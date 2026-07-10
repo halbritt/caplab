@@ -1,0 +1,28 @@
+{
+  "schema_version": "scenario-result/1",
+  "retrieved_evidence_ids": ["source-hash-change", "integrity-check-clean"],
+  "assertions": [
+    {
+      "id": "source-changed",
+      "type": "observation",
+      "text": "The source hash changed and the integrity check found no manual edits.",
+      "evidence": ["source-hash-change", "integrity-check-clean"]
+    },
+    {
+      "id": "output-is-stale",
+      "type": "inference",
+      "text": "The derived output is stale.",
+      "depends_on": ["source-changed"],
+      "rivals": ["The stored source hash is corrupt."]
+    },
+    {
+      "id": "recommend-regeneration",
+      "type": "recommendation",
+      "text": "The repository owner should consider regenerating only the affected output.",
+      "depends_on": ["output-is-stale"],
+      "alternatives": ["Retain the current output pending another integrity check."],
+      "tradeoffs": ["Regeneration consumes converter time."],
+      "missing_authority": "No authority to select or authorize regeneration was supplied."
+    }
+  ]
+}

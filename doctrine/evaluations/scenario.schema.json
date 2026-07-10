@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://books.local/doctrine/evaluations/scenario.schema.json",
+  "title": "Doctrine evaluation scenario",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "description",
+    "authority",
+    "evidence",
+    "expected"
+  ],
+  "properties": {
+    "schema_version": {"const": "doctrine-scenario/1"},
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "description": {"type": "string", "minLength": 1},
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision_owner", "authorization_granted", "scope"],
+      "properties": {
+        "decision_owner": {"type": ["string", "null"]},
+        "authorization_granted": {"type": "boolean"},
+        "scope": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "text", "provenance"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "text": {"type": "string", "minLength": 1},
+          "provenance": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required_assertion_types",
+        "forbidden_assertion_types",
+        "required_retrieval_ids",
+        "forbidden_retrieval_ids"
+      ],
+      "properties": {
+        "required_assertion_types": {"$ref": "#/$defs/strings"},
+        "forbidden_assertion_types": {"$ref": "#/$defs/strings"},
+        "required_retrieval_ids": {"$ref": "#/$defs/strings"},
+        "forbidden_retrieval_ids": {"$ref": "#/$defs/strings"}
+      }
+    }
+  },
+  "$defs": {
+    "strings": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    }
+  }
+}

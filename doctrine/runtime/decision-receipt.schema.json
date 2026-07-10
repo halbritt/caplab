@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://books.local/doctrine/runtime/decision-receipt.schema.json",
+  "title": "Doctrine decision receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "receipt_id",
+    "question",
+    "scope",
+    "status",
+    "authority_boundary",
+    "assertions",
+    "alternatives",
+    "source_locators",
+    "corpus_version",
+    "reopening_conditions"
+  ],
+  "properties": {
+    "schema_version": {"const": "decision-receipt/1"},
+    "receipt_id": {"type": "string", "minLength": 1},
+    "question": {"type": "string", "minLength": 1},
+    "scope": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "status": {
+      "enum": [
+        "recommended",
+        "decided",
+        "authorized",
+        "executed",
+        "verified",
+        "accepted",
+        "abstained"
+      ]
+    },
+    "authority_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["owner", "authority_source", "authorized_scope"],
+      "properties": {
+        "owner": {"type": ["string", "null"]},
+        "authority_source": {"type": ["string", "null"]},
+        "authorized_scope": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "assertions": {
+      "type": "array",
+      "items": {
+        "$ref": "assertion-artifact.schema.json#/$defs/assertion"
+      }
+    },
+    "alternatives": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["option", "disposition", "evidence"],
+        "properties": {
+          "option": {"type": "string", "minLength": 1},
+          "disposition": {"enum": ["selected", "rejected", "deferred"]},
+          "evidence": {"type": "array", "items": {"type": "string", "minLength": 1}}
+        }
+      }
+    },
+    "source_locators": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "corpus_version": {"type": "string", "minLength": 1},
+    "retriever_version": {"type": ["string", "null"]},
+    "verification_criteria": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "reopening_conditions": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "residual_risk": {"type": "array", "items": {"type": "string", "minLength": 1}}
+  }
+}

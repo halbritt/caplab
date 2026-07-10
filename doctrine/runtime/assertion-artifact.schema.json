@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://books.local/doctrine/runtime/assertion-artifact.schema.json",
+  "title": "Typed assertion artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "assertions"],
+  "properties": {
+    "schema_version": {"const": "assertion-artifact/1"},
+    "assertions": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/assertion"}
+    }
+  },
+  "$defs": {
+    "nonemptyStrings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "assertion": {
+      "type": "object",
+      "required": ["id", "type", "text"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+        "type": {
+          "enum": [
+            "observation",
+            "inference",
+            "recommendation",
+            "decision",
+            "authorization",
+            "execution",
+            "verification",
+            "acceptance"
+          ]
+        },
+        "text": {"type": "string", "minLength": 1},
+        "depends_on": {"$ref": "#/$defs/nonemptyStrings"},
+        "evidence": {"$ref": "#/$defs/nonemptyStrings"},
+        "rivals": {"$ref": "#/$defs/nonemptyStrings"},
+        "alternatives": {"$ref": "#/$defs/nonemptyStrings"},
+        "tradeoffs": {"$ref": "#/$defs/nonemptyStrings"},
+        "owner": {"type": "string", "minLength": 1},
+        "authority": {"type": "string", "minLength": 1},
+        "scope": {"$ref": "#/$defs/nonemptyStrings"},
+        "criteria": {"$ref": "#/$defs/nonemptyStrings"},
+        "missing_authority": {"type": "string", "minLength": 1}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"type": {"const": "observation"}}},
+          "then": {"required": ["evidence"]}
+        },
+        {
+          "if": {"properties": {"type": {"const": "inference"}}},
+          "then": {"required": ["depends_on", "rivals"]}
+        },
+        {
+          "if": {"properties": {"type": {"const": "recommendation"}}},
+          "then": {"required": ["alternatives", "tradeoffs"]}
+        },
+        {
+          "if": {"properties": {"type": {"const": "decision"}}},
+          "then": {"required": ["depends_on", "owner", "authority"]}
+        },
+        {
+          "if": {"properties": {"type": {"const": "authorization"}}},
+          "then": {"required": ["depends_on", "owner", "authority", "scope"]}
+        },
+        {
+          "if": {"properties": {"type": {"const": "execution"}}},
+          "then": {"required": ["depends_on"]}
+        },
+        {
+          "if": {"properties": {"type": {"const": "verification"}}},
+          "then": {"required": ["depends_on", "criteria", "evidence"]}
+        },
+        {
+          "if": {"properties": {"type": {"const": "acceptance"}}},
+          "then": {"required": ["depends_on", "owner", "authority"]}
+        }
+      ]
+    }
+  }
+}

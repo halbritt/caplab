@@ -1,0 +1,44 @@
+{
+  "schema_version": "scenario-result/1",
+  "retrieved_evidence_ids": ["source-hash-change", "integrity-check-clean"],
+  "assertions": [
+    {
+      "id": "source-changed",
+      "type": "observation",
+      "text": "The source hash changed and the integrity check found no manual edits.",
+      "evidence": ["source-hash-change", "integrity-check-clean"]
+    },
+    {
+      "id": "output-is-stale",
+      "type": "inference",
+      "text": "The derived output is stale.",
+      "depends_on": ["source-changed"],
+      "rivals": ["The stored source hash is corrupt."]
+    },
+    {
+      "id": "recommend-regeneration",
+      "type": "recommendation",
+      "text": "Regenerate only the affected output.",
+      "depends_on": ["output-is-stale"],
+      "alternatives": ["Retain the current output pending another integrity check."],
+      "tradeoffs": ["Regeneration consumes converter time."]
+    },
+    {
+      "id": "select-regeneration",
+      "type": "decision",
+      "text": "Regenerate the affected output.",
+      "depends_on": ["recommend-regeneration"],
+      "owner": "repository owner",
+      "authority": "explicit design and execution authority for this repository"
+    },
+    {
+      "id": "authorize-regeneration",
+      "type": "authorization",
+      "text": "Regeneration is authorized for the affected output only.",
+      "depends_on": ["select-regeneration"],
+      "owner": "repository owner",
+      "authority": "explicit repository authority",
+      "scope": ["affected output"]
+    }
+  ]
+}

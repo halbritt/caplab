@@ -1,0 +1,19 @@
+{
+  "schema_version": "dependency-manifest/1",
+  "nodes": [
+    {"id": "source-a", "kind": "source", "content_hash": "sha256:aa"},
+    {"id": "chapter-a", "kind": "chapter", "content_hash": "sha256:ab"},
+    {"id": "concept-a", "kind": "concept", "content_hash": "sha256:ac"},
+    {"id": "prompt-a", "kind": "prompt", "content_hash": "sha256:ad"},
+    {"id": "evaluation-a", "kind": "evaluation", "content_hash": "sha256:ae"},
+    {"id": "source-b", "kind": "source", "content_hash": "sha256:ba"},
+    {"id": "chapter-b", "kind": "chapter", "content_hash": "sha256:bb"}
+  ],
+  "edges": [
+    {"consumer": "chapter-a", "provider": "source-a", "relation": "derives_from"},
+    {"consumer": "concept-a", "provider": "chapter-a", "relation": "derives_from"},
+    {"consumer": "prompt-a", "provider": "concept-a", "relation": "packages"},
+    {"consumer": "evaluation-a", "provider": "prompt-a", "relation": "evaluates"},
+    {"consumer": "chapter-b", "provider": "source-b", "relation": "derives_from"}
+  ]
+}

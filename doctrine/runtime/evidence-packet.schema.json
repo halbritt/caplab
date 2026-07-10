@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://books.local/doctrine/runtime/evidence-packet.schema.json",
+  "title": "Doctrine evidence packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "packet_id",
+    "question",
+    "corpus_version",
+    "activated_concepts",
+    "formulations",
+    "conflicts",
+    "missing_evidence",
+    "source_locators"
+  ],
+  "properties": {
+    "schema_version": {"const": "evidence-packet/1"},
+    "packet_id": {"type": "string", "minLength": 1},
+    "question": {"type": "string", "minLength": 1},
+    "corpus_version": {"type": "string", "minLength": 1},
+    "activated_concepts": {"$ref": "#/$defs/identifiers"},
+    "formulations": {"$ref": "#/$defs/identifiers"},
+    "conflicts": {"$ref": "#/$defs/identifiers"},
+    "excluded_candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "reason"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "reason": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "missing_evidence": {"$ref": "#/$defs/strings"},
+    "source_locators": {"$ref": "#/$defs/strings"}
+  },
+  "$defs": {
+    "identifiers": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "strings": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    }
+  }
+}
