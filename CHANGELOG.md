@@ -8,6 +8,7 @@ This project does not yet publish numbered releases. Dated entries record notabl
 
 - Added the deterministic evidence-packet assembler (`doctrine/tools/assemble_packet.py`): applies the routing-index retrieval contract for a role, task, question, and optional repository signals, languages, and risk class, and emits packets validated against `doctrine/runtime/evidence-packet.schema.json`.
 - Added the claim-to-source entailment screening harness (`doctrine/tools/entailment_eval.py`) with a 12-judgment pilot recorded under `doctrine/evaluations/entailment/`; verdicts are model-judged screening evidence for human audit, not verification.
+- Added a `--model` flag to the entailment harness so multi-model OpenAI-compatible servers (ollama) route to the requested judge model; recorded model provenance now prefers the requested model when the server lists it.
 - Expanded root documentation for corpus conversion, doctrine contracts, evaluation fixtures, assertion discipline, and integrity boundaries.
 - Added author attribution to the root source-book catalog.
 - Added this changelog.

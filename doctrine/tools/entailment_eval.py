@@ -255,10 +255,13 @@ def extract_json_object(content: str) -> dict[str, Any] | None:
 class OpenAIClient:
     """Minimal stdlib client for an OpenAI-compatible chat endpoint."""
 
-    def __init__(self, endpoint: str, timeout: float, max_tokens: int) -> None:
+    def __init__(
+        self, endpoint: str, timeout: float, max_tokens: int, model: str = MODEL_ALIAS
+    ) -> None:
         self.endpoint = endpoint.rstrip("/")
         self.timeout = timeout
         self.max_tokens = max_tokens
+        self.model = model
 
     def _request(self, path: str, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         url = self.endpoint + path
@@ -276,9 +279,13 @@ class OpenAIClient:
     def model_id(self) -> str | None:
         document = self._request("/models")
         data = document.get("data") or []
-        if data and isinstance(data[0], dict):
-            return data[0].get("id")
-        return None
+        served = [entry.get("id") for entry in data if isinstance(entry, dict)]
+        # Multi-model servers (ollama) route by the requested name; record it
+        # when served. Single-model servers (llama.cpp) ignore the request
+        # model field, so fall back to the one model actually loaded.
+        if self.model in served:
+            return self.model
+        return served[0] if served else None
 
     def chat(self, prompt: str) -> tuple[str, str | None, float]:
         """Return (content, finish_reason, latency_seconds).
@@ -287,7 +294,7 @@ class OpenAIClient:
         ``reasoning_content`` (thinking) is intentionally ignored.
         """
         payload = {
-            "model": MODEL_ALIAS,
+            "model": self.model,
             "messages": [{"role": "user", "content": prompt}],
             "max_tokens": self.max_tokens,
         }
@@ -479,6 +486,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--results", type=Path, default=None, help="results JSONL path")
     parser.add_argument("--summarize", action="store_true", help="summarize results.jsonl and write summary.md; no judging")
     parser.add_argument("--endpoint", default=DEFAULT_ENDPOINT, help="OpenAI-compatible base URL")
+    parser.add_argument(
+        "--model",
+        default=MODEL_ALIAS,
+        help="model name sent in requests (llama.cpp ignores it; ollama routes by it)",
+    )
     parser.add_argument("--repo-root", type=Path, default=None, help="repository root override (mainly for tests)")
     parser.add_argument("--max-tokens", type=int, default=DEFAULT_MAX_TOKENS)
     parser.add_argument("--timeout", type=float, default=DEFAULT_TIMEOUT_SECONDS, help="per-request timeout in seconds")
@@ -496,7 +508,7 @@ def main(argv: list[str] | None = None) -> int:
         pairs = [pair for pair in pairs if pair["source_id"] in set(args.source)]
 
     known_keys = existing_keys(results_path)
-    client = OpenAIClient(args.endpoint, args.timeout, args.max_tokens)
+    client = OpenAIClient(args.endpoint, args.timeout, args.max_tokens, model=args.model)
     model_id: str | None = None
     processed = 0
     skipped = 0
@@ -551,7 +563,7 @@ def main(argv: list[str] | None = None) -> int:
                 "section_char_budget": SECTION_CHAR_BUDGET,
                 "endpoint": client.endpoint,
                 "request_params": {
-                    "model_alias": MODEL_ALIAS,
+                    "model_alias": client.model,
                     "max_tokens": args.max_tokens,
                     "sampler_overrides": {},
                 },
