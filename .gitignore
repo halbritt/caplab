@@ -1,3 +1,5 @@
 .book-work/
 __pycache__/
 *.py[cod]
+.adjudication.lock
+.playwright-mcp/
