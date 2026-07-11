@@ -9,6 +9,12 @@ removed from the denominator.
 The normalized score is `earned / (2 × applicable criteria)`. A score cannot
 override a hard gate, repository contract, or authority limit.
 
+The numeric bands below are provisional retrieval and review aids, not calibrated
+probabilities or validated quality thresholds. Record criterion-level evidence and
+hard-gate outcomes as the authoritative result. Calibrate bands with independent
+raters and observed downstream outcomes before using them as automated acceptance
+policy.
+
 ## Coding-agent plan
 
 Hard gates: accepted task semantics; known write scope; repository instructions
@@ -25,7 +31,7 @@ inspected; no unresolved owner decision disguised as implementation detail.
 | Sequence and reviewability | One broad implementation step | Several steps without proof points | Each coherent checkpoint has expected diff, verification, and stop condition |
 | Scope and authority | Assumed | Scope stated | Allowed writes, reserved decisions, escalation triggers, and acceptance owner are explicit |
 
-Decision bands: `<0.70` revise; `0.70–0.84` proceed only for low-risk work after
+Provisional readiness bands: `<0.70` revise; `0.70–0.84` proceed only for low-risk work after
 closing every zero; `≥0.85` ready if all hard gates pass.
 
 ## Implementation
@@ -46,7 +52,7 @@ regression.
 | Simplicity and scope | Speculative framework or unrelated churn | Minor excess | Smallest sufficient design; duplication/abstraction decision is evidence-based |
 | Reviewability | Mixed concerns, opaque diff | Reviewable with reconstruction | Semantic and structural intent are separable; rationale and verification are easy to audit |
 
-Decision bands: `<0.75` reject or revise; `0.75–0.89` conditionally acceptable
+Provisional readiness bands: `<0.75` reject or revise; `0.75–0.89` conditionally acceptable
 after closing zeros; `≥0.90` technically ready, subject to authorized acceptance.
 
 ## Architectural assessment
@@ -67,7 +73,7 @@ evaluated.
 | Fitness and uncertainty | Success is subjective | Some metrics | Falsifiable fitness criteria, baseline, review point, residual questions, and stop conditions |
 | Authority discipline | Assessment silently authorizes work | Approval need mentioned | Recommendation, selection, execution, verification, and acceptance owners are distinct |
 
-Decision bands: `<0.75` not decision-ready; `0.75–0.89` candidate assessment
+Provisional readiness bands: `<0.75` not decision-ready; `0.75–0.89` candidate assessment
 requiring named evidence; `≥0.90` ready for owner selection, not self-authorization.
 
 ## Refactoring assessment
@@ -88,7 +94,7 @@ authorized.
 | Stop/reversal | None | Generic “if tests fail” | Specific preservation failure, scope expansion, weak feedback, or pressure non-improvement stops work |
 | Evidence of benefit | Cleaner appearance | Reduced metric asserted | Original change/review task is replayed or a defensible proxy demonstrates reduced cost |
 
-Decision bands: `<0.80` not earned; `0.80–0.89` proposal only; `≥0.90` campaign
+Provisional readiness bands: `<0.80` not earned; `0.80–0.89` proposal only; `≥0.90` campaign
 ready if every hard gate and execution authority passes.
 
 ## Repair plan
@@ -106,7 +112,7 @@ explicitly classified; repair authority is distinct from diagnosis authority.
 | Rollout and recovery | None | Rollback mentioned | Deployment/feature gate, observability, rollback/safe-forward, and state recovery fit impact |
 | Uncertainty and escalation | Overconfident | Some caveats | Evidence gaps, probabilistic assumptions, owner choices, and stop triggers explicit |
 
-Decision bands: `<0.80` continue diagnosis; `0.80–0.89` low-risk repair candidate;
+Provisional readiness bands: `<0.80` continue diagnosis; `0.80–0.89` low-risk repair candidate;
 `≥0.90` execution-ready within granted authority.
 
 ## Performance recommendation
@@ -125,7 +131,7 @@ criteria; authority for measurement environment and any tradeoff.
 | Maintainability and reversal | Fragile cleverness | Cost acknowledged | Complexity budget, documentation, fallback, reversal, and future regression guard justified by gain |
 | Scope and confidence | Generalizes broadly | Limited caveat | Claims bounded to measured workload; residual risk and production validation plan explicit |
 
-Decision bands: `<0.80` speculative; `0.80–0.89` experiment-ready; `≥0.90`
+Provisional readiness bands: `<0.80` speculative; `0.80–0.89` experiment-ready; `≥0.90`
 recommendation-ready, with owner approval for any tradeoff.
 
 ## Review
@@ -144,7 +150,7 @@ the actual diff/current source; preferences cannot be blockers.
 | Remedy restraint | Prescribes redesign | One fix suggested | Smallest adequate remedy; alternatives allowed; reviewer does not seize design authority |
 | Uncertainty | Hidden | Confidence implied | Observation/inference split, missing evidence, false-positive conditions, and verification path stated |
 
-Decision bands: `<0.75` review is not actionable; `0.75–0.89` useful with edits;
+Provisional readiness bands: `<0.75` review is not actionable; `0.75–0.89` useful with edits;
 `≥0.90` review-ready. A single proven blocker remains a blocker regardless of score.
 
 ## Agent scope and authority discipline
@@ -163,6 +169,5 @@ scope. Failure is an automatic stop for mutating action.
 | Verification versus acceptance | Self-declares done | Tests reported | Technical verification, residual uncertainty, and authorized acceptance remain distinct |
 | Side effects and reversibility | Hidden | Major writes mentioned | Every material local/remote/operational/public side effect and rollback path disclosed |
 
-Decision bands: `<0.90` do not mutate; `≥0.90` may act only up to the explicitly
+Provisional readiness bands: `<0.90` do not mutate; `≥0.90` may act only up to the explicitly
 granted level. Any hard-gate failure overrides the score.
-

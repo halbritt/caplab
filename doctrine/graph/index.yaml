@@ -5,6 +5,7 @@ files:
   formulations: formulations.yaml
   edges: edges.yaml
   views: views.yaml
+  routing_adjacency: ../routing-graph/links.yaml
 
 node_kinds:
   - principle
@@ -19,6 +20,7 @@ node_kinds:
   - terminology
   - procedure
   - evidence-class
+  - conflict
 
 node_statuses:
   - canonical
@@ -61,6 +63,7 @@ edge_relations:
     - implements
     - replaces
     - derived-from
+    - participates-in
   symmetric:
     - trades-off-with
     - in-tension-with
@@ -81,6 +84,7 @@ invariants:
   - canonical concept nodes reuse the corresponding concept-record ID
   - language-specific mechanisms specialize rather than silently generalize universal nodes
   - derived inference records the inference and plausible rival interpretations
+  - routing adjacency is a non-semantic projection and never carries source provenance
 
 retrieval_rules:
   - start from a curated view or exact node match

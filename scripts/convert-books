@@ -10,6 +10,7 @@ import hashlib
 import html
 import json
 import os
+import platform
 from pathlib import Path, PurePosixPath
 import re
 import shlex
@@ -32,6 +33,10 @@ DEFAULT_MARKER_LOCAL = Path(
 )
 SUPPORTED_SUFFIXES = {".pdf", ".epub"}
 SOURCE_DIRECTORY = "sources"
+BIBLIOGRAPHY_MANIFEST = Path("doctrine/bibliography.json")
+ROOT_CATALOG_BEGIN = "<!-- BEGIN GENERATED SOURCE CATALOG -->"
+ROOT_CATALOG_END = "<!-- END GENERATED SOURCE CATALOG -->"
+CREATOR_ROLES = {"author", "contributor", "editor", "translator", "foreword-author"}
 BOUNDARY_RE = re.compile(
     r"^(?:foreword(?:\s*[:.\-–—]\s*.*)?|"
     r"preface(?:\s*[:.\-–—]\s*.*)?|"
@@ -571,6 +576,131 @@ def overridden_command(
     return ["bash", str(default_script)], False
 
 
+def command_file_identity(argument: str) -> dict[str, str | None]:
+    configured_path = Path(argument).expanduser()
+    resolved_path: Path | None = None
+    if configured_path.is_file():
+        resolved_path = configured_path.resolve()
+    elif os.sep not in argument and (located := shutil.which(argument)):
+        resolved_path = Path(located).resolve()
+    return {
+        "argument": argument,
+        "resolved_path": str(resolved_path) if resolved_path else None,
+        "sha256": sha256_file(resolved_path) if resolved_path else None,
+    }
+
+
+def command_prefix_identity(arguments: list[str]) -> list[dict[str, str | None]]:
+    return [command_file_identity(argument) for argument in arguments]
+
+
+def conversion_environment_identity() -> dict[str, object]:
+    variables = {
+        name: {"sha256": sha256_bytes(value.encode("utf-8"))}
+        for name, value in sorted(os.environ.items())
+        if name.startswith("BOOKS_") or name in {"HOME", "PATH"}
+    }
+    return {
+        "os_name": os.name,
+        "platform": sys.platform,
+        "python_version": platform.python_version(),
+        "python_executable": command_file_identity(sys.executable),
+        "variables": variables,
+    }
+
+
+def pdf_raw_conversion_identity(
+    root: Path, common_identity: dict[str, object]
+) -> dict[str, object]:
+    peecee_prefix, peecee_overridden = overridden_command(
+        "BOOKS_MARKER_PEECEE", DEFAULT_MARKER_PEECEE
+    )
+    local_prefix, local_overridden = overridden_command(
+        "BOOKS_MARKER_LOCAL", DEFAULT_MARKER_LOCAL
+    )
+    return {
+        **common_identity,
+        "converter": "marker",
+        "helpers": {
+            "peecee": command_prefix_identity(peecee_prefix),
+            "local": command_prefix_identity(local_prefix),
+        },
+        "helper_overrides": {
+            "peecee": peecee_overridden,
+            "local": local_overridden,
+        },
+        "converter_versions": {
+            "peecee": marker_version(root, "peecee"),
+            "local": marker_version(root, "local"),
+        },
+        "options": {
+            "format": "markdown",
+            "primary_target": "peecee",
+            "fallback_target": "local",
+            "fallback_policy": "infrastructure-failure-only",
+            "remote_clean": not bool(os.environ.get("BOOKS_SKIP_REMOTE_CLEAN")),
+        },
+        "supporting_commands": {
+            "pdfinfo": command_file_identity("pdfinfo"),
+            "ssh": command_file_identity("ssh"),
+        },
+    }
+
+
+def epub_raw_conversion_identity(
+    root: Path, common_identity: dict[str, object]
+) -> dict[str, object]:
+    executable = os.environ.get("BOOKS_PANDOC", "pandoc")
+    return {
+        **common_identity,
+        "converter": "pandoc",
+        "helpers": {"pandoc": command_file_identity(executable)},
+        "converter_versions": {"local": pandoc_version(root, executable)},
+        "options": {
+            "from": "epub",
+            "to": "gfm",
+            "wrap": "none",
+            "markdown_headings": "atx",
+            "extract_media": "assets",
+        },
+    }
+
+
+def raw_conversion_identity(
+    source: Path, root: Path, conversion_stage_fingerprint: str
+) -> dict[str, object]:
+    common_identity: dict[str, object] = {
+        "schema_version": "books-raw-conversion/1",
+        "source_format": source.suffix.lower().lstrip("."),
+        "conversion_stage_fingerprint": conversion_stage_fingerprint,
+        "environment": conversion_environment_identity(),
+    }
+    if source.suffix.lower() == ".pdf":
+        return pdf_raw_conversion_identity(root, common_identity)
+    return epub_raw_conversion_identity(root, common_identity)
+
+
+def raw_conversion_fingerprint(identity: dict[str, object]) -> str:
+    return sha256_bytes(json_bytes(identity))
+
+
+def has_legacy_raw_provenance(record: dict[str, object]) -> bool:
+    return (
+        "raw_conversion_identity" not in record
+        and "raw_conversion_fingerprint" not in record
+    )
+
+
+def raw_conversion_cacheable(
+    identity: dict[str, object], execution_target: object
+) -> bool:
+    versions = identity.get("converter_versions")
+    if not isinstance(versions, dict) or not isinstance(execution_target, str):
+        return False
+    version = versions.get(execution_target)
+    return isinstance(version, str) and bool(version.strip())
+
+
 def record_conversion_failure(
     work: Path,
     root: Path,
@@ -614,6 +744,8 @@ def write_converter_cache(
     converter: dict[str, object],
 ) -> None:
     cached_converter = copy.deepcopy(converter)
+    raw_identity = cached_converter.pop("raw_conversion_identity")
+    raw_fingerprint = cached_converter.pop("raw_conversion_fingerprint")
     for key in ("raw_directory", "markdown_path", "staged_source"):
         value = cached_converter.get(key)
         if isinstance(value, Path):
@@ -625,6 +757,8 @@ def write_converter_cache(
         "source_format": source.suffix.lower().lstrip("."),
         "source_size_bytes": source.stat().st_size,
         "converter": cached_converter,
+        "raw_conversion_identity": raw_identity,
+        "raw_conversion_fingerprint": raw_fingerprint,
         "raw_files": raw_file_manifest(Path(converter["raw_directory"])),
         "cache_sha256": None,
     }
@@ -633,7 +767,12 @@ def write_converter_cache(
 
 
 def load_converter_cache(
-    work: Path, root: Path, source: Path, source_hash: str
+    work: Path,
+    root: Path,
+    source: Path,
+    source_hash: str,
+    expected_identity: dict[str, object],
+    expected_fingerprint: str,
 ) -> dict[str, object] | None:
     cache_path = work / "converter-cache.json"
     if not cache_path.is_file():
@@ -649,11 +788,22 @@ def load_converter_cache(
         return None
     if not source_identity_matches(record, root, source, source_hash):
         return None
+    if (
+        record.get("raw_conversion_identity") != expected_identity
+        or record.get("raw_conversion_fingerprint") != expected_fingerprint
+    ):
+        return None
     cached_converter = record.get("converter")
     raw_files = record.get("raw_files")
     if not isinstance(cached_converter, dict) or not isinstance(raw_files, dict):
         return None
+    if not raw_conversion_cacheable(
+        expected_identity, cached_converter.get("execution_target")
+    ):
+        return None
     converter = copy.deepcopy(cached_converter)
+    converter["raw_conversion_identity"] = expected_identity
+    converter["raw_conversion_fingerprint"] = expected_fingerprint
     for key in ("raw_directory", "markdown_path", "staged_source"):
         value = converter.get(key)
         if not isinstance(value, str) or Path(value).is_absolute():
@@ -3112,6 +3262,18 @@ def output_modifications(directory: Path) -> list[str]:
             )
     if not verify_source_record(record):
         changes.append("source.json integrity check failed")
+    recorded_raw_identity = record.get("raw_conversion_identity")
+    recorded_raw_fingerprint = record.get("raw_conversion_fingerprint")
+    if not has_legacy_raw_provenance(record):
+        if not isinstance(recorded_raw_identity, dict):
+            changes.append("source.json has no raw-conversion identity")
+        elif not isinstance(recorded_raw_fingerprint, str):
+            changes.append("source.json has no raw-conversion fingerprint")
+        elif (
+            raw_conversion_fingerprint(recorded_raw_identity)
+            != recorded_raw_fingerprint
+        ):
+            changes.append("raw conversion fingerprint does not match identity")
     expected = record.get("generated_files")
     if not isinstance(expected, dict):
         changes.append("source.json has no generated-files manifest")
@@ -3188,14 +3350,27 @@ def install_directory(staged: Path, destination: Path) -> None:
     shutil.rmtree(backup)
 
 
-def convert_one(source: Path, root: Path, force: bool) -> dict[str, object]:
+def convert_one(
+    source: Path,
+    root: Path,
+    *,
+    force: bool,
+    fresh_converter: bool = False,
+) -> dict[str, object]:
     slug = slugify(source.stem)
     source_hash = sha256_file(source)
     current_pipeline_fingerprint = pipeline_fingerprint()
+    current_raw_conversion_identity = raw_conversion_identity(
+        source, root, current_pipeline_fingerprint
+    )
+    current_raw_conversion_fingerprint = raw_conversion_fingerprint(
+        current_raw_conversion_identity
+    )
     destination = root / "books" / slug
     destination_state = (
         directory_state_digest(destination) if destination.exists() else None
     )
+    legacy_destination = False
     if destination.exists():
         changes = output_modifications(destination)
         try:
@@ -3204,15 +3379,25 @@ def convert_one(source: Path, root: Path, force: bool) -> dict[str, object]:
             )
         except (OSError, json.JSONDecodeError, UnicodeDecodeError):
             existing_record = {}
+        legacy_destination = bool(existing_record) and has_legacy_raw_provenance(
+            existing_record
+        )
         if changes and not force:
             raise BookConversionError(
                 f"refusing to overwrite unexpected edits in books/{slug}: "
                 + "; ".join(changes)
             )
         if (
-            source_identity_matches(existing_record, root, source, source_hash)
+            not fresh_converter
+            and source_identity_matches(existing_record, root, source, source_hash)
             and existing_record.get("pipeline_fingerprint")
             == current_pipeline_fingerprint
+            and existing_record.get("raw_conversion_fingerprint")
+            == current_raw_conversion_fingerprint
+            and raw_conversion_cacheable(
+                current_raw_conversion_identity,
+                existing_record.get("execution_target"),
+            )
             and not changes
         ):
             print(f"books: up to date: {source.name}")
@@ -3225,7 +3410,16 @@ def convert_one(source: Path, root: Path, force: bool) -> dict[str, object]:
 
     work = root / ".book-work" / slug
     source_hash_before = source_hash
-    converter = load_converter_cache(work, root, source, source_hash)
+    converter = None
+    if not fresh_converter and not legacy_destination:
+        converter = load_converter_cache(
+            work,
+            root,
+            source,
+            source_hash,
+            current_raw_conversion_identity,
+            current_raw_conversion_fingerprint,
+        )
     if converter is not None:
         print(f"books: reusing validated converter output: {source.name}")
         final_from_previous_attempt = work / "final"
@@ -3249,6 +3443,8 @@ def convert_one(source: Path, root: Path, force: bool) -> dict[str, object]:
             if source.suffix.lower() == ".pdf"
             else convert_epub(source, source_hash, slug, root, work)
         )
+        converter["raw_conversion_identity"] = current_raw_conversion_identity
+        converter["raw_conversion_fingerprint"] = current_raw_conversion_fingerprint
         converter["prior_conversion_failures"] = prior_conversion_failures
         write_converter_cache(work, root, source, source_hash, converter)
     raw_markdown = Path(converter["markdown_path"]).read_text(encoding="utf-8")
@@ -3419,6 +3615,8 @@ def convert_one(source: Path, root: Path, force: bool) -> dict[str, object]:
         "source_size_bytes": source.stat().st_size,
         "pipeline": "scripts/convert-books",
         "pipeline_fingerprint": current_pipeline_fingerprint,
+        "raw_conversion_identity": converter["raw_conversion_identity"],
+        "raw_conversion_fingerprint": converter["raw_conversion_fingerprint"],
         "converter": converter["converter"],
         "execution_target": converter["execution_target"],
         "command_executed": converter["command_executed"],
@@ -3478,27 +3676,423 @@ def convert_one(source: Path, root: Path, force: bool) -> dict[str, object]:
     }
 
 
-def index_body(entries: list[dict[str, object]]) -> str:
+def manifest_evidence_paths(
+    root: Path, value: object, field: str, source_path: str
+) -> list[str]:
+    if not isinstance(value, list) or not value:
+        raise BookConversionError(
+            f"{BIBLIOGRAPHY_MANIFEST}: {source_path} has no {field} evidence"
+        )
+    evidence: list[str] = []
+    for item in value:
+        if not isinstance(item, str) or not item.strip():
+            raise BookConversionError(
+                f"{BIBLIOGRAPHY_MANIFEST}: {source_path} has invalid {field} evidence"
+            )
+        relative = Path(item)
+        resolved = (root / relative).resolve()
+        try:
+            resolved.relative_to(root)
+        except ValueError as error:
+            raise BookConversionError(
+                f"{BIBLIOGRAPHY_MANIFEST}: evidence escapes repository root: {item}"
+            ) from error
+        if relative.is_absolute() or not resolved.is_file():
+            raise BookConversionError(
+                f"{BIBLIOGRAPHY_MANIFEST}: evidence does not resolve: {item}"
+            )
+        evidence.append(relative.as_posix())
+    return evidence
+
+
+def load_bibliography(
+    root: Path, sources: list[Path], *, required: bool
+) -> dict[str, dict[str, object]] | None:
+    path = root / BIBLIOGRAPHY_MANIFEST
+    if not path.is_file():
+        if required:
+            raise BookConversionError(f"{BIBLIOGRAPHY_MANIFEST} is missing")
+        return None
+    try:
+        document = json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError) as error:
+        raise BookConversionError(f"{BIBLIOGRAPHY_MANIFEST} is malformed") from error
+    if (
+        not isinstance(document, dict)
+        or document.get("schema_version") != "books-bibliography/1"
+    ):
+        raise BookConversionError(
+            f"{BIBLIOGRAPHY_MANIFEST} must use schema_version books-bibliography/1"
+        )
+    policy = document.get("metadata_policy")
+    if not isinstance(policy, dict) or policy.get("generated_book_metadata") != (
+        "legacy-extracted-noncanonical"
+    ):
+        raise BookConversionError(
+            f"{BIBLIOGRAPHY_MANIFEST} must mark generated book metadata "
+            "legacy-extracted-noncanonical"
+        )
+    raw_records = document.get("books")
+    if not isinstance(raw_records, list):
+        raise BookConversionError(f"{BIBLIOGRAPHY_MANIFEST} has no books list")
+    records: dict[str, dict[str, object]] = {}
+    source_ids: set[str] = set()
+    for raw_record in raw_records:
+        if not isinstance(raw_record, dict):
+            raise BookConversionError(
+                f"{BIBLIOGRAPHY_MANIFEST} contains a non-object book record"
+            )
+        source_path = raw_record.get("source_path")
+        source_id = raw_record.get("source_id")
+        if (
+            not isinstance(source_id, str)
+            or re.fullmatch(r"SRC-[A-Z0-9-]+", source_id) is None
+        ):
+            raise BookConversionError(
+                f"{BIBLIOGRAPHY_MANIFEST} contains an invalid source_id"
+            )
+        if source_id in source_ids:
+            raise BookConversionError(
+                f"{BIBLIOGRAPHY_MANIFEST} repeats source_id {source_id}"
+            )
+        source_ids.add(source_id)
+        if not isinstance(source_path, str) or not source_path.startswith("sources/"):
+            raise BookConversionError(
+                f"{BIBLIOGRAPHY_MANIFEST} contains an invalid source_path"
+            )
+        if source_path in records:
+            raise BookConversionError(
+                f"{BIBLIOGRAPHY_MANIFEST} repeats source_path {source_path}"
+            )
+        source = root / source_path
+        if not source.is_file():
+            raise BookConversionError(
+                f"{BIBLIOGRAPHY_MANIFEST} references missing source {source_path}"
+            )
+        expected_slug = slugify(source.stem)
+        if raw_record.get("slug") != expected_slug:
+            raise BookConversionError(
+                f"{BIBLIOGRAPHY_MANIFEST}: {source_path} slug must be {expected_slug}"
+            )
+        title = raw_record.get("title")
+        if not isinstance(title, str) or not title.strip():
+            raise BookConversionError(
+                f"{BIBLIOGRAPHY_MANIFEST}: {source_path} has no canonical title"
+            )
+        manifest_evidence_paths(
+            root, raw_record.get("title_evidence"), "title", source_path
+        )
+        edition = raw_record.get("edition")
+        if not isinstance(edition, dict):
+            raise BookConversionError(
+                f"{BIBLIOGRAPHY_MANIFEST}: {source_path} has no edition record"
+            )
+        edition_label = edition.get("label")
+        edition_number = edition.get("number")
+        if (
+            not isinstance(edition_label, str)
+            or not edition_label.strip()
+            or not isinstance(edition_number, int)
+            or isinstance(edition_number, bool)
+            or edition_number < 1
+            or edition.get("support") not in {"direct", "derived-inference"}
+        ):
+            raise BookConversionError(
+                f"{BIBLIOGRAPHY_MANIFEST}: {source_path} has an invalid edition record"
+            )
+        manifest_evidence_paths(root, edition.get("evidence"), "edition", source_path)
+        creators = raw_record.get("creators")
+        if not isinstance(creators, list) or not creators:
+            raise BookConversionError(
+                f"{BIBLIOGRAPHY_MANIFEST}: {source_path} has no creators"
+            )
+        roles: set[str] = set()
+        for creator in creators:
+            if not isinstance(creator, dict):
+                raise BookConversionError(
+                    f"{BIBLIOGRAPHY_MANIFEST}: {source_path} has an invalid creator"
+                )
+            name = creator.get("name")
+            role = creator.get("role")
+            if (
+                not isinstance(name, str)
+                or not name.strip()
+                or role not in CREATOR_ROLES
+                or creator.get("support") not in {"direct", "derived-inference"}
+            ):
+                raise BookConversionError(
+                    f"{BIBLIOGRAPHY_MANIFEST}: {source_path} has an invalid creator"
+                )
+            roles.add(str(role))
+            manifest_evidence_paths(
+                root, creator.get("evidence"), f"creator {name}", source_path
+            )
+        if "author" not in roles:
+            raise BookConversionError(
+                f"{BIBLIOGRAPHY_MANIFEST}: {source_path} has no author"
+            )
+        if raw_record.get("generated_metadata_status") != (
+            "legacy-extracted-noncanonical"
+        ):
+            raise BookConversionError(
+                f"{BIBLIOGRAPHY_MANIFEST}: {source_path} must preserve legacy "
+                "generated metadata status"
+            )
+        records[source_path] = raw_record
+    expected_paths = {source_repository_path(root, source) for source in sources}
+    actual_paths = set(records)
+    if actual_paths != expected_paths:
+        missing = sorted(expected_paths - actual_paths)
+        extra = sorted(actual_paths - expected_paths)
+        details: list[str] = []
+        if missing:
+            details.append("missing " + ", ".join(missing))
+        if extra:
+            details.append("unexpected " + ", ".join(extra))
+        raise BookConversionError(
+            f"{BIBLIOGRAPHY_MANIFEST} does not match sources/: " + "; ".join(details)
+        )
+    return records
+
+
+def creator_text(record: dict[str, object]) -> str:
+    creators = record.get("creators")
+    if not isinstance(creators, list):
+        return "Unknown"
+    return "; ".join(
+        f"{creator['name']} ({creator['role']})"
+        for creator in creators
+        if isinstance(creator, dict) and creator.get("name") and creator.get("role")
+    )
+
+
+def cited_chapter_paths(root: Path) -> set[str]:
+    doctrine = root / "doctrine"
+    canonical_files = [
+        doctrine / "conflicts.yaml",
+        doctrine / "negative-doctrine.yaml",
+        doctrine / "graph" / "formulations.yaml",
+        *sorted((doctrine / "concepts").glob("*.yaml")),
+        *sorted((doctrine / "techniques").glob("*.yaml")),
+    ]
+    locator_pattern = re.compile(r"books/[^\s\"']+/chapters/[^\s\"']+?\.md")
+    paths: set[str] = set()
+    for path in canonical_files:
+        if path.is_file():
+            paths.update(locator_pattern.findall(path.read_text(encoding="utf-8")))
+    if paths:
+        return paths
+    coverage = doctrine / "chapter-coverage.yaml"
+    if coverage.is_file():
+        pattern = re.compile(r"^\s*chapter_path:\s*['\"]?(.+?)['\"]?\s*$")
+        for line in coverage.read_text(encoding="utf-8").splitlines():
+            if match := pattern.match(line):
+                paths.add(match.group(1))
+    return paths
+
+
+def validation_items(validation: dict[str, object], field: str) -> list[object]:
+    value = validation.get(field)
+    return value if isinstance(value, list) else []
+
+
+def warning_finding_entries(validation: dict[str, object]) -> list[object]:
+    entries: list[object] = []
+    damaged_code = validation_items(validation, "damaged_code")
+    entries.extend(
+        entry
+        for entry in damaged_code
+        if not (
+            isinstance(entry, dict)
+            and entry.get("reason") == "fenced code changed during post-processing"
+        )
+    )
+    for field in (
+        "unresolved_tables",
+        "low_confidence_chapter_boundaries",
+        "unresolved_navigation_anchors",
+        "degraded_internal_links",
+        "source_section_warnings",
+        "converter_reported_failures",
+    ):
+        entries.extend(validation_items(validation, field))
+    duplicate_headings = validation.get("duplicate_headings")
+    if isinstance(duplicate_headings, dict):
+        duplicate_entries = duplicate_headings.get("entries")
+        if isinstance(duplicate_entries, list):
+            entries.extend(duplicate_entries)
+    return entries
+
+
+def structural_error_count(validation: dict[str, object]) -> int:
+    count = sum(
+        len(validation_items(validation, field))
+        for field in (
+            "malformed_markdown",
+            "broken_links",
+            "missing_assets",
+            "missing_chapters",
+            "missing_sections",
+            "missing_parts",
+            "empty_chapters",
+        )
+    )
+    count += sum(
+        isinstance(entry, dict)
+        and entry.get("reason") == "fenced code changed during post-processing"
+        for entry in validation_items(validation, "damaged_code")
+    )
+    return max(count, len(validation_items(validation, "errors")))
+
+
+def finding_chapter_path(slug: str, entry: object) -> str | None:
+    if not isinstance(entry, dict):
+        return None
+    value = entry.get("file") or entry.get("source_file")
+    if not isinstance(value, str) or not value:
+        return None
+    relative = PurePosixPath(value)
+    if relative.parts and relative.parts[0] == "chapters":
+        return f"books/{slug}/{relative.as_posix()}"
+    if len(relative.parts) == 1:
+        return f"books/{slug}/chapters/{relative.as_posix()}"
+    return f"books/{slug}/{relative.as_posix()}"
+
+
+def quality_summary(
+    directory: Path,
+    validation: dict[str, object],
+    cited_paths: set[str],
+    *,
+    source_identity_verified: bool,
+) -> dict[str, object]:
+    slug = directory.name
+    conversion_complete = (
+        validation.get("converter_exit_status") == 0
+        and isinstance(validation.get("chapter_count"), int)
+        and int(validation["chapter_count"]) > 0
+    )
+    errors = structural_error_count(validation)
+    warning_entries = warning_finding_entries(validation)
+    warning_messages = validation_items(validation, "warnings")
+    warnings = max(len(warning_entries), len(warning_messages))
+    notices = len(validation_items(validation, "page_furniture_removed"))
+    integrity_verified = (
+        conversion_complete
+        and source_identity_verified
+        and errors == 0
+        and not output_modifications(directory)
+    )
+    if errors:
+        content_quality = "blocked"
+    elif warnings:
+        content_quality = "review-required"
+    else:
+        content_quality = "clean"
+    human_review = validation.get("human_review_status")
+    if not isinstance(human_review, str) or not human_review.strip():
+        human_review = "not-recorded"
+    cited_findings = [
+        path
+        for entry in warning_entries
+        if (path := finding_chapter_path(slug, entry)) in cited_paths
+    ]
+    return {
+        "conversion_complete": conversion_complete,
+        "integrity_verified": integrity_verified,
+        "content_quality": content_quality,
+        "human_review": human_review,
+        "severity_counts": {
+            "errors": errors,
+            "warnings": warnings,
+            "notices": notices,
+        },
+        "cited_finding_count": len(cited_findings),
+        "cited_chapter_count": len(set(cited_findings)),
+    }
+
+
+def warnings_text(slug: str, warnings: object) -> str:
+    messages = warnings if isinstance(warnings, list) else []
+    if not messages:
+        return "None"
+    visible = "; ".join(str(message) for message in messages[:3])
+    link = f"[all warning evidence](./{slug}/validation.json)"
+    if len(messages) > 3:
+        return f"{visible}; +{len(messages) - 3} more; {link}"
+    return f"{visible}; {link}"
+
+
+def cited_findings_text(entry: dict[str, object]) -> str:
+    findings = int(entry["cited_finding_count"])
+    chapters = int(entry["cited_chapter_count"])
+    if not findings:
+        return "0 file-located findings"
+    finding_label = "finding" if findings == 1 else "findings"
+    chapter_label = "chapter" if chapters == 1 else "chapters"
+    return (
+        f"{findings} {finding_label} across {chapters} cited {chapter_label}; "
+        f"[details](./{entry['slug']}/validation.json)"
+    )
+
+
+def index_body(
+    entries: list[dict[str, object]], *, canonical_bibliography: bool
+) -> str:
     lines = [
         "# Books",
         "",
         "Generated Markdown corpora for supported book files in `sources/`.",
         "",
-        "| Title | Authors | Format | Converter | Target | Chapters | Status | Output | Warnings |",
-        "|---|---|---|---|---|---:|---|---|---|",
     ]
+    if canonical_bibliography:
+        lines.extend(
+            [
+                "Titles, editions, and creator roles come from the canonical "
+                "[`doctrine/bibliography.json`](../doctrine/bibliography.json). "
+                "Per-book `metadata.json` remains legacy extraction evidence and "
+                "is noncanonical.",
+                "",
+            ]
+        )
+    lines.extend(
+        [
+            "`Conversion complete` reports converter completion and nonempty chapter "
+            "output. `Integrity verified` reports source identity, structural, and generated-manifest "
+            "checks. `Content quality` is `clean`, `review-required`, or `blocked`. "
+            "Human review is never inferred. Cited-chapter impact counts only warning "
+            "findings with file locators that intersect canonical doctrine source locators.",
+            "",
+            "| Title | Edition | Creators | Format | Converter | Target | Chapters | "
+            "Conversion complete | Integrity verified | Content quality | Human review | "
+            "Severity counts | Cited chapters | Output | Warnings |",
+            "|---|---|---|---|---|---|---:|---|---|---|---|---|---|---|---|",
+        ]
+    )
     for entry in entries:
-        warning_text = "; ".join(str(item) for item in entry["warnings"][:3]) or "None"
+        counts = entry["severity_counts"]
+        if not isinstance(counts, dict):
+            raise BookConversionError("index entry has invalid severity counts")
+        severity_text = (
+            f"errors={counts['errors']}; warnings={counts['warnings']}; "
+            f"notices={counts['notices']}"
+        )
         cells = [
             str(entry["title"]),
-            str(entry["authors"]),
+            str(entry["edition"]),
+            str(entry["creators"]),
             str(entry["format"]),
             str(entry["converter"]),
             str(entry["target"]),
             str(entry["chapter_count"]),
-            str(entry["status"]),
+            "yes" if entry["conversion_complete"] else "no",
+            "yes" if entry["integrity_verified"] else "no",
+            str(entry["content_quality"]),
+            str(entry["human_review"]),
+            severity_text,
+            cited_findings_text(entry),
             f"[{entry['slug']}](./{entry['slug']}/)",
-            warning_text,
+            warnings_text(str(entry["slug"]), entry["warnings"]),
         ]
         lines.append(
             "| " + " | ".join(cell.replace("|", "\\|") for cell in cells) + " |"
@@ -3529,13 +4123,20 @@ def index_integrity_error(index: Path) -> str | None:
     return None
 
 
-def update_index(root: Path, sources: list[Path], force: bool, check: bool) -> None:
+def update_index(
+    root: Path,
+    sources: list[Path],
+    force: bool,
+    check: bool,
+    bibliography: dict[str, dict[str, object]] | None,
+) -> None:
     books_directory = root / "books"
     index = books_directory / "README.md"
     integrity_error = index_integrity_error(index)
     if integrity_error and not force:
         raise BookConversionError(integrity_error)
     entries: list[dict[str, object]] = []
+    cited_paths = cited_chapter_paths(root)
     for source in sources:
         slug = slugify(source.stem)
         directory = books_directory / slug
@@ -3544,23 +4145,49 @@ def update_index(root: Path, sources: list[Path], force: bool, check: bool) -> N
         validation = json.loads(
             (directory / "validation.json").read_text(encoding="utf-8")
         )
-        authors = metadata.get("authors") or []
-        entries.append(
-            {
-                "title": metadata.get("title") or source.stem,
-                "authors": ", ".join(str(author) for author in authors)
-                if authors
-                else "Unknown",
-                "format": provenance["source_format"],
-                "converter": provenance["converter"],
-                "target": provenance["execution_target"],
-                "chapter_count": validation["chapter_count"],
-                "status": "success" if validation["conversion_success"] else "failed",
-                "slug": slug,
-                "warnings": validation.get("warnings", []),
-            }
+        source_path = source_repository_path(root, source)
+        canonical = bibliography.get(source_path) if bibliography else None
+        if canonical:
+            edition = canonical["edition"]
+            if not isinstance(edition, dict):
+                raise BookConversionError(
+                    f"{BIBLIOGRAPHY_MANIFEST}: {source_path} edition is invalid"
+                )
+            title = canonical["title"]
+            edition_label = edition["label"]
+            creators = creator_text(canonical)
+        else:
+            authors = metadata.get("authors") or []
+            title = metadata.get("title") or source.stem
+            edition_label = "not cataloged"
+            creators = (
+                ", ".join(str(author) for author in authors) if authors else "Unknown"
+            )
+        entry: dict[str, object] = {
+            "title": title,
+            "edition": edition_label,
+            "creators": creators,
+            "format": provenance["source_format"],
+            "converter": provenance["converter"],
+            "target": provenance["execution_target"],
+            "chapter_count": validation["chapter_count"],
+            "slug": slug,
+            "warnings": validation.get("warnings", []),
+        }
+        entry.update(
+            quality_summary(
+                directory,
+                validation,
+                cited_paths,
+                source_identity_verified=source_identity_matches(
+                    provenance, root, source, sha256_file(source)
+                ),
+            )
         )
-    expected = generated_index(index_body(entries))
+        entries.append(entry)
+    expected = generated_index(
+        index_body(entries, canonical_bibliography=bibliography is not None)
+    )
     if check:
         if not index.is_file() or index.read_text(encoding="utf-8") != expected:
             raise BookConversionError("books/README.md is missing or stale")
@@ -3570,8 +4197,79 @@ def update_index(root: Path, sources: list[Path], force: bool, check: bool) -> N
         atomic_write(index, expected.encode("utf-8"))
 
 
+def source_catalog_body(records: dict[str, dict[str, object]]) -> str:
+    lines = [
+        "The entries below are canonical bibliographic presentation metadata from "
+        "[`doctrine/bibliography.json`](doctrine/bibliography.json). Per-book "
+        "`metadata.json` remains legacy extraction evidence and is noncanonical.",
+        "",
+        "| Book | Edition | Creators | Source file |",
+        "|---|---|---|---|",
+    ]
+    for source_path, record in records.items():
+        edition = record["edition"]
+        if not isinstance(edition, dict):
+            raise BookConversionError(
+                f"{BIBLIOGRAPHY_MANIFEST}: {source_path} edition is invalid"
+            )
+        cells = [
+            str(record["title"]),
+            str(edition["label"]),
+            creator_text(record),
+            f"`{source_path}`",
+        ]
+        lines.append(
+            "| " + " | ".join(cell.replace("|", "\\|") for cell in cells) + " |"
+        )
+    return "\n".join(lines) + "\n"
+
+
+def update_source_catalog(
+    root: Path,
+    bibliography: dict[str, dict[str, object]],
+    *,
+    check: bool,
+) -> None:
+    readme = root / "README.md"
+    if not readme.is_file():
+        raise BookConversionError("README.md is missing")
+    text = readme.read_text(encoding="utf-8")
+    if text.count(ROOT_CATALOG_BEGIN) != 1 or text.count(ROOT_CATALOG_END) != 1:
+        raise BookConversionError(
+            "README.md generated source catalog markers are missing"
+        )
+    before, remainder = text.split(ROOT_CATALOG_BEGIN, 1)
+    _, after = remainder.split(ROOT_CATALOG_END, 1)
+    expected_block = (
+        ROOT_CATALOG_BEGIN + "\n" + source_catalog_body(bibliography) + ROOT_CATALOG_END
+    )
+    expected = before + expected_block + after
+    if check:
+        if text != expected:
+            raise BookConversionError("README.md source catalog is stale")
+        return
+    if text != expected:
+        atomic_write(readme, expected.encode("utf-8"))
+
+
+def update_catalogs(
+    root: Path,
+    sources: list[Path],
+    *,
+    force: bool,
+    check: bool,
+    require_bibliography: bool,
+) -> None:
+    bibliography = load_bibliography(root, sources, required=require_bibliography)
+    update_index(root, sources, force, check, bibliography)
+    if bibliography is not None:
+        update_source_catalog(root, bibliography, check=check)
+
+
 def check_outputs(root: Path, sources: list[Path]) -> None:
     errors: list[str] = []
+    warnings: list[str] = []
+    current_pipeline_fingerprint = pipeline_fingerprint()
     for source in sources:
         slug = slugify(source.stem)
         directory = root / "books" / slug
@@ -3588,8 +4286,17 @@ def check_outputs(root: Path, sources: list[Path]) -> None:
         source_hash = sha256_file(source)
         if not source_identity_matches(record, root, source, source_hash):
             errors.append(f"books/{slug}: source identity is stale")
-        if record.get("pipeline_fingerprint") != pipeline_fingerprint():
+        legacy_raw_provenance = has_legacy_raw_provenance(record)
+        if (
+            record.get("pipeline_fingerprint") != current_pipeline_fingerprint
+            and not legacy_raw_provenance
+        ):
             errors.append(f"books/{slug}: pipeline fingerprint is stale")
+        if legacy_raw_provenance:
+            warnings.append(
+                f"books/{slug}: status=legacy-unverified; raw conversion "
+                "provenance is absent and converter cache reuse is disabled"
+            )
         try:
             validation = json.loads(
                 (directory / "validation.json").read_text(encoding="utf-8")
@@ -3598,6 +4305,8 @@ def check_outputs(root: Path, sources: list[Path]) -> None:
                 errors.append(f"books/{slug}: validation reports failure")
         except (OSError, json.JSONDecodeError, UnicodeDecodeError):
             errors.append(f"books/{slug}: validation.json is unreadable")
+    for warning in warnings:
+        print(f"books: warning: {warning}", file=sys.stderr)
     if errors:
         raise BookConversionError("; ".join(errors))
 
@@ -3698,6 +4407,16 @@ def parse_arguments(argv: list[str]) -> argparse.Namespace:
         help="explicitly replace generated outputs even when integrity checks detect edits",
     )
     parser.add_argument(
+        "--fresh-converter",
+        action="store_true",
+        help="bypass validated raw-converter caches and rerun conversion",
+    )
+    parser.add_argument(
+        "--catalog-only",
+        action="store_true",
+        help="regenerate public catalogs from existing records without running converters",
+    )
+    parser.add_argument(
         "--book",
         metavar="SOURCE_FILENAME",
         help="convert one exact sources/ filename without rebuilding the repository index",
@@ -3709,6 +4428,17 @@ def main(argv: list[str] | None = None) -> int:
     arguments = parse_arguments(argv or sys.argv[1:])
     root = arguments.root.resolve()
     try:
+        if arguments.check and arguments.fresh_converter:
+            raise BookConversionError(
+                "--fresh-converter cannot be combined with --check"
+            )
+        if arguments.catalog_only and (
+            arguments.check or arguments.fresh_converter or arguments.book
+        ):
+            raise BookConversionError(
+                "--catalog-only cannot be combined with --check, --fresh-converter, "
+                "or --book"
+            )
         all_sources = discover_sources(root)
         recover_interrupted_installs(root, all_sources)
         reject_orphan_outputs(root, all_sources)
@@ -3722,19 +4452,46 @@ def main(argv: list[str] | None = None) -> int:
                 raise BookConversionError(
                     f"no PDF or EPUB in sources/ has the exact filename: {arguments.book}"
                 )
+        if arguments.catalog_only:
+            update_catalogs(
+                root,
+                sources,
+                force=arguments.force,
+                check=False,
+                require_bibliography=True,
+            )
+            print(f"books: catalogs updated ({len(sources)} source book(s))")
+            return 0
         if arguments.check:
             check_outputs(root, sources)
             if not arguments.book:
-                update_index(root, sources, force=False, check=True)
+                update_catalogs(
+                    root,
+                    sources,
+                    force=False,
+                    check=True,
+                    require_bibliography=True,
+                )
             print(f"books: check passed ({len(sources)} source book(s))")
             return 0
         for source in sources:
             print(f"books: converting: {source.name}", flush=True)
-            convert_one(source, root, arguments.force)
+            convert_one(
+                source,
+                root,
+                force=arguments.force,
+                fresh_converter=arguments.fresh_converter,
+            )
         if arguments.book:
             print(f"books: partial complete ({len(sources)} source book(s))")
             return 0
-        update_index(root, sources, arguments.force, check=False)
+        update_catalogs(
+            root,
+            sources,
+            force=arguments.force,
+            check=False,
+            require_bibliography=False,
+        )
         work_root = root / ".book-work"
         if work_root.is_dir():
             shutil.rmtree(work_root)

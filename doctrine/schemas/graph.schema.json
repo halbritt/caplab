@@ -28,6 +28,15 @@
         }
       }
     },
+    "projection": {
+      "type": "object",
+      "required": ["owner", "source_id"],
+      "additionalProperties": false,
+      "properties": {
+        "owner": {"enum": ["concept-record", "conflict-registry"]},
+        "source_id": {"$ref": "#/$defs/id"}
+      }
+    },
     "node": {
       "type": "object",
       "required": [
@@ -45,6 +54,7 @@
       "additionalProperties": false,
       "properties": {
         "id": {"$ref": "#/$defs/id"},
+        "projection": {"$ref": "#/$defs/projection"},
         "kind": {
           "enum": [
             "principle",
@@ -58,7 +68,8 @@
             "constraint",
             "terminology",
             "procedure",
-            "evidence-class"
+            "evidence-class",
+            "conflict"
           ]
         },
         "label": {"type": "string", "minLength": 1},
@@ -80,7 +91,8 @@
         "mappings",
         "paraphrase",
         "conditions",
-        "caveats"
+        "caveats",
+        "context_basis"
       ],
       "additionalProperties": false,
       "properties": {
@@ -90,7 +102,43 @@
         "mappings": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/mapping"}},
         "paraphrase": {"type": "string", "minLength": 1},
         "conditions": {"type": "string", "minLength": 1},
-        "caveats": {"type": "string", "minLength": 1}
+        "caveats": {"type": "string", "minLength": 1},
+        "context_basis": {
+          "type": "object",
+          "required": ["conditions", "caveats"],
+          "additionalProperties": false,
+          "properties": {
+            "conditions": {
+              "enum": ["source-specific", "canonical-mapping", "conflict-position"]
+            },
+            "caveats": {
+              "enum": ["source-specific", "canonical-policy", "conflict-position"]
+            }
+          }
+        },
+        "conflict_ref": {"type": "string", "pattern": "^conflict-[a-z0-9-]+$"},
+        "position_ref": {"type": "string", "pattern": "^[a-z][a-z0-9-]+$"}
+      }
+    },
+    "synthesis": {
+      "type": "object",
+      "required": ["origin", "rationale", "rivals", "falsifiers"],
+      "additionalProperties": false,
+      "properties": {
+        "origin": {"enum": ["curated", "projected"]},
+        "rationale": {"type": "string", "minLength": 1},
+        "rivals": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "falsifiers": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        }
       }
     },
     "edge": {
@@ -107,8 +155,22 @@
         "provenance"
       ],
       "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {"derivation": {"const": "synthesized"}},
+            "required": ["derivation"]
+          },
+          "then": {"required": ["synthesis"]}
+        }
+      ],
       "properties": {
-        "id": {"$ref": "#/$defs/id"},
+        "id": {
+          "allOf": [
+            {"$ref": "#/$defs/id"},
+            {"not": {"pattern": "^E-ROUTE-"}}
+          ]
+        },
         "from": {"$ref": "#/$defs/id"},
         "relation": {"$ref": "#/$defs/id"},
         "to": {"$ref": "#/$defs/id"},
@@ -117,7 +179,177 @@
         "derivation": {"enum": ["direct", "corroborated", "synthesized", "contested"]},
         "confidence": {"enum": ["universal", "strong", "contextual", "weak", "contested"]},
         "provenance": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/id"}, "uniqueItems": true},
-        "conflict_ref": {"type": "string", "pattern": "^conflict-[a-z0-9-]+$"}
+        "conflict_ref": {"type": "string", "pattern": "^conflict-[a-z0-9-]+$"},
+        "synthesis": {"$ref": "#/$defs/synthesis"}
+      }
+    },
+    "routingLink": {
+      "type": "object",
+      "required": ["id", "from", "relation", "to", "semantic", "declared_by"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string", "pattern": "^R-ROUTE-[a-f0-9]{12}$"},
+        "from": {"$ref": "#/$defs/id"},
+        "relation": {"const": "co-retrieved-with"},
+        "to": {"$ref": "#/$defs/id"},
+        "semantic": {"const": false},
+        "declared_by": {"$ref": "#/$defs/strings"}
+      }
+    },
+    "routingGraph": {
+      "type": "object",
+      "required": ["schema_version", "links"],
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {"const": "agent-doctrine-routing-graph/1"},
+        "links": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/routingLink"}
+        }
+      }
+    },
+    "conflictPositionSupport": {
+      "type": "object",
+      "required": [
+        "source_id",
+        "locator",
+        "contribution",
+        "relationship"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {"type": "string", "pattern": "^SRC-[A-Z0-9]+$"},
+        "locator": {"type": "string", "pattern": "^books/.+\\.md :: .+$"},
+        "contribution": {"type": "string", "minLength": 1},
+        "relationship": {
+          "enum": [
+            "direct_support",
+            "corroboration",
+            "refinement",
+            "derived_inference",
+            "terminology_variant",
+            "historical_precursor",
+            "tension"
+          ]
+        },
+        "conditions": {"type": "string", "minLength": 1},
+        "caveats": {"type": "string", "minLength": 1}
+      }
+    },
+    "conflictPositionBasis": {
+      "type": "object",
+      "required": ["kind", "rationale"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": ["source-supported", "derived-inference", "local-policy"]
+        },
+        "rationale": {"type": "string", "minLength": 1}
+      }
+    },
+    "conflictPosition": {
+      "type": "object",
+      "required": ["id", "claim", "source_support", "basis"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]+$"},
+        "claim": {"type": "string", "minLength": 1},
+        "source_support": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/conflictPositionSupport"}
+        },
+        "basis": {"$ref": "#/$defs/conflictPositionBasis"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"source_support": {"minItems": 1}}},
+          "then": {
+            "properties": {
+              "basis": {
+                "properties": {"kind": {"const": "source-supported"}}
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "basis": {
+                "properties": {
+                  "kind": {"enum": ["derived-inference", "local-policy"]}
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "conflictRecord": {
+      "type": "object",
+      "required": [
+        "conflict_id",
+        "disagreement_kind",
+        "positions",
+        "hidden_assumptions",
+        "evidence_favoring_each_position",
+        "decision_rule",
+        "unresolved_questions",
+        "roles_affected",
+        "related_concepts",
+        "source_support"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "conflict_id": {"type": "string", "pattern": "^conflict-[a-z0-9-]+$"},
+        "disagreement_kind": {
+          "enum": [
+            "contextual",
+            "terminological",
+            "historical-evolution",
+            "methodological",
+            "substantive"
+          ]
+        },
+        "positions": {
+          "type": "array",
+          "minItems": 2,
+          "items": {"$ref": "#/$defs/conflictPosition"}
+        },
+        "hidden_assumptions": {"$ref": "#/$defs/strings"},
+        "evidence_favoring_each_position": {"type": "object"},
+        "decision_rule": {"type": "string", "minLength": 1},
+        "unresolved_questions": {"$ref": "#/$defs/strings"},
+        "roles_affected": {"$ref": "#/$defs/strings"},
+        "related_concepts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "pattern": "^[a-z][a-z0-9-]+$"},
+          "uniqueItems": true
+        },
+        "source_support": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["source_id", "locator"],
+            "additionalProperties": false,
+            "properties": {
+              "source_id": {"type": "string", "pattern": "^SRC-[A-Z0-9]+$"},
+              "locator": {"type": "string", "pattern": "^books/.+\\.md :: .+$"}
+            }
+          }
+        }
+      }
+    },
+    "conflictDocument": {
+      "type": "object",
+      "required": ["schema_version", "interpretation", "conflicts"],
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {"const": "agent-doctrine-conflicts/1"},
+        "interpretation": {"type": "string", "minLength": 1},
+        "conflicts": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/conflictRecord"}
+        }
       }
     }
   }

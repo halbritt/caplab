@@ -228,6 +228,52 @@ transitions:
       - acceptance authority and all mandatory gates
     agent_default: forbidden
 
+lifecycle_events:
+  - id: authorization-withdrawn-or-expired
+    applies_from: [authorize, execute, verify]
+    transition_to: recommend
+    trigger:
+      - the owner withdraws authorization
+      - the authorization expires before the next material side effect
+    effect:
+      - stop new side effects immediately
+      - stabilize or roll back only within previously granted safety authority
+      - record completed effects and request renewed authority for further execution
+  - id: scope-or-environment-changed
+    applies_from: [authorize, execute, verify]
+    transition_to: recommend
+    trigger:
+      - target scope, semantics, risk class, environment, dependency, or affected people change materially
+    effect:
+      - invalidate the prior execution selection for the changed dimensions
+      - re-establish evidence, preservation boundaries, and authorization before continuing
+  - id: execution-failed-or-interrupted
+    applies_from: [execute]
+    transition_to: diagnose
+    trigger:
+      - execution fails, partially applies, or reaches a stop condition
+    effect:
+      - preserve the failure evidence and actual partial state
+      - stabilize within granted authority
+      - do not relabel partial execution as verification
+  - id: verification-failed
+    applies_from: [verify]
+    transition_to: diagnose
+    trigger:
+      - any mandatory criterion fails or remains unverified
+    effect:
+      - reject acceptance promotion
+      - distinguish repair, rework, rollback, and criterion error before selecting another action
+  - id: acceptance-rejected-or-reopened
+    applies_from: [accept]
+    transition_to: recommend
+    trigger:
+      - the authorized acceptor rejects the result
+      - a recorded reopening condition occurs
+    effect:
+      - preserve the prior receipt as historical evidence
+      - create a new decision lineage rather than mutating the accepted record
+
 role_defaults:
   coding-agent:
     usual_ceiling: execute

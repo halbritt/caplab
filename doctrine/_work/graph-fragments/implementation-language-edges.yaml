@@ -671,4 +671,4 @@ edges:
       - early return, cancellation, partial consumption, and shutdown are exercised
     derivation: direct
     confidence: strong
-    provenance: [F-CONCEPT-EGO-d0767ea65303, F-CONCEPT-EGO-80467c3675ec]
+    provenance: [F-CONCEPT-EGO-80467c3675ec]

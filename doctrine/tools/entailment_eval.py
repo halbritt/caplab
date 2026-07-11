@@ -35,9 +35,10 @@ _TOOLS_DIR = str(Path(__file__).resolve().parent)
 if _TOOLS_DIR not in sys.path:
     sys.path.insert(0, _TOOLS_DIR)
 
-from validate_doctrine import plain_heading  # noqa: E402
+from validate_doctrine import parse_heading_selector, plain_heading  # noqa: E402
 
-SCHEMA_VERSION = "entailment-eval/1"
+SCHEMA_VERSION = "entailment-eval/2"
+PROMPT_VERSION = "entailment-prompt/3"
 DEFAULT_ENDPOINT = "http://localhost:8081/v1"
 MODEL_ALIAS = "qwen3.6-35b-a3b"
 SECTION_CHAR_BUDGET = 24000
@@ -46,16 +47,28 @@ DEFAULT_MAX_TOKENS = 4096
 DEFAULT_TIMEOUT_SECONDS = 300.0
 
 MODEL_VERDICTS = ("supported", "partially_supported", "not_supported", "contradicted")
-HARNESS_VERDICTS = ("resolution_failed", "unparseable", "transport_error")
-FLAGGED_VERDICTS = ("not_supported", "contradicted", "unparseable")
+HARNESS_VERDICTS = (
+    "insufficient_context",
+    "resolution_failed",
+    "unparseable",
+    "transport_error",
+    "quote_not_found",
+)
+FLAGGED_VERDICTS = (
+    "not_supported",
+    "contradicted",
+    "insufficient_context",
+    "unparseable",
+    "quote_not_found",
+)
 
 RELATIONSHIP_MEANINGS = {
     "direct_support": (
         "the section is cited as directly supporting the claimed contribution"
     ),
     "corroboration": (
-        "the section is cited as independently reinforcing the contribution "
-        "without being its primary basis"
+        "the section is cited as additional support reinforcing the contribution "
+        "without materially changing it; source independence is evaluated separately"
     ),
     "refinement": (
         "the section is cited as adding conditions, scope, or nuance captured "
@@ -70,8 +83,7 @@ RELATIONSHIP_MEANINGS = {
         "different vocabulary"
     ),
     "historical_precursor": (
-        "the section is cited as an earlier form of the idea the contribution "
-        "describes"
+        "the section is cited as an earlier form of the idea the contribution describes"
     ),
 }
 
@@ -90,58 +102,123 @@ class Resolution:
     relative_path: str | None
     heading: str | None
     chapter_sha256: str | None
+    section_sha256: str | None
     section_text: str | None
     error: str | None
 
 
 def extract_section(chapter_text: str, expected_heading: str) -> str | None:
-    """Return the text under the first heading matching ``expected_heading``.
+    """Return the uniquely selected text under ``expected_heading``.
 
     The section runs from the line after the matched heading until the next
     heading of the same or a higher level. Heading comparison reuses
     ``validate_doctrine.plain_heading`` so locators resolve exactly as the
     doctrine validator checks them. Returns ``None`` when no heading matches.
     """
-    normalized = plain_heading(expected_heading)
+    heading, selectors = parse_heading_selector(expected_heading)
+    if "invalid" in selectors or set(selectors) - {"level", "occurrence", "sha256"}:
+        return None
+    normalized = plain_heading(heading)
     lines = chapter_text.splitlines()
-    start_index = None
-    level = 0
+    matches: list[tuple[int, int, str, str]] = []
     for index, line in enumerate(lines):
         match = HEADING_RE.match(line)
-        if match and plain_heading(match.group(2)) == normalized:
-            start_index = index
-            level = len(match.group(1))
-            break
-    if start_index is None:
+        if not match or plain_heading(match.group(2)) != normalized:
+            continue
+        level = len(match.group(1))
+        body: list[str] = []
+        end = len(lines)
+        for candidate_index in range(index + 1, len(lines)):
+            candidate = HEADING_RE.match(lines[candidate_index])
+            if candidate and len(candidate.group(1)) <= level:
+                end = candidate_index
+                break
+            body.append(lines[candidate_index])
+        section_text = "\n".join(body).strip("\n")
+        bounded_section = "\n".join(lines[index:end]).rstrip() + "\n"
+        matches.append(
+            (
+                level,
+                index + 1,
+                hashlib.sha256(bounded_section.encode("utf-8")).hexdigest(),
+                section_text,
+            )
+        )
+    if "level" in selectors:
+        try:
+            selected_level = int(selectors["level"])
+        except ValueError:
+            return None
+        matches = [match for match in matches if match[0] == selected_level]
+    if "sha256" in selectors:
+        matches = [match for match in matches if match[2] == selectors["sha256"]]
+    if "occurrence" in selectors:
+        try:
+            occurrence = int(selectors["occurrence"])
+        except ValueError:
+            return None
+        if occurrence < 1 or occurrence > len(matches):
+            return None
+        matches = [matches[occurrence - 1]]
+    if len(matches) != 1:
         return None
-    body: list[str] = []
-    for line in lines[start_index + 1 :]:
-        match = HEADING_RE.match(line)
-        if match and len(match.group(1)) <= level:
-            break
-        body.append(line)
-    return "\n".join(body).strip("\n")
+    return matches[0][3]
 
 
 def resolve_locator(repo_root: Path, locator: str) -> Resolution:
     """Resolve ``relative/path.md :: Exact Heading`` to section text."""
     if " :: " not in locator:
-        return Resolution(None, None, None, None, "malformed_locator")
+        return Resolution(None, None, None, None, None, "malformed_locator")
     relative_path, heading = locator.split(" :: ", 1)
     path = repo_root / relative_path
     if not path.is_file():
-        return Resolution(relative_path, heading, None, None, "file_missing")
+        return Resolution(relative_path, heading, None, None, None, "file_missing")
     data = path.read_bytes()
     chapter_sha256 = hashlib.sha256(data).hexdigest()
     section = extract_section(data.decode("utf-8"), heading)
     if section is None:
-        return Resolution(relative_path, heading, chapter_sha256, None, "heading_not_found")
-    return Resolution(relative_path, heading, chapter_sha256, section, None)
+        return Resolution(
+            relative_path, heading, chapter_sha256, None, None, "heading_not_found"
+        )
+    section_sha256 = hashlib.sha256(section.encode("utf-8")).hexdigest()
+    return Resolution(
+        relative_path, heading, chapter_sha256, section_sha256, section, None
+    )
 
 
-def record_key(concept_id: str, locator: str, contribution: str, chapter_sha256: str | None) -> str:
-    """Deterministic identity of one judgment target."""
-    material = "\x1f".join([concept_id, locator, contribution, chapter_sha256 or ""])
+def record_key(
+    *,
+    concept_id: str,
+    locator: str,
+    claim: str,
+    contribution: str,
+    relationship: str,
+    chapter_sha256: str | None,
+    section_sha256: str | None,
+    prompt_version: str,
+    model_alias: str,
+    served_model_id: str,
+    endpoint: str,
+    max_tokens: int,
+    sampler_overrides: dict[str, object],
+) -> str:
+    """Content identity for one complete judgment target and judge configuration."""
+    target = {
+        "chapter_sha256": chapter_sha256,
+        "claim": claim,
+        "concept_id": concept_id,
+        "contribution": contribution,
+        "endpoint": endpoint.rstrip("/"),
+        "locator": locator,
+        "max_tokens": max_tokens,
+        "model_alias": model_alias,
+        "served_model_id": served_model_id,
+        "prompt_version": prompt_version,
+        "relationship": relationship,
+        "sampler_overrides": sampler_overrides,
+        "section_sha256": section_sha256,
+    }
+    material = json.dumps(target, sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(material.encode("utf-8")).hexdigest()
 
 
@@ -263,7 +340,9 @@ class OpenAIClient:
         self.max_tokens = max_tokens
         self.model = model
 
-    def _request(self, path: str, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+    def _request(
+        self, path: str, payload: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         url = self.endpoint + path
         if payload is None:
             request = urllib.request.Request(url)
@@ -353,6 +432,22 @@ def judge(client: OpenAIClient, prompt: str) -> dict[str, Any]:
     }
 
 
+def verify_evidence_quote(outcome: dict[str, Any], section_text: str) -> dict[str, Any]:
+    """Require a non-empty model quote to be present in the complete section."""
+    quote = outcome.get("evidence_quote")
+    if not isinstance(quote, str) or not quote.strip():
+        return outcome
+    normalized_quote = " ".join(quote.split()).casefold()
+    normalized_section = " ".join(section_text.split()).casefold()
+    if normalized_quote in normalized_section:
+        return outcome
+    invalid = dict(outcome)
+    invalid["model_verdict"] = outcome.get("verdict")
+    invalid["verdict"] = "quote_not_found"
+    invalid["error"] = "evidence_quote_not_found_in_section"
+    return invalid
+
+
 def existing_keys(results_path: Path) -> set[str]:
     keys: set[str] = set()
     if not results_path.is_file():
@@ -387,7 +482,10 @@ def load_records(results_path: Path) -> tuple[list[dict[str, Any]], int]:
             continue
         if isinstance(record, dict) and "key" in record:
             records[record["key"]] = record
-    ordered = sorted(records.values(), key=lambda item: (item.get("concept_id", ""), item.get("locator", "")))
+    ordered = sorted(
+        records.values(),
+        key=lambda item: (item.get("concept_id", ""), item.get("locator", "")),
+    )
     return ordered, lines
 
 
@@ -404,8 +502,12 @@ def summarize(results_path: Path, summary_path: Path) -> int:
         for record in records
         if isinstance(record.get("latency_seconds"), (int, float))
     ]
-    flagged = [record for record in records if record.get("verdict") in FLAGGED_VERDICTS]
-    failures = [record for record in records if record.get("verdict") == "resolution_failed"]
+    flagged = [
+        record for record in records if record.get("verdict") in FLAGGED_VERDICTS
+    ]
+    failures = [
+        record for record in records if record.get("verdict") == "resolution_failed"
+    ]
 
     verdict_order = list(MODEL_VERDICTS) + list(HARNESS_VERDICTS)
     lines = [
@@ -440,8 +542,14 @@ def summarize(results_path: Path, summary_path: Path) -> int:
     for source_id in sorted(source_counts):
         counts = source_counts[source_id]
         row = [str(counts.get(verdict, 0)) for verdict in verdict_order]
-        lines.append(f"| {source_id} | " + " | ".join(row) + f" | {sum(counts.values())} |")
-    lines += ["", "## Flagged entries (not_supported, contradicted, unparseable)", ""]
+        lines.append(
+            f"| {source_id} | " + " | ".join(row) + f" | {sum(counts.values())} |"
+        )
+    lines += [
+        "",
+        "## Flagged entries (negative, incomplete, or invalid screening evidence)",
+        "",
+    ]
     if flagged:
         for record in flagged:
             lines.append(
@@ -478,26 +586,63 @@ def summarize(results_path: Path, summary_path: Path) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--limit", type=int, default=None, help="stop after N new records")
-    parser.add_argument("--concept", action="append", default=None, help="filter by concept ID (repeatable)")
-    parser.add_argument("--source", action="append", default=None, help="filter by source ID (repeatable)")
-    parser.add_argument("--redo", action="store_true", help="re-judge records whose key already exists")
-    parser.add_argument("--dry-run", action="store_true", help="enumerate, resolve, and build prompts without model calls")
+    parser.add_argument(
+        "--limit", type=int, default=None, help="stop after N new records"
+    )
+    parser.add_argument(
+        "--concept",
+        action="append",
+        default=None,
+        help="filter by concept ID (repeatable)",
+    )
+    parser.add_argument(
+        "--source",
+        action="append",
+        default=None,
+        help="filter by source ID (repeatable)",
+    )
+    parser.add_argument(
+        "--redo", action="store_true", help="re-judge records whose key already exists"
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="enumerate, resolve, and build prompts without model calls",
+    )
     parser.add_argument("--results", type=Path, default=None, help="results JSONL path")
-    parser.add_argument("--summarize", action="store_true", help="summarize results.jsonl and write summary.md; no judging")
-    parser.add_argument("--endpoint", default=DEFAULT_ENDPOINT, help="OpenAI-compatible base URL")
+    parser.add_argument(
+        "--summarize",
+        action="store_true",
+        help="summarize results.jsonl and write summary.md; no judging",
+    )
+    parser.add_argument(
+        "--endpoint", default=DEFAULT_ENDPOINT, help="OpenAI-compatible base URL"
+    )
     parser.add_argument(
         "--model",
         default=MODEL_ALIAS,
         help="model name sent in requests (llama.cpp ignores it; ollama routes by it)",
     )
-    parser.add_argument("--repo-root", type=Path, default=None, help="repository root override (mainly for tests)")
+    parser.add_argument(
+        "--repo-root",
+        type=Path,
+        default=None,
+        help="repository root override (mainly for tests)",
+    )
     parser.add_argument("--max-tokens", type=int, default=DEFAULT_MAX_TOKENS)
-    parser.add_argument("--timeout", type=float, default=DEFAULT_TIMEOUT_SECONDS, help="per-request timeout in seconds")
+    parser.add_argument(
+        "--timeout",
+        type=float,
+        default=DEFAULT_TIMEOUT_SECONDS,
+        help="per-request timeout in seconds",
+    )
     args = parser.parse_args(argv)
 
     repo_root = (args.repo_root or DEFAULT_REPOSITORY).resolve()
-    results_path = args.results or repo_root / "doctrine" / "evaluations" / "entailment" / "results.jsonl"
+    results_path = (
+        args.results
+        or repo_root / "doctrine" / "evaluations" / "entailment" / "results.jsonl"
+    )
     if args.summarize:
         return summarize(results_path, results_path.parent / "summary.md")
 
@@ -508,8 +653,16 @@ def main(argv: list[str] | None = None) -> int:
         pairs = [pair for pair in pairs if pair["source_id"] in set(args.source)]
 
     known_keys = existing_keys(results_path)
-    client = OpenAIClient(args.endpoint, args.timeout, args.max_tokens, model=args.model)
+    client = OpenAIClient(
+        args.endpoint, args.timeout, args.max_tokens, model=args.model
+    )
     model_id: str | None = None
+    if not args.dry_run:
+        try:
+            model_id = client.model_id()
+        except TRANSPORT_ERRORS as error:
+            print(f"warning: /models unavailable: {error}", file=sys.stderr)
+    served_model_id = model_id or client.model
     processed = 0
     skipped = 0
     verdict_counts: Counter = Counter()
@@ -517,8 +670,21 @@ def main(argv: list[str] | None = None) -> int:
     try:
         for pair in pairs:
             resolution = resolve_locator(repo_root, pair["locator"])
+            sampler_overrides: dict[str, object] = {}
             key = record_key(
-                pair["concept_id"], pair["locator"], pair["contribution"], resolution.chapter_sha256
+                concept_id=pair["concept_id"],
+                locator=pair["locator"],
+                claim=pair["claim"],
+                contribution=pair["contribution"],
+                relationship=pair["relationship"],
+                chapter_sha256=resolution.chapter_sha256,
+                section_sha256=resolution.section_sha256,
+                prompt_version=PROMPT_VERSION,
+                model_alias=client.model,
+                served_model_id=served_model_id,
+                endpoint=client.endpoint,
+                max_tokens=args.max_tokens,
+                sampler_overrides=sampler_overrides,
             )
             if key in known_keys and not args.redo:
                 skipped += 1
@@ -557,15 +723,18 @@ def main(argv: list[str] | None = None) -> int:
                 "contribution": pair["contribution"],
                 "claim": pair["claim"],
                 "chapter_sha256": resolution.chapter_sha256,
+                "section_sha256": resolution.section_sha256,
                 "resolution_error": resolution.error,
                 "truncated": truncated,
                 "section_chars": section_chars,
                 "section_char_budget": SECTION_CHAR_BUDGET,
                 "endpoint": client.endpoint,
+                "prompt_version": PROMPT_VERSION,
                 "request_params": {
                     "model_alias": client.model,
+                    "served_model_id": served_model_id,
                     "max_tokens": args.max_tokens,
-                    "sampler_overrides": {},
+                    "sampler_overrides": sampler_overrides,
                 },
                 "judged_at": datetime.datetime.now(datetime.timezone.utc).isoformat(
                     timespec="seconds"
@@ -583,13 +752,25 @@ def main(argv: list[str] | None = None) -> int:
                         "model": None,
                     }
                 )
+            elif truncated:
+                record.update(
+                    {
+                        "verdict": "insufficient_context",
+                        "evidence_quote": "",
+                        "rationale": (
+                            "The complete cited section exceeds the configured "
+                            "context budget; no entailment judgment was requested."
+                        ),
+                        "error": "section_exceeds_context_budget",
+                        "finish_reason": None,
+                        "latency_seconds": None,
+                        "model": None,
+                    }
+                )
             else:
-                if model_id is None:
-                    try:
-                        model_id = client.model_id()
-                    except TRANSPORT_ERRORS as error:
-                        print(f"warning: /models unavailable: {error}", file=sys.stderr)
-                outcome = judge(client, prompt or "")
+                outcome = verify_evidence_quote(
+                    judge(client, prompt or ""), resolution.section_text or ""
+                )
                 record["model"] = model_id
                 record.update(outcome)
             if results_handle is None:
@@ -600,7 +781,9 @@ def main(argv: list[str] | None = None) -> int:
             known_keys.add(key)
             verdict_counts[record["verdict"]] += 1
             latency = record.get("latency_seconds")
-            latency_note = f" {latency:.1f}s" if isinstance(latency, (int, float)) else ""
+            latency_note = (
+                f" {latency:.1f}s" if isinstance(latency, (int, float)) else ""
+            )
             print(
                 f"[{processed}] {record['verdict']}{latency_note} "
                 f"concept={pair['concept_id']} source={pair['source_id']}",

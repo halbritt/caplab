@@ -129,6 +129,7 @@ sources:
       - 2003 Java/J2EE, XML, CORBA, and relational-mapping details are dated.
       - Distributed consistency requires reinterpretation of some transaction guidance.
       - The source itself contraindicates rich domain modeling for simple CRUD and weak modeling capability.
+      - The supplied conversion renders the cover title as "Domain-Driven DISSIGN" and lacks the advertised foreword; provenance establishes the supplied file, not edition completeness.
     known_tensions:
       - Domain fidelity yields to measured performance, framework reality, and translation cost when necessary.
       - Bounded contexts are not automatic service deployment boundaries.
@@ -152,6 +153,7 @@ sources:
       - Catalog names, mechanics, and object/polymorphism destinations are historically and language specific.
       - A catalog recipe never establishes that a repository needs the transformation.
       - Small-class/method preferences must be balanced against locality and module depth.
+      - Front matter contains distributor-added text, so source authenticity is preserved as supplied but not certified as publisher-clean.
     known_tensions:
       - Opportunistic continuous refactoring versus evidence-ranked campaigns.
       - Indirection benefits versus interface and navigation cost.
@@ -198,6 +200,7 @@ sources:
       - Case studies and thresholds do not establish causation or portable numeric gates.
       - LOC and complexity proxies are language- and style-sensitive.
       - Pairing, aliases, squashes, generated code, copied history, and reorganization bias author data.
+      - The converted Chapter 6 title merges several subsection names; chapter identity is usable, but the generated title requires human correction before bibliographic use.
     known_tensions:
       - Hotspot-ranked investment versus opportunistic continuous refactoring.
       - Stable old code as low priority versus latent risk or dead-code concerns.

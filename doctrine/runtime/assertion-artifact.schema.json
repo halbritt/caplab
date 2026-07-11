@@ -4,9 +4,13 @@
   "title": "Typed assertion artifact",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "assertions"],
+  "required": ["schema_version", "evidence", "assertions"],
   "properties": {
-    "schema_version": {"const": "assertion-artifact/1"},
+    "schema_version": {"const": "assertion-artifact/2"},
+    "evidence": {
+      "type": "array",
+      "items": {"$ref": "evidence-record.schema.json"}
+    },
     "assertions": {
       "type": "array",
       "items": {"$ref": "#/$defs/assertion"}
@@ -21,6 +25,7 @@
     },
     "assertion": {
       "type": "object",
+      "additionalProperties": false,
       "required": ["id", "type", "text"],
       "properties": {
         "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
@@ -59,7 +64,7 @@
         },
         {
           "if": {"properties": {"type": {"const": "recommendation"}}},
-          "then": {"required": ["alternatives", "tradeoffs"]}
+          "then": {"required": ["depends_on", "alternatives", "tradeoffs"]}
         },
         {
           "if": {"properties": {"type": {"const": "decision"}}},
@@ -71,7 +76,7 @@
         },
         {
           "if": {"properties": {"type": {"const": "execution"}}},
-          "then": {"required": ["depends_on"]}
+          "then": {"required": ["depends_on", "scope"]}
         },
         {
           "if": {"properties": {"type": {"const": "verification"}}},

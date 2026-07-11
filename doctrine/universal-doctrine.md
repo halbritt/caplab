@@ -28,7 +28,8 @@ records live under `concepts/`; the table below is the compact retrieval surface
 
 Before recommending or executing material work, produce:
 
-1. **Decision:** the exact choice or change being considered.
+1. **Decision question:** the exact choice or change being considered; it becomes a
+   decision only when an authorized owner records a selection.
 2. **Authority:** who may observe, diagnose, select, execute, verify, and accept it.
 3. **Evidence:** observations that establish the problem and evidence still missing.
 4. **Context:** repository archetype, lifecycle, language, operational and risk constraints.
@@ -52,4 +53,3 @@ The following are never sufficient evidence on their own:
 - one implementation, one duplicated fragment, or a hypothetical future variant;
 - framework availability, source prestige, community fashion, or agent preference;
 - technical access, prior unrelated permission, or silence as execution authority.
-

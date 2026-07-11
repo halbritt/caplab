@@ -107,7 +107,7 @@ procedures:
       - "6. Choose the abstraction only if it hides volatile knowledge or contains change better for current evidence; otherwise retain directness or duplication."
       - "7. Set a removal/revisit condition when justification relies partly on expected future variation."
     outputs:
-      - earned/not-earned/contested decision
+      - earned/not-earned/contested disposition at the caller's granted authority level
       - stable contract and variation axis
       - alternatives and evidence
       - revisit/removal trigger
@@ -190,7 +190,7 @@ procedures:
     outputs:
       - classified pressure and causal evidence
       - lower-level alternatives
-      - decision status and revisit triggers
+      - assessment or recommendation status, plus an owner decision only when selection authority is explicit
     stop_conditions:
       - the driver cannot be expressed as an observable scenario
       - current system evidence is too incomplete to distinguish architecture from implementation
@@ -245,7 +245,6 @@ procedures:
     roles: [architecture-agent, domain-design-agent]
     related_concepts:
       - architecture-earned-boundary
-      - architecture-earned-boundary
       - architecture-distribution-readiness
 
   - id: proc-determine-refactoring-earned
@@ -268,7 +267,7 @@ procedures:
       - "6. Estimate campaign size, review/migration cost, new abstraction cost, reversal, and expected period of benefit."
       - "7. Refactoring is earned only if expected pressure reduction exceeds risk/cost and a bounded campaign exists; otherwise leave, monitor, or characterize."
     outputs:
-      - earned/not-earned/monitor decision
+      - earned/not-earned/monitor disposition at the caller's granted authority level
       - pressure episodes and filtered false positives
       - preservation feasibility and candidate scope
     stop_conditions:
@@ -349,7 +348,7 @@ procedures:
     outputs:
       - change-point/dependency map
       - characterization suite and detection limits
-      - seam/enabling-point decision
+      - seam/enabling-point recommendation or authorized selection
       - bounded implementation and residual unknowns
     stop_conditions:
       - no observation surface can distinguish regression from success
@@ -427,7 +426,7 @@ procedures:
     outputs:
       - duplication classification
       - shared meaning/variation analysis
-      - unify, retain, generate, or monitor decision
+      - unify, retain, generate, or monitor recommendation or authorized selection
     stop_conditions:
       - the shared rule cannot be stated independently of current implementation
       - one occurrence is generated or vendored and has a different authority
@@ -519,7 +518,6 @@ procedures:
     related_concepts:
       - domain-language-model-loop
       - domain-bounded-context
-      - domain-language-model-loop
 
   - id: proc-decide-performance-justified
     title: Decide whether performance work is justified
@@ -539,9 +537,9 @@ procedures:
       - "4. Validate metric boundary, unit, aggregation, sampling, variance, instrumentation cost, and workload representativeness. Capture a reproducible baseline."
       - "5. Compare baseline with target and materiality. If within target, stop; further optimization needs a new objective."
       - "6. Profile representative work and locate a causal resource path. If the bottleneck is external/out of scope, recommend the appropriate owner/action rather than local tuning."
-      - "7. Estimate benefit ceiling, campaign cost, added complexity, and regression risk. Authorize an experiment only when expected value exceeds cost and protection exists."
+      - "7. Estimate benefit ceiling, campaign cost, added complexity, and regression risk. Recommend an experiment only when expected value exceeds cost and protection exists; execute it only under separate authority."
     outputs:
-      - repair, no-action, monitor, experiment, or optimization-campaign decision
+      - repair, no-action, monitor, experiment, or optimization-campaign recommendation or authorized selection
       - quantified objective/baseline and bottleneck evidence
       - authority, preservation, and stop conditions
     stop_conditions:
@@ -696,7 +694,7 @@ procedures:
       - "6. Leave alone when no material harm is demonstrated or lower-risk observation/protection dominates; record triggers that would reopen the decision."
       - "7. Do not call no change permanent: assign revisit condition, not a vague future cleanup."
     outputs:
-      - leave/monitor/protect/change decision
+      - leave/monitor/protect/change recommendation or authorized selection
       - evidence, latent-risk check, and revisit trigger
     stop_conditions:
       - missing evidence prevents distinguishing stable from merely unobserved dangerous code
@@ -746,7 +744,6 @@ procedures:
     related_concepts:
       - agent-conduct-authority-bounded-action
       - universal-reversible-reviewable-change
-      - agent-conduct-authority-bounded-action
 
   - id: proc-assess-authority-to-act
     title: Assess whether an agent has authority to act
@@ -786,4 +783,3 @@ procedures:
     related_concepts:
       - agent-conduct-authority-bounded-action
       - universal-repository-contract-precedence
-      - agent-conduct-authority-bounded-action

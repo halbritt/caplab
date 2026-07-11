@@ -1,6 +1,7 @@
 # Doctrine evaluations
 
-This directory contains deterministic fixtures for testing evidence handling and assertion boundaries before a retriever or model is introduced.
+This directory contains deterministic fixtures and calibration scaffolding for
+testing evidence handling, retrieval contracts, and assertion boundaries.
 
 Each scenario defines:
 
@@ -25,10 +26,10 @@ The runner checks the scenario's required and forbidden retrieval IDs and assert
 
 The `dependency-impact` fixture is synthetic. It proves that a changed source rebuilds its dependent chapter, concept, and prompt, re-verifies the associated evaluation, and leaves an unrelated source branch untouched.
 
-These fixtures do not evaluate natural-language entailment, retrieval quality,
-or source locator resolution. The extraction is stable; those properties still
-require additional graph-backed, hand-audited scenarios before a retriever can
-be accepted.
+These fixtures do not establish natural-language entailment or retrieval
+quality. Exact locator resolution is enforced separately by the doctrine release
+gate; engineering-judgment quality still requires graph-backed,
+human-adjudicated scenarios before the retriever can be accepted.
 
 The [`entailment/`](entailment/README.md) subdirectory holds a separate,
 model-judged screening harness (`doctrine/tools/entailment_eval.py`) for the
@@ -36,3 +37,11 @@ first of those gaps: whether each concept's cited source section supports its
 claimed contribution. Its verdicts are observations of model output supporting
 inferences about entailment — screening for human audit, not verification, not
 acceptance — and they never modify doctrine.
+
+The [`gold/`](gold/README.md) subdirectory contains a deterministic calibration
+queue spanning the registered sources, graph relationship classes, agent-role
+defaults, contextual risk classes, authority transitions, and explicit
+insufficient-evidence, abstention, and no-change outcomes. It currently contains
+candidate metadata only: every record is pending human adjudication and there
+are no checked-in human dispositions. Machine screening cannot be promoted into
+a human disposition or engineering acceptance.

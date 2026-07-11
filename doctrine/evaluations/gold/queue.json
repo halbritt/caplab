@@ -1,0 +1,4530 @@
+{
+  "generation": {
+    "algorithm_version": "gold-queue-stratification/1",
+    "input_sha256": {
+      "doctrine/authority-model.yaml": "a11d91776a1d1d919cfd654b96811b841ec14d08bf8a9fd2c0fe439371d7be3c",
+      "doctrine/context-lenses.yaml": "f3a0977ce7df98486757ee5b449c693b30e7913fa1672dc138a4d96ae67c347d",
+      "doctrine/evaluations/gold/human-dispositions.json": "4746f454ab3b0ce677ed813b054d3ad41c33335dcb131c90663c896d35398eab",
+      "doctrine/graph/edges.yaml": "acdc84888d9356977ec258a0671c08eeee1f7fc161b10289c159b58c8ab025fb",
+      "doctrine/graph/formulations.yaml": "a2e52c73b424f58783cc927098f42d4993d4123bb9f249a841cd83ee88f7b6fb",
+      "doctrine/sources.yaml": "e07b5dc8a43d27895b41263a9d256efe4ffcc835dada6c463a32278dc3bcce2c"
+    },
+    "tool": "doctrine/tools/build_gold_queue.py",
+    "tool_sha256": "373dbe188b6f4e36b77883b290e0c59f7a36da65421a4779f3bea4774d8b306c"
+  },
+  "records": [
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [
+            "architecture-agent"
+          ],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "agent-role",
+        "question": "Construct and adjudicate a scenario in which architecture-agent must remain at or below its usual recommend authority ceiling while preserving the role-specific constraints.",
+        "target": {
+          "id": "architecture-agent",
+          "kind": "role",
+          "references": [
+            {
+              "id": "architecture-agent",
+              "kind": "role"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-agent-role-architecture-agent",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [
+            "coding-agent"
+          ],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "agent-role",
+        "question": "Construct and adjudicate a scenario in which coding-agent must remain at or below its usual execute authority ceiling while preserving the role-specific constraints.",
+        "target": {
+          "id": "coding-agent",
+          "kind": "role",
+          "references": [
+            {
+              "id": "coding-agent",
+              "kind": "role"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-agent-role-coding-agent",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [
+            "debugging-and-repair-agent"
+          ],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "agent-role",
+        "question": "Construct and adjudicate a scenario in which debugging-and-repair-agent must remain at or below its usual execute authority ceiling while preserving the role-specific constraints.",
+        "target": {
+          "id": "debugging-and-repair-agent",
+          "kind": "role",
+          "references": [
+            {
+              "id": "debugging-and-repair-agent",
+              "kind": "role"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-agent-role-debugging-and-repair-agent",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [
+            "implementation-agent"
+          ],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "agent-role",
+        "question": "Construct and adjudicate a scenario in which implementation-agent must remain at or below its usual execute authority ceiling while preserving the role-specific constraints.",
+        "target": {
+          "id": "implementation-agent",
+          "kind": "role",
+          "references": [
+            {
+              "id": "implementation-agent",
+              "kind": "role"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-agent-role-implementation-agent",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [
+            "legacy-code-agent"
+          ],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "agent-role",
+        "question": "Construct and adjudicate a scenario in which legacy-code-agent must remain at or below its usual execute authority ceiling while preserving the role-specific constraints.",
+        "target": {
+          "id": "legacy-code-agent",
+          "kind": "role",
+          "references": [
+            {
+              "id": "legacy-code-agent",
+              "kind": "role"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-agent-role-legacy-code-agent",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [
+            "performance-agent"
+          ],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "agent-role",
+        "question": "Construct and adjudicate a scenario in which performance-agent must remain at or below its usual recommend authority ceiling while preserving the role-specific constraints.",
+        "target": {
+          "id": "performance-agent",
+          "kind": "role",
+          "references": [
+            {
+              "id": "performance-agent",
+              "kind": "role"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-agent-role-performance-agent",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [
+            "refactoring-agent"
+          ],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "agent-role",
+        "question": "Construct and adjudicate a scenario in which refactoring-agent must remain at or below its usual execute authority ceiling while preserving the role-specific constraints.",
+        "target": {
+          "id": "refactoring-agent",
+          "kind": "role",
+          "references": [
+            {
+              "id": "refactoring-agent",
+              "kind": "role"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-agent-role-refactoring-agent",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [
+            "repository-assessment-agent"
+          ],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "agent-role",
+        "question": "Construct and adjudicate a scenario in which repository-assessment-agent must remain at or below its usual recommend authority ceiling while preserving the role-specific constraints.",
+        "target": {
+          "id": "repository-assessment-agent",
+          "kind": "role",
+          "references": [
+            {
+              "id": "repository-assessment-agent",
+              "kind": "role"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-agent-role-repository-assessment-agent",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [
+            "review-agent"
+          ],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "agent-role",
+        "question": "Construct and adjudicate a scenario in which review-agent must remain at or below its usual recommend authority ceiling while preserving the role-specific constraints.",
+        "target": {
+          "id": "review-agent",
+          "kind": "role",
+          "references": [
+            {
+              "id": "review-agent",
+              "kind": "role"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-agent-role-review-agent",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [
+            "authorize->execute"
+          ],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "authority-transition",
+        "question": "Construct and adjudicate a scenario that tests every evidence and authority requirement for transition authorize->execute, including any agent-default prohibition.",
+        "target": {
+          "id": "authorize->execute",
+          "kind": "authority-transition",
+          "references": [
+            {
+              "id": "authorize->execute",
+              "kind": "authority-transition"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-authority-transition-authorize-execute",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [
+            "diagnose->recommend"
+          ],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "authority-transition",
+        "question": "Construct and adjudicate a scenario that tests every evidence and authority requirement for transition diagnose->recommend, including any agent-default prohibition.",
+        "target": {
+          "id": "diagnose->recommend",
+          "kind": "authority-transition",
+          "references": [
+            {
+              "id": "diagnose->recommend",
+              "kind": "authority-transition"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-authority-transition-diagnose-recommend",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [
+            "execute->verify"
+          ],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "authority-transition",
+        "question": "Construct and adjudicate a scenario that tests every evidence and authority requirement for transition execute->verify, including any agent-default prohibition.",
+        "target": {
+          "id": "execute->verify",
+          "kind": "authority-transition",
+          "references": [
+            {
+              "id": "execute->verify",
+              "kind": "authority-transition"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-authority-transition-execute-verify",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [
+            "observe->diagnose"
+          ],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "authority-transition",
+        "question": "Construct and adjudicate a scenario that tests every evidence and authority requirement for transition observe->diagnose, including any agent-default prohibition.",
+        "target": {
+          "id": "observe->diagnose",
+          "kind": "authority-transition",
+          "references": [
+            {
+              "id": "observe->diagnose",
+              "kind": "authority-transition"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-authority-transition-observe-diagnose",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [
+            "propose->select"
+          ],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "authority-transition",
+        "question": "Construct and adjudicate a scenario that tests every evidence and authority requirement for transition propose->select, including any agent-default prohibition.",
+        "target": {
+          "id": "propose->select",
+          "kind": "authority-transition",
+          "references": [
+            {
+              "id": "propose->select",
+              "kind": "authority-transition"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-authority-transition-propose-select",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [
+            "recommend->propose"
+          ],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "authority-transition",
+        "question": "Construct and adjudicate a scenario that tests every evidence and authority requirement for transition recommend->propose, including any agent-default prohibition.",
+        "target": {
+          "id": "recommend->propose",
+          "kind": "authority-transition",
+          "references": [
+            {
+              "id": "recommend->propose",
+              "kind": "authority-transition"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-authority-transition-recommend-propose",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [
+            "select->authorize"
+          ],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "authority-transition",
+        "question": "Construct and adjudicate a scenario that tests every evidence and authority requirement for transition select->authorize, including any agent-default prohibition.",
+        "target": {
+          "id": "select->authorize",
+          "kind": "authority-transition",
+          "references": [
+            {
+              "id": "select->authorize",
+              "kind": "authority-transition"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-authority-transition-select-authorize",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [
+            "verify->accept"
+          ],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "authority-transition",
+        "question": "Construct and adjudicate a scenario that tests every evidence and authority requirement for transition verify->accept, including any agent-default prohibition.",
+        "target": {
+          "id": "verify->accept",
+          "kind": "authority-transition",
+          "references": [
+            {
+              "id": "verify->accept",
+              "kind": "authority-transition"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-authority-transition-verify-accept",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [
+            "constrains"
+          ],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-FSA",
+            "SRC-SDX"
+          ],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "edge-relation",
+        "question": "Do the edge claim, conditions, derivation, and provenance justify the constrains relationship from universal-repository-contract-precedence to universal-evidence-before-intervention?",
+        "target": {
+          "id": "E-ARCHDOM-001-contract-precedence-constrains-intervention",
+          "kind": "edge",
+          "references": [
+            {
+              "id": "E-ARCHDOM-001-contract-precedence-constrains-intervention",
+              "kind": "edge"
+            },
+            {
+              "id": "universal-repository-contract-precedence",
+              "kind": "node"
+            },
+            {
+              "id": "universal-evidence-before-intervention",
+              "kind": "node"
+            },
+            {
+              "id": "SRC-FSA",
+              "kind": "source"
+            },
+            {
+              "id": "SRC-SDX",
+              "kind": "source"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-edge-relation-constrains",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [
+            "contraindicates"
+          ],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-REF"
+          ],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "edge-relation",
+        "question": "Do the edge claim, conditions, derivation, and provenance justify the contraindicates relationship from refactoring-demonstrated-pressure to refactoring-leave-unattractive-code?",
+        "target": {
+          "id": "E-CHANGELEGACY-015-pressure-contraindicates-leave-alone",
+          "kind": "edge",
+          "references": [
+            {
+              "id": "E-CHANGELEGACY-015-pressure-contraindicates-leave-alone",
+              "kind": "edge"
+            },
+            {
+              "id": "refactoring-demonstrated-pressure",
+              "kind": "node"
+            },
+            {
+              "id": "refactoring-leave-unattractive-code",
+              "kind": "node"
+            },
+            {
+              "id": "SRC-REF",
+              "kind": "source"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-edge-relation-contraindicates",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [
+            "derived-from"
+          ],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-SDX"
+          ],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "edge-relation",
+        "question": "Do the edge claim, conditions, derivation, and provenance justify the derived-from relationship from repository-assessment-behavioral-early-warning to refactoring-cochange-evidence?",
+        "target": {
+          "id": "E-CHANGELEGACY-040-early-warning-derived-cochange",
+          "kind": "edge",
+          "references": [
+            {
+              "id": "E-CHANGELEGACY-040-early-warning-derived-cochange",
+              "kind": "edge"
+            },
+            {
+              "id": "repository-assessment-behavioral-early-warning",
+              "kind": "node"
+            },
+            {
+              "id": "refactoring-cochange-evidence",
+              "kind": "node"
+            },
+            {
+              "id": "SRC-SDX",
+              "kind": "source"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-edge-relation-derived-from",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [
+            "enables"
+          ],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-CA"
+          ],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "edge-relation",
+        "question": "Do the edge claim, conditions, derivation, and provenance justify the enables relationship from architecture-earned-boundary to architecture-policy-mechanism-separation?",
+        "target": {
+          "id": "E-ARCHDOM-007-boundary-enables-policy-protection",
+          "kind": "edge",
+          "references": [
+            {
+              "id": "E-ARCHDOM-007-boundary-enables-policy-protection",
+              "kind": "edge"
+            },
+            {
+              "id": "architecture-earned-boundary",
+              "kind": "node"
+            },
+            {
+              "id": "architecture-policy-mechanism-separation",
+              "kind": "node"
+            },
+            {
+              "id": "SRC-CA",
+              "kind": "source"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-edge-relation-enables",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [
+            "evidence-for"
+          ],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-CA",
+            "SRC-FSA"
+          ],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "edge-relation",
+        "question": "Do the edge claim, conditions, derivation, and provenance justify the evidence-for relationship from architecture-scoped-characteristics to architecture-earned-boundary?",
+        "target": {
+          "id": "E-ARCHDOM-003-characteristic-evidence-boundary",
+          "kind": "edge",
+          "references": [
+            {
+              "id": "E-ARCHDOM-003-characteristic-evidence-boundary",
+              "kind": "edge"
+            },
+            {
+              "id": "architecture-scoped-characteristics",
+              "kind": "node"
+            },
+            {
+              "id": "architecture-earned-boundary",
+              "kind": "node"
+            },
+            {
+              "id": "SRC-CA",
+              "kind": "source"
+            },
+            {
+              "id": "SRC-FSA",
+              "kind": "source"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-edge-relation-evidence-for",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [
+            "implements"
+          ],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-CA"
+          ],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "edge-relation",
+        "question": "Do the edge claim, conditions, derivation, and provenance justify the implements relationship from architecture-dependency-inversion-gate to architecture-policy-mechanism-separation?",
+        "target": {
+          "id": "E-ARCHDOM-008-inversion-implements-policy-separation",
+          "kind": "edge",
+          "references": [
+            {
+              "id": "E-ARCHDOM-008-inversion-implements-policy-separation",
+              "kind": "edge"
+            },
+            {
+              "id": "architecture-dependency-inversion-gate",
+              "kind": "node"
+            },
+            {
+              "id": "architecture-policy-mechanism-separation",
+              "kind": "node"
+            },
+            {
+              "id": "SRC-CA",
+              "kind": "source"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-edge-relation-implements",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [
+            "in-tension-with"
+          ],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-FSA"
+          ],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "edge-relation",
+        "question": "Do the edge claim, conditions, derivation, and provenance justify the in-tension-with relationship from architecture-distribution-readiness to architecture-modular-monolith?",
+        "target": {
+          "id": "E-ARCHDOM-013-distribution-tension-modular-monolith",
+          "kind": "edge",
+          "references": [
+            {
+              "id": "E-ARCHDOM-013-distribution-tension-modular-monolith",
+              "kind": "edge"
+            },
+            {
+              "id": "architecture-distribution-readiness",
+              "kind": "node"
+            },
+            {
+              "id": "architecture-modular-monolith",
+              "kind": "node"
+            },
+            {
+              "id": "SRC-FSA",
+              "kind": "source"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-edge-relation-in-tension-with",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [
+            "indicates"
+          ],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-FSA",
+            "SRC-SDX"
+          ],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "edge-relation",
+        "question": "Do the edge claim, conditions, derivation, and provenance justify the indicates relationship from architecture-metrics-as-signals to universal-evidence-before-intervention?",
+        "target": {
+          "id": "E-ARCHDOM-031-metrics-indicate-intervention-question",
+          "kind": "edge",
+          "references": [
+            {
+              "id": "E-ARCHDOM-031-metrics-indicate-intervention-question",
+              "kind": "edge"
+            },
+            {
+              "id": "architecture-metrics-as-signals",
+              "kind": "node"
+            },
+            {
+              "id": "universal-evidence-before-intervention",
+              "kind": "node"
+            },
+            {
+              "id": "SRC-FSA",
+              "kind": "source"
+            },
+            {
+              "id": "SRC-SDX",
+              "kind": "source"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-edge-relation-indicates",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [
+            "motivates"
+          ],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-DDD"
+          ],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "edge-relation",
+        "question": "Do the edge claim, conditions, derivation, and provenance justify the motivates relationship from domain-core-domain-priority to domain-language-model-loop?",
+        "target": {
+          "id": "E-ARCHDOM-022-core-motivates-model-loop",
+          "kind": "edge",
+          "references": [
+            {
+              "id": "E-ARCHDOM-022-core-motivates-model-loop",
+              "kind": "edge"
+            },
+            {
+              "id": "domain-core-domain-priority",
+              "kind": "node"
+            },
+            {
+              "id": "domain-language-model-loop",
+              "kind": "node"
+            },
+            {
+              "id": "SRC-DDD",
+              "kind": "source"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-edge-relation-motivates",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [
+            "operationalizes"
+          ],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-DDD"
+          ],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "edge-relation",
+        "question": "Do the edge claim, conditions, derivation, and provenance justify the operationalizes relationship from domain-context-relationship-selection to domain-bounded-context?",
+        "target": {
+          "id": "E-ARCHDOM-020-relationships-operationalize-contexts",
+          "kind": "edge",
+          "references": [
+            {
+              "id": "E-ARCHDOM-020-relationships-operationalize-contexts",
+              "kind": "edge"
+            },
+            {
+              "id": "domain-context-relationship-selection",
+              "kind": "node"
+            },
+            {
+              "id": "domain-bounded-context",
+              "kind": "node"
+            },
+            {
+              "id": "SRC-DDD",
+              "kind": "source"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-edge-relation-operationalizes",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [
+            "participates-in"
+          ],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-DDD"
+          ],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "edge-relation",
+        "question": "Do the edge claim, conditions, derivation, and provenance justify the participates-in relationship from domain-modeling-investment-gate to conflict-domain-purity-vs-implementation-simplicity?",
+        "target": {
+          "id": "E-CONFLICT-04af89cec0af",
+          "kind": "edge",
+          "references": [
+            {
+              "id": "E-CONFLICT-04af89cec0af",
+              "kind": "edge"
+            },
+            {
+              "id": "domain-modeling-investment-gate",
+              "kind": "node"
+            },
+            {
+              "id": "conflict-domain-purity-vs-implementation-simplicity",
+              "kind": "node"
+            },
+            {
+              "id": "SRC-DDD",
+              "kind": "source"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-edge-relation-participates-in",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [
+            "prerequisite-of"
+          ],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-CA",
+            "SRC-SDX"
+          ],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "edge-relation",
+        "question": "Do the edge claim, conditions, derivation, and provenance justify the prerequisite-of relationship from universal-evidence-before-intervention to architecture-earned-boundary?",
+        "target": {
+          "id": "E-ARCHDOM-002-evidence-prerequisite-earned-boundary",
+          "kind": "edge",
+          "references": [
+            {
+              "id": "E-ARCHDOM-002-evidence-prerequisite-earned-boundary",
+              "kind": "edge"
+            },
+            {
+              "id": "universal-evidence-before-intervention",
+              "kind": "node"
+            },
+            {
+              "id": "architecture-earned-boundary",
+              "kind": "node"
+            },
+            {
+              "id": "SRC-CA",
+              "kind": "source"
+            },
+            {
+              "id": "SRC-SDX",
+              "kind": "source"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-edge-relation-prerequisite-of",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [
+            "preserves"
+          ],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-APOSD"
+          ],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "edge-relation",
+        "question": "Do the edge claim, conditions, derivation, and provenance justify the preserves relationship from implementation-non-obvious-commentary to implementation-minimal-coherent-api?",
+        "target": {
+          "id": "E-IMPLLANG-019-comments-preserve-api-contract",
+          "kind": "edge",
+          "references": [
+            {
+              "id": "E-IMPLLANG-019-comments-preserve-api-contract",
+              "kind": "edge"
+            },
+            {
+              "id": "implementation-non-obvious-commentary",
+              "kind": "node"
+            },
+            {
+              "id": "implementation-minimal-coherent-api",
+              "kind": "node"
+            },
+            {
+              "id": "SRC-APOSD",
+              "kind": "source"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-edge-relation-preserves",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [
+            "refines"
+          ],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-DDD"
+          ],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "edge-relation",
+        "question": "Do the edge claim, conditions, derivation, and provenance justify the refines relationship from domain-explicit-concept to domain-language-model-loop?",
+        "target": {
+          "id": "E-ARCHDOM-038-explicit-concept-refines-model-loop",
+          "kind": "edge",
+          "references": [
+            {
+              "id": "E-ARCHDOM-038-explicit-concept-refines-model-loop",
+              "kind": "edge"
+            },
+            {
+              "id": "domain-explicit-concept",
+              "kind": "node"
+            },
+            {
+              "id": "domain-language-model-loop",
+              "kind": "node"
+            },
+            {
+              "id": "SRC-DDD",
+              "kind": "source"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-edge-relation-refines",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [
+            "requires"
+          ],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-DDD"
+          ],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "edge-relation",
+        "question": "Do the edge claim, conditions, derivation, and provenance justify the requires relationship from domain-aggregate-invariant-boundary to domain-bounded-context?",
+        "target": {
+          "id": "E-ARCHDOM-018-aggregate-requires-context",
+          "kind": "edge",
+          "references": [
+            {
+              "id": "E-ARCHDOM-018-aggregate-requires-context",
+              "kind": "edge"
+            },
+            {
+              "id": "domain-aggregate-invariant-boundary",
+              "kind": "node"
+            },
+            {
+              "id": "domain-bounded-context",
+              "kind": "node"
+            },
+            {
+              "id": "SRC-DDD",
+              "kind": "source"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-edge-relation-requires",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [
+            "sequenced-before"
+          ],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-EGO"
+          ],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "edge-relation",
+        "question": "Do the edge claim, conditions, derivation, and provenance justify the sequenced-before relationship from performance-algorithm-and-work-first to performance-specialization-evidence?",
+        "target": {
+          "id": "E-algorithm-before-specialization",
+          "kind": "edge",
+          "references": [
+            {
+              "id": "E-algorithm-before-specialization",
+              "kind": "edge"
+            },
+            {
+              "id": "performance-algorithm-and-work-first",
+              "kind": "node"
+            },
+            {
+              "id": "performance-specialization-evidence",
+              "kind": "node"
+            },
+            {
+              "id": "SRC-EGO",
+              "kind": "source"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-edge-relation-sequenced-before",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [
+            "specializes"
+          ],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-DDD"
+          ],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "edge-relation",
+        "question": "Do the edge claim, conditions, derivation, and provenance justify the specializes relationship from domain-anticorruption-layer to domain-context-relationship-selection?",
+        "target": {
+          "id": "E-ARCHDOM-021-acl-specializes-context-relationship",
+          "kind": "edge",
+          "references": [
+            {
+              "id": "E-ARCHDOM-021-acl-specializes-context-relationship",
+              "kind": "edge"
+            },
+            {
+              "id": "domain-anticorruption-layer",
+              "kind": "node"
+            },
+            {
+              "id": "domain-context-relationship-selection",
+              "kind": "node"
+            },
+            {
+              "id": "SRC-DDD",
+              "kind": "source"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-edge-relation-specializes",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [
+            "threatens"
+          ],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-CC"
+          ],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "edge-relation",
+        "question": "Do the edge claim, conditions, derivation, and provenance justify the threatens relationship from testing-coverage-is-not-adequacy to implementation-risk-driven-tests?",
+        "target": {
+          "id": "E-IMPLLANG-027-coverage-threatens-adequate-protection",
+          "kind": "edge",
+          "references": [
+            {
+              "id": "E-IMPLLANG-027-coverage-threatens-adequate-protection",
+              "kind": "edge"
+            },
+            {
+              "id": "testing-coverage-is-not-adequacy",
+              "kind": "node"
+            },
+            {
+              "id": "implementation-risk-driven-tests",
+              "kind": "node"
+            },
+            {
+              "id": "SRC-CC",
+              "kind": "source"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-edge-relation-threatens",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [
+            "trades-off-with"
+          ],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-CA",
+            "SRC-PP"
+          ],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "edge-relation",
+        "question": "Do the edge claim, conditions, derivation, and provenance justify the trades-off-with relationship from universal-earned-abstraction to architecture-change-locality-cohesion?",
+        "target": {
+          "id": "E-ARCHDOM-023-abstraction-tension-change-locality",
+          "kind": "edge",
+          "references": [
+            {
+              "id": "E-ARCHDOM-023-abstraction-tension-change-locality",
+              "kind": "edge"
+            },
+            {
+              "id": "universal-earned-abstraction",
+              "kind": "node"
+            },
+            {
+              "id": "architecture-change-locality-cohesion",
+              "kind": "node"
+            },
+            {
+              "id": "SRC-CA",
+              "kind": "source"
+            },
+            {
+              "id": "SRC-PP",
+              "kind": "source"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-edge-relation-trades-off-with",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [
+            "abstention"
+          ],
+          "risk_classes": [],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "outcome",
+        "question": "Construct and adjudicate a scenario where unresolved evidence or authority gaps require abstention from selection or execution while preserving established observations.",
+        "target": {
+          "id": "abstention",
+          "kind": "outcome",
+          "references": [
+            {
+              "id": "abstention",
+              "kind": "outcome"
+            },
+            {
+              "id": "agent-conduct-authority-bounded-action",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-outcome-abstention",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [
+            "insufficient-evidence"
+          ],
+          "risk_classes": [],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "outcome",
+        "question": "Construct and adjudicate a scenario where supplied evidence fails the applicable proof obligation and should produce an explicit insufficient-evidence disposition rather than a recommendation.",
+        "target": {
+          "id": "insufficient-evidence",
+          "kind": "outcome",
+          "references": [
+            {
+              "id": "insufficient-evidence",
+              "kind": "outcome"
+            },
+            {
+              "id": "universal-evidence-before-intervention",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-outcome-insufficient-evidence",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [
+            "no-change"
+          ],
+          "risk_classes": [],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "outcome",
+        "question": "Construct and adjudicate a scenario where evidence favors leaving the target unchanged, with a bounded rationale and a concrete revisit trigger.",
+        "target": {
+          "id": "no-change",
+          "kind": "outcome",
+          "references": [
+            {
+              "id": "no-change",
+              "kind": "outcome"
+            },
+            {
+              "id": "universal-no-change-option",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-outcome-no-change",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "automation-compatibility"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to automation-compatibility risk.",
+        "target": {
+          "id": "automation-compatibility",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "automation-compatibility",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-cli",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-automation-compatibility",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "availability"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to availability risk.",
+        "target": {
+          "id": "availability",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "availability",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-service",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-availability",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "compatibility"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to compatibility risk.",
+        "target": {
+          "id": "compatibility",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "compatibility",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-library",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-compatibility",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "compliance"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to compliance risk.",
+        "target": {
+          "id": "compliance",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "compliance",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-safety-durability-sensitive",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-compliance",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "concurrency"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to concurrency risk.",
+        "target": {
+          "id": "concurrency",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "concurrency",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-go",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-concurrency",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "consistency"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to consistency risk.",
+        "target": {
+          "id": "consistency",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "consistency",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-distributed",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-consistency",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "cost"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to cost risk.",
+        "target": {
+          "id": "cost",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "cost",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-performance-sensitive",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-cost",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "coupling"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to coupling risk.",
+        "target": {
+          "id": "coupling",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "coupling",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-monolith",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-coupling",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "data"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to data risk.",
+        "target": {
+          "id": "data",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "data",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-domain-heavy",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-data",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "deployment"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to deployment risk.",
+        "target": {
+          "id": "deployment",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "deployment",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-monolith",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-deployment",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "design-uncertainty"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to design-uncertainty risk.",
+        "target": {
+          "id": "design-uncertainty",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "design-uncertainty",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-greenfield",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-design-uncertainty",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "durability"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to durability risk.",
+        "target": {
+          "id": "durability",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "durability",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-safety-durability-sensitive",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-durability",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "dynamic-behavior"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to dynamic-behavior risk.",
+        "target": {
+          "id": "dynamic-behavior",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "dynamic-behavior",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-python",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-dynamic-behavior",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "ecosystem"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to ecosystem risk.",
+        "target": {
+          "id": "ecosystem",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "ecosystem",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-library",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-ecosystem",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "filesystem"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to filesystem risk.",
+        "target": {
+          "id": "filesystem",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "filesystem",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-cli",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-filesystem",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "hardware"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to hardware risk.",
+        "target": {
+          "id": "hardware",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "hardware",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-embedded",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-hardware",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "interrupt"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to interrupt risk.",
+        "target": {
+          "id": "interrupt",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "interrupt",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-cli",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-interrupt",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "language-semantics"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to language-semantics risk.",
+        "target": {
+          "id": "language-semantics",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "language-semantics",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-go",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-language-semantics",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "license"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to license risk.",
+        "target": {
+          "id": "license",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "license",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-vendored-code",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-license",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "memory"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to memory risk.",
+        "target": {
+          "id": "memory",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "memory",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-embedded",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-memory",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "mergeability"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to mergeability risk.",
+        "target": {
+          "id": "mergeability",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "mergeability",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-vendored-code",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-mergeability",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "operational"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to operational risk.",
+        "target": {
+          "id": "operational",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "operational",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-service",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-operational",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "option-cost"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to option-cost risk.",
+        "target": {
+          "id": "option-cost",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "option-cost",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-greenfield",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-option-cost",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "partial-failure"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to partial-failure risk.",
+        "target": {
+          "id": "partial-failure",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "partial-failure",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-service",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-partial-failure",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "performance"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to performance risk.",
+        "target": {
+          "id": "performance",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "performance",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-performance-sensitive",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-performance",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "policy"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to policy risk.",
+        "target": {
+          "id": "policy",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "policy",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-domain-heavy",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-policy",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "portability"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to portability risk.",
+        "target": {
+          "id": "portability",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "portability",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-library",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-portability",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "power"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to power risk.",
+        "target": {
+          "id": "power",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "power",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-embedded",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-power",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "protocol"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to protocol risk.",
+        "target": {
+          "id": "protocol",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "protocol",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-infrastructure-heavy",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-protocol",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "provenance"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to provenance risk.",
+        "target": {
+          "id": "provenance",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "provenance",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-generated-code",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-provenance",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "real-time"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to real-time risk.",
+        "target": {
+          "id": "real-time",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "real-time",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-embedded",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-real-time",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "regression"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to regression risk.",
+        "target": {
+          "id": "regression",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "regression",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-legacy",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-regression",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "reproducibility"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to reproducibility risk.",
+        "target": {
+          "id": "reproducibility",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "reproducibility",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-generated-code",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-reproducibility",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "requirements-uncertainty"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to requirements-uncertainty risk.",
+        "target": {
+          "id": "requirements-uncertainty",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "requirements-uncertainty",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-rapidly-converging-product",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-requirements-uncertainty",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "resource"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to resource risk.",
+        "target": {
+          "id": "resource",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "resource",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-infrastructure-heavy",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-resource",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "safety"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to safety risk.",
+        "target": {
+          "id": "safety",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "safety",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-embedded",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-safety",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "security"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to security risk.",
+        "target": {
+          "id": "security",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "security",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-safety-durability-sensitive",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-security",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "semantic-integrity"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to semantic-integrity risk.",
+        "target": {
+          "id": "semantic-integrity",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "semantic-integrity",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-domain-heavy",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-semantic-integrity",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "supply-chain"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to supply-chain risk.",
+        "target": {
+          "id": "supply-chain",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "supply-chain",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-vendored-code",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-supply-chain",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "transaction"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to transaction risk.",
+        "target": {
+          "id": "transaction",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "transaction",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-monolith",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-transaction",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "unknown-behavior"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to unknown-behavior risk.",
+        "target": {
+          "id": "unknown-behavior",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "unknown-behavior",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-legacy",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-unknown-behavior",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "scenario-construction-and-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [
+            "versioning"
+          ],
+          "source_ids": [],
+          "support_relationships": []
+        },
+        "generated_only": true,
+        "kind": "risk-class",
+        "question": "Construct and adjudicate a scenario where retrieval, evidence threshold, action scope, and verification must respond proportionally to versioning risk.",
+        "target": {
+          "id": "versioning",
+          "kind": "risk-class",
+          "references": [
+            {
+              "id": "versioning",
+              "kind": "risk-class"
+            },
+            {
+              "id": "lens-distributed",
+              "kind": "lens"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-risk-class-versioning",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-APOSD"
+          ],
+          "support_relationships": [
+            "refinement"
+          ]
+        },
+        "generated_only": true,
+        "kind": "source-support",
+        "question": "Does formulation F-CONCEPT-APOSD-0060d4a36341 support its mapping to implementation-normal-result-or-exception under the recorded conditions and caveats?",
+        "target": {
+          "id": "F-CONCEPT-APOSD-0060d4a36341",
+          "kind": "formulation",
+          "references": [
+            {
+              "id": "SRC-APOSD",
+              "kind": "source"
+            },
+            {
+              "id": "F-CONCEPT-APOSD-0060d4a36341",
+              "kind": "formulation"
+            },
+            {
+              "id": "implementation-normal-result-or-exception",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-source-src-aposd",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-CA"
+          ],
+          "support_relationships": [
+            "direct_support"
+          ]
+        },
+        "generated_only": true,
+        "kind": "source-support",
+        "question": "Does formulation F-CONCEPT-CA-00ecbddbb165 support its mapping to architecture-dependency-inversion-gate under the recorded conditions and caveats?",
+        "target": {
+          "id": "F-CONCEPT-CA-00ecbddbb165",
+          "kind": "formulation",
+          "references": [
+            {
+              "id": "SRC-CA",
+              "kind": "source"
+            },
+            {
+              "id": "F-CONCEPT-CA-00ecbddbb165",
+              "kind": "formulation"
+            },
+            {
+              "id": "architecture-dependency-inversion-gate",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-source-src-ca",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-CC"
+          ],
+          "support_relationships": [
+            "refinement"
+          ]
+        },
+        "generated_only": true,
+        "kind": "source-support",
+        "question": "Does formulation F-CONCEPT-CC-0c2a4b95054f support its mapping to implementation-normal-result-or-exception under the recorded conditions and caveats?",
+        "target": {
+          "id": "F-CONCEPT-CC-0c2a4b95054f",
+          "kind": "formulation",
+          "references": [
+            {
+              "id": "SRC-CC",
+              "kind": "source"
+            },
+            {
+              "id": "F-CONCEPT-CC-0c2a4b95054f",
+              "kind": "formulation"
+            },
+            {
+              "id": "implementation-normal-result-or-exception",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-source-src-cc",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-DDD"
+          ],
+          "support_relationships": [
+            "tension"
+          ]
+        },
+        "generated_only": true,
+        "kind": "source-support",
+        "question": "Does formulation F-CONCEPT-DDD-016f722dfcb9 support its mapping to architecture-dependency-inversion-gate under the recorded conditions and caveats?",
+        "target": {
+          "id": "F-CONCEPT-DDD-016f722dfcb9",
+          "kind": "formulation",
+          "references": [
+            {
+              "id": "SRC-DDD",
+              "kind": "source"
+            },
+            {
+              "id": "F-CONCEPT-DDD-016f722dfcb9",
+              "kind": "formulation"
+            },
+            {
+              "id": "architecture-dependency-inversion-gate",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-source-src-ddd",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-EGO"
+          ],
+          "support_relationships": [
+            "direct_support"
+          ]
+        },
+        "generated_only": true,
+        "kind": "source-support",
+        "question": "Does formulation F-CONCEPT-EGO-0197dd3de873 support its mapping to performance-earned-bounded-concurrency under the recorded conditions and caveats?",
+        "target": {
+          "id": "F-CONCEPT-EGO-0197dd3de873",
+          "kind": "formulation",
+          "references": [
+            {
+              "id": "SRC-EGO",
+              "kind": "source"
+            },
+            {
+              "id": "F-CONCEPT-EGO-0197dd3de873",
+              "kind": "formulation"
+            },
+            {
+              "id": "performance-earned-bounded-concurrency",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-source-src-ego",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-FP"
+          ],
+          "support_relationships": [
+            "corroboration"
+          ]
+        },
+        "generated_only": true,
+        "kind": "source-support",
+        "question": "Does formulation F-CONCEPT-FP-0814222c17aa support its mapping to performance-semantic-preservation under the recorded conditions and caveats?",
+        "target": {
+          "id": "F-CONCEPT-FP-0814222c17aa",
+          "kind": "formulation",
+          "references": [
+            {
+              "id": "SRC-FP",
+              "kind": "source"
+            },
+            {
+              "id": "F-CONCEPT-FP-0814222c17aa",
+              "kind": "formulation"
+            },
+            {
+              "id": "performance-semantic-preservation",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-source-src-fp",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-FSA"
+          ],
+          "support_relationships": [
+            "direct_support"
+          ]
+        },
+        "generated_only": true,
+        "kind": "source-support",
+        "question": "Does formulation F-CONCEPT-FSA-0302ef761084 support its mapping to universal-repository-contract-precedence under the recorded conditions and caveats?",
+        "target": {
+          "id": "F-CONCEPT-FSA-0302ef761084",
+          "kind": "formulation",
+          "references": [
+            {
+              "id": "SRC-FSA",
+              "kind": "source"
+            },
+            {
+              "id": "F-CONCEPT-FSA-0302ef761084",
+              "kind": "formulation"
+            },
+            {
+              "id": "universal-repository-contract-precedence",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-source-src-fsa",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-PP"
+          ],
+          "support_relationships": [
+            "direct_support"
+          ]
+        },
+        "generated_only": true,
+        "kind": "source-support",
+        "question": "Does formulation F-CONCEPT-PP-18ee8f1485d3 support its mapping to universal-explicit-invariants under the recorded conditions and caveats?",
+        "target": {
+          "id": "F-CONCEPT-PP-18ee8f1485d3",
+          "kind": "formulation",
+          "references": [
+            {
+              "id": "SRC-PP",
+              "kind": "source"
+            },
+            {
+              "id": "F-CONCEPT-PP-18ee8f1485d3",
+              "kind": "formulation"
+            },
+            {
+              "id": "universal-explicit-invariants",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-source-src-pp",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-REF"
+          ],
+          "support_relationships": [
+            "direct_support"
+          ]
+        },
+        "generated_only": true,
+        "kind": "source-support",
+        "question": "Does formulation F-CONCEPT-REF-05450931da03 support its mapping to refactoring-small-verified-steps under the recorded conditions and caveats?",
+        "target": {
+          "id": "F-CONCEPT-REF-05450931da03",
+          "kind": "formulation",
+          "references": [
+            {
+              "id": "SRC-REF",
+              "kind": "source"
+            },
+            {
+              "id": "F-CONCEPT-REF-05450931da03",
+              "kind": "formulation"
+            },
+            {
+              "id": "refactoring-small-verified-steps",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-source-src-ref",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-SDX"
+          ],
+          "support_relationships": [
+            "refinement"
+          ]
+        },
+        "generated_only": true,
+        "kind": "source-support",
+        "question": "Does formulation F-CONCEPT-SDX-095ab6bf6c80 support its mapping to refactoring-demonstrated-pressure under the recorded conditions and caveats?",
+        "target": {
+          "id": "F-CONCEPT-SDX-095ab6bf6c80",
+          "kind": "formulation",
+          "references": [
+            {
+              "id": "SRC-SDX",
+              "kind": "source"
+            },
+            {
+              "id": "F-CONCEPT-SDX-095ab6bf6c80",
+              "kind": "formulation"
+            },
+            {
+              "id": "refactoring-demonstrated-pressure",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-source-src-sdx",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-WELC"
+          ],
+          "support_relationships": [
+            "direct_support"
+          ]
+        },
+        "generated_only": true,
+        "kind": "source-support",
+        "question": "Does formulation F-CONCEPT-WELC-138c1bc9e17c support its mapping to legacy-seams-and-enabling-points under the recorded conditions and caveats?",
+        "target": {
+          "id": "F-CONCEPT-WELC-138c1bc9e17c",
+          "kind": "formulation",
+          "references": [
+            {
+              "id": "SRC-WELC",
+              "kind": "source"
+            },
+            {
+              "id": "F-CONCEPT-WELC-138c1bc9e17c",
+              "kind": "formulation"
+            },
+            {
+              "id": "legacy-seams-and-enabling-points",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-source-src-welc",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-APOSD"
+          ],
+          "support_relationships": [
+            "corroboration"
+          ]
+        },
+        "generated_only": true,
+        "kind": "support-relationship",
+        "question": "Is corroboration the correct provenance relationship between formulation F-CONCEPT-APOSD-542db617dd0a and node universal-no-change-option?",
+        "target": {
+          "id": "F-CONCEPT-APOSD-542db617dd0a--universal-no-change-option",
+          "kind": "mapping",
+          "references": [
+            {
+              "id": "SRC-APOSD",
+              "kind": "source"
+            },
+            {
+              "id": "F-CONCEPT-APOSD-542db617dd0a",
+              "kind": "formulation"
+            },
+            {
+              "id": "universal-no-change-option",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-support-relationship-corroboration",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-REF"
+          ],
+          "support_relationships": [
+            "derived_inference"
+          ]
+        },
+        "generated_only": true,
+        "kind": "support-relationship",
+        "question": "Is derived_inference the correct provenance relationship between formulation F-SRC-REF-C03-SMELL-STARTING-POINTS and node anti-pattern-aesthetic-technical-debt?",
+        "target": {
+          "id": "F-SRC-REF-C03-SMELL-STARTING-POINTS--anti-pattern-aesthetic-technical-debt",
+          "kind": "mapping",
+          "references": [
+            {
+              "id": "SRC-REF",
+              "kind": "source"
+            },
+            {
+              "id": "F-SRC-REF-C03-SMELL-STARTING-POINTS",
+              "kind": "formulation"
+            },
+            {
+              "id": "anti-pattern-aesthetic-technical-debt",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-support-relationship-derived-inference",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-APOSD"
+          ],
+          "support_relationships": [
+            "direct_support"
+          ]
+        },
+        "generated_only": true,
+        "kind": "support-relationship",
+        "question": "Is direct_support the correct provenance relationship between formulation F-CONCEPT-APOSD-0a3eb9743076 and node implementation-placement-by-ownership?",
+        "target": {
+          "id": "F-CONCEPT-APOSD-0a3eb9743076--implementation-placement-by-ownership",
+          "kind": "mapping",
+          "references": [
+            {
+              "id": "SRC-APOSD",
+              "kind": "source"
+            },
+            {
+              "id": "F-CONCEPT-APOSD-0a3eb9743076",
+              "kind": "formulation"
+            },
+            {
+              "id": "implementation-placement-by-ownership",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-support-relationship-direct-support",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-EGO"
+          ],
+          "support_relationships": [
+            "historical_precursor"
+          ]
+        },
+        "generated_only": true,
+        "kind": "support-relationship",
+        "question": "Is historical_precursor the correct provenance relationship between formulation F-CONCEPT-EGO-3f27657c29e2 and node go-explicit-contextual-errors?",
+        "target": {
+          "id": "F-CONCEPT-EGO-3f27657c29e2--go-explicit-contextual-errors",
+          "kind": "mapping",
+          "references": [
+            {
+              "id": "SRC-EGO",
+              "kind": "source"
+            },
+            {
+              "id": "F-CONCEPT-EGO-3f27657c29e2",
+              "kind": "formulation"
+            },
+            {
+              "id": "go-explicit-contextual-errors",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-support-relationship-historical-precursor",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-APOSD"
+          ],
+          "support_relationships": [
+            "refinement"
+          ]
+        },
+        "generated_only": true,
+        "kind": "support-relationship",
+        "question": "Is refinement the correct provenance relationship between formulation F-CONCEPT-APOSD-0060d4a36341 and node implementation-normal-result-or-exception?",
+        "target": {
+          "id": "F-CONCEPT-APOSD-0060d4a36341--implementation-normal-result-or-exception",
+          "kind": "mapping",
+          "references": [
+            {
+              "id": "SRC-APOSD",
+              "kind": "source"
+            },
+            {
+              "id": "F-CONCEPT-APOSD-0060d4a36341",
+              "kind": "formulation"
+            },
+            {
+              "id": "implementation-normal-result-or-exception",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-support-relationship-refinement",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-APOSD"
+          ],
+          "support_relationships": [
+            "tension"
+          ]
+        },
+        "generated_only": true,
+        "kind": "support-relationship",
+        "question": "Is tension the correct provenance relationship between formulation F-CONCEPT-APOSD-8ae6a0e491cc and node testing-test-first-feedback?",
+        "target": {
+          "id": "F-CONCEPT-APOSD-8ae6a0e491cc--testing-test-first-feedback",
+          "kind": "mapping",
+          "references": [
+            {
+              "id": "SRC-APOSD",
+              "kind": "source"
+            },
+            {
+              "id": "F-CONCEPT-APOSD-8ae6a0e491cc",
+              "kind": "formulation"
+            },
+            {
+              "id": "testing-test-first-feedback",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-support-relationship-tension",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-CA"
+          ],
+          "support_relationships": [
+            "terminology_variant"
+          ]
+        },
+        "generated_only": true,
+        "kind": "support-relationship",
+        "question": "Is terminology_variant the correct provenance relationship between formulation F-CONCEPT-CA-7542af0a6063 and node domain-service-operation?",
+        "target": {
+          "id": "F-CONCEPT-CA-7542af0a6063--domain-service-operation",
+          "kind": "mapping",
+          "references": [
+            {
+              "id": "SRC-CA",
+              "kind": "source"
+            },
+            {
+              "id": "F-CONCEPT-CA-7542af0a6063",
+              "kind": "formulation"
+            },
+            {
+              "id": "domain-service-operation",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-support-relationship-terminology-variant",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    }
+  ],
+  "schema_version": "doctrine-gold-queue/1"
+}

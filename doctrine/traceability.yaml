@@ -1,5 +1,5 @@
 schema_version: agent-doctrine-traceability/1
-generated_at_utc: 2026-07-10
+corpus_snapshot_date: 2026-07-10
 coverage_definition:
   unit: Every Markdown file under each registered source's chapters directory, including front matter, part dividers, indexes, bibliographies, and other files that may be classified as non-substantive evidence.
   expected_units: 331
@@ -46,7 +46,7 @@ canonicalization_ledgers:
 
 provenance_relations:
   direct_support: A source passage materially states the canonical claim or operational rule.
-  corroboration: An independent source expresses substantially the same rule and increases cross-context support.
+  corroboration: An additional source formulation supports substantially the same rule without materially changing it; a distinct source ID increases cross-context portability, while another passage from the same source supplies only within-source reinforcement.
   refinement: A source narrows, conditions, or operationalizes another formulation without rejecting its core.
   derived_inference: The canonical rule is a transparent synthesis from source premises and is not stated directly by the cited source.
   terminology_variant: The source names materially the same concept differently.
@@ -54,6 +54,8 @@ provenance_relations:
   tension: The source formulation conflicts with or limits the canonical formulation under some conditions.
 
 artifact_derivation:
+  bibliography.json: Canonical titles, editions, creator roles, and field-level evidence joined to stable source IDs while preserving legacy extracted metadata as noncanonical evidence.
+  chapter-coverage.yaml: Exact chapter paths, dispositions, and content hashes generated from all four extraction ledgers and checked against the registered corpus filesystem.
   corpus-map.yaml: Per-source maps in all four extraction ledgers; source registry in sources.yaml.
   universal-doctrine.md: Cross-source canonicalization of repeated foundation claims; detailed evidence remains in concepts and graph formulations.
   role-doctrine.md: Role activation and constraints derived from canonical concepts, procedures, authority levels, and change types.
@@ -61,36 +63,43 @@ artifact_derivation:
   techniques: Contextual architecture and domain mechanisms retained from the specialist-technique ledger with evidence, cost, contraindication, reversal, scale, and operational consequences.
   procedures.yaml: Procedure candidates across all lanes, deduplicated against the twenty requested decisions.
   negative-doctrine.yaml: High-confidence operational prohibitions selected from all four extraction ledgers with activation thresholds.
-  conflicts.yaml: Material disagreements preserved from source-specific conflict ledgers and resolved only by explicit evidence rules.
+  conflicts.yaml: Material disagreements preserved with position-specific source support, explicit derived or local-policy bases, and selection only by repository evidence rules.
   change-types.yaml: Change-class boundaries synthesized chiefly from SRC-REF and SRC-WELC and constrained by architecture, performance, and implementation evidence.
   evidence-taxonomy.yaml: Evidence capabilities and limits synthesized across static, test, runtime, history, architecture, domain, and performance sources.
   authority-model.yaml: Explicit separation of epistemic and action states; source evidence informs discipline but repository authority defines permissions.
   routing-index.yaml: Selective routes over concept, procedure, lens, conflict, evidence, and authority identifiers.
   rubrics.md: Evaluation criteria distilled from proof obligations in concepts, procedures, and authority model.
   checklists.md: Readiness and stop gates distilled from procedures and high-confidence prohibitions.
-  graph: Canonical semantic projection of concept records and source formulations; never a substitute for coverage ledgers or source chapters.
-  runtime: Portable structural contracts for evidence packets, assertion levels, decision receipts, and dependency impact.
-  evaluations: Deterministic canaries for authority withdrawal, assertion boundaries, and declared dependency impact; not yet an entailment or retrieval-quality benchmark.
+  graph: Canonical semantic projection of concept records and source formulations; routing adjacency is stored separately under routing-graph and never treated as source-supported semantics.
+  runtime: Portable structural contracts for typed evidence, compact evidence packets, assertion levels, decision receipts, and dependency impact.
+  evaluations: Deterministic canaries for authority withdrawal, assertion boundaries, routing, declared dependency impact, model-judged entailment screening, and a generated pending-human calibration queue; human adjudication remains a separate acceptance gate.
 
 provenance_invariants:
+  - Every registered source binary matches its recorded path, format, SHA-256, size-bearing source.json record, and generated corpus identity.
+  - Every registered chapter has exactly one hashed chapter-coverage record with an extraction-ledger disposition.
+  - Every canonical bibliography record maps one stable source ID to its registered source path and source-owned field evidence.
   - Every concept source_support locator names a registered source and an exact converted chapter heading.
   - Every canonical graph node lists source formulations that explicitly map back to that node.
-  - Every source formulation names one source, one exact chapter-heading locator, its source-specific wording, and its relation to each mapped canonical node.
-  - Every graph edge cites one or more source formulations; tension and contradiction edges also cite a conflict record.
-  - Synthesized claims must identify derived_inference rather than being presented as a direct author formulation.
+  - Every source formulation names one source, one exact chapter-heading locator, a source-attributed paraphrase, and its relation to each mapped canonical node; context_basis distinguishes source-specific context from canonical mapping or conflict-position context.
+  - Every semantic graph edge cites source formulations covering both endpoints; tension and contradiction edges also cite a conflict record.
+  - Routing adjacency is explicitly non-semantic and never carries source-formulation provenance.
+  - Formulation mappings use derived_inference for a synthesized concept mapping; synthesized semantic edges use derivation synthesized plus a rationale, rivals, and falsifiers. Neither encoding may be presented as a direct author formulation.
   - Canonicalization may merge concepts but may not erase source-specific formulations or material disagreement.
   - Repository evidence and explicit project contracts outrank every corpus-derived artifact.
 
 machine_validation:
-  command: python3 doctrine/tools/validate_doctrine.py
+  command: make doctrine-check
   validates:
-    - YAML parsing for machine-readable artifacts and JSON schemas for concepts, graph records, and technique records
-    - source registry and chapter counts
-    - exact chapter-heading locators
+    - YAML and JSON parsing plus schemas for bibliography, sources, concepts, graph records, conflicts, and technique records
+    - original source paths, formats, SHA-256 values, generated source.json agreement, and chapter counts
+    - exact hashed chapter coverage and extraction-ledger identity
+    - unique chapter-heading locators, with explicit selectors for repeated headings
     - unique concept, graph-node, formulation, edge, procedure, conflict, and route identifiers
     - concept-to-graph and graph-to-formulation references
-    - edge provenance and conflict linkage
+    - semantic edge endpoint provenance, non-semantic routing adjacency, position-attributed conflict provenance, and graph reachability
     - routing referential integrity
+    - deterministic routing, graph, and chapter-coverage projections
+    - deterministic calibration-queue coverage and drift without manufacturing human dispositions
 
 known_limitations:
   - The corpus consists mainly of practitioner books; support strength is not equivalent to controlled empirical proof.

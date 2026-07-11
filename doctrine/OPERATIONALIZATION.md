@@ -1,6 +1,6 @@
 # Operationalizing the doctrine corpus
 
-Status: post-extraction design note for downstream retrieval and evaluation work.
+Status: post-extraction runtime boundary and remaining evaluation work.
 
 ## Conclusion
 
@@ -53,7 +53,7 @@ needs its own scenario acceptance evidence before it should guide execution.
 
 ## Recommended sequence
 
-### 1. Build evaluations before the retriever
+### 1. Complete human evaluations before accepting the retriever
 
 Create a scenario corpus that tests whether the doctrine changes engineering
 judgment, not whether a model can repeat a concept label. Each scenario should
@@ -87,26 +87,32 @@ schema changes.
 
 ### 2. Retrieve evidence packets, not chunks
 
-The routing index is generated and validated. A future runtime retriever should
-begin with it and the graph views, then assemble the smallest packet that can
-support a decision. A packet should contain:
+The routing index and deterministic evidence-packet assembler are generated and
+validated. The current assembler begins with controlled routing registries,
+question phrases, and concept routes, then selects a bounded,
+prerequisite-closed packet for one decision question. It consults graph
+formulations after selection to attach provenance; it does not traverse the
+curated graph views. A packet contains:
 
-- the activated concept and its prerequisites;
-- primary source formulations;
-- corroborating formulations where they add confidence;
-- relevant conflict records or dissenting formulations;
-- applicability, exclusions, preservation boundaries, and required evidence;
-- missing evidence and the action it blocks;
-- exact source locators and corpus version.
+- activated concept and operational-layer identifiers;
+- claim-level source contributions and exact locators;
+- activated conflict identifiers plus the conflict-registry artifact reference;
+- typed evidence records and obligation status tied to the requiring concept;
+- exclusion and budget decisions;
+- corpus, doctrine, retriever, and packet content identities.
 
-Lexical, vector, and graph retrieval may all nominate candidates. Routing rules,
-prerequisites, exclusions, and authority constraints decide what survives.
-Graph centrality and embedding similarity are candidate signals, not measures of
-truth.
+The implemented selector uses exact normalized question phrases, declared
+signals, role/task bundles, language, risk, and explicit lenses. A future
+retriever may add lexical, vector, or graph nomination, but routing rules,
+prerequisites, exclusions, and authority constraints must still decide what
+survives. Graph centrality and embedding similarity would remain candidate
+signals, not measures of truth.
 
-The retriever should be able to explain why each record was included and why a
-plausible alternative was excluded. That explanation is part of the retrieval
-contract and should be covered by evaluations.
+The assembler records why each selected record was included and why candidates
+were excluded. Its default compact view omits redundant derived inventories;
+`--detail full` restores those audit views. These structural properties are
+covered by deterministic tests, but their judgment quality still requires
+human-adjudicated evaluation.
 
 ### 3. Preserve disagreement
 
@@ -184,7 +190,7 @@ Build the pilot around:
 
 1. a hand-audited subset of concept and conflict records;
 2. a scenario suite containing ordinary, negative, and ambiguous cases;
-3. one hybrid evidence-packet assembler;
+3. the existing deterministic evidence-packet assembler;
 4. one thin operational skill;
 5. decision receipts retained as evaluation artifacts.
 
@@ -201,9 +207,13 @@ The repository already contains the portable evaluation and runtime contracts:
 doctrine/
   evaluations/
     fixtures/
+    gold/
+      queue.schema.json
+      human-dispositions.schema.json
     scenario.schema.json
     result.schema.json
   runtime/
+    evidence-record.schema.json
     assertion-artifact.schema.json
     evidence-packet.schema.json
     decision-receipt.schema.json

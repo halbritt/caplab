@@ -175,6 +175,10 @@ concepts:
     locator: 'books/refactoring-improving-the-design-of-existing-code/chapters/008-chapter-4-building-tests.md :: The Value of Self-testing Code'
     contribution: Makes frequent relevant automated feedback a precondition for detecting unintended behavior change during refactoring.
     relationship: direct_support
+  - source_id: SRC-WELC
+    locator: 'books/programming-working-effectively-with-legacy-code/chapters/008-chapter-1-changing-software.md :: Improving Design'
+    contribution: Defines refactoring as small, test-supported structural modifications that keep functionality intact while making the code easier to change.
+    relationship: corroboration
   confidence: universal
   roles:
   - coding-agent

@@ -289,7 +289,7 @@ prohibitions:
     exceptions: [A microbenchmark can establish a narrow local operation claim under its stated environment.]
     source_support:
       - {source_id: SRC-EGO, locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/012-chapter-8-benchmarking-versus-stress-and-load-tests.md :: Microbenchmarks Versus Memory Management"}
-      - {source_id: SRC-EGO, locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/012-chapter-8-benchmarking-versus-stress-and-load-tests.md :: Macrobenchmarks"}
+      - {source_id: SRC-EGO, locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/012-chapter-8-benchmarking-versus-stress-and-load-tests.md :: Macrobenchmarks @@ occurrence=1"}
 
   - id: prohibit-concurrency-first-optimization
     prohibition: Never add concurrency as the first response to a slow algorithm, unnecessary work, or imagined future scale.

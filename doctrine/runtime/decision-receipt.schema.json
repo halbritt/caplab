@@ -11,6 +11,7 @@
     "scope",
     "status",
     "authority_boundary",
+    "evidence",
     "assertions",
     "alternatives",
     "source_locators",
@@ -18,10 +19,10 @@
     "reopening_conditions"
   ],
   "properties": {
-    "schema_version": {"const": "decision-receipt/1"},
+    "schema_version": {"const": "decision-receipt/2"},
     "receipt_id": {"type": "string", "minLength": 1},
     "question": {"type": "string", "minLength": 1},
-    "scope": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "scope": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
     "status": {
       "enum": [
         "recommended",
@@ -42,18 +43,26 @@
         "authority_source": {"type": ["string", "null"]},
         "authorized_scope": {
           "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
           "items": {"type": "string", "minLength": 1}
         }
       }
     },
+    "evidence": {
+      "type": "array",
+      "items": {"$ref": "evidence-record.schema.json"}
+    },
     "assertions": {
       "type": "array",
+      "minItems": 1,
       "items": {
         "$ref": "assertion-artifact.schema.json#/$defs/assertion"
       }
     },
     "alternatives": {
       "type": "array",
+      "minItems": 1,
       "items": {
         "type": "object",
         "additionalProperties": false,
@@ -61,15 +70,15 @@
         "properties": {
           "option": {"type": "string", "minLength": 1},
           "disposition": {"enum": ["selected", "rejected", "deferred"]},
-          "evidence": {"type": "array", "items": {"type": "string", "minLength": 1}}
+          "evidence": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
         }
       }
     },
-    "source_locators": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "source_locators": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
     "corpus_version": {"type": "string", "minLength": 1},
     "retriever_version": {"type": ["string", "null"]},
-    "verification_criteria": {"type": "array", "items": {"type": "string", "minLength": 1}},
-    "reopening_conditions": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "verification_criteria": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "reopening_conditions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
     "residual_risk": {"type": "array", "items": {"type": "string", "minLength": 1}}
   }
 }

@@ -144,6 +144,19 @@ class LocatorResolutionTests(unittest.TestCase):
         section = entailment_eval.extract_section(CHAPTER_TEXT, "Deep Modules")
         self.assertIsNotNone(section)
 
+    def test_explicit_heading_occurrence_resolves_the_selected_section(self):
+        chapter_text = (
+            "# Chapter\n\n## Repeated\n\nFirst section.\n\n"
+            "## Repeated\n\nSecond section.\n"
+        )
+
+        self.assertIsNone(entailment_eval.extract_section(chapter_text, "Repeated"))
+        section = entailment_eval.extract_section(
+            chapter_text, "Repeated @@ occurrence=2"
+        )
+        self.assertIn("Second section.", section)
+        self.assertNotIn("First section.", section)
+
     def test_missing_heading_is_a_recorded_failure_not_a_crash(self):
         resolution = entailment_eval.resolve_locator(
             self.root, "books/fake-book/chapters/001-intro.md :: No Such Heading"
@@ -172,6 +185,43 @@ class JsonExtractionTests(unittest.TestCase):
 
     def test_no_json_returns_none(self):
         self.assertIsNone(entailment_eval.extract_json_object("no json here"))
+
+
+class JudgmentIdentityTests(unittest.TestCase):
+    def judgment_key(self, **overrides):
+        target = {
+            "concept_id": "test-concept",
+            "locator": "books/test.md :: Section",
+            "claim": "Original claim.",
+            "contribution": "Original contribution.",
+            "relationship": "direct_support",
+            "chapter_sha256": "chapter-sha",
+            "section_sha256": "section-sha",
+            "prompt_version": entailment_eval.PROMPT_VERSION,
+            "model_alias": "judge-a",
+            "served_model_id": "judge-a-build-1",
+            "endpoint": "http://localhost:8081/v1",
+            "max_tokens": 4096,
+            "sampler_overrides": {},
+        }
+        target.update(overrides)
+        return entailment_eval.record_key(**target)
+
+    def test_key_binds_claim_relationship_prompt_model_and_request(self):
+        baseline = self.judgment_key()
+
+        for field, value in (
+            ("claim", "Changed claim."),
+            ("relationship", "refinement"),
+            ("prompt_version", "prompt/next"),
+            ("model_alias", "judge-b"),
+            ("served_model_id", "judge-a-build-2"),
+            ("endpoint", "http://other-host:8081/v1"),
+            ("max_tokens", 2048),
+            ("sampler_overrides", {"temperature": 0}),
+        ):
+            with self.subTest(field=field):
+                self.assertNotEqual(baseline, self.judgment_key(**{field: value}))
 
 
 class HarnessRunTests(unittest.TestCase):
@@ -214,7 +264,7 @@ class HarnessRunTests(unittest.TestCase):
         self.assertEqual(1, len(records))
         record = records[0]
         chapter_sha = hashlib.sha256(chapter.read_bytes()).hexdigest()
-        self.assertEqual("entailment-eval/1", record["schema_version"])
+        self.assertEqual("entailment-eval/2", record["schema_version"])
         self.assertEqual("test-deep-modules", record["concept_id"])
         self.assertEqual("SRC-FAKE", record["source_id"])
         self.assertEqual(chapter_sha, record["chapter_sha256"])
@@ -234,10 +284,19 @@ class HarnessRunTests(unittest.TestCase):
         )
         self.assertGreaterEqual(record["latency_seconds"], 0.0)
         expected_key = entailment_eval.record_key(
-            record["concept_id"],
-            record["locator"],
-            record["contribution"],
-            chapter_sha,
+            concept_id=record["concept_id"],
+            locator=record["locator"],
+            claim=record["claim"],
+            contribution=record["contribution"],
+            relationship=record["relationship"],
+            chapter_sha256=chapter_sha,
+            section_sha256=record["section_sha256"],
+            prompt_version=record["prompt_version"],
+            model_alias=record["request_params"]["model_alias"],
+            served_model_id=record["request_params"]["served_model_id"],
+            endpoint=record["endpoint"],
+            max_tokens=record["request_params"]["max_tokens"],
+            sampler_overrides=record["request_params"]["sampler_overrides"],
         )
         self.assertEqual(expected_key, record["key"])
         # The judged prompt contains the section, claim, contribution, and
@@ -261,6 +320,51 @@ class HarnessRunTests(unittest.TestCase):
         records = self.read_records()
         self.assertEqual(2, len(records))
         self.assertEqual(records[0]["key"], records[1]["key"])
+
+    def test_different_model_alias_has_distinct_resume_identity(self):
+        write_synthetic_repo(self.root)
+        self.assertEqual(0, self.run_harness("--model", "judge-a"))
+        self.assertEqual(0, self.run_harness("--model", "judge-b"))
+
+        records = self.read_records()
+        self.assertEqual(2, len(records))
+        self.assertNotEqual(records[0]["key"], records[1]["key"])
+
+    def test_truncated_section_is_insufficient_context_without_model_call(self):
+        chapter = write_synthetic_repo(self.root)
+        chapter.write_text(
+            "# Chapter 1\n\n## Deep Modules\n\n"
+            + ("Relevant evidence appears throughout. " * 2000)
+            + "\n\n## Next Section\n",
+            encoding="utf-8",
+        )
+
+        self.assertEqual(0, self.run_harness())
+
+        self.assertEqual([], FakeOpenAIHandler.chat_requests)
+        record = self.read_records()[0]
+        self.assertTrue(record["truncated"])
+        self.assertEqual("insufficient_context", record["verdict"])
+        self.assertEqual("section_exceeds_context_budget", record["error"])
+
+    def test_evidence_quote_must_occur_in_the_complete_section(self):
+        original = FakeOpenAIHandler.chat_content
+        FakeOpenAIHandler.chat_content = json.dumps(
+            {
+                "verdict": "supported",
+                "evidence_quote": "words the source never contains",
+                "rationale": "Purported support.",
+            }
+        )
+        self.addCleanup(setattr, FakeOpenAIHandler, "chat_content", original)
+        write_synthetic_repo(self.root)
+
+        self.assertEqual(0, self.run_harness())
+
+        record = self.read_records()[0]
+        self.assertEqual("quote_not_found", record["verdict"])
+        self.assertEqual("supported", record["model_verdict"])
+        self.assertEqual("evidence_quote_not_found_in_section", record["error"])
 
     def test_resolution_failure_is_recorded_without_model_call(self):
         write_synthetic_repo(self.root, heading="Heading That Does Not Exist")

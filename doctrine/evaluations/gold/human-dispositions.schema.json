@@ -1,0 +1,98 @@
+{
+  "$id": "https://books.local/doctrine/evaluations/gold/human-dispositions.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "dispositions": {
+      "items": {
+        "$ref": "#/$defs/disposition"
+      },
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "doctrine-gold-human-dispositions/1"
+    }
+  },
+  "required": [
+    "schema_version",
+    "dispositions"
+  ],
+  "title": "Human gold-calibration dispositions",
+  "type": "object",
+  "$defs": {
+    "disposition": {
+      "additionalProperties": false,
+      "properties": {
+        "adjudicated_at": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "adjudicator": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "kind": {
+              "const": "human"
+            }
+          },
+          "required": [
+            "kind",
+            "id"
+          ],
+          "type": "object"
+        },
+        "candidate_id": {
+          "pattern": "^[a-z0-9][a-z0-9-]*$",
+          "type": "string"
+        },
+        "evidence_reviewed": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "rationale": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "uncertainty": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "verdict": {
+          "enum": [
+            "supported",
+            "partially-supported",
+            "not-supported",
+            "contradicted",
+            "relevant",
+            "irrelevant",
+            "sufficient-evidence",
+            "insufficient-evidence",
+            "abstention",
+            "no-change",
+            "action-warranted",
+            "transition-allowed",
+            "transition-forbidden"
+          ]
+        }
+      },
+      "required": [
+        "candidate_id",
+        "adjudicator",
+        "adjudicated_at",
+        "verdict",
+        "rationale",
+        "evidence_reviewed",
+        "uncertainty"
+      ],
+      "type": "object"
+    }
+  }
+}

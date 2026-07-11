@@ -16,6 +16,7 @@ nodes:
   - F-CONCEPT-SDX-4a4d1f2737b8
   - F-CONCEPT-CC-8730c675fe4f
   - F-CONCEPT-EGO-04a5f9442d14
+  - F-SRC-WELC-C05-TOOL-TRUST
   tags:
   - evidence
   - intervention
@@ -47,7 +48,7 @@ nodes:
   definition: When causality or preservation matters, change one interpretable variable at a time and keep feedback close enough to locate any failure.
   operational_significance: Supports diagnosis, safe change, review, and rollback by preventing interacting unknowns.
   status: canonical
-  confidence: strong
+  confidence: universal
   doctrine_refs:
   - universal-minimize-simultaneous-uncertainty
   formulations:
@@ -56,6 +57,7 @@ nodes:
   - F-CONCEPT-CC-8dae51f003ad
   - F-CONCEPT-PP-576799738c3f
   - F-CONCEPT-REF-ffdba6dd9a1f
+  - F-SRC-REF-C15-STOP-WHEN-UNSURE
   tags:
   - uncertainty
   - sequencing
@@ -67,7 +69,7 @@ nodes:
   definition: Structure is costly when one conceptual change forces disproportionate, risky, or cross-owner edits; the signal must be interpreted in context.
   operational_significance: Converts vague maintainability concerns into inspectable change pressure.
   status: canonical
-  confidence: strong
+  confidence: universal
   doctrine_refs:
   - universal-change-amplification
   formulations:
@@ -96,6 +98,7 @@ nodes:
   - F-SRC-WELC-C05-TOOL-TRUST
   - F-CONCEPT-REF-d35bfd74c496
   - F-CONCEPT-REF-b5351f415aea
+  - F-CONCEPT-WELC-2867db953bdb
   tags:
   - refactoring
   - proof
@@ -146,7 +149,7 @@ nodes:
   definition: Apply one behavior-preserving structural transformation at a time, verify immediately, and backtrack to smaller mechanics when confidence falls.
   operational_significance: Bounds the source of regressions and makes a campaign reversible and reviewable.
   status: canonical
-  confidence: universal
+  confidence: strong
   doctrine_refs:
   - refactoring-small-verified-steps
   formulations:
@@ -173,6 +176,7 @@ nodes:
   - F-SRC-SDX-C02-XRAY
   - F-CONCEPT-SDX-b25be62a75a5
   - F-CONCEPT-SDX-7e8f6559595b
+  - F-SRC-SDX-C02-HOTSPOT-INTEREST
   tags:
   - history
   - hotspot
@@ -202,8 +206,8 @@ nodes:
   label: Leave unattractive code alone when change is not earned
   definition: Stable or low-impact code may remain structurally unattractive when intervention cost and regression risk exceed demonstrated future change benefit.
   operational_significance: Resists aesthetic refactoring and focuses effort on change-bearing surfaces.
-  status: canonical
-  confidence: strong
+  status: contextual
+  confidence: contextual
   doctrine_refs:
   - refactoring-leave-unattractive-code
   formulations:
@@ -212,6 +216,7 @@ nodes:
   - F-SRC-SDX-C05-OLD-CODE-HEURISTIC
   - F-CONCEPT-REF-65e7ba623175
   - F-CONCEPT-SDX-90ea18fd2260
+  - F-SRC-SDX-C05-DEAD-CODE
   tags:
   - no-change
   - refactoring
@@ -343,7 +348,7 @@ nodes:
   definition: A performance claim names the operation, representative workload, environment, correctness precondition, resource/statistical measure, target, and owner.
   operational_significance: Prevents proxy optimization and supplies a positive stop condition.
   status: canonical
-  confidence: universal
+  confidence: strong
   doctrine_refs:
   - performance-measurable-objective
   formulations:
@@ -362,7 +367,7 @@ nodes:
   definition: Evidence is interpretable only when its boundary, unit, population, aggregation, granularity, collection behavior, and observer cost are known.
   operational_significance: Separates CPU from wall time, heap from resident memory, and averages from tails before decisions use them.
   status: canonical
-  confidence: universal
+  confidence: strong
   doctrine_refs:
   - performance-metric-semantics
   formulations:
@@ -381,7 +386,7 @@ nodes:
   definition: A pre-change measurement is retained with the exact workload, environment, code, dependencies, build, correctness checks, samples, and variance needed for comparison.
   operational_significance: Makes improvement falsifiable and exposes drift or noise.
   status: canonical
-  confidence: universal
+  confidence: strong
   doctrine_refs:
   - performance-representative-baseline
   formulations:
@@ -400,7 +405,7 @@ nodes:
   definition: A benchmark supports only claims for which its work, correctness, setup boundary, inputs, environment, repetition, and variance are controlled and inspectable.
   operational_significance: Blocks precise-looking but invalid comparisons from authorizing complexity.
   status: canonical
-  confidence: universal
+  confidence: strong
   doctrine_refs:
   - performance-benchmark-validity
   formulations:
@@ -439,7 +444,7 @@ nodes:
   definition: Select and interpret a representative resource profile before changing the bottleneck, following direct and cumulative cost across concurrency and runtime boundaries.
   operational_significance: Converts a visible hotspot into ranked causal hypotheses rather than a reflexive edit.
   status: canonical
-  confidence: universal
+  confidence: strong
   doctrine_refs:
   - performance-profile-causal-bottleneck
   formulations:
@@ -498,7 +503,7 @@ nodes:
   label: Earned bounded concurrency
   definition: Add a bounded runtime-appropriate concurrency model only when representative evidence shows sequential waiting or parallelizable work prevents the objective and semantics can be preserved.
   operational_significance: Makes scheduling, capacity, state, ordering, cancellation, errors, and lifecycle part of the performance decision.
-  status: contextual
+  status: canonical
   confidence: strong
   doctrine_refs:
   - performance-earned-bounded-concurrency
@@ -522,7 +527,7 @@ nodes:
   label: Evidence-earned hot-path specialization
   definition: Specialized or duplicated fast-path code is justified only by a stable profiled bottleneck, material macro benefit, semantic equivalence, and explicit maintenance and portability cost.
   operational_significance: Preserves the option to specialize without turning it into a universal preference for low-level code.
-  status: contested
+  status: contextual
   confidence: contextual
   doctrine_refs:
   - performance-specialization-evidence
@@ -584,7 +589,7 @@ nodes:
   label: Cache validity, ownership, and bounds
   definition: Caching is earned by repeated expensive work plus a complete key, freshness/invalidation policy, capacity, ownership, concurrency, security context, and measured macro benefit.
   operational_significance: Exposes time-space-consistency costs instead of treating memoization as free speed.
-  status: contextual
+  status: canonical
   confidence: strong
   doctrine_refs:
   - performance-cache-validity
@@ -607,7 +612,7 @@ nodes:
   definition: Retain an isolated optimization only when it materially improves the authorized target without violating preservation or other budgets, and stop once the target is met.
   operational_significance: Limits optimization scope and makes reversion a normal experiment result.
   status: canonical
-  confidence: universal
+  confidence: strong
   doctrine_refs:
   - performance-target-based-stop
   formulations:
@@ -621,6 +626,9 @@ nodes:
   - target
   - scope
 - id: agent-conduct-authority-bounded-action
+  projection:
+    owner: concept-record
+    source_id: agent-conduct-authority-bounded-action
   kind: principle
   label: Bound action by granted authority
   definition: Observation, diagnosis, recommendation, selection, execution, verification, and acceptance are distinct authority levels; technical access and sufficient evidence at one level do not grant the next.
@@ -641,6 +649,9 @@ nodes:
   - diagnose
   - execute
 - id: architecture-boundary-strength
+  projection:
+    owner: concept-record
+    source_id: architecture-boundary-strength
   kind: pattern
   label: Select boundary strength separately from boundary existence
   definition: Source seams, facades, inverted interfaces, release components, local processes, network services, transaction boundaries, and semantic relationships provide different protection at different costs.
@@ -660,6 +671,9 @@ nodes:
   - facade
   - process-boundary
 - id: architecture-change-locality-cohesion
+  projection:
+    owner: concept-record
+    source_id: architecture-change-locality-cohesion
   kind: principle
   label: Group architecture by semantic cohesion and change locality
   definition: Components should group behavior that shares meaning and closes against the same changes, while reuse and release forces remain explicit competing evidence rather than automatic grouping rules.
@@ -679,6 +693,9 @@ nodes:
   - common-closure
   - common-reuse
 - id: architecture-contextual-partitioning
+  projection:
+    owner: concept-record
+    source_id: architecture-contextual-partitioning
   kind: pattern
   label: Treat partition dimensions as separate contextual choices
   definition: Technical concern, domain capability, source visibility, ownership, release, deployment, and semantic context are separate partition axes that may be composed rather than forced into one whole-system scheme.
@@ -698,6 +715,9 @@ nodes:
   - package-by-component
   - package-by-feature
 - id: architecture-contextual-style-selection
+  projection:
+    owner: concept-record
+    source_id: architecture-contextual-style-selection
   kind: pattern
   label: Select architecture style from drivers rather than fashion
   definition: Architecture styles and hybrids are contextual technique bundles whose value and costs must be evaluated per scoped drivers, workflows, data, team, operations, migration, and existing constraints.
@@ -717,6 +737,9 @@ nodes:
   - hybrid-architecture
   - style-selection
 - id: architecture-decision-record
+  projection:
+    owner: concept-record
+    source_id: architecture-decision-record
   kind: principle
   label: Record architecture decisions with authority and supersession
   definition: Architecturally significant decisions need a durable record of status, context, scope, alternatives, consequences, authority, verification, and evidence-based supersession triggers.
@@ -736,6 +759,9 @@ nodes:
   - architecture-decision
   - decision-status
 - id: architecture-dependency-inversion-gate
+  projection:
+    owner: concept-record
+    source_id: architecture-dependency-inversion-gate
   kind: heuristic
   label: Earn dependency inversion from policy pressure
   definition: Direct dependencies remain preferable until a stable consumer policy, asymmetric volatility, real substitution, legacy interception, ownership, release, or deployment need earns inversion.
@@ -755,6 +781,9 @@ nodes:
   - consumer-owned-interface
   - stable-policy
 - id: architecture-distribution-readiness
+  projection:
+    owner: concept-record
+    source_id: architecture-distribution-readiness
   kind: principle
   label: Earn distribution and prove operational readiness
   definition: Process or network distribution is justified only by an irreducible current driver and explicit readiness for data authority, partial failure, consistency, compatibility, delivery, observability, security, recovery, and cost.
@@ -774,6 +803,9 @@ nodes:
   - network-fallacies
   - service-decomposition
 - id: architecture-earned-boundary
+  projection:
+    owner: concept-record
+    source_id: architecture-earned-boundary
   kind: pattern
   label: Earn architectural boundaries from independent forces
   definition: A boundary is justified only by demonstrated independent policy, semantic, invariant, ownership, volatility, release, deployment, trust, or quality forces.
@@ -793,6 +825,9 @@ nodes:
   - service-boundary
   - semantic-boundary
 - id: architecture-event-temporal-semantics
+  projection:
+    owner: concept-record
+    source_id: architecture-event-temporal-semantics
   kind: principle
   label: Make event temporal and failure semantics explicit
   definition: Asynchronous and event-driven interaction is safe only when completion, ordering, delivery, duplication, idempotency, retry, loss, replay, reconciliation, observability, and ownership semantics are explicit.
@@ -812,6 +847,9 @@ nodes:
   - choreography
   - orchestration
 - id: architecture-feedback-loop
+  projection:
+    owner: concept-record
+    source_id: architecture-feedback-loop
   kind: procedure
   label: Keep architecture and implementation in a closed feedback loop
   definition: Architecture must evolve through implementation, domain learning, and runtime evidence; architecture detached from code loses feasibility feedback, while implementation without decision context erodes accepted constraints.
@@ -831,6 +869,9 @@ nodes:
   - evolutionary-architecture
   - architecture-drift
 - id: architecture-fitness-functions
+  projection:
+    owner: concept-record
+    source_id: architecture-fitness-functions
   kind: principle
   label: Verify architecture at its preservation boundaries
   definition: Accepted architecture outcomes and constraints need scoped behavior, fitness functions, telemetry, and boundary tests whose observed property, limitations, owner, and response are explicit.
@@ -850,6 +891,9 @@ nodes:
   - boundary-test
   - architecture-verification
 - id: architecture-framework-commitment
+  projection:
+    owner: concept-record
+    source_id: architecture-framework-commitment
   kind: heuristic
   label: Treat frameworks as asymmetric architecture commitments
   definition: Framework adoption or extraction is a lifecycle-wide and often asymmetric commitment that is earned only by demonstrated consumers, stable extension needs, and benefits exceeding API control, upgrade, coupling, and replacement cost.
@@ -869,6 +913,9 @@ nodes:
   - framework-lock-in
   - asymmetric-marriage
 - id: architecture-interaction-synchrony
+  projection:
+    owner: concept-record
+    source_id: architecture-interaction-synchrony
   kind: principle
   label: Choose synchronous or asynchronous interaction from temporal needs
   definition: Synchronous calls and asynchronous events optimize different response, atomicity, availability, load, and recovery semantics; neither is a universal decoupling default.
@@ -888,6 +935,9 @@ nodes:
   - request-reply
   - temporal-coupling
 - id: architecture-metrics-as-signals
+  projection:
+    owner: concept-record
+    source_id: architecture-metrics-as-signals
   kind: principle
   label: Treat architecture metrics as investigation signals
   definition: Coupling, complexity, instability, abstractness, coverage, and distance metrics are narrow proxies that can identify questions but cannot decide architecture without repository-relative semantic, historical, and operational evidence.
@@ -907,6 +957,9 @@ nodes:
   - instability
   - abstractness
 - id: architecture-modular-monolith
+  projection:
+    owner: concept-record
+    source_id: architecture-modular-monolith
   kind: heuristic
   label: Prefer a modular monolith when one operational envelope suffices
   definition: Enforceable in-process modules are a first-class topology when one deployment, consistency, latency, failure, and operational envelope satisfies current drivers.
@@ -926,6 +979,9 @@ nodes:
   - service-extraction
   - monolith
 - id: architecture-policy-mechanism-separation
+  projection:
+    owner: concept-record
+    source_id: architecture-policy-mechanism-separation
   kind: principle
   label: Protect independent policy from contingent mechanism
   definition: Independently valuable business or application policy should depend on stable semantic contracts rather than volatile delivery, persistence, framework, device, or deployment representations.
@@ -945,6 +1001,9 @@ nodes:
   - domain-isolation
   - clean-architecture
 - id: architecture-risk-analysis
+  projection:
+    owner: concept-record
+    source_id: architecture-risk-analysis
   kind: heuristic
   label: Analyze architecture risk collaboratively and proportionately
   definition: Architecture risk should be identified against concrete flows and characteristics by people with design, implementation, domain, operations, and security knowledge, then mitigated or explicitly accepted by the proper authority.
@@ -964,6 +1023,9 @@ nodes:
   - risk-matrix
   - mitigation
 - id: architecture-scoped-characteristics
+  projection:
+    owner: concept-record
+    source_id: architecture-scoped-characteristics
   kind: principle
   label: Scope measurable architecture characteristics
   definition: A quality is architecturally significant only when it affects structure, is important to success, has a concrete scenario and threshold, and is scoped to the affected flow or architectural quantum.
@@ -983,6 +1045,9 @@ nodes:
   - slo
   - quality-scenario
 - id: architecture-selective-option-preservation
+  projection:
+    owner: concept-record
+    source_id: architecture-selective-option-preservation
   kind: proof-obligation
   label: Preserve architecture options selectively
   definition: An architecture option is worth carrying only when plausible change, consequence, delay value, and reversal cost justify the complexity introduced to keep it open.
@@ -1002,6 +1067,9 @@ nodes:
   - partial-boundary
   - last-responsible-moment
 - id: architecture-structural-constraint-enforcement
+  projection:
+    owner: concept-record
+    source_id: architecture-structural-constraint-enforcement
   kind: principle
   label: Enforce accepted structural constraints proportionately
   definition: Consequential forbidden dependencies and architecture contracts should use the cheapest reliable compiler, build, static, test, or fitness enforcement that protects the accepted outcome without freezing replaceable detail.
@@ -1021,6 +1089,9 @@ nodes:
   - dependency-rule
   - architecture-lint
 - id: architecture-team-topology-force
+  projection:
+    owner: concept-record
+    source_id: architecture-team-topology-force
   kind: heuristic
   label: Treat team topology as a force, not an automatic boundary map
   definition: Team ownership, communication, skill, size, cadence, and control influence architecture, but one team does not automatically imply one context, component, or deployable service.
@@ -1040,6 +1111,9 @@ nodes:
   - ownership-boundary
   - architecture-governance
 - id: debugging-causal-repair
+  projection:
+    owner: concept-record
+    source_id: debugging-causal-repair
   kind: principle
   label: Repair the cause and verify the causal claim
   definition: A defect repair should change the smallest cause capable of explaining the first divergence, preserve unrelated behavior and structure, and verify both the original reproduction and relevant regression surface.
@@ -1059,6 +1133,9 @@ nodes:
   - regression-test
   - symptom-fix
 - id: debugging-hypothesis-led-investigation
+  projection:
+    owner: concept-record
+    source_id: debugging-hypothesis-led-investigation
   kind: principle
   label: Investigate defects with discriminating hypotheses
   definition: Diagnosis should stabilize the failure, separate expected from actual behavior, generate competing causal hypotheses, and use the cheapest observation that discriminates among them before changing production logic.
@@ -1078,6 +1155,9 @@ nodes:
   - hypothesis
   - first-divergence
 - id: domain-aggregate-invariant-boundary
+  projection:
+    owner: concept-record
+    source_id: domain-aggregate-invariant-boundary
   kind: pattern
   label: Define Aggregates from invariants and consistency
   definition: An Aggregate is the smallest cluster whose domain invariants require one authorized consistency and transaction boundary; object composition, reachability, ORM cascade, or service topology do not define it.
@@ -1097,6 +1177,9 @@ nodes:
   - invariant-boundary
   - transaction-boundary
 - id: domain-anticorruption-layer
+  projection:
+    owner: concept-record
+    source_id: domain-anticorruption-layer
   kind: heuristic
   label: Earn an Anticorruption Layer from semantic conflict
   definition: An Anticorruption Layer protects a valuable local model from a necessary, materially different foreign or legacy model through explicit semantic translation; it is not merely a transport client or generic facade.
@@ -1116,6 +1199,9 @@ nodes:
   - semantic-translation
   - legacy-integration
 - id: domain-association-constraint
+  projection:
+    owner: concept-record
+    source_id: domain-association-constraint
   kind: heuristic
   label: Constrain domain associations to required meaning
   definition: Domain associations should retain only the traversal, direction, multiplicity, qualification, and ownership that real use cases and invariants require.
@@ -1134,6 +1220,9 @@ nodes:
   - multiplicity
   - object-graph
 - id: domain-bounded-context
+  projection:
+    owner: concept-record
+    source_id: domain-bounded-context
   kind: pattern
   label: Bound one coherent model and language explicitly
   definition: A Bounded Context delimits where one model and Ubiquitous Language remain coherent under explicit ownership; it is not equivalent to a source module, team, database, architectural quantum, process, or service.
@@ -1153,6 +1242,9 @@ nodes:
   - model-integrity
   - semantic-boundary
 - id: domain-context-relationship-selection
+  projection:
+    owner: concept-record
+    source_id: domain-context-relationship-selection
   kind: pattern
   label: Select context relationships from control and semantic economics
   definition: Shared Kernel, Customer/Supplier, Conformist, Anticorruption Layer, Separate Ways, and Open Host Service with Published Language optimize different cooperation, control, semantic-distance, consumer-breadth, and integration-value conditions.
@@ -1172,6 +1264,9 @@ nodes:
   - customer-supplier
   - conformist
 - id: domain-core-domain-priority
+  projection:
+    owner: concept-record
+    source_id: domain-core-domain-priority
   kind: heuristic
   label: Concentrate deep design on the Core Domain
   definition: Scarce modeling and architectural attention should focus on validated differentiating capability, while generic and supporting subdomains are simplified, sourced, or isolated without neglecting required reliability.
@@ -1191,6 +1286,9 @@ nodes:
   - supporting-subdomain
   - distillation
 - id: domain-explicit-concept
+  projection:
+    owner: concept-record
+    source_id: domain-explicit-concept
   kind: heuristic
   label: Make implicit domain concepts explicit when they simplify behavior
   definition: A constraint, policy, process, Specification, or other hidden concept should become explicit only when experts validate it and it clarifies recurring decisions, behavior, or implementation awkwardness.
@@ -1210,6 +1308,9 @@ nodes:
   - policy-object
   - process-object
 - id: domain-factory-lifecycle
+  projection:
+    owner: concept-record
+    source_id: domain-factory-lifecycle
   kind: pattern
   label: Use Factory only for complex valid creation
   definition: A Factory is justified only when creation or reconstitution must establish a complex valid whole or lifecycle transition that a clear constructor cannot express safely.
@@ -1229,6 +1330,9 @@ nodes:
   - object-creation
   - reconstitution
 - id: domain-fitting-large-scale-structure
+  projection:
+    owner: concept-record
+    source_id: domain-fitting-large-scale-structure
   kind: heuristic
   label: Use only a fitting minimal large-scale domain structure
   definition: Large-scale domain structure should be the smallest organizing concept that currently fits and communicates the model, and it must evolve, simplify, or disappear when exceptions and learning show loss of fit.
@@ -1248,6 +1352,9 @@ nodes:
   - responsibility-layers
   - system-metaphor
 - id: domain-identity-entity
+  projection:
+    owner: concept-record
+    source_id: domain-identity-entity
   kind: principle
   label: Use Entity only for domain-significant identity
   definition: A domain Entity is justified when meaning depends on continuity and identity despite attribute changes; a primary key or mutable record alone is insufficient.
@@ -1267,6 +1374,9 @@ nodes:
   - lifecycle
   - reference-object
 - id: domain-intention-revealing-interface
+  projection:
+    owner: concept-record
+    source_id: domain-intention-revealing-interface
   kind: principle
   label: Reveal domain intention and consequences in interfaces
   definition: A domain-facing API should express purpose, policy, result, state change, failure, and invariant in the Ubiquitous Language while hiding mechanism and limiting side effects.
@@ -1286,6 +1396,9 @@ nodes:
   - side-effect-free
   - assertion
 - id: domain-language-model-loop
+  projection:
+    owner: concept-record
+    source_id: domain-language-model-loop
   kind: procedure
   label: Evolve language, model, implementation, and learning together
   definition: A domain model is a working Ubiquitous Language bound to code, tests, examples, and continuous expert-developer learning, not a noun inventory or documentation-only abstraction.
@@ -1305,6 +1418,9 @@ nodes:
   - knowledge-crunching
   - domain-language
 - id: domain-modeling-investment-gate
+  projection:
+    owner: concept-record
+    source_id: domain-modeling-investment-gate
   kind: heuristic
   label: Earn strategic and tactical domain modeling investment
   definition: Deep domain modeling is justified by business-critical rule, identity, policy, and language complexity plus sustained expert-developer learning and sufficient product lifespan, not by tables, jargon, or architectural fashion.
@@ -1324,6 +1440,9 @@ nodes:
   - smart-ui
   - transaction-script
 - id: domain-repository-lifecycle
+  projection:
+    owner: concept-record
+    source_id: domain-repository-lifecycle
   kind: pattern
   label: Use Repository for aggregate-root lifecycle access
   definition: A Repository is justified when domain code needs collection-like retrieval and reconstitution of Aggregate roots while persistence, query, consistency, transaction, and latency mechanics remain explicit to implementers.
@@ -1343,6 +1462,9 @@ nodes:
   - query-semantics
   - persistence-gateway
 - id: domain-service-operation
+  projection:
+    owner: concept-record
+    source_id: domain-service-operation
   kind: principle
   label: Use Domain Service only for ownerless domain operations
   definition: A Domain Service expresses an important stateless domain operation that does not naturally belong to an Entity or Value Object; it is not an application service, deployable service, or microservice.
@@ -1362,6 +1484,9 @@ nodes:
   - anemic-model
   - service-layer
 - id: domain-value-object
+  projection:
+    owner: concept-record
+    source_id: domain-value-object
   kind: principle
   label: Use Value Object for attribute-defined meaning
   definition: A Value Object is justified when meaning is entirely its attributes, equality is by value, and replacement is valid; immutability and whole-value invariants are preferred unless domain evidence requires controlled mutation.
@@ -1380,6 +1505,9 @@ nodes:
   - immutability
   - units
 - id: go-bounded-concurrency
+  projection:
+    owner: concept-record
+    source_id: go-bounded-concurrency
   kind: principle
   label: Earn and bound Go concurrency
   definition: Goroutines and channels add scheduling, coordination, synchronization, and memory cost; introduce a bounded topology only when a parallelizable workload or functional throughput requirement justifies it after sequential simplification.
@@ -1398,6 +1526,9 @@ nodes:
   - worker-pool
   - sharding
 - id: go-explicit-contextual-errors
+  projection:
+    owner: concept-record
+    source_id: go-explicit-contextual-errors
   kind: pattern
   label: Keep Go error paths explicit and contextual
   definition: Go errors are ordinary explicit control flow; every material error must be handled, returned, or deliberately classified while preserving causal inspection, stable context, cleanup, and caller recovery semantics.
@@ -1417,6 +1548,9 @@ nodes:
   - errors-as
   - wrap-error
 - id: go-goroutine-resource-lifecycle
+  projection:
+    owner: concept-record
+    source_id: go-goroutine-resource-lifecycle
   kind: principle
   label: Own Go goroutine and resource lifecycles
   definition: Every goroutine and opened or exhaustible resource needs an owner, stop condition, completion observation, cleanup, and error behavior on success, failure, cancellation, and partial consumption.
@@ -1426,7 +1560,7 @@ nodes:
   doctrine_refs:
   - go-goroutine-resource-lifecycle
   formulations:
-  - F-CONCEPT-EGO-d0767ea65303
+  - F-CONCEPT-EGO-80467c3675ec
   - F-CONCEPT-EGO-01d7a5f259dc
   - F-CONCEPT-EGO-33b0c9659f27
   tags:
@@ -1436,6 +1570,9 @@ nodes:
   - defer
   - exhaust-body
 - id: go-package-api-simplicity
+  projection:
+    owner: concept-record
+    source_id: go-package-api-simplicity
   kind: principle
   label: Keep Go packages cohesive and APIs minimally exported
   definition: Go package boundaries should place behavior with a cohesive responsibility, export only demonstrated cross-package needs, enforce implementation scope where appropriate, and keep dependencies visible.
@@ -1455,6 +1592,9 @@ nodes:
   - internal
   - module
 - id: go-semantics-before-performance-constructs
+  projection:
+    owner: concept-record
+    source_id: go-semantics-before-performance-constructs
   kind: heuristic
   label: Choose Go values, pointers, generics, and interfaces for semantics first
   definition: Pointer use, generic or interface dispatch, and specialization have workload- and compiler-dependent cost and must be selected first from ownership, mutation, nil, copy, identity, API, and variation semantics.
@@ -1474,6 +1614,9 @@ nodes:
   - generics
   - interface
 - id: implementation-comments-first-design-probe
+  projection:
+    owner: concept-record
+    source_id: implementation-comments-first-design-probe
   kind: heuristic
   label: Use comments-first as an optional design probe
   definition: Drafting the interface contract and high-level implementation intent before code can expose an incoherent abstraction while redesign is cheap, but it is an optional probe rather than a universal workflow.
@@ -1492,6 +1635,9 @@ nodes:
   - design-probe
   - interface-draft
 - id: implementation-duplication-as-evidence
+  projection:
+    owner: concept-record
+    source_id: implementation-duplication-as-evidence
   kind: proof-obligation
   label: Treat duplication as evidence about knowledge
   definition: Duplication is harmful when multiple representations encode one authoritative rule or must change together; similar code with independent ownership may be safer than a premature common abstraction.
@@ -1511,6 +1657,9 @@ nodes:
   - clone
   - knowledge-authority
 - id: implementation-error-surface-reduction
+  projection:
+    owner: concept-record
+    source_id: implementation-error-surface-reduction
   kind: heuristic
   label: Reduce error surfaces without erasing failure meaning
   definition: Error handling may be simplified by natural total semantics, reliable masking, or aggregation at a useful boundary only when the change preserves caller-relevant failure information and operational safety.
@@ -1529,6 +1678,9 @@ nodes:
   - aggregate-errors
   - idempotent-semantics
 - id: implementation-explicit-failure-policy
+  projection:
+    owner: concept-record
+    source_id: implementation-explicit-failure-policy
   kind: principle
   label: Make failure policy explicit
   definition: Errors and exceptional conditions are part of an interface and need explicit caller-relevant meaning, recovery ownership, propagation, retry, logging, cleanup, partial-effect, and termination semantics.
@@ -1549,6 +1701,9 @@ nodes:
   - exception
   - retry
 - id: implementation-fail-fast-or-recover
+  projection:
+    owner: concept-record
+    source_id: implementation-fail-fast-or-recover
   kind: heuristic
   label: Select fail-fast or recovery from system consequences
   definition: Continuing, containing, retrying, degrading, or terminating after failure is a product and operational tradeoff, not a universal coding preference.
@@ -1568,6 +1723,9 @@ nodes:
   - degrade
   - containment
 - id: implementation-minimal-coherent-api
+  projection:
+    owner: concept-record
+    source_id: implementation-minimal-coherent-api
   kind: principle
   label: Expose a minimal coherent API contract
   definition: An API must state the non-obvious meaning callers depend on while exposing no more mechanism, configuration, or surface than demonstrated consumers require.
@@ -1587,6 +1745,9 @@ nodes:
   - precondition
   - postcondition
 - id: implementation-non-obvious-commentary
+  projection:
+    owner: concept-record
+    source_id: implementation-non-obvious-commentary
   kind: principle
   label: Comment non-obvious contract and rationale
   definition: Comments should preserve contract, rationale, invariant, unit, ownership, side effect, nonlocal relation, or tradeoff that correct code cannot make sufficiently obvious; they should not narrate mechanics.
@@ -1606,6 +1767,9 @@ nodes:
   - invariant
   - non-obvious-contract
 - id: implementation-normal-result-or-exception
+  projection:
+    owner: concept-record
+    source_id: implementation-normal-result-or-exception
   kind: heuristic
   label: Distinguish normal results from exceptional failures
   definition: Expected domain outcomes belong in ordinary result or control semantics; exception-like mechanisms are appropriate only when the operation cannot fulfill its normal contract and the language and caller model support nonlocal failure flow.
@@ -1625,6 +1789,9 @@ nodes:
   - sentinel
   - status
 - id: implementation-obvious-control-flow
+  projection:
+    owner: concept-record
+    source_id: implementation-obvious-control-flow
   kind: principle
   label: Make control and state transitions obvious to readers
   definition: Control flow, ordering, state, termination, and variable roles should be visible through the simplest fitting structures so a reader can predict behavior without reconstructing hidden context.
@@ -1644,6 +1811,9 @@ nodes:
   - state-transition
   - local-reasoning
 - id: implementation-placement-by-ownership
+  projection:
+    owner: concept-record
+    source_id: implementation-placement-by-ownership
   kind: principle
   label: Place behavior with its knowledge and invariants
   definition: New behavior belongs in the smallest existing owner of the relevant state, policy, invariant, or hidden design decision that can expose a coherent contract without importing unrelated concerns.
@@ -1662,6 +1832,9 @@ nodes:
   - responsibility
   - invariants
 - id: implementation-readiness
+  projection:
+    owner: concept-record
+    source_id: implementation-readiness
   kind: principle
   label: Scale implementation readiness to risk
   definition: Consequential coding should begin only after the intended outcome, affected contracts, placement constraints, failure and resource policy, verification route, and integration path are understood at a depth proportional to consequence and uncertainty.
@@ -1680,6 +1853,9 @@ nodes:
   - risk
   - requirements
 - id: implementation-repository-language-conformance
+  projection:
+    owner: concept-record
+    source_id: implementation-repository-language-conformance
   kind: pattern
   label: Conform language choices to the repository toolchain
   definition: A language idiom or mechanism is appropriate only when current repository versions, tooling, neighboring code, public compatibility, and runtime semantics support it and it improves the authorized task.
@@ -1699,6 +1875,9 @@ nodes:
   - version-floor
   - repository-convention
 - id: implementation-representation-fit
+  projection:
+    owner: concept-record
+    source_id: implementation-representation-fit
   kind: principle
   label: Select representation from semantics and operations
   definition: Control and data representations should be chosen from required invariants, ownership, mutation, ordering, access, scale, and materialization needs before habit or speculative performance.
@@ -1718,6 +1897,9 @@ nodes:
   - container
   - ownership
 - id: implementation-risk-driven-tests
+  projection:
+    owner: concept-record
+    source_id: implementation-risk-driven-tests
   kind: principle
   label: Derive protection from contract and risk
   definition: Tests and characterization should protect observable contracts, invariants, boundary values, state transitions, failure and resource paths, and repaired regressions at the smallest level that can observe them without binding to irrelevant internals.
@@ -1738,6 +1920,9 @@ nodes:
   - boundaries
   - contract-test
 - id: implementation-semantic-naming
+  projection:
+    owner: concept-record
+    source_id: implementation-semantic-naming
   kind: principle
   label: Name semantic distinctions precisely
   definition: Names should create accurate mental models of domain meaning, scope, units, effects, and role while following repository and language conventions.
@@ -1757,6 +1942,9 @@ nodes:
   - semantic-distinction
   - glossary
 - id: legacy-cover-and-modify
+  projection:
+    owner: concept-record
+    source_id: legacy-cover-and-modify
   kind: principle
   label: Cover-and-modify change algorithm
   definition: Poorly characterized code should be changed through a minimum route from change point to effect/test point, dependency seam, characterization, semantic edit, and optional refactoring.
@@ -1775,6 +1963,9 @@ nodes:
   - change-point
   - test-point
 - id: legacy-current-work-responsibility-discovery
+  projection:
+    owner: concept-record
+    source_id: legacy-current-work-responsibility-discovery
   kind: heuristic
   label: Discover responsibility through current work
   definition: The behavior being changed supplies the most reliable initial evidence for one responsibility inside an unclear large unit.
@@ -1792,6 +1983,9 @@ nodes:
   - responsibility-discovery
   - large-class
 - id: legacy-effect-surface
+  projection:
+    owner: concept-record
+    source_id: legacy-effect-surface
   kind: principle
   label: Select protection from effect propagation
   definition: Required tests follow all observable effects reachable from a change point, not class boundaries or coverage targets alone.
@@ -1810,6 +2004,9 @@ nodes:
   - side-effect
   - blast-radius
 - id: legacy-pinch-point
+  projection:
+    owner: concept-record
+    source_id: legacy-pinch-point
   kind: heuristic
   label: Protect a change cluster at a stable convergence point
   definition: One stable observation can intercept effects from several changed paths, trading localization for reduced preparation.
@@ -1827,6 +2024,9 @@ nodes:
   - interception-point
   - test-covering
 - id: legacy-provisional-dependency-break
+  projection:
+    owner: concept-record
+    source_id: legacy-provisional-dependency-break
   kind: heuristic
   label: Minimum provisional dependency break
   definition: Break only the dependency that prevents required feedback, and make any resulting design scar explicit and revisitable.
@@ -1845,6 +2045,9 @@ nodes:
   - design-scar
   - testability
 - id: legacy-provisional-safety-net
+  projection:
+    owner: concept-record
+    source_id: legacy-provisional-safety-net
   kind: heuristic
   label: Provisional broad characterization safety net
   definition: A broad black-box or E2E suite may temporarily protect initial restructuring when local tests are impossible, with explicit brittleness and retirement rules.
@@ -1862,6 +2065,9 @@ nodes:
   - safety-net
   - black-box-characterization
 - id: legacy-scratch-refactoring
+  projection:
+    owner: concept-record
+    source_id: legacy-scratch-refactoring
   kind: principle
   label: Disposable refactoring for understanding
   definition: Aggressive reversible structural edits can reveal behavior and responsibilities, but insight—not the scratch diff—is the default deliverable.
@@ -1878,6 +2084,9 @@ nodes:
   - throwaway-extraction
   - code-understanding
 - id: legacy-sprout-wrap
+  projection:
+    owner: concept-record
+    source_id: legacy-sprout-wrap
   kind: heuristic
   label: Sprout or wrap behavior under deadline pressure
   definition: When required behavior cannot safely enter an untestable body in time, tested logic may be placed beside or around it through a narrow integration point.
@@ -1895,6 +2104,9 @@ nodes:
   - wrap-method
   - urgent-legacy-change
 - id: legacy-unprotected-enabling-edit
+  projection:
+    owner: concept-record
+    source_id: legacy-unprotected-enabling-edit
   kind: principle
   label: Last-resort unprotected mechanical enabling edit
   definition: A first testless production edit is permissible only when it is the smallest reversible bridge required to make protection possible and no safer path exists.
@@ -1913,6 +2125,9 @@ nodes:
   - first-seam
   - compiler
 - id: python-bounded-async
+  projection:
+    owner: concept-record
+    source_id: python-bounded-async
   kind: principle
   label: Keep Python async nonblocking, bounded, and owned
   definition: Async code must keep the event loop free of unbounded blocking work, bound fan-out and queues, own every task and resource, and make cancellation and failure propagation explicit.
@@ -1931,6 +2146,9 @@ nodes:
   - backpressure
   - event-loop
 - id: python-cache-validity
+  projection:
+    owner: concept-record
+    source_id: python-cache-validity
   kind: proof-obligation
   label: Define Python cache validity, ownership, and bounds
   definition: functools cache, LRU, cached properties, and bespoke dictionaries are safe only when key identity, determinism, invalidation, capacity, concurrency, failure, ownership, and lifecycle are explicit and repeated work is material.
@@ -1949,6 +2167,9 @@ nodes:
   - cached-property
   - memoization
 - id: python-compatible-property-evolution
+  projection:
+    owner: concept-record
+    source_id: python-compatible-property-evolution
   kind: heuristic
   label: Evolve Python attributes through compatible properties
   definition: A plain public attribute can evolve to a property when real validation or computation appears, provided ordinary caller and framework behavior remains compatible; speculative getters and setters are unnecessary.
@@ -1966,6 +2187,9 @@ nodes:
   - compatible-evolution
   - getter-setter
 - id: python-concurrency-model-selection
+  projection:
+    owner: concept-record
+    source_id: python-concurrency-model-selection
   kind: heuristic
   label: Select Python concurrency from workload and runtime evidence
   definition: Sequential execution, bounded threads, processes, and async solve different workload and dependency constraints; the current interpreter and deployment must be verified before assuming their CPU, I/O, or isolation behavior.
@@ -1984,6 +2208,9 @@ nodes:
   - process
   - async
 - id: python-data-carrier-versus-domain-object
+  projection:
+    owner: concept-record
+    source_id: python-data-carrier-versus-domain-object
   kind: heuristic
   label: Distinguish Python data carriers from domain objects
   definition: A behaviorless record is appropriate for interchange, snapshots, or scaffolding and becomes a domain restructuring candidate only when cohesive policy or invariants manipulating its fields are recurring and scattered.
@@ -2002,6 +2229,9 @@ nodes:
   - dto
   - domain-object
 - id: python-dynamic-mechanism-escalation
+  projection:
+    owner: concept-record
+    source_id: python-dynamic-mechanism-escalation
   kind: principle
   label: Escalate Python dynamic mechanisms only when earned
   definition: Ordinary functions and attributes should give way to properties, decorators, descriptors, subclass hooks, and metaclasses only as demonstrated repetition, cross-class policy, or framework construction requirements demand.
@@ -2020,6 +2250,9 @@ nodes:
   - decorator
   - property
 - id: python-function-over-stateless-class
+  projection:
+    owner: concept-record
+    source_id: python-function-over-stateless-class
   kind: heuristic
   label: Prefer a Python function for stateless single-operation behavior
   definition: A named function or callable is usually a clearer implementation of a single-operation strategy with no independent identity, state, lifecycle, or related operations than a parallel one-method class hierarchy.
@@ -2038,6 +2271,9 @@ nodes:
   - callable
   - one-method-class
 - id: python-inheritance-constraints
+  projection:
+    owner: concept-record
+    source_id: python-inheritance-constraints
   kind: principle
   label: Constrain Python inheritance to substitutability or narrow framework reuse
   definition: Python inheritance is justified by substitutability or a narrow tested framework role, not by code reuse alone; composition is safer when identities, invariants, or evolution differ.
@@ -2056,6 +2292,9 @@ nodes:
   - mro
   - subclass-built-in
 - id: python-interface-mechanism-selection
+  projection:
+    owner: concept-record
+    source_id: python-interface-mechanism-selection
   kind: principle
   label: Select the least powerful Python interface mechanism that proves the contract
   definition: Direct coupling, duck typing, static Protocol, ABC, and concrete type constraints provide different evidence and runtime behavior; choose the least powerful mechanism real consumers and enforcement needs justify.
@@ -2074,6 +2313,9 @@ nodes:
   - abc
   - concrete-type
 - id: python-mutable-ownership
+  projection:
+    owner: concept-record
+    source_id: python-mutable-ownership
   kind: principle
   label: Make Python mutable ownership explicit
   definition: Because Python assignment and calls share object references, every stored or mutated input needs an explicit borrowed, consumed, copied, shared, or owned contract.
@@ -2092,6 +2334,9 @@ nodes:
   - mutable-default
   - copy
 - id: python-protocol-conformance
+  projection:
+    owner: concept-record
+    source_id: python-protocol-conformance
   kind: principle
   label: Earn interoperability through complete Python protocols
   definition: A custom type should implement the smallest semantically complete standard protocol that real clients consume instead of inventing a parallel API or adding decorative special methods.
@@ -2110,6 +2355,9 @@ nodes:
   - dunder
   - duck-typing
 - id: python-repository-shaped-idiom
+  projection:
+    owner: concept-record
+    source_id: python-repository-shaped-idiom
   kind: pattern
   label: Make Python idiom repository-shaped
   definition: Pythonic form is contextual interoperability with the repository's supported interpreter, dependencies, tooling, neighboring code, and public behavior, not permission for style-only modernization.
@@ -2128,6 +2376,9 @@ nodes:
   - pyproject
   - compatibility
 - id: python-representation-fit
+  projection:
+    owner: concept-record
+    source_id: python-representation-fit
   kind: principle
   label: Choose Python representations by semantic and workload fit
   definition: Lists, tuples, deques, sets, mappings, flat arrays, views, and generators should be selected from ordering, uniqueness, mutability, access, ownership, size, and materialization needs rather than habit.
@@ -2146,6 +2397,9 @@ nodes:
   - deque
   - set
 - id: python-runtime-static-boundary
+  projection:
+    owner: concept-record
+    source_id: python-runtime-static-boundary
   kind: pattern
   label: Keep Python static evidence distinct from runtime guarantees
   definition: Type hints, TypedDict, cast, and structural checks are static evidence; they do not validate untrusted data, enforce business invariants, prove behavior, or replace executable tests.
@@ -2164,6 +2418,9 @@ nodes:
   - typeddict
   - cast
 - id: python-special-method-laws
+  projection:
+    owner: concept-record
+    source_id: python-special-method-laws
   kind: principle
   label: Preserve Python special-method laws
   definition: Equality, hashing, operators, slicing, representation, and formatting must preserve Python's conventional algebra, mutation, dispatch, fallback, and result semantics.
@@ -2182,6 +2439,9 @@ nodes:
   - hash
   - notimplemented
 - id: python-streaming-iteration
+  projection:
+    owner: concept-record
+    source_id: python-streaming-iteration
   kind: principle
   label: Preserve Python iterator, exhaustion, and lifetime semantics
   definition: Generators and iterators are appropriate only when single-pass deferred execution, exception timing, and resource lifetime satisfy consumers; reusable iterables must remain distinct from their iterators.
@@ -2200,6 +2460,9 @@ nodes:
   - generator
   - exhaustion
 - id: python-structured-cleanup
+  projection:
+    owner: concept-record
+    source_id: python-structured-cleanup
   kind: principle
   label: Bind Python cleanup to structured lifetime
   definition: Files, locks, transactions, temporary state, and asynchronous resources should use with, async with, contextlib, or an equivalent structured owner so setup and cleanup remain paired across success, exceptions, and cancellation.
@@ -2218,6 +2481,9 @@ nodes:
   - async-with
   - contextlib
 - id: python-text-bytes-boundary
+  projection:
+    owner: concept-record
+    source_id: python-text-bytes-boundary
   kind: pattern
   label: Make Python text and bytes conversion a policy boundary
   definition: Decode bytes to text at a known ingress and encode text at egress with an explicit codec, error, normalization, and loss policy; leave opaque binary payloads uninterpreted.
@@ -2236,6 +2502,9 @@ nodes:
   - bytes
   - encoding
 - id: refactoring-change-type-classification
+  projection:
+    owner: concept-record
+    source_id: refactoring-change-type-classification
   kind: principle
   label: Classify change by purpose and semantic permission
   definition: A change label is valid only when its purpose and allowable observable delta match the actual work.
@@ -2254,6 +2523,9 @@ nodes:
   - semantic-delta
   - cleanup
 - id: refactoring-compatibility-migration
+  projection:
+    owner: concept-record
+    source_id: refactoring-compatibility-migration
   kind: principle
   label: Published structural change is a compatibility migration
   definition: Independent consumers or persisted data turn a desirable internal restructuring into a phased migration.
@@ -2272,6 +2544,9 @@ nodes:
   - compatibility
   - deprecation
 - id: refactoring-directional-campaign
+  projection:
+    owner: concept-record
+    source_id: refactoring-directional-campaign
   kind: procedure
   label: Broad refactoring as a revisable direction
   definition: A broad structural outcome should be delivered through protected independently valuable intermediate states and revised as knowledge grows.
@@ -2290,6 +2565,9 @@ nodes:
   - incremental-transformation
   - rewrite
 - id: refactoring-splinter-campaign
+  projection:
+    owner: concept-record
+    source_id: refactoring-splinter-campaign
   kind: procedure
   label: Facade-preserving hotspot splinter campaign
   definition: In an active congested hotspot, the first campaign may improve safe parallel evolution by extracting one evidenced responsibility while retaining the old API.
@@ -2307,6 +2585,9 @@ nodes:
   - facade-refactor
   - congested-hotspot
 - id: refactoring-stop-backtrack-escalate
+  projection:
+    owner: concept-record
+    source_id: refactoring-stop-backtrack-escalate
   kind: principle
   label: Stop, backtrack, or escalate on lost certainty
   definition: The agent must stop when it can no longer state what changed, what remains invariant, why a check failed, or whether it has authority.
@@ -2325,6 +2606,9 @@ nodes:
   - escalate
   - uncertain-behavior
 - id: refactoring-transformation-tool-trust
+  projection:
+    owner: concept-record
+    source_id: refactoring-transformation-tool-trust
   kind: principle
   label: Bound automation trust by semantic coverage
   definition: Automated transformation reduces mechanical error only within the language and repository surfaces the tool models.
@@ -2343,6 +2627,9 @@ nodes:
   - automated-rename
   - compiler-trust
 - id: repository-assessment-behavioral-boundary-candidate
+  projection:
+    owner: concept-record
+    source_id: repository-assessment-behavioral-boundary-candidate
   kind: pattern
   label: Co-change-nominated domain boundary candidate
   definition: Historical clusters can nominate a component or bounded-context candidate, but semantic language, invariants, data/authority ownership, transactions, and experts establish the boundary.
@@ -2360,6 +2647,9 @@ nodes:
   - co-change-cluster
   - domain-boundary
 - id: repository-assessment-behavioral-data-fitness
+  projection:
+    owner: concept-record
+    source_id: repository-assessment-behavioral-data-fitness
   kind: pattern
   label: Version-history evidence fitness gate
   definition: Behavioral inference is admissible only after checking whether repository practice preserves the entity, time, task, and author relationships the analysis assumes.
@@ -2378,6 +2668,9 @@ nodes:
   - mailmap
   - squash
 - id: repository-assessment-behavioral-early-warning
+  projection:
+    owner: concept-record
+    source_id: repository-assessment-behavioral-early-warning
   kind: pattern
   label: Nonblocking behavioral review warning
   definition: Rising hotspot rank, steep relative complexity growth, or missing expected co-change should focus review and allow intentional divergence.
@@ -2395,6 +2688,9 @@ nodes:
   - missing-co-change
   - complexity-warning
 - id: repository-assessment-code-age
+  projection:
+    owner: concept-record
+    source_id: repository-assessment-code-age
   kind: pattern
   label: Code-age stability clue
   definition: Time since modification can suggest stable or active regions but cannot establish quality, safety, use, cohesion, or deadness.
@@ -2413,6 +2709,9 @@ nodes:
   - dead-code
   - old-code
 - id: repository-assessment-complexity-trend
+  projection:
+    owner: concept-record
+    source_id: repository-assessment-complexity-trend
   kind: pattern
   label: Repository-relative structural trajectory
   definition: A consistent relative trajectory or unusual delta is more actionable than an absolute universal complexity threshold.
@@ -2430,6 +2729,9 @@ nodes:
   - rising-complexity
   - relative-threshold
 - id: repository-assessment-logical-change-set
+  projection:
+    owner: concept-record
+    source_id: repository-assessment-logical-change-set
   kind: pattern
   label: Cross-commit logical change grouping
   definition: Co-change across split commits or repositories requires a defensible grouping of commits into one logical task.
@@ -2446,12 +2748,15 @@ nodes:
   - ticket-commit
   - cross-repository-coupling
 - id: repository-assessment-metrics-not-performance
+  projection:
+    owner: concept-record
+    source_id: repository-assessment-metrics-not-performance
   kind: pattern
   label: Prohibit individual performance scoring from behavioral code data
   definition: Commit, LOC, ownership, defect-attribution, hotspot, and knowledge-map data must never be converted into individual productivity or performance judgments.
   operational_significance: Measurement changes behavior, destroys the evidence source, discourages help/deletion/risky work, and cannot see task context.
   status: canonical
-  confidence: universal
+  confidence: strong
   doctrine_refs:
   - repository-assessment-metrics-not-performance
   formulations:
@@ -2464,6 +2769,9 @@ nodes:
   - commit-count
   - loc
 - id: review-severity-confidence-separation
+  projection:
+    owner: concept-record
+    source_id: review-severity-confidence-separation
   kind: principle
   label: Separate review severity from confidence and preference
   definition: A review must distinguish demonstrated defect or contract violation from evidence-backed risk, maintainability concern, suggestion, and personal preference, while stating confidence independently from consequence.
@@ -2484,6 +2792,9 @@ nodes:
   - defect
   - risk
 - id: testing-coverage-is-not-adequacy
+  projection:
+    owner: concept-record
+    source_id: testing-coverage-is-not-adequacy
   kind: principle
   label: Treat coverage as execution evidence, not adequacy
   definition: Coverage can show that code was executed, but cannot by itself establish correct assertions, boundary protection, failure behavior, state coverage, or test independence.
@@ -2502,6 +2813,9 @@ nodes:
   - branch-coverage
   - line-coverage
 - id: testing-design-before-feature-tests
+  projection:
+    owner: concept-record
+    source_id: testing-design-before-feature-tests
   kind: heuristic
   label: Design shared abstractions before feature tests freeze them
   definition: When a new shared module's responsibility and interface are unsettled, compare the broader abstraction and caller alternatives before individual feature tests dictate a tactical structure.
@@ -2520,6 +2834,9 @@ nodes:
   - shared-abstraction
   - interface-alternatives
 - id: testing-test-first-feedback
+  projection:
+    owner: concept-record
+    source_id: testing-test-first-feedback
   kind: heuristic
   label: Use test-first when it improves contract feedback
   definition: Writing a failing behavioral test before implementation is valuable when it clarifies an accepted contract, reproduces a defect, or creates a close preservation gate; it is not proof that the resulting design is coherent.
@@ -2539,6 +2856,9 @@ nodes:
   - regression-test
   - tdd
 - id: universal-earned-abstraction
+  projection:
+    owner: concept-record
+    source_id: universal-earned-abstraction
   kind: principle
   label: Earn abstractions through demonstrated pressure
   definition: Introduce or retain an abstraction only when it hides coherent knowledge or mechanism and reduces total caller reasoning, coordinated change, or substitution cost more than its interface and indirection add.
@@ -2558,6 +2878,9 @@ nodes:
   - indirection
   - reuse
 - id: universal-explicit-invariants
+  projection:
+    owner: concept-record
+    source_id: universal-explicit-invariants
   kind: principle
   label: Make invariants explicit and owned
   definition: Every material invariant needs a clear owner, representation, enforcement point, failure policy, and proof mechanism proportionate to risk.
@@ -2577,6 +2900,9 @@ nodes:
   - assertion
   - invalid-state
 - id: universal-information-hiding
+  projection:
+    owner: concept-record
+    source_id: universal-information-hiding
   kind: principle
   label: Hide volatile decisions behind coherent contracts
   definition: Information hiding succeeds when one module owns a design decision or representation and callers depend on stable meaning rather than mechanics; access modifiers alone are insufficient.
@@ -2596,6 +2922,9 @@ nodes:
   - representation
   - encapsulation
 - id: universal-local-reasoning
+  projection:
+    owner: concept-record
+    source_id: universal-local-reasoning
   kind: principle
   label: Prefer local reasoning
   definition: Place knowledge, state, invariants, and behavior so a maintainer can understand and change one responsibility without reconstructing distant hidden state or call order.
@@ -2615,6 +2944,9 @@ nodes:
   - change-locality
   - orthogonality
 - id: universal-measure-claimed-improvement
+  projection:
+    owner: concept-record
+    source_id: universal-measure-claimed-improvement
   kind: principle
   label: Measure the improvement that is claimed
   definition: A claim that work improves performance, maintainability, reliability, architecture fitness, or process needs a preserved baseline and evidence on that same dimension.
@@ -2634,6 +2966,9 @@ nodes:
   - fitness-function
   - benefit-proof
 - id: universal-no-change-option
+  projection:
+    owner: concept-record
+    source_id: universal-no-change-option
   kind: principle
   label: Keep no change as a valid decision
   definition: Leave code or architecture unchanged when demonstrated pressure and expected benefit do not exceed intervention, migration, indirection, learning, and operational cost.
@@ -2653,6 +2988,9 @@ nodes:
   - defer
   - monitor
 - id: universal-repository-contract-precedence
+  projection:
+    owner: concept-record
+    source_id: universal-repository-contract-precedence
   kind: pattern
   label: Repository contracts outrank generic doctrine
   definition: Explicit task authority, accepted repository decisions, executable contracts, and current runtime facts govern the work before any generic engineering school or source preference.
@@ -2672,6 +3010,9 @@ nodes:
   - adr
   - convention
 - id: universal-reversible-reviewable-change
+  projection:
+    owner: concept-record
+    source_id: universal-reversible-reviewable-change
   kind: principle
   label: Prefer reversible, reviewable changes
   definition: Choose the smallest coherent step that can be independently understood, verified, and reversed or safely advanced.
@@ -2691,6 +3032,9 @@ nodes:
   - checkpoint
   - rollback
 - id: universal-separate-semantic-structural-change
+  projection:
+    owner: concept-record
+    source_id: universal-separate-semantic-structural-change
   kind: principle
   label: Separate semantic and structural work
   definition: Feature behavior, defect repair, refactoring, architecture, migration, optimization, cleanup, deletion, and dependency changes remain distinct checkpoints even when one task needs several.
@@ -2709,3 +3053,458 @@ nodes:
   - semantic-change
   - structural-change
   - change-classification
+- id: conflict-abstraction-vs-duplication
+  projection:
+    owner: conflict-registry
+    source_id: conflict-abstraction-vs-duplication
+  kind: conflict
+  label: Abstraction Vs Duplication
+  definition: 'Contested positions: abstract-shared-knowledge: Centralize one authoritative piece of knowledge so a conceptual change has one implementation authority. | tolerate-local-duplication: Keep similar code local when semantics, owners, contexts, or future change can diverge.'
+  operational_significance: Abstract only when semantic identity and coevolution are demonstrated and the shared interface reduces total change/reasoning cost; otherwise retain local duplication and record the revisit trigger.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-abstraction-vs-duplication
+  formulations:
+  - F-CONFLICT-PP-88d7be39a185
+  - F-CONFLICT-SDX-f1bf943c3555
+  tags:
+  - conflict
+  - contextual
+- id: conflict-architectural-constraint-vs-team-autonomy
+  projection:
+    owner: conflict-registry
+    source_id: conflict-architectural-constraint-vs-team-autonomy
+  kind: conflict
+  label: Architectural Constraint Vs Team Autonomy
+  definition: 'Contested positions: enforced-constraint: Consequential structural, compatibility, security, or quality rules should be automatically enforced across teams. | contextual-team-autonomy: Teams should choose local implementation and structure where their drivers differ and global enforcement would freeze detail.'
+  operational_significance: Enforce only accepted consequential outcomes or forbidden dependencies at the cheapest reliable boundary; leave replaceable implementation choices local and provide an explicit exception/supersession path.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-architectural-constraint-vs-team-autonomy
+  formulations:
+  - F-CONFLICT-FSA-0735dc3638d2
+  tags:
+  - conflict
+  - contextual
+- id: conflict-broad-redesign-vs-incremental-transformation
+  projection:
+    owner: conflict-registry
+    source_id: conflict-broad-redesign-vs-incremental-transformation
+  kind: conflict
+  label: Broad Redesign Vs Incremental Transformation
+  definition: 'Contested positions: broad-redesign: Systemic mismatch may require replacing structure whose assumptions no longer fit. | incremental-transformation: Preserve feedback and delivery through small facade-compatible slices.'
+  operational_significance: Prefer the smallest independently verifiable migration path; authorize broad replacement only when evidence rules out safe incremental paths and supplies parity, coexistence, rollback, data, and cutover proof.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-broad-redesign-vs-incremental-transformation
+  formulations:
+  - F-CONFLICT-WELC-df7e2da10242
+  - F-CONFLICT-SDX-748db6e58157
+  tags:
+  - conflict
+  - methodological
+- id: conflict-broad-vs-narrow-characterization
+  projection:
+    owner: conflict-registry
+    source_id: conflict-broad-vs-narrow-characterization
+  kind: conflict
+  label: Broad Vs Narrow Characterization
+  definition: 'Contested positions: broad-safety-net: A high-level characterization test can protect a wide poorly understood effect surface quickly. | narrow-local-test: A focused test gives faster diagnosis, lower brittleness, and clearer preservation claims.'
+  operational_significance: Establish the cheapest test that detects the authorized change's relevant effects; use broad protection provisionally, then add narrower tests as understanding and seams improve.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-broad-vs-narrow-characterization
+  formulations:
+  - F-CONFLICT-SDX-d3e566b23055
+  - F-CONFLICT-WELC-dbb4d062464f
+  tags:
+  - conflict
+  - contextual
+- id: conflict-caching-vs-recomputation-freshness
+  projection:
+    owner: conflict-registry
+    source_id: conflict-caching-vs-recomputation-freshness
+  kind: conflict
+  label: Caching Vs Recomputation Freshness
+  definition: 'Contested positions: cache: Store expensive results to reduce repeated work and latency. | recompute: Recompute to preserve freshness, bound memory, and avoid invalidation/ownership complexity.'
+  operational_significance: Cache only when measured avoided work exceeds memory, invalidation, consistency, privacy, and failure costs; specify key, owner, lifetime, capacity, invalidation, and fallback before implementation.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-caching-vs-recomputation-freshness
+  formulations:
+  - F-CONFLICT-FP-1209f2dae563
+  - F-CONFLICT-EGO-4af04bb0e73a
+  tags:
+  - conflict
+  - contextual
+- id: conflict-choreography-vs-orchestration
+  projection:
+    owner: conflict-registry
+    source_id: conflict-choreography-vs-orchestration
+  kind: conflict
+  label: Choreography Vs Orchestration
+  definition: 'Contested positions: choreography: Let independently owned event handlers react without a central workflow controller. | orchestration: Give one mediator explicit responsibility for workflow state, ordering, compensation, and completion.'
+  operational_significance: Choose from causal ownership and recovery semantics rather than broker fashion; use orchestration when global process state is a real domain/operational responsibility, and choreography only when local reactions remain independently correct.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-choreography-vs-orchestration
+  formulations:
+  - F-CONFLICT-FSA-b96ec9e95ef6
+  - F-CONFLICT-FSA-4ddbecbb7c12
+  tags:
+  - conflict
+  - contextual
+- id: conflict-comments-vs-self-documenting-structure
+  projection:
+    owner: conflict-registry
+    source_id: conflict-comments-vs-self-documenting-structure
+  kind: conflict
+  label: Comments Vs Self Documenting Structure
+  definition: 'Contested positions: improve-code-first: Names and structure should make operations obvious; comments that narrate code rot and mask poor design. | preserve-nonobvious-information: Comments carry contract, rationale, invariants, units, ownership, and cross-module information code cannot state economically.'
+  operational_significance: First improve safe local structure; retain concise comments for verified information not obvious from the code, place them at the authority boundary, and test or review drift where consequential.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-comments-vs-self-documenting-structure
+  formulations:
+  - F-CONFLICT-CC-5bc9439b2b37
+  - F-CONFLICT-APOSD-cd8f3b4a57a5
+  tags:
+  - conflict
+  - substantive
+- id: conflict-concurrency-vs-sequential-simplicity
+  projection:
+    owner: conflict-registry
+    source_id: conflict-concurrency-vs-sequential-simplicity
+  kind: conflict
+  label: Concurrency Vs Sequential Simplicity
+  definition: 'Contested positions: concurrent: Parallelism or asynchronous progress can meet throughput, latency, isolation, or responsiveness requirements. | sequential: Sequential execution minimizes scheduling, ownership, ordering, cancellation, race, and debugging cost.'
+  operational_significance: Remove unnecessary work first; add the smallest bounded concurrency model only when representative measurement predicts and confirms a material target benefit while preserving ordering and lifecycle contracts.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-concurrency-vs-sequential-simplicity
+  formulations:
+  - F-CONFLICT-EGO-05d3f49f0b7e
+  - F-CONFLICT-FP-97cefa098c80
+  - F-CONFLICT-EGO-14fe0bf5bda4
+  tags:
+  - conflict
+  - contextual
+- id: conflict-deep-modules-vs-small-units
+  projection:
+    owner: conflict-registry
+    source_id: conflict-deep-modules-vs-small-units
+  kind: conflict
+  label: Deep Modules Vs Small Units
+  definition: 'Contested positions: deep-module: Concentrate related complexity behind a small stable interface so callers reason locally. | small-unit: Extract small cohesive routines or classes so each operation has one clear purpose and can be changed or tested independently.'
+  operational_significance: Compare caller simplification and hidden benefit against interface, navigation, change, and review cost; select the smallest number of cohesive units that minimizes total reasoning and change amplification, not a target size.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-deep-modules-vs-small-units
+  formulations:
+  - F-CONFLICT-APOSD-e96880d16b96
+  - F-CONFLICT-CC-552823e8603a
+  - F-CONFLICT-REF-b6f67fa12ed8
+  tags:
+  - conflict
+  - contextual
+- id: conflict-dependency-inversion-vs-direct-coupling
+  projection:
+    owner: conflict-registry
+    source_id: conflict-dependency-inversion-vs-direct-coupling
+  kind: conflict
+  label: Dependency Inversion Vs Direct Coupling
+  definition: 'Contested positions: invert-dependency: Protect stable policy from volatile details through an abstraction controlled by the consumer. | direct-dependency: Keep one stable implementation directly coupled until independent evolution or substitution earns indirection.'
+  operational_significance: Name the protected policy and coupling dimension; introduce the least costly seam whose protection exceeds its interface and lifecycle cost, otherwise retain direct coupling.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-dependency-inversion-vs-direct-coupling
+  formulations:
+  - F-CONFLICT-CA-5a516f98b491
+  - F-CONFLICT-WELC-07bdea51fd98
+  tags:
+  - conflict
+  - contextual
+- id: conflict-domain-purity-vs-implementation-simplicity
+  projection:
+    owner: conflict-registry
+    source_id: conflict-domain-purity-vs-implementation-simplicity
+  kind: conflict
+  label: Domain Purity Vs Implementation Simplicity
+  definition: 'Contested positions: protect-domain-model: Keep domain language, policy, and invariants free from contingent infrastructure representations. | accept-direct-implementation: Use simple transaction scripts, framework representations, or direct data operations when a rich model adds translation and ceremony without value.'
+  operational_significance: Invest in model isolation only where domain decisions and invariant density create demonstrated reasoning leverage; choose the simplest direct form elsewhere and keep operational constraints visible.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-domain-purity-vs-implementation-simplicity
+  formulations:
+  - F-CONFLICT-DDD-8a521ac47ad2
+  - F-CONFLICT-DDD-9a0b5c74e469
+  tags:
+  - conflict
+  - contextual
+- id: conflict-domain-vs-technical-partition
+  projection:
+    owner: conflict-registry
+    source_id: conflict-domain-vs-technical-partition
+  kind: conflict
+  label: Domain Vs Technical Partition
+  definition: 'Contested positions: domain-partition: Group a capability''s presentation, policy, and persistence so feature and domain changes remain local. | technical-partition: Group common technical concerns so mechanism expertise, standards, and reuse remain centralized.'
+  operational_significance: Select partition axes per demonstrated change, semantic, ownership, quality, and enforcement forces; hybridize deliberately, but do not infer a bounded context from either folder scheme.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-domain-vs-technical-partition
+  formulations:
+  - F-CONFLICT-FSA-4453bc034369
+  - F-CONFLICT-DDD-3563cfa1faa0
+  - F-CONFLICT-FSA-f65603fe6c04
+  tags:
+  - conflict
+  - methodological
+- id: conflict-full-vs-partial-vs-no-boundary
+  projection:
+    owner: conflict-registry
+    source_id: conflict-full-vs-partial-vs-no-boundary
+  kind: conflict
+  label: Full Vs Partial Vs No Boundary
+  definition: 'Contested positions: full-boundary: Enforce bidirectional independence with separate contracts, dependency direction, release, process, or network isolation. | partial-boundary: Preserve a cheaper facade or one-dimensional seam until stronger independent evolution is demonstrated. | no-boundary: Keep direct cohesive coupling when separation cost exceeds the evidenced force.'
+  operational_significance: First establish whether a boundary is earned; then choose the cheapest strength that satisfies the measured protection, ownership, release, failure, and compatibility requirement, with a revisit trigger for partial forms.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-full-vs-partial-vs-no-boundary
+  formulations:
+  - F-CONFLICT-FSA-9233af79a2d2
+  - F-CONFLICT-CA-58a0634af851
+  tags:
+  - conflict
+  - contextual
+- id: conflict-generalized-reuse-vs-local-clarity
+  projection:
+    owner: conflict-registry
+    source_id: conflict-generalized-reuse-vs-local-clarity
+  kind: conflict
+  label: Generalized Reuse Vs Local Clarity
+  definition: 'Contested positions: generalized-reuse: A reusable mechanism can amortize design and maintenance across stable consumers. | local-clarity: Direct purpose-built code preserves context and avoids a lowest-common-denominator interface.'
+  operational_significance: Generalize only the stable semantic core demonstrated across current consumers; leave context-specific policy local and treat framework extraction as a separate lifecycle commitment.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-generalized-reuse-vs-local-clarity
+  formulations:
+  - F-CONFLICT-DDD-3cf66e4bcf80
+  - F-CONFLICT-APOSD-95b59f3b2599
+  tags:
+  - conflict
+  - contextual
+- id: conflict-model-fidelity-vs-performance-representation
+  projection:
+    owner: conflict-registry
+    source_id: conflict-model-fidelity-vs-performance-representation
+  kind: conflict
+  label: Model Fidelity Vs Performance Representation
+  definition: 'Contested positions: preserve-domain-representation: Keep code and data shaped around domain language and invariants so policy remains intelligible. | specialize-runtime-representation: Use a different storage, indexing, batching, or computation representation when the domain-shaped form cannot meet an accepted resource objective.'
+  operational_significance: Preserve the domain-facing model by default; add the narrowest specialized representation behind an explicit translation boundary only when profiling and representative benchmarks justify it and equivalence, synchronization, recovery, and retirement are protected.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-model-fidelity-vs-performance-representation
+  formulations:
+  - F-CONFLICT-APOSD-bce361e473fd
+  - F-CONFLICT-DDD-1b3b373140b3
+  tags:
+  - conflict
+  - contextual
+- id: conflict-monolith-vs-distributed-services
+  projection:
+    owner: conflict-registry
+    source_id: conflict-monolith-vs-distributed-services
+  kind: conflict
+  label: Monolith Vs Distributed Services
+  definition: 'Contested positions: modular-monolith: In-process modules minimize latency, consistency, deployment, and operational costs while preserving semantic boundaries. | distributed-services: Independent processes can satisfy required scale, isolation, technology, release, ownership, or geographic drivers.'
+  operational_significance: Prefer the least distributed topology meeting current drivers; distribute only the flows for which a hard driver and operational readiness exceed network, data, and coordination cost.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-monolith-vs-distributed-services
+  formulations:
+  - F-CONFLICT-FSA-a2e4eda7abe7
+  - F-CONFLICT-CA-a2a125d715dc
+  - F-CONFLICT-FSA-c4f01da698f5
+  tags:
+  - conflict
+  - contextual
+- id: conflict-performance-specialization-vs-abstraction
+  projection:
+    owner: conflict-registry
+    source_id: conflict-performance-specialization-vs-abstraction
+  kind: conflict
+  label: Performance Specialization Vs Abstraction
+  definition: 'Contested positions: preserve-abstraction: Maintain clear general interfaces and representations to contain complexity and change. | specialize-hot-path: A measured critical path may need direct data layout, fused work, batching, or specialized code.'
+  operational_significance: Specialize only the measured critical path, hide it behind the existing semantic boundary when possible, compare end-to-end resource effects, and remove it when gain no longer clears complexity cost.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-performance-specialization-vs-abstraction
+  formulations:
+  - F-CONFLICT-APOSD-470345c21945
+  - F-CONFLICT-EGO-1f9eb241105b
+  tags:
+  - conflict
+  - contextual
+- id: conflict-refactor-now-vs-leave-alone
+  projection:
+    owner: conflict-registry
+    source_id: conflict-refactor-now-vs-leave-alone
+  kind: conflict
+  label: Refactor Now Vs Leave Alone
+  definition: 'Contested positions: refactor-opportunistically: Improve nearby structure while understanding is fresh to prevent compounding design decay. | leave-stable-code: Avoid regression and opportunity cost where unattractive code is stable or outside the authorized change surface.'
+  operational_significance: Refactor only when demonstrated pressure and near-term benefit clear protection, integration, and opportunity costs; otherwise record the signal and revisit trigger without intervention.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-refactor-now-vs-leave-alone
+  formulations:
+  - F-CONFLICT-REF-4f1ecd835d7e
+  - F-CONFLICT-SDX-dec2f77c4d2a
+  tags:
+  - conflict
+  - contextual
+- id: conflict-shared-kernel-vs-acl-vs-conformist
+  projection:
+    owner: conflict-registry
+    source_id: conflict-shared-kernel-vs-acl-vs-conformist
+  kind: conflict
+  label: Shared Kernel Vs Acl Vs Conformist
+  definition: 'Contested positions: shared-kernel: Jointly own a small stable overlap when teams can coordinate every change closely. | anticorruption-layer: Translate between materially different models to protect valuable local semantics. | conformist: Adopt an upstream model when leverage is absent and local translation has insufficient value.'
+  operational_significance: Select relationship from control, cooperation, semantic distance, local strategic value, and integration economics; never choose from diagram symmetry or reuse desire alone.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-shared-kernel-vs-acl-vs-conformist
+  formulations:
+  - F-CONFLICT-DDD-55841d065c21
+  - F-CONFLICT-DDD-42612c4535da
+  - F-CONFLICT-DDD-fb053c3a2945
+  tags:
+  - conflict
+  - contextual
+- id: conflict-static-typing-vs-runtime-validation
+  projection:
+    owner: conflict-registry
+    source_id: conflict-static-typing-vs-runtime-validation
+  kind: conflict
+  label: Static Typing Vs Runtime Validation
+  definition: 'Contested positions: static-contract: Types and protocols catch interface mismatches early and document trusted internal contracts. | runtime-validation: External data and value-level invariants require executable validation and tests.'
+  operational_significance: Use static typing for properties the repository checker can prove; validate at every trust/data boundary for properties that exist only at runtime, and test both paths.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-static-typing-vs-runtime-validation
+  formulations:
+  - F-CONFLICT-FP-4e4b556b889f
+  - F-CONFLICT-FP-2ad6a91cd488
+  tags:
+  - conflict
+  - contextual
+- id: conflict-synchronous-vs-asynchronous-interaction
+  projection:
+    owner: conflict-registry
+    source_id: conflict-synchronous-vs-asynchronous-interaction
+  kind: conflict
+  label: Synchronous Vs Asynchronous Interaction
+  definition: 'Contested positions: synchronous: Direct request/response preserves simple causal completion and immediate failure propagation. | asynchronous: Events or queues can isolate availability, shape load, and support independent temporal progress.'
+  operational_significance: Choose from response timing, atomicity, coupling, load shape, loss/retry semantics, and recovery ownership; do not treat topology as the decision.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-synchronous-vs-asynchronous-interaction
+  formulations:
+  - F-CONFLICT-FSA-ad6b4f60e5a7
+  - F-CONFLICT-FSA-26e6e12cb801
+  tags:
+  - conflict
+  - contextual
+- id: conflict-temporary-seam-vs-long-term-design
+  projection:
+    owner: conflict-registry
+    source_id: conflict-temporary-seam-vs-long-term-design
+  kind: conflict
+  label: Temporary Seam Vs Long Term Design
+  definition: 'Contested positions: temporary-seam: A minimal interception point can make an urgent legacy change protectable without redesigning the system. | durable-boundary: Production indirection should meet long-term API, encapsulation, ownership, and operability standards.'
+  operational_significance: Use the smallest controlled seam that creates feedback; declare its production default and lifecycle, then promote or remove it based on repeated pressure rather than omission.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-temporary-seam-vs-long-term-design
+  formulations:
+  - F-CONFLICT-WELC-2086672564b8
+  - F-CONFLICT-WELC-dc0a1ebaa166
+  tags:
+  - conflict
+  - contextual
+- id: conflict-unified-model-vs-bounded-contexts
+  projection:
+    owner: conflict-registry
+    source_id: conflict-unified-model-vs-bounded-contexts
+  kind: conflict
+  label: Unified Model Vs Bounded Contexts
+  definition: 'Contested positions: unified-model: One shared model can eliminate translation and keep enterprise concepts consistent. | bounded-models: Multiple internally coherent models preserve distinct meanings, rules, ownership, and evolution.'
+  operational_significance: Attempt unification only within a scope where one language and model remain coherent; preserve distinct models across demonstrated semantic discontinuities and choose an explicit relationship for every necessary crossing.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-unified-model-vs-bounded-contexts
+  formulations:
+  - F-CONFLICT-DDD-4b990d6fa270
+  - F-CONFLICT-DDD-81505ac081f8
+  tags:
+  - conflict
+  - substantive
+- id: conflict-uniformity-vs-context-sensitive-design
+  projection:
+    owner: conflict-registry
+    source_id: conflict-uniformity-vs-context-sensitive-design
+  kind: conflict
+  label: Uniformity Vs Context Sensitive Design
+  definition: 'Contested positions: repository-uniformity: Consistency lowers cognitive load, tool cost, and accidental variation. | local-fit: Different quality, domain, runtime, or language forces may require intentionally different structures.'
+  operational_significance: Conform by default; introduce a documented local exception or migration only when distinct forces produce material benefit exceeding ecosystem and review cost.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-uniformity-vs-context-sensitive-design
+  formulations:
+  - F-CONFLICT-APOSD-5d541ea91120
+  - F-CONFLICT-FSA-3370edf14365
+  tags:
+  - conflict
+  - contextual
+- id: conflict-upfront-vs-evolutionary-architecture
+  projection:
+    owner: conflict-registry
+    source_id: conflict-upfront-vs-evolutionary-architecture
+  kind: conflict
+  label: Upfront Vs Evolutionary Architecture
+  definition: 'Contested positions: decide-up-front: Resolve high-cost, safety-critical, procurement, data, or topology decisions before implementation makes them expensive or impossible. | evolve-from-feedback: Delay reversible decisions and evolve structure through implementation, domain, and runtime feedback.'
+  operational_significance: Classify decisions by reversibility, consequence, information value, and decision deadline; decide only the irreversible/high-consequence minimum early and establish feedback plus revisit triggers for the rest.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-upfront-vs-evolutionary-architecture
+  formulations:
+  - F-CONFLICT-CC-2368b3a56da2
+  - F-CONFLICT-FSA-77a33f8cdade
+  - F-CONFLICT-DDD-f5ba9ef317c4
+  tags:
+  - conflict
+  - methodological

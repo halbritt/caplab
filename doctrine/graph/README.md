@@ -10,14 +10,20 @@ subgraphs without specialized graph infrastructure.
   and retrieval rules;
 - `nodes.yaml`: canonical engineering concepts and operational constructs;
 - `formulations.yaml`: source-specific paraphrases with exact chapter/heading
-  locators and their relationship to a canonical node;
+  locators and their relationships to one or more canonical nodes;
 - `edges.yaml`: typed relationships between nodes, each with formulation-level
   provenance;
 - `views.yaml`: curated entry nodes for roles, tasks, and common decisions.
+- `../routing-graph/links.yaml`: generated non-semantic co-retrieval adjacency;
+  it is not part of the evidence-backed semantic edge set.
 
-`../tools/sync_concepts_to_graph.py --write` adds any missing Concept Record,
-typed source-support projection, and routing-composition edge while retaining
-curated graph material. `--check` is the release gate for a missing projection.
+`../tools/sync_concepts_to_graph.py --write` deterministically refreshes Concept
+Record nodes and source support, conflict nodes and position formulations,
+`participates-in` edges, concept confidence/status, and non-semantic routing
+adjacency. It removes stale owned records while retaining curated labels,
+definitions, semantic edges, and source-specific formulations. `--check` fails
+on projected additions, updates, deletions, broken owned reciprocity, or stale
+routing adjacency.
 
 ## Canonicalization rules
 
@@ -40,7 +46,9 @@ curated graph material. `--check` is the release gate for a missing projection.
 ## Provenance relations
 
 - `direct_support`: the source chapter explicitly advances the canonical rule.
-- `corroboration`: the source independently supports the same rule or result.
+- `corroboration`: an additional formulation supports the same rule or result;
+  a distinct source ID adds independent cross-context support, while another
+  passage from the same source provides only within-source reinforcement.
 - `refinement`: the source adds operational conditions, mechanics, limitations,
   or a narrower specialization.
 - `derived_inference`: the canonical rule follows from source evidence but is not
@@ -52,17 +60,31 @@ curated graph material. `--check` is the release gate for a missing projection.
 - `tension`: the source supports a competing position preserved in the conflict
   registry.
 
+## Formulation context attribution
+
+Every formulation declares `context_basis` separately for `conditions` and
+`caveats`. `source-specific` means the formulation's curated context was mined
+from that source. `canonical-mapping` and `canonical-policy` identify context
+copied from the canonical Concept Record and explicitly not attributed to the
+source. `conflict-position` identifies context supplied by the conflict
+registry's position and selection rule. This distinction prevents a canonical
+applicability rule from being presented as an author's premise.
+
 ## Edge interpretation
 
 Edges are directional unless their relation is documented as symmetric in
 `index.yaml`. An edge states an operational claim, not mere topical similarity.
-For example, `characterization-surfaces --enables--> safe-structural-change`
-means that captured behavior creates feedback required for a bounded change; it
-does not mean the two concepts simply co-occur in a chapter.
+For example,
+`legacy-characterization-surfaces --enables--> refactoring-behavior-preservation`
+means that captured behavior creates feedback for preserving behavior through a
+bounded structural change; it does not mean the two concepts simply co-occur in
+a chapter.
 
 Every edge carries `provenance`, a list of formulation IDs. A synthesized edge
 may combine formulations from several sources, but its confidence and derivation
-must remain explicit. Unsupported convenience edges are invalid.
+must remain explicit. Synthesized edges also record a rationale, credible rival,
+and falsifier. Unsupported convenience edges are invalid. Co-retrieval links do
+not belong in this file because retrieval adjacency is not a semantic claim.
 
 ## Retrieval
 

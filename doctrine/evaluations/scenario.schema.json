@@ -13,7 +13,7 @@
     "expected"
   ],
   "properties": {
-    "schema_version": {"const": "doctrine-scenario/1"},
+    "schema_version": {"const": "doctrine-scenario/2"},
     "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
     "description": {"type": "string", "minLength": 1},
     "authority": {
@@ -28,16 +28,7 @@
     },
     "evidence": {
       "type": "array",
-      "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": ["id", "text", "provenance"],
-        "properties": {
-          "id": {"type": "string", "minLength": 1},
-          "text": {"type": "string", "minLength": 1},
-          "provenance": {"type": "string", "minLength": 1}
-        }
-      }
+      "items": {"$ref": "../runtime/evidence-record.schema.json"}
     },
     "expected": {
       "type": "object",

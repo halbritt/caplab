@@ -250,7 +250,6 @@ lenses:
       - identify model-consistency contexts and protect the differentiating core domain
     emphasize_concepts:
       - domain-language-model-loop
-      - domain-language-model-loop
       - domain-aggregate-invariant-boundary
       - domain-bounded-context
     modify_decisions:

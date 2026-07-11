@@ -40,11 +40,14 @@ verification into acceptance.
 | Artifact | Purpose | Primary retrieval key |
 |---|---|---|
 | `corpus-map.yaml` | Source contributions, assumptions, limitations, and tensions | source ID |
+| `bibliography.json` | Canonical titles, editions, creator roles, and field-level evidence | source ID |
+| `chapter-coverage.yaml` | Exact chapter inventory, disposition, and content hashes | chapter/source ID |
 | `universal-doctrine.md` | Compact cross-role foundation | every engineering task |
 | `role-doctrine.md` | Role-specific defaults, permissions, and stop rules | agent role |
 | `concepts/*.yaml` | Canonical operational concept records | concept ID, task, signal |
 | `techniques/*.yaml` | Costed architecture/domain techniques with activation and reversal rules | demonstrated force/technique ID |
-| `graph/index.yaml` | Canonical doctrine graph entry point and relation vocabulary | node/edge/source formulation |
+| `graph/index.yaml` | Provenance-bearing semantic doctrine graph and relation vocabulary | node/edge/source formulation |
+| `routing-graph/links.yaml` | Generated non-semantic co-retrieval adjacency | concept ID |
 | `procedures.yaml` | Deterministic decision procedures | task/procedure ID |
 | `negative-doctrine.yaml` | High-confidence prohibitions with trigger thresholds | risk/failure signal |
 | `conflicts.yaml` | Preserved disagreements and selection rules | conflict ID/context |
@@ -56,8 +59,8 @@ verification into acceptance.
 | `rubrics.md` | Scored evaluation rubrics | artifact under review |
 | `checklists.md` | Readiness, preservation, evidence, and escalation gates | execution phase |
 | `traceability.yaml` | Coverage and source-support audit | concept/source/procedure ID |
-| `runtime/*.schema.json` | Portable evidence-packet, assertion, receipt, and dependency contracts | runtime artifact type |
-| `evaluations/` | Deterministic authority and dependency-impact canaries | scenario/expected assertion boundary |
+| `runtime/*.schema.json` | Portable evidence-record, packet, assertion, receipt, and dependency contracts | runtime artifact type |
+| `evaluations/` | Authority/routing canaries, entailment screening, and a pending-human calibration queue | scenario/evaluation axis |
 | `CONVERGED_RECOMMENDATION.md` | Current synthesis and next accepted implementation target | downstream product decision |
 | `OPERATIONALIZATION.md` | Retrieval, evaluation, receipt, and outcome-learning design constraints | downstream runtime work |
 
@@ -68,9 +71,15 @@ or default retrieval inputs for agents.
 
 The graph under `graph/` is a semantic projection of the same doctrine. It does
 not replace concept records or chapter evidence. Canonical nodes converge shared
-ideas; source formulations retain each source's conditions and vocabulary; typed
-edges make prerequisites, refinements, conflicts, protections, and tradeoffs
-explicit.
+ideas; formulations preserve the source-attributed contribution, exact locator,
+and relationship to one or more canonical nodes. Curated formulations may carry
+source-specific conditions and caveats. Generated source-support formulations
+instead label canonical mapping applicability and policy explicitly in
+`context_basis`, so canonical conditions are not attributed to an author.
+Typed edges make prerequisites, refinements, conflicts, protections, and
+tradeoffs explicit. Generated keyword and routing adjacency lives under
+`routing-graph/` and declares `semantic: false`; it must not be cited as source
+support.
 
 ## Record and citation contract
 
@@ -85,7 +94,8 @@ explicit.
   endorses the derived rule.
 - Claims are paraphrased. The doctrinal library does not reproduce the source
   corpus or depend on source wording.
-- Confidence means: `universal` for a highly portable rule with broad support;
+- Confidence means: `universal` for a highly portable rule supported by at
+  least two distinct source IDs (an enforced release-gate threshold);
   `strong` for reliable support within stated constraints; `contextual` for a
   rule that depends materially on repository conditions; `weak` for a useful
   hypothesis requiring local confirmation; and `contested` for an unresolved
@@ -93,11 +103,13 @@ explicit.
 
 ## Retrieval contract
 
-Retrievers should begin with `routing-index.yaml`, load the universal concepts
-marked `core`, and add only records activated by the current role, task,
-repository signals, language, and risk class. Exclusion conditions and
-prerequisites are hard filters. A specialist record must not be loaded merely
-because it shares a keyword with the task.
+Retrievers should begin with `routing-index.yaml`, load its explicit six-concept
+always-load safety kernel, and add records activated by the question, current
+role, task, repository signals, language, risk class, or explicit lens.
+Exclusions and language applicability are hard filters. Concept prerequisites
+close the selected set; evidence-shaped prerequisites become obligations rather
+than silently filtering out guidance. A specialist record must not be loaded
+merely because it shares a keyword with the task.
 
 When the repository does not supply the evidence required by a record, the
 agent should gather evidence, narrow the claim, propose an experiment, or stop.
@@ -106,9 +118,9 @@ It should not substitute confidence or source prestige for missing evidence.
 ### Assembling an evidence packet
 
 `tools/assemble_packet.py` implements this retrieval contract as a
-deterministic CLI. It applies the routing index `selection_order` for a role,
-task, question, and optional repository signals, languages, and risk class,
-then emits a packet conforming to `runtime/evidence-packet.schema.json`:
+deterministic CLI. It resolves canonical role and task vocabularies, applies a
+question-sensitive and prerequisite-closed selection budget, and emits a
+content-addressed `evidence-packet/2`:
 
 ```bash
 python3 doctrine/tools/assemble_packet.py \
@@ -121,13 +133,24 @@ python3 doctrine/tools/assemble_packet.py \
 Interpretation notes (the assembler cannot inspect a target repository):
 
 - A route prerequisite naming another concept record is pulled into the
-  activated set; every other prerequisite and each `required_evidence` item is
-  reported in `missing_evidence` as `<item> — required by <concept-id>` unless
-  a provided `--signal` matches it. Missing evidence never drops always-load
-  or role/task-baseline concepts; `exclude_when` matches always do, and every
-  dropped candidate is recorded in `excluded_candidates` with its reason.
-- `corpus_version` is derived from repository data only:
-  the traceability `generated_at_utc` date plus a sha256 digest over the
-  sorted `source_sha256` values in `sources.yaml`. Identical invocations
-  produce byte-identical packets; the packet is retrieved guidance and does
-  not create authority to act.
+  activated set. Other prerequisites and required evidence become explicit
+  obligations. Signals can activate records but cannot satisfy obligations;
+  only typed `evidence-record/1` inputs can do that.
+- The default compact packet retains the six-concept safety kernel and all
+  activated operational layers without repeating derived audit views. Use
+  `--detail full` for formulations, flattened missing-evidence text, and source
+  locator inventories.
+- The default 5,000-unit budget is a relative concept-selection cost, not a
+  byte, word, or tokenizer-token limit. Identical inputs produce byte-identical
+  packets; changes to doctrine or retrieval logic change their content IDs.
+- A packet is retrieved guidance. It never creates authority to act.
+
+## Release validation
+
+Run `make doctrine-check` to verify source binaries and generated provenance,
+the exact 331-chapter coverage manifest, unambiguous source locators, canonical
+bibliography, routing freshness, semantic graph projection, graph fragments,
+conflict reachability, pending-human calibration-queue freshness, and doctrinal
+cross-references. `make check` combines that gate with the converter integrity
+check and the test suite. Queue coverage is scaffolding, not evidence that any
+candidate has been adjudicated or accepted.

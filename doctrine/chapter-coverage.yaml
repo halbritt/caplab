@@ -1,0 +1,1775 @@
+schema_version: chapter-coverage/1
+generated_from:
+- ledger: doctrine/_work/extractions/implementation-sources.md
+  sha256: f6b1194167ccd636efd0693295316494be49b31b116dacd81572e1ac31352a1c
+- ledger: doctrine/_work/extractions/architecture-domain-sources.md
+  sha256: c495606d0274a1077ae838b9f5fcc3db845f397b3544fdb69ba28938281cb32b
+- ledger: doctrine/_work/extractions/language-performance-sources.md
+  sha256: 642ab27b7fbf063bab9ca5a53ab6f1c2adc4763da8c69603820722bdb0a61e2b
+- ledger: doctrine/_work/extractions/change-legacy-sources.md
+  sha256: da751b5b8fe4bd2e04ef3df539a243257b994968be2ed0b346b5efaa1382946e
+chapters:
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/001-clean-architecture.md
+  title: Clean Architecture
+  disposition: Edition metadata; declared audience; no independent doctrine.
+  sha256: 3df58e1aae9de67b892f591d03a09aa5108657916bfaf83ece7b85fac06b762d
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/002-contents.md
+  title: Contents
+  disposition: Source navigation and heading cross-check.
+  sha256: 3a6fcbf3511e298c83e30e48755a36f75a5a8ce383f5b21dd9b20f96b187427f
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/003-foreword.md
+  title: Foreword
+  disposition: Architecture as costly-to-change decisions; architecture as hypothesis tested by implementation and measurement;
+    incomplete knowledge.
+  sha256: c06a940a88dbc50adae9c34b39d836c4ded36f7ea350d5e26d1cf80f15702e73
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/004-preface.md
+  title: Preface
+  disposition: Author's claim of architecture-rule continuity; broad experiential basis; important universality caveat.
+  sha256: 9a7aa3dbc905995e9ca5fb8335d044f09e146cdf8628dbcd8d877b4e0e00fa1e
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/005-acknowledgments.md
+  title: Acknowledgments
+  disposition: Publication-only.
+  sha256: 591d724b9a4a177d853b64f87cdf34f69d990673415700aa53e51c6f05763967
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/006-about-the-author.md
+  title: About the Author
+  disposition: Author background and source-bias context.
+  sha256: 073b2c03bb9835c4e054eca410fa76a008c075e4b85e409245dc2e972688a56e
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/007-i-introduction.md
+  title: 'Part I: Introduction'
+  disposition: Lifetime change cost, coupling, and maintainability motivation; largely rhetorical.
+  sha256: 7cff14ee232b0abbab267da7bb10932eb1a1a8f7062171d28a3a1094206b76f4
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/008-chapter-1-what-is-design-and-architecture.md
+  title: 'Chapter 1: What Is Design and Architecture?'
+  disposition: Design/architecture continuum; lifetime human effort; productivity degradation; rewrite caution.
+  sha256: ddaf04148acf7fff3d41fb39921f1e9ff27b9b38f899d91043854d46f460d86d
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/009-chapter-2-a-tale-of-two-values.md
+  title: 'Chapter 2: A Tale of Two Values'
+  disposition: Behavior versus changeability; structural stewardship; urgency versus importance.
+  sha256: a7099aaed84e3a9708b5d08512237e5fb047815929b5ec3e1d4e79cd4670e7c9
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/010-ii-starting-with-the-bricks-programming-paradigms.md
+  title: 'Part II: Programming Paradigms'
+  disposition: Code-level disciplines as architecture substrate.
+  sha256: ef4ba7e3fac1496ba69a93320c2b7dd6ca5a4d9056dd1c2eafb0289095cf0262
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/011-chapter-3-paradigm-overview.md
+  title: 'Chapter 3: Paradigm Overview'
+  disposition: Structured, OO, functional disciplines; function, separation, and data management.
+  sha256: 025c87682c039f2fff1c2e9e542cbf742ac30dc1a82defc5491e72b571045603
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/012-chapter-4-structured-programming.md
+  title: 'Chapter 4: Structured Programming'
+  disposition: Decomposition; falsifiable testing rather than proof; functional decomposition.
+  sha256: bacc17166240561f1c1ef7d27b18a98917f91ae98fd13994efe740ec7d6f8686
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/013-chapter-5-object-oriented-programming.md
+  title: 'Chapter 5: Object-Oriented Programming'
+  disposition: Polymorphism, plugin boundaries, source dependency inversion, independent deployment claims.
+  sha256: 65240d83f177ea0b7700acd0d2c8a8b38e31cd76e4f469fbf727b6989c2705db
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/014-chapter-6-functional-programming.md
+  title: 'Chapter 6: Functional Programming'
+  disposition: Mutability segregation, concurrency risk, event-sourcing advocacy and resource caveats.
+  sha256: 10867c98d67e2e489f9d4242ccfb8538787ca848f717807ed812c34002932fea
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/015-iii-design-principles.md
+  title: 'Part III: Design Principles'
+  disposition: SOLID scope and claimed goals; module-level context.
+  sha256: 384ff87edf6ac1b5ecadbad06eb9da3419fb08d513e5b232c08dbdcfb3d280c2
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/016-chapter-7-srp-the-single-responsibility-principle.md
+  title: 'Chapter 7: SRP'
+  disposition: Actor-driven change axes, accidental coupling, merge pressure, facade trade-off.
+  sha256: a98c60fdee70567ddb497886eacbeb0555f9cc0b179377b09b6d7324098f5818
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/017-chapter-8-ocp-the-open-closed-principle.md
+  title: 'Chapter 8: OCP'
+  disposition: Extension pressure, change protection hierarchy, directional control, information hiding.
+  sha256: e8d27038dd247792d358706ae0c30e12356eb074f3c641e82f45eae46d4a1ad7
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/018-chapter-9-lsp-the-liskov-substitution-principle.md
+  title: 'Chapter 9: LSP'
+  disposition: Behavioral substitutability as boundary contract, not inheritance aesthetics.
+  sha256: 6a64822811dab63c178322dc385c72dc74932b6ad8b267c0f4957b9008cf09c3
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/019-chapter-10-isp-the-interface-segregation-principle.md
+  title: 'Chapter 10: ISP'
+  disposition: Avoiding dependencies on unused capabilities; language and architectural costs.
+  sha256: 402d4d37304186495460d65f6d7f1f25158401d441167de04fd99169c44bdb55
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/020-chapter-11-dip-the-dependency-inversion-principle.md
+  title: 'Chapter 11: DIP'
+  disposition: Stable policy abstractions, factories, unavoidable concrete edges.
+  sha256: 36674bdaf909cc36d8b6230f46b4e70f9fe493364dd29d1a1f1d27017e9c7160
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/021-iv-component-principles.md
+  title: 'Part IV: Component Principles'
+  disposition: Part divider.
+  sha256: 26ca3fe04e60b21475a0beeeeefc22993bda9d6892adf05b7bd96195a57f3d0a
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/022-chapter-12-components.md
+  title: 'Chapter 12: Components'
+  disposition: Deployment units and historical linking context.
+  sha256: 52de5d5df512162db2c20b4d83f734c95e97145a8ac3d2a8649b76fdc9bb93e0
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/023-chapter-13-component-cohesion.md
+  title: 'Chapter 13: Component Cohesion'
+  disposition: Release/reuse, common closure, common reuse, unavoidable cohesion tension.
+  sha256: 982001f6cd8ca80034a7d7c9be6b1c9b53d3cc363d3c6c933a22e327e5a9b8e6
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/024-chapter-14-component-coupling.md
+  title: 'Chapter 14: Component Coupling'
+  disposition: Acyclic graph, stability, stable abstractions, metrics as indicators rather than gods.
+  sha256: dc4a7f3926474308e8f573329476c4fd14d2a2a7707d82c3b714e8e5d58e0da5
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/025-v-architecture.md
+  title: 'Part V: Architecture'
+  disposition: Part divider.
+  sha256: 0cee57e017c87071d760749945540ad46388d2fc855bb19cea1dc4ae4df9541f
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/026-chapter-15-what-is-architecture.md
+  title: 'Chapter 15: What Is Architecture?'
+  disposition: Development/deployment/operation/maintenance drivers; option preservation; policy/detail separation; team-size
+    context.
+  sha256: 2ed1b27f4f111a96621d6608e77c8da5cb75e30c56417c9c70742273b3b9fec1
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/027-chapter-16-independence.md
+  title: 'Chapter 16: Independence'
+  disposition: Use-case separation; decoupling modes; deployment versus source boundaries; duplication nuance.
+  sha256: 039317ae96a1cc890edc1090dc734d6a3a43b5abe4b36cd265fbd66f25c5d3d6
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/028-chapter-17-boundaries-drawing-lines.md
+  title: 'Chapter 17: Boundaries: Drawing Lines'
+  disposition: Boundary timing, plugin direction, policy versus volatile detail, delayed commitment.
+  sha256: 21c742f73b2de0d725da76ca570d152f041bd0056ad81af4102842aa6f4107b1
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/029-chapter-18-boundary-anatomy.md
+  title: 'Chapter 18: Boundary Anatomy'
+  disposition: In-process, component, thread, process, and service boundary costs.
+  sha256: f9ebc9f40136a72deee20890a38640ba47c459ed55268c0e066ab660fef701f9
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/030-chapter-19-policy-and-level.md
+  title: 'Chapter 19: Policy and Level'
+  disposition: Policy level as distance from inputs/outputs, not source placement.
+  sha256: 9b9e7ccd3cbe9096a630d8f4022257bd21c1474ea240bc65d9bb1cd3d47680e6
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/031-chapter-20-business-rules.md
+  title: 'Chapter 20: Business Rules'
+  disposition: Entity and use-case rules; request/response models; business-policy isolation.
+  sha256: d71dbbc8d6ca88910a89169cdc01b58a94dda6516904d46458fbee12d6a4e1f8
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/032-chapter-21-screaming-architecture.md
+  title: 'Chapter 21: Screaming Architecture'
+  disposition: Repository structure should reveal purpose; frameworks are tools; testability.
+  sha256: 318a4a0389e0be6ebb5176aeb01fb0ebb6d66b450a99d1dc0a545f90bfc68c0f
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/033-chapter-22-the-clean-architecture.md
+  title: 'Chapter 22: The Clean Architecture'
+  disposition: Policy/detail layers, inward dependency rule, adapters, boundary data forms.
+  sha256: bc1d4951434279164f84f3b2845b966f0a8be1021f5289cb44d5eae519192017
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/034-chapter-23-presenters-and-humble-objects.md
+  title: 'Chapter 23: Presenters and Humble Objects'
+  disposition: Separate hard-to-test adapters from testable policy; gateways, mappers, listeners.
+  sha256: 0f8f53fc6d5048ac607ddf232bf8393207f65cfa413348d2f992dd69c07e6eba
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/035-chapter-24-partial-boundaries.md
+  title: 'Chapter 24: Partial Boundaries'
+  disposition: Full-boundary cost, partial placeholders, erosion risk, facade and one-way trade-offs.
+  sha256: 6eb49a3959f8f83329af80fb0e4cbcf143914c1f53c02751a90b4b84b23a283d
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/036-chapter-25-layers-and-boundaries.md
+  title: 'Chapter 25: Layers and Boundaries'
+  disposition: Multiple change axes, boundary inflection point, YAGNI tension, continuous watchfulness.
+  sha256: 415fd1173736247f84b8b62e0afe083191c1f8e808952e005ce81e4ff85f7888
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/037-chapter-26-the-main-component.md
+  title: 'Chapter 26: The Main Component'
+  disposition: Composition root; framework and configuration containment.
+  sha256: f9db908e54e67d6a7c1f4b91244442d165da4f7827e7d40dce75d8ad3c877ca5
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/038-chapter-27-services-great-and-small.md
+  title: 'Chapter 27: Services: Great and Small'
+  disposition: Service decoupling fallacies; cross-cutting change; component boundaries can remain in-process.
+  sha256: 1d2f307d1d096735df421328372ad90093d5958159aa6a964cdf2cd5871168c3
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/039-chapter-28-the-test-boundary.md
+  title: 'Chapter 28: The Test Boundary'
+  disposition: Tests as clients/components; structural coupling; stable testing API and security concern.
+  sha256: 337aadc6f4204d82b1d09a094048cd2e72424a9c03460b6779176a35d1c4cd1b
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/040-chapter-29-clean-embedded-architecture.md
+  title: 'Chapter 29: Clean Embedded Architecture'
+  disposition: Hardware/OS isolation, HAL, target-independent testability, conditional compilation control.
+  sha256: 06bd36c12b58387712a79e7feefeb7e958ef4491345d7385f5c880d4e391b401
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/041-vi-details.md
+  title: 'Part VI: Details'
+  disposition: Part divider.
+  sha256: a48188beb16efe46172ec06eb044c9520a2d9905689e4c29747ba373e735e196
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/042-chapter-30-the-database-is-a-detail.md
+  title: 'Chapter 30: The Database Is a Detail'
+  disposition: Persistence technology versus data model; overbroad advocacy caveat; performance exceptions.
+  sha256: d06a84fff5421be9d6de9c43aa0ba0bae1f09441b92afea82d9f8611424d6c16
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/043-chapter-31-the-web-is-a-detail.md
+  title: 'Chapter 31: The Web Is a Detail'
+  disposition: Delivery mechanism volatility; UI boundary.
+  sha256: 8338536eced974e5ea962c31acfb45b60e9cbadd66bbe5d506222c958559b2b7
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/044-chapter-32-frameworks-are-details.md
+  title: 'Chapter 32: Frameworks Are Details'
+  disposition: Framework lock-in, asymmetric commitment, isolate and defer adoption.
+  sha256: 1ef0699fc6b92b3dee3c7e26e686bd83e2aadd0f41d1e9df881ffc022c791ce0
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/045-chapter-33-case-study-video-sales.md
+  title: 'Chapter 33: Case Study: Video Sales'
+  disposition: Use-case analysis, component grouping, dependency management example.
+  sha256: a3ecb2efeb9470a00b2374908a569ce1728fdb6ba767832e5388df96ebf7039b
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/046-chapter-34-the-missing-chapter.md
+  title: 'Chapter 34: The Missing Chapter'
+  disposition: Package by layer/feature/component; compile-time enforcement; access control; implementation must realize diagrams.
+  sha256: f9b5c7325ce552f18a8ae26de0a64d61e549b1f0e7229c06eb30714874fa0b73
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/047-vii-appendix.md
+  title: 'Appendix A: Architecture Archaeology'
+  disposition: Longitudinal anecdotes; overarchitecture failure; premature reusable framework failure; boundaries under old
+    technologies.
+  sha256: a083f54a30c3c5ee0f9b10cb9406ab539a4278226a57483ba4b7e6fe8bf3228b
+- source_id: SRC-CA
+  chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/048-index.md
+  title: Index
+  disposition: Retrieval aid only; no independent doctrine.
+  sha256: a8fa9c66c55df18bdc2c4d3dc63a721b1007b50873f09e5505ac8c637c8f1bac
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/001-complete.md
+  title: Complete
+  disposition: Cover, edition, copyright, endorsements, and high-level contents; publication context only.
+  sha256: a3d6d7fa69028eacaa2094c436394a17df66b292da92990f164d0c2524f94155
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/002-table-of-contents.md
+  title: Table of Contents
+  disposition: Navigation and chapter/heading cross-check; no independent doctrine.
+  sha256: 5e3b6a84a5d2fd39a38cc8174eeab258463d8ea3e48d25524cfed04344373170
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/003-preface.md
+  title: Preface
+  disposition: Construction scope, audience, evidence/experience basis, balanced-practice intent, and limits of a construction-focused
+    source.
+  sha256: 9a6b38b9a37fcfce15a0a003d7bded25b32788788a15fa7e20bf19bcd7406921
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/004-acknowledgments.md
+  title: Acknowledgments
+  disposition: Reviewer and practitioner provenance; no independent doctrine.
+  sha256: ac1363b40bb62ae523166e355ac32c14d694f10cc4f5166bb8cc01265ba69247
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/005-part-i-laying-the-foundation.md
+  title: 'Part I: Laying the Foundation'
+  disposition: Part divider and navigation only.
+  sha256: e884cf414871933427eb5f5f7a29e941c81bd94b3a552e8b3ac7316edcde5c29
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/006-chapter-1-welcome-to-software-construction.md
+  title: 'Chapter 1: Welcome to Software Construction'
+  disposition: Construction as detailed design, coding, debugging, developer testing, review, and integration; source code
+    as an important operational description.
+  sha256: 116a632252f762c7eec938a768b0012d0f66fe7ecf511a8ef49e7634536c6d4c
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/007-chapter-2-metaphors-for-a-richer-understanding-of-software-development.md
+  title: 'Chapter 2: Metaphors for a Richer Understanding of Software Development'
+  disposition: Models as fallible heuristics; construction, growth, and accretion metaphors; select and combine models without
+    overextending them.
+  sha256: 6439c71214420891c70de92800b02fe95a6003712f41fba3e48425dffe28946c
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/008-chapter-3-measure-twice-cut-once-upstream-prerequisites.md
+  title: 'Chapter 3: Measure Twice, Cut Once: Upstream Prerequisites'
+  disposition: Problem/requirement/architecture readiness, iterative versus sequential context, risks, error/security/performance/scalability
+    policies, feasibility, buy/build/reuse, and change strategy.
+  sha256: 4785f94f9314f9e4e8b998f1f072b98132fc2ec375af1c469099a23c68ed90f2
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/009-chapter-4-key-construction-decisions.md
+  title: 'Chapter 4: Key Construction Decisions'
+  disposition: Language strengths/limits, repository conventions, technology maturity, programming into a language, construction-practice
+    selection, tooling and integration policy.
+  sha256: 437e3ed5e7d435aa5bc55bb39580b644d32827b0fe88e1f9976666a439ca7996
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/010-part-ii-creating-high-quality-code.md
+  title: 'Part II: Creating High-Quality Code'
+  disposition: Part divider and navigation only.
+  sha256: 393d16faf12f1d1d11cda101eb7ccf58202d17c7ddac42dc9872f81f42afd7df
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/011-chapter-5-design-in-construction.md
+  title: 'Chapter 5: Design in Construction'
+  disposition: Complexity management, heuristic/iterative design, information hiding, coupling/cohesion, change isolation,
+    contracts, testability, alternatives, prototyping, and proportionate design records.
+  sha256: f8f1234c12859b22852e997bf356b9e099868fc25c18924d7c554f77181d404c
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/012-chapter-6-working-classes.md
+  title: 'Chapter 6: Working Classes'
+  disposition: ADTs, class abstraction and encapsulation, containment versus inheritance, constructor validity, class creation/avoidance,
+    packages, and interface quality.
+  sha256: f24612e3a3fd720c18568c8c92f15f3b5c5a70cc4fb2d8d55db2c345d994ec32
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/013-chapter-7-high-quality-routines.md
+  title: 'Chapter 7: High-Quality Routines'
+  disposition: Reasons to extract, functional cohesion, naming and side effects, routine length evidence, parameter contracts,
+    functions/procedures, macro and inline hazards.
+  sha256: 6c419ec292b40b4f4c6239ccfd6abe952e7e8373106214c5db8721a6db49e35e
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/014-chapter-8-defensive-programming.md
+  title: 'Chapter 8: Defensive Programming'
+  disposition: Invalid-input containment, assertions, error policy, robustness/correctness trade-off, exceptions, trust boundaries,
+    debug aids, and production hardening.
+  sha256: ca15bab508ce9319de261cbd652e31a06341e80f87877b8ff94c192af9976b7b
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/015-chapter-9-the-pseudocode-programming-process.md
+  title: 'Chapter 9: The Pseudocode Programming Process'
+  disposition: Intent-first routine design, iterative code translation, review, testing, cleanup, and alternatives; pseudocode
+    as a design probe rather than required notation.
+  sha256: 107f32faed547a87f7236c47cd5c80509415fcdc4ee6044baf49f2692e15e3f3
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/016-part-iii-variables.md
+  title: 'Part III: Variables'
+  disposition: Part divider and navigation only.
+  sha256: 1b5be3b7d2dd2cac91cb03eb24c6f52d1724128ac15439575b44d29336468541
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/017-chapter-10-general-issues-in-using-variables.md
+  title: 'Chapter 10: General Issues in Using Variables'
+  disposition: Data literacy, initialization, minimal scope/live time, persistence, binding time, data/control alignment,
+    and one-purpose variables.
+  sha256: cd7d8acd145e70b4c8eb109d2346104bfba1c597623ec26207ba4c1a5d287d14
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/018-chapter-11-the-power-of-variable-names.md
+  title: 'Chapter 11: The Power of Variable Names'
+  disposition: Problem-oriented naming, scope-sensitive length, semantic qualifiers/opposites, booleans/enums/constants, naming
+    conventions, abbreviations, and reader cost.
+  sha256: 9a8ac6f7d9f72602864adb5f672485303fcf1b499ecaaaea42b9290911030a5a
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/019-chapter-12-fundamental-data-types.md
+  title: 'Chapter 12: Fundamental Data Types'
+  disposition: Numeric bounds/precision, strings, booleans, enumerations, constants, arrays, and domain-specific types; examples
+    strongly language/era dependent.
+  sha256: 34bbd16eedbea2b01b4cb340f14e2531fb3dbe2d9f9301bb887de82b404ed405
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/020-chapter-13-unusual-data-types.md
+  title: 'Chapter 13: Unusual Data Types'
+  disposition: Structures, pointer representation/ownership hazards, global-data costs, access mediation, and containment
+    of unavoidable globals.
+  sha256: 10b2d4b24540c7c2d36ad6769d0ef661b0504745007efac05d7c38103fea768b
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/021-part-iv-statements.md
+  title: 'Part IV: Statements'
+  disposition: Part divider and navigation only.
+  sha256: 5a68295317b30a27f4651c98cb18693f0e91f988b72e98de2797c57047ebeb6c
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/022-chapter-14-organizing-straight-line-code.md
+  title: 'Chapter 14: Organizing Straight-Line Code'
+  disposition: Make ordering dependencies explicit; top-to-bottom flow; group semantically related statements.
+  sha256: bba08672d58353f23da59d02994e1e514849bd58d4f5d1ffc214e7a9eb777dab
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/023-chapter-15-using-conditionals.md
+  title: 'Chapter 15: Using Conditionals'
+  disposition: Nominal-path clarity, positive conditions, branch ordering, exhaustive/default handling, and choosing conditional
+    forms.
+  sha256: 1352060c217941c84eec363b2fb3728ee8d1b1099c540d40567f736b037c7301
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/024-chapter-16-controlling-loops.md
+  title: 'Chapter 16: Controlling Loops'
+  disposition: Loop-form selection, entry/exit invariants, early exits, endpoint correctness, one-purpose indexes, nesting,
+    and inside-out construction.
+  sha256: bde7680fcc684e4c7bef1f6a6b76e41b00e9f0f744e4100712d749698b7b57d9
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/025-chapter-17-unusual-control-structures.md
+  title: 'Chapter 17: Unusual Control Structures'
+  disposition: Multiple returns, recursion constraints, rare `goto` cases, cleanup/error-flow trade-offs, and control-flow
+    reviewability.
+  sha256: cbfc3cd7f2e77bee6cbfbb8a0413222d208b512ce6379e04d8d9b85e8fefd080
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/026-chapter-18-table-driven-methods.md
+  title: 'Chapter 18: Table-Driven Methods'
+  disposition: Replacing complicated logic with direct/indexed/stair-step tables, lookup-key design, configuration/data trade-offs,
+    and readability/performance conditions.
+  sha256: 3eb2595bee5d288822fb926177146e927e71615ff4257b7c083e12ce85257635
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/027-chapter-19-general-control-issues.md
+  title: 'Chapter 19: General Control Issues'
+  disposition: Boolean clarity, block/null-statement hazards, taming nesting, structured flow, decision complexity, and measurement
+    as a warning signal.
+  sha256: 3f8bfd88d941678e537bab7057d403163cdfa7f4c8e5121cce53cd5cc8a9bf0c
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/028-part-v-code-improvements.md
+  title: 'Part V: Code Improvements'
+  disposition: Part divider and navigation only.
+  sha256: a5b0da8398c9d8fceb9006b8376a6f9199e4e49d99ac01879b6ea3ac75a2f99b
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/029-chapter-20-the-software-quality-landscape.md
+  title: 'Chapter 20: The Software-Quality Landscape'
+  disposition: Quality attributes and trade-offs, explicit objectives, complementary prevention/detection methods, timing,
+    and cost-of-defect evidence.
+  sha256: 753d515c7a2433fb8b4788c94330b50cf5dfbb07a10e80197a7805d6196675d8
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/030-chapter-21-collaborative-construction.md
+  title: 'Chapter 21: Collaborative Construction'
+  disposition: Pairing, inspections, walkthroughs, code reading, role/checklist discipline, complementary defect detection,
+    and non-personal review.
+  sha256: b247552cb54a98d7719c9168202f67c998f673931810c893b3bf2550aa382cc1
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/031-chapter-22-developer-testing.md
+  title: 'Chapter 22: Developer Testing'
+  disposition: Test-first/last trade-off, basis/data-flow/boundary/equivalence testing, good/bad data, error clustering, scaffolding,
+    automation, coverage, and records.
+  sha256: e7b5db54ad1dc6563b5e5852b01f8ee17084e5d2d2a85200844e1fc5b596afba
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/032-chapter-23-debugging.md
+  title: 'Chapter 23: Debugging'
+  disposition: Scientific hypothesis loop, stabilization, localization, root-cause repair, sibling search, psychological traps,
+    warnings, tools, and regression protection.
+  sha256: 8733bc17620fd6fd8a7a427eeabaf2510e70fbd8ea3d2f1c89d475a1df8807da
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/033-chapter-24-refactoring.md
+  title: 'Chapter 24: Refactoring'
+  disposition: Evolution pressures, smells as candidate signals, behavior preservation, reasons not to refactor, transformation
+    catalog, small verified steps, and bad timing.
+  sha256: 82a17c74fe10c8b836ad7d0ae8cfad0fb271957fb8c86a8bd70d3c283b48ded1
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/034-chapter-25-code-tuning-strategies.md
+  title: 'Chapter 25: Code-Tuning Strategies'
+  disposition: Performance requirements, architecture/algorithm primacy, profiling, hotspots, baseline/measurement precision,
+    iteration, and clean-code preservation.
+  sha256: 29b2692115b19e7e33e0694a17ec5cb0ca3640eeee1183c50ad98af12c639da2
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/035-chapter-26-code-tuning-techniques.md
+  title: 'Chapter 26: Code-Tuning Techniques'
+  disposition: Logic/loop/data/expression/routine/low-level transformations; every result is environment-specific and requires
+    measurement and semantic safeguards.
+  sha256: 56bd2a3204c8f115f0376af341001be00ec125fb822ed62ce8e13c0c7b54cd93
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/036-part-vi-system-considerations.md
+  title: 'Part VI: System Considerations'
+  disposition: Part divider and navigation only.
+  sha256: 6ceb30aa448f2335961d2d994d55a96fa5f90564d1b0ff65666c615df644e5d5
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/037-chapter-27-how-program-size-affects-construction.md
+  title: 'Chapter 27: How Program Size Affects Construction'
+  disposition: Communication paths, defect/productivity effects, activity mix, and process formality scaled to project size.
+  sha256: c5f4a91a4347ba4a435e29f4b70b7300e09c6da223376be341d2962af47dcc33
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/038-chapter-28-managing-construction.md
+  title: 'Chapter 28: Managing Construction'
+  disposition: Standards calibration, configuration/change control, version/environment records, estimates, measurement, human
+    variation, and authority/management context.
+  sha256: 04cae7a7d5bca4eaa380b14e02ef9790449b3cc1b2ad0888461c073b1bd8c0e4
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/039-chapter-29-integration.md
+  title: 'Chapter 29: Integration'
+  disposition: Incremental versus big-bang integration, risk/feature/top-down/bottom-up strategies, daily build/smoke test,
+    and continuous integration.
+  sha256: 70911e5dc4bf5b2883f8b3bb9d3919421fb49f15bb73cb1498ed362a2b3ad168
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/040-chapter-30-programming-tools.md
+  title: 'Chapter 30: Programming Tools'
+  disposition: Search/diff/analysis/refactoring/VCS/build/debug/test/profile/automation tools; tools amplify reasoning but
+    do not replace it.
+  sha256: d2832c8ec244c9816e1315e5391c6b02241d2cb5579ecac1b2b7fc731a16830b
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/041-part-vii-software-craftsmanship.md
+  title: 'Part VII: Software Craftsmanship'
+  disposition: Part divider and navigation only.
+  sha256: b151c274ef80411558113604413552bf467ef3fe09280cbaa5f61930684f916e
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/042-chapter-31-layout-and-style.md
+  title: 'Chapter 31: Layout and Style'
+  disposition: Logical/consistent formatting, whitespace and block visibility, statement/comment/class/file organization,
+    convention over aesthetic argument.
+  sha256: c71a96597c1bf716c8055e13f2bfaf825d3e4f503a6733a07769d4df0d43dd62
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/043-chapter-32-self-documenting-code.md
+  title: 'Chapter 32: Self-Documenting Code'
+  disposition: Code structure as documentation, when comments add non-code information, intent/rationale/contract comments,
+    maintenance proximity, and external documents.
+  sha256: d3dedb1d07dc3617b798238cd71fd9bb865771bf5910aa9457d2371f42944abf
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/044-chapter-33-personal-character.md
+  title: 'Chapter 33: Personal Character'
+  disposition: Intellectual humility/honesty, curiosity, cooperation, discipline, habits, and willingness to seek evidence;
+    conduct evidence is practitioner-oriented.
+  sha256: 7a9c248a597b9cf140088e4448484dbb7b20aa65816fd75840e6dac120901cd4
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/045-chapter-34-themes-in-software-craftsmanship.md
+  title: 'Chapter 34: Themes in Software Craftsmanship'
+  disposition: Complexity, process selection, human readers, programming into languages, conventions, domain-level expression,
+    warning signs, iteration, experimentation, and anti-dogmatism.
+  sha256: e76e5ef9273c9399e6e3239b7ebd8a660c4070d9005a44c2844b740b88ebc901
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/046-chapter-35-where-to-find-more-information.md
+  title: 'Chapter 35: Where to Find More Information'
+  disposition: Reading plan, source categories, periodicals, and professional learning; dated bibliography routes, no independent
+    implementation rule.
+  sha256: 230d38a55602d9aecee420cb308709f40972625fbeb20420144597c89280ee5b
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/047-bibliography.md
+  title: Bibliography
+  disposition: Citation provenance and historical evidence routes; no independent doctrine.
+  sha256: f9b0da262cc0912d7d3f26c497ed25597e4d70c69de8c335f0af4d8c12641389
+- source_id: SRC-CC
+  chapter_path: books/code-complete-2nd-edition-v413hav/chapters/048-index.md
+  title: Index
+  disposition: Retrieval aid and topic cross-check; no independent doctrine.
+  sha256: bc0d7b64f86f506bfb6503eb8c69a513a17f0de5d69abd02a29c4396d09b8e43
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/001-cover-page.md
+  title: Cover Page
+  disposition: Publication-only.
+  sha256: 4d56db39a0548c07902992a35ca9853f26857543a879f5c3827aba10b3291527
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/002-title-page.md
+  title: Title Page
+  disposition: Edition/title metadata; publication-only.
+  sha256: fdfbdbfa7134c510b01f1de3a44ed6971368d0220330161da01a8dde3f81f270
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/003-copyright.md
+  title: Copyright
+  disposition: Second-edition date and publication context; no doctrine.
+  sha256: 976561456edbd80f47bffde01e4f0bb1188bfaf327e45f990e0fcb8eba191e13
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/004-contents.md
+  title: Contents
+  disposition: Navigation and chapter cross-check.
+  sha256: 10beeab402c71e95a0f639da753259f99570f8ee35ed11d3ceb429f2eb6e8e03
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/005-preface.md
+  title: Preface
+  disposition: Design philosophy scope, teaching/practitioner basis, and explicit non-exhaustiveness.
+  sha256: 861d924261da54f6095f8e97fb9b30be33a03a845677583167e2dbb95a4d4bda
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/006-1-introduction.md
+  title: '1: Introduction'
+  disposition: Complexity as central design problem, strategic investment, and iterative design framing.
+  sha256: dd94360bb6d4e6edbe677a2935f6907cc150fd8c2c80d8ef4009bf6b969c5854
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/007-2-the-nature-of-complexity.md
+  title: '2: The Nature of Complexity'
+  disposition: Change amplification, cognitive load, unknown unknowns, dependency/obscurity causes, reader frequency weighting.
+  sha256: 9a566946ede28f8b2af4ffb42e540613c4cf5b2521d84003c302798cb1c7f636
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/008-3-working-code-isnt-enough.md
+  title: '3: Working Code Isn’t Enough'
+  disposition: Strategic versus tactical implementation, continuous design investment, and explicitly opinion-based payback
+    estimates.
+  sha256: b0d12f2c43878df8ec5fd962c1de0240a3938c32b1568100ed35a7f41ba1d82a
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/009-4-modules-should-be-deep.md
+  title: '4: Modules Should Be Deep'
+  disposition: Interface cost versus hidden functionality, common-case simplicity, shallow-module warning, and examples/counterexamples.
+  sha256: c25475b1001289079b8a71ee08b1100e27c82b1a1746e1976b19650a0263b22f
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/010-5-information-hiding-and-leakage.md
+  title: '5: Information Hiding (and Leakage)'
+  disposition: Hide design decisions, detect duplicated knowledge, avoid temporal decomposition, expose user-needed facts,
+    and distinguish privacy from hiding.
+  sha256: b542a9936a2162c9c62ef5b5e6ec3e4f4a6ede9f5f6778420a747464b7516d27
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/011-6-general-purpose-modules-are-deeper.md
+  title: '6: General-Purpose Modules are Deeper'
+  disposition: Current-needs generality, clean mechanisms, specialized layers, simpler APIs, and overgeneralization constraints.
+  sha256: b13bac145f946a42eb621dc7b2f70ec86d8c732daa49af43551cd0731a4c88a0
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/012-7-different-layer-different-abstraction.md
+  title: '7: Different Layer, Different Abstraction'
+  disposition: Pass-through warning, dispatcher/implementation/adapter exceptions, decorator and configuration costs, context-object
+    trade-offs.
+  sha256: 990bdfb2d027356a2b84e90e330cd4086acc45c40fb58751e120022889e693ef
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/013-8-pull-complexity-downwards.md
+  title: '8: Pull Complexity Downwards'
+  disposition: Let modules absorb related complexity to simplify callers; avoid pulling unrelated policy into a module.
+  sha256: b1bcd051f82458e5de1f5f0c3e1398565889359ab53131969fe39187ff63816b
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/014-9-better-together-or-better-apart.md
+  title: '9: Better Together Or Better Apart?'
+  disposition: Shared knowledge/use/concept criteria, interface and duplication costs, clean subtask extraction, method-length
+    disagreement.
+  sha256: 353faa902ea23d0b1e94555f2be2958596c4a82ae816296dcc7cd4cc2f0756e5
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/015-10-define-errors-out-of-existence.md
+  title: '10: Define Errors Out Of Existence'
+  disposition: Reduce exception sites by semantics, masking, aggregation, or crash in bounded contexts; preserve meaningful
+    environmental/durability failures.
+  sha256: 6daae2dfc33ecb96d83e16664ea39f0abc46747392deb3216c5e058f641a77fc
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/016-11-design-it-twice.md
+  title: '11: Design it Twice'
+  disposition: Generate substantially different designs; compare caller ease, interface, generality, performance, and implementation
+    cost.
+  sha256: b7b6bf5fd97701d368c1316e8b036468232dda4343ce6b0bcf9f474222838082
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/017-12-why-write-comments-the-four-excuses.md
+  title: '12: Why Write Comments? The Four Excuses'
+  disposition: Comments as design/abstraction information, critique of comments-as-failure, and rebuttals to common objections.
+  sha256: f34d54dbe469519b1ad2e12ed3a74998f631a6a6acf2d86a9a3810c9a7b2dac6
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/018-13-comments-should-describe-things-that-arent-obvious-from-the-code.md
+  title: '13: Comments Should Describe Things that Aren’t Obvious from the Code'
+  disposition: Informal contracts, rationale, invariants, ownership, units, side effects, higher/lower-level commentary, and
+    cross-module design records.
+  sha256: 95b5249f2a4e5a535ce24bdb4501a43b0a26ea46e95bc8de8a3ac9decb205251
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/019-14-choosing-names.md
+  title: '14: Choosing Names'
+  disposition: Precise mental images, semantic consistency, scope, typed/domain distinctions, hard-to-name design signal,
+    and Go-style naming tension.
+  sha256: 4b5a13f438de6c966349c1124d2b5f14e69d336147625f856bb2cd8059fa7e13
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/020-15-write-the-comments-first.md
+  title: '15: Write The Comments First'
+  disposition: Interface/implementation comments as a pre-code design probe; contextual practice, not an invariant workflow.
+  sha256: 426723488062a678c86176ac06ffb530cb6ecf9943fbd7461587befa24aa9078
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/021-16-modifying-existing-code.md
+  title: '16: Modifying Existing Code'
+  disposition: Strategic improvement while changing, preserving design quality, resisting tactical patches, and bounding cleanups.
+  sha256: 69e90c77f36a5e350696c4416eaa31cd9f4043b32901d1eabdb6bab6eb0356d8
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/022-17-consistency.md
+  title: '17: Consistency'
+  disposition: Cognitive leverage from conventions, documentation/automation/review, repository conformity, and thresholds
+    for changing convention.
+  sha256: 235c98044a8a5775f74809d86725bcfbdce377c0d1201546f48023f8ca50c66d
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/023-18-code-should-be-obvious.md
+  title: '18: Code Should be Obvious'
+  disposition: Reader-tested obviousness, event invocation context, semantic containers, whitespace/comments/names, and reading-over-writing
+    priority.
+  sha256: aaa7069ecb7cea26500b2db279027a9c404b8c5eb2661d88c125a8c464d435e2
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/024-19-software-trends.md
+  title: '19: Software Trends'
+  disposition: Interface versus implementation inheritance, composition, agile/TDD tensions, pattern restraint, and accessor
+    skepticism.
+  sha256: 1287e2da437f322d1fd26ecf280e7a2a18a7f0a135b3f825f00922399c18c565
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/025-20-designing-for-performance.md
+  title: '20: Designing for Performance'
+  disposition: Naturally efficient design, baseline/profiling/microbenchmarks, algorithm/architecture first, critical-path
+    isolation, and remove unproven optimizations.
+  sha256: 1724c308f131126b50fb3b96f854103f9871015df7aace46c1b2d6690950edea
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/026-21-decide-what-matters.md
+  title: '21: Decide What Matters'
+  disposition: Identify externally important constraints, minimize important concepts/locations, expose what matters and hide
+    the rest.
+  sha256: 1c476866a4bb4919811f5f175dfe5eafb201d4b6379327286b9e05ab2fb330c2
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/027-22-conclusion.md
+  title: '22: Conclusion'
+  disposition: Consolidated design principles and red flags; summary does not add independent support.
+  sha256: 1a3445253358c1ca463515ba0ffd69cf6ff7035e09e56036674d671b2fdc1baf
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/028-index.md
+  title: Index
+  disposition: Retrieval aid only.
+  sha256: c2055445d05645092e5acac82360828d08682dba2e726caf259b55e2700bc9a2
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/029-summary-of-design-principles.md
+  title: Summary of Design Principles
+  disposition: Canonical author summary and cross-check; repetitions do not add independent evidence.
+  sha256: d7a19272f5e5ecb64b48e94ce43888dbaf42fd8e8962482966fb5562b74cf49c
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/030-summary-of-red-flags.md
+  title: Summary of Red Flags
+  disposition: Author's diagnostic signals; signals are hypotheses, not automatic verdicts.
+  sha256: c1cd594191576df311311f2cb13cc4716772e8d82be795f1dd7161f0141325a5
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/031-about-the-author.md
+  title: About the Author
+  disposition: Author/research/teaching context and potential source bias.
+  sha256: 7a3c8b1f5b868386fd89608dba1f4da186d62514a9c5db165698b1dda8133c16
+- source_id: SRC-APOSD
+  chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/032-back-cover.md
+  title: Back Cover
+  disposition: Promotional synopsis and endorsements; not evidence.
+  sha256: eca2e9ad46052c0741b2f90dccdd107afa359d707312abef8338d489911a51b4
+- source_id: SRC-SDX
+  chapter_path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/001-software-design-x-rays.md
+  title: Software Design X-Rays
+  disposition: Publication/title context and endorsements only.
+  sha256: 6fb2e34b8f015c6b2aa4278950b5034253a7560f6ad841674e8ff7f785a75a6d
+- source_id: SRC-SDX
+  chapter_path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/002-contents.md
+  title: Contents
+  disposition: Navigation and chapter-boundary cross-check.
+  sha256: 78d5c89768b27217559c764e2c3965a77028ed6c7c66eb8a95f82dc9b3d59f60
+- source_id: SRC-SDX
+  chapter_path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/003-acknowledgments.md
+  title: Acknowledgments
+  disposition: Publication context only.
+  sha256: de6c19c7c812880427054a80453bf677bcc840b23e98c040d90c321343a91f02
+- source_id: SRC-SDX
+  chapter_path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/004-the-world-of-behavioral-code-analysis.md
+  title: The World of Behavioral Code Analysis
+  disposition: Version-control-as-behavioral evidence, prioritization purpose, examples, and practitioner scope.
+  sha256: 6842bf4222992e5610496acf3b3864aff926aa66e73e3ac73564fb7af17dea11
+- source_id: SRC-SDX
+  chapter_path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/005-part-i-prioritize-and-react-to-technical-debt.md
+  title: 'Part I: Prioritize and React to Technical Debt'
+  disposition: Part divider.
+  sha256: 40b209beead3a15a90078ab8ac15329c0e233fbf657ce4e2692f87b2f3cdd1a1
+- source_id: SRC-SDX
+  chapter_path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/006-chapter-1-why-technical-debt-isn-t-technical.md
+  title: 'Chapter 1: Why Technical Debt Isn''t Technical'
+  disposition: Debt as time/context/business cost; decision logs; organizational causes; cognitive load; contextual metrics.
+  sha256: 75f84326008c9dba4d555fad85d3b30843c957cf7d0c305641301f2d80e4f19a
+- source_id: SRC-SDX
+  chapter_path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/007-chapter-2-identify-code-with-high-interest-rates.md
+  title: 'Chapter 2: Identify Code with High Interest Rates'
+  disposition: Hotspots from change frequency plus rough complexity; trends and X-rays; prioritization, not verdict.
+  sha256: 2d632e4835b25f8cb51eed6939a1fac16a62af81289fa2ab91594c5b4f1a4a8c
+- source_id: SRC-SDX
+  chapter_path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/008-chapter-3-coupling-in-time-a-heuristic-for-the-concept-of-surprise.md
+  title: 'Chapter 3: Coupling in Time: A Heuristic for the Concept of Surprise'
+  disposition: Co-change, thresholds, surprising dependencies, test code, clone prioritization, polyglot analysis.
+  sha256: a083f569b344969c297c2f45ef08f8e59c7196982ecbd263a3180f40ce31c39f
+- source_id: SRC-SDX
+  chapter_path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/009-chapter-4-pay-off-your-technical-debt.md
+  title: 'Chapter 4: Pay Off Your Technical Debt'
+  disposition: Proximity, splinter campaigns, congestion, temporary protection, deletion hypotheses, cognitive chunks.
+  sha256: 832e4cd9b3b325bb68b2e26823789e8b88c40cd725fa2dbba40ad948d0fc91f3
+- source_id: SRC-SDX
+  chapter_path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/010-chapter-5-the-principles-of-code-age.md
+  title: 'Chapter 5: The Principles of Code Age'
+  disposition: Code-age heuristics, stable/active regions, domain precedence, package evolution, dead code caveat.
+  sha256: 76721df334c561cc3ecb02c2e4e31bf04ee5eb2613863ebf5df75fcad5830482
+- source_id: SRC-SDX
+  chapter_path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/011-part-ii-work-with-large-codebases-and-organizations.md
+  title: 'Part II: Work with Large Codebases and Organizations'
+  disposition: Part divider.
+  sha256: cbf5ffe5c5af3de0556a207f26030f026865d07dad8305a27c4013449c443fe1
+- source_id: SRC-SDX
+  chapter_path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/012-chapter-6-spot-your-system-s-tipping-point-is-software-too-hard-divide-and-conquer-with-architectural-hotspots-analyze-subsystems-fight-the-normalization-of-deviance-toward-team-oriented-measures-exercises.md
+  title: 'Chapter 6: Spot Your System''s Tipping Point…'
+  disposition: Logical components, subsystem drill-down, function hotspots, complexity trends, normalization of deviance,
+    team-scoped analysis.
+  sha256: cc523f6fe024bfe96d68ecd7731955848c45eeade796f82ddb62e22c05e26268
+- source_id: SRC-SDX
+  chapter_path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/013-chapter-7-beyond-conway-s-law.md
+  title: 'Chapter 7: Beyond Conway''s Law'
+  disposition: Coordination/diffusion, ownership, operational versus knowledge boundaries, organizational bias, non-performance
+    use.
+  sha256: 1021fc694f9546dda847811703ebb626e9023ea1a4b5168cc84e8a9cfcf4db36
+- source_id: SRC-SDX
+  chapter_path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/014-chapter-8-toward-modular-monoliths-through-the-social-view-of-code.md
+  title: 'Chapter 8: Toward Modular Monoliths through the Social View of Code'
+  disposition: Rewrite risk, layered change cost, component/feature alternatives, deletion test, bounded-context candidates,
+    team alignment.
+  sha256: c24ef9934bfbc76d7b13aabf3bb96b7ffcd80f0b2cc78c377507f81698b0f795
+- source_id: SRC-SDX
+  chapter_path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/015-chapter-9-systems-of-systems-analyzing-multiple-repositories-and-microservices.md
+  title: 'Chapter 9: Systems of Systems: Analyzing Multiple Repositories and Microservices'
+  disposition: Multi-repository evidence, distributed coupling, architectural shotgun surgery, sociotechnical fit, technical
+    sprawl.
+  sha256: 9594e13dd220ce2afd3c1e1a6370d494c653a27edefe5b82fd4de8a7ae02cfa5
+- source_id: SRC-SDX
+  chapter_path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/016-chapter-10-an-extra-team-member-predictive-and-proactive-analyses.md
+  title: 'Chapter 10: An Extra Team Member: Predictive and Proactive Analyses'
+  disposition: Early warnings, relative trends, rising hotspots, omission prompts, knowledge loss, data biases and workarounds.
+  sha256: fe88dd040024db11948c4695645012def811098cc882b63b085c472600fc11e9
+- source_id: SRC-SDX
+  chapter_path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/017-appendix-a1-the-hazards-of-productivity-and-performance-metrics.md
+  title: 'Appendix A1: The Hazards of Productivity and Performance Metrics'
+  disposition: Goodhart effects, invisible context, ethics/legal context, and prohibition on individual performance scoring.
+  sha256: 39bd1a1dc476c2819bc2273b130b4d2317cc967acf92b26f4991e11148ea047f
+- source_id: SRC-SDX
+  chapter_path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/018-appendix-a2-code-maat-an-open-source-analysis-engine.md
+  title: 'Appendix A2: Code Maat: An Open Source Analysis Engine'
+  disposition: Historical tooling and data-transformation mechanics.
+  sha256: ce69e42cf7a09b41baff151c1ae17648b0160f631af1d261d37cf93018e7020d
+- source_id: SRC-SDX
+  chapter_path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/019-appendix-a3-data-mining-with-git-cloc-and-codescene.md
+  title: 'Appendix A3: Data Mining with Git, cloc, and CodeScene'
+  disposition: Git/cloc command mechanics, cleaning, scope, and historical tool-version caveats.
+  sha256: a1d76cce0b90cd6ada4a647e72a4fce0e008dcfb93e6d1c1d5d624c9277f2450
+- source_id: SRC-SDX
+  chapter_path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/020-appendix-a4-hints-and-solutions-to-the-exercises.md
+  title: 'Appendix A4: Hints and Solutions to the Exercises'
+  disposition: Case-study answers; reinforces alternatives and manual validation.
+  sha256: 9db9113f3f22673fa957c04d35014d6f61dc722d5419993747e3c5fb8068269e
+- source_id: SRC-SDX
+  chapter_path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/021-bibliography.md
+  title: Bibliography
+  disposition: Source trail only.
+  sha256: 47452d6bce88aba25d8bc006c48b75582491cb23b60144d008493b4c03e18e87
+- source_id: SRC-SDX
+  chapter_path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/022-index.md
+  title: Index
+  disposition: Retrieval aid; heavily flattened conversion with no independent doctrine.
+  sha256: aac894dfa97b8513dfccb908a58aca57feaede48996c7243796b73dbfa9ee465
+- source_id: SRC-DDD
+  chapter_path: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/001-domain-driven-dissign.md
+  title: Domain-Driven DISSIGN
+  disposition: Cover/title conversion; no independent doctrine.
+  sha256: d0b9b8597bf4b1f204a8c12eaee43ef8b8d28c27c0cf5dab959d9ed2b350ceb2
+- source_id: SRC-DDD
+  chapter_path: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/002-chapter-1-crunching-knowledge.md
+  title: 'Chapter 1: Crunching Knowledge'
+  disposition: Developer/expert learning loop, knowledge-rich models, prototype feedback, distillation.
+  sha256: 9f652e07e193d9b3c1fd3859b2756d6d7a4017576fb7c7c266d8c9380ba1d3bf
+- source_id: SRC-DDD
+  chapter_path: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/003-chapter-2-communication-and-the-use-of-language.md
+  title: 'Chapter 2: Communication and the Use of Language'
+  disposition: Ubiquitous language, model-aligned conversation/code/tests, documentation roles, explanatory models.
+  sha256: b37d39ae4fc56b77380b467aaa58566051579e9d5c9ded2212ee2b08577c6646
+- source_id: SRC-DDD
+  chapter_path: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/004-chapter-3-binding-model-and-implementation.md
+  title: 'Chapter 3: Binding Model and Implementation'
+  disposition: Model-driven design, paradigm/tool fit, user-model alignment, hands-on modelers.
+  sha256: 5f11aadc11ffb0a832ffa551710c705c527cddad6420e7806102e0866252fbb9
+- source_id: SRC-DDD
+  chapter_path: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/005-chapter-4-isolating-the-domain.md
+  title: 'Chapter 4: Isolating the Domain'
+  disposition: Domain-layer isolation, framework selectivity, Smart UI contraindication and simpler alternatives.
+  sha256: 936bb679d6c358f6ffce3b15cd2e15d091e819a58e4bc4f6bb711360fd7534c5
+- source_id: SRC-DDD
+  chapter_path: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/006-chapter-5-a-model-expressed-in-software.md
+  title: 'Chapter 5: A Model Expressed in Software'
+  disposition: Association constraints, entity/value/service/module decisions, technical packaging and paradigm mixing.
+  sha256: 1c8fc827fb11b48ac071aba598219ee353769e176ec74b750aed5dca7a33f696
+- source_id: SRC-DDD
+  chapter_path: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/007-chapter-6-the-life-cycle-of-a-domain-object.md
+  title: 'Chapter 6: The Life Cycle of a Domain Object'
+  disposition: Aggregate consistency boundaries, factories, repositories, transactions, relational compromise.
+  sha256: c6aa42e753389054d39e190cadb4afc21e6a7fa8406c41022e1fe2533a850f8a
+- source_id: SRC-DDD
+  chapter_path: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/008-chapter-7-using-the-language-an-extended-example.md
+  title: 'Chapter 7: Using the Language: An Extended Example'
+  disposition: Integrated modeling choices, scenarios, aggregates/repositories, external integration, performance trade-offs.
+  sha256: 4c0b96386c91890a2186e08a932f7d2eb588bafd11b799b667fcc7aabc7e7085
+- source_id: SRC-DDD
+  chapter_path: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/009-chapter-8-breakthrough.md
+  title: 'Chapter 8: Breakthrough'
+  disposition: Deep-model discontinuities, risk/benefit decision, broad refactoring under deadline.
+  sha256: 489d0ff6c1502f6b88b27f50e00c78c23fb5cbd5d5f1314969f7582f151c266d
+- source_id: SRC-DDD
+  chapter_path: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/010-epilogue-a-cascade-of-new-insights.md
+  title: 'Epilogue: A Cascade of New Insights'
+  disposition: One model breakthrough exposing further implicit concepts.
+  sha256: 5be64882e28a14e37697321c04016015e3f6b76748599bc83ed5e4034d219ff2
+- source_id: SRC-DDD
+  chapter_path: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/011-chapter-9-making-implicit-concepts-explicit.md
+  title: 'Chapter 9: Making Implicit Concepts Explicit'
+  disposition: Language/design awkwardness as evidence, constraints/process/specification objects, working prototypes.
+  sha256: 096f2febb835929d1ede8c22d6e07ca3e3efc1cf99f6b3812fcca22015ff9de9
+- source_id: SRC-DDD
+  chapter_path: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/012-chapter-10-supple-design.md
+  title: 'Chapter 10: Supple Design'
+  disposition: Intention-revealing interfaces, side-effect-free functions, assertions, contours, declarative design, restraint.
+  sha256: 12c10b907199dc6e29255122bd5f05246a13a201d9f569ef1117146fdde7d74c
+- source_id: SRC-DDD
+  chapter_path: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/013-chapter-11-applying-analysis-patterns.md
+  title: 'Chapter 11: Applying Analysis Patterns'
+  disposition: Prior models as starting evidence, not recipes; implementation feedback and compromise.
+  sha256: b6d34dffaed48049b2114d0b709f52d0c9a5576426ac67fd5b8ac480276001d6
+- source_id: SRC-DDD
+  chapter_path: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/014-chapter-12-relating-design-patterns-to-the-model.md
+  title: 'Chapter 12: Relating Design Patterns to the Model'
+  disposition: Strategy/policy and composite only when they express domain concepts; reject pattern-for-pattern's-sake.
+  sha256: 1454fc38e2267f4736c3834ca8dcba6a2e726aafbb263f1f6481e74bf94904a8
+- source_id: SRC-DDD
+  chapter_path: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/015-chapter-13-refactoring-toward-deeper-insight.md
+  title: 'Chapter 13: Refactoring Toward Deeper Insight'
+  disposition: Model-refactoring signals, exploration teams, domain validation, timing and release cautions.
+  sha256: cbdaab67d87640d7d0dc3dde359282a57f2f55dedc6e5af4aac4af6ed5d7aa90
+- source_id: SRC-DDD
+  chapter_path: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md
+  title: 'Chapter 14: Maintaining Model Integrity'
+  disposition: Bounded contexts, context maps, integration relationships, model-boundary tests, legacy migration.
+  sha256: 72d8d0560472caf4e7e41ecfac39a9e466b3273bea19e181d1200d22f542e614
+- source_id: SRC-DDD
+  chapter_path: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/017-chapter-15-distillation.md
+  title: 'Chapter 15: Distillation'
+  disposition: Core domain, generic subdomains, cohesive mechanisms, segregated/abstract core, refactoring priority.
+  sha256: 0ee93deb65ace0b30022dedb3c66969582d5682de1d43f855fe872b5be00839a
+- source_id: SRC-DDD
+  chapter_path: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/018-chapter-16-large-scale-structure.md
+  title: 'Chapter 16: Large-Scale Structure'
+  disposition: Evolving order, minimal structures, metaphors/layers/knowledge level/plugins, fit and discard conditions.
+  sha256: 9ec4dbf4a022c285e8c3cb1a543d5c95153a374e66b8616ea5210d51675a9c1a
+- source_id: SRC-DDD
+  chapter_path: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/019-chapter-17-bringing-the-strategy-together.md
+  title: 'Chapter 17: Bringing the Strategy Together'
+  disposition: Assessment-first strategy, feedback-driven architecture, minimalism/humility, avoid master plans.
+  sha256: ea04061f4a1ca3f5a0b03a632073047ea8f3b4f9be9328bcae08d8f2fd963c02
+- source_id: SRC-DDD
+  chapter_path: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/020-references.md
+  title: References
+  disposition: Bibliographic provenance; no independent doctrine.
+  sha256: 9eb19b07a6f9c71cef1e9816e79f485401e5af4f11f7110cdf8eda55cad397d5
+- source_id: SRC-EGO
+  chapter_path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/001-data-driven-performance-optimizations.md
+  title: Data-Driven Performance Optimizations
+  disposition: Title/publication metadata only.
+  sha256: 2d4224bed380bd7aaf6db6dc7fe6dbcb9f47fd308daa51fd5f1267d943865a45
+- source_id: SRC-EGO
+  chapter_path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/002-table-of-contents.md
+  title: Table of Contents
+  disposition: Navigation and chapter-boundary cross-check.
+  sha256: 886f4cad7e9f793666fc5b38d3afc030ba47c5f3d845f9031ee155d4fb60ce31
+- source_id: SRC-EGO
+  chapter_path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/003-preface.md
+  title: Preface
+  disposition: Data-driven scope; non-generalizability of optimizations; Go 1.18+ assumption; pedagogical omission of some
+    error handling.
+  sha256: f777a49ccf4ffea1a14927a4281d6a630396cb6c19b2c33530edbb3ebba8be7a
+- source_id: SRC-EGO
+  chapter_path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/004-acknowledgments.md
+  title: Acknowledgments
+  disposition: Publication context only.
+  sha256: 9349175715158397e21a127ab6ffe7f9c05ef7e60a8377c8ce2b05b2daaddb7a
+- source_id: SRC-EGO
+  chapter_path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/005-chapter-1-software-efficiency-matters.md
+  title: 'Chapter 1: Software Efficiency Matters'
+  disposition: Accuracy/speed/efficiency distinction; total cost; premature pessimization; scaling cost; doing less work;
+    readability tension.
+  sha256: 118ec59a377e29129778be1b4d9564fbe995acc5f830c08851f8c2e1148b8062
+- source_id: SRC-EGO
+  chapter_path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/006-chapter-2-efficient-introduction-to-go.md
+  title: 'Chapter 2: Efficient Introduction to Go'
+  disposition: Go simplicity; package/export/dependency discipline; explicit errors; composition/interfaces/generics; no blanket
+    speed claims.
+  sha256: d3d0fe906aa72a6f33fdceb76b142ba19e9978be1ed07cff6ddf97bff2f5e8ce
+- source_id: SRC-EGO
+  chapter_path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/007-chapter-3-conquering-efficiency.md
+  title: 'Chapter 3: Conquering Efficiency'
+  disposition: Reasonable versus deliberate optimization; Resource-Aware Efficiency Requirements; issue triage; TFBO loop;
+    design levels.
+  sha256: 21381fb21b49bc26be58bd795f3bbb8a47d842a89f702af18013cf61fed3bc05
+- source_id: SRC-EGO
+  chapter_path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/008-chapter-4-how-go-uses-the-cpu-resource-or-two.md
+  title: 'Chapter 4: How Go Uses the CPU Resource (or Two)'
+  disposition: Compiler/scheduler/cache behavior; simple hot paths; contiguous data; goroutine/channel costs; concurrency
+    as late optimization.
+  sha256: 8003df1627a563b0e1632ae756ed11ea5e93613fc063f736d18a30a3e7ffffe6
+- source_id: SRC-EGO
+  chapter_path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/009-chapter-5-how-go-uses-memory-resource.md
+  title: 'Chapter 5: How Go Uses Memory Resource'
+  disposition: VSS/RSS/heap distinction; paging; values/pointers/slices; allocation/escape/GC; `GOMEMLIMIT`; allocate-less-first
+    rule.
+  sha256: dd6838d6000f81e88a5f604fdadc5aab12ab40eff447141cf6d1916ad7cf2e6c
+- source_id: SRC-EGO
+  chapter_path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/010-chapter-6-efficiency-observability.md
+  title: 'Chapter 6: Efficiency Observability'
+  disposition: Signal selection; instrumentation cost; metric semantics/granularity; percentiles; cardinality; CPU/wall time;
+    heap/RSS/WSS.
+  sha256: 87d8863b6d75f966562d8ba05b537df18e02d99da0372adbc3c31dc17b546633
+- source_id: SRC-EGO
+  chapter_path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/011-chapter-7-data-driven-efficiency-assessment.md
+  title: 'Chapter 7: Data-Driven Efficiency Assessment'
+  disposition: Estimated and asymptotic complexity; constant factors; expected-versus-observed scaling; empirical verification.
+  sha256: ce8f3335d707758a189b96cdcf4789cb6ac8d8ff62800e263ca564032dc9b151
+- source_id: SRC-EGO
+  chapter_path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/012-chapter-8-benchmarking-versus-stress-and-load-tests.md
+  title: 'Chapter 8: Benchmarking Versus Stress and Load Tests'
+  disposition: Benchmark validity; versions/workloads/variance; production/macro/micro levels; Go benchmarks; compiler traps;
+    containerized macro tests.
+  sha256: c721c33c95c191f993fa5010ba29f8ba89d005c11d43d6e8fa56f4b21ce04213
+- source_id: SRC-EGO
+  chapter_path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/013-chapter-9-data-driven-bottleneck-analysis.md
+  title: 'Chapter 9: Data-Driven Bottleneck Analysis'
+  disposition: Root cause versus symptom; pprof semantics; sample uncertainty; flat/cumulative cost; heap/goroutine/CPU/off-CPU
+    profiles.
+  sha256: 27b0b1ba95c0e6fbd3004cf773433e967a627623389fae28c208f16665ff2f00
+- source_id: SRC-EGO
+  chapter_path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/014-chapter-10-optimization-examples.md
+  title: 'Chapter 10: Optimization Examples'
+  disposition: One-variable optimization; specialization; streaming; unsafe trade-offs; sharded/bounded concurrency; target-based
+    stopping.
+  sha256: 7924ccbc6f6d13a6025556bb152a3faababadb4753d8552055f890d99756c4d9
+- source_id: SRC-EGO
+  chapter_path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/015-chapter-11-optimization-patterns.md
+  title: 'Chapter 11: Optimization Patterns'
+  disposition: Do less work; time/space trade-offs; reduce/reuse/recycle; resource/goroutine lifecycle; preallocation; pooling
+    and retention traps.
+  sha256: 6e998f8e0818ecf431271babb5f86e8ee507015cc69f7abb2de8f2478d38c20c
+- source_id: SRC-EGO
+  chapter_path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/016-index.md
+  title: Index
+  disposition: Retrieval aid; conversion is heavily table-mangled; no independent doctrine.
+  sha256: 713f0da92b222dc1e912b7856ba4fb9e126c0166c460ebb78cc8e666ee906847
+- source_id: SRC-EGO
+  chapter_path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/017-about-the-author.md
+  title: About the Author
+  disposition: Observability/SRE/Go-systems experience; source-perspective context.
+  sha256: c96def5d860f26e3da8dfe1cfa3b38395303398e0082531d39de472b298efc1e
+- source_id: SRC-EGO
+  chapter_path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/018-colophon.md
+  title: Colophon
+  disposition: Publication metadata only.
+  sha256: fddb41c7ecfd44a38291146aea7384aded56c87a9a7f6943fe3708e7b91177a3
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/001-fluent-python.md
+  title: Fluent Python
+  disposition: Edition/revision metadata; July 2021 early-release status; no independent doctrine.
+  sha256: 058cfe357ca131833c2b6fa8c269e46620a62e75ae5f62dcf87e00026fa29b77
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/002-preface.md
+  title: Preface
+  disposition: Existing facilities before custom abstraction; experimentation, REPL, doctest, tests; stale first-edition passages
+    explicitly acknowledged.
+  sha256: 3b56d5fc13749fc561617a4ba9193de327d09ce2f5268b781661c9ebc172a417
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/003-acknowledgments.md
+  title: Acknowledgments
+  disposition: Publication context only.
+  sha256: bfbce0bd3e7dd37801c2c3c6ebe8851f538ee8c01114766556e06e19bb9ec478
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/004-part-i-prologue.md
+  title: Part I. Prologue
+  disposition: Part divider.
+  sha256: eff50cc50da1bda56fc477e74a248db38ee2511938e661353cb9cc8982216e9c
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/005-chapter-1-the-python-data-model.md
+  title: 'Chapter 1: The Python Data Model'
+  disposition: Special-method protocols; built-in interoperability; representations; collection protocols; protocol-conforming
+    behavior.
+  sha256: d3fb4f1f9c22b078faab38c2c1084dd2d2bbd09847c89fa69fa617c3011d1a42
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/006-part-ii-data-structures.md
+  title: Part II. Data Structures
+  disposition: Part divider.
+  sha256: f585e165b91b20429aa8b86bef9ea193161205b6fad640f4c4756b3d3f3bf164
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/007-chapter-2-an-array-of-sequences.md
+  title: 'Chapter 2: An Array of Sequences'
+  disposition: Sequence representation; comprehensions versus generators; records/tuples; unpacking; slicing; arrays, memory
+    views, NumPy, deques.
+  sha256: de4a59dbdf927726993a7424b7dd414ccaf1aa3d82fe261fe5581f6d97b76129
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/008-chapter-3-dictionaries-and-sets.md
+  title: 'Chapter 3: Dictionaries and Sets'
+  disposition: Hashability; mappings/sets; missing-key policy; specialized mappings; immutable façades; views; mapping extension.
+  sha256: 6cbc7582111596c58d52d255349d60192e8b774fc9fab26c2853792f28ec47fb
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/009-chapter-4-text-versus-bytes.md
+  title: 'Chapter 4: Text Versus Bytes'
+  disposition: Text/binary boundary; explicit codecs; failures; normalization/casefolding; collation; lossy transformations;
+    filesystem APIs.
+  sha256: 95ad7980e6fcc06554d3beb566e6df1de3df906b24f713fe4da28972d9f4e310
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/010-chapter-5-data-class-builders.md
+  title: 'Chapter 5: Data Class Builders'
+  disposition: Data-carrier choices; no runtime enforcement from hints; dataclass options; data-class smell as hypothesis;
+    scaffolding and interchange records.
+  sha256: eeccbf8ce0c0da0786b675cfbf3475d0989e755ea153882d3b3ad549c2b9ce39
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/011-chapter-6-object-references-mutability-and-recycling.md
+  title: 'Chapter 6: Object References, Mutability, and Recycling'
+  disposition: Identity/equality; aliasing; shallow/deep copies; call by sharing; mutable defaults; ownership; GC/weak references.
+  sha256: 66c404c9007dfc4348d21f533732f86b6612822a0ebf80cb3b45c0ec451117a2
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/012-part-iii-functions-as-objects.md
+  title: Part III. Functions as Objects
+  disposition: Part divider.
+  sha256: 8c0aa301162a0066aa09d45337fdc1a33bb4b3acd0ab43b38e3fe360401c7a25
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/013-chapter-7-functions-as-first-class-objects.md
+  title: 'Chapter 7: Functions as First-Class Objects'
+  disposition: Higher-order functions; callables; parameter API design; standard functional helpers; class-free behavior injection.
+  sha256: 3342819fc316ae61749982ce8084beeb7a940027de653ceee73be79f98e44ff3
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/014-chapter-8-type-hints-in-functions.md
+  title: 'Chapter 8: Type Hints in Functions'
+  disposition: Gradual typing; `Any`; duck/nominal/static protocol relations; annotation scope; tests versus type checking;
+    checker limitations.
+  sha256: 5439ceaee49ab1a5ecc381ad4afca69fdb0de59673b3254edd9512053d9a52aa
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/015-chapter-9-decorators-and-closures.md
+  title: 'Chapter 9: Decorators and Closures'
+  disposition: Import-time execution; closures; decorator transparency; registration; cache/lru-cache risks; single dispatch.
+  sha256: b5a0b66c5dcd6e85224234a0366357a9a51aefe9124eafaf80e0ec9b3684a7db
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/016-chapter-10-design-patterns-with-first-class-functions.md
+  title: 'Chapter 10: Design Patterns with First-Class Functions'
+  disposition: Function-oriented Strategy/Command; patterns as intermediate designs; stateful callable trade-off; registration
+    discovery.
+  sha256: 2845a09bd5fee184c2a7dedfc840e39901632f277931b5eb61aa59b4a53d1b1e
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/017-part-iv-classes-and-protocols.md
+  title: Part IV. Classes and Protocols
+  disposition: Part divider.
+  sha256: 0df5558877d40ba82c1b6a68fb6bc5167203eb0e730296bdf601cea18068c3d0
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/018-chapter-11-a-pythonic-object.md
+  title: 'Chapter 11: A Pythonic Object'
+  disposition: Requirement-proportional objects; repr/format/equality/hash contracts; alternate constructors; immutability;
+    `__slots__` contraindications.
+  sha256: 9811cc70340558e289db59cef5854289ac7666cfe42ae07bb4d7adec714db98b
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/019-chapter-12-writing-special-methods-for-sequences.md
+  title: 'Chapter 12: Writing Special Methods for Sequences'
+  disposition: Informal sequence protocol; correct slicing; dynamic attributes; equality/hash; consistency with standard objects.
+  sha256: be3e3bd10ef69c2643304bdf9b5ad89f7b2e955997a25435b090f7c84cb61259
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/020-chapter-13-interfaces-protocols-and-abcs.md
+  title: 'Chapter 13: Interfaces, Protocols, and ABCs'
+  disposition: Duck, goose, nominal, and static duck typing; fail-fast use; ABCs; minimal protocols; runtime-check limitations.
+  sha256: fa8766a2d3ad258f60e94d721ba46f240afb5968594dd20f8b34b3b211010841
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/021-chapter-14-inheritance-for-good-or-for-worse.md
+  title: 'Chapter 14: Inheritance: For Good or For Worse'
+  disposition: Built-in subclass hazards; MRO; mixin constraints; interface versus implementation inheritance; composition
+    preference.
+  sha256: 0192a7609f453da4993ca41c4ef9fd204bd0857632cf57d7e89168394500cbbe
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/022-chapter-15-more-about-type-hints.md
+  title: 'Chapter 15: More About Type Hints'
+  disposition: Overloads; `TypedDict` false security; casts; runtime annotation hazards; generics/variance; rapidly evolving
+    typing system.
+  sha256: 440459341026b7845a7b73609d00c1664011235d0e2c762e0f90fa5955069d8e
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/023-chapter-16-operator-overloading-doing-it-right.md
+  title: 'Chapter 16: Operator Overloading: Doing It Right'
+  disposition: Conventional operator semantics; `NotImplemented`; mixed operands; nonmutation; comparison/hash consistency;
+    augmented assignment.
+  sha256: 9b5bae07f384f2113ba0d01ae4a880aa00a11a08a08834b8eeaae212b4f189c1
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/024-chapter-17-iterables-iterators-and-generators.md
+  title: 'Chapter 17: Iterables, Iterators, and Generators'
+  disposition: Iterable/iterator distinction; lazy streaming; generator boundaries; standard iterators; large-data pipelines;
+    single-use behavior.
+  sha256: a77cdc62f666d76c7abcf9c35cd02e53c20363f91f63740a6f75859a5d396fdb
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/025-chapter-18-context-managers-and-else-blocks.md
+  title: 'Chapter 18: Context Managers and else Blocks'
+  disposition: Deterministic setup/teardown; exception boundaries; `contextlib`; EAFP/LBYL; pattern-matching case study.
+  sha256: c5f51423c60875e704dd32acafa0bd083ea776dc67df5ae02799ad29b32341d1
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/026-chapter-19-classic-coroutines.md
+  title: 'Chapter 19: Classic Coroutines'
+  disposition: Generator-based coroutine mechanics; cooperative scheduling; termination/exception propagation; primarily historical
+    guidance.
+  sha256: 04f9d7cdfd2b5e8f1ac44f433cdea245cd85bac7e9431ea06ee9249881238bf0
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/027-chapter-20-concurrency-models-in-python.md
+  title: 'Chapter 20: Concurrency Models in Python'
+  disposition: Concurrency versus parallelism; thread/process/async trade-offs; GIL-era constraints; CPU/I/O distinction;
+    scaling caution.
+  sha256: c483886c01e2d4d53866c4b73ba92b6860824a5705e9b4b1a014e1e4587e9a57
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/028-chapter-21-concurrency-with-futures.md
+  title: 'Chapter 21: Concurrency with Futures'
+  disposition: Thread/process executors; completion order; future-owned state; exceptions; bounded clients; realistic concurrent
+    testing.
+  sha256: afb529b4602fa2b2feabbfb94920ef8f6e7529d397ceb649755a1b6aeb2bb2cc
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/029-chapter-22-asynchronous-programming.md
+  title: 'Chapter 22: Asynchronous Programming'
+  disposition: Event-loop nonblocking discipline; async context/iteration; semaphores; executor escape hatch; backpressure;
+    CPU-bound traps.
+  sha256: 0eb7db268bd860ddd0ae090732c08040e7888b8cf5ca97d8a335ff590f70e53c
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/030-chapter-23-dynamic-attributes-and-properties.md
+  title: 'Chapter 23: Dynamic Attributes and Properties'
+  disposition: Data-driven attributes; property-based API evolution/validation; cache semantics; attribute-lookup risk; simplest-mechanism
+    preference.
+  sha256: fa2d8d396be8b0191c5d2e60cac6fd3abb613d473457fb01983836850d0dd9f2
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/031-chapter-24-attribute-descriptors.md
+  title: 'Chapter 24: Attribute Descriptors'
+  disposition: Reusable managed-field behavior; overriding/non-overriding descriptors; shadowing; narrow framework-level applicability.
+  sha256: df0054c2a5f135eb7c2471e9edc753daa309e95a1e3eb00a5869d31af89e3340
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/032-chapter-25-class-metaprogramming.md
+  title: 'Chapter 25: Class Metaprogramming'
+  disposition: Class factories/hooks/decorators/metaclasses; import-time effects; conflict and maintenance costs; application-level
+    restraint.
+  sha256: e1885fb0becf5500774814f2262e6ce6b16ef661eae647336322743e799b239b
+- source_id: SRC-FP
+  chapter_path: books/fluent-python-2nd-edition-z-lib-org/chapters/033-about-the-author.md
+  title: About the Author
+  disposition: Author background and perspective only.
+  sha256: 1ca192a74f1099b96a79b4a0d133ae6bb0a54ca1b286dd7f19116d174be245d2
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/001-fundamentals-of-software-architecture.md
+  title: Fundamentals of Software Architecture
+  disposition: Edition and positioning metadata; no independent doctrine.
+  sha256: eb2c12beb69941a247381923d41ec4fbbab2b46ef7afaf8559d27aad6d547fed
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/002-table-of-contents.md
+  title: Table of Contents
+  disposition: Source navigation and heading cross-check.
+  sha256: 3ee83426cb4eeece9201174a663ce46bfe97fe2f0ae40cda742a3240ea666dc1
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/003-preface-invalidating-axioms.md
+  title: 'Preface: Invalidating Axioms'
+  disposition: Revalidate architectural axioms against ecosystem capability; engineering rigor and trade-offs.
+  sha256: 2a9dd1ebf0c178cb83a98bdbb5637f73e28d16c338d18a2b451e5c8172dfe30d
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/004-acknowledgments.md
+  title: Acknowledgments
+  disposition: Publication-only.
+  sha256: 1746178cbcb3f2cf0bf7262f54c3c59e83aa3f6a50441002166a85adbcf99dde
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/005-chapter-1-introduction.md
+  title: 'Chapter 1: Introduction'
+  disposition: Architecture dimensions, architect expectations, iterative delivery, DevOps/operations/data intersections,
+    trade-off laws.
+  sha256: 1a6d97e3e5c7e63a91d809f4145b079e5c7bbf442111f9c9b41333661a46f238
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/006-part-i-foundations.md
+  title: 'Part I: Foundations'
+  disposition: Part divider.
+  sha256: 24f40b0c4bb0e0fb62285cf5c7c9cc79afe27950a8a81332e9b8d50fcc587c31
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/007-chapter-2-architectural-thinking.md
+  title: 'Chapter 2: Architectural Thinking'
+  disposition: Architect/developer feedback, breadth, stale expertise, business drivers, trade-off analysis, hands-on balance.
+  sha256: f7cf72543eca6a1b55c74a5a02a1ecd79e08b4a7cc34bab1b759b4200ea0092d
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/008-chapter-3-modularity.md
+  title: 'Chapter 3: Modularity'
+  disposition: Cohesion/coupling/connascence, static and dynamic coupling, metric limitations, component transition.
+  sha256: 94a97ced40014047d0f0f084095446bdf92e292790bf78a674be88d56512c144
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/009-chapter-4-architecture-characteristics-defined.md
+  title: 'Chapter 4: Architecture Characteristics Defined'
+  disposition: Structural significance, operational/structural/cross-cutting qualities, ambiguity, least-worst trade-offs.
+  sha256: 4345306c66a0cff6a34c4021fd02b0297053f5fe5bacda5f3eae58e5c40903a1
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/010-chapter-5-identifying-architectural-characteristics.md
+  title: 'Chapter 5: Identifying Architecture Characteristics'
+  disposition: Extract explicit/implicit drivers; avoid over-specification; prioritize minimal characteristic set.
+  sha256: 1ea2daf0b97f944f3856386583b2ce85bb8bd09df2022d5b6d33aa5dda7cfa9e
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/011-chapter-6-measuring-and-governing-architecture-characteristics.md
+  title: 'Chapter 6: Measuring and Governing Architecture Characteristics'
+  disposition: Objective definitions, percentiles/budgets, process measures, automated fitness functions and caveats.
+  sha256: 746853d06c446045d3e9447f616458dd05fc0931ca3cf5d73d6ef7d0e8cd3e3e
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/012-chapter-7-scope-of-architecture-characteristics.md
+  title: 'Chapter 7: Scope of Architecture Characteristics'
+  disposition: Architecture quantum, static/dynamic coupling, bounded-context comparison, characteristic scope.
+  sha256: 1baa263e9fd435ceca25067671a3fe83666269cad844c0b80d8a77f98b334dab
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/013-chapter-8-component-based-thinking.md
+  title: 'Chapter 8: Component-Based Thinking'
+  disposition: Technical/domain partitioning, Conway effects, iterative component discovery, entity trap, granularity, monolith/distributed
+    decision.
+  sha256: 41fdcb3c799c252d0e3923119846a7baef742c7c4e7f629469467bedc1b1349f
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/014-part-ii-architecture-styles.md
+  title: 'Part II: Architecture Styles'
+  disposition: Part divider.
+  sha256: 695d20bfd78f9a35bae9f75efe21f16f785922d4087dcb1eebf1e0f3f800a477
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/015-chapter-9-foundations.md
+  title: 'Chapter 9: Foundations'
+  disposition: Architecture style vocabulary; Big Ball of Mud; monolith/distributed split; distributed fallacies, logs, transactions,
+    contracts.
+  sha256: 8f2fbdf83a98f7e4165e47698a49a523527c945d079abaa3b8fa6731fbb81eda
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/016-chapter-10-layered-architecture-style.md
+  title: 'Chapter 10: Layered Architecture Style'
+  disposition: Technical layers, closed/open layers, sinkhole risk, simplicity versus agility/testability.
+  sha256: e25ba34d6506155a64ad325d8198295c6a078847b0a501ac1a4699dcd2d60140
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/017-chapter-11-pipeline-architecture-style.md
+  title: 'Chapter 11: Pipeline Architecture Style'
+  disposition: Pipes/filters, unidirectional transformation, modular processing, topology constraints.
+  sha256: bc19f802097a9258e59243962fefc3d60db09ae4a1b4bbaae77839174ee9077d
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/018-chapter-12-microkernel-architecture-style.md
+  title: 'Chapter 12: Microkernel Architecture Style'
+  disposition: Core/plugin topology, registry/contracts, customization fit, plugin coupling and single-quantum limits.
+  sha256: af48b7f76a624f552b90b8ac45441883e07c0fea5ca6f95fdb59bf19b6cc9d2b
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/019-chapter-13-service-based-architecture-style.md
+  title: 'Chapter 13: Service-Based Architecture Style'
+  disposition: Coarse domain services, shared/federated data, ACID benefits, moderate distribution, pragmatic trade-offs.
+  sha256: 23d8d9fccf60c667d1b8737ccf015773687259919014ba67467fa39dd6de66ba
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/020-chapter-14-event-driven-architecture-style.md
+  title: 'Chapter 14: Event-Driven Architecture Style'
+  disposition: Broker versus mediator, async flow, error/recovery/data-loss controls, eventual consistency, test/debug costs.
+  sha256: a3a3567399aa1f4b727eac74c5cfe200dc27d03f6560eb81fcfb04784616c758
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/021-chapter-15-space-based-architecture-style.md
+  title: 'Chapter 15: Space-Based Architecture Style'
+  disposition: Extreme scale/elasticity via in-memory grids, async persistence, collision/recovery complexity, operational
+    prerequisites.
+  sha256: c16e5877e820bea3fb4b8daeaa08a3d05c65b5fa1288257c887a8e58b8519b46
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/022-chapter-16-orchestration-driven-service-oriented-architecture.md
+  title: 'Chapter 16: Orchestration-Driven SOA'
+  disposition: Central orchestration, reuse-driven coupling, service taxonomy, governance and complexity costs.
+  sha256: ba74d5afb1e90d0f59292ba8e22ebc0ee39255ef673eda379ea393cb9fc62c08
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/023-chapter-17-microservices-architecture.md
+  title: 'Chapter 17: Microservices Architecture'
+  disposition: Bounded contexts, data isolation, granularity, operational reuse, choreography/orchestration, sagas and distributed
+    costs.
+  sha256: 67976a9286c87355bc3ab7599942b1a1fdf4f8deada7cf04ecf3225d3eae88e7
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/024-chapter-18-choosing-the-appropriate-architecture-style.md
+  title: 'Chapter 18: Choosing the Appropriate Architecture Style'
+  disposition: Contextual style selection, data and team/operations constraints, monolith/distributed, sync/async default,
+    hybridization.
+  sha256: 0a650bb8fcb36eb13590d76ae1a83d448d78d927adb4db37d04ca50211bfb340
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/025-part-iii-techniques-and-soft-skills.md
+  title: 'Part III: Techniques and Soft Skills'
+  disposition: Part divider.
+  sha256: 2569a4ea0037f267e7381f99fee329d78b8e3e42bf0a27c8cbd65134355ff947
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/026-chapter-19-architecture-decisions.md
+  title: 'Chapter 19: Architecture Decisions'
+  disposition: Last responsible moment, architecturally significant decisions, ADRs, consequences/compliance, decision authority.
+  sha256: cee4406d3e14cbee8670e0d21e2abb8d0e6c4419983d3d5edaf7f81917777c70
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/027-chapter-20-analyzing-architecture-risk.md
+  title: 'Chapter 20: Analyzing Architecture Risk'
+  disposition: Impact/likelihood matrix, collaborative risk storming, mitigation, repeated assessment.
+  sha256: 329c374d65b9e2f5a389ee7fa2b376b57dc050d8758ca0003a810a947133f5ad
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/028-chapter-21-diagramming-and-presenting-architecture.md
+  title: 'Chapter 21: Diagramming and Presenting Architecture'
+  disposition: Representational consistency, low-fidelity exploration, C4/UML limits, communication fidelity.
+  sha256: 38d93f4b59811b452c6e182205e7728de53761b8c96020373ea9c695ed6d3be0
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/029-chapter-22-making-teams-effective.md
+  title: 'Chapter 22: Making Teams Effective'
+  disposition: Constraint calibration, control-freak/armchair failure modes, team-context control, checklists.
+  sha256: 7703bd41388a9bf0a3464192187b1583c54f7531c7d410ee1ced95c52f558be2
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/030-chapter-23-negotiation-and-leadership-skills.md
+  title: 'Chapter 23: Negotiation and Leadership Skills'
+  disposition: Stakeholder negotiation, business justification, pragmatic leadership, team proximity.
+  sha256: 518df6105331f11d7038de801833bf0ee969b54bc6f5628751a2519326249823
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/031-chapter-24-developing-a-career-path.md
+  title: 'Chapter 24: Developing a Career Path'
+  disposition: Keeping knowledge current, technology radar, learning and architecture practice.
+  sha256: ac9e0008742d856ebc84c777945617c61f1916e52312b6fd7e8d85d1ad65ca93
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/032-self-assessment-questions.md
+  title: Self-Assessment Questions
+  disposition: Retrieval/check coverage for chapters 1–24; no independent claims.
+  sha256: b3c2634be57c970bac804931d8abdaac1d31614b1968a29344ef58d48f97622b
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/033-index.md
+  title: Index
+  disposition: Retrieval aid only; no independent doctrine.
+  sha256: 4e85a1399b7f735b28400d49745fa7e972931ff6253ccdd434c694ddb7ace039
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/034-about-the-authors.md
+  title: About the Authors
+  disposition: Author background and distributed-systems consulting context.
+  sha256: 1e79becbaf436ebd20de5ef0517f7af97027e34e6994f7a01e6761ecf7913140
+- source_id: SRC-FSA
+  chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/035-colophon.md
+  title: Colophon
+  disposition: Publication-only.
+  sha256: 75642d0ab745fb432102a2cd173c22f2efd399f3185710c9bfc8127b1c31e293
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/001-working-effectively-with-legacy-code.md
+  title: Working Effectively with Legacy Code
+  disposition: Publication/title context only.
+  sha256: 5a2dab175fd48f98e0bbb18bd064cf219429ff7ad4583ab0dffdea6deb10ba3a
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/002-contents.md
+  title: Contents
+  disposition: Navigation and chapter-boundary cross-check.
+  sha256: 01ad3d14f2a87577ce7c6dda71a7804d3b4898752a9c66fcb5961ff5a9672d4f
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/003-foreword.md
+  title: Foreword
+  disposition: Change safety and feedback motivation; perspective only.
+  sha256: 7c7d2c4ad24459ff1f1857d91b56838bde20c6dcd6e0abe486fe9bf42cfba395
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/004-preface.md
+  title: Preface
+  disposition: Legacy-change scope, dependency difficulty, and language mix.
+  sha256: 5d264e3b74aab1007e37a92c9640451547d1fd8f962e92748404680a40f832c7
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/005-acknowledgments.md
+  title: Acknowledgments
+  disposition: Publication context only.
+  sha256: 50e10bd9fb9483c64262253b590901fc3db0eca6cf1e0373750b4cc1fe4af09f
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/006-introduction.md
+  title: Introduction
+  disposition: Operational definition of legacy code and test-feedback emphasis; definition is deliberately narrow and contextual.
+  sha256: 3ae5eb3f230005501d1f22375b20465097490636ff67f88747b68201105cba99
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/007-part-i.md
+  title: Part I
+  disposition: Part divider.
+  sha256: 09c39033e7f8d5e02ddd972cebae218fc9e1b9dd7c1ce4824817655e5c2987e6
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/008-chapter-1-changing-software.md
+  title: 'Chapter 1: Changing Software'
+  disposition: Feature, repair, refactoring, and optimization distinctions; preservation and risk questions.
+  sha256: 986334bb5c31f401d4a059a7a4e939593d5224780255e5c83a266df2689e1331
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/009-chapter-2-working-with-feedback.md
+  title: 'Chapter 2: Working with Feedback'
+  disposition: Cover-and-modify, fast local feedback, test coverings, the legacy dilemma, and change algorithm.
+  sha256: e821f9592453576d21944c652de6759794c0eb68d8c5468e7497ea19a44574cd
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/010-chapter-3-sensing-and-separation.md
+  title: 'Chapter 3: Sensing and Separation'
+  disposition: Observation and execution isolation; fakes versus mocks; localized tests.
+  sha256: 8fa61cbdd6d5ccba742a66466b68a81588a5f56790c51a7295f0fb851c8798ba
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/011-chapter-4-the-seam-model.md
+  title: 'Chapter 4: The Seam Model'
+  disposition: Seams, enabling points, and preprocessing/link/object seam trade-offs.
+  sha256: 460d96317730e261729cee958b4887a72fd360f2ae93c04d65ac0643fdf3efc5
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/012-chapter-5-tools.md
+  title: 'Chapter 5: Tools'
+  disposition: Refactoring and test tools as leverage; tool/library versions are historical.
+  sha256: 46ae8ee7c85d12d7c29dfd2195da3161d187ac4a9be5cf3df41202c4d16f7402
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/013-part-ii.md
+  title: Part II
+  disposition: Part divider.
+  sha256: 7d019020ee10952f7c69cc198701695e7c518c4fe4e15c648a47242b0cf707c2
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/014-chapter-6-i-don-t-have-much-time-and-i-have-to-change-it.md
+  title: 'Chapter 6: I Don''t Have Much Time and I Have to Change It'
+  disposition: Sprout/wrap methods and classes as pressure adaptations with integration and design costs.
+  sha256: 59e777c56ef75526adb2c01ed3e58a55d4b1de5f46e3cfae5e359ec7e0849fcc
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/015-chapter-7-it-takes-forever-to-make-a-change.md
+  title: 'Chapter 7: It Takes Forever to Make a Change'
+  disposition: Lag time, build/test feedback, dependency structure, and incremental improvement.
+  sha256: 761ed46ba9029ec2efc931c28fe8d3b063ac83897d95784d20aacc2f1b88207c
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/016-chapter-8-how-do-i-add-a-feature.md
+  title: 'Chapter 8: How Do I Add a Feature?'
+  disposition: TDD loop, legacy adaptation, programming by difference, and substitutability.
+  sha256: e18bd75eea50b148544d07c49f995ca4a9e55ac38d25af87555655c5dfc0bde2
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/017-chapter-9-i-can-t-get-this-class-into-a-test-harness.md
+  title: 'Chapter 9: I Can''t Get This Class into a Test Harness'
+  disposition: Constructor/global/hidden dependencies, parameterization, extraction, and subclass seams.
+  sha256: b9aa738bcd67a9445f0b79ea5b542e0d9c83dd11e8bbeb39343f920aa1557bab
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/018-chapter-10-i-can-t-run-this-method-in-a-test-harness.md
+  title: 'Chapter 10: I Can''t Run This Method in a Test Harness'
+  disposition: Hidden methods, side effects, command/query separation, and access/test trade-offs.
+  sha256: f1ca7e3232a10110a0fde2efc19dbe3f7308fb0413ffbd236c34f1750ca1950c
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/019-chapter-11-i-need-to-make-a-change-what-methods-should-i-test.md
+  title: 'Chapter 11: I Need to Make a Change. What Methods Should I Test?'
+  disposition: Effect reasoning and propagation; test-surface selection; encapsulation tension.
+  sha256: 7753f840c66a97542eaa78b5f788ae6af8fcebd1c261ef84d19ca890dbe46c8c
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/020-chapter-12-i-need-to-make-many-changes-in-one-area-do-i-have-to-break-dependencies-for-all-the-classes-involved.md
+  title: 'Chapter 12: I Need to Make Many Changes in One Area. Do I Have to Break Dependencies for All the Classes Involved?'
+  disposition: Interception/pinch points, higher-level coverings, hidden responsibilities, and traps.
+  sha256: 6ad3a2b967705455e52c620f8afe7eb648551cbc44458fea881f072292562c2c
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/021-chapter-13-i-need-to-make-a-change-but-i-don-t-know-what-tests-to-write.md
+  title: 'Chapter 13: I Need to Make a Change, but I Don''t Know What Tests to Write'
+  disposition: Characterization of actual behavior, suspicious behavior handling, targeted tests, and stopping heuristic.
+  sha256: f830d16adc940a7ae70d56d7f8ba17134647b506dfbc9a5016bb139bf50fe381
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/022-chapter-14-dependencies-on-libraries-are-killing-me.md
+  title: 'Chapter 14: Dependencies on Libraries Are Killing Me'
+  disposition: Library boundaries, wrapper decisions, ownership and change risk.
+  sha256: a9d149748d9701700c1f695553837486890720c077b42185aaead331704cc7b1
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/023-chapter-15-my-application-is-all-api-calls.md
+  title: 'Chapter 15: My Application Is All API Calls'
+  disposition: Skin/wrapper strategy and separating application policy from API mechanics.
+  sha256: 9f29376b9d510f01479e5f63f993da8e8dfce66f99a53a801a8b9fed666985bb
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/024-chapter-16-i-don-t-understand-the-code-well-enough-to-change-it.md
+  title: 'Chapter 16: I Don''t Understand the Code Well Enough to Change It'
+  disposition: Notes, listing markup, effect sketches, scratch refactoring, and unused-code investigation.
+  sha256: ff796b65d6d3015cbf6f5eea387378f69576363b047956c5083576b29c4b9107
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/025-chapter-17-my-application-has-no-structure.md
+  title: 'Chapter 17: My Application Has No Structure'
+  disposition: Narrative/system understanding and growth around emerging structure.
+  sha256: bcc78a8dc208b6f6e6dabe1d35016b47d297ca56106dea020d175a4b177ae8ca
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/026-chapter-18-my-test-code-is-in-the-way.md
+  title: 'Chapter 18: My Test Code Is in the Way'
+  disposition: Test duplication, fixtures, naming, localization, and refactoring tests.
+  sha256: f9a2cf312812513c455c70c45a8517c20e3f82398c4a4f519998a7a6e7914f65
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/027-chapter-19-my-project-is-not-object-oriented-how-do-i-make-safe-changes.md
+  title: 'Chapter 19: My Project Is Not Object Oriented. How Do I Make Safe Changes?'
+  disposition: Procedural seams, functions, globals, linker/preprocessor techniques, and language-specific constraints.
+  sha256: 1eeb45024c4e833a1f05f39a5ed0f76c37dae39a83f70fc86332154c5753dcb9
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/028-chapter-20-this-class-is-too-big-and-i-don-t-want-it-to-get-any-bigger.md
+  title: 'Chapter 20: This Class Is Too Big and I Don''t Want It to Get Any Bigger'
+  disposition: Responsibility discovery, current-work lens, implementation/interface sequencing, strategy and tactics.
+  sha256: 554d1e7b6ab0aa52028dbbe3c5b3024dc764e38c67ac968dce635714b0aa9079
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/029-chapter-21-i-m-changing-the-same-code-all-over-the-place.md
+  title: 'Chapter 21: I''m Changing the Same Code All Over the Place'
+  disposition: Repeated edit sites, duplication, hierarchy and extraction alternatives.
+  sha256: 6cab2ba259c04e19ea3ca1f0c123f10cd983cefece34c885807394152137c5ca
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/030-chapter-22-i-need-to-change-a-monster-method-and-i-can-t-write-tests-for-it.md
+  title: 'Chapter 22: I Need to Change a Monster Method and I Can''t Write Tests for It'
+  disposition: Automated versus manual extraction, sensing variables, dependency gleaning, sequence discovery, tiny pieces,
+    redo.
+  sha256: cf490b17e0cbb3046b78293139564ebbc4922fc38ec2be33a5ac20d6662fc0e4
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/031-chapter-23-how-do-i-know-that-i-m-not-breaking-anything.md
+  title: 'Chapter 23: How Do I Know That I''m Not Breaking Anything?'
+  disposition: Hyperaware/single-goal editing, signature preservation, compiler support, and pairing.
+  sha256: 9c90faa66ece10f04af75dabd94f84ad8e6c3ace20ef8973795e6b019a0f94cf
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/032-chapter-24-we-feel-overwhelmed-it-isn-t-going-to-get-any-better.md
+  title: 'Chapter 24: We Feel Overwhelmed. It Isn''t Going to Get Any Better'
+  disposition: Incremental improvement, local wins, team visibility, and avoiding total-rewrite paralysis.
+  sha256: 3dda93dc09b184be9599b0f5872fb472a0d0b7023197b5f63c080bb791f7be01
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/033-part-iii.md
+  title: Part III
+  disposition: Part divider.
+  sha256: 4f3b764f38cd9327c8fd000ff869f7776193b94a18b51c264b673a09facdcae6
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/034-chapter-25-dependency-breaking-techniques.md
+  title: 'Chapter 25: Dependency-Breaking Techniques'
+  disposition: Catalog of parameter, extraction, override, interface, linker, function-pointer, global, subclass, and text/preprocessor
+    seams.
+  sha256: 5a9d0a7162393cf85a98535ff5c9bcb8b64c36599772b625ff3da27be9783962
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/035-appendix.md
+  title: Appendix
+  disposition: Refactoring names and cross-reference support.
+  sha256: 7a210f71350a7ac1abadfc17d9db99cc0f996b9bfda6bb3cc540d571b9bfb3f7
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/036-glossary.md
+  title: Glossary
+  disposition: Terminology cross-check.
+  sha256: 3a250d1b229d8cfcd82fdad624a59f121e696e524198afd066153a48629f2f37
+- source_id: SRC-WELC
+  chapter_path: books/programming-working-effectively-with-legacy-code/chapters/037-index.md
+  title: Index
+  disposition: Retrieval aid; conversion is noisy and contributes no independent rule.
+  sha256: 8cb253e4078ff2024259ea9241825e0cdf06b9305d10e3dd78dcda9c3f2fb8c5
+- source_id: SRC-REF
+  chapter_path: books/refactoring-improving-the-design-of-existing-code/chapters/001-refactoring-improving-the-design-of-existing-code.md
+  title: 'Refactoring: Improving the Design of Existing Code'
+  disposition: Publication/title context only.
+  sha256: 3ce89afbd03b11498e8502898d6931b4aa58c8355f9a7078957c2ed4923dfa07
+- source_id: SRC-REF
+  chapter_path: books/refactoring-improving-the-design-of-existing-code/chapters/002-foreword.md
+  title: Foreword
+  disposition: Small behavior-preserving transformation, test feedback, and language/tool context; perspective, not independent
+    rule.
+  sha256: d204e5fb7922426da0d233962bed7dcc4748822303ee3feae744fb57d35b0228
+- source_id: SRC-REF
+  chapter_path: books/refactoring-improving-the-design-of-existing-code/chapters/003-preface.md
+  title: Preface
+  disposition: Definition, intended audience, catalog scope, and Smalltalk/Java-era assumptions.
+  sha256: c6cb75762b7b36d739b42bdf607d02f72efb7edce8cb3fd7526aaa23e807df90
+- source_id: SRC-REF
+  chapter_path: books/refactoring-improving-the-design-of-existing-code/chapters/004-acknowledgments.md
+  title: Acknowledgments
+  disposition: Publication context only.
+  sha256: 50bf75ca46eb43fa27164303d584634cd7cb0c6a55546e767f13031c10e82186
+- source_id: SRC-REF
+  chapter_path: books/refactoring-improving-the-design-of-existing-code/chapters/005-chapter-1-refactoring-a-first-example.md
+  title: 'Chapter 1: Refactoring, a First Example'
+  disposition: Tests first; small-step extraction/movement; local variables; responsibility placement; polymorphism case study;
+    change-driven need.
+  sha256: 8fdd2814722d254072129438f35db1d9d7abf148292d1f928a81b31749d03fab
+- source_id: SRC-REF
+  chapter_path: books/refactoring-improving-the-design-of-existing-code/chapters/006-chapter-2-principles-in-refactoring.md
+  title: 'Chapter 2: Principles in Refactoring'
+  disposition: Definition; two hats; reasons, timing, constraints, interfaces, databases, design, performance, and leave-alone
+    conditions.
+  sha256: 3b23e32aa2e9673e76d04469aa4b91e9aa92544b6e0f7209e7b3a6747bef342a
+- source_id: SRC-REF
+  chapter_path: books/refactoring-improving-the-design-of-existing-code/chapters/007-chapter-3-bad-smells-in-code.md
+  title: 'Chapter 3: Bad Smells in Code'
+  disposition: Smells as fallible indications; duplication, change dispersion, low cohesion, speculative generality, indirection,
+    data and inheritance concerns.
+  sha256: c9f599f975ac0a5c647771e5804cd91e0d479c935ea9fde2e70c78b61dd5708d
+- source_id: SRC-REF
+  chapter_path: books/refactoring-improving-the-design-of-existing-code/chapters/008-chapter-4-building-tests.md
+  title: 'Chapter 4: Building Tests'
+  disposition: Self-checking automated feedback; unit/functional distinction; risk-oriented cases; boundaries and failures;
+    limits of test proof.
+  sha256: a926b34e921cd9ee6eabe1309e4aad37034335a1a817a64be65f737513a38734
+- source_id: SRC-REF
+  chapter_path: books/refactoring-improving-the-design-of-existing-code/chapters/009-chapter-5-toward-a-catalog-of-refactorings.md
+  title: 'Chapter 5: Toward a Catalog of Refactorings'
+  disposition: Transformation record format; mechanics, motivation, examples, reference discovery, and catalog maturity limits.
+  sha256: 4738820948ea053e70cd8eaa9178162d3ab2b09305735954e3e87a4bb1039832
+- source_id: SRC-REF
+  chapter_path: books/refactoring-improving-the-design-of-existing-code/chapters/010-chapter-6-composing-methods.md
+  title: 'Chapter 6: Composing Methods'
+  disposition: Extract/inline, query-versus-temp, explaining variables, state separation, method objects, and algorithm substitution.
+  sha256: 9c78a7639874b82d6f8efd922721b1035c5c66dc42645d3ac889ed21fa8e75f9
+- source_id: SRC-REF
+  chapter_path: books/refactoring-improving-the-design-of-existing-code/chapters/011-chapter-7-moving-features-between-objects.md
+  title: 'Chapter 7: Moving Features Between Objects'
+  disposition: Move/extract/inline class and field; delegation trade-offs; local extension of external code.
+  sha256: 49d17aecab9be3a23c1697f631de6eba2fdbc7fab0b15b3b818fcd6016a0a688
+- source_id: SRC-REF
+  chapter_path: books/refactoring-improving-the-design-of-existing-code/chapters/012-chapter-8-organizing-data.md
+  title: 'Chapter 8: Organizing Data'
+  disposition: Representation, value/reference identity, associations, collection encapsulation, domain values, type codes,
+    and state/strategy trade-offs.
+  sha256: 27a27bedb6ac570e00b5fad830b3f0921dbb75c42e2c4127036aae9929d150c2
+- source_id: SRC-REF
+  chapter_path: books/refactoring-improving-the-design-of-existing-code/chapters/013-chapter-9-simplifying-conditional-expressions.md
+  title: 'Chapter 9: Simplifying Conditional Expressions'
+  disposition: Decompose/consolidate conditionals, guards, null objects, and explicit assertions.
+  sha256: 47ffbf860a4e835ce5339b9cf0bece2187432eae9164424cef85637df8f60417
+- source_id: SRC-REF
+  chapter_path: books/refactoring-improving-the-design-of-existing-code/chapters/014-chapter-10-making-method-calls-simpler.md
+  title: 'Chapter 10: Making Method Calls Simpler'
+  disposition: Naming/signature evolution, query/command separation, parameters, constructors, exceptions, and published API
+    risk.
+  sha256: 48ac026b88ab1daebdcfb4e86161935790595c035b2cd4360d1659859c6d9f66
+- source_id: SRC-REF
+  chapter_path: books/refactoring-improving-the-design-of-existing-code/chapters/015-chapter-11-dealing-with-generalization.md
+  title: 'Chapter 11: Dealing with Generalization'
+  disposition: Pull/push hierarchy moves, template methods, delegation/inheritance, interface extraction, and hierarchy removal.
+  sha256: 49c9132815728c77c957169a046ce8ae6d684228548df16806532efc381766a1
+- source_id: SRC-REF
+  chapter_path: books/refactoring-improving-the-design-of-existing-code/chapters/016-chapter-12-big-refactorings.md
+  title: 'Chapter 12: Big Refactorings'
+  disposition: Long-running directions rather than one-shot recipes; inheritance separation, procedural-to-object conversion,
+    domain/presentation separation, hierarchy extraction.
+  sha256: 97e197984d504fd3ca3cfc4ebeef43a1dc6b6fe4caa9e302fd24e2030fb05339
+- source_id: SRC-REF
+  chapter_path: books/refactoring-improving-the-design-of-existing-code/chapters/017-chapter-13-refactoring-reuse-and-reality.md
+  title: 'Chapter 13: Refactoring, Reuse, and Reality'
+  disposition: Adoption limits, economics, safety, near-term benefits, language/tool effects, and practitioner evidence.
+  sha256: 252f4e8faab5952dde2029ffa247516b65519450945179a5f497e583939cf681
+- source_id: SRC-REF
+  chapter_path: books/refactoring-improving-the-design-of-existing-code/chapters/018-endnotes.md
+  title: Endnotes
+  disposition: Attribution and historical notes; no independent doctrine.
+  sha256: 6ad71e23439924067b46b67aef51dcd2d00ef2b3d7ebd0053f4e20b6cc262ea9
+- source_id: SRC-REF
+  chapter_path: books/refactoring-improving-the-design-of-existing-code/chapters/019-chapter-14-refactoring-tools.md
+  title: 'Chapter 14: Refactoring Tools'
+  disposition: Semantic accuracy, program model, speed, undo, and workflow integration as tool-trust conditions.
+  sha256: 93478fcadc5d6930b05daeee5cdd837ea3a6c2fcecda654ff5f5c4f87cec9afb
+- source_id: SRC-REF
+  chapter_path: books/refactoring-improving-the-design-of-existing-code/chapters/020-chapter-15-putting-it-all-together.md
+  title: 'Chapter 15: Putting It All Together'
+  disposition: Goal selection, uncertainty stop, backtracking, pairing, semantic-issue deferral, and continuous small campaigns.
+  sha256: 8822981a8ebe5f3f266f6189dc68542667ba5c3496e5673cf45d5d3f1157cb7e
+- source_id: SRC-REF
+  chapter_path: books/refactoring-improving-the-design-of-existing-code/chapters/021-bibliography.md
+  title: Bibliography
+  disposition: Source trail only.
+  sha256: d0ea7425ea03e3b16e87b1254973c865fbd285bebd4c18381b0fcc46a64fd4e1
+- source_id: SRC-PP
+  chapter_path: books/the-pragmatic-programmer/chapters/001-what-others-in-the-trenches-say-about-the-pragmatic-programmer.md
+  title: Endorsements/title/copyright
+  disposition: Publication and first-edition/printing context; endorsements are not evidence.
+  sha256: d625082f7184337c66048e858e5af1925382b3a1a2a00d46283b7e13aca48433
+- source_id: SRC-PP
+  chapter_path: books/the-pragmatic-programmer/chapters/002-contents.md
+  title: Contents
+  disposition: Navigation and topic cross-check; no independent doctrine.
+  sha256: 4b4cba7fab5c49309a6d0226ab0ab856dd5804daf04cbd1c2080e868cceebd69
+- source_id: SRC-PP
+  chapter_path: books/the-pragmatic-programmer/chapters/003-foreword.md
+  title: Foreword
+  disposition: Practitioner framing and adaptability; largely rhetorical.
+  sha256: 9d31425d12c4c6fc92ee5c5fb243152400064b5ef41ff1d49ce7c7d234fe46cb
+- source_id: SRC-PP
+  chapter_path: books/the-pragmatic-programmer/chapters/004-preface.md
+  title: Preface
+  disposition: Pattern-language format, context dependence, no universal best solution, intended audience and source limitations.
+  sha256: e3b6c2c1bdf6ceeafa1ff036c1a97d17f3030224bea95518e46f81820b2cd068
+- source_id: SRC-PP
+  chapter_path: books/the-pragmatic-programmer/chapters/005-acknowledgments.md
+  title: Acknowledgments
+  disposition: Publication-only.
+  sha256: c84872a8b340ae4baca7f42ad0397690d60fe99b5aa8f01e4e1ee65233925e2f
+- source_id: SRC-PP
+  chapter_path: books/the-pragmatic-programmer/chapters/006-chapter-1-a-pragmatic-philosophy.md
+  title: 'Chapter 1: A Pragmatic Philosophy'
+  disposition: Responsibility/authority, entropy, good-enough quality, stopping, learning, critical thinking, and audience-aware
+    communication.
+  sha256: c2fd929696ba12d697c9222dd7e06b8bd02cb0ac982ee7b846212a54f9478d4d
+- source_id: SRC-PP
+  chapter_path: books/the-pragmatic-programmer/chapters/007-chapter-2-a-pragmatic-approach.md
+  title: 'Chapter 2: A Pragmatic Approach'
+  disposition: DRY as knowledge authority, orthogonality, reversibility, tracer bullets, disposable prototypes, domain languages,
+    and evidence-refined estimation.
+  sha256: 644a838311e6383890e239a5f62c31cd1639296c6b93f9e23de4b52b29fc9fab
+- source_id: SRC-PP
+  chapter_path: books/the-pragmatic-programmer/chapters/008-chapter-3-the-basic-tools.md
+  title: 'Chapter 3: The Basic Tools'
+  disposition: Plain-text longevity, shell/editor fluency, VCS, systematic debugging, text transformation, and active/passive
+    generation. Tool specifics are dated.
+  sha256: 45eea12690acd90d5d6780efb796c249724e0150035a795e1968db654eb4c4b4
+- source_id: SRC-PP
+  chapter_path: books/the-pragmatic-programmer/chapters/009-chapter-4-pragmatic-paranoia.md
+  title: 'Chapter 4: Pragmatic Paranoia'
+  disposition: Contracts, pre/postconditions/invariants, crash/fail early, assertions, exceptions versus normal flow, and
+    resource ownership/balance.
+  sha256: 60e45cc1b49168d8bec7c02d1f467e5d4867098efc5b28f0bf21ce230c3a1542
+- source_id: SRC-PP
+  chapter_path: books/the-pragmatic-programmer/chapters/010-chapter-5-bend-or-break.md
+  title: 'Chapter 5: Bend, or Break'
+  disposition: Law of Demeter, coupling, metadata/configuration, temporal coupling/concurrency, pub-sub/MVC, blackboards,
+    and costs of indirect control.
+  sha256: 6c111e1879b841d4447590e394a2c5f991b8b7470abc02324c15e3fea2ed50b5
+- source_id: SRC-PP
+  chapter_path: books/the-pragmatic-programmer/chapters/011-chapter-6-while-you-are-coding.md
+  title: 'Chapter 6: While You Are Coding'
+  disposition: Deliberate programming, assumptions, algorithmic complexity, refactoring boundaries, contract tests, harnesses,
+    observability, and tool-generated code caution.
+  sha256: 0d4d8600636040f4596917803733ed53f5db042af2fd5800ab76a87f2d6f24c8
+- source_id: SRC-PP
+  chapter_path: books/the-pragmatic-programmer/chapters/012-chapter-7-before-the-project.md
+  title: 'Chapter 7: Before the Project'
+  disposition: Discovering needs, policy versus implementation, glossary, scope control, readiness, specifications as abstractions,
+    and formal-method limits.
+  sha256: 6985926a080b8b02a65307f9c2506f35c927cc2e533a940da59b6f382968e957
+- source_id: SRC-PP
+  chapter_path: books/the-pragmatic-programmer/chapters/013-chapter-8-pragmatic-projects.md
+  title: 'Chapter 8: Pragmatic Projects'
+  disposition: Team conventions, automation, regression, multi-level/risk testing, test data and tests-of-tests, documentation
+    authority, expectations, and shared ownership.
+  sha256: 552c24564f1bd17f6d1ea41fe479e93ee0558143b8098599751d859a50ca03a6
+- source_id: SRC-PP
+  chapter_path: books/the-pragmatic-programmer/chapters/014-appendix-a.md
+  title: Appendix A
+  disposition: Resources, organizations, tools, periodicals, and reading routes; largely historically dated and not independent
+    doctrine.
+  sha256: a34d84c29c891c7b8f0efdb1196a02e2f63683f40966edfaa834ce8f7f7caa1e
+- source_id: SRC-PP
+  chapter_path: books/the-pragmatic-programmer/chapters/015-bibliography.md
+  title: Bibliography
+  disposition: Citation provenance; no independent doctrine.
+  sha256: 98bf80eb55bf2c8080b0cb9e1c9bb96d537522a6edd5a3bcec12be954315d5e4
+- source_id: SRC-PP
+  chapter_path: books/the-pragmatic-programmer/chapters/016-appendix-b.md
+  title: Appendix B
+  disposition: Exercise answers and worked examples reinforcing DRY, orthogonality, contracts, algorithms, refactoring, testing,
+    and design trade-offs.
+  sha256: accaf129b31202e547cd09e7fb09f03a7ac4968cdd8237121aa1d3896fcf9e39
+- source_id: SRC-PP
+  chapter_path: books/the-pragmatic-programmer/chapters/017-index.md
+  title: Index and quick-reference tips
+  disposition: Retrieval aid and compact claim cross-check; repeated tips do not add independent support.
+  sha256: 5b604cb31d4bd2b193a8d96e0836cfdd8b184da8f0ef6d2e869e5a489c9fb25a

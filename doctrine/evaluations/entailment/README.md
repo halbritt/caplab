@@ -2,7 +2,7 @@
 
 Model-judged screening of whether each doctrine concept's cited source section
 actually supports its claimed contribution. This covers the first property
-listed under "Build evaluations before the retriever" in
+listed under "Complete human evaluations before accepting the retriever" in
 [`../../OPERATIONALIZATION.md`](../../OPERATIONALIZATION.md) — claim-to-source
 entailment — which the deterministic fixtures in the parent directory
 explicitly do not evaluate.
@@ -17,7 +17,7 @@ Per [`ubiquitous_language.md`](../../../ubiquitous_language.md):
   checksum, prompt parameters, model identity, raw fields).
 - That observation supports an **inference** about entailment: the citation
   probably does (or does not) support the contribution. Rival explanations
-  always include model error, truncation of the section, and the section-scope
+  always include model error, incomplete context, and the section-scope
   assumption below.
 - A verdict is **screening, never verification and never acceptance**. It
   ranks citations for human audit. It creates no authority to change anything,
@@ -37,24 +37,30 @@ Per [`ubiquitous_language.md`](../../../ubiquitous_language.md):
    Heading`) to the text under that heading up to the next heading of the same
    or a higher level, using the same heading normalization as
    `doctrine/tools/validate_doctrine.py`. Resolution failures are recorded as
-   findings (`verdict: resolution_failed`), never crashes.
-3. Sends one prompt per pair — section text (truncated at 24000 characters,
-   with truncation recorded), concept claim, contribution sentence, and
-   relationship type with its meaning — to the local OpenAI-compatible
+   findings (`verdict: resolution_failed`), never crashes. Repeated normalized
+   headings require an explicit `@@ occurrence=N` selector.
+3. Sections above 24000 characters are recorded as
+   `insufficient_context` and are not sent to a model. Complete shorter
+   sections, the concept claim, contribution sentence, and relationship type
+   with its meaning are sent to the local OpenAI-compatible
    endpoint (`http://localhost:8081/v1`, alias `qwen3.6-35b-a3b`,
    server-default sampler, `max_tokens` 4096, requests strictly sequential).
 4. Parses a strict JSON verdict (`supported`, `partially_supported`,
    `not_supported`, `contradicted`) from `message.content` only (the model's
    `reasoning_content` is ignored). One retry on parse failure, then
    `unparseable` with the raw content; one retry on transport failure, then
-   `transport_error`.
+   `transport_error`. A non-empty evidence quote that is not present in the
+   complete cited section becomes `quote_not_found` rather than support.
 5. Appends one JSON line per judgment to `results.jsonl` with full provenance:
-   concept, source, locator, chapter sha256, truncation, contribution,
+   concept, source, locator, chapter and section sha256, contribution,
    relationship, verdict, evidence quote, rationale, model id, request
-   parameters, endpoint, latency, schema version `entailment-eval/1`, and a
-   deterministic key = sha256 over (concept_id, locator, contribution,
-   chapter_sha256). The key changes when a chapter file changes, so edited
-   chapters are automatically re-screened.
+   parameters, endpoint, prompt version, latency, schema version
+   `entailment-eval/2`, and a deterministic key over the complete judgment
+   target and judge configuration. The key binds claim, relationship,
+   contribution, chapter and section identity, prompt version, requested
+   model, served model identifier, endpoint, token limit, and sampler
+   overrides. Changing any of those
+   creates a distinct judgment instead of silently reusing a stale result.
 
 ## Run, resume, summarize
 
@@ -84,8 +90,9 @@ deterministically from `results.jsonl` — do not edit it by hand.
 - **Single-model judgment.** One local model, one prompt, one sample. Verdicts
   carry that model's failure modes; disagreement with a human reading is
   expected and is why this is screening only.
-- **Truncation.** Sections longer than 24000 characters are truncated (the
-  record says so); support appearing late in a long section can be missed.
+- **Context budget.** Sections longer than 24000 characters are not judged;
+  they remain `insufficient_context` until evaluated with a complete-section
+  or audited chunking strategy.
 - **Section-scope assumption.** Only the text under the cited heading is
   judged. The citation contract says locators support audit and retrieval,
   "not claims that every sentence in a chapter endorses the derived rule";
@@ -97,3 +104,7 @@ deterministically from `results.jsonl` — do not edit it by hand.
 - **Relationship semantics.** `tension` and `historical_precursor` citations
   ask the model to confirm a characterization, not endorsement; misreading the
   relationship's meaning is a rival explanation for any flagged verdict.
+  `corroboration` means an additional supporting formulation and does not by
+  itself claim an independent source ID; cross-source support is evaluated
+  separately. This clarification is encoded in `entailment-prompt/3`, so older
+  judgments are not reused under the changed prompt semantics.

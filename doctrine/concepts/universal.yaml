@@ -732,7 +732,7 @@ concepts:
       - too-slow feedback for step size
     source_support:
       - source_id: SRC-PP
-        locator: "books/the-pragmatic-programmer/chapters/007-chapter-2-a-pragmatic-approach.md :: Reversibility"
+        locator: "books/the-pragmatic-programmer/chapters/007-chapter-2-a-pragmatic-approach.md :: Reversibility @@ occurrence=1"
         contribution: Treats non-final decisions and replaceable choices as protection against uncertainty.
         relationship: direct_support
       - source_id: SRC-REF

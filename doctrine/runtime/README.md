@@ -4,9 +4,10 @@ These JSON Schema files define portable boundaries between the corpus, retrieval
 
 | Contract | Purpose |
 |---|---|
-| `assertion-artifact.schema.json` | Typed observations, inferences, recommendations, decisions, authorization, execution, verification, and acceptance |
-| `evidence-packet.schema.json` | Bounded doctrine and provenance selected for one question |
-| `decision-receipt.schema.json` | Durable record of assertions, authority, alternatives, provenance, and reopening conditions |
+| `evidence-record.schema.json` | Typed repository evidence with inspectable provenance and explicit obligation mappings |
+| `assertion-artifact.schema.json` | Version 2 typed observations, inferences, recommendations, decisions, authorization, execution, verification, and acceptance |
+| `evidence-packet.schema.json` | Version 2 bounded doctrine and provenance selected for one question |
+| `decision-receipt.schema.json` | Version 2 durable record of assertions, authority, alternatives, provenance, criteria, and reopening conditions |
 | `dependency-manifest.schema.json` | Content identities and dependencies used to calculate rebuild and reverification impact |
 
 The schemas use JSON Schema 2020-12. Their `$id` values are stable identifiers, not network dependencies.
@@ -19,7 +20,47 @@ Validate a JSON assertion artifact with:
 python3 doctrine/tools/validate_assertions.py artifact.json
 ```
 
-The standard-library validator enforces cross-record rules that JSON Schema alone cannot express conveniently, including resolvable assertion dependencies and required predecessor types for execution, verification, and acceptance. It is structural: it can reject missing provenance or authority fields, but it cannot prove that natural-language labels are honest.
+The validator enforces cross-record rules that JSON Schema alone cannot express
+conveniently. In version 2 artifacts, every derived assertion must resolve its
+typed evidence and reach an observation through a legal, acyclic predecessor
+chain. Decisions require a recommendation; execution requires direct
+authorization whose scope contains the execution scope; verification follows
+execution; and acceptance follows verification. Version 2 receipts also require
+the appropriate owner, authority source, criteria, and authorized scope for
+their lifecycle state. Version 1 inputs remain accepted for compatibility but
+do not receive the stricter typed-evidence and complete-lineage guarantees.
+
+These checks are structural. They reject missing lineage, evidence, ownership,
+or scope, but they cannot prove that a natural-language assertion or evidence
+summary is honest. Withdrawal, expiry, scope or environment changes,
+interrupted execution, failed verification, and rejected acceptance are
+reopening events rather than permission to retain a stale status.
+
+## Evidence-packet assembly
+
+The packet assembler emits `evidence-packet/2` and defaults to the compact
+agent-facing view:
+
+```bash
+python3 doctrine/tools/assemble_packet.py \
+  --role coding-agent \
+  --task implementation \
+  --question "Where should retry policy live?" \
+  --render markdown
+```
+
+Roles and tasks resolve through the controlled routing registry. Repository
+signals may nominate doctrine but never discharge an evidence obligation; only
+a valid `evidence-record/1` supplied with `--evidence` can do that. The compact
+packet retains the safety kernel, prerequisites, operational layers, evidence
+obligations, activation reasons, conflicts, and exact claim provenance. Use
+`--detail full` when an audit needs the derived formulation, missing-evidence,
+and source-locator views.
+
+The default 5,000-unit budget applies only to activated-concept selection. Its
+units are relative routing costs, not bytes, words, model tokens, or a claim of
+empirical calibration. Corpus, doctrine, retriever, and packet content
+identities are deterministic and content-addressed.
 
 ## Dependency impact
 

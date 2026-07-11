@@ -28,6 +28,17 @@ def dump(value: dict[str, Any]) -> str:
     return yaml.safe_dump(value, sort_keys=False, allow_unicode=True, width=1000)
 
 
+def fragment_matches_canonical(
+    fragment: dict[str, Any], canonical: dict[str, Any]
+) -> bool:
+    """Compare a fragment with its canonical edge, excluding projected audit data."""
+    projected = dict(canonical)
+    synthesis = projected.get("synthesis")
+    if isinstance(synthesis, dict) and synthesis.get("origin") == "projected":
+        projected.pop("synthesis")
+    return fragment == projected
+
+
 def merged() -> tuple[dict[str, Any], int]:
     document = load(EDGE_PATH)
     edges = document["edges"]
@@ -36,8 +47,10 @@ def merged() -> tuple[dict[str, Any], int]:
     for path in sorted(FRAGMENTS.glob("*-edges.yaml")):
         for edge in load(path).get("edges", []):
             prior = by_id.get(edge["id"])
-            if prior is not None and prior != edge:
-                raise ValueError(f"edge collision with different content: {edge['id']} from {path}")
+            if prior is not None and not fragment_matches_canonical(edge, prior):
+                raise ValueError(
+                    f"edge collision with different content: {edge['id']} from {path}"
+                )
             if prior is None:
                 edges.append(edge)
                 by_id[edge["id"]] = edge

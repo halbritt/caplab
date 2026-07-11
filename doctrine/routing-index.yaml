@@ -1,4 +1,2660 @@
 schema_version: agent-doctrine-routing-index/1
+role_registry:
+- role: coding-agent
+  aliases:
+  - implementation-agent
+- role: architecture-agent
+  aliases:
+  - architectural-agent
+  - domain-design-agent
+- role: refactoring-agent
+  aliases: []
+- role: legacy-code-agent
+  aliases:
+  - legacy-agent
+- role: performance-agent
+  aliases: []
+- role: review-agent
+  aliases:
+  - dependency-agent
+- role: debugging-and-repair-agent
+  aliases:
+  - debugging-agent
+  - repair-agent
+- role: repository-assessment-agent
+  aliases: []
+task_registry:
+- family: implementation
+  aliases:
+  - feature-implementation
+  variants:
+  - ADR-review
+  - API-design
+  - API-review
+  - ORM-review
+  - accept-improvement
+  - acquire-Go-resource
+  - acquire-resource
+  - add-Go-concurrency
+  - add-Go-dependency
+  - add-cache
+  - add-concurrency
+  - add-generics
+  - add-interface
+  - add-language-feature
+  - add-property
+  - add-protocol
+  - add-type-hints
+  - aggregate-design
+  - aggregate-review
+  - algorithm-review
+  - analyze-incident
+  - any active campaign
+  - any behavioral analysis
+  - any code or data change
+  - architecture-assessment
+  - architecture-decision
+  - architecture-evolution
+  - architecture-fitness
+  - architecture-governance
+  - architecture-implementation
+  - architecture-planning
+  - architecture-review
+  - architecture-risk
+  - architecture-verification
+  - assess-domain-object
+  - assess-refactoring
+  - assess-structure
+  - assess-tests
+  - assessment
+  - association-design
+  - asynchronous-workflow
+  - behavior-placement
+  - behavior-preserving-change
+  - benchmark-comparison
+  - bottleneck-diagnosis
+  - bound-concurrency
+  - boundary selection
+  - boundary-design
+  - boundary-planning
+  - boundary-review
+  - boundary-selection
+  - boundary-testing
+  - bounded-context-discovery
+  - build-guard
+  - cache-review
+  - capacity-planning
+  - change large unclear unit
+  - change poorly characterized code
+  - change-public-API
+  - change-public-contract
+  - characterize-legacy
+  - choose broad characterization surface
+  - choose-Go-receiver
+  - choose-Python-container
+  - choose-data-structure
+  - cleanup
+  - close-incident-cause
+  - close-performance-work
+  - command-query-review
+  - communication-design
+  - compare-interface
+  - compare-performance
+  - component-design
+  - component-partitioning
+  - composite-change
+  - consistency-review
+  - context-mapping
+  - context-translation
+  - create first test seam
+  - create-public-API
+  - create-test-seam
+  - creation-API
+  - cross-repo co-change analysis
+  - decomposition
+  - delete
+  - deletion
+  - dependency-breaking
+  - dependency-review
+  - design-API
+  - design-Go-API
+  - design-Python-interface
+  - design-Python-worker
+  - design-attribute
+  - design-constructor
+  - design-context-manager
+  - design-custom-type
+  - design-dynamic-mechanism
+  - design-failure-mode
+  - design-generator
+  - design-idempotent-API
+  - design-iterator
+  - design-module
+  - design-observability
+  - design-performance-experiment
+  - design-record
+  - design-routine
+  - design-shared-module
+  - design-strategy
+  - design-subclass
+  - determine tests
+  - diagnose-defect
+  - diagnose-leak
+  - diagnose-memory
+  - diagnose-retention
+  - diagnose-stale-data
+  - diagnose-type-boundary
+  - diagnosis
+  - discover baseline
+  - distributed-migration
+  - distributed-repair
+  - distributed-review
+  - document-API
+  - domain-architecture-review
+  - domain-assessment
+  - domain-decomposition
+  - domain-modeling
+  - domain-review
+  - domain-strategy
+  - enable characterization
+  - entity-design
+  - establish preservation boundary
+  - evaluate-duplication
+  - evaluate-performance-change
+  - event-design
+  - explain-workaround
+  - extract-abstraction
+  - extract-helper
+  - factory-design
+  - fitness-design
+  - fix-flake
+  - framework-adoption
+  - framework-design
+  - framework-extraction
+  - framework-migration
+  - get code under test
+  - governance
+  - governance-design
+  - hotspot-triage
+  - implement-Go-error-path
+  - implement-I-O
+  - implement-Python
+  - implement-async
+  - implement-contract
+  - implement-feature
+  - implement-language-code
+  - implement-protocol
+  - implement-routine
+  - implement-special-method
+  - implement-text-boundary
+  - implementation
+  - improve-throughput
+  - integration
+  - integration-design
+  - interface-design
+  - interpret-benchmark
+  - interpret-metric
+  - introduce-dependency
+  - investigate-flake
+  - large-model-organization
+  - launch-goroutine
+  - legacy-integration
+  - legacy-migration
+  - legacy-seam
+  - manage-attributes
+  - memory-diagnosis
+  - messaging-review
+  - metric-review
+  - microservice-design
+  - migrate
+  - migration
+  - migration-approval
+  - migration-design
+  - migration-review
+  - model-design
+  - model-domain-concept
+  - model-refactoring
+  - model-state
+  - modernization
+  - modernize-Python
+  - modernize-syntax
+  - modularization
+  - module-design
+  - move-code
+  - name-symbol
+  - naming
+  - operational-hardening
+  - optimization
+  - optimization-selection
+  - optimization-triage
+  - optimize
+  - optimize-Go-hot-path
+  - optimize-data-path
+  - optimize-latency
+  - optimize-library
+  - optimize-materialization
+  - optimize-system
+  - optimize-throughput
+  - package-design
+  - performance-plan
+  - performance-regression
+  - performance-repair
+  - performance-review
+  - performance-triage
+  - persistence-design
+  - persistence-mapping
+  - persistence-reconstitution
+  - place-Go-behavior
+  - place-new-behavior
+  - placement
+  - plan-change
+  - plan-implementation
+  - plan-tests
+  - planning
+  - platform-contract
+  - plugin-design
+  - pool-review
+  - profile-analysis
+  - protect first legacy restructure
+  - protect refactor
+  - protocol evolution
+  - public rename
+  - quality-assessment
+  - quality-review
+  - query-review
+  - recommendation
+  - reduce-allocation
+  - refactor
+  - refactor-data-class
+  - refactoring
+  - refactoring-prioritization
+  - rename
+  - repair
+  - repair-Go-failure
+  - repair-aliasing
+  - repair-corruption
+  - repair-defect
+  - repair-encoding
+  - repair-failure
+  - repair-hash-equality
+  - repair-leak
+  - repair-stale-data
+  - repair-state-bug
+  - repair-task-leak
+  - replace-inheritance
+  - repository-assessment
+  - repository-design
+  - resilience-review
+  - review
+  - review-ABC
+  - review-API
+  - review-I-O
+  - review-Python
+  - review-Python-API
+  - review-async
+  - review-benchmark
+  - review-cache
+  - review-cleanup
+  - review-comment
+  - review-control-flow
+  - review-coverage-gate
+  - review-errors
+  - review-fast-path
+  - review-generator
+  - review-idiom
+  - review-interface
+  - review-metaclass
+  - review-mixin
+  - review-mutation
+  - review-operator
+  - review-optimization
+  - review-package
+  - review-representation
+  - review-resource-use
+  - review-shutdown
+  - review-special-method
+  - review-types
+  - review-worker-pool
+  - roadmap-prioritization
+  - rule-extraction
+  - run-optimization-campaign
+  - saga-design
+  - schema change
+  - select-boundary
+  - select-callable
+  - select-concurrency
+  - select-optimization
+  - service-decomposition
+  - service-extraction
+  - service-review
+  - shutdown-design
+  - simplify-error-handling
+  - simplify-hierarchy
+  - social or productivity analysis
+  - sourcing-decision
+  - specialize-hot-path
+  - specification-design
+  - state-design
+  - strategic-domain-design
+  - stream-data
+  - style-selection
+  - substitute collaborator
+  - tactical-DDD-review
+  - team-boundary-design
+  - topology-migration
+  - topology-selection
+  - transaction-design
+  - translate-failure
+  - understand code before change
+  - unfamiliar-change
+  - upgrade
+  - urgent feature in untestable code
+  - validate-benchmark
+  - validate-input
+  - value-design
+  - vendor-integration
+  - verification
+  - verify-implementation
+  - verify-optimization
+  - verify-refactor
+  - write-benchmark
+  - write-comment
+- family: api-review
+  aliases:
+  - api-design-review
+  variants:
+  - ADR-review
+  - API-design
+  - API-review
+  - CI warning
+  - ORM-review
+  - accept-improvement
+  - acquire-Go-resource
+  - acquire-resource
+  - add-Go-concurrency
+  - add-Go-dependency
+  - add-cache
+  - add-concurrency
+  - add-generics
+  - add-interface
+  - add-language-feature
+  - add-property
+  - add-protocol
+  - add-type-hints
+  - aggregate-design
+  - aggregate-review
+  - algorithm-review
+  - analyze-incident
+  - any active campaign
+  - any behavioral analysis
+  - any code or data change
+  - architecture-assessment
+  - architecture-decision
+  - architecture-evolution
+  - architecture-fitness
+  - architecture-governance
+  - architecture-implementation
+  - architecture-planning
+  - architecture-review
+  - architecture-risk
+  - architecture-verification
+  - assess-domain-object
+  - assess-refactoring
+  - assess-structure
+  - assess-tests
+  - assessment
+  - association-design
+  - asynchronous-workflow
+  - behavior-placement
+  - behavior-preserving-change
+  - benchmark-comparison
+  - bottleneck-diagnosis
+  - bound-concurrency
+  - boundary analysis
+  - boundary selection
+  - boundary-design
+  - boundary-planning
+  - boundary-review
+  - boundary-selection
+  - boundary-testing
+  - bounded-context-discovery
+  - build-guard
+  - cache-review
+  - capacity-planning
+  - change-public-API
+  - change-public-contract
+  - characterize-legacy
+  - choose-Go-receiver
+  - choose-Python-container
+  - choose-data-structure
+  - cleanup
+  - clone analysis
+  - close-incident-cause
+  - close-performance-work
+  - code-review
+  - command-query-review
+  - communication-design
+  - companion change
+  - compare-interface
+  - compare-performance
+  - component-design
+  - component-partitioning
+  - composite-change
+  - consistency-review
+  - context-mapping
+  - context-translation
+  - create-public-API
+  - create-test-seam
+  - creation-API
+  - cross-repo co-change analysis
+  - decomposition
+  - delete
+  - deletion
+  - dependency-breaking
+  - dependency-review
+  - design or review isolated tests
+  - design-API
+  - design-Go-API
+  - design-Python-interface
+  - design-Python-worker
+  - design-attribute
+  - design-constructor
+  - design-context-manager
+  - design-custom-type
+  - design-dynamic-mechanism
+  - design-failure-mode
+  - design-generator
+  - design-idempotent-API
+  - design-iterator
+  - design-module
+  - design-observability
+  - design-performance-experiment
+  - design-record
+  - design-routine
+  - design-shared-module
+  - design-strategy
+  - design-subclass
+  - diagnose-defect
+  - diagnose-leak
+  - diagnose-memory
+  - diagnose-retention
+  - diagnose-stale-data
+  - diagnose-type-boundary
+  - diagnosis
+  - distributed-migration
+  - distributed-repair
+  - distributed-review
+  - document-API
+  - domain-architecture-review
+  - domain-assessment
+  - domain-decomposition
+  - domain-modeling
+  - domain-review
+  - domain-strategy
+  - early warning
+  - entity-design
+  - evaluate-duplication
+  - evaluate-performance-change
+  - event-design
+  - explain-workaround
+  - extract-abstraction
+  - extract-helper
+  - factory-design
+  - fitness-design
+  - fix-flake
+  - framework-adoption
+  - framework-design
+  - framework-extraction
+  - framework-migration
+  - governance
+  - governance-design
+  - hotspot-triage
+  - implement-Go-error-path
+  - implement-I-O
+  - implement-Python
+  - implement-async
+  - implement-contract
+  - implement-feature
+  - implement-language-code
+  - implement-protocol
+  - implement-routine
+  - implement-special-method
+  - implement-text-boundary
+  - implementation
+  - implementation-assessment
+  - improve-throughput
+  - integration
+  - integration-design
+  - interface-design
+  - interpret-benchmark
+  - interpret-metric
+  - introduce-dependency
+  - investigate-flake
+  - large-model-organization
+  - launch-goroutine
+  - legacy-integration
+  - legacy-migration
+  - legacy-seam
+  - manage-attributes
+  - memory-diagnosis
+  - messaging-review
+  - metric-review
+  - microservice-design
+  - migrate
+  - migration
+  - migration-approval
+  - migration-design
+  - migration-review
+  - model-design
+  - model-domain-concept
+  - model-refactoring
+  - model-state
+  - modernization
+  - modernize-Python
+  - modernize-syntax
+  - modularization
+  - module-design
+  - move-code
+  - name-symbol
+  - naming
+  - operational-hardening
+  - optimization
+  - optimization-selection
+  - optimization-triage
+  - optimize
+  - optimize-Go-hot-path
+  - optimize-data-path
+  - optimize-latency
+  - optimize-library
+  - optimize-materialization
+  - optimize-system
+  - optimize-throughput
+  - package reorganization
+  - package-design
+  - performance-plan
+  - performance-regression
+  - performance-repair
+  - performance-review
+  - performance-triage
+  - persistence-design
+  - persistence-mapping
+  - persistence-reconstitution
+  - place-Go-behavior
+  - place-new-behavior
+  - placement
+  - plan-change
+  - plan-implementation
+  - plan-review
+  - plan-tests
+  - planning
+  - platform-contract
+  - plugin-design
+  - pool-review
+  - prioritize investigation or campaign
+  - profile-analysis
+  - protocol evolution
+  - public rename
+  - pull request review
+  - quality-assessment
+  - quality-review
+  - query-review
+  - recommendation
+  - reduce-allocation
+  - refactor
+  - refactor-data-class
+  - refactoring
+  - refactoring-prioritization
+  - rename
+  - repair
+  - repair-Go-failure
+  - repair-aliasing
+  - repair-corruption
+  - repair-defect
+  - repair-encoding
+  - repair-failure
+  - repair-hash-equality
+  - repair-leak
+  - repair-review
+  - repair-stale-data
+  - repair-state-bug
+  - repair-task-leak
+  - replace-inheritance
+  - repository-assessment
+  - repository-design
+  - resilience-review
+  - review
+  - review-ABC
+  - review-API
+  - review-I-O
+  - review-Python
+  - review-Python-API
+  - review-async
+  - review-benchmark
+  - review-cache
+  - review-cleanup
+  - review-comment
+  - review-control-flow
+  - review-coverage-gate
+  - review-errors
+  - review-fast-path
+  - review-generator
+  - review-idiom
+  - review-interface
+  - review-metaclass
+  - review-mixin
+  - review-mutation
+  - review-operator
+  - review-optimization
+  - review-package
+  - review-representation
+  - review-resource-use
+  - review-shutdown
+  - review-special-method
+  - review-types
+  - review-worker-pool
+  - roadmap-prioritization
+  - rule-extraction
+  - run-optimization-campaign
+  - saga-design
+  - schema change
+  - select-boundary
+  - select-callable
+  - select-concurrency
+  - select-optimization
+  - service-decomposition
+  - service-extraction
+  - service-review
+  - shutdown-design
+  - simplify-error-handling
+  - simplify-hierarchy
+  - social or productivity analysis
+  - sourcing-decision
+  - specialize-hot-path
+  - specification-design
+  - stability
+  - state-design
+  - strategic-domain-design
+  - stream-data
+  - style-selection
+  - tactical-DDD-review
+  - team-boundary-design
+  - topology-migration
+  - topology-selection
+  - transaction-design
+  - translate-failure
+  - trend analysis
+  - unfamiliar-change
+  - upgrade
+  - validate-benchmark
+  - validate-input
+  - value-design
+  - vendor-integration
+  - verification
+  - verify-implementation
+  - verify-optimization
+  - verify-refactor
+  - write-benchmark
+  - write-comment
+- family: architecture-assessment
+  aliases:
+  - architecture-review
+  variants:
+  - ADR-review
+  - API-design
+  - API-review
+  - ORM-review
+  - accept-improvement
+  - add-Go-concurrency
+  - add-cache
+  - add-concurrency
+  - add-interface
+  - aggregate-design
+  - aggregate-review
+  - algorithm-review
+  - analyze-incident
+  - any active campaign
+  - any behavioral analysis
+  - any code or data change
+  - architecture-assessment
+  - architecture-decision
+  - architecture-evolution
+  - architecture-fitness
+  - architecture-governance
+  - architecture-implementation
+  - architecture-planning
+  - architecture-review
+  - architecture-risk
+  - architecture-verification
+  - assess-refactoring
+  - assess-structure
+  - assessment
+  - association-design
+  - asynchronous-workflow
+  - behavior-placement
+  - benchmark-comparison
+  - bottleneck-diagnosis
+  - bound-concurrency
+  - boundary selection
+  - boundary-design
+  - boundary-planning
+  - boundary-review
+  - boundary-selection
+  - boundary-testing
+  - bounded-context-discovery
+  - build-guard
+  - cache-review
+  - capacity-planning
+  - change large unclear unit
+  - change poorly characterized code
+  - choose broad characterization surface
+  - cleanup
+  - close-incident-cause
+  - close-performance-work
+  - command-query-review
+  - communication-design
+  - compare-performance
+  - component-design
+  - component-partitioning
+  - composite-change
+  - consistency-review
+  - context-mapping
+  - context-translation
+  - create first test seam
+  - creation-API
+  - cross-repo co-change analysis
+  - decomposition
+  - delete
+  - deletion
+  - dependency-breaking
+  - dependency-review
+  - design-Python-worker
+  - design-observability
+  - design-performance-experiment
+  - determine tests
+  - diagnose-defect
+  - diagnose-leak
+  - diagnose-memory
+  - diagnose-stale-data
+  - diagnosis
+  - discover baseline
+  - distributed-migration
+  - distributed-repair
+  - distributed-review
+  - domain-architecture-review
+  - domain-assessment
+  - domain-decomposition
+  - domain-modeling
+  - domain-review
+  - domain-strategy
+  - enable characterization
+  - entity-design
+  - establish preservation boundary
+  - evaluate-duplication
+  - evaluate-performance-change
+  - event-design
+  - extract-abstraction
+  - factory-design
+  - fitness-design
+  - fix-flake
+  - framework-adoption
+  - framework-design
+  - framework-extraction
+  - framework-migration
+  - get code under test
+  - governance
+  - governance-design
+  - hotspot-triage
+  - implement-async
+  - implementation
+  - improve-throughput
+  - integration
+  - integration-design
+  - interface-design
+  - interpret-benchmark
+  - interpret-metric
+  - investigate-flake
+  - large-model-organization
+  - legacy-integration
+  - legacy-migration
+  - legacy-seam
+  - memory-diagnosis
+  - messaging-review
+  - metric-review
+  - microservice-design
+  - migrate
+  - migration
+  - migration-approval
+  - migration-design
+  - migration-review
+  - model-design
+  - model-refactoring
+  - modernization
+  - modularization
+  - module-design
+  - naming
+  - optimization
+  - optimization-selection
+  - optimization-triage
+  - optimize
+  - optimize-latency
+  - optimize-library
+  - optimize-system
+  - optimize-throughput
+  - package-design
+  - performance-plan
+  - performance-regression
+  - performance-repair
+  - performance-review
+  - performance-triage
+  - persistence-design
+  - persistence-mapping
+  - persistence-reconstitution
+  - placement
+  - plan-change
+  - planning
+  - platform-contract
+  - plugin-design
+  - pool-review
+  - profile-analysis
+  - protect first legacy restructure
+  - protect refactor
+  - protocol evolution
+  - public rename
+  - quality-assessment
+  - quality-review
+  - query-review
+  - recommendation
+  - reduce-allocation
+  - refactor
+  - refactoring
+  - refactoring-prioritization
+  - repair
+  - repair-defect
+  - repair-stale-data
+  - repair-task-leak
+  - repository-assessment
+  - repository-design
+  - review
+  - review-async
+  - review-benchmark
+  - review-cache
+  - review-fast-path
+  - review-optimization
+  - review-resource-use
+  - review-worker-pool
+  - roadmap-prioritization
+  - rule-extraction
+  - run-optimization-campaign
+  - saga-design
+  - schema change
+  - select-boundary
+  - select-concurrency
+  - select-optimization
+  - service-decomposition
+  - service-extraction
+  - service-review
+  - shutdown-design
+  - social or productivity analysis
+  - sourcing-decision
+  - specialize-hot-path
+  - specification-design
+  - state-design
+  - strategic-domain-design
+  - style-selection
+  - substitute collaborator
+  - tactical-DDD-review
+  - team-boundary-design
+  - topology-migration
+  - topology-selection
+  - transaction-design
+  - understand code before change
+  - unfamiliar-change
+  - upgrade
+  - urgent feature in untestable code
+  - validate-benchmark
+  - value-design
+  - vendor-integration
+  - verification
+  - verify-optimization
+  - verify-refactor
+  - write-benchmark
+- family: domain-design
+  aliases:
+  - domain-modeling
+  variants:
+  - ADR-review
+  - API-design
+  - API-review
+  - ORM-review
+  - accept-improvement
+  - acquire-Go-resource
+  - acquire-resource
+  - add-Go-dependency
+  - add-generics
+  - add-interface
+  - add-language-feature
+  - add-property
+  - add-protocol
+  - add-type-hints
+  - aggregate-design
+  - aggregate-review
+  - any code or data change
+  - architecture-assessment
+  - architecture-evolution
+  - architecture-fitness
+  - architecture-governance
+  - architecture-implementation
+  - architecture-planning
+  - architecture-review
+  - architecture-risk
+  - architecture-verification
+  - assess-domain-object
+  - assess-refactoring
+  - assess-structure
+  - assess-tests
+  - assessment
+  - association-design
+  - asynchronous-workflow
+  - behavior-placement
+  - behavior-preserving-change
+  - boundary selection
+  - boundary-design
+  - boundary-planning
+  - boundary-review
+  - boundary-selection
+  - boundary-testing
+  - bounded-context-discovery
+  - build-guard
+  - change large unclear unit
+  - change poorly characterized code
+  - change-public-API
+  - change-public-contract
+  - characterize-legacy
+  - choose broad characterization surface
+  - choose-Go-receiver
+  - choose-Python-container
+  - choose-data-structure
+  - cleanup
+  - command-query-review
+  - communication-design
+  - compare-interface
+  - component-design
+  - component-partitioning
+  - composite-change
+  - consistency-review
+  - context-mapping
+  - context-translation
+  - create first test seam
+  - create-public-API
+  - create-test-seam
+  - creation-API
+  - cross-repo co-change analysis
+  - decomposition
+  - delete
+  - dependency-breaking
+  - dependency-review
+  - design-API
+  - design-Go-API
+  - design-Python-interface
+  - design-attribute
+  - design-constructor
+  - design-context-manager
+  - design-custom-type
+  - design-dynamic-mechanism
+  - design-failure-mode
+  - design-generator
+  - design-idempotent-API
+  - design-iterator
+  - design-module
+  - design-record
+  - design-routine
+  - design-shared-module
+  - design-strategy
+  - design-subclass
+  - determine tests
+  - diagnose-retention
+  - diagnose-type-boundary
+  - diagnosis
+  - discover baseline
+  - distributed-migration
+  - distributed-repair
+  - distributed-review
+  - document-API
+  - domain-architecture-review
+  - domain-assessment
+  - domain-decomposition
+  - domain-modeling
+  - domain-review
+  - domain-strategy
+  - enable characterization
+  - entity-design
+  - establish preservation boundary
+  - evaluate-duplication
+  - event-design
+  - explain-workaround
+  - extract-abstraction
+  - extract-helper
+  - factory-design
+  - fitness-design
+  - framework-adoption
+  - framework-design
+  - framework-extraction
+  - framework-migration
+  - get code under test
+  - governance
+  - governance-design
+  - hotspot-triage
+  - implement-Go-error-path
+  - implement-I-O
+  - implement-Python
+  - implement-contract
+  - implement-feature
+  - implement-language-code
+  - implement-protocol
+  - implement-routine
+  - implement-special-method
+  - implement-text-boundary
+  - implementation
+  - integration
+  - integration-design
+  - interface-design
+  - introduce-dependency
+  - large-model-organization
+  - launch-goroutine
+  - legacy-integration
+  - legacy-migration
+  - legacy-seam
+  - manage-attributes
+  - messaging-review
+  - metric-review
+  - microservice-design
+  - migrate
+  - migration
+  - migration-design
+  - migration-review
+  - model-design
+  - model-domain-concept
+  - model-refactoring
+  - model-state
+  - modernization
+  - modernize-Python
+  - modernize-syntax
+  - modularization
+  - module-design
+  - move-code
+  - name-symbol
+  - naming
+  - operational-hardening
+  - optimization
+  - optimization-triage
+  - optimize
+  - optimize-Go-hot-path
+  - optimize-data-path
+  - optimize-materialization
+  - package-design
+  - persistence-design
+  - persistence-mapping
+  - persistence-reconstitution
+  - place-Go-behavior
+  - place-new-behavior
+  - placement
+  - plan-change
+  - plan-implementation
+  - plan-tests
+  - planning
+  - platform-contract
+  - plugin-design
+  - protect first legacy restructure
+  - protect refactor
+  - protocol evolution
+  - public rename
+  - quality-assessment
+  - quality-review
+  - query-review
+  - recommendation
+  - refactor
+  - refactor-data-class
+  - refactoring
+  - refactoring-prioritization
+  - rename
+  - repair
+  - repair-Go-failure
+  - repair-aliasing
+  - repair-corruption
+  - repair-defect
+  - repair-encoding
+  - repair-failure
+  - repair-hash-equality
+  - repair-leak
+  - repair-state-bug
+  - replace-inheritance
+  - repository-assessment
+  - repository-design
+  - resilience-review
+  - review
+  - review-ABC
+  - review-API
+  - review-I-O
+  - review-Python
+  - review-Python-API
+  - review-cache
+  - review-cleanup
+  - review-comment
+  - review-control-flow
+  - review-coverage-gate
+  - review-errors
+  - review-generator
+  - review-idiom
+  - review-interface
+  - review-metaclass
+  - review-mixin
+  - review-mutation
+  - review-operator
+  - review-package
+  - review-representation
+  - review-shutdown
+  - review-special-method
+  - review-types
+  - roadmap-prioritization
+  - rule-extraction
+  - saga-design
+  - schema change
+  - select-boundary
+  - select-callable
+  - service-decomposition
+  - service-extraction
+  - service-review
+  - simplify-error-handling
+  - simplify-hierarchy
+  - sourcing-decision
+  - specification-design
+  - state-design
+  - strategic-domain-design
+  - stream-data
+  - style-selection
+  - substitute collaborator
+  - tactical-DDD-review
+  - team-boundary-design
+  - topology-migration
+  - topology-selection
+  - transaction-design
+  - translate-failure
+  - understand code before change
+  - unfamiliar-change
+  - upgrade
+  - urgent feature in untestable code
+  - validate-input
+  - value-design
+  - vendor-integration
+  - verify-implementation
+  - verify-optimization
+  - verify-refactor
+  - write-comment
+- family: refactoring
+  aliases:
+  - structural-refactoring
+  variants:
+  - ADR-review
+  - API-design
+  - API-review
+  - accept-improvement
+  - acquire-Go-resource
+  - acquire-resource
+  - add-Go-dependency
+  - add-generics
+  - add-interface
+  - add-language-feature
+  - add-property
+  - add-protocol
+  - add-type-hints
+  - analyze-incident
+  - any active campaign
+  - any behavioral analysis
+  - any code or data change
+  - architecture-assessment
+  - architecture-decision
+  - architecture-evolution
+  - architecture-fitness
+  - architecture-governance
+  - architecture-implementation
+  - architecture-planning
+  - architecture-review
+  - architecture-risk
+  - architecture-verification
+  - assess-domain-object
+  - assess-refactoring
+  - assess-structure
+  - assess-tests
+  - assessment
+  - asynchronous-workflow
+  - automated transformation
+  - behavior-preserving-change
+  - boundary-design
+  - boundary-planning
+  - boundary-review
+  - boundary-selection
+  - boundary-testing
+  - broad restructuring
+  - build-guard
+  - change large unclear unit
+  - change poorly characterized code
+  - change-public-API
+  - change-public-contract
+  - characterize-legacy
+  - choose broad characterization surface
+  - choose-Go-receiver
+  - choose-Python-container
+  - choose-data-structure
+  - cleanup
+  - close-incident-cause
+  - codemod
+  - communication-design
+  - compare-interface
+  - component-design
+  - component-partitioning
+  - composite-change
+  - context-mapping
+  - create first test seam
+  - create-public-API
+  - create-test-seam
+  - cross-repo co-change analysis
+  - decide whether to refactor
+  - decomposition
+  - delete
+  - deletion
+  - dependency breaking
+  - dependency-breaking
+  - dependency-review
+  - design-API
+  - design-Go-API
+  - design-Python-interface
+  - design-attribute
+  - design-constructor
+  - design-context-manager
+  - design-custom-type
+  - design-dynamic-mechanism
+  - design-failure-mode
+  - design-generator
+  - design-idempotent-API
+  - design-iterator
+  - design-module
+  - design-record
+  - design-routine
+  - design-shared-module
+  - design-strategy
+  - design-subclass
+  - determine tests
+  - diagnose-defect
+  - diagnose-retention
+  - diagnose-type-boundary
+  - diagnosis
+  - discover baseline
+  - distributed-migration
+  - distributed-repair
+  - distributed-review
+  - document-API
+  - domain-modeling
+  - enable characterization
+  - establish preservation boundary
+  - evaluate smell
+  - evaluate-duplication
+  - event-design
+  - explain-workaround
+  - extract-abstraction
+  - extract-helper
+  - first hotspot campaign
+  - fitness-design
+  - fix-flake
+  - framework-adoption
+  - framework-design
+  - framework-extraction
+  - framework-migration
+  - get code under test
+  - governance
+  - governance-design
+  - hotspot-triage
+  - implement-Go-error-path
+  - implement-I-O
+  - implement-Python
+  - implement-contract
+  - implement-feature
+  - implement-language-code
+  - implement-protocol
+  - implement-routine
+  - implement-special-method
+  - implement-text-boundary
+  - implementation
+  - integration
+  - interface-design
+  - introduce-dependency
+  - investigate-flake
+  - launch-goroutine
+  - legacy extraction
+  - legacy-integration
+  - legacy-seam
+  - manage-attributes
+  - messaging-review
+  - metric-review
+  - microservice-design
+  - migrate
+  - migration
+  - migration-approval
+  - migration-design
+  - migration-review
+  - model-domain-concept
+  - model-state
+  - modernization
+  - modernize-Python
+  - modernize-syntax
+  - modularization
+  - module-design
+  - move-code
+  - name-symbol
+  - old-code review
+  - operational-hardening
+  - optimization
+  - optimization-triage
+  - optimize
+  - optimize-Go-hot-path
+  - optimize-data-path
+  - optimize-materialization
+  - package-design
+  - persistence-design
+  - place-Go-behavior
+  - place-new-behavior
+  - placement
+  - plan-change
+  - plan-implementation
+  - plan-tests
+  - planning
+  - plugin-design
+  - protect first legacy restructure
+  - protect refactor
+  - protocol evolution
+  - public rename
+  - quality-assessment
+  - quality-review
+  - recommendation
+  - refactor
+  - refactor-data-class
+  - refactoring
+  - rename
+  - repair
+  - repair-Go-failure
+  - repair-aliasing
+  - repair-corruption
+  - repair-defect
+  - repair-encoding
+  - repair-failure
+  - repair-hash-equality
+  - repair-leak
+  - repair-state-bug
+  - replace-inheritance
+  - repository-assessment
+  - resilience-review
+  - review
+  - review structure
+  - review-ABC
+  - review-API
+  - review-I-O
+  - review-Python
+  - review-Python-API
+  - review-cache
+  - review-cleanup
+  - review-comment
+  - review-control-flow
+  - review-coverage-gate
+  - review-errors
+  - review-generator
+  - review-idiom
+  - review-interface
+  - review-metaclass
+  - review-mixin
+  - review-mutation
+  - review-operator
+  - review-package
+  - review-representation
+  - review-shutdown
+  - review-special-method
+  - review-types
+  - rewrite assessment
+  - saga-design
+  - schema change
+  - select campaign
+  - select-boundary
+  - select-callable
+  - service-decomposition
+  - service-extraction
+  - simplify-error-handling
+  - simplify-hierarchy
+  - social or productivity analysis
+  - state-design
+  - stream-data
+  - style-selection
+  - substitute collaborator
+  - team-boundary-design
+  - topology-migration
+  - topology-selection
+  - translate-failure
+  - understand code before change
+  - unfamiliar-change
+  - upgrade
+  - urgent feature in untestable code
+  - validate-input
+  - verification
+  - verify-implementation
+  - verify-optimization
+  - verify-refactor
+  - write-comment
+- family: legacy-change
+  aliases:
+  - legacy-code-change
+  variants:
+  - ADR-review
+  - API-design
+  - API-review
+  - accept-improvement
+  - acquire-Go-resource
+  - acquire-resource
+  - add-Go-dependency
+  - add-generics
+  - add-interface
+  - add-language-feature
+  - add-property
+  - add-protocol
+  - add-type-hints
+  - analyze-incident
+  - any active campaign
+  - any behavioral analysis
+  - any code or data change
+  - architecture-assessment
+  - architecture-decision
+  - architecture-evolution
+  - architecture-fitness
+  - architecture-governance
+  - architecture-implementation
+  - architecture-planning
+  - architecture-review
+  - architecture-risk
+  - architecture-verification
+  - assess-domain-object
+  - assess-refactoring
+  - assess-structure
+  - assess-tests
+  - assessment
+  - asynchronous-workflow
+  - automated transformation
+  - behavior-preserving-change
+  - boundary-design
+  - boundary-planning
+  - boundary-review
+  - boundary-selection
+  - boundary-testing
+  - broad restructuring
+  - build-guard
+  - change large unclear unit
+  - change poorly characterized code
+  - change-public-API
+  - change-public-contract
+  - characterize-legacy
+  - choose broad characterization surface
+  - choose-Go-receiver
+  - choose-Python-container
+  - choose-data-structure
+  - cleanup
+  - close-incident-cause
+  - codemod
+  - communication-design
+  - compare-interface
+  - component-design
+  - component-partitioning
+  - composite-change
+  - context-mapping
+  - create first test seam
+  - create-public-API
+  - create-test-seam
+  - cross-repo co-change analysis
+  - decide whether to refactor
+  - decomposition
+  - delete
+  - deletion
+  - dependency breaking
+  - dependency-breaking
+  - dependency-review
+  - design-API
+  - design-Go-API
+  - design-Python-interface
+  - design-attribute
+  - design-constructor
+  - design-context-manager
+  - design-custom-type
+  - design-dynamic-mechanism
+  - design-failure-mode
+  - design-generator
+  - design-idempotent-API
+  - design-iterator
+  - design-module
+  - design-record
+  - design-routine
+  - design-shared-module
+  - design-strategy
+  - design-subclass
+  - determine tests
+  - diagnose-defect
+  - diagnose-retention
+  - diagnose-type-boundary
+  - diagnosis
+  - discover baseline
+  - distributed-migration
+  - distributed-repair
+  - distributed-review
+  - document-API
+  - domain-modeling
+  - enable characterization
+  - establish preservation boundary
+  - evaluate smell
+  - evaluate-duplication
+  - event-design
+  - explain-workaround
+  - extract-abstraction
+  - extract-helper
+  - first hotspot campaign
+  - fitness-design
+  - fix-flake
+  - framework-adoption
+  - framework-design
+  - framework-extraction
+  - framework-migration
+  - get code under test
+  - governance
+  - governance-design
+  - hotspot-triage
+  - implement-Go-error-path
+  - implement-I-O
+  - implement-Python
+  - implement-contract
+  - implement-feature
+  - implement-language-code
+  - implement-protocol
+  - implement-routine
+  - implement-special-method
+  - implement-text-boundary
+  - implementation
+  - integration
+  - interface-design
+  - introduce-dependency
+  - investigate-flake
+  - launch-goroutine
+  - legacy extraction
+  - legacy-integration
+  - legacy-seam
+  - manage-attributes
+  - messaging-review
+  - metric-review
+  - microservice-design
+  - migrate
+  - migration
+  - migration-approval
+  - migration-design
+  - migration-review
+  - model-domain-concept
+  - model-state
+  - modernization
+  - modernize-Python
+  - modernize-syntax
+  - modularization
+  - module-design
+  - move-code
+  - name-symbol
+  - old-code review
+  - operational-hardening
+  - optimization
+  - optimization-triage
+  - optimize
+  - optimize-Go-hot-path
+  - optimize-data-path
+  - optimize-materialization
+  - package-design
+  - persistence-design
+  - place-Go-behavior
+  - place-new-behavior
+  - placement
+  - plan-change
+  - plan-implementation
+  - plan-tests
+  - planning
+  - plugin-design
+  - protect first legacy restructure
+  - protect refactor
+  - protocol evolution
+  - public rename
+  - quality-assessment
+  - quality-review
+  - recommendation
+  - refactor
+  - refactor-data-class
+  - refactoring
+  - rename
+  - repair
+  - repair-Go-failure
+  - repair-aliasing
+  - repair-corruption
+  - repair-defect
+  - repair-encoding
+  - repair-failure
+  - repair-hash-equality
+  - repair-leak
+  - repair-state-bug
+  - replace-inheritance
+  - repository-assessment
+  - resilience-review
+  - review
+  - review structure
+  - review-ABC
+  - review-API
+  - review-I-O
+  - review-Python
+  - review-Python-API
+  - review-cache
+  - review-cleanup
+  - review-comment
+  - review-control-flow
+  - review-coverage-gate
+  - review-errors
+  - review-generator
+  - review-idiom
+  - review-interface
+  - review-metaclass
+  - review-mixin
+  - review-mutation
+  - review-operator
+  - review-package
+  - review-representation
+  - review-shutdown
+  - review-special-method
+  - review-types
+  - rewrite assessment
+  - saga-design
+  - schema change
+  - select campaign
+  - select-boundary
+  - select-callable
+  - service-decomposition
+  - service-extraction
+  - simplify-error-handling
+  - simplify-hierarchy
+  - social or productivity analysis
+  - state-design
+  - stream-data
+  - style-selection
+  - substitute collaborator
+  - team-boundary-design
+  - topology-migration
+  - topology-selection
+  - translate-failure
+  - understand code before change
+  - unfamiliar-change
+  - upgrade
+  - urgent feature in untestable code
+  - validate-input
+  - verification
+  - verify-implementation
+  - verify-optimization
+  - verify-refactor
+  - write-comment
+- family: defect-repair
+  aliases:
+  - repair
+  variants:
+  - ADR-review
+  - API-design
+  - API-review
+  - CI warning
+  - accept-improvement
+  - acquire-Go-resource
+  - acquire-resource
+  - add-Go-concurrency
+  - add-Go-dependency
+  - add-cache
+  - add-concurrency
+  - add-generics
+  - add-interface
+  - add-language-feature
+  - add-property
+  - add-protocol
+  - add-type-hints
+  - algorithm-review
+  - analyze-incident
+  - any active campaign
+  - any behavioral analysis
+  - any code or data change
+  - architecture-assessment
+  - architecture-decision
+  - architecture-evolution
+  - architecture-fitness
+  - architecture-governance
+  - architecture-implementation
+  - architecture-planning
+  - architecture-review
+  - architecture-risk
+  - architecture-verification
+  - assess-domain-object
+  - assess-refactoring
+  - assess-structure
+  - assess-tests
+  - assessment
+  - asynchronous-workflow
+  - behavior-preserving-change
+  - benchmark-comparison
+  - bottleneck-diagnosis
+  - bound-concurrency
+  - boundary analysis
+  - boundary-design
+  - boundary-planning
+  - boundary-review
+  - boundary-selection
+  - boundary-testing
+  - build-guard
+  - cache-review
+  - capacity-planning
+  - change large unclear unit
+  - change poorly characterized code
+  - change-public-API
+  - change-public-contract
+  - characterize-legacy
+  - choose broad characterization surface
+  - choose-Go-receiver
+  - choose-Python-container
+  - choose-data-structure
+  - cleanup
+  - clone analysis
+  - close-incident-cause
+  - close-performance-work
+  - code-review
+  - communication-design
+  - companion change
+  - compare-interface
+  - compare-performance
+  - component-design
+  - component-partitioning
+  - composite-change
+  - context-mapping
+  - create first test seam
+  - create-public-API
+  - create-test-seam
+  - cross-repo co-change analysis
+  - decomposition
+  - delete
+  - deletion
+  - dependency-breaking
+  - dependency-review
+  - design or review isolated tests
+  - design-API
+  - design-Go-API
+  - design-Python-interface
+  - design-Python-worker
+  - design-attribute
+  - design-constructor
+  - design-context-manager
+  - design-custom-type
+  - design-dynamic-mechanism
+  - design-failure-mode
+  - design-generator
+  - design-idempotent-API
+  - design-iterator
+  - design-module
+  - design-observability
+  - design-performance-experiment
+  - design-record
+  - design-routine
+  - design-shared-module
+  - design-strategy
+  - design-subclass
+  - determine tests
+  - diagnose-defect
+  - diagnose-leak
+  - diagnose-memory
+  - diagnose-retention
+  - diagnose-stale-data
+  - diagnose-type-boundary
+  - diagnosis
+  - discover baseline
+  - distributed-migration
+  - distributed-repair
+  - distributed-review
+  - document-API
+  - domain-modeling
+  - early warning
+  - enable characterization
+  - establish preservation boundary
+  - evaluate-duplication
+  - evaluate-performance-change
+  - event-design
+  - explain-workaround
+  - extract-abstraction
+  - extract-helper
+  - fitness-design
+  - fix-flake
+  - framework-adoption
+  - framework-design
+  - framework-extraction
+  - framework-migration
+  - get code under test
+  - governance
+  - governance-design
+  - hotspot-triage
+  - implement-Go-error-path
+  - implement-I-O
+  - implement-Python
+  - implement-async
+  - implement-contract
+  - implement-feature
+  - implement-language-code
+  - implement-protocol
+  - implement-routine
+  - implement-special-method
+  - implement-text-boundary
+  - implementation
+  - implementation-assessment
+  - improve-throughput
+  - integration
+  - interface-design
+  - interpret-benchmark
+  - interpret-metric
+  - introduce-dependency
+  - investigate-flake
+  - launch-goroutine
+  - legacy-integration
+  - legacy-seam
+  - manage-attributes
+  - memory-diagnosis
+  - messaging-review
+  - metric-review
+  - microservice-design
+  - migrate
+  - migration
+  - migration-approval
+  - migration-design
+  - migration-review
+  - model-domain-concept
+  - model-state
+  - modernization
+  - modernize-Python
+  - modernize-syntax
+  - modularization
+  - module-design
+  - move-code
+  - name-symbol
+  - operational-hardening
+  - optimization
+  - optimization-selection
+  - optimization-triage
+  - optimize
+  - optimize-Go-hot-path
+  - optimize-data-path
+  - optimize-latency
+  - optimize-library
+  - optimize-materialization
+  - optimize-system
+  - optimize-throughput
+  - package reorganization
+  - package-design
+  - performance-plan
+  - performance-regression
+  - performance-repair
+  - performance-review
+  - performance-triage
+  - persistence-design
+  - place-Go-behavior
+  - place-new-behavior
+  - placement
+  - plan-change
+  - plan-implementation
+  - plan-review
+  - plan-tests
+  - planning
+  - plugin-design
+  - pool-review
+  - prioritize investigation or campaign
+  - profile-analysis
+  - protect first legacy restructure
+  - protect refactor
+  - protocol evolution
+  - public rename
+  - pull request review
+  - quality-assessment
+  - quality-review
+  - recommendation
+  - reduce-allocation
+  - refactor
+  - refactor-data-class
+  - refactoring
+  - rename
+  - repair
+  - repair-Go-failure
+  - repair-aliasing
+  - repair-corruption
+  - repair-defect
+  - repair-encoding
+  - repair-failure
+  - repair-hash-equality
+  - repair-leak
+  - repair-review
+  - repair-stale-data
+  - repair-state-bug
+  - repair-task-leak
+  - replace-inheritance
+  - repository-assessment
+  - resilience-review
+  - review
+  - review-ABC
+  - review-API
+  - review-I-O
+  - review-Python
+  - review-Python-API
+  - review-async
+  - review-benchmark
+  - review-cache
+  - review-cleanup
+  - review-comment
+  - review-control-flow
+  - review-coverage-gate
+  - review-errors
+  - review-fast-path
+  - review-generator
+  - review-idiom
+  - review-interface
+  - review-metaclass
+  - review-mixin
+  - review-mutation
+  - review-operator
+  - review-optimization
+  - review-package
+  - review-representation
+  - review-resource-use
+  - review-shutdown
+  - review-special-method
+  - review-types
+  - review-worker-pool
+  - run-optimization-campaign
+  - saga-design
+  - schema change
+  - select-boundary
+  - select-callable
+  - select-concurrency
+  - select-optimization
+  - service-decomposition
+  - service-extraction
+  - shutdown-design
+  - simplify-error-handling
+  - simplify-hierarchy
+  - social or productivity analysis
+  - specialize-hot-path
+  - stability
+  - state-design
+  - stream-data
+  - style-selection
+  - substitute collaborator
+  - team-boundary-design
+  - topology-migration
+  - topology-selection
+  - translate-failure
+  - trend analysis
+  - understand code before change
+  - unfamiliar-change
+  - upgrade
+  - urgent feature in untestable code
+  - validate-benchmark
+  - validate-input
+  - verification
+  - verify-implementation
+  - verify-optimization
+  - verify-refactor
+  - write-benchmark
+  - write-comment
+- family: performance-optimization
+  aliases:
+  - performance-work
+  variants:
+  - ADR-review
+  - API-design
+  - API-review
+  - accept-improvement
+  - acquire-Go-resource
+  - acquire-resource
+  - add-Go-concurrency
+  - add-Go-dependency
+  - add-cache
+  - add-concurrency
+  - add-generics
+  - add-interface
+  - add-language-feature
+  - add-property
+  - add-protocol
+  - add-type-hints
+  - algorithm-review
+  - analyze-incident
+  - any active campaign
+  - any behavioral analysis
+  - any code or data change
+  - architecture-assessment
+  - architecture-decision
+  - architecture-evolution
+  - architecture-fitness
+  - architecture-governance
+  - architecture-implementation
+  - architecture-planning
+  - architecture-review
+  - architecture-risk
+  - architecture-verification
+  - assess-domain-object
+  - assess-refactoring
+  - assess-structure
+  - assess-tests
+  - assessment
+  - asynchronous-workflow
+  - behavior-preserving-change
+  - benchmark-comparison
+  - bottleneck-diagnosis
+  - bound-concurrency
+  - boundary-design
+  - boundary-planning
+  - boundary-review
+  - boundary-selection
+  - boundary-testing
+  - build-guard
+  - cache-review
+  - capacity-planning
+  - change-public-API
+  - change-public-contract
+  - characterize-legacy
+  - choose-Go-receiver
+  - choose-Python-container
+  - choose-data-structure
+  - cleanup
+  - close-incident-cause
+  - close-performance-work
+  - communication-design
+  - compare-interface
+  - compare-performance
+  - component-design
+  - component-partitioning
+  - composite-change
+  - context-mapping
+  - create-public-API
+  - create-test-seam
+  - cross-repo co-change analysis
+  - decomposition
+  - delete
+  - deletion
+  - dependency-breaking
+  - dependency-review
+  - design-API
+  - design-Go-API
+  - design-Python-interface
+  - design-Python-worker
+  - design-attribute
+  - design-constructor
+  - design-context-manager
+  - design-custom-type
+  - design-dynamic-mechanism
+  - design-failure-mode
+  - design-generator
+  - design-idempotent-API
+  - design-iterator
+  - design-module
+  - design-observability
+  - design-performance-experiment
+  - design-record
+  - design-routine
+  - design-shared-module
+  - design-strategy
+  - design-subclass
+  - diagnose-defect
+  - diagnose-leak
+  - diagnose-memory
+  - diagnose-retention
+  - diagnose-stale-data
+  - diagnose-type-boundary
+  - diagnosis
+  - distributed-migration
+  - distributed-repair
+  - distributed-review
+  - document-API
+  - domain-modeling
+  - evaluate-duplication
+  - evaluate-performance-change
+  - event-design
+  - explain-workaround
+  - extract-abstraction
+  - extract-helper
+  - fitness-design
+  - fix-flake
+  - framework-adoption
+  - framework-design
+  - framework-extraction
+  - framework-migration
+  - governance
+  - governance-design
+  - hotspot-triage
+  - implement-Go-error-path
+  - implement-I-O
+  - implement-Python
+  - implement-async
+  - implement-contract
+  - implement-feature
+  - implement-language-code
+  - implement-protocol
+  - implement-routine
+  - implement-special-method
+  - implement-text-boundary
+  - implementation
+  - improve-throughput
+  - integration
+  - interface-design
+  - interpret-benchmark
+  - interpret-metric
+  - introduce-dependency
+  - investigate-flake
+  - launch-goroutine
+  - legacy-integration
+  - legacy-seam
+  - manage-attributes
+  - memory-diagnosis
+  - messaging-review
+  - metric-review
+  - microservice-design
+  - migrate
+  - migration
+  - migration-approval
+  - migration-design
+  - migration-review
+  - model-domain-concept
+  - model-state
+  - modernization
+  - modernize-Python
+  - modernize-syntax
+  - modularization
+  - module-design
+  - move-code
+  - name-symbol
+  - operational-hardening
+  - optimization
+  - optimization-selection
+  - optimization-triage
+  - optimize
+  - optimize-Go-hot-path
+  - optimize-data-path
+  - optimize-latency
+  - optimize-library
+  - optimize-materialization
+  - optimize-system
+  - optimize-throughput
+  - package-design
+  - performance-plan
+  - performance-regression
+  - performance-repair
+  - performance-review
+  - performance-triage
+  - persistence-design
+  - place-Go-behavior
+  - place-new-behavior
+  - placement
+  - plan-change
+  - plan-implementation
+  - plan-tests
+  - planning
+  - plugin-design
+  - pool-review
+  - profile-analysis
+  - protocol evolution
+  - public rename
+  - quality-assessment
+  - quality-review
+  - recommendation
+  - reduce-allocation
+  - refactor
+  - refactor-data-class
+  - refactoring
+  - rename
+  - repair
+  - repair-Go-failure
+  - repair-aliasing
+  - repair-corruption
+  - repair-defect
+  - repair-encoding
+  - repair-failure
+  - repair-hash-equality
+  - repair-leak
+  - repair-stale-data
+  - repair-state-bug
+  - repair-task-leak
+  - replace-inheritance
+  - repository-assessment
+  - resilience-review
+  - review
+  - review-ABC
+  - review-API
+  - review-I-O
+  - review-Python
+  - review-Python-API
+  - review-async
+  - review-benchmark
+  - review-cache
+  - review-cleanup
+  - review-comment
+  - review-control-flow
+  - review-coverage-gate
+  - review-errors
+  - review-fast-path
+  - review-generator
+  - review-idiom
+  - review-interface
+  - review-metaclass
+  - review-mixin
+  - review-mutation
+  - review-operator
+  - review-optimization
+  - review-package
+  - review-representation
+  - review-resource-use
+  - review-shutdown
+  - review-special-method
+  - review-types
+  - review-worker-pool
+  - run-optimization-campaign
+  - saga-design
+  - schema change
+  - select-boundary
+  - select-callable
+  - select-concurrency
+  - select-optimization
+  - service-decomposition
+  - service-extraction
+  - shutdown-design
+  - simplify-error-handling
+  - simplify-hierarchy
+  - social or productivity analysis
+  - specialize-hot-path
+  - state-design
+  - stream-data
+  - style-selection
+  - team-boundary-design
+  - topology-migration
+  - topology-selection
+  - translate-failure
+  - unfamiliar-change
+  - upgrade
+  - validate-benchmark
+  - validate-input
+  - verification
+  - verify-implementation
+  - verify-optimization
+  - verify-refactor
+  - write-benchmark
+  - write-comment
+- family: repository-assessment
+  aliases:
+  - repo-assessment
+  variants:
+  - ADR-review
+  - API-design
+  - API-review
+  - CI warning
+  - ORM-review
+  - accept-improvement
+  - acquire-Go-resource
+  - acquire-resource
+  - add-Go-concurrency
+  - add-Go-dependency
+  - add-cache
+  - add-concurrency
+  - add-generics
+  - add-interface
+  - add-language-feature
+  - add-property
+  - add-protocol
+  - add-type-hints
+  - aggregate-design
+  - aggregate-review
+  - algorithm-review
+  - analyze-incident
+  - any active campaign
+  - any behavioral analysis
+  - any code or data change
+  - architecture-assessment
+  - architecture-decision
+  - architecture-evolution
+  - architecture-fitness
+  - architecture-governance
+  - architecture-implementation
+  - architecture-planning
+  - architecture-review
+  - architecture-risk
+  - architecture-verification
+  - assess-domain-object
+  - assess-refactoring
+  - assess-structure
+  - assess-tests
+  - assessment
+  - association-design
+  - asynchronous-workflow
+  - automated transformation
+  - behavior-placement
+  - behavior-preserving-change
+  - benchmark-comparison
+  - bottleneck-diagnosis
+  - bound-concurrency
+  - boundary analysis
+  - boundary selection
+  - boundary-design
+  - boundary-planning
+  - boundary-review
+  - boundary-selection
+  - boundary-testing
+  - bounded-context-discovery
+  - broad restructuring
+  - build-guard
+  - cache-review
+  - capacity-planning
+  - change large unclear unit
+  - change poorly characterized code
+  - change-public-API
+  - change-public-contract
+  - characterize-legacy
+  - choose broad characterization surface
+  - choose-Go-receiver
+  - choose-Python-container
+  - choose-data-structure
+  - cleanup
+  - clone analysis
+  - close-incident-cause
+  - close-performance-work
+  - code-review
+  - codemod
+  - command-query-review
+  - communication-design
+  - companion change
+  - compare-interface
+  - compare-performance
+  - component-design
+  - component-partitioning
+  - composite-change
+  - consistency-review
+  - context-mapping
+  - context-translation
+  - create first test seam
+  - create-public-API
+  - create-test-seam
+  - creation-API
+  - cross-repo co-change analysis
+  - decide whether to refactor
+  - decomposition
+  - delete
+  - deletion
+  - dependency breaking
+  - dependency-breaking
+  - dependency-review
+  - design or review isolated tests
+  - design-API
+  - design-Go-API
+  - design-Python-interface
+  - design-Python-worker
+  - design-attribute
+  - design-constructor
+  - design-context-manager
+  - design-custom-type
+  - design-dynamic-mechanism
+  - design-failure-mode
+  - design-generator
+  - design-idempotent-API
+  - design-iterator
+  - design-module
+  - design-observability
+  - design-performance-experiment
+  - design-record
+  - design-routine
+  - design-shared-module
+  - design-strategy
+  - design-subclass
+  - determine tests
+  - diagnose-defect
+  - diagnose-leak
+  - diagnose-memory
+  - diagnose-retention
+  - diagnose-stale-data
+  - diagnose-type-boundary
+  - diagnosis
+  - discover baseline
+  - distributed-migration
+  - distributed-repair
+  - distributed-review
+  - document-API
+  - domain-architecture-review
+  - domain-assessment
+  - domain-decomposition
+  - domain-modeling
+  - domain-review
+  - domain-strategy
+  - early warning
+  - enable characterization
+  - entity-design
+  - establish preservation boundary
+  - evaluate smell
+  - evaluate-duplication
+  - evaluate-performance-change
+  - event-design
+  - explain-workaround
+  - extract-abstraction
+  - extract-helper
+  - factory-design
+  - first hotspot campaign
+  - fitness-design
+  - fix-flake
+  - framework-adoption
+  - framework-design
+  - framework-extraction
+  - framework-migration
+  - get code under test
+  - governance
+  - governance-design
+  - hotspot-triage
+  - implement-Go-error-path
+  - implement-I-O
+  - implement-Python
+  - implement-async
+  - implement-contract
+  - implement-feature
+  - implement-language-code
+  - implement-protocol
+  - implement-routine
+  - implement-special-method
+  - implement-text-boundary
+  - implementation
+  - implementation-assessment
+  - improve-throughput
+  - integration
+  - integration-design
+  - interface-design
+  - interpret-benchmark
+  - interpret-metric
+  - introduce-dependency
+  - investigate-flake
+  - large-model-organization
+  - launch-goroutine
+  - legacy extraction
+  - legacy-integration
+  - legacy-migration
+  - legacy-seam
+  - manage-attributes
+  - memory-diagnosis
+  - messaging-review
+  - metric-review
+  - microservice-design
+  - migrate
+  - migration
+  - migration-approval
+  - migration-design
+  - migration-review
+  - model-design
+  - model-domain-concept
+  - model-refactoring
+  - model-state
+  - modernization
+  - modernize-Python
+  - modernize-syntax
+  - modularization
+  - module-design
+  - move-code
+  - name-symbol
+  - naming
+  - old-code review
+  - operational-hardening
+  - optimization
+  - optimization-selection
+  - optimization-triage
+  - optimize
+  - optimize-Go-hot-path
+  - optimize-data-path
+  - optimize-latency
+  - optimize-library
+  - optimize-materialization
+  - optimize-system
+  - optimize-throughput
+  - package reorganization
+  - package-design
+  - performance-plan
+  - performance-regression
+  - performance-repair
+  - performance-review
+  - performance-triage
+  - persistence-design
+  - persistence-mapping
+  - persistence-reconstitution
+  - place-Go-behavior
+  - place-new-behavior
+  - placement
+  - plan-change
+  - plan-implementation
+  - plan-review
+  - plan-tests
+  - planning
+  - platform-contract
+  - plugin-design
+  - pool-review
+  - prioritize investigation or campaign
+  - profile-analysis
+  - protect first legacy restructure
+  - protect refactor
+  - protocol evolution
+  - public rename
+  - pull request review
+  - quality-assessment
+  - quality-review
+  - query-review
+  - recommendation
+  - reduce-allocation
+  - refactor
+  - refactor-data-class
+  - refactoring
+  - refactoring-prioritization
+  - rename
+  - repair
+  - repair-Go-failure
+  - repair-aliasing
+  - repair-corruption
+  - repair-defect
+  - repair-encoding
+  - repair-failure
+  - repair-hash-equality
+  - repair-leak
+  - repair-review
+  - repair-stale-data
+  - repair-state-bug
+  - repair-task-leak
+  - replace-inheritance
+  - repository-assessment
+  - repository-design
+  - resilience-review
+  - review
+  - review structure
+  - review-ABC
+  - review-API
+  - review-I-O
+  - review-Python
+  - review-Python-API
+  - review-async
+  - review-benchmark
+  - review-cache
+  - review-cleanup
+  - review-comment
+  - review-control-flow
+  - review-coverage-gate
+  - review-errors
+  - review-fast-path
+  - review-generator
+  - review-idiom
+  - review-interface
+  - review-metaclass
+  - review-mixin
+  - review-mutation
+  - review-operator
+  - review-optimization
+  - review-package
+  - review-representation
+  - review-resource-use
+  - review-shutdown
+  - review-special-method
+  - review-types
+  - review-worker-pool
+  - rewrite assessment
+  - roadmap-prioritization
+  - rule-extraction
+  - run-optimization-campaign
+  - saga-design
+  - schema change
+  - select campaign
+  - select-boundary
+  - select-callable
+  - select-concurrency
+  - select-optimization
+  - service-decomposition
+  - service-extraction
+  - service-review
+  - shutdown-design
+  - simplify-error-handling
+  - simplify-hierarchy
+  - social or productivity analysis
+  - sourcing-decision
+  - specialize-hot-path
+  - specification-design
+  - stability
+  - state-design
+  - strategic-domain-design
+  - stream-data
+  - style-selection
+  - substitute collaborator
+  - tactical-DDD-review
+  - team-boundary-design
+  - topology-migration
+  - topology-selection
+  - transaction-design
+  - translate-failure
+  - trend analysis
+  - understand code before change
+  - unfamiliar-change
+  - upgrade
+  - urgent feature in untestable code
+  - validate-benchmark
+  - validate-input
+  - value-design
+  - vendor-integration
+  - verification
+  - verify-implementation
+  - verify-optimization
+  - verify-refactor
+  - write-benchmark
+  - write-comment
 selection_order:
 - apply explicit authority and repository-contract precedence
 - select role bundle
@@ -12,20 +2668,13 @@ always_load:
   - universal-doctrine.md
   - authority-model.yaml
   - change-types.yaml
+  policy: universal-safety-kernel
   concepts:
-  - refactoring-behavior-preservation
-  - universal-change-amplification
-  - universal-earned-abstraction
+  - agent-conduct-authority-bounded-action
   - universal-evidence-before-intervention
-  - universal-explicit-invariants
-  - universal-information-hiding
-  - universal-local-reasoning
-  - universal-measure-claimed-improvement
-  - universal-minimize-simultaneous-uncertainty
   - universal-no-change-option
   - universal-preserve-behavior-by-default
   - universal-repository-contract-precedence
-  - universal-reversible-reviewable-change
   - universal-separate-semantic-structural-change
 concept_routes:
 - concept_id: agent-conduct-authority-bounded-action
@@ -68,6 +2717,25 @@ concept_routes:
   - universal-evidence-before-intervention
   - universal-reversible-reviewable-change
   - universal-no-change-option
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - legacy-code-agent
+  - performance-agent
+  - refactoring-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: architecture-boundary-strength
   artifact: concepts/architecture.yaml
   activate_for_roles:
@@ -105,6 +2773,22 @@ concept_routes:
   - architecture-distribution-readiness
   - architecture-modular-monolith
   - domain-bounded-context
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - legacy-code-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: architecture-change-locality-cohesion
   artifact: concepts/architecture.yaml
   activate_for_roles:
@@ -143,6 +2827,23 @@ concept_routes:
   - universal-earned-abstraction
   - architecture-earned-boundary
   - architecture-contextual-partitioning
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - refactoring-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: architecture-contextual-partitioning
   artifact: concepts/architecture.yaml
   activate_for_roles:
@@ -177,6 +2878,22 @@ concept_routes:
   - architecture-earned-boundary
   - architecture-modular-monolith
   - domain-bounded-context
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: architecture-contextual-style-selection
   artifact: concepts/architecture.yaml
   activate_for_roles:
@@ -214,6 +2931,21 @@ concept_routes:
   - architecture-distribution-readiness
   - architecture-interaction-synchrony
   - universal-no-change-option
+  activate_for_role_families:
+  - architecture-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: architecture-decision-record
   artifact: concepts/architecture.yaml
   activate_for_roles:
@@ -252,6 +2984,21 @@ concept_routes:
   - architecture-feedback-loop
   - architecture-risk-analysis
   - architecture-fitness-functions
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: architecture-dependency-inversion-gate
   artifact: concepts/architecture.yaml
   activate_for_roles:
@@ -287,6 +3034,22 @@ concept_routes:
   - universal-earned-abstraction
   - architecture-policy-mechanism-separation
   - architecture-boundary-strength
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - legacy-code-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: architecture-distribution-readiness
   artifact: concepts/architecture.yaml
   activate_for_roles:
@@ -331,6 +3094,22 @@ concept_routes:
   - architecture-event-temporal-semantics
   - domain-bounded-context
   - performance-measurable-objective
+  activate_for_role_families:
+  - architecture-agent
+  - debugging-and-repair-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: architecture-earned-boundary
   artifact: concepts/architecture.yaml
   activate_for_roles:
@@ -372,6 +3151,24 @@ concept_routes:
   - architecture-boundary-strength
   - architecture-policy-mechanism-separation
   - domain-bounded-context
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - legacy-code-agent
+  - refactoring-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: architecture-event-temporal-semantics
   artifact: concepts/architecture.yaml
   activate_for_roles:
@@ -414,6 +3211,23 @@ concept_routes:
   - architecture-distribution-readiness
   - architecture-fitness-functions
   - universal-explicit-invariants
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: architecture-feedback-loop
   artifact: concepts/architecture.yaml
   activate_for_roles:
@@ -450,6 +3264,22 @@ concept_routes:
   - architecture-fitness-functions
   - universal-reversible-reviewable-change
   - universal-measure-claimed-improvement
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: architecture-fitness-functions
   artifact: concepts/architecture.yaml
   activate_for_roles:
@@ -490,6 +3320,23 @@ concept_routes:
   - architecture-structural-constraint-enforcement
   - architecture-decision-record
   - universal-measure-claimed-improvement
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: architecture-framework-commitment
   artifact: concepts/architecture.yaml
   activate_for_roles:
@@ -525,6 +3372,21 @@ concept_routes:
   - universal-earned-abstraction
   - architecture-policy-mechanism-separation
   - architecture-change-locality-cohesion
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: architecture-interaction-synchrony
   artifact: concepts/architecture.yaml
   activate_for_roles:
@@ -560,6 +3422,22 @@ concept_routes:
   - architecture-event-temporal-semantics
   - architecture-distribution-readiness
   - architecture-scoped-characteristics
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: architecture-metrics-as-signals
   artifact: concepts/architecture.yaml
   activate_for_roles:
@@ -594,6 +3472,22 @@ concept_routes:
   - universal-evidence-before-intervention
   - universal-measure-claimed-improvement
   - architecture-fitness-functions
+  activate_for_role_families:
+  - architecture-agent
+  - refactoring-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: architecture-modular-monolith
   artifact: concepts/architecture.yaml
   activate_for_roles:
@@ -629,6 +3523,21 @@ concept_routes:
   - architecture-boundary-strength
   - architecture-contextual-partitioning
   - domain-bounded-context
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: architecture-policy-mechanism-separation
   artifact: concepts/architecture.yaml
   activate_for_roles:
@@ -666,6 +3575,22 @@ concept_routes:
   - architecture-dependency-inversion-gate
   - architecture-earned-boundary
   - domain-language-model-loop
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - legacy-code-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: architecture-risk-analysis
   artifact: concepts/architecture.yaml
   activate_for_roles:
@@ -703,6 +3628,22 @@ concept_routes:
   - architecture-scoped-characteristics
   - architecture-fitness-functions
   - universal-minimize-simultaneous-uncertainty
+  activate_for_role_families:
+  - architecture-agent
+  - performance-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: architecture-scoped-characteristics
   artifact: concepts/architecture.yaml
   activate_for_roles:
@@ -743,6 +3684,22 @@ concept_routes:
   - architecture-fitness-functions
   - architecture-contextual-style-selection
   - performance-measurable-objective
+  activate_for_role_families:
+  - architecture-agent
+  - performance-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: architecture-selective-option-preservation
   artifact: concepts/architecture.yaml
   activate_for_roles:
@@ -777,6 +3734,21 @@ concept_routes:
   - universal-reversible-reviewable-change
   - architecture-earned-boundary
   - architecture-boundary-strength
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: architecture-structural-constraint-enforcement
   artifact: concepts/architecture.yaml
   activate_for_roles:
@@ -811,6 +3783,21 @@ concept_routes:
   - architecture-fitness-functions
   - architecture-decision-record
   - architecture-scoped-characteristics
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: architecture-team-topology-force
   artifact: concepts/architecture.yaml
   activate_for_roles:
@@ -846,6 +3833,21 @@ concept_routes:
   - architecture-decision-record
   - domain-bounded-context
   - domain-context-relationship-selection
+  activate_for_role_families:
+  - architecture-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: debugging-causal-repair
   artifact: concepts/review-debug-agent.yaml
   activate_for_roles:
@@ -879,6 +3881,21 @@ concept_routes:
   - universal-preserve-behavior-by-default
   - universal-separate-semantic-structural-change
   - implementation-risk-driven-tests
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - legacy-code-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: debugging-hypothesis-led-investigation
   artifact: concepts/review-debug-agent.yaml
   activate_for_roles:
@@ -914,6 +3931,21 @@ concept_routes:
   - universal-minimize-simultaneous-uncertainty
   - debugging-causal-repair
   - implementation-risk-driven-tests
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - legacy-code-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: domain-aggregate-invariant-boundary
   artifact: concepts/domain.yaml
   activate_for_roles:
@@ -956,6 +3988,18 @@ concept_routes:
   - domain-repository-lifecycle
   - domain-factory-lifecycle
   - architecture-distribution-readiness
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - domain-design
+  - implementation
+  - repository-assessment
 - concept_id: domain-anticorruption-layer
   artifact: concepts/domain.yaml
   activate_for_roles:
@@ -994,6 +4038,18 @@ concept_routes:
   - domain-bounded-context
   - architecture-policy-mechanism-separation
   - architecture-boundary-strength
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - legacy-code-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - domain-design
+  - implementation
+  - repository-assessment
 - concept_id: domain-association-constraint
   artifact: concepts/domain.yaml
   activate_for_roles:
@@ -1028,6 +4084,17 @@ concept_routes:
   - domain-identity-entity
   - domain-value-object
   - domain-aggregate-invariant-boundary
+  activate_for_role_families:
+  - coding-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - domain-design
+  - implementation
+  - repository-assessment
 - concept_id: domain-bounded-context
   artifact: concepts/domain.yaml
   activate_for_roles:
@@ -1069,6 +4136,19 @@ concept_routes:
   - architecture-boundary-strength
   - architecture-distribution-readiness
   - architecture-team-topology-force
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - legacy-code-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - domain-design
+  - implementation
+  - repository-assessment
 - concept_id: domain-context-relationship-selection
   artifact: concepts/domain.yaml
   activate_for_roles:
@@ -1108,6 +4188,17 @@ concept_routes:
   - domain-anticorruption-layer
   - architecture-team-topology-force
   - architecture-boundary-strength
+  activate_for_role_families:
+  - architecture-agent
+  - legacy-code-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - domain-design
+  - implementation
+  - repository-assessment
 - concept_id: domain-core-domain-priority
   artifact: concepts/domain.yaml
   activate_for_roles:
@@ -1143,6 +4234,18 @@ concept_routes:
   - domain-modeling-investment-gate
   - domain-language-model-loop
   - domain-fitting-large-scale-structure
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - domain-design
+  - implementation
+  - repository-assessment
 - concept_id: domain-explicit-concept
   artifact: concepts/domain.yaml
   activate_for_roles:
@@ -1176,6 +4279,16 @@ concept_routes:
   - domain-language-model-loop
   - domain-intention-revealing-interface
   - universal-earned-abstraction
+  activate_for_role_families:
+  - coding-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - domain-design
+  - implementation
+  - repository-assessment
 - concept_id: domain-factory-lifecycle
   artifact: concepts/domain.yaml
   activate_for_roles:
@@ -1208,6 +4321,16 @@ concept_routes:
   - domain-aggregate-invariant-boundary
   - domain-repository-lifecycle
   - domain-identity-entity
+  activate_for_role_families:
+  - coding-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - domain-design
+  - implementation
+  - repository-assessment
 - concept_id: domain-fitting-large-scale-structure
   artifact: concepts/domain.yaml
   activate_for_roles:
@@ -1242,6 +4365,17 @@ concept_routes:
   - domain-bounded-context
   - domain-language-model-loop
   - architecture-contextual-style-selection
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - domain-design
+  - implementation
+  - repository-assessment
 - concept_id: domain-identity-entity
   artifact: concepts/domain.yaml
   activate_for_roles:
@@ -1276,6 +4410,17 @@ concept_routes:
   - domain-value-object
   - domain-aggregate-invariant-boundary
   - domain-language-model-loop
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - domain-design
+  - implementation
+  - repository-assessment
 - concept_id: domain-intention-revealing-interface
   artifact: concepts/domain.yaml
   activate_for_roles:
@@ -1312,6 +4457,16 @@ concept_routes:
   - domain-service-operation
   - domain-explicit-concept
   - universal-information-hiding
+  activate_for_role_families:
+  - coding-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - domain-design
+  - implementation
+  - repository-assessment
 - concept_id: domain-language-model-loop
   artifact: concepts/domain.yaml
   activate_for_roles:
@@ -1349,6 +4504,17 @@ concept_routes:
   - domain-aggregate-invariant-boundary
   - domain-explicit-concept
   - architecture-policy-mechanism-separation
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - domain-design
+  - implementation
+  - repository-assessment
 - concept_id: domain-modeling-investment-gate
   artifact: concepts/domain.yaml
   activate_for_roles:
@@ -1384,6 +4550,18 @@ concept_routes:
   - universal-no-change-option
   - domain-language-model-loop
   - domain-core-domain-priority
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - domain-design
+  - implementation
+  - repository-assessment
 - concept_id: domain-repository-lifecycle
   artifact: concepts/domain.yaml
   activate_for_roles:
@@ -1420,6 +4598,18 @@ concept_routes:
   - domain-aggregate-invariant-boundary
   - domain-factory-lifecycle
   - architecture-policy-mechanism-separation
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - domain-design
+  - implementation
+  - repository-assessment
 - concept_id: domain-service-operation
   artifact: concepts/domain.yaml
   activate_for_roles:
@@ -1453,6 +4643,17 @@ concept_routes:
   - domain-identity-entity
   - domain-value-object
   - domain-intention-revealing-interface
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - domain-design
+  - implementation
+  - repository-assessment
 - concept_id: domain-value-object
   artifact: concepts/domain.yaml
   activate_for_roles:
@@ -1487,6 +4688,16 @@ concept_routes:
   - domain-identity-entity
   - domain-aggregate-invariant-boundary
   - domain-intention-revealing-interface
+  activate_for_role_families:
+  - coding-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - domain-design
+  - implementation
+  - repository-assessment
 - concept_id: go-bounded-concurrency
   artifact: concepts/go.yaml
   activate_for_roles:
@@ -1523,6 +4734,19 @@ concept_routes:
   - performance-resource-lifecycle
   - performance-target-based-stop
   - go-goroutine-resource-lifecycle
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - performance-optimization
+  - repository-assessment
 - concept_id: go-explicit-contextual-errors
   artifact: concepts/go.yaml
   activate_for_roles:
@@ -1557,6 +4781,20 @@ concept_routes:
   - performance-resource-lifecycle
   - debugging-causal-repair
   - implementation-repository-language-conformance
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: go-goroutine-resource-lifecycle
   artifact: concepts/go.yaml
   activate_for_roles:
@@ -1594,6 +4832,21 @@ concept_routes:
   - implementation-explicit-failure-policy
   - go-explicit-contextual-errors
   - go-bounded-concurrency
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: go-package-api-simplicity
   artifact: concepts/go.yaml
   activate_for_roles:
@@ -1628,6 +4881,20 @@ concept_routes:
   - implementation-minimal-coherent-api
   - implementation-repository-language-conformance
   - universal-earned-abstraction
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: go-semantics-before-performance-constructs
   artifact: concepts/go.yaml
   activate_for_roles:
@@ -1664,6 +4931,21 @@ concept_routes:
   - performance-specialization-evidence
   - performance-semantic-preservation
   - implementation-repository-language-conformance
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: implementation-comments-first-design-probe
   artifact: concepts/implementation.yaml
   activate_for_roles:
@@ -1693,6 +4975,20 @@ concept_routes:
   - implementation-minimal-coherent-api
   - implementation-non-obvious-commentary
   - universal-earned-abstraction
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: implementation-duplication-as-evidence
   artifact: concepts/implementation.yaml
   activate_for_roles:
@@ -1727,6 +5023,21 @@ concept_routes:
   - universal-change-amplification
   - universal-information-hiding
   - performance-cache-validity
+  activate_for_role_families:
+  - coding-agent
+  - performance-agent
+  - refactoring-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: implementation-error-surface-reduction
   artifact: concepts/implementation.yaml
   activate_for_roles:
@@ -1759,6 +5070,21 @@ concept_routes:
   - implementation-explicit-failure-policy
   - universal-information-hiding
   - performance-resource-lifecycle
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: implementation-explicit-failure-policy
   artifact: concepts/implementation.yaml
   activate_for_roles:
@@ -1797,6 +5123,21 @@ concept_routes:
   - universal-preserve-behavior-by-default
   - performance-resource-lifecycle
   - implementation-error-surface-reduction
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: implementation-fail-fast-or-recover
   artifact: concepts/implementation.yaml
   activate_for_roles:
@@ -1831,6 +5172,21 @@ concept_routes:
   - implementation-explicit-failure-policy
   - universal-explicit-invariants
   - performance-resource-lifecycle
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: implementation-minimal-coherent-api
   artifact: concepts/implementation.yaml
   activate_for_roles:
@@ -1866,6 +5222,20 @@ concept_routes:
   - universal-information-hiding
   - universal-explicit-invariants
   - implementation-explicit-failure-policy
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: implementation-non-obvious-commentary
   artifact: concepts/implementation.yaml
   activate_for_roles:
@@ -1899,6 +5269,20 @@ concept_routes:
   - implementation-obvious-control-flow
   - implementation-semantic-naming
   - implementation-minimal-coherent-api
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: implementation-normal-result-or-exception
   artifact: concepts/implementation.yaml
   activate_for_roles:
@@ -1930,6 +5314,20 @@ concept_routes:
   - implementation-explicit-failure-policy
   - implementation-error-surface-reduction
   - implementation-fail-fast-or-recover
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: implementation-obvious-control-flow
   artifact: concepts/implementation.yaml
   activate_for_roles:
@@ -1962,6 +5360,20 @@ concept_routes:
   - universal-explicit-invariants
   - implementation-semantic-naming
   - implementation-non-obvious-commentary
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: implementation-placement-by-ownership
   artifact: concepts/implementation.yaml
   activate_for_roles:
@@ -1996,6 +5408,21 @@ concept_routes:
   - universal-local-reasoning
   - universal-change-amplification
   - implementation-minimal-coherent-api
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - refactoring-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: implementation-readiness
   artifact: concepts/implementation.yaml
   activate_for_roles:
@@ -2028,6 +5455,19 @@ concept_routes:
   - universal-repository-contract-precedence
   - implementation-placement-by-ownership
   - implementation-risk-driven-tests
+  activate_for_role_families:
+  - coding-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: implementation-repository-language-conformance
   artifact: concepts/implementation.yaml
   activate_for_roles:
@@ -2062,6 +5502,21 @@ concept_routes:
   - universal-repository-contract-precedence
   - implementation-representation-fit
   - implementation-obvious-control-flow
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: implementation-representation-fit
   artifact: concepts/implementation.yaml
   activate_for_roles:
@@ -2098,6 +5553,21 @@ concept_routes:
   - universal-information-hiding
   - performance-algorithm-and-work-first
   - performance-semantic-preservation
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: implementation-risk-driven-tests
   artifact: concepts/implementation.yaml
   activate_for_roles:
@@ -2134,6 +5604,23 @@ concept_routes:
   - universal-explicit-invariants
   - testing-coverage-is-not-adequacy
   - debugging-causal-repair
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - legacy-code-agent
+  - performance-agent
+  - refactoring-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: implementation-semantic-naming
   artifact: concepts/implementation.yaml
   activate_for_roles:
@@ -2166,6 +5653,20 @@ concept_routes:
   - implementation-obvious-control-flow
   - implementation-minimal-coherent-api
   - universal-repository-contract-precedence
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: legacy-characterization-surfaces
   artifact: concepts/legacy.yaml
   activate_for_roles:
@@ -2194,6 +5695,20 @@ concept_routes:
   - refactoring-behavior-preservation
   - legacy-effect-surface
   - refactoring-stop-backtrack-escalate
+  activate_for_role_families:
+  - debugging-and-repair-agent
+  - legacy-code-agent
+  - refactoring-agent
+  - review-agent
+  activate_for_task_families:
+  - legacy-change
+  conditional_for_task_families:
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - refactoring
+  - repository-assessment
 - concept_id: legacy-cover-and-modify
   artifact: concepts/legacy.yaml
   activate_for_roles:
@@ -2221,6 +5736,20 @@ concept_routes:
   - legacy-effect-surface
   - legacy-seams-and-enabling-points
   - legacy-characterization-surfaces
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - legacy-code-agent
+  - refactoring-agent
+  activate_for_task_families:
+  - legacy-change
+  conditional_for_task_families:
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - refactoring
+  - repository-assessment
 - concept_id: legacy-current-work-responsibility-discovery
   artifact: concepts/legacy.yaml
   activate_for_roles:
@@ -2248,6 +5777,19 @@ concept_routes:
   - architecture-change-locality-cohesion
   - legacy-scratch-refactoring
   - refactoring-small-verified-steps
+  activate_for_role_families:
+  - coding-agent
+  - legacy-code-agent
+  - refactoring-agent
+  activate_for_task_families:
+  - legacy-change
+  conditional_for_task_families:
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - refactoring
+  - repository-assessment
 - concept_id: legacy-effect-surface
   artifact: concepts/legacy.yaml
   activate_for_roles:
@@ -2278,6 +5820,20 @@ concept_routes:
   - legacy-characterization-surfaces
   - legacy-pinch-point
   - legacy-cover-and-modify
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - legacy-code-agent
+  - review-agent
+  activate_for_task_families:
+  - legacy-change
+  conditional_for_task_families:
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - refactoring
+  - repository-assessment
 - concept_id: legacy-pinch-point
   artifact: concepts/legacy.yaml
   activate_for_roles:
@@ -2302,6 +5858,19 @@ concept_routes:
   related_concepts:
   - legacy-effect-surface
   - legacy-provisional-safety-net
+  activate_for_role_families:
+  - debugging-and-repair-agent
+  - legacy-code-agent
+  - refactoring-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - refactoring
+  - repository-assessment
 - concept_id: legacy-provisional-dependency-break
   artifact: concepts/legacy.yaml
   activate_for_roles:
@@ -2327,6 +5896,19 @@ concept_routes:
   - legacy-seams-and-enabling-points
   - legacy-unprotected-enabling-edit
   - legacy-sprout-wrap
+  activate_for_role_families:
+  - debugging-and-repair-agent
+  - legacy-code-agent
+  - refactoring-agent
+  activate_for_task_families:
+  - legacy-change
+  conditional_for_task_families:
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - refactoring
+  - repository-assessment
 - concept_id: legacy-provisional-safety-net
   artifact: concepts/legacy.yaml
   activate_for_roles:
@@ -2351,6 +5933,19 @@ concept_routes:
   related_concepts:
   - legacy-pinch-point
   - refactoring-splinter-campaign
+  activate_for_role_families:
+  - debugging-and-repair-agent
+  - legacy-code-agent
+  - refactoring-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - refactoring
+  - repository-assessment
 - concept_id: legacy-scratch-refactoring
   artifact: concepts/legacy.yaml
   activate_for_roles:
@@ -2376,6 +5971,19 @@ concept_routes:
   related_concepts:
   - legacy-current-work-responsibility-discovery
   - refactoring-stop-backtrack-escalate
+  activate_for_role_families:
+  - legacy-code-agent
+  - refactoring-agent
+  - repository-assessment-agent
+  activate_for_task_families:
+  - legacy-change
+  conditional_for_task_families:
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - refactoring
+  - repository-assessment
 - concept_id: legacy-seams-and-enabling-points
   artifact: concepts/legacy.yaml
   activate_for_roles:
@@ -2405,6 +6013,20 @@ concept_routes:
   - legacy-cover-and-modify
   - legacy-provisional-dependency-break
   - legacy-sensing-and-separation
+  activate_for_role_families:
+  - architecture-agent
+  - debugging-and-repair-agent
+  - legacy-code-agent
+  - refactoring-agent
+  activate_for_task_families:
+  - legacy-change
+  conditional_for_task_families:
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - refactoring
+  - repository-assessment
 - concept_id: legacy-sensing-and-separation
   artifact: concepts/legacy.yaml
   activate_for_roles:
@@ -2431,6 +6053,16 @@ concept_routes:
   related_concepts:
   - legacy-seams-and-enabling-points
   - legacy-effect-surface
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - legacy-code-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: legacy-sprout-wrap
   artifact: concepts/legacy.yaml
   activate_for_roles:
@@ -2456,6 +6088,19 @@ concept_routes:
   related_concepts:
   - legacy-cover-and-modify
   - legacy-provisional-dependency-break
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - legacy-code-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - refactoring
+  - repository-assessment
 - concept_id: legacy-unprotected-enabling-edit
   artifact: concepts/legacy.yaml
   activate_for_roles:
@@ -2485,6 +6130,20 @@ concept_routes:
   - legacy-provisional-dependency-break
   - refactoring-transformation-tool-trust
   - refactoring-stop-backtrack-escalate
+  activate_for_role_families:
+  - debugging-and-repair-agent
+  - legacy-code-agent
+  - refactoring-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - refactoring
+  - repository-assessment
 - concept_id: performance-algorithm-and-work-first
   artifact: concepts/performance.yaml
   activate_for_roles:
@@ -2514,6 +6173,18 @@ concept_routes:
   - performance-profile-causal-bottleneck
   - performance-specialization-evidence
   - performance-semantic-preservation
+  activate_for_role_families:
+  - coding-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - performance-optimization
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - repository-assessment
 - concept_id: performance-benchmark-validity
   artifact: concepts/performance.yaml
   activate_for_roles:
@@ -2544,6 +6215,18 @@ concept_routes:
   - performance-representative-baseline
   - performance-experiment-level-fit
   - performance-semantic-preservation
+  activate_for_role_families:
+  - coding-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - performance-optimization
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - repository-assessment
 - concept_id: performance-cache-validity
   artifact: concepts/performance.yaml
   activate_for_roles:
@@ -2582,6 +6265,19 @@ concept_routes:
   - performance-memory-lifecycle
   - performance-semantic-preservation
   - performance-target-based-stop
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - performance-optimization
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - repository-assessment
 - concept_id: performance-earned-bounded-concurrency
   artifact: concepts/performance.yaml
   activate_for_roles:
@@ -2621,6 +6317,19 @@ concept_routes:
   - performance-resource-lifecycle
   - performance-target-based-stop
   - performance-semantic-preservation
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - performance-optimization
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - repository-assessment
 - concept_id: performance-experiment-level-fit
   artifact: concepts/performance.yaml
   activate_for_roles:
@@ -2652,6 +6361,18 @@ concept_routes:
   - performance-benchmark-validity
   - performance-memory-lifecycle
   - performance-semantic-preservation
+  activate_for_role_families:
+  - architecture-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - performance-optimization
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - repository-assessment
 - concept_id: performance-measurable-objective
   artifact: concepts/performance.yaml
   activate_for_roles:
@@ -2687,6 +6408,19 @@ concept_routes:
   - performance-metric-semantics
   - performance-representative-baseline
   - performance-target-based-stop
+  activate_for_role_families:
+  - architecture-agent
+  - debugging-and-repair-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - performance-optimization
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - repository-assessment
 - concept_id: performance-memory-lifecycle
   artifact: concepts/performance.yaml
   activate_for_roles:
@@ -2725,6 +6459,19 @@ concept_routes:
   - performance-cache-validity
   - performance-resource-lifecycle
   - performance-experiment-level-fit
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - performance-optimization
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - repository-assessment
 - concept_id: performance-metric-semantics
   artifact: concepts/performance.yaml
   activate_for_roles:
@@ -2759,6 +6506,18 @@ concept_routes:
   - performance-representative-baseline
   - performance-benchmark-validity
   - performance-profile-causal-bottleneck
+  activate_for_role_families:
+  - debugging-and-repair-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - performance-optimization
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - repository-assessment
 - concept_id: performance-profile-causal-bottleneck
   artifact: concepts/performance.yaml
   activate_for_roles:
@@ -2794,6 +6553,18 @@ concept_routes:
   - performance-algorithm-and-work-first
   - performance-memory-lifecycle
   - performance-earned-bounded-concurrency
+  activate_for_role_families:
+  - debugging-and-repair-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - performance-optimization
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - repository-assessment
 - concept_id: performance-representative-baseline
   artifact: concepts/performance.yaml
   activate_for_roles:
@@ -2825,6 +6596,18 @@ concept_routes:
   - performance-measurable-objective
   - performance-metric-semantics
   - performance-benchmark-validity
+  activate_for_role_families:
+  - coding-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - performance-optimization
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - repository-assessment
 - concept_id: performance-resource-lifecycle
   artifact: concepts/performance.yaml
   activate_for_roles:
@@ -2863,6 +6646,19 @@ concept_routes:
   - performance-earned-bounded-concurrency
   - performance-memory-lifecycle
   - implementation-explicit-failure-policy
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - performance-optimization
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - repository-assessment
 - concept_id: performance-semantic-preservation
   artifact: concepts/performance.yaml
   activate_for_roles:
@@ -2899,6 +6695,19 @@ concept_routes:
   - universal-preserve-behavior-by-default
   - performance-benchmark-validity
   - performance-target-based-stop
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - performance-optimization
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - repository-assessment
 - concept_id: performance-specialization-evidence
   artifact: concepts/performance.yaml
   activate_for_roles:
@@ -2935,6 +6744,18 @@ concept_routes:
   - performance-algorithm-and-work-first
   - performance-semantic-preservation
   - universal-earned-abstraction
+  activate_for_role_families:
+  - coding-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - performance-optimization
+  - repository-assessment
 - concept_id: performance-target-based-stop
   artifact: concepts/performance.yaml
   activate_for_roles:
@@ -2967,6 +6788,18 @@ concept_routes:
   - performance-measurable-objective
   - performance-semantic-preservation
   - universal-reversible-reviewable-change
+  activate_for_role_families:
+  - coding-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - performance-optimization
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - repository-assessment
 - concept_id: python-bounded-async
   artifact: concepts/python.yaml
   activate_for_roles:
@@ -3004,6 +6837,19 @@ concept_routes:
   - python-structured-cleanup
   - performance-earned-bounded-concurrency
   - performance-resource-lifecycle
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - performance-optimization
+  - repository-assessment
 - concept_id: python-cache-validity
   artifact: concepts/python.yaml
   activate_for_roles:
@@ -3040,6 +6886,19 @@ concept_routes:
   - performance-memory-lifecycle
   - performance-target-based-stop
   - python-mutable-ownership
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - performance-optimization
+  - repository-assessment
 - concept_id: python-compatible-property-evolution
   artifact: concepts/python.yaml
   activate_for_roles:
@@ -3073,6 +6932,20 @@ concept_routes:
   - implementation-minimal-coherent-api
   - implementation-repository-language-conformance
   - python-dynamic-mechanism-escalation
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: python-concurrency-model-selection
   artifact: concepts/python.yaml
   activate_for_roles:
@@ -3109,6 +6982,19 @@ concept_routes:
   - performance-resource-lifecycle
   - performance-target-based-stop
   - python-bounded-async
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - performance-optimization
+  - repository-assessment
 - concept_id: python-data-carrier-versus-domain-object
   artifact: concepts/python.yaml
   activate_for_roles:
@@ -3141,6 +7027,21 @@ concept_routes:
   - implementation-placement-by-ownership
   - universal-explicit-invariants
   - python-runtime-static-boundary
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - refactoring-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: python-dynamic-mechanism-escalation
   artifact: concepts/python.yaml
   activate_for_roles:
@@ -3174,6 +7075,20 @@ concept_routes:
   - implementation-repository-language-conformance
   - implementation-obvious-control-flow
   - python-compatible-property-evolution
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: python-function-over-stateless-class
   artifact: concepts/python.yaml
   activate_for_roles:
@@ -3203,6 +7118,20 @@ concept_routes:
   - universal-earned-abstraction
   - implementation-minimal-coherent-api
   - python-dynamic-mechanism-escalation
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: python-inheritance-constraints
   artifact: concepts/python.yaml
   activate_for_roles:
@@ -3235,6 +7164,21 @@ concept_routes:
   - universal-earned-abstraction
   - implementation-duplication-as-evidence
   - implementation-placement-by-ownership
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - refactoring-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: python-interface-mechanism-selection
   artifact: concepts/python.yaml
   activate_for_roles:
@@ -3269,6 +7213,20 @@ concept_routes:
   - universal-earned-abstraction
   - python-protocol-conformance
   - python-runtime-static-boundary
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: python-mutable-ownership
   artifact: concepts/python.yaml
   activate_for_roles:
@@ -3305,6 +7263,21 @@ concept_routes:
   - performance-memory-lifecycle
   - python-representation-fit
   - python-cache-validity
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: python-protocol-conformance
   artifact: concepts/python.yaml
   activate_for_roles:
@@ -3336,6 +7309,20 @@ concept_routes:
   - implementation-minimal-coherent-api
   - python-interface-mechanism-selection
   - python-special-method-laws
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: python-repository-shaped-idiom
   artifact: concepts/python.yaml
   activate_for_roles:
@@ -3368,6 +7355,20 @@ concept_routes:
   - universal-repository-contract-precedence
   - implementation-repository-language-conformance
   - python-runtime-static-boundary
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: python-representation-fit
   artifact: concepts/python.yaml
   activate_for_roles:
@@ -3401,6 +7402,20 @@ concept_routes:
   - performance-semantic-preservation
   - python-mutable-ownership
   - python-streaming-iteration
+  activate_for_role_families:
+  - coding-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: python-runtime-static-boundary
   artifact: concepts/python.yaml
   activate_for_roles:
@@ -3436,6 +7451,20 @@ concept_routes:
   - implementation-minimal-coherent-api
   - universal-explicit-invariants
   - python-protocol-conformance
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: python-special-method-laws
   artifact: concepts/python.yaml
   activate_for_roles:
@@ -3467,6 +7496,20 @@ concept_routes:
   - python-protocol-conformance
   - universal-explicit-invariants
   - implementation-risk-driven-tests
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: python-streaming-iteration
   artifact: concepts/python.yaml
   activate_for_roles:
@@ -3502,6 +7545,21 @@ concept_routes:
   - performance-semantic-preservation
   - performance-resource-lifecycle
   - python-protocol-conformance
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: python-structured-cleanup
   artifact: concepts/python.yaml
   activate_for_roles:
@@ -3539,6 +7597,21 @@ concept_routes:
   - implementation-explicit-failure-policy
   - python-streaming-iteration
   - python-bounded-async
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: python-text-bytes-boundary
   artifact: concepts/python.yaml
   activate_for_roles:
@@ -3571,6 +7644,20 @@ concept_routes:
   - implementation-minimal-coherent-api
   - implementation-explicit-failure-policy
   - universal-preserve-behavior-by-default
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: refactoring-behavior-preservation
   artifact: concepts/refactoring.yaml
   activate_for_roles:
@@ -3604,6 +7691,26 @@ concept_routes:
   - legacy-characterization-surfaces
   - legacy-effect-surface
   - refactoring-compatibility-migration
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - legacy-code-agent
+  - performance-agent
+  - refactoring-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: refactoring-change-type-classification
   artifact: concepts/refactoring.yaml
   activate_for_roles:
@@ -3639,6 +7746,23 @@ concept_routes:
   - refactoring-behavior-preservation
   - universal-separate-semantic-structural-change
   - refactoring-compatibility-migration
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - legacy-code-agent
+  - refactoring-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: refactoring-cochange-evidence
   artifact: concepts/refactoring.yaml
   activate_for_roles:
@@ -3669,6 +7793,16 @@ concept_routes:
   - repository-assessment-logical-change-set
   - implementation-duplication-as-evidence
   - repository-assessment-behavioral-boundary-candidate
+  activate_for_role_families:
+  - architecture-agent
+  - refactoring-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: refactoring-compatibility-migration
   artifact: concepts/refactoring.yaml
   activate_for_roles:
@@ -3699,6 +7833,22 @@ concept_routes:
   - refactoring-behavior-preservation
   - refactoring-change-type-classification
   - refactoring-splinter-campaign
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - refactoring-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: refactoring-demonstrated-pressure
   artifact: concepts/refactoring.yaml
   activate_for_roles:
@@ -3729,6 +7879,16 @@ concept_routes:
   - architecture-metrics-as-signals
   - refactoring-hotspot-prioritization
   - refactoring-leave-unattractive-code
+  activate_for_role_families:
+  - architecture-agent
+  - refactoring-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - legacy-change
+  - refactoring
+  conditional_for_task_families:
+  - repository-assessment
 - concept_id: refactoring-directional-campaign
   artifact: concepts/refactoring.yaml
   activate_for_roles:
@@ -3756,6 +7916,15 @@ concept_routes:
   - refactoring-splinter-campaign
   - refactoring-compatibility-migration
   - refactoring-stop-backtrack-escalate
+  activate_for_role_families:
+  - architecture-agent
+  - legacy-code-agent
+  - refactoring-agent
+  activate_for_task_families:
+  - legacy-change
+  - refactoring
+  conditional_for_task_families:
+  - repository-assessment
 - concept_id: refactoring-hotspot-prioritization
   artifact: concepts/refactoring.yaml
   activate_for_roles:
@@ -3782,6 +7951,15 @@ concept_routes:
   - architecture-metrics-as-signals
   - repository-assessment-complexity-trend
   - refactoring-demonstrated-pressure
+  activate_for_role_families:
+  - refactoring-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: refactoring-leave-unattractive-code
   artifact: concepts/refactoring.yaml
   activate_for_roles:
@@ -3812,6 +7990,16 @@ concept_routes:
   - refactoring-demonstrated-pressure
   - repository-assessment-code-age
   - architecture-metrics-as-signals
+  activate_for_role_families:
+  - architecture-agent
+  - refactoring-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - legacy-change
+  - refactoring
+  conditional_for_task_families:
+  - repository-assessment
 - concept_id: refactoring-small-verified-steps
   artifact: concepts/refactoring.yaml
   activate_for_roles:
@@ -3842,6 +8030,16 @@ concept_routes:
   - universal-minimize-simultaneous-uncertainty
   - refactoring-transformation-tool-trust
   - refactoring-stop-backtrack-escalate
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - legacy-code-agent
+  - refactoring-agent
+  activate_for_task_families:
+  - legacy-change
+  - refactoring
+  conditional_for_task_families:
+  - repository-assessment
 - concept_id: refactoring-smells-as-hypotheses
   artifact: concepts/refactoring.yaml
   activate_for_roles:
@@ -3870,6 +8068,16 @@ concept_routes:
   - refactoring-demonstrated-pressure
   - architecture-metrics-as-signals
   - universal-earned-abstraction
+  activate_for_role_families:
+  - coding-agent
+  - refactoring-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - legacy-change
+  - refactoring
+  conditional_for_task_families:
+  - repository-assessment
 - concept_id: refactoring-splinter-campaign
   artifact: concepts/refactoring.yaml
   activate_for_roles:
@@ -3899,6 +8107,15 @@ concept_routes:
   - refactoring-hotspot-prioritization
   - legacy-provisional-safety-net
   - refactoring-compatibility-migration
+  activate_for_role_families:
+  - architecture-agent
+  - legacy-code-agent
+  - refactoring-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - legacy-change
+  - refactoring
+  - repository-assessment
 - concept_id: refactoring-stop-backtrack-escalate
   artifact: concepts/refactoring.yaml
   activate_for_roles:
@@ -3930,6 +8147,25 @@ concept_routes:
   - agent-conduct-authority-bounded-action
   - legacy-characterization-surfaces
   - refactoring-small-verified-steps
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - legacy-code-agent
+  - performance-agent
+  - refactoring-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: refactoring-transformation-tool-trust
   artifact: concepts/refactoring.yaml
   activate_for_roles:
@@ -3958,6 +8194,16 @@ concept_routes:
   related_concepts:
   - refactoring-small-verified-steps
   - legacy-unprotected-enabling-edit
+  activate_for_role_families:
+  - coding-agent
+  - legacy-code-agent
+  - refactoring-agent
+  - review-agent
+  activate_for_task_families:
+  - legacy-change
+  - refactoring
+  conditional_for_task_families:
+  - repository-assessment
 - concept_id: repository-assessment-behavioral-boundary-candidate
   artifact: concepts/repository-assessment.yaml
   activate_for_roles:
@@ -3986,6 +8232,17 @@ concept_routes:
   - refactoring-cochange-evidence
   - architecture-team-topology-force
   - architecture-change-locality-cohesion
+  activate_for_role_families:
+  - architecture-agent
+  - refactoring-agent
+  - repository-assessment-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - domain-design
+  - implementation
+  - repository-assessment
 - concept_id: repository-assessment-behavioral-data-fitness
   artifact: concepts/repository-assessment.yaml
   activate_for_roles:
@@ -4012,6 +8269,20 @@ concept_routes:
   - architecture-metrics-as-signals
   - repository-assessment-logical-change-set
   - architecture-team-topology-force
+  activate_for_role_families:
+  - architecture-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: repository-assessment-behavioral-early-warning
   artifact: concepts/repository-assessment.yaml
   activate_for_roles:
@@ -4039,6 +8310,15 @@ concept_routes:
   - refactoring-cochange-evidence
   - repository-assessment-complexity-trend
   - architecture-metrics-as-signals
+  activate_for_role_families:
+  - coding-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - repository-assessment
 - concept_id: repository-assessment-code-age
   artifact: concepts/repository-assessment.yaml
   activate_for_roles:
@@ -4065,6 +8345,15 @@ concept_routes:
   related_concepts:
   - refactoring-leave-unattractive-code
   - architecture-metrics-as-signals
+  activate_for_role_families:
+  - architecture-agent
+  - refactoring-agent
+  - repository-assessment-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - repository-assessment
 - concept_id: repository-assessment-complexity-trend
   artifact: concepts/repository-assessment.yaml
   activate_for_roles:
@@ -4090,6 +8379,15 @@ concept_routes:
   related_concepts:
   - refactoring-hotspot-prioritization
   - repository-assessment-behavioral-early-warning
+  activate_for_role_families:
+  - refactoring-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - repository-assessment
 - concept_id: repository-assessment-logical-change-set
   artifact: concepts/repository-assessment.yaml
   activate_for_roles:
@@ -4115,6 +8413,21 @@ concept_routes:
   related_concepts:
   - refactoring-cochange-evidence
   - repository-assessment-behavioral-data-fitness
+  activate_for_role_families:
+  - architecture-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: repository-assessment-metrics-not-performance
   artifact: concepts/repository-assessment.yaml
   activate_for_roles:
@@ -4144,6 +8457,25 @@ concept_routes:
   related_concepts:
   - architecture-team-topology-force
   - agent-conduct-authority-bounded-action
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - legacy-code-agent
+  - performance-agent
+  - refactoring-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: review-severity-confidence-separation
   artifact: concepts/review-debug-agent.yaml
   activate_for_roles:
@@ -4177,6 +8509,16 @@ concept_routes:
   - universal-repository-contract-precedence
   - implementation-risk-driven-tests
   - agent-conduct-authority-bounded-action
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: testing-coverage-is-not-adequacy
   artifact: concepts/implementation.yaml
   activate_for_roles:
@@ -4208,6 +8550,21 @@ concept_routes:
   - implementation-risk-driven-tests
   - universal-evidence-before-intervention
   - universal-measure-claimed-improvement
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: testing-design-before-feature-tests
   artifact: concepts/implementation.yaml
   activate_for_roles:
@@ -4238,6 +8595,20 @@ concept_routes:
   - testing-test-first-feedback
   - implementation-minimal-coherent-api
   - universal-earned-abstraction
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: testing-test-first-feedback
   artifact: concepts/implementation.yaml
   activate_for_roles:
@@ -4268,6 +8639,21 @@ concept_routes:
   - implementation-risk-driven-tests
   - testing-design-before-feature-tests
   - debugging-causal-repair
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - refactoring-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: universal-change-amplification
   artifact: concepts/universal.yaml
   activate_for_roles:
@@ -4302,6 +8688,23 @@ concept_routes:
   - universal-local-reasoning
   - implementation-duplication-as-evidence
   - refactoring-cochange-evidence
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - refactoring-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: universal-earned-abstraction
   artifact: concepts/universal.yaml
   activate_for_roles:
@@ -4337,6 +8740,23 @@ concept_routes:
   - universal-information-hiding
   - implementation-duplication-as-evidence
   - architecture-earned-boundary
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - performance-agent
+  - refactoring-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: universal-evidence-before-intervention
   artifact: concepts/universal.yaml
   activate_for_roles:
@@ -4376,6 +8796,26 @@ concept_routes:
   - universal-repository-contract-precedence
   - universal-no-change-option
   - universal-measure-claimed-improvement
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - legacy-code-agent
+  - performance-agent
+  - refactoring-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: universal-explicit-invariants
   artifact: concepts/universal.yaml
   activate_for_roles:
@@ -4415,6 +8855,23 @@ concept_routes:
   - implementation-placement-by-ownership
   - domain-aggregate-invariant-boundary
   - implementation-explicit-failure-policy
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - legacy-code-agent
+  - refactoring-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: universal-information-hiding
   artifact: concepts/universal.yaml
   activate_for_roles:
@@ -4449,6 +8906,22 @@ concept_routes:
   - universal-local-reasoning
   - universal-earned-abstraction
   - architecture-change-locality-cohesion
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - refactoring-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: universal-local-reasoning
   artifact: concepts/universal.yaml
   activate_for_roles:
@@ -4484,6 +8957,23 @@ concept_routes:
   - universal-information-hiding
   - universal-change-amplification
   - architecture-change-locality-cohesion
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - legacy-code-agent
+  - refactoring-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: universal-measure-claimed-improvement
   artifact: concepts/universal.yaml
   activate_for_roles:
@@ -4519,6 +9009,23 @@ concept_routes:
   - refactoring-demonstrated-pressure
   - architecture-feedback-loop
   - architecture-fitness-functions
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - performance-agent
+  - refactoring-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: universal-minimize-simultaneous-uncertainty
   artifact: concepts/universal.yaml
   activate_for_roles:
@@ -4556,6 +9063,24 @@ concept_routes:
   - universal-reversible-reviewable-change
   - refactoring-small-verified-steps
   - debugging-hypothesis-led-investigation
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - legacy-code-agent
+  - performance-agent
+  - refactoring-agent
+  activate_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: universal-no-change-option
   artifact: concepts/universal.yaml
   activate_for_roles:
@@ -4590,6 +9115,23 @@ concept_routes:
   - universal-evidence-before-intervention
   - refactoring-leave-unattractive-code
   - performance-target-based-stop
+  activate_for_role_families:
+  - architecture-agent
+  - performance-agent
+  - refactoring-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: universal-preserve-behavior-by-default
   artifact: concepts/universal.yaml
   activate_for_roles:
@@ -4630,6 +9172,24 @@ concept_routes:
   - universal-separate-semantic-structural-change
   - refactoring-behavior-preservation
   - performance-semantic-preservation
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - legacy-code-agent
+  - performance-agent
+  - refactoring-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: universal-repository-contract-precedence
   artifact: concepts/universal.yaml
   activate_for_roles:
@@ -4668,6 +9228,26 @@ concept_routes:
   related_concepts:
   - universal-evidence-before-intervention
   - agent-conduct-authority-bounded-action
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - legacy-code-agent
+  - performance-agent
+  - refactoring-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: universal-reversible-reviewable-change
   artifact: concepts/universal.yaml
   activate_for_roles:
@@ -4702,6 +9282,24 @@ concept_routes:
   - universal-minimize-simultaneous-uncertainty
   - universal-preserve-behavior-by-default
   - performance-target-based-stop
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - legacy-code-agent
+  - performance-agent
+  - refactoring-agent
+  activate_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: universal-separate-semantic-structural-change
   artifact: concepts/universal.yaml
   activate_for_roles:
@@ -4740,6 +9338,24 @@ concept_routes:
   - universal-preserve-behavior-by-default
   - refactoring-behavior-preservation
   - debugging-causal-repair
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - legacy-code-agent
+  - performance-agent
+  - refactoring-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+  conditional_for_task_families: []
 role_bundles:
 - role: coding-agent
   core_concepts:
@@ -4905,7 +9521,7 @@ role_bundles:
   - conflict-unified-model-vs-bounded-contexts
   - conflict-uniformity-vs-context-sensitive-design
   - conflict-upfront-vs-evolutionary-architecture
-  initial_retrieval_budget_hint: 9000
+  initial_retrieval_budget_hint: 5000
 - role: architecture-agent
   core_concepts:
   - refactoring-behavior-preservation
@@ -5037,7 +9653,7 @@ role_bundles:
   - conflict-unified-model-vs-bounded-contexts
   - conflict-uniformity-vs-context-sensitive-design
   - conflict-upfront-vs-evolutionary-architecture
-  initial_retrieval_budget_hint: 9000
+  initial_retrieval_budget_hint: 5000
 - role: refactoring-agent
   core_concepts:
   - refactoring-behavior-preservation
@@ -5116,7 +9732,7 @@ role_bundles:
   - conflict-full-vs-partial-vs-no-boundary
   - conflict-refactor-now-vs-leave-alone
   - conflict-temporary-seam-vs-long-term-design
-  initial_retrieval_budget_hint: 9000
+  initial_retrieval_budget_hint: 5000
 - role: legacy-code-agent
   core_concepts:
   - refactoring-behavior-preservation
@@ -5176,7 +9792,7 @@ role_bundles:
   - conflict-full-vs-partial-vs-no-boundary
   - conflict-shared-kernel-vs-acl-vs-conformist
   - conflict-temporary-seam-vs-long-term-design
-  initial_retrieval_budget_hint: 9000
+  initial_retrieval_budget_hint: 5000
 - role: performance-agent
   core_concepts:
   - refactoring-behavior-preservation
@@ -5251,7 +9867,7 @@ role_bundles:
   - conflict-model-fidelity-vs-performance-representation
   - conflict-monolith-vs-distributed-services
   - conflict-performance-specialization-vs-abstraction
-  initial_retrieval_budget_hint: 9000
+  initial_retrieval_budget_hint: 5000
 - role: review-agent
   core_concepts:
   - refactoring-behavior-preservation
@@ -5423,7 +10039,7 @@ role_bundles:
   - conflict-temporary-seam-vs-long-term-design
   - conflict-unified-model-vs-bounded-contexts
   - conflict-uniformity-vs-context-sensitive-design
-  initial_retrieval_budget_hint: 9000
+  initial_retrieval_budget_hint: 5000
 - role: debugging-and-repair-agent
   core_concepts:
   - refactoring-behavior-preservation
@@ -5500,7 +10116,7 @@ role_bundles:
   - conflict-concurrency-vs-sequential-simplicity
   - conflict-static-typing-vs-runtime-validation
   - conflict-synchronous-vs-asynchronous-interaction
-  initial_retrieval_budget_hint: 9000
+  initial_retrieval_budget_hint: 5000
 - role: repository-assessment-agent
   core_concepts:
   - refactoring-behavior-preservation
@@ -5551,7 +10167,7 @@ role_bundles:
   - conflict-architectural-constraint-vs-team-autonomy
   - conflict-refactor-now-vs-leave-alone
   - conflict-upfront-vs-evolutionary-architecture
-  initial_retrieval_budget_hint: 9000
+  initial_retrieval_budget_hint: 5000
 task_bundles:
 - task: implementation
   primary_concepts:
@@ -5679,6 +10295,8 @@ task_bundles:
   - proc-place-new-behavior
   - proc-determine-abstraction-earned
   - proc-determine-tests-characterization
+  change_types:
+  - change-feature-implementation
   evidence:
   - evidence-explicit-user-requirements
   - evidence-repository-contracts
@@ -5802,6 +10420,7 @@ task_bundles:
   - proc-review-api
   - proc-establish-preservation-boundaries
   - proc-rank-engineering-risks
+  change_types: []
   evidence:
   - evidence-repository-contracts
   - evidence-static-source-structure
@@ -5899,6 +10518,8 @@ task_bundles:
   - proc-select-architectural-boundary
   - proc-rank-engineering-risks
   - proc-decide-leave-code-alone
+  change_types:
+  - change-architectural-restructuring
   evidence:
   - evidence-accepted-design-decisions
   - evidence-operational-constraints
@@ -5990,6 +10611,9 @@ task_bundles:
   - proc-identify-domain-boundaries
   - proc-place-new-behavior
   - proc-select-architectural-boundary
+  change_types:
+  - change-feature-implementation
+  - change-architectural-restructuring
   evidence:
   - evidence-domain-language
   - evidence-explicit-user-requirements
@@ -6101,6 +10725,8 @@ task_bundles:
   - proc-select-first-refactoring-campaign
   - proc-establish-preservation-boundaries
   - proc-determine-tests-characterization
+  change_types:
+  - change-refactoring
   evidence:
   - evidence-static-source-structure
   - evidence-tests
@@ -6209,6 +10835,10 @@ task_bundles:
   - proc-establish-preservation-boundaries
   - proc-determine-tests-characterization
   - proc-stop-and-escalate
+  change_types:
+  - change-feature-implementation
+  - change-defect-repair
+  - change-refactoring
   evidence:
   - evidence-static-source-structure
   - evidence-tests
@@ -6327,6 +10957,8 @@ task_bundles:
   - proc-establish-preservation-boundaries
   - proc-determine-tests-characterization
   - proc-rank-engineering-risks
+  change_types:
+  - change-defect-repair
   evidence:
   - evidence-tests
   - evidence-runtime-observation
@@ -6433,6 +11065,8 @@ task_bundles:
   - proc-decide-performance-justified
   - proc-establish-preservation-boundaries
   - proc-rank-engineering-risks
+  change_types:
+  - change-optimization
   evidence:
   - evidence-profiling
   - evidence-benchmarks
@@ -6585,6 +11219,7 @@ task_bundles:
   - proc-determine-refactoring-earned
   - proc-rank-engineering-risks
   - proc-decide-leave-code-alone
+  change_types: []
   evidence:
   - evidence-repository-contracts
   - evidence-static-source-structure

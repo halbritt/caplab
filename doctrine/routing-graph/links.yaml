@@ -1,0 +1,2658 @@
+schema_version: agent-doctrine-routing-graph/1
+links:
+- id: R-ROUTE-0b242c82126a
+  from: agent-conduct-authority-bounded-action
+  relation: co-retrieved-with
+  to: refactoring-stop-backtrack-escalate
+  semantic: false
+  declared_by:
+  - refactoring-stop-backtrack-escalate
+- id: R-ROUTE-6bf9fcb772f7
+  from: agent-conduct-authority-bounded-action
+  relation: co-retrieved-with
+  to: repository-assessment-metrics-not-performance
+  semantic: false
+  declared_by:
+  - repository-assessment-metrics-not-performance
+- id: R-ROUTE-e5acea77fcce
+  from: agent-conduct-authority-bounded-action
+  relation: co-retrieved-with
+  to: review-severity-confidence-separation
+  semantic: false
+  declared_by:
+  - review-severity-confidence-separation
+- id: R-ROUTE-a94d09d3dd9d
+  from: agent-conduct-authority-bounded-action
+  relation: co-retrieved-with
+  to: universal-evidence-before-intervention
+  semantic: false
+  declared_by:
+  - agent-conduct-authority-bounded-action
+- id: R-ROUTE-0466e9c07a78
+  from: agent-conduct-authority-bounded-action
+  relation: co-retrieved-with
+  to: universal-no-change-option
+  semantic: false
+  declared_by:
+  - agent-conduct-authority-bounded-action
+- id: R-ROUTE-8ab099cabd88
+  from: agent-conduct-authority-bounded-action
+  relation: co-retrieved-with
+  to: universal-repository-contract-precedence
+  semantic: false
+  declared_by:
+  - agent-conduct-authority-bounded-action
+  - universal-repository-contract-precedence
+- id: R-ROUTE-b6699eba1bfc
+  from: agent-conduct-authority-bounded-action
+  relation: co-retrieved-with
+  to: universal-reversible-reviewable-change
+  semantic: false
+  declared_by:
+  - agent-conduct-authority-bounded-action
+- id: R-ROUTE-24ef7c7e6667
+  from: architecture-boundary-strength
+  relation: co-retrieved-with
+  to: architecture-dependency-inversion-gate
+  semantic: false
+  declared_by:
+  - architecture-dependency-inversion-gate
+- id: R-ROUTE-3ca3de88bc2f
+  from: architecture-boundary-strength
+  relation: co-retrieved-with
+  to: architecture-distribution-readiness
+  semantic: false
+  declared_by:
+  - architecture-boundary-strength
+  - architecture-distribution-readiness
+- id: R-ROUTE-a2a8007131a3
+  from: architecture-boundary-strength
+  relation: co-retrieved-with
+  to: architecture-earned-boundary
+  semantic: false
+  declared_by:
+  - architecture-boundary-strength
+  - architecture-earned-boundary
+- id: R-ROUTE-460da0f515d9
+  from: architecture-boundary-strength
+  relation: co-retrieved-with
+  to: architecture-modular-monolith
+  semantic: false
+  declared_by:
+  - architecture-boundary-strength
+  - architecture-modular-monolith
+- id: R-ROUTE-1c88d3bb8099
+  from: architecture-boundary-strength
+  relation: co-retrieved-with
+  to: architecture-selective-option-preservation
+  semantic: false
+  declared_by:
+  - architecture-selective-option-preservation
+- id: R-ROUTE-aa935542e707
+  from: architecture-boundary-strength
+  relation: co-retrieved-with
+  to: domain-anticorruption-layer
+  semantic: false
+  declared_by:
+  - domain-anticorruption-layer
+- id: R-ROUTE-76c12d9e95dc
+  from: architecture-boundary-strength
+  relation: co-retrieved-with
+  to: domain-bounded-context
+  semantic: false
+  declared_by:
+  - architecture-boundary-strength
+  - domain-bounded-context
+- id: R-ROUTE-b50b140bd40e
+  from: architecture-boundary-strength
+  relation: co-retrieved-with
+  to: domain-context-relationship-selection
+  semantic: false
+  declared_by:
+  - domain-context-relationship-selection
+- id: R-ROUTE-f546b89d44b2
+  from: architecture-change-locality-cohesion
+  relation: co-retrieved-with
+  to: architecture-contextual-partitioning
+  semantic: false
+  declared_by:
+  - architecture-change-locality-cohesion
+  - architecture-contextual-partitioning
+- id: R-ROUTE-b8bbbb8c7253
+  from: architecture-change-locality-cohesion
+  relation: co-retrieved-with
+  to: architecture-earned-boundary
+  semantic: false
+  declared_by:
+  - architecture-change-locality-cohesion
+- id: R-ROUTE-3302a9e9fdd0
+  from: architecture-change-locality-cohesion
+  relation: co-retrieved-with
+  to: architecture-framework-commitment
+  semantic: false
+  declared_by:
+  - architecture-framework-commitment
+- id: R-ROUTE-55375aa5e02d
+  from: architecture-change-locality-cohesion
+  relation: co-retrieved-with
+  to: legacy-current-work-responsibility-discovery
+  semantic: false
+  declared_by:
+  - legacy-current-work-responsibility-discovery
+- id: R-ROUTE-50a90146357e
+  from: architecture-change-locality-cohesion
+  relation: co-retrieved-with
+  to: repository-assessment-behavioral-boundary-candidate
+  semantic: false
+  declared_by:
+  - repository-assessment-behavioral-boundary-candidate
+- id: R-ROUTE-da798d24001c
+  from: architecture-change-locality-cohesion
+  relation: co-retrieved-with
+  to: universal-change-amplification
+  semantic: false
+  declared_by:
+  - architecture-change-locality-cohesion
+- id: R-ROUTE-1e19325c6efd
+  from: architecture-change-locality-cohesion
+  relation: co-retrieved-with
+  to: universal-earned-abstraction
+  semantic: false
+  declared_by:
+  - architecture-change-locality-cohesion
+- id: R-ROUTE-882c5535bd24
+  from: architecture-change-locality-cohesion
+  relation: co-retrieved-with
+  to: universal-information-hiding
+  semantic: false
+  declared_by:
+  - universal-information-hiding
+- id: R-ROUTE-fdcf1808347d
+  from: architecture-change-locality-cohesion
+  relation: co-retrieved-with
+  to: universal-local-reasoning
+  semantic: false
+  declared_by:
+  - architecture-change-locality-cohesion
+  - universal-local-reasoning
+- id: R-ROUTE-3abd43b0d7f4
+  from: architecture-contextual-partitioning
+  relation: co-retrieved-with
+  to: architecture-earned-boundary
+  semantic: false
+  declared_by:
+  - architecture-contextual-partitioning
+- id: R-ROUTE-e9bd821e8a0c
+  from: architecture-contextual-partitioning
+  relation: co-retrieved-with
+  to: architecture-modular-monolith
+  semantic: false
+  declared_by:
+  - architecture-contextual-partitioning
+  - architecture-modular-monolith
+- id: R-ROUTE-a5837c9c054b
+  from: architecture-contextual-partitioning
+  relation: co-retrieved-with
+  to: domain-bounded-context
+  semantic: false
+  declared_by:
+  - architecture-contextual-partitioning
+- id: R-ROUTE-9bd7f6357e9f
+  from: architecture-contextual-style-selection
+  relation: co-retrieved-with
+  to: architecture-distribution-readiness
+  semantic: false
+  declared_by:
+  - architecture-contextual-style-selection
+- id: R-ROUTE-d3f673258a70
+  from: architecture-contextual-style-selection
+  relation: co-retrieved-with
+  to: architecture-interaction-synchrony
+  semantic: false
+  declared_by:
+  - architecture-contextual-style-selection
+- id: R-ROUTE-2e69e20e5266
+  from: architecture-contextual-style-selection
+  relation: co-retrieved-with
+  to: architecture-modular-monolith
+  semantic: false
+  declared_by:
+  - architecture-contextual-style-selection
+- id: R-ROUTE-a9ebe460143b
+  from: architecture-contextual-style-selection
+  relation: co-retrieved-with
+  to: architecture-scoped-characteristics
+  semantic: false
+  declared_by:
+  - architecture-contextual-style-selection
+  - architecture-scoped-characteristics
+- id: R-ROUTE-0d1b1159642c
+  from: architecture-contextual-style-selection
+  relation: co-retrieved-with
+  to: domain-fitting-large-scale-structure
+  semantic: false
+  declared_by:
+  - domain-fitting-large-scale-structure
+- id: R-ROUTE-cab3458093b8
+  from: architecture-contextual-style-selection
+  relation: co-retrieved-with
+  to: universal-no-change-option
+  semantic: false
+  declared_by:
+  - architecture-contextual-style-selection
+- id: R-ROUTE-4aca779d8e88
+  from: architecture-decision-record
+  relation: co-retrieved-with
+  to: architecture-feedback-loop
+  semantic: false
+  declared_by:
+  - architecture-decision-record
+  - architecture-feedback-loop
+- id: R-ROUTE-33d9eea372f1
+  from: architecture-decision-record
+  relation: co-retrieved-with
+  to: architecture-fitness-functions
+  semantic: false
+  declared_by:
+  - architecture-decision-record
+  - architecture-fitness-functions
+- id: R-ROUTE-d6e43dbb33b2
+  from: architecture-decision-record
+  relation: co-retrieved-with
+  to: architecture-risk-analysis
+  semantic: false
+  declared_by:
+  - architecture-decision-record
+  - architecture-risk-analysis
+- id: R-ROUTE-99ca9588e93d
+  from: architecture-decision-record
+  relation: co-retrieved-with
+  to: architecture-structural-constraint-enforcement
+  semantic: false
+  declared_by:
+  - architecture-structural-constraint-enforcement
+- id: R-ROUTE-39b9e6b81ad7
+  from: architecture-decision-record
+  relation: co-retrieved-with
+  to: architecture-team-topology-force
+  semantic: false
+  declared_by:
+  - architecture-team-topology-force
+- id: R-ROUTE-fd191c8a02b7
+  from: architecture-decision-record
+  relation: co-retrieved-with
+  to: universal-repository-contract-precedence
+  semantic: false
+  declared_by:
+  - architecture-decision-record
+- id: R-ROUTE-5767b7bbe6f0
+  from: architecture-dependency-inversion-gate
+  relation: co-retrieved-with
+  to: architecture-policy-mechanism-separation
+  semantic: false
+  declared_by:
+  - architecture-dependency-inversion-gate
+  - architecture-policy-mechanism-separation
+- id: R-ROUTE-afe7b6675561
+  from: architecture-dependency-inversion-gate
+  relation: co-retrieved-with
+  to: universal-earned-abstraction
+  semantic: false
+  declared_by:
+  - architecture-dependency-inversion-gate
+- id: R-ROUTE-de655b5b8cb7
+  from: architecture-distribution-readiness
+  relation: co-retrieved-with
+  to: architecture-event-temporal-semantics
+  semantic: false
+  declared_by:
+  - architecture-distribution-readiness
+  - architecture-event-temporal-semantics
+- id: R-ROUTE-9b33db18e47d
+  from: architecture-distribution-readiness
+  relation: co-retrieved-with
+  to: architecture-interaction-synchrony
+  semantic: false
+  declared_by:
+  - architecture-interaction-synchrony
+- id: R-ROUTE-d5b8fadec0b7
+  from: architecture-distribution-readiness
+  relation: co-retrieved-with
+  to: architecture-modular-monolith
+  semantic: false
+  declared_by:
+  - architecture-distribution-readiness
+  - architecture-modular-monolith
+- id: R-ROUTE-b06385f6ebdc
+  from: architecture-distribution-readiness
+  relation: co-retrieved-with
+  to: architecture-scoped-characteristics
+  semantic: false
+  declared_by:
+  - architecture-distribution-readiness
+- id: R-ROUTE-37845f07ec8e
+  from: architecture-distribution-readiness
+  relation: co-retrieved-with
+  to: architecture-team-topology-force
+  semantic: false
+  declared_by:
+  - architecture-team-topology-force
+- id: R-ROUTE-b625d1a28a39
+  from: architecture-distribution-readiness
+  relation: co-retrieved-with
+  to: domain-aggregate-invariant-boundary
+  semantic: false
+  declared_by:
+  - domain-aggregate-invariant-boundary
+- id: R-ROUTE-2a48379051f8
+  from: architecture-distribution-readiness
+  relation: co-retrieved-with
+  to: domain-bounded-context
+  semantic: false
+  declared_by:
+  - architecture-distribution-readiness
+  - domain-bounded-context
+- id: R-ROUTE-e38488c71ac3
+  from: architecture-distribution-readiness
+  relation: co-retrieved-with
+  to: performance-measurable-objective
+  semantic: false
+  declared_by:
+  - architecture-distribution-readiness
+- id: R-ROUTE-4dff054e3ce2
+  from: architecture-earned-boundary
+  relation: co-retrieved-with
+  to: architecture-policy-mechanism-separation
+  semantic: false
+  declared_by:
+  - architecture-earned-boundary
+  - architecture-policy-mechanism-separation
+- id: R-ROUTE-ccf53314a92b
+  from: architecture-earned-boundary
+  relation: co-retrieved-with
+  to: architecture-selective-option-preservation
+  semantic: false
+  declared_by:
+  - architecture-selective-option-preservation
+- id: R-ROUTE-e5a9285766b8
+  from: architecture-earned-boundary
+  relation: co-retrieved-with
+  to: architecture-team-topology-force
+  semantic: false
+  declared_by:
+  - architecture-team-topology-force
+- id: R-ROUTE-f1626b532405
+  from: architecture-earned-boundary
+  relation: co-retrieved-with
+  to: domain-bounded-context
+  semantic: false
+  declared_by:
+  - architecture-earned-boundary
+  - domain-bounded-context
+- id: R-ROUTE-05fe6ed07e27
+  from: architecture-earned-boundary
+  relation: co-retrieved-with
+  to: universal-earned-abstraction
+  semantic: false
+  declared_by:
+  - universal-earned-abstraction
+- id: R-ROUTE-b1478daf9de1
+  from: architecture-earned-boundary
+  relation: co-retrieved-with
+  to: universal-information-hiding
+  semantic: false
+  declared_by:
+  - architecture-earned-boundary
+- id: R-ROUTE-c92d401ac1a5
+  from: architecture-event-temporal-semantics
+  relation: co-retrieved-with
+  to: architecture-fitness-functions
+  semantic: false
+  declared_by:
+  - architecture-event-temporal-semantics
+- id: R-ROUTE-7d959aba08fa
+  from: architecture-event-temporal-semantics
+  relation: co-retrieved-with
+  to: architecture-interaction-synchrony
+  semantic: false
+  declared_by:
+  - architecture-event-temporal-semantics
+  - architecture-interaction-synchrony
+- id: R-ROUTE-14a61817ae79
+  from: architecture-event-temporal-semantics
+  relation: co-retrieved-with
+  to: universal-explicit-invariants
+  semantic: false
+  declared_by:
+  - architecture-event-temporal-semantics
+- id: R-ROUTE-e526d3fdf1af
+  from: architecture-feedback-loop
+  relation: co-retrieved-with
+  to: architecture-fitness-functions
+  semantic: false
+  declared_by:
+  - architecture-feedback-loop
+  - architecture-fitness-functions
+- id: R-ROUTE-c647ea5767d5
+  from: architecture-feedback-loop
+  relation: co-retrieved-with
+  to: universal-measure-claimed-improvement
+  semantic: false
+  declared_by:
+  - architecture-feedback-loop
+  - universal-measure-claimed-improvement
+- id: R-ROUTE-48518b23c9be
+  from: architecture-feedback-loop
+  relation: co-retrieved-with
+  to: universal-reversible-reviewable-change
+  semantic: false
+  declared_by:
+  - architecture-feedback-loop
+- id: R-ROUTE-dd53f5b1342b
+  from: architecture-fitness-functions
+  relation: co-retrieved-with
+  to: architecture-metrics-as-signals
+  semantic: false
+  declared_by:
+  - architecture-metrics-as-signals
+- id: R-ROUTE-78c2b5ad489e
+  from: architecture-fitness-functions
+  relation: co-retrieved-with
+  to: architecture-risk-analysis
+  semantic: false
+  declared_by:
+  - architecture-risk-analysis
+- id: R-ROUTE-bbe9b7d64609
+  from: architecture-fitness-functions
+  relation: co-retrieved-with
+  to: architecture-scoped-characteristics
+  semantic: false
+  declared_by:
+  - architecture-fitness-functions
+  - architecture-scoped-characteristics
+- id: R-ROUTE-b30d6bf8d998
+  from: architecture-fitness-functions
+  relation: co-retrieved-with
+  to: architecture-structural-constraint-enforcement
+  semantic: false
+  declared_by:
+  - architecture-fitness-functions
+  - architecture-structural-constraint-enforcement
+- id: R-ROUTE-3a5d73df17ac
+  from: architecture-fitness-functions
+  relation: co-retrieved-with
+  to: universal-measure-claimed-improvement
+  semantic: false
+  declared_by:
+  - architecture-fitness-functions
+  - universal-measure-claimed-improvement
+- id: R-ROUTE-c72c253c1ab8
+  from: architecture-framework-commitment
+  relation: co-retrieved-with
+  to: architecture-policy-mechanism-separation
+  semantic: false
+  declared_by:
+  - architecture-framework-commitment
+- id: R-ROUTE-1e73421cc4d7
+  from: architecture-framework-commitment
+  relation: co-retrieved-with
+  to: universal-earned-abstraction
+  semantic: false
+  declared_by:
+  - architecture-framework-commitment
+- id: R-ROUTE-b49e5dbaea98
+  from: architecture-interaction-synchrony
+  relation: co-retrieved-with
+  to: architecture-scoped-characteristics
+  semantic: false
+  declared_by:
+  - architecture-interaction-synchrony
+- id: R-ROUTE-5b4a5a66d766
+  from: architecture-metrics-as-signals
+  relation: co-retrieved-with
+  to: refactoring-demonstrated-pressure
+  semantic: false
+  declared_by:
+  - refactoring-demonstrated-pressure
+- id: R-ROUTE-371e29576d77
+  from: architecture-metrics-as-signals
+  relation: co-retrieved-with
+  to: refactoring-hotspot-prioritization
+  semantic: false
+  declared_by:
+  - refactoring-hotspot-prioritization
+- id: R-ROUTE-387610e9bd80
+  from: architecture-metrics-as-signals
+  relation: co-retrieved-with
+  to: refactoring-leave-unattractive-code
+  semantic: false
+  declared_by:
+  - refactoring-leave-unattractive-code
+- id: R-ROUTE-30ff1543468a
+  from: architecture-metrics-as-signals
+  relation: co-retrieved-with
+  to: refactoring-smells-as-hypotheses
+  semantic: false
+  declared_by:
+  - refactoring-smells-as-hypotheses
+- id: R-ROUTE-4bf5bc81c00a
+  from: architecture-metrics-as-signals
+  relation: co-retrieved-with
+  to: repository-assessment-behavioral-data-fitness
+  semantic: false
+  declared_by:
+  - repository-assessment-behavioral-data-fitness
+- id: R-ROUTE-5b943ce4f229
+  from: architecture-metrics-as-signals
+  relation: co-retrieved-with
+  to: repository-assessment-behavioral-early-warning
+  semantic: false
+  declared_by:
+  - repository-assessment-behavioral-early-warning
+- id: R-ROUTE-c465af6009b3
+  from: architecture-metrics-as-signals
+  relation: co-retrieved-with
+  to: repository-assessment-code-age
+  semantic: false
+  declared_by:
+  - repository-assessment-code-age
+- id: R-ROUTE-4c735920cb08
+  from: architecture-metrics-as-signals
+  relation: co-retrieved-with
+  to: universal-evidence-before-intervention
+  semantic: false
+  declared_by:
+  - architecture-metrics-as-signals
+- id: R-ROUTE-dcf7ff7506fa
+  from: architecture-metrics-as-signals
+  relation: co-retrieved-with
+  to: universal-measure-claimed-improvement
+  semantic: false
+  declared_by:
+  - architecture-metrics-as-signals
+- id: R-ROUTE-54b8f665107a
+  from: architecture-modular-monolith
+  relation: co-retrieved-with
+  to: domain-bounded-context
+  semantic: false
+  declared_by:
+  - architecture-modular-monolith
+- id: R-ROUTE-68bbc3e461f1
+  from: architecture-policy-mechanism-separation
+  relation: co-retrieved-with
+  to: domain-anticorruption-layer
+  semantic: false
+  declared_by:
+  - domain-anticorruption-layer
+- id: R-ROUTE-c64779f68d23
+  from: architecture-policy-mechanism-separation
+  relation: co-retrieved-with
+  to: domain-language-model-loop
+  semantic: false
+  declared_by:
+  - architecture-policy-mechanism-separation
+  - domain-language-model-loop
+- id: R-ROUTE-83edb5a2db54
+  from: architecture-policy-mechanism-separation
+  relation: co-retrieved-with
+  to: domain-repository-lifecycle
+  semantic: false
+  declared_by:
+  - domain-repository-lifecycle
+- id: R-ROUTE-f9a89a59fd47
+  from: architecture-policy-mechanism-separation
+  relation: co-retrieved-with
+  to: universal-information-hiding
+  semantic: false
+  declared_by:
+  - architecture-policy-mechanism-separation
+- id: R-ROUTE-b30a4394dc2f
+  from: architecture-risk-analysis
+  relation: co-retrieved-with
+  to: architecture-scoped-characteristics
+  semantic: false
+  declared_by:
+  - architecture-risk-analysis
+- id: R-ROUTE-e0992cd93eee
+  from: architecture-risk-analysis
+  relation: co-retrieved-with
+  to: universal-minimize-simultaneous-uncertainty
+  semantic: false
+  declared_by:
+  - architecture-risk-analysis
+- id: R-ROUTE-89cb188b3c29
+  from: architecture-scoped-characteristics
+  relation: co-retrieved-with
+  to: architecture-structural-constraint-enforcement
+  semantic: false
+  declared_by:
+  - architecture-structural-constraint-enforcement
+- id: R-ROUTE-5d6f59fbd371
+  from: architecture-scoped-characteristics
+  relation: co-retrieved-with
+  to: performance-measurable-objective
+  semantic: false
+  declared_by:
+  - architecture-scoped-characteristics
+- id: R-ROUTE-164c5a8dd144
+  from: architecture-scoped-characteristics
+  relation: co-retrieved-with
+  to: universal-evidence-before-intervention
+  semantic: false
+  declared_by:
+  - architecture-scoped-characteristics
+- id: R-ROUTE-9a33e17d1e1f
+  from: architecture-selective-option-preservation
+  relation: co-retrieved-with
+  to: universal-reversible-reviewable-change
+  semantic: false
+  declared_by:
+  - architecture-selective-option-preservation
+- id: R-ROUTE-7ee7d4fb7781
+  from: architecture-team-topology-force
+  relation: co-retrieved-with
+  to: domain-bounded-context
+  semantic: false
+  declared_by:
+  - architecture-team-topology-force
+  - domain-bounded-context
+- id: R-ROUTE-1f1e1a4ce003
+  from: architecture-team-topology-force
+  relation: co-retrieved-with
+  to: domain-context-relationship-selection
+  semantic: false
+  declared_by:
+  - architecture-team-topology-force
+  - domain-context-relationship-selection
+- id: R-ROUTE-e0cc5e1bb102
+  from: architecture-team-topology-force
+  relation: co-retrieved-with
+  to: repository-assessment-behavioral-boundary-candidate
+  semantic: false
+  declared_by:
+  - repository-assessment-behavioral-boundary-candidate
+- id: R-ROUTE-7fb8579db4eb
+  from: architecture-team-topology-force
+  relation: co-retrieved-with
+  to: repository-assessment-behavioral-data-fitness
+  semantic: false
+  declared_by:
+  - repository-assessment-behavioral-data-fitness
+- id: R-ROUTE-909d2313b04f
+  from: architecture-team-topology-force
+  relation: co-retrieved-with
+  to: repository-assessment-metrics-not-performance
+  semantic: false
+  declared_by:
+  - repository-assessment-metrics-not-performance
+- id: R-ROUTE-5706032da35a
+  from: debugging-causal-repair
+  relation: co-retrieved-with
+  to: debugging-hypothesis-led-investigation
+  semantic: false
+  declared_by:
+  - debugging-causal-repair
+  - debugging-hypothesis-led-investigation
+- id: R-ROUTE-f72f82d8dae3
+  from: debugging-causal-repair
+  relation: co-retrieved-with
+  to: go-explicit-contextual-errors
+  semantic: false
+  declared_by:
+  - go-explicit-contextual-errors
+- id: R-ROUTE-4776ff8081c5
+  from: debugging-causal-repair
+  relation: co-retrieved-with
+  to: implementation-risk-driven-tests
+  semantic: false
+  declared_by:
+  - debugging-causal-repair
+  - implementation-risk-driven-tests
+- id: R-ROUTE-31a4fff98192
+  from: debugging-causal-repair
+  relation: co-retrieved-with
+  to: testing-test-first-feedback
+  semantic: false
+  declared_by:
+  - testing-test-first-feedback
+- id: R-ROUTE-4b7795b82255
+  from: debugging-causal-repair
+  relation: co-retrieved-with
+  to: universal-preserve-behavior-by-default
+  semantic: false
+  declared_by:
+  - debugging-causal-repair
+- id: R-ROUTE-9165f857a575
+  from: debugging-causal-repair
+  relation: co-retrieved-with
+  to: universal-separate-semantic-structural-change
+  semantic: false
+  declared_by:
+  - debugging-causal-repair
+  - universal-separate-semantic-structural-change
+- id: R-ROUTE-302c3c56aeb1
+  from: debugging-hypothesis-led-investigation
+  relation: co-retrieved-with
+  to: implementation-risk-driven-tests
+  semantic: false
+  declared_by:
+  - debugging-hypothesis-led-investigation
+- id: R-ROUTE-9b19b098a44b
+  from: debugging-hypothesis-led-investigation
+  relation: co-retrieved-with
+  to: universal-evidence-before-intervention
+  semantic: false
+  declared_by:
+  - debugging-hypothesis-led-investigation
+- id: R-ROUTE-1f2e420a1704
+  from: debugging-hypothesis-led-investigation
+  relation: co-retrieved-with
+  to: universal-minimize-simultaneous-uncertainty
+  semantic: false
+  declared_by:
+  - debugging-hypothesis-led-investigation
+  - universal-minimize-simultaneous-uncertainty
+- id: R-ROUTE-3a9df8ac98df
+  from: domain-aggregate-invariant-boundary
+  relation: co-retrieved-with
+  to: domain-association-constraint
+  semantic: false
+  declared_by:
+  - domain-association-constraint
+- id: R-ROUTE-f505206936ca
+  from: domain-aggregate-invariant-boundary
+  relation: co-retrieved-with
+  to: domain-bounded-context
+  semantic: false
+  declared_by:
+  - domain-aggregate-invariant-boundary
+- id: R-ROUTE-0d506b5c4369
+  from: domain-aggregate-invariant-boundary
+  relation: co-retrieved-with
+  to: domain-factory-lifecycle
+  semantic: false
+  declared_by:
+  - domain-aggregate-invariant-boundary
+  - domain-factory-lifecycle
+- id: R-ROUTE-d222200cca30
+  from: domain-aggregate-invariant-boundary
+  relation: co-retrieved-with
+  to: domain-identity-entity
+  semantic: false
+  declared_by:
+  - domain-aggregate-invariant-boundary
+  - domain-identity-entity
+- id: R-ROUTE-94f26855e585
+  from: domain-aggregate-invariant-boundary
+  relation: co-retrieved-with
+  to: domain-language-model-loop
+  semantic: false
+  declared_by:
+  - domain-language-model-loop
+- id: R-ROUTE-66080b14e88f
+  from: domain-aggregate-invariant-boundary
+  relation: co-retrieved-with
+  to: domain-repository-lifecycle
+  semantic: false
+  declared_by:
+  - domain-aggregate-invariant-boundary
+  - domain-repository-lifecycle
+- id: R-ROUTE-356207663394
+  from: domain-aggregate-invariant-boundary
+  relation: co-retrieved-with
+  to: domain-value-object
+  semantic: false
+  declared_by:
+  - domain-value-object
+- id: R-ROUTE-c4930aca356d
+  from: domain-aggregate-invariant-boundary
+  relation: co-retrieved-with
+  to: universal-explicit-invariants
+  semantic: false
+  declared_by:
+  - domain-aggregate-invariant-boundary
+  - universal-explicit-invariants
+- id: R-ROUTE-5f5aa390cd74
+  from: domain-anticorruption-layer
+  relation: co-retrieved-with
+  to: domain-bounded-context
+  semantic: false
+  declared_by:
+  - domain-anticorruption-layer
+- id: R-ROUTE-68fa0fa4078e
+  from: domain-anticorruption-layer
+  relation: co-retrieved-with
+  to: domain-context-relationship-selection
+  semantic: false
+  declared_by:
+  - domain-anticorruption-layer
+  - domain-context-relationship-selection
+- id: R-ROUTE-babb3338ebc8
+  from: domain-association-constraint
+  relation: co-retrieved-with
+  to: domain-identity-entity
+  semantic: false
+  declared_by:
+  - domain-association-constraint
+- id: R-ROUTE-0d51a3e2ea32
+  from: domain-association-constraint
+  relation: co-retrieved-with
+  to: domain-value-object
+  semantic: false
+  declared_by:
+  - domain-association-constraint
+- id: R-ROUTE-e2bb15dbe48b
+  from: domain-bounded-context
+  relation: co-retrieved-with
+  to: domain-context-relationship-selection
+  semantic: false
+  declared_by:
+  - domain-bounded-context
+  - domain-context-relationship-selection
+- id: R-ROUTE-89421edbed69
+  from: domain-bounded-context
+  relation: co-retrieved-with
+  to: domain-fitting-large-scale-structure
+  semantic: false
+  declared_by:
+  - domain-fitting-large-scale-structure
+- id: R-ROUTE-ce5610227a1c
+  from: domain-bounded-context
+  relation: co-retrieved-with
+  to: domain-language-model-loop
+  semantic: false
+  declared_by:
+  - domain-bounded-context
+  - domain-language-model-loop
+- id: R-ROUTE-04f84079aafc
+  from: domain-bounded-context
+  relation: co-retrieved-with
+  to: repository-assessment-behavioral-boundary-candidate
+  semantic: false
+  declared_by:
+  - repository-assessment-behavioral-boundary-candidate
+- id: R-ROUTE-7b77c6264534
+  from: domain-core-domain-priority
+  relation: co-retrieved-with
+  to: domain-fitting-large-scale-structure
+  semantic: false
+  declared_by:
+  - domain-core-domain-priority
+  - domain-fitting-large-scale-structure
+- id: R-ROUTE-c2452f5b87f0
+  from: domain-core-domain-priority
+  relation: co-retrieved-with
+  to: domain-language-model-loop
+  semantic: false
+  declared_by:
+  - domain-core-domain-priority
+- id: R-ROUTE-b7797e88a43d
+  from: domain-core-domain-priority
+  relation: co-retrieved-with
+  to: domain-modeling-investment-gate
+  semantic: false
+  declared_by:
+  - domain-core-domain-priority
+  - domain-modeling-investment-gate
+- id: R-ROUTE-942eff776157
+  from: domain-explicit-concept
+  relation: co-retrieved-with
+  to: domain-intention-revealing-interface
+  semantic: false
+  declared_by:
+  - domain-explicit-concept
+  - domain-intention-revealing-interface
+- id: R-ROUTE-0616623ab939
+  from: domain-explicit-concept
+  relation: co-retrieved-with
+  to: domain-language-model-loop
+  semantic: false
+  declared_by:
+  - domain-explicit-concept
+  - domain-language-model-loop
+- id: R-ROUTE-c1fa25d66290
+  from: domain-explicit-concept
+  relation: co-retrieved-with
+  to: universal-earned-abstraction
+  semantic: false
+  declared_by:
+  - domain-explicit-concept
+- id: R-ROUTE-9ab1b96e2891
+  from: domain-factory-lifecycle
+  relation: co-retrieved-with
+  to: domain-identity-entity
+  semantic: false
+  declared_by:
+  - domain-factory-lifecycle
+- id: R-ROUTE-428f82555203
+  from: domain-factory-lifecycle
+  relation: co-retrieved-with
+  to: domain-repository-lifecycle
+  semantic: false
+  declared_by:
+  - domain-factory-lifecycle
+  - domain-repository-lifecycle
+- id: R-ROUTE-27f89ee4f7a3
+  from: domain-fitting-large-scale-structure
+  relation: co-retrieved-with
+  to: domain-language-model-loop
+  semantic: false
+  declared_by:
+  - domain-fitting-large-scale-structure
+- id: R-ROUTE-508d21a3c589
+  from: domain-identity-entity
+  relation: co-retrieved-with
+  to: domain-language-model-loop
+  semantic: false
+  declared_by:
+  - domain-identity-entity
+- id: R-ROUTE-edcf1f9ba4c2
+  from: domain-identity-entity
+  relation: co-retrieved-with
+  to: domain-service-operation
+  semantic: false
+  declared_by:
+  - domain-service-operation
+- id: R-ROUTE-f616ee34f6f9
+  from: domain-identity-entity
+  relation: co-retrieved-with
+  to: domain-value-object
+  semantic: false
+  declared_by:
+  - domain-identity-entity
+  - domain-value-object
+- id: R-ROUTE-8678b08ba04b
+  from: domain-intention-revealing-interface
+  relation: co-retrieved-with
+  to: domain-language-model-loop
+  semantic: false
+  declared_by:
+  - domain-intention-revealing-interface
+- id: R-ROUTE-88104c9f4b17
+  from: domain-intention-revealing-interface
+  relation: co-retrieved-with
+  to: domain-service-operation
+  semantic: false
+  declared_by:
+  - domain-intention-revealing-interface
+  - domain-service-operation
+- id: R-ROUTE-2ffd8fedc0af
+  from: domain-intention-revealing-interface
+  relation: co-retrieved-with
+  to: domain-value-object
+  semantic: false
+  declared_by:
+  - domain-intention-revealing-interface
+  - domain-value-object
+- id: R-ROUTE-d5edb910982f
+  from: domain-intention-revealing-interface
+  relation: co-retrieved-with
+  to: universal-information-hiding
+  semantic: false
+  declared_by:
+  - domain-intention-revealing-interface
+- id: R-ROUTE-4dd24b750e92
+  from: domain-language-model-loop
+  relation: co-retrieved-with
+  to: domain-modeling-investment-gate
+  semantic: false
+  declared_by:
+  - domain-language-model-loop
+  - domain-modeling-investment-gate
+- id: R-ROUTE-23209faaa45d
+  from: domain-modeling-investment-gate
+  relation: co-retrieved-with
+  to: universal-evidence-before-intervention
+  semantic: false
+  declared_by:
+  - domain-modeling-investment-gate
+- id: R-ROUTE-f05ba09be9bf
+  from: domain-modeling-investment-gate
+  relation: co-retrieved-with
+  to: universal-no-change-option
+  semantic: false
+  declared_by:
+  - domain-modeling-investment-gate
+- id: R-ROUTE-679b5e2cf0f1
+  from: domain-service-operation
+  relation: co-retrieved-with
+  to: domain-value-object
+  semantic: false
+  declared_by:
+  - domain-service-operation
+- id: R-ROUTE-bceaf70f9c7c
+  from: go-bounded-concurrency
+  relation: co-retrieved-with
+  to: go-goroutine-resource-lifecycle
+  semantic: false
+  declared_by:
+  - go-bounded-concurrency
+  - go-goroutine-resource-lifecycle
+- id: R-ROUTE-fb1c4de2ed9a
+  from: go-bounded-concurrency
+  relation: co-retrieved-with
+  to: performance-earned-bounded-concurrency
+  semantic: false
+  declared_by:
+  - go-bounded-concurrency
+- id: R-ROUTE-9efd5823b570
+  from: go-bounded-concurrency
+  relation: co-retrieved-with
+  to: performance-resource-lifecycle
+  semantic: false
+  declared_by:
+  - go-bounded-concurrency
+- id: R-ROUTE-fef8e4d412b7
+  from: go-bounded-concurrency
+  relation: co-retrieved-with
+  to: performance-target-based-stop
+  semantic: false
+  declared_by:
+  - go-bounded-concurrency
+- id: R-ROUTE-52fe03935f11
+  from: go-explicit-contextual-errors
+  relation: co-retrieved-with
+  to: go-goroutine-resource-lifecycle
+  semantic: false
+  declared_by:
+  - go-goroutine-resource-lifecycle
+- id: R-ROUTE-819a2d4d52de
+  from: go-explicit-contextual-errors
+  relation: co-retrieved-with
+  to: implementation-explicit-failure-policy
+  semantic: false
+  declared_by:
+  - go-explicit-contextual-errors
+- id: R-ROUTE-45cfba172dbd
+  from: go-explicit-contextual-errors
+  relation: co-retrieved-with
+  to: implementation-repository-language-conformance
+  semantic: false
+  declared_by:
+  - go-explicit-contextual-errors
+- id: R-ROUTE-fe8d9c8c0c54
+  from: go-explicit-contextual-errors
+  relation: co-retrieved-with
+  to: performance-resource-lifecycle
+  semantic: false
+  declared_by:
+  - go-explicit-contextual-errors
+- id: R-ROUTE-1621bcebf393
+  from: go-goroutine-resource-lifecycle
+  relation: co-retrieved-with
+  to: implementation-explicit-failure-policy
+  semantic: false
+  declared_by:
+  - go-goroutine-resource-lifecycle
+- id: R-ROUTE-22275041ebb8
+  from: go-goroutine-resource-lifecycle
+  relation: co-retrieved-with
+  to: performance-resource-lifecycle
+  semantic: false
+  declared_by:
+  - go-goroutine-resource-lifecycle
+- id: R-ROUTE-79bfc5152e2a
+  from: go-package-api-simplicity
+  relation: co-retrieved-with
+  to: implementation-minimal-coherent-api
+  semantic: false
+  declared_by:
+  - go-package-api-simplicity
+- id: R-ROUTE-968363049b6b
+  from: go-package-api-simplicity
+  relation: co-retrieved-with
+  to: implementation-placement-by-ownership
+  semantic: false
+  declared_by:
+  - go-package-api-simplicity
+- id: R-ROUTE-7582eceae250
+  from: go-package-api-simplicity
+  relation: co-retrieved-with
+  to: implementation-repository-language-conformance
+  semantic: false
+  declared_by:
+  - go-package-api-simplicity
+- id: R-ROUTE-bc927f08659c
+  from: go-package-api-simplicity
+  relation: co-retrieved-with
+  to: universal-earned-abstraction
+  semantic: false
+  declared_by:
+  - go-package-api-simplicity
+- id: R-ROUTE-df0fc6dd4390
+  from: go-semantics-before-performance-constructs
+  relation: co-retrieved-with
+  to: implementation-repository-language-conformance
+  semantic: false
+  declared_by:
+  - go-semantics-before-performance-constructs
+- id: R-ROUTE-4fa513546b30
+  from: go-semantics-before-performance-constructs
+  relation: co-retrieved-with
+  to: implementation-representation-fit
+  semantic: false
+  declared_by:
+  - go-semantics-before-performance-constructs
+- id: R-ROUTE-60ceca287709
+  from: go-semantics-before-performance-constructs
+  relation: co-retrieved-with
+  to: performance-semantic-preservation
+  semantic: false
+  declared_by:
+  - go-semantics-before-performance-constructs
+- id: R-ROUTE-a5bad30c8c05
+  from: go-semantics-before-performance-constructs
+  relation: co-retrieved-with
+  to: performance-specialization-evidence
+  semantic: false
+  declared_by:
+  - go-semantics-before-performance-constructs
+- id: R-ROUTE-518e3308be7b
+  from: implementation-comments-first-design-probe
+  relation: co-retrieved-with
+  to: implementation-minimal-coherent-api
+  semantic: false
+  declared_by:
+  - implementation-comments-first-design-probe
+- id: R-ROUTE-e88dec53a23b
+  from: implementation-comments-first-design-probe
+  relation: co-retrieved-with
+  to: implementation-non-obvious-commentary
+  semantic: false
+  declared_by:
+  - implementation-comments-first-design-probe
+- id: R-ROUTE-3fb2739383ef
+  from: implementation-comments-first-design-probe
+  relation: co-retrieved-with
+  to: universal-earned-abstraction
+  semantic: false
+  declared_by:
+  - implementation-comments-first-design-probe
+- id: R-ROUTE-f908138f6be1
+  from: implementation-duplication-as-evidence
+  relation: co-retrieved-with
+  to: performance-cache-validity
+  semantic: false
+  declared_by:
+  - implementation-duplication-as-evidence
+- id: R-ROUTE-44b5d6271ea5
+  from: implementation-duplication-as-evidence
+  relation: co-retrieved-with
+  to: python-inheritance-constraints
+  semantic: false
+  declared_by:
+  - python-inheritance-constraints
+- id: R-ROUTE-5e4e03237210
+  from: implementation-duplication-as-evidence
+  relation: co-retrieved-with
+  to: refactoring-cochange-evidence
+  semantic: false
+  declared_by:
+  - refactoring-cochange-evidence
+- id: R-ROUTE-6f0b526678de
+  from: implementation-duplication-as-evidence
+  relation: co-retrieved-with
+  to: universal-change-amplification
+  semantic: false
+  declared_by:
+  - implementation-duplication-as-evidence
+  - universal-change-amplification
+- id: R-ROUTE-f2df4a2c23a1
+  from: implementation-duplication-as-evidence
+  relation: co-retrieved-with
+  to: universal-earned-abstraction
+  semantic: false
+  declared_by:
+  - implementation-duplication-as-evidence
+  - universal-earned-abstraction
+- id: R-ROUTE-9720e74971d5
+  from: implementation-duplication-as-evidence
+  relation: co-retrieved-with
+  to: universal-information-hiding
+  semantic: false
+  declared_by:
+  - implementation-duplication-as-evidence
+- id: R-ROUTE-8f390433972d
+  from: implementation-error-surface-reduction
+  relation: co-retrieved-with
+  to: implementation-explicit-failure-policy
+  semantic: false
+  declared_by:
+  - implementation-error-surface-reduction
+  - implementation-explicit-failure-policy
+- id: R-ROUTE-d808cf79b7a2
+  from: implementation-error-surface-reduction
+  relation: co-retrieved-with
+  to: implementation-normal-result-or-exception
+  semantic: false
+  declared_by:
+  - implementation-normal-result-or-exception
+- id: R-ROUTE-de5421f1c10b
+  from: implementation-error-surface-reduction
+  relation: co-retrieved-with
+  to: performance-resource-lifecycle
+  semantic: false
+  declared_by:
+  - implementation-error-surface-reduction
+- id: R-ROUTE-87817f3df45a
+  from: implementation-error-surface-reduction
+  relation: co-retrieved-with
+  to: universal-information-hiding
+  semantic: false
+  declared_by:
+  - implementation-error-surface-reduction
+- id: R-ROUTE-b0477c73c8c9
+  from: implementation-explicit-failure-policy
+  relation: co-retrieved-with
+  to: implementation-fail-fast-or-recover
+  semantic: false
+  declared_by:
+  - implementation-fail-fast-or-recover
+- id: R-ROUTE-b1b2f7b1d3aa
+  from: implementation-explicit-failure-policy
+  relation: co-retrieved-with
+  to: implementation-minimal-coherent-api
+  semantic: false
+  declared_by:
+  - implementation-minimal-coherent-api
+- id: R-ROUTE-e6ffc6e91bf8
+  from: implementation-explicit-failure-policy
+  relation: co-retrieved-with
+  to: implementation-normal-result-or-exception
+  semantic: false
+  declared_by:
+  - implementation-normal-result-or-exception
+- id: R-ROUTE-71cd01e1e943
+  from: implementation-explicit-failure-policy
+  relation: co-retrieved-with
+  to: performance-resource-lifecycle
+  semantic: false
+  declared_by:
+  - implementation-explicit-failure-policy
+  - performance-resource-lifecycle
+- id: R-ROUTE-17cc7ebec6a8
+  from: implementation-explicit-failure-policy
+  relation: co-retrieved-with
+  to: python-structured-cleanup
+  semantic: false
+  declared_by:
+  - python-structured-cleanup
+- id: R-ROUTE-ae7926191555
+  from: implementation-explicit-failure-policy
+  relation: co-retrieved-with
+  to: python-text-bytes-boundary
+  semantic: false
+  declared_by:
+  - python-text-bytes-boundary
+- id: R-ROUTE-ff6062a8ae3d
+  from: implementation-explicit-failure-policy
+  relation: co-retrieved-with
+  to: universal-explicit-invariants
+  semantic: false
+  declared_by:
+  - implementation-explicit-failure-policy
+  - universal-explicit-invariants
+- id: R-ROUTE-b002ed7fd5df
+  from: implementation-explicit-failure-policy
+  relation: co-retrieved-with
+  to: universal-preserve-behavior-by-default
+  semantic: false
+  declared_by:
+  - implementation-explicit-failure-policy
+- id: R-ROUTE-417079ffa16f
+  from: implementation-fail-fast-or-recover
+  relation: co-retrieved-with
+  to: implementation-normal-result-or-exception
+  semantic: false
+  declared_by:
+  - implementation-normal-result-or-exception
+- id: R-ROUTE-95152294576a
+  from: implementation-fail-fast-or-recover
+  relation: co-retrieved-with
+  to: performance-resource-lifecycle
+  semantic: false
+  declared_by:
+  - implementation-fail-fast-or-recover
+- id: R-ROUTE-2885647946a0
+  from: implementation-fail-fast-or-recover
+  relation: co-retrieved-with
+  to: universal-explicit-invariants
+  semantic: false
+  declared_by:
+  - implementation-fail-fast-or-recover
+- id: R-ROUTE-0b07b5f14c63
+  from: implementation-minimal-coherent-api
+  relation: co-retrieved-with
+  to: implementation-non-obvious-commentary
+  semantic: false
+  declared_by:
+  - implementation-non-obvious-commentary
+- id: R-ROUTE-1f9fc9f0db81
+  from: implementation-minimal-coherent-api
+  relation: co-retrieved-with
+  to: implementation-placement-by-ownership
+  semantic: false
+  declared_by:
+  - implementation-placement-by-ownership
+- id: R-ROUTE-c5efd09b0845
+  from: implementation-minimal-coherent-api
+  relation: co-retrieved-with
+  to: implementation-semantic-naming
+  semantic: false
+  declared_by:
+  - implementation-semantic-naming
+- id: R-ROUTE-66ba91c77388
+  from: implementation-minimal-coherent-api
+  relation: co-retrieved-with
+  to: python-compatible-property-evolution
+  semantic: false
+  declared_by:
+  - python-compatible-property-evolution
+- id: R-ROUTE-83dd08ec4093
+  from: implementation-minimal-coherent-api
+  relation: co-retrieved-with
+  to: python-function-over-stateless-class
+  semantic: false
+  declared_by:
+  - python-function-over-stateless-class
+- id: R-ROUTE-6288fbec1706
+  from: implementation-minimal-coherent-api
+  relation: co-retrieved-with
+  to: python-interface-mechanism-selection
+  semantic: false
+  declared_by:
+  - python-interface-mechanism-selection
+- id: R-ROUTE-f35ec4b21c5d
+  from: implementation-minimal-coherent-api
+  relation: co-retrieved-with
+  to: python-protocol-conformance
+  semantic: false
+  declared_by:
+  - python-protocol-conformance
+- id: R-ROUTE-58aab24ee262
+  from: implementation-minimal-coherent-api
+  relation: co-retrieved-with
+  to: python-runtime-static-boundary
+  semantic: false
+  declared_by:
+  - python-runtime-static-boundary
+- id: R-ROUTE-ab0d458b97dd
+  from: implementation-minimal-coherent-api
+  relation: co-retrieved-with
+  to: python-text-bytes-boundary
+  semantic: false
+  declared_by:
+  - python-text-bytes-boundary
+- id: R-ROUTE-ea50768f35aa
+  from: implementation-minimal-coherent-api
+  relation: co-retrieved-with
+  to: testing-design-before-feature-tests
+  semantic: false
+  declared_by:
+  - testing-design-before-feature-tests
+- id: R-ROUTE-e7695f6128cb
+  from: implementation-minimal-coherent-api
+  relation: co-retrieved-with
+  to: universal-earned-abstraction
+  semantic: false
+  declared_by:
+  - implementation-minimal-coherent-api
+- id: R-ROUTE-c3ff6db22433
+  from: implementation-minimal-coherent-api
+  relation: co-retrieved-with
+  to: universal-explicit-invariants
+  semantic: false
+  declared_by:
+  - implementation-minimal-coherent-api
+- id: R-ROUTE-987a769949a8
+  from: implementation-minimal-coherent-api
+  relation: co-retrieved-with
+  to: universal-information-hiding
+  semantic: false
+  declared_by:
+  - implementation-minimal-coherent-api
+- id: R-ROUTE-b1f1ea247352
+  from: implementation-non-obvious-commentary
+  relation: co-retrieved-with
+  to: implementation-obvious-control-flow
+  semantic: false
+  declared_by:
+  - implementation-non-obvious-commentary
+  - implementation-obvious-control-flow
+- id: R-ROUTE-272be75524d2
+  from: implementation-non-obvious-commentary
+  relation: co-retrieved-with
+  to: implementation-semantic-naming
+  semantic: false
+  declared_by:
+  - implementation-non-obvious-commentary
+- id: R-ROUTE-e6a5c77548c0
+  from: implementation-obvious-control-flow
+  relation: co-retrieved-with
+  to: implementation-repository-language-conformance
+  semantic: false
+  declared_by:
+  - implementation-repository-language-conformance
+- id: R-ROUTE-efaefdb3372b
+  from: implementation-obvious-control-flow
+  relation: co-retrieved-with
+  to: implementation-semantic-naming
+  semantic: false
+  declared_by:
+  - implementation-obvious-control-flow
+  - implementation-semantic-naming
+- id: R-ROUTE-138e2b900e37
+  from: implementation-obvious-control-flow
+  relation: co-retrieved-with
+  to: python-dynamic-mechanism-escalation
+  semantic: false
+  declared_by:
+  - python-dynamic-mechanism-escalation
+- id: R-ROUTE-962be771aec0
+  from: implementation-obvious-control-flow
+  relation: co-retrieved-with
+  to: universal-explicit-invariants
+  semantic: false
+  declared_by:
+  - implementation-obvious-control-flow
+- id: R-ROUTE-1da603a353fe
+  from: implementation-obvious-control-flow
+  relation: co-retrieved-with
+  to: universal-local-reasoning
+  semantic: false
+  declared_by:
+  - implementation-obvious-control-flow
+- id: R-ROUTE-6b8105a30a07
+  from: implementation-placement-by-ownership
+  relation: co-retrieved-with
+  to: implementation-readiness
+  semantic: false
+  declared_by:
+  - implementation-readiness
+- id: R-ROUTE-bb2801771db6
+  from: implementation-placement-by-ownership
+  relation: co-retrieved-with
+  to: python-data-carrier-versus-domain-object
+  semantic: false
+  declared_by:
+  - python-data-carrier-versus-domain-object
+- id: R-ROUTE-9028291d9352
+  from: implementation-placement-by-ownership
+  relation: co-retrieved-with
+  to: python-inheritance-constraints
+  semantic: false
+  declared_by:
+  - python-inheritance-constraints
+- id: R-ROUTE-adf8e7af1bbb
+  from: implementation-placement-by-ownership
+  relation: co-retrieved-with
+  to: universal-change-amplification
+  semantic: false
+  declared_by:
+  - implementation-placement-by-ownership
+- id: R-ROUTE-9e6d8268b72b
+  from: implementation-placement-by-ownership
+  relation: co-retrieved-with
+  to: universal-explicit-invariants
+  semantic: false
+  declared_by:
+  - universal-explicit-invariants
+- id: R-ROUTE-179ca7793bae
+  from: implementation-placement-by-ownership
+  relation: co-retrieved-with
+  to: universal-information-hiding
+  semantic: false
+  declared_by:
+  - implementation-placement-by-ownership
+- id: R-ROUTE-7a2125b91243
+  from: implementation-placement-by-ownership
+  relation: co-retrieved-with
+  to: universal-local-reasoning
+  semantic: false
+  declared_by:
+  - implementation-placement-by-ownership
+- id: R-ROUTE-5c4ef45231c3
+  from: implementation-readiness
+  relation: co-retrieved-with
+  to: implementation-risk-driven-tests
+  semantic: false
+  declared_by:
+  - implementation-readiness
+- id: R-ROUTE-5cd00854208c
+  from: implementation-readiness
+  relation: co-retrieved-with
+  to: universal-evidence-before-intervention
+  semantic: false
+  declared_by:
+  - implementation-readiness
+- id: R-ROUTE-06d030972817
+  from: implementation-readiness
+  relation: co-retrieved-with
+  to: universal-repository-contract-precedence
+  semantic: false
+  declared_by:
+  - implementation-readiness
+- id: R-ROUTE-f4ed476618c9
+  from: implementation-repository-language-conformance
+  relation: co-retrieved-with
+  to: implementation-representation-fit
+  semantic: false
+  declared_by:
+  - implementation-repository-language-conformance
+- id: R-ROUTE-a66227a0a107
+  from: implementation-repository-language-conformance
+  relation: co-retrieved-with
+  to: python-compatible-property-evolution
+  semantic: false
+  declared_by:
+  - python-compatible-property-evolution
+- id: R-ROUTE-c9cbce5343f1
+  from: implementation-repository-language-conformance
+  relation: co-retrieved-with
+  to: python-dynamic-mechanism-escalation
+  semantic: false
+  declared_by:
+  - python-dynamic-mechanism-escalation
+- id: R-ROUTE-8b1eebc2b706
+  from: implementation-repository-language-conformance
+  relation: co-retrieved-with
+  to: python-repository-shaped-idiom
+  semantic: false
+  declared_by:
+  - python-repository-shaped-idiom
+- id: R-ROUTE-e3d141b4cfda
+  from: implementation-repository-language-conformance
+  relation: co-retrieved-with
+  to: universal-repository-contract-precedence
+  semantic: false
+  declared_by:
+  - implementation-repository-language-conformance
+- id: R-ROUTE-84f39dd97ac1
+  from: implementation-representation-fit
+  relation: co-retrieved-with
+  to: performance-algorithm-and-work-first
+  semantic: false
+  declared_by:
+  - implementation-representation-fit
+- id: R-ROUTE-1340b620f412
+  from: implementation-representation-fit
+  relation: co-retrieved-with
+  to: performance-semantic-preservation
+  semantic: false
+  declared_by:
+  - implementation-representation-fit
+- id: R-ROUTE-91141317accb
+  from: implementation-representation-fit
+  relation: co-retrieved-with
+  to: python-representation-fit
+  semantic: false
+  declared_by:
+  - python-representation-fit
+- id: R-ROUTE-2343e17558a7
+  from: implementation-representation-fit
+  relation: co-retrieved-with
+  to: python-streaming-iteration
+  semantic: false
+  declared_by:
+  - python-streaming-iteration
+- id: R-ROUTE-40c8b978d8a1
+  from: implementation-representation-fit
+  relation: co-retrieved-with
+  to: universal-explicit-invariants
+  semantic: false
+  declared_by:
+  - implementation-representation-fit
+- id: R-ROUTE-0c6f87e427eb
+  from: implementation-representation-fit
+  relation: co-retrieved-with
+  to: universal-information-hiding
+  semantic: false
+  declared_by:
+  - implementation-representation-fit
+- id: R-ROUTE-1a4832ac54cb
+  from: implementation-risk-driven-tests
+  relation: co-retrieved-with
+  to: python-runtime-static-boundary
+  semantic: false
+  declared_by:
+  - python-runtime-static-boundary
+- id: R-ROUTE-a43d710359ee
+  from: implementation-risk-driven-tests
+  relation: co-retrieved-with
+  to: python-special-method-laws
+  semantic: false
+  declared_by:
+  - python-special-method-laws
+- id: R-ROUTE-e278ffe92370
+  from: implementation-risk-driven-tests
+  relation: co-retrieved-with
+  to: review-severity-confidence-separation
+  semantic: false
+  declared_by:
+  - review-severity-confidence-separation
+- id: R-ROUTE-22a78fb61131
+  from: implementation-risk-driven-tests
+  relation: co-retrieved-with
+  to: testing-coverage-is-not-adequacy
+  semantic: false
+  declared_by:
+  - implementation-risk-driven-tests
+  - testing-coverage-is-not-adequacy
+- id: R-ROUTE-1bc92209caf1
+  from: implementation-risk-driven-tests
+  relation: co-retrieved-with
+  to: testing-test-first-feedback
+  semantic: false
+  declared_by:
+  - testing-test-first-feedback
+- id: R-ROUTE-79bad6d73070
+  from: implementation-risk-driven-tests
+  relation: co-retrieved-with
+  to: universal-explicit-invariants
+  semantic: false
+  declared_by:
+  - implementation-risk-driven-tests
+- id: R-ROUTE-3e5a260e7446
+  from: implementation-risk-driven-tests
+  relation: co-retrieved-with
+  to: universal-preserve-behavior-by-default
+  semantic: false
+  declared_by:
+  - implementation-risk-driven-tests
+- id: R-ROUTE-097983856d02
+  from: implementation-semantic-naming
+  relation: co-retrieved-with
+  to: universal-repository-contract-precedence
+  semantic: false
+  declared_by:
+  - implementation-semantic-naming
+- id: R-ROUTE-6ec8aafd1337
+  from: legacy-characterization-surfaces
+  relation: co-retrieved-with
+  to: legacy-cover-and-modify
+  semantic: false
+  declared_by:
+  - legacy-cover-and-modify
+- id: R-ROUTE-a832cf0df436
+  from: legacy-characterization-surfaces
+  relation: co-retrieved-with
+  to: legacy-effect-surface
+  semantic: false
+  declared_by:
+  - legacy-characterization-surfaces
+  - legacy-effect-surface
+- id: R-ROUTE-6164d04f8e18
+  from: legacy-characterization-surfaces
+  relation: co-retrieved-with
+  to: refactoring-behavior-preservation
+  semantic: false
+  declared_by:
+  - legacy-characterization-surfaces
+  - refactoring-behavior-preservation
+- id: R-ROUTE-8fe28de729b6
+  from: legacy-characterization-surfaces
+  relation: co-retrieved-with
+  to: refactoring-stop-backtrack-escalate
+  semantic: false
+  declared_by:
+  - legacy-characterization-surfaces
+  - refactoring-stop-backtrack-escalate
+- id: R-ROUTE-90d6bf6355b6
+  from: legacy-cover-and-modify
+  relation: co-retrieved-with
+  to: legacy-effect-surface
+  semantic: false
+  declared_by:
+  - legacy-cover-and-modify
+  - legacy-effect-surface
+- id: R-ROUTE-a28a6ab59d0d
+  from: legacy-cover-and-modify
+  relation: co-retrieved-with
+  to: legacy-seams-and-enabling-points
+  semantic: false
+  declared_by:
+  - legacy-cover-and-modify
+  - legacy-seams-and-enabling-points
+- id: R-ROUTE-8ea2b2686c23
+  from: legacy-cover-and-modify
+  relation: co-retrieved-with
+  to: legacy-sprout-wrap
+  semantic: false
+  declared_by:
+  - legacy-sprout-wrap
+- id: R-ROUTE-abfabb6c9f6c
+  from: legacy-current-work-responsibility-discovery
+  relation: co-retrieved-with
+  to: legacy-scratch-refactoring
+  semantic: false
+  declared_by:
+  - legacy-current-work-responsibility-discovery
+  - legacy-scratch-refactoring
+- id: R-ROUTE-1cb2e5b83b49
+  from: legacy-current-work-responsibility-discovery
+  relation: co-retrieved-with
+  to: refactoring-small-verified-steps
+  semantic: false
+  declared_by:
+  - legacy-current-work-responsibility-discovery
+- id: R-ROUTE-5d98a8140036
+  from: legacy-effect-surface
+  relation: co-retrieved-with
+  to: legacy-pinch-point
+  semantic: false
+  declared_by:
+  - legacy-effect-surface
+  - legacy-pinch-point
+- id: R-ROUTE-c1f3b328dc32
+  from: legacy-effect-surface
+  relation: co-retrieved-with
+  to: legacy-sensing-and-separation
+  semantic: false
+  declared_by:
+  - legacy-sensing-and-separation
+- id: R-ROUTE-c7b74ab8707b
+  from: legacy-effect-surface
+  relation: co-retrieved-with
+  to: refactoring-behavior-preservation
+  semantic: false
+  declared_by:
+  - refactoring-behavior-preservation
+- id: R-ROUTE-3481f37f9de2
+  from: legacy-pinch-point
+  relation: co-retrieved-with
+  to: legacy-provisional-safety-net
+  semantic: false
+  declared_by:
+  - legacy-pinch-point
+  - legacy-provisional-safety-net
+- id: R-ROUTE-402c11d04460
+  from: legacy-provisional-dependency-break
+  relation: co-retrieved-with
+  to: legacy-seams-and-enabling-points
+  semantic: false
+  declared_by:
+  - legacy-provisional-dependency-break
+  - legacy-seams-and-enabling-points
+- id: R-ROUTE-de6ac6628444
+  from: legacy-provisional-dependency-break
+  relation: co-retrieved-with
+  to: legacy-sprout-wrap
+  semantic: false
+  declared_by:
+  - legacy-provisional-dependency-break
+  - legacy-sprout-wrap
+- id: R-ROUTE-ba6f0ab844c3
+  from: legacy-provisional-dependency-break
+  relation: co-retrieved-with
+  to: legacy-unprotected-enabling-edit
+  semantic: false
+  declared_by:
+  - legacy-provisional-dependency-break
+  - legacy-unprotected-enabling-edit
+- id: R-ROUTE-43e45b986014
+  from: legacy-provisional-safety-net
+  relation: co-retrieved-with
+  to: refactoring-splinter-campaign
+  semantic: false
+  declared_by:
+  - legacy-provisional-safety-net
+  - refactoring-splinter-campaign
+- id: R-ROUTE-365bab5e7619
+  from: legacy-scratch-refactoring
+  relation: co-retrieved-with
+  to: refactoring-stop-backtrack-escalate
+  semantic: false
+  declared_by:
+  - legacy-scratch-refactoring
+- id: R-ROUTE-540411c5cab1
+  from: legacy-seams-and-enabling-points
+  relation: co-retrieved-with
+  to: legacy-sensing-and-separation
+  semantic: false
+  declared_by:
+  - legacy-seams-and-enabling-points
+  - legacy-sensing-and-separation
+- id: R-ROUTE-dfbc1863817b
+  from: legacy-unprotected-enabling-edit
+  relation: co-retrieved-with
+  to: refactoring-stop-backtrack-escalate
+  semantic: false
+  declared_by:
+  - legacy-unprotected-enabling-edit
+- id: R-ROUTE-19ed1d68528e
+  from: legacy-unprotected-enabling-edit
+  relation: co-retrieved-with
+  to: refactoring-transformation-tool-trust
+  semantic: false
+  declared_by:
+  - legacy-unprotected-enabling-edit
+  - refactoring-transformation-tool-trust
+- id: R-ROUTE-9a944d0f4eff
+  from: performance-algorithm-and-work-first
+  relation: co-retrieved-with
+  to: performance-profile-causal-bottleneck
+  semantic: false
+  declared_by:
+  - performance-algorithm-and-work-first
+  - performance-profile-causal-bottleneck
+- id: R-ROUTE-9a58cd780745
+  from: performance-algorithm-and-work-first
+  relation: co-retrieved-with
+  to: performance-semantic-preservation
+  semantic: false
+  declared_by:
+  - performance-algorithm-and-work-first
+- id: R-ROUTE-70f6cb4ddc13
+  from: performance-algorithm-and-work-first
+  relation: co-retrieved-with
+  to: performance-specialization-evidence
+  semantic: false
+  declared_by:
+  - performance-algorithm-and-work-first
+  - performance-specialization-evidence
+- id: R-ROUTE-9831beb785f6
+  from: performance-benchmark-validity
+  relation: co-retrieved-with
+  to: performance-experiment-level-fit
+  semantic: false
+  declared_by:
+  - performance-benchmark-validity
+  - performance-experiment-level-fit
+- id: R-ROUTE-c1d97fe33991
+  from: performance-benchmark-validity
+  relation: co-retrieved-with
+  to: performance-metric-semantics
+  semantic: false
+  declared_by:
+  - performance-metric-semantics
+- id: R-ROUTE-ff40bfd645b7
+  from: performance-benchmark-validity
+  relation: co-retrieved-with
+  to: performance-representative-baseline
+  semantic: false
+  declared_by:
+  - performance-benchmark-validity
+  - performance-representative-baseline
+- id: R-ROUTE-acb06531f648
+  from: performance-benchmark-validity
+  relation: co-retrieved-with
+  to: performance-semantic-preservation
+  semantic: false
+  declared_by:
+  - performance-benchmark-validity
+  - performance-semantic-preservation
+- id: R-ROUTE-3354fafd863a
+  from: performance-cache-validity
+  relation: co-retrieved-with
+  to: performance-memory-lifecycle
+  semantic: false
+  declared_by:
+  - performance-cache-validity
+  - performance-memory-lifecycle
+- id: R-ROUTE-1542b4fbbf91
+  from: performance-cache-validity
+  relation: co-retrieved-with
+  to: performance-semantic-preservation
+  semantic: false
+  declared_by:
+  - performance-cache-validity
+- id: R-ROUTE-5c1068ce6c6a
+  from: performance-cache-validity
+  relation: co-retrieved-with
+  to: performance-target-based-stop
+  semantic: false
+  declared_by:
+  - performance-cache-validity
+- id: R-ROUTE-206df098f667
+  from: performance-cache-validity
+  relation: co-retrieved-with
+  to: python-cache-validity
+  semantic: false
+  declared_by:
+  - python-cache-validity
+- id: R-ROUTE-76abd6a5b039
+  from: performance-earned-bounded-concurrency
+  relation: co-retrieved-with
+  to: performance-profile-causal-bottleneck
+  semantic: false
+  declared_by:
+  - performance-profile-causal-bottleneck
+- id: R-ROUTE-212f4626ef62
+  from: performance-earned-bounded-concurrency
+  relation: co-retrieved-with
+  to: performance-resource-lifecycle
+  semantic: false
+  declared_by:
+  - performance-earned-bounded-concurrency
+  - performance-resource-lifecycle
+- id: R-ROUTE-f87f9e18e34e
+  from: performance-earned-bounded-concurrency
+  relation: co-retrieved-with
+  to: performance-semantic-preservation
+  semantic: false
+  declared_by:
+  - performance-earned-bounded-concurrency
+- id: R-ROUTE-97518026d08a
+  from: performance-earned-bounded-concurrency
+  relation: co-retrieved-with
+  to: performance-target-based-stop
+  semantic: false
+  declared_by:
+  - performance-earned-bounded-concurrency
+- id: R-ROUTE-a44147a2f9c4
+  from: performance-earned-bounded-concurrency
+  relation: co-retrieved-with
+  to: python-bounded-async
+  semantic: false
+  declared_by:
+  - python-bounded-async
+- id: R-ROUTE-1bec51ac24ad
+  from: performance-earned-bounded-concurrency
+  relation: co-retrieved-with
+  to: python-concurrency-model-selection
+  semantic: false
+  declared_by:
+  - python-concurrency-model-selection
+- id: R-ROUTE-f944c817ce86
+  from: performance-experiment-level-fit
+  relation: co-retrieved-with
+  to: performance-memory-lifecycle
+  semantic: false
+  declared_by:
+  - performance-experiment-level-fit
+  - performance-memory-lifecycle
+- id: R-ROUTE-7959ea849deb
+  from: performance-experiment-level-fit
+  relation: co-retrieved-with
+  to: performance-semantic-preservation
+  semantic: false
+  declared_by:
+  - performance-experiment-level-fit
+- id: R-ROUTE-17c13d5e42ad
+  from: performance-measurable-objective
+  relation: co-retrieved-with
+  to: performance-metric-semantics
+  semantic: false
+  declared_by:
+  - performance-measurable-objective
+- id: R-ROUTE-668db53d9d34
+  from: performance-measurable-objective
+  relation: co-retrieved-with
+  to: performance-representative-baseline
+  semantic: false
+  declared_by:
+  - performance-measurable-objective
+  - performance-representative-baseline
+- id: R-ROUTE-b86a3f93e1f1
+  from: performance-measurable-objective
+  relation: co-retrieved-with
+  to: performance-target-based-stop
+  semantic: false
+  declared_by:
+  - performance-measurable-objective
+  - performance-target-based-stop
+- id: R-ROUTE-470d3aafb97a
+  from: performance-memory-lifecycle
+  relation: co-retrieved-with
+  to: performance-profile-causal-bottleneck
+  semantic: false
+  declared_by:
+  - performance-profile-causal-bottleneck
+- id: R-ROUTE-007bc4a2b0c5
+  from: performance-memory-lifecycle
+  relation: co-retrieved-with
+  to: performance-resource-lifecycle
+  semantic: false
+  declared_by:
+  - performance-memory-lifecycle
+  - performance-resource-lifecycle
+- id: R-ROUTE-4e9e33bdf074
+  from: performance-memory-lifecycle
+  relation: co-retrieved-with
+  to: python-cache-validity
+  semantic: false
+  declared_by:
+  - python-cache-validity
+- id: R-ROUTE-2f1a5ef9f5d6
+  from: performance-memory-lifecycle
+  relation: co-retrieved-with
+  to: python-mutable-ownership
+  semantic: false
+  declared_by:
+  - python-mutable-ownership
+- id: R-ROUTE-b323370a042f
+  from: performance-metric-semantics
+  relation: co-retrieved-with
+  to: performance-profile-causal-bottleneck
+  semantic: false
+  declared_by:
+  - performance-metric-semantics
+- id: R-ROUTE-33851b73dda1
+  from: performance-metric-semantics
+  relation: co-retrieved-with
+  to: performance-representative-baseline
+  semantic: false
+  declared_by:
+  - performance-metric-semantics
+  - performance-representative-baseline
+- id: R-ROUTE-99130d8a229c
+  from: performance-representative-baseline
+  relation: co-retrieved-with
+  to: universal-measure-claimed-improvement
+  semantic: false
+  declared_by:
+  - universal-measure-claimed-improvement
+- id: R-ROUTE-d99d7d6a6189
+  from: performance-resource-lifecycle
+  relation: co-retrieved-with
+  to: python-bounded-async
+  semantic: false
+  declared_by:
+  - python-bounded-async
+- id: R-ROUTE-03fb68059b1b
+  from: performance-resource-lifecycle
+  relation: co-retrieved-with
+  to: python-concurrency-model-selection
+  semantic: false
+  declared_by:
+  - python-concurrency-model-selection
+- id: R-ROUTE-9612e428aefc
+  from: performance-resource-lifecycle
+  relation: co-retrieved-with
+  to: python-streaming-iteration
+  semantic: false
+  declared_by:
+  - python-streaming-iteration
+- id: R-ROUTE-4380ccfaf0f6
+  from: performance-resource-lifecycle
+  relation: co-retrieved-with
+  to: python-structured-cleanup
+  semantic: false
+  declared_by:
+  - python-structured-cleanup
+- id: R-ROUTE-a2f3e057482a
+  from: performance-semantic-preservation
+  relation: co-retrieved-with
+  to: performance-specialization-evidence
+  semantic: false
+  declared_by:
+  - performance-specialization-evidence
+- id: R-ROUTE-0aa56ac8555e
+  from: performance-semantic-preservation
+  relation: co-retrieved-with
+  to: performance-target-based-stop
+  semantic: false
+  declared_by:
+  - performance-semantic-preservation
+  - performance-target-based-stop
+- id: R-ROUTE-6094bf8871d3
+  from: performance-semantic-preservation
+  relation: co-retrieved-with
+  to: python-representation-fit
+  semantic: false
+  declared_by:
+  - python-representation-fit
+- id: R-ROUTE-dc4e27c74d70
+  from: performance-semantic-preservation
+  relation: co-retrieved-with
+  to: python-streaming-iteration
+  semantic: false
+  declared_by:
+  - python-streaming-iteration
+- id: R-ROUTE-6c13ebf15869
+  from: performance-semantic-preservation
+  relation: co-retrieved-with
+  to: universal-preserve-behavior-by-default
+  semantic: false
+  declared_by:
+  - performance-semantic-preservation
+  - universal-preserve-behavior-by-default
+- id: R-ROUTE-f5cad162e52e
+  from: performance-specialization-evidence
+  relation: co-retrieved-with
+  to: universal-earned-abstraction
+  semantic: false
+  declared_by:
+  - performance-specialization-evidence
+- id: R-ROUTE-6faf2e34ee9e
+  from: performance-target-based-stop
+  relation: co-retrieved-with
+  to: python-cache-validity
+  semantic: false
+  declared_by:
+  - python-cache-validity
+- id: R-ROUTE-447a0ff6eb20
+  from: performance-target-based-stop
+  relation: co-retrieved-with
+  to: python-concurrency-model-selection
+  semantic: false
+  declared_by:
+  - python-concurrency-model-selection
+- id: R-ROUTE-eabc79eeb8fb
+  from: performance-target-based-stop
+  relation: co-retrieved-with
+  to: universal-no-change-option
+  semantic: false
+  declared_by:
+  - universal-no-change-option
+- id: R-ROUTE-c7a171d5f5ab
+  from: performance-target-based-stop
+  relation: co-retrieved-with
+  to: universal-reversible-reviewable-change
+  semantic: false
+  declared_by:
+  - performance-target-based-stop
+  - universal-reversible-reviewable-change
+- id: R-ROUTE-e484ac112143
+  from: python-bounded-async
+  relation: co-retrieved-with
+  to: python-concurrency-model-selection
+  semantic: false
+  declared_by:
+  - python-bounded-async
+  - python-concurrency-model-selection
+- id: R-ROUTE-2fa7cb784f87
+  from: python-bounded-async
+  relation: co-retrieved-with
+  to: python-structured-cleanup
+  semantic: false
+  declared_by:
+  - python-bounded-async
+  - python-structured-cleanup
+- id: R-ROUTE-9e9d678759a6
+  from: python-cache-validity
+  relation: co-retrieved-with
+  to: python-mutable-ownership
+  semantic: false
+  declared_by:
+  - python-cache-validity
+  - python-mutable-ownership
+- id: R-ROUTE-0242473d8121
+  from: python-compatible-property-evolution
+  relation: co-retrieved-with
+  to: python-dynamic-mechanism-escalation
+  semantic: false
+  declared_by:
+  - python-compatible-property-evolution
+  - python-dynamic-mechanism-escalation
+- id: R-ROUTE-75e81218ef55
+  from: python-compatible-property-evolution
+  relation: co-retrieved-with
+  to: universal-reversible-reviewable-change
+  semantic: false
+  declared_by:
+  - python-compatible-property-evolution
+- id: R-ROUTE-14c54af9c573
+  from: python-data-carrier-versus-domain-object
+  relation: co-retrieved-with
+  to: python-runtime-static-boundary
+  semantic: false
+  declared_by:
+  - python-data-carrier-versus-domain-object
+- id: R-ROUTE-dabfd581ceb0
+  from: python-data-carrier-versus-domain-object
+  relation: co-retrieved-with
+  to: universal-explicit-invariants
+  semantic: false
+  declared_by:
+  - python-data-carrier-versus-domain-object
+- id: R-ROUTE-af956c441829
+  from: python-dynamic-mechanism-escalation
+  relation: co-retrieved-with
+  to: python-function-over-stateless-class
+  semantic: false
+  declared_by:
+  - python-function-over-stateless-class
+- id: R-ROUTE-b03fc882c04d
+  from: python-dynamic-mechanism-escalation
+  relation: co-retrieved-with
+  to: universal-earned-abstraction
+  semantic: false
+  declared_by:
+  - python-dynamic-mechanism-escalation
+- id: R-ROUTE-46e0f9d5d85f
+  from: python-function-over-stateless-class
+  relation: co-retrieved-with
+  to: universal-earned-abstraction
+  semantic: false
+  declared_by:
+  - python-function-over-stateless-class
+- id: R-ROUTE-d67800c86489
+  from: python-inheritance-constraints
+  relation: co-retrieved-with
+  to: universal-earned-abstraction
+  semantic: false
+  declared_by:
+  - python-inheritance-constraints
+- id: R-ROUTE-a6c0c591480f
+  from: python-interface-mechanism-selection
+  relation: co-retrieved-with
+  to: python-protocol-conformance
+  semantic: false
+  declared_by:
+  - python-interface-mechanism-selection
+  - python-protocol-conformance
+- id: R-ROUTE-8ba363b177b4
+  from: python-interface-mechanism-selection
+  relation: co-retrieved-with
+  to: python-runtime-static-boundary
+  semantic: false
+  declared_by:
+  - python-interface-mechanism-selection
+- id: R-ROUTE-9c718dcb8651
+  from: python-interface-mechanism-selection
+  relation: co-retrieved-with
+  to: universal-earned-abstraction
+  semantic: false
+  declared_by:
+  - python-interface-mechanism-selection
+- id: R-ROUTE-b4b0cb37dc96
+  from: python-mutable-ownership
+  relation: co-retrieved-with
+  to: python-representation-fit
+  semantic: false
+  declared_by:
+  - python-mutable-ownership
+  - python-representation-fit
+- id: R-ROUTE-1daa0ffb1dc9
+  from: python-mutable-ownership
+  relation: co-retrieved-with
+  to: universal-explicit-invariants
+  semantic: false
+  declared_by:
+  - python-mutable-ownership
+- id: R-ROUTE-f51d0be71e45
+  from: python-protocol-conformance
+  relation: co-retrieved-with
+  to: python-runtime-static-boundary
+  semantic: false
+  declared_by:
+  - python-runtime-static-boundary
+- id: R-ROUTE-7d943a84acea
+  from: python-protocol-conformance
+  relation: co-retrieved-with
+  to: python-special-method-laws
+  semantic: false
+  declared_by:
+  - python-protocol-conformance
+  - python-special-method-laws
+- id: R-ROUTE-7cce14747e49
+  from: python-protocol-conformance
+  relation: co-retrieved-with
+  to: python-streaming-iteration
+  semantic: false
+  declared_by:
+  - python-streaming-iteration
+- id: R-ROUTE-109ddc4d30e5
+  from: python-repository-shaped-idiom
+  relation: co-retrieved-with
+  to: python-runtime-static-boundary
+  semantic: false
+  declared_by:
+  - python-repository-shaped-idiom
+- id: R-ROUTE-4b4949610b3a
+  from: python-repository-shaped-idiom
+  relation: co-retrieved-with
+  to: universal-repository-contract-precedence
+  semantic: false
+  declared_by:
+  - python-repository-shaped-idiom
+- id: R-ROUTE-37b881d5a572
+  from: python-representation-fit
+  relation: co-retrieved-with
+  to: python-streaming-iteration
+  semantic: false
+  declared_by:
+  - python-representation-fit
+- id: R-ROUTE-d4a3a47c6266
+  from: python-runtime-static-boundary
+  relation: co-retrieved-with
+  to: universal-explicit-invariants
+  semantic: false
+  declared_by:
+  - python-runtime-static-boundary
+- id: R-ROUTE-996f1ee6eec5
+  from: python-special-method-laws
+  relation: co-retrieved-with
+  to: universal-explicit-invariants
+  semantic: false
+  declared_by:
+  - python-special-method-laws
+- id: R-ROUTE-346760c164ec
+  from: python-streaming-iteration
+  relation: co-retrieved-with
+  to: python-structured-cleanup
+  semantic: false
+  declared_by:
+  - python-structured-cleanup
+- id: R-ROUTE-df9bca1d2f4f
+  from: python-text-bytes-boundary
+  relation: co-retrieved-with
+  to: universal-preserve-behavior-by-default
+  semantic: false
+  declared_by:
+  - python-text-bytes-boundary
+- id: R-ROUTE-9b76a20e0923
+  from: refactoring-behavior-preservation
+  relation: co-retrieved-with
+  to: refactoring-change-type-classification
+  semantic: false
+  declared_by:
+  - refactoring-change-type-classification
+- id: R-ROUTE-a51e8b62cac8
+  from: refactoring-behavior-preservation
+  relation: co-retrieved-with
+  to: refactoring-compatibility-migration
+  semantic: false
+  declared_by:
+  - refactoring-behavior-preservation
+  - refactoring-compatibility-migration
+- id: R-ROUTE-02a28408242b
+  from: refactoring-behavior-preservation
+  relation: co-retrieved-with
+  to: universal-preserve-behavior-by-default
+  semantic: false
+  declared_by:
+  - universal-preserve-behavior-by-default
+- id: R-ROUTE-c98c18f484b9
+  from: refactoring-behavior-preservation
+  relation: co-retrieved-with
+  to: universal-separate-semantic-structural-change
+  semantic: false
+  declared_by:
+  - universal-separate-semantic-structural-change
+- id: R-ROUTE-3732b321eb51
+  from: refactoring-change-type-classification
+  relation: co-retrieved-with
+  to: refactoring-compatibility-migration
+  semantic: false
+  declared_by:
+  - refactoring-change-type-classification
+  - refactoring-compatibility-migration
+- id: R-ROUTE-27ee64045d38
+  from: refactoring-change-type-classification
+  relation: co-retrieved-with
+  to: universal-separate-semantic-structural-change
+  semantic: false
+  declared_by:
+  - refactoring-change-type-classification
+- id: R-ROUTE-969e1a6c084a
+  from: refactoring-cochange-evidence
+  relation: co-retrieved-with
+  to: repository-assessment-behavioral-boundary-candidate
+  semantic: false
+  declared_by:
+  - refactoring-cochange-evidence
+  - repository-assessment-behavioral-boundary-candidate
+- id: R-ROUTE-64fcca1668b6
+  from: refactoring-cochange-evidence
+  relation: co-retrieved-with
+  to: repository-assessment-behavioral-early-warning
+  semantic: false
+  declared_by:
+  - repository-assessment-behavioral-early-warning
+- id: R-ROUTE-4fd0330a4e02
+  from: refactoring-cochange-evidence
+  relation: co-retrieved-with
+  to: repository-assessment-logical-change-set
+  semantic: false
+  declared_by:
+  - refactoring-cochange-evidence
+  - repository-assessment-logical-change-set
+- id: R-ROUTE-4237fa293a4e
+  from: refactoring-cochange-evidence
+  relation: co-retrieved-with
+  to: universal-change-amplification
+  semantic: false
+  declared_by:
+  - universal-change-amplification
+- id: R-ROUTE-def53584010a
+  from: refactoring-compatibility-migration
+  relation: co-retrieved-with
+  to: refactoring-directional-campaign
+  semantic: false
+  declared_by:
+  - refactoring-directional-campaign
+- id: R-ROUTE-9843fc764b74
+  from: refactoring-compatibility-migration
+  relation: co-retrieved-with
+  to: refactoring-splinter-campaign
+  semantic: false
+  declared_by:
+  - refactoring-compatibility-migration
+  - refactoring-splinter-campaign
+- id: R-ROUTE-79a8a7b8d4a6
+  from: refactoring-demonstrated-pressure
+  relation: co-retrieved-with
+  to: refactoring-hotspot-prioritization
+  semantic: false
+  declared_by:
+  - refactoring-demonstrated-pressure
+  - refactoring-hotspot-prioritization
+- id: R-ROUTE-69a65fcba98f
+  from: refactoring-demonstrated-pressure
+  relation: co-retrieved-with
+  to: refactoring-leave-unattractive-code
+  semantic: false
+  declared_by:
+  - refactoring-demonstrated-pressure
+  - refactoring-leave-unattractive-code
+- id: R-ROUTE-e57b81b52446
+  from: refactoring-demonstrated-pressure
+  relation: co-retrieved-with
+  to: refactoring-smells-as-hypotheses
+  semantic: false
+  declared_by:
+  - refactoring-smells-as-hypotheses
+- id: R-ROUTE-00347a5983ae
+  from: refactoring-demonstrated-pressure
+  relation: co-retrieved-with
+  to: universal-measure-claimed-improvement
+  semantic: false
+  declared_by:
+  - universal-measure-claimed-improvement
+- id: R-ROUTE-b74a852c07f0
+  from: refactoring-directional-campaign
+  relation: co-retrieved-with
+  to: refactoring-splinter-campaign
+  semantic: false
+  declared_by:
+  - refactoring-directional-campaign
+  - refactoring-splinter-campaign
+- id: R-ROUTE-9bc33af52d54
+  from: refactoring-directional-campaign
+  relation: co-retrieved-with
+  to: refactoring-stop-backtrack-escalate
+  semantic: false
+  declared_by:
+  - refactoring-directional-campaign
+- id: R-ROUTE-80e22ff8e025
+  from: refactoring-hotspot-prioritization
+  relation: co-retrieved-with
+  to: refactoring-splinter-campaign
+  semantic: false
+  declared_by:
+  - refactoring-splinter-campaign
+- id: R-ROUTE-ee626f9f7ae1
+  from: refactoring-hotspot-prioritization
+  relation: co-retrieved-with
+  to: repository-assessment-complexity-trend
+  semantic: false
+  declared_by:
+  - refactoring-hotspot-prioritization
+  - repository-assessment-complexity-trend
+- id: R-ROUTE-b443a9115af5
+  from: refactoring-leave-unattractive-code
+  relation: co-retrieved-with
+  to: repository-assessment-code-age
+  semantic: false
+  declared_by:
+  - refactoring-leave-unattractive-code
+  - repository-assessment-code-age
+- id: R-ROUTE-f187b9f5737c
+  from: refactoring-leave-unattractive-code
+  relation: co-retrieved-with
+  to: universal-no-change-option
+  semantic: false
+  declared_by:
+  - universal-no-change-option
+- id: R-ROUTE-40e009804b74
+  from: refactoring-small-verified-steps
+  relation: co-retrieved-with
+  to: refactoring-stop-backtrack-escalate
+  semantic: false
+  declared_by:
+  - refactoring-small-verified-steps
+  - refactoring-stop-backtrack-escalate
+- id: R-ROUTE-e8b42820715e
+  from: refactoring-small-verified-steps
+  relation: co-retrieved-with
+  to: refactoring-transformation-tool-trust
+  semantic: false
+  declared_by:
+  - refactoring-small-verified-steps
+  - refactoring-transformation-tool-trust
+- id: R-ROUTE-1f82d6d05580
+  from: refactoring-small-verified-steps
+  relation: co-retrieved-with
+  to: universal-minimize-simultaneous-uncertainty
+  semantic: false
+  declared_by:
+  - refactoring-small-verified-steps
+  - universal-minimize-simultaneous-uncertainty
+- id: R-ROUTE-f9fee3a23371
+  from: refactoring-smells-as-hypotheses
+  relation: co-retrieved-with
+  to: universal-earned-abstraction
+  semantic: false
+  declared_by:
+  - refactoring-smells-as-hypotheses
+- id: R-ROUTE-71f7c7295d30
+  from: repository-assessment-behavioral-data-fitness
+  relation: co-retrieved-with
+  to: repository-assessment-logical-change-set
+  semantic: false
+  declared_by:
+  - repository-assessment-behavioral-data-fitness
+  - repository-assessment-logical-change-set
+- id: R-ROUTE-aa1a06fc18f8
+  from: repository-assessment-behavioral-early-warning
+  relation: co-retrieved-with
+  to: repository-assessment-complexity-trend
+  semantic: false
+  declared_by:
+  - repository-assessment-behavioral-early-warning
+  - repository-assessment-complexity-trend
+- id: R-ROUTE-d6975d259422
+  from: review-severity-confidence-separation
+  relation: co-retrieved-with
+  to: universal-evidence-before-intervention
+  semantic: false
+  declared_by:
+  - review-severity-confidence-separation
+- id: R-ROUTE-82faaa9a5d18
+  from: review-severity-confidence-separation
+  relation: co-retrieved-with
+  to: universal-repository-contract-precedence
+  semantic: false
+  declared_by:
+  - review-severity-confidence-separation
+- id: R-ROUTE-f220b215936c
+  from: testing-coverage-is-not-adequacy
+  relation: co-retrieved-with
+  to: universal-evidence-before-intervention
+  semantic: false
+  declared_by:
+  - testing-coverage-is-not-adequacy
+- id: R-ROUTE-0a7771cc4b59
+  from: testing-coverage-is-not-adequacy
+  relation: co-retrieved-with
+  to: universal-measure-claimed-improvement
+  semantic: false
+  declared_by:
+  - testing-coverage-is-not-adequacy
+- id: R-ROUTE-926a10149ae9
+  from: testing-design-before-feature-tests
+  relation: co-retrieved-with
+  to: testing-test-first-feedback
+  semantic: false
+  declared_by:
+  - testing-design-before-feature-tests
+  - testing-test-first-feedback
+- id: R-ROUTE-783ac04f724e
+  from: testing-design-before-feature-tests
+  relation: co-retrieved-with
+  to: universal-earned-abstraction
+  semantic: false
+  declared_by:
+  - testing-design-before-feature-tests
+- id: R-ROUTE-5a5e8f02ec2e
+  from: universal-change-amplification
+  relation: co-retrieved-with
+  to: universal-local-reasoning
+  semantic: false
+  declared_by:
+  - universal-change-amplification
+  - universal-local-reasoning
+- id: R-ROUTE-cfbe1b833f89
+  from: universal-earned-abstraction
+  relation: co-retrieved-with
+  to: universal-information-hiding
+  semantic: false
+  declared_by:
+  - universal-earned-abstraction
+  - universal-information-hiding
+- id: R-ROUTE-2870b503a398
+  from: universal-evidence-before-intervention
+  relation: co-retrieved-with
+  to: universal-measure-claimed-improvement
+  semantic: false
+  declared_by:
+  - universal-evidence-before-intervention
+- id: R-ROUTE-5fdb7f6eb349
+  from: universal-evidence-before-intervention
+  relation: co-retrieved-with
+  to: universal-no-change-option
+  semantic: false
+  declared_by:
+  - universal-evidence-before-intervention
+  - universal-no-change-option
+- id: R-ROUTE-38dddf6e2526
+  from: universal-evidence-before-intervention
+  relation: co-retrieved-with
+  to: universal-repository-contract-precedence
+  semantic: false
+  declared_by:
+  - universal-evidence-before-intervention
+  - universal-repository-contract-precedence
+- id: R-ROUTE-70c35a79db36
+  from: universal-information-hiding
+  relation: co-retrieved-with
+  to: universal-local-reasoning
+  semantic: false
+  declared_by:
+  - universal-information-hiding
+  - universal-local-reasoning
+- id: R-ROUTE-97d1fda4ccd9
+  from: universal-minimize-simultaneous-uncertainty
+  relation: co-retrieved-with
+  to: universal-reversible-reviewable-change
+  semantic: false
+  declared_by:
+  - universal-minimize-simultaneous-uncertainty
+  - universal-reversible-reviewable-change
+- id: R-ROUTE-a06839996636
+  from: universal-preserve-behavior-by-default
+  relation: co-retrieved-with
+  to: universal-reversible-reviewable-change
+  semantic: false
+  declared_by:
+  - universal-reversible-reviewable-change
+- id: R-ROUTE-5877e90c4767
+  from: universal-preserve-behavior-by-default
+  relation: co-retrieved-with
+  to: universal-separate-semantic-structural-change
+  semantic: false
+  declared_by:
+  - universal-preserve-behavior-by-default
+  - universal-separate-semantic-structural-change

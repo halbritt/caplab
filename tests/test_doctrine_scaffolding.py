@@ -438,7 +438,18 @@ class CheckedInScaffoldingTests(unittest.TestCase):
                 ROOT / "doctrine" / "evaluations" / "scenario.schema.json",
             ]
         )
-        self.assertEqual(6, len(schema_paths))
+        self.assertEqual(
+            {
+                "assertion-artifact.schema.json",
+                "decision-receipt.schema.json",
+                "dependency-manifest.schema.json",
+                "evidence-packet.schema.json",
+                "evidence-record.schema.json",
+                "result.schema.json",
+                "scenario.schema.json",
+            },
+            {path.name for path in schema_paths},
+        )
 
         for schema_path in schema_paths:
             with self.subTest(schema=schema_path.name):

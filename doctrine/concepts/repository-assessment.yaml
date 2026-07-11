@@ -339,7 +339,7 @@ concepts:
     locator: 'books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/017-appendix-a1-the-hazards-of-productivity-and-performance-metrics.md :: The Situation Is Invisible in Code'
     contribution: Knowledge/commit/LOC/defect metrics used for individual evaluation create adaptive gaming, erase context, damage collaboration, and destroy the data source.
     relationship: direct_support
-  confidence: universal
+  confidence: strong
   roles:
   - coding-agent
   - architecture-agent

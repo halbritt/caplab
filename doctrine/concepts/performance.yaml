@@ -57,7 +57,7 @@ concepts:
         locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/007-chapter-3-conquering-efficiency.md :: Resource-Aware Efficiency Requirements"
         contribution: Formalizes workload- and resource-bound efficiency targets.
         relationship: corroboration
-    confidence: universal
+    confidence: strong
     roles: [performance-agent, architecture-agent, review-agent, debugging-and-repair-agent]
     languages: [language-independent]
     repository_archetypes: [library, service, CLI, embedded-system, distributed-system]
@@ -123,7 +123,7 @@ concepts:
         locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/010-chapter-6-efficiency-observability.md :: High Metric Cardinality"
         contribution: Identifies instrumentation cost and cardinality as part of measurement safety.
         relationship: corroboration
-    confidence: universal
+    confidence: strong
     roles: [performance-agent, review-agent, debugging-and-repair-agent]
     languages: [language-independent]
     repository_archetypes: [service, CLI, embedded-system, distributed-system, library]
@@ -189,7 +189,7 @@ concepts:
         locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/012-chapter-8-benchmarking-versus-stress-and-load-tests.md :: Reproducing Production"
         contribution: Connects benchmark validity to representative production conditions.
         relationship: corroboration
-    confidence: universal
+    confidence: strong
     roles: [performance-agent, coding-agent, review-agent]
     languages: [language-independent]
     repository_archetypes: [library, service, CLI, embedded-system, distributed-system]
@@ -255,7 +255,7 @@ concepts:
         locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/012-chapter-8-benchmarking-versus-stress-and-load-tests.md :: Test Your Benchmark for Correctness!"
         contribution: Requires correctness of the benchmarked work itself.
         relationship: corroboration
-    confidence: universal
+    confidence: strong
     roles: [performance-agent, review-agent, coding-agent]
     languages: [language-independent]
     repository_archetypes: [library, service, CLI, embedded-system, distributed-system]
@@ -381,7 +381,7 @@ concepts:
         locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/013-chapter-9-data-driven-bottleneck-analysis.md :: Profile First, Ask Questions Later"
         contribution: Establishes profile-led bottleneck selection with profile-semantic caveats.
         relationship: corroboration
-    confidence: universal
+    confidence: strong
     roles: [performance-agent, debugging-and-repair-agent, review-agent]
     languages: [language-independent, Go, Python]
     repository_archetypes: [library, service, CLI, embedded-system, distributed-system]
@@ -938,7 +938,7 @@ concepts:
         locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/014-chapter-10-optimization-examples.md :: Optimize One Thing at a Time"
         contribution: Supports retain/revert decisions after each isolated change.
         relationship: corroboration
-    confidence: universal
+    confidence: strong
     roles: [performance-agent, coding-agent, review-agent]
     languages: [language-independent]
     repository_archetypes: [library, service, CLI, embedded-system, distributed-system]
