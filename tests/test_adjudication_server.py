@@ -257,6 +257,28 @@ def build_fixture(root: Path) -> Path:
         root / "doctrine/evaluations/entailment/results.jsonl",
         json.dumps(flagged_result_v1()) + "\n",
     )
+    write(
+        root / "doctrine/evaluations/entailment/frontier-review.jsonl",
+        json.dumps(
+            {
+                "schema_version": "frontier-review/1",
+                "key": "a" * 64,
+                "concept_id": CONCEPT_ID,
+                "finding": "citation-defective",
+                "confidence": "high",
+                "rationale": "Fixture frontier rationale.",
+                "evidence_quote": "",
+                "proposed_fix": {
+                    "relationship": "refinement",
+                    "contribution": "Fixture corrected contribution.",
+                },
+                "local_verdict_assessment": "correct",
+                "reviewer": {"kind": "model", "id": "fixture-frontier"},
+                "reviewed_at": "2026-07-11T00:00:00+00:00",
+            }
+        )
+        + "\n",
+    )
 
     fake_builder = root / "fake_builder.py"
     write(
@@ -423,6 +445,12 @@ class ServerTests(unittest.TestCase):
         self.assertIn("Deep modules", flag["section"]["text"])
         self.assertIn("directly supporting", flag["relationship_meaning"])
         self.assertIsNone(flag["audit"])
+        self.assertEqual(flag["frontier"]["finding"], "citation-defective")
+        self.assertEqual(flag["frontier"]["reviewer"]["kind"], "model")
+        self.assertEqual(
+            flag["frontier"]["proposed_fix"]["contribution"],
+            "Fixture corrected contribution.",
+        )
 
     def test_state_reports_unresolved_reference_instead_of_dropping_it(self) -> None:
         queue_path = self.root / "doctrine/evaluations/gold/queue.json"

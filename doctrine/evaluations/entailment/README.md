@@ -73,6 +73,20 @@ the latest wins for display. Audits are appended by the web adjudication UI
 [`../gold/README.md`](../gold/README.md)) and are findings about citations —
 they do not modify doctrine, results, or the graph.
 
+## Frontier second opinions
+
+`frontier-review.jsonl` records second-opinion reviews of flagged records by a
+frontier model (reviewer `kind: model`, one JSON line per review, schema
+`frontier-review/1`: `key`, `concept_id`, `finding` ∈ {`citation-holds`,
+`citation-defective`, `needs-deeper-review`}, `confidence`, `rationale`,
+`evidence_quote`, optional `proposed_fix` {`relationship`, `contribution`},
+`local_verdict_assessment` ∈ {`correct`, `overstated`, `artifact`},
+`reviewer`, `reviewed_at`). Like the local verdicts these are **model
+observations**: the adjudication bench shows the latest per key beside the
+local screening verdict, but a flag remains pending until a human records a
+finding in `human-audit.jsonl`. Frontier reviews must never be copied into
+human audits unread.
+
 ## Run, resume, summarize
 
 ```bash

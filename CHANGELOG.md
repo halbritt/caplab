@@ -29,6 +29,11 @@ remains under `Unreleased`, whether or not it has been committed.
 - Added the deterministic evidence-packet assembler (`doctrine/tools/assemble_packet.py`): applies the routing-index retrieval contract for a role, task, question, and optional repository signals, languages, and risk class, and emits packets validated against `doctrine/runtime/evidence-packet.schema.json`.
 - Added the claim-to-source entailment screening harness (`doctrine/tools/entailment_eval.py`) with a 12-judgment pilot recorded under `doctrine/evaluations/entailment/`; verdicts are model-judged screening evidence for human audit, not verification.
 - Added a `--model` flag to the entailment harness so multi-model OpenAI-compatible servers (ollama) route to the requested judge model; recorded model provenance now prefers the requested model when the server lists it.
+- Added frontier-model second-opinion reviews of the 31 pending screening flags
+  (`doctrine/evaluations/entailment/frontier-review.jsonl`, reviewer kind
+  `model`), displayed in the adjudication bench beside the local screening
+  verdict; 17 of 31 local flags were judged artifacts of section extraction
+  truncated by conversion-flattened subsection and callout headings.
 - Expanded root documentation for corpus conversion, doctrine contracts, evaluation fixtures, assertion discipline, and integrity boundaries.
 - Added author attribution to the root source-book catalog.
 - Added a tailnet-local web adjudication bench
@@ -43,6 +48,15 @@ remains under `Unreleased`, whether or not it has been committed.
   validation followed by builder `--write`/`--check`). Access is limited to
   loopback and the Tailscale CGNAT range by socket peer address; dispositions
   and audits record the human's dictated judgment verbatim.
+- Added a repository-native product-document scaffold under `docs/product/`
+  with explicit specification and implementation-plan lifecycles, reusable
+  templates, and a stable index that keeps proposal, decision, authorization,
+  execution, verification, and acceptance distinct.
+- Added the proposed Doctrine Robustness Laboratory specification and its
+  dependency-ordered pilot plan for paired clean/mutated evaluation cases,
+  relational oracles, deterministic grading, and separately governed human
+  adjudication. These documents do not claim implementation authorization or a
+  current robustness capability.
 - Added this changelog.
 
 ### Changed

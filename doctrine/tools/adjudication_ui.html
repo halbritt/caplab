@@ -187,6 +187,10 @@ dl.kv pre{font:11.5px/1.5 var(--mono);background:var(--ink);border:1px solid var
 .result.fail{border:1px solid #5d332d;background:#2d1c19;color:#f0a9a2}
 .result pre{font:11px/1.5 var(--mono);margin-top:8px;white-space:pre-wrap;overflow-wrap:anywhere;color:inherit;opacity:.85;max-height:220px;overflow-y:auto}
 .result details summary{cursor:pointer;font:11px var(--mono)}
+.frontier{border:1px solid #3a3a5c;border-radius:6px;background:#1e1e2c;padding:14px 16px;margin-bottom:16px;font-size:13.5px}
+.frontier .fr-head{font:600 12px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#a8a8e0;margin-bottom:8px}
+.frontier .fr-fix{border-left:3px solid #6c6cb8;padding:6px 10px;margin-top:8px;background:#232338;border-radius:0 4px 4px 0}
+.frontier button.usefix{margin-top:8px;font:600 11px var(--mono);color:#c6c6ee;background:#2c2c46;border:1px solid #44446a;border-radius:4px;padding:5px 10px;cursor:pointer}
 .done-card{border:1px solid #2f4636;border-radius:6px;background:#1b241e;padding:14px 16px;font-size:13.5px}
 .done-card .dc-head{font:600 12px var(--mono);color:#9ed0ab;margin-bottom:8px}
 .done-card dl.kv dd{border-color:#26382c}
@@ -565,6 +569,19 @@ function renderFlag(f, pos, total){
   h += "</section>";
   h += '<div class="provenance">'+provLine(f)+"</div>";
 
+  if(f.frontier){
+    var fr = f.frontier;
+    var fixText = fr.proposed_fix ? (fr.proposed_fix.relationship+": "+fr.proposed_fix.contribution) : "";
+    h += '<section class="frontier"><div class="fr-head">frontier second opinion — model observation ('+esc(fr.reviewer && fr.reviewer.id || "model")+')</div>'
+       + '<div><b>'+esc(fr.finding)+'</b> · confidence '+esc(fr.confidence || "—")
+       + ' · local flag judged '+esc(fr.local_verdict_assessment || "—")+'</div>'
+       + (fr.rationale ? '<div style="margin-top:6px">'+esc(fr.rationale)+"</div>" : "")
+       + (fr.proposed_fix ? '<div class="fr-fix"><b>proposed fix</b> — <code>'+esc(fr.proposed_fix.relationship)+'</code>: '+esc(fr.proposed_fix.contribution)+'</div>'
+          + '<button class="usefix" data-fix="'+esc(fixText)+'">copy proposed fix into note</button>' : "")
+       + '<div class="rule" style="margin-top:8px;font-size:11.5px;color:var(--tx-faint)">This is another model’s screening observation, not a human audit. It settles nothing until you record your finding below.</div>'
+       + "</section>";
+  }
+
   h += '<section class="judgment"><h3>Human audit — your finding</h3>'
      + '<div class="rule">The model verdict above is a screening observation. Record what <em>you</em> conclude after reading the section.</div>'
      + (f.audit ? '<div class="done-card" style="margin-bottom:12px"><div class="dc-head">latest audit — '+esc(f.audit.finding)+' · '+esc(f.audit.reviewed_by)+' · '+esc(f.audit.reviewed_at)+'</div>'+(f.audit.note?esc(f.audit.note):'<span style="color:var(--tx-faint)">no note</span>')+"</div>" : "")
@@ -753,6 +770,12 @@ function bindFlagControls(f){
   Array.prototype.forEach.call(document.querySelectorAll(".findbtn"), function(b){
     b.onclick = function(){ submitAudit(f, b.getAttribute("data-finding")); };
   });
+  var usefix = document.querySelector(".frontier .usefix");
+  if(usefix) usefix.onclick = function(){
+    var note = $("audit-note");
+    note.value = usefix.getAttribute("data-fix");
+    note.focus();
+  };
 }
 function bindQueueControls(c){
   if(c.disposition) return;

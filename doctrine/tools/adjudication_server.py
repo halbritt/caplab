@@ -52,6 +52,7 @@ UI_FILENAME = "adjudication_ui.html"
 GOLD_RELATIVE = Path("doctrine/evaluations/gold")
 ENTAILMENT_RELATIVE = Path("doctrine/evaluations/entailment")
 AUDIT_FILENAME = "human-audit.jsonl"
+FRONTIER_REVIEW_FILENAME = "frontier-review.jsonl"
 AUDIT_SCHEMA_VERSION = "entailment-human-audit/1"
 FINDINGS = ("citation-holds", "citation-defective", "needs-deeper-review")
 FLAG_VERDICTS = (
@@ -574,6 +575,29 @@ def load_audits(root: Path) -> list[dict[str, Any]]:
     return audits
 
 
+def load_frontier_reviews(root: Path) -> dict[str, dict[str, Any]]:
+    """Latest frontier-model second opinion per entailment record key.
+
+    These are model observations (reviewer kind ``model``), never human
+    audits; they are displayed beside the local screening verdict only.
+    """
+    path = root / ENTAILMENT_RELATIVE / FRONTIER_REVIEW_FILENAME
+    latest: dict[str, dict[str, Any]] = {}
+    if not path.is_file():
+        return latest
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            record = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(record, dict) and record.get("key"):
+            latest[str(record["key"])] = record
+    return latest
+
+
 def disposition_verdicts(root: Path) -> list[str]:
     schema = load_json_mapping(
         root / GOLD_RELATIVE / "human-dispositions.schema.json"
@@ -597,6 +621,7 @@ def build_state(root: Path) -> dict[str, Any]:
     dispositions_by_id = {str(item.get("candidate_id")): item for item in dispositions}
     results, _ = entailment_eval.load_records(root / ENTAILMENT_RELATIVE / "results.jsonl")
     audits = load_audits(root)
+    frontier_reviews = load_frontier_reviews(root)
     latest_audit: dict[str, dict[str, Any]] = {}
     audit_counts: dict[str, int] = {}
     for audit in audits:
@@ -651,6 +676,7 @@ def build_state(root: Path) -> dict[str, Any]:
         key = str(result.get("key", ""))
         flag["audit"] = latest_audit.get(key)
         flag["audit_count"] = audit_counts.get(key, 0)
+        flag["frontier"] = frontier_reviews.get(key)
         flag["evidence_path"] = (
             f"doctrine/evaluations/entailment/results.jsonl#key={key}"
         )
