@@ -1,14 +1,30 @@
 # Books
 
-This repository keeps source PDF and EPUB books in the repository root and builds
-a semantically structured Markdown corpus under [`books/`](books/README.md).
+This repository converts root-level PDF and EPUB books into a semantically structured Markdown corpus. It also contains provenance-aware doctrine contracts and evaluation fixtures for turning the corpus into bounded engineering guidance.
+
+The source books remain unchanged in the repository root. Generated books live under [`books/`](books/README.md), one directory per source.
+
+## Repository map
+
+| Path | Contents |
+|---|---|
+| [`books/`](books/README.md) | Generated chapter Markdown, assets, source metadata, provenance, and validation records |
+| [`doctrine/OPERATIONALIZATION.md`](doctrine/OPERATIONALIZATION.md) | Sequence for building evaluation, retrieval, skills, and decision receipts around the corpus |
+| [`doctrine/CONVERGED_RECOMMENDATION.md`](doctrine/CONVERGED_RECOMMENDATION.md) | Converged recommendation that preceded the operational design |
+| [`doctrine/runtime/`](doctrine/runtime/README.md) | JSON Schema contracts and structural assertion validation |
+| [`doctrine/evaluations/`](doctrine/evaluations/README.md) | Replayable authority canaries and dependency-impact fixtures |
+| [`ubiquitous_language.md`](ubiquitous_language.md) | Canonical meanings of observation, inference, recommendation, decision, and adjacent authority terms |
+| [`AGENTS.md`](AGENTS.md) | Repository instructions for coding agents |
+| [`scripts/convert-books`](scripts/convert-books) | Root-level book discovery and conversion command |
+| [`tests/`](tests/) | Conversion-pipeline and doctrine-scaffolding tests |
+| [`CHANGELOG.md`](CHANGELOG.md) | Notable repository changes |
 
 ## Source books
 
-The repository currently contains these root-level source books:
+Only supported files located directly in the repository root are ingested. Subdirectories are not searched for source books.
 
 | Book | Source file |
-| --- | --- |
+|---|---|
 | A Philosophy of Software Design, 2nd Edition | `dokumen.pub_a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217.epub` |
 | Clean Architecture: A Craftsman's Guide to Software Structure and Design | `Clean Architecture A Craftsman Guide to Software Structure and Design.pdf` |
 | Code Complete, 2nd Edition | `code-complete-2nd-edition-v413hav.pdf` |
@@ -21,24 +37,91 @@ The repository currently contains these root-level source books:
 | The Pragmatic Programmer | `the-pragmatic-programmer.pdf` |
 | Working Effectively with Legacy Code | `[PROGRAMMING][Working Effectively. with Legacy Code].pdf` |
 
-Run the complete root-level ingestion pipeline with:
+The generated [book index](books/README.md) records title, authors, converter, execution target, chapter count, status, output path, and validation warnings for each source.
+
+## Convert and validate books
+
+Convert every supported root-level source:
 
 ```bash
 make books
 ```
 
-The command uses Marker on `peecee` for PDFs and Pandoc for EPUBs. It discovers
-only root-level source files, preserves the originals, extracts assets, splits on
-logical chapter boundaries, and writes metadata, provenance, and validation
-records for every book.
+PDFs use Marker on the `peecee` GPU worker, with the defined local Marker path available only as an infrastructure fallback. EPUBs use Pandoc. The pipeline extracts assets, identifies logical chapter boundaries, and writes normalized Markdown plus metadata and validation records.
 
-Run the tests and validate existing generated output without invoking converters:
+Convert one exact source without rebuilding the repository index:
+
+```bash
+./scripts/convert-books --book 'Refactoring  Improving the Design of Existing Code.pdf'
+```
+
+Run tests and validate generated books without invoking converters or writing output:
 
 ```bash
 make check
 ```
 
-Generated books carry file manifests and integrity checks. The pipeline refuses
-to overwrite unexpected edits unless `scripts/convert-books --force` is invoked
-explicitly. The tracked `out/Refactoring/` directory is the legacy raw Marker
-conversion and is not used as an intermediate by the corpus pipeline.
+Each generated book has this shape:
+
+```text
+books/<book-slug>/
+  README.md
+  metadata.json
+  source.json
+  validation.json
+  chapters/
+  assets/
+```
+
+`source.json` includes source identity and conversion provenance. Generated file manifests protect existing output: conversion refuses to overwrite unexpected edits unless `--force` is supplied explicitly.
+
+## Assertion discipline
+
+Repository analysis must follow [`ubiquitous_language.md`](ubiquitous_language.md). In particular:
+
+- observations require inspectable evidence;
+- inferences retain uncertainty and credible rivals;
+- recommendations include alternatives and tradeoffs;
+- decisions identify an owner and authority boundary;
+- authorization, execution, verification, and acceptance remain separate states.
+
+The structural validator checks these fields and predecessor relationships:
+
+```bash
+python3 doctrine/tools/validate_assertions.py \
+  doctrine/evaluations/fixtures/authority-withdrawn/result.json
+```
+
+Structural validity does not prove that a natural-language assertion is true or honestly labeled. Source entailment remains an evaluation concern.
+
+## Doctrine evaluations
+
+The authority canaries hold evidence constant while changing authorization. The authorized fixture may reach decision and authorization; the withdrawn fixture must stop at recommendation.
+
+Replay the withdrawn-authority case:
+
+```bash
+python3 doctrine/tools/run_scenario.py \
+  doctrine/evaluations/fixtures/authority-withdrawn/scenario.json \
+  doctrine/evaluations/fixtures/authority-withdrawn/result.json
+```
+
+Calculate the rebuild and reverification impact of a changed manifest node:
+
+```bash
+python3 doctrine/tools/dependency_impact.py \
+  doctrine/evaluations/fixtures/dependency-impact/manifest.json \
+  --changed source-a
+```
+
+These fixtures are synthetic contract tests. They do not yet measure natural-language entailment, graph retrieval quality, or source-locator correctness.
+
+## Integrity boundaries
+
+- Source PDFs and EPUBs are inputs and are not rewritten by conversion.
+- Generated corpus files retain source hashes, converter provenance, and validation results.
+- Unexpected manual changes to generated output stop regeneration unless replacement is explicitly forced.
+- Corpus doctrine may support an observation, inference, or recommendation; it cannot create authorization.
+- Evaluation outcomes and usage traces must not rewrite source doctrine silently.
+
+The tracked `out/Refactoring/` directory is a legacy raw Marker conversion. The corpus pipeline does not use it as an intermediate.
