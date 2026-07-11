@@ -38,3 +38,39 @@ python3 doctrine/tools/build_gold_queue.py --check
 4. Run `--check` and obtain an independent review of the adjudication where the evaluation risk requires it.
 
 Do not copy a model verdict into `human-dispositions.json` under a human identity. If a person has not inspected the evidence and made the judgment, the candidate remains `pending-human`.
+
+## Web adjudication UI
+
+`doctrine/tools/adjudication_server.py` serves a single-page bench for the
+workflow above at **http://100.85.100.81:8788/** on the tailnet (also
+http://127.0.0.1:8788/ locally). Access is limited to loopback and the
+Tailscale CGNAT range, judged by the socket peer address.
+
+The UI presents two work surfaces: the entailment screening flags (see
+[`../entailment/README.md`](../entailment/README.md)) and this gold queue,
+with every candidate reference resolved to its source, formulation, node,
+edge, lens, role, risk-class, transition, or outcome record and, for
+source-support candidates, the matching machine-screening records.
+
+What it writes:
+
+- `POST /api/disposition` appends one disposition to
+  `human-dispositions.json` (atomic write under a lock, whole-document schema
+  validation before rename), then runs `build_gold_queue.py --write` followed
+  by `--check` and reports both results.
+- `POST /api/flag-audit` appends one human audit record to
+  `../entailment/human-audit.jsonl`.
+
+The verdict, rationale, uncertainty, and evidence list in a disposition are
+the human's dictated judgment; the server records them verbatim and adds only
+the adjudicator envelope (`kind: human`, the reviewer's id) and the
+`adjudicated_at` timestamp. Machine verdicts shown in the UI are screening
+observations and are never copied into a disposition by the server.
+
+Service management (systemd user unit, linger enabled):
+
+```bash
+systemctl --user restart doctrine-adjudication   # restart
+systemctl --user status doctrine-adjudication
+journalctl --user -u doctrine-adjudication -f    # tail logs
+```

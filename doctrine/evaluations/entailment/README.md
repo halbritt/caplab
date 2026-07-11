@@ -62,6 +62,17 @@ Per [`ubiquitous_language.md`](../../../ubiquitous_language.md):
    overrides. Changing any of those
    creates a distinct judgment instead of silently reusing a stale result.
 
+## Human audits
+
+`human-audit.jsonl` records human review of screening results (one JSON line
+per audit, schema `entailment-human-audit/1`: `key`, `concept_id`, `locator`,
+`finding` ∈ {`citation-holds`, `citation-defective`, `needs-deeper-review`},
+`note`, `reviewed_by`, `reviewed_at`). Multiple audits per key are allowed;
+the latest wins for display. Audits are appended by the web adjudication UI
+(`doctrine/tools/adjudication_server.py`, see
+[`../gold/README.md`](../gold/README.md)) and are findings about citations —
+they do not modify doctrine, results, or the graph.
+
 ## Run, resume, summarize
 
 ```bash

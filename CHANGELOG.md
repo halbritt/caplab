@@ -31,6 +31,18 @@ remains under `Unreleased`, whether or not it has been committed.
 - Added a `--model` flag to the entailment harness so multi-model OpenAI-compatible servers (ollama) route to the requested judge model; recorded model provenance now prefers the requested model when the server lists it.
 - Expanded root documentation for corpus conversion, doctrine contracts, evaluation fixtures, assertion discipline, and integrity boundaries.
 - Added author attribution to the root source-book catalog.
+- Added a tailnet-local web adjudication bench
+  (`doctrine/tools/adjudication_server.py` + `adjudication_ui.html`, systemd
+  user unit `doctrine-adjudication`, http://100.85.100.81:8788/): one-item-at-a-time
+  human review of the entailment screening flags (evidence quote highlighted
+  in the resolved cited section, audits appended to
+  `doctrine/evaluations/entailment/human-audit.jsonl`) and the gold queue
+  candidates (every reference resolved best-effort with explicit unresolved
+  markers, machine screening joined for source-support candidates, dispositions
+  appended atomically to `human-dispositions.json` with whole-document schema
+  validation followed by builder `--write`/`--check`). Access is limited to
+  loopback and the Tailscale CGNAT range by socket peer address; dispositions
+  and audits record the human's dictated judgment verbatim.
 - Added this changelog.
 
 ### Changed
