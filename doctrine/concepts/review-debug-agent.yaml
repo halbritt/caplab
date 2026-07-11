@@ -171,7 +171,7 @@ concepts:
         relationship: direct_support
       - source_id: SRC-CC
         locator: "books/code-complete-2nd-edition-v413hav/chapters/038-chapter-28-managing-construction.md :: Requirements and Design Changes"
-        contribution: Distinguishes requirements, design, configuration, and code changes with different controls and owners.
+        contribution: Technical ability to make a change does not confer authority to select or authorize it; proposed changes should pass through explicit evaluation and approval before execution.
         relationship: corroboration
       - source_id: SRC-CC
         locator: "books/code-complete-2nd-edition-v413hav/chapters/008-chapter-3-measure-twice-cut-once-upstream-prerequisites.md :: Boss-Readiness Test"

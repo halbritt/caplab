@@ -69,7 +69,7 @@ concepts:
         relationship: direct_support
       - source_id: SRC-CC
         locator: "books/code-complete-2nd-edition-v413hav/chapters/011-chapter-5-design-in-construction.md :: Assign Responsibilities"
-        contribution: Supports cohesive responsibility assignment and limited inter-module interaction.
+        contribution: Endorses asking what each object should be responsible for, framed as a broader form of information hiding.
         relationship: corroboration
     confidence: strong
     roles: [coding-agent, architecture-agent, refactoring-agent, review-agent]
@@ -164,7 +164,7 @@ concepts:
         relationship: refinement
       - source_id: SRC-APOSD
         locator: "books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/015-10-define-errors-out-of-existence.md :: 10: Define Errors Out Of Existence"
-        contribution: Preserves caller-relevant failure meaning while reducing avoidable handling complexity.
+        contribution: Reduce exception complexity by hiding implementation-local failures, not caller-relevant failures.
         relationship: refinement
       - source_id: SRC-EGO
         locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/006-chapter-2-efficient-introduction-to-go.md :: Single Way of Handling Errors"
@@ -635,7 +635,7 @@ concepts:
     source_support:
       - source_id: SRC-CC
         locator: "books/code-complete-2nd-edition-v413hav/chapters/031-chapter-22-developer-testing.md :: Coverage Monitors"
-        contribution: Limits coverage to path-execution evidence and requires complementary testing techniques.
+        contribution: Coverage monitors report only which code was exercised, revealing unexecuted code that signals the need for more tests.
         relationship: direct_support
       - source_id: SRC-PP
         locator: "books/the-pragmatic-programmer/chapters/013-chapter-8-pragmatic-projects.md :: Testing Thoroughly"

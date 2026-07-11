@@ -728,13 +728,13 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
-- id: F-CONCEPT-CC-e5d3ed842e46
+- id: F-CONCEPT-CC-ef6a379be1f7
   source_id: SRC-CC
   locator: books/code-complete-2nd-edition-v413hav/chapters/038-chapter-28-managing-construction.md#Requirements and Design Changes
   mappings:
   - node_id: agent-conduct-authority-bounded-action
     relationship_to_canonical: corroboration
-  paraphrase: Distinguishes requirements, design, configuration, and code changes with different controls and owners.
+  paraphrase: Technical ability to make a change does not confer authority to select or authorize it; proposed changes should pass through explicit evaluation and approval before execution.
   conditions: 'Canonical mapping applicability (not attributed to the source): all autonomous engineering assessment and execution'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -788,13 +788,13 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
-- id: F-CONCEPT-FSA-5e0ce1c8ce6e
+- id: F-CONCEPT-FSA-74d6dffd3175
   source_id: SRC-FSA
   locator: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/024-chapter-18-choosing-the-appropriate-architecture-style.md#Monolith versus distributed
   mappings:
   - node_id: architecture-boundary-strength
     relationship_to_canonical: corroboration
-  paraphrase: Makes deployment topology a separate costed decision.
+  paraphrase: Makes deployment topology a separate, explicitly criteria-driven design determination.
   conditions: 'Canonical mapping applicability (not attributed to the source): an architectural boundary has been earned; reviewing whether a module should become a component, process, or service'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -1028,13 +1028,13 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
-- id: F-CONCEPT-FSA-e0dae116aa55
+- id: F-CONCEPT-FSA-bb3f8497dab2
   source_id: SRC-FSA
   locator: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/013-chapter-8-component-based-thinking.md#Component Granularity
   mappings:
   - node_id: architecture-earned-boundary
     relationship_to_canonical: corroboration
-  paraphrase: Makes component granularity an iterative responsibility and characteristic decision.
+  paraphrase: Frames component granularity as a consequential trade-off—too fine multiplies communication, too coarse concentrates coupling and harms deployability and testability.
   conditions: 'Canonical mapping applicability (not attributed to the source): proposing a module, interface, component, process, service, or context boundary; repeated changes or ownership conflicts cross an existing structure'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -1748,13 +1748,13 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
-- id: F-CONCEPT-FSA-4ed19d47a349
+- id: F-CONCEPT-FSA-554e40210a27
   source_id: SRC-FSA
   locator: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/024-chapter-18-choosing-the-appropriate-architecture-style.md#Organizational factors
   mappings:
   - node_id: domain-context-relationship-selection
     relationship_to_canonical: refinement
-  paraphrase: Adds team and process constraints to cross-boundary architecture choices.
+  paraphrase: Adds organizational constraints—vendor cost and merger strategy favoring open integration—to cross-boundary architecture choices.
   conditions: 'Canonical mapping applicability (not attributed to the source): two Bounded Contexts or systems must integrate; legacy, vendor, platform, or cross-team model relationships are designed'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -2422,13 +2422,13 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
-- id: F-CONCEPT-APOSD-5df7585c0502
+- id: F-CONCEPT-APOSD-8db114972c4b
   source_id: SRC-APOSD
   locator: 'books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/015-10-define-errors-out-of-existence.md#10: Define Errors Out Of Existence'
   mappings:
   - node_id: implementation-explicit-failure-policy
     relationship_to_canonical: refinement
-  paraphrase: Preserves caller-relevant failure meaning while reducing avoidable handling complexity.
+  paraphrase: Reduce exception complexity by hiding implementation-local failures, not caller-relevant failures.
   conditions: 'Canonical mapping applicability (not attributed to the source): API design; I/O; validation; persistence; distributed calls; repair; operational hardening'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -2638,13 +2638,13 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
-- id: F-CONCEPT-CC-f65db168af4f
+- id: F-CONCEPT-CC-b4cfd1661c32
   source_id: SRC-CC
   locator: books/code-complete-2nd-edition-v413hav/chapters/011-chapter-5-design-in-construction.md#Assign Responsibilities
   mappings:
   - node_id: implementation-placement-by-ownership
     relationship_to_canonical: corroboration
-  paraphrase: Supports cohesive responsibility assignment and limited inter-module interaction.
+  paraphrase: Endorses asking what each object should be responsible for, framed as a broader form of information hiding.
   conditions: 'Canonical mapping applicability (not attributed to the source): new behavior; defect repair placement; helper extraction; module or class selection'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -2950,13 +2950,13 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
-- id: F-CONCEPT-WELC-22a12be20a07
+- id: F-CONCEPT-WELC-4b7c1aabcb50
   source_id: SRC-WELC
   locator: books/programming-working-effectively-with-legacy-code/chapters/009-chapter-2-working-with-feedback.md#Break Dependencies
   mappings:
   - node_id: legacy-provisional-dependency-break
     relationship_to_canonical: direct_support
-  paraphrase: The legacy dilemma may require a small production edit to create tests; dependency-breaking scars can be tolerated locally and reconsidered after feedback exists.
+  paraphrase: The legacy dilemma often forces dependency-breaking edits before tests exist; make these first incisions conservatively using dedicated safety practices.
   conditions: 'Canonical mapping applicability (not attributed to the source): one dependency blocks harness or observation'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -3070,25 +3070,25 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
-- id: F-CONCEPT-WELC-9023366b4f0d
+- id: F-CONCEPT-WELC-b9ee71078a0e
   source_id: SRC-WELC
   locator: books/programming-working-effectively-with-legacy-code/chapters/031-chapter-23-how-do-i-know-that-i-m-not-breaking-anything.md#Hyperaware Editing
   mappings:
   - node_id: legacy-unprotected-enabling-edit
     relationship_to_canonical: direct_support
-  paraphrase: When no test can exist before the first seam, use hyperaware single-goal editing, preserve signatures, lean on compiler/reference checks, and pair/review.
+  paraphrase: Hyperaware editing—knowing whether each keystroke changes behavior—is the working mindset for edits made without test feedback, fostered by fast tests and pairing.
   conditions: 'Canonical mapping applicability (not attributed to the source): first seam impossible without production edit; statically checkable mechanics'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
-- id: F-CONCEPT-WELC-36a096131afd
+- id: F-CONCEPT-WELC-1c903d84693d
   source_id: SRC-WELC
   locator: books/programming-working-effectively-with-legacy-code/chapters/031-chapter-23-how-do-i-know-that-i-m-not-breaking-anything.md#Lean on the Compiler
   mappings:
   - node_id: legacy-unprotected-enabling-edit
     relationship_to_canonical: direct_support
-  paraphrase: When no test can exist before the first seam, use hyperaware single-goal editing, preserve signatures, lean on compiler/reference checks, and pair/review.
+  paraphrase: Leaning on the compiler finds every affected reference via deliberate compile errors (with inheritance blind spots), and pairing is insisted on for dependency-breaking edits.
   conditions: 'Canonical mapping applicability (not attributed to the source): first seam impossible without production edit; statically checkable mechanics'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -4210,13 +4210,13 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
-- id: F-CONCEPT-REF-45d4065277d1
+- id: F-CONCEPT-REF-af0f041fee97
   source_id: SRC-REF
   locator: books/refactoring-improving-the-design-of-existing-code/chapters/019-chapter-14-refactoring-tools.md#Accuracy
   mappings:
   - node_id: refactoring-transformation-tool-trust
     relationship_to_canonical: direct_support
-  paraphrase: Refactoring-tool safety depends on semantic accuracy, program representation, speed, undo, and integration—not operation naming alone.
+  paraphrase: Automated refactorings cannot totally preserve behavior—reflection and timing escape the tool's model—so safe use requires identifying the cases the tool cannot fix.
   conditions: 'Canonical mapping applicability (not attributed to the source): IDE refactor; codemod; compiler-assisted rename; bulk transformation'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -4246,13 +4246,13 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
-- id: F-CONCEPT-SDX-c94488f64ebb
+- id: F-CONCEPT-SDX-8a767197b702
   source_id: SRC-SDX
   locator: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/014-chapter-8-toward-modular-monoliths-through-the-social-view-of-code.md#The Big Win Is in the Problem Domain
   mappings:
   - node_id: repository-assessment-behavioral-boundary-candidate
     relationship_to_canonical: direct_support
-  paraphrase: Co-change clusters across technical layers can nominate components or bounded contexts, but source inspection and domain expertise choose the model.
+  paraphrase: Domain expertise built by direct time with users—not analysis output alone—supplies the understanding that simplifies architecture and chooses the model.
   conditions: 'Canonical mapping applicability (not attributed to the source): layered monolith modularization; cross-layer co-change; context discovery'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -4270,25 +4270,25 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
-- id: F-CONCEPT-SDX-714cb5634d4a
+- id: F-CONCEPT-SDX-7bf36cbc4786
   source_id: SRC-SDX
   locator: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/013-chapter-7-beyond-conway-s-law.md#Watch Out for Authors with Multiple Aliases
   mappings:
   - node_id: repository-assessment-behavioral-data-fitness
     relationship_to_canonical: direct_support
-  paraphrase: Aliases, pair/mob work, squashes, copied history, generated/noncode files, organizational shifts, and task grouping can invalidate social or technical inference.
+  paraphrase: Multiple Git aliases per developer bias author-based social metrics; a .mailmap mapping restores single-developer identity before inference.
   conditions: 'Canonical mapping applicability (not attributed to the source): any history; hotspot; co-change; ownership; or age analysis'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
-- id: F-CONCEPT-SDX-83f0f415584a
+- id: F-CONCEPT-SDX-99ea208ffa96
   source_id: SRC-SDX
   locator: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/016-chapter-10-an-extra-team-member-predictive-and-proactive-analyses.md#Detect Future Hotspots
   mappings:
   - node_id: repository-assessment-behavioral-early-warning
     relationship_to_canonical: direct_support
-  paraphrase: Rising hotspot rank, relative complexity increase, or absent expected co-change should focus early review while permitting intentional divergence.
+  paraphrase: Files that climb rapidly in the hotspot ranking should focus early review, while allowing that rising activity may reflect intentional investment rather than defects.
   conditions: 'Canonical mapping applicability (not attributed to the source): CI or review with stable behavioral baseline'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -4318,25 +4318,25 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
-- id: F-CONCEPT-SDX-8a0ef6c89d72
+- id: F-CONCEPT-SDX-aad25134eb3f
   source_id: SRC-SDX
   locator: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/010-chapter-5-the-principles-of-code-age.md#Dead Code Is Stable Code
   mappings:
   - node_id: repository-assessment-code-age
     relationship_to_canonical: direct_support
-  paraphrase: Last-change age distinguishes active and stable regions only after reference date, product activity, domain, generated content, tests, and dead-code alternatives are considered.
+  paraphrase: Old, unmodified code may appear stable only because it is dead; verify it is still in use before extraction, and prefer deletion when it is dead.
   conditions: 'Canonical mapping applicability (not attributed to the source): mature repository; stability or dead-code assessment'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
-- id: F-CONCEPT-SDX-c5c9444a3e00
+- id: F-CONCEPT-SDX-a40d6d18b08c
   source_id: SRC-SDX
   locator: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/007-chapter-2-identify-code-with-high-interest-rates.md#Evaluate Hotspots with Complexity Trends
   mappings:
   - node_id: repository-assessment-complexity-trend
     relationship_to_canonical: direct_support
-  paraphrase: Trends and repository-relative deltas reveal accumulation while avoiding noisy universal thresholds; language/style biases remain.
+  paraphrase: A file's complexity trend over its history reveals accumulating complexity, distinguishing complexity growth from mere size growth via a language-neutral indentation proxy.
   conditions: 'Canonical mapping applicability (not attributed to the source): active large code; rising hotspot; normalization-of-deviance check'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -4438,13 +4438,13 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
-- id: F-CONCEPT-CC-8cab97dc172f
+- id: F-CONCEPT-CC-20a835bbb400
   source_id: SRC-CC
   locator: books/code-complete-2nd-edition-v413hav/chapters/031-chapter-22-developer-testing.md#Coverage Monitors
   mappings:
   - node_id: testing-coverage-is-not-adequacy
     relationship_to_canonical: direct_support
-  paraphrase: Limits coverage to path-execution evidence and requires complementary testing techniques.
+  paraphrase: Coverage monitors report only which code was exercised, revealing unexecuted code that signals the need for more tests.
   conditions: 'Canonical mapping applicability (not attributed to the source): test assessment; coverage gate review; implementation or repair verification'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:

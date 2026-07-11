@@ -820,7 +820,7 @@ concepts:
   source_support:
   - source_id: SRC-REF
     locator: 'books/refactoring-improving-the-design-of-existing-code/chapters/019-chapter-14-refactoring-tools.md :: Accuracy'
-    contribution: Refactoring-tool safety depends on semantic accuracy, program representation, speed, undo, and integration—not operation naming alone.
+    contribution: Automated refactorings cannot totally preserve behavior—reflection and timing escape the tool's model—so safe use requires identifying the cases the tool cannot fix.
     relationship: direct_support
   - source_id: SRC-WELC
     locator: 'books/programming-working-effectively-with-legacy-code/chapters/030-chapter-22-i-need-to-change-a-monster-method-and-i-can-t-write-tests-for-it.md :: Tackling Monsters with Automated Refactoring Support'

@@ -506,7 +506,7 @@ concepts:
       - source_id: SRC-FSA
         relationship: refinement
         locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/024-chapter-18-choosing-the-appropriate-architecture-style.md :: Organizational factors"
-        contribution: "Adds team and process constraints to cross-boundary architecture choices."
+        contribution: Adds organizational constraints—vendor cost and merger strategy favoring open integration—to cross-boundary architecture choices.
     confidence: contextual
     roles: [architecture-agent, legacy-code-agent, review-agent]
     languages: [language-independent]

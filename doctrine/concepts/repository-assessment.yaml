@@ -48,7 +48,7 @@ concepts:
   source_support:
   - source_id: SRC-SDX
     locator: 'books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/007-chapter-2-identify-code-with-high-interest-rates.md :: Evaluate Hotspots with Complexity Trends'
-    contribution: Trends and repository-relative deltas reveal accumulation while avoiding noisy universal thresholds; language/style biases remain.
+    contribution: A file's complexity trend over its history reveals accumulating complexity, distinguishing complexity growth from mere size growth via a language-neutral indentation proxy.
     relationship: direct_support
   - source_id: SRC-SDX
     locator: 'books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/007-chapter-2-identify-code-with-high-interest-rates.md :: Know the Biases in Complexity Trends'
@@ -144,7 +144,7 @@ concepts:
     relationship: direct_support
   - source_id: SRC-SDX
     locator: 'books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/010-chapter-5-the-principles-of-code-age.md :: Dead Code Is Stable Code'
-    contribution: Last-change age distinguishes active and stable regions only after reference date, product activity, domain, generated content, tests, and dead-code alternatives are considered.
+    contribution: Old, unmodified code may appear stable only because it is dead; verify it is still in use before extraction, and prefer deletion when it is dead.
     relationship: direct_support
   confidence: contextual
   roles:
@@ -244,7 +244,7 @@ concepts:
     relationship: direct_support
   - source_id: SRC-SDX
     locator: 'books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/013-chapter-7-beyond-conway-s-law.md :: Watch Out for Authors with Multiple Aliases'
-    contribution: Aliases, pair/mob work, squashes, copied history, generated/noncode files, organizational shifts, and task grouping can invalidate social or technical inference.
+    contribution: Multiple Git aliases per developer bias author-based social metrics; a .mailmap mapping restores single-developer identity before inference.
     relationship: direct_support
   confidence: strong
   roles:
@@ -445,7 +445,7 @@ concepts:
     relationship: direct_support
   - source_id: SRC-SDX
     locator: 'books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/014-chapter-8-toward-modular-monoliths-through-the-social-view-of-code.md :: The Big Win Is in the Problem Domain'
-    contribution: Co-change clusters across technical layers can nominate components or bounded contexts, but source inspection and domain expertise choose the model.
+    contribution: Domain expertise built by direct time with users—not analysis output alone—supplies the understanding that simplifies architecture and chooses the model.
     relationship: direct_support
   confidence: contextual
   roles:
@@ -627,7 +627,7 @@ concepts:
   source_support:
   - source_id: SRC-SDX
     locator: 'books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/016-chapter-10-an-extra-team-member-predictive-and-proactive-analyses.md :: Detect Future Hotspots'
-    contribution: Rising hotspot rank, relative complexity increase, or absent expected co-change should focus early review while permitting intentional divergence.
+    contribution: Files that climb rapidly in the hotspot ranking should focus early review, while allowing that rising activity may reflect intentional investment rather than defects.
     relationship: direct_support
   - source_id: SRC-SDX
     locator: 'books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/016-chapter-10-an-extra-team-member-predictive-and-proactive-analyses.md :: Catch the Absence of Change'

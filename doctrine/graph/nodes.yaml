@@ -639,7 +639,7 @@ nodes:
   - agent-conduct-authority-bounded-action
   formulations:
   - F-CONCEPT-PP-3cd1576a1ee8
-  - F-CONCEPT-CC-e5d3ed842e46
+  - F-CONCEPT-CC-ef6a379be1f7
   - F-CONCEPT-CC-8d39ebafa179
   - F-CONCEPT-EGO-0ea813693bc5
   tags:
@@ -663,7 +663,7 @@ nodes:
   formulations:
   - F-CONCEPT-CA-29842f7171dc
   - F-CONCEPT-CA-3d52f6c3637f
-  - F-CONCEPT-FSA-5e0ce1c8ce6e
+  - F-CONCEPT-FSA-74d6dffd3175
   tags:
   - architecture
   - boundary-strength
@@ -816,7 +816,7 @@ nodes:
   - architecture-earned-boundary
   formulations:
   - F-CONCEPT-CA-ee58e1594efc
-  - F-CONCEPT-FSA-e0dae116aa55
+  - F-CONCEPT-FSA-bb3f8497dab2
   - F-CONCEPT-DDD-e26711b6f899
   tags:
   - architecture
@@ -1256,7 +1256,7 @@ nodes:
   formulations:
   - F-CONCEPT-DDD-7f1d90c349ac
   - F-CONCEPT-DDD-f61bd371382f
-  - F-CONCEPT-FSA-4ed19d47a349
+  - F-CONCEPT-FSA-554e40210a27
   tags:
   - domain
   - context-relationship
@@ -1692,7 +1692,7 @@ nodes:
   formulations:
   - F-CONCEPT-CC-233e88b9c99c
   - F-CONCEPT-PP-811f1df832f2
-  - F-CONCEPT-APOSD-5df7585c0502
+  - F-CONCEPT-APOSD-8db114972c4b
   - F-CONCEPT-EGO-47133b650968
   tags:
   - implementation
@@ -1824,7 +1824,7 @@ nodes:
   - implementation-placement-by-ownership
   formulations:
   - F-CONCEPT-APOSD-0a3eb9743076
-  - F-CONCEPT-CC-f65db168af4f
+  - F-CONCEPT-CC-b4cfd1661c32
   tags:
   - implementation
   - behavior-placement
@@ -2036,7 +2036,7 @@ nodes:
   doctrine_refs:
   - legacy-provisional-dependency-break
   formulations:
-  - F-CONCEPT-WELC-22a12be20a07
+  - F-CONCEPT-WELC-4b7c1aabcb50
   - F-CONCEPT-SDX-6062f695ea2b
   tags:
   - legacy
@@ -2116,8 +2116,8 @@ nodes:
   doctrine_refs:
   - legacy-unprotected-enabling-edit
   formulations:
-  - F-CONCEPT-WELC-9023366b4f0d
-  - F-CONCEPT-WELC-36a096131afd
+  - F-CONCEPT-WELC-b9ee71078a0e
+  - F-CONCEPT-WELC-1c903d84693d
   tags:
   - legacy
   - hyperaware-editing
@@ -2618,7 +2618,7 @@ nodes:
   doctrine_refs:
   - refactoring-transformation-tool-trust
   formulations:
-  - F-CONCEPT-REF-45d4065277d1
+  - F-CONCEPT-REF-af0f041fee97
   - F-CONCEPT-WELC-e618e7af8e9c
   tags:
   - refactoring
@@ -2640,7 +2640,7 @@ nodes:
   - repository-assessment-behavioral-boundary-candidate
   formulations:
   - F-CONCEPT-SDX-81087ba97153
-  - F-CONCEPT-SDX-c94488f64ebb
+  - F-CONCEPT-SDX-8a767197b702
   tags:
   - domain
   - bounded-context-candidate
@@ -2660,7 +2660,7 @@ nodes:
   - repository-assessment-behavioral-data-fitness
   formulations:
   - F-CONCEPT-SDX-b864bebc70eb
-  - F-CONCEPT-SDX-714cb5634d4a
+  - F-CONCEPT-SDX-7bf36cbc4786
   tags:
   - agent-conduct
   - history-bias
@@ -2680,7 +2680,7 @@ nodes:
   doctrine_refs:
   - repository-assessment-behavioral-early-warning
   formulations:
-  - F-CONCEPT-SDX-83f0f415584a
+  - F-CONCEPT-SDX-99ea208ffa96
   - F-CONCEPT-SDX-df8340541154
   tags:
   - review
@@ -2701,7 +2701,7 @@ nodes:
   - repository-assessment-code-age
   formulations:
   - F-CONCEPT-SDX-78de61a2d5d3
-  - F-CONCEPT-SDX-8a0ef6c89d72
+  - F-CONCEPT-SDX-aad25134eb3f
   tags:
   - review
   - code-age
@@ -2721,7 +2721,7 @@ nodes:
   doctrine_refs:
   - repository-assessment-complexity-trend
   formulations:
-  - F-CONCEPT-SDX-c5c9444a3e00
+  - F-CONCEPT-SDX-a40d6d18b08c
   - F-CONCEPT-SDX-c96f60d63001
   tags:
   - review
@@ -2804,7 +2804,7 @@ nodes:
   doctrine_refs:
   - testing-coverage-is-not-adequacy
   formulations:
-  - F-CONCEPT-CC-8cab97dc172f
+  - F-CONCEPT-CC-20a835bbb400
   - F-CONCEPT-PP-ccc50b0e9e5f
   tags:
   - implementation

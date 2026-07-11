@@ -596,7 +596,7 @@ edges:
   confidence: strong
   provenance:
   - F-CONCEPT-FSA-03d270194af5
-  - F-CONCEPT-FSA-5e0ce1c8ce6e
+  - F-CONCEPT-FSA-74d6dffd3175
 - id: E-ARCHDOM-013-distribution-tension-modular-monolith
   from: architecture-distribution-readiness
   relation: in-tension-with
@@ -841,7 +841,7 @@ edges:
   confidence: contextual
   provenance:
   - F-CONCEPT-FSA-e5e17aa74fb6
-  - F-CONCEPT-FSA-e0dae116aa55
+  - F-CONCEPT-FSA-bb3f8497dab2
 - id: E-ARCHDOM-030-team-constrains-distribution
   from: architecture-team-topology-force
   relation: constrains
@@ -1179,7 +1179,7 @@ edges:
   derivation: corroborated
   confidence: strong
   provenance:
-  - F-CONCEPT-REF-45d4065277d1
+  - F-CONCEPT-REF-af0f041fee97
   - F-CONCEPT-REF-05450931da03
 - id: E-CHANGELEGACY-014-tool-trust-requires-preservation
   from: refactoring-transformation-tool-trust
@@ -1269,7 +1269,7 @@ edges:
   derivation: corroborated
   confidence: contextual
   provenance:
-  - F-CONCEPT-WELC-22a12be20a07
+  - F-CONCEPT-WELC-4b7c1aabcb50
   - F-CONCEPT-WELC-138c1bc9e17c
 - id: E-CHANGELEGACY-020-effects-constrain-characterization
   from: legacy-effect-surface
@@ -1361,8 +1361,8 @@ edges:
   derivation: synthesized
   confidence: contested
   provenance:
-  - F-CONCEPT-WELC-9023366b4f0d
-  - F-CONCEPT-WELC-22a12be20a07
+  - F-CONCEPT-WELC-b9ee71078a0e
+  - F-CONCEPT-WELC-4b7c1aabcb50
   synthesis:
     origin: projected
     rationale: The cited formulations for legacy-unprotected-enabling-edit and legacy-provisional-dependency-break are combined to infer a 'specializes' relationship under the edge conditions; the complete relationship is a synthesis and is not attributed directly to either source.
@@ -1383,7 +1383,7 @@ edges:
   confidence: contextual
   provenance:
   - F-CONCEPT-WELC-e618e7af8e9c
-  - F-CONCEPT-WELC-36a096131afd
+  - F-CONCEPT-WELC-1c903d84693d
 - id: E-CHANGELEGACY-027-hotspot-specializes-metrics
   from: refactoring-hotspot-prioritization
   relation: specializes
@@ -1414,7 +1414,7 @@ edges:
   derivation: corroborated
   confidence: contextual
   provenance:
-  - F-CONCEPT-SDX-c5c9444a3e00
+  - F-CONCEPT-SDX-a40d6d18b08c
   - F-CONCEPT-SDX-b25be62a75a5
 - id: E-CHANGELEGACY-029-data-fitness-prerequisite-metrics
   from: repository-assessment-behavioral-data-fitness
@@ -1457,7 +1457,7 @@ edges:
   derivation: corroborated
   confidence: strong
   provenance:
-  - F-CONCEPT-SDX-714cb5634d4a
+  - F-CONCEPT-SDX-7bf36cbc4786
   - F-CONCEPT-FSA-e5e17aa74fb6
 - id: E-CHANGELEGACY-032-cochange-evidence-boundary-candidate
   from: refactoring-cochange-evidence
@@ -1484,7 +1484,7 @@ edges:
   derivation: synthesized
   confidence: contextual
   provenance:
-  - F-CONCEPT-SDX-c94488f64ebb
+  - F-CONCEPT-SDX-8a767197b702
   - F-CONCEPT-DDD-66cc671ede0b
   synthesis:
     origin: projected
@@ -1610,8 +1610,8 @@ edges:
   derivation: direct
   confidence: contextual
   provenance:
-  - F-CONCEPT-SDX-83f0f415584a
-  - F-CONCEPT-SDX-c5c9444a3e00
+  - F-CONCEPT-SDX-99ea208ffa96
+  - F-CONCEPT-SDX-a40d6d18b08c
 - id: E-CHANGELEGACY-042-review-severity-constrains-warning
   from: review-severity-confidence-separation
   relation: constrains
@@ -2022,7 +2022,7 @@ edges:
   derivation: direct
   confidence: strong
   provenance:
-  - F-CONCEPT-CC-8cab97dc172f
+  - F-CONCEPT-CC-20a835bbb400
   - F-CONCEPT-CC-ba525ba51386
 - id: E-IMPLLANG-028-test-first-operationalizes-protection
   from: testing-test-first-feedback
@@ -3584,7 +3584,7 @@ edges:
   derivation: contested
   confidence: contested
   provenance:
-  - F-CONCEPT-WELC-22a12be20a07
+  - F-CONCEPT-WELC-4b7c1aabcb50
   - F-CONFLICT-WELC-2086672564b8
   conflict_ref: conflict-temporary-seam-vs-long-term-design
   synthesis:

@@ -5,8 +5,8 @@
       "doctrine/authority-model.yaml": "a11d91776a1d1d919cfd654b96811b841ec14d08bf8a9fd2c0fe439371d7be3c",
       "doctrine/context-lenses.yaml": "f3a0977ce7df98486757ee5b449c693b30e7913fa1672dc138a4d96ae67c347d",
       "doctrine/evaluations/gold/human-dispositions.json": "4746f454ab3b0ce677ed813b054d3ad41c33335dcb131c90663c896d35398eab",
-      "doctrine/graph/edges.yaml": "acdc84888d9356977ec258a0671c08eeee1f7fc161b10289c159b58c8ab025fb",
-      "doctrine/graph/formulations.yaml": "a2e52c73b424f58783cc927098f42d4993d4123bb9f249a841cd83ee88f7b6fb",
+      "doctrine/graph/edges.yaml": "bc6829d69bcd6e8718d6927b1f881b30321e3819a407c1eae8e4e142a6dd59cc",
+      "doctrine/graph/formulations.yaml": "bb1b7d713c28cacce31fd1a201712e35b6df41e99e1c1ccc7c388baf2e58fd2e",
       "doctrine/sources.yaml": "e07b5dc8a43d27895b41263a9d256efe4ffcc835dada6c463a32278dc3bcce2c"
     },
     "tool": "doctrine/tools/build_gold_queue.py",

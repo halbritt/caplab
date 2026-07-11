@@ -174,7 +174,7 @@ concepts:
       - source_id: SRC-FSA
         relationship: corroboration
         locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/013-chapter-8-component-based-thinking.md :: Component Granularity"
-        contribution: "Makes component granularity an iterative responsibility and characteristic decision."
+        contribution: Frames component granularity as a consequential trade-off—too fine multiplies communication, too coarse concentrates coupling and harms deployability and testability.
       - source_id: SRC-DDD
         relationship: refinement
         locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md :: Bounded Context"
@@ -227,7 +227,7 @@ concepts:
       - source_id: SRC-FSA
         relationship: corroboration
         locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/024-chapter-18-choosing-the-appropriate-architecture-style.md :: Monolith versus distributed"
-        contribution: "Makes deployment topology a separate costed decision."
+        contribution: Makes deployment topology a separate, explicitly criteria-driven design determination.
     confidence: strong
     roles: [architecture-agent, coding-agent, legacy-code-agent, review-agent]
     languages: [language-independent]

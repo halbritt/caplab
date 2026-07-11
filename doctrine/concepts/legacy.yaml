@@ -451,7 +451,7 @@ concepts:
   source_support:
   - source_id: SRC-WELC
     locator: 'books/programming-working-effectively-with-legacy-code/chapters/009-chapter-2-working-with-feedback.md :: Break Dependencies'
-    contribution: The legacy dilemma may require a small production edit to create tests; dependency-breaking scars can be tolerated locally and reconsidered after feedback exists.
+    contribution: The legacy dilemma often forces dependency-breaking edits before tests exist; make these first incisions conservatively using dedicated safety practices.
     relationship: direct_support
   - source_id: SRC-SDX
     locator: 'books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/009-chapter-4-pay-off-your-technical-debt.md :: Signal Incompleteness with Names'
@@ -1112,11 +1112,11 @@ concepts:
   source_support:
   - source_id: SRC-WELC
     locator: 'books/programming-working-effectively-with-legacy-code/chapters/031-chapter-23-how-do-i-know-that-i-m-not-breaking-anything.md :: Hyperaware Editing'
-    contribution: When no test can exist before the first seam, use hyperaware single-goal editing, preserve signatures, lean on compiler/reference checks, and pair/review.
+    contribution: Hyperaware editing—knowing whether each keystroke changes behavior—is the working mindset for edits made without test feedback, fostered by fast tests and pairing.
     relationship: direct_support
   - source_id: SRC-WELC
     locator: 'books/programming-working-effectively-with-legacy-code/chapters/031-chapter-23-how-do-i-know-that-i-m-not-breaking-anything.md :: Lean on the Compiler'
-    contribution: When no test can exist before the first seam, use hyperaware single-goal editing, preserve signatures, lean on compiler/reference checks, and pair/review.
+    contribution: Leaning on the compiler finds every affected reference via deliberate compile errors (with inheritance blind spots), and pairing is insisted on for dependency-breaking edits.
     relationship: direct_support
   confidence: contested
   roles:
