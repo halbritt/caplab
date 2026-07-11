@@ -102,3 +102,32 @@ because it shares a keyword with the task.
 When the repository does not supply the evidence required by a record, the
 agent should gather evidence, narrow the claim, propose an experiment, or stop.
 It should not substitute confidence or source prestige for missing evidence.
+
+### Assembling an evidence packet
+
+`tools/assemble_packet.py` implements this retrieval contract as a
+deterministic CLI. It applies the routing index `selection_order` for a role,
+task, question, and optional repository signals, languages, and risk class,
+then emits a packet conforming to `runtime/evidence-packet.schema.json`:
+
+```bash
+python3 doctrine/tools/assemble_packet.py \
+  --role legacy-code-agent --task legacy-change \
+  --question "Can we safely extract the billing calculation?" \
+  --signal "no tests around target" --risk regression \
+  --out packet.json --render markdown
+```
+
+Interpretation notes (the assembler cannot inspect a target repository):
+
+- A route prerequisite naming another concept record is pulled into the
+  activated set; every other prerequisite and each `required_evidence` item is
+  reported in `missing_evidence` as `<item> — required by <concept-id>` unless
+  a provided `--signal` matches it. Missing evidence never drops always-load
+  or role/task-baseline concepts; `exclude_when` matches always do, and every
+  dropped candidate is recorded in `excluded_candidates` with its reason.
+- `corpus_version` is derived from repository data only:
+  the traceability `generated_at_utc` date plus a sha256 digest over the
+  sorted `source_sha256` values in `sources.yaml`. Identical invocations
+  produce byte-identical packets; the packet is retrieved guidance and does
+  not create authority to act.

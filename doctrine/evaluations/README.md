@@ -29,3 +29,10 @@ These fixtures do not evaluate natural-language entailment, retrieval quality,
 or source locator resolution. The extraction is stable; those properties still
 require additional graph-backed, hand-audited scenarios before a retriever can
 be accepted.
+
+The [`entailment/`](entailment/README.md) subdirectory holds a separate,
+model-judged screening harness (`doctrine/tools/entailment_eval.py`) for the
+first of those gaps: whether each concept's cited source section supports its
+claimed contribution. Its verdicts are observations of model output supporting
+inferences about entailment — screening for human audit, not verification, not
+acceptance — and they never modify doctrine.

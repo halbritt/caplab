@@ -13,7 +13,8 @@ The source books remain unchanged under [`sources/`](sources/). Generated books 
 | [`doctrine/OPERATIONALIZATION.md`](doctrine/OPERATIONALIZATION.md) | Sequence for building evaluation, retrieval, skills, and decision receipts around the corpus |
 | [`doctrine/CONVERGED_RECOMMENDATION.md`](doctrine/CONVERGED_RECOMMENDATION.md) | Converged recommendation that preceded the operational design |
 | [`doctrine/runtime/`](doctrine/runtime/README.md) | JSON Schema contracts and structural assertion validation |
-| [`doctrine/evaluations/`](doctrine/evaluations/README.md) | Replayable authority canaries and dependency-impact fixtures |
+| [`doctrine/tools/`](doctrine/tools/) | Doctrine validation, graph projection, evidence-packet assembly, and entailment-screening tooling |
+| [`doctrine/evaluations/`](doctrine/evaluations/README.md) | Replayable authority canaries, dependency-impact fixtures, and entailment screening results |
 | [`ubiquitous_language.md`](ubiquitous_language.md) | Canonical meanings of observation, inference, recommendation, decision, and adjacent authority terms |
 | [`AGENTS.md`](AGENTS.md) | Repository instructions for coding agents |
 | [`scripts/convert-books`](scripts/convert-books) | `sources/` book discovery and conversion command |
@@ -115,7 +116,25 @@ python3 doctrine/tools/dependency_impact.py \
   --changed source-a
 ```
 
-These fixtures are synthetic contract tests. They do not yet measure natural-language entailment, graph retrieval quality, or source-locator correctness.
+These fixtures are synthetic contract tests. They do not yet measure graph retrieval quality or source-locator correctness.
+
+Assemble a deterministic evidence packet from the routing index (see [`doctrine/README.md`](doctrine/README.md) for interpretation notes):
+
+```bash
+python3 doctrine/tools/assemble_packet.py \
+  --role legacy-code-agent --task legacy-change \
+  --question "Can we safely extract the billing calculation?" \
+  --signal "no tests around target" --render markdown
+```
+
+Screen claim-to-source entailment with the local model (results under [`doctrine/evaluations/entailment/`](doctrine/evaluations/entailment/README.md)):
+
+```bash
+python3 doctrine/tools/entailment_eval.py --limit 12
+python3 doctrine/tools/entailment_eval.py --summarize
+```
+
+Entailment verdicts are observations of model output supporting inferences about entailment. They queue records for human audit; they are not verification or acceptance, and they never modify doctrine.
 
 ## Integrity boundaries
 
