@@ -1,0 +1,139 @@
+schema_version: agent-doctrine-sources/1
+sources:
+  - id: SRC-APOSD
+    title: A Philosophy of Software Design, 2nd Edition
+    authors: [John K. Ousterhout]
+    corpus_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217
+    source_input_path: "sources/dokumen.pub_a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217.epub"
+    source_sha256: 9f587b71073a53a7813f4048669ee80ec3183eedd8eeb43736add7601d6b3d21
+    source_format: epub
+    chapter_count: 32
+    source_roles:
+      - universal-engineering-foundation
+      - implementation-craft
+      - architectural-reasoning
+  - id: SRC-CA
+    title: "Clean Architecture: A Craftsman's Guide to Software Structure and Design"
+    authors: [Robert C. Martin]
+    corpus_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design
+    source_input_path: "sources/Clean Architecture A Craftsman Guide to Software Structure and Design.pdf"
+    source_sha256: eb3885d72fdb7c27a6a3531b06d69ae71c90f4c9c7a0e79f517654bad402baf5
+    source_format: pdf
+    chapter_count: 48
+    source_roles:
+      - architectural-reasoning
+      - implementation-craft
+      - boundary-and-dependency-design
+  - id: SRC-CC
+    title: Code Complete, Second Edition
+    authors: [Steve McConnell]
+    corpus_path: books/code-complete-2nd-edition-v413hav
+    source_input_path: "sources/code-complete-2nd-edition-v413hav.pdf"
+    source_sha256: c321aafe940280e0c2fe7fe2b85a7e743ff6009bafeed7af0c8f6263b1ed08d3
+    source_format: pdf
+    chapter_count: 48
+    source_roles:
+      - implementation-craft
+      - construction-quality
+      - review-and-testing
+  - id: SRC-DDD
+    title: "Domain-Driven Design: Tackling Complexity in the Heart of Software"
+    authors: [Eric Evans]
+    corpus_path: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans
+    source_input_path: "sources/Domain Driven Design Tackling Complexity in the Heart of Software - Eric Evans.pdf"
+    source_sha256: 1de0796de844ea9d8b9bf09cb0bacbeedb6ab40a969beace80b5633d65b21c37
+    source_format: pdf
+    chapter_count: 20
+    source_roles:
+      - domain-modeling
+      - architectural-reasoning
+      - model-and-implementation-integrity
+  - id: SRC-EGO
+    title: "Efficient Go: Data-Driven Performance Optimization"
+    authors: [Bartłomiej Płotka]
+    corpus_path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library
+    source_input_path: "sources/Efficient Go Data-Driven Performance Optimization (Bartlomiej Plotka) (Z-Library).pdf"
+    source_sha256: 607ea2155c8b1f07f97c15d30a93fb400a7ef3437737b40f6252a0061cacb2ad
+    source_format: pdf
+    chapter_count: 18
+    source_roles:
+      - performance-engineering
+      - language-specific-implementation
+      - measurement-and-benchmarking
+  - id: SRC-FP
+    title: Fluent Python, 2nd Edition
+    authors: [Luciano Ramalho]
+    corpus_path: books/fluent-python-2nd-edition-z-lib-org
+    source_input_path: "sources/Fluent.Python.2nd.Edition.(z-lib.org).pdf"
+    source_sha256: 3303dcaf731b6288e4246d80a6ac9a1d6b8b5517a109ace97ca5a9ca2e02b2db
+    source_format: pdf
+    chapter_count: 33
+    source_roles:
+      - language-specific-implementation
+      - implementation-craft
+      - concurrency-and-data-models
+  - id: SRC-FSA
+    title: Fundamentals of Software Architecture
+    authors: [Mark Richards, Neal Ford]
+    corpus_path: books/oreilly-fundamentals-of-software-architecture-2020-1
+    source_input_path: "sources/OReilly.Fundamentals.of.Software.Architecture.2020.1.pdf"
+    source_sha256: 5008352574b214d08e4e831288a4e628355557fb73a927f91eda411c2ba1a546
+    source_format: pdf
+    chapter_count: 35
+    source_roles:
+      - architectural-reasoning
+      - quality-attribute-analysis
+      - evolutionary-architecture
+  - id: SRC-PP
+    title: The Pragmatic Programmer
+    authors: [Andrew Hunt, David Thomas]
+    corpus_path: books/the-pragmatic-programmer
+    source_input_path: "sources/the-pragmatic-programmer.pdf"
+    source_sha256: 7c8ad03780b2905e0cd47e3f5c60bd0474a718e7e7133ca226ef05828011ef20
+    source_format: pdf
+    chapter_count: 17
+    source_roles:
+      - universal-engineering-foundation
+      - implementation-craft
+      - agent-conduct
+  - id: SRC-REF
+    title: "Refactoring: Improving the Design of Existing Code"
+    authors:
+      - Martin Fowler
+      - Kent Beck
+      - John Brant
+      - William Opdyke
+      - Don Roberts
+    corpus_path: books/refactoring-improving-the-design-of-existing-code
+    source_input_path: "sources/Refactoring  Improving the Design of Existing Code.pdf"
+    source_sha256: c782e9e6989927db458839d1e665e342d0d62a4c2f085ea4b9a8c82fe9709abc
+    source_format: pdf
+    chapter_count: 21
+    source_roles:
+      - refactoring-mechanics
+      - behavior-preserving-change
+      - testing-and-sequencing
+  - id: SRC-SDX
+    title: "Software Design X-Rays: Fix Technical Debt with Behavioral Code Analysis"
+    authors: [Adam Tornhill]
+    corpus_path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725
+    source_input_path: "sources/dokumen.pub_software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725.pdf"
+    source_sha256: 0b6f92fdaf4698b89793b163185f72af017b2d20d2e2563658d711d57559bba8
+    source_format: pdf
+    chapter_count: 22
+    source_roles:
+      - historical-and-hotspot-analysis
+      - architectural-reasoning
+      - sociotechnical-analysis
+  - id: SRC-WELC
+    title: Working Effectively with Legacy Code
+    authors: [Michael C. Feathers]
+    corpus_path: books/programming-working-effectively-with-legacy-code
+    source_input_path: "sources/[PROGRAMMING][Working Effectively. with Legacy Code].pdf"
+    source_sha256: 7ff574830fc3d20fc450a419f8fb595145b3f041b68fe5ba1ef15eb90efd2c71
+    source_format: pdf
+    chapter_count: 37
+    source_roles:
+      - safe-change-and-legacy-systems
+      - characterization-and-seams
+      - dependency-breaking

@@ -1,0 +1,1112 @@
+{
+  "attempts": [
+    {
+      "argv": [
+        "bash",
+        "/home/halbritt/git/skills/skills/marker-convert/scripts/convert-peecee.sh",
+        ".book-work/code-complete-2nd-edition-v413hav/code-complete-2nd-edition-v413hav-c321aafe9402.pdf",
+        "--format",
+        "markdown",
+        "--out",
+        ".book-work/code-complete-2nd-edition-v413hav/marker-peecee",
+        "--host",
+        "peecee"
+      ],
+      "command": "bash /home/halbritt/git/skills/skills/marker-convert/scripts/convert-peecee.sh .book-work/code-complete-2nd-edition-v413hav/code-complete-2nd-edition-v413hav-c321aafe9402.pdf --format markdown --out .book-work/code-complete-2nd-edition-v413hav/marker-peecee --host peecee",
+      "execution_target": "peecee",
+      "exit_status": 0,
+      "failures": [],
+      "fresh_output_validated": true,
+      "freshness_error": null,
+      "warnings": [],
+      "working_directory": "/home/halbritt/git/books"
+    }
+  ],
+  "chapter_boundary_evidence": [
+    {
+      "anchor": null,
+      "body_line": 751,
+      "number": 1,
+      "source": "explicit body chapter label and following title",
+      "title": "Welcome to Software Construction"
+    },
+    {
+      "anchor": null,
+      "body_line": 864,
+      "number": 2,
+      "source": "explicit body chapter label and following title",
+      "title": "Metaphors for a Richer Understanding of Software Development"
+    },
+    {
+      "anchor": null,
+      "body_line": 1099,
+      "number": 3,
+      "source": "explicit body chapter label and following title",
+      "title": "Measure Twice, Cut Once: Upstream Prerequisites"
+    },
+    {
+      "anchor": null,
+      "body_line": 1918,
+      "number": 4,
+      "source": "explicit body chapter label and following title",
+      "title": "Key Construction Decisions"
+    },
+    {
+      "anchor": null,
+      "body_line": 2147,
+      "number": 5,
+      "source": "explicit body chapter label and following title",
+      "title": "Design in Construction"
+    },
+    {
+      "anchor": null,
+      "body_line": 3204,
+      "number": 6,
+      "source": "explicit body chapter label and following title",
+      "title": "Working Classes"
+    },
+    {
+      "anchor": null,
+      "body_line": 4172,
+      "number": 7,
+      "source": "explicit body chapter label and following title",
+      "title": "High-Quality Routines"
+    },
+    {
+      "anchor": null,
+      "body_line": 4815,
+      "number": 8,
+      "source": "explicit body chapter label and following title",
+      "title": "Defensive Programming"
+    },
+    {
+      "anchor": null,
+      "body_line": 5476,
+      "number": 9,
+      "source": "explicit body chapter label and following title",
+      "title": "The Pseudocode Programming Process"
+    },
+    {
+      "anchor": null,
+      "body_line": 5992,
+      "number": 10,
+      "source": "explicit body chapter label and following title",
+      "title": "General Issues in Using Variables"
+    },
+    {
+      "anchor": null,
+      "body_line": 6625,
+      "number": 11,
+      "source": "explicit body chapter label and following title",
+      "title": "The Power of Variable Names"
+    },
+    {
+      "anchor": null,
+      "body_line": 7533,
+      "number": 12,
+      "source": "explicit body chapter label and following title",
+      "title": "Fundamental Data Types"
+    },
+    {
+      "anchor": null,
+      "body_line": 8472,
+      "number": 13,
+      "source": "explicit body chapter label and following title",
+      "title": "Unusual Data Types"
+    },
+    {
+      "anchor": null,
+      "body_line": 9229,
+      "number": 14,
+      "source": "explicit body chapter label and following title",
+      "title": "Organizing Straight-Line Code"
+    },
+    {
+      "anchor": null,
+      "body_line": 9451,
+      "number": 15,
+      "source": "explicit body chapter label and following title",
+      "title": "Using Conditionals"
+    },
+    {
+      "anchor": null,
+      "body_line": 9877,
+      "number": 16,
+      "source": "explicit body chapter label and following title",
+      "title": "Controlling Loops"
+    },
+    {
+      "anchor": null,
+      "body_line": 10658,
+      "number": 17,
+      "source": "explicit body chapter label and following title",
+      "title": "Unusual Control Structures"
+    },
+    {
+      "anchor": null,
+      "body_line": 11329,
+      "number": 18,
+      "source": "explicit body chapter label and following title",
+      "title": "Table-Driven Methods"
+    },
+    {
+      "anchor": null,
+      "body_line": 11951,
+      "number": 19,
+      "source": "explicit body chapter label and following title",
+      "title": "General Control Issues"
+    },
+    {
+      "anchor": null,
+      "number": 20,
+      "source": "printed table of contents",
+      "source_line": 13109,
+      "title": "The Software-Quality Landscape"
+    },
+    {
+      "anchor": null,
+      "number": 21,
+      "source": "printed table of contents",
+      "source_line": 13110,
+      "title": "Collaborative Construction"
+    },
+    {
+      "anchor": null,
+      "number": 22,
+      "source": "printed table of contents",
+      "source_line": 13111,
+      "title": "Developer Testing"
+    },
+    {
+      "anchor": null,
+      "number": 23,
+      "source": "printed table of contents",
+      "source_line": 13112,
+      "title": "Debugging"
+    },
+    {
+      "anchor": null,
+      "number": 24,
+      "source": "printed table of contents",
+      "source_line": 13113,
+      "title": "Refactoring"
+    },
+    {
+      "anchor": null,
+      "number": 25,
+      "source": "printed table of contents",
+      "source_line": 13114,
+      "title": "Code-Tuning Strategies"
+    },
+    {
+      "anchor": null,
+      "number": 26,
+      "source": "printed table of contents",
+      "source_line": 13115,
+      "title": "Code-Tuning Techniques"
+    },
+    {
+      "anchor": null,
+      "body_line": 17739,
+      "number": 27,
+      "source": "explicit body chapter label and following title",
+      "title": "How Program Size Affects Construction"
+    },
+    {
+      "anchor": null,
+      "body_line": 17993,
+      "number": 28,
+      "source": "explicit body chapter label and following title",
+      "title": "Managing Construction"
+    },
+    {
+      "anchor": null,
+      "body_line": 18604,
+      "number": 29,
+      "source": "explicit body chapter label and following title",
+      "title": "Integration"
+    },
+    {
+      "anchor": null,
+      "body_line": 18981,
+      "number": 30,
+      "source": "explicit body chapter label and following title",
+      "title": "Programming Tools"
+    },
+    {
+      "anchor": null,
+      "body_line": 19394,
+      "number": 31,
+      "source": "explicit body chapter label and following title",
+      "title": "Layout and Style"
+    },
+    {
+      "anchor": null,
+      "body_line": 21132,
+      "number": 32,
+      "source": "explicit body chapter label and following title",
+      "title": "Self-Documenting Code"
+    },
+    {
+      "anchor": null,
+      "body_line": 22370,
+      "number": 33,
+      "source": "explicit body chapter label and following title",
+      "title": "Personal Character"
+    },
+    {
+      "anchor": null,
+      "body_line": 22666,
+      "number": 34,
+      "source": "explicit body chapter label and following title",
+      "title": "Themes in Software Craftsmanship"
+    },
+    {
+      "anchor": null,
+      "body_line": 22971,
+      "number": 35,
+      "source": "explicit body chapter label and following title",
+      "title": "Where to Find More Information"
+    }
+  ],
+  "collapsed_duplicate_headings": [
+    {
+      "chapter": "006-chapter-1-welcome-to-software-construction.md",
+      "count": 1
+    },
+    {
+      "chapter": "007-chapter-2-metaphors-for-a-richer-understanding-of-software-development.md",
+      "count": 1
+    },
+    {
+      "chapter": "008-chapter-3-measure-twice-cut-once-upstream-prerequisites.md",
+      "count": 1
+    },
+    {
+      "chapter": "009-chapter-4-key-construction-decisions.md",
+      "count": 1
+    },
+    {
+      "chapter": "011-chapter-5-design-in-construction.md",
+      "count": 1
+    },
+    {
+      "chapter": "012-chapter-6-working-classes.md",
+      "count": 1
+    },
+    {
+      "chapter": "013-chapter-7-high-quality-routines.md",
+      "count": 1
+    },
+    {
+      "chapter": "014-chapter-8-defensive-programming.md",
+      "count": 1
+    },
+    {
+      "chapter": "015-chapter-9-the-pseudocode-programming-process.md",
+      "count": 1
+    },
+    {
+      "chapter": "017-chapter-10-general-issues-in-using-variables.md",
+      "count": 1
+    },
+    {
+      "chapter": "018-chapter-11-the-power-of-variable-names.md",
+      "count": 1
+    },
+    {
+      "chapter": "019-chapter-12-fundamental-data-types.md",
+      "count": 1
+    },
+    {
+      "chapter": "020-chapter-13-unusual-data-types.md",
+      "count": 1
+    },
+    {
+      "chapter": "022-chapter-14-organizing-straight-line-code.md",
+      "count": 1
+    },
+    {
+      "chapter": "023-chapter-15-using-conditionals.md",
+      "count": 1
+    },
+    {
+      "chapter": "024-chapter-16-controlling-loops.md",
+      "count": 1
+    },
+    {
+      "chapter": "025-chapter-17-unusual-control-structures.md",
+      "count": 1
+    },
+    {
+      "chapter": "026-chapter-18-table-driven-methods.md",
+      "count": 1
+    },
+    {
+      "chapter": "027-chapter-19-general-control-issues.md",
+      "count": 1
+    },
+    {
+      "chapter": "029-chapter-20-the-software-quality-landscape.md",
+      "count": 1
+    },
+    {
+      "chapter": "030-chapter-21-collaborative-construction.md",
+      "count": 1
+    },
+    {
+      "chapter": "031-chapter-22-developer-testing.md",
+      "count": 1
+    },
+    {
+      "chapter": "032-chapter-23-debugging.md",
+      "count": 1
+    },
+    {
+      "chapter": "033-chapter-24-refactoring.md",
+      "count": 1
+    },
+    {
+      "chapter": "034-chapter-25-code-tuning-strategies.md",
+      "count": 1
+    },
+    {
+      "chapter": "035-chapter-26-code-tuning-techniques.md",
+      "count": 1
+    },
+    {
+      "chapter": "037-chapter-27-how-program-size-affects-construction.md",
+      "count": 1
+    },
+    {
+      "chapter": "038-chapter-28-managing-construction.md",
+      "count": 1
+    },
+    {
+      "chapter": "039-chapter-29-integration.md",
+      "count": 1
+    },
+    {
+      "chapter": "040-chapter-30-programming-tools.md",
+      "count": 1
+    },
+    {
+      "chapter": "042-chapter-31-layout-and-style.md",
+      "count": 1
+    },
+    {
+      "chapter": "043-chapter-32-self-documenting-code.md",
+      "count": 1
+    },
+    {
+      "chapter": "044-chapter-33-personal-character.md",
+      "count": 1
+    },
+    {
+      "chapter": "045-chapter-34-themes-in-software-craftsmanship.md",
+      "count": 1
+    },
+    {
+      "chapter": "046-chapter-35-where-to-find-more-information.md",
+      "count": 1
+    }
+  ],
+  "command_argv": [
+    "bash",
+    "/home/halbritt/git/skills/skills/marker-convert/scripts/convert-peecee.sh",
+    ".book-work/code-complete-2nd-edition-v413hav/code-complete-2nd-edition-v413hav-c321aafe9402.pdf",
+    "--format",
+    "markdown",
+    "--out",
+    ".book-work/code-complete-2nd-edition-v413hav/marker-peecee",
+    "--host",
+    "peecee"
+  ],
+  "command_executed": "bash /home/halbritt/git/skills/skills/marker-convert/scripts/convert-peecee.sh .book-work/code-complete-2nd-edition-v413hav/code-complete-2nd-edition-v413hav-c321aafe9402.pdf --format markdown --out .book-work/code-complete-2nd-edition-v413hav/marker-peecee --host peecee",
+  "content_author_line": null,
+  "conversion_options": {
+    "format": "markdown",
+    "host": "peecee"
+  },
+  "converter": "marker",
+  "converter_exit_status": 0,
+  "converter_version": "marker-pdf 1.10.2",
+  "degraded_internal_links": [],
+  "execution_target": "peecee",
+  "failures": [],
+  "fallbacks_used": [],
+  "generated_directories": [
+    "assets",
+    "chapters"
+  ],
+  "generated_files": {
+    "README.md": "dbacf56b09f8799076e54d10d3e2aace1f3e55df9107b33dc358c4eb1a782dd0",
+    "assets/_page_0_Picture_3.jpeg": "4e21a8ade41c32fabffbe16afa1c380be07cf6c6b16e4ad0e05cdc89020535ec",
+    "assets/_page_102_Picture_8.jpeg": "ef2bcdd1c52e41b99325c0e7a70149ef18eacd70a2e0fe05da00b4df75d9c1b1",
+    "assets/_page_105_Picture_3.jpeg": "41c11a71cbb3ab5d6ae920f4242ff7557a25b27e63fcd3c0ce8b9fb0e49ebdec",
+    "assets/_page_111_Picture_2.jpeg": "6d2fa5bea14a93c2c7b1f3b0908fd37ea265ef1defaa0a94c58802a69ffa9661",
+    "assets/_page_112_Picture_11.jpeg": "239a6592c86936dcdc3ce3ec5a1f19b1be1e2f4e1345e17cb65c5cc8a839d818",
+    "assets/_page_114_Picture_7.jpeg": "1ca64af71b9c175a5da3fa5eeb5aaec23ea5d4c9165be8421a2a97a1f93f2520",
+    "assets/_page_115_Picture_13.jpeg": "3d898d5968e53169679967d3629066bdaebec7c1bc22f4d2619177c7a1fc53f5",
+    "assets/_page_118_Picture_4.jpeg": "5bd89f0c8adfc822febf9e1742f0d862b08188848dc3001d1a9195f376450745",
+    "assets/_page_119_Figure_5.jpeg": "ef73f996ce01906f603d71ea171ae3a3b2570c7067dfa0a9b935d860560daa2c",
+    "assets/_page_119_Figure_7.jpeg": "ab49807965c4b10e08cc6554ba8b4f89a54e4d134c30e823a90586ce34421cbd",
+    "assets/_page_11_Picture_1.jpeg": "bf288b787adf20b59abbef6021357c969c0e5c316813d01bfad94b8d1639f869",
+    "assets/_page_11_Picture_27.jpeg": "f05b5d13adee61f150eff80c7b8e8a67ebf09505683d1df5e99f7b9933c9f89d",
+    "assets/_page_120_Figure_9.jpeg": "8546f755533391e49f4509b91e9dfb57a85fccc8c3481676cc370fa15c011b4b",
+    "assets/_page_124_Figure_4.jpeg": "c86ecd0b371926f05ba676637a6349091ffe16b3acb5de20644ce97cc2c1eeb7",
+    "assets/_page_126_Picture_3.jpeg": "e27ca3e64ba1d2dc68b04d5c3473936837d33c73bda0e504341310a47826796f",
+    "assets/_page_127_Picture_2.jpeg": "f9a716ca664462d1311815cbefb36fc9def3b459fdc1c0422fa02c1f0c4b26cb",
+    "assets/_page_129_Picture_7.jpeg": "a41421dba6817062e3e7afe0bd19c27f1a6da9d6d04f935aae644e31783ee206",
+    "assets/_page_130_Picture_6.jpeg": "4c6c4d95d62bde4fb4437978f74e0641c70b360218b8b9ea0ddc1368781c0d11",
+    "assets/_page_132_Figure_7.jpeg": "1f61d4debcd8dd1f272f4ba423318911e12bb5c5681630ce9719bfe90105fbe3",
+    "assets/_page_133_Picture_6.jpeg": "c7895052215f95fc114c5965c1121b9ef6106667470197fbe3365bc7ea59ac72",
+    "assets/_page_138_Picture_10.jpeg": "b8e2f018e02b2a9762b96be6ea755aab0d2310a3a8485433b39e47d9026c75ec",
+    "assets/_page_146_Picture_8.jpeg": "edfd1385999126c3214f99ba977535317f0f63484d3084daf69e37eb3953c6a7",
+    "assets/_page_161_Picture_16.jpeg": "706f675c7f7ab5887532a57a2b960470e583e36911bec556ba534d3243ba9a52",
+    "assets/_page_164_Picture_7.jpeg": "d015a82ab04a26b39bab9a1834fce39a728e5eb0647e5826e0d35288726447ea",
+    "assets/_page_165_Picture_4.jpeg": "4cfe928771a0b96ddec629e573cfe332c974182cd62f7bab0c174ce23da61981",
+    "assets/_page_170_Picture_5.jpeg": "a88675adb71269a1f48999b85a6f87fa0167ea24c87bbb4e3d7b3fbc1556b9df",
+    "assets/_page_171_Figure_8.jpeg": "2ba53074eea221a5f02ddfed24ee6fca095f2b9c9323b2ab1f7c4dde4916cdc4",
+    "assets/_page_172_Picture_6.jpeg": "7d14aef727b16c61bb2a06980c71c66fdf4742e42ebbcd2e69cc97c79a110d99",
+    "assets/_page_174_Picture_4.jpeg": "619b92bdc1e6fed3bbb5eac9c4762d6062462fb68ee899b5596fc47536609afa",
+    "assets/_page_178_Picture_8.jpeg": "5a1c48fa401e2d82869a5a3f36710dd414236e99b6b8df4f5c6d00f3bb1512a8",
+    "assets/_page_179_Picture_10.jpeg": "14a7e636dd1ae388303a2b9d5f18199b7ad3da737849770e5d3ed8062ea237c0",
+    "assets/_page_185_Picture_7.jpeg": "b48cc58784a76293bbac962faf71181e9a86896532fac6facb3a672704b60a33",
+    "assets/_page_187_Figure_7.jpeg": "b9ba040cee3f4e783fb97a4a83aa30572eafb0b8f6c509bc38f76409cc2c55cd",
+    "assets/_page_188_Picture_12.jpeg": "7dad988d3591746642295310833f66c50858a3a9413f8e1ad0722b8d76dbcbb9",
+    "assets/_page_190_Figure_4.jpeg": "f4d76aece66768e46f32d98cfea1daa89648ff4586b73a9cdff291fdf61c2800",
+    "assets/_page_198_Picture_2.jpeg": "9228a0a68b16fa9a7c40ba965aa213f7ffd24b09cd90fc046dba753fa49697f5",
+    "assets/_page_200_Picture_4.jpeg": "0e658ef8b5ffdff172ea5b5df11e90b15c3a9341fb7c4d8070f550326e86f620",
+    "assets/_page_202_Picture_5.jpeg": "59dd285aebdb947ebfd4bc473fc6d17fc48260e1c189c78f299c61b3420c87c4",
+    "assets/_page_204_Figure_6.jpeg": "eeddc0d8a077ce52e7201ddd77765b65ce183d9994c013620a8230aed92b135a",
+    "assets/_page_207_Picture_12.jpeg": "5ff16339db6848343a69b26565f4d6b92a81bf14569a14ce03f0f7ded3a818bf",
+    "assets/_page_207_Picture_2.jpeg": "edf7ccb2750ddc2580bcb162c9d249dcf8dd94a818fa1dc1b15b90fb363ff373",
+    "assets/_page_207_Picture_9.jpeg": "5b44198d46038c389a5187306e4baad5f0e79cc3829ec025304297282cc003ac",
+    "assets/_page_209_Figure_8.jpeg": "78d168577528ff9340e224cbee789c88c24254de52d0800a246607dcb28c1a8e",
+    "assets/_page_20_Picture_5.jpeg": "e2fe1cfca5e6221211f8b069eae307879dc2345743292d0a818d3b1e6debc55f",
+    "assets/_page_210_Picture_9.jpeg": "a0d634cc5d5468e37eb0cdbbe1a2f3dd1d8cb7de6dfdb51822220b5cd31c5985",
+    "assets/_page_212_Figure_5.jpeg": "3762921375773b6283b58e0aa67cee9629e37897c978dd46a5e5ecbffe4fae93",
+    "assets/_page_214_Picture_10.jpeg": "757c2b6703ac1ccc3c33646ad396508923797d07d8e6e14730c57de6f0e269e0",
+    "assets/_page_218_Picture_2.jpeg": "dfecc524f6cc68c6599439095f82230b9c18e157e6553f947b3861dd52fc8359",
+    "assets/_page_219_Picture_5.jpeg": "dcc04a0456b7efbd386b569b625c427b0cbbdba6d4884d4dcc4c251c03820e7b",
+    "assets/_page_220_Picture_10.jpeg": "81041017433e0eb3cbbb0b59c589543d58945390b5b0bbfb629adfae22f840e5",
+    "assets/_page_223_Picture_17.jpeg": "fddc58596d5b6ebf7185203adfee89100cc6464ee29e55c52c5f96e5ebde3df6",
+    "assets/_page_224_Picture_4.jpeg": "335fc016012224cfd252a7e1e7ba22c4446825b469a4d6745d7ec5e68fa229f3",
+    "assets/_page_225_Picture_2.jpeg": "42ebf1cee8a0480adf6257e9084a9bb6f878e8a55da220e52b8e82e99bac1b93",
+    "assets/_page_225_Picture_6.jpeg": "02d1f9615b9126931f23c1d3b9ef879f552cbfc20ecf86eb04200750f163e62d",
+    "assets/_page_230_Figure_3.jpeg": "d4c9a49b3971360935da718842aab504284452292e83899f9e26e70d40e02a24",
+    "assets/_page_233_Picture_7.jpeg": "19c776b525dc79f07b3005222d034f80cc5f8f89faf4147e12b05ab32f7f7d67",
+    "assets/_page_236_Figure_3.jpeg": "2eb535c6261b4e3458d56ad14f0311d926c60fa41cf870f4cfc0fbd8ad9b77ea",
+    "assets/_page_237_Picture_4.jpeg": "417185cad28bd2922efe4773511f3685903b390e8e88e6416c3dba4c94bcab7b",
+    "assets/_page_240_Figure_3.jpeg": "75f01e847a43ce5090984c4290946898b99712b66ea19a2c8b97dadcd0c5ff6c",
+    "assets/_page_241_Picture_12.jpeg": "ea71dc0f378c1283b7f5966ec12ffd8948ab5890f69d99343b7fbc1773e644f7",
+    "assets/_page_252_Figure_4.jpeg": "30c2e16b2330646a8f2f04f16c47ef6c354e0cc46b799233c475613a80bb2ab3",
+    "assets/_page_253_Figure_6.jpeg": "2cc4b4f50791685d203ec3bdcefc1bd489cc3b057008560918bcc22745b281a0",
+    "assets/_page_254_Picture_11.jpeg": "db79106d5d0bdb3b0fda8973cbaa8b6ede0c6b13b0132f6bcff72b2515af5f82",
+    "assets/_page_256_Picture_6.jpeg": "e74dbae725ecb500e830226f459308af95b38d6679bc79b8997d9f7927845a58",
+    "assets/_page_261_Figure_8.jpeg": "8b966c7f9c647895867e495ed9b60e0756fc43c213ce853fe6a62aac913b5d63",
+    "assets/_page_262_Figure_3.jpeg": "3b37866a0ac47c5039477fff0028d562aaea70ba78d6f13f57280150de3aaf1e",
+    "assets/_page_266_Figure_7.jpeg": "5bd315386f4c6ed0e661e19b9de5e529807efb1d027a87aa75fb2ae1e9dacdc5",
+    "assets/_page_266_Picture_9.jpeg": "f3b009f22ab37d378a48091d4e3a97511394d536d205fff46d3b0ea066b232f4",
+    "assets/_page_274_Picture_4.jpeg": "05600d6c5fba3809cde0674ac927cb908022fe7109fd0d4be6eec69e5776005c",
+    "assets/_page_276_Picture_12.jpeg": "56db5e0d283678fcebeaf377a35b6156b86d9f78cc152b4302066ee25c74cd86",
+    "assets/_page_276_Picture_3.jpeg": "328774f039f4cfbb77837ad9f76b16f89dc9eb83000a415860c23216064810c0",
+    "assets/_page_277_Picture_8.jpeg": "b4fc799403c33697a80413ce0aa5ac80ff582875f1fe948fde9b569af03dcfd0",
+    "assets/_page_278_Figure_3.jpeg": "39b2472469d9652c053944103e5187c004eefe852371ab0a932804941c05e8c5",
+    "assets/_page_282_Picture_5.jpeg": "a5cdcdce3a3044554bd3db2a95c9aa8df598d0ad07dd263717a890240cd83e2c",
+    "assets/_page_287_Picture_4.jpeg": "64151722d217d425a002c1dca7ed76d77ad211755c2734b09c47b6c296be146b",
+    "assets/_page_290_Picture_8.jpeg": "d89ee2ee2f2afe2b83dbf342f0379329fe62ec89781e42bb29cfa63e82c030f1",
+    "assets/_page_291_Picture_11.jpeg": "939f06df585f122ffa76bdaf0eae24ce1adca74a466b74d3159054e1029db69a",
+    "assets/_page_291_Picture_2.jpeg": "3fb25b6cabc482af43a1383824565af43e578742f4df33d68f9c7b611b29a06e",
+    "assets/_page_291_Picture_7.jpeg": "abf33cc8cd9da742fe18bbce1f2a949dda18cabcde75b1b3b046744203c60916",
+    "assets/_page_292_Picture_3.jpeg": "d8c3513f7918be75431fe80778cd966af3b34cae7cc569e1a85fd38a19b42bea",
+    "assets/_page_292_Picture_9.jpeg": "a39d18ca1af80c9e4e1ef83f36aa3aa3d2593fe606f36604984e28760595c25e",
+    "assets/_page_293_Figure_4.jpeg": "68504f46ed26d76f78333625db5ebe02378777495cbfbc1315d2f6d964c42755",
+    "assets/_page_296_Picture_10.jpeg": "547effb196d2fabbbede397f1eab556e1ada1e1ff3611a208d4a9c03e12e0839",
+    "assets/_page_296_Picture_3.jpeg": "f6ffd99bb8a393d6fb2337a9a70d30a5db8c41b82f144c6f3813649b54555dc5",
+    "assets/_page_297_Picture_7.jpeg": "b1f7c6650080dfb975aefbfc9377e4f7274f65070ffb6f40a28c76afcf69554a",
+    "assets/_page_298_Figure_4.jpeg": "90313869a7f58666294843c990a1bce1a50042b6a9c0a871402525810f33665d",
+    "assets/_page_302_Picture_5.jpeg": "a4399d561a27ae335e57d25f088f7d0d41b95d9e953669954dc9001fef836fa3",
+    "assets/_page_307_Picture_3.jpeg": "00721118d0ac698f628ffcd59a940889051324b260b30029f79a1226745992bb",
+    "assets/_page_317_Picture_6.jpeg": "e0f08f6ea33b48e61f230fdf2101103ae716144dfe82a402a0b01f12ab4f6049",
+    "assets/_page_318_Picture_3.jpeg": "b5057c7555c08ba297d84df6b3f54eb43eed28badb31696af67c0388f27e34a9",
+    "assets/_page_321_Picture_4.jpeg": "306aa779311ef4706c776bfe5bf266248458f5e1014b7a985361022809c97e8b",
+    "assets/_page_323_Picture_5.jpeg": "86b57ec799a97b23611bf0c09b7bbbc8794e123c1cec48e84aa64dbe1ded3ad1",
+    "assets/_page_329_Picture_11.jpeg": "25338c213b79eb93248855143a16879308d671816dee85f78f4b4d859d32ce8a",
+    "assets/_page_331_Picture_5.jpeg": "bb1f833e2f858f1d383a73f908f084677a372294f8505dbc82c56707a6050b28",
+    "assets/_page_338_Picture_3.jpeg": "d54652017a693f4e6ec66c4e57602112c453eaa95fd6a0ac77a8e22b619ec7d2",
+    "assets/_page_340_Picture_2.jpeg": "00d572707788e35abd79e60b20723c4cef91fab8d48752d434fd2ecc1503318b",
+    "assets/_page_344_Figure_4.jpeg": "61c82d4b45c351b72309400544e1c849224733b3deb276937bca6da0ca95bb72",
+    "assets/_page_346_Figure_8.jpeg": "08365783a0528e859335d84551275e1daba0a7d0803c6a920edd19a4d3ca4e88",
+    "assets/_page_346_Picture_5.jpeg": "ed05b71461fd5e7a5d5225277480f56cd30882e062f3c56691cc7a29783223fa",
+    "assets/_page_347_Picture_9.jpeg": "418e07b348aae4af6c900218014a8066b6c4296a4d3b2baa48a2f088510a577d",
+    "assets/_page_349_Figure_3.jpeg": "199b2221705ecee747cb9b0633e491eb2f3d3c0dd46e8c19d0f9d6bf53ceb808",
+    "assets/_page_357_Picture_6.jpeg": "4bbcbffa675670ace2c36efde4328eec70bf09eac0dd7b82ff2caa4038a551b2",
+    "assets/_page_359_Picture_5.jpeg": "c005ba12077c2dc3c5f30227ed561bfabec5591f32fd43e288384492993376e2",
+    "assets/_page_360_Figure_6.jpeg": "b512f1c081f94bf76f24605fe4c4af24346ea614753e281c2055d806afeaebeb",
+    "assets/_page_361_Picture_5.jpeg": "42f4c4d773b1ba4b1f69c72350d0ea631c19850fcab91f67e8bc0004628065c2",
+    "assets/_page_361_Picture_9.jpeg": "b19c5282bab352327aede336a353f068e4d42bdb7bf4819c6c9abe651693647a",
+    "assets/_page_363_Picture_3.jpeg": "05336e9ee67495ab7d9bc587bba38d43e912ba100cd24c9900c8519a1101afdb",
+    "assets/_page_363_Picture_5.jpeg": "875c18ca7a87c8ed4f166294e2bb96bc7481d2946c22c435d339be25fadd5321",
+    "assets/_page_364_Figure_7.jpeg": "e5abebeda21cda3c90a8357c2c6240e9fa8d60c91cb5adc7edd8d4f3319886cf",
+    "assets/_page_365_Figure_12.jpeg": "39b05b339323983f4ca138abe391b641f0cd9915d372204308250906c19fc34c",
+    "assets/_page_365_Figure_14.jpeg": "00885aec051b724dc144b09296531597adb83ee8e7e78e0810db194dab7f00eb",
+    "assets/_page_365_Picture_4.jpeg": "7019c1892c25c8e4badfc0a1f3b8e75bbc6980aa251a3bb00097ea8ed48cc8ad",
+    "assets/_page_371_Picture_10.jpeg": "dcf110319bf817f65f51908eecb287c1b1973f7141f4cf436c55665ab956b398",
+    "assets/_page_372_Picture_7.jpeg": "b0dca4e33d0bf98d795d3ea298810cddfd68ea848d2c5022580cb391d927fde6",
+    "assets/_page_373_Picture_3.jpeg": "b3d440ca21267d0a8606b427cbcf0c7081e7d1e9e754c71b4df825508575a8be",
+    "assets/_page_375_Picture_8.jpeg": "3a2a516e9548af201d1a335f617da451a8b81181b508a0ae2587588f3bc86d78",
+    "assets/_page_384_Picture_8.jpeg": "bb836c1789d40527e41c1b5a1c16646601a91da6adbd7c1b1898e2e482ec4fb6",
+    "assets/_page_386_Picture_2.jpeg": "12ece32862d01bbe11d36bed5e6daa65f3e2fbaac48b7edc206bef689d52d67b",
+    "assets/_page_388_Picture_9.jpeg": "8e7d976c033c42e13d8cb8b37d847be9692fc568b0ad794a95381975913b7e06",
+    "assets/_page_389_Picture_2.jpeg": "a8a15521c85f4e621de726bed01128f31db91d1963213f86bd047b98ac8bfe8b",
+    "assets/_page_391_Picture_16.jpeg": "0fd96dda1dae5eca7207a1e307ae6fade2db489801370f22d4ec826216d76a20",
+    "assets/_page_392_Figure_4.jpeg": "25e6e73543fc5737df8ae831e7dfdec4f45d896ade837ffce45d3a5aa35eac25",
+    "assets/_page_392_Figure_6.jpeg": "edcc254eacb026c64d44557a088ff0b903cfe843b2e0cac897fe35fdb2b88e8b",
+    "assets/_page_393_Picture_6.jpeg": "9ffbfb1eaab73d104af4c71b78ff1fa2a4888accc547f7fc7e720c8b86442da6",
+    "assets/_page_394_Figure_2.jpeg": "e44def83b59d57c94227386e639f0c3a029c6ef3db7532a3b47ede2591844504",
+    "assets/_page_398_Picture_2.jpeg": "7a131df0f971f6fad1063e18dc405ab08501130ca34390dce844966d8a113f0c",
+    "assets/_page_400_Picture_3.jpeg": "ca346dc36879cef451828d2a2aae7e9987ae40ddf7e630719d865224bd6d6f14",
+    "assets/_page_405_Figure_10.jpeg": "bc7eae46adf2ff5a356e61209f824e64670286bd22b9bb8cae07cdaa587c6850",
+    "assets/_page_407_Figure_2.jpeg": "977aa4b00dfbe07185dd280fead51914d09f246ec8467fdc0e97998e7ddf5e63",
+    "assets/_page_407_Picture_7.jpeg": "8890552af54b27c5b4024e9b2f4d6002f8fe70c816402eabfa7dfecf5373b66b",
+    "assets/_page_409_Picture_4.jpeg": "f2c29fb10246d4fe892377349722270ca77ce1dabdad87cc12c15d9f9cd3602d",
+    "assets/_page_40_Figure_8.jpeg": "e02b27618ea97c7e87667949e8711359dbe2c9af70659fc2d15b98dcfff6a3b9",
+    "assets/_page_410_Picture_6.jpeg": "4e777e6f1ce0cab3c291ab7409f9bf4fd6b2fd3461a0d2c821bbce2188dcaf7e",
+    "assets/_page_418_Picture_11.jpeg": "424342a262e8683c7ad3149c9e1371b778433abcde64d20ae7e72834db304be9",
+    "assets/_page_418_Picture_15.jpeg": "1682ef79404ab6bbaf9f19a0cc1b95df6cfc6bef961d2bb8842c3798deed94af",
+    "assets/_page_418_Picture_2.jpeg": "c1a6534c380f2d61f99225c519755943ee165aeb3e09c5385d225c1cdf03fdd5",
+    "assets/_page_41_Figure_6.jpeg": "140febe3b97a02b5135017fcc49885d573394bcc55f01eb59251a888e431d3e1",
+    "assets/_page_41_Picture_2.jpeg": "92eaf8ac2ca44d538ea1ceaa3de82001117f300c069db27dcc1b06937a95fbcd",
+    "assets/_page_427_Picture_16.jpeg": "051a069837a9df840f358396144e6929e597e632dcbd2d131d8beb2801162607",
+    "assets/_page_429_Picture_8.jpeg": "bc68db9ac19a982c2e23f093c8c3131c66b17377e74da770a25c488ddcfd0c7e",
+    "assets/_page_430_Picture_8.jpeg": "c7a4bdd708c0a7a48dd65a157e2fb32eeaf60f5a8cbc95859ac05c9586ee05d3",
+    "assets/_page_433_Picture_7.jpeg": "7b2e568d78b5aa7f8c0d05a37b97c1cef7f46fd7cf6eb8f9f4744b502f286351",
+    "assets/_page_438_Figure_2.jpeg": "2fbeb1257eac532d29cd223e21b6b440eff569fa2d08df00299cca69b2c4e26c",
+    "assets/_page_43_Picture_9.jpeg": "ae99751c9380afab6a6731df1a2a6f966f47e9b2ab9343f9990d56d2eb116b10",
+    "assets/_page_442_Picture_4.jpeg": "0b4e4345ee26a379ffdd49d78bb9d86dd3459f276a1b7da3026cc3271b92ebe1",
+    "assets/_page_443_Picture_7.jpeg": "6e23096a448bf3a17839be120a2c0417b134a9706bfa0086d957dc4362e7743e",
+    "assets/_page_447_Picture_16.jpeg": "06bace3f2978cdc69f339ca14f0b73deb6efd0554355c4d9f864e24f46047bae",
+    "assets/_page_448_Picture_7.jpeg": "78d99ca96aa75c6622740b47af9a5e8178aabf6a47669df226e86083aedd35e4",
+    "assets/_page_449_Figure_6.jpeg": "46b09437e2f1f1308d8ce70d4d9345304151a002faa0ada321d85e578b4da6e6",
+    "assets/_page_449_Picture_2.jpeg": "df678cb6ac44510ce9db653b5aaeed482a7101dc7d2fec5c96b144d68f103abb",
+    "assets/_page_451_Picture_4.jpeg": "6d2ef5a5c037dd82565ceaae3fd5e6510c6a73a75e0ee273ede092e1aefaa158",
+    "assets/_page_453_Figure_6.jpeg": "eb3257ad26585dd188a8a4468ab3ef3c1abf02eaf2bdb3e850f3f2e612d16ea4",
+    "assets/_page_454_Figure_2.jpeg": "5cd254279a19fb9cc2e972b3492a34fbc1494561867a2c237d6b7f182285411b",
+    "assets/_page_461_Figure_6.jpeg": "7f4d7cb5685bc181818cf72ebc52701ea1cdbc2e2880097ead4df2bc25091372",
+    "assets/_page_462_Picture_8.jpeg": "50cf05624224c4015ede0bee4f7959c30961fc484e1d86b9fdd7dc41864e123c",
+    "assets/_page_468_Picture_3.jpeg": "a23cb69d3c43184228647ac6e8c9b0afc94f858256fdd63b4ab3287f853d5311",
+    "assets/_page_470_Picture_9.jpeg": "aa77c7ee9e49f16ac0e72dd9643303c934c632f2b80752e78ef7ca9d97b7402c",
+    "assets/_page_474_Figure_3.jpeg": "e00b9dd4ed2e921d10a83cc16ad253f7f85a083fc7663dec5b5053db2e77d994",
+    "assets/_page_476_Figure_11.jpeg": "8fcb180c537e396464ff41f2a1c5eb76c7eae71bfd49504bd321f4c259fb257c",
+    "assets/_page_476_Picture_5.jpeg": "ebb88f40674541d3684cb93f4eadba8a0991e58a76b832b4f025a4d56945cffa",
+    "assets/_page_47_Picture_11.jpeg": "5620308d51581b2a9d7cafd57e04b929fe2ddc5dc42cde7359f82ec87f399621",
+    "assets/_page_481_Picture_13.jpeg": "50dd50ea9d1a0551c7cca8baa63a94beb5400b42b1d29fc67cb48ce3f454641f",
+    "assets/_page_481_Picture_7.jpeg": "6967e4ff5b1029473d607d0d7124915e4aecf23726e150cf77a0aeea4839ed5c",
+    "assets/_page_481_Picture_9.jpeg": "e647d20c8719b1aee1044e9996bd6f9b21eda925e3e961612c6cf337f6a92672",
+    "assets/_page_493_Figure_9.jpeg": "4bed5f4f4325babb50b02db3b1f44411440b6cb748fff26c90c7aab4ddb69f01",
+    "assets/_page_493_Picture_4.jpeg": "9ad6c7a00a94c005be64d5dae5e3fc0ae2182c5684915ad734cb790b06183706",
+    "assets/_page_49_Figure_7.jpeg": "09324472d2b8f6768a0a6e05ea31bc099efadb696292dad9af55cda15e4526a4",
+    "assets/_page_504_Figure_5.jpeg": "e0a25719075fcdb57ea105fc05e9170d1bf4d281427cdf690a4815bc44e65861",
+    "assets/_page_505_Figure_6.jpeg": "d21046e8c968e93a8768f56359ff4623377b90e5e1f8f5f1757a1d1f5af95b55",
+    "assets/_page_506_Picture_6.jpeg": "0854642d70482e5de9308f162144994f30d5eb03b8f2d7ae2ac6aed47f568963",
+    "assets/_page_507_Figure_2.jpeg": "e4013aff244b04cbd41dad6b768c39011c926d83a35690ad7c06a802e34af494",
+    "assets/_page_507_Picture_6.jpeg": "4cbc58428002032ce2b3d5e8700fa71228febd87635ac5b8dfe15f394613a15a",
+    "assets/_page_508_Figure_6.jpeg": "ee99b3d61b43064a5ff07a388e6669e34f78fadd81b321ac8ba8307f8cc2aac2",
+    "assets/_page_509_Figure_2.jpeg": "bfc6eb3d756bd1a5c47d467346ee237ce59ac2599b26e9c6b3fc6a04c2ff2a30",
+    "assets/_page_509_Picture_13.jpeg": "50153e2d013c53d22aa96826150ce89cbca5ac02d49594be09141677967eb497",
+    "assets/_page_50_Picture_12.jpeg": "d9f71da8013e37f0ecd7ff2526b6f866bc9758e445aa4861f8741f727e00e7f6",
+    "assets/_page_50_Picture_7.jpeg": "ba2c2d70c46550ca788daa407f217751694a39f0547c249ffe5d0d144d67a61e",
+    "assets/_page_510_Picture_10.jpeg": "005ba9f7e39ecd2baf75d2c95a8ba443a3b252e214ace05e806a1eecb9d5c30e",
+    "assets/_page_510_Picture_3.jpeg": "9778ff2ffe16524ffbf20d5f5a4bbef24b64cb62315f74356154c8d8b78f51fb",
+    "assets/_page_511_Figure_2.jpeg": "c3bd5ee568fb5cb2f16238820f5677ea990c17fdc34e9c1bef79483e76c8ed53",
+    "assets/_page_511_Figure_4.jpeg": "879edb8c93007179c33edcb65f0f799b2196f0b57ecc70d3f63260d2cc189756",
+    "assets/_page_516_Figure_7.jpeg": "5c27d241abb8c64cdc4b0cd0f657e5765dbfa87dfb75297cc60a821c665c2b45",
+    "assets/_page_516_Picture_12.jpeg": "4a123a1b745d8eb362ac069f41cc821535dbd36f5132855d12d5b4bc058f4093",
+    "assets/_page_516_Picture_5.jpeg": "e100578079882e82f637abece7e950976fb8f7340d71c78a79e50596deb9b72a",
+    "assets/_page_516_Picture_9.jpeg": "7ae53fc3fd66d8e1fa3cd27e78f6bd28029d1e723d49e533edd6edc9bb285bf3",
+    "assets/_page_517_Picture_9.jpeg": "8d691886ef5b35a66abfbc9d21b181401262e238c8bf4ca8213406f76ab55481",
+    "assets/_page_51_Picture_4.jpeg": "c98fb8ef85d81280d740af8878638121685789f8e39cb25ca7a9dbd74eff1e47",
+    "assets/_page_521_Figure_15.jpeg": "892a7dda779ed228db8f4105f9e1ff306ead06eb34afbb45be696c94143b0161",
+    "assets/_page_529_Figure_6.jpeg": "ead2db3f8461827fae2d244a9e0e9b439ff59cc414b6e436ce83fd9cfeaf5022",
+    "assets/_page_529_Picture_12.jpeg": "88f7f3e47dd17368b0e057a05f31007603e14df5ff56417cbb12ae987ccfa966",
+    "assets/_page_52_Picture_6.jpeg": "045e233bb73e676543d211801650fd0dce295bd4353ce28f5451a750eae1ba37",
+    "assets/_page_530_Figure_4.jpeg": "fcefa7f2ee8adff7ecc5bab0cba9a3bb5709a8e13a686911abb942f8e857e51d",
+    "assets/_page_530_Picture_12.jpeg": "989dc093a127b2939c9d583ba5a16050b6027478e35b64ed1bab3679a4883934",
+    "assets/_page_530_Picture_15.jpeg": "bf1032d7dd8c3b329a904cba5709c02db317e937a02fe273fbd68101b758f9e0",
+    "assets/_page_536_Picture_5.jpeg": "d6cf47ad21e3e668da75f4227f163bc114f9b0e6db4d06fec170ea29cf238907",
+    "assets/_page_537_Figure_10.jpeg": "5f940605baf377011be445d6e47da7210af2a58a5b3b34531cf71b357096fab2",
+    "assets/_page_537_Figure_7.jpeg": "0e01783864a3b2c8d3a4bfea417cd27dbe167c9dca2b081f619ff1ab2316131e",
+    "assets/_page_538_Figure_3.jpeg": "10d46ad54a7ad86ee2821ce346811925663830f760d585aa8b9b3b872fb99b36",
+    "assets/_page_53_Picture_2.jpeg": "27410f6aef773c3099c8d40b1381e5c936cbdf9d349b994b5bf2c9416eacf516",
+    "assets/_page_540_Figure_10.jpeg": "53482de304ec40e6737e4375ae2b302467b7f53fdd2097e49ce9ecb2d3a7082b",
+    "assets/_page_543_Picture_2.jpeg": "692bf9dd671e994182db4ddb52781b17191b6c810ad1ba4c2b58d2eb6cea5c74",
+    "assets/_page_549_Picture_10.jpeg": "4e8a99ecfdc10f3828555c13730874a2114298a8ff3e026851b039dfa9c1aa23",
+    "assets/_page_54_Picture_2.jpeg": "02da8eeedd09a479c30012c3cb02db8034dc658d2010c465758bc34c18b58c15",
+    "assets/_page_553_Figure_13.jpeg": "16464c48d4e6d6fbba865f0dfc058b09b5fcb37972df7e94bd1b45767df6a5fc",
+    "assets/_page_553_Figure_9.jpeg": "cc25b085b50d6d5ed02fb34436ba1f5938440d51d07b909985d20f3786041a54",
+    "assets/_page_553_Picture_5.jpeg": "7c9c1c2df530ed5df8937cbad51a92da292092662c5f671154ca4089b35e8303",
+    "assets/_page_555_Figure_2.jpeg": "bc03cf20d96b25f51a06f6fa642cff941553d5812b579f33cf95ed8ea001dffb",
+    "assets/_page_555_Figure_8.jpeg": "906a51a7f7fb803e88578456a6dfe09c096d3ea067b8078cac6d75ab61886ed5",
+    "assets/_page_556_Figure_6.jpeg": "0f79673bfd481c1295823243f92a6eaa35270c887f083898f2ad297712ed8c11",
+    "assets/_page_557_Figure_10.jpeg": "712fa8a9321bc142d86d911a8785e8b27dc75696e2099c881e7af82d94b3b764",
+    "assets/_page_557_Figure_2.jpeg": "c15ef6031ba6a0e6a02f2be505af31a0d72b10c580212a4b1acdcd8f3f1145bd",
+    "assets/_page_557_Figure_6.jpeg": "fad0f9e05b950812bd1045c3bdf6fdf1d711d85e15fb704f58ccf855f5ada7e4",
+    "assets/_page_558_Figure_7.jpeg": "66c8637e78bddc34958379ef5ce278caf86d62a2905501ff21bd1c307c66880a",
+    "assets/_page_558_Picture_4.jpeg": "0b62b7c19913f63c24cdd613e2d0e4bc42c062c4a6ac22f9de3288c9008037db",
+    "assets/_page_562_Figure_4.jpeg": "9ef823f25713f09bd80b7af868a6cae0a35f521e87563546ef616f282f457982",
+    "assets/_page_564_Picture_11.jpeg": "ac2879a95f5d08d1b866a368dff90d00d17b1630e896b925cd1aae8f3c28fdca",
+    "assets/_page_565_Picture_9.jpeg": "ce5d390e4d4ee04a0dbae8a942fda85a610eea478f4751596e4c1b47c25aed26",
+    "assets/_page_56_Picture_3.jpeg": "988ccd3eb8486db681a98d831b23a0133dd1dc2401715eace8dbb9c3f209ccc9",
+    "assets/_page_56_Picture_9.jpeg": "09b8609901b3790aab996f17784464f92e73e96e0b5b48532698bf9d3ad538b9",
+    "assets/_page_572_Picture_10.jpeg": "2d10337144b0c5dd047d174e38b6c90bdb88769289c0c904f5a53058462ec3b1",
+    "assets/_page_572_Picture_2.jpeg": "c57f37ef8d9a4f0103aa1166267c83edba4109c6c0874ded5a5be9503a26dcf0",
+    "assets/_page_572_Picture_4.jpeg": "1ab3249a1f8febaa69cde6fa480aa139b0b295891cb831b42ed41b075caceab5",
+    "assets/_page_573_Figure_5.jpeg": "4ad4976cc0049c0e2d94d9e4abad3825673265b5609988599e3b550fa151ea2c",
+    "assets/_page_576_Picture_4.jpeg": "8757ff10d4a5ac777c74cb58b17eb7c63926c6daee03d4d59b49697e4c9914cd",
+    "assets/_page_577_Picture_4.jpeg": "6121c584bbd533ee85627ee9bc811e7cf42202afcda3114380c273bd5e210c4b",
+    "assets/_page_581_Figure_8.jpeg": "689ed0200ba3fa5e0c05e848792e4953a49d81cf6a09b60f7dfeb1fa32e1d3d9",
+    "assets/_page_586_Picture_11.jpeg": "6141fd71b3066355290c77d74d60b8b7eeb748159ba0fa1688a1eb6e123c6957",
+    "assets/_page_588_Picture_11.jpeg": "add9eed711c15c0e218cdb94bc2ff4406548c9d50ba93e98a99ea28a0838fa68",
+    "assets/_page_588_Picture_7.jpeg": "891df347c3519c5944a57aa9788e4dcea66fd771ccd1bf541da1465f3eceff6c",
+    "assets/_page_590_Picture_10.jpeg": "ea48591d4fdf259099afc8b584e88a501f5a7f2f0ab4d1d8af0affc04ec61e78",
+    "assets/_page_591_Picture_3.jpeg": "ae7cfd2241550a2ef8060a2ef4290af81e871800b73592d406f5b9e9486a8fd9",
+    "assets/_page_593_Picture_3.jpeg": "a4de73a4f94762c8f2b752dc652ef985f828ba7ceaa3140973bcd3e853fd56f4",
+    "assets/_page_595_Picture_6.jpeg": "2001f571e505cb345e5532674c7be89d5800ea2c736dc5fda0e276bfb54b7d08",
+    "assets/_page_599_Figure_19.jpeg": "6cf10ae517672b7db30c0d6759d6beabc0bea27806883bd7dd566301938a2119",
+    "assets/_page_600_Picture_2.jpeg": "e17cdfacf28351086f4d524d67540a0400b77beae0109a1fc26b54f16e0bbe43",
+    "assets/_page_600_Picture_7.jpeg": "42af8d544c194724980d5d966a6760efba8e5f2558549a9d24463e0aec4783bd",
+    "assets/_page_601_Picture_2.jpeg": "a4ec0f117a49cae417fd82edf32227ad174d56c8ffd0883e06278e7be0edd82a",
+    "assets/_page_60_Picture_8.jpeg": "7edb2ad59844d68b6d6a505a3dc4a15938bc58ff4d854d86f727ee0fc41448d6",
+    "assets/_page_617_Figure_3.jpeg": "1ffcb7b4dfeb198e8a0a8d61cc076c93ca42997106d71f73537543954a3ba4c8",
+    "assets/_page_617_Figure_6.jpeg": "152d6c180516b3e3cae2c859a64e6da6b7492bb5982a2c55c25c61a7dd26c3bb",
+    "assets/_page_619_Figure_6.jpeg": "56f2cf7a9eb702666a1cb98b24b712421188ceac61a2f71690446d9617d60f55",
+    "assets/_page_61_Picture_5.jpeg": "ef6f89db2a28a0139b502165af98d93531132eac5a6f673c02c863c7ef52a5f6",
+    "assets/_page_620_Figure_3.jpeg": "78ab5e9fe56aaab00f00c8a58af49819f6b2451361c28fb57016a1586415d00d",
+    "assets/_page_624_Picture_9.jpeg": "5daadc13e9979e5af06ba780fa3095dca7d2d8cee15be89977f9f94bec7db341",
+    "assets/_page_626_Picture_6.jpeg": "4e65f124ba9d4e6f698d1ecd0c73f40fe9803a7f85db772c7d11b106ce207522",
+    "assets/_page_628_Picture_6.jpeg": "245b320dd2e8f143aed112390d6269ca01aea5c0377bd1aba6a1912bc89ec468",
+    "assets/_page_639_Picture_7.jpeg": "f88dfec9bb6e5b477ecaad9e187845e144239cf602cb638df192745cb64e7891",
+    "assets/_page_63_Picture_5.jpeg": "2cf427ee95250e454e8bc23aca76993c86614a1aff04e0165f95f2cb6e806e68",
+    "assets/_page_650_Figure_10.jpeg": "ae45ac6d0b579436c7257f3ecd7fe7a473b8a8c5768c6f5ed231b1fa6ac5cc95",
+    "assets/_page_652_Picture_10.jpeg": "369c581b223011626c643752cfdf5853eb5b8527355aae9b134986beea7a8d1b",
+    "assets/_page_655_Picture_14.jpeg": "ebc0882c3ad6f43a9e024070904510203afd907f8782c05eac14fe066d753e2a",
+    "assets/_page_655_Picture_2.jpeg": "ec929194231e961f1ee453f1e10175a9c02b29996b6a2bfa79b8f9c50452e98b",
+    "assets/_page_65_Figure_2.jpeg": "67de0111bc55e229f3d602fdf84df9b517d452c61cba56b014d394b90369d16a",
+    "assets/_page_65_Figure_5.jpeg": "4a70ec224d51cc534ae7321e42fe96257a7bf98e56aab4141ce32f86f56ac38d",
+    "assets/_page_661_Picture_5.jpeg": "beeb029cb926c892bd2161bab75f3eece0c80e97466462f34bab6c5bb86752f4",
+    "assets/_page_66_Figure_2.jpeg": "ca0f8bb6601c527f621a129864dc58a2ac6176aa3166c4a689980857d5de3acc",
+    "assets/_page_66_Figure_5.jpeg": "2a233a91faeb24d10a7545393797f28dc30f80b25216888c1460462d45d416e0",
+    "assets/_page_670_Picture_11.jpeg": "359153ef322698aad693a91e3b4fdbc97657b535283aadc625a97793e9bb9ed0",
+    "assets/_page_670_Picture_6.jpeg": "804b3eef03c101a749d8fd80475b4d32d3e601a0a74ed0d27c37b3098b7354ef",
+    "assets/_page_686_Figure_6.jpeg": "0c3cd19180ac4ff5a792c99e38d7681acc7e6313b214044c860ac28263505ed9",
+    "assets/_page_686_Picture_10.jpeg": "63aa7908703e0ab501216fabdb9439540b133d0513f554fc9f6f7a9a0eb8f7f1",
+    "assets/_page_686_Picture_13.jpeg": "f9d3fe6afb53628b76273a78cb4fe725838ef38f0d6f3caf2c178601c1390148",
+    "assets/_page_686_Picture_4.jpeg": "96b2ddadaa053a8f273812a18c679a745568b01d1e3a53f4b39f1e60c72d4b4c",
+    "assets/_page_686_Picture_5.jpeg": "aa9ee769b386d5ccc271c62644910b949a2e47cc0478698e9ed4a6cdf57b2302",
+    "assets/_page_686_Picture_8.jpeg": "73ec2f27f434912dc596ef9d84ff76fbaf947cd55648612a91119dc5084ada23",
+    "assets/_page_688_Figure_2.jpeg": "c64719c0d1c11513fd66ce1341a38609ea41bd7ab0d9a93e46c0c29627e784d5",
+    "assets/_page_688_Figure_4.jpeg": "3d9086a895820f77be159b4a088d2dd94380f486bd909bb9dc87494212f510d7",
+    "assets/_page_688_Picture_7.jpeg": "2401742bf3316c46585cae8e0992ef4521e60b9d6056f06c25271c8ca4bad811",
+    "assets/_page_689_Figure_6.jpeg": "69a795dae3922fa41231d4889f0fff74735beae5bc4420bb0e0ae6826fb4345e",
+    "assets/_page_690_Figure_6.jpeg": "57970f37409595d9f0e11defcbde8a573b63382fb651977df62544eb285de0d6",
+    "assets/_page_690_Picture_8.jpeg": "840339bda145f5889a57f2635469d11030a28999cf4c724244043ec7243e8c9c",
+    "assets/_page_691_Figure_2.jpeg": "4dc4010a57dc60a8f3993a4fb8df08a0cf135ae43856680d21d754428d0ee7b3",
+    "assets/_page_691_Figure_5.jpeg": "1552cbaba0de16e8ec530b865685ce296d905c3267fcb57bca2e506cb683b74d",
+    "assets/_page_692_Figure_8.jpeg": "5cf8febce574f9670c3fa4a779f5b0241247de53ceb17ee3140d03ab6d4927a4",
+    "assets/_page_693_Picture_6.jpeg": "391c7e49a6b51940e602f740563c78da4ee7828f7aea55f677d9556cb43a92f3",
+    "assets/_page_694_Picture_2.jpeg": "3d22e808f7d19ddd22501e65fc1256973a55a51bd4f49245223d46d088368c45",
+    "assets/_page_697_Figure_15.jpeg": "f3c8ed4d26289701a10105c2b5ed2e6351d6423ca11b4751db627d64ace9900d",
+    "assets/_page_699_Figure_8.jpeg": "873d50fa4bab42954c18b3caf7184f2e96076669251540f194a7f1dde895f290",
+    "assets/_page_701_Figure_5.jpeg": "ce73ebd380f90fc0964465fa40deeda28d428d5d31aa32da9792340d1d98c40c",
+    "assets/_page_703_Picture_6.jpeg": "26f6e2ff4576a0c2702a8a83712f9010050ce68bfccf520e9d7e1832a26fb5a8",
+    "assets/_page_704_Picture_2.jpeg": "0537d87c6cf29350e0a2f85c6d401e79c2765ffab95422cf6b63f19ff1b48d38",
+    "assets/_page_707_Figure_3.jpeg": "44a9e23e8ffc954847d587c7dc098cf923df740f56dc5ccc35c451770d072443",
+    "assets/_page_709_Figure_4.jpeg": "551a23547190e2b44ec9ea936440e2e647b8e01a081b90e152fdc6343635b789",
+    "assets/_page_70_Picture_6.jpeg": "923b56a8c64848a0e2c143fd80f69178c57bc054859e9af884f75ca1a768a83b",
+    "assets/_page_711_Figure_21.jpeg": "0f61ed61e911200409450505f7caf3a7602cc56c607c8951371617bafaed3963",
+    "assets/_page_713_Picture_12.jpeg": "bace1704b7200ff995d88059a40b0bd532bcf7f8c14f4627d647ae63f7224209",
+    "assets/_page_716_Picture_10.jpeg": "a063f7b305ed1edc110edb113add4f6d4978c477181cad246e0524d169d20466",
+    "assets/_page_717_Picture_9.jpeg": "e89f46a0a0545bfd5d6462c62ee65986f7263861b3aff0d1e9a8fe7eb2615bf3",
+    "assets/_page_718_Figure_10.jpeg": "b280a9b74898b06817794bbe30b84295e27a0e04b19f30c88550b7dd42c2534e",
+    "assets/_page_718_Figure_13.jpeg": "3f4ca5831658e1eec70c211bee30dc62451d8e395d9445c0bdf5830c83e0f709",
+    "assets/_page_718_Figure_4.jpeg": "51bcbfb34c9e05e4b91e40ac82663a51d4d8948cb612d91d8ce62726ea4d9eeb",
+    "assets/_page_718_Figure_6.jpeg": "b4d950551f9d5d1ec680aefca6948162ddaf7f7fae011858e4b45098beae498b",
+    "assets/_page_71_Figure_2.jpeg": "fed980da9704d4e31ec8c563edd8820373f1a03aaebc2d7ecab643bf72ff44ce",
+    "assets/_page_71_Figure_4.jpeg": "01ce3e1eecb6346a872dc94719c341674d5769054b719e7f159f87e168a7c612",
+    "assets/_page_721_Figure_2.jpeg": "a0eaf9400b687ca3f7dfa816e22e8a5e86f136176004a2d794d37fd4dc159e99",
+    "assets/_page_726_Picture_2.jpeg": "bcd0b858b4602e1dc6a273bae15774ef1452a47e90deafd41ae334b08d7ca832",
+    "assets/_page_726_Picture_6.jpeg": "f8dc371357f22d9fafd83955d0b103236a710931e7ed5b0989addccec17bbe03",
+    "assets/_page_727_Picture_12.jpeg": "4d155764278bfeb28aa8ac4b6581db765655adc7406629c48aa109e23d906384",
+    "assets/_page_728_Picture_12.jpeg": "365d271bc0d077499d3fcc0e7671533a34f2fc734d2314accd4ef32bb869601a",
+    "assets/_page_729_Figure_4.jpeg": "0879e8e3437551791c85d00bc07626d4987f283bf2682b01971728edb547cc2b",
+    "assets/_page_729_Picture_6.jpeg": "d027d81901d93cfdbfda439cafb443241f2acad6fb45702f10ee7b73bb84a529",
+    "assets/_page_731_Picture_2.jpeg": "b83eea2c82b08ea58067c575df2da228b0fed5f8a372f8ba149b44f0132f42c6",
+    "assets/_page_732_Picture_7.jpeg": "8a644424be841557cca30cae2b7efb4266de83968febb6b11ba1c4cbf4432ca7",
+    "assets/_page_733_Picture_4.jpeg": "9b1cfb05dd6037ea56d1c93ecaabc616af3a0f25cf319910a769665a50844840",
+    "assets/_page_734_Picture_3.jpeg": "9e82d405fadfdef36a71c74277584f93da066af150fbd3003d3544d0c5a85d92",
+    "assets/_page_734_Picture_8.jpeg": "3d30c55a6b7aefec1ad81cf53ff4d9adda8d04f813365fff28dd968210176c90",
+    "assets/_page_735_Figure_7.jpeg": "ba6f872bbf9687beb04a66f87a322051da7a56144c790db539b1e7bcdf82905e",
+    "assets/_page_736_Figure_6.jpeg": "b055387434b92b4d4573f609a8bd73381ecb865cfc45d79bba6edd73b449d2e7",
+    "assets/_page_737_Picture_8.jpeg": "54bf4c965b62f02569de23477a03a48c109fdb406dca61894377822ea59ff250",
+    "assets/_page_73_Figure_4.jpeg": "9fc2ef8f972dae6fa27ad60b6f7beaa6d57a3c2c826baab4f5968c7dcbfa9a99",
+    "assets/_page_742_Figure_10.jpeg": "abc2ab9ba80dd6e7358e867d176135ac023570ad7b33c0ec0a73b4380a96a889",
+    "assets/_page_742_Figure_6.jpeg": "c6cab631670d881883175a1768ca125a3c20f04a976b937e7df8a5a8a22ea120",
+    "assets/_page_745_Figure_14.jpeg": "c20b1f4d5c70474bb12cfba21a918bec8995394af295250c6d1faa947f6f5971",
+    "assets/_page_746_Picture_12.jpeg": "529eae48837f7e1a7dc615c53d5884f0d12f3c9ff272d4d143c0358f9a28d61b",
+    "assets/_page_74_Picture_12.jpeg": "2520eb5f207393edca857cb24558b28ca2fdd7ad7d265fd94913467cc841f571",
+    "assets/_page_74_Picture_2.jpeg": "754ade13a59e38aba6ff5bf889200f1cc2385cd01987c2a4f41d5c86555d3c65",
+    "assets/_page_74_Picture_4.jpeg": "f7d39eb9c936a06ccc4b93ce56669335570223658b1ae9a465a2dbc39a656004",
+    "assets/_page_75_Figure_3.jpeg": "cfe2c76d253af45251909c5282f53ec1f577b3b938ffb64002079ebd86f0ecee",
+    "assets/_page_75_Picture_6.jpeg": "6811faf07948464278a954553bd33ab8335e735cbc9160ba6ae93c38f2950c97",
+    "assets/_page_766_Picture_11.jpeg": "472c041c672286bd9374139f0658fa397c24d45479b821e5aaca2235d78d2123",
+    "assets/_page_766_Picture_7.jpeg": "deb051e650bdb742db13f161b24be3b8706bac048f3ac112fbca37fdc3ce4485",
+    "assets/_page_768_Picture_7.jpeg": "89744761a5ee222ccb6aecf1acd307a3ef292f254fca716ccdf78f6e103b849f",
+    "assets/_page_76_Figure_3.jpeg": "f4191fffc7b42433e8a3909a36cbeaa0d3536df6461520dc79f5ab8c87e53678",
+    "assets/_page_76_Picture_7.jpeg": "f49f148c4ee8b1c32e39204444ea9048e66b98e30aeb312786047458c5077207",
+    "assets/_page_770_Picture_12.jpeg": "10c99809692ca33d24d96100915312b3180dda6c6b4f9f19c9d36e4e61ab9e05",
+    "assets/_page_771_Picture_4.jpeg": "94dbe439f47b0ef55633d5aaf3a4f7a990b56af5cf7bca70f72dba9248e12c4e",
+    "assets/_page_772_Picture_5.jpeg": "b625bfb54c647612226018c2d813a689a2e5e21d71bcd51f3ca8b0796151517e",
+    "assets/_page_773_Figure_11.jpeg": "bb8a2a2d540047e3017712642177f72abcaa7caede08c75c159180f54d94922d",
+    "assets/_page_773_Figure_6.jpeg": "b3e099c023866f792f7bc9c1d55d9cab32ba539e77f7daaeba67522612d9df5b",
+    "assets/_page_773_Figure_9.jpeg": "fe7d676211f3fdbb74619be749c337fc771296087cbeec83de2ddf29de72aecd",
+    "assets/_page_779_Figure_8.jpeg": "eff7b11a9cde47294de7daf91c11dc0815ad352fe406f9fd88a45e159caa0bd0",
+    "assets/_page_780_Picture_12.jpeg": "1bd719cfcd4d88f65816dacbc7205e944bc88ed94263d31e40b3377516054889",
+    "assets/_page_782_Picture_14.jpeg": "f40be8d8e65cb478b565c8ce9d7e508718185c77b8a5dcf85d5c351aa6308a4b",
+    "assets/_page_783_Picture_5.jpeg": "1b894683f663c1cb26420ea3f304a858fb21048ba4a0fe38fbd3b5316d366c89",
+    "assets/_page_783_Picture_7.jpeg": "ed611ee57bed64893d45c1212d7a6ea90e74d6d9182978455232efa05bba5d4d",
+    "assets/_page_785_Figure_3.jpeg": "8423206f10b2116a493a80c2cec5f76fd91ffb47435579b4b322edc8208c6483",
+    "assets/_page_787_Figure_2.jpeg": "32914f9b77a050c19f33539da1f92b384f602b99408ca9f4bc0522645884c43c",
+    "assets/_page_791_Picture_11.jpeg": "dca724fe6169efea3493512784efc0354c6dcd624e95a5944c486c66507b4ccb",
+    "assets/_page_797_Picture_11.jpeg": "9d280ba8a64d08bde6d7cfcae268db4774a98a0373d1d520251d3cd091001d57",
+    "assets/_page_797_Picture_15.jpeg": "a1ba3cd697bdce3062692ab69ae439154ce17a4a0f767264c6da6580cd80e557",
+    "assets/_page_800_Picture_4.jpeg": "3762c76dcefb26d9f646be08f9fed91dd120b4adb65fac96bb74bbab5c4fd74a",
+    "assets/_page_80_Picture_4.jpeg": "886e1a1dfda88f575d166ac88c479db95a05717576cc0ccc88eddec0099d4c19",
+    "assets/_page_80_Picture_7.jpeg": "7f73b4f269eb7212897491d103cbb0153e44778e8e4da587108ae34e89bf750e",
+    "assets/_page_80_Picture_9.jpeg": "03db0bc3b4f778773838afbe88f7999dfd4e5932be395b73efe47c1abebabcde",
+    "assets/_page_814_Picture_9.jpeg": "16f75cf362d3ccd7c18c8a9e8beaf9105a969b3da0431e9d0cd2febd65536ef4",
+    "assets/_page_818_Picture_13.jpeg": "9e97db6b7c77aac8ef03cebafe9b2b7c1c87476c56680e7a3c9b283272b48f80",
+    "assets/_page_824_Figure_2.jpeg": "dfa60828a734717356810e9274f7568241f33b6a534efc7ed54bdc6e568b3dd8",
+    "assets/_page_826_Picture_12.jpeg": "5ec0f374ae83838f40ca1858a8988b8b933882659a7aa3a26facf6380bb40cd4",
+    "assets/_page_826_Picture_3.jpeg": "2f014f7c5ae0678fdb25184e69a9abdcb1f8c0e3af9ee75099247bcbcab9c870",
+    "assets/_page_827_Picture_7.jpeg": "0702c1e8f9b8ff103cced753bb7855f3b6e9b9a1198400128c3fd3e9035c3686",
+    "assets/_page_828_Figure_3.jpeg": "0e9a9e4b73c0bbf46b931d468cf6da6b683b96341a633b96790925dc6cc44630",
+    "assets/_page_830_Picture_4.jpeg": "885459229631e857d275a51c352773da6211501700fce62b22a94d0b4ffa7096",
+    "assets/_page_832_Picture_8.jpeg": "38ee2225c965f50d7cfadab68365dd177f4476249fef9e03d40cb0ec166931ed",
+    "assets/_page_833_Picture_6.jpeg": "e83db8979857550ecf691199e8f3a9dedb9e238cadf2fd998aa6497331d4691f",
+    "assets/_page_835_Figure_4.jpeg": "37eace80862696ca3130c9530f24d190a47278d3560f13da102029db3ffe2235",
+    "assets/_page_837_Picture_11.jpeg": "8afb48920dcc74df132c40321e464f5f533a9ab9bbfe91ff7bdf8659e9a5d50c",
+    "assets/_page_837_Picture_4.jpeg": "31c15b5cc6c17f3e5f8e462f28d534694968a62231cdaf8a68cbd134a012bf97",
+    "assets/_page_837_Picture_9.jpeg": "44ea3f7be4fff043594073a4c09aeb1a84608d6566be7f01957a338ffd6fb2d5",
+    "assets/_page_841_Picture_8.jpeg": "1e73948f68d6cedb7e089f6007984d21987d53398b40c41e9393338610651cd7",
+    "assets/_page_848_Picture_12.jpeg": "83ee56d04a6aaf210ac1d0b414aec8ef52e942cf435eb69aced5d3ff482e1a95",
+    "assets/_page_856_Figure_8.jpeg": "f5f0bab016d1acac1a4ce2e90afc1dd4d484f4cc07c705cf3ace55fefcc25573",
+    "assets/_page_85_Figure_5.jpeg": "6ab68514f491355339de40261ee1f6bf2bef36b071d99479e0e008cf5fac9dc2",
+    "assets/_page_878_Picture_9.jpeg": "3512770dbe45b1c3c9d52e2038fdd541ce2ffa710c8735c60f4098ee15639799",
+    "assets/_page_882_Figure_2.jpeg": "dd601bf0110e99fdf3169c0b4239f1b52ef9e8ee50b582f34ab5c3d783fd8762",
+    "assets/_page_885_Figure_6.jpeg": "73008afd7ee6773c2e3e8952bfbce92c8426783a3f92a1f2592a2408c5b74c80",
+    "assets/_page_951_Picture_3.jpeg": "d00be716d369ddbbc8a7cecaea16d92f7d7659e7b2ed0ddfd5d6fa10b3dc614e",
+    "assets/_page_98_Picture_7.jpeg": "81bb608195956af8e1cf58696ed995cdc58235a1d470229f49621e278321ed50",
+    "chapters/001-complete.md": "a3d6d7fa69028eacaa2094c436394a17df66b292da92990f164d0c2524f94155",
+    "chapters/002-table-of-contents.md": "5e3b6a84a5d2fd39a38cc8174eeab258463d8ea3e48d25524cfed04344373170",
+    "chapters/003-preface.md": "9a6b38b9a37fcfce15a0a003d7bded25b32788788a15fa7e20bf19bcd7406921",
+    "chapters/004-acknowledgments.md": "ac1363b40bb62ae523166e355ac32c14d694f10cc4f5166bb8cc01265ba69247",
+    "chapters/005-part-i-laying-the-foundation.md": "e884cf414871933427eb5f5f7a29e941c81bd94b3a552e8b3ac7316edcde5c29",
+    "chapters/006-chapter-1-welcome-to-software-construction.md": "116a632252f762c7eec938a768b0012d0f66fe7ecf511a8ef49e7634536c6d4c",
+    "chapters/007-chapter-2-metaphors-for-a-richer-understanding-of-software-development.md": "6439c71214420891c70de92800b02fe95a6003712f41fba3e48425dffe28946c",
+    "chapters/008-chapter-3-measure-twice-cut-once-upstream-prerequisites.md": "4785f94f9314f9e4e8b998f1f072b98132fc2ec375af1c469099a23c68ed90f2",
+    "chapters/009-chapter-4-key-construction-decisions.md": "437e3ed5e7d435aa5bc55bb39580b644d32827b0fe88e1f9976666a439ca7996",
+    "chapters/010-part-ii-creating-high-quality-code.md": "393d16faf12f1d1d11cda101eb7ccf58202d17c7ddac42dc9872f81f42afd7df",
+    "chapters/011-chapter-5-design-in-construction.md": "f8f1234c12859b22852e997bf356b9e099868fc25c18924d7c554f77181d404c",
+    "chapters/012-chapter-6-working-classes.md": "f24612e3a3fd720c18568c8c92f15f3b5c5a70cc4fb2d8d55db2c345d994ec32",
+    "chapters/013-chapter-7-high-quality-routines.md": "6c419ec292b40b4f4c6239ccfd6abe952e7e8373106214c5db8721a6db49e35e",
+    "chapters/014-chapter-8-defensive-programming.md": "ca15bab508ce9319de261cbd652e31a06341e80f87877b8ff94c192af9976b7b",
+    "chapters/015-chapter-9-the-pseudocode-programming-process.md": "107f32faed547a87f7236c47cd5c80509415fcdc4ee6044baf49f2692e15e3f3",
+    "chapters/016-part-iii-variables.md": "1b5be3b7d2dd2cac91cb03eb24c6f52d1724128ac15439575b44d29336468541",
+    "chapters/017-chapter-10-general-issues-in-using-variables.md": "cd7d8acd145e70b4c8eb109d2346104bfba1c597623ec26207ba4c1a5d287d14",
+    "chapters/018-chapter-11-the-power-of-variable-names.md": "9a8ac6f7d9f72602864adb5f672485303fcf1b499ecaaaea42b9290911030a5a",
+    "chapters/019-chapter-12-fundamental-data-types.md": "34bbd16eedbea2b01b4cb340f14e2531fb3dbe2d9f9301bb887de82b404ed405",
+    "chapters/020-chapter-13-unusual-data-types.md": "10b2d4b24540c7c2d36ad6769d0ef661b0504745007efac05d7c38103fea768b",
+    "chapters/021-part-iv-statements.md": "5a68295317b30a27f4651c98cb18693f0e91f988b72e98de2797c57047ebeb6c",
+    "chapters/022-chapter-14-organizing-straight-line-code.md": "bba08672d58353f23da59d02994e1e514849bd58d4f5d1ffc214e7a9eb777dab",
+    "chapters/023-chapter-15-using-conditionals.md": "1352060c217941c84eec363b2fb3728ee8d1b1099c540d40567f736b037c7301",
+    "chapters/024-chapter-16-controlling-loops.md": "bde7680fcc684e4c7bef1f6a6b76e41b00e9f0f744e4100712d749698b7b57d9",
+    "chapters/025-chapter-17-unusual-control-structures.md": "cbfc3cd7f2e77bee6cbfbb8a0413222d208b512ce6379e04d8d9b85e8fefd080",
+    "chapters/026-chapter-18-table-driven-methods.md": "3eb2595bee5d288822fb926177146e927e71615ff4257b7c083e12ce85257635",
+    "chapters/027-chapter-19-general-control-issues.md": "3f8bfd88d941678e537bab7057d403163cdfa7f4c8e5121cce53cd5cc8a9bf0c",
+    "chapters/028-part-v-code-improvements.md": "a5b0da8398c9d8fceb9006b8376a6f9199e4e49d99ac01879b6ea3ac75a2f99b",
+    "chapters/029-chapter-20-the-software-quality-landscape.md": "753d515c7a2433fb8b4788c94330b50cf5dfbb07a10e80197a7805d6196675d8",
+    "chapters/030-chapter-21-collaborative-construction.md": "b247552cb54a98d7719c9168202f67c998f673931810c893b3bf2550aa382cc1",
+    "chapters/031-chapter-22-developer-testing.md": "e7b5db54ad1dc6563b5e5852b01f8ee17084e5d2d2a85200844e1fc5b596afba",
+    "chapters/032-chapter-23-debugging.md": "8733bc17620fd6fd8a7a427eeabaf2510e70fbd8ea3d2f1c89d475a1df8807da",
+    "chapters/033-chapter-24-refactoring.md": "82a17c74fe10c8b836ad7d0ae8cfad0fb271957fb8c86a8bd70d3c283b48ded1",
+    "chapters/034-chapter-25-code-tuning-strategies.md": "29b2692115b19e7e33e0694a17ec5cb0ca3640eeee1183c50ad98af12c639da2",
+    "chapters/035-chapter-26-code-tuning-techniques.md": "56bd2a3204c8f115f0376af341001be00ec125fb822ed62ce8e13c0c7b54cd93",
+    "chapters/036-part-vi-system-considerations.md": "6ceb30aa448f2335961d2d994d55a96fa5f90564d1b0ff65666c615df644e5d5",
+    "chapters/037-chapter-27-how-program-size-affects-construction.md": "c5f4a91a4347ba4a435e29f4b70b7300e09c6da223376be341d2962af47dcc33",
+    "chapters/038-chapter-28-managing-construction.md": "04cae7a7d5bca4eaa380b14e02ef9790449b3cc1b2ad0888461c073b1bd8c0e4",
+    "chapters/039-chapter-29-integration.md": "70911e5dc4bf5b2883f8b3bb9d3919421fb49f15bb73cb1498ed362a2b3ad168",
+    "chapters/040-chapter-30-programming-tools.md": "d2832c8ec244c9816e1315e5391c6b02241d2cb5579ecac1b2b7fc731a16830b",
+    "chapters/041-part-vii-software-craftsmanship.md": "b151c274ef80411558113604413552bf467ef3fe09280cbaa5f61930684f916e",
+    "chapters/042-chapter-31-layout-and-style.md": "c71a96597c1bf716c8055e13f2bfaf825d3e4f503a6733a07769d4df0d43dd62",
+    "chapters/043-chapter-32-self-documenting-code.md": "d3dedb1d07dc3617b798238cd71fd9bb865771bf5910aa9457d2371f42944abf",
+    "chapters/044-chapter-33-personal-character.md": "7a9c248a597b9cf140088e4448484dbb7b20aa65816fd75840e6dac120901cd4",
+    "chapters/045-chapter-34-themes-in-software-craftsmanship.md": "e76e5ef9273c9399e6e3239b7ebd8a660c4070d9005a44c2844b740b88ebc901",
+    "chapters/046-chapter-35-where-to-find-more-information.md": "230d38a55602d9aecee420cb308709f40972625fbeb20420144597c89280ee5b",
+    "chapters/047-bibliography.md": "f9b0da262cc0912d7d3f26c497ed25597e4d70c69de8c335f0af4d8c12641389",
+    "chapters/048-index.md": "bc0d7b64f86f506bfb6503eb8c69a513a17f0de5d69abd02a29c4396d09b8e43",
+    "metadata.json": "3388ab76abeb147699848d49bdcf6145e3034633f4ca290c3ad8fe3eb983c1c0",
+    "validation.json": "51fd63c99cecd1ee7b33b48b25f4204f7b83ad7703974648179fd6cce75a5aa3"
+  },
+  "llm_used": false,
+  "merged_duplicate_boundaries": [],
+  "ocr_usage": {
+    "llm_request_count": 0,
+    "ocr_pages": [
+      {
+        "page_id": 0,
+        "physical_page": 1
+      },
+      {
+        "page_id": 17,
+        "physical_page": 18
+      },
+      {
+        "page_id": 25,
+        "physical_page": 26
+      },
+      {
+        "page_id": 38,
+        "physical_page": 39
+      },
+      {
+        "page_id": 40,
+        "physical_page": 41
+      },
+      {
+        "page_id": 58,
+        "physical_page": 59
+      },
+      {
+        "page_id": 108,
+        "physical_page": 109
+      },
+      {
+        "page_id": 111,
+        "physical_page": 112
+      },
+      {
+        "page_id": 160,
+        "physical_page": 161
+      },
+      {
+        "page_id": 225,
+        "physical_page": 226
+      },
+      {
+        "page_id": 250,
+        "physical_page": 251
+      },
+      {
+        "page_id": 272,
+        "physical_page": 273
+      },
+      {
+        "page_id": 320,
+        "physical_page": 321
+      },
+      {
+        "page_id": 326,
+        "physical_page": 327
+      },
+      {
+        "page_id": 382,
+        "physical_page": 383
+      },
+      {
+        "page_id": 390,
+        "physical_page": 391
+      },
+      {
+        "page_id": 426,
+        "physical_page": 427
+      },
+      {
+        "page_id": 498,
+        "physical_page": 499
+      },
+      {
+        "page_id": 502,
+        "physical_page": 503
+      },
+      {
+        "page_id": 514,
+        "physical_page": 515
+      },
+      {
+        "page_id": 534,
+        "physical_page": 535
+      },
+      {
+        "page_id": 570,
+        "physical_page": 571
+      },
+      {
+        "page_id": 622,
+        "physical_page": 623
+      },
+      {
+        "page_id": 682,
+        "physical_page": 683
+      },
+      {
+        "page_id": 684,
+        "physical_page": 685
+      },
+      {
+        "page_id": 696,
+        "physical_page": 697
+      },
+      {
+        "page_id": 729,
+        "physical_page": 730
+      },
+      {
+        "page_id": 762,
+        "physical_page": 763
+      },
+      {
+        "page_id": 764,
+        "physical_page": 765
+      },
+      {
+        "page_id": 806,
+        "physical_page": 807
+      },
+      {
+        "page_id": 812,
+        "physical_page": 813
+      },
+      {
+        "page_id": 825,
+        "physical_page": 826
+      },
+      {
+        "page_id": 841,
+        "physical_page": 842
+      },
+      {
+        "page_id": 854,
+        "physical_page": 855
+      },
+      {
+        "page_id": 872,
+        "physical_page": 873
+      },
+      {
+        "page_id": 890,
+        "physical_page": 891
+      },
+      {
+        "page_id": 920,
+        "physical_page": 921
+      },
+      {
+        "page_id": 927,
+        "physical_page": 928
+      },
+      {
+        "page_id": 928,
+        "physical_page": 929
+      },
+      {
+        "page_id": 929,
+        "physical_page": 930
+      },
+      {
+        "page_id": 931,
+        "physical_page": 932
+      },
+      {
+        "page_id": 932,
+        "physical_page": 933
+      },
+      {
+        "page_id": 935,
+        "physical_page": 936
+      },
+      {
+        "page_id": 936,
+        "physical_page": 937
+      },
+      {
+        "page_id": 939,
+        "physical_page": 940
+      },
+      {
+        "page_id": 940,
+        "physical_page": 941
+      },
+      {
+        "page_id": 942,
+        "physical_page": 943
+      },
+      {
+        "page_id": 948,
+        "physical_page": 949
+      },
+      {
+        "page_id": 949,
+        "physical_page": 950
+      }
+    ],
+    "text_extraction_methods": {
+      "pdftext": 903,
+      "surya": 49
+    },
+    "used": true
+  },
+  "page_furniture_removed": [],
+  "pipeline": "scripts/convert-books",
+  "pipeline_fingerprint": "cc9009c2c2f54d8877bed0bf1499a36424fe6e4f7c82a089cd040be3e3baa5e5",
+  "post_processing_performed": [
+    "staged the source under a deterministic length-bounded hash-qualified space-free basename",
+    "split converter Markdown at explicit logical-unit headings rather than page numbers",
+    "normalized headings to ATX syntax with exactly one level-one heading per chapter",
+    "kept converter paragraphs unwrapped and normalized excessive blank lines outside code",
+    "moved extracted media into assets and rewrote relative links",
+    "preserved fenced code content exactly",
+    "used printed table-of-contents and explicit body chapter-label evidence to recover chapter boundaries and titles",
+    "collapsed adjacent identical headings while preserving intervening anchors"
+  ],
+  "pre_conversion_commands": [
+    {
+      "argv": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "ConnectTimeout=15",
+        "peecee",
+        "cmd /c if exist marker\\out\\code-complete-2nd-edition-v413hav-c321aafe9402 rmdir /s /q marker\\out\\code-complete-2nd-edition-v413hav-c321aafe9402"
+      ],
+      "command": "ssh -o BatchMode=yes -o ConnectTimeout=15 peecee 'cmd /c if exist marker\\out\\code-complete-2nd-edition-v413hav-c321aafe9402 rmdir /s /q marker\\out\\code-complete-2nd-edition-v413hav-c321aafe9402'",
+      "exit_status": 0,
+      "working_directory": "/home/halbritt/git/books"
+    }
+  ],
+  "prior_conversion_failures": [],
+  "record_sha256": "cb07a64211f340e2572a93c86c992ddd291e56b95b569db5582784b3024f643b",
+  "schema_version": "books-corpus/1",
+  "section_boundary_evidence": [],
+  "source_filename": "code-complete-2nd-edition-v413hav.pdf",
+  "source_format": "pdf",
+  "source_path": "sources/code-complete-2nd-edition-v413hav.pdf",
+  "source_sha256": "c321aafe940280e0c2fe7fe2b85a7e743ff6009bafeed7af0c8f6263b1ed08d3",
+  "source_size_bytes": 8880461,
+  "staging_workaround": "length-bounded hash-qualified space-free basename",
+  "unresolved_navigation_anchors": [],
+  "warnings": [],
+  "working_directory": "/home/halbritt/git/books"
+}

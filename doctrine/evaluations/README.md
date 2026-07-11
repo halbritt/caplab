@@ -25,4 +25,7 @@ The runner checks the scenario's required and forbidden retrieval IDs and assert
 
 The `dependency-impact` fixture is synthetic. It proves that a changed source rebuilds its dependent chapter, concept, and prompt, re-verifies the associated evaluation, and leaves an unrelated source branch untouched.
 
-These fixtures do not yet evaluate natural-language entailment, retrieval quality, or source locator resolution. Those require graph-backed and hand-audited scenarios after extraction stabilizes.
+These fixtures do not evaluate natural-language entailment, retrieval quality,
+or source locator resolution. The extraction is stable; those properties still
+require additional graph-backed, hand-audited scenarios before a retriever can
+be accepted.

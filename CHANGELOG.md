@@ -9,6 +9,11 @@ This project does not yet publish numbered releases. Dated entries record notabl
 - Expanded root documentation for corpus conversion, doctrine contracts, evaluation fixtures, assertion discipline, and integrity boundaries.
 - Added this changelog.
 
+### Changed
+
+- Moved the original PDF and EPUB inputs from the repository root into `sources/` and updated conversion discovery accordingly.
+- Added repository-relative input paths and source SHA-256 values to provenance records without reconverting chapter content.
+
 ## 2026-07-10
 
 ### Added

@@ -1,13 +1,14 @@
 # Books
 
-This repository converts root-level PDF and EPUB books into a semantically structured Markdown corpus. It also contains provenance-aware doctrine contracts and evaluation fixtures for turning the corpus into bounded engineering guidance.
+This repository converts PDF and EPUB books from `sources/` into a semantically structured Markdown corpus. It also contains provenance-aware doctrine contracts and evaluation fixtures for turning the corpus into bounded engineering guidance.
 
-The source books remain unchanged in the repository root. Generated books live under [`books/`](books/README.md), one directory per source.
+The source books remain unchanged under [`sources/`](sources/). Generated books live under [`books/`](books/README.md), one directory per source.
 
 ## Repository map
 
 | Path | Contents |
 |---|---|
+| [`sources/`](sources/) | Original PDF and EPUB inputs, preserved unchanged |
 | [`books/`](books/README.md) | Generated chapter Markdown, assets, source metadata, provenance, and validation records |
 | [`doctrine/OPERATIONALIZATION.md`](doctrine/OPERATIONALIZATION.md) | Sequence for building evaluation, retrieval, skills, and decision receipts around the corpus |
 | [`doctrine/CONVERGED_RECOMMENDATION.md`](doctrine/CONVERGED_RECOMMENDATION.md) | Converged recommendation that preceded the operational design |
@@ -15,33 +16,33 @@ The source books remain unchanged in the repository root. Generated books live u
 | [`doctrine/evaluations/`](doctrine/evaluations/README.md) | Replayable authority canaries and dependency-impact fixtures |
 | [`ubiquitous_language.md`](ubiquitous_language.md) | Canonical meanings of observation, inference, recommendation, decision, and adjacent authority terms |
 | [`AGENTS.md`](AGENTS.md) | Repository instructions for coding agents |
-| [`scripts/convert-books`](scripts/convert-books) | Root-level book discovery and conversion command |
+| [`scripts/convert-books`](scripts/convert-books) | `sources/` book discovery and conversion command |
 | [`tests/`](tests/) | Conversion-pipeline and doctrine-scaffolding tests |
 | [`CHANGELOG.md`](CHANGELOG.md) | Notable repository changes |
 
 ## Source books
 
-Only supported files located directly in the repository root are ingested. Subdirectories are not searched for source books.
+Only supported files located directly under `sources/` are ingested. Files in the repository root and nested source directories are not searched.
 
 | Book | Source file |
 |---|---|
-| A Philosophy of Software Design, 2nd Edition | `dokumen.pub_a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217.epub` |
-| Clean Architecture: A Craftsman's Guide to Software Structure and Design | `Clean Architecture A Craftsman Guide to Software Structure and Design.pdf` |
-| Code Complete, 2nd Edition | `code-complete-2nd-edition-v413hav.pdf` |
-| Domain-Driven Design: Tackling Complexity in the Heart of Software | `Domain Driven Design Tackling Complexity in the Heart of Software - Eric Evans.pdf` |
-| Efficient Go: Data-Driven Performance Optimization | `Efficient Go Data-Driven Performance Optimization (Bartlomiej Plotka) (Z-Library).pdf` |
-| Fluent Python, 2nd Edition | `Fluent.Python.2nd.Edition.(z-lib.org).pdf` |
-| Fundamentals of Software Architecture | `OReilly.Fundamentals.of.Software.Architecture.2020.1.pdf` |
-| Refactoring: Improving the Design of Existing Code | `Refactoring  Improving the Design of Existing Code.pdf` |
-| Software Design X-Rays: Fix Technical Debt with Behavioral Code Analysis | `dokumen.pub_software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725.pdf` |
-| The Pragmatic Programmer | `the-pragmatic-programmer.pdf` |
-| Working Effectively with Legacy Code | `[PROGRAMMING][Working Effectively. with Legacy Code].pdf` |
+| A Philosophy of Software Design, 2nd Edition | `sources/dokumen.pub_a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217.epub` |
+| Clean Architecture: A Craftsman's Guide to Software Structure and Design | `sources/Clean Architecture A Craftsman Guide to Software Structure and Design.pdf` |
+| Code Complete, 2nd Edition | `sources/code-complete-2nd-edition-v413hav.pdf` |
+| Domain-Driven Design: Tackling Complexity in the Heart of Software | `sources/Domain Driven Design Tackling Complexity in the Heart of Software - Eric Evans.pdf` |
+| Efficient Go: Data-Driven Performance Optimization | `sources/Efficient Go Data-Driven Performance Optimization (Bartlomiej Plotka) (Z-Library).pdf` |
+| Fluent Python, 2nd Edition | `sources/Fluent.Python.2nd.Edition.(z-lib.org).pdf` |
+| Fundamentals of Software Architecture | `sources/OReilly.Fundamentals.of.Software.Architecture.2020.1.pdf` |
+| Refactoring: Improving the Design of Existing Code | `sources/Refactoring  Improving the Design of Existing Code.pdf` |
+| Software Design X-Rays: Fix Technical Debt with Behavioral Code Analysis | `sources/dokumen.pub_software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725.pdf` |
+| The Pragmatic Programmer | `sources/the-pragmatic-programmer.pdf` |
+| Working Effectively with Legacy Code | `sources/[PROGRAMMING][Working Effectively. with Legacy Code].pdf` |
 
 The generated [book index](books/README.md) records title, authors, converter, execution target, chapter count, status, output path, and validation warnings for each source.
 
 ## Convert and validate books
 
-Convert every supported root-level source:
+Convert every supported source:
 
 ```bash
 make books
@@ -73,7 +74,7 @@ books/<book-slug>/
   assets/
 ```
 
-`source.json` includes source identity and conversion provenance. Generated file manifests protect existing output: conversion refuses to overwrite unexpected edits unless `--force` is supplied explicitly.
+`source.json` includes the repository-relative source path, content identity, and conversion provenance. Generated file manifests protect existing output: conversion refuses to overwrite unexpected edits unless `--force` is supplied explicitly.
 
 ## Assertion discipline
 
@@ -118,7 +119,7 @@ These fixtures are synthetic contract tests. They do not yet measure natural-lan
 
 ## Integrity boundaries
 
-- Source PDFs and EPUBs are inputs and are not rewritten by conversion.
+- Source PDFs and EPUBs under `sources/` are inputs and are not rewritten by conversion.
 - Generated corpus files retain source hashes, converter provenance, and validation results.
 - Unexpected manual changes to generated output stop regeneration unless replacement is explicitly forced.
 - Corpus doctrine may support an observation, inference, or recommendation; it cannot create authorization.

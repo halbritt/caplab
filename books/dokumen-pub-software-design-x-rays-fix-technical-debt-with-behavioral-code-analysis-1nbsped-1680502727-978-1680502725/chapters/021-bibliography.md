@@ -1,0 +1,56 @@
+# Bibliography
+
+- <span id="page-241-10"></span><span id="page-241-9"></span><span id="page-241-0"></span>[AH99] M.S. Ackerman and C. Halverson. Considering an Organization's Memory. *Proceedings, Computer Supported Cooperative Work Conference*. 39-48, 1999.
+- <span id="page-241-4"></span>[AS06] S.W. Ambler and P.J. Sadalage. *Refactoring Databases: Evolutionary Database Design*. Addison-Wesley, Boston, MA, 2006.
+- <span id="page-241-5"></span>[Bak95] B. Baker. On Finding Duplication and Near-Duplication in Large Software Systems. *Proceedings of the Second Working Conference on Reverse Engineering*. 86-95, 1995.
+- <span id="page-241-2"></span>[Bec07] K. Beck. *Implementation Patterns*. Addison-Wesley, Boston, MA, 2007.
+- <span id="page-241-8"></span>[BG05] N Braisby and A Gellatly. *Cognitive Psychology*. Oxford University Press, New York, NY, 2005.
+- <span id="page-241-7"></span>[BK03] R.S. Baron and N.L. Kerr. *Group Process, Group Decision, Group Action*. Open University Press, Berkshire, United Kingdom, 2003.
+- <span id="page-241-3"></span>[BNMG11] C. Bird, N. Nagappan, B. Murphy, H. Gall, and P. Devanbu. Don't Touch My Code! Examining the Effects of Ownership on Software Quality. *Proceedings of the 19th ACM SIGSOFT symposium and the 13th European conference on foundations of software engineering*. 4-14, 2011.
+- <span id="page-241-6"></span><span id="page-241-1"></span>[BOW11] R.M. Bell, T.J. Ostrand, and E.J. Weyuker. *Does Measuring Code Change Improve Fault Prediction?*. ACM Press, New York, NY, USA, 2011.
+- [Bra95] S Brand. *How Buildings Learn: What Happens After They're Built*. Penguin, New York, NY, 1995.
+- [Bro86] Frederick Brooks. No Silver Bullet—Essence and Accident in Software Engineering. *Proceedings of the IFIP Tenth World Computing Conference*. 1986.
+
+- <span id="page-242-6"></span>[Bro95] Frederick P. Brooks Jr. *The Mythical Man-Month: Essays on Software Engineering*. Addison-Wesley, Boston, MA, Anniversary, 1995.
+- <span id="page-242-12"></span>[CB10] J.O. Coplien and G Bjørnvig. *Lean Architecture for Agile Software Development*. John Wiley & Sons, New York, NY, 2010.
+- <span id="page-242-11"></span><span id="page-242-10"></span>[CB16] L.J. Colfer and C.Y. Baldwin. The Mirroring Hypothesis: Theory, Evidence, and Exceptions. *Ind Corp Change*. 25:709–738, 2016.
+- [CE78] R.C. Cass and J.J. Edney. The commons dilemma: A simulation testing the effects of resource visibility and territorial division. *Human Ecology*. 6, 1978.
+- <span id="page-242-8"></span><span id="page-242-7"></span>[CH13] M. Cataldo and J.D. Herbsleb. Coordination Breakdowns and Their Impact on Development Productivity and Software Failures. *IEEE Transactions on Software Engineering*. 39, 2013.
+- <span id="page-242-1"></span>[Con68] M.E. Conway. How do committees invent?. *Datamation*. 4:28–31, 1968.
+- <span id="page-242-9"></span>[DB02] F. Detienne and F. Bott. *Software Design: Cognitive Aspects*. Springer, New York, NY, USA, 2002.
+- <span id="page-242-4"></span>[DLG05] M. D'Ambros, M. Lanza, and H Gall. Fractal Figures: Visualizing Development Effort for CVS Entities. *Visualizing Software for Understanding and Analysis, 2005. VISSOFT 2005. 3rd IEEE International Workshop on*. 1–6, 2005.
+- <span id="page-242-13"></span>[Ebb85] H. Ebbinghaus. *Über das Gedächtnis. Untersuchungen zur experimentellen Psychologie.*. Duncker & Humblot, Leipzig, Germany, 1985.
+- <span id="page-242-3"></span>[Eva03] Eric Evans. *Domain-Driven Design: Tackling Complexity in the Heart of Software*. Addison-Wesley Longman, Boston, MA, First, 2003.
+- <span id="page-242-0"></span>[FBBO99] Martin Fowler, Kent Beck, John Brant, William Opdyke, and Don Roberts. *Refactoring: Improving the Design of Existing Code*. Addison-Wesley, Boston, MA, 1999.
+- <span id="page-242-5"></span>[Fea04] Michael Feathers. *Working Effectively with Legacy Code*. Prentice Hall, Englewood Cliffs, NJ, 2004.
+- <span id="page-242-14"></span>[Fel14] F. Feldt. Do System Test Cases Grow Old?. *Proceedings of the 2014 IEEE International Conference on Software Testing, Verification, and Validation*. 343-352, 2014.
+- <span id="page-242-2"></span>[Fow16] S.J. Fowler. *Production-Ready Microservices: Building Standardized Systems Across an Engineering Organization*. O'Reilly & Associates, Inc., Sebastopol, CA, 2016.
+- [FP09] Steve Freeman and Nat Pryce. *Growing Object-Oriented Software, Guided by Tests*. Addison-Wesley Longman, Boston, MA, 2009.
+
+- <span id="page-243-9"></span>[Gan03] M. Gancarz. *Linux and the Unix Philosophy, 2nd Edition*. Digital Press, Woburn, MA, 2003.
+- <span id="page-243-7"></span>[GHC15] M. Greiler, K. Herzig, and J. Czerwonka. Code ownership and software quality: a replication study. *Proceedings of the 12th Working Conference on Mining Software Repositories*. 2015.
+- <span id="page-243-5"></span>[GKMS00] T. L. Graves, A. F. Karr, J. S. Marron, and H Siy. Predicting fault incidence using software change history. *Software Engineering, IEEE Transactions on*. 26[7], 2000.
+- <span id="page-243-1"></span>[HGH08] A. Hindle, M.W. Godfrey, and R.C. Holt. *Reading Beside the Lines: Indentation as a Proxy for Complexity Metrics. Program Comprehension, 2008. ICPC 2008. The 16th IEEE International Conference on*. IEEE Computer Society Press, Washington, DC, 2008.
+- <span id="page-243-10"></span><span id="page-243-2"></span>[HM03] J.D. Herbsleb and A. Mockus. An Empirical Study of Speed and Communication in Globally Distributed Software Development. *IEEE Transactions On Software Engineering*. 29, 2003.
+- <span id="page-243-3"></span>[HT00] Andrew Hunt and David Thomas. *The Pragmatic Programmer: From Journeyman to Master*. Addison-Wesley, Boston, MA, 2000.
+- <span id="page-243-8"></span>[KR87] R.M. Karp and M. O. Rabin. Efficient randomized pattern-matching algorithms. *IBM Journal of Research and Development*. 31(2):249–-260, 1987.
+- <span id="page-243-6"></span>[Leh80] M. M. Lehman. On Understanding Laws, Evolution, and Conservation in the Large-Program Life Cycle. *Journal of Systems and Software*. 1:213–221, 1980.
+- <span id="page-243-11"></span>[Mar17] R.C. Martin. *Clean Architecture: A Craftsman's Guide to Software Structure and Design*. Prentice Hall, Englewood Cliffs, NJ, 2017.
+- <span id="page-243-4"></span>[MBMY97] P.L. McLeod, R.S. Baron, M.W. Marti, and K. Yoon. The eyes have it: Minority influence in face-to-face and computer-mediated group discussion. *Journal of Applied Psychology*. 82:706–718, 1997.
+- <span id="page-243-0"></span>[MLM96] J. Mayrand, C. Leblanc, and E. Merlo. Experiment on the Automatic Detection of Function Clones in a Software System Using Metrics. *Proceedings of the 12th International Conference on Software Maintenance*. 244- 253, 1996.
+- [MPS08] R. Moser, W. Pedrycz, and G. Succi. A Comparative Analysis of the Efficiency of Change Metrics and Static Code Attributes for Defect Prediction. *Proceedings of the 30th international conference on Software engineering*. 181–190, 2008.
+
+- <span id="page-244-3"></span>[MW09] A. Meneely and L. Williams. Secure open source collaboration: an empirical study of Linus' law. *Proceedings of the 16th ACM conference on computer and communications security*. 453–462, 2009.
+- <span id="page-244-1"></span>[NMB08] N. Nagappan, B. Murphy, and V. Basili. The Influence of Organizational Structure on Software Quality. *International Conference on Software Engineering, Proceedings*. 521–530, 2008.
+- <span id="page-244-5"></span><span id="page-244-4"></span>[OV14] A. Olsson and R. Voss. *Git Version Control Cookbook*. Packt Publishing, Birmingham, UK, 2014.
+- <span id="page-244-9"></span>[OW10] A. Oram and G. Wilson. *Making Software: What Really Works, and Why We Believe It*. O'Reilly & Associates, Inc., Sebastopol, CA, 2010.
+- <span id="page-244-6"></span>[Par94] D. Parnas. Software Aging. *ICSE '94 Proceedings of the 16th international conference on Software engineering*. 279–287, 1994.
+- <span id="page-244-12"></span>[SABB17] D. Spadini, M. Aniche, M. Bruntink, and A. Bacchelli. To Mock or Not To Mock? An Empirical Study on Mocking Practices. *Unknown - Fix it!*. 2017.
+- <span id="page-244-8"></span>[Sch83] D.A. Schön. *Reflective Practitioner: How Professionals Think in Action*. Basic Books, New York, NY, 1983.
+- <span id="page-244-11"></span>[SSS14] G. Suryanarayana, G. Samarthyam, and T. Sharma. *Refactoring for Software Design Smells: Managing Technical Debt*. Morgan Kaufmann, Massachusetts, USA, 2014.
+- <span id="page-244-2"></span>[Ste72] I.D. Steiner. *Group Process and Productivity*. Academic Press, New York, NY, USA, 1972.
+- <span id="page-244-0"></span>[TBPD15] M. Tufano, G. Bavota, D. Poshyvanyk, M. Di Penta, R. Oliveto, and A. De Lucia. An Empirical Study on Developer Related Factors Characterizing Fix-Inducing Commits. *Journal of Software: Evolution and Process*. 2015.
+- <span id="page-244-13"></span>[Tor15] Adam Tornhill. *Your Code as a Crime Scene*. The Pragmatic Bookshelf, Raleigh, NC, 2015.
+- <span id="page-244-10"></span>[TPBO15] M. Tufano, F. Palomba, G. Bavota, R. Oliveto, M. Di Penta, A. De Lucia, and D. Poshyvanyk. When and Why Your Code Starts to Smell Bad. *Proceedings of the 37th International Conference on Software Engineering*. 2015.
+- <span id="page-244-7"></span>[Vau97] D. Vaughan. *The Challenger Launch Decision: Risky Technology, Culture, and Deviance at NASA*. University of Chicago Press, Chicago, IL, 1997.
+- [ZWDZ04] T. Zimmermann, P. Weißgerber, S. Diehl, and A. Zeller. Mining Version Histories to Guide Software Changes. *Proceedings of International Conference on Software Engineering (ICSE)*. 2004.

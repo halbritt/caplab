@@ -1,0 +1,1025 @@
+schema_version: agent-doctrine-concepts/1
+concepts:
+  - id: architecture-scoped-characteristics
+    title: Scope measurable architecture characteristics
+    category: architecture
+    claim: A quality is architecturally significant only when it affects structure, is important to success, has a concrete scenario and threshold, and is scoped to the affected flow or architectural quantum.
+    decision_rule: Derive candidate characteristics from accepted requirements and domain or operational concerns; define stimulus, environment, response, threshold, owner, and scope; retain only the smallest differentiating set whose structural consequences can be measured.
+    why_it_matters: Unscoped adjectives such as scalable, secure, or maintainable encourage global overdesign and make tradeoffs unverifiable.
+    applicable_when: ["selecting boundaries, topology, style, or architecture safeguards", "reviewing SLO, availability, security, durability, scalability, or maintainability claims"]
+    not_applicable_when: ["the requirement is local implementation behavior with no structural consequence"]
+    required_evidence: ["accepted quality concern and stakeholder priority", "stimulus, operating environment, response, and measurable threshold", "smallest affected flow, component, or quantum", "baseline or explicit baseline plan"]
+    insufficient_evidence: ["a quality adjective without a scenario", "desire to maximize every quality", "a system-wide scope inferred by default", "a feature requirement with no structural effect"]
+    required_inputs: ["accepted requirements and operational constraints", "current topology and dependency scope", "stakeholder tradeoff authority"]
+    expected_outputs: ["prioritized characteristic scenarios and owners", "scope and measurement method", "explicit conflicts and rejected characteristics"]
+    preservation_boundaries: ["accepted functional behavior", "qualities outside the authorized tradeoff", "scope not implicated by the characteristic"]
+    safe_actions: ["narrow a characteristic to one flow", "establish a baseline fitness measure", "report an unmeasurable characteristic as a requirements gap"]
+    unsafe_actions: ["redesign the whole system for an adjective", "treat a style rating as proof", "trade correctness, durability, or security without authority"]
+    common_failure_modes: ["quality-attribute maximalism", "global scope inflation", "proxy metric substituted for stakeholder outcome"]
+    counterexamples: ["A local input-validation rule is important but is not an architecture characteristic unless it changes system structure or cross-cutting constraints."]
+    interactions: ["Specializes universal-evidence-before-intervention for architecture-quality claims.", "Provides drivers for architecture-earned-boundary and architecture-contextual-style-selection."]
+    conflicts: [conflict-model-fidelity-vs-performance-representation]
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/009-chapter-4-architecture-characteristics-defined.md :: Influences some structural aspect of the design"
+        contribution: "Defines structural influence and importance as tests for architectural significance."
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/012-chapter-7-scope-of-architecture-characteristics.md :: Architectural Quanta and Granularity"
+        contribution: "Scopes architecture characteristics below the whole-system level."
+      - source_id: SRC-CA
+        relationship: refinement
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/026-chapter-15-what-is-architecture.md :: OPERATION"
+        contribution: "Distinguishes operational effectiveness from development and maintenance structure."
+    confidence: strong
+    roles: [architecture-agent, performance-agent, review-agent, repository-assessment-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [architecture characteristic, quality attribute, SLO, quality scenario, architectural quantum, fitness]
+    routing:
+      activate_for_roles: [architecture-agent, performance-agent, review-agent, repository-assessment-agent]
+      activate_for_tasks: [architecture-assessment, style-selection, boundary-selection, quality-review, architecture-planning]
+      activate_for_repository_signals: [SLO, quality attribute, availability requirement, security boundary, scalability target, architecture fitness]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [architecture, operational, security, durability, performance]
+      exclude_when: [purely local implementation decision with no structural consequence]
+      prerequisites: [accepted requirement or domain concern, target scope]
+      retrieval_priority: high
+      retrieval_budget_hint: 390
+      related_concepts: [universal-evidence-before-intervention, architecture-fitness-functions, architecture-contextual-style-selection, performance-measurable-objective]
+
+  - id: architecture-feedback-loop
+    title: Keep architecture and implementation in a closed feedback loop
+    category: architecture
+    claim: Architecture must evolve through implementation, domain learning, and runtime evidence; architecture detached from code loses feasibility feedback, while implementation without decision context erodes accepted constraints.
+    decision_rule: Exercise significant proposals with representative implementation or operational evidence, return discoveries to the decision owner, and reopen rather than silently violate decisions whose assumptions no longer hold.
+    why_it_matters: Static plans can freeze incorrect assumptions, while unrecorded local workarounds make the actual architecture diverge from its governing intent.
+    applicable_when: ["making or implementing architecturally significant decisions", "new evidence challenges an accepted boundary, style, model, or quality assumption"]
+    not_applicable_when: ["a fully mechanical local change has no architectural consequence"]
+    required_evidence: ["representative implementation or runtime feedback", "decision owner and current status", "assumption or threshold affected by the evidence", "affected implementer and operator perspectives"]
+    insufficient_evidence: ["a diagram handed off once", "title-based authority without implementation evidence", "a workaround with no analysis of the governing decision"]
+    required_inputs: ["accepted architecture decision", "implementation and operational observations", "authority for proposal or supersession"]
+    expected_outputs: ["confirmed, narrowed, or reopened decision", "recorded assumption and feedback", "implementation constraint or supersession proposal"]
+    preservation_boundaries: ["accepted decision remains authoritative until superseded", "implementation evidence does not itself grant semantic or architectural authority"]
+    safe_actions: ["build a representative slice", "record an invalidated assumption", "propose an ADR supersession", "keep architects and domain modelers close to implementation"]
+    unsafe_actions: ["silently bypass an accepted boundary", "freeze a master plan against evidence", "treat implementation as automatic acceptance"]
+    common_failure_modes: ["armchair architecture", "architecture drift", "artifact attachment", "implementation teams deprived of decision context"]
+    counterexamples: ["A repository-wide rename conforming to an accepted contract need not reopen architecture merely because it touches many files."]
+    interactions: ["Uses architecture-fitness-functions as one evidence channel, but human and domain feedback remain distinct.", "Works through architecture-decision-record when evidence warrants supersession."]
+    conflicts: [conflict-upfront-vs-evolutionary-architecture]
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/007-chapter-2-architectural-thinking.md :: Balancing Architecture and Hands-On Coding"
+        contribution: "Keeps architectural reasoning connected to implementation practice."
+      - source_id: SRC-DDD
+        relationship: direct_support
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/019-chapter-17-bringing-the-strategy-together.md :: The decision process must absorb feedback"
+        contribution: "Requires strategic design to change in response to implementation and model learning."
+      - source_id: SRC-DDD
+        relationship: direct_support
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/004-chapter-3-binding-model-and-implementation.md :: Hands-On Modelers"
+        contribution: "Makes implementation participation part of model authority and learning."
+    confidence: strong
+    roles: [architecture-agent, coding-agent, review-agent, repository-assessment-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [architecture feedback, implementation feedback, evolutionary architecture, architecture drift, hands-on architect]
+    routing:
+      activate_for_roles: [architecture-agent, coding-agent, review-agent, repository-assessment-agent]
+      activate_for_tasks: [architecture-planning, architecture-implementation, ADR-review, architecture-verification]
+      activate_for_repository_signals: [accepted ADR, architecture workaround, repeated exception, failed fitness function, implementation disagreement]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [architecture, change, operational]
+      exclude_when: [fully mechanical local change under an accepted architecture]
+      prerequisites: [decision context, representative feedback]
+      retrieval_priority: high
+      retrieval_budget_hint: 340
+      related_concepts: [architecture-decision-record, architecture-fitness-functions, universal-reversible-reviewable-change, universal-measure-claimed-improvement]
+
+  - id: architecture-selective-option-preservation
+    title: Preserve architecture options selectively
+    category: architecture
+    claim: An architecture option is worth carrying only when plausible change, consequence, delay value, and reversal cost justify the complexity introduced to keep it open.
+    decision_rule: Name the deferred commitment and trigger, estimate probability, impact, later separation cost, and current carrying cost, then choose direct code, a partial seam, or a full boundary proportionately.
+    why_it_matters: Both premature commitment and maximum flexibility can create irreversible cost; speculative seams freeze untested variation and burden every current change.
+    applicable_when: ["a design decision is expensive to reverse", "a future boundary or implementation variation is plausible but not yet fully demonstrated"]
+    not_applicable_when: ["the option is cheap to recover later", "no credible trigger or beneficiary exists"]
+    required_evidence: ["specific deferred commitment", "credible change trigger and consequence", "current carrying cost", "later migration or reversal cost"]
+    insufficient_evidence: ["something might change", "generic extensibility", "preference to avoid all decisions"]
+    required_inputs: ["candidate commitment", "time horizon and product trajectory", "available boundary strengths"]
+    expected_outputs: ["commit, defer directly, add partial seam, or add full boundary", "review, completion, or deletion trigger"]
+    preservation_boundaries: ["current simplicity and local reasoning", "accepted behavior and contracts", "reviewability of deferred decisions"]
+    safe_actions: ["postpone a replaceable mechanism", "use a local facade with a deletion trigger", "record the last responsible decision point"]
+    unsafe_actions: ["introduce interfaces for hypothetical implementations", "delay a blocking irreversible decision", "carry unused abstraction indefinitely"]
+    common_failure_modes: ["speculative generality", "analysis paralysis", "partial boundary mistaken for actual independence"]
+    counterexamples: ["A regulated data-retention decision that determines schema and procurement may require early explicit commitment rather than deferral."]
+    interactions: ["Relies on universal-reversible-reviewable-change and specializes it for architectural commitments.", "Selects among strengths described by architecture-boundary-strength."]
+    conflicts: [conflict-upfront-vs-evolutionary-architecture, conflict-full-vs-partial-vs-no-boundary]
+    source_support:
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/026-chapter-15-what-is-architecture.md :: KEEPING OPTIONS OPEN"
+        contribution: "Frames architecture as delaying irrelevant detail commitments."
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/035-chapter-24-partial-boundaries.md :: SKIP THE LAST STEP"
+        contribution: "Shows a lower-cost but incomplete way to reserve a boundary option."
+      - source_id: SRC-DDD
+        relationship: tension
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/019-chapter-17-bringing-the-strategy-together.md :: Beware the Master Plan"
+        contribution: "Constrains advance option structure with humility and evolving evidence."
+    confidence: contextual
+    roles: [architecture-agent, coding-agent, review-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [option preservation, reversible architecture, partial boundary, last responsible moment, deferred commitment]
+    routing:
+      activate_for_roles: [architecture-agent, coding-agent, review-agent]
+      activate_for_tasks: [boundary-planning, architecture-planning, framework-adoption, migration-design]
+      activate_for_repository_signals: [expensive commitment, uncertain future boundary, partial seam, migration horizon]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [architecture, migration, compatibility, cost]
+      exclude_when: [option is inexpensive to recover or has no credible trigger]
+      prerequisites: [reversal-cost estimate, explicit trigger]
+      retrieval_priority: high
+      retrieval_budget_hint: 360
+      related_concepts: [universal-reversible-reviewable-change, architecture-earned-boundary, architecture-boundary-strength]
+
+  - id: architecture-earned-boundary
+    title: Earn architectural boundaries from independent forces
+    category: architecture
+    claim: A boundary is justified only by demonstrated independent policy, semantic, invariant, ownership, volatility, release, deployment, trust, or quality forces.
+    decision_rule: State what must vary or be governed independently and why; identify what must remain cohesive; compare no boundary and lower-cost seams; create only the boundary whose protection exceeds translation, coordination, and operational cost.
+    why_it_matters: Boundaries improve local reasoning and autonomy only when they hide or protect something real; otherwise they add navigation, contracts, mapping, and failure modes.
+    applicable_when: ["proposing a module, interface, component, process, service, or context boundary", "repeated changes or ownership conflicts cross an existing structure"]
+    not_applicable_when: ["responsibilities change together", "no stable semantic contract exists", "separation would weaken an invariant"]
+    required_evidence: ["independent change, policy, semantic, ownership, release, trust, or quality force", "cohesive invariant and data ownership", "candidate contract and consumers", "cost comparison with direct collaboration"]
+    insufficient_evidence: ["file size", "diagram symmetry", "one difficult test", "directory or team names", "desire to decouple without naming a coupling dimension"]
+    required_inputs: ["representative changes and workflows", "dependency and ownership map", "accepted quality and preservation constraints"]
+    expected_outputs: ["boundary or no-boundary decision", "protected force and cohesive interior", "contract owner and verification plan"]
+    preservation_boundaries: ["domain invariants and authoritative data", "accepted behavior and compatibility", "information hiding and local reasoning"]
+    safe_actions: ["introduce a narrow source seam", "keep cohesive data and behavior together", "return no boundary when pressure is absent"]
+    unsafe_actions: ["service per entity", "interface per class", "split an atomic invariant for organizational symmetry", "infer a bounded context from a folder"]
+    common_failure_modes: ["accidental indirection", "distributed monolith", "boundary without semantic contract", "false autonomy"]
+    counterexamples: ["A large file with one cohesive responsibility and stable change pattern may need navigation improvement but no architectural boundary."]
+    interactions: ["Specializes universal-information-hiding without duplicating the universal abstraction gate.", "Boundary existence is separate from architecture-boundary-strength.", "A domain-bounded-context can provide semantic evidence but never entails deployment."]
+    conflicts: [conflict-full-vs-partial-vs-no-boundary, conflict-monolith-vs-distributed-services]
+    source_support:
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/028-chapter-17-boundaries-drawing-lines.md :: WHICH LINES DO YOU DRAW, AND WHEN DO YOU DRAW THEM?"
+        contribution: "Connects line drawing and timing to protection of policy from details."
+      - source_id: SRC-FSA
+        relationship: corroboration
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/013-chapter-8-component-based-thinking.md :: Component Granularity"
+        contribution: "Makes component granularity an iterative responsibility and characteristic decision."
+      - source_id: SRC-DDD
+        relationship: refinement
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md :: Bounded Context"
+        contribution: "Provides semantic model integrity as one distinct boundary force."
+    confidence: strong
+    roles: [architecture-agent, coding-agent, refactoring-agent, legacy-code-agent, review-agent, repository-assessment-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [earned boundary, module boundary, service boundary, semantic boundary, ownership, independent change]
+    routing:
+      activate_for_roles: [architecture-agent, coding-agent, refactoring-agent, legacy-code-agent, review-agent, repository-assessment-agent]
+      activate_for_tasks: [boundary-selection, module-design, service-decomposition, context-mapping, architecture-review]
+      activate_for_repository_signals: [cross-module change, dependency cycle, ownership conflict, release coupling, semantic conflict, service proposal]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [architecture, maintainability, data, operational]
+      exclude_when: [purely local implementation placement]
+      prerequisites: [representative change or quality force, preservation boundary]
+      retrieval_priority: core
+      retrieval_budget_hint: 430
+      related_concepts: [universal-information-hiding, architecture-boundary-strength, architecture-policy-mechanism-separation, domain-bounded-context]
+
+  - id: architecture-boundary-strength
+    title: Select boundary strength separately from boundary existence
+    category: architecture
+    claim: Source seams, facades, inverted interfaces, release components, local processes, network services, transaction boundaries, and semantic relationships provide different protection at different costs.
+    decision_rule: After a force earns a boundary, compare crossing semantics, translation, versioning, latency, failure, observability, testing, release, data, and ownership costs; choose the cheapest strength that satisfies the current force and define strengthen, merge, or delete triggers.
+    why_it_matters: Treating every boundary as an interface or service either under-protects important independence or imports distributed and compatibility costs unnecessarily.
+    applicable_when: ["an architectural boundary has been earned", "reviewing whether a module should become a component, process, or service"]
+    not_applicable_when: ["no independent force has earned a boundary"]
+    required_evidence: ["required independence dimension", "crossing contract including failure and temporal semantics", "release and deployment requirements", "data ownership and transaction needs", "operational capability"]
+    insufficient_evidence: ["a boundary exists in a diagram", "test substitution alone", "a separate repository", "future distribution without an operational driver"]
+    required_inputs: ["earned boundary force", "candidate crossing mechanisms", "cost and reversal analysis"]
+    expected_outputs: ["selected boundary kind and strength", "crossing semantics and owner", "migration, reversal, and verification triggers"]
+    preservation_boundaries: ["semantic fidelity", "invariants and transaction scope", "latency, failure, durability, and compatibility contracts"]
+    safe_actions: ["keep a semantic boundary in-process", "use a facade as an explicitly partial seam", "strengthen only one affected quantum"]
+    unsafe_actions: ["equate interface with decoupling", "equate bounded context with service", "cross a network while assuming local failure semantics"]
+    common_failure_modes: ["false independence", "partial boundary presented as full protection", "accidental distributed transaction", "unowned translation"]
+    counterexamples: ["Two independently named packages can remain one architectural unit when they share data, release, failure, and change semantics."]
+    interactions: ["Requires architecture-earned-boundary first.", "Uses architecture-distribution-readiness before selecting network strength.", "Can realize domain-bounded-context in-process without equating the concepts."]
+    conflicts: [conflict-full-vs-partial-vs-no-boundary, conflict-monolith-vs-distributed-services]
+    source_support:
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/029-chapter-18-boundary-anatomy.md :: BOUNDARY CROSSING"
+        contribution: "Distinguishes source, component, process, and service boundary mechanisms."
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/035-chapter-24-partial-boundaries.md :: FACADES"
+        contribution: "Shows a low-cost boundary form with limited directional protection."
+      - source_id: SRC-FSA
+        relationship: corroboration
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/024-chapter-18-choosing-the-appropriate-architecture-style.md :: Monolith versus distributed"
+        contribution: "Makes deployment topology a separate costed decision."
+    confidence: strong
+    roles: [architecture-agent, coding-agent, legacy-code-agent, review-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [boundary strength, partial boundary, facade, process boundary, service boundary, deployment boundary]
+    routing:
+      activate_for_roles: [architecture-agent, coding-agent, legacy-code-agent, review-agent]
+      activate_for_tasks: [boundary-selection, service-extraction, modularization, migration-design]
+      activate_for_repository_signals: [interface proposal, package seam, separate deployment, remote call, partial boundary]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [architecture, data, operational, compatibility]
+      exclude_when: [no boundary force is demonstrated]
+      prerequisites: [architecture-earned-boundary, crossing semantics]
+      retrieval_priority: high
+      retrieval_budget_hint: 420
+      related_concepts: [architecture-earned-boundary, architecture-distribution-readiness, architecture-modular-monolith, domain-bounded-context]
+
+  - id: architecture-dependency-inversion-gate
+    title: Earn dependency inversion from policy pressure
+    category: architecture
+    claim: Direct dependencies remain preferable until a stable consumer policy, asymmetric volatility, real substitution, legacy interception, ownership, release, or deployment need earns inversion.
+    decision_rule: State the concrete harm of the current dependency, test whether moving ownership removes it, define the smallest consumer-needed contract, and introduce inversion only when independent-change value exceeds interface, adapter, lifecycle, navigation, and testing cost.
+    why_it_matters: Interface-per-class design creates mock-shaped APIs and permanent indirection without protecting any stable policy.
+    applicable_when: ["a volatile provider threatens stable policy", "multiple real implementations or independent deployment exist", "a legacy dependency requires an interception seam"]
+    not_applicable_when: ["one stable implementation shares lifecycle and ownership", "the interface would mirror the provider", "a function or direct adapter is clearer"]
+    required_evidence: ["consumer policy and provider volatility", "real implementation, substitution, release, or legacy-seam need", "narrow contract and owner", "net cost comparison"]
+    insufficient_evidence: ["a concrete class exists", "a test wants a mock", "generic desire to decouple", "hypothetical future implementation"]
+    required_inputs: ["current dependency and harm", "consumer use cases", "variation and ownership history"]
+    expected_outputs: ["direct, adapter, facade, or inverted dependency decision", "contract owner and deletion or review trigger"]
+    preservation_boundaries: ["behavior and failure semantics", "lifecycle and performance visibility", "repository language idioms"]
+    safe_actions: ["define a consumer-owned narrow port", "inject a function where idiomatic", "retain direct coupling when stable"]
+    unsafe_actions: ["interface per class", "provider-owned broad interface", "use network distribution as a DIP implementation without operational evidence"]
+    common_failure_modes: ["speculative indirection", "mock-shaped production API", "cycle relocated rather than removed", "leaky contract"]
+    counterexamples: ["A single stable standard-library implementation normally needs no project-owned interface solely for mocking."]
+    interactions: ["Specializes universal-earned-abstraction for architectural dependency direction.", "May realize architecture-policy-mechanism-separation but is not synonymous with it."]
+    conflicts: [conflict-dependency-inversion-vs-direct-coupling]
+    source_support:
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/020-chapter-11-dip-the-dependency-inversion-principle.md :: STABLE ABSTRACTIONS"
+        contribution: "Directs source dependencies toward stable abstractions protecting policy."
+      - source_id: SRC-CA
+        relationship: refinement
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/035-chapter-24-partial-boundaries.md :: FACADES"
+        contribution: "Shows that a facade may be sufficient when full inversion is unearned."
+      - source_id: SRC-DDD
+        relationship: tension
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/007-chapter-6-the-life-cycle-of-a-domain-object.md :: When a Constructor Is All You Need"
+        contribution: "Provides a simplicity counterweight to automatic lifecycle abstractions."
+    confidence: contextual
+    roles: [architecture-agent, coding-agent, legacy-code-agent, review-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith]
+    retrieval_terms: [dependency inversion, interface pressure, consumer-owned interface, stable policy, adapter, direct coupling]
+    routing:
+      activate_for_roles: [architecture-agent, coding-agent, legacy-code-agent, review-agent]
+      activate_for_tasks: [interface-design, dependency-breaking, boundary-design, legacy-seam]
+      activate_for_repository_signals: [volatile dependency, multiple implementations, mock-heavy interface, dependency cycle, legacy static dependency]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [architecture, maintainability, compatibility]
+      exclude_when: [one stable implementation with shared lifecycle and no policy pressure]
+      prerequisites: [concrete dependency harm, consumer contract sketch]
+      retrieval_priority: high
+      retrieval_budget_hint: 390
+      related_concepts: [universal-earned-abstraction, architecture-policy-mechanism-separation, architecture-boundary-strength]
+
+  - id: architecture-policy-mechanism-separation
+    title: Protect independent policy from contingent mechanism
+    category: architecture
+    claim: Independently valuable business or application policy should depend on stable semantic contracts rather than volatile delivery, persistence, framework, device, or deployment representations.
+    decision_rule: Identify policy whose meaning and tests can evolve independently, list caller-visible mechanism semantics that cannot be hidden, and introduce only enough translation and dependency control to protect that policy.
+    why_it_matters: Mechanism leakage amplifies framework, storage, device, and delivery changes through policy, while absolute detail claims can hide real consistency, latency, safety, or operational constraints.
+    applicable_when: ["business or application policy is obscured by framework, database, web, or device types", "mechanism volatility repeatedly changes policy code"]
+    not_applicable_when: ["the mechanism determines required domain semantics or quality", "the workflow is simple and separation costs more than it protects"]
+    required_evidence: ["independently meaningful policy", "volatile or replaceable mechanism", "stable semantic crossing data", "mechanism semantics that callers must still observe"]
+    insufficient_evidence: ["the source calls a technology a detail", "generic layering preference", "testability alone"]
+    required_inputs: ["policy and mechanism map", "change and failure evidence", "crossing contract"]
+    expected_outputs: ["protected policy boundary or justified direct integration", "explicit crossing data and exposed operational semantics"]
+    preservation_boundaries: ["domain meaning and invariants", "required consistency, latency, failure, safety, and durability behavior", "repository framework commitments"]
+    safe_actions: ["translate framework types at an edge", "keep domain policy independently testable", "expose caller-relevant failure and cost"]
+    unsafe_actions: ["declare database or web universally irrelevant", "hide distributed consistency behind a local-looking port", "duplicate policy in adapters"]
+    common_failure_modes: ["anemic pass-through layers", "mechanism types leaking inward", "operational semantics hidden by abstraction", "school-driven layering"]
+    counterexamples: ["In an embedded controller, hardware timing or safety constraints may be policy inputs rather than replaceable details."]
+    interactions: ["Refines universal-information-hiding at architectural scale.", "Architecture-dependency-inversion-gate is one possible mechanism, not an automatic requirement.", "Domain-language-model-loop supplies the local meaning of policy."]
+    conflicts: [conflict-domain-purity-vs-implementation-simplicity, conflict-model-fidelity-vs-performance-representation]
+    source_support:
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/033-chapter-22-the-clean-architecture.md :: THE DEPENDENCY RULE"
+        contribution: "Directs architectural dependencies inward toward higher-level policy."
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/033-chapter-22-the-clean-architecture.md :: WHICH DATA CROSSES THE BOUNDARIES"
+        contribution: "Keeps external framework and database representations from crossing into policy."
+      - source_id: SRC-DDD
+        relationship: direct_support
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/005-chapter-4-isolating-the-domain.md :: The Domain Layer Is Where the Model Lives"
+        contribution: "Protects domain meaning from user-interface and infrastructure concerns."
+    confidence: strong
+    roles: [architecture-agent, coding-agent, legacy-code-agent, review-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [policy mechanism, dependency rule, domain isolation, clean architecture, adapter, framework boundary]
+    routing:
+      activate_for_roles: [architecture-agent, coding-agent, legacy-code-agent, review-agent]
+      activate_for_tasks: [boundary-design, framework-adoption, persistence-design, legacy-integration, architecture-review]
+      activate_for_repository_signals: [framework types in domain, database model leakage, device API in policy, repeated mechanism churn]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [architecture, maintainability, data, operational]
+      exclude_when: [mechanism semantics are the product or separation has no independent policy value]
+      prerequisites: [identified policy, mechanism semantics]
+      retrieval_priority: high
+      retrieval_budget_hint: 430
+      related_concepts: [universal-information-hiding, architecture-dependency-inversion-gate, architecture-earned-boundary, domain-language-model-loop]
+
+  - id: architecture-change-locality-cohesion
+    title: Group architecture by semantic cohesion and change locality
+    category: architecture
+    claim: Components should group behavior that shares meaning and closes against the same changes, while reuse and release forces remain explicit competing evidence rather than automatic grouping rules.
+    decision_rule: Trace representative changes, consumers, releases, responsibilities, and domain concepts; group what must change or be understood together; split only when recognizable seams reduce coordinated change without weakening information hiding.
+    why_it_matters: Arbitrary size, technical categories, or reuse can scatter one responsibility and amplify routine changes across components.
+    applicable_when: ["selecting component or module granularity", "reviewing recurring coordinated changes or scattered responsibilities"]
+    not_applicable_when: ["generated or vendored structure is governed elsewhere", "the alleged pressure is one anomalous change"]
+    required_evidence: ["representative change and co-change paths", "semantic responsibilities and invariants", "consumer and release relationships", "current navigation and coordination cost"]
+    insufficient_evidence: ["line count", "one directory contains many files", "syntactic similarity", "a desired uniform component size"]
+    required_inputs: ["change history or representative scenarios", "dependency and consumer map", "domain language or responsibility model"]
+    expected_outputs: ["cohesion rationale and component candidates", "kept-together and separated responsibilities", "remaining reuse and release tradeoffs"]
+    preservation_boundaries: ["semantic integrity", "authoritative policy ownership", "public release and compatibility contracts"]
+    safe_actions: ["co-locate an invariant with its data", "tolerate duplication across independently changing contexts", "iterate granularity after real changes"]
+    unsafe_actions: ["split by size alone", "centralize syntactically similar but semantically different policy", "force one component per actor or entity"]
+    common_failure_modes: ["coincidental cohesion", "change amplification", "accidental shared kernel", "release component with unrelated consumers"]
+    counterexamples: ["Two similar validation functions may remain separate when they represent different authorities and evolve independently."]
+    interactions: ["Specializes universal-local-reasoning and universal-change-amplification for architectural grouping.", "Can provide evidence for architecture-earned-boundary.", "Universal-earned-abstraction governs whether shared code is extracted."]
+    conflicts: [conflict-abstraction-vs-duplication, conflict-domain-vs-technical-partition]
+    source_support:
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/023-chapter-13-component-cohesion.md :: THE COMMON CLOSURE PRINCIPLE"
+        contribution: "Groups component contents by common reasons to change."
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/023-chapter-13-component-cohesion.md :: THE TENSION DIAGRAM FOR COMPONENT COHESION"
+        contribution: "Preserves conflict among closure, reuse, and release forces."
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/008-chapter-3-modularity.md :: Cohesion"
+        contribution: "Ranks grouping quality from functional toward coincidental cohesion."
+    confidence: strong
+    roles: [architecture-agent, coding-agent, refactoring-agent, review-agent, repository-assessment-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, monolith, distributed-system]
+    retrieval_terms: [component cohesion, change locality, common closure, common reuse, component granularity, semantic cohesion]
+    routing:
+      activate_for_roles: [architecture-agent, coding-agent, refactoring-agent, review-agent, repository-assessment-agent]
+      activate_for_tasks: [component-design, module-design, decomposition, architecture-review, repository-assessment]
+      activate_for_repository_signals: [coordinated edits, scattered invariant, release coupling, broad component, duplicate policy]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [maintainability, architecture, compatibility]
+      exclude_when: [generated or vendored organization]
+      prerequisites: [representative change or responsibility evidence]
+      retrieval_priority: high
+      retrieval_budget_hint: 400
+      related_concepts: [universal-local-reasoning, universal-change-amplification, universal-earned-abstraction, architecture-earned-boundary, architecture-contextual-partitioning]
+
+  - id: architecture-contextual-partitioning
+    title: Treat partition dimensions as separate contextual choices
+    category: architecture
+    claim: Technical concern, domain capability, source visibility, ownership, release, deployment, and semantic context are separate partition axes that may be composed rather than forced into one whole-system scheme.
+    decision_rule: Compare domain and technical partitions against actual changes, local reasoning, enforcement, quality attributes, ownership, and deployment; select the nesting and visibility that minimizes total coordination for the target scope.
+    why_it_matters: Layer-only organization can scatter features, while domain-only organization can duplicate mechanism or conceal cross-cutting operational constraints.
+    applicable_when: ["choosing package, module, component, or service organization", "reviewing domain versus technical layering"]
+    not_applicable_when: ["the repository mandates generated or externally owned structure"]
+    required_evidence: ["feature and technical change paths", "responsibility and domain-capability map", "visibility and enforcement capability", "ownership and deployment constraints"]
+    insufficient_evidence: ["a school prefers layers or features", "directory names", "organization chart alone", "one entity per module"]
+    required_inputs: ["current partition and change evidence", "repository language and build enforcement", "domain and operational concerns"]
+    expected_outputs: ["selected partition axes and nesting", "allowed and forbidden dependencies", "explicit duplicated or shared mechanism"]
+    preservation_boundaries: ["domain invariants", "cross-cutting security and operational behavior", "repository visibility conventions"]
+    safe_actions: ["use technical adapters inside domain modules", "retain a shared technical mechanism behind narrow contracts", "mix partition styles across quanta explicitly"]
+    unsafe_actions: ["infer domain boundaries from folders", "apply one partition style enterprise-wide", "hide cross-cutting failure semantics"]
+    common_failure_modes: ["package-by-layer change amplification", "feature folders without encapsulation", "domain purity that duplicates unsafe mechanism"]
+    counterexamples: ["A small framework adapter library can be technically partitioned even when application behavior is organized by domain capability."]
+    interactions: ["Uses architecture-change-locality-cohesion as grouping evidence.", "Domain-bounded-context is a semantic partition and remains distinct from package or service partitions."]
+    conflicts: [conflict-domain-vs-technical-partition, conflict-uniformity-vs-context-sensitive-design]
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/013-chapter-8-component-based-thinking.md :: Architecture Partitioning"
+        contribution: "Compares domain and technical partitioning as alternative architectural axes."
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/046-chapter-34-the-missing-chapter.md :: PACKAGE BY COMPONENT"
+        contribution: "Connects source organization and encapsulation to visible use-case boundaries."
+      - source_id: SRC-DDD
+        relationship: refinement
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/006-chapter-5-a-model-expressed-in-software.md :: Modules (a.k.a. Packages)"
+        contribution: "Uses modules for conceptual cohesion rather than infrastructure-driven packaging."
+    confidence: contextual
+    roles: [architecture-agent, coding-agent, review-agent, repository-assessment-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, monolith, distributed-system]
+    retrieval_terms: [domain partitioning, technical partitioning, package by component, package by feature, layered architecture]
+    routing:
+      activate_for_roles: [architecture-agent, coding-agent, review-agent, repository-assessment-agent]
+      activate_for_tasks: [package-design, module-design, component-partitioning, architecture-review]
+      activate_for_repository_signals: [package by layer, feature folder, scattered change, domain module proposal, component reorganization]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [architecture, maintainability]
+      exclude_when: [generated layout or fixed external packaging contract]
+      prerequisites: [change and responsibility evidence]
+      retrieval_priority: high
+      retrieval_budget_hint: 370
+      related_concepts: [architecture-change-locality-cohesion, architecture-earned-boundary, architecture-modular-monolith, domain-bounded-context]
+
+  - id: architecture-structural-constraint-enforcement
+    title: Enforce accepted structural constraints proportionately
+    category: architecture
+    claim: Consequential forbidden dependencies and architecture contracts should use the cheapest reliable compiler, build, static, test, or fitness enforcement that protects the accepted outcome without freezing replaceable detail.
+    decision_rule: Name the accepted structural rule and consequence of violation, select a signal directly tied to it, establish scope and owner, and automate only when false positives and maintenance cost remain lower than drift risk.
+    why_it_matters: Diagrams and conventions alone drift, while indiscriminate automated gates create metric gaming and block legitimate evolution.
+    applicable_when: ["an accepted dependency or context rule is repeatedly violated", "structural drift would have material cost or risk"]
+    not_applicable_when: ["the decision is provisional", "the check can observe only an implementation detail with no protected outcome"]
+    required_evidence: ["accepted structural constraint", "observable violation and consequence", "reliable enforcement point", "owner and supersession process"]
+    insufficient_evidence: ["the diagram shows an arrow", "a metric threshold is convenient", "one review comment"]
+    required_inputs: ["decision record", "dependency or contract model", "build and test capabilities"]
+    expected_outputs: ["enforcement rule and scope", "failure message and owner", "exception and supersession process"]
+    preservation_boundaries: ["legitimate implementation freedom", "build reliability", "accepted dependency and security rules"]
+    safe_actions: ["detect dependency cycles", "enforce forbidden imports", "validate public contract compatibility"]
+    unsafe_actions: ["freeze every class layout", "fail builds on an unexplained proxy", "use a check to create unaccepted architecture"]
+    common_failure_modes: ["architecture lint theater", "stale gate", "false-positive fatigue", "implementation detail ossification"]
+    counterexamples: ["A one-time exploratory boundary proposal should be tested before it becomes a mandatory repository gate."]
+    interactions: ["Is one realization of architecture-fitness-functions.", "Architecture-decision-record supplies accepted status and supersession authority."]
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/011-chapter-6-measuring-and-governing-architecture-characteristics.md :: Fitness Functions"
+        contribution: "Uses executable signals to govern architecture characteristics."
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/011-chapter-6-measuring-and-governing-architecture-characteristics.md :: Cyclic dependencies"
+        contribution: "Provides dependency-cycle detection as a structural fitness example."
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/046-chapter-34-the-missing-chapter.md :: ENCAPSULATION"
+        contribution: "Shows that source organization protects architecture only when visibility is enforceable."
+    confidence: strong
+    roles: [architecture-agent, coding-agent, review-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [architecture enforcement, fitness function, dependency rule, architecture lint, cyclic dependency]
+    routing:
+      activate_for_roles: [architecture-agent, coding-agent, review-agent]
+      activate_for_tasks: [architecture-governance, fitness-design, dependency-review, build-guard]
+      activate_for_repository_signals: [forbidden import, dependency cycle, repeated architecture violation, architecture linter]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [architecture, build, security, compatibility]
+      exclude_when: [unaccepted or exploratory structural proposal]
+      prerequisites: [accepted decision, reliable observable]
+      retrieval_priority: high
+      retrieval_budget_hint: 330
+      related_concepts: [architecture-fitness-functions, architecture-decision-record, architecture-scoped-characteristics]
+
+  - id: architecture-metrics-as-signals
+    title: Treat architecture metrics as investigation signals
+    category: architecture
+    claim: Coupling, complexity, instability, abstractness, coverage, and distance metrics are narrow proxies that can identify questions but cannot decide architecture without repository-relative semantic, historical, and operational evidence.
+    decision_rule: Define the metric, baseline, trend, distribution, and confounders; investigate outliers; act only when corroborating evidence connects the signal to an accepted architecture risk or characteristic.
+    why_it_matters: Universal thresholds and metric optimization invite Goodhart effects, aesthetic restructuring, and false correctness claims.
+    applicable_when: ["using static structure, complexity, coverage, or coupling measures in assessment", "designing architecture governance metrics"]
+    not_applicable_when: ["the signal's semantics or collection method is unknown"]
+    required_evidence: ["metric definition and scope", "repository baseline and trend", "known confounders", "causal link to an accepted outcome or risk"]
+    insufficient_evidence: ["one snapshot", "universal threshold", "ranking without semantic context", "coverage as correctness proof"]
+    required_inputs: ["metric samples", "repository structure and history", "claimed architecture concern"]
+    expected_outputs: ["investigate, monitor, reject, or corroborated intervention", "explicit limits on the metric claim"]
+    preservation_boundaries: ["domain correctness and understandable structure", "generated and vendored code scope", "metric meaning across comparisons"]
+    safe_actions: ["flag a cycle for investigation", "compare compatible trends", "combine metric with change or incident evidence"]
+    unsafe_actions: ["split code solely to lower a number", "optimize coverage percentage", "claim a fitness proxy proves architecture"]
+    common_failure_modes: ["Goodhart effect", "threshold cargo cult", "metric-driven aesthetic refactor", "wrong-scope comparison"]
+    counterexamples: ["A detected forbidden dependency can be a direct contract violation when the dependency rule itself is accepted; it need not be treated as merely statistical."]
+    interactions: ["Specializes universal-evidence-before-intervention and universal-measure-claimed-improvement.", "Architecture-fitness-functions can use metrics only with explicit semantics and protected outcomes."]
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/008-chapter-3-modularity.md :: Limitations of Metrics"
+        contribution: "Limits what structural coupling and cohesion metrics can establish."
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/011-chapter-6-measuring-and-governing-architecture-characteristics.md :: They aren't physics"
+        contribution: "Rejects physics-like certainty for software architecture measures."
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/024-chapter-14-component-coupling.md :: CONCLUSION"
+        contribution: "Treats component metrics as imperfect heuristics rather than absolute gods."
+    confidence: universal
+    roles: [architecture-agent, review-agent, refactoring-agent, repository-assessment-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [architecture metric, coupling metric, instability, abstractness, main sequence, complexity threshold]
+    routing:
+      activate_for_roles: [architecture-agent, review-agent, refactoring-agent, repository-assessment-agent]
+      activate_for_tasks: [architecture-assessment, metric-review, hotspot-triage, governance]
+      activate_for_repository_signals: [complexity report, coupling score, coverage threshold, instability metric, architecture dashboard]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [architecture, evidence, maintainability]
+      exclude_when: [accepted binary contract violation is directly observed]
+      prerequisites: [metric definition and repository baseline]
+      retrieval_priority: core
+      retrieval_budget_hint: 340
+      related_concepts: [universal-evidence-before-intervention, universal-measure-claimed-improvement, architecture-fitness-functions]
+
+  - id: architecture-modular-monolith
+    title: Prefer a modular monolith when one operational envelope suffices
+    category: architecture
+    claim: Enforceable in-process modules are a first-class topology when one deployment, consistency, latency, failure, and operational envelope satisfies current drivers.
+    decision_rule: Test whether source/domain modules can meet ownership and change needs without networking; retain one process unless independent scale, availability, geography, security, or deployment requirements justify distribution.
+    why_it_matters: A modular monolith preserves local transactions and simpler operations while enabling semantic and source boundaries, avoiding a distributed tax before it is earned.
+    applicable_when: ["designing a new service or product topology", "evaluating service extraction from a monolith", "domain modules need stronger source boundaries"]
+    not_applicable_when: ["a module has an irreducible independent availability, geography, security, or scaling requirement"]
+    required_evidence: ["cohesive module responsibilities", "acceptable shared deployment and failure domain", "transaction and data needs", "enforceable source boundaries"]
+    insufficient_evidence: ["monolith is old", "microservices are current", "separate teams exist", "folders are already separate"]
+    required_inputs: ["driver and characteristic set", "workflow and transaction map", "team and operational capabilities"]
+    expected_outputs: ["modular-monolith, coarse-service, or distributed decision", "module contracts and extraction triggers"]
+    preservation_boundaries: ["module semantics and invariants", "transaction behavior", "deployment and recovery reliability"]
+    safe_actions: ["enforce in-process module visibility", "assign explicit data authority", "extract only a driver-backed quantum later"]
+    unsafe_actions: ["call a big ball of mud modular", "share internals through backchannels", "treat modular monolith as a mandatory temporary stage"]
+    common_failure_modes: ["modules without enforcement", "shared database ownership ambiguity", "monolith stigma driving distribution"]
+    counterexamples: ["A globally distributed low-latency edge capability with independent availability may require deployment separation even when its code is cohesive."]
+    interactions: ["Competes with distribution under architecture-distribution-readiness.", "Architecture-contextual-partitioning defines source organization; domain-bounded-context remains semantic rather than deployable by definition."]
+    conflicts: [conflict-monolith-vs-distributed-services]
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/024-chapter-18-choosing-the-appropriate-architecture-style.md :: Modular Monolith"
+        contribution: "Presents modular monolith as a deliberate architecture candidate."
+      - source_id: SRC-CA
+        relationship: corroboration
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/029-chapter-18-boundary-anatomy.md :: THE DREADED MONOLITH"
+        contribution: "Shows that meaningful source-level boundaries can exist inside one deployable unit."
+      - source_id: SRC-DDD
+        relationship: corroboration
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/006-chapter-5-a-model-expressed-in-software.md :: Modules (a.k.a. Packages)"
+        contribution: "Supports conceptually cohesive modules without requiring distribution."
+    confidence: contextual
+    roles: [architecture-agent, coding-agent, review-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, CLI, monolith]
+    retrieval_terms: [modular monolith, in-process module, service extraction, monolith, module boundary]
+    routing:
+      activate_for_roles: [architecture-agent, coding-agent, review-agent]
+      activate_for_tasks: [topology-selection, service-decomposition, modularization, architecture-review]
+      activate_for_repository_signals: [microservice proposal, monolith decomposition, shared transactions, operational simplicity]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [architecture, operational, data, cost]
+      exclude_when: [hard independent deployment or isolation requirement already established]
+      prerequisites: [driver set, module and transaction map]
+      retrieval_priority: high
+      retrieval_budget_hint: 380
+      related_concepts: [architecture-distribution-readiness, architecture-boundary-strength, architecture-contextual-partitioning, domain-bounded-context]
+
+  - id: architecture-distribution-readiness
+    title: Earn distribution and prove operational readiness
+    category: architecture
+    claim: Process or network distribution is justified only by an irreducible current driver and explicit readiness for data authority, partial failure, consistency, compatibility, delivery, observability, security, recovery, and cost.
+    decision_rule: Establish the driver and baseline, model critical workflows and failures, assign authoritative data and transactions, assess platform and on-call capability, compare in-process and coarse alternatives, and distribute only the quanta whose benefits exceed the distributed tax.
+    why_it_matters: Distribution can provide isolation and independent scale, but it creates latency, failure, contract, data, security, and operational coupling that source modularity does not.
+    applicable_when: ["proposing services, processes, queues, or independent deployments", "reviewing a distributed migration or service decomposition"]
+    not_applicable_when: ["a source module or local algorithm solves the demonstrated problem", "operational readiness is absent"]
+    required_evidence: ["measured scale, isolation, geography, security, or deployment driver", "data authority and transaction plan", "partial-failure and compatibility design", "CI/CD, observability, on-call, recovery, and cost capability"]
+    insufficient_evidence: ["future scale", "one team per service", "bounded context exists", "separate repositories", "async messaging is available"]
+    required_inputs: ["critical workflows and quality scenarios", "data and transaction topology", "platform and operator capability", "migration and reversal plan"]
+    expected_outputs: ["remain in-process, run bounded trial, or distribute", "readiness gaps and owners", "failure, consistency, and rollback semantics"]
+    preservation_boundaries: ["domain invariants", "user-visible completion and consistency", "durability, security, latency, and compatibility"]
+    safe_actions: ["run an isolated capacity experiment", "extract one mature quantum", "retain a modular monolith", "define merge-back triggers"]
+    unsafe_actions: ["service per entity", "network call treated as local", "shared data with claimed independent deployment", "distribution without recovery ownership"]
+    common_failure_modes: ["distributed monolith", "saga discovered after split", "untraceable failure", "contract lockstep", "operational overload"]
+    counterexamples: ["A small cohesive library used in one process does not need a service merely to be reusable."]
+    interactions: ["Architecture-scoped-characteristics supplies the driver.", "Architecture-modular-monolith is the lower-cost comparison.", "Domain-bounded-context may inform a candidate seam but never entails distribution.", "Performance-measurable-objective is required when scale or latency is the driver."]
+    conflicts: [conflict-monolith-vs-distributed-services, conflict-model-fidelity-vs-performance-representation]
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/015-chapter-9-foundations.md :: Other Distributed Considerations"
+        contribution: "Catalogs distributed logging, transactions, contracts, and network costs."
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/038-chapter-27-services-great-and-small.md :: THE DECOUPLING FALLACY"
+        contribution: "Rejects the claim that service boundaries inherently decouple policy."
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/024-chapter-18-choosing-the-appropriate-architecture-style.md :: Monolith versus distributed"
+        contribution: "Makes topology a driver-based tradeoff rather than a maturity progression."
+    confidence: strong
+    roles: [architecture-agent, performance-agent, review-agent, debugging-and-repair-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, monolith, distributed-system]
+    retrieval_terms: [distributed readiness, microservices, network fallacies, service decomposition, data ownership, distributed transaction]
+    routing:
+      activate_for_roles: [architecture-agent, performance-agent, review-agent, debugging-and-repair-agent]
+      activate_for_tasks: [topology-selection, microservice-design, service-extraction, distributed-migration, distributed-review]
+      activate_for_repository_signals: [remote call, queue, service split, saga, independent deployment, distributed database]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [architecture, operational, data, durability, security, performance, cost]
+      exclude_when: [purely in-process module design]
+      prerequisites: [irreducible driver, data and failure model]
+      retrieval_priority: specialist
+      retrieval_budget_hint: 520
+      related_concepts: [architecture-scoped-characteristics, architecture-modular-monolith, architecture-boundary-strength, architecture-event-temporal-semantics, domain-bounded-context, performance-measurable-objective]
+
+  - id: architecture-contextual-style-selection
+    title: Select architecture style from drivers rather than fashion
+    category: architecture
+    claim: Architecture styles and hybrids are contextual technique bundles whose value and costs must be evaluated per scoped drivers, workflows, data, team, operations, migration, and existing constraints.
+    decision_rule: Include current structure and no topology change as candidates; eliminate styles that violate hard constraints; walk normal, failure, recovery, deployment, and evolution scenarios through finalists; choose per quantum and document hybrid crossings.
+    why_it_matters: Style prestige and reference diagrams conceal the data, operational, coordination, and migration costs that determine fitness in a real repository.
+    applicable_when: ["selecting or changing a system or subsystem architecture style", "reviewing layered, pipeline, plugin, service, event, space-based, or microservice proposals"]
+    not_applicable_when: ["a local implementation or module change meets the accepted driver"]
+    required_evidence: ["ranked scoped characteristics", "representative workflows and failure scenarios", "data and team topology", "operational and migration capability", "current-style baseline"]
+    insufficient_evidence: ["industry fashion", "source preference", "style rating table alone", "diagram similarity"]
+    required_inputs: ["driver and constraint set", "current architecture", "candidate technique costs"]
+    expected_outputs: ["selected style or retained current structure", "tradeoffs and rejected alternatives", "hybrid seams, verification, and reversal triggers"]
+    preservation_boundaries: ["behavior and data semantics", "accepted qualities", "operational ownership and cost"]
+    safe_actions: ["apply different styles to different quanta", "retain a modular monolith", "run a bounded topology experiment"]
+    unsafe_actions: ["one style for the enterprise", "microservices because bounded contexts exist", "copy a reference topology without failure analysis"]
+    common_failure_modes: ["architecture fashion", "hybrid seams left implicit", "benefits-only comparison", "migration cost omitted"]
+    counterexamples: ["A batch transformation subsystem may use a pipeline inside an otherwise layered monolith without forcing the entire system into pipeline architecture."]
+    interactions: ["Architecture-scoped-characteristics drives selection.", "Architecture-distribution-readiness gates distributed styles.", "Universal-no-change-option remains a required candidate."]
+    conflicts: [conflict-uniformity-vs-context-sensitive-design, conflict-monolith-vs-distributed-services]
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/024-chapter-18-choosing-the-appropriate-architecture-style.md :: Decision Criteria"
+        contribution: "Selects styles using domain, characteristic, data, organization, process, and operational criteria."
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/024-chapter-18-choosing-the-appropriate-architecture-style.md :: Shifting \"Fashion\" in Architecture"
+        contribution: "Rejects fashion as a sufficient architecture selector."
+      - source_id: SRC-DDD
+        relationship: corroboration
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/018-chapter-16-large-scale-structure.md :: How Restrictive Should a Structure Be?"
+        contribution: "Requires structure strength to fit current model and team needs."
+    confidence: strong
+    roles: [architecture-agent, review-agent, repository-assessment-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [architecture style, architecture fashion, hybrid architecture, style selection, layered, microkernel, microservices]
+    routing:
+      activate_for_roles: [architecture-agent, review-agent, repository-assessment-agent]
+      activate_for_tasks: [style-selection, architecture-assessment, topology-migration, architecture-review]
+      activate_for_repository_signals: [new architecture, style migration, reference architecture, microservice proposal, architecture kata]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [architecture, operational, data, cost]
+      exclude_when: [local implementation issue with no architectural driver]
+      prerequisites: [scoped characteristics, current baseline]
+      retrieval_priority: high
+      retrieval_budget_hint: 440
+      related_concepts: [architecture-scoped-characteristics, architecture-modular-monolith, architecture-distribution-readiness, architecture-interaction-synchrony, universal-no-change-option]
+
+  - id: architecture-event-temporal-semantics
+    title: Make event temporal and failure semantics explicit
+    category: architecture
+    claim: Asynchronous and event-driven interaction is safe only when completion, ordering, delivery, duplication, idempotency, retry, loss, replay, reconciliation, observability, and ownership semantics are explicit.
+    decision_rule: Trace normal, timeout, duplicate, reordered, partial, poison-message, and recovery paths; choose broker choreography only for genuinely independent reactions and a mediator or process owner when completion, compensation, audit, or conditional recovery must be governed.
+    why_it_matters: Messaging can move latency and failure out of the caller without eliminating them, producing silent loss, emergent workflows, and unverifiable completion.
+    applicable_when: ["designing events, queues, pub-sub, sagas, or asynchronous workflows", "reviewing choreography versus orchestration"]
+    not_applicable_when: ["a bounded synchronous call already meets response, availability, and load requirements"]
+    required_evidence: ["business completion and temporal requirements", "delivery, ordering, and idempotency contract", "retry, replay, reconciliation, and recovery owner", "queue and end-to-end observability"]
+    insufficient_evidence: ["async is decoupled", "a broker is available", "exactly-once is assumed", "producer success is treated as business completion"]
+    required_inputs: ["workflow and state transitions", "failure scenarios", "consumer ownership and capacity", "durability requirements"]
+    expected_outputs: ["interaction topology and completion owner", "delivery and recovery contract", "failure tests and telemetry"]
+    preservation_boundaries: ["user-visible completion and consistency", "data durability and auditability", "ordering and duplicate semantics"]
+    safe_actions: ["define an idempotency key", "persist process state", "add dead-letter and replay ownership", "keep independent reactions choreographed"]
+    unsafe_actions: ["assume broker acknowledgment means domain completion", "hide commands as events", "retry non-idempotent work blindly", "claim exactly-once without end-to-end proof"]
+    common_failure_modes: ["silent data loss", "poison-message loop", "emergent unowned workflow", "duplicate side effect", "unreconciled partial completion"]
+    counterexamples: ["A fire-and-forget analytics signal can accept loss only when that loss tolerance is explicit and independent of business correctness."]
+    interactions: ["Specializes architecture-interaction-synchrony for asynchronous choices.", "Requires architecture-distribution-readiness for production infrastructure and operations."]
+    conflicts: [conflict-synchronous-vs-asynchronous-interaction, conflict-choreography-vs-orchestration]
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/020-chapter-14-event-driven-architecture-style.md :: Error Handling"
+        contribution: "Makes asynchronous workflow error ownership and recovery explicit."
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/020-chapter-14-event-driven-architecture-style.md :: Preventing Data Loss"
+        contribution: "Shows that messaging topology does not automatically prevent loss."
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/023-chapter-17-microservices-architecture.md :: Choreography and Orchestration"
+        contribution: "Compares decentralized reactions with explicit workflow coordination."
+    confidence: strong
+    roles: [architecture-agent, coding-agent, performance-agent, debugging-and-repair-agent, review-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, distributed-system]
+    retrieval_terms: [event-driven architecture, async, choreography, orchestration, idempotency, message loss, replay]
+    routing:
+      activate_for_roles: [architecture-agent, coding-agent, performance-agent, debugging-and-repair-agent, review-agent]
+      activate_for_tasks: [event-design, asynchronous-workflow, saga-design, messaging-review, distributed-repair]
+      activate_for_repository_signals: [message broker, queue, event handler, saga, retry, dead letter, pub-sub]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [data, durability, operational, correctness, performance]
+      exclude_when: [purely in-process synchronous collaboration]
+      prerequisites: [workflow completion semantics, recovery owner]
+      retrieval_priority: specialist
+      retrieval_budget_hint: 520
+      related_concepts: [architecture-interaction-synchrony, architecture-distribution-readiness, architecture-fitness-functions, universal-explicit-invariants]
+
+  - id: architecture-interaction-synchrony
+    title: Choose synchronous or asynchronous interaction from temporal needs
+    category: architecture
+    claim: Synchronous calls and asynchronous events optimize different response, atomicity, availability, load, and recovery semantics; neither is a universal decoupling default.
+    decision_rule: State when the initiator needs a result and what completion means, model normal and failure paths, use synchronous interaction while combined latency and availability fit the budget, and choose asynchronous progress only with authorized state and recovery semantics.
+    why_it_matters: Choosing by fashion or throughput folklore can convert simple immediate behavior into eventual state, or create long synchronous failure chains.
+    applicable_when: ["selecting communication between components or services", "reviewing request-reply versus event interaction"]
+    not_applicable_when: ["the communication mechanism is fixed by an accepted external protocol and no change is proposed"]
+    required_evidence: ["required response time and completion meaning", "atomicity and consistency need", "latency and availability budget", "load shape and capacity mismatch", "recovery semantics"]
+    insufficient_evidence: ["async is faster", "sync is simpler", "events are more decoupled", "network topology alone"]
+    required_inputs: ["critical workflow", "quality scenarios", "caller and consumer ownership"]
+    expected_outputs: ["synchronous, asynchronous, or hybrid decision", "temporal and failure contract", "verification thresholds"]
+    preservation_boundaries: ["user-visible completion", "transaction and consistency semantics", "latency, availability, and recovery expectations"]
+    safe_actions: ["use synchronous request for a bounded immediate answer", "accept a command then expose async completion state", "buffer independent long-running work"]
+    unsafe_actions: ["change eventuality without authorization", "build an unbounded synchronous call chain", "use async without reconciliation"]
+    common_failure_modes: ["availability coupling", "hidden eventual consistency", "request disguised as event", "caller waits on nominally async work"]
+    counterexamples: ["A payment authorization requiring an immediate accept or reject may remain synchronous even if downstream settlement is asynchronous."]
+    interactions: ["Architecture-event-temporal-semantics is mandatory for an asynchronous selection.", "Architecture-scoped-characteristics supplies latency and availability drivers."]
+    conflicts: [conflict-synchronous-vs-asynchronous-interaction]
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/020-chapter-14-event-driven-architecture-style.md :: Choosing Between Request-Based and Event-Based"
+        contribution: "Compares request and event interactions by workflow and quality consequences."
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/024-chapter-18-choosing-the-appropriate-architecture-style.md :: What communication styles between services—synchronous or asynchronous?"
+        contribution: "Makes communication style an explicit architecture decision criterion."
+      - source_id: SRC-CA
+        relationship: refinement
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/029-chapter-18-boundary-anatomy.md :: SERVICES"
+        contribution: "Distinguishes runtime service crossings from local source boundaries."
+    confidence: strong
+    roles: [architecture-agent, coding-agent, performance-agent, review-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, monolith, distributed-system]
+    retrieval_terms: [synchronous, asynchronous, request reply, temporal coupling, event, latency coupling]
+    routing:
+      activate_for_roles: [architecture-agent, coding-agent, performance-agent, review-agent]
+      activate_for_tasks: [communication-design, API-design, event-design, architecture-review]
+      activate_for_repository_signals: [remote request, event proposal, queue, long call chain, latency SLO]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [architecture, operational, performance, data]
+      exclude_when: [fixed external protocol outside task authority]
+      prerequisites: [workflow temporal requirements]
+      retrieval_priority: specialist
+      retrieval_budget_hint: 390
+      related_concepts: [architecture-event-temporal-semantics, architecture-distribution-readiness, architecture-scoped-characteristics]
+
+  - id: architecture-decision-record
+    title: Record architecture decisions with authority and supersession
+    category: agent-conduct
+    claim: Architecturally significant decisions need a durable record of status, context, scope, alternatives, consequences, authority, verification, and evidence-based supersession triggers.
+    decision_rule: Record proposal versus accepted status, decision owner, affected scope, observations and assumptions, rejected alternatives, positive and negative consequences, compliance evidence, migration, and reversal; require authorization before execution and supersede rather than rewrite history.
+    why_it_matters: Forgotten, email-only, or authority-ambiguous decisions produce repeated debates, silent architecture drift, and implementation presented as permission.
+    applicable_when: ["a choice constrains future implementation or other teams", "a decision affects topology, data, public contracts, security, durability, or costly migration"]
+    not_applicable_when: ["a local reversible implementation detail does not constrain other work"]
+    required_evidence: ["architecture significance and scope", "ranked drivers and alternatives", "decision authority and affected stakeholders", "verification and reversal plan"]
+    insufficient_evidence: ["best practice", "email consensus", "implementation already exists", "diagram without status or consequences"]
+    required_inputs: ["decision question", "evidence and alternatives", "authority model"]
+    expected_outputs: ["proposed, accepted, rejected, or superseded record", "implementation and verification gates", "revisit trigger"]
+    preservation_boundaries: ["repository decision history", "proposal versus authorization", "acceptance remains with authorized owner"]
+    safe_actions: ["draft an ADR", "link evidence and fitness checks", "supersede when assumptions change"]
+    unsafe_actions: ["silently edit accepted rationale", "treat execution as authorization", "record benefits without negative consequences", "store canonical decision only in chat"]
+    common_failure_modes: ["groundhog-day decision", "email-driven architecture", "cover-your-assets record", "status ambiguity"]
+    counterexamples: ["Choosing a private local variable name does not warrant an ADR even when several alternatives exist."]
+    interactions: ["Universal-repository-contract-precedence governs accepted status.", "Architecture-risk-analysis contributes risks and mitigations.", "Architecture-fitness-functions verifies but does not accept the decision."]
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/026-chapter-19-architecture-decisions.md :: Architecture Decision Records"
+        contribution: "Defines durable records for architecture decisions."
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/026-chapter-19-architecture-decisions.md :: ADRs and Request for Comments (RFC)"
+        contribution: "Distinguishes decision records from broader collaborative proposal processes."
+      - source_id: SRC-DDD
+        relationship: refinement
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/019-chapter-17-bringing-the-strategy-together.md :: Decisions must reach the entire team"
+        contribution: "Adds communication and implementation legitimacy to strategic decisions."
+    confidence: strong
+    roles: [architecture-agent, review-agent, repository-assessment-agent, coding-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [ADR, RFC, architecture decision, decision status, supersession, authority]
+    routing:
+      activate_for_roles: [architecture-agent, review-agent, repository-assessment-agent, coding-agent]
+      activate_for_tasks: [architecture-decision, ADR-review, architecture-planning, migration-approval]
+      activate_for_repository_signals: [ADR directory, RFC, architecture proposal, superseded decision, repeated design debate]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [architecture, authority, compatibility, data, operational]
+      exclude_when: [local reversible implementation detail]
+      prerequisites: [decision scope, authority owner]
+      retrieval_priority: high
+      retrieval_budget_hint: 430
+      related_concepts: [universal-repository-contract-precedence, architecture-feedback-loop, architecture-risk-analysis, architecture-fitness-functions]
+
+  - id: architecture-risk-analysis
+    title: Analyze architecture risk collaboratively and proportionately
+    category: architecture
+    claim: Architecture risk should be identified against concrete flows and characteristics by people with design, implementation, domain, operations, and security knowledge, then mitigated or explicitly accepted by the proper authority.
+    decision_rule: Select consequential characteristics and flows, elicit risks independently, reconcile and score likelihood and impact with uncertainty visible, assign mitigation or experiments, and rescore before residual-risk acceptance.
+    why_it_matters: Single-perspective reviews miss implementation and operational failure paths, while averaged scores can manufacture false certainty.
+    applicable_when: ["an architecture decision has consequential uncertainty", "reviewing availability, elasticity, security, durability, or migration risk"]
+    not_applicable_when: ["the change is local, low-risk, and directly verified", "no concrete architecture or workflow exists yet"]
+    required_evidence: ["concrete architecture and critical flows", "scoped characteristics", "cross-role participants", "current controls and incident evidence"]
+    insufficient_evidence: ["generic brainstorming", "one architect's score", "risk label without likelihood, impact, or scenario"]
+    required_inputs: ["architecture view", "quality scenarios", "participant perspectives", "authority for mitigation and acceptance"]
+    expected_outputs: ["risk matrix with uncertainty", "mitigations, owners, and experiments", "residual-risk acceptance requirement"]
+    preservation_boundaries: ["disagreement and uncertainty", "risk acceptance authority", "scope proportionality"]
+    safe_actions: ["risk-storm one critical flow", "create a falsifying experiment", "escalate high residual risk"]
+    unsafe_actions: ["average away disagreement", "treat risk as proven defect", "execute mitigation without authority"]
+    common_failure_modes: ["consensus theater", "generic risk register", "mitigation without verification", "missing operator perspective"]
+    counterexamples: ["A deterministic private refactor with complete focused tests rarely warrants a cross-team risk-storming workshop."]
+    interactions: ["Supplies context to architecture-decision-record.", "Architecture-scoped-characteristics determines which risks matter.", "Universal-minimize-simultaneous-uncertainty guides experiments."]
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/027-chapter-20-analyzing-architecture-risk.md :: Risk Storming"
+        contribution: "Defines collaborative identification and analysis of architecture risks."
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/027-chapter-20-analyzing-architecture-risk.md :: Mitigation"
+        contribution: "Connects identified risks to explicit mitigation."
+      - source_id: SRC-DDD
+        relationship: corroboration
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/019-chapter-17-bringing-the-strategy-together.md :: Assessment First"
+        contribution: "Requires strategic design to begin from the actual model and project condition."
+    confidence: contextual
+    roles: [architecture-agent, review-agent, performance-agent, repository-assessment-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, embedded-system, monolith, distributed-system]
+    retrieval_terms: [architecture risk, risk storming, risk matrix, mitigation, residual risk]
+    routing:
+      activate_for_roles: [architecture-agent, review-agent, performance-agent, repository-assessment-agent]
+      activate_for_tasks: [architecture-risk, architecture-review, migration-review, quality-assessment]
+      activate_for_repository_signals: [high consequence architecture, uncertain availability, security boundary, migration risk, risk workshop]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [architecture, security, durability, operational, performance]
+      exclude_when: [low-risk local change with direct proof]
+      prerequisites: [concrete flow and characteristic]
+      retrieval_priority: specialist
+      retrieval_budget_hint: 390
+      related_concepts: [architecture-decision-record, architecture-scoped-characteristics, architecture-fitness-functions, universal-minimize-simultaneous-uncertainty]
+
+  - id: architecture-fitness-functions
+    title: Verify architecture at its preservation boundaries
+    category: architecture
+    claim: Accepted architecture outcomes and constraints need scoped behavior, fitness functions, telemetry, and boundary tests whose observed property, limitations, owner, and response are explicit.
+    decision_rule: Map each accepted decision to an observable outcome or structural rule, prefer end-to-end outcome measures, establish baseline and threshold, include failure and recovery behavior, and revise checks when the decision is superseded.
+    why_it_matters: Architecture otherwise drifts silently, while passing narrow checks can be overclaimed as complete correctness or stakeholder acceptance.
+    applicable_when: ["an accepted architecture decision can drift", "a quality attribute or boundary requires continuing proof"]
+    not_applicable_when: ["no accepted outcome or reliable observable exists"]
+    required_evidence: ["accepted decision and protected property", "measurement or test semantics", "baseline, threshold, noise, and cadence", "owner and response to failure"]
+    insufficient_evidence: ["coverage percentage", "dependency arrow", "one happy-path integration test", "proxy with no causal link"]
+    required_inputs: ["decision record", "preservation boundary", "test and telemetry capability"]
+    expected_outputs: ["fitness suite or telemetry plan", "claim limitations", "drift response and supersession path"]
+    preservation_boundaries: ["implementation freedom outside protected property", "production privacy and reliability", "verification remains distinct from acceptance"]
+    safe_actions: ["test context translation examples", "enforce dependency cycles", "measure end-to-end recovery", "delete stale checks after supersession"]
+    unsafe_actions: ["expose internals publicly for tests", "freeze every class layout", "claim a green check proves deployability or correctness"]
+    common_failure_modes: ["proxy overclaim", "brittle architecture snapshot", "unowned alert", "test backdoor", "stale fitness gate"]
+    counterexamples: ["A qualitative early architecture hypothesis may need an experiment before any durable fitness function is possible."]
+    interactions: ["Feeds architecture-feedback-loop with evidence.", "Architecture-structural-constraint-enforcement is one mechanism.", "Architecture-decision-record supplies acceptance and supersession context."]
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/011-chapter-6-measuring-and-governing-architecture-characteristics.md :: Fitness Functions"
+        contribution: "Defines executable architecture-characteristic governance."
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/039-chapter-28-the-test-boundary.md :: TESTS AS SYSTEM COMPONENTS"
+        contribution: "Treats tests as architectural clients with their own dependency consequences."
+      - source_id: SRC-DDD
+        relationship: corroboration
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md :: Continuous Integration"
+        contribution: "Uses continuous integration to preserve model integrity within a context."
+    confidence: strong
+    roles: [architecture-agent, coding-agent, review-agent, performance-agent, debugging-and-repair-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [architecture fitness, fitness function, boundary test, architecture verification, drift, compliance]
+    routing:
+      activate_for_roles: [architecture-agent, coding-agent, review-agent, performance-agent, debugging-and-repair-agent]
+      activate_for_tasks: [architecture-verification, fitness-design, boundary-testing, architecture-governance]
+      activate_for_repository_signals: [fitness function, architecture test, contract test, dependency rule, SLO monitor]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [architecture, correctness, operational, data, performance]
+      exclude_when: [no accepted outcome or reliable observable]
+      prerequisites: [accepted decision, preservation boundary]
+      retrieval_priority: high
+      retrieval_budget_hint: 440
+      related_concepts: [architecture-scoped-characteristics, architecture-feedback-loop, architecture-structural-constraint-enforcement, architecture-decision-record, universal-measure-claimed-improvement]
+
+  - id: architecture-framework-commitment
+    title: Treat frameworks as asymmetric architecture commitments
+    category: architecture
+    claim: Framework adoption or extraction is a lifecycle-wide and often asymmetric commitment that is earned only by demonstrated consumers, stable extension needs, and benefits exceeding API control, upgrade, coupling, and replacement cost.
+    decision_rule: Identify which lifecycle and representations the framework controls, compare direct library use and narrow isolation, require multiple proven consumers before generalizing a framework, and define upgrade, replacement, or acceptance strategy.
+    why_it_matters: Framework convenience can scatter framework types and inheritance through core policy, while a speculative internal framework freezes one application's accidental design.
+    applicable_when: ["adopting an invasive framework", "extracting a plugin framework", "reviewing framework leakage or replacement"]
+    not_applicable_when: ["a small library call has no lifecycle control", "the framework semantics are deliberately the product"]
+    required_evidence: ["framework lifecycle and control surface", "current consumers and variation", "upgrade and replacement history", "isolation cost and lost convenience"]
+    insufficient_evidence: ["framework popularity", "one consumer", "hypothetical reuse", "wrapper that mirrors the entire API"]
+    required_inputs: ["framework contract and lifecycle", "application policy boundaries", "consumer evidence"]
+    expected_outputs: ["direct commitment, isolated adapter, extracted framework, or rejection", "ownership and exit strategy"]
+    preservation_boundaries: ["application policy and domain meaning", "framework-required runtime behavior", "upgrade, security, and compatibility obligations"]
+    safe_actions: ["isolate invasive types at an edge", "use framework features directly where they are the accepted platform", "generalize after multiple applications"]
+    unsafe_actions: ["inherit framework base types throughout core policy", "build a framework for one application", "claim a mirror wrapper enables replacement"]
+    common_failure_modes: ["asymmetric marriage", "lowest-common-denominator wrapper", "premature framework", "upgrade lock-in"]
+    counterexamples: ["A repository explicitly built as an extension framework can accept framework semantics as its public product contract."]
+    interactions: ["Universal-earned-abstraction supplies the general evidence gate.", "Architecture-policy-mechanism-separation guides isolation when policy is independent."]
+    conflicts: [conflict-abstraction-vs-duplication]
+    source_support:
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/044-chapter-32-frameworks-are-details.md :: ASYMMETRIC MARRIAGE"
+        contribution: "Frames application-framework commitment as structurally asymmetric."
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/044-chapter-32-frameworks-are-details.md :: THE SOLUTION"
+        contribution: "Recommends limiting framework coupling behind an architectural boundary."
+      - source_id: SRC-DDD
+        relationship: tension
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/018-chapter-16-large-scale-structure.md :: Pluggable Component Framework"
+        contribution: "Shows that an ambitious framework can be appropriate when a mature model and real plugin variation earn it."
+    confidence: contextual
+    roles: [architecture-agent, coding-agent, review-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system]
+    retrieval_terms: [framework adoption, plugin framework, framework lock-in, asymmetric marriage, framework isolation]
+    routing:
+      activate_for_roles: [architecture-agent, coding-agent, review-agent]
+      activate_for_tasks: [framework-adoption, framework-extraction, plugin-design, framework-migration]
+      activate_for_repository_signals: [framework base class, framework types in domain, plugin registry, framework replacement, internal framework proposal]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [architecture, compatibility, security, maintainability]
+      exclude_when: [ordinary library use with no lifecycle or representation control]
+      prerequisites: [consumer evidence, commitment surface]
+      retrieval_priority: specialist
+      retrieval_budget_hint: 390
+      related_concepts: [universal-earned-abstraction, architecture-policy-mechanism-separation, architecture-change-locality-cohesion]
+
+  - id: architecture-team-topology-force
+    title: Treat team topology as a force, not an automatic boundary map
+    category: architecture
+    claim: Team ownership, communication, skill, size, cadence, and control influence architecture, but one team does not automatically imply one context, component, or deployable service.
+    decision_rule: Map actual change coordination and decision authority, combine that evidence with semantic cohesion and quality drivers, and create or strengthen boundaries only where aligned forces exceed the cost of contracts and distribution.
+    why_it_matters: Organization-chart architecture can create artificial services, while ignoring socio-technical coupling can leave every change dependent on cross-team negotiation.
+    applicable_when: ["team ownership is used to justify decomposition", "architecture governance or context relationships cross teams"]
+    not_applicable_when: ["the task is a local implementation decision within an accepted boundary"]
+    required_evidence: ["actual ownership and decision rights", "change and communication paths", "team familiarity, size, experience, and cadence", "semantic and quality alignment"]
+    insufficient_evidence: ["organization chart", "one team per repository", "Conway's Law quoted without current change evidence"]
+    required_inputs: ["team and ownership map", "change history", "domain and deployment boundaries"]
+    expected_outputs: ["aligned or intentionally misaligned team-boundary decision", "coordination and governance plan", "no-service decision where appropriate"]
+    preservation_boundaries: ["domain and data authority", "team autonomy within accepted outcomes", "implementation feedback to architecture"]
+    safe_actions: ["align a mature capability with an owner", "keep shared deployment despite separate teams", "calibrate governance to team experience"]
+    unsafe_actions: ["service per team", "team per bounded context by definition", "central architecture team drains implementers of domain knowledge"]
+    common_failure_modes: ["org-chart decomposition", "false independent deployment", "architectural control mismatch", "feedback-starved application teams"]
+    counterexamples: ["Two small teams can jointly own one modular monolith when release coordination is cheap and domain/data invariants span their work."]
+    interactions: ["Can provide evidence for architecture-earned-boundary but never entails architecture-distribution-readiness.", "Domain-context-relationship-selection uses cooperation and control as explicit inputs."]
+    conflicts: [conflict-architectural-constraint-vs-team-autonomy, conflict-monolith-vs-distributed-services]
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/013-chapter-8-component-based-thinking.md :: Conway's Law"
+        contribution: "Relates communication structure and system design."
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/029-chapter-22-making-teams-effective.md :: How Much Control?"
+        contribution: "Calibrates architectural control to team and project context."
+      - source_id: SRC-CA
+        relationship: tension
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/038-chapter-27-services-great-and-small.md :: THE FALLACY OF INDEPENDENT DEVELOPMENT AND DEPLOYMENT"
+        contribution: "Rejects the assumption that service separation guarantees team independence."
+    confidence: contextual
+    roles: [architecture-agent, review-agent, repository-assessment-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, monolith, distributed-system]
+    retrieval_terms: [Conway law, team topology, ownership boundary, architecture governance, team autonomy]
+    routing:
+      activate_for_roles: [architecture-agent, review-agent, repository-assessment-agent]
+      activate_for_tasks: [team-boundary-design, service-decomposition, governance-design, context-mapping]
+      activate_for_repository_signals: [multiple teams, ownership conflict, service per team, architecture board, cross-team change]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [architecture, organizational, delivery]
+      exclude_when: [local implementation within one accepted boundary]
+      prerequisites: [actual ownership and change evidence]
+      retrieval_priority: high
+      retrieval_budget_hint: 380
+      related_concepts: [architecture-earned-boundary, architecture-distribution-readiness, architecture-decision-record, domain-bounded-context, domain-context-relationship-selection]

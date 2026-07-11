@@ -1,0 +1,2711 @@
+schema_version: agent-doctrine-graph-nodes/1
+nodes:
+- id: universal-evidence-before-intervention
+  kind: principle
+  label: Evidence before intervention
+  definition: An engineering intervention is earned only by evidence capable of establishing the claimed problem and distinguishing the proposed response from no change or lower-cost alternatives.
+  operational_significance: Prevents smells, aesthetics, fashion, and source prestige from becoming action mandates.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - universal-evidence-before-intervention
+  formulations:
+  - F-SRC-SDX-C01-DEBT-DEPENDS-ON-CHANGE
+  - F-SRC-SDX-C02-HOTSPOTS-FOCUS
+  - F-SRC-WELC-C01-CHANGE-PRESERVATION
+  - F-CONCEPT-SDX-4a4d1f2737b8
+  - F-CONCEPT-CC-8730c675fe4f
+  - F-CONCEPT-EGO-04a5f9442d14
+  tags:
+  - evidence
+  - intervention
+  - no-change
+  - agent-conduct
+- id: universal-preserve-behavior-by-default
+  kind: principle
+  label: Preserve behavior by default
+  definition: Observable behavior remains inside the preservation boundary unless an authorized contract explicitly releases or changes it.
+  operational_significance: Makes semantic authority explicit and prevents repair or redesign from hiding inside structural work.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - universal-preserve-behavior-by-default
+  formulations:
+  - F-SRC-REF-C02-TWO-DEFINITIONS
+  - F-SRC-WELC-C01-CHANGE-PRESERVATION
+  - F-CONCEPT-REF-470f9e409dc8
+  - F-CONCEPT-WELC-c9e182aee017
+  - F-CONCEPT-EGO-cb3c230956bf
+  tags:
+  - behavior
+  - preservation
+  - authority
+  - change-classification
+- id: universal-minimize-simultaneous-uncertainty
+  kind: principle
+  label: Minimize simultaneous uncertainty
+  definition: When causality or preservation matters, change one interpretable variable at a time and keep feedback close enough to locate any failure.
+  operational_significance: Supports diagnosis, safe change, review, and rollback by preventing interacting unknowns.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - universal-minimize-simultaneous-uncertainty
+  formulations:
+  - F-SRC-REF-C05-SMALL-STEPS
+  - F-SRC-WELC-C02-COVER-EDIT
+  - F-CONCEPT-CC-8dae51f003ad
+  - F-CONCEPT-PP-576799738c3f
+  - F-CONCEPT-REF-ffdba6dd9a1f
+  tags:
+  - uncertainty
+  - sequencing
+  - feedback
+  - reversibility
+- id: universal-change-amplification
+  kind: principle
+  label: Change amplification
+  definition: Structure is costly when one conceptual change forces disproportionate, risky, or cross-owner edits; the signal must be interpreted in context.
+  operational_significance: Converts vague maintainability concerns into inspectable change pressure.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - universal-change-amplification
+  formulations:
+  - F-SRC-SDX-C03-COCHANGE
+  - F-SRC-SDX-C02-HOTSPOT-INTEREST
+  - F-CONCEPT-APOSD-1dd25725fdb8
+  - F-CONCEPT-SDX-12e8c62f5d1e
+  - F-CONCEPT-CA-cf12bd441c78
+  tags:
+  - change
+  - coupling
+  - maintainability
+  - history
+- id: refactoring-behavior-preservation
+  kind: proof-obligation
+  label: Refactoring behavior-preservation proof
+  definition: A refactoring campaign must identify the observable boundary it claims to preserve and supply feedback capable of detecting relevant regression throughout the transformation.
+  operational_significance: Distinguishes refactoring from behavior-changing implementation and limits confidence to exercised properties.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - refactoring-behavior-preservation
+  formulations:
+  - F-SRC-REF-C02-TWO-DEFINITIONS
+  - F-SRC-REF-C04-SELF-TESTING
+  - F-SRC-WELC-C05-TOOL-TRUST
+  - F-CONCEPT-REF-d35bfd74c496
+  - F-CONCEPT-REF-b5351f415aea
+  tags:
+  - refactoring
+  - proof
+  - tests
+  - preservation
+- id: refactoring-smells-as-hypotheses
+  kind: heuristic
+  label: Smells are hypotheses, not verdicts
+  definition: A smell names a recurring structural pattern worth inspecting, but local change pressure, risk, and context determine whether action is warranted.
+  operational_significance: Retains diagnostic vocabulary without turning a catalog into mandatory aesthetic cleanup.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - refactoring-smells-as-hypotheses
+  formulations:
+  - F-SRC-REF-C03-SMELL-STARTING-POINTS
+  - F-SRC-SDX-C02-HOTSPOTS-FOCUS
+  - F-CONCEPT-REF-84afbce1a1f9
+  - F-CONCEPT-SDX-fc63450e88e7
+  tags:
+  - refactoring
+  - smell
+  - diagnosis
+  - evidence
+- id: refactoring-demonstrated-pressure
+  kind: proof-obligation
+  label: Demonstrated structural pressure
+  definition: Structural change requires concrete episodes in which the current structure amplifies changes, obscures behavior, increases defects or review cost, or blocks authorized work.
+  operational_significance: Establishes why a campaign should occur now and what benefit must be shown.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - refactoring-demonstrated-pressure
+  formulations:
+  - F-SRC-REF-C02-WHEN-TO-REFACTOR
+  - F-SRC-SDX-C01-DEBT-DEPENDS-ON-CHANGE
+  - F-SRC-SDX-C03-COCHANGE
+  - F-CONCEPT-REF-75d28cd696bd
+  - F-CONCEPT-SDX-095ab6bf6c80
+  tags:
+  - refactoring
+  - pressure
+  - evidence
+  - prioritization
+- id: refactoring-small-verified-steps
+  kind: transformation
+  label: Small verified transformation steps
+  definition: Apply one behavior-preserving structural transformation at a time, verify immediately, and backtrack to smaller mechanics when confidence falls.
+  operational_significance: Bounds the source of regressions and makes a campaign reversible and reviewable.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - refactoring-small-verified-steps
+  formulations:
+  - F-SRC-REF-C05-SMALL-STEPS
+  - F-SRC-REF-C15-STOP-WHEN-UNSURE
+  - F-CONCEPT-REF-05450931da03
+  - F-CONCEPT-REF-29788f5e2e45
+  tags:
+  - refactoring
+  - sequencing
+  - verification
+  - rollback
+- id: refactoring-hotspot-prioritization
+  kind: heuristic
+  label: Hotspot prioritization
+  definition: Combine change activity with a complexity proxy to focus scarce inspection on code likely to carry high maintenance interest, then inspect the code and context before selecting a remedy.
+  operational_significance: Reduces corpus-scale investigation without pretending the metric diagnoses the design defect.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - refactoring-hotspot-prioritization
+  formulations:
+  - F-SRC-SDX-C02-HOTSPOTS-FOCUS
+  - F-SRC-SDX-C02-XRAY
+  - F-CONCEPT-SDX-b25be62a75a5
+  - F-CONCEPT-SDX-7e8f6559595b
+  tags:
+  - history
+  - hotspot
+  - prioritization
+  - technical-debt
+- id: refactoring-cochange-evidence
+  kind: heuristic
+  label: Co-change as coordination evidence
+  definition: Repeated coordinated edits reveal temporal coupling or shared change pressure; static, domain, and process evidence must determine whether the coupling is expected, harmful, or incidental.
+  operational_significance: Finds invisible dependencies while preventing a heat map from becoming an automatic merge/split plan.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - refactoring-cochange-evidence
+  formulations:
+  - F-SRC-SDX-C03-COCHANGE
+  - F-SRC-SDX-C03-SURPRISE
+  - F-CONCEPT-SDX-15e6d8564bf0
+  - F-CONCEPT-SDX-1ccfcfbcbc05
+  tags:
+  - history
+  - co-change
+  - coupling
+  - boundaries
+- id: refactoring-leave-unattractive-code
+  kind: constraint
+  label: Leave unattractive code alone when change is not earned
+  definition: Stable or low-impact code may remain structurally unattractive when intervention cost and regression risk exceed demonstrated future change benefit.
+  operational_significance: Resists aesthetic refactoring and focuses effort on change-bearing surfaces.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - refactoring-leave-unattractive-code
+  formulations:
+  - F-SRC-REF-C02-WHEN-NOT-TO-REFACTOR
+  - F-SRC-SDX-C01-DEBT-DEPENDS-ON-CHANGE
+  - F-SRC-SDX-C05-OLD-CODE-HEURISTIC
+  - F-CONCEPT-REF-65e7ba623175
+  - F-CONCEPT-SDX-90ea18fd2260
+  tags:
+  - no-change
+  - refactoring
+  - risk
+  - prioritization
+- id: legacy-characterization-surfaces
+  kind: pattern
+  label: Characterization surface
+  definition: Capture what poorly understood code currently does at the narrowest stable boundary capable of detecting unintended effects of the required change.
+  operational_significance: Creates a preservation baseline without asserting that observed behavior is ideal or intended.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - legacy-characterization-surfaces
+  formulations:
+  - F-SRC-WELC-PREFACE-CODE-WITHOUT-TESTS
+  - F-SRC-WELC-C02-COVER-EDIT
+  - F-CONCEPT-WELC-6445fd919375
+  - F-CONCEPT-WELC-ead58536d9dd
+  tags:
+  - legacy
+  - characterization
+  - behavior
+  - tests
+- id: legacy-seams-and-enabling-points
+  kind: pattern
+  label: Seam and enabling point
+  definition: A seam is a place where program behavior can vary without editing the core logic; its enabling point is where the alternative behavior is selected or controlled.
+  operational_significance: Gives legacy agents a bounded way to test or substitute dependencies before redesigning the system.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - legacy-seams-and-enabling-points
+  formulations:
+  - F-SRC-WELC-C04-SEAM-MODEL
+  - F-SRC-WELC-C04-SEAM-TYPES
+  - F-CONCEPT-WELC-138c1bc9e17c
+  - F-CONCEPT-WELC-80c0ff1f73ae
+  tags:
+  - legacy
+  - seam
+  - dependency
+  - testability
+- id: legacy-sensing-and-separation
+  kind: pattern
+  label: Sensing and separation
+  definition: Sensing exposes the effects that must be observed; separation isolates the unit from dependencies that prevent execution in a harness.
+  operational_significance: Prevents indiscriminate mocking by distinguishing what must be observed from what must be replaced.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - legacy-sensing-and-separation
+  formulations:
+  - F-SRC-WELC-C03-SENSING-SEPARATION
+  - F-CONCEPT-WELC-fab853142df6
+  tags:
+  - legacy
+  - sensing
+  - separation
+  - test-double
+- id: heuristic-code-age
+  kind: heuristic
+  label: Code age as a stability clue
+  definition: Age can suggest stable mental chunks or low defect/change exposure, but must be checked for dead code, stale tests, and domain-specific reasons for different rates of change.
+  operational_significance: Helps find candidate stable boundaries without equating old code with good or important code.
+  status: contextual
+  confidence: contextual
+  doctrine_refs: []
+  formulations:
+  - F-SRC-SDX-C05-OLD-CODE-HEURISTIC
+  - F-SRC-SDX-C05-DEAD-CODE
+  tags:
+  - history
+  - age
+  - stability
+  - heuristic
+- id: anti-pattern-aesthetic-technical-debt
+  kind: anti-pattern
+  label: Aesthetic technical-debt declaration
+  definition: Declaring code to be costly debt solely because its static form violates a preferred style, without evidence that it is changed, risky, or impeding work.
+  operational_significance: Converts maintainability language back into an evidence question rather than an unbounded cleanup mandate.
+  status: canonical
+  confidence: strong
+  doctrine_refs: []
+  formulations:
+  - F-SRC-SDX-C01-DEBT-DEPENDS-ON-CHANGE
+  - F-SRC-REF-C03-SMELL-STARTING-POINTS
+  tags:
+  - anti-pattern
+  - technical-debt
+  - aesthetics
+  - evidence
+- id: term-refactoring
+  kind: terminology
+  label: Refactoring
+  definition: A change to internal software structure intended to make it easier to understand or modify without changing the defined observable behavior.
+  operational_significance: Supplies the semantic boundary used to classify structural campaigns.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - refactoring-behavior-preservation
+  formulations:
+  - F-SRC-REF-C02-TWO-DEFINITIONS
+  - F-SRC-WELC-C05-REFACTORING-DEFINITION
+  tags:
+  - terminology
+  - refactoring
+  - behavior
+- id: term-legacy-code
+  kind: terminology
+  label: Legacy code
+  definition: Operationally, code lacking sufficiently fast and trustworthy feedback for safe change; this working definition is narrower than code that is merely old or inherited.
+  operational_significance: Routes agents toward characterization and feedback instead of aesthetic judgment or blame.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - legacy-characterization-surfaces
+  formulations:
+  - F-SRC-WELC-PREFACE-CODE-WITHOUT-TESTS
+  - F-SRC-SDX-C01-LEGACY-VS-DEBT
+  tags:
+  - terminology
+  - legacy
+  - tests
+  - feedback
+- id: performance-measurable-objective
+  kind: proof-obligation
+  label: Measurable performance objective
+  definition: A performance claim names the operation, representative workload, environment, correctness precondition, resource/statistical measure, target, and owner.
+  operational_significance: Prevents proxy optimization and supplies a positive stop condition.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - performance-measurable-objective
+  formulations:
+  - F-SRC-EGO-PERF-CLAIM
+  - F-SRC-EGO-PERF-RAER
+  - F-CONCEPT-EGO-3b4e3941c405
+  - F-CONCEPT-EGO-247c5508bd66
+  tags:
+  - performance
+  - objective
+  - workload
+  - resource-budget
+- id: performance-metric-semantics
+  kind: proof-obligation
+  label: Measurement semantics
+  definition: Evidence is interpretable only when its boundary, unit, population, aggregation, granularity, collection behavior, and observer cost are known.
+  operational_significance: Separates CPU from wall time, heap from resident memory, and averages from tails before decisions use them.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - performance-metric-semantics
+  formulations:
+  - F-SRC-EGO-METRIC-SEMANTICS
+  - F-SRC-EGO-METRIC-CARDINALITY
+  - F-CONCEPT-EGO-b2380da8dfcb
+  - F-CONCEPT-EGO-4e7e71cfbf64
+  tags:
+  - performance
+  - measurement
+  - observability
+  - evidence
+- id: performance-representative-baseline
+  kind: proof-obligation
+  label: Representative performance baseline
+  definition: A pre-change measurement is retained with the exact workload, environment, code, dependencies, build, correctness checks, samples, and variance needed for comparison.
+  operational_significance: Makes improvement falsifiable and exposes drift or noise.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - performance-representative-baseline
+  formulations:
+  - F-SRC-EGO-EXPERIMENT-RELIABILITY
+  - F-SRC-EGO-PRODUCTION-REPRESENTATION
+  - F-CONCEPT-EGO-0e795b497f00
+  - F-CONCEPT-EGO-48b09ee4ac0b
+  tags:
+  - performance
+  - baseline
+  - reproducibility
+  - workload
+- id: performance-benchmark-validity
+  kind: proof-obligation
+  label: Benchmark validity
+  definition: A benchmark supports only claims for which its work, correctness, setup boundary, inputs, environment, repetition, and variance are controlled and inspectable.
+  operational_significance: Blocks precise-looking but invalid comparisons from authorizing complexity.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - performance-benchmark-validity
+  formulations:
+  - F-SRC-EGO-BENCHMARKS-LIE
+  - F-SRC-EGO-BENCHMARK-CORRECTNESS
+  - F-SRC-EGO-EXPERIMENT-RELIABILITY
+  - F-CONCEPT-EGO-6341b5996d56
+  - F-CONCEPT-EGO-99849705b3d5
+  tags:
+  - performance
+  - benchmark
+  - experiment
+  - evidence
+- id: performance-experiment-level-fit
+  kind: heuristic
+  label: Experiment level fits the claim
+  definition: Microbenchmarks, process/system benchmarks, and production observations answer different questions and require explicit escalation gates between levels.
+  operational_significance: Prevents local allocation or speed results from being generalized into system capacity or memory claims.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - performance-experiment-level-fit
+  formulations:
+  - F-SRC-EGO-BENCHMARK-LEVELS
+  - F-SRC-EGO-MICRO-MEMORY
+  - F-CONCEPT-EGO-43361b873c90
+  - F-CONCEPT-EGO-dd4566cf90ad
+  tags:
+  - performance
+  - microbenchmark
+  - macrobenchmark
+  - production
+- id: performance-profile-causal-bottleneck
+  kind: proof-obligation
+  label: Causal bottleneck profile
+  definition: Select and interpret a representative resource profile before changing the bottleneck, following direct and cumulative cost across concurrency and runtime boundaries.
+  operational_significance: Converts a visible hotspot into ranked causal hypotheses rather than a reflexive edit.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - performance-profile-causal-bottleneck
+  formulations:
+  - F-SRC-EGO-EFFICIENCY-RCA
+  - F-SRC-EGO-PROFILE-FIRST
+  - F-CONCEPT-EGO-7341f1082c82
+  - F-CONCEPT-EGO-e7ee84f979da
+  tags:
+  - performance
+  - profiling
+  - bottleneck
+  - causality
+- id: performance-algorithm-and-work-first
+  kind: principle
+  label: Work and algorithm before micro-tuning
+  definition: Eliminate work, improve algorithms and representations, and reduce data movement before paying for fragile low-level specialization.
+  operational_significance: Directs effort to the largest leverage while preserving simpler options.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - performance-algorithm-and-work-first
+  formulations:
+  - F-SRC-EGO-COMPLEXITY-PRACTICAL
+  - F-SRC-EGO-DO-LESS
+  - F-CONCEPT-EGO-da76af9e2aae
+  - F-CONCEPT-EGO-fe2e9d787aa5
+  tags:
+  - performance
+  - algorithm
+  - representation
+  - work-elimination
+- id: performance-memory-lifecycle
+  kind: principle
+  label: Memory metric, ownership, and lifetime
+  definition: Diagnose allocation, retention, heap, resident memory, mappings, and GC as distinct phenomena, then trace ownership and lifetime to the retained resource.
+  operational_significance: Prevents local allocation wins from hiding process-memory, aliasing, or retention regressions.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - performance-memory-lifecycle
+  formulations:
+  - F-SRC-EGO-GO-MEMORY
+  - F-SRC-EGO-MICRO-MEMORY
+  - F-SRC-FP-MUTABLE-OWNERSHIP
+  - F-CONCEPT-EGO-974dcb1239bc
+  - F-CONCEPT-EGO-13df6765b148
+  - F-CONCEPT-FP-a7298fd686ed
+  tags:
+  - performance
+  - memory
+  - ownership
+  - lifetime
+  - allocation
+- id: performance-earned-bounded-concurrency
+  kind: tradeoff
+  label: Earned bounded concurrency
+  definition: Add a bounded runtime-appropriate concurrency model only when representative evidence shows sequential waiting or parallelizable work prevents the objective and semantics can be preserved.
+  operational_significance: Makes scheduling, capacity, state, ordering, cancellation, errors, and lifecycle part of the performance decision.
+  status: contextual
+  confidence: strong
+  doctrine_refs:
+  - performance-earned-bounded-concurrency
+  formulations:
+  - F-SRC-EGO-CONCURRENCY-LAST
+  - F-SRC-EGO-CONCURRENCY-LATENCY
+  - F-SRC-FP-CONCURRENCY-MODELS
+  - F-SRC-FP-ASYNC-SEMAPHORE
+  - F-CONCEPT-EGO-0197dd3de873
+  - F-CONCEPT-EGO-055579127a24
+  - F-CONCEPT-FP-5158b6ddbe3a
+  - F-CONCEPT-FP-2df6f90b6662
+  tags:
+  - performance
+  - concurrency
+  - backpressure
+  - scheduling
+  - lifecycle
+- id: performance-specialization-evidence
+  kind: tradeoff
+  label: Evidence-earned hot-path specialization
+  definition: Specialized or duplicated fast-path code is justified only by a stable profiled bottleneck, material macro benefit, semantic equivalence, and explicit maintenance and portability cost.
+  operational_significance: Preserves the option to specialize without turning it into a universal preference for low-level code.
+  status: contested
+  confidence: contextual
+  doctrine_refs:
+  - performance-specialization-evidence
+  formulations:
+  - F-SRC-EGO-STANDARD-SPECIALIZATION
+  - F-SRC-EGO-DELIBERATE-TRADEOFF
+  - F-CONCEPT-EGO-818a0dd6b387
+  - F-CONCEPT-EGO-3e23a14db301
+  tags:
+  - performance
+  - specialization
+  - abstraction
+  - fast-path
+- id: performance-semantic-preservation
+  kind: proof-obligation
+  label: Optimization semantic preservation
+  definition: A performance transformation preserves results, precision, ordering, freshness, fairness, errors, identity, durability, and ownership unless an authorized tradeoff explicitly changes them.
+  operational_significance: Prevents faster incorrect or differently reliable behavior from being labeled an internal optimization.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - performance-semantic-preservation
+  formulations:
+  - F-SRC-EGO-FUNCTIONALITY-PHASE
+  - F-SRC-EGO-OPTIMIZE-ONE
+  - F-SRC-FP-SHALLOW-COPY
+  - F-CONCEPT-EGO-e15bd1ba3b97
+  - F-CONCEPT-EGO-6e16f8632f72
+  - F-CONCEPT-FP-0814222c17aa
+  tags:
+  - performance
+  - preservation
+  - correctness
+  - tradeoff
+- id: performance-resource-lifecycle
+  kind: principle
+  label: Owned resource and task lifecycle
+  definition: Every task, goroutine, executor, connection, file, queue, buffer, or pool has an owner, capacity, completion and error path, cancellation or shutdown, and cleanup semantics.
+  operational_significance: Treats leaks and abandoned work as correctness, availability, durability, and performance concerns together.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - performance-resource-lifecycle
+  formulations:
+  - F-SRC-EGO-GOROUTINE-LIFECYCLE
+  - F-SRC-FP-CONTEXT-MANAGER
+  - F-SRC-FP-ASYNC-CONTEXT
+  - F-CONCEPT-EGO-80467c3675ec
+  - F-CONCEPT-FP-1ee236d2a0d7
+  - F-CONCEPT-FP-adb25de0d8b1
+  tags:
+  - resource
+  - lifecycle
+  - concurrency
+  - cleanup
+  - ownership
+- id: performance-cache-validity
+  kind: tradeoff
+  label: Cache validity, ownership, and bounds
+  definition: Caching is earned by repeated expensive work plus a complete key, freshness/invalidation policy, capacity, ownership, concurrency, security context, and measured macro benefit.
+  operational_significance: Exposes time-space-consistency costs instead of treating memoization as free speed.
+  status: contextual
+  confidence: strong
+  doctrine_refs:
+  - performance-cache-validity
+  formulations:
+  - F-SRC-FP-LRU-CACHE
+  - F-SRC-FP-PROPERTY-CACHE
+  - F-SRC-EGO-REUSE-MEMORY
+  - F-CONCEPT-FP-0dd5704280be
+  - F-CONCEPT-FP-bc6164871696
+  - F-CONCEPT-EGO-84d08e327f3c
+  tags:
+  - performance
+  - cache
+  - freshness
+  - memory
+  - consistency
+- id: performance-target-based-stop
+  kind: constraint
+  label: Target-based optimization stop
+  definition: Retain an isolated optimization only when it materially improves the authorized target without violating preservation or other budgets, and stop once the target is met.
+  operational_significance: Limits optimization scope and makes reversion a normal experiment result.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - performance-target-based-stop
+  formulations:
+  - F-SRC-EGO-TARGET-STOP
+  - F-SRC-EGO-OPTIMIZE-ONE
+  - F-CONCEPT-EGO-f4d3a7b7971b
+  - F-CONCEPT-EGO-70098527d689
+  tags:
+  - performance
+  - stop-condition
+  - target
+  - scope
+- id: agent-conduct-authority-bounded-action
+  kind: principle
+  label: Bound action by granted authority
+  definition: Observation, diagnosis, recommendation, selection, execution, verification, and acceptance are distinct authority levels; technical access and sufficient evidence at one level do not grant the next.
+  operational_significance: An agent can diagnose correctly yet still be unauthorized to choose product behavior, mutate external state, widen architecture, or accept its own work.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - agent-conduct-authority-bounded-action
+  formulations:
+  - F-CONCEPT-PP-3cd1576a1ee8
+  - F-CONCEPT-CC-e5d3ed842e46
+  - F-CONCEPT-CC-8d39ebafa179
+  - F-CONCEPT-EGO-0ea813693bc5
+  tags:
+  - agent-conduct
+  - authority
+  - observe
+  - diagnose
+  - execute
+- id: architecture-boundary-strength
+  kind: pattern
+  label: Select boundary strength separately from boundary existence
+  definition: Source seams, facades, inverted interfaces, release components, local processes, network services, transaction boundaries, and semantic relationships provide different protection at different costs.
+  operational_significance: Treating every boundary as an interface or service either under-protects important independence or imports distributed and compatibility costs unnecessarily.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - architecture-boundary-strength
+  formulations:
+  - F-CONCEPT-CA-29842f7171dc
+  - F-CONCEPT-CA-3d52f6c3637f
+  - F-CONCEPT-FSA-5e0ce1c8ce6e
+  tags:
+  - architecture
+  - boundary-strength
+  - partial-boundary
+  - facade
+  - process-boundary
+- id: architecture-change-locality-cohesion
+  kind: principle
+  label: Group architecture by semantic cohesion and change locality
+  definition: Components should group behavior that shares meaning and closes against the same changes, while reuse and release forces remain explicit competing evidence rather than automatic grouping rules.
+  operational_significance: Arbitrary size, technical categories, or reuse can scatter one responsibility and amplify routine changes across components.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - architecture-change-locality-cohesion
+  formulations:
+  - F-CONCEPT-CA-b0c791e81e5f
+  - F-CONCEPT-CA-016834320863
+  - F-CONCEPT-FSA-cd4436d179ca
+  tags:
+  - architecture
+  - component-cohesion
+  - change-locality
+  - common-closure
+  - common-reuse
+- id: architecture-contextual-partitioning
+  kind: pattern
+  label: Treat partition dimensions as separate contextual choices
+  definition: Technical concern, domain capability, source visibility, ownership, release, deployment, and semantic context are separate partition axes that may be composed rather than forced into one whole-system scheme.
+  operational_significance: Layer-only organization can scatter features, while domain-only organization can duplicate mechanism or conceal cross-cutting operational constraints.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - architecture-contextual-partitioning
+  formulations:
+  - F-CONCEPT-FSA-0ab10d2b4279
+  - F-CONCEPT-CA-a7ddac9ac1dd
+  - F-CONCEPT-DDD-3059fab70ec8
+  tags:
+  - architecture
+  - domain-partitioning
+  - technical-partitioning
+  - package-by-component
+  - package-by-feature
+- id: architecture-contextual-style-selection
+  kind: pattern
+  label: Select architecture style from drivers rather than fashion
+  definition: Architecture styles and hybrids are contextual technique bundles whose value and costs must be evaluated per scoped drivers, workflows, data, team, operations, migration, and existing constraints.
+  operational_significance: Style prestige and reference diagrams conceal the data, operational, coordination, and migration costs that determine fitness in a real repository.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - architecture-contextual-style-selection
+  formulations:
+  - F-CONCEPT-FSA-a2ad44dc00e5
+  - F-CONCEPT-FSA-18aa818d8706
+  - F-CONCEPT-DDD-0bad7a159bae
+  tags:
+  - architecture
+  - architecture-style
+  - architecture-fashion
+  - hybrid-architecture
+  - style-selection
+- id: architecture-decision-record
+  kind: principle
+  label: Record architecture decisions with authority and supersession
+  definition: Architecturally significant decisions need a durable record of status, context, scope, alternatives, consequences, authority, verification, and evidence-based supersession triggers.
+  operational_significance: Forgotten, email-only, or authority-ambiguous decisions produce repeated debates, silent architecture drift, and implementation presented as permission.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - architecture-decision-record
+  formulations:
+  - F-CONCEPT-FSA-5736784e1cc4
+  - F-CONCEPT-FSA-5af1b56aea58
+  - F-CONCEPT-DDD-7a9af80c70c6
+  tags:
+  - agent-conduct
+  - adr
+  - rfc
+  - architecture-decision
+  - decision-status
+- id: architecture-dependency-inversion-gate
+  kind: heuristic
+  label: Earn dependency inversion from policy pressure
+  definition: Direct dependencies remain preferable until a stable consumer policy, asymmetric volatility, real substitution, legacy interception, ownership, release, or deployment need earns inversion.
+  operational_significance: Interface-per-class design creates mock-shaped APIs and permanent indirection without protecting any stable policy.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - architecture-dependency-inversion-gate
+  formulations:
+  - F-CONCEPT-CA-00ecbddbb165
+  - F-CONCEPT-CA-6274d163da20
+  - F-CONCEPT-DDD-016f722dfcb9
+  tags:
+  - architecture
+  - dependency-inversion
+  - interface-pressure
+  - consumer-owned-interface
+  - stable-policy
+- id: architecture-distribution-readiness
+  kind: principle
+  label: Earn distribution and prove operational readiness
+  definition: Process or network distribution is justified only by an irreducible current driver and explicit readiness for data authority, partial failure, consistency, compatibility, delivery, observability, security, recovery, and cost.
+  operational_significance: Distribution can provide isolation and independent scale, but it creates latency, failure, contract, data, security, and operational coupling that source modularity does not.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - architecture-distribution-readiness
+  formulations:
+  - F-CONCEPT-FSA-03d270194af5
+  - F-CONCEPT-CA-cdb1734143c6
+  - F-CONCEPT-FSA-11b347e9e248
+  tags:
+  - architecture
+  - distributed-readiness
+  - microservices
+  - network-fallacies
+  - service-decomposition
+- id: architecture-earned-boundary
+  kind: pattern
+  label: Earn architectural boundaries from independent forces
+  definition: A boundary is justified only by demonstrated independent policy, semantic, invariant, ownership, volatility, release, deployment, trust, or quality forces.
+  operational_significance: Boundaries improve local reasoning and autonomy only when they hide or protect something real; otherwise they add navigation, contracts, mapping, and failure modes.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - architecture-earned-boundary
+  formulations:
+  - F-CONCEPT-CA-ee58e1594efc
+  - F-CONCEPT-FSA-e0dae116aa55
+  - F-CONCEPT-DDD-e26711b6f899
+  tags:
+  - architecture
+  - earned-boundary
+  - module-boundary
+  - service-boundary
+  - semantic-boundary
+- id: architecture-event-temporal-semantics
+  kind: principle
+  label: Make event temporal and failure semantics explicit
+  definition: Asynchronous and event-driven interaction is safe only when completion, ordering, delivery, duplication, idempotency, retry, loss, replay, reconciliation, observability, and ownership semantics are explicit.
+  operational_significance: Messaging can move latency and failure out of the caller without eliminating them, producing silent loss, emergent workflows, and unverifiable completion.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - architecture-event-temporal-semantics
+  formulations:
+  - F-CONCEPT-FSA-d4cbd8a817c0
+  - F-CONCEPT-FSA-de47302649fe
+  - F-CONCEPT-FSA-b1e25ff20329
+  tags:
+  - architecture
+  - event-driven-architecture
+  - async
+  - choreography
+  - orchestration
+- id: architecture-feedback-loop
+  kind: procedure
+  label: Keep architecture and implementation in a closed feedback loop
+  definition: Architecture must evolve through implementation, domain learning, and runtime evidence; architecture detached from code loses feasibility feedback, while implementation without decision context erodes accepted constraints.
+  operational_significance: Static plans can freeze incorrect assumptions, while unrecorded local workarounds make the actual architecture diverge from its governing intent.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - architecture-feedback-loop
+  formulations:
+  - F-CONCEPT-FSA-7b6932c7e374
+  - F-CONCEPT-DDD-4feff0cf7d5e
+  - F-CONCEPT-DDD-d596264ccafc
+  tags:
+  - architecture
+  - architecture-feedback
+  - implementation-feedback
+  - evolutionary-architecture
+  - architecture-drift
+- id: architecture-fitness-functions
+  kind: principle
+  label: Verify architecture at its preservation boundaries
+  definition: Accepted architecture outcomes and constraints need scoped behavior, fitness functions, telemetry, and boundary tests whose observed property, limitations, owner, and response are explicit.
+  operational_significance: Architecture otherwise drifts silently, while passing narrow checks can be overclaimed as complete correctness or stakeholder acceptance.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - architecture-fitness-functions
+  formulations:
+  - F-CONCEPT-FSA-6001d4a20bfb
+  - F-CONCEPT-CA-362d49e3ac5e
+  - F-CONCEPT-DDD-87491dccf00a
+  tags:
+  - architecture
+  - architecture-fitness
+  - fitness-function
+  - boundary-test
+  - architecture-verification
+- id: architecture-framework-commitment
+  kind: heuristic
+  label: Treat frameworks as asymmetric architecture commitments
+  definition: Framework adoption or extraction is a lifecycle-wide and often asymmetric commitment that is earned only by demonstrated consumers, stable extension needs, and benefits exceeding API control, upgrade, coupling, and replacement cost.
+  operational_significance: Framework convenience can scatter framework types and inheritance through core policy, while a speculative internal framework freezes one application's accidental design.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - architecture-framework-commitment
+  formulations:
+  - F-CONCEPT-CA-17bccb7b59d6
+  - F-CONCEPT-CA-9a2aae2c1c03
+  - F-CONCEPT-DDD-41709dfac39e
+  tags:
+  - architecture
+  - framework-adoption
+  - plugin-framework
+  - framework-lock-in
+  - asymmetric-marriage
+- id: architecture-interaction-synchrony
+  kind: principle
+  label: Choose synchronous or asynchronous interaction from temporal needs
+  definition: Synchronous calls and asynchronous events optimize different response, atomicity, availability, load, and recovery semantics; neither is a universal decoupling default.
+  operational_significance: Choosing by fashion or throughput folklore can convert simple immediate behavior into eventual state, or create long synchronous failure chains.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - architecture-interaction-synchrony
+  formulations:
+  - F-CONCEPT-FSA-68722526e520
+  - F-CONCEPT-FSA-d752eca0e916
+  - F-CONCEPT-CA-fa455effbd05
+  tags:
+  - architecture
+  - synchronous
+  - asynchronous
+  - request-reply
+  - temporal-coupling
+- id: architecture-metrics-as-signals
+  kind: principle
+  label: Treat architecture metrics as investigation signals
+  definition: Coupling, complexity, instability, abstractness, coverage, and distance metrics are narrow proxies that can identify questions but cannot decide architecture without repository-relative semantic, historical, and operational evidence.
+  operational_significance: Universal thresholds and metric optimization invite Goodhart effects, aesthetic restructuring, and false correctness claims.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - architecture-metrics-as-signals
+  formulations:
+  - F-CONCEPT-FSA-a8b1df24c4a8
+  - F-CONCEPT-FSA-a18ba8d928f4
+  - F-CONCEPT-CA-86b6dc378a36
+  tags:
+  - architecture
+  - architecture-metric
+  - coupling-metric
+  - instability
+  - abstractness
+- id: architecture-modular-monolith
+  kind: heuristic
+  label: Prefer a modular monolith when one operational envelope suffices
+  definition: Enforceable in-process modules are a first-class topology when one deployment, consistency, latency, failure, and operational envelope satisfies current drivers.
+  operational_significance: A modular monolith preserves local transactions and simpler operations while enabling semantic and source boundaries, avoiding a distributed tax before it is earned.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - architecture-modular-monolith
+  formulations:
+  - F-CONCEPT-FSA-4a5f3e78f591
+  - F-CONCEPT-CA-09dbafc6f4c1
+  - F-CONCEPT-DDD-2a3837ab99a8
+  tags:
+  - architecture
+  - modular-monolith
+  - in-process-module
+  - service-extraction
+  - monolith
+- id: architecture-policy-mechanism-separation
+  kind: principle
+  label: Protect independent policy from contingent mechanism
+  definition: Independently valuable business or application policy should depend on stable semantic contracts rather than volatile delivery, persistence, framework, device, or deployment representations.
+  operational_significance: Mechanism leakage amplifies framework, storage, device, and delivery changes through policy, while absolute detail claims can hide real consistency, latency, safety, or operational constraints.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - architecture-policy-mechanism-separation
+  formulations:
+  - F-CONCEPT-CA-6d677b7e3fba
+  - F-CONCEPT-CA-e2a320f1b46d
+  - F-CONCEPT-DDD-45151fcc9515
+  tags:
+  - architecture
+  - policy-mechanism
+  - dependency-rule
+  - domain-isolation
+  - clean-architecture
+- id: architecture-risk-analysis
+  kind: heuristic
+  label: Analyze architecture risk collaboratively and proportionately
+  definition: Architecture risk should be identified against concrete flows and characteristics by people with design, implementation, domain, operations, and security knowledge, then mitigated or explicitly accepted by the proper authority.
+  operational_significance: Single-perspective reviews miss implementation and operational failure paths, while averaged scores can manufacture false certainty.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - architecture-risk-analysis
+  formulations:
+  - F-CONCEPT-FSA-28ee0a82fb2f
+  - F-CONCEPT-FSA-bfafd013bbdb
+  - F-CONCEPT-DDD-48c4d27b7190
+  tags:
+  - architecture
+  - architecture-risk
+  - risk-storming
+  - risk-matrix
+  - mitigation
+- id: architecture-scoped-characteristics
+  kind: principle
+  label: Scope measurable architecture characteristics
+  definition: A quality is architecturally significant only when it affects structure, is important to success, has a concrete scenario and threshold, and is scoped to the affected flow or architectural quantum.
+  operational_significance: Unscoped adjectives such as scalable, secure, or maintainable encourage global overdesign and make tradeoffs unverifiable.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - architecture-scoped-characteristics
+  formulations:
+  - F-CONCEPT-FSA-867935058af3
+  - F-CONCEPT-FSA-c8e23580080f
+  - F-CONCEPT-CA-b2bcd73ceff2
+  tags:
+  - architecture
+  - architecture-characteristic
+  - quality-attribute
+  - slo
+  - quality-scenario
+- id: architecture-selective-option-preservation
+  kind: proof-obligation
+  label: Preserve architecture options selectively
+  definition: An architecture option is worth carrying only when plausible change, consequence, delay value, and reversal cost justify the complexity introduced to keep it open.
+  operational_significance: Both premature commitment and maximum flexibility can create irreversible cost; speculative seams freeze untested variation and burden every current change.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - architecture-selective-option-preservation
+  formulations:
+  - F-CONCEPT-CA-b78373047966
+  - F-CONCEPT-CA-fc96ecd9ef36
+  - F-CONCEPT-DDD-a04fc53b7a74
+  tags:
+  - architecture
+  - option-preservation
+  - reversible-architecture
+  - partial-boundary
+  - last-responsible-moment
+- id: architecture-structural-constraint-enforcement
+  kind: principle
+  label: Enforce accepted structural constraints proportionately
+  definition: Consequential forbidden dependencies and architecture contracts should use the cheapest reliable compiler, build, static, test, or fitness enforcement that protects the accepted outcome without freezing replaceable detail.
+  operational_significance: Diagrams and conventions alone drift, while indiscriminate automated gates create metric gaming and block legitimate evolution.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - architecture-structural-constraint-enforcement
+  formulations:
+  - F-CONCEPT-FSA-0567c4481497
+  - F-CONCEPT-FSA-c8a985ea4eaa
+  - F-CONCEPT-CA-31f0c0606507
+  tags:
+  - architecture
+  - architecture-enforcement
+  - fitness-function
+  - dependency-rule
+  - architecture-lint
+- id: architecture-team-topology-force
+  kind: heuristic
+  label: Treat team topology as a force, not an automatic boundary map
+  definition: Team ownership, communication, skill, size, cadence, and control influence architecture, but one team does not automatically imply one context, component, or deployable service.
+  operational_significance: Organization-chart architecture can create artificial services, while ignoring socio-technical coupling can leave every change dependent on cross-team negotiation.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - architecture-team-topology-force
+  formulations:
+  - F-CONCEPT-FSA-e5e17aa74fb6
+  - F-CONCEPT-FSA-200670fffeae
+  - F-CONCEPT-CA-d1259b6f4041
+  tags:
+  - architecture
+  - conway-law
+  - team-topology
+  - ownership-boundary
+  - architecture-governance
+- id: debugging-causal-repair
+  kind: principle
+  label: Repair the cause and verify the causal claim
+  definition: A defect repair should change the smallest cause capable of explaining the first divergence, preserve unrelated behavior and structure, and verify both the original reproduction and relevant regression surface.
+  operational_significance: A passing symptom test after an unrelated or broad change does not establish causality and can leave the defect or introduce new regressions.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - debugging-causal-repair
+  formulations:
+  - F-CONCEPT-CC-e1fdb3f9e1e0
+  - F-CONCEPT-CC-81e8afc68bac
+  - F-CONCEPT-PP-804006f1a700
+  tags:
+  - agent-conduct
+  - causal-repair
+  - root-cause
+  - regression-test
+  - symptom-fix
+- id: debugging-hypothesis-led-investigation
+  kind: principle
+  label: Investigate defects with discriminating hypotheses
+  definition: Diagnosis should stabilize the failure, separate expected from actual behavior, generate competing causal hypotheses, and use the cheapest observation that discriminates among them before changing production logic.
+  operational_significance: Symptoms can be distant from causes, and a suspicious line or coincident edit easily becomes a false causal story.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - debugging-hypothesis-led-investigation
+  formulations:
+  - F-CONCEPT-CC-d614293db2a2
+  - F-CONCEPT-CC-88594da93dcd
+  - F-CONCEPT-PP-c19084b5b5f9
+  tags:
+  - agent-conduct
+  - debugging
+  - reproduce
+  - hypothesis
+  - first-divergence
+- id: domain-aggregate-invariant-boundary
+  kind: pattern
+  label: Define Aggregates from invariants and consistency
+  definition: An Aggregate is the smallest cluster whose domain invariants require one authorized consistency and transaction boundary; object composition, reachability, ORM cascade, or service topology do not define it.
+  operational_significance: Oversized aggregates cause contention and loading cost; undersized aggregates allow invalid states or hide distributed consistency changes.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - domain-aggregate-invariant-boundary
+  formulations:
+  - F-CONCEPT-DDD-e1f709bfd6bd
+  - F-CONCEPT-FSA-acee17c6de53
+  - F-CONCEPT-CA-cde8211fe8cb
+  tags:
+  - domain
+  - aggregate
+  - aggregate-root
+  - invariant-boundary
+  - transaction-boundary
+- id: domain-anticorruption-layer
+  kind: heuristic
+  label: Earn an Anticorruption Layer from semantic conflict
+  definition: An Anticorruption Layer protects a valuable local model from a necessary, materially different foreign or legacy model through explicit semantic translation; it is not merely a transport client or generic facade.
+  operational_significance: Foreign concepts can corrupt core meaning, but unnecessary translation creates a third model, duplicate data, latency, and permanent maintenance burden.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - domain-anticorruption-layer
+  formulations:
+  - F-CONCEPT-DDD-aa97141b7e01
+  - F-CONCEPT-DDD-21679de80cf5
+  - F-CONCEPT-CA-ef3aa9b871a2
+  tags:
+  - domain
+  - anticorruption-layer
+  - acl
+  - semantic-translation
+  - legacy-integration
+- id: domain-association-constraint
+  kind: heuristic
+  label: Constrain domain associations to required meaning
+  definition: Domain associations should retain only the traversal, direction, multiplicity, qualification, and ownership that real use cases and invariants require.
+  operational_significance: Complete-looking bidirectional object graphs expand coupling, loading, mutation, and invariant uncertainty without necessarily expressing useful domain knowledge.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - domain-association-constraint
+  formulations:
+  - F-CONCEPT-DDD-2f059970c06c
+  - F-CONCEPT-DDD-17d5f1f6c00b
+  tags:
+  - domain
+  - domain-association
+  - bidirectional-association
+  - multiplicity
+  - object-graph
+- id: domain-bounded-context
+  kind: pattern
+  label: Bound one coherent model and language explicitly
+  definition: A Bounded Context delimits where one model and Ubiquitous Language remain coherent under explicit ownership; it is not equivalent to a source module, team, database, architectural quantum, process, or service.
+  operational_significance: One unbounded model accumulates contradictions, while context-per-entity or context-per-service adds translation and coordination without semantic value.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - domain-bounded-context
+  formulations:
+  - F-CONCEPT-DDD-66cc671ede0b
+  - F-CONCEPT-DDD-fde5e6bc2ea2
+  - F-CONCEPT-FSA-1bf22d2f2c26
+  tags:
+  - domain
+  - bounded-context
+  - context-map
+  - model-integrity
+  - semantic-boundary
+- id: domain-context-relationship-selection
+  kind: pattern
+  label: Select context relationships from control and semantic economics
+  definition: Shared Kernel, Customer/Supplier, Conformist, Anticorruption Layer, Separate Ways, and Open Host Service with Published Language optimize different cooperation, control, semantic-distance, consumer-breadth, and integration-value conditions.
+  operational_significance: Choosing the most independent-looking relationship can create translation swamps, while casual sharing corrupts local meaning and release autonomy.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - domain-context-relationship-selection
+  formulations:
+  - F-CONCEPT-DDD-7f1d90c349ac
+  - F-CONCEPT-DDD-f61bd371382f
+  - F-CONCEPT-FSA-4ed19d47a349
+  tags:
+  - domain
+  - context-relationship
+  - shared-kernel
+  - customer-supplier
+  - conformist
+- id: domain-core-domain-priority
+  kind: heuristic
+  label: Concentrate deep design on the Core Domain
+  definition: Scarce modeling and architectural attention should focus on validated differentiating capability, while generic and supporting subdomains are simplified, sourced, or isolated without neglecting required reliability.
+  operational_significance: Equal investment dilutes expertise, while treating technical complexity or prestige as core diverts talent from the capability that differentiates the product.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - domain-core-domain-priority
+  formulations:
+  - F-CONCEPT-DDD-2d0aee0bc861
+  - F-CONCEPT-DDD-cee9f4393989
+  - F-CONCEPT-FSA-f96ae715925b
+  tags:
+  - domain
+  - core-domain
+  - generic-subdomain
+  - supporting-subdomain
+  - distillation
+- id: domain-explicit-concept
+  kind: heuristic
+  label: Make implicit domain concepts explicit when they simplify behavior
+  definition: A constraint, policy, process, Specification, or other hidden concept should become explicit only when experts validate it and it clarifies recurring decisions, behavior, or implementation awkwardness.
+  operational_significance: Hidden concepts create tangled conditionals and contradictory rules, while pattern-shaped abstractions can invent ceremony unsupported by domain meaning.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - domain-explicit-concept
+  formulations:
+  - F-CONCEPT-DDD-4cf19156be4d
+  - F-CONCEPT-DDD-ac8a4f7281dc
+  - F-CONCEPT-DDD-c20f87352db5
+  tags:
+  - domain
+  - implicit-concept
+  - specification
+  - policy-object
+  - process-object
+- id: domain-factory-lifecycle
+  kind: pattern
+  label: Use Factory only for complex valid creation
+  definition: A Factory is justified only when creation or reconstitution must establish a complex valid whole or lifecycle transition that a clear constructor cannot express safely.
+  operational_significance: Factories can protect invariant construction, but routine factory layers hide novelty, failure, identity, and lifecycle behind unnecessary indirection.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - domain-factory-lifecycle
+  formulations:
+  - F-CONCEPT-DDD-8161d58f050b
+  - F-CONCEPT-DDD-07436db0ee76
+  - F-CONCEPT-DDD-57dd1bea920a
+  tags:
+  - domain
+  - factory
+  - constructor
+  - object-creation
+  - reconstitution
+- id: domain-fitting-large-scale-structure
+  kind: heuristic
+  label: Use only a fitting minimal large-scale domain structure
+  definition: Large-scale domain structure should be the smallest organizing concept that currently fits and communicates the model, and it must evolve, simplify, or disappear when exceptions and learning show loss of fit.
+  operational_significance: A fitting structure coordinates large models, but a master plan or ceremonial metaphor suppresses discovery and forces local concepts into the wrong shape.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - domain-fitting-large-scale-structure
+  formulations:
+  - F-CONCEPT-DDD-a69b951ff5b9
+  - F-CONCEPT-DDD-d5e28dee8f35
+  - F-CONCEPT-DDD-dffa956f42e3
+  tags:
+  - domain
+  - large-scale-structure
+  - evolving-order
+  - responsibility-layers
+  - system-metaphor
+- id: domain-identity-entity
+  kind: principle
+  label: Use Entity only for domain-significant identity
+  definition: A domain Entity is justified when meaning depends on continuity and identity despite attribute changes; a primary key or mutable record alone is insufficient.
+  operational_significance: Treating every row as an Entity adds mutable lifecycle and identity complexity, while modeling true identity as a value loses continuity and reference semantics.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - domain-identity-entity
+  formulations:
+  - F-CONCEPT-DDD-9cec3a630a7f
+  - F-CONCEPT-DDD-dd8e4ebe0158
+  - F-CONCEPT-FSA-107da7f4f6fd
+  tags:
+  - domain
+  - entity
+  - identity
+  - lifecycle
+  - reference-object
+- id: domain-intention-revealing-interface
+  kind: principle
+  label: Reveal domain intention and consequences in interfaces
+  definition: A domain-facing API should express purpose, policy, result, state change, failure, and invariant in the Ubiquitous Language while hiding mechanism and limiting side effects.
+  operational_significance: Mechanism-named or side-effect-obscuring APIs force callers to reconstruct hidden rules and make model changes unsafe.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - domain-intention-revealing-interface
+  formulations:
+  - F-CONCEPT-DDD-dd56be5c6621
+  - F-CONCEPT-DDD-b14a815409c9
+  - F-CONCEPT-CA-b84176590b37
+  tags:
+  - domain
+  - intention-revealing-interface
+  - domain-api
+  - side-effect-free
+  - assertion
+- id: domain-language-model-loop
+  kind: procedure
+  label: Evolve language, model, implementation, and learning together
+  definition: A domain model is a working Ubiquitous Language bound to code, tests, examples, and continuous expert-developer learning, not a noun inventory or documentation-only abstraction.
+  operational_significance: A model detached from code becomes aspirational, while code detached from expert language embeds accidental technical concepts and inconsistent business meaning.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - domain-language-model-loop
+  formulations:
+  - F-CONCEPT-DDD-43e35e2d42ec
+  - F-CONCEPT-DDD-a845db3706b8
+  - F-CONCEPT-CA-0a601729a7bc
+  tags:
+  - domain
+  - ubiquitous-language
+  - model-driven-design
+  - knowledge-crunching
+  - domain-language
+- id: domain-modeling-investment-gate
+  kind: heuristic
+  label: Earn strategic and tactical domain modeling investment
+  definition: Deep domain modeling is justified by business-critical rule, identity, policy, and language complexity plus sustained expert-developer learning and sufficient product lifespan, not by tables, jargon, or architectural fashion.
+  operational_significance: Domain modeling can concentrate insight in complex products, but in simple workflows it introduces vocabulary, layers, and lifecycle ceremony with no compensating value.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - domain-modeling-investment-gate
+  formulations:
+  - F-CONCEPT-DDD-880216cd2773
+  - F-CONCEPT-DDD-0ef2b413dbba
+  - F-CONCEPT-DDD-4994c8d6fe88
+  tags:
+  - domain
+  - ddd-investment
+  - domain-complexity
+  - smart-ui
+  - transaction-script
+- id: domain-repository-lifecycle
+  kind: pattern
+  label: Use Repository for aggregate-root lifecycle access
+  definition: A Repository is justified when domain code needs collection-like retrieval and reconstitution of Aggregate roots while persistence, query, consistency, transaction, and latency mechanics remain explicit to implementers.
+  operational_significance: A meaningful Repository isolates persistence mechanism without pretending queries are free; repository-per-table designs add abstraction while preserving a data-centric model.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - domain-repository-lifecycle
+  formulations:
+  - F-CONCEPT-DDD-f195b0456312
+  - F-CONCEPT-DDD-1705b67d44b7
+  - F-CONCEPT-CA-58aa7bca7855
+  tags:
+  - domain
+  - repository
+  - aggregate-repository
+  - query-semantics
+  - persistence-gateway
+- id: domain-service-operation
+  kind: principle
+  label: Use Domain Service only for ownerless domain operations
+  definition: A Domain Service expresses an important stateless domain operation that does not naturally belong to an Entity or Value Object; it is not an application service, deployable service, or microservice.
+  operational_significance: Domain Services can clarify genuine processes but easily become procedural dumping grounds that strip behavior from the model.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - domain-service-operation
+  formulations:
+  - F-CONCEPT-DDD-308c94715625
+  - F-CONCEPT-DDD-be448c890613
+  - F-CONCEPT-CA-7542af0a6063
+  tags:
+  - domain
+  - domain-service
+  - stateless-operation
+  - anemic-model
+  - service-layer
+- id: domain-value-object
+  kind: principle
+  label: Use Value Object for attribute-defined meaning
+  definition: A Value Object is justified when meaning is entirely its attributes, equality is by value, and replacement is valid; immutability and whole-value invariants are preferred unless domain evidence requires controlled mutation.
+  operational_significance: Explicit value semantics localize validation and eliminate identity noise, but indiscriminate copying or hidden mutability can create performance and correctness problems.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - domain-value-object
+  formulations:
+  - F-CONCEPT-DDD-075810fcb312
+  - F-CONCEPT-DDD-9e90b1c087ae
+  tags:
+  - domain
+  - value-object
+  - value-equality
+  - immutability
+  - units
+- id: go-bounded-concurrency
+  kind: principle
+  label: Earn and bound Go concurrency
+  definition: Goroutines and channels add scheduling, coordination, synchronization, and memory cost; introduce a bounded topology only when a parallelizable workload or functional throughput requirement justifies it after sequential simplification.
+  operational_significance: Unbounded per-item goroutines and coordination-heavy channels can make the system slower, nondeterministic, leaky, and memory-bound.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - go-bounded-concurrency
+  formulations:
+  - F-CONCEPT-EGO-211da5d25df9
+  - F-CONCEPT-EGO-8c9f91ac12bd
+  tags:
+  - performance
+  - goroutine
+  - go-concurrency
+  - worker-pool
+  - sharding
+- id: go-explicit-contextual-errors
+  kind: pattern
+  label: Keep Go error paths explicit and contextual
+  definition: Go errors are ordinary explicit control flow; every material error must be handled, returned, or deliberately classified while preserving causal inspection, stable context, cleanup, and caller recovery semantics.
+  operational_significance: Discarded or repeatedly transformed errors lose root cause, break errors.Is or errors.As behavior, duplicate reports, and leak resources.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - go-explicit-contextual-errors
+  formulations:
+  - F-CONCEPT-EGO-d25487327d45
+  - F-CONCEPT-EGO-a953193d6eec
+  - F-CONCEPT-EGO-3f27657c29e2
+  tags:
+  - implementation
+  - go-error
+  - errors-is
+  - errors-as
+  - wrap-error
+- id: go-goroutine-resource-lifecycle
+  kind: principle
+  label: Own Go goroutine and resource lifecycles
+  definition: Every goroutine and opened or exhaustible resource needs an owner, stop condition, completion observation, cleanup, and error behavior on success, failure, cancellation, and partial consumption.
+  operational_significance: Go makes concurrent work and resource acquisition concise, but orphan goroutines, unread bodies, lost errors, and wrong close ownership cause leaks and deadlocks.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - go-goroutine-resource-lifecycle
+  formulations:
+  - F-CONCEPT-EGO-d0767ea65303
+  - F-CONCEPT-EGO-01d7a5f259dc
+  - F-CONCEPT-EGO-33b0c9659f27
+  tags:
+  - implementation
+  - goroutine-lifecycle
+  - close
+  - defer
+  - exhaust-body
+- id: go-package-api-simplicity
+  kind: principle
+  label: Keep Go packages cohesive and APIs minimally exported
+  definition: Go package boundaries should place behavior with a cohesive responsibility, export only demonstrated cross-package needs, enforce implementation scope where appropriate, and keep dependencies visible.
+  operational_significance: Unnecessary packages and exports create cycles, compatibility burden, pass-through APIs, and framework-style indirection that Go tooling cannot hide.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - go-package-api-simplicity
+  formulations:
+  - F-CONCEPT-EGO-106b9bb189ce
+  - F-CONCEPT-EGO-eb31c8ec4cc4
+  - F-CONCEPT-EGO-ff0eaec1e383
+  tags:
+  - implementation
+  - go-package
+  - export
+  - internal
+  - module
+- id: go-semantics-before-performance-constructs
+  kind: heuristic
+  label: Choose Go values, pointers, generics, and interfaces for semantics first
+  definition: Pointer use, generic or interface dispatch, and specialization have workload- and compiler-dependent cost and must be selected first from ownership, mutation, nil, copy, identity, API, and variation semantics.
+  operational_significance: Folklore such as pointers avoid copies or generics are zero-cost can increase escapes, allocations, alias races, API surface, and maintenance cost.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - go-semantics-before-performance-constructs
+  formulations:
+  - F-CONCEPT-EGO-2c0da95aac06
+  - F-CONCEPT-EGO-794ae49950e4
+  - F-CONCEPT-EGO-026f4c26d5e5
+  tags:
+  - implementation
+  - go-pointer
+  - value-receiver
+  - generics
+  - interface
+- id: implementation-comments-first-design-probe
+  kind: heuristic
+  label: Use comments-first as an optional design probe
+  definition: Drafting the interface contract and high-level implementation intent before code can expose an incoherent abstraction while redesign is cheap, but it is an optional probe rather than a universal workflow.
+  operational_significance: A difficult contract is easier to reconsider before implementation details and tests anchor the first design.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - implementation-comments-first-design-probe
+  formulations:
+  - F-CONCEPT-APOSD-854a62a628e0
+  - F-CONCEPT-CC-8bc447fed3a2
+  tags:
+  - implementation
+  - comments-first
+  - pseudocode
+  - design-probe
+  - interface-draft
+- id: implementation-duplication-as-evidence
+  kind: proof-obligation
+  label: Treat duplication as evidence about knowledge
+  definition: Duplication is harmful when multiple representations encode one authoritative rule or must change together; similar code with independent ownership may be safer than a premature common abstraction.
+  operational_significance: Blind deduplication creates wrong commonality, while duplicated knowledge causes inconsistent repairs and change amplification.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - implementation-duplication-as-evidence
+  formulations:
+  - F-CONCEPT-PP-2197b08e3bb2
+  - F-CONCEPT-APOSD-08a9b621a0da
+  - F-CONCEPT-CC-f4a3a42c67b4
+  tags:
+  - implementation
+  - duplication
+  - dry
+  - clone
+  - knowledge-authority
+- id: implementation-error-surface-reduction
+  kind: heuristic
+  label: Reduce error surfaces without erasing failure meaning
+  definition: Error handling may be simplified by natural total semantics, reliable masking, or aggregation at a useful boundary only when the change preserves caller-relevant failure information and operational safety.
+  operational_significance: Repeated low-level handling increases complexity, but defining away a material failure converts visible risk into silent corruption or misleading success.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - implementation-error-surface-reduction
+  formulations:
+  - F-CONCEPT-APOSD-71fddb56f8d8
+  - F-CONCEPT-CC-296353e2be19
+  tags:
+  - implementation
+  - define-errors-away
+  - mask-failure
+  - aggregate-errors
+  - idempotent-semantics
+- id: implementation-explicit-failure-policy
+  kind: principle
+  label: Make failure policy explicit
+  definition: Errors and exceptional conditions are part of an interface and need explicit caller-relevant meaning, recovery ownership, propagation, retry, logging, cleanup, partial-effect, and termination semantics.
+  operational_significance: Improvised handling loses causes, duplicates reporting, retries unsafe work, leaks resources, or continues after state can no longer be trusted.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - implementation-explicit-failure-policy
+  formulations:
+  - F-CONCEPT-CC-233e88b9c99c
+  - F-CONCEPT-PP-811f1df832f2
+  - F-CONCEPT-APOSD-5df7585c0502
+  - F-CONCEPT-EGO-47133b650968
+  tags:
+  - implementation
+  - failure-policy
+  - error-semantics
+  - exception
+  - retry
+- id: implementation-fail-fast-or-recover
+  kind: heuristic
+  label: Select fail-fast or recovery from system consequences
+  definition: Continuing, containing, retrying, degrading, or terminating after failure is a product and operational tradeoff, not a universal coding preference.
+  operational_significance: Crashing an availability-critical service can be needless, while continuing after corruption can compound data loss and make diagnosis harder.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - implementation-fail-fast-or-recover
+  formulations:
+  - F-CONCEPT-PP-5850f3961698
+  - F-CONCEPT-CC-266f5d39ba53
+  - F-CONCEPT-APOSD-17ea53390834
+  tags:
+  - implementation
+  - fail-fast
+  - recover
+  - degrade
+  - containment
+- id: implementation-minimal-coherent-api
+  kind: principle
+  label: Expose a minimal coherent API contract
+  definition: An API must state the non-obvious meaning callers depend on while exposing no more mechanism, configuration, or surface than demonstrated consumers require.
+  operational_significance: A signature alone omits material obligations, while oversized or pass-through APIs increase compatibility burden and leak decisions.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - implementation-minimal-coherent-api
+  formulations:
+  - F-CONCEPT-PP-d90f9a137c18
+  - F-CONCEPT-CC-791f5ecc8dbe
+  - F-CONCEPT-APOSD-a90ebdb601c1
+  tags:
+  - implementation
+  - api-contract
+  - consumer
+  - precondition
+  - postcondition
+- id: implementation-non-obvious-commentary
+  kind: principle
+  label: Comment non-obvious contract and rationale
+  definition: Comments should preserve contract, rationale, invariant, unit, ownership, side effect, nonlocal relation, or tradeoff that correct code cannot make sufficiently obvious; they should not narrate mechanics.
+  operational_significance: Missing rationale forces repeated rediscovery, while redundant or stale narration competes with executable truth and hides poor structure.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - implementation-non-obvious-commentary
+  formulations:
+  - F-CONCEPT-APOSD-3f17a9e18d90
+  - F-CONCEPT-CC-be15f4673a75
+  - F-CONCEPT-PP-913f03916f55
+  tags:
+  - implementation
+  - comments
+  - rationale
+  - invariant
+  - non-obvious-contract
+- id: implementation-normal-result-or-exception
+  kind: heuristic
+  label: Distinguish normal results from exceptional failures
+  definition: Expected domain outcomes belong in ordinary result or control semantics; exception-like mechanisms are appropriate only when the operation cannot fulfill its normal contract and the language and caller model support nonlocal failure flow.
+  operational_significance: Treating expected outcomes as exceptions obscures normal flow, while encoding true failures as ambiguous values invites ignored errors.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - implementation-normal-result-or-exception
+  formulations:
+  - F-CONCEPT-PP-e6b506d51dc9
+  - F-CONCEPT-CC-0c2a4b95054f
+  - F-CONCEPT-APOSD-0060d4a36341
+  tags:
+  - implementation
+  - normal-result
+  - exception
+  - sentinel
+  - status
+- id: implementation-obvious-control-flow
+  kind: principle
+  label: Make control and state transitions obvious to readers
+  definition: Control flow, ordering, state, termination, and variable roles should be visible through the simplest fitting structures so a reader can predict behavior without reconstructing hidden context.
+  operational_significance: Writer familiarity hides surprises that later readers experience as cognitive load, missed edge cases, and unsafe edits.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - implementation-obvious-control-flow
+  formulations:
+  - F-CONCEPT-APOSD-f41be09fb465
+  - F-CONCEPT-CC-f1bbab5a75ef
+  - F-CONCEPT-CC-1185c366449d
+  tags:
+  - implementation
+  - obvious-code
+  - control-flow
+  - state-transition
+  - local-reasoning
+- id: implementation-placement-by-ownership
+  kind: principle
+  label: Place behavior with its knowledge and invariants
+  definition: New behavior belongs in the smallest existing owner of the relevant state, policy, invariant, or hidden design decision that can expose a coherent contract without importing unrelated concerns.
+  operational_significance: Placement determines change locality, duplication, caller complexity, and the amount of system context needed for a safe change.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - implementation-placement-by-ownership
+  formulations:
+  - F-CONCEPT-APOSD-0a3eb9743076
+  - F-CONCEPT-CC-f65db168af4f
+  tags:
+  - implementation
+  - behavior-placement
+  - ownership
+  - responsibility
+  - invariants
+- id: implementation-readiness
+  kind: principle
+  label: Scale implementation readiness to risk
+  definition: Consequential coding should begin only after the intended outcome, affected contracts, placement constraints, failure and resource policy, verification route, and integration path are understood at a depth proportional to consequence and uncertainty.
+  operational_significance: Missing prerequisites force implementation to invent product semantics and architecture while making verification ambiguous.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - implementation-readiness
+  formulations:
+  - F-CONCEPT-CC-2291cd188fa0
+  - F-CONCEPT-PP-e387cbdbd401
+  tags:
+  - implementation
+  - implementation-readiness
+  - prerequisites
+  - risk
+  - requirements
+- id: implementation-repository-language-conformance
+  kind: pattern
+  label: Conform language choices to the repository toolchain
+  definition: A language idiom or mechanism is appropriate only when current repository versions, tooling, neighboring code, public compatibility, and runtime semantics support it and it improves the authorized task.
+  operational_significance: Technically valid language features can break supported environments, confuse maintainers, or silently change API and runtime behavior.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - implementation-repository-language-conformance
+  formulations:
+  - F-CONCEPT-CC-24e6e3121f6c
+  - F-CONCEPT-FP-b8b872819c0e
+  - F-CONCEPT-EGO-18b7dfc06d5d
+  tags:
+  - implementation
+  - language-idiom
+  - toolchain
+  - version-floor
+  - repository-convention
+- id: implementation-representation-fit
+  kind: principle
+  label: Select representation from semantics and operations
+  definition: Control and data representations should be chosen from required invariants, ownership, mutation, ordering, access, scale, and materialization needs before habit or speculative performance.
+  operational_significance: A mismatched representation hides invariants, creates accidental quadratic work, leaks storage choices into APIs, and increases aliasing or lifetime risk.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - implementation-representation-fit
+  formulations:
+  - F-CONCEPT-CC-b54c0c143dfc
+  - F-CONCEPT-APOSD-d74a0d11c04c
+  - F-CONCEPT-FP-c50eaf7296ff
+  tags:
+  - implementation
+  - representation
+  - data-structure
+  - container
+  - ownership
+- id: implementation-risk-driven-tests
+  kind: principle
+  label: Derive protection from contract and risk
+  definition: Tests and characterization should protect observable contracts, invariants, boundary values, state transitions, failure and resource paths, and repaired regressions at the smallest level that can observe them without binding to irrelevant internals.
+  operational_significance: Different defect classes escape different methods, and line execution does not establish that meaningful behavior is protected.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - implementation-risk-driven-tests
+  formulations:
+  - F-CONCEPT-CC-ba525ba51386
+  - F-CONCEPT-PP-3303b20a4da0
+  - F-CONCEPT-APOSD-7c6f6a8b13de
+  - F-CONCEPT-FP-925f7861cb72
+  tags:
+  - implementation
+  - risk-driven-tests
+  - characterization
+  - boundaries
+  - contract-test
+- id: implementation-semantic-naming
+  kind: principle
+  label: Name semantic distinctions precisely
+  definition: Names should create accurate mental models of domain meaning, scope, units, effects, and role while following repository and language conventions.
+  operational_significance: Imprecise names collapse distinct concepts, hide side effects, and spread vocabulary drift across code, tests, and discussion.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - implementation-semantic-naming
+  formulations:
+  - F-CONCEPT-APOSD-f8e2728d0282
+  - F-CONCEPT-CC-aa56eb24871a
+  - F-CONCEPT-PP-1c9e11961419
+  tags:
+  - implementation
+  - naming
+  - vocabulary
+  - semantic-distinction
+  - glossary
+- id: legacy-cover-and-modify
+  kind: principle
+  label: Cover-and-modify change algorithm
+  definition: Poorly characterized code should be changed through a minimum route from change point to effect/test point, dependency seam, characterization, semantic edit, and optional refactoring.
+  operational_significance: It resolves the need-tests-before-change versus need-change-before-tests dilemma without redesigning the system first.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - legacy-cover-and-modify
+  formulations:
+  - F-CONCEPT-WELC-c9dc66e1055a
+  - F-CONCEPT-REF-717c89b23e88
+  tags:
+  - legacy
+  - legacy-change-algorithm
+  - cover-and-modify
+  - change-point
+  - test-point
+- id: legacy-current-work-responsibility-discovery
+  kind: heuristic
+  label: Discover responsibility through current work
+  definition: The behavior being changed supplies the most reliable initial evidence for one responsibility inside an unclear large unit.
+  operational_significance: Live change supplies semantic and temporal evidence without requiring an ideal full decomposition.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - legacy-current-work-responsibility-discovery
+  formulations:
+  - F-CONCEPT-WELC-5cc31083a931
+  - F-CONCEPT-SDX-78726ad40d8d
+  tags:
+  - legacy
+  - current-work
+  - responsibility-discovery
+  - large-class
+- id: legacy-effect-surface
+  kind: principle
+  label: Select protection from effect propagation
+  definition: Required tests follow all observable effects reachable from a change point, not class boundaries or coverage targets alone.
+  operational_significance: It bounds test preparation and reveals hidden coupling without demanding global coverage.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - legacy-effect-surface
+  formulations:
+  - F-CONCEPT-WELC-3a871b9131dd
+  - F-CONCEPT-WELC-4ddf27f69353
+  tags:
+  - legacy
+  - effect-analysis
+  - what-to-test
+  - side-effect
+  - blast-radius
+- id: legacy-pinch-point
+  kind: heuristic
+  label: Protect a change cluster at a stable convergence point
+  definition: One stable observation can intercept effects from several changed paths, trading localization for reduced preparation.
+  operational_significance: It can make a bounded change feasible without breaking every dependency in a tangled area.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - legacy-pinch-point
+  formulations:
+  - F-CONCEPT-WELC-a561bd7ea427
+  - F-CONCEPT-WELC-b15fce350175
+  tags:
+  - legacy
+  - pinch-point
+  - interception-point
+  - test-covering
+- id: legacy-provisional-dependency-break
+  kind: heuristic
+  label: Minimum provisional dependency break
+  definition: Break only the dependency that prevents required feedback, and make any resulting design scar explicit and revisitable.
+  operational_significance: Demanding final architecture before tests recreates the legacy dilemma, while untracked hooks fossilize.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - legacy-provisional-dependency-break
+  formulations:
+  - F-CONCEPT-WELC-22a12be20a07
+  - F-CONCEPT-SDX-6062f695ea2b
+  tags:
+  - legacy
+  - dependency-break
+  - temporary-seam
+  - design-scar
+  - testability
+- id: legacy-provisional-safety-net
+  kind: heuristic
+  label: Provisional broad characterization safety net
+  definition: A broad black-box or E2E suite may temporarily protect initial restructuring when local tests are impossible, with explicit brittleness and retirement rules.
+  operational_significance: Broad tests may be the only initial route but are slow, brittle, and weak at localization.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - legacy-provisional-safety-net
+  formulations:
+  - F-CONCEPT-SDX-cb334d1881c0
+  - F-CONCEPT-WELC-33cfc8c4ee96
+  tags:
+  - legacy
+  - temporary-e2e
+  - safety-net
+  - black-box-characterization
+- id: legacy-scratch-refactoring
+  kind: principle
+  label: Disposable refactoring for understanding
+  definition: Aggressive reversible structural edits can reveal behavior and responsibilities, but insight—not the scratch diff—is the default deliverable.
+  operational_significance: It permits exploration without laundering unverified edits into production.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - legacy-scratch-refactoring
+  formulations:
+  - F-CONCEPT-WELC-5ece628c0bd4
+  tags:
+  - legacy
+  - scratch-refactoring
+  - throwaway-extraction
+  - code-understanding
+- id: legacy-sprout-wrap
+  kind: heuristic
+  label: Sprout or wrap behavior under deadline pressure
+  definition: When required behavior cannot safely enter an untestable body in time, tested logic may be placed beside or around it through a narrow integration point.
+  operational_significance: It confines new uncertainty but may create a staging scar and leave old/new integration weakly protected.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - legacy-sprout-wrap
+  formulations:
+  - F-CONCEPT-WELC-681bbd844c08
+  - F-CONCEPT-WELC-86afdadc6e55
+  tags:
+  - legacy
+  - sprout-method
+  - wrap-method
+  - urgent-legacy-change
+- id: legacy-unprotected-enabling-edit
+  kind: principle
+  label: Last-resort unprotected mechanical enabling edit
+  definition: A first testless production edit is permissible only when it is the smallest reversible bridge required to make protection possible and no safer path exists.
+  operational_significance: The legacy dilemma sometimes requires an edit before tests, but normalizing this exception invites unbounded edit-and-pray.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - legacy-unprotected-enabling-edit
+  formulations:
+  - F-CONCEPT-WELC-9023366b4f0d
+  - F-CONCEPT-WELC-36a096131afd
+  tags:
+  - legacy
+  - hyperaware-editing
+  - testless-refactor
+  - first-seam
+  - compiler
+- id: python-bounded-async
+  kind: principle
+  label: Keep Python async nonblocking, bounded, and owned
+  definition: Async code must keep the event loop free of unbounded blocking work, bound fan-out and queues, own every task and resource, and make cancellation and failure propagation explicit.
+  operational_significance: Unbounded task creation and one blocking dependency can turn apparently concurrent code into memory growth, starvation, lost errors, and shutdown leaks.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - python-bounded-async
+  formulations:
+  - F-CONCEPT-FP-3d234f5d44cd
+  - F-CONCEPT-FP-bded7c08591b
+  tags:
+  - performance
+  - asyncio
+  - semaphore
+  - backpressure
+  - event-loop
+- id: python-cache-validity
+  kind: proof-obligation
+  label: Define Python cache validity, ownership, and bounds
+  definition: functools cache, LRU, cached properties, and bespoke dictionaries are safe only when key identity, determinism, invalidation, capacity, concurrency, failure, ownership, and lifecycle are explicit and repeated work is material.
+  operational_significance: Caches deliberately duplicate state and can return stale data, retain objects, hide failures, or add contention while improving a microbenchmark.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - python-cache-validity
+  formulations:
+  - F-CONCEPT-FP-456143dd3994
+  - F-CONCEPT-FP-d88fcc60f497
+  tags:
+  - performance
+  - functools-cache
+  - lru-cache
+  - cached-property
+  - memoization
+- id: python-compatible-property-evolution
+  kind: heuristic
+  label: Evolve Python attributes through compatible properties
+  definition: A plain public attribute can evolve to a property when real validation or computation appears, provided ordinary caller and framework behavior remains compatible; speculative getters and setters are unnecessary.
+  operational_significance: Python properties preserve a useful evolution option without imposing boilerplate up front, but can also hide expensive work and compatibility changes.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - python-compatible-property-evolution
+  formulations:
+  - F-CONCEPT-FP-e32371f85328
+  tags:
+  - implementation
+  - python-property
+  - public-attribute
+  - compatible-evolution
+  - getter-setter
+- id: python-concurrency-model-selection
+  kind: heuristic
+  label: Select Python concurrency from workload and runtime evidence
+  definition: Sequential execution, bounded threads, processes, and async solve different workload and dependency constraints; the current interpreter and deployment must be verified before assuming their CPU, I/O, or isolation behavior.
+  operational_significance: A concurrency model can add coordination, serialization, lifecycle, and debugging cost while failing to improve the actual bottleneck.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - python-concurrency-model-selection
+  formulations:
+  - F-CONCEPT-FP-ba596925640d
+  - F-CONCEPT-FP-907e9b1f7350
+  tags:
+  - performance
+  - python-concurrency
+  - thread
+  - process
+  - async
+- id: python-data-carrier-versus-domain-object
+  kind: heuristic
+  label: Distinguish Python data carriers from domain objects
+  definition: A behaviorless record is appropriate for interchange, snapshots, or scaffolding and becomes a domain restructuring candidate only when cohesive policy or invariants manipulating its fields are recurring and scattered.
+  operational_significance: Treating every record as an anemic smell creates ceremony, while leaving real policy scattered duplicates invariants and ownership.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - python-data-carrier-versus-domain-object
+  formulations:
+  - F-CONCEPT-FP-f5350efe47f8
+  - F-CONCEPT-FP-8801805aae27
+  tags:
+  - implementation
+  - dataclass
+  - data-carrier
+  - dto
+  - domain-object
+- id: python-dynamic-mechanism-escalation
+  kind: principle
+  label: Escalate Python dynamic mechanisms only when earned
+  definition: Ordinary functions and attributes should give way to properties, decorators, descriptors, subclass hooks, and metaclasses only as demonstrated repetition, cross-class policy, or framework construction requirements demand.
+  operational_significance: Powerful dynamic mechanisms move behavior away from ordinary control flow and can make imports, lookup, debugging, and static tooling difficult to reason about.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - python-dynamic-mechanism-escalation
+  formulations:
+  - F-CONCEPT-FP-aff4f8afdf70
+  - F-CONCEPT-FP-2388fa2cadf1
+  tags:
+  - implementation
+  - metaclass
+  - descriptor
+  - decorator
+  - property
+- id: python-function-over-stateless-class
+  kind: heuristic
+  label: Prefer a Python function for stateless single-operation behavior
+  definition: A named function or callable is usually a clearer implementation of a single-operation strategy with no independent identity, state, lifecycle, or related operations than a parallel one-method class hierarchy.
+  operational_significance: One-method hierarchies can add registration and inheritance machinery without hiding useful complexity, while closures can also hide state when overused.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - python-function-over-stateless-class
+  formulations:
+  - F-CONCEPT-FP-d578fda1e55e
+  - F-CONCEPT-FP-0f7c6e2e603a
+  tags:
+  - implementation
+  - first-class-function
+  - strategy
+  - callable
+  - one-method-class
+- id: python-inheritance-constraints
+  kind: principle
+  label: Constrain Python inheritance to substitutability or narrow framework reuse
+  definition: Python inheritance is justified by substitutability or a narrow tested framework role, not by code reuse alone; composition is safer when identities, invariants, or evolution differ.
+  operational_significance: Inheritance couples representation and method resolution, can bypass overrides in built-ins, and spreads fragile assumptions across a hierarchy.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - python-inheritance-constraints
+  formulations:
+  - F-CONCEPT-FP-550f7aa92d70
+  - F-CONCEPT-FP-9daf77dbeae8
+  tags:
+  - implementation
+  - python-inheritance
+  - mixin
+  - mro
+  - subclass-built-in
+- id: python-interface-mechanism-selection
+  kind: principle
+  label: Select the least powerful Python interface mechanism that proves the contract
+  definition: Direct coupling, duck typing, static Protocol, ABC, and concrete type constraints provide different evidence and runtime behavior; choose the least powerful mechanism real consumers and enforcement needs justify.
+  operational_significance: Unnecessary interfaces add indirection and false substitutability, while an overly concrete boundary can duplicate adapters or block demonstrated variation.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - python-interface-mechanism-selection
+  formulations:
+  - F-CONCEPT-FP-4c60a2f40cc7
+  - F-CONCEPT-FP-9a86d8f00be0
+  tags:
+  - implementation
+  - duck-typing
+  - protocol
+  - abc
+  - concrete-type
+- id: python-mutable-ownership
+  kind: principle
+  label: Make Python mutable ownership explicit
+  definition: Because Python assignment and calls share object references, every stored or mutated input needs an explicit borrowed, consumed, copied, shared, or owned contract.
+  operational_significance: Implicit aliasing creates action at a distance, cross-call ghost state, retention, and race-prone shared caches.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - python-mutable-ownership
+  formulations:
+  - F-CONCEPT-FP-c65f79886e4b
+  - F-CONCEPT-FP-a18a1d9f3e15
+  tags:
+  - implementation
+  - python-mutability
+  - aliasing
+  - mutable-default
+  - copy
+- id: python-protocol-conformance
+  kind: principle
+  label: Earn interoperability through complete Python protocols
+  definition: A custom type should implement the smallest semantically complete standard protocol that real clients consume instead of inventing a parallel API or adding decorative special methods.
+  operational_significance: Protocol conformance enables native interoperability, while partial or surprising emulation makes generic-looking operations unsafe.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - python-protocol-conformance
+  formulations:
+  - F-CONCEPT-FP-eef30a8a9f91
+  - F-CONCEPT-FP-3ddc0ed14fcd
+  tags:
+  - implementation
+  - python-protocol
+  - special-method
+  - dunder
+  - duck-typing
+- id: python-repository-shaped-idiom
+  kind: pattern
+  label: Make Python idiom repository-shaped
+  definition: Pythonic form is contextual interoperability with the repository's supported interpreter, dependencies, tooling, neighboring code, and public behavior, not permission for style-only modernization.
+  operational_significance: A valid modern idiom can still break supported runtimes, violate API commitments, or create an isolated local dialect.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - python-repository-shaped-idiom
+  formulations:
+  - F-CONCEPT-FP-6191dfc584db
+  - F-CONCEPT-FP-b1d03f6e2bd6
+  tags:
+  - implementation
+  - pythonic
+  - version-floor
+  - pyproject
+  - compatibility
+- id: python-representation-fit
+  kind: principle
+  label: Choose Python representations by semantic and workload fit
+  definition: Lists, tuples, deques, sets, mappings, flat arrays, views, and generators should be selected from ordering, uniqueness, mutability, access, ownership, size, and materialization needs rather than habit.
+  operational_significance: A mismatched container can lose ordering or duplicates, create quadratic operations, retain backing storage, or leak representation into public APIs.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - python-representation-fit
+  formulations:
+  - F-CONCEPT-FP-b929241844bf
+  - F-CONCEPT-FP-92bc2351ea50
+  tags:
+  - implementation
+  - python-container
+  - list
+  - deque
+  - set
+- id: python-runtime-static-boundary
+  kind: pattern
+  label: Keep Python static evidence distinct from runtime guarantees
+  definition: Type hints, TypedDict, cast, and structural checks are static evidence; they do not validate untrusted data, enforce business invariants, prove behavior, or replace executable tests.
+  operational_significance: Treating green static analysis as runtime proof creates false security and lets invalid external data or business states pass unchecked.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - python-runtime-static-boundary
+  formulations:
+  - F-CONCEPT-FP-ca0253d8906f
+  - F-CONCEPT-FP-5c8ae780320f
+  tags:
+  - implementation
+  - python-typing
+  - runtime-validation
+  - typeddict
+  - cast
+- id: python-special-method-laws
+  kind: principle
+  label: Preserve Python special-method laws
+  definition: Equality, hashing, operators, slicing, representation, and formatting must preserve Python's conventional algebra, mutation, dispatch, fallback, and result semantics.
+  operational_significance: Special methods participate in language-wide protocols, so a locally plausible implementation can corrupt sets, mappings, operators, sorting, or debugging output.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - python-special-method-laws
+  formulations:
+  - F-CONCEPT-FP-ed6febfafbeb
+  - F-CONCEPT-FP-789c2624c736
+  tags:
+  - implementation
+  - dunder-law
+  - equality
+  - hash
+  - notimplemented
+- id: python-streaming-iteration
+  kind: principle
+  label: Preserve Python iterator, exhaustion, and lifetime semantics
+  definition: Generators and iterators are appropriate only when single-pass deferred execution, exception timing, and resource lifetime satisfy consumers; reusable iterables must remain distinct from their iterators.
+  operational_significance: Lazy iteration can reduce memory while silently changing when work, errors, cleanup, and side effects occur.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - python-streaming-iteration
+  formulations:
+  - F-CONCEPT-FP-afbee32d40fd
+  - F-CONCEPT-FP-eaac107b183b
+  tags:
+  - implementation
+  - iterator
+  - iterable
+  - generator
+  - exhaustion
+- id: python-structured-cleanup
+  kind: principle
+  label: Bind Python cleanup to structured lifetime
+  definition: Files, locks, transactions, temporary state, and asynchronous resources should use with, async with, contextlib, or an equivalent structured owner so setup and cleanup remain paired across success, exceptions, and cancellation.
+  operational_significance: Happy-path cleanup leaks resources and leaves partial state when early returns, exceptions, generator abandonment, or cancellation intervene.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - python-structured-cleanup
+  formulations:
+  - F-CONCEPT-FP-dfdfca29c6cd
+  - F-CONCEPT-FP-d43a46525e1e
+  tags:
+  - implementation
+  - context-manager
+  - with
+  - async-with
+  - contextlib
+- id: python-text-bytes-boundary
+  kind: pattern
+  label: Make Python text and bytes conversion a policy boundary
+  definition: Decode bytes to text at a known ingress and encode text at egress with an explicit codec, error, normalization, and loss policy; leave opaque binary payloads uninterpreted.
+  operational_significance: Defaults and ASCII-only samples conceal mojibake, cross-platform corruption, and identifier or security collisions.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - python-text-bytes-boundary
+  formulations:
+  - F-CONCEPT-FP-8345f212d53e
+  - F-CONCEPT-FP-d44b91126f6a
+  tags:
+  - implementation
+  - unicode
+  - text
+  - bytes
+  - encoding
+- id: refactoring-change-type-classification
+  kind: principle
+  label: Classify change by purpose and semantic permission
+  definition: A change label is valid only when its purpose and allowable observable delta match the actual work.
+  operational_significance: Classification determines authority, preservation, tests, review, rollout, and rollback; misleading labels hide risk.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - refactoring-change-type-classification
+  formulations:
+  - F-CONCEPT-WELC-addd89d29422
+  - F-CONCEPT-REF-426930580ebe
+  tags:
+  - agent-conduct
+  - change-type
+  - refactoring-versus-repair
+  - semantic-delta
+  - cleanup
+- id: refactoring-compatibility-migration
+  kind: principle
+  label: Published structural change is a compatibility migration
+  definition: Independent consumers or persisted data turn a desirable internal restructuring into a phased migration.
+  operational_significance: Internal green tests do not protect deployed clients, old data, or independently released components.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - refactoring-compatibility-migration
+  formulations:
+  - F-CONCEPT-REF-eefb58a34d08
+  - F-CONCEPT-REF-906a31b8f3cb
+  tags:
+  - architecture
+  - api-migration
+  - schema-migration
+  - compatibility
+  - deprecation
+- id: refactoring-directional-campaign
+  kind: procedure
+  label: Broad refactoring as a revisable direction
+  definition: A broad structural outcome should be delivered through protected independently valuable intermediate states and revised as knowledge grows.
+  operational_significance: Large transformations reveal requirements and domain structure during execution; a fixed end diagram creates long-lived uncertainty.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - refactoring-directional-campaign
+  formulations:
+  - F-CONCEPT-REF-72d068fb3352
+  - F-CONCEPT-SDX-9a12313b67a0
+  tags:
+  - refactoring
+  - big-refactoring
+  - campaign
+  - incremental-transformation
+  - rewrite
+- id: refactoring-splinter-campaign
+  kind: procedure
+  label: Facade-preserving hotspot splinter campaign
+  definition: In an active congested hotspot, the first campaign may improve safe parallel evolution by extracting one evidenced responsibility while retaining the old API.
+  operational_significance: It reduces ripple and merge exposure without pretending the first split is the final architecture.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - refactoring-splinter-campaign
+  formulations:
+  - F-CONCEPT-SDX-5b145b0aacfb
+  - F-CONCEPT-SDX-89178e7889da
+  tags:
+  - refactoring
+  - splinter-pattern
+  - facade-refactor
+  - congested-hotspot
+- id: refactoring-stop-backtrack-escalate
+  kind: principle
+  label: Stop, backtrack, or escalate on lost certainty
+  definition: The agent must stop when it can no longer state what changed, what remains invariant, why a check failed, or whether it has authority.
+  operational_significance: Continuing converts explicit uncertainty into hidden risk and unauthorized decisions.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - refactoring-stop-backtrack-escalate
+  formulations:
+  - F-CONCEPT-REF-abf9adc41800
+  - F-CONCEPT-WELC-82f76fd6fde6
+  tags:
+  - agent-conduct
+  - stop-condition
+  - backtrack
+  - escalate
+  - uncertain-behavior
+- id: refactoring-transformation-tool-trust
+  kind: principle
+  label: Bound automation trust by semantic coverage
+  definition: Automated transformation reduces mechanical error only within the language and repository surfaces the tool models.
+  operational_significance: Speed and a refactoring label do not establish semantic accuracy.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - refactoring-transformation-tool-trust
+  formulations:
+  - F-CONCEPT-REF-45d4065277d1
+  - F-CONCEPT-WELC-e618e7af8e9c
+  tags:
+  - refactoring
+  - codemod
+  - ide-refactor
+  - automated-rename
+  - compiler-trust
+- id: repository-assessment-behavioral-boundary-candidate
+  kind: pattern
+  label: Co-change-nominated domain boundary candidate
+  definition: Historical clusters can nominate a component or bounded-context candidate, but semantic language, invariants, data/authority ownership, transactions, and experts establish the boundary.
+  operational_significance: History reveals how work traverses current structure but commits can reflect convenience, rollout, or process artifacts.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - repository-assessment-behavioral-boundary-candidate
+  formulations:
+  - F-CONCEPT-SDX-81087ba97153
+  - F-CONCEPT-SDX-c94488f64ebb
+  tags:
+  - domain
+  - bounded-context-candidate
+  - co-change-cluster
+  - domain-boundary
+- id: repository-assessment-behavioral-data-fitness
+  kind: pattern
+  label: Version-history evidence fitness gate
+  definition: Behavioral inference is admissible only after checking whether repository practice preserves the entity, time, task, and author relationships the analysis assumes.
+  operational_significance: Plausible charts can encode false provenance and socially harmful attribution.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - repository-assessment-behavioral-data-fitness
+  formulations:
+  - F-CONCEPT-SDX-b864bebc70eb
+  - F-CONCEPT-SDX-714cb5634d4a
+  tags:
+  - agent-conduct
+  - history-bias
+  - git-data-quality
+  - mailmap
+  - squash
+- id: repository-assessment-behavioral-early-warning
+  kind: pattern
+  label: Nonblocking behavioral review warning
+  definition: Rising hotspot rank, steep relative complexity growth, or missing expected co-change should focus review and allow intentional divergence.
+  operational_significance: Early evidence can catch risk before it hardens, but forced historical conformity prevents healthy refactoring.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - repository-assessment-behavioral-early-warning
+  formulations:
+  - F-CONCEPT-SDX-83f0f415584a
+  - F-CONCEPT-SDX-df8340541154
+  tags:
+  - review
+  - rising-hotspot
+  - missing-co-change
+  - complexity-warning
+- id: repository-assessment-code-age
+  kind: pattern
+  label: Code-age stability clue
+  definition: Time since modification can suggest stable or active regions but cannot establish quality, safety, use, cohesion, or deadness.
+  operational_significance: Stable modules reduce cognitive load, while paused, abandoned, dead, or feared code can look equally old.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - repository-assessment-code-age
+  formulations:
+  - F-CONCEPT-SDX-78de61a2d5d3
+  - F-CONCEPT-SDX-8a0ef6c89d72
+  tags:
+  - review
+  - code-age
+  - stable-code
+  - dead-code
+  - old-code
+- id: repository-assessment-complexity-trend
+  kind: pattern
+  label: Repository-relative structural trajectory
+  definition: A consistent relative trajectory or unusual delta is more actionable than an absolute universal complexity threshold.
+  operational_significance: Language, formatting, generated code, and local style bias absolute values.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - repository-assessment-complexity-trend
+  formulations:
+  - F-CONCEPT-SDX-c5c9444a3e00
+  - F-CONCEPT-SDX-c96f60d63001
+  tags:
+  - review
+  - complexity-trend
+  - rising-complexity
+  - relative-threshold
+- id: repository-assessment-logical-change-set
+  kind: pattern
+  label: Cross-commit logical change grouping
+  definition: Co-change across split commits or repositories requires a defensible grouping of commits into one logical task.
+  operational_significance: Same-commit analysis misses distributed work, while temporal windows create false positives.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - repository-assessment-logical-change-set
+  formulations:
+  - F-CONCEPT-SDX-12a148197eac
+  tags:
+  - architecture
+  - logical-change-set
+  - ticket-commit
+  - cross-repository-coupling
+- id: repository-assessment-metrics-not-performance
+  kind: pattern
+  label: Prohibit individual performance scoring from behavioral code data
+  definition: Commit, LOC, ownership, defect-attribution, hotspot, and knowledge-map data must never be converted into individual productivity or performance judgments.
+  operational_significance: Measurement changes behavior, destroys the evidence source, discourages help/deletion/risky work, and cannot see task context.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - repository-assessment-metrics-not-performance
+  formulations:
+  - F-CONCEPT-SDX-d65947c87148
+  - F-CONCEPT-SDX-6cbe3260028c
+  tags:
+  - agent-conduct
+  - developer-productivity
+  - performance-metric
+  - commit-count
+  - loc
+- id: review-severity-confidence-separation
+  kind: principle
+  label: Separate review severity from confidence and preference
+  definition: A review must distinguish demonstrated defect or contract violation from evidence-backed risk, maintainability concern, suggestion, and personal preference, while stating confidence independently from consequence.
+  operational_significance: Severity inflation and preference laundering obscure real defects, expand review authority, and make authors spend effort without a verified engineering outcome.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - review-severity-confidence-separation
+  formulations:
+  - F-CONCEPT-CC-15b7c4b5b811
+  - F-CONCEPT-CC-22ea1c9672c3
+  - F-CONCEPT-PP-fe09a6608b1e
+  - F-CONCEPT-APOSD-b4ca38a03e4f
+  tags:
+  - review
+  - review-severity
+  - blocker
+  - defect
+  - risk
+- id: testing-coverage-is-not-adequacy
+  kind: principle
+  label: Treat coverage as execution evidence, not adequacy
+  definition: Coverage can show that code was executed, but cannot by itself establish correct assertions, boundary protection, failure behavior, state coverage, or test independence.
+  operational_significance: A high percentage with weak or missing assertions can conceal the exact behaviors most likely to fail.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - testing-coverage-is-not-adequacy
+  formulations:
+  - F-CONCEPT-CC-8cab97dc172f
+  - F-CONCEPT-PP-ccc50b0e9e5f
+  tags:
+  - implementation
+  - coverage
+  - adequacy
+  - branch-coverage
+  - line-coverage
+- id: testing-design-before-feature-tests
+  kind: heuristic
+  label: Design shared abstractions before feature tests freeze them
+  definition: When a new shared module's responsibility and interface are unsettled, compare the broader abstraction and caller alternatives before individual feature tests dictate a tactical structure.
+  operational_significance: Tests written around the first decomposition can make an accidental interface costly to reconsider without supplying architectural evidence.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - testing-design-before-feature-tests
+  formulations:
+  - F-CONCEPT-APOSD-f6cc19b3dc4b
+  - F-CONCEPT-CC-c740d22f93c5
+  tags:
+  - implementation
+  - design-first
+  - tdd
+  - shared-abstraction
+  - interface-alternatives
+- id: testing-test-first-feedback
+  kind: heuristic
+  label: Use test-first when it improves contract feedback
+  definition: Writing a failing behavioral test before implementation is valuable when it clarifies an accepted contract, reproduces a defect, or creates a close preservation gate; it is not proof that the resulting design is coherent.
+  operational_significance: Test-first can shorten feedback and expose testability, but feature-by-feature tests can anchor accidental interfaces when the abstraction itself is unresolved.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - testing-test-first-feedback
+  formulations:
+  - F-CONCEPT-CC-122f0ecf84a1
+  - F-CONCEPT-PP-ad47ad2743b0
+  - F-CONCEPT-APOSD-8ae6a0e491cc
+  tags:
+  - implementation
+  - test-first
+  - red-green
+  - regression-test
+  - tdd
+- id: universal-earned-abstraction
+  kind: principle
+  label: Earn abstractions through demonstrated pressure
+  definition: Introduce or retain an abstraction only when it hides coherent knowledge or mechanism and reduces total caller reasoning, coordinated change, or substitution cost more than its interface and indirection add.
+  operational_significance: An abstraction can create local reasoning, but a shallow or speculative one freezes the wrong model and adds permanent interface burden.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - universal-earned-abstraction
+  formulations:
+  - F-CONCEPT-APOSD-2ea5ca3d7275
+  - F-CONCEPT-CC-fe7a1d6bd016
+  - F-CONCEPT-PP-9768c732f35d
+  tags:
+  - universal
+  - earned-abstraction
+  - interface
+  - indirection
+  - reuse
+- id: universal-explicit-invariants
+  kind: principle
+  label: Make invariants explicit and owned
+  definition: Every material invariant needs a clear owner, representation, enforcement point, failure policy, and proof mechanism proportionate to risk.
+  operational_significance: Implicit or duplicated invariants become inconsistent, allow invalid intermediate states, and make callers coordinate hidden rules.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - universal-explicit-invariants
+  formulations:
+  - F-CONCEPT-PP-18ee8f1485d3
+  - F-CONCEPT-CC-c3a917698570
+  - F-CONCEPT-DDD-2ac4e8deb2fd
+  tags:
+  - universal
+  - invariant
+  - contract
+  - assertion
+  - invalid-state
+- id: universal-information-hiding
+  kind: principle
+  label: Hide volatile decisions behind coherent contracts
+  definition: Information hiding succeeds when one module owns a design decision or representation and callers depend on stable meaning rather than mechanics; access modifiers alone are insufficient.
+  operational_significance: Leaked knowledge creates coordinated edits and expands the mental model required for local work.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - universal-information-hiding
+  formulations:
+  - F-CONCEPT-APOSD-e67566b00059
+  - F-CONCEPT-CC-3940cef9a909
+  - F-CONCEPT-CA-0bcc6ee9be58
+  tags:
+  - universal
+  - information-hiding
+  - leakage
+  - representation
+  - encapsulation
+- id: universal-local-reasoning
+  kind: principle
+  label: Prefer local reasoning
+  definition: Place knowledge, state, invariants, and behavior so a maintainer can understand and change one responsibility without reconstructing distant hidden state or call order.
+  operational_significance: Cognitive load and unknown dependencies dominate change risk even when code is individually readable.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - universal-local-reasoning
+  formulations:
+  - F-CONCEPT-APOSD-2bc29e652438
+  - F-CONCEPT-PP-62449b43723c
+  - F-CONCEPT-CC-921f8e2d3837
+  tags:
+  - universal
+  - local-reasoning
+  - cognitive-load
+  - change-locality
+  - orthogonality
+- id: universal-measure-claimed-improvement
+  kind: principle
+  label: Measure the improvement that is claimed
+  definition: A claim that work improves performance, maintainability, reliability, architecture fitness, or process needs a preserved baseline and evidence on that same dimension.
+  operational_significance: A reduced file size, complexity score, or benchmark can move while the actual change, review, user, or operational cost stays the same or worsens.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - universal-measure-claimed-improvement
+  formulations:
+  - F-CONCEPT-SDX-eb8d00c14fc8
+  - F-CONCEPT-FSA-daf109befe73
+  - F-CONCEPT-EGO-fb398e678862
+  tags:
+  - universal
+  - measure-improvement
+  - baseline
+  - fitness-function
+  - benefit-proof
+- id: universal-no-change-option
+  kind: principle
+  label: Keep no change as a valid decision
+  definition: Leave code or architecture unchanged when demonstrated pressure and expected benefit do not exceed intervention, migration, indirection, learning, and operational cost.
+  operational_significance: Engineering capacity and change risk are finite, and unattractive stable code can be safer than an unearned redesign.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - universal-no-change-option
+  formulations:
+  - F-CONCEPT-REF-47a52fa2ffa2
+  - F-CONCEPT-SDX-27531eaed8cd
+  - F-CONCEPT-APOSD-542db617dd0a
+  tags:
+  - universal
+  - leave-code-alone
+  - no-change
+  - defer
+  - monitor
+- id: universal-repository-contract-precedence
+  kind: pattern
+  label: Repository contracts outrank generic doctrine
+  definition: Explicit task authority, accepted repository decisions, executable contracts, and current runtime facts govern the work before any generic engineering school or source preference.
+  operational_significance: Advice that is sound in one language, lifecycle, architecture, or risk class can be harmful when detached from a repository's accepted commitments.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - universal-repository-contract-precedence
+  formulations:
+  - F-CONCEPT-FSA-0302ef761084
+  - F-CONCEPT-CC-59bf0838015e
+  - F-CONCEPT-APOSD-901470c5095d
+  tags:
+  - universal
+  - repository-contract
+  - precedence
+  - adr
+  - convention
+- id: universal-reversible-reviewable-change
+  kind: principle
+  label: Prefer reversible, reviewable changes
+  definition: Choose the smallest coherent step that can be independently understood, verified, and reversed or safely advanced.
+  operational_significance: Reversibility preserves options and reviewability limits simultaneous uncertainty and blast radius.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - universal-reversible-reviewable-change
+  formulations:
+  - F-CONCEPT-PP-5fbab4f1eb07
+  - F-CONCEPT-REF-f2dd8866d777
+  - F-CONCEPT-FSA-f4b9a8a0a449
+  tags:
+  - universal
+  - reversible
+  - reviewable
+  - checkpoint
+  - rollback
+- id: universal-separate-semantic-structural-change
+  kind: principle
+  label: Separate semantic and structural work
+  definition: Feature behavior, defect repair, refactoring, architecture, migration, optimization, cleanup, deletion, and dependency changes remain distinct checkpoints even when one task needs several.
+  operational_significance: Mixed changes make causality, review, rollback, benchmark interpretation, and authority impossible to audit.
+  status: canonical
+  confidence: universal
+  doctrine_refs:
+  - universal-separate-semantic-structural-change
+  formulations:
+  - F-CONCEPT-REF-93dea0b4cc46
+  - F-CONCEPT-WELC-9ac8f09782c8
+  - F-CONCEPT-EGO-6b5a5b5f4309
+  tags:
+  - universal
+  - two-hats
+  - semantic-change
+  - structural-change
+  - change-classification

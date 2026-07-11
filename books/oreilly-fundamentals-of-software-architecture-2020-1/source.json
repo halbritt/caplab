@@ -1,0 +1,641 @@
+{
+  "attempts": [
+    {
+      "argv": [
+        "bash",
+        "/home/halbritt/git/skills/skills/marker-convert/scripts/convert-peecee.sh",
+        ".book-work/oreilly-fundamentals-of-software-architecture-2020-1/oreilly-fundamentals-of-software-architecture-20-5008352574b2.pdf",
+        "--format",
+        "markdown",
+        "--out",
+        ".book-work/oreilly-fundamentals-of-software-architecture-2020-1/marker-peecee",
+        "--host",
+        "peecee"
+      ],
+      "command": "bash /home/halbritt/git/skills/skills/marker-convert/scripts/convert-peecee.sh .book-work/oreilly-fundamentals-of-software-architecture-2020-1/oreilly-fundamentals-of-software-architecture-20-5008352574b2.pdf --format markdown --out .book-work/oreilly-fundamentals-of-software-architecture-2020-1/marker-peecee --host peecee",
+      "execution_target": "peecee",
+      "exit_status": 0,
+      "failures": [],
+      "fresh_output_validated": true,
+      "freshness_error": null,
+      "warnings": [],
+      "working_directory": "/home/halbritt/git/books"
+    }
+  ],
+  "chapter_boundary_evidence": [
+    {
+      "anchor": null,
+      "number": 1,
+      "source": "numbered printed contents table",
+      "source_line": 108,
+      "title": "Introduction"
+    },
+    {
+      "anchor": null,
+      "number": 2,
+      "source": "numbered printed contents table",
+      "source_line": 126,
+      "title": "Architectural Thinking"
+    },
+    {
+      "anchor": null,
+      "number": 3,
+      "source": "numbered printed contents table",
+      "source_line": 135,
+      "title": "Modularity"
+    },
+    {
+      "anchor": null,
+      "number": 4,
+      "source": "numbered printed contents table",
+      "source_line": 145,
+      "title": "Architecture Characteristics Defined"
+    },
+    {
+      "anchor": null,
+      "number": 5,
+      "source": "numbered printed contents table",
+      "source_line": 151,
+      "title": "Identifying Architectural Characteristics"
+    },
+    {
+      "anchor": null,
+      "number": 6,
+      "source": "numbered printed contents table",
+      "source_line": 157,
+      "title": "Measuring and Governing Architecture Characteristics"
+    },
+    {
+      "anchor": null,
+      "number": 7,
+      "source": "numbered printed contents table",
+      "source_line": 165,
+      "title": "Scope of Architecture Characteristics"
+    },
+    {
+      "anchor": null,
+      "number": 8,
+      "source": "numbered printed contents table",
+      "source_line": 171,
+      "title": "Component-Based Thinking"
+    },
+    {
+      "anchor": null,
+      "number": 9,
+      "source": "numbered printed contents table",
+      "source_line": 190,
+      "title": "Foundations"
+    },
+    {
+      "anchor": null,
+      "number": 10,
+      "source": "numbered printed contents table",
+      "source_line": 206,
+      "title": "Layered Architecture Style"
+    },
+    {
+      "anchor": null,
+      "number": 11,
+      "source": "numbered printed contents table",
+      "source_line": 214,
+      "title": "Pipeline Architecture Style"
+    },
+    {
+      "anchor": null,
+      "number": 12,
+      "source": "numbered printed contents table",
+      "source_line": 220,
+      "title": "Microkernel Architecture Style"
+    },
+    {
+      "anchor": null,
+      "number": 13,
+      "source": "numbered printed contents table",
+      "source_line": 228,
+      "title": "Service-Based Architecture Style"
+    },
+    {
+      "anchor": null,
+      "number": 14,
+      "source": "numbered printed contents table",
+      "source_line": 236,
+      "title": "Event-Driven Architecture Style"
+    },
+    {
+      "anchor": null,
+      "number": 15,
+      "source": "numbered printed contents table",
+      "source_line": 250,
+      "title": "Space-Based Architecture Style"
+    },
+    {
+      "anchor": null,
+      "number": 16,
+      "source": "numbered printed contents table",
+      "source_line": 265,
+      "title": "Orchestration-Driven Service-Oriented Architecture"
+    },
+    {
+      "anchor": null,
+      "number": 17,
+      "source": "numbered printed contents table",
+      "source_line": 277,
+      "title": "Microservices Architecture"
+    },
+    {
+      "anchor": null,
+      "number": 18,
+      "source": "numbered printed contents table",
+      "source_line": 294,
+      "title": "Choosing the Appropriate Architecture Style"
+    },
+    {
+      "anchor": null,
+      "number": 19,
+      "source": "numbered printed contents table",
+      "source_line": 301,
+      "title": "Architecture Decisions"
+    },
+    {
+      "anchor": null,
+      "number": 20,
+      "source": "numbered printed contents table",
+      "source_line": 313,
+      "title": "Analyzing Architecture Risk"
+    },
+    {
+      "anchor": null,
+      "number": 21,
+      "source": "numbered printed contents table",
+      "source_line": 327,
+      "title": "Diagramming and Presenting Architecture"
+    },
+    {
+      "anchor": null,
+      "number": 22,
+      "source": "numbered printed contents table",
+      "source_line": 338,
+      "title": "Making Teams Effective"
+    },
+    {
+      "anchor": null,
+      "number": 23,
+      "source": "numbered printed contents table",
+      "source_line": 352,
+      "title": "Negotiation and Leadership Skills"
+    },
+    {
+      "anchor": null,
+      "number": 24,
+      "source": "numbered printed contents table",
+      "source_line": 365,
+      "title": "Developing a Career Path"
+    }
+  ],
+  "collapsed_duplicate_headings": [],
+  "command_argv": [
+    "bash",
+    "/home/halbritt/git/skills/skills/marker-convert/scripts/convert-peecee.sh",
+    ".book-work/oreilly-fundamentals-of-software-architecture-2020-1/oreilly-fundamentals-of-software-architecture-20-5008352574b2.pdf",
+    "--format",
+    "markdown",
+    "--out",
+    ".book-work/oreilly-fundamentals-of-software-architecture-2020-1/marker-peecee",
+    "--host",
+    "peecee"
+  ],
+  "command_executed": "bash /home/halbritt/git/skills/skills/marker-convert/scripts/convert-peecee.sh .book-work/oreilly-fundamentals-of-software-architecture-2020-1/oreilly-fundamentals-of-software-architecture-20-5008352574b2.pdf --format markdown --out .book-work/oreilly-fundamentals-of-software-architecture-2020-1/marker-peecee --host peecee",
+  "content_author_line": "Mark Richards and Neal Ford",
+  "conversion_options": {
+    "format": "markdown",
+    "host": "peecee"
+  },
+  "converter": "marker",
+  "converter_exit_status": 0,
+  "converter_version": "marker-pdf 1.10.2",
+  "degraded_internal_links": [
+    {
+      "original_target": "#page-164-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "017-chapter-11-pipeline-architecture-style.md"
+    },
+    {
+      "original_target": "#page-164-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "017-chapter-11-pipeline-architecture-style.md"
+    },
+    {
+      "original_target": "#page-164-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "017-chapter-11-pipeline-architecture-style.md"
+    }
+  ],
+  "execution_target": "peecee",
+  "failures": [],
+  "fallbacks_used": [],
+  "generated_directories": [
+    "assets",
+    "chapters"
+  ],
+  "generated_files": {
+    "README.md": "ed92dce5ca335930120f5938428bbf3f6bc2c09dd477c953fe746644c4617b28",
+    "assets/_page_0_Picture_0.jpeg": "23f2070f873e52a55c8fc238d80e8380696e8c060bc13dfc1cecc812b7262b03",
+    "assets/_page_103_Figure_0.jpeg": "7b709dee61a7d07a03e4083d7a9bd1440ec53bc1424a8f27cb60db14eb50e24f",
+    "assets/_page_104_Figure_0.jpeg": "dea257cac13fb3f411bb46a13494d74f098dd2bc43680067d87a15a64e44e03c",
+    "assets/_page_105_Picture_8.jpeg": "5fd79861e4e1901d16866ac5cf38470b4a2b89d090121dd51c2bc12bace7fe70",
+    "assets/_page_106_Picture_1.jpeg": "0a1173187c8a570ceb906e58954528998fe431d6bb595fe8259665fd1e04df34",
+    "assets/_page_113_Figure_0.jpeg": "990384bf015a11b924b5fc8b35905182c2ed8919be243c3d0ddb8277fce9ff4b",
+    "assets/_page_119_Picture_0.jpeg": "077a2d5534b13b02da76275479924f883a93a10ecc89fcefabce3f35aa08c05d",
+    "assets/_page_120_Figure_0.jpeg": "a70545472d984d3578270b93783d10619da2c56903b46f185ac2ec8ecd5500f9",
+    "assets/_page_121_Figure_4.jpeg": "d2f411d93867abfb103dae7c349e334d821b499af05a3aff6adc6566f07abdc1",
+    "assets/_page_122_Figure_1.jpeg": "dc4ed78bdc96c9cfa180f73a46f1a1b6b9088806221d67e042a614c99e7788f4",
+    "assets/_page_124_Figure_0.jpeg": "a772df005b1d9abbeadbbcedf599670c0373022ff3139dccc2eb89c69a4c6382",
+    "assets/_page_125_Figure_0.jpeg": "e56c8e3b84da0e02fe5dd7a08bd87d19267787745fc4a40932814655be8ad5a5",
+    "assets/_page_125_Figure_5.jpeg": "4e5119ff0e6b1682684f79a17f3fefd85b7ae718b517fd06dc69275b65d3dc40",
+    "assets/_page_127_Figure_5.jpeg": "1c5c84847a7c4a3d86f247f38524d5e0a9039a8edfadf375f2304afedc4bc9e8",
+    "assets/_page_129_Figure_8.jpeg": "702e2a9085d00af910e4b9422c21a8706e604f4c18aaa30045e0f2b748101fda",
+    "assets/_page_132_Figure_8.jpeg": "7e7401aba6e1f87ab89e88ee8ab4023c22f56b3675332ffd41b076e681094ca2",
+    "assets/_page_134_Figure_0.jpeg": "758cb2b4ff842f9541ffed5fea380b5d488a1a4f25ece6533dbece1a2e6668e9",
+    "assets/_page_140_Figure_0.jpeg": "b7c57c9f0644d5707881629913c5835e5825ecc6aaa0bb1f98c6cb1f3bc7aba4",
+    "assets/_page_143_Figure_2.jpeg": "56906166e6cd782badcca40e3d6de9656d1d722693cbe66440d8bddabbad2bf6",
+    "assets/_page_144_Figure_1.jpeg": "a29509b717bcf29761fc6a5cdd9a3fa3e0a29adb55c96a2dd4eada50f0de3a19",
+    "assets/_page_145_Figure_1.jpeg": "7fac38caae1352851357728ca40145f381d7c8c8195ed83b587b32d8fe072e4a",
+    "assets/_page_146_Figure_7.jpeg": "6b7fe6ad9c5fb6a5903c94237b35777cc27a908ae8f87bf749cfb9c9e9422376",
+    "assets/_page_147_Figure_1.jpeg": "9a22223f4da305728e0e73b18d03302dde3556463ee0744e1d6a3c532627519c",
+    "assets/_page_148_Picture_1.jpeg": "22e4bf2e7561338dce008b33797fa5bcbba4aa101ea9e6dcf8885a9f135c133f",
+    "assets/_page_149_Picture_1.jpeg": "2fc6cf416259a5e8ec41d69f0e592415f9d11d3804cf14592da821aa68e36be6",
+    "assets/_page_150_Figure_1.jpeg": "cf18c7ff1db7d4a9376b74b8b52289a44ab9dddba2f7f766f5839c85c623ac3b",
+    "assets/_page_153_Figure_3.jpeg": "46db5bcf9f0ac99c24ebe8c677cb560c1fd6bea7d8c22b7e2ab5b62505892a1e",
+    "assets/_page_153_Picture_0.jpeg": "9d37fb2b0bd6578d335616ff44bf39aa1c041a8c378a1c5fb2a0317c062327f9",
+    "assets/_page_155_Figure_0.jpeg": "f73464855fd24f51f65b9d2497c0e3df3bf79ea956fbf17381e34fcb255e2a23",
+    "assets/_page_156_Figure_1.jpeg": "088218c878de701966e765f3bd93b4ea0c1a79404674a1e2f1f95d5a96289407",
+    "assets/_page_157_Figure_0.jpeg": "3b59dd58023faa0aa87e6a24220d45aed08df2bffe8a343586173ee82e123504",
+    "assets/_page_162_Figure_6.jpeg": "295d97e2c81ca7fa49c88fe3477482e21481ab38455ce18bdf5f462e3e4d2306",
+    "assets/_page_164_Figure_5.jpeg": "1aaaebcf89724aeb9dbb786c073e4ccbd49e7152138ed2d65523317892798c3a",
+    "assets/_page_169_Figure_0.jpeg": "3fde29e8ebb4768b2874df85e7fad593aaaa4c5bb43ada74725f25f4b0ffa262",
+    "assets/_page_16_Picture_4.jpeg": "b9bb4f8396464afb39e5ea8541fac6b96412b47291def9ff4d14d90d9d43cc26",
+    "assets/_page_171_Figure_0.jpeg": "1ef463a4a1b1ddbcb489a13907177aaea6cab742e6db681bc681a86c59035308",
+    "assets/_page_172_Figure_0.jpeg": "4ab8ffe28ce1de02a72e7941ed2da04f3d3e40bd6dae24e2a21f4e7b8fa78667",
+    "assets/_page_173_Figure_3.jpeg": "3d37784cca74e41f09005e32b9cc67d11ce8ad7563e158a9c8db97ba9cab73c4",
+    "assets/_page_174_Figure_1.jpeg": "218bf51a90c1d54050e6332c9b4e596e3c42ceb0737c015a663419627fd8b05d",
+    "assets/_page_174_Figure_4.jpeg": "ef6098fa2d93239e0be47c632829ed4a3a75aa3a1e11e7a9368757e6651a86ac",
+    "assets/_page_176_Figure_0.jpeg": "721a361d3bab7a06d0aa150ab68ebaf6b196d0bf560dd3c37a72d077d021906e",
+    "assets/_page_17_Picture_1.jpeg": "b499fb5a9aabe7e74c940e445e073a71f6db6e6e48309ce30e6324a65752602a",
+    "assets/_page_183_Figure_0.jpeg": "52a364e8727a9b3f0187d8d5c39f8a1ae456233713d8fb22b91272d60ea98ce6",
+    "assets/_page_184_Figure_2.jpeg": "8942d32b0356bc4b12a168f1be74c16484068dc20243b7642ff9d2e832f75916",
+    "assets/_page_185_Figure_1.jpeg": "61b3220c6f34942e51b4277d92b8a6257be25c072c930f9f6b5c4ec862bcb657",
+    "assets/_page_186_Figure_1.jpeg": "5ac414b83a57ce576e6b23a3c05008d17567b1486edc68488a7cda0540f85930",
+    "assets/_page_187_Figure_0.jpeg": "45df9b5146df851a59edea3f48421e4317d550a86b29d18e73ca174e41c53b84",
+    "assets/_page_189_Figure_1.jpeg": "26aab98b72bd92e4484f7ab320c29077b35ca63e089dba6110467e07a775486a",
+    "assets/_page_190_Figure_1.jpeg": "316c9128a3ac78df3d8f4f426fd545b37915e8eabe8538bcb482634bc0da22e6",
+    "assets/_page_190_Picture_4.jpeg": "d41cc4db9e358dea7af37e5557fa357676167868f3848de070ee0c5c67ecd7d2",
+    "assets/_page_192_Figure_0.jpeg": "f09fb5643448c7d460352b73d32d54ce6e21d70550d347bbe8f9f7b800e901dc",
+    "assets/_page_194_Figure_2.jpeg": "01c62fd56b2a84b96895d862db27df12d89d0cb09e826d7aea6575481b4e8e49",
+    "assets/_page_199_Figure_0.jpeg": "87e9cede6006bcdb0b9abd3f31b115e55465dcd4cc7ea15ecbb5365cd4566701",
+    "assets/_page_1_Picture_0.jpeg": "c55d7a17f6e36fcce38b6875931fbe44a0a40a9bf4336f22faebfe061575b817",
+    "assets/_page_1_Picture_19.jpeg": "9f1d199ec0e1701c45992b7cab4ae5fe1b09e73e38004f8c87057b062e9c7922",
+    "assets/_page_200_Figure_2.jpeg": "91da6468c4eda52d02ee44fef34f2e9308c7b61629e4df6ac167de5e8d0ce1bf",
+    "assets/_page_201_Figure_1.jpeg": "4e83550d3bce44648d36f57d07e73681b9668c33e83cf34b02b0ec530bfc7424",
+    "assets/_page_202_Figure_0.jpeg": "3eaff9b5042136bd6a4a4d17d8af3e3ffd030476f42e49fd5de9b7a4befb77ed",
+    "assets/_page_205_Figure_1.jpeg": "798098e99eaf6ebf4bc61181c47839da1b401bf2779daa871fe348d6f17719ab",
+    "assets/_page_207_Figure_0.jpeg": "dcbbd24e9f0c1769c83443f49f5ac4a1b871df6497cb719411989750bc1f0d04",
+    "assets/_page_208_Figure_0.jpeg": "7a2c0f9783711e3b9b00b3df587ed50c8ed906f2ec1cdfd790615fd7604a3039",
+    "assets/_page_209_Figure_0.jpeg": "1675d44c587468c5d85ba05d9a8b4e7c0268f82211c57dacb78d983c84bd5d38",
+    "assets/_page_210_Figure_0.jpeg": "dfe2577cd4a08a4c7dc1f7c911ad2279e38feaef1a3230bd5fcb443c499787f6",
+    "assets/_page_211_Figure_1.jpeg": "d528e538cc6672279cafe4b1ed9fbe48c3708c62dd3bdfa89991bee8e5f28099",
+    "assets/_page_212_Figure_1.jpeg": "b83c3e50c10102986fdfb70402187fab58170f90ea7be7ebf29a56e65abf8e0b",
+    "assets/_page_213_Figure_0.jpeg": "131335d6d4baa80a756bf5c7d1204a670af0c6db3e5b730c4dbb44c7bb5f7fbb",
+    "assets/_page_215_Figure_3.jpeg": "2ea17509e8b8cf25329daca8c821bafe64717e99a9f9b866083dff36524257fa",
+    "assets/_page_217_Figure_2.jpeg": "06c44f32f4898a7362aa46db3a6cc943f09386cafeeaea47fc2a2af02292454f",
+    "assets/_page_219_Figure_5.jpeg": "e5e71ee269d59b7c4ff2e5273f3421d4b98dad257c2a9616350caed8f3c7fe3c",
+    "assets/_page_21_Figure_0.jpeg": "24bfe0d05b46229d6cc4d229dc1e61d3ac888d0e801032890239e96835e495e7",
+    "assets/_page_220_Figure_6.jpeg": "cca04ab479cae572066febb149c0c29d5703aaf84f34c60627e95f58aeef55f2",
+    "assets/_page_221_Figure_3.jpeg": "69ebe27de546cee260d18601cdf947f6f34b5d1d69a07d4b741b5b53db6a90d5",
+    "assets/_page_222_Figure_2.jpeg": "0fafb6b0d87e80d7fab08d4cedbc530a10a4a88f93faad9f382c353044eff96f",
+    "assets/_page_223_Figure_3.jpeg": "70b9ddeadb0ec40ad909729f16959e4ddd0707f9e581420cdb208a3b98927153",
+    "assets/_page_224_Figure_5.jpeg": "ff3d38bb5b03a3c5d36a2e3aa5d3c8c74868351b66382652af14f849a432750d",
+    "assets/_page_225_Figure_4.jpeg": "ebab294ad60fb906fab92518c7a4eca03c0a5950639a9d5478150a72634ffa2a",
+    "assets/_page_231_Figure_0.jpeg": "2484ae530da7f6928b6372e787c0c73db9968d4266a091175ed89b6c5803a56d",
+    "assets/_page_232_Figure_1.jpeg": "84b710bb948be20b3a25908e07d198e4abf0534195366ee5e6b92bab8e20eb24",
+    "assets/_page_233_Picture_0.jpeg": "781db95b422b551c4de43ffcdfff1f12dabeeda2b8963358ea522451ba94de08",
+    "assets/_page_234_Figure_0.jpeg": "01a59afa34e628a27548c775e676eb7138db99dcc829947ecd18226fca14796a",
+    "assets/_page_235_Picture_0.jpeg": "8e64b4b47e654af5d1b714d4e63b4c15de8af60b23c28074fba1719e97cba55f",
+    "assets/_page_238_Figure_0.jpeg": "fb464a2d8929d08595b73e27026912686058d9f4857970090c10e8d9a20038d3",
+    "assets/_page_239_Figure_1.jpeg": "e8f53a574e692e1f0b3e4be2d611036d0845800b4a42e9e66ce4b7957822fadf",
+    "assets/_page_23_Figure_1.jpeg": "56d5e9ab9effbe1b4f7a8d8030373391aa55da1e3f8df8068e5b729b3c08bd32",
+    "assets/_page_240_Figure_3.jpeg": "f80312d6377d1230181f482b3577f86e055c2a5ee71c39079b822a96f5742612",
+    "assets/_page_241_Figure_1.jpeg": "af272a341d8a322bb752974aea6bdffa710b99186303b7f1336f70310a284e41",
+    "assets/_page_242_Figure_1.jpeg": "8331a7b0ef8938c5d0ad03890fc3d178a2904bbc32a6ac4350e181ab9af2fe27",
+    "assets/_page_246_Figure_1.jpeg": "75bc89b86b11e63026f625260666dc256524c5d0d60fb808acc2b3b17e764a6a",
+    "assets/_page_247_Figure_1.jpeg": "6f43b58695c45aa73df6ffbd8604a04f4f340784ddc355263eb58e6f6f16bbcc",
+    "assets/_page_248_Figure_1.jpeg": "c50d886573a523833bed26084a26219d1888b875fdb1cb2a92c771d87620d8f9",
+    "assets/_page_24_Figure_1.jpeg": "bf5456c01c58eef9b8087caad4e4dc84892a83c919c317919f7415ac4063fbbe",
+    "assets/_page_250_Figure_0.jpeg": "5c760150930aecf5db02fc583f4b5d8eb19e4c0afd8b4d1911812e951c3e6e3f",
+    "assets/_page_255_Figure_3.jpeg": "6d245cdfb8b2e969e425c8734ebb0d708eeb1264646bb9b4d4b397b98a0dfa0f",
+    "assets/_page_258_Figure_0.jpeg": "6ef714d2c8dd10f1ae18fc0f97ad8700b0ee9333c999cff2dddd72c25871d92d",
+    "assets/_page_259_Figure_3.jpeg": "857241cc5024a003cfc16851c31d5551e3764be918ce5d7f2edb7e8d3d21d3be",
+    "assets/_page_259_Picture_0.jpeg": "81c8aa557de3080d5428b5c226043fbc9ab435ef84e39d3a5ce1241ed392f8cf",
+    "assets/_page_25_Figure_1.jpeg": "c5161417faf4598249bed2ed65af299cd568f6d4aeb938aedb84d88a99b23d2e",
+    "assets/_page_265_Figure_5.jpeg": "9a99c16ec5a6bdaa0a6215d209d151d94a24f1910778c60f3d1f3effc6a10e7c",
+    "assets/_page_269_Figure_4.jpeg": "e05ae2722c0befb1fea94613873b92165079416d7b4f50d80b9fb9748d3e1178",
+    "assets/_page_26_Figure_0.jpeg": "cfe1322270830b1c30f9a0918408669d498478e50f3917aa5247281ac1fe2607",
+    "assets/_page_270_Figure_1.jpeg": "5c6bf4c628adb94430c0370ee5d4c440a3ee4a22f805ddd7b8368441bea075b6",
+    "assets/_page_271_Figure_1.jpeg": "848d2e0e94198171d16fcf187203a6f0561c6f88e1d476d91dd59954cdb5ad72",
+    "assets/_page_272_Figure_2.jpeg": "0d9ca91afd0bf343f3cfa1d8aabbc5df34186a25d87924a918cb5ec15d9708ee",
+    "assets/_page_275_Figure_5.jpeg": "d7de59c05587040147e352ab8cfba614e9964bff0804ebbdf331dad457819a62",
+    "assets/_page_276_Figure_2.jpeg": "3f1eaabfb07793bdba29ac0f0fc043f58ee6b68d4affb61c26471a71065ecd2d",
+    "assets/_page_277_Picture_2.jpeg": "b17e07cb754a90630b7009fb15c298d16f159b78fba1e5b65d510eb2ecef4002",
+    "assets/_page_278_Picture_1.jpeg": "f8b715d8d8d711a68472e5add7bcae281290eadc629bb39ff86f0db8507c2408",
+    "assets/_page_279_Picture_3.jpeg": "dc5330522c636a6bc151064d9afc026acaa0ccb441337fd129737135bbea5da0",
+    "assets/_page_27_Figure_0.jpeg": "a22064709692c00b961896af52b12da3fd88928e182a0a037b1404f12c525e58",
+    "assets/_page_280_Picture_1.jpeg": "9926c781234eb6262d32cff484b44fb24ace5388ef6eb7a157a84624005d6fec",
+    "assets/_page_281_Picture_1.jpeg": "ab77732a8887f0f76555b4fdc774ac6e8be374ce732aa99c56fdb49ef8d09afa",
+    "assets/_page_282_Picture_2.jpeg": "1a8e3c7c8540bd8cb029c0a6054282ffa4d19c0753e0299c61dc20e172af83c3",
+    "assets/_page_290_Picture_1.jpeg": "34c031e8d7a3af01953e194ca725aff4f45ef4ead32aaffa918a734657443f35",
+    "assets/_page_291_Figure_0.jpeg": "0b60b1a4246bcd2b056a5cf6448a46a7061a005bde21114811c02873e86d0746",
+    "assets/_page_292_Figure_0.jpeg": "6861799a9ad548fd876ac8196c35e06147ff898b117aed195681fe1bc7d557c9",
+    "assets/_page_294_Figure_1.jpeg": "ac1c1f1cc9083a76475a20e778c5484f52783f378eac4f5dd43c39d6976281c8",
+    "assets/_page_296_Figure_1.jpeg": "80fb8c07ba892a61807280322f184e26621d95a703a6eec855a1e87d13779241",
+    "assets/_page_305_Picture_0.jpeg": "84c82a3883a5322ba44b8e58c8417a91ab51c2a04b97167dea588d7ac3fc2611",
+    "assets/_page_309_Picture_4.jpeg": "10d9c3c51977695448298bb4049ac48ebcd49b2d7a18207d6a0d2314ec8d100c",
+    "assets/_page_311_Figure_1.jpeg": "eb2e0fcaaafd4a9cf8e502265e5d24b41c1566fc8512e8de0e747c51cf98caa7",
+    "assets/_page_313_Picture_3.jpeg": "5917f99a532241c5307ee57ba3930ccbf5422c796060593a8c6bbf973870bc31",
+    "assets/_page_317_Picture_3.jpeg": "a4165e610f7b48b2b5ecd856ca498f42d0df25277202d67c4a431f82d24e095c",
+    "assets/_page_322_Figure_0.jpeg": "e906afa343a63b16fdd4b2873d0d3ffa65de215b448223804e002a7866fccf8e",
+    "assets/_page_323_Picture_4.jpeg": "61e7d461273a1bdff08ad58a9ec5c68cc2dd32037aa6f8b1c424313732f86d9a",
+    "assets/_page_324_Figure_0.jpeg": "4f26e27d05df1c0d6a85228c2d2783090933e248fcca0fc72bce332af5be3f14",
+    "assets/_page_325_Picture_4.jpeg": "3f4cd7eb14af268917cfd3efa47f2de70c3909249af7803e09db3b0c8cbce2e4",
+    "assets/_page_326_Figure_1.jpeg": "5f39ad489b9d14b12684c4d069056af7ad06decffd14a34a6ed8400ac8e8654c",
+    "assets/_page_328_Figure_6.jpeg": "9d1eba0f5fc20d9f405794940009c5a09beff614fa7027b4051d385fcd334143",
+    "assets/_page_329_Figure_7.jpeg": "06675e8c28ad3f13c1fb4756c12f89fb8fe74dbad62c1e1efb67363b2b2fc0bd",
+    "assets/_page_330_Figure_3.jpeg": "e20eda75b8b9f0dcfbf47dad332dade21496c46076951547aa7180e85ae6709a",
+    "assets/_page_332_Figure_0.jpeg": "1e4298c7369d1acbac3628d453df50b654be80dab00ae01d66a477eaf087db45",
+    "assets/_page_333_Figure_1.jpeg": "baf11da34a5f3ee0e042f3beb7f453a9d4ab0305e910e1308ab6e46f6c6f728a",
+    "assets/_page_335_Picture_0.jpeg": "32f82465e2c98c1fafd6e4b44e17c96042243cab28a13a4d4c2383f1e52ba058",
+    "assets/_page_339_Figure_7.jpeg": "0f55d358640b39666448fafe119bfcefdc79964e30938249e4687df3270790c2",
+    "assets/_page_341_Figure_4.jpeg": "e5b77b8707dcb21bb8d513c4f4587b3c522f2c8fa3d400825c55659fcfc8377b",
+    "assets/_page_342_Figure_0.jpeg": "b2387810274672283ac7078d1ccbea3cbf27ca365e6b402e56111d6bb568cd25",
+    "assets/_page_345_Picture_0.jpeg": "ec052048a2cc0968090b798905cf290733d8fb7e1f579a205bb5d6628294f33f",
+    "assets/_page_346_Picture_1.jpeg": "940b71c8b583a081be41437351ae942d2fdd5a9b46260456bf2200dc20c7e1a5",
+    "assets/_page_347_Picture_3.jpeg": "0d8c825cfb57b52bbd3ada6808e7eee216eccc25b1d2b5a3373f9e43abacec5d",
+    "assets/_page_348_Figure_3.jpeg": "0b6bd7efd64e0ae5e858fb1dcf4c0b13ed5993af6ff9e1feafa0cb1b248391c8",
+    "assets/_page_349_Picture_6.jpeg": "9d649b042c829d8002011f53024b0306d9c4e6c9bebe00d80ffeab5a1ad85c61",
+    "assets/_page_352_Figure_0.jpeg": "6f558baf5672a69a75040660557d7c0d4c2380fb7240f2cfeaefbee3300e923a",
+    "assets/_page_353_Figure_0.jpeg": "caa82af5f83661ae6a92e4c0969a981d6d737961aecd58c936bf9acb358c1304",
+    "assets/_page_354_Figure_0.jpeg": "950c40bb22202c87b69b8dfec063e6ffdbb15bbe7a4bcb21b2bde129390c0d16",
+    "assets/_page_355_Figure_0.jpeg": "e1a67643cd7648e0cda21cc539554037e5368cbfb78352e7ec851687ba75ede9",
+    "assets/_page_356_Picture_4.jpeg": "2b72d82ccd832eff4c045689510a74323a01259bc9766dd3584108873dd39fb5",
+    "assets/_page_358_Picture_5.jpeg": "796bee79088b68fbf0831b9ea91882b833a96331d97ebe096f29fb8c6f4dc99c",
+    "assets/_page_35_Picture_3.jpeg": "36bf2f1bd9777cb43b354fac4f28b9cb3a8a4b20e5a7a9883a8bc75618995604",
+    "assets/_page_364_Figure_0.jpeg": "cffe0a6aed80ad404a674449001093e0ff42266725b4b14eec36a681676248fb",
+    "assets/_page_367_Picture_6.jpeg": "f2eeaaea0914f92b3dbc9549134e93f9d41344380535a61c1845b8c681dcb826",
+    "assets/_page_368_Picture_0.jpeg": "6a34eccfd05025d76429a20b5bc22fd9e2d86d46e9c0f209250c8ac70b378568",
+    "assets/_page_368_Picture_7.jpeg": "1e83f502472301e5291eeea2fb03a8dc80fffc7499d8193003867ddda20838ff",
+    "assets/_page_369_Picture_2.jpeg": "4bc4bac955eedf0bb86d638958ae80899030cb9f1459abbd1a20241a7de81f90",
+    "assets/_page_370_Picture_1.jpeg": "99250dfcc897405c667c134ae44cfc988b41c39fbac07e8a81e19ed7eb639f56",
+    "assets/_page_370_Picture_4.jpeg": "d32da39a529ae3c457a74e4219d7b9b849162a5866774c63e3314b6017e7c014",
+    "assets/_page_371_Picture_0.jpeg": "2d098f3f10dd01c946eeb6f0b6a2d85eae194b67cfffcbc7b379e52263a240e0",
+    "assets/_page_372_Picture_3.jpeg": "4e168aefa1be99262eebab2f52e03d52f63a7b246b45686d71119cfd0b49c5b5",
+    "assets/_page_373_Figure_4.jpeg": "6adb1ae5cae7c377a4390ba1f021f404c0a9775ab916a119797edab0f60e3b86",
+    "assets/_page_374_Figure_1.jpeg": "afba7a2dcbbf9c1dcfdab96aea0ccb770c4545814c0f0448f3d80a2cc35566c8",
+    "assets/_page_375_Picture_7.jpeg": "415bc12519cfd1db4c1c0361822281db4fa9ccacc0d83361e812133e8935f118",
+    "assets/_page_380_Picture_0.jpeg": "e93637757d60c70d18ef1a2b8c90d3fcae1ac6d1e7ff9d2ed03dd715d0a6dada",
+    "assets/_page_380_Picture_3.jpeg": "3da8cdff45af00343571e58226c15586b6fac86bb87ab103454f1d9bfc2617c3",
+    "assets/_page_381_Picture_1.jpeg": "89b1f5c92e2fd88456009772455e561e8fb5f4f849140d7aeaadc8bd56c8ef01",
+    "assets/_page_385_Figure_2.jpeg": "a94e7e16d7336e6479bb6af44ca88b0b0b4391354f83c6235ac082ebeab5e899",
+    "assets/_page_388_Picture_5.jpeg": "ddfc559455c213cdc5f18463852eb8ca254ed335a8a9112848ec268d4b535e4d",
+    "assets/_page_390_Picture_5.jpeg": "c57555e712cdd98d15d4a910b1baf624b209c80f2a547568c7bfee9c318c50b3",
+    "assets/_page_43_Figure_1.jpeg": "825d955d7cbdeba23b924ab22168550655baa16a0ae182ff1a3a43a24b66dd3c",
+    "assets/_page_44_Picture_0.jpeg": "e843f271549c1754900a5db923fef8af7214de3112a6c101f008b483e5f3d8da",
+    "assets/_page_45_Figure_0.jpeg": "ac0b39255f997258ca158f54172a369dedbb318dc802aedb4f5e7c6c08760c42",
+    "assets/_page_46_Figure_2.jpeg": "bb17a04aa16b4168770ed555f2ba7d8c0f6026cb4ce1924c69a6bcb5a1d78d33",
+    "assets/_page_47_Figure_1.jpeg": "4ba5d01fc737edc71dba5e81fe278446833543e2f6b9473248f6037ca6a0c79f",
+    "assets/_page_48_Picture_0.jpeg": "04186af282a471b5975a4a29b85598a0baba4b03f01b09cdf3ea8da2e735487c",
+    "assets/_page_4_Picture_3.jpeg": "f2d9681ca438dee2d4536c438e3be5b60049588874bbe199ea8af1d783d37ef6",
+    "assets/_page_50_Figure_1.jpeg": "bcbee5247f4d6826eb06f89e5801dda5cbaa2839907dc0e5d69c19c46f8f45fb",
+    "assets/_page_50_Figure_5.jpeg": "7469d997da2aeeb9711aac5341f445f41167799827238beddfd7bf6d4f3470c0",
+    "assets/_page_51_Figure_0.jpeg": "661ec6acc4d41d42e59074d94d0c77194fecbdd959c482364b573da6b035e952",
+    "assets/_page_62_Figure_6.jpeg": "ea0c2e0d3416e90af4d468b418ec4e528533052ced27b755e583267e5ca77687",
+    "assets/_page_65_Figure_6.jpeg": "fc8421a3969f171d9601483a0f365930cd489cd3bec620d385c7a0f60fe8ae38",
+    "assets/_page_66_Figure_0.jpeg": "caa06c659b2ab39f1269b84d9883ddcb4160123914379646a8183e88018093d4",
+    "assets/_page_66_Figure_3.jpeg": "ae81d5e4a370968f2dd1d320aaf1709b514676c9d3901d24d00f8c290dbff99d",
+    "assets/_page_70_Figure_5.jpeg": "b343f164c78e58ee60517e41b965436020971ca28f9c8cc27c2b165e1fa4e250",
+    "assets/_page_72_Figure_0.jpeg": "1a1e4310b9e7d4dd354fe4fb551455f9ea56556ff8dcaf8a6d0622bb0df75829",
+    "assets/_page_74_Picture_3.jpeg": "8b92d65e8d45f1c1bcbd9b88ac703ecedb3098cc89fbc6a83d31f3ed3bbe7e9b",
+    "assets/_page_75_Picture_6.jpeg": "c632ab26b58154389c41a32951642a118560ef4dd04c23160dfe2fd6b2c87973",
+    "assets/_page_82_Picture_6.jpeg": "dffbb386da8771eca79ad08ebb7d076849477cfe14c75bb59f80ad27dcdb19c2",
+    "assets/_page_83_Figure_0.jpeg": "39cc262f9c4ec9138caf789fc1c6dbe148b5ff1be9deed3ca1e8ea7491358b54",
+    "assets/_page_89_Figure_4.jpeg": "afe66e23c5b53b45eb0cd4ef9f84f2747eae123432feafe6f87f840121dbe56c",
+    "assets/_page_90_Figure_0.jpeg": "c5ac4c4a7307aeab825cf2f90379ecd103a777b443e854a3cad08497fc450513",
+    "assets/_page_99_Figure_3.jpeg": "4864196da9beac5a6d93b8cf563d42fcac5a829dc0766a98e288289ecfe42b6a",
+    "chapters/001-fundamentals-of-software-architecture.md": "eb2c12beb69941a247381923d41ec4fbbab2b46ef7afaf8559d27aad6d547fed",
+    "chapters/002-table-of-contents.md": "3ee83426cb4eeece9201174a663ce46bfe97fe2f0ae40cda742a3240ea666dc1",
+    "chapters/003-preface-invalidating-axioms.md": "2a9dd1ebf0c178cb83a98bdbb5637f73e28d16c338d18a2b451e5c8172dfe30d",
+    "chapters/004-acknowledgments.md": "1746178cbcb3f2cf0bf7262f54c3c59e83aa3f6a50441002166a85adbcf99dde",
+    "chapters/005-chapter-1-introduction.md": "1a6d97e3e5c7e63a91d809f4145b079e5c7bbf442111f9c9b41333661a46f238",
+    "chapters/006-part-i-foundations.md": "24f40b0c4bb0e0fb62285cf5c7c9cc79afe27950a8a81332e9b8d50fcc587c31",
+    "chapters/007-chapter-2-architectural-thinking.md": "f7cf72543eca6a1b55c74a5a02a1ecd79e08b4a7cc34bab1b759b4200ea0092d",
+    "chapters/008-chapter-3-modularity.md": "94a97ced40014047d0f0f084095446bdf92e292790bf78a674be88d56512c144",
+    "chapters/009-chapter-4-architecture-characteristics-defined.md": "4345306c66a0cff6a34c4021fd02b0297053f5fe5bacda5f3eae58e5c40903a1",
+    "chapters/010-chapter-5-identifying-architectural-characteristics.md": "1ea2daf0b97f944f3856386583b2ce85bb8bd09df2022d5b6d33aa5dda7cfa9e",
+    "chapters/011-chapter-6-measuring-and-governing-architecture-characteristics.md": "746853d06c446045d3e9447f616458dd05fc0931ca3cf5d73d6ef7d0e8cd3e3e",
+    "chapters/012-chapter-7-scope-of-architecture-characteristics.md": "1baa263e9fd435ceca25067671a3fe83666269cad844c0b80d8a77f98b334dab",
+    "chapters/013-chapter-8-component-based-thinking.md": "41fdcb3c799c252d0e3923119846a7baef742c7c4e7f629469467bedc1b1349f",
+    "chapters/014-part-ii-architecture-styles.md": "695d20bfd78f9a35bae9f75efe21f16f785922d4087dcb1eebf1e0f3f800a477",
+    "chapters/015-chapter-9-foundations.md": "8f2fbdf83a98f7e4165e47698a49a523527c945d079abaa3b8fa6731fbb81eda",
+    "chapters/016-chapter-10-layered-architecture-style.md": "e25ba34d6506155a64ad325d8198295c6a078847b0a501ac1a4699dcd2d60140",
+    "chapters/017-chapter-11-pipeline-architecture-style.md": "bc19f802097a9258e59243962fefc3d60db09ae4a1b4bbaae77839174ee9077d",
+    "chapters/018-chapter-12-microkernel-architecture-style.md": "af48b7f76a624f552b90b8ac45441883e07c0fea5ca6f95fdb59bf19b6cc9d2b",
+    "chapters/019-chapter-13-service-based-architecture-style.md": "23d8d9fccf60c667d1b8737ccf015773687259919014ba67467fa39dd6de66ba",
+    "chapters/020-chapter-14-event-driven-architecture-style.md": "a3a3567399aa1f4b727eac74c5cfe200dc27d03f6560eb81fcfb04784616c758",
+    "chapters/021-chapter-15-space-based-architecture-style.md": "c16e5877e820bea3fb4b8daeaa08a3d05c65b5fa1288257c887a8e58b8519b46",
+    "chapters/022-chapter-16-orchestration-driven-service-oriented-architecture.md": "ba74d5afb1e90d0f59292ba8e22ebc0ee39255ef673eda379ea393cb9fc62c08",
+    "chapters/023-chapter-17-microservices-architecture.md": "67976a9286c87355bc3ab7599942b1a1fdf4f8deada7cf04ecf3225d3eae88e7",
+    "chapters/024-chapter-18-choosing-the-appropriate-architecture-style.md": "0a650bb8fcb36eb13590d76ae1a83d448d78d927adb4db37d04ca50211bfb340",
+    "chapters/025-part-iii-techniques-and-soft-skills.md": "2569a4ea0037f267e7381f99fee329d78b8e3e42bf0a27c8cbd65134355ff947",
+    "chapters/026-chapter-19-architecture-decisions.md": "cee4406d3e14cbee8670e0d21e2abb8d0e6c4419983d3d5edaf7f81917777c70",
+    "chapters/027-chapter-20-analyzing-architecture-risk.md": "329c374d65b9e2f5a389ee7fa2b376b57dc050d8758ca0003a810a947133f5ad",
+    "chapters/028-chapter-21-diagramming-and-presenting-architecture.md": "38d93f4b59811b452c6e182205e7728de53761b8c96020373ea9c695ed6d3be0",
+    "chapters/029-chapter-22-making-teams-effective.md": "7703bd41388a9bf0a3464192187b1583c54f7531c7d410ee1ced95c52f558be2",
+    "chapters/030-chapter-23-negotiation-and-leadership-skills.md": "518df6105331f11d7038de801833bf0ee969b54bc6f5628751a2519326249823",
+    "chapters/031-chapter-24-developing-a-career-path.md": "ac9e0008742d856ebc84c777945617c61f1916e52312b6fd7e8d85d1ad65ca93",
+    "chapters/032-self-assessment-questions.md": "b3c2634be57c970bac804931d8abdaac1d31614b1968a29344ef58d48f97622b",
+    "chapters/033-index.md": "4e85a1399b7f735b28400d49745fa7e972931ff6253ccdd434c694ddb7ace039",
+    "chapters/034-about-the-authors.md": "1e79becbaf436ebd20de5ef0517f7af97027e34e6994f7a01e6761ecf7913140",
+    "chapters/035-colophon.md": "75642d0ab745fb432102a2cd173c22f2efd399f3185710c9bfc8127b1c31e293",
+    "metadata.json": "a05f8836f05950ab61e40fcbceeffe39d88b6e234937694b03f467a3dd433e48",
+    "validation.json": "eec0f94378643d3b2864b09c3fee6cdea2747eb9bfa41738858fb016eab8c50d"
+  },
+  "llm_used": false,
+  "merged_duplicate_boundaries": [],
+  "ocr_usage": {
+    "llm_request_count": 0,
+    "ocr_pages": [
+      {
+        "page_id": 0,
+        "physical_page": 1
+      },
+      {
+        "page_id": 1,
+        "physical_page": 2
+      },
+      {
+        "page_id": 3,
+        "physical_page": 4
+      },
+      {
+        "page_id": 19,
+        "physical_page": 20
+      },
+      {
+        "page_id": 41,
+        "physical_page": 42
+      },
+      {
+        "page_id": 62,
+        "physical_page": 63
+      },
+      {
+        "page_id": 64,
+        "physical_page": 65
+      },
+      {
+        "page_id": 73,
+        "physical_page": 74
+      },
+      {
+        "page_id": 95,
+        "physical_page": 96
+      },
+      {
+        "page_id": 109,
+        "physical_page": 110
+      },
+      {
+        "page_id": 137,
+        "physical_page": 138
+      },
+      {
+        "page_id": 161,
+        "physical_page": 162
+      },
+      {
+        "page_id": 181,
+        "physical_page": 182
+      },
+      {
+        "page_id": 197,
+        "physical_page": 198
+      },
+      {
+        "page_id": 229,
+        "physical_page": 230
+      },
+      {
+        "page_id": 263,
+        "physical_page": 264
+      },
+      {
+        "page_id": 285,
+        "physical_page": 286
+      },
+      {
+        "page_id": 297,
+        "physical_page": 298
+      },
+      {
+        "page_id": 299,
+        "physical_page": 300
+      },
+      {
+        "page_id": 314,
+        "physical_page": 315
+      },
+      {
+        "page_id": 315,
+        "physical_page": 316
+      },
+      {
+        "page_id": 383,
+        "physical_page": 384
+      },
+      {
+        "page_id": 401,
+        "physical_page": 402
+      }
+    ],
+    "text_extraction_methods": {
+      "pdftext": 399,
+      "surya": 23
+    },
+    "used": true
+  },
+  "page_furniture_removed": [],
+  "pipeline": "scripts/convert-books",
+  "pipeline_fingerprint": "cc9009c2c2f54d8877bed0bf1499a36424fe6e4f7c82a089cd040be3e3baa5e5",
+  "post_processing_performed": [
+    "staged the source under a deterministic length-bounded hash-qualified space-free basename",
+    "split converter Markdown at explicit logical-unit headings rather than page numbers",
+    "normalized headings to ATX syntax with exactly one level-one heading per chapter",
+    "kept converter paragraphs unwrapped and normalized excessive blank lines outside code",
+    "moved extracted media into assets and rewrote relative links",
+    "preserved fenced code content exactly",
+    "used printed table-of-contents and explicit body chapter-label evidence to recover chapter boundaries and titles",
+    "used printed contents part entries to recover structural dividers and titles",
+    "rewrote unresolved internal references only when a containing anchor was known, or preserved visible link text when Marker emitted no page destination"
+  ],
+  "pre_conversion_commands": [
+    {
+      "argv": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "ConnectTimeout=15",
+        "peecee",
+        "cmd /c if exist marker\\out\\oreilly-fundamentals-of-software-architecture-20-5008352574b2 rmdir /s /q marker\\out\\oreilly-fundamentals-of-software-architecture-20-5008352574b2"
+      ],
+      "command": "ssh -o BatchMode=yes -o ConnectTimeout=15 peecee 'cmd /c if exist marker\\out\\oreilly-fundamentals-of-software-architecture-20-5008352574b2 rmdir /s /q marker\\out\\oreilly-fundamentals-of-software-architecture-20-5008352574b2'",
+      "exit_status": 0,
+      "working_directory": "/home/halbritt/git/books"
+    }
+  ],
+  "prior_conversion_failures": [],
+  "record_sha256": "85a10cdd4be1aa9f6d3a6755f6376f1b10f9a30b1a7796f362be346af4775698",
+  "schema_version": "books-corpus/1",
+  "section_boundary_evidence": [
+    {
+      "kind": "part",
+      "label": "I",
+      "source": "printed part entry in contents table",
+      "source_line": 125,
+      "title": "Foundations"
+    },
+    {
+      "kind": "part",
+      "label": "II",
+      "source": "printed part entry in contents table",
+      "source_line": 189,
+      "title": "Architecture Styles"
+    },
+    {
+      "kind": "part",
+      "label": "III",
+      "source": "printed part entry in contents table",
+      "source_line": 301,
+      "title": "Techniques and Soft Skills"
+    }
+  ],
+  "source_filename": "OReilly.Fundamentals.of.Software.Architecture.2020.1.pdf",
+  "source_format": "pdf",
+  "source_path": "sources/OReilly.Fundamentals.of.Software.Architecture.2020.1.pdf",
+  "source_sha256": "5008352574b214d08e4e831288a4e628355557fb73a927f91eda411c2ba1a546",
+  "source_size_bytes": 24625023,
+  "staging_workaround": "length-bounded hash-qualified space-free basename",
+  "unresolved_navigation_anchors": [],
+  "warnings": [],
+  "working_directory": "/home/halbritt/git/books"
+}

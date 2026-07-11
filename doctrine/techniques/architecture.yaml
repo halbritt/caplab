@@ -1,0 +1,1006 @@
+schema_version: agent-doctrine-techniques/1
+catalog: architecture
+scope: specialist
+non_universality: >-
+  These records are conditional techniques, not architectural defaults or maturity
+  stages. Retrieval must carry each technique's activation evidence, costs,
+  contraindications, preservation boundaries, and alternatives with the technique.
+techniques:
+  - id: architecture-direct-in-process-dependency
+    candidate_id: TECH-ARC-001
+    title: Direct in-process dependency
+    non_universality: Direct coupling is the low-cost option only while lifecycle, ownership, failure, and change forces remain aligned.
+    problem_solved: Provide local collaboration with minimal indirection, latency, and operational machinery.
+    activation_evidence:
+      - Same owner, release cadence, process, and failure domain.
+      - Concrete semantics are stable and no independent substitution or deployment is required.
+      - In-process latency and atomicity are materially useful.
+    costs:
+      - Compile-time and change coupling between caller and provider.
+      - Later extraction may require an adapter, protocol, or data migration.
+    contraindications:
+      - A volatile provider would control stable consumer policy.
+      - The contract is public, cross-team, or independently deployed.
+      - Multiple implementations or independent test substitution are demonstrated needs.
+    reversal_cost:
+      level: low-to-moderate
+      exit_path: Introduce a measured seam at the narrowest stable consumer need, then migrate callers incrementally.
+      cost_drivers: [spread of concrete types, shared transactions, shared data ownership]
+    appropriate_scale: [function, package, module, modular-monolith]
+    operational_consequences:
+      - Avoids network failure, protocol versioning, and separate deployment machinery.
+      - Shares process capacity, availability, and failure behavior with the provider.
+    preservation_boundaries:
+      - Existing call semantics, transactions, latency expectations, and error behavior.
+      - Accepted ownership and release boundaries.
+    alternatives:
+      - architecture-partial-boundary
+      - architecture-dependency-inversion
+      - architecture-ports-and-adapters
+    related_concepts:
+      - architecture-dependency-inversion-gate
+      - architecture-boundary-strength
+      - architecture-earned-boundary
+      - universal-earned-abstraction
+      - universal-local-reasoning
+    source_support:
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/035-chapter-24-partial-boundaries.md :: FACADES"
+        contribution: Shows a concrete facade as a lower-cost alternative to a fully inverted boundary.
+      - source_id: SRC-FSA
+        relationship: corroboration
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/015-chapter-9-foundations.md :: Monolithic"
+        contribution: Describes the shared deployment and process characteristics of monolithic topology.
+
+  - id: architecture-layered-style
+    candidate_id: TECH-ARC-002
+    title: Layered architecture
+    non_universality: Technical layering is one contextual partition, not a required architecture for every application.
+    problem_solved: Organize technically similar concerns and constrain calls through a familiar monolithic structure.
+    activation_evidence:
+      - Business workflows are simple or standard and technical partitioning matches team and repository work.
+      - One deployment and data envelope is acceptable.
+      - Layers have distinct responsibilities rather than pass-through naming.
+    costs:
+      - Feature changes may traverse many layers and amplify review scope.
+      - Sinkhole pass-through and anemic domain behavior can emerge.
+      - Deployment, database, and failure isolation remain coarse.
+    contraindications:
+      - Independent domain change or deployability is a primary driver.
+      - Availability, scale, or security isolation must differ by capability.
+      - Proposed layers have no independently meaningful policy or mechanism.
+    reversal_cost:
+      level: moderate
+      exit_path: Repartition one evidenced feature at a time behind enforceable module contracts.
+      cost_drivers: [feature scattering, cross-layer data shapes, shared database assumptions]
+    appropriate_scale: [small-monolith, medium-monolith]
+    operational_consequences:
+      - Keeps deployment and operations simple.
+      - Provides limited fault and scaling isolation.
+    preservation_boundaries:
+      - Accepted use-case behavior and transaction semantics.
+      - Public APIs and persistence compatibility during repartitioning.
+    alternatives:
+      - architecture-domain-feature-packaging
+      - architecture-modular-monolith-technique
+      - domain-smart-ui-transaction-script
+    related_concepts:
+      - architecture-contextual-style-selection
+      - architecture-contextual-partitioning
+      - architecture-change-locality-cohesion
+      - domain-modeling-investment-gate
+      - universal-change-amplification
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/016-chapter-10-layered-architecture-style.md :: Topology"
+        contribution: Defines the technical layers and their common monolithic topology.
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/016-chapter-10-layered-architecture-style.md :: Why Use This Architecture Style"
+        contribution: Supplies the contextual benefits and tradeoffs that earn the style.
+      - source_id: SRC-CA
+        relationship: refinement
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/046-chapter-34-the-missing-chapter.md :: PACKAGE BY LAYER"
+        contribution: Distinguishes package-by-layer from alternatives with stronger source visibility.
+      - source_id: SRC-DDD
+        relationship: refinement
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/005-chapter-4-isolating-the-domain.md :: Layered Architecture"
+        contribution: Uses layers conditionally to isolate a domain model from technical responsibilities.
+
+  - id: architecture-domain-feature-packaging
+    candidate_id: TECH-ARC-003
+    title: Package or component by domain feature
+    non_universality: A feature folder is not evidence of cohesion; this technique is earned by recurring capability-local change and enforceable visibility.
+    problem_solved: Keep a use case or domain capability locally understandable and prevent accidental cross-feature access.
+    activation_evidence:
+      - Recurring feature changes currently traverse multiple technical packages.
+      - A coherent capability, owner, vocabulary, or invariant set can be named.
+      - Language, build, or architecture checks can enforce the intended visibility.
+    costs:
+      - Some technical duplication and adapter placement decisions.
+      - Boundary naming, ownership, and dependency enforcement work.
+    contraindications:
+      - The proposed feature has no coherent semantics or change pattern.
+      - The repository cannot enforce access and the team will not add proportional checks.
+      - The code is a tiny cross-cutting utility with one stable purpose.
+    reversal_cost:
+      level: low-to-moderate
+      exit_path: Merge or move packages while retaining public behavior; preserve adapters until callers migrate.
+      cost_drivers: [public package APIs, cyclic dependencies, duplicated infrastructure]
+    appropriate_scale: [package, feature-module, modular-monolith]
+    operational_consequences:
+      - Has no inherent deployment or network cost.
+      - Can clarify ownership and telemetry attribution without creating runtime isolation.
+    preservation_boundaries:
+      - Feature behavior, public import paths, and dependency rules during moves.
+      - Shared infrastructure semantics that remain intentionally common.
+    alternatives:
+      - architecture-layered-style
+      - architecture-direct-in-process-dependency
+      - architecture-modular-monolith-technique
+    related_concepts:
+      - architecture-contextual-partitioning
+      - architecture-change-locality-cohesion
+      - architecture-structural-constraint-enforcement
+      - universal-local-reasoning
+      - universal-information-hiding
+    source_support:
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/046-chapter-34-the-missing-chapter.md :: PACKAGE BY FEATURE"
+        contribution: Presents feature-oriented source organization as an alternative partition.
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/046-chapter-34-the-missing-chapter.md :: PACKAGE BY COMPONENT"
+        contribution: Emphasizes enforceable component access and use-case locality.
+      - source_id: SRC-FSA
+        relationship: corroboration
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/013-chapter-8-component-based-thinking.md :: Domain partitioning"
+        contribution: Contrasts domain partitioning with technical partitioning and exposes its tradeoffs.
+
+  - id: architecture-ports-and-adapters
+    candidate_id: TECH-ARC-004
+    title: Ports and adapters
+    non_universality: Policy-detail isolation is warranted only when policy has independent value and mechanisms create demonstrated volatility or substitution pressure.
+    problem_solved: Protect stable application or domain policy from delivery, persistence, framework, or device mechanisms.
+    activation_evidence:
+      - Policy can evolve and be tested independently of a mechanism.
+      - Multiple, replaceable, volatile, or externally controlled mechanisms exist.
+      - A smaller stable inward contract can express the consumer's semantic need.
+    costs:
+      - Mapping, indirection, extra types, and composition wiring.
+      - Duplicated representations and lifecycle coordination.
+    contraindications:
+      - Trivial CRUD or a workflow whose semantics are dominated by the mechanism.
+      - Portability is hypothetical and no independent change force exists.
+      - Testing seams would be exposed as an unnecessarily public API.
+    reversal_cost:
+      level: moderate
+      exit_path: Collapse adapters into direct calls after proving that the protected variation no longer matters.
+      cost_drivers: [spread of boundary representations, number of adapters, public contracts]
+    appropriate_scale: [module, application, bounded-system]
+    operational_consequences:
+      - In-process adapters do not themselves change topology.
+      - Remote adapters additionally require protocol, failure, security, and observability controls.
+    preservation_boundaries:
+      - Domain and application semantics across mapping boundaries.
+      - Error, identity, transaction, ordering, and data-loss behavior.
+    alternatives:
+      - architecture-direct-in-process-dependency
+      - architecture-partial-boundary
+      - architecture-dependency-inversion
+    related_concepts:
+      - architecture-policy-mechanism-separation
+      - architecture-dependency-inversion-gate
+      - architecture-earned-boundary
+      - universal-information-hiding
+      - universal-earned-abstraction
+    source_support:
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/033-chapter-22-the-clean-architecture.md :: THE DEPENDENCY RULE"
+        contribution: Directs dependencies from volatile mechanisms toward protected policy contracts.
+      - source_id: SRC-CA
+        relationship: refinement
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/034-chapter-23-presenters-and-humble-objects.md :: THE HUMBLE OBJECT PATTERN"
+        contribution: Separates difficult mechanism behavior from testable policy through narrow boundaries.
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/046-chapter-34-the-missing-chapter.md :: PORTS AND ADAPTERS"
+        contribution: Describes source organization around an application core and adapters.
+
+  - id: architecture-partial-boundary
+    candidate_id: TECH-ARC-005
+    title: Partial boundary or facade
+    non_universality: A partial seam is neither automatically prudent nor a mandatory step toward a full boundary; it needs a plausible localized force and a deletion or completion trigger.
+    problem_solved: Reserve a likely seam or control dependency for less cost than a fully independent boundary.
+    activation_evidence:
+      - Localized variation or dependency pressure is plausible and costly to defer.
+      - Independent deployment or multiple implementations are not yet earned.
+      - The facade can hide meaningful complexity or constrain a risky dependency.
+    costs:
+      - Indirection without full independence.
+      - False confidence, reverse coupling, and indefinite scaffolding risk.
+    contraindications:
+      - No concrete likely variation or protected policy exists.
+      - The facade merely renames or mirrors the provider.
+      - Current risk already requires process, data, or security isolation.
+    reversal_cost:
+      level: low
+      exit_path: Delete the seam if pressure disappears, or complete the boundary when stronger evidence arrives.
+      cost_drivers: [number of callers, leaked provider types, one-way-only dependency control]
+    appropriate_scale: [function, package, module]
+    operational_consequences:
+      - Usually adds little runtime or deployment overhead.
+      - Does not provide fault, security, data, or deployment isolation by itself.
+    preservation_boundaries:
+      - Current behavior and provider error semantics.
+      - Explicit completion and deletion criteria.
+    alternatives:
+      - architecture-direct-in-process-dependency
+      - architecture-dependency-inversion
+      - architecture-ports-and-adapters
+    related_concepts:
+      - architecture-boundary-strength
+      - architecture-selective-option-preservation
+      - architecture-earned-boundary
+      - universal-reversible-reviewable-change
+      - universal-earned-abstraction
+    source_support:
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/035-chapter-24-partial-boundaries.md :: SKIP THE LAST STEP"
+        contribution: Describes retaining source separation without paying for independent deployment.
+      - source_id: SRC-CA
+        relationship: refinement
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/035-chapter-24-partial-boundaries.md :: ONE-DIMENSIONAL BOUNDARIES"
+        contribution: Exposes the weaker protection and reverse-dependency risk of one-dimensional seams.
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/035-chapter-24-partial-boundaries.md :: FACADES"
+        contribution: Presents a facade as a still-lower-cost partial boundary.
+
+  - id: architecture-dependency-inversion
+    candidate_id: TECH-ARC-006
+    title: Dependency inversion with a consumer-owned port
+    non_universality: An interface is earned by asymmetric change or ownership forces, not by a general preference for indirection or mocks.
+    problem_solved: Keep stable consumer policy from depending directly on a more volatile mechanism or provider contract.
+    activation_evidence:
+      - Consumer needs are narrower and more stable than the provider API.
+      - Volatility, substitution, ownership, deployment, or a necessary legacy seam is demonstrated.
+      - The repository can place and govern the contract with the consumer.
+    costs:
+      - Interface ownership and versioning, adapters, navigation, and lifecycle complexity.
+      - Mock misuse and abstractions that leak provider semantics.
+    contraindications:
+      - One stable implementation with no independent variation.
+      - The proposed interface mirrors the provider exactly.
+      - Repository idiom is clearer with a function or concrete injected value.
+    reversal_cost:
+      level: low-to-moderate
+      exit_path: Collapse the port and adapter to a direct dependency when the independent force disappears.
+      cost_drivers: [public consumers, adapter count, contract-specific types]
+    appropriate_scale: [function, package, module, component]
+    operational_consequences:
+      - Source inversion alone adds no network isolation.
+      - A remote implementation separately incurs protocol, availability, and operational costs.
+    preservation_boundaries:
+      - Consumer-visible semantics rather than provider surface shape.
+      - Error, lifetime, transaction, and concurrency behavior.
+    alternatives:
+      - architecture-direct-in-process-dependency
+      - architecture-partial-boundary
+      - architecture-ports-and-adapters
+    related_concepts:
+      - architecture-dependency-inversion-gate
+      - architecture-policy-mechanism-separation
+      - architecture-earned-boundary
+      - universal-information-hiding
+      - universal-earned-abstraction
+    source_support:
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/020-chapter-11-dip-the-dependency-inversion-principle.md :: STABLE ABSTRACTIONS"
+        contribution: Relates abstraction direction to stability and volatility.
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/017-chapter-8-ocp-the-open-closed-principle.md :: DIRECTIONAL CONTROL"
+        contribution: Uses an interface to reverse source dependency across a demonstrated component boundary.
+
+  - id: architecture-plugin-microkernel
+    candidate_id: TECH-ARC-007
+    title: Plugin or microkernel architecture
+    non_universality: A plugin mechanism is justified by multiple real extensions and a stable small core, not by a hypothetical future ecosystem.
+    problem_solved: Support optional, customer-specific, or independently varying capabilities around a stable core.
+    activation_evidence:
+      - Multiple real plugins or product variants already exist or are committed.
+      - A small stable core contract can be governed and versioned.
+      - Runtime or configuration-driven extension provides concrete value.
+    costs:
+      - Discovery and registry machinery, compatibility, security, and versioning.
+      - Weaker cross-plugin transactions and harder debugging.
+    contraindications:
+      - Only one implementation or extension exists.
+      - Plugins require pervasive access to core internals.
+      - The workflow requires strong atomic coordination across extensions.
+    reversal_cost:
+      level: moderate-to-high
+      exit_path: Fold controlled plugins into the core; preserve compatibility until external consumers migrate.
+      cost_drivers: [external plugin authors, versioned contracts, persisted plugin state]
+    appropriate_scale: [product, developer-tool, bounded-system]
+    operational_consequences:
+      - Requires plugin lifecycle, compatibility, isolation, security, and observability controls.
+      - Runtime loading can add startup and failure modes.
+    preservation_boundaries:
+      - Published plugin contract and compatibility promises.
+      - Isolation, permissions, lifecycle, and failure containment.
+    alternatives:
+      - architecture-domain-feature-packaging
+      - architecture-modular-monolith-technique
+      - architecture-direct-in-process-dependency
+    related_concepts:
+      - architecture-framework-commitment
+      - architecture-contextual-style-selection
+      - architecture-earned-boundary
+      - architecture-dependency-inversion-gate
+      - universal-earned-abstraction
+    source_support:
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/028-chapter-17-boundaries-drawing-lines.md :: PLUGIN ARCHITECTURE"
+        contribution: Frames plugins as dependencies pointing toward protected business rules.
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/018-chapter-12-microkernel-architecture-style.md :: Plug-In Components"
+        contribution: Defines the extension role and independently varying capability pressure.
+      - source_id: SRC-FSA
+        relationship: refinement
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/018-chapter-12-microkernel-architecture-style.md :: Contracts"
+        contribution: Establishes plugin contract and versioning consequences.
+
+  - id: architecture-pipeline-style
+    candidate_id: TECH-ARC-008
+    title: Pipeline architecture
+    non_universality: Pipelines fit ordered transformations; they are not a general substitute for rich transactional or interactive workflows.
+    problem_solved: Transform or test a stream through ordered, largely independent stages with narrow data contracts.
+    activation_evidence:
+      - Processing has a natural sequence of transformations.
+      - Stages can expose narrow data contracts and control side effects.
+      - Reuse, reordering, streaming, or parallel stage execution matters.
+    costs:
+      - Intermediate representations and explicit ordering and error semantics.
+      - Backpressure, cross-stage debugging, and observability complexity.
+    contraindications:
+      - Rich shared transactional state spans stages.
+      - The workflow is highly interactive or branches around shared context.
+      - Transformations cannot be isolated without semantic duplication.
+    reversal_cost:
+      level: low-to-moderate
+      exit_path: Compose adjacent stages or collapse the pipeline into direct application flow.
+      cost_drivers: [persisted intermediate formats, distributed stages, external stage contracts]
+    appropriate_scale: [application, subsystem, streaming-system]
+    operational_consequences:
+      - Streaming forms require buffering, backpressure, retries, checkpointing, and ordering controls.
+      - Failure diagnosis must connect events across stages.
+    preservation_boundaries:
+      - Stage ordering and end-to-end transformation semantics.
+      - Delivery guarantees, error propagation, and side-effect idempotency.
+    alternatives:
+      - architecture-direct-in-process-dependency
+      - architecture-event-broker-choreography
+      - architecture-event-mediator-orchestration
+    related_concepts:
+      - architecture-contextual-style-selection
+      - architecture-change-locality-cohesion
+      - architecture-event-temporal-semantics
+      - architecture-interaction-synchrony
+      - universal-preserve-behavior-by-default
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/017-chapter-11-pipeline-architecture-style.md :: Pipes"
+        contribution: Defines the communication links and flow between stages.
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/017-chapter-11-pipeline-architecture-style.md :: Filters"
+        contribution: Defines self-contained transformation stages and common stage roles.
+
+  - id: architecture-modular-monolith-technique
+    candidate_id: TECH-ARC-009
+    title: Modular monolith
+    non_universality: A modular monolith is a contextual topology, not a universal target or a mandatory waypoint to microservices.
+    problem_solved: Enforce cohesive source and domain boundaries while retaining one deployment and transaction envelope.
+    activation_evidence:
+      - Cohesive modules and ownership or change boundaries can be demonstrated.
+      - Shared deployment, process failure, and transactions are acceptable.
+      - Operational simplicity is worth more than independent scaling or release.
+    costs:
+      - Shared process, deployment, and often database failure domain.
+      - Boundary integrity depends on source visibility and automated checks.
+      - Scaling is commonly coarse-grained.
+    contraindications:
+      - Independent availability, geography, security, or deployability is mandatory.
+      - One capability has incompatible resource or release needs.
+      - No coherent source modules can yet be identified.
+    reversal_cost:
+      level: moderate
+      exit_path: Extract only the modules with proven distributed drivers behind explicit ports and data ownership.
+      cost_drivers: [shared transactions, shared tables, cyclic module dependencies]
+    appropriate_scale: [product, system]
+    operational_consequences:
+      - One deployment and observability domain simplifies operation and transactions.
+      - Capacity and incidents affect the shared process unless internally isolated.
+    preservation_boundaries:
+      - Module contracts, data ownership, and accepted shared transactions.
+      - End-to-end behavior during any later extraction.
+    alternatives:
+      - architecture-layered-style
+      - architecture-service-based-style
+      - architecture-microservices-style
+    related_concepts:
+      - architecture-modular-monolith
+      - architecture-contextual-partitioning
+      - architecture-distribution-readiness
+      - architecture-change-locality-cohesion
+      - domain-bounded-context
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/024-chapter-18-choosing-the-appropriate-architecture-style.md :: Modular Monolith"
+        contribution: Retains modular source boundaries without distributed topology costs.
+      - source_id: SRC-CA
+        relationship: corroboration
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/029-chapter-18-boundary-anatomy.md :: THE DREADED MONOLITH"
+        contribution: Distinguishes monolithic deployment from the absence of internal component boundaries.
+      - source_id: SRC-CA
+        relationship: refinement
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/046-chapter-34-the-missing-chapter.md :: PACKAGE BY COMPONENT"
+        contribution: Supplies an enforceable source-organization mechanism for internal modularity.
+
+  - id: architecture-service-based-style
+    candidate_id: TECH-ARC-010
+    title: Service-based architecture
+    non_universality: Coarse services are earned by moderate distribution forces and an accepted shared-data tradeoff, not by a desire to appear service-oriented.
+    problem_solved: Give a few coarse domain areas some independent deployment and scaling while retaining simpler operations than finer-grained services.
+    activation_evidence:
+      - A small number of coarse domains have distinct release or capacity needs.
+      - Teams can own services end to end.
+      - Shared data coordination and moderate rather than maximal isolation are accepted.
+    costs:
+      - Network latency and failure, API versioning, orchestration, and distributed logging.
+      - Shared-database coupling and cross-service transaction coordination.
+    contraindications:
+      - Strong data isolation or fine-grained independent scaling is mandatory.
+      - Cross-service transaction semantics are unresolved.
+      - Delivery, monitoring, security, and on-call maturity are absent.
+    reversal_cost:
+      level: moderate-to-high
+      exit_path: Merge services when distribution is unearned, or split only the evidenced hotspot behind owned data.
+      cost_drivers: [protocol consumers, shared database coupling, deployment pipelines]
+    appropriate_scale: [system]
+    operational_consequences:
+      - Requires service deployment, monitoring, security, compatibility, and failure handling.
+      - Shared data can simplify joins while coupling schema and availability.
+    preservation_boundaries:
+      - API, transaction, consistency, authentication, and failure semantics.
+      - Data authority during merge, split, and rollout.
+    alternatives:
+      - architecture-modular-monolith-technique
+      - architecture-microservices-style
+      - architecture-direct-in-process-dependency
+    related_concepts:
+      - architecture-contextual-style-selection
+      - architecture-distribution-readiness
+      - architecture-team-topology-force
+      - architecture-contextual-partitioning
+      - universal-change-amplification
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/019-chapter-13-service-based-architecture-style.md :: Topology"
+        contribution: Defines coarse services and their commonly shared data topology.
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/019-chapter-13-service-based-architecture-style.md :: When to Use This Architecture Style"
+        contribution: Supplies contextual selection factors and limits.
+
+  - id: architecture-event-broker-choreography
+    candidate_id: TECH-ARC-011
+    title: Event broker or choreography
+    non_universality: Choreography is appropriate for genuinely independent reactions, not for hiding a workflow that needs explicit completion ownership.
+    problem_solved: Enable extensible, high-throughput reactions with loose temporal coupling and no central process controller.
+    activation_evidence:
+      - No single business process owns global completion.
+      - Consumers react independently and new consumers are added frequently.
+      - Durable messaging, replay, idempotency, schema governance, and tracing are available.
+    costs:
+      - Emergent workflow and difficult completion and error visibility.
+      - Duplicate, ordering, eventual-consistency, replay, and schema-evolution complexity.
+    contraindications:
+      - A regulated or deterministic long-running workflow needs audit and compensation.
+      - Observability and recovery ownership are weak.
+      - Events are imperative commands disguised as facts.
+    reversal_cost:
+      level: moderate-to-high
+      exit_path: Add a process manager for the owned workflow or return selected interactions to direct request-response.
+      cost_drivers: [event consumers, persisted event schemas, replay history, distributed ownership]
+    appropriate_scale: [subsystem, system]
+    operational_consequences:
+      - Requires broker availability, dead-letter and replay operations, schema governance, lag monitoring, and tracing.
+      - Completion and recovery are distributed unless explicitly assigned.
+    preservation_boundaries:
+      - Event meaning, ordering, delivery, duplicate, and idempotency semantics.
+      - Data consistency, replay safety, and consumer compatibility.
+    alternatives:
+      - architecture-event-mediator-orchestration
+      - architecture-direct-in-process-dependency
+      - architecture-pipeline-style
+    related_concepts:
+      - architecture-event-temporal-semantics
+      - architecture-interaction-synchrony
+      - architecture-distribution-readiness
+      - architecture-contextual-style-selection
+      - universal-explicit-invariants
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/020-chapter-14-event-driven-architecture-style.md :: Broker Topology"
+        contribution: Defines the decentralized broker topology and its extensibility tradeoff.
+      - source_id: SRC-FSA
+        relationship: refinement
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/020-chapter-14-event-driven-architecture-style.md :: Error Handling"
+        contribution: Makes distributed error workflow an explicit design obligation.
+      - source_id: SRC-FSA
+        relationship: refinement
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/020-chapter-14-event-driven-architecture-style.md :: Preventing Data Loss"
+        contribution: Establishes durability and handoff failure concerns.
+
+  - id: architecture-event-mediator-orchestration
+    candidate_id: TECH-ARC-012
+    title: Event mediator or orchestration
+    non_universality: A mediator is earned by explicit workflow completion and recovery policy; it is harmful when it only relays independent reactions.
+    problem_solved: Own conditional routing, completion, compensation, audit, and recovery for a multi-step process.
+    activation_evidence:
+      - A long-running, regulated, branching, or human-involved transaction exists.
+      - One business process owns completion and needs restart or recovery.
+      - Durable process state and idempotent participants can be implemented.
+    costs:
+      - Mediator availability and scaling, central coupling, and bottleneck risk.
+      - Workflow versioning and persistent process-state complexity.
+    contraindications:
+      - Reactions are genuinely independent and no completion policy exists.
+      - The workflow is short enough for a direct transaction or request.
+      - The mediator would merely forward every message without decisions.
+    reversal_cost:
+      level: moderate-to-high
+      exit_path: Decentralize only stable independent reactions while retaining explicit owners for remaining workflows.
+      cost_drivers: [persisted process state, workflow versions, participant contracts]
+    appropriate_scale: [business-process, system]
+    operational_consequences:
+      - Requires durable process state, idempotency, compensation, observability, and upgrade strategy.
+      - Mediator capacity and availability become explicit system constraints.
+    preservation_boundaries:
+      - Completion, compensation, audit, ordering, and restart semantics.
+      - Participant idempotency and authoritative process state.
+    alternatives:
+      - architecture-event-broker-choreography
+      - architecture-direct-in-process-dependency
+      - architecture-pipeline-style
+    related_concepts:
+      - architecture-event-temporal-semantics
+      - architecture-interaction-synchrony
+      - architecture-distribution-readiness
+      - architecture-contextual-style-selection
+      - universal-explicit-invariants
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/020-chapter-14-event-driven-architecture-style.md :: Mediator Topology"
+        contribution: Defines centralized workflow control and mediator responsibilities.
+      - source_id: SRC-FSA
+        relationship: corroboration
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/023-chapter-17-microservices-architecture.md :: Choreography and Orchestration"
+        contribution: Contrasts decentralized reactions with explicit orchestration in distributed systems.
+
+  - id: architecture-space-based-style
+    candidate_id: TECH-ARC-013
+    title: Space-based architecture
+    non_universality: This is a high-cost specialist topology for measured extreme concurrency and database contention, not a general scaling precaution.
+    problem_solved: Absorb extreme variable load through elastic in-memory processing and distributed partitioned data.
+    activation_evidence:
+      - Representative measurement shows variable concurrency and database contention dominate the objective.
+      - Data can be partitioned and synchronization or collision policies are acceptable.
+      - The organization can operate a distributed data grid and recovery machinery.
+    costs:
+      - Data-grid, replication, collision, data-loss, and cache-coherence complexity.
+      - Memory expense, specialized skills, and difficult recovery validation.
+    contraindications:
+      - Strong centralized transactions or unpartitionable data.
+      - Ordinary load, weak operations maturity, or a restrictive cost ceiling.
+      - No representative baseline proves the database bottleneck.
+    reversal_cost:
+      level: high
+      exit_path: Migrate authoritative data and processing back behind compatibility stages with reconciliation and rollback proof.
+      cost_drivers: [distributed state, persisted partitioning, grid-specific APIs, synchronization semantics]
+    appropriate_scale: [specialized-high-scale-system]
+    operational_consequences:
+      - Requires grid health, data pumps, writers and readers, replication, recovery, capacity, and collision monitoring.
+      - Memory capacity and data synchronization become durability concerns.
+    preservation_boundaries:
+      - Authoritative data, collision resolution, transaction, and loss semantics.
+      - Baseline latency and throughput plus correctness under failure and recovery.
+    alternatives:
+      - performance-algorithm-and-work-first
+      - architecture-service-based-style
+      - architecture-modular-monolith-technique
+    related_concepts:
+      - architecture-contextual-style-selection
+      - architecture-distribution-readiness
+      - architecture-scoped-characteristics
+      - performance-measurable-objective
+      - performance-semantic-preservation
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/021-chapter-15-space-based-architecture-style.md :: General Topology"
+        contribution: Defines distributed in-memory processing and data components.
+      - source_id: SRC-FSA
+        relationship: refinement
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/021-chapter-15-space-based-architecture-style.md :: Data Collisions"
+        contribution: Makes concurrent data collision and consistency policy explicit.
+      - source_id: SRC-FSA
+        relationship: refinement
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/021-chapter-15-space-based-architecture-style.md :: Architecture Characteristics Ratings"
+        contribution: Characterizes the specialist scale and operational tradeoffs without making the ratings a verdict.
+
+  - id: architecture-orchestration-driven-soa
+    candidate_id: TECH-ARC-014
+    title: Orchestration-driven service-oriented architecture
+    non_universality: Central enterprise orchestration is justified only by heterogeneous integration and governance forces that can fund its coupling and operational burden.
+    problem_solved: Coordinate enterprise processes across heterogeneous systems with centralized integration and policy.
+    activation_evidence:
+      - Existing heterogeneous systems must participate in shared enterprise workflows.
+      - Stable shared services and a real reuse or governance mandate exist.
+      - Central governance and orchestration have responsive ownership and budget.
+    costs:
+      - Enterprise-service coupling and reuse-induced change amplification.
+      - Orchestration bottlenecks, governance overhead, and vendor or infrastructure complexity.
+    contraindications:
+      - Product autonomy and rapid local change dominate.
+      - A central team cannot govern contracts responsively.
+      - Reuse is merely syntactic or latency and availability budgets are tight.
+    reversal_cost:
+      level: high
+      exit_path: Strangle orchestration flow by flow, assign local ownership, and preserve compatibility during service decomposition.
+      cost_drivers: [pervasive shared services, orchestration state, enterprise contracts, vendor-specific infrastructure]
+    appropriate_scale: [enterprise]
+    operational_consequences:
+      - Requires an orchestration engine, registry and governance, monitoring, compatibility, and recovery.
+      - Central services and orchestration can amplify incidents and release coordination.
+    preservation_boundaries:
+      - Enterprise workflow, contract, transaction, and recovery semantics.
+      - Governance and acceptance authority during decentralization.
+    alternatives:
+      - architecture-event-mediator-orchestration
+      - architecture-service-based-style
+      - architecture-modular-monolith-technique
+    related_concepts:
+      - architecture-contextual-style-selection
+      - architecture-distribution-readiness
+      - architecture-team-topology-force
+      - universal-change-amplification
+      - architecture-risk-analysis
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/022-chapter-16-orchestration-driven-service-oriented-architecture.md :: Orchestration Engine"
+        contribution: Defines central workflow coordination across enterprise services.
+      - source_id: SRC-FSA
+        relationship: tension
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/022-chapter-16-orchestration-driven-service-oriented-architecture.md :: Reuse…and Coupling"
+        contribution: Establishes that reuse creates coupling and change amplification rather than free leverage.
+
+  - id: architecture-microservices-style
+    candidate_id: TECH-ARC-015
+    title: Microservices architecture
+    non_universality: A bounded context, team boundary, or fashionable preference does not entail a microservice; irreducible distribution drivers and operational readiness are mandatory.
+    problem_solved: Give mature bounded capabilities independent deployment, data authority, scaling, availability, and team ownership.
+    activation_evidence:
+      - Stable coherent capabilities and explicit data ownership have been exercised in-process.
+      - Independent deployment, scaling, availability, geography, security, or technology is measurably valuable.
+      - Automated delivery, observability, security, on-call, recovery, and contract governance are ready.
+      - Eventual consistency, sagas, and data duplication are explicitly accepted where required.
+    costs:
+      - Network and contract complexity, partial failure, and distributed data coordination.
+      - Eventual consistency, duplicated data, harder tests and debugging, and high cognitive and incident load.
+    contraindications:
+      - Small, simple, early, or rapidly converging product with uncertain boundaries.
+      - Shared transactions and joins are central or uniform scaling suffices.
+      - Platform, telemetry, delivery, security, or on-call capability is weak.
+    reversal_cost:
+      level: high
+      exit_path: Merge compatible services behind maintained contracts and migrate data authority with reconciliation and rollback gates.
+      cost_drivers: [data separation, protocol consumers, team topology, independent pipelines, event history]
+    appropriate_scale: [system, enterprise, selected-capabilities]
+    operational_consequences:
+      - Requires per-service CI/CD, telemetry, security, compatibility, discovery, capacity, incident response, and data recovery.
+      - Every remote edge adds partial-failure and rollout-order obligations.
+    preservation_boundaries:
+      - Data authority, consistency, transaction, identity, and protocol semantics.
+      - Availability, security, recovery, and compatibility promises.
+    alternatives:
+      - architecture-modular-monolith-technique
+      - architecture-service-based-style
+      - architecture-domain-feature-packaging
+    related_concepts:
+      - architecture-distribution-readiness
+      - architecture-contextual-style-selection
+      - domain-bounded-context
+      - architecture-event-temporal-semantics
+      - architecture-team-topology-force
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/023-chapter-17-microservices-architecture.md :: Granularity"
+        contribution: Treats service granularity as a tradeoff rather than a fixed size rule.
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/023-chapter-17-microservices-architecture.md :: Data Isolation"
+        contribution: Makes independent data ownership a defining force and cost.
+      - source_id: SRC-FSA
+        relationship: refinement
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/023-chapter-17-microservices-architecture.md :: Transactions and Sagas"
+        contribution: Establishes distributed consistency and compensation consequences.
+      - source_id: SRC-CA
+        relationship: tension
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/038-chapter-27-services-great-and-small.md :: THE DECOUPLING FALLACY"
+        contribution: Rejects the inference that service topology itself guarantees architectural decoupling.
+
+  - id: architecture-quantum-analysis
+    candidate_id: TECH-ARC-016
+    title: Architectural quantum analysis
+    non_universality: An architectural quantum scopes analysis; it is not automatically a service or an instruction to split deployment.
+    problem_solved: Scope architecture characteristics and deployability to the smallest highly cohesive, synchronously connected functional unit.
+    activation_evidence:
+      - Different parts of the system need different quality thresholds.
+      - Synchronous connascence, functional cohesion, and deployment boundaries can be observed.
+      - Per-unit SLO, failure, or scaling analysis would change a decision.
+    costs:
+      - Dependency analysis and instrumentation effort.
+      - Risk of reifying an analytical unit as an unearned deployable boundary.
+    contraindications:
+      - A small uniform system has no differentiated quality needs.
+      - Deployability is not a driver.
+      - Units are guessed from organization charts or directories rather than dependencies.
+    reversal_cost:
+      level: analytical
+      exit_path: Revise the analysis scope when dependency or characteristic evidence changes; no structural migration is implied.
+      cost_drivers: [monitoring assumptions, decisions derived from an incorrect scope]
+    appropriate_scale: [component, subsystem, system]
+    operational_consequences:
+      - Makes per-quantum SLO, deployment, failure, and recovery implications explicit.
+      - Adds no topology by itself.
+    preservation_boundaries:
+      - Actual dependency and deployment facts.
+      - Quality scenarios must remain tied to their smallest evidenced scope.
+    alternatives:
+      - whole-system-characteristic-analysis
+      - architecture-domain-feature-packaging
+      - architecture-modular-monolith-technique
+    related_concepts:
+      - architecture-scoped-characteristics
+      - architecture-contextual-style-selection
+      - architecture-earned-boundary
+      - architecture-interaction-synchrony
+      - universal-evidence-before-intervention
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/012-chapter-7-scope-of-architecture-characteristics.md :: Architectural Quanta and Granularity"
+        contribution: Defines a quantum through deployability, cohesion, and synchronous connascence.
+      - source_id: SRC-FSA
+        relationship: refinement
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/013-chapter-8-component-based-thinking.md :: Architecture Quantum Redux: Choosing Between Monolithic Versus Distributed Architectures"
+        contribution: Applies quantum analysis to topology selection without equating it to services.
+
+  - id: architecture-fitness-function-technique
+    candidate_id: TECH-ARC-017
+    title: Architecture fitness function
+    non_universality: A fitness function is useful only for an accepted outcome or structural rule with a valid actionable signal; measurement for its own sake is not doctrine.
+    problem_solved: Detect drift in a named architecture characteristic or enforceable dependency rule continuously.
+    activation_evidence:
+      - An accepted measurable outcome or structural constraint exists.
+      - The signal has a defensible relationship to the protected outcome.
+      - A threshold, cadence, owner, and response are defined.
+    costs:
+      - Test and monitor maintenance, runtime or build expense, and false positives.
+      - Proxy gaming and accidental freezing of implementation detail.
+    contraindications:
+      - The target is an unmeasurable adjective.
+      - The proxy is weakly related to the decision or no owner can act.
+      - The check would enforce a superseded or purely aesthetic preference.
+    reversal_cost:
+      level: low
+      exit_path: Delete or supersede the function with the decision it protected, preserving history and replacement coverage.
+      cost_drivers: [runtime instrumentation, organizational compliance dependence]
+    appropriate_scale: [module, system, enterprise]
+    operational_consequences:
+      - Build-time checks add feedback and maintenance cost.
+      - Runtime telemetry and chaos tests add capacity, safety, and incident-management obligations.
+    preservation_boundaries:
+      - The accepted outcome, threshold semantics, and owner authority.
+      - Production safety and privacy when gathering runtime evidence.
+    alternatives:
+      - periodic-architecture-review
+      - representative-experiment
+      - architecture-decision-record-technique
+    related_concepts:
+      - architecture-fitness-functions
+      - architecture-metrics-as-signals
+      - architecture-scoped-characteristics
+      - universal-measure-claimed-improvement
+      - architecture-feedback-loop
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/011-chapter-6-measuring-and-governing-architecture-characteristics.md :: Fitness Functions"
+        contribution: Defines objective checks that protect architecture characteristics as systems evolve.
+      - source_id: SRC-FSA
+        relationship: refinement
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/011-chapter-6-measuring-and-governing-architecture-characteristics.md :: The Origin of the Simian Army"
+        contribution: Supplies a runtime fitness example whose operational risk must remain explicit.
+
+  - id: architecture-adr-rfc-technique
+    candidate_id: TECH-ARC-018
+    title: Architecture decision record or request for comments
+    non_universality: Decision records belong to significant, consequential choices; forcing every local implementation detail through an ADR creates bureaucracy without preserving useful context.
+    problem_solved: Preserve context, authority, alternatives, consequences, compliance, and revisitability of significant decisions.
+    activation_evidence:
+      - A decision constrains future work, crosses boundaries, or is expensive to reverse or forget.
+      - A selection authority and affected reviewers can be named.
+      - Rationale, alternatives, consequences, and compliance can be recorded.
+    costs:
+      - Writing, review, indexing, and supersession upkeep.
+      - Stale records and process overhead if scope is indiscriminate.
+    contraindications:
+      - A trivial reversible implementation detail.
+      - No authority exists to select the decision.
+      - The artifact would record a conclusion without rationale or consequences.
+    reversal_cost:
+      level: low-for-record, decision-dependent
+      exit_path: Supersede explicitly and link the new evidence, migration, and verification to the prior record.
+      cost_drivers: [underlying decision irreversibility, number of governed consumers]
+    appropriate_scale: [team, system, enterprise]
+    operational_consequences:
+      - Operational and compliance obligations require linked tests, telemetry, or runbooks.
+      - The record itself does not enforce or accept the decision.
+    preservation_boundaries:
+      - Decision status, owner, rationale, rejected alternatives, and supersession history.
+      - Separation of proposal, selection, execution, verification, and acceptance authority.
+    alternatives:
+      - local-code-comment
+      - issue-or-design-note
+      - architecture-fitness-function-technique
+    related_concepts:
+      - architecture-decision-record
+      - architecture-feedback-loop
+      - architecture-risk-analysis
+      - universal-reversible-reviewable-change
+      - universal-repository-contract-precedence
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/026-chapter-19-architecture-decisions.md :: Architecturally Significant"
+        contribution: Supplies a significance gate for which decisions warrant architecture treatment.
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/026-chapter-19-architecture-decisions.md :: Architecture Decision Records"
+        contribution: Defines a durable record of context, decision, and consequences.
+      - source_id: SRC-FSA
+        relationship: refinement
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/026-chapter-19-architecture-decisions.md :: ADRs and Request for Comments (RFC)"
+        contribution: Relates records to collaborative proposal and review without collapsing authority stages.
+
+  - id: architecture-risk-storming
+    candidate_id: TECH-ARC-019
+    title: Architecture risk storming
+    non_universality: Risk storming is a proportionate technique for a concrete consequential flow, not a generic workshop or a vote that manufactures certainty.
+    problem_solved: Surface and prioritize architecture risk across implementation, operations, security, and domain perspectives.
+    activation_evidence:
+      - A concrete architecture, flow, and named characteristic can be examined.
+      - Consequence or uncertainty warrants cross-role analysis.
+      - Participants with implementation and operational knowledge are available.
+    costs:
+      - Workshop time, subjective scoring, consensus pressure, and mitigation backlog.
+      - Scores can disguise disputed assumptions or absent evidence.
+    contraindications:
+      - Generic brainstorming with no impending decision.
+      - A low-risk local change whose evidence is already sufficient.
+      - Operators, implementers, or relevant domain experts are absent.
+    reversal_cost:
+      level: low
+      exit_path: Repeat or retire the assessment as mitigations and evidence change; do not preserve stale scores as truth.
+      cost_drivers: [participant time, mitigation commitments, false confidence]
+    appropriate_scale: [proposal, release, architecture-iteration]
+    operational_consequences:
+      - High risks should become owned experiments, tests, telemetry, recovery work, or explicit acceptance decisions.
+      - Residual risk acceptance must remain with authorized stakeholders.
+    preservation_boundaries:
+      - Disputed assumptions, confidence, and source evidence.
+      - Risk acceptance and mitigation authority.
+    alternatives:
+      - targeted-failure-analysis
+      - architecture-fitness-function-technique
+      - architecture-adr-rfc-technique
+    related_concepts:
+      - architecture-risk-analysis
+      - architecture-scoped-characteristics
+      - architecture-decision-record
+      - universal-evidence-before-intervention
+      - universal-minimize-simultaneous-uncertainty
+    source_support:
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/027-chapter-20-analyzing-architecture-risk.md :: Risk Storming"
+        contribution: Defines collaborative identification and scoring of risks against a concrete architecture.
+      - source_id: SRC-FSA
+        relationship: refinement
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/027-chapter-20-analyzing-architecture-risk.md :: Consensus"
+        contribution: Exposes consensus and averaging as a source of false certainty.
+      - source_id: SRC-FSA
+        relationship: direct_support
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/027-chapter-20-analyzing-architecture-risk.md :: Mitigation"
+        contribution: Connects identified risk to mitigation rather than treating scoring as an endpoint.
+
+  - id: architecture-framework-isolation
+    candidate_id: TECH-ARC-020
+    title: Framework isolation
+    non_universality: Framework isolation is earned by asymmetric commitment and a narrower stable application contract; a wrapper that mirrors the framework provides no protection.
+    problem_solved: Limit framework lifecycle and API churn from controlling independently valuable application policy.
+    activation_evidence:
+      - The framework is invasive, volatile, replaceable, or controls application lifecycle.
+      - Application policy can be stated behind a smaller semantic adapter.
+      - Upgrade, security, testing, or replacement risk exceeds adapter cost.
+    costs:
+      - Adapter and translation effort and loss of some framework convenience.
+      - Risk of a lowest-common-denominator or mirrored wrapper API.
+    contraindications:
+      - Framework behavior is the product or essential runtime semantics.
+      - Replacement is implausible and lifecycle risk is accepted.
+      - The wrapper exposes the same types and operations unchanged.
+    reversal_cost:
+      level: moderate
+      exit_path: Replace the adapter, or deliberately accept direct commitment after recording the changed economics.
+      cost_drivers: [framework types leaked into policy, lifecycle callbacks, persistence annotations]
+    appropriate_scale: [module, application, system]
+    operational_consequences:
+      - Upgrades, security patches, startup, lifecycle, and observability remain operational concerns behind the adapter.
+      - Isolation can localize but cannot eliminate framework failure and support risk.
+    preservation_boundaries:
+      - Application policy, lifecycle, error, transaction, and security semantics.
+      - Repository framework conventions unless supersession is authorized.
+    alternatives:
+      - direct-framework-commitment
+      - architecture-ports-and-adapters
+      - architecture-dependency-inversion
+    related_concepts:
+      - architecture-framework-commitment
+      - architecture-policy-mechanism-separation
+      - architecture-dependency-inversion-gate
+      - universal-information-hiding
+      - universal-repository-contract-precedence
+    source_support:
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/044-chapter-32-frameworks-are-details.md :: ASYMMETRIC MARRIAGE"
+        contribution: Identifies the asymmetric commitment between an application and a framework vendor.
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/044-chapter-32-frameworks-are-details.md :: THE RISKS"
+        contribution: Enumerates framework lifecycle, constraint, and replacement risks.
+      - source_id: SRC-CA
+        relationship: direct_support
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/044-chapter-32-frameworks-are-details.md :: THE SOLUTION"
+        contribution: Recommends narrow integration rather than pervasive inheritance or framework control.

@@ -1,0 +1,899 @@
+schema_version: agent-doctrine-concepts/1
+concepts:
+  - id: universal-repository-contract-precedence
+    title: Repository contracts outrank generic doctrine
+    category: universal
+    claim: Explicit task authority, accepted repository decisions, executable contracts, and current runtime facts govern the work before any generic engineering school or source preference.
+    decision_rule: Discover the applicable local contract and actual target state first; use doctrine to investigate or choose among locally valid options, never to override a higher-precedence constraint without owner authority and repository evidence.
+    why_it_matters: Advice that is sound in one language, lifecycle, architecture, or risk class can be harmful when detached from a repository's accepted commitments.
+    applicable_when:
+      - every assessment, recommendation, review, or implementation
+    required_evidence:
+      - user instruction and authority
+      - repository instructions from root through target path
+      - accepted ADR, RFC, API, compatibility, generation, build, and test contracts
+      - current source, configuration, and relevant runtime state
+    insufficient_evidence:
+      - a book or framework calls a practice universal
+      - neighboring directory names resemble a known architecture
+      - community popularity or agent preference
+    required_inputs:
+      - task and target scope
+      - repository contract hierarchy
+      - current target evidence
+    expected_outputs:
+      - cited applicable contracts and any conflict
+      - in-contract action or explicit escalation
+    preservation_boundaries:
+      - accepted behavior, architecture, ownership, data, compatibility, and operational policy
+      - generated and vendored authority
+    safe_actions:
+      - use generic doctrine as a hypothesis or decision aid
+      - verify whether an older decision's assumptions still hold
+      - propose a decision change separately
+    unsafe_actions:
+      - silently migrate repository style or architecture to a source-preferred form
+      - treat an unaccepted design draft as authority
+      - infer permission from technical access
+    common_failure_modes:
+      - cargo-cult architecture
+      - style migration hidden in feature work
+      - stale documentation followed over executable current truth
+    counterexamples:
+      - A demonstrably stale contract may be repaired or superseded, but only through the repository's decision authority and an explicit change classification.
+    interactions:
+      - Governs every lower-priority concept and contextual lens.
+    source_support:
+      - source_id: SRC-FSA
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/003-preface-invalidating-axioms.md :: Axiom"
+        contribution: Rejects timeless architecture axioms and requires context-specific tradeoff reasoning.
+        relationship: direct_support
+      - source_id: SRC-CC
+        locator: "books/code-complete-2nd-edition-v413hav/chapters/009-chapter-4-key-construction-decisions.md :: cc2e.com/0496 Checklist: Major Construction Practices Coding"
+        contribution: Makes language, platform, project convention, and risk explicit inputs to construction choices.
+        relationship: corroboration
+      - source_id: SRC-APOSD
+        locator: "books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/022-17-consistency.md :: 17: Consistency"
+        contribution: Establishes existing local consistency as leverage that should not be displaced casually.
+        relationship: corroboration
+    confidence: universal
+    roles: [coding-agent, architecture-agent, refactoring-agent, legacy-code-agent, performance-agent, review-agent, debugging-and-repair-agent, repository-assessment-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [repository contract, precedence, ADR, convention, accepted decision, local evidence]
+    routing:
+      activate_for_roles: [coding-agent, architecture-agent, refactoring-agent, legacy-code-agent, performance-agent, review-agent, debugging-and-repair-agent, repository-assessment-agent]
+      activate_for_tasks: [assessment, planning, implementation, review, diagnosis, optimization]
+      activate_for_repository_signals: [repository instructions, ADR, RFC, generated marker, compatibility policy, runtime configuration]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [all]
+      exclude_when: [never]
+      prerequisites: [target repository and task scope]
+      retrieval_priority: core
+      retrieval_budget_hint: 320
+      related_concepts: [universal-evidence-before-intervention, agent-conduct-authority-bounded-action]
+
+  - id: universal-evidence-before-intervention
+    title: Evidence before intervention
+    category: universal
+    claim: An engineering intervention is earned only by evidence capable of establishing the claimed problem and distinguishing the proposed response from no change or a lower-cost response.
+    decision_rule: State the observable condition, evidence class, causal hypothesis, and remedy prediction; gather the cheapest discriminating evidence before recommending or executing material change.
+    why_it_matters: Static unattractiveness, source prestige, and plausible stories can otherwise become unbounded refactoring, architecture, or optimization mandates.
+    applicable_when:
+      - assessing structure, architecture, correctness, technical debt, or performance
+      - selecting any material intervention
+    required_evidence:
+      - claim-relative observation such as accepted requirement, reproduction, incident, recurring change, operational constraint, or representative measurement
+      - evidence connecting the proposed action to the condition
+      - alternatives including no change where viable
+    insufficient_evidence:
+      - file size, age, smell, churn, or complexity metric alone
+      - a hypothetical future variant or scale
+      - a single unrepresentative benchmark or anecdote
+    required_inputs:
+      - decision question and consequence
+      - available evidence and known gaps
+    expected_outputs:
+      - observation, inference, and recommendation separated
+      - act, experiment, monitor, leave, or escalate disposition
+    preservation_boundaries:
+      - authority and repository contracts
+      - properties outside the proven intervention scope
+    safe_actions:
+      - gather history, tests, runtime, domain, or profile evidence
+      - narrow a claim to what the evidence establishes
+      - recommend an experiment rather than a solution
+    unsafe_actions:
+      - convert correlation into causation
+      - treat an inventory or metric as a verdict
+      - hide missing evidence behind confidence
+    common_failure_modes:
+      - aesthetic debt declaration
+      - architecture astronomy
+      - speculative optimization
+    source_support:
+      - source_id: SRC-SDX
+        locator: "books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/006-chapter-1-why-technical-debt-isn-t-technical.md :: Interest Rate Is a Function of Time"
+        contribution: Shows that poor-looking code creates maintenance debt only in relation to change and context.
+        relationship: direct_support
+      - source_id: SRC-CC
+        locator: "books/code-complete-2nd-edition-v413hav/chapters/008-chapter-3-measure-twice-cut-once-upstream-prerequisites.md :: cc2e.com/0386 Checklist: Upstream Prerequisites"
+        contribution: Requires problem, requirements, and architecture evidence before construction.
+        relationship: corroboration
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/007-chapter-3-conquering-efficiency.md :: Resource-Aware Efficiency Requirements"
+        contribution: Makes optimization action depend on explicit workload and resource evidence.
+        relationship: corroboration
+    confidence: universal
+    roles: [coding-agent, architecture-agent, refactoring-agent, legacy-code-agent, performance-agent, review-agent, debugging-and-repair-agent, repository-assessment-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [evidence, intervention, technical debt, hypothesis, no change, causal proof]
+    routing:
+      activate_for_roles: [coding-agent, architecture-agent, refactoring-agent, legacy-code-agent, performance-agent, review-agent, debugging-and-repair-agent, repository-assessment-agent]
+      activate_for_tasks: [assessment, diagnosis, recommendation, planning, refactoring, optimization]
+      activate_for_repository_signals: [smell, hotspot, metric, incident, complaint, proposed architecture]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [all]
+      exclude_when: [never]
+      prerequisites: [a bounded decision question]
+      retrieval_priority: core
+      retrieval_budget_hint: 340
+      related_concepts: [universal-repository-contract-precedence, universal-no-change-option, universal-measure-claimed-improvement]
+
+  - id: universal-preserve-behavior-by-default
+    title: Preserve behavior unless change is authorized
+    category: universal
+    claim: Existing observable behavior remains protected unless an accepted contract explicitly identifies what may change and who can accept it.
+    decision_rule: List authorized semantic changes; provisionally preserve every other relevant output, side effect, data, error, ordering, timing/resource contract, security, durability, and operational property until it is classified.
+    why_it_matters: Internal-looking changes often affect undocumented callers, state, failures, order, performance, or operations.
+    applicable_when:
+      - repair, refactoring, migration, optimization, cleanup, deletion, or dependency change
+    required_evidence:
+      - accepted desired behavior and semantic authority
+      - preservation matrix and consumers
+      - tests, characterization, probes, or explicit residual risk
+    insufficient_evidence:
+      - all edited symbols are private
+      - the existing suite passes without path proof
+      - the change is labeled refactoring or cleanup
+    required_inputs:
+      - change classification
+      - current and intended behavior
+      - authority and proof mechanisms
+    expected_outputs:
+      - authorized-change and preservation matrices
+      - verification and acceptance owner
+    preservation_boundaries:
+      - behavior not explicitly released
+      - public and operational contracts
+      - relied-upon undocumented behavior until owner decision
+    safe_actions:
+      - characterize surprising behavior
+      - separate semantic and structural checkpoints
+      - narrow the preservation claim to exercised properties
+    unsafe_actions:
+      - repair a discovered bug inside a refactoring campaign
+      - assume error, ordering, or timing changes are internal
+      - silently redefine behavior to match a preferred design
+    common_failure_modes:
+      - behavior-changing refactor
+      - passing unrelated tests used as proof
+      - undocumented compatibility break
+    source_support:
+      - source_id: SRC-REF
+        locator: "books/refactoring-improving-the-design-of-existing-code/chapters/006-chapter-2-principles-in-refactoring.md :: Defining Refactoring"
+        contribution: Defines refactoring by preservation of externally visible behavior.
+        relationship: direct_support
+      - source_id: SRC-WELC
+        locator: "books/programming-working-effectively-with-legacy-code/chapters/008-chapter-1-changing-software.md :: Four Reasons to Change Software"
+        contribution: Distinguishes change intents while centering preservation of existing behavior.
+        relationship: corroboration
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/007-chapter-3-conquering-efficiency.md :: Functionality Phase"
+        contribution: Requires a functional baseline before efficiency changes.
+        relationship: corroboration
+    confidence: universal
+    roles: [coding-agent, refactoring-agent, legacy-code-agent, performance-agent, debugging-and-repair-agent, review-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [behavior preservation, semantic change, refactoring, regression, characterization]
+    routing:
+      activate_for_roles: [coding-agent, refactoring-agent, legacy-code-agent, performance-agent, debugging-and-repair-agent, review-agent]
+      activate_for_tasks: [repair, refactor, migrate, optimize, cleanup, delete, upgrade]
+      activate_for_repository_signals: [existing behavior, public API, persistent data, operational contract]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [correctness, compatibility, data, durability, performance]
+      exclude_when: [the task creates a new isolated artifact with no existing contract]
+      prerequisites: [proc-establish-preservation-boundaries]
+      retrieval_priority: core
+      retrieval_budget_hint: 390
+      related_concepts: [universal-separate-semantic-structural-change, refactoring-behavior-preservation, performance-semantic-preservation]
+
+  - id: universal-minimize-simultaneous-uncertainty
+    title: Minimize simultaneous uncertainty
+    category: universal
+    claim: Organize investigation and change so one uncertain behavior, dependency, design choice, or performance hypothesis is tested at a time with close feedback.
+    decision_rule: Rank unresolved assumptions by consequence; use the cheapest discriminating search, experiment, characterization, prototype, trace, or benchmark; update the plan before broadening work.
+    why_it_matters: Interacting unknowns make failures hard to localize, comparisons uninterpretable, and reversal unsafe.
+    applicable_when:
+      - unfamiliar code, uncertain requirements, novel dependencies, integration, debugging, refactoring, or optimization
+    not_applicable_when:
+      - a fully mechanical change has established behavior and verification
+    required_evidence:
+      - explicit unknowns and consequence
+      - discriminating check and baseline
+      - checkpoint and stop condition
+    insufficient_evidence:
+      - a broad implementation happens to compile
+      - confidence based on another repository
+      - several simultaneous changes followed by one result
+    required_inputs:
+      - uncertainty ledger
+      - available feedback and authority
+    expected_outputs:
+      - resolved, narrowed, or falsified assumption
+      - retained or discarded experiment
+      - updated sequence
+    preservation_boundaries:
+      - experiments do not alter authoritative data or behavior without permission
+      - disposable prototypes do not enter production silently
+    safe_actions:
+      - one-change diagnostic experiment
+      - thin tracer slice built to production standards
+      - throwaway prototype kept outside authority surfaces
+    unsafe_actions:
+      - prototype laundering
+      - repair and refactor in one comparison
+      - several performance levers in one benchmark
+    common_failure_modes:
+      - causal ambiguity
+      - large speculative diff
+      - feedback too slow for step size
+    source_support:
+      - source_id: SRC-CC
+        locator: "books/code-complete-2nd-edition-v413hav/chapters/011-chapter-5-design-in-construction.md :: Experimental Prototyping"
+        contribution: Uses bounded prototypes to answer specific design uncertainties.
+        relationship: direct_support
+      - source_id: SRC-PP
+        locator: "books/the-pragmatic-programmer/chapters/007-chapter-2-a-pragmatic-approach.md :: Tracer Bullets Don't Always Hit Their Target"
+        contribution: Treats thin integrated slices as feedback that redirects implementation.
+        relationship: corroboration
+      - source_id: SRC-REF
+        locator: "books/refactoring-improving-the-design-of-existing-code/chapters/009-chapter-5-toward-a-catalog-of-refactorings.md :: Format of the Refactorings"
+        contribution: Advocates the smallest verified structural steps and decomposition after failure.
+        relationship: corroboration
+    confidence: universal
+    roles: [coding-agent, architecture-agent, refactoring-agent, legacy-code-agent, performance-agent, debugging-and-repair-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [uncertainty, experiment, prototype, tracer, small steps, hypothesis]
+    routing:
+      activate_for_roles: [coding-agent, architecture-agent, refactoring-agent, legacy-code-agent, performance-agent, debugging-and-repair-agent]
+      activate_for_tasks: [planning, diagnosis, unfamiliar-change, refactor, optimization, integration]
+      activate_for_repository_signals: [unknown behavior, novel dependency, flaky or slow feedback, broad change]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [uncertainty, regression, causality]
+      exclude_when: [fully mechanical low-risk change with direct verification]
+      prerequisites: [a stated unknown and observation method]
+      retrieval_priority: core
+      retrieval_budget_hint: 330
+      related_concepts: [universal-reversible-reviewable-change, refactoring-small-verified-steps, debugging-hypothesis-led-investigation]
+
+  - id: universal-local-reasoning
+    title: Prefer local reasoning
+    category: universal
+    claim: Place knowledge, state, invariants, and behavior so a maintainer can understand and change one responsibility without reconstructing distant hidden state or call order.
+    decision_rule: Minimize the concepts and remote facts required for a representative change; localize an invariant with its authoritative data and hide coherent complexity behind a stable contract.
+    why_it_matters: Cognitive load and unknown dependencies dominate change risk even when code is individually readable.
+    applicable_when:
+      - selecting placement, module shape, API, state ownership, or control flow
+    required_evidence:
+      - representative change or use scenario
+      - knowledge and navigation required by callers/maintainers
+      - state, invariant, and dependency ownership
+    insufficient_evidence:
+      - physical proximity alone
+      - fewer files without less required knowledge
+      - short methods connected by opaque delegation
+    required_inputs:
+      - current dependency and knowledge map
+      - expected change axes
+    expected_outputs:
+      - localized responsibility and stable contract
+      - remaining cross-boundary obligations
+    preservation_boundaries:
+      - authoritative ownership and required cross-system contracts
+      - observability of material cost/failure semantics
+    safe_actions:
+      - co-locate state and invariant enforcement
+      - hide representation and mechanism
+      - make the main control path obvious
+    unsafe_actions:
+      - duplicate authoritative policy to avoid a dependency
+      - hide unavoidable distributed consistency
+      - add pass-through layers that increase navigation
+    common_failure_modes:
+      - message chains
+      - global mutable context
+      - temporal coupling
+      - shallow wrapper proliferation
+    conflicts:
+      - conflict-deep-modules-vs-small-units
+    source_support:
+      - source_id: SRC-APOSD
+        locator: "books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/007-2-the-nature-of-complexity.md :: 2: The Nature of Complexity"
+        contribution: Defines complexity through change amplification, cognitive load, and unknown unknowns.
+        relationship: direct_support
+      - source_id: SRC-PP
+        locator: "books/the-pragmatic-programmer/chapters/007-chapter-2-a-pragmatic-approach.md :: Orthogonality"
+        contribution: Connects independent change to localized effects and reduced coordination.
+        relationship: corroboration
+      - source_id: SRC-CC
+        locator: "books/code-complete-2nd-edition-v413hav/chapters/011-chapter-5-design-in-construction.md :: Software's Primary Technical Imperative: Managing Complexity"
+        contribution: Centers human ability to understand a bounded amount of detail during construction.
+        relationship: corroboration
+    confidence: universal
+    roles: [coding-agent, architecture-agent, refactoring-agent, legacy-code-agent, review-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [local reasoning, cognitive load, change locality, orthogonality, temporal coupling]
+    routing:
+      activate_for_roles: [coding-agent, architecture-agent, refactoring-agent, legacy-code-agent, review-agent]
+      activate_for_tasks: [placement, API-design, module-design, refactor, review]
+      activate_for_repository_signals: [message chain, global state, scattered invariant, coordinated edits]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [maintainability, correctness, change]
+      exclude_when: [a required distributed or external contract is inherently nonlocal]
+      prerequisites: [representative change scenario]
+      retrieval_priority: core
+      retrieval_budget_hint: 340
+      related_concepts: [universal-information-hiding, universal-change-amplification, architecture-change-locality-cohesion]
+
+  - id: universal-explicit-invariants
+    title: Make invariants explicit and owned
+    category: universal
+    claim: Every material invariant needs a clear owner, representation, enforcement point, failure policy, and proof mechanism proportionate to risk.
+    decision_rule: State valid and invalid states over observable data; place enforcement with the authority that can keep the rule true across all mutation paths; map it to tests, static constraints, schema rules, or monitors.
+    why_it_matters: Implicit or duplicated invariants become inconsistent, allow invalid intermediate states, and make callers coordinate hidden rules.
+    applicable_when:
+      - state, API, persistence, concurrency, domain, migration, or security rules are changed
+    required_evidence:
+      - accepted policy or current relied-upon constraint
+      - all mutation/creation paths and authority
+      - failure and recovery requirements
+    insufficient_evidence:
+      - repeated defensive code without understanding the rule
+      - an assertion that can be disabled where safety depends on it
+      - a type name with no enforcement
+    required_inputs:
+      - state model and ownership
+      - domain/operational scenarios
+    expected_outputs:
+      - invariant statement and owner
+      - enforcement and proof map
+      - intentional failure semantics
+    preservation_boundaries:
+      - public preconditions/postconditions and substitutability
+      - durable data and concurrency semantics
+    safe_actions:
+      - validated construction
+      - semantic type or schema constraint
+      - side-effect-free internal assertion plus boundary validation
+    unsafe_actions:
+      - strengthen a public precondition silently
+      - enforce one copy of a duplicated rule and leave others inconsistent
+      - mutate inside an assertion
+    common_failure_modes:
+      - two-phase initialization
+      - ambiguous sentinel state
+      - validation scattered across callers
+    source_support:
+      - source_id: SRC-PP
+        locator: "books/the-pragmatic-programmer/chapters/009-chapter-4-pragmatic-paranoia.md :: Design by Contract"
+        contribution: Treats preconditions, postconditions, and invariants as explicit program agreements.
+        relationship: direct_support
+      - source_id: SRC-CC
+        locator: "books/code-complete-2nd-edition-v413hav/chapters/014-chapter-8-defensive-programming.md :: 8.2 Assertions"
+        contribution: Separates internal invariant assertions from normal input and error handling.
+        relationship: corroboration
+      - source_id: SRC-DDD
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/007-chapter-6-the-life-cycle-of-a-domain-object.md :: Aggregates"
+        contribution: Locates transactional domain invariants within an explicit consistency boundary.
+        relationship: corroboration
+    confidence: universal
+    roles: [coding-agent, architecture-agent, domain-design-agent, refactoring-agent, legacy-code-agent, review-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [invariant, contract, assertion, invalid state, ownership, enforcement]
+    routing:
+      activate_for_roles: [coding-agent, architecture-agent, domain-design-agent, refactoring-agent, legacy-code-agent, review-agent]
+      activate_for_tasks: [state-design, API-review, migration, repair, domain-modeling]
+      activate_for_repository_signals: [repeated validation, corruption, invalid state, aggregate, schema constraint]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [correctness, data, concurrency, safety, security]
+      exclude_when: [no state or behavioral constraint is involved]
+      prerequisites: [identified authoritative owner]
+      retrieval_priority: core
+      retrieval_budget_hint: 370
+      related_concepts: [implementation-placement-by-ownership, domain-aggregate-invariant-boundary, implementation-explicit-failure-policy]
+
+  - id: universal-change-amplification
+    title: Reduce demonstrated change amplification
+    category: universal
+    claim: Structure is costly when one conceptual change repeatedly forces disproportionate, risky, or cross-owner edits; restructuring is justified only when it reduces that demonstrated amplification.
+    decision_rule: Trace representative changes and co-change; distinguish shared knowledge from generated, process, test, or requirement-driven coordination; select a boundary or abstraction only when it localizes the same future change.
+    why_it_matters: It turns vague maintainability into an inspectable relationship between structure and work.
+    applicable_when:
+      - evaluating cohesion, boundaries, duplication, technical debt, or architecture
+    required_evidence:
+      - concrete change episodes or accepted near-term change
+      - static/domain interpretation of coordinated edits
+      - predicted and later observed pressure reduction
+    insufficient_evidence:
+      - churn alone
+      - one large commit or bulk rename
+      - file size or dependency count
+    required_inputs:
+      - change history and current structure
+      - concept/invariant ownership
+    expected_outputs:
+      - amplification map and cause
+      - no-change, localize, merge, split, or abstract decision
+    preservation_boundaries:
+      - behavior and ownership while relocating structure
+      - generated and test/application relationships interpreted correctly
+    safe_actions:
+      - filter mechanical history
+      - inspect surprising co-change
+      - replay the motivating change after restructuring
+    unsafe_actions:
+      - turn a heat map directly into a refactoring plan
+      - merge all co-changing code
+      - blame authors or teams using history metrics
+    common_failure_modes:
+      - false temporal coupling
+      - shared common module becoming a dependency magnet
+      - stable abstraction that does not match actual change axes
+    source_support:
+      - source_id: SRC-APOSD
+        locator: "books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/007-2-the-nature-of-complexity.md :: 2: The Nature of Complexity"
+        contribution: Names change amplification as a primary symptom of software complexity.
+        relationship: direct_support
+      - source_id: SRC-SDX
+        locator: "books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/008-chapter-3-coupling-in-time-a-heuristic-for-the-concept-of-surprise.md :: What Is Change Coupling?"
+        contribution: Supplies historical evidence for repeated coordinated change invisible in static code.
+        relationship: corroboration
+      - source_id: SRC-CA
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/023-chapter-13-component-cohesion.md :: THE COMMON CLOSURE PRINCIPLE"
+        contribution: Connects component cohesion to grouping elements that change for the same reasons.
+        relationship: corroboration
+    confidence: universal
+    roles: [coding-agent, architecture-agent, refactoring-agent, review-agent, repository-assessment-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [change amplification, shotgun surgery, co-change, temporal coupling, cohesion]
+    routing:
+      activate_for_roles: [coding-agent, architecture-agent, refactoring-agent, review-agent, repository-assessment-agent]
+      activate_for_tasks: [assess-structure, select-boundary, evaluate-duplication, refactor]
+      activate_for_repository_signals: [repeated cross-file edit, co-change, shotgun surgery, coordination bottleneck]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [maintainability, change, coordination]
+      exclude_when: [history is missing and no concrete change episodes can be established]
+      prerequisites: [filtered representative change evidence]
+      retrieval_priority: core
+      retrieval_budget_hint: 380
+      related_concepts: [universal-local-reasoning, implementation-duplication-as-evidence, refactoring-cochange-evidence]
+
+  - id: universal-information-hiding
+    title: Hide volatile decisions behind coherent contracts
+    category: universal
+    claim: Information hiding succeeds when one module owns a design decision or representation and callers depend on stable meaning rather than mechanics; access modifiers alone are insufficient.
+    decision_rule: List facts callers must know and decisions they should not; move representation, order, defaults, and mechanism behind the owner unless correctness, cost, failure, security, or operation requires exposure.
+    why_it_matters: Leaked knowledge creates coordinated edits and expands the mental model required for local work.
+    applicable_when:
+      - designing modules, APIs, data representations, adapters, or configuration
+    required_evidence:
+      - decision owner and volatility
+      - actual caller needs
+      - leaked knowledge or coordinated change
+      - material cost/failure semantics callers require
+    insufficient_evidence:
+      - private fields and getters
+      - a facade with backchannels
+      - a directory or interface boundary alone
+    required_inputs:
+      - caller use cases
+      - representation and change history
+    expected_outputs:
+      - hidden/exposed knowledge inventory
+      - coherent semantic contract and owner
+    preservation_boundaries:
+      - necessary operational visibility
+      - public compatibility and data fidelity
+      - caller-owned policy
+    safe_actions:
+      - centralize format and order logic
+      - expose semantic operations
+      - keep framework or device types at an edge when policy is independent
+    unsafe_actions:
+      - hide caller-relevant failure or durability
+      - duplicate policy in callers
+      - expose raw representation through routine getters
+    common_failure_modes:
+      - privacy mistaken for hiding
+      - temporal decomposition
+      - configuration leakage
+    source_support:
+      - source_id: SRC-APOSD
+        locator: "books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/010-5-information-hiding-and-leakage.md :: 5: Information Hiding (and Leakage)"
+        contribution: Defines information leakage and decision ownership as central complexity mechanisms.
+        relationship: direct_support
+      - source_id: SRC-CC
+        locator: "books/code-complete-2nd-edition-v413hav/chapters/011-chapter-5-design-in-construction.md :: Hide Secrets (Information Hiding)"
+        contribution: Uses hidden design decisions to guide construction decomposition.
+        relationship: corroboration
+      - source_id: SRC-CA
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/028-chapter-17-boundaries-drawing-lines.md :: WHAT ABOUT INPUT AND OUTPUT?"
+        contribution: Applies information direction to policy and mechanism boundaries.
+        relationship: corroboration
+    confidence: universal
+    roles: [coding-agent, architecture-agent, refactoring-agent, review-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [information hiding, leakage, representation, encapsulation, decision owner]
+    routing:
+      activate_for_roles: [coding-agent, architecture-agent, refactoring-agent, review-agent]
+      activate_for_tasks: [module-design, API-design, placement, boundary-review, refactor]
+      activate_for_repository_signals: [raw representation exposure, duplicated format logic, pass-through layer, configuration leakage]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [maintainability, compatibility, correctness]
+      exclude_when: [the information is explicitly caller-owned policy]
+      prerequisites: [caller needs and decision owner]
+      retrieval_priority: core
+      retrieval_budget_hint: 360
+      related_concepts: [universal-local-reasoning, universal-earned-abstraction, architecture-change-locality-cohesion]
+
+  - id: universal-earned-abstraction
+    title: Earn abstractions through demonstrated pressure
+    category: universal
+    claim: Introduce or retain an abstraction only when it hides coherent knowledge or mechanism and reduces total caller reasoning, coordinated change, or substitution cost more than its interface and indirection add.
+    decision_rule: Identify stable meaning and actual variation, compare direct code, duplication, composition, helper, configuration, and abstraction, and count concepts, navigation, errors, lifecycle, testing, and operational cost on both sides.
+    why_it_matters: An abstraction can create local reasoning, but a shallow or speculative one freezes the wrong model and adds permanent interface burden.
+    applicable_when:
+      - proposing helper, module, interface, base class, pattern, plugin, or framework
+      - evaluating duplication or multiple implementations
+    required_evidence:
+      - coherent shared meaning or real boundary pressure
+      - current consumers or demonstrated variation
+      - hidden decision and net cost comparison
+    insufficient_evidence:
+      - two similar snippets
+      - one implementation plus a mock
+      - hypothetical extensibility or reuse
+      - desire for symmetry or decoupling without a force
+    required_inputs:
+      - concrete examples and callers
+      - variation/change history and contract sketch
+    expected_outputs:
+      - earned, not-earned, or contested decision
+      - stable contract, variation axis, and removal trigger
+    preservation_boundaries:
+      - behavior, errors, lifecycle, cost, and ownership
+      - no semantic repair hidden in extraction
+    safe_actions:
+      - private intention-revealing helper
+      - consumer-owned narrow interface for genuine substitution
+      - module hiding volatile representation
+    unsafe_actions:
+      - generic framework before repeated use
+      - pass-through wrapper with no policy or hiding
+      - parameter/flag explosion to force examples together
+    common_failure_modes:
+      - speculative generality
+      - wrong commonality
+      - leaky abstraction
+      - mock-shaped production API
+    conflicts:
+      - conflict-abstraction-vs-duplication
+      - conflict-performance-specialization-vs-abstraction
+    source_support:
+      - source_id: SRC-APOSD
+        locator: "books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/009-4-modules-should-be-deep.md :: 4: Modules Should Be Deep"
+        contribution: Evaluates abstraction by interface burden versus hidden useful complexity.
+        relationship: direct_support
+      - source_id: SRC-CC
+        locator: "books/code-complete-2nd-edition-v413hav/chapters/013-chapter-7-high-quality-routines.md :: 7.1 Valid Reasons to Create a Routine"
+        contribution: Grounds extraction in abstraction, readability, and change rather than size alone.
+        relationship: corroboration
+      - source_id: SRC-PP
+        locator: "books/the-pragmatic-programmer/chapters/007-chapter-2-a-pragmatic-approach.md :: The Evils of Duplication"
+        contribution: Refines abstraction pressure as duplicated authoritative knowledge rather than text alone.
+        relationship: corroboration
+    confidence: universal
+    roles: [coding-agent, architecture-agent, refactoring-agent, review-agent, performance-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [earned abstraction, interface, indirection, reuse, speculative generality, deep module]
+    routing:
+      activate_for_roles: [coding-agent, architecture-agent, refactoring-agent, review-agent, performance-agent]
+      activate_for_tasks: [add-interface, extract-abstraction, evaluate-duplication, framework-design]
+      activate_for_repository_signals: [multiple implementations, duplicated rule, wrapper layer, plugin request]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [maintainability, API, architecture, performance]
+      exclude_when: [generated repetition is managed authoritatively by a generator]
+      prerequisites: [proc-determine-abstraction-earned]
+      retrieval_priority: core
+      retrieval_budget_hint: 420
+      related_concepts: [universal-information-hiding, implementation-duplication-as-evidence, architecture-earned-boundary]
+
+  - id: universal-separate-semantic-structural-change
+    title: Separate semantic and structural work
+    category: universal
+    claim: Feature behavior, defect repair, refactoring, architecture, migration, optimization, cleanup, deletion, and dependency changes remain distinct checkpoints even when one task needs several.
+    decision_rule: Classify each edit by intended observable effect; preserve the failing reproducer or baseline through preparation; make semantic effect appear in an isolated checkpoint and justify follow-up structure independently.
+    why_it_matters: Mixed changes make causality, review, rollback, benchmark interpretation, and authority impossible to audit.
+    applicable_when:
+      - a task combines behavior and structure or spans change types
+    required_evidence:
+      - per-edit change classification
+      - preservation boundary and semantic authority
+      - checkpoint verification
+    insufficient_evidence:
+      - one final green test suite
+      - all changes touch the same files
+      - structure also improved while fixing the bug
+    required_inputs:
+      - intended effect and proposed diff sequence
+      - baseline or reproducer
+    expected_outputs:
+      - separate checkpoints and proof for each change type
+      - explicit composite authority when indivisible
+    preservation_boundaries:
+      - causal evidence for repair/optimization
+      - reviewable behavior delta
+      - rollback and migration states
+    safe_actions:
+      - mechanical preparation followed by an isolated semantic edit
+      - follow-up refactoring after repair verification
+      - separate dependency update
+    unsafe_actions:
+      - fix a defect during nominal refactoring
+      - combine broad cleanup with optimization comparison
+      - delete old migration path before transition acceptance
+    common_failure_modes:
+      - behavior-changing refactor
+      - repair hidden in move/rename
+      - untraceable benchmark or regression
+    source_support:
+      - source_id: SRC-REF
+        locator: "books/refactoring-improving-the-design-of-existing-code/chapters/006-chapter-2-principles-in-refactoring.md :: The Two Hats"
+        contribution: Distinguishes adding function from restructuring and advocates not doing both at the same instant.
+        relationship: direct_support
+      - source_id: SRC-WELC
+        locator: "books/programming-working-effectively-with-legacy-code/chapters/008-chapter-1-changing-software.md :: Four Reasons to Change Software"
+        contribution: Distinguishes feature, repair, design, and optimization intents by behavior preservation.
+        relationship: corroboration
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/014-chapter-10-optimization-examples.md :: Optimize One Thing at a Time"
+        contribution: Preserves causal evidence by isolating one performance transformation.
+        relationship: corroboration
+    confidence: universal
+    roles: [coding-agent, refactoring-agent, legacy-code-agent, performance-agent, debugging-and-repair-agent, review-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [two hats, semantic change, structural change, change classification, checkpoint]
+    routing:
+      activate_for_roles: [coding-agent, refactoring-agent, legacy-code-agent, performance-agent, debugging-and-repair-agent, review-agent]
+      activate_for_tasks: [repair, refactor, optimize, migrate, upgrade, composite-change]
+      activate_for_repository_signals: [mixed diff, behavior plus moves, benchmark plus cleanup, migration plus deletion]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [correctness, causality, review, rollback]
+      exclude_when: [a single mechanical change has no semantic dimension]
+      prerequisites: [change-type classification]
+      retrieval_priority: core
+      retrieval_budget_hint: 340
+      related_concepts: [universal-preserve-behavior-by-default, refactoring-behavior-preservation, debugging-causal-repair]
+
+  - id: universal-reversible-reviewable-change
+    title: Prefer reversible, reviewable changes
+    category: universal
+    claim: Choose the smallest coherent step that can be independently understood, verified, and reversed or safely advanced.
+    decision_rule: For each step, specify expected effect, preserved properties, feedback, checkpoint, and rollback/safe-forward; split when a reviewer cannot attribute outcomes or a failure cannot be localized.
+    why_it_matters: Reversibility preserves options and reviewability limits simultaneous uncertainty and blast radius.
+    applicable_when:
+      - implementation, refactoring, migration, optimization, architecture evolution, or operational hardening
+    required_evidence:
+      - coherent checkpoint and exact verification
+      - rollback or safe-forward route
+      - compatibility/intermediate-state analysis
+    insufficient_evidence:
+      - a large final patch can be reverted wholesale
+      - all steps are described in prose but not independently valid
+    required_inputs:
+      - sequence, feedback cadence, and target state
+    expected_outputs:
+      - checkpointed plan or diff
+      - stop and recovery conditions
+    preservation_boundaries:
+      - no long-lived invalid intermediate state
+      - required atomicity and compatibility window
+    safe_actions:
+      - thin vertical slice
+      - one mechanical transformation at a time
+      - staged prepare, transition, verify, retire migration
+    unsafe_actions:
+      - big-bang rewrite without necessity
+      - irreversible data or public change without rehearsal
+      - unrelated churn that obscures review
+    common_failure_modes:
+      - incomplete intermediate state
+      - rollback that cannot restore data semantics
+      - too-slow feedback for step size
+    source_support:
+      - source_id: SRC-PP
+        locator: "books/the-pragmatic-programmer/chapters/007-chapter-2-a-pragmatic-approach.md :: Reversibility"
+        contribution: Treats non-final decisions and replaceable choices as protection against uncertainty.
+        relationship: direct_support
+      - source_id: SRC-REF
+        locator: "books/refactoring-improving-the-design-of-existing-code/chapters/009-chapter-5-toward-a-catalog-of-refactorings.md :: Format of the Refactorings"
+        contribution: Provides small mechanics with verification after each step.
+        relationship: corroboration
+      - source_id: SRC-FSA
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/026-chapter-19-architecture-decisions.md :: Covering Your Assets Anti-Pattern"
+        contribution: Connects architecture decision timing and documentation to reversibility and evidence.
+        relationship: corroboration
+    confidence: universal
+    roles: [coding-agent, architecture-agent, refactoring-agent, legacy-code-agent, performance-agent, debugging-and-repair-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [reversible, reviewable, checkpoint, rollback, safe-forward, incremental]
+    routing:
+      activate_for_roles: [coding-agent, architecture-agent, refactoring-agent, legacy-code-agent, performance-agent, debugging-and-repair-agent]
+      activate_for_tasks: [plan-change, migrate, refactor, optimize, architecture-evolution]
+      activate_for_repository_signals: [large diff, irreversible data, compatibility transition, slow feedback]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [all]
+      exclude_when: [external atomicity requires one indivisible transaction and that requirement is evidenced]
+      prerequisites: [preservation boundary and verification path]
+      retrieval_priority: core
+      retrieval_budget_hint: 350
+      related_concepts: [universal-minimize-simultaneous-uncertainty, universal-preserve-behavior-by-default, performance-target-based-stop]
+
+  - id: universal-measure-claimed-improvement
+    title: Measure the improvement that is claimed
+    category: universal
+    claim: A claim that work improves performance, maintainability, reliability, architecture fitness, or process needs a preserved baseline and evidence on that same dimension.
+    decision_rule: Define the observable outcome before intervention, choose a representative direct measure or defensible proxy, compare under compatible conditions, and bound the conclusion to the evidence.
+    why_it_matters: A reduced file size, complexity score, or benchmark can move while the actual change, review, user, or operational cost stays the same or worsens.
+    applicable_when:
+      - accepting refactoring, optimization, architecture, hardening, or process improvement
+    required_evidence:
+      - pre-change baseline and target
+      - representative comparison or replayed motivating scenario
+      - semantic preservation and confound analysis
+    insufficient_evidence:
+      - aesthetic improvement
+      - metric decrease detached from outcome
+      - one favorable result or self-reported ease
+    required_inputs:
+      - named improvement and baseline
+      - candidate result and context
+    expected_outputs:
+      - verified, not verified, regressed, or inconclusive disposition
+      - retained regression/fitness check where stable
+    preservation_boundaries:
+      - measurement semantics and representative population
+      - unmeasured tradeoffs reported explicitly
+    safe_actions:
+      - replay the change task that motivated refactoring
+      - use fitness functions for accepted architecture characteristics
+      - retain benchmark raw results
+    unsafe_actions:
+      - select a proxy after seeing results
+      - claim global benefit from a local metric
+      - suppress contradictory evidence
+    common_failure_modes:
+      - Goodhart's law
+      - benchmark overfit
+      - refactoring success defined by line count
+    source_support:
+      - source_id: SRC-SDX
+        locator: "books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/007-chapter-2-identify-code-with-high-interest-rates.md :: Follow Up on Improvements to Rails"
+        contribution: Uses post-refactoring trends to check whether change pressure actually improves.
+        relationship: direct_support
+      - source_id: SRC-FSA
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/011-chapter-6-measuring-and-governing-architecture-characteristics.md :: Fitness Functions"
+        contribution: Makes accepted architecture characteristics continuously testable.
+        relationship: corroboration
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/012-chapter-8-benchmarking-versus-stress-and-load-tests.md :: Reliability of Experiments"
+        contribution: Establishes controlled repeatable comparison for performance improvement.
+        relationship: corroboration
+    confidence: universal
+    roles: [coding-agent, architecture-agent, refactoring-agent, performance-agent, review-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [measure improvement, baseline, fitness function, benefit proof, regression]
+    routing:
+      activate_for_roles: [coding-agent, architecture-agent, refactoring-agent, performance-agent, review-agent]
+      activate_for_tasks: [verify-refactor, verify-optimization, architecture-fitness, accept-improvement]
+      activate_for_repository_signals: [improvement claim, metric delta, completed campaign]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [evidence-quality, maintainability, performance, reliability]
+      exclude_when: [the work makes no improvement claim beyond implementing an accepted behavior]
+      prerequisites: [a named outcome and preserved baseline]
+      retrieval_priority: core
+      retrieval_budget_hint: 320
+      related_concepts: [performance-representative-baseline, refactoring-demonstrated-pressure, architecture-feedback-loop, architecture-fitness-functions]
+
+  - id: universal-no-change-option
+    title: Keep no change as a valid decision
+    category: universal
+    claim: Leave code or architecture unchanged when demonstrated pressure and expected benefit do not exceed intervention, migration, indirection, learning, and operational cost.
+    decision_rule: Compare no change, observe/protect, local change, and broader change; check present cost, expected future work, latent high-impact risk, preservation difficulty, and reversal cost; record a concrete revisit trigger.
+    why_it_matters: Engineering capacity and change risk are finite, and unattractive stable code can be safer than an unearned redesign.
+    applicable_when:
+      - assessing refactoring, architecture, modernization, abstraction, or optimization
+    required_evidence:
+      - actual current cost/risk or absence within a stated interval
+      - expected future change from accepted plans
+      - latent security, safety, data, durability, and compatibility check
+      - intervention cost and uncertainty
+    insufficient_evidence:
+      - code is old or quiet and therefore safe
+      - code looks bad and therefore must change
+      - target design is fashionable or aesthetically cleaner
+    required_inputs:
+      - problem claim and alternatives
+      - risk and expected change horizon
+    expected_outputs:
+      - leave, monitor, protect, localize, or change disposition
+      - revisit trigger and owner
+    preservation_boundaries:
+      - latent high-impact risks are not dismissed because churn is low
+      - quiet external consumers and missing history remain uncertainty
+    safe_actions:
+      - add focused characterization or monitoring instead of restructuring
+      - record a trigger such as next feature, incident, or threshold
+      - choose deletion only after use/authority proof
+    unsafe_actions:
+      - defer an accepted critical risk indefinitely
+      - use no change as an excuse to avoid required behavior
+      - call code dead from static evidence alone
+    common_failure_modes:
+      - aesthetic refactoring
+      - modernization theater
+      - stable code assumed safe or used
+    conflicts:
+      - conflict-refactor-now-vs-leave-alone
+      - conflict-upfront-vs-evolutionary-architecture
+    source_support:
+      - source_id: SRC-REF
+        locator: "books/refactoring-improving-the-design-of-existing-code/chapters/006-chapter-2-principles-in-refactoring.md :: When Shouldn't You Refactor?"
+        contribution: Explicitly retains cases where refactoring is not the appropriate action.
+        relationship: direct_support
+      - source_id: SRC-SDX
+        locator: "books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/006-chapter-1-why-technical-debt-isn-t-technical.md :: Interest Rate Is a Function of Time"
+        contribution: Separates unattractive static code from code imposing active maintenance interest.
+        relationship: corroboration
+      - source_id: SRC-APOSD
+        locator: "books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/026-21-decide-what-matters.md :: 21: Decide What Matters"
+        contribution: Prioritizes design attention on consequential complexity instead of uniform perfection.
+        relationship: corroboration
+    confidence: universal
+    roles: [architecture-agent, refactoring-agent, performance-agent, review-agent, repository-assessment-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [leave code alone, no change, defer, monitor, unattractive stable code]
+    routing:
+      activate_for_roles: [architecture-agent, refactoring-agent, performance-agent, review-agent, repository-assessment-agent]
+      activate_for_tasks: [assess-refactoring, architecture-review, modernization, optimization-triage]
+      activate_for_repository_signals: [stable old code, low churn, broad redesign proposal, no measured bottleneck]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [maintainability, regression, opportunity-cost]
+      exclude_when: [an accepted requirement or intolerable risk mandates action]
+      prerequisites: [proc-decide-leave-code-alone]
+      retrieval_priority: core
+      retrieval_budget_hint: 350
+      related_concepts: [universal-evidence-before-intervention, refactoring-leave-unattractive-code, performance-target-based-stop]

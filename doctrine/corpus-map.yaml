@@ -1,0 +1,269 @@
+schema_version: agent-doctrine-corpus-map/1
+precedence_note: Source descriptions characterize evidence in this corpus; they do not grant a source authority over repository contracts, current runtime facts, or authorized requirements.
+sources:
+  - source_id: SRC-CC
+    primary_domain: Construction craft across detailed design, coding, developer testing, debugging, integration, refactoring, and tuning.
+    strongest_contributions:
+      - broad operational inventory of implementation decisions and readiness checks
+      - complexity and human comprehension as cross-cutting construction criteria
+      - defensive boundaries, complementary defect detection, scientific debugging, and measured tuning
+    contextual_assumptions:
+      - primarily imperative and object-oriented commercial software
+      - recognizable requirements and architectural inputs exist before construction
+      - teams can establish and enforce project conventions
+    limitations:
+      - Published in 2004; languages, compiler behavior, tools, hardware, and several cited studies have aged.
+      - Numerical limits and defect percentages are investigation prompts, not portable gates.
+      - Construction evidence does not grant product, security, operational, or architecture authority.
+    known_tensions:
+      - Routine extraction guidance can conflict with SRC-APOSD's interface-cost and deep-module reasoning.
+      - Broad duplication warnings require narrowing to duplicated knowledge or coupled change.
+      - Anticipating change can become speculation unless bounded by current evidence.
+    likely_agent_roles: [coding-agent, review-agent, debugging-and-repair-agent, refactoring-agent, performance-agent, repository-assessment-agent]
+    concepts_worth_mining: [implementation-readiness, local-reasoning, information-hiding, explicit-contract, defensive-boundary, scientific-debugging, incremental-integration, measured-optimization]
+    coverage_ledger: doctrine/_work/extractions/implementation-sources.md#complete-chapter-coverage-ledger
+
+  - source_id: SRC-PP
+    primary_domain: Context-sensitive practitioner conduct and cross-cutting implementation practices.
+    strongest_contributions:
+      - DRY as authoritative knowledge ownership rather than visual similarity
+      - orthogonality as change locality and reversibility as option preservation
+      - contracts, invariants, resource ownership, systematic debugging, testability, and automation
+    contextual_assumptions:
+      - developers have latitude over tools and implementation practices
+      - late-1990s C, C++, Java, Unix, client-server, and enterprise examples
+      - advice is a contextual collection of tips rather than a closed method
+    limitations:
+      - Tooling, middleware, GUI, exception, and deployment examples are historically dated.
+      - Broken-window, metadata, and concurrency rhetoric is not universal evidence.
+      - Refactor-sooner guidance still requires pressure, protection, scope, and authority.
+    known_tensions:
+      - Law-of-Demeter wrappers can create pass-through interfaces criticized by SRC-APOSD.
+      - Configurability can shift complexity into a public interface rather than hide it.
+      - Test-led design and exception guidance conflict contextually with SRC-APOSD.
+    likely_agent_roles: [coding-agent, debugging-and-repair-agent, review-agent, legacy-code-agent, repository-assessment-agent]
+    concepts_worth_mining: [knowledge-authority, change-locality, reversible-choice, tracer-bullet, disposable-prototype, invariant, resource-ownership, deliberate-programming, stop-rule]
+    coverage_ledger: doctrine/_work/extractions/implementation-sources.md#complete-chapter-coverage-ledger
+
+  - source_id: SRC-APOSD
+    primary_domain: Reducing software complexity through deep modules, information hiding, simple interfaces, and reader-centered design.
+    strongest_contributions:
+      - operational complexity model of change amplification, cognitive load, and unknown unknowns
+      - module depth as interface burden compared with hidden benefit
+      - information-leakage diagnostics, current-needs generality, and caller simplification
+      - criteria for keeping code together or apart and comparing alternative designs
+    contextual_assumptions:
+      - long-lived modular systems where interface and implementation can be separated
+      - changeability and reader comprehension are important quality attributes
+      - examples emphasize Java, C++, Tcl, and systems or infrastructure code
+    limitations:
+      - Deepness has no universal scalar and can conceal cohesion, security, or operational concerns if applied mechanically.
+      - Claimed strategic-investment payback is explicitly opinion rather than empirical proof.
+      - Error elimination and comments-first are contextual techniques, not universal workflows.
+    known_tensions:
+      - Challenges rigid small-method/class and comments-as-failure doctrines.
+      - Is more skeptical than SRC-PP and SRC-CC about wrappers, configuration, TDD-led structure, and inheritance.
+      - Pulling complexity downward is wrong when the complexity belongs to caller policy or authority.
+    likely_agent_roles: [coding-agent, architecture-agent, review-agent, refactoring-agent, performance-agent]
+    concepts_worth_mining: [change-amplification, cognitive-load, deep-module, interface-burden, information-leakage, semantic-cohesion, design-alternatives, obviousness]
+    coverage_ledger: doctrine/_work/extractions/implementation-sources.md#complete-chapter-coverage-ledger
+
+  - source_id: SRC-CA
+    primary_domain: Dependency structure and boundary design for maintainable systems.
+    strongest_contributions:
+      - connects source dependency direction to protection from change
+      - distinguishes source, component, process, and service boundaries
+      - identifies a cost gradient from facade to full boundary
+      - treats deployment, operation, development, and maintenance as distinct drivers
+    contextual_assumptions:
+      - primarily object-oriented and statically typed enterprise or embedded systems
+      - high-level policy can be identified and source boundaries can be enforced
+      - changeability is a dominant economic concern
+    limitations:
+      - Strong claims about database, web, and framework details underweight data, security, and operational forces.
+      - Component metrics and universal dependency rhetoric are heuristics, not decisions.
+      - Much support is practitioner argument and historical examples.
+    known_tensions:
+      - SRC-FSA gives operational characteristics and data topology more structural weight.
+      - SRC-DDD permits multiple locally valid models instead of one inward-layer scheme.
+      - Its own examples preserve partial boundaries and expose overarchitecture failures.
+    likely_agent_roles: [architecture-agent, coding-agent, review-agent, refactoring-agent]
+    concepts_worth_mining: [dependency-direction, policy-detail-separation, boundary-cost-gradient, partial-boundary, composition-root, compiler-enforced-constraint, option-preservation]
+    coverage_ledger: doctrine/_work/extractions/architecture-domain-sources.md#complete-chapter-coverage-ledger
+
+  - source_id: SRC-FSA
+    primary_domain: Selection and governance of architectural characteristics, styles, risks, and decisions.
+    strongest_contributions:
+      - explicit trade-off analysis tied to business and operational drivers
+      - measurable architecture characteristics and fitness functions
+      - distributed-system cost inventory and architecture-style selection procedure
+      - iterative decision, risk, and governance practices
+    contextual_assumptions:
+      - 2020-era commercial systems with CI/CD, monitoring, and organizational agency
+      - architect and engineering roles collaborate continuously
+      - many examples assume Java, .NET, cloud, and DevOps capability
+    limitations:
+      - Style ratings compress context and cannot substitute for repository evidence.
+      - Cloud, container, and product examples drift with time.
+      - Security and data architecture receive less depth than their operational importance may require.
+    known_tensions:
+      - Context-specific tradeoffs temper SRC-CA's more timeless framing.
+      - Role separation differs from the tighter model/code feedback emphasized by SRC-DDD.
+      - Default synchronous interaction conflicts with event- or workload-specific designs.
+    likely_agent_roles: [architecture-agent, review-agent, repository-assessment-agent, performance-agent]
+    concepts_worth_mining: [architectural-driver, measurable-characteristic, fitness-function, evolutionary-architecture, distributed-cost, ADR, risk-storming]
+    coverage_ledger: doctrine/_work/extractions/architecture-domain-sources.md#complete-chapter-coverage-ledger
+
+  - source_id: SRC-DDD
+    primary_domain: Modeling complex business domains while maintaining model integrity across code, teams, and boundaries.
+    strongest_contributions:
+      - model and implementation as one learning feedback system
+      - ubiquitous language as an executable design instrument
+      - identity, value, service, aggregate, repository, and factory decision rules
+      - bounded contexts, context relationships, anticorruption, and core-domain focus
+    contextual_assumptions:
+      - a knowledge-rich domain with sustained expert access
+      - skilled developers can iteratively model and express the model in code
+      - examples largely assume object-oriented enterprise applications
+    limitations:
+      - 2003 Java/J2EE, XML, CORBA, and relational-mapping details are dated.
+      - Distributed consistency requires reinterpretation of some transaction guidance.
+      - The source itself contraindicates rich domain modeling for simple CRUD and weak modeling capability.
+    known_tensions:
+      - Domain fidelity yields to measured performance, framework reality, and translation cost when necessary.
+      - Bounded contexts are not automatic service deployment boundaries.
+      - Unified models and mature frameworks can be valid despite current service fashion.
+    likely_agent_roles: [architecture-agent, coding-agent, review-agent, legacy-code-agent, refactoring-agent]
+    concepts_worth_mining: [ubiquitous-language, model-implementation-feedback, aggregate-invariant, bounded-context, context-map, anticorruption-layer, core-domain, evolving-order]
+    coverage_ledger: doctrine/_work/extractions/architecture-domain-sources.md#complete-chapter-coverage-ledger
+
+  - source_id: SRC-REF
+    primary_domain: Behavior-preserving structural improvement through small explicit transformations.
+    strongest_contributions:
+      - operational distinction between refactoring and behavior change
+      - tiny compile-and-test-backed steps with stop and reversal points
+      - smell catalog as transformation hypotheses and responsibility movement cues
+      - explicit mechanics and constraints around published interfaces and databases
+    contextual_assumptions:
+      - a mostly working program with fast automated tests and compiler or tool support
+      - late-1990s Java and Smalltalk object-oriented structures
+      - control over at least some callers
+    limitations:
+      - Catalog names, mechanics, and object/polymorphism destinations are historically and language specific.
+      - A catalog recipe never establishes that a repository needs the transformation.
+      - Small-class/method preferences must be balanced against locality and module depth.
+    known_tensions:
+      - Opportunistic continuous refactoring versus evidence-ranked campaigns.
+      - Indirection benefits versus interface and navigation cost.
+      - Comment smells versus comments that preserve rationale, contract, or non-obvious constraints.
+    likely_agent_roles: [refactoring-agent, coding-agent, review-agent, legacy-code-agent, debugging-and-repair-agent]
+    concepts_worth_mining: [refactoring-definition, two-hats, preservation-boundary, short-verified-step, smell-hypothesis, public-boundary-migration, campaign-direction]
+    coverage_ledger: doctrine/_work/extractions/change-legacy-sources.md#complete-chapter-coverage-ledger
+
+  - source_id: SRC-WELC
+    primary_domain: Safe modification when behavior is poorly characterized and dependencies obstruct local feedback.
+    strongest_contributions:
+      - cover-and-modify change algorithm and tests of observed behavior
+      - seams, enabling points, sensing, separation, and effect reasoning
+      - incremental dependency breaking and deadline-pressure adaptations
+      - bounded last-resort editing discipline where protection cannot yet exist
+    contextual_assumptions:
+      - a valuable existing system with incomplete tests and required change
+      - 2004-era C++, Java, C#, C, compiler, preprocessor, and linker contexts
+      - some dependency interception is technically and organizationally possible
+    limitations:
+      - Code-without-tests is an operational lens, not an exhaustive legacy definition.
+      - The source's unit-test boundary is narrower than contemporary usage.
+      - Testability does not justify permanent public exposure of internals.
+    known_tensions:
+      - Protection versus encapsulation and temporary seam quality versus durable design.
+      - Compiler-supported enabling edits versus tests-before-change.
+      - Sprout or wrap speed versus integration completeness.
+    likely_agent_roles: [legacy-code-agent, debugging-and-repair-agent, refactoring-agent, coding-agent, repository-assessment-agent]
+    concepts_worth_mining: [characterization-surface, dependency-seam, enabling-point, sensing, effect-surface, pinch-point, temporary-scaffolding, scratch-refactoring]
+    coverage_ledger: doctrine/_work/extractions/change-legacy-sources.md#complete-chapter-coverage-ledger
+
+  - source_id: SRC-SDX
+    primary_domain: Historical, hotspot, and sociotechnical evidence for prioritizing engineering investigation.
+    strongest_contributions:
+      - combines change frequency and reasoning cost rather than equating ugliness with debt
+      - treats co-change, age, ownership, and congestion as hypotheses
+      - narrows large systems to inspectable candidates and sizes splinter campaigns
+      - makes history-data fitness an explicit proof obligation
+    contextual_assumptions:
+      - meaningful version history with usable file identity and enough representative commits
+      - domain experts can inspect candidates selected by quantitative signals
+      - repository history approximates the logical system under assessment
+    limitations:
+      - Case studies and thresholds do not establish causation or portable numeric gates.
+      - LOC and complexity proxies are language- and style-sensitive.
+      - Pairing, aliases, squashes, generated code, copied history, and reorganization bias author data.
+    known_tensions:
+      - Hotspot-ranked investment versus opportunistic continuous refactoring.
+      - Stable old code as low priority versus latent risk or dead-code concerns.
+      - Team ownership boundaries versus broad knowledge and logical-system boundaries.
+    likely_agent_roles: [repository-assessment-agent, refactoring-agent, architecture-agent, review-agent, legacy-code-agent]
+    concepts_worth_mining: [change-pressure, hotspot, co-change, code-age, complexity-trend, congestion, data-fitness, splinter-campaign, relative-warning]
+    coverage_ledger: doctrine/_work/extractions/change-legacy-sources.md#complete-chapter-coverage-ledger
+
+  - source_id: SRC-FP
+    primary_domain: Python implementation craft across data models, protocols, typing, ownership, resources, concurrency, and metaprogramming.
+    strongest_contributions:
+      - operational use of Python protocols and representation choices
+      - explicit runtime-versus-static boundaries and ownership/aliasing hazards
+      - graduated alternatives among functions, classes, protocols, ABCs, inheritance, generators, and dynamic mechanisms
+      - idiomatic interoperability constrained by actual repository needs
+    contextual_assumptions:
+      - Python 3.9 and 3.10 era, often CPython
+      - developers can inspect standard-library and runtime behavior
+      - examples are predominantly pedagogical rather than workload evidence
+    limitations:
+      - Early-release material and runtime, typing, GIL, coroutine, and cache details are version sensitive.
+      - Current interpreter matrix and official documentation outrank the text.
+      - Idiom alone never establishes migration or public-API authority.
+    known_tensions:
+      - Duck typing versus static or fail-fast guarantees.
+      - Dynamic mechanisms versus explicit control flow.
+      - Streaming, slots, views, caching, and concurrency versus lifetime or semantic narrowing.
+    likely_agent_roles: [coding-agent, review-agent, debugging-and-repair-agent, performance-agent, legacy-code-agent, repository-assessment-agent]
+    concepts_worth_mining: [protocol-conformance, representation-fit, mutable-ownership, encoding-boundary, runtime-validation, minimal-protocol, deterministic-cleanup, streaming, bounded-async, dynamic-mechanism-escalation]
+    coverage_ledger: doctrine/_work/extractions/language-performance-sources.md#complete-chapter-coverage-ledger
+
+  - source_id: SRC-EGO
+    primary_domain: Evidence-driven performance engineering with Go-specific runtime, profiling, allocation, concurrency, and lifecycle mechanics.
+    strongest_contributions:
+      - workload, resource, and percentile-specific performance objectives
+      - reproducible test, benchmark, profile, single-change, and remeasure loop
+      - measurement-semantics and benchmark-level distinctions
+      - late, evidence-earned concurrency, pooling, unsafe conversion, and runtime tuning
+    contextual_assumptions:
+      - Go 1.18+ circa 2022 and observable service or systems workloads
+      - benchmark artifacts and profiles can be retained and compared
+      - examples often assume Linux, containers, Prometheus, and pprof
+    limitations:
+      - Compiler, runtime, container, GC, and standard-library behavior drifts.
+      - Hardware figures and controlled examples do not generalize automatically.
+      - Repository toolchain and representative workload evidence remain mandatory.
+    known_tensions:
+      - Readability and general abstractions versus specialized hot paths.
+      - Microbenchmark wins versus macro memory, GC, or operational regressions.
+      - Concurrency throughput versus scheduling, coordination, and nondeterminism costs.
+    likely_agent_roles: [performance-agent, coding-agent, review-agent, architecture-agent, debugging-and-repair-agent, repository-assessment-agent]
+    concepts_worth_mining: [performance-objective, measurement-semantics, benchmark-validity, profile-led-bottleneck, work-elimination, memory-lifecycle, bounded-concurrency, specialization, regression-gate]
+    coverage_ledger: doctrine/_work/extractions/language-performance-sources.md#complete-chapter-coverage-ledger
+
+coverage_summary:
+  chapter_files: 331
+  covered_chapters: 331
+  per_source_counts:
+    SRC-APOSD: 32
+    SRC-CA: 48
+    SRC-CC: 48
+    SRC-DDD: 20
+    SRC-EGO: 18
+    SRC-FP: 33
+    SRC-FSA: 35
+    SRC-PP: 17
+    SRC-REF: 21
+    SRC-SDX: 22
+    SRC-WELC: 37

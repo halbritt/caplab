@@ -1,0 +1,199 @@
+schema_version: agent-doctrine-concepts/1
+concepts:
+  - id: review-severity-confidence-separation
+    title: Separate review severity from confidence and preference
+    category: review
+    claim: A review must distinguish demonstrated defect or contract violation from evidence-backed risk, maintainability concern, suggestion, and personal preference, while stating confidence independently from consequence.
+    decision_rule: Tie blockers to an accepted requirement, correctness, security, durability, compatibility, or architecture contract and show the reproduction or causal path; label uncertain risks and optional alternatives explicitly, and apply repository style rules only with their actual configured severity.
+    why_it_matters: Severity inflation and preference laundering obscure real defects, expand review authority, and make authors spend effort without a verified engineering outcome.
+    applicable_when: [code review, implementation assessment, plan review, repair review, architecture consistency review]
+    required_evidence: [change scope and type, repository contract, concrete locator, consequence, evidence and confidence]
+    insufficient_evidence: [cleaner, unfamiliar style, book citation alone, unsupported future concern, no test by itself]
+    required_inputs: [diff and context, accepted contracts, risk class, verification evidence, review authority]
+    expected_outputs: [blocker, defect, risk, suggestion, or preference classification with confidence and verification]
+    preservation_boundaries: [task scope, review authority, author intent, unrelated code, repository convention]
+    safe_actions: [ask a focused question, cite the failing path, propose a bounded alternative, acknowledge uncertainty]
+    unsafe_actions: [block on aesthetics, demand unrelated cleanup, rewrite by preference, equate missing proof with a proven defect]
+    common_failure_modes: [severity inflation, drive-by architecture, vague style comment, duplicate finding, confidence hidden]
+    counterexamples: [A formatter or lint violation is a blocker when the repository explicitly configures it as an acceptance gate.]
+    interactions: [A high-consequence low-confidence risk can justify investigation or escalation without being mislabeled as a confirmed defect.]
+    source_support:
+      - source_id: SRC-CC
+        locator: "books/code-complete-2nd-edition-v413hav/chapters/030-chapter-21-collaborative-construction.md :: Egos in Inspections"
+        contribution: Frames collaborative review around defect discovery rather than personal preference or ego.
+        relationship: direct_support
+      - source_id: SRC-CC
+        locator: "books/code-complete-2nd-edition-v413hav/chapters/030-chapter-21-collaborative-construction.md :: Collaborative Construction Complements Other Quality-Assurance Techniques"
+        contribution: Positions review as one evidence channel that complements testing rather than replacing it.
+        relationship: corroboration
+      - source_id: SRC-PP
+        locator: "books/the-pragmatic-programmer/chapters/006-chapter-1-a-pragmatic-philosophy.md :: Know Your Audience"
+        contribution: Requires communication calibrated to audience, responsibility, and actual information.
+        relationship: refinement
+      - source_id: SRC-APOSD
+        locator: "books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/023-18-code-should-be-obvious.md :: 18: Code Should be Obvious"
+        contribution: Supplies reader-obviousness evidence for maintainability findings without making taste universal.
+        relationship: refinement
+    confidence: strong
+    roles: [review-agent, coding-agent, architecture-agent, debugging-and-repair-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [review severity, blocker, defect, risk, suggestion, preference, confidence]
+    routing:
+      activate_for_roles: [review-agent, coding-agent, architecture-agent, debugging-and-repair-agent]
+      activate_for_tasks: [code-review, plan-review, implementation-assessment, repair-review]
+      activate_for_repository_signals: [review finding, requested change, blocker, style comment, uncertain risk]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [all]
+      exclude_when: [no evaluative finding is being issued]
+      prerequisites: [review scope and repository contract]
+      retrieval_priority: core
+      retrieval_budget_hint: 340
+      related_concepts: [universal-evidence-before-intervention, universal-repository-contract-precedence, implementation-risk-driven-tests, agent-conduct-authority-bounded-action]
+
+  - id: debugging-hypothesis-led-investigation
+    title: Investigate defects with discriminating hypotheses
+    category: agent-conduct
+    claim: Diagnosis should stabilize the failure, separate expected from actual behavior, generate competing causal hypotheses, and use the cheapest observation that discriminates among them before changing production logic.
+    decision_rule: Reproduce with one controlled command or input, narrow environmental and input variation, record observations separately from interpretations, rank multiple hypotheses, and trace backward to the first incorrect state or event.
+    why_it_matters: Symptoms can be distant from causes, and a suspicious line or coincident edit easily becomes a false causal story.
+    applicable_when: [bug report, flaky failure, incident, corrupted state, performance regression with a correctness symptom]
+    not_applicable_when: [purely specified feature with no defect claim]
+    required_evidence: [expected contract, stable reproduction or explicit inability, observations, hypothesis ledger, discriminating checks]
+    insufficient_evidence: [stack trace alone, suspicious code, platform blame without isolation, changing code until a test passes]
+    required_inputs: [report and environment, logs or data, relevant source and history, available tests and probes]
+    expected_outputs: [reproduction, localized first divergence, supported or falsified hypotheses, diagnosis confidence and gaps]
+    preservation_boundaries: [production data and privacy, diagnostic instrumentation, unrelated behavior, environment integrity]
+    safe_actions: [trace locally, visualize data, compare known-good behavior, bisect, add bounded instrumentation, explain the path aloud]
+    unsafe_actions: [alter production state without authority, batch several diagnostic changes, leave secret-bearing logs, patch before causal localization]
+    common_failure_modes: [confirmation bias, non-reproducible diagnosis, symptom fixation, environmental assumption, debugger-induced state change]
+    counterexamples: [Urgent containment may precede complete diagnosis when explicitly authorized; it remains containment, not causal repair.]
+    interactions: [The investigation ends with a causal claim; a separate repair obligation selects and verifies the minimal intervention.]
+    source_support:
+      - source_id: SRC-CC
+        locator: "books/code-complete-2nd-edition-v413hav/chapters/032-chapter-23-debugging.md :: The Scientific Method of Debugging"
+        contribution: Establishes data gathering, hypotheses, experiments, and iterative localization as the debugging method.
+        relationship: direct_support
+      - source_id: SRC-CC
+        locator: "books/code-complete-2nd-edition-v413hav/chapters/032-chapter-23-debugging.md :: Stabilize the Error"
+        contribution: Makes a controlled reproducible failure the basis for reliable diagnosis.
+        relationship: refinement
+      - source_id: SRC-PP
+        locator: "books/the-pragmatic-programmer/chapters/008-chapter-3-the-basic-tools.md :: Debugging Strategies"
+        contribution: Corroborates reproduction, visualization, tracing, explanation, and process of elimination.
+        relationship: corroboration
+    confidence: strong
+    roles: [debugging-and-repair-agent, coding-agent, legacy-code-agent, review-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [debugging, reproduce, hypothesis, first divergence, causal investigation, flake]
+    routing:
+      activate_for_roles: [debugging-and-repair-agent, coding-agent, legacy-code-agent, review-agent]
+      activate_for_tasks: [diagnose-defect, investigate-flake, analyze-incident]
+      activate_for_repository_signals: [failing test, incident, stack trace, corrupted state, nondeterministic behavior]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [correctness, durability, availability, data-integrity]
+      exclude_when: [the task has no defect or causal claim]
+      prerequisites: [expected behavior and authority to observe]
+      retrieval_priority: core
+      retrieval_budget_hint: 390
+      related_concepts: [universal-evidence-before-intervention, universal-minimize-simultaneous-uncertainty, debugging-causal-repair, implementation-risk-driven-tests]
+
+  - id: debugging-causal-repair
+    title: Repair the cause and verify the causal claim
+    category: agent-conduct
+    claim: A defect repair should change the smallest cause capable of explaining the first divergence, preserve unrelated behavior and structure, and verify both the original reproduction and relevant regression surface.
+    decision_rule: Explain how the candidate cause produces the symptom, add or identify a failing regression where feasible, change one causal lever, rerun the reproduction and broader affected tests, inspect sibling instances, and remove temporary instrumentation unless deliberately retained.
+    why_it_matters: A passing symptom test after an unrelated or broad change does not establish causality and can leave the defect or introduce new regressions.
+    applicable_when: [confirmed defect, flaky root cause, data or lifecycle bug, correctness-related performance regression]
+    not_applicable_when: [temporary containment explicitly authorized without a root-cause claim]
+    required_evidence: [first divergence, causal explanation, failing reproduction before repair, changed path exercised after repair, relevant regression evidence]
+    insufficient_evidence: [post-change pass alone, suspicious line, broad cleanup, catch-and-ignore, test changed to accept output]
+    required_inputs: [diagnosis, preservation boundary, repair authority, test and rollback route]
+    expected_outputs: [minimal causal repair, regression protection, verification results, residual uncertainty and sibling disposition]
+    preservation_boundaries: [unrelated semantics and structure, public and data compatibility, diagnostic artifacts, production safety]
+    safe_actions: [write a focused regression, fix one cause, search for the same defect pattern, retain useful bounded observability]
+    unsafe_actions: [bundle refactoring or optimization, suppress the failure, repair a symptom without causal explanation, accept own semantic change]
+    common_failure_modes: [symptom patch, coincident pass, broadened diff, regression test on the wrong path, stale instrumentation]
+    counterexamples: [A security incident may require immediate containment first; the repair record must distinguish that action from root-cause closure.]
+    interactions: [Structural improvement discovered during repair should become a separate campaign after the semantic checkpoint.]
+    source_support:
+      - source_id: SRC-CC
+        locator: "books/code-complete-2nd-edition-v413hav/chapters/032-chapter-23-debugging.md :: 23.3 Fixing a Defect"
+        contribution: Requires understanding the problem, fixing the cause carefully, checking similar defects, and verifying the repair.
+        relationship: direct_support
+      - source_id: SRC-CC
+        locator: "books/code-complete-2nd-edition-v413hav/chapters/032-chapter-23-debugging.md :: Locate the Source of the Error"
+        contribution: Connects repair to the first causal source rather than the visible symptom.
+        relationship: refinement
+      - source_id: SRC-PP
+        locator: "books/the-pragmatic-programmer/chapters/008-chapter-3-the-basic-tools.md :: The Element of Surprise"
+        contribution: Treats surprising behavior as evidence that the mental model and nearby assumptions need correction and regression protection.
+        relationship: corroboration
+    confidence: strong
+    roles: [debugging-and-repair-agent, coding-agent, legacy-code-agent, review-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [causal repair, root cause, regression test, symptom fix, first divergence, verify repair]
+    routing:
+      activate_for_roles: [debugging-and-repair-agent, coding-agent, legacy-code-agent, review-agent]
+      activate_for_tasks: [repair-defect, fix-flake, close-incident-cause]
+      activate_for_repository_signals: [localized root cause, failing reproduction, proposed bug fix]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [correctness, regression, durability, security]
+      exclude_when: [only containment is authorized or diagnosis is not yet causal]
+      prerequisites: [debugging-hypothesis-led-investigation]
+      retrieval_priority: core
+      retrieval_budget_hint: 380
+      related_concepts: [debugging-hypothesis-led-investigation, universal-preserve-behavior-by-default, universal-separate-semantic-structural-change, implementation-risk-driven-tests]
+
+  - id: agent-conduct-authority-bounded-action
+    title: Bound action by granted authority
+    category: agent-conduct
+    claim: Observation, diagnosis, recommendation, selection, execution, verification, and acceptance are distinct authority levels; technical access and sufficient evidence at one level do not grant the next.
+    decision_rule: Before each material transition, identify the requested authority level, affected contracts, reversibility, evidence, verification, external effects, and acceptance owner; continue with safe observation or a smaller reversible slice when possible, and escalate the exact decision when semantic, architectural, production, or acceptance authority is missing.
+    why_it_matters: An agent can diagnose correctly yet still be unauthorized to choose product behavior, mutate external state, widen architecture, or accept its own work.
+    applicable_when: [all autonomous engineering assessment and execution]
+    required_evidence: [explicit task authority, repository contract, affected behavior and state, reversibility and verification, decision owner]
+    insufficient_evidence: [filesystem access, passing tests, source recommendation, assumed maintainer preference, urgency alone]
+    required_inputs: [current authority state, proposed action, scope and contracts, risk and fallback, acceptance owner]
+    expected_outputs: [observe, diagnose, recommend, propose, select, execute, verify, stop, or escalate disposition with rationale]
+    preservation_boundaries: [behavior and architecture outside scope, data and external systems, human acceptance, production and communication effects]
+    safe_actions: [read-only investigation, local reversible experiment, in-scope implementation decision, precise escalation packet]
+    unsafe_actions: [silently widen scope, mutate production without authority, invent domain semantics, treat verification as acceptance]
+    common_failure_modes: [assessment becomes execution, implementation redefines architecture, reviewer converts preference to blocker, false completion]
+    counterexamples: [Normal mechanical decisions inside an explicitly authorized feature and accepted architecture do not require repeated approval.]
+    interactions: [Evidence determines what can be claimed; authority determines what can be decided or changed.]
+    source_support:
+      - source_id: SRC-PP
+        locator: "books/the-pragmatic-programmer/chapters/006-chapter-1-a-pragmatic-philosophy.md :: Take Responsibility"
+        contribution: Requires stating uncertainty, accepting responsibility, and declining or renegotiating unsupported commitments.
+        relationship: direct_support
+      - source_id: SRC-CC
+        locator: "books/code-complete-2nd-edition-v413hav/chapters/038-chapter-28-managing-construction.md :: Requirements and Design Changes"
+        contribution: Distinguishes requirements, design, configuration, and code changes with different controls and owners.
+        relationship: corroboration
+      - source_id: SRC-CC
+        locator: "books/code-complete-2nd-edition-v413hav/chapters/008-chapter-3-measure-twice-cut-once-upstream-prerequisites.md :: Boss-Readiness Test"
+        contribution: Supplies a practical stop signal when consequential prerequisites cannot be responsibly defended.
+        relationship: refinement
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/007-chapter-3-conquering-efficiency.md :: 5. Are we within RAERs?"
+        contribution: Refines authority discipline with a positive stop rule at the accepted target and escalation for wider tradeoffs.
+        relationship: refinement
+    confidence: universal
+    roles: [coding-agent, architecture-agent, refactoring-agent, legacy-code-agent, performance-agent, review-agent, debugging-and-repair-agent, repository-assessment-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [authority, observe, diagnose, execute, verify, accept, stop, escalate]
+    routing:
+      activate_for_roles: [coding-agent, architecture-agent, refactoring-agent, legacy-code-agent, performance-agent, review-agent, debugging-and-repair-agent, repository-assessment-agent]
+      activate_for_tasks: [assessment, diagnosis, recommendation, planning, implementation, review, verification]
+      activate_for_repository_signals: [unclear authority, semantic choice, architecture change, production effect, acceptance decision]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [all]
+      exclude_when: [never]
+      prerequisites: [task scope and authority statement]
+      retrieval_priority: core
+      retrieval_budget_hint: 400
+      related_concepts: [universal-repository-contract-precedence, universal-evidence-before-intervention, universal-reversible-reviewable-change, universal-no-change-option]

@@ -1,0 +1,351 @@
+schema_version: agent-negative-doctrine/1
+interpretation: A prohibition activates only in its stated scope and at its evidence threshold. Detecting a violation permits observation or escalation; it does not grant execution authority.
+prohibitions:
+  - id: prohibit-generic-doctrine-over-local-contract
+    prohibition: Never override an accepted repository contract, current language semantics, or measured runtime fact with a generic source preference.
+    applies_when: [all engineering assessment and action]
+    evidence_threshold: The applicable local instruction, accepted decision, executable contract, or current observation conflicts with generic doctrine.
+    exceptions: [An authorized proposal may seek to supersede the local contract, but proposal and execution remain separate.]
+    source_support:
+      - {source_id: SRC-CC, locator: "books/code-complete-2nd-edition-v413hav/chapters/045-chapter-34-themes-in-software-craftsmanship.md :: 34.9 Thou Shalt Rend Software and Religion Asunder"}
+      - {source_id: SRC-APOSD, locator: "books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/022-17-consistency.md :: 17: Consistency"}
+
+  - id: prohibit-authority-inference-from-access
+    prohibition: Never infer authorization, acceptance, or semantic-change authority from technical access, role label, diagnosis, or ability to execute.
+    applies_when: [agent conduct, repository assessment, review, implementation]
+    evidence_threshold: The requested transition exceeds the explicit task authority or lacks the designated decision owner.
+    exceptions: [Reversible read-only evidence collection may continue within the granted scope.]
+    source_support:
+      - {source_id: SRC-PP, locator: "books/the-pragmatic-programmer/chapters/006-chapter-1-a-pragmatic-philosophy.md :: Take Responsibility"}
+      - {source_id: SRC-FSA, locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/026-chapter-19-architecture-decisions.md :: Architecture Decision Records"}
+
+  - id: prohibit-unknown-consequential-implementation
+    prohibition: Never begin consequential implementation when intended behavior, affected contracts, preservation boundaries, verification, or authority remain materially unknowable.
+    applies_when: [feature implementation, repair, migration, architecture change]
+    evidence_threshold: One missing input can plausibly change the chosen behavior or create irreversible impact.
+    exceptions: [A bounded reversible experiment may be authorized explicitly as evidence collection.]
+    source_support:
+      - {source_id: SRC-CC, locator: "books/code-complete-2nd-edition-v413hav/chapters/008-chapter-3-measure-twice-cut-once-upstream-prerequisites.md :: cc2e.com/0386 Checklist: Upstream Prerequisites"}
+      - {source_id: SRC-PP, locator: "books/the-pragmatic-programmer/chapters/006-chapter-1-a-pragmatic-philosophy.md :: Take Responsibility"}
+
+  - id: prohibit-size-only-decomposition
+    prohibition: Never split a routine, class, module, or file solely because it exceeds a size or count threshold.
+    applies_when: [implementation review, refactoring, architecture assessment]
+    evidence_threshold: Size is the only stated concern; no independently evolving responsibility, change coupling, interface leverage, or review problem is demonstrated.
+    exceptions: [Repository or tooling hard limits remain contracts, though the decomposition still needs a coherent seam.]
+    source_support:
+      - {source_id: SRC-CC, locator: "books/code-complete-2nd-edition-v413hav/chapters/013-chapter-7-high-quality-routines.md :: 7.4 How Long Can a Routine Be?"}
+      - {source_id: SRC-APOSD, locator: "books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/014-9-better-together-or-better-apart.md :: 9: Better Together Or Better Apart?"}
+
+  - id: prohibit-syntax-only-abstraction
+    prohibition: Never introduce a shared abstraction from syntactic similarity alone.
+    applies_when: [implementation, refactoring, architecture]
+    evidence_threshold: Shared knowledge, authority, semantics, consumers, or reasons to change have not been established.
+    exceptions: [Mechanical generation may centralize repeated syntax when generation itself is the accepted authority.]
+    source_support:
+      - {source_id: SRC-PP, locator: "books/the-pragmatic-programmer/chapters/007-chapter-2-a-pragmatic-approach.md :: The Evils of Duplication"}
+      - {source_id: SRC-SDX, locator: "books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/008-chapter-3-coupling-in-time-a-heuristic-for-the-concept-of-surprise.md :: The Dirty Secret of Copy-Paste"}
+
+  - id: prohibit-indirection-by-slogan
+    prohibition: Never add an interface, wrapper, decorator, base class, service, or configuration option merely to claim decoupling, testability, extensibility, or symmetry.
+    applies_when: [implementation, architecture, legacy change]
+    evidence_threshold: The proposal names no hidden decision, substitute behavior, independent consumer, volatility, ownership, deployment, or policy boundary.
+    exceptions: [A minimal temporary seam may be used when its enabling point, scope, removal/reassessment condition, and production default are explicit.]
+    source_support:
+      - {source_id: SRC-APOSD, locator: "books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/012-7-different-layer-different-abstraction.md :: 7: Different Layer, Different Abstraction"}
+      - {source_id: SRC-WELC, locator: "books/programming-working-effectively-with-legacy-code/chapters/011-chapter-4-the-seam-model.md :: Enabling Point"}
+
+  - id: prohibit-directory-inferred-ownership
+    prohibition: Never infer responsibility, domain, team, or architectural boundaries from directory names, graph clusters, tables, or entity nouns alone.
+    applies_when: [placement, domain design, architecture, repository assessment]
+    evidence_threshold: No corroborating invariant, language, data authority, workflow, ownership, change, or runtime evidence exists.
+    exceptions: [Accepted repository documentation may declare a directory boundary; verify enforcement and current fit.]
+    source_support:
+      - {source_id: SRC-CC, locator: "books/code-complete-2nd-edition-v413hav/chapters/011-chapter-5-design-in-construction.md :: Assign Responsibilities"}
+      - {source_id: SRC-SDX, locator: "books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/014-chapter-8-toward-modular-monoliths-through-the-social-view-of-code.md :: The Big Win Is in the Problem Domain"}
+
+  - id: prohibit-hidden-caller-relevant-failure
+    prohibition: Never hide caller-relevant failure, durability, precision, ordering, ownership, or resource semantics merely to make an interface look simple.
+    applies_when: [API design, error handling, domain design]
+    evidence_threshold: A caller must change policy or recovery based on the omitted information, or masking can lose/corrupt state.
+    exceptions: [A module may mask a failure it can reliably recover from while preserving every promised observable contract.]
+    source_support:
+      - {source_id: SRC-APOSD, locator: "books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/015-10-define-errors-out-of-existence.md :: 10: Define Errors Out Of Existence"}
+      - {source_id: SRC-CC, locator: "books/code-complete-2nd-edition-v413hav/chapters/014-chapter-8-defensive-programming.md :: 8.3 Error-Handling Techniques"}
+
+  - id: prohibit-implicit-resource-lifecycle
+    prohibition: Never leave resource ownership, cleanup, cancellation, goroutine/task termination, or lock ordering implicit across success and failure paths.
+    applies_when: [implementation, review, debugging, performance]
+    evidence_threshold: A resource can escape, block, leak, outlive its owner, or be acquired along multiple paths.
+    exceptions: [A process-lifetime resource may intentionally omit ordinary release, but ownership and shutdown policy remain explicit.]
+    source_support:
+      - {source_id: SRC-PP, locator: "books/the-pragmatic-programmer/chapters/009-chapter-4-pragmatic-paranoia.md :: How to Balance Resources"}
+      - {source_id: SRC-EGO, locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/015-chapter-11-optimization-patterns.md :: The Three Rs Optimization Method"}
+
+  - id: prohibit-semantic-work-labeled-refactoring
+    prohibition: Never combine behavior repair or feature change with structural work and label the combined work behavior-preserving refactoring.
+    applies_when: [repair, refactoring, review, migration]
+    evidence_threshold: Any accepted observable behavior, public contract, data meaning, or failure policy changes.
+    exceptions: [A necessary prerequisite refactor may precede semantic work when independently verified and reported as a separate slice.]
+    source_support:
+      - {source_id: SRC-REF, locator: "books/refactoring-improving-the-design-of-existing-code/chapters/006-chapter-2-principles-in-refactoring.md :: The Two Hats"}
+      - {source_id: SRC-CC, locator: "books/code-complete-2nd-edition-v413hav/chapters/033-chapter-24-refactoring.md :: 24.4 Refactoring Safely"}
+
+  - id: prohibit-test-change-without-contract-reconciliation
+    prohibition: Never change a failing test merely to accommodate a new implementation without reconciling the accepted contract.
+    applies_when: [implementation, repair, migration]
+    evidence_threshold: The test expresses supported behavior or its authority is unresolved.
+    exceptions: [Correct a demonstrably wrong or obsolete test with evidence, semantic authority, and an explicit change classification.]
+    source_support:
+      - {source_id: SRC-PP, locator: "books/the-pragmatic-programmer/chapters/011-chapter-6-while-you-are-coding.md :: Testing Against Contract"}
+      - {source_id: SRC-WELC, locator: "books/programming-working-effectively-with-legacy-code/chapters/021-chapter-13-i-need-to-make-a-change-but-i-don-t-know-what-tests-to-write.md :: When You Find Bugs"}
+
+  - id: prohibit-coverage-as-adequacy-proof
+    prohibition: Never claim test adequacy or correctness from line coverage alone.
+    applies_when: [review, implementation, legacy, repair]
+    evidence_threshold: The claim lacks contract, boundary, state, failure, data-flow, mutation, or risk analysis.
+    exceptions: [Coverage remains useful for finding code that no selected test executes.]
+    source_support:
+      - {source_id: SRC-CC, locator: "books/code-complete-2nd-edition-v413hav/chapters/031-chapter-22-developer-testing.md :: Coverage Monitors"}
+      - {source_id: SRC-FSA, locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/011-chapter-6-measuring-and-governing-architecture-characteristics.md :: Process Measures"}
+
+  - id: prohibit-symptom-only-repair
+    prohibition: Never present a symptom patch as a root-cause repair without a stable reproduction or causal explanation.
+    applies_when: [debugging and repair]
+    evidence_threshold: A reproducible failure or incident trace permits competing hypotheses, but the selected change is not connected causally.
+    exceptions: [Authorized emergency containment may proceed when labeled temporary, monitored, and followed by root-cause work.]
+    source_support:
+      - {source_id: SRC-CC, locator: "books/code-complete-2nd-edition-v413hav/chapters/032-chapter-23-debugging.md :: The Scientific Method of Debugging"}
+      - {source_id: SRC-PP, locator: "books/the-pragmatic-programmer/chapters/008-chapter-3-the-basic-tools.md :: Bug Reproduction"}
+
+  - id: prohibit-aesthetic-refactoring
+    prohibition: Never refactor solely because code violates a preferred style or catalog smell.
+    applies_when: [refactoring, review, repository assessment]
+    evidence_threshold: No current or forecast authorized change, defect, comprehension, review, risk, or ownership pressure clears the intervention cost.
+    exceptions: [A repository-enforced formatter or style migration is a contract-backed cleanup, not smell evidence.]
+    source_support:
+      - {source_id: SRC-REF, locator: "books/refactoring-improving-the-design-of-existing-code/chapters/007-chapter-3-bad-smells-in-code.md :: Chapter 3: Bad Smells in Code"}
+      - {source_id: SRC-SDX, locator: "books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/006-chapter-1-why-technical-debt-isn-t-technical.md :: Complex Questions Require Context"}
+
+  - id: prohibit-unsafe-broad-refactor
+    prohibition: Never perform a broad manual refactor without intermediate verification merely because the target design appears clearer.
+    applies_when: [refactoring, legacy modernization]
+    evidence_threshold: The edit has multiple semantic dimensions or cannot localize regression to one transformation.
+    exceptions: [Mechanically proven transformations may batch only within the tool's verified semantic coverage and repository checks.]
+    source_support:
+      - {source_id: SRC-REF, locator: "books/refactoring-improving-the-design-of-existing-code/chapters/005-chapter-1-refactoring-a-first-example.md :: Final Thoughts"}
+      - {source_id: SRC-WELC, locator: "books/programming-working-effectively-with-legacy-code/chapters/030-chapter-22-i-need-to-change-a-monster-method-and-i-can-t-write-tests-for-it.md :: The Manual Refactoring Challenge"}
+
+  - id: prohibit-silent-characterization-repair
+    prohibition: Never silently fix surprising behavior discovered while characterizing legacy code.
+    applies_when: [legacy, repair, refactoring]
+    evidence_threshold: Current behavior conflicts with expectation but no accepted behavior source or repair authority resolves the conflict.
+    exceptions: [After explicit defect classification and authorization, repair in a separately protected semantic change.]
+    source_support:
+      - {source_id: SRC-WELC, locator: "books/programming-working-effectively-with-legacy-code/chapters/021-chapter-13-i-need-to-make-a-change-but-i-don-t-know-what-tests-to-write.md :: When You Find Bugs"}
+
+  - id: prohibit-global-legacy-understanding-gate
+    prohibition: Never demand complete system understanding or global coverage before a bounded required legacy change.
+    applies_when: [legacy, repair]
+    evidence_threshold: The relevant effect surface can be identified and protected while unrelated uncertainty remains.
+    exceptions: [Safety, durability, or systemic side effects may make the relevant effect surface system-wide.]
+    source_support:
+      - {source_id: SRC-WELC, locator: "books/programming-working-effectively-with-legacy-code/chapters/009-chapter-2-working-with-feedback.md :: The Legacy Code Change Algorithm"}
+      - {source_id: SRC-WELC, locator: "books/programming-working-effectively-with-legacy-code/chapters/021-chapter-13-i-need-to-make-a-change-but-i-don-t-know-what-tests-to-write.md :: A Heuristic for Writing Characterization Tests"}
+
+  - id: prohibit-unclassified-temporary-seam
+    prohibition: Never let a seam, sensing hook, wrapper, sprout, facade, or broad characterization test become permanent by omission.
+    applies_when: [legacy, refactoring]
+    evidence_threshold: A temporary structure enters production without explicit durable/provisional status, owner, or reassessment trigger.
+    exceptions: [A provisional structure may be promoted after review against long-term interface and information-hiding costs.]
+    source_support:
+      - {source_id: SRC-WELC, locator: "books/programming-working-effectively-with-legacy-code/chapters/014-chapter-6-i-don-t-have-much-time-and-i-have-to-change-it.md :: Summary"}
+      - {source_id: SRC-SDX, locator: "books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/009-chapter-4-pay-off-your-technical-debt.md :: Introduce Provisional End-to-End Tests"}
+
+  - id: prohibit-internal-refactor-across-public-boundary
+    prohibition: Never change a published API, deployed protocol, or persisted schema under an internal-refactoring assumption.
+    applies_when: [refactoring, migration, architecture]
+    evidence_threshold: An independent consumer or durable datum may observe the change and atomic control is not proven.
+    exceptions: [Use an explicitly authorized compatibility migration with rollout, verification, and reversal policy.]
+    source_support:
+      - {source_id: SRC-REF, locator: "books/refactoring-improving-the-design-of-existing-code/chapters/006-chapter-2-principles-in-refactoring.md :: Changing Interfaces"}
+      - {source_id: SRC-REF, locator: "books/refactoring-improving-the-design-of-existing-code/chapters/006-chapter-2-principles-in-refactoring.md :: Databases"}
+
+  - id: prohibit-churn-as-design-verdict
+    prohibition: Never call high churn poor design without examining why the code changes.
+    applies_when: [repository assessment, refactoring, architecture]
+    evidence_threshold: Churn is uncorroborated by complexity, defects, co-change, review cost, ownership, or task context.
+    exceptions: [Churn may prioritize inspection, never establish the remedy by itself.]
+    source_support:
+      - {source_id: SRC-SDX, locator: "books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/007-chapter-2-identify-code-with-high-interest-rates.md :: Use Hotspots to Improve, Not Judge"}
+
+  - id: prohibit-cochange-causality
+    prohibition: Never infer a defect, dependency direction, domain boundary, or structural remedy from co-change alone.
+    applies_when: [repository assessment, architecture, refactoring]
+    evidence_threshold: History shows correlated edits but no diff, task, static, runtime, domain, or ownership corroboration.
+    exceptions: [Co-change is valid evidence for nominating a relationship for investigation.]
+    source_support:
+      - {source_id: SRC-SDX, locator: "books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/008-chapter-3-coupling-in-time-a-heuristic-for-the-concept-of-surprise.md :: Learn More About Change Coupling"}
+
+  - id: prohibit-generated-artifact-dominance
+    prohibition: Never let generated, vendored, formatting, merge, migration, or noncode artifacts dominate a maintainer-facing hotspot or co-change inventory.
+    applies_when: [repository assessment]
+    evidence_threshold: The artifacts distort ranking and are not the actual maintainership target.
+    exceptions: [Analyze such artifacts separately when generation, vendor integration, or migration behavior is itself the task.]
+    source_support:
+      - {source_id: SRC-SDX, locator: "books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/016-chapter-10-an-extra-team-member-predictive-and-proactive-analyses.md :: Clean Your Input Data"}
+
+  - id: prohibit-behavioral-metrics-for-personnel-scoring
+    prohibition: Never use commits, lines, defect attribution, ownership, hotspots, or knowledge maps to score individual productivity or performance.
+    applies_when: [repository assessment, review, management-facing reporting]
+    evidence_threshold: Always active; the evidence lacks situational meaning and creates adaptive harm regardless of threshold.
+    exceptions: []
+    source_support:
+      - {source_id: SRC-SDX, locator: "books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/017-appendix-a1-the-hazards-of-productivity-and-performance-metrics.md :: Adaptive Behavior and the Destruction of a Data Source"}
+
+  - id: prohibit-architecture-by-fashion
+    prohibition: Never adopt an architectural style, layer scheme, or distributed topology because it is fashionable, source-preferred, or diagrammatically uniform.
+    applies_when: [architecture assessment and selection]
+    evidence_threshold: No repository-specific driver, contraindication, operational capability, migration cost, or simpler/no-change alternative is evaluated.
+    exceptions: [An accepted organizational standard is a local constraint, but deviations and fit still require evaluation.]
+    source_support:
+      - {source_id: SRC-FSA, locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/024-chapter-18-choosing-the-appropriate-architecture-style.md :: Shifting \"Fashion\" in Architecture"}
+      - {source_id: SRC-FSA, locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/009-chapter-4-architecture-characteristics-defined.md :: Trade-Offs and Least Worst Architecture"}
+
+  - id: prohibit-boundary-without-force
+    prohibition: Never invent an architectural boundary solely for file size, diagram symmetry, test substitution, or style conformance.
+    applies_when: [architecture, refactoring, implementation placement]
+    evidence_threshold: No independent policy, invariant, quality, trust, volatility, release, deployment, ownership, or semantic force exists.
+    exceptions: [A low-cost source seam may be a reversible experiment when explicitly classified and measured.]
+    source_support:
+      - {source_id: SRC-CA, locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/036-chapter-25-layers-and-boundaries.md :: CONCLUSION"}
+      - {source_id: SRC-FSA, locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/013-chapter-8-component-based-thinking.md :: Component Granularity"}
+
+  - id: prohibit-distribution-as-decoupling-proof
+    prohibition: Never claim a process, service, or repository split removes dependencies or guarantees independent development and deployment.
+    applies_when: [architecture, migration]
+    evidence_threshold: Shared data, contracts, release cadence, synchronous chains, logical change sets, or ownership still coordinate the units.
+    exceptions: [Independence may be claimed only for the specifically measured dimensions that the split actually separates.]
+    source_support:
+      - {source_id: SRC-CA, locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/038-chapter-27-services-great-and-small.md :: THE FALLACY OF INDEPENDENT DEVELOPMENT AND DEPLOYMENT"}
+      - {source_id: SRC-SDX, locator: "books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/015-chapter-9-systems-of-systems-analyzing-multiple-repositories-and-microservices.md :: Distribution Won't Cure the Dependency Blues"}
+
+  - id: prohibit-unmeasurable-architecture-quality
+    prohibition: Never restructure for a quality attribute that has no scoped scenario, operational definition, priority, or verification route.
+    applies_when: [architecture, operational hardening]
+    evidence_threshold: The quality is only an adjective or universal aspiration such as scalable, flexible, or maintainable.
+    exceptions: [An experiment may be proposed to discover a measurable threshold.]
+    source_support:
+      - {source_id: SRC-FSA, locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/011-chapter-6-measuring-and-governing-architecture-characteristics.md :: Measuring Architecture Characteristics"}
+
+  - id: prohibit-metric-triggered-architecture
+    prohibition: Never let a metric automatically trigger architectural restructuring.
+    applies_when: [architecture, repository assessment]
+    evidence_threshold: The metric lacks repository baseline, trend, causal or semantic explanation, and demonstrated risk.
+    exceptions: [A hard accepted constraint may trigger a predefined response, but the contract—not the metric's prestige—provides authority.]
+    source_support:
+      - {source_id: SRC-CA, locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/024-chapter-14-component-coupling.md :: CONCLUSION"}
+      - {source_id: SRC-FSA, locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/008-chapter-3-modularity.md :: Limitations of Metrics"}
+
+  - id: prohibit-bounded-context-as-service
+    prohibition: Never equate a bounded context, team, source module, database, deployment unit, or service without evidence that the relevant semantic and operational forces align.
+    applies_when: [domain design, architecture]
+    evidence_threshold: The mapping is inferred from labels or organizational symmetry rather than model consistency, ownership, data, deployment, and failure analysis.
+    exceptions: [One-to-one alignment may be selected after the dimensions are evaluated independently.]
+    source_support:
+      - {source_id: SRC-DDD, locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md :: BOUNDED CONTEXTS Are Not MODULES"}
+      - {source_id: SRC-FSA, locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/012-chapter-7-scope-of-architecture-characteristics.md :: Architectural Quanta and Granularity"}
+
+  - id: prohibit-master-plan-freeze
+    prohibition: Never freeze an architectural or domain master plan against implementation, domain, or runtime evidence.
+    applies_when: [architecture, domain modeling]
+    evidence_threshold: New evidence invalidates assumptions or produces repeated exceptions and workarounds, but the artifact is defended because of prior investment or status.
+    exceptions: [A safety or compatibility constraint may remain fixed until the authorized owner changes it; report the mismatch.]
+    source_support:
+      - {source_id: SRC-DDD, locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/019-chapter-17-bringing-the-strategy-together.md :: Beware the Master Plan"}
+      - {source_id: SRC-FSA, locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/028-chapter-21-diagramming-and-presenting-architecture.md :: Irrational Artifact Attachment"}
+
+  - id: prohibit-unspecified-performance-optimization
+    prohibition: Never optimize an unspecified performance complaint or suspected hotspot.
+    applies_when: [performance, implementation, architecture]
+    evidence_threshold: Operation, workload, boundary, environment, resource/statistic, correctness precondition, or target is missing.
+    exceptions: [Ordinary low-cost efficient choices need no incident, but speculative complexity still requires evidence.]
+    source_support:
+      - {source_id: SRC-EGO, locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/005-chapter-1-software-efficiency-matters.md :: Clarify When Someone Uses the Word \"Performance\""}
+      - {source_id: SRC-CC, locator: "books/code-complete-2nd-edition-v413hav/chapters/034-chapter-25-code-tuning-strategies.md :: 25.4 Measurement"}
+
+  - id: prohibit-invalid-benchmark-claim
+    prohibition: Never claim a benchmark improvement from one run, stale results, changed workload or environment, unchecked behavior, or variance larger than the claimed effect.
+    applies_when: [performance]
+    evidence_threshold: Any causal-control or semantic-validity item is absent.
+    exceptions: [A noisy result may motivate a better experiment, not an optimization claim.]
+    source_support:
+      - {source_id: SRC-EGO, locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/012-chapter-8-benchmarking-versus-stress-and-load-tests.md :: Reliability of Experiments"}
+
+  - id: prohibit-microbenchmark-generalization
+    prohibition: Never use a microbenchmark alone to claim end-to-end latency, peak memory, garbage-collection behavior, or production capacity.
+    applies_when: [performance review and recommendation]
+    evidence_threshold: The claim includes dependencies, contention, process lifecycle, or runtime effects excluded by the experiment.
+    exceptions: [A microbenchmark can establish a narrow local operation claim under its stated environment.]
+    source_support:
+      - {source_id: SRC-EGO, locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/012-chapter-8-benchmarking-versus-stress-and-load-tests.md :: Microbenchmarks Versus Memory Management"}
+      - {source_id: SRC-EGO, locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/012-chapter-8-benchmarking-versus-stress-and-load-tests.md :: Macrobenchmarks"}
+
+  - id: prohibit-concurrency-first-optimization
+    prohibition: Never add concurrency as the first response to a slow algorithm, unnecessary work, or imagined future scale.
+    applies_when: [performance, architecture, implementation]
+    evidence_threshold: The sequential path has not been simplified/profiled or coordination, ordering, ownership, cancellation, and downstream capacity are unmeasured.
+    exceptions: [Concurrency may be a functional requirement for responsiveness or isolation; still bound and verify it.]
+    source_support:
+      - {source_id: SRC-EGO, locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/008-chapter-4-how-go-uses-the-cpu-resource-or-two.md :: Adding Concurrency Should Be One of Our Last Deliberate Optimizations to Try"}
+      - {source_id: SRC-EGO, locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/014-chapter-10-optimization-examples.md :: A Naive Concurrency"}
+
+  - id: prohibit-unbounded-concurrency
+    prohibition: Never create unbounded tasks, goroutines, workers, channels, or concurrent requests from unbounded input.
+    applies_when: [Python, Go, services, performance-sensitive systems]
+    evidence_threshold: Cardinality is not hard-bounded below downstream, memory, scheduling, or service capacity.
+    exceptions: [None where input is genuinely unbounded; impose admission, queue, semaphore, worker, or cancellation bounds.]
+    source_support:
+      - {source_id: SRC-FP, locator: "books/fluent-python-2nd-edition-z-lib-org/chapters/029-chapter-22-asynchronous-programming.md :: Using asyncio.as_completed and a semaphore"}
+      - {source_id: SRC-EGO, locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/008-chapter-4-how-go-uses-the-cpu-resource-or-two.md :: When to Use Concurrency"}
+
+  - id: prohibit-python-hints-as-runtime-validation
+    prohibition: Never treat Python type hints, TypedDict, cast, or protocol method presence as runtime validation of external data or business invariants.
+    applies_when: [Python implementation and review]
+    evidence_threshold: Values originate outside trusted typed code or correctness depends on value-level constraints.
+    exceptions: [A trusted all-typed internal boundary may rely on static checks for the properties they actually prove.]
+    source_support:
+      - {source_id: SRC-FP, locator: "books/fluent-python-2nd-edition-z-lib-org/chapters/014-chapter-8-type-hints-in-functions.md :: Flawed Typing and Strong Testing"}
+
+  - id: prohibit-mutable-default-state
+    prohibition: Never use a mutable Python object as shared per-call default state.
+    applies_when: [Python implementation and review]
+    evidence_threshold: The default can be mutated or escape the call.
+    exceptions: [An intentionally shared singleton must be named and documented outside a parameter default.]
+    source_support:
+      - {source_id: SRC-FP, locator: "books/fluent-python-2nd-edition-z-lib-org/chapters/011-chapter-6-object-references-mutability-and-recycling.md :: Mutable Types as Parameter Defaults: Bad Idea"}
+
+  - id: prohibit-metaclass-before-simpler-mechanism
+    prohibition: Never introduce Python metaclass machinery before a function, property, descriptor, class decorator, or __init_subclass__ has been eliminated by concrete constraints.
+    applies_when: [Python libraries and frameworks]
+    evidence_threshold: The proposal has no framework-level repeated class-construction requirement that simpler mechanisms cannot express.
+    exceptions: [Framework internals may earn a metaclass while keeping it out of ordinary user APIs.]
+    source_support:
+      - {source_id: SRC-FP, locator: "books/fluent-python-2nd-edition-z-lib-org/chapters/032-chapter-25-class-metaprogramming.md :: Modern Features Simplify or Replace Metaclasses"}
+
+  - id: prohibit-go-error-discard
+    prohibition: Never ignore a Go error because an example, helper, or happy-path convention omits handling.
+    applies_when: [Go implementation and review]
+    evidence_threshold: The operation can fail and no explicit best-effort or loss policy owns the consequence.
+    exceptions: [A deliberately ignored error must be justified at the call site or by a repository-enforced convention.]
+    source_support:
+      - {source_id: SRC-EGO, locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/006-chapter-2-efficient-introduction-to-go.md :: Never Ignore Errors!"}
+
+  - id: prohibit-review-preference-as-blocker
+    prohibition: Never convert a review preference into a blocking requirement without a repository contract or evidence-backed consequence.
+    applies_when: [review]
+    evidence_threshold: The comment cannot identify violated behavior, accepted architecture, safety, security, durability, compatibility, maintainability pressure, or tooling contract.
+    exceptions: [An enforced repository style or process rule is a contract even when aesthetic.]
+    source_support:
+      - {source_id: SRC-CC, locator: "books/code-complete-2nd-edition-v413hav/chapters/030-chapter-21-collaborative-construction.md :: Egos in Inspections"}
+      - {source_id: SRC-CC, locator: "books/code-complete-2nd-edition-v413hav/chapters/045-chapter-34-themes-in-software-craftsmanship.md :: 34.9 Thou Shalt Rend Software and Religion Asunder"}

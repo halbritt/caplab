@@ -1,0 +1,956 @@
+schema_version: agent-doctrine-concepts/1
+concepts:
+  - id: performance-measurable-objective
+    title: Performance claims require measurable objectives
+    category: performance
+    claim: Performance work is justified only against a named operation, representative workload, environment, correctness precondition, metric, target, resource boundary, and owner.
+    decision_rule: Rewrite requests such as faster or less memory as a falsifiable workload-relative objective; if the objective cannot be owned and measured, gather requirements or stop before changing code.
+    why_it_matters: Undefined performance lets agents optimize a favorable proxy, move cost elsewhere, and claim improvement without user or operational value.
+    applicable_when:
+      - performance, capacity, cost, latency, throughput, or resource use is a stated goal
+      - a defect may actually be a resource or termination failure
+    not_applicable_when:
+      - a purely functional defect has already violated an accepted behavior independent of performance
+    required_evidence:
+      - accepted workload and operation boundary
+      - latency percentile, throughput, CPU, memory, I/O, network, cost, or other metric with a target
+      - environment, input distribution and scale, concurrency, and success/failure population
+      - owner for the objective and any quality tradeoff
+    insufficient_evidence:
+      - slow or high CPU without a time, capacity, and workload boundary
+      - an average without distribution or tail requirement
+      - a benchmark result selected before the target
+    required_inputs:
+      - complaint, SLO, incident, capacity forecast, or cost goal
+      - current system and operational boundary
+    expected_outputs:
+      - measurable objective and baseline plan
+      - repair, monitor, experiment, optimization, or no-action classification
+    preservation_boundaries:
+      - functional correctness and accepted failure behavior
+      - workload meaning and measurement population
+      - untraded quality attributes
+    safe_actions:
+      - disambiguate accuracy, speed, and resource efficiency
+      - request missing target or workload evidence
+      - perform read-only exploratory profiling with bounded claims when authorized
+    unsafe_actions:
+      - select a convenient metric after seeing results
+      - optimize every operation without priority
+      - infer authority to trade correctness, freshness, fairness, or durability
+    common_failure_modes:
+      - metric substitution
+      - benchmark theater
+      - improving a cold or irrelevant operation
+    counterexamples:
+      - An infinite loop that violates termination is first a defect repair, although performance evidence may help diagnose it.
+    interactions:
+      - Feeds proc-decide-performance-justified and constrains every optimization procedure.
+    conflicts:
+      - conflict-performance-specialization-vs-abstraction
+    source_support:
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/005-chapter-1-software-efficiency-matters.md :: Clarify When Someone Uses the Word \"Performance\""
+        contribution: Separates accuracy, speed, and resource efficiency before acting on a performance claim.
+        relationship: direct_support
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/007-chapter-3-conquering-efficiency.md :: Resource-Aware Efficiency Requirements"
+        contribution: Formalizes workload- and resource-bound efficiency targets.
+        relationship: corroboration
+    confidence: universal
+    roles: [performance-agent, architecture-agent, review-agent, debugging-and-repair-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, distributed-system]
+    retrieval_terms: [performance objective, SLO, RAER, latency, throughput, resource budget, capacity]
+    routing:
+      activate_for_roles: [performance-agent, architecture-agent, review-agent, debugging-and-repair-agent]
+      activate_for_tasks: [performance-triage, capacity-planning, optimization, performance-review]
+      activate_for_repository_signals: [benchmark directories, SLOs, profiler artifacts, performance incident, cost target]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [performance, operational, cost, availability]
+      exclude_when: [the task is a functional repair with no performance claim]
+      prerequisites: [authority to inspect the target and identify the objective owner]
+      retrieval_priority: core
+      retrieval_budget_hint: 360
+      related_concepts: [performance-metric-semantics, performance-representative-baseline, performance-target-based-stop]
+
+  - id: performance-metric-semantics
+    title: Define measurement semantics before interpretation
+    category: performance
+    claim: A metric or profile is usable evidence only when its boundary, unit, population, aggregation, granularity, collection method, and observer cost are known.
+    decision_rule: Document what begins and ends the measurement, which outcomes it includes, how it aggregates and samples, and what system boundary it represents before using the value to choose or validate work.
+    why_it_matters: Similar labels can represent CPU versus wall time, heap versus resident memory, instantaneous versus cumulative state, or averages that hide tails.
+    applicable_when:
+      - interpreting metrics, logs, traces, profiles, dashboards, or benchmark output
+    required_evidence:
+      - instrumentation definition and configuration
+      - unit, aggregation window, population, and sampling behavior
+      - sanity check against actual runtime behavior
+      - instrumentation overhead and data-loss limits
+    insufficient_evidence:
+      - a dashboard label or metric name
+      - heap bytes reported as total process memory
+      - CPU percentage without interval, quota, and core semantics
+      - percentiles without population and window
+    required_inputs:
+      - signal and collection path
+      - target operation and system boundary
+    expected_outputs:
+      - evidence statement with explicit limitations
+      - valid comparison or rejected signal
+    preservation_boundaries:
+      - privacy and sensitive runtime data
+      - production reliability under instrumentation
+      - metric meaning across before/after comparisons
+    safe_actions:
+      - record signal semantics and version
+      - compare compatible samples only
+      - use bounded temporary high-detail instrumentation when authorized
+    unsafe_actions:
+      - average away a tail requirement
+      - compare incompatible memory or time measures
+      - create unbounded metric cardinality
+    common_failure_modes:
+      - wrong-boundary optimization
+      - observer effect
+      - false trend caused by aggregation or instrumentation changes
+    source_support:
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/010-chapter-6-efficiency-observability.md :: Efficiency Metrics Semantics"
+        contribution: Makes metric boundary and meaning prerequisites to efficiency analysis.
+        relationship: direct_support
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/010-chapter-6-efficiency-observability.md :: High Metric Cardinality"
+        contribution: Identifies instrumentation cost and cardinality as part of measurement safety.
+        relationship: corroboration
+    confidence: universal
+    roles: [performance-agent, review-agent, debugging-and-repair-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, CLI, embedded-system, distributed-system, library]
+    retrieval_terms: [metric semantics, profile semantics, percentile, CPU time, wall time, RSS, heap, cardinality]
+    routing:
+      activate_for_roles: [performance-agent, review-agent, debugging-and-repair-agent]
+      activate_for_tasks: [interpret-metric, design-observability, validate-benchmark, profile-analysis]
+      activate_for_repository_signals: [metrics, traces, dashboards, pprof, telemetry instrumentation]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [performance, evidence-quality, privacy, operational]
+      exclude_when: [no measurement is being interpreted or proposed]
+      prerequisites: [access to instrumentation definition or benchmark harness]
+      retrieval_priority: core
+      retrieval_budget_hint: 340
+      related_concepts: [performance-representative-baseline, performance-benchmark-validity, performance-profile-causal-bottleneck]
+
+  - id: performance-representative-baseline
+    title: Preserve a representative baseline
+    category: performance
+    claim: An improvement claim requires a reproducible pre-change baseline over the workload, environment, build, and metric named by the objective.
+    decision_rule: Capture versioned raw results and enough harness/environment configuration to rerun the baseline; reject comparisons whose workload or measurement boundary changed materially.
+    why_it_matters: Without a stable baseline, natural variance, compiler/runtime drift, caching, or workload changes can masquerade as improvement.
+    applicable_when:
+      - beginning deliberate optimization or validating a regression
+      - comparing implementations, releases, or configurations
+    required_evidence:
+      - exact code, dependency, build, benchmark, data, and environment versions
+      - repeated raw measurements and variance
+      - correctness validation for the measured workload
+      - known resource limits and warmup/cache state
+    insufficient_evidence:
+      - one wall-clock observation
+      - a historical number without its harness and environment
+      - separate runs with several uncontrolled changes
+    required_inputs:
+      - measurable objective
+      - executable representative workload
+    expected_outputs:
+      - retained baseline artifacts
+      - bounded statement of repeatability and noise
+    preservation_boundaries:
+      - workload equivalence
+      - build and environment comparability
+      - functional results
+    safe_actions:
+      - version the harness and data
+      - capture raw samples and configuration
+      - label an exploratory result as non-decisive
+    unsafe_actions:
+      - delete outliers without a causal reason
+      - change the workload after seeing candidate performance
+      - compare across unrelated hardware or configurations as if controlled
+    common_failure_modes:
+      - unreproducible gains
+      - cache or thermal artifacts
+      - workload overfitting
+    source_support:
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/012-chapter-8-benchmarking-versus-stress-and-load-tests.md :: Reliability of Experiments"
+        contribution: Requires stable versions, repeated nearby comparison, and explicit nondeterminism.
+        relationship: direct_support
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/012-chapter-8-benchmarking-versus-stress-and-load-tests.md :: Reproducing Production"
+        contribution: Connects benchmark validity to representative production conditions.
+        relationship: corroboration
+    confidence: universal
+    roles: [performance-agent, coding-agent, review-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, distributed-system]
+    retrieval_terms: [baseline, A/B, variance, repeatability, workload, benchmark artifact]
+    routing:
+      activate_for_roles: [performance-agent, coding-agent, review-agent]
+      activate_for_tasks: [optimization, performance-regression, benchmark-comparison]
+      activate_for_repository_signals: [benchmark suite, load test, performance CI, profiler result]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [performance, evidence-quality]
+      exclude_when: [the action makes no improvement or regression claim]
+      prerequisites: [performance-measurable-objective, performance-metric-semantics]
+      retrieval_priority: core
+      retrieval_budget_hint: 330
+      related_concepts: [performance-measurable-objective, performance-metric-semantics, performance-benchmark-validity]
+
+  - id: performance-benchmark-validity
+    title: Benchmark validity precedes interpretation
+    category: performance
+    claim: Benchmark results support only claims for which the harness, workload, correctness, environment, repetition, and variance are controlled and inspectable.
+    decision_rule: Validate the benchmark itself before comparing candidates; reject dead-work elimination, setup leakage, unstable shared environments, unrepresentative inputs, or statistical summaries that conceal instability.
+    why_it_matters: A precise number from an invalid harness creates false confidence and can reward a transformation that harms the real system.
+    applicable_when:
+      - designing or reviewing microbenchmarks, macrobenchmarks, load tests, or stress tests
+    required_evidence:
+      - correctness assertions and work that cannot be optimized away
+      - setup/measurement boundary and warmup policy
+      - representative input distribution and resource limits
+      - repeated raw results, variance, and environment stability
+    insufficient_evidence:
+      - fastest single run
+      - benchmark code that does not check its result
+      - shared noisy CI without a noise characterization
+      - statistics used without stable underlying samples
+    required_inputs:
+      - performance claim and appropriate experiment level
+      - benchmark source and execution environment
+    expected_outputs:
+      - valid comparison, bounded exploratory result, or invalid-evidence finding
+      - raw result and harness provenance
+    preservation_boundaries:
+      - benchmark correctness and workload meaning
+      - candidate functional behavior
+      - honest uncertainty reporting
+    safe_actions:
+      - inspect implausible iteration rates
+      - retain raw data and exact versions
+      - add correctness checks and representative cases
+    unsafe_actions:
+      - extrapolate production capacity from a toy microbenchmark
+      - compare different harnesses as one experiment
+      - hide regressions in non-target resources
+    common_failure_modes:
+      - compiler-eliminated work
+      - setup dominating measurement
+      - benchmark-specific data favoring one candidate
+    source_support:
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/012-chapter-8-benchmarking-versus-stress-and-load-tests.md :: Benchmarks Lie"
+        contribution: Frames benchmark interpretation as a primary source of error.
+        relationship: direct_support
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/012-chapter-8-benchmarking-versus-stress-and-load-tests.md :: Test Your Benchmark for Correctness!"
+        contribution: Requires correctness of the benchmarked work itself.
+        relationship: corroboration
+    confidence: universal
+    roles: [performance-agent, review-agent, coding-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, distributed-system]
+    retrieval_terms: [benchmark validity, compiler elimination, warmup, variance, load test, stress test]
+    routing:
+      activate_for_roles: [performance-agent, review-agent, coding-agent]
+      activate_for_tasks: [write-benchmark, review-benchmark, compare-performance]
+      activate_for_repository_signals: [benchmark files, load generator, performance CI]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [performance, evidence-quality]
+      exclude_when: [no benchmark evidence is used]
+      prerequisites: [performance-measurable-objective, performance-representative-baseline]
+      retrieval_priority: core
+      retrieval_budget_hint: 390
+      related_concepts: [performance-representative-baseline, performance-experiment-level-fit, performance-semantic-preservation]
+
+  - id: performance-experiment-level-fit
+    title: Match experiment level to the claim
+    category: performance
+    claim: Microbenchmarks, process/system benchmarks, and production observations answer different questions and cannot substitute for one another.
+    decision_rule: Use the lowest level that isolates the causal hypothesis, then require a higher-level gate whenever the local change can interact with allocation, GC, scheduling, I/O, dependencies, or end-to-end resource limits.
+    why_it_matters: A local speed or allocation win can become a system latency, memory, throughput, or reliability loss.
+    applicable_when:
+      - selecting or interpreting a performance experiment
+    required_evidence:
+      - exact claim and system boundary
+      - known interactions omitted by the chosen level
+      - escalation gate for relevant system effects
+    insufficient_evidence:
+      - allocations per operation used to claim peak resident memory
+      - macro throughput without a validated load generator and correctness
+      - production averages without controlled comparison
+    required_inputs:
+      - candidate hypothesis and measurable objective
+      - available micro, macro, and runtime harnesses
+    expected_outputs:
+      - chosen experiment level and limits
+      - required follow-on regression gate
+    preservation_boundaries:
+      - end-to-end semantics and dependency behavior
+      - resource interactions outside the local unit
+    safe_actions:
+      - use a microbenchmark for a profiled local decision
+      - add macro validation when runtime interactions are plausible
+    unsafe_actions:
+      - generalize an isolated result to full-system capacity
+      - omit dependency, scheduler, or GC behavior from the claim
+    common_failure_modes:
+      - local win and system loss
+      - harness bottleneck mistaken for application bottleneck
+      - warm-cache result generalized to cold behavior
+    source_support:
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/012-chapter-8-benchmarking-versus-stress-and-load-tests.md :: Benchmarking Levels"
+        contribution: Separates production, macro, and micro measurement roles.
+        relationship: direct_support
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/012-chapter-8-benchmarking-versus-stress-and-load-tests.md :: Microbenchmarks Versus Memory Management"
+        contribution: Shows why local allocation results do not establish process memory behavior.
+        relationship: corroboration
+    confidence: strong
+    roles: [performance-agent, review-agent, architecture-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, distributed-system]
+    retrieval_terms: [microbenchmark, macrobenchmark, production measurement, experiment level, system regression]
+    routing:
+      activate_for_roles: [performance-agent, review-agent, architecture-agent]
+      activate_for_tasks: [design-performance-experiment, interpret-benchmark, optimize-system]
+      activate_for_repository_signals: [microbenchmarks, end-to-end benchmark, load test, production metrics]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [performance, operational, evidence-quality]
+      exclude_when: [the claim is explicitly limited to a pure local algorithm with no system implication]
+      prerequisites: [performance-benchmark-validity]
+      retrieval_priority: high
+      retrieval_budget_hint: 320
+      related_concepts: [performance-benchmark-validity, performance-memory-lifecycle, performance-semantic-preservation]
+
+  - id: performance-profile-causal-bottleneck
+    title: Profile representative work before changing a bottleneck
+    category: performance
+    claim: Resource consumption observed near a symptom is not necessarily its root cause; select and interpret a representative profile before choosing an intervention.
+    decision_rule: Choose CPU, allocation, in-use heap, goroutine/task, block/lock, trace, I/O, or off-CPU evidence by symptom; inspect direct and cumulative cost and follow the causal resource path across concurrency boundaries.
+    why_it_matters: Optimizing the hottest visible frame can move work, miss upstream causes, or address sampling artifacts rather than the objective.
+    applicable_when:
+      - deliberate optimization or unexplained CPU, memory, latency, contention, or task growth
+    required_evidence:
+      - representative workload, version, and profile interval
+      - profile type and sampling/granularity semantics
+      - direct versus cumulative contribution and concurrency boundary analysis
+      - reproducibility or independent corroboration
+    insufficient_evidence:
+      - one stack sample
+      - top frame without call/resource context
+      - sampled percentage treated as exact absolute time
+      - profile from a different workload or build
+    required_inputs:
+      - measurable objective and reproducer
+      - profiling capability appropriate to the runtime
+    expected_outputs:
+      - ranked causal bottleneck hypotheses
+      - next discriminating experiment or bounded candidate
+    preservation_boundaries:
+      - sensitive profile data and production overhead
+      - workload and build equivalence
+    safe_actions:
+      - retain raw profile and interpretation limits
+      - correlate with source/runtime and other metrics
+      - bound always-on or production profiling
+    unsafe_actions:
+      - optimize a frame merely because it is visually prominent
+      - expose secrets or personal data in profile artifacts
+      - merge incompatible profiles
+    common_failure_modes:
+      - profiler blind spot
+      - asynchronous attribution error
+      - observer perturbation
+    source_support:
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/013-chapter-9-data-driven-bottleneck-analysis.md :: Root Cause Analysis, but for Efficiency"
+        contribution: Treats performance analysis as causal diagnosis rather than local symptom tuning.
+        relationship: direct_support
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/013-chapter-9-data-driven-bottleneck-analysis.md :: Profile First, Ask Questions Later"
+        contribution: Establishes profile-led bottleneck selection with profile-semantic caveats.
+        relationship: corroboration
+    confidence: universal
+    roles: [performance-agent, debugging-and-repair-agent, review-agent]
+    languages: [language-independent, Go, Python]
+    repository_archetypes: [library, service, CLI, embedded-system, distributed-system]
+    retrieval_terms: [profile, bottleneck, pprof, flame graph, allocation profile, contention, root cause]
+    routing:
+      activate_for_roles: [performance-agent, debugging-and-repair-agent, review-agent]
+      activate_for_tasks: [profile-analysis, bottleneck-diagnosis, optimization-selection]
+      activate_for_repository_signals: [CPU profile, heap profile, task dump, trace, contention metrics]
+      activate_for_languages: [language-independent, Go, Python]
+      activate_for_risk_classes: [performance, evidence-quality, privacy]
+      exclude_when: [a measurable target is already met and no diagnostic question remains]
+      prerequisites: [performance-measurable-objective, performance-metric-semantics]
+      retrieval_priority: core
+      retrieval_budget_hint: 400
+      related_concepts: [performance-algorithm-and-work-first, performance-memory-lifecycle, performance-earned-bounded-concurrency]
+
+  - id: performance-algorithm-and-work-first
+    title: Remove work and improve algorithms before micro-tuning
+    category: performance
+    claim: The highest-leverage performance changes usually eliminate work, change asymptotic behavior, reduce data movement, or choose a better representation before low-level specialization.
+    decision_rule: For a profiled bottleneck, evaluate avoidance, batching, streaming, precomputation, algorithm/data structure, I/O and movement, allocation/layout, then code/runtime/hardware tuning; verify constants on the target distribution.
+    why_it_matters: Micro-tuning a poor algorithm or unnecessary work adds complexity while preserving the dominant cost.
+    applicable_when:
+      - selecting a performance candidate after profiling
+    required_evidence:
+      - profile contribution and input distribution/scale
+      - complexity and work-count model
+      - representative empirical comparison
+      - memory, latency, and semantic tradeoffs
+    insufficient_evidence:
+      - Big-O notation without target sizes and constants
+      - a clever instruction-level change before work-count analysis
+      - assumed zero-cost abstraction
+    required_inputs:
+      - causal bottleneck hypothesis
+      - candidate algorithms, representations, or work-elimination options
+    expected_outputs:
+      - ranked intervention ladder
+      - selected one-variable experiment
+    preservation_boundaries:
+      - output and error semantics
+      - precision, ordering, memory, and latency/resource trade space
+    safe_actions:
+      - remove redundant conversions, calls, or materialization
+      - compare algorithm and data representation on representative inputs
+      - stop if a simpler candidate meets the target
+    unsafe_actions:
+      - optimize cold complexity
+      - hide a semantic change as work elimination
+      - introduce unsafe or nonportable code before higher-level options
+    common_failure_modes:
+      - optimizing constants while asymptotics dominate
+      - shifting cost to memory or I/O
+      - data distribution mismatch
+    source_support:
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/011-chapter-7-data-driven-efficiency-assessment.md :: Practical Applications"
+        contribution: Combines asymptotic and empirical analysis for real workloads.
+        relationship: direct_support
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/015-chapter-11-optimization-patterns.md :: Do Less Work"
+        contribution: Places work elimination at the start of the optimization pattern hierarchy.
+        relationship: corroboration
+    confidence: strong
+    roles: [performance-agent, coding-agent, review-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, distributed-system]
+    retrieval_terms: [algorithm, complexity, do less work, data structure, batching, streaming, allocation]
+    routing:
+      activate_for_roles: [performance-agent, coding-agent, review-agent]
+      activate_for_tasks: [select-optimization, algorithm-review, performance-plan]
+      activate_for_repository_signals: [profiled hot path, scaling failure, repeated allocation or conversion]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [performance, maintainability]
+      exclude_when: [no measured bottleneck or target exists]
+      prerequisites: [performance-profile-causal-bottleneck]
+      retrieval_priority: high
+      retrieval_budget_hint: 360
+      related_concepts: [performance-profile-causal-bottleneck, performance-specialization-evidence, performance-semantic-preservation]
+
+  - id: performance-memory-lifecycle
+    title: Diagnose memory by metric, ownership, and lifetime
+    category: performance
+    claim: Heap, allocation rate, resident/working-set memory, mappings, retained objects, and garbage-collection cost are different signals; optimization must follow ownership and lifetime to the retained resource.
+    decision_rule: Identify the memory measure and system boundary, profile allocations and in-use retention, trace references/ownership and resource lifetime, then reduce work or retention before pooling or runtime tuning.
+    why_it_matters: Allocation microbenchmarks can improve while process memory, GC pauses, or retained capacity worsens.
+    applicable_when:
+      - diagnosing memory growth, allocation pressure, GC cost, OOM, or process footprint
+    required_evidence:
+      - precise memory metric and interval
+      - allocation and in-use/retention evidence
+      - owner/reference/lifetime path
+      - representative macro memory behavior
+    insufficient_evidence:
+      - allocations per operation alone
+      - heap profile presented as RSS
+      - pointer use assumed to reduce memory
+      - GC tuning without retention diagnosis
+    required_inputs:
+      - memory objective or incident
+      - runtime/OS/container accounting and profiles
+    expected_outputs:
+      - causal retention/allocation model
+      - reduce, reuse, recycle, limit, or no-action decision
+    preservation_boundaries:
+      - object identity and aliasing
+      - lifetime, cleanup, cache freshness, and concurrency
+      - latency/CPU tradeoffs
+    safe_actions:
+      - eliminate unnecessary allocation or materialization
+      - bound caches, queues, pools, and goroutine/task growth
+      - validate process-level effects after local changes
+    unsafe_actions:
+      - pool without retention and contention analysis
+      - use unsafe zero-copy conversion without lifetime/aliasing proof
+      - raise memory limits instead of diagnosing leaks
+    common_failure_modes:
+      - retained capacity hidden by reuse
+      - pool increases live memory
+      - aliasing extends lifetime or corrupts data
+    source_support:
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/009-chapter-5-how-go-uses-memory-resource.md :: Go Memory Management"
+        contribution: Separates Go heap/allocation/escape/GC mechanisms and memory-accounting concerns.
+        relationship: direct_support
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/012-chapter-8-benchmarking-versus-stress-and-load-tests.md :: Microbenchmarks Versus Memory Management"
+        contribution: Shows why local allocation evidence needs macro memory validation.
+        relationship: corroboration
+      - source_id: SRC-FP
+        locator: "books/fluent-python-2nd-edition-z-lib-org/chapters/011-chapter-6-object-references-mutability-and-recycling.md :: Defensive Programming with Mutable Parameters"
+        contribution: Adds aliasing and ownership constraints to memory-oriented representation changes.
+        relationship: corroboration
+    confidence: strong
+    roles: [performance-agent, debugging-and-repair-agent, coding-agent, review-agent]
+    languages: [language-independent, Go, Python]
+    repository_archetypes: [service, CLI, embedded-system, library, distributed-system]
+    retrieval_terms: [heap, RSS, working set, allocation, retention, GC, pooling, aliasing]
+    routing:
+      activate_for_roles: [performance-agent, debugging-and-repair-agent, coding-agent, review-agent]
+      activate_for_tasks: [memory-diagnosis, reduce-allocation, cache-review, pool-review]
+      activate_for_repository_signals: [OOM, heap growth, high GC, allocation profile, object pool, cache]
+      activate_for_languages: [language-independent, Go, Python]
+      activate_for_risk_classes: [performance, availability, correctness]
+      exclude_when: [the concern has no memory or resource-lifetime dimension]
+      prerequisites: [performance-metric-semantics, performance-profile-causal-bottleneck]
+      retrieval_priority: high
+      retrieval_budget_hint: 430
+      related_concepts: [performance-cache-validity, performance-resource-lifecycle, performance-experiment-level-fit]
+
+  - id: performance-earned-bounded-concurrency
+    title: Earn and bound concurrency
+    category: performance
+    claim: Concurrency is a workload-specific performance and correctness tradeoff that must be measured, capacity-bounded, and given explicit state, ordering, cancellation, error, and lifecycle ownership.
+    decision_rule: Prefer sequential execution until waiting or parallelizable work demonstrably limits the objective; select the runtime-appropriate model and smallest worker/task count meeting the target, then validate tail latency and resource contention.
+    why_it_matters: Threads, processes, goroutines, and async tasks add scheduling, coordination, memory, nondeterminism, and failure paths that can make the system slower or incorrect.
+    applicable_when:
+      - proposing or reviewing threads, processes, goroutines, worker pools, async tasks, or sharding
+    required_evidence:
+      - workload decomposition and profile of waiting versus CPU work
+      - runtime/interpreter/dependency constraints
+      - ordering, state-sharing, cancellation, backpressure, idempotency, and error contract
+      - representative benchmark across worker counts and resource limits
+    insufficient_evidence:
+      - core count alone
+      - async syntax or goroutine availability
+      - throughput improvement without tail/resource/correctness evidence
+      - dated runtime assumptions without current toolchain verification
+    required_inputs:
+      - measurable objective, causal bottleneck, and capacity boundary
+      - current runtime and deployment topology
+    expected_outputs:
+      - sequential or concurrency-model decision
+      - bounded topology and lifecycle/error contract
+      - benchmark and semantic verification
+    preservation_boundaries:
+      - ordering, atomicity, consistency, fairness, idempotency, and error propagation
+      - cancellation, cleanup, and resource limits
+      - public API and durability semantics
+    safe_actions:
+      - benchmark bounded worker counts
+      - use semaphores, queues, or capacity limits tied to downstream resources
+      - keep an explicit sequential fallback where practical
+    unsafe_actions:
+      - unbounded fan-out
+      - CPU work on an event-loop thread
+      - process pools for tiny serialized work
+      - fire-and-forget durable operations
+    common_failure_modes:
+      - contention and scheduler overhead
+      - task/goroutine leak
+      - event-loop starvation
+      - lost errors or nondeterministic repair
+    conflicts:
+      - conflict-concurrency-vs-sequential-simplicity
+    source_support:
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/008-chapter-4-how-go-uses-the-cpu-resource-or-two.md :: Adding Concurrency Should Be One of Our Last Deliberate Optimizations to Try"
+        contribution: Treats Go concurrency as a late measured optimization rather than a default speedup.
+        relationship: direct_support
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/014-chapter-10-optimization-examples.md :: Optimizing Latency Using Concurrency"
+        contribution: Demonstrates bounded concurrency and sharding as workload-specific experiments.
+        relationship: corroboration
+      - source_id: SRC-FP
+        locator: "books/fluent-python-2nd-edition-z-lib-org/chapters/027-chapter-20-concurrency-models-in-python.md :: Processes, threads, and Python's Infamous GIL"
+        contribution: Refines model choice by interpreter, workload, and state-sharing constraints.
+        relationship: corroboration
+      - source_id: SRC-FP
+        locator: "books/fluent-python-2nd-edition-z-lib-org/chapters/029-chapter-22-asynchronous-programming.md :: Using asyncio.as_completed and a semaphore"
+        contribution: Adds async capacity bounding and nonblocking discipline.
+        relationship: corroboration
+    confidence: strong
+    roles: [performance-agent, coding-agent, architecture-agent, review-agent]
+    languages: [language-independent, Go, Python]
+    repository_archetypes: [service, CLI, embedded-system, distributed-system, library]
+    retrieval_terms: [concurrency, parallelism, goroutine, async, worker pool, backpressure, semaphore, GIL]
+    routing:
+      activate_for_roles: [performance-agent, coding-agent, architecture-agent, review-agent]
+      activate_for_tasks: [add-concurrency, review-async, optimize-throughput, optimize-latency]
+      activate_for_repository_signals: [goroutines, asyncio tasks, thread pool, process pool, worker queue]
+      activate_for_languages: [language-independent, Go, Python]
+      activate_for_risk_classes: [concurrency, performance, correctness, operational]
+      exclude_when: [the workload meets its objective sequentially]
+      prerequisites: [performance-profile-causal-bottleneck, performance-semantic-preservation, performance-resource-lifecycle]
+      retrieval_priority: high
+      retrieval_budget_hint: 500
+      related_concepts: [performance-resource-lifecycle, performance-target-based-stop, performance-semantic-preservation]
+
+  - id: performance-specialization-evidence
+    title: Specialize only a proven critical path
+    category: performance
+    claim: Duplicated or lower-level specialized code is justified only for a stable profiled hot path whose material end-to-end benefit exceeds added maintenance and portability cost.
+    decision_rule: Keep the general path as reference/fallback when practical, make the specialization narrow, and require controlled micro plus relevant macro evidence and equivalence tests.
+    why_it_matters: Specialization can unlock performance an abstraction cannot provide, but it duplicates knowledge and narrows portability, clarity, and future change options.
+    applicable_when:
+      - a general implementation is a measured bottleneck after higher-level work reduction
+    required_evidence:
+      - stable hot path and target workload
+      - measured material benefit beyond noise at appropriate experiment levels
+      - semantic equivalence and portability/support boundary
+      - maintenance owner and rollback path
+    insufficient_evidence:
+      - belief that generic code is slow
+      - microbenchmark win without system effect
+      - one caller or hypothetical future scale
+    required_inputs:
+      - general implementation and profiled bottleneck
+      - candidate specialized mechanism
+    expected_outputs:
+      - retain general path or narrow specialization decision
+      - tradeoff, fallback, and regression evidence
+    preservation_boundaries:
+      - output, errors, ordering, aliasing, and resource lifetime
+      - supported platforms and toolchains
+      - maintainable fallback/reference behavior
+    safe_actions:
+      - isolate specialization behind a small internal boundary
+      - compare with the general path using equivalence/property tests
+      - document measured reason and removal condition
+    unsafe_actions:
+      - spread unsafe or platform-specific tricks across callers
+      - delete the reference path before confidence and support warrant it
+      - present specialized duplication as universally cleaner
+    common_failure_modes:
+      - benchmark-specific overfitting
+      - semantic drift between paths
+      - later general-path change missed in specialization
+    conflicts:
+      - conflict-performance-specialization-vs-abstraction
+    source_support:
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/014-chapter-10-optimization-examples.md :: Standard Functions Might Not Be Perfect for All Cases"
+        contribution: Supports specialization where general library behavior performs unnecessary work for a proven case.
+        relationship: direct_support
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/014-chapter-10-optimization-examples.md :: Deliberate Trade-offs"
+        contribution: Requires explicit evidence and cost accounting for low-level performance tradeoffs.
+        relationship: corroboration
+    confidence: contextual
+    roles: [performance-agent, coding-agent, review-agent]
+    languages: [language-independent, Go, Python]
+    repository_archetypes: [performance-sensitive-library, service, embedded-system]
+    retrieval_terms: [specialization, hot path, unsafe, zero-copy, optimized duplicate, fast path]
+    routing:
+      activate_for_roles: [performance-agent, coding-agent, review-agent]
+      activate_for_tasks: [specialize-hot-path, review-fast-path, optimize-library]
+      activate_for_repository_signals: [fast path, unsafe conversion, hand-written parser, duplicated optimized implementation]
+      activate_for_languages: [language-independent, Go, Python]
+      activate_for_risk_classes: [performance, portability, maintainability, correctness]
+      exclude_when: [no representative profile and macro benefit exist]
+      prerequisites: [performance-algorithm-and-work-first, performance-benchmark-validity, performance-semantic-preservation]
+      retrieval_priority: specialist
+      retrieval_budget_hint: 430
+      related_concepts: [performance-algorithm-and-work-first, performance-semantic-preservation, universal-earned-abstraction]
+
+  - id: performance-semantic-preservation
+    title: Performance transformations preserve semantics unless tradeoffs are authorized
+    category: performance
+    claim: A faster or smaller implementation is unacceptable if it silently changes results, precision, ordering, freshness, fairness, errors, identity, durability, or resource ownership.
+    decision_rule: Establish semantic and non-target resource baselines before optimization; treat any intended quality tradeoff as a separate owner decision and change classification.
+    why_it_matters: Many high-yield transformations rely on caching, streaming, concurrency, unsafe conversion, pooling, approximation, or batching that can change behavior subtly.
+    applicable_when:
+      - executing or reviewing any deliberate optimization
+    required_evidence:
+      - explicit preservation matrix
+      - behavior tests including boundaries and errors
+      - concurrency/order/lifetime tests where relevant
+      - before/after checks of non-target resources and quality
+    insufficient_evidence:
+      - benchmark correctness on one happy input
+      - passing unrelated tests
+      - an assertion that internal behavior is not observable
+    required_inputs:
+      - optimization candidate and measurable objective
+      - accepted semantics and tradeoff authority
+    expected_outputs:
+      - semantic equivalence proof or explicit authorized tradeoff
+      - regression and rollback plan
+    preservation_boundaries:
+      - functional output and error policy
+      - precision, ordering, freshness, fairness, identity, concurrency, and durability
+      - public API and operational behavior
+    safe_actions:
+      - property/equivalence testing against a reference implementation
+      - retain fallback during validation
+      - report unverified dimensions
+    unsafe_actions:
+      - relabel approximation or stale caching as an internal optimization
+      - ignore changed errors or cancellation
+      - use unsafe aliasing without ownership proof
+    common_failure_modes:
+      - faster wrong result
+      - tail or memory regression hidden by average speed
+      - concurrency changes ordering or error propagation
+    source_support:
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/007-chapter-3-conquering-efficiency.md :: Functionality Phase"
+        contribution: Places functional proof before efficiency work.
+        relationship: direct_support
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/014-chapter-10-optimization-examples.md :: Optimize One Thing at a Time"
+        contribution: Preserves causal and semantic clarity by isolating each optimization.
+        relationship: corroboration
+      - source_id: SRC-FP
+        locator: "books/fluent-python-2nd-edition-z-lib-org/chapters/011-chapter-6-object-references-mutability-and-recycling.md :: Copies Are Shallow by Default"
+        contribution: Shows how representation and zero-copy/aliasing choices can change object semantics.
+        relationship: corroboration
+    confidence: universal
+    roles: [performance-agent, coding-agent, review-agent, debugging-and-repair-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, distributed-system]
+    retrieval_terms: [semantic preservation, equivalence, precision, ordering, freshness, optimization regression]
+    routing:
+      activate_for_roles: [performance-agent, coding-agent, review-agent, debugging-and-repair-agent]
+      activate_for_tasks: [optimize, review-optimization, performance-repair]
+      activate_for_repository_signals: [cache, concurrency, streaming, pooling, unsafe, approximation, batching]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [correctness, performance, durability, concurrency]
+      exclude_when: [the task has no performance transformation]
+      prerequisites: [proc-establish-preservation-boundaries]
+      retrieval_priority: core
+      retrieval_budget_hint: 380
+      related_concepts: [universal-preserve-behavior-by-default, performance-benchmark-validity, performance-target-based-stop]
+
+  - id: performance-resource-lifecycle
+    title: Own task, goroutine, and resource lifecycles
+    category: performance
+    claim: Every concurrent task, goroutine, executor, connection, file, queue, buffer, or pool must have an owner, capacity, completion/error path, cancellation or shutdown mechanism, and cleanup semantics.
+    decision_rule: Trace creation to release and stop/wait behavior; reject background work or reusable resources whose lifetime, capacity, errors, or retention cannot be bounded.
+    why_it_matters: Resource leaks and unbounded work commonly appear as performance failures but are also correctness, availability, and durability failures.
+    applicable_when:
+      - code creates asynchronous work or acquires external/scarce resources
+      - reuse, caching, pooling, or background processing is proposed
+    required_evidence:
+      - ownership and lifecycle map
+      - capacity/backpressure and error propagation
+      - cancellation, shutdown, and cleanup tests
+      - retention and contention measurement where reused
+    insufficient_evidence:
+      - garbage collection eventually runs
+      - fire-and-forget syntax
+      - a pool or cache has a standard-library implementation
+    required_inputs:
+      - resource/task topology and failure policy
+      - operational shutdown and recovery constraints
+    expected_outputs:
+      - explicit owner and lifecycle contract
+      - bounded implementation or leak finding
+    preservation_boundaries:
+      - completion and durability
+      - cancellation, errors, shutdown order, and cleanup
+      - memory, file descriptor, connection, and scheduler budgets
+    safe_actions:
+      - use lexical/structured context management
+      - wait or join owned work and propagate errors
+      - bound queues, workers, pools, and cached state
+    unsafe_actions:
+      - abandon durable work without acknowledgement
+      - rely on finalizers as primary cleanup
+      - create unbounded tasks, goroutines, queues, or pools
+    common_failure_modes:
+      - goroutine/task leak
+      - lost errors or writes
+      - retained buffer/pool memory
+      - shutdown deadlock or partial completion
+    source_support:
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/015-chapter-11-optimization-patterns.md :: Control the Lifecycle of Your Goroutines"
+        contribution: Requires explicit goroutine start, stop, wait, and error ownership.
+        relationship: direct_support
+      - source_id: SRC-FP
+        locator: "books/fluent-python-2nd-edition-z-lib-org/chapters/025-chapter-18-context-managers-and-else-blocks.md :: Context Managers and with Blocks"
+        contribution: Provides deterministic lexical setup and cleanup semantics.
+        relationship: corroboration
+      - source_id: SRC-FP
+        locator: "books/fluent-python-2nd-edition-z-lib-org/chapters/029-chapter-22-asynchronous-programming.md :: Asynchronous Context Managers"
+        contribution: Extends structured lifecycle to asynchronous resources.
+        relationship: corroboration
+    confidence: universal
+    roles: [coding-agent, performance-agent, review-agent, debugging-and-repair-agent]
+    languages: [language-independent, Go, Python]
+    repository_archetypes: [service, CLI, embedded-system, distributed-system, library]
+    retrieval_terms: [lifecycle, goroutine leak, task leak, context manager, shutdown, cancellation, pool]
+    routing:
+      activate_for_roles: [coding-agent, performance-agent, review-agent, debugging-and-repair-agent]
+      activate_for_tasks: [add-concurrency, review-resource-use, diagnose-leak, shutdown-design]
+      activate_for_repository_signals: [go statement, create_task, executor, pool, open connection, background worker]
+      activate_for_languages: [language-independent, Go, Python]
+      activate_for_risk_classes: [availability, durability, concurrency, performance]
+      exclude_when: [no external resource or asynchronous work is created]
+      prerequisites: [explicit lifecycle and failure policy]
+      retrieval_priority: high
+      retrieval_budget_hint: 390
+      related_concepts: [performance-earned-bounded-concurrency, performance-memory-lifecycle, implementation-explicit-failure-policy]
+
+  - id: performance-cache-validity
+    title: Cache only with validity, ownership, and bounds
+    category: performance
+    claim: A cache is an explicit time-space-consistency tradeoff requiring repeated expensive work, a valid key and freshness policy, bounded retention, concurrency semantics, and measured system benefit.
+    decision_rule: Identify determinism, key identity, invalidation/freshness, cardinality, memory, tenant/authorization scope, concurrent fill, failure caching, and lifecycle before caching; prefer bounded mechanisms and validate macro effects.
+    why_it_matters: Caching can reduce computation while introducing stale or cross-context data, memory growth, stampedes, and hidden ownership.
+    applicable_when:
+      - proposing or reviewing memoization, cached properties, shared caches, or precomputed results
+    required_evidence:
+      - profiled repeated work and expected/observed hit rate
+      - validity and invalidation/freshness contract
+      - key completeness including tenant, policy, and version where relevant
+      - memory/cardinality bounds and concurrency behavior
+      - representative benchmark and correctness tests
+    insufficient_evidence:
+      - function looks expensive
+      - decorator or cache library is available
+      - hit-path microbenchmark only
+    required_inputs:
+      - workload, result semantics, and ownership boundary
+      - memory/consistency budgets
+    expected_outputs:
+      - no-cache, local bounded cache, or shared cache design
+      - validity, capacity, monitoring, and regression evidence
+    preservation_boundaries:
+      - freshness, authorization/tenant isolation, errors, and mutable-result ownership
+      - process memory and lifecycle
+    safe_actions:
+      - use bounded LRU/TTL where policy permits
+      - include every validity dimension in the key
+      - expose cache metrics without unsafe cardinality
+    unsafe_actions:
+      - unbounded process cache on uncontrolled keys
+      - mutable cached object shared unexpectedly
+      - cache failures or authorization results without explicit policy
+    common_failure_modes:
+      - stale or cross-tenant result
+      - out-of-memory
+      - thundering herd
+      - key omits a policy dimension
+    conflicts:
+      - conflict-caching-vs-recomputation-freshness
+    source_support:
+      - source_id: SRC-FP
+        locator: "books/fluent-python-2nd-edition-z-lib-org/chapters/015-chapter-9-decorators-and-closures.md :: Using lru_cache"
+        contribution: Describes bounded memoization and key/hash constraints.
+        relationship: direct_support
+      - source_id: SRC-FP
+        locator: "books/fluent-python-2nd-edition-z-lib-org/chapters/030-chapter-23-dynamic-attributes-and-properties.md :: Step 4: Bespoke Property Cache"
+        contribution: Exposes cache placement and invalidation semantics for computed attributes.
+        relationship: corroboration
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/015-chapter-11-optimization-patterns.md :: Reuse Memory"
+        contribution: Frames reuse as a measured tradeoff with memory-retention risks.
+        relationship: corroboration
+    confidence: strong
+    roles: [performance-agent, coding-agent, review-agent, debugging-and-repair-agent]
+    languages: [language-independent, Python, Go]
+    repository_archetypes: [service, library, CLI, distributed-system]
+    retrieval_terms: [cache, memoization, LRU, TTL, invalidation, freshness, stampede]
+    routing:
+      activate_for_roles: [performance-agent, coding-agent, review-agent, debugging-and-repair-agent]
+      activate_for_tasks: [add-cache, review-cache, diagnose-stale-data, diagnose-memory]
+      activate_for_repository_signals: [cache decorator, map-based cache, TTL, memoization, shared cache]
+      activate_for_languages: [language-independent, Python, Go]
+      activate_for_risk_classes: [correctness, performance, memory, security]
+      exclude_when: [the work is cheap or never repeated for the cache lifetime]
+      prerequisites: [performance-profile-causal-bottleneck, performance-memory-lifecycle]
+      retrieval_priority: high
+      retrieval_budget_hint: 430
+      related_concepts: [performance-memory-lifecycle, performance-semantic-preservation, performance-target-based-stop]
+
+  - id: performance-target-based-stop
+    title: Stop optimization when the authorized target is met
+    category: performance
+    claim: Meeting the accepted objective is a positive stop condition; further optimization requires a new benefit case and authority.
+    decision_rule: After every controlled iteration, rerun correctness and performance gates; retain the change only if it improves the target materially without violating other budgets, and stop once the target is satisfied.
+    why_it_matters: Endless optimization consumes options and maintainability for benefits nobody requested, while shifting goalposts destroys causal comparison.
+    applicable_when:
+      - conducting a deliberate optimization campaign
+    required_evidence:
+      - accepted objective and baseline
+      - controlled before/after result with uncertainty
+      - semantic and non-target resource gates
+      - remaining gap to target
+    insufficient_evidence:
+      - code can still be made faster
+      - microbenchmark improvement after the system target is already met
+      - sunk effort in the campaign
+    required_inputs:
+      - optimization iteration result
+      - objective owner and tradeoff constraints
+    expected_outputs:
+      - retain, revert, continue, or escalate decision
+      - final regression protection and residual limits
+    preservation_boundaries:
+      - objective definition and comparison harness
+      - correctness and other resource/quality budgets
+      - authority for additional complexity
+    safe_actions:
+      - revert a failed or immaterial hypothesis
+      - stop at the target and document bounded result
+      - monitor production drift when appropriate
+    unsafe_actions:
+      - move the target after seeing results
+      - keep complexity for an immaterial gain
+      - continue into unapproved tradeoffs
+    common_failure_modes:
+      - benchmark vanity
+      - local maximum chasing
+      - forgotten removal of experimental complexity
+    source_support:
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/007-chapter-3-conquering-efficiency.md :: 5. Are we within RAERs?"
+        contribution: Makes target satisfaction the decision point for release or another measured iteration.
+        relationship: direct_support
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/014-chapter-10-optimization-examples.md :: Optimize One Thing at a Time"
+        contribution: Supports retain/revert decisions after each isolated change.
+        relationship: corroboration
+    confidence: universal
+    roles: [performance-agent, coding-agent, review-agent]
+    languages: [language-independent]
+    repository_archetypes: [library, service, CLI, embedded-system, distributed-system]
+    retrieval_terms: [stop optimization, target met, revert, performance gate, regression budget]
+    routing:
+      activate_for_roles: [performance-agent, coding-agent, review-agent]
+      activate_for_tasks: [run-optimization-campaign, evaluate-performance-change, close-performance-work]
+      activate_for_repository_signals: [performance target, benchmark delta, optimization iteration]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [performance, scope, maintainability]
+      exclude_when: [no deliberate optimization campaign exists]
+      prerequisites: [performance-measurable-objective, performance-representative-baseline, performance-semantic-preservation]
+      retrieval_priority: core
+      retrieval_budget_hint: 300
+      related_concepts: [performance-measurable-objective, performance-semantic-preservation, universal-reversible-reviewable-change]

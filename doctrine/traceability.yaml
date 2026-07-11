@@ -1,0 +1,99 @@
+schema_version: agent-doctrine-traceability/1
+generated_at_utc: 2026-07-10
+coverage_definition:
+  unit: Every Markdown file under each registered source's chapters directory, including front matter, part dividers, indexes, bibliographies, and other files that may be classified as non-substantive evidence.
+  expected_units: 331
+  covered_units: 331
+  exclusions: []
+  note: The 343 Markdown files under books include 11 per-book README files plus books/README.md; those repository navigation files are not source chapters.
+
+chapter_coverage_ledgers:
+  - ledger: doctrine/_work/extractions/implementation-sources.md
+    sha256: f6b1194167ccd636efd0693295316494be49b31b116dacd81572e1ac31352a1c
+    sources:
+      - {source_id: SRC-CC, expected: 48, covered: 48}
+      - {source_id: SRC-PP, expected: 17, covered: 17}
+      - {source_id: SRC-APOSD, expected: 32, covered: 32}
+    locator_audit: 169 unique chapter-heading locators validated during extraction
+  - ledger: doctrine/_work/extractions/architecture-domain-sources.md
+    sha256: c495606d0274a1077ae838b9f5fcc3db845f397b3544fdb69ba28938281cb32b
+    sources:
+      - {source_id: SRC-CA, expected: 48, covered: 48}
+      - {source_id: SRC-FSA, expected: 35, covered: 35}
+      - {source_id: SRC-DDD, expected: 20, covered: 20}
+    locator_audit: 791 locator occurrences validated during extraction
+  - ledger: doctrine/_work/extractions/language-performance-sources.md
+    sha256: 642ab27b7fbf063bab9ca5a53ab6f1c2adc4763da8c69603820722bdb0a61e2b
+    sources:
+      - {source_id: SRC-FP, expected: 33, covered: 33}
+      - {source_id: SRC-EGO, expected: 18, covered: 18}
+    locator_audit: 51 chapter files plus exact candidate locators validated during extraction
+  - ledger: doctrine/_work/extractions/change-legacy-sources.md
+    sha256: da751b5b8fe4bd2e04ef3df539a243257b994968be2ed0b346b5efaa1382946e
+    sources:
+      - {source_id: SRC-REF, expected: 21, covered: 21}
+      - {source_id: SRC-WELC, expected: 37, covered: 37}
+      - {source_id: SRC-SDX, expected: 22, covered: 22}
+    locator_audit: 139 unique chapter-heading locators validated during extraction
+
+canonicalization_ledgers:
+  - ledger: doctrine/_work/canonicalization/implementation-language.md
+    purpose: Merge implementation, language, review, repair, and conduct candidates while preserving source formulations and collision decisions.
+  - ledger: doctrine/_work/canonicalization/architecture-domain.md
+    purpose: Merge architecture and domain candidates while preserving typed terminology collisions, conflicts, and boundary distinctions.
+  - ledger: doctrine/_work/canonicalization/change-legacy.md
+    purpose: Merge refactoring, legacy, and historical-analysis candidates while preserving behavior, evidence, and temporary-structure distinctions.
+
+provenance_relations:
+  direct_support: A source passage materially states the canonical claim or operational rule.
+  corroboration: An independent source expresses substantially the same rule and increases cross-context support.
+  refinement: A source narrows, conditions, or operationalizes another formulation without rejecting its core.
+  derived_inference: The canonical rule is a transparent synthesis from source premises and is not stated directly by the cited source.
+  terminology_variant: The source names materially the same concept differently.
+  historical_precursor: The source supplies an earlier or technology-specific form retained for historical applicability.
+  tension: The source formulation conflicts with or limits the canonical formulation under some conditions.
+
+artifact_derivation:
+  corpus-map.yaml: Per-source maps in all four extraction ledgers; source registry in sources.yaml.
+  universal-doctrine.md: Cross-source canonicalization of repeated foundation claims; detailed evidence remains in concepts and graph formulations.
+  role-doctrine.md: Role activation and constraints derived from canonical concepts, procedures, authority levels, and change types.
+  concepts: Full operational records synthesized from extraction and canonicalization ledgers; every actionable concept has exact source_support.
+  techniques: Contextual architecture and domain mechanisms retained from the specialist-technique ledger with evidence, cost, contraindication, reversal, scale, and operational consequences.
+  procedures.yaml: Procedure candidates across all lanes, deduplicated against the twenty requested decisions.
+  negative-doctrine.yaml: High-confidence operational prohibitions selected from all four extraction ledgers with activation thresholds.
+  conflicts.yaml: Material disagreements preserved from source-specific conflict ledgers and resolved only by explicit evidence rules.
+  change-types.yaml: Change-class boundaries synthesized chiefly from SRC-REF and SRC-WELC and constrained by architecture, performance, and implementation evidence.
+  evidence-taxonomy.yaml: Evidence capabilities and limits synthesized across static, test, runtime, history, architecture, domain, and performance sources.
+  authority-model.yaml: Explicit separation of epistemic and action states; source evidence informs discipline but repository authority defines permissions.
+  routing-index.yaml: Selective routes over concept, procedure, lens, conflict, evidence, and authority identifiers.
+  rubrics.md: Evaluation criteria distilled from proof obligations in concepts, procedures, and authority model.
+  checklists.md: Readiness and stop gates distilled from procedures and high-confidence prohibitions.
+  graph: Canonical semantic projection of concept records and source formulations; never a substitute for coverage ledgers or source chapters.
+  runtime: Portable structural contracts for evidence packets, assertion levels, decision receipts, and dependency impact.
+  evaluations: Deterministic canaries for authority withdrawal, assertion boundaries, and declared dependency impact; not yet an entailment or retrieval-quality benchmark.
+
+provenance_invariants:
+  - Every concept source_support locator names a registered source and an exact converted chapter heading.
+  - Every canonical graph node lists source formulations that explicitly map back to that node.
+  - Every source formulation names one source, one exact chapter-heading locator, its source-specific wording, and its relation to each mapped canonical node.
+  - Every graph edge cites one or more source formulations; tension and contradiction edges also cite a conflict record.
+  - Synthesized claims must identify derived_inference rather than being presented as a direct author formulation.
+  - Canonicalization may merge concepts but may not erase source-specific formulations or material disagreement.
+  - Repository evidence and explicit project contracts outrank every corpus-derived artifact.
+
+machine_validation:
+  command: python3 doctrine/tools/validate_doctrine.py
+  validates:
+    - YAML parsing for machine-readable artifacts and JSON schemas for concepts, graph records, and technique records
+    - source registry and chapter counts
+    - exact chapter-heading locators
+    - unique concept, graph-node, formulation, edge, procedure, conflict, and route identifiers
+    - concept-to-graph and graph-to-formulation references
+    - edge provenance and conflict linkage
+    - routing referential integrity
+
+known_limitations:
+  - The corpus consists mainly of practitioner books; support strength is not equivalent to controlled empirical proof.
+  - Converted tables, figures, code blocks, and headings can be malformed; provenance points to the converted source and extraction ledgers record conversion caveats.
+  - Language, runtime, dependency, platform, and operational claims require current repository/toolchain verification.
+  - Exact source coverage establishes inspection, not consensus; conflicts remain first-class records.

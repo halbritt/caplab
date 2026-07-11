@@ -1,0 +1,90 @@
+schema_version: agent-doctrine-graph-index/1
+graph_id: software-engineering-agent-doctrine
+files:
+  nodes: nodes.yaml
+  formulations: formulations.yaml
+  edges: edges.yaml
+  views: views.yaml
+
+node_kinds:
+  - principle
+  - heuristic
+  - transformation
+  - pattern
+  - anti-pattern
+  - proof-obligation
+  - tradeoff
+  - smell
+  - constraint
+  - terminology
+  - procedure
+  - evidence-class
+
+node_statuses:
+  - canonical
+  - contextual
+  - contested
+  - historical
+
+provenance_relations:
+  - direct_support
+  - corroboration
+  - refinement
+  - derived_inference
+  - terminology_variant
+  - historical_precursor
+  - tension
+
+edge_relations:
+  directional:
+    - requires
+    - prerequisite-of
+    - operationalizes
+    - specializes
+    - generalizes
+    - refines
+    - enables
+    - constrains
+    - preserves
+    - threatens
+    - detects
+    - indicates
+    - mitigates
+    - causes
+    - contraindicates
+    - applies-when
+    - excludes
+    - composes-with
+    - sequenced-before
+    - evidence-for
+    - motivates
+    - implements
+    - replaces
+    - derived-from
+  symmetric:
+    - trades-off-with
+    - in-tension-with
+    - contradicts
+    - synonymous-with
+
+edge_derivations:
+  - direct
+  - corroborated
+  - synthesized
+  - contested
+
+invariants:
+  - every node has at least one source formulation
+  - every formulation names an existing source and chapter path
+  - every edge references existing nodes and at least one source formulation
+  - every contradicts or in-tension-with edge references a conflict record
+  - canonical concept nodes reuse the corresponding concept-record ID
+  - language-specific mechanisms specialize rather than silently generalize universal nodes
+  - derived inference records the inference and plausible rival interpretations
+
+retrieval_rules:
+  - start from a curated view or exact node match
+  - include prerequisite and proof-obligation neighbors before transformations
+  - load conflict records for contested edges before selecting a position
+  - stop traversal at excluded contexts and unsupported language boundaries
+  - prefer canonical nodes while retaining source formulations for audit or disagreement analysis

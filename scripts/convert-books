@@ -1,0 +1,3749 @@
+#!/usr/bin/env python3
+"""Convert PDF and EPUB books from sources/ into deterministic Markdown corpora."""
+
+from __future__ import annotations
+
+import argparse
+from collections import Counter
+import copy
+import hashlib
+import html
+import json
+import os
+from pathlib import Path, PurePosixPath
+import re
+import shlex
+import shutil
+import subprocess
+import sys
+import tempfile
+import unicodedata
+from urllib.parse import unquote, urlparse
+import xml.etree.ElementTree as ET
+import zipfile
+
+
+SCHEMA_VERSION = "books-corpus/1"
+DEFAULT_MARKER_PEECEE = Path(
+    "/home/halbritt/git/skills/skills/marker-convert/scripts/convert-peecee.sh"
+)
+DEFAULT_MARKER_LOCAL = Path(
+    "/home/halbritt/git/skills/skills/marker-convert/scripts/convert.sh"
+)
+SUPPORTED_SUFFIXES = {".pdf", ".epub"}
+SOURCE_DIRECTORY = "sources"
+BOUNDARY_RE = re.compile(
+    r"^(?:foreword(?:\s*[:.\-–—]\s*.*)?|"
+    r"preface(?:\s*[:.\-–—]\s*.*)?|"
+    r"afterword(?:\s*[:.\-–—]\s*.*)?|acknowledg(?:e)?ments?|"
+    r"introduction(?:\s*[:.\-–—]\s*.*)?|"
+    r"prologue(?:\s*[:.\-–—]\s*.*)?|"
+    r"epilogue(?:\s*[:.\-–—]\s*.*)?|contents|table of contents|"
+    r"about (?:the )?authors?|"
+    r"chapter\s+\d+\b.*|part\s+"
+    r"(?:\d+|[ivxlcdm]+)\b.*|appendix(?:\s+[a-z0-9]+)?\b.*|"
+    r"self-assessment questions|references|bibliography|glossary|index|"
+    r"endnotes|colophon)$",
+    re.IGNORECASE,
+)
+STRONG_NAMED_BOUNDARY_RE = re.compile(
+    r"^(?:foreword(?:\s*[:.\-–—]\s*.*)?|"
+    r"preface(?:\s*[:.\-–—]\s*.*)?|afterword(?:\s*[:.\-–—]\s*.*)?|"
+    r"acknowledg(?:e)?ments?|about (?:the )?authors?|references|"
+    r"bibliography|glossary|index|endnotes|colophon)$",
+    re.IGNORECASE,
+)
+HEADING_RE = re.compile(r"^(#{1,6})[ \t]+(.+?)[ \t]*#*[ \t]*$")
+FENCE_OPEN_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
+LINK_RE = re.compile(r"((?<![A-Za-z0-9_])!?\[[^\]]*\]\()([^\n)]+)(\))")
+HTML_LINK_RE = re.compile(r"(\b(?:src|href)=[\"'])([^\"']+)([\"'])", re.IGNORECASE)
+HTML_ID_RE = re.compile(r"\b(?:id|name)=[\"']([^\"']+)[\"']", re.IGNORECASE)
+EMPTY_ANCHOR_TAG_RE = re.compile(
+    r"<(?:span|a)\b[^>]*(?:id|name)=[\"'][^\"']+[\"'][^>]*>\s*</(?:span|a)>",
+    re.IGNORECASE,
+)
+INFRASTRUCTURE_FAILURE_RE = re.compile(
+    r"(?:connection (?:refused|timed out|closed)|could not resolve hostname|"
+    r"name or service not known|no route to host|network is unreachable|"
+    r"permission denied \(publickey|marker: upload failed|marker: download failed|"
+    r"no live .marker. slot|ssh:|scp:|cuda out of memory|outofmemoryerror|"
+    r"no such file or directory|command not found|is not recognized as an internal)",
+    re.IGNORECASE,
+)
+CHAPTER_NUMBER_WORDS = {
+    "one": 1,
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+    "eight": 8,
+    "nine": 9,
+    "ten": 10,
+    "eleven": 11,
+    "twelve": 12,
+    "thirteen": 13,
+    "fourteen": 14,
+    "fifteen": 15,
+    "sixteen": 16,
+    "seventeen": 17,
+    "eighteen": 18,
+    "nineteen": 19,
+    "twenty": 20,
+}
+
+
+class BookConversionError(RuntimeError):
+    pass
+
+
+def json_bytes(value: object) -> bytes:
+    return (
+        json.dumps(value, indent=2, ensure_ascii=False, sort_keys=True) + "\n"
+    ).encode("utf-8")
+
+
+def write_json(path: Path, value: object) -> None:
+    path.write_bytes(json_bytes(value))
+
+
+def atomic_write(path: Path, data: bytes) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{path.name}.tmp-", dir=path.parent
+    )
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "wb") as output:
+            output.write(data)
+            output.flush()
+            os.fsync(output.fileno())
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def sha256_bytes(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as source:
+        for chunk in iter(lambda: source.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def slugify(value: str) -> str:
+    normalized = unicodedata.normalize("NFKD", value)
+    ascii_value = normalized.encode("ascii", "ignore").decode("ascii").lower()
+    slug = re.sub(r"[^a-z0-9]+", "-", ascii_value).strip("-")
+    return slug or "book"
+
+
+def plain_heading(markup: str) -> str:
+    value = markup.strip()
+    value = re.sub(
+        r"</?(?:b|br|code|em|i|span|strong)\b[^>]*>",
+        "",
+        value,
+        flags=re.IGNORECASE,
+    )
+    previous = None
+    while value != previous:
+        previous = value
+        value = re.sub(r"^(?:\*\*|__|\*|_)(.*?)(?:\*\*|__|\*|_)$", r"\1", value)
+        value = re.sub(r"\[([^\]]+)\]\([^)]*\)", r"\1", value)
+    return html.unescape(value).strip()
+
+
+def heading(line: str) -> tuple[int, str] | None:
+    match = HEADING_RE.match(line)
+    if not match:
+        return None
+    return len(match.group(1)), plain_heading(match.group(2))
+
+
+def opened_fence(line: str) -> tuple[str, int] | None:
+    match = FENCE_OPEN_RE.match(line)
+    if not match:
+        return None
+    delimiter = match.group(1)
+    if delimiter[0] == "`" and "`" in match.group(2):
+        return None
+    return delimiter[0], len(delimiter)
+
+
+def closed_fence(line: str, active_fence: tuple[str, int]) -> bool:
+    character, minimum_length = active_fence
+    return bool(
+        re.fullmatch(
+            rf" {{0,3}}{re.escape(character)}{{{minimum_length},}}[ \t]*", line
+        )
+    )
+
+
+def next_fence_state(
+    line: str, active_fence: tuple[str, int] | None
+) -> tuple[tuple[str, int] | None, bool]:
+    if active_fence is not None:
+        if closed_fence(line, active_fence):
+            return None, True
+        return active_fence, False
+    opening = opened_fence(line)
+    return opening, opening is not None
+
+
+def discover_sources(root: Path) -> list[Path]:
+    source_directory = root / SOURCE_DIRECTORY
+    if source_directory.is_symlink():
+        raise BookConversionError("sources/ must not be a symbolic link")
+    if not source_directory.is_dir():
+        raise BookConversionError("sources/ is missing or is not a directory")
+    sources = sorted(
+        (
+            child
+            for child in source_directory.iterdir()
+            if child.is_file()
+            and not child.is_symlink()
+            and child.suffix.lower() in SUPPORTED_SUFFIXES
+        ),
+        key=lambda child: (child.name.casefold(), child.name),
+    )
+    if not sources:
+        raise BookConversionError("sources/ contains no direct PDF or EPUB files")
+    slugs: dict[str, Path] = {}
+    for source in sources:
+        slug = slugify(source.stem)
+        if slug in slugs:
+            raise BookConversionError(
+                f"source filenames collide on slug '{slug}': {slugs[slug].name!r} and "
+                f"{source.name!r}"
+            )
+        slugs[slug] = source
+    return sources
+
+
+def source_repository_path(root: Path, source: Path) -> str:
+    try:
+        return source.relative_to(root).as_posix()
+    except ValueError as error:
+        raise BookConversionError(
+            f"source is outside the repository root: {source}"
+        ) from error
+
+
+def command_result(argv: list[str], cwd: Path) -> dict[str, object]:
+    try:
+        completed = subprocess.run(argv, cwd=cwd, capture_output=True, text=True)
+    except OSError as error:
+        return {
+            "argv": argv,
+            "command": shlex.join(argv),
+            "working_directory": str(cwd),
+            "exit_status": 127,
+            "stdout": "",
+            "stderr": f"unable to execute converter: {error}",
+        }
+    return {
+        "argv": argv,
+        "command": shlex.join(argv),
+        "working_directory": str(cwd),
+        "exit_status": completed.returncode,
+        "stdout": completed.stdout,
+        "stderr": completed.stderr,
+    }
+
+
+def significant_messages(output: str) -> tuple[list[str], list[str]]:
+    warnings: list[str] = []
+    failures: list[str] = []
+    for raw_line in output.replace("\r", "\n").splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
+        if "OCR Error Detection:" in line:
+            continue
+        if re.search(r"error:.*model.*(?:not found|not loaded)", line, re.I):
+            warnings.append(line)
+        elif re.search(r"\b(?:error|failed|failure|exception|traceback)\b", line, re.I):
+            failures.append(line)
+        elif re.search(r"\b(?:warn(?:ing)?|deprecated|fallback)\b", line, re.I):
+            warnings.append(line)
+    return list(dict.fromkeys(warnings)), list(dict.fromkeys(failures))
+
+
+def tool_version(command: list[str], cwd: Path) -> str | None:
+    try:
+        result = subprocess.run(
+            command, cwd=cwd, capture_output=True, text=True, timeout=30
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    if result.returncode != 0:
+        return None
+    return next(
+        (line.strip() for line in result.stdout.splitlines() if line.strip()), None
+    )
+
+
+def marker_version(root: Path, execution_target: str) -> str | None:
+    configured = os.environ.get("BOOKS_MARKER_VERSION")
+    if configured:
+        return configured
+    if execution_target != "local":
+        return None
+    python = Path.home() / "git" / "marker" / ".venv" / "bin" / "python"
+    if not python.is_file():
+        return None
+    version = tool_version(
+        [
+            str(python),
+            "-c",
+            "import importlib.metadata as m; print(m.version('marker-pdf'))",
+        ],
+        root,
+    )
+    return f"marker-pdf {version}" if version else None
+
+
+def pipeline_fingerprint() -> str:
+    configured = os.environ.get("BOOKS_PIPELINE_FINGERPRINT")
+    if configured:
+        return configured
+    return sha256_file(Path(__file__).resolve())
+
+
+def pandoc_version(root: Path, executable: str) -> str | None:
+    configured = os.environ.get("BOOKS_PANDOC_VERSION")
+    return configured or tool_version([executable, "--version"], root)
+
+
+def pdf_information(source: Path) -> dict[str, object]:
+    try:
+        completed = subprocess.run(
+            ["pdfinfo", str(source)], capture_output=True, text=True, timeout=60
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return {}
+    if completed.returncode != 0:
+        return {}
+    information: dict[str, object] = {}
+    for line in completed.stdout.splitlines():
+        if ":" not in line:
+            continue
+        key, value = line.split(":", 1)
+        information[key.strip()] = value.strip()
+    if str(information.get("Pages", "")).isdigit():
+        information["Pages"] = int(str(information["Pages"]))
+    return information
+
+
+def epub_information(source: Path) -> dict[str, object]:
+    result: dict[str, object] = {
+        "titles": [],
+        "creators": [],
+        "contributors": [],
+        "languages": [],
+        "identifiers": [],
+        "publishers": [],
+        "dates": [],
+        "subjects": [],
+        "rights": [],
+        "descriptions": [],
+        "spine": [],
+        "navigation": [],
+    }
+    try:
+        with zipfile.ZipFile(source) as archive:
+            container = ET.fromstring(archive.read("META-INF/container.xml"))
+            rootfile = next(
+                element
+                for element in container.iter()
+                if element.tag.rsplit("}", 1)[-1] == "rootfile"
+            )
+            package_path = rootfile.attrib["full-path"]
+            package = ET.fromstring(archive.read(package_path))
+            mapping = {
+                "title": "titles",
+                "creator": "creators",
+                "contributor": "contributors",
+                "language": "languages",
+                "identifier": "identifiers",
+                "publisher": "publishers",
+                "date": "dates",
+                "subject": "subjects",
+                "rights": "rights",
+                "description": "descriptions",
+            }
+            for element in package.iter():
+                local_name = element.tag.rsplit("}", 1)[-1]
+                if local_name in mapping and element.text and element.text.strip():
+                    entry: dict[str, object] = {"value": element.text.strip()}
+                    if element.attrib:
+                        entry["attributes"] = dict(sorted(element.attrib.items()))
+                    result[mapping[local_name]].append(entry)  # type: ignore[union-attr]
+            manifest = {
+                element.attrib.get("id"): dict(sorted(element.attrib.items()))
+                for element in package.iter()
+                if element.tag.rsplit("}", 1)[-1] == "item"
+            }
+            package_directory = PurePosixPath(package_path).parent
+            navigation_items = [
+                item
+                for item in manifest.values()
+                if "nav" in str(item.get("properties", "")).split()
+            ]
+            if navigation_items:
+                navigation_path = str(package_directory / navigation_items[0]["href"])
+                navigation_document = ET.fromstring(archive.read(navigation_path))
+
+                def direct_children(
+                    element: ET.Element, local_name: str
+                ) -> list[ET.Element]:
+                    return [
+                        child
+                        for child in list(element)
+                        if child.tag.rsplit("}", 1)[-1] == local_name
+                    ]
+
+                def navigation_list(ordered_list: ET.Element, depth: int) -> None:
+                    for item in direct_children(ordered_list, "li"):
+                        anchors = [
+                            element
+                            for element in item.iter()
+                            if element.tag.rsplit("}", 1)[-1] == "a"
+                        ]
+                        if anchors:
+                            anchor = anchors[0]
+                            title = " ".join("".join(anchor.itertext()).split())
+                            if title:
+                                result["navigation"].append(  # type: ignore[union-attr]
+                                    {
+                                        "title": title,
+                                        "href": anchor.attrib.get("href"),
+                                        "depth": depth,
+                                        "source": "epub-nav",
+                                    }
+                                )
+                        for nested in direct_children(item, "ol"):
+                            navigation_list(nested, depth + 1)
+
+                for navigation in (
+                    element
+                    for element in navigation_document.iter()
+                    if element.tag.rsplit("}", 1)[-1] == "nav"
+                ):
+                    navigation_type = next(
+                        (
+                            value
+                            for key, value in navigation.attrib.items()
+                            if key.rsplit("}", 1)[-1] == "type"
+                        ),
+                        "",
+                    )
+                    if navigation_type and navigation_type != "toc":
+                        continue
+                    for ordered_list in direct_children(navigation, "ol"):
+                        navigation_list(ordered_list, 1)
+                    if result["navigation"]:
+                        break
+            if not result["navigation"]:
+                ncx_items = [
+                    item
+                    for item in manifest.values()
+                    if item.get("media-type") == "application/x-dtbncx+xml"
+                ]
+                if ncx_items:
+                    ncx_path = str(package_directory / ncx_items[0]["href"])
+                    ncx_document = ET.fromstring(archive.read(ncx_path))
+                    nav_map = next(
+                        (
+                            element
+                            for element in ncx_document.iter()
+                            if element.tag.rsplit("}", 1)[-1] == "navMap"
+                        ),
+                        None,
+                    )
+
+                    def ncx_points(parent: ET.Element, depth: int) -> None:
+                        points = [
+                            child
+                            for child in list(parent)
+                            if child.tag.rsplit("}", 1)[-1] == "navPoint"
+                        ]
+                        for point in points:
+                            label = next(
+                                (
+                                    element
+                                    for element in point.iter()
+                                    if element.tag.rsplit("}", 1)[-1] == "text"
+                                    and element.text
+                                    and element.text.strip()
+                                ),
+                                None,
+                            )
+                            content = next(
+                                (
+                                    element
+                                    for element in point.iter()
+                                    if element.tag.rsplit("}", 1)[-1] == "content"
+                                ),
+                                None,
+                            )
+                            if label is not None and content is not None:
+                                result["navigation"].append(  # type: ignore[union-attr]
+                                    {
+                                        "title": " ".join(label.text.split()),
+                                        "href": content.attrib.get("src"),
+                                        "depth": depth,
+                                        "source": "epub-ncx",
+                                    }
+                                )
+                            ncx_points(point, depth + 1)
+
+                    if nav_map is not None:
+                        ncx_points(nav_map, 1)
+            for element in package.iter():
+                if element.tag.rsplit("}", 1)[-1] != "itemref":
+                    continue
+                idref = element.attrib.get("idref")
+                result["spine"].append(  # type: ignore[union-attr]
+                    {
+                        "idref": idref,
+                        "linear": element.attrib.get("linear", "yes"),
+                        "manifest_item": manifest.get(idref),
+                    }
+                )
+            top_level_navigation = [
+                entry
+                for entry in result["navigation"]  # type: ignore[union-attr]
+                if entry.get("depth") == 1
+            ]
+            spine_entries = result["spine"]
+            if len(top_level_navigation) == len(spine_entries):  # type: ignore[arg-type]
+                for navigation_entry, spine_entry in zip(
+                    top_level_navigation,
+                    spine_entries,
+                    strict=True,  # type: ignore[arg-type]
+                ):
+                    manifest_item = spine_entry.get("manifest_item") or {}
+                    navigation_entry["spine_href"] = manifest_item.get("href")
+            result["package_path"] = package_path
+    except (KeyError, StopIteration, ET.ParseError, zipfile.BadZipFile):
+        result["parse_error"] = "EPUB package metadata could not be parsed"
+    return result
+
+
+def raw_output_is_fresh(
+    markdown_path: Path, metadata_path: Path | None, expected_pages: int | None
+) -> tuple[bool, str | None, dict[str, object] | None]:
+    if not markdown_path.is_file() or markdown_path.stat().st_size == 0:
+        return False, "converter did not produce non-empty Markdown", None
+    if metadata_path is None:
+        return True, None, None
+    if not metadata_path.is_file():
+        return False, "Marker did not produce its metadata JSON", None
+    try:
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return False, "Marker metadata JSON is malformed", None
+    page_stats = metadata.get("page_stats")
+    if not isinstance(page_stats, list) or not page_stats:
+        return False, "Marker metadata contains no page statistics", metadata
+    if expected_pages is not None and len(page_stats) != expected_pages:
+        return (
+            False,
+            f"Marker returned {len(page_stats)} pages; source reports {expected_pages}",
+            metadata,
+        )
+    return True, None, metadata
+
+
+def overridden_command(
+    environment_name: str, default_script: Path
+) -> tuple[list[str], bool]:
+    override = os.environ.get(environment_name)
+    if override:
+        return [override], True
+    return ["bash", str(default_script)], False
+
+
+def record_conversion_failure(
+    work: Path,
+    root: Path,
+    source: Path,
+    source_hash: str,
+    converter: str,
+    attempts: list[dict[str, object]],
+    fallbacks: list[dict[str, object]],
+    pre_conversion_commands: list[dict[str, object]],
+    error: str,
+) -> None:
+    write_json(
+        work / "conversion-failure.json",
+        {
+            "source_path": source_repository_path(root, source),
+            "source_filename": source.name,
+            "source_sha256": source_hash,
+            "source_format": source.suffix.lower().lstrip("."),
+            "converter": converter,
+            "attempts": attempts,
+            "fallbacks_used": fallbacks,
+            "pre_conversion_commands": pre_conversion_commands,
+            "error": error,
+        },
+    )
+
+
+def raw_file_manifest(directory: Path) -> dict[str, str]:
+    return {
+        path.relative_to(directory).as_posix(): sha256_file(path)
+        for path in sorted(directory.rglob("*"))
+        if path.is_file()
+    }
+
+
+def write_converter_cache(
+    work: Path,
+    root: Path,
+    source: Path,
+    source_hash: str,
+    converter: dict[str, object],
+) -> None:
+    cached_converter = copy.deepcopy(converter)
+    for key in ("raw_directory", "markdown_path", "staged_source"):
+        value = cached_converter.get(key)
+        if isinstance(value, Path):
+            cached_converter[key] = value.relative_to(root).as_posix()
+    record: dict[str, object] = {
+        "source_path": source_repository_path(root, source),
+        "source_filename": source.name,
+        "source_sha256": source_hash,
+        "source_format": source.suffix.lower().lstrip("."),
+        "source_size_bytes": source.stat().st_size,
+        "converter": cached_converter,
+        "raw_files": raw_file_manifest(Path(converter["raw_directory"])),
+        "cache_sha256": None,
+    }
+    record["cache_sha256"] = sha256_bytes(json_bytes(record))
+    write_json(work / "converter-cache.json", record)
+
+
+def load_converter_cache(
+    work: Path, root: Path, source: Path, source_hash: str
+) -> dict[str, object] | None:
+    cache_path = work / "converter-cache.json"
+    if not cache_path.is_file():
+        return None
+    try:
+        record = json.loads(cache_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return None
+    expected = record.get("cache_sha256")
+    candidate = copy.deepcopy(record)
+    candidate["cache_sha256"] = None
+    if not isinstance(expected, str) or expected != sha256_bytes(json_bytes(candidate)):
+        return None
+    if not source_identity_matches(record, root, source, source_hash):
+        return None
+    cached_converter = record.get("converter")
+    raw_files = record.get("raw_files")
+    if not isinstance(cached_converter, dict) or not isinstance(raw_files, dict):
+        return None
+    converter = copy.deepcopy(cached_converter)
+    for key in ("raw_directory", "markdown_path", "staged_source"):
+        value = converter.get(key)
+        if not isinstance(value, str) or Path(value).is_absolute():
+            return None
+        resolved = (root / value).resolve()
+        try:
+            resolved.relative_to(work.resolve())
+        except ValueError:
+            return None
+        converter[key] = resolved
+    raw_directory = Path(converter["raw_directory"])
+    if raw_file_manifest(raw_directory) != raw_files:
+        return None
+    staged_source = Path(converter["staged_source"])
+    if not staged_source.is_file() or sha256_file(staged_source) != source_hash:
+        return None
+    markdown_path = Path(converter["markdown_path"])
+    if not markdown_path.is_file() or not markdown_path.stat().st_size:
+        return None
+    return converter
+
+
+def conversion_stem(slug: str, source_hash: str) -> str:
+    readable_prefix = slug[:48].rstrip("-") or "book"
+    return f"{readable_prefix}-{source_hash[:12]}"
+
+
+def convert_pdf(
+    source: Path, source_hash: str, slug: str, root: Path, work: Path
+) -> dict[str, object]:
+    stem = conversion_stem(slug, source_hash)
+    staged_source = work / f"{stem}.pdf"
+    shutil.copyfile(source, staged_source)
+    pdfinfo = pdf_information(source)
+    expected_pages = (
+        pdfinfo.get("Pages") if isinstance(pdfinfo.get("Pages"), int) else None
+    )
+    attempts: list[dict[str, object]] = []
+    fallbacks: list[dict[str, object]] = []
+
+    peecee_prefix, peecee_overridden = overridden_command(
+        "BOOKS_MARKER_PEECEE", DEFAULT_MARKER_PEECEE
+    )
+    peecee_output = work / "marker-peecee"
+    peecee_argv = peecee_prefix + [
+        str(staged_source.relative_to(root)),
+        "--format",
+        "markdown",
+        "--out",
+        str(peecee_output.relative_to(root)),
+    ]
+    if not peecee_overridden:
+        peecee_argv.extend(["--host", "peecee"])
+
+    pre_conversion_commands: list[dict[str, object]] = []
+    infrastructure_failure: str | None = None
+    if not peecee_overridden and not os.environ.get("BOOKS_SKIP_REMOTE_CLEAN"):
+        clean_argv = [
+            "ssh",
+            "-o",
+            "BatchMode=yes",
+            "-o",
+            "ConnectTimeout=15",
+            "peecee",
+            f"cmd /c if exist marker\\out\\{stem} rmdir /s /q marker\\out\\{stem}",
+        ]
+        clean_result = command_result(clean_argv, root)
+        clean_public = {
+            key: value
+            for key, value in clean_result.items()
+            if key not in {"stdout", "stderr"}
+        }
+        pre_conversion_commands.append(clean_public)
+        if clean_result["exit_status"] != 0:
+            infrastructure_failure = "remote stale-output cleanup failed"
+
+    peecee_result: dict[str, object] | None = None
+    marker_metadata: dict[str, object] | None = None
+    raw_directory: Path | None = None
+    markdown_path: Path | None = None
+    selected_target: str | None = None
+
+    if infrastructure_failure is None:
+        peecee_result = command_result(peecee_argv, root)
+        combined = f"{peecee_result['stdout']}\n{peecee_result['stderr']}"
+        warnings, failures = significant_messages(combined)
+        raw_directory = peecee_output / stem
+        candidate_markdown = raw_directory / f"{stem}.md"
+        candidate_metadata = raw_directory / f"{stem}_meta.json"
+        fresh, freshness_error, metadata = raw_output_is_fresh(
+            candidate_markdown, candidate_metadata, expected_pages
+        )
+        if (
+            fresh
+            and not peecee_overridden
+            and not re.search(
+                r"(?:marker: done ->|Saved markdown to|\bOUTPUT:)",
+                combined,
+                re.IGNORECASE,
+            )
+        ):
+            fresh = False
+            freshness_error = "remote log contains no Marker completion evidence"
+        attempt = {
+            "execution_target": "peecee",
+            "argv": peecee_result["argv"],
+            "command": peecee_result["command"],
+            "working_directory": peecee_result["working_directory"],
+            "exit_status": peecee_result["exit_status"],
+            "warnings": warnings,
+            "failures": failures,
+            "fresh_output_validated": fresh,
+            "freshness_error": freshness_error,
+        }
+        attempts.append(attempt)
+        if peecee_result["exit_status"] == 0 and fresh:
+            selected_target = "peecee"
+            markdown_path = candidate_markdown
+            marker_metadata = metadata
+        else:
+            failure_text = combined + "\n" + (freshness_error or "")
+            if INFRASTRUCTURE_FAILURE_RE.search(failure_text):
+                infrastructure_failure = (
+                    freshness_error or "peecee infrastructure failure"
+                )
+            else:
+                error = (
+                    f"Marker failed on peecee for {source.name}: "
+                    f"{freshness_error or 'converter exit status ' + str(peecee_result['exit_status'])}"
+                )
+                record_conversion_failure(
+                    work,
+                    root,
+                    source,
+                    source_hash,
+                    "marker",
+                    attempts,
+                    fallbacks,
+                    pre_conversion_commands,
+                    error,
+                )
+                raise BookConversionError(error)
+
+    if infrastructure_failure is not None:
+        local_prefix, _ = overridden_command("BOOKS_MARKER_LOCAL", DEFAULT_MARKER_LOCAL)
+        local_output = work / "marker-local"
+        local_argv = local_prefix + [
+            str(staged_source.relative_to(root)),
+            "--format",
+            "markdown",
+            "--out",
+            str(local_output.relative_to(root)),
+        ]
+        local_result = command_result(local_argv, root)
+        combined = f"{local_result['stdout']}\n{local_result['stderr']}"
+        warnings, failures = significant_messages(combined)
+        raw_directory = local_output / stem
+        candidate_markdown = raw_directory / f"{stem}.md"
+        candidate_metadata = raw_directory / f"{stem}_meta.json"
+        fresh, freshness_error, metadata = raw_output_is_fresh(
+            candidate_markdown, candidate_metadata, expected_pages
+        )
+        attempts.append(
+            {
+                "execution_target": "local",
+                "argv": local_result["argv"],
+                "command": local_result["command"],
+                "working_directory": local_result["working_directory"],
+                "exit_status": local_result["exit_status"],
+                "warnings": warnings,
+                "failures": failures,
+                "fresh_output_validated": fresh,
+                "freshness_error": freshness_error,
+            }
+        )
+        fallbacks.append(
+            {"from": "peecee", "to": "local", "reason": infrastructure_failure}
+        )
+        if local_result["exit_status"] != 0 or not fresh:
+            error = (
+                f"local Marker fallback failed for {source.name}: "
+                f"{freshness_error or 'converter exit status ' + str(local_result['exit_status'])}"
+            )
+            record_conversion_failure(
+                work,
+                root,
+                source,
+                source_hash,
+                "marker",
+                attempts,
+                fallbacks,
+                pre_conversion_commands,
+                error,
+            )
+            raise BookConversionError(error)
+        selected_target = "local"
+        markdown_path = candidate_markdown
+        marker_metadata = metadata
+
+    assert (
+        raw_directory is not None
+        and markdown_path is not None
+        and selected_target is not None
+    )
+    selected_attempt = next(
+        attempt
+        for attempt in attempts
+        if attempt["execution_target"] == selected_target
+    )
+    return {
+        "format": "pdf",
+        "raw_directory": raw_directory,
+        "markdown_path": markdown_path,
+        "marker_metadata": marker_metadata or {},
+        "document_metadata": pdfinfo,
+        "converter": "marker",
+        "execution_target": selected_target,
+        "converter_version": marker_version(root, selected_target),
+        "converter_exit_status": selected_attempt["exit_status"],
+        "command_executed": selected_attempt["command"],
+        "command_argv": selected_attempt["argv"],
+        "working_directory": selected_attempt["working_directory"],
+        "attempts": attempts,
+        "fallbacks_used": fallbacks,
+        "pre_conversion_commands": pre_conversion_commands,
+        "conversion_options": {"format": "markdown", "host": selected_target},
+        "staged_source": staged_source,
+    }
+
+
+def convert_epub(
+    source: Path, source_hash: str, slug: str, root: Path, work: Path
+) -> dict[str, object]:
+    stem = conversion_stem(slug, source_hash)
+    staged_source = work / f"{stem}.epub"
+    shutil.copyfile(source, staged_source)
+    raw_directory = work / "pandoc"
+    raw_directory.mkdir()
+    markdown_path = raw_directory / "intermediate.md"
+    executable = os.environ.get("BOOKS_PANDOC", "pandoc")
+    argv = [
+        executable,
+        f"../{staged_source.name}",
+        "--from=epub",
+        "--to=gfm",
+        "--wrap=none",
+        "--markdown-headings=atx",
+        "--extract-media=assets",
+        "--output=intermediate.md",
+    ]
+    result = command_result(argv, raw_directory)
+    warnings, failures = significant_messages(f"{result['stdout']}\n{result['stderr']}")
+    attempt = {
+        "execution_target": "local",
+        "argv": result["argv"],
+        "command": result["command"],
+        "working_directory": result["working_directory"],
+        "exit_status": result["exit_status"],
+        "warnings": warnings,
+        "failures": failures,
+        "fresh_output_validated": markdown_path.is_file()
+        and bool(markdown_path.stat().st_size),
+        "freshness_error": None
+        if markdown_path.is_file() and markdown_path.stat().st_size
+        else "converter did not produce non-empty Markdown",
+    }
+    if (
+        result["exit_status"] != 0
+        or not markdown_path.is_file()
+        or not markdown_path.stat().st_size
+    ):
+        error = (
+            f"Pandoc failed for {source.name} with exit status {result['exit_status']}"
+        )
+        record_conversion_failure(
+            work, root, source, source_hash, "pandoc", [attempt], [], [], error
+        )
+        raise BookConversionError(error)
+    return {
+        "format": "epub",
+        "raw_directory": raw_directory,
+        "markdown_path": markdown_path,
+        "marker_metadata": {},
+        "document_metadata": epub_information(source),
+        "converter": "pandoc",
+        "execution_target": "local",
+        "converter_version": pandoc_version(root, executable),
+        "converter_exit_status": result["exit_status"],
+        "command_executed": result["command"],
+        "command_argv": result["argv"],
+        "working_directory": result["working_directory"],
+        "attempts": [attempt],
+        "fallbacks_used": [],
+        "pre_conversion_commands": [],
+        "conversion_options": {
+            "from": "epub",
+            "to": "gfm",
+            "wrap": "none",
+            "markdown_headings": "atx",
+            "extract_media": "assets",
+        },
+        "staged_source": staged_source,
+    }
+
+
+def remove_high_confidence_furniture(lines: list[str]) -> tuple[list[str], list[str]]:
+    removed: list[str] = []
+    about_author_indexes = [
+        index
+        for index, line in enumerate(lines)
+        if (parsed := heading(line))
+        and re.fullmatch(
+            r"about (?:the )?authors?", plain_heading(parsed[1]), re.IGNORECASE
+        )
+    ]
+    for about_index in reversed(about_author_indexes):
+        navigation_start = next(
+            (
+                index
+                for index in range(about_index + 1, len(lines))
+                if heading(lines[index])
+                and LINK_RE.search(lines[index])
+                and not HTML_ID_RE.search(lines[index])
+            ),
+            None,
+        )
+        if navigation_start is None:
+            continue
+        tail = lines[navigation_start:]
+        nonblank = [line for line in tail if line.strip()]
+        page_link_lines = [
+            line
+            for line in nonblank
+            if any(
+                match.group(2).strip().casefold().startswith("#page-")
+                for match in LINK_RE.finditer(line)
+            )
+        ]
+        tail_headings = [line for line in nonblank if heading(line)]
+        if (
+            len(page_link_lines) < 20
+            or len(tail_headings) < 3
+            or len(page_link_lines) / len(nonblank) < 0.75
+            or any(HTML_ID_RE.search(line) for line in tail)
+        ):
+            continue
+        removed.append(
+            "terminal generated internal-page navigation after About the Author "
+            f"({len(tail)} source line(s))"
+        )
+        return lines[:navigation_start], removed
+    return list(lines), removed
+
+
+def chapter_heading_parts(title: str) -> tuple[int | None, str]:
+    plain = plain_heading(title)
+    match = re.match(
+        r"^Chapter\s+(\d{1,3}|[A-Za-z]+)\b\s*(?:[.):-]\s*)?(.*)$",
+        plain,
+        re.IGNORECASE,
+    )
+    if not match:
+        return None, plain
+    token = match.group(1).casefold()
+    number = int(token) if token.isdigit() else CHAPTER_NUMBER_WORDS.get(token)
+    return number, match.group(2).strip()
+
+
+def chapter_title_key(title: str) -> str:
+    _number, value = chapter_heading_parts(title)
+    value = re.sub(r"^\d{1,3}\s*(?:[.):-]\s*)?", "", value)
+    words = re.sub(r"[^\w]+", " ", value.casefold()).split()
+    return " ".join(
+        "architecture" if word == "architectural" else word for word in words
+    )
+
+
+def self_assessment_navigation_indexes(lines: list[str]) -> set[int]:
+    indexes: set[int] = set()
+    inside_self_assessment = False
+    active_fence: tuple[str, int] | None = None
+    for index, line in enumerate(lines):
+        next_state, delimiter = next_fence_state(line, active_fence)
+        if delimiter:
+            active_fence = next_state
+            continue
+        if active_fence is not None:
+            continue
+        parsed = heading(line)
+        if not parsed:
+            continue
+        title = plain_heading(parsed[1])
+        if re.search(r"\bself-assessment questions\b", title, re.IGNORECASE):
+            inside_self_assessment = True
+            continue
+        if inside_self_assessment and STRONG_NAMED_BOUNDARY_RE.fullmatch(title):
+            break
+        number, _inline_title = chapter_heading_parts(title)
+        if inside_self_assessment and number is not None and LINK_RE.search(line):
+            indexes.add(index)
+    return indexes
+
+
+def printed_chapter_evidence(markdown: str) -> list[dict[str, object]]:
+    candidates: list[tuple[int, int, str, str | None]] = []
+    lines = markdown.splitlines()
+    excluded_indexes = self_assessment_navigation_indexes(lines)
+    active_fence: tuple[str, int] | None = None
+    for line_index, raw_line in enumerate(lines):
+        next_state, delimiter = next_fence_state(raw_line, active_fence)
+        if delimiter:
+            active_fence = next_state
+            continue
+        if active_fence is not None:
+            continue
+        if line_index in excluded_indexes:
+            continue
+        segments = re.split(r"<br\s*/?>", raw_line, flags=re.IGNORECASE)
+        chapter_pattern = (
+            r"(?:^|\|)\s*Chapter\s+(\d+)\s*:\s*(.*)"
+            if raw_line.lstrip().startswith("|")
+            else r"^\s*(?:[-*]\s+)?Chapter\s+(\d+)\s*:\s*(.*)"
+        )
+        chapter_match = re.search(
+            chapter_pattern,
+            segments[0],
+            re.IGNORECASE,
+        )
+        if not chapter_match:
+            heading_match = HEADING_RE.match(raw_line)
+            heading_title = (
+                plain_heading(
+                    re.sub(
+                        r"<br\s*/?>",
+                        " ",
+                        heading_match.group(2),
+                        flags=re.IGNORECASE,
+                    )
+                )
+                if heading_match
+                else ""
+            )
+            unpunctuated = re.fullmatch(
+                r"Chapter\s+(\d+)\s+(.+)", heading_title, re.IGNORECASE
+            )
+            if unpunctuated:
+                anchor = next(
+                    (
+                        match.group(2).strip()[1:]
+                        for match in LINK_RE.finditer(raw_line)
+                        if match.group(2).strip().startswith("#")
+                    ),
+                    None,
+                )
+                candidates.append(
+                    (
+                        line_index,
+                        int(unpunctuated.group(1)),
+                        unpunctuated.group(2).strip(),
+                        anchor,
+                    )
+                )
+                continue
+        if not chapter_match:
+            continue
+        number = int(chapter_match.group(1))
+        title_parts: list[str] = []
+        title_segments = [chapter_match.group(2), *segments[1:]]
+        page_segment_index = next(
+            (
+                index
+                for index, segment in enumerate(title_segments[1:], 1)
+                if re.fullmatch(r"\d{1,4}", segment.strip(" |"))
+            ),
+            None,
+        )
+        for segment_index, segment in enumerate(title_segments):
+            cleaned = segment.strip(" |")
+            if re.fullmatch(r"\d{1,4}", cleaned):
+                break
+            page_match = (
+                None
+                if page_segment_index is not None and segment_index < page_segment_index
+                else re.search(r"(?:\s+|(?<=[A-Za-z.!?]))(\d{1,4})\s*$", cleaned)
+            )
+            if page_match:
+                cleaned = cleaned[: page_match.start()].rstrip(" .|")
+                if cleaned:
+                    title_parts.append(cleaned)
+                break
+            if cleaned:
+                title_parts.append(cleaned)
+        title = " ".join(html.unescape(" ".join(title_parts)).split()).strip(" .|")
+        if title:
+            anchor = next(
+                (
+                    match.group(2).strip()[1:]
+                    for match in LINK_RE.finditer(raw_line)
+                    if match.group(2).strip().startswith("#")
+                ),
+                None,
+            )
+            candidates.append((line_index, number, title, anchor))
+
+    runs: list[list[tuple[int, int, str, str | None]]] = []
+    current: list[tuple[int, int, str, str | None]] = []
+    for candidate in candidates:
+        if not current or (
+            candidate[1] == current[-1][1] + 1 and candidate[0] - current[-1][0] <= 30
+        ):
+            current.append(candidate)
+            continue
+        if candidate[1] == current[-1][1]:
+            continue
+        runs.append(current)
+        current = [candidate]
+    if current:
+        runs.append(current)
+    best_run = max(runs, key=len, default=[])
+    if len(best_run) < 3:
+        return []
+    return [
+        {
+            "number": number,
+            "title": title,
+            "source_line": line_index,
+            "anchor": anchor,
+            "source": "printed table of contents",
+        }
+        for line_index, number, title, anchor in best_run
+    ]
+
+
+def body_chapter_evidence(markdown: str) -> list[dict[str, object]]:
+    headings = markdown_headings(markdown)
+    excluded_indexes = self_assessment_navigation_indexes(markdown.splitlines())
+    candidates: list[tuple[int, int, str, str]] = []
+    for position, (line_number, _level, title) in enumerate(headings):
+        if line_number - 1 in excluded_indexes:
+            continue
+        number, inline_title = chapter_heading_parts(title)
+        if number is None:
+            continue
+        if inline_title:
+            candidates.append(
+                (
+                    number,
+                    line_number - 1,
+                    inline_title,
+                    "explicit body chapter heading",
+                )
+            )
+            continue
+        if position + 1 < len(headings):
+            next_line, _next_level, next_title = headings[position + 1]
+            if next_line - line_number <= 8:
+                candidates.append(
+                    (
+                        number,
+                        line_number - 1,
+                        next_title,
+                        "explicit body chapter label and following title",
+                    )
+                )
+
+    runs: list[list[tuple[int, int, str, str]]] = []
+    current: list[tuple[int, int, str, str]] = []
+    for candidate in candidates:
+        if not current or candidate[0] == current[-1][0] + 1:
+            current.append(candidate)
+            continue
+        if candidate[0] == current[-1][0]:
+            continue
+        runs.append(current)
+        current = [candidate]
+    if current:
+        runs.append(current)
+    best_run = max(runs, key=len, default=[])
+    if len(best_run) < 3:
+        return []
+    return [
+        {
+            "number": number,
+            "title": title,
+            "body_line": line_index,
+            "anchor": None,
+            "source": source,
+        }
+        for number, line_index, title, source in best_run
+    ]
+
+
+def numbered_contents_evidence(
+    markdown: str,
+) -> tuple[list[dict[str, object]], list[dict[str, object]]]:
+    chapter_candidates: list[tuple[int, int, str]] = []
+    appendix_candidates: list[tuple[int, str, str]] = []
+    part_candidates: list[tuple[int, str, str]] = []
+    frontmatter_candidates: list[tuple[int, str]] = []
+    in_contents = False
+    before_first_chapter = True
+    active_fence: tuple[str, int] | None = None
+    for line_index, line in enumerate(markdown.splitlines()):
+        next_state, delimiter = next_fence_state(line, active_fence)
+        if delimiter:
+            active_fence = next_state
+            continue
+        if active_fence is not None:
+            continue
+        parsed_heading = heading(line)
+        if parsed_heading and parsed_heading[0] == 1:
+            heading_title = plain_heading(parsed_heading[1]).casefold()
+            if "contents" in heading_title:
+                in_contents = True
+                continue
+            if in_contents:
+                break
+        if not in_contents or not line.lstrip().startswith("|"):
+            continue
+        match = re.match(r"^\s*\|\s*((?:\d+|A\d+))\.?\s*\|\s*(.*?)\|", line)
+        if not match:
+            cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+            part_cell = next(
+                (
+                    plain_heading(
+                        re.sub(r"<br\s*/?>", " ", cell, flags=re.IGNORECASE)
+                    ).strip()
+                    for cell in cells
+                    if plain_heading(cell).casefold().startswith("part")
+                ),
+                None,
+            )
+            part_match = (
+                re.fullmatch(
+                    r"Part\s+([IVXLCDM]+)\s*[.:\-–—]\s*(.+)",
+                    part_cell,
+                    re.IGNORECASE,
+                )
+                if part_cell
+                else None
+            )
+            if part_match:
+                before_first_chapter = False
+                part_title = re.sub(r"\s+\d{1,4}$", "", part_match.group(2)).strip()
+                if part_title:
+                    part_candidates.append(
+                        (line_index, part_match.group(1).upper(), part_title)
+                    )
+                continue
+            inline_chapter_cell = (
+                plain_heading(
+                    re.sub(r"<br\s*/?>", " ", cells[0], flags=re.IGNORECASE)
+                ).strip()
+                if cells
+                else ""
+            )
+            inline_chapter_match = re.fullmatch(
+                r"(\d{1,3})\.\s+(.+)", inline_chapter_cell
+            )
+            if inline_chapter_match:
+                before_first_chapter = False
+                inline_title = inline_chapter_match.group(2).strip()
+                if not any(
+                    re.fullmatch(r"\d{1,4}", cell.strip()) for cell in cells[1:]
+                ):
+                    inline_title = re.sub(r"\s+\d{1,4}$", "", inline_title)
+                if inline_title:
+                    chapter_candidates.append(
+                        (
+                            line_index,
+                            int(inline_chapter_match.group(1)),
+                            inline_title,
+                        )
+                    )
+                continue
+            if before_first_chapter and len(cells) >= 2 and not cells[0]:
+                title = plain_heading(
+                    re.split(r"<br\s*/?>", cells[1], maxsplit=1, flags=re.IGNORECASE)[0]
+                ).strip()
+                if title and not title.casefold().startswith("part "):
+                    frontmatter_candidates.append((line_index, title))
+            continue
+        label = match.group(1)
+        if label.isdigit():
+            before_first_chapter = False
+        title_segments = [
+            plain_heading(segment).strip()
+            for segment in re.split(r"<br\s*/?>", match.group(2), flags=re.IGNORECASE)
+            if plain_heading(segment).strip()
+        ]
+        if label.isdigit() and title_segments:
+            embedded_part = re.fullmatch(
+                r"Part\s+([IVXLCDM]+)\s*[.:\-–—]\s*(.*)",
+                title_segments[0],
+                re.IGNORECASE,
+            )
+            if embedded_part and len(title_segments) >= 2:
+                part_title = embedded_part.group(2).strip() or title_segments[1]
+                chapter_segment_index = 1 if embedded_part.group(2).strip() else 2
+                if part_title:
+                    part_candidates.append(
+                        (line_index, embedded_part.group(1).upper(), part_title)
+                    )
+                title_segments = title_segments[chapter_segment_index:]
+        title = " ".join(title_segments).strip()
+        title = re.sub(r"\s+\d{1,4}$", "", title)
+        if not title:
+            continue
+        if label.startswith("A"):
+            appendix_candidates.append((line_index, label, title))
+        else:
+            chapter_candidates.append((line_index, int(label), title))
+
+    chapter_runs: list[list[tuple[int, int, str]]] = []
+    current: list[tuple[int, int, str]] = []
+    for candidate in chapter_candidates:
+        if not current or candidate[1] == current[-1][1] + 1:
+            current.append(candidate)
+            continue
+        if candidate[1] == current[-1][1]:
+            continue
+        chapter_runs.append(current)
+        current = [candidate]
+    if current:
+        chapter_runs.append(current)
+    best_run = max(chapter_runs, key=len, default=[])
+    chapters = [
+        {
+            "number": number,
+            "title": title,
+            "source_line": line_index,
+            "anchor": None,
+            "source": "numbered printed contents table",
+        }
+        for line_index, number, title in best_run
+    ]
+    sections: list[dict[str, object]] = [
+        {
+            "label": label,
+            "title": title,
+            "source_line": line_index,
+            "source": "numbered printed contents table",
+            "kind": "appendix",
+        }
+        for line_index, label, title in appendix_candidates
+    ]
+    sections.extend(
+        {
+            "label": label,
+            "title": title,
+            "source_line": line_index,
+            "source": "printed part entry in contents table",
+            "kind": "part",
+        }
+        for line_index, label, title in part_candidates
+    )
+    sections.extend(
+        {
+            "label": None,
+            "title": title,
+            "source_line": line_index,
+            "source": "unnumbered printed contents entry",
+            "kind": "frontmatter",
+        }
+        for line_index, title in frontmatter_candidates
+    )
+    sections.sort(key=lambda entry: int(entry["source_line"]))
+    return chapters, sections
+
+
+def structural_only_unit(unit: dict[str, object]) -> bool:
+    """Return whether a unit contains only its boundary heading and anchors."""
+    title_index = int(unit["title_index"])
+    for index, line in enumerate(unit["lines"]):  # type: ignore[union-attr]
+        if index == title_index:
+            continue
+        stripped = str(line).strip()
+        if not EMPTY_ANCHOR_TAG_RE.sub("", stripped).strip():
+            continue
+        return False
+    return True
+
+
+def merge_structural_units(
+    units: list[dict[str, object]],
+) -> list[dict[str, object]]:
+    """Merge adjacent duplicate boundaries without hiding genuinely empty units."""
+    if not units:
+        return []
+
+    source_units = copy.deepcopy(units)
+    merged: list[dict[str, object]] = []
+
+    def same_title(left: dict[str, object], right: dict[str, object]) -> bool:
+        return (
+            plain_heading(str(left["title"])).casefold()
+            == plain_heading(str(right["title"])).casefold()
+        )
+
+    def bibliography_alias(left: dict[str, object], right: dict[str, object]) -> bool:
+        return {
+            plain_heading(str(left["title"])).casefold(),
+            plain_heading(str(right["title"])).casefold(),
+        } == {"bibliography", "references"}
+
+    def part_label_alias(left: dict[str, object], right: dict[str, object]) -> bool:
+        left_match = re.fullmatch(
+            r"part\s+([ivxlcdm]+)",
+            plain_heading(str(left["title"])),
+            re.IGNORECASE,
+        )
+        right_match = re.match(
+            r"part\s+([ivxlcdm]+)\b",
+            plain_heading(str(right["title"])),
+            re.IGNORECASE,
+        )
+        return bool(
+            left_match
+            and right_match
+            and left_match.group(1).casefold() == right_match.group(1).casefold()
+        )
+
+    def without_title(structural: dict[str, object]) -> list[str]:
+        title_index = int(structural["title_index"])
+        return [
+            str(line)
+            for index, line in enumerate(structural["lines"])  # type: ignore[union-attr]
+            if index != title_index
+        ]
+
+    for index, unit in enumerate(source_units):
+        if (
+            structural_only_unit(unit)
+            and index + 1 < len(source_units)
+            and part_label_alias(unit, source_units[index + 1])
+        ):
+            neighbor = source_units[index + 1]
+            prefix = [*without_title(unit), ""]
+            neighbor["lines"] = [*prefix, *neighbor["lines"]]  # type: ignore[misc]
+            neighbor["title_index"] = int(neighbor["title_index"]) + len(prefix)
+            neighbor.setdefault("merged_duplicate_boundaries", []).append(  # type: ignore[union-attr]
+                unit["title"]
+            )
+            continue
+        if (
+            structural_only_unit(unit)
+            and index + 1 < len(source_units)
+            and bibliography_alias(unit, source_units[index + 1])
+        ):
+            neighbor = source_units[index + 1]
+            prefix = [*unit["lines"], ""]  # type: ignore[misc]
+            neighbor["lines"] = [*prefix, *neighbor["lines"]]  # type: ignore[misc]
+            neighbor["title"] = unit["title"]
+            neighbor["title_index"] = int(unit["title_index"])
+            neighbor.setdefault("merged_duplicate_boundaries", []).append(  # type: ignore[union-attr]
+                f"{unit['title']} + References"
+            )
+            continue
+        if (
+            structural_only_unit(unit)
+            and index + 1 < len(source_units)
+            and same_title(unit, source_units[index + 1])
+        ):
+            neighbor = source_units[index + 1]
+            prefix = [*without_title(unit), ""]
+            neighbor["lines"] = [*prefix, *neighbor["lines"]]  # type: ignore[misc]
+            neighbor["title_index"] = int(neighbor["title_index"]) + len(prefix)
+            neighbor.setdefault("merged_duplicate_boundaries", []).append(unit["title"])  # type: ignore[union-attr]
+            continue
+        if structural_only_unit(unit) and merged and same_title(unit, merged[-1]):
+            merged[-1]["lines"] = [  # type: ignore[misc]
+                *merged[-1]["lines"],  # type: ignore[misc]
+                "",
+                *without_title(unit),
+            ]
+            merged[-1].setdefault("merged_duplicate_boundaries", []).append(  # type: ignore[union-attr]
+                unit["title"]
+            )
+            continue
+        merged.append(unit)
+    return merged
+
+
+def split_logical_units(
+    markdown: str,
+    fallback_title: str,
+    navigation_entries: list[dict[str, object]] | None = None,
+    chapter_evidence: list[dict[str, object]] | None = None,
+    section_evidence: list[dict[str, object]] | None = None,
+) -> tuple[list[dict[str, object]], list[str]]:
+    lines, removed = remove_high_confidence_furniture(markdown.splitlines())
+    navigation_entries = navigation_entries or []
+    chapter_evidence = chapter_evidence or []
+    section_evidence = section_evidence or []
+    chapter_evidence_by_anchor = {
+        unquote(str(entry["anchor"])): entry
+        for entry in chapter_evidence
+        if entry.get("anchor")
+    }
+    navigation_title_set = {
+        plain_heading(str(entry["title"])).casefold()
+        for entry in navigation_entries
+        if entry.get("title") and entry.get("depth") == 1
+    }
+    navigation_anchor_titles: dict[str, str] = {}
+    for entry in navigation_entries:
+        title = entry.get("title")
+        href = entry.get("spine_href") or entry.get("href")
+        if not title or not href or entry.get("depth") != 1:
+            continue
+        decoded_href = unquote(str(href))
+        path, separator, fragment = decoded_href.partition("#")
+        candidates = {decoded_href, path, PurePosixPath(path).name}
+        if separator and fragment:
+            candidates.add(fragment)
+        for candidate in candidates:
+            if candidate:
+                navigation_anchor_titles[candidate] = str(title)
+
+    heading_entries: list[tuple[int, int, str]] = []
+    linked_heading_indexes: set[int] = set()
+    anchor_boundary_titles: dict[int, str] = {}
+    chapter_anchor_evidence: dict[int, dict[str, object]] = {}
+    active_fence: tuple[str, int] | None = None
+    for index, line in enumerate(lines):
+        next_state, delimiter = next_fence_state(line, active_fence)
+        if delimiter:
+            active_fence = next_state
+            continue
+        if active_fence is not None:
+            continue
+        parsed = heading(line)
+        if parsed:
+            heading_entries.append((index, parsed[0], parsed[1]))
+            if LINK_RE.search(line):
+                if not HTML_ID_RE.search(line):
+                    linked_heading_indexes.add(index)
+        for anchor_match in HTML_ID_RE.finditer(line):
+            anchor = unquote(anchor_match.group(1))
+            if anchor in navigation_anchor_titles:
+                anchor_boundary_titles.setdefault(
+                    index, navigation_anchor_titles[anchor]
+                )
+            if anchor in chapter_evidence_by_anchor:
+                chapter_anchor_evidence.setdefault(
+                    index, chapter_evidence_by_anchor[anchor]
+                )
+
+    linked_heading_indexes.update(self_assessment_navigation_indexes(lines))
+
+    numbered_candidates: list[tuple[int, int, str]] = []
+    for index, level, title in heading_entries:
+        match = re.fullmatch(
+            r"(?:chapter\s+)?(\d{1,3})(?:\s*[.):-]\s*|\s+)(?!\d)(\S.*)",
+            title,
+            re.IGNORECASE,
+        )
+        if match and level <= 2 and index not in linked_heading_indexes:
+            numbered_candidates.append((index, int(match.group(1)), title))
+    numeric_boundary_indexes: set[int] = set()
+    best_sequence: list[tuple[int, int, str]] = []
+    for starting_number in (0, 1):
+        sequence: list[tuple[int, int, str]] = []
+        expected = starting_number
+        for candidate in numbered_candidates:
+            number = candidate[1]
+            if number == expected:
+                sequence.append(candidate)
+                expected += 1
+            elif sequence and number > expected:
+                break
+        if len(sequence) > len(best_sequence):
+            best_sequence = sequence
+    if len(best_sequence) >= 3:
+        numeric_boundary_indexes = {entry[0] for entry in best_sequence}
+    numeric_boundary_titles = {entry[2].casefold() for entry in best_sequence}
+    roman_values = {
+        "I": 1,
+        "II": 2,
+        "III": 3,
+        "IV": 4,
+        "V": 5,
+        "VI": 6,
+        "VII": 7,
+        "VIII": 8,
+        "IX": 9,
+        "X": 10,
+    }
+    roman_candidates: list[tuple[int, int, str]] = []
+    roman_boundary_forced_titles: dict[int, str] = {}
+    for position, (index, level, title) in enumerate(heading_entries):
+        match = re.fullmatch(r"([IVX]+)(?:\s+(\S.*))?", title)
+        if match and level <= 2 and index not in linked_heading_indexes:
+            value = roman_values.get(match.group(1))
+            if value is not None:
+                combined_title = title
+                if not match.group(2) and position + 1 < len(heading_entries):
+                    next_index, _next_level, next_title = heading_entries[position + 1]
+                    if next_index - index <= 3:
+                        combined_title = f"{title} {next_title}"
+                roman_candidates.append((index, value, combined_title))
+                roman_boundary_forced_titles[index] = combined_title
+    roman_sequence: list[tuple[int, int, str]] = []
+    expected_roman = 1
+    for candidate in roman_candidates:
+        if candidate[1] == expected_roman:
+            roman_sequence.append(candidate)
+            expected_roman += 1
+        elif roman_sequence and candidate[1] > expected_roman:
+            break
+    roman_boundary_indexes = (
+        {entry[0] for entry in roman_sequence} if len(roman_sequence) >= 3 else set()
+    )
+    roman_boundary_titles = {entry[2].casefold() for entry in roman_sequence}
+    evidence_titles = {
+        int(entry["number"]): str(entry["title"])
+        for entry in chapter_evidence
+        if isinstance(entry.get("number"), int) and entry.get("title")
+    }
+    evidence_source_lines = {
+        int(entry["source_line"])
+        for entry in chapter_evidence
+        if isinstance(entry.get("source_line"), int)
+    }
+    section_source_lines = {
+        int(entry["source_line"])
+        for entry in section_evidence
+        if isinstance(entry.get("source_line"), int)
+    }
+    heading_titles_by_index = {index: title for index, _level, title in heading_entries}
+    section_boundary_titles: dict[int, str] = {}
+    section_boundary_kinds: dict[int, str] = {}
+    previous_section_index = -1
+    for entry in section_evidence:
+        label = entry.get("label")
+        evidence_title = entry.get("title")
+        if not evidence_title:
+            continue
+        expected_key = chapter_title_key(str(evidence_title))
+        candidate = next(
+            (
+                (index, heading_title)
+                for index, _level, heading_title in heading_entries
+                if index > previous_section_index
+                and index not in linked_heading_indexes
+                and index not in section_source_lines
+                and (
+                    chapter_title_key(heading_title) == expected_key
+                    or chapter_title_key(heading_title).startswith(f"{expected_key} ")
+                    or expected_key.startswith(f"{chapter_title_key(heading_title)} ")
+                )
+            ),
+            None,
+        )
+        if candidate is None:
+            continue
+        candidate_index, body_title = candidate
+        if entry.get("kind") == "appendix" and label:
+            section_boundary_titles[candidate_index] = f"Appendix {label}: {body_title}"
+        elif entry.get("kind") == "part" and label:
+            section_boundary_titles[candidate_index] = f"Part {label}: {body_title}"
+        else:
+            section_boundary_titles[candidate_index] = body_title
+        section_boundary_kinds[candidate_index] = str(entry.get("kind") or "section")
+        previous_section_index = candidate_index
+    chapter_boundary_titles: dict[int, str] = {}
+    assigned_numbers: dict[int, int] = {}
+    chapter_anchor_boundary_indexes: set[int] = set()
+    for index, entry in chapter_anchor_evidence.items():
+        number = entry.get("number")
+        evidence_title = entry.get("title")
+        if not isinstance(number, int) or not evidence_title:
+            continue
+        _body_number, body_title = chapter_heading_parts(
+            heading_titles_by_index.get(index, str(evidence_title))
+        )
+        body_title = re.sub(rf"^{number}\s*(?:[.):-]\s*)?", "", body_title).strip()
+        body_key = chapter_title_key(body_title)
+        evidence_key = chapter_title_key(str(evidence_title))
+        chosen_title = (
+            str(evidence_title)
+            if body_key
+            and (evidence_key == body_key or evidence_key.startswith(f"{body_key} "))
+            else body_title or str(evidence_title)
+        )
+        assigned_numbers[number] = index
+        chapter_boundary_titles[index] = f"Chapter {number}: {chosen_title}"
+        chapter_anchor_boundary_indexes.add(index)
+    for index, _level, title in heading_entries:
+        if index in evidence_source_lines or index in linked_heading_indexes:
+            continue
+        number, _inline_title = chapter_heading_parts(title)
+        if number is None:
+            continue
+        if number in assigned_numbers:
+            continue
+        assigned_numbers[number] = index
+        if number in evidence_titles:
+            chapter_boundary_titles[index] = (
+                f"Chapter {number}: {evidence_titles[number]}"
+            )
+    previous_index = -1
+    for number, evidence_title in sorted(evidence_titles.items()):
+        if number in assigned_numbers:
+            previous_index = assigned_numbers[number]
+            continue
+        following_indexes = [
+            index
+            for later_number, index in assigned_numbers.items()
+            if later_number > number
+        ]
+        upper_bound = min(following_indexes) if following_indexes else len(lines)
+        expected_key = chapter_title_key(evidence_title)
+        candidate = next(
+            (
+                (index, heading_title)
+                for index, _level, heading_title in heading_entries
+                if previous_index < index < upper_bound
+                and index not in linked_heading_indexes
+                and index not in evidence_source_lines
+                and index not in section_boundary_titles
+                and (
+                    chapter_title_key(heading_title) == expected_key
+                    or chapter_title_key(heading_title).startswith(f"{expected_key} ")
+                    or expected_key.startswith(f"{chapter_title_key(heading_title)} ")
+                )
+            ),
+            None,
+        )
+        if candidate is not None:
+            candidate_index, body_title = candidate
+            _body_number, stripped_body_title = chapter_heading_parts(body_title)
+            assigned_numbers[number] = candidate_index
+            chapter_boundary_titles[candidate_index] = (
+                f"Chapter {number}: {stripped_body_title or body_title}"
+            )
+            previous_index = candidate_index
+
+    def is_boundary(title: str, line_index: int | None = None) -> bool:
+        return bool(
+            (
+                BOUNDARY_RE.fullmatch(title)
+                and (line_index is None or line_index not in linked_heading_indexes)
+            )
+            or plain_heading(title).casefold() in navigation_title_set
+            or (line_index is not None and line_index in numeric_boundary_indexes)
+            or (line_index is not None and line_index in roman_boundary_indexes)
+            or (line_index is not None and line_index in chapter_boundary_titles)
+            or (line_index is not None and line_index in section_boundary_titles)
+        )
+
+    if anchor_boundary_titles:
+        first_boundary = min(anchor_boundary_titles)
+        first_navigation_title = next(
+            (
+                str(entry["title"])
+                for entry in navigation_entries
+                if entry.get("depth") == 1 and entry.get("title")
+            ),
+            None,
+        )
+        if (
+            first_boundary > 0
+            and anchor_boundary_titles[first_boundary] == first_navigation_title
+        ):
+            anchor_boundary_titles[0] = anchor_boundary_titles.pop(first_boundary)
+        boundary_indexes = sorted(anchor_boundary_titles)
+    else:
+        boundary_indexes = [
+            index
+            for index, level, title in heading_entries
+            if (
+                index in chapter_boundary_titles
+                or index in section_boundary_titles
+                or index in roman_boundary_indexes
+                or (
+                    (
+                        level <= 2
+                        or (level <= 3 and STRONG_NAMED_BOUNDARY_RE.fullmatch(title))
+                    )
+                    and is_boundary(title, index)
+                )
+            )
+        ]
+
+    ranges: list[tuple[int, int]] = []
+    if not boundary_indexes:
+        ranges.append((0, len(lines)))
+    else:
+        if boundary_indexes[0] > 0 and any(
+            line.strip() for line in lines[: boundary_indexes[0]]
+        ):
+            ranges.append((0, boundary_indexes[0]))
+        for position, start in enumerate(boundary_indexes):
+            end = (
+                boundary_indexes[position + 1]
+                if position + 1 < len(boundary_indexes)
+                else len(lines)
+            )
+            ranges.append((start, end))
+
+    units: list[dict[str, object]] = []
+    for start, end in ranges:
+        content = lines[start:end]
+        forced_title = (
+            anchor_boundary_titles.get(start)
+            or chapter_boundary_titles.get(start)
+            or section_boundary_titles.get(start)
+            or roman_boundary_forced_titles.get(start)
+        )
+        matching_title_index = next(
+            (
+                index
+                for index, line in enumerate(content)
+                if heading(line)
+                and forced_title
+                and plain_heading(heading(line)[1]).casefold()
+                == plain_heading(forced_title).casefold()
+            ),
+            None,
+        )
+        if (
+            start in anchor_boundary_titles
+            and forced_title
+            and matching_title_index is None
+        ):
+            insertion_index = 1 if content and HTML_ID_RE.search(content[0]) else 0
+            content.insert(insertion_index, f"# {forced_title}")
+            content.insert(insertion_index + 1, "")
+            title = forced_title
+            title_index = insertion_index
+            confidence = "high"
+            evidence = "EPUB navigation and spine anchor"
+        elif start in anchor_boundary_titles and forced_title:
+            title = forced_title
+            title_index = matching_title_index
+            confidence = "high"
+            evidence = "EPUB navigation and spine anchor"
+        elif forced_title:
+            title = forced_title
+            title_index = next(
+                (i for i, line in enumerate(content) if heading(line)), 0
+            )
+            confidence = "high"
+            evidence = (
+                "printed table-of-contents link target and matching body anchor"
+                if start in chapter_anchor_boundary_indexes
+                else "numbered printed contents table and matching appendix heading"
+                if section_boundary_kinds.get(start) == "appendix"
+                else "printed contents part entry and matching divider heading"
+                if section_boundary_kinds.get(start) == "part"
+                else "unnumbered printed contents entry and matching front-matter heading"
+                if start in section_boundary_titles
+                else "ordered top-level Roman numeral part sequence"
+                if start in roman_boundary_indexes
+                else "printed table of contents and matching body heading"
+            )
+        else:
+            title_index = next(
+                (i for i, line in enumerate(content) if heading(line)), None
+            )
+        if not forced_title and title_index is None:
+            title = fallback_title
+            content = [f"# {title}", ""] + content
+            title_index = 0
+            confidence = "low"
+            evidence = "source filename; no heading was available"
+        elif not forced_title:
+            title = heading(content[title_index])[1]  # type: ignore[index]
+            first_is_boundary = is_boundary(title, start)
+            confidence = "high" if first_is_boundary else "medium"
+            evidence = (
+                "EPUB navigation heading"
+                if plain_heading(title).casefold() in navigation_title_set
+                else "ordered top-level numeric heading sequence"
+                if plain_heading(title).casefold() in numeric_boundary_titles
+                else "ordered top-level Roman numeral part sequence"
+                if plain_heading(title).casefold() in roman_boundary_titles
+                else "explicit logical-unit heading"
+                if first_is_boundary
+                else "first visible document heading before the first logical boundary"
+            )
+        units.append(
+            {
+                "title": title,
+                "lines": content,
+                "title_index": title_index,
+                "boundary_confidence": confidence,
+                "boundary_evidence": evidence,
+                "structural_divider": start in roman_boundary_indexes
+                or bool(re.match(r"^Part\s+", str(title), re.IGNORECASE)),
+            }
+        )
+    return merge_structural_units(units), removed
+
+
+def visible_navigation_text(markdown_line: str) -> str:
+    text = re.sub(r"<[^>]+>", " ", markdown_line)
+    text = re.sub(r"!?(?:\[([^\]]*)\])\([^)]*\)", r"\1", text)
+    text = re.sub(r"[*_`#]", "", text)
+    return " ".join(html.unescape(text).split()).casefold()
+
+
+def inject_epub_navigation_anchors(
+    units: list[dict[str, object]], navigation_entries: list[dict[str, object]]
+) -> tuple[list[dict[str, object]], list[dict[str, str]]]:
+    updated_units = copy.deepcopy(units)
+    unit_by_document: dict[str, dict[str, object]] = {}
+    existing_anchors: set[str] = set()
+    for unit in updated_units:
+        for line in unit["lines"]:  # type: ignore[union-attr]
+            for match in HTML_ID_RE.finditer(line):
+                anchor = unquote(match.group(1))
+                existing_anchors.add(anchor)
+                if "#" not in anchor:
+                    unit_by_document[anchor] = unit
+
+    unresolved: list[dict[str, str]] = []
+    for entry in navigation_entries:
+        if entry.get("depth") == 1 or not entry.get("title") or not entry.get("href"):
+            continue
+        decoded_href = unquote(str(entry["href"]))
+        path, separator, fragment = decoded_href.partition("#")
+        if not separator or not fragment:
+            continue
+        document_anchor = PurePosixPath(path).name
+        full_anchor = f"{document_anchor}#{fragment}"
+        if full_anchor in existing_anchors:
+            continue
+        unit = unit_by_document.get(document_anchor)
+        expected_text = visible_navigation_text(str(entry["title"]))
+        if unit is None:
+            unresolved.append(
+                {
+                    "title": str(entry["title"]),
+                    "href": decoded_href,
+                    "reason": "chapter not found",
+                }
+            )
+            continue
+        lines = list(unit["lines"])  # type: ignore[arg-type]
+        line_index = next(
+            (
+                index
+                for index, line in enumerate(lines)
+                if visible_navigation_text(line) == expected_text
+            ),
+            None,
+        )
+        if line_index is None:
+            unresolved.append(
+                {
+                    "title": str(entry["title"]),
+                    "href": decoded_href,
+                    "reason": "title not found",
+                }
+            )
+            continue
+        lines.insert(line_index, f'<span id="{full_anchor}"></span>')
+        unit["lines"] = lines
+        if line_index <= int(unit["title_index"]):
+            unit["title_index"] = int(unit["title_index"]) + 1
+        existing_anchors.add(full_anchor)
+    return updated_units, unresolved
+
+
+def normalize_unit(unit: dict[str, object]) -> str:
+    lines = list(unit["lines"])  # type: ignore[arg-type]
+    title_index = int(unit["title_index"])
+    output: list[str] = []
+    active_fence: tuple[str, int] | None = None
+    previous_heading_level = 1
+    index = 0
+    while index < len(lines):
+        line = lines[index].rstrip("\r")
+        next_state, delimiter = next_fence_state(line, active_fence)
+        if delimiter:
+            output.append(line)
+            active_fence = next_state
+            index += 1
+            continue
+        if active_fence is not None:
+            output.append(line)
+            index += 1
+            continue
+        parsed = heading(line)
+        if parsed:
+            original_level, title = parsed
+            if index == title_index:
+                level = 1
+                title = str(unit["title"])
+            else:
+                level = max(2, original_level)
+                level = min(level, previous_heading_level + 1, 6)
+            output.extend(EMPTY_ANCHOR_TAG_RE.findall(line))
+            output.append(f"{'#' * level} {title}")
+            previous_heading_level = level
+            index += 1
+            continue
+        if re.match(r"^\s*\*\s+", line):
+            line = re.sub(r"^(\s*)\*\s+", r"\1- ", line)
+        output.append(line)
+        index += 1
+
+    compact: list[str] = []
+    active_fence = None
+    in_indented_code = False
+    for line in output:
+        next_state, delimiter = next_fence_state(line, active_fence)
+        if delimiter:
+            active_fence = next_state
+            compact.append(line)
+            continue
+        if active_fence is None and line.startswith(("    ", "\t")):
+            in_indented_code = True
+        elif line:
+            in_indented_code = False
+        if (
+            active_fence is None
+            and not in_indented_code
+            and not line
+            and compact
+            and not compact[-1]
+        ):
+            continue
+        compact.append(line)
+    while compact and not compact[0]:
+        compact.pop(0)
+    while compact and not compact[-1]:
+        compact.pop()
+    return "\n".join(compact) + "\n"
+
+
+def collapse_adjacent_duplicate_headings(markdown: str) -> tuple[str, int]:
+    output: list[str] = []
+    active_fence: tuple[str, int] | None = None
+    previous_heading: str | None = None
+    removed = 0
+    for line in markdown.splitlines():
+        next_state, delimiter = next_fence_state(line, active_fence)
+        if delimiter:
+            active_fence = next_state
+            previous_heading = None
+            output.append(line)
+            continue
+        if active_fence is not None:
+            output.append(line)
+            continue
+        parsed = heading(line)
+        if parsed:
+            key = chapter_title_key(parsed[1])
+            if key == previous_heading:
+                removed += 1
+                continue
+            previous_heading = key
+            output.append(line)
+            continue
+        output.append(line)
+        stripped = line.strip()
+        if stripped and EMPTY_ANCHOR_TAG_RE.sub("", stripped).strip():
+            previous_heading = None
+    return "\n".join(output) + "\n", removed
+
+
+def copy_assets(
+    raw_directory: Path, source_format: str, final_assets: Path
+) -> dict[str, str]:
+    mapping: dict[str, str] = {}
+    final_assets.mkdir(parents=True)
+    if source_format == "epub":
+        asset_root = raw_directory / "assets"
+        if not asset_root.exists():
+            return mapping
+        candidates = [path for path in asset_root.rglob("*") if path.is_file()]
+        for candidate in candidates:
+            relative = candidate.relative_to(asset_root)
+            destination = final_assets / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(candidate, destination)
+            mapping[f"assets/{relative.as_posix()}"] = relative.as_posix()
+            mapping[relative.as_posix()] = relative.as_posix()
+            mapping[candidate.resolve().as_posix()] = relative.as_posix()
+    else:
+        candidates = [
+            path
+            for path in raw_directory.rglob("*")
+            if path.is_file()
+            and path.suffix.lower() != ".md"
+            and not path.name.endswith("_meta.json")
+        ]
+        for candidate in candidates:
+            relative = candidate.relative_to(raw_directory)
+            destination = final_assets / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(candidate, destination)
+            mapping[relative.as_posix()] = relative.as_posix()
+            mapping[candidate.resolve().as_posix()] = relative.as_posix()
+    return mapping
+
+
+def mapped_asset(target: str, mapping: dict[str, str]) -> str | None:
+    stripped = target.strip()
+    wrapper = stripped.startswith("<") and stripped.endswith(">")
+    bare = stripped[1:-1] if wrapper else stripped
+    parsed = urlparse(unquote(bare))
+    if parsed.scheme and parsed.scheme != "file":
+        return None
+    candidate = parsed.path or unquote(bare)
+    return mapping.get(candidate) or mapping.get(candidate.removeprefix("./"))
+
+
+def rewrite_asset_links(markdown: str, mapping: dict[str, str]) -> str:
+    active_fence: tuple[str, int] | None = None
+    output: list[str] = []
+    for line in markdown.splitlines():
+        next_state, delimiter = next_fence_state(line, active_fence)
+        if delimiter:
+            active_fence = next_state
+            output.append(line)
+            continue
+        if active_fence is None:
+
+            def replacement(match: re.Match[str]) -> str:
+                target = match.group(2).strip(" <> ")
+                if target.casefold().startswith("www."):
+                    return f"{match.group(1)}https://{target}{match.group(3)}"
+                relative = mapped_asset(match.group(2), mapping)
+                if relative:
+                    return f"{match.group(1)}../assets/{relative}{match.group(3)}"
+                return match.group(0)
+
+            line = LINK_RE.sub(replacement, line)
+            line = HTML_LINK_RE.sub(replacement, line)
+        output.append(line)
+    return "\n".join(output) + "\n"
+
+
+def extract_code_blocks(markdown: str) -> tuple[list[str], bool]:
+    blocks: list[str] = []
+    current: list[str] | None = None
+    active_fence: tuple[str, int] | None = None
+    for line in markdown.splitlines():
+        next_state, delimiter = next_fence_state(line, active_fence)
+        if delimiter and current is None and next_state is not None:
+            current = [line]
+        elif delimiter and current is not None and next_state is None:
+            current.append(line)
+            blocks.append("\n".join(current))
+            current = None
+        elif current is not None:
+            current.append(line)
+        active_fence = next_state
+    return blocks, current is not None
+
+
+def markdown_links(markdown: str) -> list[str]:
+    targets: list[str] = []
+    active_fence: tuple[str, int] | None = None
+    for line in markdown.splitlines():
+        next_state, delimiter = next_fence_state(line, active_fence)
+        if delimiter:
+            active_fence = next_state
+            continue
+        if active_fence is None:
+            targets.extend(
+                match.group(2).strip(" <> ") for match in LINK_RE.finditer(line)
+            )
+            targets.extend(
+                match.group(2).strip() for match in HTML_LINK_RE.finditer(line)
+            )
+    return targets
+
+
+def markdown_headings(markdown: str) -> list[tuple[int, int, str]]:
+    headings: list[tuple[int, int, str]] = []
+    active_fence: tuple[str, int] | None = None
+    for line_number, line in enumerate(markdown.splitlines(), 1):
+        next_state, delimiter = next_fence_state(line, active_fence)
+        if delimiter:
+            active_fence = next_state
+            continue
+        if active_fence is not None:
+            continue
+        parsed_heading = heading(line)
+        if parsed_heading:
+            headings.append((line_number, parsed_heading[0], parsed_heading[1]))
+    return headings
+
+
+def markdown_anchor_ids(markdown: str) -> set[str]:
+    anchors = {unquote(match.group(1)) for match in HTML_ID_RE.finditer(markdown)}
+    duplicate_counts: Counter[str] = Counter()
+    for _line_number, _level, title in markdown_headings(markdown):
+        base = re.sub(r"[^\w\- ]", "", title.casefold())
+        base = re.sub(r"\s+", "-", base.strip())
+        suffix = duplicate_counts[base]
+        duplicate_counts[base] += 1
+        anchors.add(f"{base}-{suffix}" if suffix else base)
+    return anchors
+
+
+def rewrite_cross_chapter_links(
+    markdown: str, current_filename: str, anchor_owners: dict[str, str]
+) -> tuple[str, list[dict[str, str]]]:
+    active_fence: tuple[str, int] | None = None
+    output: list[str] = []
+    degraded_links: list[dict[str, str]] = []
+
+    def replacement(match: re.Match[str]) -> str:
+        target = match.group(2).strip()
+        parsed_target = urlparse(target)
+        prefix = match.group(1)
+        if (
+            parsed_target.scheme == "file"
+            and parsed_target.fragment
+            and prefix.startswith("[")
+            and prefix.endswith("](")
+        ):
+            label = prefix[1:-2]
+            label_anchor = re.sub(r"[^\w\- ]", "", label.casefold())
+            label_anchor = re.sub(r"\s+", "-", label_anchor.strip())
+            candidates = sorted(
+                (
+                    anchor
+                    for anchor in anchor_owners
+                    if anchor == label_anchor or anchor.startswith(f"{label_anchor}-")
+                ),
+                key=len,
+            )
+            if candidates:
+                destination_anchor = candidates[0]
+                owner = anchor_owners[destination_anchor]
+                destination = (
+                    f"#{destination_anchor}"
+                    if owner == current_filename
+                    else f"{owner}#{destination_anchor}"
+                )
+                degraded_links.append(
+                    {
+                        "source_file": current_filename,
+                        "original_target": target,
+                        "replacement_anchor": destination_anchor,
+                        "reason": "rewrote converter-local file URI by matching its visible section title",
+                    }
+                )
+                return f"{prefix}{destination}{match.group(3)}"
+            degraded_links.append(
+                {
+                    "source_file": current_filename,
+                    "original_target": target,
+                    "replacement_anchor": "",
+                    "reason": "converter-local file URI had no unique corpus destination; link text was preserved",
+                }
+            )
+            return label
+        if not target.startswith("#"):
+            return match.group(0)
+        anchor = unquote(target[1:])
+        owner = anchor_owners.get(anchor)
+        destination_anchor = anchor
+        if not owner and "#" in anchor:
+            destination_anchor = anchor.split("#", 1)[0]
+            owner = anchor_owners.get(destination_anchor)
+            if owner:
+                degraded_links.append(
+                    {
+                        "source_file": current_filename,
+                        "original_target": target,
+                        "replacement_anchor": destination_anchor,
+                    }
+                )
+        if not owner:
+            if (
+                re.fullmatch(r"page-\d+(?:-\d+)?", anchor, re.IGNORECASE)
+                and prefix.startswith("[")
+                and prefix.endswith("](")
+            ):
+                degraded_links.append(
+                    {
+                        "source_file": current_filename,
+                        "original_target": target,
+                        "replacement_anchor": "",
+                        "reason": "converter emitted no destination anchor; link text was preserved",
+                    }
+                )
+                return prefix[1:-2]
+            return match.group(0)
+        destination = (
+            f"#{destination_anchor}"
+            if owner == current_filename
+            else f"{owner}#{destination_anchor}"
+        )
+        return f"{match.group(1)}{destination}{match.group(3)}"
+
+    for line in markdown.splitlines():
+        next_state, delimiter = next_fence_state(line, active_fence)
+        if delimiter:
+            active_fence = next_state
+            output.append(line)
+            continue
+        if active_fence is None:
+            line = LINK_RE.sub(replacement, line)
+            line = HTML_LINK_RE.sub(replacement, line)
+        output.append(line)
+    return "\n".join(output) + "\n", degraded_links
+
+
+def probable_table_damage(path: Path, markdown: str) -> list[dict[str, object]]:
+    findings: list[dict[str, object]] = []
+    lines = markdown.splitlines()
+    for index, line in enumerate(lines, 1):
+        if not line.lstrip().startswith("|"):
+            continue
+        reasons: list[str] = []
+        if "<br>" in line.lower():
+            reasons.append("inline HTML line breaks in table cell")
+        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+        if cells and all(not cell for cell in cells):
+            reasons.append("empty table row")
+        if any(not cell for cell in cells) and not re.fullmatch(
+            r"[-: ]+", "".join(cells)
+        ):
+            reasons.append("empty table cell")
+        if reasons:
+            findings.append(
+                {"file": path.as_posix(), "line": index, "reasons": reasons}
+            )
+    return findings[:50]
+
+
+def validate_corpus(
+    final_directory: Path,
+    raw_markdown: str,
+    units: list[dict[str, object]],
+    converter: dict[str, object],
+    removed_furniture: list[str],
+) -> dict[str, object]:
+    chapter_paths = sorted((final_directory / "chapters").glob("*.md"))
+    malformed: list[dict[str, object]] = []
+    broken_links: list[dict[str, object]] = []
+    missing_assets: list[dict[str, object]] = []
+    h1_titles: list[str] = []
+    duplicate_headings: list[dict[str, object]] = []
+    table_damage: list[dict[str, object]] = []
+    final_code_blocks: list[str] = []
+    damaged_code: list[dict[str, object]] = []
+    chapter_documents = {
+        path: path.read_text(encoding="utf-8") for path in chapter_paths
+    }
+    anchors_by_path = {
+        path.resolve(): markdown_anchor_ids(text)
+        for path, text in chapter_documents.items()
+    }
+
+    for path in chapter_paths:
+        text = chapter_documents[path]
+        relative_path = path.relative_to(final_directory)
+        headings = markdown_headings(text)
+        h1 = [title for _line, level, title in headings if level == 1]
+        if len(h1) != 1:
+            malformed.append(
+                {
+                    "file": relative_path.as_posix(),
+                    "reason": f"expected one H1; found {len(h1)}",
+                }
+            )
+        else:
+            h1_titles.append(h1[0])
+        heading_counts = Counter(
+            (level, plain_heading(title).casefold()) for _line, level, title in headings
+        )
+        for (level, normalized_title), count in sorted(heading_counts.items()):
+            if count > 1:
+                duplicate_headings.append(
+                    {
+                        "file": relative_path.as_posix(),
+                        "level": level,
+                        "title": normalized_title,
+                        "count": count,
+                    }
+                )
+        blocks, unclosed = extract_code_blocks(text)
+        final_code_blocks.extend(blocks)
+        if unclosed:
+            malformed.append(
+                {"file": relative_path.as_posix(), "reason": "unclosed code fence"}
+            )
+        for target in markdown_links(text):
+            parsed = urlparse(target)
+            if parsed.scheme and parsed.scheme not in {"data", "file"}:
+                continue
+            decoded_path = unquote(parsed.path)
+            if parsed.scheme in {"data", "file"} or Path(decoded_path).is_absolute():
+                finding = {
+                    "file": relative_path.as_posix(),
+                    "target": target,
+                    "reason": "absolute or inline local resource is not allowed",
+                }
+                broken_links.append(finding)
+                if parsed.scheme == "data" or "assets" in Path(decoded_path).parts:
+                    missing_assets.append(finding)
+                continue
+            target_path = (
+                path.resolve()
+                if not decoded_path
+                else (path.parent / decoded_path).resolve()
+            )
+            if not target_path.exists():
+                finding = {
+                    "file": relative_path.as_posix(),
+                    "target": target,
+                    "reason": "local target does not exist",
+                }
+                broken_links.append(finding)
+                if "assets" in Path(decoded_path).parts:
+                    missing_assets.append(finding)
+                continue
+            if parsed.fragment and unquote(parsed.fragment) not in anchors_by_path.get(
+                target_path, set()
+            ):
+                broken_links.append(
+                    {
+                        "file": relative_path.as_posix(),
+                        "target": target,
+                        "reason": "target anchor does not exist",
+                    }
+                )
+        table_damage.extend(probable_table_damage(relative_path, text))
+        lines = text.splitlines()
+        active_fence: tuple[str, int] | None = None
+        for index, line in enumerate(lines[:-1], 1):
+            next_state, delimiter = next_fence_state(line, active_fence)
+            if delimiter:
+                active_fence = next_state
+                continue
+            if (
+                active_fence is not None
+                and re.search(r"</\s*$", line)
+                and re.match(r"\s*[A-Za-z][A-Za-z0-9]*>", lines[index])
+            ):
+                damaged_code.append(
+                    {
+                        "file": relative_path.as_posix(),
+                        "line": index,
+                        "reason": "probable HTML tag split across source code lines",
+                    }
+                )
+
+    raw_code_blocks, raw_unclosed = extract_code_blocks(raw_markdown)
+    if raw_unclosed:
+        malformed.append(
+            {
+                "file": "converter-output",
+                "reason": "raw converter output has an unclosed code fence",
+            }
+        )
+    if raw_code_blocks != final_code_blocks:
+        damaged_code.insert(
+            0,
+            {
+                "file": "chapters",
+                "reason": "fenced code changed during post-processing",
+                "raw_block_count": len(raw_code_blocks),
+                "final_block_count": len(final_code_blocks),
+            },
+        )
+
+    duplicate_h1 = sorted(
+        title for title, count in Counter(h1_titles).items() if count > 1
+    )
+    duplicate_headings.extend(
+        {
+            "file": None,
+            "level": 1,
+            "title": title,
+            "count": h1_titles.count(title),
+            "reason": "same chapter title occurs in multiple files",
+        }
+        for title in duplicate_h1
+    )
+    marker_metadata = converter.get("marker_metadata", {})
+    page_stats = (
+        marker_metadata.get("page_stats", [])
+        if isinstance(marker_metadata, dict)
+        else []
+    )
+    methods = Counter(
+        stat.get("text_extraction_method")
+        for stat in page_stats
+        if isinstance(stat, dict) and stat.get("text_extraction_method")
+    )
+    ocr_pages = []
+    for stat in page_stats:
+        if not isinstance(stat, dict) or stat.get("text_extraction_method") in {
+            None,
+            "pdftext",
+        }:
+            continue
+        page_id = stat.get("page_id")
+        ocr_pages.append(
+            {
+                "page_id": page_id,
+                "physical_page": page_id + 1 if isinstance(page_id, int) else None,
+            }
+        )
+    llm_requests = sum(
+        int(stat.get("block_metadata", {}).get("llm_request_count", 0) or 0)
+        for stat in page_stats
+        if isinstance(stat, dict)
+    )
+    detected_chapter_numbers = {
+        int(match.group(1))
+        for unit in units
+        if (match := re.match(r"^chapter\s+(\d+)\b", str(unit["title"]), re.I))
+    }
+    expected_chapters: dict[int, str] = {
+        int(entry["number"]): f"Chapter {entry['number']}: {entry['title']}"
+        for entry in converter.get("printed_chapter_evidence", [])
+        if isinstance(entry, dict)
+        and isinstance(entry.get("number"), int)
+        and entry.get("title")
+    }
+    for entry in (
+        marker_metadata.get("table_of_contents", [])
+        if isinstance(marker_metadata, dict)
+        else []
+    ):
+        if not isinstance(entry, dict):
+            continue
+        title = str(entry.get("title", ""))
+        match = re.match(r"^chapter\s+(\d+)\b", title, re.I)
+        if match:
+            expected_chapters.setdefault(int(match.group(1)), title)
+    missing_chapters = [
+        expected_chapters[number]
+        for number in sorted(set(expected_chapters) - detected_chapter_numbers)
+    ]
+    detected_sections = {
+        str(match.group(1)).casefold()
+        for unit in units
+        if (
+            match := re.match(
+                r"^appendix\s+([^: ]+)", str(unit["title"]), re.IGNORECASE
+            )
+        )
+    }
+    expected_sections = {
+        str(entry["label"]).casefold(): f"Appendix {entry['label']}: {entry['title']}"
+        for entry in converter.get("section_boundary_evidence", [])
+        if isinstance(entry, dict)
+        and entry.get("kind") == "appendix"
+        and entry.get("label")
+        and entry.get("title")
+    }
+    missing_sections = [
+        expected_sections[label]
+        for label in sorted(set(expected_sections) - detected_sections)
+    ]
+    detected_parts = {
+        str(match.group(1)).upper()
+        for unit in units
+        if (match := re.match(r"^part\s+([ivxlcdm]+)\b", str(unit["title"]), re.I))
+    }
+    expected_parts = {
+        str(entry["label"]).upper(): f"Part {entry['label']}: {entry['title']}"
+        for entry in converter.get("section_boundary_evidence", [])
+        if isinstance(entry, dict)
+        and entry.get("kind") == "part"
+        and entry.get("label")
+        and entry.get("title")
+    }
+    missing_parts = [
+        expected_parts[label] for label in sorted(set(expected_parts) - detected_parts)
+    ]
+    structural_dividers = [
+        path.relative_to(final_directory).as_posix()
+        for path, unit in zip(chapter_paths, units, strict=False)
+        if unit.get("structural_divider")
+    ]
+    empty_chapters = [
+        path.relative_to(final_directory).as_posix()
+        for index, path in enumerate(chapter_paths)
+        if not (index < len(units) and units[index].get("structural_divider"))
+        and not EMPTY_ANCHOR_TAG_RE.sub(
+            "",
+            re.sub(r"(?m)^# .+$", "", path.read_text(encoding="utf-8")),
+        ).strip()
+    ]
+    low_confidence = [
+        {
+            "title": unit["title"],
+            "confidence": unit["boundary_confidence"],
+            "evidence": unit["boundary_evidence"],
+        }
+        for unit in units
+        if unit["boundary_confidence"] != "high"
+    ]
+    converter_warnings = [
+        warning
+        for attempt in converter.get("attempts", [])
+        if isinstance(attempt, dict)
+        for warning in attempt.get("warnings", [])
+    ]
+    converter_failures = [
+        failure
+        for attempt in converter.get("attempts", [])
+        if isinstance(attempt, dict)
+        for failure in attempt.get("failures", [])
+    ]
+    warnings: list[str] = list(dict.fromkeys(converter_warnings))
+    if converter.get("converter_version") is None:
+        warnings.append(
+            "converter version could not be determined for the execution target"
+        )
+    selected_failures = next(
+        (
+            list(attempt.get("failures", []))
+            for attempt in converter.get("attempts", [])
+            if isinstance(attempt, dict)
+            and attempt.get("execution_target") == converter.get("execution_target")
+        ),
+        [],
+    )
+    for attempt in converter.get("attempts", []):
+        if not isinstance(attempt, dict) or attempt.get(
+            "execution_target"
+        ) == converter.get("execution_target"):
+            continue
+        warnings.extend(
+            f"{attempt.get('execution_target')} attempt: {failure}"
+            for failure in attempt.get("failures", [])
+        )
+    if table_damage:
+        warnings.append(
+            f"{len(table_damage)} probable unresolved table issue(s) were preserved"
+        )
+    if damaged_code:
+        warnings.append(
+            f"{len(damaged_code)} probable code-conversion issue(s) were preserved"
+        )
+    if duplicate_headings:
+        warnings.append(
+            f"{len(duplicate_headings)} duplicate heading pattern(s) remain for review"
+        )
+    if low_confidence:
+        warnings.append(
+            f"{len(low_confidence)} chapter boundary or boundaries require conservative inference"
+        )
+    if removed_furniture:
+        warnings.append(
+            f"removed {len(removed_furniture)} high-confidence page-furniture item(s)"
+        )
+    unresolved_navigation_anchors = converter.get("unresolved_navigation_anchors", [])
+    degraded_internal_links = converter.get("degraded_internal_links", [])
+    if unresolved_navigation_anchors:
+        warnings.append(
+            f"{len(unresolved_navigation_anchors)} EPUB navigation anchor(s) could not be restored from Pandoc output"
+        )
+    if degraded_internal_links:
+        redirected_links = sum(
+            bool(item.get("replacement_anchor"))
+            for item in degraded_internal_links
+            if isinstance(item, dict)
+        )
+        text_only_links = len(degraded_internal_links) - redirected_links
+        if redirected_links:
+            warnings.append(
+                f"{redirected_links} internal link(s) were conservatively redirected to their chapter anchor"
+            )
+        if text_only_links:
+            warnings.append(
+                f"{text_only_links} internal page link(s) had no converter destination; visible reference text was preserved"
+            )
+    if raw_code_blocks and all(
+        block.splitlines()[0].strip() in {"```", "~~~"} for block in raw_code_blocks
+    ):
+        warnings.append(
+            "converter supplied no reliable language identifiers for fenced code blocks"
+        )
+    source_section_warnings: list[str] = []
+    front_matter_sample = "\n".join(raw_markdown.splitlines()[:200])
+    unit_titles = [plain_heading(str(unit["title"])) for unit in units]
+    if re.search(r"\bforeword\s+by\b", front_matter_sample, re.IGNORECASE) and not any(
+        re.match(r"^foreword\b", title, re.IGNORECASE) for title in unit_titles
+    ):
+        source_section_warnings.append(
+            "source front matter names a foreword, but no foreword heading was present "
+            "in the converter output; the source file may omit that section"
+        )
+    warnings.extend(source_section_warnings)
+    errors: list[str] = []
+    if malformed:
+        errors.append("malformed Markdown remains")
+    if broken_links:
+        errors.append("broken local links remain")
+    if missing_assets:
+        errors.append("referenced assets are missing")
+    if missing_chapters:
+        errors.append("chapters detected in converter metadata are missing")
+    if missing_sections:
+        errors.append("numbered appendix sections detected in contents are missing")
+    if missing_parts:
+        errors.append("part dividers detected in contents are missing")
+    if empty_chapters:
+        errors.append("empty chapter files remain")
+    if any(
+        item.get("reason") == "fenced code changed during post-processing"
+        for item in damaged_code
+    ):
+        errors.append("post-processing changed fenced code")
+    if selected_failures:
+        errors.append("selected converter attempt reported failures")
+
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "conversion_success": not errors and converter["converter_exit_status"] == 0,
+        "converter_exit_status": converter["converter_exit_status"],
+        "chapter_count": len(chapter_paths),
+        "missing_chapters": missing_chapters,
+        "missing_sections": missing_sections,
+        "missing_parts": missing_parts,
+        "empty_chapters": empty_chapters,
+        "structural_dividers": structural_dividers,
+        "duplicate_headings": {
+            "scope": "all heading levels within chapters and level-one titles across chapters",
+            "entries": duplicate_headings,
+        },
+        "malformed_markdown": malformed,
+        "broken_links": broken_links,
+        "missing_assets": missing_assets,
+        "damaged_code": damaged_code,
+        "unresolved_tables": table_damage,
+        "ocr_usage": {
+            "used": bool(ocr_pages) if page_stats else None,
+            "text_extraction_methods": dict(sorted(methods.items())),
+            "ocr_pages": ocr_pages,
+            "llm_request_count": llm_requests if page_stats else None,
+        },
+        "low_confidence_chapter_boundaries": low_confidence,
+        "page_furniture_removed": removed_furniture,
+        "unresolved_navigation_anchors": unresolved_navigation_anchors,
+        "degraded_internal_links": degraded_internal_links,
+        "source_section_warnings": source_section_warnings,
+        "warnings": warnings,
+        "errors": errors,
+        "converter_reported_failures": list(dict.fromkeys(converter_failures)),
+    }
+
+
+def pdf_filename_metadata(source: Path) -> tuple[str | None, list[str]]:
+    match = re.fullmatch(r"(.+?)\s+-\s+([^()]+)", source.stem)
+    if not match:
+        return None, []
+    title = " ".join(match.group(1).split())
+    author = " ".join(match.group(2).split())
+    return (title or None), ([author] if author else [])
+
+
+def usable_pdf_title(value: object) -> str | None:
+    title = " ".join(str(value or "").split())
+    if not title or title.casefold() in {"untitled", "unknown"}:
+        return None
+    if re.search(r"\.(?:docx?|pdf|epub)$", title, re.IGNORECASE):
+        return None
+    return title
+
+
+def usable_pdf_author(value: object) -> str | None:
+    author = " ".join(str(value or "").split()).strip(" ;")
+    if not author or author.casefold() in {"administrator", "unknown"}:
+        return None
+    return author
+
+
+def metadata_record(
+    source: Path,
+    content_title: str,
+    content_authors: list[str],
+    converter: dict[str, object],
+) -> dict[str, object]:
+    document_metadata = converter["document_metadata"]
+    if converter["format"] == "epub" and isinstance(document_metadata, dict):
+        title_entries = document_metadata.get("titles", [])
+        creator_entries = document_metadata.get("creators", [])
+        title = (
+            title_entries[0].get("value")
+            if title_entries and isinstance(title_entries[0], dict)
+            else content_title
+        )
+        authors = [
+            entry["value"]
+            for entry in creator_entries
+            if isinstance(entry, dict) and entry.get("value")
+        ] or content_authors
+        contributors = [
+            entry["value"]
+            for entry in document_metadata.get("contributors", [])
+            if isinstance(entry, dict) and entry.get("value")
+        ]
+        descriptions = [
+            entry["value"]
+            for entry in document_metadata.get("descriptions", [])
+            if isinstance(entry, dict) and entry.get("value")
+        ]
+        languages = [
+            entry["value"]
+            for entry in document_metadata.get("languages", [])
+            if isinstance(entry, dict) and entry.get("value")
+        ]
+        publishers = [
+            entry["value"]
+            for entry in document_metadata.get("publishers", [])
+            if isinstance(entry, dict) and entry.get("value")
+        ]
+        dates = [
+            entry["value"]
+            for entry in document_metadata.get("dates", [])
+            if isinstance(entry, dict) and entry.get("value")
+        ]
+        identifiers = document_metadata.get("identifiers", [])
+        subjects = [
+            entry["value"]
+            for entry in document_metadata.get("subjects", [])
+            if isinstance(entry, dict) and entry.get("value")
+        ]
+        rights = [
+            entry["value"]
+            for entry in document_metadata.get("rights", [])
+            if isinstance(entry, dict) and entry.get("value")
+        ]
+        publisher: str | None = publishers[0] if publishers else None
+        publication_date: str | None = dates[0] if dates else None
+        language: str | None = languages[0] if languages else None
+        rights_value: str | None = rights[0] if rights else None
+        description: str | None = descriptions[0] if descriptions else None
+        page_count = None
+        table_of_contents: list[object] = []
+        title_source = "EPUB package metadata" if title_entries else "converted content"
+        author_source = (
+            "EPUB package metadata" if creator_entries else "converted content"
+        )
+    else:
+        embedded_title_value = (
+            document_metadata.get("Title")
+            if isinstance(document_metadata, dict)
+            else None
+        )
+        embedded_title = usable_pdf_title(embedded_title_value)
+        filename_title, filename_authors = pdf_filename_metadata(source)
+        if embedded_title:
+            title = embedded_title
+            title_source = "embedded PDF metadata"
+        elif filename_title:
+            title = filename_title
+            title_source = "source filename"
+        else:
+            title = content_title
+            title_source = "converted content"
+        embedded_author_value = (
+            document_metadata.get("Author")
+            if isinstance(document_metadata, dict)
+            else None
+        )
+        embedded_author = usable_pdf_author(embedded_author_value)
+        if content_authors:
+            authors = content_authors
+            author_source = "converted content"
+        elif embedded_author:
+            authors = [embedded_author]
+            author_source = "embedded PDF metadata"
+        elif filename_authors:
+            authors = filename_authors
+            author_source = "source filename"
+        else:
+            authors = []
+            author_source = None
+        contributors = []
+        description = None
+        language = None
+        publisher = None
+        publication_date = None
+        identifiers = []
+        subjects = []
+        rights_value = None
+        page_count = (
+            document_metadata.get("Pages")
+            if isinstance(document_metadata, dict)
+            else None
+        )
+        marker_metadata = converter.get("marker_metadata", {})
+        table_of_contents = (
+            marker_metadata.get("table_of_contents", [])
+            if isinstance(marker_metadata, dict)
+            else []
+        )
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "title": title,
+        "subtitle": None,
+        "authors": authors,
+        "contributors": contributors,
+        "language": language,
+        "publisher": publisher,
+        "publication_date": publication_date,
+        "identifiers": identifiers,
+        "subjects": subjects,
+        "description": description,
+        "rights": rights_value,
+        "source_format": source.suffix.lower().lstrip("."),
+        "page_count": page_count,
+        "content_metadata_evidence": {
+            "title": content_title,
+            "authors": content_authors,
+        },
+        "metadata_selection": {
+            "title_source": title_source,
+            "author_source": author_source,
+        },
+        "source_document_metadata": document_metadata,
+        "converter_table_of_contents": table_of_contents,
+        "converter_metadata": converter.get("marker_metadata", {}),
+    }
+
+
+def content_metadata(
+    markdown: str, fallback_title: str
+) -> tuple[str, list[str], str | None]:
+    title = fallback_title
+    author_line: str | None = None
+    active_fence: tuple[str, int] | None = None
+    for line in markdown.splitlines()[:160]:
+        next_state, delimiter = next_fence_state(line, active_fence)
+        if delimiter:
+            active_fence = next_state
+            continue
+        if active_fence is not None:
+            continue
+        parsed = heading(line)
+        if parsed and title == fallback_title:
+            title = parsed[1]
+        match = re.match(r"^\s*by\s+(.+?)\s*$", line, re.IGNORECASE)
+        if match:
+            author_line = match.group(1)
+            break
+    authors: list[str] = []
+    if author_line:
+        authors = [
+            part.strip()
+            for part in re.split(r",\s*|\s+and\s+", author_line)
+            if part.strip()
+        ]
+    return title, authors, author_line
+
+
+def chapter_filename(index: int, title: str) -> str:
+    return f"{index:03d}-{slugify(title)}.md"
+
+
+def build_readme(
+    metadata: dict[str, object],
+    source: Path,
+    source_hash: str,
+    converter: dict[str, object],
+    validation: dict[str, object],
+    chapters: list[tuple[str, str]],
+) -> str:
+    authors = metadata.get("authors") or []
+    author_text = ", ".join(str(author) for author in authors) if authors else "Unknown"
+    lines = [
+        f"# {metadata['title']}",
+        "",
+        f"- Authors: {author_text}",
+        f"- Source: `{source.name}`",
+        f"- Source format: `{source.suffix.lower().lstrip('.')}`",
+        f"- Source SHA-256: `{source_hash}`",
+        f"- Converter: `{converter['converter']}`",
+        f"- Execution target: `{converter['execution_target']}`",
+        "",
+        "## Chapters",
+        "",
+    ]
+    for filename, title in chapters:
+        lines.append(f"- [{title}](chapters/{filename})")
+    lines.extend(
+        [
+            "",
+            "## Validation summary",
+            "",
+            f"- Status: {'success' if validation['conversion_success'] else 'failed'}",
+            f"- Chapters: {validation['chapter_count']}",
+            f"- Broken links: {len(validation['broken_links'])}",
+            f"- Missing assets: {len(validation['missing_assets'])}",
+            f"- Malformed Markdown findings: {len(validation['malformed_markdown'])}",
+            f"- Probable damaged-code findings: {len(validation['damaged_code'])}",
+            f"- Unresolved table findings: {len(validation['unresolved_tables'])}",
+            "",
+            "## Known limitations",
+            "",
+        ]
+    )
+    warnings = validation.get("warnings") or []
+    if warnings:
+        lines.extend(f"- {warning}" for warning in warnings)
+    else:
+        lines.append("- None detected.")
+    return "\n".join(lines) + "\n"
+
+
+def generated_file_hashes(directory: Path) -> dict[str, str]:
+    return {
+        path.relative_to(directory).as_posix(): sha256_file(path)
+        for path in sorted(directory.rglob("*"))
+        if path.is_file() and path.name != "source.json"
+    }
+
+
+def generated_directories(directory: Path) -> list[str]:
+    return sorted(
+        path.relative_to(directory).as_posix()
+        for path in directory.rglob("*")
+        if path.is_dir() and not path.is_symlink()
+    )
+
+
+def source_record_with_integrity(record: dict[str, object]) -> dict[str, object]:
+    result = copy.deepcopy(record)
+    result["record_sha256"] = None
+    result["record_sha256"] = sha256_bytes(json_bytes(result))
+    return result
+
+
+def verify_source_record(record: dict[str, object]) -> bool:
+    expected = record.get("record_sha256")
+    candidate = copy.deepcopy(record)
+    candidate["record_sha256"] = None
+    return isinstance(expected, str) and expected == sha256_bytes(json_bytes(candidate))
+
+
+def output_modifications(directory: Path) -> list[str]:
+    if directory.is_symlink():
+        return ["corpus directory is a symbolic link"]
+    if not directory.is_dir():
+        return ["corpus path is not a directory"]
+    source_json = directory / "source.json"
+    if not source_json.is_file():
+        return ["source.json is missing"]
+    try:
+        record = json.loads(source_json.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return ["source.json is malformed"]
+    changes: list[str] = []
+    for path in directory.rglob("*"):
+        if path.is_symlink():
+            changes.append(
+                f"unexpected symbolic link present: {path.relative_to(directory).as_posix()}"
+            )
+    if not verify_source_record(record):
+        changes.append("source.json integrity check failed")
+    expected = record.get("generated_files")
+    if not isinstance(expected, dict):
+        changes.append("source.json has no generated-files manifest")
+        return changes
+    actual_paths = {
+        path.relative_to(directory).as_posix()
+        for path in directory.rglob("*")
+        if path.is_file() and path.name != "source.json"
+    }
+    expected_paths = set(expected)
+    for missing in sorted(expected_paths - actual_paths):
+        changes.append(f"generated file missing: {missing}")
+    for unexpected in sorted(actual_paths - expected_paths):
+        changes.append(f"unexpected file present: {unexpected}")
+    for relative in sorted(expected_paths & actual_paths):
+        if sha256_file(directory / relative) != expected[relative]:
+            changes.append(f"generated file was edited: {relative}")
+    expected_directories = record.get("generated_directories")
+    if not isinstance(expected_directories, list):
+        changes.append("source.json has no generated-directories manifest")
+    else:
+        actual_directories = set(generated_directories(directory))
+        recorded_directories = set(expected_directories)
+        for missing in sorted(recorded_directories - actual_directories):
+            changes.append(f"generated directory missing: {missing}")
+        for unexpected in sorted(actual_directories - recorded_directories):
+            changes.append(f"unexpected directory present: {unexpected}")
+    return changes
+
+
+def directory_state_digest(directory: Path) -> str:
+    digest = hashlib.sha256()
+    for path in sorted(directory.rglob("*"), key=lambda item: item.as_posix()):
+        relative = path.relative_to(directory).as_posix().encode("utf-8")
+        digest.update(relative + b"\0")
+        if path.is_symlink():
+            digest.update(b"link\0" + os.readlink(path).encode("utf-8") + b"\0")
+        elif path.is_file():
+            digest.update(b"file\0" + sha256_file(path).encode("ascii") + b"\0")
+        elif path.is_dir():
+            digest.update(b"directory\0")
+        else:
+            digest.update(b"other\0")
+    return digest.hexdigest()
+
+
+def source_identity_matches(
+    record: dict[str, object], root: Path, source: Path, source_hash: str
+) -> bool:
+    return (
+        record.get("source_path") == source_repository_path(root, source)
+        and record.get("source_filename") == source.name
+        and record.get("source_sha256") == source_hash
+        and record.get("source_format") == source.suffix.lower().lstrip(".")
+        and record.get("source_size_bytes") == source.stat().st_size
+    )
+
+
+def install_directory(staged: Path, destination: Path) -> None:
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    if not destination.exists():
+        staged.rename(destination)
+        return
+    backup = Path(
+        tempfile.mkdtemp(prefix=f".{destination.name}.backup-", dir=destination.parent)
+    )
+    backup.rmdir()
+    destination.rename(backup)
+    try:
+        staged.rename(destination)
+    except BaseException:
+        backup.rename(destination)
+        raise
+    shutil.rmtree(backup)
+
+
+def convert_one(source: Path, root: Path, force: bool) -> dict[str, object]:
+    slug = slugify(source.stem)
+    source_hash = sha256_file(source)
+    current_pipeline_fingerprint = pipeline_fingerprint()
+    destination = root / "books" / slug
+    destination_state = (
+        directory_state_digest(destination) if destination.exists() else None
+    )
+    if destination.exists():
+        changes = output_modifications(destination)
+        try:
+            existing_record = json.loads(
+                (destination / "source.json").read_text(encoding="utf-8")
+            )
+        except (OSError, json.JSONDecodeError, UnicodeDecodeError):
+            existing_record = {}
+        if changes and not force:
+            raise BookConversionError(
+                f"refusing to overwrite unexpected edits in books/{slug}: "
+                + "; ".join(changes)
+            )
+        if (
+            source_identity_matches(existing_record, root, source, source_hash)
+            and existing_record.get("pipeline_fingerprint")
+            == current_pipeline_fingerprint
+            and not changes
+        ):
+            print(f"books: up to date: {source.name}")
+            return {
+                "source": source,
+                "slug": slug,
+                "converted": False,
+                "destination": destination,
+            }
+
+    work = root / ".book-work" / slug
+    source_hash_before = source_hash
+    converter = load_converter_cache(work, root, source, source_hash)
+    if converter is not None:
+        print(f"books: reusing validated converter output: {source.name}")
+        final_from_previous_attempt = work / "final"
+        if final_from_previous_attempt.exists():
+            shutil.rmtree(final_from_previous_attempt)
+    else:
+        prior_conversion_failures: list[dict[str, object]] = []
+        failure_path = work / "conversion-failure.json"
+        if failure_path.is_file():
+            try:
+                previous_failure = json.loads(failure_path.read_text(encoding="utf-8"))
+                if isinstance(previous_failure, dict):
+                    prior_conversion_failures.append(previous_failure)
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                pass
+        if work.exists():
+            shutil.rmtree(work)
+        work.mkdir(parents=True)
+        converter = (
+            convert_pdf(source, source_hash, slug, root, work)
+            if source.suffix.lower() == ".pdf"
+            else convert_epub(source, source_hash, slug, root, work)
+        )
+        converter["prior_conversion_failures"] = prior_conversion_failures
+        write_converter_cache(work, root, source, source_hash, converter)
+    raw_markdown = Path(converter["markdown_path"]).read_text(encoding="utf-8")
+    title, authors, author_line = content_metadata(raw_markdown, source.stem)
+    navigation_entries: list[dict[str, object]] = []
+    if converter["format"] == "epub" and isinstance(
+        converter["document_metadata"], dict
+    ):
+        navigation_entries = [
+            entry
+            for entry in converter["document_metadata"].get("navigation", [])
+            if isinstance(entry, dict) and entry.get("title")
+        ]
+    chapter_evidence: list[dict[str, object]] = []
+    section_evidence: list[dict[str, object]] = []
+    if converter["format"] == "pdf":
+        numbered_chapters, section_evidence = numbered_contents_evidence(raw_markdown)
+        evidence_by_number = {
+            int(entry["number"]): entry
+            for entry in numbered_chapters
+            if isinstance(entry.get("number"), int)
+        }
+        evidence_by_number.update(
+            {
+                int(entry["number"]): entry
+                for entry in body_chapter_evidence(raw_markdown)
+                if isinstance(entry.get("number"), int)
+            }
+        )
+        evidence_by_number.update(
+            {
+                int(entry["number"]): entry
+                for entry in printed_chapter_evidence(raw_markdown)
+                if isinstance(entry.get("number"), int)
+            }
+        )
+        chapter_evidence = [
+            evidence_by_number[number] for number in sorted(evidence_by_number)
+        ]
+    converter["printed_chapter_evidence"] = chapter_evidence
+    converter["section_boundary_evidence"] = section_evidence
+    units, removed_furniture = split_logical_units(
+        raw_markdown,
+        title,
+        navigation_entries,
+        chapter_evidence,
+        section_evidence,
+    )
+    merged_duplicate_boundaries = [
+        str(merged_title)
+        for unit in units
+        for merged_title in unit.get("merged_duplicate_boundaries", [])
+    ]
+    converter["merged_duplicate_boundaries"] = merged_duplicate_boundaries
+    units, unresolved_navigation_anchors = inject_epub_navigation_anchors(
+        units, navigation_entries
+    )
+    converter["unresolved_navigation_anchors"] = unresolved_navigation_anchors
+
+    final_directory = work / "final"
+    chapters_directory = final_directory / "chapters"
+    chapters_directory.mkdir(parents=True)
+    asset_mapping = copy_assets(
+        Path(converter["raw_directory"]),
+        str(converter["format"]),
+        final_directory / "assets",
+    )
+    rendered_chapters: list[tuple[str, str, str]] = []
+    collapsed_duplicate_headings: list[dict[str, object]] = []
+    for index, unit in enumerate(units, 1):
+        filename = chapter_filename(index, str(unit["title"]))
+        normalized = normalize_unit(unit)
+        normalized, collapsed_count = collapse_adjacent_duplicate_headings(normalized)
+        if collapsed_count:
+            collapsed_duplicate_headings.append(
+                {
+                    "chapter": filename,
+                    "count": collapsed_count,
+                }
+            )
+        normalized = rewrite_asset_links(normalized, asset_mapping)
+        rendered_chapters.append((filename, str(unit["title"]), normalized))
+    converter["collapsed_duplicate_headings"] = collapsed_duplicate_headings
+    anchor_owners: dict[str, str] = {}
+    for filename, _title, chapter_markdown in rendered_chapters:
+        for anchor in markdown_anchor_ids(chapter_markdown):
+            anchor_owners.setdefault(anchor, filename)
+    chapters: list[tuple[str, str]] = []
+    degraded_internal_links: list[dict[str, str]] = []
+    for filename, chapter_title, chapter_markdown in rendered_chapters:
+        rewritten, degraded_links = rewrite_cross_chapter_links(
+            chapter_markdown, filename, anchor_owners
+        )
+        degraded_internal_links.extend(degraded_links)
+        (chapters_directory / filename).write_text(
+            rewritten, encoding="utf-8", newline="\n"
+        )
+        chapters.append((filename, chapter_title))
+    converter["degraded_internal_links"] = degraded_internal_links
+
+    metadata = metadata_record(source, title, authors, converter)
+    write_json(final_directory / "metadata.json", metadata)
+    validation = validate_corpus(
+        final_directory, raw_markdown, units, converter, removed_furniture
+    )
+    write_json(final_directory / "validation.json", validation)
+    (final_directory / "README.md").write_text(
+        build_readme(metadata, source, source_hash, converter, validation, chapters),
+        encoding="utf-8",
+        newline="\n",
+    )
+    post_processing = [
+        "staged the source under a deterministic length-bounded hash-qualified space-free basename",
+        "split converter Markdown at explicit logical-unit headings rather than page numbers",
+        "normalized headings to ATX syntax with exactly one level-one heading per chapter",
+        "kept converter paragraphs unwrapped and normalized excessive blank lines outside code",
+        "moved extracted media into assets and rewrote relative links",
+        "preserved fenced code content exactly",
+    ]
+    if removed_furniture:
+        post_processing.append(
+            "removed only high-confidence page furniture listed in validation.json"
+        )
+    if converter["format"] == "epub":
+        post_processing.append(
+            "split on native EPUB navigation/spine anchors and restored section anchors where Pandoc omitted them"
+        )
+    if chapter_evidence:
+        post_processing.append(
+            "used printed table-of-contents and explicit body chapter-label evidence to recover chapter boundaries and titles"
+        )
+    if any(entry.get("kind") == "appendix" for entry in section_evidence):
+        post_processing.append(
+            "used numbered printed contents entries to recover appendix boundaries and titles"
+        )
+    if any(entry.get("kind") == "part" for entry in section_evidence):
+        post_processing.append(
+            "used printed contents part entries to recover structural dividers and titles"
+        )
+    if any(entry.get("kind") == "frontmatter" for entry in section_evidence):
+        post_processing.append(
+            "used unnumbered printed contents entries to recover front-matter boundaries and titles"
+        )
+    if degraded_internal_links:
+        post_processing.append(
+            "rewrote unresolved internal references only when a containing anchor was known, or preserved visible link text when Marker emitted no page destination"
+        )
+    if merged_duplicate_boundaries:
+        post_processing.append(
+            "merged adjacent duplicate title-only boundaries while preserving their anchors: "
+            + ", ".join(merged_duplicate_boundaries)
+        )
+    if collapsed_duplicate_headings:
+        post_processing.append(
+            "collapsed adjacent identical headings while preserving intervening anchors"
+        )
+    selected_attempt = next(
+        attempt
+        for attempt in converter["attempts"]
+        if attempt["execution_target"] == converter["execution_target"]
+    )
+    source_record = {
+        "schema_version": SCHEMA_VERSION,
+        "source_path": source_repository_path(root, source),
+        "source_filename": source.name,
+        "source_sha256": source_hash,
+        "source_format": source.suffix.lower().lstrip("."),
+        "source_size_bytes": source.stat().st_size,
+        "pipeline": "scripts/convert-books",
+        "pipeline_fingerprint": current_pipeline_fingerprint,
+        "converter": converter["converter"],
+        "execution_target": converter["execution_target"],
+        "command_executed": converter["command_executed"],
+        "command_argv": converter["command_argv"],
+        "working_directory": converter["working_directory"],
+        "converter_version": converter["converter_version"],
+        "converter_exit_status": converter["converter_exit_status"],
+        "conversion_options": converter["conversion_options"],
+        "ocr_usage": validation["ocr_usage"],
+        "llm_used": validation["ocr_usage"].get("llm_request_count", 0)
+        not in {0, None},
+        "fallbacks_used": converter["fallbacks_used"],
+        "attempts": converter["attempts"],
+        "pre_conversion_commands": converter["pre_conversion_commands"],
+        "warnings": selected_attempt["warnings"],
+        "failures": selected_attempt["failures"],
+        "prior_conversion_failures": converter.get("prior_conversion_failures", []),
+        "staging_workaround": "length-bounded hash-qualified space-free basename",
+        "post_processing_performed": post_processing,
+        "page_furniture_removed": removed_furniture,
+        "unresolved_navigation_anchors": unresolved_navigation_anchors,
+        "degraded_internal_links": degraded_internal_links,
+        "content_author_line": author_line,
+        "chapter_boundary_evidence": chapter_evidence,
+        "section_boundary_evidence": section_evidence,
+        "merged_duplicate_boundaries": merged_duplicate_boundaries,
+        "collapsed_duplicate_headings": collapsed_duplicate_headings,
+        "generated_files": {},
+        "generated_directories": [],
+        "record_sha256": None,
+    }
+    source_record["generated_files"] = generated_file_hashes(final_directory)
+    source_record["generated_directories"] = generated_directories(final_directory)
+    write_json(
+        final_directory / "source.json", source_record_with_integrity(source_record)
+    )
+    if source_hash_before != sha256_file(source):
+        raise BookConversionError(f"source changed during conversion: {source.name}")
+    if validation["errors"]:
+        raise BookConversionError(
+            f"validation failed for {source.name}: " + "; ".join(validation["errors"])
+        )
+    current_destination_state = (
+        directory_state_digest(destination) if destination.exists() else None
+    )
+    if current_destination_state != destination_state:
+        raise BookConversionError(
+            f"refusing to publish because books/{slug} changed during conversion"
+        )
+    install_directory(final_directory, destination)
+    print(f"books: converted: {source.name} -> books/{slug} ({len(chapters)} chapters)")
+    return {
+        "source": source,
+        "slug": slug,
+        "converted": True,
+        "destination": destination,
+    }
+
+
+def index_body(entries: list[dict[str, object]]) -> str:
+    lines = [
+        "# Books",
+        "",
+        "Generated Markdown corpora for supported book files in `sources/`.",
+        "",
+        "| Title | Authors | Format | Converter | Target | Chapters | Status | Output | Warnings |",
+        "|---|---|---|---|---|---:|---|---|---|",
+    ]
+    for entry in entries:
+        warning_text = "; ".join(str(item) for item in entry["warnings"][:3]) or "None"
+        cells = [
+            str(entry["title"]),
+            str(entry["authors"]),
+            str(entry["format"]),
+            str(entry["converter"]),
+            str(entry["target"]),
+            str(entry["chapter_count"]),
+            str(entry["status"]),
+            f"[{entry['slug']}](./{entry['slug']}/)",
+            warning_text,
+        ]
+        lines.append(
+            "| " + " | ".join(cell.replace("|", "\\|") for cell in cells) + " |"
+        )
+    return "\n".join(lines) + "\n"
+
+
+def generated_index(body: str) -> str:
+    checksum = sha256_bytes(body.encode("utf-8"))
+    return f"<!-- generated-by: scripts/convert-books; content-sha256: {checksum} -->\n{body}"
+
+
+def index_integrity_error(index: Path) -> str | None:
+    if not index.exists():
+        return None
+    if index.is_symlink() or not index.is_file():
+        return "books/README.md is not a regular generated file"
+    text = index.read_text(encoding="utf-8")
+    first, separator, body = text.partition("\n")
+    match = re.fullmatch(
+        r"<!-- generated-by: scripts/convert-books; content-sha256: ([0-9a-f]{64}) -->",
+        first,
+    )
+    if not separator or not match:
+        return "books/README.md is not recognized as generated output"
+    if match.group(1) != sha256_bytes(body.encode("utf-8")):
+        return "books/README.md was edited after generation"
+    return None
+
+
+def update_index(root: Path, sources: list[Path], force: bool, check: bool) -> None:
+    books_directory = root / "books"
+    index = books_directory / "README.md"
+    integrity_error = index_integrity_error(index)
+    if integrity_error and not force:
+        raise BookConversionError(integrity_error)
+    entries: list[dict[str, object]] = []
+    for source in sources:
+        slug = slugify(source.stem)
+        directory = books_directory / slug
+        metadata = json.loads((directory / "metadata.json").read_text(encoding="utf-8"))
+        provenance = json.loads((directory / "source.json").read_text(encoding="utf-8"))
+        validation = json.loads(
+            (directory / "validation.json").read_text(encoding="utf-8")
+        )
+        authors = metadata.get("authors") or []
+        entries.append(
+            {
+                "title": metadata.get("title") or source.stem,
+                "authors": ", ".join(str(author) for author in authors)
+                if authors
+                else "Unknown",
+                "format": provenance["source_format"],
+                "converter": provenance["converter"],
+                "target": provenance["execution_target"],
+                "chapter_count": validation["chapter_count"],
+                "status": "success" if validation["conversion_success"] else "failed",
+                "slug": slug,
+                "warnings": validation.get("warnings", []),
+            }
+        )
+    expected = generated_index(index_body(entries))
+    if check:
+        if not index.is_file() or index.read_text(encoding="utf-8") != expected:
+            raise BookConversionError("books/README.md is missing or stale")
+        return
+    books_directory.mkdir(exist_ok=True)
+    if not index.is_file() or index.read_text(encoding="utf-8") != expected:
+        atomic_write(index, expected.encode("utf-8"))
+
+
+def check_outputs(root: Path, sources: list[Path]) -> None:
+    errors: list[str] = []
+    for source in sources:
+        slug = slugify(source.stem)
+        directory = root / "books" / slug
+        if not directory.is_dir():
+            errors.append(f"books/{slug} is missing")
+            continue
+        changes = output_modifications(directory)
+        if changes:
+            errors.extend(f"books/{slug}: {change}" for change in changes)
+        try:
+            record = json.loads((directory / "source.json").read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError, UnicodeDecodeError):
+            continue
+        source_hash = sha256_file(source)
+        if not source_identity_matches(record, root, source, source_hash):
+            errors.append(f"books/{slug}: source identity is stale")
+        if record.get("pipeline_fingerprint") != pipeline_fingerprint():
+            errors.append(f"books/{slug}: pipeline fingerprint is stale")
+        try:
+            validation = json.loads(
+                (directory / "validation.json").read_text(encoding="utf-8")
+            )
+            if validation.get("errors") or not validation.get("conversion_success"):
+                errors.append(f"books/{slug}: validation reports failure")
+        except (OSError, json.JSONDecodeError, UnicodeDecodeError):
+            errors.append(f"books/{slug}: validation.json is unreadable")
+    if errors:
+        raise BookConversionError("; ".join(errors))
+
+
+def reject_orphan_outputs(root: Path, sources: list[Path]) -> None:
+    books_directory = root / "books"
+    if books_directory.is_symlink():
+        raise BookConversionError("books/ must not be a symbolic link")
+    if not books_directory.is_dir():
+        return
+    expected_slugs = {slugify(source.stem) for source in sources}
+    orphans: list[str] = []
+    for child in books_directory.iterdir():
+        if child.name == "README.md" and child.is_file() and not child.is_symlink():
+            continue
+        if child.name in expected_slugs and child.is_dir() and not child.is_symlink():
+            continue
+        orphans.append(child.name)
+    orphans.sort()
+    if orphans:
+        raise BookConversionError(
+            "unexpected entries under books/: " + ", ".join(orphans)
+        )
+
+
+def recover_interrupted_installs(root: Path, sources: list[Path]) -> None:
+    books_directory = root / "books"
+    if books_directory.is_symlink() or not books_directory.is_dir():
+        return
+    for source in sources:
+        slug = slugify(source.stem)
+        backups = sorted(books_directory.glob(f".{slug}.backup-*"))
+        if not backups:
+            continue
+        if len(backups) != 1 or backups[0].is_symlink() or not backups[0].is_dir():
+            raise BookConversionError(
+                f"cannot safely recover interrupted install for books/{slug}"
+            )
+        backup = backups[0]
+        destination = books_directory / slug
+        if destination.exists():
+            changes = output_modifications(destination)
+            if changes:
+                raise BookConversionError(
+                    f"interrupted install left an invalid books/{slug}: "
+                    + "; ".join(changes)
+                )
+            shutil.rmtree(backup)
+            print(f"books: completed interrupted install cleanup: books/{slug}")
+            continue
+        changes = output_modifications(backup)
+        if changes:
+            raise BookConversionError(
+                f"interrupted install backup for books/{slug} is invalid: "
+                + "; ".join(changes)
+            )
+        backup.rename(destination)
+        print(f"books: restored interrupted install backup: books/{slug}")
+
+
+def preflight_existing_outputs(root: Path, sources: list[Path], force: bool) -> None:
+    books_directory = root / "books"
+    index_error = index_integrity_error(books_directory / "README.md")
+    if index_error and not force:
+        raise BookConversionError(index_error)
+    errors: list[str] = []
+    for source in sources:
+        slug = slugify(source.stem)
+        destination = books_directory / slug
+        if not destination.exists():
+            continue
+        changes = output_modifications(destination)
+        if changes and not force:
+            errors.extend(f"books/{slug}: {change}" for change in changes)
+    if errors:
+        raise BookConversionError(
+            "refusing to start while generated outputs contain unexpected edits: "
+            + "; ".join(errors)
+        )
+
+
+def parse_arguments(argv: list[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--root",
+        type=Path,
+        default=Path(__file__).resolve().parents[1],
+        help="repository root (defaults to the parent of scripts/)",
+    )
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="validate existing corpora without running converters or writing files",
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="explicitly replace generated outputs even when integrity checks detect edits",
+    )
+    parser.add_argument(
+        "--book",
+        metavar="SOURCE_FILENAME",
+        help="convert one exact sources/ filename without rebuilding the repository index",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
+    arguments = parse_arguments(argv or sys.argv[1:])
+    root = arguments.root.resolve()
+    try:
+        all_sources = discover_sources(root)
+        recover_interrupted_installs(root, all_sources)
+        reject_orphan_outputs(root, all_sources)
+        preflight_existing_outputs(root, all_sources, arguments.force)
+        sources = all_sources
+        if arguments.book:
+            sources = [
+                source for source in all_sources if source.name == arguments.book
+            ]
+            if not sources:
+                raise BookConversionError(
+                    f"no PDF or EPUB in sources/ has the exact filename: {arguments.book}"
+                )
+        if arguments.check:
+            check_outputs(root, sources)
+            if not arguments.book:
+                update_index(root, sources, force=False, check=True)
+            print(f"books: check passed ({len(sources)} source book(s))")
+            return 0
+        for source in sources:
+            print(f"books: converting: {source.name}", flush=True)
+            convert_one(source, root, arguments.force)
+        if arguments.book:
+            print(f"books: partial complete ({len(sources)} source book(s))")
+            return 0
+        update_index(root, sources, arguments.force, check=False)
+        work_root = root / ".book-work"
+        if work_root.is_dir():
+            shutil.rmtree(work_root)
+        print(f"books: complete ({len(sources)} source book(s))")
+        return 0
+    except BookConversionError as error:
+        print(f"books: error: {error}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

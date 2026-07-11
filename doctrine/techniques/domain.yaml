@@ -1,0 +1,834 @@
+schema_version: agent-doctrine-techniques/1
+catalog: domain
+scope: specialist
+non_universality: >-
+  These records are conditional domain-design techniques, not a tactical DDD
+  template. Retrieval must carry each technique's activation evidence, costs,
+  contraindications, preservation boundaries, and alternatives with the technique.
+techniques:
+  - id: domain-ubiquitous-language-technique
+    candidate_id: TECH-DOM-001
+    title: Ubiquitous Language
+    non_universality: A shared domain language is warranted where terms affect rules and decisions; generic infrastructure and naming style do not require DDD ceremony.
+    problem_solved: Align experts, requirements, code, tests, and operations when ambiguous or divergent terms obscure domain decisions.
+    activation_evidence:
+      - Recurring translation, misunderstanding, or defects arise from domain terms.
+      - Authoritative experts can validate concrete examples and meanings.
+      - Vocabulary changes rules, identity, policy, or observable behavior.
+    costs:
+      - Continuous expert-developer collaboration and coordinated renaming.
+      - Previously hidden disagreement becomes explicit and must be resolved or scoped.
+    contraindications:
+      - Generic infrastructure has no domain decision content.
+      - Experts are unavailable and documents cannot establish authority.
+      - Vocabulary has no consequence in code, tests, APIs, or operations.
+    reversal_cost:
+      level: moderate
+      exit_path: Evolve terms through explicit model and compatibility changes rather than silently redefining them.
+      cost_drivers: [public APIs, persisted events, logs and runbooks, cross-context false cognates]
+    appropriate_scale: [team, bounded-context]
+    operational_consequences:
+      - APIs, events, logs, dashboards, documentation, and runbooks may require coordinated terminology and versioning.
+      - Operational names must remain traceable to context-specific meaning.
+    preservation_boundaries:
+      - Accepted business meaning and authoritative examples.
+      - Context-specific definitions where the same word has different meanings.
+    alternatives:
+      - scoped-glossary-with-examples
+      - transaction-script-with-explicit-rules
+      - separate-context-languages
+    related_concepts:
+      - domain-language-model-loop
+      - domain-bounded-context
+      - domain-explicit-concept
+      - domain-intention-revealing-interface
+      - architecture-feedback-loop
+    source_support:
+      - source_id: SRC-DDD
+        relationship: direct_support
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/003-chapter-2-communication-and-the-use-of-language.md :: Ubiquitous Language"
+        contribution: Binds expert conversation and the model to one context-specific working language.
+      - source_id: SRC-DDD
+        relationship: refinement
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/004-chapter-3-binding-model-and-implementation.md :: Model-Driven Design"
+        contribution: Requires the selected language and model to be expressed in implementation rather than documentation alone.
+
+  - id: domain-entity-technique
+    candidate_id: TECH-DOM-002
+    title: Entity
+    non_universality: A mutable record or database primary key is not sufficient; entity semantics require domain-significant continuity independent of current attributes.
+    problem_solved: Represent a domain concept whose identity and lifecycle persist while its attributes change.
+    activation_evidence:
+      - Experts distinguish whether two instances are the same thing despite state change.
+      - History, reference, or lifecycle rules require stable identity.
+      - Identity authority, generation, and comparison rules can be stated.
+    costs:
+      - Identity generation and comparison plus mutable lifecycle complexity.
+      - Persistence, concurrency, deduplication, and reference-management burden.
+    contraindications:
+      - Meaning is entirely determined by attributes.
+      - Identity exists only for database convenience.
+      - An immutable value with replacement semantics is clearer.
+    reversal_cost:
+      level: moderate-to-high
+      exit_path: Migrate identity and references explicitly before converting to value semantics or merging entity types.
+      cost_drivers: [persisted identifiers, external references, audit history, deduplication rules]
+    appropriate_scale: [domain-object, bounded-context]
+    operational_consequences:
+      - Identity authority affects idempotency, deduplication, reconciliation, and distributed references.
+      - Concurrent lifecycle changes need explicit conflict and consistency policy.
+    preservation_boundaries:
+      - Identity continuity, lifecycle history, and equality semantics.
+      - External references and authoritative identity generation.
+    alternatives:
+      - domain-value-object-technique
+      - explicit-data-record
+      - domain-aggregate-technique
+    related_concepts:
+      - domain-identity-entity
+      - domain-aggregate-invariant-boundary
+      - domain-factory-lifecycle
+      - domain-repository-lifecycle
+      - universal-explicit-invariants
+    source_support:
+      - source_id: SRC-DDD
+        relationship: direct_support
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/006-chapter-5-a-model-expressed-in-software.md :: Entities (a.k.a. Reference Objects)"
+        contribution: Defines entities through identity and continuity rather than attributes alone.
+
+  - id: domain-value-object-technique
+    candidate_id: TECH-DOM-003
+    title: Value Object
+    non_universality: Value semantics are appropriate only when attributes wholly define meaning and replacement is valid; immutability is not a universal object rule.
+    problem_solved: Represent a descriptive concept as a constrained whole with value equality and replacement semantics.
+    activation_evidence:
+      - No independent identity or lifecycle is meaningful.
+      - Equality is determined by the complete semantic value.
+      - Constraints, units, precision, or valid combinations belong to the concept.
+    costs:
+      - Creation, copying, serialization, and mapping work.
+      - Large or frequently allocated values can impose measured performance costs.
+    contraindications:
+      - Identity or lifecycle matters independently of attributes.
+      - Mutation itself is domain-significant.
+      - The type is only a transport object with no concept or invariant.
+    reversal_cost:
+      level: low-to-moderate
+      exit_path: Inline the value or introduce identity through explicit data and reference migration.
+      cost_drivers: [persisted representation, public serialization, value used as a key]
+    appropriate_scale: [local-domain-object, bounded-context]
+    operational_consequences:
+      - Serialization, units, precision, locale, and compatibility must preserve value meaning.
+      - Allocation concerns require measurement before weakening semantics.
+    preservation_boundaries:
+      - Equality, units, precision, constraints, and serialization semantics.
+      - Immutability or replacement behavior promised to callers.
+    alternatives:
+      - domain-entity-technique
+      - primitive-with-validated-boundary
+      - explicit-data-record
+    related_concepts:
+      - domain-value-object
+      - domain-explicit-concept
+      - domain-intention-revealing-interface
+      - performance-semantic-preservation
+      - universal-explicit-invariants
+    source_support:
+      - source_id: SRC-DDD
+        relationship: direct_support
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/006-chapter-5-a-model-expressed-in-software.md :: Value Objects"
+        contribution: Defines descriptive objects by their attributes and value rather than identity.
+
+  - id: domain-service-technique
+    candidate_id: TECH-DOM-004
+    title: Domain Service
+    non_universality: A domain service is an important stateless domain operation that fits no entity or value; it is not a mandatory layer or a deployable service.
+    problem_solved: Express a named domain process or policy without distorting the responsibility of an entity or value object.
+    activation_evidence:
+      - Experts name the operation as part of the domain.
+      - Inputs and outputs are domain concepts.
+      - Assigning the behavior to one entity or value would be artificial.
+      - The operation is stateless in domain terms.
+    costs:
+      - Procedural drift, anemic entities, and broad dependency-hub risk.
+      - Side effects and orchestration can become hidden behind a service name.
+    contraindications:
+      - An entity or value naturally owns the behavior.
+      - The operation is technical integration or application orchestration.
+      - A service exists only to satisfy a package template.
+    reversal_cost:
+      level: low-to-moderate
+      exit_path: Move naturally owned behavior to domain objects or split an overbroad service along named policies.
+      cost_drivers: [number of callers, hidden side effects, service as transaction boundary]
+    appropriate_scale: [domain-operation, bounded-context]
+    operational_consequences:
+      - Side effects, transactions, failures, and retries require explicit application orchestration.
+      - The technique itself does not imply a process or network service.
+    preservation_boundaries:
+      - Domain policy semantics and statelessness.
+      - Explicit separation from technical side effects and deployment terminology.
+    alternatives:
+      - behavior-on-domain-entity
+      - behavior-on-value-object
+      - explicit-application-service
+    related_concepts:
+      - domain-service-operation
+      - domain-intention-revealing-interface
+      - domain-aggregate-invariant-boundary
+      - architecture-policy-mechanism-separation
+      - universal-local-reasoning
+    source_support:
+      - source_id: SRC-DDD
+        relationship: direct_support
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/006-chapter-5-a-model-expressed-in-software.md :: Services"
+        contribution: Defines a stateless domain operation whose responsibility does not fit an entity or value object.
+      - source_id: SRC-DDD
+        relationship: refinement
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/011-chapter-9-making-implicit-concepts-explicit.md :: Processes as Domain Objects"
+        contribution: Shows when an implicit process deserves explicit domain representation.
+
+  - id: domain-aggregate-technique
+    candidate_id: TECH-DOM-005
+    title: Aggregate
+    non_universality: Object containment, persistence cascade, or a convenient graph does not earn an aggregate; exact invariants must require one authorized consistency boundary.
+    problem_solved: Protect a cluster of invariants through one root-controlled lifecycle and consistency boundary.
+    activation_evidence:
+      - Named invariants require atomic coordination among the included concepts.
+      - One root can authorize every valid state transition.
+      - External references can target the root without traversing internals.
+      - Consistency and concurrency requirements are explicit.
+    costs:
+      - Contention, loading and mapping cost, and command-routing constraints.
+      - Oversized aggregates inhibit scale; undersized aggregates weaken invariants.
+    contraindications:
+      - The grouping is only object-graph containment or persistence cascade.
+      - No exact invariant spans the members.
+      - Cross-boundary eventual consistency is acceptable and clearer.
+    reversal_cost:
+      level: high
+      exit_path: Split or merge only with invariant, reference, transaction, and data migration plus concurrency characterization.
+      cost_drivers: [persisted boundaries, external references, transaction semantics, event ordering]
+    appropriate_scale: [aggregate, bounded-context]
+    operational_consequences:
+      - Transaction scope, contention, retries, locking, and consistency follow the chosen boundary.
+      - Distribution may require sagas or authorized weakening of invariants.
+    preservation_boundaries:
+      - Exact invariants and root authority.
+      - Identity, transaction, concurrency, retry, and consistency semantics.
+    alternatives:
+      - independent-entities-with-eventual-consistency
+      - domain-service-technique
+      - transaction-script
+    related_concepts:
+      - domain-aggregate-invariant-boundary
+      - domain-identity-entity
+      - domain-repository-lifecycle
+      - domain-factory-lifecycle
+      - universal-explicit-invariants
+    source_support:
+      - source_id: SRC-DDD
+        relationship: direct_support
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/007-chapter-6-the-life-cycle-of-a-domain-object.md :: Aggregates"
+        contribution: Defines an invariant and lifecycle boundary governed through an aggregate root.
+      - source_id: SRC-FSA
+        relationship: refinement
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/023-chapter-17-microservices-architecture.md :: Transactions and Sagas"
+        contribution: Establishes the consistency cost when atomic domain work crosses distributed boundaries.
+
+  - id: domain-factory-technique
+    candidate_id: TECH-DOM-006
+    title: Factory
+    non_universality: Complex invariant-establishing creation earns a factory; a simple constructor remains preferable when it can create a valid object clearly.
+    problem_solved: Create or reconstitute a valid aggregate or value while hiding coordinated construction detail.
+    activation_evidence:
+      - Creation coordinates many parts or establishes nontrivial invariants.
+      - A simple constructor cannot express valid creation clearly.
+      - A lifecycle transition creates a distinct aggregate or value.
+    costs:
+      - Additional abstraction and dependency setup.
+      - Construction logic can become detached from domain meaning.
+    contraindications:
+      - Construction is simple and locally understandable.
+      - The factory exists only because a framework or template expects one.
+      - Post-creation invalidity is unrelated to construction.
+    reversal_cost:
+      level: low-to-moderate
+      exit_path: Inline the factory when construction simplifies; retain characterization for identity and invariants.
+      cost_drivers: [external factory contract, generated identity, reconstitution behavior]
+    appropriate_scale: [aggregate, bounded-context]
+    operational_consequences:
+      - Failure, idempotency, identity generation, and dependency availability must be defined.
+      - Reconstitution must preserve history and persistence compatibility.
+    preservation_boundaries:
+      - Valid-at-creation invariants, identity, and lifecycle transition semantics.
+      - Idempotency and failure behavior.
+    alternatives:
+      - simple-constructor
+      - named-constructor
+      - domain-service-technique
+    related_concepts:
+      - domain-factory-lifecycle
+      - domain-aggregate-invariant-boundary
+      - domain-identity-entity
+      - domain-value-object
+      - universal-explicit-invariants
+    source_support:
+      - source_id: SRC-DDD
+        relationship: direct_support
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/007-chapter-6-the-life-cycle-of-a-domain-object.md :: Factories"
+        contribution: Assigns complex whole-object creation and reconstitution to an explicit lifecycle boundary.
+      - source_id: SRC-DDD
+        relationship: tension
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/007-chapter-6-the-life-cycle-of-a-domain-object.md :: When a Constructor Is All You Need"
+        contribution: Preserves simple construction as the lower-cost alternative when no factory pressure exists.
+
+  - id: domain-repository-technique
+    candidate_id: TECH-DOM-007
+    title: Repository
+    non_universality: A repository represents aggregate lifecycle and collection semantics; renaming every table DAO as a repository adds abstraction without domain value.
+    problem_solved: Let domain code retrieve and persist aggregate roots while isolating persistence and reconstitution mechanisms.
+    activation_evidence:
+      - Aggregate lifecycle and reconstitution are meaningful.
+      - Retrieval operations use domain concepts and return aggregate roots.
+      - Persistence details would otherwise pollute domain decisions.
+    costs:
+      - Query-abstraction mismatch, hidden I/O, N+1 behavior, and session or transaction complexity.
+      - Generic CRUD APIs can erase domain semantics.
+    contraindications:
+      - One repository is proposed per table.
+      - Internal non-root objects are exposed independently.
+      - A trivial data script or read model does not reconstitute domain aggregates.
+    reversal_cost:
+      level: moderate
+      exit_path: Collapse to a direct gateway or separate specialized reads while retaining aggregate write lifecycle.
+      cost_drivers: [callers, unit-of-work assumptions, query DSL, caching and session behavior]
+    appropriate_scale: [aggregate, bounded-context]
+    operational_consequences:
+      - Latency, consistency, pagination, transactions, caching, and hidden I/O must be visible.
+      - Query paths may need separate representations rather than forcing every read through aggregates.
+    preservation_boundaries:
+      - Aggregate reconstitution, identity, lifecycle, and transaction semantics.
+      - Query result meaning, consistency, ordering, pagination, and failure behavior.
+    alternatives:
+      - direct-database-gateway
+      - specialized-query-service
+      - transaction-script
+    related_concepts:
+      - domain-repository-lifecycle
+      - domain-aggregate-invariant-boundary
+      - architecture-policy-mechanism-separation
+      - universal-information-hiding
+      - universal-local-reasoning
+    source_support:
+      - source_id: SRC-DDD
+        relationship: direct_support
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/007-chapter-6-the-life-cycle-of-a-domain-object.md :: Repositories"
+        contribution: Defines collection-like access and reconstitution for aggregate roots.
+      - source_id: SRC-CA
+        relationship: corroboration
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/034-chapter-23-presenters-and-humble-objects.md :: DATABASE GATEWAYS"
+        contribution: Separates persistence access from higher-level application policy.
+
+  - id: domain-specification-technique
+    candidate_id: TECH-DOM-008
+    title: Specification
+    non_universality: A specification is earned by a named recurring domain rule; one simple conditional or a generic predicate library does not justify the pattern.
+    problem_solved: Express a complex predicate, selection, or creation rule as a composable and reusable domain concept.
+    activation_evidence:
+      - Experts name the criterion or policy.
+      - The rule recurs or is duplicated across validation, query, or construction.
+      - Composition, explanation, or independent testing adds concrete value.
+    costs:
+      - Object or DSL proliferation and persistence-translation complexity.
+      - Evaluation cost and hidden I/O can become unclear.
+    contraindications:
+      - A single simple conditional is sufficient.
+      - No domain term or recurring semantics exists.
+      - Query or performance semantics cannot be made explicit.
+    reversal_cost:
+      level: low-to-moderate
+      exit_path: Inline one-use specifications or specialize separate in-memory and query forms behind semantic tests.
+      cost_drivers: [public specification API, persistence translators, serialized rules]
+    appropriate_scale: [local-domain-rule, bounded-context]
+    operational_consequences:
+      - Query translation, evaluation cost, versioning, and explanation or audit may matter.
+      - Semantically equivalent in-memory and persisted evaluation require regression checks.
+    preservation_boundaries:
+      - Predicate truth conditions and composition semantics.
+      - Query consistency, evaluation cost expectations, and audit explanation.
+    alternatives:
+      - named-domain-function
+      - direct-conditional
+      - specialized-query-object
+    related_concepts:
+      - domain-explicit-concept
+      - domain-intention-revealing-interface
+      - domain-language-model-loop
+      - performance-metric-semantics
+      - universal-earned-abstraction
+    source_support:
+      - source_id: SRC-DDD
+        relationship: direct_support
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/011-chapter-9-making-implicit-concepts-explicit.md :: Specification"
+        contribution: Promotes an important recurring rule into an explicit combinable domain concept.
+
+  - id: domain-bounded-context-map-technique
+    candidate_id: TECH-DOM-009
+    title: Bounded Context and Context Map
+    non_universality: A folder, team, table, component, or service boundary does not prove a bounded context; semantic and authority discontinuity must be demonstrated.
+    problem_solved: Preserve model integrity where one language cannot remain coherent across differing meanings, authorities, cadences, or systems.
+    activation_evidence:
+      - The same term or concept has contradictory meanings or rules.
+      - Distinct decision or data authorities and change cadences exist.
+      - Necessary crossings can be named and verified through examples and change history.
+      - Translation provides semantic value rather than mere mapping ceremony.
+    costs:
+      - Translation, duplicated concepts or data, contract versioning, and coordination.
+      - Integration reliability and ownership become explicit work.
+    contraindications:
+      - One small coherent team and model can share meaning safely.
+      - The split only mirrors directory, deployment, or organization structure.
+      - Translation adds no semantic protection.
+    reversal_cost:
+      level: high
+      exit_path: Merge or split contexts through explicit semantic mapping, data migration, compatibility, and authority reassignment.
+      cost_drivers: [persisted divergent models, public contracts, data ownership, team authority]
+    appropriate_scale: [subsystem, team, enterprise]
+    operational_consequences:
+      - Integration reliability, synchronization, observability, versioning, and ownership must be assigned.
+      - A context boundary does not itself require a network boundary.
+    preservation_boundaries:
+      - Context-specific language, invariants, and decision authority.
+      - Cross-context identity, data, transaction, failure, and translation semantics.
+    alternatives:
+      - one-coherent-model
+      - domain-shared-kernel
+      - domain-anticorruption-layer-technique
+    related_concepts:
+      - domain-bounded-context
+      - domain-context-relationship-selection
+      - domain-language-model-loop
+      - architecture-contextual-partitioning
+      - architecture-distribution-readiness
+    source_support:
+      - source_id: SRC-DDD
+        relationship: direct_support
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md :: Bounded Context"
+        contribution: Defines the explicit scope within which a model and language remain consistent.
+      - source_id: SRC-DDD
+        relationship: direct_support
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md :: Context Map"
+        contribution: Makes context boundaries and relationships explicit rather than implicit.
+      - source_id: SRC-FSA
+        relationship: refinement
+        locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/012-chapter-7-scope-of-architecture-characteristics.md :: Domain-Driven Design's Bounded Context"
+        contribution: Relates context semantics to architecture scope while not entailing a service boundary.
+
+  - id: domain-shared-kernel
+    candidate_id: TECH-DOM-010
+    title: Shared Kernel
+    non_universality: Shared code or a common schema is not automatically a kernel; the shared subset must be small, stable, semantically identical, and jointly governed.
+    problem_solved: Avoid duplicate translation where two contexts gain more from a small shared model subset than from independent copies.
+    activation_evidence:
+      - A tiny stable overlap has genuinely identical semantics.
+      - Teams have high trust, compatible cadence, and a joint change process.
+      - Integrated tests can detect damage to either context.
+    costs:
+      - Release coordination, mutual veto, and shared change and failure amplification.
+      - Ownership can blur and the kernel can grow beyond its economic value.
+    contraindications:
+      - Trust or cadence differs materially.
+      - Meanings are diverging or overlap is broad.
+      - Teams cannot coordinate changes or run joint regression tests.
+    reversal_cost:
+      level: moderate-to-high
+      exit_path: Copy and translate the kernel into each context or merge contexts if their models are actually one.
+      cost_drivers: [shared persisted schema, dependency spread, release coupling]
+    appropriate_scale: [two-context, two-team]
+    operational_consequences:
+      - Shared release compatibility and joint regression ownership are required.
+      - Incidents and schema changes may affect both contexts simultaneously.
+    preservation_boundaries:
+      - The exact shared semantics and deliberately small scope.
+      - Joint change authority and compatibility guarantees.
+    alternatives:
+      - domain-anticorruption-layer-technique
+      - duplicated-local-models
+      - merge-bounded-contexts
+    related_concepts:
+      - domain-context-relationship-selection
+      - domain-bounded-context
+      - universal-change-amplification
+      - universal-earned-abstraction
+      - architecture-team-topology-force
+    source_support:
+      - source_id: SRC-DDD
+        relationship: direct_support
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md :: Shared Kernel"
+        contribution: Defines a deliberately small jointly maintained model subset and its coordination obligations.
+
+  - id: domain-customer-supplier
+    candidate_id: TECH-DOM-011
+    title: Customer/Supplier relationship
+    non_universality: Customer/Supplier requires a real upstream-downstream dependency and influence channel; naming teams customer and supplier does not create leverage.
+    problem_solved: Let a dependent downstream context influence an authoritative upstream interface and delivery plan.
+    activation_evidence:
+      - Upstream and downstream direction is clear.
+      - Downstream depends materially on upstream behavior.
+      - Negotiation, prioritization, and joint acceptance tests are feasible.
+    costs:
+      - Planning and priority coordination.
+      - Downstream remains coupled to supplier schedule, quality, and availability.
+    contraindications:
+      - Downstream has no meaningful leverage or cooperation.
+      - Ownership is symmetrical and joint rather than upstream-downstream.
+      - Upstream semantics are unacceptable without translation.
+    reversal_cost:
+      level: moderate
+      exit_path: Adopt Conformist or an Anticorruption Layer if influence disappears; merge only if authority and semantics converge.
+      cost_drivers: [contract consumers, planning commitments, shared acceptance suites]
+    appropriate_scale: [cross-team, cross-context]
+    operational_consequences:
+      - Requires contract tests, release communication, SLOs, and an escalation path.
+      - Supplier failures and rollout changes remain downstream risks.
+    preservation_boundaries:
+      - Upstream authority and negotiated downstream requirements.
+      - Contract, compatibility, SLO, and acceptance semantics.
+    alternatives:
+      - domain-conformist
+      - domain-anticorruption-layer-technique
+      - domain-shared-kernel
+    related_concepts:
+      - domain-context-relationship-selection
+      - domain-bounded-context
+      - architecture-team-topology-force
+      - universal-repository-contract-precedence
+      - architecture-decision-record
+    source_support:
+      - source_id: SRC-DDD
+        relationship: direct_support
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md :: Customer/Supplier Development Teams"
+        contribution: Defines an upstream-downstream relationship with negotiation and downstream-oriented acceptance.
+
+  - id: domain-conformist
+    candidate_id: TECH-DOM-012
+    title: Conformist relationship
+    non_universality: Conformance is a deliberate economic choice for low local differentiation and absent influence, not a universal response to upstream authority.
+    problem_solved: Avoid translation expense when downstream cannot influence upstream and the upstream model is adequate for local needs.
+    activation_evidence:
+      - Negotiation is unavailable or uneconomic.
+      - Upstream semantics and interface are stable and adequate.
+      - Local differentiation is low and translation would add little value.
+    costs:
+      - Upstream concepts constrain the local model and changes propagate directly.
+      - Downstream autonomy and semantic precision are reduced.
+    contraindications:
+      - A valuable local core model would be harmed.
+      - Upstream semantics are unsafe, misleading, or unstable.
+      - Translation is affordable relative to the protection it offers.
+    reversal_cost:
+      level: moderate-to-high
+      exit_path: Introduce an Anticorruption Layer at the highest-value semantic mismatches and migrate incrementally.
+      cost_drivers: [upstream types embedded in local model, persisted upstream identifiers, broad API use]
+    appropriate_scale: [downstream-context]
+    operational_consequences:
+      - Requires compatibility monitoring and explicit acceptance of semantic loss.
+      - Upstream incidents and release changes propagate into downstream operation.
+    preservation_boundaries:
+      - Accepted upstream contract and explicitly accepted semantic compromise.
+      - Local safety, correctness, and regulatory requirements that cannot be delegated.
+    alternatives:
+      - domain-anticorruption-layer-technique
+      - domain-customer-supplier
+      - domain-separate-ways
+    related_concepts:
+      - domain-context-relationship-selection
+      - domain-bounded-context
+      - domain-anticorruption-layer
+      - domain-core-domain-priority
+      - universal-no-change-option
+    source_support:
+      - source_id: SRC-DDD
+        relationship: direct_support
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md :: Conformist"
+        contribution: Defines deliberate adoption of an upstream model when influence and translation value are low.
+
+  - id: domain-anticorruption-layer-technique
+    candidate_id: TECH-DOM-013
+    title: Anticorruption Layer
+    non_universality: Translation is earned by material semantic mismatch and a valuable local model; equivalent meanings or a tiny stable interface do not justify an ACL.
+    problem_solved: Protect a valuable local model from semantic corruption by an uncontrolled, legacy, or externally governed model.
+    activation_evidence:
+      - Integration is necessary and cannot be avoided.
+      - Concrete identity, rule, error, lifecycle, or language mismatch exists.
+      - The local model has enough value to justify translation ownership.
+      - Mapping behavior can be characterized and tested.
+    costs:
+      - Translators, facades, duplicated models, latency, error mapping, and maintenance.
+      - A dedicated ownership burden and possible synchronization state.
+    contraindications:
+      - Semantics are already equivalent.
+      - The interface is tiny and stable or the local model has little value.
+      - Translator cost exceeds the demonstrated protection value.
+    reversal_cost:
+      level: moderate-to-high
+      exit_path: Remove mappings if contexts converge, choose Conformist if protection loses value, or strengthen the boundary if mismatches grow.
+      cost_drivers: [mapping count, persisted translated data, bidirectional synchronization, public contracts]
+    appropriate_scale: [boundary, bounded-context]
+    operational_consequences:
+      - Requires mapping tests, error and identity policy, metrics, compatibility, and fallback.
+      - Transactions, retries, and synchronization failures must be visible and recoverable.
+    preservation_boundaries:
+      - Local language, invariants, identity, and decision authority.
+      - Cross-boundary error, transaction, version, and data-loss semantics.
+    alternatives:
+      - domain-conformist
+      - domain-separate-ways
+      - domain-open-host-published-language
+    related_concepts:
+      - domain-anticorruption-layer
+      - domain-context-relationship-selection
+      - domain-bounded-context
+      - universal-information-hiding
+      - architecture-boundary-strength
+    source_support:
+      - source_id: SRC-DDD
+        relationship: direct_support
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md :: Anticorruption Layer"
+        contribution: Defines a translating boundary that protects a local model from an external model.
+      - source_id: SRC-CA
+        relationship: corroboration
+        locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/035-chapter-24-partial-boundaries.md :: FACADES"
+        contribution: Supplies a lower-strength mechanism for hiding an external surface, while not proving semantic translation by itself.
+
+  - id: domain-separate-ways
+    candidate_id: TECH-DOM-014
+    title: Separate Ways
+    non_universality: Separation is valid only when integration value is below coordination and translation cost and no hard end-to-end invariant requires unification.
+    problem_solved: Avoid a costly integration whose business, reliability, or maintenance value does not justify continued coupling.
+    activation_evidence:
+      - Workflows can tolerate independence, manual transfer, or deliberate duplication.
+      - No legal, financial, safety, or correctness invariant requires shared state.
+      - Measured coordination or translation cost exceeds integration value.
+    costs:
+      - Duplicate capabilities or data and possible user reconciliation.
+      - Loss of enterprise uniformity and shared reporting convenience.
+    contraindications:
+      - Essential end-to-end workflow or regulatory invariant.
+      - Inconsistent results or manual reconciliation are unacceptable.
+      - Separation merely avoids resolving an authorized shared responsibility.
+    reversal_cost:
+      level: moderate-to-high
+      exit_path: Integrate later through an explicit relationship, reconciliation plan, and authority model.
+      cost_drivers: [divergent data, duplicated capabilities, user workflows, regulatory records]
+    appropriate_scale: [bounded-context, system]
+    operational_consequences:
+      - Manual operations, reconciliation, ownership, and user communication must be explicit.
+      - Duplicate systems need independent reliability and support.
+    preservation_boundaries:
+      - Required user outcomes and any non-negotiable invariant.
+      - Clear data and decision ownership on each side.
+    alternatives:
+      - domain-anticorruption-layer-technique
+      - domain-open-host-published-language
+      - domain-shared-kernel
+    related_concepts:
+      - domain-context-relationship-selection
+      - domain-bounded-context
+      - universal-no-change-option
+      - universal-change-amplification
+      - architecture-risk-analysis
+    source_support:
+      - source_id: SRC-DDD
+        relationship: direct_support
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md :: Separate Ways"
+        contribution: Treats deliberate nonintegration as an option when integration cost exceeds value.
+
+  - id: domain-open-host-published-language
+    candidate_id: TECH-DOM-015
+    title: Open Host Service and Published Language
+    non_universality: A generalized public protocol is earned by multiple independent consumers and stable governable semantics, not by one internal caller or an unstable model.
+    problem_solved: Serve many consumers through a stable public integration surface instead of bespoke translation for each relationship.
+    activation_evidence:
+      - Multiple independent consumers share recurring exchange needs.
+      - Public semantics are stable enough to document, govern, and version.
+      - The provider can own compatibility, support, security, and deprecation.
+    costs:
+      - Public compatibility, governance, security, documentation, and support burden.
+      - Lowest-common-denominator pressure and delayed internal evolution.
+    contraindications:
+      - Only one consumer exists.
+      - Meanings change rapidly or consumers require incompatible views.
+      - Publishing would expose the provider's internal model directly.
+    reversal_cost:
+      level: high
+      exit_path: Version and deprecate the public language or move consumers to explicit bilateral adapters.
+      cost_drivers: [consumer count, persisted messages, external commitments, deprecation windows]
+    appropriate_scale: [multiple-contexts, ecosystem]
+    operational_consequences:
+      - Requires authentication, SLOs, schema and version governance, monitoring, support, and deprecation policy.
+      - Compatibility and rollout ordering become durable obligations.
+    preservation_boundaries:
+      - Published semantic contract, compatibility, and consumer expectations.
+      - Internal model information hiding and security boundaries.
+    alternatives:
+      - bilateral-adapters
+      - domain-anticorruption-layer-technique
+      - domain-customer-supplier
+    related_concepts:
+      - domain-context-relationship-selection
+      - domain-bounded-context
+      - universal-information-hiding
+      - architecture-distribution-readiness
+      - architecture-decision-record
+    source_support:
+      - source_id: SRC-DDD
+        relationship: direct_support
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md :: Open Host Service"
+        contribution: Defines a generalized provider protocol for multiple integrations.
+      - source_id: SRC-DDD
+        relationship: direct_support
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md :: Published Language"
+        contribution: Defines a documented shared exchange language with stable interpretation.
+
+  - id: domain-core-generic-subdomain
+    candidate_id: TECH-DOM-016
+    title: Core Domain and Generic Subdomain distillation
+    non_universality: Core status follows explicit business differentiation and investment economics, not prestige, code complexity, or technical novelty.
+    problem_solved: Focus scarce modeling, architecture, and engineering effort on differentiating capability while sourcing generic work proportionately.
+    activation_evidence:
+      - Business strategy identifies a capability that changes competitive or mission outcomes.
+      - Core, supporting, generic, and simple work can be compared explicitly.
+      - Investment, sourcing, and protection decisions follow from the classification.
+    costs:
+      - Classification disputes and risk of neglecting necessary supporting reliability.
+      - Buy, build, vendor, integration, and talent-allocation tradeoffs.
+    contraindications:
+      - Strategy is unknown or all domains are equally generic or mandated.
+      - Core is used as a label for prestige or technical difficulty.
+      - Classification would excuse underfunding security, durability, or operations.
+    reversal_cost:
+      level: moderate-to-high
+      exit_path: Reclassify as strategy changes and migrate ownership, sourcing, and protection explicitly.
+      cost_drivers: [vendor contracts, team skills, data ownership, architectural specialization]
+    appropriate_scale: [product, portfolio]
+    operational_consequences:
+      - Core capability usually receives stronger talent, tests, observability, and change protection.
+      - Generic sourcing adds vendor, compatibility, security, and continuity operations.
+    preservation_boundaries:
+      - Business strategy and acceptance authority.
+      - Minimum security, reliability, and durability regardless of classification.
+    alternatives:
+      - uniform-investment
+      - outsource-generic-capability
+      - domain-smart-ui-transaction-script
+    related_concepts:
+      - domain-core-domain-priority
+      - domain-modeling-investment-gate
+      - domain-bounded-context
+      - architecture-scoped-characteristics
+      - universal-evidence-before-intervention
+    source_support:
+      - source_id: SRC-DDD
+        relationship: direct_support
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/017-chapter-15-distillation.md :: Core Domain"
+        contribution: Focuses scarce design effort on the model that creates strategic differentiation.
+      - source_id: SRC-DDD
+        relationship: direct_support
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/017-chapter-15-distillation.md :: Generic Subdomains"
+        contribution: Distinguishes necessary but nondifferentiating capability whose implementation can be sourced differently.
+      - source_id: SRC-DDD
+        relationship: refinement
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/017-chapter-15-distillation.md :: Domain Vision Statement"
+        contribution: Connects model focus to explicit strategic value rather than internal prestige.
+
+  - id: domain-minimal-large-scale-structure
+    candidate_id: TECH-DOM-017
+    title: Minimal evolving large-scale structure
+    non_universality: A shared large-scale structure is earned by cross-model coordination pressure and demonstrable fit; a master plan imposed on a small or evolving model is contraindicated.
+    problem_solved: Provide a simple organizing concept across a large model without freezing local discovery and evolution.
+    activation_evidence:
+      - Multiple model areas create concrete coordination or cognitive pressure.
+      - A simple conceptual rule clarifies placement and relationships in the current model.
+      - Teams can test the structure against implementation and revise it.
+    costs:
+      - Governance and maintenance.
+      - The structure can become ceremonial, suppress discovery, or outlive its fit.
+    contraindications:
+      - A small coherent model needs no cross-cutting structure.
+      - The proposed structure does not fit current examples.
+      - A master plan predetermines boundaries before learning.
+    reversal_cost:
+      level: moderate
+      exit_path: Simplify, replace, or remove the structure when fit deteriorates, migrating rules incrementally.
+      cost_drivers: [build enforcement, package layout, shared terminology, cross-team governance]
+    appropriate_scale: [multi-module, multi-context]
+    operational_consequences:
+      - Structural constraints may be enforced in build and review.
+      - Ownership, evolution, exceptions, and deprecation must be explicit.
+    preservation_boundaries:
+      - Local model integrity and validated domain semantics.
+      - Feedback and authority needed to change the organizing structure.
+    alternatives:
+      - local-module-structure-only
+      - domain-bounded-context-map-technique
+      - no-large-scale-structure
+    related_concepts:
+      - domain-fitting-large-scale-structure
+      - architecture-contextual-partitioning
+      - architecture-feedback-loop
+      - universal-no-change-option
+      - universal-reversible-reviewable-change
+    source_support:
+      - source_id: SRC-DDD
+        relationship: direct_support
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/018-chapter-16-large-scale-structure.md :: Evolving Order"
+        contribution: Requires large-scale order to evolve with the model rather than precede learning as a fixed master plan.
+      - source_id: SRC-DDD
+        relationship: direct_support
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/018-chapter-16-large-scale-structure.md :: Minimalism"
+        contribution: Limits structure to the smallest concept that clarifies the model.
+
+  - id: domain-smart-ui-transaction-script
+    candidate_id: TECH-DOM-018
+    title: Smart UI or transaction script
+    non_universality: Simplicity is a valid specialist alternative for low-complexity work, but complex evolving invariants or multiple channels trigger reassessment.
+    problem_solved: Deliver a simple data-centric workflow quickly without investing in a deep domain model whose strategic payoff is absent.
+    activation_evidence:
+      - Domain rules and validations are straightforward and local to a workflow.
+      - Product lifespan, differentiation, or channel count is limited.
+      - A deeper model would add ceremony without resolving observed ambiguity or defects.
+      - A concrete complexity trigger for reassessment is recorded.
+    costs:
+      - Domain logic may duplicate and become hard to extract as complexity grows.
+      - UI, framework, and persistence coupling can obscure business behavior.
+    contraindications:
+      - Differentiating complex rules or invariants span workflows.
+      - Multiple interfaces must express the same policy.
+      - The product is long-lived and its domain is evolving rapidly.
+    reversal_cost:
+      level: low-initially, rising-with-growth
+      exit_path: Characterize current behavior, extract one recurring rule or policy at a time, and keep semantic repair separate.
+      cost_drivers: [duplicated rules, UI callbacks, framework leakage, weak tests]
+    appropriate_scale: [small-application, simple-workflow]
+    operational_consequences:
+      - Conventional deployment is possible, but business rules may be harder to observe and test independently.
+      - Growth triggers should include duplicated policy, multiple channels, and cross-workflow invariants.
+    preservation_boundaries:
+      - Existing user-visible behavior and undocumented workflow rules.
+      - Transaction, validation, error, and persistence semantics during extraction.
+    alternatives:
+      - modest-domain-module
+      - domain-ubiquitous-language-technique
+      - domain-aggregate-technique
+    related_concepts:
+      - domain-modeling-investment-gate
+      - universal-no-change-option
+      - universal-preserve-behavior-by-default
+      - architecture-contextual-style-selection
+      - universal-separate-semantic-structural-change
+    source_support:
+      - source_id: SRC-DDD
+        relationship: tension
+        locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/005-chapter-4-isolating-the-domain.md :: The Smart UI \"Anti-Pattern\""
+        contribution: Preserves a simple UI-centered design as a rational option under low domain complexity while identifying its growth limits.

@@ -1,0 +1,1392 @@
+schema_version: agent-doctrine-concepts/1
+concepts:
+- id: refactoring-change-type-classification
+  title: Classify change by purpose and semantic permission
+  category: agent-conduct
+  claim: A change label is valid only when its purpose and allowable observable delta match the actual work.
+  decision_rule: Inventory intended observable deltas, classify the primary purpose, and split mixed purposes into separately authorized and verified slices.
+  why_it_matters: Classification determines authority, preservation, tests, review, rollout, and rollback; misleading labels hide risk.
+  applicable_when:
+  - planning any repository write
+  - reviewing a mixed diff
+  - describing a campaign
+  not_applicable_when:
+  - pure observation with no proposed mutation
+  required_evidence:
+  - request and acceptance criteria
+  - current behavior
+  - accepted contracts
+  - proposed semantic delta
+  insufficient_evidence:
+  - issue label
+  - commit title
+  - cleanup wording
+  - code movement
+  required_inputs:
+  - authority statement
+  - current and desired behavior
+  - affected boundaries
+  expected_outputs:
+  - change type
+  - authorized delta
+  - invariant list
+  - ordered slices
+  preservation_boundaries:
+  - All observable behavior outside the authorized delta.
+  safe_actions:
+  - repair then refactor on green
+  - name migration explicitly
+  - separate optimization from semantics
+  unsafe_actions:
+  - call behavior change refactoring
+  - hide API migration in cleanup
+  - bundle unrelated repair
+  common_failure_modes:
+  - review ambiguity
+  - missing rollback
+  - untested semantic drift
+  counterexamples:
+  - A private local rename with unchanged behavior is ordinary refactoring.
+  interactions:
+  - refactoring-behavior-preservation
+  - universal-separate-semantic-structural-change
+  - refactoring-compatibility-migration
+  conflicts: []
+  source_support:
+  - source_id: SRC-WELC
+    locator: 'books/programming-working-effectively-with-legacy-code/chapters/008-chapter-1-changing-software.md :: Four Reasons to Change Software'
+    contribution: Feature addition, defect repair, design improvement/refactoring, and optimization differ by purpose and by which existing behavior may change.
+    relationship: direct_support
+  - source_id: SRC-REF
+    locator: 'books/refactoring-improving-the-design-of-existing-code/chapters/006-chapter-2-principles-in-refactoring.md :: Defining Refactoring'
+    contribution: Refactoring is explicitly behavior-preserving structural change and should be distinguished from cleanup or performance work.
+    relationship: refinement
+  confidence: universal
+  roles:
+  - coding-agent
+  - refactoring-agent
+  - legacy-code-agent
+  - debugging-and-repair-agent
+  - review-agent
+  - architecture-agent
+  languages:
+  - language-independent
+  repository_archetypes:
+  - all
+  retrieval_terms:
+  - change type
+  - refactoring versus repair
+  - semantic delta
+  - cleanup
+  - migration
+  routing:
+    activate_for_roles:
+    - coding-agent
+    - refactoring-agent
+    - legacy-code-agent
+    - debugging-and-repair-agent
+    - review-agent
+    - architecture-agent
+    activate_for_tasks:
+    - implementation
+    - repair
+    - refactoring
+    - migration
+    - optimization
+    - cleanup
+    - deletion
+    activate_for_repository_signals:
+    - mixed-purpose diff
+    - public contract
+    - behavior change
+    activate_for_languages:
+    - language-independent
+    activate_for_risk_classes:
+    - all
+    exclude_when:
+    - read-only orientation without recommendation
+    prerequisites:
+    - request and authority inventory
+    retrieval_priority: core
+    retrieval_budget_hint: 325
+    related_concepts:
+    - refactoring-behavior-preservation
+    - universal-separate-semantic-structural-change
+    - refactoring-compatibility-migration
+- id: refactoring-behavior-preservation
+  title: Explicit behavior-preservation boundary
+  category: universal
+  claim: Unless change is authorized, externally observable behavior remains invariant across structural work.
+  decision_rule: Enumerate authorized deltas; treat every other output, error, side effect, stored format, protocol, ordering, timing, durability, and supported caller interaction as preserved until evidence narrows it.
+  why_it_matters: Tests expose only selected observations; an explicit boundary prevents silent semantic assumptions.
+  applicable_when:
+  - refactoring
+  - repair
+  - migration
+  - optimization
+  - legacy change
+  not_applicable_when:
+  - an implementation detail with no observable or contractual consequence
+  required_evidence:
+  - requirements or ADRs
+  - callers
+  - tests
+  - runtime observations
+  - schemas
+  - incidents
+  insufficient_evidence:
+  - green unit tests alone
+  - compilation alone
+  - internal method shape
+  required_inputs:
+  - authorized delta
+  - observable-surface inventory
+  expected_outputs:
+  - preservation matrix
+  - check per material invariant
+  - unknowns
+  preservation_boundaries:
+  - The concept defines the preservation boundary; each surface must name its owner and evidence.
+  safe_actions:
+  - characterize uncertain behavior
+  - explicitly record gaps
+  - use layered checks
+  unsafe_actions:
+  - claim preservation from compilation
+  - ignore errors or side effects
+  - freeze irrelevant internals
+  common_failure_modes:
+  - incomplete surface inventory
+  - accidental behavior frozen indiscriminately
+  - false test confidence
+  counterexamples:
+  - An authorized defect repair changes the failing case while preserving the surrounding boundary.
+  interactions:
+  - legacy-characterization-surfaces
+  - legacy-effect-surface
+  - refactoring-compatibility-migration
+  conflicts: []
+  source_support:
+  - source_id: SRC-REF
+    locator: 'books/refactoring-improving-the-design-of-existing-code/chapters/006-chapter-2-principles-in-refactoring.md :: Defining Refactoring'
+    contribution: Defines refactoring as structural change that preserves externally visible behavior.
+    relationship: direct_support
+  - source_id: SRC-REF
+    locator: 'books/refactoring-improving-the-design-of-existing-code/chapters/008-chapter-4-building-tests.md :: The Value of Self-testing Code'
+    contribution: Makes frequent relevant automated feedback a precondition for detecting unintended behavior change during refactoring.
+    relationship: direct_support
+  confidence: universal
+  roles:
+  - coding-agent
+  - architecture-agent
+  - refactoring-agent
+  - legacy-code-agent
+  - performance-agent
+  - review-agent
+  - debugging-and-repair-agent
+  - repository-assessment-agent
+  languages:
+  - language-independent
+  repository_archetypes:
+  - all
+  - especially weakly-tested and durable systems
+  retrieval_terms:
+  - behavior preservation
+  - invariant
+  - regression boundary
+  - semantic equivalence
+  routing:
+    activate_for_roles:
+    - coding-agent
+    - architecture-agent
+    - refactoring-agent
+    - legacy-code-agent
+    - performance-agent
+    - review-agent
+    - debugging-and-repair-agent
+    - repository-assessment-agent
+    activate_for_tasks:
+    - any code or data change
+    activate_for_repository_signals:
+    - weak tests
+    - public API
+    - persistence
+    - side effects
+    activate_for_languages:
+    - language-independent
+    activate_for_risk_classes:
+    - all
+    - highest priority for high consequence
+    exclude_when:
+    - pure observation
+    prerequisites:
+    - refactoring-change-type-classification
+    retrieval_priority: core
+    retrieval_budget_hint: 450
+    related_concepts:
+    - legacy-characterization-surfaces
+    - legacy-effect-surface
+    - refactoring-compatibility-migration
+- id: refactoring-small-verified-steps
+  title: Short verified transformation loop
+  category: refactoring
+  claim: Structural safety comes from small reversible moves with feedback, not from the intended final design alone.
+  decision_rule: Make the smallest move that advances one goal, run the cheapest relevant check, checkpoint coherent green states, and broaden checks at integration boundaries.
+  why_it_matters: Short feedback minimizes simultaneous uncertainty and localizes error to the last move.
+  applicable_when:
+  - manual refactoring
+  - legacy extraction
+  - hotspot campaign
+  - codemod staging
+  not_applicable_when:
+  - requiring an expensive full suite after every keystroke when a reliable check ladder exists
+  required_evidence:
+  - known baseline
+  - move-specific expectation
+  - fast check
+  - rollback point
+  insufficient_evidence:
+  - only a final suite after an opaque rewrite
+  - compile-only for semantic risk
+  required_inputs:
+  - target
+  - check ladder
+  - campaign goal
+  expected_outputs:
+  - verified step sequence
+  - green checkpoints
+  preservation_boundaries:
+  - Each structural step preserves the established boundary.
+  safe_actions:
+  - extract then targeted test
+  - commit coherent green slice
+  - redo an early extraction
+  unsafe_actions:
+  - defer all verification
+  - accumulate unrelated moves
+  - long isolated refactor without integration
+  common_failure_modes:
+  - steps too large
+  - flaky feedback
+  - ritual microsteps with no causal value
+  counterexamples:
+  - A trusted tool may perform an internally atomic repository-wide rename
+  - followed by repository checks.
+  interactions:
+  - universal-minimize-simultaneous-uncertainty
+  - refactoring-transformation-tool-trust
+  - refactoring-stop-backtrack-escalate
+  conflicts: []
+  source_support:
+  - source_id: SRC-REF
+    locator: 'books/refactoring-improving-the-design-of-existing-code/chapters/009-chapter-5-toward-a-catalog-of-refactorings.md :: Format of the Refactorings'
+    contribution: Prescribes small mechanics with verification after each move and decomposition of a failed larger step.
+    relationship: direct_support
+  - source_id: SRC-REF
+    locator: 'books/refactoring-improving-the-design-of-existing-code/chapters/020-chapter-15-putting-it-all-together.md :: Stop when you are unsure.'
+    contribution: Requires stopping and backtracking when confidence in the next structural move falls.
+    relationship: corroboration
+  confidence: strong
+  roles:
+  - coding-agent
+  - refactoring-agent
+  - legacy-code-agent
+  - debugging-and-repair-agent
+  languages:
+  - language-independent
+  repository_archetypes:
+  - all
+  retrieval_terms:
+  - small steps
+  - test change rhythm
+  - reversible refactoring
+  - green checkpoint
+  routing:
+    activate_for_roles:
+    - coding-agent
+    - refactoring-agent
+    - legacy-code-agent
+    - debugging-and-repair-agent
+    activate_for_tasks:
+    - refactoring
+    - dependency breaking
+    - codemod
+    - legacy extraction
+    activate_for_repository_signals:
+    - fragile tests
+    - large diff
+    - merge congestion
+    activate_for_languages:
+    - language-independent
+    activate_for_risk_classes:
+    - all
+    exclude_when:
+    - pure analysis
+    prerequisites:
+    - baseline and check ladder
+    retrieval_priority: core
+    retrieval_budget_hint: 400
+    related_concepts:
+    - universal-minimize-simultaneous-uncertainty
+    - refactoring-transformation-tool-trust
+    - refactoring-stop-backtrack-escalate
+- id: refactoring-stop-backtrack-escalate
+  title: Stop, backtrack, or escalate on lost certainty
+  category: agent-conduct
+  claim: The agent must stop when it can no longer state what changed, what remains invariant, why a check failed, or whether it has authority.
+  decision_rule: Return to the last known-good state; retain only an independently useful protected subset; otherwise reverse the agent-owned slice or escalate the behavior/authority choice.
+  why_it_matters: Continuing converts explicit uncertainty into hidden risk and unauthorized decisions.
+  applicable_when:
+  - ambiguous failure
+  - surprising behavior
+  - authority gap
+  - irreversible next step
+  not_applicable_when:
+  - safe read-only investigation can still reduce uncertainty
+  required_evidence:
+  - baseline
+  - current diff
+  - failure output
+  - ownership and authority
+  insufficient_evidence:
+  - sunk cost
+  - deadline
+  - confidence without reproducer
+  required_inputs:
+  - campaign goal
+  - last green point
+  - uncertainty ledger
+  expected_outputs:
+  - continue
+  - retain-smaller
+  - backtrack
+  - or escalate decision with reason
+  preservation_boundaries:
+  - Do not cross an unresolved semantic, public, data, production, or authority boundary.
+  safe_actions:
+  - discard scratch work
+  - keep green seam
+  - present alternatives
+  unsafe_actions:
+  - debug forward through many edits
+  - silently choose expected behavior
+  - reverse user changes
+  common_failure_modes:
+  - premature abandonment
+  - destructive rollback
+  - escalation without prior safe investigation
+  counterexamples:
+  - A newly authorized semantic delta can resume as a separately classified slice.
+  interactions:
+  - agent-conduct-authority-bounded-action
+  - legacy-characterization-surfaces
+  - refactoring-small-verified-steps
+  conflicts:
+  - conflict-refactor-now-vs-leave-alone
+  source_support:
+  - source_id: SRC-REF
+    locator: 'books/refactoring-improving-the-design-of-existing-code/chapters/020-chapter-15-putting-it-all-together.md :: Stop when you are unsure.'
+    contribution: Stop when unsure; retain an independently better state or return to the last safe point.
+    relationship: direct_support
+  - source_id: SRC-WELC
+    locator: 'books/programming-working-effectively-with-legacy-code/chapters/021-chapter-13-i-need-to-make-a-change-but-i-don-t-know-what-tests-to-write.md :: When You Find Bugs'
+    contribution: Unexpected characterized behavior should be marked and investigated rather than silently changed.
+    relationship: refinement
+  confidence: universal
+  roles:
+  - coding-agent
+  - architecture-agent
+  - refactoring-agent
+  - legacy-code-agent
+  - performance-agent
+  - review-agent
+  - debugging-and-repair-agent
+  - repository-assessment-agent
+  languages:
+  - language-independent
+  repository_archetypes:
+  - all
+  retrieval_terms:
+  - stop condition
+  - backtrack
+  - escalate
+  - uncertain behavior
+  - authority
+  routing:
+    activate_for_roles:
+    - coding-agent
+    - architecture-agent
+    - refactoring-agent
+    - legacy-code-agent
+    - performance-agent
+    - review-agent
+    - debugging-and-repair-agent
+    - repository-assessment-agent
+    activate_for_tasks:
+    - any active campaign
+    activate_for_repository_signals:
+    - failing checks
+    - ambiguous behavior
+    - public or production boundary
+    activate_for_languages:
+    - language-independent
+    activate_for_risk_classes:
+    - all
+    exclude_when:
+    - none
+    prerequisites:
+    - last known-good state
+    retrieval_priority: core
+    retrieval_budget_hint: 325
+    related_concepts:
+    - agent-conduct-authority-bounded-action
+    - legacy-characterization-surfaces
+    - refactoring-small-verified-steps
+- id: refactoring-demonstrated-pressure
+  title: Evidence that earns refactoring
+  category: refactoring
+  claim: Structural intervention requires demonstrated present or imminent maintenance pressure, not unattractiveness alone.
+  decision_rule: Require a concrete goal and verified pressure such as repeated coupled edits, dispersed responsibility, blocked testing, recurring defects, active complexity growth, or material review/cognitive cost; select the smallest response.
+  why_it_matters: Refactoring spends risk and review capacity and should target recurring cost.
+  applicable_when:
+  - refactoring proposal
+  - cleanup request
+  - architecture improvement assessment
+  not_applicable_when:
+  - an independently authorized platform migration
+  - though it needs its own evidence
+  required_evidence:
+  - current task
+  - call sites
+  - history
+  - defects
+  - test friction
+  - review or domain evidence
+  insufficient_evidence:
+  - file length
+  - smell name
+  - generic style
+  - churn alone
+  required_inputs:
+  - pressure ledger
+  - candidate responses
+  expected_outputs:
+  - earned
+  - not-earned
+  - or uncertain decision and verification target
+  preservation_boundaries:
+  - Any selected structural action remains behavior-preserving unless separately authorized.
+  safe_actions:
+  - refactor adjacent to required work
+  - rank a measured hotspot for inspection
+  unsafe_actions:
+  - broad aesthetic cleanup
+  - automatic split from a threshold
+  common_failure_modes:
+  - metric-driven churn
+  - wrong bottleneck
+  - under-refactoring where history is unavailable
+  counterexamples:
+  - A security-driven structural migration can be earned by external risk rather than prior churn.
+  interactions:
+  - architecture-metrics-as-signals
+  - refactoring-hotspot-prioritization
+  - refactoring-leave-unattractive-code
+  conflicts: []
+  source_support:
+  - source_id: SRC-REF
+    locator: 'books/refactoring-improving-the-design-of-existing-code/chapters/006-chapter-2-principles-in-refactoring.md :: When Should You Refactor?'
+    contribution: Ties refactoring to feature, repair, review, and repeated maintenance work instead of detached beautification.
+    relationship: direct_support
+  - source_id: SRC-SDX
+    locator: 'books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/006-chapter-1-why-technical-debt-isn-t-technical.md :: Interest Rate Is a Function of Time'
+    contribution: Shows that unattractive code incurs maintenance interest only when work repeatedly encounters it.
+    relationship: refinement
+  confidence: strong
+  roles:
+  - refactoring-agent
+  - review-agent
+  - architecture-agent
+  - repository-assessment-agent
+  languages:
+  - language-independent
+  repository_archetypes:
+  - all nongenerated code
+  retrieval_terms:
+  - refactoring evidence
+  - structural pressure
+  - technical debt
+  - leave alone
+  routing:
+    activate_for_roles:
+    - refactoring-agent
+    - review-agent
+    - architecture-agent
+    - repository-assessment-agent
+    activate_for_tasks:
+    - decide whether to refactor
+    - select campaign
+    activate_for_repository_signals:
+    - smell
+    - hotspot
+    - change friction
+    - test blockage
+    activate_for_languages:
+    - language-independent
+    activate_for_risk_classes:
+    - all
+    exclude_when:
+    - generated or vendored code without source-owner task
+    prerequisites:
+    - repository orientation
+    - preservation feasibility
+    retrieval_priority: core
+    retrieval_budget_hint: 475
+    related_concepts:
+    - architecture-metrics-as-signals
+    - refactoring-hotspot-prioritization
+    - refactoring-leave-unattractive-code
+- id: refactoring-smells-as-hypotheses
+  title: Treat smells as falsifiable hypotheses
+  category: refactoring
+  claim: A smell names an investigation question and neither proves a defect nor selects a transformation.
+  decision_rule: Translate the smell into an operational maintenance consequence, test it against callers, change history, responsibilities, runtime constraints, and repository idiom, then act only when the hypothesis survives.
+  why_it_matters: Surface forms are context-sensitive and automatic remedies often create indirection or destroy rationale.
+  applicable_when:
+  - long method
+  - large class
+  - switch
+  - comments
+  - duplication
+  - middle man
+  - inheritance findings
+  not_applicable_when:
+  - a direct contractual violation already establishes a defect
+  required_evidence:
+  - specific consequence
+  - causal link
+  - repository context
+  insufficient_evidence:
+  - detector output
+  - threshold count
+  - catalog match
+  - reviewer taste
+  required_inputs:
+  - smell candidate
+  - current source and use evidence
+  expected_outputs:
+  - confirmed
+  - refuted
+  - or uncertain hypothesis and next observation
+  preservation_boundaries:
+  - Investigation does not authorize structural or semantic change.
+  safe_actions:
+  - inspect why a long unit changes
+  - retain rationale comments
+  - compare alternative remedies
+  unsafe_actions:
+  - split by size
+  - replace every switch with polymorphism
+  - delete comments automatically
+  common_failure_modes:
+  - cargo-cult patterns
+  - shallow modules
+  - false blocker review
+  counterexamples:
+  - Repeated dispersed edits with omission defects can strongly confirm shotgun surgery.
+  interactions:
+  - refactoring-demonstrated-pressure
+  - architecture-metrics-as-signals
+  - universal-earned-abstraction
+  conflicts:
+  - conflict-deep-modules-vs-small-units
+  - conflict-comments-vs-self-documenting-structure
+  source_support:
+  - source_id: SRC-REF
+    locator: 'books/refactoring-improving-the-design-of-existing-code/chapters/007-chapter-3-bad-smells-in-code.md :: Chapter 3: Bad Smells in Code'
+    contribution: Presents smells as experienced starting points for inspection and candidate transformations.
+    relationship: direct_support
+  - source_id: SRC-SDX
+    locator: 'books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/007-chapter-2-identify-code-with-high-interest-rates.md :: Escape the Technical-Debt Trap'
+    contribution: Corroborates that prioritization signals focus manual investigation rather than establish a mandatory remedy.
+    relationship: corroboration
+  confidence: strong
+  roles:
+  - coding-agent
+  - refactoring-agent
+  - review-agent
+  - repository-assessment-agent
+  languages:
+  - language-independent
+  repository_archetypes:
+  - all nongenerated code
+  retrieval_terms:
+  - code smell
+  - heuristic not verdict
+  - long method
+  - large class
+  routing:
+    activate_for_roles:
+    - coding-agent
+    - refactoring-agent
+    - review-agent
+    - repository-assessment-agent
+    activate_for_tasks:
+    - evaluate smell
+    - review structure
+    activate_for_repository_signals:
+    - static smell finding
+    - size threshold
+    - style objection
+    activate_for_languages:
+    - language-independent
+    activate_for_risk_classes:
+    - all
+    exclude_when:
+    - generated and vendored output
+    prerequisites:
+    - maintenance-consequence hypothesis
+    retrieval_priority: core
+    retrieval_budget_hint: 375
+    related_concepts:
+    - refactoring-demonstrated-pressure
+    - architecture-metrics-as-signals
+    - universal-earned-abstraction
+- id: refactoring-compatibility-migration
+  title: Published structural change is a compatibility migration
+  category: architecture
+  claim: Independent consumers or persisted data turn a desirable internal restructuring into a phased migration.
+  decision_rule: Inventory consumers and control; change atomically only when all are proven controlled, otherwise preserve an adapter or old representation, migrate observably, then remove under deprecation authority.
+  why_it_matters: Internal green tests do not protect deployed clients, old data, or independently released components.
+  applicable_when:
+  - public API
+  - wire protocol
+  - event
+  - schema
+  - file format
+  - multi-repo consumer
+  not_applicable_when:
+  - private proven-unreferenced symbol with atomic callers
+  required_evidence:
+  - consumer inventory
+  - compatibility contract
+  - ownership
+  - rollout
+  - rollback
+  - telemetry where available
+  insufficient_evidence:
+  - local repository search
+  - one-component compile
+  - internal tests
+  required_inputs:
+  - boundary and consumer map
+  expected_outputs:
+  - atomic-edit proof or phased migration plan
+  preservation_boundaries:
+  - Old clients/data remain usable through the authorized compatibility interval.
+  safe_actions:
+  - adapter
+  - dual read/write when authorized
+  - staged deprecation
+  unsafe_actions:
+  - rename public API as refactoring
+  - mutate schema without migration
+  common_failure_modes:
+  - orphan clients
+  - unreadable data
+  - permanent adapter
+  counterexamples:
+  - A private method and all callers in one compilation unit can change atomically.
+  interactions:
+  - refactoring-behavior-preservation
+  - refactoring-change-type-classification
+  - refactoring-splinter-campaign
+  conflicts:
+  - conflict-dependency-inversion-vs-direct-coupling
+  source_support:
+  - source_id: SRC-REF
+    locator: 'books/refactoring-improving-the-design-of-existing-code/chapters/006-chapter-2-principles-in-refactoring.md :: Changing Interfaces'
+    contribution: Published callers and database data make an otherwise local refactoring a compatibility and migration problem.
+    relationship: direct_support
+  - source_id: SRC-REF
+    locator: 'books/refactoring-improving-the-design-of-existing-code/chapters/006-chapter-2-principles-in-refactoring.md :: Databases'
+    contribution: Published callers and database data make an otherwise local refactoring a compatibility and migration problem.
+    relationship: direct_support
+  confidence: strong
+  roles:
+  - architecture-agent
+  - coding-agent
+  - refactoring-agent
+  - review-agent
+  languages:
+  - language-independent
+  repository_archetypes:
+  - library
+  - service
+  - durable system
+  - multi-repo
+  retrieval_terms:
+  - API migration
+  - schema migration
+  - compatibility
+  - deprecation
+  - facade
+  routing:
+    activate_for_roles:
+    - architecture-agent
+    - coding-agent
+    - refactoring-agent
+    - review-agent
+    activate_for_tasks:
+    - public rename
+    - schema change
+    - protocol evolution
+    activate_for_repository_signals:
+    - external callers
+    - persisted data
+    - multiple deployables
+    activate_for_languages:
+    - language-independent
+    activate_for_risk_classes:
+    - high
+    - critical for durable data
+    exclude_when:
+    - proven private atomic scope
+    prerequisites:
+    - consumer and authority inventory
+    retrieval_priority: core
+    retrieval_budget_hint: 450
+    related_concepts:
+    - refactoring-behavior-preservation
+    - refactoring-change-type-classification
+    - refactoring-splinter-campaign
+- id: refactoring-transformation-tool-trust
+  title: Bound automation trust by semantic coverage
+  category: refactoring
+  claim: Automated transformation reduces mechanical error only within the language and repository surfaces the tool models.
+  decision_rule: Verify tool/version support, preview edits, enumerate dynamic/config/generated/foreign-language blind spots, retain undo, and run repository-native checks.
+  why_it_matters: Speed and a refactoring label do not establish semantic accuracy.
+  applicable_when:
+  - IDE refactor
+  - codemod
+  - compiler-assisted rename
+  - bulk transformation
+  not_applicable_when:
+  - ordinary hand edit without automation
+  - though normal verification still applies
+  required_evidence:
+  - tool contract
+  - preview
+  - modeled references
+  - blind-spot inventory
+  - post-checks
+  insufficient_evidence:
+  - vendor claim
+  - successful command
+  - compilation alone
+  required_inputs:
+  - operation
+  - files/languages
+  - dynamic and generated surfaces
+  expected_outputs:
+  - trust level
+  - exceptions requiring review
+  - verification plan
+  preservation_boundaries:
+  - All semantic, serialized, configured, reflected, and cross-language references remain valid.
+  safe_actions:
+  - semantic private rename with preview
+  - staged codemod
+  unsafe_actions:
+  - text replace treated as semantic
+  - opaque bulk output
+  - no undo
+  common_failure_modes:
+  - stale config strings
+  - reflection breakage
+  - generated drift
+  - shadowing errors
+  counterexamples:
+  - Compiler-enforced private rename may need compile plus focused tests
+  - not manual reference audit everywhere.
+  interactions:
+  - refactoring-small-verified-steps
+  - legacy-unprotected-enabling-edit
+  conflicts: []
+  source_support:
+  - source_id: SRC-REF
+    locator: 'books/refactoring-improving-the-design-of-existing-code/chapters/019-chapter-14-refactoring-tools.md :: Accuracy'
+    contribution: Refactoring-tool safety depends on semantic accuracy, program representation, speed, undo, and integration—not operation naming alone.
+    relationship: direct_support
+  - source_id: SRC-WELC
+    locator: 'books/programming-working-effectively-with-legacy-code/chapters/030-chapter-22-i-need-to-change-a-monster-method-and-i-can-t-write-tests-for-it.md :: Tackling Monsters with Automated Refactoring Support'
+    contribution: Trusted automated extraction can be safer without tests only when manual edits are not mixed; compiler assistance still has blind spots.
+    relationship: refinement
+  confidence: strong
+  roles:
+  - coding-agent
+  - refactoring-agent
+  - review-agent
+  - legacy-code-agent
+  languages:
+  - language-independent
+  repository_archetypes:
+  - all
+  - especially mixed-language
+  retrieval_terms:
+  - codemod
+  - IDE refactor
+  - automated rename
+  - compiler trust
+  routing:
+    activate_for_roles:
+    - coding-agent
+    - refactoring-agent
+    - review-agent
+    - legacy-code-agent
+    activate_for_tasks:
+    - automated transformation
+    activate_for_repository_signals:
+    - reflection
+    - templates
+    - generated code
+    - serialization
+    activate_for_languages:
+    - language-independent
+    activate_for_risk_classes:
+    - medium
+    - high for public/dynamic surfaces
+    exclude_when:
+    - none
+    prerequisites:
+    - tool support and preview
+    retrieval_priority: high
+    retrieval_budget_hint: 400
+    related_concepts:
+    - refactoring-small-verified-steps
+    - legacy-unprotected-enabling-edit
+- id: refactoring-directional-campaign
+  title: Broad refactoring as a revisable direction
+  category: refactoring
+  claim: A broad structural outcome should be delivered through protected independently valuable intermediate states and revised as knowledge grows.
+  decision_rule: Name the demonstrated force and target property, choose the first boundary that reduces cost/risk, preserve compatibility, integrate, remeasure, and revise or stop.
+  why_it_matters: Large transformations reveal requirements and domain structure during execution; a fixed end diagram creates long-lived uncertainty.
+  applicable_when:
+  - modularization
+  - legacy restructuring
+  - inheritance separation
+  - domain/presentation separation
+  not_applicable_when:
+  - tiny isolated atomic transformation
+  required_evidence:
+  - architectural pressure
+  - protected first boundary
+  - incremental value
+  - integration cadence
+  - stop criteria
+  insufficient_evidence:
+  - future diagram
+  - source prestige
+  - promise of cleanup later
+  required_inputs:
+  - force
+  - target property
+  - campaign options
+  expected_outputs:
+  - first bounded campaign
+  - later candidates
+  - remeasurement and stop signals
+  preservation_boundaries:
+  - Intermediate states retain supported behavior and compatibility.
+  safe_actions:
+  - facade/delegation
+  - one useful extraction
+  - short integration
+  unsafe_actions:
+  - months-long branch
+  - all-at-once rewrite
+  - destroy old path before proof
+  common_failure_modes:
+  - permanent transition
+  - goal drift
+  - merge conflicts
+  - architecture astronautics
+  counterexamples:
+  - A small independent subsystem can sometimes change atomically.
+  interactions:
+  - refactoring-splinter-campaign
+  - refactoring-compatibility-migration
+  - refactoring-stop-backtrack-escalate
+  conflicts:
+  - conflict-broad-redesign-vs-incremental-transformation
+  source_support:
+  - source_id: SRC-REF
+    locator: 'books/refactoring-improving-the-design-of-existing-code/chapters/016-chapter-12-big-refactorings.md :: The Nature of the Game'
+    contribution: Big refactorings are long-running directions that discover intermediate structure rather than single catalog operations.
+    relationship: direct_support
+  - source_id: SRC-SDX
+    locator: 'books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/014-chapter-8-toward-modular-monoliths-through-the-social-view-of-code.md :: The Trade-Off Between Architectural Refinements and Replacement Systems'
+    contribution: Replacement risks hidden requirements and catch-up; large improvement should proceed through protected, quickly integrated states.
+    relationship: refinement
+  confidence: contextual
+  roles:
+  - architecture-agent
+  - refactoring-agent
+  - legacy-code-agent
+  languages:
+  - language-independent
+  repository_archetypes:
+  - large active legacy systems
+  retrieval_terms:
+  - big refactoring
+  - campaign
+  - incremental transformation
+  - rewrite
+  routing:
+    activate_for_roles:
+    - architecture-agent
+    - refactoring-agent
+    - legacy-code-agent
+    activate_for_tasks:
+    - broad restructuring
+    - rewrite assessment
+    activate_for_repository_signals:
+    - large active hotspot
+    - architecture migration
+    activate_for_languages:
+    - language-independent
+    activate_for_risk_classes:
+    - high
+    exclude_when:
+    - no campaign authority
+    prerequisites:
+    - refactoring-demonstrated-pressure
+    - protection and integration plan
+    retrieval_priority: high
+    retrieval_budget_hint: 550
+    related_concepts:
+    - refactoring-splinter-campaign
+    - refactoring-compatibility-migration
+    - refactoring-stop-backtrack-escalate
+- id: refactoring-leave-unattractive-code
+  title: Evidence-governed no-change decision
+  category: refactoring
+  claim: Leave unattractive code unchanged when it has no demonstrated cost or authorized imminent change and intervention risk exceeds near-term benefit.
+  decision_rule: Compare activity, incidents, runtime use, roadmap and support obligations against characterization, dependency, integration, and knowledge cost; choose no change when benefit remains speculative.
+  why_it_matters: Mature odd code can embody hard-won behavior, and touching it resets defect risk.
+  applicable_when:
+  - old stable module
+  - rewrite proposal
+  - cleanup audit
+  not_applicable_when:
+  - confirmed defect
+  - vulnerability
+  - unsupported platform
+  - imminent required change
+  required_evidence:
+  - recent history
+  - runtime use
+  - incidents
+  - roadmap
+  - support constraints
+  - ownership
+  insufficient_evidence:
+  - age alone
+  - folklore
+  - complaints
+  - no commits in paused product
+  required_inputs:
+  - value-risk comparison
+  expected_outputs:
+  - leave
+  - isolate
+  - characterize
+  - delete-investigate
+  - or act decision with revisit trigger
+  preservation_boundaries:
+  - Existing behavior remains untouched; observations do not become authorization.
+  safe_actions:
+  - avoid stable code
+  - isolate through existing boundary
+  - record trigger
+  unsafe_actions:
+  - rewrite from dislike
+  - declare dead from age
+  - permanent freeze despite new risk
+  common_failure_modes:
+  - fear-driven avoidance
+  - false stability
+  - latent external risk
+  counterexamples:
+  - An unsupported runtime can earn migration despite low churn.
+  interactions:
+  - refactoring-demonstrated-pressure
+  - repository-assessment-code-age
+  - architecture-metrics-as-signals
+  conflicts:
+  - conflict-refactor-now-vs-leave-alone
+  source_support:
+  - source_id: SRC-REF
+    locator: 'books/refactoring-improving-the-design-of-existing-code/chapters/006-chapter-2-principles-in-refactoring.md :: When Shouldn''t You Refactor?'
+    contribution: Identifies conditions where incremental refactoring is not justified or cannot be made safe.
+    relationship: direct_support
+  - source_id: SRC-SDX
+    locator: 'books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/006-chapter-1-why-technical-debt-isn-t-technical.md :: Interest Rate Is a Function of Time'
+    contribution: Supports leaving low-change unattractive code alone when it carries no demonstrated maintenance interest.
+    relationship: corroboration
+  confidence: contextual
+  roles:
+  - refactoring-agent
+  - architecture-agent
+  - review-agent
+  - repository-assessment-agent
+  languages:
+  - language-independent
+  repository_archetypes:
+  - legacy
+  - stable products
+  retrieval_terms:
+  - leave code alone
+  - stable code
+  - no change
+  - rewrite risk
+  routing:
+    activate_for_roles:
+    - refactoring-agent
+    - architecture-agent
+    - review-agent
+    - repository-assessment-agent
+    activate_for_tasks:
+    - cleanup
+    - rewrite assessment
+    - old-code review
+    activate_for_repository_signals:
+    - old or ugly low-churn code
+    activate_for_languages:
+    - language-independent
+    activate_for_risk_classes:
+    - medium
+    - high
+    exclude_when:
+    - confirmed urgent external obligation
+    prerequisites:
+    - runtime
+    - roadmap
+    - support evidence
+    retrieval_priority: core
+    retrieval_budget_hint: 400
+    related_concepts:
+    - refactoring-demonstrated-pressure
+    - repository-assessment-code-age
+    - architecture-metrics-as-signals
+- id: refactoring-hotspot-prioritization
+  title: Active-cost hotspot signal
+  category: review
+  claim: Recent change activity combined with rough complexity or size prioritizes code where poor maintainability would impose recurring cost.
+  decision_rule: Clean and scope history, combine frequency with a consistent complexity proxy, inspect trends, drill to function level, and validate current responsibilities and roadmap.
+  why_it_matters: Frequently changed simple code and large stable code have different maintenance economics.
+  applicable_when:
+  - large mature active repository
+  - limited investigation capacity
+  not_applicable_when:
+  - history is corrupted
+  - product phase discontinuity dominates
+  required_evidence:
+  - meaningful interval
+  - clean identity
+  - frequency
+  - complexity
+  - current source inspection
+  insufficient_evidence:
+  - LOC alone
+  - change count alone
+  - lifetime rank
+  required_inputs:
+  - scoped history
+  - source metrics
+  - roadmap and incidents
+  expected_outputs:
+  - healthy-active
+  - investigate
+  - refactor-candidate
+  - or false-positive classification
+  preservation_boundaries:
+  - A hotspot is not a defect or action authorization.
+  safe_actions:
+  - drill into active functions
+  - compare trend
+  - validate test/infrastructure hotspots
+  unsafe_actions:
+  - split hottest file automatically
+  - blame authors
+  common_failure_modes:
+  - formatting migration
+  - generated file
+  - historic completed refactor
+  - healthy test churn
+  counterexamples:
+  - Stable safety-critical code may deserve review despite low hotspot rank.
+  interactions:
+  - architecture-metrics-as-signals
+  - repository-assessment-complexity-trend
+  - refactoring-demonstrated-pressure
+  conflicts: []
+  source_support:
+  - source_id: SRC-SDX
+    locator: 'books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/007-chapter-2-identify-code-with-high-interest-rates.md :: Prioritize Technical Debt with Hotspots'
+    contribution: Combines change activity and a complexity proxy to estimate where difficult code may impose recurring maintenance interest.
+    relationship: refinement
+  - source_id: SRC-SDX
+    locator: 'books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/007-chapter-2-identify-code-with-high-interest-rates.md :: Use X-Rays to Get Deep Insights into Code'
+    contribution: Refines hotspot analysis to function or method granularity before choosing an actionable candidate.
+    relationship: refinement
+  confidence: contextual
+  roles:
+  - repository-assessment-agent
+  - refactoring-agent
+  - review-agent
+  languages:
+  - language-independent
+  repository_archetypes:
+  - active mature repositories
+  retrieval_terms:
+  - hotspot
+  - churn
+  - interest rate
+  - active complex code
+  routing:
+    activate_for_roles:
+    - repository-assessment-agent
+    - refactoring-agent
+    - review-agent
+    activate_for_tasks:
+    - prioritize investigation or campaign
+    activate_for_repository_signals:
+    - many files
+    - technical debt inventory
+    activate_for_languages:
+    - language-independent
+    activate_for_risk_classes:
+    - normal
+    - high
+    exclude_when:
+    - generated or unfit history
+    prerequisites:
+    - repository-assessment-behavioral-data-fitness
+    retrieval_priority: high
+    retrieval_budget_hint: 450
+    related_concepts:
+    - architecture-metrics-as-signals
+    - repository-assessment-complexity-trend
+    - refactoring-demonstrated-pressure
+- id: refactoring-cochange-evidence
+  title: Repeated co-change relationship signal
+  category: review
+  claim: Repeated co-change nominates a technical, semantic, test, process, or organizational relationship that requires explanation; expected coupling can be healthy.
+  decision_rule: Normalize logical changes, require meaningful support and degree, inspect surprising pairs or clusters, review actual diffs and domain context, and classify the relationship.
+  why_it_matters: Static dependencies miss cross-language, configuration, data, and workflow coupling.
+  applicable_when:
+  - companion-change planning
+  - duplication
+  - boundary assessment
+  - omission warning
+  not_applicable_when:
+  - single commit or ungroupable split work
+  required_evidence:
+  - support count
+  - coupling degree
+  - interval
+  - task/diff/source/domain inspection
+  insufficient_evidence:
+  - one commit
+  - percentage without support
+  - graph adjacency
+  required_inputs:
+  - fit logical change history
+  - entity identity
+  expected_outputs:
+  - expected
+  - accidental
+  - missing abstraction
+  - omission risk
+  - process artifact
+  - or unresolved classification
+  preservation_boundaries:
+  - Correlation does not establish direction or authorize merging/splitting.
+  safe_actions:
+  - change-planning reminder
+  - deeper source inspection
+  unsafe_actions:
+  - merge modules from correlation
+  - force all historical companions
+  common_failure_modes:
+  - broad commits
+  - squash
+  - code generation
+  - staged commits
+  - release trains
+  counterexamples:
+  - Test and production code changing together may be desirable.
+  interactions:
+  - repository-assessment-logical-change-set
+  - implementation-duplication-as-evidence
+  - repository-assessment-behavioral-boundary-candidate
+  conflicts: []
+  source_support:
+  - source_id: SRC-SDX
+    locator: 'books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/008-chapter-3-coupling-in-time-a-heuristic-for-the-concept-of-surprise.md :: What Is Change Coupling?'
+    contribution: Defines repeated same-change edits as evidence of a temporal relationship invisible in static structure.
+    relationship: direct_support
+  - source_id: SRC-SDX
+    locator: 'books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/008-chapter-3-coupling-in-time-a-heuristic-for-the-concept-of-surprise.md :: Detect Cochanging Files'
+    contribution: Distinguishes expected co-change from surprising relationships that merit investigation.
+    relationship: refinement
+  confidence: contextual
+  roles:
+  - repository-assessment-agent
+  - architecture-agent
+  - refactoring-agent
+  - review-agent
+  languages:
+  - language-independent
+  repository_archetypes:
+  - mono-repo
+  - multi-repo with logical changes
+  retrieval_terms:
+  - change coupling
+  - temporal coupling
+  - co-change
+  - surprise
+  routing:
+    activate_for_roles:
+    - repository-assessment-agent
+    - architecture-agent
+    - refactoring-agent
+    - review-agent
+    activate_for_tasks:
+    - companion change
+    - clone analysis
+    - boundary analysis
+    activate_for_repository_signals:
+    - repeated joint edits
+    - omitted companion
+    activate_for_languages:
+    - language-independent
+    activate_for_risk_classes:
+    - normal
+    - high for architecture
+    exclude_when:
+    - insufficient or unfit logical changes
+    prerequisites:
+    - repository-assessment-behavioral-data-fitness
+    - repository-assessment-logical-change-set where needed
+    retrieval_priority: high
+    retrieval_budget_hint: 500
+    related_concepts:
+    - repository-assessment-logical-change-set
+    - implementation-duplication-as-evidence
+    - repository-assessment-behavioral-boundary-candidate
+- id: refactoring-splinter-campaign
+  title: Facade-preserving hotspot splinter campaign
+  category: refactoring
+  claim: In an active congested hotspot, the first campaign may improve safe parallel evolution by extracting one evidenced responsibility while retaining the old API.
+  decision_rule: Validate hotspot and congestion, establish protection, group behaviors, choose the highest-pressure cohesive group, extract behind delegation, verify, integrate quickly, and remeasure.
+  why_it_matters: It reduces ripple and merge exposure without pretending the first split is the final architecture.
+  applicable_when:
+  - large active complex hotspot under parallel development
+  not_applicable_when:
+  - size alone
+  - quiet cohesive module
+  - no safety net
+  required_evidence:
+  - hotspot and trend
+  - parallel pressure
+  - responsibility map
+  - tests
+  - short integration path
+  insufficient_evidence:
+  - LOC
+  - one complaint
+  - final diagram
+  required_inputs:
+  - hotspot evidence
+  - behavior groups
+  - protection
+  expected_outputs:
+  - one extracted responsibility
+  - old facade
+  - checks
+  - follow-up signals
+  preservation_boundaries:
+  - Original signatures and behavior remain available during the first campaign.
+  safe_actions:
+  - one behavior extraction
+  - immediate integration
+  - later remeasurement
+  unsafe_actions:
+  - all-at-once split
+  - long branch
+  - early client migration
+  common_failure_modes:
+  - permanent middle man
+  - low-cohesion splinter
+  - branch drift
+  counterexamples:
+  - A historic inactive large file should first pass the leave-alone decision.
+  interactions:
+  - refactoring-directional-campaign
+  - refactoring-hotspot-prioritization
+  - legacy-provisional-safety-net
+  - refactoring-compatibility-migration
+  conflicts:
+  - conflict-broad-redesign-vs-incremental-transformation
+  source_support:
+  - source_id: SRC-SDX
+    locator: 'books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/009-chapter-4-pay-off-your-technical-debt.md :: Refactor Congested Code with the Splinter Pattern'
+    contribution: In a congested active hotspot, extract one high-activity behavior behind the old API, regress, integrate quickly, and repeat based on new evidence.
+    relationship: direct_support
+  - source_id: SRC-SDX
+    locator: 'books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/009-chapter-4-pay-off-your-technical-debt.md :: Know the Consequences of Splinters'
+    contribution: In a congested active hotspot, extract one high-activity behavior behind the old API, regress, integrate quickly, and repeat based on new evidence.
+    relationship: direct_support
+  confidence: contextual
+  roles:
+  - refactoring-agent
+  - architecture-agent
+  - legacy-code-agent
+  languages:
+  - language-independent
+  repository_archetypes:
+  - large active hotspot systems
+  retrieval_terms:
+  - splinter pattern
+  - facade refactor
+  - congested hotspot
+  routing:
+    activate_for_roles:
+    - refactoring-agent
+    - architecture-agent
+    - legacy-code-agent
+    activate_for_tasks:
+    - first hotspot campaign
+    activate_for_repository_signals:
+    - large active file
+    - parallel changes
+    - merge conflict
+    activate_for_languages:
+    - language-independent
+    activate_for_risk_classes:
+    - high
+    exclude_when:
+    - no protection or campaign authority
+    prerequisites:
+    - refactoring-hotspot-prioritization
+    - responsibility map
+    - safety net
+    retrieval_priority: specialist
+    retrieval_budget_hint: 625
+    related_concepts:
+    - refactoring-directional-campaign
+    - refactoring-hotspot-prioritization
+    - legacy-provisional-safety-net
+    - refactoring-compatibility-migration

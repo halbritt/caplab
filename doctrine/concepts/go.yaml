@@ -1,0 +1,238 @@
+schema_version: agent-doctrine-concepts/1
+concepts:
+  - id: go-package-api-simplicity
+    title: Keep Go packages cohesive and APIs minimally exported
+    category: implementation
+    claim: Go package boundaries should place behavior with a cohesive responsibility, export only demonstrated cross-package needs, enforce implementation scope where appropriate, and keep dependencies visible.
+    decision_rule: Inspect consumers, ownership, change reasons, import topology, initialization, and repository conventions; retain or extend the smallest coherent package, use internal for enforced implementation scope, and add a package, dependency, export, or interface only when it reduces real complexity or supplies required capability.
+    why_it_matters: Unnecessary packages and exports create cycles, compatibility burden, pass-through APIs, and framework-style indirection that Go tooling cannot hide.
+    applicable_when: [Go package change, public API, new dependency, symbol export, interface proposal]
+    not_applicable_when: [generated or vendored Go whose producing workflow is out of scope]
+    required_evidence: [package call and import graph, actual consumers, data and invariant ownership, module and dependency policy, compatibility tests]
+    insufficient_evidence: [package or file size, clean-architecture preference, aesthetic symmetry, testing convenience alone]
+    required_inputs: [feature contract, repository topology, consumer and ownership inventory]
+    expected_outputs: [placement export dependency and interface decision with compatibility impact]
+    preservation_boundaries: [import paths, initialization order, build tags, public API, module and dependency contract]
+    safe_actions: [unexported implementation, internal package, consumer-shaped interface when earned, transparent dependency]
+    unsafe_actions: [broad utility package, export for testing convenience, package fragmentation, repackaging beyond task scope]
+    common_failure_modes: [package cycle, overfragmentation, accidental public API, dependency opacity, interface mirroring implementation]
+    counterexamples: [A public library with an accepted compatibility mission may deliberately expose a broader stable capability.]
+    interactions: [Universal placement and abstraction rules govern; this lens adds Go package, export, internal, and module mechanics.]
+    source_support:
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/006-chapter-2-efficient-introduction-to-go.md :: Packaging and Modules"
+        contribution: Establishes package and module boundaries as primary organization and dependency surfaces.
+        relationship: direct_support
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/006-chapter-2-efficient-introduction-to-go.md :: Internal Packages"
+        contribution: Refines implementation scope with Go's enforced internal visibility.
+        relationship: refinement
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/006-chapter-2-efficient-introduction-to-go.md :: Dependencies Transparency by Default"
+        contribution: Corroborates explicit, inspectable dependency relationships.
+        relationship: corroboration
+    confidence: strong
+    roles: [coding-agent, architecture-agent, review-agent]
+    languages: [Go]
+    repository_archetypes: [library, service, CLI, monolith, distributed-system]
+    retrieval_terms: [Go package, export, internal, module, dependency, interface]
+    routing:
+      activate_for_roles: [coding-agent, architecture-agent, review-agent]
+      activate_for_tasks: [place-Go-behavior, design-Go-API, add-Go-dependency, review-package]
+      activate_for_repository_signals: [package split, exported symbol, internal directory, import cycle, new module dependency]
+      activate_for_languages: [Go]
+      activate_for_risk_classes: [compatibility, architecture, maintainability]
+      exclude_when: [the target is generated or vendored and its workflow is out of scope]
+      prerequisites: [repository package and consumer inventory]
+      retrieval_priority: core
+      retrieval_budget_hint: 370
+      related_concepts: [implementation-placement-by-ownership, implementation-minimal-coherent-api, implementation-repository-language-conformance, universal-earned-abstraction]
+
+  - id: go-explicit-contextual-errors
+    title: Keep Go error paths explicit and contextual
+    category: implementation
+    claim: Go errors are ordinary explicit control flow; every material error must be handled, returned, or deliberately classified while preserving causal inspection, stable context, cleanup, and caller recovery semantics.
+    decision_rule: At each error site, identify recovery ownership, add operation context at the boundary that knows it, preserve cause using the current repository and toolchain convention, avoid duplicate logging and propagation, and test important failure and cleanup paths.
+    why_it_matters: Discarded or repeatedly transformed errors lose root cause, break errors.Is or errors.As behavior, duplicate reports, and leak resources.
+    applicable_when: [all Go code that receives or creates errors]
+    not_applicable_when: [an API explicitly documents an ignorable best-effort result and consequence analysis confirms it]
+    required_evidence: [callee contract, caller recovery behavior, current Go version and repository convention, cleanup and failure tests]
+    insufficient_evidence: [example code omits handling, operation seems unable to fail, dated third-party wrapping advice]
+    required_inputs: [operation and failure contract, caller, repository error convention, resource ownership]
+    expected_outputs: [handled propagated or classified error with preserved cause and context]
+    preservation_boundaries: [errors.Is and errors.As inspection, stable caller decisions, cleanup, retry and logging semantics]
+    safe_actions: [return with stable operation context once, combine cleanup errors when durability requires, deliberately document an ignored error]
+    unsafe_actions: [drop an error, compare unstable message text, double-log and return without policy, replace current standard handling with dated library advice]
+    common_failure_modes: [lost cause, noisy duplicate logs, broken sentinel or typed inspection, leaked resource, misleading success]
+    counterexamples: [A best-effort close during shutdown may be secondary, but data-loss or durability consequences still require reporting or combination.]
+    interactions: [The language-independent failure policy supplies product semantics; this concept supplies Go's explicit mechanism and current-toolchain check.]
+    source_support:
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/006-chapter-2-efficient-introduction-to-go.md :: Never Ignore Errors!"
+        contribution: Requires every meaningful error to be handled or deliberately justified.
+        relationship: direct_support
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/006-chapter-2-efficient-introduction-to-go.md :: Single Way of Handling Errors"
+        contribution: Establishes errors as explicit ordinary control flow in Go.
+        relationship: corroboration
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/006-chapter-2-efficient-introduction-to-go.md :: How to Wrap Errors?"
+        contribution: Supplies historical wrapping guidance retained only behind a current repository and toolchain check.
+        relationship: historical_precursor
+    confidence: strong
+    roles: [coding-agent, debugging-and-repair-agent, review-agent]
+    languages: [Go]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [Go error, errors Is, errors As, wrap error, ignored error, error context]
+    routing:
+      activate_for_roles: [coding-agent, debugging-and-repair-agent, review-agent]
+      activate_for_tasks: [implement-Go-error-path, repair-Go-failure, review-errors]
+      activate_for_repository_signals: [ignored error, fmt errorf, errors Is, errors As, double log]
+      activate_for_languages: [Go]
+      activate_for_risk_classes: [correctness, durability, availability, data-integrity]
+      exclude_when: [the operation has no error channel or failure]
+      prerequisites: [implementation-explicit-failure-policy]
+      retrieval_priority: core
+      retrieval_budget_hint: 350
+      related_concepts: [implementation-explicit-failure-policy, performance-resource-lifecycle, debugging-causal-repair, implementation-repository-language-conformance]
+
+  - id: go-semantics-before-performance-constructs
+    title: Choose Go values, pointers, generics, and interfaces for semantics first
+    category: implementation
+    claim: Pointer use, generic or interface dispatch, and specialization have workload- and compiler-dependent cost and must be selected first from ownership, mutation, nil, copy, identity, API, and variation semantics.
+    decision_rule: Choose value versus pointer from mutation, identity, size, copy, escape, nil, and method-set needs; choose generics, interfaces, or direct code from consumer variation and clarity; profile and benchmark only when the construct is material to an accepted performance target.
+    why_it_matters: Folklore such as pointers avoid copies or generics are zero-cost can increase escapes, allocations, alias races, API surface, and maintenance cost.
+    applicable_when: [Go receiver and parameter choice, generic or interface proposal, hot-path specialization]
+    not_applicable_when: [ordinary type choices with established semantics and no material performance claim]
+    required_evidence: [ownership and mutation semantics, API compatibility, escape or build analysis when relevant, causal profile and representative benchmark for speed claims]
+    insufficient_evidence: [pointers are faster, generics are free, Go is fast, one compiler version extrapolated indefinitely]
+    required_inputs: [semantic contract, consumer variation, current toolchain, performance objective when applicable]
+    expected_outputs: [simplest correct construct or measured bounded specialization]
+    preservation_boundaries: [aliasing and mutation, nil behavior, interface and method sets, compiler compatibility, public API]
+    safe_actions: [value for value semantics, pointer for identity or shared mutation, generic code for real type variation]
+    unsafe_actions: [pointer proliferation for presumed speed, generic abstraction before variants, manual inlining without profile]
+    common_failure_modes: [extra escape and allocation, alias race, false generic abstraction, benchmark-shaped API]
+    counterexamples: [A pointer is required for shared mutation or identity independently of performance.]
+    interactions: [Performance specialization activates only after the semantic choice and a proven critical path.]
+    source_support:
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/006-chapter-2-efficient-introduction-to-go.md :: Generic Code Will Be Faster?"
+        contribution: Rejects automatic performance claims for generics and requires workload measurement.
+        relationship: direct_support
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/009-chapter-5-how-go-uses-memory-resource.md :: Values, Pointers, and Memory Blocks"
+        contribution: Refines value and pointer choice with copy, address, and memory behavior.
+        relationship: refinement
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/008-chapter-4-how-go-uses-the-cpu-resource-or-two.md :: Manual Inlining Is Rarely Needed"
+        contribution: Corroborates reliance on simple code and current compiler behavior before manual specialization.
+        relationship: corroboration
+    confidence: contextual
+    roles: [coding-agent, performance-agent, architecture-agent, review-agent]
+    languages: [Go]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [Go pointer, value receiver, generics, interface, escape, specialization]
+    routing:
+      activate_for_roles: [coding-agent, performance-agent, architecture-agent, review-agent]
+      activate_for_tasks: [choose-Go-receiver, add-generics, optimize-Go-hot-path, review-interface]
+      activate_for_repository_signals: [pointer conversion, generic type, interface dispatch, escape report, manual inline]
+      activate_for_languages: [Go]
+      activate_for_risk_classes: [correctness, performance, compatibility, concurrency]
+      exclude_when: [the semantic construct is established and no performance claim is made]
+      prerequisites: [semantic ownership and mutation analysis]
+      retrieval_priority: high
+      retrieval_budget_hint: 390
+      related_concepts: [implementation-representation-fit, performance-specialization-evidence, performance-semantic-preservation, implementation-repository-language-conformance]
+
+  - id: go-bounded-concurrency
+    title: Earn and bound Go concurrency
+    category: performance
+    claim: Goroutines and channels add scheduling, coordination, synchronization, and memory cost; introduce a bounded topology only when a parallelizable workload or functional throughput requirement justifies it after sequential simplification.
+    decision_rule: Remove unnecessary work and improve the sequential path first, model dependencies and ordering, choose bounded workers or sharding, define cancellation errors closure and wait ownership, then compare sequential and concurrent implementations under representative load and resource limits.
+    why_it_matters: Unbounded per-item goroutines and coordination-heavy channels can make the system slower, nondeterministic, leaky, and memory-bound.
+    applicable_when: [parallelizable Go work, high-latency I/O, throughput or latency pressure, worker or shard design]
+    not_applicable_when: [tiny tasks, sequential dependencies, cold paths, no accepted concurrency driver]
+    required_evidence: [objective and baseline, causal profile or functional throughput requirement, task-size distribution, work dependency graph, race leak and macro resource tests]
+    insufficient_evidence: [idle cores, goroutine syntax, micro throughput ignoring errors or coordination, GOMAXPROCS folklore]
+    required_inputs: [work graph, ordering and error contract, target, resource and deployment limits]
+    expected_outputs: [sequential, worker, shard, or other bounded topology with comparison evidence]
+    preservation_boundaries: [result ordering, errors and cancellation, delivery semantics, closure ownership, CPU memory and scheduler budgets]
+    safe_actions: [bounded worker pool, explicit wait and stop, sharding when coordination dominates, retain sequential fallback]
+    unsafe_actions: [goroutine per unbounded item, sender-ownership violation on channel close, shared mutation without synchronization]
+    common_failure_modes: [slower path, goroutine leak, race, memory explosion, nondeterministic result, shutdown deadlock]
+    counterexamples: [Independent long network waits may justify bounded concurrency from a functional throughput requirement before CPU profiling.]
+    interactions: [This Go pattern refines the generic earned-concurrency obligation and depends on goroutine lifecycle ownership.]
+    conflicts: [conflict-concurrency-vs-sequential-simplicity]
+    source_support:
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/008-chapter-4-how-go-uses-the-cpu-resource-or-two.md :: Adding Concurrency Should Be One of Our Last Deliberate Optimizations to Try"
+        contribution: Requires sequential simplification and measured evidence before concurrent optimization.
+        relationship: direct_support
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/014-chapter-10-optimization-examples.md :: A Worker Approach Without Coordination (Sharding)"
+        contribution: Refines topology selection by showing when sharding removes costly coordination.
+        relationship: refinement
+    confidence: strong
+    roles: [coding-agent, performance-agent, architecture-agent, review-agent]
+    languages: [Go]
+    repository_archetypes: [service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [goroutine, Go concurrency, worker pool, sharding, channel, GOMAXPROCS]
+    routing:
+      activate_for_roles: [coding-agent, performance-agent, architecture-agent, review-agent]
+      activate_for_tasks: [add-Go-concurrency, optimize-throughput, review-worker-pool]
+      activate_for_repository_signals: [go statement, channel, worker pool, per-item goroutine, scheduler profile]
+      activate_for_languages: [Go]
+      activate_for_risk_classes: [concurrency, performance, availability, memory]
+      exclude_when: [no workload or quality driver for concurrency exists]
+      prerequisites: [performance-measurable-objective, performance-profile-causal-bottleneck]
+      retrieval_priority: specialist
+      retrieval_budget_hint: 440
+      related_concepts: [performance-earned-bounded-concurrency, performance-resource-lifecycle, performance-target-based-stop, go-goroutine-resource-lifecycle]
+
+  - id: go-goroutine-resource-lifecycle
+    title: Own Go goroutine and resource lifecycles
+    category: implementation
+    claim: Every goroutine and opened or exhaustible resource needs an owner, stop condition, completion observation, cleanup, and error behavior on success, failure, cancellation, and partial consumption.
+    decision_rule: At creation or acquisition, state who cancels or closes, whether and how the caller waits, how errors propagate, what partial consumption requires, and how completion is tested; use defer immediately after successful acquisition when its timing matches the required lifetime.
+    why_it_matters: Go makes concurrent work and resource acquisition concise, but orphan goroutines, unread bodies, lost errors, and wrong close ownership cause leaks and deadlocks.
+    applicable_when: [goroutine, channel, file, response body, stream, timer, background worker]
+    not_applicable_when: [immutable values with no external or concurrent lifecycle]
+    required_evidence: [creation-to-completion control flow, owner and transfer, cancellation and error paths, leak race and shutdown tests]
+    insufficient_evidence: [happy-path return, finalizer, one empty goroutine profile, assumption receiver closes sender-owned channel]
+    required_inputs: [lifecycle graph, failure and cancellation policy, resource API]
+    expected_outputs: [explicit lifecycle contract and implementation with cleanup tests]
+    preservation_boundaries: [partial results, error and close order, acknowledged work, shutdown and cancellation]
+    safe_actions: [stop and wait for owned goroutine, close or exhaust a body as required, defer release at the correct scope]
+    unsafe_actions: [launch without cancellation or error observation, close from the wrong owner, leak on early return, defer inside an unbounded loop]
+    common_failure_modes: [goroutine leak, file or socket leak, deadlock, lost error, premature close]
+    counterexamples: [Process-owned telemetry may be intentionally detached but still requires bounded buffers and shutdown semantics.]
+    interactions: [Generic resource lifecycle applies across languages; this lens makes goroutine, channel, defer, and exhaust mechanics explicit.]
+    source_support:
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/015-chapter-11-optimization-patterns.md :: Control the Lifecycle of Your Goroutines"
+        contribution: Requires explicit goroutine start, stop, wait, and error ownership.
+        relationship: direct_support
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/015-chapter-11-optimization-patterns.md :: Reliably Close Things"
+        contribution: Refines cleanup placement and error-path release for closeable resources.
+        relationship: refinement
+      - source_id: SRC-EGO
+        locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/015-chapter-11-optimization-patterns.md :: Exhaust Things"
+        contribution: Extends ownership to partially consumed streams and response bodies.
+        relationship: refinement
+    confidence: strong
+    roles: [coding-agent, debugging-and-repair-agent, performance-agent, review-agent]
+    languages: [Go]
+    repository_archetypes: [library, service, CLI, embedded-system, monolith, distributed-system]
+    retrieval_terms: [goroutine lifecycle, close, defer, exhaust body, cancellation, leak]
+    routing:
+      activate_for_roles: [coding-agent, debugging-and-repair-agent, performance-agent, review-agent]
+      activate_for_tasks: [launch-goroutine, acquire-Go-resource, repair-leak, review-shutdown]
+      activate_for_repository_signals: [go statement, defer, Close, response body, timer, channel close]
+      activate_for_languages: [Go]
+      activate_for_risk_classes: [durability, concurrency, availability, resource-lifecycle]
+      exclude_when: [there is no acquired resource or concurrent work]
+      prerequisites: [lifecycle and ownership inventory]
+      retrieval_priority: core
+      retrieval_budget_hint: 390
+      related_concepts: [performance-resource-lifecycle, implementation-explicit-failure-policy, go-explicit-contextual-errors, go-bounded-concurrency]

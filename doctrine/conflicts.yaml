@@ -1,0 +1,487 @@
+schema_version: agent-doctrine-conflicts/1
+interpretation: Conflict records preserve incompatible recommendations until repository evidence selects a position. A decision rule is not permission to execute the selected change.
+conflicts:
+  - conflict_id: conflict-deep-modules-vs-small-units
+    positions:
+      - id: deep-module
+        claim: Concentrate related complexity behind a small stable interface so callers reason locally.
+      - id: small-unit
+        claim: Extract small cohesive routines or classes so each operation has one clear purpose and can be changed or tested independently.
+    hidden_assumptions:
+      - Deep-module advice assumes hidden functionality remains semantically cohesive and the interface actually simplifies callers.
+      - Small-unit advice assumes extraction creates meaningful concepts rather than navigation and pass-through cost.
+    evidence_favoring_each_position:
+      deep-module: [many callers repeat policy or knowledge, interface cost dominates, extracted units would leak the same decision]
+      small-unit: [responsibilities evolve independently, extraction creates a stable named seam, tests or ownership need isolation]
+    decision_rule: Compare caller simplification and hidden benefit against interface, navigation, change, and review cost; select the smallest number of cohesive units that minimizes total reasoning and change amplification, not a target size.
+    unresolved_questions: [How module depth should be measured across languages and repository scales remains contextual.]
+    roles_affected: [coding-agent, architecture-agent, refactoring-agent, review-agent]
+    source_support:
+      - {source_id: SRC-APOSD, locator: "books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/009-4-modules-should-be-deep.md :: 4: Modules Should Be Deep"}
+      - {source_id: SRC-CC, locator: "books/code-complete-2nd-edition-v413hav/chapters/013-chapter-7-high-quality-routines.md :: 7.1 Valid Reasons to Create a Routine"}
+      - {source_id: SRC-REF, locator: "books/refactoring-improving-the-design-of-existing-code/chapters/007-chapter-3-bad-smells-in-code.md :: Long Method"}
+
+  - conflict_id: conflict-abstraction-vs-duplication
+    positions:
+      - id: abstract-shared-knowledge
+        claim: Centralize one authoritative piece of knowledge so a conceptual change has one implementation authority.
+      - id: tolerate-local-duplication
+        claim: Keep similar code local when semantics, owners, contexts, or future change can diverge.
+    hidden_assumptions:
+      - Abstraction assumes the duplicated material represents the same knowledge and will coevolve.
+      - Duplication assumes the extra edit/review burden is lower than coordination and interface cost.
+    evidence_favoring_each_position:
+      abstract-shared-knowledge: [same invariant or policy, repeated coordinated changes, stable shared contract, one legitimate owner]
+      tolerate-local-duplication: [different bounded contexts, independent release or ownership, syntax-only similarity, abstraction needs conditionals or parameter flags]
+    decision_rule: Abstract only when semantic identity and coevolution are demonstrated and the shared interface reduces total change/reasoning cost; otherwise retain local duplication and record the revisit trigger.
+    unresolved_questions: [How many examples are needed depends on reversal cost and semantic stability, not a universal count.]
+    roles_affected: [coding-agent, architecture-agent, refactoring-agent, review-agent]
+    source_support:
+      - {source_id: SRC-PP, locator: "books/the-pragmatic-programmer/chapters/007-chapter-2-a-pragmatic-approach.md :: The Evils of Duplication"}
+      - {source_id: SRC-SDX, locator: "books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/008-chapter-3-coupling-in-time-a-heuristic-for-the-concept-of-surprise.md :: The Dirty Secret of Copy-Paste"}
+
+  - conflict_id: conflict-dependency-inversion-vs-direct-coupling
+    positions:
+      - id: invert-dependency
+        claim: Protect stable policy from volatile details through an abstraction controlled by the consumer.
+      - id: direct-dependency
+        claim: Keep one stable implementation directly coupled until independent evolution or substitution earns indirection.
+    hidden_assumptions:
+      - Inversion assumes stable policy can be separated cleanly and the abstraction will not mirror the detail.
+      - Direct coupling assumes the dependency shares lifecycle, authority, and volatility with its consumer.
+    evidence_favoring_each_position:
+      invert-dependency: [asymmetric volatility, multiple implementations, deployment or ownership boundary, legacy interception, stable policy/mechanism split]
+      direct-dependency: [one controlled implementation, coordinated change, wrapper would pass through, substitution exists only for a mock]
+    decision_rule: Name the protected policy and coupling dimension; introduce the least costly seam whose protection exceeds its interface and lifecycle cost, otherwise retain direct coupling.
+    unresolved_questions: [Future volatility can be estimated but never established solely by architectural taste.]
+    roles_affected: [architecture-agent, coding-agent, legacy-code-agent, review-agent]
+    source_support:
+      - {source_id: SRC-CA, locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/020-chapter-11-dip-the-dependency-inversion-principle.md :: STABLE ABSTRACTIONS"}
+      - {source_id: SRC-WELC, locator: "books/programming-working-effectively-with-legacy-code/chapters/034-chapter-25-dependency-breaking-techniques.md :: Extract Interface"}
+
+  - conflict_id: conflict-domain-purity-vs-implementation-simplicity
+    positions:
+      - id: protect-domain-model
+        claim: Keep domain language, policy, and invariants free from contingent infrastructure representations.
+      - id: accept-direct-implementation
+        claim: Use simple transaction scripts, framework representations, or direct data operations when a rich model adds translation and ceremony without value.
+    hidden_assumptions:
+      - Purity assumes domain complexity and lifespan repay modeling and translation costs.
+      - Simplicity assumes rules are shallow, stable, or adequately expressed in direct workflows.
+    evidence_favoring_each_position:
+      protect-domain-model: [business-critical rule complexity, recurring semantic errors, multiple workflows, expert language, model breakthrough potential]
+      accept-direct-implementation: [simple CRUD, short-lived product, infrastructure-heavy logic, weak expert feedback, translation dominates behavior]
+    decision_rule: Invest in model isolation only where domain decisions and invariant density create demonstrated reasoning leverage; choose the simplest direct form elsewhere and keep operational constraints visible.
+    unresolved_questions: [A domain may move between these conditions as product knowledge grows.]
+    roles_affected: [architecture-agent, coding-agent, review-agent, refactoring-agent]
+    source_support:
+      - {source_id: SRC-DDD, locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/005-chapter-4-isolating-the-domain.md :: The Domain Layer Is Where the Model Lives"}
+      - {source_id: SRC-DDD, locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/005-chapter-4-isolating-the-domain.md :: The Smart UI \"Anti-Pattern\""}
+
+  - conflict_id: conflict-upfront-vs-evolutionary-architecture
+    positions:
+      - id: decide-up-front
+        claim: Resolve high-cost, safety-critical, procurement, data, or topology decisions before implementation makes them expensive or impossible.
+      - id: evolve-from-feedback
+        claim: Delay reversible decisions and evolve structure through implementation, domain, and runtime feedback.
+    hidden_assumptions:
+      - Up-front design assumes drivers and consequences are knowable before delivery.
+      - Evolution assumes feedback arrives before the last responsible moment and reversal remains affordable.
+    evidence_favoring_each_position:
+      decide-up-front: [irreversible commitment, regulatory proof, safety boundary, durable schema/protocol, long procurement lead, catastrophic failure cost]
+      evolve-from-feedback: [uncertain product/domain, reversible structure, cheap experiment, unvalidated scale, rapid convergence]
+    decision_rule: Classify decisions by reversibility, consequence, information value, and decision deadline; decide only the irreversible/high-consequence minimum early and establish feedback plus revisit triggers for the rest.
+    unresolved_questions: [The last responsible moment is repository- and market-specific.]
+    roles_affected: [architecture-agent, coding-agent, repository-assessment-agent]
+    source_support:
+      - {source_id: SRC-CC, locator: "books/code-complete-2nd-edition-v413hav/chapters/008-chapter-3-measure-twice-cut-once-upstream-prerequisites.md :: Iterative Approaches' Effect on Prerequisites"}
+      - {source_id: SRC-FSA, locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/003-preface-invalidating-axioms.md :: Axiom"}
+      - {source_id: SRC-DDD, locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/019-chapter-17-bringing-the-strategy-together.md :: The plan must allow for evolution"}
+
+  - conflict_id: conflict-generalized-reuse-vs-local-clarity
+    positions:
+      - id: generalized-reuse
+        claim: A reusable mechanism can amortize design and maintenance across stable consumers.
+      - id: local-clarity
+        claim: Direct purpose-built code preserves context and avoids a lowest-common-denominator interface.
+    hidden_assumptions:
+      - Reuse assumes multiple proven consumers share semantics and lifecycle.
+      - Local clarity assumes duplicated evolution and inconsistent fixes remain affordable.
+    evidence_favoring_each_position:
+      generalized-reuse: [multiple current consumers, stable common policy, coordinated governance, extension/replacement economics]
+      local-clarity: [one consumer, diverging contexts, release independence, generic API needs flags or callbacks, speculative framework]
+    decision_rule: Generalize only the stable semantic core demonstrated across current consumers; leave context-specific policy local and treat framework extraction as a separate lifecycle commitment.
+    unresolved_questions: [Consumer count is not enough without semantic and governance alignment.]
+    roles_affected: [coding-agent, architecture-agent, review-agent]
+    source_support:
+      - {source_id: SRC-DDD, locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/017-chapter-15-distillation.md :: Generic Subdomains"}
+      - {source_id: SRC-APOSD, locator: "books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/011-6-general-purpose-modules-are-deeper.md :: 6: General-Purpose Modules are Deeper"}
+
+  - conflict_id: conflict-temporary-seam-vs-long-term-design
+    positions:
+      - id: temporary-seam
+        claim: A minimal interception point can make an urgent legacy change protectable without redesigning the system.
+      - id: durable-boundary
+        claim: Production indirection should meet long-term API, encapsulation, ownership, and operability standards.
+    hidden_assumptions:
+      - Temporary seams assume the short-term risk reduction exceeds added complexity and reassessment will occur.
+      - Durable design assumes enough behavior and time are known to choose the lasting boundary safely.
+    evidence_favoring_each_position:
+      temporary-seam: [required change blocked by dependency, weak feedback, deadline, narrow enabling point, explicit provisional status]
+      durable-boundary: [repeated use, stable independent responsibility, multiple consumers, long lifespan, public or security-sensitive surface]
+    decision_rule: Use the smallest controlled seam that creates feedback; declare its production default and lifecycle, then promote or remove it based on repeated pressure rather than omission.
+    unresolved_questions: [Some safe seams are also good permanent boundaries; status must remain explicit until reviewed.]
+    roles_affected: [legacy-code-agent, refactoring-agent, coding-agent, review-agent]
+    source_support:
+      - {source_id: SRC-WELC, locator: "books/programming-working-effectively-with-legacy-code/chapters/011-chapter-4-the-seam-model.md :: Seams"}
+      - {source_id: SRC-WELC, locator: "books/programming-working-effectively-with-legacy-code/chapters/014-chapter-6-i-don-t-have-much-time-and-i-have-to-change-it.md :: Summary"}
+
+  - conflict_id: conflict-comments-vs-self-documenting-structure
+    positions:
+      - id: improve-code-first
+        claim: Names and structure should make operations obvious; comments that narrate code rot and mask poor design.
+      - id: preserve-nonobvious-information
+        claim: Comments carry contract, rationale, invariants, units, ownership, and cross-module information code cannot state economically.
+    hidden_assumptions:
+      - Code-first assumes the information is expressible locally in executable structure.
+      - Comment support assumes maintenance keeps prose adjacent and authoritative.
+    evidence_favoring_each_position:
+      improve-code-first: [comment repeats statements, renaming or extraction removes it, prose contradicts current code]
+      preserve-nonobvious-information: [why rather than what, external constraint, informal contract, invariant, deliberate tradeoff, surprising limitation]
+    decision_rule: First improve safe local structure; retain concise comments for verified information not obvious from the code, place them at the authority boundary, and test or review drift where consequential.
+    unresolved_questions: [Some languages can encode contracts directly; others need prose.]
+    roles_affected: [coding-agent, review-agent, refactoring-agent]
+    source_support:
+      - {source_id: SRC-CC, locator: "books/code-complete-2nd-edition-v413hav/chapters/043-chapter-32-self-documenting-code.md :: Repeat of the Code"}
+      - {source_id: SRC-APOSD, locator: "books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/018-13-comments-should-describe-things-that-arent-obvious-from-the-code.md :: 13: Comments Should Describe Things that Aren’t Obvious from the Code"}
+
+  - conflict_id: conflict-performance-specialization-vs-abstraction
+    positions:
+      - id: preserve-abstraction
+        claim: Maintain clear general interfaces and representations to contain complexity and change.
+      - id: specialize-hot-path
+        claim: A measured critical path may need direct data layout, fused work, batching, or specialized code.
+    hidden_assumptions:
+      - Abstraction assumes its overhead is immaterial to the target.
+      - Specialization assumes representative measurement and semantic equivalence are reliable.
+    evidence_favoring_each_position:
+      preserve-abstraction: [target already met, path cold, effect within noise, specialization duplicates policy, operational cost rises]
+      specialize-hot-path: [profiled causal bottleneck, target miss, significant repeatable gain, narrow containment, equivalence and regression gates]
+    decision_rule: Specialize only the measured critical path, hide it behind the existing semantic boundary when possible, compare end-to-end resource effects, and remove it when gain no longer clears complexity cost.
+    unresolved_questions: [Hardware and runtime changes can reverse the tradeoff.]
+    roles_affected: [performance-agent, coding-agent, review-agent, architecture-agent]
+    source_support:
+      - {source_id: SRC-EGO, locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/014-chapter-10-optimization-examples.md :: Optimize One Thing at a Time"}
+      - {source_id: SRC-APOSD, locator: "books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/025-20-designing-for-performance.md :: 20: Designing for Performance"}
+
+  - conflict_id: conflict-broad-redesign-vs-incremental-transformation
+    positions:
+      - id: broad-redesign
+        claim: Systemic mismatch may require replacing structure whose assumptions no longer fit.
+      - id: incremental-transformation
+        claim: Preserve feedback and delivery through small facade-compatible slices.
+    hidden_assumptions:
+      - Redesign assumes the new model is understood and coexistence or cutover is feasible.
+      - Incremental work assumes the existing structure has viable seams and does not perpetuate intolerable risk.
+    evidence_favoring_each_position:
+      broad-redesign: [invalid core representation, regulatory or platform deadline, no safe evolutionary path, replacement can be shadowed and compared]
+      incremental-transformation: [uncertain behavior, active parallel work, valuable stable boundaries, migration can deliver checkpoints]
+    decision_rule: Prefer the smallest independently verifiable migration path; authorize broad replacement only when evidence rules out safe incremental paths and supplies parity, coexistence, rollback, data, and cutover proof.
+    unresolved_questions: [Legacy behavior can make complete parity unknowable.]
+    roles_affected: [architecture-agent, legacy-code-agent, refactoring-agent, review-agent]
+    source_support:
+      - {source_id: SRC-WELC, locator: "books/programming-working-effectively-with-legacy-code/chapters/009-chapter-2-working-with-feedback.md :: The Legacy Code Change Algorithm"}
+      - {source_id: SRC-SDX, locator: "books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/009-chapter-4-pay-off-your-technical-debt.md :: Refactor Congested Code with the Splinter Pattern"}
+
+  - conflict_id: conflict-uniformity-vs-context-sensitive-design
+    positions:
+      - id: repository-uniformity
+        claim: Consistency lowers cognitive load, tool cost, and accidental variation.
+      - id: local-fit
+        claim: Different quality, domain, runtime, or language forces may require intentionally different structures.
+    hidden_assumptions:
+      - Uniformity assumes the convention remains fit and exceptions cost more than benefits.
+      - Local fit assumes divergence is explainable and will not fragment the repository.
+    evidence_favoring_each_position:
+      repository-uniformity: [same forces and language, established tooling, broad contributor base, low migration benefit]
+      local-fit: [measurably different risk or runtime constraints, bounded context, platform idiom, convention blocks correctness or operability]
+    decision_rule: Conform by default; introduce a documented local exception or migration only when distinct forces produce material benefit exceeding ecosystem and review cost.
+    unresolved_questions: [A local exception can become the next convention only through explicit adoption.]
+    roles_affected: [coding-agent, architecture-agent, review-agent]
+    source_support:
+      - {source_id: SRC-APOSD, locator: "books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/022-17-consistency.md :: 17: Consistency"}
+      - {source_id: SRC-FSA, locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/009-chapter-4-architecture-characteristics-defined.md :: Trade-Offs and Least Worst Architecture"}
+
+  - conflict_id: conflict-refactor-now-vs-leave-alone
+    positions:
+      - id: refactor-opportunistically
+        claim: Improve nearby structure while understanding is fresh to prevent compounding design decay.
+      - id: leave-stable-code
+        claim: Avoid regression and opportunity cost where unattractive code is stable or outside the authorized change surface.
+    hidden_assumptions:
+      - Opportunistic work assumes protection is adequate and structural pressure is real.
+      - Leaving alone assumes future change probability and latent risk are low enough.
+    evidence_favoring_each_position:
+      refactor-opportunistically: [current change repeats friction, known invariant seam, fast feedback, bounded scope, immediate integration benefit]
+      leave-stable-code: [low churn and incidents, weak tests, no authorized future work, public boundary risk, expected benefit below campaign cost]
+    decision_rule: Refactor only when demonstrated pressure and near-term benefit clear protection, integration, and opportunity costs; otherwise record the signal and revisit trigger without intervention.
+    unresolved_questions: [History cannot predict sudden future change with certainty.]
+    roles_affected: [refactoring-agent, coding-agent, review-agent, repository-assessment-agent]
+    source_support:
+      - {source_id: SRC-REF, locator: "books/refactoring-improving-the-design-of-existing-code/chapters/006-chapter-2-principles-in-refactoring.md :: When Should You Refactor?"}
+      - {source_id: SRC-SDX, locator: "books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/006-chapter-1-why-technical-debt-isn-t-technical.md :: Prioritize Improvements Guided by Data"}
+
+  - conflict_id: conflict-monolith-vs-distributed-services
+    positions:
+      - id: modular-monolith
+        claim: In-process modules minimize latency, consistency, deployment, and operational costs while preserving semantic boundaries.
+      - id: distributed-services
+        claim: Independent processes can satisfy required scale, isolation, technology, release, ownership, or geographic drivers.
+    hidden_assumptions:
+      - Monolith assumes one operational and consistency envelope remains adequate.
+      - Distribution assumes the organization can own partial failure, data authority, contracts, observability, security, and recovery.
+    evidence_favoring_each_position:
+      modular-monolith: [shared transaction, synchronous workflow, one team/release, insufficient operations capability, low latency]
+      distributed-services: [irreducible isolation or scale, independent release ownership, geographic boundary, distinct trust zone, mature operations]
+    decision_rule: Prefer the least distributed topology meeting current drivers; distribute only the flows for which a hard driver and operational readiness exceed network, data, and coordination cost.
+    unresolved_questions: [A modular monolith can be an end state or a staging state; do not assume either.]
+    roles_affected: [architecture-agent, performance-agent, review-agent]
+    source_support:
+      - {source_id: SRC-FSA, locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/015-chapter-9-foundations.md :: Monolithic Versus Distributed Architectures"}
+      - {source_id: SRC-CA, locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/038-chapter-27-services-great-and-small.md :: THE DECOUPLING FALLACY"}
+
+  - conflict_id: conflict-synchronous-vs-asynchronous-interaction
+    positions:
+      - id: synchronous
+        claim: Direct request/response preserves simple causal completion and immediate failure propagation.
+      - id: asynchronous
+        claim: Events or queues can isolate availability, shape load, and support independent temporal progress.
+    hidden_assumptions:
+      - Synchronous interaction assumes latency and availability coupling are acceptable.
+      - Asynchronous interaction assumes completion, ordering, retries, idempotency, replay, and reconciliation can be owned.
+    evidence_favoring_each_position:
+      synchronous: [caller needs immediate result, atomicity, low latency path, manageable dependency availability]
+      asynchronous: [load smoothing, long work, partial availability, event semantics, explicit eventual consistency]
+    decision_rule: Choose from response timing, atomicity, coupling, load shape, loss/retry semantics, and recovery ownership; do not treat topology as the decision.
+    unresolved_questions: [Hybrid workflows often require explicit phase boundaries and dual failure models.]
+    roles_affected: [architecture-agent, coding-agent, debugging-and-repair-agent, review-agent]
+    source_support:
+      - {source_id: SRC-FSA, locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/020-chapter-14-event-driven-architecture-style.md :: Choosing Between Request-Based and Event-Based"}
+
+  - conflict_id: conflict-concurrency-vs-sequential-simplicity
+    positions:
+      - id: concurrent
+        claim: Parallelism or asynchronous progress can meet throughput, latency, isolation, or responsiveness requirements.
+      - id: sequential
+        claim: Sequential execution minimizes scheduling, ownership, ordering, cancellation, race, and debugging cost.
+    hidden_assumptions:
+      - Concurrency assumes exploitable independent work and downstream capacity.
+      - Sequential simplicity assumes one execution path can meet the required objective.
+    evidence_favoring_each_position:
+      concurrent: [profiled parallel work, target miss, bounded cardinality, owned lifecycle, repeatable end-to-end gain]
+      sequential: [target met, work serial by invariant, contention dominates, downstream bottleneck, gain within noise]
+    decision_rule: Remove unnecessary work first; add the smallest bounded concurrency model only when representative measurement predicts and confirms a material target benefit while preserving ordering and lifecycle contracts.
+    unresolved_questions: [Runtime and hardware changes can alter the optimum.]
+    roles_affected: [performance-agent, coding-agent, review-agent, debugging-and-repair-agent]
+    source_support:
+      - {source_id: SRC-EGO, locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/008-chapter-4-how-go-uses-the-cpu-resource-or-two.md :: When to Use Concurrency"}
+      - {source_id: SRC-FP, locator: "books/fluent-python-2nd-edition-z-lib-org/chapters/027-chapter-20-concurrency-models-in-python.md :: Processes, threads, and Python's Infamous GIL"}
+
+  - conflict_id: conflict-caching-vs-recomputation-freshness
+    positions:
+      - id: cache
+        claim: Store expensive results to reduce repeated work and latency.
+      - id: recompute
+        claim: Recompute to preserve freshness, bound memory, and avoid invalidation/ownership complexity.
+    hidden_assumptions:
+      - Caching assumes stable keys, acceptable staleness, bounded cardinality, and favorable hit rate.
+      - Recompute assumes source availability and work cost meet the objective.
+    evidence_favoring_each_position:
+      cache: [profiled repeated cost, stable validity rule, bounded capacity, high hit rate, observable invalidation]
+      recompute: [cheap work, volatile inputs, sensitive/tenant data, low reuse, retention or stampede risk]
+    decision_rule: Cache only when measured avoided work exceeds memory, invalidation, consistency, privacy, and failure costs; specify key, owner, lifetime, capacity, invalidation, and fallback before implementation.
+    unresolved_questions: [Distributed caches introduce a separate consistency and availability boundary.]
+    roles_affected: [performance-agent, architecture-agent, coding-agent, review-agent]
+    source_support:
+      - {source_id: SRC-FP, locator: "books/fluent-python-2nd-edition-z-lib-org/chapters/015-chapter-9-decorators-and-closures.md :: Memoization with functools.cache"}
+      - {source_id: SRC-EGO, locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/015-chapter-11-optimization-patterns.md :: Trading Space for Time"}
+
+  - conflict_id: conflict-static-typing-vs-runtime-validation
+    positions:
+      - id: static-contract
+        claim: Types and protocols catch interface mismatches early and document trusted internal contracts.
+      - id: runtime-validation
+        claim: External data and value-level invariants require executable validation and tests.
+    hidden_assumptions:
+      - Static contracts assume values come from checked code and the type system expresses the property.
+      - Runtime checks assume their cost and failure behavior are acceptable at the boundary.
+    evidence_favoring_each_position:
+      static-contract: [closed typed boundary, structural interface property, CI checker authority]
+      runtime-validation: [untrusted input, serialization, dynamic plugin, value range, cross-version data, business invariant]
+    decision_rule: Use static typing for properties the repository checker can prove; validate at every trust/data boundary for properties that exist only at runtime, and test both paths.
+    unresolved_questions: [Gradual typing creates mixed-trust zones that require explicit ownership.]
+    roles_affected: [coding-agent, review-agent, debugging-and-repair-agent]
+    source_support:
+      - {source_id: SRC-FP, locator: "books/fluent-python-2nd-edition-z-lib-org/chapters/014-chapter-8-type-hints-in-functions.md :: Flawed Typing and Strong Testing"}
+
+  - conflict_id: conflict-broad-vs-narrow-characterization
+    positions:
+      - id: broad-safety-net
+        claim: A high-level characterization test can protect a wide poorly understood effect surface quickly.
+      - id: narrow-local-test
+        claim: A focused test gives faster diagnosis, lower brittleness, and clearer preservation claims.
+    hidden_assumptions:
+      - Broad protection assumes the harness is stable and its coarse oracle detects the relevant regressions.
+      - Narrow protection assumes dependencies can be separated and effects identified safely.
+    evidence_favoring_each_position:
+      broad-safety-net: [unknown internal effects, urgent change, stable external boundary, no local seam yet]
+      narrow-local-test: [known effect surface, enabling point available, fast repeated campaign, high diagnosis value]
+    decision_rule: Establish the cheapest test that detects the authorized change's relevant effects; use broad protection provisionally, then add narrower tests as understanding and seams improve.
+    unresolved_questions: [Some integration behavior is inherently only observable at a broad boundary.]
+    roles_affected: [legacy-code-agent, refactoring-agent, debugging-and-repair-agent]
+    source_support:
+      - {source_id: SRC-WELC, locator: "books/programming-working-effectively-with-legacy-code/chapters/021-chapter-13-i-need-to-make-a-change-but-i-don-t-know-what-tests-to-write.md :: A Heuristic for Writing Characterization Tests"}
+      - {source_id: SRC-SDX, locator: "books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/009-chapter-4-pay-off-your-technical-debt.md :: Introduce Provisional End-to-End Tests"}
+
+  - conflict_id: conflict-model-fidelity-vs-performance-representation
+    positions:
+      - id: preserve-domain-representation
+        claim: Keep code and data shaped around domain language and invariants so policy remains intelligible.
+      - id: specialize-runtime-representation
+        claim: Use a different storage, indexing, batching, or computation representation when the domain-shaped form cannot meet an accepted resource objective.
+    hidden_assumptions:
+      - Domain fidelity assumes its representation is operationally affordable.
+      - Specialization assumes translation can preserve meaning and measured benefit exceeds dual-model complexity.
+    evidence_favoring_each_position:
+      preserve-domain-representation: [performance target met, hot path unproven, translation duplicates policy, semantic errors dominate]
+      specialize-runtime-representation: [profiled causal bottleneck, accepted target miss, stable mapping, semantic oracle, material repeatable improvement]
+    decision_rule: Preserve the domain-facing model by default; add the narrowest specialized representation behind an explicit translation boundary only when profiling and representative benchmarks justify it and equivalence, synchronization, recovery, and retirement are protected.
+    unresolved_questions: [Changes in workload, runtime, or domain semantics can reverse the selected representation.]
+    roles_affected: [architecture-agent, coding-agent, performance-agent, review-agent]
+    source_support:
+      - {source_id: SRC-DDD, locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/008-chapter-7-using-the-language-an-extended-example.md :: Performance Tuning"}
+      - {source_id: SRC-APOSD, locator: "books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/025-20-designing-for-performance.md :: 20: Designing for Performance"}
+
+  - conflict_id: conflict-full-vs-partial-vs-no-boundary
+    positions:
+      - id: full-boundary
+        claim: Enforce bidirectional independence with separate contracts, dependency direction, release, process, or network isolation.
+      - id: partial-boundary
+        claim: Preserve a cheaper facade or one-dimensional seam until stronger independent evolution is demonstrated.
+      - id: no-boundary
+        claim: Keep direct cohesive coupling when separation cost exceeds the evidenced force.
+    hidden_assumptions:
+      - Full boundaries assume the protected force is durable enough to repay lifecycle and crossing cost.
+      - Partial boundaries assume retained scaffolding provides useful options without false confidence.
+      - No boundary assumes volatility, ownership, deployment, and failure remain aligned.
+    evidence_favoring_each_position:
+      full-boundary: [independent release or trust, strong asymmetric volatility, process isolation, governed public contract]
+      partial-boundary: [plausible variation, reversible source seam, incomplete evidence, low-cost option preservation]
+      no-boundary: [one owner and lifecycle, cohesive invariant, no substitution or isolation need, pass-through interface]
+    decision_rule: First establish whether a boundary is earned; then choose the cheapest strength that satisfies the measured protection, ownership, release, failure, and compatibility requirement, with a revisit trigger for partial forms.
+    unresolved_questions: [Partial boundaries can either reduce future cost or become indefinite unused scaffolding.]
+    roles_affected: [architecture-agent, coding-agent, refactoring-agent, legacy-code-agent]
+    source_support:
+      - {source_id: SRC-CA, locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/035-chapter-24-partial-boundaries.md :: Chapter 24: Partial Boundaries"}
+      - {source_id: SRC-FSA, locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/013-chapter-8-component-based-thinking.md :: Component Granularity"}
+
+  - conflict_id: conflict-domain-vs-technical-partition
+    positions:
+      - id: domain-partition
+        claim: Group a capability's presentation, policy, and persistence so feature and domain changes remain local.
+      - id: technical-partition
+        claim: Group common technical concerns so mechanism expertise, standards, and reuse remain centralized.
+    hidden_assumptions:
+      - Domain partitioning assumes capability cohesion exceeds cross-capability technical reuse.
+      - Technical partitioning assumes layer reuse and specialist control exceed feature-spanning change cost.
+    evidence_favoring_each_position:
+      domain-partition: [feature changes cross layers repeatedly, clear capability ownership, domain language and invariants, independent cadence]
+      technical-partition: [mechanism dominates, strong shared platform policy, uniform regulated control, shallow domain behavior]
+    decision_rule: Select partition axes per demonstrated change, semantic, ownership, quality, and enforcement forces; hybridize deliberately, but do not infer a bounded context from either folder scheme.
+    unresolved_questions: [A repository may need different partition axes at source, deployment, data, and organizational levels.]
+    roles_affected: [architecture-agent, coding-agent, domain-design-agent, review-agent]
+    source_support:
+      - {source_id: SRC-FSA, locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/013-chapter-8-component-based-thinking.md :: Domain partitioning"}
+      - {source_id: SRC-FSA, locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/013-chapter-8-component-based-thinking.md :: Technical partitioning"}
+      - {source_id: SRC-DDD, locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/006-chapter-5-a-model-expressed-in-software.md :: Modules (a.k.a. Packages)"}
+
+  - conflict_id: conflict-choreography-vs-orchestration
+    positions:
+      - id: choreography
+        claim: Let independently owned event handlers react without a central workflow controller.
+      - id: orchestration
+        claim: Give one mediator explicit responsibility for workflow state, ordering, compensation, and completion.
+    hidden_assumptions:
+      - Choreography assumes no actor needs authoritative global completion and emergent flow remains observable.
+      - Orchestration assumes central workflow ownership is legitimate and the mediator's capacity and availability are manageable.
+    evidence_favoring_each_position:
+      choreography: [independent reactions, simple fan-out, no global transaction, strong event governance and observability]
+      orchestration: [conditional multi-step workflow, compensation, audit, deadlines, completion query, explicit recovery owner]
+    decision_rule: Choose from causal ownership and recovery semantics rather than broker fashion; use orchestration when global process state is a real domain/operational responsibility, and choreography only when local reactions remain independently correct.
+    unresolved_questions: [Hybrid workflows must mark where responsibility transfers between mediator and autonomous reactions.]
+    roles_affected: [architecture-agent, coding-agent, review-agent, debugging-and-repair-agent]
+    source_support:
+      - {source_id: SRC-FSA, locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/020-chapter-14-event-driven-architecture-style.md :: Broker Topology"}
+      - {source_id: SRC-FSA, locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/020-chapter-14-event-driven-architecture-style.md :: Mediator Topology"}
+
+  - conflict_id: conflict-architectural-constraint-vs-team-autonomy
+    positions:
+      - id: enforced-constraint
+        claim: Consequential structural, compatibility, security, or quality rules should be automatically enforced across teams.
+      - id: contextual-team-autonomy
+        claim: Teams should choose local implementation and structure where their drivers differ and global enforcement would freeze detail.
+    hidden_assumptions:
+      - Enforcement assumes the rule is accepted, stable, measurable, and worth coordination/tooling cost.
+      - Autonomy assumes local divergence does not violate shared contracts or externalize operational cost.
+    evidence_favoring_each_position:
+      enforced-constraint: [cross-team invariant, regulated boundary, repeated violation, cheap reliable check, explicit owner]
+      contextual-team-autonomy: [local reversible detail, distinct driver, check creates false positives, central rule has no measured consequence]
+    decision_rule: Enforce only accepted consequential outcomes or forbidden dependencies at the cheapest reliable boundary; leave replaceable implementation choices local and provide an explicit exception/supersession path.
+    unresolved_questions: [The same rule may be architectural for one scope and implementation detail for another.]
+    roles_affected: [architecture-agent, review-agent, coding-agent, repository-assessment-agent]
+    source_support:
+      - {source_id: SRC-FSA, locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/011-chapter-6-measuring-and-governing-architecture-characteristics.md :: Governing Architecture Characteristics"}
+      - {source_id: SRC-CA, locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/046-chapter-34-the-missing-chapter.md :: ENCAPSULATION"}
+
+  - conflict_id: conflict-unified-model-vs-bounded-contexts
+    positions:
+      - id: unified-model
+        claim: One shared model can eliminate translation and keep enterprise concepts consistent.
+      - id: bounded-models
+        claim: Multiple internally coherent models preserve distinct meanings, rules, ownership, and evolution.
+    hidden_assumptions:
+      - Unification assumes terms and invariants are genuinely the same and shared governance is affordable.
+      - Bounded models assume translation and duplication cost less than a compromised universal model.
+    evidence_favoring_each_position:
+      unified-model: [same language and invariants, high cross-context atomicity, one owner, low semantic variation]
+      bounded-models: [term/rule conflict, distinct expert groups, independent cadence, legacy/external model, specialized performance model]
+    decision_rule: Attempt unification only within a scope where one language and model remain coherent; preserve distinct models across demonstrated semantic discontinuities and choose an explicit relationship for every necessary crossing.
+    unresolved_questions: [Context boundaries can merge or split as domain understanding and ownership change.]
+    roles_affected: [architecture-agent, domain-design-agent, coding-agent, review-agent]
+    source_support:
+      - {source_id: SRC-DDD, locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md :: Unifying an Elephant"}
+      - {source_id: SRC-DDD, locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md :: Catering to Special Needs with Distinct Models"}
+
+  - conflict_id: conflict-shared-kernel-vs-acl-vs-conformist
+    positions:
+      - id: shared-kernel
+        claim: Jointly own a small stable overlap when teams can coordinate every change closely.
+      - id: anticorruption-layer
+        claim: Translate between materially different models to protect valuable local semantics.
+      - id: conformist
+        claim: Adopt an upstream model when leverage is absent and local translation has insufficient value.
+    hidden_assumptions:
+      - Shared Kernel assumes high trust, synchronized change, and truly shared semantics.
+      - Anticorruption Layer assumes local model value repays translation and operational cost.
+      - Conformist assumes upstream semantics are adequate and dependency risk is accepted.
+    evidence_favoring_each_position:
+      shared-kernel: [small overlap, strong cooperation, aligned cadence, shared tests, mutual influence]
+      anticorruption-layer: [semantic mismatch, valuable local core, necessary integration, controlled translation ownership]
+      conformist: [no upstream influence, acceptable model, low differentiating value, translator cost exceeds benefit]
+    decision_rule: Select relationship from control, cooperation, semantic distance, local strategic value, and integration economics; never choose from diagram symmetry or reuse desire alone.
+    unresolved_questions: [Relationships can change as leverage, trust, and strategic importance evolve.]
+    roles_affected: [architecture-agent, domain-design-agent, legacy-code-agent, review-agent]
+    source_support:
+      - {source_id: SRC-DDD, locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md :: Shared Kernel"}
+      - {source_id: SRC-DDD, locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md :: Anticorruption Layer"}
+      - {source_id: SRC-DDD, locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md :: Conformist"}

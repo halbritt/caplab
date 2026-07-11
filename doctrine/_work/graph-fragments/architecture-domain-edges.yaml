@@ -1,0 +1,483 @@
+schema_version: agent-doctrine-graph-edges/1
+edges:
+  - id: E-ARCHDOM-001-contract-precedence-constrains-intervention
+    from: universal-repository-contract-precedence
+    relation: constrains
+    to: universal-evidence-before-intervention
+    claim: Accepted repository decisions and observed local contracts bound which source-derived evidence may justify an intervention.
+    conditions:
+      - an accepted repository contract or decision applies to the target scope
+      - supersession has not been authorized through the repository decision process
+    derivation: synthesized
+    confidence: universal
+    provenance: [F-CONCEPT-FSA-0302ef761084, F-CONCEPT-SDX-4a4d1f2737b8]
+
+  - id: E-ARCHDOM-002-evidence-prerequisite-earned-boundary
+    from: universal-evidence-before-intervention
+    relation: prerequisite-of
+    to: architecture-earned-boundary
+    claim: An architectural boundary is selectable only after evidence establishes an independent policy, semantic, invariant, ownership, release, trust, deployment, or quality force.
+    conditions:
+      - the boundary is a discretionary architecture intervention
+      - no higher-precedence repository contract already mandates its exact form
+    derivation: corroborated
+    confidence: strong
+    provenance: [F-CONCEPT-SDX-4a4d1f2737b8, F-CONCEPT-CA-ee58e1594efc]
+
+  - id: E-ARCHDOM-003-characteristic-evidence-boundary
+    from: architecture-scoped-characteristics
+    relation: evidence-for
+    to: architecture-earned-boundary
+    claim: A scoped architecture characteristic can earn a boundary when structural separation is necessary to meet its concrete threshold.
+    conditions:
+      - the characteristic has an accepted scenario, threshold, owner, and scope
+      - a local implementation change cannot satisfy the threshold at lower cost
+    derivation: corroborated
+    confidence: strong
+    provenance: [F-CONCEPT-FSA-c8e23580080f, F-CONCEPT-CA-ee58e1594efc]
+
+  - id: E-ARCHDOM-004-change-locality-evidence-boundary
+    from: architecture-change-locality-cohesion
+    relation: evidence-for
+    to: architecture-earned-boundary
+    claim: Recurring independent change closure and semantic cohesion support a module or component boundary when the seam reduces coordinated change without weakening information hiding.
+    conditions:
+      - representative changes show responsibilities evolve independently
+      - the proposed contract is semantically coherent and cheaper than continued coordination
+    derivation: corroborated
+    confidence: strong
+    provenance: [F-CONCEPT-CA-b0c791e81e5f, F-CONCEPT-CA-ee58e1594efc]
+
+  - id: E-ARCHDOM-005-bounded-context-evidence-boundary
+    from: domain-bounded-context
+    relation: evidence-for
+    to: architecture-earned-boundary
+    claim: Demonstrated model-language discontinuity supplies evidence for a semantic boundary but not by itself for a process or network boundary.
+    conditions:
+      - expert examples establish internal model coherence and external semantic discontinuity
+      - boundary strength is selected separately from semantic existence
+    derivation: corroborated
+    confidence: strong
+    provenance: [F-CONCEPT-DDD-66cc671ede0b, F-CONCEPT-DDD-e26711b6f899]
+
+  - id: E-ARCHDOM-006-earned-boundary-prerequisite-strength
+    from: architecture-earned-boundary
+    relation: prerequisite-of
+    to: architecture-boundary-strength
+    claim: Boundary existence must be justified before selecting source, facade, interface, release, process, network, transaction, or semantic strength.
+    conditions:
+      - a demonstrated independent force has earned a boundary
+      - candidate strengths are compared on crossing and lifecycle cost
+    derivation: synthesized
+    confidence: strong
+    provenance: [F-CONCEPT-CA-ee58e1594efc, F-CONCEPT-CA-29842f7171dc]
+
+  - id: E-ARCHDOM-007-boundary-enables-policy-protection
+    from: architecture-earned-boundary
+    relation: enables
+    to: architecture-policy-mechanism-separation
+    claim: A properly placed boundary can protect independently valuable policy from contingent mechanism when the two vary for different reasons.
+    conditions:
+      - policy meaning is stable enough to define a semantic contract
+      - mechanism behavior that callers must observe remains explicit
+    derivation: corroborated
+    confidence: strong
+    provenance: [F-CONCEPT-CA-ee58e1594efc, F-CONCEPT-CA-6d677b7e3fba]
+
+  - id: E-ARCHDOM-008-inversion-implements-policy-separation
+    from: architecture-dependency-inversion-gate
+    relation: implements
+    to: architecture-policy-mechanism-separation
+    claim: A consumer-owned dependency inversion can implement policy-mechanism separation when asymmetric volatility or substitution clears its evidence gate.
+    conditions:
+      - a stable consumer policy and volatile provider are demonstrated
+      - the narrow interface does not merely mirror the provider
+    derivation: direct
+    confidence: contextual
+    provenance: [F-CONCEPT-CA-00ecbddbb165, F-CONCEPT-CA-6d677b7e3fba]
+
+  - id: E-ARCHDOM-009-options-constrain-boundary-strength
+    from: architecture-selective-option-preservation
+    relation: constrains
+    to: architecture-boundary-strength
+    claim: When future separation is plausible but not fully earned, option value can justify a lower-cost seam rather than immediate full independence.
+    conditions:
+      - the future trigger and later reversal cost are credible
+      - current seam carrying cost is lower than delay value
+    derivation: synthesized
+    confidence: contextual
+    provenance: [F-CONCEPT-CA-fc96ecd9ef36, F-CONCEPT-CA-3d52f6c3637f]
+
+  - id: E-ARCHDOM-010-no-change-constrains-option-carrying
+    from: universal-no-change-option
+    relation: constrains
+    to: architecture-selective-option-preservation
+    claim: No architecture option structure should be carried when no credible trigger or net delay value clears the no-change threshold.
+    conditions:
+      - current contracts and accepted thresholds hold
+      - later recovery remains cheaper than carrying speculative structure now
+    derivation: synthesized
+    confidence: contextual
+    provenance: [F-CONCEPT-REF-47a52fa2ffa2, F-CONCEPT-DDD-a04fc53b7a74]
+
+  - id: E-ARCHDOM-011-characteristics-constrain-style
+    from: architecture-scoped-characteristics
+    relation: constrains
+    to: architecture-contextual-style-selection
+    claim: Ranked and scoped architecture characteristics eliminate incompatible styles and define the least-worst candidate set.
+    conditions:
+      - characteristic scenarios and priorities are accepted
+      - style comparison includes data, team, operational, migration, and failure consequences
+    derivation: direct
+    confidence: strong
+    provenance: [F-CONCEPT-FSA-c8e23580080f, F-CONCEPT-FSA-a2ad44dc00e5]
+
+  - id: E-ARCHDOM-012-distribution-constrains-strength
+    from: architecture-distribution-readiness
+    relation: constrains
+    to: architecture-boundary-strength
+    claim: Selecting process or network strength requires operational, data, failure, compatibility, security, and recovery readiness beyond a source or semantic seam.
+    conditions:
+      - process or network separation is a candidate
+      - the claimed independent driver cannot be met in process
+    derivation: corroborated
+    confidence: strong
+    provenance: [F-CONCEPT-FSA-03d270194af5, F-CONCEPT-FSA-5e0ce1c8ce6e]
+
+  - id: E-ARCHDOM-013-distribution-tension-modular-monolith
+    from: architecture-distribution-readiness
+    relation: in-tension-with
+    to: architecture-modular-monolith
+    claim: Distribution buys independent scale or isolation at network and operational cost, while a modular monolith preserves one low-cost consistency and deployment envelope.
+    conditions:
+      - both topologies can plausibly satisfy the functional requirements
+      - current drivers and operational readiness must select the position
+    derivation: contested
+    confidence: contextual
+    provenance: [F-CONCEPT-FSA-11b347e9e248, F-CONCEPT-FSA-4a5f3e78f591]
+    conflict_ref: conflict-monolith-vs-distributed-services
+
+  - id: E-ARCHDOM-014-context-constrains-distribution
+    from: domain-bounded-context
+    relation: constrains
+    to: architecture-distribution-readiness
+    claim: A Bounded Context supplies semantic scope but cannot by itself authorize or prove readiness for a process or service boundary.
+    conditions:
+      - a context is used as evidence in a service-decomposition proposal
+      - deployment, data, and operational drivers are evaluated separately
+    derivation: synthesized
+    confidence: strong
+    provenance: [F-CONCEPT-DDD-66cc671ede0b, F-CONCEPT-CA-cdb1734143c6]
+
+  - id: E-ARCHDOM-015-partitioning-implements-policy-separation
+    from: architecture-contextual-partitioning
+    relation: implements
+    to: architecture-policy-mechanism-separation
+    claim: Domain modules combined with technical adapters can implement policy-mechanism separation when repository visibility actually enforces the dependency rule.
+    conditions:
+      - domain and technical responsibilities are evidenced independently
+      - package or module visibility prevents mechanism leakage
+    derivation: corroborated
+    confidence: contextual
+    provenance: [F-CONCEPT-CA-a7ddac9ac1dd, F-CONCEPT-DDD-45151fcc9515]
+
+  - id: E-ARCHDOM-016-language-evidence-bounded-context
+    from: domain-language-model-loop
+    relation: evidence-for
+    to: domain-bounded-context
+    claim: Contradictory meanings, identities, rules, and authoritative language reveal candidate Bounded Context discontinuities.
+    conditions:
+      - expert examples show internally coherent but externally incompatible meanings
+      - the difference affects behavior or authority rather than terminology alone
+    derivation: direct
+    confidence: strong
+    provenance: [F-CONCEPT-DDD-43e35e2d42ec, F-CONCEPT-DDD-66cc671ede0b]
+
+  - id: E-ARCHDOM-017-language-evidence-aggregate
+    from: domain-language-model-loop
+    relation: evidence-for
+    to: domain-aggregate-invariant-boundary
+    claim: Expert-validated commands, identity, lifecycle, and invariants provide the semantic evidence required to define an Aggregate.
+    conditions:
+      - the model identifies states that must remain consistent
+      - commands and mutation authority are explicit
+    derivation: corroborated
+    confidence: strong
+    provenance: [F-CONCEPT-DDD-a845db3706b8, F-CONCEPT-DDD-e1f709bfd6bd]
+
+  - id: E-ARCHDOM-018-aggregate-requires-context
+    from: domain-aggregate-invariant-boundary
+    relation: requires
+    to: domain-bounded-context
+    claim: Aggregate invariants and identity semantics are meaningful only within a bounded model context whose language and authority define them.
+    conditions:
+      - the same terms or data can have different rules in another context
+      - aggregate consistency is not generalized across context boundaries silently
+    derivation: synthesized
+    confidence: strong
+    provenance: [F-CONCEPT-DDD-e1f709bfd6bd, F-CONCEPT-DDD-66cc671ede0b]
+
+  - id: E-ARCHDOM-019-aggregate-constrains-distribution
+    from: domain-aggregate-invariant-boundary
+    relation: constrains
+    to: architecture-distribution-readiness
+    claim: Required atomic invariants can contraindicate a service split or require explicitly authorized saga and weaker-consistency semantics.
+    conditions:
+      - a proposed process boundary crosses one Aggregate invariant
+      - any weakened consistency has a domain owner and reconciliation design
+    derivation: corroborated
+    confidence: strong
+    provenance: [F-CONCEPT-DDD-e1f709bfd6bd, F-CONCEPT-FSA-acee17c6de53, F-CONCEPT-FSA-03d270194af5]
+
+  - id: E-ARCHDOM-020-relationships-operationalize-contexts
+    from: domain-context-relationship-selection
+    relation: operationalizes
+    to: domain-bounded-context
+    claim: Explicit relationship selection operationalizes how Bounded Contexts integrate, coordinate authority, translate meaning, or remain separate.
+    conditions:
+      - two contexts have a necessary or deliberately absent crossing
+      - control, cooperation, semantic distance, and economics are known
+    derivation: direct
+    confidence: strong
+    provenance: [F-CONCEPT-DDD-7f1d90c349ac, F-CONCEPT-DDD-fde5e6bc2ea2]
+
+  - id: E-ARCHDOM-021-acl-specializes-context-relationship
+    from: domain-anticorruption-layer
+    relation: specializes
+    to: domain-context-relationship-selection
+    claim: An Anticorruption Layer is the context-relationship option for necessary integration where material semantic conflict threatens a valuable local model and translation earns its cost.
+    conditions:
+      - direct integration or Conformist would corrupt valuable local meaning
+      - translation, versioning, identity, and failure costs are supportable
+    derivation: direct
+    confidence: contextual
+    provenance: [F-CONCEPT-DDD-aa97141b7e01, F-CONCEPT-DDD-f61bd371382f]
+
+  - id: E-ARCHDOM-022-core-motivates-model-loop
+    from: domain-core-domain-priority
+    relation: motivates
+    to: domain-language-model-loop
+    claim: Validated differentiating capability warrants the strongest sustained investment in expert-developer language, model, code, and test learning.
+    conditions:
+      - stakeholders validate the capability as differentiating
+      - expert access and product lifespan can sustain the learning loop
+    derivation: corroborated
+    confidence: contextual
+    provenance: [F-CONCEPT-DDD-2d0aee0bc861, F-CONCEPT-DDD-43e35e2d42ec]
+
+  - id: E-ARCHDOM-023-abstraction-tension-change-locality
+    from: universal-earned-abstraction
+    relation: trades-off-with
+    to: architecture-change-locality-cohesion
+    claim: Shared abstraction can centralize stable knowledge but can also couple consumers that close against different changes, making local duplication the lower-cost choice.
+    conditions:
+      - similar implementations have uncertain semantic identity or evolution
+      - interface and coordination cost must be compared with duplicated-change cost
+    derivation: contested
+    confidence: contextual
+    provenance: [F-CONCEPT-PP-9768c732f35d, F-CONCEPT-CA-016834320863]
+    conflict_ref: conflict-abstraction-vs-duplication
+
+  - id: E-ARCHDOM-024-framework-specializes-earned-abstraction
+    from: architecture-framework-commitment
+    relation: specializes
+    to: universal-earned-abstraction
+    claim: Framework extraction is an earned-abstraction decision with additional asymmetric lifecycle, API-control, upgrade, and replacement costs.
+    conditions:
+      - multiple proven consumers share a stable semantic core
+      - framework commitment and exit costs are explicit
+    derivation: corroborated
+    confidence: contextual
+    provenance: [F-CONCEPT-CA-17bccb7b59d6, F-CONCEPT-APOSD-2ea5ca3d7275]
+
+  - id: E-ARCHDOM-025-fitness-enables-feedback
+    from: architecture-fitness-functions
+    relation: enables
+    to: architecture-feedback-loop
+    claim: Fitness checks, telemetry, and boundary tests return implementation and runtime evidence that can confirm, narrow, or reopen architecture decisions.
+    conditions:
+      - the check observes the property claimed by the decision
+      - a decision owner receives and acts on the signal
+    derivation: corroborated
+    confidence: strong
+    provenance: [F-CONCEPT-FSA-6001d4a20bfb, F-CONCEPT-DDD-4feff0cf7d5e]
+
+  - id: E-ARCHDOM-026-fitness-constrains-decision-record
+    from: architecture-fitness-functions
+    relation: constrains
+    to: architecture-decision-record
+    claim: Technical verification can establish compliance claims but cannot substitute for the decision status, authorization, or acceptance recorded by the proper owner.
+    conditions:
+      - a fitness result is used to support decision compliance
+      - acceptance authority remains distinct from verification
+    derivation: synthesized
+    confidence: strong
+    provenance: [F-CONCEPT-FSA-6001d4a20bfb, F-CONCEPT-FSA-5736784e1cc4]
+
+  - id: E-ARCHDOM-027-adr-operationalizes-contract-precedence
+    from: architecture-decision-record
+    relation: operationalizes
+    to: universal-repository-contract-precedence
+    claim: An accepted and durable architecture decision record operationalizes repository authority by making status, scope, consequences, compliance, and supersession explicit.
+    conditions:
+      - the decision is architecturally significant
+      - accepted status and decision authority are recorded durably
+    derivation: corroborated
+    confidence: strong
+    provenance: [F-CONCEPT-FSA-5736784e1cc4, F-CONCEPT-FSA-0302ef761084]
+
+  - id: E-ARCHDOM-028-risk-evidence-decision-record
+    from: architecture-risk-analysis
+    relation: evidence-for
+    to: architecture-decision-record
+    claim: Identified architecture risks, mitigations, residual uncertainty, and acceptance owners provide evidence that belongs in an architecture decision record.
+    conditions:
+      - risk analysis concerns the decision's scoped characteristics and flows
+      - mitigation and residual-risk authority are explicit
+    derivation: corroborated
+    confidence: strong
+    provenance: [F-CONCEPT-FSA-28ee0a82fb2f, F-CONCEPT-FSA-5736784e1cc4]
+
+  - id: E-ARCHDOM-029-team-evidence-boundary
+    from: architecture-team-topology-force
+    relation: evidence-for
+    to: architecture-earned-boundary
+    claim: Actual ownership and coordination pressure can strengthen a boundary case when it aligns with semantic cohesion, change locality, or quality forces.
+    conditions:
+      - current change and communication paths demonstrate coordination cost
+      - team evidence is corroborated by a non-organizational boundary force
+    derivation: corroborated
+    confidence: contextual
+    provenance: [F-CONCEPT-FSA-e5e17aa74fb6, F-CONCEPT-FSA-e0dae116aa55]
+
+  - id: E-ARCHDOM-030-team-constrains-distribution
+    from: architecture-team-topology-force
+    relation: constrains
+    to: architecture-distribution-readiness
+    claim: Separate teams alone do not prove independent service deployment because shared data, contracts, transactions, and cross-cutting changes can retain coordination coupling.
+    conditions:
+      - a service split is justified primarily by organization structure
+      - operational and semantic independence remain unproven
+    derivation: corroborated
+    confidence: strong
+    provenance: [F-CONCEPT-CA-d1259b6f4041, F-CONCEPT-CA-cdb1734143c6]
+
+  - id: E-ARCHDOM-031-metrics-indicate-intervention-question
+    from: architecture-metrics-as-signals
+    relation: indicates
+    to: universal-evidence-before-intervention
+    claim: An architecture metric can indicate where discriminating evidence is needed but cannot itself select or authorize restructuring.
+    conditions:
+      - metric semantics, scope, baseline, trend, and confounders are known
+      - semantic, historical, or runtime evidence is gathered before intervention
+    derivation: corroborated
+    confidence: strong
+    provenance: [F-CONCEPT-FSA-a8b1df24c4a8, F-CONCEPT-SDX-4a4d1f2737b8]
+
+  - id: E-ARCHDOM-032-structural-enforcement-implements-fitness
+    from: architecture-structural-constraint-enforcement
+    relation: implements
+    to: architecture-fitness-functions
+    claim: Compiler, build, static, and dependency checks implement architecture fitness for accepted structural constraints.
+    conditions:
+      - the structural rule protects an accepted outcome
+      - the signal is reliable and does not freeze unrelated implementation detail
+    derivation: direct
+    confidence: strong
+    provenance: [F-CONCEPT-FSA-c8a985ea4eaa, F-CONCEPT-FSA-6001d4a20bfb]
+
+  - id: E-ARCHDOM-033-synchrony-specializes-style-selection
+    from: architecture-interaction-synchrony
+    relation: specializes
+    to: architecture-contextual-style-selection
+    claim: Communication temporality is a scoped architecture-style choice selected from workflow response, atomicity, load, latency, availability, and recovery needs.
+    conditions:
+      - interaction crosses a component or service boundary
+      - temporal and failure requirements are known
+    derivation: direct
+    confidence: strong
+    provenance: [F-CONCEPT-FSA-d752eca0e916, F-CONCEPT-FSA-a2ad44dc00e5]
+
+  - id: E-ARCHDOM-034-event-semantics-constrain-async-selection
+    from: architecture-event-temporal-semantics
+    relation: constrains
+    to: architecture-interaction-synchrony
+    claim: Asynchronous selection is valid only when delivery, loss, order, duplicate, retry, idempotency, replay, reconciliation, and completion semantics are explicit.
+    conditions:
+      - asynchronous events or queues are a candidate
+      - failure and recovery ownership is operationally supportable
+    derivation: direct
+    confidence: strong
+    provenance: [F-CONCEPT-FSA-d4cbd8a817c0, F-CONCEPT-FSA-de47302649fe, F-CONCEPT-FSA-68722526e520]
+
+  - id: E-ARCHDOM-035-repository-operationalizes-aggregate
+    from: domain-repository-lifecycle
+    relation: operationalizes
+    to: domain-aggregate-invariant-boundary
+    claim: A Repository operationalizes Aggregate-root retrieval and reconstitution while preserving identity, transaction, consistency, and query semantics.
+    conditions:
+      - the retrieved object is an Aggregate root
+      - persistence and query cost remain explicit to implementers
+    derivation: direct
+    confidence: strong
+    provenance: [F-CONCEPT-DDD-f195b0456312, F-CONCEPT-DDD-e1f709bfd6bd]
+
+  - id: E-ARCHDOM-036-factory-operationalizes-aggregate-creation
+    from: domain-factory-lifecycle
+    relation: operationalizes
+    to: domain-aggregate-invariant-boundary
+    claim: A Factory operationalizes construction of a valid Aggregate whole when creation invariants cannot be expressed safely by a simple constructor.
+    conditions:
+      - multiple parts or rules must be coordinated at creation
+      - invariant ownership remains with the Aggregate after construction
+    derivation: direct
+    confidence: contextual
+    provenance: [F-CONCEPT-DDD-8161d58f050b, F-CONCEPT-DDD-e1f709bfd6bd]
+
+  - id: E-ARCHDOM-037-interface-operationalizes-model-loop
+    from: domain-intention-revealing-interface
+    relation: operationalizes
+    to: domain-language-model-loop
+    claim: Intention-revealing domain operations bind the Ubiquitous Language and model to client-visible code, consequences, and feedback.
+    conditions:
+      - the interface is domain-facing
+      - purpose, effects, failures, and invariants are validated in domain language
+    derivation: direct
+    confidence: strong
+    provenance: [F-CONCEPT-DDD-dd56be5c6621, F-CONCEPT-DDD-43e35e2d42ec]
+
+  - id: E-ARCHDOM-038-explicit-concept-refines-model-loop
+    from: domain-explicit-concept
+    relation: refines
+    to: domain-language-model-loop
+    claim: A validated implicit policy, process, constraint, or Specification refines the language-model-code loop by making recurring domain decisions executable and discussable.
+    conditions:
+      - experts validate the concept and its scenarios
+      - the concept reduces awkwardness, contradiction, or duplicated policy
+    derivation: direct
+    confidence: contextual
+    provenance: [F-CONCEPT-DDD-4cf19156be4d, F-CONCEPT-DDD-43e35e2d42ec]
+
+  - id: E-ARCHDOM-039-investment-prerequisite-model-loop
+    from: domain-modeling-investment-gate
+    relation: prerequisite-of
+    to: domain-language-model-loop
+    claim: Sustained deep domain modeling doctrine activates only after business value, rule or language complexity, expert access, and product lifespan clear its investment gate.
+    conditions:
+      - the proposed work exceeds ordinary semantic naming and local invariant design
+      - simpler transaction-script or modest module alternatives are compared
+    derivation: corroborated
+    confidence: contextual
+    provenance: [F-CONCEPT-DDD-880216cd2773, F-CONCEPT-DDD-0ef2b413dbba, F-CONCEPT-DDD-43e35e2d42ec]
+
+  - id: E-ARCHDOM-040-no-change-constrains-style-selection
+    from: universal-no-change-option
+    relation: constrains
+    to: architecture-contextual-style-selection
+    claim: Current architecture remains a required candidate and should remain unchanged when accepted thresholds hold and migration adds unearned cost or uncertainty.
+    conditions:
+      - no scoped driver requires a different style
+      - repository contracts permit retaining current structure
+    derivation: corroborated
+    confidence: strong
+    provenance: [F-CONCEPT-REF-47a52fa2ffa2, F-CONCEPT-FSA-a2ad44dc00e5]

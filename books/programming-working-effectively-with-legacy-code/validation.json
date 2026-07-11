@@ -1,0 +1,856 @@
+{
+  "broken_links": [],
+  "chapter_count": 37,
+  "conversion_success": true,
+  "converter_exit_status": 0,
+  "converter_reported_failures": [],
+  "damaged_code": [],
+  "degraded_internal_links": [],
+  "duplicate_headings": {
+    "entries": [
+      {
+        "count": 2,
+        "file": "chapters/014-chapter-6-i-don-t-have-much-time-and-i-have-to-change-it.md",
+        "level": 3,
+        "title": "advantages and disadvantages"
+      },
+      {
+        "count": 2,
+        "file": "chapters/016-chapter-8-how-do-i-add-a-feature.md",
+        "level": 4,
+        "title": "make it pass"
+      },
+      {
+        "count": 14,
+        "file": "chapters/034-chapter-25-dependency-breaking-techniques.md",
+        "level": 3,
+        "title": "steps"
+      },
+      {
+        "count": 10,
+        "file": "chapters/034-chapter-25-dependency-breaking-techniques.md",
+        "level": 4,
+        "title": "steps"
+      }
+    ],
+    "scope": "all heading levels within chapters and level-one titles across chapters"
+  },
+  "empty_chapters": [],
+  "errors": [],
+  "low_confidence_chapter_boundaries": [
+    {
+      "confidence": "medium",
+      "evidence": "first visible document heading before the first logical boundary",
+      "title": "Working Effectively with Legacy Code"
+    }
+  ],
+  "malformed_markdown": [],
+  "missing_assets": [],
+  "missing_chapters": [],
+  "missing_parts": [],
+  "missing_sections": [],
+  "ocr_usage": {
+    "llm_request_count": 0,
+    "ocr_pages": [],
+    "text_extraction_methods": {
+      "pdftext": 458
+    },
+    "used": false
+  },
+  "page_furniture_removed": [],
+  "schema_version": "books-corpus/1",
+  "source_section_warnings": [],
+  "structural_dividers": [
+    "chapters/007-part-i.md",
+    "chapters/013-part-ii.md",
+    "chapters/033-part-iii.md"
+  ],
+  "unresolved_navigation_anchors": [],
+  "unresolved_tables": [
+    {
+      "file": "chapters/002-contents.md",
+      "line": 8,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 10,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 11,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 14,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 16,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 17,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 18,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 20,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 21,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 22,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 23,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 30,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 32,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 33,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 34,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 36,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 38,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 39,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 40,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 41,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 42,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 43,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 44,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 45,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 46,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 47,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 48,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 49,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 50,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 54,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 59,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 60,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 61,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 62,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 63,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 64,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 65,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 66,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 67,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 68,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 69,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 70,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 71,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 72,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 80,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 82,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 83,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 84,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 85,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/002-contents.md",
+      "line": 86,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/008-chapter-1-changing-software.md",
+      "line": 89,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/008-chapter-1-changing-software.md",
+      "line": 97,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/008-chapter-1-changing-software.md",
+      "line": 100,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/028-chapter-20-this-class-is-too-big-and-i-don-t-want-it-to-get-any-bigger.md",
+      "line": 45,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/028-chapter-20-this-class-is-too-big-and-i-don-t-want-it-to-get-any-bigger.md",
+      "line": 46,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/028-chapter-20-this-class-is-too-big-and-i-don-t-want-it-to-get-any-bigger.md",
+      "line": 47,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 10,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 19,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 20,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 23,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 35,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 37,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 39,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 40,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 41,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 42,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 43,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 44,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 54,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 63,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 70,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 71,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 77,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 90,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 91,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 112,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 142,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 144,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 145,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 146,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 147,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 148,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 149,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 150,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 151,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 152,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 153,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 154,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 155,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 156,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 157,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 158,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 159,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 160,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 161,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 162,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 163,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 164,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 165,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 166,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 167,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 168,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 169,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 171,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 172,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/037-index.md",
+      "line": 173,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    }
+  ],
+  "warnings": [
+    "106 probable unresolved table issue(s) were preserved",
+    "4 duplicate heading pattern(s) remain for review",
+    "1 chapter boundary or boundaries require conservative inference",
+    "converter supplied no reliable language identifiers for fenced code blocks"
+  ]
+}

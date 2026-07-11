@@ -1,6 +1,6 @@
 # Operationalizing the doctrine corpus
 
-Status: design note for the work that follows corpus and graph extraction.
+Status: post-extraction design note for downstream retrieval and evaluation work.
 
 ## Conclusion
 
@@ -24,13 +24,13 @@ Do not create a parallel layer of generic “guidance cards.” Treat the concep
 record as the canonical unit of judgment and extend the system around it.
 
 ```text
-source spans -> formulations -> concepts and conflicts -> evidence packet
-                                                        -> operational skill
-                                                        -> decision receipt
-                                                        -> evaluated outcome
+source chapter sections -> formulations -> concepts and conflicts -> evidence packet
+                                                                  -> operational skill
+                                                                  -> decision receipt
+                                                                  -> evaluated outcome
 ```
 
-Source text and source formulations remain immutable. Concepts, routing,
+Source text and source formulations remain provenance-stable. Concepts, routing,
 evaluations, and operational confidence can evolve as separately versioned
 derived artifacts.
 
@@ -41,12 +41,15 @@ Operational work should begin only after:
 1. `python3 doctrine/tools/validate_doctrine.py` passes;
 2. concept, formulation, edge, conflict, procedure, and source IDs are stable;
 3. every derived claim and graph edge has resolvable provenance;
-4. the extraction records its schema version and source-corpus identity;
+4. the source registry and traceability ledger record corpus identity, chapter
+   counts, extraction checksums, and schema versions;
 5. unresolved conflicts and known coverage gaps are explicit.
 
-At the time of this note, the graph and procedures validate, while the doctrinal
-library is still being assembled. That is an expected extraction checkpoint,
-not a reason to build runtime retrieval against an incomplete contract.
+The completed library passes this gate: 331/331 chapter files are covered, all
+141 Concept Records project to the provenance graph, and the doctrine validator
+checks concepts, conflicts, procedures, routing, techniques, exact source
+headings, graph references, and extraction checksums. Downstream retrieval still
+needs its own scenario acceptance evidence before it should guide execution.
 
 ## Recommended sequence
 
@@ -84,7 +87,7 @@ schema changes.
 
 ### 2. Retrieve evidence packets, not chunks
 
-Once the routing index is generated and validated, the runtime retriever should
+The routing index is generated and validated. A future runtime retriever should
 begin with it and the graph views, then assemble the smallest packet that can
 support a decision. A packet should contain:
 
@@ -190,18 +193,28 @@ relevant disagreement, cite the correct source formulations, and stop when the
 repository lacks the evidence or authority required by the doctrine. Expand to
 other roles only after those properties hold.
 
-## Proposed repository additions
+## Present foundation and deferred runtime state
 
-The following names are proposals, not current repository contracts:
+The repository already contains the portable evaluation and runtime contracts:
 
 ```text
 doctrine/
   evaluations/
-    scenarios/
-    expected/
+    fixtures/
+    scenario.schema.json
+    result.schema.json
   runtime/
+    assertion-artifact.schema.json
     evidence-packet.schema.json
     decision-receipt.schema.json
+    dependency-manifest.schema.json
+```
+
+Outcome traces remain deferred until a retention and redaction policy is
+accepted:
+
+```text
+doctrine/
   traces/
     README.md
 ```

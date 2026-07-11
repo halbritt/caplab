@@ -1,0 +1,1163 @@
+schema_version: agent-doctrine-concepts/1
+concepts:
+- id: legacy-cover-and-modify
+  title: Cover-and-modify change algorithm
+  category: legacy
+  claim: Poorly characterized code should be changed through a minimum route from change point to effect/test point, dependency seam, characterization, semantic edit, and optional refactoring.
+  decision_rule: Identify change and test points, break only dependencies blocking sensing or separation, characterize relevant behavior, implement the authorized delta, then refactor only on green.
+  why_it_matters: It resolves the need-tests-before-change versus need-change-before-tests dilemma without redesigning the system first.
+  applicable_when:
+  - valuable weakly-tested existing code
+  - difficult construction or execution
+  not_applicable_when:
+  - fast existing tests already protect the full change surface
+  required_evidence:
+  - change point
+  - effect path
+  - observation point
+  - dependency obstacle
+  - baseline
+  insufficient_evidence:
+  - global coverage percentage
+  - whole-system understanding
+  - mockability alone
+  required_inputs:
+  - authorized delta
+  - dependency and effect sketch
+  expected_outputs:
+  - minimum safe-change route
+  - tests
+  - uncertainty ledger
+  preservation_boundaries:
+  - All behavior outside the accepted semantic delta.
+  safe_actions:
+  - one seam
+  - targeted characterization
+  - semantic slice
+  - optional later refactor
+  unsafe_actions:
+  - break every dependency
+  - redesign surrounding architecture
+  - edit and pray
+  common_failure_modes:
+  - test point too high
+  - seam changes production binding
+  - missed side effects
+  counterexamples:
+  - A pure fully tested function can be modified directly.
+  interactions:
+  - legacy-effect-surface
+  - legacy-seams-and-enabling-points
+  - legacy-characterization-surfaces
+  conflicts: []
+  source_support:
+  - source_id: SRC-WELC
+    locator: 'books/programming-working-effectively-with-legacy-code/chapters/009-chapter-2-working-with-feedback.md :: The Legacy Code Change Algorithm'
+    contribution: Identify change points and test points, break blocking dependencies, write tests, then make the change and refactor.
+    relationship: direct_support
+  - source_id: SRC-REF
+    locator: 'books/refactoring-improving-the-design-of-existing-code/chapters/005-chapter-1-refactoring-a-first-example.md :: The First Step in Refactoring'
+    contribution: A working test surface precedes the small structural steps of ordinary refactoring.
+    relationship: corroboration
+  confidence: strong
+  roles:
+  - legacy-code-agent
+  - debugging-and-repair-agent
+  - coding-agent
+  - refactoring-agent
+  languages:
+  - language-independent
+  repository_archetypes:
+  - weakly-tested legacy systems
+  retrieval_terms:
+  - legacy change algorithm
+  - cover and modify
+  - change point
+  - test point
+  routing:
+    activate_for_roles:
+    - legacy-code-agent
+    - debugging-and-repair-agent
+    - coding-agent
+    - refactoring-agent
+    activate_for_tasks:
+    - change poorly characterized code
+    activate_for_repository_signals:
+    - few tests
+    - hard constructor
+    - hidden dependency
+    activate_for_languages:
+    - language-independent
+    activate_for_risk_classes:
+    - high
+    exclude_when:
+    - complete reliable local protection already exists
+    prerequisites:
+    - authorized semantic goal
+    retrieval_priority: core
+    retrieval_budget_hint: 550
+    related_concepts:
+    - legacy-effect-surface
+    - legacy-seams-and-enabling-points
+    - legacy-characterization-surfaces
+- id: legacy-characterization-surfaces
+  title: Characterize actual relevant behavior
+  category: legacy
+  claim: A characterization test records what the system does at a relevant observation surface; it does not declare that behavior correct.
+  decision_rule: Invoke a relevant path, assert and observe, rule out harness error, encode repeatable actual behavior and change-sensitive boundaries, and stop when the intended change can be sensed.
+  why_it_matters: Undocumented deployed behavior may be relied upon, while desired-behavior assumptions can silently widen a change.
+  applicable_when:
+  - unknown or undocumented behavior
+  - legacy refactoring
+  - suspected regressions
+  not_applicable_when:
+  - irrelevant dead paths
+  - formally specified behavior with a stronger oracle except as comparison
+  required_evidence:
+  - representative setup
+  - actual output or effect
+  - repeatability
+  - path relevance
+  insufficient_evidence:
+  - what code should do
+  - snapshot approval without inspection
+  - coverage alone
+  required_inputs:
+  - change and effect surface
+  - observation harness
+  expected_outputs:
+  - targeted baseline tests
+  - suspicious-behavior and uncertainty ledger
+  preservation_boundaries:
+  - Observed relevant behavior is provisionally preserved unless repair authority changes it.
+  safe_actions:
+  - name an odd observation explicitly
+  - normalize nondeterministic noise
+  - escalate discrepancy
+  unsafe_actions:
+  - silently correct behavior
+  - treat observation as moral correctness
+  - capture unstable environment wholesale
+  common_failure_modes:
+  - golden-master noise
+  - nondeterminism
+  - ossified irrelevant behavior
+  - harness bug
+  counterexamples:
+  - A protocol specification can supply the desired oracle while characterization shows the current deviation.
+  interactions:
+  - refactoring-behavior-preservation
+  - legacy-effect-surface
+  - refactoring-stop-backtrack-escalate
+  conflicts:
+  - conflict-broad-vs-narrow-characterization
+  source_support:
+  - source_id: SRC-WELC
+    locator: 'books/programming-working-effectively-with-legacy-code/chapters/009-chapter-2-working-with-feedback.md :: The Legacy Code Change Algorithm'
+    contribution: Places tests around relevant existing behavior before the semantic change and subsequent refactoring.
+    relationship: direct_support
+  - source_id: SRC-WELC
+    locator: 'books/programming-working-effectively-with-legacy-code/chapters/004-preface.md :: Preface'
+    contribution: Frames insufficient trustworthy feedback as the operational risk that characterization must address.
+    relationship: refinement
+  confidence: strong
+  roles:
+  - legacy-code-agent
+  - debugging-and-repair-agent
+  - refactoring-agent
+  - review-agent
+  languages:
+  - language-independent
+  repository_archetypes:
+  - weakly-tested
+  - undocumented
+  - deployed systems
+  retrieval_terms:
+  - characterization test
+  - golden master
+  - actual behavior
+  - suspected bug
+  routing:
+    activate_for_roles:
+    - legacy-code-agent
+    - debugging-and-repair-agent
+    - refactoring-agent
+    - review-agent
+    activate_for_tasks:
+    - discover baseline
+    - protect refactor
+    activate_for_repository_signals:
+    - unknown behavior
+    - no tests
+    - odd deployed result
+    activate_for_languages:
+    - language-independent
+    activate_for_risk_classes:
+    - high
+    exclude_when:
+    - irrelevant generated output without normalization
+    prerequisites:
+    - repeatable observation surface
+    retrieval_priority: core
+    retrieval_budget_hint: 500
+    related_concepts:
+    - refactoring-behavior-preservation
+    - legacy-effect-surface
+    - refactoring-stop-backtrack-escalate
+- id: legacy-seams-and-enabling-points
+  title: Dependency seam with explicit enabling point
+  category: legacy
+  claim: A test seam is operational only when alternate behavior can be selected explicitly at a known enabling point without changing production semantics.
+  decision_rule: Name the behavior to substitute, locate enabling points, choose the least invasive mechanism, prove production selection is unchanged, and govern lifecycle and concurrency.
+  why_it_matters: An interface or hook without controllable selection does not enable sensing or separation and may only add indirection.
+  applicable_when:
+  - dependency blocks execution or observation
+  - nondeterministic or external collaborator
+  not_applicable_when:
+  - cheap deterministic value dependency
+  - existing sufficient injection
+  required_evidence:
+  - blocking dependency
+  - substitute behavior
+  - enabling point
+  - production/test selection
+  insufficient_evidence:
+  - interface existence
+  - mocking framework
+  - generic decoupling goal
+  required_inputs:
+  - dependency path
+  - language/build/runtime seam options
+  expected_outputs:
+  - seam mechanism
+  - enabling point
+  - production default
+  - tests
+  - disposition
+  preservation_boundaries:
+  - Production binding, lifetime, concurrency, and public API remain unchanged unless authorized.
+  safe_actions:
+  - constructor/function parameter
+  - controlled object seam
+  - explicit existing default
+  unsafe_actions:
+  - ambient global switch
+  - hidden test mode
+  - public exposure solely for tests
+  common_failure_modes:
+  - parallel-test leakage
+  - permanent indirection
+  - test-only production branch
+  counterexamples:
+  - An already injected owned protocol needs no new seam.
+  interactions:
+  - legacy-cover-and-modify
+  - legacy-provisional-dependency-break
+  - legacy-sensing-and-separation
+  conflicts:
+  - conflict-temporary-seam-vs-long-term-design
+  source_support:
+  - source_id: SRC-WELC
+    locator: 'books/programming-working-effectively-with-legacy-code/chapters/011-chapter-4-the-seam-model.md :: Seams'
+    contribution: Defines a seam and its enabling point as a controllable way to vary behavior without editing the target logic.
+    relationship: direct_support
+  - source_id: SRC-WELC
+    locator: 'books/programming-working-effectively-with-legacy-code/chapters/011-chapter-4-the-seam-model.md :: Seam Types'
+    contribution: Compares object, preprocessing, and link seams and makes mechanism choice contextual.
+    relationship: refinement
+  confidence: strong
+  roles:
+  - legacy-code-agent
+  - debugging-and-repair-agent
+  - refactoring-agent
+  - architecture-agent
+  languages:
+  - language-independent
+  repository_archetypes:
+  - weakly-tested systems
+  - external-dependency code
+  retrieval_terms:
+  - seam
+  - enabling point
+  - dependency breaking
+  - test hook
+  routing:
+    activate_for_roles:
+    - legacy-code-agent
+    - debugging-and-repair-agent
+    - refactoring-agent
+    - architecture-agent
+    activate_for_tasks:
+    - get code under test
+    - substitute collaborator
+    activate_for_repository_signals:
+    - global
+    - static call
+    - nondeterminism
+    - hard constructor
+    activate_for_languages:
+    - language-independent
+    activate_for_risk_classes:
+    - high
+    exclude_when:
+    - no blocked sensing or separation need
+    prerequisites:
+    - identified observation goal
+    retrieval_priority: high
+    retrieval_budget_hint: 500
+    related_concepts:
+    - legacy-cover-and-modify
+    - legacy-provisional-dependency-break
+    - legacy-sensing-and-separation
+- id: legacy-sensing-and-separation
+  title: Sensing, separation, and test-double evidence scope
+  category: review
+  claim: Sensing exposes the effects a harness must observe, separation removes dependencies that prevent execution, and substitutes establish only the local behavior they model rather than real integration.
+  decision_rule: Name the effect that must be sensed and the dependency that blocks execution; introduce only the required observation or separation mechanism, use the simplest faithful substitute, and add contract or integration evidence whenever correctness depends on the real boundary.
+  why_it_matters: Conflating observation, isolation, and integration proof creates indiscriminate mocking and passing tests that encode a false production model.
+  applicable_when:
+  - mock
+  - fake
+  - stub
+  - external dependency
+  - nondeterministic collaborator
+  not_applicable_when:
+  - cheap deterministic value object
+  required_evidence:
+  - observation need
+  - collaborator contract
+  - substitute fidelity
+  - integration layer
+  insufficient_evidence:
+  - passing mocked test
+  - verified call count
+  - type compatibility
+  required_inputs:
+  - boundary contract
+  - desired observation
+  expected_outputs:
+  - real or double choice
+  - scope statement
+  - missing integration evidence
+  preservation_boundaries:
+  - The substitute must not redefine the production contract.
+  safe_actions:
+  - small owned in-memory fake
+  - boundary contract test
+  unsafe_actions:
+  - reimplement vendor behavior and infer integration correctness
+  - mock internals broadly
+  common_failure_modes:
+  - brittle interaction tests
+  - divergent fake
+  - false integration confidence
+  counterexamples:
+  - Exactly-once enqueue interaction may itself be the required behavior.
+  interactions:
+  - legacy-seams-and-enabling-points
+  - legacy-effect-surface
+  conflicts: []
+  source_support:
+  - source_id: SRC-WELC
+    locator: 'books/programming-working-effectively-with-legacy-code/chapters/010-chapter-3-sensing-and-separation.md :: Chapter 3: Sensing and Separation'
+    contribution: Separates the need to observe effects from the need to isolate dependencies that prevent harness execution.
+    relationship: direct_support
+  confidence: strong
+  roles:
+  - coding-agent
+  - legacy-code-agent
+  - debugging-and-repair-agent
+  - review-agent
+  languages:
+  - language-independent
+  repository_archetypes:
+  - services
+  - external dependency systems
+  retrieval_terms:
+  - mock
+  - fake
+  - test double
+  - integration proof
+  routing:
+    activate_for_roles:
+    - coding-agent
+    - legacy-code-agent
+    - debugging-and-repair-agent
+    - review-agent
+    activate_for_tasks:
+    - design or review isolated tests
+    activate_for_repository_signals:
+    - heavy mocking
+    - external collaborator
+    activate_for_languages:
+    - language-independent
+    activate_for_risk_classes:
+    - normal
+    - high for external side effects
+    exclude_when:
+    - no substitution
+    prerequisites:
+    - collaborator contract
+    retrieval_priority: high
+    retrieval_budget_hint: 400
+    related_concepts:
+    - legacy-seams-and-enabling-points
+    - legacy-effect-surface
+- id: legacy-provisional-dependency-break
+  title: Minimum provisional dependency break
+  category: legacy
+  claim: Break only the dependency that prevents required feedback, and make any resulting design scar explicit and revisitable.
+  decision_rule: Rank seam options by production impact, scope, reversibility, and test leverage; choose the smallest, verify production behavior, and record retain/remove criteria.
+  why_it_matters: Demanding final architecture before tests recreates the legacy dilemma, while untracked hooks fossilize.
+  applicable_when:
+  - one dependency blocks harness or observation
+  not_applicable_when:
+  - durable boundary is independently earned or no protection benefit exists
+  required_evidence:
+  - blocking dependency
+  - alternatives
+  - production invariant
+  - lifecycle criteria
+  insufficient_evidence:
+  - testability as an abstract virtue
+  required_inputs:
+  - obstacle
+  - seam options
+  - protection goal
+  expected_outputs:
+  - bounded enabling change
+  - tests
+  - debt disposition
+  preservation_boundaries:
+  - Production behavior and selection remain stable.
+  safe_actions:
+  - parameterize with current production value
+  - extract-and-override in harness
+  unsafe_actions:
+  - redesign all dependencies
+  - leave hidden global hook
+  common_failure_modes:
+  - temporary scar becomes permanent
+  - API pollution
+  - global leakage
+  counterexamples:
+  - Multiple production implementations can independently earn a durable interface.
+  interactions:
+  - legacy-seams-and-enabling-points
+  - legacy-unprotected-enabling-edit
+  - legacy-sprout-wrap
+  conflicts:
+  - conflict-temporary-seam-vs-long-term-design
+  source_support:
+  - source_id: SRC-WELC
+    locator: 'books/programming-working-effectively-with-legacy-code/chapters/009-chapter-2-working-with-feedback.md :: Break Dependencies'
+    contribution: The legacy dilemma may require a small production edit to create tests; dependency-breaking scars can be tolerated locally and reconsidered after feedback exists.
+    relationship: direct_support
+  - source_id: SRC-SDX
+    locator: 'books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/009-chapter-4-pay-off-your-technical-debt.md :: Signal Incompleteness with Names'
+    contribution: A temporary facade or provocative name can make an incomplete intermediate state explicit during an iterative hotspot split.
+    relationship: corroboration
+  confidence: contextual
+  roles:
+  - legacy-code-agent
+  - debugging-and-repair-agent
+  - refactoring-agent
+  languages:
+  - language-independent
+  repository_archetypes:
+  - weakly-tested legacy systems
+  retrieval_terms:
+  - dependency break
+  - temporary seam
+  - design scar
+  - testability
+  routing:
+    activate_for_roles:
+    - legacy-code-agent
+    - debugging-and-repair-agent
+    - refactoring-agent
+    activate_for_tasks:
+    - enable characterization
+    activate_for_repository_signals:
+    - hard dependency
+    - no test harness
+    activate_for_languages:
+    - language-independent
+    activate_for_risk_classes:
+    - high
+    exclude_when:
+    - no actual feedback blockage
+    prerequisites:
+    - legacy-seams-and-enabling-points analysis
+    retrieval_priority: high
+    retrieval_budget_hint: 450
+    related_concepts:
+    - legacy-seams-and-enabling-points
+    - legacy-unprotected-enabling-edit
+    - legacy-sprout-wrap
+- id: legacy-effect-surface
+  title: Select protection from effect propagation
+  category: legacy
+  claim: Required tests follow all observable effects reachable from a change point, not class boundaries or coverage targets alone.
+  decision_rule: Trace returns, mutations, globals/statics, I/O, callbacks/events, exceptions, and deferred effects to stable observations; choose the nearest reliable points plus critical broad contracts.
+  why_it_matters: It bounds test preparation and reveals hidden coupling without demanding global coverage.
+  applicable_when:
+  - planning tests for change
+  - legacy characterization
+  - repair blast radius
+  not_applicable_when:
+  - as a replacement for cross-cutting security or concurrency analysis
+  required_evidence:
+  - call and effect sketch
+  - side effects
+  - exception paths
+  - observation points
+  insufficient_evidence:
+  - testing every public method
+  - line coverage
+  - class adjacency
+  required_inputs:
+  - change point
+  - execution and state graph
+  expected_outputs:
+  - test-point list
+  - uncovered high-risk effects
+  - confidence
+  preservation_boundaries:
+  - Every preserved material effect needs a check or explicit uncertainty.
+  safe_actions:
+  - test return and mutation
+  - include async completion
+  - use pinch point where justified
+  unsafe_actions:
+  - assume void means no effect
+  - expose internals without trade-off review
+  common_failure_modes:
+  - missed deferred effect
+  - enormous high-level test
+  - internal overspecification
+  counterexamples:
+  - A pure function's effect surface may be only its return value.
+  interactions:
+  - legacy-characterization-surfaces
+  - legacy-pinch-point
+  - legacy-cover-and-modify
+  conflicts:
+  - conflict-broad-vs-narrow-characterization
+  source_support:
+  - source_id: SRC-WELC
+    locator: 'books/programming-working-effectively-with-legacy-code/chapters/019-chapter-11-i-need-to-make-a-change-what-methods-should-i-test.md :: Effect Propagation'
+    contribution: Effects propagate through returns, mutation, globals/statics, and downstream calls; tests should be selected from that forward effect graph.
+    relationship: direct_support
+  - source_id: SRC-WELC
+    locator: 'books/programming-working-effectively-with-legacy-code/chapters/019-chapter-11-i-need-to-make-a-change-what-methods-should-i-test.md :: Effects and Encapsulation'
+    contribution: Effects propagate through returns, mutation, globals/statics, and downstream calls; tests should be selected from that forward effect graph.
+    relationship: direct_support
+  confidence: strong
+  roles:
+  - legacy-code-agent
+  - debugging-and-repair-agent
+  - coding-agent
+  - review-agent
+  languages:
+  - language-independent
+  repository_archetypes:
+  - all
+  retrieval_terms:
+  - effect analysis
+  - what to test
+  - side effect
+  - blast radius
+  routing:
+    activate_for_roles:
+    - legacy-code-agent
+    - debugging-and-repair-agent
+    - coding-agent
+    - review-agent
+    activate_for_tasks:
+    - determine tests
+    - establish preservation boundary
+    activate_for_repository_signals:
+    - hidden mutation
+    - globals
+    - callbacks
+    - I/O
+    activate_for_languages:
+    - language-independent
+    activate_for_risk_classes:
+    - all
+    - especially high
+    exclude_when:
+    - none
+    prerequisites:
+    - identified change point
+    retrieval_priority: core
+    retrieval_budget_hint: 450
+    related_concepts:
+    - legacy-characterization-surfaces
+    - legacy-pinch-point
+    - legacy-cover-and-modify
+- id: legacy-pinch-point
+  title: Protect a change cluster at a stable convergence point
+  category: legacy
+  claim: One stable observation can intercept effects from several changed paths, trading localization for reduced preparation.
+  decision_rule: Choose the closest stable convergence point covering the relevant effect set; supplement critical leaves and narrow or retire the broad test as seams improve.
+  why_it_matters: It can make a bounded change feasible without breaking every dependency in a tangled area.
+  applicable_when:
+  - many connected classes or effects
+  - no economical local harness
+  not_applicable_when:
+  - point is nondeterministic
+  - destructive
+  - too slow
+  - or misses the changed path
+  required_evidence:
+  - effect convergence
+  - stable harness
+  - scope
+  - cost
+  - critical gaps
+  insufficient_evidence:
+  - architectural height
+  - aggregate coverage
+  required_inputs:
+  - effect graph
+  - candidate interception points
+  expected_outputs:
+  - selected point
+  - covered paths
+  - supplemental tests
+  - retention rule
+  preservation_boundaries:
+  - Broad coverage protects only observed effects; unrelated behavior is not declared correct.
+  safe_actions:
+  - temporary service-boundary characterization
+  - targeted leaf tests
+  unsafe_actions:
+  - one happy-path E2E test claimed comprehensive
+  common_failure_modes:
+  - flaky slow suite
+  - incidental convergence
+  - weak failure localization
+  counterexamples:
+  - A stable public protocol may be the enduring correct contract surface.
+  interactions:
+  - legacy-effect-surface
+  - legacy-provisional-safety-net
+  conflicts:
+  - conflict-broad-vs-narrow-characterization
+  source_support:
+  - source_id: SRC-WELC
+    locator: 'books/programming-working-effectively-with-legacy-code/chapters/020-chapter-12-i-need-to-make-many-changes-in-one-area-do-i-have-to-break-dependencies-for-all-the-classes-involved.md :: Pinch Point'
+    contribution: A pinch point intercepts effects for a cluster and can avoid breaking every dependency, but higher-level points have traps and weaker localization.
+    relationship: direct_support
+  - source_id: SRC-WELC
+    locator: 'books/programming-working-effectively-with-legacy-code/chapters/020-chapter-12-i-need-to-make-many-changes-in-one-area-do-i-have-to-break-dependencies-for-all-the-classes-involved.md :: Traps Pinch Point Traps'
+    contribution: A pinch point intercepts effects for a cluster and can avoid breaking every dependency, but higher-level points have traps and weaker localization.
+    relationship: direct_support
+  confidence: contextual
+  roles:
+  - legacy-code-agent
+  - debugging-and-repair-agent
+  - refactoring-agent
+  languages:
+  - language-independent
+  repository_archetypes:
+  - tangled legacy subsystems
+  retrieval_terms:
+  - pinch point
+  - interception point
+  - test covering
+  routing:
+    activate_for_roles:
+    - legacy-code-agent
+    - debugging-and-repair-agent
+    - refactoring-agent
+    activate_for_tasks:
+    - choose broad characterization surface
+    activate_for_repository_signals:
+    - many dependencies
+    - effect convergence
+    activate_for_languages:
+    - language-independent
+    activate_for_risk_classes:
+    - high
+    exclude_when:
+    - stable narrow test point exists cheaply
+    prerequisites:
+    - legacy-effect-surface
+    retrieval_priority: specialist
+    retrieval_budget_hint: 450
+    related_concepts:
+    - legacy-effect-surface
+    - legacy-provisional-safety-net
+- id: legacy-current-work-responsibility-discovery
+  title: Discover responsibility through current work
+  category: legacy
+  claim: The behavior being changed supplies the most reliable initial evidence for one responsibility inside an unclear large unit.
+  decision_rule: Mark methods, data, and effects involved in current work; name their shared purpose; extract only with a cohesive seam and protection; defer unrelated groups.
+  why_it_matters: Live change supplies semantic and temporal evidence without requiring an ideal full decomposition.
+  applicable_when:
+  - large unclear class/module
+  - feature or repair in legacy code
+  not_applicable_when:
+  - forcing every task into a new type
+  - accepted domain boundary already resolves placement
+  required_evidence:
+  - current path
+  - data relationships
+  - change reason
+  - nameable policy
+  - test seam
+  insufficient_evidence:
+  - size
+  - position grouping
+  - imagined class diagram
+  required_inputs:
+  - current task slice
+  - effect and data map
+  expected_outputs:
+  - local responsibility hypothesis
+  - retain or extract choice
+  preservation_boundaries:
+  - Initial extraction remains behind existing interfaces where possible.
+  safe_actions:
+  - extract in current owner first
+  - revisit after more changes
+  unsafe_actions:
+  - design complete hierarchy from static read
+  - move ownership before understanding
+  common_failure_modes:
+  - task-shaped fragmentation
+  - duplicated invariants
+  - provisional boundary mistaken final
+  counterexamples:
+  - Strong accepted domain architecture may already identify the owner.
+  interactions:
+  - architecture-change-locality-cohesion
+  - legacy-scratch-refactoring
+  - refactoring-small-verified-steps
+  conflicts:
+  - conflict-deep-modules-vs-small-units
+  source_support:
+  - source_id: SRC-WELC
+    locator: 'books/programming-working-effectively-with-legacy-code/chapters/028-chapter-20-this-class-is-too-big-and-i-don-t-want-it-to-get-any-bigger.md :: Heuristic #7: Focus on the Current Work'
+    contribution: Method/data relationships and the present change reveal one responsibility more reliably than attempting a complete decomposition from static size.
+    relationship: direct_support
+  - source_id: SRC-SDX
+    locator: 'books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/009-chapter-4-pay-off-your-technical-debt.md :: Split a Hotspot File Along Its Responsibilities'
+    contribution: Function-level activity can select which recognized behavior group to extract first from a hotspot.
+    relationship: corroboration
+  confidence: contextual
+  roles:
+  - legacy-code-agent
+  - refactoring-agent
+  - coding-agent
+  languages:
+  - language-independent
+  repository_archetypes:
+  - large legacy units
+  retrieval_terms:
+  - current work
+  - responsibility discovery
+  - large class
+  routing:
+    activate_for_roles:
+    - legacy-code-agent
+    - refactoring-agent
+    - coding-agent
+    activate_for_tasks:
+    - change large unclear unit
+    activate_for_repository_signals:
+    - large class
+    - mixed methods
+    - unclear owner
+    activate_for_languages:
+    - language-independent
+    activate_for_risk_classes:
+    - medium
+    - high
+    exclude_when:
+    - no current or imminent work
+    prerequisites:
+    - current change and effect map
+    retrieval_priority: high
+    retrieval_budget_hint: 450
+    related_concepts:
+    - architecture-change-locality-cohesion
+    - legacy-scratch-refactoring
+    - refactoring-small-verified-steps
+- id: legacy-scratch-refactoring
+  title: Disposable refactoring for understanding
+  category: legacy
+  claim: Aggressive reversible structural edits can reveal behavior and responsibilities, but insight—not the scratch diff—is the default deliverable.
+  decision_rule: Work in an isolated reversible copy, rename/extract/delete to learn, capture findings, discard, and recreate only the smallest justified production campaign from a clean baseline.
+  why_it_matters: It permits exploration without laundering unverified edits into production.
+  applicable_when:
+  - poorly understood code
+  - monster method
+  - suspected dead code
+  not_applicable_when:
+  - static reading and existing tests already answer the question
+  required_evidence:
+  - explicit scratch status
+  - clean baseline
+  - no external side effects
+  - recorded findings
+  insufficient_evidence:
+  - scratch code compiles
+  - scratch structure looks better
+  required_inputs:
+  - understanding question
+  - isolated workspace
+  expected_outputs:
+  - effect/responsibility/dead-code hypotheses
+  - no production diff by default
+  preservation_boundaries:
+  - Scratch mutations never alter shared or external state and are not merged without a fresh protected campaign.
+  safe_actions:
+  - throwaway extraction
+  - exploratory rename
+  - discard
+  unsafe_actions:
+  - merge exploration
+  - delete from production based on scratch only
+  - destroy user work
+  common_failure_modes:
+  - scratch becomes production
+  - findings not recorded
+  - false dead-code conclusion
+  counterexamples:
+  - A protected extraction discovered in scratch can be recreated as the first production slice.
+  interactions:
+  - legacy-current-work-responsibility-discovery
+  - refactoring-stop-backtrack-escalate
+  conflicts: []
+  source_support:
+  - source_id: SRC-WELC
+    locator: 'books/programming-working-effectively-with-legacy-code/chapters/024-chapter-16-i-don-t-understand-the-code-well-enough-to-change-it.md :: Scratch Refactoring'
+    contribution: Aggressive disposable extraction, renaming, and deletion can reveal structure and effects; production work should restart from a clean baseline.
+    relationship: direct_support
+  confidence: strong
+  roles:
+  - legacy-code-agent
+  - repository-assessment-agent
+  - refactoring-agent
+  languages:
+  - language-independent
+  repository_archetypes:
+  - poorly understood legacy code
+  retrieval_terms:
+  - scratch refactoring
+  - throwaway extraction
+  - code understanding
+  routing:
+    activate_for_roles:
+    - legacy-code-agent
+    - repository-assessment-agent
+    - refactoring-agent
+    activate_for_tasks:
+    - understand code before change
+    activate_for_repository_signals:
+    - unknown behavior
+    - monster method
+    activate_for_languages:
+    - language-independent
+    activate_for_risk_classes:
+    - medium
+    - high
+    exclude_when:
+    - cannot isolate external side effects
+    prerequisites:
+    - clean baseline and disposable workspace
+    retrieval_priority: high
+    retrieval_budget_hint: 375
+    related_concepts:
+    - legacy-current-work-responsibility-discovery
+    - refactoring-stop-backtrack-escalate
+- id: legacy-sprout-wrap
+  title: Sprout or wrap behavior under deadline pressure
+  category: legacy
+  claim: When required behavior cannot safely enter an untestable body in time, tested logic may be placed beside or around it through a narrow integration point.
+  decision_rule: Sprout separable new computation; wrap required before/after behavior; test new logic, characterize integration where feasible, and record the design and integration gap.
+  why_it_matters: It confines new uncertainty but may create a staging scar and leave old/new integration weakly protected.
+  applicable_when:
+  - urgent authorized feature or repair in untestable code
+  not_applicable_when:
+  - small seam can cheaply bring original path under test
+  required_evidence:
+  - deadline and change need
+  - protection obstacle
+  - narrow integration
+  - new-logic tests
+  insufficient_evidence:
+  - desire to avoid understanding old code
+  required_inputs:
+  - required behavior
+  - old call boundary
+  expected_outputs:
+  - sprout or wrap slice
+  - integration-risk statement
+  - follow-up disposition
+  preservation_boundaries:
+  - Existing old behavior remains unchanged except the authorized added wrapper/sprout effect.
+  safe_actions:
+  - tested helper called once
+  - explicit decorator/wrapper with contract
+  unsafe_actions:
+  - parallel subsystem
+  - duplicated long-term policy
+  - untested integration claimed safe
+  common_failure_modes:
+  - architectural scar
+  - stale duplication
+  - context split
+  counterexamples:
+  - Ordinary TDD inside already testable code is preferable.
+  interactions:
+  - legacy-cover-and-modify
+  - legacy-provisional-dependency-break
+  conflicts:
+  - conflict-temporary-seam-vs-long-term-design
+  source_support:
+  - source_id: SRC-WELC
+    locator: 'books/programming-working-effectively-with-legacy-code/chapters/014-chapter-6-i-don-t-have-much-time-and-i-have-to-change-it.md :: Sprout Method'
+    contribution: Sprout places new tested behavior beside old code; wrap inserts behavior around it; both trade speed for integration/design costs.
+    relationship: direct_support
+  - source_id: SRC-WELC
+    locator: 'books/programming-working-effectively-with-legacy-code/chapters/014-chapter-6-i-don-t-have-much-time-and-i-have-to-change-it.md :: Wrap Method'
+    contribution: Sprout places new tested behavior beside old code; wrap inserts behavior around it; both trade speed for integration/design costs.
+    relationship: direct_support
+  confidence: contextual
+  roles:
+  - coding-agent
+  - legacy-code-agent
+  - debugging-and-repair-agent
+  languages:
+  - language-independent
+  repository_archetypes:
+  - deadline-constrained legacy systems
+  retrieval_terms:
+  - sprout method
+  - wrap method
+  - urgent legacy change
+  routing:
+    activate_for_roles:
+    - coding-agent
+    - legacy-code-agent
+    - debugging-and-repair-agent
+    activate_for_tasks:
+    - urgent feature in untestable code
+    activate_for_repository_signals:
+    - deadline
+    - no harness
+    - narrow call point
+    activate_for_languages:
+    - language-independent
+    activate_for_risk_classes:
+    - high
+    exclude_when:
+    - existing local protection
+    prerequisites:
+    - explicit integration-risk acceptance
+    retrieval_priority: specialist
+    retrieval_budget_hint: 450
+    related_concepts:
+    - legacy-cover-and-modify
+    - legacy-provisional-dependency-break
+- id: legacy-provisional-safety-net
+  title: Provisional broad characterization safety net
+  category: legacy
+  claim: A broad black-box or E2E suite may temporarily protect initial restructuring when local tests are impossible, with explicit brittleness and retirement rules.
+  decision_rule: Cover critical user scenarios and complex paths in an isolated stable environment, use them to enable the first seam, add narrower tests, then retain only enduring contract value.
+  why_it_matters: Broad tests may be the only initial route but are slow, brittle, and weak at localization.
+  applicable_when:
+  - central untestable hotspot
+  - stable black-box boundary
+  not_applicable_when:
+  - destructive live environment
+  - reliable narrow seam already available
+  required_evidence:
+  - critical scenarios
+  - repeatability
+  - environment controls
+  - coverage gaps
+  - retirement criteria
+  insufficient_evidence:
+  - one recorded happy path
+  - screenshots
+  - aggregate coverage
+  required_inputs:
+  - user-visible scenarios
+  - change surface
+  expected_outputs:
+  - temporary safety net
+  - scope statement
+  - narrowing plan
+  preservation_boundaries:
+  - Only recorded stable external behavior is protected.
+  safe_actions:
+  - isolated API characterization
+  - DOM/component identity over pixels
+  unsafe_actions:
+  - production live test
+  - flaky GUI playback claimed comprehensive
+  common_failure_modes:
+  - brittleness blocks unrelated change
+  - leaked state
+  - false confidence
+  counterexamples:
+  - Stable protocol E2E tests may retain enduring value after local tests exist.
+  interactions:
+  - legacy-pinch-point
+  - refactoring-splinter-campaign
+  conflicts:
+  - conflict-broad-vs-narrow-characterization
+  source_support:
+  - source_id: SRC-SDX
+    locator: 'books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/009-chapter-4-pay-off-your-technical-debt.md :: Build Temporary Tests as a Safety Net'
+    contribution: Brittle black-box/E2E tests may be justified as temporary refactoring protection and should be disposed of or narrowed after the intermediate goal.
+    relationship: direct_support
+  - source_id: SRC-WELC
+    locator: 'books/programming-working-effectively-with-legacy-code/chapters/009-chapter-2-working-with-feedback.md :: Test Coverings'
+    contribution: A higher-level test covering can provide initial safety while localized tests are unavailable.
+    relationship: corroboration
+  confidence: contextual
+  roles:
+  - legacy-code-agent
+  - refactoring-agent
+  - debugging-and-repair-agent
+  languages:
+  - language-independent
+  repository_archetypes:
+  - untestable central systems
+  retrieval_terms:
+  - temporary E2E
+  - safety net
+  - black-box characterization
+  routing:
+    activate_for_roles:
+    - legacy-code-agent
+    - refactoring-agent
+    - debugging-and-repair-agent
+    activate_for_tasks:
+    - protect first legacy restructure
+    activate_for_repository_signals:
+    - no local tests
+    - stable external boundary
+    activate_for_languages:
+    - language-independent
+    activate_for_risk_classes:
+    - high
+    exclude_when:
+    - unisolated destructive environment
+    prerequisites:
+    - critical scenario inventory
+    retrieval_priority: specialist
+    retrieval_budget_hint: 500
+    related_concepts:
+    - legacy-pinch-point
+    - refactoring-splinter-campaign
+- id: legacy-unprotected-enabling-edit
+  title: Last-resort unprotected mechanical enabling edit
+  category: legacy
+  claim: A first testless production edit is permissible only when it is the smallest reversible bridge required to make protection possible and no safer path exists.
+  decision_rule: Exhaust pre-change tests/seams; if blocked, make one signature-preserving mechanical goal, use compiler/tool/reference checks and peer review, stop on ambiguity, then add characterization before semantic work.
+  why_it_matters: The legacy dilemma sometimes requires an edit before tests, but normalizing this exception invites unbounded edit-and-pray.
+  applicable_when:
+  - first seam impossible without production edit
+  - statically checkable mechanics
+  not_applicable_when:
+  - semantic change
+  - broad dynamic/reference surface
+  - irreversible external state
+  required_evidence:
+  - no practical pre-change harness
+  - singular goal
+  - reference map
+  - tool coverage
+  - rollback
+  insufficient_evidence:
+  - deadline
+  - confidence
+  - code simplicity
+  required_inputs:
+  - blocked harness
+  - candidate bridge
+  expected_outputs:
+  - minimal enabling edit
+  - heightened review
+  - immediate protection
+  preservation_boundaries:
+  - No semantic or public contract change; signatures preserved where possible.
+  safe_actions:
+  - compiler-checked extraction
+  - pair review
+  - immediate characterization
+  unsafe_actions:
+  - rename across reflection
+  - manual logic alteration
+  - design cleanup
+  common_failure_modes:
+  - compiler blind spots
+  - bridge expands
+  - reordered side effects
+  counterexamples:
+  - A proven semantics-aware automated refactor falls primarily under refactoring-transformation-tool-trust.
+  interactions:
+  - legacy-provisional-dependency-break
+  - refactoring-transformation-tool-trust
+  - refactoring-stop-backtrack-escalate
+  conflicts: []
+  source_support:
+  - source_id: SRC-WELC
+    locator: 'books/programming-working-effectively-with-legacy-code/chapters/031-chapter-23-how-do-i-know-that-i-m-not-breaking-anything.md :: Hyperaware Editing'
+    contribution: When no test can exist before the first seam, use hyperaware single-goal editing, preserve signatures, lean on compiler/reference checks, and pair/review.
+    relationship: direct_support
+  - source_id: SRC-WELC
+    locator: 'books/programming-working-effectively-with-legacy-code/chapters/031-chapter-23-how-do-i-know-that-i-m-not-breaking-anything.md :: Lean on the Compiler'
+    contribution: When no test can exist before the first seam, use hyperaware single-goal editing, preserve signatures, lean on compiler/reference checks, and pair/review.
+    relationship: direct_support
+  confidence: contested
+  roles:
+  - legacy-code-agent
+  - refactoring-agent
+  - debugging-and-repair-agent
+  - review-agent
+  languages:
+  - language-independent
+  repository_archetypes:
+  - weakly-tested legacy systems
+  retrieval_terms:
+  - hyperaware editing
+  - testless refactor
+  - first seam
+  - compiler
+  routing:
+    activate_for_roles:
+    - legacy-code-agent
+    - refactoring-agent
+    - debugging-and-repair-agent
+    - review-agent
+    activate_for_tasks:
+    - create first test seam
+    activate_for_repository_signals:
+    - no harness possible
+    - compiler-visible references
+    activate_for_languages:
+    - language-independent
+    activate_for_risk_classes:
+    - high
+    - critical scrutiny
+    exclude_when:
+    - semantic edit
+    - dynamic blind spots
+    - irreversible state
+    prerequisites:
+    - documented exhaustion of safer options
+    retrieval_priority: specialist
+    retrieval_budget_hint: 500
+    related_concepts:
+    - legacy-provisional-dependency-break
+    - refactoring-transformation-tool-trust
+    - refactoring-stop-backtrack-escalate

@@ -1,0 +1,1283 @@
+{
+  "attempts": [
+    {
+      "argv": [
+        "bash",
+        "/home/halbritt/git/skills/skills/marker-convert/scripts/convert-peecee.sh",
+        ".book-work/fluent-python-2nd-edition-z-lib-org/fluent-python-2nd-edition-z-lib-org-3303dcaf731b.pdf",
+        "--format",
+        "markdown",
+        "--out",
+        ".book-work/fluent-python-2nd-edition-z-lib-org/marker-peecee",
+        "--host",
+        "peecee"
+      ],
+      "command": "bash /home/halbritt/git/skills/skills/marker-convert/scripts/convert-peecee.sh .book-work/fluent-python-2nd-edition-z-lib-org/fluent-python-2nd-edition-z-lib-org-3303dcaf731b.pdf --format markdown --out .book-work/fluent-python-2nd-edition-z-lib-org/marker-peecee --host peecee",
+      "execution_target": "peecee",
+      "exit_status": 0,
+      "failures": [],
+      "fresh_output_validated": true,
+      "freshness_error": null,
+      "warnings": [],
+      "working_directory": "/home/halbritt/git/books"
+    }
+  ],
+  "chapter_boundary_evidence": [
+    {
+      "anchor": null,
+      "body_line": 288,
+      "number": 1,
+      "source": "explicit body chapter heading",
+      "title": "The Python Data Model"
+    },
+    {
+      "anchor": null,
+      "body_line": 933,
+      "number": 2,
+      "source": "explicit body chapter heading",
+      "title": "An Array of Sequences"
+    },
+    {
+      "anchor": null,
+      "body_line": 3080,
+      "number": 3,
+      "source": "explicit body chapter heading",
+      "title": "Dictionaries and Sets"
+    },
+    {
+      "anchor": null,
+      "body_line": 4567,
+      "number": 4,
+      "source": "explicit body chapter heading",
+      "title": "Text Versus Bytes"
+    },
+    {
+      "anchor": null,
+      "body_line": 5971,
+      "number": 5,
+      "source": "explicit body chapter heading",
+      "title": "Data Class Builders"
+    },
+    {
+      "anchor": null,
+      "body_line": 7488,
+      "number": 6,
+      "source": "explicit body chapter heading",
+      "title": "Object References, Mutability, and Recycling"
+    },
+    {
+      "anchor": null,
+      "body_line": 8277,
+      "number": 7,
+      "source": "explicit body chapter heading",
+      "title": "Functions as First-Class Objects"
+    },
+    {
+      "anchor": null,
+      "body_line": 8995,
+      "number": 8,
+      "source": "explicit body chapter heading",
+      "title": "Type Hints in Functions"
+    },
+    {
+      "anchor": null,
+      "body_line": 10742,
+      "number": 9,
+      "source": "explicit body chapter heading",
+      "title": "Decorators and Closures"
+    },
+    {
+      "anchor": null,
+      "body_line": 12052,
+      "number": 10,
+      "source": "explicit body chapter heading",
+      "title": "Design Patterns with First-Class Functions"
+    },
+    {
+      "anchor": null,
+      "body_line": 12634,
+      "number": 11,
+      "source": "explicit body chapter heading",
+      "title": "A Pythonic Object"
+    },
+    {
+      "anchor": null,
+      "body_line": 13729,
+      "number": 12,
+      "source": "explicit body chapter heading",
+      "title": "Writing Special Methods for Sequences"
+    },
+    {
+      "anchor": null,
+      "body_line": 14814,
+      "number": 13,
+      "source": "explicit body chapter heading",
+      "title": "Interfaces, Protocols, and ABCs"
+    },
+    {
+      "anchor": null,
+      "body_line": 16300,
+      "number": 14,
+      "source": "explicit body chapter heading",
+      "title": "Inheritance: For Good or For Worse"
+    },
+    {
+      "anchor": null,
+      "body_line": 16916,
+      "number": 15,
+      "source": "explicit body chapter heading",
+      "title": "More About Type Hints"
+    },
+    {
+      "anchor": null,
+      "body_line": 18654,
+      "number": 16,
+      "source": "explicit body chapter heading",
+      "title": "Operator Overloading: Doing It Right"
+    },
+    {
+      "anchor": null,
+      "body_line": 19778,
+      "number": 17,
+      "source": "explicit body chapter heading",
+      "title": "Iterables, Iterators, and Generators"
+    },
+    {
+      "anchor": null,
+      "body_line": 21785,
+      "number": 18,
+      "source": "explicit body chapter heading",
+      "title": "Context Managers and else Blocks"
+    },
+    {
+      "anchor": null,
+      "body_line": 22546,
+      "number": 19,
+      "source": "explicit body chapter heading",
+      "title": "Classic Coroutines"
+    },
+    {
+      "anchor": null,
+      "body_line": 24035,
+      "number": 20,
+      "source": "explicit body chapter heading",
+      "title": "Concurrency Models in Python"
+    },
+    {
+      "anchor": null,
+      "body_line": 25151,
+      "number": 21,
+      "source": "explicit body chapter heading",
+      "title": "Concurrency with Futures"
+    },
+    {
+      "anchor": null,
+      "body_line": 26062,
+      "number": 22,
+      "source": "explicit body chapter heading",
+      "title": "Asynchronous Programming"
+    },
+    {
+      "anchor": null,
+      "body_line": 27827,
+      "number": 23,
+      "source": "explicit body chapter heading",
+      "title": "Dynamic Attributes and Properties"
+    },
+    {
+      "anchor": null,
+      "body_line": 29155,
+      "number": 24,
+      "source": "explicit body chapter heading",
+      "title": "Attribute Descriptors"
+    },
+    {
+      "anchor": null,
+      "body_line": 29925,
+      "number": 25,
+      "source": "explicit body chapter heading",
+      "title": "Class Metaprogramming"
+    }
+  ],
+  "collapsed_duplicate_headings": [],
+  "command_argv": [
+    "bash",
+    "/home/halbritt/git/skills/skills/marker-convert/scripts/convert-peecee.sh",
+    ".book-work/fluent-python-2nd-edition-z-lib-org/fluent-python-2nd-edition-z-lib-org-3303dcaf731b.pdf",
+    "--format",
+    "markdown",
+    "--out",
+    ".book-work/fluent-python-2nd-edition-z-lib-org/marker-peecee",
+    "--host",
+    "peecee"
+  ],
+  "command_executed": "bash /home/halbritt/git/skills/skills/marker-convert/scripts/convert-peecee.sh .book-work/fluent-python-2nd-edition-z-lib-org/fluent-python-2nd-edition-z-lib-org-3303dcaf731b.pdf --format markdown --out .book-work/fluent-python-2nd-edition-z-lib-org/marker-peecee --host peecee",
+  "content_author_line": "Luciano Ramalho",
+  "conversion_options": {
+    "format": "markdown",
+    "host": "peecee"
+  },
+  "converter": "marker",
+  "converter_exit_status": 0,
+  "converter_version": "marker-pdf 1.10.2",
+  "degraded_internal_links": [
+    {
+      "original_target": "#page-31-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "005-chapter-1-the-python-data-model.md"
+    },
+    {
+      "original_target": "#page-31-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "005-chapter-1-the-python-data-model.md"
+    },
+    {
+      "original_target": "#page-31-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "005-chapter-1-the-python-data-model.md"
+    },
+    {
+      "original_target": "#page-54-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "007-chapter-2-an-array-of-sequences.md"
+    },
+    {
+      "original_target": "#page-70-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "007-chapter-2-an-array-of-sequences.md"
+    },
+    {
+      "original_target": "#page-54-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "007-chapter-2-an-array-of-sequences.md"
+    },
+    {
+      "original_target": "#page-60-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "007-chapter-2-an-array-of-sequences.md"
+    },
+    {
+      "original_target": "#page-85-1",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "007-chapter-2-an-array-of-sequences.md"
+    },
+    {
+      "original_target": "#page-100-2",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "007-chapter-2-an-array-of-sequences.md"
+    },
+    {
+      "original_target": "file:///tmp/calibre_4.99.4_tmp_kffi9hqx/euo795rh_pdf_out/OEBPS/Images/#discover_encoding",
+      "reason": "rewrote converter-local file URI by matching its visible section title",
+      "replacement_anchor": "how-to-discover-the-encoding-of-a-byte-sequence",
+      "source_file": "009-chapter-4-text-versus-bytes.md"
+    },
+    {
+      "original_target": "#page-229-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "009-chapter-4-text-versus-bytes.md"
+    },
+    {
+      "original_target": "#page-230-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "009-chapter-4-text-versus-bytes.md"
+    },
+    {
+      "original_target": "#page-230-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "009-chapter-4-text-versus-bytes.md"
+    },
+    {
+      "original_target": "#page-247-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "009-chapter-4-text-versus-bytes.md"
+    },
+    {
+      "original_target": "#page-248-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "009-chapter-4-text-versus-bytes.md"
+    },
+    {
+      "original_target": "#page-254-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "009-chapter-4-text-versus-bytes.md"
+    },
+    {
+      "original_target": "#page-235-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "009-chapter-4-text-versus-bytes.md"
+    },
+    {
+      "original_target": "#page-363-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "013-chapter-7-functions-as-first-class-objects.md"
+    },
+    {
+      "original_target": "#page-367-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "013-chapter-7-functions-as-first-class-objects.md"
+    },
+    {
+      "original_target": "#page-402-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "014-chapter-8-type-hints-in-functions.md"
+    },
+    {
+      "original_target": "#page-434-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "014-chapter-8-type-hints-in-functions.md"
+    },
+    {
+      "original_target": "#page-399-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "014-chapter-8-type-hints-in-functions.md"
+    },
+    {
+      "original_target": "#page-410-1",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "014-chapter-8-type-hints-in-functions.md"
+    },
+    {
+      "original_target": "#page-434-1",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "014-chapter-8-type-hints-in-functions.md"
+    },
+    {
+      "original_target": "#page-439-1",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "014-chapter-8-type-hints-in-functions.md"
+    },
+    {
+      "original_target": "#page-458-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "015-chapter-9-decorators-and-closures.md"
+    },
+    {
+      "original_target": "#page-507-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "016-chapter-10-design-patterns-with-first-class-functions.md"
+    },
+    {
+      "original_target": "#page-507-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "016-chapter-10-design-patterns-with-first-class-functions.md"
+    },
+    {
+      "original_target": "#page-507-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "016-chapter-10-design-patterns-with-first-class-functions.md"
+    },
+    {
+      "original_target": "#page-523-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "016-chapter-10-design-patterns-with-first-class-functions.md"
+    },
+    {
+      "original_target": "#page-523-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "016-chapter-10-design-patterns-with-first-class-functions.md"
+    },
+    {
+      "original_target": "#page-31-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "018-chapter-11-a-pythonic-object.md"
+    },
+    {
+      "original_target": "#page-587-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "019-chapter-12-writing-special-methods-for-sequences.md"
+    },
+    {
+      "original_target": "#page-587-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "019-chapter-12-writing-special-methods-for-sequences.md"
+    },
+    {
+      "original_target": "#page-618-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "019-chapter-12-writing-special-methods-for-sequences.md"
+    },
+    {
+      "original_target": "#page-624-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "020-chapter-13-interfaces-protocols-and-abcs.md"
+    },
+    {
+      "original_target": "#page-624-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "020-chapter-13-interfaces-protocols-and-abcs.md"
+    },
+    {
+      "original_target": "#page-624-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "020-chapter-13-interfaces-protocols-and-abcs.md"
+    },
+    {
+      "original_target": "#page-649-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "020-chapter-13-interfaces-protocols-and-abcs.md"
+    },
+    {
+      "original_target": "#page-649-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "020-chapter-13-interfaces-protocols-and-abcs.md"
+    },
+    {
+      "original_target": "#page-649-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "020-chapter-13-interfaces-protocols-and-abcs.md"
+    },
+    {
+      "original_target": "#page-649-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "020-chapter-13-interfaces-protocols-and-abcs.md"
+    },
+    {
+      "original_target": "#page-655-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "020-chapter-13-interfaces-protocols-and-abcs.md"
+    },
+    {
+      "original_target": "#page-659-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "020-chapter-13-interfaces-protocols-and-abcs.md"
+    },
+    {
+      "original_target": "#page-655-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "020-chapter-13-interfaces-protocols-and-abcs.md"
+    },
+    {
+      "original_target": "#page-666-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "020-chapter-13-interfaces-protocols-and-abcs.md"
+    },
+    {
+      "original_target": "#page-624-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "020-chapter-13-interfaces-protocols-and-abcs.md"
+    },
+    {
+      "original_target": "#page-624-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "020-chapter-13-interfaces-protocols-and-abcs.md"
+    },
+    {
+      "original_target": "#page-649-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "020-chapter-13-interfaces-protocols-and-abcs.md"
+    },
+    {
+      "original_target": "#page-696-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "020-chapter-13-interfaces-protocols-and-abcs.md"
+    },
+    {
+      "original_target": "#page-624-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "020-chapter-13-interfaces-protocols-and-abcs.md"
+    },
+    {
+      "original_target": "#page-668-1",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "020-chapter-13-interfaces-protocols-and-abcs.md"
+    },
+    {
+      "original_target": "#page-682-1",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "020-chapter-13-interfaces-protocols-and-abcs.md"
+    },
+    {
+      "original_target": "#page-707-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "021-chapter-14-inheritance-for-good-or-for-worse.md"
+    },
+    {
+      "original_target": "#page-707-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "021-chapter-14-inheritance-for-good-or-for-worse.md"
+    },
+    {
+      "original_target": "#page-707-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "021-chapter-14-inheritance-for-good-or-for-worse.md"
+    },
+    {
+      "original_target": "#page-714-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "021-chapter-14-inheritance-for-good-or-for-worse.md"
+    },
+    {
+      "original_target": "#page-714-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "021-chapter-14-inheritance-for-good-or-for-worse.md"
+    },
+    {
+      "original_target": "#page-716-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "021-chapter-14-inheritance-for-good-or-for-worse.md"
+    },
+    {
+      "original_target": "#page-716-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "021-chapter-14-inheritance-for-good-or-for-worse.md"
+    },
+    {
+      "original_target": "#page-716-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "021-chapter-14-inheritance-for-good-or-for-worse.md"
+    },
+    {
+      "original_target": "#page-726-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "021-chapter-14-inheritance-for-good-or-for-worse.md"
+    },
+    {
+      "original_target": "#page-728-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "021-chapter-14-inheritance-for-good-or-for-worse.md"
+    },
+    {
+      "original_target": "#page-726-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "021-chapter-14-inheritance-for-good-or-for-worse.md"
+    },
+    {
+      "original_target": "#page-728-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "021-chapter-14-inheritance-for-good-or-for-worse.md"
+    },
+    {
+      "original_target": "#page-709-1",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "021-chapter-14-inheritance-for-good-or-for-worse.md"
+    },
+    {
+      "original_target": "#page-720-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "021-chapter-14-inheritance-for-good-or-for-worse.md"
+    },
+    {
+      "original_target": "#page-743-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "022-chapter-15-more-about-type-hints.md"
+    },
+    {
+      "original_target": "#page-760-2",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "022-chapter-15-more-about-type-hints.md"
+    },
+    {
+      "original_target": "#page-760-2",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "022-chapter-15-more-about-type-hints.md"
+    },
+    {
+      "original_target": "#page-760-2",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "022-chapter-15-more-about-type-hints.md"
+    },
+    {
+      "original_target": "#page-752-1",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "022-chapter-15-more-about-type-hints.md"
+    },
+    {
+      "original_target": "#page-758-1",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "022-chapter-15-more-about-type-hints.md"
+    },
+    {
+      "original_target": "#page-31-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "023-chapter-16-operator-overloading-doing-it-right.md"
+    },
+    {
+      "original_target": "#page-812-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "023-chapter-16-operator-overloading-doing-it-right.md"
+    },
+    {
+      "original_target": "#page-812-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "023-chapter-16-operator-overloading-doing-it-right.md"
+    },
+    {
+      "original_target": "#page-812-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "023-chapter-16-operator-overloading-doing-it-right.md"
+    },
+    {
+      "original_target": "#page-812-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "023-chapter-16-operator-overloading-doing-it-right.md"
+    },
+    {
+      "original_target": "#page-830-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "023-chapter-16-operator-overloading-doing-it-right.md"
+    },
+    {
+      "original_target": "#page-830-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "023-chapter-16-operator-overloading-doing-it-right.md"
+    },
+    {
+      "original_target": "#page-858-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "024-chapter-17-iterables-iterators-and-generators.md"
+    },
+    {
+      "original_target": "#page-896-1",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "024-chapter-17-iterables-iterators-and-generators.md"
+    },
+    {
+      "original_target": "#page-916-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "024-chapter-17-iterables-iterators-and-generators.md"
+    },
+    {
+      "original_target": "#page-995-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "026-chapter-19-classic-coroutines.md"
+    },
+    {
+      "original_target": "#page-995-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "026-chapter-19-classic-coroutines.md"
+    },
+    {
+      "original_target": "#page-995-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "026-chapter-19-classic-coroutines.md"
+    },
+    {
+      "original_target": "#page-1005-1",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "026-chapter-19-classic-coroutines.md"
+    },
+    {
+      "original_target": "#page-1026-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "027-chapter-20-concurrency-models-in-python.md"
+    },
+    {
+      "original_target": "#page-1059-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "027-chapter-20-concurrency-models-in-python.md"
+    },
+    {
+      "original_target": "#page-1059-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "027-chapter-20-concurrency-models-in-python.md"
+    },
+    {
+      "original_target": "#page-1059-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "027-chapter-20-concurrency-models-in-python.md"
+    },
+    {
+      "original_target": "#page-1061-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "027-chapter-20-concurrency-models-in-python.md"
+    },
+    {
+      "original_target": "#page-1059-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "027-chapter-20-concurrency-models-in-python.md"
+    },
+    {
+      "original_target": "#page-1135-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "029-chapter-22-asynchronous-programming.md"
+    },
+    {
+      "original_target": "#page-1156-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "029-chapter-22-asynchronous-programming.md"
+    },
+    {
+      "original_target": "#page-1172-1",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "029-chapter-22-asynchronous-programming.md"
+    },
+    {
+      "original_target": "#page-1228-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "030-chapter-23-dynamic-attributes-and-properties.md"
+    },
+    {
+      "original_target": "#page-1218-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "030-chapter-23-dynamic-attributes-and-properties.md"
+    },
+    {
+      "original_target": "#page-1231-2",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "030-chapter-23-dynamic-attributes-and-properties.md"
+    },
+    {
+      "original_target": "#page-1254-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "030-chapter-23-dynamic-attributes-and-properties.md"
+    },
+    {
+      "original_target": "#page-1289-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "031-chapter-24-attribute-descriptors.md"
+    },
+    {
+      "original_target": "#page-1343-0",
+      "reason": "converter emitted no destination anchor; link text was preserved",
+      "replacement_anchor": "",
+      "source_file": "032-chapter-25-class-metaprogramming.md"
+    }
+  ],
+  "execution_target": "peecee",
+  "failures": [],
+  "fallbacks_used": [],
+  "generated_directories": [
+    "assets",
+    "chapters"
+  ],
+  "generated_files": {
+    "README.md": "7e5609fd0e154d961db7e10f9e309f310586f6814d6cc826a93f0de7feed6e87",
+    "assets/_page_0_Figure_3.jpeg": "35173cebf9156288bf21428c7170c230a2a49662a73be708ba260e121378eb20",
+    "assets/_page_0_Picture_0.jpeg": "683ed91005ab4a56c54ea8ba5fc151a8fa4f3b7ad6a7f632c85520ec799d66ce",
+    "assets/_page_102_Figure_0.jpeg": "654d2258b3c83f72853b6b94030c6b8de22986ad12aadaf8fb4084e435179e9c",
+    "assets/_page_1053_Figure_2.jpeg": "1b9278bfc3a1f7d78578519c7ccc950afa192f098a3f196477fe8d084c299c67",
+    "assets/_page_1059_Figure_0.jpeg": "390b61a40e1bc1464681d3f9f5217ab7c007833975dcb67ba52a96114be38ff3",
+    "assets/_page_1061_Figure_0.jpeg": "23b2b84202935158ae25da7305ee39a088ada2f7811e4db79a1544e46ba774e0",
+    "assets/_page_1104_Figure_0.jpeg": "9f792326d7129ba8bad3559a2b9dbc821da82f55ecdd801334e582269eb16d36",
+    "assets/_page_1135_Picture_0.jpeg": "d0348ea54ef3c6c437127f58554e88d11118958acc6b32a8ac525dc6f4bdf37c",
+    "assets/_page_1154_Figure_4.jpeg": "bf91104ed45d4d36d0b89332d543c0a40ef73a7609d1bc123029e7d3d26389a3",
+    "assets/_page_1158_Picture_0.jpeg": "131aeafae729db99569f4ecdc01bac05f84604b5c280aa0f2dd3dbf40691f0a5",
+    "assets/_page_1163_Figure_0.jpeg": "e54e7a72c5c93aae4cc349dd57484bd895a505572221f74a6206902c80ed3a38",
+    "assets/_page_1239_Picture_0.jpeg": "169943695849fc7846d5fbd236a4c92fc862cf1b9022c5dff444499ef281ca0c",
+    "assets/_page_1261_Figure_0.jpeg": "048308dc8f37f7010415ed02bc5871a7b848ccd35a273198c3a5294613737e3a",
+    "assets/_page_1263_Figure_1.jpeg": "bc702d4fd775b0e3caa10ed2cff533f247b1e803070378115d06071fc703a8df",
+    "assets/_page_1264_Figure_3.jpeg": "dae7dcfb15158108aaeea9a324163021132119123643032ce3b2dad9f5ca17a7",
+    "assets/_page_1289_Figure_0.jpeg": "019a5b253f1742b5d9aa9ad0fb67d6b6bc488ef36a222818d23fc9e3a90672a6",
+    "assets/_page_1329_Figure_0.jpeg": "992f931fc371c7623afeb8eafaf6b3cfd6a28641ae48e9984bfe7302c12659f8",
+    "assets/_page_148_Figure_1.jpeg": "7d045d83f89ef19c0009b7a1e96fabae33a04c85084f808f67c4309386462edc",
+    "assets/_page_179_Figure_0.jpeg": "3ff3232914f28172014df9632901d97fc372b37a3af2ac1e453f4d74d19c7137",
+    "assets/_page_221_Picture_1.jpeg": "628896feaa17e3c0cc3227a73d7fcecb1730ea8196094319cc2c98ff9c6def33",
+    "assets/_page_29_Figure_0.jpeg": "0e6fd32e1a435e87877d665c5ac26a80ac016a0a4c44ee32589adfbe3a22f4e1",
+    "assets/_page_326_Figure_0.jpeg": "47d342873d10af34e85328fec626faf95314a6ee9839253b8c9b4536dd6c53d1",
+    "assets/_page_329_Figure_0.jpeg": "45e84069e6989d532ebfa31f88a84aa8674eb645e47d49584efdefd9771b6d84",
+    "assets/_page_335_Figure_0.jpeg": "9dc7c59facb0f3eb981f6e2fa95efbb1e2a23bcdfa9dee54b5fc536c3cec2b91",
+    "assets/_page_336_Figure_4.jpeg": "8e5ab688f6bedfb02839c18a88d566f8eba0999113f1c4c45f8935c9e9ae8bf4",
+    "assets/_page_36_Figure_0.jpeg": "3022750a9a08238c5d8aef5487ab50c6717e5e4e172205d7512114b4aed40f72",
+    "assets/_page_470_Figure_2.jpeg": "eea11e3562aefee1cd77a351a2fc68078b873e88df6d3510e306aee73fc5d5b0",
+    "assets/_page_507_Figure_0.jpeg": "3b12058b9774c130b51d801fe0eb3cc81ea20078b390ea1c323cbf63c6b94fb7",
+    "assets/_page_523_Figure_0.jpeg": "07c3af3227c78e0ed43d2d1ba1d73bebf1c47a62cb0f7a1cdbc901d59496fb33",
+    "assets/_page_54_Picture_2.jpeg": "2a0b5e0ee1ef96f3ef08a639507b8e687c25389766057fa34e6253b84294fb5d",
+    "assets/_page_558_Picture_0.jpeg": "71aa221605f50fb2486a2c0675a9b3475c9002ec33694627e2345bc5e41ed981",
+    "assets/_page_56_Figure_2.jpeg": "2f0034cf3d05ea1bfff70c233f6a2568177c43fa1df4c65c9a2df6bb900bf3ff",
+    "assets/_page_572_Figure_0.jpeg": "3c1d63e01bb034610a438763fe5737e287e174819e0d8936af0a91f6bc512a1d",
+    "assets/_page_596_Figure_0.jpeg": "b6337130bc2e8ec7ab954a271d4d860a9b330563a1f088d040b503408cf24e27",
+    "assets/_page_600_Figure_0.jpeg": "c08cc65d0a34f63597f61a99f75b9ac1618ae570c7f348bb98cb65be48641a11",
+    "assets/_page_624_Figure_1.jpeg": "480b6048738f2452c0f2719910dea7bb015bcf728dba5bb0431fc4b75bebe121",
+    "assets/_page_630_Figure_0.jpeg": "66c8a3e2c7925fd5476c4ae995ec529e64e8043e2fb4e87e875fd58a53c307ec",
+    "assets/_page_63_Picture_0.jpeg": "46e7fb25ea5e5d68322c9099d2f98272b1d2c660dbcebc9d50eb1a16d8ecf3b4",
+    "assets/_page_646_Figure_0.jpeg": "79d55dc0d59b431d34d3b33f63cad3b077faf11bb0910afd10fb278d7f99c7b5",
+    "assets/_page_649_Figure_0.jpeg": "b281d3057fc255012f249c75effcaa5b1b5729f06282932b69e9a720236f8d09",
+    "assets/_page_655_Figure_0.jpeg": "d57bbc386250c52871cb8f19d8997ec3e5e8ec52c6fe60f56f77e2bb84cb6392",
+    "assets/_page_666_Figure_0.jpeg": "6de94a8e8cef0d69c1c7fd574e1e034984a59a4fa7f60b64b7a00eb209757c00",
+    "assets/_page_671_Figure_2.jpeg": "030073ce8c2a0022d2eefef0f2b2544d2cca59d3872add4d03bbcc0febe13a86",
+    "assets/_page_696_Figure_0.jpeg": "0e24412d8395747725c9cbafa1234f054dc9f6dbbb5be71028e2124a3a07560a",
+    "assets/_page_707_Figure_0.jpeg": "685ae8677bb3d0267425ec250e0991b03279a7d2f8a792cf562fd7b64f09df5b",
+    "assets/_page_707_Figure_1.jpeg": "ddef9cb2e816d71de3cd7b1b7050a9590818d86c0f05b3eda6bec4f83e3c18a2",
+    "assets/_page_70_Figure_0.jpeg": "9fa142dae976057cb820e2f08fa7ead74a501007ac455e2f2c78f2551b8564d3",
+    "assets/_page_714_Figure_0.jpeg": "6fe391988514cbb3e90425cf0ec3a6088665b81eab282024196737c9082c803d",
+    "assets/_page_716_Picture_0.jpeg": "d1ebbb071447d61e2dca2a3e996b2d0ae89c1f4cab6b693b9bccb8579351b838",
+    "assets/_page_726_Figure_1.jpeg": "f38cceec533f1f1d2da565edaf4cd3e1cfaf8ea26a63aeabecb6c5d01aed4e2b",
+    "assets/_page_728_Figure_0.jpeg": "7cd525be4b8fbaf222a39fbce7e563a5b01d85e69593becf9d01c52c936bf63d",
+    "assets/_page_807_Figure_0.jpeg": "e0daa048ebdf6325e2a75beafe8da911807f99f046df54847013fdd665287cca",
+    "assets/_page_831_Figure_2.jpeg": "43567e2819f5cc8606529fe1c0af438aab379a39801fd997217d0fa6e3733328",
+    "assets/_page_849_Figure_0.jpeg": "b77563b1bde1a1163ae8d6b5909b099296e67bb74b77bbb6e56c57dd9e075d86",
+    "assets/_page_962_Figure_0.jpeg": "b233cf60a7bf2d7fef6c81b8f7132ba197280a0bd046a91947c5ca500cb17474",
+    "assets/_page_977_Figure_0.jpeg": "49cee536bc8e96be7921b06cf2cd7bbe9bf19b8e58d644d545f0e05246b6a2d1",
+    "chapters/001-fluent-python.md": "058cfe357ca131833c2b6fa8c269e46620a62e75ae5f62dcf87e00026fa29b77",
+    "chapters/002-preface.md": "3b56d5fc13749fc561617a4ba9193de327d09ce2f5268b781661c9ebc172a417",
+    "chapters/003-acknowledgments.md": "bfbce0bd3e7dd37801c2c3c6ebe8851f538ee8c01114766556e06e19bb9ec478",
+    "chapters/004-part-i-prologue.md": "eff50cc50da1bda56fc477e74a248db38ee2511938e661353cb9cc8982216e9c",
+    "chapters/005-chapter-1-the-python-data-model.md": "d3fb4f1f9c22b078faab38c2c1084dd2d2bbd09847c89fa69fa617c3011d1a42",
+    "chapters/006-part-ii-data-structures.md": "f585e165b91b20429aa8b86bef9ea193161205b6fad640f4c4756b3d3f3bf164",
+    "chapters/007-chapter-2-an-array-of-sequences.md": "de4a59dbdf927726993a7424b7dd414ccaf1aa3d82fe261fe5581f6d97b76129",
+    "chapters/008-chapter-3-dictionaries-and-sets.md": "6cbc7582111596c58d52d255349d60192e8b774fc9fab26c2853792f28ec47fb",
+    "chapters/009-chapter-4-text-versus-bytes.md": "95ad7980e6fcc06554d3beb566e6df1de3df906b24f713fe4da28972d9f4e310",
+    "chapters/010-chapter-5-data-class-builders.md": "eeccbf8ce0c0da0786b675cfbf3475d0989e755ea153882d3b3ad549c2b9ce39",
+    "chapters/011-chapter-6-object-references-mutability-and-recycling.md": "66c404c9007dfc4348d21f533732f86b6612822a0ebf80cb3b45c0ec451117a2",
+    "chapters/012-part-iii-functions-as-objects.md": "8c0aa301162a0066aa09d45337fdc1a33bb4b3acd0ab43b38e3fe360401c7a25",
+    "chapters/013-chapter-7-functions-as-first-class-objects.md": "3342819fc316ae61749982ce8084beeb7a940027de653ceee73be79f98e44ff3",
+    "chapters/014-chapter-8-type-hints-in-functions.md": "5439ceaee49ab1a5ecc381ad4afca69fdb0de59673b3254edd9512053d9a52aa",
+    "chapters/015-chapter-9-decorators-and-closures.md": "b5a0b66c5dcd6e85224234a0366357a9a51aefe9124eafaf80e0ec9b3684a7db",
+    "chapters/016-chapter-10-design-patterns-with-first-class-functions.md": "2845a09bd5fee184c2a7dedfc840e39901632f277931b5eb61aa59b4a53d1b1e",
+    "chapters/017-part-iv-classes-and-protocols.md": "0df5558877d40ba82c1b6a68fb6bc5167203eb0e730296bdf601cea18068c3d0",
+    "chapters/018-chapter-11-a-pythonic-object.md": "9811cc70340558e289db59cef5854289ac7666cfe42ae07bb4d7adec714db98b",
+    "chapters/019-chapter-12-writing-special-methods-for-sequences.md": "be3e3bd10ef69c2643304bdf9b5ad89f7b2e955997a25435b090f7c84cb61259",
+    "chapters/020-chapter-13-interfaces-protocols-and-abcs.md": "fa8766a2d3ad258f60e94d721ba46f240afb5968594dd20f8b34b3b211010841",
+    "chapters/021-chapter-14-inheritance-for-good-or-for-worse.md": "0192a7609f453da4993ca41c4ef9fd204bd0857632cf57d7e89168394500cbbe",
+    "chapters/022-chapter-15-more-about-type-hints.md": "440459341026b7845a7b73609d00c1664011235d0e2c762e0f90fa5955069d8e",
+    "chapters/023-chapter-16-operator-overloading-doing-it-right.md": "9b5bae07f384f2113ba0d01ae4a880aa00a11a08a08834b8eeaae212b4f189c1",
+    "chapters/024-chapter-17-iterables-iterators-and-generators.md": "a77cdc62f666d76c7abcf9c35cd02e53c20363f91f63740a6f75859a5d396fdb",
+    "chapters/025-chapter-18-context-managers-and-else-blocks.md": "c5f51423c60875e704dd32acafa0bd083ea776dc67df5ae02799ad29b32341d1",
+    "chapters/026-chapter-19-classic-coroutines.md": "04f9d7cdfd2b5e8f1ac44f433cdea245cd85bac7e9431ea06ee9249881238bf0",
+    "chapters/027-chapter-20-concurrency-models-in-python.md": "c483886c01e2d4d53866c4b73ba92b6860824a5705e9b4b1a014e1e4587e9a57",
+    "chapters/028-chapter-21-concurrency-with-futures.md": "afb529b4602fa2b2feabbfb94920ef8f6e7529d397ceb649755a1b6aeb2bb2cc",
+    "chapters/029-chapter-22-asynchronous-programming.md": "0eb7db268bd860ddd0ae090732c08040e7888b8cf5ca97d8a335ff590f70e53c",
+    "chapters/030-chapter-23-dynamic-attributes-and-properties.md": "fa2d8d396be8b0191c5d2e60cac6fd3abb613d473457fb01983836850d0dd9f2",
+    "chapters/031-chapter-24-attribute-descriptors.md": "df0054c2a5f135eb7c2471e9edc753daa309e95a1e3eb00a5869d31af89e3340",
+    "chapters/032-chapter-25-class-metaprogramming.md": "e1885fb0becf5500774814f2262e6ce6b16ef661eae647336322743e799b239b",
+    "chapters/033-about-the-author.md": "1ca192a74f1099b96a79b4a0d133ae6bb0a54ca1b286dd7f19116d174be245d2",
+    "metadata.json": "c381ea293e9c9f46f230072f7678c0e2d7b1c1e0834922adb22eba0fcdc5835c",
+    "validation.json": "a29f2b51dc0b9cb976d4b97cb4fac3d06229c4f5eb65289f175bfc16259e1d06"
+  },
+  "llm_used": false,
+  "merged_duplicate_boundaries": [],
+  "ocr_usage": {
+    "llm_request_count": 0,
+    "ocr_pages": [
+      {
+        "page_id": 0,
+        "physical_page": 1
+      },
+      {
+        "page_id": 39,
+        "physical_page": 40
+      },
+      {
+        "page_id": 40,
+        "physical_page": 41
+      },
+      {
+        "page_id": 42,
+        "physical_page": 43
+      },
+      {
+        "page_id": 43,
+        "physical_page": 44
+      },
+      {
+        "page_id": 54,
+        "physical_page": 55
+      },
+      {
+        "page_id": 69,
+        "physical_page": 70
+      },
+      {
+        "page_id": 70,
+        "physical_page": 71
+      },
+      {
+        "page_id": 74,
+        "physical_page": 75
+      },
+      {
+        "page_id": 89,
+        "physical_page": 90
+      },
+      {
+        "page_id": 93,
+        "physical_page": 94
+      },
+      {
+        "page_id": 111,
+        "physical_page": 112
+      },
+      {
+        "page_id": 112,
+        "physical_page": 113
+      },
+      {
+        "page_id": 124,
+        "physical_page": 125
+      },
+      {
+        "page_id": 125,
+        "physical_page": 126
+      },
+      {
+        "page_id": 126,
+        "physical_page": 127
+      },
+      {
+        "page_id": 151,
+        "physical_page": 152
+      },
+      {
+        "page_id": 153,
+        "physical_page": 154
+      },
+      {
+        "page_id": 154,
+        "physical_page": 155
+      },
+      {
+        "page_id": 174,
+        "physical_page": 175
+      },
+      {
+        "page_id": 180,
+        "physical_page": 181
+      },
+      {
+        "page_id": 181,
+        "physical_page": 182
+      },
+      {
+        "page_id": 185,
+        "physical_page": 186
+      },
+      {
+        "page_id": 188,
+        "physical_page": 189
+      },
+      {
+        "page_id": 190,
+        "physical_page": 191
+      },
+      {
+        "page_id": 192,
+        "physical_page": 193
+      },
+      {
+        "page_id": 272,
+        "physical_page": 273
+      },
+      {
+        "page_id": 273,
+        "physical_page": 274
+      },
+      {
+        "page_id": 292,
+        "physical_page": 293
+      },
+      {
+        "page_id": 370,
+        "physical_page": 371
+      },
+      {
+        "page_id": 415,
+        "physical_page": 416
+      },
+      {
+        "page_id": 507,
+        "physical_page": 508
+      },
+      {
+        "page_id": 523,
+        "physical_page": 524
+      },
+      {
+        "page_id": 542,
+        "physical_page": 543
+      },
+      {
+        "page_id": 624,
+        "physical_page": 625
+      },
+      {
+        "page_id": 632,
+        "physical_page": 633
+      },
+      {
+        "page_id": 649,
+        "physical_page": 650
+      },
+      {
+        "page_id": 655,
+        "physical_page": 656
+      },
+      {
+        "page_id": 659,
+        "physical_page": 660
+      },
+      {
+        "page_id": 661,
+        "physical_page": 662
+      },
+      {
+        "page_id": 666,
+        "physical_page": 667
+      },
+      {
+        "page_id": 696,
+        "physical_page": 697
+      },
+      {
+        "page_id": 707,
+        "physical_page": 708
+      },
+      {
+        "page_id": 714,
+        "physical_page": 715
+      },
+      {
+        "page_id": 716,
+        "physical_page": 717
+      },
+      {
+        "page_id": 726,
+        "physical_page": 727
+      },
+      {
+        "page_id": 728,
+        "physical_page": 729
+      },
+      {
+        "page_id": 782,
+        "physical_page": 783
+      },
+      {
+        "page_id": 783,
+        "physical_page": 784
+      },
+      {
+        "page_id": 784,
+        "physical_page": 785
+      },
+      {
+        "page_id": 785,
+        "physical_page": 786
+      },
+      {
+        "page_id": 786,
+        "physical_page": 787
+      },
+      {
+        "page_id": 787,
+        "physical_page": 788
+      },
+      {
+        "page_id": 815,
+        "physical_page": 816
+      },
+      {
+        "page_id": 816,
+        "physical_page": 817
+      },
+      {
+        "page_id": 817,
+        "physical_page": 818
+      },
+      {
+        "page_id": 820,
+        "physical_page": 821
+      },
+      {
+        "page_id": 821,
+        "physical_page": 822
+      },
+      {
+        "page_id": 873,
+        "physical_page": 874
+      },
+      {
+        "page_id": 886,
+        "physical_page": 887
+      },
+      {
+        "page_id": 891,
+        "physical_page": 892
+      },
+      {
+        "page_id": 904,
+        "physical_page": 905
+      },
+      {
+        "page_id": 995,
+        "physical_page": 996
+      },
+      {
+        "page_id": 1055,
+        "physical_page": 1056
+      },
+      {
+        "page_id": 1059,
+        "physical_page": 1060
+      },
+      {
+        "page_id": 1061,
+        "physical_page": 1062
+      },
+      {
+        "page_id": 1135,
+        "physical_page": 1136
+      },
+      {
+        "page_id": 1189,
+        "physical_page": 1190
+      },
+      {
+        "page_id": 1190,
+        "physical_page": 1191
+      },
+      {
+        "page_id": 1191,
+        "physical_page": 1192
+      },
+      {
+        "page_id": 1289,
+        "physical_page": 1290
+      },
+      {
+        "page_id": 1343,
+        "physical_page": 1344
+      }
+    ],
+    "text_extraction_methods": {
+      "pdftext": 1318,
+      "surya": 72
+    },
+    "used": true
+  },
+  "page_furniture_removed": [
+    "terminal generated internal-page navigation after About the Author (576 source line(s))"
+  ],
+  "pipeline": "scripts/convert-books",
+  "pipeline_fingerprint": "cc9009c2c2f54d8877bed0bf1499a36424fe6e4f7c82a089cd040be3e3baa5e5",
+  "post_processing_performed": [
+    "staged the source under a deterministic length-bounded hash-qualified space-free basename",
+    "split converter Markdown at explicit logical-unit headings rather than page numbers",
+    "normalized headings to ATX syntax with exactly one level-one heading per chapter",
+    "kept converter paragraphs unwrapped and normalized excessive blank lines outside code",
+    "moved extracted media into assets and rewrote relative links",
+    "preserved fenced code content exactly",
+    "removed only high-confidence page furniture listed in validation.json",
+    "used printed table-of-contents and explicit body chapter-label evidence to recover chapter boundaries and titles",
+    "rewrote unresolved internal references only when a containing anchor was known, or preserved visible link text when Marker emitted no page destination"
+  ],
+  "pre_conversion_commands": [
+    {
+      "argv": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "ConnectTimeout=15",
+        "peecee",
+        "cmd /c if exist marker\\out\\fluent-python-2nd-edition-z-lib-org-3303dcaf731b rmdir /s /q marker\\out\\fluent-python-2nd-edition-z-lib-org-3303dcaf731b"
+      ],
+      "command": "ssh -o BatchMode=yes -o ConnectTimeout=15 peecee 'cmd /c if exist marker\\out\\fluent-python-2nd-edition-z-lib-org-3303dcaf731b rmdir /s /q marker\\out\\fluent-python-2nd-edition-z-lib-org-3303dcaf731b'",
+      "exit_status": 0,
+      "working_directory": "/home/halbritt/git/books"
+    }
+  ],
+  "prior_conversion_failures": [],
+  "record_sha256": "42a0f81691d21af92270d0800280d647ae20b5e10e3a194a745c3b8bad4a5325",
+  "schema_version": "books-corpus/1",
+  "section_boundary_evidence": [],
+  "source_filename": "Fluent.Python.2nd.Edition.(z-lib.org).pdf",
+  "source_format": "pdf",
+  "source_path": "sources/Fluent.Python.2nd.Edition.(z-lib.org).pdf",
+  "source_sha256": "3303dcaf731b6288e4246d80a6ac9a1d6b8b5517a109ace97ca5a9ca2e02b2db",
+  "source_size_bytes": 15086814,
+  "staging_workaround": "length-bounded hash-qualified space-free basename",
+  "unresolved_navigation_anchors": [],
+  "warnings": [],
+  "working_directory": "/home/halbritt/git/books"
+}
