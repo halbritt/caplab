@@ -7,6 +7,7 @@ This project does not yet publish numbered releases. Dated entries record notabl
 ### Added
 
 - Expanded root documentation for corpus conversion, doctrine contracts, evaluation fixtures, assertion discipline, and integrity boundaries.
+- Added author attribution to the root source-book catalog.
 - Added this changelog.
 
 ### Changed

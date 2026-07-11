@@ -24,19 +24,19 @@ The source books remain unchanged under [`sources/`](sources/). Generated books 
 
 Only supported files located directly under `sources/` are ingested. Files in the repository root and nested source directories are not searched.
 
-| Book | Source file |
-|---|---|
-| A Philosophy of Software Design, 2nd Edition | `sources/dokumen.pub_a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217.epub` |
-| Clean Architecture: A Craftsman's Guide to Software Structure and Design | `sources/Clean Architecture A Craftsman Guide to Software Structure and Design.pdf` |
-| Code Complete, 2nd Edition | `sources/code-complete-2nd-edition-v413hav.pdf` |
-| Domain-Driven Design: Tackling Complexity in the Heart of Software | `sources/Domain Driven Design Tackling Complexity in the Heart of Software - Eric Evans.pdf` |
-| Efficient Go: Data-Driven Performance Optimization | `sources/Efficient Go Data-Driven Performance Optimization (Bartlomiej Plotka) (Z-Library).pdf` |
-| Fluent Python, 2nd Edition | `sources/Fluent.Python.2nd.Edition.(z-lib.org).pdf` |
-| Fundamentals of Software Architecture | `sources/OReilly.Fundamentals.of.Software.Architecture.2020.1.pdf` |
-| Refactoring: Improving the Design of Existing Code | `sources/Refactoring  Improving the Design of Existing Code.pdf` |
-| Software Design X-Rays: Fix Technical Debt with Behavioral Code Analysis | `sources/dokumen.pub_software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725.pdf` |
-| The Pragmatic Programmer | `sources/the-pragmatic-programmer.pdf` |
-| Working Effectively with Legacy Code | `sources/[PROGRAMMING][Working Effectively. with Legacy Code].pdf` |
+| Book | Authors | Source file |
+|---|---|---|
+| A Philosophy of Software Design, 2nd Edition | John K. Ousterhout | `sources/dokumen.pub_a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217.epub` |
+| Clean Architecture: A Craftsman's Guide to Software Structure and Design | Robert C. Martin | `sources/Clean Architecture A Craftsman Guide to Software Structure and Design.pdf` |
+| Code Complete, 2nd Edition | Steve McConnell | `sources/code-complete-2nd-edition-v413hav.pdf` |
+| Domain-Driven Design: Tackling Complexity in the Heart of Software | Eric Evans | `sources/Domain Driven Design Tackling Complexity in the Heart of Software - Eric Evans.pdf` |
+| Efficient Go: Data-Driven Performance Optimization | Bartłomiej Płotka | `sources/Efficient Go Data-Driven Performance Optimization (Bartlomiej Plotka) (Z-Library).pdf` |
+| Fluent Python, 2nd Edition | Luciano Ramalho | `sources/Fluent.Python.2nd.Edition.(z-lib.org).pdf` |
+| Fundamentals of Software Architecture | Mark Richards; Neal Ford | `sources/OReilly.Fundamentals.of.Software.Architecture.2020.1.pdf` |
+| Refactoring: Improving the Design of Existing Code | Martin Fowler; contributors: Kent Beck, John Brant, William Opdyke, Don Roberts | `sources/Refactoring  Improving the Design of Existing Code.pdf` |
+| Software Design X-Rays: Fix Technical Debt with Behavioral Code Analysis | Adam Tornhill | `sources/dokumen.pub_software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725.pdf` |
+| The Pragmatic Programmer | Andrew Hunt and David Thomas | `sources/the-pragmatic-programmer.pdf` |
+| Working Effectively with Legacy Code | Michael C. Feathers | `sources/[PROGRAMMING][Working Effectively. with Legacy Code].pdf` |
 
 The generated [book index](books/README.md) records title, authors, converter, execution target, chapter count, status, output path, and validation warnings for each source.
 
