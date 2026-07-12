@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://books.local/doctrine/evaluations/robustness/skill-eval-case.schema.json",
+  "title": "Doctrine skill evaluation case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "id", "status", "stimulus", "oracle"],
+  "properties": {
+    "schema_version": {"const": "doctrine-skill-eval-case/1"},
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "status": {"enum": ["candidate", "active", "retired"]},
+    "stimulus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["question", "role", "task", "authority", "repository_evidence", "output_contract"],
+      "properties": {
+        "question": {"type": "string", "minLength": 1},
+        "role": {"type": "string", "minLength": 1},
+        "task": {"type": "string", "minLength": 1},
+        "authority": {"type": "string", "minLength": 1},
+        "repository_evidence": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "output_contract": {"const": "decision-receipt/2"}
+      }
+    },
+    "oracle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["acceptable_statuses", "required_assertion_types", "forbidden_assertion_types", "minimum_source_locators", "clean_utility_required", "human_criteria", "detection_boundary"],
+      "properties": {
+        "acceptable_statuses": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["recommended", "decided", "authorized", "executed", "verified", "accepted", "abstained"]}},
+        "required_assertion_types": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "forbidden_assertion_types": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "minimum_source_locators": {"type": "integer", "minimum": 0},
+        "clean_utility_required": {"type": "boolean"},
+        "human_criteria": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["technical-usefulness", "evidence-calibration", "credible-rivals", "conflict-handling", "authority-discipline", "actionable-specificity"]}},
+        "detection_boundary": {"enum": ["structural", "metamorphic", "human-semantic"]}
+      }
+    }
+  }
+}

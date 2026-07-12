@@ -18,6 +18,8 @@ SCHEMA_PATHS = {
     "case": SCHEMA_ROOT / "case.schema.json",
     "result": SCHEMA_ROOT / "result.schema.json",
     "human-adjudication": SCHEMA_ROOT / "human-adjudication.schema.json",
+    "skill-eval-case": SCHEMA_ROOT / "skill-eval-case.schema.json",
+    "skill-eval-result": SCHEMA_ROOT / "skill-eval-result.schema.json",
 }
 
 

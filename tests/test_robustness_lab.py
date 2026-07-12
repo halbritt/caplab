@@ -69,7 +69,7 @@ class RobustnessContractTests(unittest.TestCase):
     def test_all_laboratory_contracts_are_portable_offline_schemas(self):
         loader = load_module()
         self.assertEqual(
-            {"operator", "case", "result", "human-adjudication"},
+            {"operator", "case", "result", "human-adjudication", "skill-eval-case", "skill-eval-result"},
             set(loader.SCHEMA_PATHS),
         )
         loader.validate_schema_registry()

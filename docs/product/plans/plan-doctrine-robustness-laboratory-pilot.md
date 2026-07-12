@@ -17,7 +17,9 @@ authorized_scope:
   - doctrine/evaluations/robustness/**
   - doctrine/tools/build_robustness_suite.py
   - doctrine/tools/run_robustness_case.py
+  - doctrine/tools/evaluate_doctrine_skill.py
   - tests/test_robustness_lab.py
+  - tests/test_doctrine_skill_eval.py
   - docs/product/specs/spec-doctrine-robustness-laboratory.md
   - docs/product/plans/plan-doctrine-robustness-laboratory-pilot.md
 change_types:
@@ -32,6 +34,29 @@ delegate authorized P2 after P1's focused gates passed and stale abandoned graph
 fragments were removed. Repository maintainers own human adjudication and
 acceptance; external-subject traces remain disabled. Later checkpoints remain
 separate decisions under the selected plan.
+
+## Status log
+
+- **2026-07-12 — Doctrine-skill evaluation harness authorized and executed.**
+  The repository owner authorized a bounded hermetic slice spanning the P3 and
+  P5 contracts: sealed control/treatment inputs, imported `decision-receipt/2`
+  outputs, criterion-level relational grading, hard authority failures,
+  over-refusal detection, output identities, and a pending human-review queue.
+  This does not authorize model execution, trace retention, human dispositions,
+  the remaining P3 cases, or the full P5/P6 campaigns.
+
+- **2026-07-12 — Harbor adapter rendered and proven hermetically.** The
+  handoff-authorized slice added `render-harbor` and `grade-arm` to the
+  doctrine-skill harness, with templates and adapter documentation under
+  `doctrine/evaluations/robustness/harbor/`. Rendered arms bind the sealed
+  envelopes into Harbor tasks whose separate verifier environment receives
+  only the transferred `decision-receipt/2`; tests prove render determinism,
+  oracle isolation from the agent surface, arm parity outside the declared
+  skill-condition surface, a reward projection that cannot hide hard
+  failures, over-refusal non-reward, and self-sufficiency of the treatment
+  corpus projection. Harbor itself remains uninstalled on this host; model
+  execution, external-trace retention, and live A/B trials remain
+  unauthorized.
 
 ## Objective and authority boundary
 
