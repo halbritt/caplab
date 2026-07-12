@@ -112,5 +112,10 @@ quote failures as mechanical artifacts caused by stitched spans, omitted
 list items, Markdown normalization, or OCR/conversion spelling. The shared
 batch-processing `insufficient_context` result was the deterministic
 60,000-character context gate on a resolvable 86,539-character chapter
-section; its cited support occurs near the start. The only remaining
-disagreement was a supported-versus-partially-supported gradation.
+section; its cited support occurs near the start. The remaining
+supported-versus-partially-supported split on
+`data-transaction-guarantee-verification` exposed a second scope defect:
+the cited “Meaning of ACID” section supports the ambiguity of the ACID
+label, while property-specific guarantees occur in later sibling sections.
+Both narrowing proposals are model recommendations awaiting human
+adjudication, not doctrine decisions.
