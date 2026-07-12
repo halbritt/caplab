@@ -58,6 +58,20 @@ separate decisions under the selected plan.
   execution, external-trace retention, and live A/B trials remain
   unauthorized.
 
+- **2026-07-12 — Harbor installed and the adapter smoke-verified without
+  models.** Under explicit owner authorization, `harbor==0.18.0` was
+  installed (`uv tool install harbor==0.18.0`) and the rendered
+  `authority-withdrawal` pair ran the model-free matrix on Docker: the
+  oracle agent earned reward 1 with zero hard failures on both arms, and
+  the nop agent earned reward 0 with the `missing_receipt` subject failure
+  on both arms, with the complete mechanical arm result published under
+  each trial's verifier logs. The treatment job injected the live skill via
+  `--skill`; Harbor's `lock.json` skill provenance and the recorded
+  `skill_md_sha256` and per-file hashes all match the injected directory.
+  No model executed, and job records stayed outside the repository. The
+  first live A/B still requires the owner to select the model, cost,
+  output location, and retention policy.
+
 ## Objective and authority boundary
 
 Deliver a repository-native pilot that can compile a clean/mutated evaluation

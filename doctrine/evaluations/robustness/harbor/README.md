@@ -78,12 +78,27 @@ across jobs, not against `skill_md_sha256`.
 Afterwards collect the two receipts from the trial artifacts and grade the
 pair with the existing `grade` subcommand.
 
+## Model-free validation
+
+Both arms validate without any model. The oracle agent runs
+`solution/solve.sh` and must earn reward 1; the nop agent does nothing and
+must earn reward 0 with the `missing_receipt` hard failure in the trial's
+`verifier/arm-result.json`:
+
+```bash
+harbor run -p /tmp/doctrine-skill-harbor/control -a oracle -o /tmp/doctrine-skill-jobs
+harbor run -p /tmp/doctrine-skill-harbor/control -a nop    -o /tmp/doctrine-skill-jobs
+```
+
+Keep job output outside the repository; trial records are evaluation working
+state, not tracked artifacts.
+
 ## Boundaries
 
-- Harbor is not installed by this repository's tooling; installing it changes
-  the host and needs explicit authority. Pin an accepted version
-  (for example `pip install harbor==0.18.0`) rather than an unbounded latest
-  release, and recheck the task schema against the pinned version.
+- Harbor changes the host and is installed only under explicit authority;
+  this host runs `harbor==0.18.0` (`uv tool install harbor==0.18.0`,
+  authorized 2026-07-12). Keep the version pinned and recheck the task
+  schema before any upgrade.
 - No default repository check runs Harbor, builds a container, opens the
   network, or executes a model.
 - Live agent runs produce external traces; do not retain them without an
