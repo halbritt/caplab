@@ -58,6 +58,10 @@ concepts:
         locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/007-chapter-3-conquering-efficiency.md :: Resource-Aware Efficiency Requirements"
         contribution: Formalizes workload- and resource-bound efficiency targets.
         relationship: corroboration
+      - source_id: SRC-DDIA2
+        locator: 'books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/006-chapter-2-defining-nonfunctional-requirements.md :: Understanding Load'
+        contribution: Sharpens representative-workload evidence by requiring system-specific load parameters and their observed or explicitly projected distributions before a scalability objective is evaluated.
+        relationship: refinement
     confidence: strong
     roles: [performance-agent, architecture-agent, review-agent, debugging-and-repair-agent]
     languages: [language-independent]
@@ -127,6 +131,10 @@ concepts:
       - source_id: SRC-RI
         locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/012-chapter-6-case-study-phenomenal-cosmic-powers-itty-bitty-living-space.md :: Vital Signs"
         contribution: Incident evidence that latency averages computed only over completed requests hide timeouts - response time is a lagging indicator that can read nominal while effectively infinite, because requests that never finish are never averaged in.
+        relationship: refinement
+      - source_id: SRC-DDIA2
+        locator: 'books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/006-chapter-2-defining-nonfunctional-requirements.md :: Average, Median, and Percentiles'
+        contribution: Shows that arithmetic means conceal response-time distributions and that median and tail percentiles expose the experience of typical and slow requests without assuming a normal distribution.
         relationship: refinement
     confidence: strong
     roles: [performance-agent, review-agent, debugging-and-repair-agent]

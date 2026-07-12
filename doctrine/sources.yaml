@@ -9,6 +9,19 @@ sources:
     source_format: "pdf"
     chapter_count: 17
     source_roles: ["language-specific-implementation", "implementation-craft", "measurement-and-benchmarking"]
+  - id: SRC-ADPCH3
+    title: 'API Design Patterns (Chapter 3 extract: Naming)'
+    authors:
+      - JJ Geewax
+    corpus_path: books/bookshelf-ch-three-api-design-patterns
+    source_input_path: sources/bookshelf_ch_three_API_Design_Patterns.pdf
+    source_sha256: db598ff7b5789d20321693e594b18733bf58a029330dc13b174b61bdaff39872
+    source_format: pdf
+    chapter_count: 2
+    source_roles:
+      - api-design
+      - semantic-naming
+      - implementation-craft
   - id: SRC-APOSD
     title: A Philosophy of Software Design, 2nd Edition
     authors: [John K. Ousterhout]
@@ -66,6 +79,20 @@ sources:
       - domain-modeling
       - architectural-reasoning
       - model-and-implementation-integrity
+  - id: SRC-DDIA2
+    title: 'Designing Data-Intensive Applications: The Big Ideas Behind Reliable, Scalable, and Maintainable Systems'
+    authors:
+      - Martin Kleppmann
+      - Chris Riccomini
+    corpus_path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2
+    source_input_path: sources/dokumen.pub_designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2.pdf
+    source_sha256: bca051a41972f71043cf17b4c072b3e22767c01e50a6d5144bc11978566aacb8
+    source_format: pdf
+    chapter_count: 22
+    source_roles:
+      - data-systems-architecture
+      - distributed-data-and-consistency
+      - storage-processing-and-integration
   - id: SRC-EGO
     title: "Efficient Go: Data-Driven Performance Optimization"
     authors: [Bartłomiej Płotka]

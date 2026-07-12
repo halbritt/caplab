@@ -1040,6 +1040,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-DDIA2-0170ff730ccb
+  source_id: SRC-DDIA2
+  locator: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/005-chapter-1-trade-offs-in-data-systems-architecture.md#Distributed Versus Single-Node Systems
+  mappings:
+  - node_id: architecture-distribution-readiness
+    relationship_to_canonical: refinement
+  paraphrase: Conditions distribution on actual scale or availability requirements and identifies the added fault, latency, consistency, and operational complexity compared with a sufficient single-node system.
+  conditions: 'Canonical mapping applicability (not attributed to the source): proposing services, processes, queues, or independent deployments; reviewing a distributed migration or service decomposition'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-CA-ee58e1594efc
   source_id: SRC-CA
   locator: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/028-chapter-17-boundaries-drawing-lines.md#WHICH LINES DO YOU DRAW, AND WHEN DO YOU DRAW THEM?
@@ -1107,6 +1119,18 @@ formulations:
   - node_id: architecture-event-temporal-semantics
     relationship_to_canonical: direct_support
   paraphrase: Compares decentralized reactions with explicit workflow coordination.
+  conditions: 'Canonical mapping applicability (not attributed to the source): designing events, queues, pub-sub, sagas, or asynchronous workflows; reviewing choreography versus orchestration'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-DDIA2-078f8ffbff77
+  source_id: SRC-DDIA2
+  locator: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/010-chapter-6-replication.md#Detecting Concurrent Writes
+  mappings:
+  - node_id: architecture-event-temporal-semantics
+    relationship_to_canonical: refinement
+  paraphrase: Uses version vectors to distinguish causally ordered updates from genuinely concurrent writes so a system can avoid silently discarding concurrent information under arbitrary arrival order.
   conditions: 'Canonical mapping applicability (not attributed to the source): designing events, queues, pub-sub, sagas, or asynchronous workflows; reviewing choreography versus orchestration'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -1564,6 +1588,198 @@ formulations:
     relationship_to_canonical: tension
   paraphrase: Rejects the assumption that service separation guarantees team independence.
   conditions: 'Canonical mapping applicability (not attributed to the source): team ownership is used to justify decomposition; architecture governance or context relationships cross teams'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-DDIA2-a66c6a8c2453
+  source_id: SRC-DDIA2
+  locator: 'books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/015-chapter-11-batch-processing.md#Chapter 11: Batch Processing'
+  mappings:
+  - node_id: data-batch-reproducible-derivation
+    relationship_to_canonical: direct_support
+  paraphrase: Describes batch jobs as read-only transformations that regenerate output from scratch and derives rollback, comparison, monitoring, and human-fault-tolerance benefits from avoiding external side effects.
+  conditions: 'Canonical mapping applicability (not attributed to the source): building ETL, analytics, model-training, reconciliation, or bulk transformation jobs; reviewing retry and rollback of batch work'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-DDIA2-192f26ed7669
+  source_id: SRC-DDIA2
+  locator: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/014-chapter-10-consistency-and-consensus.md#Linearizability Versus Serializability
+  mappings:
+  - node_id: data-consistency-model-selection
+    relationship_to_canonical: direct_support
+  paraphrase: Separates linearizability from serializability and shows that a system may provide either, both, or neither, preventing one property from being assumed merely because the other is present.
+  conditions: 'Canonical mapping applicability (not attributed to the source): selecting read, write, or transaction consistency; reviewing replicated-state semantics; diagnosing stale or contradictory observations'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-DDIA2-15a3b593d274
+  source_id: SRC-DDIA2
+  locator: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/017-chapter-13-a-philosophy-of-streaming-systems.md#Designing for auditability
+  mappings:
+  - node_id: data-end-to-end-integrity-auditing
+    relationship_to_canonical: direct_support
+  paraphrase: Connects immutable input events, deterministic repeatable derivation, hashes, redundant recomputation, and provenance so derived state can be checked and unexpected behavior reproduced.
+  conditions: 'Canonical mapping applicability (not attributed to the source): operating durable derived-data pipelines; handling high-consequence financial, identity, or compliance data; reviewing backup, replay, or reconciliation claims'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-DDIA2-ffd22d8aeafa
+  source_id: SRC-DDIA2
+  locator: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/017-chapter-13-a-philosophy-of-streaming-systems.md#Uniquely identifying requests
+  mappings:
+  - node_id: data-end-to-end-request-idempotence
+    relationship_to_canonical: direct_support
+  paraphrase: Shows that connection-level duplicate suppression cannot cover retries across browser, service, and database boundaries and uses a unique request identifier plus a database uniqueness constraint to enforce one durable effect.
+  conditions: 'Canonical mapping applicability (not attributed to the source): processing commands that may be retried after an unknown outcome; charging, transferring, provisioning, sending, or incrementing through several hops; reviewing exactly-once claims'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-DDIA2-1f1518592eca
+  source_id: SRC-DDIA2
+  locator: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/016-chapter-12-stream-processing.md#Reasoning About Time
+  mappings:
+  - node_id: data-event-time-semantics
+    relationship_to_canonical: direct_support
+  paraphrase: Distinguishes event time from processing time and explains how lag, reprocessing, out-of-order arrival, and stragglers otherwise create nondeterministic or incorrect windowed results.
+  conditions: 'Canonical mapping applicability (not attributed to the source): building stream windows, joins, alerts, or temporal aggregates; replaying historical events; reviewing event timestamps and late-data handling'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-DDIA2-e17d5a9720f9
+  source_id: SRC-DDIA2
+  locator: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/013-chapter-9-the-trouble-with-distributed-systems.md#Distributed Locks and Leases
+  mappings:
+  - node_id: data-fencing-token-enforcement
+    relationship_to_canonical: direct_support
+  paraphrase: Demonstrates that a process can pause past lease expiry and later issue a stale write, and requires the storage service to reject that write by comparing monotonically increasing fencing tokens.
+  conditions: 'Canonical mapping applicability (not attributed to the source): using distributed locks or leases to protect writes or exclusive work; reviewing failover of a lease-holding worker'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-DDIA2-c28f08f1839b
+  source_id: SRC-DDIA2
+  locator: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/008-chapter-4-storage-and-retrieval.md#Storage and Indexing for OLTP
+  mappings:
+  - node_id: data-index-workload-tradeoff
+    relationship_to_canonical: direct_support
+  paraphrase: Establishes indexes as auxiliary structures that accelerate particular queries while consuming space and adding write overhead, so index selection must follow application query patterns.
+  conditions: 'Canonical mapping applicability (not attributed to the source): adding, changing, or removing database, search, or secondary indexes; diagnosing read latency or write amplification'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-DDIA2-c8436c9c7f1a
+  source_id: SRC-DDIA2
+  locator: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/018-chapter-14-doing-the-right-thing.md#Legislation and Self-Regulation
+  mappings:
+  - node_id: data-minimization-lifecycle
+    relationship_to_canonical: direct_support
+  paraphrase: Calls for collecting personal data only for specified necessary purposes and purging it once no longer needed, emphasizing that data not held cannot be leaked, stolen, or compelled for disclosure.
+  conditions: 'Canonical mapping applicability (not attributed to the source): collecting or retaining personal, behavioral, identity, location, health, or other sensitive data; setting retention for analytics, logs, events, or product features'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-DDIA2-b49dfb806296
+  source_id: SRC-DDIA2
+  locator: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/011-chapter-7-sharding.md#Skewed Workloads and Relieving Hot Spots
+  mappings:
+  - node_id: data-partition-key-workload-fit
+    relationship_to_canonical: direct_support
+  paraphrase: Shows how skewed keys and celebrity-like hot spots defeat otherwise even sharding and compares mitigations that spread load while adding bookkeeping and read fan-out.
+  conditions: 'Canonical mapping applicability (not attributed to the source): choosing or changing a shard or stream partition key; diagnosing hot partitions; designing tenant placement'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-DDIA2-816f8979603a
+  source_id: SRC-DDIA2
+  locator: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/010-chapter-6-replication.md#Synchronous Versus Asynchronous Replication
+  mappings:
+  - node_id: data-replication-guarantee-selection
+    relationship_to_canonical: direct_support
+  paraphrase: Contrasts synchronous and asynchronous follower acknowledgment by write latency, availability during follower failure, and the possibility of losing acknowledged writes during failover.
+  conditions: 'Canonical mapping applicability (not attributed to the source): selecting or configuring database replication; reviewing failover, durability, or multi-region behavior; diagnosing acknowledged-write loss or stale reads'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-DDIA2-017071268972
+  source_id: SRC-DDIA2
+  locator: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/009-chapter-5-encoding-and-evolution.md#The Merits of Schemas
+  mappings:
+  - node_id: data-schema-evolution-compatibility
+    relationship_to_canonical: direct_support
+  paraphrase: Establishes explicit schemas as current executable documentation, enables forward- and backward-compatibility checks before deployment, and reduces the number of data formats that must coexist during evolution.
+  conditions: 'Canonical mapping applicability (not attributed to the source): selecting or evolving a schema-based persisted, event, wire, or file format; configuring predeployment compatibility checks'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-DDIA2-0370551b8b7e
+  source_id: SRC-DDIA2
+  locator: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/011-chapter-7-sharding.md#Pros and Cons of Sharding
+  mappings:
+  - node_id: data-sharding-evidence-gate
+    relationship_to_canonical: direct_support
+  paraphrase: States that sharding is primarily needed when one node cannot hold the data or sustain the write rate and enumerates the query, transaction, index, and operational complexity it introduces.
+  conditions: 'Canonical mapping applicability (not attributed to the source): proposing database or workload sharding; reviewing a partitioned datastore or capacity limit; planning a shard migration'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-DDIA2-0f220f03ea5b
+  source_id: SRC-DDIA2
+  locator: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/016-chapter-12-stream-processing.md#Change Data Capture
+  mappings:
+  - node_id: data-single-authority-change-propagation
+    relationship_to_canonical: direct_support
+  paraphrase: Uses change data capture to make the source database the ordering leader and downstream indexes or warehouses followers that apply the same committed changes in order, while retaining asynchronous replication lag.
+  conditions: 'Canonical mapping applicability (not attributed to the source): synchronizing a database with caches, indexes, warehouses, or other stores; introducing change data capture or an outbox; reviewing dual writes'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-DDIA2-1eccdf7ec673
+  source_id: SRC-DDIA2
+  locator: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/005-chapter-1-trade-offs-in-data-systems-architecture.md#Systems of Record and Derived Data
+  mappings:
+  - node_id: data-system-of-record-derived-state
+    relationship_to_canonical: direct_support
+  paraphrase: Defines a system of record as the authoritative version of data and distinguishes indexes, caches, and materialized views as derived datasets that can be discarded and rebuilt from that authority.
+  conditions: 'Canonical mapping applicability (not attributed to the source): introducing a cache, search index, denormalized field, materialized view, warehouse feed, projection, or replicated read model; reviewing data ownership, read optimization, or recovery across several stores'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-DDIA2-cafc2f4675c8
+  source_id: SRC-DDIA2
+  locator: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/007-chapter-3-data-models-and-query-languages.md#Normalization, Denormalization, and Joins
+  mappings:
+  - node_id: data-system-of-record-derived-state
+    relationship_to_canonical: refinement
+  paraphrase: Frames normalization as storing a fact in one authoritative place and denormalization as deliberate duplication that can improve reads while increasing write work and consistency risk.
+  conditions: 'Canonical mapping applicability (not attributed to the source): introducing a cache, search index, denormalized field, materialized view, warehouse feed, projection, or replicated read model; reviewing data ownership, read optimization, or recovery across several stores'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-DDIA2-5087d042e616
+  source_id: SRC-DDIA2
+  locator: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/012-chapter-8-transactions.md#The Meaning of ACID
+  mappings:
+  - node_id: data-transaction-guarantee-verification
+    relationship_to_canonical: direct_support
+  paraphrase: Explains that ACID terminology is overloaded and marketed inconsistently, then separates the properties so application code can reason about the guarantee actually supplied.
+  conditions: 'Canonical mapping applicability (not attributed to the source): relying on database transactions for correctness; selecting an isolation level; reviewing retry or distributed transaction behavior'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
     conditions: canonical-mapping
@@ -3130,6 +3346,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-DDIA2-2d42ed988315
+  source_id: SRC-DDIA2
+  locator: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/007-chapter-3-data-models-and-query-languages.md#When to Use Which Model
+  mappings:
+  - node_id: implementation-representation-fit
+    relationship_to_canonical: refinement
+  paraphrase: Specializes representation fit for relational and document data by tying the choice to relationship shape, join needs, and access locality; graph and analytical representations are not attributed to this section.
+  conditions: 'Canonical mapping applicability (not attributed to the source): data-structure selection; state model; collection-heavy code; serialization boundary; algorithm implementation'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-CC-ba525ba51386
   source_id: SRC-CC
   locator: books/code-complete-2nd-edition-v413hav/chapters/031-chapter-22-developer-testing.md#22.3 Bag of Testing Tricks
@@ -3281,6 +3509,18 @@ formulations:
   - node_id: implementation-semantic-naming
     relationship_to_canonical: refinement
   paraphrase: Extends consistent vocabulary across requirements, code, tests, and communication.
+  conditions: 'Canonical mapping applicability (not attributed to the source): new symbol; API review; domain implementation; rename proposal'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-ADPCH3-1bea9183d8d8
+  source_id: SRC-ADPCH3
+  locator: books/bookshelf-ch-three-api-design-patterns/chapters/002-chapter-3-naming.md#3.5 Data types and units
+  mappings:
+  - node_id: implementation-semantic-naming
+    relationship_to_canonical: refinement
+  paraphrase: Shows that primitive fields with names such as size are ambiguous across bytes, duration, and dimensions, and recommends exposing units in the name or using a richer type that carries the distinction.
   conditions: 'Canonical mapping applicability (not attributed to the source): new symbol; API review; domain implementation; rename proposal'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -3958,6 +4198,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-DDIA2-4f773a8db5da
+  source_id: SRC-DDIA2
+  locator: 'books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/009-chapter-5-encoding-and-evolution.md#Dataflow Through Services: REST and RPC'
+  mappings:
+  - node_id: operations-integration-point-distrust
+    relationship_to_canonical: refinement
+  paraphrase: Shows that remote calls add uncertain outcomes, variable latency, serialization boundaries, retries, and duplicate effects that a local call does not have, so callers must own explicit failure semantics.
+  conditions: 'Canonical mapping applicability (not attributed to the source): writing or reviewing code that calls another process or service; integrating a vendor client library; diagnosing hangs near a remote dependency'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-RI-4e2b9949be10
   source_id: SRC-RI
   locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/017-chapter-11-security.md#The Principle of Least Privilege
@@ -4570,6 +4822,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-DDIA2-8acbb0c9286c
+  source_id: SRC-DDIA2
+  locator: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/006-chapter-2-defining-nonfunctional-requirements.md#Understanding Load
+  mappings:
+  - node_id: performance-measurable-objective
+    relationship_to_canonical: refinement
+  paraphrase: Sharpens representative-workload evidence by requiring system-specific load parameters and their observed or explicitly projected distributions before a scalability objective is evaluated.
+  conditions: 'Canonical mapping applicability (not attributed to the source): performance, capacity, cost, latency, throughput, or resource use is a stated goal; a defect may actually be a resource or termination failure'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-EGO-974dcb1239bc
   source_id: SRC-EGO
   locator: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/009-chapter-5-how-go-uses-memory-resource.md#Go Memory Management
@@ -4649,6 +4913,18 @@ formulations:
   - node_id: performance-metric-semantics
     relationship_to_canonical: refinement
   paraphrase: Incident evidence that latency averages computed only over completed requests hide timeouts - response time is a lagging indicator that can read nominal while effectively infinite, because requests that never finish are never averaged in.
+  conditions: 'Canonical mapping applicability (not attributed to the source): interpreting metrics, logs, traces, profiles, dashboards, or benchmark output'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-DDIA2-58fb155246fc
+  source_id: SRC-DDIA2
+  locator: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/006-chapter-2-defining-nonfunctional-requirements.md#Average, Median, and Percentiles
+  mappings:
+  - node_id: performance-metric-semantics
+    relationship_to_canonical: refinement
+  paraphrase: Shows that arithmetic means conceal response-time distributions and that median and tail percentiles expose the experience of typical and slow requests without assuming a normal distribution.
   conditions: 'Canonical mapping applicability (not attributed to the source): interpreting metrics, logs, traces, profiles, dashboards, or benchmark output'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -5417,6 +5693,18 @@ formulations:
   - node_id: refactoring-compatibility-migration
     relationship_to_canonical: refinement
   paraphrase: Shows schemaless stores still carry an implicit application schema across every document version ever written - of the four concurrent code/data version combinations only old-code-reads-new-data fails, so code able to read both versions must be fully rolled out before data migration runs, and trickle-then-batch migration amortizes migrations too large for a deployment window.
+  conditions: 'Canonical mapping applicability (not attributed to the source): public API; wire protocol; event; schema; file format; multi-repo consumer'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-ADPCH3-b7f6aed33730
+  source_id: SRC-ADPCH3
+  locator: books/bookshelf-ch-three-api-design-patterns/chapters/002-chapter-3-naming.md#3.1 Why do names matter?
+  mappings:
+  - node_id: refactoring-compatibility-migration
+    relationship_to_canonical: refinement
+  paraphrase: Explains that public API names survive compilation into independently owned consumer code, including private code the provider cannot update, so a rename cannot be treated as a local find-and-replace.
   conditions: 'Canonical mapping applicability (not attributed to the source): public API; wire protocol; event; schema; file format; multi-repo consumer'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -6569,6 +6857,18 @@ formulations:
   - node_id: universal-explicit-invariants
     relationship_to_canonical: refinement
   paraphrase: Reads a test act phase that needs more than one method call as evidence the API lets clients skip an invariant-maintaining step - an encapsulation breach the owner should close by performing the whole business operation in one method; applies to business-logic APIs, explicitly less to utility or infrastructure code.
+  conditions: 'Canonical mapping applicability (not attributed to the source): state, API, persistence, concurrency, domain, migration, or security rules are changed'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-DDIA2-e2232e87bd24
+  source_id: SRC-DDIA2
+  locator: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/012-chapter-8-transactions.md#Consistency
+  mappings:
+  - node_id: universal-explicit-invariants
+    relationship_to_canonical: refinement
+  paraphrase: Defines transaction consistency as preservation of application-specific invariants and makes clear that the application must correctly define and enforce those invariants; the database cannot infer arbitrary domain rules.
   conditions: 'Canonical mapping applicability (not attributed to the source): state, API, persistence, concurrency, domain, migration, or security rules are changed'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:

@@ -728,6 +728,10 @@ concepts:
     locator: 'books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/020-chapter-13-design-for-deployment.md :: Schemaless Databases'
     contribution: Shows schemaless stores still carry an implicit application schema across every document version ever written - of the four concurrent code/data version combinations only old-code-reads-new-data fails, so code able to read both versions must be fully rolled out before data migration runs, and trickle-then-batch migration amortizes migrations too large for a deployment window.
     relationship: refinement
+  - source_id: SRC-ADPCH3
+    locator: 'books/bookshelf-ch-three-api-design-patterns/chapters/002-chapter-3-naming.md :: 3.1 Why do names matter?'
+    contribution: Explains that public API names survive compilation into independently owned consumer code, including private code the provider cannot update, so a rename cannot be treated as a local find-and-replace.
+    relationship: refinement
   confidence: strong
   roles:
   - architecture-agent

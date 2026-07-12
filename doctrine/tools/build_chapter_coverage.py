@@ -24,13 +24,16 @@ LEDGERS = (
     DOCTRINE / "_work" / "extractions" / "operations-sources.md",
     DOCTRINE / "_work" / "extractions" / "testing-sources.md",
     DOCTRINE / "_work" / "extractions" / "go-concurrency-sources.md",
+    DOCTRINE / "_work" / "extractions" / "data-sources.md",
 )
 SOURCE_ALIASES = {
+    "ADP": "SRC-ADPCH3",
     "APOSD": "SRC-APOSD",
     "CA": "SRC-CA",
     "CC": "SRC-CC",
     "CIG": "SRC-CIG",
     "DDD": "SRC-DDD",
+    "DDIA": "SRC-DDIA2",
     "EGO": "SRC-EGO",
     "FP": "SRC-FP",
     "FSA": "SRC-FSA",

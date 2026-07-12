@@ -630,6 +630,10 @@ concepts:
         relationship: corroboration
         locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Integration Points"
         contribution: "Corroborates the cost side - every added remote integration point is a stability liability that can and will hang or fail, and the movement toward many small services and SaaS dependencies multiplies that exposure."
+      - source_id: SRC-DDIA2
+        locator: 'books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/005-chapter-1-trade-offs-in-data-systems-architecture.md :: Distributed Versus Single-Node Systems'
+        contribution: Conditions distribution on actual scale or availability requirements and identifies the added fault, latency, consistency, and operational complexity compared with a sufficient single-node system.
+        relationship: refinement
     confidence: strong
     roles: [architecture-agent, performance-agent, review-agent, debugging-and-repair-agent]
     languages: [language-independent]
@@ -728,6 +732,10 @@ concepts:
         relationship: direct_support
         locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/023-chapter-17-microservices-architecture.md :: Choreography and Orchestration"
         contribution: "Compares decentralized reactions with explicit workflow coordination."
+      - source_id: SRC-DDIA2
+        locator: 'books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/010-chapter-6-replication.md :: Detecting Concurrent Writes'
+        contribution: Uses version vectors to distinguish causally ordered updates from genuinely concurrent writes so a system can avoid silently discarding concurrent information under arbitrary arrival order.
+        relationship: refinement
     confidence: strong
     roles: [architecture-agent, coding-agent, performance-agent, debugging-and-repair-agent, review-agent]
     languages: [language-independent]

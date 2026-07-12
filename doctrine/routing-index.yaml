@@ -52,6 +52,7 @@ task_registry:
   - any active campaign
   - any behavioral analysis
   - any code or data change
+  - api-review
   - architecture-assessment
   - architecture-decision
   - architecture-evolution
@@ -113,6 +114,7 @@ task_registry:
   - creation-API
   - cross-repo co-change analysis
   - decomposition
+  - defect-repair
   - delete
   - deletion
   - dependency-breaking
@@ -237,6 +239,7 @@ task_registry:
   - optimize-system
   - optimize-throughput
   - package-design
+  - performance-optimization
   - performance-plan
   - performance-regression
   - performance-repair
@@ -391,6 +394,7 @@ task_registry:
   - any active campaign
   - any behavioral analysis
   - any code or data change
+  - api-review
   - architecture-assessment
   - architecture-decision
   - architecture-evolution
@@ -451,6 +455,7 @@ task_registry:
   - creation-API
   - cross-repo co-change analysis
   - decomposition
+  - defect-repair
   - delete
   - deletion
   - dependency-breaking
@@ -574,6 +579,7 @@ task_registry:
   - optimize-throughput
   - package reorganization
   - package-design
+  - performance-optimization
   - performance-plan
   - performance-regression
   - performance-repair
@@ -719,6 +725,7 @@ task_registry:
   - any active campaign
   - any behavioral analysis
   - any code or data change
+  - api-review
   - architecture-assessment
   - architecture-decision
   - architecture-evolution
@@ -768,6 +775,7 @@ task_registry:
   - creation-API
   - cross-repo co-change analysis
   - decomposition
+  - defect-repair
   - delete
   - deletion
   - dependency-breaking
@@ -850,6 +858,7 @@ task_registry:
   - optimize-system
   - optimize-throughput
   - package-design
+  - performance-optimization
   - performance-plan
   - performance-regression
   - performance-repair
@@ -956,6 +965,7 @@ task_registry:
   - aggregate-review
   - analyze-incident
   - any code or data change
+  - api-review
   - architecture-assessment
   - architecture-evolution
   - architecture-fitness
@@ -1009,6 +1019,7 @@ task_registry:
   - creation-API
   - cross-repo co-change analysis
   - decomposition
+  - defect-repair
   - delete
   - dependency-breaking
   - dependency-review
@@ -1114,6 +1125,7 @@ task_registry:
   - optimize-data-path
   - optimize-materialization
   - package-design
+  - performance-optimization
   - persistence-design
   - persistence-mapping
   - persistence-reconstitution
@@ -1241,6 +1253,7 @@ task_registry:
   - any active campaign
   - any behavioral analysis
   - any code or data change
+  - api-review
   - architecture-assessment
   - architecture-decision
   - architecture-evolution
@@ -1292,6 +1305,7 @@ task_registry:
   - cross-repo co-change analysis
   - decide whether to refactor
   - decomposition
+  - defect-repair
   - delete
   - deletion
   - dependency breaking
@@ -1394,6 +1408,7 @@ task_registry:
   - optimize-data-path
   - optimize-materialization
   - package-design
+  - performance-optimization
   - persistence-design
   - place-Go-behavior
   - place-new-behavior
@@ -1511,6 +1526,7 @@ task_registry:
   - any active campaign
   - any behavioral analysis
   - any code or data change
+  - api-review
   - architecture-assessment
   - architecture-decision
   - architecture-evolution
@@ -1562,6 +1578,7 @@ task_registry:
   - cross-repo co-change analysis
   - decide whether to refactor
   - decomposition
+  - defect-repair
   - delete
   - deletion
   - dependency breaking
@@ -1664,6 +1681,7 @@ task_registry:
   - optimize-data-path
   - optimize-materialization
   - package-design
+  - performance-optimization
   - persistence-design
   - place-Go-behavior
   - place-new-behavior
@@ -1784,6 +1802,7 @@ task_registry:
   - any active campaign
   - any behavioral analysis
   - any code or data change
+  - api-review
   - architecture-assessment
   - architecture-decision
   - architecture-evolution
@@ -1840,6 +1859,7 @@ task_registry:
   - create-test-seam
   - cross-repo co-change analysis
   - decomposition
+  - defect-repair
   - delete
   - deletion
   - dependency-breaking
@@ -1956,6 +1976,7 @@ task_registry:
   - optimize-throughput
   - package reorganization
   - package-design
+  - performance-optimization
   - performance-plan
   - performance-regression
   - performance-repair
@@ -2096,6 +2117,7 @@ task_registry:
   - any active campaign
   - any behavioral analysis
   - any code or data change
+  - api-review
   - architecture-assessment
   - architecture-decision
   - architecture-evolution
@@ -2145,6 +2167,7 @@ task_registry:
   - create-test-seam
   - cross-repo co-change analysis
   - decomposition
+  - defect-repair
   - delete
   - deletion
   - dependency-breaking
@@ -2252,6 +2275,7 @@ task_registry:
   - optimize-system
   - optimize-throughput
   - package-design
+  - performance-optimization
   - performance-plan
   - performance-regression
   - performance-repair
@@ -2386,6 +2410,7 @@ task_registry:
   - any active campaign
   - any behavioral analysis
   - any code or data change
+  - api-review
   - architecture-assessment
   - architecture-decision
   - architecture-evolution
@@ -2454,6 +2479,7 @@ task_registry:
   - cross-repo co-change analysis
   - decide whether to refactor
   - decomposition
+  - defect-repair
   - delete
   - deletion
   - dependency breaking
@@ -2587,6 +2613,7 @@ task_registry:
   - optimize-throughput
   - package reorganization
   - package-design
+  - performance-optimization
   - performance-plan
   - performance-regression
   - performance-repair
@@ -3901,6 +3928,772 @@ concept_routes:
   activate_for_role_families:
   - architecture-agent
   - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+- concept_id: data-batch-reproducible-derivation
+  artifact: concepts/data.yaml
+  activate_for_roles:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_tasks:
+  - architecture-assessment
+  - implementation
+  - defect-repair
+  activate_for_repository_signals:
+  - batch job
+  - ETL pipeline
+  - bulk load
+  - model training
+  - scheduled workflow
+  activate_for_languages:
+  - language-independent
+  activate_for_risk_classes:
+  - data-integrity
+  - correctness
+  - reliability
+  - rollback
+  exclude_when:
+  - the task has no derived output or replay requirement
+  prerequisites:
+  - versioned inputs
+  - owned output activation and side effects
+  retrieval_priority: high
+  retrieval_budget_hint: 390
+  related_concepts:
+  - data-system-of-record-derived-state
+  - universal-reversible-reviewable-change
+  - performance-semantic-preservation
+  - operations-production-readiness
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+- concept_id: data-consistency-model-selection
+  artifact: concepts/data.yaml
+  activate_for_roles:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_tasks:
+  - architecture-assessment
+  - implementation
+  - repository-assessment
+  activate_for_repository_signals:
+  - consistency setting
+  - stale read
+  - serializable transaction
+  - replica read
+  - uniqueness constraint
+  activate_for_languages:
+  - language-independent
+  activate_for_risk_classes:
+  - correctness
+  - concurrency
+  - availability
+  - performance
+  exclude_when:
+  - no ordering, recency, or consistency property is relied upon
+  prerequisites:
+  - forbidden observation or invariant
+  - datastore guarantee
+  retrieval_priority: core
+  retrieval_budget_hint: 410
+  related_concepts:
+  - data-transaction-guarantee-verification
+  - data-replication-guarantee-selection
+  - architecture-scoped-characteristics
+  - architecture-interaction-synchrony
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+- concept_id: data-end-to-end-integrity-auditing
+  artifact: concepts/data.yaml
+  activate_for_roles:
+  - architecture-agent
+  - debugging-and-repair-agent
+  - review-agent
+  - repository-assessment-agent
+  activate_for_tasks:
+  - architecture-assessment
+  - defect-repair
+  - repository-assessment
+  activate_for_repository_signals:
+  - audit log
+  - reconciliation job
+  - backup restore
+  - derived pipeline
+  - silent corruption
+  activate_for_languages:
+  - language-independent
+  activate_for_risk_classes:
+  - data-integrity
+  - evidence
+  - correctness
+  - durability
+  exclude_when:
+  - the data and outputs are explicitly disposable
+  prerequisites:
+  - owned integrity invariant
+  - source and derivation identity
+  retrieval_priority: high
+  retrieval_budget_hint: 420
+  related_concepts:
+  - operations-transparency-by-design
+  - data-batch-reproducible-derivation
+  - data-system-of-record-derived-state
+  - universal-measure-claimed-improvement
+  activate_for_role_families:
+  - architecture-agent
+  - debugging-and-repair-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+- concept_id: data-end-to-end-request-idempotence
+  artifact: concepts/data.yaml
+  activate_for_roles:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_tasks:
+  - architecture-assessment
+  - implementation
+  - defect-repair
+  - api-review
+  activate_for_repository_signals:
+  - retryable command
+  - payment
+  - message consumer
+  - timeout after commit
+  - idempotency key
+  activate_for_languages:
+  - language-independent
+  activate_for_risk_classes:
+  - correctness
+  - data-integrity
+  - high for external side effects
+  - reliability
+  exclude_when:
+  - duplicate execution is proven harmless and naturally idempotent
+  prerequisites:
+  - stable intent identity
+  - atomic durable effect boundary
+  retrieval_priority: core
+  retrieval_budget_hint: 410
+  related_concepts:
+  - architecture-event-temporal-semantics
+  - implementation-explicit-failure-policy
+  - data-single-authority-change-propagation
+  - data-transaction-guarantee-verification
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+- concept_id: data-event-time-semantics
+  artifact: concepts/data.yaml
+  activate_for_roles:
+  - architecture-agent
+  - coding-agent
+  - performance-agent
+  - review-agent
+  activate_for_tasks:
+  - architecture-assessment
+  - implementation
+  - performance-optimization
+  activate_for_repository_signals:
+  - stream window
+  - event timestamp
+  - watermark
+  - late event
+  - temporal join
+  activate_for_languages:
+  - language-independent
+  activate_for_risk_classes:
+  - correctness
+  - data-integrity
+  - performance
+  - runtime-semantics
+  exclude_when:
+  - time and ordering cannot change the result
+  prerequisites:
+  - timestamp authority
+  - delay and ordering model
+  retrieval_priority: specialist
+  retrieval_budget_hint: 400
+  related_concepts:
+  - architecture-event-temporal-semantics
+  - performance-metric-semantics
+  - data-batch-reproducible-derivation
+  - data-end-to-end-request-idempotence
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+- concept_id: data-fencing-token-enforcement
+  artifact: concepts/data.yaml
+  activate_for_roles:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_tasks:
+  - architecture-assessment
+  - implementation
+  - defect-repair
+  activate_for_repository_signals:
+  - distributed lock
+  - lease renewal
+  - leader failover
+  - worker ownership
+  - process pause
+  activate_for_languages:
+  - language-independent
+  activate_for_risk_classes:
+  - concurrency
+  - correctness
+  - data-integrity
+  - availability
+  exclude_when:
+  - no distributed mutual-exclusion claim protects mutable state
+  prerequisites:
+  - resource can compare and reject tokens
+  - monotonic token authority
+  retrieval_priority: specialist
+  retrieval_budget_hint: 390
+  related_concepts:
+  - operations-designed-failure-modes
+  - architecture-event-temporal-semantics
+  - data-transaction-guarantee-verification
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+- concept_id: data-index-workload-tradeoff
+  artifact: concepts/data.yaml
+  activate_for_roles:
+  - coding-agent
+  - performance-agent
+  - review-agent
+  activate_for_tasks:
+  - implementation
+  - performance-optimization
+  - architecture-assessment
+  activate_for_repository_signals:
+  - CREATE INDEX
+  - slow query
+  - write amplification
+  - unused index
+  - full-text index
+  activate_for_languages:
+  - language-independent
+  activate_for_risk_classes:
+  - performance
+  - data
+  - cost
+  - maintainability
+  exclude_when:
+  - no auxiliary access structure is being changed or assessed
+  prerequisites:
+  - representative query workload
+  - write and storage budget
+  retrieval_priority: high
+  retrieval_budget_hint: 340
+  related_concepts:
+  - data-system-of-record-derived-state
+  - performance-benchmark-validity
+  - performance-algorithm-and-work-first
+  - performance-cache-validity
+  activate_for_role_families:
+  - coding-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - performance-optimization
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - repository-assessment
+- concept_id: data-minimization-lifecycle
+  artifact: concepts/data.yaml
+  activate_for_roles:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_tasks:
+  - architecture-assessment
+  - implementation
+  - api-review
+  activate_for_repository_signals:
+  - personal data
+  - behavior tracking
+  - analytics event
+  - retention policy
+  - delete request
+  activate_for_languages:
+  - language-independent
+  activate_for_risk_classes:
+  - privacy
+  - security
+  - data-integrity
+  - critical ethical and social
+  exclude_when:
+  - no personal or sensitive data is collected, retained, or propagated
+  prerequisites:
+  - data classification
+  - purpose and authority
+  - lifecycle inventory
+  retrieval_priority: core
+  retrieval_budget_hint: 430
+  related_concepts:
+  - operations-bounded-accumulation
+  - data-system-of-record-derived-state
+  - data-end-to-end-integrity-auditing
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+- concept_id: data-partition-key-workload-fit
+  artifact: concepts/data.yaml
+  activate_for_roles:
+  - architecture-agent
+  - performance-agent
+  - coding-agent
+  - review-agent
+  activate_for_tasks:
+  - architecture-assessment
+  - performance-optimization
+  - implementation
+  activate_for_repository_signals:
+  - hot partition
+  - partition key
+  - tenant placement
+  - key skew
+  - read fan-out
+  activate_for_languages:
+  - language-independent
+  activate_for_risk_classes:
+  - performance
+  - availability
+  - data
+  - cost
+  exclude_when:
+  - no partitioned data or work exists
+  prerequisites:
+  - representative key distribution
+  - access-locality requirements
+  retrieval_priority: high
+  retrieval_budget_hint: 370
+  related_concepts:
+  - data-sharding-evidence-gate
+  - performance-measurable-objective
+  - architecture-contextual-partitioning
+  - performance-representative-baseline
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - performance-optimization
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - implementation
+  - repository-assessment
+- concept_id: data-replication-guarantee-selection
+  artifact: concepts/data.yaml
+  activate_for_roles:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_tasks:
+  - architecture-assessment
+  - implementation
+  - repository-assessment
+  activate_for_repository_signals:
+  - replica
+  - failover
+  - replication lag
+  - multi-region database
+  - recovery point
+  activate_for_languages:
+  - language-independent
+  activate_for_risk_classes:
+  - durability
+  - availability
+  - performance
+  - data-integrity
+  exclude_when:
+  - no replicated durable state is involved
+  prerequisites:
+  - durability and availability objectives
+  - replication and failover topology
+  retrieval_priority: core
+  retrieval_budget_hint: 420
+  related_concepts:
+  - data-consistency-model-selection
+  - operations-designed-failure-modes
+  - operations-resilience-margin
+  - architecture-distribution-readiness
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+- concept_id: data-schema-evolution-compatibility
+  artifact: concepts/data.yaml
+  activate_for_roles:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  - refactoring-agent
+  activate_for_tasks:
+  - implementation
+  - api-review
+  - refactoring
+  - architecture-assessment
+  activate_for_repository_signals:
+  - schema change
+  - event version
+  - wire field
+  - rolling deployment
+  - stored payload
+  activate_for_languages:
+  - language-independent
+  activate_for_risk_classes:
+  - compatibility
+  - data-integrity
+  - migration
+  - deployment
+  exclude_when:
+  - the representation is private, ephemeral, and changed atomically
+  prerequisites:
+  - consumer and persisted-data inventory
+  - accepted compatibility interval
+  retrieval_priority: core
+  retrieval_budget_hint: 410
+  related_concepts:
+  - refactoring-compatibility-migration
+  - operations-live-interface-compatibility
+  - data-single-authority-change-propagation
+  - universal-explicit-invariants
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - refactoring-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+- concept_id: data-sharding-evidence-gate
+  artifact: concepts/data.yaml
+  activate_for_roles:
+  - architecture-agent
+  - performance-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_tasks:
+  - architecture-assessment
+  - performance-optimization
+  - repository-assessment
+  activate_for_repository_signals:
+  - shard proposal
+  - partitioned table
+  - single-node limit
+  - cross-shard query
+  - rebalance
+  activate_for_languages:
+  - language-independent
+  activate_for_risk_classes:
+  - architecture
+  - data
+  - availability
+  - operational
+  - cost
+  exclude_when:
+  - single-node capacity and operational objectives are already satisfied
+  prerequisites:
+  - representative load model
+  - single-node baseline
+  - data and transaction map
+  retrieval_priority: core
+  retrieval_budget_hint: 440
+  related_concepts:
+  - architecture-distribution-readiness
+  - performance-measurable-objective
+  - data-partition-key-workload-fit
+  - architecture-contextual-partitioning
+  activate_for_role_families:
+  - architecture-agent
+  - performance-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+- concept_id: data-single-authority-change-propagation
+  artifact: concepts/data.yaml
+  activate_for_roles:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_tasks:
+  - architecture-assessment
+  - implementation
+  - api-review
+  activate_for_repository_signals:
+  - dual write
+  - CDC connector
+  - outbox table
+  - search-index sync
+  - cache invalidation stream
+  activate_for_languages:
+  - language-independent
+  activate_for_risk_classes:
+  - data-integrity
+  - compatibility
+  - availability
+  - coordination
+  exclude_when:
+  - no fact is replicated into a derived system
+  prerequisites:
+  - accepted write authority
+  - durable ordered change source
+  retrieval_priority: core
+  retrieval_budget_hint: 430
+  related_concepts:
+  - data-system-of-record-derived-state
+  - data-schema-evolution-compatibility
+  - architecture-event-temporal-semantics
+  - data-end-to-end-request-idempotence
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+- concept_id: data-system-of-record-derived-state
+  artifact: concepts/data.yaml
+  activate_for_roles:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_tasks:
+  - architecture-assessment
+  - implementation
+  - api-review
+  activate_for_repository_signals:
+  - cache or index
+  - multiple datastores
+  - dual write
+  - materialized view
+  - warehouse feed
+  activate_for_languages:
+  - language-independent
+  activate_for_risk_classes:
+  - data
+  - data-integrity
+  - architecture
+  - correctness
+  exclude_when:
+  - there is only one representation and no proposed derivative
+  prerequisites:
+  - identified mutation paths
+  - accepted data authority
+  retrieval_priority: core
+  retrieval_budget_hint: 390
+  related_concepts:
+  - data-single-authority-change-propagation
+  - performance-cache-validity
+  - universal-explicit-invariants
+  - data-index-workload-tradeoff
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+- concept_id: data-transaction-guarantee-verification
+  artifact: concepts/data.yaml
+  activate_for_roles:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_tasks:
+  - architecture-assessment
+  - implementation
+  - defect-repair
+  - repository-assessment
+  activate_for_repository_signals:
+  - transaction block
+  - isolation setting
+  - retry loop
+  - write skew
+  - distributed transaction
+  activate_for_languages:
+  - language-independent
+  activate_for_risk_classes:
+  - correctness
+  - data-integrity
+  - durability
+  - concurrency
+  exclude_when:
+  - no transaction or consistency guarantee supports the claimed behavior
+  prerequisites:
+  - explicit application invariants
+  - datastore guarantee and configuration
+  retrieval_priority: core
+  retrieval_budget_hint: 430
+  related_concepts:
+  - universal-explicit-invariants
+  - data-consistency-model-selection
+  - implementation-explicit-failure-policy
+  - performance-semantic-preservation
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
   - review-agent
   activate_for_task_families:
   - architecture-assessment
@@ -11899,6 +12692,17 @@ role_bundles:
   - architecture-policy-mechanism-separation
   - architecture-selective-option-preservation
   - architecture-structural-constraint-enforcement
+  - data-batch-reproducible-derivation
+  - data-consistency-model-selection
+  - data-end-to-end-request-idempotence
+  - data-index-workload-tradeoff
+  - data-minimization-lifecycle
+  - data-partition-key-workload-fit
+  - data-replication-guarantee-selection
+  - data-schema-evolution-compatibility
+  - data-single-authority-change-propagation
+  - data-system-of-record-derived-state
+  - data-transaction-guarantee-verification
   - debugging-causal-repair
   - debugging-hypothesis-led-investigation
   - go-channel-capacity-contract
@@ -11989,6 +12793,8 @@ role_bundles:
   - architecture-event-temporal-semantics
   - architecture-framework-commitment
   - architecture-interaction-synchrony
+  - data-event-time-semantics
+  - data-fencing-token-enforcement
   - domain-aggregate-invariant-boundary
   - domain-anticorruption-layer
   - domain-association-constraint
@@ -12113,6 +12919,18 @@ role_bundles:
   - architecture-selective-option-preservation
   - architecture-structural-constraint-enforcement
   - architecture-team-topology-force
+  - data-batch-reproducible-derivation
+  - data-consistency-model-selection
+  - data-end-to-end-integrity-auditing
+  - data-end-to-end-request-idempotence
+  - data-minimization-lifecycle
+  - data-partition-key-workload-fit
+  - data-replication-guarantee-selection
+  - data-schema-evolution-compatibility
+  - data-sharding-evidence-gate
+  - data-single-authority-change-propagation
+  - data-system-of-record-derived-state
+  - data-transaction-guarantee-verification
   - go-channel-capacity-contract
   - go-consumer-owned-interfaces
   - go-context-lifecycle-propagation
@@ -12172,6 +12990,8 @@ role_bundles:
   - architecture-framework-commitment
   - architecture-interaction-synchrony
   - architecture-risk-analysis
+  - data-event-time-semantics
+  - data-fencing-token-enforcement
   - domain-aggregate-invariant-boundary
   - domain-anticorruption-layer
   - domain-bounded-context
@@ -12269,6 +13089,7 @@ role_bundles:
   - architecture-change-locality-cohesion
   - architecture-earned-boundary
   - architecture-metrics-as-signals
+  - data-schema-evolution-compatibility
   - implementation-duplication-as-evidence
   - implementation-placement-by-ownership
   - implementation-risk-driven-tests
@@ -12417,6 +13238,9 @@ role_bundles:
   - agent-conduct-authority-bounded-action
   - architecture-fitness-functions
   - architecture-scoped-characteristics
+  - data-index-workload-tradeoff
+  - data-partition-key-workload-fit
+  - data-sharding-evidence-gate
   - go-channel-capacity-contract
   - go-goroutine-resource-lifecycle
   - go-semantics-before-performance-constructs
@@ -12455,6 +13279,7 @@ role_bundles:
   - architecture-event-temporal-semantics
   - architecture-interaction-synchrony
   - architecture-risk-analysis
+  - data-event-time-semantics
   - domain-aggregate-invariant-boundary
   - domain-association-constraint
   - domain-repository-lifecycle
@@ -12519,6 +13344,19 @@ role_bundles:
   - architecture-selective-option-preservation
   - architecture-structural-constraint-enforcement
   - architecture-team-topology-force
+  - data-batch-reproducible-derivation
+  - data-consistency-model-selection
+  - data-end-to-end-integrity-auditing
+  - data-end-to-end-request-idempotence
+  - data-index-workload-tradeoff
+  - data-minimization-lifecycle
+  - data-partition-key-workload-fit
+  - data-replication-guarantee-selection
+  - data-schema-evolution-compatibility
+  - data-sharding-evidence-gate
+  - data-single-authority-change-propagation
+  - data-system-of-record-derived-state
+  - data-transaction-guarantee-verification
   - debugging-causal-repair
   - debugging-hypothesis-led-investigation
   - go-channel-capacity-contract
@@ -12623,6 +13461,8 @@ role_bundles:
   - architecture-framework-commitment
   - architecture-interaction-synchrony
   - architecture-risk-analysis
+  - data-event-time-semantics
+  - data-fencing-token-enforcement
   - domain-aggregate-invariant-boundary
   - domain-anticorruption-layer
   - domain-association-constraint
@@ -12727,6 +13567,10 @@ role_bundles:
   default_concepts:
   - agent-conduct-authority-bounded-action
   - architecture-fitness-functions
+  - data-batch-reproducible-derivation
+  - data-end-to-end-integrity-auditing
+  - data-end-to-end-request-idempotence
+  - data-transaction-guarantee-verification
   - debugging-causal-repair
   - debugging-hypothesis-led-investigation
   - go-context-lifecycle-propagation
@@ -12785,6 +13629,7 @@ role_bundles:
   conditional_concepts:
   - architecture-distribution-readiness
   - architecture-event-temporal-semantics
+  - data-fencing-token-enforcement
   - implementation-non-obvious-commentary
   - legacy-pinch-point
   - legacy-provisional-safety-net
@@ -12836,6 +13681,8 @@ role_bundles:
   - architecture-metrics-as-signals
   - architecture-scoped-characteristics
   - architecture-team-topology-force
+  - data-end-to-end-integrity-auditing
+  - data-sharding-evidence-gate
   - legacy-scratch-refactoring
   - operations-build-provenance
   - operations-dependency-vulnerability-currency
@@ -12979,6 +13826,21 @@ task_bundles:
   - architecture-selective-option-preservation
   - architecture-structural-constraint-enforcement
   - architecture-team-topology-force
+  - data-batch-reproducible-derivation
+  - data-consistency-model-selection
+  - data-end-to-end-integrity-auditing
+  - data-end-to-end-request-idempotence
+  - data-event-time-semantics
+  - data-fencing-token-enforcement
+  - data-index-workload-tradeoff
+  - data-minimization-lifecycle
+  - data-partition-key-workload-fit
+  - data-replication-guarantee-selection
+  - data-schema-evolution-compatibility
+  - data-sharding-evidence-gate
+  - data-single-authority-change-propagation
+  - data-system-of-record-derived-state
+  - data-transaction-guarantee-verification
   - domain-aggregate-invariant-boundary
   - domain-anticorruption-layer
   - domain-association-constraint
@@ -13161,6 +14023,21 @@ task_bundles:
   - architecture-selective-option-preservation
   - architecture-structural-constraint-enforcement
   - architecture-team-topology-force
+  - data-batch-reproducible-derivation
+  - data-consistency-model-selection
+  - data-end-to-end-integrity-auditing
+  - data-end-to-end-request-idempotence
+  - data-event-time-semantics
+  - data-fencing-token-enforcement
+  - data-index-workload-tradeoff
+  - data-minimization-lifecycle
+  - data-partition-key-workload-fit
+  - data-replication-guarantee-selection
+  - data-schema-evolution-compatibility
+  - data-sharding-evidence-gate
+  - data-single-authority-change-propagation
+  - data-system-of-record-derived-state
+  - data-transaction-guarantee-verification
   - domain-aggregate-invariant-boundary
   - domain-anticorruption-layer
   - domain-association-constraint
@@ -13243,6 +14120,17 @@ task_bundles:
   - architecture-selective-option-preservation
   - architecture-structural-constraint-enforcement
   - architecture-team-topology-force
+  - data-batch-reproducible-derivation
+  - data-consistency-model-selection
+  - data-end-to-end-integrity-auditing
+  - data-end-to-end-request-idempotence
+  - data-minimization-lifecycle
+  - data-replication-guarantee-selection
+  - data-schema-evolution-compatibility
+  - data-sharding-evidence-gate
+  - data-single-authority-change-propagation
+  - data-system-of-record-derived-state
+  - data-transaction-guarantee-verification
   - debugging-causal-repair
   - debugging-hypothesis-led-investigation
   - operations-automation-safeguards
@@ -13275,6 +14163,8 @@ task_bundles:
   - universal-reversible-reviewable-change
   - universal-separate-semantic-structural-change
   conditional_concepts:
+  - data-index-workload-tradeoff
+  - data-partition-key-workload-fit
   - domain-aggregate-invariant-boundary
   - domain-anticorruption-layer
   - domain-association-constraint
@@ -13355,6 +14245,17 @@ task_bundles:
   - architecture-selective-option-preservation
   - architecture-structural-constraint-enforcement
   - architecture-team-topology-force
+  - data-batch-reproducible-derivation
+  - data-consistency-model-selection
+  - data-end-to-end-integrity-auditing
+  - data-end-to-end-request-idempotence
+  - data-minimization-lifecycle
+  - data-replication-guarantee-selection
+  - data-schema-evolution-compatibility
+  - data-sharding-evidence-gate
+  - data-single-authority-change-propagation
+  - data-system-of-record-derived-state
+  - data-transaction-guarantee-verification
   - operations-bounded-accumulation
   - operations-cascading-failure-halting
   - operations-designed-failure-modes
@@ -13521,6 +14422,19 @@ task_bundles:
   - architecture-selective-option-preservation
   - architecture-structural-constraint-enforcement
   - architecture-team-topology-force
+  - data-batch-reproducible-derivation
+  - data-consistency-model-selection
+  - data-end-to-end-integrity-auditing
+  - data-end-to-end-request-idempotence
+  - data-event-time-semantics
+  - data-fencing-token-enforcement
+  - data-minimization-lifecycle
+  - data-replication-guarantee-selection
+  - data-schema-evolution-compatibility
+  - data-sharding-evidence-gate
+  - data-single-authority-change-propagation
+  - data-system-of-record-derived-state
+  - data-transaction-guarantee-verification
   - go-channel-capacity-contract
   - go-consumer-owned-interfaces
   - go-context-lifecycle-propagation
@@ -13685,6 +14599,19 @@ task_bundles:
   - architecture-selective-option-preservation
   - architecture-structural-constraint-enforcement
   - architecture-team-topology-force
+  - data-batch-reproducible-derivation
+  - data-consistency-model-selection
+  - data-end-to-end-integrity-auditing
+  - data-end-to-end-request-idempotence
+  - data-event-time-semantics
+  - data-fencing-token-enforcement
+  - data-minimization-lifecycle
+  - data-replication-guarantee-selection
+  - data-schema-evolution-compatibility
+  - data-sharding-evidence-gate
+  - data-single-authority-change-propagation
+  - data-system-of-record-derived-state
+  - data-transaction-guarantee-verification
   - go-channel-capacity-contract
   - go-consumer-owned-interfaces
   - go-context-lifecycle-propagation
@@ -13885,6 +14812,21 @@ task_bundles:
   - architecture-selective-option-preservation
   - architecture-structural-constraint-enforcement
   - architecture-team-topology-force
+  - data-batch-reproducible-derivation
+  - data-consistency-model-selection
+  - data-end-to-end-integrity-auditing
+  - data-end-to-end-request-idempotence
+  - data-event-time-semantics
+  - data-fencing-token-enforcement
+  - data-index-workload-tradeoff
+  - data-minimization-lifecycle
+  - data-partition-key-workload-fit
+  - data-replication-guarantee-selection
+  - data-schema-evolution-compatibility
+  - data-sharding-evidence-gate
+  - data-single-authority-change-propagation
+  - data-system-of-record-derived-state
+  - data-transaction-guarantee-verification
   - go-bounded-concurrency
   - legacy-characterization-surfaces
   - legacy-cover-and-modify
@@ -13948,6 +14890,8 @@ task_bundles:
   primary_concepts:
   - agent-conduct-authority-bounded-action
   - architecture-decision-record
+  - data-index-workload-tradeoff
+  - data-partition-key-workload-fit
   - debugging-causal-repair
   - debugging-hypothesis-led-investigation
   - operations-automation-safeguards
@@ -14007,6 +14951,19 @@ task_bundles:
   - architecture-selective-option-preservation
   - architecture-structural-constraint-enforcement
   - architecture-team-topology-force
+  - data-batch-reproducible-derivation
+  - data-consistency-model-selection
+  - data-end-to-end-integrity-auditing
+  - data-end-to-end-request-idempotence
+  - data-event-time-semantics
+  - data-fencing-token-enforcement
+  - data-minimization-lifecycle
+  - data-replication-guarantee-selection
+  - data-schema-evolution-compatibility
+  - data-sharding-evidence-gate
+  - data-single-authority-change-propagation
+  - data-system-of-record-derived-state
+  - data-transaction-guarantee-verification
   - go-channel-capacity-contract
   - go-consumer-owned-interfaces
   - go-context-lifecycle-propagation
@@ -14154,6 +15111,21 @@ task_bundles:
   - architecture-selective-option-preservation
   - architecture-structural-constraint-enforcement
   - architecture-team-topology-force
+  - data-batch-reproducible-derivation
+  - data-consistency-model-selection
+  - data-end-to-end-integrity-auditing
+  - data-end-to-end-request-idempotence
+  - data-event-time-semantics
+  - data-fencing-token-enforcement
+  - data-index-workload-tradeoff
+  - data-minimization-lifecycle
+  - data-partition-key-workload-fit
+  - data-replication-guarantee-selection
+  - data-schema-evolution-compatibility
+  - data-sharding-evidence-gate
+  - data-single-authority-change-propagation
+  - data-system-of-record-derived-state
+  - data-transaction-guarantee-verification
   - domain-aggregate-invariant-boundary
   - domain-anticorruption-layer
   - domain-association-constraint
@@ -14405,6 +15377,8 @@ risk_routes:
   - architecture-selective-option-preservation
   - architecture-structural-constraint-enforcement
   - architecture-team-topology-force
+  - data-sharding-evidence-gate
+  - data-system-of-record-derived-state
   - domain-bounded-context
   - domain-context-relationship-selection
   - domain-core-domain-priority
@@ -14427,6 +15401,12 @@ risk_routes:
   - operations-automation-safeguards
 - risk_class: availability
   concepts:
+  - data-consistency-model-selection
+  - data-fencing-token-enforcement
+  - data-partition-key-workload-fit
+  - data-replication-guarantee-selection
+  - data-sharding-evidence-gate
+  - data-single-authority-change-propagation
   - debugging-hypothesis-led-investigation
   - go-bounded-concurrency
   - go-context-lifecycle-propagation
@@ -14483,6 +15463,8 @@ risk_routes:
   - architecture-framework-commitment
   - architecture-selective-option-preservation
   - architecture-structural-constraint-enforcement
+  - data-schema-evolution-compatibility
+  - data-single-authority-change-propagation
   - domain-anticorruption-layer
   - domain-context-relationship-selection
   - go-consumer-owned-interfaces
@@ -14510,6 +15492,9 @@ risk_routes:
   - universal-preserve-behavior-by-default
 - risk_class: concurrency
   concepts:
+  - data-consistency-model-selection
+  - data-fencing-token-enforcement
+  - data-transaction-guarantee-verification
   - go-bounded-concurrency
   - go-channel-capacity-contract
   - go-goroutine-resource-lifecycle
@@ -14531,11 +15516,20 @@ risk_routes:
   - universal-explicit-invariants
 - risk_class: coordination
   concepts:
+  - data-single-authority-change-propagation
   - universal-change-amplification
 - risk_class: correctness
   concepts:
   - architecture-event-temporal-semantics
   - architecture-fitness-functions
+  - data-batch-reproducible-derivation
+  - data-consistency-model-selection
+  - data-end-to-end-integrity-auditing
+  - data-end-to-end-request-idempotence
+  - data-event-time-semantics
+  - data-fencing-token-enforcement
+  - data-system-of-record-derived-state
+  - data-transaction-guarantee-verification
   - debugging-causal-repair
   - debugging-hypothesis-led-investigation
   - domain-aggregate-invariant-boundary
@@ -14601,12 +15595,16 @@ risk_routes:
   - architecture-distribution-readiness
   - architecture-modular-monolith
   - architecture-selective-option-preservation
+  - data-index-workload-tradeoff
+  - data-partition-key-workload-fit
+  - data-sharding-evidence-gate
   - operations-capacity-ratio-realism
   - operations-production-readiness
   - operations-resilience-margin
   - performance-measurable-objective
 - risk_class: critical ethical and social
   concepts:
+  - data-minimization-lifecycle
   - repository-assessment-metrics-not-performance
 - risk_class: critical for durable data
   concepts:
@@ -14629,6 +15627,10 @@ risk_routes:
   - architecture-interaction-synchrony
   - architecture-modular-monolith
   - architecture-policy-mechanism-separation
+  - data-index-workload-tradeoff
+  - data-partition-key-workload-fit
+  - data-sharding-evidence-gate
+  - data-system-of-record-derived-state
   - domain-aggregate-invariant-boundary
   - domain-anticorruption-layer
   - domain-association-constraint
@@ -14644,6 +15646,17 @@ risk_routes:
   - universal-preserve-behavior-by-default
 - risk_class: data-integrity
   concepts:
+  - data-batch-reproducible-derivation
+  - data-end-to-end-integrity-auditing
+  - data-end-to-end-request-idempotence
+  - data-event-time-semantics
+  - data-fencing-token-enforcement
+  - data-minimization-lifecycle
+  - data-replication-guarantee-selection
+  - data-schema-evolution-compatibility
+  - data-single-authority-change-propagation
+  - data-system-of-record-derived-state
+  - data-transaction-guarantee-verification
   - debugging-hypothesis-led-investigation
   - go-explicit-contextual-errors
   - go-text-byte-rune-semantics
@@ -14658,6 +15671,7 @@ risk_routes:
   - architecture-team-topology-force
 - risk_class: deployment
   concepts:
+  - data-schema-evolution-compatibility
   - operations-ephemeral-instance-design
   - operations-externalized-configuration
   - operations-zero-downtime-rollout
@@ -14690,6 +15704,9 @@ risk_routes:
   - architecture-event-temporal-semantics
   - architecture-risk-analysis
   - architecture-scoped-characteristics
+  - data-end-to-end-integrity-auditing
+  - data-replication-guarantee-selection
+  - data-transaction-guarantee-verification
   - debugging-causal-repair
   - debugging-hypothesis-led-investigation
   - domain-aggregate-invariant-boundary
@@ -14709,6 +15726,7 @@ risk_routes:
 - risk_class: evidence
   concepts:
   - architecture-metrics-as-signals
+  - data-end-to-end-integrity-auditing
 - risk_class: evidence-quality
   concepts:
   - operations-chaos-experiment-discipline
@@ -14760,6 +15778,7 @@ risk_routes:
   - repository-assessment-code-age
 - risk_class: high for external side effects
   concepts:
+  - data-end-to-end-request-idempotence
   - legacy-sensing-and-separation
 - risk_class: high for public/dynamic surfaces
   concepts:
@@ -14776,6 +15795,7 @@ risk_routes:
   - architecture-framework-commitment
   - architecture-metrics-as-signals
   - architecture-policy-mechanism-separation
+  - data-index-workload-tradeoff
   - domain-explicit-concept
   - domain-intention-revealing-interface
   - domain-language-model-loop
@@ -14841,6 +15861,7 @@ risk_routes:
 - risk_class: migration
   concepts:
   - architecture-selective-option-preservation
+  - data-schema-evolution-compatibility
   - domain-anticorruption-layer
   - operations-zero-downtime-rollout
 - risk_class: normal
@@ -14867,6 +15888,7 @@ risk_routes:
   - architecture-policy-mechanism-separation
   - architecture-risk-analysis
   - architecture-scoped-characteristics
+  - data-sharding-evidence-gate
   - domain-anticorruption-layer
   - implementation-minimal-coherent-api
   - implementation-non-obvious-commentary
@@ -14914,6 +15936,11 @@ risk_routes:
   - architecture-interaction-synchrony
   - architecture-risk-analysis
   - architecture-scoped-characteristics
+  - data-consistency-model-selection
+  - data-event-time-semantics
+  - data-index-workload-tradeoff
+  - data-partition-key-workload-fit
+  - data-replication-guarantee-selection
   - domain-aggregate-invariant-boundary
   - domain-association-constraint
   - domain-repository-lifecycle
@@ -14954,6 +15981,7 @@ risk_routes:
   - performance-specialization-evidence
 - risk_class: privacy
   concepts:
+  - data-minimization-lifecycle
   - operations-credential-custody
   - performance-metric-semantics
   - performance-profile-causal-bottleneck
@@ -14985,6 +16013,8 @@ risk_routes:
   - universal-no-change-option
 - risk_class: reliability
   concepts:
+  - data-batch-reproducible-derivation
+  - data-end-to-end-request-idempotence
   - operations-cascading-failure-halting
   - operations-integration-point-distrust
   - universal-measure-claimed-improvement
@@ -15002,10 +16032,12 @@ risk_routes:
   - universal-separate-semantic-structural-change
 - risk_class: rollback
   concepts:
+  - data-batch-reproducible-derivation
   - operations-zero-downtime-rollout
   - universal-separate-semantic-structural-change
 - risk_class: runtime-semantics
   concepts:
+  - data-event-time-semantics
   - go-interface-nil-semantics
   - go-text-byte-rune-semantics
   - implementation-repository-language-conformance
@@ -15028,6 +16060,7 @@ risk_routes:
   - architecture-risk-analysis
   - architecture-scoped-characteristics
   - architecture-structural-constraint-enforcement
+  - data-minimization-lifecycle
   - debugging-causal-repair
   - operations-build-provenance
   - operations-credential-custody

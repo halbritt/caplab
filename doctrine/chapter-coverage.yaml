@@ -14,6 +14,8 @@ generated_from:
   sha256: 7a30c7e7e66c5e84f60971dcc6a2aef364a3202227bd8141f940c33c06088eed
 - ledger: doctrine/_work/extractions/go-concurrency-sources.md
   sha256: 9eaa169c69eb21c5df9099f3ba45efb1e1cd45a8cec3985c78824efec991d382
+- ledger: doctrine/_work/extractions/data-sources.md
+  sha256: 3cdf7198cc165f8a1554125530e1086a8997afbef05a8d32f3aaa4c356695f0d
 chapters:
 - source_id: SRC-100GO
   chapter_path: books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/001-100-go-mistakes-and-how-to-avoid-them.md
@@ -108,6 +110,17 @@ chapters:
   title: Index
   disposition: reference-only; back-of-book index; back-cover description and endorsements.
   sha256: 02de79715d7bd66814a89d78998698df7174c7e4eeabd6a22807b8a43a93c480
+- source_id: SRC-ADPCH3
+  chapter_path: books/bookshelf-ch-three-api-design-patterns/chapters/001-api-design-patterns.md
+  title: API Design Patterns
+  disposition: Structural — title and author matter; copyright and publication metadata.
+  sha256: f86ac906a4ed8033228acaafbcc7ebea6145cdf899d6970d2fe345bf2a6c6ecd
+- source_id: SRC-ADPCH3
+  chapter_path: books/bookshelf-ch-three-api-design-patterns/chapters/002-chapter-3-naming.md
+  title: 'Chapter 3: Naming'
+  disposition: Substantive — durable public names; expressive simple predictable naming; context and conventions; units and
+    rich data types.
+  sha256: 4e786082c647aff78f2c96fb30f55e6eb6397661252cbee7d40579aa6f99db6f
 - source_id: SRC-CA
   chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/001-clean-architecture.md
   title: Clean Architecture
@@ -872,6 +885,125 @@ chapters:
   title: Back Cover
   disposition: Promotional synopsis and endorsements; not evidence.
   sha256: eca2e9ad46052c0741b2f90dccdd107afa359d707312abef8338d489911a51b4
+- source_id: SRC-DDIA2
+  chapter_path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/001-2nd-edition.md
+  title: 2nd Edition
+  disposition: Structural — edition and title matter; praise and revision history.
+  sha256: cd827c515b6f9b48b0938bbd9f432f09d889ce0b2937cc3fe43092881b3ef707
+- source_id: SRC-DDIA2
+  chapter_path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/002-table-of-contents.md
+  title: Table of Contents
+  disposition: Structural — book navigation; chapter and section inventory.
+  sha256: aff659fb09423a7b41cac581a667131adc17afa0f821b75f52f21c4fded7ac20
+- source_id: SRC-DDIA2
+  chapter_path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/003-preface.md
+  title: Preface
+  disposition: Structural — intended audience; second-edition scope; conventions.
+  sha256: f31778c2cdd38f50cf438ae4bc390617fe445de5ff19c23bab2a44ae9ddecebd
+- source_id: SRC-DDIA2
+  chapter_path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/004-acknowledgments.md
+  title: Acknowledgments
+  disposition: Structural — acknowledgments.
+  sha256: 2e3992f4a18fca967dfe61d4ccbaa77fc57c20128a728136432db1566128de2e
+- source_id: SRC-DDIA2
+  chapter_path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/005-chapter-1-trade-offs-in-data-systems-architecture.md
+  title: 'Chapter 1: Trade-Offs in Data Systems Architecture'
+  disposition: Substantive — contextual architecture trade-offs; systems of record and derived data; distribution and cloud
+    choices; data systems and society.
+  sha256: 74ee2484856574241b3238db18806c716ed5200601bc2009a1d0824b3b3d7100
+- source_id: SRC-DDIA2
+  chapter_path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/006-chapter-2-defining-nonfunctional-requirements.md
+  title: 'Chapter 2: Defining Nonfunctional Requirements'
+  disposition: Substantive — measurable nonfunctional requirements; load and scalability; latency distributions; fault tolerance
+    and maintainability.
+  sha256: 5cad25443b0875cfb8cbf8449b5fba324ce27b21490f61efdab777ecea4c525a
+- source_id: SRC-DDIA2
+  chapter_path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/007-chapter-3-data-models-and-query-languages.md
+  title: 'Chapter 3: Data Models and Query Languages'
+  disposition: Substantive — data-model selection; normalization and denormalization; relational document and graph models;
+    event sourcing and analytical models.
+  sha256: 83e25e6ee08beca2be2606a752a2b889dba6671de97cc8816dbc321a01269a3f
+- source_id: SRC-DDIA2
+  chapter_path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/008-chapter-4-storage-and-retrieval.md
+  title: 'Chapter 4: Storage and Retrieval'
+  disposition: Substantive — storage-engine trade-offs; indexes as derived structures; analytical storage; full-text and vector
+    retrieval.
+  sha256: 91ced21799c85e75c862cce94569cab6dfdc2ecd4698195739a664096b7705c2
+- source_id: SRC-DDIA2
+  chapter_path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/009-chapter-5-encoding-and-evolution.md
+  title: 'Chapter 5: Encoding and Evolution'
+  disposition: Substantive — schema evolution and compatibility; serialization; remote dataflow; durable workflows and events.
+  sha256: ce5a653aaebc7dd87204f6d308779224e03329f5e3c5c4228fa759d0dc877bbd
+- source_id: SRC-DDIA2
+  chapter_path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/010-chapter-6-replication.md
+  title: 'Chapter 6: Replication'
+  disposition: Substantive — replication guarantees; replication lag; multi-leader and leaderless operation; causality and
+    conflict resolution.
+  sha256: 830f470ff8b07028c55e1de06bd3cb417593247675b418e0877d4e44d848b201
+- source_id: SRC-DDIA2
+  chapter_path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/011-chapter-7-sharding.md
+  title: 'Chapter 7: Sharding'
+  disposition: Substantive — sharding evidence and costs; partition-key selection; hot spots and rebalancing; secondary indexes.
+  sha256: 6df7628a5ab9314e309e2c15504df397639598d869a56f5485475ac93e6c3228
+- source_id: SRC-DDIA2
+  chapter_path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/012-chapter-8-transactions.md
+  title: 'Chapter 8: Transactions'
+  disposition: Substantive — transaction semantics; isolation anomalies; invariant preservation; distributed transactions
+    and message processing.
+  sha256: 4b533bda3dd1fcd7f50537ae8e2751c67c35d00904ecc50e267b3f1e5e9f56f4
+- source_id: SRC-DDIA2
+  chapter_path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/013-chapter-9-the-trouble-with-distributed-systems.md
+  title: 'Chapter 9: The Trouble with Distributed Systems'
+  disposition: Substantive — partial failure; network and clock uncertainty; leases and fencing; system models and verification.
+  sha256: 30b0d31df5b18e714a302170b89a6c58dd6ceded635646b20f93038d8b613630
+- source_id: SRC-DDIA2
+  chapter_path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/014-chapter-10-consistency-and-consensus.md
+  title: 'Chapter 10: Consistency and Consensus'
+  disposition: Substantive — linearizability and serializability; logical clocks; consensus; coordination services.
+  sha256: 458bc59363d43fd2cffe731a6fa95fd5ec1550bf3026429594a41047c95dad2d
+- source_id: SRC-DDIA2
+  chapter_path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/015-chapter-11-batch-processing.md
+  title: 'Chapter 11: Batch Processing'
+  disposition: Substantive — reproducible batch derivation; distributed orchestration; dataflow and shuffle; serving derived
+    data.
+  sha256: 7f0e2b4cef1f1764c108b08758ae607f3f723f3f1d07e5e667e50f8e00d1ee86
+- source_id: SRC-DDIA2
+  chapter_path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/016-chapter-12-stream-processing.md
+  title: 'Chapter 12: Stream Processing'
+  disposition: Substantive — event transport and durable logs; change data capture; event-time semantics; stream joins and
+    fault tolerance.
+  sha256: 0d61c891d8ab3db313489b4401da6e32d19f1740b50d0b03bc1b0f3ea63e2a44
+- source_id: SRC-DDIA2
+  chapter_path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/017-chapter-13-a-philosophy-of-streaming-systems.md
+  title: 'Chapter 13: A Philosophy of Streaming Systems'
+  disposition: Substantive — data integration and derivation; end-to-end correctness; constraint enforcement; auditability
+    and integrity.
+  sha256: eb7532a39192e53ee577a24cf38365158e209e554110a1aaa8bf4cbcba63e53d
+- source_id: SRC-DDIA2
+  chapter_path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/018-chapter-14-doing-the-right-thing.md
+  title: 'Chapter 14: Doing the Right Thing'
+  disposition: Substantive — ethical consequences; bias and accountability; privacy and consent; data minimization.
+  sha256: b7a1b5acb8a917561e0a36245f2531164a049a55e5ba01a2f4580362c75375ec
+- source_id: SRC-DDIA2
+  chapter_path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/019-glossary.md
+  title: Glossary
+  disposition: Reference Only — data-systems terminology; cross-references to substantive chapters.
+  sha256: 34ff828cf9dc55f80c24938636c44f1f329db6b57f3ad4454c3a40ec8b7a00bf
+- source_id: SRC-DDIA2
+  chapter_path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/020-index.md
+  title: Index
+  disposition: Reference Only — alphabetical topic index; product and concept references.
+  sha256: 61b0e767582864057069a3bb40f3ab4585bf642e4941f79aa76cd616d1bc377d
+- source_id: SRC-DDIA2
+  chapter_path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/021-about-the-authors.md
+  title: About the Authors
+  disposition: Structural — author biographies.
+  sha256: e3a6b331cfdf9c2bb2b684d7e3ba82dc4a6d13f12dedf7b8ebb8366f30d99ecb
+- source_id: SRC-DDIA2
+  chapter_path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/022-colophon.md
+  title: Colophon
+  disposition: Structural — cover and production credits; publisher promotion.
+  sha256: 6fab43d74ca841d5e1e823ca9c6f2b10a5182cd6586b7356b3f96292539675c7
 - source_id: SRC-SDX
   chapter_path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/001-software-design-x-rays.md
   title: Software Design X-Rays

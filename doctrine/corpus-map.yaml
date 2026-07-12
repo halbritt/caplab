@@ -329,15 +329,93 @@ sources:
     concepts_worth_mining: ["concurrency-ordering", "atomicity-scope", "progress-contract", "concurrency-api", "channel-ownership", "goroutine-lifecycle", "queue-capacity", "async-observation", "resilience-margin"]
     coverage_ledger: "doctrine/_work/extractions/go-concurrency-sources.md#complete-chapter-coverage-ledger"
 
+  - source_id: SRC-DDIA2
+    primary_domain: Data-system architecture and implementation trade-offs across models, storage, replication, sharding, transactions, distributed coordination, batch and stream processing, integration, and responsible data handling.
+    strongest_contributions:
+    - systems of record and reproducible derived state as the organizing distinction for caches, indexes, warehouses, and dataflows
+    - workload-grounded selection of models, indexes, replication, sharding, transaction guarantees, and consistency properties
+    - explicit partial-failure, causality, fencing, temporal, idempotency, and end-to-end integrity semantics for distributed data systems
+    - reproducible batch and stream derivation with one change authority, replay, compatibility, auditability, and repair
+    - privacy, accountability, and data minimization as architecture lifecycle obligations
+    contextual_assumptions:
+    - the second edition was first released on 2026-02-18 and describes a 2025-2026 data-infrastructure, cloud, and hardware context
+    - teams can measure representative workloads and own data, operational, and recovery consequences
+    - examples span OLTP, OLAP, cloud services, distributed systems, batch processing, and stream processing rather than one repository shape
+    limitations:
+    - 'Edition and time boundary: this is the second edition first released 2026-02-18; named products, cloud services, hardware capacities, pricing, laws and regulatory summaries, and ecosystem comparisons are evidence only for the source''s 2025-2026 context and require current primary-source verification.'
+    - The source is a practitioner synthesis. Product guarantees, protocol details, security claims, legal requirements, and operational behavior must be verified against current primary documentation and the repository environment.
+    - Chapter 13 deliberately presents one opinionated streaming philosophy, and chapter 14 advances normative ethical recommendations; neither becomes repository authority merely through inclusion. People-related claims require critical scrutiny.
+    - 'Marker used Surya OCR on all 673 physical pages. Visible conversion damage remains in some code, tables, glossary entries, and the index; glossary and index are reference-only, and doctrine cites only headings marked role: section.'
+    - Single-source support is capped at strong or contextual confidence, and no first-edition DDIA source or claim should be silently merged into SRC-DDIA2.
+    known_tensions:
+    - single-node and integrated-system simplicity versus the scale, isolation, and specialization benefits of distribution
+    - normalized authoritative state versus denormalized read performance and freshness
+    - strict timeliness and coordination versus asynchronous availability, latency, and fault containment
+    - immutable replayable histories versus deletion, privacy, and data-minimization obligations
+    - general consistency or scalability labels versus operation-scoped guarantees and measured workloads
+    likely_agent_roles:
+    - architecture-agent
+    - coding-agent
+    - performance-agent
+    - review-agent
+    - debugging-and-repair-agent
+    - repository-assessment-agent
+    concepts_worth_mining:
+    - data-system-of-record-derived-state
+    - data-index-workload-tradeoff
+    - data-schema-evolution-compatibility
+    - data-replication-guarantee-selection
+    - data-sharding-evidence-gate
+    - data-partition-key-workload-fit
+    - data-transaction-guarantee-verification
+    - data-fencing-token-enforcement
+    - data-consistency-model-selection
+    - data-batch-reproducible-derivation
+    - data-single-authority-change-propagation
+    - data-event-time-semantics
+    - data-end-to-end-request-idempotence
+    - data-end-to-end-integrity-auditing
+    - data-minimization-lifecycle
+    coverage_ledger: doctrine/_work/extractions/data-sources.md#complete-chapter-coverage-ledger
+  - source_id: SRC-ADPCH3
+    primary_domain: Public API naming, including semantic clarity, consistency, context, units, and the compatibility cost of renaming.
+    strongest_contributions:
+    - public API names persist in independently owned consumer code and therefore make renaming a compatibility migration
+    - good API names balance expressiveness, simplicity, and predictability
+    - units or richer quantity types prevent primitive fields from collapsing incompatible meanings
+    contextual_assumptions:
+    - the extract is from the 2021 first edition and illustrates naming with 2021-era API-description and TypeScript-like examples
+    - the named API has independent consumers and therefore a public compatibility surface
+    - repository and language conventions still govern syntax and casing choices
+    limitations:
+    - 'Scope boundary: the supplied source is a 17-page extract containing chapter 3, Naming, plus publication front matter. It is not the complete book and supplies no evidence for any other chapter or for a whole-book method.'
+    - Published in 2021; language, schema-tool, casing, and ecosystem examples require current repository and language verification even where the semantic naming principle remains useful.
+    - 'Marker used Surya OCR on all 17 pages and the converted code listings contain visible layout artifacts; extracted claims rely on the surrounding prose and exact headings marked role: section.'
+    - The evidence is single-author practitioner reasoning, so candidate support is capped at strong or contextual confidence.
+    known_tensions:
+    - expressive precision versus short simple names
+    - cross-API consistency versus context-specific meaning
+    - locally cleaner renaming versus compatibility for independent consumers
+    likely_agent_roles:
+    - coding-agent
+    - review-agent
+    - refactoring-agent
+    - architecture-agent
+    concepts_worth_mining:
+    - refactoring-compatibility-migration
+    - implementation-semantic-naming
+    coverage_ledger: doctrine/_work/extractions/data-sources.md#complete-chapter-coverage-ledger
 coverage_summary:
-  chapter_files: 409
-  covered_chapters: 409
+  chapter_files: 433
+  covered_chapters: 433
   per_source_counts:
     SRC-100GO: 17
+    SRC-ADPCH3: 2
     SRC-APOSD: 32
     SRC-CA: 48
     SRC-CC: 48
     SRC-CIG: 14
+    SRC-DDIA2: 22
     SRC-DDD: 20
     SRC-EGO: 18
     SRC-FP: 33

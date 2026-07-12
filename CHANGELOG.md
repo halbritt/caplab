@@ -15,6 +15,23 @@ remains under `Unreleased`, whether or not it has been committed.
   existing concepts), and Go-specific evidence on four preserved conflicts;
   exact doctrine coverage grows from 378 to 409 chapters and the concept
   catalog from 182 to 193 records.
+- Registered *Designing Data-Intensive Applications*, Second Edition
+  (SRC-DDIA2), and the explicitly scoped *API Design Patterns* chapter-3
+  Naming extract (SRC-ADPCH3) as doctrine sources, with complete 24-file
+  coverage in a data-systems extraction ledger and edition, time, OCR, and
+  excerpt limitations carried into the corpus map.
+- Added the data-systems concept catalog with 15 canonical `data-*` records
+  carrying 16 source supports after folding denormalization into
+  source/derived authority; the catalog covers indexes, schema evolution,
+  replication, sharding, partition keys, transactions and consistency,
+  fencing, reproducible batch and stream derivation, CDC, event time,
+  end-to-end idempotence and integrity auditing, and data minimization.
+- Added nine narrowly scoped citations to existing architecture, performance,
+  operations, universal, refactoring, and implementation concepts, including
+  load-model evidence on `performance-measurable-objective` and
+  relational/document-model evidence on `implementation-representation-fit`;
+  chapter coverage grows 409 -> 433, registered sources 15 -> 17, and canonical
+  concepts 193 -> 208 with no new conflict record.
 - Added eight PDF sources and their chaptered Markdown corpora: *100 Go
   Mistakes and How to Avoid Them*, *API Design Patterns* chapter 3 (an
   explicitly labeled extract), *Architecture Patterns with Python*,

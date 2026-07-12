@@ -204,6 +204,20 @@ links:
   declared_by:
   - architecture-contextual-partitioning
   - architecture-modular-monolith
+- id: R-ROUTE-fa31e3d72ac5
+  from: architecture-contextual-partitioning
+  relation: co-retrieved-with
+  to: data-partition-key-workload-fit
+  semantic: false
+  declared_by:
+  - data-partition-key-workload-fit
+- id: R-ROUTE-b079c201100f
+  from: architecture-contextual-partitioning
+  relation: co-retrieved-with
+  to: data-sharding-evidence-gate
+  semantic: false
+  declared_by:
+  - data-sharding-evidence-gate
 - id: R-ROUTE-a5837c9c054b
   from: architecture-contextual-partitioning
   relation: co-retrieved-with
@@ -358,6 +372,20 @@ links:
   semantic: false
   declared_by:
   - architecture-team-topology-force
+- id: R-ROUTE-e011c72e955d
+  from: architecture-distribution-readiness
+  relation: co-retrieved-with
+  to: data-replication-guarantee-selection
+  semantic: false
+  declared_by:
+  - data-replication-guarantee-selection
+- id: R-ROUTE-aa48533ba906
+  from: architecture-distribution-readiness
+  relation: co-retrieved-with
+  to: data-sharding-evidence-gate
+  semantic: false
+  declared_by:
+  - data-sharding-evidence-gate
 - id: R-ROUTE-b625d1a28a39
   from: architecture-distribution-readiness
   relation: co-retrieved-with
@@ -467,6 +495,34 @@ links:
   declared_by:
   - architecture-event-temporal-semantics
   - architecture-interaction-synchrony
+- id: R-ROUTE-54a4d661ddd5
+  from: architecture-event-temporal-semantics
+  relation: co-retrieved-with
+  to: data-end-to-end-request-idempotence
+  semantic: false
+  declared_by:
+  - data-end-to-end-request-idempotence
+- id: R-ROUTE-a26e9da41789
+  from: architecture-event-temporal-semantics
+  relation: co-retrieved-with
+  to: data-event-time-semantics
+  semantic: false
+  declared_by:
+  - data-event-time-semantics
+- id: R-ROUTE-1c1ad49936e2
+  from: architecture-event-temporal-semantics
+  relation: co-retrieved-with
+  to: data-fencing-token-enforcement
+  semantic: false
+  declared_by:
+  - data-fencing-token-enforcement
+- id: R-ROUTE-f18726a897f0
+  from: architecture-event-temporal-semantics
+  relation: co-retrieved-with
+  to: data-single-authority-change-propagation
+  semantic: false
+  declared_by:
+  - data-single-authority-change-propagation
 - id: R-ROUTE-dc3626a9f85f
   from: architecture-event-temporal-semantics
   relation: co-retrieved-with
@@ -577,6 +633,13 @@ links:
   semantic: false
   declared_by:
   - architecture-interaction-synchrony
+- id: R-ROUTE-65aabd04c4e5
+  from: architecture-interaction-synchrony
+  relation: co-retrieved-with
+  to: data-consistency-model-selection
+  semantic: false
+  declared_by:
+  - data-consistency-model-selection
 - id: R-ROUTE-5b4a5a66d766
   from: architecture-metrics-as-signals
   relation: co-retrieved-with
@@ -704,6 +767,13 @@ links:
   semantic: false
   declared_by:
   - architecture-structural-constraint-enforcement
+- id: R-ROUTE-be10410d17ec
+  from: architecture-scoped-characteristics
+  relation: co-retrieved-with
+  to: data-consistency-model-selection
+  semantic: false
+  declared_by:
+  - data-consistency-model-selection
 - id: R-ROUTE-5d6f59fbd371
   from: architecture-scoped-characteristics
   relation: co-retrieved-with
@@ -762,6 +832,300 @@ links:
   semantic: false
   declared_by:
   - repository-assessment-metrics-not-performance
+- id: R-ROUTE-89c5eff1ef54
+  from: data-batch-reproducible-derivation
+  relation: co-retrieved-with
+  to: data-end-to-end-integrity-auditing
+  semantic: false
+  declared_by:
+  - data-end-to-end-integrity-auditing
+- id: R-ROUTE-7242253c0d04
+  from: data-batch-reproducible-derivation
+  relation: co-retrieved-with
+  to: data-event-time-semantics
+  semantic: false
+  declared_by:
+  - data-event-time-semantics
+- id: R-ROUTE-1c6dbe609e78
+  from: data-batch-reproducible-derivation
+  relation: co-retrieved-with
+  to: data-system-of-record-derived-state
+  semantic: false
+  declared_by:
+  - data-batch-reproducible-derivation
+- id: R-ROUTE-24389b1f2098
+  from: data-batch-reproducible-derivation
+  relation: co-retrieved-with
+  to: operations-production-readiness
+  semantic: false
+  declared_by:
+  - data-batch-reproducible-derivation
+- id: R-ROUTE-91c01f8f5717
+  from: data-batch-reproducible-derivation
+  relation: co-retrieved-with
+  to: performance-semantic-preservation
+  semantic: false
+  declared_by:
+  - data-batch-reproducible-derivation
+- id: R-ROUTE-aa56cb143e16
+  from: data-batch-reproducible-derivation
+  relation: co-retrieved-with
+  to: universal-reversible-reviewable-change
+  semantic: false
+  declared_by:
+  - data-batch-reproducible-derivation
+- id: R-ROUTE-6de67daa4607
+  from: data-consistency-model-selection
+  relation: co-retrieved-with
+  to: data-replication-guarantee-selection
+  semantic: false
+  declared_by:
+  - data-consistency-model-selection
+  - data-replication-guarantee-selection
+- id: R-ROUTE-2a53e2e61f5a
+  from: data-consistency-model-selection
+  relation: co-retrieved-with
+  to: data-transaction-guarantee-verification
+  semantic: false
+  declared_by:
+  - data-consistency-model-selection
+  - data-transaction-guarantee-verification
+- id: R-ROUTE-86db7ae10434
+  from: data-end-to-end-integrity-auditing
+  relation: co-retrieved-with
+  to: data-minimization-lifecycle
+  semantic: false
+  declared_by:
+  - data-minimization-lifecycle
+- id: R-ROUTE-bbd3a990f219
+  from: data-end-to-end-integrity-auditing
+  relation: co-retrieved-with
+  to: data-system-of-record-derived-state
+  semantic: false
+  declared_by:
+  - data-end-to-end-integrity-auditing
+- id: R-ROUTE-d7abd0501005
+  from: data-end-to-end-integrity-auditing
+  relation: co-retrieved-with
+  to: operations-transparency-by-design
+  semantic: false
+  declared_by:
+  - data-end-to-end-integrity-auditing
+- id: R-ROUTE-1475ac0d16b9
+  from: data-end-to-end-integrity-auditing
+  relation: co-retrieved-with
+  to: universal-measure-claimed-improvement
+  semantic: false
+  declared_by:
+  - data-end-to-end-integrity-auditing
+- id: R-ROUTE-7b15c7cfe8b8
+  from: data-end-to-end-request-idempotence
+  relation: co-retrieved-with
+  to: data-event-time-semantics
+  semantic: false
+  declared_by:
+  - data-event-time-semantics
+- id: R-ROUTE-8929e1af09dc
+  from: data-end-to-end-request-idempotence
+  relation: co-retrieved-with
+  to: data-single-authority-change-propagation
+  semantic: false
+  declared_by:
+  - data-end-to-end-request-idempotence
+  - data-single-authority-change-propagation
+- id: R-ROUTE-6195ae2db3de
+  from: data-end-to-end-request-idempotence
+  relation: co-retrieved-with
+  to: data-transaction-guarantee-verification
+  semantic: false
+  declared_by:
+  - data-end-to-end-request-idempotence
+- id: R-ROUTE-d1077b656603
+  from: data-end-to-end-request-idempotence
+  relation: co-retrieved-with
+  to: implementation-explicit-failure-policy
+  semantic: false
+  declared_by:
+  - data-end-to-end-request-idempotence
+- id: R-ROUTE-f0c1531033e6
+  from: data-event-time-semantics
+  relation: co-retrieved-with
+  to: performance-metric-semantics
+  semantic: false
+  declared_by:
+  - data-event-time-semantics
+- id: R-ROUTE-9f3a59110b2a
+  from: data-fencing-token-enforcement
+  relation: co-retrieved-with
+  to: data-transaction-guarantee-verification
+  semantic: false
+  declared_by:
+  - data-fencing-token-enforcement
+- id: R-ROUTE-927b1ae06507
+  from: data-fencing-token-enforcement
+  relation: co-retrieved-with
+  to: operations-designed-failure-modes
+  semantic: false
+  declared_by:
+  - data-fencing-token-enforcement
+- id: R-ROUTE-3721f7d4ab22
+  from: data-index-workload-tradeoff
+  relation: co-retrieved-with
+  to: data-system-of-record-derived-state
+  semantic: false
+  declared_by:
+  - data-index-workload-tradeoff
+  - data-system-of-record-derived-state
+- id: R-ROUTE-c500b39f288b
+  from: data-index-workload-tradeoff
+  relation: co-retrieved-with
+  to: performance-algorithm-and-work-first
+  semantic: false
+  declared_by:
+  - data-index-workload-tradeoff
+- id: R-ROUTE-adec37fb0692
+  from: data-index-workload-tradeoff
+  relation: co-retrieved-with
+  to: performance-benchmark-validity
+  semantic: false
+  declared_by:
+  - data-index-workload-tradeoff
+- id: R-ROUTE-6cfa7ad5db4a
+  from: data-index-workload-tradeoff
+  relation: co-retrieved-with
+  to: performance-cache-validity
+  semantic: false
+  declared_by:
+  - data-index-workload-tradeoff
+- id: R-ROUTE-be3d391eeed2
+  from: data-minimization-lifecycle
+  relation: co-retrieved-with
+  to: data-system-of-record-derived-state
+  semantic: false
+  declared_by:
+  - data-minimization-lifecycle
+- id: R-ROUTE-f8ac1a6b7c62
+  from: data-minimization-lifecycle
+  relation: co-retrieved-with
+  to: operations-bounded-accumulation
+  semantic: false
+  declared_by:
+  - data-minimization-lifecycle
+- id: R-ROUTE-395615a5fd36
+  from: data-partition-key-workload-fit
+  relation: co-retrieved-with
+  to: data-sharding-evidence-gate
+  semantic: false
+  declared_by:
+  - data-partition-key-workload-fit
+  - data-sharding-evidence-gate
+- id: R-ROUTE-7da637bbf71b
+  from: data-partition-key-workload-fit
+  relation: co-retrieved-with
+  to: performance-measurable-objective
+  semantic: false
+  declared_by:
+  - data-partition-key-workload-fit
+- id: R-ROUTE-332676f82524
+  from: data-partition-key-workload-fit
+  relation: co-retrieved-with
+  to: performance-representative-baseline
+  semantic: false
+  declared_by:
+  - data-partition-key-workload-fit
+- id: R-ROUTE-585078fef940
+  from: data-replication-guarantee-selection
+  relation: co-retrieved-with
+  to: operations-designed-failure-modes
+  semantic: false
+  declared_by:
+  - data-replication-guarantee-selection
+- id: R-ROUTE-651ca956d970
+  from: data-replication-guarantee-selection
+  relation: co-retrieved-with
+  to: operations-resilience-margin
+  semantic: false
+  declared_by:
+  - data-replication-guarantee-selection
+- id: R-ROUTE-56f5790aa1af
+  from: data-schema-evolution-compatibility
+  relation: co-retrieved-with
+  to: data-single-authority-change-propagation
+  semantic: false
+  declared_by:
+  - data-schema-evolution-compatibility
+  - data-single-authority-change-propagation
+- id: R-ROUTE-dbdf42ee533e
+  from: data-schema-evolution-compatibility
+  relation: co-retrieved-with
+  to: operations-live-interface-compatibility
+  semantic: false
+  declared_by:
+  - data-schema-evolution-compatibility
+- id: R-ROUTE-233d9009c666
+  from: data-schema-evolution-compatibility
+  relation: co-retrieved-with
+  to: refactoring-compatibility-migration
+  semantic: false
+  declared_by:
+  - data-schema-evolution-compatibility
+- id: R-ROUTE-176d19a5d0d2
+  from: data-schema-evolution-compatibility
+  relation: co-retrieved-with
+  to: universal-explicit-invariants
+  semantic: false
+  declared_by:
+  - data-schema-evolution-compatibility
+- id: R-ROUTE-7c288c90631f
+  from: data-sharding-evidence-gate
+  relation: co-retrieved-with
+  to: performance-measurable-objective
+  semantic: false
+  declared_by:
+  - data-sharding-evidence-gate
+- id: R-ROUTE-0f7bd661d55c
+  from: data-single-authority-change-propagation
+  relation: co-retrieved-with
+  to: data-system-of-record-derived-state
+  semantic: false
+  declared_by:
+  - data-single-authority-change-propagation
+  - data-system-of-record-derived-state
+- id: R-ROUTE-44deca4a1f9c
+  from: data-system-of-record-derived-state
+  relation: co-retrieved-with
+  to: performance-cache-validity
+  semantic: false
+  declared_by:
+  - data-system-of-record-derived-state
+- id: R-ROUTE-2224321f228b
+  from: data-system-of-record-derived-state
+  relation: co-retrieved-with
+  to: universal-explicit-invariants
+  semantic: false
+  declared_by:
+  - data-system-of-record-derived-state
+- id: R-ROUTE-a5890a8f621a
+  from: data-transaction-guarantee-verification
+  relation: co-retrieved-with
+  to: implementation-explicit-failure-policy
+  semantic: false
+  declared_by:
+  - data-transaction-guarantee-verification
+- id: R-ROUTE-4d298f139426
+  from: data-transaction-guarantee-verification
+  relation: co-retrieved-with
+  to: performance-semantic-preservation
+  semantic: false
+  declared_by:
+  - data-transaction-guarantee-verification
+- id: R-ROUTE-fdd30c2f209f
+  from: data-transaction-guarantee-verification
+  relation: co-retrieved-with
+  to: universal-explicit-invariants
+  semantic: false
+  declared_by:
+  - data-transaction-guarantee-verification
 - id: R-ROUTE-5706032da35a
   from: debugging-causal-repair
   relation: co-retrieved-with

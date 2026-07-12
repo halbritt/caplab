@@ -356,6 +356,7 @@ nodes:
   - F-SRC-EGO-PERF-RAER
   - F-CONCEPT-EGO-3b4e3941c405
   - F-CONCEPT-EGO-247c5508bd66
+  - F-CONCEPT-DDIA2-8acbb0c9286c
   tags:
   - performance
   - objective
@@ -376,6 +377,7 @@ nodes:
   - F-CONCEPT-EGO-b2380da8dfcb
   - F-CONCEPT-EGO-4e7e71cfbf64
   - F-CONCEPT-RI-f975dca8b967
+  - F-CONCEPT-DDIA2-58fb155246fc
   tags:
   - performance
   - measurement
@@ -809,6 +811,7 @@ nodes:
   - F-CONCEPT-CA-cdb1734143c6
   - F-CONCEPT-FSA-11b347e9e248
   - F-CONCEPT-RI-7202e71dc0f8
+  - F-CONCEPT-DDIA2-0170ff730ccb
   tags:
   - architecture
   - distributed-readiness
@@ -853,6 +856,7 @@ nodes:
   - F-CONCEPT-FSA-d4cbd8a817c0
   - F-CONCEPT-FSA-de47302649fe
   - F-CONCEPT-FSA-b1e25ff20329
+  - F-CONCEPT-DDIA2-078f8ffbff77
   tags:
   - architecture
   - event-driven-architecture
@@ -1921,6 +1925,7 @@ nodes:
   - F-CONCEPT-CC-b54c0c143dfc
   - F-CONCEPT-APOSD-d74a0d11c04c
   - F-CONCEPT-FP-c50eaf7296ff
+  - F-CONCEPT-DDIA2-2d42ed988315
   tags:
   - implementation
   - representation
@@ -1972,6 +1977,7 @@ nodes:
   - F-CONCEPT-APOSD-f8e2728d0282
   - F-CONCEPT-CC-aa56eb24871a
   - F-CONCEPT-PP-1c9e11961419
+  - F-CONCEPT-ADPCH3-1bea9183d8d8
   tags:
   - implementation
   - naming
@@ -2577,6 +2583,7 @@ nodes:
   - F-CONCEPT-RI-90ab0af56d87
   - F-CONCEPT-RI-d4dcbde1f5b5
   - F-CONCEPT-RI-478ad78f2eca
+  - F-CONCEPT-ADPCH3-b7f6aed33730
   tags:
   - architecture
   - api-migration
@@ -2937,6 +2944,7 @@ nodes:
   - F-CONCEPT-CC-c3a917698570
   - F-CONCEPT-DDD-2ac4e8deb2fd
   - F-CONCEPT-UT-95f110826c03
+  - F-CONCEPT-DDIA2-e2232e87bd24
   tags:
   - universal
   - invariant
@@ -3372,6 +3380,7 @@ nodes:
   - F-CONCEPT-RI-2951a6f592de
   - F-CONCEPT-RI-3aa2031a7c24
   - F-CONCEPT-100GO-7d36cdb248bf
+  - F-CONCEPT-DDIA2-4f773a8db5da
   tags:
   - architecture
   - integration-point
@@ -4200,6 +4209,307 @@ nodes:
   - sleep-flake
   - completion-signal
   - bounded-polling
+- id: data-batch-reproducible-derivation
+  projection:
+    owner: concept-record
+    source_id: data-batch-reproducible-derivation
+  kind: principle
+  label: Make batch derivations reproducible and replaceable
+  definition: Build batch derivations from immutable inputs with deterministic, side-effect-bounded transformations and versioned outputs so failures, bugs, and changed logic can be recovered by rerunning rather than repairing hidden mutations.
+  operational_significance: Reproducible derivation converts code and task failures into reruns or output swaps instead of irreversible mutation and makes debugging, comparison, and recovery inspectable.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - data-batch-reproducible-derivation
+  formulations:
+  - F-CONCEPT-DDIA2-a66c6a8c2453
+  tags:
+  - architecture
+  - batch-processing
+  - reproducible-derivation
+  - immutable-input
+  - etl
+- id: data-consistency-model-selection
+  projection:
+    owner: concept-record
+    source_id: data-consistency-model-selection
+  kind: principle
+  label: Select consistency properties by the guarantee actually needed
+  definition: 'Name and select consistency properties independently: linearizability governs the real-time behavior of operations on a replicated object, while serializability governs transaction equivalence to a serial execution.'
+  operational_significance: Treating linearizability, serializability, and generic consistency as synonyms hides different guarantees and can pay coordination cost without preventing the anomaly that matters.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - data-consistency-model-selection
+  formulations:
+  - F-CONCEPT-DDIA2-192f26ed7669
+  tags:
+  - architecture
+  - linearizability
+  - serializability
+  - consistency-model
+  - read-after-write
+- id: data-end-to-end-integrity-auditing
+  projection:
+    owner: concept-record
+    source_id: data-end-to-end-integrity-auditing
+  kind: principle
+  label: Audit data integrity across the whole derivation path
+  definition: Design dataflows so durable inputs, derivation code, provenance, and outputs can be checked end to end and replayed or independently recomputed to detect corruption that component guarantees cannot exclude.
+  operational_significance: Component checksums and transaction guarantees cannot detect every application, storage, network, or derivation bug, so silent corruption remains invisible unless the resulting dataflow is checked end to end.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - data-end-to-end-integrity-auditing
+  formulations:
+  - F-CONCEPT-DDIA2-15a3b593d274
+  tags:
+  - architecture
+  - data-integrity
+  - audit
+  - provenance
+  - reconciliation
+- id: data-end-to-end-request-idempotence
+  projection:
+    owner: concept-record
+    source_id: data-end-to-end-request-idempotence
+  kind: principle
+  label: Suppress duplicate effects end to end
+  definition: Carry a client-generated operation identity through every hop and enforce its uniqueness at the durable effect boundary so retries after unknown outcomes cannot apply one intent more than once.
+  operational_significance: Transport, broker, or transaction duplicate suppression ends at its own boundary; a timeout can cause a human or upstream service to retry the same intent as a new request.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - data-end-to-end-request-idempotence
+  formulations:
+  - F-CONCEPT-DDIA2-ffd22d8aeafa
+  tags:
+  - architecture
+  - idempotency-key
+  - request-id
+  - duplicate-suppression
+  - unknown-outcome
+- id: data-event-time-semantics
+  projection:
+    owner: concept-record
+    source_id: data-event-time-semantics
+  kind: principle
+  label: Make event time, lateness, and window closure explicit
+  definition: Define stream computations against explicit event-time or processing-time semantics, including ordering, lateness, window closure, correction, and retained state; do not let processing delay silently change results.
+  operational_significance: Network delay, backlog, restart, and reprocessing make arrival time differ from occurrence time; implicit clock choice creates false spikes, missing events, and nondeterministic joins.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - data-event-time-semantics
+  formulations:
+  - F-CONCEPT-DDIA2-1f1518592eca
+  tags:
+  - architecture
+  - event-time
+  - processing-time
+  - watermark
+  - late-event
+- id: data-fencing-token-enforcement
+  projection:
+    owner: concept-record
+    source_id: data-fencing-token-enforcement
+  kind: principle
+  label: Enforce distributed leases with fencing tokens
+  definition: A distributed lease or lock is safe only when the protected resource rejects stale holders using monotonically increasing fencing tokens; client-side lease belief alone cannot prevent delayed or paused actors from writing.
+  operational_significance: A paused or delayed process can resume after its lease expires and still write, so mutual exclusion at the coordinator does not protect a resource that cannot recognize stale holders.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - data-fencing-token-enforcement
+  formulations:
+  - F-CONCEPT-DDIA2-e17d5a9720f9
+  tags:
+  - architecture
+  - fencing-token
+  - distributed-lock
+  - lease
+  - zombie-process
+- id: data-index-workload-tradeoff
+  projection:
+    owner: concept-record
+    source_id: data-index-workload-tradeoff
+  kind: principle
+  label: Earn indexes from demonstrated query workloads
+  definition: Create and retain an index only for demonstrated access paths whose read benefit exceeds its storage, write-amplification, maintenance, and consistency costs.
+  operational_significance: Every index accelerates selected reads by maintaining additional derived state, which consumes storage, increases writes, and can lengthen compaction, recovery, or update paths.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - data-index-workload-tradeoff
+  formulations:
+  - F-CONCEPT-DDIA2-c28f08f1839b
+  tags:
+  - performance
+  - index
+  - secondary-index
+  - write-amplification
+  - query-plan
+- id: data-minimization-lifecycle
+  projection:
+    owner: concept-record
+    source_id: data-minimization-lifecycle
+  kind: principle
+  label: Minimize sensitive data across its lifecycle
+  definition: Collect personal or sensitive data only for specified necessary purposes, retain it only while needed, and purge it when the purpose ends so unavailable data cannot be leaked, stolen, or compelled.
+  operational_significance: Every retained sensitive datum creates breach, misuse, and compelled-disclosure exposure; data that was never collected or has been purged cannot create those risks.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - data-minimization-lifecycle
+  formulations:
+  - F-CONCEPT-DDIA2-c8436c9c7f1a
+  tags:
+  - architecture
+  - data-minimization
+  - retention
+  - deletion
+  - personal-data
+- id: data-partition-key-workload-fit
+  projection:
+    owner: concept-record
+    source_id: data-partition-key-workload-fit
+  kind: principle
+  label: Fit partition keys to load distribution and locality
+  definition: Choose partition keys against observed key distribution, request rates, access locality, and change over time; detect and mitigate hot keys without concealing routing or query costs.
+  operational_significance: A nominally even partitioning algorithm still overloads one shard when the workload concentrates on a hot key, and salting that key can trade write relief for read fan-out and bookkeeping.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - data-partition-key-workload-fit
+  formulations:
+  - F-CONCEPT-DDIA2-b49dfb806296
+  tags:
+  - performance
+  - partition-key
+  - hot-key
+  - skew
+  - hash-partitioning
+- id: data-replication-guarantee-selection
+  projection:
+    owner: concept-record
+    source_id: data-replication-guarantee-selection
+  kind: principle
+  label: Select replication guarantees from failure consequences
+  definition: Choose replication synchrony from explicit durability, latency, availability, and recovery requirements; acknowledge which writes may be lost or blocked under each failure mode.
+  operational_significance: 'Replication does not itself guarantee durability or availability: synchronous acknowledgment can block, while asynchronous acknowledgment can lose writes after failover.'
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - data-replication-guarantee-selection
+  formulations:
+  - F-CONCEPT-DDIA2-816f8979603a
+  tags:
+  - architecture
+  - replication
+  - synchronous-replication
+  - asynchronous-replication
+  - failover
+- id: data-schema-evolution-compatibility
+  projection:
+    owner: concept-record
+    source_id: data-schema-evolution-compatibility
+  kind: principle
+  label: Manage schema evolution across mixed versions
+  definition: Use explicit schemas as executable documentation and predeployment compatibility checks; choose evolution rules that support forward and backward checks while minimizing the number of concurrently supported data formats.
+  operational_significance: An explicit schema can expose incompatible evolution before deployment and serve as executable documentation, while proliferating data formats increases reader and migration complexity.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - data-schema-evolution-compatibility
+  formulations:
+  - F-CONCEPT-DDIA2-017071268972
+  tags:
+  - architecture
+  - schema-evolution
+  - backward-compatibility
+  - forward-compatibility
+  - mixed-version
+- id: data-sharding-evidence-gate
+  projection:
+    owner: concept-record
+    source_id: data-sharding-evidence-gate
+  kind: proof-obligation
+  label: Earn sharding from demonstrated capacity pressure
+  definition: Adopt sharding only when demonstrated data volume or write throughput exceeds a simpler topology and the system can absorb cross-shard queries, transactions, indexes, rebalancing, and routing complexity.
+  operational_significance: Sharding can extend storage and write capacity but turns local queries, transactions, indexes, and operations into distributed coordination problems.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - data-sharding-evidence-gate
+  formulations:
+  - F-CONCEPT-DDIA2-0370551b8b7e
+  tags:
+  - architecture
+  - sharding
+  - partitioning
+  - single-node-capacity
+  - cross-shard-transaction
+- id: data-single-authority-change-propagation
+  projection:
+    owner: concept-record
+    source_id: data-single-authority-change-propagation
+  kind: principle
+  label: Synchronize derived systems from one change authority
+  definition: Propagate changes to derived systems from one ordering authority rather than independent dual writes; make downstream lag, replay, schema, and recovery semantics explicit.
+  operational_significance: Independent writes to a database and an index or cache can succeed in different orders or only partly, creating permanent divergence even when neither system reports an error.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - data-single-authority-change-propagation
+  formulations:
+  - F-CONCEPT-DDIA2-0f220f03ea5b
+  tags:
+  - architecture
+  - change-data-capture
+  - cdc
+  - outbox
+  - dual-write
+- id: data-system-of-record-derived-state
+  projection:
+    owner: concept-record
+    source_id: data-system-of-record-derived-state
+  kind: principle
+  label: Separate authoritative records from managed derived state
+  definition: Designate authoritative systems of record explicitly; caches, indexes, denormalized representations, analytics, and other regenerable representations are derived state whose read benefit must exceed their write, consistency, rebuild, and deletion costs.
+  operational_significance: When authoritative and derived representations are not distinguished, direct writes create competing truths; when denormalized copies are not costed, read convenience silently becomes write amplification, inconsistency, and unrecoverable drift.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - data-system-of-record-derived-state
+  formulations:
+  - F-CONCEPT-DDIA2-1eccdf7ec673
+  - F-CONCEPT-DDIA2-cafc2f4675c8
+  tags:
+  - architecture
+  - system-of-record
+  - source-of-truth
+  - derived-data
+  - materialized-view
+- id: data-transaction-guarantee-verification
+  projection:
+    owner: concept-record
+    source_id: data-transaction-guarantee-verification
+  kind: principle
+  label: Verify transaction guarantees rather than trusting labels
+  definition: 'Treat transaction and ACID labels as claims to verify: identify the actual atomicity, isolation, durability, failure, and scope guarantees a datastore provides before relying on them for correctness.'
+  operational_significance: ACID and isolation names are used inconsistently, so code can appear safe under nominal behavior while losing updates, exposing partial effects, or losing acknowledged data under concurrency and faults.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - data-transaction-guarantee-verification
+  formulations:
+  - F-CONCEPT-DDIA2-5087d042e616
+  tags:
+  - architecture
+  - transaction
+  - acid
+  - isolation-level
+  - atomicity
 - id: conflict-abstraction-vs-duplication
   projection:
     owner: conflict-registry

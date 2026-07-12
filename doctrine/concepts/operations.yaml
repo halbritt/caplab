@@ -128,6 +128,10 @@ concepts:
         locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/014-chapter-10-the-standard-library.md :: 10.7 #81: Using the default HTTP client and server"
         contribution: "Shows that Go's default HTTP client has no request timeout and its default server omits protective phase limits, so production clients and servers need explicit timeout and resource policy."
         relationship: "refinement"
+      - source_id: SRC-DDIA2
+        locator: 'books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/009-chapter-5-encoding-and-evolution.md :: Dataflow Through Services: REST and RPC'
+        contribution: Shows that remote calls add uncertain outcomes, variable latency, serialization boundaries, retries, and duplicate effects that a local call does not have, so callers must own explicit failure semantics.
+        relationship: refinement
     confidence: strong
     roles: [coding-agent, architecture-agent, review-agent, debugging-and-repair-agent]
     languages: [language-independent]

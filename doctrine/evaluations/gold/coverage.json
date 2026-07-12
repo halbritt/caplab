@@ -1,13 +1,13 @@
 {
   "adjudicated_human_count": 0,
-  "candidate_count": 103,
+  "candidate_count": 105,
   "candidate_kind_counts": {
     "agent-role": 9,
     "authority-transition": 8,
     "edge-relation": 19,
     "outcome": 3,
     "risk-class": 42,
-    "source-support": 15,
+    "source-support": 17,
     "support-relationship": 7
   },
   "covered": {
@@ -104,11 +104,13 @@
     ],
     "source_ids": [
       "SRC-100GO",
+      "SRC-ADPCH3",
       "SRC-APOSD",
       "SRC-CA",
       "SRC-CC",
       "SRC-CIG",
       "SRC-DDD",
+      "SRC-DDIA2",
       "SRC-EGO",
       "SRC-FP",
       "SRC-FSA",
@@ -139,7 +141,7 @@
     "source_ids": [],
     "support_relationships": []
   },
-  "pending_human_count": 103,
+  "pending_human_count": 105,
   "required": {
     "agent_roles": [
       "architecture-agent",
@@ -234,11 +236,13 @@
     ],
     "source_ids": [
       "SRC-100GO",
+      "SRC-ADPCH3",
       "SRC-APOSD",
       "SRC-CA",
       "SRC-CC",
       "SRC-CIG",
       "SRC-DDD",
+      "SRC-DDIA2",
       "SRC-EGO",
       "SRC-FP",
       "SRC-FSA",
