@@ -5,8 +5,10 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import os
 import subprocess
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -14,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[2]
 HARBOR_ROOT = ROOT / "doctrine/evaluations/robustness/harbor"
 ORDER = HARBOR_ROOT / "tasks/checkout-retries-activation-order.csv"
 FLEET_RUNNER = Path("/home/halbritt/git/gpu-fleet/bin/gpu-fleet-run")
+FLEET_PICKER = Path("/home/halbritt/git/gpu-fleet/pick_slot.py")
 ENDPOINT_TOKEN = "@@GPU_FLEET_ENDPOINT_URL@@"
 MODEL_TOKEN = "@@GPU_FLEET_SERVED_MODEL@@"
 
@@ -130,6 +133,36 @@ def selected_trials(order, first, limit):
     return selected if limit is None else selected[:limit]
 
 
+def route_is_ready(trial):
+    subject = SUBJECTS[trial.subject]
+    completed = subprocess.run(
+        [
+            "python3",
+            str(FLEET_PICKER),
+            "--model",
+            subject["model"],
+            "--max-context",
+            str(subject["max_context"]),
+            "--job",
+            trial.job_name,
+            "--json",
+        ],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    return bool(json.loads(completed.stdout))
+
+
+def wait_for_route(trial, timeout=120):
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        if route_is_ready(trial):
+            return True
+        time.sleep(5)
+    return False
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--jobs-dir", type=Path, required=True)
@@ -142,6 +175,9 @@ def main(argv=None):
     environment.setdefault("OPENAI_API_KEY", "sk-local-noauth")
     trials = selected_trials(load_order(), args.first_sequence, args.limit)
     for trial in trials:
+        if not wait_for_route(trial):
+            print(f"activation: route did not recover for {trial.job_name}", flush=True)
+            return 75
         print(f"activation: starting {trial.job_name}", flush=True)
         completed = subprocess.run(
             trial_command(trial, args.jobs_dir),

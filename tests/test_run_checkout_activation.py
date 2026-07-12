@@ -9,6 +9,7 @@ from run_checkout_activation import (  # noqa: E402
     MODEL_TOKEN,
     Trial,
     load_order,
+    route_is_ready,
     selected_trials,
     trial_command,
 )
@@ -57,3 +58,31 @@ def test_resume_selection_preserves_recorded_order():
     selected = selected_trials(load_order(), first=47, limit=None)
 
     assert [trial.sequence for trial in selected] == [47, 48]
+
+
+def test_route_gate_uses_exact_subject_capability(monkeypatch):
+    observed = {}
+
+    class Completed:
+        stdout = '[{"node":"peecee"}]'
+
+    def run(command, **kwargs):
+        observed["command"] = command
+        observed["kwargs"] = kwargs
+        return Completed()
+
+    monkeypatch.setattr("run_checkout_activation.subprocess.run", run)
+
+    assert route_is_ready(Trial(2, 1, "27b", "m1", "forced")) is True
+    assert observed["command"][2:7] == [
+        "--model",
+        "qwen3.6:27b",
+        "--max-context",
+        "32768",
+        "--job",
+    ]
+    assert observed["kwargs"] == {
+        "capture_output": True,
+        "text": True,
+        "check": True,
+    }

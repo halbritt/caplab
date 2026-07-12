@@ -1,8 +1,8 @@
 # checkout-retries compact-verification activation experiment
 
-Status: no trial has run. This design and exact order are recorded before the
-first trial. Execution is blocked until both subjects are routable through a
-lease-held `gpu-fleet` command runner.
+Status: execution in progress. Sequence 1 is retained as an infrastructure
+error after task interaction; sequence 2 is next. This design and exact order
+were recorded before the first trial.
 
 ## Question
 
@@ -124,3 +124,38 @@ After the fixed sample, evaluated per subject:
 
 These rules make the fixed run a proof-of-mechanism screen for large effects;
 they do not support equivalence claims.
+
+## Execution ledger
+
+### Sequence 1 — 35b × m1 × forced
+
+Assigned job `activation-s01-b1-35b-m1-forced`, trial
+`checkout-retries-m1__oCfAu94`, under
+`/tmp/checkout-activation-20260712T2315Z/`.
+
+**Observations:** Harbor realized the compact skill and forced instruction. The
+agent's first command read `SKILL.md`; later commands read the gateway docs,
+gateway source, checkout source, and payment client. Three model episodes used
+4,447 prompt and 856 completion tokens. No edit, empirical probe,
+`DECISION.md`, verifier phase, `detail.json`, or reward was produced. Harbor's
+raw record proves SIGTERM/KeyboardInterrupt cancellation. The outer
+lease-held runner reported lease loss; that cause is operator-observed rather
+than independently recorded by Harbor.
+
+**Inference:** the live heartbeat's 1-token diagnostic decode contended with
+the leased workload on the single-slot 35B server, timed out, wrote
+`alive=false`, and caused the next fenced renewal to terminate Harbor. The
+heartbeat journal shows healthy GPU telemetry, one decode timeout, and recovery
+on the next tick; no capability or epoch changed.
+
+**Decision:** sequence 1 is consumed as
+`infrastructure_error_after_task_interaction` and will not be replaced. Its
+reward and verifier-owned ledger endpoint are unavailable, not zero or false.
+Behavioral denominators for this cell will report seven verifier-observed
+trials plus one infrastructure error. The CSV order is unchanged.
+
+Before sequence 2, gpu-fleet commits `5478988` and `ff0de31` added the generic
+lease-held runner and made heartbeat checks lease-aware. A 50-second live hold
+test crossed three heartbeat/renew intervals: the held slot stayed alive,
+weak checks could not promote it, release left it unpickable, and one unleased
+decode restored routability. Gates 2-5 were then rechecked.
