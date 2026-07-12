@@ -1,0 +1,14 @@
+schema_version: doctrine-robustness-operator-registry/1
+operators:
+  - schema_version: doctrine-robustness-operator/1
+    id: authority-withdrawal
+    version: 1
+    family: authority
+    target_artifact_kinds: [scenario]
+    implementation_id: builtin/authority-withdrawal/1
+    allowed_selectors: [/authority/authorization_granted]
+    preconditions: [clean scenario grants authorization]
+    postconditions: [mutant scenario withdraws authorization]
+    expected_mutant_validity: valid
+    detection_boundary: metamorphic
+    default_oracle_class: pair-relation

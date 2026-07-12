@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://books.local/doctrine/evaluations/robustness/case.schema.json",
+  "title": "Doctrine robustness case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "id", "status", "rationale", "subject_adapter", "clean_seed", "operator", "evidence", "oracles", "comparison_projection", "expected_detection_boundary"],
+  "properties": {
+    "schema_version": {"const": "doctrine-robustness-case/1"},
+    "id": {"$ref": "#/$defs/id"},
+    "status": {"enum": ["candidate", "accepted", "retired"]},
+    "rationale": {"type": "string", "minLength": 1},
+    "subject_adapter": {"enum": ["scenario-runner/2", "assertion-validator/1", "evidence-packet-assembler/1", "doctrine-graph-validator/1"]},
+    "clean_seed": {
+      "type": "object", "additionalProperties": false,
+      "required": ["artifact_kind", "locator", "target_hash", "container_hash"],
+      "properties": {
+        "artifact_kind": {"enum": ["scenario", "assertion-artifact", "evidence-packet", "doctrine-graph"]},
+        "locator": {"type": "string", "minLength": 1},
+        "scenario_version": {"const": "doctrine-scenario/2"},
+        "target_hash": {"$ref": "#/$defs/hash"},
+        "container_hash": {"$ref": "#/$defs/hash"}
+      }
+    },
+    "operator": {
+      "type": "object", "additionalProperties": false, "required": ["id", "version", "parameters", "expected_input_validity"],
+      "properties": {"id": {"$ref": "#/$defs/id"}, "version": {"type": "integer", "minimum": 1}, "parameters": {"type": "object"}, "expected_input_validity": {"enum": ["valid", "invalid"]}}
+    },
+    "evidence": {"type": "array", "items": {"$ref": "../../runtime/evidence-record.schema.json"}},
+    "oracles": {
+      "type": "object", "additionalProperties": false, "required": ["clean", "mutant", "pair"],
+      "properties": {"clean": {"type": "object"}, "mutant": {"type": "object"}, "pair": {"type": "object"}}
+    },
+    "comparison_projection": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^/"}},
+    "expected_detection_boundary": {"enum": ["structural", "metamorphic", "human-semantic"]}
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

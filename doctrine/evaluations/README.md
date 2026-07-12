@@ -45,3 +45,23 @@ insufficient-evidence, abstention, and no-change outcomes. It currently contains
 candidate metadata only: every record is pending human adjudication and there
 are no checked-in human dispositions. Machine screening cannot be promoted into
 a human disposition or engineering acceptance.
+
+## Robustness laboratory
+
+The selected
+[`Doctrine Robustness Laboratory`](../../docs/product/specs/spec-doctrine-robustness-laboratory.md)
+defines clean/mutated evaluation pairs, controlled mutation operators,
+relational oracles, content-addressed reports, and separate mechanical and
+human-adjudication outcomes. P1 and P2 of its
+[`pilot implementation plan`](../../docs/product/plans/plan-doctrine-robustness-laboratory-pilot.md)
+are implemented: versioned contracts load offline, and the
+`authority-withdrawal` case compiles one declared input delta before invoking
+the existing scenario runner for the clean and mutant branches. Run it with:
+
+```bash
+python3 doctrine/tools/run_robustness_case.py \
+  doctrine/evaluations/robustness/cases/authority-withdrawal.json
+```
+
+This is a deterministic structural checkpoint, not an accepted judgment-quality
+gate. Later cases, grading, catalogs, and human adjudication remain deferred.

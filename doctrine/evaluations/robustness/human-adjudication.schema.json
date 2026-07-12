@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://books.local/doctrine/evaluations/robustness/human-adjudication.schema.json",
+  "title": "Human doctrine robustness adjudications",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "adjudications"],
+  "properties": {
+    "schema_version": {"const": "doctrine-robustness-human-adjudication/1"},
+    "adjudications": {"type": "array", "items": {"$ref": "#/$defs/adjudication"}}
+  },
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "adjudication": {
+      "type": "object", "additionalProperties": false,
+      "required": ["case_id", "run_hash", "clean_output_hash", "mutant_output_hash", "adjudicator", "adjudicated_at", "evidence_reviewed", "disposition", "rationale", "uncertainty"],
+      "properties": {
+        "case_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+        "run_hash": {"$ref": "#/$defs/hash"}, "clean_output_hash": {"$ref": "#/$defs/hash"}, "mutant_output_hash": {"$ref": "#/$defs/hash"},
+        "adjudicator": {"type": "object", "additionalProperties": false, "required": ["kind", "id"], "properties": {"kind": {"const": "human"}, "id": {"type": "string", "minLength": 1}}},
+        "adjudicated_at": {"type": "string", "format": "date-time"},
+        "evidence_reviewed": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "disposition": {"enum": ["expected-response-observed", "expected-response-not-observed", "equivalent-mutation", "invalid-baseline", "invalid-mutation", "indeterminate"]},
+        "rationale": {"type": "string", "minLength": 1}, "uncertainty": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

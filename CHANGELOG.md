@@ -52,11 +52,11 @@ remains under `Unreleased`, whether or not it has been committed.
   with explicit specification and implementation-plan lifecycles, reusable
   templates, and a stable index that keeps proposal, decision, authorization,
   execution, verification, and acceptance distinct.
-- Added the proposed Doctrine Robustness Laboratory specification and its
-  dependency-ordered pilot plan for paired clean/mutated evaluation cases,
-  relational oracles, deterministic grading, and separately governed human
-  adjudication. These documents do not claim implementation authorization or a
-  current robustness capability.
+- Added the selected Doctrine Robustness Laboratory specification, authorized
+  pilot plan, versioned offline contracts, strict loader, and deterministic
+  `authority-withdrawal` pair. The P2 runner changes one declared authority
+  selector and invokes the existing scenario runner for clean and mutant
+  branches; later grading and human-adjudication checkpoints remain deferred.
 - Added tracked per-book section maps (`doctrine/section-maps/*.yaml`, schema
   `section-map/1`) classifying every chapter heading as a genuine section
   boundary or conversion-flattened embedded content (callouts, captions,

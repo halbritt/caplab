@@ -17,6 +17,7 @@ The source books remain unchanged under [`sources/`](sources/). Generated books 
 | [`doctrine/runtime/`](doctrine/runtime/README.md) | JSON Schema contracts and structural assertion validation |
 | [`doctrine/tools/`](doctrine/tools/) | Doctrine validation, graph projection, evidence-packet assembly, and entailment-screening tooling |
 | [`doctrine/evaluations/`](doctrine/evaluations/README.md) | Replayable authority canaries, dependency-impact fixtures, entailment screening, and a pending-human gold-calibration queue |
+| [`docs/product/`](docs/product/README.md) | Repository-specific product specifications, implementation plans, templates, and lifecycle index |
 | [`ubiquitous_language.md`](ubiquitous_language.md) | Canonical meanings of observation, inference, recommendation, decision, and adjacent authority terms |
 | [`AGENTS.md`](AGENTS.md) | Repository instructions for coding agents |
 | [`scripts/convert-books`](scripts/convert-books) | `sources/` book discovery and conversion command |
