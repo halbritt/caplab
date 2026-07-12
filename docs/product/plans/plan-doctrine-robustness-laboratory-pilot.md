@@ -89,6 +89,26 @@ separate decisions under the selected plan.
   peecee `qwen3.6:27b` subject stayed queued behind the conversion
   campaign's GPU work at run time; its pair runs when that endpoint drains.
 
+- **2026-07-12 — Live A/B extended to GLM 5.2; the 27b subject skipped by
+  the owner.** Same `terminus-2` configuration and scratchpad-only retention;
+  the GLM 5.2 jobs used the bearer-authenticated OpenRouter endpoint already
+  established for entailment screening. Mechanical outcome `both-failed`
+  (paired result `bc9fdead…`): the control receipt abstained with dangling
+  evidence references, while the treatment receipt was the first fully
+  contract-valid live receipt and failed only the acceptable-status
+  criterion, leaving `over_refusal` as its single hard failure. The peecee
+  `qwen3.6:27b` control arm completed incidentally before the owner skipped
+  that subject (abstained, two hard failures); no 27b pair exists.
+  **Observation:** all five live arms across three model families abstained
+  on the adequately evidenced clean case, while skill injection
+  monotonically reduced hard failures (three to two on the 35B, two to one
+  on GLM 5.2) without converting abstention into a recommendation, and no
+  treatment trajectory executed the full skill protocol or assembled an
+  evidence packet. Whether that pattern is genuine over-refusal, oracle
+  dogmatism in the case's acceptable-status set, or anchoring from the
+  instruction's mention of `abstained` is a human-adjudication question that
+  this record does not decide.
+
 ## Objective and authority boundary
 
 Deliver a repository-native pilot that can compile a clean/mutated evaluation
