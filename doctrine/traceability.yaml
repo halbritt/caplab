@@ -2,10 +2,10 @@ schema_version: agent-doctrine-traceability/1
 corpus_snapshot_date: 2026-07-12
 coverage_definition:
   unit: Every Markdown file under each registered source's chapters directory, including front matter, part dividers, indexes, bibliographies, and other files that may be classified as non-substantive evidence.
-  expected_units: 433
-  covered_units: 433
+  expected_units: 500
+  covered_units: 500
   exclusions: []
-  note: The Markdown files under books include per-book README files plus books/README.md; those navigation files are not source chapters. The chapter files of the two remaining converted-but-unregistered books stay outside doctrine coverage until their sources are registered.
+  note: The 520 Markdown files under books comprise 500 registered source chapter files plus 19 per-book README files and books/README.md. Those 20 README files are navigation, not source chapters. All 19 converted books are registered; zero book directories and zero chapter files remain outside doctrine coverage.
 
 chapter_coverage_ledgers:
   - ledger: doctrine/_work/extractions/implementation-sources.md
@@ -58,6 +58,13 @@ chapter_coverage_ledgers:
       - {source_id: SRC-ADPCH3, expected: 2, covered: 2}
     locator_audit: 25 unique chapter-heading locators resolution-verified and section-role-confirmed during extraction
 
+  - ledger: doctrine/_work/extractions/organization-python-sources.md
+    sha256: d8eb865d956df4488fe9b3d32059683001edba6ff77931d43b44d84794140be1
+    sources:
+      - {source_id: SRC-SEAG, expected: 38, covered: 38}
+      - {source_id: SRC-APWP, expected: 29, covered: 29}
+    locator_audit: 33 support locator references across 31 distinct chapter headings; all 33 resolve exactly once and carry section-map role section
+
 canonicalization_ledgers:
   - ledger: doctrine/_work/canonicalization/implementation-language.md
     purpose: Merge implementation, language, review, repair, and conduct candidates while preserving source formulations and collision decisions.
@@ -77,7 +84,7 @@ provenance_relations:
 
 artifact_derivation:
   bibliography.json: Canonical titles, editions, creator roles, and field-level evidence joined to stable source IDs while preserving legacy extracted metadata as noncanonical evidence.
-  chapter-coverage.yaml: Exact chapter paths, dispositions, and content hashes generated from all eight extraction ledgers and checked against the registered corpus filesystem.
+  chapter-coverage.yaml: Exact chapter paths, dispositions, and content hashes generated from all nine extraction ledgers and checked against the registered corpus filesystem.
   corpus-map.yaml: Per-source maps in all registered extraction ledgers; source registry in sources.yaml.
   universal-doctrine.md: Cross-source canonicalization of repeated foundation claims; detailed evidence remains in concepts and graph formulations.
   role-doctrine.md: Role activation and constraints derived from canonical concepts, procedures, authority levels, and change types.

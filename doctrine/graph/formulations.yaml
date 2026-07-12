@@ -836,6 +836,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-APWP-a6b0fa93078f
+  source_id: SRC-APWP
+  locator: books/architecture-patterns-with-python/chapters/017-chapter-10-commands-and-command-handler.md#Commands and Events
+  mappings:
+  - node_id: architecture-command-event-semantics
+    relationship_to_canonical: direct_support
+  paraphrase: Defines commands as imperative intent sent to one handler with noisy failure and events as past-tense facts broadcast to listeners whose failures are independent of the publisher.
+  conditions: 'Canonical mapping applicability (not attributed to the source): designing a message bus or handler registry; reviewing domain or integration messages; assigning failure and retry ownership'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-FSA-0ab10d2b4279
   source_id: SRC-FSA
   locator: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/013-chapter-8-component-based-thinking.md#Architecture Partitioning
@@ -904,6 +916,18 @@ formulations:
     relationship_to_canonical: corroboration
   paraphrase: Requires structure strength to fit current model and team needs.
   conditions: 'Canonical mapping applicability (not attributed to the source): selecting or changing a system or subsystem architecture style; reviewing layered, pipeline, plugin, service, event, space-based, or microservice proposals'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-APWP-540258d38c11
+  source_id: SRC-APWP
+  locator: books/architecture-patterns-with-python/chapters/019-chapter-12-command-query-responsibility-segregation-cqrs.md#Your Domain Model Is Not Optimized for Read Operations
+  mappings:
+  - node_id: architecture-cqrs-earned-read-model
+    relationship_to_canonical: direct_support
+  paraphrase: Explains that a domain model shaped around write workflows and state-change rules often contains machinery irrelevant to queries, while explicitly saying simple CRUD systems whose reads and writes align do not need CQRS.
+  conditions: 'Canonical mapping applicability (not attributed to the source): read requirements differ materially from write workflows; a domain model makes important queries awkward or slow; evaluating CQRS or a denormalized view'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
     conditions: canonical-mapping
@@ -992,6 +1016,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-APWP-5fd5d3d46539
+  source_id: SRC-APWP
+  locator: books/architecture-patterns-with-python/chapters/025-appendix-d-repository-and-unit-of-work-patterns-with-django.md#What to Do If You Already Have Django
+  mappings:
+  - node_id: architecture-dependency-inversion-gate
+    relationship_to_canonical: direct_support
+  paraphrase: Advises retaining Django-coupled models while the application and tests remain simple and fast, and paying the substantial Repository and Unit of Work cost only when test speed, migration, or cross-application interdependency pressure justifies it.
+  conditions: 'Canonical mapping applicability (not attributed to the source): a volatile provider threatens stable policy; multiple real implementations or independent deployment exist; a legacy dependency requires an interception seam'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-FSA-03d270194af5
   source_id: SRC-FSA
   locator: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/015-chapter-9-foundations.md#Other Distributed Considerations
@@ -1047,6 +1083,18 @@ formulations:
   - node_id: architecture-distribution-readiness
     relationship_to_canonical: refinement
   paraphrase: Conditions distribution on actual scale or availability requirements and identifies the added fault, latency, consistency, and operational complexity compared with a sufficient single-node system.
+  conditions: 'Canonical mapping applicability (not attributed to the source): proposing services, processes, queues, or independent deployments; reviewing a distributed migration or service decomposition'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-SEAG-c832eeaeba8f
+  source_id: SRC-SEAG
+  locator: 'books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/033-chapter-24-continuous-delivery.md#Velocity Is a Team Sport: How to Break Up a Deployment into Manageable Pieces'
+  mappings:
+  - node_id: architecture-distribution-readiness
+    relationship_to_canonical: tension
+  paraphrase: Advocates microservice migration or even a rewrite as the best-return response to costly team-scale monolith releases, framing team and deployment scaling as the driver for distribution.
   conditions: 'Canonical mapping applicability (not attributed to the source): proposing services, processes, queues, or independent deployments; reviewing a distributed migration or service decomposition'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -1292,6 +1340,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-APWP-1d3d530f4b94
+  source_id: SRC-APWP
+  locator: 'books/architecture-patterns-with-python/chapters/018-chapter-11-event-driven-architecture-using-events-to-integrate-microservices.md#The Alternative: Temporal Decoupling Using Asynchronous Messaging'
+  mappings:
+  - node_id: architecture-interaction-synchrony
+    relationship_to_canonical: direct_support
+  paraphrase: Argues that independently consistent services can accept eventual consistency between them, continue during peer degradation, and change workflow locally by exchanging asynchronous events instead of requiring synchronous ordered success.
+  conditions: 'Canonical mapping applicability (not attributed to the source): selecting communication between components or services; reviewing request-reply versus event interaction'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-FSA-a8b1df24c4a8
   source_id: SRC-FSA
   locator: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/008-chapter-3-modularity.md#Limitations of Metrics
@@ -1395,6 +1455,30 @@ formulations:
   - node_id: architecture-policy-mechanism-separation
     relationship_to_canonical: direct_support
   paraphrase: Protects domain meaning from user-interface and infrastructure concerns.
+  conditions: 'Canonical mapping applicability (not attributed to the source): business or application policy is obscured by framework, database, web, or device types; mechanism volatility repeatedly changes policy code'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-APWP-90374e151fc5
+  source_id: SRC-APWP
+  locator: books/architecture-patterns-with-python/chapters/007-chapter-2-repository-pattern.md#Applying the DIP to Data Access
+  mappings:
+  - node_id: architecture-policy-mechanism-separation
+    relationship_to_canonical: direct_support
+  paraphrase: Keeps the domain model independent of ORM and database representations by directing infrastructure dependencies inward, so storage concerns do not shape policy code or its unit-test environment.
+  conditions: 'Canonical mapping applicability (not attributed to the source): business or application policy is obscured by framework, database, web, or device types; mechanism volatility repeatedly changes policy code'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-APWP-073934776376
+  source_id: SRC-APWP
+  locator: 'books/architecture-patterns-with-python/chapters/024-appendix-c-swapping-out-the-infrastructure-do-everything-with-csvs.md#Appendix C. Swapping Out the Infrastructure: Do Everything with CSVs'
+  mappings:
+  - node_id: architecture-policy-mechanism-separation
+    relationship_to_canonical: corroboration
+  paraphrase: Demonstrates reuse of the same domain and service-layer behavior when a Flask/Postgres interface is replaced by CLI and CSV storage, with only Repository and Unit of Work adapters reimplemented.
   conditions: 'Canonical mapping applicability (not attributed to the source): business or application policy is obscured by framework, database, web, or device types; mechanism volatility repeatedly changes policy code'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -1904,6 +1988,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-APWP-0649bc8b0991
+  source_id: SRC-APWP
+  locator: books/architecture-patterns-with-python/chapters/012-chapter-7-aggregates-and-consistency-boundaries.md#Choosing an Aggregate
+  mappings:
+  - node_id: domain-aggregate-invariant-boundary
+    relationship_to_canonical: direct_support
+  paraphrase: Selects aggregate granularity from the objects that must be consistent for one operation, rejects broader warehouse and shipment groupings that would unnecessarily serialize independent work, and keeps the boundary small for performance.
+  conditions: 'Canonical mapping applicability (not attributed to the source): modeling transactional domain invariants; reviewing aggregate size, consistency, or service decomposition'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-DDD-aa97141b7e01
   source_id: SRC-DDD
   locator: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md#Anticorruption Layer
@@ -2007,6 +2103,18 @@ formulations:
   - node_id: domain-bounded-context
     relationship_to_canonical: corroboration
   paraphrase: Operations-side corroboration that one enterprise-wide model per noun fails - each group defines customer differently with different lifecycles and permissions, so federate zones of authority exchanging common representations instead of a single system of record, and keep upstream leverage concepts from leaking into downstream feeds as incidental complexity.
+  conditions: 'Canonical mapping applicability (not attributed to the source): different users, workflows, teams, or systems use conflicting meanings or rules; mapping a complex domain or legacy integration'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-APWP-ea6a7d09012d
+  source_id: SRC-APWP
+  locator: books/architecture-patterns-with-python/chapters/012-chapter-7-aggregates-and-consistency-boundaries.md#Choosing an Aggregate
+  mappings:
+  - node_id: domain-bounded-context
+    relationship_to_canonical: direct_support
+  paraphrase: Shows Product modeled only with allocation-relevant SKU and batches while ecommerce owns price and description, using context-specific models and explicit translation instead of one enterprise-wide object graph.
   conditions: 'Canonical mapping applicability (not attributed to the source): different users, workflows, teams, or systems use conflicting meanings or rules; mapping a complex domain or legacy integration'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -2228,6 +2336,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-APWP-611706e37f2b
+  source_id: SRC-APWP
+  locator: books/architecture-patterns-with-python/chapters/006-chapter-1-domain-modeling.md#Value Objects and Entities
+  mappings:
+  - node_id: domain-identity-entity
+    relationship_to_canonical: direct_support
+  paraphrase: Distinguishes entities from values by persistent identity despite mutable attributes and requires equality and hashing choices to follow the stable identity attribute rather than current state.
+  conditions: 'Canonical mapping applicability (not attributed to the source): modeling identity, lifecycle, history, or references; reviewing entity-versus-value semantics'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-DDD-dd56be5c6621
   source_id: SRC-DDD
   locator: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/012-chapter-10-supple-design.md#Intention-Revealing Interfaces
@@ -2295,6 +2415,18 @@ formulations:
   - node_id: domain-language-model-loop
     relationship_to_canonical: corroboration
   paraphrase: Requires application purpose and use cases to remain visible in structure.
+  conditions: 'Canonical mapping applicability (not attributed to the source): domain-modeling investment has been earned; business terms or rules are ambiguous or contradictory'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-APWP-9e8e547a90bd
+  source_id: SRC-APWP
+  locator: books/architecture-patterns-with-python/chapters/006-chapter-1-domain-modeling.md#Exploring the Domain Language
+  mappings:
+  - node_id: domain-language-model-loop
+    relationship_to_canonical: direct_support
+  paraphrase: Begins modeling with an expert-agreed glossary, business-language rules, and concrete examples that make identifiers, constraints, allocation preferences, and duplicate handling discussable and testable.
   conditions: 'Canonical mapping applicability (not attributed to the source): domain-modeling investment has been earned; business terms or rules are ambiguous or contradictory'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -2372,6 +2504,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-APWP-4944744983ea
+  source_id: SRC-APWP
+  locator: books/architecture-patterns-with-python/chapters/007-chapter-2-repository-pattern.md#Introducing the Repository Pattern
+  mappings:
+  - node_id: domain-repository-lifecycle
+    relationship_to_canonical: direct_support
+  paraphrase: Defines a repository as a minimal collection-like abstraction over storage, with add and get operations used by domain and service code so database mechanics remain behind the adapter.
+  conditions: 'Canonical mapping applicability (not attributed to the source): Aggregate roots require retrieval or reconstitution; persistence mechanics would pollute domain use cases'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-DDD-308c94715625
   source_id: SRC-DDD
   locator: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/006-chapter-5-a-model-expressed-in-software.md#Services
@@ -2408,6 +2552,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-APWP-e7330ce8d26c
+  source_id: SRC-APWP
+  locator: books/architecture-patterns-with-python/chapters/009-chapter-4-our-first-use-case-flask-api-and-service-layer.md#Why Is Everything Called a Service?
+  mappings:
+  - node_id: domain-service-operation
+    relationship_to_canonical: direct_support
+  paraphrase: Distinguishes an application service that orchestrates retrieval, domain updates, and persistence from a stateless domain service that expresses business logic with no natural entity or value-object home.
+  conditions: 'Canonical mapping applicability (not attributed to the source): an important domain operation spans concepts and has no natural object owner; reviewing an anemic model or service layer'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-DDD-075810fcb312
   source_id: SRC-DDD
   locator: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/006-chapter-5-a-model-expressed-in-software.md#Value Objects
@@ -2427,6 +2583,18 @@ formulations:
   - node_id: domain-value-object
     relationship_to_canonical: direct_support
   paraphrase: Conditions the default immutability rule on domain and implementation forces.
+  conditions: 'Canonical mapping applicability (not attributed to the source): modeling descriptive concepts, quantities, ranges, money, addresses, or measurements; reviewing equality and mutability semantics'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-APWP-76ba98a8c680
+  source_id: SRC-APWP
+  locator: books/architecture-patterns-with-python/chapters/006-chapter-1-domain-modeling.md#Value Objects and Entities
+  mappings:
+  - node_id: domain-value-object
+    relationship_to_canonical: direct_support
+  paraphrase: Defines value objects by complete attribute identity and replacement semantics, and ties Python equality and hashing to all immutable value attributes.
   conditions: 'Canonical mapping applicability (not attributed to the source): modeling descriptive concepts, quantities, ranges, money, addresses, or measurements; reviewing equality and mutability semantics'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -2898,6 +3066,30 @@ formulations:
     relationship_to_canonical: direct_support
   paraphrase: Separates deadlock, livelock, and starvation from value correctness and exposes lock order, critical-section scope, fairness, and non-memory resources as progress obligations.
   conditions: 'Canonical mapping applicability (not attributed to the source): designing or reviewing concurrent components; diagnosing hangs or starvation'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-SEAG-b2c5c00570cc
+  source_id: SRC-SEAG
+  locator: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/030-chapter-21-dependency-management.md#Considerations When Importing
+  mappings:
+  - node_id: implementation-dependency-adoption-gate
+    relationship_to_canonical: direct_support
+  paraphrase: Provides a pre-import question set covering runnable tests, provider and supported-use evidence, compatibility and breaking cadence, expected duration, internal implementation cost, upgrade incentives, owner, and expected upgrade difficulty.
+  conditions: 'Canonical mapping applicability (not attributed to the source): adding a package, framework, plugin, SDK, or service dependency; replacing an internal implementation with a third-party dependency; reviewing a dependency introduced transitively'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-SEAG-ade6df47ab8c
+  source_id: SRC-SEAG
+  locator: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/018-chapter-10-documentation.md#Documentation Is Like Code
+  mappings:
+  - node_id: implementation-documentation-lifecycle
+    relationship_to_canonical: direct_support
+  paraphrase: 'Treats documentation as maintained engineering state: it assigns owners and canonical sources, keeps documents with code under version control, reviews and tracks changes, and checks freshness rather than relying on ownerless wiki pages.'
+  conditions: 'Canonical mapping applicability (not attributed to the source): creating or reviewing public API documentation; maintaining operator or developer guides; recording durable architecture and repository guidance'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
     conditions: canonical-mapping
@@ -3526,6 +3718,30 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-APWP-ee5934c01c40
+  source_id: SRC-APWP
+  locator: books/architecture-patterns-with-python/chapters/011-chapter-6-unit-of-work-pattern.md#Explicit Versus Implicit Commits
+  mappings:
+  - node_id: implementation-unit-of-work-safe-default
+    relationship_to_canonical: direct_support
+  paraphrase: Compares implicit and explicit commit designs and prefers explicit commit plus default rollback because every path except complete success and deliberate commit leaves durable state unchanged.
+  conditions: 'Canonical mapping applicability (not attributed to the source): application use cases that mutate transactional state; repository and service-layer design; reviewing commit and rollback behavior'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-APWP-989f57e619de
+  source_id: SRC-APWP
+  locator: books/architecture-patterns-with-python/chapters/026-appendix-e-validation.md#Validating Pragmatics
+  mappings:
+  - node_id: implementation-validation-placement
+    relationship_to_canonical: direct_support
+  paraphrase: Separates validation into syntax, semantics, and pragmatics and assigns them respectively to message or edge handling, service-layer or message-bus preconditions, and domain business rules.
+  conditions: 'Canonical mapping applicability (not attributed to the source): designing API or message validation; placing service preconditions; reviewing domain invariants and input checks'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-WELC-6445fd919375
   source_id: SRC-WELC
   locator: books/programming-working-effectively-with-legacy-code/chapters/009-chapter-2-working-with-feedback.md#The Legacy Code Change Algorithm
@@ -3869,6 +4085,18 @@ formulations:
   - node_id: operations-build-provenance
     relationship_to_canonical: corroboration
   paraphrase: Requires an artifact repository of blessed binaries with known provenance populated only by clean build servers, pipeline stage tagging, and documents a real supply-chain attack delivered through a compromised CI-server plugin.
+  conditions: 'Canonical mapping applicability (not attributed to the source): setting up or reviewing build and deployment pipelines; adding dependencies or build plugins; an agent producing artifacts intended for deployment'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-SEAG-f65a51785822
+  source_id: SRC-SEAG
+  locator: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/027-chapter-18-build-systems-and-build-philosophy.md#Artifact-Based Build Systems
+  mappings:
+  - node_id: operations-build-provenance
+    relationship_to_canonical: refinement
+  paraphrase: Supports declarative artifact and tool dependencies, sandboxing against undeclared filesystem and network inputs, cryptographic pinning of external artifacts in version control, and controlled mirrors for availability and repeatability.
   conditions: 'Canonical mapping applicability (not attributed to the source): setting up or reviewing build and deployment pipelines; adding dependencies or build plugins; an agent producing artifacts intended for deployment'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -4277,6 +4505,30 @@ formulations:
   - node_id: operations-live-interface-compatibility
     relationship_to_canonical: corroboration
   paraphrase: Independently states that needing provider and caller updated together is a coupling warning sign.
+  conditions: 'Canonical mapping applicability (not attributed to the source): changing any live API message format or endpoint; adding validation to existing interfaces; reviewing changes labeled cleanup on public surfaces; planning version-discriminated breaks'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-SEAG-851a06f663c3
+  source_id: SRC-SEAG
+  locator: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/007-chapter-1-what-is-software-engineering.md#Hvrum's Law
+  mappings:
+  - node_id: operations-live-interface-compatibility
+    relationship_to_canonical: direct_support
+  paraphrase: States that with enough API users, any observable behavior can acquire dependents, so change-cost analysis must include discovering and resolving breakage beyond the published contract.
+  conditions: 'Canonical mapping applicability (not attributed to the source): changing any live API message format or endpoint; adding validation to existing interfaces; reviewing changes labeled cleanup on public surfaces; planning version-discriminated breaks'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-APWP-c454267cc102
+  source_id: SRC-APWP
+  locator: books/architecture-patterns-with-python/chapters/026-appendix-e-validation.md#Postel's Law and the Tolerant Reader Pattern
+  mappings:
+  - node_id: operations-live-interface-compatibility
+    relationship_to_canonical: refinement
+  paraphrase: Refines controlled event integration toward consumers reading only required fields and avoiding overspecified identifier formats so producers can add irrelevant data independently, while explicitly limiting leniency for public untrusted APIs.
   conditions: 'Canonical mapping applicability (not attributed to the source): changing any live API message format or endpoint; adding validation to existing interfaces; reviewing changes labeled cleanup on public surfaces; planning version-discriminated breaks'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -5710,6 +5962,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-SEAG-9c12de42bc04
+  source_id: SRC-SEAG
+  locator: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/023-chapter-15-deprecation.md#Managing the Deprecation Process
+  mappings:
+  - node_id: refactoring-compatibility-migration
+    relationship_to_canonical: refinement
+  paraphrase: Requires explicit deprecation ownership, warns that advisory migration delegated to consumers does not finish, and treats deleted subcomponents and declining use as valuable milestones before final removal.
+  conditions: 'Canonical mapping applicability (not attributed to the source): public API; wire protocol; event; schema; file format; multi-repo consumer'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-REF-75d28cd696bd
   source_id: SRC-REF
   locator: books/refactoring-improving-the-design-of-existing-code/chapters/006-chapter-2-principles-in-refactoring.md#When Should You Refactor?
@@ -5753,6 +6017,30 @@ formulations:
   - node_id: refactoring-directional-campaign
     relationship_to_canonical: refinement
   paraphrase: Replacement risks hidden requirements and catch-up; large improvement should proceed through protected, quickly integrated states.
+  conditions: 'Canonical mapping applicability (not attributed to the source): modularization; legacy restructuring; inheritance separation; domain/presentation separation'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-SEAG-a3c7ab8f7f49
+  source_id: SRC-SEAG
+  locator: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/031-chapter-22-large-scale-changes.md#Sharding and Submitting
+  mappings:
+  - node_id: refactoring-directional-campaign
+    relationship_to_canonical: refinement
+  paraphrase: Shows a broad generated migration split by ownership into independently committable, independently tested and reviewed shards, with bounded outstanding work and cheap regeneration when a shard fails.
+  conditions: 'Canonical mapping applicability (not attributed to the source): modularization; legacy restructuring; inheritance separation; domain/presentation separation'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-APWP-32844dcfe127
+  source_id: SRC-APWP
+  locator: books/architecture-patterns-with-python/chapters/021-epilogue.md#Separating Entangled Responsibilities
+  mappings:
+  - node_id: refactoring-directional-campaign
+    relationship_to_canonical: refinement
+  paraphrase: Starts an overgrown-system migration by naming use cases, centralizing their orchestration and transaction boundaries, and accepting temporary duplication and long handlers as a comprehensible intermediate state before deeper domain cleanup.
   conditions: 'Canonical mapping applicability (not attributed to the source): modularization; legacy restructuring; inheritance separation; domain/presentation separation'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -5974,6 +6262,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-SEAG-7e2b7eb94d10
+  source_id: SRC-SEAG
+  locator: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/014-chapter-7-measuring-engineering-productivity.md#Using Data to Validate Metrics
+  mappings:
+  - node_id: repository-assessment-behavioral-data-fitness
+    relationship_to_canonical: corroboration
+  paraphrase: Shows tool logs counting automated builds that engineers did not experience as latency, then uses in-context qualitative evidence to revise the metric rather than treating the quantitative proxy as ground truth.
+  conditions: 'Canonical mapping applicability (not attributed to the source): any history; hotspot; co-change; ownership; or age analysis'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-SDX-99ea208ffa96
   source_id: SRC-SDX
   locator: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/016-chapter-10-an-extra-team-member-predictive-and-proactive-analyses.md#Detect Future Hotspots
@@ -6154,6 +6454,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-SEAG-47e7182e2b06
+  source_id: SRC-SEAG
+  locator: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/020-chapter-12-unit-testing.md#Test State, Not Interactions
+  mappings:
+  - node_id: testing-assert-observable-outcomes
+    relationship_to_canonical: direct_support
+  paraphrase: Contrasts state and interaction verification and shows that asserting the resulting system state detects lost effects and survives equivalent implementation changes that call-sequence assertions misclassify.
+  conditions: 'Canonical mapping applicability (not attributed to the source): writing assertions; reviewing tests for brittleness; diagnosing tests that fail on refactoring; assessing suite accuracy'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-CC-20a835bbb400
   source_id: SRC-CC
   locator: books/code-complete-2nd-edition-v413hav/chapters/031-chapter-22-developer-testing.md#Coverage Monitors
@@ -6197,6 +6509,18 @@ formulations:
   - node_id: testing-coverage-is-not-adequacy
     relationship_to_canonical: refinement
   paraphrase: Prescribes writing all tests black-box against behavior meaningful to the problem domain, while using white-box coverage analysis only to locate untested branches that are then tested black-box; a test untraceable to a business requirement should be restructured or deleted.
+  conditions: 'Canonical mapping applicability (not attributed to the source): test assessment; coverage gate review; implementation or repair verification'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-SEAG-c1327a40d7d3
+  source_id: SRC-SEAG
+  locator: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/019-chapter-11-testing-overview.md#A Note on Code Coverage
+  mappings:
+  - node_id: testing-coverage-is-not-adequacy
+    relationship_to_canonical: direct_support
+  paraphrase: Explains that coverage records execution rather than useful assertions or behavior protection, warns that numeric bars become ceilings, and redirects adequacy assessment to customer-visible behaviors, dependency breakage, stability, and context.
   conditions: 'Canonical mapping applicability (not attributed to the source): test assessment; coverage gate review; implementation or repair verification'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -6574,6 +6898,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-APWP-a54a4328c58d
+  source_id: SRC-APWP
+  locator: books/architecture-patterns-with-python/chapters/008-chapter-3-a-brief-interlude-on-coupling-and-abstractions.md#Testing Edge to Edge with Fakes and Dependency Injection
+  mappings:
+  - node_id: testing-shared-dependency-substitution
+    relationship_to_canonical: corroboration
+  paraphrase: Advocates explicit fakes and dependency injection, state assertions at the highest useful abstraction, and real production entrypoints; it rejects broad patching and interaction-heavy mocks because they leave design coupling intact and make tests implementation-sensitive.
+  conditions: 'Canonical mapping applicability (not attributed to the source): deciding what to mock or stub in a unit test; reviewing test-double usage; a suite whose tests interfere through shared state or run slowly'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-UT-7f34a6a54455
   source_id: SRC-UT
   locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/006-chapter-1-the-goal-of-unit-testing.md#1.2 The goal of unit testing
@@ -6641,6 +6977,30 @@ formulations:
   - node_id: testing-test-level-mix
     relationship_to_canonical: direct_support
   paraphrase: Grounds the Test Pyramid's ratio in the fast-feedback versus regression-protection trade-off (no layer may concede resistance to refactoring) and licenses explicit exceptions - CRUD-dominated systems shift toward a unit/integration rectangle, and a single-dependency API can justify more end-to-end tests.
+  conditions: 'Canonical mapping applicability (not attributed to the source): planning a test strategy; reviewing the suite''s level distribution; deciding at which level to protect a behavior'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-SEAG-491b46acbe58
+  source_id: SRC-SEAG
+  locator: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/022-chapter-14-larger-testing.md#Common Gaps in Unit Tests
+  mappings:
+  - node_id: testing-test-level-mix
+    relationship_to_canonical: refinement
+  paraphrase: 'Identifies concrete unit-test blind spots: unfaithful doubles, deployment configuration, load behavior, unanticipated inputs and side effects, and emergent behavior outside the isolated scope.'
+  conditions: 'Canonical mapping applicability (not attributed to the source): planning a test strategy; reviewing the suite''s level distribution; deciding at which level to protect a behavior'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-APWP-458fdb6890d8
+  source_id: SRC-APWP
+  locator: books/architecture-patterns-with-python/chapters/010-chapter-5-tdd-in-high-gear-and-low-gear.md#On Deciding What Kind of Tests to Write
+  mappings:
+  - node_id: testing-test-level-mix
+    relationship_to_canonical: refinement
+  paraphrase: Contrasts low-level domain tests that expose design and domain-language feedback but couple to implementation with API-level tests that survive broad redesign but reveal less about object-level design.
   conditions: 'Canonical mapping applicability (not attributed to the source): planning a test strategy; reviewing the suite''s level distribution; deciding at which level to protect a behavior'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -6773,6 +7133,18 @@ formulations:
   - node_id: universal-earned-abstraction
     relationship_to_canonical: refinement
   paraphrase: Identifies common behavior, actual decoupling, and intentional behavior restriction as evidence for an interface, while treating speculative interfaces that do not improve the code as pollution.
+  conditions: 'Canonical mapping applicability (not attributed to the source): proposing helper, module, interface, base class, pattern, plugin, or framework; evaluating duplication or multiple implementations'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-APWP-c8192f7d608d
+  source_id: SRC-APWP
+  locator: books/architecture-patterns-with-python/chapters/007-chapter-2-repository-pattern.md#What Is the Trade-Off?
+  mappings:
+  - node_id: universal-earned-abstraction
+    relationship_to_canonical: refinement
+  paraphrase: Makes the repository layer local complexity and maintenance cost explicit and justifies that cost through controlled storage semantics, infrastructure substitution, and useful test isolation rather than pattern recognition alone.
   conditions: 'Canonical mapping applicability (not attributed to the source): proposing helper, module, interface, base class, pattern, plugin, or framework; evaluating duplication or multiple implementations'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -6982,6 +7354,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-SEAG-a682775f6fae
+  source_id: SRC-SEAG
+  locator: 'books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/014-chapter-7-measuring-engineering-productivity.md#Triage: Is It Even Worth Measuring?'
+  mappings:
+  - node_id: universal-measure-claimed-improvement
+    relationship_to_canonical: refinement
+  paraphrase: Requires a concrete measurement question, declared actions for favorable and unfavorable results, and an empowered decision owner; otherwise measurement cost produces curiosity or vanity rather than decision evidence.
+  conditions: 'Canonical mapping applicability (not attributed to the source): accepting refactoring, optimization, architecture, hardening, or process improvement'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-CC-8dae51f003ad
   source_id: SRC-CC
   locator: books/code-complete-2nd-edition-v413hav/chapters/011-chapter-5-design-in-construction.md#Experimental Prototyping
@@ -7157,6 +7541,18 @@ formulations:
   - node_id: universal-reversible-reviewable-change
     relationship_to_canonical: corroboration
   paraphrase: Connects architecture decision timing and documentation to reversibility and evidence.
+  conditions: 'Canonical mapping applicability (not attributed to the source): implementation, refactoring, migration, optimization, architecture evolution, or operational hardening'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-SEAG-aa29c8fcc179
+  source_id: SRC-SEAG
+  locator: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/017-chapter-9-code-review.md#Write Small Changes
+  mappings:
+  - node_id: universal-reversible-reviewable-change
+    relationship_to_canonical: refinement
+  paraphrase: Supports small single-focus reviews because they reduce reviewer load, shorten feedback, localize defects, and expose wrong approaches early, while acknowledging that some coherent larger changes justify extra coordination.
   conditions: 'Canonical mapping applicability (not attributed to the source): implementation, refactoring, migration, optimization, architecture evolution, or operational hardening'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:

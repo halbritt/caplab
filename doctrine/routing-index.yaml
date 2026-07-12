@@ -156,6 +156,7 @@ task_registry:
   - domain-architecture-review
   - domain-assessment
   - domain-decomposition
+  - domain-design
   - domain-modeling
   - domain-review
   - domain-strategy
@@ -496,6 +497,7 @@ task_registry:
   - domain-architecture-review
   - domain-assessment
   - domain-decomposition
+  - domain-design
   - domain-modeling
   - domain-review
   - domain-strategy
@@ -798,6 +800,7 @@ task_registry:
   - domain-architecture-review
   - domain-assessment
   - domain-decomposition
+  - domain-design
   - domain-modeling
   - domain-review
   - domain-strategy
@@ -1055,6 +1058,7 @@ task_registry:
   - domain-architecture-review
   - domain-assessment
   - domain-decomposition
+  - domain-design
   - domain-modeling
   - domain-review
   - domain-strategy
@@ -1340,6 +1344,7 @@ task_registry:
   - distributed-repair
   - distributed-review
   - document-API
+  - domain-design
   - domain-modeling
   - enable characterization
   - establish preservation boundary
@@ -1613,6 +1618,7 @@ task_registry:
   - distributed-repair
   - distributed-review
   - document-API
+  - domain-design
   - domain-modeling
   - enable characterization
   - establish preservation boundary
@@ -1899,6 +1905,7 @@ task_registry:
   - distributed-repair
   - distributed-review
   - document-API
+  - domain-design
   - domain-modeling
   - early warning
   - enable characterization
@@ -2204,6 +2211,7 @@ task_registry:
   - distributed-repair
   - distributed-review
   - document-API
+  - domain-design
   - domain-modeling
   - evaluate-duplication
   - evaluate-performance-change
@@ -2523,6 +2531,7 @@ task_registry:
   - domain-architecture-review
   - domain-assessment
   - domain-decomposition
+  - domain-design
   - domain-modeling
   - domain-review
   - domain-strategy
@@ -2936,6 +2945,57 @@ concept_routes:
   - performance-optimization
   - refactoring
   - repository-assessment
+- concept_id: architecture-command-event-semantics
+  artifact: concepts/architecture.yaml
+  activate_for_roles:
+  - coding-agent
+  - architecture-agent
+  - review-agent
+  - debugging-and-repair-agent
+  activate_for_tasks:
+  - implementation
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  activate_for_repository_signals:
+  - message bus
+  - domain event
+  - command handler
+  - event handler
+  - asynchronous workflow
+  activate_for_languages:
+  - language-independent
+  activate_for_risk_classes:
+  - correctness
+  - operational
+  - durability
+  exclude_when:
+  - no message contract or asynchronous handoff exists
+  prerequisites:
+  - workflow semantics and handler ownership
+  retrieval_priority: high
+  retrieval_budget_hint: 380
+  related_concepts:
+  - architecture-event-temporal-semantics
+  - architecture-interaction-synchrony
+  - implementation-explicit-failure-policy
+  - domain-intention-revealing-interface
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_task_families:
+  - architecture-assessment
+  - domain-design
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: architecture-contextual-partitioning
   artifact: concepts/architecture.yaml
   activate_for_roles:
@@ -3033,6 +3093,59 @@ concept_routes:
   conditional_for_task_families:
   - api-review
   - defect-repair
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+- concept_id: architecture-cqrs-earned-read-model
+  artifact: concepts/architecture.yaml
+  activate_for_roles:
+  - coding-agent
+  - architecture-agent
+  - performance-agent
+  - review-agent
+  activate_for_tasks:
+  - implementation
+  - architecture-assessment
+  - domain-design
+  - performance-optimization
+  activate_for_repository_signals:
+  - CQRS proposal
+  - slow domain query
+  - read projection
+  - denormalized view
+  - read write mismatch
+  activate_for_languages:
+  - language-independent
+  activate_for_risk_classes:
+  - data
+  - performance
+  - maintainability
+  - cost
+  exclude_when:
+  - simple CRUD meets current read and write contracts
+  prerequisites:
+  - query evidence and write-model semantics
+  retrieval_priority: normal
+  retrieval_budget_hint: 380
+  related_concepts:
+  - architecture-policy-mechanism-separation
+  - domain-aggregate-invariant-boundary
+  - performance-representative-baseline
+  - performance-semantic-preservation
+  - universal-earned-abstraction
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - architecture-assessment
+  - defect-repair
+  - domain-design
   - implementation
   - legacy-change
   - performance-optimization
@@ -6298,6 +6411,105 @@ concept_routes:
   - performance-optimization
   - refactoring
   - repository-assessment
+- concept_id: implementation-dependency-adoption-gate
+  artifact: concepts/implementation.yaml
+  activate_for_roles:
+  - coding-agent
+  - architecture-agent
+  - review-agent
+  activate_for_tasks:
+  - implementation
+  - api-review
+  - architecture-assessment
+  activate_for_repository_signals:
+  - dependency manifest change
+  - new package import
+  - new framework
+  - vendor SDK
+  - plugin adoption
+  activate_for_languages:
+  - language-independent
+  activate_for_risk_classes:
+  - build
+  - compatibility
+  - security
+  - cost
+  exclude_when:
+  - accepted repository decision already mandates the exact dependency and no adoption question remains
+  prerequisites:
+  - capability need and repository dependency policy
+  retrieval_priority: high
+  retrieval_budget_hint: 380
+  related_concepts:
+  - architecture-framework-commitment
+  - operations-dependency-vulnerability-currency
+  - operations-build-provenance
+  - implementation-readiness
+  - universal-earned-abstraction
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+- concept_id: implementation-documentation-lifecycle
+  artifact: concepts/implementation.yaml
+  activate_for_roles:
+  - coding-agent
+  - architecture-agent
+  - review-agent
+  - repository-assessment-agent
+  activate_for_tasks:
+  - implementation
+  - api-review
+  - architecture-assessment
+  - repository-assessment
+  activate_for_repository_signals:
+  - public API documentation
+  - operator guide
+  - developer guide
+  - duplicate documentation
+  - stale documentation
+  activate_for_languages:
+  - language-independent
+  activate_for_risk_classes:
+  - maintainability
+  - compatibility
+  - operational
+  exclude_when:
+  - the artifact is explicitly temporary and noncanonical
+  prerequisites:
+  - document consumers and current authoritative code or contract
+  retrieval_priority: normal
+  retrieval_budget_hint: 320
+  related_concepts:
+  - implementation-non-obvious-commentary
+  - universal-repository-contract-precedence
+  - architecture-decision-record
+  - operations-transparency-by-design
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - repository-assessment-agent
+  - review-agent
+  activate_for_task_families: []
+  conditional_for_task_families:
+  - api-review
+  - defect-repair
+  - domain-design
+  - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: implementation-duplication-as-evidence
   artifact: concepts/implementation.yaml
   activate_for_roles:
@@ -6972,6 +7184,102 @@ concept_routes:
   - defect-repair
   - domain-design
   - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+- concept_id: implementation-unit-of-work-safe-default
+  artifact: concepts/implementation.yaml
+  activate_for_roles:
+  - coding-agent
+  - architecture-agent
+  - review-agent
+  activate_for_tasks:
+  - implementation
+  - architecture-assessment
+  - domain-design
+  activate_for_repository_signals:
+  - database transaction
+  - unit of work
+  - commit call
+  - rollback path
+  - repository mutation
+  activate_for_languages:
+  - language-independent
+  activate_for_risk_classes:
+  - data-integrity
+  - durability
+  - correctness
+  exclude_when:
+  - no durable mutation or transactional resource exists
+  prerequisites:
+  - transaction semantics and invariant boundary
+  retrieval_priority: high
+  retrieval_budget_hint: 380
+  related_concepts:
+  - domain-aggregate-invariant-boundary
+  - python-structured-cleanup
+  - testing-database-production-fidelity
+  - implementation-explicit-failure-policy
+  - universal-explicit-invariants
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+- concept_id: implementation-validation-placement
+  artifact: concepts/implementation.yaml
+  activate_for_roles:
+  - coding-agent
+  - architecture-agent
+  - review-agent
+  activate_for_tasks:
+  - implementation
+  - api-review
+  - domain-design
+  activate_for_repository_signals:
+  - input validation
+  - message schema
+  - service precondition
+  - domain invariant
+  - invalid request
+  activate_for_languages:
+  - language-independent
+  activate_for_risk_classes:
+  - correctness
+  - data-integrity
+  - domain-integrity
+  exclude_when:
+  - the application treats the payload as authorized opaque data
+  prerequisites:
+  - input contract and domain ownership
+  retrieval_priority: high
+  retrieval_budget_hint: 360
+  related_concepts:
+  - implementation-placement-by-ownership
+  - universal-explicit-invariants
+  - python-runtime-static-boundary
+  - operations-untrusted-request-handling
+  - domain-intention-revealing-interface
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
   - legacy-change
   - performance-optimization
   - refactoring
@@ -12682,6 +12990,7 @@ role_bundles:
   - agent-conduct-authority-bounded-action
   - architecture-boundary-strength
   - architecture-change-locality-cohesion
+  - architecture-command-event-semantics
   - architecture-contextual-partitioning
   - architecture-decision-record
   - architecture-dependency-inversion-gate
@@ -12719,6 +13028,7 @@ role_bundles:
   - implementation-atomicity-scope
   - implementation-concurrency-ordering-contract
   - implementation-concurrency-progress-contract
+  - implementation-dependency-adoption-gate
   - implementation-duplication-as-evidence
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
@@ -12730,6 +13040,8 @@ role_bundles:
   - implementation-repository-language-conformance
   - implementation-representation-fit
   - implementation-risk-driven-tests
+  - implementation-unit-of-work-safe-default
+  - implementation-validation-placement
   - legacy-cover-and-modify
   - legacy-current-work-responsibility-discovery
   - legacy-effect-surface
@@ -12790,6 +13102,7 @@ role_bundles:
   - testing-testability-as-design-signal
   - testing-unit-of-behavior
   conditional_concepts:
+  - architecture-cqrs-earned-read-model
   - architecture-event-temporal-semantics
   - architecture-framework-commitment
   - architecture-interaction-synchrony
@@ -12812,6 +13125,7 @@ role_bundles:
   - domain-value-object
   - go-bounded-concurrency
   - implementation-comments-first-design-probe
+  - implementation-documentation-lifecycle
   - implementation-non-obvious-commentary
   - implementation-normal-result-or-exception
   - implementation-semantic-naming
@@ -12905,6 +13219,7 @@ role_bundles:
   - agent-conduct-authority-bounded-action
   - architecture-boundary-strength
   - architecture-change-locality-cohesion
+  - architecture-command-event-semantics
   - architecture-contextual-partitioning
   - architecture-contextual-style-selection
   - architecture-decision-record
@@ -12940,6 +13255,7 @@ role_bundles:
   - implementation-atomicity-scope
   - implementation-concurrency-ordering-contract
   - implementation-concurrency-progress-contract
+  - implementation-dependency-adoption-gate
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
   - implementation-fail-fast-or-recover
@@ -12947,6 +13263,8 @@ role_bundles:
   - implementation-placement-by-ownership
   - implementation-repository-language-conformance
   - implementation-representation-fit
+  - implementation-unit-of-work-safe-default
+  - implementation-validation-placement
   - legacy-seams-and-enabling-points
   - operations-automation-safeguards
   - operations-bounded-accumulation
@@ -12985,6 +13303,7 @@ role_bundles:
   - repository-assessment-metrics-not-performance
   - review-severity-confidence-separation
   conditional_concepts:
+  - architecture-cqrs-earned-read-model
   - architecture-distribution-readiness
   - architecture-event-temporal-semantics
   - architecture-framework-commitment
@@ -13005,6 +13324,7 @@ role_bundles:
   - domain-service-operation
   - go-bounded-concurrency
   - implementation-comments-first-design-probe
+  - implementation-documentation-lifecycle
   - implementation-normal-result-or-exception
   - implementation-semantic-naming
   - operations-capacity-ratio-realism
@@ -13275,6 +13595,7 @@ role_bundles:
   - refactoring-stop-backtrack-escalate
   - repository-assessment-metrics-not-performance
   conditional_concepts:
+  - architecture-cqrs-earned-read-model
   - architecture-distribution-readiness
   - architecture-event-temporal-semantics
   - architecture-interaction-synchrony
@@ -13330,6 +13651,7 @@ role_bundles:
   - agent-conduct-authority-bounded-action
   - architecture-boundary-strength
   - architecture-change-locality-cohesion
+  - architecture-command-event-semantics
   - architecture-contextual-partitioning
   - architecture-contextual-style-selection
   - architecture-decision-record
@@ -13373,6 +13695,7 @@ role_bundles:
   - implementation-atomicity-scope
   - implementation-concurrency-ordering-contract
   - implementation-concurrency-progress-contract
+  - implementation-dependency-adoption-gate
   - implementation-duplication-as-evidence
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
@@ -13384,6 +13707,8 @@ role_bundles:
   - implementation-repository-language-conformance
   - implementation-representation-fit
   - implementation-risk-driven-tests
+  - implementation-unit-of-work-safe-default
+  - implementation-validation-placement
   - legacy-characterization-surfaces
   - legacy-effect-surface
   - legacy-sensing-and-separation
@@ -13456,6 +13781,7 @@ role_bundles:
   - testing-testability-as-design-signal
   - testing-unit-of-behavior
   conditional_concepts:
+  - architecture-cqrs-earned-read-model
   - architecture-distribution-readiness
   - architecture-event-temporal-semantics
   - architecture-framework-commitment
@@ -13481,6 +13807,7 @@ role_bundles:
   - domain-value-object
   - go-bounded-concurrency
   - implementation-comments-first-design-probe
+  - implementation-documentation-lifecycle
   - implementation-non-obvious-commentary
   - implementation-normal-result-or-exception
   - implementation-semantic-naming
@@ -13566,6 +13893,7 @@ role_bundles:
   - universal-separate-semantic-structural-change
   default_concepts:
   - agent-conduct-authority-bounded-action
+  - architecture-command-event-semantics
   - architecture-fitness-functions
   - data-batch-reproducible-derivation
   - data-end-to-end-integrity-auditing
@@ -13705,6 +14033,7 @@ role_bundles:
   - domain-bounded-context
   - domain-core-domain-priority
   - domain-modeling-investment-gate
+  - implementation-documentation-lifecycle
   - operations-capacity-ratio-realism
   - repository-assessment-behavioral-boundary-candidate
   - repository-assessment-behavioral-early-warning
@@ -13748,6 +14077,7 @@ task_bundles:
   - implementation-atomicity-scope
   - implementation-concurrency-ordering-contract
   - implementation-concurrency-progress-contract
+  - implementation-dependency-adoption-gate
   - implementation-duplication-as-evidence
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
@@ -13759,6 +14089,8 @@ task_bundles:
   - implementation-repository-language-conformance
   - implementation-representation-fit
   - implementation-risk-driven-tests
+  - implementation-unit-of-work-safe-default
+  - implementation-validation-placement
   - operations-automation-safeguards
   - operations-build-provenance
   - operations-credential-custody
@@ -13808,8 +14140,10 @@ task_bundles:
   conditional_concepts:
   - architecture-boundary-strength
   - architecture-change-locality-cohesion
+  - architecture-command-event-semantics
   - architecture-contextual-partitioning
   - architecture-contextual-style-selection
+  - architecture-cqrs-earned-read-model
   - architecture-dependency-inversion-gate
   - architecture-distribution-readiness
   - architecture-earned-boundary
@@ -13937,6 +14271,7 @@ task_bundles:
   - implementation-atomicity-scope
   - implementation-concurrency-ordering-contract
   - implementation-concurrency-progress-contract
+  - implementation-dependency-adoption-gate
   - implementation-duplication-as-evidence
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
@@ -13948,6 +14283,8 @@ task_bundles:
   - implementation-repository-language-conformance
   - implementation-representation-fit
   - implementation-risk-driven-tests
+  - implementation-unit-of-work-safe-default
+  - implementation-validation-placement
   - legacy-sensing-and-separation
   - operations-automation-safeguards
   - operations-build-provenance
@@ -14005,8 +14342,10 @@ task_bundles:
   conditional_concepts:
   - architecture-boundary-strength
   - architecture-change-locality-cohesion
+  - architecture-command-event-semantics
   - architecture-contextual-partitioning
   - architecture-contextual-style-selection
+  - architecture-cqrs-earned-read-model
   - architecture-dependency-inversion-gate
   - architecture-distribution-readiness
   - architecture-earned-boundary
@@ -14106,6 +14445,7 @@ task_bundles:
   - agent-conduct-authority-bounded-action
   - architecture-boundary-strength
   - architecture-change-locality-cohesion
+  - architecture-command-event-semantics
   - architecture-contextual-partitioning
   - architecture-contextual-style-selection
   - architecture-decision-record
@@ -14232,6 +14572,7 @@ task_bundles:
   primary_concepts:
   - architecture-boundary-strength
   - architecture-change-locality-cohesion
+  - architecture-command-event-semantics
   - architecture-contextual-partitioning
   - architecture-contextual-style-selection
   - architecture-dependency-inversion-gate
@@ -14295,6 +14636,8 @@ task_bundles:
   - implementation-comments-first-design-probe
   - implementation-concurrency-ordering-contract
   - implementation-concurrency-progress-contract
+  - implementation-dependency-adoption-gate
+  - implementation-documentation-lifecycle
   - implementation-duplication-as-evidence
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
@@ -14309,6 +14652,8 @@ task_bundles:
   - implementation-representation-fit
   - implementation-risk-driven-tests
   - implementation-semantic-naming
+  - implementation-unit-of-work-safe-default
+  - implementation-validation-placement
   - legacy-characterization-surfaces
   - legacy-cover-and-modify
   - legacy-current-work-responsibility-discovery
@@ -14404,8 +14749,10 @@ task_bundles:
   conditional_concepts:
   - architecture-boundary-strength
   - architecture-change-locality-cohesion
+  - architecture-command-event-semantics
   - architecture-contextual-partitioning
   - architecture-contextual-style-selection
+  - architecture-cqrs-earned-read-model
   - architecture-dependency-inversion-gate
   - architecture-distribution-readiness
   - architecture-earned-boundary
@@ -14450,6 +14797,8 @@ task_bundles:
   - implementation-comments-first-design-probe
   - implementation-concurrency-ordering-contract
   - implementation-concurrency-progress-contract
+  - implementation-dependency-adoption-gate
+  - implementation-documentation-lifecycle
   - implementation-duplication-as-evidence
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
@@ -14464,6 +14813,8 @@ task_bundles:
   - implementation-representation-fit
   - implementation-risk-driven-tests
   - implementation-semantic-naming
+  - implementation-unit-of-work-safe-default
+  - implementation-validation-placement
   - legacy-characterization-surfaces
   - legacy-cover-and-modify
   - legacy-current-work-responsibility-discovery
@@ -14581,8 +14932,10 @@ task_bundles:
   conditional_concepts:
   - architecture-boundary-strength
   - architecture-change-locality-cohesion
+  - architecture-command-event-semantics
   - architecture-contextual-partitioning
   - architecture-contextual-style-selection
+  - architecture-cqrs-earned-read-model
   - architecture-dependency-inversion-gate
   - architecture-distribution-readiness
   - architecture-earned-boundary
@@ -14627,6 +14980,8 @@ task_bundles:
   - implementation-comments-first-design-probe
   - implementation-concurrency-ordering-contract
   - implementation-concurrency-progress-contract
+  - implementation-dependency-adoption-gate
+  - implementation-documentation-lifecycle
   - implementation-duplication-as-evidence
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
@@ -14641,6 +14996,8 @@ task_bundles:
   - implementation-representation-fit
   - implementation-risk-driven-tests
   - implementation-semantic-naming
+  - implementation-unit-of-work-safe-default
+  - implementation-validation-placement
   - operations-bounded-accumulation
   - operations-build-provenance
   - operations-cascading-failure-halting
@@ -14726,6 +15083,7 @@ task_bundles:
   - implementation-atomicity-scope
   - implementation-concurrency-ordering-contract
   - implementation-concurrency-progress-contract
+  - implementation-dependency-adoption-gate
   - implementation-duplication-as-evidence
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
@@ -14737,6 +15095,8 @@ task_bundles:
   - implementation-repository-language-conformance
   - implementation-representation-fit
   - implementation-risk-driven-tests
+  - implementation-unit-of-work-safe-default
+  - implementation-validation-placement
   - legacy-sensing-and-separation
   - operations-automation-safeguards
   - operations-build-provenance
@@ -14794,8 +15154,10 @@ task_bundles:
   conditional_concepts:
   - architecture-boundary-strength
   - architecture-change-locality-cohesion
+  - architecture-command-event-semantics
   - architecture-contextual-partitioning
   - architecture-contextual-style-selection
+  - architecture-cqrs-earned-read-model
   - architecture-dependency-inversion-gate
   - architecture-distribution-readiness
   - architecture-earned-boundary
@@ -14933,8 +15295,10 @@ task_bundles:
   conditional_concepts:
   - architecture-boundary-strength
   - architecture-change-locality-cohesion
+  - architecture-command-event-semantics
   - architecture-contextual-partitioning
   - architecture-contextual-style-selection
+  - architecture-cqrs-earned-read-model
   - architecture-dependency-inversion-gate
   - architecture-distribution-readiness
   - architecture-earned-boundary
@@ -14979,6 +15343,8 @@ task_bundles:
   - implementation-comments-first-design-probe
   - implementation-concurrency-ordering-contract
   - implementation-concurrency-progress-contract
+  - implementation-dependency-adoption-gate
+  - implementation-documentation-lifecycle
   - implementation-duplication-as-evidence
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
@@ -14993,6 +15359,8 @@ task_bundles:
   - implementation-representation-fit
   - implementation-risk-driven-tests
   - implementation-semantic-naming
+  - implementation-unit-of-work-safe-default
+  - implementation-validation-placement
   - operations-bounded-accumulation
   - operations-build-provenance
   - operations-cascading-failure-halting
@@ -15093,8 +15461,10 @@ task_bundles:
   conditional_concepts:
   - architecture-boundary-strength
   - architecture-change-locality-cohesion
+  - architecture-command-event-semantics
   - architecture-contextual-partitioning
   - architecture-contextual-style-selection
+  - architecture-cqrs-earned-read-model
   - architecture-dependency-inversion-gate
   - architecture-distribution-readiness
   - architecture-earned-boundary
@@ -15158,6 +15528,8 @@ task_bundles:
   - implementation-comments-first-design-probe
   - implementation-concurrency-ordering-contract
   - implementation-concurrency-progress-contract
+  - implementation-dependency-adoption-gate
+  - implementation-documentation-lifecycle
   - implementation-duplication-as-evidence
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
@@ -15172,6 +15544,8 @@ task_bundles:
   - implementation-representation-fit
   - implementation-risk-driven-tests
   - implementation-semantic-naming
+  - implementation-unit-of-work-safe-default
+  - implementation-validation-placement
   - legacy-characterization-surfaces
   - legacy-cover-and-modify
   - legacy-current-work-responsibility-discovery
@@ -15442,6 +15816,7 @@ risk_routes:
 - risk_class: build
   concepts:
   - architecture-structural-constraint-enforcement
+  - implementation-dependency-adoption-gate
   - operations-build-provenance
   - operations-dependency-vulnerability-currency
 - risk_class: causality
@@ -15471,6 +15846,8 @@ risk_routes:
   - go-package-api-simplicity
   - go-semantics-before-performance-constructs
   - implementation-comments-first-design-probe
+  - implementation-dependency-adoption-gate
+  - implementation-documentation-lifecycle
   - implementation-minimal-coherent-api
   - implementation-normal-result-or-exception
   - implementation-repository-language-conformance
@@ -15520,6 +15897,7 @@ risk_routes:
   - universal-change-amplification
 - risk_class: correctness
   concepts:
+  - architecture-command-event-semantics
   - architecture-event-temporal-semantics
   - architecture-fitness-functions
   - data-batch-reproducible-derivation
@@ -15561,6 +15939,8 @@ risk_routes:
   - implementation-obvious-control-flow
   - implementation-placement-by-ownership
   - implementation-representation-fit
+  - implementation-unit-of-work-safe-default
+  - implementation-validation-placement
   - operations-contract-conformance-testing
   - operations-designed-failure-modes
   - operations-integration-point-distrust
@@ -15592,12 +15972,14 @@ risk_routes:
 - risk_class: cost
   concepts:
   - architecture-contextual-style-selection
+  - architecture-cqrs-earned-read-model
   - architecture-distribution-readiness
   - architecture-modular-monolith
   - architecture-selective-option-preservation
   - data-index-workload-tradeoff
   - data-partition-key-workload-fit
   - data-sharding-evidence-gate
+  - implementation-dependency-adoption-gate
   - operations-capacity-ratio-realism
   - operations-production-readiness
   - operations-resilience-margin
@@ -15619,6 +16001,7 @@ risk_routes:
   concepts:
   - architecture-boundary-strength
   - architecture-contextual-style-selection
+  - architecture-cqrs-earned-read-model
   - architecture-decision-record
   - architecture-distribution-readiness
   - architecture-earned-boundary
@@ -15662,6 +16045,8 @@ risk_routes:
   - go-text-byte-rune-semantics
   - implementation-atomicity-scope
   - implementation-explicit-failure-policy
+  - implementation-unit-of-work-safe-default
+  - implementation-validation-placement
   - operations-untrusted-request-handling
   - python-mutable-ownership
   - python-runtime-static-boundary
@@ -15697,9 +16082,11 @@ risk_routes:
 - risk_class: domain-integrity
   concepts:
   - implementation-semantic-naming
+  - implementation-validation-placement
   - python-data-carrier-versus-domain-object
 - risk_class: durability
   concepts:
+  - architecture-command-event-semantics
   - architecture-distribution-readiness
   - architecture-event-temporal-semantics
   - architecture-risk-analysis
@@ -15715,6 +16102,7 @@ risk_routes:
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
   - implementation-fail-fast-or-recover
+  - implementation-unit-of-work-safe-default
   - performance-resource-lifecycle
   - performance-semantic-preservation
   - python-bounded-async
@@ -15790,6 +16178,7 @@ risk_routes:
   concepts:
   - architecture-change-locality-cohesion
   - architecture-contextual-partitioning
+  - architecture-cqrs-earned-read-model
   - architecture-dependency-inversion-gate
   - architecture-earned-boundary
   - architecture-framework-commitment
@@ -15803,6 +16192,7 @@ risk_routes:
   - domain-service-operation
   - go-package-api-simplicity
   - implementation-comments-first-design-probe
+  - implementation-documentation-lifecycle
   - implementation-duplication-as-evidence
   - implementation-minimal-coherent-api
   - implementation-non-obvious-commentary
@@ -15876,6 +16266,7 @@ risk_routes:
 - risk_class: operational
   concepts:
   - architecture-boundary-strength
+  - architecture-command-event-semantics
   - architecture-contextual-style-selection
   - architecture-decision-record
   - architecture-distribution-readiness
@@ -15890,6 +16281,7 @@ risk_routes:
   - architecture-scoped-characteristics
   - data-sharding-evidence-gate
   - domain-anticorruption-layer
+  - implementation-documentation-lifecycle
   - implementation-minimal-coherent-api
   - implementation-non-obvious-commentary
   - operations-automation-safeguards
@@ -15930,6 +16322,7 @@ risk_routes:
   - domain-fitting-large-scale-structure
 - risk_class: performance
   concepts:
+  - architecture-cqrs-earned-read-model
   - architecture-distribution-readiness
   - architecture-event-temporal-semantics
   - architecture-fitness-functions
@@ -16062,6 +16455,7 @@ risk_routes:
   - architecture-structural-constraint-enforcement
   - data-minimization-lifecycle
   - debugging-causal-repair
+  - implementation-dependency-adoption-gate
   - operations-build-provenance
   - operations-credential-custody
   - operations-dependency-vulnerability-currency

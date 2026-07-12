@@ -117,6 +117,10 @@ concepts:
         locator: "books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/007-chapter-2-what-is-a-unit-test.md :: 2.2.1 How the classical and London schools handle dependencies"
         contribution: Shows that even the London school leaves immutable dependencies unmocked, and distinguishes collaborators (shared or mutable dependencies) from value objects, which never need substitution.
         relationship: direct_support
+      - source_id: SRC-APWP
+        locator: 'books/architecture-patterns-with-python/chapters/008-chapter-3-a-brief-interlude-on-coupling-and-abstractions.md :: Testing Edge to Edge with Fakes and Dependency Injection'
+        contribution: Advocates explicit fakes and dependency injection, state assertions at the highest useful abstraction, and real production entrypoints; it rejects broad patching and interaction-heavy mocks because they leave design coupling intact and make tests implementation-sensitive.
+        relationship: corroboration
     confidence: contextual
     roles: [coding-agent, review-agent, legacy-code-agent]
     languages: [language-independent]
@@ -296,6 +300,10 @@ concepts:
         locator: "books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/010-chapter-4-the-four-pillars-of-a-good-unit-test.md :: 4.2 The intrinsic connection between the first two attributes"
         contribution: Frames suite accuracy as signal (bugs found) over noise (false alarms) and shows false positives grow from a minor early-project nuisance to as damaging as missed bugs once the codebase ages and refactoring becomes necessary.
         relationship: refinement
+      - source_id: SRC-SEAG
+        locator: 'books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/020-chapter-12-unit-testing.md :: Test State, Not Interactions'
+        contribution: Contrasts state and interaction verification and shows that asserting the resulting system state detects lost effects and survives equivalent implementation changes that call-sequence assertions misclassify.
+        relationship: direct_support
     confidence: strong
     roles: [coding-agent, review-agent, refactoring-agent, debugging-and-repair-agent]
     languages: [language-independent]
@@ -336,6 +344,14 @@ concepts:
         locator: "books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/010-chapter-4-the-four-pillars-of-a-good-unit-test.md :: 4.5 Exploring well-known test automation concepts"
         contribution: Grounds the Test Pyramid's ratio in the fast-feedback versus regression-protection trade-off (no layer may concede resistance to refactoring) and licenses explicit exceptions - CRUD-dominated systems shift toward a unit/integration rectangle, and a single-dependency API can justify more end-to-end tests.
         relationship: direct_support
+      - source_id: SRC-SEAG
+        locator: 'books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/022-chapter-14-larger-testing.md :: Common Gaps in Unit Tests'
+        contribution: 'Identifies concrete unit-test blind spots: unfaithful doubles, deployment configuration, load behavior, unanticipated inputs and side effects, and emergent behavior outside the isolated scope.'
+        relationship: refinement
+      - source_id: SRC-APWP
+        locator: 'books/architecture-patterns-with-python/chapters/010-chapter-5-tdd-in-high-gear-and-low-gear.md :: On Deciding What Kind of Tests to Write'
+        contribution: Contrasts low-level domain tests that expose design and domain-language feedback but couple to implementation with API-level tests that survive broad redesign but reveal less about object-level design.
+        relationship: refinement
     confidence: contextual
     roles: [coding-agent, review-agent, repository-assessment-agent]
     languages: [language-independent]

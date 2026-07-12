@@ -246,6 +246,10 @@ concepts:
     locator: 'books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/013-chapter-7-beyond-conway-s-law.md :: Watch Out for Authors with Multiple Aliases'
     contribution: Multiple Git aliases per developer bias author-based social metrics; a .mailmap mapping restores single-developer identity before inference.
     relationship: direct_support
+  - source_id: SRC-SEAG
+    locator: 'books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/014-chapter-7-measuring-engineering-productivity.md :: Using Data to Validate Metrics'
+    contribution: Shows tool logs counting automated builds that engineers did not experience as latency, then uses in-context qualitative evidence to revise the metric rather than treating the quantitative proxy as ground truth.
+    relationship: corroboration
   confidence: strong
   roles:
   - repository-assessment-agent

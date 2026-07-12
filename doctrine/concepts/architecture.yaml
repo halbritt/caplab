@@ -285,6 +285,10 @@ concepts:
         relationship: refinement
         locator: "books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/015-chapter-8-why-integration-testing.md :: 8.4 Using interfaces to abstract dependencies"
         contribution: "Adds test-double enablement for unmanaged dependencies as the only legitimate justification for a single-implementation interface, argues such interfaces are not abstractions (genuine abstractions are discovered, needing at least two implementations), and rejects speculative interfaces as YAGNI violations; managed and in-process dependencies stay concrete."
+      - source_id: SRC-APWP
+        locator: 'books/architecture-patterns-with-python/chapters/025-appendix-d-repository-and-unit-of-work-patterns-with-django.md :: What to Do If You Already Have Django'
+        contribution: Advises retaining Django-coupled models while the application and tests remain simple and fast, and paying the substantial Repository and Unit of Work cost only when test speed, migration, or cross-application interdependency pressure justifies it.
+        relationship: direct_support
     confidence: contextual
     roles: [architecture-agent, coding-agent, legacy-code-agent, review-agent]
     languages: [language-independent]
@@ -334,6 +338,14 @@ concepts:
         relationship: direct_support
         locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/005-chapter-4-isolating-the-domain.md :: The Domain Layer Is Where the Model Lives"
         contribution: "Protects domain meaning from user-interface and infrastructure concerns."
+      - source_id: SRC-APWP
+        locator: 'books/architecture-patterns-with-python/chapters/007-chapter-2-repository-pattern.md :: Applying the DIP to Data Access'
+        contribution: Keeps the domain model independent of ORM and database representations by directing infrastructure dependencies inward, so storage concerns do not shape policy code or its unit-test environment.
+        relationship: direct_support
+      - source_id: SRC-APWP
+        locator: 'books/architecture-patterns-with-python/chapters/024-appendix-c-swapping-out-the-infrastructure-do-everything-with-csvs.md :: Appendix C. Swapping Out the Infrastructure: Do Everything with CSVs'
+        contribution: Demonstrates reuse of the same domain and service-layer behavior when a Flask/Postgres interface is replaced by CLI and CSV storage, with only Repository and Unit of Work adapters reimplemented.
+        relationship: corroboration
     confidence: strong
     roles: [architecture-agent, coding-agent, legacy-code-agent, review-agent]
     languages: [language-independent]
@@ -634,6 +646,10 @@ concepts:
         locator: 'books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/005-chapter-1-trade-offs-in-data-systems-architecture.md :: Distributed Versus Single-Node Systems'
         contribution: Conditions distribution on actual scale or availability requirements and identifies the added fault, latency, consistency, and operational complexity compared with a sufficient single-node system.
         relationship: refinement
+      - source_id: SRC-SEAG
+        locator: 'books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/033-chapter-24-continuous-delivery.md :: Velocity Is a Team Sport: How to Break Up a Deployment into Manageable Pieces'
+        contribution: Advocates microservice migration or even a rewrite as the best-return response to costly team-scale monolith releases, framing team and deployment scaling as the driver for distribution.
+        relationship: tension
     confidence: strong
     roles: [architecture-agent, performance-agent, review-agent, debugging-and-repair-agent]
     languages: [language-independent]
@@ -789,6 +805,10 @@ concepts:
         relationship: refinement
         locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md :: Decoupling Middleware"
         contribution: "Adds the stability dimension and switching-cost framing - synchronous request/reply middleware amplifies shocks and facilitates cascading failure while message-oriented middleware decouples in space and time at the price of inherently harder asynchronous design, and the choice is a nearly irreversible early decision."
+      - source_id: SRC-APWP
+        locator: 'books/architecture-patterns-with-python/chapters/018-chapter-11-event-driven-architecture-using-events-to-integrate-microservices.md :: The Alternative: Temporal Decoupling Using Asynchronous Messaging'
+        contribution: Argues that independently consistent services can accept eventual consistency between them, continue during peer degradation, and change workflow locally by exchanging asynchronous events instead of requiring synchronous ordered success.
+        relationship: direct_support
     confidence: strong
     roles: [architecture-agent, coding-agent, performance-agent, review-agent]
     languages: [language-independent]
@@ -1047,3 +1067,240 @@ concepts:
       retrieval_priority: high
       retrieval_budget_hint: 380
       related_concepts: [architecture-earned-boundary, architecture-distribution-readiness, architecture-decision-record, domain-bounded-context, domain-context-relationship-selection]
+
+  - id: architecture-command-event-semantics
+    title: Distinguish directed intent from broadcast fact
+    category: architecture
+    claim: A command expresses present intent to one responsible recipient and must return failure meaning to its sender; an event records a past fact for interested listeners and must not make the publisher depend on any one listener outcome.
+    decision_rule: 'Classify each message from its temporal meaning, recipient ownership, multiplicity, and failure obligation: use a command for requested work with one accountable handler and caller-visible failure; use an event for an immutable fact with independent listeners, then define delivery, replay, and listener-failure policy separately.'
+    why_it_matters: Treating commands and events as interchangeable hides causal ownership, makes errors disappear or leak to the wrong caller, and turns broadcast infrastructure into an implicit workflow controller.
+    applicable_when:
+      - designing a message bus or handler registry
+      - reviewing domain or integration messages
+      - assigning failure and retry ownership
+    not_applicable_when:
+      - a direct local function call with no durable or asynchronous message contract
+    required_evidence:
+      - whether the message represents intent or a completed fact
+      - one accountable recipient or independent listeners
+      - sender response and failure obligations
+      - delivery, ordering, retry, and idempotency semantics
+    insufficient_evidence:
+      - past-tense or imperative naming alone
+      - the use of a broker
+      - a class inheriting Event or Command
+      - fan-out as an architectural preference
+    required_inputs:
+      - workflow and domain language
+      - handler ownership
+      - caller completion contract
+      - messaging failure model
+    expected_outputs:
+      - command or event classification
+      - handler cardinality and ownership
+      - caller-visible failure policy
+      - delivery and compatibility obligations
+    preservation_boundaries:
+      - accepted domain meaning
+      - public message schema and compatibility
+      - causal and failure ownership
+      - durability and replay expectations
+    safe_actions:
+      - rename a message to match its semantics
+      - give a command one accountable handler
+      - allow event listeners to fail independently with observable recovery
+      - record command outcomes for the requester
+    unsafe_actions:
+      - broadcast a command to avoid choosing an owner
+      - use an event when the publisher requires a specific listener result
+      - swallow command failure
+      - let one event subscriber silently determine publisher success
+    common_failure_modes:
+      - event-shaped remote procedure call
+      - multiple command handlers racing for authority
+      - publisher blocked on every subscriber
+      - listener failure lost without retry or reconciliation
+    counterexamples:
+      - A process manager may consume events and issue commands, but the transfer between fact and intent remains explicit.
+    interactions:
+      - Specializes architecture-event-temporal-semantics and implementation-explicit-failure-policy; choreography or orchestration remains a separate workflow-ownership decision.
+    conflicts:
+      - conflict-synchronous-vs-asynchronous-interaction
+      - conflict-choreography-vs-orchestration
+    source_support:
+      - source_id: SRC-APWP
+        locator: 'books/architecture-patterns-with-python/chapters/017-chapter-10-commands-and-command-handler.md :: Commands and Events'
+        contribution: Defines commands as imperative intent sent to one handler with noisy failure and events as past-tense facts broadcast to listeners whose failures are independent of the publisher.
+        relationship: direct_support
+    confidence: strong
+    roles:
+      - coding-agent
+      - architecture-agent
+      - review-agent
+      - debugging-and-repair-agent
+    languages:
+      - language-independent
+    repository_archetypes:
+      - service
+      - monolith
+      - distributed-system
+    retrieval_terms:
+      - command versus event
+      - directed intent
+      - broadcast fact
+      - message handler
+      - event listener failure
+    routing:
+      activate_for_roles:
+        - coding-agent
+        - architecture-agent
+        - review-agent
+        - debugging-and-repair-agent
+      activate_for_tasks:
+        - implementation
+        - api-review
+        - architecture-assessment
+        - defect-repair
+      activate_for_repository_signals:
+        - message bus
+        - domain event
+        - command handler
+        - event handler
+        - asynchronous workflow
+      activate_for_languages:
+        - language-independent
+      activate_for_risk_classes:
+        - correctness
+        - operational
+        - durability
+      exclude_when:
+        - no message contract or asynchronous handoff exists
+      prerequisites:
+        - workflow semantics and handler ownership
+      retrieval_priority: high
+      retrieval_budget_hint: 380
+      related_concepts:
+        - architecture-event-temporal-semantics
+        - architecture-interaction-synchrony
+        - implementation-explicit-failure-policy
+        - domain-intention-revealing-interface
+
+  - id: architecture-cqrs-earned-read-model
+    title: Separate a read model only when write semantics make reads materially different
+    category: architecture
+    claim: A separate read representation is earned when a rule-rich write model makes actual query shapes awkward or costly; simple CRUD should retain one model, and any split should serve materially different read requirements rather than architectural fashion.
+    decision_rule: Compare direct queries, repository or ORM projections, and a separate read model against observed query shapes, write-model complexity, consistency and freshness needs, performance targets, translation cost, rebuildability, and ownership; split only when the measured read benefit exceeds dual-model lifecycle cost.
+    why_it_matters: A write model optimized around invariants can make queries expensive or unintelligible, but an unnecessary read model duplicates representation, introduces lag, and creates synchronization and recovery work.
+    applicable_when:
+      - read requirements differ materially from write workflows
+      - a domain model makes important queries awkward or slow
+      - evaluating CQRS or a denormalized view
+    not_applicable_when:
+      - simple CRUD whose read and write representations align
+      - no measured query or comprehension problem exists
+    required_evidence:
+      - actual read shapes and service objectives
+      - write-side rules and invariant complexity
+      - baseline query cost or maintainability evidence
+      - freshness, consistency, rebuild, and ownership requirements
+    insufficient_evidence:
+      - use of a domain model alone
+      - CQRS fashion
+      - one slow query without diagnosis
+      - belief that reads and writes always scale independently
+    required_inputs:
+      - query consumers and contracts
+      - write model and persistence semantics
+      - performance baseline
+      - data synchronization and recovery policy
+    expected_outputs:
+      - single-model or split-model decision
+      - read representation and owner
+      - freshness and consistency contract
+      - equivalence, rebuild, and retirement checks
+    preservation_boundaries:
+      - write-side invariants and authority
+      - query correctness and compatibility
+      - accepted freshness and ordering
+      - durable source of truth
+    safe_actions:
+      - start with a direct projection over the authoritative data
+      - add the narrowest read representation for demonstrated queries
+      - make lag and rebuild observable
+      - retain semantic tests across representations
+    unsafe_actions:
+      - duplicate business rules into a read model
+      - introduce CQRS for simple CRUD by default
+      - claim eventual consistency without a freshness contract
+      - make the projection the accidental authority
+    common_failure_modes:
+      - dual models drift semantically
+      - unbounded projection lag
+      - read model cannot be rebuilt
+      - query optimization leaks into write invariants
+    counterexamples:
+      - A simple application can use one ORM-backed representation for both reads and writes when it meets its contracts.
+    interactions:
+      - Applies conflict-model-fidelity-vs-performance-representation to query models and depends on architecture-policy-mechanism-separation for a stable translation boundary.
+    conflicts:
+      - conflict-model-fidelity-vs-performance-representation
+    source_support:
+      - source_id: SRC-APWP
+        locator: 'books/architecture-patterns-with-python/chapters/019-chapter-12-command-query-responsibility-segregation-cqrs.md :: Your Domain Model Is Not Optimized for Read Operations'
+        contribution: Explains that a domain model shaped around write workflows and state-change rules often contains machinery irrelevant to queries, while explicitly saying simple CRUD systems whose reads and writes align do not need CQRS.
+        relationship: direct_support
+    confidence: strong
+    roles:
+      - coding-agent
+      - architecture-agent
+      - performance-agent
+      - review-agent
+    languages:
+      - language-independent
+    repository_archetypes:
+      - service
+      - monolith
+      - distributed-system
+    retrieval_terms:
+      - CQRS
+      - read model
+      - write model
+      - query projection
+      - denormalized view
+      - projection lag
+    routing:
+      activate_for_roles:
+        - coding-agent
+        - architecture-agent
+        - performance-agent
+        - review-agent
+      activate_for_tasks:
+        - implementation
+        - architecture-assessment
+        - domain-design
+        - performance-optimization
+      activate_for_repository_signals:
+        - CQRS proposal
+        - slow domain query
+        - read projection
+        - denormalized view
+        - read write mismatch
+      activate_for_languages:
+        - language-independent
+      activate_for_risk_classes:
+        - data
+        - performance
+        - maintainability
+        - cost
+      exclude_when:
+        - simple CRUD meets current read and write contracts
+      prerequisites:
+        - query evidence and write-model semantics
+      retrieval_priority: normal
+      retrieval_budget_hint: 380
+      related_concepts:
+        - architecture-policy-mechanism-separation
+        - domain-aggregate-invariant-boundary
+        - performance-representative-baseline
+        - performance-semantic-preservation
+        - universal-earned-abstraction

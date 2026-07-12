@@ -590,6 +590,10 @@ concepts:
         locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/016-chapter-10-control-plane.md :: Provisioning and Deployment Services"
         contribution: Requires an artifact repository of blessed binaries with known provenance populated only by clean build servers, pipeline stage tagging, and documents a real supply-chain attack delivered through a compromised CI-server plugin.
         relationship: corroboration
+      - source_id: SRC-SEAG
+        locator: 'books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/027-chapter-18-build-systems-and-build-philosophy.md :: Artifact-Based Build Systems'
+        contribution: Supports declarative artifact and tool dependencies, sandboxing against undeclared filesystem and network inputs, cryptographic pinning of external artifacts in version control, and controlled mirrors for availability and repeatability.
+        relationship: refinement
     confidence: strong
     roles: [coding-agent, review-agent, architecture-agent, repository-assessment-agent]
     languages: [language-independent]
@@ -1008,6 +1012,14 @@ concepts:
         locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/024-chapter-16-adaptation.md :: Team-Scale Autonomy"
         contribution: Independently states that needing provider and caller updated together is a coupling warning sign.
         relationship: corroboration
+      - source_id: SRC-SEAG
+        locator: 'books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/007-chapter-1-what-is-software-engineering.md :: Hvrum''s Law'
+        contribution: States that with enough API users, any observable behavior can acquire dependents, so change-cost analysis must include discovering and resolving breakage beyond the published contract.
+        relationship: direct_support
+      - source_id: SRC-APWP
+        locator: 'books/architecture-patterns-with-python/chapters/026-appendix-e-validation.md :: Postel''s Law and the Tolerant Reader Pattern'
+        contribution: Refines controlled event integration toward consumers reading only required fields and avoiding overspecified identifier formats so producers can add irrelevant data independently, while explicitly limiting leniency for public untrusted APIs.
+        relationship: refinement
     confidence: strong
     roles: [architecture-agent, coding-agent, review-agent, refactoring-agent]
     languages: [language-independent]

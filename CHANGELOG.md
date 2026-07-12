@@ -32,6 +32,13 @@ remains under `Unreleased`, whether or not it has been committed.
   relational/document-model evidence on `implementation-representation-fit`;
   chapter coverage grows 409 -> 433, registered sources 15 -> 17, and canonical
   concepts 193 -> 208 with no new conflict record.
+- Registered *Software Engineering at Google* (SRC-SEAG) and
+  *Architecture Patterns with Python* (SRC-APWP) with a complete
+  67-chapter extraction ledger, six canonical concepts, and 33
+  provenance-preserving support records (six on new concepts and 27
+  extending existing concepts); exact doctrine coverage grows from 433
+  to 500 chapters, registered sources from 17 to 19, and canonical
+  concepts from 208 to 214 while preserved conflicts remain at 29.
 - Added eight PDF sources and their chaptered Markdown corpora: *100 Go
   Mistakes and How to Avoid Them*, *API Design Patterns* chapter 3 (an
   explicitly labeled extract), *Architecture Patterns with Python*,

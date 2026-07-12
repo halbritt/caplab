@@ -6,8 +6,8 @@
       "doctrine/context-lenses.yaml": "f3a0977ce7df98486757ee5b449c693b30e7913fa1672dc138a4d96ae67c347d",
       "doctrine/evaluations/gold/human-dispositions.json": "4746f454ab3b0ce677ed813b054d3ad41c33335dcb131c90663c896d35398eab",
       "doctrine/graph/edges.yaml": "9a62c3950d29f08cab56809ec0523e10cb44eeda415300b3108a5165453c9f07",
-      "doctrine/graph/formulations.yaml": "50452b627a38b99b63d7c3378c9c8816be28d4802014fdfb70eca122caffcd76",
-      "doctrine/sources.yaml": "875cdea591ce0386f849ba012702c2292fac83d8b86855ee378c3f87d6101f3c"
+      "doctrine/graph/formulations.yaml": "51e6733c77aa241adb982e392ce0590794db059cd622f9ff10c290d3eb41c0c0",
+      "doctrine/sources.yaml": "7f7f8ea331a56e4ffaacd3c31773eec46966a76ab52111291199ac5cf440fae0"
     },
     "tool": "doctrine/tools/build_gold_queue.py",
     "tool_sha256": "373dbe188b6f4e36b77883b290e0c59f7a36da65421a4779f3bea4774d8b306c"
@@ -3805,6 +3805,55 @@
           "outcomes": [],
           "risk_classes": [],
           "source_ids": [
+            "SRC-APWP"
+          ],
+          "support_relationships": [
+            "direct_support"
+          ]
+        },
+        "generated_only": true,
+        "kind": "source-support",
+        "question": "Does formulation F-CONCEPT-APWP-0649bc8b0991 support its mapping to domain-aggregate-invariant-boundary under the recorded conditions and caveats?",
+        "target": {
+          "id": "F-CONCEPT-APWP-0649bc8b0991",
+          "kind": "formulation",
+          "references": [
+            {
+              "id": "SRC-APWP",
+              "kind": "source"
+            },
+            {
+              "id": "F-CONCEPT-APWP-0649bc8b0991",
+              "kind": "formulation"
+            },
+            {
+              "id": "domain-aggregate-invariant-boundary",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-source-src-apwp",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
             "SRC-CA"
           ],
           "support_relationships": [
@@ -4377,6 +4426,55 @@
         "status": "pending-human"
       },
       "id": "gold-source-src-sdx",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-SEAG"
+          ],
+          "support_relationships": [
+            "direct_support"
+          ]
+        },
+        "generated_only": true,
+        "kind": "source-support",
+        "question": "Does formulation F-CONCEPT-SEAG-47e7182e2b06 support its mapping to testing-assert-observable-outcomes under the recorded conditions and caveats?",
+        "target": {
+          "id": "F-CONCEPT-SEAG-47e7182e2b06",
+          "kind": "formulation",
+          "references": [
+            {
+              "id": "SRC-SEAG",
+              "kind": "source"
+            },
+            {
+              "id": "F-CONCEPT-SEAG-47e7182e2b06",
+              "kind": "formulation"
+            },
+            {
+              "id": "testing-assert-observable-outcomes",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-source-src-seag",
       "machine_screening": {
         "references": [],
         "status": "not-run"

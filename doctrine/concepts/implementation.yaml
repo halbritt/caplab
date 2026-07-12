@@ -690,6 +690,10 @@ concepts:
         locator: "books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/010-chapter-4-the-four-pillars-of-a-good-unit-test.md :: 4.5 Exploring well-known test automation concepts"
         contribution: Prescribes writing all tests black-box against behavior meaningful to the problem domain, while using white-box coverage analysis only to locate untested branches that are then tested black-box; a test untraceable to a business requirement should be restructured or deleted.
         relationship: refinement
+      - source_id: SRC-SEAG
+        locator: 'books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/019-chapter-11-testing-overview.md :: A Note on Code Coverage'
+        contribution: Explains that coverage records execution rather than useful assertions or behavior protection, warns that numeric bars become ceilings, and redirects adequacy assessment to customer-visible behaviors, dependency breakage, stability, and context.
+        relationship: direct_support
     confidence: strong
     roles: [coding-agent, review-agent, debugging-and-repair-agent, repository-assessment-agent]
     languages: [language-independent]
@@ -1019,3 +1023,476 @@ concepts:
       retrieval_priority: "core"
       retrieval_budget_hint: 400
       related_concepts: ["implementation-atomicity-scope", "implementation-concurrency-ordering-contract", "go-goroutine-resource-lifecycle"]
+
+  - id: implementation-documentation-lifecycle
+    title: Give durable documentation a code-like lifecycle
+    category: implementation
+    claim: Durable technical documentation needs canonical ownership, source control, change review with the code it describes, issue tracking, and periodic freshness checks so duplicate or stale sources are consolidated or deprecated.
+    decision_rule: For documentation used to build, operate, integrate with, or change the system, identify its consumers, owner, canonical location, coupled code or contract, review path, freshness signal, and retirement rule; keep it with the authoritative source when practical and classify temporary notes explicitly.
+    why_it_matters: Ownerless or duplicated documentation drifts from executable reality, makes readers choose among conflicting claims, and leaves the people who detect errors unable to route repairs.
+    applicable_when:
+      - creating or reviewing public API documentation
+      - maintaining operator or developer guides
+      - recording durable architecture and repository guidance
+    not_applicable_when:
+      - temporary investigation notes with an explicit expiry
+      - generated documentation whose generator is the maintained authority
+    required_evidence:
+      - identified document consumers and purpose
+      - canonical source and accountable owner
+      - coupling between the document and code or contract
+      - freshness, issue, review, and deprecation route
+    insufficient_evidence:
+      - the document exists in a popular wiki
+      - a recent modification timestamp alone
+      - a request to document everything
+      - multiple copies that happen to agree today
+    required_inputs:
+      - accepted code and contract state
+      - repository documentation conventions
+      - ownership and review boundaries
+      - existing duplicates and inbound links
+    expected_outputs:
+      - canonical documentation location and owner
+      - change and review policy tied to affected code
+      - freshness and issue signal
+      - consolidation or deprecation disposition for duplicates
+    preservation_boundaries:
+      - accepted contract meaning
+      - repository history and attribution
+      - valid inbound links or an explicit redirect plan
+      - human authority over policy and acceptance
+    safe_actions:
+      - update documentation in the same change as its coupled code
+      - assign an owner and issue route
+      - consolidate duplicates into a canonical source with redirects
+      - mark temporary or generated material explicitly
+    unsafe_actions:
+      - silently create a second canonical source
+      - infer policy from stale prose over executable contracts
+      - delete documentation only because it is old
+      - treat a passing freshness check as human acceptance
+    common_failure_modes:
+      - ownerless wiki rot
+      - duplicate sources that disagree
+      - documentation review detached from code review
+      - freshness metrics optimized without reader value
+    counterexamples:
+      - A disposable scratch note can remain outside this lifecycle when it is clearly noncanonical and expires.
+    interactions:
+      - Complements implementation-non-obvious-commentary for durable context beyond code and universal-repository-contract-precedence when prose conflicts with executable state.
+    conflicts:
+      - conflict-comments-vs-self-documenting-structure
+    source_support:
+      - source_id: SRC-SEAG
+        locator: 'books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/018-chapter-10-documentation.md :: Documentation Is Like Code'
+        contribution: 'Treats documentation as maintained engineering state: it assigns owners and canonical sources, keeps documents with code under version control, reviews and tracks changes, and checks freshness rather than relying on ownerless wiki pages.'
+        relationship: direct_support
+    confidence: strong
+    roles:
+      - coding-agent
+      - architecture-agent
+      - review-agent
+      - repository-assessment-agent
+    languages:
+      - language-independent
+    repository_archetypes:
+      - library
+      - service
+      - CLI
+      - monolith
+      - distributed-system
+    retrieval_terms:
+      - documentation owner
+      - canonical documentation
+      - documentation drift
+      - freshness
+      - docs as code
+      - duplicate documentation
+    routing:
+      activate_for_roles:
+        - coding-agent
+        - architecture-agent
+        - review-agent
+        - repository-assessment-agent
+      activate_for_tasks:
+        - implementation
+        - api-review
+        - architecture-assessment
+        - repository-assessment
+      activate_for_repository_signals:
+        - public API documentation
+        - operator guide
+        - developer guide
+        - duplicate documentation
+        - stale documentation
+      activate_for_languages:
+        - language-independent
+      activate_for_risk_classes:
+        - maintainability
+        - compatibility
+        - operational
+      exclude_when:
+        - the artifact is explicitly temporary and noncanonical
+      prerequisites:
+        - document consumers and current authoritative code or contract
+      retrieval_priority: normal
+      retrieval_budget_hint: 320
+      related_concepts:
+        - implementation-non-obvious-commentary
+        - universal-repository-contract-precedence
+        - architecture-decision-record
+        - operations-transparency-by-design
+
+  - id: implementation-dependency-adoption-gate
+    title: Price a dependency across its maintenance horizon before adoption
+    category: implementation
+    claim: Adopt an external dependency only after its behavior, testability, provider stewardship, compatibility promise, expected lifespan and breaking cadence, internal alternative cost, and upgrade ownership and cost have been evaluated for the product maintenance horizon.
+    decision_rule: State the capability needed and expected lifespan; compare an internal implementation, direct platform use, and candidate dependencies across current fit, test evidence, compatibility, security, transitive surface, provider incentives, upgrade cadence, migration cost, and named ownership; adopt the lowest total-lifecycle-cost option or defer when material evidence is absent.
+    why_it_matters: Importing code is cheap today but creates future compatibility, security, build, upgrade, and ownership obligations that can exceed the implementation cost avoided.
+    applicable_when:
+      - adding a package, framework, plugin, SDK, or service dependency
+      - replacing an internal implementation with a third-party dependency
+      - reviewing a dependency introduced transitively
+    not_applicable_when:
+      - the dependency is already mandated by an accepted repository contract and the task does not reconsider it
+    required_evidence:
+      - demonstrated capability need and expected usage horizon
+      - runnable tests and observed behavior of the candidate
+      - provider ownership, compatibility promise, and release history
+      - security and transitive-dependency posture
+      - named internal upgrade and incident owner
+      - credible internal or platform alternative and migration cost
+    insufficient_evidence:
+      - popularity alone
+      - one successful local example
+      - latest version status
+      - reputation without compatibility evidence
+      - a test double proving only the consumer assumption
+    required_inputs:
+      - repository dependency and toolchain policy
+      - supported runtimes and deployment targets
+      - candidate release and compatibility records
+      - consumer and upgrade ownership
+    expected_outputs:
+      - adopt, build, use-platform, prototype, or defer decision
+      - version and compatibility boundary
+      - upgrade and vulnerability response owner
+      - reversal or migration plan proportional to lock-in
+    preservation_boundaries:
+      - supported runtime and public compatibility
+      - build reproducibility and provenance
+      - security policy
+      - existing dependency owners and licenses
+    safe_actions:
+      - prototype behind a disposable seam
+      - pin and verify an approved dependency
+      - record upgrade ownership and removal conditions
+      - prefer a smaller surface that satisfies the demonstrated need
+    unsafe_actions:
+      - adopt because reimplementation feels wasteful without lifecycle comparison
+      - use an unmaintained dependency without an explicit containment plan
+      - leave upgrade ownership implicit
+      - confuse a lockfile with a security or compatibility assessment
+    common_failure_modes:
+      - orphaned dependency
+      - forced upgrade with no migration budget
+      - transitive dependency explosion
+      - provider promise misunderstood
+      - internal wrapper that hides rather than reduces lock-in
+    counterexamples:
+      - A short-lived isolated experiment may use a disposable dependency if it cannot enter production or a public contract.
+    interactions:
+      - Specializes architecture-framework-commitment for imported code and precedes operations-dependency-vulnerability-currency and operations-build-provenance after adoption.
+    conflicts:
+      - conflict-generalized-reuse-vs-local-clarity
+    source_support:
+      - source_id: SRC-SEAG
+        locator: 'books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/030-chapter-21-dependency-management.md :: Considerations When Importing'
+        contribution: Provides a pre-import question set covering runnable tests, provider and supported-use evidence, compatibility and breaking cadence, expected duration, internal implementation cost, upgrade incentives, owner, and expected upgrade difficulty.
+        relationship: direct_support
+    confidence: strong
+    roles:
+      - coding-agent
+      - architecture-agent
+      - review-agent
+    languages:
+      - language-independent
+    repository_archetypes:
+      - library
+      - service
+      - CLI
+      - monolith
+      - distributed-system
+    retrieval_terms:
+      - add dependency
+      - dependency adoption
+      - third-party package
+      - upgrade owner
+      - compatibility promise
+      - build versus buy
+    routing:
+      activate_for_roles:
+        - coding-agent
+        - architecture-agent
+        - review-agent
+      activate_for_tasks:
+        - implementation
+        - api-review
+        - architecture-assessment
+      activate_for_repository_signals:
+        - dependency manifest change
+        - new package import
+        - new framework
+        - vendor SDK
+        - plugin adoption
+      activate_for_languages:
+        - language-independent
+      activate_for_risk_classes:
+        - build
+        - compatibility
+        - security
+        - cost
+      exclude_when:
+        - accepted repository decision already mandates the exact dependency and no adoption question remains
+      prerequisites:
+        - capability need and repository dependency policy
+      retrieval_priority: high
+      retrieval_budget_hint: 380
+      related_concepts:
+        - architecture-framework-commitment
+        - operations-dependency-vulnerability-currency
+        - operations-build-provenance
+        - implementation-readiness
+        - universal-earned-abstraction
+
+  - id: implementation-unit-of-work-safe-default
+    title: Make transactional mutation require explicit success
+    category: implementation
+    claim: A transactional unit of work should make no durable change unless its caller explicitly commits; normal exit, early exit, and exception otherwise roll back so one explicit success path owns mutation.
+    decision_rule: Define the smallest transactional resource and consistency scope; enter it under one owner, perform reads and writes, verify invariants, and commit explicitly only after complete success; make every other exit roll back and treat irreversible external effects as separate obligations requiring an outbox, idempotence, or compensation.
+    why_it_matters: Implicit commit and ambiguous transaction ownership turn early returns, exceptions, and partial work into durable state that callers cannot reason about or safely retry.
+    applicable_when:
+      - application use cases that mutate transactional state
+      - repository and service-layer design
+      - reviewing commit and rollback behavior
+    not_applicable_when:
+      - pure computation with no durable mutation
+      - an indivisible external operation whose API itself is the transaction boundary
+    required_evidence:
+      - transactional resource and owner
+      - aggregate or invariant boundary
+      - all commit, rollback, early-exit, and exception paths
+      - external side effects inside the scope
+      - production-fidelity commit and rollback tests
+    insufficient_evidence:
+      - a class named UnitOfWork
+      - use of a context manager alone
+      - an ORM session with undocumented autocommit
+      - mock-only verification of commit calls
+    required_inputs:
+      - use-case success contract
+      - persistence and isolation semantics
+      - failure and retry policy
+      - external-effect inventory
+    expected_outputs:
+      - explicit transaction boundary and owner
+      - single success commit path
+      - default rollback behavior
+      - test evidence for success, early exit, and failure
+    preservation_boundaries:
+      - domain invariants
+      - durable data integrity
+      - accepted transaction and isolation semantics
+      - external effects that cannot be rolled back
+    safe_actions:
+      - require explicit commit after invariant checks
+      - rollback in structured cleanup
+      - test against the production database semantics
+      - separate irreversible publication from the local transaction
+    unsafe_actions:
+      - commit implicitly on ordinary scope exit
+      - hide writes behind multiple transaction owners
+      - assume rollback reverses an external message or email
+      - verify transaction behavior only with mocks
+    common_failure_modes:
+      - partial commit on early return
+      - nested units of work with conflicting owners
+      - external effect emitted before rollback
+      - fake unit of work diverging from real isolation behavior
+    counterexamples:
+      - An immutable append API with one atomic call can expose that call itself as the explicit commit boundary.
+    interactions:
+      - Refines domain-aggregate-invariant-boundary with application transaction ownership and relies on python-structured-cleanup or an equivalent resource owner for cleanup.
+    conflicts: []
+    source_support:
+      - source_id: SRC-APWP
+        locator: 'books/architecture-patterns-with-python/chapters/011-chapter-6-unit-of-work-pattern.md :: Explicit Versus Implicit Commits'
+        contribution: Compares implicit and explicit commit designs and prefers explicit commit plus default rollback because every path except complete success and deliberate commit leaves durable state unchanged.
+        relationship: direct_support
+    confidence: strong
+    roles:
+      - coding-agent
+      - architecture-agent
+      - review-agent
+    languages:
+      - language-independent
+    repository_archetypes:
+      - service
+      - monolith
+      - distributed-system
+    retrieval_terms:
+      - unit of work
+      - explicit commit
+      - default rollback
+      - transaction owner
+      - partial commit
+    routing:
+      activate_for_roles:
+        - coding-agent
+        - architecture-agent
+        - review-agent
+      activate_for_tasks:
+        - implementation
+        - architecture-assessment
+        - domain-design
+      activate_for_repository_signals:
+        - database transaction
+        - unit of work
+        - commit call
+        - rollback path
+        - repository mutation
+      activate_for_languages:
+        - language-independent
+      activate_for_risk_classes:
+        - data-integrity
+        - durability
+        - correctness
+      exclude_when:
+        - no durable mutation or transactional resource exists
+      prerequisites:
+        - transaction semantics and invariant boundary
+      retrieval_priority: high
+      retrieval_budget_hint: 380
+      related_concepts:
+        - domain-aggregate-invariant-boundary
+        - python-structured-cleanup
+        - testing-database-production-fidelity
+        - implementation-explicit-failure-policy
+        - universal-explicit-invariants
+
+  - id: implementation-validation-placement
+    title: Place validation with the owner of each meaning layer
+    category: implementation
+    claim: Validate message syntax at ingress or message construction, validate semantic preconditions in the application service or dispatcher, and enforce contextual business feasibility in the domain model, without duplicating one rule across all layers.
+    decision_rule: Classify each rule as structural syntax, referential or message semantics, or context-dependent domain policy; enforce it at the earliest boundary that owns that meaning, keep the invariant at its authoritative owner, and define caller-visible failure without repeating the same rule in every layer.
+    why_it_matters: Undifferentiated validation either lets malformed data travel too deeply, clutters the domain with transport concerns, or scatters business rules so representations disagree.
+    applicable_when:
+      - designing API or message validation
+      - placing service preconditions
+      - reviewing domain invariants and input checks
+    not_applicable_when:
+      - opaque binary data that the application is not authorized or required to interpret
+    required_evidence:
+      - input trust boundary and syntax contract
+      - authoritative source for referenced entities and semantic preconditions
+      - domain owner and invariant
+      - failure and reporting requirements per caller
+    insufficient_evidence:
+      - a field has a type hint
+      - a schema validates shape
+      - the same check appears in several layers
+      - a framework convention without ownership analysis
+    required_inputs:
+      - external input contract
+      - application workflow
+      - domain model and invariants
+      - failure policy
+    expected_outputs:
+      - rule classification and authoritative enforcement point
+      - edge rejection behavior
+      - service precondition behavior
+      - domain invariant and proof route
+    preservation_boundaries:
+      - untrusted-input containment
+      - domain authority and invariants
+      - public error compatibility
+      - idempotence and transaction semantics
+    safe_actions:
+      - reject malformed structure at ingress
+      - use a service precondition for referenced-resource existence
+      - keep business feasibility in the domain owner
+      - share a predicate without duplicating authority
+    unsafe_actions:
+      - treat static types as runtime validation
+      - repeat one business rule independently in controller service and model
+      - let malformed input reach durable state
+      - put transport syntax into a domain entity
+    common_failure_modes:
+      - schema-valid but impossible command
+      - domain model polluted by transport checks
+      - contradictory validations across layers
+      - time-of-check/time-of-use race from a separate transaction
+    counterexamples:
+      - A single small boundary function may own all three layers when it is genuinely the only semantic owner and still keeps the distinctions explicit.
+    interactions:
+      - Specializes implementation-placement-by-ownership and universal-explicit-invariants; untrusted public input remains governed by operations-untrusted-request-handling.
+    conflicts:
+      - conflict-domain-purity-vs-implementation-simplicity
+    source_support:
+      - source_id: SRC-APWP
+        locator: 'books/architecture-patterns-with-python/chapters/026-appendix-e-validation.md :: Validating Pragmatics'
+        contribution: Separates validation into syntax, semantics, and pragmatics and assigns them respectively to message or edge handling, service-layer or message-bus preconditions, and domain business rules.
+        relationship: direct_support
+    confidence: strong
+    roles:
+      - coding-agent
+      - architecture-agent
+      - review-agent
+    languages:
+      - language-independent
+    repository_archetypes:
+      - library
+      - service
+      - CLI
+      - monolith
+      - distributed-system
+    retrieval_terms:
+      - validation placement
+      - validate at edge
+      - syntax semantics pragmatics
+      - precondition
+      - domain validation
+    routing:
+      activate_for_roles:
+        - coding-agent
+        - architecture-agent
+        - review-agent
+      activate_for_tasks:
+        - implementation
+        - api-review
+        - domain-design
+      activate_for_repository_signals:
+        - input validation
+        - message schema
+        - service precondition
+        - domain invariant
+        - invalid request
+      activate_for_languages:
+        - language-independent
+      activate_for_risk_classes:
+        - correctness
+        - data-integrity
+        - domain-integrity
+      exclude_when:
+        - the application treats the payload as authorized opaque data
+      prerequisites:
+        - input contract and domain ownership
+      retrieval_priority: high
+      retrieval_budget_hint: 360
+      related_concepts:
+        - implementation-placement-by-ownership
+        - universal-explicit-invariants
+        - python-runtime-static-boundary
+        - operations-untrusted-request-handling
+        - domain-intention-revealing-interface

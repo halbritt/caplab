@@ -622,6 +622,10 @@ concepts:
         locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/006-chapter-2-code-and-project-organization.md :: 2.5 #5: Interface pollution"
         contribution: "Identifies common behavior, actual decoupling, and intentional behavior restriction as evidence for an interface, while treating speculative interfaces that do not improve the code as pollution."
         relationship: "refinement"
+      - source_id: SRC-APWP
+        locator: 'books/architecture-patterns-with-python/chapters/007-chapter-2-repository-pattern.md :: What Is the Trade-Off?'
+        contribution: Makes the repository layer local complexity and maintenance cost explicit and justifies that cost through controlled storage semantics, infrastructure substitution, and useful test isolation rather than pattern recognition alone.
+        relationship: refinement
     confidence: universal
     roles: [coding-agent, architecture-agent, refactoring-agent, review-agent, performance-agent]
     languages: [language-independent]
@@ -755,6 +759,10 @@ concepts:
         locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/026-chapter-19-architecture-decisions.md :: Covering Your Assets Anti-Pattern"
         contribution: Connects architecture decision timing and documentation to reversibility and evidence.
         relationship: corroboration
+      - source_id: SRC-SEAG
+        locator: 'books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/017-chapter-9-code-review.md :: Write Small Changes'
+        contribution: Supports small single-focus reviews because they reduce reviewer load, shorten feedback, localize defects, and expose wrong approaches early, while acknowledging that some coherent larger changes justify extra coordination.
+        relationship: refinement
     confidence: universal
     roles: [coding-agent, architecture-agent, refactoring-agent, legacy-code-agent, performance-agent, debugging-and-repair-agent]
     languages: [language-independent]
@@ -822,6 +830,10 @@ concepts:
         locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/012-chapter-8-benchmarking-versus-stress-and-load-tests.md :: Reliability of Experiments"
         contribution: Establishes controlled repeatable comparison for performance improvement.
         relationship: corroboration
+      - source_id: SRC-SEAG
+        locator: 'books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/014-chapter-7-measuring-engineering-productivity.md :: Triage: Is It Even Worth Measuring?'
+        contribution: Requires a concrete measurement question, declared actions for favorable and unfavorable results, and an empowered decision owner; otherwise measurement cost produces curiosity or vanity rather than decision evidence.
+        relationship: refinement
     confidence: universal
     roles: [coding-agent, architecture-agent, refactoring-agent, performance-agent, review-agent]
     languages: [language-independent]

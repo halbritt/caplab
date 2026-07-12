@@ -732,6 +732,10 @@ concepts:
     locator: 'books/bookshelf-ch-three-api-design-patterns/chapters/002-chapter-3-naming.md :: 3.1 Why do names matter?'
     contribution: Explains that public API names survive compilation into independently owned consumer code, including private code the provider cannot update, so a rename cannot be treated as a local find-and-replace.
     relationship: refinement
+  - source_id: SRC-SEAG
+    locator: 'books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/023-chapter-15-deprecation.md :: Managing the Deprecation Process'
+    contribution: Requires explicit deprecation ownership, warns that advisory migration delegated to consumers does not finish, and treats deleted subcomponents and declining use as valuable milestones before final removal.
+    relationship: refinement
   confidence: strong
   roles:
   - architecture-agent
@@ -947,6 +951,14 @@ concepts:
   - source_id: SRC-SDX
     locator: 'books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/014-chapter-8-toward-modular-monoliths-through-the-social-view-of-code.md :: The Trade-Off Between Architectural Refinements and Replacement Systems'
     contribution: Replacement risks hidden requirements and catch-up; large improvement should proceed through protected, quickly integrated states.
+    relationship: refinement
+  - source_id: SRC-SEAG
+    locator: 'books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/031-chapter-22-large-scale-changes.md :: Sharding and Submitting'
+    contribution: Shows a broad generated migration split by ownership into independently committable, independently tested and reviewed shards, with bounded outstanding work and cheap regeneration when a shard fails.
+    relationship: refinement
+  - source_id: SRC-APWP
+    locator: 'books/architecture-patterns-with-python/chapters/021-epilogue.md :: Separating Entangled Responsibilities'
+    contribution: Starts an overgrown-system migration by naming use cases, centralizing their orchestration and transaction boundaries, and accepting temporary duplication and long handlers as a comprehensible intermediate state before deeper domain cleanup.
     relationship: refinement
   confidence: contextual
   roles:

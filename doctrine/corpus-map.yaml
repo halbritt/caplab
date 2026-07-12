@@ -405,13 +405,94 @@ sources:
     - refactoring-compatibility-migration
     - implementation-semantic-naming
     coverage_ledger: doctrine/_work/extractions/data-sources.md#complete-chapter-coverage-ledger
+  - source_id: SRC-SEAG
+    primary_domain: Long-lived software engineering at organizational scale across review, testing, documentation, dependencies, build systems, migration, integration, delivery, and engineering measurement.
+    strongest_contributions:
+      - observable behavior as a compatibility constraint over time
+      - decision-linked measurement and validation of behavioral metrics
+      - reviewable change, documentation lifecycle, behavior-focused testing, and owned deprecation
+      - declared reproducible builds, dependency-adoption economics, and independently safe large-scale migration shards
+    contextual_assumptions:
+      - Google-scale engineering with centralized ownership, monorepo tooling, code review, CI, and deployment infrastructure
+      - 2020-era tools and organizational practices with teams able to invest in shared infrastructure
+      - process and productivity evidence is interpreted with mixed methods and an identified decision owner
+    limitations:
+      - The original PDF was airlock-DANGEROUS and Marker received a CDR-CLEAN 150-DPI raster derivative; all 602 pages used Surya OCR with no LLM.
+      - Validation preserves 9 probable code-damage findings, 125 unresolved table findings, 9 duplicate-heading patterns, one low-confidence first boundary, and no reliable fenced-code language identifiers. Prose locators were inspected, but code and tables require source-image review before technical reuse.
+      - Google-specific scale, monorepo, ownership, and tooling conditions are not portable defaults; organizational anecdotes are practitioner evidence rather than controlled comparison.
+      - The source cannot justify individual performance judgments or grant organizational, migration, or execution authority; single-source support is capped at strong or contextual.
+    known_tensions:
+      - Its state-based testing position supports the classical side of conflict-classical-vs-london-test-isolation.
+      - Its recommendation to answer costly team-scale monolith releases with microservices or a rewrite conflicts with architecture-distribution-readiness and conflict-monolith-vs-distributed-services.
+      - Its large-scale automation assumes centralized ownership and infrastructure that smaller or multi-repository systems may not possess.
+    likely_agent_roles:
+      - coding-agent
+      - architecture-agent
+      - refactoring-agent
+      - review-agent
+      - repository-assessment-agent
+    concepts_worth_mining:
+      - operations-live-interface-compatibility
+      - universal-measure-claimed-improvement
+      - repository-assessment-behavioral-data-fitness
+      - implementation-documentation-lifecycle
+      - testing-coverage-is-not-adequacy
+      - testing-test-level-mix
+      - refactoring-compatibility-migration
+      - operations-build-provenance
+      - implementation-dependency-adoption-gate
+      - refactoring-directional-campaign
+    coverage_ledger: doctrine/_work/extractions/organization-python-sources.md#complete-chapter-coverage-ledger
+  - source_id: SRC-APWP
+    primary_domain: Python-centered domain modeling and application architecture using repositories, units of work, aggregates, service layers, events, CQRS, dependency injection, and test-driven feedback.
+    strongest_contributions:
+      - executable domain language with entity, value-object, service, aggregate, repository, and bounded-context distinctions
+      - cost-aware dependency inversion and policy-mechanism separation with a source-supported direct-coupling alternative
+      - classical state-based testing, test-level tradeoffs, and explicit transaction success semantics
+      - command-event semantics, temporal decoupling, earned CQRS, incremental legacy separation, and validation placement
+    contextual_assumptions:
+      - Python applications circa 2020 using Flask, SQLAlchemy, Postgres, Redis, containers, and pytest-like testing
+      - a business domain with enough rules and lifespan to repay domain modeling and architectural indirection
+      - the team can change application structure, own adapters, and maintain explicit test and deployment seams
+    limitations:
+      - The original PDF was airlock-DANGEROUS and Marker received a CDR-CLEAN 150-DPI raster derivative; all 497 pages used Surya OCR with no LLM.
+      - Validation preserves probable code damage in 20 chapters, 32 unresolved table findings, 20 duplicate-heading patterns, one low-confidence first boundary, and no reliable fenced-code language identifiers. Candidate support relies on inspected prose; code needs source-image review.
+      - The running allocation example is pedagogical and the epilogue says it is not battle-hardened production code; performance and migration cases are illustrative rather than controlled evidence.
+      - Framework, Python, database, broker, and deployment specifics drift; single-source support is capped at strong or contextual.
+    known_tensions:
+      - Its explicit classicist preference is preserved against conflict-classical-vs-london-test-isolation rather than promoted as universal.
+      - Its Django guidance supplies the direct-coupling side of conflict-dependency-inversion-vs-direct-coupling and qualifies domain purity when indirection cost is not repaid.
+      - Its asynchronous integration guidance remains conditional on conflict-synchronous-vs-asynchronous-interaction and explicit delivery, recovery, and consistency semantics.
+      - Its CQRS guidance sits within conflict-model-fidelity-vs-performance-representation and rejects the split for simple CRUD.
+    likely_agent_roles:
+      - coding-agent
+      - architecture-agent
+      - refactoring-agent
+      - legacy-code-agent
+      - review-agent
+      - performance-agent
+    concepts_worth_mining:
+      - domain-language-model-loop
+      - domain-value-object
+      - domain-identity-entity
+      - domain-service-operation
+      - domain-repository-lifecycle
+      - domain-aggregate-invariant-boundary
+      - domain-bounded-context
+      - implementation-unit-of-work-safe-default
+      - architecture-command-event-semantics
+      - architecture-cqrs-earned-read-model
+      - implementation-validation-placement
+    coverage_ledger: doctrine/_work/extractions/organization-python-sources.md#complete-chapter-coverage-ledger
+
 coverage_summary:
-  chapter_files: 433
-  covered_chapters: 433
+  chapter_files: 500
+  covered_chapters: 500
   per_source_counts:
     SRC-100GO: 17
     SRC-ADPCH3: 2
     SRC-APOSD: 32
+    SRC-APWP: 29
     SRC-CA: 48
     SRC-CC: 48
     SRC-CIG: 14
@@ -424,5 +505,6 @@ coverage_summary:
     SRC-REF: 21
     SRC-RI: 27
     SRC-SDX: 22
+    SRC-SEAG: 38
     SRC-UT: 20
     SRC-WELC: 37

@@ -34,6 +34,20 @@ sources:
       - universal-engineering-foundation
       - implementation-craft
       - architectural-reasoning
+  - id: SRC-APWP
+    title: 'Architecture Patterns with Python: Enabling Test-Driven Development, Domain-Driven Design, and Event-Driven Microservices'
+    authors:
+      - Harry Percival
+      - Bob Gregory
+    corpus_path: books/architecture-patterns-with-python
+    source_input_path: sources/Architecture-Patterns-with-Python.pdf
+    source_sha256: b5b423b766ebe69b14ad03e1a6dbae1198a2f8b0ffbc289e34be11d70c3da32c
+    source_format: pdf
+    chapter_count: 29
+    source_roles:
+      - domain-modeling
+      - architectural-reasoning
+      - boundary-and-dependency-design
   - id: SRC-CA
     title: "Clean Architecture: A Craftsman's Guide to Software Structure and Design"
     authors: [Robert C. Martin]
@@ -182,6 +196,21 @@ sources:
       - historical-and-hotspot-analysis
       - architectural-reasoning
       - sociotechnical-analysis
+  - id: SRC-SEAG
+    title: 'Software Engineering at Google: Lessons Learned from Programming Over Time'
+    authors:
+      - Titus Winters
+      - Tom Manshreck
+      - Hyrum Wright
+    corpus_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798
+    source_input_path: sources/dokumen.pub_software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798.pdf
+    source_sha256: 4e567ce8f561cad28c0369df71a25cb2b64361473c64509c493cce79e293289e
+    source_format: pdf
+    chapter_count: 38
+    source_roles:
+      - universal-engineering-foundation
+      - review-and-testing
+      - implementation-craft
   - id: SRC-UT
     title: "Unit Testing: Principles, Practices, and Patterns"
     authors: [Vladimir Khorikov]

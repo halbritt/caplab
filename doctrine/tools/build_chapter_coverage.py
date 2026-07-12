@@ -25,10 +25,12 @@ LEDGERS = (
     DOCTRINE / "_work" / "extractions" / "testing-sources.md",
     DOCTRINE / "_work" / "extractions" / "go-concurrency-sources.md",
     DOCTRINE / "_work" / "extractions" / "data-sources.md",
+    DOCTRINE / "_work" / "extractions" / "organization-python-sources.md",
 )
 SOURCE_ALIASES = {
     "ADP": "SRC-ADPCH3",
     "APOSD": "SRC-APOSD",
+    "APWP": "SRC-APWP",
     "CA": "SRC-CA",
     "CC": "SRC-CC",
     "CIG": "SRC-CIG",
@@ -42,6 +44,7 @@ SOURCE_ALIASES = {
     "REF": "SRC-REF",
     "RI": "SRC-RI",
     "SDX": "SRC-SDX",
+    "SEAG": "SRC-SEAG",
     "UT": "SRC-UT",
     "WELC": "SRC-WELC",
 }

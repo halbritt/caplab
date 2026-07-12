@@ -189,6 +189,34 @@ links:
   declared_by:
   - architecture-change-locality-cohesion
   - universal-local-reasoning
+- id: R-ROUTE-085b6c88f3ca
+  from: architecture-command-event-semantics
+  relation: co-retrieved-with
+  to: architecture-event-temporal-semantics
+  semantic: false
+  declared_by:
+  - architecture-command-event-semantics
+- id: R-ROUTE-9d79be463c87
+  from: architecture-command-event-semantics
+  relation: co-retrieved-with
+  to: architecture-interaction-synchrony
+  semantic: false
+  declared_by:
+  - architecture-command-event-semantics
+- id: R-ROUTE-60978d8c65f8
+  from: architecture-command-event-semantics
+  relation: co-retrieved-with
+  to: domain-intention-revealing-interface
+  semantic: false
+  declared_by:
+  - architecture-command-event-semantics
+- id: R-ROUTE-998322a14f91
+  from: architecture-command-event-semantics
+  relation: co-retrieved-with
+  to: implementation-explicit-failure-policy
+  semantic: false
+  declared_by:
+  - architecture-command-event-semantics
 - id: R-ROUTE-3abd43b0d7f4
   from: architecture-contextual-partitioning
   relation: co-retrieved-with
@@ -268,6 +296,41 @@ links:
   semantic: false
   declared_by:
   - architecture-contextual-style-selection
+- id: R-ROUTE-4cf871eb1aef
+  from: architecture-cqrs-earned-read-model
+  relation: co-retrieved-with
+  to: architecture-policy-mechanism-separation
+  semantic: false
+  declared_by:
+  - architecture-cqrs-earned-read-model
+- id: R-ROUTE-b27d53fbb731
+  from: architecture-cqrs-earned-read-model
+  relation: co-retrieved-with
+  to: domain-aggregate-invariant-boundary
+  semantic: false
+  declared_by:
+  - architecture-cqrs-earned-read-model
+- id: R-ROUTE-78c9250377b9
+  from: architecture-cqrs-earned-read-model
+  relation: co-retrieved-with
+  to: performance-representative-baseline
+  semantic: false
+  declared_by:
+  - architecture-cqrs-earned-read-model
+- id: R-ROUTE-ea799faf178e
+  from: architecture-cqrs-earned-read-model
+  relation: co-retrieved-with
+  to: performance-semantic-preservation
+  semantic: false
+  declared_by:
+  - architecture-cqrs-earned-read-model
+- id: R-ROUTE-ae23ce4a1cf6
+  from: architecture-cqrs-earned-read-model
+  relation: co-retrieved-with
+  to: universal-earned-abstraction
+  semantic: false
+  declared_by:
+  - architecture-cqrs-earned-read-model
 - id: R-ROUTE-4aca779d8e88
   from: architecture-decision-record
   relation: co-retrieved-with
@@ -306,6 +369,13 @@ links:
   semantic: false
   declared_by:
   - architecture-team-topology-force
+- id: R-ROUTE-784c94eb9c6f
+  from: architecture-decision-record
+  relation: co-retrieved-with
+  to: implementation-documentation-lifecycle
+  semantic: false
+  declared_by:
+  - implementation-documentation-lifecycle
 - id: R-ROUTE-fd191c8a02b7
   from: architecture-decision-record
   relation: co-retrieved-with
@@ -619,6 +689,13 @@ links:
   semantic: false
   declared_by:
   - architecture-framework-commitment
+- id: R-ROUTE-c44dec064525
+  from: architecture-framework-commitment
+  relation: co-retrieved-with
+  to: implementation-dependency-adoption-gate
+  semantic: false
+  declared_by:
+  - implementation-dependency-adoption-gate
 - id: R-ROUTE-1e73421cc4d7
   from: architecture-framework-commitment
   relation: co-retrieved-with
@@ -1259,6 +1336,13 @@ links:
   semantic: false
   declared_by:
   - domain-value-object
+- id: R-ROUTE-8e0389edcc41
+  from: domain-aggregate-invariant-boundary
+  relation: co-retrieved-with
+  to: implementation-unit-of-work-safe-default
+  semantic: false
+  declared_by:
+  - implementation-unit-of-work-safe-default
 - id: R-ROUTE-c4930aca356d
   from: domain-aggregate-invariant-boundary
   relation: co-retrieved-with
@@ -1453,6 +1537,13 @@ links:
   declared_by:
   - domain-intention-revealing-interface
   - domain-value-object
+- id: R-ROUTE-8828c0da9ccf
+  from: domain-intention-revealing-interface
+  relation: co-retrieved-with
+  to: implementation-validation-placement
+  semantic: false
+  declared_by:
+  - implementation-validation-placement
 - id: R-ROUTE-d5edb910982f
   from: domain-intention-revealing-interface
   relation: co-retrieved-with
@@ -1784,6 +1875,55 @@ links:
   semantic: false
   declared_by:
   - performance-resource-lifecycle
+- id: R-ROUTE-24bae3bbdedc
+  from: implementation-dependency-adoption-gate
+  relation: co-retrieved-with
+  to: implementation-readiness
+  semantic: false
+  declared_by:
+  - implementation-dependency-adoption-gate
+- id: R-ROUTE-ac9682179c02
+  from: implementation-dependency-adoption-gate
+  relation: co-retrieved-with
+  to: operations-build-provenance
+  semantic: false
+  declared_by:
+  - implementation-dependency-adoption-gate
+- id: R-ROUTE-3a9962bbf0a0
+  from: implementation-dependency-adoption-gate
+  relation: co-retrieved-with
+  to: operations-dependency-vulnerability-currency
+  semantic: false
+  declared_by:
+  - implementation-dependency-adoption-gate
+- id: R-ROUTE-3da5b708c94b
+  from: implementation-dependency-adoption-gate
+  relation: co-retrieved-with
+  to: universal-earned-abstraction
+  semantic: false
+  declared_by:
+  - implementation-dependency-adoption-gate
+- id: R-ROUTE-74716a8784e2
+  from: implementation-documentation-lifecycle
+  relation: co-retrieved-with
+  to: implementation-non-obvious-commentary
+  semantic: false
+  declared_by:
+  - implementation-documentation-lifecycle
+- id: R-ROUTE-ddaf1189b984
+  from: implementation-documentation-lifecycle
+  relation: co-retrieved-with
+  to: operations-transparency-by-design
+  semantic: false
+  declared_by:
+  - implementation-documentation-lifecycle
+- id: R-ROUTE-606417d63045
+  from: implementation-documentation-lifecycle
+  relation: co-retrieved-with
+  to: universal-repository-contract-precedence
+  semantic: false
+  declared_by:
+  - implementation-documentation-lifecycle
 - id: R-ROUTE-f908138f6be1
   from: implementation-duplication-as-evidence
   relation: co-retrieved-with
@@ -1878,6 +2018,13 @@ links:
   semantic: false
   declared_by:
   - implementation-normal-result-or-exception
+- id: R-ROUTE-9e175700c298
+  from: implementation-explicit-failure-policy
+  relation: co-retrieved-with
+  to: implementation-unit-of-work-safe-default
+  semantic: false
+  declared_by:
+  - implementation-unit-of-work-safe-default
 - id: R-ROUTE-fb62734fbf6e
   from: implementation-explicit-failure-policy
   relation: co-retrieved-with
@@ -2113,6 +2260,13 @@ links:
   semantic: false
   declared_by:
   - implementation-readiness
+- id: R-ROUTE-df9b3c8d1338
+  from: implementation-placement-by-ownership
+  relation: co-retrieved-with
+  to: implementation-validation-placement
+  semantic: false
+  declared_by:
+  - implementation-validation-placement
 - id: R-ROUTE-bb2801771db6
   from: implementation-placement-by-ownership
   relation: co-retrieved-with
@@ -2359,6 +2513,48 @@ links:
   semantic: false
   declared_by:
   - implementation-semantic-naming
+- id: R-ROUTE-80bc24b75f6e
+  from: implementation-unit-of-work-safe-default
+  relation: co-retrieved-with
+  to: python-structured-cleanup
+  semantic: false
+  declared_by:
+  - implementation-unit-of-work-safe-default
+- id: R-ROUTE-fd2755580c86
+  from: implementation-unit-of-work-safe-default
+  relation: co-retrieved-with
+  to: testing-database-production-fidelity
+  semantic: false
+  declared_by:
+  - implementation-unit-of-work-safe-default
+- id: R-ROUTE-4f5b6fdd96db
+  from: implementation-unit-of-work-safe-default
+  relation: co-retrieved-with
+  to: universal-explicit-invariants
+  semantic: false
+  declared_by:
+  - implementation-unit-of-work-safe-default
+- id: R-ROUTE-1b72fbcae70f
+  from: implementation-validation-placement
+  relation: co-retrieved-with
+  to: operations-untrusted-request-handling
+  semantic: false
+  declared_by:
+  - implementation-validation-placement
+- id: R-ROUTE-a8387be15e52
+  from: implementation-validation-placement
+  relation: co-retrieved-with
+  to: python-runtime-static-boundary
+  semantic: false
+  declared_by:
+  - implementation-validation-placement
+- id: R-ROUTE-1ff47adcde37
+  from: implementation-validation-placement
+  relation: co-retrieved-with
+  to: universal-explicit-invariants
+  semantic: false
+  declared_by:
+  - implementation-validation-placement
 - id: R-ROUTE-6ec8aafd1337
   from: legacy-characterization-surfaces
   relation: co-retrieved-with

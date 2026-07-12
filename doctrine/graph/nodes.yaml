@@ -788,6 +788,7 @@ nodes:
   - F-CONCEPT-CA-6274d163da20
   - F-CONCEPT-DDD-016f722dfcb9
   - F-CONCEPT-UT-549514600cd7
+  - F-CONCEPT-APWP-5fd5d3d46539
   tags:
   - architecture
   - dependency-inversion
@@ -812,6 +813,7 @@ nodes:
   - F-CONCEPT-FSA-11b347e9e248
   - F-CONCEPT-RI-7202e71dc0f8
   - F-CONCEPT-DDIA2-0170ff730ccb
+  - F-CONCEPT-SEAG-c832eeaeba8f
   tags:
   - architecture
   - distributed-readiness
@@ -946,6 +948,7 @@ nodes:
   - F-CONCEPT-FSA-d752eca0e916
   - F-CONCEPT-CA-fa455effbd05
   - F-CONCEPT-RI-dced255c7368
+  - F-CONCEPT-APWP-1d3d530f4b94
   tags:
   - architecture
   - synchronous
@@ -1012,6 +1015,8 @@ nodes:
   - F-CONCEPT-CA-6d677b7e3fba
   - F-CONCEPT-CA-e2a320f1b46d
   - F-CONCEPT-DDD-45151fcc9515
+  - F-CONCEPT-APWP-90374e151fc5
+  - F-CONCEPT-APWP-073934776376
   tags:
   - architecture
   - policy-mechanism
@@ -1190,6 +1195,7 @@ nodes:
   - F-CONCEPT-DDD-e1f709bfd6bd
   - F-CONCEPT-FSA-acee17c6de53
   - F-CONCEPT-CA-cde8211fe8cb
+  - F-CONCEPT-APWP-0649bc8b0991
   tags:
   - domain
   - aggregate
@@ -1256,6 +1262,7 @@ nodes:
   - F-CONCEPT-DDD-fde5e6bc2ea2
   - F-CONCEPT-FSA-1bf22d2f2c26
   - F-CONCEPT-RI-af154918ae96
+  - F-CONCEPT-APWP-ea6a7d09012d
   tags:
   - domain
   - bounded-context
@@ -1388,6 +1395,7 @@ nodes:
   - F-CONCEPT-DDD-9cec3a630a7f
   - F-CONCEPT-DDD-dd8e4ebe0158
   - F-CONCEPT-FSA-107da7f4f6fd
+  - F-CONCEPT-APWP-611706e37f2b
   tags:
   - domain
   - entity
@@ -1432,6 +1440,7 @@ nodes:
   - F-CONCEPT-DDD-43e35e2d42ec
   - F-CONCEPT-DDD-a845db3706b8
   - F-CONCEPT-CA-0a601729a7bc
+  - F-CONCEPT-APWP-9e8e547a90bd
   tags:
   - domain
   - ubiquitous-language
@@ -1476,6 +1485,7 @@ nodes:
   - F-CONCEPT-DDD-f195b0456312
   - F-CONCEPT-DDD-1705b67d44b7
   - F-CONCEPT-CA-58aa7bca7855
+  - F-CONCEPT-APWP-4944744983ea
   tags:
   - domain
   - repository
@@ -1498,6 +1508,7 @@ nodes:
   - F-CONCEPT-DDD-308c94715625
   - F-CONCEPT-DDD-be448c890613
   - F-CONCEPT-CA-7542af0a6063
+  - F-CONCEPT-APWP-e7330ce8d26c
   tags:
   - domain
   - domain-service
@@ -1519,6 +1530,7 @@ nodes:
   formulations:
   - F-CONCEPT-DDD-075810fcb312
   - F-CONCEPT-DDD-9e90b1c087ae
+  - F-CONCEPT-APWP-76ba98a8c680
   tags:
   - domain
   - value-object
@@ -2584,6 +2596,7 @@ nodes:
   - F-CONCEPT-RI-d4dcbde1f5b5
   - F-CONCEPT-RI-478ad78f2eca
   - F-CONCEPT-ADPCH3-b7f6aed33730
+  - F-CONCEPT-SEAG-9c12de42bc04
   tags:
   - architecture
   - api-migration
@@ -2605,6 +2618,8 @@ nodes:
   formulations:
   - F-CONCEPT-REF-72d068fb3352
   - F-CONCEPT-SDX-9a12313b67a0
+  - F-CONCEPT-SEAG-a3c7ab8f7f49
+  - F-CONCEPT-APWP-32844dcfe127
   tags:
   - refactoring
   - big-refactoring
@@ -2708,6 +2723,7 @@ nodes:
   formulations:
   - F-CONCEPT-SDX-b864bebc70eb
   - F-CONCEPT-SDX-7bf36cbc4786
+  - F-CONCEPT-SEAG-7e2b7eb94d10
   tags:
   - agent-conduct
   - history-bias
@@ -2855,6 +2871,7 @@ nodes:
   - F-CONCEPT-PP-ccc50b0e9e5f
   - F-CONCEPT-UT-45555a2f20c6
   - F-CONCEPT-UT-89da45219ab8
+  - F-CONCEPT-SEAG-c1327a40d7d3
   tags:
   - implementation
   - coverage
@@ -2921,6 +2938,7 @@ nodes:
   - F-CONCEPT-CC-fe7a1d6bd016
   - F-CONCEPT-PP-9768c732f35d
   - F-CONCEPT-100GO-0c0c8bbfae82
+  - F-CONCEPT-APWP-c8192f7d608d
   tags:
   - universal
   - earned-abstraction
@@ -3011,6 +3029,7 @@ nodes:
   - F-CONCEPT-SDX-eb8d00c14fc8
   - F-CONCEPT-FSA-daf109befe73
   - F-CONCEPT-EGO-fb398e678862
+  - F-CONCEPT-SEAG-a682775f6fae
   tags:
   - universal
   - measure-improvement
@@ -3077,6 +3096,7 @@ nodes:
   - F-CONCEPT-PP-5fbab4f1eb07
   - F-CONCEPT-REF-f2dd8866d777
   - F-CONCEPT-FSA-f4b9a8a0a449
+  - F-CONCEPT-SEAG-aa29c8fcc179
   tags:
   - universal
   - reversible
@@ -3163,6 +3183,7 @@ nodes:
   formulations:
   - F-CONCEPT-RI-d9459b3f937e
   - F-CONCEPT-RI-7f507c710cd3
+  - F-CONCEPT-SEAG-f65a51785822
   tags:
   - implementation
   - chain-of-custody
@@ -3425,6 +3446,8 @@ nodes:
   - F-CONCEPT-RI-44756352a75f
   - F-CONCEPT-RI-6ea96ba769c6
   - F-CONCEPT-RI-3441ca419366
+  - F-CONCEPT-SEAG-851a06f663c3
+  - F-CONCEPT-APWP-c454267cc102
   tags:
   - architecture
   - breaking-change
@@ -3661,6 +3684,7 @@ nodes:
   formulations:
   - F-CONCEPT-UT-ad82d76470b2
   - F-CONCEPT-UT-f0a720f510c4
+  - F-CONCEPT-SEAG-47e7182e2b06
   tags:
   - implementation
   - false-positive
@@ -3897,6 +3921,7 @@ nodes:
   formulations:
   - F-CONCEPT-UT-5209ad804053
   - F-CONCEPT-UT-6ff972a54817
+  - F-CONCEPT-APWP-a54a4328c58d
   tags:
   - implementation
   - test-double
@@ -3938,6 +3963,8 @@ nodes:
   - testing-test-level-mix
   formulations:
   - F-CONCEPT-UT-28bcc9878b05
+  - F-CONCEPT-SEAG-491b46acbe58
+  - F-CONCEPT-APWP-458fdb6890d8
   tags:
   - implementation
   - test-pyramid
@@ -4510,6 +4537,126 @@ nodes:
   - acid
   - isolation-level
   - atomicity
+- id: architecture-command-event-semantics
+  projection:
+    owner: concept-record
+    source_id: architecture-command-event-semantics
+  kind: principle
+  label: Distinguish directed intent from broadcast fact
+  definition: A command expresses present intent to one responsible recipient and must return failure meaning to its sender; an event records a past fact for interested listeners and must not make the publisher depend on any one listener outcome.
+  operational_significance: Treating commands and events as interchangeable hides causal ownership, makes errors disappear or leak to the wrong caller, and turns broadcast infrastructure into an implicit workflow controller.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - architecture-command-event-semantics
+  formulations:
+  - F-CONCEPT-APWP-a6b0fa93078f
+  tags:
+  - architecture
+  - command-versus-event
+  - directed-intent
+  - broadcast-fact
+  - message-handler
+- id: architecture-cqrs-earned-read-model
+  projection:
+    owner: concept-record
+    source_id: architecture-cqrs-earned-read-model
+  kind: principle
+  label: Separate a read model only when write semantics make reads materially different
+  definition: A separate read representation is earned when a rule-rich write model makes actual query shapes awkward or costly; simple CRUD should retain one model, and any split should serve materially different read requirements rather than architectural fashion.
+  operational_significance: A write model optimized around invariants can make queries expensive or unintelligible, but an unnecessary read model duplicates representation, introduces lag, and creates synchronization and recovery work.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - architecture-cqrs-earned-read-model
+  formulations:
+  - F-CONCEPT-APWP-540258d38c11
+  tags:
+  - architecture
+  - cqrs
+  - read-model
+  - write-model
+  - query-projection
+- id: implementation-dependency-adoption-gate
+  projection:
+    owner: concept-record
+    source_id: implementation-dependency-adoption-gate
+  kind: principle
+  label: Price a dependency across its maintenance horizon before adoption
+  definition: Adopt an external dependency only after its behavior, testability, provider stewardship, compatibility promise, expected lifespan and breaking cadence, internal alternative cost, and upgrade ownership and cost have been evaluated for the product maintenance horizon.
+  operational_significance: Importing code is cheap today but creates future compatibility, security, build, upgrade, and ownership obligations that can exceed the implementation cost avoided.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - implementation-dependency-adoption-gate
+  formulations:
+  - F-CONCEPT-SEAG-b2c5c00570cc
+  tags:
+  - implementation
+  - add-dependency
+  - dependency-adoption
+  - third-party-package
+  - upgrade-owner
+- id: implementation-documentation-lifecycle
+  projection:
+    owner: concept-record
+    source_id: implementation-documentation-lifecycle
+  kind: principle
+  label: Give durable documentation a code-like lifecycle
+  definition: Durable technical documentation needs canonical ownership, source control, change review with the code it describes, issue tracking, and periodic freshness checks so duplicate or stale sources are consolidated or deprecated.
+  operational_significance: Ownerless or duplicated documentation drifts from executable reality, makes readers choose among conflicting claims, and leaves the people who detect errors unable to route repairs.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - implementation-documentation-lifecycle
+  formulations:
+  - F-CONCEPT-SEAG-ade6df47ab8c
+  tags:
+  - implementation
+  - documentation-owner
+  - canonical-documentation
+  - documentation-drift
+  - freshness
+- id: implementation-unit-of-work-safe-default
+  projection:
+    owner: concept-record
+    source_id: implementation-unit-of-work-safe-default
+  kind: principle
+  label: Make transactional mutation require explicit success
+  definition: A transactional unit of work should make no durable change unless its caller explicitly commits; normal exit, early exit, and exception otherwise roll back so one explicit success path owns mutation.
+  operational_significance: Implicit commit and ambiguous transaction ownership turn early returns, exceptions, and partial work into durable state that callers cannot reason about or safely retry.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - implementation-unit-of-work-safe-default
+  formulations:
+  - F-CONCEPT-APWP-ee5934c01c40
+  tags:
+  - implementation
+  - unit-of-work
+  - explicit-commit
+  - default-rollback
+  - transaction-owner
+- id: implementation-validation-placement
+  projection:
+    owner: concept-record
+    source_id: implementation-validation-placement
+  kind: principle
+  label: Place validation with the owner of each meaning layer
+  definition: Validate message syntax at ingress or message construction, validate semantic preconditions in the application service or dispatcher, and enforce contextual business feasibility in the domain model, without duplicating one rule across all layers.
+  operational_significance: Undifferentiated validation either lets malformed data travel too deeply, clutters the domain with transport concerns, or scatters business rules so representations disagree.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - implementation-validation-placement
+  formulations:
+  - F-CONCEPT-APWP-989f57e619de
+  tags:
+  - implementation
+  - validation-placement
+  - validate-at-edge
+  - syntax-semantics-pragmatics
+  - precondition
 - id: conflict-abstraction-vs-duplication
   projection:
     owner: conflict-registry

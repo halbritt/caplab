@@ -80,6 +80,10 @@ concepts:
         relationship: corroboration
         locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/032-chapter-21-screaming-architecture.md :: THE THEME OF AN ARCHITECTURE"
         contribution: "Requires application purpose and use cases to remain visible in structure."
+      - source_id: SRC-APWP
+        locator: 'books/architecture-patterns-with-python/chapters/006-chapter-1-domain-modeling.md :: Exploring the Domain Language'
+        contribution: Begins modeling with an expert-agreed glossary, business-language rules, and concrete examples that make identifiers, constraints, allocation preferences, and duplicate handling discussable and testable.
+        relationship: direct_support
     confidence: strong
     roles: [coding-agent, architecture-agent, review-agent]
     languages: [language-independent]
@@ -128,6 +132,10 @@ concepts:
         relationship: tension
         locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/013-chapter-8-component-based-thinking.md :: Entity trap"
         contribution: "Warns that data entities do not define architectural components."
+      - source_id: SRC-APWP
+        locator: 'books/architecture-patterns-with-python/chapters/006-chapter-1-domain-modeling.md :: Value Objects and Entities'
+        contribution: Distinguishes entities from values by persistent identity despite mutable attributes and requires equality and hashing choices to follow the stable identity attribute rather than current state.
+        relationship: direct_support
     confidence: strong
     roles: [coding-agent, architecture-agent, review-agent]
     languages: [language-independent]
@@ -172,6 +180,10 @@ concepts:
         relationship: direct_support
         locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/006-chapter-5-a-model-expressed-in-software.md :: Special Cases: When to Allow Mutability"
         contribution: "Conditions the default immutability rule on domain and implementation forces."
+      - source_id: SRC-APWP
+        locator: 'books/architecture-patterns-with-python/chapters/006-chapter-1-domain-modeling.md :: Value Objects and Entities'
+        contribution: Defines value objects by complete attribute identity and replacement semantics, and ties Python equality and hashing to all immutable value attributes.
+        relationship: direct_support
     confidence: strong
     roles: [coding-agent, review-agent]
     languages: [language-independent]
@@ -220,6 +232,10 @@ concepts:
         relationship: terminology_variant
         locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/038-chapter-27-services-great-and-small.md :: SERVICE ARCHITECTURE?"
         contribution: "Uses service primarily for a deployable runtime unit, requiring explicit terminology separation."
+      - source_id: SRC-APWP
+        locator: 'books/architecture-patterns-with-python/chapters/009-chapter-4-our-first-use-case-flask-api-and-service-layer.md :: Why Is Everything Called a Service?'
+        contribution: Distinguishes an application service that orchestrates retrieval, domain updates, and persistence from a stateless domain service that expresses business logic with no natural entity or value-object home.
+        relationship: direct_support
     confidence: strong
     roles: [coding-agent, architecture-agent, review-agent]
     languages: [language-independent]
@@ -269,6 +285,10 @@ concepts:
         relationship: corroboration
         locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/031-chapter-20-business-rules.md :: USE CASES"
         contribution: "Places application-specific invariant orchestration with explicit use-case policy."
+      - source_id: SRC-APWP
+        locator: 'books/architecture-patterns-with-python/chapters/012-chapter-7-aggregates-and-consistency-boundaries.md :: Choosing an Aggregate'
+        contribution: Selects aggregate granularity from the objects that must be consistent for one operation, rejects broader warehouse and shipment groupings that would unnecessarily serialize independent work, and keeps the boundary small for performance.
+        relationship: direct_support
     confidence: strong
     roles: [coding-agent, architecture-agent, review-agent, performance-agent]
     languages: [language-independent]
@@ -317,6 +337,10 @@ concepts:
         relationship: corroboration
         locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/034-chapter-23-presenters-and-humble-objects.md :: DATABASE GATEWAYS"
         contribution: "Separates business use cases from persistence mechanism through a gateway."
+      - source_id: SRC-APWP
+        locator: 'books/architecture-patterns-with-python/chapters/007-chapter-2-repository-pattern.md :: Introducing the Repository Pattern'
+        contribution: Defines a repository as a minimal collection-like abstraction over storage, with add and get operations used by domain and service code so database mechanics remain behind the adapter.
+        relationship: direct_support
     confidence: contextual
     roles: [coding-agent, architecture-agent, performance-agent, review-agent]
     languages: [language-independent]
@@ -462,6 +486,10 @@ concepts:
         relationship: corroboration
         locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/024-chapter-16-adaptation.md :: Information Architecture"
         contribution: "Operations-side corroboration that one enterprise-wide model per noun fails - each group defines customer differently with different lifecycles and permissions, so federate zones of authority exchanging common representations instead of a single system of record, and keep upstream leverage concepts from leaking into downstream feeds as incidental complexity."
+      - source_id: SRC-APWP
+        locator: 'books/architecture-patterns-with-python/chapters/012-chapter-7-aggregates-and-consistency-boundaries.md :: Choosing an Aggregate'
+        contribution: Shows Product modeled only with allocation-relevant SKU and batches while ecommerce owns price and description, using context-specific models and explicit translation instead of one enterprise-wide object graph.
+        relationship: direct_support
     confidence: strong
     roles: [architecture-agent, coding-agent, legacy-code-agent, review-agent, repository-assessment-agent]
     languages: [language-independent]

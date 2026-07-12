@@ -16,6 +16,8 @@ generated_from:
   sha256: 9eaa169c69eb21c5df9099f3ba45efb1e1cd45a8cec3985c78824efec991d382
 - ledger: doctrine/_work/extractions/data-sources.md
   sha256: 3cdf7198cc165f8a1554125530e1086a8997afbef05a8d32f3aaa4c356695f0d
+- ledger: doctrine/_work/extractions/organization-python-sources.md
+  sha256: d8eb865d956df4488fe9b3d32059683001edba6ff77931d43b44d84794140be1
 chapters:
 - source_id: SRC-100GO
   chapter_path: books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/001-100-go-mistakes-and-how-to-avoid-them.md
@@ -110,6 +112,157 @@ chapters:
   title: Index
   disposition: reference-only; back-of-book index; back-cover description and endorsements.
   sha256: 02de79715d7bd66814a89d78998698df7174c7e4eeabd6a22807b8a43a93c480
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/001-o-reilly.md
+  title: reference-only
+  disposition: Title, table of contents, publication data, and revision history.
+  sha256: 5e2d12dfc9b6dcde2decc7150def289b42363886fa06245af2555cac64f69472
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/002-preface.md
+  title: reference-only
+  disposition: Audience, source scope, TDD-DDD-event framing, examples, and conventions.
+  sha256: 75c8007c1c1fd90684be9cb26ccfd8447ad24b4c8c88b69ef23778e4f628b000
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/003-acknowledgments.md
+  title: reference-only
+  disposition: Reviewers and acknowledgments.
+  sha256: 040793c999b549faafecd7a290b94395963adf3dfc3a4a07de82d9f5d52c6c75
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/004-introduction.md
+  title: substantive
+  disposition: Encapsulation, abstractions, layering, dependency inversion, and a domain-model center.
+  sha256: 1681560f5935728c37f74618a8dcd9e5e95d339188d981b63b1d8a099db30cc5
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/005-part-i-building-an-architecture-to-support-domain-modeling.md
+  title: structural
+  disposition: Part I divider and roadmap.
+  sha256: 4af2942fb9d910a64ab5637dbecaa4671bd50486c589b2173c59a861d3fbb256
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/006-chapter-1-domain-modeling.md
+  title: substantive
+  disposition: Domain language, executable examples, entities, value objects, domain services, idiomatic Python, and domain
+    failures.
+  sha256: b28c670fc11c1fd84a4ed84cfb5704ffc5836f87158eaaa0b94509d4169368f2
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/007-chapter-2-repository-pattern.md
+  title: substantive
+  disposition: Persistence isolation, dependency inversion, repository semantics, ports and adapters, fakes, and abstraction
+    cost.
+  sha256: 2b9dee23ac1a58d20f7fc8af5a1e0a706743ae8c9aaceafcb678dd76493a1c0a
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/008-chapter-3-a-brief-interlude-on-coupling-and-abstractions.md
+  title: substantive
+  disposition: Coupling, responsibility discovery, policy-mechanism separation, dependency injection, fakes, and classical
+    versus London testing.
+  sha256: 1c7a0b36146ba4dafdd220a6152299d75dd749a204e9a953e93aa38c7d640ba2
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/009-chapter-4-our-first-use-case-flask-api-and-service-layer.md
+  title: substantive
+  disposition: Entrypoints, orchestration versus domain policy, service layer, end-to-end and service tests, and placement.
+  sha256: 10e1ba4004222c8d03a8a5adc6ff62226b77b0d16fdbf12a0c25c52aec64747a
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/010-chapter-5-tdd-in-high-gear-and-low-gear.md
+  title: substantive
+  disposition: Test pyramid, design-feedback versus coupling, service and domain test levels, and end-to-end coverage.
+  sha256: a1f29defc0eb0c25982b25ab3d161e69cfb043499a16a9ee2c7ec9dd7816e492
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/011-chapter-6-unit-of-work-pattern.md
+  title: substantive
+  disposition: Transaction ownership, context-managed cleanup, explicit commit, default rollback, repositories, and atomic
+    operations.
+  sha256: df5cee54aef7464352782467e75f6626fc1482169790a5fcd85fbd2ccd584049
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/012-chapter-7-aggregates-and-consistency-boundaries.md
+  title: substantive
+  disposition: Invariants, concurrency, consistency boundaries, aggregate choice, optimistic locking, isolation, and performance.
+  sha256: 04b9b169eb17b35d6046272c7d5f0118f9758145c5f2f450b4e873826fe152b2
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/013-part-i-recap.md
+  title: reference-only
+  disposition: Part I pattern recap and summary tables.
+  sha256: cf936b1d82cffff3812dd17a3e8af8d99590a4359ed9be1e9cd77f8b69fd7068
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/014-part-ii-event-driven-architecture.md
+  title: structural
+  disposition: Part II event-driven architecture divider.
+  sha256: 687a851bba11b057affdc58eb53a11adb7dfd1250c68c2afcf71576301c294c0
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/015-chapter-8-events-and-the-message-bus.md
+  title: substantive
+  disposition: Domain events, event recording, message-bus dispatch, handlers, and responsibility separation.
+  sha256: 8d87958b3f008efc5edb4e532fe34290047c4bbf9193daf9743cbe814644faa3
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/016-chapter-9-going-to-town-on-the-message-bus.md
+  title: substantive
+  disposition: Message-handler architecture, event interfaces, unit-of-work event collection, and handler testing.
+  sha256: 82ddfd96e6cf500ced29a4a4b7ceb06f585972a8483d84ab930f4daa02a4fb61
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/017-chapter-10-commands-and-command-handler.md
+  title: substantive
+  disposition: Commands versus events, intent versus fact, recipients, and distinct failure behavior.
+  sha256: 241aec20dc04892ed5de20fa0a05a020c306a13369291863a1cbe9f519e0c1b4
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/018-chapter-11-event-driven-architecture-using-events-to-integrate-microservices.md
+  title: substantive
+  disposition: Distributed coupling, partial failure, temporal decoupling, asynchronous integration, adapters, and end-to-end
+    tests.
+  sha256: 7cf8e80cb340ade577dc9605a1a26568e533a0f825a9cce931594f3433a2d607
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/019-chapter-12-command-query-responsibility-segregation-cqrs.md
+  title: substantive
+  disposition: Write-side domain rules, read models, consistency, query representations, rebuilds, and performance.
+  sha256: 92ac8c8571986161b785ecbd587df79670a1e7c5eb14b389b97886414c1c62fc
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/020-chapter-13-dependency-injection-and-bootstrapping.md
+  title: substantive
+  disposition: Explicit dependencies, manual injection, composition roots, entrypoint bootstrapping, adapters, and tests.
+  sha256: 6133f08e7cd8385efa226ac735e03ad2983bcfca16b9bd94851c0491d0904b7e
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/021-epilogue.md
+  title: substantive
+  disposition: Incremental legacy separation, aggregate and context discovery, event interception, strangler migration, and
+    reliability warnings.
+  sha256: 0b81924cda134db6685f0e2182bd00fcc2356bfecb93f49f8076471d37f683be
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/022-appendix-a-summary-diagram-and-table.md
+  title: reference-only
+  disposition: Architecture diagram and component responsibility table.
+  sha256: 2faafc30d9f552a68f60644d5fc1e617dbdf97a8d8aec10151e0555ac30dcaae
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/023-appendix-b-a-template-project-structure.md
+  title: substantive
+  disposition: Project layout, environment configuration, containers, packaging, commands, and test structure.
+  sha256: 41c6037d921e9db1d8eb0d3f7620b3ffbbd2d708981096e2ab4dd0cd774f14ff
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/024-appendix-c-swapping-out-the-infrastructure-do-everything-with-csvs.md
+  title: substantive
+  disposition: Infrastructure substitution proof using CSV repository and unit-of-work adapters.
+  sha256: a6e5aab72b7034c740df7176ed5e13f1ef4b26673a4bc6d862b79b8a2cdb25f3
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/025-appendix-d-repository-and-unit-of-work-patterns-with-django.md
+  title: substantive
+  disposition: Django repository and unit-of-work adaptation, framework coupling, views as adapters, and incremental options.
+  sha256: bde5a19c589e5bea0bb9758864c43a3109e60cd9bb75421eb0a1447669257463
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/026-appendix-e-validation.md
+  title: substantive
+  disposition: Syntax, semantics, pragmatics, tolerant readers, edge validation, preconditions, and idempotence.
+  sha256: fbf63c11a0fadc0c839688c234959fbfde59dd282e290d2904e5df96693ca8f5
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/027-index.md
+  title: reference-only
+  disposition: Back-of-book subject index.
+  sha256: 1c91d4857daa1dfc1a4e9a50895441f6e983a5cb2740f634e1c8691ec70373f5
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/028-about-the-authors.md
+  title: reference-only
+  disposition: Author biographies.
+  sha256: 0fb38078be900ba5163795d34b411c674987aa813cd9efbd811e074ca564b0d2
+- source_id: SRC-APWP
+  chapter_path: books/architecture-patterns-with-python/chapters/029-colophon.md
+  title: reference-only
+  disposition: Colophon and cover information.
+  sha256: 778c369d2ee133c64e0f37fa4ba43c25a1e9aa007843831c7823831ff03ecd9f
 - source_id: SRC-ADPCH3
   chapter_path: books/bookshelf-ch-three-api-design-patterns/chapters/001-api-design-patterns.md
   title: API Design Patterns
@@ -1118,6 +1271,196 @@ chapters:
   title: Index
   disposition: Retrieval aid; heavily flattened conversion with no independent doctrine.
   sha256: aac894dfa97b8513dfccb908a58aca57feaede48996c7243796b73dbfa9ee465
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/001-o-reilly.md
+  title: reference-only
+  disposition: Title, publication data, curator attribution, and catalog description.
+  sha256: f992de998a857e1ea86d42443277fa9c1bdf42ed10a750605c6c029277560d05
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/002-table-of-contents.md
+  title: reference-only
+  disposition: Navigation and printed chapter and section inventory.
+  sha256: 63db7616014d6210f8b5ea6b99073426f168b54cdbca94f3250c8f4c70610e38
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/003-foreword.md
+  title: reference-only
+  disposition: External framing of Google practices and their limits outside Google.
+  sha256: a545970498a735df2fc6ba7e4f3894f528213c36cb581976d10a9896c5d71477
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/004-preface.md
+  title: reference-only
+  disposition: Source thesis, time-scale-tradeoff framing, scope, and explicit limitations.
+  sha256: 489c943c396f7bc7d6973f03789ecfca935d162d6a844dc6d9bb8e999718e37c
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/005-acknowledgments.md
+  title: reference-only
+  disposition: Contributors, reviewers, and acknowledgments.
+  sha256: 257cdab03948bbb4b6da2821b2c37bd7b17f80b873e9ec7c6ee9dfb09eebe297
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/006-part-i-thesis.md
+  title: structural
+  disposition: Part I divider.
+  sha256: d3dd0ce95018ecca6646caf9eb489f0e5e61ce082ae2cd757b90d6025b8193af
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/007-chapter-1-what-is-software-engineering.md
+  title: substantive
+  disposition: Software over time; scale; Hyrum law; scalable policy; tradeoffs; decision inputs.
+  sha256: 7f482206612e6b617a97f2486f55185785a6063a1d7fa7f5a494dfa3e6040dc2
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/008-part-ii.md
+  title: structural
+  disposition: Part II culture divider.
+  sha256: fb2c28386c3a3d326144a8b63e49c73d35b6513013c9bf9dafc1042341a5cf52
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/009-chapter-2-how-to-work-well-on-teams.md
+  title: substantive
+  disposition: Collaborative visibility, team trust, early feedback, bus factor, and blameless learning.
+  sha256: 52db6c371f16eb9879de3bfbbbbfeff48e7463aaad6ee9d4c8d7763951e18643
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/010-chapter-3-knowledge-sharing.md
+  title: substantive
+  disposition: Psychological safety, mentorship, canonical information, documentation, code, and organizational learning.
+  sha256: fb2e362206135ad4f155cc174994b6d50e0238d51a7afe8b34ff51b4c80c54fe
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/011-chapter-4-engineering-for-equity.md
+  title: substantive
+  disposition: Bias, diversity, inclusive product outcomes, process challenges, and responsible release choices.
+  sha256: 45054c4bbe68eaa68d8e07fbec09edaab6f952551ec2c6438583840c39f38413
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/012-chapter-5-how-to-lead-a-team.md
+  title: substantive
+  disposition: Engineering leadership roles, servant leadership, management antipatterns, delegation, and goals.
+  sha256: 087417f1e845ac27dcbab68ea0de319eab62af4dd97b33268f7ddeb48f69ffa5
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/013-chapter-6-leading-at-scale.md
+  title: substantive
+  disposition: Decision tradeoffs, delegation, self-sustaining teams, scaling work, and leadership attention.
+  sha256: cec81acd2362a71dfaa97e051a5a054fb4b63f98522ed00cb4b6aa120c075ca0
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/014-chapter-7-measuring-engineering-productivity.md
+  title: substantive
+  disposition: Measurement triage, goals-signals-metrics, mixed methods, metric validation, decision ownership, and action.
+  sha256: 40970950fec09757500599d32dc91ca344fafff84a72d00e633103e6f642244a
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/015-part-iii.md
+  title: structural
+  disposition: Part III processes divider.
+  sha256: 9cc2ac5b92eb4492a963f0e7f66f6a9a3255076a408401e59d7abd88a861e845
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/016-chapter-8-style-guides-and-rules.md
+  title: substantive
+  disposition: Earned rules, readability, consistency hierarchy, ecosystem conventions, automation, and exceptions.
+  sha256: f7be9fd685bfce473a43e9a09e37d49db0a5bc8f916488511f315e36264e9e81
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/017-chapter-9-code-review.md
+  title: substantive
+  disposition: Review flow, code liability, correctness, comprehension, small changes, review types, and automation.
+  sha256: 8a1a1c6f450f93b74e606da21a742b4bc3c394f810b7e6203a64d745cbbcd109
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/018-chapter-10-documentation.md
+  title: substantive
+  disposition: Documentation audiences and forms, ownership, canonical sources, review, freshness, and deprecation.
+  sha256: 1cba331da1779b4955b0e1892f93038ff0828a8b67a3bc2f3cf58d90d4f85a5e
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/019-chapter-11-testing-overview.md
+  title: substantive
+  disposition: Test purpose, sizes and scopes, failure testing, coverage limits, flaky-test cost, and test culture.
+  sha256: d782acb63eec4e61d8f1919ab829bb6ebde46170a4bfdca75b23cb90224bab14
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/020-chapter-12-unit-testing.md
+  title: substantive
+  disposition: Maintainable tests, public APIs, state versus interaction, behavior focus, clarity, and DAMP sharing.
+  sha256: 028e03ceb2f21c0150297c9ebad1d20607d8ce58bdf53e92fa94b377bbb2077d
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/021-chapter-13-test-doubles.md
+  title: substantive
+  disposition: Double fidelity, seams, fakes, stubs, interaction tests, realism, state testing, and overspecification.
+  sha256: a1ead4e0312fc64b8312ba7727306450d24ae9379a577c34fc0cbb32df268a51
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/022-chapter-14-larger-testing.md
+  title: substantive
+  disposition: Unit-test gaps, fidelity, hermeticity, test data, load and configuration, ownership, and workflow.
+  sha256: 7d23ec47ed7be83627d65160331f24a1f3c1d5a023189a98bbfaf973111fa3e2
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/023-chapter-15-deprecation.md
+  title: substantive
+  disposition: Deprecation motives, advisory and compulsory forms, warnings, ownership, milestones, and tooling.
+  sha256: ed3b8bee950393a20bfa829c3094d50a9f22402ab7086b412aa28bf267e71367
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/024-part-iv.md
+  title: structural
+  disposition: Part IV tools divider.
+  sha256: c850c6a43de0e549154a9987c2e0e5e682b78b3b74f295cf4f51b6d23562e50d
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/025-chapter-16-version-control-and-branch-management.md
+  title: substantive
+  disposition: Version-control authority, source of truth, branch models, one-version practice, and monorepos.
+  sha256: b39a870f5afba21e88dee3d673447b83d8c200cd3ba6bfbcb90bdc9779342a98
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/026-chapter-17-code-search.md
+  title: substantive
+  disposition: Repository-scale code search, browsing workflows, indexing, ranking, latency, completeness, and trust.
+  sha256: 44fa95732957daabc2b33fa14cd8658f636b6bcde739be2d1819b8244cb49373
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/027-chapter-18-build-systems-and-build-philosophy.md
+  title: substantive
+  disposition: Dependency graphs, declarative artifacts, hermetic builds, reproducibility, distribution, and module visibility.
+  sha256: 0f24fe74f305a1614bc00678c96397cf96d3b6e8a390d1831d6c652a1b778dfb
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/028-chapter-19-critique-google-s-code-review-tool.md
+  title: substantive
+  disposition: Review-tool workflow, communication, approvals, history, trust, and integration with analysis.
+  sha256: 96ff06ef20bb6ac8db98564e85c58e8b14ef36e884cc7ba9aaf792d267ab9662
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/029-chapter-20-static-analysis.md
+  title: substantive
+  disposition: Static-analysis scalability, developer usability, workflow integration, feedback, and suggested fixes.
+  sha256: 81bc6f3ebe4933a19336628e0fe3c822bc50050c693021862a504c222418bec8
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/030-chapter-21-dependency-management.md
+  title: substantive
+  disposition: Import costs, compatibility promises, upgrade ownership, semantic versioning, and provider-consumer obligations.
+  sha256: 00805a0f5e3e45192ca0d13fa28795be53ab4c3dd1fff85f0a433b627dd55b55
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/031-chapter-22-large-scale-changes.md
+  title: substantive
+  disposition: Large-scale migration authorization, generation, sharding, testing, review, submission, and cleanup.
+  sha256: a3ee4bc4382d8186caf5a0cc1b5bf07ec2e3ffda6a3029afa676e0dc50313677
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/032-chapter-23-continuous-integration.md
+  title: substantive
+  disposition: Fast feedback, continuous build and testing, hermeticity, configuration, flakiness, and failure management.
+  sha256: 49f9b6295e8c58ae7fbe94e25b7b9804c2ae5dc38e1906d6a2bdfdccc3350a64
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/033-chapter-24-continuous-delivery.md
+  title: substantive
+  disposition: Release trains, feature flags, incremental deployment, evidence, discipline, and team-scale release pressure.
+  sha256: 829c9dc69ed8f14a256fd402619d547939244f40e20183f7cf1c83d4b7a1decc
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/034-chapter-25-compute-as-a-service.md
+  title: substantive
+  disposition: Compute automation, containers, multitenancy, state, failure, service connection, and abstraction tradeoffs.
+  sha256: ff95feb6a791d93acf76c5ff26c939503c53fed862137e576957d114d37beeef
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/035-part-v-conclusion.md
+  title: structural
+  disposition: Part V conclusion divider.
+  sha256: 9549d2899c39c083cbfbb8411d89eb20c8d4bc3bc995f44469ae315c72dd9033
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/036-afterword.md
+  title: reference-only
+  disposition: Closing social-responsibility and future-looking framing.
+  sha256: 41cf031044dc7ff8066323cca2538c10255c0a1c52651de53096ea56818a0af4
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/037-index.md
+  title: reference-only
+  disposition: Back-of-book index and author biographies.
+  sha256: 660a4c1fcffafc0fac3f52ff7dde4ba6f0b4b68a0ecd2358f42e0f20b6ef6b27
+- source_id: SRC-SEAG
+  chapter_path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/038-colophon.md
+  title: reference-only
+  disposition: Colophon and publisher material.
+  sha256: 108ed1b9d60f1b6a7043e422684d1db871dfeea6d03e393edc11ce6be18c8b00
 - source_id: SRC-DDD
   chapter_path: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/001-domain-driven-dissign.md
   title: Domain-Driven DISSIGN
