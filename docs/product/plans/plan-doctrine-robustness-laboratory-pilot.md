@@ -72,6 +72,23 @@ separate decisions under the selected plan.
   first live A/B still requires the owner to select the model, cost,
   output location, and retention policy.
 
+- **2026-07-12 — First live doctrine-skill A/B executed on the local 35B
+  subject.** The owner authorized live trials on the two local endpoints at
+  zero cost, with all trajectories, receipts, and paired results retained
+  only in the on-box session scratchpad. Harbor `terminus-2` drove
+  `qwen3.6-35b-a3b` (llama.cpp on proximal, host-side litellm, dummy key)
+  through both arms with identical settings; the treatment job injected the
+  doctrine skill through Harbor's native SKILL.md discovery, and its
+  trajectory shows the skill was read. Mechanical outcome: `both-failed`
+  (paired result `b7cbc01f…`). The control receipt abstained, asserted a
+  forbidden decision, and failed the receipt contract; the treatment receipt
+  dropped the forbidden decision, passed the required-assertion-type and
+  source-locator criteria, but still abstained with unresolved evidence
+  references. Over-refusal dominated both arms. These are screening
+  observations pending human review, not verification of skill quality. The
+  peecee `qwen3.6:27b` subject stayed queued behind the conversion
+  campaign's GPU work at run time; its pair runs when that endpoint drains.
+
 ## Objective and authority boundary
 
 Deliver a repository-native pilot that can compile a clean/mutated evaluation
