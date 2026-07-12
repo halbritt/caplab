@@ -1,5 +1,8 @@
 # Harbor adapter for the doctrine-skill A/B evaluation
 
+System-level documentation for the judgment harness this adapter belongs to
+lives in [`docs/agent-judgment/`](../../../docs/agent-judgment/README.md).
+
 This directory holds the templates for rendering one skill-eval case as a
 matched pair of [Harbor](https://www.harborframework.com) tasks. The renderer
 is `doctrine/tools/evaluate_doctrine_skill.py render-harbor`; rendered tasks
