@@ -95,3 +95,18 @@ first trial), aggregates and band counts afterward, and content hashes for
 every input. Judgment-bearing texts reach humans through the adjudication
 surfaces as model-attributed material awaiting disposition, never as
 auto-filled verdicts.
+
+Derive stage counts from retained Harbor jobs with:
+
+```bash
+python3 doctrine/tools/summarize_harbor_trials.py \
+  /tmp/jobs/job-* > /tmp/harbor-stage-summary.json
+```
+
+The counter currently accepts `terminus-2` jobs in Harbor's `ATIF-v1.7`
+trajectory format. It reads realized skill injection from `lock.json`, direct
+single-line commands from agent tool calls, and ledger/decision observations
+from verifier-owned `detail.json`.
+Prompt metadata, reasoning prose, terminal output, and commands printed by a
+file read do not advance a stage. Each trial record includes SHA-256 hashes of
+the four input artifacts.

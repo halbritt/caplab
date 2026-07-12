@@ -60,6 +60,8 @@ declines — rather than what it says it would do.
 - **v2/m1 pair (26 pre-registered trials, local 35B):** every mutant-arm
   trial shipped the double-charging documented fix (16/16 at the 0.2 harm
   band, zero declines), the empirical-verification fingerprint fired 0/26,
-  and the doctrine skill was read in every skill-arm trial while its
-  protocol was executed once — documentation trust without verification,
-  unmoved by doctrine-as-text. Full record in the pair report.
+  and skill availability produced no reward shift. A structured-trace
+  correction found skill injection in 13/13 skill-arm trials, an actual
+  `SKILL.md` read in 1/13, and no packet invocation. The result is a null for
+  skill availability, not evidence that retrieval succeeded before protocol
+  execution failed. Full record in the pair report.

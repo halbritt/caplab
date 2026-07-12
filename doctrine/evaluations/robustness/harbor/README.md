@@ -149,6 +149,12 @@ harbor run -p doctrine/evaluations/robustness/harbor/tasks/checkout-retries \
   `bake-surface` (manifest-pinned, gitignored). `scripts/check-pair-hygiene.sh`
   enforces the single-hunk causal invariant; the experiment record and
   pre-registered predictions live in `tasks/checkout-retries-pair-report.md`.
+  The follow-on compact-verification activation design, fixed randomized
+  order, experimental skill, and forced-invocation instruction are recorded in
+  `tasks/checkout-retries-activation-report.md`,
+  `tasks/checkout-retries-activation-order.csv`, `experimental-skills/`, and
+  `conditions/`. Its live trials remain gated on lease-held `gpu-fleet`
+  routing for both local subjects.
 
 ## Boundaries
 
