@@ -123,6 +123,17 @@ harbor run -p doctrine/evaluations/robustness/harbor/tasks/checkout-retries \
   against remaining credits before each request; for expensive models cap
   it with `--ak 'llm_kwargs={"max_tokens": 8192}'`.
 
+  A same-day harness sweep held the model fixed where possible: `codex`
+  and `qwen-coder` on the local `qwen3.6-35b-a3b` both earned 1.0, and
+  `claude-code` on Claude Fable 5 (subscription OAuth via
+  `CLAUDE_CODE_OAUTH_TOKEN` + `CLAUDE_FORCE_OAUTH=1`) earned 1.0.
+  `opencode` on the same local model returned 0.3 as an integration
+  artifact, not a judgment result: it made one LLM call, mishandled the
+  reasoning model's `reasoning_content`-then-`content` reply shape, saw an
+  empty message, and stopped without editing anything. Grade
+  harness-integration failures separately from model judgment when
+  comparing subjects.
+
 ## Boundaries
 
 - Harbor changes the host and is installed only under explicit authority;
