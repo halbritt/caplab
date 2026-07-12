@@ -310,13 +310,34 @@ sources:
     concepts_worth_mining: [suite-net-value, unit-of-behavior, four-pillar-test-value, assert-observable-outcomes, shared-dependency-substitution, mock-unmanaged-dependencies-only, mock-at-system-edges, output-based-style-preference, humble-object-testability-split, integration-scope-selection, database-delivery-prerequisites, database-production-fidelity, no-test-privileged-access]
     coverage_ledger: doctrine/_work/extractions/testing-sources.md#complete-chapter-coverage-ledger
 
+  - source_id: "SRC-100GO"
+    primary_domain: "Go implementation judgment across project organization, values, text, errors, concurrency, standard-library boundaries, testing, and performance."
+    strongest_contributions: ["consumer-owned minimal interfaces and semantics-first use of Go abstractions", "slice, string, receiver, interface-nil, error, context, goroutine, and channel contracts", "risk-driven testing, benchmark validity, profiling, and memory-lifecycle diagnostics"]
+    contextual_assumptions: ["2022 and Go 1.18-era language, compiler, runtime, and standard-library behavior", "the current repository can expose its Go toolchain and workload evidence", "examples are practitioner teaching cases rather than repository-specific measurements"]
+    limitations: ["Runtime-, compiler-, scheduler-, and standard-library-sensitive claims require verification against the repository's current Go version.", "Loop-variable capture, time.After lifetime, and GOMAXPROCS/container behavior are especially version-sensitive and were not promoted into portable doctrine.", "Numerical thresholds and performance examples are investigation prompts, not portable gates.", "The supplied conversion contains probable OCR damage in code; extracted claims rely on prose semantics and exact section provenance, not code-block fidelity.", "One practitioner source does not establish universal portability."]
+    known_tensions: ["Interfaces and generics can reduce coupling or create speculative abstraction and navigation cost.", "Concurrency can improve an evidenced objective or lose to sequential execution after scheduling and coordination cost.", "Channels, mutexes, and atomics have overlapping capabilities but different ownership, coordination, and measurement obligations.", "Source-era runtime guidance can conflict with the current toolchain."]
+    likely_agent_roles: ["coding-agent", "review-agent", "debugging-and-repair-agent", "performance-agent", "architecture-agent"]
+    concepts_worth_mining: ["consumer-owned-interface", "slice-aliasing", "byte-rune-semantics", "typed-nil-interface", "concurrency-ordering", "context-lifecycle", "channel-capacity", "deterministic-async-test"]
+    coverage_ledger: "doctrine/_work/extractions/go-concurrency-sources.md#complete-chapter-coverage-ledger"
+  - source_id: "SRC-CIG"
+    primary_domain: "Go concurrency foundations, synchronization primitives, ownership patterns, cancellation and error propagation, pipelines, queues, scaled-system controls, and runtime diagnostics."
+    strongest_contributions: ["ordering, atomicity, progress, and concurrency-safety contracts", "channel ownership, goroutine termination, cancellation, fan-out/fan-in, and error propagation", "bounded queues, progress heartbeats, replicated-request tradeoffs, rate limiting, race detection, and profiling"]
+    contextual_assumptions: ["2017 and Go 1.8-era runtime, scheduler, library, and tooling behavior", "applications can expose ownership and cancellation in their API contracts", "patterns remain conditional on current workload and operational constraints"]
+    limitations: ["Scheduler, preemption, runtime, context-library, error-library, and tooling details have aged and require current verification.", "The book's rhetoric that goroutines are cheap or effectively free is not a resource-lifecycle or cardinality guarantee.", "Pattern examples do not establish benefit without representative workload evidence.", "Internal heartbeats expose worker progress to a supervising caller but do not establish externally observed service liveness.", "The supplied conversion contains probable OCR code damage; extracted claims rely on prose semantics and exact section provenance."]
+    known_tensions: ["Channel-centered coordination versus tightly scoped mutex-protected state.", "Cheap-goroutine rhetoric versus explicit ownership, termination, and bounded cardinality.", "Queue smoothing versus latency, memory retention, hidden bottlenecks, and loss on failure.", "Internal heartbeat signals versus external liveness observation.", "Replicated-request resilience versus handler, downstream, and cancellation cost."]
+    likely_agent_roles: ["coding-agent", "architecture-agent", "review-agent", "debugging-and-repair-agent", "performance-agent"]
+    concepts_worth_mining: ["concurrency-ordering", "atomicity-scope", "progress-contract", "concurrency-api", "channel-ownership", "goroutine-lifecycle", "queue-capacity", "async-observation", "resilience-margin"]
+    coverage_ledger: "doctrine/_work/extractions/go-concurrency-sources.md#complete-chapter-coverage-ledger"
+
 coverage_summary:
-  chapter_files: 378
-  covered_chapters: 378
+  chapter_files: 409
+  covered_chapters: 409
   per_source_counts:
+    SRC-100GO: 17
     SRC-APOSD: 32
     SRC-CA: 48
     SRC-CC: 48
+    SRC-CIG: 14
     SRC-DDD: 20
     SRC-EGO: 18
     SRC-FP: 33

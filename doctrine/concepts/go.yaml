@@ -79,6 +79,18 @@ concepts:
         locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/006-chapter-2-efficient-introduction-to-go.md :: How to Wrap Errors?"
         contribution: Supplies historical wrapping guidance retained only behind a current repository and toolchain check.
         relationship: historical_precursor
+      - source_id: "SRC-100GO"
+        locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/011-chapter-7-error-management.md :: 7.2 #49: Ignoring when to wrap an error"
+        contribution: "Separates wrapping for added context or typed marking from transformation that intentionally hides the cause, and exposes wrapping as a caller-coupling decision rather than automatic formatting."
+        relationship: "refinement"
+      - source_id: "SRC-CIG"
+        locator: "books/concurrency-in-go/chapters/008-chapter-4-concurrency-patterns-in-go.md :: Error Handling"
+        contribution: "Requires a goroutine's error to travel with its result so the parent with recovery context can choose policy instead of the child logging or terminating locally."
+        relationship: "refinement"
+      - source_id: "SRC-CIG"
+        locator: "books/concurrency-in-go/chapters/009-chapter-5-concurrency-at-scale.md :: Error Propagation"
+        contribution: "Separates the low-level occurrence and location from a stable user-facing message and further diagnostic route, assigning each module one opportunity to add the context it owns."
+        relationship: "refinement"
     confidence: strong
     roles: [coding-agent, debugging-and-repair-agent, review-agent]
     languages: [Go]
@@ -127,6 +139,14 @@ concepts:
         locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/008-chapter-4-how-go-uses-the-cpu-resource-or-two.md :: Manual Inlining Is Rarely Needed"
         contribution: Corroborates reliance on simple code and current compiler behavior before manual specialization.
         relationship: corroboration
+      - source_id: "SRC-100GO"
+        locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/006-chapter-2-code-and-project-organization.md :: 2.9 #9: Being confused about when to use generics"
+        contribution: "Treats generics as an abstraction to introduce for demonstrated type variation or imminent boilerplate rather than speculative future reuse."
+        relationship: "direct_support"
+      - source_id: "SRC-100GO"
+        locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/010-chapter-6-functions-and-methods.md :: 6.1 #42: Not knowing which type of receiver to use"
+        contribution: "Selects value versus pointer receivers from mutation, copyability, size, method-set and interface consistency, and intended value semantics, with performance secondary."
+        relationship: "refinement"
     confidence: contextual
     roles: [coding-agent, performance-agent, architecture-agent, review-agent]
     languages: [Go]
@@ -172,6 +192,14 @@ concepts:
         locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/014-chapter-10-optimization-examples.md :: A Worker Approach Without Coordination (Sharding)"
         contribution: Refines topology selection by showing when sharding removes costly coordination.
         relationship: refinement
+      - source_id: "SRC-100GO"
+        locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/012-chapter-8-concurrency-foundations.md :: 8.2 #56: Thinking concurrency is always faster"
+        contribution: "Rejects concurrency as a default speedup because scheduling and coordination can dominate small work, and recommends beginning with a sequential implementation before profiling and benchmarking a parallel alternative."
+        relationship: "direct_support"
+      - source_id: "SRC-CIG"
+        locator: "books/concurrency-in-go/chapters/008-chapter-4-concurrency-patterns-in-go.md :: Fan-Out, Fan-In"
+        contribution: "Applies fan-out only when a pipeline stage is computationally expensive and order-independent, and makes fan-in completion and output-channel closure explicit."
+        relationship: "refinement"
     confidence: strong
     roles: [coding-agent, performance-agent, architecture-agent, review-agent]
     languages: [Go]
@@ -206,7 +234,7 @@ concepts:
     unsafe_actions: [launch without cancellation or error observation, close from the wrong owner, leak on early return, defer inside an unbounded loop]
     common_failure_modes: [goroutine leak, file or socket leak, deadlock, lost error, premature close]
     counterexamples: [Process-owned telemetry may be intentionally detached but still requires bounded buffers and shutdown semantics.]
-    interactions: [Generic resource lifecycle applies across languages; this lens makes goroutine, channel, defer, and exhaust mechanics explicit.]
+    interactions: ["Generic resource lifecycle applies across languages; this lens makes goroutine, channel, defer, and exhaust mechanics explicit.", "A Go API that starts concurrent work must expose caller responsibility, completion observation, cancellation, and error ownership as part of this lifecycle contract.", "Channel creation, sending, directional capability, and closure belong to one explicit owner within the same lifecycle contract."]
     source_support:
       - source_id: SRC-EGO
         locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/015-chapter-11-optimization-patterns.md :: Control the Lifecycle of Your Goroutines"
@@ -220,6 +248,22 @@ concepts:
         locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/015-chapter-11-optimization-patterns.md :: Exhaust Things"
         contribution: Extends ownership to partially consumed streams and response bodies.
         relationship: refinement
+      - source_id: "SRC-100GO"
+        locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/013-chapter-9-concurrency-practice.md :: 9.2 #62: Starting a goroutine without knowing when to stop it"
+        contribution: "Treats a goroutine as an owned resource whose termination, held resources, and completion wait must be designed at creation rather than inferred after launch."
+        relationship: "direct_support"
+      - source_id: "SRC-CIG"
+        locator: "books/concurrency-in-go/chapters/005-chapter-1-an-introduction-to-concurrency.md :: Determining Concurrency Safety"
+        contribution: "Uses alternative function signatures to show how callers otherwise cannot tell whether they must add concurrency, whether the callee already creates goroutines, or how completion is observed."
+        relationship: "refinement"
+      - source_id: "SRC-CIG"
+        locator: "books/concurrency-in-go/chapters/007-chapter-3-go-s-concurrency-building-blocks.md :: Channels"
+        contribution: "Assigns channel creation, writes, and closure to one owner, exposes receive-only access to consumers, and connects unclear or oversized ownership scope to deadlocks and panics."
+        relationship: "refinement"
+      - source_id: "SRC-CIG"
+        locator: "books/concurrency-in-go/chapters/008-chapter-4-concurrency-patterns-in-go.md :: Preventing Goroutine Leaks"
+        contribution: "Defines completion, unrecoverable error, and explicit cancellation as termination paths and assigns the goroutine creator responsibility for ensuring a child can stop."
+        relationship: "direct_support"
     confidence: strong
     roles: [coding-agent, debugging-and-repair-agent, performance-agent, review-agent]
     languages: [Go]
@@ -235,4 +279,278 @@ concepts:
       prerequisites: [lifecycle and ownership inventory]
       retrieval_priority: core
       retrieval_budget_hint: 390
-      related_concepts: [performance-resource-lifecycle, implementation-explicit-failure-policy, go-explicit-contextual-errors, go-bounded-concurrency]
+      related_concepts: [performance-resource-lifecycle, implementation-explicit-failure-policy, go-explicit-contextual-errors, go-bounded-concurrency, go-context-lifecycle-propagation, go-channel-capacity-contract, implementation-concurrency-progress-contract]
+
+  - id: "go-channel-capacity-contract"
+    title: "Treat channel capacity as a synchronization contract"
+    category: "implementation"
+    claim: "Choose unbuffered channels when handoff synchronization is part of the contract; buffer only for a demonstrated nonblocking or bounded-capacity need, and justify size because buffering weakens synchronization and can hide deadlocks."
+    decision_rule: "Choose unbuffered or buffered channels from the required handoff and backpressure semantics; when buffered, justify a finite capacity from burst, service-rate, memory, and latency evidence and define full-buffer behavior."
+    why_it_matters: "Channel capacity changes blocking, scheduling, backpressure, ordering visibility, and memory use; an arbitrary buffer can hide a blocked consumer or create unbounded latency expectations."
+    applicable_when: ["creating or changing a Go channel buffer", "reviewing worker pools or pipelines"]
+    not_applicable_when: ["the channel capacity is fixed by an external protocol and already evidenced"]
+    required_evidence: ["producer and consumer rates or burst bounds", "blocking and latency contract", "memory cost and full-buffer behavior"]
+    insufficient_evidence: ["a buffer avoids a current deadlock", "capacity equals an arbitrary round number"]
+    required_inputs: ["pipeline topology and rate evidence", "ownership and shutdown behavior"]
+    expected_outputs: ["capacity rationale or unbuffered-handshake decision", "saturation behavior and test"]
+    preservation_boundaries: ["message order and delivery semantics", "bounded memory and cancellation behavior"]
+    safe_actions: ["use unbuffered channels for required rendezvous", "bound buffers and observe saturation"]
+    unsafe_actions: ["increase capacity until tests pass", "use buffering to mask missing consumer progress"]
+    common_failure_modes: ["hidden deadlock", "latency accumulation", "memory growth", "producer or consumer starvation"]
+    conflicts: ["conflict-concurrency-vs-sequential-simplicity"]
+    source_support:
+      - source_id: "SRC-100GO"
+        locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/013-chapter-9-concurrency-practice.md :: 9.7 #67: Being puzzled about channel size"
+        contribution: "Separates the synchronization guarantee of unbuffered channels from buffered delivery and limits buffer sizing to known bounded sends or evidence from measurement."
+        relationship: "direct_support"
+    confidence: "strong"
+    roles: ["coding-agent", "architecture-agent", "performance-agent", "review-agent"]
+    languages: ["Go"]
+    repository_archetypes: ["library", "service", "CLI", "monolith"]
+    retrieval_terms: ["Go channel capacity", "buffered channel", "backpressure", "rendezvous"]
+    routing:
+      activate_for_roles: ["coding-agent", "architecture-agent", "performance-agent", "review-agent"]
+      activate_for_tasks: ["add-Go-concurrency", "bound-concurrency", "review-async"]
+      activate_for_repository_signals: ["make chan with capacity", "worker queue", "blocked send"]
+      activate_for_languages: ["Go"]
+      activate_for_risk_classes: ["concurrency", "resource-lifecycle", "performance"]
+      exclude_when: ["no channel or capacity choice is in scope"]
+      prerequisites: ["producer-consumer and blocking contract"]
+      retrieval_priority: "high"
+      retrieval_budget_hint: 360
+      related_concepts: ["performance-resource-lifecycle", "go-goroutine-resource-lifecycle", "go-bounded-concurrency"]
+
+  - id: "go-consumer-owned-interfaces"
+    title: "Place Go interfaces with demonstrated consumers"
+    category: "implementation"
+    claim: "Define a Go interface at the consumer that needs the behavioral contract; create a producer-side interface only for a known cross-consumer abstraction and keep it minimal."
+    decision_rule: "Identify the current consumer and the behavior it needs; define the smallest interface in that consumer's package, and expose a producer-side interface only when multiple current consumers demonstrably share one stable abstraction."
+    why_it_matters: "Producer-owned interfaces often encode speculative capability and force consumers to depend on methods they do not need; consumer placement keeps the contract at the point of use."
+    applicable_when: ["designing or reviewing a Go package boundary", "introducing a test or substitution seam"]
+    not_applicable_when: ["a concrete dependency is local, stable, and no consumer needs substitution"]
+    required_evidence: ["current consumer call sets and ownership", "observed substitution, volatility, or cross-boundary pressure", "Go method-set and import-direction compatibility"]
+    insufficient_evidence: ["a mock is easier to generate", "a future implementation is merely imaginable"]
+    required_inputs: ["producer API and current consumers", "package dependency graph"]
+    expected_outputs: ["interface placement and minimal method set", "direct-coupling or inversion rationale"]
+    preservation_boundaries: ["existing exported API compatibility", "implicit interface satisfaction"]
+    safe_actions: ["accept a concrete producer and define a narrow consumer interface", "delay an interface until a real consumer contract exists"]
+    unsafe_actions: ["publish a producer-wide interface that mirrors every method", "add an interface solely for speculative reuse"]
+    common_failure_modes: ["interface pollution", "mock-shaped production APIs", "import cycles or duplicated producer contracts"]
+    conflicts: ["conflict-dependency-inversion-vs-direct-coupling"]
+    source_support:
+      - source_id: "SRC-100GO"
+        locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/006-chapter-2-code-and-project-organization.md :: 2.6 #6: Interface on the producer side"
+        contribution: "Locates interfaces at actual consumers by default and limits producer-side interfaces to known reusable abstractions kept as small as possible."
+        relationship: "direct_support"
+    confidence: "strong"
+    roles: ["coding-agent", "architecture-agent", "review-agent"]
+    languages: ["Go"]
+    repository_archetypes: ["library", "service", "CLI", "monolith"]
+    retrieval_terms: ["Go consumer interface", "producer interface", "minimal method set", "implicit satisfaction"]
+    routing:
+      activate_for_roles: ["coding-agent", "architecture-agent", "review-agent"]
+      activate_for_tasks: ["add-interface", "design-Go-API", "review-interface"]
+      activate_for_repository_signals: ["Go interface declaration", "producer package API", "mock-only abstraction"]
+      activate_for_languages: ["Go"]
+      activate_for_risk_classes: ["API", "architecture", "compatibility"]
+      exclude_when: ["no behavioral abstraction is required by a current consumer"]
+      prerequisites: ["current consumer inventory"]
+      retrieval_priority: "high"
+      retrieval_budget_hint: 360
+      related_concepts: ["universal-earned-abstraction", "implementation-minimal-coherent-api", "architecture-dependency-inversion-gate"]
+
+  - id: "go-context-lifecycle-propagation"
+    title: "Propagate context only across shared lifetimes"
+    category: "implementation"
+    claim: "Propagate a Go context only when child work shares the parent's request lifetime; derive cancellation and deadlines explicitly so independent work is not canceled accidentally."
+    decision_rule: "Accept context as the first parameter at request-scoped boundaries, propagate it unchanged down the call graph, derive narrower deadlines or cancellation only with an owned cancel function, and never store context in long-lived state."
+    why_it_matters: "Replacing, discarding, or indefinitely retaining a context severs deadlines, cancellation, and request-scoped ownership, allowing work to outlive its caller or lose required values."
+    applicable_when: ["implementing Go request, RPC, database, or goroutine lifecycles", "reviewing cancellation and deadline propagation"]
+    not_applicable_when: ["the operation has no caller-scoped lifetime or cancellation contract"]
+    required_evidence: ["context origin and propagation path", "deadline and cancellation ownership", "all derived cancel functions are called"]
+    insufficient_evidence: ["a context parameter exists somewhere", "context.Background is convenient"]
+    required_inputs: ["call graph and lifecycle owner", "deadline and cancellation requirements"]
+    expected_outputs: ["propagation and derivation contract", "verified cancellation path"]
+    preservation_boundaries: ["caller deadline and cancellation", "request-scoped value semantics"]
+    safe_actions: ["derive and defer cancel at the owning scope", "pass the received context to downstream calls"]
+    unsafe_actions: ["replace a caller context with Background", "store context in a struct", "forget a derived cancel function"]
+    common_failure_modes: ["orphan work", "lost deadline", "timer and goroutine leaks", "hidden request coupling"]
+    source_support:
+      - source_id: "SRC-100GO"
+        locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/013-chapter-9-concurrency-practice.md :: 9.1 #61: Propagating an inappropriate context"
+        contribution: "Shows that passing an HTTP request context to independent asynchronous publication cancels that work when the handler returns and therefore requires a deliberately detached lifecycle."
+        relationship: "direct_support"
+    confidence: "strong"
+    roles: ["coding-agent", "architecture-agent", "review-agent", "debugging-and-repair-agent"]
+    languages: ["Go"]
+    repository_archetypes: ["library", "service", "CLI", "monolith", "distributed-system"]
+    retrieval_terms: ["Go context propagation", "deadline", "cancellation", "context lifecycle"]
+    routing:
+      activate_for_roles: ["coding-agent", "architecture-agent", "review-agent", "debugging-and-repair-agent"]
+      activate_for_tasks: ["launch-goroutine", "review-async", "review-shutdown"]
+      activate_for_repository_signals: ["context.Context", "context.Background", "WithCancel", "WithTimeout"]
+      activate_for_languages: ["Go"]
+      activate_for_risk_classes: ["resource-lifecycle", "correctness", "availability"]
+      exclude_when: ["no caller-scoped lifecycle exists"]
+      prerequisites: ["caller and callee lifecycle map"]
+      retrieval_priority: "high"
+      retrieval_budget_hint: 360
+      related_concepts: ["go-goroutine-resource-lifecycle"]
+
+  - id: "go-interface-nil-semantics"
+    title: "Keep typed nil out of absent interface results"
+    category: "implementation"
+    claim: "A Go interface containing a typed nil pointer is non-nil; an API returning an interface must return an explicit nil interface when absence is its contract."
+    decision_rule: "When nil denotes absence for an interface result, return a nil interface rather than converting a typed nil pointer; test both interface equality and any subsequent method call at the boundary."
+    why_it_matters: "An interface containing a typed nil pointer compares non-nil, so callers can enter error or behavior paths that later panic despite an apparent absence contract."
+    applicable_when: ["returning error or another interface from Go code", "reviewing optional interface-valued results"]
+    not_applicable_when: ["the interface intentionally carries a typed nil with documented method semantics"]
+    required_evidence: ["dynamic type and dynamic value at the return", "caller nil checks and method use"]
+    insufficient_evidence: ["the concrete pointer is nil before conversion", "a compile-time interface assertion"]
+    required_inputs: ["interface return contract", "concrete return values and caller behavior"]
+    expected_outputs: ["explicit absence representation", "regression test for typed-nil behavior"]
+    preservation_boundaries: ["public nil/absence semantics", "existing error classification"]
+    safe_actions: ["return literal nil for absent interface results", "normalize typed nil before interface conversion"]
+    unsafe_actions: ["return a typed nil as an error", "assume interface equality inspects only the dynamic value"]
+    common_failure_modes: ["non-nil error wrapping a nil pointer", "panic on method invocation", "misreported success or failure"]
+    source_support:
+      - source_id: "SRC-100GO"
+        locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/010-chapter-6-functions-and-methods.md :: 6.4 #45: Returning a nil receiver"
+        contribution: "Demonstrates that converting a nil pointer to an interface produces a non-nil interface and requires an explicit nil return for an absent error or other interface value."
+        relationship: "direct_support"
+    confidence: "strong"
+    roles: ["coding-agent", "review-agent", "debugging-and-repair-agent"]
+    languages: ["Go"]
+    repository_archetypes: ["library", "service", "CLI", "monolith"]
+    retrieval_terms: ["Go typed nil", "nil interface", "dynamic type", "error return"]
+    routing:
+      activate_for_roles: ["coding-agent", "review-agent", "debugging-and-repair-agent"]
+      activate_for_tasks: ["design-Go-API", "review-interface", "repair-Go-failure"]
+      activate_for_repository_signals: ["interface return", "error return", "nil pointer conversion"]
+      activate_for_languages: ["Go"]
+      activate_for_risk_classes: ["correctness", "API", "runtime-semantics"]
+      exclude_when: ["absence is not part of the interface contract"]
+      prerequisites: ["documented absence semantics"]
+      retrieval_priority: "high"
+      retrieval_budget_hint: 300
+      related_concepts: ["go-explicit-contextual-errors"]
+
+  - id: "go-slice-aliasing-control"
+    title: "Control Go slice aliasing before append"
+    category: "implementation"
+    claim: "Treat a subslice as an alias of its backing array; before appending or exposing it, make the intended mutation reach explicit and copy or cap capacity when isolation is required."
+    decision_rule: "Before appending to, mutating, returning, or retaining a slice, establish backing-array sharing and intended ownership; copy for isolation or cap capacity when append must not reach spare shared storage."
+    why_it_matters: "A subslice can retain and mutate shared backing storage, so an append that looks local can corrupt another view or extend an unintended memory lifetime."
+    applicable_when: ["reviewing Go slice mutation or API ownership", "diagnosing unexpected mutation or retained memory"]
+    not_applicable_when: ["the slice is proven local, immutable, and non-escaping"]
+    required_evidence: ["len and cap at the mutation boundary", "backing-array sharing and ownership", "tests that observe both aliased views"]
+    insufficient_evidence: ["two slices have different variable names", "append appears syntactically local"]
+    required_inputs: ["slice construction and subslicing path", "mutation and escape points"]
+    expected_outputs: ["explicit aliasing and mutation contract", "copy, capacity cap, or shared-ownership decision"]
+    preservation_boundaries: ["element order and contents", "allocation behavior when performance is material"]
+    safe_actions: ["use a full-slice expression to limit append capacity", "copy when caller and callee require independent ownership"]
+    unsafe_actions: ["append through a subslice while assuming isolation", "retain a tiny subslice without considering backing-array lifetime"]
+    common_failure_modes: ["unexpected cross-view mutation", "data races through shared storage", "large backing-array retention"]
+    source_support:
+      - source_id: "SRC-100GO"
+        locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/007-chapter-3-data-types.md :: 3.9 #25: Unexpected side effects using slice append"
+        contribution: "Shows that a subslice retains the original backing array and that append can mutate the original when spare capacity remains; copying or a full-slice capacity limit isolates that effect."
+        relationship: "direct_support"
+    confidence: "strong"
+    roles: ["coding-agent", "review-agent", "debugging-and-repair-agent"]
+    languages: ["Go"]
+    repository_archetypes: ["library", "service", "CLI", "monolith"]
+    retrieval_terms: ["Go slice aliasing", "backing array", "full slice expression", "append capacity"]
+    routing:
+      activate_for_roles: ["coding-agent", "review-agent", "debugging-and-repair-agent"]
+      activate_for_tasks: ["review-mutation", "review-representation", "repair-Go-failure"]
+      activate_for_repository_signals: ["slice expression", "append call", "slice returned across package boundary"]
+      activate_for_languages: ["Go"]
+      activate_for_risk_classes: ["correctness", "concurrency", "memory"]
+      exclude_when: ["no alias, mutation, append, retention, or escape is possible"]
+      prerequisites: ["slice ownership and mutation path"]
+      retrieval_priority: "high"
+      retrieval_budget_hint: 340
+      related_concepts: ["performance-memory-lifecycle", "implementation-concurrency-ordering-contract"]
+
+  - id: "go-synchronization-mechanism-fit"
+    title: "Choose channels or mutexes by coordination semantics"
+    category: "implementation"
+    claim: "Use a mutex to protect concurrently shared state and channels to coordinate work, signal events, or transfer ownership; choose from required semantics rather than treating either mechanism as a universal default."
+    decision_rule: "Use a mutex for tightly scoped shared-state invariants; use channels for coordination, signaling, streaming, or ownership transfer; choose atomics only for a measured narrow state transition whose memory-order semantics are established."
+    why_it_matters: "Treating channels or mutexes as a universal default obscures ownership and coordination semantics and can add blocking, goroutine, contention, or lifecycle cost without benefit."
+    applicable_when: ["selecting synchronization for concurrent Go code", "reviewing channels, locks, or atomics"]
+    not_applicable_when: ["a sequential implementation meets the requirement"]
+    required_evidence: ["shared-state invariant or ownership-transfer contract", "blocking and ordering requirements", "contention or throughput evidence when optimization is claimed"]
+    insufficient_evidence: ["the slogan communicate by sharing memory", "a microbenchmark detached from lifecycle and correctness"]
+    required_inputs: ["concurrency topology", "ownership, ordering, and cancellation requirements"]
+    expected_outputs: ["mechanism choice with semantic rationale", "blocking and lifecycle contract"]
+    preservation_boundaries: ["shared-state invariants", "completion, cancellation, and ordering semantics"]
+    safe_actions: ["keep a mutex-protected region small and internal", "use directional channels for explicit ownership flow"]
+    unsafe_actions: ["add channels solely to appear idiomatic", "replace clear synchronization with atomics without measured need"]
+    common_failure_modes: ["deadlock", "goroutine leak", "lock contention", "unclear ownership"]
+    interactions: ["Preserve the contextual tension with go-bounded-concurrency; this record does not override that concept.", "Preserve the contextual tension with go-goroutine-resource-lifecycle; this record does not override that concept."]
+    conflicts: ["conflict-concurrency-vs-sequential-simplicity"]
+    source_support:
+      - source_id: "SRC-100GO"
+        locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/012-chapter-8-concurrency-foundations.md :: 8.3 #57: Being puzzled about when to use channels or mutexes"
+        contribution: "Distinguishes mutex protection of shared state from channel-based coordination, signaling, and ownership transfer and treats the mechanisms as complementary."
+        relationship: "direct_support"
+      - source_id: "SRC-CIG"
+        locator: "books/concurrency-in-go/chapters/006-chapter-2-modeling-your-code-communicating-sequential-processes.md :: Go's Philosophy on Concurrency"
+        contribution: "Routes ownership transfer and coordination toward channels and tightly scoped internal shared state toward synchronization, while reserving lower-level substitution for a measured critical section."
+        relationship: "direct_support"
+    confidence: "strong"
+    roles: ["coding-agent", "architecture-agent", "performance-agent", "review-agent"]
+    languages: ["Go"]
+    repository_archetypes: ["library", "service", "CLI", "monolith", "distributed-system"]
+    retrieval_terms: ["Go channels versus mutexes", "synchronization fit", "ownership transfer", "shared state"]
+    routing:
+      activate_for_roles: ["coding-agent", "architecture-agent", "performance-agent", "review-agent"]
+      activate_for_tasks: ["select-concurrency", "add-Go-concurrency", "review-async"]
+      activate_for_repository_signals: ["channel declaration", "sync.Mutex", "sync.RWMutex", "sync/atomic"]
+      activate_for_languages: ["Go"]
+      activate_for_risk_classes: ["concurrency", "correctness", "performance"]
+      exclude_when: ["no concurrency or shared state exists"]
+      prerequisites: ["ownership and ordering contract"]
+      retrieval_priority: "high"
+      retrieval_budget_hint: 390
+      related_concepts: ["go-bounded-concurrency", "go-goroutine-resource-lifecycle", "implementation-concurrency-progress-contract"]
+
+  - id: "go-text-byte-rune-semantics"
+    title: "Choose byte or rune semantics explicitly"
+    category: "implementation"
+    claim: "Treat a Go string as immutable arbitrary bytes, not guaranteed UTF-8; establish the encoding and whether the unit is bytes or Unicode code points before interpreting its length or contents."
+    decision_rule: "At each text boundary, state the encoding and semantic unit; use bytes for opaque data, rune-aware iteration for Unicode code points, and explicit grapheme handling when user-visible characters are required."
+    why_it_matters: "Confusing bytes, UTF-8 code units, and Unicode code points corrupts length checks, indexing, truncation, validation, and external data handling."
+    applicable_when: ["processing Go strings from files, networks, or users", "reviewing indexing, length, slicing, or truncation of text"]
+    not_applicable_when: ["the value is explicitly opaque binary data and never interpreted as text"]
+    required_evidence: ["encoding contract at ingress", "required semantic unit: bytes, code points, or graphemes", "invalid-encoding behavior"]
+    insufficient_evidence: ["the Go source literal is UTF-8", "len appears to match sample characters"]
+    required_inputs: ["text provenance and encoding", "consumer operations and display requirements"]
+    expected_outputs: ["explicit text-unit contract", "validated iteration and slicing strategy"]
+    preservation_boundaries: ["original byte sequence where required", "invalid-input handling contract"]
+    safe_actions: ["validate UTF-8 before Unicode interpretation", "range over runes when code points are the unit"]
+    unsafe_actions: ["index arbitrary strings as characters", "equate len with character count"]
+    common_failure_modes: ["split multibyte encoding", "incorrect limits", "silent corruption of external text"]
+    source_support:
+      - source_id: "SRC-100GO"
+        locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/009-chapter-5-strings.md :: 5.1 #36: Not understanding the concept of a rune"
+        contribution: "Distinguishes arbitrary string bytes, UTF-8 source literals, Unicode code points, and rune values, including that len reports bytes rather than runes."
+        relationship: "direct_support"
+    confidence: "strong"
+    roles: ["coding-agent", "review-agent", "debugging-and-repair-agent"]
+    languages: ["Go"]
+    repository_archetypes: ["library", "service", "CLI", "monolith"]
+    retrieval_terms: ["Go string bytes", "UTF-8", "rune", "code point", "text length"]
+    routing:
+      activate_for_roles: ["coding-agent", "review-agent", "debugging-and-repair-agent"]
+      activate_for_tasks: ["review-representation", "review-types", "repair-Go-failure"]
+      activate_for_repository_signals: ["string indexing", "len on string", "byte-to-string conversion"]
+      activate_for_languages: ["Go"]
+      activate_for_risk_classes: ["correctness", "data-integrity", "runtime-semantics"]
+      exclude_when: ["the value remains opaque bytes end to end"]
+      prerequisites: ["encoding and semantic-unit contract"]
+      retrieval_priority: "high"
+      retrieval_budget_hint: 330
+      related_concepts: ["implementation-representation-fit"]

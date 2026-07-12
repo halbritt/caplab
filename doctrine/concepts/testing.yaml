@@ -728,3 +728,46 @@ concepts:
       retrieval_priority: high
       retrieval_budget_hint: 420
       related_concepts: [universal-information-hiding, testing-assert-observable-outcomes, legacy-characterization-surfaces, implementation-minimal-coherent-api]
+
+  - id: "testing-deterministic-async-observation"
+    title: "Observe asynchronous completion instead of sleeping"
+    category: "review"
+    claim: "Tests of asynchronous behavior should coordinate on an observable completion signal rather than infer completion from elapsed time; if direct synchronization is impossible, use a bounded retry with an explicit deadline."
+    decision_rule: "Wait on a completion, progress, or state-change signal controlled by the work under test; when direct coordination is impossible, poll the observable result with a bounded deadline and diagnostic failure."
+    why_it_matters: "Sleeping guesses at completion time, making tests slow when overlong and flaky when the environment is slower than expected."
+    applicable_when: ["testing goroutines, threads, tasks, callbacks, or eventual state", "repairing time-based flaky tests"]
+    not_applicable_when: ["elapsed time is itself the behavior under test and a controlled clock is available"]
+    required_evidence: ["observable completion or progress contract", "bounded deadline and failure diagnostics", "repeated or adversarial scheduling results"]
+    insufficient_evidence: ["a longer sleep makes the test pass", "one fast local run"]
+    required_inputs: ["asynchronous lifecycle and observable outcome", "test clock or synchronization hooks"]
+    expected_outputs: ["event-driven wait or bounded polling helper", "deterministic failure diagnostics"]
+    preservation_boundaries: ["the production concurrency contract", "test timeout as a safety bound rather than a completion oracle"]
+    safe_actions: ["wait on a channel, future, event, or externally observable state", "use bounded polling only when direct signaling is unavailable"]
+    unsafe_actions: ["sleep and then assert completion", "remove timeouts from waits"]
+    common_failure_modes: ["flaky tests", "slow suites", "hung tests without diagnostics", "false confidence from scheduler luck"]
+    interactions: ["Preserve the contextual tension with testing-suite-net-value; this record does not override that concept.", "Preserve the contextual tension with operations-liveness-by-external-observation; this record does not override that concept."]
+    source_support:
+      - source_id: "SRC-100GO"
+        locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/015-chapter-11-testing.md :: 11.5 #86: Sleeping in unit tests"
+        contribution: "Replaces passive sleeps with channel-based synchronization and retains bounded retry only as a fallback when direct coordination cannot be designed."
+        relationship: "direct_support"
+      - source_id: "SRC-CIG"
+        locator: "books/concurrency-in-go/chapters/009-chapter-5-concurrency-at-scale.md :: Heartbeats"
+        contribution: "Uses unit-of-work and interval heartbeats as explicit progress observations that let tests wait for real activity rather than choose an arbitrary sleep duration."
+        relationship: "corroboration"
+    confidence: "strong"
+    roles: ["coding-agent", "review-agent", "debugging-and-repair-agent"]
+    languages: ["language-independent"]
+    repository_archetypes: ["library", "service", "CLI", "monolith", "distributed-system"]
+    retrieval_terms: ["asynchronous test", "sleep flake", "completion signal", "bounded polling", "heartbeat"]
+    routing:
+      activate_for_roles: ["coding-agent", "review-agent", "debugging-and-repair-agent"]
+      activate_for_tasks: ["assess-tests", "review-tests", "review-async"]
+      activate_for_repository_signals: ["sleep in test", "eventual assertion", "goroutine or task under test"]
+      activate_for_languages: ["language-independent"]
+      activate_for_risk_classes: ["correctness", "concurrency", "regression"]
+      exclude_when: ["the test is entirely synchronous"]
+      prerequisites: ["observable completion criterion"]
+      retrieval_priority: "core"
+      retrieval_budget_hint: 370
+      related_concepts: ["implementation-risk-driven-tests", "implementation-concurrency-ordering-contract", "operations-liveness-by-external-observation", "testing-suite-net-value"]

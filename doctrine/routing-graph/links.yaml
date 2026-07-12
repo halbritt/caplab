@@ -307,6 +307,13 @@ links:
   declared_by:
   - architecture-dependency-inversion-gate
   - architecture-policy-mechanism-separation
+- id: R-ROUTE-25e296899b3e
+  from: architecture-dependency-inversion-gate
+  relation: co-retrieved-with
+  to: go-consumer-owned-interfaces
+  semantic: false
+  declared_by:
+  - go-consumer-owned-interfaces
 - id: R-ROUTE-afe7b6675561
   from: architecture-dependency-inversion-gate
   relation: co-retrieved-with
@@ -1125,6 +1132,13 @@ links:
   semantic: false
   declared_by:
   - testing-shared-dependency-substitution
+- id: R-ROUTE-2c4a206df5d8
+  from: go-bounded-concurrency
+  relation: co-retrieved-with
+  to: go-channel-capacity-contract
+  semantic: false
+  declared_by:
+  - go-channel-capacity-contract
 - id: R-ROUTE-bceaf70f9c7c
   from: go-bounded-concurrency
   relation: co-retrieved-with
@@ -1133,6 +1147,13 @@ links:
   declared_by:
   - go-bounded-concurrency
   - go-goroutine-resource-lifecycle
+- id: R-ROUTE-97a5f1af564e
+  from: go-bounded-concurrency
+  relation: co-retrieved-with
+  to: go-synchronization-mechanism-fit
+  semantic: false
+  declared_by:
+  - go-synchronization-mechanism-fit
 - id: R-ROUTE-fb1c4de2ed9a
   from: go-bounded-concurrency
   relation: co-retrieved-with
@@ -1154,6 +1175,44 @@ links:
   semantic: false
   declared_by:
   - go-bounded-concurrency
+- id: R-ROUTE-f4bddfaed193
+  from: go-channel-capacity-contract
+  relation: co-retrieved-with
+  to: go-goroutine-resource-lifecycle
+  semantic: false
+  declared_by:
+  - go-channel-capacity-contract
+  - go-goroutine-resource-lifecycle
+- id: R-ROUTE-2cc41deef6c3
+  from: go-channel-capacity-contract
+  relation: co-retrieved-with
+  to: performance-resource-lifecycle
+  semantic: false
+  declared_by:
+  - go-channel-capacity-contract
+  - performance-resource-lifecycle
+- id: R-ROUTE-62c79377410a
+  from: go-consumer-owned-interfaces
+  relation: co-retrieved-with
+  to: implementation-minimal-coherent-api
+  semantic: false
+  declared_by:
+  - go-consumer-owned-interfaces
+- id: R-ROUTE-c43ad3c9eac7
+  from: go-consumer-owned-interfaces
+  relation: co-retrieved-with
+  to: universal-earned-abstraction
+  semantic: false
+  declared_by:
+  - go-consumer-owned-interfaces
+- id: R-ROUTE-47f515985ae7
+  from: go-context-lifecycle-propagation
+  relation: co-retrieved-with
+  to: go-goroutine-resource-lifecycle
+  semantic: false
+  declared_by:
+  - go-context-lifecycle-propagation
+  - go-goroutine-resource-lifecycle
 - id: R-ROUTE-52fe03935f11
   from: go-explicit-contextual-errors
   relation: co-retrieved-with
@@ -1161,6 +1220,13 @@ links:
   semantic: false
   declared_by:
   - go-goroutine-resource-lifecycle
+- id: R-ROUTE-6957c07e8016
+  from: go-explicit-contextual-errors
+  relation: co-retrieved-with
+  to: go-interface-nil-semantics
+  semantic: false
+  declared_by:
+  - go-interface-nil-semantics
 - id: R-ROUTE-819a2d4d52de
   from: go-explicit-contextual-errors
   relation: co-retrieved-with
@@ -1182,6 +1248,21 @@ links:
   semantic: false
   declared_by:
   - go-explicit-contextual-errors
+- id: R-ROUTE-2d4a54da475f
+  from: go-goroutine-resource-lifecycle
+  relation: co-retrieved-with
+  to: go-synchronization-mechanism-fit
+  semantic: false
+  declared_by:
+  - go-synchronization-mechanism-fit
+- id: R-ROUTE-cd38a6aa5c6e
+  from: go-goroutine-resource-lifecycle
+  relation: co-retrieved-with
+  to: implementation-concurrency-progress-contract
+  semantic: false
+  declared_by:
+  - go-goroutine-resource-lifecycle
+  - implementation-concurrency-progress-contract
 - id: R-ROUTE-1621bcebf393
   from: go-goroutine-resource-lifecycle
   relation: co-retrieved-with
@@ -1252,6 +1333,50 @@ links:
   semantic: false
   declared_by:
   - go-semantics-before-performance-constructs
+- id: R-ROUTE-99dbb86e9c88
+  from: go-slice-aliasing-control
+  relation: co-retrieved-with
+  to: implementation-concurrency-ordering-contract
+  semantic: false
+  declared_by:
+  - go-slice-aliasing-control
+- id: R-ROUTE-82ce5be78505
+  from: go-slice-aliasing-control
+  relation: co-retrieved-with
+  to: performance-memory-lifecycle
+  semantic: false
+  declared_by:
+  - go-slice-aliasing-control
+- id: R-ROUTE-6a9d983c2588
+  from: go-synchronization-mechanism-fit
+  relation: co-retrieved-with
+  to: implementation-concurrency-progress-contract
+  semantic: false
+  declared_by:
+  - go-synchronization-mechanism-fit
+- id: R-ROUTE-c9066ba6c0b4
+  from: go-text-byte-rune-semantics
+  relation: co-retrieved-with
+  to: implementation-representation-fit
+  semantic: false
+  declared_by:
+  - go-text-byte-rune-semantics
+- id: R-ROUTE-1d542dd9c706
+  from: implementation-atomicity-scope
+  relation: co-retrieved-with
+  to: implementation-concurrency-ordering-contract
+  semantic: false
+  declared_by:
+  - implementation-atomicity-scope
+  - implementation-concurrency-ordering-contract
+- id: R-ROUTE-352d143166fd
+  from: implementation-atomicity-scope
+  relation: co-retrieved-with
+  to: implementation-concurrency-progress-contract
+  semantic: false
+  declared_by:
+  - implementation-atomicity-scope
+  - implementation-concurrency-progress-contract
 - id: R-ROUTE-518e3308be7b
   from: implementation-comments-first-design-probe
   relation: co-retrieved-with
@@ -1273,6 +1398,28 @@ links:
   semantic: false
   declared_by:
   - implementation-comments-first-design-probe
+- id: R-ROUTE-b7d3b44440e0
+  from: implementation-concurrency-ordering-contract
+  relation: co-retrieved-with
+  to: implementation-concurrency-progress-contract
+  semantic: false
+  declared_by:
+  - implementation-concurrency-progress-contract
+- id: R-ROUTE-ed0f47508756
+  from: implementation-concurrency-ordering-contract
+  relation: co-retrieved-with
+  to: testing-deterministic-async-observation
+  semantic: false
+  declared_by:
+  - implementation-concurrency-ordering-contract
+  - testing-deterministic-async-observation
+- id: R-ROUTE-3209eb9c3ee9
+  from: implementation-concurrency-progress-contract
+  relation: co-retrieved-with
+  to: performance-resource-lifecycle
+  semantic: false
+  declared_by:
+  - performance-resource-lifecycle
 - id: R-ROUTE-f908138f6be1
   from: implementation-duplication-as-evidence
   relation: co-retrieved-with
@@ -1785,6 +1932,13 @@ links:
   declared_by:
   - implementation-risk-driven-tests
   - testing-coverage-is-not-adequacy
+- id: R-ROUTE-a6a15a081826
+  from: implementation-risk-driven-tests
+  relation: co-retrieved-with
+  to: testing-deterministic-async-observation
+  semantic: false
+  declared_by:
+  - testing-deterministic-async-observation
 - id: R-ROUTE-b923b384e90a
   from: implementation-risk-driven-tests
   relation: co-retrieved-with
@@ -2309,6 +2463,13 @@ links:
   semantic: false
   declared_by:
   - operations-liveness-by-external-observation
+- id: R-ROUTE-04becd24475c
+  from: operations-liveness-by-external-observation
+  relation: co-retrieved-with
+  to: testing-deterministic-async-observation
+  semantic: false
+  declared_by:
+  - testing-deterministic-async-observation
 - id: R-ROUTE-6dbad18ec0c0
   from: operations-load-shedding
   relation: co-retrieved-with
@@ -2337,6 +2498,13 @@ links:
   semantic: false
   declared_by:
   - operations-load-shedding
+- id: R-ROUTE-720ebf229af5
+  from: operations-load-shedding
+  relation: co-retrieved-with
+  to: performance-resource-lifecycle
+  semantic: false
+  declared_by:
+  - performance-resource-lifecycle
 - id: R-ROUTE-5bd0473ae92b
   from: operations-production-readiness
   relation: co-retrieved-with
@@ -3268,6 +3436,13 @@ links:
   semantic: false
   declared_by:
   - testing-design-before-feature-tests
+- id: R-ROUTE-2b8da9f0f6f7
+  from: testing-deterministic-async-observation
+  relation: co-retrieved-with
+  to: testing-suite-net-value
+  semantic: false
+  declared_by:
+  - testing-deterministic-async-observation
 - id: R-ROUTE-8e44bd74086f
   from: testing-four-pillar-test-value
   relation: co-retrieved-with

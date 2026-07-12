@@ -6,8 +6,8 @@
       "doctrine/context-lenses.yaml": "f3a0977ce7df98486757ee5b449c693b30e7913fa1672dc138a4d96ae67c347d",
       "doctrine/evaluations/gold/human-dispositions.json": "4746f454ab3b0ce677ed813b054d3ad41c33335dcb131c90663c896d35398eab",
       "doctrine/graph/edges.yaml": "9a62c3950d29f08cab56809ec0523e10cb44eeda415300b3108a5165453c9f07",
-      "doctrine/graph/formulations.yaml": "a4e9f2f073a2bc5fa4030820caec80005c9d1140e6fbfd85619ee5819332903c",
-      "doctrine/sources.yaml": "8a2ad5c10ac38cf4806cb47e9ecf7adb4aa7b80fc12b357a4355e8f5053d321a"
+      "doctrine/graph/formulations.yaml": "1c59f0edf127698d2bf0244ce8bacbf217a3615f5e3849fd7ea48c8cc667ba1c",
+      "doctrine/sources.yaml": "8329d317750e865dd93edb0a9eecf1f3b317953f7cb63148c2a9d1a4e94169fd"
     },
     "tool": "doctrine/tools/build_gold_queue.py",
     "tool_sha256": "373dbe188b6f4e36b77883b290e0c59f7a36da65421a4779f3bea4774d8b306c"
@@ -3658,6 +3658,55 @@
           "outcomes": [],
           "risk_classes": [],
           "source_ids": [
+            "SRC-100GO"
+          ],
+          "support_relationships": [
+            "refinement"
+          ]
+        },
+        "generated_only": true,
+        "kind": "source-support",
+        "question": "Does formulation F-CONCEPT-100GO-0c0c8bbfae82 support its mapping to universal-earned-abstraction under the recorded conditions and caveats?",
+        "target": {
+          "id": "F-CONCEPT-100GO-0c0c8bbfae82",
+          "kind": "formulation",
+          "references": [
+            {
+              "id": "SRC-100GO",
+              "kind": "source"
+            },
+            {
+              "id": "F-CONCEPT-100GO-0c0c8bbfae82",
+              "kind": "formulation"
+            },
+            {
+              "id": "universal-earned-abstraction",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-source-src-100go",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
             "SRC-APOSD"
           ],
           "support_relationships": [
@@ -3789,6 +3838,55 @@
         "status": "pending-human"
       },
       "id": "gold-source-src-cc",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-CIG"
+          ],
+          "support_relationships": [
+            "refinement"
+          ]
+        },
+        "generated_only": true,
+        "kind": "source-support",
+        "question": "Does formulation F-CONCEPT-CIG-1403fb3d5be5 support its mapping to go-explicit-contextual-errors under the recorded conditions and caveats?",
+        "target": {
+          "id": "F-CONCEPT-CIG-1403fb3d5be5",
+          "kind": "formulation",
+          "references": [
+            {
+              "id": "SRC-CIG",
+              "kind": "source"
+            },
+            {
+              "id": "F-CONCEPT-CIG-1403fb3d5be5",
+              "kind": "formulation"
+            },
+            {
+              "id": "go-explicit-contextual-errors",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-source-src-cig",
       "machine_screening": {
         "references": [],
         "status": "not-run"
@@ -4393,7 +4491,7 @@
           "outcomes": [],
           "risk_classes": [],
           "source_ids": [
-            "SRC-APOSD"
+            "SRC-100GO"
           ],
           "support_relationships": [
             "direct_support"
@@ -4401,21 +4499,21 @@
         },
         "generated_only": true,
         "kind": "support-relationship",
-        "question": "Is direct_support the correct provenance relationship between formulation F-CONCEPT-APOSD-0a3eb9743076 and node implementation-placement-by-ownership?",
+        "question": "Is direct_support the correct provenance relationship between formulation F-CONCEPT-100GO-12e6913a2591 and node performance-profile-causal-bottleneck?",
         "target": {
-          "id": "F-CONCEPT-APOSD-0a3eb9743076--implementation-placement-by-ownership",
+          "id": "F-CONCEPT-100GO-12e6913a2591--performance-profile-causal-bottleneck",
           "kind": "mapping",
           "references": [
             {
-              "id": "SRC-APOSD",
+              "id": "SRC-100GO",
               "kind": "source"
             },
             {
-              "id": "F-CONCEPT-APOSD-0a3eb9743076",
+              "id": "F-CONCEPT-100GO-12e6913a2591",
               "kind": "formulation"
             },
             {
-              "id": "implementation-placement-by-ownership",
+              "id": "performance-profile-causal-bottleneck",
               "kind": "node"
             }
           ]
@@ -4491,7 +4589,7 @@
           "outcomes": [],
           "risk_classes": [],
           "source_ids": [
-            "SRC-APOSD"
+            "SRC-100GO"
           ],
           "support_relationships": [
             "refinement"
@@ -4499,21 +4597,21 @@
         },
         "generated_only": true,
         "kind": "support-relationship",
-        "question": "Is refinement the correct provenance relationship between formulation F-CONCEPT-APOSD-0060d4a36341 and node implementation-normal-result-or-exception?",
+        "question": "Is refinement the correct provenance relationship between formulation F-CONCEPT-100GO-0c0c8bbfae82 and node universal-earned-abstraction?",
         "target": {
-          "id": "F-CONCEPT-APOSD-0060d4a36341--implementation-normal-result-or-exception",
+          "id": "F-CONCEPT-100GO-0c0c8bbfae82--universal-earned-abstraction",
           "kind": "mapping",
           "references": [
             {
-              "id": "SRC-APOSD",
+              "id": "SRC-100GO",
               "kind": "source"
             },
             {
-              "id": "F-CONCEPT-APOSD-0060d4a36341",
+              "id": "F-CONCEPT-100GO-0c0c8bbfae82",
               "kind": "formulation"
             },
             {
-              "id": "implementation-normal-result-or-exception",
+              "id": "universal-earned-abstraction",
               "kind": "node"
             }
           ]

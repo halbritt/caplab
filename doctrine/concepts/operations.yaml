@@ -124,6 +124,10 @@ concepts:
         locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Countering Integration Point Problems"
         contribution: Prescribes the counters for integration point failures - circuit breaker and decoupling middleware plus a controllable per-integration test harness exercised under substantial load - rather than trusting functional tests.
         relationship: refinement
+      - source_id: "SRC-100GO"
+        locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/014-chapter-10-the-standard-library.md :: 10.7 #81: Using the default HTTP client and server"
+        contribution: "Shows that Go's default HTTP client has no request timeout and its default server omits protective phase limits, so production clients and servers need explicit timeout and resource policy."
+        relationship: "refinement"
     confidence: strong
     roles: [coding-agent, architecture-agent, review-agent, debugging-and-repair-agent]
     languages: [language-independent]
@@ -216,6 +220,10 @@ concepts:
         locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Slow Responses"
         contribution: Establishes that slow responses - from excess demand, leak-driven garbage collection, or TCP stalls - propagate upward as a gradual cascading failure and recommends systems monitor their own SLA compliance and start refusing work when they exceed it.
         relationship: direct_support
+      - source_id: "SRC-CIG"
+        locator: "books/concurrency-in-go/chapters/009-chapter-5-concurrency-at-scale.md :: Rate Limiting"
+        contribution: "Uses rate limits to bound malicious and legitimate demand, preserve fairness across users, and compose multiple resource-specific quotas before work enters the protected operation."
+        relationship: "refinement"
     confidence: strong
     roles: [architecture-agent, performance-agent, review-agent, debugging-and-repair-agent]
     languages: [language-independent]
@@ -1137,6 +1145,10 @@ concepts:
         locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/024-chapter-16-adaptation.md :: Team-Scale Autonomy"
         contribution: Argues full utilization slows flow and that value-stream optimization specializes the system to today's tasks at the cost of future flexibility - the adaptability face of the same tradeoff.
         relationship: refinement
+      - source_id: "SRC-CIG"
+        locator: "books/concurrency-in-go/chapters/009-chapter-5-concurrency-at-scale.md :: Replicated Requests"
+        contribution: "Frames replicated requests as an explicit exchange of additional handlers and downstream resources for lower tail latency and fault tolerance, requiring cancellation of losing work."
+        relationship: "refinement"
     confidence: strong
     roles: [performance-agent, architecture-agent, review-agent, repository-assessment-agent]
     languages: [language-independent]

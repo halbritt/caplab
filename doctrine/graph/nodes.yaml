@@ -416,6 +416,7 @@ nodes:
   - F-CONCEPT-EGO-6341b5996d56
   - F-CONCEPT-EGO-99849705b3d5
   - F-CONCEPT-RI-ccd004be21de
+  - F-CONCEPT-100GO-1d0935b587ff
   tags:
   - performance
   - benchmark
@@ -454,6 +455,7 @@ nodes:
   - F-SRC-EGO-PROFILE-FIRST
   - F-CONCEPT-EGO-7341f1082c82
   - F-CONCEPT-EGO-e7ee84f979da
+  - F-CONCEPT-100GO-12e6913a2591
   tags:
   - performance
   - profiling
@@ -494,6 +496,7 @@ nodes:
   - F-CONCEPT-EGO-974dcb1239bc
   - F-CONCEPT-EGO-13df6765b148
   - F-CONCEPT-FP-a7298fd686ed
+  - F-CONCEPT-100GO-8fcad813e341
   tags:
   - performance
   - memory
@@ -518,6 +521,7 @@ nodes:
   - F-CONCEPT-EGO-055579127a24
   - F-CONCEPT-FP-5158b6ddbe3a
   - F-CONCEPT-FP-2df6f90b6662
+  - F-CONCEPT-100GO-efc677baa7d1
   tags:
   - performance
   - concurrency
@@ -582,6 +586,7 @@ nodes:
   - F-CONCEPT-FP-adb25de0d8b1
   - F-CONCEPT-RI-04ce42376d1c
   - F-CONCEPT-RI-a84696fe8ccf
+  - F-CONCEPT-CIG-dab4c4b63d32
   tags:
   - resource
   - lifecycle
@@ -1531,6 +1536,8 @@ nodes:
   formulations:
   - F-CONCEPT-EGO-211da5d25df9
   - F-CONCEPT-EGO-8c9f91ac12bd
+  - F-CONCEPT-100GO-afb0f05a91a5
+  - F-CONCEPT-CIG-91cda6689b11
   tags:
   - performance
   - goroutine
@@ -1553,6 +1560,9 @@ nodes:
   - F-CONCEPT-EGO-d25487327d45
   - F-CONCEPT-EGO-a953193d6eec
   - F-CONCEPT-EGO-3f27657c29e2
+  - F-CONCEPT-100GO-399bffc0dde3
+  - F-CONCEPT-CIG-8be3541429f1
+  - F-CONCEPT-CIG-1403fb3d5be5
   tags:
   - implementation
   - go-error
@@ -1575,6 +1585,10 @@ nodes:
   - F-CONCEPT-EGO-80467c3675ec
   - F-CONCEPT-EGO-01d7a5f259dc
   - F-CONCEPT-EGO-33b0c9659f27
+  - F-CONCEPT-100GO-f1dbe2699852
+  - F-CONCEPT-CIG-db1ff6961b35
+  - F-CONCEPT-CIG-5e6bff8f856c
+  - F-CONCEPT-CIG-95396a47b1ae
   tags:
   - implementation
   - goroutine-lifecycle
@@ -1619,6 +1633,8 @@ nodes:
   - F-CONCEPT-EGO-2c0da95aac06
   - F-CONCEPT-EGO-794ae49950e4
   - F-CONCEPT-EGO-026f4c26d5e5
+  - F-CONCEPT-100GO-37ab0530756c
+  - F-CONCEPT-100GO-a54006a9fa24
   tags:
   - implementation
   - go-pointer
@@ -1932,6 +1948,8 @@ nodes:
   - F-CONCEPT-UT-87ba129e0cba
   - F-CONCEPT-UT-e68c47c1fb38
   - F-CONCEPT-UT-4c8831dbcecd
+  - F-CONCEPT-100GO-90caf5322894
+  - F-CONCEPT-CIG-8a8c1887c784
   tags:
   - implementation
   - risk-driven-tests
@@ -2895,6 +2913,7 @@ nodes:
   - F-CONCEPT-APOSD-2ea5ca3d7275
   - F-CONCEPT-CC-fe7a1d6bd016
   - F-CONCEPT-PP-9768c732f35d
+  - F-CONCEPT-100GO-0c0c8bbfae82
   tags:
   - universal
   - earned-abstraction
@@ -3352,6 +3371,7 @@ nodes:
   formulations:
   - F-CONCEPT-RI-2951a6f592de
   - F-CONCEPT-RI-3aa2031a7c24
+  - F-CONCEPT-100GO-7d36cdb248bf
   tags:
   - architecture
   - integration-point
@@ -3439,6 +3459,7 @@ nodes:
   - F-CONCEPT-RI-1c5c424e3aad
   - F-CONCEPT-RI-3a5a34fd7bcc
   - F-CONCEPT-RI-85393ac75383
+  - F-CONCEPT-CIG-25761275a97e
   tags:
   - performance
   - load-shedding
@@ -3481,6 +3502,7 @@ nodes:
   formulations:
   - F-CONCEPT-RI-7ab2b473094d
   - F-CONCEPT-RI-e8345878c370
+  - F-CONCEPT-CIG-79ebe140fe49
   tags:
   - performance
   - resilience-margin
@@ -3955,6 +3977,229 @@ nodes:
   - test-granularity
   - test-naming
   - one-class-per-test
+- id: go-channel-capacity-contract
+  projection:
+    owner: concept-record
+    source_id: go-channel-capacity-contract
+  kind: principle
+  label: Treat channel capacity as a synchronization contract
+  definition: Choose unbuffered channels when handoff synchronization is part of the contract; buffer only for a demonstrated nonblocking or bounded-capacity need, and justify size because buffering weakens synchronization and can hide deadlocks.
+  operational_significance: Channel capacity changes blocking, scheduling, backpressure, ordering visibility, and memory use; an arbitrary buffer can hide a blocked consumer or create unbounded latency expectations.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - go-channel-capacity-contract
+  formulations:
+  - F-CONCEPT-100GO-55136b24f092
+  tags:
+  - implementation
+  - go-channel-capacity
+  - buffered-channel
+  - backpressure
+  - rendezvous
+- id: go-consumer-owned-interfaces
+  projection:
+    owner: concept-record
+    source_id: go-consumer-owned-interfaces
+  kind: principle
+  label: Place Go interfaces with demonstrated consumers
+  definition: Define a Go interface at the consumer that needs the behavioral contract; create a producer-side interface only for a known cross-consumer abstraction and keep it minimal.
+  operational_significance: Producer-owned interfaces often encode speculative capability and force consumers to depend on methods they do not need; consumer placement keeps the contract at the point of use.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - go-consumer-owned-interfaces
+  formulations:
+  - F-CONCEPT-100GO-e7de630f0363
+  tags:
+  - implementation
+  - go-consumer-interface
+  - producer-interface
+  - minimal-method-set
+  - implicit-satisfaction
+- id: go-context-lifecycle-propagation
+  projection:
+    owner: concept-record
+    source_id: go-context-lifecycle-propagation
+  kind: pattern
+  label: Propagate context only across shared lifetimes
+  definition: Propagate a Go context only when child work shares the parent's request lifetime; derive cancellation and deadlines explicitly so independent work is not canceled accidentally.
+  operational_significance: Replacing, discarding, or indefinitely retaining a context severs deadlines, cancellation, and request-scoped ownership, allowing work to outlive its caller or lose required values.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - go-context-lifecycle-propagation
+  formulations:
+  - F-CONCEPT-100GO-b54165018f5f
+  tags:
+  - implementation
+  - go-context-propagation
+  - deadline
+  - cancellation
+  - context-lifecycle
+- id: go-interface-nil-semantics
+  projection:
+    owner: concept-record
+    source_id: go-interface-nil-semantics
+  kind: principle
+  label: Keep typed nil out of absent interface results
+  definition: A Go interface containing a typed nil pointer is non-nil; an API returning an interface must return an explicit nil interface when absence is its contract.
+  operational_significance: An interface containing a typed nil pointer compares non-nil, so callers can enter error or behavior paths that later panic despite an apparent absence contract.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - go-interface-nil-semantics
+  formulations:
+  - F-CONCEPT-100GO-4597385a5698
+  tags:
+  - implementation
+  - go-typed-nil
+  - nil-interface
+  - dynamic-type
+  - error-return
+- id: go-slice-aliasing-control
+  projection:
+    owner: concept-record
+    source_id: go-slice-aliasing-control
+  kind: principle
+  label: Control Go slice aliasing before append
+  definition: Treat a subslice as an alias of its backing array; before appending or exposing it, make the intended mutation reach explicit and copy or cap capacity when isolation is required.
+  operational_significance: A subslice can retain and mutate shared backing storage, so an append that looks local can corrupt another view or extend an unintended memory lifetime.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - go-slice-aliasing-control
+  formulations:
+  - F-CONCEPT-100GO-f9cf58c59f67
+  tags:
+  - implementation
+  - go-slice-aliasing
+  - backing-array
+  - full-slice-expression
+  - append-capacity
+- id: go-synchronization-mechanism-fit
+  projection:
+    owner: concept-record
+    source_id: go-synchronization-mechanism-fit
+  kind: principle
+  label: Choose channels or mutexes by coordination semantics
+  definition: Use a mutex to protect concurrently shared state and channels to coordinate work, signal events, or transfer ownership; choose from required semantics rather than treating either mechanism as a universal default.
+  operational_significance: Treating channels or mutexes as a universal default obscures ownership and coordination semantics and can add blocking, goroutine, contention, or lifecycle cost without benefit.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - go-synchronization-mechanism-fit
+  formulations:
+  - F-CONCEPT-100GO-918f35b9bc15
+  - F-CONCEPT-CIG-a214380894d7
+  tags:
+  - implementation
+  - go-channels-versus-mutexes
+  - synchronization-fit
+  - ownership-transfer
+  - shared-state
+- id: go-text-byte-rune-semantics
+  projection:
+    owner: concept-record
+    source_id: go-text-byte-rune-semantics
+  kind: principle
+  label: Choose byte or rune semantics explicitly
+  definition: Treat a Go string as immutable arbitrary bytes, not guaranteed UTF-8; establish the encoding and whether the unit is bytes or Unicode code points before interpreting its length or contents.
+  operational_significance: Confusing bytes, UTF-8 code units, and Unicode code points corrupts length checks, indexing, truncation, validation, and external data handling.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - go-text-byte-rune-semantics
+  formulations:
+  - F-CONCEPT-100GO-c4cc5fc8d036
+  tags:
+  - implementation
+  - go-string-bytes
+  - utf-8
+  - rune
+  - code-point
+- id: implementation-atomicity-scope
+  projection:
+    owner: concept-record
+    source_id: implementation-atomicity-scope
+  kind: principle
+  label: Define atomicity at the required scope
+  definition: Atomicity is defined relative to an explicit scope, and composing individually atomic operations does not make the compound operation atomic; protect the smallest scope that must be indivisible.
+  operational_significance: Individually atomic reads and writes can compose into a non-atomic check-update sequence that loses data or violates invariants.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - implementation-atomicity-scope
+  formulations:
+  - F-CONCEPT-CIG-a4c3be4168e4
+  tags:
+  - implementation
+  - atomicity-scope
+  - compound-operation
+  - read-modify-write
+  - critical-section
+- id: implementation-concurrency-ordering-contract
+  projection:
+    owner: concept-record
+    source_id: implementation-concurrency-ordering-contract
+  kind: principle
+  label: Make concurrent ordering logically necessary
+  definition: Required ordering between concurrent operations must be established by synchronization that makes the order logically necessary; timing delays and high-probability schedules are not correctness evidence.
+  operational_significance: Timing only makes a desired schedule more probable; it cannot establish correctness when operations must occur in a particular causal order.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - implementation-concurrency-ordering-contract
+  formulations:
+  - F-CONCEPT-100GO-b14dd786d074
+  - F-CONCEPT-CIG-e8d36d730546
+  tags:
+  - implementation
+  - concurrency-ordering
+  - happens-before
+  - sleep-race
+  - causal-order
+- id: implementation-concurrency-progress-contract
+  projection:
+    owner: concept-record
+    source_id: implementation-concurrency-progress-contract
+  kind: principle
+  label: Protect progress as well as shared state
+  definition: 'Concurrent correctness requires progress as well as race freedom: designs must account for deadlock, livelock, starvation, lock ordering, and fairness across every contended resource.'
+  operational_significance: Code can be data-race-free yet never complete or provide equitable access because of deadlock, livelock, starvation, or resource cycles.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - implementation-concurrency-progress-contract
+  formulations:
+  - F-CONCEPT-CIG-26f2185137cb
+  tags:
+  - implementation
+  - concurrency-progress
+  - deadlock
+  - livelock
+  - starvation
+- id: testing-deterministic-async-observation
+  projection:
+    owner: concept-record
+    source_id: testing-deterministic-async-observation
+  kind: principle
+  label: Observe asynchronous completion instead of sleeping
+  definition: Tests of asynchronous behavior should coordinate on an observable completion signal rather than infer completion from elapsed time; if direct synchronization is impossible, use a bounded retry with an explicit deadline.
+  operational_significance: Sleeping guesses at completion time, making tests slow when overlong and flaky when the environment is slower than expected.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - testing-deterministic-async-observation
+  formulations:
+  - F-CONCEPT-100GO-6c14f61677b4
+  - F-CONCEPT-CIG-e104686e83f0
+  tags:
+  - review
+  - asynchronous-test
+  - sleep-flake
+  - completion-signal
+  - bounded-polling
 - id: conflict-abstraction-vs-duplication
   projection:
     owner: conflict-registry
@@ -4115,7 +4360,9 @@ nodes:
   formulations:
   - F-CONFLICT-EGO-05d3f49f0b7e
   - F-CONFLICT-FP-97cefa098c80
+  - F-CONFLICT-CIG-73ea8275aae4
   - F-CONFLICT-EGO-14fe0bf5bda4
+  - F-CONFLICT-100GO-00f137a1b3f3
   tags:
   - conflict
   - contextual
@@ -4153,6 +4400,8 @@ nodes:
   formulations:
   - F-CONFLICT-CA-5a516f98b491
   - F-CONFLICT-WELC-07bdea51fd98
+  - F-CONFLICT-100GO-49ba45d1e103
+  - F-CONFLICT-100GO-641a2429fe6d
   tags:
   - conflict
   - contextual
@@ -4209,6 +4458,7 @@ nodes:
   - F-CONFLICT-RI-45cccc993592
   - F-CONFLICT-RI-5dba4a2df98e
   - F-CONFLICT-RI-924f45f592c9
+  - F-CONFLICT-CIG-0b993457741c
   tags:
   - conflict
   - contextual
@@ -4263,6 +4513,7 @@ nodes:
   formulations:
   - F-CONFLICT-DDD-3cf66e4bcf80
   - F-CONFLICT-APOSD-95b59f3b2599
+  - F-CONFLICT-100GO-db230ddbf9ac
   tags:
   - conflict
   - contextual

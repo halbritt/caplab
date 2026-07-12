@@ -614,6 +614,10 @@ concepts:
         locator: "books/the-pragmatic-programmer/chapters/007-chapter-2-a-pragmatic-approach.md :: The Evils of Duplication"
         contribution: Refines abstraction pressure as duplicated authoritative knowledge rather than text alone.
         relationship: corroboration
+      - source_id: "SRC-100GO"
+        locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/006-chapter-2-code-and-project-organization.md :: 2.5 #5: Interface pollution"
+        contribution: "Identifies common behavior, actual decoupling, and intentional behavior restriction as evidence for an interface, while treating speculative interfaces that do not improve the code as pollution."
+        relationship: "refinement"
     confidence: universal
     roles: [coding-agent, architecture-agent, refactoring-agent, review-agent, performance-agent]
     languages: [language-independent]

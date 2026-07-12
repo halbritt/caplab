@@ -1,5 +1,14 @@
 schema_version: agent-doctrine-sources/1
 sources:
+  - id: "SRC-100GO"
+    title: "100 Go Mistakes and How to Avoid Them"
+    authors: ["Teiva Harsanyi"]
+    corpus_path: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir"
+    source_input_path: "sources/100-Go-Mistakes-and-How-to-Avoid-Them-(Teiva-Harsanyi)_bibis.ir.pdf"
+    source_sha256: "e137980cb9611b94b6cac4a2aa63aee8e86947e9acbffbbff98154a52093d0b9"
+    source_format: "pdf"
+    chapter_count: 17
+    source_roles: ["language-specific-implementation", "implementation-craft", "measurement-and-benchmarking"]
   - id: SRC-APOSD
     title: A Philosophy of Software Design, 2nd Edition
     authors: [John K. Ousterhout]
@@ -36,6 +45,15 @@ sources:
       - implementation-craft
       - construction-quality
       - review-and-testing
+  - id: "SRC-CIG"
+    title: "Concurrency in Go: Tools and Techniques for Developers"
+    authors: ["Katherine Cox-Buday"]
+    corpus_path: "books/concurrency-in-go"
+    source_input_path: "sources/Concurrency in Go.pdf"
+    source_sha256: "5d8d4f2a7f7e908852f7c3205830251b1f6fea7beef351654fd03f39a21a15e7"
+    source_format: "pdf"
+    chapter_count: 14
+    source_roles: ["concurrency-and-runtime-semantics", "language-specific-implementation", "operational-stability-and-resilience"]
   - id: SRC-DDD
     title: "Domain-Driven Design: Tackling Complexity in the Heart of Software"
     authors: [Eric Evans]

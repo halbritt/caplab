@@ -65,11 +65,19 @@ conflicts:
         source_support:
           - {source_id: SRC-CA, locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/020-chapter-11-dip-the-dependency-inversion-principle.md :: STABLE ABSTRACTIONS", contribution: "Advances stable abstractions and dependency direction that protect policy from volatile details.", relationship: direct_support}
           - {source_id: SRC-WELC, locator: "books/programming-working-effectively-with-legacy-code/chapters/034-chapter-25-dependency-breaking-techniques.md :: Extract Interface", contribution: "Supplies interface extraction as a dependency-breaking seam when a concrete dependency blocks safe change.", relationship: refinement}
+          - source_id: "SRC-100GO"
+            locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/006-chapter-2-code-and-project-organization.md :: 2.6 #6: Interface on the producer side"
+            contribution: "Locates the minimal behavioral interface with the consuming package, supplying Go-specific support for consumer-controlled inversion when an actual consumer contract exists."
+            relationship: "refinement"
         basis: {kind: source-supported, rationale: "Clean Architecture supplies the policy argument and WELC supplies a constrained legacy mechanism."}
       - id: direct-dependency
         claim: Keep one stable implementation directly coupled until independent evolution or substitution earns indirection.
-        source_support: []
-        basis: {kind: derived-inference, rationale: "Neither cited section directly recommends continued direct coupling; this position is the explicit no-indirection alternative derived from abstraction cost and the repository evidence gate."}
+        source_support:
+          - source_id: "SRC-100GO"
+            locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/006-chapter-2-code-and-project-organization.md :: 2.5 #5: Interface pollution"
+            contribution: "Treats an interface without common behavior, actual decoupling, or intentional restriction as pollution, directly supporting continued concrete coupling until abstraction pressure exists."
+            relationship: "direct_support"
+        basis: {kind: source-supported, rationale: "100 Go Mistakes directly supports retaining a concrete dependency when an interface does not improve current consumers; the position remains conditional on shared lifecycle and volatility evidence."}
     hidden_assumptions:
       - Inversion assumes stable policy can be separated cleanly and the abstraction will not mirror the detail.
       - Direct coupling assumes the dependency shares lifecycle, authority, and volatility with its consumer.
@@ -83,6 +91,10 @@ conflicts:
     source_support:
       - {source_id: SRC-CA, locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/020-chapter-11-dip-the-dependency-inversion-principle.md :: STABLE ABSTRACTIONS"}
       - {source_id: SRC-WELC, locator: "books/programming-working-effectively-with-legacy-code/chapters/034-chapter-25-dependency-breaking-techniques.md :: Extract Interface"}
+      - source_id: "SRC-100GO"
+        locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/006-chapter-2-code-and-project-organization.md :: 2.6 #6: Interface on the producer side"
+      - source_id: "SRC-100GO"
+        locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/006-chapter-2-code-and-project-organization.md :: 2.5 #5: Interface pollution"
 
   - conflict_id: conflict-domain-purity-vs-implementation-simplicity
     disagreement_kind: contextual
@@ -151,8 +163,12 @@ conflicts:
         basis: {kind: source-supported, rationale: "DDD and APOSD support reuse when a stable common mechanism is demonstrated."}
       - id: local-clarity
         claim: Direct purpose-built code preserves context and avoids a lowest-common-denominator interface.
-        source_support: []
-        basis: {kind: derived-inference, rationale: "The cited sections support qualified generality but do not directly formulate the local-purpose position; it is retained as the no-generalization alternative when shared semantics are absent."}
+        source_support:
+          - source_id: "SRC-100GO"
+            locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/006-chapter-2-code-and-project-organization.md :: 2.9 #9: Being confused about when to use generics"
+            contribution: "Recommends introducing generics for demonstrated type variation or imminent repeated boilerplate rather than speculative future reuse, directly supporting local clarity before earned generalization."
+            relationship: "direct_support"
+        basis: {kind: source-supported, rationale: "100 Go Mistakes directly supports the local-purpose position until present type variation or repeated boilerplate earns generalization."}
     hidden_assumptions:
       - Reuse assumes multiple proven consumers share semantics and lifecycle.
       - Local clarity assumes duplicated evolution and inconsistent fixes remain affordable.
@@ -166,6 +182,8 @@ conflicts:
     source_support:
       - {source_id: SRC-DDD, locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/017-chapter-15-distillation.md :: Generic Subdomains"}
       - {source_id: SRC-APOSD, locator: "books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/011-6-general-purpose-modules-are-deeper.md :: 6: General-Purpose Modules are Deeper"}
+      - source_id: "SRC-100GO"
+        locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/006-chapter-2-code-and-project-organization.md :: 2.9 #9: Being confused about when to use generics"
 
   - conflict_id: conflict-temporary-seam-vs-long-term-design
     disagreement_kind: contextual
@@ -395,11 +413,19 @@ conflicts:
         source_support:
           - {source_id: SRC-EGO, locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/008-chapter-4-how-go-uses-the-cpu-resource-or-two.md :: When to Use Concurrency", contribution: "Identifies workload and resource conditions under which concurrency can improve an accepted objective.", relationship: direct_support}
           - {source_id: SRC-FP, locator: "books/fluent-python-2nd-edition-z-lib-org/chapters/027-chapter-20-concurrency-models-in-python.md :: Processes, threads, and Python's Infamous GIL", contribution: "Refines concurrency selection through Python runtime constraints and workload type.", relationship: refinement}
+          - source_id: "SRC-CIG"
+            locator: "books/concurrency-in-go/chapters/006-chapter-2-modeling-your-code-communicating-sequential-processes.md :: Go's Philosophy on Concurrency"
+            contribution: "Supports channel-based coordination and ownership transfer for concurrent work while leaving the choice conditional on workload, lifecycle, and current runtime evidence."
+            relationship: "refinement"
         basis: {kind: source-supported, rationale: "Efficient Go and Fluent Python directly support conditional concurrency model selection."}
       - id: sequential
         claim: Sequential execution minimizes scheduling, ownership, ordering, cancellation, race, and debugging cost.
         source_support:
           - {source_id: SRC-EGO, locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/008-chapter-4-how-go-uses-the-cpu-resource-or-two.md :: When to Use Concurrency", contribution: "Warns that concurrency adds cost and should not be introduced when the workload and target do not justify it.", relationship: direct_support}
+          - source_id: "SRC-100GO"
+            locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/012-chapter-8-concurrency-foundations.md :: 8.2 #56: Thinking concurrency is always faster"
+            contribution: "Shows scheduling and coordination overhead can dominate small work and recommends a sequential baseline before a profiled and benchmarked concurrent alternative."
+            relationship: "direct_support"
         basis: {kind: source-supported, rationale: "Efficient Go's use conditions retain sequential execution as the lower-cost default."}
     hidden_assumptions:
       - Concurrency assumes exploitable independent work and downstream capacity.
@@ -414,6 +440,10 @@ conflicts:
     source_support:
       - {source_id: SRC-EGO, locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/008-chapter-4-how-go-uses-the-cpu-resource-or-two.md :: When to Use Concurrency"}
       - {source_id: SRC-FP, locator: "books/fluent-python-2nd-edition-z-lib-org/chapters/027-chapter-20-concurrency-models-in-python.md :: Processes, threads, and Python's Infamous GIL"}
+      - source_id: "SRC-100GO"
+        locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/012-chapter-8-concurrency-foundations.md :: 8.2 #56: Thinking concurrency is always faster"
+      - source_id: "SRC-CIG"
+        locator: "books/concurrency-in-go/chapters/006-chapter-2-modeling-your-code-communicating-sequential-processes.md :: Go's Philosophy on Concurrency"
 
   - conflict_id: conflict-caching-vs-recomputation-freshness
     disagreement_kind: contextual
@@ -767,6 +797,10 @@ conflicts:
         source_support:
           - {source_id: SRC-RI, locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/025-chapter-17-chaos-engineering.md :: Antecedents of Chaos Engineering", contribution: "Imports drift-into-failure - economic plus workload pressure push systems toward the safety boundary - and the regulator paradox - a well-working protection stops producing evidence of its own quality - observing that highly efficient systems break all at once.", relationship: direct_support}
           - {source_id: SRC-RI, locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/024-chapter-16-adaptation.md :: Team-Scale Autonomy", contribution: "Argues full utilization slows flow and value-stream optimization specializes the system to today's tasks at the cost of future flexibility.", relationship: refinement}
+          - source_id: "SRC-CIG"
+            locator: "books/concurrency-in-go/chapters/009-chapter-5-concurrency-at-scale.md :: Replicated Requests"
+            contribution: "Makes the resilience side's resource cost explicit: replicated requests trade additional handler and downstream capacity for tail-latency and fault-tolerance margin and require cancellation of losing work."
+            relationship: "refinement"
         basis: {kind: source-supported, rationale: "Release It! directly advances retained margin and routine tolerable stress as the counterweight to efficiency-driven drift."}
     hidden_assumptions:
       - Efficiency assumes demand and failure behavior stay near their measured envelope so consumed headroom is never suddenly needed.
@@ -782,6 +816,8 @@ conflicts:
       - {source_id: SRC-RI, locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Unbalanced Capacities"}
       - {source_id: SRC-RI, locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/025-chapter-17-chaos-engineering.md :: Antecedents of Chaos Engineering"}
       - {source_id: SRC-RI, locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/024-chapter-16-adaptation.md :: Team-Scale Autonomy"}
+      - source_id: "SRC-CIG"
+        locator: "books/concurrency-in-go/chapters/009-chapter-5-concurrency-at-scale.md :: Replicated Requests"
 
   - conflict_id: conflict-classical-vs-london-test-isolation
     disagreement_kind: contextual

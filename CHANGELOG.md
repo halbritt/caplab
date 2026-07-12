@@ -8,6 +8,13 @@ remains under `Unreleased`, whether or not it has been committed.
 
 ### Added
 
+- Registered *100 Go Mistakes and How to Avoid Them* (SRC-100GO) and
+  *Concurrency in Go* (SRC-CIG) with exact source metadata, contextual
+  limitations, a complete 31-chapter extraction ledger, 11 canonical concepts,
+  36 provenance-preserving support records (14 on new concepts and 22 refining
+  existing concepts), and Go-specific evidence on four preserved conflicts;
+  exact doctrine coverage grows from 378 to 409 chapters and the concept
+  catalog from 182 to 193 records.
 - Added eight PDF sources and their chaptered Markdown corpora: *100 Go
   Mistakes and How to Avoid Them*, *API Design Patterns* chapter 3 (an
   explicitly labeled extract), *Architecture Patterns with Python*,

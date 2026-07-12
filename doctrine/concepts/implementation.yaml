@@ -627,6 +627,14 @@ concepts:
         locator: "books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/017-chapter-10-testing-the-database.md :: 10.5.1 Should you test reads?"
         contribution: Sets an asymmetric evidence threshold by consequence - write operations warrant thorough database-integration coverage because mistakes corrupt persisted state and propagate to external systems, while only the most complex or important read operations justify tests.
         relationship: refinement
+      - source_id: "SRC-100GO"
+        locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/015-chapter-11-testing.md :: 11.2 #83: Not enabling the -race flag"
+        contribution: "Makes Go's runtime race detector a targeted concurrency check while preserving its limits: it observes only exercised paths and carries substantial execution and memory overhead."
+        relationship: "refinement"
+      - source_id: "SRC-CIG"
+        locator: "books/concurrency-in-go/chapters/011-appendix.md :: Race Detection"
+        contribution: "Corroborates continuous race-detector use for concurrent paths while stating that runtime detection finds only races exercised by the selected tests or workload."
+        relationship: "corroboration"
     confidence: strong
     roles: [coding-agent, debugging-and-repair-agent, refactoring-agent, legacy-code-agent, review-agent, performance-agent]
     languages: [language-independent]
@@ -882,3 +890,124 @@ concepts:
       retrieval_priority: core
       retrieval_budget_hint: 330
       related_concepts: [universal-repository-contract-precedence, implementation-representation-fit, implementation-obvious-control-flow]
+
+  - id: "implementation-atomicity-scope"
+    title: "Define atomicity at the required scope"
+    category: "implementation"
+    claim: "Atomicity is defined relative to an explicit scope, and composing individually atomic operations does not make the compound operation atomic; protect the smallest scope that must be indivisible."
+    decision_rule: "State the smallest compound operation that must appear indivisible to named observers, then protect that entire scope with one suitable transaction, lock, compare-and-swap loop, or ownership boundary."
+    why_it_matters: "Individually atomic reads and writes can compose into a non-atomic check-update sequence that loses data or violates invariants."
+    applicable_when: ["reviewing concurrent read-modify-write behavior", "designing transactions or critical sections"]
+    not_applicable_when: ["each operation is independent and no compound invariant exists"]
+    required_evidence: ["observer and indivisible invariant", "complete read-modify-write scope", "mechanism guaranteeing atomicity at that scope"]
+    insufficient_evidence: ["each primitive operation is atomic", "the critical section is small"]
+    required_inputs: ["state transition and observers", "contention and failure semantics"]
+    expected_outputs: ["declared atomicity scope", "mechanism and verification for the compound operation"]
+    preservation_boundaries: ["compound invariant", "failure and rollback semantics"]
+    safe_actions: ["lock or transact across the whole invariant", "use compare-and-swap with explicit retry semantics"]
+    unsafe_actions: ["protect reads and writes separately while assuming the sequence is atomic", "widen a lock without progress analysis"]
+    common_failure_modes: ["lost update", "check-then-act race", "partial state exposure"]
+    source_support:
+      - source_id: "SRC-CIG"
+        locator: "books/concurrency-in-go/chapters/005-chapter-1-an-introduction-to-concurrency.md :: Atomicity"
+        contribution: "Makes atomicity context-dependent and demonstrates that a read, increment, and write can each be atomic while their compound update is not."
+        relationship: "direct_support"
+    confidence: "strong"
+    roles: ["coding-agent", "review-agent", "architecture-agent", "debugging-and-repair-agent"]
+    languages: ["language-independent"]
+    repository_archetypes: ["library", "service", "CLI", "monolith", "distributed-system"]
+    retrieval_terms: ["atomicity scope", "compound operation", "read modify write", "critical section"]
+    routing:
+      activate_for_roles: ["coding-agent", "review-agent", "architecture-agent", "debugging-and-repair-agent"]
+      activate_for_tasks: ["add-concurrency", "review-control-flow", "code-review"]
+      activate_for_repository_signals: ["atomic primitive", "transaction", "check then update", "shared counter"]
+      activate_for_languages: ["language-independent"]
+      activate_for_risk_classes: ["concurrency", "correctness", "data-integrity"]
+      exclude_when: ["no compound invariant spans operations"]
+      prerequisites: ["named observer and invariant"]
+      retrieval_priority: "core"
+      retrieval_budget_hint: 370
+      related_concepts: ["implementation-concurrency-ordering-contract", "implementation-concurrency-progress-contract"]
+
+  - id: "implementation-concurrency-ordering-contract"
+    title: "Make concurrent ordering logically necessary"
+    category: "implementation"
+    claim: "Required ordering between concurrent operations must be established by synchronization that makes the order logically necessary; timing delays and high-probability schedules are not correctness evidence."
+    decision_rule: "Express every required order through synchronization, data dependency, or an explicit state protocol that makes the invalid schedule impossible; remove sleeps used as correctness mechanisms."
+    why_it_matters: "Timing only makes a desired schedule more probable; it cannot establish correctness when operations must occur in a particular causal order."
+    applicable_when: ["implementing or reviewing concurrent code in any language", "repairing a timing-sensitive race condition"]
+    not_applicable_when: ["operations are independent and all interleavings satisfy the contract"]
+    required_evidence: ["named required order", "synchronization or protocol edge enforcing it", "adversarial scheduling or deterministic completion tests"]
+    insufficient_evidence: ["sleep duration longer than observed execution", "many passing runs"]
+    required_inputs: ["concurrent operations and invariant", "available synchronization mechanisms"]
+    expected_outputs: ["explicit ordering contract", "test proving the invalid order cannot occur"]
+    preservation_boundaries: ["functional and temporal invariants", "termination behavior"]
+    safe_actions: ["coordinate on an observable event", "encode a state transition or synchronization edge"]
+    unsafe_actions: ["sleep to force order", "treat launch order as execution order"]
+    common_failure_modes: ["flaky correctness", "rare stale state", "environment-sensitive failures"]
+    conflicts: ["conflict-concurrency-vs-sequential-simplicity"]
+    source_support:
+      - source_id: "SRC-100GO"
+        locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/012-chapter-8-concurrency-foundations.md :: 8.4 #58: Not understanding race problems"
+        contribution: "Distinguishes data races from broader race conditions and uses Go memory-model ordering guarantees to show why synchronized access alone may not make behavior deterministic."
+        relationship: "direct_support"
+      - source_id: "SRC-CIG"
+        locator: "books/concurrency-in-go/chapters/005-chapter-1-an-introduction-to-concurrency.md :: Race Conditions"
+        contribution: "Shows that sleeps only raise the probability of one schedule and cannot correct a race; required operation order must be encoded rather than inferred from elapsed time."
+        relationship: "direct_support"
+    confidence: "strong"
+    roles: ["coding-agent", "review-agent", "debugging-and-repair-agent", "architecture-agent"]
+    languages: ["language-independent"]
+    repository_archetypes: ["library", "service", "CLI", "monolith", "distributed-system"]
+    retrieval_terms: ["concurrency ordering", "happens-before", "sleep race", "causal order"]
+    routing:
+      activate_for_roles: ["coding-agent", "review-agent", "debugging-and-repair-agent", "architecture-agent"]
+      activate_for_tasks: ["add-concurrency", "review-async", "repair-Go-failure"]
+      activate_for_repository_signals: ["thread or task launch", "sleep near concurrent code", "shared state"]
+      activate_for_languages: ["language-independent"]
+      activate_for_risk_classes: ["concurrency", "correctness", "causality"]
+      exclude_when: ["all interleavings are valid"]
+      prerequisites: ["named ordering requirement"]
+      retrieval_priority: "core"
+      retrieval_budget_hint: 380
+      related_concepts: ["implementation-concurrency-ordering-contract", "implementation-atomicity-scope", "testing-deterministic-async-observation"]
+    interactions: ["The SRC-100GO formulation makes the Go-specific distinction explicit: race-detector cleanliness and semantic ordering are separate obligations under the Go memory model."]
+
+  - id: "implementation-concurrency-progress-contract"
+    title: "Protect progress as well as shared state"
+    category: "implementation"
+    claim: "Concurrent correctness requires progress as well as race freedom: designs must account for deadlock, livelock, starvation, lock ordering, and fairness across every contended resource."
+    decision_rule: "Alongside safety invariants, specify progress and fairness expectations; inspect wait-for cycles, lock order, retry behavior, critical-section duration, and contention across memory and non-memory resources."
+    why_it_matters: "Code can be data-race-free yet never complete or provide equitable access because of deadlock, livelock, starvation, or resource cycles."
+    applicable_when: ["designing or reviewing concurrent components", "diagnosing hangs or starvation"]
+    not_applicable_when: ["the component is sequential and has no asynchronous resource waits"]
+    required_evidence: ["resource and wait-for graph", "global lock or acquisition order", "termination, retry, and fairness observations"]
+    insufficient_evidence: ["race detector passes", "no deadlock occurred in one test"]
+    required_inputs: ["concurrency topology and resources", "progress and fairness requirements"]
+    expected_outputs: ["progress contract and lock order", "deadlock, livelock, and starvation test plan"]
+    preservation_boundaries: ["safety invariants while improving progress", "resource ownership and cancellation"]
+    safe_actions: ["define a global acquisition order", "bound retries and critical sections", "observe blocked and starved work"]
+    unsafe_actions: ["fix deadlock by adding sleeps", "assume memory locks are the only contended resources"]
+    common_failure_modes: ["deadlock", "livelock", "starvation", "priority inversion"]
+    conflicts: ["conflict-concurrency-vs-sequential-simplicity", "conflict-efficiency-vs-resilience-margin"]
+    source_support:
+      - source_id: "SRC-CIG"
+        locator: "books/concurrency-in-go/chapters/005-chapter-1-an-introduction-to-concurrency.md :: Deadlocks, Livelocks, and Starvation"
+        contribution: "Separates deadlock, livelock, and starvation from value correctness and exposes lock order, critical-section scope, fairness, and non-memory resources as progress obligations."
+        relationship: "direct_support"
+    confidence: "strong"
+    roles: ["coding-agent", "review-agent", "debugging-and-repair-agent", "architecture-agent"]
+    languages: ["language-independent"]
+    repository_archetypes: ["library", "service", "CLI", "monolith", "distributed-system"]
+    retrieval_terms: ["concurrency progress", "deadlock", "livelock", "starvation", "lock ordering"]
+    routing:
+      activate_for_roles: ["coding-agent", "review-agent", "debugging-and-repair-agent", "architecture-agent"]
+      activate_for_tasks: ["add-concurrency", "review-async", "design-failure-mode"]
+      activate_for_repository_signals: ["multiple locks", "retry loop", "blocked workers", "resource acquisition"]
+      activate_for_languages: ["language-independent"]
+      activate_for_risk_classes: ["concurrency", "availability", "resource-lifecycle"]
+      exclude_when: ["no concurrent or asynchronous resource acquisition exists"]
+      prerequisites: ["resource ownership and wait graph"]
+      retrieval_priority: "core"
+      retrieval_budget_hint: 400
+      related_concepts: ["implementation-atomicity-scope", "implementation-concurrency-ordering-contract", "go-goroutine-resource-lifecycle"]

@@ -12,7 +12,102 @@ generated_from:
   sha256: 06623b1d712686f16e350ef06763c05e29bef26c92e925193ebbd796bb270a12
 - ledger: doctrine/_work/extractions/testing-sources.md
   sha256: 7a30c7e7e66c5e84f60971dcc6a2aef364a3202227bd8141f940c33c06088eed
+- ledger: doctrine/_work/extractions/go-concurrency-sources.md
+  sha256: 9eaa169c69eb21c5df9099f3ba45efb1e1cd45a8cec3985c78824efec991d382
 chapters:
+- source_id: SRC-100GO
+  chapter_path: books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/001-100-go-mistakes-and-how-to-avoid-them.md
+  title: 100 Go Mistakes and How to Avoid Them
+  disposition: structural; title and publication data; table of contents.
+  sha256: 86aba769a94c4227196a24b933324b8a2fb83b021c4db8ed1d9b5fa12bb38a83
+- source_id: SRC-100GO
+  chapter_path: books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/002-preface.md
+  title: Preface
+  disposition: reference-only; source origin; mistake-catalog method.
+  sha256: 6164344750ef05ce3888bb0de8c9aaa11a4c8044562f5ceb671eecde57e14a51
+- source_id: SRC-100GO
+  chapter_path: books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/003-acknowledgments.md
+  title: Acknowledgments
+  disposition: reference-only; acknowledgments; audience and roadmap; code and forum access.
+  sha256: ac53add47844f2ffc966deae31beea8bb212367d724bfec898a98effb43518f6
+- source_id: SRC-100GO
+  chapter_path: books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/004-about-the-author.md
+  title: About the Author
+  disposition: structural; author biography; cover illustration.
+  sha256: d7b6350b9bc835578aec859f0aec5d6dbb14110b0b90436aac9a442baf1d18d3
+- source_id: SRC-100GO
+  chapter_path: books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/005-chapter-1-go-simple-to-learn-but-hard-to-master.md
+  title: 'Chapter 1: Go: Simple to Learn but Hard to Master'
+  disposition: substantive; simple syntax versus difficult mastery; learning from mistakes; bug complexity readability API
+    performance and productivity categories.
+  sha256: 0168e3f0567ee309f5ec1632dc34bc7a7ff680be667d69932b23ba04ab025800
+- source_id: SRC-100GO
+  chapter_path: books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/006-chapter-2-code-and-project-organization.md
+  title: 'Chapter 2: Code and Project Organization'
+  disposition: substantive; scope and control-flow readability; interfaces generics and embedding; package API and project
+    organization.
+  sha256: 658c49b8e1c9736c952bc50851967cf0757aa4f5cd1ba27cb40a77f3d65aaab5
+- source_id: SRC-100GO
+  chapter_path: books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/007-chapter-3-data-types.md
+  title: 'Chapter 3: Data Types'
+  disposition: substantive; numeric semantics; slice aliasing capacity and retention; map allocation retention and comparison.
+  sha256: 45b54962ccbbad2e9d55e17dccbbcf04050af67eda6203e665ee7d64c6f558a5
+- source_id: SRC-100GO
+  chapter_path: books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/008-chapter-4-control-structures.md
+  title: 'Chapter 4: Control Structures'
+  disposition: substantive; range copy and evaluation semantics; map iteration nondeterminism; loop exit and defer lifetime.
+  sha256: 00ab92610ed4e1a74446ccab4f82cd75bf39cc6a10089d83edcbf4a75c9a01a7
+- source_id: SRC-100GO
+  chapter_path: books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/009-chapter-5-strings.md
+  title: 'Chapter 5: Strings'
+  disposition: substantive; bytes UTF-8 code points and runes; string iteration and trimming; allocation and backing-storage
+    retention.
+  sha256: 768db4f8125816e8161bc2498fe8108aa5457c27e080628e30a45917684df2eb
+- source_id: SRC-100GO
+  chapter_path: books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/010-chapter-6-functions-and-methods.md
+  title: 'Chapter 6: Functions and Methods'
+  disposition: substantive; value and pointer receivers; named results and defer evaluation; typed nil interfaces and reader-shaped
+    APIs.
+  sha256: 52af9b6fd12810d7f0a93c1da484f1cfe71ac6208c90421043a59331cb6b8a03
+- source_id: SRC-100GO
+  chapter_path: books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/011-chapter-7-error-management.md
+  title: 'Chapter 7: Error Management'
+  disposition: substantive; panic boundaries; wrapping typed and sentinel errors; single handling and cleanup errors.
+  sha256: cdea5240807054369c655b3e72ade782ae7e70a6b67784ef8ac59d26d6305980
+- source_id: SRC-100GO
+  chapter_path: books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/012-chapter-8-concurrency-foundations.md
+  title: 'Chapter 8: Concurrency: Foundations'
+  disposition: substantive; concurrency versus parallelism; channels mutexes races and memory ordering; workload-sensitive
+    bounds and context.
+  sha256: 1bd0ef6206f333c4fc699de8078cc9334166eee89c975be01ebfe168875972d7
+- source_id: SRC-100GO
+  chapter_path: books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/013-chapter-9-concurrency-practice.md
+  title: 'Chapter 9: Concurrency: Practice'
+  disposition: substantive; context and goroutine lifetime; channel selection notification and capacity; shared collection
+    synchronization and group completion.
+  sha256: 5e42f5aa4312dc9a4124992a3509945e37fe4805f17572b966bc6cab4a77385b
+- source_id: SRC-100GO
+  chapter_path: books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/014-chapter-10-the-standard-library.md
+  title: 'Chapter 10: The Standard Library'
+  disposition: substantive; time JSON and SQL contracts; transient resource closure; production HTTP timeout configuration.
+  sha256: 80dab2509b625d389f2765f3de4602d218f2682f0efbddd409abd6314e1905e8
+- source_id: SRC-100GO
+  chapter_path: books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/015-chapter-11-testing.md
+  title: 'Chapter 11: Testing'
+  disposition: substantive; test classification and execution modes; race detection and deterministic asynchronous tests;
+    benchmark validity and coverage limits.
+  sha256: 8c52672b04ae1d427c90db4267d9a14a74df3c6922f66a59049f0b87f2109d2d
+- source_id: SRC-100GO
+  chapter_path: books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/016-chapter-12-optimizations.md
+  title: 'Chapter 12: Optimizations'
+  disposition: substantive; hardware and compiler-sensitive optimization; allocation and garbage-collection behavior; profiling
+    tracing and container runtime constraints.
+  sha256: 963a048f559a9e46324135a3ae26489d924b758833ae82a9de9cce801b660a96
+- source_id: SRC-100GO
+  chapter_path: books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/017-index.md
+  title: Index
+  disposition: reference-only; back-of-book index; back-cover description and endorsements.
+  sha256: 02de79715d7bd66814a89d78998698df7174c7e4eeabd6a22807b8a43a93c480
 - source_id: SRC-CA
   chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/001-clean-architecture.md
   title: Clean Architecture
@@ -530,6 +625,80 @@ chapters:
   title: Index
   disposition: Retrieval aid and topic cross-check; no independent doctrine.
   sha256: bc0d7b64f86f506bfb6503eb8c69a513a17f0de5d69abd02a29c4396d09b8e43
+- source_id: SRC-CIG
+  chapter_path: books/concurrency-in-go/chapters/001-o-reilly.md
+  title: O'REILLY®
+  disposition: structural; title and publication data; book description and endorsements.
+  sha256: ff3eac18eec68d9b4bf11fd4baa37e35a6435dbf9190bebae387b7c72a7abe39
+- source_id: SRC-CIG
+  chapter_path: books/concurrency-in-go/chapters/002-table-of-contents.md
+  title: Table of Contents
+  disposition: reference-only; table of contents.
+  sha256: 28760a94e9f4fada3a6b5c86b06c68461794cb61ca046095f97f5f3374f666c9
+- source_id: SRC-CIG
+  chapter_path: books/concurrency-in-go/chapters/003-preface.md
+  title: Preface
+  disposition: reference-only; audience and chapter roadmap; source conventions and resources.
+  sha256: 524f1b35c309020267275595098012e397d963d0b9d88e94c9397c2c20d89b96
+- source_id: SRC-CIG
+  chapter_path: books/concurrency-in-go/chapters/004-acknowledgments.md
+  title: Acknowledgments
+  disposition: structural; acknowledgments.
+  sha256: 32c57ec6afb7ac704e430274a084a6854608c88309aeb2462464e9f2aa95e895
+- source_id: SRC-CIG
+  chapter_path: books/concurrency-in-go/chapters/005-chapter-1-an-introduction-to-concurrency.md
+  title: 'Chapter 1: An Introduction to Concurrency'
+  disposition: substantive; race and atomicity; memory synchronization; deadlock livelock starvation and concurrency safety.
+  sha256: f416247a148b19927d6537fe6a3554c29aeddb7347696d2768832957549e7b62
+- source_id: SRC-CIG
+  chapter_path: books/concurrency-in-go/chapters/006-chapter-2-modeling-your-code-communicating-sequential-processes.md
+  title: 'Chapter 2: Modeling Your Code: Communicating Sequential Processes'
+  disposition: substantive; concurrency versus parallelism; communicating sequential processes; channels versus shared-memory
+    synchronization.
+  sha256: 5b3ba0270d8188edc081323ead864030dad84927acd93e4987b06f1d7783b111
+- source_id: SRC-CIG
+  chapter_path: books/concurrency-in-go/chapters/007-chapter-3-go-s-concurrency-building-blocks.md
+  title: 'Chapter 3: Go''s Concurrency Building Blocks'
+  disposition: substantive; goroutines and sync primitives; channel ownership and selection; scheduler configuration.
+  sha256: b3a8f41a778f115c6164d143fb4ef336e05a3b29f8491c001467950ecf1e6cf5
+- source_id: SRC-CIG
+  chapter_path: books/concurrency-in-go/chapters/008-chapter-4-concurrency-patterns-in-go.md
+  title: 'Chapter 4: Concurrency Patterns in Go'
+  disposition: substantive; confinement and goroutine cancellation; pipelines fan-out and channel composition; queueing and
+    context propagation.
+  sha256: a9682b8a420b52ad4048b4838fe01fb47bfb2e2e6cb437c0b910a78b76489efc
+- source_id: SRC-CIG
+  chapter_path: books/concurrency-in-go/chapters/009-chapter-5-concurrency-at-scale.md
+  title: 'Chapter 5: Concurrency at Scale'
+  disposition: substantive; error timeout and cancellation propagation; heartbeats replicated requests and rate limits; supervision
+    and restart behavior.
+  sha256: 6e9a44332fca7f789fcec33c5a1251823b16a5862a38df2fbeb925ca3136edff
+- source_id: SRC-CIG
+  chapter_path: books/concurrency-in-go/chapters/010-chapter-6-goroutines-and-the-go-runtime.md
+  title: 'Chapter 6: Goroutines and the Go Runtime'
+  disposition: substantive; work-stealing scheduler; task versus continuation stealing; runtime abstraction with substantial
+    version sensitivity.
+  sha256: 0fd0500db927622d0f1de78b5445246682a3f9d26deed354a41788ac6f4439d0
+- source_id: SRC-CIG
+  chapter_path: books/concurrency-in-go/chapters/011-appendix.md
+  title: Appendix
+  disposition: substantive; panic stack traces; runtime race detection; pprof concurrency diagnostics.
+  sha256: 282e6b1eb2d84edc444a55f82817e86ea4a3bb9eacf0eee08c77573766d38c6c
+- source_id: SRC-CIG
+  chapter_path: books/concurrency-in-go/chapters/012-index.md
+  title: Index
+  disposition: reference-only; back-of-book index.
+  sha256: fa5e57eeaac76403328af8ec0fe246edf869b4041ca20ade11b96d10db733f3e
+- source_id: SRC-CIG
+  chapter_path: books/concurrency-in-go/chapters/013-about-the-author.md
+  title: About the Author
+  disposition: structural; author biography.
+  sha256: abba46a0acbf6d2c952f76ec1b79c7b4fcf773e5acc41cdae3fb40df064a7168
+- source_id: SRC-CIG
+  chapter_path: books/concurrency-in-go/chapters/014-colophon.md
+  title: Colophon
+  disposition: structural; cover animal and production credits.
+  sha256: df1d07405facc050aa2fcf8eeca0f6b674b7ee6fe9df196768615d33fb59eca9
 - source_id: SRC-APOSD
   chapter_path: books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/001-cover-page.md
   title: Cover Page

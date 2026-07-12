@@ -69,6 +69,11 @@ class SectionOracleTests(unittest.TestCase):
             review
             for review in reviews
             if review.get("local_verdict_assessment") == "artifact"
+            # This oracle covers the original section-truncation review. The
+            # later bench pre-pass also uses ``artifact`` for quote-verifier
+            # mechanics that do not imply a section-map defect.
+            and review.get("reviewer", {}).get("method")
+            == "parallel-subagent-review-with-full-chapter-access"
         ]
         self.assertEqual(17, len(artifacts))
         failures = []

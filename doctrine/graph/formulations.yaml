@@ -2240,6 +2240,66 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-100GO-afb0f05a91a5
+  source_id: SRC-100GO
+  locator: 'books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/012-chapter-8-concurrency-foundations.md#8.2 #56: Thinking concurrency is always faster'
+  mappings:
+  - node_id: go-bounded-concurrency
+    relationship_to_canonical: direct_support
+  paraphrase: Rejects concurrency as a default speedup because scheduling and coordination can dominate small work, and recommends beginning with a sequential implementation before profiling and benchmarking a parallel alternative.
+  conditions: 'Canonical mapping applicability (not attributed to the source): parallelizable Go work; high-latency I/O; throughput or latency pressure; worker or shard design'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-CIG-91cda6689b11
+  source_id: SRC-CIG
+  locator: books/concurrency-in-go/chapters/008-chapter-4-concurrency-patterns-in-go.md#Fan-Out, Fan-In
+  mappings:
+  - node_id: go-bounded-concurrency
+    relationship_to_canonical: refinement
+  paraphrase: Applies fan-out only when a pipeline stage is computationally expensive and order-independent, and makes fan-in completion and output-channel closure explicit.
+  conditions: 'Canonical mapping applicability (not attributed to the source): parallelizable Go work; high-latency I/O; throughput or latency pressure; worker or shard design'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-100GO-55136b24f092
+  source_id: SRC-100GO
+  locator: 'books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/013-chapter-9-concurrency-practice.md#9.7 #67: Being puzzled about channel size'
+  mappings:
+  - node_id: go-channel-capacity-contract
+    relationship_to_canonical: direct_support
+  paraphrase: Separates the synchronization guarantee of unbuffered channels from buffered delivery and limits buffer sizing to known bounded sends or evidence from measurement.
+  conditions: 'Canonical mapping applicability (not attributed to the source): creating or changing a Go channel buffer; reviewing worker pools or pipelines'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-100GO-e7de630f0363
+  source_id: SRC-100GO
+  locator: 'books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/006-chapter-2-code-and-project-organization.md#2.6 #6: Interface on the producer side'
+  mappings:
+  - node_id: go-consumer-owned-interfaces
+    relationship_to_canonical: direct_support
+  paraphrase: Locates interfaces at actual consumers by default and limits producer-side interfaces to known reusable abstractions kept as small as possible.
+  conditions: 'Canonical mapping applicability (not attributed to the source): designing or reviewing a Go package boundary; introducing a test or substitution seam'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-100GO-b54165018f5f
+  source_id: SRC-100GO
+  locator: 'books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/013-chapter-9-concurrency-practice.md#9.1 #61: Propagating an inappropriate context'
+  mappings:
+  - node_id: go-context-lifecycle-propagation
+    relationship_to_canonical: direct_support
+  paraphrase: Shows that passing an HTTP request context to independent asynchronous publication cancels that work when the handler returns and therefore requires a deliberately detached lifecycle.
+  conditions: 'Canonical mapping applicability (not attributed to the source): implementing Go request, RPC, database, or goroutine lifecycles; reviewing cancellation and deadline propagation'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-EGO-d25487327d45
   source_id: SRC-EGO
   locator: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/006-chapter-2-efficient-introduction-to-go.md#Never Ignore Errors!
@@ -2271,6 +2331,42 @@ formulations:
   - node_id: go-explicit-contextual-errors
     relationship_to_canonical: historical_precursor
   paraphrase: Supplies historical wrapping guidance retained only behind a current repository and toolchain check.
+  conditions: 'Canonical mapping applicability (not attributed to the source): all Go code that receives or creates errors'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-100GO-399bffc0dde3
+  source_id: SRC-100GO
+  locator: 'books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/011-chapter-7-error-management.md#7.2 #49: Ignoring when to wrap an error'
+  mappings:
+  - node_id: go-explicit-contextual-errors
+    relationship_to_canonical: refinement
+  paraphrase: Separates wrapping for added context or typed marking from transformation that intentionally hides the cause, and exposes wrapping as a caller-coupling decision rather than automatic formatting.
+  conditions: 'Canonical mapping applicability (not attributed to the source): all Go code that receives or creates errors'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-CIG-8be3541429f1
+  source_id: SRC-CIG
+  locator: books/concurrency-in-go/chapters/008-chapter-4-concurrency-patterns-in-go.md#Error Handling
+  mappings:
+  - node_id: go-explicit-contextual-errors
+    relationship_to_canonical: refinement
+  paraphrase: Requires a goroutine's error to travel with its result so the parent with recovery context can choose policy instead of the child logging or terminating locally.
+  conditions: 'Canonical mapping applicability (not attributed to the source): all Go code that receives or creates errors'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-CIG-1403fb3d5be5
+  source_id: SRC-CIG
+  locator: books/concurrency-in-go/chapters/009-chapter-5-concurrency-at-scale.md#Error Propagation
+  mappings:
+  - node_id: go-explicit-contextual-errors
+    relationship_to_canonical: refinement
+  paraphrase: Separates the low-level occurrence and location from a stable user-facing message and further diagnostic route, assigning each module one opportunity to add the context it owns.
   conditions: 'Canonical mapping applicability (not attributed to the source): all Go code that receives or creates errors'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -2310,6 +2406,66 @@ formulations:
     relationship_to_canonical: refinement
   paraphrase: Extends ownership to partially consumed streams and response bodies.
   conditions: 'Canonical mapping applicability (not attributed to the source): goroutine; channel; file; response body; stream; timer; background worker'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-100GO-f1dbe2699852
+  source_id: SRC-100GO
+  locator: 'books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/013-chapter-9-concurrency-practice.md#9.2 #62: Starting a goroutine without knowing when to stop it'
+  mappings:
+  - node_id: go-goroutine-resource-lifecycle
+    relationship_to_canonical: direct_support
+  paraphrase: Treats a goroutine as an owned resource whose termination, held resources, and completion wait must be designed at creation rather than inferred after launch.
+  conditions: 'Canonical mapping applicability (not attributed to the source): goroutine; channel; file; response body; stream; timer; background worker'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-CIG-db1ff6961b35
+  source_id: SRC-CIG
+  locator: books/concurrency-in-go/chapters/005-chapter-1-an-introduction-to-concurrency.md#Determining Concurrency Safety
+  mappings:
+  - node_id: go-goroutine-resource-lifecycle
+    relationship_to_canonical: refinement
+  paraphrase: Uses alternative function signatures to show how callers otherwise cannot tell whether they must add concurrency, whether the callee already creates goroutines, or how completion is observed.
+  conditions: 'Canonical mapping applicability (not attributed to the source): goroutine; channel; file; response body; stream; timer; background worker'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-CIG-5e6bff8f856c
+  source_id: SRC-CIG
+  locator: books/concurrency-in-go/chapters/007-chapter-3-go-s-concurrency-building-blocks.md#Channels
+  mappings:
+  - node_id: go-goroutine-resource-lifecycle
+    relationship_to_canonical: refinement
+  paraphrase: Assigns channel creation, writes, and closure to one owner, exposes receive-only access to consumers, and connects unclear or oversized ownership scope to deadlocks and panics.
+  conditions: 'Canonical mapping applicability (not attributed to the source): goroutine; channel; file; response body; stream; timer; background worker'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-CIG-95396a47b1ae
+  source_id: SRC-CIG
+  locator: books/concurrency-in-go/chapters/008-chapter-4-concurrency-patterns-in-go.md#Preventing Goroutine Leaks
+  mappings:
+  - node_id: go-goroutine-resource-lifecycle
+    relationship_to_canonical: direct_support
+  paraphrase: Defines completion, unrecoverable error, and explicit cancellation as termination paths and assigns the goroutine creator responsibility for ensuring a child can stop.
+  conditions: 'Canonical mapping applicability (not attributed to the source): goroutine; channel; file; response body; stream; timer; background worker'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-100GO-4597385a5698
+  source_id: SRC-100GO
+  locator: 'books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/010-chapter-6-functions-and-methods.md#6.4 #45: Returning a nil receiver'
+  mappings:
+  - node_id: go-interface-nil-semantics
+    relationship_to_canonical: direct_support
+  paraphrase: Demonstrates that converting a nil pointer to an interface produces a non-nil interface and requires an explicit nil return for an absent error or other interface value.
+  conditions: 'Canonical mapping applicability (not attributed to the source): returning error or another interface from Go code; reviewing optional interface-valued results'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
     conditions: canonical-mapping
@@ -2386,6 +2542,90 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-100GO-37ab0530756c
+  source_id: SRC-100GO
+  locator: 'books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/006-chapter-2-code-and-project-organization.md#2.9 #9: Being confused about when to use generics'
+  mappings:
+  - node_id: go-semantics-before-performance-constructs
+    relationship_to_canonical: direct_support
+  paraphrase: Treats generics as an abstraction to introduce for demonstrated type variation or imminent boilerplate rather than speculative future reuse.
+  conditions: 'Canonical mapping applicability (not attributed to the source): Go receiver and parameter choice; generic or interface proposal; hot-path specialization'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-100GO-a54006a9fa24
+  source_id: SRC-100GO
+  locator: 'books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/010-chapter-6-functions-and-methods.md#6.1 #42: Not knowing which type of receiver to use'
+  mappings:
+  - node_id: go-semantics-before-performance-constructs
+    relationship_to_canonical: refinement
+  paraphrase: Selects value versus pointer receivers from mutation, copyability, size, method-set and interface consistency, and intended value semantics, with performance secondary.
+  conditions: 'Canonical mapping applicability (not attributed to the source): Go receiver and parameter choice; generic or interface proposal; hot-path specialization'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-100GO-f9cf58c59f67
+  source_id: SRC-100GO
+  locator: 'books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/007-chapter-3-data-types.md#3.9 #25: Unexpected side effects using slice append'
+  mappings:
+  - node_id: go-slice-aliasing-control
+    relationship_to_canonical: direct_support
+  paraphrase: Shows that a subslice retains the original backing array and that append can mutate the original when spare capacity remains; copying or a full-slice capacity limit isolates that effect.
+  conditions: 'Canonical mapping applicability (not attributed to the source): reviewing Go slice mutation or API ownership; diagnosing unexpected mutation or retained memory'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-100GO-918f35b9bc15
+  source_id: SRC-100GO
+  locator: 'books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/012-chapter-8-concurrency-foundations.md#8.3 #57: Being puzzled about when to use channels or mutexes'
+  mappings:
+  - node_id: go-synchronization-mechanism-fit
+    relationship_to_canonical: direct_support
+  paraphrase: Distinguishes mutex protection of shared state from channel-based coordination, signaling, and ownership transfer and treats the mechanisms as complementary.
+  conditions: 'Canonical mapping applicability (not attributed to the source): selecting synchronization for concurrent Go code; reviewing channels, locks, or atomics'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-CIG-a214380894d7
+  source_id: SRC-CIG
+  locator: books/concurrency-in-go/chapters/006-chapter-2-modeling-your-code-communicating-sequential-processes.md#Go's Philosophy on Concurrency
+  mappings:
+  - node_id: go-synchronization-mechanism-fit
+    relationship_to_canonical: direct_support
+  paraphrase: Routes ownership transfer and coordination toward channels and tightly scoped internal shared state toward synchronization, while reserving lower-level substitution for a measured critical section.
+  conditions: 'Canonical mapping applicability (not attributed to the source): selecting synchronization for concurrent Go code; reviewing channels, locks, or atomics'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-100GO-c4cc5fc8d036
+  source_id: SRC-100GO
+  locator: 'books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/009-chapter-5-strings.md#5.1 #36: Not understanding the concept of a rune'
+  mappings:
+  - node_id: go-text-byte-rune-semantics
+    relationship_to_canonical: direct_support
+  paraphrase: Distinguishes arbitrary string bytes, UTF-8 source literals, Unicode code points, and rune values, including that len reports bytes rather than runes.
+  conditions: 'Canonical mapping applicability (not attributed to the source): processing Go strings from files, networks, or users; reviewing indexing, length, slicing, or truncation of text'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-CIG-a4c3be4168e4
+  source_id: SRC-CIG
+  locator: books/concurrency-in-go/chapters/005-chapter-1-an-introduction-to-concurrency.md#Atomicity
+  mappings:
+  - node_id: implementation-atomicity-scope
+    relationship_to_canonical: direct_support
+  paraphrase: Makes atomicity context-dependent and demonstrates that a read, increment, and write can each be atomic while their compound update is not.
+  conditions: 'Canonical mapping applicability (not attributed to the source): reviewing concurrent read-modify-write behavior; designing transactions or critical sections'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-APOSD-854a62a628e0
   source_id: SRC-APOSD
   locator: 'books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/020-15-write-the-comments-first.md#15: Write The Comments First'
@@ -2406,6 +2646,42 @@ formulations:
     relationship_to_canonical: corroboration
   paraphrase: Provides intent-level pseudocode and header contracts as a compatible routine-design technique.
   conditions: 'Canonical mapping applicability (not attributed to the source): new shared routine; API design; unfamiliar algorithm; consequential abstraction'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-100GO-b14dd786d074
+  source_id: SRC-100GO
+  locator: 'books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/012-chapter-8-concurrency-foundations.md#8.4 #58: Not understanding race problems'
+  mappings:
+  - node_id: implementation-concurrency-ordering-contract
+    relationship_to_canonical: direct_support
+  paraphrase: Distinguishes data races from broader race conditions and uses Go memory-model ordering guarantees to show why synchronized access alone may not make behavior deterministic.
+  conditions: 'Canonical mapping applicability (not attributed to the source): implementing or reviewing concurrent code in any language; repairing a timing-sensitive race condition'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-CIG-e8d36d730546
+  source_id: SRC-CIG
+  locator: books/concurrency-in-go/chapters/005-chapter-1-an-introduction-to-concurrency.md#Race Conditions
+  mappings:
+  - node_id: implementation-concurrency-ordering-contract
+    relationship_to_canonical: direct_support
+  paraphrase: Shows that sleeps only raise the probability of one schedule and cannot correct a race; required operation order must be encoded rather than inferred from elapsed time.
+  conditions: 'Canonical mapping applicability (not attributed to the source): implementing or reviewing concurrent code in any language; repairing a timing-sensitive race condition'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-CIG-26f2185137cb
+  source_id: SRC-CIG
+  locator: books/concurrency-in-go/chapters/005-chapter-1-an-introduction-to-concurrency.md#Deadlocks, Livelocks, and Starvation
+  mappings:
+  - node_id: implementation-concurrency-progress-contract
+    relationship_to_canonical: direct_support
+  paraphrase: Separates deadlock, livelock, and starvation from value correctness and exposes lock order, critical-section scope, fairness, and non-memory resources as progress obligations.
+  conditions: 'Canonical mapping applicability (not attributed to the source): designing or reviewing concurrent components; diagnosing hangs or starvation'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
     conditions: canonical-mapping
@@ -2945,6 +3221,30 @@ formulations:
   - node_id: implementation-risk-driven-tests
     relationship_to_canonical: refinement
   paraphrase: Sets an asymmetric evidence threshold by consequence - write operations warrant thorough database-integration coverage because mistakes corrupt persisted state and propagate to external systems, while only the most complex or important read operations justify tests.
+  conditions: 'Canonical mapping applicability (not attributed to the source): new behavior; repair; refactoring; legacy change; optimization; integration'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-100GO-90caf5322894
+  source_id: SRC-100GO
+  locator: 'books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/015-chapter-11-testing.md#11.2 #83: Not enabling the -race flag'
+  mappings:
+  - node_id: implementation-risk-driven-tests
+    relationship_to_canonical: refinement
+  paraphrase: 'Makes Go''s runtime race detector a targeted concurrency check while preserving its limits: it observes only exercised paths and carries substantial execution and memory overhead.'
+  conditions: 'Canonical mapping applicability (not attributed to the source): new behavior; repair; refactoring; legacy change; optimization; integration'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-CIG-8a8c1887c784
+  source_id: SRC-CIG
+  locator: books/concurrency-in-go/chapters/011-appendix.md#Race Detection
+  mappings:
+  - node_id: implementation-risk-driven-tests
+    relationship_to_canonical: corroboration
+  paraphrase: Corroborates continuous race-detector use for concurrent paths while stating that runtime detection finds only races exercised by the selected tests or workload.
   conditions: 'Canonical mapping applicability (not attributed to the source): new behavior; repair; refactoring; legacy change; optimization; integration'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -3646,6 +3946,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-100GO-7d36cdb248bf
+  source_id: SRC-100GO
+  locator: 'books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/014-chapter-10-the-standard-library.md#10.7 #81: Using the default HTTP client and server'
+  mappings:
+  - node_id: operations-integration-point-distrust
+    relationship_to_canonical: refinement
+  paraphrase: Shows that Go's default HTTP client has no request timeout and its default server omits protective phase limits, so production clients and servers need explicit timeout and resource policy.
+  conditions: 'Canonical mapping applicability (not attributed to the source): writing or reviewing code that calls another process or service; integrating a vendor client library; diagnosing hangs near a remote dependency'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-RI-4e2b9949be10
   source_id: SRC-RI
   locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/017-chapter-11-security.md#The Principle of Least Privilege
@@ -3778,6 +4090,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-CIG-25761275a97e
+  source_id: SRC-CIG
+  locator: books/concurrency-in-go/chapters/009-chapter-5-concurrency-at-scale.md#Rate Limiting
+  mappings:
+  - node_id: operations-load-shedding
+    relationship_to_canonical: refinement
+  paraphrase: Uses rate limits to bound malicious and legitimate demand, preserve fairness across users, and compose multiple resource-specific quotas before work enters the protected operation.
+  conditions: 'Canonical mapping applicability (not attributed to the source): services facing demand they do not control; designing health checks and load-balancer integration; diagnosing latency collapse at peak load'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-RI-3daebe831fee
   source_id: SRC-RI
   locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/005-chapter-1-living-in-production.md#Aiming for the Right Target
@@ -3821,6 +4145,18 @@ formulations:
   - node_id: operations-resilience-margin
     relationship_to_canonical: refinement
   paraphrase: Argues full utilization slows flow and that value-stream optimization specializes the system to today's tasks at the cost of future flexibility - the adaptability face of the same tradeoff.
+  conditions: 'Canonical mapping applicability (not attributed to the source): setting utilization or efficiency targets; reviewing optimization campaigns that consume headroom; assessing why a hyper-efficient system fails abruptly; value-stream optimization that specializes a system to today''s tasks'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-CIG-79ebe140fe49
+  source_id: SRC-CIG
+  locator: books/concurrency-in-go/chapters/009-chapter-5-concurrency-at-scale.md#Replicated Requests
+  mappings:
+  - node_id: operations-resilience-margin
+    relationship_to_canonical: refinement
+  paraphrase: Frames replicated requests as an explicit exchange of additional handlers and downstream resources for lower tail latency and fault tolerance, requiring cancellation of losing work.
   conditions: 'Canonical mapping applicability (not attributed to the source): setting utilization or efficiency targets; reviewing optimization campaigns that consume headroom; assessing why a hyper-efficient system fails abruptly; value-stream optimization that specializes a system to today''s tasks'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -4054,6 +4390,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-100GO-1d0935b587ff
+  source_id: SRC-100GO
+  locator: 'books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/015-chapter-11-testing.md#11.8 #89: Writing inaccurate benchmarks'
+  mappings:
+  - node_id: performance-benchmark-validity
+    relationship_to_canonical: direct_support
+  paraphrase: Enumerates Go benchmark validity threats from timer scope, short runs and variance, compiler elimination, environment mismatch, cached input state, and the observer effect.
+  conditions: 'Canonical mapping applicability (not attributed to the source): designing or reviewing microbenchmarks, macrobenchmarks, load tests, or stress tests'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-FP-0dd5704280be
   source_id: SRC-FP
   locator: books/fluent-python-2nd-edition-z-lib-org/chapters/015-chapter-9-decorators-and-closures.md#Using lru_cache
@@ -4162,6 +4510,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-100GO-efc677baa7d1
+  source_id: SRC-100GO
+  locator: 'books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/012-chapter-8-concurrency-foundations.md#8.5 #59: Not understanding the concurrency impacts of a workload type'
+  mappings:
+  - node_id: performance-earned-bounded-concurrency
+    relationship_to_canonical: refinement
+  paraphrase: Sizes worker concurrency from whether work is CPU-bound or I/O-bound and from actual CPU or external-system capacity, while requiring benchmark validation rather than a fixed worker-count rule.
+  conditions: 'Canonical mapping applicability (not attributed to the source): proposing or reviewing threads, processes, goroutines, worker pools, async tasks, or sharding'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-EGO-43361b873c90
   source_id: SRC-EGO
   locator: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/012-chapter-8-benchmarking-versus-stress-and-load-tests.md#Benchmarking Levels
@@ -4246,6 +4606,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-100GO-8fcad813e341
+  source_id: SRC-100GO
+  locator: 'books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/007-chapter-3-data-types.md#3.10 #26: Slices and memory leaks'
+  mappings:
+  - node_id: performance-memory-lifecycle
+    relationship_to_canonical: refinement
+  paraphrase: 'Shows two Go retention paths: a small subslice can retain a large backing array, and removed pointer elements can remain garbage-collector reachable; copying or clearing references changes lifetime.'
+  conditions: 'Canonical mapping applicability (not attributed to the source): diagnosing memory growth, allocation pressure, GC cost, OOM, or process footprint'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-EGO-b2380da8dfcb
   source_id: SRC-EGO
   locator: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/010-chapter-6-efficiency-observability.md#Efficiency Metrics Semantics
@@ -4301,6 +4673,18 @@ formulations:
   - node_id: performance-profile-causal-bottleneck
     relationship_to_canonical: corroboration
   paraphrase: Establishes profile-led bottleneck selection with profile-semantic caveats.
+  conditions: 'Canonical mapping applicability (not attributed to the source): deliberate optimization or unexplained CPU, memory, latency, contention, or task growth'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-100GO-12e6913a2591
+  source_id: SRC-100GO
+  locator: 'books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/016-chapter-12-optimizations.md#12.8 #98: Not using Go diagnostics tooling'
+  mappings:
+  - node_id: performance-profile-causal-bottleneck
+    relationship_to_canonical: direct_support
+  paraphrase: Differentiates CPU, goroutine, heap, mutex, and blocking profiles from execution traces and selects them by the resource or scheduling question rather than optimizing blind.
   conditions: 'Canonical mapping applicability (not attributed to the source): deliberate optimization or unexplained CPU, memory, latency, contention, or task growth'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -4373,6 +4757,18 @@ formulations:
   - node_id: performance-resource-lifecycle
     relationship_to_canonical: corroboration
   paraphrase: Production incident evidence - a connection pool with no checkout timeout left all 3,000 request-handling threads blocked forever on an unresponsive downstream dependency while CPU stayed near zero, a missing completion path on a pooled resource halting the entire system.
+  conditions: 'Canonical mapping applicability (not attributed to the source): code creates asynchronous work or acquires external/scarce resources; reuse, caching, pooling, or background processing is proposed'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-CIG-dab4c4b63d32
+  source_id: SRC-CIG
+  locator: books/concurrency-in-go/chapters/008-chapter-4-concurrency-patterns-in-go.md#Queuing
+  mappings:
+  - node_id: performance-resource-lifecycle
+    relationship_to_canonical: refinement
+  paraphrase: Rejects queues as an automatic performance repair, relates capacity to arrival and service rates, and makes lag, memory, hidden synchronization defects, and loss on failure explicit costs.
   conditions: 'Canonical mapping applicability (not attributed to the source): code creates asynchronous work or acquires external/scarce resources; reuse, caching, pooling, or background processing is proposed'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -5590,6 +5986,30 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-100GO-6c14f61677b4
+  source_id: SRC-100GO
+  locator: 'books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/015-chapter-11-testing.md#11.5 #86: Sleeping in unit tests'
+  mappings:
+  - node_id: testing-deterministic-async-observation
+    relationship_to_canonical: direct_support
+  paraphrase: Replaces passive sleeps with channel-based synchronization and retains bounded retry only as a fallback when direct coordination cannot be designed.
+  conditions: 'Canonical mapping applicability (not attributed to the source): testing goroutines, threads, tasks, callbacks, or eventual state; repairing time-based flaky tests'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-CIG-e104686e83f0
+  source_id: SRC-CIG
+  locator: books/concurrency-in-go/chapters/009-chapter-5-concurrency-at-scale.md#Heartbeats
+  mappings:
+  - node_id: testing-deterministic-async-observation
+    relationship_to_canonical: corroboration
+  paraphrase: Uses unit-of-work and interval heartbeats as explicit progress observations that let tests wait for real activity rather than choose an arbitrary sleep duration.
+  conditions: 'Canonical mapping applicability (not attributed to the source): testing goroutines, threads, tasks, callbacks, or eventual state; repairing time-based flaky tests'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-UT-3136d3ad57da
   source_id: SRC-UT
   locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/010-chapter-4-the-four-pillars-of-a-good-unit-test.md#4.1 Diving into the four pillars of a good unit test
@@ -6053,6 +6473,18 @@ formulations:
   - node_id: universal-earned-abstraction
     relationship_to_canonical: corroboration
   paraphrase: Refines abstraction pressure as duplicated authoritative knowledge rather than text alone.
+  conditions: 'Canonical mapping applicability (not attributed to the source): proposing helper, module, interface, base class, pattern, plugin, or framework; evaluating duplication or multiple implementations'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-100GO-0c0c8bbfae82
+  source_id: SRC-100GO
+  locator: 'books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/006-chapter-2-code-and-project-organization.md#2.5 #5: Interface pollution'
+  mappings:
+  - node_id: universal-earned-abstraction
+    relationship_to_canonical: refinement
+  paraphrase: Identifies common behavior, actual decoupling, and intentional behavior restriction as evidence for an interface, while treating speculative interfaces that do not improve the code as pollution.
   conditions: 'Canonical mapping applicability (not attributed to the source): proposing helper, module, interface, base class, pattern, plugin, or framework; evaluating duplication or multiple implementations'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -6732,6 +7164,20 @@ formulations:
     caveats: conflict-position
   conflict_ref: conflict-concurrency-vs-sequential-simplicity
   position_ref: concurrent
+- id: F-CONFLICT-CIG-73ea8275aae4
+  source_id: SRC-CIG
+  locator: books/concurrency-in-go/chapters/006-chapter-2-modeling-your-code-communicating-sequential-processes.md#Go's Philosophy on Concurrency
+  mappings:
+  - node_id: conflict-concurrency-vs-sequential-simplicity
+    relationship_to_canonical: refinement
+  paraphrase: Supports channel-based coordination and ownership transfer for concurrent work while leaving the choice conditional on workload, lifecycle, and current runtime evidence.
+  conditions: Applies to position 'concurrent' within conflict-concurrency-vs-sequential-simplicity under its evidence-selection rule.
+  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: Efficient Go and Fluent Python directly support conditional concurrency model selection.'
+  context_basis:
+    conditions: conflict-position
+    caveats: conflict-position
+  conflict_ref: conflict-concurrency-vs-sequential-simplicity
+  position_ref: concurrent
 - id: F-CONFLICT-EGO-14fe0bf5bda4
   source_id: SRC-EGO
   locator: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/008-chapter-4-how-go-uses-the-cpu-resource-or-two.md#When to Use Concurrency
@@ -6739,6 +7185,20 @@ formulations:
   - node_id: conflict-concurrency-vs-sequential-simplicity
     relationship_to_canonical: direct_support
   paraphrase: Warns that concurrency adds cost and should not be introduced when the workload and target do not justify it.
+  conditions: Applies to position 'sequential' within conflict-concurrency-vs-sequential-simplicity under its evidence-selection rule.
+  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: Efficient Go''s use conditions retain sequential execution as the lower-cost default.'
+  context_basis:
+    conditions: conflict-position
+    caveats: conflict-position
+  conflict_ref: conflict-concurrency-vs-sequential-simplicity
+  position_ref: sequential
+- id: F-CONFLICT-100GO-00f137a1b3f3
+  source_id: SRC-100GO
+  locator: 'books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/012-chapter-8-concurrency-foundations.md#8.2 #56: Thinking concurrency is always faster'
+  mappings:
+  - node_id: conflict-concurrency-vs-sequential-simplicity
+    relationship_to_canonical: direct_support
+  paraphrase: Shows scheduling and coordination overhead can dominate small work and recommends a sequential baseline before a profiled and benchmarked concurrent alternative.
   conditions: Applies to position 'sequential' within conflict-concurrency-vs-sequential-simplicity under its evidence-selection rule.
   caveats: 'This evidence supports one position; it does not decide the conflict. Basis: Efficient Go''s use conditions retain sequential execution as the lower-cost default.'
   context_basis:
@@ -6816,6 +7276,34 @@ formulations:
     caveats: conflict-position
   conflict_ref: conflict-dependency-inversion-vs-direct-coupling
   position_ref: invert-dependency
+- id: F-CONFLICT-100GO-49ba45d1e103
+  source_id: SRC-100GO
+  locator: 'books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/006-chapter-2-code-and-project-organization.md#2.6 #6: Interface on the producer side'
+  mappings:
+  - node_id: conflict-dependency-inversion-vs-direct-coupling
+    relationship_to_canonical: refinement
+  paraphrase: Locates the minimal behavioral interface with the consuming package, supplying Go-specific support for consumer-controlled inversion when an actual consumer contract exists.
+  conditions: Applies to position 'invert-dependency' within conflict-dependency-inversion-vs-direct-coupling under its evidence-selection rule.
+  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: Clean Architecture supplies the policy argument and WELC supplies a constrained legacy mechanism.'
+  context_basis:
+    conditions: conflict-position
+    caveats: conflict-position
+  conflict_ref: conflict-dependency-inversion-vs-direct-coupling
+  position_ref: invert-dependency
+- id: F-CONFLICT-100GO-641a2429fe6d
+  source_id: SRC-100GO
+  locator: 'books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/006-chapter-2-code-and-project-organization.md#2.5 #5: Interface pollution'
+  mappings:
+  - node_id: conflict-dependency-inversion-vs-direct-coupling
+    relationship_to_canonical: direct_support
+  paraphrase: Treats an interface without common behavior, actual decoupling, or intentional restriction as pollution, directly supporting continued concrete coupling until abstraction pressure exists.
+  conditions: Applies to position 'direct-dependency' within conflict-dependency-inversion-vs-direct-coupling under its evidence-selection rule.
+  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: 100 Go Mistakes directly supports retaining a concrete dependency when an interface does not improve current consumers; the position remains conditional on shared lifecycle and volatility evidence.'
+  context_basis:
+    conditions: conflict-position
+    caveats: conflict-position
+  conflict_ref: conflict-dependency-inversion-vs-direct-coupling
+  position_ref: direct-dependency
 - id: F-CONFLICT-DDD-8a521ac47ad2
   source_id: SRC-DDD
   locator: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/005-chapter-4-isolating-the-domain.md#The Domain Layer Is Where the Model Lives
@@ -6928,6 +7416,20 @@ formulations:
     caveats: conflict-position
   conflict_ref: conflict-efficiency-vs-resilience-margin
   position_ref: retain-resilience-margin
+- id: F-CONFLICT-CIG-0b993457741c
+  source_id: SRC-CIG
+  locator: books/concurrency-in-go/chapters/009-chapter-5-concurrency-at-scale.md#Replicated Requests
+  mappings:
+  - node_id: conflict-efficiency-vs-resilience-margin
+    relationship_to_canonical: refinement
+  paraphrase: 'Makes the resilience side''s resource cost explicit: replicated requests trade additional handler and downstream capacity for tail-latency and fault-tolerance margin and require cancellation of losing work.'
+  conditions: Applies to position 'retain-resilience-margin' within conflict-efficiency-vs-resilience-margin under its evidence-selection rule.
+  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: Release It! directly advances retained margin and routine tolerable stress as the counterweight to efficiency-driven drift.'
+  context_basis:
+    conditions: conflict-position
+    caveats: conflict-position
+  conflict_ref: conflict-efficiency-vs-resilience-margin
+  position_ref: retain-resilience-margin
 - id: F-CONFLICT-RI-29ab9488b28f
   source_id: SRC-RI
   locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/008-chapter-3-stabilize-your-system.md#Chain of Failure
@@ -7012,6 +7514,20 @@ formulations:
     caveats: conflict-position
   conflict_ref: conflict-generalized-reuse-vs-local-clarity
   position_ref: generalized-reuse
+- id: F-CONFLICT-100GO-db230ddbf9ac
+  source_id: SRC-100GO
+  locator: 'books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/006-chapter-2-code-and-project-organization.md#2.9 #9: Being confused about when to use generics'
+  mappings:
+  - node_id: conflict-generalized-reuse-vs-local-clarity
+    relationship_to_canonical: direct_support
+  paraphrase: Recommends introducing generics for demonstrated type variation or imminent repeated boilerplate rather than speculative future reuse, directly supporting local clarity before earned generalization.
+  conditions: Applies to position 'local-clarity' within conflict-generalized-reuse-vs-local-clarity under its evidence-selection rule.
+  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: 100 Go Mistakes directly supports the local-purpose position until present type variation or repeated boilerplate earns generalization.'
+  context_basis:
+    conditions: conflict-position
+    caveats: conflict-position
+  conflict_ref: conflict-generalized-reuse-vs-local-clarity
+  position_ref: local-clarity
 - id: F-CONFLICT-RI-5a1f22ed66d7
   source_id: SRC-RI
   locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/016-chapter-10-control-plane.md#Command and Control

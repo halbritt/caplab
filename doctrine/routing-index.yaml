@@ -943,7 +943,9 @@ task_registry:
   - accept-improvement
   - acquire-Go-resource
   - acquire-resource
+  - add-Go-concurrency
   - add-Go-dependency
+  - add-concurrency
   - add-generics
   - add-interface
   - add-language-feature
@@ -972,6 +974,7 @@ task_registry:
   - asynchronous-workflow
   - behavior-placement
   - behavior-preserving-change
+  - bound-concurrency
   - boundary selection
   - boundary-design
   - boundary-planning
@@ -1156,6 +1159,7 @@ task_registry:
   - review-I-O
   - review-Python
   - review-Python-API
+  - review-async
   - review-cache
   - review-cleanup
   - review-comment
@@ -1182,6 +1186,7 @@ task_registry:
   - schema change
   - select-boundary
   - select-callable
+  - select-concurrency
   - service-decomposition
   - service-extraction
   - service-review
@@ -1223,7 +1228,9 @@ task_registry:
   - accept-improvement
   - acquire-Go-resource
   - acquire-resource
+  - add-Go-concurrency
   - add-Go-dependency
+  - add-concurrency
   - add-generics
   - add-interface
   - add-language-feature
@@ -1252,6 +1259,7 @@ task_registry:
   - asynchronous-workflow
   - automated transformation
   - behavior-preserving-change
+  - bound-concurrency
   - boundary-design
   - boundary-planning
   - boundary-review
@@ -1426,6 +1434,7 @@ task_registry:
   - review-I-O
   - review-Python
   - review-Python-API
+  - review-async
   - review-cache
   - review-cleanup
   - review-comment
@@ -1452,6 +1461,7 @@ task_registry:
   - select campaign
   - select-boundary
   - select-callable
+  - select-concurrency
   - service-decomposition
   - service-extraction
   - shutdown-design
@@ -1488,7 +1498,9 @@ task_registry:
   - accept-improvement
   - acquire-Go-resource
   - acquire-resource
+  - add-Go-concurrency
   - add-Go-dependency
+  - add-concurrency
   - add-generics
   - add-interface
   - add-language-feature
@@ -1517,6 +1529,7 @@ task_registry:
   - asynchronous-workflow
   - automated transformation
   - behavior-preserving-change
+  - bound-concurrency
   - boundary-design
   - boundary-planning
   - boundary-review
@@ -1691,6 +1704,7 @@ task_registry:
   - review-I-O
   - review-Python
   - review-Python-API
+  - review-async
   - review-cache
   - review-cleanup
   - review-comment
@@ -1717,6 +1731,7 @@ task_registry:
   - select campaign
   - select-boundary
   - select-callable
+  - select-concurrency
   - service-decomposition
   - service-extraction
   - shutdown-design
@@ -4797,6 +4812,141 @@ concept_routes:
   - implementation
   - performance-optimization
   - repository-assessment
+- concept_id: go-channel-capacity-contract
+  artifact: concepts/go.yaml
+  activate_for_roles:
+  - coding-agent
+  - architecture-agent
+  - performance-agent
+  - review-agent
+  activate_for_tasks:
+  - add-Go-concurrency
+  - bound-concurrency
+  - review-async
+  activate_for_repository_signals:
+  - make chan with capacity
+  - worker queue
+  - blocked send
+  activate_for_languages:
+  - Go
+  activate_for_risk_classes:
+  - concurrency
+  - resource-lifecycle
+  - performance
+  exclude_when:
+  - no channel or capacity choice is in scope
+  prerequisites:
+  - producer-consumer and blocking contract
+  retrieval_priority: high
+  retrieval_budget_hint: 360
+  related_concepts:
+  - performance-resource-lifecycle
+  - go-goroutine-resource-lifecycle
+  - go-bounded-concurrency
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+- concept_id: go-consumer-owned-interfaces
+  artifact: concepts/go.yaml
+  activate_for_roles:
+  - coding-agent
+  - architecture-agent
+  - review-agent
+  activate_for_tasks:
+  - add-interface
+  - design-Go-API
+  - review-interface
+  activate_for_repository_signals:
+  - Go interface declaration
+  - producer package API
+  - mock-only abstraction
+  activate_for_languages:
+  - Go
+  activate_for_risk_classes:
+  - API
+  - architecture
+  - compatibility
+  exclude_when:
+  - no behavioral abstraction is required by a current consumer
+  prerequisites:
+  - current consumer inventory
+  retrieval_priority: high
+  retrieval_budget_hint: 360
+  related_concepts:
+  - universal-earned-abstraction
+  - implementation-minimal-coherent-api
+  - architecture-dependency-inversion-gate
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+- concept_id: go-context-lifecycle-propagation
+  artifact: concepts/go.yaml
+  activate_for_roles:
+  - coding-agent
+  - architecture-agent
+  - review-agent
+  - debugging-and-repair-agent
+  activate_for_tasks:
+  - launch-goroutine
+  - review-async
+  - review-shutdown
+  activate_for_repository_signals:
+  - context.Context
+  - context.Background
+  - WithCancel
+  - WithTimeout
+  activate_for_languages:
+  - Go
+  activate_for_risk_classes:
+  - resource-lifecycle
+  - correctness
+  - availability
+  exclude_when:
+  - no caller-scoped lifecycle exists
+  prerequisites:
+  - caller and callee lifecycle map
+  retrieval_priority: high
+  retrieval_budget_hint: 360
+  related_concepts:
+  - go-goroutine-resource-lifecycle
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: go-explicit-contextual-errors
   artifact: concepts/go.yaml
   activate_for_roles:
@@ -4882,10 +5032,55 @@ concept_routes:
   - implementation-explicit-failure-policy
   - go-explicit-contextual-errors
   - go-bounded-concurrency
+  - go-context-lifecycle-propagation
+  - go-channel-capacity-contract
+  - implementation-concurrency-progress-contract
   activate_for_role_families:
   - coding-agent
   - debugging-and-repair-agent
   - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+- concept_id: go-interface-nil-semantics
+  artifact: concepts/go.yaml
+  activate_for_roles:
+  - coding-agent
+  - review-agent
+  - debugging-and-repair-agent
+  activate_for_tasks:
+  - design-Go-API
+  - review-interface
+  - repair-Go-failure
+  activate_for_repository_signals:
+  - interface return
+  - error return
+  - nil pointer conversion
+  activate_for_languages:
+  - Go
+  activate_for_risk_classes:
+  - correctness
+  - API
+  - runtime-semantics
+  exclude_when:
+  - absence is not part of the interface contract
+  prerequisites:
+  - documented absence semantics
+  retrieval_priority: high
+  retrieval_budget_hint: 300
+  related_concepts:
+  - go-explicit-contextual-errors
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
   - review-agent
   activate_for_task_families:
   - api-review
@@ -4996,6 +5191,184 @@ concept_routes:
   - performance-optimization
   - refactoring
   - repository-assessment
+- concept_id: go-slice-aliasing-control
+  artifact: concepts/go.yaml
+  activate_for_roles:
+  - coding-agent
+  - review-agent
+  - debugging-and-repair-agent
+  activate_for_tasks:
+  - review-mutation
+  - review-representation
+  - repair-Go-failure
+  activate_for_repository_signals:
+  - slice expression
+  - append call
+  - slice returned across package boundary
+  activate_for_languages:
+  - Go
+  activate_for_risk_classes:
+  - correctness
+  - concurrency
+  - memory
+  exclude_when:
+  - no alias, mutation, append, retention, or escape is possible
+  prerequisites:
+  - slice ownership and mutation path
+  retrieval_priority: high
+  retrieval_budget_hint: 340
+  related_concepts:
+  - performance-memory-lifecycle
+  - implementation-concurrency-ordering-contract
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+- concept_id: go-synchronization-mechanism-fit
+  artifact: concepts/go.yaml
+  activate_for_roles:
+  - coding-agent
+  - architecture-agent
+  - performance-agent
+  - review-agent
+  activate_for_tasks:
+  - select-concurrency
+  - add-Go-concurrency
+  - review-async
+  activate_for_repository_signals:
+  - channel declaration
+  - sync.Mutex
+  - sync.RWMutex
+  - sync/atomic
+  activate_for_languages:
+  - Go
+  activate_for_risk_classes:
+  - concurrency
+  - correctness
+  - performance
+  exclude_when:
+  - no concurrency or shared state exists
+  prerequisites:
+  - ownership and ordering contract
+  retrieval_priority: high
+  retrieval_budget_hint: 390
+  related_concepts:
+  - go-bounded-concurrency
+  - go-goroutine-resource-lifecycle
+  - implementation-concurrency-progress-contract
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - performance-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+- concept_id: go-text-byte-rune-semantics
+  artifact: concepts/go.yaml
+  activate_for_roles:
+  - coding-agent
+  - review-agent
+  - debugging-and-repair-agent
+  activate_for_tasks:
+  - review-representation
+  - review-types
+  - repair-Go-failure
+  activate_for_repository_signals:
+  - string indexing
+  - len on string
+  - byte-to-string conversion
+  activate_for_languages:
+  - Go
+  activate_for_risk_classes:
+  - correctness
+  - data-integrity
+  - runtime-semantics
+  exclude_when:
+  - the value remains opaque bytes end to end
+  prerequisites:
+  - encoding and semantic-unit contract
+  retrieval_priority: high
+  retrieval_budget_hint: 330
+  related_concepts:
+  - implementation-representation-fit
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+- concept_id: implementation-atomicity-scope
+  artifact: concepts/implementation.yaml
+  activate_for_roles:
+  - coding-agent
+  - review-agent
+  - architecture-agent
+  - debugging-and-repair-agent
+  activate_for_tasks:
+  - add-concurrency
+  - review-control-flow
+  - code-review
+  activate_for_repository_signals:
+  - atomic primitive
+  - transaction
+  - check then update
+  - shared counter
+  activate_for_languages:
+  - language-independent
+  activate_for_risk_classes:
+  - concurrency
+  - correctness
+  - data-integrity
+  exclude_when:
+  - no compound invariant spans operations
+  prerequisites:
+  - named observer and invariant
+  retrieval_priority: core
+  retrieval_budget_hint: 370
+  related_concepts:
+  - implementation-concurrency-ordering-contract
+  - implementation-concurrency-progress-contract
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
 - concept_id: implementation-comments-first-design-probe
   artifact: concepts/implementation.yaml
   activate_for_roles:
@@ -5035,6 +5408,99 @@ concept_routes:
   - defect-repair
   - domain-design
   - implementation
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+- concept_id: implementation-concurrency-ordering-contract
+  artifact: concepts/implementation.yaml
+  activate_for_roles:
+  - coding-agent
+  - review-agent
+  - debugging-and-repair-agent
+  - architecture-agent
+  activate_for_tasks:
+  - add-concurrency
+  - review-async
+  - repair-Go-failure
+  activate_for_repository_signals:
+  - thread or task launch
+  - sleep near concurrent code
+  - shared state
+  activate_for_languages:
+  - language-independent
+  activate_for_risk_classes:
+  - concurrency
+  - correctness
+  - causality
+  exclude_when:
+  - all interleavings are valid
+  prerequisites:
+  - named ordering requirement
+  retrieval_priority: core
+  retrieval_budget_hint: 380
+  related_concepts:
+  - implementation-concurrency-ordering-contract
+  - implementation-atomicity-scope
+  - testing-deterministic-async-observation
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
+  - legacy-change
+  - performance-optimization
+  - refactoring
+  - repository-assessment
+- concept_id: implementation-concurrency-progress-contract
+  artifact: concepts/implementation.yaml
+  activate_for_roles:
+  - coding-agent
+  - review-agent
+  - debugging-and-repair-agent
+  - architecture-agent
+  activate_for_tasks:
+  - add-concurrency
+  - review-async
+  - design-failure-mode
+  activate_for_repository_signals:
+  - multiple locks
+  - retry loop
+  - blocked workers
+  - resource acquisition
+  activate_for_languages:
+  - language-independent
+  activate_for_risk_classes:
+  - concurrency
+  - availability
+  - resource-lifecycle
+  exclude_when:
+  - no concurrent or asynchronous resource acquisition exists
+  prerequisites:
+  - resource ownership and wait graph
+  retrieval_priority: core
+  retrieval_budget_hint: 400
+  related_concepts:
+  - implementation-atomicity-scope
+  - implementation-concurrency-ordering-contract
+  - go-goroutine-resource-lifecycle
+  activate_for_role_families:
+  - architecture-agent
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - implementation
+  conditional_for_task_families:
+  - domain-design
   - legacy-change
   - performance-optimization
   - refactoring
@@ -7912,6 +8378,9 @@ concept_routes:
   - performance-earned-bounded-concurrency
   - performance-memory-lifecycle
   - implementation-explicit-failure-policy
+  - go-channel-capacity-contract
+  - implementation-concurrency-progress-contract
+  - operations-load-shedding
   activate_for_role_families:
   - coding-agent
   - debugging-and-repair-agent
@@ -10019,6 +10488,46 @@ concept_routes:
   - performance-optimization
   - refactoring
   - repository-assessment
+- concept_id: testing-deterministic-async-observation
+  artifact: concepts/testing.yaml
+  activate_for_roles:
+  - coding-agent
+  - review-agent
+  - debugging-and-repair-agent
+  activate_for_tasks:
+  - assess-tests
+  - review-tests
+  - review-async
+  activate_for_repository_signals:
+  - sleep in test
+  - eventual assertion
+  - goroutine or task under test
+  activate_for_languages:
+  - language-independent
+  activate_for_risk_classes:
+  - correctness
+  - concurrency
+  - regression
+  exclude_when:
+  - the test is entirely synchronous
+  prerequisites:
+  - observable completion criterion
+  retrieval_priority: core
+  retrieval_budget_hint: 370
+  related_concepts:
+  - implementation-risk-driven-tests
+  - implementation-concurrency-ordering-contract
+  - operations-liveness-by-external-observation
+  - testing-suite-net-value
+  activate_for_role_families:
+  - coding-agent
+  - debugging-and-repair-agent
+  - review-agent
+  activate_for_task_families:
+  - api-review
+  - defect-repair
+  - repository-assessment
+  conditional_for_task_families: []
 - concept_id: testing-four-pillar-test-value
   artifact: concepts/testing.yaml
   activate_for_roles:
@@ -11392,10 +11901,20 @@ role_bundles:
   - architecture-structural-constraint-enforcement
   - debugging-causal-repair
   - debugging-hypothesis-led-investigation
+  - go-channel-capacity-contract
+  - go-consumer-owned-interfaces
+  - go-context-lifecycle-propagation
   - go-explicit-contextual-errors
   - go-goroutine-resource-lifecycle
+  - go-interface-nil-semantics
   - go-package-api-simplicity
   - go-semantics-before-performance-constructs
+  - go-slice-aliasing-control
+  - go-synchronization-mechanism-fit
+  - go-text-byte-rune-semantics
+  - implementation-atomicity-scope
+  - implementation-concurrency-ordering-contract
+  - implementation-concurrency-progress-contract
   - implementation-duplication-as-evidence
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
@@ -11456,6 +11975,7 @@ role_bundles:
   - review-severity-confidence-separation
   - testing-assert-observable-outcomes
   - testing-coverage-is-not-adequacy
+  - testing-deterministic-async-observation
   - testing-four-pillar-test-value
   - testing-integration-scope-selection
   - testing-mock-unmanaged-dependencies-only
@@ -11593,8 +12113,15 @@ role_bundles:
   - architecture-selective-option-preservation
   - architecture-structural-constraint-enforcement
   - architecture-team-topology-force
+  - go-channel-capacity-contract
+  - go-consumer-owned-interfaces
+  - go-context-lifecycle-propagation
   - go-package-api-simplicity
   - go-semantics-before-performance-constructs
+  - go-synchronization-mechanism-fit
+  - implementation-atomicity-scope
+  - implementation-concurrency-ordering-contract
+  - implementation-concurrency-progress-contract
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
   - implementation-fail-fast-or-recover
@@ -11890,8 +12417,10 @@ role_bundles:
   - agent-conduct-authority-bounded-action
   - architecture-fitness-functions
   - architecture-scoped-characteristics
+  - go-channel-capacity-contract
   - go-goroutine-resource-lifecycle
   - go-semantics-before-performance-constructs
+  - go-synchronization-mechanism-fit
   - implementation-duplication-as-evidence
   - implementation-repository-language-conformance
   - implementation-representation-fit
@@ -11992,10 +12521,20 @@ role_bundles:
   - architecture-team-topology-force
   - debugging-causal-repair
   - debugging-hypothesis-led-investigation
+  - go-channel-capacity-contract
+  - go-consumer-owned-interfaces
+  - go-context-lifecycle-propagation
   - go-explicit-contextual-errors
   - go-goroutine-resource-lifecycle
+  - go-interface-nil-semantics
   - go-package-api-simplicity
   - go-semantics-before-performance-constructs
+  - go-slice-aliasing-control
+  - go-synchronization-mechanism-fit
+  - go-text-byte-rune-semantics
+  - implementation-atomicity-scope
+  - implementation-concurrency-ordering-contract
+  - implementation-concurrency-progress-contract
   - implementation-duplication-as-evidence
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
@@ -12068,6 +12607,7 @@ role_bundles:
   - review-severity-confidence-separation
   - testing-assert-observable-outcomes
   - testing-coverage-is-not-adequacy
+  - testing-deterministic-async-observation
   - testing-four-pillar-test-value
   - testing-integration-scope-selection
   - testing-mock-unmanaged-dependencies-only
@@ -12189,8 +12729,15 @@ role_bundles:
   - architecture-fitness-functions
   - debugging-causal-repair
   - debugging-hypothesis-led-investigation
+  - go-context-lifecycle-propagation
   - go-explicit-contextual-errors
   - go-goroutine-resource-lifecycle
+  - go-interface-nil-semantics
+  - go-slice-aliasing-control
+  - go-text-byte-rune-semantics
+  - implementation-atomicity-scope
+  - implementation-concurrency-ordering-contract
+  - implementation-concurrency-progress-contract
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
   - implementation-fail-fast-or-recover
@@ -12233,6 +12780,7 @@ role_bundles:
   - review-severity-confidence-separation
   - testing-assert-observable-outcomes
   - testing-coverage-is-not-adequacy
+  - testing-deterministic-async-observation
   - testing-test-first-feedback
   conditional_concepts:
   - architecture-distribution-readiness
@@ -12339,10 +12887,20 @@ task_bundles:
   - architecture-decision-record
   - debugging-causal-repair
   - debugging-hypothesis-led-investigation
+  - go-channel-capacity-contract
+  - go-consumer-owned-interfaces
+  - go-context-lifecycle-propagation
   - go-explicit-contextual-errors
   - go-goroutine-resource-lifecycle
+  - go-interface-nil-semantics
   - go-package-api-simplicity
   - go-semantics-before-performance-constructs
+  - go-slice-aliasing-control
+  - go-synchronization-mechanism-fit
+  - go-text-byte-rune-semantics
+  - implementation-atomicity-scope
+  - implementation-concurrency-ordering-contract
+  - implementation-concurrency-progress-contract
   - implementation-duplication-as-evidence
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
@@ -12503,10 +13061,20 @@ task_bundles:
   - architecture-decision-record
   - debugging-causal-repair
   - debugging-hypothesis-led-investigation
+  - go-channel-capacity-contract
+  - go-consumer-owned-interfaces
+  - go-context-lifecycle-propagation
   - go-explicit-contextual-errors
   - go-goroutine-resource-lifecycle
+  - go-interface-nil-semantics
   - go-package-api-simplicity
   - go-semantics-before-performance-constructs
+  - go-slice-aliasing-control
+  - go-synchronization-mechanism-fit
+  - go-text-byte-rune-semantics
+  - implementation-atomicity-scope
+  - implementation-concurrency-ordering-contract
+  - implementation-concurrency-progress-contract
   - implementation-duplication-as-evidence
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
@@ -12549,6 +13117,7 @@ task_bundles:
   - review-severity-confidence-separation
   - testing-assert-observable-outcomes
   - testing-coverage-is-not-adequacy
+  - testing-deterministic-async-observation
   - testing-four-pillar-test-value
   - testing-integration-scope-selection
   - testing-mock-unmanaged-dependencies-only
@@ -12810,11 +13379,21 @@ task_bundles:
   - universal-reversible-reviewable-change
   - universal-separate-semantic-structural-change
   conditional_concepts:
+  - go-channel-capacity-contract
+  - go-consumer-owned-interfaces
+  - go-context-lifecycle-propagation
   - go-explicit-contextual-errors
   - go-goroutine-resource-lifecycle
+  - go-interface-nil-semantics
   - go-package-api-simplicity
   - go-semantics-before-performance-constructs
+  - go-slice-aliasing-control
+  - go-synchronization-mechanism-fit
+  - go-text-byte-rune-semantics
+  - implementation-atomicity-scope
   - implementation-comments-first-design-probe
+  - implementation-concurrency-ordering-contract
+  - implementation-concurrency-progress-contract
   - implementation-duplication-as-evidence
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
@@ -12942,11 +13521,21 @@ task_bundles:
   - architecture-selective-option-preservation
   - architecture-structural-constraint-enforcement
   - architecture-team-topology-force
+  - go-channel-capacity-contract
+  - go-consumer-owned-interfaces
+  - go-context-lifecycle-propagation
   - go-explicit-contextual-errors
   - go-goroutine-resource-lifecycle
+  - go-interface-nil-semantics
   - go-package-api-simplicity
   - go-semantics-before-performance-constructs
+  - go-slice-aliasing-control
+  - go-synchronization-mechanism-fit
+  - go-text-byte-rune-semantics
+  - implementation-atomicity-scope
   - implementation-comments-first-design-probe
+  - implementation-concurrency-ordering-contract
+  - implementation-concurrency-progress-contract
   - implementation-duplication-as-evidence
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
@@ -13096,11 +13685,21 @@ task_bundles:
   - architecture-selective-option-preservation
   - architecture-structural-constraint-enforcement
   - architecture-team-topology-force
+  - go-channel-capacity-contract
+  - go-consumer-owned-interfaces
+  - go-context-lifecycle-propagation
   - go-explicit-contextual-errors
   - go-goroutine-resource-lifecycle
+  - go-interface-nil-semantics
   - go-package-api-simplicity
   - go-semantics-before-performance-constructs
+  - go-slice-aliasing-control
+  - go-synchronization-mechanism-fit
+  - go-text-byte-rune-semantics
+  - implementation-atomicity-scope
   - implementation-comments-first-design-probe
+  - implementation-concurrency-ordering-contract
+  - implementation-concurrency-progress-contract
   - implementation-duplication-as-evidence
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
@@ -13186,10 +13785,20 @@ task_bundles:
   - architecture-decision-record
   - debugging-causal-repair
   - debugging-hypothesis-led-investigation
+  - go-channel-capacity-contract
+  - go-consumer-owned-interfaces
+  - go-context-lifecycle-propagation
   - go-explicit-contextual-errors
   - go-goroutine-resource-lifecycle
+  - go-interface-nil-semantics
   - go-package-api-simplicity
   - go-semantics-before-performance-constructs
+  - go-slice-aliasing-control
+  - go-synchronization-mechanism-fit
+  - go-text-byte-rune-semantics
+  - implementation-atomicity-scope
+  - implementation-concurrency-ordering-contract
+  - implementation-concurrency-progress-contract
   - implementation-duplication-as-evidence
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
@@ -13232,6 +13841,7 @@ task_bundles:
   - review-severity-confidence-separation
   - testing-assert-observable-outcomes
   - testing-coverage-is-not-adequacy
+  - testing-deterministic-async-observation
   - testing-four-pillar-test-value
   - testing-integration-scope-selection
   - testing-mock-unmanaged-dependencies-only
@@ -13397,11 +14007,21 @@ task_bundles:
   - architecture-selective-option-preservation
   - architecture-structural-constraint-enforcement
   - architecture-team-topology-force
+  - go-channel-capacity-contract
+  - go-consumer-owned-interfaces
+  - go-context-lifecycle-propagation
   - go-explicit-contextual-errors
   - go-goroutine-resource-lifecycle
+  - go-interface-nil-semantics
   - go-package-api-simplicity
   - go-semantics-before-performance-constructs
+  - go-slice-aliasing-control
+  - go-synchronization-mechanism-fit
+  - go-text-byte-rune-semantics
+  - implementation-atomicity-scope
   - implementation-comments-first-design-probe
+  - implementation-concurrency-ordering-contract
+  - implementation-concurrency-progress-contract
   - implementation-duplication-as-evidence
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
@@ -13497,6 +14117,7 @@ task_bundles:
   - repository-assessment-behavioral-data-fitness
   - repository-assessment-metrics-not-performance
   - review-severity-confidence-separation
+  - testing-deterministic-async-observation
   - testing-four-pillar-test-value
   - testing-testability-as-design-signal
   - universal-change-amplification
@@ -13550,11 +14171,21 @@ task_bundles:
   - domain-service-operation
   - domain-value-object
   - go-bounded-concurrency
+  - go-channel-capacity-contract
+  - go-consumer-owned-interfaces
+  - go-context-lifecycle-propagation
   - go-explicit-contextual-errors
   - go-goroutine-resource-lifecycle
+  - go-interface-nil-semantics
   - go-package-api-simplicity
   - go-semantics-before-performance-constructs
+  - go-slice-aliasing-control
+  - go-synchronization-mechanism-fit
+  - go-text-byte-rune-semantics
+  - implementation-atomicity-scope
   - implementation-comments-first-design-probe
+  - implementation-concurrency-ordering-contract
+  - implementation-concurrency-progress-contract
   - implementation-duplication-as-evidence
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
@@ -13678,10 +14309,17 @@ language_bundles:
 - language: Go
   concepts:
   - go-bounded-concurrency
+  - go-channel-capacity-contract
+  - go-consumer-owned-interfaces
+  - go-context-lifecycle-propagation
   - go-explicit-contextual-errors
   - go-goroutine-resource-lifecycle
+  - go-interface-nil-semantics
   - go-package-api-simplicity
   - go-semantics-before-performance-constructs
+  - go-slice-aliasing-control
+  - go-synchronization-mechanism-fit
+  - go-text-byte-rune-semantics
   - performance-cache-validity
   - performance-earned-bounded-concurrency
   - performance-memory-lifecycle
@@ -13724,6 +14362,8 @@ risk_routes:
 - risk_class: API
   concepts:
   - domain-intention-revealing-interface
+  - go-consumer-owned-interfaces
+  - go-interface-nil-semantics
   - operations-live-interface-compatibility
   - universal-earned-abstraction
 - risk_class: all
@@ -13770,6 +14410,7 @@ risk_routes:
   - domain-core-domain-priority
   - domain-fitting-large-scale-structure
   - domain-modeling-investment-gate
+  - go-consumer-owned-interfaces
   - go-package-api-simplicity
   - implementation-placement-by-ownership
   - python-dynamic-mechanism-escalation
@@ -13788,8 +14429,10 @@ risk_routes:
   concepts:
   - debugging-hypothesis-led-investigation
   - go-bounded-concurrency
+  - go-context-lifecycle-propagation
   - go-explicit-contextual-errors
   - go-goroutine-resource-lifecycle
+  - implementation-concurrency-progress-contract
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
   - implementation-fail-fast-or-recover
@@ -13823,6 +14466,7 @@ risk_routes:
   - operations-dependency-vulnerability-currency
 - risk_class: causality
   concepts:
+  - implementation-concurrency-ordering-contract
   - universal-minimize-simultaneous-uncertainty
   - universal-separate-semantic-structural-change
 - risk_class: change
@@ -13841,6 +14485,7 @@ risk_routes:
   - architecture-structural-constraint-enforcement
   - domain-anticorruption-layer
   - domain-context-relationship-selection
+  - go-consumer-owned-interfaces
   - go-package-api-simplicity
   - go-semantics-before-performance-constructs
   - implementation-comments-first-design-probe
@@ -13866,8 +14511,14 @@ risk_routes:
 - risk_class: concurrency
   concepts:
   - go-bounded-concurrency
+  - go-channel-capacity-contract
   - go-goroutine-resource-lifecycle
   - go-semantics-before-performance-constructs
+  - go-slice-aliasing-control
+  - go-synchronization-mechanism-fit
+  - implementation-atomicity-scope
+  - implementation-concurrency-ordering-contract
+  - implementation-concurrency-progress-contract
   - performance-earned-bounded-concurrency
   - performance-resource-lifecycle
   - performance-semantic-preservation
@@ -13876,6 +14527,7 @@ risk_routes:
   - python-concurrency-model-selection
   - python-mutable-ownership
   - python-structured-cleanup
+  - testing-deterministic-async-observation
   - universal-explicit-invariants
 - risk_class: coordination
   concepts:
@@ -13896,8 +14548,15 @@ risk_routes:
   - domain-repository-lifecycle
   - domain-service-operation
   - domain-value-object
+  - go-context-lifecycle-propagation
   - go-explicit-contextual-errors
+  - go-interface-nil-semantics
   - go-semantics-before-performance-constructs
+  - go-slice-aliasing-control
+  - go-synchronization-mechanism-fit
+  - go-text-byte-rune-semantics
+  - implementation-atomicity-scope
+  - implementation-concurrency-ordering-contract
   - implementation-duplication-as-evidence
   - implementation-error-surface-reduction
   - implementation-explicit-failure-policy
@@ -13928,6 +14587,7 @@ risk_routes:
   - python-streaming-iteration
   - python-structured-cleanup
   - testing-coverage-is-not-adequacy
+  - testing-deterministic-async-observation
   - testing-no-test-privileged-access
   - testing-test-first-feedback
   - universal-explicit-invariants
@@ -13986,6 +14646,8 @@ risk_routes:
   concepts:
   - debugging-hypothesis-led-investigation
   - go-explicit-contextual-errors
+  - go-text-byte-rune-semantics
+  - implementation-atomicity-scope
   - implementation-explicit-failure-policy
   - operations-untrusted-request-handling
   - python-mutable-ownership
@@ -14168,6 +14830,7 @@ risk_routes:
 - risk_class: memory
   concepts:
   - go-bounded-concurrency
+  - go-slice-aliasing-control
   - implementation-representation-fit
   - operations-bounded-accumulation
   - performance-cache-validity
@@ -14255,7 +14918,9 @@ risk_routes:
   - domain-association-constraint
   - domain-repository-lifecycle
   - go-bounded-concurrency
+  - go-channel-capacity-contract
   - go-semantics-before-performance-constructs
+  - go-synchronization-mechanism-fit
   - implementation-duplication-as-evidence
   - implementation-representation-fit
   - operations-capacity-ratio-realism
@@ -14302,6 +14967,7 @@ risk_routes:
   - testing-assert-observable-outcomes
   - testing-database-delivery-prerequisites
   - testing-database-production-fidelity
+  - testing-deterministic-async-observation
   - testing-four-pillar-test-value
   - testing-humble-object-testability-split
   - testing-integration-scope-selection
@@ -14324,7 +14990,10 @@ risk_routes:
   - universal-measure-claimed-improvement
 - risk_class: resource-lifecycle
   concepts:
+  - go-channel-capacity-contract
+  - go-context-lifecycle-propagation
   - go-goroutine-resource-lifecycle
+  - implementation-concurrency-progress-contract
   - operations-bounded-accumulation
   - python-streaming-iteration
   - python-structured-cleanup
@@ -14337,6 +15006,8 @@ risk_routes:
   - universal-separate-semantic-structural-change
 - risk_class: runtime-semantics
   concepts:
+  - go-interface-nil-semantics
+  - go-text-byte-rune-semantics
   - implementation-repository-language-conformance
   - python-compatible-property-evolution
   - python-dynamic-mechanism-escalation

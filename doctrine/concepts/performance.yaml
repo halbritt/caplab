@@ -264,6 +264,10 @@ concepts:
         locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/023-chapter-15-case-study-trampled-by-your-own-customers.md :: The Testing Gap"
         contribution: Case-study evidence that load tests scripted only around intended polite usage systematically overstate capacity - production traffic included cookie-less search spiders, scrapers, and repeated hits the rule-following scripts never modeled - so a representative load workload must include noise, protocol-violating clients, and hostile access patterns.
         relationship: refinement
+      - source_id: "SRC-100GO"
+        locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/015-chapter-11-testing.md :: 11.8 #89: Writing inaccurate benchmarks"
+        contribution: "Enumerates Go benchmark validity threats from timer scope, short runs and variance, compiler elimination, environment mismatch, cached input state, and the observer effect."
+        relationship: "direct_support"
     confidence: strong
     roles: [performance-agent, review-agent, coding-agent]
     languages: [language-independent]
@@ -390,6 +394,10 @@ concepts:
         locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/013-chapter-9-data-driven-bottleneck-analysis.md :: Profile First, Ask Questions Later"
         contribution: Establishes profile-led bottleneck selection with profile-semantic caveats.
         relationship: corroboration
+      - source_id: "SRC-100GO"
+        locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/016-chapter-12-optimizations.md :: 12.8 #98: Not using Go diagnostics tooling"
+        contribution: "Differentiates CPU, goroutine, heap, mutex, and blocking profiles from execution traces and selects them by the resource or scheduling question rather than optimizing blind."
+        relationship: "direct_support"
     confidence: strong
     roles: [performance-agent, debugging-and-repair-agent, review-agent]
     languages: [language-independent, Go, Python]
@@ -524,6 +532,10 @@ concepts:
         locator: "books/fluent-python-2nd-edition-z-lib-org/chapters/011-chapter-6-object-references-mutability-and-recycling.md :: Defensive Programming with Mutable Parameters"
         contribution: Adds aliasing and ownership constraints to memory-oriented representation changes.
         relationship: corroboration
+      - source_id: "SRC-100GO"
+        locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/007-chapter-3-data-types.md :: 3.10 #26: Slices and memory leaks"
+        contribution: "Shows two Go retention paths: a small subslice can retain a large backing array, and removed pointer elements can remain garbage-collector reachable; copying or clearing references changes lifetime."
+        relationship: "refinement"
     confidence: strong
     roles: [performance-agent, debugging-and-repair-agent, coding-agent, review-agent]
     languages: [language-independent, Go, Python]
@@ -603,6 +615,10 @@ concepts:
         locator: "books/fluent-python-2nd-edition-z-lib-org/chapters/029-chapter-22-asynchronous-programming.md :: Using asyncio.as_completed and a semaphore"
         contribution: Adds async capacity bounding and nonblocking discipline.
         relationship: corroboration
+      - source_id: "SRC-100GO"
+        locator: "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/012-chapter-8-concurrency-foundations.md :: 8.5 #59: Not understanding the concurrency impacts of a workload type"
+        contribution: "Sizes worker concurrency from whether work is CPU-bound or I/O-bound and from actual CPU or external-system capacity, while requiring benchmark validation rather than a fixed worker-count rule."
+        relationship: "refinement"
     confidence: strong
     roles: [performance-agent, coding-agent, architecture-agent, review-agent]
     languages: [language-independent, Go, Python]
@@ -797,6 +813,7 @@ concepts:
       - lost errors or writes
       - retained buffer/pool memory
       - shutdown deadlock or partial completion
+    interactions: ["Queue capacity is a resource-lifecycle decision: residence time, memory, saturation, backpressure, and loss on failure must be bounded, while edge overload policy remains governed by operations-load-shedding."]
     source_support:
       - source_id: SRC-EGO
         locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/015-chapter-11-optimization-patterns.md :: Control the Lifecycle of Your Goroutines"
@@ -818,6 +835,10 @@ concepts:
         locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/012-chapter-6-case-study-phenomenal-cosmic-powers-itty-bitty-living-space.md :: Diagnostic Tests"
         contribution: Production incident evidence - a connection pool with no checkout timeout left all 3,000 request-handling threads blocked forever on an unresponsive downstream dependency while CPU stayed near zero, a missing completion path on a pooled resource halting the entire system.
         relationship: corroboration
+      - source_id: "SRC-CIG"
+        locator: "books/concurrency-in-go/chapters/008-chapter-4-concurrency-patterns-in-go.md :: Queuing"
+        contribution: "Rejects queues as an automatic performance repair, relates capacity to arrival and service rates, and makes lag, memory, hidden synchronization defects, and loss on failure explicit costs."
+        relationship: "refinement"
     confidence: universal
     roles: [coding-agent, performance-agent, review-agent, debugging-and-repair-agent]
     languages: [language-independent, Go, Python]
@@ -833,7 +854,7 @@ concepts:
       prerequisites: [explicit lifecycle and failure policy]
       retrieval_priority: high
       retrieval_budget_hint: 390
-      related_concepts: [performance-earned-bounded-concurrency, performance-memory-lifecycle, implementation-explicit-failure-policy]
+      related_concepts: [performance-earned-bounded-concurrency, performance-memory-lifecycle, implementation-explicit-failure-policy, go-channel-capacity-contract, implementation-concurrency-progress-contract, operations-load-shedding]
 
   - id: performance-cache-validity
     title: Cache only with validity, ownership, and bounds
