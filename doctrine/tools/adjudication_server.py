@@ -598,6 +598,30 @@ def load_frontier_reviews(root: Path) -> dict[str, dict[str, Any]]:
     return latest
 
 
+def load_gold_frontier_reviews(root: Path) -> dict[str, dict[str, Any]]:
+    """Latest frontier-model second opinion per gold-queue candidate id.
+
+    These are model observations (reviewer kind ``model``), never human
+    dispositions; they are displayed beside the candidate only and are never
+    copied into ``human-dispositions.json`` by the server.
+    """
+    path = root / GOLD_RELATIVE / FRONTIER_REVIEW_FILENAME
+    latest: dict[str, dict[str, Any]] = {}
+    if not path.is_file():
+        return latest
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            record = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(record, dict) and record.get("candidate_id"):
+            latest[str(record["candidate_id"])] = record
+    return latest
+
+
 def disposition_verdicts(root: Path) -> list[str]:
     schema = load_json_mapping(
         root / GOLD_RELATIVE / "human-dispositions.schema.json"
@@ -622,6 +646,7 @@ def build_state(root: Path) -> dict[str, Any]:
     results, _ = entailment_eval.load_records(root / ENTAILMENT_RELATIVE / "results.jsonl")
     audits = load_audits(root)
     frontier_reviews = load_frontier_reviews(root)
+    gold_frontier_reviews = load_gold_frontier_reviews(root)
     latest_audit: dict[str, dict[str, Any]] = {}
     audit_counts: dict[str, int] = {}
     for audit in audits:
@@ -658,6 +683,7 @@ def build_state(root: Path) -> dict[str, Any]:
                 "queue_machine_screening": record.get("machine_screening"),
                 "human_disposition": record.get("human_disposition"),
                 "disposition": dispositions_by_id.get(str(record.get("id"))),
+                "frontier": gold_frontier_reviews.get(str(record.get("id"))),
                 "references": references,
                 "screening": screening,
             }
@@ -709,6 +735,7 @@ def build_state(root: Path) -> dict[str, Any]:
     progress = {
         "queue_total": len(queue),
         "queue_adjudicated": sum(1 for item in queue if item["disposition"]),
+        "gold_frontier_reviewed": sum(1 for item in queue if item["frontier"]),
         "flags_total": len(flags),
         "flags_audited": sum(1 for flag in flags if flag["audit"]),
         "flags_stale_hidden": stale_hidden,

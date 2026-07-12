@@ -275,6 +275,23 @@ def build_fixture(root: Path) -> Path:
         + "\n",
     )
     write(
+        gold / "frontier-review.jsonl",
+        json.dumps(
+            {
+                "schema_version": "gold-frontier-review/1",
+                "candidate_id": "gold-source-src-mini",
+                "recommended_verdict": "partially-supported",
+                "confidence": "medium",
+                "rationale": "Fixture gold frontier rationale.",
+                "evidence_reviewed": [LOCATOR, "doctrine/concepts/mini.yaml"],
+                "caveats": "Fixture caveat.",
+                "reviewer": {"kind": "model", "id": "fixture-gold-frontier"},
+                "reviewed_at": "2026-07-12T00:00:00+00:00",
+            }
+        )
+        + "\n",
+    )
+    write(
         root / "doctrine/evaluations/entailment/frontier-review.jsonl",
         json.dumps(
             {
@@ -419,6 +436,7 @@ class ServerTests(unittest.TestCase):
             {
                 "queue_total": 3,
                 "queue_adjudicated": 1,
+                "gold_frontier_reviewed": 1,
                 "flags_total": 1,
                 "flags_audited": 0,
                 "flags_stale_hidden": 1,
@@ -445,9 +463,19 @@ class ServerTests(unittest.TestCase):
         self.assertEqual(
             source_candidate["screening"][0]["match_basis"], "formulation-id"
         )
+        # Gold frontier second opinion joins by candidate id; it is a model
+        # observation, never a disposition.
+        self.assertEqual(
+            source_candidate["frontier"]["recommended_verdict"],
+            "partially-supported",
+        )
+        self.assertEqual(source_candidate["frontier"]["confidence"], "medium")
+        self.assertEqual(source_candidate["frontier"]["reviewer"]["kind"], "model")
+        self.assertEqual(source_candidate["frontier"]["caveats"], "Fixture caveat.")
 
         role_candidate = by_id["gold-agent-role-review-agent"]
         self.assertIsNotNone(role_candidate["disposition"])
+        self.assertIsNone(role_candidate["frontier"])
         role_ref = role_candidate["references"][0]
         self.assertTrue(role_ref["resolved"])
         self.assertIn("Fixture review-agent", role_ref["doctrine_section"]["text"])

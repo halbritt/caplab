@@ -417,13 +417,21 @@ function orderedFlags(){
   });
   return flags;
 }
+var QUEUE_KIND_ORDER = ["edge-relation","source-support","support-relationship",
+                        "authority-transition","outcome","agent-role","risk-class"];
+function queueKindRank(k){
+  var i = QUEUE_KIND_ORDER.indexOf(k);
+  return i < 0 ? QUEUE_KIND_ORDER.length : i;
+}
 function orderedQueue(){
   var q = (S.data.queue || []).slice();
   q.sort(function(a,b){
     var am = a.adjudication_mode === "direct-evidence-review" ? 0 : 1;
     var bm = b.adjudication_mode === "direct-evidence-review" ? 0 : 1;
     if(am !== bm) return am - bm;
-    return 0; // stable: keep queue.json order within mode
+    var r = queueKindRank(a.kind) - queueKindRank(b.kind);
+    if(r) return r;
+    return 0; // stable: keep queue.json order within mode + kind
   });
   return q;
 }
@@ -711,6 +719,18 @@ function renderCandidate(c, pos, total){
        + c.screening.map(screeningCard).join("") + "</section>";
   }
 
+  if(c.frontier){
+    var fr = c.frontier;
+    h += '<section class="frontier"><div class="fr-head">frontier second opinion — model observation ('+esc(fr.reviewer && fr.reviewer.id || "model")+')</div>'
+       + '<div><b>'+esc(fr.recommended_verdict)+'</b> · confidence '+esc(fr.confidence || "—")+'</div>'
+       + (fr.rationale ? '<div style="margin-top:6px">'+esc(fr.rationale)+"</div>" : "")
+       + (fr.caveats ? '<div class="fr-fix"><b>caveats</b> — '+esc(fr.caveats)+"</div>" : "")
+       + (c.disposition ? "" : '<button class="usefix" data-verdict="'+esc(fr.recommended_verdict)+'">pre-select '+esc(fr.recommended_verdict)+' in the form</button>')
+       + (direct ? "" : '<div class="rule" style="margin-top:8px;font-size:11.5px;color:var(--tx-faint)">Scenario construction and the disposition remain human; this is advisory only.</div>')
+       + '<div class="rule" style="margin-top:8px;font-size:11.5px;color:var(--tx-faint)">This is another model’s review observation, not a human disposition. Rationale, uncertainty, and the recorded verdict remain yours.</div>'
+       + "</section>";
+  }
+
   if(c.disposition){
     var d = c.disposition;
     h += '<section class="judgment"><h3>Recorded human disposition</h3>'
@@ -808,6 +828,12 @@ function bindQueueControls(c){
       });
     };
   });
+  var pre = document.querySelector(".frontier .usefix");
+  if(pre) pre.onclick = function(){
+    var v = pre.getAttribute("data-verdict");
+    var btn = document.querySelector('.vbtn[data-verdict="'+v+'"]');
+    if(btn) btn.click();
+  };
   var add = $("ev-add");
   if(add) add.onclick = function(){
     var inp = $("ev-extra"), v = inp.value.trim();
