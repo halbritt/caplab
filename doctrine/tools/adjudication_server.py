@@ -663,9 +663,33 @@ def build_state(root: Path) -> dict[str, Any]:
             }
         )
 
+    # Only current-generation flags reach the bench: a record is stale when
+    # its judge semantics predate the harness's prompt version or its
+    # contribution no longer matches the (possibly remediated) doctrine.
+    # Stale flags remain in results.jsonl as history but are not work items.
+    current_contributions = {
+        (concept_id, str(support.get("locator", ""))): str(
+            support.get("contribution", "")
+        )
+        for concept_id, concept in context["concepts"].items()
+        for support in concept.get("source_support", [])
+    }
+
+    def record_is_current(record: dict[str, Any]) -> bool:
+        if record.get("prompt_version") != entailment_eval.PROMPT_VERSION:
+            return False
+        expected = current_contributions.get(
+            (str(record.get("concept_id")), str(record.get("locator")))
+        )
+        return expected is not None and expected == record.get("contribution")
+
     flags: list[dict[str, Any]] = []
+    stale_hidden = 0
     for result in results:
         if result.get("verdict") not in FLAG_VERDICTS:
+            continue
+        if not record_is_current(result):
+            stale_hidden += 1
             continue
         flag = dict(result)
         flag["section"] = resolve_section(root, str(result.get("locator", "")))
@@ -687,6 +711,7 @@ def build_state(root: Path) -> dict[str, Any]:
         "queue_adjudicated": sum(1 for item in queue if item["disposition"]),
         "flags_total": len(flags),
         "flags_audited": sum(1 for flag in flags if flag["audit"]),
+        "flags_stale_hidden": stale_hidden,
     }
     return {
         "generated_at": utc_now_iso(),

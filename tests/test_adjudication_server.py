@@ -24,6 +24,7 @@ if str(TOOLS) not in sys.path:
     sys.path.insert(0, str(TOOLS))
 
 import adjudication_server  # noqa: E402
+import entailment_eval  # noqa: E402
 
 SECTION_BODY = (
     "The module owns its own decisions. **Deep modules** hide complexity "
@@ -91,7 +92,8 @@ def candidate(identifier: str, kind: str, mode: str, references: list) -> dict:
 
 def flagged_result_v1() -> dict:
     return {
-        "schema_version": "entailment-eval/1",
+        "schema_version": "entailment-eval/2",
+        "prompt_version": entailment_eval.PROMPT_VERSION,
         "key": "a" * 64,
         "concept_id": CONCEPT_ID,
         "source_id": "SRC-MINI",
@@ -198,7 +200,12 @@ def build_fixture(root: Path) -> Path:
         "concepts:\n"
         f"  - id: {CONCEPT_ID}\n"
         "    claim: Behavior belongs with the owner of its knowledge.\n"
-        "    decision_rule: Place behavior with its knowledge owner.\n",
+        "    decision_rule: Place behavior with its knowledge owner.\n"
+        "    source_support:\n"
+        "      - source_id: SRC-MINI\n"
+        f"        locator: '{LOCATOR}'\n"
+        f"        contribution: {CONTRIBUTION}\n"
+        "        relationship: direct_support\n",
     )
 
     gold = root / "doctrine/evaluations/gold"
@@ -255,7 +262,17 @@ def build_fixture(root: Path) -> Path:
     )
     write(
         root / "doctrine/evaluations/entailment/results.jsonl",
-        json.dumps(flagged_result_v1()) + "\n",
+        json.dumps(flagged_result_v1())
+        + "\n"
+        + json.dumps(
+            {
+                **flagged_result_v1(),
+                "schema_version": "entailment-eval/1",
+                "prompt_version": None,
+                "key": "c" * 64,
+            }
+        )
+        + "\n",
     )
     write(
         root / "doctrine/evaluations/entailment/frontier-review.jsonl",
@@ -404,6 +421,7 @@ class ServerTests(unittest.TestCase):
                 "queue_adjudicated": 1,
                 "flags_total": 1,
                 "flags_audited": 0,
+                "flags_stale_hidden": 1,
             },
         )
 
@@ -421,7 +439,9 @@ class ServerTests(unittest.TestCase):
             references["node"]["concept"]["claim"],
             "Behavior belongs with the owner of its knowledge.",
         )
-        self.assertEqual(len(source_candidate["screening"]), 1)
+        # Both generations of the fixture judgment match the formulation;
+        # screening history is not generation-filtered (flags are).
+        self.assertEqual(len(source_candidate["screening"]), 2)
         self.assertEqual(
             source_candidate["screening"][0]["match_basis"], "formulation-id"
         )
