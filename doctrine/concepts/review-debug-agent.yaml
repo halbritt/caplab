@@ -82,6 +82,10 @@ concepts:
         locator: "books/the-pragmatic-programmer/chapters/008-chapter-3-the-basic-tools.md :: Debugging Strategies"
         contribution: Corroborates reproduction, visualization, tracing, explanation, and process of elimination.
         relationship: corroboration
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/007-chapter-2-case-study.md :: Postmortem"
+        contribution: Corroborates from production postmortems that evidence classes differ in reliability - logs versus human statements that mix observation with speculation - and that the failure state itself no longer exists after recovery, so hypotheses must be built from surviving traces.
+        relationship: corroboration
     confidence: strong
     roles: [debugging-and-repair-agent, coding-agent, legacy-code-agent, review-agent]
     languages: [language-independent]

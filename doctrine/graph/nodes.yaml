@@ -375,6 +375,7 @@ nodes:
   - F-SRC-EGO-METRIC-CARDINALITY
   - F-CONCEPT-EGO-b2380da8dfcb
   - F-CONCEPT-EGO-4e7e71cfbf64
+  - F-CONCEPT-RI-f975dca8b967
   tags:
   - performance
   - measurement
@@ -414,6 +415,7 @@ nodes:
   - F-SRC-EGO-EXPERIMENT-RELIABILITY
   - F-CONCEPT-EGO-6341b5996d56
   - F-CONCEPT-EGO-99849705b3d5
+  - F-CONCEPT-RI-ccd004be21de
   tags:
   - performance
   - benchmark
@@ -578,6 +580,8 @@ nodes:
   - F-CONCEPT-EGO-80467c3675ec
   - F-CONCEPT-FP-1ee236d2a0d7
   - F-CONCEPT-FP-adb25de0d8b1
+  - F-CONCEPT-RI-04ce42376d1c
+  - F-CONCEPT-RI-a84696fe8ccf
   tags:
   - resource
   - lifecycle
@@ -600,6 +604,8 @@ nodes:
   - F-CONCEPT-FP-0dd5704280be
   - F-CONCEPT-FP-bc6164871696
   - F-CONCEPT-EGO-84d08e327f3c
+  - F-CONCEPT-RI-21b9a620ce79
+  - F-CONCEPT-RI-4cb931a3a978
   tags:
   - performance
   - cache
@@ -774,6 +780,7 @@ nodes:
   - F-CONCEPT-CA-00ecbddbb165
   - F-CONCEPT-CA-6274d163da20
   - F-CONCEPT-DDD-016f722dfcb9
+  - F-CONCEPT-UT-549514600cd7
   tags:
   - architecture
   - dependency-inversion
@@ -796,6 +803,7 @@ nodes:
   - F-CONCEPT-FSA-03d270194af5
   - F-CONCEPT-CA-cdb1734143c6
   - F-CONCEPT-FSA-11b347e9e248
+  - F-CONCEPT-RI-7202e71dc0f8
   tags:
   - architecture
   - distributed-readiness
@@ -928,6 +936,7 @@ nodes:
   - F-CONCEPT-FSA-68722526e520
   - F-CONCEPT-FSA-d752eca0e916
   - F-CONCEPT-CA-fa455effbd05
+  - F-CONCEPT-RI-dced255c7368
   tags:
   - architecture
   - synchronous
@@ -1060,6 +1069,7 @@ nodes:
   - F-CONCEPT-CA-b78373047966
   - F-CONCEPT-CA-fc96ecd9ef36
   - F-CONCEPT-DDD-a04fc53b7a74
+  - F-CONCEPT-RI-7de6cb8bd741
   tags:
   - architecture
   - option-preservation
@@ -1148,6 +1158,7 @@ nodes:
   - F-CONCEPT-CC-d614293db2a2
   - F-CONCEPT-CC-88594da93dcd
   - F-CONCEPT-PP-c19084b5b5f9
+  - F-CONCEPT-RI-1e808f1730ff
   tags:
   - agent-conduct
   - debugging
@@ -1235,6 +1246,7 @@ nodes:
   - F-CONCEPT-DDD-66cc671ede0b
   - F-CONCEPT-DDD-fde5e6bc2ea2
   - F-CONCEPT-FSA-1bf22d2f2c26
+  - F-CONCEPT-RI-af154918ae96
   tags:
   - domain
   - bounded-context
@@ -1694,6 +1706,8 @@ nodes:
   - F-CONCEPT-PP-811f1df832f2
   - F-CONCEPT-APOSD-8db114972c4b
   - F-CONCEPT-EGO-47133b650968
+  - F-CONCEPT-RI-1355466f11f7
+  - F-CONCEPT-RI-00275ae79392
   tags:
   - implementation
   - failure-policy
@@ -1716,6 +1730,7 @@ nodes:
   - F-CONCEPT-PP-5850f3961698
   - F-CONCEPT-CC-266f5d39ba53
   - F-CONCEPT-APOSD-17ea53390834
+  - F-CONCEPT-RI-ebad53dce8c9
   tags:
   - implementation
   - fail-fast
@@ -1913,6 +1928,10 @@ nodes:
   - F-CONCEPT-PP-3303b20a4da0
   - F-CONCEPT-APOSD-7c6f6a8b13de
   - F-CONCEPT-FP-925f7861cb72
+  - F-CONCEPT-UT-7715480c9e1f
+  - F-CONCEPT-UT-87ba129e0cba
+  - F-CONCEPT-UT-e68c47c1fb38
+  - F-CONCEPT-UT-4c8831dbcecd
   tags:
   - implementation
   - risk-driven-tests
@@ -2537,6 +2556,9 @@ nodes:
   formulations:
   - F-CONCEPT-REF-eefb58a34d08
   - F-CONCEPT-REF-906a31b8f3cb
+  - F-CONCEPT-RI-90ab0af56d87
+  - F-CONCEPT-RI-d4dcbde1f5b5
+  - F-CONCEPT-RI-478ad78f2eca
   tags:
   - architecture
   - api-migration
@@ -2806,6 +2828,8 @@ nodes:
   formulations:
   - F-CONCEPT-CC-20a835bbb400
   - F-CONCEPT-PP-ccc50b0e9e5f
+  - F-CONCEPT-UT-45555a2f20c6
+  - F-CONCEPT-UT-89da45219ab8
   tags:
   - implementation
   - coverage
@@ -2893,6 +2917,7 @@ nodes:
   - F-CONCEPT-PP-18ee8f1485d3
   - F-CONCEPT-CC-c3a917698570
   - F-CONCEPT-DDD-2ac4e8deb2fd
+  - F-CONCEPT-UT-95f110826c03
   tags:
   - universal
   - invariant
@@ -3053,6 +3078,883 @@ nodes:
   - semantic-change
   - structural-change
   - change-classification
+- id: operations-automation-safeguards
+  projection:
+    owner: concept-record
+    source_id: operations-automation-safeguards
+  kind: principle
+  label: Bound automation with safeguards proportional to its mechanical advantage
+  definition: Control-plane automation acting on a mistaken sensed state or a mistaken desired state amplifies failure at machine speed; automated actuators need sanity bounds on their own observations, rate limits and minimum-capacity floors on destructive change, hysteresis, and human confirmation when observed and expected state diverge widely.
+  operational_significance: Automation applies mechanical advantage without judgment, so a small sensing or intent error becomes a fleet-wide outage faster than any human can perceive and intervene.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - operations-automation-safeguards
+  formulations:
+  - F-CONCEPT-RI-eca40d364bf2
+  - F-CONCEPT-RI-0faa3d640a10
+  tags:
+  - agent-conduct
+  - automation-safeguards
+  - force-multiplier
+  - autoscaler
+  - desired-state
+- id: operations-bounded-accumulation
+  projection:
+    owner: concept-record
+    source_id: operations-bounded-accumulation
+  kind: principle
+  label: Pair every accumulation with a recycling or bounding mechanism
+  definition: Every mechanism that accumulates a resource - database rows, log files, in-memory caches, sessions, queues - must be paired with a mechanism that recycles or bounds it, so the system runs at least a full release cycle without human fiddling; callers must likewise bound how much response they will accept.
+  operational_significance: Unbounded accumulation is a slow-motion outage - systems that need routine human fiddling to survive invite the unforced errors that logins to production produce.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - operations-bounded-accumulation
+  formulations:
+  - F-CONCEPT-RI-f401ac900d06
+  - F-CONCEPT-RI-4e608d46104a
+  - F-CONCEPT-RI-0cc95e89bf20
+  tags:
+  - architecture
+  - steady-state
+  - unbounded-growth
+  - log-rotation
+  - data-purge
+- id: operations-build-provenance
+  projection:
+    owner: concept-record
+    source_id: operations-build-provenance
+  kind: principle
+  label: Require an unbroken chain of custody for production executables
+  definition: Production executables must arrive through an unbroken tamper-resistant chain of custody - version-controlled source, dependencies and build plugins verified against upstream signatures in a private repository, and builds performed only on a clean CI server that writes to a write-protected artifact store.
+  operational_significance: Build-system plugins and developer machines are attack vectors; a real supply-chain attack has been delivered through a compromised CI-server plugin, and provenance is what makes such tampering detectable.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - operations-build-provenance
+  formulations:
+  - F-CONCEPT-RI-d9459b3f937e
+  - F-CONCEPT-RI-7f507c710cd3
+  tags:
+  - implementation
+  - chain-of-custody
+  - build-provenance
+  - supply-chain
+  - artifact-repository
+- id: operations-capacity-ratio-realism
+  projection:
+    owner: concept-record
+    source_id: operations-capacity-ratio-realism
+  kind: principle
+  label: Evaluate stability at production multiplicity and capacity ratios
+  definition: Stability properties change with instance counts and inter-layer capacity ratios that development and QA environments never reproduce; many-to-one relationships, point-to-point topologies, and shared resources must be evaluated at production multiplicity and designed - not tested - out.
+  operational_significance: O(n^2) connection growth and shared-resource saturation emerge only at production scale, where the front end can always overwhelm the back end because their capacities are unbalanced by design.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - operations-capacity-ratio-realism
+  formulations:
+  - F-CONCEPT-RI-e84e0e143c75
+  - F-CONCEPT-RI-ec0ee8782424
+  tags:
+  - performance
+  - scaling-effects
+  - point-to-point
+  - unbalanced-capacities
+  - production-multiplicity
+- id: operations-cascading-failure-halting
+  projection:
+    owner: concept-record
+    source_id: operations-cascading-failure-halting
+  kind: principle
+  label: Halt cascading failures at the caller's boundary
+  definition: A failure in a called system becomes the caller's failure unless the caller stops it at the boundary; drained resource pools and calls without timeouts are the primary transmission mechanisms, and high fan-in services deserve proportionally more protection and scrutiny.
+  operational_significance: Cracks jump layers through exhausted pools and unbounded waits, so one sick dependency can take down every caller that failed to defend itself.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - operations-cascading-failure-halting
+  formulations:
+  - F-CONCEPT-RI-c0b5f0895ba4
+  - F-CONCEPT-RI-20bfb7a9fbd4
+  tags:
+  - architecture
+  - cascading-failure
+  - chain-reaction
+  - retry-storm
+  - pool-exhaustion
+- id: operations-chaos-experiment-discipline
+  projection:
+    owner: concept-record
+    source_id: operations-chaos-experiment-discipline
+  kind: principle
+  label: Establish whole-system resilience by disciplined fault injection
+  definition: Whole-system resilience is established by hypothesis-driven fault-injection experiments against the real system under a defined healthy steady state, bounded blast radius, request tracing, and a rehearsed recovery plan - not by component tests or staging environments, because safety is not composable.
+  operational_significance: Independently safe components compose into unsafe systems - two providers each meeting a 30ms p99.9 break a 50ms client budget in sequence - and well-protected systems stop emitting the failure evidence that would otherwise justify confidence.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - operations-chaos-experiment-discipline
+  formulations:
+  - F-CONCEPT-RI-ff71b9f929bb
+  - F-CONCEPT-RI-9765bd9d991a
+  - F-CONCEPT-RI-e2002a2371e1
+  - F-CONCEPT-RI-85b8353151ef
+  tags:
+  - architecture
+  - chaos-engineering
+  - fault-injection
+  - blast-radius
+  - steady-state-hypothesis
+- id: operations-contract-conformance-testing
+  projection:
+    owner: concept-record
+    source_id: operations-contract-conformance-testing
+  kind: principle
+  label: Test each side's conformance to the shared contract
+  definition: Cross-service integration confidence comes from each side testing its own conformance to the shared specification - consumer-owned contract tests plus separate request-construction and response-tolerance checks - because either party can deploy a new version at any time.
+  operational_significance: Overspecified end-to-end request/response loop tests verify only current behavior, not contract conformance - they pass until the day an independently deployed version change breaks production.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - operations-contract-conformance-testing
+  formulations:
+  - F-CONCEPT-RI-9a4097f81ddf
+  - F-CONCEPT-RI-959b4a711b1a
+  tags:
+  - review
+  - contract-test
+  - consumer-driven-contract
+  - conformance
+  - response-tolerance
+- id: operations-credential-custody
+  projection:
+    owner: concept-record
+    source_id: operations-credential-custody
+  kind: principle
+  label: Give production credentials dedicated custody
+  definition: Production credentials are high-value secrets requiring dedicated custody - kept out of source control, images, and installation directories; readable only by the owning account or held in a vault whose decryption keys live elsewhere; expunged from process memory promptly; and excluded from core dumps and support bundles.
+  operational_significance: Committed passwords, credentials in shipped support bundles, and secrets lingering in memory or dumps are recurring, well-documented compromise paths.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - operations-credential-custody
+  formulations:
+  - F-CONCEPT-RI-b3c60dcd15c4
+  - F-CONCEPT-RI-dd2440efc0a9
+  tags:
+  - implementation
+  - credential-custody
+  - secrets-management
+  - vault
+  - committed-password
+- id: operations-dependency-vulnerability-currency
+  projection:
+    owner: concept-record
+    source_id: operations-dependency-vulnerability-currency
+  kind: principle
+  label: Track the full dependency tree against known vulnerabilities
+  definition: A deployed system must continuously track its full dependency tree - including build-tool plugins and container base images - against known vulnerabilities, and treat a known-vulnerable component as a defect requiring prompt patching and redeployment.
+  operational_significance: Using components with known vulnerabilities is itself a top flaw class; new attacks emerge constantly and unpatched dependencies silently accumulate exploitable surface.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - operations-dependency-vulnerability-currency
+  formulations:
+  - F-CONCEPT-RI-abbca51d320d
+  - F-CONCEPT-RI-58c1b75e45e7
+  tags:
+  - implementation
+  - known-vulnerabilities
+  - cve
+  - dependency-tree
+  - base-image-currency
+- id: operations-designed-failure-modes
+  projection:
+    owner: concept-record
+    source_id: operations-designed-failure-modes
+  kind: principle
+  label: Design failure modes deliberately
+  definition: Because faults can never be fully prevented, a system's failure modes must be deliberately designed - containment boundaries chosen like crumple zones to protect indispensable features - or dangerous unplanned failure modes will emerge on their own.
+  operational_significance: Tightly coupled layers make failure events non-independent, so a single fault accelerates through the system instead of being absorbed at a designed boundary.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - operations-designed-failure-modes
+  formulations:
+  - F-CONCEPT-RI-4234704e87d2
+  - F-CONCEPT-RI-d49e06edcec1
+  - F-CONCEPT-RI-ef8112074e58
+  - F-CONCEPT-RI-c0ea9084b3f8
+  tags:
+  - architecture
+  - failure-mode
+  - crumple-zone
+  - crackstopper
+  - fault-error-failure
+- id: operations-ephemeral-instance-design
+  projection:
+    owner: concept-record
+    source_id: operations-ephemeral-instance-design
+  kind: principle
+  label: Treat instance identity, storage, and clock as ephemeral
+  definition: Services must treat machine identity, IP address, local storage, and clock as ephemeral and unreliable, tolerating the loss or slowdown of any single instance, avoiding irreplaceable special machines, and letting new instances volunteer for work instead of being individually configured.
+  operational_significance: Individual cloud VMs have worse availability and ephemeral identity compared with physical machines, and oversubscribed hosts make VM performance and clocks unpredictable; designs that assume stable identity break at exactly the wrong time.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - operations-ephemeral-instance-design
+  formulations:
+  - F-CONCEPT-RI-1e7ffea10d11
+  - F-CONCEPT-RI-4f6d992c1c77
+  - F-CONCEPT-RI-253294728d02
+  tags:
+  - architecture
+  - ephemeral-instance
+  - pet-server
+  - vm-clock
+  - instance-identity
+- id: operations-externalized-configuration
+  projection:
+    owner: concept-record
+    source_id: operations-externalized-configuration
+  kind: principle
+  label: Keep per-environment configuration outside the artifact
+  definition: Per-environment configuration must live outside the deployable artifact and its source repository so identical binaries promote across environments, with per-machine values separated, properties named by function, and a shared configuration service adopted only as an organization-level commitment whose unavailability instances can survive.
+  operational_significance: Configuration baked into artifacts forces rebuilds per environment and leaks environment coupling, while a configuration service adopted casually becomes a severity-one hard dependency that can shut down the fleet from one partitioned node.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - operations-externalized-configuration
+  formulations:
+  - F-CONCEPT-RI-9f4c22e6ce31
+  - F-CONCEPT-RI-3aba0239cb96
+  - F-CONCEPT-RI-8f25df9f065d
+  tags:
+  - implementation
+  - externalized-configuration
+  - environment-properties
+  - configuration-service
+  - config-injection
+- id: operations-integration-point-distrust
+  projection:
+    owner: concept-record
+    source_id: operations-integration-point-distrust
+  kind: principle
+  label: Treat every integration point as a future failure
+  definition: Every out-of-process integration point - socket, HTTP call, database query, vendor client library - will eventually hang, fail slowly, or violate its protocol, so each one requires explicit timeouts, failure-mode handling, and validation of responses as untrusted data.
+  operational_significance: Integration points are the leading killer of systems, and slow or protocol-violating failures are worse than fast clean ones because they tie up caller resources.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - operations-integration-point-distrust
+  formulations:
+  - F-CONCEPT-RI-2951a6f592de
+  - F-CONCEPT-RI-3aa2031a7c24
+  tags:
+  - architecture
+  - integration-point
+  - remote-call
+  - timeout
+  - vendor-library
+- id: operations-least-privilege
+  projection:
+    owner: concept-record
+    source_id: operations-least-privilege
+  kind: principle
+  label: Run with least privilege and least exposure
+  definition: Every service process runs as a dedicated non-administrative account with the least privilege its task requires and the smallest network exposure its role requires - isolated per application, and binding each listening socket to an explicitly configured interface rather than all interfaces on multihomed hosts.
+  operational_significance: Software running as root converts any vulnerability into full-host compromise, and default listening on every interface exposes production services to administrative and backup networks they were never meant to face.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - operations-least-privilege
+  formulations:
+  - F-CONCEPT-RI-4e2b9949be10
+  - F-CONCEPT-RI-aebb048703a6
+  - F-CONCEPT-RI-e34a0c322bd7
+  tags:
+  - implementation
+  - least-privilege
+  - non-root
+  - bind-address
+  - multihomed-host
+- id: operations-live-interface-compatibility
+  projection:
+    owner: concept-record
+    source_id: operations-live-interface-compatibility
+  kind: principle
+  label: The live interface's accepted behavior is the contract
+  definition: Once an interface is live, its actually accepted and returned behavior is the de facto contract; a new version may require less, accept more, and return more, but may not reject previously accepted traffic, withhold previously returned data, or require more authorization without a versioned migration.
+  operational_significance: Fixing an accidental edge-case behavior or adding validation on a live endpoint presents as cleanup but semantically rejects traffic that was accepted yesterday - consumers deployed against actual behavior, not documentation.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - operations-live-interface-compatibility
+  formulations:
+  - F-CONCEPT-RI-44756352a75f
+  - F-CONCEPT-RI-6ea96ba769c6
+  - F-CONCEPT-RI-3441ca419366
+  tags:
+  - architecture
+  - breaking-change
+  - de-facto-contract
+  - postel
+  - accept-more-require-less
+- id: operations-liveness-by-external-observation
+  projection:
+    owner: concept-record
+    source_id: operations-liveness-by-external-observation
+  kind: principle
+  label: Judge liveness by external observation, not process checks
+  definition: A running process is not a live system; the dominant failure mode is a process whose threads are all blocked, so health must be judged by externally executed synthetic transactions and business-level metrics, not by process, port, or status-page checks.
+  operational_significance: Monitoring that probes only a status page can report healthy while every request-handling thread is blocked, leaving the outage invisible until users report it.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - operations-liveness-by-external-observation
+  formulations:
+  - F-CONCEPT-RI-41237a5f7e12
+  - F-CONCEPT-RI-8b52737d55ee
+  tags:
+  - architecture
+  - liveness
+  - synthetic-transaction
+  - blocked-threads
+  - health-check-semantics
+- id: operations-load-shedding
+  projection:
+    owner: concept-record
+    source_id: operations-load-shedding
+  kind: principle
+  label: Refuse work fast when obligations cannot be met
+  definition: A slow response is more damaging than a fast failure because it ties up resources in caller and provider alike; when demand exceeds timely capacity a service must refuse work quickly and as close to the system edge as possible, because queues backing up across tiers are how systems fail.
+  operational_significance: Every failing system starts with a queue backing up somewhere; sockets, TCP buffers, and listen queues make response degrade nonlinearly exactly at peak load while caller retries make it worse.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - operations-load-shedding
+  formulations:
+  - F-CONCEPT-RI-1c5c424e3aad
+  - F-CONCEPT-RI-3a5a34fd7bcc
+  - F-CONCEPT-RI-85393ac75383
+  tags:
+  - performance
+  - load-shedding
+  - slow-response
+  - residence-time
+  - queue-backlog
+- id: operations-production-readiness
+  projection:
+    owner: concept-record
+    source_id: operations-production-readiness
+  kind: principle
+  label: Evaluate design choices against production life, not feature completion
+  definition: Feature completion and QA passage do not establish production readiness; design and architecture choices must be evaluated against operational cost, downtime exposure, and multi-year life in production, not only implementation cost.
+  operational_significance: Software designed only to pass QA trades one-time development savings for recurring operational cost, and the least-informed early decisions are the hardest to reverse in production.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - operations-production-readiness
+  formulations:
+  - F-CONCEPT-RI-3daebe831fee
+  - F-CONCEPT-RI-6993447627cd
+  tags:
+  - architecture
+  - production-readiness
+  - design-for-production
+  - operational-cost
+  - downtime-cost
+- id: operations-resilience-margin
+  projection:
+    owner: concept-record
+    source_id: operations-resilience-margin
+  kind: principle
+  label: Retain deliberate margin against drift into failure
+  definition: Systems optimized toward maximal utilization and specialized efficiency drift toward their safety boundary and fail abruptly; resilience requires deliberately retained capacity margin, flexibility, and routine tolerable stress.
+  operational_significance: Economic and workload pressure push systems toward the safety boundary invisibly - highly efficient systems handle disruption badly and break all at once rather than degrading.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - operations-resilience-margin
+  formulations:
+  - F-CONCEPT-RI-7ab2b473094d
+  - F-CONCEPT-RI-e8345878c370
+  tags:
+  - performance
+  - resilience-margin
+  - drift-into-failure
+  - regulator-paradox
+  - utilization-limit
+- id: operations-restore-service-first
+  projection:
+    owner: concept-record
+    source_id: operations-restore-service-first
+  kind: principle
+  label: Restore service before investigating cause
+  definition: During a production incident, restoring service takes precedence over root-cause investigation; diagnostic evidence should be captured by pre-scripted collection that does not prolong the outage, and recovery should target the most likely culprit via the dependency structure rather than rebooting the world.
+  operational_significance: Recovery destroys the failed state, improvised data gathering prolongs outages, and witnesses mix observation with speculation - so evidence discipline must be designed in before the incident.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - operations-restore-service-first
+  formulations:
+  - F-CONCEPT-RI-d2413cdb47c9
+  - F-CONCEPT-RI-e1d2f9d654e7
+  tags:
+  - agent-conduct
+  - incident-response
+  - restore-service
+  - thread-dump-script
+  - postmortem
+- id: operations-runtime-control-surface
+  projection:
+    owner: concept-record
+    source_id: operations-runtime-control-surface
+  kind: heuristic
+  label: Provide runtime control surfaces where replacement is slow
+  definition: A service whose instances start slowly needs pre-built, scriptable, access-restricted control interfaces for targeted runtime intervention - resetting circuit breakers, resizing pools, disabling specific integrations, reloading configuration, draining load, toggling features - while fast-restarting instances are better replaced than controlled.
+  operational_significance: When changing config files and restarting all servers takes hours under load, a five-minute targeted reconfiguration is the difference between a blip and an outage - but in fast-restart environments the same machinery is unearned complexity.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - operations-runtime-control-surface
+  formulations:
+  - F-CONCEPT-RI-140c51b7a260
+  - F-CONCEPT-RI-487c5f544f6b
+  tags:
+  - architecture
+  - command-and-control
+  - admin-interface
+  - runtime-reconfiguration
+  - drain
+- id: operations-synchronized-demand-dispersion
+  projection:
+    owner: concept-record
+    source_id: operations-synchronized-demand-dispersion
+  kind: principle
+  label: Anticipate and disperse synchronized demand pulses
+  definition: Synchronized stimuli - promotions and deep links, mass restarts, on-the-hour cron jobs, cache invalidation storms, and fixed retry intervals - concentrate demand into pulses that require far more than steady-state capacity; anticipate them and disperse the load with communication, waves, jitter, backoff, and pre-scaling.
+  operational_significance: The organization can conspire against its own system - a marketing email or a midnight cron line can produce a dogpile no steady-state capacity plan survives.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - operations-synchronized-demand-dispersion
+  formulations:
+  - F-CONCEPT-RI-b2197a30d67a
+  - F-CONCEPT-RI-8489e5e4223b
+  tags:
+  - performance
+  - dogpile
+  - self-denial-attack
+  - jitter
+  - backoff
+- id: operations-transparency-by-design
+  projection:
+    owner: concept-record
+    source_id: operations-transparency-by-design
+  kind: principle
+  label: Design transparency in from the start
+  definition: Every instance must be designed from the start to reveal its historical, present, and projected state through operator-aimed logs, metrics, and health checks, with alert thresholds and health-rollup policy held outside the instance, because opaque systems cannot be diagnosed, tuned, or kept funded in production.
+  operational_significance: Transparency cannot be bolted on late, ambiguous log messages breed superstition-driven operations, and at scale partially broken is the normal state - so signals must be designed for the people who act on them.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - operations-transparency-by-design
+  formulations:
+  - F-CONCEPT-RI-151cfac2aec7
+  - F-CONCEPT-RI-6a6b58795bd2
+  - F-CONCEPT-RI-3e020b3126d3
+  tags:
+  - architecture
+  - transparency
+  - operator-aimed-logging
+  - health-check-content
+  - alert-thresholds
+- id: operations-untrusted-request-handling
+  projection:
+    owner: concept-record
+    source_id: operations-untrusted-request-handling
+  kind: principle
+  label: Treat every request and externally influenced value as untrusted
+  definition: Every request and every externally influenced value is untrusted regardless of network position - validate and escape input at each interpreter boundary instead of concatenating strings into queries, markup, or paths; authenticate all callers including internal ones; and authorize each object access per request, since possession of a URL, a session, or an internal IP confers no authority.
+  operational_significance: The consensus most-critical web flaw classes - injection, broken authentication, XSS, broken access control, CSRF - each reduce to trusting request content, origin, or link possession.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - operations-untrusted-request-handling
+  formulations:
+  - F-CONCEPT-RI-7417e33fc194
+  tags:
+  - implementation
+  - untrusted-input
+  - injection
+  - parameterized-query
+  - session-management
+- id: operations-zero-downtime-rollout
+  projection:
+    owner: concept-record
+    source_id: operations-zero-downtime-rollout
+  kind: principle
+  label: Design rollout as a concurrent-versions time interval
+  definition: A production rollout is a designed time interval in which old and new versions run concurrently; the application must support preparation, drain, staged activation, and warm-up readiness so that users never observe the transition.
+  operational_significance: Users see the during state, not just the after state - and manual playbook releases measured in dozens of people and six-figure costs are what unplanned-downtime deployment designs degenerate into.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - operations-zero-downtime-rollout
+  formulations:
+  - F-CONCEPT-RI-d9ec29157087
+  - F-CONCEPT-RI-c61f1dbb9194
+  - F-CONCEPT-RI-4512a3a419cb
+  - F-CONCEPT-RI-67f9019bf8f4
+  tags:
+  - architecture
+  - zero-downtime
+  - rollout-phases
+  - drain
+  - warm-up
+- id: testing-assert-observable-outcomes
+  projection:
+    owner: concept-record
+    source_id: testing-assert-observable-outcomes
+  kind: principle
+  label: Assert the end result, not implementation steps
+  definition: Tests must verify the end result the system under test delivers to its client - its externally observable behavior - because assertions coupled to implementation steps, structure, or algorithms produce false positives that erode trust in the suite and deter refactoring.
+  operational_significance: False positives start as a minor nuisance but become as damaging as missed bugs once refactoring is needed, because developers stop trusting and then stop running the suite.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - testing-assert-observable-outcomes
+  formulations:
+  - F-CONCEPT-UT-ad82d76470b2
+  - F-CONCEPT-UT-f0a720f510c4
+  tags:
+  - implementation
+  - false-positive
+  - observable-behavior
+  - black-box-assertion
+  - implementation-detail-coupling
+- id: testing-database-delivery-prerequisites
+  projection:
+    owner: concept-record
+    source_id: testing-database-delivery-prerequisites
+  kind: principle
+  label: Put the schema and migrations in source control before testing the database
+  definition: Database integration testing presupposes delivery discipline - the schema including reference data lives in source control as the single source of truth, every change ships as an explicit committed migration (never edited retroactively except to prevent data loss), and each developer runs a separate database instance.
+  operational_significance: Without a source-controlled schema and migration history there is no authoritative database state to test against, and shared instances make tests interfere and results unreproducible.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - testing-database-delivery-prerequisites
+  formulations:
+  - F-CONCEPT-UT-06962719d381
+  tags:
+  - implementation
+  - schema-in-source-control
+  - migration-based-delivery
+  - reference-data
+  - database-instance-isolation
+- id: testing-database-production-fidelity
+  projection:
+    owner: concept-record
+    source_id: testing-database-production-fidelity
+  kind: principle
+  label: Test the database with production semantics
+  definition: Integration tests against a managed database earn trust only by matching production semantics - the same DBMS vendor (no in-memory substitutes), a separate transaction or unit of work per arrange/act/assert section instead of a shared or umbrella transaction, sequential execution, and leftover-data cleanup at the start of each test.
+  operational_significance: In-memory analogs and umbrella transactions diverge from production behavior in locking, constraints, and visibility, producing both false positives and false negatives exactly where database tests are supposed to provide confidence.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - testing-database-production-fidelity
+  formulations:
+  - F-CONCEPT-UT-2e702206a1e3
+  - F-CONCEPT-UT-d9a56b6ce826
+  - F-CONCEPT-UT-cb0ac6e88c5e
+  tags:
+  - implementation
+  - in-memory-database
+  - production-dbms
+  - unit-of-work
+  - umbrella-transaction
+- id: testing-four-pillar-test-value
+  projection:
+    owner: concept-record
+    source_id: testing-four-pillar-test-value
+  kind: principle
+  label: Value tests as the product of four attributes
+  definition: Evaluate every automated test on four attributes - protection against regressions, resistance to refactoring, fast feedback, and maintainability - whose multiplied scores give the test's value; a zero on any attribute makes the test worthless regardless of the others.
+  operational_significance: The first three attributes are mutually exclusive at their extremes, so maximizing one to the exclusion of the others produces end-to-end suites too slow to run, trivial tests that protect nothing, or brittle tests that punish refactoring.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - testing-four-pillar-test-value
+  formulations:
+  - F-CONCEPT-UT-3136d3ad57da
+  - F-CONCEPT-UT-d61bf56e3f8a
+  tags:
+  - review
+  - four-pillars
+  - regression-protection
+  - resistance-to-refactoring
+  - fast-feedback
+- id: testing-humble-object-testability-split
+  projection:
+    owner: concept-record
+    source_id: testing-humble-object-testability-split
+  kind: heuristic
+  label: Split complex collaborator-heavy code before testing it
+  definition: Unit-test effort belongs on code that is complex or domain-significant and has few collaborators; code that is both complex and collaborator-heavy must be split (Humble Object) into decision logic and a thin orchestrator rather than tested as-is, while trivial code goes untested and controllers receive a small number of integration tests.
+  operational_significance: Testing overcomplicated code as-is yields expensive brittle tests, while leaving it unsplit leaves the system's hardest logic unprotected.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - testing-humble-object-testability-split
+  formulations:
+  - F-CONCEPT-UT-bc81c30b4ece
+  - F-CONCEPT-UT-d959d607c427
+  tags:
+  - refactoring
+  - humble-object
+  - four-types-of-code
+  - overcomplicated-code
+  - collaborator-count
+- id: testing-integration-scope-selection
+  projection:
+    owner: concept-record
+    source_id: testing-integration-scope-selection
+  kind: principle
+  label: Budget integration tests around the longest happy path
+  definition: Keep integration tests few and targeted - cover as many edge cases as possible with unit tests, then use integration tests for the longest happy path that touches all out-of-process dependencies plus only those edge cases unit tests cannot exercise, letting fail-fast crashes stand in for tests of wiring bugs that manifest immediately without corrupting state.
+  operational_significance: Integration tests are slow and expensive to maintain, so undirected growth duplicates cheaper coverage while the actual cross-dependency paths stay unexercised.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - testing-integration-scope-selection
+  formulations:
+  - F-CONCEPT-UT-cf7beee38262
+  tags:
+  - implementation
+  - integration-test-scope
+  - longest-happy-path
+  - edge-case-placement
+  - fail-fast-alternative
+- id: testing-mock-at-system-edges
+  projection:
+    owner: concept-record
+    source_id: testing-mock-at-system-edges
+  kind: principle
+  label: Mock the outermost owned adapter and assert the literal message
+  definition: When mocking an unmanaged dependency, substitute the outermost owned adapter in the chain to the external system and assert the literal outgoing message, checking both that expected calls occur and that no unexpected calls occur, with assertion checkpoints kept independent of production code.
+  operational_significance: Mocking at the edge maximizes the code each test exercises and detaches assertions from intermediate implementation types, while independent checkpoints keep the test from trusting the very code it verifies.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - testing-mock-at-system-edges
+  formulations:
+  - F-CONCEPT-UT-176f20dd03fd
+  - F-CONCEPT-UT-71ac63d2ef20
+  tags:
+  - implementation
+  - mock-placement
+  - outermost-adapter
+  - system-edge
+  - spy
+- id: testing-mock-unmanaged-dependencies-only
+  projection:
+    owner: concept-record
+    source_id: testing-mock-unmanaged-dependencies-only
+  kind: principle
+  label: Mock unmanaged dependencies, use managed ones real
+  definition: Replace only unmanaged out-of-process dependencies (those whose communications form externally observable, backward-compatible contracts, such as message buses and SMTP) with mocks; use real instances of managed dependencies such as the application database and verify their final state, never interactions with them.
+  operational_significance: Communications with a managed dependency are implementation details free to change, while communications with an unmanaged dependency are contracts whose regressions break external consumers - mocking the former pins refactorable detail, mocking the latter protects a real contract.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - testing-mock-unmanaged-dependencies-only
+  formulations:
+  - F-CONCEPT-UT-a99fb350d60a
+  - F-CONCEPT-UT-4c496967444a
+  - F-CONCEPT-UT-4bc402580036
+  tags:
+  - implementation
+  - managed-dependency
+  - unmanaged-dependency
+  - mock-scope
+  - message-bus
+- id: testing-no-test-privileged-access
+  projection:
+    owner: concept-record
+    source_id: testing-no-test-privileged-access
+  kind: principle
+  label: Give tests no privileges production clients lack
+  definition: Tests must interact with the system under test exactly as production clients do, with no special privileges - do not publicize private methods or private state for testing, re-derive expected values with the algorithm under test, add test-only switches to production code, or partially mock concrete classes; each pressure signals a missing abstraction or an unseparated responsibility to extract instead.
+  operational_significance: Privileged access couples the suite to internals and pollutes production code, so tests pass in configurations production never runs and refactoring breaks tests that verified nothing a client could see.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - testing-no-test-privileged-access
+  formulations:
+  - F-CONCEPT-UT-c26b5cc72c64
+  - F-CONCEPT-UT-c08f07f66c7d
+  - F-CONCEPT-UT-c88dc4516a07
+  - F-CONCEPT-UT-19743a7ce577
+  - F-CONCEPT-UT-005a954f336c
+  - F-CONCEPT-UT-e16a95ce88c4
+  tags:
+  - implementation
+  - private-method-testing
+  - exposing-private-state
+  - domain-knowledge-leakage
+  - code-pollution
+- id: testing-output-based-style-preference
+  projection:
+    owner: concept-record
+    source_id: testing-output-based-style-preference
+  kind: principle
+  label: Prefer output-based tests where purity is affordable
+  definition: Prefer output-based tests over state-based and communication-based ones wherever decision logic can be made purely functional, because they couple least to implementation details and cost least to maintain; restructure toward a functional core only when the code's complexity and importance justify the performance and code-size cost.
+  operational_significance: Output-based tests verify pure input-to-output mappings and survive restructuring, while communication-based tests pin interaction choreography and state-based tests pin intermediate representations.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - testing-output-based-style-preference
+  formulations:
+  - F-CONCEPT-UT-d5d2251bf1d5
+  - F-CONCEPT-UT-5255e0522b48
+  - F-CONCEPT-UT-8fa132fa07e2
+  tags:
+  - implementation
+  - output-based-test
+  - state-based-test
+  - communication-based-test
+  - functional-core
+- id: testing-self-contained-test-anatomy
+  projection:
+    owner: concept-record
+    source_id: testing-self-contained-test-anatomy
+  kind: principle
+  label: One self-contained arrange-act-assert sequence per test
+  definition: A unit test should be one self-contained arrange-act-assert sequence with no branching; multiple act sections or if statements mean multiple behaviors that belong in separate tests, with grouped acts tolerable only in already-slow integration tests.
+  operational_significance: Branching and multiple act phases hide several behaviors in one test, and shared setup state makes a change to one arrangement break sibling tests while hiding the context a reader needs.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - testing-self-contained-test-anatomy
+  formulations:
+  - F-CONCEPT-UT-d01a1d59ca0b
+  - F-CONCEPT-UT-8063d1149768
+  tags:
+  - implementation
+  - arrange-act-assert
+  - aaa
+  - test-structure
+  - fixture-reuse
+- id: testing-shared-dependency-substitution
+  projection:
+    owner: concept-record
+    source_id: testing-shared-dependency-substitution
+  kind: heuristic
+  label: Substitute shared and slow dependencies, keep collaborators real
+  definition: Replace with test doubles only the dependencies that are shared between tests or slow out-of-process ones, so tests stay fast and mutually independent, and keep private mutable collaborators and value objects real.
+  operational_significance: Isolating units from their collaborators couples tests to internal communication patterns, while isolating tests from each other targets the actual sources of interference and slowness.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - testing-shared-dependency-substitution
+  formulations:
+  - F-CONCEPT-UT-5209ad804053
+  - F-CONCEPT-UT-6ff972a54817
+  tags:
+  - implementation
+  - test-double
+  - shared-dependency
+  - private-dependency
+  - collaborator
+- id: testing-suite-net-value
+  projection:
+    owner: concept-record
+    source_id: testing-suite-net-value
+  kind: principle
+  label: Keep a test only while its value exceeds its upkeep
+  definition: A test belongs in the suite only while its regression-protection and design value clearly exceeds its recurring costs of refactoring alongside the code, execution on every change, false-alarm triage, and reading, because test code is itself a liability.
+  operational_significance: Tests are code with maintenance costs of their own; a suite retained by accumulation rather than judgment slows every change while protecting little.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - testing-suite-net-value
+  formulations:
+  - F-CONCEPT-UT-7f34a6a54455
+  - F-CONCEPT-UT-f405e1422dbe
+  tags:
+  - implementation
+  - test-value
+  - suite-maintenance-cost
+  - test-liability
+  - sustainable-growth
+- id: testing-test-level-mix
+  projection:
+    owner: concept-record
+    source_id: testing-test-level-mix
+  kind: heuristic
+  label: Choose the test-level mix from the system's shape
+  definition: Choose the unit/integration/end-to-end mix by trading feedback speed against regression protection for the system at hand - a unit-test majority over a complex domain, an integration-heavy mix for simple CRUD systems, and end-to-end tests reserved for the most critical flows that cheaper tests cannot protect.
+  operational_significance: Cargo-culting a fixed ratio produces suites mismatched to the system - domain-heavy systems underprotected by integration tests, CRUD systems burdened with unit tests of trivial code.
+  status: contextual
+  confidence: contextual
+  doctrine_refs:
+  - testing-test-level-mix
+  formulations:
+  - F-CONCEPT-UT-28bcc9878b05
+  tags:
+  - implementation
+  - test-pyramid
+  - test-level-mix
+  - unit-versus-integration-ratio
+  - end-to-end-budget
+- id: testing-testability-as-design-signal
+  projection:
+    owner: concept-record
+    source_id: testing-testability-as-design-signal
+  kind: principle
+  label: Read test pain as design evidence, not a mocking problem
+  definition: Difficulty unit testing code - oversized arrange phases, sprawling interconnected object graphs - is reliable evidence of a design problem such as tight coupling, while ease of testing does not establish quality, and doubles that make painful setup disappear hide the problem rather than fix it.
+  operational_significance: Mocking a tangled graph apart makes the pain disappear without touching its cause, leaving the coupling in production while the suite over-specifies internal structure.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - testing-testability-as-design-signal
+  formulations:
+  - F-CONCEPT-UT-114f6af9104c
+  - F-CONCEPT-UT-7d4dd4c5faac
+  tags:
+  - review
+  - testability
+  - test-pain
+  - arrange-phase-size
+  - tight-coupling
+- id: testing-unit-of-behavior
+  projection:
+    owner: concept-record
+    source_id: testing-unit-of-behavior
+  kind: principle
+  label: Test one unit of behavior, not one unit of code
+  definition: A unit test should verify one unit of observable behavior meaningful in the problem domain - which may span a method, a class, or several classes - rather than one unit of code per class.
+  operational_significance: Class-per-test granularity couples the suite to the current decomposition, so structural refactoring breaks tests even when behavior is preserved.
+  status: canonical
+  confidence: strong
+  doctrine_refs:
+  - testing-unit-of-behavior
+  formulations:
+  - F-CONCEPT-UT-85860a8cc313
+  - F-CONCEPT-UT-762dd48c6b19
+  tags:
+  - implementation
+  - unit-of-behavior
+  - test-granularity
+  - test-naming
+  - one-class-per-test
 - id: conflict-abstraction-vs-duplication
   projection:
     owner: conflict-registry
@@ -3157,6 +4059,26 @@ nodes:
   formulations:
   - F-CONFLICT-FSA-b96ec9e95ef6
   - F-CONFLICT-FSA-4ddbecbb7c12
+  tags:
+  - conflict
+  - contextual
+- id: conflict-classical-vs-london-test-isolation
+  projection:
+    owner: conflict-registry
+    source_id: conflict-classical-vs-london-test-isolation
+  kind: conflict
+  label: Classical Vs London Test Isolation
+  definition: 'Contested positions: london-mock-collaborators: Isolate the unit under test from all mutable collaborators with test doubles, verifying one class at a time so failures localize to a single class; in legacy code, substituting any dependency at a seam is a legitimate enabling move to obtain feedback. | classical-mock-unmanaged-only: Mock only shared or unmanaged out-of-process dependencies whose communications form externally observable contracts; keep private in-process collaborators and managed dependencies real, because pinning intra-system communications makes tests fragile.'
+  operational_significance: Select by codebase state and dependency class - in greenfield or tested code, mock only shared or unmanaged out-of-process dependencies and keep in-process collaborators and managed dependencies real; in legacy untested code, a seam-based substitution of any dependency is a legitimate provisional enabling move whose scar carries explicit status and retirement conditions; a substitution retained past its enabling purpose is re-adjudicated as a temporary-seam-versus-durable-design question rather than promoted by omission.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-classical-vs-london-test-isolation
+  formulations:
+  - F-CONFLICT-UT-24dadad7bade
+  - F-CONFLICT-WELC-aed42691a634
+  - F-CONFLICT-UT-50bfc9561b52
+  - F-CONFLICT-UT-f925eec02114
   tags:
   - conflict
   - contextual
@@ -3271,6 +4193,43 @@ nodes:
   tags:
   - conflict
   - methodological
+- id: conflict-efficiency-vs-resilience-margin
+  projection:
+    owner: conflict-registry
+    source_id: conflict-efficiency-vs-resilience-margin
+  kind: conflict
+  label: Efficiency Vs Resilience Margin
+  definition: 'Contested positions: efficient-utilization: Capacity and resources should be used efficiently against measured objectives; symmetric overprovisioning and idle margin are capital costs that need justification. | retain-resilience-margin: Systems optimized toward maximal utilization and specialization drift toward their safety boundary and fail abruptly; deliberately retained margin, flexibility, and routine tolerable stress are required for resilience.'
+  operational_significance: Name availability margin as an explicit quality attribute with an owner and a floor before pursuing utilization or efficiency objectives toward the limit; efficiency work may consume headroom only down to that owned floor, and quiet periods count as missing evidence - not proof of safety - under the regulator paradox.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-efficiency-vs-resilience-margin
+  formulations:
+  - F-CONFLICT-RI-45cccc993592
+  - F-CONFLICT-RI-5dba4a2df98e
+  - F-CONFLICT-RI-924f45f592c9
+  tags:
+  - conflict
+  - contextual
+- id: conflict-fault-tolerance-vs-let-it-crash
+  projection:
+    owner: conflict-registry
+    source_id: conflict-fault-tolerance-vs-let-it-crash
+  kind: conflict
+  label: Fault Tolerance Vs Let It Crash
+  definition: 'Contested positions: fault-tolerant-containment: Catch faults and contain the resulting errors in place so components degrade or recover without losing service continuity. | let-it-crash-restart: Error recovery is difficult and unreliable, so crash a bounded component and restart from a clean known state under supervision.'
+  operational_significance: Choose per component from the let-it-crash preconditions - crash granularity, replacement speed, supervision, and reintegration; where all four hold, restart from known state beats in-place recovery, and where any fails, invest in containment and explicit recovery; supervisors must escalate when restarts are too dense rather than restart forever.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-fault-tolerance-vs-let-it-crash
+  formulations:
+  - F-CONFLICT-RI-29ab9488b28f
+  - F-CONFLICT-RI-6c45419f8b35
+  tags:
+  - conflict
+  - contextual
 - id: conflict-full-vs-partial-vs-no-boundary
   projection:
     owner: conflict-registry
@@ -3307,6 +4266,24 @@ nodes:
   tags:
   - conflict
   - contextual
+- id: conflict-live-control-vs-immutable-replacement
+  projection:
+    owner: conflict-registry
+    source_id: conflict-live-control-vs-immutable-replacement
+  kind: conflict
+  label: Live Control Vs Immutable Replacement
+  definition: 'Contested positions: live-runtime-control: Instances need pre-built, scriptable, access-restricted control interfaces for targeted runtime intervention - resetting breakers, resizing pools, disabling integrations, reloading configuration, draining load. | immutable-replacement: Instances are disposable images built from known state; changes ship as new images and outdated instances are deleted, never mutated in place.'
+  operational_significance: Decide per service from measured startup and warm-up time and state externalization - fast-restarting stateless instances are replaced rather than controlled, slow-starting or expensive-warm-up instances earn a scripted control surface; never build both a mutable pet and an immutable image pipeline for the same instance class.
+  status: contested
+  confidence: contested
+  doctrine_refs:
+  - conflict-live-control-vs-immutable-replacement
+  formulations:
+  - F-CONFLICT-RI-5a1f22ed66d7
+  - F-CONFLICT-RI-e0d15fcb551e
+  tags:
+  - conflict
+  - contextual
 - id: conflict-model-fidelity-vs-performance-representation
   projection:
     owner: conflict-registry
@@ -3340,6 +4317,7 @@ nodes:
   formulations:
   - F-CONFLICT-FSA-a2e4eda7abe7
   - F-CONFLICT-CA-a2a125d715dc
+  - F-CONFLICT-RI-c5d6138d6150
   - F-CONFLICT-FSA-c4f01da698f5
   tags:
   - conflict
@@ -3432,6 +4410,7 @@ nodes:
   formulations:
   - F-CONFLICT-FSA-ad6b4f60e5a7
   - F-CONFLICT-FSA-26e6e12cb801
+  - F-CONFLICT-RI-ebb32591a78c
   tags:
   - conflict
   - contextual
@@ -3468,6 +4447,7 @@ nodes:
   formulations:
   - F-CONFLICT-DDD-4b990d6fa270
   - F-CONFLICT-DDD-81505ac081f8
+  - F-CONFLICT-RI-486e604b5bf5
   tags:
   - conflict
   - substantive

@@ -24,7 +24,7 @@ conflicts:
     decision_rule: Compare caller simplification and hidden benefit against interface, navigation, change, and review cost; select the smallest number of cohesive units that minimizes total reasoning and change amplification, not a target size.
     unresolved_questions: [How module depth should be measured across languages and repository scales remains contextual.]
     roles_affected: [coding-agent, architecture-agent, refactoring-agent, review-agent]
-    related_concepts: [refactoring-smells-as-hypotheses, universal-local-reasoning, legacy-current-work-responsibility-discovery]
+    related_concepts: [refactoring-smells-as-hypotheses, universal-local-reasoning, legacy-current-work-responsibility-discovery, testing-humble-object-testability-split]
     source_support:
       - {source_id: SRC-APOSD, locator: "books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/009-4-modules-should-be-deep.md :: 4: Modules Should Be Deep"}
       - {source_id: SRC-CC, locator: "books/code-complete-2nd-edition-v413hav/chapters/013-chapter-7-high-quality-routines.md :: 7.1 Valid Reasons to Create a Routine"}
@@ -106,7 +106,7 @@ conflicts:
     decision_rule: Invest in model isolation only where domain decisions and invariant density create demonstrated reasoning leverage; choose the simplest direct form elsewhere and keep operational constraints visible.
     unresolved_questions: [A domain may move between these conditions as product knowledge grows.]
     roles_affected: [architecture-agent, coding-agent, review-agent, refactoring-agent]
-    related_concepts: [architecture-policy-mechanism-separation, domain-modeling-investment-gate]
+    related_concepts: [architecture-policy-mechanism-separation, domain-modeling-investment-gate, testing-output-based-style-preference]
     source_support:
       - {source_id: SRC-DDD, locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/005-chapter-4-isolating-the-domain.md :: The Domain Layer Is Where the Model Lives"}
       - {source_id: SRC-DDD, locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/005-chapter-4-isolating-the-domain.md :: The Smart UI \"Anti-Pattern\""}
@@ -189,7 +189,7 @@ conflicts:
     decision_rule: Use the smallest controlled seam that creates feedback; declare its production default and lifecycle, then promote or remove it based on repeated pressure rather than omission.
     unresolved_questions: [Some safe seams are also good permanent boundaries; status must remain explicit until reviewed.]
     roles_affected: [legacy-code-agent, refactoring-agent, coding-agent, review-agent]
-    related_concepts: [legacy-seams-and-enabling-points, legacy-provisional-dependency-break, legacy-sprout-wrap]
+    related_concepts: [legacy-seams-and-enabling-points, legacy-provisional-dependency-break, legacy-sprout-wrap, testing-shared-dependency-substitution, testing-mock-unmanaged-dependencies-only, testing-testability-as-design-signal, testing-no-test-privileged-access]
     source_support:
       - {source_id: SRC-WELC, locator: "books/programming-working-effectively-with-legacy-code/chapters/011-chapter-4-the-seam-model.md :: Seams"}
       - {source_id: SRC-WELC, locator: "books/programming-working-effectively-with-legacy-code/chapters/014-chapter-6-i-don-t-have-much-time-and-i-have-to-change-it.md :: Summary"}
@@ -337,7 +337,8 @@ conflicts:
         source_support:
           - {source_id: SRC-FSA, locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/015-chapter-9-foundations.md :: Monolithic Versus Distributed Architectures", contribution: "Identifies lower network, consistency, deployment, and operational costs of monolithic topology.", relationship: direct_support}
           - {source_id: SRC-CA, locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/038-chapter-27-services-great-and-small.md :: THE DECOUPLING FALLACY", contribution: "Corroborates that service boundaries do not by themselves create semantic decoupling.", relationship: corroboration}
-        basis: {kind: source-supported, rationale: "FSA compares topology costs directly and Clean Architecture limits unsupported service-decoupling claims."}
+          - {source_id: SRC-RI, locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/015-chapter-9-interconnect.md :: Solutions at Different Scales", contribution: "Corroborates the operational-cost side - dynamic service discovery pays off only with many services, high instance churn, and a platform team, while small low-change estates are better served by static DNS with logical names; distribution's supporting services are themselves operational surface area.", relationship: corroboration}
+        basis: {kind: source-supported, rationale: "FSA compares topology costs directly, Clean Architecture limits unsupported service-decoupling claims, and Release It! corroborates the operational surface area of distribution-support services."}
       - id: distributed-services
         claim: Independent processes can satisfy required scale, isolation, technology, release, ownership, or geographic drivers.
         source_support:
@@ -356,6 +357,7 @@ conflicts:
     source_support:
       - {source_id: SRC-FSA, locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/015-chapter-9-foundations.md :: Monolithic Versus Distributed Architectures"}
       - {source_id: SRC-CA, locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/038-chapter-27-services-great-and-small.md :: THE DECOUPLING FALLACY"}
+      - {source_id: SRC-RI, locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/015-chapter-9-interconnect.md :: Solutions at Different Scales"}
 
   - conflict_id: conflict-synchronous-vs-asynchronous-interaction
     disagreement_kind: contextual
@@ -369,7 +371,8 @@ conflicts:
         claim: Events or queues can isolate availability, shape load, and support independent temporal progress.
         source_support:
           - {source_id: SRC-FSA, locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/020-chapter-14-event-driven-architecture-style.md :: Choosing Between Request-Based and Event-Based", contribution: "Describes event-based interaction as temporally decoupled progress with different responsiveness and availability tradeoffs.", relationship: direct_support}
-        basis: {kind: source-supported, rationale: "FSA directly compares event-based and request-based interaction."}
+          - {source_id: SRC-RI, locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md :: Decoupling Middleware", contribution: "Weights the stability axis toward asynchrony - message-oriented middleware decouples endpoints in space and time and cannot produce cascading failure, while synchronous request/reply amplifies shocks - while conceding asynchronous design is inherently harder and the choice is a nearly irreversible early decision.", relationship: direct_support}
+        basis: {kind: source-supported, rationale: "FSA directly compares event-based and request-based interaction; Release It! adds stability-weighted support for asynchronous decoupling."}
     hidden_assumptions:
       - Synchronous interaction assumes latency and availability coupling are acceptable.
       - Asynchronous interaction assumes completion, ordering, retries, idempotency, replay, and reconciliation can be owned.
@@ -382,6 +385,7 @@ conflicts:
     related_concepts: [architecture-event-temporal-semantics, architecture-interaction-synchrony]
     source_support:
       - {source_id: SRC-FSA, locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/020-chapter-14-event-driven-architecture-style.md :: Choosing Between Request-Based and Event-Based"}
+      - {source_id: SRC-RI, locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md :: Decoupling Middleware"}
 
   - conflict_id: conflict-concurrency-vs-sequential-simplicity
     disagreement_kind: contextual
@@ -486,7 +490,7 @@ conflicts:
     decision_rule: Establish the cheapest test that detects the authorized change's relevant effects; use broad protection provisionally, then add narrower tests as understanding and seams improve.
     unresolved_questions: [Some integration behavior is inherently only observable at a broad boundary.]
     roles_affected: [legacy-code-agent, refactoring-agent, debugging-and-repair-agent]
-    related_concepts: [legacy-characterization-surfaces, legacy-effect-surface, legacy-pinch-point, legacy-provisional-safety-net]
+    related_concepts: [legacy-characterization-surfaces, legacy-effect-surface, legacy-pinch-point, legacy-provisional-safety-net, testing-four-pillar-test-value, testing-assert-observable-outcomes]
     source_support:
       - {source_id: SRC-WELC, locator: "books/programming-working-effectively-with-legacy-code/chapters/021-chapter-13-i-need-to-make-a-change-but-i-don-t-know-what-tests-to-write.md :: A Heuristic for Writing Characterization Tests"}
       - {source_id: SRC-SDX, locator: "books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/009-chapter-4-pay-off-your-technical-debt.md :: Introduce Provisional End-to-End Tests"}
@@ -644,7 +648,8 @@ conflicts:
         claim: Multiple internally coherent models preserve distinct meanings, rules, ownership, and evolution.
         source_support:
           - {source_id: SRC-DDD, locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md :: Catering to Special Needs with Distinct Models", contribution: "Supports distinct bounded models where one representation cannot remain coherent across specialized needs.", relationship: direct_support}
-        basis: {kind: source-supported, rationale: "DDD directly supports distinct models at demonstrated semantic discontinuities."}
+          - {source_id: SRC-RI, locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/024-chapter-16-adaptation.md :: Information Architecture", contribution: "Adds operational and data-interchange evidence for plural contexts - each group defines customer differently with different lifecycles and permissions, so federated zones of authority exchanging common representations beat a single system of record.", relationship: corroboration}
+        basis: {kind: source-supported, rationale: "DDD directly supports distinct models at demonstrated semantic discontinuities; Release It! corroborates from operational data interchange."}
     hidden_assumptions:
       - Unification assumes terms and invariants are genuinely the same and shared governance is affordable.
       - Bounded models assume translation and duplication cost less than a compromised universal model.
@@ -658,6 +663,7 @@ conflicts:
     source_support:
       - {source_id: SRC-DDD, locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md :: Unifying an Elephant"}
       - {source_id: SRC-DDD, locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md :: Catering to Special Needs with Distinct Models"}
+      - {source_id: SRC-RI, locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/024-chapter-16-adaptation.md :: Information Architecture"}
 
   - conflict_id: conflict-shared-kernel-vs-acl-vs-conformist
     disagreement_kind: contextual
@@ -693,3 +699,117 @@ conflicts:
       - {source_id: SRC-DDD, locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md :: Shared Kernel"}
       - {source_id: SRC-DDD, locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md :: Anticorruption Layer"}
       - {source_id: SRC-DDD, locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md :: Conformist"}
+
+  - conflict_id: conflict-fault-tolerance-vs-let-it-crash
+    disagreement_kind: contextual
+    positions:
+      - id: fault-tolerant-containment
+        claim: Catch faults and contain the resulting errors in place so components degrade or recover without losing service continuity.
+        source_support:
+          - {source_id: SRC-RI, locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/008-chapter-3-stabilize-your-system.md :: Chain of Failure", contribution: "Records the fault-tolerance camp's position - create fault-tolerant software that catches exceptions and contains the resulting errors before they become failures - alongside the camps' common ground that faults will happen and must be kept from becoming errors.", relationship: direct_support}
+        basis: {kind: source-supported, rationale: "Release It! records the fault-tolerance camp as one of two positions in a community split it deliberately does not resolve."}
+      - id: let-it-crash-restart
+        claim: Error recovery is difficult and unreliable, so crash a bounded component and restart from a clean known state under supervision.
+        source_support:
+          - {source_id: SRC-RI, locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md :: Let It Crash", contribution: "Advances crash-and-restart under four preconditions - limited crash granularity, replacement measured in milliseconds, hierarchical supervision distinct from the service consumer, and automatic reintegration - and explicitly disqualifies slow-starting monolithic processes.", relationship: direct_support}
+        basis: {kind: source-supported, rationale: "Release It! directly formulates let-it-crash with its preconditions and restart-density escalation rule."}
+    hidden_assumptions:
+      - Containment assumes recovery code can actually return the component to a trustworthy state after an unexpected error.
+      - Let-it-crash assumes a crash boundary, fast replacement, supervision, and reintegration exist; without them a crash is an outage.
+    evidence_favoring_each_position:
+      fault-tolerant-containment: [slow-starting or monolithic processes, unreplicated in-process state, no supervisor exists, error classes with well-understood safe recovery, availability contract forbids visible restarts]
+      let-it-crash-restart: [bounded crash granularity, restart measured in milliseconds, supervisor distinct from the consumer, automatic reintegration into pools or discovery, error recovery paths that are untested or untrustworthy]
+    decision_rule: Choose per component from the let-it-crash preconditions - crash granularity, replacement speed, supervision, and reintegration; where all four hold, restart from known state beats in-place recovery, and where any fails, invest in containment and explicit recovery; supervisors must escalate when restarts are too dense rather than restart forever.
+    unresolved_questions: [Mixed systems need a per-boundary decision, and in-flight work at crash time needs an explicit durability contract either way.]
+    roles_affected: [architecture-agent, coding-agent, debugging-and-repair-agent, review-agent]
+    related_concepts: [operations-designed-failure-modes, implementation-fail-fast-or-recover]
+    source_support:
+      - {source_id: SRC-RI, locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/008-chapter-3-stabilize-your-system.md :: Chain of Failure"}
+      - {source_id: SRC-RI, locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md :: Let It Crash"}
+
+  - conflict_id: conflict-live-control-vs-immutable-replacement
+    disagreement_kind: contextual
+    positions:
+      - id: live-runtime-control
+        claim: Instances need pre-built, scriptable, access-restricted control interfaces for targeted runtime intervention - resetting breakers, resizing pools, disabling integrations, reloading configuration, draining load.
+        source_support:
+          - {source_id: SRC-RI, locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/016-chapter-10-control-plane.md :: Command and Control", contribution: "Prescribes scriptable admin interfaces on non-public ports for targeted runtime intervention, scoped to slow-starting instances where full restarts under load take hours.", relationship: direct_support}
+        basis: {kind: source-supported, rationale: "Release It! directly prescribes live control surfaces for slow-starting instances."}
+      - id: immutable-replacement
+        claim: Instances are disposable images built from known state; changes ship as new images and outdated instances are deleted, never mutated in place.
+        source_support:
+          - {source_id: SRC-RI, locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/020-chapter-13-design-for-deployment.md :: Automated Deployments", contribution: "Presents the immutable-infrastructure position - convergence from an unknown accumulated state never reliably works, so always start from a known master image, inject configuration at startup, and delete outdated machines instead of mutating them.", relationship: direct_support}
+        basis: {kind: source-supported, rationale: "Release It! directly presents the immutable-infrastructure camp's argument against in-place convergence."}
+    hidden_assumptions:
+      - Live control assumes the intervention surface is rehearsed, secured, and cheaper than replacement given slow startup.
+      - Immutable replacement assumes fast image build and boot, externalized state and configuration, and a platform that reschedules work.
+    evidence_favoring_each_position:
+      live-runtime-control: [instance startup or warm-up measured in many minutes, working sets that take long to reload, stateful services where replacement loses expensive context, incidents resolved by targeted reconfiguration]
+      immutable-replacement: [startup measured in seconds, externalized state and configuration, platform-managed scheduling and discovery, configuration drift or unreproducible machine state as a recurring failure]
+    decision_rule: Decide per service from measured startup and warm-up time and state externalization - fast-restarting stateless instances are replaced rather than controlled, slow-starting or expensive-warm-up instances earn a scripted control surface; never build both a mutable pet and an immutable image pipeline for the same instance class.
+    unresolved_questions: [Warm-up time can dominate boot time for cache-heavy services, moving them back toward live control even on fast platforms.]
+    roles_affected: [architecture-agent, debugging-and-repair-agent, review-agent]
+    related_concepts: [operations-runtime-control-surface, operations-ephemeral-instance-design]
+    source_support:
+      - {source_id: SRC-RI, locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/016-chapter-10-control-plane.md :: Command and Control"}
+      - {source_id: SRC-RI, locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/020-chapter-13-design-for-deployment.md :: Automated Deployments"}
+
+  - conflict_id: conflict-efficiency-vs-resilience-margin
+    disagreement_kind: contextual
+    positions:
+      - id: efficient-utilization
+        claim: Capacity and resources should be used efficiently against measured objectives; symmetric overprovisioning and idle margin are capital costs that need justification.
+        source_support:
+          - {source_id: SRC-RI, locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Unbalanced Capacities", contribution: "Rejects evenly matched front-end and back-end capacity as a gross misuse of capital, requiring resilience mechanisms rather than symmetric overprovisioning to absorb demand mismatches.", relationship: direct_support}
+        basis: {kind: source-supported, rationale: "Release It! itself argues against overprovisioning as the answer to capacity mismatch, anchoring the efficiency side from within the same source."}
+      - id: retain-resilience-margin
+        claim: Systems optimized toward maximal utilization and specialization drift toward their safety boundary and fail abruptly; deliberately retained margin, flexibility, and routine tolerable stress are required for resilience.
+        source_support:
+          - {source_id: SRC-RI, locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/025-chapter-17-chaos-engineering.md :: Antecedents of Chaos Engineering", contribution: "Imports drift-into-failure - economic plus workload pressure push systems toward the safety boundary - and the regulator paradox - a well-working protection stops producing evidence of its own quality - observing that highly efficient systems break all at once.", relationship: direct_support}
+          - {source_id: SRC-RI, locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/024-chapter-16-adaptation.md :: Team-Scale Autonomy", contribution: "Argues full utilization slows flow and value-stream optimization specializes the system to today's tasks at the cost of future flexibility.", relationship: refinement}
+        basis: {kind: source-supported, rationale: "Release It! directly advances retained margin and routine tolerable stress as the counterweight to efficiency-driven drift."}
+    hidden_assumptions:
+      - Efficiency assumes demand and failure behavior stay near their measured envelope so consumed headroom is never suddenly needed.
+      - Margin assumes its carrying cost is affordable and that retained slack will actually absorb the disruption classes that matter.
+    evidence_favoring_each_position:
+      efficient-utilization: [measured stable demand, failure cost limited to rework rather than service obligation, cost objectives with owners, resilience mechanisms - shedding breakers back pressure - already protecting the boundary]
+      retain-resilience-margin: [utilization trending toward the limit under cost pressure, abrupt-collapse failure history, service obligations whose violation outweighs the margin's carrying cost, protection mechanisms no longer producing evidence they work]
+    decision_rule: Name availability margin as an explicit quality attribute with an owner and a floor before pursuing utilization or efficiency objectives toward the limit; efficiency work may consume headroom only down to that owned floor, and quiet periods count as missing evidence - not proof of safety - under the regulator paradox.
+    unresolved_questions: [How much margin a given service class needs is repository- and obligation-specific, and the tradeoff moves as platforms make capacity more elastic.]
+    roles_affected: [performance-agent, architecture-agent, review-agent, repository-assessment-agent]
+    related_concepts: [operations-resilience-margin, performance-measurable-objective]
+    source_support:
+      - {source_id: SRC-RI, locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Unbalanced Capacities"}
+      - {source_id: SRC-RI, locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/025-chapter-17-chaos-engineering.md :: Antecedents of Chaos Engineering"}
+      - {source_id: SRC-RI, locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/024-chapter-16-adaptation.md :: Team-Scale Autonomy"}
+
+  - conflict_id: conflict-classical-vs-london-test-isolation
+    disagreement_kind: contextual
+    positions:
+      - id: london-mock-collaborators
+        claim: Isolate the unit under test from all mutable collaborators with test doubles, verifying one class at a time so failures localize to a single class; in legacy code, substituting any dependency at a seam is a legitimate enabling move to obtain feedback.
+        source_support:
+          - {source_id: SRC-UT, locator: "books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/007-chapter-2-what-is-a-unit-test.md :: 2.1 The definition of \"unit test\"", contribution: "Documents the London school's reading of the contested isolation attribute - isolate the unit from all mutable collaborators and test one class at a time with doubles standing in for its neighbors - alongside the classical reading, in a split the chapter presents as live.", relationship: direct_support}
+          - {source_id: SRC-WELC, locator: "books/programming-working-effectively-with-legacy-code/chapters/011-chapter-4-the-seam-model.md :: Seams", contribution: "Supplies the legacy-context variant of the substitute-freely position - any dependency, including private in-process collaborators, may be replaced at a seam to gain feedback on untested code without redesigning it.", relationship: refinement}
+        basis: {kind: source-supported, rationale: "Unit Testing documents the London position as one side of a split it does not treat as settled, and WELC directly supports seam substitution as legacy-context pragmatics."}
+      - id: classical-mock-unmanaged-only
+        claim: Mock only shared or unmanaged out-of-process dependencies whose communications form externally observable contracts; keep private in-process collaborators and managed dependencies real, because pinning intra-system communications makes tests fragile.
+        source_support:
+          - {source_id: SRC-UT, locator: "books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/011-chapter-5-mocks-and-test-fragility.md :: 5.4 The classical vs. London schools of unit testing, revisited", contribution: "Advances the classical position through the fragility lens - only communications that cross the application boundary and carry backward-compatibility obligations should be verified with mocks, while intra-system communications stay real.", relationship: direct_support}
+          - {source_id: SRC-UT, locator: "books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/011-chapter-5-mocks-and-test-fragility.md :: 5.3 The relationship between mocks and test fragility", contribution: "Supplies the fragility argument - communications between classes inside the application are implementation details, so mocks that verify them couple tests to internal structure, framed through hexagonal architecture's intra- versus inter-system distinction.", relationship: direct_support}
+        basis: {kind: source-supported, rationale: "Unit Testing directly argues the classical position; it is the book's advocated side and is recorded as an argued position, not neutral ground."}
+    hidden_assumptions:
+      - The London and seam-based position assumes internal communication patterns are stable enough to pin, or that pins are provisional with explicit status and retirement conditions.
+      - The classical position assumes a codebase the team is free to design for testability, with real collaborators affordable in tests and a production-fidelity managed environment available.
+    evidence_favoring_each_position:
+      london-mock-collaborators: [untested legacy code where only a seam yields feedback, defect localization to a single class is the dominant need, collaborators are unbuildable or nondeterministic in the test environment, provisional status and retirement conditions are recorded]
+      classical-mock-unmanaged-only: [greenfield or tested code free to keep collaborators real, managed dependencies with production-fidelity instances available for tests, refactoring resistance ranked above single-class defect localization, the communications under test cross the application boundary]
+    decision_rule: Select by codebase state and dependency class - in greenfield or tested code, mock only shared or unmanaged out-of-process dependencies and keep in-process collaborators and managed dependencies real; in legacy untested code, a seam-based substitution of any dependency is a legitimate provisional enabling move whose scar carries explicit status and retirement conditions; a substitution retained past its enabling purpose is re-adjudicated as a temporary-seam-versus-durable-design question rather than promoted by omission.
+    unresolved_questions: [Where a provisional legacy seam should be promoted or retired is adjudicated per conflict-temporary-seam-vs-long-term-design, and the managed/unmanaged boundary itself moves as system ownership and external consumers change.]
+    roles_affected: [coding-agent, review-agent, legacy-code-agent, refactoring-agent]
+    related_concepts: [testing-shared-dependency-substitution, testing-mock-unmanaged-dependencies-only, testing-unit-of-behavior, legacy-seams-and-enabling-points, legacy-sensing-and-separation, legacy-provisional-dependency-break, legacy-provisional-safety-net, legacy-characterization-surfaces]
+    source_support:
+      - {source_id: SRC-UT, locator: "books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/007-chapter-2-what-is-a-unit-test.md :: 2.1 The definition of \"unit test\""}
+      - {source_id: SRC-UT, locator: "books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/011-chapter-5-mocks-and-test-fragility.md :: 5.4 The classical vs. London schools of unit testing, revisited"}
+      - {source_id: SRC-UT, locator: "books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/011-chapter-5-mocks-and-test-fragility.md :: 5.3 The relationship between mocks and test fragility"}
+      - {source_id: SRC-WELC, locator: "books/programming-working-effectively-with-legacy-code/chapters/011-chapter-4-the-seam-model.md :: Seams"}

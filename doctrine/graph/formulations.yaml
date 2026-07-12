@@ -980,6 +980,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-UT-549514600cd7
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/015-chapter-8-why-integration-testing.md#8.4 Using interfaces to abstract dependencies
+  mappings:
+  - node_id: architecture-dependency-inversion-gate
+    relationship_to_canonical: refinement
+  paraphrase: Adds test-double enablement for unmanaged dependencies as the only legitimate justification for a single-implementation interface, argues such interfaces are not abstractions (genuine abstractions are discovered, needing at least two implementations), and rejects speculative interfaces as YAGNI violations; managed and in-process dependencies stay concrete.
+  conditions: 'Canonical mapping applicability (not attributed to the source): a volatile provider threatens stable policy; multiple real implementations or independent deployment exist; a legacy dependency requires an interception seam'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-FSA-03d270194af5
   source_id: SRC-FSA
   locator: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/015-chapter-9-foundations.md#Other Distributed Considerations
@@ -1011,6 +1023,18 @@ formulations:
   - node_id: architecture-distribution-readiness
     relationship_to_canonical: direct_support
   paraphrase: Makes topology a driver-based tradeoff rather than a maturity progression.
+  conditions: 'Canonical mapping applicability (not attributed to the source): proposing services, processes, queues, or independent deployments; reviewing a distributed migration or service decomposition'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-7202e71dc0f8
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md#Integration Points
+  mappings:
+  - node_id: architecture-distribution-readiness
+    relationship_to_canonical: corroboration
+  paraphrase: Corroborates the cost side - every added remote integration point is a stability liability that can and will hang or fail, and the movement toward many small services and SaaS dependencies multiplies that exposure.
   conditions: 'Canonical mapping applicability (not attributed to the source): proposing services, processes, queues, or independent deployments; reviewing a distributed migration or service decomposition'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -1232,6 +1256,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-RI-dced255c7368
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md#Decoupling Middleware
+  mappings:
+  - node_id: architecture-interaction-synchrony
+    relationship_to_canonical: refinement
+  paraphrase: Adds the stability dimension and switching-cost framing - synchronous request/reply middleware amplifies shocks and facilitates cascading failure while message-oriented middleware decouples in space and time at the price of inherently harder asynchronous design, and the choice is a nearly irreversible early decision.
+  conditions: 'Canonical mapping applicability (not attributed to the source): selecting communication between components or services; reviewing request-reply versus event interaction'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-FSA-a8b1df24c4a8
   source_id: SRC-FSA
   locator: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/008-chapter-3-modularity.md#Limitations of Metrics
@@ -1448,6 +1484,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-RI-7de6cb8bd741
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/024-chapter-16-adaptation.md#System Architecture
+  mappings:
+  - node_id: architecture-selective-option-preservation
+    relationship_to_canonical: refinement
+  paraphrase: Adds Baldwin and Clark's six modular operators - splitting, substituting, augmenting, excluding, inverting, porting - as the concrete set of options a module boundary creates, arguing system economic value grows with the number of boundaries where operators can be applied, and grounding option value in form-follows-failure evolution of designs.
+  conditions: 'Canonical mapping applicability (not attributed to the source): a design decision is expensive to reverse; a future boundary or implementation variation is plausible but not yet fully demonstrated'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-FSA-0567c4481497
   source_id: SRC-FSA
   locator: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/011-chapter-6-measuring-and-governing-architecture-characteristics.md#Fitness Functions
@@ -1592,6 +1640,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-RI-1e808f1730ff
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/007-chapter-2-case-study.md#Postmortem
+  mappings:
+  - node_id: debugging-hypothesis-led-investigation
+    relationship_to_canonical: corroboration
+  paraphrase: Corroborates from production postmortems that evidence classes differ in reliability - logs versus human statements that mix observation with speculation - and that the failure state itself no longer exists after recovery, so hypotheses must be built from surviving traces.
+  conditions: 'Canonical mapping applicability (not attributed to the source): bug report; flaky failure; incident; corrupted state; performance regression with a correctness symptom'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-DDD-e1f709bfd6bd
   source_id: SRC-DDD
   locator: books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/007-chapter-6-the-life-cycle-of-a-domain-object.md#Aggregates
@@ -1719,6 +1779,18 @@ formulations:
   - node_id: domain-bounded-context
     relationship_to_canonical: refinement
   paraphrase: Relates semantic context to architectural scope while adding deployment and coupling criteria.
+  conditions: 'Canonical mapping applicability (not attributed to the source): different users, workflows, teams, or systems use conflicting meanings or rules; mapping a complex domain or legacy integration'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-af154918ae96
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/024-chapter-16-adaptation.md#Information Architecture
+  mappings:
+  - node_id: domain-bounded-context
+    relationship_to_canonical: corroboration
+  paraphrase: Operations-side corroboration that one enterprise-wide model per noun fails - each group defines customer differently with different lifecycles and permissions, so federate zones of authority exchanging common representations instead of a single system of record, and keep upstream leverage concepts from leaking into downstream feeds as incidental complexity.
   conditions: 'Canonical mapping applicability (not attributed to the source): different users, workflows, teams, or systems use conflicting meanings or rules; mapping a complex domain or legacy integration'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -2446,6 +2518,30 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-RI-1355466f11f7
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/007-chapter-2-case-study.md#The Smoking Gun
+  mappings:
+  - node_id: implementation-explicit-failure-policy
+    relationship_to_canonical: corroboration
+  paraphrase: Documents a whole-enterprise outage caused by a cleanup path that could itself throw - a spec-permitted exception from a close() call skipped the connection close, leaking pooled connections until exhaustion - showing cleanup and error paths are part of the failure contract.
+  conditions: 'Canonical mapping applicability (not attributed to the source): API design; I/O; validation; persistence; distributed calls; repair; operational hardening'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-00275ae79392
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/015-chapter-9-interconnect.md#Migratory Virtual IP Addresses
+  mappings:
+  - node_id: implementation-explicit-failure-policy
+    relationship_to_canonical: corroboration
+  paraphrase: Callers through a migratory failover virtual IP must expect mid-connection IO errors when the address moves, distinguish them from destination-unreachable, know that uncommitted in-flight work is lost, and retry against the new node only within circuit-breaker-style limits.
+  conditions: 'Canonical mapping applicability (not attributed to the source): API design; I/O; validation; persistence; distributed calls; repair; operational hardening'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-PP-5850f3961698
   source_id: SRC-PP
   locator: books/the-pragmatic-programmer/chapters/009-chapter-4-pragmatic-paranoia.md#Crash, Don't Trash
@@ -2477,6 +2573,18 @@ formulations:
   - node_id: implementation-fail-fast-or-recover
     relationship_to_canonical: refinement
   paraphrase: Limits crash-based simplification to deployment contexts that can tolerate it.
+  conditions: 'Canonical mapping applicability (not attributed to the source): invariant violation; corrupted state; dependency outage; embedded or service failure; durability-sensitive operation'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-ebad53dce8c9
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md#Circuit Breaker
+  mappings:
+  - node_id: implementation-fail-fast-or-recover
+    relationship_to_canonical: corroboration
+  paraphrase: Corroborates that degraded-mode behavior is a business decision - what a caller does when a breaker is open, such as accepting an order without inventory confirmation, serving cached or generic answers, or calling a secondary, must be decided with system stakeholders rather than defaulted by engineers.
   conditions: 'Canonical mapping applicability (not attributed to the source): invariant violation; corrupted state; dependency outage; embedded or service failure; durability-sensitive operation'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -2794,6 +2902,54 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-UT-7715480c9e1f
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/006-chapter-1-the-goal-of-unit-testing.md#1.4 What makes a successful test suite?
+  mappings:
+  - node_id: implementation-risk-driven-tests
+    relationship_to_canonical: refinement
+  paraphrase: Directs unit-testing effort at the domain model and other business-critical code, verifying infrastructure, external dependencies, and glue only briefly or indirectly, and notes this requires the domain model to be isolated from other concerns.
+  conditions: 'Canonical mapping applicability (not attributed to the source): new behavior; repair; refactoring; legacy change; optimization; integration'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-87ba129e0cba
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/011-chapter-5-mocks-and-test-fragility.md#5.2 Observable behavior vs. implementation details
+  mappings:
+  - node_id: implementation-risk-driven-tests
+    relationship_to_canonical: refinement
+  paraphrase: Gives an operational criterion for the contract tests may couple to - code is observable behavior only when it exposes an operation or state serving an immediate client goal, and everything else is implementation detail whose direct verification yields fragile tests.
+  conditions: 'Canonical mapping applicability (not attributed to the source): new behavior; repair; refactoring; legacy change; optimization; integration'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-e68c47c1fb38
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/013-chapter-7-refactoring-toward-valuable-unit-tests.md#7.3 Analysis of optimal unit test coverage
+  mappings:
+  - node_id: implementation-risk-driven-tests
+    relationship_to_canonical: refinement
+  paraphrase: Adds the rule that precondition safeguards deserve dedicated tests only when they carry domain significance (class invariants), while technical safeguards without domain meaning are not worth testing.
+  conditions: 'Canonical mapping applicability (not attributed to the source): new behavior; repair; refactoring; legacy change; optimization; integration'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-4c8831dbcecd
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/017-chapter-10-testing-the-database.md#10.5.1 Should you test reads?
+  mappings:
+  - node_id: implementation-risk-driven-tests
+    relationship_to_canonical: refinement
+  paraphrase: Sets an asymmetric evidence threshold by consequence - write operations warrant thorough database-integration coverage because mistakes corrupt persisted state and propagate to external systems, while only the most complex or important read operations justify tests.
+  conditions: 'Canonical mapping applicability (not attributed to the source): new behavior; repair; refactoring; legacy change; optimization; integration'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-APOSD-f8e2728d0282
   source_id: SRC-APOSD
   locator: 'books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/019-14-choosing-names.md#14: Choosing Names'
@@ -3094,6 +3250,750 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-RI-eca40d364bf2
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md#Force Multiplier
+  mappings:
+  - node_id: operations-automation-safeguards
+    relationship_to_canonical: direct_support
+  paraphrase: Analyzes autoscaler and service-discovery outages to show automation failure modes - wrong sensed state, wrong desired state, impossible computed state - and lists safeguards including distrusting observations reporting mass unavailability, stopping slowly, signaling humans on large gaps, and accounting for actuation lag.
+  conditions: 'Canonical mapping applicability (not attributed to the source): building or reviewing autoscalers deployment automation or service-discovery reactions; designing any automated actuator that can remove capacity or delete data; an autonomous agent executing bulk operational actions'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-0faa3d640a10
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/016-chapter-10-control-plane.md#Mechanical Advantage
+  mappings:
+  - node_id: operations-automation-safeguards
+    relationship_to_canonical: direct_support
+  paraphrase: Uses the 2017 AWS S3 and 2016 Reddit outages to derive concrete safeguards - slow down capacity removal, refuse changes below minimum capacity, pause for human confirmation beyond a large-change threshold, treat operator error as system failure, and study successes and near misses.
+  conditions: 'Canonical mapping applicability (not attributed to the source): building or reviewing autoscalers deployment automation or service-discovery reactions; designing any automated actuator that can remove capacity or delete data; an autonomous agent executing bulk operational actions'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-f401ac900d06
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md#Steady State
+  mappings:
+  - node_id: operations-bounded-accumulation
+    relationship_to_canonical: direct_support
+  paraphrase: States the steady-state rule - for every accumulation, a recycling mechanism - applying it to data purging, log rotation and shipping, and cache key-space and size limits, and ties routine human login to production to elevated risk of unforced errors.
+  conditions: 'Canonical mapping applicability (not attributed to the source): designing storage logging caching or session mechanisms; writing queries or API calls that fetch collections; reviewing longevity behavior of long-running services'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-4e608d46104a
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md#Unbounded Result Sets
+  mappings:
+  - node_id: operations-bounded-accumulation
+    relationship_to_canonical: refinement
+  paraphrase: Adds the caller-side bound - in any API or protocol the caller should state how much response it will accept, because data producers will eventually return millions of rows where hundreds were assumed - requiring LIMIT-style bounds and production-sized test data.
+  conditions: 'Canonical mapping applicability (not attributed to the source): designing storage logging caching or session mechanisms; writing queries or API calls that fetch collections; reviewing longevity behavior of long-running services'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-0cc95e89bf20
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/008-chapter-3-stabilize-your-system.md#Extending Your Life Span
+  mappings:
+  - node_id: operations-bounded-accumulation
+    relationship_to_canonical: corroboration
+  paraphrase: Provides the longevity evidence - memory leaks and data growth rarely appear in short-lived dev or QA runs or time-boxed load tests, so dedicated long-duration tests with idle-period simulation are the only pre-production way to find them.
+  conditions: 'Canonical mapping applicability (not attributed to the source): designing storage logging caching or session mechanisms; writing queries or API calls that fetch collections; reviewing longevity behavior of long-running services'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-d9459b3f937e
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/014-chapter-8-processes-on-machines.md#Code
+  mappings:
+  - node_id: operations-build-provenance
+    relationship_to_canonical: direct_support
+  paraphrase: Prescribes the chain of custody from developer to production instance - signature-verified third-party dependencies in a private repository, build-system plugins treated as attack vectors, no production builds from polluted developer machines, and CI-only builds into a repository nobody else can write to.
+  conditions: 'Canonical mapping applicability (not attributed to the source): setting up or reviewing build and deployment pipelines; adding dependencies or build plugins; an agent producing artifacts intended for deployment'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-7f507c710cd3
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/016-chapter-10-control-plane.md#Provisioning and Deployment Services
+  mappings:
+  - node_id: operations-build-provenance
+    relationship_to_canonical: corroboration
+  paraphrase: Requires an artifact repository of blessed binaries with known provenance populated only by clean build servers, pipeline stage tagging, and documents a real supply-chain attack delivered through a compromised CI-server plugin.
+  conditions: 'Canonical mapping applicability (not attributed to the source): setting up or reviewing build and deployment pipelines; adding dependencies or build plugins; an agent producing artifacts intended for deployment'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-e84e0e143c75
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md#Scaling Effects
+  mappings:
+  - node_id: operations-capacity-ratio-realism
+    relationship_to_canonical: direct_support
+  paraphrase: Shows how O(n^2) point-to-point connections and shared-resource saturation emerge only at production scale, and states this defect class cannot be tested out on small environments and must be designed out.
+  conditions: 'Canonical mapping applicability (not attributed to the source): reviewing topology or communication choices for production scale; capacity planning across tiers; diagnosing failures that appear only in production'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-ec0ee8782424
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md#Unbalanced Capacities
+  mappings:
+  - node_id: operations-capacity-ratio-realism
+    relationship_to_canonical: refinement
+  paraphrase: Adds the front-end/back-end ratio rule - the front end can always overwhelm the back end, so both sides must be built resilient and stress-tested beyond expected workload - while rejecting evenly matched capacity as a gross misuse of capital.
+  conditions: 'Canonical mapping applicability (not attributed to the source): reviewing topology or communication choices for production scale; capacity planning across tiers; diagnosing failures that appear only in production'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-c0b5f0895ba4
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md#Cascading Failures
+  mappings:
+  - node_id: operations-cascading-failure-halting
+    relationship_to_canonical: direct_support
+  paraphrase: Defines cascading failure as a crack jumping layers, identifies exhausted resource pools, integration points without timeouts, and aggressive or speculative retries as the jump mechanisms, and names timeouts and circuit breakers as the effective counters.
+  conditions: 'Canonical mapping applicability (not attributed to the source): reviewing services that call other services; diagnosing an outage that spread across layers; designing retry policies'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-20bfb7a9fbd4
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md#Chain Reactions
+  mappings:
+  - node_id: operations-cascading-failure-halting
+    relationship_to_canonical: refinement
+  paraphrase: Describes the intra-layer variant - in a homogeneous load-balanced farm one node's death raises survivors' load and failure probability, accelerating collapse; the shared defect must be fixed, with bulkheads and autoscaling only slowing the reaction.
+  conditions: 'Canonical mapping applicability (not attributed to the source): reviewing services that call other services; diagnosing an outage that spread across layers; designing retry policies'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-ff71b9f929bb
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/025-chapter-17-chaos-engineering.md#Adopting Your Own Monkey
+  mappings:
+  - node_id: operations-chaos-experiment-discipline
+    relationship_to_canonical: direct_support
+  paraphrase: Sets the entry conditions and experiment protocol - failed requests must be affordable, exposure limited by explicit blast-radius victim selection, request tracing must show where a fault was absorbed or became a failure, monitoring must detect the health delta, a recovery plan must exist before injection, and the hypothesis must be an externally observable steady-state invariant with pre-agreed rejection evidence.
+  conditions: 'Canonical mapping applicability (not attributed to the source): assessing resilience of a distributed system in production or production-like conditions; designing game days or continuous fault injection; deciding whether chaos tooling is appropriate at all'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-9765bd9d991a
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/025-chapter-17-chaos-engineering.md#Breaking Things to Make Them Better
+  mappings:
+  - node_id: operations-chaos-experiment-discipline
+    relationship_to_canonical: refinement
+  paraphrase: Supplies the whole-system rationale - safety is not composable, two independently safe 30ms-p99.9 providers called in sequence break a 50ms client budget, and staging cannot reproduce scale effects.
+  conditions: 'Canonical mapping applicability (not attributed to the source): assessing resilience of a distributed system in production or production-like conditions; designing game days or continuous fault injection; deciding whether chaos tooling is appropriate at all'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-e2002a2371e1
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/025-chapter-17-chaos-engineering.md#Injecting Chaos
+  mappings:
+  - node_id: operations-chaos-experiment-discipline
+    relationship_to_canonical: refinement
+  paraphrase: Provides the injection taxonomy - kill an instance, add latency, fail a specific call - and the progression from random selection to targeted search as the fault space sparsifies, including learning from faults that do not become failures.
+  conditions: 'Canonical mapping applicability (not attributed to the source): assessing resilience of a distributed system in production or production-like conditions; designing game days or continuous fault injection; deciding whether chaos tooling is appropriate at all'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-85b8353151ef
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/025-chapter-17-chaos-engineering.md#The Simian Army
+  mappings:
+  - node_id: operations-chaos-experiment-discipline
+    relationship_to_canonical: corroboration
+  paraphrase: Contrasts opt-out adoption with sign-off waivers against opt-in for fragile estates, and adds the rule that failures must happen often enough to be routine.
+  conditions: 'Canonical mapping applicability (not attributed to the source): assessing resilience of a distributed system in production or production-like conditions; designing game days or continuous fault injection; deciding whether chaos tooling is appropriate at all'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-9a4097f81ddf
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/021-chapter-14-handling-versions.md#Handle Others' Versions
+  mappings:
+  - node_id: operations-contract-conformance-testing
+    relationship_to_canonical: direct_support
+  paraphrase: Shows that overspecified end-to-end request/response loop tests verify only current behavior, not contract conformance; splits testing into request-side conformance and response-side tolerance without invoking the real dependency, and requires the consumer to handle any allowed combination of new, missing, or partial fields since callers and suppliers deploy independently.
+  conditions: 'Canonical mapping applicability (not attributed to the source): designing tests for service integrations; reviewing integration test suites that loop through live dependencies; consuming an independently deployed API'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-959b4a711b1a
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/021-chapter-14-handling-versions.md#Nonbreaking API Changes
+  mappings:
+  - node_id: operations-contract-conformance-testing
+    relationship_to_canonical: refinement
+  paraphrase: Adds the consumer-owned contract-test practice - a suite written by the consuming team run against the provider's staging system as an early-warning system - and recommends generative testing to find gaps between specification, belief, and implementation.
+  conditions: 'Canonical mapping applicability (not attributed to the source): designing tests for service integrations; reviewing integration test suites that loop through live dependencies; consuming an independently deployed API'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-b3c60dcd15c4
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/017-chapter-11-security.md#Configured Passwords
+  mappings:
+  - node_id: operations-credential-custody
+    relationship_to_canonical: direct_support
+  paraphrase: Requires production passwords separated from other configuration and outside installation directories that get zipped and shipped during support incidents, owner-only file permissions or vaulting with keys stored apart from data, prompt expunging of keys from memory, and disabled core dumps because dumps contain passwords.
+  conditions: 'Canonical mapping applicability (not attributed to the source): writing or reviewing code and scripts that touch credentials; designing configuration layouts; preparing support and diagnostic tooling'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-dd2440efc0a9
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/014-chapter-8-processes-on-machines.md#Configuration
+  mappings:
+  - node_id: operations-credential-custody
+    relationship_to_canonical: corroboration
+  paraphrase: Keeps per-environment credential files out of the application's source repository in a separately locked-down repository with explicit grant and revoke access controls, citing the recurring committed-password failure mode.
+  conditions: 'Canonical mapping applicability (not attributed to the source): writing or reviewing code and scripts that touch credentials; designing configuration layouts; preparing support and diagnostic tooling'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-abbca51d320d
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/017-chapter-11-security.md#The OWASP Top 10
+  mappings:
+  - node_id: operations-dependency-vulnerability-currency
+    relationship_to_canonical: direct_support
+  paraphrase: Includes using components with known vulnerabilities among the top flaw classes and prescribes extracting a full-artifact dependency report including build plugins, checking it against CVEs weekly, and preferably breaking the build automatically when a dependency has a known CVE.
+  conditions: 'Canonical mapping applicability (not attributed to the source): adding or upgrading dependencies; configuring CI gates; auditing a repository''s security posture; maintaining container base images'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-58c1b75e45e7
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/017-chapter-11-security.md#Security as an Ongoing Process
+  mappings:
+  - node_id: operations-dependency-vulnerability-currency
+    relationship_to_canonical: refinement
+  paraphrase: Frames security as a continuous process rather than a one-time review - new attacks emerge constantly, unhardened new technology needs extra patching vigilance, and servers must be redeployable on a moment's notice.
+  conditions: 'Canonical mapping applicability (not attributed to the source): adding or upgrading dependencies; configuring CI gates; auditing a repository''s security posture; maintaining container base images'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-4234704e87d2
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/008-chapter-3-stabilize-your-system.md#Failure Modes
+  mappings:
+  - node_id: operations-designed-failure-modes
+    relationship_to_canonical: direct_support
+  paraphrase: States that accepting the inevitability of failure is what enables designing the system's reaction to specific failures, introducing crumple zones and crackstoppers as the design stance.
+  conditions: 'Canonical mapping applicability (not attributed to the source): designing or reviewing systems with external dependencies or shared resources; deciding where to contain a class of faults; post-incident hardening'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-d49e06edcec1
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/008-chapter-3-stabilize-your-system.md#Chain of Failure
+  mappings:
+  - node_id: operations-designed-failure-modes
+    relationship_to_canonical: refinement
+  paraphrase: Supplies the fault-error-failure chain vocabulary and the observation that coupled layers make failure events non-independent, so tight coupling accelerates crack propagation.
+  conditions: 'Canonical mapping applicability (not attributed to the source): designing or reviewing systems with external dependencies or shared resources; deciding where to contain a class of faults; post-incident hardening'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-ef8112074e58
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/008-chapter-3-stabilize-your-system.md#Stopping Crack Propagation
+  mappings:
+  - node_id: operations-designed-failure-modes
+    relationship_to_canonical: refinement
+  paraphrase: Walks one real failure through every abstraction level at which the crack could have been stopped - pool configuration, socket timeouts, service partitioning, request/reply messaging - showing looser coupling acts as a shock absorber.
+  conditions: 'Canonical mapping applicability (not attributed to the source): designing or reviewing systems with external dependencies or shared resources; deciding where to contain a class of faults; post-incident hardening'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-c0ea9084b3f8
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/007-chapter-2-case-study.md#An Ounce of Prevention?
+  mappings:
+  - node_id: operations-designed-failure-modes
+    relationship_to_canonical: corroboration
+  paraphrase: Argues from the airline outage that bugs of this class cannot all be prevented by review or testing, so they must be survived, and reframes the goal as preventing bugs in one system from propagating to others.
+  conditions: 'Canonical mapping applicability (not attributed to the source): designing or reviewing systems with external dependencies or shared resources; deciding where to contain a class of faults; post-incident hardening'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-1e7ffea10d11
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/013-chapter-7-foundations.md#Virtual Machines in the Cloud
+  mappings:
+  - node_id: operations-ephemeral-instance-design
+    relationship_to_canonical: direct_support
+  paraphrase: States that individual cloud VMs have worse availability and ephemeral identity and IP than physical machines, so instances must volunteer for work via autoscaling, load balancers, or competing consumers rather than holding addresses in configuration files.
+  conditions: 'Canonical mapping applicability (not attributed to the source): designing or reviewing services deployed to VMs containers or cloud instances; migrating from static hosts to elastic infrastructure; diagnosing failures tied to a special machine'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-4f6d992c1c77
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/013-chapter-7-foundations.md#Virtual Machines in the Data Center
+  mappings:
+  - node_id: operations-ephemeral-instance-design
+    relationship_to_canonical: refinement
+  paraphrase: Warns that oversubscribed hosts make VM performance unpredictable and VM clocks non-monotonic and non-sequential, so designs must not require whole-cluster synchronous responses, special irreplaceable machines, event-ordering assumptions, or trusted OS clocks.
+  conditions: 'Canonical mapping applicability (not attributed to the source): designing or reviewing services deployed to VMs containers or cloud instances; migrating from static hosts to elastic infrastructure; diagnosing failures tied to a special machine'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-253294728d02
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/013-chapter-7-foundations.md#Containers in the Data Center
+  mappings:
+  - node_id: operations-ephemeral-instance-design
+    relationship_to_canonical: refinement
+  paraphrase: Adds that container instances have short-lived identities and must externalize storage, credentials, hostnames, and ports rather than baking them into images or per-instance configuration.
+  conditions: 'Canonical mapping applicability (not attributed to the source): designing or reviewing services deployed to VMs containers or cloud instances; migrating from static hosts to elastic infrastructure; diagnosing failures tied to a special machine'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-9f4c22e6ce31
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/014-chapter-8-processes-on-machines.md#Configuration
+  mappings:
+  - node_id: operations-externalized-configuration
+    relationship_to_canonical: direct_support
+  paraphrase: Directs per-environment properties and credentials outside the deployment directory and source repository, separates per-machine values, names properties by function rather than type, and gates configuration services behind organizational operational maturity because they become a severity-one hard dependency.
+  conditions: 'Canonical mapping applicability (not attributed to the source): designing configuration and deployment layouts; moving identical images across environments; adopting or reviewing a configuration service; writing code that reads configuration'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-3aba0239cb96
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/016-chapter-10-control-plane.md#Configuration Services
+  mappings:
+  - node_id: operations-externalized-configuration
+    relationship_to_canonical: refinement
+  paraphrase: Adds survival rules for the config-service dependency - instances must start and keep working when it is unreachable, clients must tolerate slightly stale configuration under partition, and a partitioned configuration node must never be able to shut down the fleet.
+  conditions: 'Canonical mapping applicability (not attributed to the source): designing configuration and deployment layouts; moving identical images across environments; adopting or reviewing a configuration service; writing code that reads configuration'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-8f25df9f065d
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/013-chapter-7-foundations.md#Containers in the Data Center
+  mappings:
+  - node_id: operations-externalized-configuration
+    relationship_to_canonical: corroboration
+  paraphrase: Shows the image-based limit case - a container image moves unchanged between environments, so credentials and network addresses must be injected at startup rather than baked in.
+  conditions: 'Canonical mapping applicability (not attributed to the source): designing configuration and deployment layouts; moving identical images across environments; adopting or reviewing a configuration service; writing code that reads configuration'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-2951a6f592de
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md#Integration Points
+  mappings:
+  - node_id: operations-integration-point-distrust
+    relationship_to_canonical: direct_support
+  paraphrase: Names integration points the number-one killer of systems and details their failure physics - slow socket failures worse than fast ones, HTTP-level protocol violations, vendor client libraries that block indefinitely - recommending responses be treated as data until validated.
+  conditions: 'Canonical mapping applicability (not attributed to the source): writing or reviewing code that calls another process or service; integrating a vendor client library; diagnosing hangs near a remote dependency'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-3aa2031a7c24
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md#Countering Integration Point Problems
+  mappings:
+  - node_id: operations-integration-point-distrust
+    relationship_to_canonical: refinement
+  paraphrase: Prescribes the counters for integration point failures - circuit breaker and decoupling middleware plus a controllable per-integration test harness exercised under substantial load - rather than trusting functional tests.
+  conditions: 'Canonical mapping applicability (not attributed to the source): writing or reviewing code that calls another process or service; integrating a vendor client library; diagnosing hangs near a remote dependency'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-4e2b9949be10
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/017-chapter-11-security.md#The Principle of Least Privilege
+  mappings:
+  - node_id: operations-least-privilege
+    relationship_to_canonical: direct_support
+  paraphrase: Mandates non-root and non-administrator execution with a separate OS user per major application, and removes the classic privileged-port excuse by noting a service behind a load balancer can bind any port above 1024.
+  conditions: 'Canonical mapping applicability (not attributed to the source): configuring service accounts and process privileges; writing code that opens listening sockets; containerizing services; reviewing deployment manifests'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-aebb048703a6
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/013-chapter-7-foundations.md#Programming for Multiple Networks
+  mappings:
+  - node_id: operations-least-privilege
+    relationship_to_canonical: refinement
+  paraphrase: Shows that default any-interface listening is wrong on multihomed production hosts and that servers need configurable bind addresses because the self-reported hostname cannot identify the correct interface.
+  conditions: 'Canonical mapping applicability (not attributed to the source): configuring service accounts and process privileges; writing code that opens listening sockets; containerizing services; reviewing deployment manifests'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-e34a0c322bd7
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/013-chapter-7-foundations.md#NICs and Names
+  mappings:
+  - node_id: operations-least-privilege
+    relationship_to_canonical: corroboration
+  paraphrase: Establishes that machine hostname and DNS name are distinct many-to-many mappings and that data centers separate production, backup, and administrative traffic onto different NICs with different security requirements.
+  conditions: 'Canonical mapping applicability (not attributed to the source): configuring service accounts and process privileges; writing code that opens listening sockets; containerizing services; reviewing deployment manifests'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-44756352a75f
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/021-chapter-14-handling-versions.md#Nonbreaking API Changes
+  mappings:
+  - node_id: operations-live-interface-compatibility
+    relationship_to_canonical: direct_support
+  paraphrase: Defines an API as a layered stack of agreements - framing, encoding, syntax, routing, semantics, authorization - whose unilateral break in any layer is a breaking change; gives the safe-change algebra and the de facto specification rule that even undocumented accepted behavior cannot be rejected once live, so validation tightening is itself a breaking change.
+  conditions: 'Canonical mapping applicability (not attributed to the source): changing any live API message format or endpoint; adding validation to existing interfaces; reviewing changes labeled cleanup on public surfaces; planning version-discriminated breaks'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-6ea96ba769c6
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/021-chapter-14-handling-versions.md#Help Others Handle Your Versions
+  mappings:
+  - node_id: operations-live-interface-compatibility
+    relationship_to_canonical: refinement
+  paraphrase: Adds the ownership rule that the provider absorbs compatibility cost rather than exporting synchronized upgrades to consumers.
+  conditions: 'Canonical mapping applicability (not attributed to the source): changing any live API message format or endpoint; adding validation to existing interfaces; reviewing changes labeled cleanup on public surfaces; planning version-discriminated breaks'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-3441ca419366
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/024-chapter-16-adaptation.md#Team-Scale Autonomy
+  mappings:
+  - node_id: operations-live-interface-compatibility
+    relationship_to_canonical: corroboration
+  paraphrase: Independently states that needing provider and caller updated together is a coupling warning sign.
+  conditions: 'Canonical mapping applicability (not attributed to the source): changing any live API message format or endpoint; adding validation to existing interfaces; reviewing changes labeled cleanup on public surfaces; planning version-discriminated breaks'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-41237a5f7e12
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md#Blocked Threads
+  mappings:
+  - node_id: operations-liveness-by-external-observation
+    relationship_to_canonical: direct_support
+  paraphrase: Reports that most observed system failures are hangs rather than crashes - every thread blocked on an impossible outcome - and argues for external synthetic-transaction monitoring and leading-indicator business counters over internal process monitoring.
+  conditions: 'Canonical mapping applicability (not attributed to the source): designing monitoring and alerting; reviewing health-check semantics; diagnosing a system that is up but unresponsive'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-8b52737d55ee
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/007-chapter-2-case-study.md#The Outage
+  mappings:
+  - node_id: operations-liveness-by-external-observation
+    relationship_to_canonical: corroboration
+  paraphrase: Shows monitoring that only probed a status page reporting healthy while every request-handling thread was blocked, so the outage was invisible to internal checks.
+  conditions: 'Canonical mapping applicability (not attributed to the source): designing monitoring and alerting; reviewing health-check semantics; diagnosing a system that is up but unresponsive'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-1c5c424e3aad
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/015-chapter-9-interconnect.md#Preventing Disaster
+  mappings:
+  - node_id: operations-load-shedding
+    relationship_to_canonical: direct_support
+  paraphrase: Prescribes shedding load at the edge - load balancers returning 503 when first-tier health checks fail, health checks that incorporate the service's own measured response time and required-dependency state, listen queues sized from allowed residence time, quick rejection preferred over slow timeout.
+  conditions: 'Canonical mapping applicability (not attributed to the source): services facing demand they do not control; designing health checks and load-balancer integration; diagnosing latency collapse at peak load'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-3a5a34fd7bcc
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/015-chapter-9-interconnect.md#How Systems Fail
+  mappings:
+  - node_id: operations-load-shedding
+    relationship_to_canonical: direct_support
+  paraphrase: Explains the failure mechanism the rule counters - every failing system starts with a queue backing up somewhere, and socket, TCP-buffer, and listen-queue exhaustion makes response degrade nonlinearly exactly at peak load, provoking caller retries that worsen it.
+  conditions: 'Canonical mapping applicability (not attributed to the source): services facing demand they do not control; designing health checks and load-balancer integration; diagnosing latency collapse at peak load'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-85393ac75383
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md#Slow Responses
+  mappings:
+  - node_id: operations-load-shedding
+    relationship_to_canonical: direct_support
+  paraphrase: Establishes that slow responses - from excess demand, leak-driven garbage collection, or TCP stalls - propagate upward as a gradual cascading failure and recommends systems monitor their own SLA compliance and start refusing work when they exceed it.
+  conditions: 'Canonical mapping applicability (not attributed to the source): services facing demand they do not control; designing health checks and load-balancer integration; diagnosing latency collapse at peak load'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-3daebe831fee
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/005-chapter-1-living-in-production.md#Aiming for the Right Target
+  mappings:
+  - node_id: operations-production-readiness
+    relationship_to_canonical: direct_support
+  paraphrase: Argues that software designed to pass QA tells you little about years of production life and introduces design for production by analogy to design for manufacturability.
+  conditions: 'Canonical mapping applicability (not attributed to the source): comparing design or architecture alternatives for deployed systems; planning work on revenue- or availability-critical software; reviewing a proposal justified by development convenience alone'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-6993447627cd
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/005-chapter-1-living-in-production.md#A Million Dollars Here, a Million Dollars There
+  mappings:
+  - node_id: operations-production-readiness
+    relationship_to_canonical: refinement
+  paraphrase: Quantifies design decisions as financial decisions - trading a one-time development cost for a recurring operational cost such as per-release downtime is usually the wrong trade - with a concrete downtime-cost example.
+  conditions: 'Canonical mapping applicability (not attributed to the source): comparing design or architecture alternatives for deployed systems; planning work on revenue- or availability-critical software; reviewing a proposal justified by development convenience alone'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-7ab2b473094d
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/025-chapter-17-chaos-engineering.md#Antecedents of Chaos Engineering
+  mappings:
+  - node_id: operations-resilience-margin
+    relationship_to_canonical: direct_support
+  paraphrase: Imports Dekker's drift-into-failure model - economic pressure plus workload pressure push the system toward the safety boundary - Weinberg's regulator paradox - the better a regulator works the less information it produces about its own quality - and the observation that highly efficient systems handle disruption badly and break all at once, justifying continuous low-level induced breakage as a balancing force.
+  conditions: 'Canonical mapping applicability (not attributed to the source): setting utilization or efficiency targets; reviewing optimization campaigns that consume headroom; assessing why a hyper-efficient system fails abruptly; value-stream optimization that specializes a system to today''s tasks'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-e8345878c370
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/024-chapter-16-adaptation.md#Team-Scale Autonomy
+  mappings:
+  - node_id: operations-resilience-margin
+    relationship_to_canonical: refinement
+  paraphrase: Argues full utilization slows flow and that value-stream optimization specializes the system to today's tasks at the cost of future flexibility - the adaptability face of the same tradeoff.
+  conditions: 'Canonical mapping applicability (not attributed to the source): setting utilization or efficiency targets; reviewing optimization campaigns that consume headroom; assessing why a hyper-efficient system fails abruptly; value-stream optimization that specializes a system to today''s tasks'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-d2413cdb47c9
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/007-chapter-2-case-study.md#The Outage
+  mappings:
+  - node_id: operations-restore-service-first
+    relationship_to_canonical: direct_support
+  paraphrase: States restore-service-over-investigation as the first priority, presents pre-created automated thread-dump and snapshot scripts as the balance between improvisation and data loss, and demonstrates culprit-targeting via the common-dependency hypothesis.
+  conditions: 'Canonical mapping applicability (not attributed to the source): an availability-affecting incident is in progress; preparing incident runbooks and capture scripts; writing postmortems'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-e1d2f9d654e7
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/007-chapter-2-case-study.md#Postmortem
+  mappings:
+  - node_id: operations-restore-service-first
+    relationship_to_canonical: refinement
+  paraphrase: Adds post-incident evidence discipline - the failed state is destroyed by recovery, witnesses mix observation with speculation and present hypotheses as facts, and configuration should be compared against pre-outage backups to detect after-the-fact changes.
+  conditions: 'Canonical mapping applicability (not attributed to the source): an availability-affecting incident is in progress; preparing incident runbooks and capture scripts; writing postmortems'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-140c51b7a260
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/016-chapter-10-control-plane.md#Command and Control
+  mappings:
+  - node_id: operations-runtime-control-surface
+    relationship_to_canonical: direct_support
+  paraphrase: Scopes live control to slow-starting instances - fast-start container environments should kill and replace instead - lists the control signals worth exposing, requires admin APIs on separate non-public ports, prefers scriptable command lines over GUIs, warns command queues can dogpile a fleet without jitter or waves, and bans self-destruct controls such as schema wipe in production code.
+  conditions: 'Canonical mapping applicability (not attributed to the source): operating or designing slow-starting stateful services; planning incident-recovery tooling; reviewing admin interfaces'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-487c5f544f6b
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/012-chapter-6-case-study-phenomenal-cosmic-powers-itty-bitty-living-space.md#Does the Condition Respond to Treatment?
+  mappings:
+  - node_id: operations-runtime-control-surface
+    relationship_to_canonical: corroboration
+  paraphrase: Demonstrates recovery by dynamically reconfiguring and restarting a single component in under five minutes where changing config files and restarting all servers would have taken more than six hours under load.
+  conditions: 'Canonical mapping applicability (not attributed to the source): operating or designing slow-starting stateful services; planning incident-recovery tooling; reviewing admin interfaces'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-b2197a30d67a
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md#Self-Denial Attacks
+  mappings:
+  - node_id: operations-synchronized-demand-dispersion
+    relationship_to_canonical: direct_support
+  paraphrase: Defines the self-denial attack - the organization conspiring against its own system via marketing events, deep links bypassing CDNs, and shared-resource hot spots - and prescribes communication, load-spreading waves, static landing pages, fallback modes, and pre-autoscaling.
+  conditions: 'Canonical mapping applicability (not attributed to the source): writing schedulers cron jobs or retry logic; planning fleet restarts or config pushes; preparing for traffic events; reviewing periodic batch work'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-8489e5e4223b
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md#Dogpile
+  mappings:
+  - node_id: operations-synchronized-demand-dispersion
+    relationship_to_canonical: refinement
+  paraphrase: Adds the dogpile mechanism - startup and periodic load from boot storms, midnight cron, config pushes, and lockstep waits far exceeds steady state - and prescribes randomized slew and increasing backoff so callers desynchronize.
+  conditions: 'Canonical mapping applicability (not attributed to the source): writing schedulers cron jobs or retry logic; planning fleet restarts or config pushes; preparing for traffic events; reviewing periodic batch work'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-151cfac2aec7
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/014-chapter-8-processes-on-machines.md#Transparency
+  mappings:
+  - node_id: operations-transparency-by-design
+    relationship_to_canonical: direct_support
+  paraphrase: Defines transparency as a designed-in quality that cannot be added late, requires monitoring to remain an exoskeleton with alerting and threshold policy outside the instance, aims logging levels at operations with ERROR reserved for actionable system problems, and specifies health checks that report version, accepting-work state, and connection-pool and circuit-breaker status.
+  conditions: 'Canonical mapping applicability (not attributed to the source): building new services or instances; reviewing logging metrics and health-check design; deciding what to alert on'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-6a6b58795bd2
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/016-chapter-10-control-plane.md#System-Wide Transparency
+  mappings:
+  - node_id: operations-transparency-by-design
+    relationship_to_canonical: refinement
+  paraphrase: Reframes system-level monitoring around two questions - are users receiving a good experience, and is the system creating the intended economic value - and treats partially broken as the normal operating state at scale rather than something to alert on.
+  conditions: 'Canonical mapping applicability (not attributed to the source): building new services or instances; reviewing logging metrics and health-check design; deciding what to alert on'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-3e020b3126d3
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/012-chapter-6-case-study-phenomenal-cosmic-powers-itty-bitty-living-space.md#Taking the Pulse
+  mappings:
+  - node_id: operations-transparency-by-design
+    relationship_to_canonical: corroboration
+  paraphrase: Shows continuous scripted sampling of instance vitals teaching operators the system's normal rhythms so anomalies are recognized at a glance - the visibility that later made the outage diagnosable.
+  conditions: 'Canonical mapping applicability (not attributed to the source): building new services or instances; reviewing logging metrics and health-check design; deciding what to alert on'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-7417e33fc194
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/017-chapter-11-security.md#The OWASP Top 10
+  mappings:
+  - node_id: operations-untrusted-request-handling
+    relationship_to_canonical: direct_support
+  paraphrase: Catalogs the consensus most-critical web-application flaw classes - injection, broken authentication and session management, XSS, broken access control, security misconfiguration, sensitive data exposure, CSRF, underprotected APIs - each traced to trusting request content, origin, or link possession, with defenses such as parameterized queries, output escaping, fresh post-authentication session IDs, and per-request object authorization.
+  conditions: 'Canonical mapping applicability (not attributed to the source): handling any externally influenced input; building or reviewing HTTP APIs and web surfaces; constructing queries markup or file paths from request data; internal services assumed safe behind the perimeter'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-d9ec29157087
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/020-chapter-13-design-for-deployment.md#Phases of Deployment
+  mappings:
+  - node_id: operations-zero-downtime-rollout
+    relationship_to_canonical: direct_support
+  paraphrase: Decomposes a rollout into a macroscopic window nesting four per-instance time spans - prepare, drain bounded by session and blocked-thread realities, apply, and time-to-ready after start - and derives that packaging grain size drives per-machine update time, which must be budgeted before planning the rollout window.
+  conditions: 'Canonical mapping applicability (not attributed to the source): planning or reviewing deployments of running services; designing deployment automation; sizing rollout windows and batches'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-c61f1dbb9194
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/020-chapter-13-design-for-deployment.md#The Fallacy of Planned Downtime
+  mappings:
+  - node_id: operations-zero-downtime-rollout
+    relationship_to_canonical: refinement
+  paraphrase: Argues users see the during state, so deployment must be treated as a designed feature rather than an after-state assumption.
+  conditions: 'Canonical mapping applicability (not attributed to the source): planning or reviewing deployments of running services; designing deployment automation; sizing rollout windows and batches'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-4512a3a419cb
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/020-chapter-13-design-for-deployment.md#Rollout
+  mappings:
+  - node_id: operations-zero-downtime-rollout
+    relationship_to_canonical: refinement
+  paraphrase: Prescribes batched health-gated group updates with a canary group, traffic shaping while watching metrics, a health-check route that gates load-balancer traffic starting with available=false until warm, and decoupling session lifetime from process lifetime.
+  conditions: 'Canonical mapping applicability (not attributed to the source): planning or reviewing deployments of running services; designing deployment automation; sizing rollout windows and batches'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-67f9019bf8f4
+  source_id: SRC-RI
+  locator: 'books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/019-chapter-12-case-study-waiting-for-godot.md#Chapter 12: Case Study: Waiting for Godot'
+  mappings:
+  - node_id: operations-zero-downtime-rollout
+    relationship_to_canonical: corroboration
+  paraphrase: Corroborating cost evidence - a manual playbook release consuming roughly forty people and one hundred thousand dollars overnight, failing on QA-versus-production data mismatch and rolling back.
+  conditions: 'Canonical mapping applicability (not attributed to the source): planning or reviewing deployments of running services; designing deployment automation; sizing rollout windows and batches'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-EGO-da76af9e2aae
   source_id: SRC-EGO
   locator: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/011-chapter-7-data-driven-efficiency-assessment.md#Practical Applications
@@ -3142,6 +4042,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-RI-ccd004be21de
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/023-chapter-15-case-study-trampled-by-your-own-customers.md#The Testing Gap
+  mappings:
+  - node_id: performance-benchmark-validity
+    relationship_to_canonical: refinement
+  paraphrase: Case-study evidence that load tests scripted only around intended polite usage systematically overstate capacity - production traffic included cookie-less search spiders, scrapers, and repeated hits the rule-following scripts never modeled - so a representative load workload must include noise, protocol-violating clients, and hostile access patterns.
+  conditions: 'Canonical mapping applicability (not attributed to the source): designing or reviewing microbenchmarks, macrobenchmarks, load tests, or stress tests'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-FP-0dd5704280be
   source_id: SRC-FP
   locator: books/fluent-python-2nd-edition-z-lib-org/chapters/015-chapter-9-decorators-and-closures.md#Using lru_cache
@@ -3173,6 +4085,30 @@ formulations:
   - node_id: performance-cache-validity
     relationship_to_canonical: corroboration
   paraphrase: Frames reuse as a measured tradeoff with memory-retention risks.
+  conditions: 'Canonical mapping applicability (not attributed to the source): proposing or reviewing memoization, cached properties, shared caches, or precomputed results'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-21b9a620ce79
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md#Steady State
+  mappings:
+  - node_id: performance-cache-validity
+    relationship_to_canonical: corroboration
+  paraphrase: Adds the stability-side requirements - any cache over an unbounded key space needs an enforced size limit and an invalidation strategy, monitored hit rates to prove benefit, and in managed runtimes weak references so the collector can reclaim payloads.
+  conditions: 'Canonical mapping applicability (not attributed to the source): proposing or reviewing memoization, cached properties, shared caches, or precomputed results'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-4cb931a3a978
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/016-chapter-10-control-plane.md#Command and Control
+  mappings:
+  - node_id: performance-cache-validity
+    relationship_to_canonical: corroboration
+  paraphrase: Warns that a runtime flush-cache control degrades an instance's performance for minutes and can dogpile the backing service or database, because some services cannot respond at all until their working set reloads.
   conditions: 'Canonical mapping applicability (not attributed to the source): proposing or reviewing memoization, cached properties, shared caches, or precomputed results'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -3334,6 +4270,18 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-RI-f975dca8b967
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/012-chapter-6-case-study-phenomenal-cosmic-powers-itty-bitty-living-space.md#Vital Signs
+  mappings:
+  - node_id: performance-metric-semantics
+    relationship_to_canonical: refinement
+  paraphrase: Incident evidence that latency averages computed only over completed requests hide timeouts - response time is a lagging indicator that can read nominal while effectively infinite, because requests that never finish are never averaged in.
+  conditions: 'Canonical mapping applicability (not attributed to the source): interpreting metrics, logs, traces, profiles, dashboards, or benchmark output'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-EGO-7341f1082c82
   source_id: SRC-EGO
   locator: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/013-chapter-9-data-driven-bottleneck-analysis.md#Root Cause Analysis, but for Efficiency
@@ -3401,6 +4349,30 @@ formulations:
   - node_id: performance-resource-lifecycle
     relationship_to_canonical: corroboration
   paraphrase: Extends structured lifecycle to asynchronous resources.
+  conditions: 'Canonical mapping applicability (not attributed to the source): code creates asynchronous work or acquires external/scarce resources; reuse, caching, pooling, or background processing is proposed'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-04ce42376d1c
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md#Blocked Threads
+  mappings:
+  - node_id: performance-resource-lifecycle
+    relationship_to_canonical: corroboration
+  paraphrase: Adds production-failure evidence that pooled resources and blocking calls without checkout timeouts are the proximate cause of most system failures, and warns against hand-rolled pools and synchronization added in subclasses that callers cannot see.
+  conditions: 'Canonical mapping applicability (not attributed to the source): code creates asynchronous work or acquires external/scarce resources; reuse, caching, pooling, or background processing is proposed'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-a84696fe8ccf
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/012-chapter-6-case-study-phenomenal-cosmic-powers-itty-bitty-living-space.md#Diagnostic Tests
+  mappings:
+  - node_id: performance-resource-lifecycle
+    relationship_to_canonical: corroboration
+  paraphrase: Production incident evidence - a connection pool with no checkout timeout left all 3,000 request-handling threads blocked forever on an unresponsive downstream dependency while CPU stayed near zero, a missing completion path on a pooled resource halting the entire system.
   conditions: 'Canonical mapping applicability (not attributed to the source): code creates asynchronous work or acquires external/scarce resources; reuse, caching, pooling, or background processing is proposed'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -4018,6 +4990,42 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-RI-90ab0af56d87
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/020-chapter-13-design-for-deployment.md#Relational Database Schemata
+  mappings:
+  - node_id: refactoring-compatibility-migration
+    relationship_to_canonical: refinement
+  paraphrase: Defines the additive expansion phase of a schema migration - new tables, views, nullable columns, aliases, copies, trigger shims - whose criterion is that nothing added is observable by the currently running application, and requires testing migrations against production-shaped data rather than clean QA data.
+  conditions: 'Canonical mapping applicability (not attributed to the source): public API; wire protocol; event; schema; file format; multi-repo consumer'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-d4dcbde1f5b5
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/020-chapter-13-design-for-deployment.md#Cleanup
+  mappings:
+  - node_id: refactoring-compatibility-migration
+    relationship_to_canonical: refinement
+  paraphrase: Defines the contraction phase - drop superseded structures and remove shims only after every instance runs the new version, and defer NOT NULL and foreign-key constraints until then because old instances would start erroring on actions that were previously valid; feature-toggle review and removal are scheduled here, and shim removal must itself be a versioned migration.
+  conditions: 'Canonical mapping applicability (not attributed to the source): public API; wire protocol; event; schema; file format; multi-repo consumer'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-RI-478ad78f2eca
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/020-chapter-13-design-for-deployment.md#Schemaless Databases
+  mappings:
+  - node_id: refactoring-compatibility-migration
+    relationship_to_canonical: refinement
+  paraphrase: Shows schemaless stores still carry an implicit application schema across every document version ever written - of the four concurrent code/data version combinations only old-code-reads-new-data fails, so code able to read both versions must be fully rolled out before data migration runs, and trickle-then-batch migration amortizes migrations too large for a deployment window.
+  conditions: 'Canonical mapping applicability (not attributed to the source): public API; wire protocol; event; schema; file format; multi-repo consumer'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-REF-75d28cd696bd
   source_id: SRC-REF
   locator: books/refactoring-improving-the-design-of-existing-code/chapters/006-chapter-2-principles-in-refactoring.md#When Should You Refactor?
@@ -4438,6 +5446,30 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-UT-ad82d76470b2
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/010-chapter-4-the-four-pillars-of-a-good-unit-test.md#4.1 Diving into the four pillars of a good unit test
+  mappings:
+  - node_id: testing-assert-observable-outcomes
+    relationship_to_canonical: direct_support
+  paraphrase: Traces false positives directly to coupling between tests and the SUT's implementation details (sub-renderer structure and SQL-text examples) and prescribes verifying the end result from the client's point of view, treating the SUT as a black box.
+  conditions: 'Canonical mapping applicability (not attributed to the source): writing assertions; reviewing tests for brittleness; diagnosing tests that fail on refactoring; assessing suite accuracy'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-f0a720f510c4
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/010-chapter-4-the-four-pillars-of-a-good-unit-test.md#4.2 The intrinsic connection between the first two attributes
+  mappings:
+  - node_id: testing-assert-observable-outcomes
+    relationship_to_canonical: refinement
+  paraphrase: Frames suite accuracy as signal (bugs found) over noise (false alarms) and shows false positives grow from a minor early-project nuisance to as damaging as missed bugs once the codebase ages and refactoring becomes necessary.
+  conditions: 'Canonical mapping applicability (not attributed to the source): writing assertions; reviewing tests for brittleness; diagnosing tests that fail on refactoring; assessing suite accuracy'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-CC-20a835bbb400
   source_id: SRC-CC
   locator: books/code-complete-2nd-edition-v413hav/chapters/031-chapter-22-developer-testing.md#Coverage Monitors
@@ -4462,6 +5494,78 @@ formulations:
   context_basis:
     conditions: canonical-mapping
     caveats: canonical-policy
+- id: F-CONCEPT-UT-45555a2f20c6
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/006-chapter-1-the-goal-of-unit-testing.md#1.3 Using coverage metrics to measure test suite quality
+  mappings:
+  - node_id: testing-coverage-is-not-adequacy
+    relationship_to_canonical: corroboration
+  paraphrase: Shows line and branch coverage prove only execution, not verification - assertion-free tests and unverified implicit outcomes still reach 100%, external-library code paths stay invisible, and mandated coverage targets create a perverse incentive.
+  conditions: 'Canonical mapping applicability (not attributed to the source): test assessment; coverage gate review; implementation or repair verification'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-89da45219ab8
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/010-chapter-4-the-four-pillars-of-a-good-unit-test.md#4.5 Exploring well-known test automation concepts
+  mappings:
+  - node_id: testing-coverage-is-not-adequacy
+    relationship_to_canonical: refinement
+  paraphrase: Prescribes writing all tests black-box against behavior meaningful to the problem domain, while using white-box coverage analysis only to locate untested branches that are then tested black-box; a test untraceable to a business requirement should be restructured or deleted.
+  conditions: 'Canonical mapping applicability (not attributed to the source): test assessment; coverage gate review; implementation or repair verification'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-06962719d381
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/017-chapter-10-testing-the-database.md#10.1 Prerequisites for testing the database
+  mappings:
+  - node_id: testing-database-delivery-prerequisites
+    relationship_to_canonical: direct_support
+  paraphrase: States the prerequisites (schema and reference data in source control, per-developer instances, migration-based over state-based delivery because data motion outweighs merge-conflict convenience) that make a real database testable at all.
+  conditions: 'Canonical mapping applicability (not attributed to the source): introducing database integration tests; assessing a repository''s database delivery discipline; reviewing migration practices'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-2e702206a1e3
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/017-chapter-10-testing-the-database.md#10.3.3 Avoid in-memory databases
+  mappings:
+  - node_id: testing-database-production-fidelity
+    relationship_to_canonical: direct_support
+  paraphrase: Rejects in-memory database analogs because functional mismatch with the production DBMS produces false positives and false negatives, requiring the same vendor (version/edition may differ).
+  conditions: 'Canonical mapping applicability (not attributed to the source): writing or reviewing database integration tests; diagnosing database tests that pass while production fails; designing test data lifecycle'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-d9a56b6ce826
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/017-chapter-10-testing-the-database.md#10.2 Database transaction management
+  mappings:
+  - node_id: testing-database-production-fidelity
+    relationship_to_canonical: refinement
+  paraphrase: Establishes that business operations need atomic updates via a transaction or unit of work whose lifetime matches the business operation, and that tests must not reuse one unit of work across test sections because production gives each operation its own.
+  conditions: 'Canonical mapping applicability (not attributed to the source): writing or reviewing database integration tests; diagnosing database tests that pass while production fails; designing test data lifecycle'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-cb0ac6e88c5e
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/017-chapter-10-testing-the-database.md#10.3 Test data life cycle
+  mappings:
+  - node_id: testing-database-production-fidelity
+    relationship_to_canonical: refinement
+  paraphrase: Prescribes running database integration tests sequentially and clearing leftover data at the beginning of each test (the fastest option not prone to skipped teardown), noting rollback-only umbrella transactions diverge from production behavior.
+  conditions: 'Canonical mapping applicability (not attributed to the source): writing or reviewing database integration tests; diagnosing database tests that pass while production fails; designing test data lifecycle'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
 - id: F-CONCEPT-APOSD-f6cc19b3dc4b
   source_id: SRC-APOSD
   locator: 'books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/024-19-software-trends.md#19: Software Trends'
@@ -4482,6 +5586,306 @@ formulations:
     relationship_to_canonical: corroboration
   paraphrase: Supports enough design to understand responsibilities and implementation before detailed construction.
   conditions: 'Canonical mapping applicability (not attributed to the source): new shared module; public API; durable library boundary; domain abstraction'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-3136d3ad57da
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/010-chapter-4-the-four-pillars-of-a-good-unit-test.md#4.1 Diving into the four pillars of a good unit test
+  mappings:
+  - node_id: testing-four-pillar-test-value
+    relationship_to_canonical: direct_support
+  paraphrase: Defines the four attributes and grounds regression-protection scoring in the amount, complexity, and domain significance of the code a test exercises - including library and framework code - noting trivial code is rarely worth testing.
+  conditions: 'Canonical mapping applicability (not attributed to the source): evaluating tests or suites; choosing between test designs; deciding which tests to keep or rewrite; reviewing test additions'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-d61bf56e3f8a
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/010-chapter-4-the-four-pillars-of-a-good-unit-test.md#4.4 In search of an ideal test
+  mappings:
+  - node_id: testing-four-pillar-test-value
+    relationship_to_canonical: direct_support
+  paraphrase: Proves the first three attributes mutually exclusive by extremes (end-to-end tests sacrifice speed, trivial tests sacrifice regression protection, brittle tests sacrifice refactoring resistance), makes the value estimate multiplicative with a high retention threshold, declares resistance to refactoring non-negotiable because it is near-binary, and reduces the remaining trade-off to regression protection versus feedback speed.
+  conditions: 'Canonical mapping applicability (not attributed to the source): evaluating tests or suites; choosing between test designs; deciding which tests to keep or rewrite; reviewing test additions'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-bc81c30b4ece
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/013-chapter-7-refactoring-toward-valuable-unit-tests.md#7.1.1 The four types of code
+  mappings:
+  - node_id: testing-humble-object-testability-split
+    relationship_to_canonical: direct_support
+  paraphrase: Provides the two-axis classification (complexity/domain significance versus collaborator count) that locates unit-test value, and marks the overcomplicated quadrant for splitting rather than direct testing.
+  conditions: 'Canonical mapping applicability (not attributed to the source): deciding where unit-test effort goes; code that is both complex and collaborator-heavy; reviewing test plans for controllers and domain logic'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-d959d607c427
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/013-chapter-7-refactoring-toward-valuable-unit-tests.md#7.4 Handling conditional logic in controllers
+  mappings:
+  - node_id: testing-humble-object-testability-split
+    relationship_to_canonical: refinement
+  paraphrase: Names the trilemma (domain-model testability, controller simplicity, performance - pick two), recommends splitting decision-making into granular steps mitigated by CanExecute/Execute and domain events, and rejects injecting out-of-process dependencies into the domain model.
+  conditions: 'Canonical mapping applicability (not attributed to the source): deciding where unit-test effort goes; code that is both complex and collaborator-heavy; reviewing test plans for controllers and domain logic'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-cf7beee38262
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/015-chapter-8-why-integration-testing.md#8.1 What is an integration test?
+  mappings:
+  - node_id: testing-integration-scope-selection
+    relationship_to_canonical: direct_support
+  paraphrase: Sets the unit/integration ratio rule (edge cases in unit tests; one longest-happy-path integration test per business scenario, adding tests only until every external system's communication is exercised) and admits the Fail Fast principle as a documented alternative to integration-testing immediately-manifest edge cases.
+  conditions: 'Canonical mapping applicability (not attributed to the source): scoping integration tests for a feature; reviewing integration-suite growth; deciding whether an edge case needs an out-of-process test'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-176f20dd03fd
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/016-chapter-9-mocking-best-practices.md#9.1 Maximizing mocks' value
+  mappings:
+  - node_id: testing-mock-at-system-edges
+    relationship_to_canonical: direct_support
+  paraphrase: Directs mocks at the last owned type before the external system and at the actual message content, showing this maximizes code exercised (protection against regressions) and detaches the test from intermediate implementation types (resistance to refactoring); recommends spies as independent, reusable assertion checkpoints that do not trust production code.
+  conditions: 'Canonical mapping applicability (not attributed to the source): writing integration tests that mock unmanaged dependencies; reviewing mock placement and assertions; integrating third-party client libraries'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-71ac63d2ef20
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/016-chapter-9-mocking-best-practices.md#9.2 Mocking best practices
+  mappings:
+  - node_id: testing-mock-at-system-edges
+    relationship_to_canonical: refinement
+  paraphrase: Adds that mocks belong in integration tests only (controllers are the only code touching unmanaged dependencies), that the number of mocks per test is set by the number of unmanaged dependencies rather than a one-mock rule, that call counts including the absence of other calls must be verified, and that one should write and mock owned adapters over third-party libraries.
+  conditions: 'Canonical mapping applicability (not attributed to the source): writing integration tests that mock unmanaged dependencies; reviewing mock placement and assertions; integrating third-party client libraries'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-a99fb350d60a
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/015-chapter-8-why-integration-testing.md#8.2 Which out-of-process dependencies to test directly
+  mappings:
+  - node_id: testing-mock-unmanaged-dependencies-only
+    relationship_to_canonical: direct_support
+  paraphrase: Defines the managed/unmanaged dependency distinction, states the rule to mock only unmanaged ones and verify managed ones by final state, and resolves the partially shared database by treating externally visible tables as an unmanaged message channel.
+  conditions: 'Canonical mapping applicability (not attributed to the source): choosing what to mock in integration tests; reviewing test-double usage at process boundaries; testing systems with databases message buses or external services; deciding how to test logging'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-4c496967444a
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/011-chapter-5-mocks-and-test-fragility.md#5.4.1 Not all out-of-process dependencies should be mocked out
+  mappings:
+  - node_id: testing-mock-unmanaged-dependencies-only
+    relationship_to_canonical: refinement
+  paraphrase: Establishes the precursor rule that an out-of-process dependency accessible only through the application is part of the application, so its communication pattern is an implementation detail with no backward-compatibility obligation.
+  conditions: 'Canonical mapping applicability (not attributed to the source): choosing what to mock in integration tests; reviewing test-double usage at process boundaries; testing systems with databases message buses or external services; deciding how to test logging'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-4bc402580036
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/015-chapter-8-why-integration-testing.md#8.6 How to test logging functionality
+  mappings:
+  - node_id: testing-mock-unmanaged-dependencies-only
+    relationship_to_canonical: refinement
+  paraphrase: Applies the distinction to logging - support logging observable by non-developers is observable behavior tested like any unmanaged dependency, while diagnostic logging is an implementation detail that goes untested.
+  conditions: 'Canonical mapping applicability (not attributed to the source): choosing what to mock in integration tests; reviewing test-double usage at process boundaries; testing systems with databases message buses or external services; deciding how to test logging'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-c26b5cc72c64
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/019-chapter-11-unit-testing-anti-patterns.md#11.1 Unit testing private methods
+  mappings:
+  - node_id: testing-no-test-privileged-access
+    relationship_to_canonical: direct_support
+  paraphrase: Establishes the no-test-privilege rule for private methods - test them via observable behavior; a private method too complex to reach that way is dead code or a missing abstraction to extract into its own class, with the rare exception of members that are private yet part of an observable contract (e.g., an ORM-invoked private constructor).
+  conditions: 'Canonical mapping applicability (not attributed to the source): a test wants access to private members or state; expected values are computed rather than known; production code is growing test-only parameters; a concrete class is being partially mocked; code reads ambient time'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-c08f07f66c7d
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/019-chapter-11-unit-testing-anti-patterns.md#11.2 Exposing private state
+  mappings:
+  - node_id: testing-no-test-privileged-access
+    relationship_to_canonical: refinement
+  paraphrase: Verify state only through what production code actually reads (a status change is verified via the discount it produces), never by publicizing fields for tests.
+  conditions: 'Canonical mapping applicability (not attributed to the source): a test wants access to private members or state; expected values are computed rather than known; production code is growing test-only parameters; a concrete class is being partially mocked; code reads ambient time'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-c88dc4516a07
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/019-chapter-11-unit-testing-anti-patterns.md#11.3 Leaking domain knowledge to tests
+  mappings:
+  - node_id: testing-no-test-privileged-access
+    relationship_to_canonical: refinement
+  paraphrase: Never reimplement the algorithm in the test; hardcode expected results precalculated independently of the SUT (domain expert or legacy output).
+  conditions: 'Canonical mapping applicability (not attributed to the source): a test wants access to private members or state; expected values are computed rather than known; production code is growing test-only parameters; a concrete class is being partially mocked; code reads ambient time'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-19743a7ce577
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/019-chapter-11-unit-testing-anti-patterns.md#11.4 Code pollution
+  mappings:
+  - node_id: testing-no-test-privileged-access
+    relationship_to_canonical: refinement
+  paraphrase: No production code whose only purpose is testing (Boolean environment switches); an interface with a fake implementation is the lesser, safer pollution.
+  conditions: 'Canonical mapping applicability (not attributed to the source): a test wants access to private members or state; expected values are computed rather than known; production code is growing test-only parameters; a concrete class is being partially mocked; code reads ambient time'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-005a954f336c
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/019-chapter-11-unit-testing-anti-patterns.md#11.5 Mocking concrete classes
+  mappings:
+  - node_id: testing-no-test-privileged-access
+    relationship_to_canonical: refinement
+  paraphrase: Needing CallBase partial mocks means one class mixes unmanaged-dependency communication with logic; split into a gateway plus a pure calculator.
+  conditions: 'Canonical mapping applicability (not attributed to the source): a test wants access to private members or state; expected values are computed rather than known; production code is growing test-only parameters; a concrete class is being partially mocked; code reads ambient time'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-e16a95ce88c4
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/019-chapter-11-unit-testing-anti-patterns.md#11.6 Working with time
+  mappings:
+  - node_id: testing-no-test-privileged-access
+    relationship_to_canonical: refinement
+  paraphrase: Static ambient-context time is an anti-pattern; inject time explicitly, preferring a plain value over a service (service at operation start, value thereafter).
+  conditions: 'Canonical mapping applicability (not attributed to the source): a test wants access to private members or state; expected values are computed rather than known; production code is growing test-only parameters; a concrete class is being partially mocked; code reads ambient time'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-d5d2251bf1d5
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/012-chapter-6-styles-of-unit-testing.md#6.2 Comparing the three styles of unit testing
+  mappings:
+  - node_id: testing-output-based-style-preference
+    relationship_to_canonical: direct_support
+  paraphrase: Ranks the three unit-test styles on resistance to refactoring and maintainability (protection and speed being style-independent) and establishes the preference order output > state > communication.
+  conditions: 'Canonical mapping applicability (not attributed to the source): choosing a test style for decision logic; considering a functional-core restructuring for testability; reviewing mock-heavy tests of computational code'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-5255e0522b48
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/012-chapter-6-styles-of-unit-testing.md#6.3 Understanding functional architecture
+  mappings:
+  - node_id: testing-output-based-style-preference
+    relationship_to_canonical: refinement
+  paraphrase: Defines the functional-core/mutable-shell mechanism - an immutable decision core producing outputs from inputs, with a shell that gathers inputs and applies the decisions' side effects at the edges.
+  conditions: 'Canonical mapping applicability (not attributed to the source): choosing a test style for decision logic; considering a functional-core restructuring for testability; reviewing mock-heavy tests of computational code'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-8fa132fa07e2
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/012-chapter-6-styles-of-unit-testing.md#6.5 Understanding the drawbacks of functional architecture
+  mappings:
+  - node_id: testing-output-based-style-preference
+    relationship_to_canonical: refinement
+  paraphrase: Supplies the adoption gate - the collaborator-vs-value applicability limit, the performance cost of read-decide-act, and the code-base-size cost - and warns against purity at too high a cost.
+  conditions: 'Canonical mapping applicability (not attributed to the source): choosing a test style for decision logic; considering a functional-core restructuring for testability; reviewing mock-heavy tests of computational code'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-d01a1d59ca0b
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/008-chapter-3-the-anatomy-of-a-unit-test.md#3.1 How to structure a unit test
+  mappings:
+  - node_id: testing-self-contained-test-anatomy
+    relationship_to_canonical: direct_support
+  paraphrase: Establishes the single arrange-act-assert structure, bans if statements in any test, allows multiple assertions when they verify one unit of behavior, and permits multiple act sections only as a speed compromise in slow integration tests.
+  conditions: 'Canonical mapping applicability (not attributed to the source): writing or reviewing unit tests; refactoring test structure; introducing fixture reuse'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-8063d1149768
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/008-chapter-3-the-anatomy-of-a-unit-test.md#3.3 Reusing test fixtures between tests
+  mappings:
+  - node_id: testing-self-contained-test-anatomy
+    relationship_to_canonical: direct_support
+  paraphrase: Prefers expressive private factory methods over constructor or setup-method initialization for fixture reuse, because shared setup state couples tests together (a change to one arrangement breaks siblings) and hides the context a reader needs; base-class constructors remain acceptable for near-universal integration infrastructure like database connections.
+  conditions: 'Canonical mapping applicability (not attributed to the source): writing or reviewing unit tests; refactoring test structure; introducing fixture reuse'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-5209ad804053
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/007-chapter-2-what-is-a-unit-test.md#2.1 The definition of "unit test"
+  mappings:
+  - node_id: testing-shared-dependency-substitution
+    relationship_to_canonical: direct_support
+  paraphrase: Identifies isolation as the contested attribute of the unit-test definition and states the classical resolution - isolate tests from each other, not units from collaborators - grounded in the shared/private/out-of-process/volatile dependency taxonomy that determines what must be substituted.
+  conditions: 'Canonical mapping applicability (not attributed to the source): deciding what to mock or stub in a unit test; reviewing test-double usage; a suite whose tests interfere through shared state or run slowly'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-6ff972a54817
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/007-chapter-2-what-is-a-unit-test.md#2.2.1 How the classical and London schools handle dependencies
+  mappings:
+  - node_id: testing-shared-dependency-substitution
+    relationship_to_canonical: direct_support
+  paraphrase: Shows that even the London school leaves immutable dependencies unmocked, and distinguishes collaborators (shared or mutable dependencies) from value objects, which never need substitution.
+  conditions: 'Canonical mapping applicability (not attributed to the source): deciding what to mock or stub in a unit test; reviewing test-double usage; a suite whose tests interfere through shared state or run slowly'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-7f34a6a54455
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/006-chapter-1-the-goal-of-unit-testing.md#1.2 The goal of unit testing
+  mappings:
+  - node_id: testing-suite-net-value
+    relationship_to_canonical: direct_support
+  paraphrase: Defines the goal of unit testing as sustainable project growth against software entropy (design improvement is a side effect) and itemizes the four recurring upkeep costs a test must outweigh to have positive net value.
+  conditions: 'Canonical mapping applicability (not attributed to the source): assessing an existing test suite; deciding whether a test earns its maintenance cost; reviewing test additions in a change; planning suite investment'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-f405e1422dbe
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/006-chapter-1-the-goal-of-unit-testing.md#1.4 What makes a successful test suite?
+  mappings:
+  - node_id: testing-suite-net-value
+    relationship_to_canonical: direct_support
+  paraphrase: States that suite quality can only be judged test-by-test with personal judgment, not by an aggregate automated metric, and names the three success properties - integration into the development cycle, focus on the most important code, and maximum value for minimum maintenance cost.
+  conditions: 'Canonical mapping applicability (not attributed to the source): assessing an existing test suite; deciding whether a test earns its maintenance cost; reviewing test additions in a change; planning suite investment'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
     conditions: canonical-mapping
@@ -4518,6 +5922,66 @@ formulations:
     relationship_to_canonical: tension
   paraphrase: Supports failing-test-first for repair while warning that feature-by-feature TDD can displace broader interface design.
   conditions: 'Canonical mapping applicability (not attributed to the source): defect repair; contract implementation; behavior-preserving change; well-specified feature'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-28bcc9878b05
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/010-chapter-4-the-four-pillars-of-a-good-unit-test.md#4.5 Exploring well-known test automation concepts
+  mappings:
+  - node_id: testing-test-level-mix
+    relationship_to_canonical: direct_support
+  paraphrase: Grounds the Test Pyramid's ratio in the fast-feedback versus regression-protection trade-off (no layer may concede resistance to refactoring) and licenses explicit exceptions - CRUD-dominated systems shift toward a unit/integration rectangle, and a single-dependency API can justify more end-to-end tests.
+  conditions: 'Canonical mapping applicability (not attributed to the source): planning a test strategy; reviewing the suite''s level distribution; deciding at which level to protect a behavior'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-114f6af9104c
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/007-chapter-2-what-is-a-unit-test.md#2.3 Contrasting the classical and London schools of unit testing
+  mappings:
+  - node_id: testing-testability-as-design-signal
+    relationship_to_canonical: direct_support
+  paraphrase: Argues a large interconnected class graph is itself the design problem that test pain correctly exposes, that mocking the graph apart hides the root cause instead of tackling it, and names over-specification as the London style's biggest cost.
+  conditions: 'Canonical mapping applicability (not attributed to the source): a test needs extensive setup or many doubles; reviewing code whose tests are painful to write; assessing design quality with testability evidence'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-7d4dd4c5faac
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/006-chapter-1-the-goal-of-unit-testing.md#1.2 The goal of unit testing
+  mappings:
+  - node_id: testing-testability-as-design-signal
+    relationship_to_canonical: corroboration
+  paraphrase: States the one-way indicator - hard-to-test code reliably signals poor quality (usually tight coupling), but easy-to-test code does not establish good design.
+  conditions: 'Canonical mapping applicability (not attributed to the source): a test needs extensive setup or many doubles; reviewing code whose tests are painful to write; assessing design quality with testability evidence'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-85860a8cc313
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/007-chapter-2-what-is-a-unit-test.md#2.3.1 Unit testing one class at a time
+  mappings:
+  - node_id: testing-unit-of-behavior
+    relationship_to_canonical: direct_support
+  paraphrase: Rejects the class as the default test target and requires each test to tell a cohesive story a domain-literate non-programmer could recognize, with the number of classes implementing the behavior explicitly irrelevant.
+  conditions: 'Canonical mapping applicability (not attributed to the source): writing or reviewing unit tests; choosing test granularity; naming tests; refactoring a suite that mirrors the class structure'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-762dd48c6b19
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/008-chapter-3-the-anatomy-of-a-unit-test.md#3.4 Naming a unit test
+  mappings:
+  - node_id: testing-unit-of-behavior
+    relationship_to_canonical: refinement
+  paraphrase: Applies the behavior-not-code rule to naming - describe the scenario in plain language to a domain-familiar non-programmer, avoid rigid naming policies, and keep the method under test's name out of the test name (utility code excepted).
+  conditions: 'Canonical mapping applicability (not attributed to the source): writing or reviewing unit tests; choosing test granularity; naming tests; refactoring a suite that mirrors the class structure'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
     conditions: canonical-mapping
@@ -4661,6 +6125,18 @@ formulations:
   - node_id: universal-explicit-invariants
     relationship_to_canonical: corroboration
   paraphrase: Locates transactional domain invariants within an explicit consistency boundary.
+  conditions: 'Canonical mapping applicability (not attributed to the source): state, API, persistence, concurrency, domain, migration, or security rules are changed'
+  caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
+  context_basis:
+    conditions: canonical-mapping
+    caveats: canonical-policy
+- id: F-CONCEPT-UT-95f110826c03
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/008-chapter-3-the-anatomy-of-a-unit-test.md#3.1 How to structure a unit test
+  mappings:
+  - node_id: universal-explicit-invariants
+    relationship_to_canonical: refinement
+  paraphrase: Reads a test act phase that needs more than one method call as evidence the API lets clients skip an invariant-maintaining step - an encapsulation breach the owner should close by performing the whole business operation in one method; applies to business-logic APIs, explicitly less to utility or infrastructure code.
   conditions: 'Canonical mapping applicability (not attributed to the source): state, API, persistence, concurrency, domain, migration, or security rules are changed'
   caveats: 'Canonical policy caveat (not attributed to the source): this mapping is bounded by the concept''s required evidence, preservation rules, repository contracts, and stated applicability.'
   context_basis:
@@ -5144,6 +6620,62 @@ formulations:
     caveats: conflict-position
   conflict_ref: conflict-choreography-vs-orchestration
   position_ref: orchestration
+- id: F-CONFLICT-UT-24dadad7bade
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/007-chapter-2-what-is-a-unit-test.md#2.1 The definition of "unit test"
+  mappings:
+  - node_id: conflict-classical-vs-london-test-isolation
+    relationship_to_canonical: direct_support
+  paraphrase: Documents the London school's reading of the contested isolation attribute - isolate the unit from all mutable collaborators and test one class at a time with doubles standing in for its neighbors - alongside the classical reading, in a split the chapter presents as live.
+  conditions: Applies to position 'london-mock-collaborators' within conflict-classical-vs-london-test-isolation under its evidence-selection rule.
+  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: Unit Testing documents the London position as one side of a split it does not treat as settled, and WELC directly supports seam substitution as legacy-context pragmatics.'
+  context_basis:
+    conditions: conflict-position
+    caveats: conflict-position
+  conflict_ref: conflict-classical-vs-london-test-isolation
+  position_ref: london-mock-collaborators
+- id: F-CONFLICT-WELC-aed42691a634
+  source_id: SRC-WELC
+  locator: books/programming-working-effectively-with-legacy-code/chapters/011-chapter-4-the-seam-model.md#Seams
+  mappings:
+  - node_id: conflict-classical-vs-london-test-isolation
+    relationship_to_canonical: refinement
+  paraphrase: Supplies the legacy-context variant of the substitute-freely position - any dependency, including private in-process collaborators, may be replaced at a seam to gain feedback on untested code without redesigning it.
+  conditions: Applies to position 'london-mock-collaborators' within conflict-classical-vs-london-test-isolation under its evidence-selection rule.
+  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: Unit Testing documents the London position as one side of a split it does not treat as settled, and WELC directly supports seam substitution as legacy-context pragmatics.'
+  context_basis:
+    conditions: conflict-position
+    caveats: conflict-position
+  conflict_ref: conflict-classical-vs-london-test-isolation
+  position_ref: london-mock-collaborators
+- id: F-CONFLICT-UT-50bfc9561b52
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/011-chapter-5-mocks-and-test-fragility.md#5.4 The classical vs. London schools of unit testing, revisited
+  mappings:
+  - node_id: conflict-classical-vs-london-test-isolation
+    relationship_to_canonical: direct_support
+  paraphrase: Advances the classical position through the fragility lens - only communications that cross the application boundary and carry backward-compatibility obligations should be verified with mocks, while intra-system communications stay real.
+  conditions: Applies to position 'classical-mock-unmanaged-only' within conflict-classical-vs-london-test-isolation under its evidence-selection rule.
+  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: Unit Testing directly argues the classical position; it is the book''s advocated side and is recorded as an argued position, not neutral ground.'
+  context_basis:
+    conditions: conflict-position
+    caveats: conflict-position
+  conflict_ref: conflict-classical-vs-london-test-isolation
+  position_ref: classical-mock-unmanaged-only
+- id: F-CONFLICT-UT-f925eec02114
+  source_id: SRC-UT
+  locator: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/011-chapter-5-mocks-and-test-fragility.md#5.3 The relationship between mocks and test fragility
+  mappings:
+  - node_id: conflict-classical-vs-london-test-isolation
+    relationship_to_canonical: direct_support
+  paraphrase: Supplies the fragility argument - communications between classes inside the application are implementation details, so mocks that verify them couple tests to internal structure, framed through hexagonal architecture's intra- versus inter-system distinction.
+  conditions: Applies to position 'classical-mock-unmanaged-only' within conflict-classical-vs-london-test-isolation under its evidence-selection rule.
+  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: Unit Testing directly argues the classical position; it is the book''s advocated side and is recorded as an argued position, not neutral ground.'
+  context_basis:
+    conditions: conflict-position
+    caveats: conflict-position
+  conflict_ref: conflict-classical-vs-london-test-isolation
+  position_ref: classical-mock-unmanaged-only
 - id: F-CONFLICT-CC-5bc9439b2b37
   source_id: SRC-CC
   locator: books/code-complete-2nd-edition-v413hav/chapters/043-chapter-32-self-documenting-code.md#Repeat of the Code
@@ -5354,6 +6886,76 @@ formulations:
     caveats: conflict-position
   conflict_ref: conflict-domain-vs-technical-partition
   position_ref: technical-partition
+- id: F-CONFLICT-RI-45cccc993592
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md#Unbalanced Capacities
+  mappings:
+  - node_id: conflict-efficiency-vs-resilience-margin
+    relationship_to_canonical: direct_support
+  paraphrase: Rejects evenly matched front-end and back-end capacity as a gross misuse of capital, requiring resilience mechanisms rather than symmetric overprovisioning to absorb demand mismatches.
+  conditions: Applies to position 'efficient-utilization' within conflict-efficiency-vs-resilience-margin under its evidence-selection rule.
+  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: Release It! itself argues against overprovisioning as the answer to capacity mismatch, anchoring the efficiency side from within the same source.'
+  context_basis:
+    conditions: conflict-position
+    caveats: conflict-position
+  conflict_ref: conflict-efficiency-vs-resilience-margin
+  position_ref: efficient-utilization
+- id: F-CONFLICT-RI-5dba4a2df98e
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/025-chapter-17-chaos-engineering.md#Antecedents of Chaos Engineering
+  mappings:
+  - node_id: conflict-efficiency-vs-resilience-margin
+    relationship_to_canonical: direct_support
+  paraphrase: Imports drift-into-failure - economic plus workload pressure push systems toward the safety boundary - and the regulator paradox - a well-working protection stops producing evidence of its own quality - observing that highly efficient systems break all at once.
+  conditions: Applies to position 'retain-resilience-margin' within conflict-efficiency-vs-resilience-margin under its evidence-selection rule.
+  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: Release It! directly advances retained margin and routine tolerable stress as the counterweight to efficiency-driven drift.'
+  context_basis:
+    conditions: conflict-position
+    caveats: conflict-position
+  conflict_ref: conflict-efficiency-vs-resilience-margin
+  position_ref: retain-resilience-margin
+- id: F-CONFLICT-RI-924f45f592c9
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/024-chapter-16-adaptation.md#Team-Scale Autonomy
+  mappings:
+  - node_id: conflict-efficiency-vs-resilience-margin
+    relationship_to_canonical: refinement
+  paraphrase: Argues full utilization slows flow and value-stream optimization specializes the system to today's tasks at the cost of future flexibility.
+  conditions: Applies to position 'retain-resilience-margin' within conflict-efficiency-vs-resilience-margin under its evidence-selection rule.
+  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: Release It! directly advances retained margin and routine tolerable stress as the counterweight to efficiency-driven drift.'
+  context_basis:
+    conditions: conflict-position
+    caveats: conflict-position
+  conflict_ref: conflict-efficiency-vs-resilience-margin
+  position_ref: retain-resilience-margin
+- id: F-CONFLICT-RI-29ab9488b28f
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/008-chapter-3-stabilize-your-system.md#Chain of Failure
+  mappings:
+  - node_id: conflict-fault-tolerance-vs-let-it-crash
+    relationship_to_canonical: direct_support
+  paraphrase: Records the fault-tolerance camp's position - create fault-tolerant software that catches exceptions and contains the resulting errors before they become failures - alongside the camps' common ground that faults will happen and must be kept from becoming errors.
+  conditions: Applies to position 'fault-tolerant-containment' within conflict-fault-tolerance-vs-let-it-crash under its evidence-selection rule.
+  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: Release It! records the fault-tolerance camp as one of two positions in a community split it deliberately does not resolve.'
+  context_basis:
+    conditions: conflict-position
+    caveats: conflict-position
+  conflict_ref: conflict-fault-tolerance-vs-let-it-crash
+  position_ref: fault-tolerant-containment
+- id: F-CONFLICT-RI-6c45419f8b35
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md#Let It Crash
+  mappings:
+  - node_id: conflict-fault-tolerance-vs-let-it-crash
+    relationship_to_canonical: direct_support
+  paraphrase: Advances crash-and-restart under four preconditions - limited crash granularity, replacement measured in milliseconds, hierarchical supervision distinct from the service consumer, and automatic reintegration - and explicitly disqualifies slow-starting monolithic processes.
+  conditions: Applies to position 'let-it-crash-restart' within conflict-fault-tolerance-vs-let-it-crash under its evidence-selection rule.
+  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: Release It! directly formulates let-it-crash with its preconditions and restart-density escalation rule.'
+  context_basis:
+    conditions: conflict-position
+    caveats: conflict-position
+  conflict_ref: conflict-fault-tolerance-vs-let-it-crash
+  position_ref: let-it-crash-restart
 - id: F-CONFLICT-FSA-9233af79a2d2
   source_id: SRC-FSA
   locator: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/013-chapter-8-component-based-thinking.md#Component Granularity
@@ -5410,6 +7012,34 @@ formulations:
     caveats: conflict-position
   conflict_ref: conflict-generalized-reuse-vs-local-clarity
   position_ref: generalized-reuse
+- id: F-CONFLICT-RI-5a1f22ed66d7
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/016-chapter-10-control-plane.md#Command and Control
+  mappings:
+  - node_id: conflict-live-control-vs-immutable-replacement
+    relationship_to_canonical: direct_support
+  paraphrase: Prescribes scriptable admin interfaces on non-public ports for targeted runtime intervention, scoped to slow-starting instances where full restarts under load take hours.
+  conditions: Applies to position 'live-runtime-control' within conflict-live-control-vs-immutable-replacement under its evidence-selection rule.
+  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: Release It! directly prescribes live control surfaces for slow-starting instances.'
+  context_basis:
+    conditions: conflict-position
+    caveats: conflict-position
+  conflict_ref: conflict-live-control-vs-immutable-replacement
+  position_ref: live-runtime-control
+- id: F-CONFLICT-RI-e0d15fcb551e
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/020-chapter-13-design-for-deployment.md#Automated Deployments
+  mappings:
+  - node_id: conflict-live-control-vs-immutable-replacement
+    relationship_to_canonical: direct_support
+  paraphrase: Presents the immutable-infrastructure position - convergence from an unknown accumulated state never reliably works, so always start from a known master image, inject configuration at startup, and delete outdated machines instead of mutating them.
+  conditions: Applies to position 'immutable-replacement' within conflict-live-control-vs-immutable-replacement under its evidence-selection rule.
+  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: Release It! directly presents the immutable-infrastructure camp''s argument against in-place convergence.'
+  context_basis:
+    conditions: conflict-position
+    caveats: conflict-position
+  conflict_ref: conflict-live-control-vs-immutable-replacement
+  position_ref: immutable-replacement
 - id: F-CONFLICT-APOSD-bce361e473fd
   source_id: SRC-APOSD
   locator: 'books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/025-20-designing-for-performance.md#20: Designing for Performance'
@@ -5446,7 +7076,7 @@ formulations:
     relationship_to_canonical: direct_support
   paraphrase: Identifies lower network, consistency, deployment, and operational costs of monolithic topology.
   conditions: Applies to position 'modular-monolith' within conflict-monolith-vs-distributed-services under its evidence-selection rule.
-  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: FSA compares topology costs directly and Clean Architecture limits unsupported service-decoupling claims.'
+  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: FSA compares topology costs directly, Clean Architecture limits unsupported service-decoupling claims, and Release It! corroborates the operational surface area of distribution-support services.'
   context_basis:
     conditions: conflict-position
     caveats: conflict-position
@@ -5460,7 +7090,21 @@ formulations:
     relationship_to_canonical: corroboration
   paraphrase: Corroborates that service boundaries do not by themselves create semantic decoupling.
   conditions: Applies to position 'modular-monolith' within conflict-monolith-vs-distributed-services under its evidence-selection rule.
-  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: FSA compares topology costs directly and Clean Architecture limits unsupported service-decoupling claims.'
+  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: FSA compares topology costs directly, Clean Architecture limits unsupported service-decoupling claims, and Release It! corroborates the operational surface area of distribution-support services.'
+  context_basis:
+    conditions: conflict-position
+    caveats: conflict-position
+  conflict_ref: conflict-monolith-vs-distributed-services
+  position_ref: modular-monolith
+- id: F-CONFLICT-RI-c5d6138d6150
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/015-chapter-9-interconnect.md#Solutions at Different Scales
+  mappings:
+  - node_id: conflict-monolith-vs-distributed-services
+    relationship_to_canonical: corroboration
+  paraphrase: Corroborates the operational-cost side - dynamic service discovery pays off only with many services, high instance churn, and a platform team, while small low-change estates are better served by static DNS with logical names; distribution's supporting services are themselves operational surface area.
+  conditions: Applies to position 'modular-monolith' within conflict-monolith-vs-distributed-services under its evidence-selection rule.
+  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: FSA compares topology costs directly, Clean Architecture limits unsupported service-decoupling claims, and Release It! corroborates the operational surface area of distribution-support services.'
   context_basis:
     conditions: conflict-position
     caveats: conflict-position
@@ -5628,7 +7272,21 @@ formulations:
     relationship_to_canonical: direct_support
   paraphrase: Describes event-based interaction as temporally decoupled progress with different responsiveness and availability tradeoffs.
   conditions: Applies to position 'asynchronous' within conflict-synchronous-vs-asynchronous-interaction under its evidence-selection rule.
-  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: FSA directly compares event-based and request-based interaction.'
+  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: FSA directly compares event-based and request-based interaction; Release It! adds stability-weighted support for asynchronous decoupling.'
+  context_basis:
+    conditions: conflict-position
+    caveats: conflict-position
+  conflict_ref: conflict-synchronous-vs-asynchronous-interaction
+  position_ref: asynchronous
+- id: F-CONFLICT-RI-ebb32591a78c
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md#Decoupling Middleware
+  mappings:
+  - node_id: conflict-synchronous-vs-asynchronous-interaction
+    relationship_to_canonical: direct_support
+  paraphrase: Weights the stability axis toward asynchrony - message-oriented middleware decouples endpoints in space and time and cannot produce cascading failure, while synchronous request/reply amplifies shocks - while conceding asynchronous design is inherently harder and the choice is a nearly irreversible early decision.
+  conditions: Applies to position 'asynchronous' within conflict-synchronous-vs-asynchronous-interaction under its evidence-selection rule.
+  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: FSA directly compares event-based and request-based interaction; Release It! adds stability-weighted support for asynchronous decoupling.'
   context_basis:
     conditions: conflict-position
     caveats: conflict-position
@@ -5684,7 +7342,21 @@ formulations:
     relationship_to_canonical: direct_support
   paraphrase: Supports distinct bounded models where one representation cannot remain coherent across specialized needs.
   conditions: Applies to position 'bounded-models' within conflict-unified-model-vs-bounded-contexts under its evidence-selection rule.
-  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: DDD directly supports distinct models at demonstrated semantic discontinuities.'
+  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: DDD directly supports distinct models at demonstrated semantic discontinuities; Release It! corroborates from operational data interchange.'
+  context_basis:
+    conditions: conflict-position
+    caveats: conflict-position
+  conflict_ref: conflict-unified-model-vs-bounded-contexts
+  position_ref: bounded-models
+- id: F-CONFLICT-RI-486e604b5bf5
+  source_id: SRC-RI
+  locator: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/024-chapter-16-adaptation.md#Information Architecture
+  mappings:
+  - node_id: conflict-unified-model-vs-bounded-contexts
+    relationship_to_canonical: corroboration
+  paraphrase: Adds operational and data-interchange evidence for plural contexts - each group defines customer differently with different lifecycles and permissions, so federated zones of authority exchanging common representations beat a single system of record.
+  conditions: Applies to position 'bounded-models' within conflict-unified-model-vs-bounded-contexts under its evidence-selection rule.
+  caveats: 'This evidence supports one position; it does not decide the conflict. Basis: DDD directly supports distinct models at demonstrated semantic discontinuities; Release It! corroborates from operational data interchange.'
   context_basis:
     conditions: conflict-position
     caveats: conflict-position

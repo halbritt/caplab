@@ -5,9 +5,9 @@
       "doctrine/authority-model.yaml": "a11d91776a1d1d919cfd654b96811b841ec14d08bf8a9fd2c0fe439371d7be3c",
       "doctrine/context-lenses.yaml": "f3a0977ce7df98486757ee5b449c693b30e7913fa1672dc138a4d96ae67c347d",
       "doctrine/evaluations/gold/human-dispositions.json": "4746f454ab3b0ce677ed813b054d3ad41c33335dcb131c90663c896d35398eab",
-      "doctrine/graph/edges.yaml": "bc6829d69bcd6e8718d6927b1f881b30321e3819a407c1eae8e4e142a6dd59cc",
-      "doctrine/graph/formulations.yaml": "bb1b7d713c28cacce31fd1a201712e35b6df41e99e1c1ccc7c388baf2e58fd2e",
-      "doctrine/sources.yaml": "e07b5dc8a43d27895b41263a9d256efe4ffcc835dada6c463a32278dc3bcce2c"
+      "doctrine/graph/edges.yaml": "9a62c3950d29f08cab56809ec0523e10cb44eeda415300b3108a5165453c9f07",
+      "doctrine/graph/formulations.yaml": "a4e9f2f073a2bc5fa4030820caec80005c9d1140e6fbfd85619ee5819332903c",
+      "doctrine/sources.yaml": "8a2ad5c10ac38cf4806cb47e9ecf7adb4aa7b80fc12b357a4355e8f5053d321a"
     },
     "tool": "doctrine/tools/build_gold_queue.py",
     "tool_sha256": "373dbe188b6f4e36b77883b290e0c59f7a36da65421a4779f3bea4774d8b306c"
@@ -1233,31 +1233,36 @@
           "outcomes": [],
           "risk_classes": [],
           "source_ids": [
-            "SRC-DDD"
+            "SRC-APOSD",
+            "SRC-UT"
           ],
           "support_relationships": []
         },
         "generated_only": true,
         "kind": "edge-relation",
-        "question": "Do the edge claim, conditions, derivation, and provenance justify the participates-in relationship from domain-modeling-investment-gate to conflict-domain-purity-vs-implementation-simplicity?",
+        "question": "Do the edge claim, conditions, derivation, and provenance justify the participates-in relationship from testing-humble-object-testability-split to conflict-deep-modules-vs-small-units?",
         "target": {
-          "id": "E-CONFLICT-04af89cec0af",
+          "id": "E-CONFLICT-00feaedf9c8b",
           "kind": "edge",
           "references": [
             {
-              "id": "E-CONFLICT-04af89cec0af",
+              "id": "E-CONFLICT-00feaedf9c8b",
               "kind": "edge"
             },
             {
-              "id": "domain-modeling-investment-gate",
+              "id": "testing-humble-object-testability-split",
               "kind": "node"
             },
             {
-              "id": "conflict-domain-purity-vs-implementation-simplicity",
+              "id": "conflict-deep-modules-vs-small-units",
               "kind": "node"
             },
             {
-              "id": "SRC-DDD",
+              "id": "SRC-APOSD",
+              "kind": "source"
+            },
+            {
+              "id": "SRC-UT",
               "kind": "source"
             }
           ]
@@ -4094,6 +4099,55 @@
           "outcomes": [],
           "risk_classes": [],
           "source_ids": [
+            "SRC-RI"
+          ],
+          "support_relationships": [
+            "corroboration"
+          ]
+        },
+        "generated_only": true,
+        "kind": "source-support",
+        "question": "Does formulation F-CONCEPT-RI-00275ae79392 support its mapping to implementation-explicit-failure-policy under the recorded conditions and caveats?",
+        "target": {
+          "id": "F-CONCEPT-RI-00275ae79392",
+          "kind": "formulation",
+          "references": [
+            {
+              "id": "SRC-RI",
+              "kind": "source"
+            },
+            {
+              "id": "F-CONCEPT-RI-00275ae79392",
+              "kind": "formulation"
+            },
+            {
+              "id": "implementation-explicit-failure-policy",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-source-src-ri",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
             "SRC-SDX"
           ],
           "support_relationships": [
@@ -4127,6 +4181,55 @@
         "status": "pending-human"
       },
       "id": "gold-source-src-sdx",
+      "machine_screening": {
+        "references": [],
+        "status": "not-run"
+      },
+      "schema_version": "doctrine-gold-candidate/1"
+    },
+    {
+      "candidate": {
+        "adjudication_mode": "direct-evidence-review",
+        "coverage": {
+          "agent_roles": [],
+          "authority_transitions": [],
+          "edge_relations": [],
+          "outcomes": [],
+          "risk_classes": [],
+          "source_ids": [
+            "SRC-UT"
+          ],
+          "support_relationships": [
+            "refinement"
+          ]
+        },
+        "generated_only": true,
+        "kind": "source-support",
+        "question": "Does formulation F-CONCEPT-UT-005a954f336c support its mapping to testing-no-test-privileged-access under the recorded conditions and caveats?",
+        "target": {
+          "id": "F-CONCEPT-UT-005a954f336c",
+          "kind": "formulation",
+          "references": [
+            {
+              "id": "SRC-UT",
+              "kind": "source"
+            },
+            {
+              "id": "F-CONCEPT-UT-005a954f336c",
+              "kind": "formulation"
+            },
+            {
+              "id": "testing-no-test-privileged-access",
+              "kind": "node"
+            }
+          ]
+        }
+      },
+      "human_disposition": {
+        "reference": null,
+        "status": "pending-human"
+      },
+      "id": "gold-source-src-ut",
       "machine_screening": {
         "references": [],
         "status": "not-run"

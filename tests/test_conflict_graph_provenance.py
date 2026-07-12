@@ -147,7 +147,7 @@ class ConflictGraphProvenanceTests(unittest.TestCase):
             node["id"]: node for node in nodes if node["kind"] == "conflict"
         }
         self.assertEqual(conflict_ids, set(conflict_nodes))
-        self.assertEqual(25, len(conflict_nodes))
+        self.assertEqual(29, len(conflict_nodes))
         position_formulations = [
             formulation for formulation in formulations if "conflict_ref" in formulation
         ]

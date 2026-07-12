@@ -48,6 +48,7 @@ concepts:
       - Feeds proc-decide-performance-justified and constrains every optimization procedure.
     conflicts:
       - conflict-performance-specialization-vs-abstraction
+      - conflict-efficiency-vs-resilience-margin
     source_support:
       - source_id: SRC-EGO
         locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/005-chapter-1-software-efficiency-matters.md :: Clarify When Someone Uses the Word \"Performance\""
@@ -123,6 +124,10 @@ concepts:
         locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/010-chapter-6-efficiency-observability.md :: High Metric Cardinality"
         contribution: Identifies instrumentation cost and cardinality as part of measurement safety.
         relationship: corroboration
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/012-chapter-6-case-study-phenomenal-cosmic-powers-itty-bitty-living-space.md :: Vital Signs"
+        contribution: Incident evidence that latency averages computed only over completed requests hide timeouts - response time is a lagging indicator that can read nominal while effectively infinite, because requests that never finish are never averaged in.
+        relationship: refinement
     confidence: strong
     roles: [performance-agent, review-agent, debugging-and-repair-agent]
     languages: [language-independent]
@@ -255,6 +260,10 @@ concepts:
         locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/012-chapter-8-benchmarking-versus-stress-and-load-tests.md :: Test Your Benchmark for Correctness!"
         contribution: Requires correctness of the benchmarked work itself.
         relationship: corroboration
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/023-chapter-15-case-study-trampled-by-your-own-customers.md :: The Testing Gap"
+        contribution: Case-study evidence that load tests scripted only around intended polite usage systematically overstate capacity - production traffic included cookie-less search spiders, scrapers, and repeated hits the rule-following scripts never modeled - so a representative load workload must include noise, protocol-violating clients, and hostile access patterns.
+        relationship: refinement
     confidence: strong
     roles: [performance-agent, review-agent, coding-agent]
     languages: [language-independent]
@@ -801,6 +810,14 @@ concepts:
         locator: "books/fluent-python-2nd-edition-z-lib-org/chapters/029-chapter-22-asynchronous-programming.md :: Asynchronous Context Managers"
         contribution: Extends structured lifecycle to asynchronous resources.
         relationship: corroboration
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Blocked Threads"
+        contribution: Adds production-failure evidence that pooled resources and blocking calls without checkout timeouts are the proximate cause of most system failures, and warns against hand-rolled pools and synchronization added in subclasses that callers cannot see.
+        relationship: corroboration
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/012-chapter-6-case-study-phenomenal-cosmic-powers-itty-bitty-living-space.md :: Diagnostic Tests"
+        contribution: Production incident evidence - a connection pool with no checkout timeout left all 3,000 request-handling threads blocked forever on an unresponsive downstream dependency while CPU stayed near zero, a missing completion path on a pooled resource halting the entire system.
+        relationship: corroboration
     confidence: universal
     roles: [coding-agent, performance-agent, review-agent, debugging-and-repair-agent]
     languages: [language-independent, Go, Python]
@@ -872,6 +889,14 @@ concepts:
       - source_id: SRC-EGO
         locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/015-chapter-11-optimization-patterns.md :: Reuse Memory"
         contribution: Frames reuse as a measured tradeoff with memory-retention risks.
+        relationship: corroboration
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md :: Steady State"
+        contribution: Adds the stability-side requirements - any cache over an unbounded key space needs an enforced size limit and an invalidation strategy, monitored hit rates to prove benefit, and in managed runtimes weak references so the collector can reclaim payloads.
+        relationship: corroboration
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/016-chapter-10-control-plane.md :: Command and Control"
+        contribution: Warns that a runtime flush-cache control degrades an instance's performance for minutes and can dogpile the backing service or database, because some services cannot respond at all until their working set reloads.
         relationship: corroboration
     confidence: strong
     roles: [performance-agent, coding-agent, review-agent, debugging-and-repair-agent]

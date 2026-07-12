@@ -1,5 +1,19 @@
 schema_version: agent-doctrine-routing-graph/1
 links:
+- id: R-ROUTE-673d2061ca66
+  from: agent-conduct-authority-bounded-action
+  relation: co-retrieved-with
+  to: operations-automation-safeguards
+  semantic: false
+  declared_by:
+  - operations-automation-safeguards
+- id: R-ROUTE-f3a1f20ffdc0
+  from: agent-conduct-authority-bounded-action
+  relation: co-retrieved-with
+  to: operations-restore-service-first
+  semantic: false
+  declared_by:
+  - operations-restore-service-first
 - id: R-ROUTE-0b242c82126a
   from: agent-conduct-authority-bounded-action
   relation: co-retrieved-with
@@ -352,6 +366,27 @@ links:
   declared_by:
   - architecture-distribution-readiness
   - domain-bounded-context
+- id: R-ROUTE-22b2fbfcccb3
+  from: architecture-distribution-readiness
+  relation: co-retrieved-with
+  to: operations-capacity-ratio-realism
+  semantic: false
+  declared_by:
+  - operations-capacity-ratio-realism
+- id: R-ROUTE-33e5e96c986f
+  from: architecture-distribution-readiness
+  relation: co-retrieved-with
+  to: operations-ephemeral-instance-design
+  semantic: false
+  declared_by:
+  - operations-ephemeral-instance-design
+- id: R-ROUTE-cf9ab2d303c1
+  from: architecture-distribution-readiness
+  relation: co-retrieved-with
+  to: operations-integration-point-distrust
+  semantic: false
+  declared_by:
+  - operations-integration-point-distrust
 - id: R-ROUTE-e38488c71ac3
   from: architecture-distribution-readiness
   relation: co-retrieved-with
@@ -389,6 +424,13 @@ links:
   declared_by:
   - architecture-earned-boundary
   - domain-bounded-context
+- id: R-ROUTE-8b09fe81c476
+  from: architecture-earned-boundary
+  relation: co-retrieved-with
+  to: testing-humble-object-testability-split
+  semantic: false
+  declared_by:
+  - testing-humble-object-testability-split
 - id: R-ROUTE-05fe6ed07e27
   from: architecture-earned-boundary
   relation: co-retrieved-with
@@ -418,6 +460,20 @@ links:
   declared_by:
   - architecture-event-temporal-semantics
   - architecture-interaction-synchrony
+- id: R-ROUTE-dc3626a9f85f
+  from: architecture-event-temporal-semantics
+  relation: co-retrieved-with
+  to: operations-contract-conformance-testing
+  semantic: false
+  declared_by:
+  - operations-contract-conformance-testing
+- id: R-ROUTE-1aa4f97a2343
+  from: architecture-event-temporal-semantics
+  relation: co-retrieved-with
+  to: operations-ephemeral-instance-design
+  semantic: false
+  declared_by:
+  - operations-ephemeral-instance-design
 - id: R-ROUTE-14a61817ae79
   from: architecture-event-temporal-semantics
   relation: co-retrieved-with
@@ -478,6 +534,13 @@ links:
   declared_by:
   - architecture-fitness-functions
   - architecture-structural-constraint-enforcement
+- id: R-ROUTE-d3122bbebb36
+  from: architecture-fitness-functions
+  relation: co-retrieved-with
+  to: operations-transparency-by-design
+  semantic: false
+  declared_by:
+  - operations-transparency-by-design
 - id: R-ROUTE-3a5d73df17ac
   from: architecture-fitness-functions
   relation: co-retrieved-with
@@ -599,6 +662,13 @@ links:
   semantic: false
   declared_by:
   - domain-repository-lifecycle
+- id: R-ROUTE-70a7638b97fd
+  from: architecture-policy-mechanism-separation
+  relation: co-retrieved-with
+  to: testing-output-based-style-preference
+  semantic: false
+  declared_by:
+  - testing-output-based-style-preference
 - id: R-ROUTE-f9a89a59fd47
   from: architecture-policy-mechanism-separation
   relation: co-retrieved-with
@@ -737,6 +807,20 @@ links:
   semantic: false
   declared_by:
   - debugging-hypothesis-led-investigation
+- id: R-ROUTE-d2eff2d37a9a
+  from: debugging-hypothesis-led-investigation
+  relation: co-retrieved-with
+  to: operations-liveness-by-external-observation
+  semantic: false
+  declared_by:
+  - operations-liveness-by-external-observation
+- id: R-ROUTE-bd3d13385331
+  from: debugging-hypothesis-led-investigation
+  relation: co-retrieved-with
+  to: operations-restore-service-first
+  semantic: false
+  declared_by:
+  - operations-restore-service-first
 - id: R-ROUTE-9b19b098a44b
   from: debugging-hypothesis-led-investigation
   relation: co-retrieved-with
@@ -827,6 +911,20 @@ links:
   declared_by:
   - domain-anticorruption-layer
   - domain-context-relationship-selection
+- id: R-ROUTE-6e114aadeaff
+  from: domain-anticorruption-layer
+  relation: co-retrieved-with
+  to: testing-mock-at-system-edges
+  semantic: false
+  declared_by:
+  - testing-mock-at-system-edges
+- id: R-ROUTE-669bbba5d203
+  from: domain-anticorruption-layer
+  relation: co-retrieved-with
+  to: testing-mock-unmanaged-dependencies-only
+  semantic: false
+  declared_by:
+  - testing-mock-unmanaged-dependencies-only
 - id: R-ROUTE-babb3338ebc8
   from: domain-association-constraint
   relation: co-retrieved-with
@@ -1020,6 +1118,13 @@ links:
   semantic: false
   declared_by:
   - domain-service-operation
+- id: R-ROUTE-d00e1b04917a
+  from: domain-value-object
+  relation: co-retrieved-with
+  to: testing-shared-dependency-substitution
+  semantic: false
+  declared_by:
+  - testing-shared-dependency-substitution
 - id: R-ROUTE-bceaf70f9c7c
   from: go-bounded-concurrency
   relation: co-retrieved-with
@@ -1262,6 +1367,13 @@ links:
   semantic: false
   declared_by:
   - implementation-normal-result-or-exception
+- id: R-ROUTE-fb62734fbf6e
+  from: implementation-explicit-failure-policy
+  relation: co-retrieved-with
+  to: operations-integration-point-distrust
+  semantic: false
+  declared_by:
+  - operations-integration-point-distrust
 - id: R-ROUTE-71cd01e1e943
   from: implementation-explicit-failure-policy
   relation: co-retrieved-with
@@ -1306,6 +1418,13 @@ links:
   semantic: false
   declared_by:
   - implementation-normal-result-or-exception
+- id: R-ROUTE-bc131ee0b93b
+  from: implementation-fail-fast-or-recover
+  relation: co-retrieved-with
+  to: operations-designed-failure-modes
+  semantic: false
+  declared_by:
+  - operations-designed-failure-modes
 - id: R-ROUTE-95152294576a
   from: implementation-fail-fast-or-recover
   relation: co-retrieved-with
@@ -1313,6 +1432,13 @@ links:
   semantic: false
   declared_by:
   - implementation-fail-fast-or-recover
+- id: R-ROUTE-220eeea7a18b
+  from: implementation-fail-fast-or-recover
+  relation: co-retrieved-with
+  to: testing-integration-scope-selection
+  semantic: false
+  declared_by:
+  - testing-integration-scope-selection
 - id: R-ROUTE-2885647946a0
   from: implementation-fail-fast-or-recover
   relation: co-retrieved-with
@@ -1390,6 +1516,13 @@ links:
   semantic: false
   declared_by:
   - testing-design-before-feature-tests
+- id: R-ROUTE-63826840d2fa
+  from: implementation-minimal-coherent-api
+  relation: co-retrieved-with
+  to: testing-no-test-privileged-access
+  semantic: false
+  declared_by:
+  - testing-no-test-privileged-access
 - id: R-ROUTE-e7695f6128cb
   from: implementation-minimal-coherent-api
   relation: co-retrieved-with
@@ -1609,6 +1742,13 @@ links:
   semantic: false
   declared_by:
   - implementation-representation-fit
+- id: R-ROUTE-047de655a01e
+  from: implementation-risk-driven-tests
+  relation: co-retrieved-with
+  to: operations-contract-conformance-testing
+  semantic: false
+  declared_by:
+  - operations-contract-conformance-testing
 - id: R-ROUTE-1a4832ac54cb
   from: implementation-risk-driven-tests
   relation: co-retrieved-with
@@ -1630,6 +1770,13 @@ links:
   semantic: false
   declared_by:
   - review-severity-confidence-separation
+- id: R-ROUTE-a468c794875d
+  from: implementation-risk-driven-tests
+  relation: co-retrieved-with
+  to: testing-assert-observable-outcomes
+  semantic: false
+  declared_by:
+  - testing-assert-observable-outcomes
 - id: R-ROUTE-22a78fb61131
   from: implementation-risk-driven-tests
   relation: co-retrieved-with
@@ -1638,6 +1785,27 @@ links:
   declared_by:
   - implementation-risk-driven-tests
   - testing-coverage-is-not-adequacy
+- id: R-ROUTE-b923b384e90a
+  from: implementation-risk-driven-tests
+  relation: co-retrieved-with
+  to: testing-four-pillar-test-value
+  semantic: false
+  declared_by:
+  - testing-four-pillar-test-value
+- id: R-ROUTE-6265d403f1fc
+  from: implementation-risk-driven-tests
+  relation: co-retrieved-with
+  to: testing-self-contained-test-anatomy
+  semantic: false
+  declared_by:
+  - testing-self-contained-test-anatomy
+- id: R-ROUTE-09287afb94c2
+  from: implementation-risk-driven-tests
+  relation: co-retrieved-with
+  to: testing-suite-net-value
+  semantic: false
+  declared_by:
+  - testing-suite-net-value
 - id: R-ROUTE-1bc92209caf1
   from: implementation-risk-driven-tests
   relation: co-retrieved-with
@@ -1645,6 +1813,13 @@ links:
   semantic: false
   declared_by:
   - testing-test-first-feedback
+- id: R-ROUTE-fc637b0ab837
+  from: implementation-risk-driven-tests
+  relation: co-retrieved-with
+  to: testing-unit-of-behavior
+  semantic: false
+  declared_by:
+  - testing-unit-of-behavior
 - id: R-ROUTE-79bad6d73070
   from: implementation-risk-driven-tests
   relation: co-retrieved-with
@@ -1697,6 +1872,27 @@ links:
   declared_by:
   - legacy-characterization-surfaces
   - refactoring-stop-backtrack-escalate
+- id: R-ROUTE-e2af6106edf9
+  from: legacy-characterization-surfaces
+  relation: co-retrieved-with
+  to: testing-assert-observable-outcomes
+  semantic: false
+  declared_by:
+  - testing-assert-observable-outcomes
+- id: R-ROUTE-e4c26f8d81b3
+  from: legacy-characterization-surfaces
+  relation: co-retrieved-with
+  to: testing-mock-at-system-edges
+  semantic: false
+  declared_by:
+  - testing-mock-at-system-edges
+- id: R-ROUTE-e95e45669761
+  from: legacy-characterization-surfaces
+  relation: co-retrieved-with
+  to: testing-no-test-privileged-access
+  semantic: false
+  declared_by:
+  - testing-no-test-privileged-access
 - id: R-ROUTE-90d6bf6355b6
   from: legacy-cover-and-modify
   relation: co-retrieved-with
@@ -1797,6 +1993,13 @@ links:
   declared_by:
   - legacy-provisional-safety-net
   - refactoring-splinter-campaign
+- id: R-ROUTE-5e37301edc5e
+  from: legacy-provisional-safety-net
+  relation: co-retrieved-with
+  to: testing-test-level-mix
+  semantic: false
+  declared_by:
+  - testing-test-level-mix
 - id: R-ROUTE-365bab5e7619
   from: legacy-scratch-refactoring
   relation: co-retrieved-with
@@ -1812,6 +2015,20 @@ links:
   declared_by:
   - legacy-seams-and-enabling-points
   - legacy-sensing-and-separation
+- id: R-ROUTE-c3ac789b3736
+  from: legacy-seams-and-enabling-points
+  relation: co-retrieved-with
+  to: testing-shared-dependency-substitution
+  semantic: false
+  declared_by:
+  - testing-shared-dependency-substitution
+- id: R-ROUTE-78d183105bee
+  from: legacy-sprout-wrap
+  relation: co-retrieved-with
+  to: testing-testability-as-design-signal
+  semantic: false
+  declared_by:
+  - testing-testability-as-design-signal
 - id: R-ROUTE-dfbc1863817b
   from: legacy-unprotected-enabling-edit
   relation: co-retrieved-with
@@ -1827,6 +2044,363 @@ links:
   declared_by:
   - legacy-unprotected-enabling-edit
   - refactoring-transformation-tool-trust
+- id: R-ROUTE-3c07baf3aae5
+  from: operations-automation-safeguards
+  relation: co-retrieved-with
+  to: operations-runtime-control-surface
+  semantic: false
+  declared_by:
+  - operations-automation-safeguards
+  - operations-runtime-control-surface
+- id: R-ROUTE-60f70bcff779
+  from: operations-automation-safeguards
+  relation: co-retrieved-with
+  to: operations-synchronized-demand-dispersion
+  semantic: false
+  declared_by:
+  - operations-automation-safeguards
+  - operations-synchronized-demand-dispersion
+- id: R-ROUTE-427385fb07a0
+  from: operations-bounded-accumulation
+  relation: co-retrieved-with
+  to: operations-load-shedding
+  semantic: false
+  declared_by:
+  - operations-bounded-accumulation
+- id: R-ROUTE-7c602e0b1c27
+  from: operations-bounded-accumulation
+  relation: co-retrieved-with
+  to: performance-cache-validity
+  semantic: false
+  declared_by:
+  - operations-bounded-accumulation
+- id: R-ROUTE-9cb1e19b0d93
+  from: operations-bounded-accumulation
+  relation: co-retrieved-with
+  to: performance-resource-lifecycle
+  semantic: false
+  declared_by:
+  - operations-bounded-accumulation
+- id: R-ROUTE-7e157b222e93
+  from: operations-build-provenance
+  relation: co-retrieved-with
+  to: operations-credential-custody
+  semantic: false
+  declared_by:
+  - operations-build-provenance
+  - operations-credential-custody
+- id: R-ROUTE-dbd526231b33
+  from: operations-build-provenance
+  relation: co-retrieved-with
+  to: operations-dependency-vulnerability-currency
+  semantic: false
+  declared_by:
+  - operations-build-provenance
+  - operations-dependency-vulnerability-currency
+- id: R-ROUTE-7a006b087595
+  from: operations-build-provenance
+  relation: co-retrieved-with
+  to: operations-externalized-configuration
+  semantic: false
+  declared_by:
+  - operations-build-provenance
+  - operations-externalized-configuration
+- id: R-ROUTE-daf5aafec092
+  from: operations-capacity-ratio-realism
+  relation: co-retrieved-with
+  to: operations-cascading-failure-halting
+  semantic: false
+  declared_by:
+  - operations-capacity-ratio-realism
+- id: R-ROUTE-d30d5da8c2fa
+  from: operations-capacity-ratio-realism
+  relation: co-retrieved-with
+  to: operations-load-shedding
+  semantic: false
+  declared_by:
+  - operations-capacity-ratio-realism
+  - operations-load-shedding
+- id: R-ROUTE-26677bbbf8c1
+  from: operations-capacity-ratio-realism
+  relation: co-retrieved-with
+  to: operations-synchronized-demand-dispersion
+  semantic: false
+  declared_by:
+  - operations-synchronized-demand-dispersion
+- id: R-ROUTE-0524315f2246
+  from: operations-cascading-failure-halting
+  relation: co-retrieved-with
+  to: operations-designed-failure-modes
+  semantic: false
+  declared_by:
+  - operations-cascading-failure-halting
+  - operations-designed-failure-modes
+- id: R-ROUTE-358c1e846d13
+  from: operations-cascading-failure-halting
+  relation: co-retrieved-with
+  to: operations-integration-point-distrust
+  semantic: false
+  declared_by:
+  - operations-cascading-failure-halting
+  - operations-integration-point-distrust
+- id: R-ROUTE-6cf39989a6f5
+  from: operations-cascading-failure-halting
+  relation: co-retrieved-with
+  to: operations-load-shedding
+  semantic: false
+  declared_by:
+  - operations-cascading-failure-halting
+  - operations-load-shedding
+- id: R-ROUTE-2c80655e5f56
+  from: operations-chaos-experiment-discipline
+  relation: co-retrieved-with
+  to: operations-resilience-margin
+  semantic: false
+  declared_by:
+  - operations-chaos-experiment-discipline
+  - operations-resilience-margin
+- id: R-ROUTE-115de86b9d3e
+  from: operations-chaos-experiment-discipline
+  relation: co-retrieved-with
+  to: universal-evidence-before-intervention
+  semantic: false
+  declared_by:
+  - operations-chaos-experiment-discipline
+- id: R-ROUTE-e436255a02bf
+  from: operations-chaos-experiment-discipline
+  relation: co-retrieved-with
+  to: universal-measure-claimed-improvement
+  semantic: false
+  declared_by:
+  - operations-chaos-experiment-discipline
+- id: R-ROUTE-2acffb78e526
+  from: operations-chaos-experiment-discipline
+  relation: co-retrieved-with
+  to: universal-preserve-behavior-by-default
+  semantic: false
+  declared_by:
+  - operations-chaos-experiment-discipline
+- id: R-ROUTE-6344611a5d3a
+  from: operations-contract-conformance-testing
+  relation: co-retrieved-with
+  to: operations-live-interface-compatibility
+  semantic: false
+  declared_by:
+  - operations-contract-conformance-testing
+  - operations-live-interface-compatibility
+- id: R-ROUTE-5a7bc785eb9d
+  from: operations-credential-custody
+  relation: co-retrieved-with
+  to: operations-externalized-configuration
+  semantic: false
+  declared_by:
+  - operations-credential-custody
+  - operations-externalized-configuration
+- id: R-ROUTE-50e3920a92ac
+  from: operations-credential-custody
+  relation: co-retrieved-with
+  to: operations-least-privilege
+  semantic: false
+  declared_by:
+  - operations-credential-custody
+  - operations-least-privilege
+- id: R-ROUTE-02b734840c37
+  from: operations-credential-custody
+  relation: co-retrieved-with
+  to: operations-untrusted-request-handling
+  semantic: false
+  declared_by:
+  - operations-untrusted-request-handling
+- id: R-ROUTE-973209b16240
+  from: operations-dependency-vulnerability-currency
+  relation: co-retrieved-with
+  to: operations-least-privilege
+  semantic: false
+  declared_by:
+  - operations-dependency-vulnerability-currency
+  - operations-least-privilege
+- id: R-ROUTE-e52ec7a0040d
+  from: operations-designed-failure-modes
+  relation: co-retrieved-with
+  to: operations-integration-point-distrust
+  semantic: false
+  declared_by:
+  - operations-designed-failure-modes
+  - operations-integration-point-distrust
+- id: R-ROUTE-1b6bd73a2b3c
+  from: operations-designed-failure-modes
+  relation: co-retrieved-with
+  to: operations-production-readiness
+  semantic: false
+  declared_by:
+  - operations-designed-failure-modes
+  - operations-production-readiness
+- id: R-ROUTE-0f875f655022
+  from: operations-ephemeral-instance-design
+  relation: co-retrieved-with
+  to: operations-externalized-configuration
+  semantic: false
+  declared_by:
+  - operations-ephemeral-instance-design
+  - operations-externalized-configuration
+- id: R-ROUTE-240862cf5fbf
+  from: operations-ephemeral-instance-design
+  relation: co-retrieved-with
+  to: operations-runtime-control-surface
+  semantic: false
+  declared_by:
+  - operations-runtime-control-surface
+- id: R-ROUTE-8a6ed0c46c03
+  from: operations-ephemeral-instance-design
+  relation: co-retrieved-with
+  to: operations-zero-downtime-rollout
+  semantic: false
+  declared_by:
+  - operations-zero-downtime-rollout
+- id: R-ROUTE-db6c3847ba7b
+  from: operations-least-privilege
+  relation: co-retrieved-with
+  to: operations-untrusted-request-handling
+  semantic: false
+  declared_by:
+  - operations-least-privilege
+  - operations-untrusted-request-handling
+- id: R-ROUTE-0b22ff465635
+  from: operations-live-interface-compatibility
+  relation: co-retrieved-with
+  to: operations-zero-downtime-rollout
+  semantic: false
+  declared_by:
+  - operations-zero-downtime-rollout
+- id: R-ROUTE-289a76d28b15
+  from: operations-live-interface-compatibility
+  relation: co-retrieved-with
+  to: refactoring-change-type-classification
+  semantic: false
+  declared_by:
+  - operations-live-interface-compatibility
+- id: R-ROUTE-dd9c2fad670c
+  from: operations-live-interface-compatibility
+  relation: co-retrieved-with
+  to: refactoring-compatibility-migration
+  semantic: false
+  declared_by:
+  - operations-live-interface-compatibility
+- id: R-ROUTE-186678ee9108
+  from: operations-liveness-by-external-observation
+  relation: co-retrieved-with
+  to: operations-restore-service-first
+  semantic: false
+  declared_by:
+  - operations-liveness-by-external-observation
+  - operations-restore-service-first
+- id: R-ROUTE-4bd643f30a0a
+  from: operations-liveness-by-external-observation
+  relation: co-retrieved-with
+  to: operations-transparency-by-design
+  semantic: false
+  declared_by:
+  - operations-liveness-by-external-observation
+  - operations-transparency-by-design
+- id: R-ROUTE-56bdc4a4187e
+  from: operations-liveness-by-external-observation
+  relation: co-retrieved-with
+  to: performance-metric-semantics
+  semantic: false
+  declared_by:
+  - operations-liveness-by-external-observation
+- id: R-ROUTE-6dbad18ec0c0
+  from: operations-load-shedding
+  relation: co-retrieved-with
+  to: operations-resilience-margin
+  semantic: false
+  declared_by:
+  - operations-resilience-margin
+- id: R-ROUTE-c3d51c412e77
+  from: operations-load-shedding
+  relation: co-retrieved-with
+  to: operations-synchronized-demand-dispersion
+  semantic: false
+  declared_by:
+  - operations-synchronized-demand-dispersion
+- id: R-ROUTE-47534a160b9b
+  from: operations-load-shedding
+  relation: co-retrieved-with
+  to: performance-measurable-objective
+  semantic: false
+  declared_by:
+  - operations-load-shedding
+- id: R-ROUTE-d535966f3ede
+  from: operations-load-shedding
+  relation: co-retrieved-with
+  to: performance-metric-semantics
+  semantic: false
+  declared_by:
+  - operations-load-shedding
+- id: R-ROUTE-5bd0473ae92b
+  from: operations-production-readiness
+  relation: co-retrieved-with
+  to: operations-transparency-by-design
+  semantic: false
+  declared_by:
+  - operations-production-readiness
+  - operations-transparency-by-design
+- id: R-ROUTE-9bf23b1798dd
+  from: operations-production-readiness
+  relation: co-retrieved-with
+  to: universal-evidence-before-intervention
+  semantic: false
+  declared_by:
+  - operations-production-readiness
+- id: R-ROUTE-35ef6bf6e89c
+  from: operations-resilience-margin
+  relation: co-retrieved-with
+  to: performance-measurable-objective
+  semantic: false
+  declared_by:
+  - operations-resilience-margin
+- id: R-ROUTE-63b622fe1f43
+  from: operations-runtime-control-surface
+  relation: co-retrieved-with
+  to: operations-transparency-by-design
+  semantic: false
+  declared_by:
+  - operations-runtime-control-surface
+- id: R-ROUTE-8c87765a59c1
+  from: operations-runtime-control-surface
+  relation: co-retrieved-with
+  to: performance-cache-validity
+  semantic: false
+  declared_by:
+  - operations-runtime-control-surface
+- id: R-ROUTE-5d19aadd2718
+  from: operations-transparency-by-design
+  relation: co-retrieved-with
+  to: performance-metric-semantics
+  semantic: false
+  declared_by:
+  - operations-transparency-by-design
+- id: R-ROUTE-74c32a26dd08
+  from: operations-untrusted-request-handling
+  relation: co-retrieved-with
+  to: universal-explicit-invariants
+  semantic: false
+  declared_by:
+  - operations-untrusted-request-handling
+- id: R-ROUTE-3fcc5b07f307
+  from: operations-zero-downtime-rollout
+  relation: co-retrieved-with
+  to: refactoring-compatibility-migration
+  semantic: false
+  declared_by:
+  - operations-zero-downtime-rollout
+- id: R-ROUTE-8e85cf9d3668
+  from: operations-zero-downtime-rollout
+  relation: co-retrieved-with
+  to: universal-reversible-reviewable-change
+  semantic: false
+  declared_by:
+  - operations-zero-downtime-rollout
 - id: R-ROUTE-9a944d0f4eff
   from: performance-algorithm-and-work-first
   relation: co-retrieved-with
@@ -1953,6 +2527,13 @@ links:
   semantic: false
   declared_by:
   - python-concurrency-model-selection
+- id: R-ROUTE-1e0c1830271c
+  from: performance-earned-bounded-concurrency
+  relation: co-retrieved-with
+  to: testing-database-production-fidelity
+  semantic: false
+  declared_by:
+  - testing-database-production-fidelity
 - id: R-ROUTE-f944c817ce86
   from: performance-experiment-level-fit
   relation: co-retrieved-with
@@ -2347,6 +2928,13 @@ links:
   declared_by:
   - refactoring-behavior-preservation
   - refactoring-compatibility-migration
+- id: R-ROUTE-eefb3f8cac00
+  from: refactoring-behavior-preservation
+  relation: co-retrieved-with
+  to: testing-assert-observable-outcomes
+  semantic: false
+  declared_by:
+  - testing-assert-observable-outcomes
 - id: R-ROUTE-02a28408242b
   from: refactoring-behavior-preservation
   relation: co-retrieved-with
@@ -2444,6 +3032,20 @@ links:
   semantic: false
   declared_by:
   - refactoring-smells-as-hypotheses
+- id: R-ROUTE-c1031ad03ce8
+  from: refactoring-demonstrated-pressure
+  relation: co-retrieved-with
+  to: testing-humble-object-testability-split
+  semantic: false
+  declared_by:
+  - testing-humble-object-testability-split
+- id: R-ROUTE-e11af355a9d3
+  from: refactoring-demonstrated-pressure
+  relation: co-retrieved-with
+  to: testing-testability-as-design-signal
+  semantic: false
+  declared_by:
+  - testing-testability-as-design-signal
 - id: R-ROUTE-00347a5983ae
   from: refactoring-demonstrated-pressure
   relation: co-retrieved-with
@@ -2535,6 +3137,13 @@ links:
   declared_by:
   - repository-assessment-behavioral-data-fitness
   - repository-assessment-logical-change-set
+- id: R-ROUTE-343bed5d6a40
+  from: repository-assessment-behavioral-data-fitness
+  relation: co-retrieved-with
+  to: testing-database-delivery-prerequisites
+  semantic: false
+  declared_by:
+  - testing-database-delivery-prerequisites
 - id: R-ROUTE-aa1a06fc18f8
   from: repository-assessment-behavioral-early-warning
   relation: co-retrieved-with
@@ -2557,6 +3166,42 @@ links:
   semantic: false
   declared_by:
   - review-severity-confidence-separation
+- id: R-ROUTE-78ab792e9294
+  from: testing-assert-observable-outcomes
+  relation: co-retrieved-with
+  to: testing-four-pillar-test-value
+  semantic: false
+  declared_by:
+  - testing-assert-observable-outcomes
+  - testing-four-pillar-test-value
+- id: R-ROUTE-c3cfb0b993ce
+  from: testing-assert-observable-outcomes
+  relation: co-retrieved-with
+  to: testing-no-test-privileged-access
+  semantic: false
+  declared_by:
+  - testing-no-test-privileged-access
+- id: R-ROUTE-df6328218c69
+  from: testing-assert-observable-outcomes
+  relation: co-retrieved-with
+  to: testing-output-based-style-preference
+  semantic: false
+  declared_by:
+  - testing-output-based-style-preference
+- id: R-ROUTE-874005eb0c61
+  from: testing-assert-observable-outcomes
+  relation: co-retrieved-with
+  to: testing-unit-of-behavior
+  semantic: false
+  declared_by:
+  - testing-unit-of-behavior
+- id: R-ROUTE-6c147279fa2f
+  from: testing-coverage-is-not-adequacy
+  relation: co-retrieved-with
+  to: testing-suite-net-value
+  semantic: false
+  declared_by:
+  - testing-suite-net-value
 - id: R-ROUTE-f220b215936c
   from: testing-coverage-is-not-adequacy
   relation: co-retrieved-with
@@ -2571,6 +3216,43 @@ links:
   semantic: false
   declared_by:
   - testing-coverage-is-not-adequacy
+- id: R-ROUTE-776dd9599958
+  from: testing-database-delivery-prerequisites
+  relation: co-retrieved-with
+  to: testing-database-production-fidelity
+  semantic: false
+  declared_by:
+  - testing-database-delivery-prerequisites
+  - testing-database-production-fidelity
+- id: R-ROUTE-6ea09862369d
+  from: testing-database-delivery-prerequisites
+  relation: co-retrieved-with
+  to: testing-mock-unmanaged-dependencies-only
+  semantic: false
+  declared_by:
+  - testing-database-delivery-prerequisites
+- id: R-ROUTE-8cc4a5bfff37
+  from: testing-database-production-fidelity
+  relation: co-retrieved-with
+  to: testing-integration-scope-selection
+  semantic: false
+  declared_by:
+  - testing-integration-scope-selection
+- id: R-ROUTE-269f878e8a5d
+  from: testing-database-production-fidelity
+  relation: co-retrieved-with
+  to: testing-mock-unmanaged-dependencies-only
+  semantic: false
+  declared_by:
+  - testing-database-production-fidelity
+  - testing-mock-unmanaged-dependencies-only
+- id: R-ROUTE-65d1cd6b0a57
+  from: testing-database-production-fidelity
+  relation: co-retrieved-with
+  to: universal-repository-contract-precedence
+  semantic: false
+  declared_by:
+  - testing-database-production-fidelity
 - id: R-ROUTE-926a10149ae9
   from: testing-design-before-feature-tests
   relation: co-retrieved-with
@@ -2586,6 +3268,119 @@ links:
   semantic: false
   declared_by:
   - testing-design-before-feature-tests
+- id: R-ROUTE-8e44bd74086f
+  from: testing-four-pillar-test-value
+  relation: co-retrieved-with
+  to: testing-suite-net-value
+  semantic: false
+  declared_by:
+  - testing-four-pillar-test-value
+  - testing-suite-net-value
+- id: R-ROUTE-5620267bec27
+  from: testing-four-pillar-test-value
+  relation: co-retrieved-with
+  to: testing-test-level-mix
+  semantic: false
+  declared_by:
+  - testing-four-pillar-test-value
+  - testing-test-level-mix
+- id: R-ROUTE-97c9d346ff5a
+  from: testing-humble-object-testability-split
+  relation: co-retrieved-with
+  to: testing-output-based-style-preference
+  semantic: false
+  declared_by:
+  - testing-humble-object-testability-split
+  - testing-output-based-style-preference
+- id: R-ROUTE-bad7de2795a1
+  from: testing-humble-object-testability-split
+  relation: co-retrieved-with
+  to: testing-testability-as-design-signal
+  semantic: false
+  declared_by:
+  - testing-humble-object-testability-split
+  - testing-testability-as-design-signal
+- id: R-ROUTE-6b8c6b973d0f
+  from: testing-integration-scope-selection
+  relation: co-retrieved-with
+  to: testing-mock-unmanaged-dependencies-only
+  semantic: false
+  declared_by:
+  - testing-integration-scope-selection
+- id: R-ROUTE-df46916eee00
+  from: testing-integration-scope-selection
+  relation: co-retrieved-with
+  to: testing-test-level-mix
+  semantic: false
+  declared_by:
+  - testing-integration-scope-selection
+  - testing-test-level-mix
+- id: R-ROUTE-757c9a3194bc
+  from: testing-mock-at-system-edges
+  relation: co-retrieved-with
+  to: testing-mock-unmanaged-dependencies-only
+  semantic: false
+  declared_by:
+  - testing-mock-at-system-edges
+  - testing-mock-unmanaged-dependencies-only
+- id: R-ROUTE-03fb2b4118a4
+  from: testing-mock-unmanaged-dependencies-only
+  relation: co-retrieved-with
+  to: testing-shared-dependency-substitution
+  semantic: false
+  declared_by:
+  - testing-mock-unmanaged-dependencies-only
+  - testing-shared-dependency-substitution
+- id: R-ROUTE-8e85ac47f558
+  from: testing-no-test-privileged-access
+  relation: co-retrieved-with
+  to: universal-information-hiding
+  semantic: false
+  declared_by:
+  - testing-no-test-privileged-access
+- id: R-ROUTE-d6856702325e
+  from: testing-output-based-style-preference
+  relation: co-retrieved-with
+  to: universal-no-change-option
+  semantic: false
+  declared_by:
+  - testing-output-based-style-preference
+- id: R-ROUTE-b5645d00aa8d
+  from: testing-self-contained-test-anatomy
+  relation: co-retrieved-with
+  to: testing-unit-of-behavior
+  semantic: false
+  declared_by:
+  - testing-self-contained-test-anatomy
+  - testing-unit-of-behavior
+- id: R-ROUTE-64f825ef0282
+  from: testing-self-contained-test-anatomy
+  relation: co-retrieved-with
+  to: universal-explicit-invariants
+  semantic: false
+  declared_by:
+  - testing-self-contained-test-anatomy
+- id: R-ROUTE-2a4018725d0e
+  from: testing-shared-dependency-substitution
+  relation: co-retrieved-with
+  to: testing-unit-of-behavior
+  semantic: false
+  declared_by:
+  - testing-shared-dependency-substitution
+- id: R-ROUTE-be1d16b958b7
+  from: testing-suite-net-value
+  relation: co-retrieved-with
+  to: universal-no-change-option
+  semantic: false
+  declared_by:
+  - testing-suite-net-value
+- id: R-ROUTE-63601b93de12
+  from: testing-testability-as-design-signal
+  relation: co-retrieved-with
+  to: universal-change-amplification
+  semantic: false
+  declared_by:
+  - testing-testability-as-design-signal
 - id: R-ROUTE-5a5e8f02ec2e
   from: universal-change-amplification
   relation: co-retrieved-with

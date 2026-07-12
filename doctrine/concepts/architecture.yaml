@@ -130,6 +130,10 @@ concepts:
         relationship: tension
         locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/019-chapter-17-bringing-the-strategy-together.md :: Beware the Master Plan"
         contribution: "Constrains advance option structure with humility and evolving evidence."
+      - source_id: SRC-RI
+        relationship: refinement
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/024-chapter-16-adaptation.md :: System Architecture"
+        contribution: "Adds Baldwin and Clark's six modular operators - splitting, substituting, augmenting, excluding, inverting, porting - as the concrete set of options a module boundary creates, arguing system economic value grows with the number of boundaries where operators can be applied, and grounding option value in form-follows-failure evolution of designs."
     confidence: contextual
     roles: [architecture-agent, coding-agent, review-agent]
     languages: [language-independent]
@@ -277,6 +281,10 @@ concepts:
         relationship: tension
         locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/007-chapter-6-the-life-cycle-of-a-domain-object.md :: When a Constructor Is All You Need"
         contribution: "Provides a simplicity counterweight to automatic lifecycle abstractions."
+      - source_id: SRC-UT
+        relationship: refinement
+        locator: "books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/015-chapter-8-why-integration-testing.md :: 8.4 Using interfaces to abstract dependencies"
+        contribution: "Adds test-double enablement for unmanaged dependencies as the only legitimate justification for a single-implementation interface, argues such interfaces are not abstractions (genuine abstractions are discovered, needing at least two implementations), and rejects speculative interfaces as YAGNI violations; managed and in-process dependencies stay concrete."
     confidence: contextual
     roles: [architecture-agent, coding-agent, legacy-code-agent, review-agent]
     languages: [language-independent]
@@ -618,6 +626,10 @@ concepts:
         relationship: direct_support
         locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/024-chapter-18-choosing-the-appropriate-architecture-style.md :: Monolith versus distributed"
         contribution: "Makes topology a driver-based tradeoff rather than a maturity progression."
+      - source_id: SRC-RI
+        relationship: corroboration
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Integration Points"
+        contribution: "Corroborates the cost side - every added remote integration point is a stability liability that can and will hang or fail, and the movement toward many small services and SaaS dependencies multiplies that exposure."
     confidence: strong
     roles: [architecture-agent, performance-agent, review-agent, debugging-and-repair-agent]
     languages: [language-independent]
@@ -765,6 +777,10 @@ concepts:
         relationship: refinement
         locator: "books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/029-chapter-18-boundary-anatomy.md :: SERVICES"
         contribution: "Distinguishes runtime service crossings from local source boundaries."
+      - source_id: SRC-RI
+        relationship: refinement
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md :: Decoupling Middleware"
+        contribution: "Adds the stability dimension and switching-cost framing - synchronous request/reply middleware amplifies shocks and facilitates cascading failure while message-oriented middleware decouples in space and time at the price of inherently harder asynchronous design, and the choice is a nearly irreversible early decision."
     confidence: strong
     roles: [architecture-agent, coding-agent, performance-agent, review-agent]
     languages: [language-independent]

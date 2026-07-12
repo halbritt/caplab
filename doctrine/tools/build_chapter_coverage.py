@@ -21,6 +21,8 @@ LEDGERS = (
     DOCTRINE / "_work" / "extractions" / "architecture-domain-sources.md",
     DOCTRINE / "_work" / "extractions" / "language-performance-sources.md",
     DOCTRINE / "_work" / "extractions" / "change-legacy-sources.md",
+    DOCTRINE / "_work" / "extractions" / "operations-sources.md",
+    DOCTRINE / "_work" / "extractions" / "testing-sources.md",
 )
 SOURCE_ALIASES = {
     "APOSD": "SRC-APOSD",
@@ -32,7 +34,9 @@ SOURCE_ALIASES = {
     "FSA": "SRC-FSA",
     "PP": "SRC-PP",
     "REF": "SRC-REF",
+    "RI": "SRC-RI",
     "SDX": "SRC-SDX",
+    "UT": "SRC-UT",
     "WELC": "SRC-WELC",
 }
 ROW_RE = re.compile(

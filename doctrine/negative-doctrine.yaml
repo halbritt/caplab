@@ -109,6 +109,14 @@ prohibitions:
       - {source_id: SRC-CC, locator: "books/code-complete-2nd-edition-v413hav/chapters/031-chapter-22-developer-testing.md :: Coverage Monitors"}
       - {source_id: SRC-FSA, locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/011-chapter-6-measuring-and-governing-architecture-characteristics.md :: Process Measures"}
 
+  - id: prohibit-coverage-number-target
+    prohibition: Never set or enforce a specific coverage percentage as a target, ship gate, or quality proof.
+    applies_when: [test strategy, review, coverage gate configuration, suite assessment]
+    evidence_threshold: A numeric coverage threshold is proposed or enforced as a goal in itself; coverage is a good negative indicator (too little coverage over critical code signals trouble) but a bad positive one, and a mandated number makes the metric the aim so developers reach it without verifying anything.
+    exceptions: [A repository may keep a coverage floor as one regression signal among others, provided adequacy is determined by contract, boundary, and risk evidence rather than the number.]
+    source_support:
+      - {source_id: SRC-UT, locator: "books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/006-chapter-1-the-goal-of-unit-testing.md :: 1.3 Using coverage metrics to measure test suite quality"}
+
   - id: prohibit-symptom-only-repair
     prohibition: Never present a symptom patch as a root-cause repair without a stable reproduction or causal explanation.
     applies_when: [debugging and repair]

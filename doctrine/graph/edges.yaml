@@ -2634,6 +2634,46 @@ edges:
     - legacy-provisional-safety-net may be active without conflict-broad-vs-narrow-characterization when repository evidence already selects or excludes every competing position.
     falsifiers:
     - The accepted doctrine or repository contract removes legacy-provisional-safety-net from the decision scope of conflict-broad-vs-narrow-characterization.
+- id: E-CONFLICT-f882bdddfd4a
+  from: testing-assert-observable-outcomes
+  relation: participates-in
+  to: conflict-broad-vs-narrow-characterization
+  claim: testing-assert-observable-outcomes participates in the evidence-governed choice preserved by conflict-broad-vs-narrow-characterization.
+  conditions:
+  - conflict-broad-vs-narrow-characterization is activated and repository evidence has not already excluded the competing positions
+  derivation: contested
+  confidence: contested
+  provenance:
+  - F-CONCEPT-UT-ad82d76470b2
+  - F-CONFLICT-SDX-d3e566b23055
+  conflict_ref: conflict-broad-vs-narrow-characterization
+  synthesis:
+    origin: projected
+    rationale: The conflict registry explicitly associates testing-assert-observable-outcomes with conflict-broad-vs-narrow-characterization; the participates-in relationship is a doctrine projection, not a claim attributed directly to either cited source formulation.
+    rivals:
+    - testing-assert-observable-outcomes may be active without conflict-broad-vs-narrow-characterization when repository evidence already selects or excludes every competing position.
+    falsifiers:
+    - The accepted doctrine or repository contract removes testing-assert-observable-outcomes from the decision scope of conflict-broad-vs-narrow-characterization.
+- id: E-CONFLICT-71c0aae2ee0e
+  from: testing-four-pillar-test-value
+  relation: participates-in
+  to: conflict-broad-vs-narrow-characterization
+  claim: testing-four-pillar-test-value participates in the evidence-governed choice preserved by conflict-broad-vs-narrow-characterization.
+  conditions:
+  - conflict-broad-vs-narrow-characterization is activated and repository evidence has not already excluded the competing positions
+  derivation: contested
+  confidence: contested
+  provenance:
+  - F-CONCEPT-UT-3136d3ad57da
+  - F-CONFLICT-SDX-d3e566b23055
+  conflict_ref: conflict-broad-vs-narrow-characterization
+  synthesis:
+    origin: projected
+    rationale: The conflict registry explicitly associates testing-four-pillar-test-value with conflict-broad-vs-narrow-characterization; the participates-in relationship is a doctrine projection, not a claim attributed directly to either cited source formulation.
+    rivals:
+    - testing-four-pillar-test-value may be active without conflict-broad-vs-narrow-characterization when repository evidence already selects or excludes every competing position.
+    falsifiers:
+    - The accepted doctrine or repository contract removes testing-four-pillar-test-value from the decision scope of conflict-broad-vs-narrow-characterization.
 - id: E-CONFLICT-42878a260f93
   from: performance-cache-validity
   relation: participates-in
@@ -2694,6 +2734,166 @@ edges:
     - architecture-event-temporal-semantics may be active without conflict-choreography-vs-orchestration when repository evidence already selects or excludes every competing position.
     falsifiers:
     - The accepted doctrine or repository contract removes architecture-event-temporal-semantics from the decision scope of conflict-choreography-vs-orchestration.
+- id: E-CONFLICT-bb4c790f3e48
+  from: legacy-characterization-surfaces
+  relation: participates-in
+  to: conflict-classical-vs-london-test-isolation
+  claim: legacy-characterization-surfaces participates in the evidence-governed choice preserved by conflict-classical-vs-london-test-isolation.
+  conditions:
+  - conflict-classical-vs-london-test-isolation is activated and repository evidence has not already excluded the competing positions
+  derivation: contested
+  confidence: contested
+  provenance:
+  - F-CONCEPT-WELC-6445fd919375
+  - F-CONFLICT-UT-24dadad7bade
+  conflict_ref: conflict-classical-vs-london-test-isolation
+  synthesis:
+    origin: projected
+    rationale: The conflict registry explicitly associates legacy-characterization-surfaces with conflict-classical-vs-london-test-isolation; the participates-in relationship is a doctrine projection, not a claim attributed directly to either cited source formulation.
+    rivals:
+    - legacy-characterization-surfaces may be active without conflict-classical-vs-london-test-isolation when repository evidence already selects or excludes every competing position.
+    falsifiers:
+    - The accepted doctrine or repository contract removes legacy-characterization-surfaces from the decision scope of conflict-classical-vs-london-test-isolation.
+- id: E-CONFLICT-4b2d14565749
+  from: legacy-provisional-dependency-break
+  relation: participates-in
+  to: conflict-classical-vs-london-test-isolation
+  claim: legacy-provisional-dependency-break participates in the evidence-governed choice preserved by conflict-classical-vs-london-test-isolation.
+  conditions:
+  - conflict-classical-vs-london-test-isolation is activated and repository evidence has not already excluded the competing positions
+  derivation: contested
+  confidence: contested
+  provenance:
+  - F-CONCEPT-WELC-4b7c1aabcb50
+  - F-CONFLICT-UT-24dadad7bade
+  conflict_ref: conflict-classical-vs-london-test-isolation
+  synthesis:
+    origin: projected
+    rationale: The conflict registry explicitly associates legacy-provisional-dependency-break with conflict-classical-vs-london-test-isolation; the participates-in relationship is a doctrine projection, not a claim attributed directly to either cited source formulation.
+    rivals:
+    - legacy-provisional-dependency-break may be active without conflict-classical-vs-london-test-isolation when repository evidence already selects or excludes every competing position.
+    falsifiers:
+    - The accepted doctrine or repository contract removes legacy-provisional-dependency-break from the decision scope of conflict-classical-vs-london-test-isolation.
+- id: E-CONFLICT-d340cb74864b
+  from: legacy-provisional-safety-net
+  relation: participates-in
+  to: conflict-classical-vs-london-test-isolation
+  claim: legacy-provisional-safety-net participates in the evidence-governed choice preserved by conflict-classical-vs-london-test-isolation.
+  conditions:
+  - conflict-classical-vs-london-test-isolation is activated and repository evidence has not already excluded the competing positions
+  derivation: contested
+  confidence: contested
+  provenance:
+  - F-CONCEPT-SDX-cb334d1881c0
+  - F-CONFLICT-UT-24dadad7bade
+  conflict_ref: conflict-classical-vs-london-test-isolation
+  synthesis:
+    origin: projected
+    rationale: The conflict registry explicitly associates legacy-provisional-safety-net with conflict-classical-vs-london-test-isolation; the participates-in relationship is a doctrine projection, not a claim attributed directly to either cited source formulation.
+    rivals:
+    - legacy-provisional-safety-net may be active without conflict-classical-vs-london-test-isolation when repository evidence already selects or excludes every competing position.
+    falsifiers:
+    - The accepted doctrine or repository contract removes legacy-provisional-safety-net from the decision scope of conflict-classical-vs-london-test-isolation.
+- id: E-CONFLICT-a1d558812b96
+  from: legacy-seams-and-enabling-points
+  relation: participates-in
+  to: conflict-classical-vs-london-test-isolation
+  claim: legacy-seams-and-enabling-points participates in the evidence-governed choice preserved by conflict-classical-vs-london-test-isolation.
+  conditions:
+  - conflict-classical-vs-london-test-isolation is activated and repository evidence has not already excluded the competing positions
+  derivation: contested
+  confidence: contested
+  provenance:
+  - F-CONCEPT-WELC-138c1bc9e17c
+  - F-CONFLICT-UT-24dadad7bade
+  conflict_ref: conflict-classical-vs-london-test-isolation
+  synthesis:
+    origin: projected
+    rationale: The conflict registry explicitly associates legacy-seams-and-enabling-points with conflict-classical-vs-london-test-isolation; the participates-in relationship is a doctrine projection, not a claim attributed directly to either cited source formulation.
+    rivals:
+    - legacy-seams-and-enabling-points may be active without conflict-classical-vs-london-test-isolation when repository evidence already selects or excludes every competing position.
+    falsifiers:
+    - The accepted doctrine or repository contract removes legacy-seams-and-enabling-points from the decision scope of conflict-classical-vs-london-test-isolation.
+- id: E-CONFLICT-24e82430545f
+  from: legacy-sensing-and-separation
+  relation: participates-in
+  to: conflict-classical-vs-london-test-isolation
+  claim: legacy-sensing-and-separation participates in the evidence-governed choice preserved by conflict-classical-vs-london-test-isolation.
+  conditions:
+  - conflict-classical-vs-london-test-isolation is activated and repository evidence has not already excluded the competing positions
+  derivation: contested
+  confidence: contested
+  provenance:
+  - F-CONCEPT-WELC-fab853142df6
+  - F-CONFLICT-UT-24dadad7bade
+  conflict_ref: conflict-classical-vs-london-test-isolation
+  synthesis:
+    origin: projected
+    rationale: The conflict registry explicitly associates legacy-sensing-and-separation with conflict-classical-vs-london-test-isolation; the participates-in relationship is a doctrine projection, not a claim attributed directly to either cited source formulation.
+    rivals:
+    - legacy-sensing-and-separation may be active without conflict-classical-vs-london-test-isolation when repository evidence already selects or excludes every competing position.
+    falsifiers:
+    - The accepted doctrine or repository contract removes legacy-sensing-and-separation from the decision scope of conflict-classical-vs-london-test-isolation.
+- id: E-CONFLICT-8b8548fa3909
+  from: testing-mock-unmanaged-dependencies-only
+  relation: participates-in
+  to: conflict-classical-vs-london-test-isolation
+  claim: testing-mock-unmanaged-dependencies-only participates in the evidence-governed choice preserved by conflict-classical-vs-london-test-isolation.
+  conditions:
+  - conflict-classical-vs-london-test-isolation is activated and repository evidence has not already excluded the competing positions
+  derivation: contested
+  confidence: contested
+  provenance:
+  - F-CONCEPT-UT-a99fb350d60a
+  - F-CONFLICT-UT-24dadad7bade
+  conflict_ref: conflict-classical-vs-london-test-isolation
+  synthesis:
+    origin: projected
+    rationale: The conflict registry explicitly associates testing-mock-unmanaged-dependencies-only with conflict-classical-vs-london-test-isolation; the participates-in relationship is a doctrine projection, not a claim attributed directly to either cited source formulation.
+    rivals:
+    - testing-mock-unmanaged-dependencies-only may be active without conflict-classical-vs-london-test-isolation when repository evidence already selects or excludes every competing position.
+    falsifiers:
+    - The accepted doctrine or repository contract removes testing-mock-unmanaged-dependencies-only from the decision scope of conflict-classical-vs-london-test-isolation.
+- id: E-CONFLICT-567404fcf17c
+  from: testing-shared-dependency-substitution
+  relation: participates-in
+  to: conflict-classical-vs-london-test-isolation
+  claim: testing-shared-dependency-substitution participates in the evidence-governed choice preserved by conflict-classical-vs-london-test-isolation.
+  conditions:
+  - conflict-classical-vs-london-test-isolation is activated and repository evidence has not already excluded the competing positions
+  derivation: contested
+  confidence: contested
+  provenance:
+  - F-CONCEPT-UT-5209ad804053
+  - F-CONFLICT-UT-24dadad7bade
+  conflict_ref: conflict-classical-vs-london-test-isolation
+  synthesis:
+    origin: projected
+    rationale: The conflict registry explicitly associates testing-shared-dependency-substitution with conflict-classical-vs-london-test-isolation; the participates-in relationship is a doctrine projection, not a claim attributed directly to either cited source formulation.
+    rivals:
+    - testing-shared-dependency-substitution may be active without conflict-classical-vs-london-test-isolation when repository evidence already selects or excludes every competing position.
+    falsifiers:
+    - The accepted doctrine or repository contract removes testing-shared-dependency-substitution from the decision scope of conflict-classical-vs-london-test-isolation.
+- id: E-CONFLICT-34b22ebaeb9c
+  from: testing-unit-of-behavior
+  relation: participates-in
+  to: conflict-classical-vs-london-test-isolation
+  claim: testing-unit-of-behavior participates in the evidence-governed choice preserved by conflict-classical-vs-london-test-isolation.
+  conditions:
+  - conflict-classical-vs-london-test-isolation is activated and repository evidence has not already excluded the competing positions
+  derivation: contested
+  confidence: contested
+  provenance:
+  - F-CONCEPT-UT-85860a8cc313
+  - F-CONFLICT-UT-24dadad7bade
+  conflict_ref: conflict-classical-vs-london-test-isolation
+  synthesis:
+    origin: projected
+    rationale: The conflict registry explicitly associates testing-unit-of-behavior with conflict-classical-vs-london-test-isolation; the participates-in relationship is a doctrine projection, not a claim attributed directly to either cited source formulation.
+    rivals:
+    - testing-unit-of-behavior may be active without conflict-classical-vs-london-test-isolation when repository evidence already selects or excludes every competing position.
+    falsifiers:
+    - The accepted doctrine or repository contract removes testing-unit-of-behavior from the decision scope of conflict-classical-vs-london-test-isolation.
 - id: E-CONFLICT-9103f9368950
   from: implementation-comments-first-design-probe
   relation: participates-in
@@ -2874,6 +3074,26 @@ edges:
     - refactoring-smells-as-hypotheses may be active without conflict-deep-modules-vs-small-units when repository evidence already selects or excludes every competing position.
     falsifiers:
     - The accepted doctrine or repository contract removes refactoring-smells-as-hypotheses from the decision scope of conflict-deep-modules-vs-small-units.
+- id: E-CONFLICT-00feaedf9c8b
+  from: testing-humble-object-testability-split
+  relation: participates-in
+  to: conflict-deep-modules-vs-small-units
+  claim: testing-humble-object-testability-split participates in the evidence-governed choice preserved by conflict-deep-modules-vs-small-units.
+  conditions:
+  - conflict-deep-modules-vs-small-units is activated and repository evidence has not already excluded the competing positions
+  derivation: contested
+  confidence: contested
+  provenance:
+  - F-CONCEPT-UT-bc81c30b4ece
+  - F-CONFLICT-APOSD-e96880d16b96
+  conflict_ref: conflict-deep-modules-vs-small-units
+  synthesis:
+    origin: projected
+    rationale: The conflict registry explicitly associates testing-humble-object-testability-split with conflict-deep-modules-vs-small-units; the participates-in relationship is a doctrine projection, not a claim attributed directly to either cited source formulation.
+    rivals:
+    - testing-humble-object-testability-split may be active without conflict-deep-modules-vs-small-units when repository evidence already selects or excludes every competing position.
+    falsifiers:
+    - The accepted doctrine or repository contract removes testing-humble-object-testability-split from the decision scope of conflict-deep-modules-vs-small-units.
 - id: E-CONFLICT-0d38d000c06a
   from: universal-local-reasoning
   relation: participates-in
@@ -2974,6 +3194,26 @@ edges:
     - domain-modeling-investment-gate may be active without conflict-domain-purity-vs-implementation-simplicity when repository evidence already selects or excludes every competing position.
     falsifiers:
     - The accepted doctrine or repository contract removes domain-modeling-investment-gate from the decision scope of conflict-domain-purity-vs-implementation-simplicity.
+- id: E-CONFLICT-826a47da505d
+  from: testing-output-based-style-preference
+  relation: participates-in
+  to: conflict-domain-purity-vs-implementation-simplicity
+  claim: testing-output-based-style-preference participates in the evidence-governed choice preserved by conflict-domain-purity-vs-implementation-simplicity.
+  conditions:
+  - conflict-domain-purity-vs-implementation-simplicity is activated and repository evidence has not already excluded the competing positions
+  derivation: contested
+  confidence: contested
+  provenance:
+  - F-CONCEPT-UT-d5d2251bf1d5
+  - F-CONFLICT-DDD-8a521ac47ad2
+  conflict_ref: conflict-domain-purity-vs-implementation-simplicity
+  synthesis:
+    origin: projected
+    rationale: The conflict registry explicitly associates testing-output-based-style-preference with conflict-domain-purity-vs-implementation-simplicity; the participates-in relationship is a doctrine projection, not a claim attributed directly to either cited source formulation.
+    rivals:
+    - testing-output-based-style-preference may be active without conflict-domain-purity-vs-implementation-simplicity when repository evidence already selects or excludes every competing position.
+    falsifiers:
+    - The accepted doctrine or repository contract removes testing-output-based-style-preference from the decision scope of conflict-domain-purity-vs-implementation-simplicity.
 - id: E-CONFLICT-7a09645c68e3
   from: architecture-change-locality-cohesion
   relation: participates-in
@@ -3014,6 +3254,86 @@ edges:
     - architecture-contextual-partitioning may be active without conflict-domain-vs-technical-partition when repository evidence already selects or excludes every competing position.
     falsifiers:
     - The accepted doctrine or repository contract removes architecture-contextual-partitioning from the decision scope of conflict-domain-vs-technical-partition.
+- id: E-CONFLICT-ae934e543f61
+  from: operations-resilience-margin
+  relation: participates-in
+  to: conflict-efficiency-vs-resilience-margin
+  claim: operations-resilience-margin participates in the evidence-governed choice preserved by conflict-efficiency-vs-resilience-margin.
+  conditions:
+  - conflict-efficiency-vs-resilience-margin is activated and repository evidence has not already excluded the competing positions
+  derivation: contested
+  confidence: contested
+  provenance:
+  - F-CONCEPT-RI-7ab2b473094d
+  - F-CONFLICT-RI-45cccc993592
+  conflict_ref: conflict-efficiency-vs-resilience-margin
+  synthesis:
+    origin: projected
+    rationale: The conflict registry explicitly associates operations-resilience-margin with conflict-efficiency-vs-resilience-margin; the participates-in relationship is a doctrine projection, not a claim attributed directly to either cited source formulation.
+    rivals:
+    - operations-resilience-margin may be active without conflict-efficiency-vs-resilience-margin when repository evidence already selects or excludes every competing position.
+    falsifiers:
+    - The accepted doctrine or repository contract removes operations-resilience-margin from the decision scope of conflict-efficiency-vs-resilience-margin.
+- id: E-CONFLICT-1a6ea0a9f834
+  from: performance-measurable-objective
+  relation: participates-in
+  to: conflict-efficiency-vs-resilience-margin
+  claim: performance-measurable-objective participates in the evidence-governed choice preserved by conflict-efficiency-vs-resilience-margin.
+  conditions:
+  - conflict-efficiency-vs-resilience-margin is activated and repository evidence has not already excluded the competing positions
+  derivation: contested
+  confidence: contested
+  provenance:
+  - F-CONCEPT-EGO-3b4e3941c405
+  - F-CONFLICT-RI-45cccc993592
+  conflict_ref: conflict-efficiency-vs-resilience-margin
+  synthesis:
+    origin: projected
+    rationale: The conflict registry explicitly associates performance-measurable-objective with conflict-efficiency-vs-resilience-margin; the participates-in relationship is a doctrine projection, not a claim attributed directly to either cited source formulation.
+    rivals:
+    - performance-measurable-objective may be active without conflict-efficiency-vs-resilience-margin when repository evidence already selects or excludes every competing position.
+    falsifiers:
+    - The accepted doctrine or repository contract removes performance-measurable-objective from the decision scope of conflict-efficiency-vs-resilience-margin.
+- id: E-CONFLICT-b453d69d8f73
+  from: implementation-fail-fast-or-recover
+  relation: participates-in
+  to: conflict-fault-tolerance-vs-let-it-crash
+  claim: implementation-fail-fast-or-recover participates in the evidence-governed choice preserved by conflict-fault-tolerance-vs-let-it-crash.
+  conditions:
+  - conflict-fault-tolerance-vs-let-it-crash is activated and repository evidence has not already excluded the competing positions
+  derivation: contested
+  confidence: contested
+  provenance:
+  - F-CONCEPT-PP-5850f3961698
+  - F-CONFLICT-RI-29ab9488b28f
+  conflict_ref: conflict-fault-tolerance-vs-let-it-crash
+  synthesis:
+    origin: projected
+    rationale: The conflict registry explicitly associates implementation-fail-fast-or-recover with conflict-fault-tolerance-vs-let-it-crash; the participates-in relationship is a doctrine projection, not a claim attributed directly to either cited source formulation.
+    rivals:
+    - implementation-fail-fast-or-recover may be active without conflict-fault-tolerance-vs-let-it-crash when repository evidence already selects or excludes every competing position.
+    falsifiers:
+    - The accepted doctrine or repository contract removes implementation-fail-fast-or-recover from the decision scope of conflict-fault-tolerance-vs-let-it-crash.
+- id: E-CONFLICT-29edcdd8900e
+  from: operations-designed-failure-modes
+  relation: participates-in
+  to: conflict-fault-tolerance-vs-let-it-crash
+  claim: operations-designed-failure-modes participates in the evidence-governed choice preserved by conflict-fault-tolerance-vs-let-it-crash.
+  conditions:
+  - conflict-fault-tolerance-vs-let-it-crash is activated and repository evidence has not already excluded the competing positions
+  derivation: contested
+  confidence: contested
+  provenance:
+  - F-CONCEPT-RI-4234704e87d2
+  - F-CONFLICT-RI-29ab9488b28f
+  conflict_ref: conflict-fault-tolerance-vs-let-it-crash
+  synthesis:
+    origin: projected
+    rationale: The conflict registry explicitly associates operations-designed-failure-modes with conflict-fault-tolerance-vs-let-it-crash; the participates-in relationship is a doctrine projection, not a claim attributed directly to either cited source formulation.
+    rivals:
+    - operations-designed-failure-modes may be active without conflict-fault-tolerance-vs-let-it-crash when repository evidence already selects or excludes every competing position.
+    falsifiers:
+    - The accepted doctrine or repository contract removes operations-designed-failure-modes from the decision scope of conflict-fault-tolerance-vs-let-it-crash.
 - id: E-CONFLICT-f2ae5e6d8902
   from: architecture-boundary-strength
   relation: participates-in
@@ -3114,6 +3434,46 @@ edges:
     - universal-earned-abstraction may be active without conflict-generalized-reuse-vs-local-clarity when repository evidence already selects or excludes every competing position.
     falsifiers:
     - The accepted doctrine or repository contract removes universal-earned-abstraction from the decision scope of conflict-generalized-reuse-vs-local-clarity.
+- id: E-CONFLICT-c08a615b3d6c
+  from: operations-ephemeral-instance-design
+  relation: participates-in
+  to: conflict-live-control-vs-immutable-replacement
+  claim: operations-ephemeral-instance-design participates in the evidence-governed choice preserved by conflict-live-control-vs-immutable-replacement.
+  conditions:
+  - conflict-live-control-vs-immutable-replacement is activated and repository evidence has not already excluded the competing positions
+  derivation: contested
+  confidence: contested
+  provenance:
+  - F-CONCEPT-RI-1e7ffea10d11
+  - F-CONFLICT-RI-5a1f22ed66d7
+  conflict_ref: conflict-live-control-vs-immutable-replacement
+  synthesis:
+    origin: projected
+    rationale: The conflict registry explicitly associates operations-ephemeral-instance-design with conflict-live-control-vs-immutable-replacement; the participates-in relationship is a doctrine projection, not a claim attributed directly to either cited source formulation.
+    rivals:
+    - operations-ephemeral-instance-design may be active without conflict-live-control-vs-immutable-replacement when repository evidence already selects or excludes every competing position.
+    falsifiers:
+    - The accepted doctrine or repository contract removes operations-ephemeral-instance-design from the decision scope of conflict-live-control-vs-immutable-replacement.
+- id: E-CONFLICT-131029d90580
+  from: operations-runtime-control-surface
+  relation: participates-in
+  to: conflict-live-control-vs-immutable-replacement
+  claim: operations-runtime-control-surface participates in the evidence-governed choice preserved by conflict-live-control-vs-immutable-replacement.
+  conditions:
+  - conflict-live-control-vs-immutable-replacement is activated and repository evidence has not already excluded the competing positions
+  derivation: contested
+  confidence: contested
+  provenance:
+  - F-CONCEPT-RI-140c51b7a260
+  - F-CONFLICT-RI-5a1f22ed66d7
+  conflict_ref: conflict-live-control-vs-immutable-replacement
+  synthesis:
+    origin: projected
+    rationale: The conflict registry explicitly associates operations-runtime-control-surface with conflict-live-control-vs-immutable-replacement; the participates-in relationship is a doctrine projection, not a claim attributed directly to either cited source formulation.
+    rivals:
+    - operations-runtime-control-surface may be active without conflict-live-control-vs-immutable-replacement when repository evidence already selects or excludes every competing position.
+    falsifiers:
+    - The accepted doctrine or repository contract removes operations-runtime-control-surface from the decision scope of conflict-live-control-vs-immutable-replacement.
 - id: E-CONFLICT-401ecd5a28a6
   from: architecture-distribution-readiness
   relation: participates-in
@@ -3634,6 +3994,86 @@ edges:
     - legacy-sprout-wrap may be active without conflict-temporary-seam-vs-long-term-design when repository evidence already selects or excludes every competing position.
     falsifiers:
     - The accepted doctrine or repository contract removes legacy-sprout-wrap from the decision scope of conflict-temporary-seam-vs-long-term-design.
+- id: E-CONFLICT-87be77498ecd
+  from: testing-mock-unmanaged-dependencies-only
+  relation: participates-in
+  to: conflict-temporary-seam-vs-long-term-design
+  claim: testing-mock-unmanaged-dependencies-only participates in the evidence-governed choice preserved by conflict-temporary-seam-vs-long-term-design.
+  conditions:
+  - conflict-temporary-seam-vs-long-term-design is activated and repository evidence has not already excluded the competing positions
+  derivation: contested
+  confidence: contested
+  provenance:
+  - F-CONCEPT-UT-a99fb350d60a
+  - F-CONFLICT-WELC-2086672564b8
+  conflict_ref: conflict-temporary-seam-vs-long-term-design
+  synthesis:
+    origin: projected
+    rationale: The conflict registry explicitly associates testing-mock-unmanaged-dependencies-only with conflict-temporary-seam-vs-long-term-design; the participates-in relationship is a doctrine projection, not a claim attributed directly to either cited source formulation.
+    rivals:
+    - testing-mock-unmanaged-dependencies-only may be active without conflict-temporary-seam-vs-long-term-design when repository evidence already selects or excludes every competing position.
+    falsifiers:
+    - The accepted doctrine or repository contract removes testing-mock-unmanaged-dependencies-only from the decision scope of conflict-temporary-seam-vs-long-term-design.
+- id: E-CONFLICT-b03a466d8306
+  from: testing-no-test-privileged-access
+  relation: participates-in
+  to: conflict-temporary-seam-vs-long-term-design
+  claim: testing-no-test-privileged-access participates in the evidence-governed choice preserved by conflict-temporary-seam-vs-long-term-design.
+  conditions:
+  - conflict-temporary-seam-vs-long-term-design is activated and repository evidence has not already excluded the competing positions
+  derivation: contested
+  confidence: contested
+  provenance:
+  - F-CONCEPT-UT-c26b5cc72c64
+  - F-CONFLICT-WELC-2086672564b8
+  conflict_ref: conflict-temporary-seam-vs-long-term-design
+  synthesis:
+    origin: projected
+    rationale: The conflict registry explicitly associates testing-no-test-privileged-access with conflict-temporary-seam-vs-long-term-design; the participates-in relationship is a doctrine projection, not a claim attributed directly to either cited source formulation.
+    rivals:
+    - testing-no-test-privileged-access may be active without conflict-temporary-seam-vs-long-term-design when repository evidence already selects or excludes every competing position.
+    falsifiers:
+    - The accepted doctrine or repository contract removes testing-no-test-privileged-access from the decision scope of conflict-temporary-seam-vs-long-term-design.
+- id: E-CONFLICT-e098b7aeebba
+  from: testing-shared-dependency-substitution
+  relation: participates-in
+  to: conflict-temporary-seam-vs-long-term-design
+  claim: testing-shared-dependency-substitution participates in the evidence-governed choice preserved by conflict-temporary-seam-vs-long-term-design.
+  conditions:
+  - conflict-temporary-seam-vs-long-term-design is activated and repository evidence has not already excluded the competing positions
+  derivation: contested
+  confidence: contested
+  provenance:
+  - F-CONCEPT-UT-5209ad804053
+  - F-CONFLICT-WELC-2086672564b8
+  conflict_ref: conflict-temporary-seam-vs-long-term-design
+  synthesis:
+    origin: projected
+    rationale: The conflict registry explicitly associates testing-shared-dependency-substitution with conflict-temporary-seam-vs-long-term-design; the participates-in relationship is a doctrine projection, not a claim attributed directly to either cited source formulation.
+    rivals:
+    - testing-shared-dependency-substitution may be active without conflict-temporary-seam-vs-long-term-design when repository evidence already selects or excludes every competing position.
+    falsifiers:
+    - The accepted doctrine or repository contract removes testing-shared-dependency-substitution from the decision scope of conflict-temporary-seam-vs-long-term-design.
+- id: E-CONFLICT-4004d64c17a2
+  from: testing-testability-as-design-signal
+  relation: participates-in
+  to: conflict-temporary-seam-vs-long-term-design
+  claim: testing-testability-as-design-signal participates in the evidence-governed choice preserved by conflict-temporary-seam-vs-long-term-design.
+  conditions:
+  - conflict-temporary-seam-vs-long-term-design is activated and repository evidence has not already excluded the competing positions
+  derivation: contested
+  confidence: contested
+  provenance:
+  - F-CONCEPT-UT-114f6af9104c
+  - F-CONFLICT-WELC-2086672564b8
+  conflict_ref: conflict-temporary-seam-vs-long-term-design
+  synthesis:
+    origin: projected
+    rationale: The conflict registry explicitly associates testing-testability-as-design-signal with conflict-temporary-seam-vs-long-term-design; the participates-in relationship is a doctrine projection, not a claim attributed directly to either cited source formulation.
+    rivals:
+    - testing-testability-as-design-signal may be active without conflict-temporary-seam-vs-long-term-design when repository evidence already selects or excludes every competing position.
+    falsifiers:
+    - The accepted doctrine or repository contract removes testing-testability-as-design-signal from the decision scope of conflict-temporary-seam-vs-long-term-design.
 - id: E-CONFLICT-e79d21e3e4db
   from: domain-bounded-context
   relation: participates-in

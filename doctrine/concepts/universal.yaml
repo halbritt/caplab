@@ -401,6 +401,10 @@ concepts:
         locator: "books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/007-chapter-6-the-life-cycle-of-a-domain-object.md :: Aggregates"
         contribution: Locates transactional domain invariants within an explicit consistency boundary.
         relationship: corroboration
+      - source_id: SRC-UT
+        locator: "books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/008-chapter-3-the-anatomy-of-a-unit-test.md :: 3.1 How to structure a unit test"
+        contribution: Reads a test act phase that needs more than one method call as evidence the API lets clients skip an invariant-maintaining step - an encapsulation breach the owner should close by performing the whole business operation in one method; applies to business-logic APIs, explicitly less to utility or infrastructure code.
+        relationship: refinement
     confidence: universal
     roles: [coding-agent, architecture-agent, domain-design-agent, refactoring-agent, legacy-code-agent, review-agent]
     languages: [language-independent]

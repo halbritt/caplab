@@ -458,6 +458,10 @@ concepts:
         relationship: refinement
         locator: "books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/012-chapter-7-scope-of-architecture-characteristics.md :: Domain-Driven Design's Bounded Context"
         contribution: "Relates semantic context to architectural scope while adding deployment and coupling criteria."
+      - source_id: SRC-RI
+        relationship: corroboration
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/024-chapter-16-adaptation.md :: Information Architecture"
+        contribution: "Operations-side corroboration that one enterprise-wide model per noun fails - each group defines customer differently with different lifecycles and permissions, so federate zones of authority exchanging common representations instead of a single system of record, and keep upstream leverage concepts from leaking into downstream feeds as incidental complexity."
     confidence: strong
     roles: [architecture-agent, coding-agent, legacy-code-agent, review-agent, repository-assessment-agent]
     languages: [language-independent]

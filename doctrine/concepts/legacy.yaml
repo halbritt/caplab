@@ -151,6 +151,7 @@ concepts:
   - refactoring-stop-backtrack-escalate
   conflicts:
   - conflict-broad-vs-narrow-characterization
+  - conflict-classical-vs-london-test-isolation
   source_support:
   - source_id: SRC-WELC
     locator: 'books/programming-working-effectively-with-legacy-code/chapters/009-chapter-2-working-with-feedback.md :: The Legacy Code Change Algorithm'
@@ -256,6 +257,7 @@ concepts:
   - legacy-sensing-and-separation
   conflicts:
   - conflict-temporary-seam-vs-long-term-design
+  - conflict-classical-vs-london-test-isolation
   source_support:
   - source_id: SRC-WELC
     locator: 'books/programming-working-effectively-with-legacy-code/chapters/011-chapter-4-the-seam-model.md :: Seams'
@@ -356,7 +358,8 @@ concepts:
   interactions:
   - legacy-seams-and-enabling-points
   - legacy-effect-surface
-  conflicts: []
+  conflicts:
+  - conflict-classical-vs-london-test-isolation
   source_support:
   - source_id: SRC-WELC
     locator: 'books/programming-working-effectively-with-legacy-code/chapters/010-chapter-3-sensing-and-separation.md :: Chapter 3: Sensing and Separation'
@@ -448,6 +451,7 @@ concepts:
   - legacy-sprout-wrap
   conflicts:
   - conflict-temporary-seam-vs-long-term-design
+  - conflict-classical-vs-london-test-isolation
   source_support:
   - source_id: SRC-WELC
     locator: 'books/programming-working-effectively-with-legacy-code/chapters/009-chapter-2-working-with-feedback.md :: Break Dependencies'
@@ -1013,6 +1017,7 @@ concepts:
   - refactoring-splinter-campaign
   conflicts:
   - conflict-broad-vs-narrow-characterization
+  - conflict-classical-vs-london-test-isolation
   source_support:
   - source_id: SRC-SDX
     locator: 'books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/009-chapter-4-pay-off-your-technical-debt.md :: Build Temporary Tests as a Safety Net'

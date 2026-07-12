@@ -92,6 +92,16 @@ remains under `Unreleased`, whether or not it has been committed.
   (`entailment-prompt/4`); the judged-section budget rose from 24000 to 60000
   characters. A release-gate oracle requires all 19 artifact-flag evidence
   quotes to be recoverable from the re-bounded sections.
+- Registered Release It! (2nd ed., SRC-RI) and Unit Testing: Principles,
+  Practices, and Patterns (SRC-UT) as doctrine sources via a five-reader,
+  two-integrator extraction campaign: 41 new concepts (25 operations-*, 16
+  testing-*), 25 new citations on 16 existing concepts, 12 costed stability
+  techniques, 4 new preserved conflicts (fault-tolerance-vs-let-it-crash,
+  live-control-vs-immutable-replacement, efficiency-vs-resilience-margin,
+  classical-vs-london-test-isolation), and the prohibit-coverage-number-target
+  prohibition. Chapter coverage grows 331 -> 378 with two complete extraction
+  ledgers; the graph grows to 182 concepts; the gold queue to 101 candidates.
+  New-citation entailment screening is recorded separately.
 - Added this changelog.
 
 ### Changed

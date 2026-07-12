@@ -1,0 +1,503 @@
+schema_version: agent-doctrine-techniques/1
+catalog: operations
+scope: specialist
+non_universality: >-
+  These records are conditional stability and operability techniques, not
+  production defaults or maturity stages. The source itself warns that pattern
+  count is not a quality metric and that each pattern is a judgment call.
+  Retrieval must carry each technique's activation evidence, costs,
+  contraindications, preservation boundaries, and alternatives with the
+  technique.
+techniques:
+  - id: operations-timeouts
+    candidate_id: TECH-OPS-001
+    title: Timeouts on every blocking operation
+    non_universality: Timeout values are caller-budget decisions, not library defaults; pervasive timeout handling is deliberate error-path complexity accepted as the price of production readiness.
+    problem_solved: Isolate the caller from operations that hang or fail slowly - outbound network calls, resource-pool checkouts, and lock or mutex acquisition.
+    activation_evidence:
+      - The operation can block on a party outside the caller's control.
+      - A caller latency budget exists from which the timeout value can be derived.
+      - Hang or slow-failure consequences exceed the cost of handling the timeout path.
+    costs:
+      - Error-handling code on every blocking path, materially increasing code complexity.
+      - Choosing values requires caller latency budgets; wrong values convert healthy slowness into spurious failures.
+    contraindications:
+      - Purely local computation that cannot block on external parties.
+      - Timeout values invented without a latency budget, creating false failures under load.
+    reversal_cost:
+      level: low
+      exit_path: Relax or remove timeout parameters; the call sites remain structurally unchanged.
+      cost_drivers: [callers depending on bounded-latency behavior, retry logic tuned to timeout values]
+    appropriate_scale: [call-site, client-library, service]
+    operational_consequences:
+      - Converts open-ended hangs into observable, countable failures.
+      - Immediate retries after a timeout usually re-fail; queued delayed retries add robustness.
+    preservation_boundaries:
+      - Work already accepted must have a completion or compensation path when its deadline expires.
+      - Timeout firing must preserve failure cause and context for the caller.
+    alternatives:
+      - operations-circuit-breaker
+      - operations-fail-fast
+      - synchronous call accepted with unbounded wait under explicit authority
+    related_concepts:
+      - operations-integration-point-distrust
+      - operations-cascading-failure-halting
+      - performance-resource-lifecycle
+      - implementation-explicit-failure-policy
+    source_support:
+      - source_id: SRC-RI
+        relationship: direct_support
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md :: Timeouts"
+        contribution: Presents timeouts as fault isolation for any blocking operation including pools and synchronization primitives, argues immediate retries usually re-fail while queued slow retries add robustness, and recommends centralizing timeout handling in reusable primitives such as a query object or gateway.
+
+  - id: operations-circuit-breaker
+    candidate_id: TECH-OPS-002
+    title: Circuit breaker around dangerous operations
+    non_universality: A breaker is per-process protection for integration points whose failure can block or cascade; wrapping every call in a breaker adds threading hazards and refused-call business impact without benefit.
+    problem_solved: Stop repeated calls into a failing integration point so the caller neither wastes resources nor hammers the sick dependency.
+    activation_evidence:
+      - An integration point whose failure can block threads or cascade to callers.
+      - Fault density can be measured well enough to trip on it rather than on raw counts.
+      - Stakeholder-approved degraded behavior exists for the open state.
+    costs:
+      - Some lost efficiency because each process independently rediscovers outages.
+      - Threading hazards inside the breaker implementation; prefer proven libraries over hand-rolled code.
+      - Business impact of refused calls while open must be decided with stakeholders, not defaulted.
+    contraindications:
+      - No fallback semantics exist and refusing calls is worse than waiting.
+      - The breaker would be shared out-of-process, creating a new failure mode of its own.
+    reversal_cost:
+      level: low
+      exit_path: Remove the wrapper and restore direct calls.
+      cost_drivers: [callers depending on fast-fail behavior, monitoring built on breaker state]
+    appropriate_scale: [client-library, service, integration-point]
+    operational_consequences:
+      - State changes must be logged and exposed to operations with manual trip and reset controls.
+      - Closed/open/half-open transitions with leaky-bucket fault density and per-failure-type thresholds become operational signals.
+    preservation_boundaries:
+      - Callers must see refused calls as distinct, diagnosable failures rather than silent degradation.
+      - Fallback behavior is a stakeholder decision preserved from the closed to open state.
+    alternatives:
+      - operations-timeouts
+      - operations-handshaking
+      - operations-decoupling-middleware
+    related_concepts:
+      - operations-integration-point-distrust
+      - operations-cascading-failure-halting
+      - implementation-fail-fast-or-recover
+      - operations-transparency-by-design
+    source_support:
+      - source_id: SRC-RI
+        relationship: direct_support
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md :: Circuit Breaker"
+        contribution: Specifies the full mechanism - trip on fault density rather than raw counts, half-open trial calls, per-failure-type thresholds, process-local scope to avoid a new out-of-process failure mode, mandatory state-change logging and monitoring with manual trip and reset, and preference for proven libraries over hand-rolled implementations.
+
+  - id: operations-bulkheads
+    candidate_id: TECH-OPS-003
+    title: Bulkhead capacity partitioning
+    non_universality: Partitioning deliberately strands capacity that pooled resources would share; it is earned by per-capability business impact analysis, not applied uniformly.
+    problem_solved: Contain a failure or overload in one partition - thread pool, CPU binding, instance group, zone, or dedicated pool per critical consumer - so it cannot consume the whole system.
+    activation_evidence:
+      - A shared service has multiple consumers of differing criticality or an SLA-bearing capability to protect.
+      - Business impact analysis identifies which capability justifies dedicated capacity.
+      - Failure history or load analysis shows one consumer can starve the rest.
+    costs:
+      - Capacity fragmentation - reserved capacity is unavailable to other work even when idle.
+      - More configuration surface to size, monitor, and keep current.
+    contraindications:
+      - Uniform low-criticality consumers where pooling efficiency dominates.
+      - Partitions too small to survive alone, converting one big failure into several small ones.
+    reversal_cost:
+      level: low-to-moderate
+      exit_path: Merge partitions back into shared pools; remove per-consumer routing.
+      cost_drivers: [SLAs written against dedicated capacity, per-partition monitoring and capacity plans]
+    appropriate_scale: [thread-pool, process, instance-group, zone-or-region]
+    operational_consequences:
+      - Damage containment during partial failure at the price of reduced pooling efficiency.
+      - A reserved admin thread pool preserves diagnosability while request pools are exhausted.
+    preservation_boundaries:
+      - Partition sizing must preserve each protected capability's stated service level.
+      - Cross-partition invariants and data integrity survive partition failure.
+    alternatives:
+      - operations-shed-load
+      - operations-circuit-breaker
+      - shared pooled capacity accepted with explicit blast-radius acknowledgment
+    related_concepts:
+      - operations-designed-failure-modes
+      - operations-cascading-failure-halting
+      - operations-capacity-ratio-realism
+    source_support:
+      - source_id: SRC-RI
+        relationship: direct_support
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md :: Bulkheads"
+        contribution: Details bulkhead granularities from reserved admin thread pools and process-to-core binding up to dedicated server groups per critical client and cloud zones or regions, and grounds partition placement in per-capability business impact analysis rather than uniform rules.
+
+  - id: operations-fail-fast
+    candidate_id: TECH-OPS-004
+    title: Fail fast on predictable inability
+    non_universality: Pre-flight refusal requires the system to know it will fail; misclassifying user error as system failure trips breakers and converts recoverable requests into outages.
+    problem_solved: Refuse work before consuming resources when the outcome is already determined - unavailable pool resources, popped breakers on required integration points, invalid input.
+    activation_evidence:
+      - Required resources or integrations are checkable before expensive work begins.
+      - Input validation is cheap relative to the work it gates.
+      - Downstream waste from doomed work is measurable - remake rates, wasted render time, blocked queues.
+    costs:
+      - Pre-flight verification code paths that must track the real resource dependencies.
+      - A refusal channel that callers must handle distinctly from processing failures.
+    contraindications:
+      - Resource state cannot be checked more cheaply than attempting the work.
+      - Refusal would violate an accept-then-queue contract with upstream systems.
+    reversal_cost:
+      level: low
+      exit_path: Remove pre-flight checks and let work proceed to its natural failure point.
+      cost_drivers: [callers depending on fast refusal semantics, metrics built on refusal counts]
+    appropriate_scale: [request-handler, service, batch-pipeline]
+    operational_consequences:
+      - System failures and application failures must be reported distinctly so callers do not trip breakers on user error.
+      - Doomed work stops consuming capacity; refusal rates become a leading indicator.
+    preservation_boundaries:
+      - Refusals must preserve enough cause and context for the caller's recovery decision.
+      - Validation must not tighten a live interface's accepted behavior without migration authority.
+    alternatives:
+      - operations-timeouts
+      - operations-shed-load
+      - accept-and-queue with later failure under explicit contract
+    related_concepts:
+      - operations-load-shedding
+      - implementation-explicit-failure-policy
+      - operations-live-interface-compatibility
+    source_support:
+      - source_id: SRC-RI
+        relationship: direct_support
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md :: Fail Fast"
+        contribution: Prescribes pre-flight resource and breaker verification and cheap input validation before expensive work, with the photography-renderer case showing remake rates dropping to zero, and requires distinguishing resource-unavailable from parameter-violation failures so callers do not trip breakers on user error.
+
+  - id: operations-let-it-crash
+    candidate_id: TECH-OPS-005
+    title: Let it crash with supervised restart
+    non_universality: Crash-and-restart is correct only where its four preconditions hold - limited crash granularity, fast replacement, supervision, reintegration; for slow-starting monoliths the technique is wrong. The wider disagreement is preserved in conflict-fault-tolerance-vs-let-it-crash.
+    problem_solved: Reach a clean known state after an error more reliably than in-place recovery, by crashing a bounded component and restarting it from scratch.
+    activation_evidence:
+      - A crash boundary exists that limits the granularity of what dies.
+      - Replacement is measured in milliseconds to seconds, not minutes.
+      - A supervisor distinct from the service consumer owns restart decisions.
+      - Restarted components reintegrate automatically - pools refill, discovery re-registers.
+    costs:
+      - Supervision hierarchy design and restart-density monitoring.
+      - In-flight work at crash time must be recoverable or explicitly lost by contract.
+    contraindications:
+      - Slow-starting monolithic processes whose restart is an outage.
+      - Components holding unreplicated state that dies with the process.
+      - No supervisor exists, so crashes become user-visible failures.
+    reversal_cost:
+      level: moderate
+      exit_path: Replace crash paths with in-place error recovery; the recovery logic the technique avoided must now be written.
+      cost_drivers: [supervision infrastructure, components designed without recovery code, restart-based operational procedures]
+    appropriate_scale: [actor-or-task, worker-process, container-instance]
+    operational_consequences:
+      - Supervisors must escalate when child restarts are too dense rather than restart forever.
+      - Restart storms are an operational signal, not business as usual.
+    preservation_boundaries:
+      - Acknowledged work survives crashes through durable handoff, or its loss is an explicit contract.
+      - The supervisor is not the service consumer; restart authority stays separate from request flow.
+    alternatives:
+      - implementation-fail-fast-or-recover
+      - operations-circuit-breaker
+      - in-place recovery with explicit error handling
+    related_concepts:
+      - operations-designed-failure-modes
+      - implementation-fail-fast-or-recover
+      - operations-ephemeral-instance-design
+    source_support:
+      - source_id: SRC-RI
+        relationship: direct_support
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md :: Let It Crash"
+        contribution: States the four preconditions - limited crash granularity, fast replacement, hierarchical supervision distinct from the service consumer, and reintegration - explicitly disqualifies slow-starting monolithic processes, and requires supervisors to escalate when child restarts are too dense.
+
+  - id: operations-handshaking
+    candidate_id: TECH-OPS-006
+    title: Handshaking and readiness signaling
+    non_universality: Application protocols such as HTTP barely support readiness signaling, so the practical mechanism is crude - a health check consulted by a load balancer - and it is most valuable under unbalanced capacities.
+    problem_solved: Let providers signal readiness or refusal before accepting work, so demand is cooperatively controlled instead of discovered through failure.
+    activation_evidence:
+      - Provider capacity can be exceeded by callers - especially unbalanced front-end/back-end ratios.
+      - A load balancer or caller consults health signals before dispatching work.
+      - For custom protocols, readiness signaling can be designed in natively.
+    costs:
+      - Health-check endpoints and load-balancer integration to build and keep truthful.
+      - The mechanism is binary - in or out of the pool - and cannot express fine-grained capacity.
+    contraindications:
+      - Callers that cannot or will not consult the readiness signal.
+      - Health checks that lie - reporting ready while dependencies or response times are failing - are worse than none.
+    reversal_cost:
+      level: low
+      exit_path: Remove health-gated dispatch and fall back to blind load balancing with caller-side protection.
+      cost_drivers: [load-balancer configuration, monitoring built on pool membership]
+    appropriate_scale: [service, load-balanced-tier]
+    operational_consequences:
+      - Pool membership changes become operational events worth logging and alerting on.
+      - Circuit breakers remain the caller-side stopgap when providers cannot handshake.
+    preservation_boundaries:
+      - Readiness signals must reflect genuine ability to meet response obligations.
+      - Work accepted after signaling ready must be served within the promised envelope.
+    alternatives:
+      - operations-circuit-breaker
+      - operations-shed-load
+      - operations-back-pressure
+    related_concepts:
+      - operations-load-shedding
+      - operations-capacity-ratio-realism
+      - operations-liveness-by-external-observation
+    source_support:
+      - source_id: SRC-RI
+        relationship: direct_support
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md :: Handshaking"
+        contribution: Observes that application-level protocols barely support readiness signaling, prescribes the load-balancer/health-check partnership as the practical approximation, and positions circuit breakers as the caller-side stopgap when providers cannot handshake.
+
+  - id: operations-fault-injecting-test-harness
+    candidate_id: TECH-OPS-007
+    title: Fault-injecting test harness for integration points
+    non_universality: The harness supplements rather than replaces functional and integration testing; it exists precisely because in-spec tests cannot establish out-of-spec behavior.
+    problem_solved: Exercise a caller against every way its remote dependency can misbehave below the application layer - refused or hung connections, dribbled bytes, wrong content types, oversized responses.
+    activation_evidence:
+      - Integration points whose failure modes include network- and protocol-level misbehavior.
+      - Mocks and integration environments only exercise in-spec failures.
+      - Stability consequences of unhandled out-of-spec behavior justify harness construction.
+    costs:
+      - A separate hostile server to build and maintain, unconstrained by the real interface.
+      - Load-generation capability, since some failures appear only under substantial concurrent load.
+    contraindications:
+      - No out-of-process dependency exists to misbehave.
+      - The dependency contract genuinely bounds failure modes - for example, an in-process library with total semantics.
+    reversal_cost:
+      level: low
+      exit_path: Retire the harness; the production code it validated is unaffected.
+      cost_drivers: [CI integration of harness suites, shared killer-server infrastructure]
+    appropriate_scale: [integration-point, client-library, service]
+    operational_consequences:
+      - A shared killer server with one port per failure mode turns fault injection into reusable infrastructure.
+      - Positions the team for chaos engineering, which extends the same discipline to whole systems.
+    preservation_boundaries:
+      - Harness hostility stays in test environments; production dependencies are never the injection target of this technique.
+      - Findings feed timeout, breaker, and validation fixes rather than being waived.
+    alternatives:
+      - mock-based unit testing for in-spec behavior
+      - operations-chaos-experiment-discipline
+      - integration-environment testing accepted with its in-spec limits
+    related_concepts:
+      - operations-integration-point-distrust
+      - operations-chaos-experiment-discipline
+      - implementation-risk-driven-tests
+    source_support:
+      - source_id: SRC-RI
+        relationship: direct_support
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md :: Test Harnesses"
+        contribution: Distinguishes the harness from mock objects - a separate server unconstrained by the interface, able to inject network- and protocol-level faults - catalogs concrete socket-level failure modes to simulate, and suggests port-per-failure-mode shared killer servers while explicitly supplementing rather than replacing other testing.
+
+  - id: operations-decoupling-middleware
+    candidate_id: TECH-OPS-008
+    title: Decoupling middleware for space and time separation
+    non_universality: The synchronous-versus-message-oriented choice is a nearly irreversible early architecture decision requiring business involvement in failure semantics; it is not a stability upgrade to apply late or lightly.
+    problem_solved: Remove whole classes of cascading failure by decoupling endpoints in space and time through message-oriented middleware instead of synchronous request/reply.
+    activation_evidence:
+      - Cascading failure through synchronous call chains is a demonstrated or unacceptable risk.
+      - The workflow tolerates asynchronous completion and its business consequences.
+      - Exception queues, late responses, callbacks, and reconciliation can be owned.
+    costs:
+      - Inherently harder asynchronous design - completion, ordering, duplicates, and recovery must be explicit.
+      - Middleware infrastructure to operate, monitor, and secure.
+      - Business decisions about failure semantics that synchronous calls never surfaced.
+    contraindications:
+      - The caller needs an immediate answer with atomic completion.
+      - No owner exists for exception queues and reconciliation.
+      - The decision is being made to look modern rather than from failure analysis.
+    reversal_cost:
+      level: high
+      exit_path: Reintroduce synchronous calls flow by flow; the change ripples into every part of the system that adopted asynchronous semantics.
+      cost_drivers: [persisted message schemas, workflow logic built on eventual completion, operational tooling around queues]
+    appropriate_scale: [subsystem, system]
+    operational_consequences:
+      - Queues, dead-letter handling, replay, and lag monitoring become permanent operational obligations.
+      - Message-oriented topologies cannot produce synchronous cascading failure, exchanging it for eventual-consistency management.
+    preservation_boundaries:
+      - User-visible completion semantics change only with business authorization.
+      - Delivery, ordering, and duplicate semantics are explicit contracts, not middleware defaults.
+    alternatives:
+      - operations-circuit-breaker
+      - operations-back-pressure
+      - synchronous request/reply retained with timeout and breaker protection
+    related_concepts:
+      - architecture-interaction-synchrony
+      - architecture-event-temporal-semantics
+      - operations-cascading-failure-halting
+    source_support:
+      - source_id: SRC-RI
+        relationship: direct_support
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md :: Decoupling Middleware"
+        contribution: Lays out the coupling spectrum from RPC-style synchronous calls - shock amplifiers, including JSON over HTTP - to message queues and pub/sub that cannot produce cascading failure, and marks the switch as a last-responsible-moment, high-switching-cost decision requiring business involvement in failure semantics.
+
+  - id: operations-shed-load
+    candidate_id: TECH-OPS-009
+    title: Shed load at the system edge
+    non_universality: Shedding models TCP's listen-queue refusal at the application level; it belongs at the uncontrolled edge, with back pressure preferred inside trusted system boundaries.
+    problem_solved: Keep a service inside its performance obligations under uncontrollable external demand by refusing excess work instead of degrading for everyone.
+    activation_evidence:
+      - Demand originates outside the system's control and can exceed any provisioned capacity.
+      - The service's own SLA-relative performance defines when load is too high.
+      - Load balancers or callers can absorb quick rejections.
+    costs:
+      - Refused requests are lost business unless callers retry successfully elsewhere or later.
+      - SLA self-monitoring and rejection mechanics - semaphores or health-check-driven 503s - to build and tune.
+    contraindications:
+      - Demand is internal and controllable, where back pressure through blocking is cheaper and lossless.
+      - Every request is irreplaceable and refusal is contractually barred - capacity must then lead.
+    reversal_cost:
+      level: low
+      exit_path: Remove shedding thresholds; the service returns to degrading under overload.
+      cost_drivers: [caller retry behavior tuned to rejections, capacity plans assuming shed traffic]
+    appropriate_scale: [service-edge, load-balanced-tier]
+    operational_consequences:
+      - Load balancers become shock absorbers, returning quick 503-style rejections when first-tier health checks fail.
+      - Shed rates are a first-class operational signal of demand exceeding capacity.
+    preservation_boundaries:
+      - Accepted work still completes within obligations; shedding protects the served population.
+      - Rejection signaling is honest - no fake success for dropped work.
+    alternatives:
+      - operations-back-pressure
+      - operations-handshaking
+      - operations-fail-fast
+    related_concepts:
+      - operations-load-shedding
+      - operations-capacity-ratio-realism
+      - operations-cascading-failure-halting
+    source_support:
+      - source_id: SRC-RI
+        relationship: direct_support
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md :: Shed Load"
+        contribution: Argues no system can out-scale external demand, defines load-is-too-high by the service's own SLA-relative performance, offers the semaphore-or-503 mechanisms with load balancers as shock absorbers, and positions shedding as secondary to back pressure inside system boundaries.
+
+  - id: operations-back-pressure
+    candidate_id: TECH-OPS-010
+    title: Back pressure through bounded queues
+    non_universality: Blocking producers is safe only within a trusted boundary that can tolerate the slowdown; at the uncontrolled edge the same fullness must convert to shedding instead.
+    problem_solved: Keep response time finite by making every queue finite and choosing its full behavior deliberately - drop, refuse, or block the producer so slowdown propagates upstream.
+    activation_evidence:
+      - Little's law pressure - unbounded queues drive response time toward infinity under sustained excess arrival.
+      - Producers and consumers share a trust boundary where blocking the producer is acceptable.
+      - Monitoring can distinguish transient pressure from a broken consumer.
+    costs:
+      - Producers must handle blocking or rejection, including converting blocked outbound calls to timeouts, 503s, or 202-accepted at the edge.
+      - Queue sizing and full-behavior policy per queue - drop-oldest, drop-newest, refuse, or block.
+    contraindications:
+      - Producers outside the trust boundary that cannot be blocked - shed at the edge instead.
+      - Workloads where dropping aged data is correct and simpler than propagating pressure.
+    reversal_cost:
+      level: low-to-moderate
+      exit_path: Rebound or unbound the queues; consumers return to absorbing demand until they fail.
+      cost_drivers: [producer code written against blocking semantics, capacity assumptions downstream]
+    appropriate_scale: [queue, subsystem, within-system-boundary]
+    operational_consequences:
+      - Queue depth and blocking time become the leading indicators of saturation.
+      - Persistent back pressure signals a broken or undersized consumer, not a tuning knob.
+    preservation_boundaries:
+      - Chosen full behavior is explicit per queue; silent unbounded growth is never the default.
+      - Drop policies must respect data-loss contracts - drop-oldest suits rapidly aging data only.
+    alternatives:
+      - operations-shed-load
+      - operations-decoupling-middleware
+      - capacity increase justified by measured demand
+    related_concepts:
+      - operations-load-shedding
+      - performance-earned-bounded-concurrency
+      - performance-resource-lifecycle
+      - operations-bounded-accumulation
+    source_support:
+      - source_id: SRC-RI
+        relationship: direct_support
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md :: Create Back Pressure"
+        contribution: Derives from Little's law that unbounded queues drive response time toward infinity, enumerates the four full-queue options, prescribes back pressure within a trusted boundary with async handling so blocked outbound calls convert to timeouts, 503, or 202 at the edge, and requires monitoring to distinguish transient pressure from a broken consumer.
+
+  - id: operations-governor
+    candidate_id: TECH-OPS-011
+    title: Governor on automated actions
+    non_universality: A governor deliberately slows automation below its technical capability; it is warranted where mistaken automated action outpaces human perception, not on every actuator.
+    problem_solved: Rate-limit automated actions with a stateful, time-aware, asymmetric resistance curve so humans have time to perceive and intervene before automation completes a mistake at machine speed.
+    activation_evidence:
+      - Automation can take destructive or hard-to-reverse actions - shutting down, deleting, blocking - faster than humans can react.
+      - A defined safe range exists outside which increasing resistance should apply.
+      - Monitoring and alerting can surface governed actions for human judgment.
+    costs:
+      - Slower automated response in genuine emergencies within unsafe directions.
+      - State and time-awareness to implement and test - the governor itself is stateful machinery.
+    contraindications:
+      - Actions that only add capacity or restore redundancy, where speed is the point and risk is asymmetric the other way.
+      - No human is available to use the time the governor buys.
+    reversal_cost:
+      level: low
+      exit_path: Remove rate limits and let automation act at full speed under its other safeguards.
+      cost_drivers: [operational procedures tuned to governed pacing, alert routing built on governor signals]
+    appropriate_scale: [control-plane, automated-actuator]
+    operational_consequences:
+      - Governed slowdowns must page humans - the mechanism exists to buy time for situational judgment, wired to monitoring and alerting.
+      - The response curve is U-shaped between competing safety definitions such as availability versus cost.
+    preservation_boundaries:
+      - Human intervention capability within the bought time.
+      - Asymmetry - resistance grows in unsafe directions such as shutdown, deletion, and blocking.
+    alternatives:
+      - hard minimum-capacity floors and change-size confirmation thresholds
+      - manual approval gates for destructive actions
+      - operations-automation-safeguards applied without rate limiting
+    related_concepts:
+      - operations-automation-safeguards
+      - agent-conduct-authority-bounded-action
+    source_support:
+      - source_id: SRC-RI
+        relationship: direct_support
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md :: Governor"
+        contribution: Defines the governor's properties - stateful, time-aware, asymmetric, with a U-shaped response curve between competing safety definitions such as availability versus cost - and its purpose of slowing automation enough for human situational judgment, wired to monitoring and alerting.
+
+  - id: operations-dynamic-service-discovery
+    candidate_id: TECH-OPS-012
+    title: Dynamic service discovery
+    non_universality: Discovery pays off with many services, high instance churn, and a platform team to run it; small low-change estates are better served by static DNS with logical names.
+    problem_solved: Locate service instances when the rate of instance change defeats static configuration - announcement into dynamic load-balancer pools plus caller lookup.
+    activation_evidence:
+      - High instance churn from containers, autoscaling, or cloud replacement.
+      - Too many services for DNS entries and static maps to be maintained by hand.
+      - A platform or operations team exists to run the discovery service itself.
+    costs:
+      - A new failure-prone operational service that every caller depends on.
+      - Partition behavior pushed onto clients - CP systems such as ZooKeeper go unavailable, AP systems such as Consul serve stale data.
+      - Client-side caching and fallback logic required for discovery outages.
+    contraindications:
+      - Few services with low change rates - static DNS with logical names is cheaper and more robust.
+      - No operational ownership for the discovery tier.
+      - Rolling your own discovery service instead of adopting a proven one.
+    reversal_cost:
+      level: high
+      exit_path: Replace with static DNS or another discovery tool; replacing a discovery mechanism has wide-reaching consequences for every client.
+      cost_drivers: [client libraries embedding discovery protocols, deployment automation built on registration, no plug-and-play replaceability between tools]
+    appropriate_scale: [multi-service-system, elastic-fleet]
+    operational_consequences:
+      - The discovery service becomes availability-critical infrastructure with its own monitoring, capacity, and upgrade obligations.
+      - CP-versus-AP behavior under the inevitable network partition is a client-visible semantic, not an implementation detail.
+    preservation_boundaries:
+      - Callers keep working through discovery outages via cached last-known-good data.
+      - Registration reflects genuine readiness, integrating with health-check semantics.
+    alternatives:
+      - static DNS with logical service names
+      - load balancers with maintained pool configuration
+      - operations-handshaking
+    related_concepts:
+      - architecture-distribution-readiness
+      - operations-ephemeral-instance-design
+      - operations-liveness-by-external-observation
+    source_support:
+      - source_id: SRC-RI
+        relationship: direct_support
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/015-chapter-9-interconnect.md :: Discovering Services"
+        contribution: Defines service discovery as two responsibilities - instance announcement into dynamic load-balancer pools and caller lookup - warns that discovery is itself a failure-prone service requiring client-side caching and fallback, differentiates CP versus AP behavior under the inevitable network partition, and advises against rolling your own.
+      - source_id: SRC-RI
+        relationship: direct_support
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/015-chapter-9-interconnect.md :: Solutions at Different Scales"
+        contribution: Calibrates activation - dynamic discovery pays off with many services, high rates of instance change, and a platform or operations team to amortize its cost, while small low-change teams are better served by static DNS with logical names.

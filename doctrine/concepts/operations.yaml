@@ -1,0 +1,1155 @@
+schema_version: agent-doctrine-concepts/1
+concepts:
+  - id: operations-production-readiness
+    title: Evaluate design choices against production life, not feature completion
+    category: architecture
+    claim: Feature completion and QA passage do not establish production readiness; design and architecture choices must be evaluated against operational cost, downtime exposure, and multi-year life in production, not only implementation cost.
+    decision_rule: When comparing design alternatives, include operational consequences - downtime per release, incident exposure, monitoring and recovery cost - as evidenced inputs alongside implementation cost; where the operational cost model is unevidenced, gather evidence or narrow the claim rather than gold-plate.
+    why_it_matters: Software designed only to pass QA trades one-time development savings for recurring operational cost, and the least-informed early decisions are the hardest to reverse in production.
+    applicable_when: [comparing design or architecture alternatives for deployed systems, planning work on revenue- or availability-critical software, reviewing a proposal justified by development convenience alone]
+    not_applicable_when: [throwaway prototypes or analysis code that will never run unattended in production]
+    required_evidence: [expected production lifetime and release cadence, downtime or incident cost model with an owner, operational constraints of the deployment environment]
+    insufficient_evidence: [feature-complete status and passing tests, an ROI narrative without an evidenced cost model, generic best-practice appeals]
+    required_inputs: [candidate designs and their operational consequences, deployment and operations context]
+    expected_outputs: [design comparison that names operational costs and risks, readiness gaps with owners, or an explicit accepted tradeoff]
+    preservation_boundaries: [accepted behavior and contracts, delivery commitments not traded away without authority]
+    safe_actions: [request the downtime or operations cost evidence behind a claim, name the operational consequences of each alternative, defer gold-plating when no evidence supports it]
+    unsafe_actions: [treat QA passage as production readiness, justify speculative infrastructure with an assumed cost model, trade recurring operational cost for one-time development savings silently]
+    common_failure_modes: [feature-complete declared production-ready, operational cost discovered after release, resume-driven overbuilding defended as readiness]
+    counterexamples: [A short-lived internal migration script does not warrant production-grade operational design merely because it touches production data once.]
+    interactions: [Frames the operations family; universal-evidence-before-intervention still governs whether a claimed cost model is evidence or assumption.]
+    source_support:
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/005-chapter-1-living-in-production.md :: Aiming for the Right Target"
+        contribution: Argues that software designed to pass QA tells you little about years of production life and introduces design for production by analogy to design for manufacturability.
+        relationship: direct_support
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/005-chapter-1-living-in-production.md :: A Million Dollars Here, a Million Dollars There"
+        contribution: Quantifies design decisions as financial decisions - trading a one-time development cost for a recurring operational cost such as per-release downtime is usually the wrong trade - with a concrete downtime-cost example.
+        relationship: refinement
+    confidence: strong
+    roles: [architecture-agent, review-agent, coding-agent, repository-assessment-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, distributed-system, monolith, deployed systems]
+    retrieval_terms: [production readiness, design for production, operational cost, downtime cost, feature complete]
+    routing:
+      activate_for_roles: [architecture-agent, review-agent, coding-agent, repository-assessment-agent]
+      activate_for_tasks: [architecture-assessment, plan-implementation, operational-hardening, plan-change]
+      activate_for_repository_signals: [deployment pipeline, production incident history, availability SLO, release checklist]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [operational, availability, cost]
+      exclude_when: [the artifact never runs unattended in production]
+      prerequisites: [deployment context and operational cost evidence]
+      retrieval_priority: high
+      retrieval_budget_hint: 340
+      related_concepts: [operations-designed-failure-modes, operations-transparency-by-design, universal-evidence-before-intervention]
+
+  - id: operations-designed-failure-modes
+    title: Design failure modes deliberately
+    category: architecture
+    claim: Because faults can never be fully prevented, a system's failure modes must be deliberately designed - containment boundaries chosen like crumple zones to protect indispensable features - or dangerous unplanned failure modes will emerge on their own.
+    decision_rule: Accept that faults will occur; trace the fault-error-failure chain for representative faults, choose the abstraction level (pool configuration, timeouts, partitioning, messaging) at which each crack is stopped, and loosen coupling where failure events must stay independent.
+    why_it_matters: Tightly coupled layers make failure events non-independent, so a single fault accelerates through the system instead of being absorbed at a designed boundary.
+    applicable_when: [designing or reviewing systems with external dependencies or shared resources, deciding where to contain a class of faults, post-incident hardening]
+    not_applicable_when: [isolated pure computation with no shared resources or callers to protect]
+    required_evidence: [representative fault scenarios and their propagation paths, indispensable features ranked by business impact, coupling map across layers and integration points]
+    insufficient_evidence: [belief that review and testing will prevent the bug class, absence of past incidents, a redundancy claim without failure-mode analysis]
+    required_inputs: [system topology and dependency map, business impact per capability, available containment mechanisms]
+    expected_outputs: [named containment boundaries with the faults they stop, accepted residual failure modes, coupling changes with rationale]
+    preservation_boundaries: [indispensable features under partial failure, data integrity across containment boundaries, accepted behavior of surviving components]
+    safe_actions: [walk one real failure through every level where it could have been stopped, choose containment at the cheapest effective level, record which failures are deliberately not contained]
+    unsafe_actions: [assume prevention makes containment unnecessary, add redundancy without analyzing shared failure modes, let failure modes emerge by accident]
+    common_failure_modes: [crack propagation through tight coupling, containment declared but never exercised, every fault treated as equally worth stopping]
+    counterexamples: [A single-user CLI may legitimately let any fault terminate the process; designed containment is for systems with consumers to protect.]
+    interactions: [System-level complement of implementation-fail-fast-or-recover, which selects the per-call policy; the mechanism catalog lives in the operations technique records.]
+    conflicts: [conflict-fault-tolerance-vs-let-it-crash]
+    source_support:
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/008-chapter-3-stabilize-your-system.md :: Failure Modes"
+        contribution: States that accepting the inevitability of failure is what enables designing the system's reaction to specific failures, introducing crumple zones and crackstoppers as the design stance.
+        relationship: direct_support
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/008-chapter-3-stabilize-your-system.md :: Chain of Failure"
+        contribution: Supplies the fault-error-failure chain vocabulary and the observation that coupled layers make failure events non-independent, so tight coupling accelerates crack propagation.
+        relationship: refinement
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/008-chapter-3-stabilize-your-system.md :: Stopping Crack Propagation"
+        contribution: Walks one real failure through every abstraction level at which the crack could have been stopped - pool configuration, socket timeouts, service partitioning, request/reply messaging - showing looser coupling acts as a shock absorber.
+        relationship: refinement
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/007-chapter-2-case-study.md :: An Ounce of Prevention?"
+        contribution: Argues from the airline outage that bugs of this class cannot all be prevented by review or testing, so they must be survived, and reframes the goal as preventing bugs in one system from propagating to others.
+        relationship: corroboration
+    confidence: strong
+    roles: [architecture-agent, review-agent, debugging-and-repair-agent, coding-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, distributed-system, monolith]
+    retrieval_terms: [failure mode, crumple zone, crackstopper, fault error failure, containment boundary, crack propagation]
+    routing:
+      activate_for_roles: [architecture-agent, review-agent, debugging-and-repair-agent, coding-agent]
+      activate_for_tasks: [design-failure-mode, resilience-review, architecture-review, stability]
+      activate_for_repository_signals: [external dependency, shared resource pool, incident postmortem, redundancy claim]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [availability, operational, correctness]
+      exclude_when: [isolated computation with no consumers or shared resources]
+      prerequisites: [dependency topology and business impact evidence]
+      retrieval_priority: high
+      retrieval_budget_hint: 420
+      related_concepts: [operations-cascading-failure-halting, operations-integration-point-distrust, implementation-fail-fast-or-recover, operations-production-readiness]
+
+  - id: operations-integration-point-distrust
+    title: Treat every integration point as a future failure
+    category: architecture
+    claim: Every out-of-process integration point - socket, HTTP call, database query, vendor client library - will eventually hang, fail slowly, or violate its protocol, so each one requires explicit timeouts, failure-mode handling, and validation of responses as untrusted data.
+    decision_rule: For each remote call, specify its timeout, slow-response behavior, and protocol-violation handling; treat the response as data to validate rather than a trusted object, and verify the failure behavior with fault injection rather than functional tests alone.
+    why_it_matters: Integration points are the leading killer of systems, and slow or protocol-violating failures are worse than fast clean ones because they tie up caller resources.
+    applicable_when: [writing or reviewing code that calls another process or service, integrating a vendor client library, diagnosing hangs near a remote dependency]
+    not_applicable_when: [pure in-process computation with no out-of-process calls]
+    required_evidence: [inventory of remote calls with their timeout and failure behavior, evidence of how each dependency fails - refused hung slow or malformed, response validation at the boundary]
+    insufficient_evidence: [the dependency has an SLA, functional tests against a healthy dependency, vendor documentation promising reliability]
+    required_inputs: [integration inventory, caller latency and resource budgets, dependency failure characteristics]
+    expected_outputs: [per-integration timeout and failure contract, validated response handling, fault-injection or harness coverage decision]
+    preservation_boundaries: [caller resource budgets under dependency failure, existing integration contracts, data integrity when responses are partial or malformed]
+    safe_actions: [add explicit timeouts to every blocking remote call, validate responses as untrusted data before use, exercise integrations against a hostile test harness under load]
+    unsafe_actions: [call a remote dependency with no timeout, deserialize responses into trusted objects unchecked, assume a vendor library fails fast]
+    common_failure_modes: [indefinite block inside a vendor library, slow dependency exhausting caller threads, protocol violation crashing the parser, cascading hang through undefended calls]
+    counterexamples: [A deliberate fire-and-forget notification with accepted loss tolerance does not need a response contract, but it still needs a timeout on the send.]
+    interactions: [Counters are catalogued as operations technique records - timeouts, circuit breaker, decoupling middleware, and the fault-injecting test harness.]
+    source_support:
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Integration Points"
+        contribution: Names integration points the number-one killer of systems and details their failure physics - slow socket failures worse than fast ones, HTTP-level protocol violations, vendor client libraries that block indefinitely - recommending responses be treated as data until validated.
+        relationship: direct_support
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Countering Integration Point Problems"
+        contribution: Prescribes the counters for integration point failures - circuit breaker and decoupling middleware plus a controllable per-integration test harness exercised under substantial load - rather than trusting functional tests.
+        relationship: refinement
+    confidence: strong
+    roles: [coding-agent, architecture-agent, review-agent, debugging-and-repair-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, distributed-system, monolith]
+    retrieval_terms: [integration point, remote call, timeout, vendor library, protocol violation, untrusted response]
+    routing:
+      activate_for_roles: [coding-agent, architecture-agent, review-agent, debugging-and-repair-agent]
+      activate_for_tasks: [integration-design, vendor-integration, implement-I-O, review-I-O, dependency-review]
+      activate_for_repository_signals: [HTTP client, socket call, database driver, vendor SDK, missing timeout]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [availability, operational, reliability, correctness]
+      exclude_when: [no out-of-process call exists in the change surface]
+      prerequisites: [integration inventory]
+      retrieval_priority: high
+      retrieval_budget_hint: 400
+      related_concepts: [operations-cascading-failure-halting, operations-designed-failure-modes, architecture-distribution-readiness, implementation-explicit-failure-policy]
+
+  - id: operations-cascading-failure-halting
+    title: Halt cascading failures at the caller's boundary
+    category: architecture
+    claim: A failure in a called system becomes the caller's failure unless the caller stops it at the boundary; drained resource pools and calls without timeouts are the primary transmission mechanisms, and high fan-in services deserve proportionally more protection and scrutiny.
+    decision_rule: Distinguish cross-layer cascades from within-layer chain reactions; defend every crossing with timeouts and circuit breakers, treat aggressive or speculative retries as accelerants, and fix the shared defect behind a chain reaction rather than only adding capacity.
+    why_it_matters: Cracks jump layers through exhausted pools and unbounded waits, so one sick dependency can take down every caller that failed to defend itself.
+    applicable_when: [reviewing services that call other services, diagnosing an outage that spread across layers, designing retry policies]
+    not_applicable_when: [a single-process system with no downstream dependencies]
+    required_evidence: [pool exhaustion and timeout behavior at each boundary, fan-in analysis of shared services, retry policy and its amplification behavior]
+    insufficient_evidence: [downstream health dashboards alone, an assumption that load balancers contain failure, retries added without idempotency or backoff analysis]
+    required_inputs: [call graph with fan-in weights, resource pool configuration, failure history of dependencies]
+    expected_outputs: [boundary defense plan per crossing, retry policy with backoff and limits, chain-reaction root-cause disposition]
+    preservation_boundaries: [caller availability under dependency failure, resource budgets, accepted degraded modes]
+    safe_actions: [add timeouts and breakers at layer crossings, bound and jitter retries, prioritize protection around high fan-in services, fix the load-related defect exposed by a chain reaction]
+    unsafe_actions: [retry immediately and indefinitely into a sick dependency, let one drained pool block all request threads, rely on autoscaling to outrun a chain reaction]
+    common_failure_modes: [retry storm amplifying an outage, pool drained by one slow dependency, surviving nodes collapsing in sequence after one node dies]
+    counterexamples: [Within one process a shared in-memory fault is a defect to fix, not a cascade to contain; containment applies at process and service crossings.]
+    interactions: [Chain reaction - within a layer under load - and cascade - across layers - stay distinct; bulkheads and autoscaling only slow a chain reaction whose shared defect must be fixed.]
+    source_support:
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Cascading Failures"
+        contribution: Defines cascading failure as a crack jumping layers, identifies exhausted resource pools, integration points without timeouts, and aggressive or speculative retries as the jump mechanisms, and names timeouts and circuit breakers as the effective counters.
+        relationship: direct_support
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Chain Reactions"
+        contribution: Describes the intra-layer variant - in a homogeneous load-balanced farm one node's death raises survivors' load and failure probability, accelerating collapse; the shared defect must be fixed, with bulkheads and autoscaling only slowing the reaction.
+        relationship: refinement
+    confidence: strong
+    roles: [architecture-agent, review-agent, debugging-and-repair-agent, performance-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, distributed-system]
+    retrieval_terms: [cascading failure, chain reaction, retry storm, pool exhaustion, fan-in, boundary defense]
+    routing:
+      activate_for_roles: [architecture-agent, review-agent, debugging-and-repair-agent, performance-agent]
+      activate_for_tasks: [resilience-review, distributed-review, analyze-incident, stability]
+      activate_for_repository_signals: [service call chain, connection pool, retry logic, load balancer farm, outage spanning layers]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [availability, operational, reliability]
+      exclude_when: [no downstream dependency exists]
+      prerequisites: [call graph and pool configuration evidence]
+      retrieval_priority: high
+      retrieval_budget_hint: 400
+      related_concepts: [operations-integration-point-distrust, operations-designed-failure-modes, operations-load-shedding]
+
+  - id: operations-load-shedding
+    title: Refuse work fast when obligations cannot be met
+    category: performance
+    claim: A slow response is more damaging than a fast failure because it ties up resources in caller and provider alike; when demand exceeds timely capacity a service must refuse work quickly and as close to the system edge as possible, because queues backing up across tiers are how systems fail.
+    decision_rule: Monitor the service's own response time against its obligations and start refusing work when it exceeds them; shed at the edge via load balancers and health checks that reflect measured response time and dependency state, size listen queues from allowed residence time, and prefer quick rejection over slow timeout.
+    why_it_matters: Every failing system starts with a queue backing up somewhere; sockets, TCP buffers, and listen queues make response degrade nonlinearly exactly at peak load while caller retries make it worse.
+    applicable_when: [services facing demand they do not control, designing health checks and load-balancer integration, diagnosing latency collapse at peak load]
+    not_applicable_when: [closed-loop batch workloads where the producer can simply be paused]
+    required_evidence: [measured residence time - queue time plus processing time - not processing time alone, response-time obligation or SLA with an owner, queue and listen-backlog configuration at each tier]
+    insufficient_evidence: [average latency over completed requests, CPU utilization alone, a health check that only proves the process is running]
+    required_inputs: [demand profile and capacity boundary, service obligations, edge and tier topology]
+    expected_outputs: [edge rejection policy wired to real health, queue sizing from residence-time budgets, degradation behavior visible to operations]
+    preservation_boundaries: [work already accepted, correctness of rejection signaling to callers, fairness policy where one exists]
+    safe_actions: [return quick 503-style rejections from the first tier when unhealthy, incorporate own response time and required-dependency state into health checks, bound every queue]
+    unsafe_actions: [degrade slowly instead of refusing, hide saturation behind averages of completed requests, buffer unbounded work to avoid visible rejections]
+    common_failure_modes: [latency creep until timeout storms, queues absorbing demand until every tier is saturated, health checks passing while all workers are blocked]
+    counterexamples: [Inside a trusted system boundary, blocking producers via back pressure is preferred to dropping work; shedding belongs at the uncontrolled edge.]
+    interactions: [Mechanisms are the operations shed-load and back-pressure technique records; residence-time measurement discipline comes from performance-metric-semantics.]
+    source_support:
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/015-chapter-9-interconnect.md :: Preventing Disaster"
+        contribution: Prescribes shedding load at the edge - load balancers returning 503 when first-tier health checks fail, health checks that incorporate the service's own measured response time and required-dependency state, listen queues sized from allowed residence time, quick rejection preferred over slow timeout.
+        relationship: direct_support
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/015-chapter-9-interconnect.md :: How Systems Fail"
+        contribution: Explains the failure mechanism the rule counters - every failing system starts with a queue backing up somewhere, and socket, TCP-buffer, and listen-queue exhaustion makes response degrade nonlinearly exactly at peak load, provoking caller retries that worsen it.
+        relationship: direct_support
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Slow Responses"
+        contribution: Establishes that slow responses - from excess demand, leak-driven garbage collection, or TCP stalls - propagate upward as a gradual cascading failure and recommends systems monitor their own SLA compliance and start refusing work when they exceed it.
+        relationship: direct_support
+    confidence: strong
+    roles: [architecture-agent, performance-agent, review-agent, debugging-and-repair-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, distributed-system]
+    retrieval_terms: [load shedding, slow response, residence time, queue backlog, health check, refuse work, saturation]
+    routing:
+      activate_for_roles: [architecture-agent, performance-agent, review-agent, debugging-and-repair-agent]
+      activate_for_tasks: [capacity-planning, resilience-review, operational-hardening, stability]
+      activate_for_repository_signals: [load balancer, health check endpoint, listen queue, latency SLO, timeout storm]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [availability, performance, operational]
+      exclude_when: [demand is fully controlled by a pausable producer]
+      prerequisites: [response-time obligation and residence-time measurement]
+      retrieval_priority: high
+      retrieval_budget_hint: 430
+      related_concepts: [operations-cascading-failure-halting, operations-capacity-ratio-realism, performance-metric-semantics, performance-measurable-objective]
+
+  - id: operations-liveness-by-external-observation
+    title: Judge liveness by external observation, not process checks
+    category: architecture
+    claim: A running process is not a live system; the dominant failure mode is a process whose threads are all blocked, so health must be judged by externally executed synthetic transactions and business-level metrics, not by process, port, or status-page checks.
+    decision_rule: Monitor what users experience - synthetic transactions exercising real request paths and leading-indicator business counters - and treat internal process checks as supplementary; when latency is high while CPU is low, suspect blocked threads and take thread dumps before restarting.
+    why_it_matters: Monitoring that probes only a status page can report healthy while every request-handling thread is blocked, leaving the outage invisible until users report it.
+    applicable_when: [designing monitoring and alerting, reviewing health-check semantics, diagnosing a system that is up but unresponsive]
+    not_applicable_when: [short-lived batch jobs whose success is judged by their output]
+    required_evidence: [synthetic-transaction coverage of critical request paths, business metrics with expected rhythms, thread or task-level observability for hang diagnosis]
+    insufficient_evidence: [process liveness or port checks, a status page served by a thread pool separate from request handling, CPU and memory graphs alone]
+    required_inputs: [critical user transactions, monitoring infrastructure capabilities, baseline rhythms of business metrics]
+    expected_outputs: [externally observed liveness definition, alert conditions tied to user-visible behavior, hang-diagnosis runbook hooks]
+    preservation_boundaries: [production behavior under monitoring load, privacy of synthetic and real transaction data]
+    safe_actions: [add synthetic transactions for revenue-critical paths, alert on business-metric anomalies as leading indicators, keep a reserved admin capacity so diagnosis stays possible during a hang]
+    unsafe_actions: [declare health from process existence, restart a hung system before capturing thread dumps when capture is cheap and scripted, monitor only infrastructure metrics]
+    common_failure_modes: [status page green during a total hang, alert fatigue from infrastructure noise while user impact goes unalerted, blocked threads misread as low load]
+    counterexamples: [A stateless worker consuming a queue may be adequately monitored through queue depth and processing rate rather than synthetic transactions.]
+    interactions: [Diagnostic follow-through belongs to debugging-hypothesis-led-investigation; the design-time obligation is operations-transparency-by-design.]
+    source_support:
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Blocked Threads"
+        contribution: Reports that most observed system failures are hangs rather than crashes - every thread blocked on an impossible outcome - and argues for external synthetic-transaction monitoring and leading-indicator business counters over internal process monitoring.
+        relationship: direct_support
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/007-chapter-2-case-study.md :: The Outage"
+        contribution: Shows monitoring that only probed a status page reporting healthy while every request-handling thread was blocked, so the outage was invisible to internal checks.
+        relationship: corroboration
+    confidence: strong
+    roles: [architecture-agent, debugging-and-repair-agent, review-agent, performance-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, distributed-system]
+    retrieval_terms: [liveness, synthetic transaction, blocked threads, health check semantics, business metrics, hang]
+    routing:
+      activate_for_roles: [architecture-agent, debugging-and-repair-agent, review-agent, performance-agent]
+      activate_for_tasks: [design-observability, metric-review, analyze-incident, diagnose-defect]
+      activate_for_repository_signals: [status page, monitoring config, alert rules, hang report, low CPU high latency]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [availability, operational, evidence-quality]
+      exclude_when: [output-judged batch work with no liveness question]
+      prerequisites: [critical transaction inventory]
+      retrieval_priority: high
+      retrieval_budget_hint: 380
+      related_concepts: [operations-transparency-by-design, operations-restore-service-first, performance-metric-semantics, debugging-hypothesis-led-investigation]
+
+  - id: operations-capacity-ratio-realism
+    title: Evaluate stability at production multiplicity and capacity ratios
+    category: performance
+    claim: Stability properties change with instance counts and inter-layer capacity ratios that development and QA environments never reproduce; many-to-one relationships, point-to-point topologies, and shared resources must be evaluated at production multiplicity and designed - not tested - out.
+    decision_rule: Enumerate every many-to-one and point-to-point relationship at production instance counts; rank communication alternatives by cost at that scale, accept point-to-point only at small fixed scale, and build both sides of unbalanced front-end/back-end ratios to survive being overwhelmed rather than provisioning symmetric capacity.
+    why_it_matters: O(n^2) connection growth and shared-resource saturation emerge only at production scale, where the front end can always overwhelm the back end because their capacities are unbalanced by design.
+    applicable_when: [reviewing topology or communication choices for production scale, capacity planning across tiers, diagnosing failures that appear only in production]
+    not_applicable_when: [systems whose production multiplicity genuinely matches the development environment]
+    required_evidence: [production instance counts per layer, connection and shared-resource growth model at those counts, relative capacity of adjacent tiers, stress evidence beyond expected workload on the most expensive transactions]
+    insufficient_evidence: [QA passing at small scale, load tests at development multiplicity, symmetric capacity assumptions]
+    required_inputs: [deployment topology with counts, communication pattern inventory, per-transaction cost profile]
+    expected_outputs: [scale-viability verdict per relationship, communication choice with cost rationale, resilience obligations for both sides of unbalanced ratios]
+    preservation_boundaries: [correctness under production multiplicity, capital efficiency - symmetric overprovisioning is explicitly not the goal]
+    safe_actions: [compute connection counts at production scale before choosing point-to-point, stress the most expensive transactions well past expected load, protect the back end with handshaking and breakers instead of matching front-end capacity]
+    unsafe_actions: [extrapolate stability from QA multiplicity, keep point-to-point topology while instance counts grow unbounded, provision every tier to front-end peak as a substitute for resilience]
+    common_failure_modes: [connection explosion at rollout, shared resource saturating under production fan-in, back end collapsing under front-end surge]
+    counterexamples: [Point-to-point communication among a small fixed set of instances is explicitly fine; the defect class begins where multiplicity grows.]
+    interactions: [Shared-nothing pressure here participates in conflict-monolith-vs-distributed-services through that record's cost rules; the source itself invokes the simplest-thing rule for communication choice.]
+    conflicts: [conflict-monolith-vs-distributed-services]
+    source_support:
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Scaling Effects"
+        contribution: Shows how O(n^2) point-to-point connections and shared-resource saturation emerge only at production scale, and states this defect class cannot be tested out on small environments and must be designed out.
+        relationship: direct_support
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Unbalanced Capacities"
+        contribution: Adds the front-end/back-end ratio rule - the front end can always overwhelm the back end, so both sides must be built resilient and stress-tested beyond expected workload - while rejecting evenly matched capacity as a gross misuse of capital.
+        relationship: refinement
+    confidence: strong
+    roles: [architecture-agent, performance-agent, review-agent, repository-assessment-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, distributed-system]
+    retrieval_terms: [scaling effects, point-to-point, unbalanced capacities, production multiplicity, fan-in, capacity ratio]
+    routing:
+      activate_for_roles: [architecture-agent, performance-agent, review-agent, repository-assessment-agent]
+      activate_for_tasks: [capacity-planning, topology-selection, distributed-review, architecture-review]
+      activate_for_repository_signals: [instance count growth, point-to-point mesh, shared resource, tier capacity mismatch]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [availability, performance, operational, cost]
+      exclude_when: [production multiplicity matches the tested environment]
+      prerequisites: [production topology counts]
+      retrieval_priority: specialist
+      retrieval_budget_hint: 400
+      related_concepts: [operations-load-shedding, operations-cascading-failure-halting, architecture-distribution-readiness]
+
+  - id: operations-synchronized-demand-dispersion
+    title: Anticipate and disperse synchronized demand pulses
+    category: performance
+    claim: Synchronized stimuli - promotions and deep links, mass restarts, on-the-hour cron jobs, cache invalidation storms, and fixed retry intervals - concentrate demand into pulses that require far more than steady-state capacity; anticipate them and disperse the load with communication, waves, jitter, backoff, and pre-scaling.
+    decision_rule: Before any synchronized stimulus - marketing event, fleet restart, scheduled job, config push - estimate the pulse it creates; add jitter to periodic work, increasing backoff to retries, waves to fleet operations, and static fallback paths to promotions, and pre-scale where the pulse is known in advance.
+    why_it_matters: The organization can conspire against its own system - a marketing email or a midnight cron line can produce a dogpile no steady-state capacity plan survives.
+    applicable_when: [writing schedulers cron jobs or retry logic, planning fleet restarts or config pushes, preparing for traffic events, reviewing periodic batch work]
+    not_applicable_when: [demand is naturally uncorrelated and no synchronizing stimulus exists]
+    required_evidence: [inventory of synchronized stimuli and their timing, pulse magnitude estimate versus steady-state capacity, retry and schedule interval distributions]
+    insufficient_evidence: [steady-state capacity headroom alone, an assumption that caches absorb startup load, marketing plans not shared with engineering]
+    required_inputs: [schedule and retry configuration, event calendar and communication channels, restart and deployment procedures]
+    expected_outputs: [jittered schedules and backoff policies, wave plans for fleet operations, pre-scaling or fallback plans for known events]
+    preservation_boundaries: [work correctness under dispersion - jitter must not violate ordering or deadline contracts, accepted freshness of caches being warmed]
+    safe_actions: [randomize cron start times, replace fixed retry intervals with increasing backoff plus jitter, restart fleets in waves, serve static landing pages during promotion spikes]
+    unsafe_actions: [schedule identical work at round times across a fleet, retry on fixed intervals from many clients, invalidate a shared cache everywhere at once, restart everything simultaneously after an outage]
+    common_failure_modes: [dogpile at startup or midnight, thundering herd after cache flush, retry synchronization amplifying a blip into an outage]
+    counterexamples: [A deadline-driven regulatory batch that must run at a fixed time needs capacity for its pulse rather than dispersion.]
+    interactions: [Boot storms interact with operations-load-shedding at the edge; agents scheduling their own periodic work fall under this rule directly.]
+    source_support:
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Self-Denial Attacks"
+        contribution: Defines the self-denial attack - the organization conspiring against its own system via marketing events, deep links bypassing CDNs, and shared-resource hot spots - and prescribes communication, load-spreading waves, static landing pages, fallback modes, and pre-autoscaling.
+        relationship: direct_support
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Dogpile"
+        contribution: Adds the dogpile mechanism - startup and periodic load from boot storms, midnight cron, config pushes, and lockstep waits far exceeds steady state - and prescribes randomized slew and increasing backoff so callers desynchronize.
+        relationship: refinement
+    confidence: strong
+    roles: [coding-agent, architecture-agent, performance-agent, review-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, distributed-system, CLI]
+    retrieval_terms: [dogpile, self-denial attack, jitter, backoff, thundering herd, cron synchronization, boot storm]
+    routing:
+      activate_for_roles: [coding-agent, architecture-agent, performance-agent, review-agent]
+      activate_for_tasks: [operational-hardening, capacity-planning, resilience-review]
+      activate_for_repository_signals: [cron schedule, retry interval, fleet restart script, cache invalidation, scheduled batch]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [availability, operational, performance]
+      exclude_when: [no synchronizing stimulus exists]
+      prerequisites: [schedule and retry inventory]
+      retrieval_priority: high
+      retrieval_budget_hint: 380
+      related_concepts: [operations-load-shedding, operations-capacity-ratio-realism, operations-automation-safeguards]
+
+  - id: operations-automation-safeguards
+    title: Bound automation with safeguards proportional to its mechanical advantage
+    category: agent-conduct
+    claim: Control-plane automation acting on a mistaken sensed state or a mistaken desired state amplifies failure at machine speed; automated actuators need sanity bounds on their own observations, rate limits and minimum-capacity floors on destructive change, hysteresis, and human confirmation when observed and expected state diverge widely.
+    decision_rule: Give every automated actuator explicit safeguards - distrust observations implying massive simultaneous failure, remove capacity slowly while adding it fast, refuse changes below a minimum-capacity floor, pause for human confirmation beyond a large-change threshold, and account for actuation lag - and treat resulting outages as system failures rather than operator error.
+    why_it_matters: Automation applies mechanical advantage without judgment, so a small sensing or intent error becomes a fleet-wide outage faster than any human can perceive and intervene.
+    applicable_when: [building or reviewing autoscalers deployment automation or service-discovery reactions, designing any automated actuator that can remove capacity or delete data, an autonomous agent executing bulk operational actions]
+    not_applicable_when: [automation that only reports and recommends without actuating]
+    required_evidence: [enumerated failure modes for wrong sensed state wrong desired state and impossible computed state, defined safe ranges rate limits and floors, escalation path when observation and expectation diverge]
+    insufficient_evidence: [the automation passed tests under correct inputs, a rollback script exists, human-on-call as the only safeguard]
+    required_inputs: [actuator inventory with blast radius, sensing sources and their failure modes, authority boundaries for destructive actions]
+    expected_outputs: [safeguard specification per actuator, confirmation thresholds and owners, postmortem framing that treats automation-amplified error as system failure]
+    preservation_boundaries: [minimum viable capacity, human ability to perceive and intervene, evidence trails of automated decisions]
+    safe_actions: [distrust sensor readings that report most of the fleet unavailable, start fast but stop slowly, signal for confirmation on large state gaps, detect runaway actuation such as exploding instance counts]
+    unsafe_actions: [let automation remove capacity as fast as it computes, act on a single sensing source for destructive decisions, blame the operator for automation-amplified failure, pre-script confirmations that were meant to be human judgments]
+    common_failure_modes: [autoscaler killing a healthy fleet on bad telemetry, desired-state engine converging to an erroneous small target, service-discovery partition triggering mass deregistration]
+    counterexamples: [An automation that only widens capacity or restores redundancy may safely act fast; asymmetry of risk justifies asymmetry of safeguards.]
+    interactions: [Applies agent-conduct-authority-bounded-action to operational actuators - automation should do repetitive fast tasks while humans hold whole-situation judgment; the governor technique record supplies the rate-limiting mechanism.]
+    source_support:
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Force Multiplier"
+        contribution: Analyzes autoscaler and service-discovery outages to show automation failure modes - wrong sensed state, wrong desired state, impossible computed state - and lists safeguards including distrusting observations reporting mass unavailability, stopping slowly, signaling humans on large gaps, and accounting for actuation lag.
+        relationship: direct_support
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/016-chapter-10-control-plane.md :: Mechanical Advantage"
+        contribution: Uses the 2017 AWS S3 and 2016 Reddit outages to derive concrete safeguards - slow down capacity removal, refuse changes below minimum capacity, pause for human confirmation beyond a large-change threshold, treat operator error as system failure, and study successes and near misses.
+        relationship: direct_support
+    confidence: strong
+    roles: [architecture-agent, review-agent, debugging-and-repair-agent, coding-agent]
+    languages: [language-independent]
+    repository_archetypes: [distributed-system, service, deployed systems]
+    retrieval_terms: [automation safeguards, force multiplier, autoscaler, desired state, minimum capacity, human confirmation, mechanical advantage]
+    routing:
+      activate_for_roles: [architecture-agent, review-agent, debugging-and-repair-agent, coding-agent]
+      activate_for_tasks: [operational-hardening, analyze-incident, plan-change]
+      activate_for_repository_signals: [autoscaler config, desired-state controller, deployment automation, bulk actuation script]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [operational, availability, safety, authority]
+      exclude_when: [automation only observes and recommends]
+      prerequisites: [agent-conduct-authority-bounded-action, actuator blast-radius inventory]
+      retrieval_priority: high
+      retrieval_budget_hint: 430
+      related_concepts: [agent-conduct-authority-bounded-action, operations-runtime-control-surface, operations-synchronized-demand-dispersion]
+
+  - id: operations-bounded-accumulation
+    title: Pair every accumulation with a recycling or bounding mechanism
+    category: architecture
+    claim: Every mechanism that accumulates a resource - database rows, log files, in-memory caches, sessions, queues - must be paired with a mechanism that recycles or bounds it, so the system runs at least a full release cycle without human fiddling; callers must likewise bound how much response they will accept.
+    decision_rule: For each accumulation point specify the purge rotation or size limit that balances it; require LIMIT-style bounds on queries and API responses because producers eventually return millions where hundreds were assumed; verify longevity with long-duration tests that include idle periods, since leaks and growth escape short test runs.
+    why_it_matters: Unbounded accumulation is a slow-motion outage - systems that need routine human fiddling to survive invite the unforced errors that logins to production produce.
+    applicable_when: [designing storage logging caching or session mechanisms, writing queries or API calls that fetch collections, reviewing longevity behavior of long-running services]
+    not_applicable_when: [short-lived processes whose accumulations die with the process]
+    required_evidence: [growth rate per accumulation point, recycling mechanism and its trigger, caller-side bounds on result sizes, longevity evidence covering at least a release cycle]
+    insufficient_evidence: [disk is currently large enough, tests passing on short runs, a purge script that requires manual execution]
+    required_inputs: [accumulation inventory, release-cycle length, data retention obligations]
+    expected_outputs: [bounded design per accumulation with owner, query and API result limits, longevity test plan including idle-period simulation]
+    preservation_boundaries: [data retention and audit obligations, correctness of purge boundaries, cache coherence within declared limits]
+    safe_actions: [pair data growth with purging log growth with rotation and caches with size limits, state in every protocol how much response the caller accepts, slack load scripts a few hours a day to catch idle-timeout failures]
+    unsafe_actions: [ship an accumulation with no balancing mechanism, issue unbounded queries against production-sized data, rely on scheduled human cleanup]
+    common_failure_modes: [connection or memory leak surfacing weeks after release, log partition filling, a query returning the whole table after years of growth, firewall idle timeout killing pooled connections]
+    counterexamples: [Append-only audit stores are deliberately unbounded; their growth is a sized and owned retention decision, not an accident.]
+    interactions: [The steady-state rule generalizes performance-resource-lifecycle beyond process resources; the memorable bound rule is that the only sensible numbers are zero, one, and lots.]
+    source_support:
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md :: Steady State"
+        contribution: States the steady-state rule - for every accumulation, a recycling mechanism - applying it to data purging, log rotation and shipping, and cache key-space and size limits, and ties routine human login to production to elevated risk of unforced errors.
+        relationship: direct_support
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Unbounded Result Sets"
+        contribution: Adds the caller-side bound - in any API or protocol the caller should state how much response it will accept, because data producers will eventually return millions of rows where hundreds were assumed - requiring LIMIT-style bounds and production-sized test data.
+        relationship: refinement
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/008-chapter-3-stabilize-your-system.md :: Extending Your Life Span"
+        contribution: Provides the longevity evidence - memory leaks and data growth rarely appear in short-lived dev or QA runs or time-boxed load tests, so dedicated long-duration tests with idle-period simulation are the only pre-production way to find them.
+        relationship: corroboration
+    confidence: strong
+    roles: [coding-agent, architecture-agent, review-agent, performance-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, distributed-system, monolith]
+    retrieval_terms: [steady state, unbounded growth, log rotation, data purge, result set limit, longevity test, leak]
+    routing:
+      activate_for_roles: [coding-agent, architecture-agent, review-agent, performance-agent]
+      activate_for_tasks: [review-resource-use, implement-I-O, design-API, review-cache]
+      activate_for_repository_signals: [unbounded query, growing table, log volume, session store, in-memory cache]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [availability, resource-lifecycle, operational, memory]
+      exclude_when: [process lifetime bounds every accumulation]
+      prerequisites: [accumulation inventory]
+      retrieval_priority: high
+      retrieval_budget_hint: 400
+      related_concepts: [performance-resource-lifecycle, performance-cache-validity, operations-load-shedding]
+
+  - id: operations-restore-service-first
+    title: Restore service before investigating cause
+    category: agent-conduct
+    claim: During a production incident, restoring service takes precedence over root-cause investigation; diagnostic evidence should be captured by pre-scripted collection that does not prolong the outage, and recovery should target the most likely culprit via the dependency structure rather than rebooting the world.
+    decision_rule: While an incident is active, run pre-created evidence-capture scripts, form a culprit hypothesis from the dependency structure, and restore service by the most targeted action likely to work; move causal investigation to the postmortem, where surviving traces outrank witness narratives and configuration is compared against pre-outage baselines.
+    why_it_matters: Recovery destroys the failed state, improvised data gathering prolongs outages, and witnesses mix observation with speculation - so evidence discipline must be designed in before the incident.
+    applicable_when: [an availability-affecting incident is in progress, preparing incident runbooks and capture scripts, writing postmortems]
+    not_applicable_when: [no live user impact exists - ordinary defect diagnosis proceeds evidence-first]
+    required_evidence: [pre-scripted diagnostic capture - thread dumps snapshots logs - with rehearsed cost, dependency structure supporting culprit targeting, pre-outage configuration baselines for after-the-fact comparison]
+    insufficient_evidence: [witness recollection presented as fact, post-recovery state treated as the failed state, a hypothesis formed after rebooting everything]
+    required_inputs: [incident severity and restoration options, capture tooling, dependency map]
+    expected_outputs: [service restored with targeted action, captured evidence surviving recovery, postmortem separating observations from inferences]
+    preservation_boundaries: [user-facing service level, diagnostic evidence that recovery would destroy, production data integrity during recovery actions]
+    safe_actions: [trigger scripted capture before restarting, target the common dependency implicated by the failure pattern, record restoration actions and timestamps for the postmortem]
+    unsafe_actions: [prolong an outage to complete a diagnosis, reboot everything without a culprit hypothesis, present witness speculation as observation, skip evidence capture because restoration is urgent when capture is scripted and cheap]
+    common_failure_modes: [evidence destroyed by recovery, outage extended by improvised debugging, postmortem built on narratives instead of traces, configuration drift invisible without baselines]
+    counterexamples: [When an incident is contained and users are unaffected, evidence-first diagnosis resumes precedence over speed of restoration.]
+    interactions: [Temporal boundary with debugging-hypothesis-led-investigation - restore first during the incident, hypothesis-led diagnosis after; capture authority follows agent-conduct-authority-bounded-action.]
+    source_support:
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/007-chapter-2-case-study.md :: The Outage"
+        contribution: States restore-service-over-investigation as the first priority, presents pre-created automated thread-dump and snapshot scripts as the balance between improvisation and data loss, and demonstrates culprit-targeting via the common-dependency hypothesis.
+        relationship: direct_support
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/007-chapter-2-case-study.md :: Postmortem"
+        contribution: Adds post-incident evidence discipline - the failed state is destroyed by recovery, witnesses mix observation with speculation and present hypotheses as facts, and configuration should be compared against pre-outage backups to detect after-the-fact changes.
+        relationship: refinement
+    confidence: strong
+    roles: [debugging-and-repair-agent, architecture-agent, review-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, distributed-system, deployed systems]
+    retrieval_terms: [incident response, restore service, thread dump script, postmortem, evidence capture, culprit hypothesis]
+    routing:
+      activate_for_roles: [debugging-and-repair-agent, architecture-agent, review-agent]
+      activate_for_tasks: [analyze-incident, repair-failure, operational-hardening]
+      activate_for_repository_signals: [active outage, incident runbook, postmortem document, on-call procedure]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [availability, operational, evidence-quality]
+      exclude_when: [no live service impact exists]
+      prerequisites: [incident severity and restoration authority]
+      retrieval_priority: high
+      retrieval_budget_hint: 380
+      related_concepts: [debugging-hypothesis-led-investigation, agent-conduct-authority-bounded-action, operations-liveness-by-external-observation]
+
+  - id: operations-ephemeral-instance-design
+    title: Treat instance identity, storage, and clock as ephemeral
+    category: architecture
+    claim: Services must treat machine identity, IP address, local storage, and clock as ephemeral and unreliable, tolerating the loss or slowdown of any single instance, avoiding irreplaceable special machines, and letting new instances volunteer for work instead of being individually configured.
+    decision_rule: Design so any instance can disappear or lag - no whole-cluster synchronous responses, no event-ordering or trusted-clock assumptions on virtualized hosts, no addresses baked into configuration files - and have instances join work through autoscaling groups, load balancers, or competing consumers.
+    why_it_matters: Individual cloud VMs have worse availability and ephemeral identity compared with physical machines, and oversubscribed hosts make VM performance and clocks unpredictable; designs that assume stable identity break at exactly the wrong time.
+    applicable_when: [designing or reviewing services deployed to VMs containers or cloud instances, migrating from static hosts to elastic infrastructure, diagnosing failures tied to a special machine]
+    not_applicable_when: [dedicated physical appliances with contractual identity and hardware clocks]
+    required_evidence: [instance replacement behavior under loss, work-assignment mechanism that requires no per-instance configuration, externalized storage credentials hostnames and ports, clock-sensitivity analysis]
+    insufficient_evidence: [instances have been stable so far, a pet machine documented in a runbook, NTP configured as the only ordering guarantee]
+    required_inputs: [deployment platform characteristics, state and storage topology, work-distribution mechanism]
+    expected_outputs: [instance-loss tolerance verdict, externalization plan for identity-coupled state, ordering semantics that survive untrusted clocks]
+    preservation_boundaries: [durable state outliving instances, event-ordering contracts, session continuity policy]
+    safe_actions: [externalize storage credentials hostnames and ports from images, let instances volunteer via discovery or queues, use logical ordering instead of wall clocks across instances]
+    unsafe_actions: [hold instance addresses in configuration files, depend on one irreplaceable machine, require whole-cluster synchronous responses, trust VM clocks for event ordering]
+    common_failure_modes: [pet server whose loss is an outage, config drift between hand-managed instances, ordering bugs from non-monotonic VM clocks, containers baking secrets into images]
+    counterexamples: [A licensed appliance bound to hardware identity is a constraint to isolate behind an interface, not a pattern to copy.]
+    interactions: [Complements architecture-event-temporal-semantics - untrustworthy clocks strengthen its demand for explicit ordering; instance replacement side participates in conflict-live-control-vs-immutable-replacement.]
+    conflicts: [conflict-live-control-vs-immutable-replacement]
+    source_support:
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/013-chapter-7-foundations.md :: Virtual Machines in the Cloud"
+        contribution: States that individual cloud VMs have worse availability and ephemeral identity and IP than physical machines, so instances must volunteer for work via autoscaling, load balancers, or competing consumers rather than holding addresses in configuration files.
+        relationship: direct_support
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/013-chapter-7-foundations.md :: Virtual Machines in the Data Center"
+        contribution: Warns that oversubscribed hosts make VM performance unpredictable and VM clocks non-monotonic and non-sequential, so designs must not require whole-cluster synchronous responses, special irreplaceable machines, event-ordering assumptions, or trusted OS clocks.
+        relationship: refinement
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/013-chapter-7-foundations.md :: Containers in the Data Center"
+        contribution: Adds that container instances have short-lived identities and must externalize storage, credentials, hostnames, and ports rather than baking them into images or per-instance configuration.
+        relationship: refinement
+    confidence: strong
+    roles: [architecture-agent, coding-agent, review-agent, debugging-and-repair-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, distributed-system]
+    retrieval_terms: [ephemeral instance, pet server, VM clock, instance identity, autoscaling, competing consumers, container image]
+    routing:
+      activate_for_roles: [architecture-agent, coding-agent, review-agent, debugging-and-repair-agent]
+      activate_for_tasks: [topology-selection, distributed-review, operational-hardening, migration-design]
+      activate_for_repository_signals: [hardcoded host address, container image, autoscaling group, clock-based ordering, special machine]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [availability, operational, deployment]
+      exclude_when: [hardware appliance with contractual identity]
+      prerequisites: [deployment platform evidence]
+      retrieval_priority: specialist
+      retrieval_budget_hint: 400
+      related_concepts: [architecture-distribution-readiness, operations-externalized-configuration, architecture-event-temporal-semantics]
+
+  - id: operations-build-provenance
+    title: Require an unbroken chain of custody for production executables
+    category: implementation
+    claim: Production executables must arrive through an unbroken tamper-resistant chain of custody - version-controlled source, dependencies and build plugins verified against upstream signatures in a private repository, and builds performed only on a clean CI server that writes to a write-protected artifact store.
+    decision_rule: Never treat a locally built artifact as deployable; verify third-party dependencies and build plugins against upstream signatures, build releases only on the CI server, and deploy only artifacts from the repository of blessed binaries with known provenance.
+    why_it_matters: Build-system plugins and developer machines are attack vectors; a real supply-chain attack has been delivered through a compromised CI-server plugin, and provenance is what makes such tampering detectable.
+    applicable_when: [setting up or reviewing build and deployment pipelines, adding dependencies or build plugins, an agent producing artifacts intended for deployment]
+    not_applicable_when: [local experiments and throwaway builds never promoted toward production]
+    required_evidence: [dependency and plugin verification against upstream signatures, CI-only build path for release artifacts, write-protection and provenance records on the artifact store]
+    insufficient_evidence: [the artifact works, checksums generated on the same machine that built the artifact, trust in a developer laptop's cleanliness]
+    required_inputs: [build pipeline topology, dependency sources, artifact store permissions]
+    expected_outputs: [custody gaps with owners, verified-dependency policy, deployable-artifact definition tied to CI provenance]
+    preservation_boundaries: [reproducibility of released artifacts, integrity of the artifact store, audit trail from source to instance]
+    safe_actions: [verify signatures in a private dependency mirror, tag artifacts with pipeline stage provenance, restrict artifact-store writes to the build system]
+    unsafe_actions: [deploy artifacts built on developer machines, add unverified build plugins, allow humans to overwrite released artifacts]
+    common_failure_modes: [compromised plugin injecting code at build time, dependency substitution unnoticed, hotfix binary of unknown origin in production]
+    counterexamples: [A sandboxed prototype may bypass custody until the moment its artifact is proposed for promotion, at which point it is rebuilt through the chain.]
+    interactions: [Distinct from operations-dependency-vulnerability-currency - custody and integrity here, patch currency there; both gate deployment.]
+    source_support:
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/014-chapter-8-processes-on-machines.md :: Code"
+        contribution: Prescribes the chain of custody from developer to production instance - signature-verified third-party dependencies in a private repository, build-system plugins treated as attack vectors, no production builds from polluted developer machines, and CI-only builds into a repository nobody else can write to.
+        relationship: direct_support
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/016-chapter-10-control-plane.md :: Provisioning and Deployment Services"
+        contribution: Requires an artifact repository of blessed binaries with known provenance populated only by clean build servers, pipeline stage tagging, and documents a real supply-chain attack delivered through a compromised CI-server plugin.
+        relationship: corroboration
+    confidence: strong
+    roles: [coding-agent, review-agent, architecture-agent, repository-assessment-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, library, CLI, distributed-system]
+    retrieval_terms: [chain of custody, build provenance, supply chain, artifact repository, CI build, signature verification]
+    routing:
+      activate_for_roles: [coding-agent, review-agent, architecture-agent, repository-assessment-agent]
+      activate_for_tasks: [introduce-dependency, build-guard, upgrade, dependency-review]
+      activate_for_repository_signals: [CI pipeline, artifact registry, dependency lockfile, build plugin, deployment script]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [security, build, operational]
+      exclude_when: [artifacts never leave a local experiment]
+      prerequisites: [build pipeline inventory]
+      retrieval_priority: high
+      retrieval_budget_hint: 380
+      related_concepts: [operations-dependency-vulnerability-currency, operations-externalized-configuration, operations-credential-custody]
+
+  - id: operations-externalized-configuration
+    title: Keep per-environment configuration outside the artifact
+    category: implementation
+    claim: Per-environment configuration must live outside the deployable artifact and its source repository so identical binaries promote across environments, with per-machine values separated, properties named by function, and a shared configuration service adopted only as an organization-level commitment whose unavailability instances can survive.
+    decision_rule: Separate per-environment and per-machine values from code and image; name properties by function rather than implementation type; inject credentials and addresses at startup; and if a configuration service is used, require instances to start and keep working when it is unreachable, tolerating slightly stale configuration under partition.
+    why_it_matters: Configuration baked into artifacts forces rebuilds per environment and leaks environment coupling, while a configuration service adopted casually becomes a severity-one hard dependency that can shut down the fleet from one partitioned node.
+    applicable_when: [designing configuration and deployment layouts, moving identical images across environments, adopting or reviewing a configuration service, writing code that reads configuration]
+    not_applicable_when: [single-environment tools with no promotion path]
+    required_evidence: [identical-artifact promotion across environments, separation of per-environment and per-machine values, startup and steady-state behavior when the configuration source is unreachable]
+    insufficient_evidence: [it works in staging, environment names branched inside code, a configuration service assumed always available]
+    required_inputs: [environment inventory, configuration property catalog, deployment mechanism]
+    expected_outputs: [externalized configuration layout, function-named property scheme, partition-tolerant configuration-service policy or a decision not to adopt one]
+    preservation_boundaries: [identical binaries across environments, secrets never entering the source repository, availability independent of the configuration service]
+    safe_actions: [inject environment values at startup, name properties for what they mean to the application, cache last-known-good configuration for partition survival]
+    unsafe_actions: [bake credentials or addresses into images, keep production config in the application source repository, let a partitioned configuration node shut down the fleet]
+    common_failure_modes: [rebuild-per-environment pipelines, config drift between machines, fleet outage caused by the configuration service, committed environment file overriding production]
+    counterexamples: [Build-time feature flags compiled into an artifact are a release decision, not environment configuration, and may legitimately live with the source.]
+    interactions: [Owns environment portability; operations-credential-custody owns secret protection - the two cross-reference rather than overlap.]
+    source_support:
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/014-chapter-8-processes-on-machines.md :: Configuration"
+        contribution: Directs per-environment properties and credentials outside the deployment directory and source repository, separates per-machine values, names properties by function rather than type, and gates configuration services behind organizational operational maturity because they become a severity-one hard dependency.
+        relationship: direct_support
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/016-chapter-10-control-plane.md :: Configuration Services"
+        contribution: Adds survival rules for the config-service dependency - instances must start and keep working when it is unreachable, clients must tolerate slightly stale configuration under partition, and a partitioned configuration node must never be able to shut down the fleet.
+        relationship: refinement
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/013-chapter-7-foundations.md :: Containers in the Data Center"
+        contribution: Shows the image-based limit case - a container image moves unchanged between environments, so credentials and network addresses must be injected at startup rather than baked in.
+        relationship: corroboration
+    confidence: strong
+    roles: [coding-agent, architecture-agent, review-agent, debugging-and-repair-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, distributed-system, CLI]
+    retrieval_terms: [externalized configuration, environment properties, configuration service, config injection, identical artifact promotion]
+    routing:
+      activate_for_roles: [coding-agent, architecture-agent, review-agent, debugging-and-repair-agent]
+      activate_for_tasks: [operational-hardening, implement-feature, migration-design, code-review]
+      activate_for_repository_signals: [environment config file, container image build, ZooKeeper or etcd client, per-machine settings]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [operational, security, deployment, availability]
+      exclude_when: [no environment promotion exists]
+      prerequisites: [environment and property inventory]
+      retrieval_priority: high
+      retrieval_budget_hint: 400
+      related_concepts: [operations-credential-custody, operations-ephemeral-instance-design, operations-build-provenance]
+
+  - id: operations-transparency-by-design
+    title: Design transparency in from the start
+    category: architecture
+    claim: Every instance must be designed from the start to reveal its historical, present, and projected state through operator-aimed logs, metrics, and health checks, with alert thresholds and health-rollup policy held outside the instance, because opaque systems cannot be diagnosed, tuned, or kept funded in production.
+    decision_rule: Build transparency as a designed-in quality - operator-aimed log messages with ERROR reserved for actionable system problems, health checks reporting version accepting-work state and pool or breaker status - while keeping monitoring an exoskeleton whose thresholds and rollups live outside the instance; at system level ask whether users receive a good experience and whether the system creates its intended value.
+    why_it_matters: Transparency cannot be bolted on late, ambiguous log messages breed superstition-driven operations, and at scale partially broken is the normal state - so signals must be designed for the people who act on them.
+    applicable_when: [building new services or instances, reviewing logging metrics and health-check design, deciding what to alert on]
+    not_applicable_when: [ephemeral experiments nobody operates]
+    required_evidence: [operator-aimed log and metric semantics, health-check content covering version accepting-work and dependency status, thresholds and rollup policy held outside the instance, continuity of baseline vitals]
+    insufficient_evidence: [debug-level logging exists, a dashboard was made once, alerts defined inside application code]
+    required_inputs: [operational questions the system must answer, monitoring infrastructure, business value signals]
+    expected_outputs: [instance transparency contract, alerting policy owned outside the instance, baseline rhythm documentation]
+    preservation_boundaries: [monitoring as exoskeleton - instances do not embed alerting policy, privacy of logged data, production overhead budgets]
+    safe_actions: [reserve ERROR for events demanding operator action, expose pool breaker and version state in health checks, sample vitals continuously so normal rhythms are known before incidents]
+    unsafe_actions: [add monitoring as an afterthought, log ambiguous messages that invite superstition, alert on every partial breakage at scale, bury operator signals in developer debug noise]
+    common_failure_modes: [six months of superstitious failovers from one ambiguous debug message, alert fatigue drowning real incidents, health checks that reveal nothing about readiness, unfunded operations because value is invisible]
+    counterexamples: [A build-time tool run interactively by its author needs error messages, not an operational transparency contract.]
+    interactions: [Feeds operations-liveness-by-external-observation with signal design; metric meaning discipline comes from performance-metric-semantics; runtime telemetry ownership parallels architecture-fitness-functions.]
+    source_support:
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/014-chapter-8-processes-on-machines.md :: Transparency"
+        contribution: Defines transparency as a designed-in quality that cannot be added late, requires monitoring to remain an exoskeleton with alerting and threshold policy outside the instance, aims logging levels at operations with ERROR reserved for actionable system problems, and specifies health checks that report version, accepting-work state, and connection-pool and circuit-breaker status.
+        relationship: direct_support
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/016-chapter-10-control-plane.md :: System-Wide Transparency"
+        contribution: Reframes system-level monitoring around two questions - are users receiving a good experience, and is the system creating the intended economic value - and treats partially broken as the normal operating state at scale rather than something to alert on.
+        relationship: refinement
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/012-chapter-6-case-study-phenomenal-cosmic-powers-itty-bitty-living-space.md :: Taking the Pulse"
+        contribution: Shows continuous scripted sampling of instance vitals teaching operators the system's normal rhythms so anomalies are recognized at a glance - the visibility that later made the outage diagnosable.
+        relationship: corroboration
+    confidence: strong
+    roles: [architecture-agent, coding-agent, review-agent, debugging-and-repair-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, distributed-system, deployed systems]
+    retrieval_terms: [transparency, operator-aimed logging, health check content, alert thresholds, monitoring exoskeleton, vitals]
+    routing:
+      activate_for_roles: [architecture-agent, coding-agent, review-agent, debugging-and-repair-agent]
+      activate_for_tasks: [design-observability, metric-review, interpret-metric, operational-hardening]
+      activate_for_repository_signals: [logging framework, metrics library, health endpoint, alerting rules, dashboard]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [operational, availability, evidence-quality]
+      exclude_when: [nobody will operate the artifact]
+      prerequisites: [operational questions inventory]
+      retrieval_priority: high
+      retrieval_budget_hint: 420
+      related_concepts: [operations-liveness-by-external-observation, performance-metric-semantics, architecture-fitness-functions, operations-production-readiness]
+
+  - id: operations-runtime-control-surface
+    title: Provide runtime control surfaces where replacement is slow
+    category: architecture
+    claim: A service whose instances start slowly needs pre-built, scriptable, access-restricted control interfaces for targeted runtime intervention - resetting circuit breakers, resizing pools, disabling specific integrations, reloading configuration, draining load, toggling features - while fast-restarting instances are better replaced than controlled.
+    decision_rule: Scope live control to slow-starting instances; expose the control signals worth having on separate non-public admin ports, prefer scriptable command lines over GUIs, send fleet commands in waves with jitter to avoid dogpiles, and never ship self-destruct controls such as schema wipe in production code.
+    why_it_matters: When changing config files and restarting all servers takes hours under load, a five-minute targeted reconfiguration is the difference between a blip and an outage - but in fast-restart environments the same machinery is unearned complexity.
+    applicable_when: [operating or designing slow-starting stateful services, planning incident-recovery tooling, reviewing admin interfaces]
+    not_applicable_when: [fast-starting instances where kill-and-replace is cheaper and safer than live mutation]
+    required_evidence: [measured instance startup and warm-up time, inventory of interventions that recur during incidents, access control separating admin from public surfaces]
+    insufficient_evidence: [a desire for operational knobs, admin endpoints on the public port, controls never rehearsed]
+    required_inputs: [startup-time measurements, incident intervention history, security boundary design]
+    expected_outputs: [control-surface inventory with access policy, scriptable interfaces for rehearsed interventions, decision to prefer replacement where restarts are fast]
+    preservation_boundaries: [production data - no self-destruct operations, security isolation of admin surfaces, fleet stability under command distribution]
+    safe_actions: [expose breaker reset pool resize integration toggle config reload and drain as scripted commands, restrict admin APIs to non-public ports, roll commands through the fleet in waves]
+    unsafe_actions: [ship schema-wipe or reset-everything controls in production binaries, expose admin controls on public interfaces, command the whole fleet simultaneously, build GUIs as the only operational interface]
+    common_failure_modes: [command queue dogpiling the fleet, admin endpoint exposed publicly, controls untested until the incident, six-hour full restarts because no targeted control existed]
+    counterexamples: [A stateless container that boots in one second should be killed and replaced, not remotely reconfigured.]
+    interactions: [Cache-flush controls carry the cold-start dogpile cost recorded on performance-cache-validity; safeguards on any actuating control follow operations-automation-safeguards.]
+    conflicts: [conflict-live-control-vs-immutable-replacement]
+    source_support:
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/016-chapter-10-control-plane.md :: Command and Control"
+        contribution: Scopes live control to slow-starting instances - fast-start container environments should kill and replace instead - lists the control signals worth exposing, requires admin APIs on separate non-public ports, prefers scriptable command lines over GUIs, warns command queues can dogpile a fleet without jitter or waves, and bans self-destruct controls such as schema wipe in production code.
+        relationship: direct_support
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/012-chapter-6-case-study-phenomenal-cosmic-powers-itty-bitty-living-space.md :: Does the Condition Respond to Treatment?"
+        contribution: Demonstrates recovery by dynamically reconfiguring and restarting a single component in under five minutes where changing config files and restarting all servers would have taken more than six hours under load.
+        relationship: corroboration
+    confidence: contextual
+    roles: [architecture-agent, debugging-and-repair-agent, review-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, distributed-system]
+    retrieval_terms: [command and control, admin interface, runtime reconfiguration, drain, feature toggle, scriptable operations]
+    routing:
+      activate_for_roles: [architecture-agent, debugging-and-repair-agent, review-agent]
+      activate_for_tasks: [operational-hardening, shutdown-design, resilience-review]
+      activate_for_repository_signals: [slow startup, admin endpoint, feature flag runtime toggle, pool resize control]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [operational, availability, security]
+      exclude_when: [instances restart in seconds and replacement is routine]
+      prerequisites: [startup-time evidence]
+      retrieval_priority: specialist
+      retrieval_budget_hint: 380
+      related_concepts: [operations-ephemeral-instance-design, operations-automation-safeguards, operations-transparency-by-design, performance-cache-validity]
+
+  - id: operations-untrusted-request-handling
+    title: Treat every request and externally influenced value as untrusted
+    category: implementation
+    claim: Every request and every externally influenced value is untrusted regardless of network position - validate and escape input at each interpreter boundary instead of concatenating strings into queries, markup, or paths; authenticate all callers including internal ones; and authorize each object access per request, since possession of a URL, a session, or an internal IP confers no authority.
+    decision_rule: At every interpreter boundary use parameterized or escaped forms rather than string concatenation; issue fresh session identifiers after authentication; authorize the object on the way out and reauthorize the request coming back in; and make unauthorized resources indistinguishable from nonexistent ones.
+    why_it_matters: The consensus most-critical web flaw classes - injection, broken authentication, XSS, broken access control, CSRF - each reduce to trusting request content, origin, or link possession.
+    applicable_when: [handling any externally influenced input, building or reviewing HTTP APIs and web surfaces, constructing queries markup or file paths from request data, internal services assumed safe behind the perimeter]
+    not_applicable_when: [values that provably never cross a trust boundary]
+    required_evidence: [interpreter boundaries enumerated with their escaping or parameterization mechanism, authentication policy covering internal callers, per-request object authorization checks]
+    insufficient_evidence: [the caller is inside our network, a web framework is used, input was validated once upstream]
+    required_inputs: [request flow map with trust boundaries, session and identity mechanisms, resource authorization model]
+    expected_outputs: [boundary validation and escaping policy, session lifecycle rules, object-level authorization coverage]
+    preservation_boundaries: [existing authentication contracts, information hiding of resource existence, session integrity]
+    safe_actions: [use parameterized queries everywhere, escape output per target context, regenerate session IDs at privilege changes, return not-found for unauthorized objects]
+    unsafe_actions: [concatenate request data into queries or paths, trust internal IPs as authentication, authorize by URL possession, expose object existence through 403-versus-404 differences]
+    common_failure_modes: [injection through a forgotten boundary, session fixation, direct object references authorized only on render, internal API trusting the perimeter]
+    counterexamples: [Constants compiled into the binary are trusted by construction; the boundary discipline begins where external influence enters.]
+    interactions: [Maps onto the ubiquitous-language rule that access or capability is not authorization; language-level boundary mechanics live in the language concept families.]
+    source_support:
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/017-chapter-11-security.md :: The OWASP Top 10"
+        contribution: Catalogs the consensus most-critical web-application flaw classes - injection, broken authentication and session management, XSS, broken access control, security misconfiguration, sensitive data exposure, CSRF, underprotected APIs - each traced to trusting request content, origin, or link possession, with defenses such as parameterized queries, output escaping, fresh post-authentication session IDs, and per-request object authorization.
+        relationship: direct_support
+    confidence: strong
+    roles: [coding-agent, review-agent, architecture-agent, debugging-and-repair-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, distributed-system, monolith]
+    retrieval_terms: [untrusted input, injection, parameterized query, session management, access control, OWASP, authorization per request]
+    routing:
+      activate_for_roles: [coding-agent, review-agent, architecture-agent, debugging-and-repair-agent]
+      activate_for_tasks: [validate-input, design-API, review-API, implement-I-O]
+      activate_for_repository_signals: [string-built query, HTTP handler, session cookie, file path from input, internal API]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [security, correctness, data-integrity]
+      exclude_when: [no externally influenced value reaches the code]
+      prerequisites: [trust boundary map]
+      retrieval_priority: high
+      retrieval_budget_hint: 430
+      related_concepts: [operations-least-privilege, operations-credential-custody, universal-explicit-invariants]
+
+  - id: operations-least-privilege
+    title: Run with least privilege and least exposure
+    category: implementation
+    claim: Every service process runs as a dedicated non-administrative account with the least privilege its task requires and the smallest network exposure its role requires - isolated per application, and binding each listening socket to an explicitly configured interface rather than all interfaces on multihomed hosts.
+    decision_rule: Give each major application its own OS account with no administrative rights - a service behind a load balancer can bind any port above 1024, removing the classic privileged-port excuse - and make listen addresses explicit configuration, because default any-interface binding silently bridges networks with different security roles.
+    why_it_matters: Software running as root converts any vulnerability into full-host compromise, and default listening on every interface exposes production services to administrative and backup networks they were never meant to face.
+    applicable_when: [configuring service accounts and process privileges, writing code that opens listening sockets, containerizing services, reviewing deployment manifests]
+    not_applicable_when: [single-user developer tooling confined to a workstation]
+    required_evidence: [per-application account with enumerated privileges, listen-address configuration per socket, network roles of each host interface, container base-image provenance and rebuild cadence]
+    insufficient_evidence: [the service needs port 80 as a root justification, containers assumed to isolate everything, a hardening checklist run once]
+    required_inputs: [process inventory with accounts, socket and interface topology, container build pipeline]
+    expected_outputs: [least-privilege account layout, explicit bind configuration, exposure map of listening surfaces]
+    preservation_boundaries: [service functionality under reduced privilege, separation of production backup and administrative traffic]
+    safe_actions: [create one non-admin account per application, bind sockets to configured addresses, run behind a load balancer on unprivileged ports, rebuild containers from patched upstream bases on a timed schedule]
+    unsafe_actions: [run services as root or administrator, listen on all interfaces of a multihomed host by default, share one account across applications, treat container isolation as a substitute for privilege reduction]
+    common_failure_modes: [root service turning one bug into host compromise, production service reachable from the admin network, fat container images carrying their own attack surface, hostname-based interface guessing]
+    counterexamples: [A packet-capture diagnostic genuinely requires elevated privilege; it gets a bounded, audited grant rather than a permanently privileged service.]
+    interactions: [Exposure reduction complements operations-untrusted-request-handling; capability-is-not-authority framing follows agent-conduct-authority-bounded-action.]
+    source_support:
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/017-chapter-11-security.md :: The Principle of Least Privilege"
+        contribution: Mandates non-root and non-administrator execution with a separate OS user per major application, and removes the classic privileged-port excuse by noting a service behind a load balancer can bind any port above 1024.
+        relationship: direct_support
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/013-chapter-7-foundations.md :: Programming for Multiple Networks"
+        contribution: Shows that default any-interface listening is wrong on multihomed production hosts and that servers need configurable bind addresses because the self-reported hostname cannot identify the correct interface.
+        relationship: refinement
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/013-chapter-7-foundations.md :: NICs and Names"
+        contribution: Establishes that machine hostname and DNS name are distinct many-to-many mappings and that data centers separate production, backup, and administrative traffic onto different NICs with different security requirements.
+        relationship: corroboration
+    confidence: strong
+    roles: [coding-agent, review-agent, architecture-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, distributed-system, deployed systems]
+    retrieval_terms: [least privilege, non-root, bind address, multihomed host, service account, attack surface, container privilege]
+    routing:
+      activate_for_roles: [coding-agent, review-agent, architecture-agent]
+      activate_for_tasks: [operational-hardening, implement-I-O, review-I-O, code-review]
+      activate_for_repository_signals: [root process, listen on all interfaces, service account config, container manifest]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [security, operational]
+      exclude_when: [workstation-confined developer tooling]
+      prerequisites: [process and interface inventory]
+      retrieval_priority: high
+      retrieval_budget_hint: 380
+      related_concepts: [operations-untrusted-request-handling, operations-credential-custody, operations-dependency-vulnerability-currency]
+
+  - id: operations-credential-custody
+    title: Give production credentials dedicated custody
+    category: implementation
+    claim: Production credentials are high-value secrets requiring dedicated custody - kept out of source control, images, and installation directories; readable only by the owning account or held in a vault whose decryption keys live elsewhere; expunged from process memory promptly; and excluded from core dumps and support bundles.
+    decision_rule: Separate credentials from ordinary configuration and from installation directories that get zipped and shipped during support incidents; enforce owner-only permissions or vaulting with keys stored apart from data; expunge keys from memory after use; and disable core dumps for credential-bearing processes.
+    why_it_matters: Committed passwords, credentials in shipped support bundles, and secrets lingering in memory or dumps are recurring, well-documented compromise paths.
+    applicable_when: [writing or reviewing code and scripts that touch credentials, designing configuration layouts, preparing support and diagnostic tooling]
+    not_applicable_when: [no production secret exists in the workflow]
+    required_evidence: [credential storage location and permission audit, vault key-separation design where vaulting is used, memory and dump hygiene for credential-bearing processes]
+    insufficient_evidence: [secrets encrypted with a key stored beside them, a private repository treated as safe for passwords, secrets masked only in logs]
+    required_inputs: [credential inventory with owners, storage and access mechanisms, support-tooling data flows]
+    expected_outputs: [custody policy per credential class, permission and vault configuration, dump and bundle exclusion rules]
+    preservation_boundaries: [secret confidentiality across the artifact lifecycle, auditability of credential access, service availability during rotation]
+    safe_actions: [store credentials in a separately locked-down location with explicit grant and revoke, keep vault decryption keys apart from vaulted data, zero credential buffers after use, exclude credential paths from support bundles]
+    unsafe_actions: [commit passwords to any source repository, leave credentials in installation directories, enable core dumps on credential-bearing services without scrubbing, log secrets at any level]
+    common_failure_modes: [password committed and rotated too late, support zip containing production credentials, dump file with keys attached to a ticket, key beside its ciphertext]
+    counterexamples: [Development-only fixtures with fake secrets may live in the repository precisely because they authorize nothing.]
+    interactions: [Owns secret protection; operations-externalized-configuration owns environment portability of ordinary configuration - cross-reference rather than merge.]
+    source_support:
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/017-chapter-11-security.md :: Configured Passwords"
+        contribution: Requires production passwords separated from other configuration and outside installation directories that get zipped and shipped during support incidents, owner-only file permissions or vaulting with keys stored apart from data, prompt expunging of keys from memory, and disabled core dumps because dumps contain passwords.
+        relationship: direct_support
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/014-chapter-8-processes-on-machines.md :: Configuration"
+        contribution: Keeps per-environment credential files out of the application's source repository in a separately locked-down repository with explicit grant and revoke access controls, citing the recurring committed-password failure mode.
+        relationship: corroboration
+    confidence: strong
+    roles: [coding-agent, review-agent, architecture-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, distributed-system, CLI, deployed systems]
+    retrieval_terms: [credential custody, secrets management, vault, committed password, core dump, key separation]
+    routing:
+      activate_for_roles: [coding-agent, review-agent, architecture-agent]
+      activate_for_tasks: [operational-hardening, code-review, review-I-O]
+      activate_for_repository_signals: [password in config, secrets file, vault client, deployment script with credentials]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [security, privacy, operational]
+      exclude_when: [no production secret is involved]
+      prerequisites: [credential inventory]
+      retrieval_priority: high
+      retrieval_budget_hint: 360
+      related_concepts: [operations-externalized-configuration, operations-least-privilege, operations-build-provenance]
+
+  - id: operations-dependency-vulnerability-currency
+    title: Track the full dependency tree against known vulnerabilities
+    category: implementation
+    claim: A deployed system must continuously track its full dependency tree - including build-tool plugins and container base images - against known vulnerabilities, and treat a known-vulnerable component as a defect requiring prompt patching and redeployment.
+    decision_rule: Extract a full-artifact dependency report including build plugins, check it against published CVEs on a regular cadence - preferably breaking the build automatically on a known-vulnerable dependency - and keep servers redeployable on a moment's notice because security is a continuous process, not a one-time review.
+    why_it_matters: Using components with known vulnerabilities is itself a top flaw class; new attacks emerge constantly and unpatched dependencies silently accumulate exploitable surface.
+    applicable_when: [adding or upgrading dependencies, configuring CI gates, auditing a repository's security posture, maintaining container base images]
+    not_applicable_when: [code with no third-party components and no build tooling - rare in practice]
+    required_evidence: [complete dependency report including transitive dependencies and build plugins, CVE-check cadence and gate behavior, redeployment capability evidence]
+    insufficient_evidence: [top-level dependency list only, an audit performed at release time only, pinned versions treated as safety]
+    required_inputs: [dependency manifest and lockfiles, CI configuration, deployment pipeline]
+    expected_outputs: [vulnerability tracking coverage verdict, gate policy for known CVEs, patch-and-redeploy path with owners]
+    preservation_boundaries: [build reproducibility while upgrading, behavioral compatibility verified per upgrade, gate signal integrity - no silent suppressions]
+    safe_actions: [generate dependency reports covering plugins and base images, wire CVE checks into CI with break-the-build defaults, schedule timed rebuilds from patched upstream bases]
+    unsafe_actions: [ignore transitive and build-time dependencies, suppress vulnerability findings without disposition, let unpatchable servers accumulate, treat version pinning as a security control]
+    common_failure_modes: [vulnerable transitive dependency shipped for months, compromised or outdated build plugin, stale base image with known exploits, CVE alert fatigue with no gate]
+    counterexamples: [A vulnerability in an unused code path may be deferred with an explicit recorded disposition - deferral is a decision, not a default.]
+    interactions: [Currency and patching here; integrity and custody in operations-build-provenance - both gate deployment and both feed dependency-review tasks.]
+    source_support:
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/017-chapter-11-security.md :: The OWASP Top 10"
+        contribution: Includes using components with known vulnerabilities among the top flaw classes and prescribes extracting a full-artifact dependency report including build plugins, checking it against CVEs weekly, and preferably breaking the build automatically when a dependency has a known CVE.
+        relationship: direct_support
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/017-chapter-11-security.md :: Security as an Ongoing Process"
+        contribution: Frames security as a continuous process rather than a one-time review - new attacks emerge constantly, unhardened new technology needs extra patching vigilance, and servers must be redeployable on a moment's notice.
+        relationship: refinement
+    confidence: strong
+    roles: [coding-agent, review-agent, repository-assessment-agent, architecture-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, library, CLI, distributed-system]
+    retrieval_terms: [known vulnerabilities, CVE, dependency tree, base image currency, patch and redeploy, security gate]
+    routing:
+      activate_for_roles: [coding-agent, review-agent, repository-assessment-agent, architecture-agent]
+      activate_for_tasks: [upgrade, introduce-dependency, dependency-review, build-guard]
+      activate_for_repository_signals: [lockfile, dependency manifest, container base image, CVE scanner config]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [security, build, operational]
+      exclude_when: [no third-party component exists]
+      prerequisites: [dependency inventory]
+      retrieval_priority: high
+      retrieval_budget_hint: 360
+      related_concepts: [operations-build-provenance, operations-least-privilege]
+
+  - id: operations-zero-downtime-rollout
+    title: Design rollout as a concurrent-versions time interval
+    category: architecture
+    claim: A production rollout is a designed time interval in which old and new versions run concurrently; the application must support preparation, drain, staged activation, and warm-up readiness so that users never observe the transition.
+    decision_rule: Decompose the rollout into a macroscopic window nesting per-instance prepare, drain, apply, and time-to-ready spans; budget update time from packaging grain size before planning the window; roll out in health-gated batches with a canary group; gate load-balancer traffic on a health route that starts unavailable until warm; and decouple session lifetime from process lifetime.
+    why_it_matters: Users see the during state, not just the after state - and manual playbook releases measured in dozens of people and six-figure costs are what unplanned-downtime deployment designs degenerate into.
+    applicable_when: [planning or reviewing deployments of running services, designing deployment automation, sizing rollout windows and batches]
+    not_applicable_when: [systems with genuinely accepted downtime windows where concurrency of versions is not required]
+    required_evidence: [measured per-instance prepare drain apply and warm-up times, canary and batch health gates, session-drain behavior, compatibility plan for concurrently running versions]
+    insufficient_evidence: [it deployed fine in staging, a rollback script never rehearsed, deployment treated as an operations afterthought]
+    required_inputs: [deployment topology and packaging grain, session model, health-check integration]
+    expected_outputs: [phased rollout plan with time budgets, canary and batch gating policy, drain and warm-up behavior in the application]
+    preservation_boundaries: [user-visible service continuity, in-flight sessions and transactions, data compatibility across concurrent versions]
+    safe_actions: [start instances with available=false until warm, drain sessions before stopping instances, canary before batches, watch metrics while shifting traffic]
+    unsafe_actions: [treat deployment as an instantaneous switch, ignore warm-up before accepting traffic, terminate sessions with processes, plan windows without measured update times]
+    common_failure_modes: [rollout window overrunning because packaging grain was never measured, cold instances taking traffic and timing out, sessions dropped at every deploy, canary skipped under schedule pressure]
+    interactions: [Schema and contract phasing during the window is refactoring-compatibility-migration; the undeployed-code liability cycle corroborates universal-reversible-reviewable-change.]
+    counterexamples: [A single-tenant batch tool updated between runs has no concurrent-versions interval to design.]
+    source_support:
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/020-chapter-13-design-for-deployment.md :: Phases of Deployment"
+        contribution: Decomposes a rollout into a macroscopic window nesting four per-instance time spans - prepare, drain bounded by session and blocked-thread realities, apply, and time-to-ready after start - and derives that packaging grain size drives per-machine update time, which must be budgeted before planning the rollout window.
+        relationship: direct_support
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/020-chapter-13-design-for-deployment.md :: The Fallacy of Planned Downtime"
+        contribution: Argues users see the during state, so deployment must be treated as a designed feature rather than an after-state assumption.
+        relationship: refinement
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/020-chapter-13-design-for-deployment.md :: Rollout"
+        contribution: Prescribes batched health-gated group updates with a canary group, traffic shaping while watching metrics, a health-check route that gates load-balancer traffic starting with available=false until warm, and decoupling session lifetime from process lifetime.
+        relationship: refinement
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/019-chapter-12-case-study-waiting-for-godot.md :: Chapter 12: Case Study: Waiting for Godot"
+        contribution: Corroborating cost evidence - a manual playbook release consuming roughly forty people and one hundred thousand dollars overnight, failing on QA-versus-production data mismatch and rolling back.
+        relationship: corroboration
+    confidence: strong
+    roles: [architecture-agent, review-agent, coding-agent, debugging-and-repair-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, distributed-system]
+    retrieval_terms: [zero downtime, rollout phases, drain, warm-up, canary, blue green, deployment window, concurrent versions]
+    routing:
+      activate_for_roles: [architecture-agent, review-agent, coding-agent, debugging-and-repair-agent]
+      activate_for_tasks: [migration-design, operational-hardening, plan-change, migration-review]
+      activate_for_repository_signals: [deployment pipeline, rolling update config, canary stage, session store, health gate]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [deployment, availability, migration, rollback]
+      exclude_when: [accepted downtime window removes the concurrency requirement]
+      prerequisites: [measured update-time budget]
+      retrieval_priority: specialist
+      retrieval_budget_hint: 440
+      related_concepts: [refactoring-compatibility-migration, operations-live-interface-compatibility, operations-ephemeral-instance-design, universal-reversible-reviewable-change]
+
+  - id: operations-live-interface-compatibility
+    title: The live interface's accepted behavior is the contract
+    category: architecture
+    claim: Once an interface is live, its actually accepted and returned behavior is the de facto contract; a new version may require less, accept more, and return more, but may not reject previously accepted traffic, withhold previously returned data, or require more authorization without a versioned migration.
+    decision_rule: Treat the API as a layered stack of agreements - framing, encoding, syntax, routing, semantics, authorization - where a unilateral break in any layer is a breaking change; apply the safe-change algebra of requiring a subset of parameters, accepting a superset, returning a superset, and enforcing a subset of constraints; and classify validation tightening on a live endpoint as a breaking change needing migration authority.
+    why_it_matters: Fixing an accidental edge-case behavior or adding validation on a live endpoint presents as cleanup but semantically rejects traffic that was accepted yesterday - consumers deployed against actual behavior, not documentation.
+    applicable_when: [changing any live API message format or endpoint, adding validation to existing interfaces, reviewing changes labeled cleanup on public surfaces, planning version-discriminated breaks]
+    not_applicable_when: [pre-release interfaces with no external consumers]
+    required_evidence: [observed accepted and returned behavior - not documentation alone, consumer inventory with deployment independence, compatibility classification per layer of the agreement stack]
+    insufficient_evidence: [the spec says the input was invalid, internal tests passing, an assumption that undocumented behavior is unclaimed]
+    required_inputs: [interface behavior baseline, proposed change classified per layer, migration authority]
+    expected_outputs: [nonbreaking verdict via the safe-change algebra or a versioned migration plan, version discriminator choice for unavoidable breaks, mixed-version test evidence]
+    preservation_boundaries: [previously accepted traffic, previously returned data, existing authorization requirements, message format versioning]
+    safe_actions: [require less accept more return more, put a format version in messages, run old and new versions side by side testing mixed calls against the same entities, absorb compatibility cost as the provider instead of exporting synchronized upgrades]
+    unsafe_actions: [tighten validation on a live endpoint without a versioned migration, withhold previously returned fields, require new authorization silently, treat undocumented accepted behavior as rejectable]
+    common_failure_modes: [cleanup change breaking a consumer relying on undocumented behavior, validation hardening rejecting production traffic, provider and caller forced to deploy in lockstep]
+    counterexamples: [Rejecting traffic that corrupts data is a defect repair with breaking-change consequences - it still needs the migration treatment, just with higher urgency.]
+    interactions: [Supplies the compatibility test that refactoring-compatibility-migration's phased migrations rely on; change classification pressure lands on refactoring-change-type-classification.]
+    conflicts: [conflict-static-typing-vs-runtime-validation]
+    source_support:
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/021-chapter-14-handling-versions.md :: Nonbreaking API Changes"
+        contribution: Defines an API as a layered stack of agreements - framing, encoding, syntax, routing, semantics, authorization - whose unilateral break in any layer is a breaking change; gives the safe-change algebra and the de facto specification rule that even undocumented accepted behavior cannot be rejected once live, so validation tightening is itself a breaking change.
+        relationship: direct_support
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/021-chapter-14-handling-versions.md :: Help Others Handle Your Versions"
+        contribution: Adds the ownership rule that the provider absorbs compatibility cost rather than exporting synchronized upgrades to consumers.
+        relationship: refinement
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/024-chapter-16-adaptation.md :: Team-Scale Autonomy"
+        contribution: Independently states that needing provider and caller updated together is a coupling warning sign.
+        relationship: corroboration
+    confidence: strong
+    roles: [architecture-agent, coding-agent, review-agent, refactoring-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, library, distributed-system]
+    retrieval_terms: [breaking change, de facto contract, Postel, accept more require less, API versioning, validation tightening]
+    routing:
+      activate_for_roles: [architecture-agent, coding-agent, review-agent, refactoring-agent]
+      activate_for_tasks: [change-public-API, protocol evolution, API-review, design-API]
+      activate_for_repository_signals: [public endpoint change, message schema, added validation, version header, consumer contract]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [compatibility, API, correctness]
+      exclude_when: [no external consumer exists yet]
+      prerequisites: [observed interface behavior baseline]
+      retrieval_priority: high
+      retrieval_budget_hint: 430
+      related_concepts: [refactoring-compatibility-migration, refactoring-change-type-classification, operations-contract-conformance-testing]
+
+  - id: operations-contract-conformance-testing
+    title: Test each side's conformance to the shared contract
+    category: review
+    claim: Cross-service integration confidence comes from each side testing its own conformance to the shared specification - consumer-owned contract tests plus separate request-construction and response-tolerance checks - because either party can deploy a new version at any time.
+    decision_rule: Split integration testing into request-side conformance and response-side tolerance without invoking the real dependency; have consumers own contract tests against the provider's staging surface as an early-warning system; and require consumers to handle any allowed combination of new, missing, or partial fields since callers and suppliers deploy independently.
+    why_it_matters: Overspecified end-to-end request/response loop tests verify only current behavior, not contract conformance - they pass until the day an independently deployed version change breaks production.
+    applicable_when: [designing tests for service integrations, reviewing integration test suites that loop through live dependencies, consuming an independently deployed API]
+    not_applicable_when: [both sides deploy atomically from one repository and cannot version-skew]
+    required_evidence: [the shared specification as the test oracle, request-side and response-side suites separated from live dependencies, consumer-owned contract tests with a run cadence]
+    insufficient_evidence: [end-to-end tests against the current deployment only, mocks asserting current provider behavior rather than the contract, provider tests alone]
+    required_inputs: [interface specification, consumer and provider deployment cadences, staging surface availability]
+    expected_outputs: [conformance and tolerance suites per side, contract-test ownership and alerting, field-tolerance coverage for allowed variations]
+    preservation_boundaries: [the agreed contract as oracle - tests must not enshrine incidental behavior, independence of deployment cadences]
+    safe_actions: [write consumer contract tests against the provider's staging system, test request construction against the spec without the dependency, generate allowed field combinations to find tolerance gaps]
+    unsafe_actions: [assert incidental provider behavior as contract, require the live dependency for every test run, assume field sets are fixed because they were fixed yesterday]
+    common_failure_modes: [integration suite green while contract drift breaks production, mock drift from the real contract, consumer breaking on a legally added field]
+    counterexamples: [Characterization tests of an unspecified legacy dependency assert observed behavior deliberately - that is discovery, not contract conformance.]
+    interactions: [Refines implementation-risk-driven-tests at service boundaries; message-contract semantics interact with architecture-event-temporal-semantics.]
+    source_support:
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/021-chapter-14-handling-versions.md :: Handle Others' Versions"
+        contribution: Shows that overspecified end-to-end request/response loop tests verify only current behavior, not contract conformance; splits testing into request-side conformance and response-side tolerance without invoking the real dependency, and requires the consumer to handle any allowed combination of new, missing, or partial fields since callers and suppliers deploy independently.
+        relationship: direct_support
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/021-chapter-14-handling-versions.md :: Nonbreaking API Changes"
+        contribution: Adds the consumer-owned contract-test practice - a suite written by the consuming team run against the provider's staging system as an early-warning system - and recommends generative testing to find gaps between specification, belief, and implementation.
+        relationship: refinement
+    confidence: strong
+    roles: [review-agent, coding-agent, architecture-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, distributed-system, multi-repo]
+    retrieval_terms: [contract test, consumer-driven contract, conformance, response tolerance, integration test, version skew]
+    routing:
+      activate_for_roles: [review-agent, coding-agent, architecture-agent]
+      activate_for_tasks: [plan-tests, assess-tests, integration, API-review]
+      activate_for_repository_signals: [integration test suite, service client, mock of remote API, staging environment, pact file]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [compatibility, regression, correctness]
+      exclude_when: [atomic single-repository deployment removes version skew]
+      prerequisites: [shared specification as oracle]
+      retrieval_priority: high
+      retrieval_budget_hint: 390
+      related_concepts: [operations-live-interface-compatibility, implementation-risk-driven-tests, architecture-event-temporal-semantics]
+
+  - id: operations-chaos-experiment-discipline
+    title: Establish whole-system resilience by disciplined fault injection
+    category: architecture
+    claim: Whole-system resilience is established by hypothesis-driven fault-injection experiments against the real system under a defined healthy steady state, bounded blast radius, request tracing, and a rehearsed recovery plan - not by component tests or staging environments, because safety is not composable.
+    decision_rule: Before injecting faults, verify the entry conditions - failed requests are affordable, blast radius is bounded by explicit victim selection, tracing can show where a fault was absorbed or became a failure, monitoring can detect the health delta, and a recovery plan exists; state the hypothesis as an externally observable steady-state invariant with pre-agreed rejection evidence, and progress from random to targeted injection as the fault space sparsifies.
+    why_it_matters: Independently safe components compose into unsafe systems - two providers each meeting a 30ms p99.9 break a 50ms client budget in sequence - and well-protected systems stop emitting the failure evidence that would otherwise justify confidence.
+    applicable_when: [assessing resilience of a distributed system in production or production-like conditions, designing game days or continuous fault injection, deciding whether chaos tooling is appropriate at all]
+    not_applicable_when: [every request is irreplaceable - if failed requests are unaffordable chaos experiments are the wrong approach, single-process systems adequately covered by component tests]
+    required_evidence: [defined externally observable steady state with detection capability, explicit blast-radius bounds and victim selection, request tracing across the injection path, rehearsed recovery plan, explicit authorization of the harm envelope]
+    insufficient_evidence: [staging results extrapolated to production scale, component fault tests alone, enthusiasm for chaos tooling without entry conditions]
+    required_inputs: [steady-state metrics, injection mechanisms - kill instance add latency fail specific calls, authorization for deliberate production harm]
+    expected_outputs: [hypothesis with rejection evidence agreed in advance, experiment record including faults absorbed without failure, hardening actions or validated confidence]
+    preservation_boundaries: [the authorized blast radius, user harm envelope explicitly owned and accepted, recovery capability throughout the experiment]
+    safe_actions: [start with opt-in scope for fragile estates, select victims explicitly, record where faults were absorbed as evidence of working defenses, run disaster and zombie simulations as rehearsals]
+    unsafe_actions: [inject faults without a recovery plan, infer production resilience from staging, run experiments whose failure cost was never authorized, stop recording faults that did not become failures]
+    common_failure_modes: [experiment causing unbounded real harm, hypothesis defined after seeing results, monitoring unable to detect the injected delta, chaos tooling adopted as fashion without entry conditions]
+    counterexamples: [A payment-settlement pipeline where every request is irreplaceable should build resilience evidence through redundancy proofs and shadow traffic, not production fault injection.]
+    interactions: [Deliberate injection sits in explicit tension with universal-preserve-behavior-by-default - the harm envelope must be owned and authorized, never inferred from the technique's existence; the regulator paradox inverts universal-evidence-before-intervention - controlled injection is the intervention that manufactures decision evidence; steady-state metrics double as universal-measure-claimed-improvement baselines.]
+    source_support:
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/025-chapter-17-chaos-engineering.md :: Adopting Your Own Monkey"
+        contribution: Sets the entry conditions and experiment protocol - failed requests must be affordable, exposure limited by explicit blast-radius victim selection, request tracing must show where a fault was absorbed or became a failure, monitoring must detect the health delta, a recovery plan must exist before injection, and the hypothesis must be an externally observable steady-state invariant with pre-agreed rejection evidence.
+        relationship: direct_support
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/025-chapter-17-chaos-engineering.md :: Breaking Things to Make Them Better"
+        contribution: Supplies the whole-system rationale - safety is not composable, two independently safe 30ms-p99.9 providers called in sequence break a 50ms client budget, and staging cannot reproduce scale effects.
+        relationship: refinement
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/025-chapter-17-chaos-engineering.md :: Injecting Chaos"
+        contribution: Provides the injection taxonomy - kill an instance, add latency, fail a specific call - and the progression from random selection to targeted search as the fault space sparsifies, including learning from faults that do not become failures.
+        relationship: refinement
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/025-chapter-17-chaos-engineering.md :: The Simian Army"
+        contribution: Contrasts opt-out adoption with sign-off waivers against opt-in for fragile estates, and adds the rule that failures must happen often enough to be routine.
+        relationship: corroboration
+    confidence: strong
+    roles: [architecture-agent, debugging-and-repair-agent, review-agent, performance-agent]
+    languages: [language-independent]
+    repository_archetypes: [distributed-system, service]
+    retrieval_terms: [chaos engineering, fault injection, blast radius, steady state hypothesis, game day, safety not composable]
+    routing:
+      activate_for_roles: [architecture-agent, debugging-and-repair-agent, review-agent, performance-agent]
+      activate_for_tasks: [resilience-review, operational-hardening, stability, analyze-incident]
+      activate_for_repository_signals: [chaos tooling, fault injection config, game day plan, distributed tracing, resilience claim]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [availability, operational, safety, evidence-quality]
+      exclude_when: [failed requests are unaffordable or the system is a single adequately tested process]
+      prerequisites: [authorized harm envelope, steady-state definition, recovery plan]
+      retrieval_priority: specialist
+      retrieval_budget_hint: 480
+      related_concepts: [operations-resilience-margin, universal-evidence-before-intervention, universal-preserve-behavior-by-default, universal-measure-claimed-improvement]
+
+  - id: operations-resilience-margin
+    title: Retain deliberate margin against drift into failure
+    category: performance
+    claim: Systems optimized toward maximal utilization and specialized efficiency drift toward their safety boundary and fail abruptly; resilience requires deliberately retained capacity margin, flexibility, and routine tolerable stress.
+    decision_rule: When an efficiency or throughput objective approaches the utilization limit, name availability margin as an explicit untraded quality attribute with an owner; counteract drift with routine low-level induced or tolerated stress that keeps failure evidence flowing, because a well-protected system stops producing the information that proves its protection works.
+    why_it_matters: Economic and workload pressure push systems toward the safety boundary invisibly - highly efficient systems handle disruption badly and break all at once rather than degrading.
+    applicable_when: [setting utilization or efficiency targets, reviewing optimization campaigns that consume headroom, assessing why a hyper-efficient system fails abruptly, value-stream optimization that specializes a system to today's tasks]
+    not_applicable_when: [systems with explicit accepted headroom policies already enforced, throwaway workloads where abrupt failure is acceptable]
+    required_evidence: [utilization trend against capacity, named margin with an owner and a floor, evidence stream proving protective mechanisms still work - incidents drills or injected stress]
+    insufficient_evidence: [absence of recent failures - the regulator paradox makes silence uninformative, cost savings from higher utilization alone, efficiency benchmarks without disruption scenarios]
+    required_inputs: [capacity and utilization data, efficiency objectives with owners, disruption tolerance requirements]
+    expected_outputs: [explicit margin policy with floor and owner, drift indicators with review triggers, routine stress cadence that keeps evidence flowing]
+    preservation_boundaries: [availability margin as an untraded attribute unless its owner trades it, flexibility reserves that efficiency work must not silently consume]
+    safe_actions: [name the margin before optimizing toward the limit, schedule routine tolerable stress, treat quiet periods as missing evidence rather than proof of safety, keep some general capacity unspecialized]
+    unsafe_actions: [pursue utilization limits without naming margin, read silence as safety, specialize every resource to today's workload, trade headroom for cost invisibly]
+    common_failure_modes: [drift into failure under economic pressure, abrupt collapse of a fully utilized system, protection atrophying unnoticed because it stopped being exercised]
+    counterexamples: [A batch analytics cluster may legitimately run at full utilization when failure means rerunning a job, not violating a service obligation.]
+    interactions: [First explicit counterweight to the performance family - performance-measurable-objective keeps objectives falsifiable while this record keeps margin from being silently traded; the evidence-manufacturing side is operations-chaos-experiment-discipline.]
+    conflicts: [conflict-efficiency-vs-resilience-margin]
+    source_support:
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/025-chapter-17-chaos-engineering.md :: Antecedents of Chaos Engineering"
+        contribution: Imports Dekker's drift-into-failure model - economic pressure plus workload pressure push the system toward the safety boundary - Weinberg's regulator paradox - the better a regulator works the less information it produces about its own quality - and the observation that highly efficient systems handle disruption badly and break all at once, justifying continuous low-level induced breakage as a balancing force.
+        relationship: direct_support
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/024-chapter-16-adaptation.md :: Team-Scale Autonomy"
+        contribution: Argues full utilization slows flow and that value-stream optimization specializes the system to today's tasks at the cost of future flexibility - the adaptability face of the same tradeoff.
+        relationship: refinement
+    confidence: strong
+    roles: [performance-agent, architecture-agent, review-agent, repository-assessment-agent]
+    languages: [language-independent]
+    repository_archetypes: [service, distributed-system, deployed systems]
+    retrieval_terms: [resilience margin, drift into failure, regulator paradox, utilization limit, headroom, slack capacity]
+    routing:
+      activate_for_roles: [performance-agent, architecture-agent, review-agent, repository-assessment-agent]
+      activate_for_tasks: [capacity-planning, performance-review, architecture-review, resilience-review]
+      activate_for_repository_signals: [utilization target, cost optimization campaign, headroom reduction, efficiency objective]
+      activate_for_languages: [language-independent]
+      activate_for_risk_classes: [availability, performance, operational, cost]
+      exclude_when: [failure cost is limited to rework with no service obligation]
+      prerequisites: [utilization and margin evidence]
+      retrieval_priority: high
+      retrieval_budget_hint: 400
+      related_concepts: [performance-measurable-objective, operations-chaos-experiment-discipline, operations-load-shedding]

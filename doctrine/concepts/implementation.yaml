@@ -170,6 +170,14 @@ concepts:
         locator: "books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/006-chapter-2-efficient-introduction-to-go.md :: Single Way of Handling Errors"
         contribution: Refines the policy for Go's explicit error control flow and causal context.
         relationship: refinement
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/007-chapter-2-case-study.md :: The Smoking Gun"
+        contribution: Documents a whole-enterprise outage caused by a cleanup path that could itself throw - a spec-permitted exception from a close() call skipped the connection close, leaking pooled connections until exhaustion - showing cleanup and error paths are part of the failure contract.
+        relationship: corroboration
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/015-chapter-9-interconnect.md :: Migratory Virtual IP Addresses"
+        contribution: Callers through a migratory failover virtual IP must expect mid-connection IO errors when the address moves, distinguish them from destination-unreachable, know that uncommitted in-flight work is lost, and retry against the new node only within circuit-breaker-style limits.
+        relationship: corroboration
     confidence: strong
     roles: [coding-agent, architecture-agent, review-agent, debugging-and-repair-agent]
     languages: [language-independent]
@@ -248,6 +256,7 @@ concepts:
     common_failure_modes: [crash loop, silent degradation, cascading corruption, unavailable diagnostics]
     counterexamples: [A batch CLI may terminate on the first integrity failure even when a long-lived service would isolate one request.]
     interactions: [The decision assumes a prior failure taxonomy and may differ by repository archetype.]
+    conflicts: [conflict-fault-tolerance-vs-let-it-crash]
     source_support:
       - source_id: SRC-PP
         locator: "books/the-pragmatic-programmer/chapters/009-chapter-4-pragmatic-paranoia.md :: Crash, Don't Trash"
@@ -261,6 +270,10 @@ concepts:
         locator: "books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/015-10-define-errors-out-of-existence.md :: 10: Define Errors Out Of Existence"
         contribution: Limits crash-based simplification to deployment contexts that can tolerate it.
         relationship: refinement
+      - source_id: SRC-RI
+        locator: "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md :: Circuit Breaker"
+        contribution: Corroborates that degraded-mode behavior is a business decision - what a caller does when a breaker is open, such as accepting an order without inventory confirmation, serving cached or generic answers, or calling a secondary, must be decided with system stakeholders rather than defaulted by engineers.
+        relationship: corroboration
     confidence: contextual
     roles: [coding-agent, architecture-agent, review-agent, debugging-and-repair-agent]
     languages: [language-independent]
@@ -598,6 +611,22 @@ concepts:
         locator: "books/fluent-python-2nd-edition-z-lib-org/chapters/014-chapter-8-type-hints-in-functions.md :: Flawed Typing and Strong Testing"
         contribution: Establishes runtime tests as protection that static type evidence cannot provide.
         relationship: refinement
+      - source_id: SRC-UT
+        locator: "books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/006-chapter-1-the-goal-of-unit-testing.md :: 1.4 What makes a successful test suite?"
+        contribution: Directs unit-testing effort at the domain model and other business-critical code, verifying infrastructure, external dependencies, and glue only briefly or indirectly, and notes this requires the domain model to be isolated from other concerns.
+        relationship: refinement
+      - source_id: SRC-UT
+        locator: "books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/011-chapter-5-mocks-and-test-fragility.md :: 5.2 Observable behavior vs. implementation details"
+        contribution: Gives an operational criterion for the contract tests may couple to - code is observable behavior only when it exposes an operation or state serving an immediate client goal, and everything else is implementation detail whose direct verification yields fragile tests.
+        relationship: refinement
+      - source_id: SRC-UT
+        locator: "books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/013-chapter-7-refactoring-toward-valuable-unit-tests.md :: 7.3 Analysis of optimal unit test coverage"
+        contribution: Adds the rule that precondition safeguards deserve dedicated tests only when they carry domain significance (class invariants), while technical safeguards without domain meaning are not worth testing.
+        relationship: refinement
+      - source_id: SRC-UT
+        locator: "books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/017-chapter-10-testing-the-database.md :: 10.5.1 Should you test reads?"
+        contribution: Sets an asymmetric evidence threshold by consequence - write operations warrant thorough database-integration coverage because mistakes corrupt persisted state and propagate to external systems, while only the most complex or important read operations justify tests.
+        relationship: refinement
     confidence: strong
     roles: [coding-agent, debugging-and-repair-agent, refactoring-agent, legacy-code-agent, review-agent, performance-agent]
     languages: [language-independent]
@@ -641,6 +670,14 @@ concepts:
         locator: "books/the-pragmatic-programmer/chapters/013-chapter-8-pragmatic-projects.md :: Testing Thoroughly"
         contribution: Corroborates contract, state, error, data, and test-validity coverage beyond lines.
         relationship: corroboration
+      - source_id: SRC-UT
+        locator: "books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/006-chapter-1-the-goal-of-unit-testing.md :: 1.3 Using coverage metrics to measure test suite quality"
+        contribution: Shows line and branch coverage prove only execution, not verification - assertion-free tests and unverified implicit outcomes still reach 100%, external-library code paths stay invisible, and mandated coverage targets create a perverse incentive.
+        relationship: corroboration
+      - source_id: SRC-UT
+        locator: "books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/010-chapter-4-the-four-pillars-of-a-good-unit-test.md :: 4.5 Exploring well-known test automation concepts"
+        contribution: Prescribes writing all tests black-box against behavior meaningful to the problem domain, while using white-box coverage analysis only to locate untested branches that are then tested black-box; a test untraceable to a business requirement should be restructured or deleted.
+        relationship: refinement
     confidence: strong
     roles: [coding-agent, review-agent, debugging-and-repair-agent, repository-assessment-agent]
     languages: [language-independent]

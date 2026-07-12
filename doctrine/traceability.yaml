@@ -2,10 +2,10 @@ schema_version: agent-doctrine-traceability/1
 corpus_snapshot_date: 2026-07-10
 coverage_definition:
   unit: Every Markdown file under each registered source's chapters directory, including front matter, part dividers, indexes, bibliographies, and other files that may be classified as non-substantive evidence.
-  expected_units: 331
-  covered_units: 331
+  expected_units: 378
+  covered_units: 378
   exclusions: []
-  note: The 343 Markdown files under books include 11 per-book README files plus books/README.md; those repository navigation files are not source chapters.
+  note: The 520 Markdown files under books include 19 per-book README files plus books/README.md; those repository navigation files are not source chapters, and the chapter files of the seven converted-but-unregistered books are outside doctrine coverage until their sources are registered.
 
 chapter_coverage_ledgers:
   - ledger: doctrine/_work/extractions/implementation-sources.md
@@ -35,6 +35,16 @@ chapter_coverage_ledgers:
       - {source_id: SRC-WELC, expected: 37, covered: 37}
       - {source_id: SRC-SDX, expected: 22, covered: 22}
     locator_audit: 139 unique chapter-heading locators validated during extraction
+  - ledger: doctrine/_work/extractions/operations-sources.md
+    sha256: 06623b1d712686f16e350ef06763c05e29bef26c92e925193ebbd796bb270a12
+    sources:
+      - {source_id: SRC-RI, expected: 27, covered: 27}
+    locator_audit: 80 unique chapter-heading locators grep-verified and section-role-confirmed during extraction
+  - ledger: doctrine/_work/extractions/testing-sources.md
+    sha256: 7a30c7e7e66c5e84f60971dcc6a2aef364a3202227bd8141f940c33c06088eed
+    sources:
+      - {source_id: SRC-UT, expected: 20, covered: 20}
+    locator_audit: 41 unique chapter-heading locators resolution-verified and section-role-confirmed during extraction
 
 canonicalization_ledgers:
   - ledger: doctrine/_work/canonicalization/implementation-language.md

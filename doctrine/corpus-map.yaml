@@ -255,9 +255,64 @@ sources:
     concepts_worth_mining: [performance-objective, measurement-semantics, benchmark-validity, profile-led-bottleneck, work-elimination, memory-lifecycle, bounded-concurrency, specialization, regression-gate]
     coverage_ledger: doctrine/_work/extractions/language-performance-sources.md#complete-chapter-coverage-ledger
 
+  - source_id: SRC-RI
+    primary_domain: Production readiness, stability under partial failure, and operability of deployed software systems.
+    strongest_contributions:
+      - stability antipattern and costed stability-pattern catalogs (timeouts, circuit breaker, bulkheads, shed load, back pressure, governor)
+      - designed failure modes, crack-stopping, and cascading-failure containment as architecture obligations
+      - overload doctrine grounded in queue physics, load shedding at the edge, and residence-time reasoning
+      - production hygiene for instances (build provenance, externalized configuration, credential custody, transparency, least privilege)
+      - zero-downtime deployment phasing, live-interface compatibility algebra, and chaos-experiment discipline
+    contextual_assumptions:
+      - revenue-critical, network-facing distributed or enterprise systems with real operations teams
+      - 2018-era cloud, VM, container, load-balancer, and CI/CD technology
+      - systems live for years in production and downtime has measurable financial cost
+    limitations:
+      - Published in 2018; cloud platform, container, tooling, and vendor specifics have aged.
+      - Evidence is dominated by first-person case studies - real, costed failures, but anecdotal, obfuscated, and survivorship-prone rather than controlled or comparative.
+      - Numerical details (thread counts, retry thresholds, dollar figures) are consequence illustrations, not portable gates.
+      - Operational advice does not grant product, migration, or execution authority; single-source support caps derived confidence at strong or contextual.
+    known_tensions:
+      - Records the fault-tolerance versus let-it-crash split without resolving it (preserved as conflict-fault-tolerance-vs-let-it-crash).
+      - Runtime control surfaces for slow-starting instances versus immutable kill-and-replace infrastructure (preserved as conflict-live-control-vs-immutable-replacement).
+      - Resilience margin and routine tolerable stress push against efficiency and utilization objectives in the performance family (preserved as conflict-efficiency-vs-resilience-margin).
+      - Weights the stability axis toward asynchronous decoupling more heavily than conflict-synchronous-vs-asynchronous-interaction's neutral rule.
+      - Pervasive timeout and error handling accepts complexity that implementation-error-surface-reduction seeks to remove.
+    likely_agent_roles: [architecture-agent, performance-agent, review-agent, debugging-and-repair-agent, coding-agent]
+    concepts_worth_mining: [designed-failure-mode, integration-point-distrust, cascading-failure, load-shedding, bounded-accumulation, transparency, build-provenance, credential-custody, zero-downtime-rollout, live-interface-compatibility, chaos-experiment, resilience-margin]
+    coverage_ledger: doctrine/_work/extractions/operations-sources.md#complete-chapter-coverage-ledger
+
+  - source_id: SRC-UT
+    primary_domain: Test-suite economics, unit-test value assessment, and mocking and integration-testing discipline for enterprise applications.
+    strongest_contributions:
+      - test value as a four-attribute product (regression protection, refactoring resistance, fast feedback, maintainability) with resistance to refactoring non-negotiable
+      - suite membership as a recurring cost-benefit judgment rather than an accumulation default
+      - unit-of-behavior test granularity and assertions against externally observable outcomes rather than implementation choreography
+      - managed/unmanaged dependency distinction with mocks restricted to unmanaged out-of-process dependencies at the outermost owned adapter
+      - database-testing prerequisites (schema in source control, migrations, per-section units of work, production-fidelity DBMS)
+      - anti-pattern catalog denying tests privileged access to the system under test
+    contextual_assumptions:
+      - enterprise-style applications with a domain model, application database, and external services
+      - 2020-era .NET/C# tooling (xUnit, Moq, Entity Framework) illustrating language-independent arguments
+      - a codebase the team is free to design and restructure, with a controllable test environment
+    limitations:
+      - Published in 2020 by a single author; examples are C#/.NET-centric and enterprise-application-scoped, so ecosystem specifics and tool guidance have narrow reach.
+      - Evidence is practitioner reasoning argued from first principles, not controlled or comparative study; war stories are illustrative.
+      - The book advocates the classical school of unit testing; that advocacy is an argued position within a live community disagreement, not neutral ground, and is preserved as a conflict rather than adopted silently.
+      - Numerical illustrations (coverage thresholds, pyramid ratios) are consequence illustrations, not portable gates; single-source support caps derived confidence at strong or contextual.
+    known_tensions:
+      - Classical versus London school on what a mock may replace (preserved as conflict-classical-vs-london-test-isolation, with WELC seam pragmatics as the legacy-context position).
+      - Restricting substitution to unmanaged dependencies conflicts with WELC's substitute-anything-for-feedback stance in untested legacy code (routed through conflict-temporary-seam-vs-long-term-design).
+      - The multiplicative value rule scores WELC/SDX provisional broad safety nets near zero; reconciled only by those records' explicit temporariness and retirement rules (conflict-broad-vs-narrow-characterization).
+      - Treating untestability of important logic as sufficient restructuring pressure sits in tension with refactoring-demonstrated-pressure and architecture-earned-boundary.
+      - Rejecting in-memory database substitutes and parallel database tests contradicts common ecosystem defaults; repository conventions take precedence per universal-repository-contract-precedence.
+    likely_agent_roles: [coding-agent, review-agent, refactoring-agent, legacy-code-agent, debugging-and-repair-agent]
+    concepts_worth_mining: [suite-net-value, unit-of-behavior, four-pillar-test-value, assert-observable-outcomes, shared-dependency-substitution, mock-unmanaged-dependencies-only, mock-at-system-edges, output-based-style-preference, humble-object-testability-split, integration-scope-selection, database-delivery-prerequisites, database-production-fidelity, no-test-privileged-access]
+    coverage_ledger: doctrine/_work/extractions/testing-sources.md#complete-chapter-coverage-ledger
+
 coverage_summary:
-  chapter_files: 331
-  covered_chapters: 331
+  chapter_files: 378
+  covered_chapters: 378
   per_source_counts:
     SRC-APOSD: 32
     SRC-CA: 48
@@ -268,5 +323,7 @@ coverage_summary:
     SRC-FSA: 35
     SRC-PP: 17
     SRC-REF: 21
+    SRC-RI: 27
     SRC-SDX: 22
+    SRC-UT: 20
     SRC-WELC: 37

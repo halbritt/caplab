@@ -113,6 +113,18 @@ sources:
       - refactoring-mechanics
       - behavior-preserving-change
       - testing-and-sequencing
+  - id: SRC-RI
+    title: "Release It!: Design and Deploy Production-Ready Software, Second Edition"
+    authors: [Michael T. Nygard]
+    corpus_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive
+    source_input_path: "sources/Release It!_ Design and Deploy Production-Ready Software ( PDFDrive ).pdf"
+    source_sha256: 02f377af78896cc71d242fe306c526ebe399606010f71fd4b5dcf65256d4269b
+    source_format: pdf
+    chapter_count: 27
+    source_roles:
+      - operational-stability-and-resilience
+      - architectural-reasoning
+      - quality-attribute-analysis
   - id: SRC-SDX
     title: "Software Design X-Rays: Fix Technical Debt with Behavioral Code Analysis"
     authors: [Adam Tornhill]
@@ -125,6 +137,18 @@ sources:
       - historical-and-hotspot-analysis
       - architectural-reasoning
       - sociotechnical-analysis
+  - id: SRC-UT
+    title: "Unit Testing: Principles, Practices, and Patterns"
+    authors: [Vladimir Khorikov]
+    corpus_path: books/manning-unit-testing-principles-practices-and-patterns-2020-1
+    source_input_path: "sources/Manning.Unit.Testing.Principles.Practices.and.Patterns.2020.1.pdf"
+    source_sha256: 63368375f2c4d176a8a5a8f769095fc3d00112c9813ef24f54b72892912ebb00
+    source_format: pdf
+    chapter_count: 20
+    source_roles:
+      - review-and-testing
+      - implementation-craft
+      - boundary-and-dependency-design
   - id: SRC-WELC
     title: Working Effectively with Legacy Code
     authors: [Michael C. Feathers]

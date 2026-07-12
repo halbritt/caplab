@@ -8,6 +8,10 @@ generated_from:
   sha256: 642ab27b7fbf063bab9ca5a53ab6f1c2adc4763da8c69603820722bdb0a61e2b
 - ledger: doctrine/_work/extractions/change-legacy-sources.md
   sha256: da751b5b8fe4bd2e04ef3df539a243257b994968be2ed0b346b5efaa1382946e
+- ledger: doctrine/_work/extractions/operations-sources.md
+  sha256: 06623b1d712686f16e350ef06763c05e29bef26c92e925193ebbd796bb270a12
+- ledger: doctrine/_work/extractions/testing-sources.md
+  sha256: 7a30c7e7e66c5e84f60971dcc6a2aef364a3202227bd8141f940c33c06088eed
 chapters:
 - source_id: SRC-CA
   chapter_path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/001-clean-architecture.md
@@ -1197,6 +1201,134 @@ chapters:
   title: About the Author
   disposition: Author background and perspective only.
   sha256: 1ca192a74f1099b96a79b4a0d133ae6bb0a54ca1b286dd7f19116d174be245d2
+- source_id: SRC-UT
+  chapter_path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/001-unit-testing-principles-practices-and-patterns.md
+  title: 'Unit Testing: Principles, Practices, and Patterns'
+  disposition: Title page, copyright, brief contents, and full table of contents; no doctrinal content.
+  sha256: 79d9a6eba556a01d750d4535df1ff37559f89726fd55c95951630e6b365933ef
+- source_id: SRC-UT
+  chapter_path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/002-preface.md
+  title: preface
+  disposition: Author's dissatisfaction with early mock-heavy tests; stated first-principles method for deriving testing guidelines;
+    reference-only.
+  sha256: 22f8a1c26c0319a3d29c7d5d13c9364386aca1403b54a198d89de4a3117a4ebb
+- source_id: SRC-UT
+  chapter_path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/003-acknowledgments.md
+  title: acknowledgments
+  disposition: 'Acknowledgments plus "about this book": audience, four-part roadmap, C#-but-language-agnostic code note, forum
+    and resources; reference-only.'
+  sha256: 09c7d5e14d40382f5b25678f87d22f220a55ea18e2df76dfce31ed102189e167
+- source_id: SRC-UT
+  chapter_path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/004-about-the-author.md
+  title: about the author
+  disposition: Author biography and cover-illustration note; no doctrinal content.
+  sha256: 86a003cfaeae494ebbddc3c0056e8429bad9f8b493e822f3276c0507b49bda29
+- source_id: SRC-UT
+  chapter_path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/005-part-1.md
+  title: Part 1
+  disposition: 'Part divider: goal of unit testing, the definitional dispute, and the chapter 3 refresher; no body doctrine.'
+  sha256: 4024225c5dd43039c7aa6e9c01412e43fa128d8b531bb02518244a7401ad9ee5
+- source_id: SRC-UT
+  chapter_path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/006-chapter-1-the-goal-of-unit-testing.md
+  title: 'Chapter 1: The goal of unit testing'
+  disposition: Unit testing's goal as sustainable project growth against entropy; tests (and all code) as liability with itemized
+    upkeep costs; testability and coverage metrics as negative-only indicators; coverage-number targets as perverse incentive;
+    successful-suite properties (integrated, targets critical code, value over maintenance cost).
+  sha256: 012401ec5809fb57cc7305005e68691e1fc99d48a21d897c652b00f0bdad3041
+- source_id: SRC-UT
+  chapter_path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/007-chapter-2-what-is-a-unit-test.md
+  title: 'Chapter 2: What is a unit test?'
+  disposition: Unit test definition (small piece, fast, isolated); classical vs London schools split on what isolation means;
+    shared/private/out-of-process/volatile dependency taxonomy and collaborator-vs-value distinction; unit of behavior vs
+    unit of code; large object graphs as design signal; classical definitions of integration and end-to-end tests.
+  sha256: e5c8c5decf48b6f293abc068aa05b91309074928a92e6ec6827baf62cc20a438
+- source_id: SRC-UT
+  chapter_path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/008-chapter-3-the-anatomy-of-a-unit-test.md
+  title: 'Chapter 3: The anatomy of a unit test'
+  disposition: AAA structure with one behavior per test and no branching; multi-line act phase as encapsulation/invariant
+    signal; fixture reuse via private factory methods instead of coupled constructor setup; plain-language domain-fact naming
+    without the method under test's name; parameterized tests and fluent assertions as readability trade-offs.
+  sha256: 1c021dd78463fca6f54694d0c4569a0888ac3df10519a5e131bd18148364d474
+- source_id: SRC-UT
+  chapter_path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/009-part-2.md
+  title: Part 2
+  disposition: 'Part divider: four pillars, mocks and fragility, testing styles, refactoring toward valuable tests; no body
+    doctrine.'
+  sha256: c8c69c7a428a651c029f587018a18f57e564e7386d9d3e746a857fec1577af97
+- source_id: SRC-UT
+  chapter_path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/010-chapter-4-the-four-pillars-of-a-good-unit-test.md
+  title: 'Chapter 4: The four pillars of a good unit test'
+  disposition: Four attributes of a good test (regression protection, refactoring resistance, fast feedback, maintainability);
+    false positives caused by implementation-detail coupling and their trust-eroding dynamics; multiplicative value estimate
+    and mutual exclusivity of the first three attributes; resistance to refactoring as non-negotiable; Test Pyramid ratios
+    with contextual exceptions; black-box by default, white-box for coverage analysis.
+  sha256: 69ac7d2c061b18cc6858bafc8236490a77236e99c40aa6122ed14cc7f11024f7
+- source_id: SRC-UT
+  chapter_path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/011-chapter-5-mocks-and-test-fragility.md
+  title: 'Chapter 5: Mocks and test fragility'
+  disposition: Mocks vs stubs (CQS mapping); observable behavior vs implementation details via client-goal criterion; hexagonal
+    architecture; intra- vs inter-system communications; mock only externally observable communications; fully controlled
+    out-of-process dependencies are part of the application.
+  sha256: 31dbd902397f4ce56a6bb4dc62fbb33a137cc7e21d14c74e9297f77987f8a917
+- source_id: SRC-UT
+  chapter_path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/012-chapter-6-styles-of-unit-testing.md
+  title: 'Chapter 6: Styles of unit testing'
+  disposition: Output-, state-, and communication-based test styles compared on the four attributes; functional core / mutable
+    shell architecture; audit-system refactoring from mocks to output-based tests; drawbacks (performance, code-base size,
+    applicability).
+  sha256: ea8f9e722ac49a00094aa798c003b98b1f8bc887412b6c6ae3f33a2f06854084
+- source_id: SRC-UT
+  chapter_path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/013-chapter-7-refactoring-toward-valuable-unit-tests.md
+  title: 'Chapter 7: Refactoring toward valuable unit tests'
+  disposition: Four types of code (complexity/domain significance x collaborators); Humble Object pattern; CRM refactoring
+    walkthrough; optimal coverage analysis and domain-significant preconditions; testability/controller-simplicity/performance
+    trilemma; CanExecute/Execute and domain events.
+  sha256: 5af490b69293b8235cd486847f33ee0a3cd4e581bac344bc1a1d54e8e2e047d6
+- source_id: SRC-UT
+  chapter_path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/014-part-3.md
+  title: 'Part 3: Integration testing'
+  disposition: Part divider introducing chapters 8-10 (integration testing, mocking best practices, database testing); no
+    body doctrine.
+  sha256: bbe0b54cf250d48af3f7faf0e165e82e668856bbb1e706fb6dc1fd5b752eb44a
+- source_id: SRC-UT
+  chapter_path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/015-chapter-8-why-integration-testing.md
+  title: 'Chapter 8: Why integration testing?'
+  disposition: Integration-test role and Test Pyramid; longest-happy-path scoping; Fail Fast as alternative; managed vs unmanaged
+    dependencies; single-implementation interfaces and YAGNI; explicit domain boundary, fewer layers, no circular dependencies;
+    support vs diagnostic logging.
+  sha256: 6804dcc3a9676332a1df054d08edb10a3ceced3d75128504ac5bc60bb70fb0c1
+- source_id: SRC-UT
+  chapter_path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/016-chapter-9-mocking-best-practices.md
+  title: 'Chapter 9: Mocking best practices'
+  disposition: Verify unmanaged-dependency interactions at the outermost owned type (system edge); spies as independent assertion
+    checkpoints; verify expected calls and absence of unexpected calls; mocks in integration tests only; mock only types you
+    own (adapters).
+  sha256: ed05c67452f04663324e6d18085151e02d6b74b4a277e3c0a7d32234bd118d3c
+- source_id: SRC-UT
+  chapter_path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/017-chapter-10-testing-the-database.md
+  title: 'Chapter 10: Testing the database'
+  disposition: Schema plus reference data in source control; migration-based delivery over state-based (data motion); transactions/unit
+    of work in production and per test section; sequential execution, cleanup at test start, no in-memory database substitutes;
+    test-code reuse (Object Mother, decorators, fluent assertions); higher threshold for reads, no direct repository tests.
+  sha256: 02d0c715f88f3193f6289cf59527227ccebaddda04d1b66872ee6c502cce05d2
+- source_id: SRC-UT
+  chapter_path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/018-part-4.md
+  title: 'Part 4: Unit testing anti-patterns'
+  disposition: Part divider introducing chapter 11 (anti-patterns analyzed with the four attributes); no body doctrine.
+  sha256: 4db0018a3bc81e8c7b2285fae5de1b33820bc6e7de94f89e93c71d376ef15c5b
+- source_id: SRC-UT
+  chapter_path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/019-chapter-11-unit-testing-anti-patterns.md
+  title: 'Chapter 11: Unit testing anti-patterns'
+  disposition: 'Anti-patterns: testing private methods (extract missing abstraction instead; rare ORM-contract exception),
+    exposing private state, leaking algorithm knowledge into tests (hardcode independently derived expected values), code
+    pollution (test-only switches), partially mocking concrete classes (split responsibilities), time as ambient context vs
+    explicit dependency.'
+  sha256: bd0d67fcb0c03f1f1418c83a47a996509cbdf11c3d16d2159069097c8c38f021
+- source_id: SRC-UT
+  chapter_path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/020-index.md
+  title: index
+  disposition: Back-matter alphabetical index; no citable doctrine content.
+  sha256: 6065a3c2aedf90aa412d49934b6cde06d2c01cf247c15eff2d6be6efd18eee01
 - source_id: SRC-FSA
   chapter_path: books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/001-fundamentals-of-software-architecture.md
   title: Fundamentals of Software Architecture
@@ -1678,6 +1810,183 @@ chapters:
   title: Bibliography
   disposition: Source trail only.
   sha256: d0ea7425ea03e3b16e87b1254973c865fbd285bebd4c18381b0fcc46a64fd4e1
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/001-release-it-second-edition.md
+  title: Release It! Second Edition
+  disposition: Title page, praise quotes, publication and copyright data; no doctrine content.
+  sha256: 9a78514222db152d55c0350f29373e5e38f236189cd6aa7621c48b02ea5b3871
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/002-contents.md
+  title: Contents
+  disposition: Table of contents only; navigation and heading cross-check.
+  sha256: 1c519e366fb46fbfd0b43f1f5b6fd976fc2645a007d5569e56346d90ae78253f
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/003-acknowledgments.md
+  title: Acknowledgments
+  disposition: Author acknowledgments only; publication context.
+  sha256: d3635e58e48fd0a45ac6e14d2b51cf1f429eb0bc4279f3dd0ecfcbdf02ac32a0
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/004-preface.md
+  title: Preface
+  disposition: Audience (revenue-critical distributed systems), four-part organization, and provenance note that case studies
+    are obfuscated but factually preserved real failures with real costs; reference-only.
+  sha256: fc8ac931747288b18891d5eeaea4642658532c0182c7163a82def6ad80e0ce64
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/005-chapter-1-living-in-production.md
+  title: 'Chapter 1: Living in Production'
+  disposition: Feature-complete is not production-ready; design for production analogized to design for manufacturability;
+    downtime and operations cost as financial design inputs; early decisions least informed but hardest to reverse; pragmatic
+    vs ivory-tower architecture.
+  sha256: 04100d69384b1512ae9a44eec1c1671a31d10d70f1729fbc7e09a4a76de3be02
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/006-part-i-create-stability.md
+  title: Part I Create Stability
+  disposition: Part divider, single heading; no body content.
+  sha256: 44123e2e6a5df6603740e3b411f0ce424a7d6a7143354fe18de0d0a3d4753f1f
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/007-chapter-2-case-study.md
+  title: 'Chapter 2: Case Study: The Exception That Grounded an Airline'
+  disposition: 'Full anatomy of an airline-grounding outage: DB failover leaves stale pooled JDBC connections, spec-permitted
+    exception in a cleanup path leaks connections, pool exhaustion blocks all threads, RMI without timeouts propagates the
+    hang to callers; incident discipline (restore service first, pre-scripted data capture) and postmortem evidence discipline.'
+  sha256: 86d19363c3239e3dfa943859ceb6895e074d2ecca9cafebbf117afa0f0cf7643
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/008-chapter-3-stabilize-your-system.md
+  title: 'Chapter 3: Stabilize Your System'
+  disposition: Stability vocabulary (transaction, system, impulse, stress, strain, longevity); leaks and data growth escape
+    short-lived test environments; failure modes must be designed like crumple zones; fault/error/failure chain; tight coupling
+    accelerates crack propagation; fault-tolerance vs let-it-crash camps.
+  sha256: 17b7e117f846c755352c7723c769c370ffccb285674cd240e91a4aa736a3c057
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md
+  title: 'Chapter 4: Stability Antipatterns'
+  disposition: 'Catalog of production failure amplifiers: integration points (sockets, HTTP, vendor libraries), chain reactions
+    in homogeneous farms, cascading failures via drained pools and missing timeouts, user/traffic/session pressure, blocked
+    threads as proximate cause of most failures, self-denial attacks, scaling effects, unbalanced capacities, dogpile, control-plane
+    force multiplication, slow responses, unbounded result sets.'
+  sha256: d21ee13279f215ea29082b86f2eff14da3a195fb665c4c4875b10b976da99760
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md
+  title: 'Chapter 5: Stability Patterns'
+  disposition: 'Costed countermeasure catalog: Timeouts, Circuit Breaker, Bulkheads, Steady State, Fail Fast, Let It Crash,
+    Handshaking, Test Harnesses, Decoupling Middleware, Shed Load, Back Pressure, Governor; explicit warning that pattern
+    count is not a quality metric and that each pattern is a judgment call.'
+  sha256: 544eb287ff665b989811bb6a2ab4411d4717e063e9ed415cbd071818b559d918
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/011-part-ii-design-for-production.md
+  title: Part II Design for Production
+  disposition: One-line part divider introducing Part II (design for production); no body content.
+  sha256: aaa9b8aa036f152f07890ba290db74ba4d31b17bbf7ea4a6a8da1def4351564c
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/012-chapter-6-case-study-phenomenal-cosmic-powers-itty-bitty-living-space.md
+  title: 'Chapter 6: Case Study: Phenomenal Cosmic Powers, Itty-Bitty Living Space'
+  disposition: 'Black Friday retail outage anatomy: timeout-less connection pools blocking 3,000 threads at low CPU, latency
+    averages that hide timeouts, alert fatigue from false-positive pages, and recovery by scripted runtime component reconfiguration
+    instead of six-hour full restarts.'
+  sha256: ca717bd44af307a27dc007679c7df60cc9fd5c47685bd0bcccc6b3e88f5ef479
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/013-chapter-7-foundations.md
+  title: 'Chapter 7: Foundations'
+  disposition: 'Physical foundation layer: hostname-vs-DNS many-to-many mappings, multihomed hosts with production/backup/admin
+    networks, explicit socket binding, VLANs, physical/VM/container/cloud deployment constraints, oversubscription, untrustworthy
+    VM clocks, ephemeral identity, and the 12-factor checklist.'
+  sha256: 4bc37faec14e3909879c9e77147fb2658fde462a23c40063c96098ecf02eea0f
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/014-chapter-8-processes-on-machines.md
+  title: 'Chapter 8: Processes on Machines'
+  disposition: 'Single-instance production hygiene: precise service/instance/executable vocabulary, build chain of custody,
+    immutable and disposable infrastructure, externalized per-environment configuration and credentials, and designed-in transparency
+    via operator-aimed logs, metrics, and health checks.'
+  sha256: df2ceb44961cc6aed5fb2279dce9e72a0949c7be7bab532ac658c180b2303459
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/015-chapter-9-interconnect.md
+  title: 'Chapter 9: Interconnect'
+  disposition: 'Connecting instances into systems: DNS naming and round-robin limits, GSLB, software/hardware load balancing
+    with health checks, demand control and load shedding (queues as the failure mechanism), multihomed network routing hazards,
+    dynamic service discovery and its CAP behavior, migratory virtual IPs.'
+  sha256: 70d4fd56155ca36aaf0f73af638701dce3c7503f4fe5158d63fc3e1bc4a2f011
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/016-chapter-10-control-plane.md
+  title: 'Chapter 10: Control Plane'
+  disposition: Control-plane cost/benefit sizing, automation-amplified failure (AWS S3 and Reddit outages) and safeguards,
+    platform teams as service providers, system-wide transparency framed as user experience and economic value, log/metrics
+    collection, configuration services under partition, deployment pipelines and canaries, and scriptable command-and-control
+    interfaces.
+  sha256: 51c247f275343da063514e0ad54682722807b03c90ce6be6bc82708555126842
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/017-chapter-11-security.md
+  title: 'Chapter 11: Security'
+  disposition: 'Security baked in, not sprinkled on: the OWASP Top 10 flaw classes with defenses, least privilege for processes
+    and containers, credential custody (vaulting, file permissions, memory hygiene), dependency-tree vulnerability tracking,
+    and security as a continuous patch-and-redeploy process.'
+  sha256: 6e64320b1e10537f00c6795552f027f00db922c6f158d2b8e92ab9a0629c9996
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/018-part-iii-deliver-your-system.md
+  title: Part III Deliver Your System
+  disposition: One-line part divider introducing Part III (delivery); no body content.
+  sha256: 07161cffc38a64ff3e68808110027d08a34a27b62ee6c3dd8c529124e6ecd380
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/019-chapter-12-case-study-waiting-for-godot.md
+  title: 'Chapter 12: Case Study: Waiting for Godot'
+  disposition: Narrative case study of a manual, playbook-driven, ~40-person, ~$100k overnight release that fails UAT (QA
+    data did not match production) and rolls back; motivates deployment automation and is used only as corroborating cost
+    evidence, not as a standalone rule source.
+  sha256: 352da677f8f28771e09bef9a64c83dc1476b123f526c64dd64e39e20ffead402
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/020-chapter-13-design-for-deployment.md
+  title: 'Chapter 13: Design for Deployment'
+  disposition: 'Zero-downtime deployment as a designed feature: build pipelines, convergence vs immutable infrastructure,
+    micro/macro rollout timescales (prepare, drain, apply, warm-up), expand/contract schema phasing with shims, schemaless-version
+    ordering, trickle-then-batch migration, cache-busting web assets, batched health-gated rollout with canary, cleanup/contraction.'
+  sha256: e753548374ac4684c8fbb809d767c61f6c9a8e8396ca6f571cbb406269b4d20c
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/021-chapter-14-handling-versions.md
+  title: 'Chapter 14: Handling Versions'
+  disposition: 'Version compatibility: API as layered stack of agreements; Postel asymmetry as a required/optional set algebra
+    (require less, accept more, return more); live implementation as de facto specification; version-discriminator routing
+    options for unavoidable breaks; consumer-owned contract tests and per-side conformance testing; defensive handling of
+    others'' versions.'
+  sha256: 06ebf9b42e9d1ab8573b6342dfa88f7ef4a19f3a6ccfb8a429389165cea9df31
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/022-part-iv-solve-systemic-problems.md
+  title: Part IV Solve Systemic Problems
+  disposition: Part divider only; single heading, no content.
+  sha256: 4cae1e373c144826a8fd3865c92c3ec87c93cf81c391685074e2393672f8755b
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/023-chapter-15-case-study-trampled-by-your-own-customers.md
+  title: 'Chapter 15: Case Study: Trampled by Your Own Customers'
+  disposition: 'Launch-day crash case study: sessions (not users) as the real resource unit; polite load-test scripts vs hostile
+    production traffic (bots, cookie-less spiders, scrapers, 404 storms); missing self-protective safety devices; aftermath
+    of throttles, static pages, IP blocks; nothing is as permanent as a temporary fix; Conway''s law sidebar.'
+  sha256: 3b88a6b77212f41cdf6a9a9505fd76b19511a0257d4db04ba02ed689399cb278
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/024-chapter-16-adaptation.md
+  title: 'Chapter 16: Adaptation'
+  disposition: 'Adaptation across process and architecture: decision loops and thrashing (change cadence vs feedback cadence),
+    platform teams, painless frequent releases, service extinction, efficiency-vs-flexibility tradeoff, evolutionary/component
+    architecture, loose clustering, explicit context, Baldwin and Clark modular operators as options, information architecture
+    (services issue identifiers, URL dualism, plural models, concept leakage).'
+  sha256: b5d5d9745628d7fc95e1b1fa94342e7bd49e13b941c7ecf18004fabe16067eb0
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/025-chapter-17-chaos-engineering.md
+  title: 'Chapter 17: Chaos Engineering'
+  disposition: 'Chaos engineering as empirical whole-system experimentation: safety is not composable; drift into failure
+    and the regulator paradox; Simian Army and opt-in vs opt-out adoption; prerequisites (tolerable cost, blast radius, tracing,
+    health definition, recovery plan); hypothesis design around externally observable steady state; injection types (kill,
+    latency, call failure); random-to-targeted fault search; learning from faults that do not become failures; disaster/zombie
+    simulations.'
+  sha256: 43647d48f179cccbfc4c49200c08f7b56eb17f5b65942ce05724f3c616dd842e
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/026-bibliography.md
+  title: Bibliography
+  disposition: Citation list only (Baldwin and Clark, Dekker, Humble and Farley, Taleb, Weinberg, etc.); no doctrine content.
+  sha256: 280ff7709be7d6caf9901744f3513fc7936f1bd7ed1b59280529fbbd1a8bad77
+- source_id: SRC-RI
+  chapter_path: books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/027-index.md
+  title: Index
+  disposition: Back-of-book index rendered as tables, plus conversion-flattened trailing publisher advertisements (embedded
+    headings such as "Level Up" are ad copy, not book content); reference-only.
+  sha256: 3650dc27b7bd051681f707bddab0cd5195ba28842cfde0e2d4520034fa2ac2ee
 - source_id: SRC-PP
   chapter_path: books/the-pragmatic-programmer/chapters/001-what-others-in-the-trenches-say-about-the-pragmatic-programmer.md
   title: Endorsements/title/copyright
