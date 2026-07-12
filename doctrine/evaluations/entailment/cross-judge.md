@@ -57,3 +57,24 @@ Screening precision after the section-map and quote-verification fixes is
 high enough that the entire two-judge hard-flag surface for 357 citations is
 seven items. The remaining risk the gold queue must carry is recall: neither
 judge audits what the doctrine failed to cite.
+
+
+## Addendum — SRC-RI and SRC-UT campaign citations (2026-07-13)
+
+Both judges screened the 123 citations added by the Release It! / Unit
+Testing extraction campaign under `entailment-prompt/5`:
+
+| | qwen3.6:27b | GLM 5.2 |
+|---|---:|---:|
+| supported | 108 | 109 |
+| partially_supported | 1 | 5 |
+| quote_not_found | 14 | 9 |
+| not_supported / contradicted | **0** | **0** |
+
+100/123 exact agreement (97 double-supported); **no citation received a
+hard flag from either judge** — against 14 hard flags in the original
+corpus's first screening. The campaign enforced section-scoped
+contributions and map-verified locators at extraction time, which is
+where that difference comes from. The 21 distinct quote_not_found
+targets are paraphrase suspects for light bench audit; the remaining
+disagreements are gradations.

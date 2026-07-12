@@ -7,19 +7,19 @@ Each verdict is an observation of model output supporting an inference
 about entailment. It is screening evidence, not verification and not
 acceptance; it does not modify doctrine.
 
-Records: 1516 unique judgment keys (1534 result lines).
+Records: 1762 unique judgment keys (1780 result lines).
 
 ## Verdict counts
 
 | verdict | count |
 |---|---|
-| supported | 1270 |
-| partially_supported | 134 |
+| supported | 1487 |
+| partially_supported | 140 |
 | not_supported | 21 |
 | contradicted | 4 |
 | insufficient_context | 4 |
 | unparseable | 1 |
-| quote_not_found | 82 |
+| quote_not_found | 105 |
 
 ## Verdicts by source
 
@@ -34,7 +34,9 @@ Records: 1516 unique judgment keys (1534 result lines).
 | SRC-FSA | 137 | 20 | 4 | 0 | 0 | 0 | 0 | 0 | 10 | 171 |
 | SRC-PP | 70 | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 6 | 83 |
 | SRC-REF | 71 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 77 |
+| SRC-RI | 140 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 13 | 158 |
 | SRC-SDX | 100 | 19 | 2 | 0 | 0 | 0 | 1 | 0 | 9 | 131 |
+| SRC-UT | 77 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 10 | 88 |
 | SRC-WELC | 66 | 21 | 3 | 0 | 0 | 0 | 0 | 0 | 9 | 99 |
 
 ## Flagged entries (negative, incomplete, or invalid screening evidence)
@@ -62,12 +64,14 @@ Records: 1516 unique judgment keys (1534 result lines).
 - `not_supported` — concept `architecture-metrics-as-signals` — `books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/011-chapter-6-measuring-and-governing-architecture-characteristics.md :: They aren't physics`
 - `quote_not_found` — concept `architecture-scoped-characteristics` — `books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/009-chapter-4-architecture-characteristics-defined.md :: Influences some structural aspect of the design`
 - `quote_not_found` — concept `architecture-scoped-characteristics` — `books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/012-chapter-7-scope-of-architecture-characteristics.md :: Architectural Quanta and Granularity`
+- `quote_not_found` — concept `architecture-selective-option-preservation` — `books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/024-chapter-16-adaptation.md :: System Architecture`
 - `quote_not_found` — concept `architecture-structural-constraint-enforcement` — `books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/046-chapter-34-the-missing-chapter.md :: ENCAPSULATION`
 - `quote_not_found` — concept `debugging-causal-repair` — `books/code-complete-2nd-edition-v413hav/chapters/032-chapter-23-debugging.md :: 23.3 Fixing a Defect`
 - `quote_not_found` — concept `debugging-hypothesis-led-investigation` — `books/code-complete-2nd-edition-v413hav/chapters/032-chapter-23-debugging.md :: The Scientific Method of Debugging`
 - `quote_not_found` — concept `debugging-hypothesis-led-investigation` — `books/code-complete-2nd-edition-v413hav/chapters/032-chapter-23-debugging.md :: The Scientific Method of Debugging`
 - `quote_not_found` — concept `domain-aggregate-invariant-boundary` — `books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/007-chapter-6-the-life-cycle-of-a-domain-object.md :: Aggregates`
 - `contradicted` — concept `domain-anticorruption-layer` — `books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/035-chapter-24-partial-boundaries.md :: FACADES`
+- `quote_not_found` — concept `domain-bounded-context` — `books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/024-chapter-16-adaptation.md :: Information Architecture`
 - `quote_not_found` — concept `domain-context-relationship-selection` — `books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/016-chapter-14-maintaining-model-integrity.md :: Choosing Your Model Context Strategy`
 - `quote_not_found` — concept `domain-core-domain-priority` — `books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/017-chapter-15-distillation.md :: Generic Subdomains`
 - `quote_not_found` — concept `domain-factory-lifecycle` — `books/domain-driven-design-tackling-complexity-in-the-heart-of-software-eric-evans/chapters/007-chapter-6-the-life-cycle-of-a-domain-object.md :: Factories`
@@ -90,6 +94,8 @@ Records: 1516 unique judgment keys (1534 result lines).
 - `quote_not_found` — concept `implementation-explicit-failure-policy` — `books/code-complete-2nd-edition-v413hav/chapters/014-chapter-8-defensive-programming.md :: 8.3 Error-Handling Techniques`
 - `contradicted` — concept `implementation-explicit-failure-policy` — `books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/015-10-define-errors-out-of-existence.md :: 10: Define Errors Out Of Existence`
 - `insufficient_context` — concept `implementation-explicit-failure-policy` — `books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/015-10-define-errors-out-of-existence.md :: 10: Define Errors Out Of Existence`
+- `quote_not_found` — concept `implementation-explicit-failure-policy` — `books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/015-chapter-9-interconnect.md :: Migratory Virtual IP Addresses`
+- `quote_not_found` — concept `implementation-explicit-failure-policy` — `books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/015-chapter-9-interconnect.md :: Migratory Virtual IP Addresses`
 - `not_supported` — concept `implementation-fail-fast-or-recover` — `books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/015-10-define-errors-out-of-existence.md :: 10: Define Errors Out Of Existence`
 - `quote_not_found` — concept `implementation-minimal-coherent-api` — `books/code-complete-2nd-edition-v413hav/chapters/013-chapter-7-high-quality-routines.md :: 7.5 How to Use Routine Parameters`
 - `quote_not_found` — concept `implementation-minimal-coherent-api` — `books/code-complete-2nd-edition-v413hav/chapters/013-chapter-7-high-quality-routines.md :: 7.5 How to Use Routine Parameters`
@@ -97,6 +103,8 @@ Records: 1516 unique judgment keys (1534 result lines).
 - `quote_not_found` — concept `implementation-readiness` — `books/the-pragmatic-programmer/chapters/012-chapter-7-before-the-project.md :: **36** The Requirements Pit`
 - `quote_not_found` — concept `implementation-representation-fit` — `books/fluent-python-2nd-edition-z-lib-org/chapters/007-chapter-2-an-array-of-sequences.md :: When a List Is Not the Answer`
 - `not_supported` — concept `implementation-risk-driven-tests` — `books/code-complete-2nd-edition-v413hav/chapters/031-chapter-22-developer-testing.md :: 22.3 Bag of Testing Tricks`
+- `quote_not_found` — concept `implementation-risk-driven-tests` — `books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/011-chapter-5-mocks-and-test-fragility.md :: 5.2 Observable behavior vs. implementation details`
+- `quote_not_found` — concept `implementation-risk-driven-tests` — `books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/011-chapter-5-mocks-and-test-fragility.md :: 5.2 Observable behavior vs. implementation details`
 - `quote_not_found` — concept `implementation-risk-driven-tests` — `books/the-pragmatic-programmer/chapters/013-chapter-8-pragmatic-projects.md :: What to Test`
 - `quote_not_found` — concept `implementation-risk-driven-tests` — `books/the-pragmatic-programmer/chapters/013-chapter-8-pragmatic-projects.md :: What to Test`
 - `quote_not_found` — concept `legacy-characterization-surfaces` — `books/programming-working-effectively-with-legacy-code/chapters/004-preface.md :: Preface`
@@ -111,6 +119,15 @@ Records: 1516 unique judgment keys (1534 result lines).
 - `not_supported` — concept `legacy-unprotected-enabling-edit` — `books/programming-working-effectively-with-legacy-code/chapters/031-chapter-23-how-do-i-know-that-i-m-not-breaking-anything.md :: Hyperaware Editing`
 - `quote_not_found` — concept `legacy-unprotected-enabling-edit` — `books/programming-working-effectively-with-legacy-code/chapters/031-chapter-23-how-do-i-know-that-i-m-not-breaking-anything.md :: Lean on the Compiler`
 - `quote_not_found` — concept `legacy-unprotected-enabling-edit` — `books/programming-working-effectively-with-legacy-code/chapters/031-chapter-23-how-do-i-know-that-i-m-not-breaking-anything.md :: Lean on the Compiler`
+- `quote_not_found` — concept `operations-automation-safeguards` — `books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Force Multiplier`
+- `quote_not_found` — concept `operations-bounded-accumulation` — `books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/010-chapter-5-stability-patterns.md :: Steady State`
+- `quote_not_found` — concept `operations-cascading-failure-halting` — `books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Cascading Failures`
+- `quote_not_found` — concept `operations-chaos-experiment-discipline` — `books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/025-chapter-17-chaos-engineering.md :: Injecting Chaos`
+- `quote_not_found` — concept `operations-designed-failure-modes` — `books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/008-chapter-3-stabilize-your-system.md :: Chain of Failure`
+- `quote_not_found` — concept `operations-ephemeral-instance-design` — `books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/013-chapter-7-foundations.md :: Virtual Machines in the Data Center`
+- `quote_not_found` — concept `operations-integration-point-distrust` — `books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Integration Points`
+- `quote_not_found` — concept `operations-synchronized-demand-dispersion` — `books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Dogpile`
+- `quote_not_found` — concept `operations-zero-downtime-rollout` — `books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/020-chapter-13-design-for-deployment.md :: Phases of Deployment`
 - `quote_not_found` — concept `performance-cache-validity` — `books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/015-chapter-11-optimization-patterns.md :: Reuse Memory`
 - `quote_not_found` — concept `performance-cache-validity` — `books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/015-chapter-11-optimization-patterns.md :: Reuse Memory`
 - `quote_not_found` — concept `performance-cache-validity` — `books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/015-chapter-11-optimization-patterns.md :: Reuse Memory`
@@ -141,9 +158,17 @@ Records: 1516 unique judgment keys (1534 result lines).
 - `quote_not_found` — concept `repository-assessment-complexity-trend` — `books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/007-chapter-2-identify-code-with-high-interest-rates.md :: Evaluate Hotspots with Complexity Trends`
 - `quote_not_found` — concept `repository-assessment-logical-change-set` — `books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/015-chapter-9-systems-of-systems-analyzing-multiple-repositories-and-microservices.md :: Use Logical Change Sets to Group Commits`
 - `quote_not_found` — concept `repository-assessment-metrics-not-performance` — `books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/017-appendix-a1-the-hazards-of-productivity-and-performance-metrics.md :: Adaptive Behavior and the Destruction of a Data Source`
+- `quote_not_found` — concept `testing-assert-observable-outcomes` — `books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/010-chapter-4-the-four-pillars-of-a-good-unit-test.md :: 4.1 Diving into the four pillars of a good unit test`
+- `quote_not_found` — concept `testing-assert-observable-outcomes` — `books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/010-chapter-4-the-four-pillars-of-a-good-unit-test.md :: 4.2 The intrinsic connection between the first two attributes`
 - `not_supported` — concept `testing-coverage-is-not-adequacy` — `books/code-complete-2nd-edition-v413hav/chapters/031-chapter-22-developer-testing.md :: Coverage Monitors`
 - `quote_not_found` — concept `testing-coverage-is-not-adequacy` — `books/code-complete-2nd-edition-v413hav/chapters/031-chapter-22-developer-testing.md :: Coverage Monitors`
 - `quote_not_found` — concept `testing-design-before-feature-tests` — `books/code-complete-2nd-edition-v413hav/chapters/011-chapter-5-design-in-construction.md :: How Much Design Is Enough?`
+- `quote_not_found` — concept `testing-humble-object-testability-split` — `books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/013-chapter-7-refactoring-toward-valuable-unit-tests.md :: 7.1.1 The four types of code`
+- `quote_not_found` — concept `testing-humble-object-testability-split` — `books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/013-chapter-7-refactoring-toward-valuable-unit-tests.md :: 7.4 Handling conditional logic in controllers`
+- `quote_not_found` — concept `testing-no-test-privileged-access` — `books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/019-chapter-11-unit-testing-anti-patterns.md :: 11.5 Mocking concrete classes`
+- `quote_not_found` — concept `testing-self-contained-test-anatomy` — `books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/008-chapter-3-the-anatomy-of-a-unit-test.md :: 3.1 How to structure a unit test`
+- `quote_not_found` — concept `testing-shared-dependency-substitution` — `books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/007-chapter-2-what-is-a-unit-test.md :: 2.1 The definition of "unit test"`
+- `quote_not_found` — concept `testing-suite-net-value` — `books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/006-chapter-1-the-goal-of-unit-testing.md :: 1.4 What makes a successful test suite?`
 - `quote_not_found` — concept `universal-earned-abstraction` — `books/the-pragmatic-programmer/chapters/007-chapter-2-a-pragmatic-approach.md :: The Evils of Duplication`
 - `quote_not_found` — concept `universal-explicit-invariants` — `books/code-complete-2nd-edition-v413hav/chapters/014-chapter-8-defensive-programming.md :: 8.2 Assertions`
 - `quote_not_found` — concept `universal-information-hiding` — `books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/010-5-information-hiding-and-leakage.md :: 5: Information Hiding (and Leakage)`
@@ -158,4 +183,4 @@ None.
 
 ## Latency
 
-Mean latency over 1512 model-judged records: 31.29s.
+Mean latency over 1758 model-judged records: 31.20s.
