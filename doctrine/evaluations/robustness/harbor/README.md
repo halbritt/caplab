@@ -111,9 +111,17 @@ harbor run -p doctrine/evaluations/robustness/harbor/tasks/checkout-retries \
   idempotency-key retry. Exercises `universal-evidence-before-intervention`
   and interface-contract reading. Validated 2026-07-12 on `harbor==0.18.0`
   (legacy `version = "1.0"` task format loads unchanged): oracle 1.0,
-  nop 0.3, and both live `terminus-2` subjects (`qwen3.6-35b-a3b`,
-  GLM 5.2) earned 1.0 by reading `docs/gateway-api.md` and reusing an
-  `Idempotency-Key`; run records stayed in the session scratchpad.
+  nop 0.3, and all four live `terminus-2` subjects — `qwen3.6-35b-a3b`,
+  GLM 5.2, GPT-5.6 (terra), and Claude Fable 5 — earned 1.0 by reading
+  `docs/gateway-api.md` and reusing an `Idempotency-Key`; run records
+  stayed in the session scratchpad. No subject landed on the 0.5
+  naive-retry trap, so the current gradient separates agents from no-ops
+  but does not yet discriminate among frontier models.
+
+  Operational note: `terminus-2` sends no `max_tokens`, so OpenRouter
+  reserves the model's full output limit times its completion price
+  against remaining credits before each request; for expensive models cap
+  it with `--ak 'llm_kwargs={"max_tokens": 8192}'`.
 
 ## Boundaries
 
