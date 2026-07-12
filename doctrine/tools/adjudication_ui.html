@@ -155,6 +155,9 @@ dl.kv pre{font:11.5px/1.5 var(--mono);background:var(--ink);border:1px solid var
 .vgroups{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
 .vgroup{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .vgroup>span{font:10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--tx-faint);min-width:86px;text-align:right}
+.vgroup.dim{opacity:.38;transition:opacity .15s}
+.vgroup.dim:hover,.vgroup.dim:focus-within{opacity:1}
+.vhint{font:10.5px var(--mono);color:var(--tx-faint);margin-top:2px}
 .vbtn{border:1px solid var(--line);border-radius:4px;padding:5px 12px;font:12.5px var(--mono);color:var(--tx-dim);background:var(--ink)}
 .vbtn:hover{border-color:var(--tx-faint);color:var(--tx)}
 .vbtn[aria-pressed="true"]{background:var(--hl);color:var(--hl-ink);border-color:var(--hl);font-weight:600}
@@ -283,6 +286,17 @@ var VGROUPS = [
   ["action",     ["action-warranted","no-change","abstention"]],
   ["transition", ["transition-allowed","transition-forbidden"]]
 ];
+// Which verdict groups fit each candidate kind's question. Any enum verdict
+// stays schema-valid; the others are dimmed, not disabled.
+var KIND_GROUPS = {
+  "source-support":       ["evidence","relevance"],
+  "support-relationship": ["evidence","relevance"],
+  "edge-relation":        ["evidence","relevance"],
+  "agent-role":           ["sufficiency","action"],
+  "risk-class":           ["sufficiency","action"],
+  "authority-transition": ["transition","sufficiency"],
+  "outcome":              ["action","sufficiency"]
+};
 var FINDINGS = [
   ["citation-holds","Citation holds","holds"],
   ["citation-defective","Citation defective","defective"],
@@ -712,11 +726,17 @@ function renderCandidate(c, pos, total){
   var paths = evidencePathsFor(c);
   h += '<section class="judgment"><h3>Human disposition — your judgment</h3>'
      + '<div class="rule">Recorded verbatim in human-dispositions.json under your name. Machine output above is screening; do not copy a model verdict you have not independently judged.</div>'
-     + '<div class="vgroups">' + VGROUPS.map(function(g){
-         return '<div class="vgroup"><span>'+g[0]+"</span>" + g[1].map(function(v){
-           return '<button class="vbtn" data-verdict="'+v+'" aria-pressed="false">'+v+"</button>";
-         }).join("") + "</div>";
-       }).join("") + "</div>"
+     + (function(){
+         var rec = KIND_GROUPS[c.kind] || VGROUPS.map(function(g){return g[0];});
+         return '<div class="vgroups">' + VGROUPS.map(function(g){
+           var dim = rec.indexOf(g[0]) === -1 ? " dim" : "";
+           return '<div class="vgroup'+dim+'"><span>'+g[0]+"</span>" + g[1].map(function(v){
+             return '<button class="vbtn" data-verdict="'+v+'" aria-pressed="false">'+v+"</button>";
+           }).join("") + "</div>";
+         }).join("")
+         + '<div class="vhint">One verdict answers this candidate\u2019s question \u2014 the highlighted group(s) fit a '+esc(c.kind)+' candidate; dimmed verdicts stay selectable for edge cases.</div>'
+         + "</div>";
+       })()
      + '<div class="jfield"><label>rationale — required</label><textarea id="d-rationale" placeholder="'+(direct?"what the reviewed evidence establishes and why the verdict follows":"the constructed scenario, its evidence, and why the verdict follows")+'"></textarea></div>'
      + '<div class="jfield"><label>residual uncertainty — required</label><textarea id="d-uncertainty" placeholder="what could change this judgment; rivals not ruled out"></textarea></div>'
      + '<div class="jfield"><label>evidence reviewed (min 1)</label><div class="evlist" id="evlist">'
