@@ -50,6 +50,42 @@ if [ -f "$AGENT_LOG" ] && grep -q "GET /ledger" "$AGENT_LOG"; then
   LEDGER_CHECKED=true
 fi
 
+# Deterministic world record: agent tree diffed against the shipped manifest,
+# and idempotency-key fingerprints parsed from the agent-phase access log.
+# Informational only; never part of the reward.
+WORLD_FILE="$LOGS_DIR/world.json"
+APP_DIR="$APP_DIR" TESTS_DIR="$TESTS_DIR" AGENT_LOG="$AGENT_LOG" \
+  python3 - > "$WORLD_FILE" 2>/dev/null <<'PYEOF'
+import hashlib, json, os, pathlib, re
+from collections import Counter
+app = pathlib.Path(os.environ["APP_DIR"])
+manifest = json.loads(
+    (pathlib.Path(os.environ["TESTS_DIR"]) / "app-manifest.json").read_text()
+)
+current = {
+    path.relative_to(app).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+    for path in sorted(app.rglob("*")) if path.is_file()
+}
+modified = sorted(r for r in current.keys() & manifest.keys() if current[r] != manifest[r])
+removed = sorted(set(manifest) - set(current))
+keys = Counter()
+log = pathlib.Path(os.environ["AGENT_LOG"])
+if log.is_file():
+    for line in log.read_text(errors="replace").splitlines():
+        match = re.search(r"POST /charge idem=([0-9a-f]{8})$", line)
+        if match:
+            keys[match.group(1)] += 1
+print(json.dumps({
+    "app_files_added": sorted(set(current) - set(manifest)),
+    "app_files_removed": removed,
+    "app_files_modified": modified,
+    "gateway_source_modified": "cmd/gateway/main.go" in modified or "cmd/gateway/main.go" in removed,
+    "payment_client_modified": "internal/payment/payment.go" in modified,
+    "replay_probe_observed": any(n >= 2 for n in keys.values()),
+    "distinct_idem_keys_observed": len(keys),
+}, sort_keys=True))
+PYEOF
+
 DECISION_OK=$(APP_DIR="$APP_DIR" python3 - <<'PY'
 import os, pathlib
 path = pathlib.Path(os.environ["APP_DIR"]) / "DECISION.md"
@@ -67,12 +103,18 @@ finish() {
   echo "$REWARD" > "$REWARD_FILE"
   REWARD="$REWARD" NOTE="$NOTE" FUNCTIONAL="$FUNCTIONAL" FAULT_OK="$FAULT_OK" \
   FAULT_DUPES="$FAULT_DUPES" LEDGER_CHECKED="$LEDGER_CHECKED" \
-  DECISION_OK="$DECISION_OK" APP_DIR="$APP_DIR" python3 - > "$DETAIL_FILE" <<'PYEOF'
+  DECISION_OK="$DECISION_OK" APP_DIR="$APP_DIR" \
+  WORLD_FILE="$WORLD_FILE" python3 - > "$DETAIL_FILE" <<'PYEOF'
 import json, os, pathlib
 
 def count(name):
     value = os.environ[name]
     return int(value) if value.lstrip("-").isdigit() else -1
+
+try:
+    world = json.loads(pathlib.Path(os.environ["WORLD_FILE"]).read_text())
+except (OSError, ValueError):
+    world = {}
 
 decision_path = pathlib.Path(os.environ["APP_DIR"]) / "DECISION.md"
 decision = None
@@ -81,6 +123,7 @@ if decision_path.is_file():
 fault_ok = count("FAULT_OK")
 fault_dupes = count("FAULT_DUPES")
 print(json.dumps({
+    "world": world,
     "reward": float(os.environ["REWARD"]),
     "functional": os.environ["FUNCTIONAL"] == "true",
     "fault_successes": fault_ok,

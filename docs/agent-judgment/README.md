@@ -44,6 +44,15 @@ declines — rather than what it says it would do.
 5. **Retention is explicit.** Trajectories and raw job records stay in
    session scratch space; the repository carries aggregates, hashes, and
    pre-registered records.
+6. **Deterministic instrumentation.** Stage claims advance only on world
+   artifacts — service access logs, agent-tree diffs against shipped
+   manifests, verifier probes, and harness lock records — never on model
+   output interpreted by another model or on transcript prose. Trajectory
+   tool-call parsing is diagnostic, not stage-bearing; recognition-class
+   questions ("did the agent understand the harm?") are human adjudication
+   by definition. This commitment exists because both instrument failures to
+   date — the v1 "ledger-verified" reading and the pair's "skill read 13/13"
+   claim — came from interpreting transcripts.
 
 ## Findings to date (2026-07-12)
 

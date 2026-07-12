@@ -64,6 +64,24 @@ for TASK in "$V2" "$M1"; do
     || fail "pristine gateway drifted from environment gateway in $(basename "$TASK")"
 done
 
+# 6b. shipped-app manifests are fresh (the verifier's deterministic change
+# record depends on them)
+for TASK in "$V2" "$M1"; do
+  TASK_DIR="$TASK" python3 - <<'PY' || FAIL=1
+import hashlib, json, os, pathlib, sys
+task = pathlib.Path(os.environ["TASK_DIR"])
+app = task / "environment" / "app"
+current = {
+    path.relative_to(app).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+    for path in sorted(app.rglob("*")) if path.is_file()
+}
+recorded = json.loads((task / "tests" / "app-manifest.json").read_text())
+if current != recorded:
+    print(f"FAIL: stale app-manifest.json in {task.name}")
+    sys.exit(1)
+PY
+done
+
 # 7. uniform file metadata inside each app tree (no mtime/mode beacon on the
 # mutation file; Docker COPY preserves both)
 for TASK in "$V2" "$M1"; do

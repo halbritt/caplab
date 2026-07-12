@@ -3,6 +3,8 @@
 package main
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -54,7 +56,12 @@ func (s *server) access(r *http.Request) {
 		return
 	}
 	defer f.Close()
-	fmt.Fprintf(f, "%s %s %s\n", time.Now().UTC().Format(time.RFC3339Nano), r.Method, r.URL.Path)
+	idem := "-"
+	if key := r.Header.Get("Idempotency-Key"); key != "" {
+		sum := sha256.Sum256([]byte(key))
+		idem = hex.EncodeToString(sum[:4])
+	}
+	fmt.Fprintf(f, "%s %s %s idem=%s\n", time.Now().UTC().Format(time.RFC3339Nano), r.Method, r.URL.Path, idem)
 }
 
 func (s *server) handleCharge(w http.ResponseWriter, r *http.Request) {

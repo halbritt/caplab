@@ -1,0 +1,8 @@
+{
+  "cmd/checkout/main.go": "faf56004af974515c1e6244740c8a3c1e9a9f93c913f8105afbc44a7281512cf",
+  "cmd/gateway/main.go": "83b6312c603d56de5be287a1356c5f4e94a8d57dd6463648b5eb76c5864e80af",
+  "docs/gateway-api.md": "53fc9119c327c9168765bd1248965f23711e50dc60d52ed6af550dd3eb5fbad7",
+  "go.mod": "d0f849e6e391ecd411224a1989f4567cce4ada792f1362eda95e42db21159e47",
+  "internal/payment/payment.go": "fffc8ae71c2690e97879ba08c1af2db6ef94727ce867d7158ee8c60d0ea91e67",
+  "scripts/smoke.sh": "b506e788a93f4554e5464ffc09648a0d7b83d02f2170db6721b92c870b0ca0d6"
+}

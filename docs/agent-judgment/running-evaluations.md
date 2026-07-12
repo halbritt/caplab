@@ -110,3 +110,14 @@ from verifier-owned `detail.json`.
 Prompt metadata, reasoning prose, terminal output, and commands printed by a
 file read do not advance a stage. Each trial record includes SHA-256 hashes of
 the four input artifacts.
+
+The pair verifiers additionally emit a fully world-derived record under
+`detail.json`'s `world` key, requiring no trajectory at all: the agent tree
+diffed against the shipped `tests/app-manifest.json` (files added, removed,
+modified; whether the gateway mock or the payment client changed) and
+idempotency-key fingerprints parsed from the agent-phase gateway access log,
+including `replay_probe_observed` — a deterministic "ran the falsifying
+experiment" signal (two same-key charges observed). These fields are
+informational in the current bands; regenerate manifests after any authored
+app change with `tasks/scripts/regen-app-manifests.sh` (the hygiene gate
+fails on stale manifests).

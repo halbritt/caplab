@@ -183,3 +183,18 @@ verifier-owned `detail.json`. Applied to the retained 26 jobs, it reports:
 The rewards, duplicate-charge counts, decision counts, and ledger fingerprint
 in the initial results remain unchanged. The correction changes the mechanism
 inference, not the primary intention-to-treat result.
+
+## Instrumentation v2 (deterministic world record, added after the correction)
+
+Both verifiers now emit a `world` block in `detail.json` derived entirely
+from world artifacts: the agent tree diffed against the shipped
+`tests/app-manifest.json` (files added/removed/modified, gateway-mock and
+payment-client change flags) and idempotency-key fingerprints parsed from
+the agent-phase access log, including `replay_probe_observed` — a
+deterministic record that the falsifying experiment was actually run.
+Validated against the reference matrix (decline shows the probe and the
+added DECISION.md; no-op shows nothing; rewards unchanged in all nine
+cells) and in containers (m1 oracle: probe observed, reward 1.0). These
+fields are observations only under the bands committed for this record;
+the pre-registered activation trial can build its stage vocabulary on them
+without any transcript interpretation.
