@@ -107,6 +107,13 @@ python3 doctrine/tools/entailment_eval.py --dry-run
 # Force re-judging of already-recorded keys:
 python3 doctrine/tools/entailment_eval.py --redo --concept universal-no-change-option
 
+# Judge with a hosted model (bearer key read from the named env var; only the
+# variable NAME enters provenance). Record keys bind the judge, so verdicts
+# from different judges coexist and cross-judge disagreement is comparable:
+python3 doctrine/tools/entailment_eval.py \
+  --endpoint https://openrouter.ai/api/v1 --model z-ai/glm-5.2 \
+  --api-key-env OPENROUTER_API_KEY --max-tokens 8192
+
 # Rebuild summary.md and print verdict counts (no judging):
 python3 doctrine/tools/entailment_eval.py --summarize
 ```

@@ -21,6 +21,7 @@ import datetime
 import hashlib
 import http.client
 import json
+import os
 from pathlib import Path
 import re
 import sys
@@ -400,24 +401,34 @@ class OpenAIClient:
     """Minimal stdlib client for an OpenAI-compatible chat endpoint."""
 
     def __init__(
-        self, endpoint: str, timeout: float, max_tokens: int, model: str = MODEL_ALIAS
+        self,
+        endpoint: str,
+        timeout: float,
+        max_tokens: int,
+        model: str = MODEL_ALIAS,
+        api_key: str | None = None,
     ) -> None:
         self.endpoint = endpoint.rstrip("/")
         self.timeout = timeout
         self.max_tokens = max_tokens
         self.model = model
+        self.api_key = api_key
 
     def _request(
         self, path: str, payload: dict[str, Any] | None = None
     ) -> dict[str, Any]:
         url = self.endpoint + path
+        headers: dict[str, str] = {}
+        if self.api_key:
+            headers["Authorization"] = f"Bearer {self.api_key}"
         if payload is None:
-            request = urllib.request.Request(url)
+            request = urllib.request.Request(url, headers=headers)
         else:
+            headers["Content-Type"] = "application/json"
             request = urllib.request.Request(
                 url,
                 data=json.dumps(payload).encode("utf-8"),
-                headers={"Content-Type": "application/json"},
+                headers=headers,
             )
         with urllib.request.urlopen(request, timeout=self.timeout) as response:
             return json.loads(response.read().decode("utf-8"))
@@ -730,6 +741,15 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--max-tokens", type=int, default=DEFAULT_MAX_TOKENS)
     parser.add_argument(
+        "--api-key-env",
+        default=None,
+        help=(
+            "name of an environment variable holding a bearer API key for the "
+            "endpoint (e.g. OPENROUTER_API_KEY); only the variable NAME is "
+            "recorded in provenance, never the key"
+        ),
+    )
+    parser.add_argument(
         "--timeout",
         type=float,
         default=DEFAULT_TIMEOUT_SECONDS,
@@ -752,8 +772,21 @@ def main(argv: list[str] | None = None) -> int:
         pairs = [pair for pair in pairs if pair["source_id"] in set(args.source)]
 
     known_keys = existing_keys(results_path)
+    api_key = None
+    if args.api_key_env:
+        api_key = os.environ.get(args.api_key_env)
+        if not api_key:
+            print(
+                f"error: environment variable {args.api_key_env} is not set",
+                file=sys.stderr,
+            )
+            return 2
     client = OpenAIClient(
-        args.endpoint, args.timeout, args.max_tokens, model=args.model
+        args.endpoint,
+        args.timeout,
+        args.max_tokens,
+        model=args.model,
+        api_key=api_key,
     )
     model_id: str | None = None
     if not args.dry_run:
@@ -831,6 +864,7 @@ def main(argv: list[str] | None = None) -> int:
                 "prompt_version": PROMPT_VERSION,
                 "request_params": {
                     "model_alias": client.model,
+                    "api_key_env": args.api_key_env,
                     "served_model_id": served_model_id,
                     "max_tokens": args.max_tokens,
                     "sampler_overrides": sampler_overrides,
