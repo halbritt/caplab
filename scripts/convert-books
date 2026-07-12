@@ -6,8 +6,10 @@ from __future__ import annotations
 import argparse
 from collections import Counter
 import copy
+from difflib import SequenceMatcher
 import hashlib
 import html
+import inspect
 import json
 import os
 import platform
@@ -31,12 +33,29 @@ DEFAULT_MARKER_PEECEE = Path(
 DEFAULT_MARKER_LOCAL = Path(
     "/home/halbritt/git/skills/skills/marker-convert/scripts/convert.sh"
 )
+DEFAULT_PDF_XRAY = Path(
+    "/home/halbritt/git/skills/skills/pdf-safe-ingest/scripts/xray.py"
+)
+DEFAULT_PDF_CDR = Path(__file__).resolve().with_name("pdf-cdr")
+PDF_SOURCE_XRAY_POLICY = {
+    "max_decomp_mib": 800,
+    "max_ratio": 120,
+    "max_pages": 5000,
+    "force": True,
+}
+PDF_DERIVATIVE_XRAY_POLICY = {
+    "max_decomp_mib": 8192,
+    "max_ratio": 500,
+    "max_pages": 5000,
+    "force": True,
+}
 SUPPORTED_SUFFIXES = {".pdf", ".epub"}
 SOURCE_DIRECTORY = "sources"
 BIBLIOGRAPHY_MANIFEST = Path("doctrine/bibliography.json")
 ROOT_CATALOG_BEGIN = "<!-- BEGIN GENERATED SOURCE CATALOG -->"
 ROOT_CATALOG_END = "<!-- END GENERATED SOURCE CATALOG -->"
 CREATOR_ROLES = {"author", "contributor", "editor", "translator", "foreword-author"}
+COMMAND_DIAGNOSTIC_LIMIT = 65536
 BOUNDARY_RE = re.compile(
     r"^(?:foreword(?:\s*[:.\-–—]\s*.*)?|"
     r"preface(?:\s*[:.\-–—]\s*.*)?|"
@@ -54,6 +73,7 @@ BOUNDARY_RE = re.compile(
 STRONG_NAMED_BOUNDARY_RE = re.compile(
     r"^(?:foreword(?:\s*[:.\-–—]\s*.*)?|"
     r"preface(?:\s*[:.\-–—]\s*.*)?|afterword(?:\s*[:.\-–—]\s*.*)?|"
+    r"epilogue(?:\s*[:.\-–—]\s*.*)?|"
     r"acknowledg(?:e)?ments?|about (?:the )?authors?|references|"
     r"bibliography|glossary|index|endnotes|colophon)$",
     re.IGNORECASE,
@@ -62,6 +82,13 @@ HEADING_RE = re.compile(r"^(#{1,6})[ \t]+(.+?)[ \t]*#*[ \t]*$")
 FENCE_OPEN_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 LINK_RE = re.compile(r"((?<![A-Za-z0-9_])!?\[[^\]]*\]\()([^\n)]+)(\))")
 HTML_LINK_RE = re.compile(r"(\b(?:src|href)=[\"'])([^\"']+)([\"'])", re.IGNORECASE)
+HTML_ANCHOR_RE = re.compile(
+    r"<a\b[^>]*\bhref=[\"']([^\"']+)[\"'][^>]*>([^<]*)</a>", re.IGNORECASE
+)
+TERMINAL_ESCAPE_RE = re.compile(
+    r"\x1B(?:\[[0-?]*[ -/]*[@-~]|\][^\x07\x1B]*(?:\x07|\x1B\\)|[@-_])"
+)
+NON_MARKDOWN_CONTROL_RE = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")
 HTML_ID_RE = re.compile(r"\b(?:id|name)=[\"']([^\"']+)[\"']", re.IGNORECASE)
 EMPTY_ANCHOR_TAG_RE = re.compile(
     r"<(?:span|a)\b[^>]*(?:id|name)=[\"'][^\"']+[\"'][^>]*>\s*</(?:span|a)>",
@@ -139,6 +166,56 @@ def sha256_file(path: Path) -> str:
         for chunk in iter(lambda: source.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def fingerprint_value(value: object) -> object:
+    if value is None or isinstance(value, (bool, int, float, str)):
+        return value
+    if isinstance(value, Path):
+        return value.as_posix()
+    if isinstance(value, re.Pattern):
+        return {"pattern": value.pattern, "flags": value.flags}
+    if isinstance(value, dict):
+        return [
+            [fingerprint_value(key), fingerprint_value(entry)]
+            for key, entry in sorted(value.items(), key=lambda pair: repr(pair[0]))
+        ]
+    if isinstance(value, (list, tuple)):
+        return [fingerprint_value(entry) for entry in value]
+    if isinstance(value, (set, frozenset)):
+        entries = [fingerprint_value(entry) for entry in value]
+        return sorted(entries, key=lambda entry: json.dumps(entry, sort_keys=True))
+    return repr(value)
+
+
+def raw_stage_implementation_fingerprint(*roots: object) -> str:
+    """Hash raw-conversion code and its repository-local dependencies."""
+    pending = list(roots)
+    visited: set[int] = set()
+    components: dict[str, object] = {}
+    while pending:
+        component = pending.pop()
+        if id(component) in visited:
+            continue
+        visited.add(id(component))
+        qualified_name = getattr(component, "__qualname__", repr(component))
+        # Module names vary between direct CLI execution (``__main__``), runpy,
+        # and test loaders. The qualified name and source text identify these
+        # repository-local functions without making the fingerprint depend on
+        # the loading mechanism.
+        components[f"source:{qualified_name}"] = inspect.getsource(component)
+        if not inspect.isfunction(component):
+            continue
+        module = getattr(component, "__module__", None)
+        for name in sorted(component.__code__.co_names):
+            dependency = component.__globals__.get(name)
+            if inspect.isfunction(dependency) and getattr(
+                dependency, "__module__", None
+            ) == module:
+                pending.append(dependency)
+            elif name.isupper() and dependency is not None:
+                components[f"global:{name}"] = fingerprint_value(dependency)
+    return sha256_bytes(json_bytes(components))
 
 
 def slugify(value: str) -> str:
@@ -280,6 +357,55 @@ def significant_messages(output: str) -> tuple[list[str], list[str]]:
     return list(dict.fromkeys(warnings)), list(dict.fromkeys(failures))
 
 
+def markdown_safe_diagnostic(value: object) -> str:
+    """Remove terminal controls only at the human-facing Markdown boundary."""
+    text = TERMINAL_ESCAPE_RE.sub("", str(value))
+    text = NON_MARKDOWN_CONTROL_RE.sub("", text).strip()
+    return text or "(terminal control output omitted)"
+
+
+def selected_converter_attempt(converter: dict[str, object]) -> dict[str, object]:
+    """Return the exact successful attempt selected for publication."""
+    attempts = converter.get("attempts")
+    target = converter.get("execution_target")
+    selected_number = converter.get("selected_attempt_number")
+    if not isinstance(attempts, list) or not isinstance(target, str):
+        raise BookConversionError("converter attempt provenance is incomplete")
+    matching = [
+        attempt
+        for attempt in attempts
+        if isinstance(attempt, dict)
+        and attempt.get("execution_target") == target
+        and attempt.get("exit_status") == 0
+        and attempt.get("fresh_output_validated") is True
+    ]
+    if isinstance(selected_number, int):
+        matching = [
+            attempt
+            for attempt in matching
+            if attempt.get("attempt_number") == selected_number
+        ]
+    if not matching:
+        raise BookConversionError(
+            f"no successful validated converter attempt exists for {target}"
+        )
+    return matching[-1]
+
+
+def canonicalize_converter_selection(converter: dict[str, object]) -> None:
+    """Bind summary provenance to the successful attempt, including retries."""
+    selected = selected_converter_attempt(converter)
+    attempt_number = selected.get("attempt_number")
+    if not isinstance(attempt_number, int):
+        attempt_number = 1
+        selected["attempt_number"] = attempt_number
+    converter["selected_attempt_number"] = attempt_number
+    converter["converter_exit_status"] = selected["exit_status"]
+    converter["command_executed"] = selected["command"]
+    converter["command_argv"] = selected["argv"]
+    converter["working_directory"] = selected["working_directory"]
+
+
 def tool_version(command: list[str], cwd: Path) -> str | None:
     try:
         result = subprocess.run(
@@ -319,6 +445,16 @@ def pipeline_fingerprint() -> str:
     if configured:
         return configured
     return sha256_file(Path(__file__).resolve())
+
+
+def raw_conversion_stage_fingerprint(current_pipeline_fingerprint: str) -> str:
+    """Identify source-to-raw conversion independently of corpus post-processing."""
+    configured = os.environ.get("BOOKS_RAW_CONVERSION_FINGERPRINT")
+    if configured:
+        return configured
+    if os.environ.get("BOOKS_PIPELINE_FINGERPRINT"):
+        return current_pipeline_fingerprint
+    return raw_stage_implementation_fingerprint(convert_pdf, convert_epub)
 
 
 def pandoc_version(root: Path, executable: str) -> str | None:
@@ -576,6 +712,19 @@ def overridden_command(
     return ["bash", str(default_script)], False
 
 
+def pdf_xray_command() -> tuple[list[str], bool]:
+    return [sys.executable, str(DEFAULT_PDF_CDR), "--scan-only"], bool(
+        os.environ.get("BOOKS_PDF_XRAY")
+    )
+
+
+def pdf_cdr_command() -> tuple[list[str], bool]:
+    override = os.environ.get("BOOKS_PDF_CDR")
+    if override:
+        return [override], True
+    return [sys.executable, str(DEFAULT_PDF_CDR)], False
+
+
 def command_file_identity(argument: str) -> dict[str, str | None]:
     configured_path = Path(argument).expanduser()
     resolved_path: Path | None = None
@@ -618,16 +767,25 @@ def pdf_raw_conversion_identity(
     local_prefix, local_overridden = overridden_command(
         "BOOKS_MARKER_LOCAL", DEFAULT_MARKER_LOCAL
     )
+    xray_prefix, xray_overridden = pdf_xray_command()
+    cdr_prefix, cdr_overridden = pdf_cdr_command()
     return {
         **common_identity,
         "converter": "marker",
         "helpers": {
             "peecee": command_prefix_identity(peecee_prefix),
             "local": command_prefix_identity(local_prefix),
+            "pdf_xray": command_prefix_identity(xray_prefix),
+            "pdf_xray_backend": command_prefix_identity(
+                [os.environ.get("BOOKS_PDF_XRAY", str(DEFAULT_PDF_XRAY))]
+            ),
+            "pdf_cdr": command_prefix_identity(cdr_prefix),
         },
         "helper_overrides": {
             "peecee": peecee_overridden,
             "local": local_overridden,
+            "pdf_xray": xray_overridden,
+            "pdf_cdr": cdr_overridden,
         },
         "converter_versions": {
             "peecee": marker_version(root, "peecee"),
@@ -639,10 +797,27 @@ def pdf_raw_conversion_identity(
             "fallback_target": "local",
             "fallback_policy": "infrastructure-failure-only",
             "remote_clean": not bool(os.environ.get("BOOKS_SKIP_REMOTE_CLEAN")),
+            "pdf_safety": {
+                "airlock": "required-before-marker",
+                "dangerous_input": "sandboxed-raster-cdr",
+                "suspect_input": "sandboxed-raster-cdr",
+                "required_derivative_verdict": "CLEAN-or-CDR-CLEAN",
+                "source_xray_policy": PDF_SOURCE_XRAY_POLICY,
+                "derivative_xray_policy": PDF_DERIVATIVE_XRAY_POLICY,
+            },
         },
         "supporting_commands": {
             "pdfinfo": command_file_identity("pdfinfo"),
             "ssh": command_file_identity("ssh"),
+            "bwrap": command_file_identity(
+                os.environ.get("BOOKS_PDF_BWRAP", "bwrap")
+            ),
+            "ghostscript": command_file_identity(
+                os.environ.get("BOOKS_PDF_GS", "gs")
+            ),
+            "mutool": command_file_identity(
+                os.environ.get("BOOKS_PDF_MUTOOL", "mutool")
+            ),
         },
     }
 
@@ -701,6 +876,413 @@ def raw_conversion_cacheable(
     return isinstance(version, str) and bool(version.strip())
 
 
+RAW_COMPATIBILITY_SCHEMA_VERSION = "books-raw-compatibility/1"
+RAW_CACHE_MIGRATION_AUTHORIZATIONS: tuple[dict[str, object], ...] = (
+    {
+        "migration_id": "pdf-airlock-hardening-2026-07-12",
+        "source_sha256": "e137980cb9611b94b6cac4a2aa63aee8e86947e9acbffbbff98154a52093d0b9",
+        "cache_sha256": "7fc9e69dac7067aeecacbfbf00fd809e747376b0667d45a51f700d5586d96465",
+        "previous_raw_conversion_fingerprint": "ac68dd44ac1a049da627fa3236233cb6abc08a59dee344ba9b0475440d293c0d",
+        "current_raw_conversion_fingerprint": "23edaf5c729b4860401f62e6735a90095100dd783a85ab16d6077ac0e3621281",
+        "marker_input_sha256": "9e133505ee56e8a1bb7773c45c3f7d6240cbe2fcefc7754d89217b0bc6abe86e",
+        "identity_differences_sha256": "8e039b0a4eff34c9bece4e65bdb7654f41124ba8f794b76f94d906fa1c61508e",
+    },
+    {
+        "migration_id": "pdf-airlock-hardening-2026-07-12",
+        "source_sha256": "b5b423b766ebe69b14ad03e1a6dbae1198a2f8b0ffbc289e34be11d70c3da32c",
+        "cache_sha256": "1a0c644f4e6d807c4dbd2c2a08a67fe479bc33e49774bd376b02ccbe6bdef024",
+        "previous_raw_conversion_fingerprint": "ac68dd44ac1a049da627fa3236233cb6abc08a59dee344ba9b0475440d293c0d",
+        "current_raw_conversion_fingerprint": "23edaf5c729b4860401f62e6735a90095100dd783a85ab16d6077ac0e3621281",
+        "marker_input_sha256": "b49d17fd3a29f7b7e73255e38509bce9331f5431a47caf5b03e37fc16f1e7045",
+        "identity_differences_sha256": "8e039b0a4eff34c9bece4e65bdb7654f41124ba8f794b76f94d906fa1c61508e",
+    },
+    {
+        "migration_id": "pdf-airlock-hardening-2026-07-12",
+        "source_sha256": "db598ff7b5789d20321693e594b18733bf58a029330dc13b174b61bdaff39872",
+        "cache_sha256": "638dc0207def6de8fa2535d596cb9c317c17dc1cecfbcad77bff79e1611abebe",
+        "previous_raw_conversion_fingerprint": "ac68dd44ac1a049da627fa3236233cb6abc08a59dee344ba9b0475440d293c0d",
+        "current_raw_conversion_fingerprint": "23edaf5c729b4860401f62e6735a90095100dd783a85ab16d6077ac0e3621281",
+        "marker_input_sha256": "690c747828ed7a32502f5bcf5c4c93e136826f2d075836bc45dbd4165e8bfb79",
+        "identity_differences_sha256": "8e039b0a4eff34c9bece4e65bdb7654f41124ba8f794b76f94d906fa1c61508e",
+    },
+    {
+        "migration_id": "pdf-airlock-hardening-2026-07-12",
+        "source_sha256": "5d8d4f2a7f7e908852f7c3205830251b1f6fea7beef351654fd03f39a21a15e7",
+        "cache_sha256": "cfff93d6473ec08f3218c5c6be9270940c41b16bff2401e183ba3c677b5a11e2",
+        "previous_raw_conversion_fingerprint": "ac68dd44ac1a049da627fa3236233cb6abc08a59dee344ba9b0475440d293c0d",
+        "current_raw_conversion_fingerprint": "23edaf5c729b4860401f62e6735a90095100dd783a85ab16d6077ac0e3621281",
+        "marker_input_sha256": "247986a87152ef631fd7590f995f18c4b51eb5ad0d3df4c0455d82cde88f640e",
+        "identity_differences_sha256": "8e039b0a4eff34c9bece4e65bdb7654f41124ba8f794b76f94d906fa1c61508e",
+    },
+    {
+        "migration_id": "pdf-airlock-hardening-2026-07-12",
+        "source_sha256": "bca051a41972f71043cf17b4c072b3e22767c01e50a6d5144bc11978566aacb8",
+        "cache_sha256": "1ad3775f38e55edb3786f346347911673f48f90e2b76b893f69696a0847462b0",
+        "previous_raw_conversion_fingerprint": "ac68dd44ac1a049da627fa3236233cb6abc08a59dee344ba9b0475440d293c0d",
+        "current_raw_conversion_fingerprint": "23edaf5c729b4860401f62e6735a90095100dd783a85ab16d6077ac0e3621281",
+        "marker_input_sha256": "1ea227b7f154dfea79e0c505a177ac3a1fb3bc4ed1eeaf5a1b387318364a6804",
+        "identity_differences_sha256": "8e039b0a4eff34c9bece4e65bdb7654f41124ba8f794b76f94d906fa1c61508e",
+    },
+    {
+        "migration_id": "pdf-airlock-hardening-2026-07-12",
+        "source_sha256": "4e567ce8f561cad28c0369df71a25cb2b64361473c64509c493cce79e293289e",
+        "cache_sha256": "49ff0e5b0f5c4efcd744f0b6b789f6abea901559a86fa336a420629bf314e694",
+        "previous_raw_conversion_fingerprint": "ac68dd44ac1a049da627fa3236233cb6abc08a59dee344ba9b0475440d293c0d",
+        "current_raw_conversion_fingerprint": "23edaf5c729b4860401f62e6735a90095100dd783a85ab16d6077ac0e3621281",
+        "marker_input_sha256": "0b9ce8a428af15435e74af82dc77b725b296004e0bf52d913ff1adea1800c66c",
+        "identity_differences_sha256": "8e039b0a4eff34c9bece4e65bdb7654f41124ba8f794b76f94d906fa1c61508e",
+    },
+    {
+        "migration_id": "pdf-airlock-hardening-2026-07-12",
+        "source_sha256": "63368375f2c4d176a8a5a8f769095fc3d00112c9813ef24f54b72892912ebb00",
+        "cache_sha256": "6df3344bf546b0485fe8171825bb2d2cff6dca60fd4fcb84a4f6465f1e120c3f",
+        "previous_raw_conversion_fingerprint": "ac68dd44ac1a049da627fa3236233cb6abc08a59dee344ba9b0475440d293c0d",
+        "current_raw_conversion_fingerprint": "23edaf5c729b4860401f62e6735a90095100dd783a85ab16d6077ac0e3621281",
+        "marker_input_sha256": "63368375f2c4d176a8a5a8f769095fc3d00112c9813ef24f54b72892912ebb00",
+        "identity_differences_sha256": "8e039b0a4eff34c9bece4e65bdb7654f41124ba8f794b76f94d906fa1c61508e",
+    },
+    {
+        "migration_id": "pdf-airlock-hardening-2026-07-12",
+        "source_sha256": "02f377af78896cc71d242fe306c526ebe399606010f71fd4b5dcf65256d4269b",
+        "cache_sha256": "51852fc471acea94f9677280d44ebdbd4787e80f8c5d88fa673e879972bd3d9a",
+        "previous_raw_conversion_fingerprint": "0d1c0f1501abe79e4a4cf15cb83c9c869f391ef133b708b414f7d070f8755d83",
+        "current_raw_conversion_fingerprint": "23edaf5c729b4860401f62e6735a90095100dd783a85ab16d6077ac0e3621281",
+        "marker_input_sha256": "aeba68c59d43c9c46ce27188c012743729cc98d058ef1fc304e7ed13bd4a26e4",
+        "identity_differences_sha256": "323c7b1aa3c25ad7040d903b74713c4d47f1805652555771cca053af969b4898",
+    },
+)
+
+
+def identity_differences(
+    previous: object, current: object, path: str = "$"
+) -> list[dict[str, object]]:
+    """Return a deterministic, exact description of two JSON-like identities."""
+    if isinstance(previous, dict) and isinstance(current, dict):
+        differences: list[dict[str, object]] = []
+        for key in sorted(set(previous) | set(current)):
+            child_path = f"{path}.{key}"
+            if key not in previous:
+                differences.append(
+                    {"path": child_path, "previous_missing": True, "current": current[key]}
+                )
+            elif key not in current:
+                differences.append(
+                    {"path": child_path, "previous": previous[key], "current_missing": True}
+                )
+            else:
+                differences.extend(
+                    identity_differences(previous[key], current[key], child_path)
+                )
+        return differences
+    if isinstance(previous, list) and isinstance(current, list):
+        differences = []
+        for index in range(max(len(previous), len(current))):
+            child_path = f"{path}[{index}]"
+            if index >= len(previous):
+                differences.append(
+                    {
+                        "path": child_path,
+                        "previous_missing": True,
+                        "current": current[index],
+                    }
+                )
+            elif index >= len(current):
+                differences.append(
+                    {
+                        "path": child_path,
+                        "previous": previous[index],
+                        "current_missing": True,
+                    }
+                )
+            else:
+                differences.extend(
+                    identity_differences(previous[index], current[index], child_path)
+                )
+        return differences
+    if previous == current:
+        return []
+    return [{"path": path, "previous": previous, "current": current}]
+
+
+def authorized_raw_cache_migration(
+    *,
+    source_hash: str,
+    cache_sha256: str,
+    previous_fingerprint: str,
+    current_fingerprint: str,
+    marker_input_sha256: str,
+    differences: list[dict[str, object]],
+    authorizations: tuple[dict[str, object], ...] | None = None,
+) -> dict[str, object] | None:
+    candidates = (
+        RAW_CACHE_MIGRATION_AUTHORIZATIONS
+        if authorizations is None
+        else authorizations
+    )
+    expected = {
+        "source_sha256": source_hash,
+        "cache_sha256": cache_sha256,
+        "previous_raw_conversion_fingerprint": previous_fingerprint,
+        "current_raw_conversion_fingerprint": current_fingerprint,
+        "marker_input_sha256": marker_input_sha256,
+        "identity_differences_sha256": sha256_bytes(json_bytes(differences)),
+    }
+    for authorization in candidates:
+        if not isinstance(authorization.get("migration_id"), str):
+            continue
+        if all(authorization.get(key) == value for key, value in expected.items()):
+            return copy.deepcopy(authorization)
+    return None
+
+
+def compatible_pdf_cache_record(
+    previous_identity: dict[str, object],
+    previous_fingerprint: str,
+    current_identity: dict[str, object],
+    current_fingerprint: str,
+    converter: dict[str, object],
+    *,
+    source_hash: str,
+    cache_sha256: str,
+    revalidation: dict[str, object],
+    authorizations: tuple[dict[str, object], ...] | None = None,
+) -> dict[str, object] | None:
+    differences = identity_differences(previous_identity, current_identity)
+    if (
+        raw_conversion_fingerprint(previous_identity) != previous_fingerprint
+        or raw_conversion_fingerprint(current_identity) != current_fingerprint
+        or converter.get("format") != "pdf"
+        or converter.get("converter") != "marker"
+        or converter.get("execution_target") != "peecee"
+        or converter.get("converter_exit_status") != 0
+        or converter.get("fallbacks_used")
+    ):
+        return None
+    current_versions = current_identity.get("converter_versions")
+    if (
+        not isinstance(current_versions, dict)
+        or converter.get("converter_version") != current_versions.get("peecee")
+    ):
+        return None
+    safety = converter.get("input_safety")
+    marker_input = converter.get("marker_input")
+    if not isinstance(safety, dict) or not isinstance(marker_input, Path):
+        return None
+    verdict = safety.get("verdict")
+    marker_input_sha256 = sha256_file(marker_input)
+    revalidation_checksum = revalidation.get("record_sha256")
+    revalidation_candidate = copy.deepcopy(revalidation)
+    revalidation_candidate["record_sha256"] = None
+    if (
+        revalidation.get("accepted") is not True
+        or revalidation.get("marker_input_sha256") != marker_input_sha256
+        or not isinstance(revalidation_checksum, str)
+        or revalidation_checksum != sha256_bytes(json_bytes(revalidation_candidate))
+    ):
+        return None
+    authorization = authorized_raw_cache_migration(
+        source_hash=source_hash,
+        cache_sha256=cache_sha256,
+        previous_fingerprint=previous_fingerprint,
+        current_fingerprint=current_fingerprint,
+        marker_input_sha256=marker_input_sha256,
+        differences=differences,
+        authorizations=authorizations,
+    )
+    if authorization is None:
+        return None
+    if verdict == "CLEAN":
+        if safety.get("marker_input") != "original-source-bytes":
+            return None
+        safety_basis = "CLEAN source bytes"
+    elif verdict in {"SUSPECT", "DANGEROUS"}:
+        cdr = safety.get("cdr")
+        if not isinstance(cdr, dict):
+            return None
+        selected = cdr.get("selected")
+        sandbox = cdr.get("sandbox")
+        if (
+            safety.get("marker_input") != "sandboxed-raster-cdr"
+            or not isinstance(selected, dict)
+            or selected.get("verdict") not in {"CLEAN", "CDR-CLEAN"}
+            or not isinstance(sandbox, dict)
+            or sandbox.get("network") != "none"
+            or sandbox.get("transport") != "bwrap"
+            or selected.get("derivative_sha256") != marker_input_sha256
+        ):
+            return None
+        safety_basis = "networkless raster CDR with a CLEAN post-conversion gate"
+    else:
+        return None
+    return {
+        "schema_version": RAW_COMPATIBILITY_SCHEMA_VERSION,
+        "migration_id": authorization["migration_id"],
+        "previous_raw_conversion_fingerprint": previous_fingerprint,
+        "accepted_current_raw_conversion_fingerprint": current_fingerprint,
+        "marker_input_sha256": marker_input_sha256,
+        "source_safety_verdict": verdict,
+        "identity_differences": differences,
+        "current_revalidation": revalidation,
+        "basis": [
+            "explicit --reuse-policy-compatible-raw-cache authorization",
+            "validated converter-cache checksum and raw-file manifest",
+            "successful Marker conversion on peecee with no fallback",
+            safety_basis,
+            "source, cache, marker input, old and new fingerprints, and every identity difference matched an immutable migration authorization",
+        ],
+    }
+
+
+def raw_record_matches_current_identity(
+    record: dict[str, object], current_fingerprint: str
+) -> bool:
+    if record.get("raw_conversion_fingerprint") == current_fingerprint:
+        return True
+    compatibility = record.get("raw_conversion_compatibility")
+    return (
+        isinstance(compatibility, dict)
+        and compatibility.get("schema_version")
+        == RAW_COMPATIBILITY_SCHEMA_VERSION
+        and compatibility.get("previous_raw_conversion_fingerprint")
+        == record.get("raw_conversion_fingerprint")
+        and compatibility.get("accepted_current_raw_conversion_fingerprint")
+        == current_fingerprint
+    )
+
+
+def load_policy_compatible_converter_cache(
+    work: Path,
+    root: Path,
+    source: Path,
+    source_hash: str,
+    current_identity: dict[str, object],
+    current_fingerprint: str,
+) -> dict[str, object] | None:
+    cache_path = work / "converter-cache.json"
+    if not cache_path.is_file():
+        return None
+    try:
+        record = json.loads(cache_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return None
+    previous_identity = record.get("raw_conversion_identity")
+    previous_fingerprint = record.get("raw_conversion_fingerprint")
+    if not isinstance(previous_identity, dict) or not isinstance(
+        previous_fingerprint, str
+    ):
+        return None
+    converter = load_converter_cache(
+        work,
+        root,
+        source,
+        source_hash,
+        previous_identity,
+        previous_fingerprint,
+    )
+    if converter is None:
+        return None
+    cache_sha256 = record.get("cache_sha256")
+    if not isinstance(cache_sha256, str):
+        return None
+    revalidation = revalidate_cached_marker_input(converter, root)
+    compatibility = compatible_pdf_cache_record(
+        previous_identity,
+        previous_fingerprint,
+        current_identity,
+        current_fingerprint,
+        converter,
+        source_hash=source_hash,
+        cache_sha256=cache_sha256,
+        revalidation=revalidation,
+    )
+    if compatibility is None:
+        return None
+    converter["raw_conversion_compatibility"] = compatibility
+    return converter
+
+
+def revalidation_with_integrity(record: dict[str, object]) -> dict[str, object]:
+    result = copy.deepcopy(record)
+    result["record_sha256"] = None
+    result["record_sha256"] = sha256_bytes(json_bytes(result))
+    return result
+
+
+def revalidate_cached_marker_input(
+    converter: dict[str, object], root: Path
+) -> dict[str, object]:
+    marker_input = converter.get("marker_input")
+    safety = converter.get("input_safety")
+    if not isinstance(marker_input, Path) or not isinstance(safety, dict):
+        return revalidation_with_integrity(
+            {"accepted": False, "error": "cache has no marker input safety record"}
+        )
+    marker_input_sha256 = sha256_file(marker_input)
+    verdict = safety.get("verdict")
+    if verdict == "CLEAN":
+        prefix, _overridden = pdf_xray_command()
+        result = command_result(prefix + [str(marker_input), "--force"], root)
+        try:
+            document = json.loads(str(result["stdout"]))
+        except json.JSONDecodeError:
+            document = None
+        scanned_source = document.get("source") if isinstance(document, dict) else None
+        scanned_safety = document.get("safety") if isinstance(document, dict) else None
+        accepted = (
+            result["exit_status"] == 0
+            and isinstance(scanned_source, dict)
+            and scanned_source.get("sha256") == marker_input_sha256
+            and scanned_source.get("bytes") == marker_input.stat().st_size
+            and isinstance(scanned_safety, dict)
+            and scanned_safety.get("verdict") == "CLEAN"
+        )
+        return revalidation_with_integrity(
+            {
+                "schema_version": "books-marker-input-revalidation/1",
+                "accepted": accepted,
+                "marker_input_sha256": marker_input_sha256,
+                "kind": "forced-source-xray",
+                "command": diagnostic_command_record(result),
+                "safety": scanned_safety,
+            }
+        )
+    if verdict in {"SUSPECT", "DANGEROUS"} and isinstance(
+        safety.get("cdr"), dict
+    ):
+        prefix, _overridden = pdf_cdr_command()
+        result = command_result(
+            prefix + ["--validate-existing", str(marker_input)], root
+        )
+        try:
+            document = json.loads(str(result["stdout"]))
+        except json.JSONDecodeError:
+            document = None
+        accepted = (
+            result["exit_status"] == 0
+            and isinstance(document, dict)
+            and document.get("accepted") is True
+            and document.get("derivative_sha256") == marker_input_sha256
+        )
+        return revalidation_with_integrity(
+            {
+                "schema_version": "books-marker-input-revalidation/1",
+                "accepted": accepted,
+                "marker_input_sha256": marker_input_sha256,
+                "kind": "sandboxed-cdr-structural-validation",
+                "command": diagnostic_command_record(result),
+                "validation": document,
+            }
+        )
+    return revalidation_with_integrity(
+        {
+            "schema_version": "books-marker-input-revalidation/1",
+            "accepted": False,
+            "marker_input_sha256": marker_input_sha256,
+            "error": f"unsupported cached source safety verdict: {verdict!r}",
+        }
+    )
+
+
 def record_conversion_failure(
     work: Path,
     root: Path,
@@ -746,7 +1328,10 @@ def write_converter_cache(
     cached_converter = copy.deepcopy(converter)
     raw_identity = cached_converter.pop("raw_conversion_identity")
     raw_fingerprint = cached_converter.pop("raw_conversion_fingerprint")
-    for key in ("raw_directory", "markdown_path", "staged_source"):
+    path_keys = ["raw_directory", "markdown_path", "staged_source"]
+    if converter.get("format") == "pdf":
+        path_keys.append("marker_input")
+    for key in path_keys:
         value = cached_converter.get(key)
         if isinstance(value, Path):
             cached_converter[key] = value.relative_to(root).as_posix()
@@ -804,7 +1389,10 @@ def load_converter_cache(
     converter = copy.deepcopy(cached_converter)
     converter["raw_conversion_identity"] = expected_identity
     converter["raw_conversion_fingerprint"] = expected_fingerprint
-    for key in ("raw_directory", "markdown_path", "staged_source"):
+    path_keys = ["raw_directory", "markdown_path", "staged_source"]
+    if converter.get("format") == "pdf":
+        path_keys.append("marker_input")
+    for key in path_keys:
         value = converter.get(key)
         if not isinstance(value, str) or Path(value).is_absolute():
             return None
@@ -820,6 +1408,23 @@ def load_converter_cache(
     staged_source = Path(converter["staged_source"])
     if not staged_source.is_file() or sha256_file(staged_source) != source_hash:
         return None
+    if converter.get("format") == "pdf":
+        marker_input = Path(converter["marker_input"])
+        if not marker_input.is_file():
+            return None
+        safety = converter.get("input_safety")
+        if not isinstance(safety, dict):
+            return None
+        cdr = safety.get("cdr")
+        if isinstance(cdr, dict):
+            selected = cdr.get("selected")
+            if (
+                not isinstance(selected, dict)
+                or sha256_file(marker_input) != selected.get("derivative_sha256")
+            ):
+                return None
+        elif marker_input != staged_source or sha256_file(marker_input) != source_hash:
+            return None
     markdown_path = Path(converter["markdown_path"])
     if not markdown_path.is_file() or not markdown_path.stat().st_size:
         return None
@@ -831,13 +1436,234 @@ def conversion_stem(slug: str, source_hash: str) -> str:
     return f"{readable_prefix}-{source_hash[:12]}"
 
 
+def public_command_record(result: dict[str, object]) -> dict[str, object]:
+    return {
+        key: result[key]
+        for key in ("argv", "command", "working_directory", "exit_status")
+    }
+
+
+def diagnostic_command_record(result: dict[str, object]) -> dict[str, object]:
+    record = public_command_record(result)
+    for stream in ("stdout", "stderr"):
+        text = str(result.get(stream, ""))
+        record[stream] = text[:COMMAND_DIAGNOSTIC_LIMIT]
+        record[f"{stream}_truncated"] = len(text) > COMMAND_DIAGNOSTIC_LIMIT
+    return record
+
+
+def pdf_preconversion_error(
+    work: Path,
+    root: Path,
+    source: Path,
+    source_hash: str,
+    phase: str,
+    result: dict[str, object],
+    error: str,
+) -> BookConversionError:
+    record_conversion_failure(
+        work,
+        root,
+        source,
+        source_hash,
+        phase,
+        [{"phase": phase, **diagnostic_command_record(result)}],
+        [],
+        [],
+        error,
+    )
+    return BookConversionError(error)
+
+
+def scan_pdf_safety(
+    source: Path, source_hash: str, root: Path, work: Path
+) -> dict[str, object]:
+    prefix, _overridden = pdf_xray_command()
+    result = command_result(prefix + [str(source), "--force"], root)
+    if result["exit_status"] not in {0, 3}:
+        error = (
+            f"PDF airlock failed for {source.name}: "
+            f"exit status {result['exit_status']}"
+        )
+        raise pdf_preconversion_error(
+            work, root, source, source_hash, "pdf-airlock", result, error
+        )
+    try:
+        document = json.loads(str(result["stdout"]))
+    except json.JSONDecodeError as error:
+        message = (
+            f"PDF airlock emitted malformed JSON for {source.name}: {error}"
+        )
+        raise pdf_preconversion_error(
+            work, root, source, source_hash, "pdf-airlock", result, message
+        ) from error
+    source_record = document.get("source") if isinstance(document, dict) else None
+    safety = document.get("safety") if isinstance(document, dict) else None
+    if not isinstance(source_record, dict) or not isinstance(safety, dict):
+        error = f"PDF airlock emitted an incomplete record for {source.name}"
+        raise pdf_preconversion_error(
+            work, root, source, source_hash, "pdf-airlock", result, error
+        )
+    if (
+        source_record.get("sha256") != source_hash
+        or source_record.get("bytes") != source.stat().st_size
+    ):
+        error = f"PDF airlock source identity mismatch for {source.name}"
+        raise pdf_preconversion_error(
+            work, root, source, source_hash, "pdf-airlock", result, error
+        )
+    verdict = safety.get("verdict")
+    if verdict not in {"CLEAN", "SUSPECT", "DANGEROUS"}:
+        error = (
+            f"PDF airlock returned an unknown verdict for {source.name}: {verdict!r}"
+        )
+        raise pdf_preconversion_error(
+            work, root, source, source_hash, "pdf-airlock", result, error
+        )
+    return {
+        "schema_version": document.get("schema_version"),
+        "skill": document.get("skill"),
+        "source_sha256": source_hash,
+        "source_size_bytes": source.stat().st_size,
+        "verdict": verdict,
+        "custody_id": safety.get("custody_id"),
+        "active_content": safety.get("active_content"),
+        "bomb": safety.get("bomb"),
+        "note": safety.get("note"),
+        "decompression": safety.get("decompression"),
+        "action": safety.get("action"),
+        "sandbox": document.get("sandbox"),
+        "policy": document.get("policy"),
+        "xray_command": document.get("xray_command"),
+        "command": public_command_record(result),
+    }
+
+
+def prepare_marker_input(
+    source: Path,
+    source_hash: str,
+    stem: str,
+    root: Path,
+    work: Path,
+) -> tuple[Path, Path, dict[str, object]]:
+    staged_source = work / f"{stem}.pdf"
+    shutil.copyfile(source, staged_source)
+    safety = scan_pdf_safety(source, source_hash, root, work)
+    safety["marker_input"] = "original-source-bytes"
+    if safety["verdict"] == "CLEAN":
+        return staged_source, staged_source, safety
+
+    disarmed_directory = work / "cdr"
+    disarmed_directory.mkdir()
+    disarmed = disarmed_directory / f"{stem}.pdf"
+    prefix, _overridden = pdf_cdr_command()
+    result = command_result(prefix + [str(staged_source), str(disarmed)], root)
+    if result["exit_status"] != 0:
+        error = (
+            f"sandboxed PDF disarmament failed for {source.name}: "
+            f"exit status {result['exit_status']}"
+        )
+        raise pdf_preconversion_error(
+            work, root, source, source_hash, "pdf-cdr", result, error
+        )
+    try:
+        cdr = json.loads(str(result["stdout"]))
+    except json.JSONDecodeError as error:
+        message = (
+            f"PDF disarmament emitted malformed JSON for {source.name}: {error}"
+        )
+        raise pdf_preconversion_error(
+            work, root, source, source_hash, "pdf-cdr", result, message
+        ) from error
+    selected = cdr.get("selected") if isinstance(cdr, dict) else None
+    sandbox = cdr.get("sandbox") if isinstance(cdr, dict) else None
+    if (
+        not isinstance(cdr, dict)
+        or cdr.get("schema_version") != "books-pdf-cdr/1"
+        or cdr.get("source_size_bytes") != staged_source.stat().st_size
+        or not isinstance(sandbox, dict)
+        or sandbox.get("transport") != "bwrap"
+        or sandbox.get("network") != "none"
+        or "allowlisted" not in str(sandbox.get("host_filesystem", ""))
+        or not isinstance(selected, dict)
+        or not disarmed.is_file()
+    ):
+        error = f"PDF disarmament emitted an incomplete record for {source.name}"
+        raise pdf_preconversion_error(
+            work, root, source, source_hash, "pdf-cdr", result, error
+        )
+    derivative_hash = sha256_file(disarmed)
+    if (
+        cdr.get("source_sha256") != source_hash
+        or selected.get("derivative_sha256") != derivative_hash
+        or selected.get("derivative_size_bytes") != disarmed.stat().st_size
+        or selected.get("verdict") not in {"CLEAN", "CDR-CLEAN"}
+        or not str(selected.get("custody_id", "")).endswith("-CLEAN")
+    ):
+        error = (
+            f"PDF disarmament identity or accepted CDR verdict mismatch for {source.name}"
+        )
+        raise pdf_preconversion_error(
+            work, root, source, source_hash, "pdf-cdr", result, error
+        )
+    cdr["command"] = public_command_record(result)
+    safety["marker_input"] = "sandboxed-raster-cdr"
+    safety["cdr"] = cdr
+    return staged_source, disarmed, safety
+
+
+def execute_marker_attempt(
+    argv: list[str],
+    root: Path,
+    output: Path,
+    stem: str,
+    expected_pages: int | None,
+    execution_target: str,
+    require_completion_log: bool,
+) -> dict[str, object]:
+    result = command_result(argv, root)
+    combined = f"{result['stdout']}\n{result['stderr']}"
+    warnings, failures = significant_messages(combined)
+    raw_directory = output / stem
+    markdown_path = raw_directory / f"{stem}.md"
+    metadata_path = raw_directory / f"{stem}_meta.json"
+    fresh, freshness_error, metadata = raw_output_is_fresh(
+        markdown_path, metadata_path, expected_pages
+    )
+    if fresh and require_completion_log and not re.search(
+        r"(?:marker: done ->|Saved markdown to|\bOUTPUT:)", combined, re.IGNORECASE
+    ):
+        fresh = False
+        freshness_error = "remote log contains no Marker completion evidence"
+    return {
+        "record": {
+            "execution_target": execution_target,
+            "argv": result["argv"],
+            "command": result["command"],
+            "working_directory": result["working_directory"],
+            "exit_status": result["exit_status"],
+            "warnings": warnings,
+            "failures": failures,
+            "fresh_output_validated": fresh,
+            "freshness_error": freshness_error,
+        },
+        "combined_output": combined,
+        "raw_directory": raw_directory,
+        "markdown_path": markdown_path,
+        "metadata": metadata,
+        "fresh": fresh,
+        "freshness_error": freshness_error,
+    }
+
+
 def convert_pdf(
     source: Path, source_hash: str, slug: str, root: Path, work: Path
 ) -> dict[str, object]:
     stem = conversion_stem(slug, source_hash)
-    staged_source = work / f"{stem}.pdf"
-    shutil.copyfile(source, staged_source)
-    pdfinfo = pdf_information(source)
+    staged_source, marker_input, input_safety = prepare_marker_input(
+        source, source_hash, stem, root, work
+    )
+    pdfinfo = pdf_information(marker_input)
     expected_pages = (
         pdfinfo.get("Pages") if isinstance(pdfinfo.get("Pages"), int) else None
     )
@@ -849,7 +1675,7 @@ def convert_pdf(
     )
     peecee_output = work / "marker-peecee"
     peecee_argv = peecee_prefix + [
-        str(staged_source.relative_to(root)),
+        str(marker_input.relative_to(root)),
         "--format",
         "markdown",
         "--out",
@@ -860,132 +1686,108 @@ def convert_pdf(
 
     pre_conversion_commands: list[dict[str, object]] = []
     infrastructure_failure: str | None = None
-    if not peecee_overridden and not os.environ.get("BOOKS_SKIP_REMOTE_CLEAN"):
-        clean_argv = [
-            "ssh",
-            "-o",
-            "BatchMode=yes",
-            "-o",
-            "ConnectTimeout=15",
-            "peecee",
-            f"cmd /c if exist marker\\out\\{stem} rmdir /s /q marker\\out\\{stem}",
-        ]
-        clean_result = command_result(clean_argv, root)
-        clean_public = {
-            key: value
-            for key, value in clean_result.items()
-            if key not in {"stdout", "stderr"}
-        }
-        pre_conversion_commands.append(clean_public)
-        if clean_result["exit_status"] != 0:
-            infrastructure_failure = "remote stale-output cleanup failed"
-
-    peecee_result: dict[str, object] | None = None
     marker_metadata: dict[str, object] | None = None
     raw_directory: Path | None = None
     markdown_path: Path | None = None
     selected_target: str | None = None
 
-    if infrastructure_failure is None:
-        peecee_result = command_result(peecee_argv, root)
-        combined = f"{peecee_result['stdout']}\n{peecee_result['stderr']}"
-        warnings, failures = significant_messages(combined)
-        raw_directory = peecee_output / stem
-        candidate_markdown = raw_directory / f"{stem}.md"
-        candidate_metadata = raw_directory / f"{stem}_meta.json"
-        fresh, freshness_error, metadata = raw_output_is_fresh(
-            candidate_markdown, candidate_metadata, expected_pages
-        )
-        if (
-            fresh
-            and not peecee_overridden
-            and not re.search(
-                r"(?:marker: done ->|Saved markdown to|\bOUTPUT:)",
-                combined,
-                re.IGNORECASE,
+    for attempt_number in (1, 2):
+        if not peecee_overridden and not os.environ.get("BOOKS_SKIP_REMOTE_CLEAN"):
+            clean_argv = [
+                "ssh",
+                "-o",
+                "BatchMode=yes",
+                "-o",
+                "ConnectTimeout=15",
+                "peecee",
+                f"cmd /c if exist marker\\out\\{stem} rmdir /s /q marker\\out\\{stem}",
+            ]
+            clean_result = command_result(clean_argv, root)
+            pre_conversion_commands.append(
+                {
+                    "attempt_number": attempt_number,
+                    **public_command_record(clean_result),
+                }
             )
-        ):
-            fresh = False
-            freshness_error = "remote log contains no Marker completion evidence"
-        attempt = {
-            "execution_target": "peecee",
-            "argv": peecee_result["argv"],
-            "command": peecee_result["command"],
-            "working_directory": peecee_result["working_directory"],
-            "exit_status": peecee_result["exit_status"],
-            "warnings": warnings,
-            "failures": failures,
-            "fresh_output_validated": fresh,
-            "freshness_error": freshness_error,
-        }
+            if clean_result["exit_status"] != 0:
+                infrastructure_failure = "remote stale-output cleanup failed"
+                continue
+        shutil.rmtree(peecee_output / stem, ignore_errors=True)
+        outcome = execute_marker_attempt(
+            peecee_argv,
+            root,
+            peecee_output,
+            stem,
+            expected_pages,
+            "peecee",
+            not peecee_overridden,
+        )
+        attempt = dict(outcome["record"])  # type: ignore[arg-type]
+        attempt["attempt_number"] = attempt_number
         attempts.append(attempt)
-        if peecee_result["exit_status"] == 0 and fresh:
+        if attempt["exit_status"] == 0 and outcome["fresh"]:
             selected_target = "peecee"
-            markdown_path = candidate_markdown
-            marker_metadata = metadata
-        else:
-            failure_text = combined + "\n" + (freshness_error or "")
-            if INFRASTRUCTURE_FAILURE_RE.search(failure_text):
-                infrastructure_failure = (
-                    freshness_error or "peecee infrastructure failure"
-                )
-            else:
-                error = (
-                    f"Marker failed on peecee for {source.name}: "
-                    f"{freshness_error or 'converter exit status ' + str(peecee_result['exit_status'])}"
-                )
-                record_conversion_failure(
-                    work,
-                    root,
-                    source,
-                    source_hash,
-                    "marker",
-                    attempts,
-                    fallbacks,
-                    pre_conversion_commands,
-                    error,
-                )
-                raise BookConversionError(error)
+            raw_directory = outcome["raw_directory"]  # type: ignore[assignment]
+            markdown_path = outcome["markdown_path"]  # type: ignore[assignment]
+            marker_metadata = outcome["metadata"]  # type: ignore[assignment]
+            infrastructure_failure = None
+            break
+        freshness_error = outcome["freshness_error"]
+        failure_text = (
+            str(outcome["combined_output"]) + "\n" + str(freshness_error or "")
+        )
+        if INFRASTRUCTURE_FAILURE_RE.search(failure_text):
+            infrastructure_failure = str(
+                freshness_error or "peecee infrastructure failure"
+            )
+            continue
+        error = (
+            f"Marker failed on peecee for {source.name}: "
+            f"{freshness_error or 'converter exit status ' + str(attempt['exit_status'])}"
+        )
+        record_conversion_failure(
+            work,
+            root,
+            source,
+            source_hash,
+            "marker",
+            attempts,
+            fallbacks,
+            pre_conversion_commands,
+            error,
+        )
+        raise BookConversionError(error)
 
     if infrastructure_failure is not None:
         local_prefix, _ = overridden_command("BOOKS_MARKER_LOCAL", DEFAULT_MARKER_LOCAL)
         local_output = work / "marker-local"
         local_argv = local_prefix + [
-            str(staged_source.relative_to(root)),
+            str(marker_input.relative_to(root)),
             "--format",
             "markdown",
             "--out",
             str(local_output.relative_to(root)),
         ]
-        local_result = command_result(local_argv, root)
-        combined = f"{local_result['stdout']}\n{local_result['stderr']}"
-        warnings, failures = significant_messages(combined)
-        raw_directory = local_output / stem
-        candidate_markdown = raw_directory / f"{stem}.md"
-        candidate_metadata = raw_directory / f"{stem}_meta.json"
-        fresh, freshness_error, metadata = raw_output_is_fresh(
-            candidate_markdown, candidate_metadata, expected_pages
+        outcome = execute_marker_attempt(
+            local_argv,
+            root,
+            local_output,
+            stem,
+            expected_pages,
+            "local",
+            False,
         )
-        attempts.append(
-            {
-                "execution_target": "local",
-                "argv": local_result["argv"],
-                "command": local_result["command"],
-                "working_directory": local_result["working_directory"],
-                "exit_status": local_result["exit_status"],
-                "warnings": warnings,
-                "failures": failures,
-                "fresh_output_validated": fresh,
-                "freshness_error": freshness_error,
-            }
-        )
+        attempt = dict(outcome["record"])  # type: ignore[arg-type]
+        attempt["attempt_number"] = 1
+        attempts.append(attempt)
         fallbacks.append(
             {"from": "peecee", "to": "local", "reason": infrastructure_failure}
         )
-        if local_result["exit_status"] != 0 or not fresh:
+        if attempt["exit_status"] != 0 or not outcome["fresh"]:
+            freshness_error = outcome["freshness_error"]
             error = (
                 f"local Marker fallback failed for {source.name}: "
-                f"{freshness_error or 'converter exit status ' + str(local_result['exit_status'])}"
+                f"{freshness_error or 'converter exit status ' + str(attempt['exit_status'])}"
             )
             record_conversion_failure(
                 work,
@@ -1000,8 +1802,9 @@ def convert_pdf(
             )
             raise BookConversionError(error)
         selected_target = "local"
-        markdown_path = candidate_markdown
-        marker_metadata = metadata
+        raw_directory = outcome["raw_directory"]  # type: ignore[assignment]
+        markdown_path = outcome["markdown_path"]  # type: ignore[assignment]
+        marker_metadata = outcome["metadata"]  # type: ignore[assignment]
 
     assert (
         raw_directory is not None
@@ -1031,6 +1834,8 @@ def convert_pdf(
         "pre_conversion_commands": pre_conversion_commands,
         "conversion_options": {"format": "markdown", "host": selected_target},
         "staged_source": staged_source,
+        "marker_input": marker_input,
+        "input_safety": input_safety,
     }
 
 
@@ -1161,7 +1966,7 @@ def remove_high_confidence_furniture(lines: list[str]) -> tuple[list[str], list[
 def chapter_heading_parts(title: str) -> tuple[int | None, str]:
     plain = plain_heading(title)
     match = re.match(
-        r"^Chapter\s+(\d{1,3}|[A-Za-z]+)\b\s*(?:[.):-]\s*)?(.*)$",
+        r"^Chapter\s+(\d{1,3}|[A-Za-z]+)\b\s*(?:[,.):-]\s*)?(.*)$",
         plain,
         re.IGNORECASE,
     )
@@ -1179,6 +1984,36 @@ def chapter_title_key(title: str) -> str:
     return " ".join(
         "architecture" if word == "architectural" else word for word in words
     )
+
+
+def chapter_titles_match(left: str, right: str) -> bool:
+    return chapter_title_match_rank(left, right) is not None
+
+
+def chapter_title_match_rank(left: str, right: str) -> int | None:
+    left_key = chapter_title_key(left)
+    right_key = chapter_title_key(right)
+    if not left_key or not right_key:
+        return None
+    if left_key == right_key:
+        return 0
+    left_compact = left_key.replace(" ", "")
+    right_compact = right_key.replace(" ", "")
+    if min(len(left_compact), len(right_compact)) < 8:
+        return None
+    if left_compact == right_compact:
+        return 1
+    if left_key.startswith(f"{right_key} ") or right_key.startswith(f"{left_key} "):
+        return 2
+    if left_compact.startswith(right_compact) or right_compact.startswith(left_compact):
+        return 3
+    if (
+        min(len(left_compact), len(right_compact)) >= 12
+        and abs(len(left_compact) - len(right_compact)) <= 2
+        and SequenceMatcher(None, left_compact, right_compact).ratio() >= 0.96
+    ):
+        return 4
+    return None
 
 
 def self_assessment_navigation_indexes(lines: list[str]) -> set[int]:
@@ -1205,6 +2040,33 @@ def self_assessment_navigation_indexes(lines: list[str]) -> set[int]:
         if inside_self_assessment and number is not None and LINK_RE.search(line):
             indexes.add(index)
     return indexes
+
+
+def printed_contents_region(lines: list[str]) -> tuple[int, int] | None:
+    start: int | None = None
+    for index, line in enumerate(lines):
+        parsed = heading(line)
+        if not parsed:
+            continue
+        title = plain_heading(parsed[1]).casefold()
+        if start is None and re.search(r"\bcontents\b", title):
+            start = index
+            continue
+        if start is not None and re.fullmatch(
+            r"foreword|preface|acknowledg(?:e)?ments?", title
+        ):
+            return start, index
+    if start is None:
+        return None
+    for index in range(start + 1, len(lines)):
+        if not heading(lines[index]):
+            continue
+        following = next(
+            (line.strip() for line in lines[index + 1 :] if line.strip()), ""
+        )
+        if following and not following.startswith("|"):
+            return start, index
+    return start, len(lines)
 
 
 def printed_chapter_evidence(markdown: str) -> list[dict[str, object]]:
@@ -1247,7 +2109,9 @@ def printed_chapter_evidence(markdown: str) -> list[dict[str, object]]:
                 else ""
             )
             unpunctuated = re.fullmatch(
-                r"Chapter\s+(\d+)\s+(.+)", heading_title, re.IGNORECASE
+                r"Chapter\s+(\d+)(?:\s*[,.:]\s*|\s+)(.+)",
+                heading_title,
+                re.IGNORECASE,
             )
             if unpunctuated:
                 anchor = next(
@@ -1339,10 +2203,14 @@ def printed_chapter_evidence(markdown: str) -> list[dict[str, object]]:
 
 def body_chapter_evidence(markdown: str) -> list[dict[str, object]]:
     headings = markdown_headings(markdown)
-    excluded_indexes = self_assessment_navigation_indexes(markdown.splitlines())
+    markdown_lines = markdown.splitlines()
+    excluded_indexes = self_assessment_navigation_indexes(markdown_lines)
+    contents_region = printed_contents_region(markdown_lines)
     candidates: list[tuple[int, int, str, str]] = []
     for position, (line_number, _level, title) in enumerate(headings):
         if line_number - 1 in excluded_indexes:
+            continue
+        if contents_region and contents_region[0] <= line_number - 1 < contents_region[1]:
             continue
         number, inline_title = chapter_heading_parts(title)
         if number is None:
@@ -1369,6 +2237,34 @@ def body_chapter_evidence(markdown: str) -> list[dict[str, object]]:
                     )
                 )
 
+    for position, (line_number, _level, title) in enumerate(headings):
+        if contents_region and contents_region[0] <= line_number - 1 < contents_region[1]:
+            continue
+        if plain_heading(title).casefold() != "this chapter covers" or position == 0:
+            continue
+        title_line, _title_level, chapter_title = headings[position - 1]
+        numbered_section = next(
+            (
+                (next_line, plain_heading(next_title))
+                for next_line, _next_level, next_title in headings[position + 1 : position + 8]
+                if re.match(r"^(\d{1,3})\.1(?:\D|$)", plain_heading(next_title))
+            ),
+            None,
+        )
+        if numbered_section is None:
+            continue
+        section_match = re.match(r"^(\d{1,3})\.1(?:\D|$)", numbered_section[1])
+        if section_match is None:
+            continue
+        candidates.append(
+            (
+                int(section_match.group(1)),
+                title_line - 1,
+                plain_heading(chapter_title),
+                "unnumbered body chapter title followed by chapter overview and numbered section",
+            )
+        )
+
     runs: list[list[tuple[int, int, str, str]]] = []
     current: list[tuple[int, int, str, str]] = []
     for candidate in candidates:
@@ -1383,6 +2279,12 @@ def body_chapter_evidence(markdown: str) -> list[dict[str, object]]:
         runs.append(current)
     best_run = max(runs, key=len, default=[])
     if len(best_run) < 3:
+        best_run = [
+            candidate
+            for candidate in candidates
+            if candidate[3].startswith("unnumbered body chapter title")
+        ]
+    if not best_run:
         return []
     return [
         {
@@ -1403,29 +2305,77 @@ def numbered_contents_evidence(
     appendix_candidates: list[tuple[int, str, str]] = []
     part_candidates: list[tuple[int, str, str]] = []
     frontmatter_candidates: list[tuple[int, str]] = []
-    in_contents = False
+    lines = markdown.splitlines()
+    contents_region = printed_contents_region(lines)
+    if contents_region is None:
+        return [], []
+    body_heading_titles = {
+        chapter_title_key(parsed[1]): plain_heading(parsed[1])
+        for line_index, line in enumerate(lines)
+        if line_index >= contents_region[1] and (parsed := heading(line))
+    }
+    body_heading_keys = set(body_heading_titles)
     before_first_chapter = True
     active_fence: tuple[str, int] | None = None
-    for line_index, line in enumerate(markdown.splitlines()):
+    for line_index, line in enumerate(lines):
         next_state, delimiter = next_fence_state(line, active_fence)
         if delimiter:
             active_fence = next_state
             continue
         if active_fence is not None:
             continue
-        parsed_heading = heading(line)
-        if parsed_heading and parsed_heading[0] == 1:
-            heading_title = plain_heading(parsed_heading[1]).casefold()
-            if "contents" in heading_title:
-                in_contents = True
-                continue
-            if in_contents:
-                break
-        if not in_contents or not line.lstrip().startswith("|"):
+        if not contents_region[0] < line_index < contents_region[1]:
             continue
+        if not line.lstrip().startswith("|"):
+            continue
+        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+        first_cell = (
+            plain_heading(
+                re.sub(r"<br\s*/?>", " ", cells[0], flags=re.IGNORECASE)
+            ).strip()
+            if cells
+            else ""
+        )
+        split_title_match = re.fullmatch(r"(\d{1,3})\.\s+(.+)", first_cell)
+        if split_title_match:
+            continuation = next(
+                (
+                    plain_heading(
+                        re.sub(r"<br\s*/?>", " ", cell, flags=re.IGNORECASE)
+                    ).strip()
+                    for cell in cells[1:]
+                    if plain_heading(cell).strip()
+                    and not re.fullmatch(r"\.?\s*\d{1,4}", plain_heading(cell).strip())
+                ),
+                "",
+            )
+            title = split_title_match.group(2).strip()
+            if continuation:
+                spaced_title = f"{title} {continuation}"
+                joined_title = f"{title}{continuation}"
+                joined_matches_body = (
+                    chapter_title_key(joined_title) in body_heading_keys
+                )
+                spaced_matches_body = (
+                    chapter_title_key(spaced_title) in body_heading_keys
+                )
+                title = (
+                    joined_title
+                    if joined_matches_body and not spaced_matches_body
+                    else spaced_title
+                )
+            title = re.sub(r"\s+\.?\s*\d{1,4}$", "", title).strip()
+            if title:
+                before_first_chapter = False
+                chapter_candidates.append(
+                    (line_index, int(split_title_match.group(1)), title)
+                )
+                continue
         match = re.match(r"^\s*\|\s*((?:\d+|A\d+))\.?\s*\|\s*(.*?)\|", line)
         if not match:
-            cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+            if re.fullmatch(r"\d{1,3}\.\d+", first_cell):
+                before_first_chapter = False
+                continue
             part_cell = next(
                 (
                     plain_heading(
@@ -1483,6 +2433,9 @@ def numbered_contents_evidence(
                 title = plain_heading(
                     re.split(r"<br\s*/?>", cells[1], maxsplit=1, flags=re.IGNORECASE)[0]
                 ).strip()
+                if re.fullmatch(r"\d{1,3}(?:\.\d+)?", title):
+                    before_first_chapter = False
+                    continue
                 if title and not title.casefold().startswith("part "):
                     frontmatter_candidates.append((line_index, title))
             continue
@@ -1510,26 +2463,48 @@ def numbered_contents_evidence(
                 title_segments = title_segments[chapter_segment_index:]
         title = " ".join(title_segments).strip()
         title = re.sub(r"\s+\d{1,4}$", "", title)
-        if not title:
+        if not title or not any(character.isalnum() for character in title):
             continue
+        title_key = chapter_title_key(title)
+        corroborating_body_title = max(
+            (
+                body_title
+                for body_key, body_title in body_heading_titles.items()
+                if len(body_key) >= 8 and title_key.startswith(body_key)
+            ),
+            key=lambda body_title: len(chapter_title_key(body_title)),
+            default=None,
+        )
+        if corroborating_body_title is not None:
+            title = corroborating_body_title
         if label.startswith("A"):
             appendix_candidates.append((line_index, label, title))
         else:
-            chapter_candidates.append((line_index, int(label), title))
+            number = int(label)
+            if chapter_candidates and 0 <= number <= 9:
+                expected_number = chapter_candidates[-1][1] + 1
+                if (
+                    expected_number >= 10
+                    and expected_number % 10 == number
+                    and chapter_title_key(title) in body_heading_keys
+                ):
+                    number = expected_number
+            chapter_candidates.append((line_index, number, title))
 
-    chapter_runs: list[list[tuple[int, int, str]]] = []
-    current: list[tuple[int, int, str]] = []
-    for candidate in chapter_candidates:
-        if not current or candidate[1] == current[-1][1] + 1:
-            current.append(candidate)
+    start_index = next(
+        (
+            index
+            for index, candidate in enumerate(chapter_candidates)
+            if candidate[1] == 1
+        ),
+        0,
+    )
+    best_run: list[tuple[int, int, str]] = []
+    for candidate in chapter_candidates[start_index:]:
+        if candidate[1] <= 0:
             continue
-        if candidate[1] == current[-1][1]:
-            continue
-        chapter_runs.append(current)
-        current = [candidate]
-    if current:
-        chapter_runs.append(current)
-    best_run = max(chapter_runs, key=len, default=[])
+        if not best_run or candidate[1] > best_run[-1][1]:
+            best_run.append(candidate)
     chapters = [
         {
             "number": number,
@@ -1698,6 +2673,8 @@ def split_logical_units(
     navigation_entries = navigation_entries or []
     chapter_evidence = chapter_evidence or []
     section_evidence = section_evidence or []
+    contents_region = printed_contents_region(lines)
+    contents_end = contents_region[1] if contents_region else 0
     chapter_evidence_by_anchor = {
         unquote(str(entry["anchor"])): entry
         for entry in chapter_evidence
@@ -1756,6 +2733,8 @@ def split_logical_units(
 
     numbered_candidates: list[tuple[int, int, str]] = []
     for index, level, title in heading_entries:
+        if contents_region and contents_region[0] < index < contents_region[1]:
+            continue
         match = re.fullmatch(
             r"(?:chapter\s+)?(\d{1,3})(?:\s*[.):-]\s*|\s+)(?!\d)(\S.*)",
             title,
@@ -1795,6 +2774,8 @@ def split_logical_units(
     roman_candidates: list[tuple[int, int, str]] = []
     roman_boundary_forced_titles: dict[int, str] = {}
     for position, (index, level, title) in enumerate(heading_entries):
+        if contents_region and contents_region[0] < index < contents_region[1]:
+            continue
         match = re.fullmatch(r"([IVX]+)(?:\s+(\S.*))?", title)
         if match and level <= 2 and index not in linked_heading_indexes:
             value = roman_values.get(match.group(1))
@@ -1834,6 +2815,30 @@ def split_logical_units(
         if isinstance(entry.get("source_line"), int)
     }
     heading_titles_by_index = {index: title for index, _level, title in heading_entries}
+    heading_positions = {
+        index: position
+        for position, (index, _level, _title) in enumerate(heading_entries)
+    }
+
+    def has_part_label_context(index: int, label: object) -> bool:
+        if not label:
+            return False
+        position = heading_positions[index]
+        current_title = plain_heading(heading_entries[position][2])
+        label_pattern = rf"part\s+{re.escape(str(label))}\b"
+        if re.search(label_pattern, current_title, re.IGNORECASE):
+            return True
+        if position == 0:
+            return False
+        previous_index, _previous_level, previous_title = heading_entries[position - 1]
+        return index - previous_index <= 4 and bool(
+            re.fullmatch(
+                rf"part\s+{re.escape(str(label))}",
+                plain_heading(previous_title),
+                re.IGNORECASE,
+            )
+        )
+
     section_boundary_titles: dict[int, str] = {}
     section_boundary_kinds: dict[int, str] = {}
     previous_section_index = -1
@@ -1842,25 +2847,35 @@ def split_logical_units(
         evidence_title = entry.get("title")
         if not evidence_title:
             continue
-        expected_key = chapter_title_key(str(evidence_title))
-        candidate = next(
+        candidates = [
             (
-                (index, heading_title)
-                for index, _level, heading_title in heading_entries
-                if index > previous_section_index
-                and index not in linked_heading_indexes
-                and index not in section_source_lines
-                and (
-                    chapter_title_key(heading_title) == expected_key
-                    or chapter_title_key(heading_title).startswith(f"{expected_key} ")
-                    or expected_key.startswith(f"{chapter_title_key(heading_title)} ")
-                )
-            ),
-            None,
+                index,
+                level,
+                heading_title,
+                chapter_title_match_rank(heading_title, evidence_title),
+            )
+            for index, level, heading_title in heading_entries
+            if index >= contents_end
+            and index > previous_section_index
+            and index not in linked_heading_indexes
+            and index not in section_source_lines
+            and chapter_titles_match(heading_title, str(evidence_title))
+        ]
+        if entry.get("kind") == "part":
+            contextual_candidates = [
+                candidate
+                for candidate in candidates
+                if has_part_label_context(candidate[0], label)
+            ]
+            candidates = contextual_candidates or candidates
+        candidate = (
+            min(candidates, key=lambda item: (item[3], item[1], item[0]))
+            if candidates
+            else None
         )
         if candidate is None:
             continue
-        candidate_index, body_title = candidate
+        candidate_index, _candidate_level, body_title, _match_rank = candidate
         if entry.get("kind") == "appendix" and label:
             section_boundary_titles[candidate_index] = f"Appendix {label}: {body_title}"
         elif entry.get("kind") == "part" and label:
@@ -1893,7 +2908,11 @@ def split_logical_units(
         chapter_boundary_titles[index] = f"Chapter {number}: {chosen_title}"
         chapter_anchor_boundary_indexes.add(index)
     for index, _level, title in heading_entries:
-        if index in evidence_source_lines or index in linked_heading_indexes:
+        if (
+            index < contents_end
+            or index in evidence_source_lines
+            or index in linked_heading_indexes
+        ):
             continue
         number, _inline_title = chapter_heading_parts(title)
         if number is None:
@@ -1916,31 +2935,148 @@ def split_logical_units(
             if later_number > number
         ]
         upper_bound = min(following_indexes) if following_indexes else len(lines)
-        expected_key = chapter_title_key(evidence_title)
-        candidate = next(
+        candidates = [
             (
-                (index, heading_title)
-                for index, _level, heading_title in heading_entries
-                if previous_index < index < upper_bound
-                and index not in linked_heading_indexes
-                and index not in evidence_source_lines
-                and index not in section_boundary_titles
-                and (
-                    chapter_title_key(heading_title) == expected_key
-                    or chapter_title_key(heading_title).startswith(f"{expected_key} ")
-                    or expected_key.startswith(f"{chapter_title_key(heading_title)} ")
-                )
-            ),
-            None,
+                index,
+                level,
+                heading_title,
+                chapter_title_match_rank(heading_title, evidence_title),
+            )
+            for index, level, heading_title in heading_entries
+            if max(previous_index, contents_end - 1) < index < upper_bound
+            and index not in linked_heading_indexes
+            and index not in evidence_source_lines
+            and index not in section_boundary_titles
+            and chapter_titles_match(heading_title, evidence_title)
+        ]
+        candidate = (
+            min(candidates, key=lambda item: (item[3], item[1], item[0]))
+            if candidates
+            else None
         )
         if candidate is not None:
-            candidate_index, body_title = candidate
+            candidate_index, _candidate_level, body_title, _match_rank = candidate
             _body_number, stripped_body_title = chapter_heading_parts(body_title)
+            chosen_title = stripped_body_title or body_title
+            body_key = chapter_title_key(chosen_title)
+            evidence_key = chapter_title_key(evidence_title)
+            if body_key and evidence_key.startswith(f"{body_key} "):
+                chosen_title = evidence_title
             assigned_numbers[number] = candidate_index
             chapter_boundary_titles[candidate_index] = (
-                f"Chapter {number}: {stripped_body_title or body_title}"
+                f"Chapter {number}: {chosen_title}"
             )
             previous_index = candidate_index
+
+    heading_level_by_index = {
+        index: level for index, level, _title in heading_entries
+    }
+    reference_heading_indexes = {
+        index
+        for index, _level, title in heading_entries
+        if plain_heading(title).casefold() == "references"
+    }
+    repeated_reference_indexes = (
+        reference_heading_indexes if len(reference_heading_indexes) >= 3 else set()
+    )
+    reference_inferred_indexes: set[int] = set()
+    if assigned_numbers and repeated_reference_indexes:
+        first_number = min(evidence_titles, default=0)
+        last_number = max(evidence_titles, default=0)
+        missing_numbers = [
+            number
+            for number in range(first_number, last_number + 1)
+            if number not in assigned_numbers
+        ]
+        for number in missing_numbers:
+            lower_indexes = [
+                index
+                for assigned_number, index in assigned_numbers.items()
+                if assigned_number < number
+            ]
+            upper_indexes = [
+                index
+                for assigned_number, index in assigned_numbers.items()
+                if assigned_number > number
+            ]
+            if not lower_indexes or not upper_indexes:
+                continue
+            lower_bound = max(lower_indexes)
+            upper_bound = min(upper_indexes)
+            reference_position = next(
+                (
+                    position
+                    for position, (index, _level, title) in enumerate(heading_entries)
+                    if lower_bound < index < upper_bound
+                    and index in repeated_reference_indexes
+                    and plain_heading(title).casefold() == "references"
+                ),
+                None,
+            )
+            if reference_position is None:
+                continue
+            expected_levels = {
+                heading_level_by_index[boundary]
+                for boundary in (lower_bound, upper_bound)
+                if boundary in heading_level_by_index
+            }
+            candidate = next(
+                (
+                    (index, title)
+                    for index, level, title in heading_entries[
+                        reference_position + 1 :
+                    ]
+                    if index < upper_bound
+                    and level in expected_levels
+                    and index not in linked_heading_indexes
+                    and not re.fullmatch(
+                        r"references|summary|part\s+(?:\d+|[ivxlcdm]+)\b.*",
+                        plain_heading(title),
+                        re.IGNORECASE,
+                    )
+                ),
+                None,
+            )
+            if candidate is None:
+                continue
+            candidate_index, candidate_title = candidate
+            assigned_numbers[number] = candidate_index
+            chapter_boundary_titles[candidate_index] = (
+                f"Chapter {number}: {plain_heading(candidate_title)}"
+            )
+            reference_inferred_indexes.add(candidate_index)
+    named_boundary_min_levels: dict[str, int] = {}
+    for index, level, title in heading_entries:
+        if contents_region and contents_region[0] <= index < contents_region[1]:
+            continue
+        if index in linked_heading_indexes:
+            continue
+        normalized_title = plain_heading(title).casefold()
+        if not STRONG_NAMED_BOUNDARY_RE.fullmatch(normalized_title):
+            continue
+        named_boundary_min_levels[normalized_title] = min(
+            level, named_boundary_min_levels.get(normalized_title, level)
+        )
+    part_heading_groups: dict[tuple[str, str], list[int]] = {}
+    for index, _level, title in heading_entries:
+        part_match = re.match(
+            r"^part\s+(\d+|[ivxlcdm]+)\b\s*[,.:\-–—]*\s*(.*)$",
+            plain_heading(title),
+            re.IGNORECASE,
+        )
+        if not part_match:
+            continue
+        key = (
+            part_match.group(1).casefold(),
+            chapter_title_key(part_match.group(2)),
+        )
+        part_heading_groups.setdefault(key, []).append(index)
+    duplicate_part_outline_indexes = {
+        index
+        for indexes in part_heading_groups.values()
+        if len(indexes) > 1
+        for index in indexes[:-1]
+    }
 
     def is_boundary(title: str, line_index: int | None = None) -> bool:
         return bool(
@@ -1976,17 +3112,31 @@ def split_logical_units(
             index
             for index, level, title in heading_entries
             if (
+                not contents_region
+                or index <= contents_region[0]
+                or index >= contents_region[1]
+            )
+            and (
                 index in chapter_boundary_titles
                 or index in section_boundary_titles
                 or index in roman_boundary_indexes
                 or (
                     (
                         level <= 2
-                        or (level <= 3 and STRONG_NAMED_BOUNDARY_RE.fullmatch(title))
+                        or (
+                            level <= 3
+                            and STRONG_NAMED_BOUNDARY_RE.fullmatch(title)
+                            and level
+                            == named_boundary_min_levels.get(
+                                plain_heading(title).casefold(), level
+                            )
+                        )
                     )
                     and is_boundary(title, index)
                 )
             )
+            and index not in repeated_reference_indexes
+            and index not in duplicate_part_outline_indexes
         ]
 
     ranges: list[tuple[int, int]] = []
@@ -2047,10 +3197,12 @@ def split_logical_units(
             title_index = next(
                 (i for i, line in enumerate(content) if heading(line)), 0
             )
-            confidence = "high"
+            confidence = "medium" if start in reference_inferred_indexes else "high"
             evidence = (
                 "printed table-of-contents link target and matching body anchor"
                 if start in chapter_anchor_boundary_indexes
+                else "repeated per-chapter References pattern between numbered contents boundaries"
+                if start in reference_inferred_indexes
                 else "numbered printed contents table and matching appendix heading"
                 if section_boundary_kinds.get(start) == "appendix"
                 else "printed contents part entry and matching divider heading"
@@ -2412,6 +3564,60 @@ def rewrite_cross_chapter_links(
     output: list[str] = []
     degraded_links: list[dict[str, str]] = []
 
+    def textual_anchor(target: str, label: str) -> str | None:
+        slugs = []
+        for value in (unquote(target), html.unescape(label)):
+            slug = re.sub(r"[^\w\- ]", "", value.casefold())
+            slug = re.sub(r"\s+", "-", slug.strip())
+            if slug and slug not in slugs:
+                slugs.append(slug)
+        for slug in slugs:
+            candidate_groups = (
+                [anchor for anchor in anchor_owners if anchor == slug],
+                [
+                    anchor
+                    for anchor in anchor_owners
+                    if anchor.startswith(f"{slug}-")
+                ],
+                [
+                    anchor
+                    for anchor in anchor_owners
+                    if anchor.endswith(f"-{slug}")
+                ],
+            )
+            for candidates in candidate_groups:
+                unique = sorted(set(candidates))
+                if len(unique) == 1:
+                    return unique[0]
+                if len(unique) > 1:
+                    return None
+        return None
+
+    def replace_textual_html_anchor(match: re.Match[str]) -> str:
+        target = match.group(1).strip()
+        label = html.unescape(match.group(2)).strip()
+        parsed = urlparse(target)
+        if parsed.scheme or target.startswith(('#', '/', './', '../')):
+            return match.group(0)
+        destination_anchor = textual_anchor(target, label)
+        if destination_anchor is None:
+            degraded_links.append(
+                {
+                    "source_file": current_filename,
+                    "original_target": target,
+                    "replacement_anchor": "",
+                    "reason": "bare textual HTML href had no unique corpus destination; visible link text was preserved",
+                }
+            )
+            return label
+        owner = anchor_owners[destination_anchor]
+        destination = (
+            f"#{destination_anchor}"
+            if owner == current_filename
+            else f"{owner}#{destination_anchor}"
+        )
+        return f"[{label}]({destination})"
+
     def replacement(match: re.Match[str]) -> str:
         target = match.group(2).strip()
         parsed_target = urlparse(target)
@@ -2505,6 +3711,7 @@ def rewrite_cross_chapter_links(
             output.append(line)
             continue
         if active_fence is None:
+            line = HTML_ANCHOR_RE.sub(replace_textual_html_anchor, line)
             line = LINK_RE.sub(replacement, line)
             line = HTML_LINK_RE.sub(replacement, line)
         output.append(line)
@@ -2549,6 +3756,7 @@ def validate_corpus(
     duplicate_headings: list[dict[str, object]] = []
     table_damage: list[dict[str, object]] = []
     final_code_blocks: list[str] = []
+    code_block_counts_by_path: dict[str, int] = {}
     damaged_code: list[dict[str, object]] = []
     chapter_documents = {
         path: path.read_text(encoding="utf-8") for path in chapter_paths
@@ -2587,6 +3795,8 @@ def validate_corpus(
                 )
         blocks, unclosed = extract_code_blocks(text)
         final_code_blocks.extend(blocks)
+        if blocks:
+            code_block_counts_by_path[relative_path.as_posix()] = len(blocks)
         if unclosed:
             malformed.append(
                 {"file": relative_path.as_posix(), "reason": "unclosed code fence"}
@@ -2709,6 +3919,16 @@ def validate_corpus(
                 "physical_page": page_id + 1 if isinstance(page_id, int) else None,
             }
         )
+    if ocr_pages and raw_code_blocks:
+        damaged_code.extend(
+            {
+                "file": relative_path,
+                "reason": "fenced code was reconstructed from OCR and requires source-image fidelity review",
+                "ocr_page_count": len(ocr_pages),
+                "fenced_block_count": block_count,
+            }
+            for relative_path, block_count in sorted(code_block_counts_by_path.items())
+        )
     llm_requests = sum(
         int(stat.get("block_metadata", {}).get("llm_request_count", 0) or 0)
         for stat in page_stats
@@ -2818,15 +4038,19 @@ def validate_corpus(
         warnings.append(
             "converter version could not be determined for the execution target"
         )
-    selected_failures = next(
-        (
-            list(attempt.get("failures", []))
-            for attempt in converter.get("attempts", [])
-            if isinstance(attempt, dict)
-            and attempt.get("execution_target") == converter.get("execution_target")
-        ),
-        [],
-    )
+    input_safety = converter.get("input_safety")
+    if isinstance(input_safety, dict):
+        verdict = input_safety.get("verdict")
+        if isinstance(input_safety.get("cdr"), dict):
+            warnings.append(
+                f"original source PDF airlock verdict was {verdict}; Marker received a CDR-CLEAN sandboxed raster derivative"
+            )
+        elif verdict == "SUSPECT":
+            warnings.append(
+                "source PDF airlock verdict was SUSPECT; Marker received the original bytes and active content was not trusted"
+            )
+    selected_attempt = selected_converter_attempt(converter)
+    selected_failures = list(selected_attempt.get("failures", []))
     for attempt in converter.get("attempts", []):
         if not isinstance(attempt, dict) or attempt.get(
             "execution_target"
@@ -3206,10 +4430,46 @@ def build_readme(
     )
     warnings = validation.get("warnings") or []
     if warnings:
-        lines.extend(f"- {warning}" for warning in warnings)
+        lines.extend(f"- {markdown_safe_diagnostic(warning)}" for warning in warnings)
     else:
         lines.append("- None detected.")
     return "\n".join(lines) + "\n"
+
+
+def canonical_readme_metadata(
+    root: Path, source: Path, metadata: dict[str, object]
+) -> tuple[dict[str, object], bool]:
+    manifest = root / BIBLIOGRAPHY_MANIFEST
+    if not manifest.is_file():
+        return metadata, False
+    try:
+        document = json.loads(manifest.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return metadata, False
+    source_path = source_repository_path(root, source)
+    record = next(
+        (
+            entry
+            for entry in document.get("books", [])
+            if isinstance(entry, dict) and entry.get("source_path") == source_path
+        ),
+        None,
+    )
+    if not isinstance(record, dict) or not isinstance(record.get("title"), str):
+        return metadata, False
+    authors = [
+        str(creator["name"])
+        for creator in record.get("creators", [])
+        if isinstance(creator, dict)
+        and creator.get("role") == "author"
+        and creator.get("name")
+    ]
+    if not authors:
+        return metadata, False
+    presentation = copy.deepcopy(metadata)
+    presentation["title"] = record["title"]
+    presentation["authors"] = authors
+    return presentation, True
 
 
 def generated_file_hashes(directory: Path) -> dict[str, str]:
@@ -3274,6 +4534,18 @@ def output_modifications(directory: Path) -> list[str]:
             != recorded_raw_fingerprint
         ):
             changes.append("raw conversion fingerprint does not match identity")
+    compatibility = record.get("raw_conversion_compatibility")
+    if compatibility is not None and (
+        not isinstance(compatibility, dict)
+        or compatibility.get("schema_version")
+        != RAW_COMPATIBILITY_SCHEMA_VERSION
+        or compatibility.get("previous_raw_conversion_fingerprint")
+        != recorded_raw_fingerprint
+        or not isinstance(
+            compatibility.get("accepted_current_raw_conversion_fingerprint"), str
+        )
+    ):
+        changes.append("source.json has an invalid raw-conversion compatibility record")
     expected = record.get("generated_files")
     if not isinstance(expected, dict):
         changes.append("source.json has no generated-files manifest")
@@ -3356,12 +4628,15 @@ def convert_one(
     *,
     force: bool,
     fresh_converter: bool = False,
+    reuse_policy_compatible_raw_cache: bool = False,
 ) -> dict[str, object]:
     slug = slugify(source.stem)
     source_hash = sha256_file(source)
     current_pipeline_fingerprint = pipeline_fingerprint()
     current_raw_conversion_identity = raw_conversion_identity(
-        source, root, current_pipeline_fingerprint
+        source,
+        root,
+        raw_conversion_stage_fingerprint(current_pipeline_fingerprint),
     )
     current_raw_conversion_fingerprint = raw_conversion_fingerprint(
         current_raw_conversion_identity
@@ -3392,8 +4667,9 @@ def convert_one(
             and source_identity_matches(existing_record, root, source, source_hash)
             and existing_record.get("pipeline_fingerprint")
             == current_pipeline_fingerprint
-            and existing_record.get("raw_conversion_fingerprint")
-            == current_raw_conversion_fingerprint
+            and raw_record_matches_current_identity(
+                existing_record, current_raw_conversion_fingerprint
+            )
             and raw_conversion_cacheable(
                 current_raw_conversion_identity,
                 existing_record.get("execution_target"),
@@ -3420,8 +4696,28 @@ def convert_one(
             current_raw_conversion_identity,
             current_raw_conversion_fingerprint,
         )
+        if converter is None and reuse_policy_compatible_raw_cache:
+            converter = load_policy_compatible_converter_cache(
+                work,
+                root,
+                source,
+                source_hash,
+                current_raw_conversion_identity,
+                current_raw_conversion_fingerprint,
+            )
+            if converter is None:
+                raise BookConversionError(
+                    "explicit policy-compatible raw-cache reuse was requested, "
+                    f"but no exact authorized cache migration matched {source.name}; "
+                    "Marker was not invoked"
+                )
     if converter is not None:
-        print(f"books: reusing validated converter output: {source.name}")
+        reuse_kind = (
+            "policy-compatible validated converter output"
+            if converter.get("raw_conversion_compatibility")
+            else "validated converter output"
+        )
+        print(f"books: reusing {reuse_kind}: {source.name}")
         final_from_previous_attempt = work / "final"
         if final_from_previous_attempt.exists():
             shutil.rmtree(final_from_previous_attempt)
@@ -3446,7 +4742,9 @@ def convert_one(
         converter["raw_conversion_identity"] = current_raw_conversion_identity
         converter["raw_conversion_fingerprint"] = current_raw_conversion_fingerprint
         converter["prior_conversion_failures"] = prior_conversion_failures
+        canonicalize_converter_selection(converter)
         write_converter_cache(work, root, source, source_hash, converter)
+    canonicalize_converter_selection(converter)
     raw_markdown = Path(converter["markdown_path"]).read_text(encoding="utf-8")
     title, authors, author_line = content_metadata(raw_markdown, source.stem)
     navigation_entries: list[dict[str, object]] = []
@@ -3551,8 +4849,18 @@ def convert_one(
         final_directory, raw_markdown, units, converter, removed_furniture
     )
     write_json(final_directory / "validation.json", validation)
+    readme_metadata, canonical_readme = canonical_readme_metadata(
+        root, source, metadata
+    )
     (final_directory / "README.md").write_text(
-        build_readme(metadata, source, source_hash, converter, validation, chapters),
+        build_readme(
+            readme_metadata,
+            source,
+            source_hash,
+            converter,
+            validation,
+            chapters,
+        ),
         encoding="utf-8",
         newline="\n",
     )
@@ -3568,9 +4876,32 @@ def convert_one(
         post_processing.append(
             "removed only high-confidence page furniture listed in validation.json"
         )
+    if canonical_readme:
+        post_processing.append(
+            "rendered README title and authors from doctrine/bibliography.json while preserving metadata.json as noncanonical extraction evidence"
+        )
     if converter["format"] == "epub":
         post_processing.append(
             "split on native EPUB navigation/spine anchors and restored section anchors where Pandoc omitted them"
+        )
+    cdr_record = converter.get("input_safety", {}).get("cdr")
+    if isinstance(cdr_record, dict):
+        cdr_sandbox = cdr_record.get("sandbox")
+        host_filesystem = (
+            cdr_sandbox.get("host_filesystem")
+            if isinstance(cdr_sandbox, dict)
+            else None
+        )
+        sandbox_description = (
+            "a least-privilege networkless sandbox"
+            if isinstance(host_filesystem, str)
+            and "allowlisted runtime paths only" in host_filesystem
+            else "a networkless Bubblewrap sandbox"
+        )
+        post_processing.append(
+            "replaced non-clean source content at the converter boundary with a "
+            f"CLEAN pixel-only PDF rasterized in {sandbox_description}; the "
+            "original source remained unchanged"
         )
     if chapter_evidence:
         post_processing.append(
@@ -3601,11 +4932,11 @@ def convert_one(
         post_processing.append(
             "collapsed adjacent identical headings while preserving intervening anchors"
         )
-    selected_attempt = next(
-        attempt
-        for attempt in converter["attempts"]
-        if attempt["execution_target"] == converter["execution_target"]
-    )
+    if converter.get("raw_conversion_compatibility"):
+        post_processing.append(
+            "reused a validated peecee Marker cache under the explicit policy-compatible raw-cache migration recorded in source.json"
+        )
+    selected_attempt = selected_converter_attempt(converter)
     source_record = {
         "schema_version": SCHEMA_VERSION,
         "source_path": source_repository_path(root, source),
@@ -3617,6 +4948,9 @@ def convert_one(
         "pipeline_fingerprint": current_pipeline_fingerprint,
         "raw_conversion_identity": converter["raw_conversion_identity"],
         "raw_conversion_fingerprint": converter["raw_conversion_fingerprint"],
+        "raw_conversion_compatibility": converter.get(
+            "raw_conversion_compatibility"
+        ),
         "converter": converter["converter"],
         "execution_target": converter["execution_target"],
         "command_executed": converter["command_executed"],
@@ -3624,7 +4958,9 @@ def convert_one(
         "working_directory": converter["working_directory"],
         "converter_version": converter["converter_version"],
         "converter_exit_status": converter["converter_exit_status"],
+        "selected_attempt_number": converter["selected_attempt_number"],
         "conversion_options": converter["conversion_options"],
+        "input_safety": converter.get("input_safety"),
         "ocr_usage": validation["ocr_usage"],
         "llm_used": validation["ocr_usage"].get("llm_request_count", 0)
         not in {0, None},
@@ -4016,7 +5352,7 @@ def warnings_text(slug: str, warnings: object) -> str:
     messages = warnings if isinstance(warnings, list) else []
     if not messages:
         return "None"
-    visible = "; ".join(str(message) for message in messages[:3])
+    visible = "; ".join(markdown_safe_diagnostic(message) for message in messages[:3])
     link = f"[all warning evidence](./{slug}/validation.json)"
     if len(messages) > 3:
         return f"{visible}; +{len(messages) - 3} more; {link}"
@@ -4063,7 +5399,7 @@ def index_body(
             "Human review is never inferred. Cited-chapter impact counts only warning "
             "findings with file locators that intersect canonical doctrine source locators.",
             "",
-            "| Title | Edition | Creators | Format | Converter | Target | Chapters | "
+            "| Title | Edition | Creators | Format | Converter | Target | Chapter files | "
             "Conversion complete | Integrity verified | Content quality | Human review | "
             "Severity counts | Cited chapters | Output | Warnings |",
             "|---|---|---|---|---|---|---:|---|---|---|---|---|---|---|---|",
@@ -4412,6 +5748,14 @@ def parse_arguments(argv: list[str]) -> argparse.Namespace:
         help="bypass validated raw-converter caches and rerun conversion",
     )
     parser.add_argument(
+        "--reuse-policy-compatible-raw-cache",
+        action="store_true",
+        help=(
+            "fail closed unless a validated peecee PDF cache exactly matches an "
+            "immutable safety-policy migration authorization"
+        ),
+    )
+    parser.add_argument(
         "--catalog-only",
         action="store_true",
         help="regenerate public catalogs from existing records without running converters",
@@ -4431,6 +5775,13 @@ def main(argv: list[str] | None = None) -> int:
         if arguments.check and arguments.fresh_converter:
             raise BookConversionError(
                 "--fresh-converter cannot be combined with --check"
+            )
+        if arguments.reuse_policy_compatible_raw_cache and (
+            arguments.check or arguments.fresh_converter or arguments.catalog_only
+        ):
+            raise BookConversionError(
+                "--reuse-policy-compatible-raw-cache cannot be combined with "
+                "--check, --fresh-converter, or --catalog-only"
             )
         if arguments.catalog_only and (
             arguments.check or arguments.fresh_converter or arguments.book
@@ -4481,6 +5832,9 @@ def main(argv: list[str] | None = None) -> int:
                 root,
                 force=arguments.force,
                 fresh_converter=arguments.fresh_converter,
+                reuse_policy_compatible_raw_cache=(
+                    arguments.reuse_policy_compatible_raw_cache
+                ),
             )
         if arguments.book:
             print(f"books: partial complete ({len(sources)} source book(s))")

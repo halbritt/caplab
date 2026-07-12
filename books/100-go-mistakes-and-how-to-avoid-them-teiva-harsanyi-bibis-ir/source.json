@@ -1,0 +1,2395 @@
+{
+  "attempts": [
+    {
+      "argv": [
+        "bash",
+        "/home/halbritt/git/skills/skills/marker-convert/scripts/convert-peecee.sh",
+        ".book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/cdr/100-go-mistakes-and-how-to-avoid-them-teiva-hars-e137980cb961.pdf",
+        "--format",
+        "markdown",
+        "--out",
+        ".book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/marker-peecee",
+        "--host",
+        "peecee"
+      ],
+      "attempt_number": 1,
+      "command": "bash /home/halbritt/git/skills/skills/marker-convert/scripts/convert-peecee.sh .book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/cdr/100-go-mistakes-and-how-to-avoid-them-teiva-hars-e137980cb961.pdf --format markdown --out .book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/marker-peecee --host peecee",
+      "execution_target": "peecee",
+      "exit_status": 0,
+      "failures": [],
+      "fresh_output_validated": true,
+      "freshness_error": null,
+      "warnings": [],
+      "working_directory": "/home/halbritt/git/books"
+    }
+  ],
+  "chapter_boundary_evidence": [
+    {
+      "anchor": null,
+      "body_line": 310,
+      "number": 1,
+      "source": "unnumbered body chapter title followed by chapter overview and numbered section",
+      "title": "Go: Simple to learn but hard to master"
+    },
+    {
+      "anchor": null,
+      "body_line": 453,
+      "number": 2,
+      "source": "unnumbered body chapter title followed by chapter overview and numbered section",
+      "title": "Code and project organization"
+    },
+    {
+      "anchor": null,
+      "body_line": 2296,
+      "number": 3,
+      "source": "unnumbered body chapter title followed by chapter overview and numbered section",
+      "title": "Data types"
+    },
+    {
+      "anchor": null,
+      "body_line": 3822,
+      "number": 4,
+      "source": "unnumbered body chapter title followed by chapter overview and numbered section",
+      "title": "Control structures"
+    },
+    {
+      "anchor": null,
+      "body_line": 4569,
+      "number": 5,
+      "source": "unnumbered body chapter title followed by chapter overview and numbered section",
+      "title": "Strings"
+    },
+    {
+      "anchor": null,
+      "body_line": 5073,
+      "number": 6,
+      "source": "unnumbered body chapter title followed by chapter overview and numbered section",
+      "title": "Functions and methods"
+    },
+    {
+      "anchor": null,
+      "body_line": 5749,
+      "number": 7,
+      "source": "unnumbered body chapter title followed by chapter overview and numbered section",
+      "title": "Error management"
+    },
+    {
+      "anchor": null,
+      "body_line": 6457,
+      "number": 8,
+      "source": "unnumbered body chapter title followed by chapter overview and numbered section",
+      "title": "Concurrency: Foundations"
+    },
+    {
+      "anchor": null,
+      "body_line": 7408,
+      "number": 9,
+      "source": "unnumbered body chapter title followed by chapter overview and numbered section",
+      "title": "Concurrency: Practice"
+    },
+    {
+      "anchor": null,
+      "body_line": 8936,
+      "number": 10,
+      "source": "unnumbered body chapter title followed by chapter overview and numbered section",
+      "title": "The standard library"
+    },
+    {
+      "anchor": null,
+      "body_line": 10026,
+      "number": 11,
+      "source": "unnumbered body chapter title followed by chapter overview and numbered section",
+      "title": "Testing"
+    },
+    {
+      "anchor": null,
+      "body_line": 11638,
+      "number": 12,
+      "source": "unnumbered body chapter title followed by chapter overview and numbered section",
+      "title": "Optimizations"
+    }
+  ],
+  "collapsed_duplicate_headings": [
+    {
+      "chapter": "001-100-go-mistakes-and-how-to-avoid-them.md",
+      "count": 1
+    }
+  ],
+  "command_argv": [
+    "bash",
+    "/home/halbritt/git/skills/skills/marker-convert/scripts/convert-peecee.sh",
+    ".book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/cdr/100-go-mistakes-and-how-to-avoid-them-teiva-hars-e137980cb961.pdf",
+    "--format",
+    "markdown",
+    "--out",
+    ".book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/marker-peecee",
+    "--host",
+    "peecee"
+  ],
+  "command_executed": "bash /home/halbritt/git/skills/skills/marker-convert/scripts/convert-peecee.sh .book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/cdr/100-go-mistakes-and-how-to-avoid-them-teiva-hars-e137980cb961.pdf --format markdown --out .book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/marker-peecee --host peecee",
+  "content_author_line": null,
+  "conversion_options": {
+    "format": "markdown",
+    "host": "peecee"
+  },
+  "converter": "marker",
+  "converter_exit_status": 0,
+  "converter_version": "marker-pdf 1.10.2",
+  "degraded_internal_links": [],
+  "execution_target": "peecee",
+  "failures": [],
+  "fallbacks_used": [],
+  "generated_directories": [
+    "assets",
+    "chapters"
+  ],
+  "generated_files": {
+    "README.md": "992df08bfb52855fa23b77478aef82564fb9591ce41a2dbae7a5a8e41069bdd8",
+    "assets/_page_0_Figure_0.jpeg": "6a6e4197b7b2b6826499fd5453ec8254035d82840b5a7aec2e45a2729ce38883",
+    "assets/_page_0_Picture_2.jpeg": "b5e8c8c5b761c5e07f3af34e458002e7718e9d6fb83889db826382306b56ec83",
+    "assets/_page_102_Figure_11.jpeg": "98798805ffeae61ba9d5325bf54b9b50ad5f0763329e7483a8f311b81ec7c49c",
+    "assets/_page_104_Figure_5.jpeg": "a0d8c340a825a38bb8d53680d513caf3dc23af5cfd1cf65f66e067c83fd1939a",
+    "assets/_page_104_Figure_9.jpeg": "5d114f1d92dfd9f6639d24a93b4d3d164285f88c0a79925d466a16b0967b30bd",
+    "assets/_page_107_Figure_4.jpeg": "dda48fca0f77548316b6e7250944f760b2e97fada9b67e9b851957379998a9fb",
+    "assets/_page_118_Figure_5.jpeg": "14136b22455683f16f0eed48452af728ce0e6ef81e49217f7199c389697fa625",
+    "assets/_page_118_Figure_7.jpeg": "43188809b42c1751f0c26e194ece5aa0467f48cac5166caedebcab92dd528ce5",
+    "assets/_page_120_Figure_6.jpeg": "3640e868fcc36f16efb3533110c75ad85f6917da6efff972a58428acca4262ee",
+    "assets/_page_123_Figure_10.jpeg": "8e46a51492d57266692280d71f5bf00c97083fa99a635e0e8956eff693fdce9c",
+    "assets/_page_125_Figure_4.jpeg": "9cf748e818c30cd56504294903078247a07069e0f227e28b464d794053690af6",
+    "assets/_page_136_Figure_2.jpeg": "7673559fd54d7bfd8d5a60d055dc389a1496c97123bc7f4fced20901cf51cfc1",
+    "assets/_page_154_Picture_12.jpeg": "6358f57d60a42ca76bab4d088e8398e95ec625fe0107cc8d7f8d59d1c4361b58",
+    "assets/_page_165_Figure_10.jpeg": "07e5e79e4e9edab4cf04f7c448df04368ef45c600021eca0e535ad34e850e389",
+    "assets/_page_165_Figure_13.jpeg": "04a9f29058893f6cced9f8e80fd0c56dafdfae62cc7002bd45968aa1274afa82",
+    "assets/_page_165_Picture_7.jpeg": "ac1fa76c52da14562fd0fbeb3e1dbf358ac8de69069c377e3839f7189e110aff",
+    "assets/_page_166_Figure_8.jpeg": "a3ffd4039331eaed4434500cbb84f5ff92a102a17fcbfe335dc977a00e2f1c1d",
+    "assets/_page_166_Picture_13.jpeg": "4b0e9ee9308087850da7ce56d62879aa38499300bc1c6feb8fbd4c5abb23f901",
+    "assets/_page_167_Picture_11.jpeg": "432605b34954a2005526ca0971b54e3ddb8f1530c86b8f9db890900d73435d7c",
+    "assets/_page_167_Picture_5.jpeg": "36e337e526b9cd7276e82e356f3e1120a3dbbd0f8f47f41f793d7041be87c30e",
+    "assets/_page_170_Figure_5.jpeg": "78aadeb865e1ec59ee5b4c12f27628efaddc7d810d91b59ef0a0cf8bdb6fbbdc",
+    "assets/_page_170_Figure_7.jpeg": "4fa62463d8a1e14621c47d8dcc7949e4b8b277f5e5a5cf5f3f84037a7a3e227b",
+    "assets/_page_182_Picture_5.jpeg": "731fde63c85290a522a15ee7e98810042dde17c5e00d74bf2b1c6c6f8fcb2ffc",
+    "assets/_page_182_Picture_8.jpeg": "1e6b2eb94273c32d851a100448aab3cb74c217ce2c50b3d036feb58ef572c194",
+    "assets/_page_183_Picture_3.jpeg": "6e9063c3f7ea5d34356da066925e7dcf3089ce13ab0c54f5f64db204af0af4b2",
+    "assets/_page_183_Picture_7.jpeg": "efea0a11b9d759ae3727913fb789c41364659f35bd75b195378ff9181c0781a3",
+    "assets/_page_184_Figure_4.jpeg": "90c4ba6fb0e77d2fc837c8fe091a8ef8d425c42c8f6a6b6e4a6b0e84bf6328fa",
+    "assets/_page_187_Figure_2.jpeg": "16fa923bce8185ceb40b14b9a20dad9d0d0ae38ed1bf8e7a519312df3409a78a",
+    "assets/_page_188_Figure_6.jpeg": "1ba3d32683c0af0568d9f0c251e0d804082dde332ddcb8d44007e458c29ba63a",
+    "assets/_page_192_Figure_10.jpeg": "bb68b575a311bef91a91f29e22628e2bff58e1219e0386f385465ff6ecc50e17",
+    "assets/_page_199_Picture_14.jpeg": "3bf4682070b428dfcdd9c3e034d901fb146ec866245bcb6cb3c6930459e708c3",
+    "assets/_page_1_Picture_0.jpeg": "2c2023fd98ff521e79220523e6cb0aaebd190482144fa67b4e47aa0d9f69c819",
+    "assets/_page_200_Figure_5.jpeg": "5a059d244ddb7eba55474e41b1f1eb188b5548cd1406c3d61fae42ffdd3ec5a3",
+    "assets/_page_201_Figure_7.jpeg": "e6bf4103bab719c82140c407fdf4b2c1efcf062aea15005e2cfc80d44b4dda48",
+    "assets/_page_203_Figure_7.jpeg": "076240f7b3ca7f244c05adf5da92ca41b4b17c3a3b1f6b1aff243c101a74b5fd",
+    "assets/_page_204_Picture_3.jpeg": "d4e333cd360515451679aecda3595f0afa6b998b23b197f5bdd4e218feae6621",
+    "assets/_page_204_Picture_6.jpeg": "f96f4ce10cf1e0d9962b4e3b73b9a4df8aedf155bdbe51c67f8acb8a6903896c",
+    "assets/_page_208_Figure_8.jpeg": "1b4ad7a259918bfe31babdf1f29c2abbddf6a542ed963f170d601fb49fca0698",
+    "assets/_page_218_Figure_4.jpeg": "9963662479cc9bdc5b6a67782b46160748d20637a8f766074cdee482493d2fd9",
+    "assets/_page_221_Figure_12.jpeg": "e2ca8920aeb5b6792a12c718307984db6c2c2e405f1da6076438bfc43bdd31b9",
+    "assets/_page_222_Picture_3.jpeg": "83f9fb56e4d3980eef73e3e7efdbbe2afa361931f569eb7de6d623e9307e97c6",
+    "assets/_page_222_Picture_6.jpeg": "64c8427c79ccd43175f12ba0c958f8286c6f533266455d51c34a60e909f535ea",
+    "assets/_page_222_Picture_8.jpeg": "2d7b4f4b1cadb7ff6c09386c8244e778f271ba1d51376155d85e06c71b12a790",
+    "assets/_page_223_Picture_3.jpeg": "e324b64e5681142eee3202907b75409682473df509191221bd5c20a7b4e39832",
+    "assets/_page_225_Picture_4.jpeg": "66892975a51809e00b7a980de6df23c57ceac26b921c5ac979826f777256bf17",
+    "assets/_page_227_Figure_5.jpeg": "afaefc13e9ac0ea89a554829f1402eff1f96efcfe34974776ce08a9c72f7e799",
+    "assets/_page_229_Figure_7.jpeg": "3c77e6b097646c19d051398eb938295b869622c713a565cc72353be4e09d1f9d",
+    "assets/_page_234_Figure_8.jpeg": "b986ed91af89b57a4109ebccc107b744fdaae21db66026d043884d7b89083873",
+    "assets/_page_241_Figure_2.jpeg": "5058f396ecd3e716ee9c3ff64809f2584f3fdd1653fd40457f2bffc152c13fa5",
+    "assets/_page_244_Figure_6.jpeg": "dd245e7dab37156bb979634e79c3cb8e17ed3a664daf1259b524808abdeb12ce",
+    "assets/_page_247_Figure_8.jpeg": "e1b10634f8feca8c595b07b30241e81faf1c2d350d4ced78fe3388a951192f94",
+    "assets/_page_265_Picture_2.jpeg": "8e655365fcd9a7e58458bb663e32812df9cb9e7e569842bf46e48347ed6b85df",
+    "assets/_page_276_Figure_15.jpeg": "67953fd619e475bb5fa975f04244626cc921a9b221f7888374491293030d8504",
+    "assets/_page_282_Figure_4.jpeg": "9e74ba40398694692a867b0c46b915e62faaab8370a2106af4f689547acefd1a",
+    "assets/_page_320_Figure_2.jpeg": "a6a33ff4a71add745df6190730a6413dab38f286f124cc4b6f9e104a16a45da2",
+    "assets/_page_321_Figure_6.jpeg": "51bb171ceb667ed3001b1196abdd9e1201edd8bfa8fdba19a5bf50dfbb2060c4",
+    "assets/_page_321_Figure_9.jpeg": "2ed89666a23c351de7a89d9d08ea8a302c27fbb09cd4e7f5b2f255ef9e7cf909",
+    "assets/_page_323_Figure_12.jpeg": "06656e7001e0e4da4d14857b26aa4a52354399233f3d2d29fb79f574fb5123b5",
+    "assets/_page_325_Figure_12.jpeg": "69986a52b0de9486da4d1fe9d6854ddf43747743cdb99ecc6d4be41faa25e95e",
+    "assets/_page_325_Figure_4.jpeg": "0669ea6598e2674112b092a280141b0430701b708ce50e61a2fed8f845e2a6f4",
+    "assets/_page_328_Figure_7.jpeg": "477273c77a6f5eb722c3871fa584042fdc9318e38ff77bc060c97db098da1913",
+    "assets/_page_329_Figure_5.jpeg": "ac24cfaf67afef081285db01c30ca7cee443a145490c248659464a147d2fc38e",
+    "assets/_page_330_Figure_2.jpeg": "9def0f38456dce7b6e98b27110d890772499961e7ff7034f51ce55d02298e0f0",
+    "assets/_page_332_Figure_6.jpeg": "099072a5223a8884e7e55fe04d498392b8e1dd4b65d87ba9b1d7f02f29f1979e",
+    "assets/_page_332_Figure_9.jpeg": "8b5fec43933680e1d73b26e2982a7ac092368fe75d267e8ee4e1a5d27ed76ab2",
+    "assets/_page_333_Figure_3.jpeg": "63b0b5857662dd46c57b23686cbc8c80415b5b0baced9f9a59fdef07c744ed48",
+    "assets/_page_334_Figure_4.jpeg": "c7b84eecb5228b719e385d520a8bf01c3ee9e29ed86741808241d89eed3dc140",
+    "assets/_page_334_Figure_5.jpeg": "7a14582f0a482921b71c672b00c57c24812f5740c0815dca72153cdd40cf7213",
+    "assets/_page_334_Figure_6.jpeg": "ff2fdb7b5cd969d5f476ea263a87f30ccc62432d6007ec9573d77abbacfec25e",
+    "assets/_page_335_Figure_8.jpeg": "5366f25bab880b1f75cfc6ec891fe0c96c2e97466df81dd87d5b11e8f086f1e9",
+    "assets/_page_336_Figure_4.jpeg": "320455e0d0c070ead48339ac315c4686ccb24c1b0a73c2c4f015763270cf72b8",
+    "assets/_page_337_Figure_6.jpeg": "af6bc62b536778d32ff5f12e374caa08f20de8b9d5f51446aa2e6558f677541c",
+    "assets/_page_337_Figure_9.jpeg": "17a7010f0c407f7389d6ac28d34bae5c028104a6e64c8263a38eb32c420760fe",
+    "assets/_page_338_Figure_7.jpeg": "5068c74801ee3cfe5ada4b09621de48c20cbe1d0f069e84b66d5e3db5f723bca",
+    "assets/_page_339_Figure_3.jpeg": "42567becaec6d70ac8c2dfdf0126e078d9f4b295927c050b666f432447cad20f",
+    "assets/_page_33_Picture_3.jpeg": "6e66fd32a532a1c8f36a3dd3ef5a203f498d50cae055193091d7cc484d649220",
+    "assets/_page_340_Figure_12.jpeg": "92178b23953b77393b1cceeac4129ac87fb09e5c873841217f863ef114f0cd4c",
+    "assets/_page_341_Figure_2.jpeg": "c8fed959cb716e676dc30fe8c62d2e18135597a7ed8aaaa808369790a52b992d",
+    "assets/_page_341_Figure_8.jpeg": "df4506d339951dcdcd923bd149cf83a9001384edd2573e333e5cbc0f6f45a51a",
+    "assets/_page_342_Picture_7.jpeg": "71e038c4b4f237e45322052a7f79acb65fd315537f0b0cb1ff06fb476165de03",
+    "assets/_page_343_Figure_5.jpeg": "f4b60ddf6cd30287fdd8060f649a2827411f9caf8e7a53afa7613e2a6b679556",
+    "assets/_page_344_Figure_7.jpeg": "7cd4f9b4631fd43590468e306c12fa9cbf4cc3b7d1559b0b69806e7a9dfee4ac",
+    "assets/_page_345_Figure_5.jpeg": "97f5c359a1d455df63af9b66dbdec552db486dd9d809eb1213f16f8ba1af3ffc",
+    "assets/_page_346_Figure_10.jpeg": "b5c2829b565a02e23c0d585c264ed09df89e9be20b17887a44488614435ae482",
+    "assets/_page_346_Figure_4.jpeg": "7b8a6c494e21cb2faf278c6307156b2e3cccfc8f7e1afe2b01c6db53629d834d",
+    "assets/_page_348_Figure_11.jpeg": "01fef28792d3dfe3fed91bdbba248c817efa2c2db8eee521b39b5dfb462d2b46",
+    "assets/_page_352_Figure_9.jpeg": "fbddd12d9effbeece6153d5e1dbe030d3e6b541fa9970918cebc29e17e5f5b8b",
+    "assets/_page_358_Figure_10.jpeg": "ed58745ba30c6939d8e254bc770751bb31601c33466a8f679f169702e2ffac0e",
+    "assets/_page_359_Figure_2.jpeg": "c21a5b3d3c1ae25813cd37963ace8398ac77a0a68662e413d16025cb97595d79",
+    "assets/_page_360_Figure_6.jpeg": "f382409937e527b66bb401f0f7db6cecc0d71aa123efd8c7f5362a9e8b6c5fbc",
+    "assets/_page_361_Figure_3.jpeg": "4a2cd944047e4c99af30924339752f3f3a020309c73c4065e5b0e786025e1341",
+    "assets/_page_361_Figure_8.jpeg": "613b430928f8ddd8f7783cf5c2b7b6ad5caf98c901791be5f903817f2a9a60fc",
+    "assets/_page_364_Figure_3.jpeg": "df474d88ae853e60083b316625b4812d71172d0396b97a60260c655bcce3a481",
+    "assets/_page_364_Figure_6.jpeg": "5bcf891d2ba6b055851f061e1f5ae65fb6d79689d14547e7ca8c5d59e2dacc4c",
+    "assets/_page_364_Figure_9.jpeg": "330a8563c1243c000fff6b0c4e8e7f182e6b6e2dd8a972fb8bd91b9f09473f4c",
+    "assets/_page_365_Figure_3.jpeg": "0c2b4c95a2394186c46a153256584184c4a5f60c62f38ffe126d0bd49160cf57",
+    "assets/_page_366_Figure_2.jpeg": "5960b0fd49c6d19304b32604db589477367af5549757ffc743aa5fe03aa7f408",
+    "assets/_page_368_Figure_5.jpeg": "2cad3dbf233219e185b7b3cb514a580e72f27580387003d6740e8ad698fd0840",
+    "assets/_page_368_Figure_7.jpeg": "81d7a69eb57d609aeb663792c5cea8821e0ef58d708e33142f4616c5fa9d9863",
+    "assets/_page_369_Figure_4.jpeg": "2ae566d88cdf0be39683e00dc2ad9b35b1d56344ec897f94cb08ba43a56f024f",
+    "assets/_page_370_Figure_2.jpeg": "9af2e0374107f8a230a842b5d86734c6eb594324a56a48e0531257f7919b31eb",
+    "assets/_page_372_Figure_3.jpeg": "2a74358f6e9500d46d9637ab7e62922d71f180cb69e212b9d9d9623950bb3cd1",
+    "assets/_page_372_Figure_6.jpeg": "bca16eb557c148cd7e0922ae11e773f90e1add80d7b7ab13dba2a8522b04ae1e",
+    "assets/_page_384_Picture_20.jpeg": "ae179b1b692993b24a4a2261a379b0e24273cbf9ad4e1050a97a32cb55a102bf",
+    "assets/_page_384_Picture_22.jpeg": "7dde5b1d3dae1ebac9a5abd22a4808e9e249e91216027cedbe958d1cfccf7a65",
+    "assets/_page_384_Picture_23.jpeg": "d7b8e9b1a75b24c2fa2dd03943fd715ef83737d502670851df1d706485372a36",
+    "assets/_page_384_Picture_24.jpeg": "1073b9f5e9cdc7da382c9fd7f2c72464cb2486e46536b02417b9be7397e3db8a",
+    "assets/_page_38_Picture_3.jpeg": "ed4cf195947fb4c538f8a551fa585f1a5a6e3026f90779ae5803046531d9f675",
+    "assets/_page_44_Figure_11.jpeg": "d23698a69d06ec65a3cf415e92fd85678dd22c2d01fd6b414ec76fe6cc7d3030",
+    "assets/_page_44_Figure_9.jpeg": "29869bca0646f07661c8e511737dd9a6dd7c8026a62fa9420a2411c5da839fe8",
+    "assets/_page_45_Figure_8.jpeg": "6e102680c87c56da655a9a6ccef4898dc857131a145b7c9f8de387301ca14fbf",
+    "assets/_page_46_Figure_11.jpeg": "2fc2208e621d027781787443f6fe4c56b285eb6afc133a44d820f2990339314e",
+    "assets/_page_4_Picture_2.jpeg": "0207e5e85f60e07b7b2312c9ceb697cf7203e57df6b4df3a6587a9139cb81c6b",
+    "assets/_page_58_Figure_2.jpeg": "8ba6f26be634ced81eadf9973973bb2d0906725f407ff67db4ab7fd77f567758",
+    "assets/_page_63_Figure_8.jpeg": "4dc60e2feedb207f871625d0ef56973eb852d08a3272e828b2b205d59c20627a",
+    "assets/_page_81_Figure_2.jpeg": "d91e9a36832aa7b150f6780d89f0f5b43b182398a6cf69c3ae0216e261d91693",
+    "assets/_page_84_Figure_17.jpeg": "c4609017489021b9550f6fe1f3974d0cceab3a133f37f32472cb9d613bf64fa8",
+    "assets/_page_84_Figure_5.jpeg": "fe2656e8074cafafbbae6485ac47ee694961cd829537a260db42189a62851844",
+    "assets/_page_84_Figure_7.jpeg": "50925a5bc2d28def054e06b76faac41ac32c2f2d2b24e0f5bcdff35539475e57",
+    "assets/_page_85_Figure_3.jpeg": "2db62902f4c0e78307c646e041501f149f735d8dfbb23b0f0ddfdfbbae9ec584",
+    "assets/_page_85_Figure_9.jpeg": "a68a55a175dad04a8d26d52eb128acf0f925b53c0a31d2e4c36785f138a2c801",
+    "assets/_page_86_Figure_11.jpeg": "81130efdab1343dd5e576815df44e40b3ec0f913956c1962ec52cb20e623521c",
+    "assets/_page_86_Figure_9.jpeg": "3fbbf1c22ff103f63069ee744b631822566151db5a64adad6fc32d212f983fef",
+    "assets/_page_87_Figure_2.jpeg": "7864203967efb1db0567da10231b77a2b42492cfd71965b1c4ae3fd6b09b4337",
+    "assets/_page_96_Figure_13.jpeg": "1ef899546cf0e0e02560341d12590864bdf50d922166dae88aa5a7371b743440",
+    "assets/_page_97_Figure_7.jpeg": "2ea15f085e628194162cdf3eb287174824a48ce23eb03e2fe3c7c8e4e8b2c488",
+    "assets/_page_98_Figure_10.jpeg": "a63efc3c28f96e405946a507ae0742ea38b26547f695b8a5be237b5031d239a5",
+    "assets/_page_99_Figure_9.jpeg": "ce6de05ec7f3102e12fbb56ce91b818446016f574ec379b245d55368f48dcf80",
+    "chapters/001-100-go-mistakes-and-how-to-avoid-them.md": "86aba769a94c4227196a24b933324b8a2fb83b021c4db8ed1d9b5fa12bb38a83",
+    "chapters/002-preface.md": "6164344750ef05ce3888bb0de8c9aaa11a4c8044562f5ceb671eecde57e14a51",
+    "chapters/003-acknowledgments.md": "ac53add47844f2ffc966deae31beea8bb212367d724bfec898a98effb43518f6",
+    "chapters/004-about-the-author.md": "d7b6350b9bc835578aec859f0aec5d6dbb14110b0b90436aac9a442baf1d18d3",
+    "chapters/005-chapter-1-go-simple-to-learn-but-hard-to-master.md": "0168e3f0567ee309f5ec1632dc34bc7a7ff680be667d69932b23ba04ab025800",
+    "chapters/006-chapter-2-code-and-project-organization.md": "658c49b8e1c9736c952bc50851967cf0757aa4f5cd1ba27cb40a77f3d65aaab5",
+    "chapters/007-chapter-3-data-types.md": "45b54962ccbbad2e9d55e17dccbbcf04050af67eda6203e665ee7d64c6f558a5",
+    "chapters/008-chapter-4-control-structures.md": "00ab92610ed4e1a74446ccab4f82cd75bf39cc6a10089d83edcbf4a75c9a01a7",
+    "chapters/009-chapter-5-strings.md": "768db4f8125816e8161bc2498fe8108aa5457c27e080628e30a45917684df2eb",
+    "chapters/010-chapter-6-functions-and-methods.md": "52af9b6fd12810d7f0a93c1da484f1cfe71ac6208c90421043a59331cb6b8a03",
+    "chapters/011-chapter-7-error-management.md": "cdea5240807054369c655b3e72ade782ae7e70a6b67784ef8ac59d26d6305980",
+    "chapters/012-chapter-8-concurrency-foundations.md": "1bd0ef6206f333c4fc699de8078cc9334166eee89c975be01ebfe168875972d7",
+    "chapters/013-chapter-9-concurrency-practice.md": "5e42f5aa4312dc9a4124992a3509945e37fe4805f17572b966bc6cab4a77385b",
+    "chapters/014-chapter-10-the-standard-library.md": "80dab2509b625d389f2765f3de4602d218f2682f0efbddd409abd6314e1905e8",
+    "chapters/015-chapter-11-testing.md": "8c52672b04ae1d427c90db4267d9a14a74df3c6922f66a59049f0b87f2109d2d",
+    "chapters/016-chapter-12-optimizations.md": "963a048f559a9e46324135a3ae26489d924b758833ae82a9de9cce801b660a96",
+    "chapters/017-index.md": "02de79715d7bd66814a89d78998698df7174c7e4eeabd6a22807b8a43a93c480",
+    "metadata.json": "8aaf74e5e98e11866b629493c722b3417501bc20c1fe4c9c5dd77a7218bf17b6",
+    "validation.json": "88a0e631b6d71754d605d0c1d44a0099ca93d7e6434ae880adc6dd2127d7b923"
+  },
+  "input_safety": {
+    "action": "do NOT extract or render on the host — rebuild in a --network none sandbox or refuse",
+    "active_content": {
+      "/AA": {
+        "count": 141,
+        "severity": "suspect"
+      },
+      "/EmbeddedFile": {
+        "count": 2,
+        "severity": "suspect"
+      },
+      "/JS": {
+        "count": 6,
+        "severity": "danger"
+      },
+      "/URI": {
+        "count": 162,
+        "severity": "info"
+      }
+    },
+    "bomb": null,
+    "cdr": {
+      "attempts": [
+        {
+          "accepted_verdict": "CDR-CLEAN",
+          "argv": [
+            "/usr/bin/bwrap",
+            "--unshare-all",
+            "--die-with-parent",
+            "--new-session",
+            "--ro-bind",
+            "/",
+            "/",
+            "--dev",
+            "/dev",
+            "--proc",
+            "/proc",
+            "--bind",
+            "/home/halbritt/git/books/.book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/cdr",
+            "/home/halbritt/git/books/.book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/cdr",
+            "--chdir",
+            "/home/halbritt/git/books/.book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir",
+            "/usr/bin/gs",
+            "-q",
+            "-dSAFER",
+            "-dBATCH",
+            "-dNOPAUSE",
+            "-sDEVICE=pdfimage24",
+            "-r150",
+            "-sCompression=LZW",
+            "-sOutputFile=/home/halbritt/git/books/.book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/cdr/.100-go-mistakes-and-how-to-avoid-them-teiva-hars-e137980cb961.pdf.cdr-150-LZW.pdf",
+            "100-go-mistakes-and-how-to-avoid-them-teiva-hars-e137980cb961.pdf"
+          ],
+          "ascii_stream_encoding": {
+            "argv": [
+              "/usr/bin/mutool",
+              "clean",
+              "-a",
+              "/home/halbritt/git/books/.book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/cdr/.100-go-mistakes-and-how-to-avoid-them-teiva-hars-e137980cb961.pdf.cdr-150-LZW.pdf",
+              "/home/halbritt/git/books/.book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/cdr/.100-go-mistakes-and-how-to-avoid-them-teiva-hars-e137980cb961.pdf.cdr-150-LZW.pdf.ascii.pdf"
+            ],
+            "command": "/usr/bin/mutool clean -a /home/halbritt/git/books/.book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/cdr/.100-go-mistakes-and-how-to-avoid-them-teiva-hars-e137980cb961.pdf.cdr-150-LZW.pdf /home/halbritt/git/books/.book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/cdr/.100-go-mistakes-and-how-to-avoid-them-teiva-hars-e137980cb961.pdf.cdr-150-LZW.pdf.ascii.pdf",
+            "exit_status": 0,
+            "stderr": "",
+            "stdout": ""
+          },
+          "command": "/usr/bin/bwrap --unshare-all --die-with-parent --new-session --ro-bind / / --dev /dev --proc /proc --bind /home/halbritt/git/books/.book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/cdr /home/halbritt/git/books/.book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/cdr --chdir /home/halbritt/git/books/.book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir /usr/bin/gs -q -dSAFER -dBATCH -dNOPAUSE -sDEVICE=pdfimage24 -r150 -sCompression=LZW -sOutputFile=/home/halbritt/git/books/.book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/cdr/.100-go-mistakes-and-how-to-avoid-them-teiva-hars-e137980cb961.pdf.cdr-150-LZW.pdf 100-go-mistakes-and-how-to-avoid-them-teiva-hars-e137980cb961.pdf",
+          "compression": "LZW",
+          "derivative_sha256": "9e133505ee56e8a1bb7773c45c3f7d6240cbe2fcefc7754d89217b0bc6abe86e",
+          "derivative_size_bytes": 44360861,
+          "dpi": 150,
+          "exit_status": 0,
+          "object_syntax_scan": {
+            "active_content": {},
+            "schema_version": "pdf-cdr-syntax-scan/1",
+            "scope": "PDF bytes outside stream/endstream bodies",
+            "verdict": "CLEAN"
+          },
+          "safety": {
+            "action": "extract ONLY via safe_text.py (neutralized + wrapped); do not trust active content",
+            "active_content": {
+              "/AA": {
+                "count": 14,
+                "severity": "suspect"
+              }
+            },
+            "bomb": null,
+            "custody_id": "9e133505ee56e8a1-SUSPECT",
+            "decompression": {
+              "ceilings": {
+                "max_decomp_mib": 8192,
+                "max_pages": 5000,
+                "max_ratio": 500.0
+              },
+              "decomp_bytes": 1773290196,
+              "orig_bytes": 44360861,
+              "pages": 385,
+              "ratio": 40.0
+            },
+            "note": null,
+            "verdict": "SUSPECT"
+          },
+          "stderr": "",
+          "stdout": "",
+          "xray": {
+            "argv": [
+              "/usr/bin/python3",
+              "/home/halbritt/git/skills/skills/pdf-safe-ingest/scripts/xray.py",
+              "/home/halbritt/git/books/.book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/cdr/.100-go-mistakes-and-how-to-avoid-them-teiva-hars-e137980cb961.pdf.cdr-150-LZW.pdf",
+              "--force"
+            ],
+            "command": "/usr/bin/python3 /home/halbritt/git/skills/skills/pdf-safe-ingest/scripts/xray.py /home/halbritt/git/books/.book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/cdr/.100-go-mistakes-and-how-to-avoid-them-teiva-hars-e137980cb961.pdf.cdr-150-LZW.pdf --force",
+            "exit_status": 0
+          }
+        }
+      ],
+      "command": {
+        "argv": [
+          "/usr/bin/python3",
+          "/home/halbritt/git/books/scripts/pdf-cdr",
+          "/home/halbritt/git/books/.book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/100-go-mistakes-and-how-to-avoid-them-teiva-hars-e137980cb961.pdf",
+          "/home/halbritt/git/books/.book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/cdr/100-go-mistakes-and-how-to-avoid-them-teiva-hars-e137980cb961.pdf"
+        ],
+        "command": "/usr/bin/python3 /home/halbritt/git/books/scripts/pdf-cdr /home/halbritt/git/books/.book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/100-go-mistakes-and-how-to-avoid-them-teiva-hars-e137980cb961.pdf /home/halbritt/git/books/.book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/cdr/100-go-mistakes-and-how-to-avoid-them-teiva-hars-e137980cb961.pdf",
+        "exit_status": 0,
+        "working_directory": "/home/halbritt/git/books"
+      },
+      "output": "/home/halbritt/git/books/.book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/cdr/100-go-mistakes-and-how-to-avoid-them-teiva-hars-e137980cb961.pdf",
+      "sandbox": {
+        "file_limit_bytes": 8589934592,
+        "host_filesystem": "read-only except derivative output directory",
+        "memory_limit_bytes": 34359738368,
+        "network": "none",
+        "renderer": "ghostscript pdfimage24",
+        "stream_encoding": "mutool clean -a (ASCII hex)",
+        "timeout_seconds": 7200,
+        "transport": "bwrap"
+      },
+      "schema_version": "books-pdf-cdr/1",
+      "selected": {
+        "compression": "LZW",
+        "custody_id": "9e133505ee56e8a1-CDR-CLEAN",
+        "decompression": {
+          "ceilings": {
+            "max_decomp_mib": 8192,
+            "max_pages": 5000,
+            "max_ratio": 500.0
+          },
+          "decomp_bytes": 1773290196,
+          "orig_bytes": 44360861,
+          "pages": 385,
+          "ratio": 40.0
+        },
+        "derivative_sha256": "9e133505ee56e8a1bb7773c45c3f7d6240cbe2fcefc7754d89217b0bc6abe86e",
+        "derivative_size_bytes": 44360861,
+        "dpi": 150,
+        "object_syntax_verdict": "CLEAN",
+        "verdict": "CDR-CLEAN",
+        "xray_verdict": "SUSPECT"
+      },
+      "source_sha256": "e137980cb9611b94b6cac4a2aa63aee8e86947e9acbffbbff98154a52093d0b9",
+      "source_size_bytes": 10338890
+    },
+    "command": {
+      "argv": [
+        "/usr/bin/python3",
+        "/home/halbritt/git/skills/skills/pdf-safe-ingest/scripts/xray.py",
+        "/home/halbritt/git/books/sources/100-Go-Mistakes-and-How-to-Avoid-Them-(Teiva-Harsanyi)_bibis.ir.pdf"
+      ],
+      "command": "/usr/bin/python3 /home/halbritt/git/skills/skills/pdf-safe-ingest/scripts/xray.py '/home/halbritt/git/books/sources/100-Go-Mistakes-and-How-to-Avoid-Them-(Teiva-Harsanyi)_bibis.ir.pdf'",
+      "exit_status": 3,
+      "working_directory": "/home/halbritt/git/books"
+    },
+    "custody_id": "e137980cb9611b94-DANGEROUS",
+    "decompression": {
+      "ceilings": {
+        "max_decomp_mib": 800,
+        "max_pages": 5000,
+        "max_ratio": 120.0
+      },
+      "decomp_bytes": 65009653,
+      "orig_bytes": 10338890,
+      "pages": 385,
+      "ratio": 6.3
+    },
+    "marker_input": "sandboxed-raster-cdr",
+    "note": null,
+    "schema_version": "pdf-skills/1",
+    "skill": "pdf-safe-ingest",
+    "source_sha256": "e137980cb9611b94b6cac4a2aa63aee8e86947e9acbffbbff98154a52093d0b9",
+    "source_size_bytes": 10338890,
+    "verdict": "DANGEROUS"
+  },
+  "llm_used": false,
+  "merged_duplicate_boundaries": [],
+  "ocr_usage": {
+    "llm_request_count": 0,
+    "ocr_pages": [
+      {
+        "page_id": 0,
+        "physical_page": 1
+      },
+      {
+        "page_id": 1,
+        "physical_page": 2
+      },
+      {
+        "page_id": 2,
+        "physical_page": 3
+      },
+      {
+        "page_id": 3,
+        "physical_page": 4
+      },
+      {
+        "page_id": 4,
+        "physical_page": 5
+      },
+      {
+        "page_id": 5,
+        "physical_page": 6
+      },
+      {
+        "page_id": 6,
+        "physical_page": 7
+      },
+      {
+        "page_id": 7,
+        "physical_page": 8
+      },
+      {
+        "page_id": 8,
+        "physical_page": 9
+      },
+      {
+        "page_id": 9,
+        "physical_page": 10
+      },
+      {
+        "page_id": 10,
+        "physical_page": 11
+      },
+      {
+        "page_id": 11,
+        "physical_page": 12
+      },
+      {
+        "page_id": 12,
+        "physical_page": 13
+      },
+      {
+        "page_id": 13,
+        "physical_page": 14
+      },
+      {
+        "page_id": 14,
+        "physical_page": 15
+      },
+      {
+        "page_id": 15,
+        "physical_page": 16
+      },
+      {
+        "page_id": 16,
+        "physical_page": 17
+      },
+      {
+        "page_id": 17,
+        "physical_page": 18
+      },
+      {
+        "page_id": 18,
+        "physical_page": 19
+      },
+      {
+        "page_id": 19,
+        "physical_page": 20
+      },
+      {
+        "page_id": 20,
+        "physical_page": 21
+      },
+      {
+        "page_id": 21,
+        "physical_page": 22
+      },
+      {
+        "page_id": 22,
+        "physical_page": 23
+      },
+      {
+        "page_id": 23,
+        "physical_page": 24
+      },
+      {
+        "page_id": 24,
+        "physical_page": 25
+      },
+      {
+        "page_id": 25,
+        "physical_page": 26
+      },
+      {
+        "page_id": 26,
+        "physical_page": 27
+      },
+      {
+        "page_id": 27,
+        "physical_page": 28
+      },
+      {
+        "page_id": 28,
+        "physical_page": 29
+      },
+      {
+        "page_id": 29,
+        "physical_page": 30
+      },
+      {
+        "page_id": 30,
+        "physical_page": 31
+      },
+      {
+        "page_id": 31,
+        "physical_page": 32
+      },
+      {
+        "page_id": 32,
+        "physical_page": 33
+      },
+      {
+        "page_id": 33,
+        "physical_page": 34
+      },
+      {
+        "page_id": 34,
+        "physical_page": 35
+      },
+      {
+        "page_id": 35,
+        "physical_page": 36
+      },
+      {
+        "page_id": 36,
+        "physical_page": 37
+      },
+      {
+        "page_id": 37,
+        "physical_page": 38
+      },
+      {
+        "page_id": 38,
+        "physical_page": 39
+      },
+      {
+        "page_id": 39,
+        "physical_page": 40
+      },
+      {
+        "page_id": 40,
+        "physical_page": 41
+      },
+      {
+        "page_id": 41,
+        "physical_page": 42
+      },
+      {
+        "page_id": 42,
+        "physical_page": 43
+      },
+      {
+        "page_id": 43,
+        "physical_page": 44
+      },
+      {
+        "page_id": 44,
+        "physical_page": 45
+      },
+      {
+        "page_id": 45,
+        "physical_page": 46
+      },
+      {
+        "page_id": 46,
+        "physical_page": 47
+      },
+      {
+        "page_id": 47,
+        "physical_page": 48
+      },
+      {
+        "page_id": 48,
+        "physical_page": 49
+      },
+      {
+        "page_id": 49,
+        "physical_page": 50
+      },
+      {
+        "page_id": 50,
+        "physical_page": 51
+      },
+      {
+        "page_id": 51,
+        "physical_page": 52
+      },
+      {
+        "page_id": 52,
+        "physical_page": 53
+      },
+      {
+        "page_id": 53,
+        "physical_page": 54
+      },
+      {
+        "page_id": 54,
+        "physical_page": 55
+      },
+      {
+        "page_id": 55,
+        "physical_page": 56
+      },
+      {
+        "page_id": 56,
+        "physical_page": 57
+      },
+      {
+        "page_id": 57,
+        "physical_page": 58
+      },
+      {
+        "page_id": 58,
+        "physical_page": 59
+      },
+      {
+        "page_id": 59,
+        "physical_page": 60
+      },
+      {
+        "page_id": 60,
+        "physical_page": 61
+      },
+      {
+        "page_id": 61,
+        "physical_page": 62
+      },
+      {
+        "page_id": 62,
+        "physical_page": 63
+      },
+      {
+        "page_id": 63,
+        "physical_page": 64
+      },
+      {
+        "page_id": 64,
+        "physical_page": 65
+      },
+      {
+        "page_id": 65,
+        "physical_page": 66
+      },
+      {
+        "page_id": 66,
+        "physical_page": 67
+      },
+      {
+        "page_id": 67,
+        "physical_page": 68
+      },
+      {
+        "page_id": 68,
+        "physical_page": 69
+      },
+      {
+        "page_id": 69,
+        "physical_page": 70
+      },
+      {
+        "page_id": 70,
+        "physical_page": 71
+      },
+      {
+        "page_id": 71,
+        "physical_page": 72
+      },
+      {
+        "page_id": 72,
+        "physical_page": 73
+      },
+      {
+        "page_id": 73,
+        "physical_page": 74
+      },
+      {
+        "page_id": 74,
+        "physical_page": 75
+      },
+      {
+        "page_id": 75,
+        "physical_page": 76
+      },
+      {
+        "page_id": 76,
+        "physical_page": 77
+      },
+      {
+        "page_id": 77,
+        "physical_page": 78
+      },
+      {
+        "page_id": 78,
+        "physical_page": 79
+      },
+      {
+        "page_id": 79,
+        "physical_page": 80
+      },
+      {
+        "page_id": 80,
+        "physical_page": 81
+      },
+      {
+        "page_id": 81,
+        "physical_page": 82
+      },
+      {
+        "page_id": 82,
+        "physical_page": 83
+      },
+      {
+        "page_id": 83,
+        "physical_page": 84
+      },
+      {
+        "page_id": 84,
+        "physical_page": 85
+      },
+      {
+        "page_id": 85,
+        "physical_page": 86
+      },
+      {
+        "page_id": 86,
+        "physical_page": 87
+      },
+      {
+        "page_id": 87,
+        "physical_page": 88
+      },
+      {
+        "page_id": 88,
+        "physical_page": 89
+      },
+      {
+        "page_id": 89,
+        "physical_page": 90
+      },
+      {
+        "page_id": 90,
+        "physical_page": 91
+      },
+      {
+        "page_id": 91,
+        "physical_page": 92
+      },
+      {
+        "page_id": 92,
+        "physical_page": 93
+      },
+      {
+        "page_id": 93,
+        "physical_page": 94
+      },
+      {
+        "page_id": 94,
+        "physical_page": 95
+      },
+      {
+        "page_id": 95,
+        "physical_page": 96
+      },
+      {
+        "page_id": 96,
+        "physical_page": 97
+      },
+      {
+        "page_id": 97,
+        "physical_page": 98
+      },
+      {
+        "page_id": 98,
+        "physical_page": 99
+      },
+      {
+        "page_id": 99,
+        "physical_page": 100
+      },
+      {
+        "page_id": 100,
+        "physical_page": 101
+      },
+      {
+        "page_id": 101,
+        "physical_page": 102
+      },
+      {
+        "page_id": 102,
+        "physical_page": 103
+      },
+      {
+        "page_id": 103,
+        "physical_page": 104
+      },
+      {
+        "page_id": 104,
+        "physical_page": 105
+      },
+      {
+        "page_id": 105,
+        "physical_page": 106
+      },
+      {
+        "page_id": 106,
+        "physical_page": 107
+      },
+      {
+        "page_id": 107,
+        "physical_page": 108
+      },
+      {
+        "page_id": 108,
+        "physical_page": 109
+      },
+      {
+        "page_id": 109,
+        "physical_page": 110
+      },
+      {
+        "page_id": 110,
+        "physical_page": 111
+      },
+      {
+        "page_id": 111,
+        "physical_page": 112
+      },
+      {
+        "page_id": 112,
+        "physical_page": 113
+      },
+      {
+        "page_id": 113,
+        "physical_page": 114
+      },
+      {
+        "page_id": 114,
+        "physical_page": 115
+      },
+      {
+        "page_id": 115,
+        "physical_page": 116
+      },
+      {
+        "page_id": 116,
+        "physical_page": 117
+      },
+      {
+        "page_id": 117,
+        "physical_page": 118
+      },
+      {
+        "page_id": 118,
+        "physical_page": 119
+      },
+      {
+        "page_id": 119,
+        "physical_page": 120
+      },
+      {
+        "page_id": 120,
+        "physical_page": 121
+      },
+      {
+        "page_id": 121,
+        "physical_page": 122
+      },
+      {
+        "page_id": 122,
+        "physical_page": 123
+      },
+      {
+        "page_id": 123,
+        "physical_page": 124
+      },
+      {
+        "page_id": 124,
+        "physical_page": 125
+      },
+      {
+        "page_id": 125,
+        "physical_page": 126
+      },
+      {
+        "page_id": 126,
+        "physical_page": 127
+      },
+      {
+        "page_id": 127,
+        "physical_page": 128
+      },
+      {
+        "page_id": 128,
+        "physical_page": 129
+      },
+      {
+        "page_id": 129,
+        "physical_page": 130
+      },
+      {
+        "page_id": 130,
+        "physical_page": 131
+      },
+      {
+        "page_id": 131,
+        "physical_page": 132
+      },
+      {
+        "page_id": 132,
+        "physical_page": 133
+      },
+      {
+        "page_id": 133,
+        "physical_page": 134
+      },
+      {
+        "page_id": 134,
+        "physical_page": 135
+      },
+      {
+        "page_id": 135,
+        "physical_page": 136
+      },
+      {
+        "page_id": 136,
+        "physical_page": 137
+      },
+      {
+        "page_id": 137,
+        "physical_page": 138
+      },
+      {
+        "page_id": 138,
+        "physical_page": 139
+      },
+      {
+        "page_id": 139,
+        "physical_page": 140
+      },
+      {
+        "page_id": 140,
+        "physical_page": 141
+      },
+      {
+        "page_id": 141,
+        "physical_page": 142
+      },
+      {
+        "page_id": 142,
+        "physical_page": 143
+      },
+      {
+        "page_id": 143,
+        "physical_page": 144
+      },
+      {
+        "page_id": 144,
+        "physical_page": 145
+      },
+      {
+        "page_id": 145,
+        "physical_page": 146
+      },
+      {
+        "page_id": 146,
+        "physical_page": 147
+      },
+      {
+        "page_id": 147,
+        "physical_page": 148
+      },
+      {
+        "page_id": 148,
+        "physical_page": 149
+      },
+      {
+        "page_id": 149,
+        "physical_page": 150
+      },
+      {
+        "page_id": 150,
+        "physical_page": 151
+      },
+      {
+        "page_id": 151,
+        "physical_page": 152
+      },
+      {
+        "page_id": 152,
+        "physical_page": 153
+      },
+      {
+        "page_id": 153,
+        "physical_page": 154
+      },
+      {
+        "page_id": 154,
+        "physical_page": 155
+      },
+      {
+        "page_id": 155,
+        "physical_page": 156
+      },
+      {
+        "page_id": 156,
+        "physical_page": 157
+      },
+      {
+        "page_id": 157,
+        "physical_page": 158
+      },
+      {
+        "page_id": 158,
+        "physical_page": 159
+      },
+      {
+        "page_id": 159,
+        "physical_page": 160
+      },
+      {
+        "page_id": 160,
+        "physical_page": 161
+      },
+      {
+        "page_id": 161,
+        "physical_page": 162
+      },
+      {
+        "page_id": 162,
+        "physical_page": 163
+      },
+      {
+        "page_id": 163,
+        "physical_page": 164
+      },
+      {
+        "page_id": 164,
+        "physical_page": 165
+      },
+      {
+        "page_id": 165,
+        "physical_page": 166
+      },
+      {
+        "page_id": 166,
+        "physical_page": 167
+      },
+      {
+        "page_id": 167,
+        "physical_page": 168
+      },
+      {
+        "page_id": 168,
+        "physical_page": 169
+      },
+      {
+        "page_id": 169,
+        "physical_page": 170
+      },
+      {
+        "page_id": 170,
+        "physical_page": 171
+      },
+      {
+        "page_id": 171,
+        "physical_page": 172
+      },
+      {
+        "page_id": 172,
+        "physical_page": 173
+      },
+      {
+        "page_id": 173,
+        "physical_page": 174
+      },
+      {
+        "page_id": 174,
+        "physical_page": 175
+      },
+      {
+        "page_id": 175,
+        "physical_page": 176
+      },
+      {
+        "page_id": 176,
+        "physical_page": 177
+      },
+      {
+        "page_id": 177,
+        "physical_page": 178
+      },
+      {
+        "page_id": 178,
+        "physical_page": 179
+      },
+      {
+        "page_id": 179,
+        "physical_page": 180
+      },
+      {
+        "page_id": 180,
+        "physical_page": 181
+      },
+      {
+        "page_id": 181,
+        "physical_page": 182
+      },
+      {
+        "page_id": 182,
+        "physical_page": 183
+      },
+      {
+        "page_id": 183,
+        "physical_page": 184
+      },
+      {
+        "page_id": 184,
+        "physical_page": 185
+      },
+      {
+        "page_id": 185,
+        "physical_page": 186
+      },
+      {
+        "page_id": 186,
+        "physical_page": 187
+      },
+      {
+        "page_id": 187,
+        "physical_page": 188
+      },
+      {
+        "page_id": 188,
+        "physical_page": 189
+      },
+      {
+        "page_id": 189,
+        "physical_page": 190
+      },
+      {
+        "page_id": 190,
+        "physical_page": 191
+      },
+      {
+        "page_id": 191,
+        "physical_page": 192
+      },
+      {
+        "page_id": 192,
+        "physical_page": 193
+      },
+      {
+        "page_id": 193,
+        "physical_page": 194
+      },
+      {
+        "page_id": 194,
+        "physical_page": 195
+      },
+      {
+        "page_id": 195,
+        "physical_page": 196
+      },
+      {
+        "page_id": 196,
+        "physical_page": 197
+      },
+      {
+        "page_id": 197,
+        "physical_page": 198
+      },
+      {
+        "page_id": 198,
+        "physical_page": 199
+      },
+      {
+        "page_id": 199,
+        "physical_page": 200
+      },
+      {
+        "page_id": 200,
+        "physical_page": 201
+      },
+      {
+        "page_id": 201,
+        "physical_page": 202
+      },
+      {
+        "page_id": 202,
+        "physical_page": 203
+      },
+      {
+        "page_id": 203,
+        "physical_page": 204
+      },
+      {
+        "page_id": 204,
+        "physical_page": 205
+      },
+      {
+        "page_id": 205,
+        "physical_page": 206
+      },
+      {
+        "page_id": 206,
+        "physical_page": 207
+      },
+      {
+        "page_id": 207,
+        "physical_page": 208
+      },
+      {
+        "page_id": 208,
+        "physical_page": 209
+      },
+      {
+        "page_id": 209,
+        "physical_page": 210
+      },
+      {
+        "page_id": 210,
+        "physical_page": 211
+      },
+      {
+        "page_id": 211,
+        "physical_page": 212
+      },
+      {
+        "page_id": 212,
+        "physical_page": 213
+      },
+      {
+        "page_id": 213,
+        "physical_page": 214
+      },
+      {
+        "page_id": 214,
+        "physical_page": 215
+      },
+      {
+        "page_id": 215,
+        "physical_page": 216
+      },
+      {
+        "page_id": 216,
+        "physical_page": 217
+      },
+      {
+        "page_id": 217,
+        "physical_page": 218
+      },
+      {
+        "page_id": 218,
+        "physical_page": 219
+      },
+      {
+        "page_id": 219,
+        "physical_page": 220
+      },
+      {
+        "page_id": 220,
+        "physical_page": 221
+      },
+      {
+        "page_id": 221,
+        "physical_page": 222
+      },
+      {
+        "page_id": 222,
+        "physical_page": 223
+      },
+      {
+        "page_id": 223,
+        "physical_page": 224
+      },
+      {
+        "page_id": 224,
+        "physical_page": 225
+      },
+      {
+        "page_id": 225,
+        "physical_page": 226
+      },
+      {
+        "page_id": 226,
+        "physical_page": 227
+      },
+      {
+        "page_id": 227,
+        "physical_page": 228
+      },
+      {
+        "page_id": 228,
+        "physical_page": 229
+      },
+      {
+        "page_id": 229,
+        "physical_page": 230
+      },
+      {
+        "page_id": 230,
+        "physical_page": 231
+      },
+      {
+        "page_id": 231,
+        "physical_page": 232
+      },
+      {
+        "page_id": 232,
+        "physical_page": 233
+      },
+      {
+        "page_id": 233,
+        "physical_page": 234
+      },
+      {
+        "page_id": 234,
+        "physical_page": 235
+      },
+      {
+        "page_id": 235,
+        "physical_page": 236
+      },
+      {
+        "page_id": 236,
+        "physical_page": 237
+      },
+      {
+        "page_id": 237,
+        "physical_page": 238
+      },
+      {
+        "page_id": 238,
+        "physical_page": 239
+      },
+      {
+        "page_id": 239,
+        "physical_page": 240
+      },
+      {
+        "page_id": 240,
+        "physical_page": 241
+      },
+      {
+        "page_id": 241,
+        "physical_page": 242
+      },
+      {
+        "page_id": 242,
+        "physical_page": 243
+      },
+      {
+        "page_id": 243,
+        "physical_page": 244
+      },
+      {
+        "page_id": 244,
+        "physical_page": 245
+      },
+      {
+        "page_id": 245,
+        "physical_page": 246
+      },
+      {
+        "page_id": 246,
+        "physical_page": 247
+      },
+      {
+        "page_id": 247,
+        "physical_page": 248
+      },
+      {
+        "page_id": 248,
+        "physical_page": 249
+      },
+      {
+        "page_id": 249,
+        "physical_page": 250
+      },
+      {
+        "page_id": 250,
+        "physical_page": 251
+      },
+      {
+        "page_id": 251,
+        "physical_page": 252
+      },
+      {
+        "page_id": 252,
+        "physical_page": 253
+      },
+      {
+        "page_id": 253,
+        "physical_page": 254
+      },
+      {
+        "page_id": 254,
+        "physical_page": 255
+      },
+      {
+        "page_id": 255,
+        "physical_page": 256
+      },
+      {
+        "page_id": 256,
+        "physical_page": 257
+      },
+      {
+        "page_id": 257,
+        "physical_page": 258
+      },
+      {
+        "page_id": 258,
+        "physical_page": 259
+      },
+      {
+        "page_id": 259,
+        "physical_page": 260
+      },
+      {
+        "page_id": 260,
+        "physical_page": 261
+      },
+      {
+        "page_id": 261,
+        "physical_page": 262
+      },
+      {
+        "page_id": 262,
+        "physical_page": 263
+      },
+      {
+        "page_id": 263,
+        "physical_page": 264
+      },
+      {
+        "page_id": 264,
+        "physical_page": 265
+      },
+      {
+        "page_id": 265,
+        "physical_page": 266
+      },
+      {
+        "page_id": 266,
+        "physical_page": 267
+      },
+      {
+        "page_id": 267,
+        "physical_page": 268
+      },
+      {
+        "page_id": 268,
+        "physical_page": 269
+      },
+      {
+        "page_id": 269,
+        "physical_page": 270
+      },
+      {
+        "page_id": 270,
+        "physical_page": 271
+      },
+      {
+        "page_id": 271,
+        "physical_page": 272
+      },
+      {
+        "page_id": 272,
+        "physical_page": 273
+      },
+      {
+        "page_id": 273,
+        "physical_page": 274
+      },
+      {
+        "page_id": 274,
+        "physical_page": 275
+      },
+      {
+        "page_id": 275,
+        "physical_page": 276
+      },
+      {
+        "page_id": 276,
+        "physical_page": 277
+      },
+      {
+        "page_id": 277,
+        "physical_page": 278
+      },
+      {
+        "page_id": 278,
+        "physical_page": 279
+      },
+      {
+        "page_id": 279,
+        "physical_page": 280
+      },
+      {
+        "page_id": 280,
+        "physical_page": 281
+      },
+      {
+        "page_id": 281,
+        "physical_page": 282
+      },
+      {
+        "page_id": 282,
+        "physical_page": 283
+      },
+      {
+        "page_id": 283,
+        "physical_page": 284
+      },
+      {
+        "page_id": 284,
+        "physical_page": 285
+      },
+      {
+        "page_id": 285,
+        "physical_page": 286
+      },
+      {
+        "page_id": 286,
+        "physical_page": 287
+      },
+      {
+        "page_id": 287,
+        "physical_page": 288
+      },
+      {
+        "page_id": 288,
+        "physical_page": 289
+      },
+      {
+        "page_id": 289,
+        "physical_page": 290
+      },
+      {
+        "page_id": 290,
+        "physical_page": 291
+      },
+      {
+        "page_id": 291,
+        "physical_page": 292
+      },
+      {
+        "page_id": 292,
+        "physical_page": 293
+      },
+      {
+        "page_id": 293,
+        "physical_page": 294
+      },
+      {
+        "page_id": 294,
+        "physical_page": 295
+      },
+      {
+        "page_id": 295,
+        "physical_page": 296
+      },
+      {
+        "page_id": 296,
+        "physical_page": 297
+      },
+      {
+        "page_id": 297,
+        "physical_page": 298
+      },
+      {
+        "page_id": 298,
+        "physical_page": 299
+      },
+      {
+        "page_id": 299,
+        "physical_page": 300
+      },
+      {
+        "page_id": 300,
+        "physical_page": 301
+      },
+      {
+        "page_id": 301,
+        "physical_page": 302
+      },
+      {
+        "page_id": 302,
+        "physical_page": 303
+      },
+      {
+        "page_id": 303,
+        "physical_page": 304
+      },
+      {
+        "page_id": 304,
+        "physical_page": 305
+      },
+      {
+        "page_id": 305,
+        "physical_page": 306
+      },
+      {
+        "page_id": 306,
+        "physical_page": 307
+      },
+      {
+        "page_id": 307,
+        "physical_page": 308
+      },
+      {
+        "page_id": 308,
+        "physical_page": 309
+      },
+      {
+        "page_id": 309,
+        "physical_page": 310
+      },
+      {
+        "page_id": 310,
+        "physical_page": 311
+      },
+      {
+        "page_id": 311,
+        "physical_page": 312
+      },
+      {
+        "page_id": 312,
+        "physical_page": 313
+      },
+      {
+        "page_id": 313,
+        "physical_page": 314
+      },
+      {
+        "page_id": 314,
+        "physical_page": 315
+      },
+      {
+        "page_id": 315,
+        "physical_page": 316
+      },
+      {
+        "page_id": 316,
+        "physical_page": 317
+      },
+      {
+        "page_id": 317,
+        "physical_page": 318
+      },
+      {
+        "page_id": 318,
+        "physical_page": 319
+      },
+      {
+        "page_id": 319,
+        "physical_page": 320
+      },
+      {
+        "page_id": 320,
+        "physical_page": 321
+      },
+      {
+        "page_id": 321,
+        "physical_page": 322
+      },
+      {
+        "page_id": 322,
+        "physical_page": 323
+      },
+      {
+        "page_id": 323,
+        "physical_page": 324
+      },
+      {
+        "page_id": 324,
+        "physical_page": 325
+      },
+      {
+        "page_id": 325,
+        "physical_page": 326
+      },
+      {
+        "page_id": 326,
+        "physical_page": 327
+      },
+      {
+        "page_id": 327,
+        "physical_page": 328
+      },
+      {
+        "page_id": 328,
+        "physical_page": 329
+      },
+      {
+        "page_id": 329,
+        "physical_page": 330
+      },
+      {
+        "page_id": 330,
+        "physical_page": 331
+      },
+      {
+        "page_id": 331,
+        "physical_page": 332
+      },
+      {
+        "page_id": 332,
+        "physical_page": 333
+      },
+      {
+        "page_id": 333,
+        "physical_page": 334
+      },
+      {
+        "page_id": 334,
+        "physical_page": 335
+      },
+      {
+        "page_id": 335,
+        "physical_page": 336
+      },
+      {
+        "page_id": 336,
+        "physical_page": 337
+      },
+      {
+        "page_id": 337,
+        "physical_page": 338
+      },
+      {
+        "page_id": 338,
+        "physical_page": 339
+      },
+      {
+        "page_id": 339,
+        "physical_page": 340
+      },
+      {
+        "page_id": 340,
+        "physical_page": 341
+      },
+      {
+        "page_id": 341,
+        "physical_page": 342
+      },
+      {
+        "page_id": 342,
+        "physical_page": 343
+      },
+      {
+        "page_id": 343,
+        "physical_page": 344
+      },
+      {
+        "page_id": 344,
+        "physical_page": 345
+      },
+      {
+        "page_id": 345,
+        "physical_page": 346
+      },
+      {
+        "page_id": 346,
+        "physical_page": 347
+      },
+      {
+        "page_id": 347,
+        "physical_page": 348
+      },
+      {
+        "page_id": 348,
+        "physical_page": 349
+      },
+      {
+        "page_id": 349,
+        "physical_page": 350
+      },
+      {
+        "page_id": 350,
+        "physical_page": 351
+      },
+      {
+        "page_id": 351,
+        "physical_page": 352
+      },
+      {
+        "page_id": 352,
+        "physical_page": 353
+      },
+      {
+        "page_id": 353,
+        "physical_page": 354
+      },
+      {
+        "page_id": 354,
+        "physical_page": 355
+      },
+      {
+        "page_id": 355,
+        "physical_page": 356
+      },
+      {
+        "page_id": 356,
+        "physical_page": 357
+      },
+      {
+        "page_id": 357,
+        "physical_page": 358
+      },
+      {
+        "page_id": 358,
+        "physical_page": 359
+      },
+      {
+        "page_id": 359,
+        "physical_page": 360
+      },
+      {
+        "page_id": 360,
+        "physical_page": 361
+      },
+      {
+        "page_id": 361,
+        "physical_page": 362
+      },
+      {
+        "page_id": 362,
+        "physical_page": 363
+      },
+      {
+        "page_id": 363,
+        "physical_page": 364
+      },
+      {
+        "page_id": 364,
+        "physical_page": 365
+      },
+      {
+        "page_id": 365,
+        "physical_page": 366
+      },
+      {
+        "page_id": 366,
+        "physical_page": 367
+      },
+      {
+        "page_id": 367,
+        "physical_page": 368
+      },
+      {
+        "page_id": 368,
+        "physical_page": 369
+      },
+      {
+        "page_id": 369,
+        "physical_page": 370
+      },
+      {
+        "page_id": 370,
+        "physical_page": 371
+      },
+      {
+        "page_id": 371,
+        "physical_page": 372
+      },
+      {
+        "page_id": 372,
+        "physical_page": 373
+      },
+      {
+        "page_id": 373,
+        "physical_page": 374
+      },
+      {
+        "page_id": 374,
+        "physical_page": 375
+      },
+      {
+        "page_id": 375,
+        "physical_page": 376
+      },
+      {
+        "page_id": 376,
+        "physical_page": 377
+      },
+      {
+        "page_id": 377,
+        "physical_page": 378
+      },
+      {
+        "page_id": 378,
+        "physical_page": 379
+      },
+      {
+        "page_id": 379,
+        "physical_page": 380
+      },
+      {
+        "page_id": 380,
+        "physical_page": 381
+      },
+      {
+        "page_id": 381,
+        "physical_page": 382
+      },
+      {
+        "page_id": 382,
+        "physical_page": 383
+      },
+      {
+        "page_id": 383,
+        "physical_page": 384
+      },
+      {
+        "page_id": 384,
+        "physical_page": 385
+      }
+    ],
+    "text_extraction_methods": {
+      "surya": 385
+    },
+    "used": true
+  },
+  "page_furniture_removed": [],
+  "pipeline": "scripts/convert-books",
+  "pipeline_fingerprint": "48b350a48e4f1098cc14b6027b0d394eeab4aff091ee3e9611e32621540af55c",
+  "post_processing_performed": [
+    "staged the source under a deterministic length-bounded hash-qualified space-free basename",
+    "split converter Markdown at explicit logical-unit headings rather than page numbers",
+    "normalized headings to ATX syntax with exactly one level-one heading per chapter",
+    "kept converter paragraphs unwrapped and normalized excessive blank lines outside code",
+    "moved extracted media into assets and rewrote relative links",
+    "preserved fenced code content exactly",
+    "rendered README title and authors from doctrine/bibliography.json while preserving metadata.json as noncanonical extraction evidence",
+    "replaced non-clean source content at the converter boundary with a CLEAN pixel-only PDF rasterized in a networkless Bubblewrap sandbox; the original source remained unchanged",
+    "used printed table-of-contents and explicit body chapter-label evidence to recover chapter boundaries and titles",
+    "collapsed adjacent identical headings while preserving intervening anchors",
+    "reused a validated peecee Marker cache under the explicit policy-compatible raw-cache migration recorded in source.json"
+  ],
+  "pre_conversion_commands": [
+    {
+      "argv": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "ConnectTimeout=15",
+        "peecee",
+        "cmd /c if exist marker\\out\\100-go-mistakes-and-how-to-avoid-them-teiva-hars-e137980cb961 rmdir /s /q marker\\out\\100-go-mistakes-and-how-to-avoid-them-teiva-hars-e137980cb961"
+      ],
+      "command": "ssh -o BatchMode=yes -o ConnectTimeout=15 peecee 'cmd /c if exist marker\\out\\100-go-mistakes-and-how-to-avoid-them-teiva-hars-e137980cb961 rmdir /s /q marker\\out\\100-go-mistakes-and-how-to-avoid-them-teiva-hars-e137980cb961'",
+      "exit_status": 0,
+      "working_directory": "/home/halbritt/git/books"
+    }
+  ],
+  "prior_conversion_failures": [],
+  "raw_conversion_compatibility": {
+    "accepted_current_raw_conversion_fingerprint": "23edaf5c729b4860401f62e6735a90095100dd783a85ab16d6077ac0e3621281",
+    "basis": [
+      "explicit --reuse-policy-compatible-raw-cache authorization",
+      "validated converter-cache checksum and raw-file manifest",
+      "successful Marker conversion on peecee with no fallback",
+      "networkless raster CDR with a CLEAN post-conversion gate",
+      "source, cache, marker input, old and new fingerprints, and every identity difference matched an immutable migration authorization"
+    ],
+    "current_revalidation": {
+      "accepted": true,
+      "command": {
+        "argv": [
+          "/usr/bin/python3",
+          "/home/halbritt/git/books/scripts/pdf-cdr",
+          "--validate-existing",
+          "/home/halbritt/git/books/.book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/cdr/100-go-mistakes-and-how-to-avoid-them-teiva-hars-e137980cb961.pdf"
+        ],
+        "command": "/usr/bin/python3 /home/halbritt/git/books/scripts/pdf-cdr --validate-existing /home/halbritt/git/books/.book-work/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/cdr/100-go-mistakes-and-how-to-avoid-them-teiva-hars-e137980cb961.pdf",
+        "exit_status": 0,
+        "stderr": "",
+        "stderr_truncated": false,
+        "stdout": "{\n  \"accepted\": true,\n  \"accepted_verdict\": \"CDR-CLEAN\",\n  \"derivative_sha256\": \"9e133505ee56e8a1bb7773c45c3f7d6240cbe2fcefc7754d89217b0bc6abe86e\",\n  \"derivative_size_bytes\": 44360861,\n  \"policy\": {\n    \"PDF_SAFE_MAX_DECOMP_MIB\": \"8192\",\n    \"PDF_SAFE_MAX_PAGES\": \"5000\",\n    \"PDF_SAFE_MAX_RATIO\": \"500\"\n  },\n  \"schema_version\": \"books-pdf-cdr-validation/1\",\n  \"structural_validation\": {\n    \"accepted\": true,\n    \"active_content\": {},\n    \"content_stream_count\": 385,\n    \"escaped_name_count\": 0,\n    \"forbidden_structure\": {},\n    \"image_stream_count\": 385,\n    \"malformed\": [],\n    \"object_count\": 1928,\n    \"page_count\": 385,\n    \"schema_version\": \"pdf-cdr-structural-validation/1\",\n    \"stream_count\": 770,\n    \"unexpected_objects\": []\n  },\n  \"xray\": {\n    \"safety\": {\n      \"action\": \"extract ONLY via safe_text.py (neutralized + wrapped); do not trust active content\",\n      \"active_content\": {\n        \"/AA\": {\n          \"count\": 14,\n          \"severity\": \"suspect\"\n        }\n      },\n      \"bomb\": null,\n      \"custody_id\": \"9e133505ee56e8a1-SUSPECT\",\n      \"decompression\": {\n        \"ceilings\": {\n          \"max_decomp_mib\": 8192,\n          \"max_pages\": 5000,\n          \"max_ratio\": 500.0\n        },\n        \"decomp_bytes\": 1773290196,\n        \"orig_bytes\": 44360861,\n        \"pages\": 385,\n        \"ratio\": 40.0\n      },\n      \"note\": null,\n      \"verdict\": \"SUSPECT\"\n    },\n    \"schema_version\": \"pdf-skills/1\",\n    \"skill\": \"pdf-safe-ingest\",\n    \"source\": {\n      \"bytes\": 44360861,\n      \"path\": \"/input/source.pdf\",\n      \"sha256\": \"9e133505ee56e8a1bb7773c45c3f7d6240cbe2fcefc7754d89217b0bc6abe86e\"\n    }\n  },\n  \"xray_command\": {\n    \"argv\": [\n      \"/tools/xray\",\n      \"/input/source.pdf\",\n      \"--force\"\n    ],\n    \"command\": \"/tools/xray /input/source.pdf --force\",\n    \"exit_status\": 0,\n    \"stderr\": \"\",\n    \"stderr_truncated\": false,\n    \"stdout_truncated\": false,\n    \"timed_out\": false\n  }\n}\n",
+        "stdout_truncated": false,
+        "working_directory": "/home/halbritt/git/books"
+      },
+      "kind": "sandboxed-cdr-structural-validation",
+      "marker_input_sha256": "9e133505ee56e8a1bb7773c45c3f7d6240cbe2fcefc7754d89217b0bc6abe86e",
+      "record_sha256": "9010d59fb708604af083b1f866a5a606c6ced0dfa79fa5b92f2dbf3dff79007a",
+      "schema_version": "books-marker-input-revalidation/1",
+      "validation": {
+        "accepted": true,
+        "accepted_verdict": "CDR-CLEAN",
+        "derivative_sha256": "9e133505ee56e8a1bb7773c45c3f7d6240cbe2fcefc7754d89217b0bc6abe86e",
+        "derivative_size_bytes": 44360861,
+        "policy": {
+          "PDF_SAFE_MAX_DECOMP_MIB": "8192",
+          "PDF_SAFE_MAX_PAGES": "5000",
+          "PDF_SAFE_MAX_RATIO": "500"
+        },
+        "schema_version": "books-pdf-cdr-validation/1",
+        "structural_validation": {
+          "accepted": true,
+          "active_content": {},
+          "content_stream_count": 385,
+          "escaped_name_count": 0,
+          "forbidden_structure": {},
+          "image_stream_count": 385,
+          "malformed": [],
+          "object_count": 1928,
+          "page_count": 385,
+          "schema_version": "pdf-cdr-structural-validation/1",
+          "stream_count": 770,
+          "unexpected_objects": []
+        },
+        "xray": {
+          "safety": {
+            "action": "extract ONLY via safe_text.py (neutralized + wrapped); do not trust active content",
+            "active_content": {
+              "/AA": {
+                "count": 14,
+                "severity": "suspect"
+              }
+            },
+            "bomb": null,
+            "custody_id": "9e133505ee56e8a1-SUSPECT",
+            "decompression": {
+              "ceilings": {
+                "max_decomp_mib": 8192,
+                "max_pages": 5000,
+                "max_ratio": 500.0
+              },
+              "decomp_bytes": 1773290196,
+              "orig_bytes": 44360861,
+              "pages": 385,
+              "ratio": 40.0
+            },
+            "note": null,
+            "verdict": "SUSPECT"
+          },
+          "schema_version": "pdf-skills/1",
+          "skill": "pdf-safe-ingest",
+          "source": {
+            "bytes": 44360861,
+            "path": "/input/source.pdf",
+            "sha256": "9e133505ee56e8a1bb7773c45c3f7d6240cbe2fcefc7754d89217b0bc6abe86e"
+          }
+        },
+        "xray_command": {
+          "argv": [
+            "/tools/xray",
+            "/input/source.pdf",
+            "--force"
+          ],
+          "command": "/tools/xray /input/source.pdf --force",
+          "exit_status": 0,
+          "stderr": "",
+          "stderr_truncated": false,
+          "stdout_truncated": false,
+          "timed_out": false
+        }
+      }
+    },
+    "identity_differences": [
+      {
+        "current": "de7c201a7f555db45b99aa5db0cf39ed9bcfbc9b289c4d0145e66999d362cebc",
+        "path": "$.conversion_stage_fingerprint",
+        "previous": "be144d61695774e3820a4aecaf11b72a08fcb99e739c114fee0a9bad8e8922cb"
+      },
+      {
+        "current": "75b498be9773db1831245fce750911a1bd689732020bae06751f4d331ee4e566",
+        "path": "$.helpers.pdf_cdr[1].sha256",
+        "previous": "859a470447a9fbe031638149c68eab61ca853bb8d129d0405a567ab9cb406423"
+      },
+      {
+        "current": "/home/halbritt/git/books/scripts/pdf-cdr",
+        "path": "$.helpers.pdf_xray[1].argument",
+        "previous": "/home/halbritt/git/skills/skills/pdf-safe-ingest/scripts/xray.py"
+      },
+      {
+        "current": "/home/halbritt/git/books/scripts/pdf-cdr",
+        "path": "$.helpers.pdf_xray[1].resolved_path",
+        "previous": "/home/halbritt/git/skills/skills/pdf-safe-ingest/scripts/xray.py"
+      },
+      {
+        "current": "75b498be9773db1831245fce750911a1bd689732020bae06751f4d331ee4e566",
+        "path": "$.helpers.pdf_xray[1].sha256",
+        "previous": "8292f0c9f97475deedded5e3f38c30ef1843f96cdb80673c6f611cefe19a90ed"
+      },
+      {
+        "current": {
+          "argument": "--scan-only",
+          "resolved_path": null,
+          "sha256": null
+        },
+        "path": "$.helpers.pdf_xray[2]",
+        "previous_missing": true
+      },
+      {
+        "current": [
+          {
+            "argument": "/home/halbritt/git/skills/skills/pdf-safe-ingest/scripts/xray.py",
+            "resolved_path": "/home/halbritt/git/skills/skills/pdf-safe-ingest/scripts/xray.py",
+            "sha256": "8292f0c9f97475deedded5e3f38c30ef1843f96cdb80673c6f611cefe19a90ed"
+          }
+        ],
+        "path": "$.helpers.pdf_xray_backend",
+        "previous_missing": true
+      },
+      {
+        "current": {
+          "force": true,
+          "max_decomp_mib": 8192,
+          "max_pages": 5000,
+          "max_ratio": 500
+        },
+        "path": "$.options.pdf_safety.derivative_xray_policy",
+        "previous_missing": true
+      },
+      {
+        "current": {
+          "force": true,
+          "max_decomp_mib": 800,
+          "max_pages": 5000,
+          "max_ratio": 120
+        },
+        "path": "$.options.pdf_safety.source_xray_policy",
+        "previous_missing": true
+      },
+      {
+        "current": "sandboxed-raster-cdr",
+        "path": "$.options.pdf_safety.suspect_input",
+        "previous": "record-and-proceed"
+      }
+    ],
+    "marker_input_sha256": "9e133505ee56e8a1bb7773c45c3f7d6240cbe2fcefc7754d89217b0bc6abe86e",
+    "migration_id": "pdf-airlock-hardening-2026-07-12",
+    "previous_raw_conversion_fingerprint": "ac68dd44ac1a049da627fa3236233cb6abc08a59dee344ba9b0475440d293c0d",
+    "schema_version": "books-raw-compatibility/1",
+    "source_safety_verdict": "DANGEROUS"
+  },
+  "raw_conversion_fingerprint": "ac68dd44ac1a049da627fa3236233cb6abc08a59dee344ba9b0475440d293c0d",
+  "raw_conversion_identity": {
+    "conversion_stage_fingerprint": "be144d61695774e3820a4aecaf11b72a08fcb99e739c114fee0a9bad8e8922cb",
+    "converter": "marker",
+    "converter_versions": {
+      "local": "marker-pdf 1.10.2",
+      "peecee": "marker-pdf 1.10.2"
+    },
+    "environment": {
+      "os_name": "posix",
+      "platform": "linux",
+      "python_executable": {
+        "argument": "/usr/bin/python3",
+        "resolved_path": "/usr/bin/python3.12",
+        "sha256": "1643dacd9feaedc58f3cc581e4d22577dfe25c09b10282936186ccf0f2e61118"
+      },
+      "python_version": "3.12.3",
+      "variables": {
+        "BOOKS_MARKER_VERSION": {
+          "sha256": "eba7a03a5109cc2b9da8ba0fe9ba29585c89d22f6647e361a672efdbecaa8fcf"
+        },
+        "HOME": {
+          "sha256": "c61d25bb0917ee2b317ff46c582bd46c8042dba647b0a58b618a12d7cbf89dbb"
+        },
+        "PATH": {
+          "sha256": "77b01cf85d8b75b9ee5b44df8ef34abdffaea0d2cd67a41cd1dcd3a367f9a4a9"
+        }
+      }
+    },
+    "helper_overrides": {
+      "local": false,
+      "pdf_cdr": false,
+      "pdf_xray": false,
+      "peecee": false
+    },
+    "helpers": {
+      "local": [
+        {
+          "argument": "bash",
+          "resolved_path": "/usr/bin/bash",
+          "sha256": "bc5945feb8bd26203ebfafea5ce1878bb2e32cb8fb50ab7ae395cfb1e1aaaef1"
+        },
+        {
+          "argument": "/home/halbritt/git/skills/skills/marker-convert/scripts/convert.sh",
+          "resolved_path": "/home/halbritt/git/skills/skills/marker-convert/scripts/convert.sh",
+          "sha256": "b16b1829eb4fad80f9abc4591043af39596c37e628d0be9db1a1f5a13df06a38"
+        }
+      ],
+      "pdf_cdr": [
+        {
+          "argument": "/usr/bin/python3",
+          "resolved_path": "/usr/bin/python3.12",
+          "sha256": "1643dacd9feaedc58f3cc581e4d22577dfe25c09b10282936186ccf0f2e61118"
+        },
+        {
+          "argument": "/home/halbritt/git/books/scripts/pdf-cdr",
+          "resolved_path": "/home/halbritt/git/books/scripts/pdf-cdr",
+          "sha256": "859a470447a9fbe031638149c68eab61ca853bb8d129d0405a567ab9cb406423"
+        }
+      ],
+      "pdf_xray": [
+        {
+          "argument": "/usr/bin/python3",
+          "resolved_path": "/usr/bin/python3.12",
+          "sha256": "1643dacd9feaedc58f3cc581e4d22577dfe25c09b10282936186ccf0f2e61118"
+        },
+        {
+          "argument": "/home/halbritt/git/skills/skills/pdf-safe-ingest/scripts/xray.py",
+          "resolved_path": "/home/halbritt/git/skills/skills/pdf-safe-ingest/scripts/xray.py",
+          "sha256": "8292f0c9f97475deedded5e3f38c30ef1843f96cdb80673c6f611cefe19a90ed"
+        }
+      ],
+      "peecee": [
+        {
+          "argument": "bash",
+          "resolved_path": "/usr/bin/bash",
+          "sha256": "bc5945feb8bd26203ebfafea5ce1878bb2e32cb8fb50ab7ae395cfb1e1aaaef1"
+        },
+        {
+          "argument": "/home/halbritt/git/skills/skills/marker-convert/scripts/convert-peecee.sh",
+          "resolved_path": "/home/halbritt/git/skills/skills/marker-convert/scripts/convert-peecee.sh",
+          "sha256": "b43aa9e858b017292574a8127dd7159aba888a05207059723142c91721191a05"
+        }
+      ]
+    },
+    "options": {
+      "fallback_policy": "infrastructure-failure-only",
+      "fallback_target": "local",
+      "format": "markdown",
+      "pdf_safety": {
+        "airlock": "required-before-marker",
+        "dangerous_input": "sandboxed-raster-cdr",
+        "required_derivative_verdict": "CLEAN-or-CDR-CLEAN",
+        "suspect_input": "record-and-proceed"
+      },
+      "primary_target": "peecee",
+      "remote_clean": true
+    },
+    "schema_version": "books-raw-conversion/1",
+    "source_format": "pdf",
+    "supporting_commands": {
+      "bwrap": {
+        "argument": "bwrap",
+        "resolved_path": "/usr/bin/bwrap",
+        "sha256": "52231e1caf55bcbc667b269f49c63599a6f7db4767ae6a039580d0ff853db712"
+      },
+      "ghostscript": {
+        "argument": "gs",
+        "resolved_path": "/usr/bin/gs",
+        "sha256": "7c3d71005d09340a30d9436456f212d2ef499f58378ae6763f55da9fbaf13b49"
+      },
+      "mutool": {
+        "argument": "mutool",
+        "resolved_path": "/usr/bin/mutool",
+        "sha256": "9203440040cc38ee412aeedbfe57f452d6b85709c5b1600ca6ab2aa05478ab73"
+      },
+      "pdfinfo": {
+        "argument": "pdfinfo",
+        "resolved_path": "/usr/bin/pdfinfo",
+        "sha256": "3293dda06d80e1e38dab859aa47368c2876aedc41cbc2e24e8fb9a4e66392078"
+      },
+      "ssh": {
+        "argument": "ssh",
+        "resolved_path": "/usr/bin/ssh",
+        "sha256": "27a7f5e86ed31efa1e758c7f955bdc016adf58bb3266c68e217ab5bee311b46b"
+      }
+    }
+  },
+  "record_sha256": "e6ac565856df033295ea6a0ce4aedc9c2a3abc6456624a8ced11c4c59bad8afb",
+  "schema_version": "books-corpus/1",
+  "section_boundary_evidence": [],
+  "selected_attempt_number": 1,
+  "source_filename": "100-Go-Mistakes-and-How-to-Avoid-Them-(Teiva-Harsanyi)_bibis.ir.pdf",
+  "source_format": "pdf",
+  "source_path": "sources/100-Go-Mistakes-and-How-to-Avoid-Them-(Teiva-Harsanyi)_bibis.ir.pdf",
+  "source_sha256": "e137980cb9611b94b6cac4a2aa63aee8e86947e9acbffbbff98154a52093d0b9",
+  "source_size_bytes": 10338890,
+  "staging_workaround": "length-bounded hash-qualified space-free basename",
+  "unresolved_navigation_anchors": [],
+  "warnings": [],
+  "working_directory": "/home/halbritt/git/books"
+}

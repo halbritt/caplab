@@ -1,7 +1,7 @@
 # HowTo: add a source book
 
 Adding a book has two independent phases. **Phase 1 (corpus)** converts the
-file into chaptered Markdown with provenance and takes minutes of attention.
+file into chaptered Markdown with provenance.
 **Phase 2 (doctrine)** registers the book as a doctrine source and extracts
 concept support from it — that is an extraction campaign, not a checklist
 step, and most books stop after Phase 1 until someone runs one.
@@ -23,18 +23,27 @@ python3 -m pip install -r requirements.txt
 ```
 
 - **EPUBs** need Pandoc on `PATH` (`BOOKS_PANDOC` overrides the executable).
-- **PDFs** use Marker on the `peecee` GPU worker over SSH, falling back to the
+- **PDFs** need the local `pdf-safe-ingest` x-ray. Every source is airlocked
+  before Marker. Source xray, Ghostscript rasterization, MuPDF normalization,
+  and derivative xray plus structural validation run in separate networkless
+  Bubblewrap sandboxes. A `SUSPECT` or `DANGEROUS` source becomes a pixel-only
+  derivative matching the canonical raster profile; the original remains
+  unchanged.
+  Marker then runs on the `peecee` GPU worker over SSH, falling back to the
   local Marker launcher only on infrastructure failure (`BOOKS_MARKER_PEECEE`
-  / `BOOKS_MARKER_LOCAL` override the launchers). Set `BOOKS_MARKER_VERSION`
-  — it is required for reusable remote-converter cache identity.
+  / `BOOKS_MARKER_LOCAL` override the launchers). `make books` supplies the
+  repository-pinned Marker version; set `BOOKS_MARKER_VERSION` explicitly for
+  direct script invocations because it is required for reusable remote-cache
+  identity.
 
 ### 3. Convert
 
 ```bash
 # One book, by exact source filename (does not rebuild the repo index):
-./scripts/convert-books --book 'My New Book.pdf'
+BOOKS_MARKER_VERSION='marker-pdf 1.10.2' \
+  ./scripts/convert-books --book 'My New Book.pdf'
 
-# Or everything not yet converted:
+# Or every source; up-to-date outputs are skipped:
 make books
 ```
 
@@ -44,19 +53,32 @@ Output lands in `books/<slug>/` — `chapters/`, `assets/`, `source.json`
 unexpected manual edits unless `--force` is given; `--fresh-converter`
 bypasses validated raw-converter caches when you need a genuinely fresh run.
 
+`--reuse-policy-compatible-raw-cache` is a narrow, fail-closed migration
+control, not a normal conversion mode. It may reuse a validated, fallback-free
+peecee PDF cache only when source, cache, marker input, old and new raw
+fingerprints, and the exact identity-difference digest match an immutable
+authorization. The existing Marker input must also pass the current sandboxed
+revalidation. CLEAN original bytes and CDR derivatives of SUSPECT or DANGEROUS
+sources are eligible; SUSPECT original-byte caches are rejected. A mismatch
+stops without invoking Marker. `source.json` preserves the original conversion
+provenance alongside the authorization and current revalidation.
+
 ### 4. Review the validation record
 
 Read `books/<slug>/validation.json` (or the warnings in the book README).
 Table damage, duplicate headings, and low-confidence chapter boundaries are
 recorded, not fatal — but know what you ingested before anything cites it.
+For PDFs, also inspect `source.json.input_safety`: it records the original
+airlock verdict, custody ID, any CDR attempts and derivative hash, and whether
+Marker received original bytes or a sandboxed raster derivative.
 
 ### 5. Add canonical bibliography metadata
 
 `doctrine/bibliography.json` is the canonical source of titles, editions, and
 creator roles (roles: author, contributor, editor, translator,
 foreword-author), each field with an evidence path. Add an entry for the new
-book; without one its catalog rows fall back to extraction metadata and are
-explicitly marked noncanonical. Then regenerate the catalogs:
+book; a checked-in bibliography must cover every source before the catalogs
+can be regenerated:
 
 ```bash
 ./scripts/convert-books --catalog-only
@@ -71,7 +93,8 @@ fails without it. The builder needs the local llama server
 (`http://localhost:8081/v1`) for headings its rules can't decide:
 
 ```bash
-python3 doctrine/tools/build_section_map.py --write --book <slug>
+BOOK_SLUG=my-new-book
+python3 doctrine/tools/build_section_map.py --write --book "$BOOK_SLUG"
 python3 doctrine/tools/build_section_map.py --check
 ```
 
@@ -115,7 +138,10 @@ a multi-agent campaign. Treat it as its own project with its own review.
 ## Troubleshooting
 
 - **peecee unreachable:** conversion falls back to the local Marker launcher
-  and records `fallbacks_used` in `source.json`; slower but equivalent.
+  and records the local target and `fallbacks_used` in `source.json`; expect it
+  to be slower.
+- **PDF airlock or CDR failure:** conversion stops before Marker. Do not bypass
+  the gate; inspect the recorded x-ray result and the sandbox/tool failure.
 - **"refusing to overwrite" on reconversion:** the generated tree has manual
   edits; inspect them, then rerun with `--force` if replacement is intended.
 - **Section-map `--check` staleness after editing a chapter:** rerun

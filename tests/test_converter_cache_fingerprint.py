@@ -2,17 +2,20 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import runpy
 import stat
 import subprocess
 import sys
 import tempfile
 import textwrap
 import unittest
+from unittest import mock
 import zipfile
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 CONVERT_BOOKS = REPOSITORY_ROOT / "scripts" / "convert-books"
+CONVERTER_MODULE = runpy.run_path(str(CONVERT_BOOKS))
 
 
 def write_source(root: Path) -> None:
@@ -202,6 +205,69 @@ def source_record_checksum(record: dict[str, object]) -> str:
 
 
 class ConverterCacheFingerprintTests(unittest.TestCase):
+    def test_raw_stage_fingerprint_is_independent_of_module_execution_name(self) -> None:
+        alternate_module = runpy.run_path(
+            str(CONVERT_BOOKS), run_name="converter_fingerprint_test"
+        )
+        fingerprint = CONVERTER_MODULE["raw_stage_implementation_fingerprint"]
+        self.assertEqual(
+            fingerprint(
+                CONVERTER_MODULE["convert_pdf"], CONVERTER_MODULE["convert_epub"]
+            ),
+            alternate_module["raw_stage_implementation_fingerprint"](
+                alternate_module["convert_pdf"], alternate_module["convert_epub"]
+            ),
+        )
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls._xray_directory = tempfile.TemporaryDirectory()
+        xray = Path(cls._xray_directory.name) / "clean-xray"
+        xray.write_text(
+            textwrap.dedent(
+                """\
+                #!/usr/bin/env python3
+                import hashlib
+                import json
+                from pathlib import Path
+                import sys
+
+                source = Path(sys.argv[1])
+                digest = hashlib.sha256(source.read_bytes()).hexdigest()
+                print(json.dumps({
+                    "schema_version": "pdf-skills/1",
+                    "skill": "pdf-safe-ingest",
+                    "source": {
+                        "path": str(source),
+                        "sha256": digest,
+                        "bytes": source.stat().st_size,
+                    },
+                    "safety": {
+                        "verdict": "CLEAN",
+                        "custody_id": digest[:16] + "-CLEAN",
+                        "active_content": {},
+                        "bomb": None,
+                        "note": None,
+                        "decompression": {"pages": 1, "ceilings": {}},
+                        "action": "proceed",
+                    },
+                }))
+                """
+            ),
+            encoding="utf-8",
+        )
+        xray.chmod(xray.stat().st_mode | stat.S_IXUSR)
+        cls._previous_xray = os.environ.get("BOOKS_PDF_XRAY")
+        os.environ["BOOKS_PDF_XRAY"] = str(xray)
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        if cls._previous_xray is None:
+            os.environ.pop("BOOKS_PDF_XRAY", None)
+        else:
+            os.environ["BOOKS_PDF_XRAY"] = cls._previous_xray
+        cls._xray_directory.cleanup()
+
     def test_changed_converter_version_reconverts_partial_book(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = Path(temporary_directory)
@@ -235,6 +301,28 @@ class ConverterCacheFingerprintTests(unittest.TestCase):
                 )
             )
             self.assertEqual(provenance["converter_version"], "marker-v2")
+
+    def test_production_raw_fingerprint_derives_from_raw_stage_dependencies(
+        self,
+    ) -> None:
+        dependency_fingerprint = CONVERTER_MODULE[
+            "raw_stage_implementation_fingerprint"
+        ]
+        expected = dependency_fingerprint(
+            CONVERTER_MODULE["convert_pdf"], CONVERTER_MODULE["convert_epub"]
+        )
+        with mock.patch.dict(
+            os.environ,
+            {
+                "BOOKS_PIPELINE_FINGERPRINT": "",
+                "BOOKS_RAW_CONVERSION_FINGERPRINT": "",
+            },
+        ):
+            actual = CONVERTER_MODULE["raw_conversion_stage_fingerprint"](
+                "whole-pipeline-fingerprint"
+            )
+        self.assertEqual(expected, actual)
+        self.assertEqual(64, len(actual))
 
     def test_unchanged_fingerprint_reuses_validated_raw_output(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
@@ -359,6 +447,149 @@ class ConverterCacheFingerprintTests(unittest.TestCase):
                 )
             )
             self.assertEqual(provenance["pipeline_fingerprint"], "pipeline-v2")
+
+    def test_policy_compatible_migration_is_fail_closed_without_exact_authorization(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            write_source(root)
+            marker = root / "fake-marker"
+            counter = root / "marker-count"
+            write_marker(marker)
+
+            first = run_partial_conversion(
+                root,
+                marker,
+                counter,
+                version="marker-v1",
+                generation="first",
+                pipeline_fingerprint="pipeline-v1",
+            )
+            self.assertEqual(first.returncode, 0, first.stderr)
+
+            second = run_partial_conversion(
+                root,
+                marker,
+                counter,
+                version="marker-v1",
+                generation="second",
+                pipeline_fingerprint="pipeline-v2",
+                extra_arguments=("--reuse-policy-compatible-raw-cache",),
+            )
+            self.assertEqual(second.returncode, 1)
+            self.assertIn(
+                "no exact authorized cache migration matched",
+                second.stderr,
+            )
+            self.assertEqual(counter.read_text(), "1")
+
+    def test_exact_policy_compatible_migration_authorization_is_accepted(
+        self,
+    ) -> None:
+        previous_identity = {
+            "converter": "marker",
+            "converter_versions": {"peecee": "marker-v1"},
+            "conversion_stage_fingerprint": "old-stage",
+        }
+        current_identity = {
+            **previous_identity,
+            "conversion_stage_fingerprint": "new-stage",
+        }
+        previous_fingerprint = CONVERTER_MODULE["raw_conversion_fingerprint"](
+            previous_identity
+        )
+        current_fingerprint = CONVERTER_MODULE["raw_conversion_fingerprint"](
+            current_identity
+        )
+        differences = CONVERTER_MODULE["identity_differences"](
+            previous_identity, current_identity
+        )
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            marker_input = Path(temporary_directory) / "input.pdf"
+            marker_input.write_bytes(b"%PDF clean")
+            marker_input_sha256 = hashlib.sha256(marker_input.read_bytes()).hexdigest()
+            authorization = {
+                "migration_id": "test-exact-migration",
+                "source_sha256": "a" * 64,
+                "cache_sha256": "b" * 64,
+                "previous_raw_conversion_fingerprint": previous_fingerprint,
+                "current_raw_conversion_fingerprint": current_fingerprint,
+                "marker_input_sha256": marker_input_sha256,
+                "identity_differences_sha256": hashlib.sha256(
+                    CONVERTER_MODULE["json_bytes"](differences)
+                ).hexdigest(),
+            }
+            converter = {
+                "format": "pdf",
+                "converter": "marker",
+                "execution_target": "peecee",
+                "converter_version": "marker-v1",
+                "converter_exit_status": 0,
+                "fallbacks_used": [],
+                "marker_input": marker_input,
+                "input_safety": {
+                    "verdict": "CLEAN",
+                    "marker_input": "original-source-bytes",
+                },
+            }
+            revalidation = CONVERTER_MODULE["revalidation_with_integrity"](
+                {
+                    "accepted": True,
+                    "marker_input_sha256": marker_input_sha256,
+                }
+            )
+            compatibility = CONVERTER_MODULE["compatible_pdf_cache_record"](
+                previous_identity,
+                previous_fingerprint,
+                current_identity,
+                current_fingerprint,
+                converter,
+                source_hash="a" * 64,
+                cache_sha256="b" * 64,
+                revalidation=revalidation,
+                authorizations=(authorization,),
+            )
+        self.assertIsNotNone(compatibility)
+        self.assertEqual("test-exact-migration", compatibility["migration_id"])
+        self.assertEqual(differences, compatibility["identity_differences"])
+
+    def test_policy_compatible_migration_rejects_suspect_original_bytes(
+        self,
+    ) -> None:
+        identity = {
+            "converter": "marker",
+            "converter_versions": {"peecee": "marker-v1"},
+        }
+        fingerprint = CONVERTER_MODULE["raw_conversion_fingerprint"](identity)
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            marker_input = Path(temporary_directory) / "input.pdf"
+            marker_input.write_bytes(b"%PDF suspect")
+            converter = {
+                "format": "pdf",
+                "converter": "marker",
+                "execution_target": "peecee",
+                "converter_version": "marker-v1",
+                "converter_exit_status": 0,
+                "fallbacks_used": [],
+                "marker_input": marker_input,
+                "input_safety": {
+                    "verdict": "SUSPECT",
+                    "marker_input": "original-source-bytes",
+                },
+            }
+            compatibility = CONVERTER_MODULE["compatible_pdf_cache_record"](
+                identity,
+                fingerprint,
+                identity,
+                fingerprint,
+                converter,
+                source_hash="a" * 64,
+                cache_sha256="b" * 64,
+                revalidation={"accepted": True},
+                authorizations=(),
+            )
+        self.assertIsNone(compatibility)
 
     def test_changed_execution_environment_reconverts_partial_book(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:

@@ -1,0 +1,1939 @@
+{
+  "authors": [],
+  "content_metadata_evidence": {
+    "authors": [],
+    "title": "API Design Patterns"
+  },
+  "contributors": [],
+  "converter_metadata": {
+    "debug_data_path": "debug_data\\bookshelf-ch-three-api-design-patterns-db598ff7b578",
+    "page_stats": [
+      {
+        "block_counts": [
+          [
+            "Line",
+            9
+          ],
+          [
+            "Span",
+            5
+          ],
+          [
+            "Text",
+            3
+          ],
+          [
+            "Picture",
+            1
+          ]
+        ],
+        "block_metadata": {
+          "llm_error_count": 0,
+          "llm_request_count": 0,
+          "llm_tokens_used": 0,
+          "previous_order": 0,
+          "previous_text": "",
+          "previous_type": ""
+        },
+        "page_id": 0,
+        "text_extraction_method": "surya"
+      },
+      {
+        "block_counts": [
+          [
+            "Line",
+            10
+          ],
+          [
+            "Span",
+            5
+          ],
+          [
+            "SectionHeader",
+            1
+          ],
+          [
+            "Text",
+            1
+          ],
+          [
+            "Picture",
+            1
+          ],
+          [
+            "PageFooter",
+            1
+          ]
+        ],
+        "block_metadata": {
+          "llm_error_count": 0,
+          "llm_request_count": 0,
+          "llm_tokens_used": 0,
+          "previous_order": 0,
+          "previous_text": "",
+          "previous_type": ""
+        },
+        "page_id": 1,
+        "text_extraction_method": "surya"
+      },
+      {
+        "block_counts": [
+          [
+            "Line",
+            60
+          ],
+          [
+            "Span",
+            24
+          ],
+          [
+            "Text",
+            11
+          ],
+          [
+            "PageFooter",
+            1
+          ]
+        ],
+        "block_metadata": {
+          "llm_error_count": 0,
+          "llm_request_count": 0,
+          "llm_tokens_used": 0,
+          "previous_order": 0,
+          "previous_text": "",
+          "previous_type": ""
+        },
+        "page_id": 2,
+        "text_extraction_method": "surya"
+      },
+      {
+        "block_counts": [
+          [
+            "Line",
+            29
+          ],
+          [
+            "Span",
+            11
+          ],
+          [
+            "ListItem",
+            5
+          ],
+          [
+            "SectionHeader",
+            2
+          ],
+          [
+            "PageFooter",
+            2
+          ],
+          [
+            "Text",
+            1
+          ],
+          [
+            "ListGroup",
+            1
+          ]
+        ],
+        "block_metadata": {
+          "llm_error_count": 0,
+          "llm_request_count": 0,
+          "llm_tokens_used": 0,
+          "previous_order": 0,
+          "previous_text": "",
+          "previous_type": ""
+        },
+        "page_id": 3,
+        "text_extraction_method": "surya"
+      },
+      {
+        "block_counts": [
+          [
+            "Line",
+            51
+          ],
+          [
+            "Span",
+            11
+          ],
+          [
+            "Text",
+            6
+          ],
+          [
+            "PageHeader",
+            2
+          ],
+          [
+            "SectionHeader",
+            2
+          ],
+          [
+            "PageFooter",
+            1
+          ]
+        ],
+        "block_metadata": {
+          "llm_error_count": 0,
+          "llm_request_count": 0,
+          "llm_tokens_used": 0,
+          "previous_order": 0,
+          "previous_text": "",
+          "previous_type": ""
+        },
+        "page_id": 4,
+        "text_extraction_method": "surya"
+      },
+      {
+        "block_counts": [
+          [
+            "Line",
+            47
+          ],
+          [
+            "Span",
+            16
+          ],
+          [
+            "TableCell",
+            8
+          ],
+          [
+            "Text",
+            4
+          ],
+          [
+            "PageHeader",
+            2
+          ],
+          [
+            "SectionHeader",
+            2
+          ],
+          [
+            "Caption",
+            1
+          ],
+          [
+            "Table",
+            1
+          ],
+          [
+            "PageFooter",
+            1
+          ],
+          [
+            "TableGroup",
+            1
+          ]
+        ],
+        "block_metadata": {
+          "llm_error_count": 0,
+          "llm_request_count": 0,
+          "llm_tokens_used": 0,
+          "previous_order": 0,
+          "previous_text": "",
+          "previous_type": ""
+        },
+        "page_id": 5,
+        "text_extraction_method": "surya"
+      },
+      {
+        "block_counts": [
+          [
+            "Line",
+            57
+          ],
+          [
+            "Span",
+            14
+          ],
+          [
+            "Text",
+            6
+          ],
+          [
+            "PageHeader",
+            2
+          ],
+          [
+            "SectionHeader",
+            2
+          ],
+          [
+            "Caption",
+            1
+          ],
+          [
+            "Code",
+            1
+          ],
+          [
+            "PageFooter",
+            1
+          ]
+        ],
+        "block_metadata": {
+          "llm_error_count": 0,
+          "llm_request_count": 0,
+          "llm_tokens_used": 0,
+          "previous_order": 0,
+          "previous_text": "",
+          "previous_type": ""
+        },
+        "page_id": 6,
+        "text_extraction_method": "surya"
+      },
+      {
+        "block_counts": [
+          [
+            "Line",
+            51
+          ],
+          [
+            "Span",
+            11
+          ],
+          [
+            "Text",
+            6
+          ],
+          [
+            "PageHeader",
+            2
+          ],
+          [
+            "SectionHeader",
+            2
+          ],
+          [
+            "PageFooter",
+            1
+          ]
+        ],
+        "block_metadata": {
+          "llm_error_count": 0,
+          "llm_request_count": 0,
+          "llm_tokens_used": 0,
+          "previous_order": 0,
+          "previous_text": "",
+          "previous_type": ""
+        },
+        "page_id": 7,
+        "text_extraction_method": "surya"
+      },
+      {
+        "block_counts": [
+          [
+            "Line",
+            54
+          ],
+          [
+            "Span",
+            12
+          ],
+          [
+            "Text",
+            7
+          ],
+          [
+            "PageHeader",
+            2
+          ],
+          [
+            "SectionHeader",
+            2
+          ],
+          [
+            "PageFooter",
+            1
+          ]
+        ],
+        "block_metadata": {
+          "llm_error_count": 0,
+          "llm_request_count": 0,
+          "llm_tokens_used": 0,
+          "previous_order": 0,
+          "previous_text": "",
+          "previous_type": ""
+        },
+        "page_id": 8,
+        "text_extraction_method": "surya"
+      },
+      {
+        "block_counts": [
+          [
+            "Line",
+            49
+          ],
+          [
+            "Span",
+            10
+          ],
+          [
+            "Text",
+            6
+          ],
+          [
+            "PageHeader",
+            2
+          ],
+          [
+            "SectionHeader",
+            1
+          ],
+          [
+            "PageFooter",
+            1
+          ]
+        ],
+        "block_metadata": {
+          "llm_error_count": 0,
+          "llm_request_count": 0,
+          "llm_tokens_used": 0,
+          "previous_order": 0,
+          "previous_text": "",
+          "previous_type": ""
+        },
+        "page_id": 9,
+        "text_extraction_method": "surya"
+      },
+      {
+        "block_counts": [
+          [
+            "Line",
+            54
+          ],
+          [
+            "Span",
+            14
+          ],
+          [
+            "Text",
+            6
+          ],
+          [
+            "SectionHeader",
+            3
+          ],
+          [
+            "PageHeader",
+            2
+          ],
+          [
+            "PageFooter",
+            1
+          ]
+        ],
+        "block_metadata": {
+          "llm_error_count": 0,
+          "llm_request_count": 0,
+          "llm_tokens_used": 0,
+          "previous_order": 0,
+          "previous_text": "",
+          "previous_type": ""
+        },
+        "page_id": 10,
+        "text_extraction_method": "surya"
+      },
+      {
+        "block_counts": [
+          [
+            "Line",
+            55
+          ],
+          [
+            "Span",
+            13
+          ],
+          [
+            "Text",
+            8
+          ],
+          [
+            "PageHeader",
+            2
+          ],
+          [
+            "SectionHeader",
+            2
+          ],
+          [
+            "PageFooter",
+            1
+          ]
+        ],
+        "block_metadata": {
+          "llm_error_count": 0,
+          "llm_request_count": 0,
+          "llm_tokens_used": 0,
+          "previous_order": 0,
+          "previous_text": "",
+          "previous_type": ""
+        },
+        "page_id": 11,
+        "text_extraction_method": "surya"
+      },
+      {
+        "block_counts": [
+          [
+            "Line",
+            68
+          ],
+          [
+            "Span",
+            28
+          ],
+          [
+            "Text",
+            3
+          ],
+          [
+            "Code",
+            3
+          ],
+          [
+            "PageHeader",
+            2
+          ],
+          [
+            "Caption",
+            2
+          ],
+          [
+            "SectionHeader",
+            1
+          ],
+          [
+            "PageFooter",
+            1
+          ]
+        ],
+        "block_metadata": {
+          "llm_error_count": 0,
+          "llm_request_count": 0,
+          "llm_tokens_used": 0,
+          "previous_order": 0,
+          "previous_text": "",
+          "previous_type": ""
+        },
+        "page_id": 12,
+        "text_extraction_method": "surya"
+      },
+      {
+        "block_counts": [
+          [
+            "Line",
+            56
+          ],
+          [
+            "Span",
+            12
+          ],
+          [
+            "Text",
+            5
+          ],
+          [
+            "PageHeader",
+            2
+          ],
+          [
+            "SectionHeader",
+            2
+          ],
+          [
+            "Caption",
+            1
+          ],
+          [
+            "Code",
+            1
+          ],
+          [
+            "PageFooter",
+            1
+          ]
+        ],
+        "block_metadata": {
+          "llm_error_count": 0,
+          "llm_request_count": 0,
+          "llm_tokens_used": 0,
+          "previous_order": 0,
+          "previous_text": "",
+          "previous_type": ""
+        },
+        "page_id": 13,
+        "text_extraction_method": "surya"
+      },
+      {
+        "block_counts": [
+          [
+            "Line",
+            54
+          ],
+          [
+            "Span",
+            13
+          ],
+          [
+            "Text",
+            7
+          ],
+          [
+            "PageHeader",
+            2
+          ],
+          [
+            "SectionHeader",
+            1
+          ],
+          [
+            "Caption",
+            1
+          ],
+          [
+            "Code",
+            1
+          ],
+          [
+            "PageFooter",
+            1
+          ]
+        ],
+        "block_metadata": {
+          "llm_error_count": 0,
+          "llm_request_count": 0,
+          "llm_tokens_used": 0,
+          "previous_order": 0,
+          "previous_text": "",
+          "previous_type": ""
+        },
+        "page_id": 14,
+        "text_extraction_method": "surya"
+      },
+      {
+        "block_counts": [
+          [
+            "Line",
+            58
+          ],
+          [
+            "Span",
+            11
+          ],
+          [
+            "Text",
+            3
+          ],
+          [
+            "Code",
+            2
+          ],
+          [
+            "SectionHeader",
+            2
+          ],
+          [
+            "ListItem",
+            2
+          ],
+          [
+            "PageFooter",
+            1
+          ],
+          [
+            "ListGroup",
+            1
+          ]
+        ],
+        "block_metadata": {
+          "llm_error_count": 0,
+          "llm_request_count": 0,
+          "llm_tokens_used": 0,
+          "previous_order": 0,
+          "previous_text": "",
+          "previous_type": ""
+        },
+        "page_id": 15,
+        "text_extraction_method": "surya"
+      },
+      {
+        "block_counts": [
+          [
+            "Line",
+            23
+          ],
+          [
+            "Span",
+            12
+          ],
+          [
+            "ListItem",
+            5
+          ],
+          [
+            "PageHeader",
+            2
+          ],
+          [
+            "SectionHeader",
+            1
+          ],
+          [
+            "PageFooter",
+            1
+          ],
+          [
+            "ListGroup",
+            1
+          ]
+        ],
+        "block_metadata": {
+          "llm_error_count": 0,
+          "llm_request_count": 0,
+          "llm_tokens_used": 0,
+          "previous_order": 0,
+          "previous_text": "",
+          "previous_type": ""
+        },
+        "page_id": 16,
+        "text_extraction_method": "surya"
+      }
+    ],
+    "table_of_contents": [
+      {
+        "heading_level": null,
+        "page_id": 1,
+        "polygon": [
+          [
+            257.25,
+            236.33858267716536
+          ],
+          [
+            478.5,
+            236.33858267716536
+          ],
+          [
+            478.5,
+            326.37232845894266
+          ],
+          [
+            257.25,
+            326.37232845894266
+          ]
+        ],
+        "title": "API Design\nPatterns"
+      },
+      {
+        "heading_level": null,
+        "page_id": 3,
+        "polygon": [
+          [
+            376.21142578125,
+            68.27559055118111
+          ],
+          [
+            489.75,
+            78.77952755905513
+          ],
+          [
+            485.25,
+            158.3093363329584
+          ],
+          [
+            373.5,
+            151.1171875
+          ]
+        ],
+        "title": "Naming"
+      },
+      {
+        "heading_level": null,
+        "page_id": 3,
+        "polygon": [
+          [
+            94.376953125,
+            268.03759765625
+          ],
+          [
+            199.5,
+            268.03759765625
+          ],
+          [
+            199.5,
+            279.11083984375
+          ],
+          [
+            94.376953125,
+            279.11083984375
+          ]
+        ],
+        "title": "This chapter covers"
+      },
+      {
+        "heading_level": null,
+        "page_id": 4,
+        "polygon": [
+          [
+            55.5,
+            52.43505859375
+          ],
+          [
+            221.25,
+            52.43505859375
+          ],
+          [
+            221.25,
+            63.77390326209224
+          ],
+          [
+            55.5,
+            63.77390326209224
+          ]
+        ],
+        "title": "3.1 Why do names matter?"
+      },
+      {
+        "heading_level": null,
+        "page_id": 4,
+        "polygon": [
+          [
+            55.5,
+            480.70898437500006
+          ],
+          [
+            255.0,
+            480.70898437500006
+          ],
+          [
+            255.0,
+            493.73632812500006
+          ],
+          [
+            55.5,
+            493.73632812500006
+          ]
+        ],
+        "title": "3.2 What makes a name \"good\"?"
+      },
+      {
+        "heading_level": null,
+        "page_id": 5,
+        "polygon": [
+          [
+            65.25,
+            52.43505859375
+          ],
+          [
+            150.8994140625,
+            52.43505859375
+          ],
+          [
+            150.8994140625,
+            62.27334083239595
+          ],
+          [
+            65.25,
+            62.27334083239595
+          ]
+        ],
+        "title": "3.2.1 Expressive"
+      },
+      {
+        "heading_level": null,
+        "page_id": 5,
+        "polygon": [
+          [
+            64.5,
+            286.60742407199103
+          ],
+          [
+            134.25,
+            286.60742407199103
+          ],
+          [
+            134.25,
+            296.69775390625
+          ],
+          [
+            64.5,
+            296.69775390625
+          ]
+        ],
+        "title": "3.2.2 Simple"
+      },
+      {
+        "heading_level": null,
+        "page_id": 6,
+        "polygon": [
+          [
+            55.5,
+            52.51968503937008
+          ],
+          [
+            146.25,
+            52.51968503937008
+          ],
+          [
+            146.25,
+            60.772778402699664
+          ],
+          [
+            55.5,
+            60.772778402699664
+          ]
+        ],
+        "title": "3.2.3 Predictable"
+      },
+      {
+        "heading_level": null,
+        "page_id": 6,
+        "polygon": [
+          [
+            55.5,
+            480.9302587176603
+          ],
+          [
+            269.1298828125,
+            480.9302587176603
+          ],
+          [
+            269.1298828125,
+            493.41064453125006
+          ],
+          [
+            55.5,
+            493.41064453125006
+          ]
+        ],
+        "title": "3.3 Language, grammar, and syntax"
+      },
+      {
+        "heading_level": null,
+        "page_id": 7,
+        "polygon": [
+          [
+            64.5,
+            165.77294921875
+          ],
+          [
+            146.25,
+            165.77294921875
+          ],
+          [
+            146.25,
+            175.5658042744657
+          ],
+          [
+            64.5,
+            175.5658042744657
+          ]
+        ],
+        "title": "3.3.1 Language"
+      },
+      {
+        "heading_level": null,
+        "page_id": 7,
+        "polygon": [
+          [
+            64.5,
+            452.37451171875
+          ],
+          [
+            145.7138671875,
+            452.37451171875
+          ],
+          [
+            145.7138671875,
+            460.6726659167604
+          ],
+          [
+            64.5,
+            460.6726659167604
+          ]
+        ],
+        "title": "3.3.2 Grammar"
+      },
+      {
+        "heading_level": null,
+        "page_id": 8,
+        "polygon": [
+          [
+            91.5,
+            53.269966254218225
+          ],
+          [
+            171.0,
+            53.269966254218225
+          ],
+          [
+            171.0,
+            60.772778402699664
+          ],
+          [
+            91.5,
+            60.772778402699664
+          ]
+        ],
+        "title": "IMPERATIVE ACTIONS"
+      },
+      {
+        "heading_level": null,
+        "page_id": 8,
+        "polygon": [
+          [
+            91.5,
+            460.19091796875006
+          ],
+          [
+            146.25,
+            460.19091796875006
+          ],
+          [
+            146.25,
+            468.17547806524186
+          ],
+          [
+            91.5,
+            468.17547806524186
+          ]
+        ],
+        "title": "PREPOSITIONS"
+      },
+      {
+        "heading_level": null,
+        "page_id": 9,
+        "polygon": [
+          [
+            101.25,
+            187.91943359375
+          ],
+          [
+            159.0,
+            187.91943359375
+          ],
+          [
+            159.0,
+            195.8233970753656
+          ],
+          [
+            101.25,
+            195.8233970753656
+          ]
+        ],
+        "title": "PLURALIZATION"
+      },
+      {
+        "heading_level": null,
+        "page_id": 10,
+        "polygon": [
+          [
+            55.5,
+            52.7607421875
+          ],
+          [
+            124.5,
+            52.7607421875
+          ],
+          [
+            124.5,
+            62.27334083239595
+          ],
+          [
+            55.5,
+            62.27334083239595
+          ]
+        ],
+        "title": "3.3.3 Syntax"
+      },
+      {
+        "heading_level": null,
+        "page_id": 10,
+        "polygon": [
+          [
+            91.5,
+            126.03955078125001
+          ],
+          [
+            114.0,
+            126.03955078125001
+          ],
+          [
+            114.0,
+            134.3003374578178
+          ],
+          [
+            91.5,
+            134.3003374578178
+          ]
+        ],
+        "title": "CASE"
+      },
+      {
+        "heading_level": null,
+        "page_id": 10,
+        "polygon": [
+          [
+            91.5,
+            483.18110236220474
+          ],
+          [
+            174.75,
+            483.18110236220474
+          ],
+          [
+            174.75,
+            491.13085937500006
+          ],
+          [
+            91.5,
+            491.13085937500006
+          ]
+        ],
+        "title": "RESERVED KEYWORDS"
+      },
+      {
+        "heading_level": null,
+        "page_id": 11,
+        "polygon": [
+          [
+            64.5,
+            231.08661417322836
+          ],
+          [
+            145.5,
+            231.08661417322836
+          ],
+          [
+            145.5,
+            240.35449218750003
+          ],
+          [
+            64.5,
+            240.35449218750003
+          ]
+        ],
+        "title": "3.4 Context"
+      },
+      {
+        "heading_level": null,
+        "page_id": 11,
+        "polygon": [
+          [
+            64.5,
+            540.634765625
+          ],
+          [
+            216.0,
+            540.634765625
+          ],
+          [
+            216.0,
+            554.4578177727784
+          ],
+          [
+            64.5,
+            554.4578177727784
+          ]
+        ],
+        "title": "3.5 Data types and units"
+      },
+      {
+        "heading_level": null,
+        "page_id": 12,
+        "polygon": [
+          [
+            104.25,
+            89.28346456692914
+          ],
+          [
+            320.25,
+            89.28346456692914
+          ],
+          [
+            320.25,
+            98.68212890625
+          ],
+          [
+            104.25,
+            98.68212890625
+          ]
+        ],
+        "title": "Listing 3.2 An audio clip and image using size fields"
+      },
+      {
+        "heading_level": null,
+        "page_id": 13,
+        "polygon": [
+          [
+            64.5,
+            366.1372328458943
+          ],
+          [
+            345.75,
+            366.1372328458943
+          ],
+          [
+            345.75,
+            389.19189453125
+          ],
+          [
+            64.5,
+            389.19189453125
+          ]
+        ],
+        "title": "3.6 Case study: What happens when you choose bad names?"
+      },
+      {
+        "heading_level": null,
+        "page_id": 13,
+        "polygon": [
+          [
+            100.5,
+            481.03466796875006
+          ],
+          [
+            166.5,
+            481.03466796875006
+          ],
+          [
+            166.5,
+            489.1833520809899
+          ],
+          [
+            100.5,
+            489.1833520809899
+          ]
+        ],
+        "title": "SUBTLE MEANING"
+      },
+      {
+        "heading_level": null,
+        "page_id": 14,
+        "polygon": [
+          [
+            91.5,
+            342.94482421875
+          ],
+          [
+            114.75,
+            342.94482421875
+          ],
+          [
+            114.75,
+            351.88188976377955
+          ],
+          [
+            91.5,
+            351.88188976377955
+          ]
+        ],
+        "title": "UNITS"
+      },
+      {
+        "heading_level": null,
+        "page_id": 15,
+        "polygon": [
+          [
+            113.044921875,
+            221.13916015625
+          ],
+          [
+            381.75,
+            221.13916015625
+          ],
+          [
+            381.75,
+            229.60693359375003
+          ],
+          [
+            113.044921875,
+            229.60693359375003
+          ]
+        ],
+        "title": "Listing 3.7 Alterations to the example interfaces to include units"
+      },
+      {
+        "heading_level": null,
+        "page_id": 15,
+        "polygon": [
+          [
+            64.5,
+            410.4038245219348
+          ],
+          [
+            153.75,
+            410.4038245219348
+          ],
+          [
+            153.75,
+            419.4071991001125
+          ],
+          [
+            64.5,
+            419.4071991001125
+          ]
+        ],
+        "title": "3.7 Exercises"
+      },
+      {
+        "heading_level": null,
+        "page_id": 16,
+        "polygon": [
+          [
+            91.5,
+            52.43505859375
+          ],
+          [
+            145.5,
+            52.43505859375
+          ],
+          [
+            145.5,
+            63.77390326209224
+          ],
+          [
+            91.5,
+            63.77390326209224
+          ]
+        ],
+        "title": "Summary"
+      }
+    ]
+  },
+  "converter_table_of_contents": [
+    {
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          257.25,
+          236.33858267716536
+        ],
+        [
+          478.5,
+          236.33858267716536
+        ],
+        [
+          478.5,
+          326.37232845894266
+        ],
+        [
+          257.25,
+          326.37232845894266
+        ]
+      ],
+      "title": "API Design\nPatterns"
+    },
+    {
+      "heading_level": null,
+      "page_id": 3,
+      "polygon": [
+        [
+          376.21142578125,
+          68.27559055118111
+        ],
+        [
+          489.75,
+          78.77952755905513
+        ],
+        [
+          485.25,
+          158.3093363329584
+        ],
+        [
+          373.5,
+          151.1171875
+        ]
+      ],
+      "title": "Naming"
+    },
+    {
+      "heading_level": null,
+      "page_id": 3,
+      "polygon": [
+        [
+          94.376953125,
+          268.03759765625
+        ],
+        [
+          199.5,
+          268.03759765625
+        ],
+        [
+          199.5,
+          279.11083984375
+        ],
+        [
+          94.376953125,
+          279.11083984375
+        ]
+      ],
+      "title": "This chapter covers"
+    },
+    {
+      "heading_level": null,
+      "page_id": 4,
+      "polygon": [
+        [
+          55.5,
+          52.43505859375
+        ],
+        [
+          221.25,
+          52.43505859375
+        ],
+        [
+          221.25,
+          63.77390326209224
+        ],
+        [
+          55.5,
+          63.77390326209224
+        ]
+      ],
+      "title": "3.1 Why do names matter?"
+    },
+    {
+      "heading_level": null,
+      "page_id": 4,
+      "polygon": [
+        [
+          55.5,
+          480.70898437500006
+        ],
+        [
+          255.0,
+          480.70898437500006
+        ],
+        [
+          255.0,
+          493.73632812500006
+        ],
+        [
+          55.5,
+          493.73632812500006
+        ]
+      ],
+      "title": "3.2 What makes a name \"good\"?"
+    },
+    {
+      "heading_level": null,
+      "page_id": 5,
+      "polygon": [
+        [
+          65.25,
+          52.43505859375
+        ],
+        [
+          150.8994140625,
+          52.43505859375
+        ],
+        [
+          150.8994140625,
+          62.27334083239595
+        ],
+        [
+          65.25,
+          62.27334083239595
+        ]
+      ],
+      "title": "3.2.1 Expressive"
+    },
+    {
+      "heading_level": null,
+      "page_id": 5,
+      "polygon": [
+        [
+          64.5,
+          286.60742407199103
+        ],
+        [
+          134.25,
+          286.60742407199103
+        ],
+        [
+          134.25,
+          296.69775390625
+        ],
+        [
+          64.5,
+          296.69775390625
+        ]
+      ],
+      "title": "3.2.2 Simple"
+    },
+    {
+      "heading_level": null,
+      "page_id": 6,
+      "polygon": [
+        [
+          55.5,
+          52.51968503937008
+        ],
+        [
+          146.25,
+          52.51968503937008
+        ],
+        [
+          146.25,
+          60.772778402699664
+        ],
+        [
+          55.5,
+          60.772778402699664
+        ]
+      ],
+      "title": "3.2.3 Predictable"
+    },
+    {
+      "heading_level": null,
+      "page_id": 6,
+      "polygon": [
+        [
+          55.5,
+          480.9302587176603
+        ],
+        [
+          269.1298828125,
+          480.9302587176603
+        ],
+        [
+          269.1298828125,
+          493.41064453125006
+        ],
+        [
+          55.5,
+          493.41064453125006
+        ]
+      ],
+      "title": "3.3 Language, grammar, and syntax"
+    },
+    {
+      "heading_level": null,
+      "page_id": 7,
+      "polygon": [
+        [
+          64.5,
+          165.77294921875
+        ],
+        [
+          146.25,
+          165.77294921875
+        ],
+        [
+          146.25,
+          175.5658042744657
+        ],
+        [
+          64.5,
+          175.5658042744657
+        ]
+      ],
+      "title": "3.3.1 Language"
+    },
+    {
+      "heading_level": null,
+      "page_id": 7,
+      "polygon": [
+        [
+          64.5,
+          452.37451171875
+        ],
+        [
+          145.7138671875,
+          452.37451171875
+        ],
+        [
+          145.7138671875,
+          460.6726659167604
+        ],
+        [
+          64.5,
+          460.6726659167604
+        ]
+      ],
+      "title": "3.3.2 Grammar"
+    },
+    {
+      "heading_level": null,
+      "page_id": 8,
+      "polygon": [
+        [
+          91.5,
+          53.269966254218225
+        ],
+        [
+          171.0,
+          53.269966254218225
+        ],
+        [
+          171.0,
+          60.772778402699664
+        ],
+        [
+          91.5,
+          60.772778402699664
+        ]
+      ],
+      "title": "IMPERATIVE ACTIONS"
+    },
+    {
+      "heading_level": null,
+      "page_id": 8,
+      "polygon": [
+        [
+          91.5,
+          460.19091796875006
+        ],
+        [
+          146.25,
+          460.19091796875006
+        ],
+        [
+          146.25,
+          468.17547806524186
+        ],
+        [
+          91.5,
+          468.17547806524186
+        ]
+      ],
+      "title": "PREPOSITIONS"
+    },
+    {
+      "heading_level": null,
+      "page_id": 9,
+      "polygon": [
+        [
+          101.25,
+          187.91943359375
+        ],
+        [
+          159.0,
+          187.91943359375
+        ],
+        [
+          159.0,
+          195.8233970753656
+        ],
+        [
+          101.25,
+          195.8233970753656
+        ]
+      ],
+      "title": "PLURALIZATION"
+    },
+    {
+      "heading_level": null,
+      "page_id": 10,
+      "polygon": [
+        [
+          55.5,
+          52.7607421875
+        ],
+        [
+          124.5,
+          52.7607421875
+        ],
+        [
+          124.5,
+          62.27334083239595
+        ],
+        [
+          55.5,
+          62.27334083239595
+        ]
+      ],
+      "title": "3.3.3 Syntax"
+    },
+    {
+      "heading_level": null,
+      "page_id": 10,
+      "polygon": [
+        [
+          91.5,
+          126.03955078125001
+        ],
+        [
+          114.0,
+          126.03955078125001
+        ],
+        [
+          114.0,
+          134.3003374578178
+        ],
+        [
+          91.5,
+          134.3003374578178
+        ]
+      ],
+      "title": "CASE"
+    },
+    {
+      "heading_level": null,
+      "page_id": 10,
+      "polygon": [
+        [
+          91.5,
+          483.18110236220474
+        ],
+        [
+          174.75,
+          483.18110236220474
+        ],
+        [
+          174.75,
+          491.13085937500006
+        ],
+        [
+          91.5,
+          491.13085937500006
+        ]
+      ],
+      "title": "RESERVED KEYWORDS"
+    },
+    {
+      "heading_level": null,
+      "page_id": 11,
+      "polygon": [
+        [
+          64.5,
+          231.08661417322836
+        ],
+        [
+          145.5,
+          231.08661417322836
+        ],
+        [
+          145.5,
+          240.35449218750003
+        ],
+        [
+          64.5,
+          240.35449218750003
+        ]
+      ],
+      "title": "3.4 Context"
+    },
+    {
+      "heading_level": null,
+      "page_id": 11,
+      "polygon": [
+        [
+          64.5,
+          540.634765625
+        ],
+        [
+          216.0,
+          540.634765625
+        ],
+        [
+          216.0,
+          554.4578177727784
+        ],
+        [
+          64.5,
+          554.4578177727784
+        ]
+      ],
+      "title": "3.5 Data types and units"
+    },
+    {
+      "heading_level": null,
+      "page_id": 12,
+      "polygon": [
+        [
+          104.25,
+          89.28346456692914
+        ],
+        [
+          320.25,
+          89.28346456692914
+        ],
+        [
+          320.25,
+          98.68212890625
+        ],
+        [
+          104.25,
+          98.68212890625
+        ]
+      ],
+      "title": "Listing 3.2 An audio clip and image using size fields"
+    },
+    {
+      "heading_level": null,
+      "page_id": 13,
+      "polygon": [
+        [
+          64.5,
+          366.1372328458943
+        ],
+        [
+          345.75,
+          366.1372328458943
+        ],
+        [
+          345.75,
+          389.19189453125
+        ],
+        [
+          64.5,
+          389.19189453125
+        ]
+      ],
+      "title": "3.6 Case study: What happens when you choose bad names?"
+    },
+    {
+      "heading_level": null,
+      "page_id": 13,
+      "polygon": [
+        [
+          100.5,
+          481.03466796875006
+        ],
+        [
+          166.5,
+          481.03466796875006
+        ],
+        [
+          166.5,
+          489.1833520809899
+        ],
+        [
+          100.5,
+          489.1833520809899
+        ]
+      ],
+      "title": "SUBTLE MEANING"
+    },
+    {
+      "heading_level": null,
+      "page_id": 14,
+      "polygon": [
+        [
+          91.5,
+          342.94482421875
+        ],
+        [
+          114.75,
+          342.94482421875
+        ],
+        [
+          114.75,
+          351.88188976377955
+        ],
+        [
+          91.5,
+          351.88188976377955
+        ]
+      ],
+      "title": "UNITS"
+    },
+    {
+      "heading_level": null,
+      "page_id": 15,
+      "polygon": [
+        [
+          113.044921875,
+          221.13916015625
+        ],
+        [
+          381.75,
+          221.13916015625
+        ],
+        [
+          381.75,
+          229.60693359375003
+        ],
+        [
+          113.044921875,
+          229.60693359375003
+        ]
+      ],
+      "title": "Listing 3.7 Alterations to the example interfaces to include units"
+    },
+    {
+      "heading_level": null,
+      "page_id": 15,
+      "polygon": [
+        [
+          64.5,
+          410.4038245219348
+        ],
+        [
+          153.75,
+          410.4038245219348
+        ],
+        [
+          153.75,
+          419.4071991001125
+        ],
+        [
+          64.5,
+          419.4071991001125
+        ]
+      ],
+      "title": "3.7 Exercises"
+    },
+    {
+      "heading_level": null,
+      "page_id": 16,
+      "polygon": [
+        [
+          91.5,
+          52.43505859375
+        ],
+        [
+          145.5,
+          52.43505859375
+        ],
+        [
+          145.5,
+          63.77390326209224
+        ],
+        [
+          91.5,
+          63.77390326209224
+        ]
+      ],
+      "title": "Summary"
+    }
+  ],
+  "description": null,
+  "identifiers": [],
+  "language": null,
+  "metadata_selection": {
+    "author_source": null,
+    "title_source": "converted content"
+  },
+  "page_count": 17,
+  "publication_date": null,
+  "publisher": null,
+  "rights": null,
+  "schema_version": "books-corpus/1",
+  "source_document_metadata": {
+    "Custom Metadata": "no",
+    "Encrypted": "no",
+    "File size": "4754549 bytes",
+    "Form": "none",
+    "JavaScript": "no",
+    "Metadata Stream": "no",
+    "Optimized": "no",
+    "PDF version": "1.3",
+    "Page rot": "0",
+    "Page size": "530.88 x 666.24 pts",
+    "Pages": 17,
+    "Suspects": "no",
+    "Tagged": "no",
+    "UserProperties": "no"
+  },
+  "source_format": "pdf",
+  "subjects": [],
+  "subtitle": null,
+  "title": "API Design Patterns"
+}

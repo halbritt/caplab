@@ -1,0 +1,126 @@
+{
+  "broken_links": [],
+  "chapter_count": 2,
+  "conversion_success": true,
+  "converter_exit_status": 0,
+  "converter_reported_failures": [],
+  "damaged_code": [
+    {
+      "fenced_block_count": 8,
+      "file": "chapters/002-chapter-3-naming.md",
+      "ocr_page_count": 17,
+      "reason": "fenced code was reconstructed from OCR and requires source-image fidelity review"
+    }
+  ],
+  "degraded_internal_links": [],
+  "duplicate_headings": {
+    "entries": [],
+    "scope": "all heading levels within chapters and level-one titles across chapters"
+  },
+  "empty_chapters": [],
+  "errors": [],
+  "low_confidence_chapter_boundaries": [
+    {
+      "confidence": "medium",
+      "evidence": "first visible document heading before the first logical boundary",
+      "title": "API Design Patterns"
+    }
+  ],
+  "malformed_markdown": [],
+  "missing_assets": [],
+  "missing_chapters": [],
+  "missing_parts": [],
+  "missing_sections": [],
+  "ocr_usage": {
+    "llm_request_count": 0,
+    "ocr_pages": [
+      {
+        "page_id": 0,
+        "physical_page": 1
+      },
+      {
+        "page_id": 1,
+        "physical_page": 2
+      },
+      {
+        "page_id": 2,
+        "physical_page": 3
+      },
+      {
+        "page_id": 3,
+        "physical_page": 4
+      },
+      {
+        "page_id": 4,
+        "physical_page": 5
+      },
+      {
+        "page_id": 5,
+        "physical_page": 6
+      },
+      {
+        "page_id": 6,
+        "physical_page": 7
+      },
+      {
+        "page_id": 7,
+        "physical_page": 8
+      },
+      {
+        "page_id": 8,
+        "physical_page": 9
+      },
+      {
+        "page_id": 9,
+        "physical_page": 10
+      },
+      {
+        "page_id": 10,
+        "physical_page": 11
+      },
+      {
+        "page_id": 11,
+        "physical_page": 12
+      },
+      {
+        "page_id": 12,
+        "physical_page": 13
+      },
+      {
+        "page_id": 13,
+        "physical_page": 14
+      },
+      {
+        "page_id": 14,
+        "physical_page": 15
+      },
+      {
+        "page_id": 15,
+        "physical_page": 16
+      },
+      {
+        "page_id": 16,
+        "physical_page": 17
+      }
+    ],
+    "text_extraction_methods": {
+      "surya": 17
+    },
+    "used": true
+  },
+  "page_furniture_removed": [],
+  "schema_version": "books-corpus/1",
+  "source_section_warnings": [
+    "source front matter names a foreword, but no foreword heading was present in the converter output; the source file may omit that section"
+  ],
+  "structural_dividers": [],
+  "unresolved_navigation_anchors": [],
+  "unresolved_tables": [],
+  "warnings": [
+    "original source PDF airlock verdict was DANGEROUS; Marker received a CDR-CLEAN sandboxed raster derivative",
+    "1 probable code-conversion issue(s) were preserved",
+    "1 chapter boundary or boundaries require conservative inference",
+    "converter supplied no reliable language identifiers for fenced code blocks",
+    "source front matter names a foreword, but no foreword heading was present in the converter output; the source file may omit that section"
+  ]
+}

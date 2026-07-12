@@ -33,16 +33,24 @@ The entries below are canonical bibliographic presentation metadata from [`doctr
 
 | Book | Edition | Creators | Source file |
 |---|---|---|---|
+| 100 Go Mistakes and How to Avoid Them | First edition | Teiva Harsanyi (author) | `sources/100-Go-Mistakes-and-How-to-Avoid-Them-(Teiva-Harsanyi)_bibis.ir.pdf` |
 | A Philosophy of Software Design | Second edition | John K. Ousterhout (author) | `sources/dokumen.pub_a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217.epub` |
+| API Design Patterns (Chapter 3 extract: Naming) | First edition | JJ Geewax (author) | `sources/bookshelf_ch_three_API_Design_Patterns.pdf` |
+| Architecture Patterns with Python: Enabling Test-Driven Development, Domain-Driven Design, and Event-Driven Microservices | First edition | Harry Percival (author); Bob Gregory (author) | `sources/Architecture-Patterns-with-Python.pdf` |
 | Clean Architecture: A Craftsman's Guide to Software Structure and Design | First edition | Robert C. Martin (author); James Grenning (contributor); Simon Brown (contributor) | `sources/Clean Architecture A Craftsman Guide to Software Structure and Design.pdf` |
 | Code Complete: A Practical Handbook of Software Construction | Second edition | Steve McConnell (author) | `sources/code-complete-2nd-edition-v413hav.pdf` |
+| Concurrency in Go: Tools and Techniques for Developers | First edition | Katherine Cox-Buday (author) | `sources/Concurrency in Go.pdf` |
+| Designing Data-Intensive Applications: The Big Ideas Behind Reliable, Scalable, and Maintainable Systems | Second edition | Martin Kleppmann (author); Chris Riccomini (author) | `sources/dokumen.pub_designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2.pdf` |
 | Domain-Driven Design: Tackling Complexity in the Heart of Software | First edition | Eric Evans (author); Martin Fowler (foreword-author) | `sources/Domain Driven Design Tackling Complexity in the Heart of Software - Eric Evans.pdf` |
 | Efficient Go: Data-Driven Performance Optimization | First edition | Bartłomiej Płotka (author) | `sources/Efficient Go Data-Driven Performance Optimization (Bartlomiej Plotka) (Z-Library).pdf` |
 | Fluent Python | Second edition | Luciano Ramalho (author) | `sources/Fluent.Python.2nd.Edition.(z-lib.org).pdf` |
 | Fundamentals of Software Architecture: An Engineering Approach | First edition | Mark Richards (author); Neal Ford (author) | `sources/OReilly.Fundamentals.of.Software.Architecture.2020.1.pdf` |
 | Refactoring: Improving the Design of Existing Code | First edition | Martin Fowler (author); Kent Beck (contributor); John Brant (contributor); William Opdyke (contributor); Don Roberts (contributor) | `sources/Refactoring  Improving the Design of Existing Code.pdf` |
+| Release It!: Design and Deploy Production-Ready Software | Second edition | Michael T. Nygard (author) | `sources/Release It!_ Design and Deploy Production-Ready Software ( PDFDrive ).pdf` |
 | Software Design X-Rays: Fix Technical Debt with Behavioral Code Analysis | First edition | Adam Tornhill (author) | `sources/dokumen.pub_software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725.pdf` |
+| Software Engineering at Google: Lessons Learned from Programming Over Time | First edition | Titus Winters (author); Tom Manshreck (author); Hyrum Wright (author) | `sources/dokumen.pub_software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798.pdf` |
 | The Pragmatic Programmer: From Journeyman to Master | First edition | Andrew Hunt (author); David Thomas (author) | `sources/the-pragmatic-programmer.pdf` |
+| Unit Testing: Principles, Practices, and Patterns | First edition | Vladimir Khorikov (author) | `sources/Manning.Unit.Testing.Principles.Practices.and.Patterns.2020.1.pdf` |
 | Working Effectively with Legacy Code | First edition | Michael C. Feathers (author) | `sources/[PROGRAMMING][Working Effectively. with Legacy Code].pdf` |
 <!-- END GENERATED SOURCE CATALOG -->
 
@@ -58,7 +66,7 @@ python3 -m pip install -r requirements.txt
 
 EPUB conversion requires Pandoc on `PATH`; `BOOKS_PANDOC` selects another executable, and `BOOKS_PANDOC_VERSION` supplies an explicit version when automatic detection is unsuitable.
 
-PDF conversion requires the configured Marker launcher. The default primary launcher targets the SSH-reachable `peecee` GPU worker and uses the local launcher only after an infrastructure-class failure. `BOOKS_MARKER_PEECEE` and `BOOKS_MARKER_LOCAL` override those launcher commands. `BOOKS_MARKER_VERSION` records the selected Marker version and is required for reusable remote-converter cache identity.
+PDF conversion requires the configured Marker launcher and the local `pdf-safe-ingest` x-ray. A `SUSPECT` or `DANGEROUS` verdict also requires Bubblewrap, Ghostscript, and MuPDF's `mutool` for the sandboxed raster CDR path. The default primary launcher targets the SSH-reachable `peecee` GPU worker and uses the local launcher only after an infrastructure-class failure. `BOOKS_MARKER_PEECEE` and `BOOKS_MARKER_LOCAL` override those launcher commands. `make books` supplies the repository-pinned Marker version; direct script invocations must set `BOOKS_MARKER_VERSION` to give the remote converter a reusable cache identity.
 
 ## Convert and validate books
 
@@ -68,13 +76,34 @@ Convert every supported source:
 make books
 ```
 
-PDFs use Marker on the `peecee` GPU worker, with the defined local Marker path available only as an infrastructure fallback. EPUBs use Pandoc. The pipeline extracts assets, identifies logical chapter boundaries, and writes normalized Markdown plus metadata and validation records.
+Every PDF is statically x-rayed before conversion. Source xray, rasterization,
+MuPDF normalization, and derivative xray plus structural validation run in
+separate least-privilege networkless Bubblewrap sandboxes with bounded command
+output. A source classified `SUSPECT` or `DANGEROUS` is rasterized into a
+pixel-only derivative; only a derivative matching the canonical raster profile
+and post-CDR gate reaches Marker. The original source stays unchanged, and
+`source.json` records both identities, every airlock/CDR command, and the exact
+Marker input. The original verdict remains an explicit validation warning.
+PDFs then use Marker on the `peecee` GPU worker, with the defined local Marker
+path available only as an infrastructure fallback. EPUBs use Pandoc. The
+pipeline extracts assets, identifies logical chapter boundaries, and writes
+normalized Markdown plus metadata and validation records.
 
 Convert one exact source without rebuilding the repository index:
 
 ```bash
-./scripts/convert-books --book 'Refactoring  Improving the Design of Existing Code.pdf'
+BOOKS_MARKER_VERSION='marker-pdf 1.10.2' \
+  ./scripts/convert-books --book 'Refactoring  Improving the Design of Existing Code.pdf'
 ```
+
+The exceptional `--reuse-policy-compatible-raw-cache` migration flag is
+fail-closed. It accepts only a source-, cache-, marker-input-, fingerprint-, and
+identity-diff-pinned authorization for a validated, fallback-free peecee cache.
+The existing Marker input is revalidated under the current sandbox policy
+before reuse. CLEAN original bytes and sandboxed CDR derivatives of SUSPECT or
+DANGEROUS sources are eligible; SUSPECT original-byte caches are rejected. The
+authorization, exact differences, original provenance, and current
+revalidation are recorded in `source.json`.
 
 Regenerate the root source catalog and `books/README.md` from existing records without invoking PDF or EPUB converters:
 

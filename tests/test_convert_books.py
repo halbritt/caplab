@@ -67,8 +67,11 @@ def write_counting_marker(path: Path) -> None:
     path.chmod(path.stat().st_mode | stat.S_IXUSR)
 
 
-def write_marker_with_markdown(path: Path, markdown: str) -> None:
+def write_marker_with_markdown(
+    path: Path, markdown: str, *, text_extraction_method: str = "pdftext"
+) -> None:
     encoded_markdown = repr(markdown)
+    encoded_method = repr(text_extraction_method)
     path.write_text(
         textwrap.dedent(
             f"""\
@@ -85,7 +88,7 @@ def write_marker_with_markdown(path: Path, markdown: str) -> None:
             (raw / f"{{source.stem}}_meta.json").write_text(json.dumps({{
                 "page_stats": [{{
                     "page_id": 0,
-                    "text_extraction_method": "pdftext",
+                    "text_extraction_method": {encoded_method},
                     "block_metadata": {{"llm_request_count": 0}},
                 }}],
                 "table_of_contents": [],
@@ -109,6 +112,55 @@ def tree_snapshot(path: Path) -> dict[str, tuple[str, int]]:
 
 
 class ConvertBooksTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls._xray_directory = tempfile.TemporaryDirectory()
+        xray = Path(cls._xray_directory.name) / "clean-xray"
+        xray.write_text(
+            textwrap.dedent(
+                """\
+                #!/usr/bin/env python3
+                import hashlib
+                import json
+                from pathlib import Path
+                import sys
+
+                source = Path(sys.argv[1])
+                digest = hashlib.sha256(source.read_bytes()).hexdigest()
+                print(json.dumps({
+                    "schema_version": "pdf-skills/1",
+                    "skill": "pdf-safe-ingest",
+                    "source": {
+                        "path": str(source),
+                        "sha256": digest,
+                        "bytes": source.stat().st_size,
+                    },
+                    "safety": {
+                        "verdict": "CLEAN",
+                        "custody_id": digest[:16] + "-CLEAN",
+                        "active_content": {},
+                        "bomb": None,
+                        "note": None,
+                        "decompression": {"pages": 1, "ceilings": {}},
+                        "action": "proceed",
+                    },
+                }))
+                """
+            ),
+            encoding="utf-8",
+        )
+        xray.chmod(xray.stat().st_mode | stat.S_IXUSR)
+        cls._previous_xray = os.environ.get("BOOKS_PDF_XRAY")
+        os.environ["BOOKS_PDF_XRAY"] = str(xray)
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        if cls._previous_xray is None:
+            os.environ.pop("BOOKS_PDF_XRAY", None)
+        else:
+            os.environ["BOOKS_PDF_XRAY"] = cls._previous_xray
+        cls._xray_directory.cleanup()
+
     def test_missing_or_empty_sources_directory_reports_a_clear_error(self) -> None:
         cases = [
             (False, "sources/ is missing or is not a directory"),
@@ -131,7 +183,7 @@ class ConvertBooksTests(unittest.TestCase):
     def test_pdf_filename_supplies_explicit_title_and_author_metadata(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = Path(temporary_directory)
-            source = write_source(
+            write_source(
                 root,
                 "Domain Driven Design Tackling Complexity - Eric Evans.pdf",
                 b"%PDF fixture",
@@ -325,6 +377,47 @@ class ConvertBooksTests(unittest.TestCase):
             self.assertFalse((root / "books" / "nested-book").exists())
             self.assertTrue((root / "books" / "README.md").is_file())
 
+    def test_ocr_derived_fenced_code_requires_fidelity_review(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            write_source(root, "OCR Code.pdf", b"%PDF fixture")
+            converter = root / "fake-marker"
+            write_marker_with_markdown(
+                converter,
+                "# OCR Code\n\nCover.\n\n"
+                "# Chapter 1: Example\n\n```\nvalue := source\n```\n",
+                text_extraction_method="ocr",
+            )
+            environment = os.environ.copy()
+            environment.update(
+                {
+                    "BOOKS_MARKER_PEECEE": str(converter),
+                    "BOOKS_MARKER_VERSION": "test",
+                    "BOOKS_PIPELINE_FINGERPRINT": "test",
+                    "BOOKS_SKIP_REMOTE_CLEAN": "1",
+                }
+            )
+            result = subprocess.run(
+                [sys.executable, str(CONVERT_BOOKS), "--root", str(root)],
+                capture_output=True,
+                text=True,
+                env=environment,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            validation = json.loads(
+                (root / "books" / "ocr-code" / "validation.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertEqual(len(validation["damaged_code"]), 1)
+            self.assertIn(
+                "requires source-image fidelity review",
+                validation["damaged_code"][0]["reason"],
+            )
+            locator = validation["damaged_code"][0]["file"]
+            self.assertEqual("chapters/002-chapter-1-example.md", locator)
+            self.assertTrue((root / "books" / "ocr-code" / locator).is_file())
+
     def test_long_source_name_uses_a_windows_safe_hash_qualified_stem(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = Path(temporary_directory)
@@ -494,10 +587,90 @@ class ConvertBooksTests(unittest.TestCase):
                 )
             )
             self.assertEqual(provenance["execution_target"], "local")
-            self.assertEqual(len(provenance["attempts"]), 2)
+            self.assertEqual(len(provenance["attempts"]), 3)
             self.assertEqual(provenance["fallbacks_used"][0]["from"], "peecee")
             self.assertEqual(provenance["fallbacks_used"][0]["to"], "local")
             self.assertEqual(counter.read_text(), "1")
+
+    def test_transient_remote_failure_retries_before_local_fallback(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            write_source(root, "Fixture Book.pdf", b"%PDF fixture")
+            marker = root / "working-marker"
+            marker_count = root / "marker-count"
+            write_counting_marker(marker)
+            remote = root / "transient-remote"
+            remote_attempts = root / "remote-attempts"
+            remote.write_text(
+                textwrap.dedent(
+                    """\
+                    #!/bin/sh
+                    count=0
+                    if [ -f "$REMOTE_ATTEMPTS" ]; then count=$(cat "$REMOTE_ATTEMPTS"); fi
+                    count=$((count + 1))
+                    echo "$count" > "$REMOTE_ATTEMPTS"
+                    if [ "$count" -eq 1 ]; then
+                      echo 'ssh: connect to host peecee: Connection timed out' >&2
+                      exit 1
+                    fi
+                    exec "$WORKING_MARKER" "$@"
+                    """
+                ),
+                encoding="utf-8",
+            )
+            remote.chmod(remote.stat().st_mode | stat.S_IXUSR)
+            local = root / "local-must-not-run"
+            local_sentinel = root / "local-ran"
+            local.write_text(
+                f"#!/bin/sh\ntouch '{local_sentinel}'\nexit 99\n", encoding="utf-8"
+            )
+            local.chmod(local.stat().st_mode | stat.S_IXUSR)
+            environment = os.environ.copy()
+            environment.update(
+                {
+                    "BOOKS_MARKER_PEECEE": str(remote),
+                    "BOOKS_MARKER_LOCAL": str(local),
+                    "BOOKS_MARKER_VERSION": "test",
+                    "BOOKS_PIPELINE_FINGERPRINT": "test",
+                    "BOOKS_SKIP_REMOTE_CLEAN": "1",
+                    "FAKE_MARKER_COUNT": str(marker_count),
+                    "REMOTE_ATTEMPTS": str(remote_attempts),
+                    "WORKING_MARKER": str(marker),
+                }
+            )
+            result = subprocess.run(
+                [sys.executable, str(CONVERT_BOOKS), "--root", str(root)],
+                capture_output=True,
+                text=True,
+                env=environment,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            provenance = json.loads(
+                (root / "books" / "fixture-book" / "source.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertEqual("peecee", provenance["execution_target"])
+            self.assertEqual(2, len(provenance["attempts"]))
+            self.assertEqual([], provenance["fallbacks_used"])
+            self.assertEqual(1, provenance["attempts"][0]["exit_status"])
+            self.assertEqual(0, provenance["attempts"][1]["exit_status"])
+            self.assertEqual(0, provenance["converter_exit_status"])
+            self.assertEqual(2, provenance["selected_attempt_number"])
+            self.assertEqual(
+                provenance["attempts"][1]["command"],
+                provenance["command_executed"],
+            )
+            validation = json.loads(
+                (root / "books" / "fixture-book" / "validation.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertTrue(validation["conversion_success"])
+            self.assertEqual(0, validation["converter_exit_status"])
+            self.assertEqual([], validation["errors"])
+            self.assertEqual("2\n", remote_attempts.read_text(encoding="utf-8"))
+            self.assertFalse(local_sentinel.exists())
 
     def test_document_failure_does_not_trigger_local_marker(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
@@ -1050,6 +1223,45 @@ class ConvertBooksTests(unittest.TestCase):
                 ],
             )
 
+    def test_level_three_epilogue_is_a_logical_unit(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            write_source(root, "Epilogue Book.pdf", b"%PDF fixture")
+            converter = root / "fake-marker"
+            write_marker_with_markdown(
+                converter,
+                "# Table of Contents\n\n"
+                "## Epilogue\n\nPage 99.\n\n"
+                "# Preface\n\nOpening.\n\n"
+                "# Chapter 1: First\n\nOne.\n\n"
+                "# Chapter 2: Second\n\nTwo.\n\n"
+                "# Chapter 3: Third\n\nThree.\n\n"
+                "### Epilogue\n\nClosing guidance.\n",
+            )
+            environment = os.environ.copy()
+            environment.update(
+                {
+                    "BOOKS_MARKER_PEECEE": str(converter),
+                    "BOOKS_MARKER_VERSION": "test",
+                    "BOOKS_PIPELINE_FINGERPRINT": "test",
+                    "BOOKS_SKIP_REMOTE_CLEAN": "1",
+                }
+            )
+            result = subprocess.run(
+                [sys.executable, str(CONVERT_BOOKS), "--root", str(root)],
+                capture_output=True,
+                text=True,
+                env=environment,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            chapters = sorted(
+                (root / "books" / "epilogue-book" / "chapters").glob("*.md")
+            )
+            self.assertEqual(chapters[-1].name, "006-epilogue.md")
+            self.assertIn(
+                "Closing guidance.", chapters[-1].read_text(encoding="utf-8")
+            )
+
     def test_terminal_generated_page_navigation_is_removed(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = Path(temporary_directory)
@@ -1145,6 +1357,94 @@ class ConvertBooksTests(unittest.TestCase):
             first = chapters[1].read_text(encoding="utf-8")
             self.assertEqual(first.count("First Topic"), 1)
             self.assertIn("# Chapter 1: First Topic", first)
+
+    def test_pdf_unnumbered_chapter_titles_use_numbered_body_sections(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            write_source(root, "Unnumbered Chapters.pdf", b"%PDF fixture")
+            converter = root / "fake-marker"
+            write_marker_with_markdown(
+                converter,
+                "# Unnumbered Chapters\n\nCover.\n\n"
+                "# Preface\n\nFront matter.\n\n"
+                "## First Topic\n\n"
+                "### This chapter covers\n\n- First concern\n\n"
+                "### 1.1 First section\n\nFirst body.\n\n"
+                "## Second Topic\n\n"
+                "### This chapter covers\n\n- Second concern\n\n"
+                "### 2.1 Second section\n\nSecond body.\n\n"
+                "### Third Topic\n\n"
+                "### This chapter covers\n\n- Third concern\n\n"
+                "### 3.1 Third section\n\nThird body.\n",
+            )
+            environment = os.environ.copy()
+            environment.update(
+                {
+                    "BOOKS_MARKER_PEECEE": str(converter),
+                    "BOOKS_MARKER_VERSION": "test",
+                    "BOOKS_PIPELINE_FINGERPRINT": "test",
+                    "BOOKS_SKIP_REMOTE_CLEAN": "1",
+                }
+            )
+            result = subprocess.run(
+                [sys.executable, str(CONVERT_BOOKS), "--root", str(root)],
+                capture_output=True,
+                text=True,
+                env=environment,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            chapters = sorted(
+                (root / "books" / "unnumbered-chapters" / "chapters").glob("*.md")
+            )
+            self.assertEqual(
+                [path.name for path in chapters],
+                [
+                    "001-unnumbered-chapters.md",
+                    "002-preface.md",
+                    "003-chapter-1-first-topic.md",
+                    "004-chapter-2-second-topic.md",
+                    "005-chapter-3-third-topic.md",
+                ],
+            )
+
+    def test_pdf_single_chapter_extract_uses_body_section_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            write_source(root, "Chapter Extract.pdf", b"%PDF fixture")
+            converter = root / "fake-marker"
+            write_marker_with_markdown(
+                converter,
+                "# Complete Book Title\n\nCover and copyright.\n\n"
+                "# Naming\n\n"
+                "#### This chapter covers\n\n- Names\n\n"
+                "#### 3.1 Why names matter\n\nChapter body.\n",
+            )
+            environment = os.environ.copy()
+            environment.update(
+                {
+                    "BOOKS_MARKER_PEECEE": str(converter),
+                    "BOOKS_MARKER_VERSION": "test",
+                    "BOOKS_PIPELINE_FINGERPRINT": "test",
+                    "BOOKS_SKIP_REMOTE_CLEAN": "1",
+                }
+            )
+            result = subprocess.run(
+                [sys.executable, str(CONVERT_BOOKS), "--root", str(root)],
+                capture_output=True,
+                text=True,
+                env=environment,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            chapters = sorted(
+                (root / "books" / "chapter-extract" / "chapters").glob("*.md")
+            )
+            self.assertEqual(
+                [path.name for path in chapters],
+                [
+                    "001-complete-book-title.md",
+                    "002-chapter-3-naming.md",
+                ],
+            )
 
     def test_pdf_word_numbered_chapter_headings_are_normalized(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
@@ -1250,6 +1550,443 @@ class ConvertBooksTests(unittest.TestCase):
             )
             self.assertEqual(validation["missing_chapters"], [])
             self.assertEqual(validation["missing_sections"], [])
+
+    def test_pdf_numbered_contents_ignores_placeholder_duplicate_rows(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            write_source(root, "Duplicate Contents Row.pdf", b"%PDF fixture")
+            converter = root / "fake-marker"
+            write_marker_with_markdown(
+                converter,
+                "# Contents\n\n"
+                "| 14. | Handling Versions | 270 |\n"
+                "| 15. | · | 277 |\n"
+                "| 15. | Case Study: Trampled by Your Own Customers . "
+                "Countdown and Launch | 277 |\n"
+                "| 16. | Adaptation | 291 |\n\n"
+                "# Handling Versions\n\nFourteen.\n\n"
+                "# Case Study: Trampled by Your Own Customers\n\nFifteen.\n\n"
+                "# Adaptation\n\nSixteen.\n",
+            )
+            environment = os.environ.copy()
+            environment.update(
+                {
+                    "BOOKS_MARKER_PEECEE": str(converter),
+                    "BOOKS_MARKER_VERSION": "test",
+                    "BOOKS_PIPELINE_FINGERPRINT": "test",
+                    "BOOKS_SKIP_REMOTE_CLEAN": "1",
+                }
+            )
+            result = subprocess.run(
+                [sys.executable, str(CONVERT_BOOKS), "--root", str(root)],
+                capture_output=True,
+                text=True,
+                env=environment,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            chapters = sorted(
+                (root / "books" / "duplicate-contents-row" / "chapters").glob(
+                    "*.md"
+                )
+            )
+            self.assertEqual(
+                [path.name for path in chapters],
+                [
+                    "001-contents.md",
+                    "002-chapter-14-handling-versions.md",
+                    "003-chapter-15-case-study-trampled-by-your-own-customers.md",
+                    "004-chapter-16-adaptation.md",
+                ],
+            )
+
+    def test_pdf_numbered_contents_recovers_a_dropped_tens_digit(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            write_source(root, "Dropped Tens Digit.pdf", b"%PDF fixture")
+            converter = root / "fake-marker"
+            contents_rows = "".join(
+                f"| {number}. | Chapter {number} Title | {number * 10} |\n"
+                for number in range(1, 14)
+            )
+            body_chapters = "".join(
+                f"# Chapter {number} Title\n\nBody {number}.\n\n"
+                for number in range(1, 14)
+            )
+            write_marker_with_markdown(
+                converter,
+                "# Contents\n\n"
+                + contents_rows
+                + "| 4. | Doing the Right Thing | 140 |\n\n"
+                + body_chapters
+                + "# Doing the Right Thing\n\nBody 14.\n",
+            )
+            environment = os.environ.copy()
+            environment.update(
+                {
+                    "BOOKS_MARKER_PEECEE": str(converter),
+                    "BOOKS_MARKER_VERSION": "test",
+                    "BOOKS_PIPELINE_FINGERPRINT": "test",
+                    "BOOKS_SKIP_REMOTE_CLEAN": "1",
+                }
+            )
+            result = subprocess.run(
+                [sys.executable, str(CONVERT_BOOKS), "--root", str(root)],
+                capture_output=True,
+                text=True,
+                env=environment,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            chapters = sorted(
+                (root / "books" / "dropped-tens-digit" / "chapters").glob("*.md")
+            )
+            self.assertEqual(len(chapters), 15)
+            self.assertEqual(
+                chapters[-1].name,
+                "015-chapter-14-doing-the-right-thing.md",
+            )
+
+    def test_pdf_noisy_lower_level_contents_rows_recover_chapters(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            write_source(root, "Noisy Contents.pdf", b"%PDF fixture")
+            converter = root / "fake-marker"
+            write_marker_with_markdown(
+                converter,
+                "# Noisy Contents\n\nCover.\n\n"
+                "### Table of Contents\n\n"
+                "| 1. | Reli iable Systems | 3 |\n"
+                "| 2. | Data Models | 27 |\n"
+                "| 3. Sto | rage and Retrieval | 69 |\n\n"
+                "### Preface\n\nFront matter.\n\n"
+                "### Reliable Systems\n\nFirst body.\n\n"
+                "### Data Models\n\nSecond body.\n\n"
+                "### Storage and Retrieval\n\nThird body.\n",
+            )
+            environment = os.environ.copy()
+            environment.update(
+                {
+                    "BOOKS_MARKER_PEECEE": str(converter),
+                    "BOOKS_MARKER_VERSION": "test",
+                    "BOOKS_PIPELINE_FINGERPRINT": "test",
+                    "BOOKS_SKIP_REMOTE_CLEAN": "1",
+                }
+            )
+            result = subprocess.run(
+                [sys.executable, str(CONVERT_BOOKS), "--root", str(root)],
+                capture_output=True,
+                text=True,
+                env=environment,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            chapters = sorted(
+                (root / "books" / "noisy-contents" / "chapters").glob("*.md")
+            )
+            self.assertEqual(
+                [path.name for path in chapters],
+                [
+                    "001-noisy-contents.md",
+                    "002-preface.md",
+                    "003-chapter-1-reliable-systems.md",
+                    "004-chapter-2-data-models.md",
+                    "005-chapter-3-storage-and-retrieval.md",
+                ],
+            )
+
+    def test_pdf_split_contents_cells_preserve_real_word_boundaries(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            write_source(root, "Split Contents Cells.pdf", b"%PDF fixture")
+            converter = root / "fake-marker"
+            write_marker_with_markdown(
+                converter,
+                "# Table of Contents\n\n"
+                "| 1. | First Topic | 3 |\n"
+                "| 2. | Second Topic | 9 |\n"
+                "| 3. Design | of APIs | 17 |\n"
+                "| 4. Clean | code | 25 |\n\n"
+                "# Preface\n\nFront matter.\n\n"
+                "# First Topic\n\nOne.\n\n"
+                "# Second Topic\n\nTwo.\n\n"
+                "# Design of APIs\n\nThree.\n\n"
+                "# Clean code\n\nFour.\n",
+            )
+            environment = os.environ.copy()
+            environment.update(
+                {
+                    "BOOKS_MARKER_PEECEE": str(converter),
+                    "BOOKS_MARKER_VERSION": "test",
+                    "BOOKS_PIPELINE_FINGERPRINT": "test",
+                    "BOOKS_SKIP_REMOTE_CLEAN": "1",
+                }
+            )
+            result = subprocess.run(
+                [sys.executable, str(CONVERT_BOOKS), "--root", str(root)],
+                capture_output=True,
+                text=True,
+                env=environment,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            provenance = json.loads(
+                (
+                    root
+                    / "books"
+                    / "split-contents-cells"
+                    / "source.json"
+                ).read_text(encoding="utf-8")
+            )
+            evidence_titles = {
+                entry["title"] for entry in provenance["chapter_boundary_evidence"]
+            }
+            self.assertIn("Design of APIs", evidence_titles)
+            self.assertIn("Clean code", evidence_titles)
+            self.assertNotIn("Designof APIs", evidence_titles)
+            self.assertNotIn("Cleancode", evidence_titles)
+
+    def test_pdf_contents_chapter_headings_match_later_body_titles(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            write_source(root, "Heading Contents.pdf", b"%PDF fixture")
+            converter = root / "fake-marker"
+            write_marker_with_markdown(
+                converter,
+                "# Table of Contents\n\n"
+                "## Chapter 1, First Topic\n\nPage 1.\n\n"
+                "## Chapter 2, Second Topic\n\nPage 9.\n\n"
+                "## Chapter 3, Third Topic\n\nPage 15.\n\n"
+                "# Preface\n\nFront matter.\n\n"
+                "# First Topic\n\nFirst body.\n\n"
+                "# Second Topic\n\nSecond body.\n\n"
+                "# Third Topic\n\nThird body.\n",
+            )
+            environment = os.environ.copy()
+            environment.update(
+                {
+                    "BOOKS_MARKER_PEECEE": str(converter),
+                    "BOOKS_MARKER_VERSION": "test",
+                    "BOOKS_PIPELINE_FINGERPRINT": "test",
+                    "BOOKS_SKIP_REMOTE_CLEAN": "1",
+                }
+            )
+            result = subprocess.run(
+                [sys.executable, str(CONVERT_BOOKS), "--root", str(root)],
+                capture_output=True,
+                text=True,
+                env=environment,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            chapters = sorted(
+                (root / "books" / "heading-contents" / "chapters").glob("*.md")
+            )
+            self.assertEqual(
+                [path.name for path in chapters],
+                [
+                    "001-table-of-contents.md",
+                    "002-preface.md",
+                    "003-chapter-1-first-topic.md",
+                    "004-chapter-2-second-topic.md",
+                    "005-chapter-3-third-topic.md",
+                ],
+            )
+            self.assertIn(
+                "First body.", chapters[2].read_text(encoding="utf-8")
+            )
+
+    def test_pdf_contents_sequence_ignores_spurious_numbered_rows(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            write_source(root, "Noisy Sequence.pdf", b"%PDF fixture")
+            converter = root / "fake-marker"
+            write_marker_with_markdown(
+                converter,
+                "# Table of Contents\n\n"
+                "| 1. | First Topic | 3 |\n"
+                "| 2. | Second Topic | 9 |\n"
+                "| 0. | OCR artifact | 10 |\n"
+                "| 3. | Third Topic | 15 |\n"
+                "| 4. | Fourth Topic | 21 |\n\n"
+                "# Preface\n\nFront matter.\n\n"
+                "# First Topic\n\nFirst body.\n\n"
+                "# Second Topic\n\nSecond body.\n\n"
+                "# Third Topic\n\nThird body.\n\n"
+                "# Fourth Topic\n\nFourth body.\n",
+            )
+            environment = os.environ.copy()
+            environment.update(
+                {
+                    "BOOKS_MARKER_PEECEE": str(converter),
+                    "BOOKS_MARKER_VERSION": "test",
+                    "BOOKS_PIPELINE_FINGERPRINT": "test",
+                    "BOOKS_SKIP_REMOTE_CLEAN": "1",
+                }
+            )
+            result = subprocess.run(
+                [sys.executable, str(CONVERT_BOOKS), "--root", str(root)],
+                capture_output=True,
+                text=True,
+                env=environment,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            chapters = sorted(
+                (root / "books" / "noisy-sequence" / "chapters").glob("*.md")
+            )
+            self.assertEqual(
+                [path.name for path in chapters],
+                [
+                    "001-table-of-contents.md",
+                    "002-preface.md",
+                    "003-chapter-1-first-topic.md",
+                    "004-chapter-2-second-topic.md",
+                    "005-chapter-3-third-topic.md",
+                    "006-chapter-4-fourth-topic.md",
+                ],
+            )
+
+    def test_pdf_repeated_references_recover_a_missing_contents_chapter(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            write_source(root, "Missing Contents Row.pdf", b"%PDF fixture")
+            converter = root / "fake-marker"
+            write_marker_with_markdown(
+                converter,
+                "# Table of Contents\n\n"
+                "| 1. | First Topic | 3 |\n"
+                "| 2. | Second Topic | 9 |\n"
+                "| 4. | Fourth Topic | 21 |\n"
+                "| 5. | Fifth Topic | 29 |\n\n"
+                "# Preface\n\nFront matter.\n\n"
+                "### First Topic\n\nFirst body.\n\n### References\n\nFirst refs.\n\n"
+                "### Second Topic\n\nSecond body.\n\n### References\n\nSecond refs.\n\n"
+                "### Third Topic\n\nThird body.\n\n### References\n\nThird refs.\n\n"
+                "### Fourth Topic\n\nFourth body.\n\n### References\n\nFourth refs.\n\n"
+                "### Fifth Topic\n\nFifth body.\n\n### References\n\nFifth refs.\n",
+            )
+            environment = os.environ.copy()
+            environment.update(
+                {
+                    "BOOKS_MARKER_PEECEE": str(converter),
+                    "BOOKS_MARKER_VERSION": "test",
+                    "BOOKS_PIPELINE_FINGERPRINT": "test",
+                    "BOOKS_SKIP_REMOTE_CLEAN": "1",
+                }
+            )
+            result = subprocess.run(
+                [sys.executable, str(CONVERT_BOOKS), "--root", str(root)],
+                capture_output=True,
+                text=True,
+                env=environment,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            chapters = sorted(
+                (root / "books" / "missing-contents-row" / "chapters").glob("*.md")
+            )
+            self.assertEqual(
+                [path.name for path in chapters],
+                [
+                    "001-table-of-contents.md",
+                    "002-preface.md",
+                    "003-chapter-1-first-topic.md",
+                    "004-chapter-2-second-topic.md",
+                    "005-chapter-3-third-topic.md",
+                    "006-chapter-4-fourth-topic.md",
+                    "007-chapter-5-fifth-topic.md",
+                ],
+            )
+            self.assertIn(
+                "Second refs.", chapters[3].read_text(encoding="utf-8")
+            )
+
+    def test_pdf_numbered_contents_stop_before_later_data_tables(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            write_source(root, "Later Data Table.pdf", b"%PDF fixture")
+            converter = root / "fake-marker"
+            write_marker_with_markdown(
+                converter,
+                "# Table of Contents\n\n"
+                "| 1. | First | 1 |\n"
+                "| 2. | Second | 9 |\n"
+                "| 3. | Third | 17 |\n\n"
+                "# First\n\nBody.\n\n"
+                "## Measurements\n\n"
+                "| 100. | milliseconds | 42 |\n\n"
+                "# Second\n\nBody.\n\n"
+                "# Third\n\nBody.\n",
+            )
+            environment = os.environ.copy()
+            environment.update(
+                {
+                    "BOOKS_MARKER_PEECEE": str(converter),
+                    "BOOKS_MARKER_VERSION": "test",
+                    "BOOKS_PIPELINE_FINGERPRINT": "test",
+                    "BOOKS_SKIP_REMOTE_CLEAN": "1",
+                }
+            )
+            result = subprocess.run(
+                [sys.executable, str(CONVERT_BOOKS), "--root", str(root)],
+                capture_output=True,
+                text=True,
+                env=environment,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            chapters = sorted(
+                (root / "books" / "later-data-table" / "chapters").glob("*.md")
+            )
+            self.assertEqual(
+                [path.name for path in chapters],
+                [
+                    "001-table-of-contents.md",
+                    "002-chapter-1-first.md",
+                    "003-chapter-2-second.md",
+                    "004-chapter-3-third.md",
+                ],
+            )
+
+    def test_pdf_single_references_pattern_does_not_invent_a_chapter(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            write_source(root, "False References Inference.pdf", b"%PDF fixture")
+            converter = root / "fake-marker"
+            write_marker_with_markdown(
+                converter,
+                "# Table of Contents\n\n"
+                "| 1. | First | 1 |\n"
+                "| 2. | Second | 9 |\n"
+                "| 4. | Fourth | 24 |\n\n"
+                "# Preface\n\nFront.\n\n"
+                "# First\n\nOne.\n\n"
+                "# References\n\nRefs one.\n\n"
+                "# Second\n\nTwo.\n\n"
+                "### References\n\nRefs two.\n\n"
+                "#### Books\n\nBibliography subgroup, not a chapter.\n\n"
+                "# Fourth\n\nFour.\n",
+            )
+            environment = os.environ.copy()
+            environment.update(
+                {
+                    "BOOKS_MARKER_PEECEE": str(converter),
+                    "BOOKS_MARKER_VERSION": "test",
+                    "BOOKS_PIPELINE_FINGERPRINT": "test",
+                    "BOOKS_SKIP_REMOTE_CLEAN": "1",
+                }
+            )
+            result = subprocess.run(
+                [sys.executable, str(CONVERT_BOOKS), "--root", str(root)],
+                capture_output=True,
+                text=True,
+                env=environment,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            chapter_names = [
+                path.name
+                for path in sorted(
+                    (root / "books" / "false-references-inference" / "chapters").glob(
+                        "*.md"
+                    )
+                )
+            ]
+            self.assertFalse(
+                any("chapter-3-books" in name for name in chapter_names), chapter_names
+            )
 
     def test_appendix_chapter_question_headings_stay_inside_appendix(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
@@ -1373,6 +2110,102 @@ class ConvertBooksTests(unittest.TestCase):
             )
             self.assertEqual(validation["missing_parts"], [])
             self.assertEqual(len(validation["structural_dividers"]), 3)
+
+    def test_pdf_contents_part_heading_matches_later_body_divider(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            write_source(root, "Part Heading Contents.pdf", b"%PDF fixture")
+            converter = root / "fake-marker"
+            write_marker_with_markdown(
+                converter,
+                "# Table of Contents\n\n"
+                "|  | Part I. Foundations | 5 |\n"
+                "| 1. | First Topic | 7 |\n"
+                "| 2. | Second Topic | 15 |\n"
+                "| 3. | Third Topic | 23 |\n\n"
+                "## Part I. Foundations\n\nContents continuation.\n\n"
+                "# Preface\n\nFront matter.\n\n"
+                "# Part I\n\n## Foundations\n\n"
+                "# First Topic\n\nFirst body.\n\n"
+                "# Second Topic\n\nSecond body.\n\n"
+                "# Third Topic\n\nThird body.\n",
+            )
+            environment = os.environ.copy()
+            environment.update(
+                {
+                    "BOOKS_MARKER_PEECEE": str(converter),
+                    "BOOKS_MARKER_VERSION": "test",
+                    "BOOKS_PIPELINE_FINGERPRINT": "test",
+                    "BOOKS_SKIP_REMOTE_CLEAN": "1",
+                }
+            )
+            result = subprocess.run(
+                [sys.executable, str(CONVERT_BOOKS), "--root", str(root)],
+                capture_output=True,
+                text=True,
+                env=environment,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            chapters = sorted(
+                (root / "books" / "part-heading-contents" / "chapters").glob("*.md")
+            )
+            self.assertEqual(
+                [path.name for path in chapters],
+                [
+                    "001-table-of-contents.md",
+                    "002-preface.md",
+                    "003-part-i-foundations.md",
+                    "004-chapter-1-first-topic.md",
+                    "005-chapter-2-second-topic.md",
+                    "006-chapter-3-third-topic.md",
+                ],
+            )
+
+    def test_pdf_duplicate_part_outline_keeps_the_later_body_divider(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            write_source(root, "Duplicate Part.pdf", b"%PDF fixture")
+            converter = root / "fake-marker"
+            write_marker_with_markdown(
+                converter,
+                "# Duplicate Part\n\nCover.\n\n"
+                "# Part I, Foundations\n\nOutline entry.\n\n"
+                "# Preface\n\nFront matter.\n\n"
+                "# Part I. Foundations\n\nPart body.\n\n"
+                "# Chapter 1: First\n\nOne.\n\n"
+                "# Chapter 2: Second\n\nTwo.\n\n"
+                "# Chapter 3: Third\n\nThree.\n",
+            )
+            environment = os.environ.copy()
+            environment.update(
+                {
+                    "BOOKS_MARKER_PEECEE": str(converter),
+                    "BOOKS_MARKER_VERSION": "test",
+                    "BOOKS_PIPELINE_FINGERPRINT": "test",
+                    "BOOKS_SKIP_REMOTE_CLEAN": "1",
+                }
+            )
+            result = subprocess.run(
+                [sys.executable, str(CONVERT_BOOKS), "--root", str(root)],
+                capture_output=True,
+                text=True,
+                env=environment,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            chapters = sorted(
+                (root / "books" / "duplicate-part" / "chapters").glob("*.md")
+            )
+            self.assertEqual(
+                [path.name for path in chapters],
+                [
+                    "001-duplicate-part.md",
+                    "002-preface.md",
+                    "003-part-i-foundations.md",
+                    "004-chapter-1-first.md",
+                    "005-chapter-2-second.md",
+                    "006-chapter-3-third.md",
+                ],
+            )
 
     def test_pdf_merges_title_only_duplicate_boundary_into_following_unit(
         self,

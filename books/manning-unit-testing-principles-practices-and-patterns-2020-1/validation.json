@@ -1,0 +1,1026 @@
+{
+  "broken_links": [],
+  "chapter_count": 20,
+  "conversion_success": true,
+  "converter_exit_status": 0,
+  "converter_reported_failures": [],
+  "damaged_code": [
+    {
+      "fenced_block_count": 8,
+      "file": "chapters/006-chapter-1-the-goal-of-unit-testing.md",
+      "ocr_page_count": 9,
+      "reason": "fenced code was reconstructed from OCR and requires source-image fidelity review"
+    },
+    {
+      "fenced_block_count": 7,
+      "file": "chapters/007-chapter-2-what-is-a-unit-test.md",
+      "ocr_page_count": 9,
+      "reason": "fenced code was reconstructed from OCR and requires source-image fidelity review"
+    },
+    {
+      "fenced_block_count": 35,
+      "file": "chapters/008-chapter-3-the-anatomy-of-a-unit-test.md",
+      "ocr_page_count": 9,
+      "reason": "fenced code was reconstructed from OCR and requires source-image fidelity review"
+    },
+    {
+      "fenced_block_count": 12,
+      "file": "chapters/010-chapter-4-the-four-pillars-of-a-good-unit-test.md",
+      "ocr_page_count": 9,
+      "reason": "fenced code was reconstructed from OCR and requires source-image fidelity review"
+    },
+    {
+      "fenced_block_count": 18,
+      "file": "chapters/011-chapter-5-mocks-and-test-fragility.md",
+      "ocr_page_count": 9,
+      "reason": "fenced code was reconstructed from OCR and requires source-image fidelity review"
+    },
+    {
+      "fenced_block_count": 36,
+      "file": "chapters/012-chapter-6-styles-of-unit-testing.md",
+      "ocr_page_count": 9,
+      "reason": "fenced code was reconstructed from OCR and requires source-image fidelity review"
+    },
+    {
+      "fenced_block_count": 28,
+      "file": "chapters/013-chapter-7-refactoring-toward-valuable-unit-tests.md",
+      "ocr_page_count": 9,
+      "reason": "fenced code was reconstructed from OCR and requires source-image fidelity review"
+    },
+    {
+      "fenced_block_count": 26,
+      "file": "chapters/015-chapter-8-why-integration-testing.md",
+      "ocr_page_count": 9,
+      "reason": "fenced code was reconstructed from OCR and requires source-image fidelity review"
+    },
+    {
+      "fenced_block_count": 16,
+      "file": "chapters/016-chapter-9-mocking-best-practices.md",
+      "ocr_page_count": 9,
+      "reason": "fenced code was reconstructed from OCR and requires source-image fidelity review"
+    },
+    {
+      "fenced_block_count": 29,
+      "file": "chapters/017-chapter-10-testing-the-database.md",
+      "ocr_page_count": 9,
+      "reason": "fenced code was reconstructed from OCR and requires source-image fidelity review"
+    },
+    {
+      "fenced_block_count": 24,
+      "file": "chapters/019-chapter-11-unit-testing-anti-patterns.md",
+      "ocr_page_count": 9,
+      "reason": "fenced code was reconstructed from OCR and requires source-image fidelity review"
+    }
+  ],
+  "degraded_internal_links": [],
+  "duplicate_headings": {
+    "entries": [],
+    "scope": "all heading levels within chapters and level-one titles across chapters"
+  },
+  "empty_chapters": [],
+  "errors": [],
+  "low_confidence_chapter_boundaries": [
+    {
+      "confidence": "medium",
+      "evidence": "first visible document heading before the first logical boundary",
+      "title": "Unit Testing: Principles, Practices, and Patterns"
+    }
+  ],
+  "malformed_markdown": [],
+  "missing_assets": [],
+  "missing_chapters": [],
+  "missing_parts": [],
+  "missing_sections": [],
+  "ocr_usage": {
+    "llm_request_count": 0,
+    "ocr_pages": [
+      {
+        "page_id": 5,
+        "physical_page": 6
+      },
+      {
+        "page_id": 7,
+        "physical_page": 8
+      },
+      {
+        "page_id": 8,
+        "physical_page": 9
+      },
+      {
+        "page_id": 23,
+        "physical_page": 24
+      },
+      {
+        "page_id": 85,
+        "physical_page": 86
+      },
+      {
+        "page_id": 87,
+        "physical_page": 88
+      },
+      {
+        "page_id": 168,
+        "physical_page": 169
+      },
+      {
+        "page_id": 205,
+        "physical_page": 206
+      },
+      {
+        "page_id": 279,
+        "physical_page": 280
+      }
+    ],
+    "text_extraction_methods": {
+      "pdftext": 296,
+      "surya": 9
+    },
+    "used": true
+  },
+  "page_furniture_removed": [],
+  "schema_version": "books-corpus/1",
+  "source_section_warnings": [],
+  "structural_dividers": [
+    "chapters/005-part-1.md",
+    "chapters/009-part-2.md",
+    "chapters/014-part-3.md",
+    "chapters/018-part-4.md"
+  ],
+  "unresolved_navigation_anchors": [],
+  "unresolved_tables": [
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 43,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 45,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 46,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 47,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 48,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 49,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 50,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 51,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 52,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 53,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 54,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 55,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 56,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 57,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 58,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 70,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 72,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 92,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 94,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 95,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 96,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 97,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 98,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 99,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 100,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 101,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 102,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 103,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 104,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 108,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 110,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 111,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 112,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 113,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 114,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 115,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 116,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 117,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 118,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 119,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 120,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 121,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 122,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 123,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 124,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 130,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 132,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 133,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 134,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-unit-testing-principles-practices-and-patterns.md",
+      "line": 135,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/007-chapter-2-what-is-a-unit-test.md",
+      "line": 259,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/007-chapter-2-what-is-a-unit-test.md",
+      "line": 310,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/010-chapter-4-the-four-pillars-of-a-good-unit-test.md",
+      "line": 570,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/011-chapter-5-mocks-and-test-fragility.md",
+      "line": 418,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/011-chapter-5-mocks-and-test-fragility.md",
+      "line": 632,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/012-chapter-6-styles-of-unit-testing.md",
+      "line": 279,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/012-chapter-6-styles-of-unit-testing.md",
+      "line": 281,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/012-chapter-6-styles-of-unit-testing.md",
+      "line": 555,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/012-chapter-6-styles-of-unit-testing.md",
+      "line": 700,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/012-chapter-6-styles-of-unit-testing.md",
+      "line": 905,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/012-chapter-6-styles-of-unit-testing.md",
+      "line": 909,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/013-chapter-7-refactoring-toward-valuable-unit-tests.md",
+      "line": 462,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/013-chapter-7-refactoring-toward-valuable-unit-tests.md",
+      "line": 464,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/013-chapter-7-refactoring-toward-valuable-unit-tests.md",
+      "line": 465,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-chapter-10-testing-the-database.md",
+      "line": 124,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-chapter-10-testing-the-database.md",
+      "line": 126,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-chapter-10-testing-the-database.md",
+      "line": 127,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/019-chapter-11-unit-testing-anti-patterns.md",
+      "line": 105,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 14,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 16,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 31,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 32,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 51,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 67,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 77,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 79,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 81,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 83,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 84,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 86,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 90,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 96,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 98,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 101,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 103,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 104,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 109,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 115,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 117,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 118,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 119,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 120,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 121,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 122,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 123,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 124,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 125,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 126,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 127,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 128,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 129,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 130,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 131,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 132,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 133,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 134,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 135,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 136,
+      "reasons": [
+        "inline HTML line breaks in table cell",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 141,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 143,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 157,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 178,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 182,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 184,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 185,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 187,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 216,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/020-index.md",
+      "line": 217,
+      "reasons": [
+        "empty table cell"
+      ]
+    }
+  ],
+  "warnings": [
+    "118 probable unresolved table issue(s) were preserved",
+    "11 probable code-conversion issue(s) were preserved",
+    "1 chapter boundary or boundaries require conservative inference",
+    "converter supplied no reliable language identifiers for fenced code blocks"
+  ]
+}

@@ -207,6 +207,13 @@ def run_catalog(root: Path, *arguments: str) -> subprocess.CompletedProcess[str]
 
 
 class CorpusCatalogContractTests(unittest.TestCase):
+    def test_make_books_supplies_a_reusable_marker_version_identity(self) -> None:
+        makefile = (REPOSITORY_ROOT / "Makefile").read_text(encoding="utf-8")
+        self.assertIn("MARKER_VERSION ?= marker-pdf ", makefile)
+        self.assertGreaterEqual(
+            makefile.count('BOOKS_MARKER_VERSION="$(MARKER_VERSION)"'), 2
+        )
+
     def test_checked_in_bibliography_covers_sources_with_role_provenance(self) -> None:
         path = REPOSITORY_ROOT / "doctrine" / "bibliography.json"
         self.assertTrue(path.is_file())
@@ -220,9 +227,9 @@ class CorpusCatalogContractTests(unittest.TestCase):
         source_registry = yaml.safe_load(
             (REPOSITORY_ROOT / "doctrine" / "sources.yaml").read_text(encoding="utf-8")
         )["sources"]
-        self.assertEqual(
-            {record["source_id"] for record in records},
+        self.assertLessEqual(
             {record["id"] for record in source_registry},
+            {record["source_id"] for record in records},
         )
         self.assertEqual(
             {record["source_path"] for record in records},
@@ -251,6 +258,23 @@ class CorpusCatalogContractTests(unittest.TestCase):
                     record["generated_metadata_status"],
                     "legacy-extracted-noncanonical",
                 )
+                source_path = REPOSITORY_ROOT / record["source_path"]
+                source_record_path = (
+                    REPOSITORY_ROOT
+                    / "books"
+                    / record["slug"]
+                    / "source.json"
+                )
+                self.assertTrue(source_path.is_file())
+                self.assertTrue(source_record_path.is_file())
+                source_record = json.loads(
+                    source_record_path.read_text(encoding="utf-8")
+                )
+                self.assertEqual(record["source_path"], source_record["source_path"])
+                self.assertEqual(
+                    hashlib.sha256(source_path.read_bytes()).hexdigest(),
+                    source_record["source_sha256"],
+                )
 
     def test_catalog_only_uses_canonical_metadata_and_exposes_quality_states(
         self,
@@ -263,6 +287,7 @@ class CorpusCatalogContractTests(unittest.TestCase):
             self.assertFalse((root / "converter-was-invoked").exists())
 
             index = (root / "books" / "README.md").read_text(encoding="utf-8")
+            self.assertIn("| Chapter files |", index)
             self.assertIn("Canonical Fixture Book", index)
             self.assertIn("Second edition", index)
             self.assertIn("Ada Author (author)", index)

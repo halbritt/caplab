@@ -77,7 +77,7 @@ artifact_derivation:
 provenance_invariants:
   - Every registered source binary matches its recorded path, format, SHA-256, size-bearing source.json record, and generated corpus identity.
   - Every registered chapter has exactly one hashed chapter-coverage record with an extraction-ledger disposition.
-  - Every canonical bibliography record maps one stable source ID to its registered source path and source-owned field evidence.
+  - Every canonical bibliography record maps one stable catalog source ID to its source path, generated corpus identity, and source-owned field evidence; doctrine source registration is an explicit reviewed subset.
   - Every concept source_support locator names a registered source and an exact converted chapter heading.
   - Every canonical graph node lists source formulations that explicitly map back to that node.
   - Every source formulation names one source, one exact chapter-heading locator, a source-attributed paraphrase, and its relation to each mapped canonical node; context_basis distinguishes source-specific context from canonical mapping or conflict-position context.

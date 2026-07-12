@@ -1,0 +1,1099 @@
+#!/usr/bin/env python3
+"""Rasterize a PDF in a networkless sandbox and emit a CDR-clean derivative."""
+
+from __future__ import annotations
+
+import argparse
+from dataclasses import dataclass
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import resource
+import shlex
+import shutil
+import subprocess
+import sys
+import threading
+
+
+SCHEMA_VERSION = "books-pdf-cdr/1"
+DEFAULT_XRAY = Path(
+    "/home/halbritt/git/skills/skills/pdf-safe-ingest/scripts/xray.py"
+)
+ATTEMPTS = (
+    (150, "LZW"),
+    (144, "LZW"),
+    (149, "LZW"),
+    (151, "LZW"),
+    (150, "RLE"),
+    (144, "RLE"),
+)
+MEMORY_LIMIT_BYTES = 32 * 1024**3
+FILE_LIMIT_BYTES = 8 * 1024**3
+TIMEOUT_SECONDS = 7200
+COMMAND_OUTPUT_LIMIT_BYTES = 1024 * 1024
+SOURCE_MAX_DECOMP_MIB = "800"
+SOURCE_MAX_RATIO = "120"
+SOURCE_MAX_PAGES = "5000"
+DERIVATIVE_MAX_DECOMP_MIB = "8192"
+DERIVATIVE_MAX_RATIO = "500"
+DERIVATIVE_MAX_PAGES = "5000"
+PDF_ID_RE = re.compile(
+    rb"(/ID\s*\[\s*<)[0-9A-Fa-f]{32}(>\s*<)[0-9A-Fa-f]{32}(>\s*\])"
+)
+PDF_DATE_RE = re.compile(rb"(/(?:CreationDate|ModDate)\s*\(D:)[^)]*(\))")
+ACTIVE_TOKENS = (
+    b"/JavaScript",
+    b"/JS",
+    b"/Launch",
+    b"/RichMedia",
+    b"/OpenAction",
+    b"/AA",
+    b"/SubmitForm",
+    b"/GoToR",
+    b"/EmbeddedFile",
+    b"/XFA",
+    b"/URI",
+)
+FORBIDDEN_STRUCTURE_TOKENS = (
+    b"/ObjStm",
+    b"/Encrypt",
+    b"/Outlines",
+    b"/Action",
+    b"/FileSpec",
+    b"/Filespec",
+)
+PDF_NAME_ESCAPE_RE = re.compile(rb"#([0-9A-Fa-f]{2})")
+
+
+class DisarmError(RuntimeError):
+    pass
+
+
+@dataclass(frozen=True)
+class CommandOutcome:
+    args: list[str]
+    returncode: int
+    stdout: str
+    stderr: str
+    stdout_truncated: bool
+    stderr_truncated: bool
+    timed_out: bool = False
+
+
+def bounded_run(
+    argv: list[str],
+    *,
+    environment: dict[str, str] | None = None,
+    timeout: int = TIMEOUT_SECONDS,
+    apply_resource_limits: bool = True,
+) -> CommandOutcome:
+    process = subprocess.Popen(
+        argv,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env=environment,
+        preexec_fn=resource_limits if apply_resource_limits else None,
+    )
+    retained = {"stdout": bytearray(), "stderr": bytearray()}
+    truncated = {"stdout": False, "stderr": False}
+
+    def drain(name: str, stream: object) -> None:
+        reader = stream
+        while True:
+            chunk = reader.read(65536)  # type: ignore[attr-defined]
+            if not chunk:
+                return
+            remaining = COMMAND_OUTPUT_LIMIT_BYTES - len(retained[name])
+            if remaining > 0:
+                retained[name].extend(chunk[:remaining])
+            if len(chunk) > remaining:
+                truncated[name] = True
+
+    threads = [
+        threading.Thread(target=drain, args=("stdout", process.stdout), daemon=True),
+        threading.Thread(target=drain, args=("stderr", process.stderr), daemon=True),
+    ]
+    for thread in threads:
+        thread.start()
+    timed_out = False
+    try:
+        returncode = process.wait(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        timed_out = True
+        process.kill()
+        returncode = process.wait()
+    for thread in threads:
+        thread.join(timeout=10)
+    if process.stdout is not None:
+        process.stdout.close()
+    if process.stderr is not None:
+        process.stderr.close()
+    stderr = retained["stderr"].decode("utf-8", "replace")
+    if timed_out:
+        stderr = (stderr + f"\ncommand timed out after {timeout} seconds").strip()
+        returncode = 124
+    return CommandOutcome(
+        args=argv,
+        returncode=returncode,
+        stdout=retained["stdout"].decode("utf-8", "replace"),
+        stderr=stderr,
+        stdout_truncated=truncated["stdout"],
+        stderr_truncated=truncated["stderr"],
+        timed_out=timed_out,
+    )
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def xray_prefix() -> list[str]:
+    override = os.environ.get("BOOKS_PDF_XRAY")
+    if override:
+        return [override]
+    return [sys.executable, str(DEFAULT_XRAY)]
+
+
+def command_record(
+    argv: list[str], completed: CommandOutcome
+) -> dict[str, object]:
+    return {
+        "argv": argv,
+        "command": shlex.join(argv),
+        "exit_status": completed.returncode,
+        "stdout": completed.stdout,
+        "stderr": completed.stderr,
+        "stdout_truncated": completed.stdout_truncated,
+        "stderr_truncated": completed.stderr_truncated,
+        "timed_out": completed.timed_out,
+    }
+
+
+def normalize_pdf_metadata(
+    path: Path, source_hash: str, dpi: int, compression: str
+) -> None:
+    identifier = hashlib.sha256(
+        f"{SCHEMA_VERSION}\0{source_hash}\0{dpi}\0{compression}".encode("ascii")
+    ).hexdigest()[:32].upper().encode("ascii")
+    data = path.read_bytes()
+    normalized, replacements = PDF_ID_RE.subn(
+        lambda match: (
+            match.group(1)
+            + identifier
+            + match.group(2)
+            + identifier
+            + match.group(3)
+        ),
+        data,
+    )
+    if replacements != 1:
+        raise DisarmError(
+            f"expected one Ghostscript trailer ID; found {replacements}"
+        )
+    normalized = PDF_DATE_RE.sub(
+        lambda match: match.group(1) + b"19700101000000Z00'00'" + match.group(2),
+        normalized,
+    )
+    path.write_bytes(normalized)
+
+
+def resource_limits() -> None:
+    resource.setrlimit(resource.RLIMIT_AS, (MEMORY_LIMIT_BYTES, MEMORY_LIMIT_BYTES))
+    resource.setrlimit(resource.RLIMIT_FSIZE, (FILE_LIMIT_BYTES, FILE_LIMIT_BYTES))
+
+
+def resolved_tool(environment_name: str, command_name: str) -> Path:
+    configured = os.environ.get(environment_name)
+    located = configured or shutil.which(command_name)
+    if not located:
+        raise DisarmError(f"{command_name} is required for PDF disarmament")
+    path = Path(located).expanduser().resolve()
+    if not path.is_file():
+        raise DisarmError(f"configured {command_name} is missing: {path}")
+    return path
+
+
+def sandbox_prefix(
+    *,
+    read_only_files: list[tuple[Path, str]],
+    writable_directory: Path | None = None,
+    environment: dict[str, str] | None = None,
+) -> list[str]:
+    bwrap = resolved_tool("BOOKS_PDF_BWRAP", "bwrap")
+    command = [
+        str(bwrap),
+        "--unshare-all",
+        "--die-with-parent",
+        "--new-session",
+        "--tmpfs",
+        "/",
+        "--dir",
+        "/etc",
+        "--dir",
+        "/input",
+        "--dir",
+        "/output",
+        "--dir",
+        "/tools",
+        "--ro-bind",
+        "/usr",
+        "/usr",
+        "--symlink",
+        "usr/bin",
+        "/bin",
+        "--symlink",
+        "usr/sbin",
+        "/sbin",
+        "--symlink",
+        "usr/lib",
+        "/lib",
+        "--symlink",
+        "usr/lib64",
+        "/lib64",
+        "--ro-bind-try",
+        "/etc/fonts",
+        "/etc/fonts",
+        "--ro-bind-try",
+        "/etc/ghostscript",
+        "/etc/ghostscript",
+        "--ro-bind-try",
+        "/etc/ld.so.cache",
+        "/etc/ld.so.cache",
+        "--ro-bind-try",
+        "/etc/papersize",
+        "/etc/papersize",
+        "--dev",
+        "/dev",
+        "--proc",
+        "/proc",
+        "--tmpfs",
+        "/tmp",
+    ]
+    for host_path, sandbox_path in read_only_files:
+        command.extend(["--ro-bind", str(host_path.resolve()), sandbox_path])
+    if writable_directory is not None:
+        command.extend(["--bind", str(writable_directory.resolve()), "/output"])
+    command.extend(
+        [
+            "--clearenv",
+            "--setenv",
+            "HOME",
+            "/tmp/home",
+            "--setenv",
+            "TMPDIR",
+            "/tmp",
+            "--setenv",
+            "PDF_SKILLS_CACHE",
+            "/tmp/pdf-skills",
+            "--setenv",
+            "PATH",
+            "/usr/bin",
+            "--setenv",
+            "LANG",
+            "C.UTF-8",
+        ]
+    )
+    for name, value in sorted((environment or {}).items()):
+        command.extend(["--setenv", name, value])
+    return command
+
+
+def sandboxed_tool_binding(
+    tool: Path, sandbox_name: str
+) -> tuple[list[tuple[Path, str]], str]:
+    if tool.is_relative_to("/usr"):
+        return [], str(tool)
+    sandbox_path = f"/tools/{sandbox_name}"
+    return [(tool, sandbox_path)], sandbox_path
+
+
+def raster_command(source: Path, candidate: Path, dpi: int, compression: str) -> list[str]:
+    renderer = resolved_tool("BOOKS_PDF_GS", "gs")
+    renderer_bindings, renderer_command = sandboxed_tool_binding(renderer, "gs")
+    return [
+        *sandbox_prefix(
+            read_only_files=[(source, "/input/source.pdf"), *renderer_bindings],
+            writable_directory=candidate.parent,
+        ),
+        "--chdir",
+        "/input",
+        renderer_command,
+        "-q",
+        "-dSAFER",
+        "-dBATCH",
+        "-dNOPAUSE",
+        "-sDEVICE=pdfimage24",
+        f"-r{dpi}",
+        f"-sCompression={compression}",
+        f"-sOutputFile=/output/{candidate.name}",
+        "/input/source.pdf",
+    ]
+
+
+def pdf_cdr_tool_binding() -> tuple[list[tuple[Path, str]], str]:
+    script = Path(__file__).resolve()
+    return [(script, "/tools/pdf-cdr")], "/tools/pdf-cdr"
+
+
+def xray_backend_binding() -> tuple[list[tuple[Path, str]], str]:
+    override = os.environ.get("BOOKS_PDF_XRAY")
+    if override:
+        located = Path(override).expanduser()
+        if not located.is_file() and os.sep not in override:
+            resolved = shutil.which(override)
+            located = Path(resolved) if resolved else located
+    else:
+        located = DEFAULT_XRAY
+    backend = located.resolve()
+    if not backend.is_file():
+        raise DisarmError(f"configured xray is missing: {backend}")
+    if backend.is_relative_to("/usr"):
+        return [], str(backend)
+    return [(backend, "/tools/xray")], "/tools/xray"
+
+
+def xray_policy(*, derivative: bool) -> dict[str, str]:
+    return {
+        "PDF_SAFE_MAX_DECOMP_MIB": (
+            DERIVATIVE_MAX_DECOMP_MIB if derivative else SOURCE_MAX_DECOMP_MIB
+        ),
+        "PDF_SAFE_MAX_RATIO": DERIVATIVE_MAX_RATIO if derivative else SOURCE_MAX_RATIO,
+        "PDF_SAFE_MAX_PAGES": DERIVATIVE_MAX_PAGES if derivative else SOURCE_MAX_PAGES,
+    }
+
+
+@dataclass
+class RasterObjectProfile:
+    object_ids: set[int]
+    integer_objects: set[int]
+    image_objects: set[int]
+    content_objects: set[int]
+    page_objects: dict[int, tuple[int, int, int]]
+    catalog: tuple[int, int, int] | None
+    pages_tree: tuple[int, int, list[int]] | None
+    info_object: int | None
+    trailer: tuple[int, int] | None
+    unexpected_objects: list[str]
+    malformed: list[str]
+
+
+def mutool_structure_output(path: Path) -> CommandOutcome:
+    mutool = resolved_tool("BOOKS_PDF_MUTOOL", "mutool")
+    return bounded_run([str(mutool), "show", "-e", "-g", str(path), "grep"])
+
+
+def parse_raster_object_profile(path: Path) -> RasterObjectProfile:
+    completed = mutool_structure_output(path)
+    malformed: list[str] = []
+    if completed.returncode != 0:
+        malformed.append(f"mutool object inspection exited {completed.returncode}")
+    if completed.stdout_truncated or completed.stderr_truncated:
+        malformed.append("mutool object inspection exceeded its output limit")
+    if completed.stderr.strip():
+        malformed.append("mutool object inspection emitted diagnostics")
+
+    object_ids: set[int] = set()
+    integer_objects: set[int] = set()
+    image_objects: set[int] = set()
+    content_objects: set[int] = set()
+    page_objects: dict[int, tuple[int, int, int]] = {}
+    catalogs: list[tuple[int, int, int]] = []
+    pages_trees: list[tuple[int, int, list[int]]] = []
+    info_objects: list[int] = []
+    trailers: list[tuple[int, int]] = []
+    unexpected_objects: list[str] = []
+
+    object_line = re.compile(r"^(\d+) 0 obj (.+)$")
+    catalog_body = re.compile(r"<</Info (\d+) 0 R/Pages (\d+) 0 R/Type/Catalog>>")
+    pages_body = re.compile(r"<</Count (\d+)/Kids\[((?:\d+ 0 R ?)+)\]/Type/Pages>>")
+    info_body = re.compile(
+        r"<</CreationDate\(D:19700101000000Z00'00'\)/Producer\(GPL Ghostscript [0-9.]+\)>>"
+    )
+    image_body = re.compile(
+        r"<</BitsPerComponent 8/ColorSpace/DeviceRGB/Filter\[/ASCIIHexDecode/LZWDecode\]/Height (\d+)/Length (?:\d+|\d+ 0 R)/Subtype/Image/Width (\d+)>> stream"
+    )
+    content_body = re.compile(
+        r"<</Filter\[/ASCIIHexDecode/FlateDecode\]/Length (?:\d+|\d+ 0 R)>> stream"
+    )
+    page_body = re.compile(
+        r"<</Contents (\d+) 0 R/MediaBox\[0 0 [0-9.]+ [0-9.]+\]/Parent (\d+) 0 R/Resources<</XObject<</Im1 (\d+) 0 R>>>>/Type/Page>>"
+    )
+    trailer_line = re.compile(
+        r"trailer <</Size (\d+)/Root (\d+) 0 R/ID\[<([0-9A-F]{32})><\3>\]>>"
+    )
+
+    for line in completed.stdout.splitlines():
+        trailer_match = trailer_line.fullmatch(line)
+        if trailer_match:
+            trailers.append((int(trailer_match.group(1)), int(trailer_match.group(2))))
+            continue
+        object_match = object_line.fullmatch(line)
+        if object_match is None:
+            if line.strip():
+                unexpected_objects.append(line[:240])
+            continue
+        object_number = int(object_match.group(1))
+        body = object_match.group(2)
+        if object_number in object_ids:
+            malformed.append(f"duplicate object number {object_number}")
+        object_ids.add(object_number)
+        if match := catalog_body.fullmatch(body):
+            catalogs.append((object_number, int(match.group(1)), int(match.group(2))))
+        elif match := pages_body.fullmatch(body):
+            kids = [int(value) for value in re.findall(r"(\d+) 0 R", match.group(2))]
+            pages_trees.append((object_number, int(match.group(1)), kids))
+        elif info_body.fullmatch(body):
+            info_objects.append(object_number)
+        elif match := image_body.fullmatch(body):
+            if int(match.group(1)) < 1 or int(match.group(2)) < 1:
+                malformed.append(f"image object {object_number} has empty dimensions")
+            image_objects.add(object_number)
+        elif content_body.fullmatch(body):
+            content_objects.add(object_number)
+        elif match := page_body.fullmatch(body):
+            page_objects[object_number] = tuple(int(match.group(i)) for i in range(1, 4))
+        elif re.fullmatch(r"\d+", body):
+            integer_objects.add(object_number)
+        else:
+            unexpected_objects.append(f"{object_number} 0 obj {body[:200]}")
+
+    if len(catalogs) != 1:
+        malformed.append(f"expected one canonical Catalog object; found {len(catalogs)}")
+    if len(pages_trees) != 1:
+        malformed.append(f"expected one canonical Pages object; found {len(pages_trees)}")
+    if len(info_objects) != 1:
+        malformed.append(f"expected one normalized Info object; found {len(info_objects)}")
+    if len(trailers) != 1:
+        malformed.append(f"expected one canonical trailer; found {len(trailers)}")
+    return RasterObjectProfile(
+        object_ids=object_ids,
+        integer_objects=integer_objects,
+        image_objects=image_objects,
+        content_objects=content_objects,
+        page_objects=page_objects,
+        catalog=catalogs[0] if len(catalogs) == 1 else None,
+        pages_tree=pages_trees[0] if len(pages_trees) == 1 else None,
+        info_object=info_objects[0] if len(info_objects) == 1 else None,
+        trailer=trailers[0] if len(trailers) == 1 else None,
+        unexpected_objects=unexpected_objects,
+        malformed=malformed,
+    )
+
+
+def validate_raster_object_references(profile: RasterObjectProfile) -> list[str]:
+    malformed: list[str] = []
+    page_count = len(profile.page_objects)
+    expected_object_count = 3 + 5 * page_count
+    if page_count < 1:
+        malformed.append("no canonical Page objects found")
+    if len(profile.image_objects) != page_count:
+        malformed.append("canonical profile requires one image object per page")
+    if len(profile.content_objects) != page_count:
+        malformed.append("canonical profile requires one content object per page")
+    if len(profile.integer_objects) != 2 * page_count:
+        malformed.append("canonical profile requires two stream-length objects per page")
+    if len(profile.object_ids) != expected_object_count:
+        malformed.append(
+            f"expected {expected_object_count} canonical objects; found {len(profile.object_ids)}"
+        )
+    if profile.object_ids and profile.object_ids != set(range(1, max(profile.object_ids) + 1)):
+        malformed.append("object numbers are not a contiguous canonical sequence")
+    if profile.catalog and profile.pages_tree and profile.info_object:
+        catalog_object, info_reference, pages_reference = profile.catalog
+        pages_object, declared_count, kids = profile.pages_tree
+        if info_reference != profile.info_object or pages_reference != pages_object:
+            malformed.append("Catalog references do not match the canonical Info and Pages objects")
+        if declared_count != page_count or kids != list(profile.page_objects):
+            malformed.append("Pages Kids do not exactly match the ordered Page objects")
+        content_references = []
+        image_references = []
+        for content_reference, parent_reference, image_reference in profile.page_objects.values():
+            content_references.append(content_reference)
+            image_references.append(image_reference)
+            if parent_reference != pages_object:
+                malformed.append("Page parent does not reference the canonical Pages object")
+        if set(content_references) != profile.content_objects or len(set(content_references)) != page_count:
+            malformed.append("Page Contents references do not bijectively cover content streams")
+        if set(image_references) != profile.image_objects or len(set(image_references)) != page_count:
+            malformed.append("Page Im1 references do not bijectively cover raster images")
+        if profile.trailer:
+            trailer_size, root_reference = profile.trailer
+            if root_reference != catalog_object or trailer_size != max(profile.object_ids) + 1:
+                malformed.append("trailer does not exactly cover the canonical object graph")
+    return malformed
+
+
+def validate_decoded_page_content(
+    path: Path, expected_content_objects: set[int]
+) -> list[str]:
+    mutool = resolved_tool("BOOKS_PDF_MUTOOL", "mutool")
+    completed = bounded_run(
+        [str(mutool), "show", str(path), "pages/*/Contents"]
+    )
+    malformed: list[str] = []
+    if completed.returncode != 0:
+        malformed.append(f"mutool content inspection exited {completed.returncode}")
+    if completed.stdout_truncated or completed.stderr_truncated:
+        malformed.append("mutool content inspection exceeded its output limit")
+    if completed.stderr.strip():
+        malformed.append("mutool content inspection emitted diagnostics")
+
+    block_pattern = re.compile(
+        r"(?ms)^(\d+) 0 obj\n<<\n(?P<dictionary>(?:  /[^\n]+\n)+)>>\n"
+        r"stream\n(?P<content>.*?)endstream\nendobj(?:\n|\Z)"
+    )
+    numeric = r"-?(?:\d+(?:\.\d*)?|\.\d+)"
+    content_pattern = re.compile(
+        rf"^(?P<width>{numeric}) 0 0 (?P<height>{numeric}) 0 0 cm\s*\n"
+        r"/Im1 Do\s*$"
+    )
+    observed_objects: list[int] = []
+    position = 0
+    for match in block_pattern.finditer(completed.stdout):
+        if completed.stdout[position : match.start()].strip():
+            malformed.append("unexpected text between decoded content objects")
+        position = match.end()
+        object_number = int(match.group(1))
+        observed_objects.append(object_number)
+        dictionary_lines = {
+            line.strip() for line in match.group("dictionary").splitlines()
+        }
+        expected_filter = "/Filter [ /ASCIIHexDecode /FlateDecode ]"
+        length_lines = {
+            line
+            for line in dictionary_lines
+            if re.fullmatch(r"/Length (?:\d+|\d+ 0 R)", line)
+        }
+        if dictionary_lines != {expected_filter, *length_lines} or len(length_lines) != 1:
+            malformed.append(
+                f"content object {object_number} has a noncanonical decoded dictionary"
+            )
+        content_match = content_pattern.fullmatch(match.group("content"))
+        if (
+            content_match is None
+            or float(content_match.group("width")) <= 0
+            or float(content_match.group("height")) <= 0
+        ):
+            malformed.append(
+                f"content object {object_number} contains noncanonical drawing operators"
+            )
+    if completed.stdout[position:].strip():
+        malformed.append("unexpected trailing decoded content output")
+    if (
+        set(observed_objects) != expected_content_objects
+        or len(observed_objects) != len(expected_content_objects)
+    ):
+        malformed.append("decoded Page Contents do not exactly cover content objects")
+    return malformed
+
+
+def normalization_command(
+    source: Path,
+    encoded: Path,
+    source_hash: str,
+    dpi: int,
+    compression: str,
+) -> list[str]:
+    script_bindings, script_path = pdf_cdr_tool_binding()
+    mutool = resolved_tool("BOOKS_PDF_MUTOOL", "mutool")
+    mutool_bindings, sandbox_mutool = sandboxed_tool_binding(mutool, "mutool")
+    return [
+        *sandbox_prefix(
+            read_only_files=[
+                (source, "/input/source.pdf"),
+                *script_bindings,
+                *mutool_bindings,
+            ],
+            writable_directory=encoded.parent,
+            environment={"BOOKS_PDF_MUTOOL": sandbox_mutool},
+        ),
+        str(Path(sys.executable).resolve()),
+        script_path,
+        "--normalize-child",
+        "/input/source.pdf",
+        f"/output/{encoded.name}",
+        "--source-hash",
+        source_hash,
+        "--dpi",
+        str(dpi),
+        "--compression",
+        compression,
+    ]
+
+
+def normalize_candidate_in_sandbox(
+    path: Path, source_hash: str, dpi: int, compression: str
+) -> dict[str, object]:
+    encoded = path.with_name(path.name + ".ascii.pdf")
+    encoded.unlink(missing_ok=True)
+    argv = normalization_command(path, encoded, source_hash, dpi, compression)
+    completed = bounded_run(argv)
+    record = command_record(argv, completed)
+    try:
+        child_record = json.loads(completed.stdout)
+    except json.JSONDecodeError as error:
+        encoded.unlink(missing_ok=True)
+        raise DisarmError(
+            f"sandboxed stream normalization emitted invalid JSON: {error}"
+        ) from error
+    if completed.returncode != 0 or not encoded.is_file() or not encoded.stat().st_size:
+        encoded.unlink(missing_ok=True)
+        raise DisarmError(
+            "sandboxed mutool stream normalization failed with exit status "
+            f"{completed.returncode}"
+        )
+    os.replace(encoded, path)
+    return {"sandbox": record, "mutool": child_record.get("mutool")}
+
+
+def decode_pdf_name_escapes(value: bytes) -> bytes:
+    return PDF_NAME_ESCAPE_RE.sub(
+        lambda match: bytes([int(match.group(1), 16)]), value
+    )
+
+
+def structural_pdf_validation(path: Path) -> dict[str, object]:
+    data = path.read_bytes()
+    syntax = decode_pdf_name_escapes(data)
+    profile = parse_raster_object_profile(path)
+    malformed = [
+        *profile.malformed,
+        *validate_raster_object_references(profile),
+        *validate_decoded_page_content(path, profile.content_objects),
+    ]
+    escaped_name_count = len(PDF_NAME_ESCAPE_RE.findall(data))
+    if escaped_name_count:
+        malformed.append("escaped PDF names are outside the canonical raster profile")
+    active_content = {
+        token.decode("ascii"): count
+        for token in ACTIVE_TOKENS
+        if (count := syntax.count(token))
+    }
+    forbidden_structure = {
+        token.decode("ascii"): count
+        for token in (
+            *FORBIDDEN_STRUCTURE_TOKENS,
+            b"/Annots",
+            b"/AcroForm",
+            b"/FileSpec",
+            b"/Metadata",
+        )
+        if (count := syntax.count(token))
+    }
+    page_count = len(profile.page_objects)
+    accepted = (
+        not malformed
+        and not profile.unexpected_objects
+        and not active_content
+        and not forbidden_structure
+    )
+    return {
+        "schema_version": "pdf-cdr-structural-validation/1",
+        "accepted": accepted,
+        "page_count": page_count,
+        "object_count": len(profile.object_ids),
+        "stream_count": len(profile.image_objects) + len(profile.content_objects),
+        "image_stream_count": len(profile.image_objects),
+        "content_stream_count": len(profile.content_objects),
+        "escaped_name_count": escaped_name_count,
+        "active_content": active_content,
+        "forbidden_structure": forbidden_structure,
+        "unexpected_objects": profile.unexpected_objects,
+        "malformed": malformed,
+    }
+
+
+def accepted_derivative_verdict(
+    safety: object, structural_validation: dict[str, object]
+) -> str | None:
+    if (
+        not isinstance(safety, dict)
+        or safety.get("bomb") is not None
+        or safety.get("note") is not None
+        or structural_validation.get("accepted") is not True
+    ):
+        return None
+    active_content = safety.get("active_content")
+    if not isinstance(active_content, dict):
+        return None
+    known_names = {token.decode("ascii") for token in ACTIVE_TOKENS}
+    if any(name not in known_names for name in active_content):
+        return None
+    decompression = safety.get("decompression")
+    if (
+        not isinstance(decompression, dict)
+        or decompression.get("pages") != structural_validation.get("page_count")
+    ):
+        return None
+    verdict = safety.get("verdict")
+    if verdict == "CLEAN":
+        return "CLEAN"
+    if verdict in {"SUSPECT", "DANGEROUS"} and active_content:
+        return "CDR-CLEAN"
+    return None
+
+
+def validation_sandbox_command(path: Path) -> list[str]:
+    script_bindings, script_path = pdf_cdr_tool_binding()
+    xray_bindings, sandbox_xray = xray_backend_binding()
+    mutool = resolved_tool("BOOKS_PDF_MUTOOL", "mutool")
+    mutool_bindings, sandbox_mutool = sandboxed_tool_binding(mutool, "mutool")
+    return [
+        *sandbox_prefix(
+            read_only_files=[
+                (path, "/input/source.pdf"),
+                *script_bindings,
+                *xray_bindings,
+                *mutool_bindings,
+            ],
+            environment={
+                **xray_policy(derivative=True),
+                "BOOKS_PDF_MUTOOL": sandbox_mutool,
+                "BOOKS_PDF_XRAY": sandbox_xray,
+            },
+        ),
+        str(Path(sys.executable).resolve()),
+        script_path,
+        "--validate-child",
+        "/input/source.pdf",
+    ]
+
+
+def scan_derivative(path: Path) -> tuple[dict[str, object], dict[str, object]]:
+    argv = validation_sandbox_command(path)
+    completed = bounded_run(argv)
+    record = command_record(argv, completed)
+    try:
+        document = json.loads(completed.stdout)
+    except json.JSONDecodeError as error:
+        raise DisarmError(
+            "sandboxed derivative validation emitted invalid JSON: "
+            f"{error}; {completed.stderr.strip()}"
+        ) from error
+    if completed.returncode not in {0, 1}:
+        raise DisarmError(
+            "sandboxed derivative validation failed with exit status "
+            f"{completed.returncode}"
+        )
+    if (
+        document.get("derivative_sha256") != sha256_file(path)
+        or document.get("derivative_size_bytes") != path.stat().st_size
+    ):
+        raise DisarmError("derivative validation source identity mismatch")
+    return document, record
+
+
+def command_record_without_stdout(
+    argv: list[str], completed: CommandOutcome
+) -> dict[str, object]:
+    record = command_record(argv, completed)
+    record.pop("stdout", None)
+    return record
+
+
+def direct_xray_scan(
+    path: Path, *, derivative: bool
+) -> tuple[dict[str, object], dict[str, object], int]:
+    argv = xray_prefix() + [str(path), "--force"]
+    environment = os.environ.copy()
+    environment.update(xray_policy(derivative=derivative))
+    completed = bounded_run(argv, environment=environment)
+    if completed.returncode not in {0, 3}:
+        raise DisarmError(
+            f"xray command {shlex.join(argv)} failed with exit status "
+            f"{completed.returncode}: "
+            f"{completed.stderr.strip()}"
+        )
+    try:
+        document = json.loads(completed.stdout)
+    except json.JSONDecodeError as error:
+        raise DisarmError(f"xray emitted invalid JSON: {error}") from error
+    source = document.get("source") if isinstance(document, dict) else None
+    if (
+        not isinstance(source, dict)
+        or source.get("sha256") != sha256_file(path)
+        or source.get("bytes") != path.stat().st_size
+    ):
+        raise DisarmError("xray source identity mismatch")
+    document.pop("generated_at", None)
+    return document, command_record_without_stdout(argv, completed), completed.returncode
+
+
+def source_scan_sandbox_command(path: Path) -> list[str]:
+    script_bindings, script_path = pdf_cdr_tool_binding()
+    xray_bindings, sandbox_xray = xray_backend_binding()
+    return [
+        *sandbox_prefix(
+            read_only_files=[
+                (path, "/input/source.pdf"),
+                *script_bindings,
+                *xray_bindings,
+            ],
+            environment={
+                **xray_policy(derivative=False),
+                "BOOKS_PDF_XRAY": sandbox_xray,
+            },
+        ),
+        str(Path(sys.executable).resolve()),
+        script_path,
+        "--xray-child",
+        "/input/source.pdf",
+    ]
+
+
+def scan_source_in_sandbox(path: Path) -> tuple[dict[str, object], int]:
+    argv = source_scan_sandbox_command(path)
+    completed = bounded_run(argv)
+    if completed.returncode not in {0, 3}:
+        raise DisarmError(
+            f"sandboxed source xray command {shlex.join(argv)} failed with exit "
+            f"status {completed.returncode}: "
+            f"{completed.stderr.strip()}"
+        )
+    try:
+        document = json.loads(completed.stdout)
+    except json.JSONDecodeError as error:
+        raise DisarmError(
+            f"sandboxed source xray emitted invalid JSON: {error}"
+        ) from error
+    source = document.get("source") if isinstance(document, dict) else None
+    if (
+        not isinstance(source, dict)
+        or source.get("sha256") != sha256_file(path)
+        or source.get("bytes") != path.stat().st_size
+    ):
+        raise DisarmError("sandboxed source xray identity mismatch")
+    document["sandbox"] = {
+        "transport": "bwrap",
+        "network": "none",
+        "host_filesystem": "allowlisted runtime paths only; source file read-only",
+        "command": command_record_without_stdout(argv, completed),
+    }
+    document["policy"] = xray_policy(derivative=False)
+    return document, completed.returncode
+
+
+def normalize_child(
+    source: Path,
+    output: Path,
+    source_hash: str,
+    dpi: int,
+    compression: str,
+) -> dict[str, object]:
+    mutool = resolved_tool("BOOKS_PDF_MUTOOL", "mutool")
+    argv = [str(mutool), "clean", "-a", str(source), str(output)]
+    completed = bounded_run(argv)
+    if completed.returncode != 0 or not output.is_file() or not output.stat().st_size:
+        output.unlink(missing_ok=True)
+        raise DisarmError(
+            f"mutool ASCII stream encoding failed with exit status {completed.returncode}"
+        )
+    normalize_pdf_metadata(output, source_hash, dpi, compression)
+    return {"mutool": command_record(argv, completed)}
+
+
+def validate_child(path: Path) -> tuple[dict[str, object], int]:
+    xray_document, xray_command, _xray_exit_status = direct_xray_scan(
+        path, derivative=True
+    )
+    structural_validation = structural_pdf_validation(path)
+    safety = xray_document.get("safety") if isinstance(xray_document, dict) else None
+    accepted_verdict = accepted_derivative_verdict(safety, structural_validation)
+    record = {
+        "schema_version": "books-pdf-cdr-validation/1",
+        "accepted": accepted_verdict is not None,
+        "accepted_verdict": accepted_verdict,
+        "derivative_sha256": sha256_file(path),
+        "derivative_size_bytes": path.stat().st_size,
+        "xray": xray_document,
+        "xray_command": xray_command,
+        "structural_validation": structural_validation,
+        "policy": xray_policy(derivative=True),
+    }
+    return record, 0 if accepted_verdict is not None else 1
+
+
+def disarm(source: Path, output: Path) -> dict[str, object]:
+    if not source.is_file():
+        raise DisarmError(f"source PDF is missing: {source}")
+    if source.suffix.lower() != ".pdf":
+        raise DisarmError(f"source is not a PDF: {source}")
+    output.parent.mkdir(parents=True, exist_ok=True)
+    source_hash = sha256_file(source)
+    attempts: list[dict[str, object]] = []
+    selected: dict[str, object] | None = None
+
+    for dpi, compression in ATTEMPTS:
+        candidate = output.parent / f".{output.name}.cdr-{dpi}-{compression}.pdf"
+        candidate.unlink(missing_ok=True)
+        argv = raster_command(source.resolve(), candidate.resolve(), dpi, compression)
+        completed = bounded_run(argv)
+        if completed.timed_out:
+            candidate.unlink(missing_ok=True)
+            attempts.append(
+                {
+                    "dpi": dpi,
+                    "compression": compression,
+                    "argv": argv,
+                    "command": shlex.join(argv),
+                    "exit_status": 124,
+                    "error": f"timed out after {TIMEOUT_SECONDS} seconds",
+                }
+            )
+            continue
+        attempt = {
+            "dpi": dpi,
+            "compression": compression,
+            **command_record(argv, completed),
+        }
+        if completed.returncode != 0 or not candidate.is_file() or not candidate.stat().st_size:
+            attempt["error"] = "sandboxed rasterizer did not produce a PDF"
+            attempts.append(attempt)
+            candidate.unlink(missing_ok=True)
+            continue
+        normalization = normalize_candidate_in_sandbox(
+            candidate, source_hash, dpi, compression
+        )
+        derivative_hash = sha256_file(candidate)
+        validation, scan_command = scan_derivative(candidate)
+        xray_document = validation.get("xray")
+        safety = (
+            xray_document.get("safety") if isinstance(xray_document, dict) else None
+        )
+        verdict = safety.get("verdict") if isinstance(safety, dict) else None
+        structural_validation = validation.get("structural_validation")
+        accepted_verdict = validation.get("accepted_verdict")
+        attempt.update(
+            {
+                "derivative_sha256": derivative_hash,
+                "derivative_size_bytes": candidate.stat().st_size,
+                "ascii_stream_encoding": normalization,
+                "validation_sandbox": scan_command,
+                "xray": validation.get("xray_command"),
+                "safety": safety,
+                "structural_validation": structural_validation,
+                "accepted_verdict": accepted_verdict,
+            }
+        )
+        attempts.append(attempt)
+        if accepted_verdict is None:
+            candidate.unlink(missing_ok=True)
+            continue
+        os.replace(candidate, output)
+        selected = {
+            "dpi": dpi,
+            "compression": compression,
+            "derivative_sha256": derivative_hash,
+            "derivative_size_bytes": output.stat().st_size,
+            "verdict": accepted_verdict,
+            "custody_id": (
+                safety.get("custody_id")
+                if accepted_verdict == "CLEAN"
+                else f"{derivative_hash[:16]}-CDR-CLEAN"
+            ),
+            "xray_verdict": verdict,
+            "structural_validation": structural_validation,
+            "decompression": safety.get("decompression"),
+        }
+        break
+
+    for candidate in output.parent.glob(f".{output.name}.cdr-*.pdf"):
+        candidate.unlink(missing_ok=True)
+    if selected is None:
+        raise DisarmError("no raster derivative passed the CLEAN xray gate")
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "source_sha256": source_hash,
+        "source_size_bytes": source.stat().st_size,
+        "output": output.as_posix(),
+        "sandbox": {
+            "transport": "bwrap",
+            "network": "none",
+            "host_filesystem": "allowlisted runtime paths only; source file read-only; derivative output directory writable",
+            "renderer": "ghostscript pdfimage24",
+            "stream_encoding": "mutool clean -a (ASCII hex)",
+            "memory_limit_bytes": MEMORY_LIMIT_BYTES,
+            "file_limit_bytes": FILE_LIMIT_BYTES,
+            "timeout_seconds": TIMEOUT_SECONDS,
+        },
+        "selected": selected,
+        "attempts": attempts,
+    }
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--scan-only", action="store_true")
+    mode.add_argument("--xray-child", action="store_true")
+    mode.add_argument("--normalize-child", action="store_true")
+    mode.add_argument("--validate-child", action="store_true")
+    mode.add_argument("--validate-existing", action="store_true")
+    parser.add_argument("source", type=Path)
+    parser.add_argument("output", type=Path, nargs="?")
+    parser.add_argument("--force", action="store_true")
+    parser.add_argument("--source-hash")
+    parser.add_argument("--dpi", type=int)
+    parser.add_argument("--compression")
+    arguments = parser.parse_args(argv)
+    try:
+        if arguments.scan_only:
+            document, exit_status = scan_source_in_sandbox(arguments.source.resolve())
+            print(json.dumps(document, indent=2, sort_keys=True))
+            return exit_status
+        if arguments.xray_child:
+            document, record, exit_status = direct_xray_scan(
+                arguments.source, derivative=False
+            )
+            document["xray_command"] = record
+            document["policy"] = xray_policy(derivative=False)
+            print(json.dumps(document, indent=2, sort_keys=True))
+            return exit_status
+        if arguments.normalize_child:
+            if (
+                arguments.output is None
+                or not arguments.source_hash
+                or arguments.dpi is None
+                or not arguments.compression
+            ):
+                raise DisarmError(
+                    "normalize-child requires output, source hash, dpi, and compression"
+                )
+            record = normalize_child(
+                arguments.source,
+                arguments.output,
+                arguments.source_hash,
+                arguments.dpi,
+                arguments.compression,
+            )
+            print(json.dumps(record, indent=2, sort_keys=True))
+            return 0
+        if arguments.validate_child:
+            record, exit_status = validate_child(arguments.source)
+            print(json.dumps(record, indent=2, sort_keys=True))
+            return exit_status
+        if arguments.validate_existing:
+            record, _sandbox_command = scan_derivative(arguments.source.resolve())
+            if record.get("accepted") is not True:
+                raise DisarmError("existing derivative failed hardened validation")
+            print(json.dumps(record, indent=2, sort_keys=True))
+            return 0
+        if arguments.output is None:
+            raise DisarmError("output path is required for PDF disarmament")
+        record = disarm(arguments.source.resolve(), arguments.output.resolve())
+    except (DisarmError, OSError, subprocess.SubprocessError) as error:
+        print(f"pdf-cdr: {error}", file=sys.stderr)
+        return 1
+    print(json.dumps(record, indent=2, sort_keys=True))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

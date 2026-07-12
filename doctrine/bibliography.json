@@ -4,6 +4,34 @@
       "creators": [
         {
           "evidence": [
+            "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/001-100-go-mistakes-and-how-to-avoid-them.md"
+          ],
+          "name": "Teiva Harsanyi",
+          "role": "author",
+          "support": "direct"
+        }
+      ],
+      "edition": {
+        "evidence": [
+          "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/001-100-go-mistakes-and-how-to-avoid-them.md"
+        ],
+        "label": "First edition",
+        "number": 1,
+        "support": "derived-inference"
+      },
+      "generated_metadata_status": "legacy-extracted-noncanonical",
+      "slug": "100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir",
+      "source_id": "SRC-100GO",
+      "source_path": "sources/100-Go-Mistakes-and-How-to-Avoid-Them-(Teiva-Harsanyi)_bibis.ir.pdf",
+      "title": "100 Go Mistakes and How to Avoid Them",
+      "title_evidence": [
+        "books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/001-100-go-mistakes-and-how-to-avoid-them.md"
+      ]
+    },
+    {
+      "creators": [
+        {
+          "evidence": [
             "books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/002-title-page.md"
           ],
           "name": "John K. Ousterhout",
@@ -26,6 +54,71 @@
       "title": "A Philosophy of Software Design",
       "title_evidence": [
         "books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/002-title-page.md"
+      ]
+    },
+    {
+      "creators": [
+        {
+          "evidence": [
+            "books/bookshelf-ch-three-api-design-patterns/chapters/001-api-design-patterns.md"
+          ],
+          "name": "JJ Geewax",
+          "role": "author",
+          "support": "direct"
+        }
+      ],
+      "edition": {
+        "evidence": [
+          "books/bookshelf-ch-three-api-design-patterns/chapters/001-api-design-patterns.md"
+        ],
+        "label": "First edition",
+        "number": 1,
+        "support": "derived-inference"
+      },
+      "generated_metadata_status": "legacy-extracted-noncanonical",
+      "slug": "bookshelf-ch-three-api-design-patterns",
+      "source_id": "SRC-ADPCH3",
+      "source_path": "sources/bookshelf_ch_three_API_Design_Patterns.pdf",
+      "title": "API Design Patterns (Chapter 3 extract: Naming)",
+      "title_evidence": [
+        "sources/bookshelf_ch_three_API_Design_Patterns.pdf",
+        "books/bookshelf-ch-three-api-design-patterns/chapters/001-api-design-patterns.md"
+      ]
+    },
+    {
+      "creators": [
+        {
+          "evidence": [
+            "books/architecture-patterns-with-python/chapters/001-o-reilly.md"
+          ],
+          "name": "Harry Percival",
+          "role": "author",
+          "support": "direct"
+        },
+        {
+          "evidence": [
+            "books/architecture-patterns-with-python/chapters/001-o-reilly.md"
+          ],
+          "name": "Bob Gregory",
+          "role": "author",
+          "support": "direct"
+        }
+      ],
+      "edition": {
+        "evidence": [
+          "books/architecture-patterns-with-python/chapters/001-o-reilly.md"
+        ],
+        "label": "First edition",
+        "number": 1,
+        "support": "direct"
+      },
+      "generated_metadata_status": "legacy-extracted-noncanonical",
+      "slug": "architecture-patterns-with-python",
+      "source_id": "SRC-APWP",
+      "source_path": "sources/Architecture-Patterns-with-Python.pdf",
+      "title": "Architecture Patterns with Python: Enabling Test-Driven Development, Domain-Driven Design, and Event-Driven Microservices",
+      "title_evidence": [
+        "books/architecture-patterns-with-python/chapters/001-o-reilly.md"
       ]
     },
     {
@@ -98,6 +191,70 @@
       "title": "Code Complete: A Practical Handbook of Software Construction",
       "title_evidence": [
         "books/code-complete-2nd-edition-v413hav/chapters/001-complete.md"
+      ]
+    },
+    {
+      "creators": [
+        {
+          "evidence": [
+            "books/concurrency-in-go/chapters/001-o-reilly.md"
+          ],
+          "name": "Katherine Cox-Buday",
+          "role": "author",
+          "support": "direct"
+        }
+      ],
+      "edition": {
+        "evidence": [
+          "books/concurrency-in-go/chapters/001-o-reilly.md"
+        ],
+        "label": "First edition",
+        "number": 1,
+        "support": "direct"
+      },
+      "generated_metadata_status": "legacy-extracted-noncanonical",
+      "slug": "concurrency-in-go",
+      "source_id": "SRC-CIG",
+      "source_path": "sources/Concurrency in Go.pdf",
+      "title": "Concurrency in Go: Tools and Techniques for Developers",
+      "title_evidence": [
+        "books/concurrency-in-go/chapters/001-o-reilly.md"
+      ]
+    },
+    {
+      "creators": [
+        {
+          "evidence": [
+            "books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/001-2nd-edition.md"
+          ],
+          "name": "Martin Kleppmann",
+          "role": "author",
+          "support": "direct"
+        },
+        {
+          "evidence": [
+            "books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/001-2nd-edition.md"
+          ],
+          "name": "Chris Riccomini",
+          "role": "author",
+          "support": "direct"
+        }
+      ],
+      "edition": {
+        "evidence": [
+          "books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/001-2nd-edition.md"
+        ],
+        "label": "Second edition",
+        "number": 2,
+        "support": "direct"
+      },
+      "generated_metadata_status": "legacy-extracted-noncanonical",
+      "slug": "dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2",
+      "source_id": "SRC-DDIA2",
+      "source_path": "sources/dokumen.pub_designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2.pdf",
+      "title": "Designing Data-Intensive Applications: The Big Ideas Behind Reliable, Scalable, and Maintainable Systems",
+      "title_evidence": [
+        "books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/001-2nd-edition.md"
       ]
     },
     {
@@ -296,6 +453,34 @@
       "creators": [
         {
           "evidence": [
+            "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/001-release-it-second-edition.md"
+          ],
+          "name": "Michael T. Nygard",
+          "role": "author",
+          "support": "direct"
+        }
+      ],
+      "edition": {
+        "evidence": [
+          "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/001-release-it-second-edition.md"
+        ],
+        "label": "Second edition",
+        "number": 2,
+        "support": "direct"
+      },
+      "generated_metadata_status": "legacy-extracted-noncanonical",
+      "slug": "release-it-design-and-deploy-production-ready-software-pdfdrive",
+      "source_id": "SRC-RI",
+      "source_path": "sources/Release It!_ Design and Deploy Production-Ready Software ( PDFDrive ).pdf",
+      "title": "Release It!: Design and Deploy Production-Ready Software",
+      "title_evidence": [
+        "books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/001-release-it-second-edition.md"
+      ]
+    },
+    {
+      "creators": [
+        {
+          "evidence": [
             "books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/001-software-design-x-rays.md"
           ],
           "name": "Adam Tornhill",
@@ -318,6 +503,50 @@
       "title": "Software Design X-Rays: Fix Technical Debt with Behavioral Code Analysis",
       "title_evidence": [
         "books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/001-software-design-x-rays.md"
+      ]
+    },
+    {
+      "creators": [
+        {
+          "evidence": [
+            "books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/001-o-reilly.md"
+          ],
+          "name": "Titus Winters",
+          "role": "author",
+          "support": "direct"
+        },
+        {
+          "evidence": [
+            "books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/001-o-reilly.md"
+          ],
+          "name": "Tom Manshreck",
+          "role": "author",
+          "support": "direct"
+        },
+        {
+          "evidence": [
+            "books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/001-o-reilly.md"
+          ],
+          "name": "Hyrum Wright",
+          "role": "author",
+          "support": "direct"
+        }
+      ],
+      "edition": {
+        "evidence": [
+          "books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/001-o-reilly.md"
+        ],
+        "label": "First edition",
+        "number": 1,
+        "support": "direct"
+      },
+      "generated_metadata_status": "legacy-extracted-noncanonical",
+      "slug": "dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798",
+      "source_id": "SRC-SEAG",
+      "source_path": "sources/dokumen.pub_software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798.pdf",
+      "title": "Software Engineering at Google: Lessons Learned from Programming Over Time",
+      "title_evidence": [
+        "books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/001-o-reilly.md"
       ]
     },
     {
@@ -354,6 +583,34 @@
       "title": "The Pragmatic Programmer: From Journeyman to Master",
       "title_evidence": [
         "books/the-pragmatic-programmer/chapters/001-what-others-in-the-trenches-say-about-the-pragmatic-programmer.md"
+      ]
+    },
+    {
+      "creators": [
+        {
+          "evidence": [
+            "books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/001-unit-testing-principles-practices-and-patterns.md"
+          ],
+          "name": "Vladimir Khorikov",
+          "role": "author",
+          "support": "direct"
+        }
+      ],
+      "edition": {
+        "evidence": [
+          "books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/001-unit-testing-principles-practices-and-patterns.md"
+        ],
+        "label": "First edition",
+        "number": 1,
+        "support": "derived-inference"
+      },
+      "generated_metadata_status": "legacy-extracted-noncanonical",
+      "slug": "manning-unit-testing-principles-practices-and-patterns-2020-1",
+      "source_id": "SRC-UT",
+      "source_path": "sources/Manning.Unit.Testing.Principles.Practices.and.Patterns.2020.1.pdf",
+      "title": "Unit Testing: Principles, Practices, and Patterns",
+      "title_evidence": [
+        "books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/001-unit-testing-principles-practices-and-patterns.md"
       ]
     },
     {

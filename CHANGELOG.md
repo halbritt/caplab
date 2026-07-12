@@ -8,6 +8,21 @@ remains under `Unreleased`, whether or not it has been committed.
 
 ### Added
 
+- Added eight PDF sources and their chaptered Markdown corpora: *100 Go
+  Mistakes and How to Avoid Them*, *API Design Patterns* chapter 3 (an
+  explicitly labeled extract), *Architecture Patterns with Python*,
+  *Concurrency in Go*, *Designing Data-Intensive Applications* second edition,
+  *Release It!* second edition, *Software Engineering at Google*, and *Unit
+  Testing: Principles, Practices, and Patterns*.
+- Added a mandatory PDF airlock and sandboxed raster CDR path. Every PDF is
+  statically classified before Marker; non-clean originals remain unchanged
+  while a separately hashed, post-gated pixel-only derivative crosses the
+  converter boundary. Provenance records the x-ray, CDR, execution target,
+  commands, hashes, and selected input.
+- Added an explicit policy-compatible raw-cache migration for already validated
+  peecee conversions. It accepts only fallback-free CLEAN or networkless
+  CDR-CLEAN inputs, rejects SUSPECT original bytes, and records the bounded
+  compatibility decision in per-book provenance.
 - Added a repository-native remediation plan covering runtime authority,
   routing, graph semantics, exact provenance, conversion reproducibility,
   evaluation identity, corpus quality, and calibration gates.
@@ -81,6 +96,9 @@ remains under `Unreleased`, whether or not it has been committed.
 
 ### Changed
 
+- Chapter-boundary recovery now uses noisy printed-contents sequences and
+  repeated numbered body-section patterns to recover logical chapters whose
+  OCR headings omit the word or number `Chapter`.
 - Evidence packets now use canonical role and task vocabularies, keep activation
   signals separate from typed evidence, preserve claim-level provenance, close
   prerequisite chains, record explainable question-sensitive selection, enforce

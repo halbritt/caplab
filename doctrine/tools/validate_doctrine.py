@@ -795,23 +795,51 @@ def validate_bibliography(result: Validation) -> None:
         f"duplicate bibliography source IDs: {duplicate_values(record_ids)}",
     )
     result.require(
-        set(record_ids) == set(registry),
-        "bibliography does not cover the exact source registry",
+        set(registry) <= set(record_ids),
+        "bibliography does not cover the doctrine source registry",
     )
     for record in records:
         source_id = record.get("source_id", "<missing>")
         source = registry.get(source_id)
-        if source is None:
-            continue
-        result.require(
-            record.get("source_path") == source.get("source_input_path"),
-            f"bibliography {source_id}: source path differs from source registry",
-        )
-        corpus_prefix = source["corpus_path"] + "/"
-        result.require(
-            record.get("slug") == Path(source["corpus_path"]).name,
-            f"bibliography {source_id}: slug differs from corpus path",
-        )
+        slug = record.get("slug")
+        corpus_path = f"books/{slug}" if isinstance(slug, str) else ""
+        corpus_prefix = f"{corpus_path}/"
+        if source is not None:
+            result.require(
+                record.get("source_path") == source.get("source_input_path"),
+                f"bibliography {source_id}: source path differs from source registry",
+            )
+            result.require(
+                record.get("slug") == Path(source["corpus_path"]).name,
+                f"bibliography {source_id}: slug differs from corpus path",
+            )
+        else:
+            source_json_path = REPOSITORY / corpus_path / "source.json"
+            result.require(
+                source_json_path.is_file(),
+                f"bibliography {source_id}: generated source.json missing",
+            )
+            if source_json_path.is_file():
+                try:
+                    generated = json.loads(
+                        source_json_path.read_text(encoding="utf-8")
+                    )
+                except (OSError, json.JSONDecodeError) as error:
+                    result.errors.append(
+                        f"bibliography {source_id}: invalid source.json: {error}"
+                    )
+                else:
+                    validate_source_identity(
+                        result,
+                        {
+                            "id": source_id,
+                            "source_input_path": record.get("source_path"),
+                            "source_sha256": generated.get("source_sha256"),
+                            "source_format": generated.get("source_format"),
+                            "corpus_path": corpus_path,
+                        },
+                        REPOSITORY,
+                    )
         canonical_authors = {
             creator.get("name")
             for creator in record.get("creators", [])
@@ -820,10 +848,11 @@ def validate_bibliography(result: Validation) -> None:
         result.require(
             bool(canonical_authors), f"bibliography {source_id}: no canonical author"
         )
-        result.require(
-            canonical_authors <= set(source.get("authors", [])),
-            f"bibliography {source_id}: canonical authors are absent from source registry",
-        )
+        if source is not None:
+            result.require(
+                canonical_authors <= set(source.get("authors", [])),
+                f"bibliography {source_id}: canonical authors are absent from source registry",
+            )
         evidence_paths = list(record.get("title_evidence", []))
         evidence_paths.extend(record.get("edition", {}).get("evidence", []))
         evidence_paths.extend(
@@ -833,7 +862,7 @@ def validate_bibliography(result: Validation) -> None:
         )
         for evidence in evidence_paths:
             result.require(
-                evidence == source["source_input_path"]
+                evidence == record.get("source_path")
                 or evidence.startswith(corpus_prefix),
                 f"bibliography {source_id}: field evidence belongs to another source: {evidence}",
             )

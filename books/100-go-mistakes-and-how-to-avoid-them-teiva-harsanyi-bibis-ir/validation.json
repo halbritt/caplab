@@ -1,0 +1,2443 @@
+{
+  "broken_links": [],
+  "chapter_count": 17,
+  "conversion_success": true,
+  "converter_exit_status": 0,
+  "converter_reported_failures": [],
+  "damaged_code": [
+    {
+      "fenced_block_count": 113,
+      "file": "chapters/006-chapter-2-code-and-project-organization.md",
+      "ocr_page_count": 385,
+      "reason": "fenced code was reconstructed from OCR and requires source-image fidelity review"
+    },
+    {
+      "fenced_block_count": 86,
+      "file": "chapters/007-chapter-3-data-types.md",
+      "ocr_page_count": 385,
+      "reason": "fenced code was reconstructed from OCR and requires source-image fidelity review"
+    },
+    {
+      "fenced_block_count": 40,
+      "file": "chapters/008-chapter-4-control-structures.md",
+      "ocr_page_count": 385,
+      "reason": "fenced code was reconstructed from OCR and requires source-image fidelity review"
+    },
+    {
+      "fenced_block_count": 35,
+      "file": "chapters/009-chapter-5-strings.md",
+      "ocr_page_count": 385,
+      "reason": "fenced code was reconstructed from OCR and requires source-image fidelity review"
+    },
+    {
+      "fenced_block_count": 41,
+      "file": "chapters/010-chapter-6-functions-and-methods.md",
+      "ocr_page_count": 385,
+      "reason": "fenced code was reconstructed from OCR and requires source-image fidelity review"
+    },
+    {
+      "fenced_block_count": 41,
+      "file": "chapters/011-chapter-7-error-management.md",
+      "ocr_page_count": 385,
+      "reason": "fenced code was reconstructed from OCR and requires source-image fidelity review"
+    },
+    {
+      "fenced_block_count": 36,
+      "file": "chapters/012-chapter-8-concurrency-foundations.md",
+      "ocr_page_count": 385,
+      "reason": "fenced code was reconstructed from OCR and requires source-image fidelity review"
+    },
+    {
+      "fenced_block_count": 77,
+      "file": "chapters/013-chapter-9-concurrency-practice.md",
+      "ocr_page_count": 385,
+      "reason": "fenced code was reconstructed from OCR and requires source-image fidelity review"
+    },
+    {
+      "fenced_block_count": 65,
+      "file": "chapters/014-chapter-10-the-standard-library.md",
+      "ocr_page_count": 385,
+      "reason": "fenced code was reconstructed from OCR and requires source-image fidelity review"
+    },
+    {
+      "fenced_block_count": 95,
+      "file": "chapters/015-chapter-11-testing.md",
+      "ocr_page_count": 385,
+      "reason": "fenced code was reconstructed from OCR and requires source-image fidelity review"
+    },
+    {
+      "fenced_block_count": 62,
+      "file": "chapters/016-chapter-12-optimizations.md",
+      "ocr_page_count": 385,
+      "reason": "fenced code was reconstructed from OCR and requires source-image fidelity review"
+    }
+  ],
+  "degraded_internal_links": [],
+  "duplicate_headings": {
+    "entries": [
+      {
+        "count": 3,
+        "file": "chapters/007-chapter-3-data-types.md",
+        "level": 3,
+        "title": "hash table representation: map[string]int"
+      }
+    ],
+    "scope": "all heading levels within chapters and level-one titles across chapters"
+  },
+  "empty_chapters": [],
+  "errors": [],
+  "low_confidence_chapter_boundaries": [
+    {
+      "confidence": "medium",
+      "evidence": "first visible document heading before the first logical boundary",
+      "title": "100 Go Mistakes and How to Avoid Them"
+    }
+  ],
+  "malformed_markdown": [],
+  "missing_assets": [],
+  "missing_chapters": [],
+  "missing_parts": [],
+  "missing_sections": [],
+  "ocr_usage": {
+    "llm_request_count": 0,
+    "ocr_pages": [
+      {
+        "page_id": 0,
+        "physical_page": 1
+      },
+      {
+        "page_id": 1,
+        "physical_page": 2
+      },
+      {
+        "page_id": 2,
+        "physical_page": 3
+      },
+      {
+        "page_id": 3,
+        "physical_page": 4
+      },
+      {
+        "page_id": 4,
+        "physical_page": 5
+      },
+      {
+        "page_id": 5,
+        "physical_page": 6
+      },
+      {
+        "page_id": 6,
+        "physical_page": 7
+      },
+      {
+        "page_id": 7,
+        "physical_page": 8
+      },
+      {
+        "page_id": 8,
+        "physical_page": 9
+      },
+      {
+        "page_id": 9,
+        "physical_page": 10
+      },
+      {
+        "page_id": 10,
+        "physical_page": 11
+      },
+      {
+        "page_id": 11,
+        "physical_page": 12
+      },
+      {
+        "page_id": 12,
+        "physical_page": 13
+      },
+      {
+        "page_id": 13,
+        "physical_page": 14
+      },
+      {
+        "page_id": 14,
+        "physical_page": 15
+      },
+      {
+        "page_id": 15,
+        "physical_page": 16
+      },
+      {
+        "page_id": 16,
+        "physical_page": 17
+      },
+      {
+        "page_id": 17,
+        "physical_page": 18
+      },
+      {
+        "page_id": 18,
+        "physical_page": 19
+      },
+      {
+        "page_id": 19,
+        "physical_page": 20
+      },
+      {
+        "page_id": 20,
+        "physical_page": 21
+      },
+      {
+        "page_id": 21,
+        "physical_page": 22
+      },
+      {
+        "page_id": 22,
+        "physical_page": 23
+      },
+      {
+        "page_id": 23,
+        "physical_page": 24
+      },
+      {
+        "page_id": 24,
+        "physical_page": 25
+      },
+      {
+        "page_id": 25,
+        "physical_page": 26
+      },
+      {
+        "page_id": 26,
+        "physical_page": 27
+      },
+      {
+        "page_id": 27,
+        "physical_page": 28
+      },
+      {
+        "page_id": 28,
+        "physical_page": 29
+      },
+      {
+        "page_id": 29,
+        "physical_page": 30
+      },
+      {
+        "page_id": 30,
+        "physical_page": 31
+      },
+      {
+        "page_id": 31,
+        "physical_page": 32
+      },
+      {
+        "page_id": 32,
+        "physical_page": 33
+      },
+      {
+        "page_id": 33,
+        "physical_page": 34
+      },
+      {
+        "page_id": 34,
+        "physical_page": 35
+      },
+      {
+        "page_id": 35,
+        "physical_page": 36
+      },
+      {
+        "page_id": 36,
+        "physical_page": 37
+      },
+      {
+        "page_id": 37,
+        "physical_page": 38
+      },
+      {
+        "page_id": 38,
+        "physical_page": 39
+      },
+      {
+        "page_id": 39,
+        "physical_page": 40
+      },
+      {
+        "page_id": 40,
+        "physical_page": 41
+      },
+      {
+        "page_id": 41,
+        "physical_page": 42
+      },
+      {
+        "page_id": 42,
+        "physical_page": 43
+      },
+      {
+        "page_id": 43,
+        "physical_page": 44
+      },
+      {
+        "page_id": 44,
+        "physical_page": 45
+      },
+      {
+        "page_id": 45,
+        "physical_page": 46
+      },
+      {
+        "page_id": 46,
+        "physical_page": 47
+      },
+      {
+        "page_id": 47,
+        "physical_page": 48
+      },
+      {
+        "page_id": 48,
+        "physical_page": 49
+      },
+      {
+        "page_id": 49,
+        "physical_page": 50
+      },
+      {
+        "page_id": 50,
+        "physical_page": 51
+      },
+      {
+        "page_id": 51,
+        "physical_page": 52
+      },
+      {
+        "page_id": 52,
+        "physical_page": 53
+      },
+      {
+        "page_id": 53,
+        "physical_page": 54
+      },
+      {
+        "page_id": 54,
+        "physical_page": 55
+      },
+      {
+        "page_id": 55,
+        "physical_page": 56
+      },
+      {
+        "page_id": 56,
+        "physical_page": 57
+      },
+      {
+        "page_id": 57,
+        "physical_page": 58
+      },
+      {
+        "page_id": 58,
+        "physical_page": 59
+      },
+      {
+        "page_id": 59,
+        "physical_page": 60
+      },
+      {
+        "page_id": 60,
+        "physical_page": 61
+      },
+      {
+        "page_id": 61,
+        "physical_page": 62
+      },
+      {
+        "page_id": 62,
+        "physical_page": 63
+      },
+      {
+        "page_id": 63,
+        "physical_page": 64
+      },
+      {
+        "page_id": 64,
+        "physical_page": 65
+      },
+      {
+        "page_id": 65,
+        "physical_page": 66
+      },
+      {
+        "page_id": 66,
+        "physical_page": 67
+      },
+      {
+        "page_id": 67,
+        "physical_page": 68
+      },
+      {
+        "page_id": 68,
+        "physical_page": 69
+      },
+      {
+        "page_id": 69,
+        "physical_page": 70
+      },
+      {
+        "page_id": 70,
+        "physical_page": 71
+      },
+      {
+        "page_id": 71,
+        "physical_page": 72
+      },
+      {
+        "page_id": 72,
+        "physical_page": 73
+      },
+      {
+        "page_id": 73,
+        "physical_page": 74
+      },
+      {
+        "page_id": 74,
+        "physical_page": 75
+      },
+      {
+        "page_id": 75,
+        "physical_page": 76
+      },
+      {
+        "page_id": 76,
+        "physical_page": 77
+      },
+      {
+        "page_id": 77,
+        "physical_page": 78
+      },
+      {
+        "page_id": 78,
+        "physical_page": 79
+      },
+      {
+        "page_id": 79,
+        "physical_page": 80
+      },
+      {
+        "page_id": 80,
+        "physical_page": 81
+      },
+      {
+        "page_id": 81,
+        "physical_page": 82
+      },
+      {
+        "page_id": 82,
+        "physical_page": 83
+      },
+      {
+        "page_id": 83,
+        "physical_page": 84
+      },
+      {
+        "page_id": 84,
+        "physical_page": 85
+      },
+      {
+        "page_id": 85,
+        "physical_page": 86
+      },
+      {
+        "page_id": 86,
+        "physical_page": 87
+      },
+      {
+        "page_id": 87,
+        "physical_page": 88
+      },
+      {
+        "page_id": 88,
+        "physical_page": 89
+      },
+      {
+        "page_id": 89,
+        "physical_page": 90
+      },
+      {
+        "page_id": 90,
+        "physical_page": 91
+      },
+      {
+        "page_id": 91,
+        "physical_page": 92
+      },
+      {
+        "page_id": 92,
+        "physical_page": 93
+      },
+      {
+        "page_id": 93,
+        "physical_page": 94
+      },
+      {
+        "page_id": 94,
+        "physical_page": 95
+      },
+      {
+        "page_id": 95,
+        "physical_page": 96
+      },
+      {
+        "page_id": 96,
+        "physical_page": 97
+      },
+      {
+        "page_id": 97,
+        "physical_page": 98
+      },
+      {
+        "page_id": 98,
+        "physical_page": 99
+      },
+      {
+        "page_id": 99,
+        "physical_page": 100
+      },
+      {
+        "page_id": 100,
+        "physical_page": 101
+      },
+      {
+        "page_id": 101,
+        "physical_page": 102
+      },
+      {
+        "page_id": 102,
+        "physical_page": 103
+      },
+      {
+        "page_id": 103,
+        "physical_page": 104
+      },
+      {
+        "page_id": 104,
+        "physical_page": 105
+      },
+      {
+        "page_id": 105,
+        "physical_page": 106
+      },
+      {
+        "page_id": 106,
+        "physical_page": 107
+      },
+      {
+        "page_id": 107,
+        "physical_page": 108
+      },
+      {
+        "page_id": 108,
+        "physical_page": 109
+      },
+      {
+        "page_id": 109,
+        "physical_page": 110
+      },
+      {
+        "page_id": 110,
+        "physical_page": 111
+      },
+      {
+        "page_id": 111,
+        "physical_page": 112
+      },
+      {
+        "page_id": 112,
+        "physical_page": 113
+      },
+      {
+        "page_id": 113,
+        "physical_page": 114
+      },
+      {
+        "page_id": 114,
+        "physical_page": 115
+      },
+      {
+        "page_id": 115,
+        "physical_page": 116
+      },
+      {
+        "page_id": 116,
+        "physical_page": 117
+      },
+      {
+        "page_id": 117,
+        "physical_page": 118
+      },
+      {
+        "page_id": 118,
+        "physical_page": 119
+      },
+      {
+        "page_id": 119,
+        "physical_page": 120
+      },
+      {
+        "page_id": 120,
+        "physical_page": 121
+      },
+      {
+        "page_id": 121,
+        "physical_page": 122
+      },
+      {
+        "page_id": 122,
+        "physical_page": 123
+      },
+      {
+        "page_id": 123,
+        "physical_page": 124
+      },
+      {
+        "page_id": 124,
+        "physical_page": 125
+      },
+      {
+        "page_id": 125,
+        "physical_page": 126
+      },
+      {
+        "page_id": 126,
+        "physical_page": 127
+      },
+      {
+        "page_id": 127,
+        "physical_page": 128
+      },
+      {
+        "page_id": 128,
+        "physical_page": 129
+      },
+      {
+        "page_id": 129,
+        "physical_page": 130
+      },
+      {
+        "page_id": 130,
+        "physical_page": 131
+      },
+      {
+        "page_id": 131,
+        "physical_page": 132
+      },
+      {
+        "page_id": 132,
+        "physical_page": 133
+      },
+      {
+        "page_id": 133,
+        "physical_page": 134
+      },
+      {
+        "page_id": 134,
+        "physical_page": 135
+      },
+      {
+        "page_id": 135,
+        "physical_page": 136
+      },
+      {
+        "page_id": 136,
+        "physical_page": 137
+      },
+      {
+        "page_id": 137,
+        "physical_page": 138
+      },
+      {
+        "page_id": 138,
+        "physical_page": 139
+      },
+      {
+        "page_id": 139,
+        "physical_page": 140
+      },
+      {
+        "page_id": 140,
+        "physical_page": 141
+      },
+      {
+        "page_id": 141,
+        "physical_page": 142
+      },
+      {
+        "page_id": 142,
+        "physical_page": 143
+      },
+      {
+        "page_id": 143,
+        "physical_page": 144
+      },
+      {
+        "page_id": 144,
+        "physical_page": 145
+      },
+      {
+        "page_id": 145,
+        "physical_page": 146
+      },
+      {
+        "page_id": 146,
+        "physical_page": 147
+      },
+      {
+        "page_id": 147,
+        "physical_page": 148
+      },
+      {
+        "page_id": 148,
+        "physical_page": 149
+      },
+      {
+        "page_id": 149,
+        "physical_page": 150
+      },
+      {
+        "page_id": 150,
+        "physical_page": 151
+      },
+      {
+        "page_id": 151,
+        "physical_page": 152
+      },
+      {
+        "page_id": 152,
+        "physical_page": 153
+      },
+      {
+        "page_id": 153,
+        "physical_page": 154
+      },
+      {
+        "page_id": 154,
+        "physical_page": 155
+      },
+      {
+        "page_id": 155,
+        "physical_page": 156
+      },
+      {
+        "page_id": 156,
+        "physical_page": 157
+      },
+      {
+        "page_id": 157,
+        "physical_page": 158
+      },
+      {
+        "page_id": 158,
+        "physical_page": 159
+      },
+      {
+        "page_id": 159,
+        "physical_page": 160
+      },
+      {
+        "page_id": 160,
+        "physical_page": 161
+      },
+      {
+        "page_id": 161,
+        "physical_page": 162
+      },
+      {
+        "page_id": 162,
+        "physical_page": 163
+      },
+      {
+        "page_id": 163,
+        "physical_page": 164
+      },
+      {
+        "page_id": 164,
+        "physical_page": 165
+      },
+      {
+        "page_id": 165,
+        "physical_page": 166
+      },
+      {
+        "page_id": 166,
+        "physical_page": 167
+      },
+      {
+        "page_id": 167,
+        "physical_page": 168
+      },
+      {
+        "page_id": 168,
+        "physical_page": 169
+      },
+      {
+        "page_id": 169,
+        "physical_page": 170
+      },
+      {
+        "page_id": 170,
+        "physical_page": 171
+      },
+      {
+        "page_id": 171,
+        "physical_page": 172
+      },
+      {
+        "page_id": 172,
+        "physical_page": 173
+      },
+      {
+        "page_id": 173,
+        "physical_page": 174
+      },
+      {
+        "page_id": 174,
+        "physical_page": 175
+      },
+      {
+        "page_id": 175,
+        "physical_page": 176
+      },
+      {
+        "page_id": 176,
+        "physical_page": 177
+      },
+      {
+        "page_id": 177,
+        "physical_page": 178
+      },
+      {
+        "page_id": 178,
+        "physical_page": 179
+      },
+      {
+        "page_id": 179,
+        "physical_page": 180
+      },
+      {
+        "page_id": 180,
+        "physical_page": 181
+      },
+      {
+        "page_id": 181,
+        "physical_page": 182
+      },
+      {
+        "page_id": 182,
+        "physical_page": 183
+      },
+      {
+        "page_id": 183,
+        "physical_page": 184
+      },
+      {
+        "page_id": 184,
+        "physical_page": 185
+      },
+      {
+        "page_id": 185,
+        "physical_page": 186
+      },
+      {
+        "page_id": 186,
+        "physical_page": 187
+      },
+      {
+        "page_id": 187,
+        "physical_page": 188
+      },
+      {
+        "page_id": 188,
+        "physical_page": 189
+      },
+      {
+        "page_id": 189,
+        "physical_page": 190
+      },
+      {
+        "page_id": 190,
+        "physical_page": 191
+      },
+      {
+        "page_id": 191,
+        "physical_page": 192
+      },
+      {
+        "page_id": 192,
+        "physical_page": 193
+      },
+      {
+        "page_id": 193,
+        "physical_page": 194
+      },
+      {
+        "page_id": 194,
+        "physical_page": 195
+      },
+      {
+        "page_id": 195,
+        "physical_page": 196
+      },
+      {
+        "page_id": 196,
+        "physical_page": 197
+      },
+      {
+        "page_id": 197,
+        "physical_page": 198
+      },
+      {
+        "page_id": 198,
+        "physical_page": 199
+      },
+      {
+        "page_id": 199,
+        "physical_page": 200
+      },
+      {
+        "page_id": 200,
+        "physical_page": 201
+      },
+      {
+        "page_id": 201,
+        "physical_page": 202
+      },
+      {
+        "page_id": 202,
+        "physical_page": 203
+      },
+      {
+        "page_id": 203,
+        "physical_page": 204
+      },
+      {
+        "page_id": 204,
+        "physical_page": 205
+      },
+      {
+        "page_id": 205,
+        "physical_page": 206
+      },
+      {
+        "page_id": 206,
+        "physical_page": 207
+      },
+      {
+        "page_id": 207,
+        "physical_page": 208
+      },
+      {
+        "page_id": 208,
+        "physical_page": 209
+      },
+      {
+        "page_id": 209,
+        "physical_page": 210
+      },
+      {
+        "page_id": 210,
+        "physical_page": 211
+      },
+      {
+        "page_id": 211,
+        "physical_page": 212
+      },
+      {
+        "page_id": 212,
+        "physical_page": 213
+      },
+      {
+        "page_id": 213,
+        "physical_page": 214
+      },
+      {
+        "page_id": 214,
+        "physical_page": 215
+      },
+      {
+        "page_id": 215,
+        "physical_page": 216
+      },
+      {
+        "page_id": 216,
+        "physical_page": 217
+      },
+      {
+        "page_id": 217,
+        "physical_page": 218
+      },
+      {
+        "page_id": 218,
+        "physical_page": 219
+      },
+      {
+        "page_id": 219,
+        "physical_page": 220
+      },
+      {
+        "page_id": 220,
+        "physical_page": 221
+      },
+      {
+        "page_id": 221,
+        "physical_page": 222
+      },
+      {
+        "page_id": 222,
+        "physical_page": 223
+      },
+      {
+        "page_id": 223,
+        "physical_page": 224
+      },
+      {
+        "page_id": 224,
+        "physical_page": 225
+      },
+      {
+        "page_id": 225,
+        "physical_page": 226
+      },
+      {
+        "page_id": 226,
+        "physical_page": 227
+      },
+      {
+        "page_id": 227,
+        "physical_page": 228
+      },
+      {
+        "page_id": 228,
+        "physical_page": 229
+      },
+      {
+        "page_id": 229,
+        "physical_page": 230
+      },
+      {
+        "page_id": 230,
+        "physical_page": 231
+      },
+      {
+        "page_id": 231,
+        "physical_page": 232
+      },
+      {
+        "page_id": 232,
+        "physical_page": 233
+      },
+      {
+        "page_id": 233,
+        "physical_page": 234
+      },
+      {
+        "page_id": 234,
+        "physical_page": 235
+      },
+      {
+        "page_id": 235,
+        "physical_page": 236
+      },
+      {
+        "page_id": 236,
+        "physical_page": 237
+      },
+      {
+        "page_id": 237,
+        "physical_page": 238
+      },
+      {
+        "page_id": 238,
+        "physical_page": 239
+      },
+      {
+        "page_id": 239,
+        "physical_page": 240
+      },
+      {
+        "page_id": 240,
+        "physical_page": 241
+      },
+      {
+        "page_id": 241,
+        "physical_page": 242
+      },
+      {
+        "page_id": 242,
+        "physical_page": 243
+      },
+      {
+        "page_id": 243,
+        "physical_page": 244
+      },
+      {
+        "page_id": 244,
+        "physical_page": 245
+      },
+      {
+        "page_id": 245,
+        "physical_page": 246
+      },
+      {
+        "page_id": 246,
+        "physical_page": 247
+      },
+      {
+        "page_id": 247,
+        "physical_page": 248
+      },
+      {
+        "page_id": 248,
+        "physical_page": 249
+      },
+      {
+        "page_id": 249,
+        "physical_page": 250
+      },
+      {
+        "page_id": 250,
+        "physical_page": 251
+      },
+      {
+        "page_id": 251,
+        "physical_page": 252
+      },
+      {
+        "page_id": 252,
+        "physical_page": 253
+      },
+      {
+        "page_id": 253,
+        "physical_page": 254
+      },
+      {
+        "page_id": 254,
+        "physical_page": 255
+      },
+      {
+        "page_id": 255,
+        "physical_page": 256
+      },
+      {
+        "page_id": 256,
+        "physical_page": 257
+      },
+      {
+        "page_id": 257,
+        "physical_page": 258
+      },
+      {
+        "page_id": 258,
+        "physical_page": 259
+      },
+      {
+        "page_id": 259,
+        "physical_page": 260
+      },
+      {
+        "page_id": 260,
+        "physical_page": 261
+      },
+      {
+        "page_id": 261,
+        "physical_page": 262
+      },
+      {
+        "page_id": 262,
+        "physical_page": 263
+      },
+      {
+        "page_id": 263,
+        "physical_page": 264
+      },
+      {
+        "page_id": 264,
+        "physical_page": 265
+      },
+      {
+        "page_id": 265,
+        "physical_page": 266
+      },
+      {
+        "page_id": 266,
+        "physical_page": 267
+      },
+      {
+        "page_id": 267,
+        "physical_page": 268
+      },
+      {
+        "page_id": 268,
+        "physical_page": 269
+      },
+      {
+        "page_id": 269,
+        "physical_page": 270
+      },
+      {
+        "page_id": 270,
+        "physical_page": 271
+      },
+      {
+        "page_id": 271,
+        "physical_page": 272
+      },
+      {
+        "page_id": 272,
+        "physical_page": 273
+      },
+      {
+        "page_id": 273,
+        "physical_page": 274
+      },
+      {
+        "page_id": 274,
+        "physical_page": 275
+      },
+      {
+        "page_id": 275,
+        "physical_page": 276
+      },
+      {
+        "page_id": 276,
+        "physical_page": 277
+      },
+      {
+        "page_id": 277,
+        "physical_page": 278
+      },
+      {
+        "page_id": 278,
+        "physical_page": 279
+      },
+      {
+        "page_id": 279,
+        "physical_page": 280
+      },
+      {
+        "page_id": 280,
+        "physical_page": 281
+      },
+      {
+        "page_id": 281,
+        "physical_page": 282
+      },
+      {
+        "page_id": 282,
+        "physical_page": 283
+      },
+      {
+        "page_id": 283,
+        "physical_page": 284
+      },
+      {
+        "page_id": 284,
+        "physical_page": 285
+      },
+      {
+        "page_id": 285,
+        "physical_page": 286
+      },
+      {
+        "page_id": 286,
+        "physical_page": 287
+      },
+      {
+        "page_id": 287,
+        "physical_page": 288
+      },
+      {
+        "page_id": 288,
+        "physical_page": 289
+      },
+      {
+        "page_id": 289,
+        "physical_page": 290
+      },
+      {
+        "page_id": 290,
+        "physical_page": 291
+      },
+      {
+        "page_id": 291,
+        "physical_page": 292
+      },
+      {
+        "page_id": 292,
+        "physical_page": 293
+      },
+      {
+        "page_id": 293,
+        "physical_page": 294
+      },
+      {
+        "page_id": 294,
+        "physical_page": 295
+      },
+      {
+        "page_id": 295,
+        "physical_page": 296
+      },
+      {
+        "page_id": 296,
+        "physical_page": 297
+      },
+      {
+        "page_id": 297,
+        "physical_page": 298
+      },
+      {
+        "page_id": 298,
+        "physical_page": 299
+      },
+      {
+        "page_id": 299,
+        "physical_page": 300
+      },
+      {
+        "page_id": 300,
+        "physical_page": 301
+      },
+      {
+        "page_id": 301,
+        "physical_page": 302
+      },
+      {
+        "page_id": 302,
+        "physical_page": 303
+      },
+      {
+        "page_id": 303,
+        "physical_page": 304
+      },
+      {
+        "page_id": 304,
+        "physical_page": 305
+      },
+      {
+        "page_id": 305,
+        "physical_page": 306
+      },
+      {
+        "page_id": 306,
+        "physical_page": 307
+      },
+      {
+        "page_id": 307,
+        "physical_page": 308
+      },
+      {
+        "page_id": 308,
+        "physical_page": 309
+      },
+      {
+        "page_id": 309,
+        "physical_page": 310
+      },
+      {
+        "page_id": 310,
+        "physical_page": 311
+      },
+      {
+        "page_id": 311,
+        "physical_page": 312
+      },
+      {
+        "page_id": 312,
+        "physical_page": 313
+      },
+      {
+        "page_id": 313,
+        "physical_page": 314
+      },
+      {
+        "page_id": 314,
+        "physical_page": 315
+      },
+      {
+        "page_id": 315,
+        "physical_page": 316
+      },
+      {
+        "page_id": 316,
+        "physical_page": 317
+      },
+      {
+        "page_id": 317,
+        "physical_page": 318
+      },
+      {
+        "page_id": 318,
+        "physical_page": 319
+      },
+      {
+        "page_id": 319,
+        "physical_page": 320
+      },
+      {
+        "page_id": 320,
+        "physical_page": 321
+      },
+      {
+        "page_id": 321,
+        "physical_page": 322
+      },
+      {
+        "page_id": 322,
+        "physical_page": 323
+      },
+      {
+        "page_id": 323,
+        "physical_page": 324
+      },
+      {
+        "page_id": 324,
+        "physical_page": 325
+      },
+      {
+        "page_id": 325,
+        "physical_page": 326
+      },
+      {
+        "page_id": 326,
+        "physical_page": 327
+      },
+      {
+        "page_id": 327,
+        "physical_page": 328
+      },
+      {
+        "page_id": 328,
+        "physical_page": 329
+      },
+      {
+        "page_id": 329,
+        "physical_page": 330
+      },
+      {
+        "page_id": 330,
+        "physical_page": 331
+      },
+      {
+        "page_id": 331,
+        "physical_page": 332
+      },
+      {
+        "page_id": 332,
+        "physical_page": 333
+      },
+      {
+        "page_id": 333,
+        "physical_page": 334
+      },
+      {
+        "page_id": 334,
+        "physical_page": 335
+      },
+      {
+        "page_id": 335,
+        "physical_page": 336
+      },
+      {
+        "page_id": 336,
+        "physical_page": 337
+      },
+      {
+        "page_id": 337,
+        "physical_page": 338
+      },
+      {
+        "page_id": 338,
+        "physical_page": 339
+      },
+      {
+        "page_id": 339,
+        "physical_page": 340
+      },
+      {
+        "page_id": 340,
+        "physical_page": 341
+      },
+      {
+        "page_id": 341,
+        "physical_page": 342
+      },
+      {
+        "page_id": 342,
+        "physical_page": 343
+      },
+      {
+        "page_id": 343,
+        "physical_page": 344
+      },
+      {
+        "page_id": 344,
+        "physical_page": 345
+      },
+      {
+        "page_id": 345,
+        "physical_page": 346
+      },
+      {
+        "page_id": 346,
+        "physical_page": 347
+      },
+      {
+        "page_id": 347,
+        "physical_page": 348
+      },
+      {
+        "page_id": 348,
+        "physical_page": 349
+      },
+      {
+        "page_id": 349,
+        "physical_page": 350
+      },
+      {
+        "page_id": 350,
+        "physical_page": 351
+      },
+      {
+        "page_id": 351,
+        "physical_page": 352
+      },
+      {
+        "page_id": 352,
+        "physical_page": 353
+      },
+      {
+        "page_id": 353,
+        "physical_page": 354
+      },
+      {
+        "page_id": 354,
+        "physical_page": 355
+      },
+      {
+        "page_id": 355,
+        "physical_page": 356
+      },
+      {
+        "page_id": 356,
+        "physical_page": 357
+      },
+      {
+        "page_id": 357,
+        "physical_page": 358
+      },
+      {
+        "page_id": 358,
+        "physical_page": 359
+      },
+      {
+        "page_id": 359,
+        "physical_page": 360
+      },
+      {
+        "page_id": 360,
+        "physical_page": 361
+      },
+      {
+        "page_id": 361,
+        "physical_page": 362
+      },
+      {
+        "page_id": 362,
+        "physical_page": 363
+      },
+      {
+        "page_id": 363,
+        "physical_page": 364
+      },
+      {
+        "page_id": 364,
+        "physical_page": 365
+      },
+      {
+        "page_id": 365,
+        "physical_page": 366
+      },
+      {
+        "page_id": 366,
+        "physical_page": 367
+      },
+      {
+        "page_id": 367,
+        "physical_page": 368
+      },
+      {
+        "page_id": 368,
+        "physical_page": 369
+      },
+      {
+        "page_id": 369,
+        "physical_page": 370
+      },
+      {
+        "page_id": 370,
+        "physical_page": 371
+      },
+      {
+        "page_id": 371,
+        "physical_page": 372
+      },
+      {
+        "page_id": 372,
+        "physical_page": 373
+      },
+      {
+        "page_id": 373,
+        "physical_page": 374
+      },
+      {
+        "page_id": 374,
+        "physical_page": 375
+      },
+      {
+        "page_id": 375,
+        "physical_page": 376
+      },
+      {
+        "page_id": 376,
+        "physical_page": 377
+      },
+      {
+        "page_id": 377,
+        "physical_page": 378
+      },
+      {
+        "page_id": 378,
+        "physical_page": 379
+      },
+      {
+        "page_id": 379,
+        "physical_page": 380
+      },
+      {
+        "page_id": 380,
+        "physical_page": 381
+      },
+      {
+        "page_id": 381,
+        "physical_page": 382
+      },
+      {
+        "page_id": 382,
+        "physical_page": 383
+      },
+      {
+        "page_id": 383,
+        "physical_page": 384
+      },
+      {
+        "page_id": 384,
+        "physical_page": 385
+      }
+    ],
+    "text_extraction_methods": {
+      "surya": 385
+    },
+    "used": true
+  },
+  "page_furniture_removed": [],
+  "schema_version": "books-corpus/1",
+  "source_section_warnings": [],
+  "structural_dividers": [],
+  "unresolved_navigation_anchors": [],
+  "unresolved_tables": [
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 79,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 82,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 84,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 92,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 101,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 103,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 107,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 109,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 111,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 112,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 113,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 114,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 115,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 116,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 117,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 118,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 119,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 121,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 122,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 123,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 124,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 125,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 126,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 128,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 129,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 130,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 131,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 132,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 133,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 134,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 140,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 141,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 142,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 143,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 144,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 145,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 146,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 148,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 149,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 150,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 151,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 152,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 153,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 154,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 155,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 156,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 158,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 159,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 160,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/001-100-go-mistakes-and-how-to-avoid-them.md",
+      "line": 161,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/006-chapter-2-code-and-project-organization.md",
+      "line": 1743,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/006-chapter-2-code-and-project-organization.md",
+      "line": 1748,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/006-chapter-2-code-and-project-organization.md",
+      "line": 1749,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/007-chapter-3-data-types.md",
+      "line": 1111,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/007-chapter-3-data-types.md",
+      "line": 1114,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/007-chapter-3-data-types.md",
+      "line": 1115,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/007-chapter-3-data-types.md",
+      "line": 1116,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/007-chapter-3-data-types.md",
+      "line": 1117,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/007-chapter-3-data-types.md",
+      "line": 1118,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/007-chapter-3-data-types.md",
+      "line": 1119,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/007-chapter-3-data-types.md",
+      "line": 1120,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/007-chapter-3-data-types.md",
+      "line": 1121,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/011-chapter-7-error-management.md",
+      "line": 224,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/012-chapter-8-concurrency-foundations.md",
+      "line": 344,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/012-chapter-8-concurrency-foundations.md",
+      "line": 345,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/012-chapter-8-concurrency-foundations.md",
+      "line": 346,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/012-chapter-8-concurrency-foundations.md",
+      "line": 347,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/012-chapter-8-concurrency-foundations.md",
+      "line": 348,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/012-chapter-8-concurrency-foundations.md",
+      "line": 349,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/012-chapter-8-concurrency-foundations.md",
+      "line": 350,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/012-chapter-8-concurrency-foundations.md",
+      "line": 358,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/012-chapter-8-concurrency-foundations.md",
+      "line": 359,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/012-chapter-8-concurrency-foundations.md",
+      "line": 360,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/012-chapter-8-concurrency-foundations.md",
+      "line": 361,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/012-chapter-8-concurrency-foundations.md",
+      "line": 362,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/012-chapter-8-concurrency-foundations.md",
+      "line": 363,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/012-chapter-8-concurrency-foundations.md",
+      "line": 364,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/012-chapter-8-concurrency-foundations.md",
+      "line": 378,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/012-chapter-8-concurrency-foundations.md",
+      "line": 379,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/012-chapter-8-concurrency-foundations.md",
+      "line": 380,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 36,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 43,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 49,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 50,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 51,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 52,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 54,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 55,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 56,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 59,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 60,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 83,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 86,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 99,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 123,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 149,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 162,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 163,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 179,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 180,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 181,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 201,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 202,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 203,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 213,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 214,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 216,
+      "reasons": [
+        "inline HTML line breaks in table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 233,
+      "reasons": [
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 235,
+      "reasons": [
+        "empty table row",
+        "empty table cell"
+      ]
+    },
+    {
+      "file": "chapters/017-index.md",
+      "line": 236,
+      "reasons": [
+        "empty table cell"
+      ]
+    }
+  ],
+  "warnings": [
+    "original source PDF airlock verdict was DANGEROUS; Marker received a CDR-CLEAN sandboxed raster derivative",
+    "110 probable unresolved table issue(s) were preserved",
+    "11 probable code-conversion issue(s) were preserved",
+    "1 duplicate heading pattern(s) remain for review",
+    "1 chapter boundary or boundaries require conservative inference",
+    "converter supplied no reliable language identifiers for fenced code blocks"
+  ]
+}

@@ -1,0 +1,2779 @@
+{
+  "attempts": [
+    {
+      "argv": [
+        "bash",
+        "/home/halbritt/git/skills/skills/marker-convert/scripts/convert-peecee.sh",
+        ".book-work/architecture-patterns-with-python/cdr/architecture-patterns-with-python-b5b423b766eb.pdf",
+        "--format",
+        "markdown",
+        "--out",
+        ".book-work/architecture-patterns-with-python/marker-peecee",
+        "--host",
+        "peecee"
+      ],
+      "attempt_number": 1,
+      "command": "bash /home/halbritt/git/skills/skills/marker-convert/scripts/convert-peecee.sh .book-work/architecture-patterns-with-python/cdr/architecture-patterns-with-python-b5b423b766eb.pdf --format markdown --out .book-work/architecture-patterns-with-python/marker-peecee --host peecee",
+      "execution_target": "peecee",
+      "exit_status": 0,
+      "failures": [],
+      "fresh_output_validated": true,
+      "freshness_error": null,
+      "warnings": [],
+      "working_directory": "/home/halbritt/git/books"
+    }
+  ],
+  "chapter_boundary_evidence": [
+    {
+      "anchor": null,
+      "body_line": 694,
+      "number": 1,
+      "source": "explicit body chapter heading",
+      "title": "Domain Modeling"
+    },
+    {
+      "anchor": null,
+      "body_line": 1260,
+      "number": 2,
+      "source": "explicit body chapter heading",
+      "title": "Repository Pattern"
+    },
+    {
+      "anchor": null,
+      "body_line": 1772,
+      "number": 3,
+      "source": "explicit body chapter heading",
+      "title": "A Brief Interlude: On Coupling and Abstractions"
+    },
+    {
+      "anchor": null,
+      "body_line": 2178,
+      "number": 4,
+      "source": "explicit body chapter heading",
+      "title": "Our First Use Case: Flask API and Service Layer"
+    },
+    {
+      "anchor": null,
+      "body_line": 2687,
+      "number": 5,
+      "source": "explicit body chapter heading",
+      "title": "TDD in High Gear and Low Gear"
+    },
+    {
+      "anchor": null,
+      "body_line": 3029,
+      "number": 6,
+      "source": "explicit body chapter heading",
+      "title": "Unit of Work Pattern"
+    },
+    {
+      "anchor": null,
+      "body_line": 3433,
+      "number": 7,
+      "source": "explicit body chapter heading",
+      "title": "Aggregates and Consistency Boundaries"
+    },
+    {
+      "anchor": null,
+      "body_line": 3960,
+      "number": 8,
+      "source": "explicit body chapter heading",
+      "title": "Events and the Message Bus"
+    },
+    {
+      "anchor": null,
+      "body_line": 4452,
+      "number": 9,
+      "source": "explicit body chapter heading",
+      "title": "Going to Town on the Message Bus"
+    },
+    {
+      "anchor": null,
+      "body_line": 5049,
+      "number": 10,
+      "source": "explicit body chapter heading",
+      "title": "Commands and Command Handler"
+    },
+    {
+      "anchor": null,
+      "body_line": 5387,
+      "number": 11,
+      "source": "explicit body chapter heading",
+      "title": "Event-Driven Architecture: Using Events to Integrate Microservices"
+    },
+    {
+      "anchor": null,
+      "body_line": 5678,
+      "number": 12,
+      "source": "explicit body chapter heading",
+      "title": "Command-Query Responsibility Segregation (CQRS)"
+    },
+    {
+      "anchor": null,
+      "body_line": 6161,
+      "number": 13,
+      "source": "explicit body chapter heading",
+      "title": "Dependency Injection (and Bootstrapping)"
+    }
+  ],
+  "collapsed_duplicate_headings": [],
+  "command_argv": [
+    "bash",
+    "/home/halbritt/git/skills/skills/marker-convert/scripts/convert-peecee.sh",
+    ".book-work/architecture-patterns-with-python/cdr/architecture-patterns-with-python-b5b423b766eb.pdf",
+    "--format",
+    "markdown",
+    "--out",
+    ".book-work/architecture-patterns-with-python/marker-peecee",
+    "--host",
+    "peecee"
+  ],
+  "command_executed": "bash /home/halbritt/git/skills/skills/marker-convert/scripts/convert-peecee.sh .book-work/architecture-patterns-with-python/cdr/architecture-patterns-with-python-b5b423b766eb.pdf --format markdown --out .book-work/architecture-patterns-with-python/marker-peecee --host peecee",
+  "content_author_line": null,
+  "conversion_options": {
+    "format": "markdown",
+    "host": "peecee"
+  },
+  "converter": "marker",
+  "converter_exit_status": 0,
+  "converter_version": "marker-pdf 1.10.2",
+  "degraded_internal_links": [],
+  "execution_target": "peecee",
+  "failures": [],
+  "fallbacks_used": [],
+  "generated_directories": [
+    "assets",
+    "chapters"
+  ],
+  "generated_files": {
+    "README.md": "e98fd996e1fc5d8f49ac13367d0900859a238bca9acf0312644e96e87638ae6e",
+    "assets/_page_0_Picture_3.jpeg": "8389da4f9b801a19a9b3ee797a5cd73d4d2363662a5ad63de423d15e2e0aeeb6",
+    "assets/_page_103_Figure_3.jpeg": "de6d21fa12d4a3b9e751f21decb1a182cdf80c8760637251258c4fb99457877c",
+    "assets/_page_103_Picture_4.jpeg": "a034b89e630dabfda477eddd883d095c7285fe02110f80a3c1c598ce764b9444",
+    "assets/_page_122_Picture_0.jpeg": "56b3cd92a21ba316c539d7adde777cdaae3b177c46e324ea17f10b703f11f769",
+    "assets/_page_124_Figure_0.jpeg": "d0586717eb492c5d9e4635e53f62d4625e4d684e82d0f4713e81aef0c00898c1",
+    "assets/_page_142_Figure_3.jpeg": "c1f08364d98ddd58c43f2fe33b3fc56969cb4be27163318adaa34d9368fd9010",
+    "assets/_page_143_Figure_0.jpeg": "91318e5fd4cfbe734164dc86e62420451365d57266ae45080d37879159bdcb11",
+    "assets/_page_144_Figure_0.jpeg": "d799646e57a52741d7306dc0188e8f5ec20739e5b1edfb7925220b22f0ba8d3b",
+    "assets/_page_153_Picture_0.jpeg": "1429b0300f478a466d50f71c0a3e3c2d5409da993bb6a01976d044232898e7b2",
+    "assets/_page_164_Figure_0.jpeg": "3dea6bc41140e79afaa162913fbdb23fe44de2eed912b57989eae76fa87408b0",
+    "assets/_page_166_Figure_0.jpeg": "a71e3ab95161b1e31a19f3585c467f67be4503cad00e99a1ee8b3ca640b1e24e",
+    "assets/_page_185_Picture_0.jpeg": "b583b8616681751b099fff256fd2e56c3501f6b5195ad155a656b2590a72bfc5",
+    "assets/_page_193_Picture_0.jpeg": "b4677527d829319470d2d37344aaadfdd064ba967f0d2e768e330c036ff598ca",
+    "assets/_page_194_Figure_0.jpeg": "e0e88d07560c61ce25a1cb34e1fb98b59323be8e245f77726b9cbc609661d855",
+    "assets/_page_203_Figure_0.jpeg": "8048f10980e06d10f7ea97369d50b25ae20133a0eabb5e127345d766c69c3c74",
+    "assets/_page_215_Figure_0.jpeg": "022b6b1b0eaf69849d53e4167d7c95a6c6fea35b9956448fb33aaa745da65118",
+    "assets/_page_220_Figure_0.jpeg": "2720e15357b88ab6d38950a529435f43d07f75baa84751eebd94600fcd34b68e",
+    "assets/_page_224_Figure_0.jpeg": "373b48c5e657802be23e32e5b8ee22b6e35251b136f3d9c668c625efd5efeb0c",
+    "assets/_page_247_Figure_0.jpeg": "c7dc88d704bacdac5c16a5f904a929e8684be6205e25d646509b5835f56225ef",
+    "assets/_page_249_Picture_0.jpeg": "e9b6d7c53d95131dd72338fab3c5e09c2e37f70005efa70b35452d56783beb4a",
+    "assets/_page_251_Figure_2.jpeg": "cf47d0a9449692e747432142ba4581ab17a4e656c4e3451a5987e94c9f0e0531",
+    "assets/_page_262_Figure_0.jpeg": "636915335d79b0be052be7322a687a19eac153434917a2f2d9764bb29ebecd22",
+    "assets/_page_291_Figure_0.jpeg": "995b2dd5b0e66e872ae37f61992373a84134ede25a03f0c05d97310ba2d92c5c",
+    "assets/_page_293_Figure_0.jpeg": "8a0594c6590e621b4f3284bb985538b5ea6b8271aad712a3a92a094b29b2ff14",
+    "assets/_page_294_Figure_1.jpeg": "8da0e794fbe3f01cc5e9081346526a93f5b769337a51cd410dfcf4d7ba0a60cb",
+    "assets/_page_295_Figure_3.jpeg": "e3c9835c614a74fdda0d5cfebae275daff95b4572fd3517e8423fe0fd4533b13",
+    "assets/_page_297_Figure_0.jpeg": "0ca35520fc6232e63c9a07fb00614573fe442c37040a6c3c75ccb394bb925532",
+    "assets/_page_301_Figure_0.jpeg": "a03ab6f9d8e334bf8e2e1429bde9e22d399485c30b55f660ae3a9690a35af462",
+    "assets/_page_310_Picture_0.jpeg": "900ee60b5c2a865b42fcab91e466b9990c0a8de140e22c57b4f7b564f3aa49fd",
+    "assets/_page_328_Figure_0.jpeg": "55b2a8a9d48c665d1b52a76a51a7c55fe286b4249fbd4b68ae14d07be8743f84",
+    "assets/_page_32_Picture_1.jpeg": "6443b325150c77d7453a39f46f5f2cd4e075456b05a0cb630a978b553cdd827d",
+    "assets/_page_335_Figure_0.jpeg": "e89404c5d1d8887c4d60363f6366feff257c7dde4403d3d3c4756ea327b38466",
+    "assets/_page_337_Figure_0.jpeg": "f84a6b9fbfa46303c92bd94dbf95d88ddaa9e87de5a57dee63cc104cd35e7920",
+    "assets/_page_343_Figure_0.jpeg": "d64c7ea6bee1479eaca6d55b0c8e63fcaf6168554d92d85bf6c15f9897938502",
+    "assets/_page_366_Figure_1.jpeg": "3338777f8be4d1c6dc18dffadaf137e8a691e07e77cebfa605143ac646f6c7b8",
+    "assets/_page_36_Figure_2.jpeg": "220624764ca42e9fe924e46fc75b5d43f0b3355a73a321fd5f15b2eb62238e54",
+    "assets/_page_373_Figure_0.jpeg": "6be677cf520b60d3ece3d702881244b6a425edb0d69b05eba7c8c24289884ccc",
+    "assets/_page_374_Figure_0.jpeg": "4f56e627852b81d4a92afe44bec0d41b810d5059da54146a99198abcc959c143",
+    "assets/_page_376_Figure_5.jpeg": "c9ad1eba054bf88d5bbab85515c8f07502aa70cec46c8c42ba5a565cd8c2ac07",
+    "assets/_page_377_Figure_0.jpeg": "1231abd11b6e21bafb65cc53488cdc3ecf527af41875a085ad2959a84d63f6b2",
+    "assets/_page_386_Figure_0.jpeg": "cf9f220c56c150f4f8466c2821579339b33a2517c0a798734b6a242e85193682",
+    "assets/_page_391_Figure_0.jpeg": "c5e4475225cd554ddc86970808de8b224e04d98d715929576b5442cb9f8a0efb",
+    "assets/_page_401_Picture_10.jpeg": "6ca15f9b139db94f74995d77da37d1fd2e604669bd174ed02a4be6f640550354",
+    "assets/_page_43_Figure_0.jpeg": "f2c13d8b3fbe006f8af39d065a52bb3eb088dbc72bd75041deafdb9baf659e22",
+    "assets/_page_46_Picture_0.jpeg": "8e45fcc787165d946b42efbb8f1853593964e169b0360b81d11809a254b2d0e7",
+    "assets/_page_51_Figure_0.jpeg": "e6c5ab6f7b953e056308e61f4ebaa727f01c941f06a1586ea89a9373567ac7e3",
+    "assets/_page_58_Picture_2.jpeg": "3f574fd8bf35ffdf2db004033c1b604c9c3ea87264614393e07c72d2c875a9fc",
+    "assets/_page_60_Figure_1.jpeg": "2ddf8f91ee90bea57f1c9436c761c99170ed17f91773aebf0f22ca6e7be3a3e2",
+    "assets/_page_71_Figure_0.jpeg": "f4bec490424820040c25f8ac018a267edd8b1dd150bde4cc07147cfcb3efc4e3",
+    "assets/_page_74_Figure_0.jpeg": "e30ec76f8d9c526ae67674b39c91dc4f2b4673f9d6c8e186388eaf4c5c346411",
+    "assets/_page_77_Figure_4.jpeg": "33d7785f98ab3a05c7060913f6ba4ddcc8911827162b4156f80b56715981f3c5",
+    "assets/_page_79_Picture_0.jpeg": "e148cfed2ed2b4881ba2af4393f5a95fa1f367ea571d79bceeb36b1d47c9e76b",
+    "assets/_page_80_Picture_2.jpeg": "511c98588d39b799a5687be8119b9bbef6d60be22514d09d3d355c00a5733ea6",
+    "assets/_page_89_Figure_2.jpeg": "d7dfc7354c463ee263e81fd444bf85bc07372cfb4b78cd61e9a61a680a03cfb5",
+    "assets/_page_99_Figure_0.jpeg": "b09922f1adc150d1bca2eec40cef88a7823ed736bbad799f9e497fea4a628d91",
+    "chapters/001-o-reilly.md": "5e2d12dfc9b6dcde2decc7150def289b42363886fa06245af2555cac64f69472",
+    "chapters/002-preface.md": "75c8007c1c1fd90684be9cb26ccfd8447ad24b4c8c88b69ef23778e4f628b000",
+    "chapters/003-acknowledgments.md": "040793c999b549faafecd7a290b94395963adf3dfc3a4a07de82d9f5d52c6c75",
+    "chapters/004-introduction.md": "1681560f5935728c37f74618a8dcd9e5e95d339188d981b63b1d8a099db30cc5",
+    "chapters/005-part-i-building-an-architecture-to-support-domain-modeling.md": "4af2942fb9d910a64ab5637dbecaa4671bd50486c589b2173c59a861d3fbb256",
+    "chapters/006-chapter-1-domain-modeling.md": "b28c670fc11c1fd84a4ed84cfb5704ffc5836f87158eaaa0b94509d4169368f2",
+    "chapters/007-chapter-2-repository-pattern.md": "2b9dee23ac1a58d20f7fc8af5a1e0a706743ae8c9aaceafcb678dd76493a1c0a",
+    "chapters/008-chapter-3-a-brief-interlude-on-coupling-and-abstractions.md": "1c7a0b36146ba4dafdd220a6152299d75dd749a204e9a953e93aa38c7d640ba2",
+    "chapters/009-chapter-4-our-first-use-case-flask-api-and-service-layer.md": "10e1ba4004222c8d03a8a5adc6ff62226b77b0d16fdbf12a0c25c52aec64747a",
+    "chapters/010-chapter-5-tdd-in-high-gear-and-low-gear.md": "a1f29defc0eb0c25982b25ab3d161e69cfb043499a16a9ee2c7ec9dd7816e492",
+    "chapters/011-chapter-6-unit-of-work-pattern.md": "df5cee54aef7464352782467e75f6626fc1482169790a5fcd85fbd2ccd584049",
+    "chapters/012-chapter-7-aggregates-and-consistency-boundaries.md": "04b9b169eb17b35d6046272c7d5f0118f9758145c5f2f450b4e873826fe152b2",
+    "chapters/013-part-i-recap.md": "cf936b1d82cffff3812dd17a3e8af8d99590a4359ed9be1e9cd77f8b69fd7068",
+    "chapters/014-part-ii-event-driven-architecture.md": "687a851bba11b057affdc58eb53a11adb7dfd1250c68c2afcf71576301c294c0",
+    "chapters/015-chapter-8-events-and-the-message-bus.md": "8d87958b3f008efc5edb4e532fe34290047c4bbf9193daf9743cbe814644faa3",
+    "chapters/016-chapter-9-going-to-town-on-the-message-bus.md": "82ddfd96e6cf500ced29a4a4b7ceb06f585972a8483d84ab930f4daa02a4fb61",
+    "chapters/017-chapter-10-commands-and-command-handler.md": "241aec20dc04892ed5de20fa0a05a020c306a13369291863a1cbe9f519e0c1b4",
+    "chapters/018-chapter-11-event-driven-architecture-using-events-to-integrate-microservices.md": "7cf8e80cb340ade577dc9605a1a26568e533a0f825a9cce931594f3433a2d607",
+    "chapters/019-chapter-12-command-query-responsibility-segregation-cqrs.md": "92ac8c8571986161b785ecbd587df79670a1e7c5eb14b389b97886414c1c62fc",
+    "chapters/020-chapter-13-dependency-injection-and-bootstrapping.md": "6133f08e7cd8385efa226ac735e03ad2983bcfca16b9bd94851c0491d0904b7e",
+    "chapters/021-epilogue.md": "0b81924cda134db6685f0e2182bd00fcc2356bfecb93f49f8076471d37f683be",
+    "chapters/022-appendix-a-summary-diagram-and-table.md": "2faafc30d9f552a68f60644d5fc1e617dbdf97a8d8aec10151e0555ac30dcaae",
+    "chapters/023-appendix-b-a-template-project-structure.md": "41c6037d921e9db1d8eb0d3f7620b3ffbbd2d708981096e2ab4dd0cd774f14ff",
+    "chapters/024-appendix-c-swapping-out-the-infrastructure-do-everything-with-csvs.md": "a6e5aab72b7034c740df7176ed5e13f1ef4b26673a4bc6d862b79b8a2cdb25f3",
+    "chapters/025-appendix-d-repository-and-unit-of-work-patterns-with-django.md": "bde5a19c589e5bea0bb9758864c43a3109e60cd9bb75421eb0a1447669257463",
+    "chapters/026-appendix-e-validation.md": "fbf63c11a0fadc0c839688c234959fbfde59dd282e290d2904e5df96693ca8f5",
+    "chapters/027-index.md": "1c91d4857daa1dfc1a4e9a50895441f6e983a5cb2740f634e1c8691ec70373f5",
+    "chapters/028-about-the-authors.md": "0fb38078be900ba5163795d34b411c674987aa813cd9efbd811e074ca564b0d2",
+    "chapters/029-colophon.md": "778c369d2ee133c64e0f37fa4ba43c25a1e9aa007843831c7823831ff03ecd9f",
+    "metadata.json": "34a3805cfccb23e1ae820c63c96f620c0ce7b214f5b22393a3f84b7920fe1d1c",
+    "validation.json": "8ead17e9d252c6020284fb48633f79e60c1f45227421e4bc3a3ea21995bb42f3"
+  },
+  "input_safety": {
+    "action": "do NOT extract or render on the host — rebuild in a --network none sandbox or refuse",
+    "active_content": {
+      "/AA": {
+        "count": 8,
+        "severity": "suspect"
+      },
+      "/JS": {
+        "count": 3,
+        "severity": "danger"
+      },
+      "/URI": {
+        "count": 196,
+        "severity": "info"
+      }
+    },
+    "bomb": null,
+    "cdr": {
+      "attempts": [
+        {
+          "accepted_verdict": "CDR-CLEAN",
+          "argv": [
+            "/usr/bin/bwrap",
+            "--unshare-all",
+            "--die-with-parent",
+            "--new-session",
+            "--ro-bind",
+            "/",
+            "/",
+            "--dev",
+            "/dev",
+            "--proc",
+            "/proc",
+            "--bind",
+            "/home/halbritt/git/books/.book-work/architecture-patterns-with-python/cdr",
+            "/home/halbritt/git/books/.book-work/architecture-patterns-with-python/cdr",
+            "--chdir",
+            "/home/halbritt/git/books/.book-work/architecture-patterns-with-python",
+            "/usr/bin/gs",
+            "-q",
+            "-dSAFER",
+            "-dBATCH",
+            "-dNOPAUSE",
+            "-sDEVICE=pdfimage24",
+            "-r150",
+            "-sCompression=LZW",
+            "-sOutputFile=/home/halbritt/git/books/.book-work/architecture-patterns-with-python/cdr/.architecture-patterns-with-python-b5b423b766eb.pdf.cdr-150-LZW.pdf",
+            "architecture-patterns-with-python-b5b423b766eb.pdf"
+          ],
+          "ascii_stream_encoding": {
+            "argv": [
+              "/usr/bin/mutool",
+              "clean",
+              "-a",
+              "/home/halbritt/git/books/.book-work/architecture-patterns-with-python/cdr/.architecture-patterns-with-python-b5b423b766eb.pdf.cdr-150-LZW.pdf",
+              "/home/halbritt/git/books/.book-work/architecture-patterns-with-python/cdr/.architecture-patterns-with-python-b5b423b766eb.pdf.cdr-150-LZW.pdf.ascii.pdf"
+            ],
+            "command": "/usr/bin/mutool clean -a /home/halbritt/git/books/.book-work/architecture-patterns-with-python/cdr/.architecture-patterns-with-python-b5b423b766eb.pdf.cdr-150-LZW.pdf /home/halbritt/git/books/.book-work/architecture-patterns-with-python/cdr/.architecture-patterns-with-python-b5b423b766eb.pdf.cdr-150-LZW.pdf.ascii.pdf",
+            "exit_status": 0,
+            "stderr": "",
+            "stdout": ""
+          },
+          "command": "/usr/bin/bwrap --unshare-all --die-with-parent --new-session --ro-bind / / --dev /dev --proc /proc --bind /home/halbritt/git/books/.book-work/architecture-patterns-with-python/cdr /home/halbritt/git/books/.book-work/architecture-patterns-with-python/cdr --chdir /home/halbritt/git/books/.book-work/architecture-patterns-with-python /usr/bin/gs -q -dSAFER -dBATCH -dNOPAUSE -sDEVICE=pdfimage24 -r150 -sCompression=LZW -sOutputFile=/home/halbritt/git/books/.book-work/architecture-patterns-with-python/cdr/.architecture-patterns-with-python-b5b423b766eb.pdf.cdr-150-LZW.pdf architecture-patterns-with-python-b5b423b766eb.pdf",
+          "compression": "LZW",
+          "derivative_sha256": "b49d17fd3a29f7b7e73255e38509bce9331f5431a47caf5b03e37fc16f1e7045",
+          "derivative_size_bytes": 70561997,
+          "dpi": 150,
+          "exit_status": 0,
+          "object_syntax_scan": {
+            "active_content": {},
+            "schema_version": "pdf-cdr-syntax-scan/1",
+            "scope": "PDF bytes outside stream/endstream bodies",
+            "verdict": "CLEAN"
+          },
+          "safety": {
+            "action": "extract ONLY via safe_text.py (neutralized + wrapped); do not trust active content",
+            "active_content": {
+              "/AA": {
+                "count": 1,
+                "severity": "suspect"
+              }
+            },
+            "bomb": null,
+            "custody_id": "b49d17fd3a29f7b7-SUSPECT",
+            "decompression": {
+              "ceilings": {
+                "max_decomp_mib": 8192,
+                "max_pages": 5000,
+                "max_ratio": 500.0
+              },
+              "decomp_bytes": 3136969243,
+              "orig_bytes": 70561997,
+              "pages": 497,
+              "ratio": 44.5
+            },
+            "note": null,
+            "verdict": "SUSPECT"
+          },
+          "stderr": "GPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_SrqH2v.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_UVM8YE.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_oSDKll.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_siRo4M.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_NWpRWM.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_rSg2nI.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_t16oPX.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_mtAGgy.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_XW0pJj.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_sQxSbu.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_4l3SZl.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_hH8zrL.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_27qMQv.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_qplHek.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_LklkUv.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_u68ZjZ.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_ksU1ZV.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_O1AUDN.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_Z8CErG.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_WskFm9.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_RjYGXW.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_B6tnM6.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_qNeXb7.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_2j4PWQ.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_ePMAil.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_0rHFE4.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_hkmG3E.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_T2mO7l.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_K2u3jK.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_xWVSMy.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_FVe71R.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_i2fN3m.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_jvjUGs.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_S42EyG.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_J68Hm2.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_TdLriw.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_NxpsWq.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_6uplsl.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_4B2UW8.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_0lt5MF.\nGPL Ghostscript 10.02.1: **** Could not open temporary file /tmp/gs_XXXXXX\nGPL Ghostscript 10.02.1: Could not open the scratch file /tmp/gs_ZICVXa.\n",
+          "stdout": "",
+          "xray": {
+            "argv": [
+              "/usr/bin/python3",
+              "/home/halbritt/git/skills/skills/pdf-safe-ingest/scripts/xray.py",
+              "/home/halbritt/git/books/.book-work/architecture-patterns-with-python/cdr/.architecture-patterns-with-python-b5b423b766eb.pdf.cdr-150-LZW.pdf",
+              "--force"
+            ],
+            "command": "/usr/bin/python3 /home/halbritt/git/skills/skills/pdf-safe-ingest/scripts/xray.py /home/halbritt/git/books/.book-work/architecture-patterns-with-python/cdr/.architecture-patterns-with-python-b5b423b766eb.pdf.cdr-150-LZW.pdf --force",
+            "exit_status": 0
+          }
+        }
+      ],
+      "command": {
+        "argv": [
+          "/usr/bin/python3",
+          "/home/halbritt/git/books/scripts/pdf-cdr",
+          "/home/halbritt/git/books/.book-work/architecture-patterns-with-python/architecture-patterns-with-python-b5b423b766eb.pdf",
+          "/home/halbritt/git/books/.book-work/architecture-patterns-with-python/cdr/architecture-patterns-with-python-b5b423b766eb.pdf"
+        ],
+        "command": "/usr/bin/python3 /home/halbritt/git/books/scripts/pdf-cdr /home/halbritt/git/books/.book-work/architecture-patterns-with-python/architecture-patterns-with-python-b5b423b766eb.pdf /home/halbritt/git/books/.book-work/architecture-patterns-with-python/cdr/architecture-patterns-with-python-b5b423b766eb.pdf",
+        "exit_status": 0,
+        "working_directory": "/home/halbritt/git/books"
+      },
+      "output": "/home/halbritt/git/books/.book-work/architecture-patterns-with-python/cdr/architecture-patterns-with-python-b5b423b766eb.pdf",
+      "sandbox": {
+        "file_limit_bytes": 8589934592,
+        "host_filesystem": "read-only except derivative output directory",
+        "memory_limit_bytes": 34359738368,
+        "network": "none",
+        "renderer": "ghostscript pdfimage24",
+        "stream_encoding": "mutool clean -a (ASCII hex)",
+        "timeout_seconds": 7200,
+        "transport": "bwrap"
+      },
+      "schema_version": "books-pdf-cdr/1",
+      "selected": {
+        "compression": "LZW",
+        "custody_id": "b49d17fd3a29f7b7-CDR-CLEAN",
+        "decompression": {
+          "ceilings": {
+            "max_decomp_mib": 8192,
+            "max_pages": 5000,
+            "max_ratio": 500.0
+          },
+          "decomp_bytes": 3136969243,
+          "orig_bytes": 70561997,
+          "pages": 497,
+          "ratio": 44.5
+        },
+        "derivative_sha256": "b49d17fd3a29f7b7e73255e38509bce9331f5431a47caf5b03e37fc16f1e7045",
+        "derivative_size_bytes": 70561997,
+        "dpi": 150,
+        "object_syntax_verdict": "CLEAN",
+        "verdict": "CDR-CLEAN",
+        "xray_verdict": "SUSPECT"
+      },
+      "source_sha256": "b5b423b766ebe69b14ad03e1a6dbae1198a2f8b0ffbc289e34be11d70c3da32c",
+      "source_size_bytes": 10065375
+    },
+    "command": {
+      "argv": [
+        "/usr/bin/python3",
+        "/home/halbritt/git/skills/skills/pdf-safe-ingest/scripts/xray.py",
+        "/home/halbritt/git/books/sources/Architecture-Patterns-with-Python.pdf"
+      ],
+      "command": "/usr/bin/python3 /home/halbritt/git/skills/skills/pdf-safe-ingest/scripts/xray.py /home/halbritt/git/books/sources/Architecture-Patterns-with-Python.pdf",
+      "exit_status": 3,
+      "working_directory": "/home/halbritt/git/books"
+    },
+    "custody_id": "b5b423b766ebe69b-DANGEROUS",
+    "decompression": {
+      "ceilings": {
+        "max_decomp_mib": 800,
+        "max_pages": 5000,
+        "max_ratio": 120.0
+      },
+      "decomp_bytes": 297986008,
+      "orig_bytes": 10065375,
+      "pages": 497,
+      "ratio": 29.6
+    },
+    "marker_input": "sandboxed-raster-cdr",
+    "note": null,
+    "schema_version": "pdf-skills/1",
+    "skill": "pdf-safe-ingest",
+    "source_sha256": "b5b423b766ebe69b14ad03e1a6dbae1198a2f8b0ffbc289e34be11d70c3da32c",
+    "source_size_bytes": 10065375,
+    "verdict": "DANGEROUS"
+  },
+  "llm_used": false,
+  "merged_duplicate_boundaries": [],
+  "ocr_usage": {
+    "llm_request_count": 0,
+    "ocr_pages": [
+      {
+        "page_id": 0,
+        "physical_page": 1
+      },
+      {
+        "page_id": 1,
+        "physical_page": 2
+      },
+      {
+        "page_id": 2,
+        "physical_page": 3
+      },
+      {
+        "page_id": 3,
+        "physical_page": 4
+      },
+      {
+        "page_id": 4,
+        "physical_page": 5
+      },
+      {
+        "page_id": 5,
+        "physical_page": 6
+      },
+      {
+        "page_id": 6,
+        "physical_page": 7
+      },
+      {
+        "page_id": 7,
+        "physical_page": 8
+      },
+      {
+        "page_id": 8,
+        "physical_page": 9
+      },
+      {
+        "page_id": 9,
+        "physical_page": 10
+      },
+      {
+        "page_id": 10,
+        "physical_page": 11
+      },
+      {
+        "page_id": 11,
+        "physical_page": 12
+      },
+      {
+        "page_id": 12,
+        "physical_page": 13
+      },
+      {
+        "page_id": 13,
+        "physical_page": 14
+      },
+      {
+        "page_id": 14,
+        "physical_page": 15
+      },
+      {
+        "page_id": 15,
+        "physical_page": 16
+      },
+      {
+        "page_id": 16,
+        "physical_page": 17
+      },
+      {
+        "page_id": 17,
+        "physical_page": 18
+      },
+      {
+        "page_id": 18,
+        "physical_page": 19
+      },
+      {
+        "page_id": 19,
+        "physical_page": 20
+      },
+      {
+        "page_id": 20,
+        "physical_page": 21
+      },
+      {
+        "page_id": 21,
+        "physical_page": 22
+      },
+      {
+        "page_id": 22,
+        "physical_page": 23
+      },
+      {
+        "page_id": 23,
+        "physical_page": 24
+      },
+      {
+        "page_id": 24,
+        "physical_page": 25
+      },
+      {
+        "page_id": 25,
+        "physical_page": 26
+      },
+      {
+        "page_id": 26,
+        "physical_page": 27
+      },
+      {
+        "page_id": 27,
+        "physical_page": 28
+      },
+      {
+        "page_id": 28,
+        "physical_page": 29
+      },
+      {
+        "page_id": 29,
+        "physical_page": 30
+      },
+      {
+        "page_id": 30,
+        "physical_page": 31
+      },
+      {
+        "page_id": 31,
+        "physical_page": 32
+      },
+      {
+        "page_id": 32,
+        "physical_page": 33
+      },
+      {
+        "page_id": 33,
+        "physical_page": 34
+      },
+      {
+        "page_id": 34,
+        "physical_page": 35
+      },
+      {
+        "page_id": 35,
+        "physical_page": 36
+      },
+      {
+        "page_id": 36,
+        "physical_page": 37
+      },
+      {
+        "page_id": 37,
+        "physical_page": 38
+      },
+      {
+        "page_id": 38,
+        "physical_page": 39
+      },
+      {
+        "page_id": 39,
+        "physical_page": 40
+      },
+      {
+        "page_id": 40,
+        "physical_page": 41
+      },
+      {
+        "page_id": 41,
+        "physical_page": 42
+      },
+      {
+        "page_id": 42,
+        "physical_page": 43
+      },
+      {
+        "page_id": 43,
+        "physical_page": 44
+      },
+      {
+        "page_id": 44,
+        "physical_page": 45
+      },
+      {
+        "page_id": 45,
+        "physical_page": 46
+      },
+      {
+        "page_id": 46,
+        "physical_page": 47
+      },
+      {
+        "page_id": 47,
+        "physical_page": 48
+      },
+      {
+        "page_id": 48,
+        "physical_page": 49
+      },
+      {
+        "page_id": 49,
+        "physical_page": 50
+      },
+      {
+        "page_id": 50,
+        "physical_page": 51
+      },
+      {
+        "page_id": 51,
+        "physical_page": 52
+      },
+      {
+        "page_id": 52,
+        "physical_page": 53
+      },
+      {
+        "page_id": 53,
+        "physical_page": 54
+      },
+      {
+        "page_id": 54,
+        "physical_page": 55
+      },
+      {
+        "page_id": 55,
+        "physical_page": 56
+      },
+      {
+        "page_id": 56,
+        "physical_page": 57
+      },
+      {
+        "page_id": 57,
+        "physical_page": 58
+      },
+      {
+        "page_id": 58,
+        "physical_page": 59
+      },
+      {
+        "page_id": 59,
+        "physical_page": 60
+      },
+      {
+        "page_id": 60,
+        "physical_page": 61
+      },
+      {
+        "page_id": 61,
+        "physical_page": 62
+      },
+      {
+        "page_id": 62,
+        "physical_page": 63
+      },
+      {
+        "page_id": 63,
+        "physical_page": 64
+      },
+      {
+        "page_id": 64,
+        "physical_page": 65
+      },
+      {
+        "page_id": 65,
+        "physical_page": 66
+      },
+      {
+        "page_id": 66,
+        "physical_page": 67
+      },
+      {
+        "page_id": 67,
+        "physical_page": 68
+      },
+      {
+        "page_id": 68,
+        "physical_page": 69
+      },
+      {
+        "page_id": 69,
+        "physical_page": 70
+      },
+      {
+        "page_id": 70,
+        "physical_page": 71
+      },
+      {
+        "page_id": 71,
+        "physical_page": 72
+      },
+      {
+        "page_id": 72,
+        "physical_page": 73
+      },
+      {
+        "page_id": 73,
+        "physical_page": 74
+      },
+      {
+        "page_id": 74,
+        "physical_page": 75
+      },
+      {
+        "page_id": 75,
+        "physical_page": 76
+      },
+      {
+        "page_id": 76,
+        "physical_page": 77
+      },
+      {
+        "page_id": 77,
+        "physical_page": 78
+      },
+      {
+        "page_id": 78,
+        "physical_page": 79
+      },
+      {
+        "page_id": 79,
+        "physical_page": 80
+      },
+      {
+        "page_id": 80,
+        "physical_page": 81
+      },
+      {
+        "page_id": 81,
+        "physical_page": 82
+      },
+      {
+        "page_id": 82,
+        "physical_page": 83
+      },
+      {
+        "page_id": 83,
+        "physical_page": 84
+      },
+      {
+        "page_id": 84,
+        "physical_page": 85
+      },
+      {
+        "page_id": 85,
+        "physical_page": 86
+      },
+      {
+        "page_id": 86,
+        "physical_page": 87
+      },
+      {
+        "page_id": 87,
+        "physical_page": 88
+      },
+      {
+        "page_id": 88,
+        "physical_page": 89
+      },
+      {
+        "page_id": 89,
+        "physical_page": 90
+      },
+      {
+        "page_id": 90,
+        "physical_page": 91
+      },
+      {
+        "page_id": 91,
+        "physical_page": 92
+      },
+      {
+        "page_id": 92,
+        "physical_page": 93
+      },
+      {
+        "page_id": 93,
+        "physical_page": 94
+      },
+      {
+        "page_id": 94,
+        "physical_page": 95
+      },
+      {
+        "page_id": 95,
+        "physical_page": 96
+      },
+      {
+        "page_id": 96,
+        "physical_page": 97
+      },
+      {
+        "page_id": 97,
+        "physical_page": 98
+      },
+      {
+        "page_id": 98,
+        "physical_page": 99
+      },
+      {
+        "page_id": 99,
+        "physical_page": 100
+      },
+      {
+        "page_id": 100,
+        "physical_page": 101
+      },
+      {
+        "page_id": 101,
+        "physical_page": 102
+      },
+      {
+        "page_id": 102,
+        "physical_page": 103
+      },
+      {
+        "page_id": 103,
+        "physical_page": 104
+      },
+      {
+        "page_id": 104,
+        "physical_page": 105
+      },
+      {
+        "page_id": 105,
+        "physical_page": 106
+      },
+      {
+        "page_id": 106,
+        "physical_page": 107
+      },
+      {
+        "page_id": 107,
+        "physical_page": 108
+      },
+      {
+        "page_id": 108,
+        "physical_page": 109
+      },
+      {
+        "page_id": 109,
+        "physical_page": 110
+      },
+      {
+        "page_id": 110,
+        "physical_page": 111
+      },
+      {
+        "page_id": 111,
+        "physical_page": 112
+      },
+      {
+        "page_id": 112,
+        "physical_page": 113
+      },
+      {
+        "page_id": 113,
+        "physical_page": 114
+      },
+      {
+        "page_id": 114,
+        "physical_page": 115
+      },
+      {
+        "page_id": 115,
+        "physical_page": 116
+      },
+      {
+        "page_id": 116,
+        "physical_page": 117
+      },
+      {
+        "page_id": 117,
+        "physical_page": 118
+      },
+      {
+        "page_id": 118,
+        "physical_page": 119
+      },
+      {
+        "page_id": 119,
+        "physical_page": 120
+      },
+      {
+        "page_id": 120,
+        "physical_page": 121
+      },
+      {
+        "page_id": 121,
+        "physical_page": 122
+      },
+      {
+        "page_id": 122,
+        "physical_page": 123
+      },
+      {
+        "page_id": 123,
+        "physical_page": 124
+      },
+      {
+        "page_id": 124,
+        "physical_page": 125
+      },
+      {
+        "page_id": 125,
+        "physical_page": 126
+      },
+      {
+        "page_id": 126,
+        "physical_page": 127
+      },
+      {
+        "page_id": 127,
+        "physical_page": 128
+      },
+      {
+        "page_id": 128,
+        "physical_page": 129
+      },
+      {
+        "page_id": 129,
+        "physical_page": 130
+      },
+      {
+        "page_id": 130,
+        "physical_page": 131
+      },
+      {
+        "page_id": 131,
+        "physical_page": 132
+      },
+      {
+        "page_id": 132,
+        "physical_page": 133
+      },
+      {
+        "page_id": 133,
+        "physical_page": 134
+      },
+      {
+        "page_id": 134,
+        "physical_page": 135
+      },
+      {
+        "page_id": 135,
+        "physical_page": 136
+      },
+      {
+        "page_id": 136,
+        "physical_page": 137
+      },
+      {
+        "page_id": 137,
+        "physical_page": 138
+      },
+      {
+        "page_id": 138,
+        "physical_page": 139
+      },
+      {
+        "page_id": 139,
+        "physical_page": 140
+      },
+      {
+        "page_id": 140,
+        "physical_page": 141
+      },
+      {
+        "page_id": 141,
+        "physical_page": 142
+      },
+      {
+        "page_id": 142,
+        "physical_page": 143
+      },
+      {
+        "page_id": 143,
+        "physical_page": 144
+      },
+      {
+        "page_id": 144,
+        "physical_page": 145
+      },
+      {
+        "page_id": 145,
+        "physical_page": 146
+      },
+      {
+        "page_id": 146,
+        "physical_page": 147
+      },
+      {
+        "page_id": 147,
+        "physical_page": 148
+      },
+      {
+        "page_id": 148,
+        "physical_page": 149
+      },
+      {
+        "page_id": 149,
+        "physical_page": 150
+      },
+      {
+        "page_id": 150,
+        "physical_page": 151
+      },
+      {
+        "page_id": 151,
+        "physical_page": 152
+      },
+      {
+        "page_id": 152,
+        "physical_page": 153
+      },
+      {
+        "page_id": 153,
+        "physical_page": 154
+      },
+      {
+        "page_id": 154,
+        "physical_page": 155
+      },
+      {
+        "page_id": 155,
+        "physical_page": 156
+      },
+      {
+        "page_id": 156,
+        "physical_page": 157
+      },
+      {
+        "page_id": 157,
+        "physical_page": 158
+      },
+      {
+        "page_id": 158,
+        "physical_page": 159
+      },
+      {
+        "page_id": 159,
+        "physical_page": 160
+      },
+      {
+        "page_id": 160,
+        "physical_page": 161
+      },
+      {
+        "page_id": 161,
+        "physical_page": 162
+      },
+      {
+        "page_id": 162,
+        "physical_page": 163
+      },
+      {
+        "page_id": 163,
+        "physical_page": 164
+      },
+      {
+        "page_id": 164,
+        "physical_page": 165
+      },
+      {
+        "page_id": 165,
+        "physical_page": 166
+      },
+      {
+        "page_id": 166,
+        "physical_page": 167
+      },
+      {
+        "page_id": 167,
+        "physical_page": 168
+      },
+      {
+        "page_id": 168,
+        "physical_page": 169
+      },
+      {
+        "page_id": 169,
+        "physical_page": 170
+      },
+      {
+        "page_id": 170,
+        "physical_page": 171
+      },
+      {
+        "page_id": 171,
+        "physical_page": 172
+      },
+      {
+        "page_id": 172,
+        "physical_page": 173
+      },
+      {
+        "page_id": 173,
+        "physical_page": 174
+      },
+      {
+        "page_id": 174,
+        "physical_page": 175
+      },
+      {
+        "page_id": 175,
+        "physical_page": 176
+      },
+      {
+        "page_id": 176,
+        "physical_page": 177
+      },
+      {
+        "page_id": 177,
+        "physical_page": 178
+      },
+      {
+        "page_id": 178,
+        "physical_page": 179
+      },
+      {
+        "page_id": 179,
+        "physical_page": 180
+      },
+      {
+        "page_id": 180,
+        "physical_page": 181
+      },
+      {
+        "page_id": 181,
+        "physical_page": 182
+      },
+      {
+        "page_id": 182,
+        "physical_page": 183
+      },
+      {
+        "page_id": 183,
+        "physical_page": 184
+      },
+      {
+        "page_id": 184,
+        "physical_page": 185
+      },
+      {
+        "page_id": 185,
+        "physical_page": 186
+      },
+      {
+        "page_id": 186,
+        "physical_page": 187
+      },
+      {
+        "page_id": 187,
+        "physical_page": 188
+      },
+      {
+        "page_id": 188,
+        "physical_page": 189
+      },
+      {
+        "page_id": 189,
+        "physical_page": 190
+      },
+      {
+        "page_id": 190,
+        "physical_page": 191
+      },
+      {
+        "page_id": 191,
+        "physical_page": 192
+      },
+      {
+        "page_id": 192,
+        "physical_page": 193
+      },
+      {
+        "page_id": 193,
+        "physical_page": 194
+      },
+      {
+        "page_id": 194,
+        "physical_page": 195
+      },
+      {
+        "page_id": 195,
+        "physical_page": 196
+      },
+      {
+        "page_id": 196,
+        "physical_page": 197
+      },
+      {
+        "page_id": 197,
+        "physical_page": 198
+      },
+      {
+        "page_id": 198,
+        "physical_page": 199
+      },
+      {
+        "page_id": 199,
+        "physical_page": 200
+      },
+      {
+        "page_id": 200,
+        "physical_page": 201
+      },
+      {
+        "page_id": 201,
+        "physical_page": 202
+      },
+      {
+        "page_id": 202,
+        "physical_page": 203
+      },
+      {
+        "page_id": 203,
+        "physical_page": 204
+      },
+      {
+        "page_id": 204,
+        "physical_page": 205
+      },
+      {
+        "page_id": 205,
+        "physical_page": 206
+      },
+      {
+        "page_id": 206,
+        "physical_page": 207
+      },
+      {
+        "page_id": 207,
+        "physical_page": 208
+      },
+      {
+        "page_id": 208,
+        "physical_page": 209
+      },
+      {
+        "page_id": 209,
+        "physical_page": 210
+      },
+      {
+        "page_id": 210,
+        "physical_page": 211
+      },
+      {
+        "page_id": 211,
+        "physical_page": 212
+      },
+      {
+        "page_id": 212,
+        "physical_page": 213
+      },
+      {
+        "page_id": 213,
+        "physical_page": 214
+      },
+      {
+        "page_id": 214,
+        "physical_page": 215
+      },
+      {
+        "page_id": 215,
+        "physical_page": 216
+      },
+      {
+        "page_id": 216,
+        "physical_page": 217
+      },
+      {
+        "page_id": 217,
+        "physical_page": 218
+      },
+      {
+        "page_id": 218,
+        "physical_page": 219
+      },
+      {
+        "page_id": 219,
+        "physical_page": 220
+      },
+      {
+        "page_id": 220,
+        "physical_page": 221
+      },
+      {
+        "page_id": 221,
+        "physical_page": 222
+      },
+      {
+        "page_id": 222,
+        "physical_page": 223
+      },
+      {
+        "page_id": 223,
+        "physical_page": 224
+      },
+      {
+        "page_id": 224,
+        "physical_page": 225
+      },
+      {
+        "page_id": 225,
+        "physical_page": 226
+      },
+      {
+        "page_id": 226,
+        "physical_page": 227
+      },
+      {
+        "page_id": 227,
+        "physical_page": 228
+      },
+      {
+        "page_id": 228,
+        "physical_page": 229
+      },
+      {
+        "page_id": 229,
+        "physical_page": 230
+      },
+      {
+        "page_id": 230,
+        "physical_page": 231
+      },
+      {
+        "page_id": 231,
+        "physical_page": 232
+      },
+      {
+        "page_id": 232,
+        "physical_page": 233
+      },
+      {
+        "page_id": 233,
+        "physical_page": 234
+      },
+      {
+        "page_id": 234,
+        "physical_page": 235
+      },
+      {
+        "page_id": 235,
+        "physical_page": 236
+      },
+      {
+        "page_id": 236,
+        "physical_page": 237
+      },
+      {
+        "page_id": 237,
+        "physical_page": 238
+      },
+      {
+        "page_id": 238,
+        "physical_page": 239
+      },
+      {
+        "page_id": 239,
+        "physical_page": 240
+      },
+      {
+        "page_id": 240,
+        "physical_page": 241
+      },
+      {
+        "page_id": 241,
+        "physical_page": 242
+      },
+      {
+        "page_id": 242,
+        "physical_page": 243
+      },
+      {
+        "page_id": 243,
+        "physical_page": 244
+      },
+      {
+        "page_id": 244,
+        "physical_page": 245
+      },
+      {
+        "page_id": 245,
+        "physical_page": 246
+      },
+      {
+        "page_id": 246,
+        "physical_page": 247
+      },
+      {
+        "page_id": 247,
+        "physical_page": 248
+      },
+      {
+        "page_id": 248,
+        "physical_page": 249
+      },
+      {
+        "page_id": 249,
+        "physical_page": 250
+      },
+      {
+        "page_id": 250,
+        "physical_page": 251
+      },
+      {
+        "page_id": 251,
+        "physical_page": 252
+      },
+      {
+        "page_id": 252,
+        "physical_page": 253
+      },
+      {
+        "page_id": 253,
+        "physical_page": 254
+      },
+      {
+        "page_id": 254,
+        "physical_page": 255
+      },
+      {
+        "page_id": 255,
+        "physical_page": 256
+      },
+      {
+        "page_id": 256,
+        "physical_page": 257
+      },
+      {
+        "page_id": 257,
+        "physical_page": 258
+      },
+      {
+        "page_id": 258,
+        "physical_page": 259
+      },
+      {
+        "page_id": 259,
+        "physical_page": 260
+      },
+      {
+        "page_id": 260,
+        "physical_page": 261
+      },
+      {
+        "page_id": 261,
+        "physical_page": 262
+      },
+      {
+        "page_id": 262,
+        "physical_page": 263
+      },
+      {
+        "page_id": 263,
+        "physical_page": 264
+      },
+      {
+        "page_id": 264,
+        "physical_page": 265
+      },
+      {
+        "page_id": 265,
+        "physical_page": 266
+      },
+      {
+        "page_id": 266,
+        "physical_page": 267
+      },
+      {
+        "page_id": 267,
+        "physical_page": 268
+      },
+      {
+        "page_id": 268,
+        "physical_page": 269
+      },
+      {
+        "page_id": 269,
+        "physical_page": 270
+      },
+      {
+        "page_id": 270,
+        "physical_page": 271
+      },
+      {
+        "page_id": 271,
+        "physical_page": 272
+      },
+      {
+        "page_id": 272,
+        "physical_page": 273
+      },
+      {
+        "page_id": 273,
+        "physical_page": 274
+      },
+      {
+        "page_id": 274,
+        "physical_page": 275
+      },
+      {
+        "page_id": 275,
+        "physical_page": 276
+      },
+      {
+        "page_id": 276,
+        "physical_page": 277
+      },
+      {
+        "page_id": 277,
+        "physical_page": 278
+      },
+      {
+        "page_id": 278,
+        "physical_page": 279
+      },
+      {
+        "page_id": 279,
+        "physical_page": 280
+      },
+      {
+        "page_id": 280,
+        "physical_page": 281
+      },
+      {
+        "page_id": 281,
+        "physical_page": 282
+      },
+      {
+        "page_id": 282,
+        "physical_page": 283
+      },
+      {
+        "page_id": 283,
+        "physical_page": 284
+      },
+      {
+        "page_id": 284,
+        "physical_page": 285
+      },
+      {
+        "page_id": 285,
+        "physical_page": 286
+      },
+      {
+        "page_id": 286,
+        "physical_page": 287
+      },
+      {
+        "page_id": 287,
+        "physical_page": 288
+      },
+      {
+        "page_id": 288,
+        "physical_page": 289
+      },
+      {
+        "page_id": 289,
+        "physical_page": 290
+      },
+      {
+        "page_id": 290,
+        "physical_page": 291
+      },
+      {
+        "page_id": 291,
+        "physical_page": 292
+      },
+      {
+        "page_id": 292,
+        "physical_page": 293
+      },
+      {
+        "page_id": 293,
+        "physical_page": 294
+      },
+      {
+        "page_id": 294,
+        "physical_page": 295
+      },
+      {
+        "page_id": 295,
+        "physical_page": 296
+      },
+      {
+        "page_id": 296,
+        "physical_page": 297
+      },
+      {
+        "page_id": 297,
+        "physical_page": 298
+      },
+      {
+        "page_id": 298,
+        "physical_page": 299
+      },
+      {
+        "page_id": 299,
+        "physical_page": 300
+      },
+      {
+        "page_id": 300,
+        "physical_page": 301
+      },
+      {
+        "page_id": 301,
+        "physical_page": 302
+      },
+      {
+        "page_id": 302,
+        "physical_page": 303
+      },
+      {
+        "page_id": 303,
+        "physical_page": 304
+      },
+      {
+        "page_id": 304,
+        "physical_page": 305
+      },
+      {
+        "page_id": 305,
+        "physical_page": 306
+      },
+      {
+        "page_id": 306,
+        "physical_page": 307
+      },
+      {
+        "page_id": 307,
+        "physical_page": 308
+      },
+      {
+        "page_id": 308,
+        "physical_page": 309
+      },
+      {
+        "page_id": 309,
+        "physical_page": 310
+      },
+      {
+        "page_id": 310,
+        "physical_page": 311
+      },
+      {
+        "page_id": 311,
+        "physical_page": 312
+      },
+      {
+        "page_id": 312,
+        "physical_page": 313
+      },
+      {
+        "page_id": 313,
+        "physical_page": 314
+      },
+      {
+        "page_id": 314,
+        "physical_page": 315
+      },
+      {
+        "page_id": 315,
+        "physical_page": 316
+      },
+      {
+        "page_id": 316,
+        "physical_page": 317
+      },
+      {
+        "page_id": 317,
+        "physical_page": 318
+      },
+      {
+        "page_id": 318,
+        "physical_page": 319
+      },
+      {
+        "page_id": 319,
+        "physical_page": 320
+      },
+      {
+        "page_id": 320,
+        "physical_page": 321
+      },
+      {
+        "page_id": 321,
+        "physical_page": 322
+      },
+      {
+        "page_id": 322,
+        "physical_page": 323
+      },
+      {
+        "page_id": 323,
+        "physical_page": 324
+      },
+      {
+        "page_id": 324,
+        "physical_page": 325
+      },
+      {
+        "page_id": 325,
+        "physical_page": 326
+      },
+      {
+        "page_id": 326,
+        "physical_page": 327
+      },
+      {
+        "page_id": 327,
+        "physical_page": 328
+      },
+      {
+        "page_id": 328,
+        "physical_page": 329
+      },
+      {
+        "page_id": 329,
+        "physical_page": 330
+      },
+      {
+        "page_id": 330,
+        "physical_page": 331
+      },
+      {
+        "page_id": 331,
+        "physical_page": 332
+      },
+      {
+        "page_id": 332,
+        "physical_page": 333
+      },
+      {
+        "page_id": 333,
+        "physical_page": 334
+      },
+      {
+        "page_id": 334,
+        "physical_page": 335
+      },
+      {
+        "page_id": 335,
+        "physical_page": 336
+      },
+      {
+        "page_id": 336,
+        "physical_page": 337
+      },
+      {
+        "page_id": 337,
+        "physical_page": 338
+      },
+      {
+        "page_id": 338,
+        "physical_page": 339
+      },
+      {
+        "page_id": 339,
+        "physical_page": 340
+      },
+      {
+        "page_id": 340,
+        "physical_page": 341
+      },
+      {
+        "page_id": 341,
+        "physical_page": 342
+      },
+      {
+        "page_id": 342,
+        "physical_page": 343
+      },
+      {
+        "page_id": 343,
+        "physical_page": 344
+      },
+      {
+        "page_id": 344,
+        "physical_page": 345
+      },
+      {
+        "page_id": 345,
+        "physical_page": 346
+      },
+      {
+        "page_id": 346,
+        "physical_page": 347
+      },
+      {
+        "page_id": 347,
+        "physical_page": 348
+      },
+      {
+        "page_id": 348,
+        "physical_page": 349
+      },
+      {
+        "page_id": 349,
+        "physical_page": 350
+      },
+      {
+        "page_id": 350,
+        "physical_page": 351
+      },
+      {
+        "page_id": 351,
+        "physical_page": 352
+      },
+      {
+        "page_id": 352,
+        "physical_page": 353
+      },
+      {
+        "page_id": 353,
+        "physical_page": 354
+      },
+      {
+        "page_id": 354,
+        "physical_page": 355
+      },
+      {
+        "page_id": 355,
+        "physical_page": 356
+      },
+      {
+        "page_id": 356,
+        "physical_page": 357
+      },
+      {
+        "page_id": 357,
+        "physical_page": 358
+      },
+      {
+        "page_id": 358,
+        "physical_page": 359
+      },
+      {
+        "page_id": 359,
+        "physical_page": 360
+      },
+      {
+        "page_id": 360,
+        "physical_page": 361
+      },
+      {
+        "page_id": 361,
+        "physical_page": 362
+      },
+      {
+        "page_id": 362,
+        "physical_page": 363
+      },
+      {
+        "page_id": 363,
+        "physical_page": 364
+      },
+      {
+        "page_id": 364,
+        "physical_page": 365
+      },
+      {
+        "page_id": 365,
+        "physical_page": 366
+      },
+      {
+        "page_id": 366,
+        "physical_page": 367
+      },
+      {
+        "page_id": 367,
+        "physical_page": 368
+      },
+      {
+        "page_id": 368,
+        "physical_page": 369
+      },
+      {
+        "page_id": 369,
+        "physical_page": 370
+      },
+      {
+        "page_id": 370,
+        "physical_page": 371
+      },
+      {
+        "page_id": 371,
+        "physical_page": 372
+      },
+      {
+        "page_id": 372,
+        "physical_page": 373
+      },
+      {
+        "page_id": 373,
+        "physical_page": 374
+      },
+      {
+        "page_id": 374,
+        "physical_page": 375
+      },
+      {
+        "page_id": 375,
+        "physical_page": 376
+      },
+      {
+        "page_id": 376,
+        "physical_page": 377
+      },
+      {
+        "page_id": 377,
+        "physical_page": 378
+      },
+      {
+        "page_id": 378,
+        "physical_page": 379
+      },
+      {
+        "page_id": 379,
+        "physical_page": 380
+      },
+      {
+        "page_id": 380,
+        "physical_page": 381
+      },
+      {
+        "page_id": 381,
+        "physical_page": 382
+      },
+      {
+        "page_id": 382,
+        "physical_page": 383
+      },
+      {
+        "page_id": 383,
+        "physical_page": 384
+      },
+      {
+        "page_id": 384,
+        "physical_page": 385
+      },
+      {
+        "page_id": 385,
+        "physical_page": 386
+      },
+      {
+        "page_id": 386,
+        "physical_page": 387
+      },
+      {
+        "page_id": 387,
+        "physical_page": 388
+      },
+      {
+        "page_id": 388,
+        "physical_page": 389
+      },
+      {
+        "page_id": 389,
+        "physical_page": 390
+      },
+      {
+        "page_id": 390,
+        "physical_page": 391
+      },
+      {
+        "page_id": 391,
+        "physical_page": 392
+      },
+      {
+        "page_id": 392,
+        "physical_page": 393
+      },
+      {
+        "page_id": 393,
+        "physical_page": 394
+      },
+      {
+        "page_id": 394,
+        "physical_page": 395
+      },
+      {
+        "page_id": 395,
+        "physical_page": 396
+      },
+      {
+        "page_id": 396,
+        "physical_page": 397
+      },
+      {
+        "page_id": 397,
+        "physical_page": 398
+      },
+      {
+        "page_id": 398,
+        "physical_page": 399
+      },
+      {
+        "page_id": 399,
+        "physical_page": 400
+      },
+      {
+        "page_id": 400,
+        "physical_page": 401
+      },
+      {
+        "page_id": 401,
+        "physical_page": 402
+      },
+      {
+        "page_id": 402,
+        "physical_page": 403
+      },
+      {
+        "page_id": 403,
+        "physical_page": 404
+      },
+      {
+        "page_id": 404,
+        "physical_page": 405
+      },
+      {
+        "page_id": 405,
+        "physical_page": 406
+      },
+      {
+        "page_id": 406,
+        "physical_page": 407
+      },
+      {
+        "page_id": 407,
+        "physical_page": 408
+      },
+      {
+        "page_id": 408,
+        "physical_page": 409
+      },
+      {
+        "page_id": 409,
+        "physical_page": 410
+      },
+      {
+        "page_id": 410,
+        "physical_page": 411
+      },
+      {
+        "page_id": 411,
+        "physical_page": 412
+      },
+      {
+        "page_id": 412,
+        "physical_page": 413
+      },
+      {
+        "page_id": 413,
+        "physical_page": 414
+      },
+      {
+        "page_id": 414,
+        "physical_page": 415
+      },
+      {
+        "page_id": 415,
+        "physical_page": 416
+      },
+      {
+        "page_id": 416,
+        "physical_page": 417
+      },
+      {
+        "page_id": 417,
+        "physical_page": 418
+      },
+      {
+        "page_id": 418,
+        "physical_page": 419
+      },
+      {
+        "page_id": 419,
+        "physical_page": 420
+      },
+      {
+        "page_id": 420,
+        "physical_page": 421
+      },
+      {
+        "page_id": 421,
+        "physical_page": 422
+      },
+      {
+        "page_id": 422,
+        "physical_page": 423
+      },
+      {
+        "page_id": 423,
+        "physical_page": 424
+      },
+      {
+        "page_id": 424,
+        "physical_page": 425
+      },
+      {
+        "page_id": 425,
+        "physical_page": 426
+      },
+      {
+        "page_id": 426,
+        "physical_page": 427
+      },
+      {
+        "page_id": 427,
+        "physical_page": 428
+      },
+      {
+        "page_id": 428,
+        "physical_page": 429
+      },
+      {
+        "page_id": 429,
+        "physical_page": 430
+      },
+      {
+        "page_id": 430,
+        "physical_page": 431
+      },
+      {
+        "page_id": 431,
+        "physical_page": 432
+      },
+      {
+        "page_id": 432,
+        "physical_page": 433
+      },
+      {
+        "page_id": 433,
+        "physical_page": 434
+      },
+      {
+        "page_id": 434,
+        "physical_page": 435
+      },
+      {
+        "page_id": 435,
+        "physical_page": 436
+      },
+      {
+        "page_id": 436,
+        "physical_page": 437
+      },
+      {
+        "page_id": 437,
+        "physical_page": 438
+      },
+      {
+        "page_id": 438,
+        "physical_page": 439
+      },
+      {
+        "page_id": 439,
+        "physical_page": 440
+      },
+      {
+        "page_id": 440,
+        "physical_page": 441
+      },
+      {
+        "page_id": 441,
+        "physical_page": 442
+      },
+      {
+        "page_id": 442,
+        "physical_page": 443
+      },
+      {
+        "page_id": 443,
+        "physical_page": 444
+      },
+      {
+        "page_id": 444,
+        "physical_page": 445
+      },
+      {
+        "page_id": 445,
+        "physical_page": 446
+      },
+      {
+        "page_id": 446,
+        "physical_page": 447
+      },
+      {
+        "page_id": 447,
+        "physical_page": 448
+      },
+      {
+        "page_id": 448,
+        "physical_page": 449
+      },
+      {
+        "page_id": 449,
+        "physical_page": 450
+      },
+      {
+        "page_id": 450,
+        "physical_page": 451
+      },
+      {
+        "page_id": 451,
+        "physical_page": 452
+      },
+      {
+        "page_id": 452,
+        "physical_page": 453
+      },
+      {
+        "page_id": 453,
+        "physical_page": 454
+      },
+      {
+        "page_id": 454,
+        "physical_page": 455
+      },
+      {
+        "page_id": 455,
+        "physical_page": 456
+      },
+      {
+        "page_id": 456,
+        "physical_page": 457
+      },
+      {
+        "page_id": 457,
+        "physical_page": 458
+      },
+      {
+        "page_id": 458,
+        "physical_page": 459
+      },
+      {
+        "page_id": 459,
+        "physical_page": 460
+      },
+      {
+        "page_id": 460,
+        "physical_page": 461
+      },
+      {
+        "page_id": 461,
+        "physical_page": 462
+      },
+      {
+        "page_id": 462,
+        "physical_page": 463
+      },
+      {
+        "page_id": 463,
+        "physical_page": 464
+      },
+      {
+        "page_id": 464,
+        "physical_page": 465
+      },
+      {
+        "page_id": 465,
+        "physical_page": 466
+      },
+      {
+        "page_id": 466,
+        "physical_page": 467
+      },
+      {
+        "page_id": 467,
+        "physical_page": 468
+      },
+      {
+        "page_id": 468,
+        "physical_page": 469
+      },
+      {
+        "page_id": 469,
+        "physical_page": 470
+      },
+      {
+        "page_id": 470,
+        "physical_page": 471
+      },
+      {
+        "page_id": 471,
+        "physical_page": 472
+      },
+      {
+        "page_id": 472,
+        "physical_page": 473
+      },
+      {
+        "page_id": 473,
+        "physical_page": 474
+      },
+      {
+        "page_id": 474,
+        "physical_page": 475
+      },
+      {
+        "page_id": 475,
+        "physical_page": 476
+      },
+      {
+        "page_id": 476,
+        "physical_page": 477
+      },
+      {
+        "page_id": 477,
+        "physical_page": 478
+      },
+      {
+        "page_id": 478,
+        "physical_page": 479
+      },
+      {
+        "page_id": 479,
+        "physical_page": 480
+      },
+      {
+        "page_id": 480,
+        "physical_page": 481
+      },
+      {
+        "page_id": 481,
+        "physical_page": 482
+      },
+      {
+        "page_id": 482,
+        "physical_page": 483
+      },
+      {
+        "page_id": 483,
+        "physical_page": 484
+      },
+      {
+        "page_id": 484,
+        "physical_page": 485
+      },
+      {
+        "page_id": 485,
+        "physical_page": 486
+      },
+      {
+        "page_id": 486,
+        "physical_page": 487
+      },
+      {
+        "page_id": 487,
+        "physical_page": 488
+      },
+      {
+        "page_id": 488,
+        "physical_page": 489
+      },
+      {
+        "page_id": 489,
+        "physical_page": 490
+      },
+      {
+        "page_id": 490,
+        "physical_page": 491
+      },
+      {
+        "page_id": 491,
+        "physical_page": 492
+      },
+      {
+        "page_id": 492,
+        "physical_page": 493
+      },
+      {
+        "page_id": 493,
+        "physical_page": 494
+      },
+      {
+        "page_id": 494,
+        "physical_page": 495
+      },
+      {
+        "page_id": 495,
+        "physical_page": 496
+      },
+      {
+        "page_id": 496,
+        "physical_page": 497
+      }
+    ],
+    "text_extraction_methods": {
+      "surya": 497
+    },
+    "used": true
+  },
+  "page_furniture_removed": [],
+  "pipeline": "scripts/convert-books",
+  "pipeline_fingerprint": "48b350a48e4f1098cc14b6027b0d394eeab4aff091ee3e9611e32621540af55c",
+  "post_processing_performed": [
+    "staged the source under a deterministic length-bounded hash-qualified space-free basename",
+    "split converter Markdown at explicit logical-unit headings rather than page numbers",
+    "normalized headings to ATX syntax with exactly one level-one heading per chapter",
+    "kept converter paragraphs unwrapped and normalized excessive blank lines outside code",
+    "moved extracted media into assets and rewrote relative links",
+    "preserved fenced code content exactly",
+    "rendered README title and authors from doctrine/bibliography.json while preserving metadata.json as noncanonical extraction evidence",
+    "replaced non-clean source content at the converter boundary with a CLEAN pixel-only PDF rasterized in a networkless Bubblewrap sandbox; the original source remained unchanged",
+    "used printed table-of-contents and explicit body chapter-label evidence to recover chapter boundaries and titles",
+    "reused a validated peecee Marker cache under the explicit policy-compatible raw-cache migration recorded in source.json"
+  ],
+  "pre_conversion_commands": [
+    {
+      "argv": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "ConnectTimeout=15",
+        "peecee",
+        "cmd /c if exist marker\\out\\architecture-patterns-with-python-b5b423b766eb rmdir /s /q marker\\out\\architecture-patterns-with-python-b5b423b766eb"
+      ],
+      "command": "ssh -o BatchMode=yes -o ConnectTimeout=15 peecee 'cmd /c if exist marker\\out\\architecture-patterns-with-python-b5b423b766eb rmdir /s /q marker\\out\\architecture-patterns-with-python-b5b423b766eb'",
+      "exit_status": 0,
+      "working_directory": "/home/halbritt/git/books"
+    }
+  ],
+  "prior_conversion_failures": [],
+  "raw_conversion_compatibility": {
+    "accepted_current_raw_conversion_fingerprint": "23edaf5c729b4860401f62e6735a90095100dd783a85ab16d6077ac0e3621281",
+    "basis": [
+      "explicit --reuse-policy-compatible-raw-cache authorization",
+      "validated converter-cache checksum and raw-file manifest",
+      "successful Marker conversion on peecee with no fallback",
+      "networkless raster CDR with a CLEAN post-conversion gate",
+      "source, cache, marker input, old and new fingerprints, and every identity difference matched an immutable migration authorization"
+    ],
+    "current_revalidation": {
+      "accepted": true,
+      "command": {
+        "argv": [
+          "/usr/bin/python3",
+          "/home/halbritt/git/books/scripts/pdf-cdr",
+          "--validate-existing",
+          "/home/halbritt/git/books/.book-work/architecture-patterns-with-python/cdr/architecture-patterns-with-python-b5b423b766eb.pdf"
+        ],
+        "command": "/usr/bin/python3 /home/halbritt/git/books/scripts/pdf-cdr --validate-existing /home/halbritt/git/books/.book-work/architecture-patterns-with-python/cdr/architecture-patterns-with-python-b5b423b766eb.pdf",
+        "exit_status": 0,
+        "stderr": "",
+        "stderr_truncated": false,
+        "stdout": "{\n  \"accepted\": true,\n  \"accepted_verdict\": \"CDR-CLEAN\",\n  \"derivative_sha256\": \"b49d17fd3a29f7b7e73255e38509bce9331f5431a47caf5b03e37fc16f1e7045\",\n  \"derivative_size_bytes\": 70561997,\n  \"policy\": {\n    \"PDF_SAFE_MAX_DECOMP_MIB\": \"8192\",\n    \"PDF_SAFE_MAX_PAGES\": \"5000\",\n    \"PDF_SAFE_MAX_RATIO\": \"500\"\n  },\n  \"schema_version\": \"books-pdf-cdr-validation/1\",\n  \"structural_validation\": {\n    \"accepted\": true,\n    \"active_content\": {},\n    \"content_stream_count\": 497,\n    \"escaped_name_count\": 0,\n    \"forbidden_structure\": {},\n    \"image_stream_count\": 497,\n    \"malformed\": [],\n    \"object_count\": 2488,\n    \"page_count\": 497,\n    \"schema_version\": \"pdf-cdr-structural-validation/1\",\n    \"stream_count\": 994,\n    \"unexpected_objects\": []\n  },\n  \"xray\": {\n    \"safety\": {\n      \"action\": \"extract ONLY via safe_text.py (neutralized + wrapped); do not trust active content\",\n      \"active_content\": {\n        \"/AA\": {\n          \"count\": 1,\n          \"severity\": \"suspect\"\n        }\n      },\n      \"bomb\": null,\n      \"custody_id\": \"b49d17fd3a29f7b7-SUSPECT\",\n      \"decompression\": {\n        \"ceilings\": {\n          \"max_decomp_mib\": 8192,\n          \"max_pages\": 5000,\n          \"max_ratio\": 500.0\n        },\n        \"decomp_bytes\": 3136969243,\n        \"orig_bytes\": 70561997,\n        \"pages\": 497,\n        \"ratio\": 44.5\n      },\n      \"note\": null,\n      \"verdict\": \"SUSPECT\"\n    },\n    \"schema_version\": \"pdf-skills/1\",\n    \"skill\": \"pdf-safe-ingest\",\n    \"source\": {\n      \"bytes\": 70561997,\n      \"path\": \"/input/source.pdf\",\n      \"sha256\": \"b49d17fd3a29f7b7e73255e38509bce9331f5431a47caf5b03e37fc16f1e7045\"\n    }\n  },\n  \"xray_command\": {\n    \"argv\": [\n      \"/tools/xray\",\n      \"/input/source.pdf\",\n      \"--force\"\n    ],\n    \"command\": \"/tools/xray /input/source.pdf --force\",\n    \"exit_status\": 0,\n    \"stderr\": \"\",\n    \"stderr_truncated\": false,\n    \"stdout_truncated\": false,\n    \"timed_out\": false\n  }\n}\n",
+        "stdout_truncated": false,
+        "working_directory": "/home/halbritt/git/books"
+      },
+      "kind": "sandboxed-cdr-structural-validation",
+      "marker_input_sha256": "b49d17fd3a29f7b7e73255e38509bce9331f5431a47caf5b03e37fc16f1e7045",
+      "record_sha256": "9356a2af2ffc092be9c5dbffed7f94d0a5ab488b96f02d70ec220b52caaf46bd",
+      "schema_version": "books-marker-input-revalidation/1",
+      "validation": {
+        "accepted": true,
+        "accepted_verdict": "CDR-CLEAN",
+        "derivative_sha256": "b49d17fd3a29f7b7e73255e38509bce9331f5431a47caf5b03e37fc16f1e7045",
+        "derivative_size_bytes": 70561997,
+        "policy": {
+          "PDF_SAFE_MAX_DECOMP_MIB": "8192",
+          "PDF_SAFE_MAX_PAGES": "5000",
+          "PDF_SAFE_MAX_RATIO": "500"
+        },
+        "schema_version": "books-pdf-cdr-validation/1",
+        "structural_validation": {
+          "accepted": true,
+          "active_content": {},
+          "content_stream_count": 497,
+          "escaped_name_count": 0,
+          "forbidden_structure": {},
+          "image_stream_count": 497,
+          "malformed": [],
+          "object_count": 2488,
+          "page_count": 497,
+          "schema_version": "pdf-cdr-structural-validation/1",
+          "stream_count": 994,
+          "unexpected_objects": []
+        },
+        "xray": {
+          "safety": {
+            "action": "extract ONLY via safe_text.py (neutralized + wrapped); do not trust active content",
+            "active_content": {
+              "/AA": {
+                "count": 1,
+                "severity": "suspect"
+              }
+            },
+            "bomb": null,
+            "custody_id": "b49d17fd3a29f7b7-SUSPECT",
+            "decompression": {
+              "ceilings": {
+                "max_decomp_mib": 8192,
+                "max_pages": 5000,
+                "max_ratio": 500.0
+              },
+              "decomp_bytes": 3136969243,
+              "orig_bytes": 70561997,
+              "pages": 497,
+              "ratio": 44.5
+            },
+            "note": null,
+            "verdict": "SUSPECT"
+          },
+          "schema_version": "pdf-skills/1",
+          "skill": "pdf-safe-ingest",
+          "source": {
+            "bytes": 70561997,
+            "path": "/input/source.pdf",
+            "sha256": "b49d17fd3a29f7b7e73255e38509bce9331f5431a47caf5b03e37fc16f1e7045"
+          }
+        },
+        "xray_command": {
+          "argv": [
+            "/tools/xray",
+            "/input/source.pdf",
+            "--force"
+          ],
+          "command": "/tools/xray /input/source.pdf --force",
+          "exit_status": 0,
+          "stderr": "",
+          "stderr_truncated": false,
+          "stdout_truncated": false,
+          "timed_out": false
+        }
+      }
+    },
+    "identity_differences": [
+      {
+        "current": "de7c201a7f555db45b99aa5db0cf39ed9bcfbc9b289c4d0145e66999d362cebc",
+        "path": "$.conversion_stage_fingerprint",
+        "previous": "be144d61695774e3820a4aecaf11b72a08fcb99e739c114fee0a9bad8e8922cb"
+      },
+      {
+        "current": "75b498be9773db1831245fce750911a1bd689732020bae06751f4d331ee4e566",
+        "path": "$.helpers.pdf_cdr[1].sha256",
+        "previous": "859a470447a9fbe031638149c68eab61ca853bb8d129d0405a567ab9cb406423"
+      },
+      {
+        "current": "/home/halbritt/git/books/scripts/pdf-cdr",
+        "path": "$.helpers.pdf_xray[1].argument",
+        "previous": "/home/halbritt/git/skills/skills/pdf-safe-ingest/scripts/xray.py"
+      },
+      {
+        "current": "/home/halbritt/git/books/scripts/pdf-cdr",
+        "path": "$.helpers.pdf_xray[1].resolved_path",
+        "previous": "/home/halbritt/git/skills/skills/pdf-safe-ingest/scripts/xray.py"
+      },
+      {
+        "current": "75b498be9773db1831245fce750911a1bd689732020bae06751f4d331ee4e566",
+        "path": "$.helpers.pdf_xray[1].sha256",
+        "previous": "8292f0c9f97475deedded5e3f38c30ef1843f96cdb80673c6f611cefe19a90ed"
+      },
+      {
+        "current": {
+          "argument": "--scan-only",
+          "resolved_path": null,
+          "sha256": null
+        },
+        "path": "$.helpers.pdf_xray[2]",
+        "previous_missing": true
+      },
+      {
+        "current": [
+          {
+            "argument": "/home/halbritt/git/skills/skills/pdf-safe-ingest/scripts/xray.py",
+            "resolved_path": "/home/halbritt/git/skills/skills/pdf-safe-ingest/scripts/xray.py",
+            "sha256": "8292f0c9f97475deedded5e3f38c30ef1843f96cdb80673c6f611cefe19a90ed"
+          }
+        ],
+        "path": "$.helpers.pdf_xray_backend",
+        "previous_missing": true
+      },
+      {
+        "current": {
+          "force": true,
+          "max_decomp_mib": 8192,
+          "max_pages": 5000,
+          "max_ratio": 500
+        },
+        "path": "$.options.pdf_safety.derivative_xray_policy",
+        "previous_missing": true
+      },
+      {
+        "current": {
+          "force": true,
+          "max_decomp_mib": 800,
+          "max_pages": 5000,
+          "max_ratio": 120
+        },
+        "path": "$.options.pdf_safety.source_xray_policy",
+        "previous_missing": true
+      },
+      {
+        "current": "sandboxed-raster-cdr",
+        "path": "$.options.pdf_safety.suspect_input",
+        "previous": "record-and-proceed"
+      }
+    ],
+    "marker_input_sha256": "b49d17fd3a29f7b7e73255e38509bce9331f5431a47caf5b03e37fc16f1e7045",
+    "migration_id": "pdf-airlock-hardening-2026-07-12",
+    "previous_raw_conversion_fingerprint": "ac68dd44ac1a049da627fa3236233cb6abc08a59dee344ba9b0475440d293c0d",
+    "schema_version": "books-raw-compatibility/1",
+    "source_safety_verdict": "DANGEROUS"
+  },
+  "raw_conversion_fingerprint": "ac68dd44ac1a049da627fa3236233cb6abc08a59dee344ba9b0475440d293c0d",
+  "raw_conversion_identity": {
+    "conversion_stage_fingerprint": "be144d61695774e3820a4aecaf11b72a08fcb99e739c114fee0a9bad8e8922cb",
+    "converter": "marker",
+    "converter_versions": {
+      "local": "marker-pdf 1.10.2",
+      "peecee": "marker-pdf 1.10.2"
+    },
+    "environment": {
+      "os_name": "posix",
+      "platform": "linux",
+      "python_executable": {
+        "argument": "/usr/bin/python3",
+        "resolved_path": "/usr/bin/python3.12",
+        "sha256": "1643dacd9feaedc58f3cc581e4d22577dfe25c09b10282936186ccf0f2e61118"
+      },
+      "python_version": "3.12.3",
+      "variables": {
+        "BOOKS_MARKER_VERSION": {
+          "sha256": "eba7a03a5109cc2b9da8ba0fe9ba29585c89d22f6647e361a672efdbecaa8fcf"
+        },
+        "HOME": {
+          "sha256": "c61d25bb0917ee2b317ff46c582bd46c8042dba647b0a58b618a12d7cbf89dbb"
+        },
+        "PATH": {
+          "sha256": "77b01cf85d8b75b9ee5b44df8ef34abdffaea0d2cd67a41cd1dcd3a367f9a4a9"
+        }
+      }
+    },
+    "helper_overrides": {
+      "local": false,
+      "pdf_cdr": false,
+      "pdf_xray": false,
+      "peecee": false
+    },
+    "helpers": {
+      "local": [
+        {
+          "argument": "bash",
+          "resolved_path": "/usr/bin/bash",
+          "sha256": "bc5945feb8bd26203ebfafea5ce1878bb2e32cb8fb50ab7ae395cfb1e1aaaef1"
+        },
+        {
+          "argument": "/home/halbritt/git/skills/skills/marker-convert/scripts/convert.sh",
+          "resolved_path": "/home/halbritt/git/skills/skills/marker-convert/scripts/convert.sh",
+          "sha256": "b16b1829eb4fad80f9abc4591043af39596c37e628d0be9db1a1f5a13df06a38"
+        }
+      ],
+      "pdf_cdr": [
+        {
+          "argument": "/usr/bin/python3",
+          "resolved_path": "/usr/bin/python3.12",
+          "sha256": "1643dacd9feaedc58f3cc581e4d22577dfe25c09b10282936186ccf0f2e61118"
+        },
+        {
+          "argument": "/home/halbritt/git/books/scripts/pdf-cdr",
+          "resolved_path": "/home/halbritt/git/books/scripts/pdf-cdr",
+          "sha256": "859a470447a9fbe031638149c68eab61ca853bb8d129d0405a567ab9cb406423"
+        }
+      ],
+      "pdf_xray": [
+        {
+          "argument": "/usr/bin/python3",
+          "resolved_path": "/usr/bin/python3.12",
+          "sha256": "1643dacd9feaedc58f3cc581e4d22577dfe25c09b10282936186ccf0f2e61118"
+        },
+        {
+          "argument": "/home/halbritt/git/skills/skills/pdf-safe-ingest/scripts/xray.py",
+          "resolved_path": "/home/halbritt/git/skills/skills/pdf-safe-ingest/scripts/xray.py",
+          "sha256": "8292f0c9f97475deedded5e3f38c30ef1843f96cdb80673c6f611cefe19a90ed"
+        }
+      ],
+      "peecee": [
+        {
+          "argument": "bash",
+          "resolved_path": "/usr/bin/bash",
+          "sha256": "bc5945feb8bd26203ebfafea5ce1878bb2e32cb8fb50ab7ae395cfb1e1aaaef1"
+        },
+        {
+          "argument": "/home/halbritt/git/skills/skills/marker-convert/scripts/convert-peecee.sh",
+          "resolved_path": "/home/halbritt/git/skills/skills/marker-convert/scripts/convert-peecee.sh",
+          "sha256": "b43aa9e858b017292574a8127dd7159aba888a05207059723142c91721191a05"
+        }
+      ]
+    },
+    "options": {
+      "fallback_policy": "infrastructure-failure-only",
+      "fallback_target": "local",
+      "format": "markdown",
+      "pdf_safety": {
+        "airlock": "required-before-marker",
+        "dangerous_input": "sandboxed-raster-cdr",
+        "required_derivative_verdict": "CLEAN-or-CDR-CLEAN",
+        "suspect_input": "record-and-proceed"
+      },
+      "primary_target": "peecee",
+      "remote_clean": true
+    },
+    "schema_version": "books-raw-conversion/1",
+    "source_format": "pdf",
+    "supporting_commands": {
+      "bwrap": {
+        "argument": "bwrap",
+        "resolved_path": "/usr/bin/bwrap",
+        "sha256": "52231e1caf55bcbc667b269f49c63599a6f7db4767ae6a039580d0ff853db712"
+      },
+      "ghostscript": {
+        "argument": "gs",
+        "resolved_path": "/usr/bin/gs",
+        "sha256": "7c3d71005d09340a30d9436456f212d2ef499f58378ae6763f55da9fbaf13b49"
+      },
+      "mutool": {
+        "argument": "mutool",
+        "resolved_path": "/usr/bin/mutool",
+        "sha256": "9203440040cc38ee412aeedbfe57f452d6b85709c5b1600ca6ab2aa05478ab73"
+      },
+      "pdfinfo": {
+        "argument": "pdfinfo",
+        "resolved_path": "/usr/bin/pdfinfo",
+        "sha256": "3293dda06d80e1e38dab859aa47368c2876aedc41cbc2e24e8fb9a4e66392078"
+      },
+      "ssh": {
+        "argument": "ssh",
+        "resolved_path": "/usr/bin/ssh",
+        "sha256": "27a7f5e86ed31efa1e758c7f955bdc016adf58bb3266c68e217ab5bee311b46b"
+      }
+    }
+  },
+  "record_sha256": "ea5d5cbae8b115644cda69d9579e62f4b45ea91c52aef8dd346c9b64ca899bac",
+  "schema_version": "books-corpus/1",
+  "section_boundary_evidence": [],
+  "selected_attempt_number": 1,
+  "source_filename": "Architecture-Patterns-with-Python.pdf",
+  "source_format": "pdf",
+  "source_path": "sources/Architecture-Patterns-with-Python.pdf",
+  "source_sha256": "b5b423b766ebe69b14ad03e1a6dbae1198a2f8b0ffbc289e34be11d70c3da32c",
+  "source_size_bytes": 10065375,
+  "staging_workaround": "length-bounded hash-qualified space-free basename",
+  "unresolved_navigation_anchors": [],
+  "warnings": [],
+  "working_directory": "/home/halbritt/git/books"
+}
