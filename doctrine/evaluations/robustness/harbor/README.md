@@ -93,6 +93,28 @@ harbor run -p /tmp/doctrine-skill-harbor/control -a nop    -o /tmp/doctrine-skil
 Keep job output outside the repository; trial records are evaluation working
 state, not tracked artifacts.
 
+## Curated judgment tasks
+
+`tasks/` holds hand-authored Harbor tasks with doctrine lineage, separate
+from the rendered skill-eval pairs. They are run directly:
+
+```bash
+harbor run -p doctrine/evaluations/robustness/harbor/tasks/checkout-retries \
+  -a oracle -o /tmp/doctrine-skill-jobs
+```
+
+- `tasks/checkout-retries/` — a Go checkout service loses responses from a
+  fault-injected payment gateway that commits charges before returning 502.
+  The graded gradient separates symptom-patching from contract-reading:
+  0.3 for a functional no-op, 0.5 for a naive retry that passes the smoke
+  test while double-charging the ledger, 1.0 for the documented
+  idempotency-key retry. Exercises `universal-evidence-before-intervention`
+  and interface-contract reading. Validated 2026-07-12 on `harbor==0.18.0`
+  (legacy `version = "1.0"` task format loads unchanged): oracle 1.0,
+  nop 0.3, and both live `terminus-2` subjects (`qwen3.6-35b-a3b`,
+  GLM 5.2) earned 1.0 by reading `docs/gateway-api.md` and reusing an
+  `Idempotency-Key`; run records stayed in the session scratchpad.
+
 ## Boundaries
 
 - Harbor changes the host and is installed only under explicit authority;
