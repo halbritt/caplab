@@ -10,8 +10,9 @@ role, context, evidence, and authority rather than by book.
 Apply guidance in this order:
 
 1. explicit human authorization and stop conditions;
-2. accepted repository contracts, tests, architectural decisions, and current
-   runtime facts;
+2. accepted repository contracts, tests,
+   [architectural decisions](../docs/decisions/README.md), and current runtime
+   facts;
 3. task-specific evidence from the repository and its history;
 4. context- and language-specific doctrine from this library;
 5. universal doctrine from this library;

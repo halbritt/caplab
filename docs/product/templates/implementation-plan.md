@@ -24,7 +24,9 @@ does not select the source specification or authorize execution.
 ## Objective and authority boundary
 
 Name the outcome, source decision, decision owner, authorization status, and
-the highest action level currently granted.
+the highest action level currently granted. When `source_decision` is
+architectural, link the governing repository
+[ADR](../../decisions/README.md).
 
 ## Current-state evidence and assumptions
 

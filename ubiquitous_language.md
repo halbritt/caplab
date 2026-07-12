@@ -112,6 +112,137 @@ Evidence that an executed action met stated technical criteria or produced its i
 
 The judgment by an authorized owner or mechanism that the verified outcome is sufficient. An implementer cannot silently accept their own work unless that authority was explicitly delegated.
 
+## Repository domain terms
+
+These terms name artifacts and review stages specific to this repository. The
+DDD discovery entrypoint at
+[`docs/domain/UBIQUITOUS_LANGUAGE.md`](docs/domain/UBIQUITOUS_LANGUAGE.md)
+points here rather than maintaining a second glossary.
+
+### Source book
+
+A **source book** is an original PDF or EPUB under `sources/`. Its content hash
+identifies the exact input. Conversion and doctrine work must not rewrite it.
+
+### Corpus book
+
+A **corpus book** is the generated, chapter-oriented Markdown tree under
+`books/<slug>/`, including assets, metadata, provenance, and validation. It is
+a derived artifact, not a replacement for the source book.
+
+### Doctrine source
+
+A **doctrine source** is a corpus book registered under a stable `SRC-*` ID in
+`doctrine/sources.yaml`. Registration creates coverage and traceability
+obligations; it does not mean every statement in the book is doctrine.
+
+### Concept record
+
+A **concept record** is a curated engineering rule with a stable ID, claim,
+decision rule, applicability conditions, and source support. It is the
+authoritative doctrinal unit for retrieval.
+
+### Formulation
+
+A **formulation** preserves a source-attributed contribution and its exact
+locator in the doctrine graph. Several formulations may support, refine, or
+contest one concept record without being collapsed into one source claim.
+
+### Evidence obligation
+
+An **evidence obligation** names information required before a doctrine-backed
+claim or recommendation can be made at its proposed scope. A routing signal
+may reveal an obligation but cannot satisfy it.
+
+### Evidence packet
+
+An **evidence packet** is a content-addressed selection of doctrine, conflicts,
+procedures, provenance, supplied evidence, and remaining evidence obligations
+for one question. It is retrieved guidance, not a decision or authorization.
+
+### Decision receipt
+
+A **decision receipt** is a typed record of evidence and assertion lineage for
+one decision question. It may supply an ADR, specification, plan, review, or
+handoff. It does not become a decision merely because it is structurally valid.
+
+### Screening
+
+**Screening** is a machine judgment used to prioritize later review. A
+screening verdict is an observation of model output, not verification of the
+screened claim and not a human judgment.
+
+### Pre-review
+
+A **pre-review** is an advisory model-authored inspection of a screening flag
+or pending evaluation candidate. It may record observations, an inference, and
+a recommended disposition or repair. It is not a human audit, human
+disposition, decision, verification, or acceptance, and it must not be copied
+into a human-owned record without an actual human judgment.
+
+**Frontier second opinion**, **frontier pre-pass**, and **gold pre-pass** are
+pre-review variants. Their narrower names may remain in schemas and historical
+records, but prose should identify them as pre-review when the distinction from
+human adjudication matters.
+
+### Human audit
+
+A **human audit** is a human-authored finding about a screening record or
+citation after the named reviewer inspects its evidence. It does not modify
+doctrine by itself.
+
+### Human disposition
+
+A **human disposition** is a human-authored resolution of a calibration
+candidate. It records the verdict, evidence reviewed, rationale, and residual
+uncertainty. Machine output may inform it but cannot populate it under a human
+identity.
+
+### Adjudication bench
+
+The **adjudication bench** is the interface that presents screening,
+pre-review, source evidence, human audits, and human dispositions without
+collapsing those records into one authority level.
+
+### Bounded context
+
+A **bounded context** is a deliberately selected boundary within which a model
+and its language have a consistent meaning and an identified owner. A
+directory, service, database, process, or team is evidence to inspect, not
+proof of a bounded context.
+
+### Context map
+
+A **context map** records bounded contexts and the semantic and integration
+relationships between them. Candidate boundaries stay labeled as candidates
+until a decision owner selects them through an ADR.
+
+### Domain event
+
+A **domain event** is a past-tense fact that matters to a named domain model
+inside a bounded context. A log line, queue message, webhook, or state change
+is not a domain event solely because it happened.
+
+### Product specification
+
+A **product specification** describes a proposed or selected observable
+capability and its contract. Its lifecycle state does not silently authorize
+implementation.
+
+### Implementation plan
+
+An **implementation plan** orders proposed or authorized execution checkpoints
+and preservation boundaries. Readiness is not authorization, and execution is
+not verification or acceptance.
+
+### Architecture decision record
+
+An **architecture decision record** (**ADR**) preserves one architectural
+selection, its owner and authority, evidence, alternatives, rationale,
+consequences, and reopening conditions. In this repository an ADR with status
+`decided` records selection; it does not imply implementation authorization,
+verification, or acceptance.
+
 ## Assertion flow
 
 The usual progression is:

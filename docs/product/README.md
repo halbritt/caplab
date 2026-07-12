@@ -14,6 +14,10 @@ Product documents follow the assertion and authority meanings in
 - a ready implementation plan does not authorize execution;
 - execution, verification, and acceptance remain separately recorded states.
 
+Architectural selections live in the repository's
+[`docs/decisions/`](../decisions/README.md) index. A product document may link
+an ADR; it does not become one.
+
 ## Layout
 
 ```text
@@ -82,7 +86,7 @@ states. Record them in the plan's status log and dedicated records.
 ## Maintenance rules
 
 - Every plan links its source specification and, once one exists, its governing
-  decision. Without that decision, the plan remains unselected and
+  ADR. Without that decision, the plan remains unselected and
   unauthorized.
 - A specification lists its active plans.
 - Supersession links are reciprocal.
@@ -93,4 +97,6 @@ states. Record them in the plan's status log and dedicated records.
 - Generated indexes may summarize metadata, but tools must not rewrite
   substantive prose.
 
-Start new artifacts from the files under [`templates/`](templates/).
+Start new artifacts from the files under [`templates/`](templates/). Start an
+architectural selection from the
+[`ADR template`](../decisions/adr-template.md).

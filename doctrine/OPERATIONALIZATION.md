@@ -166,8 +166,9 @@ Every material recommendation should produce a durable receipt containing:
 - exact formulation and source locators;
 - corpus, schema, and retriever versions.
 
-A receipt can feed an ADR, issue, review comment, plan, or handoff. It also gives
-the evaluation system something inspectable to score.
+A receipt can feed an [ADR](../docs/decisions/README.md), issue, review comment,
+plan, or handoff. It also gives the evaluation system something inspectable to
+score.
 
 ### 6. Learn from outcomes without rewriting doctrine
 

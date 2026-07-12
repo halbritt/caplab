@@ -8,6 +8,10 @@ remains under `Unreleased`, whether or not it has been committed.
 
 ### Added
 
+- Added a repository DDD documentation spine: expanded canonical domain
+  vocabulary, an uppercase discovery entrypoint, a candidate context map, an
+  ADR index and template, and `adr-0001` governing the authority boundaries
+  among domain docs, decisions, specifications, plans, and receipts.
 - Registered *100 Go Mistakes and How to Avoid Them* (SRC-100GO) and
   *Concurrency in Go* (SRC-CIG) with exact source metadata, contextual
   limitations, a complete 31-chapter extraction ledger, 11 canonical concepts,

@@ -81,4 +81,5 @@ List decisions or evidence gaps that block selection or implementation.
 
 Record a decision only after the named owner selects an option. Record
 implementation authorization separately; do not infer either from document
-status.
+status. Link `decision_record` to a repository
+[ADR](../../decisions/README.md) when the selection is architectural.
