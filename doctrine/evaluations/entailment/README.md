@@ -36,10 +36,15 @@ Per [`ubiquitous_language.md`](../../../ubiquitous_language.md):
 2. Resolves each locator (`relative/chapter/path.md :: Exact Converted
    Heading`) to the text under that heading up to the next heading of the same
    or a higher level, using the same heading normalization as
-   `doctrine/tools/validate_doctrine.py`. Resolution failures are recorded as
+   `doctrine/tools/validate_doctrine.py`. Where the tracked section maps
+   (`doctrine/section-maps/`, see its README) cover the chapter, headings
+   classified `embedded` — conversion-flattened callouts, captions, and
+   subsection children — do not terminate the section, so the full logical
+   section is judged; without a current map the plain level rule applies.
+   Resolution failures are recorded as
    findings (`verdict: resolution_failed`), never crashes. Repeated normalized
    headings require an explicit `@@ occurrence=N` selector.
-3. Sections above 24000 characters are recorded as
+3. Sections above 60000 characters are recorded as
    `insufficient_context` and are not sent to a model. Complete shorter
    sections, the concept claim, contribution sentence, and relationship type
    with its meaning are sent to the local OpenAI-compatible
@@ -133,3 +138,12 @@ deterministically from `results.jsonl` — do not edit it by hand.
   itself claim an independent source ID; cross-source support is evaluated
   separately. This clarification is encoded in `entailment-prompt/3`, so older
   judgments are not reused under the changed prompt semantics.
+  `entailment-prompt/4` changed judge semantics again without changing the
+  prompt text: evidence-quote verification now normalizes conversion and
+  typography artifacts (PDF line-break hyphenation, markdown emphasis, inline
+  span anchors, curly quotes) and treats an ellipsis in a quote as an elision
+  whose fragments are checked independently — under `/3` these produced false
+  `quote_not_found` verdicts (14 of 17 observed cases). Section bounds are
+  additionally map-aware (see Method), and the section identity in each
+  record's key (`section_sha256`) changes wherever the maps widen a section,
+  so pre-map judgments are not reused for re-bounded sections.

@@ -38,10 +38,10 @@ if _TOOLS_DIR not in sys.path:
 from validate_doctrine import parse_heading_selector, plain_heading  # noqa: E402
 
 SCHEMA_VERSION = "entailment-eval/2"
-PROMPT_VERSION = "entailment-prompt/3"
+PROMPT_VERSION = "entailment-prompt/4"
 DEFAULT_ENDPOINT = "http://localhost:8081/v1"
 MODEL_ALIAS = "qwen3.6-35b-a3b"
-SECTION_CHAR_BUDGET = 24000
+SECTION_CHAR_BUDGET = 60000
 RAW_CONTENT_BUDGET = 4000
 DEFAULT_MAX_TOKENS = 4096
 DEFAULT_TIMEOUT_SECONDS = 300.0
@@ -107,11 +107,22 @@ class Resolution:
     error: str | None
 
 
-def extract_section(chapter_text: str, expected_heading: str) -> str | None:
+def extract_section(
+    chapter_text: str,
+    expected_heading: str,
+    section_roles: dict[int, tuple[str, int]] | None = None,
+) -> str | None:
     """Return the uniquely selected text under ``expected_heading``.
 
     The section runs from the line after the matched heading until the next
-    heading of the same or a higher level. Heading comparison reuses
+    heading of the same or a higher level. When ``section_roles`` (a 1-based
+    line-number → ``(role, logical depth)`` mapping from the tracked section
+    maps) is supplied, headings whose role is ``embedded`` — conversion-
+    flattened callouts, captions, and box titles — do not terminate the
+    section, and neither does a ``section``-role heading whose logical depth
+    is below the cited heading's (a genuine nested subsection flattened to
+    its parent's markdown level). Headings absent from the mapping
+    conservatively count as boundaries at their markdown level. Heading comparison reuses
     ``validate_doctrine.plain_heading`` so locators resolve exactly as the
     doctrine validator checks them. Returns ``None`` when no heading matches.
     """
@@ -126,11 +137,24 @@ def extract_section(chapter_text: str, expected_heading: str) -> str | None:
         if not match or plain_heading(match.group(2)) != normalized:
             continue
         level = len(match.group(1))
+        cited_entry = section_roles.get(index + 1) if section_roles else None
+        cited_depth = cited_entry[1] if cited_entry else level
         body: list[str] = []
         end = len(lines)
         for candidate_index in range(index + 1, len(lines)):
             candidate = HEADING_RE.match(lines[candidate_index])
             if candidate and len(candidate.group(1)) <= level:
+                if section_roles is not None:
+                    entry = section_roles.get(candidate_index + 1)
+                    role = entry[0] if entry else "section"
+                    depth = entry[1] if entry else len(candidate.group(1))
+                    # Embedded headings never terminate; a nested subsection
+                    # (logical depth below the cited heading's) does not
+                    # terminate its flattened parent even at an equal
+                    # markdown level.
+                    if role == "embedded" or depth > cited_depth:
+                        body.append(lines[candidate_index])
+                        continue
                 end = candidate_index
                 break
             body.append(lines[candidate_index])
@@ -165,6 +189,48 @@ def extract_section(chapter_text: str, expected_heading: str) -> str | None:
     return matches[0][3]
 
 
+_SECTION_MAP_CACHE: dict[Path, dict[str, tuple[str, dict[int, tuple[str, int]]]]] = {}
+
+
+def load_section_roles(
+    repo_root: Path, relative_path: str, chapter_sha256: str
+) -> dict[int, tuple[str, int]] | None:
+    """Heading roles for one chapter from the tracked section maps.
+
+    Returns a 1-based line-number → ``(role, logical depth)`` mapping (depth
+    defaults to the heading's markdown level; a map entry's optional ``depth``
+    field overrides it for nested subsections flattened to their parent's
+    level), or ``None`` when no map covers the chapter or the map's chapter
+    hash is stale (the extractor then falls back to plain level-based
+    boundaries; ``build_section_map.py --check`` reports the staleness).
+    """
+    root = repo_root.resolve()
+    maps = _SECTION_MAP_CACHE.get(root)
+    if maps is None:
+        maps = {}
+        map_dir = root / "doctrine" / "section-maps"
+        if map_dir.is_dir():
+            for map_path in sorted(map_dir.glob("*.yaml")):
+                document = yaml.safe_load(map_path.read_text(encoding="utf-8")) or {}
+                for chapter in document.get("chapters", []):
+                    roles = {
+                        int(entry["line"]): (
+                            str(entry["role"]),
+                            int(entry.get("depth", entry.get("level", 6))),
+                        )
+                        for entry in chapter.get("headings", [])
+                    }
+                    maps[str(chapter.get("path"))] = (
+                        str(chapter.get("chapter_sha256")),
+                        roles,
+                    )
+        _SECTION_MAP_CACHE[root] = maps
+    entry = maps.get(relative_path)
+    if entry is None or entry[0] != chapter_sha256:
+        return None
+    return entry[1]
+
+
 def resolve_locator(repo_root: Path, locator: str) -> Resolution:
     """Resolve ``relative/path.md :: Exact Heading`` to section text."""
     if " :: " not in locator:
@@ -175,7 +241,8 @@ def resolve_locator(repo_root: Path, locator: str) -> Resolution:
         return Resolution(relative_path, heading, None, None, None, "file_missing")
     data = path.read_bytes()
     chapter_sha256 = hashlib.sha256(data).hexdigest()
-    section = extract_section(data.decode("utf-8"), heading)
+    section_roles = load_section_roles(repo_root, relative_path, chapter_sha256)
+    section = extract_section(data.decode("utf-8"), heading, section_roles)
     if section is None:
         return Resolution(
             relative_path, heading, chapter_sha256, None, None, "heading_not_found"
@@ -432,14 +499,46 @@ def judge(client: OpenAIClient, prompt: str) -> dict[str, Any]:
     }
 
 
+def normalize_for_quote_match(text: str) -> str:
+    """Normalize conversion and typography artifacts before quote containment.
+
+    Removes inline span anchors, PDF line-break hyphenation (U+2010 or soft
+    hyphen followed by whitespace), markdown emphasis and image/link syntax,
+    and maps curly quotes to straight quotes, then collapses whitespace and
+    casefolds. Models quote the *rendered* text; the section carries the raw
+    conversion artifacts.
+    """
+    text = re.sub(r"<span[^>]*>|</span>", "", text)
+    text = re.sub(r"[‐­]\s*", "", text)
+    text = (
+        text.replace("‘", "'")
+        .replace("’", "'")
+        .replace("“", '"')
+        .replace("”", '"')
+    )
+    text = re.sub(r"[*_`\\]", "", text)
+    text = re.sub(r"!\[\]\([^)]*\)", "", text)
+    text = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", text)
+    return " ".join(text.split()).casefold()
+
+
 def verify_evidence_quote(outcome: dict[str, Any], section_text: str) -> dict[str, Any]:
-    """Require a non-empty model quote to be present in the complete section."""
+    """Require a non-empty model quote to be present in the complete section.
+
+    An ellipsis in the quote ("..." or "…") is treated as an elision: each
+    fragment must be present independently. Containment is checked under
+    ``normalize_for_quote_match`` on both sides.
+    """
     quote = outcome.get("evidence_quote")
     if not isinstance(quote, str) or not quote.strip():
         return outcome
-    normalized_quote = " ".join(quote.split()).casefold()
-    normalized_section = " ".join(section_text.split()).casefold()
-    if normalized_quote in normalized_section:
+    normalized_section = normalize_for_quote_match(section_text)
+    fragments = [
+        fragment.strip()
+        for fragment in re.split(r"\.\.\.|…", normalize_for_quote_match(quote))
+        if fragment.strip()
+    ]
+    if fragments and all(fragment in normalized_section for fragment in fragments):
         return outcome
     invalid = dict(outcome)
     invalid["model_verdict"] = outcome.get("verdict")
