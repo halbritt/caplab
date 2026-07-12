@@ -7,28 +7,33 @@ Each verdict is an observation of model output supporting an inference
 about entailment. It is screening evidence, not verification and not
 acceptance; it does not modify doctrine.
 
-Records: 1762 unique judgment keys (1780 result lines).
+Records: 1950 unique judgment keys (1968 result lines).
 
 ## Verdict counts
 
 | verdict | count |
 |---|---|
-| supported | 1487 |
-| partially_supported | 140 |
-| not_supported | 21 |
+| supported | 1656 |
+| partially_supported | 143 |
+| not_supported | 22 |
 | contradicted | 4 |
-| insufficient_context | 4 |
+| insufficient_context | 6 |
 | unparseable | 1 |
-| quote_not_found | 105 |
+| quote_not_found | 118 |
 
 ## Verdicts by source
 
 | source | supported | partially_supported | not_supported | contradicted | insufficient_context | resolution_failed | unparseable | transport_error | quote_not_found | total |
 |---|---|---|---|---|---|---|---|---|---|---|
+| SRC-100GO | 41 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 42 |
+| SRC-ADPCH3 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | SRC-APOSD | 83 | 2 | 1 | 1 | 1 | 0 | 0 | 0 | 2 | 90 |
+| SRC-APWP | 38 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 40 |
 | SRC-CA | 130 | 4 | 1 | 1 | 0 | 0 | 0 | 0 | 5 | 141 |
 | SRC-CC | 106 | 16 | 6 | 2 | 0 | 0 | 0 | 0 | 11 | 141 |
+| SRC-CIG | 27 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 | 30 |
 | SRC-DDD | 192 | 12 | 0 | 0 | 0 | 0 | 0 | 0 | 5 | 209 |
+| SRC-DDIA2 | 34 | 3 | 1 | 0 | 2 | 0 | 0 | 0 | 6 | 46 |
 | SRC-EGO | 148 | 19 | 2 | 0 | 3 | 0 | 0 | 0 | 18 | 190 |
 | SRC-FP | 167 | 9 | 2 | 0 | 0 | 0 | 0 | 0 | 6 | 184 |
 | SRC-FSA | 137 | 20 | 4 | 0 | 0 | 0 | 0 | 0 | 10 | 171 |
@@ -36,6 +41,7 @@ Records: 1762 unique judgment keys (1780 result lines).
 | SRC-REF | 71 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 77 |
 | SRC-RI | 140 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 13 | 158 |
 | SRC-SDX | 100 | 19 | 2 | 0 | 0 | 0 | 1 | 0 | 9 | 131 |
+| SRC-SEAG | 25 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 26 |
 | SRC-UT | 77 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 10 | 88 |
 | SRC-WELC | 66 | 21 | 3 | 0 | 0 | 0 | 0 | 0 | 9 | 99 |
 
@@ -49,8 +55,11 @@ Records: 1762 unique judgment keys (1780 result lines).
 - `quote_not_found` — concept `architecture-boundary-strength` — `books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/029-chapter-18-boundary-anatomy.md :: BOUNDARY CROSSING`
 - `quote_not_found` — concept `architecture-boundary-strength` — `books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/035-chapter-24-partial-boundaries.md :: FACADES`
 - `quote_not_found` — concept `architecture-boundary-strength` — `books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/024-chapter-18-choosing-the-appropriate-architecture-style.md :: Monolith versus distributed`
+- `quote_not_found` — concept `architecture-command-event-semantics` — `books/architecture-patterns-with-python/chapters/017-chapter-10-commands-and-command-handler.md :: Commands and Events`
+- `quote_not_found` — concept `architecture-command-event-semantics` — `books/architecture-patterns-with-python/chapters/017-chapter-10-commands-and-command-handler.md :: Commands and Events`
 - `not_supported` — concept `architecture-contextual-style-selection` — `books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/024-chapter-18-choosing-the-appropriate-architecture-style.md :: Shifting "Fashion" in Architecture`
 - `not_supported` — concept `architecture-distribution-readiness` — `books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/038-chapter-27-services-great-and-small.md :: THE DECOUPLING FALLACY`
+- `not_supported` — concept `architecture-distribution-readiness` — `books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/005-chapter-1-trade-offs-in-data-systems-architecture.md :: Distributed Versus Single-Node Systems`
 - `not_supported` — concept `architecture-distribution-readiness` — `books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/015-chapter-9-foundations.md :: Other Distributed Considerations`
 - `quote_not_found` — concept `architecture-distribution-readiness` — `books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/015-chapter-9-foundations.md :: Other Distributed Considerations`
 - `quote_not_found` — concept `architecture-distribution-readiness` — `books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/015-chapter-9-foundations.md :: Other Distributed Considerations`
@@ -66,6 +75,12 @@ Records: 1762 unique judgment keys (1780 result lines).
 - `quote_not_found` — concept `architecture-scoped-characteristics` — `books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/012-chapter-7-scope-of-architecture-characteristics.md :: Architectural Quanta and Granularity`
 - `quote_not_found` — concept `architecture-selective-option-preservation` — `books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/024-chapter-16-adaptation.md :: System Architecture`
 - `quote_not_found` — concept `architecture-structural-constraint-enforcement` — `books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/046-chapter-34-the-missing-chapter.md :: ENCAPSULATION`
+- `insufficient_context` — concept `data-batch-reproducible-derivation` — `books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/015-chapter-11-batch-processing.md :: Chapter 11: Batch Processing`
+- `insufficient_context` — concept `data-batch-reproducible-derivation` — `books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/015-chapter-11-batch-processing.md :: Chapter 11: Batch Processing`
+- `quote_not_found` — concept `data-index-workload-tradeoff` — `books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/008-chapter-4-storage-and-retrieval.md :: Storage and Indexing for OLTP`
+- `quote_not_found` — concept `data-minimization-lifecycle` — `books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/018-chapter-14-doing-the-right-thing.md :: Legislation and Self-Regulation`
+- `quote_not_found` — concept `data-schema-evolution-compatibility` — `books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/009-chapter-5-encoding-and-evolution.md :: The Merits of Schemas`
+- `quote_not_found` — concept `data-system-of-record-derived-state` — `books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/005-chapter-1-trade-offs-in-data-systems-architecture.md :: Systems of Record and Derived Data`
 - `quote_not_found` — concept `debugging-causal-repair` — `books/code-complete-2nd-edition-v413hav/chapters/032-chapter-23-debugging.md :: 23.3 Fixing a Defect`
 - `quote_not_found` — concept `debugging-hypothesis-led-investigation` — `books/code-complete-2nd-edition-v413hav/chapters/032-chapter-23-debugging.md :: The Scientific Method of Debugging`
 - `quote_not_found` — concept `debugging-hypothesis-led-investigation` — `books/code-complete-2nd-edition-v413hav/chapters/032-chapter-23-debugging.md :: The Scientific Method of Debugging`
@@ -81,6 +96,7 @@ Records: 1762 unique judgment keys (1780 result lines).
 - `not_supported` — concept `go-explicit-contextual-errors` — `books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/006-chapter-2-efficient-introduction-to-go.md :: How to Wrap Errors?`
 - `not_supported` — concept `go-explicit-contextual-errors` — `books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/006-chapter-2-efficient-introduction-to-go.md :: How to Wrap Errors?`
 - `quote_not_found` — concept `go-explicit-contextual-errors` — `books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/006-chapter-2-efficient-introduction-to-go.md :: Never Ignore Errors!`
+- `quote_not_found` — concept `go-goroutine-resource-lifecycle` — `books/concurrency-in-go/chapters/008-chapter-4-concurrency-patterns-in-go.md :: Preventing Goroutine Leaks`
 - `quote_not_found` — concept `go-goroutine-resource-lifecycle` — `books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/015-chapter-11-optimization-patterns.md :: Control the Lifecycle of Your Goroutines`
 - `quote_not_found` — concept `go-goroutine-resource-lifecycle` — `books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/015-chapter-11-optimization-patterns.md :: Control the Lifecycle of Your Goroutines`
 - `quote_not_found` — concept `go-goroutine-resource-lifecycle` — `books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/015-chapter-11-optimization-patterns.md :: Reliably Close Things`
@@ -88,6 +104,8 @@ Records: 1762 unique judgment keys (1780 result lines).
 - `quote_not_found` — concept `go-semantics-before-performance-constructs` — `books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/006-chapter-2-efficient-introduction-to-go.md :: Generic Code Will Be Faster?`
 - `quote_not_found` — concept `go-semantics-before-performance-constructs` — `books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/006-chapter-2-efficient-introduction-to-go.md :: Generic Code Will Be Faster?`
 - `quote_not_found` — concept `go-semantics-before-performance-constructs` — `books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/006-chapter-2-efficient-introduction-to-go.md :: Generic Code Will Be Faster?`
+- `quote_not_found` — concept `go-synchronization-mechanism-fit` — `books/100-go-mistakes-and-how-to-avoid-them-teiva-harsanyi-bibis-ir/chapters/012-chapter-8-concurrency-foundations.md :: 8.3 #57: Being puzzled about when to use channels or mutexes`
+- `quote_not_found` — concept `implementation-dependency-adoption-gate` — `books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/030-chapter-21-dependency-management.md :: Considerations When Importing`
 - `contradicted` — concept `implementation-duplication-as-evidence` — `books/code-complete-2nd-edition-v413hav/chapters/013-chapter-7-high-quality-routines.md :: 7.1 Valid Reasons to Create a Routine`
 - `contradicted` — concept `implementation-duplication-as-evidence` — `books/code-complete-2nd-edition-v413hav/chapters/013-chapter-7-high-quality-routines.md :: 7.1 Valid Reasons to Create a Routine`
 - `quote_not_found` — concept `implementation-duplication-as-evidence` — `books/the-pragmatic-programmer/chapters/007-chapter-2-a-pragmatic-approach.md :: **7** The Evils of Duplication`
@@ -101,6 +119,7 @@ Records: 1762 unique judgment keys (1780 result lines).
 - `quote_not_found` — concept `implementation-minimal-coherent-api` — `books/code-complete-2nd-edition-v413hav/chapters/013-chapter-7-high-quality-routines.md :: 7.5 How to Use Routine Parameters`
 - `quote_not_found` — concept `implementation-normal-result-or-exception` — `books/code-complete-2nd-edition-v413hav/chapters/014-chapter-8-defensive-programming.md :: 8.4 Exceptions`
 - `quote_not_found` — concept `implementation-readiness` — `books/the-pragmatic-programmer/chapters/012-chapter-7-before-the-project.md :: **36** The Requirements Pit`
+- `quote_not_found` — concept `implementation-representation-fit` — `books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/007-chapter-3-data-models-and-query-languages.md :: When to Use Which Model`
 - `quote_not_found` — concept `implementation-representation-fit` — `books/fluent-python-2nd-edition-z-lib-org/chapters/007-chapter-2-an-array-of-sequences.md :: When a List Is Not the Answer`
 - `not_supported` — concept `implementation-risk-driven-tests` — `books/code-complete-2nd-edition-v413hav/chapters/031-chapter-22-developer-testing.md :: 22.3 Bag of Testing Tricks`
 - `quote_not_found` — concept `implementation-risk-driven-tests` — `books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/011-chapter-5-mocks-and-test-fragility.md :: 5.2 Observable behavior vs. implementation details`
@@ -126,6 +145,8 @@ Records: 1762 unique judgment keys (1780 result lines).
 - `quote_not_found` — concept `operations-designed-failure-modes` — `books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/008-chapter-3-stabilize-your-system.md :: Chain of Failure`
 - `quote_not_found` — concept `operations-ephemeral-instance-design` — `books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/013-chapter-7-foundations.md :: Virtual Machines in the Data Center`
 - `quote_not_found` — concept `operations-integration-point-distrust` — `books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Integration Points`
+- `quote_not_found` — concept `operations-resilience-margin` — `books/concurrency-in-go/chapters/009-chapter-5-concurrency-at-scale.md :: Replicated Requests`
+- `quote_not_found` — concept `operations-resilience-margin` — `books/concurrency-in-go/chapters/009-chapter-5-concurrency-at-scale.md :: Replicated Requests`
 - `quote_not_found` — concept `operations-synchronized-demand-dispersion` — `books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/009-chapter-4-stability-antipatterns.md :: Dogpile`
 - `quote_not_found` — concept `operations-zero-downtime-rollout` — `books/release-it-design-and-deploy-production-ready-software-pdfdrive/chapters/020-chapter-13-design-for-deployment.md :: Phases of Deployment`
 - `quote_not_found` — concept `performance-cache-validity` — `books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/015-chapter-11-optimization-patterns.md :: Reuse Memory`
@@ -137,6 +158,7 @@ Records: 1762 unique judgment keys (1780 result lines).
 - `quote_not_found` — concept `performance-measurable-objective` — `books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/005-chapter-1-software-efficiency-matters.md :: Clarify When Someone Uses the Word "Performance"`
 - `quote_not_found` — concept `performance-measurable-objective` — `books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/007-chapter-3-conquering-efficiency.md :: Resource-Aware Efficiency Requirements`
 - `quote_not_found` — concept `performance-memory-lifecycle` — `books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/012-chapter-8-benchmarking-versus-stress-and-load-tests.md :: Microbenchmarks Versus Memory Management`
+- `quote_not_found` — concept `performance-metric-semantics` — `books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/006-chapter-2-defining-nonfunctional-requirements.md :: Average, Median, and Percentiles`
 - `insufficient_context` — concept `performance-profile-causal-bottleneck` — `books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/013-chapter-9-data-driven-bottleneck-analysis.md :: Root Cause Analysis, but for Efficiency`
 - `insufficient_context` — concept `performance-profile-causal-bottleneck` — `books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/013-chapter-9-data-driven-bottleneck-analysis.md :: Root Cause Analysis, but for Efficiency`
 - `insufficient_context` — concept `performance-profile-causal-bottleneck` — `books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/013-chapter-9-data-driven-bottleneck-analysis.md :: Root Cause Analysis, but for Efficiency`
@@ -183,4 +205,4 @@ None.
 
 ## Latency
 
-Mean latency over 1758 model-judged records: 31.20s.
+Mean latency over 1944 model-judged records: 31.21s.

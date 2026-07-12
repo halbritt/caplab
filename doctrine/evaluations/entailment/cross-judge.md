@@ -78,3 +78,39 @@ contributions and map-verified locators at extraction time, which is
 where that difference comes from. The 21 distinct quote_not_found
 targets are paraphrase suspects for light bench audit; the remaining
 disagreements are gradations.
+
+## Addendum — six-book campaign citations (2026-07-12)
+
+Both judges screened the 94 citations added from SRC-100GO, SRC-CIG,
+SRC-DDIA2, SRC-SEAG, SRC-APWP, and SRC-ADPCH3 under
+`entailment-prompt/5`:
+
+| verdict | qwen3.6:27b | GLM 5.2 |
+|---|---:|---:|
+| supported | 83 | 86 |
+| partially_supported | 1 | 2 |
+| not_supported | 0 | 1 |
+| insufficient_context | 1 | 1 |
+| quote_not_found | 9 | 4 |
+
+83/94 targets received the same verdict, including 80 double-supported
+citations, two double-`quote_not_found` citations, and one shared
+`insufficient_context` result. Neither stream had a contradiction, parse
+failure, transport failure, or locator-resolution failure.
+
+GLM issued the campaign's only hard flag on
+`architecture-distribution-readiness` in DDIA2, while qwen graded the same
+citation `partially_supported`. The frontier pre-pass found a real scoping
+defect: the cited section supplies the drivers for distribution, but the
+registered contribution also attributes failure, latency, consistency, and
+operational costs that occur after the section boundary. That model
+recommendation remains queued for human adjudication.
+
+The judges produced 13 quote failures across 11 distinct targets, with two
+targets flagged by both. Section-level frontier review classified those
+quote failures as mechanical artifacts caused by stitched spans, omitted
+list items, Markdown normalization, or OCR/conversion spelling. The shared
+batch-processing `insufficient_context` result was the deterministic
+60,000-character context gate on a resolvable 86,539-character chapter
+section; its cited support occurs near the start. The only remaining
+disagreement was a supported-versus-partially-supported gradation.
