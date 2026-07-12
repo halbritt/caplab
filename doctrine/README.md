@@ -42,6 +42,7 @@ verification into acceptance.
 | `corpus-map.yaml` | Source contributions, assumptions, limitations, and tensions | source ID |
 | `bibliography.json` | Canonical titles, editions, creator roles, and field-level evidence | source ID |
 | `chapter-coverage.yaml` | Exact chapter inventory, disposition, and content hashes | chapter/source ID |
+| `section-maps/*.yaml` | Per-book heading roles separating genuine section boundaries from conversion-flattened embedded content | book slug/chapter heading |
 | `universal-doctrine.md` | Compact cross-role foundation | every engineering task |
 | `role-doctrine.md` | Role-specific defaults, permissions, and stop rules | agent role |
 | `concepts/*.yaml` | Canonical operational concept records | concept ID, task, signal |

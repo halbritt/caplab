@@ -1,0 +1,6769 @@
+schema_version: section-map/1
+book: fluent-python-2nd-edition-z-lib-org
+chapters:
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/001-fluent-python.md
+  chapter_sha256: 058cfe357ca131833c2b6fa8c269e46620a62e75ae5f62dcf87e00026fa29b77
+  headings:
+  - line: 5
+    level: 1
+    text: Fluent Python
+    role: section
+    classified_by: rule:chapter-title
+  - line: 9
+    level: 2
+    text: Fluent Python
+    role: embedded
+    classified_by: model
+  - line: 11
+    level: 2
+    text: SECOND EDITION
+    role: embedded
+    classified_by: model
+  - line: 15
+    level: 2
+    text: Luciano Ramalho
+    role: embedded
+    classified_by: model
+  - line: 17
+    level: 2
+    text: Fluent Python
+    role: embedded
+    classified_by: model
+  - line: 45
+    level: 2
+    text: Revision History for the Early Release
+    role: embedded
+    classified_by: model
+  - line: 81
+    level: 2
+    text: Dedication
+    role: embedded
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/002-preface.md
+  chapter_sha256: 3b56d5fc13749fc561617a4ba9193de327d09ce2f5268b781661c9ebc172a417
+  headings:
+  - line: 2
+    level: 1
+    text: Preface
+    role: section
+    classified_by: rule:chapter-title
+  - line: 5
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 21
+    level: 2
+    text: Who This Book Is For
+    role: section
+    classified_by: model
+  - line: 31
+    level: 2
+    text: Who This Book Is Not For
+    role: section
+    classified_by: model
+  - line: 35
+    level: 2
+    text: How This Book Is Organized
+    role: section
+    classified_by: model
+  - line: 47
+    level: 2
+    text: Part I, Prologue
+    role: embedded
+    classified_by: model
+  - line: 51
+    level: 2
+    text: Part II, Data Structures
+    role: embedded
+    classified_by: model
+  - line: 55
+    level: 2
+    text: Part III, Functions as Objects
+    role: embedded
+    classified_by: model
+  - line: 59
+    level: 2
+    text: Part IV, Classes and Protocols
+    role: embedded
+    classified_by: model
+  - line: 67
+    level: 2
+    text: '[Link to Come]'
+    role: embedded
+    classified_by: model
+  - line: 72
+    level: 2
+    text: Hands-On Approach
+    role: section
+    classified_by: model
+  - line: 83
+    level: 2
+    text: Hardware Used for Timings
+    role: section
+    classified_by: model
+  - line: 88
+    level: 2
+    text: 'Soapbox: My Personal Perspective'
+    role: section
+    classified_by: model
+  - line: 93
+    level: 2
+    text: Python Jargon
+    role: section
+    classified_by: model
+  - line: 98
+    level: 2
+    text: Python Version Covered
+    role: section
+    classified_by: model
+  - line: 107
+    level: 2
+    text: Conventions Used in This Book
+    role: section
+    classified_by: model
+  - line: 121
+    level: 2
+    text: Constant width bold
+    role: embedded
+    classified_by: model
+  - line: 125
+    level: 2
+    text: Constant width italic
+    role: embedded
+    classified_by: model
+  - line: 142
+    level: 2
+    text: Using Code Examples
+    role: section
+    classified_by: model
+  - line: 149
+    level: 2
+    text: How to Contact Us
+    role: section
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/003-acknowledgments.md
+  chapter_sha256: bfbce0bd3e7dd37801c2c3c6ebe8851f538ee8c01114766556e06e19bb9ec478
+  headings:
+  - line: 2
+    level: 1
+    text: Acknowledgments
+    role: section
+    classified_by: rule:chapter-title
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/004-part-i-prologue.md
+  chapter_sha256: eff50cc50da1bda56fc477e74a248db38ee2511938e661353cb9cc8982216e9c
+  headings:
+  - line: 2
+    level: 1
+    text: Part I. Prologue
+    role: section
+    classified_by: rule:chapter-title
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/005-chapter-1-the-python-data-model.md
+  chapter_sha256: d3fb4f1f9c22b078faab38c2c1084dd2d2bbd09847c89fa69fa617c3011d1a42
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 1: The Python Data Model'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A NOTE FOR EARLY RELEASE READERS
+    role: embedded
+    classified_by: model
+  - line: 38
+    level: 2
+    text: MAGIC AND DUNDER
+    role: section
+    classified_by: model
+  - line: 43
+    level: 2
+    text: What's new in this chapter
+    role: section
+    classified_by: model
+  - line: 52
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 57
+    level: 2
+    text: A Pythonic Card Deck
+    role: section
+    classified_by: model
+  - line: 154
+    level: 2
+    text: ELLIPSIS IN DOCTESTS
+    role: section
+    classified_by: model
+  - line: 196
+    level: 2
+    text: HOW ABOUT SHUFFLING?
+    role: section
+    classified_by: model
+  - line: 201
+    level: 2
+    text: How Special Methods Are Used
+    role: section
+    classified_by: rule:cited
+  - line: 221
+    level: 2
+    text: Emulating Numeric Types
+    role: section
+    classified_by: model
+  - line: 231
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 313
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 320
+    level: 2
+    text: String Representation
+    role: section
+    classified_by: model
+  - line: 336
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 343
+    level: 2
+    text: Boolean Value of a Custom Type
+    role: section
+    classified_by: model
+  - line: 353
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 365
+    level: 2
+    text: Collection API
+    role: section
+    classified_by: model
+  - line: 389
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 400
+    level: 2
+    text: Overview of Special Methods
+    role: section
+    classified_by: model
+  - line: 546
+    level: 2
+    text: Operator category Symbols Method names
+    role: embedded
+    classified_by: model
+  - line: 585
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 592
+    level: 2
+    text: Why len Is Not a Method
+    role: section
+    classified_by: model
+  - line: 598
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 602
+    level: 2
+    text: Chapter Summary
+    role: section
+    classified_by: model
+  - line: 615
+    level: 2
+    text: Further Reading
+    role: section
+    classified_by: model
+  - line: 627
+    level: 2
+    text: SOAPBOX
+    role: embedded
+    classified_by: model
+  - line: 629
+    level: 2
+    text: Data Model or Object Model?
+    role: embedded
+    classified_by: model
+  - line: 633
+    level: 2
+    text: Muggle Methods
+    role: section
+    classified_by: model
+  - line: 645
+    level: 2
+    text: Metaobjects
+    role: section
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/006-part-ii-data-structures.md
+  chapter_sha256: f585e165b91b20429aa8b86bef9ea193161205b6fad640f4c4756b3d3f3bf164
+  headings:
+  - line: 2
+    level: 1
+    text: Part II. Data Structures
+    role: section
+    classified_by: rule:chapter-title
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/007-chapter-2-an-array-of-sequences.md
+  chapter_sha256: de4a59dbdf927726993a7424b7dd414ccaf1aa3d82fe261fe5581f6d97b76129
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 2: An Array of Sequences'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A NOTE FOR EARLY RELEASE READERS
+    role: embedded
+    classified_by: model
+  - line: 33
+    level: 2
+    text: What's new in this chapter
+    role: section
+    classified_by: model
+  - line: 46
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 51
+    level: 2
+    text: Overview of Built-In Sequences
+    role: section
+    classified_by: model
+  - line: 55
+    level: 2
+    text: Container sequences
+    role: embedded
+    classified_by: model
+  - line: 59
+    level: 2
+    text: Flat sequences
+    role: embedded
+    classified_by: model
+  - line: 79
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 120
+    level: 2
+    text: List Comprehensions and Generator Expressions
+    role: section
+    classified_by: model
+  - line: 126
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 131
+    level: 2
+    text: List Comprehensions and Readability
+    role: embedded
+    classified_by: model
+  - line: 162
+    level: 2
+    text: SYNTAX TIP
+    role: embedded
+    classified_by: model
+  - line: 166
+    level: 2
+    text: LOCAL SCOPE WITHIN COMPREHENSIONS AND GENERATOR EXPRESSIONS
+    role: embedded
+    classified_by: model
+  - line: 195
+    level: 2
+    text: Listcomps Versus map and filter
+    role: embedded
+    classified_by: model
+  - line: 217
+    level: 2
+    text: Cartesian Products
+    role: embedded
+    classified_by: model
+  - line: 270
+    level: 2
+    text: Generator Expressions
+    role: embedded
+    classified_by: model
+  - line: 312
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 319
+    level: 2
+    text: Tuples Are Not Just Immutable Lists
+    role: section
+    classified_by: model
+  - line: 326
+    level: 2
+    text: Tuples as Records
+    role: embedded
+    classified_by: model
+  - line: 335
+    level: 2
+    text: Example 2-7. Tuples used as records
+    role: embedded
+    classified_by: rule:caption
+  - line: 365
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 376
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 385
+    level: 2
+    text: Tuples as Immutable Lists
+    role: embedded
+    classified_by: model
+  - line: 446
+    level: 2
+    text: Comparing Tuple and List Methods
+    role: embedded
+    classified_by: model
+  - line: 536
+    level: 2
+    text: Unpacking sequences and iterables
+    role: section
+    classified_by: model
+  - line: 582
+    level: 2
+    text: Using \* to grab excess items
+    role: embedded
+    classified_by: model
+  - line: 615
+    level: 2
+    text: Unpacking with \* in function calls and sequence literals
+    role: embedded
+    classified_by: model
+  - line: 645
+    level: 2
+    text: Nested Unpacking
+    role: embedded
+    classified_by: model
+  - line: 701
+    level: 2
+    text: Pattern Matching with Sequences
+    role: section
+    classified_by: model
+  - line: 706
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 780
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 787
+    level: 2
+    text: Pattern Matching Sequences in an Interpreter
+    role: embedded
+    classified_by: model
+  - line: 975
+    level: 3
+    text: Scheme syntax Pattern
+    role: embedded
+    classified_by: model
+  - line: 988
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 997
+    level: 2
+    text: Slicing
+    role: section
+    classified_by: model
+  - line: 1004
+    level: 2
+    text: Why Slices and Range Exclude the Last Item
+    role: embedded
+    classified_by: model
+  - line: 1029
+    level: 2
+    text: Slice Objects
+    role: embedded
+    classified_by: model
+  - line: 1100
+    level: 2
+    text: Multidimensional Slicing and Ellipsis
+    role: embedded
+    classified_by: model
+  - line: 1123
+    level: 2
+    text: Assigning to Slices
+    role: embedded
+    classified_by: model
+  - line: 1154
+    level: 2
+    text: Using + and \* with Sequences
+    role: section
+    classified_by: model
+  - line: 1170
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 1177
+    level: 2
+    text: Building Lists of Lists
+    role: embedded
+    classified_by: model
+  - line: 1240
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 1247
+    level: 2
+    text: Augmented Assignment with Sequences
+    role: section
+    classified_by: model
+  - line: 1295
+    level: 2
+    text: A += Assignment Puzzler
+    role: embedded
+    classified_by: model
+  - line: 1300
+    level: 2
+    text: Example 2-15. A riddle
+    role: embedded
+    classified_by: rule:caption
+  - line: 1340
+    level: 2
+    text: Example 2-17. Bytecode for the expression s[a] += b
+    role: embedded
+    classified_by: rule:caption
+  - line: 1372
+    level: 2
+    text: list.sort versus the sorted Built-In
+    role: section
+    classified_by: model
+  - line: 1376
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 1384
+    level: 2
+    text: reverse
+    role: embedded
+    classified_by: model
+  - line: 1388
+    level: 2
+    text: key
+    role: embedded
+    classified_by: model
+  - line: 1392
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 1426
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 1435
+    level: 2
+    text: When a List Is Not the Answer
+    role: section
+    classified_by: rule:cited
+  - line: 1439
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 1446
+    level: 2
+    text: Arrays
+    role: section
+    classified_by: model
+  - line: 1628
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 1641
+    level: 2
+    text: Memory Views
+    role: section
+    classified_by: model
+  - line: 1708
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 1715
+    level: 2
+    text: NumPy
+    role: section
+    classified_by: model
+  - line: 1798
+    level: 2
+    text: This was just an appetizer.
+    role: embedded
+    classified_by: model
+  - line: 1807
+    level: 2
+    text: Deques and Other Queues
+    role: section
+    classified_by: model
+  - line: 1814
+    level: 2
+    text: Example 2-22. Working with a deque
+    role: embedded
+    classified_by: rule:caption
+  - line: 2044
+    level: 2
+    text: multiprocessing
+    role: embedded
+    classified_by: model
+  - line: 2048
+    level: 2
+    text: asyncio
+    role: embedded
+    classified_by: model
+  - line: 2052
+    level: 2
+    text: heapq
+    role: embedded
+    classified_by: model
+  - line: 2058
+    level: 2
+    text: Chapter Summary
+    role: section
+    classified_by: model
+  - line: 2083
+    level: 2
+    text: Further Reading
+    role: section
+    classified_by: model
+  - line: 2107
+    level: 2
+    text: SOAPBOX
+    role: embedded
+    classified_by: model
+  - line: 2110
+    level: 2
+    text: The Nature of Tuples
+    role: embedded
+    classified_by: model
+  - line: 2118
+    level: 2
+    text: Flat Versus Container Sequences
+    role: embedded
+    classified_by: model
+  - line: 2134
+    level: 2
+    text: Mixed Bag Lists
+    role: embedded
+    classified_by: model
+  - line: 2148
+    level: 2
+    text: Key Is Brilliant
+    role: embedded
+    classified_by: model
+  - line: 2162
+    level: 2
+    text: Oracle, Google, and the Timbot Conspiracy
+    role: embedded
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/008-chapter-3-dictionaries-and-sets.md
+  chapter_sha256: 6cbc7582111596c58d52d255349d60192e8b774fc9fab26c2853792f28ec47fb
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 3: Dictionaries and Sets'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A NOTE FOR EARLY RELEASE READERS
+    role: embedded
+    classified_by: model
+  - line: 30
+    level: 2
+    text: What's new in this chapter
+    role: section
+    classified_by: model
+  - line: 41
+    level: 3
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 50
+    level: 2
+    text: Modern dict Syntax
+    role: section
+    classified_by: model
+  - line: 55
+    level: 2
+    text: dict Comprehensions
+    role: section
+    classified_by: model
+  - line: 60
+    level: 3
+    text: Example 3-1. Examples of dict comprehensions
+    role: embedded
+    classified_by: rule:caption
+  - line: 97
+    level: 2
+    text: Unpacking Mappings
+    role: section
+    classified_by: model
+  - line: 123
+    level: 2
+    text: Merging Mappings with |
+    role: section
+    classified_by: model
+  - line: 149
+    level: 3
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 156
+    level: 2
+    text: Pattern Matching with Mappings
+    role: section
+    classified_by: model
+  - line: 235
+    level: 3
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 242
+    level: 2
+    text: Standard API of Mapping Types
+    role: section
+    classified_by: model
+  - line: 260
+    level: 3
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 267
+    level: 2
+    text: What is Hashable
+    role: section
+    classified_by: model
+  - line: 296
+    level: 2
+    text: Overview of Common Mapping Methods
+    role: section
+    classified_by: model
+  - line: 418
+    level: 2
+    text: Inserting or Updating Mutable Values
+    role: section
+    classified_by: model
+  - line: 467
+    level: 1
+    text: display in alphabetical order
+    role: embedded
+    classified_by: model
+  - line: 496
+    level: 1
+    text: display in alphabetical order
+    role: embedded
+    classified_by: model
+  - line: 522
+    level: 2
+    text: Automatic Handling of Missing Keys
+    role: section
+    classified_by: model
+  - line: 527
+    level: 2
+    text: 'defaultdict: Another Take on Missing Keys'
+    role: section
+    classified_by: model
+  - line: 538
+    level: 3
+    text: 3. Returns a reference to that list.
+    role: embedded
+    classified_by: model
+  - line: 558
+    level: 1
+    text: display in alphabetical order
+    role: embedded
+    classified_by: model
+  - line: 568
+    level: 3
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 575
+    level: 2
+    text: The \_\_missing\_\_ Method
+    role: section
+    classified_by: model
+  - line: 580
+    level: 3
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 626
+    level: 2
+    text: Example 3-8. StrKeyDict0 converts nonstring keys to str on lookup (see tests in Example 3-7\)
+    role: embedded
+    classified_by: rule:caption
+  - line: 656
+    level: 3
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 665
+    level: 2
+    text: Variations of dict
+    role: section
+    classified_by: model
+  - line: 670
+    level: 2
+    text: collections.OrderedDict
+    role: section
+    classified_by: model
+  - line: 682
+    level: 2
+    text: collections.ChainMap
+    role: section
+    classified_by: model
+  - line: 718
+    level: 2
+    text: collections.Counter
+    role: section
+    classified_by: model
+  - line: 738
+    level: 2
+    text: shelve.Shelf
+    role: section
+    classified_by: model
+  - line: 754
+    level: 3
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 761
+    level: 2
+    text: Subclassing UserDict Instead of dict
+    role: section
+    classified_by: model
+  - line: 796
+    level: 2
+    text: MutableMapping.update
+    role: section
+    classified_by: model
+  - line: 800
+    level: 2
+    text: Mapping.get
+    role: section
+    classified_by: model
+  - line: 806
+    level: 3
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 813
+    level: 2
+    text: Immutable Mappings
+    role: section
+    classified_by: model
+  - line: 850
+    level: 2
+    text: Dictionary views
+    role: section
+    classified_by: model
+  - line: 908
+    level: 2
+    text: Practical Consequences of How dict Works
+    role: section
+    classified_by: rule:cited
+  - line: 924
+    level: 2
+    text: Set Theory
+    role: section
+    classified_by: model
+  - line: 928
+    level: 3
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 980
+    level: 1
+    text: 'another way:'
+    role: embedded
+    classified_by: model
+  - line: 991
+    level: 2
+    text: Set Literals
+    role: section
+    classified_by: model
+  - line: 995
+    level: 3
+    text: SYNTAX QUIRK
+    role: embedded
+    classified_by: model
+  - line: 1025
+    level: 2
+    text: Set Comprehensions
+    role: section
+    classified_by: model
+  - line: 1048
+    level: 2
+    text: Practical Consequences of How Sets Work
+    role: section
+    classified_by: model
+  - line: 1066
+    level: 2
+    text: Set Operations
+    role: section
+    classified_by: model
+  - line: 1070
+    level: 3
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 1311
+    level: 2
+    text: Set operations on dict views
+    role: section
+    classified_by: model
+  - line: 1421
+    level: 3
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 1431
+    level: 2
+    text: Chapter Summary
+    role: section
+    classified_by: model
+  - line: 1446
+    level: 2
+    text: Further Reading
+    role: section
+    classified_by: model
+  - line: 1464
+    level: 3
+    text: SOAPBOX
+    role: embedded
+    classified_by: model
+  - line: 1466
+    level: 3
+    text: Syntactic sugar
+    role: embedded
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/009-chapter-4-text-versus-bytes.md
+  chapter_sha256: 95ad7980e6fcc06554d3beb566e6df1de3df906b24f713fe4da28972d9f4e310
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 4: Text Versus Bytes'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A NOTE FOR EARLY RELEASE READERS
+    role: embedded
+    classified_by: model
+  - line: 36
+    level: 2
+    text: What's new in this chapter
+    role: section
+    classified_by: model
+  - line: 44
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 51
+    level: 2
+    text: Character Issues
+    role: section
+    classified_by: model
+  - line: 67
+    level: 2
+    text: Example 4-1. Encoding and decoding
+    role: embedded
+    classified_by: rule:caption
+  - line: 88
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 95
+    level: 2
+    text: Byte Essentials
+    role: section
+    classified_by: model
+  - line: 125
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 155
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 162
+    level: 2
+    text: Example 4-3. Initializing bytes from the raw data of an array
+    role: embedded
+    classified_by: rule:caption
+  - line: 181
+    level: 2
+    text: Basic Encoders/Decoders
+    role: section
+    classified_by: model
+  - line: 224
+    level: 2
+    text: latin1 a.k.a. iso8859\_1
+    role: section
+    classified_by: model
+  - line: 228
+    level: 2
+    text: cp1252
+    role: section
+    classified_by: model
+  - line: 232
+    level: 2
+    text: cp437
+    role: section
+    classified_by: model
+  - line: 236
+    level: 2
+    text: gb2312
+    role: section
+    classified_by: model
+  - line: 240
+    level: 2
+    text: utf-8
+    role: section
+    classified_by: model
+  - line: 244
+    level: 2
+    text: utf-16le
+    role: section
+    classified_by: model
+  - line: 248
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 255
+    level: 2
+    text: Understanding Encode/Decode Problems
+    role: section
+    classified_by: model
+  - line: 259
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 264
+    level: 2
+    text: Coping with UnicodeEncodeError
+    role: section
+    classified_by: model
+  - line: 271
+    level: 2
+    text: 'Example 4-5. Encoding to bytes: success and error handling'
+    role: embedded
+    classified_by: rule:caption
+  - line: 305
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 312
+    level: 2
+    text: Coping with UnicodeDecodeError
+    role: section
+    classified_by: model
+  - line: 318
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 325
+    level: 2
+    text: 'Example 4-6. Decoding from str to bytes: success and error handling'
+    role: embedded
+    classified_by: rule:caption
+  - line: 353
+    level: 2
+    text: SyntaxError When Loading Modules with Unexpected Encoding
+    role: section
+    classified_by: model
+  - line: 370
+    level: 2
+    text: 'Example 4-7. ola.py: "Hello, World!" in Portuguese'
+    role: embedded
+    classified_by: rule:caption
+  - line: 373
+    level: 1
+    text: 'coding: cp1252'
+    role: embedded
+    classified_by: model
+  - line: 377
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 383
+    level: 2
+    text: How to Discover the Encoding of a Byte Sequence
+    role: section
+    classified_by: model
+  - line: 389
+    level: 2
+    text: LEO'S HACK FOR GUESSING UTF-8 DECODING
+    role: embedded
+    classified_by: model
+  - line: 415
+    level: 2
+    text: 'BOM: A Useful Gremlin'
+    role: section
+    classified_by: model
+  - line: 455
+    level: 2
+    text: CALEB'S TIP ABOUT UTF-8-SIG
+    role: embedded
+    classified_by: model
+  - line: 462
+    level: 2
+    text: Handling Text Files
+    role: section
+    classified_by: rule:cited
+  - line: 489
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 539
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 546
+    level: 2
+    text: Beware of Encoding Defaults
+    role: section
+    classified_by: rule:cited
+  - line: 551
+    level: 2
+    text: Example 4-10. Exploring encoding defaults
+    role: embedded
+    classified_by: rule:caption
+  - line: 638
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 645
+    level: 2
+    text: Example 4-12. stdout\_check.py
+    role: embedded
+    classified_by: rule:caption
+  - line: 694
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 705
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 720
+    level: 2
+    text: Normalizing Unicode for Reliable Comparisons
+    role: section
+    classified_by: model
+  - line: 816
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 823
+    level: 2
+    text: Case Folding
+    role: section
+    classified_by: model
+  - line: 856
+    level: 2
+    text: Utility Functions for Normalized Text Matching
+    role: section
+    classified_by: model
+  - line: 908
+    level: 2
+    text: 'Extreme "Normalization": Taking Out Diacritics'
+    role: section
+    classified_by: model
+  - line: 1028
+    level: 2
+    text: Example 4-18. Two examples using asciize from Example 4-17
+    role: embedded
+    classified_by: rule:caption
+  - line: 1042
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 1053
+    level: 2
+    text: Sorting Unicode Text
+    role: section
+    classified_by: model
+  - line: 1109
+    level: 2
+    text: Sorting with the Unicode Collation Algorithm
+    role: section
+    classified_by: model
+  - line: 1114
+    level: 2
+    text: Example 4-20. Using the pyuca.Collator.sort\_key method
+    role: embedded
+    classified_by: rule:caption
+  - line: 1129
+    level: 3
+    text: 'PYICU: MIRO''S RECOMMENDATION FOR UNICODE SORTING'
+    role: embedded
+    classified_by: model
+  - line: 1138
+    level: 2
+    text: The Unicode Database
+    role: section
+    classified_by: model
+  - line: 1143
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 1148
+    level: 2
+    text: Finding characters by name
+    role: section
+    classified_by: model
+  - line: 1158
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 1165
+    level: 2
+    text: 'Example 4-21. cf.py: the character finder utility'
+    role: embedded
+    classified_by: rule:caption
+  - line: 1202
+    level: 2
+    text: Numeric meaning of characters
+    role: section
+    classified_by: model
+  - line: 1262
+    level: 2
+    text: Dual-Mode str and bytes APIs
+    role: section
+    classified_by: model
+  - line: 1267
+    level: 2
+    text: str Versus bytes in Regular Expressions
+    role: section
+    classified_by: model
+  - line: 1313
+    level: 2
+    text: str Versus bytes in os Functions
+    role: section
+    classified_by: model
+  - line: 1324
+    level: 2
+    text: Example 4-24. listdir with str and bytes arguments and results
+    role: embedded
+    classified_by: rule:caption
+  - line: 1340
+    level: 2
+    text: Chapter Summary
+    role: section
+    classified_by: model
+  - line: 1355
+    level: 2
+    text: Further Reading
+    role: section
+    classified_by: model
+  - line: 1381
+    level: 2
+    text: SOAPBOX
+    role: embedded
+    classified_by: model
+  - line: 1383
+    level: 2
+    text: 'Non-ASCII Names in Source Code: Should You Use Them?'
+    role: section
+    classified_by: model
+  - line: 1400
+    level: 2
+    text: What Is "Plain Text"?
+    role: section
+    classified_by: model
+  - line: 1404
+    level: 2
+    text: 'like this:'
+    role: embedded
+    classified_by: model
+  - line: 1414
+    level: 2
+    text: How Are str Represented in RAM?
+    role: section
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/010-chapter-5-data-class-builders.md
+  chapter_sha256: eeccbf8ce0c0da0786b675cfbf3475d0989e755ea153882d3b3ad549c2b9ce39
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 5: Data Class Builders'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A NOTE FOR EARLY RELEASE READERS
+    role: embedded
+    classified_by: model
+  - line: 26
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 33
+    level: 2
+    text: What's new in this chapter
+    role: section
+    classified_by: model
+  - line: 40
+    level: 2
+    text: Overview of data class builders
+    role: section
+    classified_by: model
+  - line: 46
+    level: 3
+    text: '**class Coordinate**:'
+    role: embedded
+    classified_by: model
+  - line: 76
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 109
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 123
+    level: 2
+    text: Example 5-2. typing\_namedtuple/coordinates.py
+    role: embedded
+    classified_by: rule:caption
+  - line: 138
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 154
+    level: 2
+    text: Example 5-3. dataclass/coordinates.py
+    role: embedded
+    classified_by: rule:caption
+  - line: 156
+    level: 3
+    text: '**from dataclasses import** dataclass'
+    role: embedded
+    classified_by: model
+  - line: 174
+    level: 2
+    text: Main features
+    role: section
+    classified_by: model
+  - line: 304
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 310
+    level: 2
+    text: Mutable instances
+    role: embedded
+    classified_by: model
+  - line: 315
+    level: 2
+    text: Class statement syntax
+    role: embedded
+    classified_by: model
+  - line: 319
+    level: 2
+    text: Construct dict
+    role: embedded
+    classified_by: model
+  - line: 323
+    level: 2
+    text: Get field names and default values
+    role: embedded
+    classified_by: model
+  - line: 327
+    level: 2
+    text: Get field types
+    role: embedded
+    classified_by: model
+  - line: 333
+    level: 2
+    text: New instance with changes
+    role: embedded
+    classified_by: model
+  - line: 337
+    level: 2
+    text: New class at runtime
+    role: embedded
+    classified_by: model
+  - line: 344
+    level: 2
+    text: Classic Named Tuples
+    role: section
+    classified_by: model
+  - line: 348
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 355
+    level: 2
+    text: Example 5-4. Defining and using a named tuple type
+    role: embedded
+    classified_by: rule:caption
+  - line: 383
+    level: 2
+    text: Example 5-5. Named tuple attributes and methods (continued from the previous example)
+    role: embedded
+    classified_by: rule:caption
+  - line: 406
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 427
+    level: 2
+    text: HACKING A NAMEDTUPLE TO INJECT A METHOD
+    role: embedded
+    classified_by: model
+  - line: 470
+    level: 2
+    text: Typed Named Tuples
+    role: section
+    classified_by: model
+  - line: 492
+    level: 2
+    text: Type hints 101
+    role: section
+    classified_by: model
+  - line: 496
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 503
+    level: 2
+    text: No runtime effect
+    role: embedded
+    classified_by: model
+  - line: 548
+    level: 2
+    text: Variable annotation syntax
+    role: embedded
+    classified_by: model
+  - line: 571
+    level: 2
+    text: The meaning of variable annotations
+    role: embedded
+    classified_by: model
+  - line: 613
+    level: 2
+    text: Inspecting a typing.NamedTuple
+    role: embedded
+    classified_by: model
+  - line: 673
+    level: 2
+    text: Inspecting a class decorated with dataclass
+    role: embedded
+    classified_by: model
+  - line: 743
+    level: 2
+    text: More about @dataclass
+    role: section
+    classified_by: model
+  - line: 835
+    level: 2
+    text: Field options
+    role: embedded
+    classified_by: model
+  - line: 882
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 902
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 944
+    level: 2
+    text: Post-init processing
+    role: embedded
+    classified_by: model
+  - line: 998
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 1002
+    level: 2
+    text: 'Example 5-17 is the implementation:'
+    role: embedded
+    classified_by: rule:caption
+  - line: 1036
+    level: 2
+    text: Typed class attributes
+    role: embedded
+    classified_by: model
+  - line: 1068
+    level: 2
+    text: Initialization variables that are not fields
+    role: embedded
+    classified_by: model
+  - line: 1098
+    level: 2
+    text: '@dataclass Example: Dublin Core Resource Record'
+    role: embedded
+    classified_by: model
+  - line: 1207
+    level: 2
+    text: Data class as a code smell
+    role: section
+    classified_by: rule:cited
+  - line: 1217
+    level: 2
+    text: CODE SMELL
+    role: embedded
+    classified_by: model
+  - line: 1219
+    level: 2
+    text: By Martin Fowler
+    role: embedded
+    classified_by: model
+  - line: 1236
+    level: 2
+    text: Data class as scaffolding
+    role: section
+    classified_by: model
+  - line: 1243
+    level: 2
+    text: Data class as intermediate representation
+    role: section
+    classified_by: rule:cited
+  - line: 1254
+    level: 2
+    text: Pattern Matching Class Instances
+    role: section
+    classified_by: model
+  - line: 1261
+    level: 2
+    text: Simple Class Patterns
+    role: embedded
+    classified_by: model
+  - line: 1304
+    level: 2
+    text: Keyword Class Patterns
+    role: embedded
+    classified_by: model
+  - line: 1367
+    level: 2
+    text: Positional Class Patterns
+    role: embedded
+    classified_by: model
+  - line: 1410
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 1416
+    level: 2
+    text: Chapter Summary
+    role: section
+    classified_by: model
+  - line: 1431
+    level: 2
+    text: Further Reading
+    role: section
+    classified_by: model
+  - line: 1459
+    level: 2
+    text: SOAPBOX
+    role: embedded
+    classified_by: model
+  - line: 1522
+    level: 3
+    text: '@dataclass'
+    role: embedded
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/011-chapter-6-object-references-mutability-and-recycling.md
+  chapter_sha256: 66c404c9007dfc4348d21f533732f86b6612822a0ebf80cb3b45c0ec451117a2
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 6: Object References, Mutability, and Recycling'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A NOTE FOR EARLY RELEASE READERS
+    role: embedded
+    classified_by: model
+  - line: 31
+    level: 2
+    text: What's new in this chapter
+    role: embedded
+    classified_by: model
+  - line: 39
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 46
+    level: 2
+    text: Variables Are Not Boxes
+    role: section
+    classified_by: model
+  - line: 104
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 111
+    level: 2
+    text: Identity, Equality, and Aliases
+    role: section
+    classified_by: model
+  - line: 142
+    level: 2
+    text: Example 6-4. alex and charles compare equal, but alex is not charles
+    role: embedded
+    classified_by: rule:caption
+  - line: 168
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 173
+    level: 2
+    text: Choosing Between == and is
+    role: section
+    classified_by: model
+  - line: 195
+    level: 1
+    text: '... many lines'
+    role: embedded
+    classified_by: model
+  - line: 207
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 214
+    level: 2
+    text: The Relative Immutability of Tuples
+    role: section
+    classified_by: model
+  - line: 248
+    level: 2
+    text: Copies Are Shallow by Default
+    role: section
+    classified_by: rule:cited
+  - line: 276
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 285
+    level: 2
+    text: Example 6-6. Making a shallow copy of a list containing another list; copy and paste this code to see it animated at the Online Python Tutor
+    role: embedded
+    classified_by: rule:caption
+  - line: 310
+    level: 2
+    text: Example 6-7. Output of Example 6-6
+    role: embedded
+    classified_by: rule:caption
+  - line: 319
+    level: 2
+    text: Deep and Shallow Copies of Arbitrary Objects
+    role: section
+    classified_by: model
+  - line: 343
+    level: 2
+    text: Example 6-9. Effects of using copy versus deepcopy
+    role: embedded
+    classified_by: rule:caption
+  - line: 390
+    level: 2
+    text: Function Parameters as References
+    role: section
+    classified_by: model
+  - line: 433
+    level: 2
+    text: 'Mutable Types as Parameter Defaults: Bad Idea'
+    role: section
+    classified_by: rule:cited
+  - line: 516
+    level: 2
+    text: Defensive Programming with Mutable Parameters
+    role: section
+    classified_by: rule:cited
+  - line: 579
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 586
+    level: 2
+    text: del and Garbage Collection
+    role: section
+    classified_by: model
+  - line: 612
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 655
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 660
+    level: 2
+    text: Tricks Python Plays with Immutables
+    role: section
+    classified_by: model
+  - line: 663
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 688
+    level: 2
+    text: Example 6-18. String literals may create shared objects
+    role: embedded
+    classified_by: rule:caption
+  - line: 708
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 714
+    level: 2
+    text: Chapter Summary
+    role: section
+    classified_by: model
+  - line: 734
+    level: 2
+    text: Further Reading
+    role: section
+    classified_by: model
+  - line: 752
+    level: 2
+    text: SOAPBOX
+    role: embedded
+    classified_by: model
+  - line: 754
+    level: 2
+    text: Equal Treatment to All Objects
+    role: section
+    classified_by: model
+  - line: 764
+    level: 2
+    text: Mutability
+    role: section
+    classified_by: model
+  - line: 774
+    level: 2
+    text: Object Destruction and Garbage Collection
+    role: section
+    classified_by: model
+  - line: 795
+    level: 2
+    text: 'Parameter Passing: Call by Sharing'
+    role: section
+    classified_by: model
+  - line: 799
+    level: 2
+    text: 'by Michael L. Scott (Morgan Kaufmann), section "8.3.1: Parameter Modes."'
+    role: embedded
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/012-part-iii-functions-as-objects.md
+  chapter_sha256: 8c0aa301162a0066aa09d45337fdc1a33bb4b3acd0ab43b38e3fe360401c7a25
+  headings:
+  - line: 2
+    level: 1
+    text: Part III. Functions as Objects
+    role: section
+    classified_by: rule:chapter-title
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/013-chapter-7-functions-as-first-class-objects.md
+  chapter_sha256: 3342819fc316ae61749982ce8084beeb7a940027de653ceee73be79f98e44ff3
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 7: Functions as First-Class Objects'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A NOTE FOR EARLY RELEASE READERS
+    role: embedded
+    classified_by: model
+  - line: 27
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 32
+    level: 2
+    text: What's new in this chapter
+    role: section
+    classified_by: model
+  - line: 40
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 47
+    level: 2
+    text: Treating a Function Like an Object
+    role: section
+    classified_by: model
+  - line: 93
+    level: 2
+    text: Higher-Order Functions
+    role: section
+    classified_by: model
+  - line: 98
+    level: 2
+    text: Example 7-3. Sorting a list of words by length
+    role: embedded
+    classified_by: rule:caption
+  - line: 111
+    level: 2
+    text: Example 7-4. Sorting a list of words by their reversed spelling
+    role: embedded
+    classified_by: rule:caption
+  - line: 128
+    level: 2
+    text: Modern Replacements for map, filter, and reduce
+    role: section
+    classified_by: model
+  - line: 156
+    level: 2
+    text: Example 7-6. Sum of integers up to 99 performed with reduce and sum
+    role: embedded
+    classified_by: rule:caption
+  - line: 173
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 179
+    level: 2
+    text: all(iterable)
+    role: embedded
+    classified_by: model
+  - line: 183
+    level: 2
+    text: any(iterable)
+    role: embedded
+    classified_by: model
+  - line: 194
+    level: 2
+    text: Anonymous Functions
+    role: section
+    classified_by: model
+  - line: 213
+    level: 2
+    text: FREDRIK LUNDH'S LAMBDA REFACTORING RECIPE
+    role: embedded
+    classified_by: model
+  - line: 227
+    level: 2
+    text: The Nine Flavors of Callable Objects
+    role: section
+    classified_by: model
+  - line: 243
+    level: 2
+    text: Methods
+    role: embedded
+    classified_by: model
+  - line: 247
+    level: 2
+    text: Classes
+    role: embedded
+    classified_by: model
+  - line: 251
+    level: 2
+    text: Class instances
+    role: embedded
+    classified_by: model
+  - line: 255
+    level: 2
+    text: Generator functions
+    role: embedded
+    classified_by: model
+  - line: 259
+    level: 2
+    text: Native coroutine functions
+    role: embedded
+    classified_by: model
+  - line: 263
+    level: 2
+    text: Asynchronous generator functions
+    role: embedded
+    classified_by: model
+  - line: 283
+    level: 2
+    text: User-Defined Callable Types
+    role: section
+    classified_by: rule:cited
+  - line: 338
+    level: 2
+    text: From Positional to Keyword-Only Parameters
+    role: section
+    classified_by: model
+  - line: 411
+    level: 2
+    text: Positional-only parameters
+    role: section
+    classified_by: model
+  - line: 426
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 442
+    level: 2
+    text: Packages for Functional Programming
+    role: section
+    classified_by: model
+  - line: 447
+    level: 2
+    text: The operator Module
+    role: section
+    classified_by: model
+  - line: 454
+    level: 2
+    text: Example 7-11. Factorial implemented with reduce and an anonymous function
+    role: embedded
+    classified_by: rule:caption
+  - line: 465
+    level: 2
+    text: Example 7-12. Factorial implemented with reduce and operator.mul
+    role: embedded
+    classified_by: rule:caption
+  - line: 479
+    level: 2
+    text: Example 7-13. Demo of itemgetter to sort a list of tuples (data from Example 2-8)
+    role: embedded
+    classified_by: rule:caption
+  - line: 600
+    level: 2
+    text: Freezing Arguments with functools.partial
+    role: section
+    classified_by: model
+  - line: 674
+    level: 2
+    text: Chapter Summary
+    role: section
+    classified_by: model
+  - line: 685
+    level: 2
+    text: Further Reading
+    role: section
+    classified_by: model
+  - line: 701
+    level: 2
+    text: SOAPBOX
+    role: embedded
+    classified_by: model
+  - line: 703
+    level: 2
+    text: Is Python a Functional Language?
+    role: section
+    classified_by: model
+  - line: 727
+    level: 2
+    text: The Problem with Anonymous Functions
+    role: section
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/014-chapter-8-type-hints-in-functions.md
+  chapter_sha256: 5439ceaee49ab1a5ecc381ad4afca69fdb0de59673b3254edd9512053d9a52aa
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 8: Type Hints in Functions'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A NOTE FOR EARLY RELEASE READERS
+    role: embedded
+    classified_by: model
+  - line: 35
+    level: 2
+    text: What's new in this chapter
+    role: section
+    classified_by: model
+  - line: 42
+    level: 2
+    text: About gradual typing
+    role: section
+    classified_by: model
+  - line: 67
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 72
+    level: 2
+    text: Gradual typing in practice
+    role: section
+    classified_by: model
+  - line: 76
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 104
+    level: 2
+    text: Starting with Mypy
+    role: section
+    classified_by: model
+  - line: 117
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 145
+    level: 2
+    text: Making Mypy More Strict
+    role: section
+    classified_by: model
+  - line: 190
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 202
+    level: 2
+    text: A Default Parameter Value
+    role: section
+    classified_by: model
+  - line: 243
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 269
+    level: 2
+    text: 'CODE STYLE: USE FLAKE8 AND BLUE'
+    role: embedded
+    classified_by: model
+  - line: 284
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 289
+    level: 2
+    text: Using None as a default
+    role: section
+    classified_by: model
+  - line: 303
+    level: 2
+    text: 'Let''s unpack that:'
+    role: embedded
+    classified_by: model
+  - line: 312
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 319
+    level: 2
+    text: Types are defined by supported operations
+    role: section
+    classified_by: model
+  - line: 352
+    level: 2
+    text: Duck typing
+    role: section
+    classified_by: model
+  - line: 356
+    level: 2
+    text: Nominal typing
+    role: section
+    classified_by: model
+  - line: 363
+    level: 2
+    text: Example 8-4. birds.py
+    role: embedded
+    classified_by: rule:caption
+  - line: 433
+    level: 2
+    text: Example 8-6. woody.py
+    role: embedded
+    classified_by: rule:caption
+  - line: 457
+    level: 2
+    text: Example 8-7. Runtime errors and how Mypy could have helped.
+    role: embedded
+    classified_by: rule:caption
+  - line: 489
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 496
+    level: 2
+    text: Types usable in annotations
+    role: section
+    classified_by: model
+  - line: 517
+    level: 2
+    text: The Any type
+    role: section
+    classified_by: model
+  - line: 566
+    level: 2
+    text: Subtype-of versus Consistent-with
+    role: section
+    classified_by: model
+  - line: 625
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 632
+    level: 2
+    text: Simple types and classes
+    role: section
+    classified_by: model
+  - line: 642
+    level: 2
+    text: INT IS** *CONSISTENT-WITH* **COMPLEX
+    role: embedded
+    classified_by: model
+  - line: 647
+    level: 2
+    text: Optional and Union types
+    role: section
+    classified_by: model
+  - line: 665
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 694
+    level: 2
+    text: BETTER SYNTAX FOR UNION IN PYTHON 3.10
+    role: embedded
+    classified_by: model
+  - line: 699
+    level: 2
+    text: Generic collections
+    role: section
+    classified_by: model
+  - line: 718
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 737
+    level: 2
+    text: LEGACY SUPPORT AND DEPRECATED COLLECTION TYPES
+    role: embedded
+    classified_by: model
+  - line: 803
+    level: 2
+    text: Tuple types
+    role: section
+    classified_by: model
+  - line: 811
+    level: 2
+    text: Tuples as records
+    role: section
+    classified_by: model
+  - line: 828
+    level: 2
+    text: Example 8-11. coordinates.py with the geohash function.
+    role: embedded
+    classified_by: rule:caption
+  - line: 840
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 844
+    level: 2
+    text: Tuples as records with named fields
+    role: section
+    classified_by: model
+  - line: 873
+    level: 2
+    text: Tuples as immutable sequences
+    role: section
+    classified_by: model
+  - line: 911
+    level: 2
+    text: Example 8-13. columnize.py returns a list of tuples of strings.
+    role: embedded
+    classified_by: rule:caption
+  - line: 928
+    level: 2
+    text: Generic mappings
+    role: section
+    classified_by: model
+  - line: 976
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 981
+    level: 2
+    text: Abstract Base Classes
+    role: section
+    classified_by: model
+  - line: 1026
+    level: 2
+    text: The Fall of the Numeric Tower
+    role: section
+    classified_by: model
+  - line: 1036
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 1041
+    level: 2
+    text: Iterable
+    role: section
+    classified_by: model
+  - line: 1051
+    level: 2
+    text: STUB FILES AND THE TYPESHED PROJECT.
+    role: embedded
+    classified_by: model
+  - line: 1070
+    level: 2
+    text: Example 8-15. replacer.py
+    role: embedded
+    classified_by: rule:caption
+  - line: 1084
+    level: 2
+    text: EXPLICIT TYPEALIAS IN PYTHON 3.10
+    role: embedded
+    classified_by: model
+  - line: 1090
+    level: 2
+    text: abc.Iterable versus abc.Sequence
+    role: section
+    classified_by: model
+  - line: 1101
+    level: 2
+    text: Parameterized generics and TypeVar
+    role: section
+    classified_by: model
+  - line: 1110
+    level: 2
+    text: Example 8-16. sample.py
+    role: embedded
+    classified_by: rule:caption
+  - line: 1130
+    level: 2
+    text: WHY IS TYPEVAR NEEDED?
+    role: embedded
+    classified_by: model
+  - line: 1174
+    level: 2
+    text: Restricted TypeVar
+    role: section
+    classified_by: model
+  - line: 1204
+    level: 2
+    text: Bounded TypeVar
+    role: section
+    classified_by: model
+  - line: 1233
+    level: 2
+    text: 'To summarize:'
+    role: embedded
+    classified_by: model
+  - line: 1238
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 1246
+    level: 2
+    text: The AnyStr predefined type variable
+    role: section
+    classified_by: model
+  - line: 1259
+    level: 2
+    text: Static Protocols
+    role: section
+    classified_by: model
+  - line: 1261
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 1369
+    level: 1
+    text: several lines omitted
+    role: embedded
+    classified_by: model
+  - line: 1382
+    level: 1
+    text: intentional type error
+    role: embedded
+    classified_by: model
+  - line: 1401
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 1406
+    level: 2
+    text: Example 8-23. Output of mypy top\_test.py (lines split for readability)
+    role: embedded
+    classified_by: rule:caption
+  - line: 1439
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 1444
+    level: 2
+    text: Callable
+    role: section
+    classified_by: model
+  - line: 1476
+    level: 3
+    text: '**class Order**:'
+    role: embedded
+    classified_by: model
+  - line: 1495
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 1502
+    level: 2
+    text: NoReturn
+    role: section
+    classified_by: model
+  - line: 1521
+    level: 2
+    text: Annotating positional-only and variadic parameters
+    role: section
+    classified_by: model
+  - line: 1561
+    level: 2
+    text: Flawed Typing and Strong Testing
+    role: section
+    classified_by: rule:cited
+  - line: 1584
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 1590
+    level: 2
+    text: Chapter summary
+    role: section
+    classified_by: model
+  - line: 1617
+    level: 2
+    text: Further Reading
+    role: section
+    classified_by: model
+  - line: 1635
+    level: 2
+    text: SOAPBOX
+    role: embedded
+    classified_by: model
+  - line: 1637
+    level: 2
+    text: Just ride
+    role: embedded
+    classified_by: model
+  - line: 1647
+    level: 2
+    text: The cognitive effect of typing
+    role: section
+    classified_by: model
+  - line: 1678
+    level: 2
+    text: 'requests.request\(\):'
+    role: embedded
+    classified_by: model
+  - line: 1747
+    level: 2
+    text: Duck typing FTW
+    role: embedded
+    classified_by: model
+  - line: 1753
+    level: 2
+    text: Generics or specifics?
+    role: section
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/015-chapter-9-decorators-and-closures.md
+  chapter_sha256: b5a0b66c5dcd6e85224234a0366357a9a51aefe9124eafaf80e0ec9b3684a7db
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 9: Decorators and Closures'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A NOTE FOR EARLY RELEASE READERS
+    role: embedded
+    classified_by: model
+  - line: 38
+    level: 2
+    text: What's new in this chapter
+    role: section
+    classified_by: model
+  - line: 51
+    level: 2
+    text: Decorators 101
+    role: section
+    classified_by: model
+  - line: 111
+    level: 2
+    text: When Python Executes Decorators
+    role: section
+    classified_by: model
+  - line: 188
+    level: 2
+    text: Registration decorators
+    role: section
+    classified_by: model
+  - line: 202
+    level: 2
+    text: Variable Scope Rules
+    role: section
+    classified_by: model
+  - line: 286
+    level: 2
+    text: COMPARING BYTECODES
+    role: section
+    classified_by: model
+  - line: 316
+    level: 2
+    text: Example 9-6. Disassembly of the f2 function from Example 9-4
+    role: embedded
+    classified_by: rule:caption
+  - line: 344
+    level: 2
+    text: Closures
+    role: section
+    classified_by: model
+  - line: 415
+    level: 2
+    text: Example 9-9. Testing Example 9-8
+    role: embedded
+    classified_by: rule:caption
+  - line: 453
+    level: 2
+    text: Example 9-11. Continuing from Example 9-9
+    role: embedded
+    classified_by: rule:caption
+  - line: 469
+    level: 2
+    text: The nonlocal Declaration
+    role: section
+    classified_by: model
+  - line: 476
+    level: 2
+    text: Example 9-12. A broken higher-order function to calculate a running average without keeping all history
+    role: embedded
+    classified_by: rule:caption
+  - line: 541
+    level: 2
+    text: Implementing a Simple Decorator
+    role: section
+    classified_by: model
+  - line: 602
+    level: 2
+    text: How It Works
+    role: section
+    classified_by: model
+  - line: 638
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 667
+    level: 2
+    text: Decorators in the Standard Library
+    role: section
+    classified_by: model
+  - line: 674
+    level: 2
+    text: Memoization with functools.cache
+    role: section
+    classified_by: rule:cited
+  - line: 679
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 756
+    level: 2
+    text: STACKED DECORATORS
+    role: embedded
+    classified_by: model
+    note: 'pin: all-caps sidebar box inside Memoization with functools.cache (frontier full-chapter review)'
+  - line: 791
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 796
+    level: 2
+    text: Using lru\_cache
+    role: section
+    classified_by: rule:cited
+  - line: 830
+    level: 2
+    text: typed=False
+    role: embedded
+    classified_by: model
+  - line: 845
+    level: 2
+    text: Single Dispatch Generic Functions
+    role: section
+    classified_by: model
+  - line: 868
+    level: 2
+    text: Example 9-19. htmlize() generates HTML tailored to different object types
+    role: embedded
+    classified_by: rule:caption
+  - line: 904
+    level: 2
+    text: Function singledispatch
+    role: section
+    classified_by: model
+  - line: 910
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 966
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 974
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 981
+    level: 2
+    text: Parameterized Decorators
+    role: section
+    classified_by: model
+  - line: 1004
+    level: 2
+    text: A Parameterized Registration Decorator
+    role: section
+    classified_by: model
+  - line: 1099
+    level: 2
+    text: The Parameterized Clock Decorator
+    role: section
+    classified_by: model
+  - line: 1103
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 1158
+    level: 2
+    text: Example 9-25. clockdeco\_param\_demo1.py
+    role: embedded
+    classified_by: rule:caption
+  - line: 1176
+    level: 2
+    text: Example 9-26. clockdeco\_param\_demo2.py
+    role: embedded
+    classified_by: rule:caption
+  - line: 1193
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 1200
+    level: 2
+    text: A class-based clock decorator
+    role: section
+    classified_by: model
+  - line: 1235
+    level: 2
+    text: Chapter Summary
+    role: section
+    classified_by: model
+  - line: 1250
+    level: 2
+    text: Further Reading
+    role: section
+    classified_by: model
+  - line: 1272
+    level: 2
+    text: SOAPBOX
+    role: embedded
+    classified_by: model
+  - line: 1311
+    level: 2
+    text: Python Decorators and the Decorator Design Pattern
+    role: section
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/016-chapter-10-design-patterns-with-first-class-functions.md
+  chapter_sha256: 2845a09bd5fee184c2a7dedfc840e39901632f277931b5eb61aa59b4a53d1b1e
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 10: Design Patterns with First-Class Functions'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A NOTE FOR EARLY RELEASE READERS
+    role: embedded
+    classified_by: model
+  - line: 31
+    level: 2
+    text: What's new in this chapter
+    role: embedded
+    classified_by: model
+  - line: 36
+    level: 2
+    text: 'Case Study: Refactoring Strategy'
+    role: section
+    classified_by: model
+  - line: 41
+    level: 2
+    text: Classic Strategy
+    role: embedded
+    classified_by: model
+  - line: 65
+    level: 2
+    text: Context
+    role: embedded
+    classified_by: model
+  - line: 69
+    level: 2
+    text: Strategy
+    role: embedded
+    classified_by: model
+  - line: 73
+    level: 2
+    text: Concrete Strategy
+    role: embedded
+    classified_by: model
+  - line: 187
+    level: 2
+    text: Function-Oriented Strategy
+    role: section
+    classified_by: rule:cited
+  - line: 256
+    level: 2
+    text: WHY SELF.PROMOTION(SELF)
+    role: embedded
+    classified_by: model
+  - line: 265
+    level: 2
+    text: Example 10-4. Sample usage of Order class with promotions as functions
+    role: embedded
+    classified_by: rule:caption
+  - line: 307
+    level: 2
+    text: 'Choosing the Best Strategy: Simple Approach'
+    role: embedded
+    classified_by: model
+  - line: 348
+    level: 2
+    text: Finding Strategies in a Module
+    role: embedded
+    classified_by: model
+  - line: 410
+    level: 2
+    text: Decorator-Enhanced Strategy Pattern
+    role: section
+    classified_by: model
+  - line: 468
+    level: 2
+    text: The Command Pattern
+    role: section
+    classified_by: model
+  - line: 504
+    level: 2
+    text: Chapter Summary
+    role: section
+    classified_by: model
+  - line: 513
+    level: 2
+    text: Further Reading
+    role: section
+    classified_by: model
+  - line: 535
+    level: 2
+    text: SOAPBOX
+    role: embedded
+    classified_by: model
+  - line: 547
+    level: 2
+    text: The \_\_call\_\_ of the wild
+    role: embedded
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/017-part-iv-classes-and-protocols.md
+  chapter_sha256: 0df5558877d40ba82c1b6a68fb6bc5167203eb0e730296bdf601cea18068c3d0
+  headings:
+  - line: 2
+    level: 1
+    text: Part IV. Classes and Protocols
+    role: section
+    classified_by: rule:chapter-title
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/018-chapter-11-a-pythonic-object.md
+  chapter_sha256: 9811cc70340558e289db59cef5854289ac7666cfe42ae07bb4d7adec714db98b
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 11: A Pythonic Object'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A NOTE FOR EARLY RELEASE READERS
+    role: embedded
+    classified_by: model
+  - line: 39
+    level: 2
+    text: What's new in this chapter
+    role: section
+    classified_by: model
+  - line: 50
+    level: 2
+    text: Object Representations
+    role: section
+    classified_by: model
+  - line: 68
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 73
+    level: 2
+    text: Vector Class Redux
+    role: section
+    classified_by: model
+  - line: 153
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 160
+    level: 2
+    text: An Alternative Constructor
+    role: section
+    classified_by: model
+  - line: 183
+    level: 2
+    text: classmethod Versus staticmethod
+    role: section
+    classified_by: model
+  - line: 219
+    level: 3
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 226
+    level: 2
+    text: Formatted Displays
+    role: section
+    classified_by: model
+  - line: 254
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 315
+    level: 2
+    text: 'Example 11-5. Vector2d.format method, take #1'
+    role: embedded
+    classified_by: rule:caption
+  - line: 329
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 384
+    level: 2
+    text: A Hashable Vector2d
+    role: section
+    classified_by: rule:cited
+  - line: 444
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 451
+    level: 2
+    text: 'Example 11-8. vector2d\_v3.py: implementation of hash'
+    role: embedded
+    classified_by: rule:caption
+  - line: 470
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 477
+    level: 2
+    text: Supporting Positional Patterns
+    role: section
+    classified_by: model
+  - line: 551
+    level: 2
+    text: Complete Listing of Vector2d, version 3
+    role: embedded
+    classified_by: model
+  - line: 688
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 699
+    level: 2
+    text: Private and "Protected" Attributes in Python
+    role: section
+    classified_by: model
+  - line: 742
+    level: 2
+    text: Saving Memory with \_\_slots\_\_
+    role: section
+    classified_by: model
+  - line: 746
+    level: 2
+    text: Example 11-13. The Pixel class uses `slots.
+    role: embedded
+    classified_by: rule:caption
+  - line: 775
+    level: 2
+    text: Example 11-14. The OpenPixel is a subclass of Pixel.
+    role: embedded
+    classified_by: rule:caption
+  - line: 857
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 862
+    level: 2
+    text: Summarizing The Issues with \_\_slots\_\_
+    role: section
+    classified_by: model
+  - line: 874
+    level: 2
+    text: Overriding Class Attributes
+    role: section
+    classified_by: model
+  - line: 884
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 889
+    level: 2
+    text: Example 11-18. Customizing an instance by setting the typecode attribute that was formerly inherited from the class
+    role: embedded
+    classified_by: rule:caption
+  - line: 959
+    level: 2
+    text: Chapter Summary
+    role: section
+    classified_by: rule:cited
+  - line: 995
+    level: 2
+    text: Further Reading
+    role: section
+    classified_by: model
+  - line: 1025
+    level: 2
+    text: SOAPBOX
+    role: embedded
+    classified_by: model
+  - line: 1028
+    level: 2
+    text: Properties Help Reduce Upfront Costs
+    role: section
+    classified_by: rule:cited
+  - line: 1052
+    level: 2
+    text: Safety Versus Security in Private Attributes
+    role: section
+    classified_by: model
+  - line: 1086
+    level: 1
+    text: 'NOTE: Jython is still Python 2.7 in late2020'
+    role: embedded
+    classified_by: rule:callout
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/019-chapter-12-writing-special-methods-for-sequences.md
+  chapter_sha256: be3e3bd10ef69c2643304bdf9b5ad89f7b2e955997a25435b090f7c84cb61259
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 12: Writing Special Methods for Sequences'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A NOTE FOR EARLY RELEASE READERS
+    role: embedded
+    classified_by: model
+  - line: 30
+    level: 2
+    text: What's new in this chapter
+    role: section
+    classified_by: model
+  - line: 39
+    level: 2
+    text: 'Vector: A User-Defined Sequence Type'
+    role: section
+    classified_by: model
+  - line: 45
+    level: 2
+    text: VECTOR APPLICATIONS BEYOND THREE DIMENSIONS
+    role: section
+    classified_by: model
+  - line: 54
+    level: 2
+    text: 'Vector Take #1: Vector2d Compatible'
+    role: section
+    classified_by: model
+  - line: 63
+    level: 2
+    text: Example 12-1. Tests of Vector.\_\_init\_\_ and Vector.\_\_repr\_\_
+    role: embedded
+    classified_by: rule:caption
+  - line: 76
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 83
+    level: 2
+    text: 'Example 12-2. vector\_v1.py: derived from vector2d\_v1.py'
+    role: embedded
+    classified_by: rule:caption
+  - line: 133
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 142
+    level: 2
+    text: Protocols and Duck Typing
+    role: section
+    classified_by: model
+  - line: 173
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 180
+    level: 2
+    text: 'Vector Take #2: A Sliceable Sequence'
+    role: section
+    classified_by: model
+  - line: 216
+    level: 2
+    text: How Slicing Works
+    role: section
+    classified_by: model
+  - line: 291
+    level: 2
+    text: A Slice-Aware \_\_getitem\_\_
+    role: section
+    classified_by: model
+  - line: 317
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 346
+    level: 2
+    text: 'Vector Take #3: Dynamic Attribute Access'
+    role: section
+    classified_by: model
+  - line: 451
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 459
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 468
+    level: 2
+    text: 'Vector Take #4: Hashing and a Faster =='
+    role: section
+    classified_by: model
+  - line: 544
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 562
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 594
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 612
+    level: 2
+    text: THE AWESOME ZIP
+    role: section
+    classified_by: model
+  - line: 617
+    level: 2
+    text: Example 12-15. The zip built-in at work
+    role: embedded
+    classified_by: rule:caption
+  - line: 637
+    level: 2
+    text: NEW ZIP() OPTION IN PYTHON 3.10.
+    role: section
+    classified_by: model
+  - line: 666
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 946
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 952
+    level: 2
+    text: Chapter Summary
+    role: section
+    classified_by: model
+  - line: 963
+    level: 2
+    text: Further Reading
+    role: section
+    classified_by: model
+  - line: 971
+    level: 2
+    text: SOAPBOX
+    role: embedded
+    classified_by: model
+  - line: 973
+    level: 2
+    text: Protocols as Informal Interfaces
+    role: section
+    classified_by: model
+  - line: 993
+    level: 2
+    text: Origins of Duck Typing
+    role: section
+    classified_by: model
+  - line: 997
+    level: 2
+    text: A safe** *format***, with Enhanced Usability
+    role: section
+    classified_by: model
+  - line: 1005
+    level: 2
+    text: The Search for a Pythonic Sum
+    role: section
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/020-chapter-13-interfaces-protocols-and-abcs.md
+  chapter_sha256: fa8766a2d3ad258f60e94d721ba46f240afb5968594dd20f8b34b3b211010841
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 13: Interfaces, Protocols, and ABCs'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A NOTE FOR EARLY RELEASE READERS
+    role: embedded
+    classified_by: model
+  - line: 24
+    level: 2
+    text: goose typing
+    role: embedded
+    classified_by: model
+  - line: 28
+    level: 2
+    text: static typing
+    role: embedded
+    classified_by: model
+  - line: 32
+    level: 2
+    text: static duck typing
+    role: embedded
+    classified_by: model
+  - line: 37
+    level: 2
+    text: The Typing Map
+    role: embedded
+    classified_by: model
+  - line: 39
+    level: 2
+    text: RUNTIME CHECKING
+    role: embedded
+    classified_by: model
+  - line: 59
+    level: 2
+    text: What's new in this chapter
+    role: section
+    classified_by: model
+  - line: 72
+    level: 2
+    text: Two kinds of protocols
+    role: section
+    classified_by: rule:cited
+  - line: 122
+    level: 2
+    text: dynamic protocol
+    role: embedded
+    classified_by: model
+  - line: 126
+    level: 2
+    text: static protocol
+    role: embedded
+    classified_by: model
+  - line: 142
+    level: 2
+    text: Programming ducks
+    role: section
+    classified_by: model
+  - line: 147
+    level: 2
+    text: Python Digs Sequences
+    role: section
+    classified_by: model
+  - line: 157
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 200
+    level: 2
+    text: 'Monkey-Patching: Implementing a Protocol at Runtime'
+    role: section
+    classified_by: model
+  - line: 203
+    level: 3
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 222
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 229
+    level: 2
+    text: Example 13-3. random.shuffle cannot handle FrenchDeck
+    role: embedded
+    classified_by: rule:caption
+  - line: 278
+    level: 2
+    text: Defensive programming and "fail fast"
+    role: section
+    classified_by: model
+  - line: 343
+    level: 2
+    text: Goose typing
+    role: section
+    classified_by: model
+  - line: 360
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 364
+    level: 2
+    text: WATERFOWL AND ABCS
+    role: embedded
+    classified_by: model
+  - line: 367
+    level: 2
+    text: By Alex Martelli
+    role: embedded
+    classified_by: model
+  - line: 427
+    level: 2
+    text: 'To summarize, *goose typing* entails:'
+    role: embedded
+    classified_by: model
+  - line: 434
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 457
+    level: 2
+    text: Subclassing an ABC
+    role: section
+    classified_by: model
+  - line: 506
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 513
+    level: 2
+    text: ABCs in the Standard Library
+    role: section
+    classified_by: model
+  - line: 517
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 527
+    level: 2
+    text: Iterable, Container, Sized
+    role: section
+    classified_by: model
+  - line: 531
+    level: 2
+    text: Collection
+    role: section
+    classified_by: model
+  - line: 535
+    level: 2
+    text: Sequence, Mapping, Set
+    role: section
+    classified_by: model
+  - line: 539
+    level: 2
+    text: MappingView
+    role: section
+    classified_by: model
+  - line: 543
+    level: 2
+    text: Iterator
+    role: section
+    classified_by: model
+  - line: 549
+    level: 2
+    text: Callable, Hashable
+    role: section
+    classified_by: model
+  - line: 557
+    level: 2
+    text: ISINSTANCE WITH HASHABLE AND ITERABLE CAN BE MISLEADING
+    role: embedded
+    classified_by: model
+  - line: 568
+    level: 2
+    text: Defining and Using an ABC
+    role: section
+    classified_by: model
+  - line: 570
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 608
+    level: 2
+    text: Example 13-7 shows the definition of the Tombola ABC.
+    role: embedded
+    classified_by: rule:caption
+  - line: 651
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 670
+    level: 2
+    text: Example 13-8. A fake Tombola doesn't go undetected
+    role: embedded
+    classified_by: rule:caption
+  - line: 694
+    level: 2
+    text: ABC Syntax Details
+    role: section
+    classified_by: model
+  - line: 709
+    level: 3
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 720
+    level: 2
+    text: Subclassing an ABC
+    role: section
+    classified_by: model
+  - line: 796
+    level: 2
+    text: A Virtual Subclass of an ABC
+    role: section
+    classified_by: model
+  - line: 802
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 813
+    level: 2
+    text: 'Example 13-11. tombolist.py: class TomboList is a virtual subclass of Tombola'
+    role: embedded
+    classified_by: rule:caption
+  - line: 831
+    level: 1
+    text: Tombola.register(TomboList)
+    role: embedded
+    classified_by: model
+  - line: 867
+    level: 2
+    text: Usage of register in Practice
+    role: section
+    classified_by: model
+  - line: 885
+    level: 2
+    text: Structural typing with ABCs
+    role: section
+    classified_by: model
+  - line: 928
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 937
+    level: 2
+    text: Static protocols
+    role: section
+    classified_by: model
+  - line: 939
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 946
+    level: 2
+    text: The typed double function
+    role: embedded
+    classified_by: model
+  - line: 1002
+    level: 2
+    text: Runtime checkable static protocols
+    role: section
+    classified_by: model
+  - line: 1016
+    level: 2
+    text: Example 13-14.
+    role: embedded
+    classified_by: rule:caption
+  - line: 1032
+    level: 2
+    text: Example 13-15. Using SupportsComplex at runtime.
+    role: embedded
+    classified_by: rule:caption
+  - line: 1080
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 1084
+    level: 2
+    text: DUCK TYPING IS YOUR FRIEND
+    role: embedded
+    classified_by: model
+  - line: 1135
+    level: 2
+    text: Supporting a static protocol
+    role: section
+    classified_by: model
+  - line: 1194
+    level: 2
+    text: TYPE HINTS ARE IGNORED AT RUNTIME
+    role: embedded
+    classified_by: model
+  - line: 1215
+    level: 2
+    text: Designing a static protocol
+    role: section
+    classified_by: rule:cited
+  - line: 1224
+    level: 2
+    text: 'Example 13-18. randompick.py: definition of RandomPicker.'
+    role: embedded
+    classified_by: rule:caption
+  - line: 1233
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 1238
+    level: 2
+    text: 'Example 13-19. randompick\_test.py: RandomPicker in use.'
+    role: embedded
+    classified_by: rule:caption
+  - line: 1276
+    level: 2
+    text: 'returned by pick:'
+    role: embedded
+    classified_by: model
+  - line: 1286
+    level: 2
+    text: Extending a protocol
+    role: section
+    classified_by: model
+  - line: 1293
+    level: 2
+    text: 'Example 13-20. randompickload.py: extending RandomPicker.'
+    role: embedded
+    classified_by: rule:caption
+  - line: 1310
+    level: 2
+    text: Protocol naming conventions
+    role: section
+    classified_by: model
+  - line: 1323
+    level: 2
+    text: The numbers ABCs and numeric protocols
+    role: section
+    classified_by: model
+  - line: 1325
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 1339
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 1395
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 1406
+    level: 2
+    text: Chapter Summary
+    role: section
+    classified_by: model
+  - line: 1423
+    level: 2
+    text: Further Reading
+    role: section
+    classified_by: model
+  - line: 1443
+    level: 2
+    text: SOAPBOX
+    role: embedded
+    classified_by: model
+  - line: 1445
+    level: 2
+    text: The MVP Journey of Python Static Typing
+    role: embedded
+    classified_by: model
+  - line: 1477
+    level: 2
+    text: Monkey Patching
+    role: section
+    classified_by: model
+  - line: 1485
+    level: 2
+    text: Metaphors and Idioms in Interfaces
+    role: section
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/021-chapter-14-inheritance-for-good-or-for-worse.md
+  chapter_sha256: 0192a7609f453da4993ca41c4ef9fd204bd0857632cf57d7e89168394500cbbe
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 14: Inheritance: For Good or For Worse'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A NOTE FOR EARLY RELEASE READERS
+    role: embedded
+    classified_by: model
+  - line: 26
+    level: 2
+    text: What's new in this chapter
+    role: embedded
+    classified_by: model
+  - line: 33
+    level: 2
+    text: Subclassing Built-In Types Is Tricky
+    role: section
+    classified_by: rule:cited
+  - line: 73
+    level: 2
+    text: Example 14-2. The \_\_getitem\_\_ of AnswerDict is bypassed by dict.update
+    role: embedded
+    classified_by: rule:caption
+  - line: 97
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 152
+    level: 2
+    text: Multiple Inheritance and Method Resolution Order
+    role: section
+    classified_by: rule:cited
+  - line: 225
+    level: 2
+    text: Example 14-6. Using super() to call ping (source code in Example 14-4)
+    role: embedded
+    classified_by: rule:caption
+  - line: 267
+    level: 2
+    text: Example 14-8. Inspecting the \_\_mro\_\_ attribute in several classes
+    role: embedded
+    classified_by: rule:caption
+  - line: 300
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 322
+    level: 2
+    text: Multiple Inheritance in the Real World
+    role: section
+    classified_by: model
+  - line: 375
+    level: 2
+    text: Coping with Multiple Inheritance
+    role: section
+    classified_by: model
+  - line: 386
+    level: 2
+    text: 1. Distinguish Interface Inheritance from Implementation Inheritance
+    role: embedded
+    classified_by: model
+  - line: 396
+    level: 2
+    text: 2. Make Interfaces Explicit with ABCs
+    role: embedded
+    classified_by: model
+  - line: 401
+    level: 2
+    text: 3. Use Mixins for Code Reuse
+    role: embedded
+    classified_by: model
+  - line: 406
+    level: 2
+    text: 4. Make Mixins Explicit by Naming
+    role: embedded
+    classified_by: model
+  - line: 411
+    level: 2
+    text: 5. An ABC May Also Be a Mixin; The Reverse Is Not True
+    role: embedded
+    classified_by: model
+  - line: 418
+    level: 2
+    text: 6. Don't Subclass from More Than One Concrete Class
+    role: embedded
+    classified_by: model
+  - line: 429
+    level: 2
+    text: 7. Provide Aggregate Classes to Users
+    role: embedded
+    classified_by: model
+  - line: 448
+    level: 2
+    text: 8. "Favor Object Composition Over Class Inheritance."
+    role: embedded
+    classified_by: model
+  - line: 459
+    level: 2
+    text: 'Tkinter: The Good, the Bad, and the Ugly'
+    role: section
+    classified_by: model
+  - line: 461
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 480
+    level: 2
+    text: 'A Modern Example: Mixins in Django Generic Views'
+    role: section
+    classified_by: model
+  - line: 482
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 494
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 524
+    level: 2
+    text: Chapter Summary
+    role: section
+    classified_by: model
+  - line: 541
+    level: 2
+    text: Further Reading
+    role: section
+    classified_by: model
+  - line: 555
+    level: 2
+    text: SOAPBOX
+    role: embedded
+    classified_by: model
+  - line: 557
+    level: 2
+    text: Think About the Classes You Really Need
+    role: embedded
+    classified_by: model
+  - line: 570
+    level: 2
+    text: 'Misbehaving Built-ins: Bug or Feature?'
+    role: section
+    classified_by: model
+  - line: 578
+    level: 2
+    text: Inheritance Across Languages
+    role: section
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/022-chapter-15-more-about-type-hints.md
+  chapter_sha256: 440459341026b7845a7b73609d00c1664011235d0e2c762e0f90fa5955069d8e
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 15: More About Type Hints'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A NOTE FOR EARLY RELEASE READERS
+    role: embedded
+    classified_by: model
+  - line: 29
+    level: 2
+    text: What's new in this chapter
+    role: section
+    classified_by: model
+  - line: 36
+    level: 2
+    text: Overloaded signatures
+    role: section
+    classified_by: model
+  - line: 99
+    level: 2
+    text: TAKE ADVANTAGE OF** *GRADUAL* **TYPING
+    role: embedded
+    classified_by: model
+  - line: 106
+    level: 2
+    text: Max Overload
+    role: section
+    classified_by: model
+  - line: 197
+    level: 2
+    text: Inputs implementing SupportsLessThan, no default=
+    role: embedded
+    classified_by: model
+  - line: 204
+    level: 1
+    text: '... lines omitted ...'
+    role: embedded
+    classified_by: model
+  - line: 219
+    level: 2
+    text: key= provided, no default=
+    role: embedded
+    classified_by: model
+  - line: 226
+    level: 1
+    text: '... lines omitted ...'
+    role: embedded
+    classified_by: model
+  - line: 254
+    level: 2
+    text: key= and default= provided
+    role: embedded
+    classified_by: model
+  - line: 279
+    level: 2
+    text: Takeaways from Overloading max
+    role: section
+    classified_by: model
+  - line: 297
+    level: 2
+    text: TypedDict
+    role: section
+    classified_by: rule:cited
+  - line: 299
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 403
+    level: 2
+    text: 'Example 15-5. demo\_books.py: legal and ilegal operations on a BookDict.'
+    role: embedded
+    classified_by: rule:caption
+  - line: 436
+    level: 2
+    text: Example 15-6. Type checking demo\_books.py.
+    role: embedded
+    classified_by: rule:caption
+  - line: 500
+    level: 2
+    text: 'Example 15-8. books\_any.py: from\_json function.'
+    role: embedded
+    classified_by: rule:caption
+  - line: 535
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 598
+    level: 2
+    text: Example 15-12. Output of running demo\_not\_book.py.
+    role: embedded
+    classified_by: rule:caption
+  - line: 630
+    level: 2
+    text: Type Casting
+    role: section
+    classified_by: model
+  - line: 685
+    level: 1
+    text: '... many lines omitted ...'
+    role: embedded
+    classified_by: model
+  - line: 696
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 714
+    level: 2
+    text: Reading Type Hints at Runtime
+    role: section
+    classified_by: model
+  - line: 740
+    level: 2
+    text: Problems with Annotations at Runtime
+    role: section
+    classified_by: model
+  - line: 815
+    level: 2
+    text: Dealing with the Problem
+    role: section
+    classified_by: model
+  - line: 837
+    level: 2
+    text: Implementing a generic class
+    role: section
+    classified_by: model
+  - line: 861
+    level: 2
+    text: 'error: List item 1 has incompatible type "float";'
+    role: embedded
+    classified_by: model
+  - line: 862
+    level: 2
+    text: expected "int"
+    role: embedded
+    classified_by: model
+  - line: 865
+    level: 2
+    text: 'error: Argument 1 to "load" of "LottoBlower"'
+    role: embedded
+    classified_by: model
+  - line: 866
+    level: 2
+    text: has incompatible type "str";
+    role: embedded
+    classified_by: model
+  - line: 867
+    level: 2
+    text: expected "Iterable[int]"
+    role: embedded
+    classified_by: model
+  - line: 868
+    level: 2
+    text: 'note: Following member(s) of "str" have conflicts:'
+    role: embedded
+    classified_by: rule:callout
+  - line: 869
+    level: 2
+    text: 'note: Expected:'
+    role: embedded
+    classified_by: rule:callout
+  - line: 870
+    level: 2
+    text: 'note: def __iter__(self) -> Iterator[int]'
+    role: embedded
+    classified_by: rule:callout
+  - line: 871
+    level: 2
+    text: 'note: Got:'
+    role: embedded
+    classified_by: rule:callout
+  - line: 872
+    level: 2
+    text: 'note: def __iter__(self) -> Iterator[str]'
+    role: embedded
+    classified_by: rule:callout
+  - line: 914
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 921
+    level: 2
+    text: Basic Jargon for Generic Types
+    role: section
+    classified_by: model
+  - line: 927
+    level: 2
+    text: Formal type parameter
+    role: embedded
+    classified_by: model
+  - line: 931
+    level: 2
+    text: Parameterized type
+    role: embedded
+    classified_by: model
+  - line: 947
+    level: 2
+    text: Variance
+    role: section
+    classified_by: model
+  - line: 953
+    level: 2
+    text: An Invariant Dispenser
+    role: section
+    classified_by: model
+  - line: 997
+    level: 2
+    text: 'mypy: Argument 1 to "install" has'
+    role: embedded
+    classified_by: model
+  - line: 998
+    level: 2
+    text: incompatible type "BeverageDispenser[Beverage]"
+    role: embedded
+    classified_by: model
+  - line: 999
+    level: 2
+    text: expected "BeverageDispenser[Juice]"
+    role: embedded
+    classified_by: model
+  - line: 1009
+    level: 2
+    text: 'mypy: Argument 1 to "install" has'
+    role: embedded
+    classified_by: model
+  - line: 1010
+    level: 2
+    text: incompatible type "BeverageDispenser[OrangeJuice]"
+    role: embedded
+    classified_by: model
+  - line: 1011
+    level: 2
+    text: expected "BeverageDispenser[Juice]"
+    role: embedded
+    classified_by: model
+  - line: 1019
+    level: 2
+    text: A Covariant Dispenser
+    role: section
+    classified_by: model
+  - line: 1054
+    level: 2
+    text: 'mypy: Argument 1 to "install" has'
+    role: embedded
+    classified_by: model
+  - line: 1055
+    level: 2
+    text: incompatible type "BeverageDispenser[Beverage]"
+    role: embedded
+    classified_by: model
+  - line: 1056
+    level: 2
+    text: expected "BeverageDispenser[Juice]"
+    role: embedded
+    classified_by: model
+  - line: 1062
+    level: 2
+    text: A Contravariant Trash Can
+    role: section
+    classified_by: model
+  - line: 1109
+    level: 2
+    text: 'mypy: Argument 1 to "deploy" has'
+    role: embedded
+    classified_by: model
+  - line: 1110
+    level: 2
+    text: incompatible type "TrashCan[Compostable]"
+    role: embedded
+    classified_by: model
+  - line: 1111
+    level: 2
+    text: expected "TrashCan[Biodegradable]"
+    role: embedded
+    classified_by: model
+  - line: 1117
+    level: 2
+    text: Variance Review
+    role: section
+    classified_by: model
+  - line: 1119
+    level: 2
+    text: Invariant Types
+    role: section
+    classified_by: model
+  - line: 1145
+    level: 2
+    text: Covariant Types
+    role: section
+    classified_by: model
+  - line: 1177
+    level: 2
+    text: Contravariant Types
+    role: section
+    classified_by: model
+  - line: 1201
+    level: 2
+    text: Variance Rules of Thumb
+    role: section
+    classified_by: model
+  - line: 1218
+    level: 2
+    text: Implementing a generic static protocol
+    role: section
+    classified_by: model
+  - line: 1241
+    level: 2
+    text: 'Example 15-20. abs\_demo.py: use of the generic SupportsAbs protocol.'
+    role: embedded
+    classified_by: rule:caption
+  - line: 1300
+    level: 2
+    text: Chapter summary
+    role: section
+    classified_by: model
+  - line: 1316
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 1321
+    level: 2
+    text: Further Reading
+    role: embedded
+    classified_by: model
+  - line: 1667
+    level: 2
+    text: SOAPBOX
+    role: embedded
+    classified_by: model
+  - line: 1669
+    level: 2
+    text: Typing Rabbit Holes
+    role: section
+    classified_by: model
+  - line: 1679
+    level: 2
+    text: Variance notation in other languages
+    role: section
+    classified_by: model
+  - line: 1733
+    level: 2
+    text: False Positives 147 × False Negatives 19
+    role: section
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/023-chapter-16-operator-overloading-doing-it-right.md
+  chapter_sha256: 9b5bae07f384f2113ba0d01ae4a880aa00a11a08a08834b8eeaae212b4f189c1
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 16: Operator Overloading: Doing It Right'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A NOTE FOR EARLY RELEASE READERS
+    role: embedded
+    classified_by: model
+  - line: 28
+    level: 2
+    text: What's new in this chapter
+    role: section
+    classified_by: model
+  - line: 37
+    level: 2
+    text: Operator Overloading 101
+    role: section
+    classified_by: model
+  - line: 52
+    level: 2
+    text: Unary Operators
+    role: section
+    classified_by: model
+  - line: 101
+    level: 2
+    text: WHEN X AND +X ARE NOT EQUAL
+    role: embedded
+    classified_by: model
+  - line: 156
+    level: 2
+    text: Overloading + for Vector Addition
+    role: section
+    classified_by: model
+  - line: 158
+    level: 3
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 185
+    level: 2
+    text: 'Example 16-4. Vector.add method, take #1'
+    role: embedded
+    classified_by: rule:caption
+  - line: 200
+    level: 3
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 255
+    level: 3
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 282
+    level: 3
+    text: Example 16-8. Vector.\_\_add\_\_ method needs an iterable operand
+    role: embedded
+    classified_by: rule:caption
+  - line: 329
+    level: 3
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 336
+    level: 2
+    text: Overloading \* for Scalar Multiplication
+    role: section
+    classified_by: model
+  - line: 348
+    level: 3
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 364
+    level: 3
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 405
+    level: 2
+    text: Using @ as an infix operator
+    role: section
+    classified_by: model
+  - line: 459
+    level: 2
+    text: Wrapping-up arithmetic operators
+    role: section
+    classified_by: model
+  - line: 606
+    level: 2
+    text: Rich Comparison Operators
+    role: section
+    classified_by: model
+  - line: 737
+    level: 3
+    text: NEW BEHAVIOR IN PYTHON 3
+    role: embedded
+    classified_by: model
+  - line: 754
+    level: 3
+    text: Example 16-13. Comparing a Vector to a Vector, a Vector2d, and a tuple
+    role: embedded
+    classified_by: rule:caption
+  - line: 784
+    level: 2
+    text: 'Example 16-14. vector\_v8.py: improved \_\_eq\_\_ in the Vector class'
+    role: embedded
+    classified_by: rule:caption
+  - line: 867
+    level: 2
+    text: Augmented Assignment Operators
+    role: section
+    classified_by: model
+  - line: 907
+    level: 3
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 979
+    level: 3
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 1023
+    level: 2
+    text: Chapter Summary
+    role: section
+    classified_by: rule:cited
+  - line: 1038
+    level: 2
+    text: Further Reading
+    role: section
+    classified_by: model
+  - line: 1063
+    level: 3
+    text: SOAPBOX
+    role: embedded
+    classified_by: model
+  - line: 1066
+    level: 2
+    text: 'Operator Overloading: Pros and Cons'
+    role: section
+    classified_by: model
+  - line: 1074
+    level: 2
+    text: 'Gosling goes on to say:'
+    role: embedded
+    classified_by: model
+  - line: 1099
+    level: 2
+    text: A Glimpse at Lazy Evaluation
+    role: section
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/024-chapter-17-iterables-iterators-and-generators.md
+  chapter_sha256: a77cdc62f666d76c7abcf9c35cd02e53c20363f91f63740a6f75859a5d396fdb
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 17: Iterables, Iterators, and Generators'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A NOTE FOR EARLY RELEASE READERS
+    role: embedded
+    classified_by: model
+  - line: 44
+    level: 2
+    text: What's new in this chapter
+    role: section
+    classified_by: model
+  - line: 51
+    level: 2
+    text: A Sequence of Words
+    role: section
+    classified_by: model
+  - line: 123
+    level: 2
+    text: 'Why Sequences Are Iterable: The iter Function'
+    role: section
+    classified_by: model
+  - line: 155
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 164
+    level: 2
+    text: Iterables Versus Iterators
+    role: section
+    classified_by: model
+  - line: 168
+    level: 2
+    text: iterable
+    role: embedded
+    classified_by: model
+  - line: 236
+    level: 2
+    text: '**raise StopIteration def** \_\_iter\_\_(self): **return** self @classmethod **def** \_\_subclasshook\_\_(cls, C): **if** cls **is** Iterator: **if** (any("\_\_next\_\_" **in** B.\_\_dict\_\_ **for** B **in** C.\_\_mro\_\_) **and** any("\_\_iter\_\_" **in** B.\_\_dict\_\_ **for** B **in** C.\_\_mro\_\_)): **return True return** NotImplemented'
+    role: embedded
+    classified_by: model
+  - line: 238
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 245
+    level: 1
+    text: Iterators in Python aren't a matter of type but of protocol. A
+    role: embedded
+    classified_by: model
+  - line: 247
+    level: 1
+    text: and changing number of builtin types implement *some* flavor of
+    role: embedded
+    classified_by: model
+  - line: 248
+    level: 1
+    text: iterator. Don't check the type! Use hasattr to check for both
+    role: embedded
+    classified_by: model
+  - line: 249
+    level: 1
+    text: '"__iter__" and "__next__" attributes instead.'
+    role: embedded
+    classified_by: model
+  - line: 254
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 301
+    level: 2
+    text: Sentence classes with \_\_iter\_\_
+    role: section
+    classified_by: model
+  - line: 306
+    level: 2
+    text: 'Sentence Take #2: A Classic Iterator'
+    role: section
+    classified_by: model
+  - line: 360
+    level: 2
+    text: Don't make the iterable an iterator for itself
+    role: section
+    classified_by: rule:cited
+  - line: 364
+    level: 2
+    text: Use the Iterator pattern
+    role: embedded
+    classified_by: model
+    note: 'pin: converted GoF block-quote caption inside the cited section (frontier full-chapter review)'
+  - line: 372
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 381
+    level: 2
+    text: 'Sentence Take #3: A Generator Function'
+    role: section
+    classified_by: model
+  - line: 401
+    level: 1
+    text: done!
+    role: embedded
+    classified_by: model
+  - line: 416
+    level: 2
+    text: How a Generator Works
+    role: section
+    classified_by: model
+  - line: 421
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 468
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 520
+    level: 2
+    text: Lazy sentences
+    role: section
+    classified_by: model
+  - line: 525
+    level: 2
+    text: 'Sentence Take #4: Lazy Generator'
+    role: section
+    classified_by: model
+  - line: 561
+    level: 2
+    text: 'Sentence Take #5: Lazy Generator Expression'
+    role: section
+    classified_by: model
+  - line: 634
+    level: 2
+    text: 'Generator Expressions: When to Use Them'
+    role: section
+    classified_by: model
+  - line: 644
+    level: 2
+    text: SYNTAX TIP
+    role: embedded
+    classified_by: model
+  - line: 659
+    level: 2
+    text: 'Another Example: Arithmetic Progression Generator'
+    role: section
+    classified_by: model
+  - line: 694
+    level: 2
+    text: Example 17-11. The ArithmeticProgression class
+    role: embedded
+    classified_by: rule:caption
+  - line: 731
+    level: 2
+    text: Example 17-12. The aritprog\_gen generator function
+    role: embedded
+    classified_by: rule:caption
+  - line: 747
+    level: 2
+    text: Arithmetic Progression with itertools
+    role: section
+    classified_by: model
+  - line: 781
+    level: 3
+    text: import itertools
+    role: embedded
+    classified_by: model
+  - line: 797
+    level: 2
+    text: Generator Functions in the Standard Library
+    role: section
+    classified_by: model
+  - line: 803
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 906
+    level: 2
+    text: Example 17-15 demonstrates some uses of itertools.accumulate.
+    role: embedded
+    classified_by: rule:caption
+  - line: 909
+    level: 2
+    text: Example 17-15. itertools.accumulate generator function examples
+    role: embedded
+    classified_by: rule:caption
+  - line: 936
+    level: 2
+    text: Example 17-16. Mapping generator function examples
+    role: embedded
+    classified_by: rule:caption
+  - line: 1045
+    level: 2
+    text: Example 17-18. itertools.product generator function examples
+    role: embedded
+    classified_by: rule:caption
+  - line: 1165
+    level: 2
+    text: Example 17-19. count, cycle, and repeat
+    role: embedded
+    classified_by: rule:caption
+  - line: 1285
+    level: 2
+    text: Example 17-21. itertools.groupby
+    role: embedded
+    classified_by: rule:caption
+  - line: 1358
+    level: 2
+    text: Subgenerators with yield from
+    role: section
+    classified_by: model
+  - line: 1419
+    level: 2
+    text: Reinventing chain.
+    role: section
+    classified_by: model
+  - line: 1451
+    level: 2
+    text: Traversing a tree
+    role: section
+    classified_by: model
+  - line: 1490
+    level: 2
+    text: Example 17-26 produces that output.
+    role: embedded
+    classified_by: rule:caption
+  - line: 1658
+    level: 2
+    text: Iterable Reducing Functions
+    role: section
+    classified_by: model
+  - line: 1677
+    level: 3
+    text: lse; all([]) returns True
+    role: embedded
+    classified_by: model
+  - line: 1692
+    level: 2
+    text: Example 17-32. Results of all and any for some sequences
+    role: embedded
+    classified_by: rule:caption
+  - line: 1728
+    level: 2
+    text: A Closer Look at the iter Function
+    role: section
+    classified_by: model
+  - line: 1781
+    level: 2
+    text: 'Case Study: Generators in a Database Conversion Utility'
+    role: section
+    classified_by: rule:cited
+  - line: 1797
+    level: 2
+    text: main
+    role: embedded
+    classified_by: model
+  - line: 1801
+    level: 2
+    text: iter\_iso\_records
+    role: embedded
+    classified_by: model
+  - line: 1805
+    level: 2
+    text: iter\_mst\_records
+    role: embedded
+    classified_by: model
+  - line: 1811
+    level: 2
+    text: write\_json
+    role: embedded
+    classified_by: model
+  - line: 1824
+    level: 2
+    text: Generators as Coroutines
+    role: section
+    classified_by: model
+  - line: 1842
+    level: 2
+    text: Generic Iterable Types
+    role: section
+    classified_by: model
+  - line: 1844
+    level: 2
+    text: XXX
+    role: embedded
+    classified_by: model
+  - line: 1853
+    level: 2
+    text: Chapter Summary
+    role: section
+    classified_by: model
+  - line: 1868
+    level: 2
+    text: Further Reading
+    role: section
+    classified_by: model
+  - line: 1884
+    level: 2
+    text: SOAPBOX
+    role: embedded
+    classified_by: model
+  - line: 1886
+    level: 2
+    text: 'Generator Function Syntax: More Sugar Would Be Nice'
+    role: embedded
+    classified_by: model
+  - line: 1947
+    level: 2
+    text: Terminology matters
+    role: section
+    classified_by: model
+  - line: 1951
+    level: 2
+    text: generator
+    role: embedded
+    classified_by: model
+  - line: 1961
+    level: 2
+    text: generator iterator
+    role: embedded
+    classified_by: model
+  - line: 1985
+    level: 2
+    text: generator iterator
+    role: embedded
+    classified_by: model
+  - line: 2006
+    level: 2
+    text: iterator
+    role: embedded
+    classified_by: model
+  - line: 2014
+    level: 2
+    text: The Minimalistic Iterator Interface in Python
+    role: section
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/025-chapter-18-context-managers-and-else-blocks.md
+  chapter_sha256: c5f51423c60875e704dd32acafa0bd083ea776dc67df5ae02799ad29b32341d1
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 18: Context Managers and else Blocks'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A NOTE FOR EARLY RELEASE READERS
+    role: embedded
+    classified_by: model
+  - line: 25
+    level: 2
+    text: XXX
+    role: embedded
+    classified_by: model
+  - line: 32
+    level: 2
+    text: What's new in this chapter
+    role: section
+    classified_by: model
+  - line: 39
+    level: 2
+    text: 'Do This, Then That: else Blocks Beyond if'
+    role: section
+    classified_by: model
+  - line: 51
+    level: 2
+    text: while
+    role: embedded
+    classified_by: model
+  - line: 55
+    level: 2
+    text: try
+    role: embedded
+    classified_by: model
+  - line: 61
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 105
+    level: 2
+    text: EAFP
+    role: embedded
+    classified_by: model
+  - line: 111
+    level: 2
+    text: LBYL
+    role: embedded
+    classified_by: model
+  - line: 120
+    level: 2
+    text: Context Managers and with Blocks
+    role: section
+    classified_by: rule:cited
+  - line: 133
+    level: 2
+    text: Example 18-1. Demonstration of a file object as a context manager
+    role: embedded
+    classified_by: rule:caption
+  - line: 226
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 234
+    level: 2
+    text: exc\_value
+    role: embedded
+    classified_by: model
+  - line: 238
+    level: 2
+    text: traceback
+    role: embedded
+    classified_by: model
+  - line: 245
+    level: 2
+    text: Example 18-4. Exercising LookingGlass without a with block
+    role: embedded
+    classified_by: rule:caption
+  - line: 280
+    level: 2
+    text: The contextlib Utilities
+    role: section
+    classified_by: model
+  - line: 290
+    level: 2
+    text: suppress
+    role: embedded
+    classified_by: model
+  - line: 294
+    level: 2
+    text: nullcontext
+    role: embedded
+    classified_by: model
+  - line: 300
+    level: 2
+    text: '@contextmanager'
+    role: embedded
+    classified_by: model
+  - line: 304
+    level: 2
+    text: AbstractContextManager
+    role: embedded
+    classified_by: model
+  - line: 308
+    level: 2
+    text: ContextDecorator
+    role: embedded
+    classified_by: model
+  - line: 312
+    level: 2
+    text: ExitStack
+    role: embedded
+    classified_by: model
+  - line: 321
+    level: 2
+    text: Using @contextmanager
+    role: embedded
+    classified_by: model
+  - line: 331
+    level: 2
+    text: 'Example 18-5. mirror\_gen.py: a context manager implemented with a generator'
+    role: embedded
+    classified_by: rule:caption
+  - line: 359
+    level: 2
+    text: Example 18-6. Test driving the looking\_glass context manager function
+    role: embedded
+    classified_by: rule:caption
+  - line: 429
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 456
+    level: 2
+    text: 'Pattern Matching: a Case Study'
+    role: section
+    classified_by: model
+  - line: 463
+    level: 2
+    text: Scheme Syntax
+    role: embedded
+    classified_by: model
+  - line: 504
+    level: 2
+    text: The Parser
+    role: embedded
+    classified_by: model
+  - line: 534
+    level: 2
+    text: An Expression Evaluator
+    role: embedded
+    classified_by: model
+  - line: 698
+    level: 2
+    text: OR-patterns
+    role: embedded
+    classified_by: model
+  - line: 700
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 727
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 733
+    level: 2
+    text: Chapter Summary
+    role: section
+    classified_by: model
+  - line: 744
+    level: 2
+    text: Further Reading
+    role: section
+    classified_by: model
+  - line: 758
+    level: 2
+    text: SOAPBOX
+    role: embedded
+    classified_by: model
+  - line: 760
+    level: 2
+    text: Factoring Out the Bread
+    role: embedded
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/026-chapter-19-classic-coroutines.md
+  chapter_sha256: 04f9d7cdfd2b5e8f1ac44f433cdea245cd85bac7e9431ea06ee9249881238bf0
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 19: Classic Coroutines'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A NOTE FOR EARLY RELEASE READERS
+    role: embedded
+    classified_by: model
+  - line: 24
+    level: 2
+    text: classic coroutines
+    role: embedded
+    classified_by: model
+  - line: 28
+    level: 2
+    text: generator-based coroutines
+    role: embedded
+    classified_by: model
+  - line: 32
+    level: 2
+    text: native coroutines
+    role: embedded
+    classified_by: model
+  - line: 51
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 56
+    level: 2
+    text: What's new in this chapter
+    role: section
+    classified_by: model
+  - line: 63
+    level: 2
+    text: How Coroutines Evolved from Generators
+    role: section
+    classified_by: model
+  - line: 85
+    level: 2
+    text: Basic Behavior of a Generator Used as a Coroutine
+    role: section
+    classified_by: model
+  - line: 90
+    level: 2
+    text: Example 19-1. Simplest possible demonstration of coroutine in action
+    role: embedded
+    classified_by: rule:caption
+  - line: 107
+    level: 3
+    text: 'Traceback (most recent call last): ... StopIteration'
+    role: embedded
+    classified_by: model
+  - line: 161
+    level: 2
+    text: Example 19-2. A coroutine that yields twice
+    role: embedded
+    classified_by: rule:caption
+  - line: 218
+    level: 2
+    text: 'Example: Coroutine to Compute a Running Average'
+    role: embedded
+    classified_by: model
+  - line: 223
+    level: 2
+    text: 'Example 19-3. coroaverager0.py: code for a running average coroutine'
+    role: embedded
+    classified_by: rule:caption
+  - line: 266
+    level: 2
+    text: Decorators for Coroutine Priming
+    role: section
+    classified_by: model
+  - line: 340
+    level: 2
+    text: Coroutine Termination and Exception Handling
+    role: section
+    classified_by: model
+  - line: 345
+    level: 2
+    text: Example 19-7. How an unhandled exception kills a coroutine
+    role: embedded
+    classified_by: rule:caption
+  - line: 378
+    level: 2
+    text: generator.close()
+    role: section
+    classified_by: model
+  - line: 382
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 493
+    level: 2
+    text: Returning a Value from a Coroutine
+    role: section
+    classified_by: model
+  - line: 569
+    level: 2
+    text: Using yield from
+    role: section
+    classified_by: model
+  - line: 610
+    level: 2
+    text: Example 19-16. Chaining iterables with yield from
+    role: embedded
+    classified_by: rule:caption
+  - line: 635
+    level: 2
+    text: delegating generator
+    role: embedded
+    classified_by: model
+  - line: 639
+    level: 2
+    text: subgenerator
+    role: embedded
+    classified_by: model
+  - line: 643
+    level: 2
+    text: caller
+    role: embedded
+    classified_by: model
+  - line: 648
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 675
+    level: 1
+    text: the subgenerator
+    role: embedded
+    classified_by: model
+  - line: 688
+    level: 1
+    text: the delegating generator
+    role: embedded
+    classified_by: model
+  - line: 692
+    level: 1
+    text: the client code, a.k.a. the caller
+    role: embedded
+    classified_by: model
+  - line: 706
+    level: 1
+    text: output report
+    role: embedded
+    classified_by: model
+  - line: 744
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 757
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 762
+    level: 2
+    text: Pipelines of coroutines
+    role: section
+    classified_by: model
+  - line: 771
+    level: 2
+    text: The Meaning of yield from
+    role: section
+    classified_by: model
+  - line: 774
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 789
+    level: 2
+    text: Basic behavior of yield from
+    role: section
+    classified_by: model
+  - line: 874
+    level: 2
+    text: Exception handling in yield from
+    role: section
+    classified_by: model
+  - line: 969
+    level: 2
+    text: 'Use Case: Coroutines for Discrete Event Simulation'
+    role: section
+    classified_by: model
+  - line: 977
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 984
+    level: 2
+    text: About Discrete Event Simulations
+    role: section
+    classified_by: model
+  - line: 994
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 1001
+    level: 2
+    text: The Taxi Fleet Simulation
+    role: section
+    classified_by: model
+  - line: 1192
+    level: 2
+    text: self.procs
+    role: section
+    classified_by: model
+  - line: 1197
+    level: 2
+    text: 'Example 19-22. taxi\_sim.py: Simulator class initializer'
+    role: embedded
+    classified_by: rule:caption
+  - line: 1199
+    level: 3
+    text: '**class Simulator**:'
+    role: embedded
+    classified_by: model
+  - line: 1312
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 1317
+    level: 2
+    text: Generic Type Hints for Classic Coroutines
+    role: section
+    classified_by: model
+  - line: 1331
+    level: 1
+    text: many lines omitted
+    role: embedded
+    classified_by: model
+  - line: 1371
+    level: 2
+    text: Chapter Summary
+    role: section
+    classified_by: model
+  - line: 1388
+    level: 2
+    text: Further Reading
+    role: section
+    classified_by: model
+  - line: 1420
+    level: 2
+    text: SOAPBOX
+    role: embedded
+    classified_by: model
+  - line: 1422
+    level: 2
+    text: Raise from lambda
+    role: section
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/027-chapter-20-concurrency-models-in-python.md
+  chapter_sha256: c483886c01e2d4d53866c4b73ba92b6860824a5705e9b4b1a014e1e4587e9a57
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 20: Concurrency Models in Python'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A NOTE FOR EARLY RELEASE READERS
+    role: embedded
+    classified_by: model
+  - line: 35
+    level: 2
+    text: What's new in this chapter
+    role: section
+    classified_by: model
+  - line: 44
+    level: 2
+    text: A Bit of Jargon
+    role: section
+    classified_by: model
+  - line: 48
+    level: 2
+    text: concurrency
+    role: embedded
+    classified_by: model
+  - line: 52
+    level: 2
+    text: parallelism
+    role: embedded
+    classified_by: model
+  - line: 56
+    level: 2
+    text: process
+    role: embedded
+    classified_by: model
+  - line: 60
+    level: 2
+    text: thread
+    role: embedded
+    classified_by: model
+  - line: 64
+    level: 2
+    text: contention
+    role: embedded
+    classified_by: model
+  - line: 68
+    level: 2
+    text: lock
+    role: embedded
+    classified_by: model
+  - line: 75
+    level: 2
+    text: Processes, threads, and Python's Infamous GIL
+    role: section
+    classified_by: rule:cited
+  - line: 104
+    level: 2
+    text: A Concurrent Hello World
+    role: section
+    classified_by: rule:cited
+  - line: 111
+    level: 2
+    text: Spinner with threading
+    role: section
+    classified_by: model
+  - line: 150
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 196
+    level: 2
+    text: Spinner with multiprocessing
+    role: section
+    classified_by: model
+  - line: 212
+    level: 1
+    text: '[snip] the rest of spin and slow functions are unchanged from'
+    role: embedded
+    classified_by: model
+  - line: 224
+    level: 1
+    text: '[snip] main function is unchanged as well'
+    role: embedded
+    classified_by: model
+  - line: 236
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 243
+    level: 2
+    text: Spinner with asyncio
+    role: section
+    classified_by: model
+  - line: 245
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 251
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 289
+    level: 2
+    text: await coro()
+    role: embedded
+    classified_by: model
+  - line: 293
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 300
+    level: 2
+    text: 'Example 20-5. spinner\_async.py: the spin and slow coroutines'
+    role: embedded
+    classified_by: rule:caption
+  - line: 325
+    level: 2
+    text: 'Experiment: Break the Spinner for an Insight'
+    role: section
+    classified_by: model
+  - line: 369
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 374
+    level: 2
+    text: Supervisors Side-by-side
+    role: section
+    classified_by: model
+  - line: 426
+    level: 2
+    text: The Real Impact of the GIL
+    role: section
+    classified_by: model
+  - line: 457
+    level: 2
+    text: Quick Quiz
+    role: section
+    classified_by: model
+  - line: 471
+    level: 2
+    text: 1. Answer for multiprocessing
+    role: embedded
+    classified_by: model
+  - line: 475
+    level: 2
+    text: 2. Answer for threading
+    role: embedded
+    classified_by: model
+  - line: 489
+    level: 2
+    text: 3. Answer for asyncio
+    role: embedded
+    classified_by: model
+  - line: 493
+    level: 2
+    text: POWER NAPPING WITH SLEEP(0)
+    role: section
+    classified_by: model
+  - line: 528
+    level: 2
+    text: A Homegrown Process Pool
+    role: section
+    classified_by: model
+  - line: 530
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 614
+    level: 2
+    text: Process-based Solution
+    role: section
+    classified_by: model
+  - line: 650
+    level: 2
+    text: Understanding the Elapsed Times
+    role: section
+    classified_by: model
+  - line: 658
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 663
+    level: 2
+    text: Code for the Multi-core Prime Checker
+    role: section
+    classified_by: model
+  - line: 671
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 676
+    level: 2
+    text: 'Example 20-13. procs.py: multiprocess primality check; imports, types and functions'
+    role: embedded
+    classified_by: rule:caption
+  - line: 712
+    level: 2
+    text: WHAT'S A GOOD POISON PILL?
+    role: section
+    classified_by: model
+  - line: 721
+    level: 2
+    text: 'Example 20-14. procs.py: multiprocess primality check; main function'
+    role: embedded
+    classified_by: rule:caption
+  - line: 768
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 772
+    level: 2
+    text: Experimenting with More or Less Workers
+    role: section
+    classified_by: model
+  - line: 789
+    level: 2
+    text: Thread-based Non-solution
+    role: section
+    classified_by: model
+  - line: 800
+    level: 2
+    text: The Big Picture
+    role: section
+    classified_by: model
+  - line: 813
+    level: 3
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 822
+    level: 2
+    text: System Administration
+    role: section
+    classified_by: model
+  - line: 831
+    level: 2
+    text: Data Science
+    role: section
+    classified_by: model
+  - line: 837
+    level: 2
+    text: Project Jupyter
+    role: embedded
+    classified_by: model
+  - line: 843
+    level: 2
+    text: TensorFlow and PyTorch
+    role: section
+    classified_by: model
+  - line: 847
+    level: 2
+    text: Dask
+    role: section
+    classified_by: model
+  - line: 854
+    level: 2
+    text: Server-side Web/Mobile Development
+    role: section
+    classified_by: model
+  - line: 860
+    level: 2
+    text: High performance envy/web scale envy
+    role: embedded
+    classified_by: model
+  - line: 888
+    level: 2
+    text: WSGI Application servers
+    role: section
+    classified_by: model
+  - line: 914
+    level: 3
+    text: ASGI—ASYNCHRONOUS SERVER GATEWAY INTERFACE
+    role: section
+    classified_by: model
+  - line: 921
+    level: 2
+    text: Distributed task queues
+    role: section
+    classified_by: model
+  - line: 929
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 946
+    level: 2
+    text: Chapter Summary
+    role: section
+    classified_by: model
+  - line: 961
+    level: 2
+    text: Further Reading
+    role: section
+    classified_by: model
+  - line: 966
+    level: 2
+    text: Concurrency with threads and processes
+    role: section
+    classified_by: model
+  - line: 992
+    level: 2
+    text: The GIL
+    role: section
+    classified_by: model
+  - line: 1001
+    level: 2
+    text: Concurrency beyond the standard library
+    role: section
+    classified_by: model
+  - line: 1028
+    level: 2
+    text: Concurrency and scalability beyond Python
+    role: section
+    classified_by: model
+  - line: 1054
+    level: 2
+    text: SOAPBOX
+    role: embedded
+    classified_by: model
+  - line: 1056
+    level: 2
+    text: Concurrency in the competition
+    role: section
+    classified_by: model
+  - line: 1062
+    level: 2
+    text: To manage complexity, we need constraints
+    role: section
+    classified_by: model
+  - line: 1108
+    level: 2
+    text: Old habits die hard
+    role: section
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/028-chapter-21-concurrency-with-futures.md
+  chapter_sha256: afb529b4602fa2b2feabbfb94920ef8f6e7529d397ceb649755a1b6aeb2bb2cc
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 21: Concurrency with Futures'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A NOTE FOR EARLY RELEASE READERS
+    role: embedded
+    classified_by: model
+  - line: 21
+    level: 2
+    text: What's new in this chapter
+    role: section
+    classified_by: model
+  - line: 34
+    level: 2
+    text: Concurrent Web Downloads
+    role: section
+    classified_by: model
+  - line: 79
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 91
+    level: 2
+    text: A Sequential Download Script
+    role: section
+    classified_by: model
+  - line: 95
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 100
+    level: 2
+    text: 'Example 21-2. flags.py: sequential download script; some functions will be reused by the other scripts'
+    role: embedded
+    classified_by: rule:caption
+  - line: 149
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 156
+    level: 2
+    text: Downloading with concurrent.futures
+    role: section
+    classified_by: model
+  - line: 193
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 214
+    level: 2
+    text: Where Are the Futures?
+    role: section
+    classified_by: model
+  - line: 255
+    level: 3
+    text: '**return** count'
+    role: embedded
+    classified_by: model
+  - line: 270
+    level: 2
+    text: Example 21-5. Output of flags\_threadpool\_futures.py
+    role: embedded
+    classified_by: rule:caption
+  - line: 297
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 306
+    level: 2
+    text: Launching Processes with concurrent.futures
+    role: section
+    classified_by: model
+  - line: 331
+    level: 2
+    text: Multi-core Prime Checker Redux
+    role: section
+    classified_by: model
+  - line: 391
+    level: 2
+    text: Example 21-7. Output of proc\_pool.py
+    role: embedded
+    classified_by: rule:caption
+  - line: 433
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 440
+    level: 2
+    text: Experimenting with Executor.map
+    role: section
+    classified_by: model
+  - line: 527
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 534
+    level: 2
+    text: Downloads with Progress Display and Error Handling
+    role: section
+    classified_by: model
+  - line: 556
+    level: 3
+    text: BE CAREFUL WHEN TESTING CONCURRENT CLIENTS
+    role: embedded
+    classified_by: model
+  - line: 586
+    level: 2
+    text: Example 21-10. Help screen for the scripts in the flags2 series
+    role: embedded
+    classified_by: rule:caption
+  - line: 617
+    level: 2
+    text: LOCAL
+    role: embedded
+    classified_by: model
+  - line: 621
+    level: 2
+    text: REMOTE
+    role: embedded
+    classified_by: model
+  - line: 625
+    level: 2
+    text: DELAY
+    role: embedded
+    classified_by: model
+  - line: 629
+    level: 2
+    text: ERROR
+    role: embedded
+    classified_by: model
+  - line: 633
+    level: 2
+    text: SETTING UP TEST SERVERS
+    role: section
+    classified_by: model
+  - line: 683
+    level: 2
+    text: Example 21-13. Run flags2\_asyncio.py to get 100 flags (-al 100) from the ERROR server, using 100 concurrent requests (-m 100)
+    role: embedded
+    classified_by: rule:caption
+  - line: 699
+    level: 2
+    text: Error Handling in the flags2 Examples
+    role: section
+    classified_by: model
+  - line: 795
+    level: 2
+    text: Using futures.as\_completed
+    role: section
+    classified_by: model
+  - line: 802
+    level: 2
+    text: 'Example 21-16. flags2\_threadpool.py: full listing'
+    role: embedded
+    classified_by: rule:caption
+  - line: 873
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 879
+    level: 2
+    text: Chapter Summary
+    role: section
+    classified_by: model
+  - line: 892
+    level: 2
+    text: Further Reading
+    role: section
+    classified_by: model
+  - line: 899
+    level: 2
+    text: SOAPBOX
+    role: embedded
+    classified_by: model
+  - line: 901
+    level: 2
+    text: Thread avoidance
+    role: embedded
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/029-chapter-22-asynchronous-programming.md
+  chapter_sha256: 0eb7db268bd860ddd0ae090732c08040e7888b8cf5ca97d8a335ff590f70e53c
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 22: Asynchronous Programming'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A NOTE FOR EARLY RELEASE READERS
+    role: embedded
+    classified_by: model
+  - line: 24
+    level: 2
+    text: 'Also covered here:'
+    role: embedded
+    classified_by: model
+  - line: 31
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 38
+    level: 2
+    text: What's New in this Chapter
+    role: section
+    classified_by: model
+  - line: 49
+    level: 2
+    text: A few definitions
+    role: embedded
+    classified_by: model
+  - line: 53
+    level: 2
+    text: native coroutines
+    role: embedded
+    classified_by: model
+  - line: 57
+    level: 2
+    text: classic coroutines
+    role: embedded
+    classified_by: model
+  - line: 61
+    level: 2
+    text: generator-based coroutines
+    role: embedded
+    classified_by: model
+  - line: 68
+    level: 3
+    text: '@ASYNCIO.COROUTINE HAS NO FUTURE 4'
+    role: embedded
+    classified_by: model
+  - line: 73
+    level: 2
+    text: 'Example: Probing Domains'
+    role: section
+    classified_by: model
+  - line: 147
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 152
+    level: 2
+    text: Guido's trick to read asynchronous code
+    role: section
+    classified_by: model
+  - line: 185
+    level: 2
+    text: 'New concept: awaitable'
+    role: section
+    classified_by: model
+  - line: 207
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 214
+    level: 2
+    text: Downloading with asyncio and aiohttp
+    role: section
+    classified_by: model
+  - line: 222
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 229
+    level: 2
+    text: 'Example 22-2. flags\_asyncio.py: startup functions'
+    role: embedded
+    classified_by: rule:caption
+  - line: 279
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 286
+    level: 2
+    text: 'The Secret of Native Coroutines: Humble Generators'
+    role: section
+    classified_by: model
+  - line: 301
+    level: 2
+    text: The all-or-nothing problem
+    role: section
+    classified_by: model
+  - line: 314
+    level: 2
+    text: Asynchronous Context Managers
+    role: section
+    classified_by: rule:cited
+  - line: 353
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 360
+    level: 2
+    text: Enhancing the asyncio downloader
+    role: section
+    classified_by: model
+  - line: 364
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 371
+    level: 2
+    text: Example 22-5. Running flags2\_asyncio.py
+    role: embedded
+    classified_by: rule:caption
+  - line: 386
+    level: 3
+    text: ACT RESPONSIBLY WHEN TESTING CONCURRENT CLIENTS
+    role: embedded
+    classified_by: model
+  - line: 393
+    level: 2
+    text: Using asyncio.as\_completed and a semaphore
+    role: section
+    classified_by: rule:cited
+  - line: 412
+    level: 1
+    text: default set low to avoid errors from remote site, such as
+    role: embedded
+    classified_by: model
+  - line: 413
+    level: 1
+    text: 503 - Service Temporarily Unavailable
+    role: embedded
+    classified_by: model
+  - line: 464
+    level: 2
+    text: ABOUT SEMAPHORES
+    role: section
+    classified_by: model
+  - line: 570
+    level: 2
+    text: Using an Executor to Avoid Blocking the Event Loop
+    role: section
+    classified_by: rule:cited
+  - line: 618
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 629
+    level: 2
+    text: Making Multiple Requests for Each Download
+    role: section
+    classified_by: model
+  - line: 637
+    level: 2
+    text: get\_country
+    role: embedded
+    classified_by: model
+  - line: 641
+    level: 2
+    text: download\_one
+    role: embedded
+    classified_by: model
+  - line: 647
+    level: 2
+    text: 'Example 22-9. flags3\_asyncio.py: get\_country coroutine'
+    role: embedded
+    classified_by: rule:caption
+  - line: 670
+    level: 2
+    text: 'Example 22-10. flags3\_asyncio.py: download\_one coroutine'
+    role: embedded
+    classified_by: rule:caption
+  - line: 709
+    level: 2
+    text: Much better than nested callbacks!
+    role: embedded
+    classified_by: model
+  - line: 720
+    level: 2
+    text: Writing asyncio Servers
+    role: section
+    classified_by: model
+  - line: 734
+    level: 2
+    text: WHAT IS AN INVERTED INDEX
+    role: section
+    classified_by: model
+  - line: 749
+    level: 2
+    text: A FastAPI Web Service
+    role: section
+    classified_by: model
+  - line: 786
+    level: 2
+    text: 'Example 22-11. web\_mojifinder.py: complete source'
+    role: embedded
+    classified_by: rule:caption
+  - line: 817
+    level: 1
+    text: no main funcion
+    role: embedded
+    classified_by: model
+  - line: 838
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 851
+    level: 2
+    text: An asyncio TCP Server
+    role: section
+    classified_by: model
+  - line: 985
+    level: 2
+    text: 'Example 22-15. tcp\_mojifinder.py: search coroutine.'
+    role: embedded
+    classified_by: rule:caption
+  - line: 1011
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 1020
+    level: 2
+    text: Asynchronous iteration and asynchronous iterables
+    role: section
+    classified_by: model
+  - line: 1045
+    level: 2
+    text: Asynchronous Generator Functions
+    role: section
+    classified_by: model
+  - line: 1054
+    level: 2
+    text: Experimenting with Python's Async Console
+    role: section
+    classified_by: model
+  - line: 1081
+    level: 2
+    text: Example 22-16. Experimenting with domainlib.py after running python3 -m asyncio.
+    role: embedded
+    classified_by: rule:caption
+  - line: 1131
+    level: 2
+    text: Implementing an Asynchronous Generator
+    role: section
+    classified_by: model
+  - line: 1176
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 1215
+    level: 2
+    text: 'Example 22-19. domaincheck.py: utility for probing domains using domainlib'
+    role: embedded
+    classified_by: rule:caption
+  - line: 1250
+    level: 2
+    text: Asynchronous Generators as Context Managers
+    role: section
+    classified_by: model
+  - line: 1283
+    level: 2
+    text: Asynchronous Generators Versus Native Coroutines
+    role: section
+    classified_by: model
+  - line: 1297
+    level: 2
+    text: Async Comprehensions and Async Generator Expressions
+    role: section
+    classified_by: model
+  - line: 1303
+    level: 2
+    text: Defining and Using an Asynchronous Generator Expression
+    role: section
+    classified_by: model
+  - line: 1335
+    level: 2
+    text: Asynchronous Comprehensions
+    role: section
+    classified_by: model
+  - line: 1404
+    level: 2
+    text: Generic Asynchronous Types
+    role: section
+    classified_by: model
+  - line: 1442
+    level: 2
+    text: 'Async beyond asyncio: Curio'
+    role: section
+    classified_by: model
+  - line: 1510
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 1527
+    level: 2
+    text: How Async Works and How It Doesn't
+    role: section
+    classified_by: model
+  - line: 1534
+    level: 2
+    text: Running Circles Around Blocking Calls
+    role: section
+    classified_by: model
+  - line: 1674
+    level: 2
+    text: The Myth of I/O Bound Systems
+    role: section
+    classified_by: model
+  - line: 1683
+    level: 2
+    text: Avoiding CPU-bound Traps
+    role: section
+    classified_by: model
+  - line: 1701
+    level: 2
+    text: Chapter Summary
+    role: section
+    classified_by: model
+  - line: 1722
+    level: 2
+    text: Further Reading
+    role: section
+    classified_by: model
+  - line: 1742
+    level: 2
+    text: Christie.
+    role: embedded
+    classified_by: model
+  - line: 1746
+    level: 2
+    text: SOAPBOX
+    role: embedded
+    classified_by: model
+  - line: 1749
+    level: 2
+    text: How a Slow Function Almost Spoiled The uvloop Benchmarks
+    role: section
+    classified_by: model
+  - line: 1766
+    level: 2
+    text: Death by a Thousand Cuts
+    role: section
+    classified_by: model
+  - line: 1778
+    level: 2
+    text: Smarter Clients for Better Concurrency
+    role: section
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/030-chapter-23-dynamic-attributes-and-properties.md
+  chapter_sha256: fa2d8d396be8b0191c5d2e60cac6fd3abb613d473457fb01983836850d0dd9f2
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 23: Dynamic Attributes and Properties'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A NOTE FOR EARLY RELEASE READERS
+    role: embedded
+    classified_by: model
+  - line: 25
+    level: 2
+    text: What's new in this chapter
+    role: section
+    classified_by: model
+  - line: 32
+    level: 2
+    text: Data Wrangling with Dynamic Attributes
+    role: section
+    classified_by: model
+  - line: 83
+    level: 2
+    text: Example 23-2. Interactive exploration of osconfeed.json
+    role: embedded
+    classified_by: rule:caption
+  - line: 116
+    level: 2
+    text: Exploring JSON-Like Data with Dynamic Attributes
+    role: section
+    classified_by: model
+  - line: 218
+    level: 2
+    text: The Invalid Attribute Name Problem
+    role: section
+    classified_by: model
+  - line: 283
+    level: 2
+    text: Flexible Object Creation with \_\_new\_\_
+    role: section
+    classified_by: model
+  - line: 292
+    level: 1
+    text: pseudo-code for object construction
+    role: embedded
+    classified_by: model
+  - line: 298
+    level: 1
+    text: the following statements are roughly equivalent
+    role: embedded
+    classified_by: model
+  - line: 314
+    level: 2
+    text: '*using attribute notation """* **def** \_\_new\_\_(cls, arg): **if** isinstance(arg, abc.Mapping): **return** super().\_\_new\_\_(cls) **elif** isinstance(arg, abc.MutableSequence): **return** [cls(item) **for** item **in** arg] **else**: **return** arg **def** \_\_init\_\_(self, mapping): self.\_\_data = {} **for** key, value **in** mapping.items(): **if** keyword.iskeyword(key): key += ''\_'''
+    role: embedded
+    classified_by: model
+  - line: 347
+    level: 2
+    text: Computed Properties
+    role: section
+    classified_by: model
+  - line: 349
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 372
+    level: 2
+    text: Example 23-7.
+    role: embedded
+    classified_by: rule:caption
+  - line: 396
+    level: 2
+    text: 'Step 1: Data-driven Attribute Creation'
+    role: section
+    classified_by: model
+  - line: 461
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 467
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 474
+    level: 2
+    text: 'Step 2: Property to Retrieve a Linked Record'
+    role: section
+    classified_by: model
+  - line: 483
+    level: 2
+    text: Example 23-10. Extract from the doctests of schedule\_v2.py
+    role: embedded
+    classified_by: rule:caption
+  - line: 536
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 543
+    level: 2
+    text: 'Example 23-12. schedule\_v2.py: the Event class'
+    role: embedded
+    classified_by: rule:caption
+  - line: 565
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 574
+    level: 2
+    text: 'Example 23-13. schedule\_v2.py: the load function'
+    role: embedded
+    classified_by: rule:caption
+  - line: 610
+    level: 2
+    text: 'Step 3: Property Overriding an Existing Attribute'
+    role: section
+    classified_by: model
+  - line: 630
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 637
+    level: 2
+    text: 'Step 4: Bespoke Property Cache'
+    role: section
+    classified_by: rule:cited
+  - line: 670
+    level: 1
+    text: 15 lines omitted...
+    role: embedded
+    classified_by: model
+  - line: 686
+    level: 2
+    text: 'Step 5: Caching Properties with functools'
+    role: section
+    classified_by: model
+  - line: 713
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 726
+    level: 2
+    text: Example 23-18. Stacking @property on @cache.
+    role: embedded
+    classified_by: rule:caption
+  - line: 752
+    level: 2
+    text: Using a Property for Attribute Validation
+    role: section
+    classified_by: model
+  - line: 757
+    level: 2
+    text: 'LineItem Take #1: Class for an Item in an Order'
+    role: section
+    classified_by: model
+  - line: 763
+    level: 3
+    text: '**class LineItem**:'
+    role: embedded
+    classified_by: model
+  - line: 777
+    level: 2
+    text: Example 23-20. A negative weight results in a negative subtotal
+    role: embedded
+    classified_by: rule:caption
+  - line: 801
+    level: 2
+    text: 'LineItem Take #2: A Validating Property'
+    role: section
+    classified_by: model
+  - line: 854
+    level: 2
+    text: A Proper Look at Properties
+    role: section
+    classified_by: model
+  - line: 872
+    level: 3
+    text: '**class LineItem**:'
+    role: embedded
+    classified_by: model
+  - line: 900
+    level: 2
+    text: Properties Override Instance Attributes
+    role: section
+    classified_by: model
+  - line: 1001
+    level: 2
+    text: Property Documentation
+    role: section
+    classified_by: model
+  - line: 1019
+    level: 2
+    text: Example 23-26. Documentation for a property
+    role: embedded
+    classified_by: rule:caption
+  - line: 1039
+    level: 2
+    text: Coding a Property Factory
+    role: section
+    classified_by: model
+  - line: 1071
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 1105
+    level: 2
+    text: 'Example 23-29. bulkfood\_v2prop.py: the quantity property factory'
+    role: embedded
+    classified_by: rule:caption
+  - line: 1128
+    level: 2
+    text: Handling Attribute Deletion
+    role: section
+    classified_by: model
+  - line: 1195
+    level: 2
+    text: Essential Attributes and Functions for Attribute Handling
+    role: section
+    classified_by: model
+  - line: 1200
+    level: 2
+    text: Special Attributes that Affect Attribute Handling
+    role: section
+    classified_by: model
+  - line: 1224
+    level: 2
+    text: getattr(object, name[, default])
+    role: section
+    classified_by: model
+  - line: 1228
+    level: 2
+    text: hasattr(object, name)
+    role: section
+    classified_by: model
+  - line: 1232
+    level: 2
+    text: setattr(object, name, value)
+    role: section
+    classified_by: model
+  - line: 1236
+    level: 2
+    text: vars([object])
+    role: section
+    classified_by: model
+  - line: 1241
+    level: 2
+    text: Special Methods for Attribute Handling
+    role: section
+    classified_by: model
+  - line: 1259
+    level: 2
+    text: \_\_getattribute\_\_(self, name)
+    role: section
+    classified_by: model
+  - line: 1263
+    level: 2
+    text: \_\_setattr\_\_(self, name, value)
+    role: section
+    classified_by: model
+  - line: 1267
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 1274
+    level: 2
+    text: Chapter Summary
+    role: section
+    classified_by: model
+  - line: 1285
+    level: 2
+    text: Further Reading
+    role: section
+    classified_by: model
+  - line: 1295
+    level: 2
+    text: SOAPBOX
+    role: embedded
+    classified_by: model
+  - line: 1313
+    level: 1
+    text: rather than...
+    role: embedded
+    classified_by: model
+  - line: 1326
+    level: 2
+    text: \_\_new\_\_ Is Better Than new
+    role: section
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/031-chapter-24-attribute-descriptors.md
+  chapter_sha256: df0054c2a5f135eb7c2471e9edc753daa309e95a1e3eb00a5869d31af89e3340
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 24: Attribute Descriptors'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A NOTE FOR EARLY RELEASE READERS
+    role: embedded
+    classified_by: model
+  - line: 29
+    level: 2
+    text: What's new in this chapter
+    role: section
+    classified_by: model
+  - line: 38
+    level: 2
+    text: 'Descriptor Example: Attribute Validation'
+    role: section
+    classified_by: model
+  - line: 47
+    level: 2
+    text: 'LineItem Take #3: A Simple Descriptor'
+    role: section
+    classified_by: model
+  - line: 65
+    level: 2
+    text: Managed class
+    role: embedded
+    classified_by: model
+  - line: 69
+    level: 2
+    text: Descriptor instance
+    role: embedded
+    classified_by: model
+  - line: 73
+    level: 2
+    text: Managed instance
+    role: embedded
+    classified_by: model
+  - line: 77
+    level: 2
+    text: Storage attribute
+    role: embedded
+    classified_by: model
+  - line: 81
+    level: 2
+    text: Managed attribute
+    role: embedded
+    classified_by: model
+  - line: 92
+    level: 2
+    text: INTRODUCING MILLS & GIZMOS NOTATION
+    role: section
+    classified_by: model
+  - line: 186
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 219
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 224
+    level: 2
+    text: 'LineItem Take #4: Automatic Storage Attribute Names'
+    role: section
+    classified_by: model
+  - line: 239
+    level: 3
+    text: '**class Quantity**:'
+    role: embedded
+    classified_by: model
+  - line: 296
+    level: 2
+    text: 'LineItem Take #5: A New Descriptor Type'
+    role: section
+    classified_by: model
+  - line: 379
+    level: 2
+    text: Overriding Versus Non-Overriding Descriptors
+    role: section
+    classified_by: model
+  - line: 387
+    level: 2
+    text: '**TIP** Every \_\_get\_\_ and \_\_set\_\_ method in Example 24-8 calls print\_args so their invocations are displayed in a readable way. Understanding print\_args and the auxiliary functions cls\_name and display is not important, so don''t get distracted by them.'
+    role: embedded
+    classified_by: rule:callout
+  - line: 390
+    level: 2
+    text: 'Example 24-8. descriptorkinds.py: simple classes for studying descriptor overriding behaviors'
+    role: embedded
+    classified_by: rule:caption
+  - line: 393
+    level: 3
+    text: 'auxiliary functions for display only ###'
+    role: embedded
+    classified_by: model
+  - line: 411
+    level: 3
+    text: 'essential classes for this example ###'
+    role: embedded
+    classified_by: model
+  - line: 447
+    level: 2
+    text: Overriding Descriptors
+    role: section
+    classified_by: model
+  - line: 451
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 491
+    level: 2
+    text: Overriding Descriptor Without \_\_get\_\_
+    role: section
+    classified_by: model
+  - line: 531
+    level: 2
+    text: Non-overriding Descriptor
+    role: section
+    classified_by: model
+  - line: 568
+    level: 2
+    text: Overwriting a Descriptor in the Class
+    role: section
+    classified_by: model
+  - line: 589
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 596
+    level: 2
+    text: Methods Are Descriptors
+    role: section
+    classified_by: model
+  - line: 601
+    level: 2
+    text: Example 24-13. A method is a non-overriding descriptor
+    role: embedded
+    classified_by: rule:caption
+  - line: 638
+    level: 2
+    text: Example 24-15. Experiments with a method
+    role: embedded
+    classified_by: rule:caption
+  - line: 685
+    level: 2
+    text: Descriptor Usage Tips
+    role: section
+    classified_by: model
+  - line: 708
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 715
+    level: 2
+    text: Descriptor docstring and Overriding Deletion
+    role: section
+    classified_by: model
+  - line: 727
+    level: 2
+    text: Chapter Summary
+    role: section
+    classified_by: model
+  - line: 741
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 746
+    level: 2
+    text: Further Reading
+    role: section
+    classified_by: model
+  - line: 752
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 760
+    level: 2
+    text: SOAPBOX
+    role: embedded
+    classified_by: model
+  - line: 762
+    level: 2
+    text: The Design of self
+    role: embedded
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/032-chapter-25-class-metaprogramming.md
+  chapter_sha256: e1885fb0becf5500774814f2262e6ce6b16ef661eae647336322743e799b239b
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 25: Class Metaprogramming'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A NOTE FOR EARLY RELEASE READERS
+    role: embedded
+    classified_by: model
+  - line: 23
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 32
+    level: 2
+    text: What's new in this chapter
+    role: section
+    classified_by: model
+  - line: 40
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 47
+    level: 2
+    text: Classes as Objects
+    role: section
+    classified_by: model
+  - line: 71
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 78
+    level: 2
+    text: 'type: The Built-in Class Factory'
+    role: section
+    classified_by: model
+  - line: 104
+    level: 2
+    text: name
+    role: embedded
+    classified_by: model
+  - line: 108
+    level: 2
+    text: bases
+    role: embedded
+    classified_by: model
+  - line: 112
+    level: 2
+    text: dict
+    role: embedded
+    classified_by: model
+  - line: 116
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 144
+    level: 2
+    text: A Class Factory Function
+    role: section
+    classified_by: model
+  - line: 171
+    level: 2
+    text: Example 25-1. Testing record\_factory, a simple class factory
+    role: embedded
+    classified_by: rule:caption
+  - line: 200
+    level: 2
+    text: 'Example 25-2. record\_factory.py: a simple class factory'
+    role: embedded
+    classified_by: rule:caption
+  - line: 254
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 261
+    level: 2
+    text: Introducing \_\_init\_subclass\_\_
+    role: section
+    classified_by: model
+  - line: 275
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 336
+    level: 2
+    text: CHECKED SUBCLASSES AND STATIC TYPE CHECKING
+    role: section
+    classified_by: model
+  - line: 392
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 435
+    level: 2
+    text: \_\_INIT\_SUBCLASS\_\_ IS NOT A TYPICAL CLASS METHOD
+    role: section
+    classified_by: model
+  - line: 497
+    level: 2
+    text: Enhancing Classes with a Class Decorator
+    role: section
+    classified_by: model
+  - line: 610
+    level: 2
+    text: 'What Happens When: Import Time Versus Runtime'
+    role: section
+    classified_by: model
+  - line: 631
+    level: 2
+    text: Evaluation Time Experiments
+    role: section
+    classified_by: model
+  - line: 635
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 676
+    level: 2
+    text: 'Example 25-11. builderlib.py: bottom of the module'
+    role: embedded
+    classified_by: rule:caption
+  - line: 751
+    level: 2
+    text: Example 25-13. Console experiment with evaldemo.py.
+    role: embedded
+    classified_by: rule:caption
+  - line: 759
+    level: 1
+    text: evaldemo module start
+    role: embedded
+    classified_by: model
+  - line: 763
+    level: 1
+    text: Klass body
+    role: embedded
+    classified_by: model
+  - line: 769
+    level: 1
+    text: evaldemo module end
+    role: embedded
+    classified_by: model
+  - line: 785
+    level: 2
+    text: Example 25-14. Running evaldemo.py as a program.
+    role: embedded
+    classified_by: rule:caption
+  - line: 792
+    level: 1
+    text: Klass.__init__(<Klass instance>)
+    role: embedded
+    classified_by: model
+  - line: 796
+    level: 1
+    text: evaldemo module end
+    role: embedded
+    classified_by: model
+  - line: 808
+    level: 2
+    text: Metaclasses 101
+    role: section
+    classified_by: model
+  - line: 836
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 859
+    level: 2
+    text: How a Metaclass Customizes a Class
+    role: section
+    classified_by: model
+  - line: 886
+    level: 2
+    text: bases
+    role: embedded
+    classified_by: model
+  - line: 906
+    level: 2
+    text: A Nice Metaclass Example
+    role: section
+    classified_by: model
+  - line: 1005
+    level: 2
+    text: Metaclass Evaluation Time Experiment
+    role: section
+    classified_by: model
+  - line: 1010
+    level: 2
+    text: 'Example 25-16. evaldemo\_meta.py: experimenting with a metaclass.'
+    role: embedded
+    classified_by: rule:caption
+  - line: 1042
+    level: 2
+    text: WARNING
+    role: embedded
+    classified_by: rule:callout
+  - line: 1066
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 1074
+    level: 2
+    text: 'Example 25-18. metalib.py: the MetaKlass'
+    role: embedded
+    classified_by: rule:caption
+  - line: 1127
+    level: 2
+    text: Example 25-19. Console experiment with evaldemo\_meta.py.
+    role: embedded
+    classified_by: rule:caption
+  - line: 1138
+    level: 1
+    text: evaldemo_meta module start
+    role: embedded
+    classified_by: model
+  - line: 1145
+    level: 1
+    text: Klass body
+    role: embedded
+    classified_by: model
+  - line: 1163
+    level: 1
+    text: evaldemo_meta module end
+    role: embedded
+    classified_by: model
+  - line: 1179
+    level: 2
+    text: Example 25-20. Running evaldemo\_meta.py as a program.
+    role: embedded
+    classified_by: rule:caption
+  - line: 1186
+    level: 1
+    text: Klass.__init__(<Klass instance>)
+    role: embedded
+    classified_by: model
+  - line: 1191
+    level: 1
+    text: evaldemo_meta module end
+    role: embedded
+    classified_by: model
+  - line: 1200
+    level: 2
+    text: A Metaclass solution for Checked
+    role: section
+    classified_by: model
+  - line: 1204
+    level: 2
+    text: A BIT OF STORYTELLING
+    role: embedded
+    classified_by: model
+  - line: 1363
+    level: 2
+    text: Metaclasses in the Real world
+    role: section
+    classified_by: model
+  - line: 1368
+    level: 2
+    text: Modern Features Simplify or Replace Metaclasses
+    role: section
+    classified_by: rule:cited
+  - line: 1372
+    level: 2
+    text: Class decorators
+    role: embedded
+    classified_by: model
+  - line: 1383
+    level: 2
+    text: Built-in dict preserving key insertion order
+    role: embedded
+    classified_by: model
+  - line: 1392
+    level: 2
+    text: Metaclasses are Stable Language Features
+    role: embedded
+    classified_by: model
+  - line: 1401
+    level: 2
+    text: A Class Can Only Have One Metaclass
+    role: embedded
+    classified_by: model
+  - line: 1427
+    level: 2
+    text: TIP
+    role: embedded
+    classified_by: rule:callout
+  - line: 1432
+    level: 2
+    text: Metaclasses Should be Implementation Details
+    role: section
+    classified_by: rule:cited
+  - line: 1445
+    level: 2
+    text: A Metaclass Hack with \_\_prepare\_\_
+    role: section
+    classified_by: model
+  - line: 1504
+    level: 2
+    text: 'Here are some ideas:'
+    role: embedded
+    classified_by: model
+  - line: 1510
+    level: 2
+    text: Enjoy!
+    role: embedded
+    classified_by: model
+  - line: 1512
+    level: 2
+    text: NOTE
+    role: embedded
+    classified_by: rule:callout
+  - line: 1517
+    level: 2
+    text: Wrapping up
+    role: section
+    classified_by: model
+  - line: 1544
+    level: 2
+    text: Chapter Summary
+    role: section
+    classified_by: model
+  - line: 1560
+    level: 2
+    text: Further Reading
+    role: section
+    classified_by: model
+  - line: 1576
+    level: 2
+    text: This book contributed to the design for metaclasses in Python 2.2
+    role: embedded
+    classified_by: model
+  - line: 1582
+    level: 2
+    text: SOAPBOX
+    role: embedded
+    classified_by: model
+- path: books/fluent-python-2nd-edition-z-lib-org/chapters/033-about-the-author.md
+  chapter_sha256: 1ca192a74f1099b96a79b4a0d133ae6bb0a54ca1b286dd7f19116d174be245d2
+  headings:
+  - line: 1
+    level: 1
+    text: About the Author
+    role: section
+    classified_by: rule:chapter-title

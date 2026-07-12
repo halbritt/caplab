@@ -1,0 +1,1594 @@
+schema_version: section-map/1
+book: dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725
+chapters:
+- path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/001-software-design-x-rays.md
+  chapter_sha256: 6fb2e34b8f015c6b2aa4278950b5034253a7560f6ad841674e8ff7f785a75a6d
+  headings:
+  - line: 3
+    level: 1
+    text: Software Design X-Rays
+    role: section
+    classified_by: rule:chapter-title
+  - line: 9
+    level: 2
+    text: Early praise for Software Design X-Rays
+    role: embedded
+    classified_by: model
+  - line: 13
+    level: 3
+    text: ➤ John Lewis
+    role: embedded
+    classified_by: model
+  - line: 19
+    level: 4
+    text: ➤ Jimmy Nilsson
+    role: embedded
+    classified_by: model
+  - line: 25
+    level: 4
+    text: ➤ Giovanni Asproni
+    role: embedded
+    classified_by: model
+  - line: 31
+    level: 4
+    text: ➤ Ivan Houston
+    role: embedded
+    classified_by: model
+  - line: 37
+    level: 4
+    text: ➤ Markus Harrer
+    role: embedded
+    classified_by: model
+  - line: 43
+    level: 4
+    text: ➤ Michael Hunger
+    role: embedded
+    classified_by: model
+  - line: 49
+    level: 4
+    text: ➤ Lauri Apple
+    role: embedded
+    classified_by: model
+  - line: 55
+    level: 4
+    text: ➤ Vicenç García Altés
+    role: embedded
+    classified_by: model
+  - line: 59
+    level: 2
+    text: Software Design X-Rays
+    role: section
+    classified_by: model
+- path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/002-contents.md
+  chapter_sha256: 78d5c89768b27217559c764e2c3965a77028ed6c7c66eb8a95f82dc9b3d59f60
+  headings:
+  - line: 1
+    level: 1
+    text: Contents
+    role: section
+    classified_by: rule:chapter-title
+- path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/003-acknowledgments.md
+  chapter_sha256: de6c19c7c812880427054a80453bf677bcc840b23e98c040d90c321343a91f02
+  headings:
+  - line: 1
+    level: 1
+    text: Acknowledgments
+    role: section
+    classified_by: rule:chapter-title
+- path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/004-the-world-of-behavioral-code-analysis.md
+  chapter_sha256: 6842bf4222992e5610496acf3b3864aff926aa66e73e3ac73564fb7af17dea11
+  headings:
+  - line: 2
+    level: 1
+    text: The World of Behavioral Code Analysis
+    role: section
+    classified_by: rule:chapter-title
+  - line: 12
+    level: 2
+    text: Why You Should Read This Book
+    role: section
+    classified_by: model
+  - line: 31
+    level: 2
+    text: Who Is This Book For?
+    role: section
+    classified_by: model
+  - line: 42
+    level: 2
+    text: How Should You Read This Book?
+    role: section
+    classified_by: model
+  - line: 54
+    level: 3
+    text: Access the Exercise URLs Online
+    role: embedded
+    classified_by: model
+  - line: 64
+    level: 3
+    text: To Readers of Your Code as a Crime Scene
+    role: embedded
+    classified_by: model
+  - line: 70
+    level: 4
+    text: 'Joe asks:'
+    role: embedded
+    classified_by: model
+  - line: 72
+    level: 2
+    text: Who Am I?
+    role: section
+    classified_by: model
+  - line: 77
+    level: 2
+    text: How Do I Get Behavioral Data for My Code?
+    role: section
+    classified_by: model
+  - line: 95
+    level: 3
+    text: Time Stands Still
+    role: embedded
+    classified_by: model
+  - line: 113
+    level: 2
+    text: Online Resources
+    role: section
+    classified_by: model
+  - line: 119
+    level: 3
+    text: '@AdamTornhill'
+    role: embedded
+    classified_by: model
+- path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/005-part-i-prioritize-and-react-to-technical-debt.md
+  chapter_sha256: 40b209beead3a15a90078ab8ac15329c0e233fbf657ce4e2692f87b2f3cdd1a1
+  headings:
+  - line: 1
+    level: 1
+    text: 'Part I: Prioritize and React to Technical Debt'
+    role: section
+    classified_by: rule:chapter-title
+- path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/006-chapter-1-why-technical-debt-isn-t-technical.md
+  chapter_sha256: 75f84326008c9dba4d555fad85d3b30843c957cf7d0c305641301f2d80e4f19a
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 1: Why Technical Debt Isn''t Technical'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 8
+    level: 2
+    text: Questioning Technical Debt
+    role: section
+    classified_by: rule:toc
+  - line: 22
+    level: 3
+    text: Keep a Decision Log
+    role: embedded
+    classified_by: model
+  - line: 44
+    level: 4
+    text: Interest Rate Is a Function of Time
+    role: section
+    classified_by: rule:cited
+  - line: 85
+    level: 2
+    text: The Perils of Quantifying Technical Debt
+    role: section
+    classified_by: rule:toc
+  - line: 96
+    level: 3
+    text: Why We Mistake Organizational Problems for Technical Issues
+    role: embedded
+    classified_by: model
+  - line: 107
+    level: 2
+    text: Your Mental Models of Code
+    role: embedded
+    classified_by: model
+  - line: 119
+    level: 3
+    text: Readable Code Is Economical Code
+    role: embedded
+    classified_by: model
+  - line: 128
+    level: 4
+    text: Quality Suffers with Parallel Development
+    role: embedded
+    classified_by: model
+  - line: 140
+    level: 4
+    text: Make Knowledge Distribution a Strategic Investment
+    role: embedded
+    classified_by: model
+  - line: 146
+    level: 2
+    text: Mine Your Organization's Collective Intelligence
+    role: section
+    classified_by: rule:toc
+  - line: 158
+    level: 2
+    text: There's More to Code than Code
+    role: embedded
+    classified_by: model
+  - line: 186
+    level: 3
+    text: Complex Questions Require Context
+    role: embedded
+    classified_by: model
+  - line: 192
+    level: 2
+    text: Prioritize Improvements Guided by Data
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/007-chapter-2-identify-code-with-high-interest-rates.md
+  chapter_sha256: 2d632e4835b25f8cb51eed6939a1fac16a62af81289fa2ab91594c5b4f1a4a8c
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 2: Identify Code with High Interest Rates'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 10
+    level: 2
+    text: Measure Interest Rates
+    role: section
+    classified_by: rule:toc
+  - line: 32
+    level: 2
+    text: A Proxy for Interest Rate
+    role: embedded
+    classified_by: model
+  - line: 55
+    level: 2
+    text: The Effectiveness of Change Frequencies
+    role: embedded
+    classified_by: model
+  - line: 69
+    level: 2
+    text: Add a Language-Neutral Complexity Dimension
+    role: embedded
+    classified_by: model
+  - line: 81
+    level: 3
+    text: Calculate Lines of Code With cloc
+    role: embedded
+    classified_by: model
+  - line: 89
+    level: 2
+    text: Prioritize Technical Debt with Hotspots
+    role: section
+    classified_by: rule:toc
+  - line: 128
+    level: 2
+    text: Locate Your Top Hotspots
+    role: embedded
+    classified_by: model
+  - line: 134
+    level: 3
+    text: 'Joe asks:'
+    role: embedded
+    classified_by: model
+  - line: 136
+    level: 2
+    text: Are You Telling Me Code Quality Isn't Important?
+    role: embedded
+    classified_by: model
+  - line: 145
+    level: 2
+    text: Prioritize Hotspots in ASP.NET Core MVC
+    role: embedded
+    classified_by: model
+  - line: 161
+    level: 3
+    text: Use Hotspots to Improve, Not Judge
+    role: embedded
+    classified_by: model
+  - line: 171
+    level: 2
+    text: Evaluate Hotspots with Complexity Trends
+    role: section
+    classified_by: rule:toc
+  - line: 186
+    level: 3
+    text: What Is Complexity, Anyway?
+    role: embedded
+    classified_by: model
+  - line: 195
+    level: 2
+    text: Know the Biases in Complexity Trends
+    role: section
+    classified_by: rule:cited
+  - line: 203
+    level: 3
+    text: Calculate Complexity Trends with Python
+    role: embedded
+    classified_by: model
+  - line: 212
+    level: 2
+    text: Use X-Rays to Get Deep Insights into Code
+    role: section
+    classified_by: rule:toc
+  - line: 253
+    level: 3
+    text: Inspect the Code
+    role: embedded
+    classified_by: model
+  - line: 265
+    level: 4
+    text: Refactor Control Coupling
+    role: embedded
+    classified_by: model
+  - line: 279
+    level: 4
+    text: Use the Setup Heuristic
+    role: embedded
+    classified_by: model
+  - line: 285
+    level: 2
+    text: Escape the Technical-Debt Trap
+    role: section
+    classified_by: rule:toc
+  - line: 296
+    level: 3
+    text: Work with Untouchable Code
+    role: embedded
+    classified_by: model
+  - line: 305
+    level: 2
+    text: There's More to Hotspots
+    role: embedded
+    classified_by: model
+  - line: 315
+    level: 2
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+  - line: 321
+    level: 2
+    text: Find Refactoring Candidates in Docker
+    role: embedded
+    classified_by: model
+  - line: 336
+    level: 3
+    text: Follow Up on Improvements to Rails
+    role: section
+    classified_by: rule:cited
+- path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/008-chapter-3-coupling-in-time-a-heuristic-for-the-concept-of-surprise.md
+  chapter_sha256: a083f569b344969c297c2f45ef08f8e59c7196982ecbd263a3180f40ce31c39f
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 3: Coupling in Time: A Heuristic for the Concept of Surprise'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 9
+    level: 2
+    text: Uncover Expensive Change Patterns
+    role: section
+    classified_by: rule:toc
+  - line: 20
+    level: 3
+    text: What Is Change Coupling?
+    role: section
+    classified_by: rule:cited
+  - line: 36
+    level: 4
+    text: Change Coupling Both Is and Isn't Temporal Coupling
+    role: embedded
+    classified_by: model
+  - line: 46
+    level: 2
+    text: Detect Cochanging Files
+    role: section
+    classified_by: rule:toc
+  - line: 82
+    level: 3
+    text: Minimize Your Investigative Efforts
+    role: embedded
+    classified_by: model
+  - line: 90
+    level: 4
+    text: Calculate Change Coupling from the Command Line
+    role: embedded
+    classified_by: model
+  - line: 134
+    level: 2
+    text: There Is No Such Thing as Just Test Code
+    role: embedded
+    classified_by: model
+  - line: 146
+    level: 2
+    text: The Dirty Secret of Copy-Paste
+    role: section
+    classified_by: rule:toc
+  - line: 168
+    level: 3
+    text: Clone Detection 101
+    role: embedded
+    classified_by: model
+  - line: 192
+    level: 2
+    text: The Power of Language-Neutral Analyses
+    role: section
+    classified_by: rule:toc
+  - line: 210
+    level: 2
+    text: Learn More About Change Coupling
+    role: embedded
+    classified_by: model
+  - line: 220
+    level: 2
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+  - line: 224
+    level: 2
+    text: Learn from the Change Patterns in a Codebase
+    role: embedded
+    classified_by: model
+  - line: 239
+    level: 3
+    text: Detect Omissions with Internal Change Coupling
+    role: embedded
+    classified_by: model
+  - line: 255
+    level: 3
+    text: Kill the Clones
+    role: embedded
+    classified_by: model
+- path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/009-chapter-4-pay-off-your-technical-debt.md
+  chapter_sha256: 832e4cd9b3b325bb68b2e26823789e8b88c40cd725fa2dbba40ad948d0fc91f3
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 4: Pay Off Your Technical Debt'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 10
+    level: 2
+    text: Follow the Principle of Proximity
+    role: section
+    classified_by: rule:toc
+  - line: 56
+    level: 3
+    text: Use Your Perception
+    role: embedded
+    classified_by: model
+  - line: 82
+    level: 2
+    text: Automate Proximity Recommendations
+    role: embedded
+    classified_by: model
+  - line: 96
+    level: 2
+    text: 'Joe asks:'
+    role: embedded
+    classified_by: model
+  - line: 103
+    level: 2
+    text: Refactor Congested Code with the Splinter Pattern
+    role: section
+    classified_by: rule:toc
+  - line: 124
+    level: 3
+    text: Parallel Development Is at Conflict with Refactoring
+    role: embedded
+    classified_by: model
+  - line: 130
+    level: 2
+    text: Split a Hotspot File Along Its Responsibilities
+    role: section
+    classified_by: rule:cited
+  - line: 155
+    level: 3
+    text: Use Static Analysis to Guide Code Explorations
+    role: embedded
+    classified_by: model
+  - line: 162
+    level: 2
+    text: Separate Code with Mixed Content
+    role: embedded
+    classified_by: model
+  - line: 175
+    level: 2
+    text: Signal Incompleteness with Names
+    role: section
+    classified_by: rule:cited
+  - line: 191
+    level: 2
+    text: Know the Consequences of Splinters
+    role: section
+    classified_by: rule:cited
+  - line: 210
+    level: 2
+    text: Build Temporary Tests as a Safety Net
+    role: section
+    classified_by: rule:toc
+  - line: 225
+    level: 3
+    text: Introduce Provisional End-to-End Tests
+    role: embedded
+    classified_by: model
+  - line: 237
+    level: 4
+    text: Maintainable Tests Don't Depend on Details
+    role: embedded
+    classified_by: model
+  - line: 244
+    level: 2
+    text: Reduce Debt by Deleting Cost Sinks
+    role: embedded
+    classified_by: model
+  - line: 264
+    level: 2
+    text: Turn Hotspot Methods into Brain-Friendly Chunks
+    role: section
+    classified_by: rule:toc
+  - line: 313
+    level: 2
+    text: The Curse of a Successful System
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/010-chapter-5-the-principles-of-code-age.md
+  chapter_sha256: 76721df334c561cc3ecb02c2e4e31bf04ee5eb2613863ebf5df75fcad5830482
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 5: The Principles of Code Age'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 8
+    level: 2
+    text: Stabilize Code by Age
+    role: section
+    classified_by: rule:toc
+  - line: 30
+    level: 3
+    text: The Business Domain Is Above Age
+    role: embedded
+    classified_by: model
+  - line: 36
+    level: 3
+    text: Calculate the Age of Code
+    role: embedded
+    classified_by: model
+  - line: 81
+    level: 4
+    text: Exclude Autogenerated Content
+    role: embedded
+    classified_by: model
+  - line: 88
+    level: 2
+    text: The Three Generations of Code
+    role: section
+    classified_by: rule:toc
+  - line: 111
+    level: 2
+    text: Your Best Bug Fix Is Time
+    role: embedded
+    classified_by: model
+  - line: 121
+    level: 3
+    text: Test Cases Don't Age Well
+    role: embedded
+    classified_by: model
+  - line: 129
+    level: 2
+    text: Refactor Toward Code of Similar Age
+    role: embedded
+    classified_by: model
+  - line: 159
+    level: 3
+    text: Domain Knowledge Drives Refactorings
+    role: embedded
+    classified_by: model
+  - line: 182
+    level: 2
+    text: Refactor Your Package Structure
+    role: section
+    classified_by: rule:toc
+  - line: 240
+    level: 3
+    text: Dead Code Is Stable Code
+    role: section
+    classified_by: rule:cited
+  - line: 247
+    level: 2
+    text: Scale from Files to Systems
+    role: section
+    classified_by: rule:toc
+  - line: 260
+    level: 2
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+  - line: 264
+    level: 3
+    text: Cores All the Way Down
+    role: embedded
+    classified_by: model
+  - line: 281
+    level: 4
+    text: 'Deep Mining: The Median Age of Code'
+    role: embedded
+    classified_by: model
+- path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/011-part-ii-work-with-large-codebases-and-organizations.md
+  chapter_sha256: cbf5ffe5c5af3de0556a207f26030f026865d07dad8305a27c4013449c443fe1
+  headings:
+  - line: 1
+    level: 1
+    text: 'Part II: Work with Large Codebases and Organizations'
+    role: section
+    classified_by: rule:chapter-title
+- path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/012-chapter-6-spot-your-system-s-tipping-point-is-software-too-hard-divide-and-conquer-with-architectural-hotspots-analyze-subsystems-fight-the-normalization-of-deviance-toward-team-oriented-measures-exercises.md
+  chapter_sha256: cc523f6fe024bfe96d68ecd7731955848c45eeade796f82ddb62e22c05e26268
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 6: Spot Your System''s Tipping Point Is Software Too Hard? Divide and Conquer with Architectural Hotspots Analyze Subsystems Fight the Normalization of Deviance Toward Team-Oriented Measures Exercises'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 3
+    level: 2
+    text: Spot Your System's Tipping Point
+    role: section
+    classified_by: rule:toc
+  - line: 12
+    level: 2
+    text: Is Software Too Hard?
+    role: section
+    classified_by: rule:toc
+  - line: 23
+    level: 2
+    text: Societies within a Software System
+    role: embedded
+    classified_by: model
+  - line: 36
+    level: 3
+    text: Raise the Abstraction Level
+    role: embedded
+    classified_by: model
+  - line: 52
+    level: 2
+    text: Divide and Conquer with Architectural Hotspots
+    role: section
+    classified_by: rule:toc
+  - line: 70
+    level: 2
+    text: A Language for Specifying Architectural Boundaries
+    role: embedded
+    classified_by: model
+  - line: 122
+    level: 2
+    text: Summarize Change Frequencies by Component
+    role: embedded
+    classified_by: model
+  - line: 139
+    level: 2
+    text: Analyze Subsystems
+    role: section
+    classified_by: rule:toc
+  - line: 172
+    level: 2
+    text: Prioritize Function Hotspots and Code Clones
+    role: embedded
+    classified_by: model
+  - line: 205
+    level: 3
+    text: X-Ray Hotspots with the Git Log
+    role: embedded
+    classified_by: model
+  - line: 210
+    level: 3
+    text: Look for Quick Wins
+    role: embedded
+    classified_by: model
+  - line: 228
+    level: 2
+    text: Ask the Right Questions
+    role: embedded
+    classified_by: model
+  - line: 240
+    level: 2
+    text: Rinse and Repeat
+    role: embedded
+    classified_by: model
+  - line: 254
+    level: 2
+    text: Fight the Normalization of Deviance
+    role: section
+    classified_by: rule:toc
+  - line: 273
+    level: 3
+    text: Get a Whistleblower
+    role: embedded
+    classified_by: model
+  - line: 300
+    level: 4
+    text: React to Hotspots Today
+    role: embedded
+    classified_by: model
+  - line: 307
+    level: 4
+    text: Communicate with Nontechnical Managers
+    role: embedded
+    classified_by: model
+  - line: 320
+    level: 2
+    text: Toward Team-Oriented Measures
+    role: section
+    classified_by: rule:toc
+  - line: 339
+    level: 2
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+  - line: 343
+    level: 3
+    text: Prioritize Hotspots in CPU Architectures
+    role: embedded
+    classified_by: model
+  - line: 359
+    level: 4
+    text: Get a Quick Win
+    role: embedded
+    classified_by: model
+  - line: 372
+    level: 2
+    text: Supervise Your Unit Test Practices
+    role: embedded
+    classified_by: model
+- path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/013-chapter-7-beyond-conway-s-law.md
+  chapter_sha256: 1021fc694f9546dda847811703ebb626e9023ea1a4b5168cc84e8a9cfcf4db36
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 7: Beyond Conway''s Law'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 9
+    level: 2
+    text: Software Architecture Is About Making Choices
+    role: section
+    classified_by: rule:toc
+  - line: 16
+    level: 2
+    text: Conway's Law and Its Impact on Modularity
+    role: embedded
+    classified_by: model
+  - line: 37
+    level: 2
+    text: Measure Coordination Needs
+    role: section
+    classified_by: rule:toc
+  - line: 45
+    level: 3
+    text: Parallel Development in Linux
+    role: embedded
+    classified_by: model
+  - line: 49
+    level: 4
+    text: Out-of-the-Box Social Analyses
+    role: embedded
+    classified_by: model
+  - line: 91
+    level: 4
+    text: Rank Code by Diffusion
+    role: embedded
+    classified_by: model
+  - line: 115
+    level: 4
+    text: React to Developer Fragmentation
+    role: embedded
+    classified_by: model
+  - line: 131
+    level: 4
+    text: Watch Out for Authors with Multiple Aliases
+    role: section
+    classified_by: rule:cited
+  - line: 141
+    level: 2
+    text: Code Ownership and Diffusion of Responsibility
+    role: section
+    classified_by: rule:toc
+  - line: 156
+    level: 2
+    text: Immutable Design
+    role: embedded
+    classified_by: model
+  - line: 166
+    level: 2
+    text: Code Ownership Means Responsibility
+    role: embedded
+    classified_by: model
+  - line: 179
+    level: 2
+    text: Provide Broad Knowledge Boundaries
+    role: embedded
+    classified_by: model
+  - line: 194
+    level: 3
+    text: Specify a Start Date with Organizational Significance
+    role: embedded
+    classified_by: model
+  - line: 204
+    level: 2
+    text: Analyze Operational Team Boundaries
+    role: section
+    classified_by: rule:toc
+  - line: 214
+    level: 3
+    text: Let Git Do the Team Mapping
+    role: embedded
+    classified_by: model
+  - line: 233
+    level: 2
+    text: Introduce New Teams to Take on Shared Responsibilities
+    role: embedded
+    classified_by: model
+  - line: 264
+    level: 2
+    text: 'Social Groups: The Flip Side to Conway''s Law'
+    role: section
+    classified_by: rule:toc
+  - line: 274
+    level: 3
+    text: Motivation Losses in Teams
+    role: embedded
+    classified_by: model
+  - line: 305
+    level: 2
+    text: Don't Turn Knowledge Maps into Performance Evaluations
+    role: embedded
+    classified_by: model
+  - line: 312
+    level: 3
+    text: 'Us and Them: The Perils of Interteam Conflicts'
+    role: embedded
+    classified_by: model
+  - line: 331
+    level: 2
+    text: Coffee as an Organizational Tool
+    role: embedded
+    classified_by: model
+  - line: 337
+    level: 2
+    text: Combine Social and Technical Information
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/014-chapter-8-toward-modular-monoliths-through-the-social-view-of-code.md
+  chapter_sha256: c24ef9934bfbc76d7b13aabf3bb96b7ffcd80f0b2cc78c377507f81698b0f795
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 8: Toward Modular Monoliths through the Social View of Code'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 9
+    level: 2
+    text: Dodge the Silver Bullet
+    role: section
+    classified_by: rule:toc
+  - line: 22
+    level: 2
+    text: The Trade-Off Between Architectural Refinements and Replacement Systems
+    role: section
+    classified_by: rule:cited
+  - line: 38
+    level: 3
+    text: 'Joe asks:'
+    role: embedded
+    classified_by: model
+  - line: 40
+    level: 2
+    text: Should We Really Port Every Single Feature?
+    role: embedded
+    classified_by: model
+  - line: 52
+    level: 2
+    text: Layered Architectures and the Cost of Consistency
+    role: section
+    classified_by: rule:toc
+  - line: 60
+    level: 2
+    text: Change Patterns in Layered Architectures
+    role: embedded
+    classified_by: model
+  - line: 86
+    level: 3
+    text: A Separation of Concerns That Concern
+    role: embedded
+    classified_by: model
+  - line: 102
+    level: 4
+    text: Optimize for the Ordinary
+    role: embedded
+    classified_by: model
+  - line: 112
+    level: 2
+    text: 'Monolithic Alternatives: Use Case and Feature-Centric'
+    role: section
+    classified_by: rule:toc
+  - line: 119
+    level: 2
+    text: Package by Components and Features
+    role: embedded
+    classified_by: model
+  - line: 139
+    level: 3
+    text: Use the Deletion Test
+    role: embedded
+    classified_by: model
+  - line: 157
+    level: 2
+    text: Discover Bounded Contexts Through Change Patterns
+    role: section
+    classified_by: rule:toc
+  - line: 172
+    level: 2
+    text: Look for Clusters of Cochanging Files
+    role: embedded
+    classified_by: model
+  - line: 210
+    level: 3
+    text: 'Breaking Up Monoliths: The Sequel'
+    role: embedded
+    classified_by: model
+  - line: 220
+    level: 2
+    text: The Perils of Feature Teams
+    role: section
+    classified_by: rule:toc
+  - line: 234
+    level: 3
+    text: The Big Win Is in the Problem Domain
+    role: section
+    classified_by: rule:cited
+  - line: 245
+    level: 2
+    text: Build Team Knowledge Maps
+    role: embedded
+    classified_by: model
+  - line: 266
+    level: 3
+    text: 'Joe asks:'
+    role: embedded
+    classified_by: model
+  - line: 268
+    level: 2
+    text: Why Can't I Get the Amount of Modified Code?
+    role: embedded
+    classified_by: model
+  - line: 276
+    level: 2
+    text: Not All Teams Are Equal
+    role: embedded
+    classified_by: model
+  - line: 302
+    level: 2
+    text: Clean and Dirty Architectures
+    role: section
+    classified_by: rule:toc
+  - line: 316
+    level: 2
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+  - line: 320
+    level: 2
+    text: Detect Components Across Layers
+    role: embedded
+    classified_by: model
+  - line: 336
+    level: 3
+    text: Investigate Change Patterns in Component-Based Codebases
+    role: embedded
+    classified_by: model
+- path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/015-chapter-9-systems-of-systems-analyzing-multiple-repositories-and-microservices.md
+  chapter_sha256: 9594e13dd220ce2afd3c1e1a6370d494c653a27edefe5b82fd4de8a7ae02cfa5
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 9: Systems of Systems: Analyzing Multiple Repositories and Microservices'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 10
+    level: 2
+    text: Analyze Code in Multiple Repositories
+    role: section
+    classified_by: rule:toc
+  - line: 20
+    level: 3
+    text: 'Joe asks:'
+    role: embedded
+    classified_by: model
+  - line: 22
+    level: 2
+    text: How Big Should a Microservice Be?
+    role: section
+    classified_by: model
+  - line: 27
+    level: 2
+    text: Detect Services with Low Cohesion
+    role: section
+    classified_by: model
+  - line: 63
+    level: 3
+    text: Watch Out for Behavioral Magnets
+    role: embedded
+    classified_by: model
+  - line: 74
+    level: 2
+    text: React to Your Findings
+    role: section
+    classified_by: model
+  - line: 84
+    level: 2
+    text: Compare Hotspots Across Repositories
+    role: section
+    classified_by: rule:toc
+  - line: 137
+    level: 3
+    text: Communicate Across the Organization
+    role: embedded
+    classified_by: model
+  - line: 146
+    level: 2
+    text: Track Change Patterns in Distributed Systems
+    role: section
+    classified_by: rule:toc
+  - line: 159
+    level: 3
+    text: Turn the Process on Distributed Monoliths
+    role: embedded
+    classified_by: model
+  - line: 163
+    level: 4
+    text: Use Logical Change Sets to Group Commits
+    role: section
+    classified_by: rule:cited
+  - line: 177
+    level: 2
+    text: Detect Implicit Dependencies Between Microservices
+    role: section
+    classified_by: model
+  - line: 194
+    level: 3
+    text: Balance Monolithic Uls
+    role: embedded
+    classified_by: model
+  - line: 232
+    level: 2
+    text: Detect Microservices Shotgun Surgery
+    role: section
+    classified_by: model
+  - line: 248
+    level: 3
+    text: Express Higher-Level Concepts than Services
+    role: embedded
+    classified_by: model
+  - line: 255
+    level: 2
+    text: Optimize for Sociotechnical Congruence Across Boundaries
+    role: section
+    classified_by: model
+  - line: 270
+    level: 2
+    text: Measure Technical Sprawl
+    role: section
+    classified_by: rule:toc
+  - line: 276
+    level: 2
+    text: Freedom Isn't Free
+    role: section
+    classified_by: model
+  - line: 297
+    level: 3
+    text: Turn Prototyping into Play
+    role: embedded
+    classified_by: model
+  - line: 302
+    level: 2
+    text: Measure Programming-Language Sprawl
+    role: section
+    classified_by: model
+  - line: 328
+    level: 2
+    text: Calculate a Technical Sprawl Index
+    role: section
+    classified_by: model
+  - line: 357
+    level: 3
+    text: When You Choose a Technology You Also Choose a Community
+    role: embedded
+    classified_by: model
+  - line: 363
+    level: 2
+    text: Distribution Won't Cure the Dependency Blues
+    role: section
+    classified_by: rule:toc
+  - line: 384
+    level: 2
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+  - line: 388
+    level: 2
+    text: Support Code Reading and Change Planning
+    role: embedded
+    classified_by: model
+  - line: 399
+    level: 2
+    text: Combine Technical and Social Views to Identify Communities
+    role: embedded
+    classified_by: model
+  - line: 414
+    level: 3
+    text: Analyze Your Infrastructure
+    role: embedded
+    classified_by: model
+- path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/016-chapter-10-an-extra-team-member-predictive-and-proactive-analyses.md
+  chapter_sha256: fe88dd040024db11948c4695645012def811098cc882b63b085c472600fc11e9
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 10: An Extra Team Member: Predictive and Proactive Analyses'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 11
+    level: 2
+    text: Detect Deviating Evolutionary Patterns
+    role: section
+    classified_by: rule:toc
+  - line: 46
+    level: 3
+    text: When Code Turns Bad
+    role: embedded
+    classified_by: model
+  - line: 67
+    level: 2
+    text: Identify Steep Increases in Complexity
+    role: section
+    classified_by: model
+  - line: 83
+    level: 3
+    text: 'Joe asks:'
+    role: embedded
+    classified_by: model
+  - line: 85
+    level: 2
+    text: Wouldn't an Absolute and Universal Threshold Be Better?
+    role: section
+    classified_by: model
+  - line: 106
+    level: 3
+    text: Integrate Complexity Warnings into Your Workflow
+    role: embedded
+    classified_by: model
+  - line: 113
+    level: 2
+    text: Detect Future Hotspots
+    role: section
+    classified_by: rule:cited
+  - line: 155
+    level: 3
+    text: Clean Your Input Data
+    role: embedded
+    classified_by: model
+  - line: 162
+    level: 2
+    text: Catch the Absence of Change
+    role: section
+    classified_by: rule:toc
+  - line: 215
+    level: 2
+    text: Guide On- and Offboarding with Social Data
+    role: section
+    classified_by: rule:toc
+  - line: 220
+    level: 3
+    text: Identify the Experts
+    role: embedded
+    classified_by: model
+  - line: 237
+    level: 2
+    text: Collaborative Tools Are a Workaround, Not a Solution
+    role: section
+    classified_by: model
+  - line: 245
+    level: 3
+    text: Power Laws Are Everywhere
+    role: embedded
+    classified_by: model
+  - line: 256
+    level: 2
+    text: Measure Upcoming Knowledge Loss
+    role: section
+    classified_by: model
+  - line: 282
+    level: 3
+    text: React to Knowledge Loss
+    role: embedded
+    classified_by: model
+  - line: 305
+    level: 2
+    text: Know the Biases and Workarounds for Behavioral Code Analysis
+    role: section
+    classified_by: rule:cited
+  - line: 331
+    level: 2
+    text: Your Code Is Still a Crime Scene
+    role: section
+    classified_by: rule:toc
+  - line: 355
+    level: 2
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+  - line: 359
+    level: 3
+    text: Early Warnings in Legacy Code
+    role: embedded
+    classified_by: model
+  - line: 376
+    level: 4
+    text: Find the Experts
+    role: embedded
+    classified_by: model
+  - line: 389
+    level: 4
+    text: 'Offboarding: What If?'
+    role: embedded
+    classified_by: model
+- path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/017-appendix-a1-the-hazards-of-productivity-and-performance-metrics.md
+  chapter_sha256: 39bd1a1dc476c2819bc2273b130b4d2317cc967acf92b26f4991e11148ea047f
+  headings:
+  - line: 1
+    level: 1
+    text: 'Appendix A1: The Hazards of Productivity and Performance Metrics'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 6
+    level: 2
+    text: Adaptive Behavior and the Destruction of a Data Source
+    role: section
+    classified_by: rule:toc
+  - line: 17
+    level: 2
+    text: The Situation Is Invisible in Code
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/018-appendix-a2-code-maat-an-open-source-analysis-engine.md
+  chapter_sha256: ce69e42cf7a09b41baff151c1ae17648b0160f631af1d261d37cf93018e7020d
+  headings:
+  - line: 1
+    level: 1
+    text: 'Appendix A2: Code Maat: An Open Source Analysis Engine'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 7
+    level: 2
+    text: Run Code Maat
+    role: section
+    classified_by: rule:toc
+  - line: 15
+    level: 2
+    text: Data Mining with Code Maat
+    role: section
+    classified_by: rule:toc
+  - line: 40
+    level: 2
+    text: Run Architectural Analyses
+    role: embedded
+    classified_by: model
+  - line: 63
+    level: 2
+    text: Measure Conway's Law
+    role: embedded
+    classified_by: model
+  - line: 78
+    level: 2
+    text: Visualizations
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/019-appendix-a3-data-mining-with-git-cloc-and-codescene.md
+  chapter_sha256: a1d76cce0b90cd6ada4a647e72a4fce0e008dcfb93e6d1c1d5d624c9277f2450
+  headings:
+  - line: 2
+    level: 1
+    text: 'Appendix A3: Data Mining with Git, cloc, and CodeScene'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 7
+    level: 2
+    text: Behavioral Code Analysis with Git
+    role: section
+    classified_by: rule:toc
+  - line: 12
+    level: 2
+    text: Detect Hotspots
+    role: embedded
+    classified_by: model
+  - line: 51
+    level: 3
+    text: Explore Git's Command-Line Options
+    role: embedded
+    classified_by: model
+  - line: 59
+    level: 3
+    text: Get Author Summaries
+    role: embedded
+    classified_by: model
+  - line: 80
+    level: 3
+    text: Get the Age of Your Code
+    role: embedded
+    classified_by: model
+  - line: 90
+    level: 2
+    text: A Brief Introduction to cloc
+    role: section
+    classified_by: rule:toc
+  - line: 133
+    level: 3
+    text: Take Care on Windows
+    role: embedded
+    classified_by: model
+  - line: 139
+    level: 2
+    text: Export Analysis Data from CodeScene
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/020-appendix-a4-hints-and-solutions-to-the-exercises.md
+  chapter_sha256: 9db9113f3f22673fa957c04d35014d6f61dc722d5419993747e3c5fb8068269e
+  headings:
+  - line: 2
+    level: 1
+    text: 'Appendix A4: Hints and Solutions to the Exercises'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 8
+    level: 2
+    text: 'Solutions: Identify Code with High Interest Rates'
+    role: section
+    classified_by: rule:toc
+  - line: 12
+    level: 2
+    text: Find Refactoring Candidates in Docker
+    role: embedded
+    classified_by: model
+  - line: 17
+    level: 2
+    text: Follow Up on Improvements to Rails
+    role: embedded
+    classified_by: model
+  - line: 28
+    level: 2
+    text: 'Solutions: Coupling in Time'
+    role: section
+    classified_by: rule:toc
+  - line: 33
+    level: 3
+    text: Learn from the Change Patterns in a Codebase
+    role: embedded
+    classified_by: model
+  - line: 40
+    level: 2
+    text: Detect Omissions with Internal Change Coupling
+    role: embedded
+    classified_by: model
+  - line: 45
+    level: 3
+    text: Kill the Clones
+    role: embedded
+    classified_by: model
+  - line: 50
+    level: 2
+    text: 'Solutions: The Principles of Code Age'
+    role: section
+    classified_by: rule:toc
+  - line: 55
+    level: 3
+    text: Cores All the Way Down
+    role: embedded
+    classified_by: model
+  - line: 60
+    level: 4
+    text: 'Deep Mining: The Median Age of Code'
+    role: embedded
+    classified_by: model
+  - line: 65
+    level: 2
+    text: 'Solutions: Spot Your System''s Tipping Point'
+    role: section
+    classified_by: rule:toc
+  - line: 70
+    level: 2
+    text: Prioritize Hotspots in CPU Architectures
+    role: embedded
+    classified_by: model
+  - line: 75
+    level: 2
+    text: Get a Quick Win
+    role: embedded
+    classified_by: model
+  - line: 81
+    level: 3
+    text: Supervise Your Unit-Test Practices
+    role: embedded
+    classified_by: model
+  - line: 89
+    level: 2
+    text: 'Solutions: Modular Monoliths'
+    role: section
+    classified_by: rule:toc
+  - line: 93
+    level: 2
+    text: Detect Components Across Layers
+    role: embedded
+    classified_by: model
+  - line: 114
+    level: 2
+    text: Investigate Change Patterns in Component-Based Codebases
+    role: embedded
+    classified_by: model
+  - line: 121
+    level: 2
+    text: 'Solutions: Systems of Systems'
+    role: section
+    classified_by: rule:toc
+  - line: 126
+    level: 2
+    text: Support Code Reading and Change Planning
+    role: embedded
+    classified_by: model
+  - line: 131
+    level: 3
+    text: Combine Technical and Social Views to Identify Communities
+    role: embedded
+    classified_by: model
+  - line: 136
+    level: 4
+    text: Analyze Your Infrastructure
+    role: embedded
+    classified_by: model
+  - line: 142
+    level: 2
+    text: 'Solutions: An Extra Team Member'
+    role: section
+    classified_by: rule:toc
+  - line: 146
+    level: 2
+    text: Early Warnings in Legacy Code
+    role: embedded
+    classified_by: model
+  - line: 170
+    level: 3
+    text: Find the Experts
+    role: embedded
+    classified_by: model
+  - line: 175
+    level: 2
+    text: 'Offboarding: What If?'
+    role: embedded
+    classified_by: model
+- path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/021-bibliography.md
+  chapter_sha256: 47452d6bce88aba25d8bc006c48b75582491cb23b60144d008493b4c03e18e87
+  headings:
+  - line: 1
+    level: 1
+    text: Bibliography
+    role: section
+    classified_by: rule:chapter-title
+- path: books/dokumen-pub-software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725/chapters/022-index.md
+  chapter_sha256: aac894dfa97b8513dfccb908a58aca57feaede48996c7243796b73dbfa9ee465
+  headings:
+  - line: 1
+    level: 1
+    text: Index
+    role: section
+    classified_by: rule:chapter-title
+  - line: 335
+    level: 2
+    text: Thank you!
+    role: embedded
+    classified_by: model
+  - line: 349
+    level: 2
+    text: Better by Design
+    role: embedded
+    classified_by: model
+  - line: 353
+    level: 2
+    text: Design It!
+    role: embedded
+    classified_by: model
+  - line: 365
+    level: 2
+    text: Release It! Second Edition
+    role: embedded
+    classified_by: model
+  - line: 377
+    level: 2
+    text: Learn Why, Then Learn How
+    role: embedded
+    classified_by: model
+  - line: 381
+    level: 2
+    text: Adopting Elixir
+    role: embedded
+    classified_by: model
+  - line: 391
+    level: 2
+    text: Programming Elixir ≥ 1.6
+    role: embedded
+    classified_by: model
+  - line: 403
+    level: 2
+    text: A Better Web with Phoenix and Elm
+    role: embedded
+    classified_by: model
+  - line: 407
+    level: 2
+    text: Functional Web Development with Elixir, OTP, and Phoenix
+    role: embedded
+    classified_by: model
+  - line: 419
+    level: 2
+    text: Programming Elm
+    role: embedded
+    classified_by: model
+  - line: 431
+    level: 2
+    text: Pragmatic Programming
+    role: embedded
+    classified_by: model
+  - line: 435
+    level: 2
+    text: Your Code as a Crime Scene
+    role: embedded
+    classified_by: model
+  - line: 447
+    level: 2
+    text: The Nature of Software Development
+    role: embedded
+    classified_by: model
+  - line: 459
+    level: 2
+    text: The Pragmatic Bookshelf
+    role: embedded
+    classified_by: model
+  - line: 463
+    level: 2
+    text: Visit Us Online
+    role: embedded
+    classified_by: model
+  - line: 465
+    level: 3
+    text: This Book's Home Page
+    role: embedded
+    classified_by: model
+  - line: 471
+    level: 4
+    text: Register for Updates
+    role: embedded
+    classified_by: model
+  - line: 477
+    level: 4
+    text: Join the Community
+    role: embedded
+    classified_by: model
+  - line: 483
+    level: 4
+    text: New and Noteworthy
+    role: embedded
+    classified_by: model
+  - line: 489
+    level: 2
+    text: Buy the Book
+    role: embedded
+    classified_by: model
+  - line: 493
+    level: 2
+    text: Contact Us
+    role: embedded
+    classified_by: model

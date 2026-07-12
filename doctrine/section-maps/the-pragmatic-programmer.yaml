@@ -1,0 +1,2894 @@
+schema_version: section-map/1
+book: the-pragmatic-programmer
+chapters:
+- path: books/the-pragmatic-programmer/chapters/001-what-others-in-the-trenches-say-about-the-pragmatic-programmer.md
+  chapter_sha256: d625082f7184337c66048e858e5af1925382b3a1a2a00d46283b7e13aca48433
+  headings:
+  - line: 5
+    level: 1
+    text: '**What others in the trenches say about** *The Pragmatic Programmer*...'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 39
+    level: 2
+    text: The Pragmatic Programmer
+    role: embedded
+    classified_by: model
+  - line: 43
+    level: 2
+    text: The Pragmatic Programmer
+    role: embedded
+    classified_by: model
+  - line: 45
+    level: 2
+    text: From Journeyman to Master
+    role: embedded
+    classified_by: model
+  - line: 51
+    level: 3
+    text: ADDISON–WESLEY
+    role: embedded
+    classified_by: model
+  - line: 86
+    level: 4
+    text: ISBN 0-201-61622-X
+    role: embedded
+    classified_by: model
+- path: books/the-pragmatic-programmer/chapters/002-contents.md
+  chapter_sha256: 4b4cba7fab5c49309a6d0226ab0ab856dd5804daf04cbd1c2080e868cceebd69
+  headings:
+  - line: 1
+    level: 1
+    text: Contents
+    role: section
+    classified_by: rule:chapter-title
+  - line: 30
+    level: 2
+    text: x CONTENTS
+    role: section
+    classified_by: model
+  - line: 65
+    level: 3
+    text: Appendices
+    role: section
+    classified_by: model
+- path: books/the-pragmatic-programmer/chapters/003-foreword.md
+  chapter_sha256: 9d31425d12c4c6fc92ee5c5fb243152400064b5ef41ff1d49ce7c7d234fe46cb
+  headings:
+  - line: 1
+    level: 1
+    text: Foreword
+    role: section
+    classified_by: rule:chapter-title
+- path: books/the-pragmatic-programmer/chapters/004-preface.md
+  chapter_sha256: e3b6c2c1bdf6ceeafa1ff036c1a97d17f3030224bea95518e46f81820b2cd068
+  headings:
+  - line: 1
+    level: 1
+    text: Preface
+    role: section
+    classified_by: rule:chapter-title
+  - line: 19
+    level: 2
+    text: Who Should Read This Book?
+    role: section
+    classified_by: model
+  - line: 25
+    level: 2
+    text: What Makes a Pragmatic Programmer?
+    role: section
+    classified_by: model
+  - line: 48
+    level: 2
+    text: Individual Pragmatists, Large Teams
+    role: section
+    classified_by: model
+  - line: 52
+    level: 3
+    text: We disagree.
+    role: embedded
+    classified_by: model
+  - line: 58
+    level: 4
+    text: — Quarry worker's creed
+    role: embedded
+    classified_by: model
+  - line: 62
+    level: 2
+    text: It's a Continuous Process
+    role: section
+    classified_by: model
+  - line: 72
+    level: 2
+    text: How the Book Is Organized
+    role: section
+    classified_by: model
+  - line: 82
+    level: 2
+    text: What's in a Name?
+    role: section
+    classified_by: model
+  - line: 86
+    level: 3
+    text: Lewis Carroll, Through the Looking-Glass
+    role: embedded
+    classified_by: model
+  - line: 92
+    level: 2
+    text: Source Code and Other Resources
+    role: section
+    classified_by: model
+  - line: 100
+    level: 2
+    text: Send Us Feedback
+    role: section
+    classified_by: model
+- path: books/the-pragmatic-programmer/chapters/005-acknowledgments.md
+  chapter_sha256: c84872a8b340ae4baca7f42ad0397690d60fe99b5aa8f01e4e1ee65233925e2f
+  headings:
+  - line: 1
+    level: 1
+    text: Acknowledgments
+    role: section
+    classified_by: rule:chapter-title
+- path: books/the-pragmatic-programmer/chapters/006-chapter-1-a-pragmatic-philosophy.md
+  chapter_sha256: c2fd929696ba12d697c9222dd7e06b8bd02cb0ac982ee7b846212a54f9478d4d
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 1: A Pragmatic Philosophy'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 18
+    level: 2
+    text: '**<sup>1</sup>** The Cat Ate My Source Code'
+    role: section
+    classified_by: rule:toc
+  - line: 28
+    level: 3
+    text: Take Responsibility
+    role: section
+    classified_by: rule:cited
+  - line: 48
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 56
+    level: 4
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 62
+    level: 2
+    text: '**<sup>2</sup>** Software Entropy'
+    role: section
+    classified_by: rule:toc
+  - line: 68
+    level: 3
+    text: What makes the difference?
+    role: embedded
+    classified_by: model
+  - line: 84
+    level: 3
+    text: Putting Out Fires
+    role: embedded
+    classified_by: model
+  - line: 94
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 100
+    level: 4
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 105
+    level: 2
+    text: '**<sup>3</sup>** Stone Soup and Boiled Frogs'
+    role: section
+    classified_by: rule:toc
+  - line: 131
+    level: 3
+    text: The Villagers' Side
+    role: embedded
+    classified_by: model
+  - line: 147
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 155
+    level: 4
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 159
+    level: 2
+    text: '**<sup>4</sup>** Good-Enough Software'
+    role: section
+    classified_by: rule:toc
+  - line: 175
+    level: 3
+    text: Involve Your Users in the Trade-Off
+    role: embedded
+    classified_by: model
+  - line: 187
+    level: 3
+    text: Know When to Stop
+    role: embedded
+    classified_by: model
+  - line: 195
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 202
+    level: 3
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 209
+    level: 2
+    text: '**<sup>5</sup>** Your Knowledge Portfolio'
+    role: section
+    classified_by: rule:toc
+  - line: 213
+    level: 3
+    text: Benjamin Franklin
+    role: embedded
+    classified_by: model
+  - line: 225
+    level: 3
+    text: Your Knowledge Portfolio
+    role: section
+    classified_by: rule:toc
+  - line: 237
+    level: 3
+    text: Building Your Portfolio
+    role: embedded
+    classified_by: model
+  - line: 250
+    level: 3
+    text: Goals
+    role: embedded
+    classified_by: model
+  - line: 268
+    level: 3
+    text: Opportunities for Learning
+    role: embedded
+    classified_by: model
+  - line: 278
+    level: 3
+    text: Critical Thinking
+    role: embedded
+    classified_by: model
+  - line: 290
+    level: 4
+    text: Care and Cultivation of Gurus
+    role: embedded
+    classified_by: model
+  - line: 306
+    level: 4
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 313
+    level: 2
+    text: '**<sup>6</sup>** Communicate!'
+    role: section
+    classified_by: rule:toc
+  - line: 325
+    level: 3
+    text: Know What You Want to Say
+    role: embedded
+    classified_by: model
+  - line: 333
+    level: 4
+    text: Know Your Audience
+    role: section
+    classified_by: rule:cited
+  - line: 341
+    level: 3
+    text: Choose Your Moment
+    role: embedded
+    classified_by: model
+  - line: 355
+    level: 4
+    text: Choose a Style
+    role: embedded
+    classified_by: model
+  - line: 361
+    level: 3
+    text: Make It Look Good
+    role: embedded
+    classified_by: model
+  - line: 369
+    level: 3
+    text: Involve Your Audience
+    role: embedded
+    classified_by: model
+  - line: 373
+    level: 4
+    text: Be a Listener
+    role: embedded
+    classified_by: model
+  - line: 379
+    level: 3
+    text: Get Back to People
+    role: embedded
+    classified_by: model
+  - line: 387
+    level: 4
+    text: E-Mail Communication
+    role: embedded
+    classified_by: model
+  - line: 405
+    level: 4
+    text: Summary
+    role: embedded
+    classified_by: model
+  - line: 416
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 421
+    level: 3
+    text: Challenges
+    role: embedded
+    classified_by: model
+- path: books/the-pragmatic-programmer/chapters/007-chapter-2-a-pragmatic-approach.md
+  chapter_sha256: 644a838311e6383890e239a5f62c31cd1639296c6b93f9e23de4b52b29fc9fab
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 2: A Pragmatic Approach'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 20
+    level: 2
+    text: '**<sup>7</sup>** The Evils of Duplication'
+    role: section
+    classified_by: rule:toc
+  - line: 46
+    level: 3
+    text: How Does Duplication Arise?
+    role: embedded
+    classified_by: model
+  - line: 58
+    level: 3
+    text: Imposed Duplication
+    role: embedded
+    classified_by: model
+  - line: 80
+    level: 3
+    text: Inadvertent Duplication
+    role: embedded
+    classified_by: model
+  - line: 138
+    level: 3
+    text: Impatient Duplication
+    role: embedded
+    classified_by: model
+  - line: 146
+    level: 3
+    text: Interdeveloper Duplication
+    role: embedded
+    classified_by: model
+  - line: 158
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 168
+    level: 2
+    text: '**<sup>8</sup>** Orthogonality'
+    role: section
+    classified_by: rule:toc
+  - line: 172
+    level: 3
+    text: What Is Orthogonality?
+    role: embedded
+    classified_by: model
+  - line: 182
+    level: 3
+    text: A Nonorthogonal System
+    role: embedded
+    classified_by: model
+  - line: 192
+    level: 3
+    text: Benefits of Orthogonality
+    role: embedded
+    classified_by: model
+  - line: 202
+    level: 3
+    text: Gain Productivity
+    role: embedded
+    classified_by: model
+  - line: 209
+    level: 4
+    text: Reduce Risk
+    role: embedded
+    classified_by: model
+  - line: 220
+    level: 3
+    text: Project Teams
+    role: embedded
+    classified_by: model
+  - line: 230
+    level: 3
+    text: Design
+    role: section
+    classified_by: rule:toc
+  - line: 246
+    level: 3
+    text: Toolkits and Libraries
+    role: embedded
+    classified_by: model
+  - line: 270
+    level: 3
+    text: Coding
+    role: section
+    classified_by: rule:toc
+  - line: 287
+    level: 3
+    text: Testing
+    role: section
+    classified_by: rule:toc
+  - line: 295
+    level: 3
+    text: Documentation
+    role: embedded
+    classified_by: model
+  - line: 299
+    level: 3
+    text: Living with Orthogonality
+    role: embedded
+    classified_by: model
+  - line: 307
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 322
+    level: 4
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 327
+    level: 4
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+  - line: 350
+    level: 2
+    text: '**<sup>9</sup>** Reversibility'
+    role: section
+    classified_by: rule:toc
+  - line: 374
+    level: 3
+    text: Reversibility
+    role: section
+    classified_by: rule:toc
+  - line: 386
+    level: 3
+    text: Flexible Architecture
+    role: embedded
+    classified_by: model
+  - line: 400
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 406
+    level: 4
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 416
+    level: 2
+    text: '**<sup>10</sup>** Tracer Bullets'
+    role: section
+    classified_by: rule:toc
+  - line: 438
+    level: 3
+    text: Code That Glows in the Dark
+    role: embedded
+    classified_by: model
+  - line: 465
+    level: 3
+    text: Tracer Bullets Don't Always Hit Their Target
+    role: section
+    classified_by: rule:cited
+  - line: 471
+    level: 3
+    text: Tracer Code versus Prototyping
+    role: embedded
+    classified_by: model
+  - line: 483
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 490
+    level: 2
+    text: '**<sup>11</sup>** Prototypes and Post-it Notes'
+    role: section
+    classified_by: rule:toc
+  - line: 502
+    level: 3
+    text: Things to Prototype
+    role: embedded
+    classified_by: model
+  - line: 517
+    level: 3
+    text: How to Use Prototypes
+    role: embedded
+    classified_by: model
+  - line: 530
+    level: 3
+    text: Prototyping Architecture
+    role: embedded
+    classified_by: model
+  - line: 546
+    level: 3
+    text: How Not to Use Prototypes
+    role: embedded
+    classified_by: model
+  - line: 556
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 563
+    level: 4
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+  - line: 569
+    level: 2
+    text: '**<sup>12</sup>** Domain Languages'
+    role: section
+    classified_by: rule:toc
+  - line: 619
+    level: 3
+    text: Domain-Specific Errors
+    role: embedded
+    classified_by: model
+  - line: 640
+    level: 3
+    text: Implementing a Mini-Language
+    role: embedded
+    classified_by: model
+  - line: 661
+    level: 4
+    text: Data Languages and Imperative Languages
+    role: embedded
+    classified_by: model
+  - line: 723
+    level: 1
+    text: etc...
+    role: embedded
+    classified_by: model
+  - line: 734
+    level: 4
+    text: Stand-Alone and Embedded Languages
+    role: embedded
+    classified_by: model
+  - line: 742
+    level: 4
+    text: Easy Development or Easy Maintenance?
+    role: embedded
+    classified_by: model
+  - line: 750
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 754
+    level: 4
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 759
+    level: 3
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+  - line: 785
+    level: 2
+    text: '**<sup>13</sup>** Estimating'
+    role: section
+    classified_by: rule:toc
+  - line: 797
+    level: 3
+    text: How Accurate Is Accurate Enough?
+    role: embedded
+    classified_by: model
+  - line: 818
+    level: 3
+    text: Where Do Estimates Come From?
+    role: embedded
+    classified_by: model
+  - line: 826
+    level: 4
+    text: Understand What's Being Asked
+    role: embedded
+    classified_by: model
+  - line: 830
+    level: 3
+    text: Build a Model of the System
+    role: embedded
+    classified_by: model
+  - line: 838
+    level: 3
+    text: Break the Model into Components
+    role: embedded
+    classified_by: model
+  - line: 844
+    level: 4
+    text: Give Each Parameter a Value
+    role: embedded
+    classified_by: model
+  - line: 850
+    level: 4
+    text: Calculate the Answers
+    role: embedded
+    classified_by: model
+  - line: 856
+    level: 3
+    text: Keep Track of Your Estimating Prowess
+    role: embedded
+    classified_by: model
+  - line: 862
+    level: 3
+    text: Estimating Project Schedules
+    role: embedded
+    classified_by: model
+  - line: 879
+    level: 3
+    text: What to Say When Asked for an Estimate
+    role: embedded
+    classified_by: model
+  - line: 885
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 889
+    level: 4
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 893
+    level: 4
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+- path: books/the-pragmatic-programmer/chapters/008-chapter-3-the-basic-tools.md
+  chapter_sha256: 45eea12690acd90d5d6780efb796c249724e0150035a795e1968db654eb4c4b4
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 3: The Basic Tools'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 22
+    level: 2
+    text: '**<sup>14</sup>** The Power of Plain Text'
+    role: section
+    classified_by: rule:toc
+  - line: 26
+    level: 3
+    text: What Is Plain Text?
+    role: embedded
+    classified_by: model
+  - line: 48
+    level: 3
+    text: Drawbacks
+    role: embedded
+    classified_by: model
+  - line: 58
+    level: 3
+    text: The Power of Text
+    role: embedded
+    classified_by: model
+  - line: 66
+    level: 4
+    text: Insurance Against Obsolescence
+    role: embedded
+    classified_by: model
+  - line: 108
+    level: 3
+    text: Leverage
+    role: embedded
+    classified_by: model
+  - line: 114
+    level: 4
+    text: The Unix Philosophy
+    role: embedded
+    classified_by: model
+  - line: 122
+    level: 3
+    text: Easier Testing
+    role: embedded
+    classified_by: model
+  - line: 126
+    level: 3
+    text: Lowest Common Denominator
+    role: embedded
+    classified_by: model
+  - line: 130
+    level: 3
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 139
+    level: 3
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 147
+    level: 2
+    text: '**<sup>15</sup>** Shell Games'
+    role: section
+    classified_by: rule:toc
+  - line: 165
+    level: 3
+    text: Find all .c files modified more recently than your Makefile.
+    role: embedded
+    classified_by: model
+  - line: 171
+    level: 4
+    text: Construct <sup>a</sup> zip/tar archive of my source.
+    role: embedded
+    classified_by: model
+  - line: 177
+    level: 4
+    text: Which Java files have not been changed in the last week?
+    role: embedded
+    classified_by: model
+  - line: 183
+    level: 4
+    text: Of those files, which use the awt libraries?
+    role: embedded
+    classified_by: model
+  - line: 206
+    level: 3
+    text: Shell Utilities and Windows Systems
+    role: embedded
+    classified_by: model
+  - line: 214
+    level: 4
+    text: Using Unix Tools Under Windows
+    role: embedded
+    classified_by: model
+  - line: 222
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 226
+    level: 3
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 232
+    level: 2
+    text: '**<sup>16</sup>** Power Editing'
+    role: section
+    classified_by: rule:toc
+  - line: 236
+    level: 3
+    text: One Editor
+    role: embedded
+    classified_by: model
+  - line: 252
+    level: 3
+    text: Editor Features
+    role: embedded
+    classified_by: model
+  - line: 283
+    level: 3
+    text: Productivity
+    role: embedded
+    classified_by: model
+  - line: 301
+    level: 3
+    text: Where to Go from Here
+    role: embedded
+    classified_by: model
+  - line: 320
+    level: 3
+    text: What Editors Are Available?
+    role: embedded
+    classified_by: model
+  - line: 324
+    level: 4
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 331
+    level: 2
+    text: '**<sup>17</sup>** Source Code Control'
+    role: section
+    classified_by: rule:toc
+  - line: 335
+    level: 3
+    text: George Santayana, Life of Reason
+    role: embedded
+    classified_by: model
+  - line: 357
+    level: 3
+    text: Source Code Control and Builds
+    role: embedded
+    classified_by: model
+  - line: 365
+    level: 3
+    text: But My Team Isn't Using Source Code Control
+    role: embedded
+    classified_by: model
+  - line: 371
+    level: 3
+    text: Source Code Control Products
+    role: embedded
+    classified_by: model
+  - line: 375
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 381
+    level: 4
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 386
+    level: 2
+    text: '**<sup>18</sup>** Debugging'
+    role: section
+    classified_by: rule:toc
+  - line: 390
+    level: 3
+    text: Sophocles, Ajax
+    role: embedded
+    classified_by: model
+  - line: 398
+    level: 3
+    text: Psychology of Debugging
+    role: embedded
+    classified_by: model
+  - line: 410
+    level: 3
+    text: A Debugging Mindset
+    role: embedded
+    classified_by: model
+  - line: 426
+    level: 3
+    text: Where to Start
+    role: embedded
+    classified_by: model
+  - line: 443
+    level: 3
+    text: Debugging Strategies
+    role: section
+    classified_by: rule:cited
+  - line: 447
+    level: 4
+    text: Bug Reproduction
+    role: embedded
+    classified_by: model
+  - line: 457
+    level: 3
+    text: Visualize Your Data
+    role: embedded
+    classified_by: model
+  - line: 471
+    level: 4
+    text: Tracing
+    role: embedded
+    classified_by: model
+  - line: 481
+    level: 4
+    text: Corrupt Variables? Check Their Neighborhood
+    role: embedded
+    classified_by: model
+  - line: 496
+    level: 4
+    text: Rubber Ducking
+    role: embedded
+    classified_by: model
+  - line: 504
+    level: 4
+    text: Process of Elimination
+    role: embedded
+    classified_by: model
+  - line: 520
+    level: 3
+    text: The Element of Surprise
+    role: section
+    classified_by: rule:cited
+  - line: 540
+    level: 3
+    text: Debugging Checklist
+    role: embedded
+    classified_by: model
+  - line: 548
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 555
+    level: 4
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 559
+    level: 2
+    text: '**<sup>19</sup>** Text Manipulation'
+    role: section
+    classified_by: rule:toc
+  - line: 595
+    level: 3
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 599
+    level: 4
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+  - line: 635
+    level: 2
+    text: '**<sup>20</sup>** Code Generators'
+    role: section
+    classified_by: rule:toc
+  - line: 650
+    level: 3
+    text: Passive Code Generators
+    role: embedded
+    classified_by: model
+  - line: 663
+    level: 3
+    text: Active Code Generators
+    role: embedded
+    classified_by: model
+  - line: 679
+    level: 3
+    text: Code Generators Needn't Be Complex
+    role: embedded
+    classified_by: model
+  - line: 686
+    level: 1
+    text: Add a product
+    role: embedded
+    classified_by: model
+  - line: 713
+    level: 3
+    text: Code Generators Needn't Generate Code
+    role: embedded
+    classified_by: model
+  - line: 717
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 724
+    level: 4
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+- path: books/the-pragmatic-programmer/chapters/009-chapter-4-pragmatic-paranoia.md
+  chapter_sha256: 60e45cc1b49168d8bec7c02d1f467e5d4867098efc5b28f0bf21ce230c3a1542
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 4: Pragmatic Paranoia'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 30
+    level: 2
+    text: '**<sup>21</sup>** Design by Contract'
+    role: section
+    classified_by: rule:toc
+  - line: 34
+    level: 3
+    text: Ralph Waldo Emerson, Essays
+    role: embedded
+    classified_by: model
+  - line: 44
+    level: 3
+    text: DBC
+    role: embedded
+    classified_by: model
+  - line: 78
+    level: 4
+    text: DBC and Constant Parameters
+    role: embedded
+    classified_by: model
+  - line: 111
+    level: 3
+    text: Implementing DBC
+    role: section
+    classified_by: model
+  - line: 117
+    level: 4
+    text: Assertions
+    role: embedded
+    classified_by: model
+  - line: 127
+    level: 3
+    text: Language Support
+    role: section
+    classified_by: model
+  - line: 139
+    level: 3
+    text: DBC and Crashing Early
+    role: section
+    classified_by: model
+  - line: 157
+    level: 4
+    text: Who's Responsible?
+    role: embedded
+    classified_by: model
+  - line: 171
+    level: 3
+    text: Other Uses of Invariants
+    role: section
+    classified_by: model
+  - line: 175
+    level: 4
+    text: Loop Invariants
+    role: embedded
+    classified_by: model
+  - line: 193
+    level: 4
+    text: Semantic Invariants
+    role: embedded
+    classified_by: model
+  - line: 209
+    level: 3
+    text: Dynamic Contracts and Agents
+    role: section
+    classified_by: model
+  - line: 219
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 231
+    level: 4
+    text: Challenges
+    role: section
+    classified_by: model
+  - line: 235
+    level: 4
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+  - line: 303
+    level: 2
+    text: '**<sup>22</sup>** Dead Programs Tell No Lies'
+    role: section
+    classified_by: rule:toc
+  - line: 313
+    level: 3
+    text: Crash, Don't Trash
+    role: section
+    classified_by: rule:cited
+  - line: 348
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 353
+    level: 2
+    text: '**<sup>23</sup>** Assertive Programming'
+    role: section
+    classified_by: rule:toc
+  - line: 402
+    level: 3
+    text: Leave Assertions Turned On
+    role: section
+    classified_by: model
+  - line: 414
+    level: 4
+    text: Assertions and Side Effects
+    role: embedded
+    classified_by: model
+  - line: 440
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 449
+    level: 4
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+  - line: 465
+    level: 2
+    text: '**<sup>24</sup>** When to Use Exceptions'
+    role: section
+    classified_by: rule:toc
+  - line: 513
+    level: 3
+    text: What Is Exceptional?
+    role: section
+    classified_by: rule:cited
+  - line: 554
+    level: 3
+    text: Error Handlers Are an Alternative
+    role: section
+    classified_by: model
+  - line: 562
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 566
+    level: 4
+    text: Challenges
+    role: section
+    classified_by: model
+  - line: 570
+    level: 4
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+  - line: 579
+    level: 2
+    text: '**<sup>25</sup>** How to Balance Resources'
+    role: section
+    classified_by: rule:toc
+  - line: 583
+    level: 3
+    text: Bill Cosby, Fatherhood
+    role: embedded
+    classified_by: model
+  - line: 675
+    level: 3
+    text: Nest Allocations
+    role: section
+    classified_by: model
+  - line: 684
+    level: 3
+    text: Objects and Exceptions
+    role: section
+    classified_by: model
+  - line: 692
+    level: 3
+    text: Balancing and Exceptions
+    role: section
+    classified_by: model
+  - line: 696
+    level: 3
+    text: Balancing Resources with C++ Exceptions
+    role: section
+    classified_by: model
+  - line: 766
+    level: 3
+    text: Balancing Resources in Java
+    role: section
+    classified_by: model
+  - line: 785
+    level: 3
+    text: When You Can't Balance Resources
+    role: section
+    classified_by: model
+  - line: 799
+    level: 2
+    text: Checking the Balance
+    role: embedded
+    classified_by: model
+  - line: 805
+    level: 3
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 811
+    level: 4
+    text: Challenges
+    role: section
+    classified_by: model
+  - line: 815
+    level: 4
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+- path: books/the-pragmatic-programmer/chapters/010-chapter-5-bend-or-break.md
+  chapter_sha256: 6c111e1879b841d4447590e394a2c5f991b8b7470abc02324c15e3fea2ed50b5
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 5: Bend, or Break'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 22
+    level: 2
+    text: '**<sup>26</sup>** Decoupling and the Law of Demeter'
+    role: section
+    classified_by: rule:toc
+  - line: 34
+    level: 3
+    text: Minimize Coupling
+    role: embedded
+    classified_by: model
+  - line: 73
+    level: 3
+    text: The Law of Demeter for Functions
+    role: embedded
+    classified_by: model
+  - line: 81
+    level: 3
+    text: Does It Really Make a Difference?
+    role: embedded
+    classified_by: model
+  - line: 99
+    level: 4
+    text: Physical Decoupling
+    role: embedded
+    classified_by: model
+  - line: 107
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 117
+    level: 4
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 123
+    level: 4
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+  - line: 187
+    level: 2
+    text: '**<sup>27</sup>** Metaprogramming'
+    role: section
+    classified_by: rule:toc
+  - line: 191
+    level: 3
+    text: Levy's Eighth Law
+    role: embedded
+    classified_by: model
+  - line: 197
+    level: 3
+    text: Dynamic Configuration
+    role: embedded
+    classified_by: model
+  - line: 223
+    level: 3
+    text: Metadata-Driven Applications
+    role: embedded
+    classified_by: model
+  - line: 243
+    level: 3
+    text: Business Logic
+    role: embedded
+    classified_by: model
+  - line: 255
+    level: 4
+    text: When to Configure
+    role: embedded
+    classified_by: model
+  - line: 265
+    level: 3
+    text: 'An Example: Enterprise Java Beans'
+    role: embedded
+    classified_by: model
+  - line: 281
+    level: 4
+    text: Cooperative Configuration
+    role: embedded
+    classified_by: model
+  - line: 289
+    level: 3
+    text: Don't Write Dodo-Code
+    role: embedded
+    classified_by: model
+  - line: 299
+    level: 3
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 306
+    level: 4
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 310
+    level: 4
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+  - line: 320
+    level: 2
+    text: '**<sup>28</sup>** Temporal Coupling'
+    role: section
+    classified_by: rule:toc
+  - line: 332
+    level: 3
+    text: Workflow
+    role: embedded
+    classified_by: model
+  - line: 369
+    level: 4
+    text: Architecture
+    role: embedded
+    classified_by: model
+  - line: 398
+    level: 3
+    text: Design for Concurrency
+    role: embedded
+    classified_by: model
+  - line: 410
+    level: 4
+    text: Cleaner Interfaces
+    role: embedded
+    classified_by: model
+  - line: 453
+    level: 3
+    text: Deployment
+    role: embedded
+    classified_by: model
+  - line: 463
+    level: 3
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 468
+    level: 4
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 472
+    level: 2
+    text: '**<sup>29</sup>** It''s Just a View'
+    role: section
+    classified_by: rule:toc
+  - line: 490
+    level: 3
+    text: Publish/Subscribe
+    role: embedded
+    classified_by: model
+  - line: 508
+    level: 3
+    text: Model-View-Controller
+    role: embedded
+    classified_by: model
+  - line: 512
+    level: 4
+    text: The CORBA Event Service
+    role: embedded
+    classified_by: model
+  - line: 536
+    level: 4
+    text: Java Tree View
+    role: embedded
+    classified_by: model
+  - line: 550
+    level: 3
+    text: Beyond GUIs
+    role: embedded
+    classified_by: model
+  - line: 580
+    level: 3
+    text: Still Coupled (After All These Years)
+    role: embedded
+    classified_by: model
+  - line: 586
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 594
+    level: 4
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+  - line: 614
+    level: 2
+    text: '**<sup>30</sup>** Blackboards'
+    role: section
+    classified_by: rule:toc
+  - line: 640
+    level: 3
+    text: Blackboard Implementations
+    role: embedded
+    classified_by: model
+  - line: 665
+    level: 4
+    text: Organizing Your Blackboard
+    role: embedded
+    classified_by: model
+  - line: 673
+    level: 3
+    text: Application Example
+    role: embedded
+    classified_by: model
+  - line: 696
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 701
+    level: 4
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 705
+    level: 4
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+- path: books/the-pragmatic-programmer/chapters/011-chapter-6-while-you-are-coding.md
+  chapter_sha256: 0d4d8600636040f4596917803733ed53f5db042af2fd5800ab76a87f2d6f24c8
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 6: While You Are Coding'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 18
+    level: 2
+    text: '**<sup>31</sup>** Programming by Coincidence'
+    role: section
+    classified_by: rule:toc
+  - line: 26
+    level: 3
+    text: How to Program by Coincidence
+    role: embedded
+    classified_by: model
+  - line: 34
+    level: 3
+    text: Accidents of Implementation
+    role: embedded
+    classified_by: model
+  - line: 65
+    level: 4
+    text: Accidents of Context
+    role: embedded
+    classified_by: model
+  - line: 69
+    level: 3
+    text: Implicit Assumptions
+    role: embedded
+    classified_by: model
+  - line: 77
+    level: 3
+    text: How to Program Deliberately
+    role: embedded
+    classified_by: model
+  - line: 95
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 105
+    level: 4
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+  - line: 141
+    level: 2
+    text: '**<sup>32</sup>** Algorithm Speed'
+    role: section
+    classified_by: rule:toc
+  - line: 149
+    level: 3
+    text: What Do We Mean by Estimating Algorithms?
+    role: embedded
+    classified_by: model
+  - line: 157
+    level: 3
+    text: The O( ) Notation
+    role: embedded
+    classified_by: model
+  - line: 171
+    level: 3
+    text: Common Sense Estimation
+    role: embedded
+    classified_by: model
+  - line: 183
+    level: 3
+    text: Algorithm Speed in Practice
+    role: embedded
+    classified_by: model
+  - line: 201
+    level: 3
+    text: Best Isn't Always Best
+    role: embedded
+    classified_by: model
+  - line: 209
+    level: 3
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 213
+    level: 4
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 219
+    level: 4
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+  - line: 240
+    level: 2
+    text: '**<sup>33</sup>** Refactoring'
+    role: section
+    classified_by: rule:toc
+  - line: 264
+    level: 3
+    text: When Should You Refactor?
+    role: embedded
+    classified_by: model
+  - line: 275
+    level: 4
+    text: Real-World Complications
+    role: embedded
+    classified_by: model
+  - line: 289
+    level: 3
+    text: How Do You Refactor?
+    role: embedded
+    classified_by: model
+  - line: 300
+    level: 4
+    text: Automatic Refactoring
+    role: embedded
+    classified_by: model
+  - line: 320
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 331
+    level: 4
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+  - line: 394
+    level: 2
+    text: '**<sup>34</sup>** Code That''s Easy to Test'
+    role: section
+    classified_by: rule:toc
+  - line: 404
+    level: 3
+    text: Unit Testing
+    role: section
+    classified_by: rule:cited
+  - line: 414
+    level: 3
+    text: Testing Against Contract
+    role: embedded
+    classified_by: model
+  - line: 479
+    level: 3
+    text: Writing Unit Tests
+    role: embedded
+    classified_by: model
+  - line: 528
+    level: 3
+    text: Using Test Harnesses
+    role: embedded
+    classified_by: model
+  - line: 545
+    level: 4
+    text: Ad Hoc Testing
+    role: embedded
+    classified_by: model
+  - line: 586
+    level: 3
+    text: Build a Test Window
+    role: embedded
+    classified_by: model
+  - line: 598
+    level: 3
+    text: A Culture of Testing
+    role: embedded
+    classified_by: model
+  - line: 610
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 618
+    level: 4
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+  - line: 622
+    level: 2
+    text: '**<sup>35</sup>** Evil Wizards'
+    role: section
+    classified_by: rule:toc
+  - line: 644
+    level: 3
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 649
+    level: 3
+    text: Challenges
+    role: embedded
+    classified_by: model
+- path: books/the-pragmatic-programmer/chapters/012-chapter-7-before-the-project.md
+  chapter_sha256: 6985926a080b8b02a65307f9c2506f35c927cc2e533a940da59b6f382968e957
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 7: Before the Project'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 18
+    level: 2
+    text: '**<sup>36</sup>** The Requirements Pit'
+    role: section
+    classified_by: rule:toc
+  - line: 30
+    level: 3
+    text: Digging for Requirements
+    role: embedded
+    classified_by: model
+  - line: 56
+    level: 3
+    text: Documenting Requirements
+    role: embedded
+    classified_by: model
+  - line: 66
+    level: 4
+    text: Sometimes the Interface Is the System
+    role: embedded
+    classified_by: model
+  - line: 82
+    level: 4
+    text: A. CHARACTERISTIC INFORMATION
+    role: embedded
+    classified_by: model
+  - line: 111
+    level: 3
+    text: Use Case Diagrams
+    role: embedded
+    classified_by: model
+  - line: 117
+    level: 4
+    text: 'USE CASE 5: BUY GOODS'
+    role: embedded
+    classified_by: model
+  - line: 119
+    level: 4
+    text: A. **CHARACTERISTIC INFORMATION**
+    role: embedded
+    classified_by: model
+  - line: 130
+    level: 4
+    text: B. **MAIN SUCCESS SCENARIO**
+    role: embedded
+    classified_by: model
+  - line: 140
+    level: 4
+    text: C. **EXTENSIONS**
+    role: embedded
+    classified_by: model
+  - line: 146
+    level: 4
+    text: D. **VARIATIONS**
+    role: embedded
+    classified_by: model
+  - line: 151
+    level: 4
+    text: E. **RELATED INFORMATION**
+    role: embedded
+    classified_by: model
+  - line: 161
+    level: 4
+    text: F. **SCHEDULE**
+    role: embedded
+    classified_by: model
+  - line: 165
+    level: 4
+    text: G. **OPEN ISSUES**
+    role: embedded
+    classified_by: model
+  - line: 176
+    level: 3
+    text: Overspecifying
+    role: embedded
+    classified_by: model
+  - line: 182
+    level: 3
+    text: Seeing Further
+    role: embedded
+    classified_by: model
+  - line: 198
+    level: 3
+    text: Just One More Wafer-Thin Mint. . .
+    role: embedded
+    classified_by: model
+  - line: 210
+    level: 3
+    text: Maintain a Glossary
+    role: section
+    classified_by: rule:cited
+  - line: 220
+    level: 3
+    text: Get the Word Out
+    role: embedded
+    classified_by: model
+  - line: 230
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 238
+    level: 4
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 243
+    level: 4
+    text: Exercises
+    role: section
+    classified_by: rule:toc
+  - line: 253
+    level: 2
+    text: '**<sup>37</sup>** Solving Impossible Puzzles'
+    role: section
+    classified_by: rule:toc
+  - line: 265
+    level: 3
+    text: Degrees of Freedom
+    role: embedded
+    classified_by: model
+  - line: 287
+    level: 3
+    text: There Must Be an Easier Way!
+    role: embedded
+    classified_by: model
+  - line: 304
+    level: 4
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 309
+    level: 2
+    text: '**<sup>38</sup>** Not Until You''re Ready'
+    role: section
+    classified_by: rule:toc
+  - line: 325
+    level: 3
+    text: Good Judgment or Procrastination?
+    role: embedded
+    classified_by: model
+  - line: 337
+    level: 4
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 341
+    level: 2
+    text: '**<sup>39</sup>** The Specification Trap'
+    role: section
+    classified_by: rule:toc
+  - line: 345
+    level: 3
+    text: British Airways memorandum, quoted in** *Pilot Magazine,* **December 1996
+    role: embedded
+    classified_by: model
+  - line: 375
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 379
+    level: 4
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 387
+    level: 2
+    text: '**<sup>40</sup>** Circles and Arrows'
+    role: section
+    classified_by: rule:toc
+  - line: 408
+    level: 3
+    text: Do Methods Pay Off?
+    role: embedded
+    classified_by: model
+  - line: 412
+    level: 3
+    text: Should We Use Formal Methods?
+    role: embedded
+    classified_by: model
+  - line: 422
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 426
+    level: 4
+    text: Challenges
+    role: embedded
+    classified_by: model
+- path: books/the-pragmatic-programmer/chapters/013-chapter-8-pragmatic-projects.md
+  chapter_sha256: 552c24564f1bd17f6d1ea41fe479e93ee0558143b8098599751d859a50ca03a6
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 8: Pragmatic Projects'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 18
+    level: 2
+    text: '**<sup>41</sup>** Pragmatic Teams'
+    role: section
+    classified_by: rule:toc
+  - line: 32
+    level: 3
+    text: No Broken Windows
+    role: embedded
+    classified_by: model
+  - line: 40
+    level: 3
+    text: Boiled Frogs
+    role: embedded
+    classified_by: model
+  - line: 48
+    level: 3
+    text: Communicate
+    role: embedded
+    classified_by: model
+  - line: 58
+    level: 3
+    text: Don't Repeat Yourself
+    role: embedded
+    classified_by: model
+  - line: 70
+    level: 3
+    text: Orthogonality
+    role: section
+    classified_by: rule:toc
+  - line: 96
+    level: 3
+    text: Automation
+    role: section
+    classified_by: rule:toc
+  - line: 102
+    level: 3
+    text: Know When to Stop Adding Paint
+    role: embedded
+    classified_by: model
+  - line: 106
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 118
+    level: 4
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 127
+    level: 2
+    text: '**<sup>42</sup>** Ubiquitous Automation'
+    role: section
+    classified_by: rule:toc
+  - line: 131
+    level: 3
+    text: Alfred North Whitehead
+    role: embedded
+    classified_by: model
+  - line: 139
+    level: 3
+    text: All on Automatic
+    role: embedded
+    classified_by: model
+  - line: 163
+    level: 3
+    text: Compiling the Project
+    role: embedded
+    classified_by: model
+  - line: 167
+    level: 4
+    text: Generating Code
+    role: embedded
+    classified_by: model
+  - line: 183
+    level: 3
+    text: Regression Tests
+    role: embedded
+    classified_by: model
+  - line: 187
+    level: 4
+    text: Recursive make
+    role: embedded
+    classified_by: model
+  - line: 195
+    level: 3
+    text: Build Automation
+    role: embedded
+    classified_by: model
+  - line: 210
+    level: 3
+    text: Final Builds
+    role: embedded
+    classified_by: model
+  - line: 216
+    level: 3
+    text: Automatic Administrivia
+    role: embedded
+    classified_by: model
+  - line: 224
+    level: 4
+    text: Web Site Generation
+    role: embedded
+    classified_by: model
+  - line: 234
+    level: 3
+    text: Approval Procedures
+    role: embedded
+    classified_by: model
+  - line: 248
+    level: 3
+    text: The Cobbler's Children
+    role: embedded
+    classified_by: model
+  - line: 256
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 268
+    level: 4
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 274
+    level: 2
+    text: '**<sup>43</sup>** Ruthless Testing'
+    role: section
+    classified_by: rule:toc
+  - line: 300
+    level: 3
+    text: What to Test
+    role: section
+    classified_by: rule:cited
+  - line: 316
+    level: 4
+    text: Unit Testing
+    role: embedded
+    classified_by: model
+  - line: 322
+    level: 4
+    text: Integration Testing
+    role: embedded
+    classified_by: model
+  - line: 328
+    level: 3
+    text: Validation and Verification
+    role: embedded
+    classified_by: model
+  - line: 334
+    level: 4
+    text: Resource Exhaustion, Errors, and Recovery
+    role: embedded
+    classified_by: model
+  - line: 355
+    level: 4
+    text: Performance Testing
+    role: embedded
+    classified_by: model
+  - line: 363
+    level: 4
+    text: Usability Testing
+    role: embedded
+    classified_by: model
+  - line: 373
+    level: 3
+    text: How to Test
+    role: embedded
+    classified_by: model
+  - line: 383
+    level: 4
+    text: Design/Methodology Testing
+    role: embedded
+    classified_by: model
+  - line: 398
+    level: 4
+    text: Regression Testing
+    role: embedded
+    classified_by: model
+  - line: 404
+    level: 4
+    text: Test Data
+    role: embedded
+    classified_by: model
+  - line: 416
+    level: 3
+    text: Exercising GUI Systems
+    role: embedded
+    classified_by: model
+  - line: 426
+    level: 4
+    text: Testing the Tests
+    role: embedded
+    classified_by: model
+  - line: 442
+    level: 3
+    text: Testing Thoroughly
+    role: section
+    classified_by: rule:cited
+  - line: 465
+    level: 3
+    text: When to Test
+    role: embedded
+    classified_by: model
+  - line: 479
+    level: 3
+    text: Tightening the Net
+    role: embedded
+    classified_by: model
+  - line: 493
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 502
+    level: 3
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 508
+    level: 2
+    text: '**<sup>44</sup>** It''s All Writing'
+    role: section
+    classified_by: rule:toc
+  - line: 512
+    level: 3
+    text: Chinese Proverb
+    role: embedded
+    classified_by: model
+  - line: 528
+    level: 3
+    text: Comments in Code
+    role: section
+    classified_by: rule:cited
+  - line: 572
+    level: 3
+    text: Executable Documents
+    role: embedded
+    classified_by: model
+  - line: 584
+    level: 4
+    text: What if My Document Isn't Plain Text?
+    role: embedded
+    classified_by: model
+  - line: 595
+    level: 3
+    text: Technical Writers
+    role: embedded
+    classified_by: model
+  - line: 603
+    level: 3
+    text: Print It or Weave It
+    role: embedded
+    classified_by: model
+  - line: 621
+    level: 3
+    text: Markup Languages
+    role: embedded
+    classified_by: model
+  - line: 631
+    level: 4
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 642
+    level: 4
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 647
+    level: 2
+    text: '**<sup>45</sup>** Great Expectations'
+    role: section
+    classified_by: rule:toc
+  - line: 663
+    level: 3
+    text: Communicating Expectations
+    role: embedded
+    classified_by: model
+  - line: 673
+    level: 2
+    text: The Extra Mile
+    role: section
+    classified_by: model
+  - line: 695
+    level: 3
+    text: 'Related sections include:'
+    role: embedded
+    classified_by: model
+  - line: 702
+    level: 3
+    text: Challenges
+    role: embedded
+    classified_by: model
+  - line: 707
+    level: 2
+    text: '**<sup>46</sup>** Pride and Prejudice'
+    role: section
+    classified_by: rule:toc
+- path: books/the-pragmatic-programmer/chapters/014-appendix-a.md
+  chapter_sha256: a34d84c29c891c7b8f0efdb1196a02e2f63683f40966edfaa834ce8f7f7caa1e
+  headings:
+  - line: 1
+    level: 1
+    text: Appendix A
+    role: section
+    classified_by: rule:chapter-title
+  - line: 3
+    level: 2
+    text: Resources
+    role: section
+    classified_by: rule:toc
+  - line: 15
+    level: 2
+    text: Professional Societies
+    role: section
+    classified_by: rule:toc
+  - line: 21
+    level: 2
+    text: Building a Library
+    role: section
+    classified_by: rule:toc
+  - line: 25
+    level: 3
+    text: Periodicals
+    role: embedded
+    classified_by: model
+  - line: 44
+    level: 4
+    text: Weekly Trade Papers
+    role: embedded
+    classified_by: model
+  - line: 48
+    level: 3
+    text: Books
+    role: embedded
+    classified_by: model
+  - line: 52
+    level: 4
+    text: Analysis and Design
+    role: embedded
+    classified_by: model
+  - line: 58
+    level: 3
+    text: Teams and Projects
+    role: embedded
+    classified_by: model
+  - line: 64
+    level: 4
+    text: Specific Environments
+    role: embedded
+    classified_by: model
+  - line: 72
+    level: 3
+    text: The Web
+    role: embedded
+    classified_by: model
+  - line: 82
+    level: 2
+    text: Internet Resources
+    role: section
+    classified_by: rule:toc
+  - line: 86
+    level: 3
+    text: Editors
+    role: embedded
+    classified_by: model
+  - line: 90
+    level: 4
+    text: Emacs
+    role: embedded
+    classified_by: model
+  - line: 94
+    level: 4
+    text: '[URL 1] The Emacs Editor'
+    role: embedded
+    classified_by: model
+  - line: 102
+    level: 4
+    text: '[URL 2] The XEmacs Editor'
+    role: embedded
+    classified_by: model
+  - line: 110
+    level: 4
+    text: vi
+    role: embedded
+    classified_by: model
+  - line: 114
+    level: 4
+    text: '[URL 3] The Vim Editor'
+    role: embedded
+    classified_by: model
+  - line: 122
+    level: 4
+    text: '[URL 4] The elvis Editor'
+    role: embedded
+    classified_by: model
+  - line: 126
+    level: 4
+    text: '[URL 5] Emacs Viper Mode'
+    role: embedded
+    classified_by: model
+  - line: 132
+    level: 3
+    text: Compilers, Languages, and Development Tools
+    role: embedded
+    classified_by: model
+  - line: 134
+    level: 4
+    text: '[URL 6] The GNU C/C++ Compiler'
+    role: embedded
+    classified_by: model
+  - line: 140
+    level: 4
+    text: '[URL 7] The Java Language from Sun'
+    role: embedded
+    classified_by: model
+  - line: 146
+    level: 4
+    text: '[URL 8] Perl Language Home Page'
+    role: embedded
+    classified_by: model
+  - line: 152
+    level: 4
+    text: '[URL 9] The Python Language'
+    role: embedded
+    classified_by: model
+  - line: 158
+    level: 4
+    text: '[URL 10] SmallEiffel'
+    role: embedded
+    classified_by: model
+  - line: 164
+    level: 4
+    text: '[URL 11] ISE Eiffel'
+    role: embedded
+    classified_by: model
+  - line: 170
+    level: 4
+    text: '[URL 12] Sather'
+    role: embedded
+    classified_by: model
+  - line: 176
+    level: 4
+    text: '[URL 13] VisualWorks'
+    role: embedded
+    classified_by: model
+  - line: 182
+    level: 4
+    text: '[URL 14] The Squeak Language Environment'
+    role: embedded
+    classified_by: model
+  - line: 188
+    level: 4
+    text: '[URL 15] The TOM Programming Language'
+    role: embedded
+    classified_by: model
+  - line: 194
+    level: 4
+    text: '[URL 16] The Beowulf Project'
+    role: embedded
+    classified_by: model
+  - line: 200
+    level: 4
+    text: '[URL 17] iContract—Design by Contract Tool for Java'
+    role: embedded
+    classified_by: model
+  - line: 206
+    level: 4
+    text: '[URL 18] Nana—Logging and Assertions for C and C++'
+    role: embedded
+    classified_by: model
+  - line: 212
+    level: 4
+    text: '[URL 19] DDD—Data Display Debugger'
+    role: embedded
+    classified_by: model
+  - line: 218
+    level: 4
+    text: '[URL 20] John Brant''s Refactoring Browser'
+    role: embedded
+    classified_by: model
+  - line: 224
+    level: 4
+    text: '[URL 21] DOC++ Documentation Generator'
+    role: embedded
+    classified_by: model
+  - line: 230
+    level: 4
+    text: '[URL 22] xUnit—Unit Testing Framework'
+    role: embedded
+    classified_by: model
+  - line: 236
+    level: 4
+    text: '[URL 23] The Tcl Language'
+    role: embedded
+    classified_by: model
+  - line: 242
+    level: 4
+    text: '[URL 24] Expect—Automate Interaction with Programs'
+    role: embedded
+    classified_by: model
+  - line: 248
+    level: 4
+    text: '[URL 25] T Spaces'
+    role: embedded
+    classified_by: model
+  - line: 254
+    level: 4
+    text: '[URL 26] javaCC—Java Compiler-Compiler'
+    role: embedded
+    classified_by: model
+  - line: 260
+    level: 4
+    text: '[URL 27] The bison Parser Generator'
+    role: embedded
+    classified_by: model
+  - line: 266
+    level: 4
+    text: '[URL 28] SWIG—Simplified Wrapper and Interface Generator'
+    role: embedded
+    classified_by: model
+  - line: 272
+    level: 4
+    text: '[URL 29] The Object Management Group, Inc.'
+    role: embedded
+    classified_by: model
+  - line: 278
+    level: 3
+    text: Unix Tools Under DOS
+    role: embedded
+    classified_by: model
+  - line: 280
+    level: 4
+    text: '[URL 30] The UWIN Development Tools'
+    role: embedded
+    classified_by: model
+  - line: 288
+    level: 4
+    text: '[URL 31] The Cygnus Cygwin Tools'
+    role: embedded
+    classified_by: model
+  - line: 296
+    level: 4
+    text: '[URL 32] Perl Power Tools'
+    role: embedded
+    classified_by: model
+  - line: 302
+    level: 3
+    text: Source Code Control Tools
+    role: embedded
+    classified_by: model
+  - line: 304
+    level: 4
+    text: '[URL 33] RCS—Revision Control System'
+    role: embedded
+    classified_by: model
+  - line: 310
+    level: 4
+    text: '[URL 34] CVS—Concurrent Version System'
+    role: embedded
+    classified_by: model
+  - line: 316
+    level: 4
+    text: '[URL 35] Aegis Transaction-Based Configuration Management'
+    role: embedded
+    classified_by: model
+  - line: 322
+    level: 4
+    text: '[URL 36] ClearCase'
+    role: embedded
+    classified_by: model
+  - line: 328
+    level: 4
+    text: '[URL 37] MKS Source Integrity'
+    role: embedded
+    classified_by: model
+  - line: 334
+    level: 4
+    text: '[URL 38] PVCS Configuration Management'
+    role: embedded
+    classified_by: model
+  - line: 340
+    level: 4
+    text: '[URL 39] Visual SourceSafe'
+    role: embedded
+    classified_by: model
+  - line: 346
+    level: 4
+    text: '[URL 40] Perforce'
+    role: embedded
+    classified_by: model
+  - line: 352
+    level: 3
+    text: Other Tools
+    role: embedded
+    classified_by: model
+  - line: 354
+    level: 4
+    text: '[URL 41] WinZip—Archive Utility for Windows'
+    role: embedded
+    classified_by: model
+  - line: 362
+    level: 4
+    text: '[URL 42] The Z Shell'
+    role: embedded
+    classified_by: model
+  - line: 368
+    level: 4
+    text: '[URL 43] A Free SMB Client for Unix Systems'
+    role: embedded
+    classified_by: model
+  - line: 378
+    level: 3
+    text: Papers and Publications
+    role: embedded
+    classified_by: model
+  - line: 380
+    level: 4
+    text: '[URL 44] The comp.object FAQ'
+    role: embedded
+    classified_by: model
+  - line: 386
+    level: 4
+    text: '[URL 45] eXtreme Programming'
+    role: embedded
+    classified_by: model
+  - line: 392
+    level: 4
+    text: '[URL 46] Alistair Cockburn''s Home Page'
+    role: embedded
+    classified_by: model
+  - line: 398
+    level: 4
+    text: '[URL 47] Martin Fowler''s Home Page'
+    role: embedded
+    classified_by: model
+  - line: 404
+    level: 4
+    text: '[URL 48] Robert C. Martin''s Home Page'
+    role: embedded
+    classified_by: model
+  - line: 410
+    level: 4
+    text: '[URL 49] Aspect-Oriented Programming'
+    role: embedded
+    classified_by: model
+  - line: 416
+    level: 4
+    text: '[URL 50] JavaSpaces Specification'
+    role: embedded
+    classified_by: model
+  - line: 422
+    level: 4
+    text: '[URL 51] Netscape Source Code'
+    role: embedded
+    classified_by: model
+  - line: 428
+    level: 4
+    text: '[URL 52] The Jargon File'
+    role: embedded
+    classified_by: model
+  - line: 436
+    level: 4
+    text: '[URL 53] Eric S. Raymond''s Papers'
+    role: embedded
+    classified_by: model
+  - line: 442
+    level: 4
+    text: '[URL 54] The K Desktop Environment'
+    role: embedded
+    classified_by: model
+  - line: 448
+    level: 4
+    text: '[URL 55] The GNU Image Manipulation Program'
+    role: embedded
+    classified_by: model
+  - line: 454
+    level: 4
+    text: '[URL 56] The Demeter Project'
+    role: embedded
+    classified_by: model
+  - line: 460
+    level: 3
+    text: Miscellaneous
+    role: embedded
+    classified_by: model
+  - line: 462
+    level: 4
+    text: '[URL 57] The GNU Project'
+    role: embedded
+    classified_by: model
+  - line: 470
+    level: 4
+    text: '[URL 58] Web Server Information'
+    role: embedded
+    classified_by: model
+- path: books/the-pragmatic-programmer/chapters/015-bibliography.md
+  chapter_sha256: 98bf80eb55bf2c8080b0cb9e1c9bb96d537522a6edd5a3bcec12be954315d5e4
+  headings:
+  - line: 1
+    level: 1
+    text: Bibliography
+    role: section
+    classified_by: rule:chapter-title
+- path: books/the-pragmatic-programmer/chapters/016-appendix-b.md
+  chapter_sha256: accaf129b31202e547cd09e7fb09f03a7ac4968cdd8237121aa1d3896fcf9e39
+  headings:
+  - line: 1
+    level: 1
+    text: Appendix B
+    role: section
+    classified_by: rule:chapter-title
+  - line: 3
+    level: 2
+    text: Answers to Exercises
+    role: section
+    classified_by: model
+  - line: 5
+    level: 3
+    text: '**Exercise 1:** from Orthogonality on page 43'
+    role: embedded
+    classified_by: model
+  - line: 25
+    level: 4
+    text: '**Exercise 2:** from Orthogonality on page 43'
+    role: embedded
+    classified_by: model
+  - line: 31
+    level: 4
+    text: '**Exercise 3:** from Orthogonality on page 43'
+    role: embedded
+    classified_by: model
+  - line: 39
+    level: 4
+    text: '**Exercise 4:** from Prototypes and Post-it Notes on page 56'
+    role: embedded
+    classified_by: model
+  - line: 45
+    level: 4
+    text: '**Exercise 5:** from Domain Languages on page 63'
+    role: embedded
+    classified_by: model
+  - line: 118
+    level: 4
+    text: '**Exercise 6:** from Domain Languages on page 63'
+    role: embedded
+    classified_by: model
+  - line: 126
+    level: 4
+    text: '**Answer 6:** Using BNF, a time specification could be'
+    role: embedded
+    classified_by: model
+  - line: 139
+    level: 4
+    text: '**Exercise 7:** from Domain Languages on page 63'
+    role: embedded
+    classified_by: model
+  - line: 183
+    level: 4
+    text: '**Exercise 8:** from Domain Languages on page 63'
+    role: embedded
+    classified_by: model
+  - line: 187
+    level: 4
+    text: 'Answer 8:'
+    role: embedded
+    classified_by: model
+  - line: 196
+    level: 1
+    text: doTime(hour, min, ampm, maxHour)
+    role: embedded
+    classified_by: model
+  - line: 207
+    level: 4
+    text: '**Exercise 9:** from Estimating on page 69'
+    role: embedded
+    classified_by: model
+  - line: 211
+    level: 4
+    text: '**Answer 9:** Our answer must be couched in several assumptions:'
+    role: embedded
+    classified_by: model
+  - line: 220
+    level: 4
+    text: '**Exercise 10:** from Estimating on page 69 So, which has the higher bandwidth?'
+    role: embedded
+    classified_by: model
+  - line: 224
+    level: 4
+    text: '**Exercise 11:** from Text Manipulation on page 102'
+    role: embedded
+    classified_by: model
+  - line: 256
+    level: 4
+    text: '**Answer 11:** We implemented our answer using Perl.'
+    role: embedded
+    classified_by: model
+  - line: 263
+    level: 1
+    text: Read in the rest of the file
+    role: embedded
+    classified_by: model
+  - line: 270
+    level: 1
+    text: Now generate the file
+    role: embedded
+    classified_by: model
+  - line: 295
+    level: 4
+    text: '**Exercise 12:** from Text Manipulation on page 102'
+    role: embedded
+    classified_by: model
+  - line: 299
+    level: 4
+    text: '**Answer 12:** Here''s our answer, written in Perl.'
+    role: embedded
+    classified_by: model
+  - line: 324
+    level: 4
+    text: '**Exercise 13:** from Code Generators on page 106'
+    role: embedded
+    classified_by: model
+  - line: 334
+    level: 1
+    text: Read and parse the file
+    role: embedded
+    classified_by: model
+  - line: 361
+    level: 1
+    text: Code generator for 'C' (see cg_base.pl)
+    role: embedded
+    classified_by: model
+  - line: 383
+    level: 1
+    text: Code generator for 'Pascal' (see cg_base.pl)
+    role: embedded
+    classified_by: model
+  - line: 400
+    level: 4
+    text: '**Exercise 14:** from Design by Contract on page 118'
+    role: embedded
+    classified_by: model
+  - line: 422
+    level: 4
+    text: '**Exercise 15:** from Design by Contract on page 119'
+    role: embedded
+    classified_by: model
+  - line: 439
+    level: 4
+    text: '**Exercise 16:** from Design by Contract on page 119'
+    role: embedded
+    classified_by: model
+  - line: 454
+    level: 4
+    text: '**Exercise 17:** from Design by Contract on page 119'
+    role: embedded
+    classified_by: model
+  - line: 517
+    level: 4
+    text: 'Answer 19:'
+    role: embedded
+    classified_by: model
+  - line: 562
+    level: 4
+    text: '**Exercise 21:** from When to Use Exceptions on page 128'
+    role: embedded
+    classified_by: model
+  - line: 666
+    level: 4
+    text: '**Exercise 28:** from Metaprogramming on page 149'
+    role: embedded
+    classified_by: model
+  - line: 684
+    level: 2
+    text: '**Exercise 29:** from It''s Just <sup>a</sup> View on page 164'
+    role: embedded
+    classified_by: model
+  - line: 725
+    level: 3
+    text: '**Exercise 30:** from Blackboards on page 170'
+    role: embedded
+    classified_by: model
+  - line: 733
+    level: 4
+    text: 'Answer 30:'
+    role: embedded
+    classified_by: model
+  - line: 743
+    level: 4
+    text: '**Exercise 31:** from Programming by Coincidence on page 176'
+    role: embedded
+    classified_by: model
+  - line: 760
+    level: 4
+    text: '**Exercise 32:** from Programming by Coincidence on page 176'
+    role: embedded
+    classified_by: model
+  - line: 776
+    level: 4
+    text: '**Exercise 33:** from Programming by Coincidence on page <sup>177</sup>'
+    role: embedded
+    classified_by: model
+  - line: 791
+    level: 4
+    text: '**Exercise 34:** from Algorithm Speed on page 183'
+    role: embedded
+    classified_by: model
+  - line: 801
+    level: 4
+    text: '**Exercise 35:** from Algorithm Speed on page 183'
+    role: embedded
+    classified_by: model
+  - line: 823
+    level: 4
+    text: '**Exercise 36:** from Algorithm Speed on page 183'
+    role: embedded
+    classified_by: model
+  - line: 855
+    level: 4
+    text: '**Exercise 37:** from Algorithm Speed on page 183'
+    role: embedded
+    classified_by: model
+  - line: 861
+    level: 4
+    text: '**Exercise 38:** from Refactoring on page 188'
+    role: embedded
+    classified_by: model
+  - line: 897
+    level: 4
+    text: '**Exercise 39:** from Refactoring on page 188'
+    role: embedded
+    classified_by: model
+  - line: 955
+    level: 4
+    text: '**Exercise 40:** from Refactoring on page 189'
+    role: embedded
+    classified_by: model
+  - line: 999
+    level: 4
+    text: '**Exercise 41:** from Code That''s Easy to Test on page 197'
+    role: embedded
+    classified_by: model
+  - line: 1078
+    level: 1
+    text: Start the tests
+    role: embedded
+    classified_by: model
+  - line: 1102
+    level: 4
+    text: '**Exercise 42:** from The Requirements Pit on page <sup>211</sup>'
+    role: embedded
+    classified_by: model
+  - line: 1112
+    level: 4
+    text: 'Answer 42:'
+    role: embedded
+    classified_by: model
+- path: books/the-pragmatic-programmer/chapters/017-index.md
+  chapter_sha256: 5b604cb31d4bd2b193a8d96e0836cfdd8b184da8f0ef6d2e869e5a489c9fb25a
+  headings:
+  - line: 1
+    level: 1
+    text: Index
+    role: section
+    classified_by: rule:chapter-title
+  - line: 630
+    level: 2
+    text: '-'
+    role: embedded
+    classified_by: model
+  - line: 632
+    level: 2
+    text: THE TRUSTED TECHNOLOGY LEARNING SOURCE
+    role: embedded
+    classified_by: model
+  - line: 638
+    level: 2
+    text: at
+    role: embedded
+    classified_by: model
+  - line: 650
+    level: 3
+    text: Are You Part of the Crowd?
+    role: embedded
+    classified_by: model
+  - line: 679
+    level: 4
+    text: About InformIT — THE TRUSTED TECHNOLOGY LEARNING SOURCE
+    role: embedded
+    classified_by: model
+  - line: 689
+    level: 2
+    text: The Pragmatic Programmer
+    role: embedded
+    classified_by: model
+  - line: 695
+    level: 3
+    text: TIPS 1 TO 22
+    role: embedded
+    classified_by: model
+  - line: 724
+    level: 4
+    text: TIPS 23 TO 46
+    role: embedded
+    classified_by: model
+  - line: 741
+    level: 4
+    text: TIPS 47 TO 70
+    role: embedded
+    classified_by: model
+  - line: 757
+    level: 3
+    text: Checklists
+    role: embedded
+    classified_by: model
+  - line: 768
+    level: 4
+    text: ✔The WISDOM Acrostic ................. page 20
+    role: embedded
+    classified_by: model
+  - line: 774
+    level: 4
+    text: ✔How to Maintain Orthogonality.....page 34
+    role: embedded
+    classified_by: model
+  - line: 781
+    level: 4
+    text: ✔Things to prototype...................page 53
+    role: embedded
+    classified_by: model
+  - line: 790
+    level: 4
+    text: ✔Architectural Questions ............. page 55
+    role: embedded
+    classified_by: model
+  - line: 799
+    level: 4
+    text: ✔Debugging Checklist..................page 98
+    role: embedded
+    classified_by: model
+  - line: 807
+    level: 3
+    text: ✔Law of Demeter for Functions . . . . . page 141
+    role: embedded
+    classified_by: model
+  - line: 816
+    level: 4
+    text: ✔How to Program Deliberately . . . . . . page 172
+    role: embedded
+    classified_by: model
+  - line: 827
+    level: 4
+    text: ✔When to Refactor.....................page 185
+    role: embedded
+    classified_by: model
+  - line: 835
+    level: 4
+    text: ✔Cutting the Gordian Knot .......... page 212
+    role: embedded
+    classified_by: model
+  - line: 846
+    level: 4
+    text: ✔Aspects of Testing ................... page 237
+    role: embedded
+    classified_by: model

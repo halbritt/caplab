@@ -1,0 +1,2132 @@
+schema_version: section-map/1
+book: clean-architecture-a-craftsman-guide-to-software-structure-and-design
+chapters:
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/001-clean-architecture.md
+  chapter_sha256: 3df58e1aae9de67b892f591d03a09aa5108657916bfaf83ece7b85fac06b762d
+  headings:
+  - line: 3
+    level: 1
+    text: Clean Architecture
+    role: section
+    classified_by: rule:chapter-title
+  - line: 11
+    level: 2
+    text: About This E-Book
+    role: embedded
+    classified_by: model
+  - line: 17
+    level: 2
+    text: Robert C. Martin Series
+    role: embedded
+    classified_by: model
+  - line: 33
+    level: 2
+    text: Clean Architecture
+    role: section
+    classified_by: model
+  - line: 35
+    level: 3
+    text: A CRAFTSMAN'S GUIDE TO SOFTWARE STRUCTURE AND DESIGN
+    role: embedded
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/002-contents.md
+  chapter_sha256: 3a6fcbf3511e298c83e30e48755a36f75a5a8ce383f5b21dd9b20f96b187427f
+  headings:
+  - line: 1
+    level: 1
+    text: CONTENTS
+    role: section
+    classified_by: rule:chapter-title
+  - line: 11
+    level: 2
+    text: PART I Introduction
+    role: section
+    classified_by: model
+  - line: 13
+    level: 3
+    text: Chapter 1 What Is Design and Architecture?
+    role: section
+    classified_by: model
+  - line: 21
+    level: 4
+    text: Chapter 2 A Tale of Two Values
+    role: section
+    classified_by: model
+  - line: 33
+    level: 4
+    text: 'PART II Starting with the Bricks: Programming Paradigms'
+    role: section
+    classified_by: model
+  - line: 35
+    level: 4
+    text: Chapter 3 Paradigm Overview
+    role: section
+    classified_by: model
+  - line: 45
+    level: 4
+    text: Conclusion
+    role: section
+    classified_by: model
+  - line: 47
+    level: 4
+    text: Chapter 4 Structured Programming
+    role: section
+    classified_by: model
+  - line: 61
+    level: 4
+    text: Chapter 5 Object-Oriented Programming
+    role: section
+    classified_by: model
+  - line: 71
+    level: 4
+    text: Chapter 6 Functional Programming
+    role: section
+    classified_by: model
+  - line: 83
+    level: 4
+    text: PART III Design Principles
+    role: section
+    classified_by: model
+  - line: 85
+    level: 4
+    text: 'Chapter 7 SRP: The Single Responsibility Principle'
+    role: section
+    classified_by: model
+  - line: 95
+    level: 4
+    text: 'Chapter 8 OCP: The Open-Closed Principle'
+    role: section
+    classified_by: model
+  - line: 105
+    level: 4
+    text: 'Chapter 9 LSP: The Liskov Substitution Principle'
+    role: section
+    classified_by: model
+  - line: 117
+    level: 4
+    text: 'Chapter 10 ISP: The Interface Segregation Principle'
+    role: section
+    classified_by: model
+  - line: 125
+    level: 4
+    text: 'Chapter 11 DIP: The Dependency Inversion Principle'
+    role: section
+    classified_by: model
+  - line: 135
+    level: 4
+    text: PART IV Component Principles
+    role: section
+    classified_by: model
+  - line: 137
+    level: 4
+    text: Chapter 12 Components
+    role: section
+    classified_by: model
+  - line: 147
+    level: 4
+    text: Chapter 13 Component Cohesion
+    role: section
+    classified_by: model
+  - line: 159
+    level: 4
+    text: Chapter 14 Component Coupling
+    role: section
+    classified_by: model
+  - line: 167
+    level: 4
+    text: The Stable Abstractions Principle Conclusion
+    role: section
+    classified_by: model
+  - line: 169
+    level: 4
+    text: PART V Architecture
+    role: section
+    classified_by: model
+  - line: 171
+    level: 4
+    text: Chapter 15 What Is Architecture?
+    role: section
+    classified_by: model
+  - line: 191
+    level: 4
+    text: Chapter 16 Independence
+    role: section
+    classified_by: model
+  - line: 219
+    level: 4
+    text: 'Chapter 17 Boundaries: Drawing Lines'
+    role: section
+    classified_by: model
+  - line: 233
+    level: 4
+    text: Conclusion
+    role: section
+    classified_by: model
+  - line: 235
+    level: 4
+    text: Chapter 18 Boundary Anatomy
+    role: section
+    classified_by: model
+  - line: 251
+    level: 4
+    text: Chapter 19 Policy and Level
+    role: section
+    classified_by: model
+  - line: 257
+    level: 4
+    text: Chapter 20 Business Rules
+    role: section
+    classified_by: model
+  - line: 267
+    level: 4
+    text: Chapter 21 Screaming Architecture
+    role: section
+    classified_by: model
+  - line: 281
+    level: 4
+    text: Chapter 22 The Clean Architecture
+    role: section
+    classified_by: model
+  - line: 289
+    level: 4
+    text: Chapter 23 Presenters and Humble Objects
+    role: section
+    classified_by: model
+  - line: 305
+    level: 4
+    text: Chapter 24 Partial Boundaries
+    role: section
+    classified_by: model
+  - line: 315
+    level: 4
+    text: Chapter 25 Layers and Boundaries
+    role: section
+    classified_by: model
+  - line: 327
+    level: 4
+    text: Chapter 26 The Main Component
+    role: section
+    classified_by: model
+  - line: 333
+    level: 4
+    text: 'Chapter 27 Services: Great and Small'
+    role: section
+    classified_by: model
+  - line: 349
+    level: 4
+    text: Chapter 28 The Test Boundary
+    role: section
+    classified_by: model
+  - line: 359
+    level: 4
+    text: Chapter 29 Clean Embedded Architecture
+    role: section
+    classified_by: model
+  - line: 367
+    level: 4
+    text: PART VI Details
+    role: section
+    classified_by: model
+  - line: 369
+    level: 4
+    text: Chapter 30 The Database Is a Detail
+    role: section
+    classified_by: model
+  - line: 383
+    level: 4
+    text: Chapter 31 The Web Is a Detail
+    role: section
+    classified_by: model
+  - line: 391
+    level: 4
+    text: Chapter 32 Frameworks Are Details
+    role: section
+    classified_by: model
+  - line: 405
+    level: 4
+    text: 'Chapter 33 Case Study: Video Sales'
+    role: section
+    classified_by: model
+  - line: 417
+    level: 4
+    text: Chapter 34 The Missing Chapter
+    role: section
+    classified_by: model
+  - line: 423
+    level: 4
+    text: PART VII Appendix
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/003-foreword.md
+  chapter_sha256: c06a940a88dbc50adae9c34b39d836c4ded36f7ea350d5e26d1cf80f15702e73
+  headings:
+  - line: 1
+    level: 1
+    text: FOREWORD
+    role: section
+    classified_by: rule:chapter-title
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/004-preface.md
+  chapter_sha256: 9a7aa3dbc905995e9ca5fb8335d044f09e146cdf8628dbcd8d877b4e0e00fa1e
+  headings:
+  - line: 1
+    level: 1
+    text: PREFACE
+    role: section
+    classified_by: rule:chapter-title
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/005-acknowledgments.md
+  chapter_sha256: 591d724b9a4a177d853b64f87cdf34f69d990673415700aa53e51c6f05763967
+  headings:
+  - line: 2
+    level: 1
+    text: ACKNOWLEDGMENTS
+    role: section
+    classified_by: rule:chapter-title
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/006-about-the-author.md
+  chapter_sha256: 073b2c03bb9835c4e054eca410fa76a008c075e4b85e409245dc2e972688a56e
+  headings:
+  - line: 2
+    level: 1
+    text: ABOUT THE AUTHOR
+    role: section
+    classified_by: rule:chapter-title
+  - line: 10
+    level: 2
+    text: '*Method*.'
+    role: embedded
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/007-i-introduction.md
+  chapter_sha256: 7cff14ee232b0abbab267da7bb10932eb1a1a8f7062171d28a3a1094206b76f4
+  headings:
+  - line: 2
+    level: 1
+    text: I INTRODUCTION
+    role: section
+    classified_by: rule:chapter-title
+  - line: 16
+    level: 2
+    text: '1'
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/008-chapter-1-what-is-design-and-architecture.md
+  chapter_sha256: ddaf04148acf7fff3d41fb39921f1e9ff27b9b38f899d91043854d46f460d86d
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 1: What Is Design and Architecture?'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 21
+    level: 2
+    text: THE GOAL?
+    role: section
+    classified_by: model
+  - line: 30
+    level: 3
+    text: CASE STUDY
+    role: embedded
+    classified_by: model
+  - line: 63
+    level: 4
+    text: THE SIGNATURE OF A MESS
+    role: embedded
+    classified_by: model
+  - line: 77
+    level: 4
+    text: THE EXECUTIVE VIEW
+    role: embedded
+    classified_by: model
+  - line: 93
+    level: 4
+    text: WHAT WENT WRONG?
+    role: embedded
+    classified_by: model
+  - line: 135
+    level: 3
+    text: CONCLUSION
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/009-chapter-2-a-tale-of-two-values.md
+  chapter_sha256: a7099aaed84e3a9708b5d08512237e5fb047815929b5ec3e1d4e79cd4670e7c9
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 2: A Tale of Two Values'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 9
+    level: 2
+    text: BEHAVIOR
+    role: section
+    classified_by: model
+  - line: 20
+    level: 3
+    text: ARCHITECTURE
+    role: section
+    classified_by: model
+  - line: 39
+    level: 3
+    text: THE GREATER VALUE
+    role: section
+    classified_by: model
+  - line: 53
+    level: 3
+    text: EISENHOWER'S MATRIX
+    role: section
+    classified_by: model
+  - line: 84
+    level: 3
+    text: FIGHT FOR THE ARCHITECTURE
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/010-ii-starting-with-the-bricks-programming-paradigms.md
+  chapter_sha256: ef4ba7e3fac1496ba69a93320c2b7dd6ca5a4d9056dd1c2eafb0289095cf0262
+  headings:
+  - line: 1
+    level: 1
+    text: 'II STARTING WITH THE BRICKS: PROGRAMMING PARADIGMS'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: 'STARTING WITH THE BRICKS: PROGRAMMING PARADIGMS'
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/011-chapter-3-paradigm-overview.md
+  chapter_sha256: 025c87682c039f2fff1c2e9e542cbf742ac30dc1a82defc5491e72b571045603
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 3: Paradigm Overview'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 11
+    level: 2
+    text: STRUCTURED PROGRAMMING
+    role: section
+    classified_by: model
+  - line: 20
+    level: 3
+    text: OBJECT-ORIENTED PROGRAMMING
+    role: section
+    classified_by: model
+  - line: 29
+    level: 3
+    text: FUNCTIONAL PROGRAMMING
+    role: section
+    classified_by: model
+  - line: 38
+    level: 2
+    text: FOOD FOR THOUGHT
+    role: embedded
+    classified_by: model
+  - line: 47
+    level: 3
+    text: CONCLUSION
+    role: embedded
+    classified_by: model
+  - line: 53
+    level: 2
+    text: '4'
+    role: embedded
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/012-chapter-4-structured-programming.md
+  chapter_sha256: bacc17166240561f1c1ef7d27b18a98917f91ae98fd13994efe740ec7d6f8686
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 4: Structured Programming'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 19
+    level: 2
+    text: PROOF
+    role: section
+    classified_by: model
+  - line: 46
+    level: 3
+    text: A HARMFUL PROCLAMATION
+    role: embedded
+    classified_by: model
+  - line: 61
+    level: 3
+    text: FUNCTIONAL DECOMPOSITION
+    role: embedded
+    classified_by: model
+  - line: 68
+    level: 4
+    text: NO FORMAL PROOFS
+    role: embedded
+    classified_by: model
+  - line: 75
+    level: 4
+    text: SCIENCE TO THE RESCUE
+    role: embedded
+    classified_by: model
+  - line: 92
+    level: 4
+    text: TESTS
+    role: embedded
+    classified_by: model
+  - line: 103
+    level: 3
+    text: CONCLUSION
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/013-chapter-5-object-oriented-programming.md
+  chapter_sha256: 65240d83f177ea0b7700acd0d2c8a8b38e31cd76e4f469fbf727b6989c2705db
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 5: Object-Oriented Programming'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 17
+    level: 2
+    text: ENCAPSULATION?
+    role: section
+    classified_by: model
+  - line: 60
+    level: 3
+    text: Click here to view code image
+    role: embedded
+    classified_by: model
+  - line: 101
+    level: 2
+    text: INHERITANCE?
+    role: section
+    classified_by: model
+  - line: 111
+    level: 3
+    text: Click here to view code image
+    role: embedded
+    classified_by: model
+  - line: 124
+    level: 4
+    text: Click here to view code image
+    role: embedded
+    classified_by: model
+  - line: 126
+    level: 4
+    text: namedPoint.c
+    role: embedded
+    classified_by: model
+  - line: 150
+    level: 4
+    text: Click here to view code image
+    role: embedded
+    classified_by: model
+  - line: 183
+    level: 3
+    text: POLYMORPHISM?
+    role: section
+    classified_by: model
+  - line: 187
+    level: 4
+    text: Click here to view code image
+    role: embedded
+    classified_by: model
+  - line: 206
+    level: 4
+    text: Click here to view code image
+    role: embedded
+    classified_by: model
+  - line: 220
+    level: 4
+    text: Click here to view code image
+    role: embedded
+    classified_by: model
+  - line: 235
+    level: 4
+    text: Click here to view code image
+    role: embedded
+    classified_by: model
+  - line: 258
+    level: 4
+    text: THE POWER OF POLYMORPHISM
+    role: section
+    classified_by: model
+  - line: 274
+    level: 4
+    text: DEPENDENCY INVERSION
+    role: section
+    classified_by: model
+  - line: 323
+    level: 3
+    text: CONCLUSION
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/014-chapter-6-functional-programming.md
+  chapter_sha256: 10867c98d67e2e489f9d4242ccfb8538787ca848f717807ed812c34002932fea
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 6: Functional Programming'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 9
+    level: 2
+    text: SQUARES OF INTEGERS
+    role: section
+    classified_by: model
+  - line: 15
+    level: 3
+    text: Click here to view code image
+    role: embedded
+    classified_by: model
+  - line: 28
+    level: 4
+    text: Click here to view code image
+    role: embedded
+    classified_by: model
+  - line: 36
+    level: 4
+    text: Click here to view code image
+    role: embedded
+    classified_by: model
+  - line: 66
+    level: 3
+    text: IMMUTABILITY AND ARCHITECTURE
+    role: section
+    classified_by: model
+  - line: 79
+    level: 3
+    text: SEGREGATION OF MUTABILITY
+    role: section
+    classified_by: model
+  - line: 93
+    level: 4
+    text: Click here to view code image
+    role: embedded
+    classified_by: model
+  - line: 113
+    level: 3
+    text: EVENT SOURCING
+    role: section
+    classified_by: model
+  - line: 138
+    level: 3
+    text: CONCLUSION
+    role: section
+    classified_by: model
+  - line: 140
+    level: 4
+    text: 'To summarize:'
+    role: embedded
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/015-iii-design-principles.md
+  chapter_sha256: 384ff87edf6ac1b5ecadbad06eb9da3419fb08d513e5b232c08dbdcfb3d280c2
+  headings:
+  - line: 2
+    level: 1
+    text: III DESIGN PRINCIPLES
+    role: section
+    classified_by: rule:chapter-title
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/016-chapter-7-srp-the-single-responsibility-principle.md
+  chapter_sha256: a98c60fdee70567ddb497886eacbeb0555f9cc0b179377b09b6d7324098f5818
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 7: SRP: The Single Responsibility Principle'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 12
+    level: 2
+    text: 'Historically, the SRP has been described this way:'
+    role: embedded
+    classified_by: model
+  - line: 33
+    level: 2
+    text: 'SYMPTOM 1: ACCIDENTAL DUPLICATION'
+    role: section
+    classified_by: model
+  - line: 66
+    level: 3
+    text: 'SYMPTOM 2: MERGES'
+    role: section
+    classified_by: model
+  - line: 83
+    level: 3
+    text: SOLUTIONS
+    role: section
+    classified_by: model
+  - line: 112
+    level: 3
+    text: CONCLUSION
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/017-chapter-8-ocp-the-open-closed-principle.md
+  chapter_sha256: e8d27038dd247792d358706ae0c30e12356eb074f3c641e82f45eae46d4a1ad7
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 8: OCP: The Open-Closed Principle'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 19
+    level: 2
+    text: A THOUGHT EXPERIMENT
+    role: section
+    classified_by: model
+  - line: 76
+    level: 3
+    text: DIRECTIONAL CONTROL
+    role: section
+    classified_by: model
+  - line: 83
+    level: 3
+    text: INFORMATION HIDING
+    role: section
+    classified_by: model
+  - line: 92
+    level: 3
+    text: CONCLUSION
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/018-chapter-9-lsp-the-liskov-substitution-principle.md
+  chapter_sha256: 6a64822811dab63c178322dc385c72dc74932b6ad8b267c0f4957b9008cf09c3
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 9: LSP: The Liskov Substitution Principle'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 13
+    level: 2
+    text: GUIDING THE USE OF INHERITANCE
+    role: section
+    classified_by: model
+  - line: 24
+    level: 3
+    text: THE SQUARE/RECTANGLE PROBLEM
+    role: section
+    classified_by: model
+  - line: 34
+    level: 4
+    text: Click here to view code image
+    role: embedded
+    classified_by: model
+  - line: 48
+    level: 3
+    text: LSP AND ARCHITECTURE
+    role: section
+    classified_by: model
+  - line: 59
+    level: 3
+    text: EXAMPLE LSP VIOLATION
+    role: section
+    classified_by: model
+  - line: 73
+    level: 4
+    text: purplecab.com/driver/Bob
+    role: embedded
+    classified_by: model
+  - line: 85
+    level: 4
+    text: Click here to view code image
+    role: embedded
+    classified_by: model
+  - line: 97
+    level: 4
+    text: Click here to view code image
+    role: embedded
+    classified_by: model
+  - line: 99
+    level: 4
+    text: URI Dispatch Format
+    role: embedded
+    classified_by: model
+  - line: 106
+    level: 3
+    text: CONCLUSION
+    role: section
+    classified_by: model
+  - line: 112
+    level: 2
+    text: '10'
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/019-chapter-10-isp-the-interface-segregation-principle.md
+  chapter_sha256: 402d4d37304186495460d65f6d7f1f25158401d441167de04fd99169c44bdb55
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 10: ISP: The Interface Segregation Principle'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 25
+    level: 2
+    text: ISP AND LANGUAGE
+    role: section
+    classified_by: model
+  - line: 34
+    level: 3
+    text: ISP AND ARCHITECTURE
+    role: section
+    classified_by: model
+  - line: 47
+    level: 3
+    text: CONCLUSION
+    role: section
+    classified_by: model
+  - line: 53
+    level: 2
+    text: '11'
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/020-chapter-11-dip-the-dependency-inversion-principle.md
+  chapter_sha256: 36674bdaf909cc36d8b6230f46b4e70f9fe493364dd29d1a1f1d27017e9c7160
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 11: DIP: The Dependency Inversion Principle'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 23
+    level: 2
+    text: STABLE ABSTRACTIONS
+    role: section
+    classified_by: rule:cited
+  - line: 40
+    level: 3
+    text: FACTORIES
+    role: section
+    classified_by: model
+  - line: 59
+    level: 3
+    text: CONCRETE COMPONENTS
+    role: section
+    classified_by: model
+  - line: 66
+    level: 3
+    text: CONCLUSION
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/021-iv-component-principles.md
+  chapter_sha256: 26ca3fe04e60b21475a0beeeeefc22993bda9d6892adf05b7bd96195a57f3d0a
+  headings:
+  - line: 2
+    level: 1
+    text: IV COMPONENT PRINCIPLES
+    role: section
+    classified_by: rule:chapter-title
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/022-chapter-12-components.md
+  chapter_sha256: 52de5d5df512162db2c20b4d83f734c95e97145a8ac3d2a8649b76fdc9bb93e0
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 12: Components'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 11
+    level: 2
+    text: A BRIEF HISTORY OF COMPONENTS
+    role: section
+    classified_by: model
+  - line: 17
+    level: 3
+    text: Click here to view code image
+    role: embedded
+    classified_by: model
+  - line: 73
+    level: 2
+    text: RELOCATABILITY
+    role: section
+    classified_by: model
+  - line: 86
+    level: 3
+    text: LINKERS
+    role: embedded
+    classified_by: model
+  - line: 115
+    level: 3
+    text: CONCLUSION
+    role: embedded
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/023-chapter-13-component-cohesion.md
+  chapter_sha256: 982001f6cd8ca80034a7d7c9be6b1c9b53d3cc363d3c6c933a22e327e5a9b8e6
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 13: Component Cohesion'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 17
+    level: 2
+    text: THE REUSE/RELEASE EQUIVALENCE PRINCIPLE
+    role: section
+    classified_by: model
+  - line: 38
+    level: 3
+    text: THE COMMON CLOSURE PRINCIPLE
+    role: section
+    classified_by: rule:cited
+  - line: 53
+    level: 4
+    text: SIMILARITY WITH SRP
+    role: embedded
+    classified_by: model
+  - line: 60
+    level: 3
+    text: THE COMMON REUSE PRINCIPLE
+    role: section
+    classified_by: model
+  - line: 80
+    level: 4
+    text: RELATION TO ISP
+    role: embedded
+    classified_by: model
+  - line: 89
+    level: 2
+    text: THE TENSION DIAGRAM FOR COMPONENT COHESION
+    role: section
+    classified_by: rule:cited
+  - line: 106
+    level: 3
+    text: CONCLUSION
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/024-chapter-14-component-coupling.md
+  chapter_sha256: dc4a7f3926474308e8f573329476c4fd14d2a2a7707d82c3b714e8e5d58e0da5
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 14: Component Coupling'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 9
+    level: 2
+    text: THE ACYCLIC DEPENDENCIES PRINCIPLE
+    role: section
+    classified_by: model
+  - line: 21
+    level: 3
+    text: THE WEEKLY BUILD
+    role: embedded
+    classified_by: model
+  - line: 35
+    level: 4
+    text: ELIMINATING DEPENDENCY CYCLES
+    role: embedded
+    classified_by: model
+  - line: 59
+    level: 4
+    text: consider.
+    role: embedded
+    classified_by: model
+  - line: 63
+    level: 4
+    text: THE EFFECT OF A CYCLE IN THE COMPONENT DEPENDENCY GRAPH
+    role: embedded
+    classified_by: model
+  - line: 79
+    level: 4
+    text: BREAKING THE CYCLE
+    role: embedded
+    classified_by: model
+  - line: 98
+    level: 4
+    text: THE "JITTERS"
+    role: embedded
+    classified_by: model
+  - line: 103
+    level: 3
+    text: TOP-DOWN DESIGN
+    role: embedded
+    classified_by: model
+  - line: 120
+    level: 2
+    text: THE STABLE DEPENDENCIES PRINCIPLE
+    role: section
+    classified_by: model
+  - line: 132
+    level: 3
+    text: STABILITY
+    role: embedded
+    classified_by: model
+  - line: 154
+    level: 4
+    text: STABILITY METRICS
+    role: embedded
+    classified_by: model
+  - line: 183
+    level: 4
+    text: NOT ALL COMPONENTS SHOULD BE STABLE
+    role: embedded
+    classified_by: model
+  - line: 216
+    level: 4
+    text: Abstract Components
+    role: embedded
+    classified_by: model
+  - line: 223
+    level: 3
+    text: THE STABLE ABSTRACTIONS
+    role: embedded
+    classified_by: model
+  - line: 225
+    level: 2
+    text: PRINCIPLE
+    role: section
+    classified_by: model
+  - line: 229
+    level: 3
+    text: WHERE DO WE PUT THE HIGH-LEVEL POLICY?
+    role: embedded
+    classified_by: model
+  - line: 235
+    level: 4
+    text: INTRODUCING THE STABLE ABSTRACTIONS PRINCIPLE
+    role: embedded
+    classified_by: model
+  - line: 245
+    level: 4
+    text: MEASURING ABSTRACTION
+    role: embedded
+    classified_by: model
+  - line: 255
+    level: 4
+    text: THE MAIN SEQUENCE
+    role: embedded
+    classified_by: model
+  - line: 271
+    level: 4
+    text: The Zone of Pain
+    role: embedded
+    classified_by: model
+  - line: 281
+    level: 4
+    text: The Zone of Uselessness
+    role: embedded
+    classified_by: model
+  - line: 289
+    level: 4
+    text: AVOIDING THE ZONES OF EXCLUSION
+    role: embedded
+    classified_by: model
+  - line: 297
+    level: 4
+    text: DISTANCE FROM THE MAIN SEQUENCE
+    role: embedded
+    classified_by: model
+  - line: 320
+    level: 3
+    text: CONCLUSION
+    role: section
+    classified_by: rule:cited
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/025-v-architecture.md
+  chapter_sha256: 0cee57e017c87071d760749945540ad46388d2fc855bb19cea1dc4ae4df9541f
+  headings:
+  - line: 2
+    level: 1
+    text: V ARCHITECTURE
+    role: section
+    classified_by: rule:chapter-title
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/026-chapter-15-what-is-architecture.md
+  chapter_sha256: 2ed1b27f4f111a96621d6608e77c8da5cb75e30c56417c9c70742273b3b9fec1
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 15: What Is Architecture?'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 27
+    level: 2
+    text: DEVELOPMENT
+    role: section
+    classified_by: model
+  - line: 38
+    level: 3
+    text: DEPLOYMENT
+    role: section
+    classified_by: model
+  - line: 51
+    level: 3
+    text: OPERATION
+    role: section
+    classified_by: rule:cited
+  - line: 64
+    level: 3
+    text: MAINTENANCE
+    role: section
+    classified_by: model
+  - line: 73
+    level: 3
+    text: KEEPING OPTIONS OPEN
+    role: section
+    classified_by: rule:cited
+  - line: 90
+    level: 4
+    text: 'For example:'
+    role: embedded
+    classified_by: model
+  - line: 108
+    level: 3
+    text: DEVICE INDEPENDENCE
+    role: section
+    classified_by: model
+  - line: 118
+    level: 4
+    text: Click here to view code image
+    role: embedded
+    classified_by: model
+  - line: 145
+    level: 3
+    text: JUNK MAIL
+    role: section
+    classified_by: model
+  - line: 176
+    level: 3
+    text: PHYSICAL ADDRESSING
+    role: section
+    classified_by: model
+  - line: 193
+    level: 3
+    text: CONCLUSION
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/027-chapter-16-independence.md
+  chapter_sha256: 039317ae96a1cc890edc1090dc734d6a3a43b5abe4b36cd265fbd66f25c5d3d6
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 16: Independence'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 14
+    level: 2
+    text: USE CASES
+    role: section
+    classified_by: model
+  - line: 27
+    level: 2
+    text: OPERATION
+    role: section
+    classified_by: model
+  - line: 36
+    level: 3
+    text: DEVELOPMENT
+    role: section
+    classified_by: model
+  - line: 45
+    level: 2
+    text: DEPLOYMENT
+    role: section
+    classified_by: model
+  - line: 52
+    level: 3
+    text: LEAVING OPTIONS OPEN
+    role: section
+    classified_by: model
+  - line: 63
+    level: 2
+    text: DECOUPLING LAYERS
+    role: section
+    classified_by: model
+  - line: 78
+    level: 3
+    text: DECOUPLING USE CASES
+    role: section
+    classified_by: model
+  - line: 89
+    level: 3
+    text: DECOUPLING MODE
+    role: section
+    classified_by: model
+  - line: 104
+    level: 2
+    text: INDEPENDENT DEVELOP-ABILITY
+    role: section
+    classified_by: model
+  - line: 111
+    level: 3
+    text: INDEPENDENT DEPLOYABILITY
+    role: section
+    classified_by: model
+  - line: 116
+    level: 3
+    text: DUPLICATION
+    role: section
+    classified_by: model
+  - line: 135
+    level: 3
+    text: DECOUPLING MODES (AGAIN)
+    role: section
+    classified_by: model
+  - line: 172
+    level: 3
+    text: CONCLUSION
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/028-chapter-17-boundaries-drawing-lines.md
+  chapter_sha256: 21c742f73b2de0d725da76ca570d152f041bd0056ad81af4102842aa6f4107b1
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 17: Boundaries: Drawing Lines'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 13
+    level: 2
+    text: A COUPLE OF SAD STORIES
+    role: embedded
+    classified_by: model
+  - line: 54
+    level: 3
+    text: FITNESSE
+    role: embedded
+    classified_by: model
+  - line: 87
+    level: 2
+    text: WHICH LINES DO YOU DRAW, AND WHEN DO YOU DRAW THEM?
+    role: section
+    classified_by: rule:cited
+  - line: 130
+    level: 3
+    text: WHAT ABOUT INPUT AND OUTPUT?
+    role: section
+    classified_by: rule:cited
+  - line: 145
+    level: 3
+    text: PLUGIN ARCHITECTURE
+    role: section
+    classified_by: model
+  - line: 162
+    level: 3
+    text: THE PLUGIN ARGUMENT
+    role: embedded
+    classified_by: model
+  - line: 185
+    level: 2
+    text: CONCLUSION
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/029-chapter-18-boundary-anatomy.md
+  chapter_sha256: f9ebc9f40136a72deee20890a38640ba47c459ed55268c0e066ab660fef701f9
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 18: Boundary Anatomy'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 9
+    level: 2
+    text: BOUNDARY CROSSING
+    role: section
+    classified_by: rule:cited
+  - line: 16
+    level: 3
+    text: THE DREADED MONOLITH
+    role: section
+    classified_by: rule:cited
+  - line: 49
+    level: 3
+    text: DEPLOYMENT COMPONENTS
+    role: section
+    classified_by: model
+  - line: 58
+    level: 3
+    text: THREADS
+    role: section
+    classified_by: model
+  - line: 63
+    level: 3
+    text: LOCAL PROCESSES
+    role: section
+    classified_by: model
+  - line: 80
+    level: 3
+    text: SERVICES
+    role: section
+    classified_by: rule:cited
+  - line: 89
+    level: 2
+    text: CONCLUSION
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/030-chapter-19-policy-and-level.md
+  chapter_sha256: 9b9e7ccd3cbe9096a630d8f4022257bd21c1474ea240bc65d9bb1cd3d47680e6
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 19: Policy and Level'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 21
+    level: 2
+    text: LEVEL
+    role: section
+    classified_by: model
+  - line: 37
+    level: 3
+    text: Click here to view code image
+    role: embedded
+    classified_by: model
+  - line: 72
+    level: 3
+    text: CONCLUSION
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/031-chapter-20-business-rules.md
+  chapter_sha256: d71dbbc8d6ca88910a89169cdc01b58a94dda6516904d46458fbee12d6a4e1f8
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 20: Business Rules'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 21
+    level: 2
+    text: ENTITIES
+    role: section
+    classified_by: model
+  - line: 34
+    level: 3
+    text: USE CASES
+    role: section
+    classified_by: rule:cited
+  - line: 63
+    level: 3
+    text: REQUEST AND RESPONSE MODELS
+    role: embedded
+    classified_by: model
+  - line: 74
+    level: 3
+    text: CONCLUSION
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/032-chapter-21-screaming-architecture.md
+  chapter_sha256: 318a4a0389e0be6ebb5176aeb01fb0ebb6d66b450a99d1dc0a545f90bfc68c0f
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 21: Screaming Architecture'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 15
+    level: 2
+    text: THE THEME OF AN ARCHITECTURE
+    role: section
+    classified_by: rule:cited
+  - line: 22
+    level: 3
+    text: THE PURPOSE OF AN ARCHITECTURE
+    role: section
+    classified_by: model
+  - line: 31
+    level: 3
+    text: BUT WHAT ABOUT THE WEB?
+    role: section
+    classified_by: model
+  - line: 37
+    level: 2
+    text: FRAMEWORKS ARE TOOLS, NOT WAYS OF LIFE
+    role: section
+    classified_by: model
+  - line: 48
+    level: 3
+    text: TESTABLE ARCHITECTURES
+    role: section
+    classified_by: model
+  - line: 53
+    level: 3
+    text: CONCLUSION
+    role: section
+    classified_by: model
+  - line: 63
+    level: 2
+    text: '22'
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/033-chapter-22-the-clean-architecture.md
+  chapter_sha256: bc1d4951434279164f84f3b2845b966f0a8be1021f5289cb44d5eae519192017
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 22: The Clean Architecture'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 30
+    level: 2
+    text: THE DEPENDENCY RULE
+    role: section
+    classified_by: rule:cited
+  - line: 42
+    level: 3
+    text: ENTITIES
+    role: section
+    classified_by: model
+  - line: 48
+    level: 4
+    text: USE CASES
+    role: section
+    classified_by: model
+  - line: 59
+    level: 4
+    text: INTERFACE ADAPTERS
+    role: section
+    classified_by: model
+  - line: 67
+    level: 4
+    text: FRAMEWORKS AND DRIVERS
+    role: section
+    classified_by: model
+  - line: 73
+    level: 4
+    text: ONLY FOUR CIRCLES?
+    role: section
+    classified_by: model
+  - line: 77
+    level: 4
+    text: CROSSING BOUNDARIES
+    role: section
+    classified_by: model
+  - line: 88
+    level: 4
+    text: WHICH DATA CROSSES THE BOUNDARIES
+    role: section
+    classified_by: rule:cited
+  - line: 97
+    level: 2
+    text: A TYPICAL SCENARIO
+    role: section
+    classified_by: model
+  - line: 112
+    level: 2
+    text: CONCLUSION
+    role: section
+    classified_by: model
+  - line: 116
+    level: 2
+    text: '23'
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/034-chapter-23-presenters-and-humble-objects.md
+  chapter_sha256: 0f8f53fc6d5048ac607ddf232bf8393207f65cfa413348d2f992dd69c07e6eba
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 23: Presenters and Humble Objects'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 9
+    level: 2
+    text: THE HUMBLE OBJECT PATTERN
+    role: section
+    classified_by: model
+  - line: 18
+    level: 3
+    text: PRESENTERS AND VIEWS
+    role: section
+    classified_by: model
+  - line: 33
+    level: 3
+    text: TESTING AND ARCHITECTURE
+    role: section
+    classified_by: model
+  - line: 38
+    level: 3
+    text: DATABASE GATEWAYS
+    role: section
+    classified_by: rule:cited
+  - line: 45
+    level: 3
+    text: DATA MAPPERS
+    role: section
+    classified_by: model
+  - line: 56
+    level: 3
+    text: SERVICE LISTENERS
+    role: section
+    classified_by: model
+  - line: 63
+    level: 3
+    text: CONCLUSION
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/035-chapter-24-partial-boundaries.md
+  chapter_sha256: 6eb49a3959f8f83329af80fb0e4cbcf143914c1f53c02751a90b4b84b23a283d
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 24: Partial Boundaries'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 13
+    level: 2
+    text: SKIP THE LAST STEP
+    role: section
+    classified_by: rule:cited
+  - line: 24
+    level: 3
+    text: ONE-DIMENSIONAL BOUNDARIES
+    role: section
+    classified_by: model
+  - line: 37
+    level: 3
+    text: FACADES
+    role: section
+    classified_by: rule:cited
+  - line: 48
+    level: 2
+    text: CONCLUSION
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/036-chapter-25-layers-and-boundaries.md
+  chapter_sha256: 415fd1173736247f84b8b62e0afe083191c1f8e808952e005ce81e4ff85f7888
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 25: Layers and Boundaries'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 11
+    level: 2
+    text: HUNT THE WUMPUS
+    role: section
+    classified_by: model
+  - line: 34
+    level: 3
+    text: CLEAN ARCHITECTURE?
+    role: embedded
+    classified_by: model
+  - line: 73
+    level: 3
+    text: CROSSING THE STREAMS
+    role: embedded
+    classified_by: model
+  - line: 86
+    level: 3
+    text: SPLITTING THE STREAMS
+    role: embedded
+    classified_by: model
+  - line: 109
+    level: 3
+    text: CONCLUSION
+    role: embedded
+    classified_by: model
+  - line: 123
+    level: 4
+    text: It takes a watchful eye.
+    role: embedded
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/037-chapter-26-the-main-component.md
+  chapter_sha256: f9db908e54e67d6a7c1f4b91244442d165da4f7827e7d40dce75d8ad3c877ca5
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 26: The Main Component'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 9
+    level: 2
+    text: THE ULTIMATE DETAIL
+    role: section
+    classified_by: model
+  - line: 159
+    level: 3
+    text: CONCLUSION
+    role: embedded
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/038-chapter-27-services-great-and-small.md
+  chapter_sha256: 1d2f307d1d096735df421328372ad90093d5958159aa6a964cdf2cd5871168c3
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 27: Services: Great and Small'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 12
+    level: 2
+    text: SERVICE ARCHITECTURE?
+    role: section
+    classified_by: rule:cited
+  - line: 23
+    level: 3
+    text: SERVICE BENEFITS?
+    role: section
+    classified_by: model
+  - line: 27
+    level: 4
+    text: THE DECOUPLING FALLACY
+    role: section
+    classified_by: rule:cited
+  - line: 37
+    level: 4
+    text: THE FALLACY OF INDEPENDENT DEVELOPMENT AND DEPLOYMENT
+    role: section
+    classified_by: rule:cited
+  - line: 46
+    level: 3
+    text: THE KITTY PROBLEM
+    role: section
+    classified_by: model
+  - line: 77
+    level: 2
+    text: OBJECTS TO THE RESCUE
+    role: section
+    classified_by: model
+  - line: 96
+    level: 3
+    text: COMPONENT-BASED SERVICES
+    role: section
+    classified_by: model
+  - line: 109
+    level: 3
+    text: CROSS-CUTTING CONCERNS
+    role: section
+    classified_by: model
+  - line: 121
+    level: 3
+    text: CONCLUSION
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/039-chapter-28-the-test-boundary.md
+  chapter_sha256: 337aadc6f4204d82b1d09a094048cd2e72424a9c03460b6779176a35d1c4cd1b
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 28: The Test Boundary'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 9
+    level: 2
+    text: TESTS AS SYSTEM COMPONENTS
+    role: section
+    classified_by: rule:cited
+  - line: 22
+    level: 2
+    text: DESIGN FOR TESTABILITY
+    role: section
+    classified_by: model
+  - line: 37
+    level: 3
+    text: THE TESTING API
+    role: embedded
+    classified_by: model
+  - line: 43
+    level: 4
+    text: STRUCTURAL COUPLING
+    role: embedded
+    classified_by: model
+  - line: 54
+    level: 4
+    text: SECURITY
+    role: embedded
+    classified_by: model
+  - line: 59
+    level: 3
+    text: CONCLUSION
+    role: section
+    classified_by: model
+  - line: 63
+    level: 2
+    text: '29'
+    role: embedded
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/040-chapter-29-clean-embedded-architecture.md
+  chapter_sha256: 06bd36c12b58387712a79e7feefeb7e958ef4491345d7385f5c880d4e391b401
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 29: Clean Embedded Architecture'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 16
+    level: 2
+    text: 'I''d like to add to Doug''s statement:'
+    role: embedded
+    classified_by: model
+  - line: 46
+    level: 3
+    text: APP-TITUDE TEST
+    role: embedded
+    classified_by: model
+  - line: 89
+    level: 4
+    text: Click here to view code image
+    role: embedded
+    classified_by: model
+  - line: 101
+    level: 4
+    text: Click here to view code image
+    role: embedded
+    classified_by: model
+  - line: 116
+    level: 4
+    text: Click here to view code image
+    role: embedded
+    classified_by: model
+  - line: 128
+    level: 4
+    text: Click here to view code image
+    role: embedded
+    classified_by: model
+  - line: 139
+    level: 2
+    text: THE TARGET-HARDWARE BOTTLENECK
+    role: section
+    classified_by: model
+  - line: 148
+    level: 3
+    text: A CLEAN EMBEDDED ARCHITECTURE IS A TESTABLE EMBEDDED ARCHITECTURE
+    role: section
+    classified_by: model
+  - line: 152
+    level: 4
+    text: Layers
+    role: section
+    classified_by: model
+  - line: 168
+    level: 4
+    text: The Hardware Is a Detail
+    role: section
+    classified_by: model
+  - line: 187
+    level: 4
+    text: DON'T REVEAL HARDWARE DETAILS TO THE USER OF THE HAL
+    role: section
+    classified_by: model
+  - line: 191
+    level: 4
+    text: The Processor Is a Detail
+    role: section
+    classified_by: model
+  - line: 206
+    level: 4
+    text: Click here to view code image
+    role: embedded
+    classified_by: model
+  - line: 251
+    level: 4
+    text: Click here to view code image
+    role: embedded
+    classified_by: model
+  - line: 287
+    level: 4
+    text: The Operating System Is a Detail
+    role: section
+    classified_by: model
+  - line: 313
+    level: 4
+    text: PROGRAMMING TO INTERFACES AND SUBSTITUTABILITY
+    role: section
+    classified_by: model
+  - line: 325
+    level: 4
+    text: DRY CONDITIONAL COMPILATION DIRECTIVES
+    role: section
+    classified_by: model
+  - line: 334
+    level: 3
+    text: CONCLUSION
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/041-vi-details.md
+  chapter_sha256: a48188beb16efe46172ec06eb044c9520a2d9905689e4c29747ba373e735e196
+  headings:
+  - line: 2
+    level: 1
+    text: VI DETAILS
+    role: section
+    classified_by: rule:chapter-title
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/042-chapter-30-the-database-is-a-detail.md
+  chapter_sha256: d06a84fff5421be9d6de9c43aa0ba0bae1f09441b92afea82d9f8611424d6c16
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 30: The Database Is a Detail'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 13
+    level: 2
+    text: RELATIONAL DATABASES
+    role: section
+    classified_by: model
+  - line: 24
+    level: 2
+    text: WHY ARE DATABASE SYSTEMS SO PREVALENT?
+    role: section
+    classified_by: model
+  - line: 45
+    level: 3
+    text: WHAT IF THERE WERE NO DISK?
+    role: embedded
+    classified_by: model
+  - line: 56
+    level: 3
+    text: DETAILS
+    role: embedded
+    classified_by: model
+  - line: 63
+    level: 3
+    text: BUT WHAT ABOUT PERFORMANCE?
+    role: embedded
+    classified_by: model
+  - line: 68
+    level: 3
+    text: ANECDOTE
+    role: embedded
+    classified_by: model
+  - line: 95
+    level: 3
+    text: CONCLUSION
+    role: embedded
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/043-chapter-31-the-web-is-a-detail.md
+  chapter_sha256: 8338536eced974e5ea962c31acfb45b60e9cbadd66bbe5d506222c958559b2b7
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 31: The Web Is a Detail'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 15
+    level: 2
+    text: THE ENDLESS PENDULUM
+    role: section
+    classified_by: model
+  - line: 42
+    level: 3
+    text: THE UPSHOT
+    role: embedded
+    classified_by: model
+  - line: 61
+    level: 2
+    text: CONCLUSION
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/044-chapter-32-frameworks-are-details.md
+  chapter_sha256: 1ef0699fc6b92b3dee3c7e26e686bd83e2aadd0f41d1e9df881ffc022c791ce0
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 32: Frameworks Are Details'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 11
+    level: 2
+    text: FRAMEWORK AUTHORS
+    role: section
+    classified_by: model
+  - line: 20
+    level: 3
+    text: ASYMMETRIC MARRIAGE
+    role: section
+    classified_by: rule:cited
+  - line: 35
+    level: 3
+    text: THE RISKS
+    role: section
+    classified_by: model
+  - line: 45
+    level: 3
+    text: THE SOLUTION
+    role: section
+    classified_by: rule:cited
+  - line: 64
+    level: 3
+    text: I NOW PRONOUNCE YOU …
+    role: section
+    classified_by: model
+  - line: 71
+    level: 3
+    text: CONCLUSION
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/045-chapter-33-case-study-video-sales.md
+  chapter_sha256: a3ecb2efeb9470a00b2374908a569ce1728fdb6ba767832e5388df96ebf7039b
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 33: Case Study: Video Sales'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 9
+    level: 2
+    text: THE PRODUCT
+    role: section
+    classified_by: model
+  - line: 26
+    level: 3
+    text: USE CASE ANALYSIS
+    role: section
+    classified_by: model
+  - line: 43
+    level: 3
+    text: COMPONENT ARCHITECTURE
+    role: section
+    classified_by: model
+  - line: 66
+    level: 3
+    text: DEPENDENCY MANAGEMENT
+    role: section
+    classified_by: model
+  - line: 75
+    level: 3
+    text: CONCLUSION
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/046-chapter-34-the-missing-chapter.md
+  chapter_sha256: f9b5c7325ce552f18a8ae26de0a64d61e549b1f0e7229c06eb30714874fa0b73
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 34: The Missing Chapter'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 15
+    level: 2
+    text: PACKAGE BY LAYER
+    role: section
+    classified_by: model
+  - line: 36
+    level: 3
+    text: PACKAGE BY FEATURE
+    role: section
+    classified_by: model
+  - line: 49
+    level: 2
+    text: PORTS AND ADAPTERS
+    role: section
+    classified_by: model
+  - line: 70
+    level: 3
+    text: PACKAGE BY COMPONENT
+    role: section
+    classified_by: rule:cited
+  - line: 117
+    level: 2
+    text: THE DEVIL IS IN THE IMPLEMENTATION DETAILS
+    role: section
+    classified_by: model
+  - line: 124
+    level: 3
+    text: ORGANIZATION VERSUS
+    role: embedded
+    classified_by: model
+  - line: 126
+    level: 3
+    text: ENCAPSULATION
+    role: section
+    classified_by: rule:cited
+  - line: 153
+    level: 3
+    text: OTHER DECOUPLING MODES
+    role: section
+    classified_by: model
+  - line: 179
+    level: 3
+    text: 'CONCLUSION: THE MISSING ADVICE'
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/047-vii-appendix.md
+  chapter_sha256: a083f54a30c3c5ee0f9b10cb9406ab539a4278226a57483ba4b7e6fe8bf3228b
+  headings:
+  - line: 2
+    level: 1
+    text: VII Appendix
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A
+    role: section
+    classified_by: model
+  - line: 7
+    level: 2
+    text: ARCHITECTURE ARCHAEOLOGY
+    role: section
+    classified_by: model
+  - line: 15
+    level: 2
+    text: UNION ACCOUNTING SYSTEM
+    role: section
+    classified_by: model
+  - line: 115
+    level: 3
+    text: LASER TRIM
+    role: embedded
+    classified_by: model
+  - line: 171
+    level: 3
+    text: ALUMINUM DIE-CAST MONITORING
+    role: embedded
+    classified_by: model
+  - line: 189
+    level: 3
+    text: 4-TEL
+    role: embedded
+    classified_by: model
+  - line: 263
+    level: 3
+    text: THE SERVICE AREA COMPUTER
+    role: embedded
+    classified_by: model
+  - line: 270
+    level: 4
+    text: DISPATCH DETERMINATION
+    role: embedded
+    classified_by: model
+  - line: 284
+    level: 4
+    text: ARCHITECTURE
+    role: embedded
+    classified_by: model
+  - line: 308
+    level: 4
+    text: THE GRAND REDESIGN IN THE SKY
+    role: embedded
+    classified_by: model
+  - line: 324
+    level: 4
+    text: EUROPE
+    role: embedded
+    classified_by: model
+  - line: 338
+    level: 4
+    text: SAC CONCLUSION
+    role: embedded
+    classified_by: model
+  - line: 342
+    level: 3
+    text: C LANGUAGE
+    role: embedded
+    classified_by: model
+  - line: 366
+    level: 4
+    text: C
+    role: embedded
+    classified_by: model
+  - line: 376
+    level: 3
+    text: BOSS
+    role: embedded
+    classified_by: model
+  - line: 392
+    level: 3
+    text: pCCU
+    role: embedded
+    classified_by: model
+  - line: 412
+    level: 4
+    text: THE SCHEDULE TRAP
+    role: embedded
+    classified_by: model
+  - line: 430
+    level: 3
+    text: DLU/DRU
+    role: embedded
+    classified_by: model
+  - line: 453
+    level: 4
+    text: ARCHITECTURE
+    role: embedded
+    classified_by: model
+  - line: 470
+    level: 2
+    text: VRS
+    role: section
+    classified_by: model
+  - line: 483
+    level: 3
+    text: THE NAME
+    role: embedded
+    classified_by: model
+  - line: 493
+    level: 4
+    text: ARCHITECTURE
+    role: embedded
+    classified_by: model
+  - line: 519
+    level: 4
+    text: VRS CONCLUSION
+    role: embedded
+    classified_by: model
+  - line: 523
+    level: 3
+    text: THE ELECTRONIC RECEPTIONIST
+    role: section
+    classified_by: model
+  - line: 555
+    level: 4
+    text: ER DEMISE
+    role: embedded
+    classified_by: model
+  - line: 561
+    level: 4
+    text: Ouch!
+    role: embedded
+    classified_by: model
+  - line: 566
+    level: 3
+    text: CRAFT DISPATCH SYSTEM
+    role: section
+    classified_by: model
+  - line: 600
+    level: 3
+    text: CLEAR COMMUNICATIONS
+    role: section
+    classified_by: model
+  - line: 625
+    level: 4
+    text: THE SETUP
+    role: embedded
+    classified_by: model
+  - line: 645
+    level: 4
+    text: UNCLE BOB
+    role: embedded
+    classified_by: model
+  - line: 655
+    level: 4
+    text: THE PHONE CALL
+    role: embedded
+    classified_by: model
+  - line: 664
+    level: 3
+    text: ROSE
+    role: section
+    classified_by: model
+  - line: 680
+    level: 4
+    text: THE DEBATES CONTINUED
+    role: embedded
+    classified_by: model
+  - line: 686
+    level: 4
+    text: '... BY ANY OTHER NAME'
+    role: embedded
+    classified_by: model
+  - line: 702
+    level: 3
+    text: ARCHITECTS REGISTRY EXAM
+    role: section
+    classified_by: model
+  - line: 750
+    level: 3
+    text: CONCLUSION
+    role: section
+    classified_by: model
+- path: books/clean-architecture-a-craftsman-guide-to-software-structure-and-design/chapters/048-index.md
+  chapter_sha256: a8fa9c66c55df18bdc2c4d3dc63a721b1007b50873f09e5505ac8c637c8f1bac
+  headings:
+  - line: 1
+    level: 1
+    text: INDEX
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: Numbers
+    role: embedded
+    classified_by: model
+  - line: 1533
+    level: 2
+    text: Register Your Product at informit.com/register Access additional benefits and save 35% on your next purchase
+    role: embedded
+    classified_by: model
+  - line: 1540
+    level: 3
+    text: InformIT.com-The Trusted Technology Learning Source
+    role: embedded
+    classified_by: model

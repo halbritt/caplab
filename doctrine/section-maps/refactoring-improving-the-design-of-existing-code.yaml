@@ -1,0 +1,2361 @@
+schema_version: section-map/1
+book: refactoring-improving-the-design-of-existing-code
+chapters:
+- path: books/refactoring-improving-the-design-of-existing-code/chapters/001-refactoring-improving-the-design-of-existing-code.md
+  chapter_sha256: 3ce89afbd03b11498e8502898d6931b4aa58c8355f9a7078957c2ed4923dfa07
+  headings:
+  - line: 1
+    level: 1
+    text: 'Refactoring: Improving the Design of Existing Code'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 17
+    level: 2
+    text: Book News, Inc.
+    role: embedded
+    classified_by: model
+- path: books/refactoring-improving-the-design-of-existing-code/chapters/002-foreword.md
+  chapter_sha256: d204e5fb7922426da0d233962bed7dcc4748822303ee3feae744fb57d35b0228
+  headings:
+  - line: 1
+    level: 1
+    text: Foreword
+    role: section
+    classified_by: rule:chapter-title
+- path: books/refactoring-improving-the-design-of-existing-code/chapters/003-preface.md
+  chapter_sha256: c6cb75762b7b36d739b42bdf607d02f72efb7edce8cb3fd7526aaa23e807df90
+  headings:
+  - line: 1
+    level: 1
+    text: Preface
+    role: section
+    classified_by: rule:chapter-title
+  - line: 17
+    level: 2
+    text: What Is Refactoring?
+    role: section
+    classified_by: model
+  - line: 27
+    level: 3
+    text: What's in This Book?
+    role: section
+    classified_by: model
+  - line: 41
+    level: 3
+    text: Refactoring in Java
+    role: section
+    classified_by: model
+  - line: 49
+    level: 3
+    text: Who Should Read This Book?
+    role: section
+    classified_by: model
+  - line: 62
+    level: 2
+    text: Building on the Foundations Laid by Others
+    role: section
+    classified_by: model
+- path: books/refactoring-improving-the-design-of-existing-code/chapters/004-acknowledgments.md
+  chapter_sha256: 50bf75ca46eb43fa27164303d584634cd7cb0c6a55546e767f13031c10e82186
+  headings:
+  - line: 1
+    level: 1
+    text: Acknowledgments
+    role: section
+    classified_by: rule:chapter-title
+- path: books/refactoring-improving-the-design-of-existing-code/chapters/005-chapter-1-refactoring-a-first-example.md
+  chapter_sha256: 8fdd2814722d254072129438f35db1d9d7abf148292d1f928a81b31749d03fab
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 1: Refactoring, a First Example'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 11
+    level: 2
+    text: The Starting Point
+    role: section
+    classified_by: model
+  - line: 23
+    level: 3
+    text: Movie
+    role: embedded
+    classified_by: model
+  - line: 50
+    level: 3
+    text: Rental
+    role: embedded
+    classified_by: model
+  - line: 71
+    level: 3
+    text: Customer
+    role: embedded
+    classified_by: model
+  - line: 145
+    level: 3
+    text: Comments on the Starting Program
+    role: embedded
+    classified_by: model
+  - line: 163
+    level: 4
+    text: Tip
+    role: embedded
+    classified_by: rule:callout
+  - line: 167
+    level: 2
+    text: The First Step in Refactoring
+    role: section
+    classified_by: rule:cited
+  - line: 177
+    level: 3
+    text: Tip
+    role: embedded
+    classified_by: rule:callout
+  - line: 181
+    level: 2
+    text: Decomposing and Redistributing the Statement Method
+    role: embedded
+    classified_by: model
+  - line: 323
+    level: 3
+    text: Tip
+    role: embedded
+    classified_by: rule:callout
+  - line: 389
+    level: 3
+    text: Moving the Amount Calculation
+    role: embedded
+    classified_by: model
+  - line: 608
+    level: 3
+    text: Extracting Frequent Renter Points
+    role: embedded
+    classified_by: model
+  - line: 696
+    level: 3
+    text: Removing Temps
+    role: embedded
+    classified_by: model
+  - line: 870
+    level: 2
+    text: Replacing the Conditional Logic on Price Code with Polymorphism
+    role: embedded
+    classified_by: model
+  - line: 961
+    level: 3
+    text: At last … Inheritance
+    role: embedded
+    classified_by: model
+  - line: 1093
+    level: 4
+    text: 'It is simple to move:'
+    role: embedded
+    classified_by: model
+  - line: 1122
+    level: 4
+    text: 'Once it is moved I can start using Replace Conditional with Polymorphism:'
+    role: embedded
+    classified_by: model
+  - line: 1238
+    level: 2
+    text: Final Thoughts
+    role: section
+    classified_by: model
+- path: books/refactoring-improving-the-design-of-existing-code/chapters/006-chapter-2-principles-in-refactoring.md
+  chapter_sha256: 3b23e32aa2e9673e76d04469aa4b91e9aa92544b6e0f7209e7b3a6747bef342a
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 2: Principles in Refactoring'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 5
+    level: 2
+    text: Defining Refactoring
+    role: section
+    classified_by: rule:cited
+  - line: 33
+    level: 3
+    text: The Two Hats
+    role: section
+    classified_by: rule:cited
+  - line: 39
+    level: 2
+    text: Why Should You Refactor?
+    role: section
+    classified_by: model
+  - line: 43
+    level: 3
+    text: Refactoring Improves the Design of Software
+    role: embedded
+    classified_by: model
+  - line: 51
+    level: 3
+    text: Refactoring Makes Software Easier to Understand
+    role: embedded
+    classified_by: model
+  - line: 63
+    level: 2
+    text: Refactoring Helps You Find Bugs
+    role: embedded
+    classified_by: model
+  - line: 69
+    level: 3
+    text: Refactoring Helps You Program Faster
+    role: embedded
+    classified_by: model
+  - line: 79
+    level: 3
+    text: When Should You Refactor?
+    role: section
+    classified_by: rule:cited
+  - line: 85
+    level: 3
+    text: The Rule of Three
+    role: embedded
+    classified_by: model
+  - line: 93
+    level: 3
+    text: Refactor When You Add Function
+    role: embedded
+    classified_by: model
+  - line: 101
+    level: 3
+    text: Refactor When You Need to Fix a Bug
+    role: embedded
+    classified_by: model
+  - line: 105
+    level: 3
+    text: Refactor As You Do a Code Review
+    role: embedded
+    classified_by: model
+  - line: 119
+    level: 3
+    text: Why Refactoring Works
+    role: embedded
+    classified_by: model
+  - line: 121
+    level: 3
+    text: Kent Beck
+    role: embedded
+    classified_by: model
+  - line: 142
+    level: 3
+    text: What Do I Tell My Manager?
+    role: embedded
+    classified_by: model
+  - line: 150
+    level: 3
+    text: Indirection and Refactoring
+    role: embedded
+    classified_by: model
+  - line: 152
+    level: 3
+    text: Kent Beck
+    role: embedded
+    classified_by: model
+  - line: 170
+    level: 3
+    text: · **To isolate change.**
+    role: embedded
+    classified_by: model
+  - line: 174
+    level: 3
+    text: · **To encode conditional logic.**
+    role: embedded
+    classified_by: model
+  - line: 188
+    level: 3
+    text: Problems with Refactoring
+    role: embedded
+    classified_by: model
+  - line: 196
+    level: 3
+    text: Databases
+    role: section
+    classified_by: rule:cited
+  - line: 206
+    level: 3
+    text: Changing Interfaces
+    role: section
+    classified_by: rule:cited
+  - line: 222
+    level: 3
+    text: Tip
+    role: embedded
+    classified_by: rule:callout
+  - line: 228
+    level: 3
+    text: Design Changes That Are Difficult to Refactor
+    role: embedded
+    classified_by: model
+  - line: 234
+    level: 3
+    text: When Shouldn't You Refactor?
+    role: section
+    classified_by: rule:cited
+  - line: 248
+    level: 2
+    text: Refactoring and Design
+    role: section
+    classified_by: model
+  - line: 264
+    level: 3
+    text: It Takes Awhile to Create Nothing
+    role: embedded
+    classified_by: model
+  - line: 266
+    level: 3
+    text: Ron Jeffries
+    role: embedded
+    classified_by: model
+  - line: 290
+    level: 3
+    text: Refactoring and Performance
+    role: embedded
+    classified_by: model
+  - line: 308
+    level: 2
+    text: Where Did Refactoring Come From?
+    role: section
+    classified_by: model
+  - line: 324
+    level: 3
+    text: Optimizing a Payroll System
+    role: embedded
+    classified_by: model
+  - line: 326
+    level: 3
+    text: Rich Garzaniti
+    role: embedded
+    classified_by: model
+- path: books/refactoring-improving-the-design-of-existing-code/chapters/007-chapter-3-bad-smells-in-code.md
+  chapter_sha256: c9f599f975ac0a5c647771e5804cd91e0d479c935ea9fde2e70c78b61dd5708d
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 3: Bad Smells in Code'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 19
+    level: 2
+    text: Duplicated Code
+    role: section
+    classified_by: model
+  - line: 29
+    level: 3
+    text: Long Method
+    role: section
+    classified_by: model
+  - line: 47
+    level: 2
+    text: Large Class
+    role: section
+    classified_by: model
+  - line: 61
+    level: 2
+    text: Long Parameter List
+    role: section
+    classified_by: model
+  - line: 73
+    level: 3
+    text: Divergent Change
+    role: section
+    classified_by: model
+  - line: 79
+    level: 2
+    text: Shotgun Surgery
+    role: section
+    classified_by: model
+  - line: 87
+    level: 2
+    text: Feature Envy
+    role: section
+    classified_by: model
+  - line: 95
+    level: 3
+    text: Data Clumps
+    role: section
+    classified_by: model
+  - line: 103
+    level: 3
+    text: Primitive Obsession
+    role: section
+    classified_by: model
+  - line: 113
+    level: 3
+    text: Switch Statements
+    role: section
+    classified_by: model
+  - line: 121
+    level: 3
+    text: Parallel Inheritance Hierarchies
+    role: section
+    classified_by: model
+  - line: 127
+    level: 2
+    text: Lazy Class
+    role: section
+    classified_by: model
+  - line: 131
+    level: 2
+    text: Speculative Generality
+    role: section
+    classified_by: model
+  - line: 139
+    level: 3
+    text: Temporary Field
+    role: section
+    classified_by: model
+  - line: 147
+    level: 2
+    text: Message Chains
+    role: section
+    classified_by: model
+  - line: 155
+    level: 2
+    text: Middle Man
+    role: section
+    classified_by: model
+  - line: 161
+    level: 2
+    text: Inappropriate Intimacy
+    role: section
+    classified_by: model
+  - line: 169
+    level: 2
+    text: Alternative Classes with Different Interfaces
+    role: section
+    classified_by: model
+  - line: 173
+    level: 2
+    text: Incomplete Library Class
+    role: section
+    classified_by: model
+  - line: 181
+    level: 3
+    text: Data Class
+    role: section
+    classified_by: model
+  - line: 189
+    level: 3
+    text: Refused Bequest
+    role: section
+    classified_by: model
+  - line: 199
+    level: 3
+    text: Comments
+    role: section
+    classified_by: model
+- path: books/refactoring-improving-the-design-of-existing-code/chapters/008-chapter-4-building-tests.md
+  chapter_sha256: a926b34e921cd9ee6eabe1309e4aad37034335a1a817a64be65f737513a38734
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 4: Building Tests'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 7
+    level: 2
+    text: The Value of Self-testing Code
+    role: section
+    classified_by: rule:cited
+  - line: 23
+    level: 3
+    text: Tip
+    role: embedded
+    classified_by: rule:callout
+  - line: 39
+    level: 2
+    text: The JUnit Testing Framework
+    role: section
+    classified_by: model
+  - line: 123
+    level: 3
+    text: Tip
+    role: embedded
+    classified_by: rule:callout
+  - line: 214
+    level: 3
+    text: Unit and Functional Tests
+    role: section
+    classified_by: model
+  - line: 224
+    level: 4
+    text: Tip
+    role: embedded
+    classified_by: rule:callout
+  - line: 230
+    level: 3
+    text: Adding More Tests
+    role: section
+    classified_by: model
+  - line: 236
+    level: 4
+    text: Tip
+    role: embedded
+    classified_by: rule:callout
+  - line: 385
+    level: 4
+    text: Tip
+    role: embedded
+    classified_by: rule:callout
+- path: books/refactoring-improving-the-design-of-existing-code/chapters/009-chapter-5-toward-a-catalog-of-refactorings.md
+  chapter_sha256: 4738820948ea053e70cd8eaa9178162d3ab2b09305735954e3e87a4bb1039832
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 5: Toward a Catalog of Refactorings'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 5
+    level: 2
+    text: Format of the Refactorings
+    role: section
+    classified_by: rule:cited
+  - line: 33
+    level: 3
+    text: Finding References
+    role: section
+    classified_by: model
+  - line: 53
+    level: 3
+    text: How Mature Are These Refactorings?
+    role: section
+    classified_by: model
+- path: books/refactoring-improving-the-design-of-existing-code/chapters/010-chapter-6-composing-methods.md
+  chapter_sha256: 9c78a7639874b82d6f8efd922721b1035c5c66dc42645d3ac889ed21fa8e75f9
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 6: Composing Methods'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 13
+    level: 2
+    text: Extract Method
+    role: section
+    classified_by: model
+  - line: 39
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 47
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 65
+    level: 3
+    text: 'Example: No Local Variables'
+    role: embedded
+    classified_by: model
+  - line: 115
+    level: 3
+    text: 'Example: Using Local Variables'
+    role: embedded
+    classified_by: model
+  - line: 164
+    level: 3
+    text: 'Example: Reassigning a Local Variable'
+    role: embedded
+    classified_by: model
+  - line: 184
+    level: 4
+    text: 'Now I extract the calculation:'
+    role: embedded
+    classified_by: model
+  - line: 272
+    level: 3
+    text: Inline Method
+    role: section
+    classified_by: model
+  - line: 293
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 301
+    level: 2
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 312
+    level: 2
+    text: Inline Temp
+    role: section
+    classified_by: model
+  - line: 324
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 328
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 337
+    level: 2
+    text: Replace Temp with Query
+    role: section
+    classified_by: model
+  - line: 364
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 372
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 392
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 484
+    level: 2
+    text: Introduce Explaining Variable
+    role: section
+    classified_by: model
+  - line: 508
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 522
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 532
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 594
+    level: 3
+    text: Example with Extract Method
+    role: embedded
+    classified_by: model
+  - line: 645
+    level: 2
+    text: Split Temporary Variable
+    role: section
+    classified_by: model
+  - line: 667
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 673
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 685
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 757
+    level: 2
+    text: Remove Assignments to Parameters
+    role: section
+    classified_by: model
+  - line: 771
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 792
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 801
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 841
+    level: 3
+    text: Pass By Value in Java
+    role: embedded
+    classified_by: model
+  - line: 893
+    level: 4
+    text: It produces this output
+    role: embedded
+    classified_by: model
+  - line: 906
+    level: 2
+    text: Replace Method with Method Object
+    role: section
+    classified_by: model
+  - line: 925
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 933
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 947
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 1031
+    level: 2
+    text: Substitute Algorithm
+    role: section
+    classified_by: model
+  - line: 1070
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 1078
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+- path: books/refactoring-improving-the-design-of-existing-code/chapters/011-chapter-7-moving-features-between-objects.md
+  chapter_sha256: 49d17aecab9be3a23c1697f631de6eba2fdbc7fab0b15b3b818fcd6016a0a688
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 7: Moving Features Between Objects'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 11
+    level: 2
+    text: Move Method
+    role: section
+    classified_by: model
+  - line: 19
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 29
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 66
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 154
+    level: 3
+    text: Move Field
+    role: section
+    classified_by: model
+  - line: 162
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 170
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 192
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 232
+    level: 3
+    text: 'Example: Using Self-Encapsulation'
+    role: embedded
+    classified_by: model
+  - line: 267
+    level: 3
+    text: Extract Class
+    role: section
+    classified_by: model
+  - line: 275
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 283
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 304
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 347
+    level: 4
+    text: 'Now I use Move Field on one of the fields:'
+    role: embedded
+    classified_by: model
+  - line: 423
+    level: 3
+    text: Inline Class
+    role: section
+    classified_by: model
+  - line: 431
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 435
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 449
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 514
+    level: 4
+    text: becomes
+    role: embedded
+    classified_by: model
+  - line: 523
+    level: 2
+    text: Hide Delegate
+    role: section
+    classified_by: model
+  - line: 531
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 545
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 557
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 605
+    level: 3
+    text: Remove Middle Man
+    role: section
+    classified_by: model
+  - line: 613
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 619
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 625
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 666
+    level: 2
+    text: Introduce Foreign Method
+    role: section
+    classified_by: model
+  - line: 685
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 695
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 706
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 726
+    level: 2
+    text: Introduce Local Extension
+    role: section
+    classified_by: model
+  - line: 734
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 746
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 757
+    level: 3
+    text: Examples
+    role: embedded
+    classified_by: model
+  - line: 776
+    level: 3
+    text: 'Example: Using a Subclass'
+    role: embedded
+    classified_by: model
+  - line: 811
+    level: 4
+    text: becomes
+    role: embedded
+    classified_by: model
+  - line: 820
+    level: 3
+    text: 'Example: Using a Wrapper'
+    role: embedded
+    classified_by: model
+  - line: 868
+    level: 4
+    text: becomes
+    role: embedded
+    classified_by: model
+- path: books/refactoring-improving-the-design-of-existing-code/chapters/012-chapter-8-organizing-data.md
+  chapter_sha256: 27a27bedb6ac570e00b5fad830b3f0921dbb75c42e2c4127036aae9929d150c2
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 8: Organizing Data'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 19
+    level: 2
+    text: Self Encapsulate Field
+    role: section
+    classified_by: model
+  - line: 38
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 50
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 63
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 140
+    level: 2
+    text: Replace Data Value with Object
+    role: section
+    classified_by: model
+  - line: 148
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 152
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 163
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 254
+    level: 2
+    text: Change Value to Reference
+    role: section
+    classified_by: model
+  - line: 262
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 268
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 290
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 404
+    level: 3
+    text: Change Reference to Value
+    role: section
+    classified_by: model
+  - line: 412
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 422
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 434
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 489
+    level: 2
+    text: Replace Array with Object
+    role: section
+    classified_by: model
+  - line: 504
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 508
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 520
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 624
+    level: 2
+    text: Duplicate Observed Data
+    role: section
+    classified_by: model
+  - line: 632
+    level: 2
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 640
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 669
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 897
+    level: 3
+    text: Using Event Listeners
+    role: embedded
+    classified_by: model
+  - line: 901
+    level: 2
+    text: Change Unidirectional Association to Bidirectional
+    role: section
+    classified_by: model
+  - line: 909
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 917
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 925
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 1008
+    level: 2
+    text: Change Bidirectional Association to Unidirectional
+    role: section
+    classified_by: model
+  - line: 1016
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 1026
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 1044
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 1086
+    level: 4
+    text: changes to
+    role: embedded
+    classified_by: model
+  - line: 1105
+    level: 4
+    text: becomes
+    role: embedded
+    classified_by: model
+  - line: 1138
+    level: 2
+    text: Replace Magic Number with Symbolic Constant
+    role: section
+    classified_by: model
+  - line: 1154
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 1162
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 1172
+    level: 3
+    text: Encapsulate Field
+    role: section
+    classified_by: model
+  - line: 1185
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 1193
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 1204
+    level: 2
+    text: Encapsulate Collection
+    role: section
+    classified_by: model
+  - line: 1214
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 1224
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 1256
+    level: 3
+    text: Examples
+    role: embedded
+    classified_by: model
+  - line: 1260
+    level: 3
+    text: 'Example: Java 2'
+    role: embedded
+    classified_by: model
+  - line: 1381
+    level: 4
+    text: becomes
+    role: embedded
+    classified_by: model
+  - line: 1413
+    level: 3
+    text: Moving Behavior into the Class
+    role: embedded
+    classified_by: model
+  - line: 1458
+    level: 4
+    text: A common case is
+    role: embedded
+    classified_by: model
+  - line: 1464
+    level: 4
+    text: which can be changed to the more readable
+    role: embedded
+    classified_by: model
+  - line: 1476
+    level: 3
+    text: 'Example: Java 1.1'
+    role: embedded
+    classified_by: model
+  - line: 1539
+    level: 3
+    text: 'Example: Encapsulating Arrays'
+    role: embedded
+    classified_by: model
+  - line: 1606
+    level: 2
+    text: Replace Record with Data Class
+    role: section
+    classified_by: model
+  - line: 1612
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 1616
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 1623
+    level: 2
+    text: Replace Type Code with Class
+    role: section
+    classified_by: model
+  - line: 1631
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 1641
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 1667
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 1775
+    level: 4
+    text: becomes
+    role: embedded
+    classified_by: model
+  - line: 1787
+    level: 4
+    text: becomes
+    role: embedded
+    classified_by: model
+  - line: 1799
+    level: 4
+    text: becomes
+    role: embedded
+    classified_by: model
+  - line: 1839
+    level: 2
+    text: Replace Type Code with Subclasses
+    role: section
+    classified_by: model
+  - line: 1847
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 1863
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 1877
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 1957
+    level: 3
+    text: Replace Type Code with State/Strategy
+    role: section
+    classified_by: model
+  - line: 1965
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 1971
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 1987
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 2153
+    level: 2
+    text: Replace Subclass with Fields
+    role: section
+    classified_by: model
+  - line: 2161
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 2167
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 2183
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+- path: books/refactoring-improving-the-design-of-existing-code/chapters/013-chapter-9-simplifying-conditional-expressions.md
+  chapter_sha256: 47ffbf860a4e835ce5339b9cf0bece2187432eae9164424cef85637df8f60417
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 9: Simplifying Conditional Expressions'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 13
+    level: 2
+    text: Decompose Conditional
+    role: section
+    classified_by: model
+  - line: 28
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 34
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 41
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 72
+    level: 2
+    text: Consolidate Conditional Expression
+    role: section
+    classified_by: model
+  - line: 89
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 97
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 107
+    level: 3
+    text: 'Example: Ors'
+    role: embedded
+    classified_by: model
+  - line: 144
+    level: 3
+    text: 'Example: Ands'
+    role: embedded
+    classified_by: model
+  - line: 171
+    level: 4
+    text: becomes
+    role: embedded
+    classified_by: model
+  - line: 177
+    level: 3
+    text: Consolidate Duplicate Conditional Fragments
+    role: section
+    classified_by: model
+  - line: 199
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 203
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 211
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 238
+    level: 2
+    text: Remove Control Flag
+    role: section
+    classified_by: model
+  - line: 244
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 259
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 278
+    level: 3
+    text: 'Example: Simple Control Flag Replaced with Break'
+    role: embedded
+    classified_by: model
+  - line: 360
+    level: 2
+    text: 'Example: Using Return with a Control Flag Result'
+    role: embedded
+    classified_by: model
+  - line: 457
+    level: 2
+    text: Replace Nested Conditional with Guard Clauses
+    role: section
+    classified_by: model
+  - line: 487
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 497
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 507
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 585
+    level: 3
+    text: 'Example: Reversing the Conditions'
+    role: embedded
+    classified_by: model
+  - line: 663
+    level: 2
+    text: Replace Conditional with Polymorphism
+    role: section
+    classified_by: model
+  - line: 686
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 694
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 715
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 830
+    level: 2
+    text: Introduce Null Object
+    role: section
+    classified_by: model
+  - line: 843
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 847
+    level: 3
+    text: Ron Jeffries
+    role: embedded
+    classified_by: model
+  - line: 865
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 886
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 1079
+    level: 3
+    text: 'Example: Testing Interface'
+    role: embedded
+    classified_by: model
+  - line: 1101
+    level: 3
+    text: Other Special Cases
+    role: embedded
+    classified_by: model
+  - line: 1107
+    level: 3
+    text: Introduce Assertion
+    role: section
+    classified_by: model
+  - line: 1129
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 1139
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 1153
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+- path: books/refactoring-improving-the-design-of-existing-code/chapters/014-chapter-10-making-method-calls-simpler.md
+  chapter_sha256: 48ac026b88ab1daebdcfb4e86161935790595c035b2cd4360d1659859c6d9f66
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 10: Making Method Calls Simpler'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 21
+    level: 2
+    text: Rename Method
+    role: section
+    classified_by: model
+  - line: 31
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 37
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 54
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 82
+    level: 3
+    text: Add Parameter
+    role: section
+    classified_by: model
+  - line: 90
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 100
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 124
+    level: 3
+    text: Remove Parameter
+    role: section
+    classified_by: model
+  - line: 134
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 142
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 166
+    level: 2
+    text: Separate Query from Modifier
+    role: section
+    classified_by: model
+  - line: 176
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 186
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 202
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 322
+    level: 3
+    text: Concurrency Issues
+    role: embedded
+    classified_by: model
+  - line: 326
+    level: 2
+    text: Parameterize Method
+    role: section
+    classified_by: model
+  - line: 334
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 338
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 348
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 408
+    level: 2
+    text: Replace Parameter with Explicit Methods
+    role: section
+    classified_by: model
+  - line: 430
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 438
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 447
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 530
+    level: 2
+    text: Preserve Whole Object
+    role: section
+    classified_by: model
+  - line: 546
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 562
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 578
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 671
+    level: 2
+    text: Replace Parameter with Method
+    role: section
+    classified_by: model
+  - line: 690
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 700
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 707
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 802
+    level: 3
+    text: Introduce Parameter Object
+    role: section
+    classified_by: model
+  - line: 810
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 816
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 830
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 999
+    level: 2
+    text: Remove Setting Method
+    role: section
+    classified_by: model
+  - line: 1007
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 1013
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 1025
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 1125
+    level: 3
+    text: Hide Method
+    role: section
+    classified_by: model
+  - line: 1133
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 1139
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 1152
+    level: 3
+    text: Replace Constructor with Factory Method
+    role: section
+    classified_by: model
+  - line: 1167
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 1173
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 1181
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 1218
+    level: 3
+    text: 'Example: Creating Subclasses with a String'
+    role: embedded
+    classified_by: model
+  - line: 1286
+    level: 3
+    text: 'Example: Creating Subclasses with Explicit Methods'
+    role: embedded
+    classified_by: model
+  - line: 1310
+    level: 2
+    text: Encapsulate Downcast
+    role: section
+    classified_by: model
+  - line: 1325
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 1333
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 1343
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 1379
+    level: 3
+    text: Replace Error Code with Exception
+    role: section
+    classified_by: model
+  - line: 1400
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 1408
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 1433
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 1452
+    level: 3
+    text: 'Example: Unchecked Exception'
+    role: embedded
+    classified_by: model
+  - line: 1501
+    level: 3
+    text: 'Example: Checked Exception'
+    role: embedded
+    classified_by: model
+  - line: 1586
+    level: 3
+    text: Replace Exception with Test
+    role: section
+    classified_by: model
+  - line: 1606
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 1610
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 1618
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+- path: books/refactoring-improving-the-design-of-existing-code/chapters/015-chapter-11-dealing-with-generalization.md
+  chapter_sha256: 49c9132815728c77c957169a046ce8ae6d684228548df16806532efc381766a1
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 11: Dealing with Generalization'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 11
+    level: 2
+    text: Pull Up Field
+    role: section
+    classified_by: model
+  - line: 19
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 25
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 38
+    level: 3
+    text: Pull Up Method
+    role: section
+    classified_by: model
+  - line: 46
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 60
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 78
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 104
+    level: 2
+    text: Pull Up Constructor Body
+    role: section
+    classified_by: model
+  - line: 123
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 131
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 148
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 216
+    level: 3
+    text: Push Down Method
+    role: section
+    classified_by: model
+  - line: 224
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 228
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 244
+    level: 3
+    text: Push Down Field
+    role: section
+    classified_by: model
+  - line: 252
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 256
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 264
+    level: 3
+    text: Extract Subclass
+    role: section
+    classified_by: model
+  - line: 272
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 278
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 305
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 485
+    level: 2
+    text: Extract Superclass
+    role: section
+    classified_by: model
+  - line: 493
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 501
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 519
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 661
+    level: 3
+    text: Extract Interface
+    role: section
+    classified_by: model
+  - line: 669
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 681
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 688
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 729
+    level: 3
+    text: Collapse Hierarchy
+    role: section
+    classified_by: model
+  - line: 737
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 741
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 751
+    level: 3
+    text: Form Template Method
+    role: section
+    classified_by: model
+  - line: 759
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 765
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 778
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 802
+    level: 4
+    text: 'while the htmlStatement does them in HTML:'
+    role: embedded
+    classified_by: model
+  - line: 1017
+    level: 3
+    text: Replace Inheritance with Delegation
+    role: section
+    classified_by: model
+  - line: 1025
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 1033
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 1044
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+  - line: 1107
+    level: 2
+    text: Replace Delegation with Inheritance
+    role: section
+    classified_by: model
+  - line: 1115
+    level: 3
+    text: Motivation
+    role: embedded
+    classified_by: model
+  - line: 1123
+    level: 3
+    text: Mechanics
+    role: embedded
+    classified_by: model
+  - line: 1136
+    level: 3
+    text: Example
+    role: embedded
+    classified_by: model
+- path: books/refactoring-improving-the-design-of-existing-code/chapters/016-chapter-12-big-refactorings.md
+  chapter_sha256: 97e197984d504fd3ca3cfc4ebeef43a1dc6b6fe4caa9e302fd24e2030fb05339
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 12: Big Refactorings'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 7
+    level: 2
+    text: The Nature of the Game
+    role: section
+    classified_by: rule:cited
+  - line: 21
+    level: 3
+    text: Why Big Refactorings Are Important
+    role: section
+    classified_by: model
+  - line: 29
+    level: 3
+    text: Four Big Refactorings
+    role: embedded
+    classified_by: model
+  - line: 35
+    level: 2
+    text: Tease Apart Inheritance
+    role: section
+    classified_by: model
+  - line: 43
+    level: 3
+    text: Motivation
+    role: section
+    classified_by: model
+  - line: 53
+    level: 3
+    text: Mechanics
+    role: section
+    classified_by: model
+  - line: 63
+    level: 3
+    text: Examples
+    role: section
+    classified_by: model
+  - line: 117
+    level: 2
+    text: Convert Procedural Design to Objects
+    role: section
+    classified_by: model
+  - line: 125
+    level: 3
+    text: Motivation
+    role: section
+    classified_by: model
+  - line: 133
+    level: 3
+    text: Mechanics
+    role: section
+    classified_by: model
+  - line: 146
+    level: 3
+    text: Example
+    role: section
+    classified_by: model
+  - line: 150
+    level: 3
+    text: Separate Domain from Presentation
+    role: section
+    classified_by: model
+  - line: 158
+    level: 3
+    text: Motivation
+    role: section
+    classified_by: model
+  - line: 168
+    level: 3
+    text: Mechanics
+    role: section
+    classified_by: model
+  - line: 176
+    level: 3
+    text: Example
+    role: section
+    classified_by: model
+  - line: 212
+    level: 2
+    text: Extract Hierarchy
+    role: section
+    classified_by: model
+  - line: 220
+    level: 3
+    text: Motivation
+    role: section
+    classified_by: model
+  - line: 228
+    level: 3
+    text: Mechanics
+    role: section
+    classified_by: model
+  - line: 253
+    level: 3
+    text: Example
+    role: section
+    classified_by: model
+  - line: 277
+    level: 4
+    text: can be replaced with
+    role: embedded
+    classified_by: model
+- path: books/refactoring-improving-the-design-of-existing-code/chapters/017-chapter-13-refactoring-reuse-and-reality.md
+  chapter_sha256: 252f4e8faab5952dde2029ffa247516b65519450945179a5f497e583939cf681
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 13: Refactoring, Reuse, and Reality'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 17
+    level: 2
+    text: A Reality Check
+    role: section
+    classified_by: model
+  - line: 35
+    level: 2
+    text: Why Are Developers Reluctant to Refactor Their Programs?
+    role: section
+    classified_by: model
+  - line: 58
+    level: 3
+    text: Understanding How and Where to Refactor
+    role: section
+    classified_by: model
+  - line: 86
+    level: 3
+    text: Language Features and Programming Styles That Support Refactoring
+    role: section
+    classified_by: model
+  - line: 102
+    level: 3
+    text: Language Features and Programming Styles
+    role: section
+    classified_by: model
+  - line: 104
+    level: 3
+    text: That Complicate Refactoring
+    role: section
+    classified_by: model
+  - line: 126
+    level: 3
+    text: Closing Comments
+    role: section
+    classified_by: model
+  - line: 132
+    level: 3
+    text: Refactoring to Achieve Near-term Benefits
+    role: section
+    classified_by: model
+  - line: 156
+    level: 3
+    text: Reducing the Overhead of Refactoring
+    role: section
+    classified_by: model
+  - line: 170
+    level: 2
+    text: Refactoring Safely
+    role: section
+    classified_by: model
+  - line: 226
+    level: 2
+    text: A Reality Check (Revisited)
+    role: section
+    classified_by: model
+  - line: 244
+    level: 2
+    text: Resources and References for Refactoring
+    role: section
+    classified_by: model
+  - line: 250
+    level: 2
+    text: Implications Regarding Software Reuse and Technology Transfer
+    role: section
+    classified_by: model
+  - line: 273
+    level: 3
+    text: A Final Note
+    role: section
+    classified_by: model
+- path: books/refactoring-improving-the-design-of-existing-code/chapters/018-endnotes.md
+  chapter_sha256: 6ad71e23439924067b46b67aef51dcd2d00ef2b3d7ebd0053f4e20b6cc262ea9
+  headings:
+  - line: 1
+    level: 1
+    text: Endnotes
+    role: section
+    classified_by: rule:chapter-title
+- path: books/refactoring-improving-the-design-of-existing-code/chapters/019-chapter-14-refactoring-tools.md
+  chapter_sha256: 93478fcadc5d6930b05daeee5cdd837ea3a6c2fcecda654ff5f5c4f87cec9afb
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 14: Refactoring Tools'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 7
+    level: 2
+    text: Refactoring with a Tool
+    role: section
+    classified_by: model
+  - line: 11
+    level: 3
+    text: Kent Beck
+    role: embedded
+    classified_by: model
+  - line: 29
+    level: 2
+    text: Technical Criteria for a Refactoring Tool
+    role: section
+    classified_by: model
+  - line: 33
+    level: 3
+    text: Program Database
+    role: section
+    classified_by: model
+  - line: 39
+    level: 3
+    text: Parse Trees
+    role: section
+    classified_by: model
+  - line: 55
+    level: 2
+    text: Accuracy
+    role: section
+    classified_by: rule:cited
+  - line: 63
+    level: 2
+    text: Practical Criteria for a Refactoring Tool
+    role: section
+    classified_by: model
+  - line: 67
+    level: 3
+    text: Speed
+    role: section
+    classified_by: model
+  - line: 73
+    level: 3
+    text: Undo
+    role: section
+    classified_by: model
+  - line: 79
+    level: 3
+    text: Integrated with Tools
+    role: section
+    classified_by: model
+  - line: 83
+    level: 2
+    text: Wrap Up
+    role: section
+    classified_by: model
+- path: books/refactoring-improving-the-design-of-existing-code/chapters/020-chapter-15-putting-it-all-together.md
+  chapter_sha256: 8822981a8ebe5f3f266f6189dc68542667ba5c3496e5673cf45d5d3f1157cb7e
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 15: Putting It All Together'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 29
+    level: 2
+    text: Get used to picking a goal.
+    role: section
+    classified_by: model
+  - line: 33
+    level: 3
+    text: Stop when you are unsure.
+    role: section
+    classified_by: rule:cited
+  - line: 37
+    level: 4
+    text: Backtrack.
+    role: section
+    classified_by: model
+  - line: 47
+    level: 4
+    text: Duets.
+    role: section
+    classified_by: model
+- path: books/refactoring-improving-the-design-of-existing-code/chapters/021-bibliography.md
+  chapter_sha256: d0ea7425ea03e3b16e87b1254973c865fbd285bebd4c18381b0fcc46a64fd4e1
+  headings:
+  - line: 1
+    level: 1
+    text: Bibliography
+    role: section
+    classified_by: rule:chapter-title
+  - line: 3
+    level: 2
+    text: References
+    role: section
+    classified_by: model

@@ -1,0 +1,2716 @@
+schema_version: section-map/1
+book: efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library
+chapters:
+- path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/001-data-driven-performance-optimizations.md
+  chapter_sha256: 2d4224bed380bd7aaf6db6dc7fe6dbcb9f47fd308daa51fd5f1267d943865a45
+  headings:
+  - line: 36
+    level: 1
+    text: Data-Driven Performance Optimizations
+    role: section
+    classified_by: rule:chapter-title
+- path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/002-table-of-contents.md
+  chapter_sha256: 886f4cad7e9f793666fc5b38d3afc030ba47c5f3d845f9031ee155d4fb60ce31
+  headings:
+  - line: 1
+    level: 1
+    text: Table of Contents
+    role: section
+    classified_by: rule:chapter-title
+- path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/003-preface.md
+  chapter_sha256: f777a49ccf4ffea1a14927a4281d6a630396cb6c19b2c33530edbb3ebba8be7a
+  headings:
+  - line: 1
+    level: 1
+    text: Preface
+    role: section
+    classified_by: rule:chapter-title
+  - line: 17
+    level: 2
+    text: Why I Wrote This Book
+    role: section
+    classified_by: model
+  - line: 27
+    level: 3
+    text: How I Gathered This Knowledge
+    role: section
+    classified_by: model
+  - line: 55
+    level: 3
+    text: Who This Book Is For
+    role: section
+    classified_by: model
+  - line: 63
+    level: 3
+    text: How This Book Is Organized
+    role: section
+    classified_by: model
+  - line: 75
+    level: 3
+    text: Conventions Used in This Book
+    role: section
+    classified_by: model
+  - line: 83
+    level: 4
+    text: Constant width
+    role: embedded
+    classified_by: model
+  - line: 87
+    level: 4
+    text: Constant width bold
+    role: embedded
+    classified_by: model
+  - line: 91
+    level: 4
+    text: Constant width italic
+    role: embedded
+    classified_by: model
+  - line: 107
+    level: 3
+    text: Using Code Examples
+    role: section
+    classified_by: model
+- path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/004-acknowledgments.md
+  chapter_sha256: 9349175715158397e21a127ab6ffe7f9c05ef7e60a8377c8ce2b05b2daaddb7a
+  headings:
+  - line: 2
+    level: 1
+    text: Acknowledgments
+    role: section
+    classified_by: rule:chapter-title
+  - line: 14
+    level: 2
+    text: Feedback Is Welcome!
+    role: embedded
+    classified_by: model
+  - line: 20
+    level: 3
+    text: O'Reilly Online Learning
+    role: embedded
+    classified_by: model
+  - line: 28
+    level: 3
+    text: How to Contact Us
+    role: embedded
+    classified_by: model
+- path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/005-chapter-1-software-efficiency-matters.md
+  chapter_sha256: 118ec59a377e29129778be1b4d9564fbe995acc5f830c08851f8c2e1148b8062
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 1: Software Efficiency Matters'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 42
+    level: 2
+    text: Behind Performance
+    role: section
+    classified_by: rule:toc
+  - line: 60
+    level: 3
+    text: Clarify When Someone Uses the Word "Performance"
+    role: section
+    classified_by: rule:cited
+  - line: 80
+    level: 4
+    text: Accuracy
+    role: embedded
+    classified_by: model
+  - line: 84
+    level: 4
+    text: Speed
+    role: embedded
+    classified_by: model
+  - line: 88
+    level: 4
+    text: Efficiency
+    role: embedded
+    classified_by: model
+  - line: 102
+    level: 4
+    text: It's No Mistake That the Title of My Book Is "Efficient Go"
+    role: embedded
+    classified_by: model
+  - line: 111
+    level: 3
+    text: Common Efficiency Misconceptions
+    role: section
+    classified_by: rule:toc
+  - line: 117
+    level: 3
+    text: Optimized Code Is Not Readable
+    role: section
+    classified_by: rule:toc
+  - line: 147
+    level: 4
+    text: Readability Is Important!
+    role: embedded
+    classified_by: model
+  - line: 153
+    level: 4
+    text: Code after optimization can be more readable
+    role: embedded
+    classified_by: model
+  - line: 217
+    level: 4
+    text: Example 1-2 code is safer.
+    role: embedded
+    classified_by: rule:caption
+  - line: 221
+    level: 4
+    text: Example 1-2 code is more readable.
+    role: embedded
+    classified_by: rule:caption
+  - line: 236
+    level: 4
+    text: Example 1-3. Simple loop without optimization
+    role: embedded
+    classified_by: rule:caption
+  - line: 275
+    level: 4
+    text: Readability Is Not Written in Stone; It Is Dynamic
+    role: embedded
+    classified_by: model
+  - line: 279
+    level: 4
+    text: Readability now versus past
+    role: embedded
+    classified_by: model
+  - line: 303
+    level: 4
+    text: How to Make Efficient Code More Readable
+    role: embedded
+    classified_by: model
+  - line: 311
+    level: 3
+    text: You Aren't Going to Need It
+    role: section
+    classified_by: rule:toc
+  - line: 353
+    level: 3
+    text: Hardware Is Getting Faster and Cheaper
+    role: section
+    classified_by: rule:toc
+  - line: 385
+    level: 3
+    text: Software expands to fill the available memory
+    role: embedded
+    classified_by: model
+  - line: 395
+    level: 4
+    text: Software gets slower more rapidly than hardware becomes faster
+    role: embedded
+    classified_by: model
+  - line: 428
+    level: 3
+    text: Technological limits
+    role: embedded
+    classified_by: model
+  - line: 454
+    level: 3
+    text: Faster execution is more energy efficient
+    role: embedded
+    classified_by: model
+  - line: 472
+    level: 4
+    text: Efficiency Improves Accessibility and Inclusiveness
+    role: embedded
+    classified_by: model
+  - line: 483
+    level: 3
+    text: We Can Scale Horizontally Instead
+    role: section
+    classified_by: rule:toc
+  - line: 500
+    level: 4
+    text: Vertical scalability
+    role: embedded
+    classified_by: model
+  - line: 508
+    level: 4
+    text: Horizontal scalability
+    role: embedded
+    classified_by: model
+  - line: 537
+    level: 4
+    text: Premature Scalability Is Worse than Premature Efficiency Optimizations!
+    role: embedded
+    classified_by: model
+  - line: 553
+    level: 3
+    text: Time to Market Is More Important
+    role: section
+    classified_by: rule:toc
+  - line: 589
+    level: 4
+    text: Efficiency Is Often More Important in Market than Features!
+    role: embedded
+    classified_by: model
+  - line: 599
+    level: 3
+    text: The Key to Pragmatic Code Performance
+    role: section
+    classified_by: rule:toc
+  - line: 619
+    level: 4
+    text: Speed is more fragile.
+    role: embedded
+    classified_by: model
+  - line: 631
+    level: 3
+    text: Summary
+    role: section
+    classified_by: rule:toc
+- path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/006-chapter-2-efficient-introduction-to-go.md
+  chapter_sha256: d3d0fe906aa72a6f33fdceb76b142ba19e9978be1ed07cff6ddf97bff2f5e8ce
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 2: Efficient Introduction to Go'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 22
+    level: 2
+    text: Basics You Should Know About Go
+    role: section
+    classified_by: rule:toc
+  - line: 31
+    level: 3
+    text: Imperative, Compiled, and Statically Typed Language
+    role: section
+    classified_by: rule:toc
+  - line: 49
+    level: 4
+    text: Go Versus Golang
+    role: embedded
+    classified_by: model
+  - line: 55
+    level: 3
+    text: Designed to Improve Serious Codebases
+    role: section
+    classified_by: rule:toc
+  - line: 65
+    level: 4
+    text: Robert Griesemer
+    role: embedded
+    classified_by: model
+  - line: 69
+    level: 4
+    text: Ken Thompson
+    role: embedded
+    classified_by: model
+  - line: 90
+    level: 4
+    text: You Can Treat Go Code as Script!
+    role: embedded
+    classified_by: model
+  - line: 96
+    level: 3
+    text: Governed by Google, Yet Open Source
+    role: section
+    classified_by: rule:toc
+  - line: 106
+    level: 3
+    text: Simplicity, Safety, and Readability Are Paramount
+    role: section
+    classified_by: rule:toc
+  - line: 114
+    level: 4
+    text: Is My Code Idiomatic?
+    role: embedded
+    classified_by: model
+  - line: 124
+    level: 3
+    text: Packaging and Modules
+    role: section
+    classified_by: rule:toc
+  - line: 169
+    level: 4
+    text: Internal Packages
+    role: section
+    classified_by: rule:cited
+  - line: 173
+    level: 3
+    text: Dependencies Transparency by Default
+    role: section
+    classified_by: rule:toc
+  - line: 227
+    level: 3
+    text: Consistent Tooling
+    role: section
+    classified_by: rule:toc
+  - line: 256
+    level: 3
+    text: Single Way of Handling Errors
+    role: section
+    classified_by: rule:toc
+  - line: 343
+    level: 4
+    text: How to Wrap Errors?
+    role: section
+    classified_by: rule:cited
+  - line: 357
+    level: 4
+    text: Never Ignore Errors!
+    role: section
+    classified_by: rule:cited
+  - line: 367
+    level: 3
+    text: Strong Ecosystem
+    role: section
+    classified_by: rule:toc
+  - line: 394
+    level: 3
+    text: Unused Import or Variable Causes Build Error
+    role: section
+    classified_by: rule:toc
+  - line: 426
+    level: 3
+    text: Unit Testing and Table Tests
+    role: section
+    classified_by: rule:toc
+  - line: 475
+    level: 3
+    text: Advanced Language Elements
+    role: section
+    classified_by: rule:toc
+  - line: 479
+    level: 3
+    text: Code Documentation as a First Citizen
+    role: section
+    classified_by: rule:toc
+  - line: 538
+    level: 3
+    text: Backward Compatibility and Portability
+    role: section
+    classified_by: rule:toc
+  - line: 552
+    level: 3
+    text: Go Runtime
+    role: section
+    classified_by: rule:toc
+  - line: 560
+    level: 3
+    text: Object-Oriented Programming
+    role: section
+    classified_by: rule:toc
+  - line: 619
+    level: 3
+    text: Embedding Multiple Types
+    role: embedded
+    classified_by: model
+  - line: 662
+    level: 3
+    text: Generics
+    role: section
+    classified_by: rule:toc
+  - line: 674
+    level: 4
+    text: Overhead
+    role: embedded
+    classified_by: model
+  - line: 755
+    level: 4
+    text: Generic Code Will Be Faster?
+    role: section
+    classified_by: rule:cited
+  - line: 770
+    level: 3
+    text: Is Go "Fast"?
+    role: section
+    classified_by: rule:toc
+  - line: 802
+    level: 3
+    text: Summary
+    role: section
+    classified_by: rule:toc
+- path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/007-chapter-3-conquering-efficiency.md
+  chapter_sha256: 21381fb21b49bc26be58bd795f3bbb8a47d842a89f702af18013cf61fed3bc05
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 3: Conquering Efficiency'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 23
+    level: 2
+    text: Laziness or Deliberate Efficiency Descoping?
+    role: section
+    classified_by: model
+  - line: 37
+    level: 3
+    text: Beyond Waste, Optimization Is a Zero-Sum Game
+    role: section
+    classified_by: rule:toc
+  - line: 49
+    level: 4
+    text: We Can Optimize for Anything
+    role: embedded
+    classified_by: model
+  - line: 62
+    level: 3
+    text: Reasonable Optimizations
+    role: section
+    classified_by: rule:toc
+  - line: 86
+    level: 4
+    text: Be Mindful of Readability
+    role: embedded
+    classified_by: model
+  - line: 109
+    level: 3
+    text: Deliberate Optimizations
+    role: section
+    classified_by: rule:toc
+  - line: 136
+    level: 3
+    text: Optimization Challenges
+    role: section
+    classified_by: rule:toc
+  - line: 148
+    level: 4
+    text: Maintaining efficiency over time is hard.
+    role: embedded
+    classified_by: model
+  - line: 152
+    level: 3
+    text: Reliable verification of current performance is very difficult.
+    role: embedded
+    classified_by: model
+  - line: 172
+    level: 3
+    text: Understand Your Goals
+    role: section
+    classified_by: rule:toc
+  - line: 182
+    level: 4
+    text: XY problem.
+    role: embedded
+    classified_by: model
+  - line: 186
+    level: 4
+    text: Efficiency is not a zero-sum game.
+    role: embedded
+    classified_by: model
+  - line: 216
+    level: 3
+    text: Efficiency Requirements Should Be Formalized
+    role: section
+    classified_by: rule:toc
+  - line: 252
+    level: 4
+    text: The SRE Domain
+    role: embedded
+    classified_by: model
+  - line: 280
+    level: 3
+    text: Resource-Aware Efficiency Requirements
+    role: section
+    classified_by: rule:toc
+  - line: 289
+    level: 4
+    text: Example 3-1. The example RAER entry
+    role: embedded
+    classified_by: rule:caption
+  - line: 341
+    level: 3
+    text: Acquiring and Assessing Efficiency Goals
+    role: section
+    classified_by: rule:toc
+  - line: 357
+    level: 4
+    text: Dogfooding
+    role: embedded
+    classified_by: model
+  - line: 365
+    level: 3
+    text: Example of Defining RAER
+    role: section
+    classified_by: rule:toc
+  - line: 377
+    level: 3
+    text: Defining Efficiency Requirements Is Like Negotiating Salary
+    role: embedded
+    classified_by: model
+  - line: 391
+    level: 4
+    text: Napkin Math
+    role: embedded
+    classified_by: model
+  - line: 407
+    level: 4
+    text: Runtime
+    role: embedded
+    classified_by: model
+  - line: 413
+    level: 4
+    text: Space
+    role: embedded
+    classified_by: model
+  - line: 433
+    level: 3
+    text: Got an Efficiency Problem? Keep Calm!
+    role: section
+    classified_by: rule:toc
+  - line: 443
+    level: 4
+    text: Blameless Culture Matters
+    role: embedded
+    classified_by: model
+  - line: 455
+    level: 4
+    text: 'Step 1: An efficiency issue was reported on our bug tracker.'
+    role: embedded
+    classified_by: model
+  - line: 461
+    level: 4
+    text: 'Step 2: Check for duplicates.'
+    role: embedded
+    classified_by: model
+  - line: 465
+    level: 4
+    text: 'Step 3: Validate the circumstances against functional requirements.'
+    role: embedded
+    classified_by: model
+  - line: 471
+    level: 4
+    text: 'Step 4: Validate the situation against RAERs.'
+    role: embedded
+    classified_by: model
+  - line: 483
+    level: 4
+    text: Functional or Efficiency Requirements Can Change!
+    role: embedded
+    classified_by: model
+  - line: 487
+    level: 4
+    text: 'Step 5: Acknowledge the issue, note it for prioritization, and move on.'
+    role: embedded
+    classified_by: model
+  - line: 493
+    level: 4
+    text: 'Step 6: Done, issue was triaged.'
+    role: embedded
+    classified_by: model
+  - line: 499
+    level: 4
+    text: This Flow Is Applicable for Both SaaS and Externally Installed Software
+    role: embedded
+    classified_by: model
+  - line: 505
+    level: 3
+    text: Optimization Design Levels
+    role: section
+    classified_by: rule:toc
+  - line: 529
+    level: 4
+    text: System level
+    role: embedded
+    classified_by: model
+  - line: 539
+    level: 4
+    text: Intramodule algorithm and data structure level
+    role: embedded
+    classified_by: model
+  - line: 545
+    level: 4
+    text: Implementation (code) level
+    role: embedded
+    classified_by: model
+  - line: 555
+    level: 4
+    text: Operating system level
+    role: embedded
+    classified_by: model
+  - line: 563
+    level: 4
+    text: Hardware level
+    role: embedded
+    classified_by: model
+  - line: 581
+    level: 4
+    text: Beware of the Optimization Biases!
+    role: embedded
+    classified_by: model
+  - line: 591
+    level: 3
+    text: Efficiency-Aware Development Flow
+    role: section
+    classified_by: rule:toc
+  - line: 608
+    level: 3
+    text: Functionality Phase
+    role: section
+    classified_by: rule:toc
+  - line: 619
+    level: 4
+    text: 1. Test functionality first
+    role: embedded
+    classified_by: model
+  - line: 635
+    level: 4
+    text: 2. Do we pass the functional tests?
+    role: embedded
+    classified_by: model
+  - line: 643
+    level: 4
+    text: 3. If the tests fail, we have to fix, implement, or design the missing parts
+    role: embedded
+    classified_by: model
+  - line: 653
+    level: 3
+    text: Efficiency Phase
+    role: section
+    classified_by: rule:toc
+  - line: 661
+    level: 4
+    text: 4. Efficiency assessment
+    role: embedded
+    classified_by: model
+  - line: 674
+    level: 4
+    text: 5. Are we within RAERs?
+    role: section
+    classified_by: rule:cited
+  - line: 682
+    level: 4
+    text: 6. Find the main bottleneck
+    role: embedded
+    classified_by: model
+  - line: 692
+    level: 3
+    text: 7. Choice of level
+    role: embedded
+    classified_by: model
+  - line: 700
+    level: 4
+    text: 8. Optimize!
+    role: embedded
+    classified_by: model
+  - line: 732
+    level: 3
+    text: 9. Release and enjoy!
+    role: embedded
+    classified_by: model
+  - line: 736
+    level: 3
+    text: Summary
+    role: section
+    classified_by: rule:toc
+- path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/008-chapter-4-how-go-uses-the-cpu-resource-or-two.md
+  chapter_sha256: 8003df1627a563b0e1632ae756ed11ea5e93613fc063f736d18a30a3e7ffffe6
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 4: How Go Uses the CPU Resource (or Two)'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 26
+    level: 2
+    text: Mechanical Sympathy
+    role: section
+    classified_by: model
+  - line: 35
+    level: 3
+    text: CPU in a Modern Computer Architecture
+    role: section
+    classified_by: rule:toc
+  - line: 72
+    level: 3
+    text: Assembly
+    role: section
+    classified_by: rule:toc
+  - line: 117
+    level: 3
+    text: Do I Need to Understand Assembly?
+    role: embedded
+    classified_by: model
+  - line: 145
+    level: 3
+    text: Understanding Go Compiler
+    role: section
+    classified_by: rule:toc
+  - line: 181
+    level: 4
+    text: Function Inlining
+    role: embedded
+    classified_by: model
+  - line: 191
+    level: 4
+    text: Manual Inlining Is Rarely Needed
+    role: section
+    classified_by: rule:cited
+  - line: 238
+    level: 1
+    text: command-line-arguments
+    role: embedded
+    classified_by: model
+  - line: 257
+    level: 4
+    text: The Simpler the Code, the More Effective Compiler Optimizations Will Be
+    role: embedded
+    classified_by: model
+  - line: 270
+    level: 3
+    text: CPU and Memory Wall Problem
+    role: section
+    classified_by: rule:toc
+  - line: 294
+    level: 3
+    text: Hierachical Cache System
+    role: section
+    classified_by: rule:toc
+  - line: 314
+    level: 3
+    text: Pipelining and Out-of-Order Execution
+    role: section
+    classified_by: rule:toc
+  - line: 364
+    level: 4
+    text: Contiguous Memory Structure Matters
+    role: embedded
+    classified_by: model
+  - line: 369
+    level: 3
+    text: Hyper-Threading
+    role: section
+    classified_by: rule:toc
+  - line: 409
+    level: 4
+    text: Three Principles of Writing CPU-Efficient Code on Critical Path
+    role: embedded
+    classified_by: model
+  - line: 419
+    level: 3
+    text: Schedulers
+    role: section
+    classified_by: rule:toc
+  - line: 427
+    level: 3
+    text: Operating System Scheduler
+    role: section
+    classified_by: rule:toc
+  - line: 445
+    level: 4
+    text: Running
+    role: embedded
+    classified_by: model
+  - line: 449
+    level: 4
+    text: Blocked
+    role: embedded
+    classified_by: model
+  - line: 453
+    level: 4
+    text: Ready
+    role: embedded
+    classified_by: model
+  - line: 472
+    level: 4
+    text: CPU Overloading
+    role: embedded
+    classified_by: model
+  - line: 482
+    level: 4
+    text: CPU Time on an Overloaded Machine
+    role: embedded
+    classified_by: model
+  - line: 500
+    level: 3
+    text: Go Runtime Scheduler
+    role: section
+    classified_by: rule:toc
+  - line: 639
+    level: 4
+    text: Allocated, open channel
+    role: embedded
+    classified_by: model
+  - line: 645
+    level: 4
+    text: Closed channel
+    role: embedded
+    classified_by: model
+  - line: 649
+    level: 4
+    text: Nil channel
+    role: embedded
+    classified_by: model
+  - line: 657
+    level: 4
+    text: A number of goroutines
+    role: embedded
+    classified_by: model
+  - line: 667
+    level: 4
+    text: First Rule of Efficient Code
+    role: embedded
+    classified_by: model
+  - line: 671
+    level: 4
+    text: GOMAXPROCS
+    role: embedded
+    classified_by: model
+  - line: 677
+    level: 4
+    text: Recommended GOMAXPROCS Configuration
+    role: embedded
+    classified_by: model
+  - line: 691
+    level: 3
+    text: When to Use Concurrency
+    role: section
+    classified_by: rule:toc
+  - line: 695
+    level: 4
+    text: Advantages
+    role: embedded
+    classified_by: model
+  - line: 702
+    level: 4
+    text: Disadvantages
+    role: embedded
+    classified_by: model
+  - line: 717
+    level: 4
+    text: Adding Concurrency Should Be One of Our Last Deliberate Optimizations to Try
+    role: section
+    classified_by: rule:cited
+  - line: 723
+    level: 3
+    text: Summary
+    role: section
+    classified_by: rule:toc
+- path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/009-chapter-5-how-go-uses-memory-resource.md
+  chapter_sha256: dd6838d6000f81e88a5f604fdadc5aab12ab40eff447141cf6d1916ad7cf2e6c
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 5: How Go Uses Memory Resource'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 18
+    level: 2
+    text: Memory Relevance
+    role: section
+    classified_by: rule:toc
+  - line: 54
+    level: 3
+    text: Memory Inefficiency Is Usually the Most Common Problem in Go Programs
+    role: embedded
+    classified_by: model
+  - line: 62
+    level: 3
+    text: Do We Have a Memory Problem?
+    role: section
+    classified_by: rule:toc
+  - line: 79
+    level: 3
+    text: Physical Memory
+    role: section
+    classified_by: rule:toc
+  - line: 113
+    level: 4
+    text: Capacity
+    role: embedded
+    classified_by: model
+  - line: 117
+    level: 4
+    text: Bandwidth and latency
+    role: embedded
+    classified_by: model
+  - line: 122
+    level: 4
+    text: Voltage
+    role: embedded
+    classified_by: model
+  - line: 126
+    level: 4
+    text: Cost
+    role: embedded
+    classified_by: model
+  - line: 139
+    level: 3
+    text: OS Memory Management
+    role: section
+    classified_by: rule:toc
+  - line: 145
+    level: 4
+    text: Dedicated memory space for each process
+    role: embedded
+    classified_by: model
+  - line: 149
+    level: 4
+    text: Avoiding external fragmentation
+    role: embedded
+    classified_by: model
+  - line: 153
+    level: 4
+    text: Memory isolation
+    role: embedded
+    classified_by: model
+  - line: 157
+    level: 4
+    text: Memory safety
+    role: embedded
+    classified_by: model
+  - line: 161
+    level: 4
+    text: Efficient memory usage
+    role: embedded
+    classified_by: model
+  - line: 171
+    level: 3
+    text: Virtual Memory
+    role: section
+    classified_by: rule:toc
+  - line: 184
+    level: 4
+    text: The Importance of Page Size
+    role: embedded
+    classified_by: model
+  - line: 222
+    level: 4
+    text: Developers Can Utilize mmap Explicitly in Programs for Specific Use Cases
+    role: embedded
+    classified_by: model
+  - line: 234
+    level: 3
+    text: mmap Syscall
+    role: section
+    classified_by: rule:toc
+  - line: 355
+    level: 4
+    text: An Underrated Way to Learn More About Your Process and OS Resource Behavior
+    role: embedded
+    classified_by: model
+  - line: 363
+    level: 4
+    text: Allocate more RAM frames
+    role: embedded
+    classified_by: model
+  - line: 367
+    level: 4
+    text: De-allocate unused RAM frames and reuse them
+    role: embedded
+    classified_by: model
+  - line: 371
+    level: 4
+    text: Triggering out-of-memory (OOM) situation
+    role: embedded
+    classified_by: model
+  - line: 386
+    level: 3
+    text: OS Memory Mapping
+    role: section
+    classified_by: rule:toc
+  - line: 402
+    level: 4
+    text: '*Page* A'
+    role: embedded
+    classified_by: model
+  - line: 406
+    level: 4
+    text: '*Page* B'
+    role: embedded
+    classified_by: model
+  - line: 410
+    level: 4
+    text: '*Page* C'
+    role: embedded
+    classified_by: model
+  - line: 414
+    level: 4
+    text: '*Page* D'
+    role: embedded
+    classified_by: model
+  - line: 449
+    level: 3
+    text: Go Memory Management
+    role: section
+    classified_by: rule:toc
+  - line: 463
+    level: 4
+    text: .text*,* .data*, and shared libraries*
+    role: embedded
+    classified_by: model
+  - line: 467
+    level: 4
+    text: Block starting symbol (*.bss*)
+    role: embedded
+    classified_by: model
+  - line: 471
+    level: 4
+    text: Heap
+    role: section
+    classified_by: rule:toc
+  - line: 487
+    level: 4
+    text: Most of the Time, It's Enough to Optimize the Heap Usage
+    role: embedded
+    classified_by: model
+  - line: 491
+    level: 4
+    text: Manual process mappings
+    role: embedded
+    classified_by: model
+  - line: 495
+    level: 4
+    text: Stack
+    role: embedded
+    classified_by: model
+  - line: 523
+    level: 4
+    text: Transparent Allocations Mean There Is a Risk of Overdoing Them
+    role: embedded
+    classified_by: model
+  - line: 531
+    level: 3
+    text: Values, Pointers, and Memory Blocks
+    role: section
+    classified_by: rule:toc
+  - line: 551
+    level: 4
+    text: Think About Variables as Boxes Holding Values
+    role: embedded
+    classified_by: model
+  - line: 569
+    level: 4
+    text: Memory Structure for Go Slice
+    role: embedded
+    classified_by: model
+  - line: 588
+    level: 4
+    text: Structure Padding
+    role: embedded
+    classified_by: model
+  - line: 648
+    level: 3
+    text: Go Allocator
+    role: section
+    classified_by: rule:toc
+  - line: 708
+    level: 4
+    text: Internal Go Runtime Knowledge Versus OS Knowledge
+    role: embedded
+    classified_by: model
+  - line: 718
+    level: 4
+    text: Don't Be Bothered by a Small Memory Increase
+    role: embedded
+    classified_by: model
+  - line: 730
+    level: 3
+    text: Garbage Collection
+    role: section
+    classified_by: rule:toc
+  - line: 755
+    level: 4
+    text: GOMEMLIMIT Does Not Prevent Your Program from Allocating More than the Set Value!
+    role: embedded
+    classified_by: model
+  - line: 763
+    level: 4
+    text: Manual trigger.
+    role: embedded
+    classified_by: model
+  - line: 833
+    level: 4
+    text: CPU overhead
+    role: embedded
+    classified_by: model
+  - line: 843
+    level: 4
+    text: Additional increase in program latency
+    role: embedded
+    classified_by: model
+  - line: 853
+    level: 4
+    text: Memory overhead
+    role: embedded
+    classified_by: model
+  - line: 869
+    level: 4
+    text: The Solution to Most Memory Efficiency Issues
+    role: embedded
+    classified_by: model
+  - line: 875
+    level: 3
+    text: Summary
+    role: section
+    classified_by: rule:toc
+- path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/010-chapter-6-efficiency-observability.md
+  chapter_sha256: 87d8863b6d75f966562d8ba05b537df18e02d99da0372adbc3c31dc17b546633
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 6: Efficiency Observability'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 13
+    level: 2
+    text: You Can't Improve What You Don't Measure!
+    role: embedded
+    classified_by: model
+  - line: 21
+    level: 3
+    text: Observability
+    role: section
+    classified_by: rule:toc
+  - line: 26
+    level: 4
+    text: Observability
+    role: section
+    classified_by: rule:toc
+  - line: 52
+    level: 4
+    text: Instrumentation
+    role: embedded
+    classified_by: model
+  - line: 56
+    level: 4
+    text: 'Instrumentation can have many forms:'
+    role: embedded
+    classified_by: model
+  - line: 58
+    level: 4
+    text: Manual instrumentation
+    role: embedded
+    classified_by: model
+  - line: 62
+    level: 4
+    text: Autoinstrumentation
+    role: embedded
+    classified_by: model
+  - line: 68
+    level: 4
+    text: Capturing raw events
+    role: embedded
+    classified_by: model
+  - line: 74
+    level: 4
+    text: Capturing aggregated information
+    role: embedded
+    classified_by: model
+  - line: 86
+    level: 4
+    text: Push
+    role: embedded
+    classified_by: model
+  - line: 90
+    level: 4
+    text: Pull
+    role: embedded
+    classified_by: model
+  - line: 96
+    level: 4
+    text: Push Versus Pull
+    role: embedded
+    classified_by: model
+  - line: 107
+    level: 3
+    text: 'Example: Instrumenting for Latency'
+    role: section
+    classified_by: rule:toc
+  - line: 119
+    level: 3
+    text: Logging
+    role: section
+    classified_by: rule:toc
+  - line: 208
+    level: 4
+    text: Be Mindful While Using the Go Standard Library Logger
+    role: embedded
+    classified_by: model
+  - line: 284
+    level: 3
+    text: Tracing
+    role: section
+    classified_by: rule:toc
+  - line: 346
+    level: 4
+    text: Readability and maintainability
+    role: embedded
+    classified_by: model
+  - line: 354
+    level: 4
+    text: Hiding Instrumentation Under Abstractions
+    role: embedded
+    classified_by: model
+  - line: 360
+    level: 4
+    text: Cost and reliability
+    role: embedded
+    classified_by: model
+  - line: 368
+    level: 4
+    text: Short duration
+    role: embedded
+    classified_by: model
+  - line: 382
+    level: 3
+    text: Metrics
+    role: section
+    classified_by: rule:toc
+  - line: 443
+    level: 1
+    text: HELP operation_duration_seconds Tracks the latency of operations in seconds.
+    role: embedded
+    classified_by: model
+  - line: 444
+    level: 1
+    text: TYPE operation_duration_seconds histogram
+    role: embedded
+    classified_by: model
+  - line: 541
+    level: 4
+    text: High Metric Cardinality
+    role: section
+    classified_by: rule:cited
+  - line: 551
+    level: 4
+    text: There Is No Observability Silver Bullet!
+    role: embedded
+    classified_by: model
+  - line: 557
+    level: 3
+    text: Efficiency Metrics Semantics
+    role: section
+    classified_by: rule:toc
+  - line: 563
+    level: 4
+    text: Metrics As Numeric Value Versus Metric Observability Signal
+    role: embedded
+    classified_by: model
+  - line: 569
+    level: 4
+    text: Semantics
+    role: embedded
+    classified_by: model
+  - line: 573
+    level: 4
+    text: Granularity
+    role: embedded
+    classified_by: model
+  - line: 581
+    level: 3
+    text: Latency
+    role: section
+    classified_by: rule:toc
+  - line: 612
+    level: 4
+    text: Shorter Latencies Are Harder to Measure Reliably
+    role: embedded
+    classified_by: model
+  - line: 620
+    level: 4
+    text: Time Is Infinite; the Software Structures Measuring that Time Are Not!
+    role: embedded
+    classified_by: model
+  - line: 651
+    level: 4
+    text: HTTP client-side latency (response time)
+    role: embedded
+    classified_by: model
+  - line: 655
+    level: 4
+    text: HTTP server-side latency
+    role: embedded
+    classified_by: model
+  - line: 659
+    level: 4
+    text: Server-side latency (service time)
+    role: embedded
+    classified_by: model
+  - line: 663
+    level: 4
+    text: Server-side function latency
+    role: embedded
+    classified_by: model
+  - line: 671
+    level: 4
+    text: Whatever Metric Granularity You Choose, Understand and Document What You Measure!
+    role: embedded
+    classified_by: model
+  - line: 720
+    level: 3
+    text: CPU Usage
+    role: section
+    classified_by: rule:toc
+  - line: 726
+    level: 4
+    text: CPU cycles
+    role: embedded
+    classified_by: model
+  - line: 734
+    level: 4
+    text: CPU instructions
+    role: embedded
+    classified_by: model
+  - line: 743
+    level: 4
+    text: CPU time
+    role: embedded
+    classified_by: model
+  - line: 818
+    level: 3
+    text: Memory Usage
+    role: section
+    classified_by: rule:toc
+  - line: 824
+    level: 4
+    text: runtime heap statistics
+    role: embedded
+    classified_by: model
+  - line: 872
+    level: 4
+    text: OS memory pages statistics
+    role: embedded
+    classified_by: model
+  - line: 892
+    level: 4
+    text: WSS
+    role: embedded
+    classified_by: model
+  - line: 907
+    level: 3
+    text: Summary
+    role: section
+    classified_by: rule:toc
+- path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/011-chapter-7-data-driven-efficiency-assessment.md
+  chapter_sha256: ce8f3335d707758a189b96cdcf4789cb6ac8d8ff62800e263ca564032dc9b151
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 7: Data-Driven Efficiency Assessment'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 10
+    level: 2
+    text: The Definition of Measuring
+    role: section
+    classified_by: model
+  - line: 26
+    level: 3
+    text: Complexity Analysis
+    role: section
+    classified_by: rule:toc
+  - line: 35
+    level: 3
+    text: '"Estimated" Efficiency Complexity'
+    role: section
+    classified_by: rule:toc
+  - line: 48
+    level: 4
+    text: '"Estimated" Complexity'
+    role: embedded
+    classified_by: model
+  - line: 59
+    level: 4
+    text: This Is Just an Example!
+    role: embedded
+    classified_by: model
+  - line: 93
+    level: 3
+    text: Asymptotic Complexity with Big O Notation
+    role: section
+    classified_by: rule:toc
+  - line: 131
+    level: 4
+    text: The Industry Is Not Always Using Big O Notation Properly
+    role: embedded
+    classified_by: model
+  - line: 156
+    level: 3
+    text: Practical Applications
+    role: section
+    classified_by: rule:toc
+  - line: 176
+    level: 4
+    text: If you know precise complexity, you don't need to measure to know expected resource requirements
+    role: embedded
+    classified_by: model
+  - line: 201
+    level: 4
+    text: It tells us if there is any easy optimization to our code
+    role: embedded
+    classified_by: model
+  - line: 219
+    level: 4
+    text: Three Clear Indications We Are Wasting Memory Space
+    role: embedded
+    classified_by: model
+  - line: 225
+    level: 4
+    text: It helps us assess ideas for a better algorithm as an optimization
+    role: embedded
+    classified_by: model
+  - line: 245
+    level: 4
+    text: Worse Is Sometimes Better!
+    role: embedded
+    classified_by: model
+  - line: 251
+    level: 4
+    text: It tells us where the bottleneck is and what part of the algorithm is critical
+    role: embedded
+    classified_by: model
+  - line: 257
+    level: 3
+    text: The Art of Benchmarking
+    role: section
+    classified_by: rule:toc
+- path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/012-chapter-8-benchmarking-versus-stress-and-load-tests.md
+  chapter_sha256: c721c33c95c191f993fa5010ba29f8ba89d005c11d43d6e8fa56f4b21ce04213
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 8: Benchmarking Versus Stress and Load Tests'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 11
+    level: 2
+    text: Experiment
+    role: embedded
+    classified_by: model
+  - line: 15
+    level: 3
+    text: Measurement
+    role: embedded
+    classified_by: model
+  - line: 23
+    level: 4
+    text: The number of test iterations (N)
+    role: embedded
+    classified_by: model
+  - line: 27
+    level: 4
+    text: Comparison
+    role: embedded
+    classified_by: model
+  - line: 33
+    level: 3
+    text: Comparison to Functional Testing
+    role: section
+    classified_by: rule:toc
+  - line: 51
+    level: 4
+    text: Embrace the performance nondeterminism
+    role: embedded
+    classified_by: model
+  - line: 59
+    level: 4
+    text: It is more expensive to write and run
+    role: embedded
+    classified_by: model
+  - line: 65
+    level: 4
+    text: Expectations are less specific
+    role: embedded
+    classified_by: model
+  - line: 75
+    level: 4
+    text: We Focus More on Relative Results than Absolute Numbers!
+    role: embedded
+    classified_by: model
+  - line: 81
+    level: 3
+    text: Benchmarks Lie
+    role: section
+    classified_by: rule:toc
+  - line: 93
+    level: 4
+    text: Benchmarks Don't Lie; We Just Misinterpret the Results!
+    role: embedded
+    classified_by: model
+  - line: 107
+    level: 3
+    text: Reliability of Experiments
+    role: section
+    classified_by: rule:toc
+  - line: 115
+    level: 4
+    text: The Same Applies to Bottleneck Analysis!
+    role: embedded
+    classified_by: model
+  - line: 121
+    level: 3
+    text: Human Errors
+    role: section
+    classified_by: model
+    note: 'pin: nested subsection of "Reliability of Experiments" flattened to its parent''s level; printed TOC lists nested entries (frontier full-chapter review)'
+    depth: 4
+  - line: 131
+    level: 4
+    text: Keep it simple.
+    role: embedded
+    classified_by: model
+  - line: 137
+    level: 4
+    text: Know what version of software you are benchmarking.
+    role: embedded
+    classified_by: model
+  - line: 143
+    level: 4
+    text: Know what version of benchmark you are using.
+    role: embedded
+    classified_by: model
+  - line: 167
+    level: 3
+    text: Reproducing Production
+    role: section
+    classified_by: model
+    note: 'pin: nested subsection of "Reliability of Experiments" flattened to its parent''s level; printed TOC lists nested entries (frontier full-chapter review)'
+    depth: 4
+  - line: 177
+    level: 4
+    text: Production conditions
+    role: embedded
+    classified_by: model
+  - line: 181
+    level: 4
+    text: Production workload
+    role: embedded
+    classified_by: model
+  - line: 208
+    level: 3
+    text: Performance Nondeterminism
+    role: section
+    classified_by: model
+    note: 'pin: nested subsection of "Reliability of Experiments" flattened to its parent''s level; printed TOC lists nested entries (frontier full-chapter review)'
+    depth: 4
+  - line: 224
+    level: 3
+    text: Compressible Versus Noncompressible Resources
+    role: embedded
+    classified_by: model
+  - line: 237
+    level: 4
+    text: Don't Overuse the Statistics
+    role: embedded
+    classified_by: model
+  - line: 251
+    level: 3
+    text: Background threads
+    role: embedded
+    classified_by: model
+  - line: 255
+    level: 4
+    text: Thermal scaling
+    role: embedded
+    classified_by: model
+  - line: 259
+    level: 4
+    text: Power management
+    role: embedded
+    classified_by: model
+  - line: 264
+    level: 3
+    text: For Most Cases, It's Enough to Maintain Simple Stability Best Practices
+    role: embedded
+    classified_by: model
+  - line: 272
+    level: 4
+    text: Be extra vigilant on shared infrastructure.
+    role: embedded
+    classified_by: model
+  - line: 283
+    level: 4
+    text: Be mindful of benchmark machine limits.
+    role: embedded
+    classified_by: model
+  - line: 289
+    level: 4
+    text: Run the experiment longer.
+    role: embedded
+    classified_by: model
+  - line: 293
+    level: 3
+    text: Avoid Comparing Efficiency with Older Experiment Results!
+    role: embedded
+    classified_by: model
+  - line: 307
+    level: 3
+    text: Benchmarking Levels
+    role: section
+    classified_by: rule:toc
+  - line: 321
+    level: 4
+    text: Feedback Loop
+    role: embedded
+    classified_by: model
+  - line: 343
+    level: 3
+    text: Benchmarking in Production
+    role: section
+    classified_by: rule:toc
+  - line: 347
+    level: 4
+    text: Benchmarking in Production Has Limited Use
+    role: embedded
+    classified_by: model
+  - line: 359
+    level: 3
+    text: Macrobenchmarks
+    role: section
+    classified_by: rule:toc
+  - line: 377
+    level: 3
+    text: Microbenchmarks
+    role: section
+    classified_by: rule:toc
+  - line: 387
+    level: 4
+    text: When Microbenchmarking, Don't Forget About the Big Picture
+    role: embedded
+    classified_by: model
+  - line: 395
+    level: 3
+    text: What Level Should You Use?
+    role: section
+    classified_by: rule:toc
+  - line: 413
+    level: 4
+    text: Don't Worry About "Benchmark" Code Coverage!
+    role: embedded
+    classified_by: model
+  - line: 423
+    level: 3
+    text: Summary
+    role: section
+    classified_by: rule:toc
+  - line: 435
+    level: 2
+    text: Benchmarking
+    role: section
+    classified_by: rule:toc
+  - line: 445
+    level: 3
+    text: Microbenchmarks
+    role: section
+    classified_by: rule:toc
+  - line: 459
+    level: 4
+    text: Keep Microbenchmarks Micro
+    role: embedded
+    classified_by: model
+  - line: 469
+    level: 4
+    text: Learning about runtime complexity
+    role: embedded
+    classified_by: model
+  - line: 475
+    level: 4
+    text: A/B testing
+    role: embedded
+    classified_by: model
+  - line: 485
+    level: 3
+    text: Go Benchmarks
+    role: section
+    classified_by: rule:toc
+  - line: 497
+    level: 4
+    text: The Go Benchmark Naming Convention
+    role: embedded
+    classified_by: model
+  - line: 512
+    level: 4
+    text: Example 8-1. Core Go benchmark elements
+    role: embedded
+    classified_by: rule:caption
+  - line: 537
+    level: 4
+    text: The Choice of Test Data and Conditions for Our Benchmarks
+    role: embedded
+    classified_by: model
+  - line: 590
+    level: 4
+    text: Running Go Benchmarks Through IDE
+    role: embedded
+    classified_by: model
+  - line: 621
+    level: 3
+    text: Understanding the Results
+    role: section
+    classified_by: rule:toc
+  - line: 723
+    level: 3
+    text: Tips and Tricks for Microbenchmarking
+    role: section
+    classified_by: rule:toc
+  - line: 727
+    level: 3
+    text: Too-High Variance
+    role: section
+    classified_by: rule:toc
+  - line: 748
+    level: 3
+    text: Find Your Workflow
+    role: section
+    classified_by: rule:toc
+  - line: 777
+    level: 3
+    text: Test Your Benchmark for Correctness!
+    role: section
+    classified_by: rule:toc
+  - line: 788
+    level: 4
+    text: Example 8-9. Example unit test to assess the correctness of the Sum function
+    role: embedded
+    classified_by: rule:caption
+  - line: 867
+    level: 3
+    text: Sharing Benchmarks with the Team (and Your Future Self)
+    role: section
+    classified_by: rule:toc
+  - line: 882
+    level: 4
+    text: Example 8-12. Well-documented, reusable Go benchmark for assessing concurrent implementations of the Sum function
+    role: embedded
+    classified_by: rule:caption
+  - line: 950
+    level: 3
+    text: Running Benchmarks for Different Inputs
+    role: section
+    classified_by: rule:toc
+  - line: 1013
+    level: 3
+    text: Microbenchmarks Versus Memory Management
+    role: section
+    classified_by: rule:toc
+  - line: 1027
+    level: 4
+    text: GC latency
+    role: embedded
+    classified_by: model
+  - line: 1033
+    level: 4
+    text: Maximum memory usage
+    role: embedded
+    classified_by: model
+  - line: 1048
+    level: 3
+    text: Compiler Optimizations Versus Benchmark
+    role: section
+    classified_by: rule:toc
+  - line: 1128
+    level: 4
+    text: Outsmart compiler in microbenchmark.
+    role: embedded
+    classified_by: model
+  - line: 1166
+    level: 4
+    text: Don't Put Sinks Everywhere!
+    role: embedded
+    classified_by: model
+  - line: 1178
+    level: 3
+    text: Macrobenchmarks
+    role: section
+    classified_by: rule:toc
+  - line: 1186
+    level: 4
+    text: Participate in Macrobenchmarks That Touch Your Software!
+    role: embedded
+    classified_by: model
+  - line: 1193
+    level: 3
+    text: Basics
+    role: section
+    classified_by: rule:toc
+  - line: 1221
+    level: 4
+    text: Our Go program as a separate process
+    role: embedded
+    classified_by: model
+  - line: 1225
+    level: 3
+    text: Dependencies, e.g., object storage
+    role: embedded
+    classified_by: model
+  - line: 1234
+    level: 4
+    text: Observability
+    role: section
+    classified_by: rule:toc
+  - line: 1238
+    level: 4
+    text: Load tester
+    role: embedded
+    classified_by: model
+  - line: 1254
+    level: 3
+    text: Go e2e Framework
+    role: section
+    classified_by: rule:toc
+  - line: 1264
+    level: 3
+    text: Benefits of Benchmarking in Containers
+    role: embedded
+    classified_by: model
+  - line: 1389
+    level: 4
+    text: Keep Your Container Images Versioned!
+    role: embedded
+    classified_by: model
+  - line: 1395
+    level: 3
+    text: Duration of Macrobenchmarks
+    role: embedded
+    classified_by: model
+  - line: 1406
+    level: 3
+    text: Understanding Results and Observations
+    role: section
+    classified_by: rule:toc
+  - line: 1461
+    level: 4
+    text: Server-side latency
+    role: embedded
+    classified_by: model
+  - line: 1473
+    level: 4
+    text: Prometheus Rate Duration
+    role: embedded
+    classified_by: model
+  - line: 1488
+    level: 3
+    text: CPU time
+    role: embedded
+    classified_by: model
+  - line: 1500
+    level: 4
+    text: Memory
+    role: embedded
+    classified_by: model
+  - line: 1516
+    level: 3
+    text: go\_memstats\_heap\_alloc\_bytes Gauge and Temporary Changes
+    role: embedded
+    classified_by: model
+  - line: 1536
+    level: 3
+    text: Common Macrobenchmarking Workflows
+    role: section
+    classified_by: rule:toc
+  - line: 1572
+    level: 3
+    text: Summary
+    role: section
+    classified_by: rule:toc
+- path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/013-chapter-9-data-driven-bottleneck-analysis.md
+  chapter_sha256: 27b0b1ba95c0e6fbd3004cf773433e967a627623389fae28c208f16665ff2f00
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 9: Data-Driven Bottleneck Analysis'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 18
+    level: 2
+    text: Root Cause Analysis, but for Efficiency
+    role: section
+    classified_by: rule:toc
+  - line: 38
+    level: 3
+    text: Profiling in Go
+    role: section
+    classified_by: rule:toc
+  - line: 54
+    level: 4
+    text: Profiler
+    role: embedded
+    classified_by: model
+  - line: 60
+    level: 3
+    text: pprof Format
+    role: section
+    classified_by: rule:toc
+  - line: 207
+    level: 4
+    text: Mappings
+    role: embedded
+    classified_by: model
+  - line: 215
+    level: 4
+    text: Locations
+    role: embedded
+    classified_by: model
+  - line: 219
+    level: 4
+    text: Functions
+    role: embedded
+    classified_by: model
+  - line: 223
+    level: 4
+    text: ValueTypes
+    role: embedded
+    classified_by: model
+  - line: 229
+    level: 4
+    text: Contributions
+    role: embedded
+    classified_by: model
+  - line: 235
+    level: 4
+    text: Samples
+    role: embedded
+    classified_by: model
+  - line: 239
+    level: 4
+    text: Further metadata
+    role: embedded
+    classified_by: model
+  - line: 252
+    level: 4
+    text: Statistical Profiles Are Not 100% Precise
+    role: embedded
+    classified_by: model
+  - line: 264
+    level: 3
+    text: go tool pprof Reports
+    role: section
+    classified_by: rule:toc
+  - line: 316
+    level: 4
+    text: VIEW
+    role: embedded
+    classified_by: model
+  - line: 320
+    level: 4
+    text: SAMPLE
+    role: embedded
+    classified_by: model
+  - line: 324
+    level: 4
+    text: REFINE
+    role: embedded
+    classified_by: model
+  - line: 342
+    level: 4
+    text: CONFIG
+    role: embedded
+    classified_by: model
+  - line: 346
+    level: 4
+    text: DOWNLOAD
+    role: embedded
+    classified_by: model
+  - line: 350
+    level: 4
+    text: Search regexp
+    role: embedded
+    classified_by: model
+  - line: 354
+    level: 4
+    text: The binary name and sample type
+    role: embedded
+    classified_by: model
+  - line: 394
+    level: 4
+    text: Top
+    role: embedded
+    classified_by: model
+  - line: 404
+    level: 3
+    text: Choose Your Granularity
+    role: embedded
+    classified_by: model
+  - line: 414
+    level: 4
+    text: Flat%
+    role: embedded
+    classified_by: model
+  - line: 418
+    level: 4
+    text: Sum%
+    role: embedded
+    classified_by: model
+  - line: 422
+    level: 4
+    text: Cum%
+    role: embedded
+    classified_by: model
+  - line: 428
+    level: 4
+    text: Be Careful When Goroutines Are Involved
+    role: embedded
+    classified_by: model
+  - line: 435
+    level: 4
+    text: Name and Inlined
+    role: embedded
+    classified_by: model
+  - line: 443
+    level: 4
+    text: Graph
+    role: embedded
+    classified_by: model
+  - line: 457
+    level: 4
+    text: Node
+    role: embedded
+    classified_by: model
+  - line: 464
+    level: 4
+    text: Edge
+    role: embedded
+    classified_by: model
+  - line: 476
+    level: 4
+    text: Some Nodes Might Be Hidden!
+    role: embedded
+    classified_by: model
+  - line: 494
+    level: 3
+    text: Don't Be Afraid of Unknowns!
+    role: embedded
+    classified_by: model
+  - line: 506
+    level: 4
+    text: Flame Graph
+    role: embedded
+    classified_by: model
+  - line: 520
+    level: 4
+    text: Color and Order of Segments Usually Do Not Matter
+    role: embedded
+    classified_by: model
+  - line: 538
+    level: 4
+    text: Peek, Source, and Disassemble
+    role: embedded
+    classified_by: model
+  - line: 566
+    level: 3
+    text: Capturing the Profiling Signal
+    role: section
+    classified_by: rule:toc
+  - line: 581
+    level: 4
+    text: Always-On Profiling
+    role: embedded
+    classified_by: model
+  - line: 593
+    level: 4
+    text: Programmatically triggered
+    role: embedded
+    classified_by: model
+  - line: 601
+    level: 4
+    text: Go benchmark integrations
+    role: embedded
+    classified_by: model
+  - line: 605
+    level: 4
+    text: HTTP handlers
+    role: embedded
+    classified_by: model
+  - line: 653
+    level: 3
+    text: Common Profile Instrumentation
+    role: section
+    classified_by: rule:toc
+  - line: 657
+    level: 3
+    text: Heap
+    role: section
+    classified_by: rule:toc
+  - line: 669
+    level: 4
+    text: What Memory Profile Rate Should You Choose?
+    role: embedded
+    classified_by: model
+  - line: 685
+    level: 4
+    text: alloc\_space
+    role: embedded
+    classified_by: model
+  - line: 699
+    level: 4
+    text: Resetting Cumulative Allocations
+    role: embedded
+    classified_by: model
+  - line: 707
+    level: 4
+    text: alloc\_objects
+    role: embedded
+    classified_by: model
+  - line: 712
+    level: 4
+    text: inuse\_space
+    role: embedded
+    classified_by: model
+  - line: 720
+    level: 4
+    text: Finding the Source of the Memory Leaks
+    role: embedded
+    classified_by: model
+  - line: 726
+    level: 4
+    text: inuse\_objects
+    role: embedded
+    classified_by: model
+  - line: 735
+    level: 3
+    text: Goroutine
+    role: section
+    classified_by: rule:toc
+  - line: 757
+    level: 4
+    text: runtime.gopark
+    role: embedded
+    classified_by: model
+  - line: 761
+    level: 4
+    text: runtime.chanrecv *and* runtime.chansend
+    role: embedded
+    classified_by: model
+  - line: 766
+    level: 4
+    text: runtime.selectgo
+    role: embedded
+    classified_by: model
+  - line: 770
+    level: 4
+    text: runtime.netpollblock
+    role: embedded
+    classified_by: model
+  - line: 776
+    level: 3
+    text: CPU
+    role: section
+    classified_by: rule:toc
+  - line: 786
+    level: 4
+    text: CPU Profile Has Its Start and End
+    role: embedded
+    classified_by: model
+  - line: 810
+    level: 4
+    text: Samples
+    role: embedded
+    classified_by: model
+  - line: 814
+    level: 4
+    text: CPU
+    role: section
+    classified_by: rule:toc
+  - line: 820
+    level: 4
+    text: io.Copy
+    role: embedded
+    classified_by: model
+  - line: 824
+    level: 4
+    text: bytes.Split
+    role: embedded
+    classified_by: model
+  - line: 828
+    level: 4
+    text: gcBgMarkWorker
+    role: embedded
+    classified_by: model
+  - line: 832
+    level: 4
+    text: runtime.slicebytetostring
+    role: embedded
+    classified_by: model
+  - line: 836
+    level: 4
+    text: strconv.ParseInt
+    role: embedded
+    classified_by: model
+  - line: 842
+    level: 3
+    text: Off-CPU Time
+    role: section
+    classified_by: rule:toc
+  - line: 852
+    level: 4
+    text: CPU time
+    role: embedded
+    classified_by: model
+  - line: 856
+    level: 4
+    text: Block time
+    role: embedded
+    classified_by: model
+  - line: 865
+    level: 4
+    text: Mutex time
+    role: embedded
+    classified_by: model
+  - line: 869
+    level: 4
+    text: Untracked off-CPU time
+    role: embedded
+    classified_by: model
+  - line: 875
+    level: 4
+    text: Do We Have to Measure or Find Bottlenecks in Off-CPU Time?
+    role: embedded
+    classified_by: model
+  - line: 914
+    level: 3
+    text: Tips and Tricks
+    role: section
+    classified_by: rule:toc
+  - line: 918
+    level: 3
+    text: Sharing Profiles
+    role: section
+    classified_by: rule:toc
+  - line: 928
+    level: 3
+    text: Continuous Profiling
+    role: section
+    classified_by: rule:toc
+  - line: 1017
+    level: 4
+    text: Overhead of Continuous Profiling
+    role: embedded
+    classified_by: model
+  - line: 1027
+    level: 3
+    text: Comparing and Aggregating Profiles
+    role: section
+    classified_by: rule:toc
+  - line: 1031
+    level: 4
+    text: Subtracting profiles
+    role: embedded
+    classified_by: model
+  - line: 1038
+    level: 4
+    text: Comparing profiles
+    role: embedded
+    classified_by: model
+  - line: 1042
+    level: 4
+    text: Merging profiles
+    role: embedded
+    classified_by: model
+  - line: 1050
+    level: 3
+    text: Summary
+    role: section
+    classified_by: rule:toc
+  - line: 1056
+    level: 4
+    text: Profile First, Ask Questions Later
+    role: section
+    classified_by: rule:cited
+- path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/014-chapter-10-optimization-examples.md
+  chapter_sha256: 7924ccbc6f6d13a6025556bb152a3faababadb4753d8552055f890d99756c4d9
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 10: Optimization Examples'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 21
+    level: 2
+    text: Sum Examples
+    role: section
+    classified_by: rule:toc
+  - line: 42
+    level: 3
+    text: What If We Can't Match This Goal?
+    role: section
+    classified_by: model
+  - line: 58
+    level: 3
+    text: Optimizing Latency
+    role: section
+    classified_by: rule:toc
+  - line: 87
+    level: 4
+    text: Example 10-2. Go benchmark with fgprof profiling
+    role: embedded
+    classified_by: rule:caption
+  - line: 116
+    level: 4
+    text: Optimize One Thing at a Time
+    role: section
+    classified_by: rule:cited
+  - line: 125
+    level: 3
+    text: Optimizing bytes.Split
+    role: section
+    classified_by: rule:toc
+  - line: 169
+    level: 4
+    text: Standard Functions Might Not Be Perfect for All Cases
+    role: section
+    classified_by: rule:cited
+  - line: 179
+    level: 3
+    text: Optimizing runtime.slicebytetostring
+    role: section
+    classified_by: rule:toc
+  - line: 230
+    level: 4
+    text: Deliberate Trade-offs
+    role: section
+    classified_by: rule:cited
+  - line: 236
+    level: 3
+    text: Optimizing strconv.Parse
+    role: section
+    classified_by: rule:toc
+  - line: 316
+    level: 3
+    text: Optimizing Memory Usage
+    role: section
+    classified_by: rule:toc
+  - line: 324
+    level: 3
+    text: Moving to Streaming Algorithm
+    role: section
+    classified_by: rule:toc
+  - line: 366
+    level: 3
+    text: Optimizing bufio.Scanner
+    role: section
+    classified_by: rule:toc
+  - line: 471
+    level: 3
+    text: Optimizing Latency Using Concurrency
+    role: section
+    classified_by: rule:toc
+  - line: 477
+    level: 3
+    text: A Naive Concurrency
+    role: section
+    classified_by: model
+    note: 'pin: nested subsection of "Optimizing Latency Using Concurrency" flattened to its parent''s level; printed TOC lists nested entries (frontier full-chapter review)'
+    depth: 4
+  - line: 523
+    level: 3
+    text: A Worker Approach with Distribution
+    role: section
+    classified_by: model
+    note: 'pin: nested subsection of "Optimizing Latency Using Concurrency" flattened to its parent''s level; printed TOC lists nested entries (frontier full-chapter review)'
+    depth: 4
+  - line: 594
+    level: 3
+    text: A Worker Approach Without Coordination (Sharding)
+    role: section
+    classified_by: model
+    note: 'pin: nested subsection of "Optimizing Latency Using Concurrency" flattened to its parent''s level; printed TOC lists nested entries (frontier full-chapter review)'
+    depth: 4
+  - line: 604
+    level: 4
+    text: runtime.schedule
+    role: embedded
+    classified_by: model
+  - line: 608
+    level: 4
+    text: runtime.chansend
+    role: embedded
+    classified_by: model
+  - line: 612
+    level: 4
+    text: runtime.chanrecv
+    role: embedded
+    classified_by: model
+  - line: 668
+    level: 3
+    text: A Streamed, Sharded Worker Approach
+    role: section
+    classified_by: model
+    note: 'pin: nested subsection of "Optimizing Latency Using Concurrency" flattened to its parent''s level; printed TOC lists nested entries (frontier full-chapter review)'
+    depth: 4
+  - line: 745
+    level: 3
+    text: 'Bonus: Thinking Out of the Box'
+    role: section
+    classified_by: rule:toc
+  - line: 777
+    level: 3
+    text: Summary
+    role: section
+    classified_by: rule:toc
+- path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/015-chapter-11-optimization-patterns.md
+  chapter_sha256: 6e998f8e0818ecf431271babb5f86e8ee507015cc69f7abb2de8f2478d38c20c
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 11: Optimization Patterns'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 7
+    level: 2
+    text: Be a Mindful Go Developer
+    role: embedded
+    classified_by: model
+  - line: 21
+    level: 3
+    text: Common Patterns
+    role: section
+    classified_by: rule:toc
+  - line: 27
+    level: 3
+    text: Do Less Work
+    role: section
+    classified_by: rule:toc
+  - line: 37
+    level: 4
+    text: Generic Implementations
+    role: embedded
+    classified_by: model
+  - line: 43
+    level: 4
+    text: Do things once
+    role: embedded
+    classified_by: model
+  - line: 51
+    level: 4
+    text: Leverage math to do less
+    role: embedded
+    classified_by: model
+  - line: 55
+    level: 4
+    text: Use the knowledge or precomputed information
+    role: embedded
+    classified_by: model
+  - line: 94
+    level: 4
+    text: Be Strategic!
+    role: embedded
+    classified_by: model
+  - line: 99
+    level: 3
+    text: Trading Functionality for Efficiency
+    role: section
+    classified_by: rule:toc
+  - line: 105
+    level: 3
+    text: Trading Space for Time
+    role: section
+    classified_by: rule:toc
+  - line: 109
+    level: 4
+    text: Precomputing result
+    role: embedded
+    classified_by: model
+  - line: 122
+    level: 4
+    text: Caching
+    role: embedded
+    classified_by: model
+  - line: 126
+    level: 4
+    text: Augmenting data structure
+    role: embedded
+    classified_by: model
+  - line: 132
+    level: 4
+    text: Decompressing
+    role: embedded
+    classified_by: model
+  - line: 138
+    level: 3
+    text: Trading Time for Space
+    role: section
+    classified_by: rule:toc
+  - line: 146
+    level: 4
+    text: Trading Space for Time or Time for Space Optimizations Is Not Always Intuitive
+    role: embedded
+    classified_by: model
+  - line: 154
+    level: 3
+    text: The Three Rs Optimization Method
+    role: section
+    classified_by: rule:toc
+  - line: 160
+    level: 3
+    text: Reduce Allocations
+    role: section
+    classified_by: rule:toc
+  - line: 176
+    level: 3
+    text: Reuse Memory
+    role: section
+    classified_by: rule:toc
+  - line: 183
+    level: 4
+    text: Be Careful When Reusing
+    role: embedded
+    classified_by: model
+  - line: 192
+    level: 3
+    text: Recycle
+    role: section
+    classified_by: rule:toc
+  - line: 214
+    level: 4
+    text: GC tuning
+    role: embedded
+    classified_by: model
+  - line: 222
+    level: 3
+    text: Using Kubernetes? Use GOMEMLIMIT Together with Pod Memory Limits
+    role: embedded
+    classified_by: model
+  - line: 232
+    level: 4
+    text: Triggering GC and freeing OS memory manually
+    role: embedded
+    classified_by: model
+  - line: 236
+    level: 4
+    text: Allocating objects off-heap
+    role: embedded
+    classified_by: model
+  - line: 252
+    level: 3
+    text: Don't Leak Resources
+    role: section
+    classified_by: rule:toc
+  - line: 258
+    level: 4
+    text: '"This Program Has a Memory Leak!"'
+    role: embedded
+    classified_by: model
+  - line: 285
+    level: 3
+    text: Control the Lifecycle of Your Goroutines
+    role: section
+    classified_by: rule:toc
+  - line: 299
+    level: 4
+    text: How to stop them
+    role: embedded
+    classified_by: model
+  - line: 303
+    level: 4
+    text: Should my function wait for the goroutine to finish?
+    role: embedded
+    classified_by: model
+  - line: 472
+    level: 4
+    text: Are we sure they finished?
+    role: embedded
+    classified_by: model
+  - line: 537
+    level: 3
+    text: Reliably Close Things
+    role: section
+    classified_by: rule:toc
+  - line: 551
+    level: 4
+    text: Example 11-8. Examples of closing files with defer
+    role: embedded
+    classified_by: rule:caption
+  - line: 600
+    level: 4
+    text: Example 11-9. Closing files in error cases
+    role: embedded
+    classified_by: rule:caption
+  - line: 643
+    level: 3
+    text: Exhaust Things
+    role: section
+    classified_by: rule:toc
+  - line: 712
+    level: 3
+    text: Pre-Allocate If You Can
+    role: section
+    classified_by: rule:toc
+  - line: 883
+    level: 3
+    text: Overusing Memory with Arrays
+    role: section
+    classified_by: rule:toc
+  - line: 975
+    level: 3
+    text: Memory Reuse and Pooling
+    role: section
+    classified_by: rule:toc
+  - line: 989
+    level: 4
+    text: Example 11-17. Simple buffering or byte slice
+    role: embedded
+    classified_by: rule:caption
+  - line: 1150
+    level: 4
+    text: gobwas-pool
+    role: embedded
+    classified_by: model
+  - line: 1154
+    level: 4
+    text: static-buffers
+    role: embedded
+    classified_by: model
+  - line: 1204
+    level: 4
+    text: The Optimization Journey Can Be a Roller Coaster!
+    role: embedded
+    classified_by: model
+  - line: 1219
+    level: 3
+    text: Why Can't We Always Have Nice Things in the Standard Library?
+    role: embedded
+    classified_by: model
+  - line: 1231
+    level: 3
+    text: Summary
+    role: section
+    classified_by: rule:toc
+  - line: 1258
+    level: 3
+    text: Next Steps
+    role: section
+    classified_by: rule:toc
+  - line: 1278
+    level: 3
+    text: Disk
+    role: embedded
+    classified_by: model
+  - line: 1286
+    level: 4
+    text: Network
+    role: embedded
+    classified_by: model
+  - line: 1290
+    level: 4
+    text: GPUs and FPGA
+    role: embedded
+    classified_by: model
+  - line: 1322
+    level: 2
+    text: Latencies for Napkin Math Calculations
+    role: section
+    classified_by: rule:toc
+- path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/016-index.md
+  chapter_sha256: 713f0da92b222dc1e912b7856ba4fb9e126c0166c460ebb78cc8e666ee906847
+  headings:
+  - line: 1
+    level: 1
+    text: Index
+    role: section
+    classified_by: rule:chapter-title
+- path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/017-about-the-author.md
+  chapter_sha256: c96def5d860f26e3da8dfe1cfa3b38395303398e0082531d39de472b298efc1e
+  headings:
+  - line: 1
+    level: 1
+    text: About the Author
+    role: section
+    classified_by: rule:chapter-title
+- path: books/efficient-go-data-driven-performance-optimization-bartlomiej-plotka-z-library/chapters/018-colophon.md
+  chapter_sha256: fddb41c7ecfd44a38291146aea7384aded56c87a9a7f6943fe3708e7b91177a3
+  headings:
+  - line: 1
+    level: 1
+    text: Colophon
+    role: section
+    classified_by: rule:chapter-title
+  - line: 15
+    level: 2
+    text: Learn from experts. Become one yourself.
+    role: embedded
+    classified_by: model

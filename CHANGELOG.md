@@ -57,6 +57,26 @@ remains under `Unreleased`, whether or not it has been committed.
   relational oracles, deterministic grading, and separately governed human
   adjudication. These documents do not claim implementation authorization or a
   current robustness capability.
+- Added tracked per-book section maps (`doctrine/section-maps/*.yaml`, schema
+  `section-map/1`) classifying every chapter heading as a genuine section
+  boundary or conversion-flattened embedded content (callouts, captions,
+  definition-list items, flattened subsection children), built by
+  `doctrine/tools/build_section_map.py --write | --check | --stats`. A
+  deterministic rule ladder (chapter title, callout, caption, numbered-book,
+  printed-TOC, doctrine-cited) records provenance per heading; the local model
+  classifies the remainder as screening evidence; human entries are
+  authoritative and preserved verbatim. `--check` enforces book/chapter/heading
+  coverage, current chapter hashes, and that every doctrine-cited heading is a
+  section.
+- Section extraction is now map-aware: embedded headings no longer terminate
+  cited sections, and an optional per-heading `depth` expresses genuine nested
+  subsections flattened to their parent's markdown level (two such subsections
+  are themselves doctrine-cited). Evidence-quote verification normalizes
+  conversion artifacts (PDF line-break hyphenation, markdown emphasis and
+  escapes, span anchors, curly quotes) and treats ellipses as elisions
+  (`entailment-prompt/4`); the judged-section budget rose from 24000 to 60000
+  characters. A release-gate oracle requires all 19 artifact-flag evidence
+  quotes to be recoverable from the re-bounded sections.
 - Added this changelog.
 
 ### Changed
