@@ -8,6 +8,7 @@ import copy
 import hashlib
 import json
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 
@@ -472,6 +473,97 @@ def _solution_receipt(stimulus: dict[str, object]) -> dict[str, object]:
     }
 
 
+# Generated provenance files float with checkout state; surface identity
+# covers only the knowledge content itself.
+SURFACE_IDENTITY_EXCLUDED = ("PROJECTION.md", "projection-manifest.json")
+
+
+def _surface_files(source: Path) -> dict[str, bytes]:
+    resolved_root = source.resolve()
+    paths = sorted(path for path in source.rglob("*") if path.is_file())
+    if not paths:
+        raise EvaluationError(f"empty_surface_source: {source}")
+    entries: dict[str, bytes] = {}
+    for path in paths:
+        relative = path.relative_to(source).as_posix()
+        if path.is_symlink():
+            raise EvaluationError(f"surface_symlink: {relative}")
+        if not path.resolve().is_relative_to(resolved_root):
+            raise EvaluationError(f"surface_outside_source: {relative}")
+        data = path.read_bytes()
+        _assert_agent_surface_sealed("surface", relative, data)
+        entries[relative] = data
+    return entries
+
+
+def bake_surface(
+    task_dirs: list[Path],
+    name: str = "corpus",
+    mount: str | None = None,
+    source: Path | None = None,
+    corpus_root: Path | None = None,
+    check: bool = False,
+) -> dict[str, object]:
+    """Materialize one sealed knowledge surface into task environments identically.
+
+    The manifest pins content identity; a changed source fails ``check`` loudly
+    instead of silently rebaselining. Rendered bytes under
+    ``environment/<name>/`` are regenerated on every invocation.
+    """
+    mount = HARBOR_CORPUS_MOUNT if mount is None else mount
+    if source is not None:
+        files = _surface_files(Path(source))
+        source_kind = "directory"
+    else:
+        files = _projection_files(ROOT if corpus_root is None else Path(corpus_root))
+        source_kind = "doctrine-corpus-projection"
+    manifest = {
+        "schema_version": "knowledge-surface/1",
+        "name": name,
+        "mount": mount,
+        "source_kind": source_kind,
+        "files": {
+            relative: _sha256(data)
+            for relative, data in sorted(files.items())
+            if relative not in SURFACE_IDENTITY_EXCLUDED
+        },
+    }
+    manifest["surface_hash"] = _content_hash(manifest)
+    copy_line = f"COPY {name}/ {mount.rstrip('/')}/"
+    baked = []
+    for task_dir in task_dirs:
+        task_dir = Path(task_dir)
+        environment = task_dir / "environment"
+        dockerfile = environment / "Dockerfile"
+        if not dockerfile.is_file():
+            raise EvaluationError(f"not_a_task_environment: {environment}")
+        if copy_line not in dockerfile.read_text(encoding="utf-8"):
+            raise EvaluationError(
+                f"dockerfile_missing_copy_line: {task_dir.name}: {copy_line}"
+            )
+        manifest_path = task_dir / f"surface-{name}.manifest.json"
+        if check:
+            if not manifest_path.is_file():
+                raise EvaluationError(f"missing_surface_manifest: {manifest_path}")
+            if _load_object(manifest_path) != manifest:
+                raise EvaluationError(f"stale_surface: {manifest_path}")
+        else:
+            _write_json(manifest_path, manifest)
+        target = environment / name
+        if target.exists():
+            shutil.rmtree(target)
+        for relative, data in files.items():
+            _write_file(target / relative, data)
+        baked.append({"task_dir": str(task_dir), "files": len(files)})
+    return {
+        "surface_hash": manifest["surface_hash"],
+        "name": name,
+        "mount": mount,
+        "source_kind": source_kind,
+        "tasks": baked,
+    }
+
+
 def _skill_directory_manifest(skill_dir: Path) -> dict[str, str]:
     files = sorted(path for path in skill_dir.rglob("*") if path.is_file())
     if not files:
@@ -697,6 +789,15 @@ def _argument_parser() -> argparse.ArgumentParser:
     render_parser.add_argument("--skill", type=Path, required=True)
     render_parser.add_argument("--out", type=Path, required=True)
     render_parser.add_argument("--corpus-root", type=Path)
+    bake_parser = subparsers.add_parser("bake-surface")
+    bake_parser.add_argument(
+        "--task", dest="tasks", type=Path, action="append", required=True
+    )
+    bake_parser.add_argument("--name", default="corpus")
+    bake_parser.add_argument("--mount")
+    bake_parser.add_argument("--source", type=Path)
+    bake_parser.add_argument("--corpus-root", type=Path)
+    bake_parser.add_argument("--check", action="store_true")
     return parser
 
 
@@ -734,12 +835,25 @@ def _render_harbor_command(arguments) -> None:
     print(json.dumps(summary, indent=2, sort_keys=True))
 
 
+def _bake_surface_command(arguments) -> None:
+    summary = bake_surface(
+        arguments.tasks,
+        name=arguments.name,
+        mount=arguments.mount,
+        source=arguments.source,
+        corpus_root=arguments.corpus_root,
+        check=arguments.check,
+    )
+    print(json.dumps(summary, indent=2, sort_keys=True))
+
+
 def main() -> int:
     commands = {
         "compile": _compile_command,
         "grade": _grade_command,
         "grade-arm": _grade_arm_command,
         "render-harbor": _render_harbor_command,
+        "bake-surface": _bake_surface_command,
     }
     arguments = _argument_parser().parse_args()
     try:

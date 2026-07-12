@@ -536,6 +536,81 @@ class DoctrineSkillHarborProjectionTests(unittest.TestCase):
             self.assertEqual("passed", json.loads(graded.stdout)["arm"]["status"])
 
 
+def make_fixture_task(base: Path, name: str, copy_lines: str) -> Path:
+    environment = base / name / "environment"
+    environment.mkdir(parents=True)
+    (environment / "Dockerfile").write_text(
+        f"FROM scratch\nCOPY app/ /app/\n{copy_lines}", encoding="utf-8"
+    )
+    return base / name
+
+
+class DoctrineSkillBakeSurfaceTests(unittest.TestCase):
+    def test_bakes_the_corpus_surface_into_multiple_tasks_identically(self):
+        harness = load_harness()
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            corpus = make_fixture_corpus(base / "corpus-src", harness)
+            copy_line = "COPY corpus/ /home/halbritt/git/books/\n"
+            first = make_fixture_task(base, "one", copy_line)
+            second = make_fixture_task(base, "two", copy_line)
+            harness.bake_surface([first, second], corpus_root=corpus)
+            self.assertEqual(
+                tree_bytes(first / "environment/corpus"),
+                tree_bytes(second / "environment/corpus"),
+            )
+            self.assertEqual(
+                (first / "surface-corpus.manifest.json").read_bytes(),
+                (second / "surface-corpus.manifest.json").read_bytes(),
+            )
+            manifest = json.loads(
+                (first / "surface-corpus.manifest.json").read_text(encoding="utf-8")
+            )
+            self.assertNotIn("PROJECTION.md", manifest["files"])
+            self.assertNotIn("projection-manifest.json", manifest["files"])
+            self.assertTrue(
+                (first / "environment/corpus/PROJECTION.md").is_file()
+            )
+            harness.bake_surface([first], corpus_root=corpus, check=True)
+            poison = corpus / "doctrine/traceability.yaml"
+            poison.write_text(
+                poison.read_text(encoding="utf-8") + "drift: true\n", encoding="utf-8"
+            )
+            with self.assertRaises(harness.EvaluationError) as caught:
+                harness.bake_surface([first], corpus_root=corpus, check=True)
+            self.assertIn("stale_surface", str(caught.exception))
+
+    def test_bakes_a_generic_memory_surface_at_a_custom_mount(self):
+        harness = load_harness()
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            memory = base / "memory-src"
+            (memory / "episodes").mkdir(parents=True)
+            (memory / "MEMORY.md").write_text("- fact one\n", encoding="utf-8")
+            (memory / "episodes/0001.md").write_text("episode\n", encoding="utf-8")
+            task = make_fixture_task(
+                base, "task", "COPY memory/ /agent/memory/\n"
+            )
+            harness.bake_surface(
+                [task], name="memory", mount="/agent/memory", source=memory
+            )
+            self.assertEqual(
+                b"- fact one\n",
+                (task / "environment/memory/MEMORY.md").read_bytes(),
+            )
+            manifest = json.loads(
+                (task / "surface-memory.manifest.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual("directory", manifest["source_kind"])
+            self.assertEqual("/agent/memory", manifest["mount"])
+            bare = make_fixture_task(base, "bare", "")
+            with self.assertRaises(harness.EvaluationError) as caught:
+                harness.bake_surface(
+                    [bare], name="memory", mount="/agent/memory", source=memory
+                )
+            self.assertIn("dockerfile_missing_copy_line", str(caught.exception))
+
+
 class DoctrineSkillGradingTests(unittest.TestCase):
     def test_treatment_can_improve_on_an_unsafe_control_without_hiding_the_hard_failure(self):
         harness = load_harness()
