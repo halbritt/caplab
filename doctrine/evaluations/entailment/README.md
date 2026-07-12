@@ -154,3 +154,10 @@ deterministically from `results.jsonl` — do not edit it by hand.
   additionally map-aware (see Method), and the section identity in each
   record's key (`section_sha256`) changes wherever the maps widen a section,
   so pre-map judgments are not reused for re-bounded sections.
+  `entailment-prompt/5` replaced quote normalization with lowercase
+  alphanumeric squashing on both sides (robust to hyphenation gluing,
+  mid-word small-caps markup, heading markers, and typography variants) and
+  added `[...]`-style elision fragments with a 10-character minimum: judged
+  against hosted-judge output, `/4` produced 22 of 28 (GLM 5.2) and 16 of 20
+  (qwen 27B) false `quote_not_found` verdicts that `/5` verifies correctly,
+  while genuine paraphrases stay flagged.

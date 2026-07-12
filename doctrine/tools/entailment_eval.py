@@ -39,7 +39,7 @@ if _TOOLS_DIR not in sys.path:
 from validate_doctrine import parse_heading_selector, plain_heading  # noqa: E402
 
 SCHEMA_VERSION = "entailment-eval/2"
-PROMPT_VERSION = "entailment-prompt/4"
+PROMPT_VERSION = "entailment-prompt/5"
 DEFAULT_ENDPOINT = "http://localhost:8081/v1"
 MODEL_ALIAS = "qwen3.6-35b-a3b"
 SECTION_CHAR_BUDGET = 60000
@@ -511,45 +511,44 @@ def judge(client: OpenAIClient, prompt: str) -> dict[str, Any]:
 
 
 def normalize_for_quote_match(text: str) -> str:
-    """Normalize conversion and typography artifacts before quote containment.
+    """Squash text to a lowercase alphanumeric stream for quote containment.
 
-    Removes inline span anchors, PDF line-break hyphenation (U+2010 or soft
-    hyphen followed by whitespace), markdown emphasis and image/link syntax,
-    and maps curly quotes to straight quotes, then collapses whitespace and
-    casefolds. Models quote the *rendered* text; the section carries the raw
-    conversion artifacts.
+    Models quote the *rendered* text while sections carry raw conversion
+    artifacts — line-break hyphenation, mid-word small-caps markup
+    (``A***GGREGATE***``), heading markers, span anchors, escapes, and
+    typography variants. Comparing lowercase alphanumeric streams on both
+    sides is robust to all of these; link targets and image references are
+    dropped first so their URLs cannot create false matches.
     """
     text = re.sub(r"<span[^>]*>|</span>", "", text)
-    text = re.sub(r"[‐­]\s*", "", text)
-    text = (
-        text.replace("‘", "'")
-        .replace("’", "'")
-        .replace("“", '"')
-        .replace("”", '"')
-    )
-    text = re.sub(r"[*_`\\]", "", text)
     text = re.sub(r"!\[\]\([^)]*\)", "", text)
     text = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", text)
-    return " ".join(text.split()).casefold()
+    return re.sub(r"[^a-z0-9]+", "", text.casefold())
 
 
 def verify_evidence_quote(outcome: dict[str, Any], section_text: str) -> dict[str, Any]:
     """Require a non-empty model quote to be present in the complete section.
 
-    An ellipsis in the quote ("..." or "…") is treated as an elision: each
-    fragment must be present independently. Containment is checked under
-    ``normalize_for_quote_match`` on both sides.
+    An ellipsis in the quote ("...", "…", "[...]", "[…]") is treated as an
+    elision: each fragment must be present independently. Fragments are
+    split before squashing (squashing removes the ellipsis characters), and
+    fragments shorter than 10 alphanumeric characters are ignored to avoid
+    trivial matches; if none remain, the whole squashed quote must match.
     """
     quote = outcome.get("evidence_quote")
     if not isinstance(quote, str) or not quote.strip():
         return outcome
     normalized_section = normalize_for_quote_match(section_text)
     fragments = [
-        fragment.strip()
-        for fragment in re.split(r"\.\.\.|…", normalize_for_quote_match(quote))
-        if fragment.strip()
+        normalize_for_quote_match(fragment)
+        for fragment in re.split(r"\[\.\.\.\]|\[…\]|\.\.\.|…", quote)
     ]
-    if fragments and all(fragment in normalized_section for fragment in fragments):
+    fragments = [fragment for fragment in fragments if len(fragment) >= 10]
+    if not fragments:
+        fragments = [normalize_for_quote_match(quote)]
+    if fragments[0] and all(
+        fragment in normalized_section for fragment in fragments
+    ):
         return outcome
     invalid = dict(outcome)
     invalid["model_verdict"] = outcome.get("verdict")
