@@ -1,0 +1,3904 @@
+schema_version: section-map/1
+book: dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2
+chapters:
+- path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/001-2nd-edition.md
+  chapter_sha256: cd827c515b6f9b48b0938bbd9f432f09d889ce0b2937cc3fe43092881b3ef707
+  headings:
+  - line: 3
+    level: 1
+    text: 2nd Edition
+    role: section
+    classified_by: rule:chapter-title
+  - line: 5
+    level: 2
+    text: Designing Data-Intensive Applications
+    role: embedded
+    classified_by: model
+  - line: 19
+    level: 2
+    text: Designing Data-Intensive Applications
+    role: embedded
+    classified_by: model
+  - line: 42
+    level: 2
+    text: Praise for Designing Data-Intensive Applications
+    role: embedded
+    classified_by: model
+  - line: 69
+    level: 2
+    text: Designing Data-Intensive Applications
+    role: embedded
+    classified_by: model
+  - line: 77
+    level: 2
+    text: Designing Data-Intensive Applications
+    role: embedded
+    classified_by: model
+  - line: 97
+    level: 2
+    text: Revision History for the Second Edition
+    role: embedded
+    classified_by: model
+- path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/002-table-of-contents.md
+  chapter_sha256: aff659fb09423a7b41cac581a667131adc17afa0f821b75f52f21c4fded7ac20
+  headings:
+  - line: 1
+    level: 1
+    text: Table of Contents
+    role: section
+    classified_by: rule:chapter-title
+- path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/003-preface.md
+  chapter_sha256: f31778c2cdd38f50cf438ae4bc390617fe445de5ff19c23bab2a44ae9ddecebd
+  headings:
+  - line: 1
+    level: 1
+    text: Preface
+    role: section
+    classified_by: rule:chapter-title
+  - line: 15
+    level: 2
+    text: Who Should Read This Book?
+    role: section
+    classified_by: model
+  - line: 27
+    level: 2
+    text: What's New in the Second Edition?
+    role: section
+    classified_by: model
+  - line: 37
+    level: 2
+    text: References and Further Reading
+    role: section
+    classified_by: model
+  - line: 45
+    level: 2
+    text: Conventions Used in This Book
+    role: section
+    classified_by: model
+  - line: 53
+    level: 3
+    text: Constant width
+    role: embedded
+    classified_by: model
+  - line: 57
+    level: 3
+    text: Constant width bold
+    role: embedded
+    classified_by: model
+  - line: 71
+    level: 2
+    text: O'Reilly Online Learning
+    role: section
+    classified_by: model
+  - line: 79
+    level: 2
+    text: How to Contact Us
+    role: section
+    classified_by: model
+- path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/004-acknowledgments.md
+  chapter_sha256: 2e3992f4a18fca967dfe61d4ccbaa77fc57c20128a728136432db1566128de2e
+  headings:
+  - line: 1
+    level: 1
+    text: Acknowledgments
+    role: section
+    classified_by: rule:chapter-title
+- path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/005-chapter-1-trade-offs-in-data-systems-architecture.md
+  chapter_sha256: 74ee2484856574241b3238db18806c716ed5200601bc2009a1d0824b3b3d7100
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 1: Trade-Offs in Data Systems Architecture'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 42
+    level: 2
+    text: 'Terminology: Frontends and Backends'
+    role: embedded
+    classified_by: model
+  - line: 48
+    level: 2
+    text: Operational Versus Analytical Systems
+    role: section
+    classified_by: rule:toc
+  - line: 65
+    level: 2
+    text: Characterizing Transaction Processing and Analytics
+    role: section
+    classified_by: rule:toc
+  - line: 104
+    level: 2
+    text: Data Warehousing
+    role: section
+    classified_by: rule:toc
+  - line: 137
+    level: 3
+    text: From data warehouse to data lake
+    role: embedded
+    classified_by: model
+  - line: 152
+    level: 3
+    text: Beyond the data lake
+    role: embedded
+    classified_by: model
+  - line: 160
+    level: 2
+    text: Systems of Record and Derived Data
+    role: section
+    classified_by: rule:toc
+  - line: 164
+    level: 3
+    text: Systems of record
+    role: embedded
+    classified_by: model
+  - line: 168
+    level: 3
+    text: Derived data systems
+    role: embedded
+    classified_by: model
+  - line: 182
+    level: 2
+    text: Cloud Versus Self-Hosting
+    role: section
+    classified_by: rule:toc
+  - line: 198
+    level: 2
+    text: Pros and Cons of Cloud Services
+    role: section
+    classified_by: rule:toc
+  - line: 223
+    level: 2
+    text: Cloud Native System Architecture
+    role: section
+    classified_by: rule:toc
+  - line: 236
+    level: 2
+    text: Layering of cloud services
+    role: embedded
+    classified_by: model
+  - line: 249
+    level: 2
+    text: Separation of storage and compute
+    role: embedded
+    classified_by: model
+  - line: 263
+    level: 2
+    text: Operations in the Cloud Era
+    role: section
+    classified_by: rule:toc
+  - line: 289
+    level: 2
+    text: Distributed Versus Single-Node Systems
+    role: section
+    classified_by: rule:toc
+  - line: 293
+    level: 3
+    text: Inherent distribution
+    role: embedded
+    classified_by: model
+  - line: 297
+    level: 3
+    text: Requests between cloud services
+    role: embedded
+    classified_by: model
+  - line: 301
+    level: 3
+    text: Fault tolerance/high availability
+    role: embedded
+    classified_by: model
+  - line: 305
+    level: 3
+    text: Scalability
+    role: section
+    classified_by: rule:toc
+  - line: 309
+    level: 2
+    text: Latency
+    role: embedded
+    classified_by: model
+  - line: 313
+    level: 3
+    text: Elasticity
+    role: embedded
+    classified_by: model
+  - line: 317
+    level: 2
+    text: Specialized hardware
+    role: embedded
+    classified_by: model
+  - line: 321
+    level: 2
+    text: Legal compliance
+    role: embedded
+    classified_by: model
+  - line: 325
+    level: 3
+    text: Sustainability
+    role: embedded
+    classified_by: model
+  - line: 331
+    level: 2
+    text: Problems with Distributed Systems
+    role: section
+    classified_by: rule:toc
+  - line: 343
+    level: 2
+    text: Microservices and Serverless
+    role: section
+    classified_by: rule:toc
+  - line: 361
+    level: 2
+    text: Cloud Computing Versus Supercomputing
+    role: section
+    classified_by: rule:toc
+  - line: 373
+    level: 2
+    text: Data Systems, Law, and Society
+    role: section
+    classified_by: rule:toc
+  - line: 397
+    level: 2
+    text: Summary
+    role: section
+    classified_by: rule:toc
+  - line: 409
+    level: 3
+    text: References
+    role: embedded
+    classified_by: model
+- path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/006-chapter-2-defining-nonfunctional-requirements.md
+  chapter_sha256: 5cad25443b0875cfb8cbf8449b5fba324ce27b21490f61efdab777ecea4c525a
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 2: Defining Nonfunctional Requirements'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 20
+    level: 2
+    text: 'Case Study: Social Network Home Timelines'
+    role: section
+    classified_by: rule:toc
+  - line: 26
+    level: 2
+    text: Representing Users, Posts, and Follows
+    role: section
+    classified_by: rule:toc
+  - line: 51
+    level: 2
+    text: Materializing and Updating Timelines
+    role: section
+    classified_by: rule:toc
+  - line: 72
+    level: 2
+    text: Describing Performance
+    role: section
+    classified_by: rule:toc
+  - line: 76
+    level: 3
+    text: Response time
+    role: embedded
+    classified_by: model
+  - line: 80
+    level: 2
+    text: Throughput
+    role: embedded
+    classified_by: model
+  - line: 92
+    level: 2
+    text: When an Overloaded System Won't Recover
+    role: embedded
+    classified_by: model
+  - line: 102
+    level: 2
+    text: Latency and Response Time
+    role: section
+    classified_by: rule:toc
+  - line: 124
+    level: 2
+    text: Average, Median, and Percentiles
+    role: section
+    classified_by: rule:toc
+  - line: 142
+    level: 2
+    text: The User Impact of Response Times
+    role: embedded
+    classified_by: model
+  - line: 152
+    level: 2
+    text: Use of Response Time Metrics
+    role: section
+    classified_by: rule:toc
+  - line: 162
+    level: 2
+    text: Computing Percentiles
+    role: embedded
+    classified_by: model
+  - line: 170
+    level: 2
+    text: Reliability and Fault Tolerance
+    role: section
+    classified_by: rule:toc
+  - line: 181
+    level: 3
+    text: Fault
+    role: embedded
+    classified_by: model
+  - line: 185
+    level: 2
+    text: Failure
+    role: embedded
+    classified_by: model
+  - line: 191
+    level: 2
+    text: Fault Tolerance
+    role: section
+    classified_by: rule:toc
+  - line: 203
+    level: 2
+    text: Hardware and Software Faults
+    role: section
+    classified_by: rule:toc
+  - line: 217
+    level: 2
+    text: Tolerating hardware faults through redundancy
+    role: embedded
+    classified_by: model
+  - line: 231
+    level: 2
+    text: Software faults
+    role: embedded
+    classified_by: model
+  - line: 246
+    level: 2
+    text: Humans and Reliability
+    role: section
+    classified_by: rule:toc
+  - line: 260
+    level: 2
+    text: How Important Is Reliability?
+    role: embedded
+    classified_by: model
+  - line: 272
+    level: 2
+    text: Scalability
+    role: section
+    classified_by: rule:toc
+  - line: 288
+    level: 2
+    text: Understanding Load
+    role: section
+    classified_by: rule:toc
+  - line: 305
+    level: 2
+    text: Shared-Memory, Shared-Disk, and Shared-Nothing Architectures
+    role: section
+    classified_by: rule:toc
+  - line: 319
+    level: 2
+    text: Principles for Scalability
+    role: section
+    classified_by: rule:toc
+  - line: 329
+    level: 2
+    text: Maintainability
+    role: section
+    classified_by: rule:toc
+  - line: 339
+    level: 2
+    text: Operability
+    role: embedded
+    classified_by: model
+  - line: 343
+    level: 2
+    text: Simplicity
+    role: embedded
+    classified_by: model
+  - line: 347
+    level: 2
+    text: Evolvability
+    role: embedded
+    classified_by: model
+  - line: 351
+    level: 2
+    text: 'Operability: Making Life Easy for Operations'
+    role: section
+    classified_by: rule:toc
+  - line: 368
+    level: 2
+    text: 'Simplicity: Managing Complexity'
+    role: section
+    classified_by: rule:toc
+  - line: 386
+    level: 2
+    text: 'Evolvability: Making Change Easy'
+    role: section
+    classified_by: rule:toc
+  - line: 396
+    level: 2
+    text: Summary
+    role: section
+    classified_by: rule:toc
+  - line: 406
+    level: 3
+    text: References
+    role: embedded
+    classified_by: model
+- path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/007-chapter-3-data-models-and-query-languages.md
+  chapter_sha256: 83e25e6ee08beca2be2606a752a2b889dba6671de97cc8816dbc321a01269a3f
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 3: Data Models and Query Languages'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 20
+    level: 2
+    text: 'Terminology: Declarative Query Languages'
+    role: section
+    classified_by: model
+  - line: 28
+    level: 2
+    text: Relational Versus Document Models
+    role: section
+    classified_by: rule:toc
+  - line: 42
+    level: 2
+    text: The Object-Relational Mismatch
+    role: section
+    classified_by: rule:toc
+  - line: 50
+    level: 2
+    text: Object-relational mapping
+    role: embedded
+    classified_by: model
+  - line: 62
+    level: 2
+    text: 'Nevertheless, ORMs also have advantages:'
+    role: embedded
+    classified_by: model
+  - line: 68
+    level: 3
+    text: The document data model for one-to-many relationships
+    role: embedded
+    classified_by: model
+  - line: 80
+    level: 2
+    text: Example 3-1. Representing a LinkedIn profile as a JSON document
+    role: embedded
+    classified_by: rule:caption
+  - line: 120
+    level: 2
+    text: Normalization, Denormalization, and Joins
+    role: section
+    classified_by: rule:toc
+  - line: 159
+    level: 2
+    text: Trade-offs of normalization
+    role: embedded
+    classified_by: model
+  - line: 174
+    level: 2
+    text: Denormalization in the social networking case study
+    role: embedded
+    classified_by: model
+  - line: 196
+    level: 2
+    text: Many-to-One and Many-to-Many Relationships
+    role: section
+    classified_by: rule:toc
+  - line: 233
+    level: 2
+    text: 'Stars and Snowflakes: Schemas for Analytics'
+    role: section
+    classified_by: rule:toc
+  - line: 265
+    level: 2
+    text: When to Use Which Model
+    role: section
+    classified_by: rule:toc
+  - line: 275
+    level: 2
+    text: Schema flexibility in the document model
+    role: embedded
+    classified_by: model
+  - line: 311
+    level: 2
+    text: Data locality for reads and writes
+    role: embedded
+    classified_by: model
+  - line: 319
+    level: 2
+    text: Query languages for documents
+    role: embedded
+    classified_by: model
+  - line: 353
+    level: 3
+    text: Convergence of document and relational databases
+    role: embedded
+    classified_by: model
+  - line: 363
+    level: 2
+    text: Graph-Like Data Models
+    role: section
+    classified_by: rule:toc
+  - line: 402
+    level: 2
+    text: Property Graphs
+    role: section
+    classified_by: rule:toc
+  - line: 458
+    level: 2
+    text: The Cypher Query Language
+    role: section
+    classified_by: rule:toc
+  - line: 466
+    level: 2
+    text: CREATE
+    role: embedded
+    classified_by: model
+  - line: 487
+    level: 3
+    text: MATCH
+    role: embedded
+    classified_by: model
+  - line: 508
+    level: 2
+    text: Graph Queries in SQL
+    role: section
+    classified_by: rule:toc
+  - line: 522
+    level: 3
+    text: WITH RECURSIVE
+    role: embedded
+    classified_by: model
+  - line: 577
+    level: 2
+    text: Triple Stores and SPARQL
+    role: section
+    classified_by: rule:toc
+  - line: 649
+    level: 2
+    text: The Semantic Web
+    role: embedded
+    classified_by: model
+  - line: 655
+    level: 2
+    text: The RDF data model
+    role: embedded
+    classified_by: model
+  - line: 694
+    level: 2
+    text: The SPARQL query language
+    role: embedded
+    classified_by: model
+  - line: 731
+    level: 2
+    text: 'Datalog: Recursive Relational Queries'
+    role: section
+    classified_by: rule:toc
+  - line: 793
+    level: 2
+    text: GraphQL
+    role: section
+    classified_by: rule:toc
+  - line: 856
+    level: 2
+    text: Event Sourcing and CQRS
+    role: section
+    classified_by: rule:toc
+  - line: 895
+    level: 2
+    text: 'However, event sourcing and CQRS also have downsides:'
+    role: embedded
+    classified_by: model
+  - line: 905
+    level: 2
+    text: DataFrames, Matrices, and Arrays
+    role: section
+    classified_by: rule:toc
+  - line: 934
+    level: 2
+    text: Summary
+    role: section
+    classified_by: rule:toc
+  - line: 960
+    level: 2
+    text: References
+    role: section
+    classified_by: model
+- path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/008-chapter-4-storage-and-retrieval.md
+  chapter_sha256: 91ced21799c85e75c862cce94569cab6dfdc2ecd4698195739a664096b7705c2
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 4: Storage and Retrieval'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 17
+    level: 2
+    text: Storage and Indexing for OLTP
+    role: section
+    classified_by: rule:toc
+  - line: 66
+    level: 2
+    text: Log-Structured Storage
+    role: section
+    classified_by: rule:toc
+  - line: 84
+    level: 3
+    text: The SSTable file format
+    role: embedded
+    classified_by: model
+  - line: 98
+    level: 2
+    text: Constructing and merging SSTables
+    role: embedded
+    classified_by: model
+  - line: 127
+    level: 3
+    text: Bloom filters
+    role: embedded
+    classified_by: model
+  - line: 148
+    level: 2
+    text: Compaction strategies
+    role: embedded
+    classified_by: model
+  - line: 152
+    level: 2
+    text: Size-tiered compaction
+    role: embedded
+    classified_by: model
+  - line: 156
+    level: 3
+    text: Leveled compaction
+    role: embedded
+    classified_by: model
+  - line: 164
+    level: 2
+    text: Embedded Storage Engines
+    role: embedded
+    classified_by: model
+  - line: 172
+    level: 2
+    text: B-Trees
+    role: section
+    classified_by: rule:toc
+  - line: 206
+    level: 3
+    text: Making B-trees reliable
+    role: embedded
+    classified_by: model
+  - line: 216
+    level: 2
+    text: Using B-tree variants
+    role: embedded
+    classified_by: model
+  - line: 225
+    level: 2
+    text: Comparing B-Trees and LSM-Trees
+    role: section
+    classified_by: rule:toc
+  - line: 229
+    level: 2
+    text: Read performance
+    role: embedded
+    classified_by: model
+  - line: 239
+    level: 2
+    text: Sequential versus random writes
+    role: embedded
+    classified_by: model
+  - line: 245
+    level: 2
+    text: Sequential Versus Random Writes on SSDs
+    role: embedded
+    classified_by: model
+  - line: 253
+    level: 3
+    text: Write amplification
+    role: embedded
+    classified_by: model
+  - line: 267
+    level: 3
+    text: Disk space usage
+    role: embedded
+    classified_by: model
+  - line: 277
+    level: 2
+    text: Multicolumn and Secondary Indexes
+    role: section
+    classified_by: rule:toc
+  - line: 285
+    level: 2
+    text: Storing Values Within the Index
+    role: section
+    classified_by: rule:toc
+  - line: 297
+    level: 2
+    text: Keeping Everything in Memory
+    role: section
+    classified_by: rule:toc
+  - line: 313
+    level: 2
+    text: Data Storage for Analytics
+    role: section
+    classified_by: rule:toc
+  - line: 321
+    level: 2
+    text: Cloud Data Warehouses
+    role: section
+    classified_by: rule:toc
+  - line: 329
+    level: 2
+    text: Query engine
+    role: embedded
+    classified_by: model
+  - line: 333
+    level: 2
+    text: Storage format
+    role: embedded
+    classified_by: model
+  - line: 337
+    level: 3
+    text: Table format
+    role: embedded
+    classified_by: model
+  - line: 341
+    level: 2
+    text: Data catalog
+    role: embedded
+    classified_by: model
+  - line: 345
+    level: 2
+    text: Column-Oriented Storage
+    role: section
+    classified_by: rule:toc
+  - line: 389
+    level: 3
+    text: Columnar storage layout
+    role: embedded
+    classified_by: model
+  - line: 411
+    level: 2
+    text: Column compression
+    role: embedded
+    classified_by: model
+  - line: 447
+    level: 2
+    text: Sort order in column storage
+    role: embedded
+    classified_by: model
+  - line: 463
+    level: 2
+    text: Writing to column-oriented storage
+    role: embedded
+    classified_by: model
+  - line: 473
+    level: 2
+    text: 'Query Execution: Compilation and Vectorization'
+    role: section
+    classified_by: rule:toc
+  - line: 481
+    level: 2
+    text: Query compilation
+    role: embedded
+    classified_by: model
+  - line: 485
+    level: 2
+    text: Vectorized processing
+    role: embedded
+    classified_by: model
+  - line: 502
+    level: 2
+    text: Materialized Views and Data Cubes
+    role: section
+    classified_by: rule:toc
+  - line: 522
+    level: 2
+    text: Multidimensional and Full-Text Indexes
+    role: section
+    classified_by: rule:toc
+  - line: 541
+    level: 2
+    text: Full-Text Search
+    role: section
+    classified_by: rule:toc
+  - line: 557
+    level: 2
+    text: Vector Embeddings
+    role: section
+    classified_by: rule:toc
+  - line: 577
+    level: 3
+    text: Flat indexes
+    role: embedded
+    classified_by: model
+  - line: 581
+    level: 2
+    text: Inverted file (IVF) indexes
+    role: embedded
+    classified_by: model
+  - line: 585
+    level: 2
+    text: Hierarchical Navigable Small World (HNSW) indexes
+    role: embedded
+    classified_by: model
+  - line: 595
+    level: 2
+    text: Summary
+    role: section
+    classified_by: rule:toc
+  - line: 615
+    level: 2
+    text: References
+    role: section
+    classified_by: model
+- path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/009-chapter-5-encoding-and-evolution.md
+  chapter_sha256: ce5a653aaebc7dd87204f6d308779224e03329f5e3c5c4228fa759d0dc877bbd
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 5: Encoding and Evolution'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 43
+    level: 2
+    text: Formats for Encoding Data
+    role: section
+    classified_by: rule:toc
+  - line: 54
+    level: 2
+    text: Terminology clash
+    role: embedded
+    classified_by: model
+  - line: 62
+    level: 2
+    text: Language-Specific Formats
+    role: section
+    classified_by: rule:toc
+  - line: 76
+    level: 2
+    text: JSON, XML, and Binary Variants
+    role: section
+    classified_by: rule:toc
+  - line: 94
+    level: 2
+    text: JSON Schema
+    role: embedded
+    classified_by: model
+  - line: 118
+    level: 2
+    text: Binary encodings
+    role: embedded
+    classified_by: model
+  - line: 151
+    level: 2
+    text: Protocol Buffers
+    role: section
+    classified_by: rule:toc
+  - line: 179
+    level: 2
+    text: Field tags and schema evolution
+    role: embedded
+    classified_by: model
+  - line: 193
+    level: 2
+    text: Avro
+    role: section
+    classified_by: rule:toc
+  - line: 238
+    level: 3
+    text: The writer's schema and the reader's schema
+    role: embedded
+    classified_by: model
+  - line: 256
+    level: 2
+    text: Schema evolution rules
+    role: embedded
+    classified_by: model
+  - line: 268
+    level: 2
+    text: But what is the writer's schema?
+    role: embedded
+    classified_by: model
+  - line: 278
+    level: 2
+    text: Database with individually written records
+    role: embedded
+    classified_by: model
+  - line: 282
+    level: 2
+    text: Sending records over a network connection
+    role: embedded
+    classified_by: model
+  - line: 288
+    level: 2
+    text: Dynamically generated schemas
+    role: embedded
+    classified_by: model
+  - line: 300
+    level: 2
+    text: The Merits of Schemas
+    role: section
+    classified_by: rule:toc
+  - line: 318
+    level: 2
+    text: Modes of Dataflow
+    role: section
+    classified_by: rule:toc
+  - line: 326
+    level: 2
+    text: Dataflow Through Databases
+    role: section
+    classified_by: rule:toc
+  - line: 334
+    level: 2
+    text: Different values written at different times
+    role: embedded
+    classified_by: model
+  - line: 344
+    level: 2
+    text: Archival storage
+    role: embedded
+    classified_by: model
+  - line: 352
+    level: 2
+    text: 'Dataflow Through Services: REST and RPC'
+    role: section
+    classified_by: rule:toc
+  - line: 364
+    level: 3
+    text: Web services
+    role: embedded
+    classified_by: model
+  - line: 422
+    level: 2
+    text: The problems with remote procedure calls
+    role: embedded
+    classified_by: model
+  - line: 438
+    level: 2
+    text: Load balancers, service discovery, and service meshes
+    role: embedded
+    classified_by: model
+  - line: 444
+    level: 3
+    text: Hardware load balancers
+    role: embedded
+    classified_by: model
+  - line: 448
+    level: 3
+    text: Software load balancers (such as NGINX and HAProxy)
+    role: embedded
+    classified_by: model
+  - line: 452
+    level: 3
+    text: The Domain Name Service (DNS)
+    role: embedded
+    classified_by: model
+  - line: 456
+    level: 2
+    text: Service discovery systems
+    role: embedded
+    classified_by: model
+  - line: 462
+    level: 3
+    text: Service meshes
+    role: embedded
+    classified_by: model
+  - line: 470
+    level: 2
+    text: Data encoding and evolution for RPC
+    role: embedded
+    classified_by: model
+  - line: 483
+    level: 2
+    text: Durable Execution and Workflows
+    role: section
+    classified_by: rule:toc
+  - line: 491
+    level: 2
+    text: Tasks, activities, and functions
+    role: embedded
+    classified_by: model
+  - line: 537
+    level: 2
+    text: Event-Driven Architectures
+    role: section
+    classified_by: rule:toc
+  - line: 552
+    level: 2
+    text: Message brokers
+    role: embedded
+    classified_by: model
+  - line: 567
+    level: 3
+    text: Distributed actor frameworks
+    role: embedded
+    classified_by: model
+  - line: 577
+    level: 2
+    text: Summary
+    role: section
+    classified_by: rule:toc
+  - line: 593
+    level: 3
+    text: Databases
+    role: embedded
+    classified_by: model
+  - line: 597
+    level: 3
+    text: RPC and REST APIs
+    role: embedded
+    classified_by: model
+  - line: 607
+    level: 3
+    text: References
+    role: embedded
+    classified_by: model
+- path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/010-chapter-6-replication.md
+  chapter_sha256: 830f470ff8b07028c55e1de06bd3cb417593247675b418e0877d4e44d848b201
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 6: Replication'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 23
+    level: 2
+    text: Backups and Replication
+    role: section
+    classified_by: model
+  - line: 31
+    level: 2
+    text: Single-Leader Replication
+    role: section
+    classified_by: rule:toc
+  - line: 53
+    level: 2
+    text: Synchronous Versus Asynchronous Replication
+    role: section
+    classified_by: rule:toc
+  - line: 79
+    level: 2
+    text: Setting Up New Followers
+    role: section
+    classified_by: rule:toc
+  - line: 96
+    level: 2
+    text: Databases Backed by Object Storage
+    role: section
+    classified_by: model
+  - line: 111
+    level: 2
+    text: Handling Node Outages
+    role: section
+    classified_by: rule:toc
+  - line: 117
+    level: 2
+    text: 'Follower failure: Catch-up recovery'
+    role: embedded
+    classified_by: model
+  - line: 125
+    level: 3
+    text: 'Leader failure: Failover'
+    role: embedded
+    classified_by: model
+  - line: 135
+    level: 2
+    text: 'Failover is fraught with things that can go wrong:'
+    role: embedded
+    classified_by: model
+  - line: 151
+    level: 2
+    text: Implementation of Replication Logs
+    role: section
+    classified_by: rule:toc
+  - line: 155
+    level: 2
+    text: Statement-based replication
+    role: embedded
+    classified_by: model
+  - line: 169
+    level: 2
+    text: Write-ahead log shipping
+    role: embedded
+    classified_by: model
+  - line: 177
+    level: 2
+    text: Logical (row-based) log replication
+    role: embedded
+    classified_by: model
+  - line: 193
+    level: 2
+    text: Problems with Replication Lag
+    role: section
+    classified_by: rule:toc
+  - line: 211
+    level: 2
+    text: Reading your own writes
+    role: embedded
+    classified_by: model
+  - line: 240
+    level: 2
+    text: Regions and Availability Zones
+    role: section
+    classified_by: model
+  - line: 246
+    level: 3
+    text: Monotonic reads
+    role: embedded
+    classified_by: model
+  - line: 262
+    level: 2
+    text: Consistent prefix reads
+    role: embedded
+    classified_by: model
+  - line: 290
+    level: 2
+    text: Solutions for Replication Lag
+    role: section
+    classified_by: rule:toc
+  - line: 304
+    level: 2
+    text: Multi-Leader Replication
+    role: section
+    classified_by: rule:toc
+  - line: 316
+    level: 2
+    text: Geographically Distributed Operation
+    role: section
+    classified_by: rule:toc
+  - line: 328
+    level: 2
+    text: Performance
+    role: embedded
+    classified_by: model
+  - line: 332
+    level: 3
+    text: Tolerance of regional outages
+    role: embedded
+    classified_by: model
+  - line: 336
+    level: 3
+    text: Tolerance of network problems
+    role: embedded
+    classified_by: model
+  - line: 342
+    level: 2
+    text: Consistency
+    role: section
+    classified_by: model
+  - line: 352
+    level: 2
+    text: Multi-leader replication topologies
+    role: section
+    classified_by: model
+  - line: 368
+    level: 2
+    text: Problems with different topologies
+    role: embedded
+    classified_by: model
+  - line: 384
+    level: 2
+    text: Sync Engines and Local-First Software
+    role: section
+    classified_by: rule:toc
+  - line: 392
+    level: 2
+    text: Real-time collaboration, offline-first, and local-first apps
+    role: embedded
+    classified_by: model
+  - line: 402
+    level: 2
+    text: Pros and cons of sync engines
+    role: embedded
+    classified_by: model
+  - line: 420
+    level: 2
+    text: Dealing with Conflicting Writes
+    role: section
+    classified_by: rule:toc
+  - line: 436
+    level: 2
+    text: Conflict avoidance
+    role: embedded
+    classified_by: model
+  - line: 446
+    level: 2
+    text: Last write wins (discarding concurrent writes)
+    role: embedded
+    classified_by: model
+  - line: 460
+    level: 2
+    text: Manual conflict resolution
+    role: embedded
+    classified_by: model
+  - line: 479
+    level: 3
+    text: Automatic conflict resolution
+    role: embedded
+    classified_by: model
+  - line: 493
+    level: 2
+    text: Conflict-free replicated datatypes and operational transformation
+    role: section
+    classified_by: model
+  - line: 509
+    level: 3
+    text: CRDT
+    role: embedded
+    classified_by: model
+  - line: 517
+    level: 2
+    text: Types of conflict
+    role: section
+    classified_by: model
+  - line: 527
+    level: 2
+    text: Leaderless Replication
+    role: section
+    classified_by: rule:toc
+  - line: 539
+    level: 2
+    text: Writing to the Database When a Node Is Down
+    role: section
+    classified_by: rule:toc
+  - line: 557
+    level: 2
+    text: Catching up on missed writes
+    role: embedded
+    classified_by: model
+  - line: 561
+    level: 2
+    text: Read repair
+    role: embedded
+    classified_by: model
+  - line: 565
+    level: 2
+    text: Hinted handoff
+    role: embedded
+    classified_by: model
+  - line: 569
+    level: 2
+    text: Anti-entropy
+    role: embedded
+    classified_by: model
+  - line: 573
+    level: 2
+    text: Using quorums for reading and writing
+    role: section
+    classified_by: model
+  - line: 602
+    level: 2
+    text: Understanding the limitations of quorum consistency
+    role: embedded
+    classified_by: model
+  - line: 624
+    level: 2
+    text: Monitoring staleness
+    role: embedded
+    classified_by: model
+  - line: 632
+    level: 2
+    text: Single-Leader Versus Leaderless Replication Performance
+    role: section
+    classified_by: rule:toc
+  - line: 654
+    level: 2
+    text: Multi-Region Operation
+    role: section
+    classified_by: rule:toc
+  - line: 664
+    level: 2
+    text: Detecting Concurrent Writes
+    role: section
+    classified_by: rule:toc
+  - line: 684
+    level: 2
+    text: The happens-before relation and concurrency
+    role: embedded
+    classified_by: model
+  - line: 695
+    level: 2
+    text: Concurrency, Time, and Relativity
+    role: embedded
+    classified_by: model
+  - line: 703
+    level: 2
+    text: Capturing the happens-before relationship
+    role: embedded
+    classified_by: model
+  - line: 735
+    level: 3
+    text: Version vectors
+    role: embedded
+    classified_by: model
+  - line: 749
+    level: 2
+    text: Version vectors and vector clocks
+    role: embedded
+    classified_by: model
+  - line: 753
+    level: 2
+    text: Summary
+    role: section
+    classified_by: rule:toc
+  - line: 757
+    level: 2
+    text: High availability
+    role: embedded
+    classified_by: model
+  - line: 761
+    level: 2
+    text: Durability
+    role: embedded
+    classified_by: model
+  - line: 765
+    level: 3
+    text: Disconnected operation
+    role: embedded
+    classified_by: model
+  - line: 771
+    level: 3
+    text: Scalability
+    role: section
+    classified_by: rule:toc
+  - line: 779
+    level: 3
+    text: Single-leader replication
+    role: section
+    classified_by: rule:toc
+  - line: 783
+    level: 2
+    text: Multi-leader replication
+    role: section
+    classified_by: rule:toc
+  - line: 787
+    level: 2
+    text: Leaderless replication
+    role: section
+    classified_by: rule:toc
+  - line: 797
+    level: 2
+    text: Read-after-write consistency
+    role: embedded
+    classified_by: model
+  - line: 801
+    level: 3
+    text: Monotonic reads
+    role: embedded
+    classified_by: model
+  - line: 805
+    level: 3
+    text: Consistent prefix reads
+    role: embedded
+    classified_by: model
+  - line: 813
+    level: 2
+    text: References
+    role: section
+    classified_by: model
+- path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/011-chapter-7-sharding.md
+  chapter_sha256: 6df7628a5ab9314e309e2c15504df397639598d869a56f5485475ac93e6c3228
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 7: Sharding'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 22
+    level: 2
+    text: Sharding and Partitioning
+    role: section
+    classified_by: model
+  - line: 34
+    level: 2
+    text: Pros and Cons of Sharding
+    role: section
+    classified_by: rule:toc
+  - line: 50
+    level: 2
+    text: Sharding for Multitenancy
+    role: section
+    classified_by: rule:toc
+  - line: 56
+    level: 3
+    text: Resource isolation
+    role: embedded
+    classified_by: model
+  - line: 60
+    level: 2
+    text: Permission isolation
+    role: embedded
+    classified_by: model
+  - line: 64
+    level: 2
+    text: Cell-based architecture
+    role: embedded
+    classified_by: model
+  - line: 68
+    level: 2
+    text: Per-tenant backup and restore
+    role: embedded
+    classified_by: model
+  - line: 72
+    level: 3
+    text: Regulatory compliance
+    role: embedded
+    classified_by: model
+  - line: 76
+    level: 3
+    text: Data residence
+    role: embedded
+    classified_by: model
+  - line: 80
+    level: 3
+    text: Gradual schema rollout
+    role: embedded
+    classified_by: model
+  - line: 90
+    level: 2
+    text: Sharding of Key-Value Data
+    role: section
+    classified_by: rule:toc
+  - line: 100
+    level: 2
+    text: Sharding by Key Range
+    role: section
+    classified_by: rule:toc
+  - line: 118
+    level: 2
+    text: Rebalancing key-range sharded data
+    role: embedded
+    classified_by: model
+  - line: 130
+    level: 2
+    text: Sharding by Hash of Key
+    role: section
+    classified_by: rule:toc
+  - line: 138
+    level: 3
+    text: Hash modulo number of nodes
+    role: embedded
+    classified_by: model
+  - line: 150
+    level: 2
+    text: Fixed number of shards
+    role: embedded
+    classified_by: model
+  - line: 172
+    level: 2
+    text: Sharding by hash range
+    role: embedded
+    classified_by: model
+  - line: 186
+    level: 2
+    text: Partitioning and Range Queries in Data Warehouses
+    role: embedded
+    classified_by: model
+  - line: 202
+    level: 2
+    text: Consistent hashing
+    role: embedded
+    classified_by: model
+  - line: 213
+    level: 2
+    text: Skewed Workloads and Relieving Hot Spots
+    role: section
+    classified_by: rule:toc
+  - line: 229
+    level: 2
+    text: 'Operations: Automatic Versus Manual Rebalancing'
+    role: section
+    classified_by: rule:toc
+  - line: 243
+    level: 2
+    text: Request Routing
+    role: section
+    classified_by: rule:toc
+  - line: 280
+    level: 2
+    text: Sharding and Secondary Indexes
+    role: section
+    classified_by: rule:toc
+  - line: 288
+    level: 2
+    text: Local Secondary Indexes
+    role: section
+    classified_by: rule:toc
+  - line: 310
+    level: 2
+    text: Global Secondary Indexes
+    role: section
+    classified_by: rule:toc
+  - line: 334
+    level: 2
+    text: Summary
+    role: section
+    classified_by: rule:toc
+  - line: 348
+    level: 2
+    text: Hash sharding
+    role: embedded
+    classified_by: model
+  - line: 360
+    level: 2
+    text: Local secondary indexes
+    role: section
+    classified_by: rule:toc
+  - line: 364
+    level: 3
+    text: Global secondary indexes
+    role: section
+    classified_by: rule:toc
+  - line: 370
+    level: 3
+    text: References
+    role: section
+    classified_by: model
+- path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/012-chapter-8-transactions.md
+  chapter_sha256: 4b533bda3dd1fcd7f50537ae8e2751c67c35d00904ecc50e267b3f1e5e9f56f4
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 8: Transactions'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 30
+    level: 2
+    text: What Exactly Is a Transaction?
+    role: section
+    classified_by: rule:toc
+  - line: 40
+    level: 2
+    text: The Meaning of ACID
+    role: section
+    classified_by: rule:toc
+  - line: 52
+    level: 2
+    text: Atomicity
+    role: section
+    classified_by: model
+  - line: 64
+    level: 2
+    text: Consistency
+    role: section
+    classified_by: model
+  - line: 83
+    level: 3
+    text: Isolation
+    role: section
+    classified_by: model
+  - line: 97
+    level: 2
+    text: Durability
+    role: section
+    classified_by: model
+  - line: 105
+    level: 2
+    text: Replication and Durability
+    role: section
+    classified_by: model
+  - line: 123
+    level: 2
+    text: Single-Object and Multi-Object Operations
+    role: section
+    classified_by: rule:toc
+  - line: 127
+    level: 3
+    text: Atomicity
+    role: section
+    classified_by: model
+  - line: 131
+    level: 3
+    text: Isolation
+    role: section
+    classified_by: model
+  - line: 161
+    level: 2
+    text: Single-object writes
+    role: section
+    classified_by: model
+  - line: 179
+    level: 2
+    text: The need for multi-object transactions
+    role: section
+    classified_by: model
+  - line: 191
+    level: 2
+    text: Handling errors and aborts
+    role: section
+    classified_by: model
+  - line: 207
+    level: 2
+    text: Weak Isolation Levels
+    role: section
+    classified_by: rule:toc
+  - line: 227
+    level: 2
+    text: Read Committed
+    role: section
+    classified_by: rule:toc
+  - line: 236
+    level: 3
+    text: No dirty reads
+    role: section
+    classified_by: model
+  - line: 251
+    level: 2
+    text: No dirty writes
+    role: section
+    classified_by: model
+  - line: 266
+    level: 2
+    text: Implementing read-committed
+    role: section
+    classified_by: model
+  - line: 282
+    level: 2
+    text: Snapshot Isolation and Repeatable Read
+    role: section
+    classified_by: rule:toc
+  - line: 302
+    level: 2
+    text: Backups
+    role: section
+    classified_by: model
+  - line: 306
+    level: 2
+    text: Analytical queries and integrity checks
+    role: section
+    classified_by: model
+  - line: 318
+    level: 2
+    text: Multiversion concurrency control
+    role: section
+    classified_by: model
+  - line: 338
+    level: 2
+    text: Visibility rules for observing a consistent snapshot
+    role: section
+    classified_by: model
+  - line: 356
+    level: 2
+    text: Indexes and snapshot isolation
+    role: section
+    classified_by: model
+  - line: 366
+    level: 3
+    text: Snapshot isolation, repeatable read, and naming confusion
+    role: section
+    classified_by: model
+  - line: 374
+    level: 2
+    text: Preventing Lost Updates
+    role: section
+    classified_by: rule:toc
+  - line: 388
+    level: 2
+    text: Atomic write operations
+    role: section
+    classified_by: model
+  - line: 402
+    level: 3
+    text: Explicit locking
+    role: section
+    classified_by: model
+  - line: 427
+    level: 2
+    text: Automatically detecting lost updates
+    role: section
+    classified_by: model
+  - line: 435
+    level: 2
+    text: Conditional writes (compare-and-set)
+    role: section
+    classified_by: model
+  - line: 451
+    level: 2
+    text: Conflict resolution and replication
+    role: section
+    classified_by: model
+  - line: 463
+    level: 2
+    text: Write Skew and Phantoms
+    role: section
+    classified_by: rule:toc
+  - line: 479
+    level: 2
+    text: Characterizing write skew
+    role: section
+    classified_by: model
+  - line: 507
+    level: 2
+    text: More examples of write skew
+    role: section
+    classified_by: model
+  - line: 532
+    level: 3
+    text: Multiplayer game
+    role: embedded
+    classified_by: model
+  - line: 536
+    level: 3
+    text: Claiming a username
+    role: embedded
+    classified_by: model
+  - line: 540
+    level: 3
+    text: Preventing double-spending
+    role: embedded
+    classified_by: model
+  - line: 544
+    level: 2
+    text: Phantoms causing write skew
+    role: section
+    classified_by: model
+  - line: 559
+    level: 2
+    text: Materializing conflicts
+    role: section
+    classified_by: model
+  - line: 569
+    level: 2
+    text: Serializability
+    role: section
+    classified_by: rule:toc
+  - line: 587
+    level: 2
+    text: Actual Serial Execution
+    role: section
+    classified_by: rule:toc
+  - line: 600
+    level: 2
+    text: Encapsulating transactions in stored procedures
+    role: section
+    classified_by: model
+  - line: 618
+    level: 3
+    text: Pros and cons of stored procedures
+    role: section
+    classified_by: model
+  - line: 636
+    level: 2
+    text: Sharding
+    role: section
+    classified_by: model
+  - line: 648
+    level: 2
+    text: Summary of serial execution
+    role: section
+    classified_by: model
+  - line: 657
+    level: 2
+    text: Two-Phase Locking
+    role: section
+    classified_by: rule:toc
+  - line: 663
+    level: 3
+    text: 2PL is not 2PC
+    role: section
+    classified_by: model
+  - line: 676
+    level: 3
+    text: Implementation of 2PL
+    role: section
+    classified_by: model
+  - line: 690
+    level: 3
+    text: Performance of 2PL
+    role: section
+    classified_by: model
+  - line: 702
+    level: 3
+    text: Predicate locks
+    role: section
+    classified_by: model
+  - line: 724
+    level: 2
+    text: Index-range locks
+    role: section
+    classified_by: model
+  - line: 741
+    level: 2
+    text: Serializable Snapshot Isolation
+    role: section
+    classified_by: rule:toc
+  - line: 749
+    level: 3
+    text: Pessimistic versus optimistic concurrency control
+    role: section
+    classified_by: model
+  - line: 763
+    level: 3
+    text: Decisions based on an outdated premise
+    role: section
+    classified_by: model
+  - line: 776
+    level: 2
+    text: Detection of stale MVCC reads
+    role: section
+    classified_by: model
+  - line: 790
+    level: 2
+    text: Detection of writes that affect prior reads
+    role: section
+    classified_by: model
+  - line: 806
+    level: 2
+    text: Performance of serializable snapshot isolation
+    role: section
+    classified_by: model
+  - line: 820
+    level: 2
+    text: Distributed Transactions
+    role: section
+    classified_by: rule:toc
+  - line: 848
+    level: 2
+    text: Two-Phase Commit
+    role: section
+    classified_by: rule:toc
+  - line: 867
+    level: 2
+    text: A system of promises
+    role: section
+    classified_by: model
+  - line: 884
+    level: 3
+    text: Coordinator failure
+    role: section
+    classified_by: model
+  - line: 902
+    level: 2
+    text: Three-phase commit
+    role: section
+    classified_by: model
+  - line: 910
+    level: 2
+    text: Distributed Transactions Across Different Systems
+    role: section
+    classified_by: rule:toc
+  - line: 918
+    level: 3
+    text: Database-internal distributed transactions
+    role: section
+    classified_by: rule:toc
+  - line: 922
+    level: 2
+    text: Heterogeneous distributed transactions
+    role: section
+    classified_by: model
+  - line: 928
+    level: 2
+    text: Exactly-once message processing
+    role: section
+    classified_by: model
+  - line: 938
+    level: 2
+    text: XA transactions
+    role: section
+    classified_by: model
+  - line: 950
+    level: 2
+    text: Holding locks while in doubt
+    role: section
+    classified_by: model
+  - line: 960
+    level: 2
+    text: Recovering from coordinator failure
+    role: section
+    classified_by: model
+  - line: 970
+    level: 3
+    text: Problems with XA transactions
+    role: section
+    classified_by: model
+  - line: 984
+    level: 2
+    text: Database-Internal Distributed Transactions
+    role: section
+    classified_by: rule:toc
+  - line: 1001
+    level: 2
+    text: Exactly-Once Message Processing Revisited
+    role: section
+    classified_by: rule:toc
+  - line: 1018
+    level: 2
+    text: Summary
+    role: section
+    classified_by: rule:toc
+  - line: 1037
+    level: 3
+    text: 'Here''s a brief recap:'
+    role: embedded
+    classified_by: model
+  - line: 1039
+    level: 2
+    text: Dirty reads
+    role: embedded
+    classified_by: model
+  - line: 1043
+    level: 2
+    text: Dirty writes
+    role: embedded
+    classified_by: model
+  - line: 1047
+    level: 3
+    text: Read skew
+    role: embedded
+    classified_by: model
+  - line: 1051
+    level: 3
+    text: Phantom reads
+    role: embedded
+    classified_by: model
+  - line: 1055
+    level: 2
+    text: Lost updates
+    role: embedded
+    classified_by: model
+  - line: 1059
+    level: 2
+    text: Write skew
+    role: embedded
+    classified_by: model
+  - line: 1065
+    level: 2
+    text: Literally executing transactions in a serial order
+    role: embedded
+    classified_by: model
+  - line: 1069
+    level: 3
+    text: Two-phase locking
+    role: section
+    classified_by: rule:toc
+  - line: 1073
+    level: 2
+    text: Serializable snapshot isolation
+    role: section
+    classified_by: rule:toc
+  - line: 1081
+    level: 2
+    text: References
+    role: section
+    classified_by: model
+- path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/013-chapter-9-the-trouble-with-distributed-systems.md
+  chapter_sha256: 30b0d31df5b18e714a302170b89a6c58dd6ceded635646b20f93038d8b613630
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 9: The Trouble with Distributed Systems'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 15
+    level: 2
+    text: Faults and Partial Failures
+    role: section
+    classified_by: rule:toc
+  - line: 35
+    level: 2
+    text: Unreliable Networks
+    role: section
+    classified_by: rule:toc
+  - line: 57
+    level: 2
+    text: The Limitations of TCP
+    role: section
+    classified_by: rule:toc
+  - line: 75
+    level: 2
+    text: Network Faults in Practice
+    role: section
+    classified_by: rule:toc
+  - line: 90
+    level: 2
+    text: Network partitions
+    role: embedded
+    classified_by: model
+  - line: 98
+    level: 2
+    text: Fault Detection
+    role: section
+    classified_by: rule:toc
+  - line: 115
+    level: 2
+    text: Timeouts and Unbounded Delays
+    role: section
+    classified_by: rule:toc
+  - line: 129
+    level: 2
+    text: Network congestion and queueing
+    role: embedded
+    classified_by: model
+  - line: 144
+    level: 2
+    text: TCP Versus UDP
+    role: embedded
+    classified_by: model
+  - line: 150
+    level: 2
+    text: Variability of network delays
+    role: embedded
+    classified_by: model
+  - line: 160
+    level: 2
+    text: Synchronous Versus Asynchronous Networks
+    role: section
+    classified_by: rule:toc
+  - line: 170
+    level: 2
+    text: Can we not simply make network delays predictable?
+    role: embedded
+    classified_by: model
+  - line: 180
+    level: 2
+    text: Latency and Resource Utilization
+    role: embedded
+    classified_by: model
+  - line: 196
+    level: 2
+    text: Combining circuit switching and packet switching
+    role: embedded
+    classified_by: model
+  - line: 208
+    level: 2
+    text: Unreliable Clocks
+    role: section
+    classified_by: rule:toc
+  - line: 227
+    level: 2
+    text: Monotonic Versus Time-of-Day Clocks
+    role: section
+    classified_by: rule:toc
+  - line: 231
+    level: 2
+    text: Time-of-day clocks
+    role: embedded
+    classified_by: model
+  - line: 239
+    level: 3
+    text: Monotonic clocks
+    role: embedded
+    classified_by: model
+  - line: 251
+    level: 2
+    text: Clock Synchronization and Accuracy
+    role: section
+    classified_by: rule:toc
+  - line: 271
+    level: 2
+    text: Relying on Synchronized Clocks
+    role: section
+    classified_by: rule:toc
+  - line: 281
+    level: 2
+    text: Timestamps for ordering events
+    role: embedded
+    classified_by: model
+  - line: 310
+    level: 2
+    text: Clock readings with a confidence interval
+    role: embedded
+    classified_by: model
+  - line: 322
+    level: 3
+    text: Synchronized clocks for global snapshots
+    role: embedded
+    classified_by: model
+  - line: 338
+    level: 2
+    text: Process Pauses
+    role: section
+    classified_by: rule:toc
+  - line: 382
+    level: 2
+    text: Provididng response time quarantees
+    role: embedded
+    classified_by: model
+  - line: 400
+    level: 2
+    text: Limiting the impact of garbage collection
+    role: embedded
+    classified_by: model
+  - line: 412
+    level: 2
+    text: Knowledge, Truth, and Lies
+    role: section
+    classified_by: rule:toc
+  - line: 424
+    level: 2
+    text: The Majority Rules
+    role: section
+    classified_by: rule:toc
+  - line: 440
+    level: 2
+    text: Distributed Locks and Leases
+    role: section
+    classified_by: rule:toc
+  - line: 466
+    level: 2
+    text: Fencing off zombies and delayed requests
+    role: embedded
+    classified_by: model
+  - line: 492
+    level: 2
+    text: Fencing with multiple replicas
+    role: embedded
+    classified_by: model
+  - line: 508
+    level: 2
+    text: Byzantine Faults
+    role: section
+    classified_by: rule:toc
+  - line: 516
+    level: 2
+    text: The Byzantine Generals Problem
+    role: embedded
+    classified_by: model
+  - line: 524
+    level: 2
+    text: Uses of Byzantine fault tolerance
+    role: embedded
+    classified_by: model
+  - line: 539
+    level: 3
+    text: Weak forms of lying
+    role: embedded
+    classified_by: model
+  - line: 548
+    level: 2
+    text: System Model and Reality
+    role: section
+    classified_by: rule:toc
+  - line: 556
+    level: 3
+    text: Synchronous model
+    role: embedded
+    classified_by: model
+  - line: 560
+    level: 2
+    text: Partially synchronous model
+    role: embedded
+    classified_by: model
+  - line: 566
+    level: 2
+    text: Asynchronous model
+    role: embedded
+    classified_by: model
+  - line: 572
+    level: 3
+    text: Crash-stop faults
+    role: embedded
+    classified_by: model
+  - line: 576
+    level: 2
+    text: Crash-recovery faults
+    role: embedded
+    classified_by: model
+  - line: 580
+    level: 3
+    text: Degraded performance and partial functionality
+    role: embedded
+    classified_by: model
+  - line: 584
+    level: 2
+    text: Byzantine (arbitrary) faults
+    role: embedded
+    classified_by: model
+  - line: 590
+    level: 2
+    text: Defining the correctness of an algorithm
+    role: embedded
+    classified_by: model
+  - line: 596
+    level: 3
+    text: Uniqueness
+    role: embedded
+    classified_by: model
+  - line: 600
+    level: 3
+    text: Monotonic sequence
+    role: embedded
+    classified_by: model
+  - line: 604
+    level: 3
+    text: Availability
+    role: embedded
+    classified_by: model
+  - line: 610
+    level: 2
+    text: Distinguishing between safety and liveness
+    role: embedded
+    classified_by: model
+  - line: 626
+    level: 2
+    text: Mapping system models to the real world
+    role: embedded
+    classified_by: model
+  - line: 638
+    level: 2
+    text: Formal Methods and Randomized Testing
+    role: section
+    classified_by: rule:toc
+  - line: 646
+    level: 2
+    text: Model checking and specification languages
+    role: embedded
+    classified_by: model
+  - line: 656
+    level: 2
+    text: Fault injection
+    role: embedded
+    classified_by: model
+  - line: 666
+    level: 2
+    text: Deterministic simulation testing
+    role: embedded
+    classified_by: model
+  - line: 674
+    level: 2
+    text: Application-level
+    role: embedded
+    classified_by: model
+  - line: 678
+    level: 2
+    text: Runtime-level
+    role: embedded
+    classified_by: model
+  - line: 682
+    level: 3
+    text: Machine-level
+    role: embedded
+    classified_by: model
+  - line: 688
+    level: 2
+    text: The Power of Determinism
+    role: embedded
+    classified_by: model
+  - line: 700
+    level: 2
+    text: Summary
+    role: section
+    classified_by: rule:toc
+  - line: 722
+    level: 2
+    text: References
+    role: embedded
+    classified_by: model
+- path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/014-chapter-10-consistency-and-consensus.md
+  chapter_sha256: 458bc59363d43fd2cffe731a6fa95fd5ec1550bf3026429594a41047c95dad2d
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 10: Consistency and Consensus'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 11
+    level: 2
+    text: Eventual consistency
+    role: section
+    classified_by: model
+  - line: 15
+    level: 2
+    text: Strong consistency
+    role: section
+    classified_by: model
+  - line: 33
+    level: 2
+    text: Linearizability
+    role: section
+    classified_by: rule:toc
+  - line: 51
+    level: 2
+    text: What Makes a System Linearizable?
+    role: section
+    classified_by: rule:toc
+  - line: 68
+    level: 3
+    text: 'Let''s break it down:'
+    role: embedded
+    classified_by: model
+  - line: 110
+    level: 2
+    text: Linearizability Versus Serializability
+    role: section
+    classified_by: model
+  - line: 114
+    level: 3
+    text: Serializability
+    role: section
+    classified_by: rule:toc
+  - line: 120
+    level: 3
+    text: Linearizability
+    role: section
+    classified_by: rule:toc
+  - line: 130
+    level: 2
+    text: Relying on Linearizability
+    role: section
+    classified_by: rule:toc
+  - line: 134
+    level: 2
+    text: Locking and leader election
+    role: section
+    classified_by: model
+  - line: 146
+    level: 2
+    text: Constraints and uniqueness quarantees
+    role: section
+    classified_by: model
+  - line: 158
+    level: 2
+    text: Cross-channel timing dependencies
+    role: section
+    classified_by: model
+  - line: 176
+    level: 2
+    text: Implementing Linearizable Systems
+    role: section
+    classified_by: rule:toc
+  - line: 190
+    level: 3
+    text: Consensus algorithms (likely linearizable)
+    role: section
+    classified_by: model
+  - line: 194
+    level: 3
+    text: Multi-leader replication (not linearizable)
+    role: section
+    classified_by: model
+  - line: 198
+    level: 3
+    text: Leaderless replication (probably not linearizable)
+    role: section
+    classified_by: model
+  - line: 220
+    level: 2
+    text: The Cost of Linearizability
+    role: section
+    classified_by: rule:toc
+  - line: 240
+    level: 3
+    text: The CAP theorem
+    role: section
+    classified_by: model
+  - line: 257
+    level: 2
+    text: The Unhelpful CAP Theorem
+    role: section
+    classified_by: model
+  - line: 267
+    level: 2
+    text: Linearizability and network delays
+    role: section
+    classified_by: model
+  - line: 279
+    level: 2
+    text: ID Generators and Logical Clocks
+    role: section
+    classified_by: rule:toc
+  - line: 299
+    level: 3
+    text: Sharded ID assignment
+    role: section
+    classified_by: model
+  - line: 303
+    level: 2
+    text: Preallocated blocks of IDs
+    role: section
+    classified_by: model
+  - line: 309
+    level: 3
+    text: Random UUIDs
+    role: section
+    classified_by: model
+  - line: 313
+    level: 2
+    text: Wall-clock timestamp made unique
+    role: section
+    classified_by: model
+  - line: 323
+    level: 2
+    text: Logical Clocks
+    role: section
+    classified_by: rule:toc
+  - line: 337
+    level: 2
+    text: Lamport timestamps
+    role: section
+    classified_by: model
+  - line: 355
+    level: 2
+    text: Hybrid logical clocks
+    role: section
+    classified_by: model
+  - line: 368
+    level: 2
+    text: Lamport/hybrid logical clocks versus vector clocks
+    role: section
+    classified_by: model
+  - line: 376
+    level: 2
+    text: Linearizable ID Generators
+    role: section
+    classified_by: rule:toc
+  - line: 392
+    level: 2
+    text: Implementing a linearizable ID generator
+    role: section
+    classified_by: model
+  - line: 404
+    level: 2
+    text: Enforcing constraints using logical clocks
+    role: section
+    classified_by: model
+  - line: 414
+    level: 2
+    text: Consensus
+    role: section
+    classified_by: rule:toc
+  - line: 430
+    level: 2
+    text: The Impossibility of Consensus
+    role: section
+    classified_by: model
+  - line: 438
+    level: 2
+    text: The Many Faces of Consensus
+    role: section
+    classified_by: rule:toc
+  - line: 449
+    level: 2
+    text: Single-value consensus
+    role: section
+    classified_by: model
+  - line: 462
+    level: 3
+    text: Integrity
+    role: embedded
+    classified_by: model
+  - line: 466
+    level: 2
+    text: Validity
+    role: embedded
+    classified_by: model
+  - line: 470
+    level: 3
+    text: Termination
+    role: embedded
+    classified_by: model
+  - line: 488
+    level: 3
+    text: Compare-and-set as consensus
+    role: section
+    classified_by: model
+  - line: 498
+    level: 2
+    text: Shared logs as consensus
+    role: section
+    classified_by: model
+  - line: 504
+    level: 3
+    text: Eventual append
+    role: embedded
+    classified_by: model
+  - line: 508
+    level: 2
+    text: Reliable delivery
+    role: embedded
+    classified_by: model
+  - line: 512
+    level: 3
+    text: Append-only
+    role: embedded
+    classified_by: model
+  - line: 516
+    level: 3
+    text: Agreement
+    role: embedded
+    classified_by: model
+  - line: 520
+    level: 3
+    text: Validity
+    role: embedded
+    classified_by: model
+  - line: 542
+    level: 2
+    text: Fetch-and-add as consensus
+    role: section
+    classified_by: model
+  - line: 554
+    level: 3
+    text: Atomic commitment as consensus
+    role: section
+    classified_by: model
+  - line: 560
+    level: 3
+    text: Uniform agreement
+    role: embedded
+    classified_by: model
+  - line: 564
+    level: 2
+    text: Integrity
+    role: embedded
+    classified_by: model
+  - line: 568
+    level: 2
+    text: Validity
+    role: embedded
+    classified_by: model
+  - line: 572
+    level: 3
+    text: Nontriviality
+    role: embedded
+    classified_by: model
+  - line: 576
+    level: 2
+    text: Termination
+    role: embedded
+    classified_by: model
+  - line: 590
+    level: 2
+    text: Consensus in Practice
+    role: section
+    classified_by: rule:toc
+  - line: 596
+    level: 3
+    text: Using shared logs
+    role: section
+    classified_by: model
+  - line: 612
+    level: 2
+    text: From single-leader replication to consensus
+    role: section
+    classified_by: model
+  - line: 630
+    level: 2
+    text: Subtleties of consensus
+    role: section
+    classified_by: model
+  - line: 636
+    level: 2
+    text: Consistency Versus Availability in Leader Election
+    role: section
+    classified_by: model
+  - line: 650
+    level: 2
+    text: Pros and cons of consensus
+    role: section
+    classified_by: model
+  - line: 662
+    level: 2
+    text: Coordination Services
+    role: section
+    classified_by: rule:toc
+  - line: 670
+    level: 3
+    text: Locks and leases
+    role: section
+    classified_by: model
+  - line: 674
+    level: 3
+    text: Support for fencing
+    role: section
+    classified_by: model
+  - line: 678
+    level: 3
+    text: Failure detection
+    role: section
+    classified_by: model
+  - line: 682
+    level: 2
+    text: Change notifications
+    role: section
+    classified_by: model
+  - line: 688
+    level: 2
+    text: Managing Configuration with Coordination Services
+    role: section
+    classified_by: model
+  - line: 694
+    level: 2
+    text: Allocating work to nodes
+    role: section
+    classified_by: model
+  - line: 706
+    level: 2
+    text: Service discovery
+    role: section
+    classified_by: model
+  - line: 716
+    level: 2
+    text: Summary
+    role: section
+    classified_by: rule:toc
+  - line: 728
+    level: 2
+    text: Linearizable CAS operations
+    role: section
+    classified_by: model
+  - line: 732
+    level: 3
+    text: Locks and leases
+    role: section
+    classified_by: model
+  - line: 736
+    level: 3
+    text: Uniqueness constraints
+    role: section
+    classified_by: model
+  - line: 740
+    level: 2
+    text: Shared logs
+    role: section
+    classified_by: model
+  - line: 744
+    level: 3
+    text: Atomic transaction commit
+    role: section
+    classified_by: model
+  - line: 748
+    level: 3
+    text: Linearizable fetch-and-add operations
+    role: section
+    classified_by: model
+  - line: 764
+    level: 3
+    text: References
+    role: section
+    classified_by: model
+- path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/015-chapter-11-batch-processing.md
+  chapter_sha256: 7f0e2b4cef1f1764c108b08758ae607f3f723f3f1d07e5e667e50f8e00d1ee86
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 11: Batch Processing'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 41
+    level: 2
+    text: Batch Processing with Unix Tools
+    role: section
+    classified_by: rule:toc
+  - line: 62
+    level: 2
+    text: Simple Log Analysis
+    role: section
+    classified_by: rule:toc
+  - line: 99
+    level: 2
+    text: Chain of Commands Versus Custom Program
+    role: section
+    classified_by: rule:toc
+  - line: 124
+    level: 2
+    text: Sorting Versus In-Memory Aggregation
+    role: section
+    classified_by: rule:toc
+  - line: 136
+    level: 2
+    text: Batch Processing in Distributed Systems
+    role: section
+    classified_by: rule:toc
+  - line: 146
+    level: 2
+    text: Distributed Filesystems
+    role: section
+    classified_by: rule:toc
+  - line: 169
+    level: 2
+    text: Distributed Filesystems and Network Storage
+    role: embedded
+    classified_by: model
+  - line: 177
+    level: 2
+    text: Object Stores
+    role: section
+    classified_by: rule:toc
+  - line: 198
+    level: 2
+    text: Distributed Job Orchestration
+    role: section
+    classified_by: rule:toc
+  - line: 215
+    level: 3
+    text: Task executors
+    role: embedded
+    classified_by: model
+  - line: 221
+    level: 2
+    text: Resource manager
+    role: embedded
+    classified_by: model
+  - line: 225
+    level: 3
+    text: Scheduler
+    role: embedded
+    classified_by: model
+  - line: 235
+    level: 3
+    text: Resource allocation
+    role: embedded
+    classified_by: model
+  - line: 253
+    level: 2
+    text: Scheduling workflows
+    role: embedded
+    classified_by: model
+  - line: 275
+    level: 2
+    text: Handling faults
+    role: embedded
+    classified_by: model
+  - line: 289
+    level: 2
+    text: Batch Processing Models
+    role: section
+    classified_by: rule:toc
+  - line: 295
+    level: 2
+    text: MapReduce
+    role: section
+    classified_by: rule:toc
+  - line: 311
+    level: 3
+    text: Mapper
+    role: embedded
+    classified_by: model
+  - line: 315
+    level: 3
+    text: Reducer
+    role: embedded
+    classified_by: model
+  - line: 321
+    level: 2
+    text: MapReduce and Functional Programming
+    role: embedded
+    classified_by: model
+  - line: 329
+    level: 2
+    text: Dataflow Engines
+    role: section
+    classified_by: rule:toc
+  - line: 348
+    level: 2
+    text: Shuffling Data
+    role: section
+    classified_by: rule:toc
+  - line: 354
+    level: 3
+    text: Shuffle is not random
+    role: embedded
+    classified_by: model
+  - line: 378
+    level: 2
+    text: Joins and Grouping
+    role: section
+    classified_by: rule:toc
+  - line: 402
+    level: 2
+    text: Query Languages
+    role: section
+    classified_by: rule:toc
+  - line: 416
+    level: 2
+    text: Batch Processing and Cloud Data Warehouses Converge
+    role: embedded
+    classified_by: model
+  - line: 430
+    level: 2
+    text: DataFrames
+    role: section
+    classified_by: rule:toc
+  - line: 440
+    level: 2
+    text: Batch Use Cases
+    role: section
+    classified_by: rule:toc
+  - line: 451
+    level: 2
+    text: Extract-Transform-Load
+    role: section
+    classified_by: rule:toc
+  - line: 465
+    level: 2
+    text: Analytics
+    role: section
+    classified_by: rule:toc
+  - line: 471
+    level: 2
+    text: Pre-aggregation queries
+    role: embedded
+    classified_by: model
+  - line: 475
+    level: 3
+    text: Ad hoc queries
+    role: embedded
+    classified_by: model
+  - line: 481
+    level: 2
+    text: Machine Learning
+    role: section
+    classified_by: rule:toc
+  - line: 485
+    level: 2
+    text: Feature engineering
+    role: embedded
+    classified_by: model
+  - line: 489
+    level: 2
+    text: Model training
+    role: embedded
+    classified_by: model
+  - line: 493
+    level: 2
+    text: Batch inference
+    role: embedded
+    classified_by: model
+  - line: 515
+    level: 2
+    text: Serving Derived Data
+    role: section
+    classified_by: rule:toc
+  - line: 539
+    level: 2
+    text: Summary
+    role: section
+    classified_by: rule:toc
+  - line: 560
+    level: 3
+    text: References
+    role: embedded
+    classified_by: model
+- path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/016-chapter-12-stream-processing.md
+  chapter_sha256: 0d61c891d8ab3db313489b4401da6e32d19f1740b50d0b03bc1b0f3ea63e2a44
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 12: Stream Processing'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 21
+    level: 2
+    text: Transmitting Event Streams
+    role: section
+    classified_by: rule:toc
+  - line: 39
+    level: 2
+    text: Messaging Systems
+    role: section
+    classified_by: rule:toc
+  - line: 59
+    level: 3
+    text: Direct messaging from producers to consumers
+    role: embedded
+    classified_by: model
+  - line: 73
+    level: 2
+    text: Message brokers
+    role: embedded
+    classified_by: model
+  - line: 81
+    level: 2
+    text: Message brokers compared to databases
+    role: embedded
+    classified_by: model
+  - line: 92
+    level: 2
+    text: Multiple consumers
+    role: embedded
+    classified_by: model
+  - line: 96
+    level: 2
+    text: Load balancing
+    role: embedded
+    classified_by: model
+  - line: 100
+    level: 3
+    text: Fan-out
+    role: embedded
+    classified_by: model
+  - line: 110
+    level: 2
+    text: Acknowledgments and redelivery
+    role: embedded
+    classified_by: model
+  - line: 128
+    level: 2
+    text: Log-Based Message Brokers
+    role: section
+    classified_by: rule:toc
+  - line: 140
+    level: 2
+    text: Using logs for message storage
+    role: embedded
+    classified_by: model
+  - line: 156
+    level: 2
+    text: Logs compared to traditional messaging
+    role: embedded
+    classified_by: model
+  - line: 169
+    level: 3
+    text: Consumer offsets
+    role: embedded
+    classified_by: model
+  - line: 177
+    level: 2
+    text: Disk space usage
+    role: embedded
+    classified_by: model
+  - line: 187
+    level: 2
+    text: When consumers cannot keep up with producers
+    role: embedded
+    classified_by: model
+  - line: 197
+    level: 2
+    text: Replaying old messages
+    role: embedded
+    classified_by: model
+  - line: 205
+    level: 2
+    text: Databases and Streams
+    role: section
+    classified_by: rule:toc
+  - line: 221
+    level: 2
+    text: Keeping Systems in Sync
+    role: section
+    classified_by: rule:toc
+  - line: 243
+    level: 2
+    text: Change Data Capture
+    role: section
+    classified_by: rule:toc
+  - line: 259
+    level: 2
+    text: Implementing CDC
+    role: embedded
+    classified_by: model
+  - line: 269
+    level: 3
+    text: Initial snapshot
+    role: embedded
+    classified_by: model
+  - line: 277
+    level: 2
+    text: Log compaction
+    role: embedded
+    classified_by: model
+  - line: 295
+    level: 2
+    text: API support for change streams
+    role: embedded
+    classified_by: model
+  - line: 303
+    level: 2
+    text: CDC versus event sourcing
+    role: embedded
+    classified_by: model
+  - line: 312
+    level: 2
+    text: Change Data Capture and Database Schemas
+    role: embedded
+    classified_by: model
+  - line: 329
+    level: 2
+    text: State, Streams, and Immutability
+    role: section
+    classified_by: rule:toc
+  - line: 352
+    level: 2
+    text: Advantages of immutable events
+    role: embedded
+    classified_by: model
+  - line: 362
+    level: 2
+    text: Deriving several views from the same event log
+    role: embedded
+    classified_by: model
+  - line: 374
+    level: 2
+    text: Concurrency control
+    role: embedded
+    classified_by: model
+  - line: 388
+    level: 2
+    text: Limitations of immutability
+    role: embedded
+    classified_by: model
+  - line: 406
+    level: 2
+    text: Processing Streams
+    role: section
+    classified_by: rule:toc
+  - line: 422
+    level: 2
+    text: Uses of Stream Processing
+    role: section
+    classified_by: rule:toc
+  - line: 433
+    level: 3
+    text: Complex event processing
+    role: embedded
+    classified_by: model
+  - line: 443
+    level: 2
+    text: Stream analytics
+    role: embedded
+    classified_by: model
+  - line: 457
+    level: 2
+    text: Maintaining materialized views
+    role: embedded
+    classified_by: model
+  - line: 465
+    level: 2
+    text: Incremental View Maintenance
+    role: embedded
+    classified_by: model
+  - line: 473
+    level: 3
+    text: Data freshness
+    role: embedded
+    classified_by: model
+  - line: 483
+    level: 2
+    text: Search on streams
+    role: embedded
+    classified_by: model
+  - line: 489
+    level: 3
+    text: Event-driven architectures and RPC
+    role: embedded
+    classified_by: model
+  - line: 503
+    level: 2
+    text: Reasoning About Time
+    role: section
+    classified_by: rule:toc
+  - line: 513
+    level: 2
+    text: Event time versus processing time
+    role: embedded
+    classified_by: model
+  - line: 527
+    level: 2
+    text: Handling straggler events
+    role: embedded
+    classified_by: model
+  - line: 540
+    level: 2
+    text: Whose clock are you using, anyway?
+    role: embedded
+    classified_by: model
+  - line: 556
+    level: 2
+    text: Types of windows
+    role: embedded
+    classified_by: model
+  - line: 560
+    level: 2
+    text: Tumbling windows
+    role: embedded
+    classified_by: model
+  - line: 564
+    level: 2
+    text: Hopping windows
+    role: embedded
+    classified_by: model
+  - line: 568
+    level: 2
+    text: Sliding windows
+    role: embedded
+    classified_by: model
+  - line: 572
+    level: 3
+    text: Session windows
+    role: embedded
+    classified_by: model
+  - line: 578
+    level: 2
+    text: Stream Joins
+    role: section
+    classified_by: rule:toc
+  - line: 584
+    level: 3
+    text: Stream-stream join (window join)
+    role: embedded
+    classified_by: model
+  - line: 594
+    level: 2
+    text: Stream-table join (stream enrichment)
+    role: embedded
+    classified_by: model
+  - line: 606
+    level: 3
+    text: Table-table join (materialized view maintenance)
+    role: embedded
+    classified_by: model
+  - line: 634
+    level: 2
+    text: Time dependence of joins
+    role: embedded
+    classified_by: model
+  - line: 648
+    level: 2
+    text: Fault Tolerance
+    role: section
+    classified_by: rule:toc
+  - line: 656
+    level: 3
+    text: Microbatching and checkpointing
+    role: embedded
+    classified_by: model
+  - line: 666
+    level: 2
+    text: Atomic commit revisited
+    role: embedded
+    classified_by: model
+  - line: 674
+    level: 2
+    text: Idempotence
+    role: embedded
+    classified_by: model
+  - line: 684
+    level: 2
+    text: Rebuilding state after a failure
+    role: embedded
+    classified_by: model
+  - line: 696
+    level: 2
+    text: Summary
+    role: section
+    classified_by: rule:toc
+  - line: 706
+    level: 2
+    text: Log-based message broker
+    role: embedded
+    classified_by: model
+  - line: 722
+    level: 3
+    text: Stream-stream joins
+    role: embedded
+    classified_by: model
+  - line: 726
+    level: 3
+    text: Stream-table joins
+    role: embedded
+    classified_by: model
+  - line: 730
+    level: 2
+    text: Table-table joins
+    role: embedded
+    classified_by: model
+  - line: 736
+    level: 2
+    text: References
+    role: embedded
+    classified_by: model
+- path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/017-chapter-13-a-philosophy-of-streaming-systems.md
+  chapter_sha256: eb7532a39192e53ee577a24cf38365158e209e554110a1aaa8bf4cbcba63e53d
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 13: A Philosophy of Streaming Systems'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 11
+    level: 2
+    text: Data Integration
+    role: section
+    classified_by: rule:toc
+  - line: 23
+    level: 2
+    text: Combining Specialized Tools by Deriving Data
+    role: section
+    classified_by: rule:toc
+  - line: 29
+    level: 2
+    text: Reasoning about dataflows
+    role: section
+    classified_by: model
+  - line: 41
+    level: 3
+    text: Derived data versus distributed transactions
+    role: embedded
+    classified_by: model
+  - line: 55
+    level: 3
+    text: The limits of total ordering
+    role: embedded
+    classified_by: model
+  - line: 67
+    level: 2
+    text: Ordering events to capture causality
+    role: section
+    classified_by: model
+  - line: 84
+    level: 2
+    text: Batch and Stream Processing
+    role: section
+    classified_by: rule:toc
+  - line: 90
+    level: 2
+    text: Maintaining derived state
+    role: section
+    classified_by: model
+  - line: 100
+    level: 2
+    text: Reprocessing data for application evolution
+    role: section
+    classified_by: model
+  - line: 106
+    level: 2
+    text: Schema Migrations on Railways
+    role: section
+    classified_by: model
+  - line: 118
+    level: 2
+    text: Unifying batch and stream processing
+    role: section
+    classified_by: model
+  - line: 128
+    level: 2
+    text: Unbundling Databases
+    role: section
+    classified_by: rule:toc
+  - line: 142
+    level: 2
+    text: Composing Data Storage Technologies
+    role: section
+    classified_by: rule:toc
+  - line: 155
+    level: 2
+    text: Creating an index
+    role: section
+    classified_by: model
+  - line: 163
+    level: 2
+    text: The meta-database of everything
+    role: section
+    classified_by: model
+  - line: 177
+    level: 3
+    text: Unbundled databases (unifying writes)
+    role: embedded
+    classified_by: model
+  - line: 183
+    level: 2
+    text: Making unbundling work
+    role: section
+    classified_by: model
+  - line: 196
+    level: 3
+    text: Unbundled versus integrated systems
+    role: embedded
+    classified_by: model
+  - line: 208
+    level: 2
+    text: Designing Applications Around Dataflow
+    role: section
+    classified_by: rule:toc
+  - line: 216
+    level: 3
+    text: Application code as a derivation function
+    role: embedded
+    classified_by: model
+  - line: 230
+    level: 2
+    text: Separation of application code and state
+    role: section
+    classified_by: model
+  - line: 248
+    level: 3
+    text: 'Dataflow: Interplay between state changes and application code'
+    role: embedded
+    classified_by: model
+  - line: 263
+    level: 2
+    text: Stream processors and services
+    role: section
+    classified_by: model
+  - line: 282
+    level: 2
+    text: Observing Derived State
+    role: section
+    classified_by: rule:toc
+  - line: 296
+    level: 3
+    text: Materialized views and caching
+    role: embedded
+    classified_by: model
+  - line: 312
+    level: 3
+    text: Stateful, offline-capable clients
+    role: embedded
+    classified_by: model
+  - line: 322
+    level: 2
+    text: Pushing state changes to clients
+    role: section
+    classified_by: model
+  - line: 332
+    level: 3
+    text: End-to-end event streams
+    role: embedded
+    classified_by: model
+  - line: 344
+    level: 3
+    text: Reads are events too
+    role: embedded
+    classified_by: model
+  - line: 360
+    level: 2
+    text: Multishard data processing
+    role: section
+    classified_by: model
+  - line: 370
+    level: 2
+    text: Aiming for Correctness
+    role: section
+    classified_by: rule:toc
+  - line: 386
+    level: 2
+    text: The End-to-End Argument for Databases
+    role: section
+    classified_by: rule:toc
+  - line: 392
+    level: 2
+    text: Exactly-once execution of an operation
+    role: section
+    classified_by: model
+  - line: 400
+    level: 3
+    text: Duplicate suppression
+    role: embedded
+    classified_by: model
+  - line: 422
+    level: 2
+    text: Uniquely identifying requests
+    role: section
+    classified_by: model
+  - line: 445
+    level: 2
+    text: The end-to-end argument
+    role: section
+    classified_by: model
+  - line: 459
+    level: 2
+    text: Applying end-to-end thinking in data systems
+    role: section
+    classified_by: model
+  - line: 471
+    level: 2
+    text: Enforcing Constraints
+    role: section
+    classified_by: rule:toc
+  - line: 479
+    level: 2
+    text: Uniqueness constraints require consensus
+    role: section
+    classified_by: model
+  - line: 489
+    level: 2
+    text: Uniqueness in log-based messaging
+    role: section
+    classified_by: model
+  - line: 503
+    level: 2
+    text: Multishard request processing
+    role: section
+    classified_by: model
+  - line: 536
+    level: 2
+    text: Timeliness and Integrity
+    role: section
+    classified_by: rule:toc
+  - line: 546
+    level: 3
+    text: Timeliness
+    role: embedded
+    classified_by: model
+  - line: 552
+    level: 3
+    text: Integrity
+    role: embedded
+    classified_by: model
+  - line: 564
+    level: 2
+    text: Correctness of dataflow systems
+    role: section
+    classified_by: model
+  - line: 580
+    level: 3
+    text: Loosely interpreted constraints
+    role: embedded
+    classified_by: model
+  - line: 597
+    level: 2
+    text: Coordination-avoiding data systems
+    role: section
+    classified_by: model
+  - line: 612
+    level: 2
+    text: Trust. but Verify
+    role: section
+    classified_by: model
+  - line: 620
+    level: 2
+    text: Maintaining integrity in the face of software bugs
+    role: section
+    classified_by: model
+  - line: 630
+    level: 2
+    text: Don't just blindly trust what they promise
+    role: section
+    classified_by: model
+  - line: 642
+    level: 2
+    text: Designing for auditability
+    role: section
+    classified_by: model
+  - line: 652
+    level: 3
+    text: The end-to-end argument again
+    role: embedded
+    classified_by: model
+  - line: 660
+    level: 2
+    text: Tools for auditable data systems
+    role: section
+    classified_by: model
+  - line: 670
+    level: 2
+    text: Summary
+    role: section
+    classified_by: rule:toc
+  - line: 686
+    level: 3
+    text: References
+    role: embedded
+    classified_by: model
+- path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/018-chapter-14-doing-the-right-thing.md
+  chapter_sha256: b7a1b5acb8a917561e0a36245f2531164a049a55e5ba01a2f4580362c75375ec
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 14: Doing the Right Thing'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 21
+    level: 2
+    text: Predictive Analytics
+    role: section
+    classified_by: rule:toc
+  - line: 29
+    level: 2
+    text: Bias and Discrimination
+    role: section
+    classified_by: rule:toc
+  - line: 41
+    level: 2
+    text: Responsibility and Accountability
+    role: section
+    classified_by: rule:toc
+  - line: 55
+    level: 2
+    text: Feedback Loops
+    role: section
+    classified_by: rule:toc
+  - line: 65
+    level: 2
+    text: Privacy and Tracking
+    role: section
+    classified_by: rule:toc
+  - line: 77
+    level: 2
+    text: Surveillance
+    role: section
+    classified_by: rule:toc
+  - line: 91
+    level: 2
+    text: Consent and Freedom of Choice
+    role: section
+    classified_by: rule:toc
+  - line: 109
+    level: 2
+    text: Privacy and Use of Data
+    role: section
+    classified_by: rule:toc
+  - line: 129
+    level: 2
+    text: Data as Assets and Power
+    role: section
+    classified_by: rule:toc
+  - line: 147
+    level: 2
+    text: Remembering the Industrial Revolution
+    role: section
+    classified_by: rule:toc
+  - line: 161
+    level: 2
+    text: Legislation and Self-Regulation
+    role: section
+    classified_by: rule:toc
+  - line: 177
+    level: 2
+    text: Summary
+    role: section
+    classified_by: rule:toc
+  - line: 200
+    level: 2
+    text: References
+    role: section
+    classified_by: model
+- path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/019-glossary.md
+  chapter_sha256: 34ff828cf9dc55f80c24938636c44f1f329db6b57f3ad4454c3a40ec8b7a00bf
+  headings:
+  - line: 1
+    level: 1
+    text: Glossary
+    role: section
+    classified_by: rule:chapter-title
+  - line: 7
+    level: 2
+    text: asynchronous
+    role: embedded
+    classified_by: model
+  - line: 11
+    level: 3
+    text: atomic
+    role: embedded
+    classified_by: model
+  - line: 16
+    level: 2
+    text: backpressure
+    role: embedded
+    classified_by: model
+  - line: 20
+    level: 3
+    text: batch process
+    role: embedded
+    classified_by: model
+  - line: 24
+    level: 3
+    text: hounded
+    role: embedded
+    classified_by: model
+  - line: 28
+    level: 2
+    text: Byzantine fault
+    role: embedded
+    classified_by: model
+  - line: 32
+    level: 3
+    text: cache
+    role: embedded
+    classified_by: model
+  - line: 36
+    level: 3
+    text: CAP theorem
+    role: embedded
+    classified_by: model
+  - line: 40
+    level: 3
+    text: CAP theorem
+    role: embedded
+    classified_by: model
+  - line: 44
+    level: 3
+    text: causality
+    role: embedded
+    classified_by: model
+  - line: 48
+    level: 3
+    text: consensus
+    role: section
+    classified_by: rule:toc
+  - line: 52
+    level: 2
+    text: data warehouse
+    role: embedded
+    classified_by: model
+  - line: 56
+    level: 3
+    text: declarative
+    role: embedded
+    classified_by: model
+  - line: 60
+    level: 3
+    text: denormalize
+    role: embedded
+    classified_by: model
+  - line: 66
+    level: 3
+    text: derived data
+    role: embedded
+    classified_by: model
+  - line: 70
+    level: 3
+    text: deterministic
+    role: embedded
+    classified_by: model
+  - line: 74
+    level: 2
+    text: distributed
+    role: embedded
+    classified_by: model
+  - line: 82
+    level: 3
+    text: failover
+    role: embedded
+    classified_by: model
+  - line: 86
+    level: 3
+    text: fault-tolerant
+    role: embedded
+    classified_by: model
+  - line: 90
+    level: 2
+    text: flow control
+    role: embedded
+    classified_by: model
+  - line: 94
+    level: 3
+    text: follower
+    role: embedded
+    classified_by: model
+  - line: 98
+    level: 3
+    text: full-text search
+    role: section
+    classified_by: rule:toc
+  - line: 102
+    level: 3
+    text: graph
+    role: embedded
+    classified_by: model
+  - line: 106
+    level: 3
+    text: hash
+    role: embedded
+    classified_by: model
+  - line: 110
+    level: 3
+    text: idempotent
+    role: embedded
+    classified_by: model
+  - line: 114
+    level: 3
+    text: index
+    role: embedded
+    classified_by: model
+  - line: 118
+    level: 3
+    text: isolation
+    role: embedded
+    classified_by: model
+  - line: 122
+    level: 3
+    text: inin
+    role: embedded
+    classified_by: model
+  - line: 126
+    level: 3
+    text: leader
+    role: embedded
+    classified_by: model
+  - line: 130
+    level: 3
+    text: linearizable
+    role: embedded
+    classified_by: model
+  - line: 134
+    level: 3
+    text: locality
+    role: embedded
+    classified_by: model
+  - line: 142
+    level: 3
+    text: log
+    role: embedded
+    classified_by: model
+  - line: 146
+    level: 2
+    text: materialize
+    role: embedded
+    classified_by: model
+  - line: 150
+    level: 3
+    text: node
+    role: embedded
+    classified_by: model
+  - line: 154
+    level: 3
+    text: normalized
+    role: embedded
+    classified_by: model
+  - line: 158
+    level: 3
+    text: OLAP
+    role: embedded
+    classified_by: model
+  - line: 162
+    level: 3
+    text: OLTP
+    role: embedded
+    classified_by: model
+  - line: 166
+    level: 3
+    text: percentile
+    role: embedded
+    classified_by: model
+  - line: 170
+    level: 3
+    text: primary key
+    role: embedded
+    classified_by: model
+  - line: 174
+    level: 3
+    text: quorum
+    role: embedded
+    classified_by: model
+  - line: 178
+    level: 2
+    text: rehalance
+    role: embedded
+    classified_by: model
+  - line: 182
+    level: 3
+    text: replication
+    role: section
+    classified_by: rule:toc
+  - line: 186
+    level: 2
+    text: schema
+    role: embedded
+    classified_by: model
+  - line: 190
+    level: 3
+    text: secondary index
+    role: embedded
+    classified_by: model
+  - line: 194
+    level: 3
+    text: seria lizable
+    role: embedded
+    classified_by: model
+  - line: 198
+    level: 3
+    text: sharding
+    role: embedded
+    classified_by: model
+  - line: 202
+    level: 3
+    text: shared-nothing
+    role: embedded
+    classified_by: model
+  - line: 206
+    level: 3
+    text: skew
+    role: embedded
+    classified_by: model
+  - line: 211
+    level: 3
+    text: split brain
+    role: embedded
+    classified_by: model
+  - line: 217
+    level: 3
+    text: stored procedure
+    role: embedded
+    classified_by: model
+  - line: 221
+    level: 3
+    text: stream process
+    role: embedded
+    classified_by: model
+  - line: 225
+    level: 2
+    text: synch ron ous
+    role: embedded
+    classified_by: model
+  - line: 229
+    level: 3
+    text: system of record
+    role: embedded
+    classified_by: model
+  - line: 233
+    level: 3
+    text: timeout
+    role: embedded
+    classified_by: model
+  - line: 237
+    level: 3
+    text: total order
+    role: embedded
+    classified_by: model
+  - line: 241
+    level: 3
+    text: transaction
+    role: embedded
+    classified_by: model
+  - line: 245
+    level: 2
+    text: two-phase commit (2PC)
+    role: embedded
+    classified_by: model
+  - line: 249
+    level: 2
+    text: two-phase commit (2PC)
+    role: embedded
+    classified_by: model
+  - line: 253
+    level: 2
+    text: two-phase locking (2PL)
+    role: embedded
+    classified_by: model
+  - line: 257
+    level: 2
+    text: unbounded
+    role: embedded
+    classified_by: model
+- path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/020-index.md
+  chapter_sha256: 61b0e767582864057069a3bb40f3ab4585bf642e4941f79aa76cd616d1bc377d
+  headings:
+  - line: 1
+    level: 1
+    text: Index
+    role: section
+    classified_by: rule:chapter-title
+- path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/021-about-the-authors.md
+  chapter_sha256: e3a6b331cfdf9c2bb2b684d7e3ba82dc4a6d13f12dedf7b8ebb8366f30d99ecb
+  headings:
+  - line: 1
+    level: 1
+    text: About the Authors
+    role: section
+    classified_by: rule:chapter-title
+- path: books/dokumen-pub-designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2/chapters/022-colophon.md
+  chapter_sha256: 6fab43d74ca841d5e1e823ca9c6f2b10a5182cd6586b7356b3f96292539675c7
+  headings:
+  - line: 1
+    level: 1
+    text: Colophon
+    role: section
+    classified_by: rule:chapter-title
+  - line: 15
+    level: 2
+    text: O'REILLY'
+    role: embedded
+    classified_by: model
+  - line: 17
+    level: 2
+    text: Learn from experts. Become one yourself.
+    role: embedded
+    classified_by: model

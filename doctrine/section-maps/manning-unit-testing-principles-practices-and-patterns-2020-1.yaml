@@ -1,0 +1,2043 @@
+schema_version: section-map/1
+book: manning-unit-testing-principles-practices-and-patterns-2020-1
+chapters:
+- path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/001-unit-testing-principles-practices-and-patterns.md
+  chapter_sha256: 79d9a6eba556a01d750d4535df1ff37559f89726fd55c95951630e6b365933ef
+  headings:
+  - line: 7
+    level: 1
+    text: 'Unit Testing: Principles, Practices, and Patterns'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 41
+    level: 2
+    text: brief contents
+    role: embedded
+    classified_by: model
+  - line: 60
+    level: 2
+    text: contents
+    role: embedded
+    classified_by: model
+  - line: 74
+    level: 2
+    text: The goal of unit testing 3
+    role: section
+    classified_by: model
+- path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/002-preface.md
+  chapter_sha256: 22f8a1c26c0319a3d29c7d5d13c9364386aca1403b54a198d89de4a3117a4ebb
+  headings:
+  - line: 1
+    level: 1
+    text: preface
+    role: section
+    classified_by: rule:chapter-title
+- path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/003-acknowledgments.md
+  chapter_sha256: 09c7d5e14d40382f5b25678f87d22f220a55ea18e2df76dfce31ed102189e167
+  headings:
+  - line: 1
+    level: 1
+    text: acknowledgments
+    role: section
+    classified_by: rule:chapter-title
+  - line: 11
+    level: 2
+    text: about this book
+    role: section
+    classified_by: model
+  - line: 15
+    level: 2
+    text: Who should read this book
+    role: section
+    classified_by: model
+  - line: 23
+    level: 2
+    text: 'How this book is organized: A roadmap'
+    role: section
+    classified_by: model
+  - line: 46
+    level: 2
+    text: About the Code
+    role: section
+    classified_by: model
+  - line: 52
+    level: 2
+    text: liveBook discussion forum
+    role: section
+    classified_by: model
+  - line: 58
+    level: 3
+    text: Other online resources
+    role: embedded
+    classified_by: model
+- path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/004-about-the-author.md
+  chapter_sha256: 86a003cfaeae494ebbddc3c0056e8429bad9f8b493e822f3276c0507b49bda29
+  headings:
+  - line: 1
+    level: 1
+    text: about the author
+    role: section
+    classified_by: rule:chapter-title
+  - line: 5
+    level: 2
+    text: about the cover illustration
+    role: section
+    classified_by: model
+- path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/005-part-1.md
+  chapter_sha256: 4024225c5dd43039c7aa6e9c01412e43fa128d8b531bb02518244a7401ad9ee5
+  headings:
+  - line: 1
+    level: 1
+    text: Part 1
+    role: section
+    classified_by: rule:chapter-title
+  - line: 3
+    level: 2
+    text: The bigger picture
+    role: section
+    classified_by: model
+- path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/006-chapter-1-the-goal-of-unit-testing.md
+  chapter_sha256: 012401ec5809fb57cc7305005e68691e1fc99d48a21d897c652b00f0bdad3041
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 1: The goal of unit testing'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: This chapter covers
+    role: embedded
+    classified_by: model
+  - line: 23
+    level: 2
+    text: 1.1 The current state of unit testing
+    role: section
+    classified_by: rule:numbered-book
+  - line: 43
+    level: 3
+    text: What is an enterprise application?
+    role: embedded
+    classified_by: model
+  - line: 53
+    level: 2
+    text: 1.2 The goal of unit testing
+    role: section
+    classified_by: rule:numbered-book
+  - line: 57
+    level: 3
+    text: The relationship between unit testing and code design
+    role: embedded
+    classified_by: model
+  - line: 61
+    level: 4
+    text: (continued)
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 86
+    level: 4
+    text: 1.2.1 What makes a good or bad test?
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 109
+    level: 4
+    text: Production code vs. test code
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 118
+    level: 2
+    text: 1.3 Using coverage metrics to measure test suite quality
+    role: section
+    classified_by: rule:numbered-book
+  - line: 133
+    level: 3
+    text: 1.3.1 Understanding the code coverage metric
+    role: embedded
+    classified_by: model
+  - line: 144
+    level: 4
+    text: Listing 1.1 A sample method partially covered by a test
+    role: embedded
+    classified_by: rule:caption
+  - line: 193
+    level: 4
+    text: 1.3.2 Understanding the branch coverage metric
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 227
+    level: 4
+    text: 1.3.3 Problems with coverage metrics
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 237
+    level: 4
+    text: YOU CAN'T GUARANTEE THAT THE TEST VERIFIES ALL THE POSSIBLE OUTCOMES
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 243
+    level: 4
+    text: Listing 1.2 Version of **IsStringLong** that records the last result
+    role: embedded
+    classified_by: rule:caption
+  - line: 270
+    level: 4
+    text: Listing 1.3 A test with no assertions always passes.
+    role: embedded
+    classified_by: rule:caption
+  - line: 285
+    level: 4
+    text: A story from the trenches
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 300
+    level: 4
+    text: NO COVERAGE METRIC CAN TAKE INTO ACCOUNT CODE PATHS IN EXTERNAL LIBRARIES
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 334
+    level: 4
+    text: 1.3.4 Aiming at a particular coverage number
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 347
+    level: 2
+    text: 1.4 What makes a successful test suite?
+    role: section
+    classified_by: rule:numbered-book
+  - line: 360
+    level: 3
+    text: 1.4.1 It's integrated into the development cycle
+    role: embedded
+    classified_by: model
+  - line: 365
+    level: 4
+    text: 1.4.2 It targets only the most important parts of your code base
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 388
+    level: 4
+    text: 1.4.3 It provides maximum value with minimum maintenance costs
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 404
+    level: 2
+    text: 1.5 What you will learn in this book
+    role: section
+    classified_by: rule:numbered-book
+  - line: 423
+    level: 2
+    text: Summary
+    role: section
+    classified_by: model
+- path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/007-chapter-2-what-is-a-unit-test.md
+  chapter_sha256: e5c8c5decf48b6f293abc068aa05b91309074928a92e6ec6827baf62cc20a438
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 2: What is a unit test?'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: This chapter covers
+    role: embedded
+    classified_by: model
+  - line: 18
+    level: 2
+    text: 2.1 The definition of "unit test"
+    role: section
+    classified_by: rule:numbered-book
+  - line: 31
+    level: 3
+    text: The classical and London schools of unit testing
+    role: section
+    classified_by: model
+  - line: 38
+    level: 4
+    text: '2.1.1 The isolation issue: The London take'
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 139
+    level: 4
+    text: Listing 2.2 Tests written using the London style of unit testing
+    role: embedded
+    classified_by: rule:caption
+  - line: 192
+    level: 4
+    text: '2.1.2 The isolation issue: The classical take'
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 209
+    level: 4
+    text: Shared, private, and out-of-process dependencies
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 229
+    level: 4
+    text: Shared vs. volatile dependencies
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 245
+    level: 2
+    text: 2.2 The classical and London schools of unit testing
+    role: section
+    classified_by: rule:numbered-book
+  - line: 265
+    level: 3
+    text: 2.2.1 How the classical and London schools handle dependencies
+    role: section
+    classified_by: model
+  - line: 315
+    level: 4
+    text: Collaborator vs. dependency
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 340
+    level: 2
+    text: 2.3 Contrasting the classical and London schools of unit testing
+    role: section
+    classified_by: rule:numbered-book
+  - line: 353
+    level: 3
+    text: 2.3.1 Unit testing one class at a time
+    role: section
+    classified_by: model
+  - line: 377
+    level: 4
+    text: 2.3.2 Unit testing a large graph of interconnected classes
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 386
+    level: 4
+    text: 2.3.3 Revealing the precise bug location
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 395
+    level: 4
+    text: 2.3.4 Other differences between the classical and London schools
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 402
+    level: 4
+    text: Test-driven development
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 421
+    level: 2
+    text: 2.4 Integration tests in the two schools
+    role: section
+    classified_by: rule:numbered-book
+  - line: 452
+    level: 2
+    text: 2.4.1 End-to-end tests are a subset of integration tests
+    role: section
+    classified_by: model
+  - line: 472
+    level: 2
+    text: Summary
+    role: section
+    classified_by: model
+- path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/008-chapter-3-the-anatomy-of-a-unit-test.md
+  chapter_sha256: 1c021dd78463fca6f54694d0c4569a0888ac3df10519a5e131bd18148364d474
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 3: The anatomy of a unit test'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 5
+    level: 2
+    text: This chapter covers
+    role: embedded
+    classified_by: model
+  - line: 19
+    level: 2
+    text: 3.1 How to structure a unit test
+    role: section
+    classified_by: rule:numbered-book
+  - line: 24
+    level: 3
+    text: 3.1.1 Using the AAA pattern
+    role: embedded
+    classified_by: model
+  - line: 40
+    level: 4
+    text: Listing 3.1 A test covering the **Sum** method in **calculator**
+    role: embedded
+    classified_by: rule:caption
+  - line: 76
+    level: 3
+    text: Given-When-Then pattern
+    role: embedded
+    classified_by: model
+  - line: 91
+    level: 3
+    text: 3.1.2 Avoid multiple arrange, act, and assert sections
+    role: embedded
+    classified_by: model
+  - line: 108
+    level: 2
+    text: 3.1.3 Avoid if statements in tests
+    role: embedded
+    classified_by: model
+  - line: 115
+    level: 3
+    text: 3.1.4 How large should each section be?
+    role: embedded
+    classified_by: model
+  - line: 120
+    level: 4
+    text: THE ARRANGE SECTION IS THE LARGEST
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 126
+    level: 4
+    text: WATCH OUT FOR ACT SECTIONS THAT ARE LARGER THAN A SINGLE LINE
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 133
+    level: 4
+    text: Listing 3.2 A single-line *act* section
+    role: embedded
+    classified_by: rule:caption
+  - line: 154
+    level: 4
+    text: Listing 3.3 A two-line *act* section
+    role: embedded
+    classified_by: rule:caption
+  - line: 189
+    level: 4
+    text: 3.1.5 How many assertions should the assert section hold?
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 198
+    level: 4
+    text: 3.1.6 What about the teardown phase?
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 205
+    level: 4
+    text: 3.1.7 Differentiating the system under test
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 212
+    level: 4
+    text: Listing 3.4 Differentiating the SUT from its dependencies
+    role: embedded
+    classified_by: rule:caption
+  - line: 235
+    level: 4
+    text: 3.1.8 Dropping the arrange, act, and assert comments from tests
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 239
+    level: 4
+    text: Listing 3.5 Calculator with sections separated by empty lines
+    role: embedded
+    classified_by: rule:caption
+  - line: 265
+    level: 2
+    text: 3.2 Exploring the xUnit testing framework
+    role: section
+    classified_by: rule:numbered-book
+  - line: 311
+    level: 2
+    text: 3.3 Reusing test fixtures between tests
+    role: section
+    classified_by: rule:numbered-book
+  - line: 317
+    level: 3
+    text: Test fixture
+    role: embedded
+    classified_by: model
+  - line: 373
+    level: 4
+    text: 3.3.1 High coupling between tests is an anti-pattern
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 395
+    level: 4
+    text: 3.3.2 The use of constructors in tests diminishes test readability
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 402
+    level: 4
+    text: 3.3.3 A better way to reuse test fixtures
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 406
+    level: 4
+    text: Listing 3.8 Extracting the common initialization code into private factory methods
+    role: embedded
+    classified_by: rule:caption
+  - line: 460
+    level: 4
+    text: Listing 3.9 Common initialization code in a base class
+    role: embedded
+    classified_by: rule:caption
+  - line: 488
+    level: 2
+    text: 3.4 Naming a unit test
+    role: section
+    classified_by: rule:numbered-book
+  - line: 498
+    level: 3
+    text: where
+    role: embedded
+    classified_by: model
+  - line: 546
+    level: 3
+    text: 3.4.1 Unit test naming guidelines
+    role: embedded
+    classified_by: model
+  - line: 559
+    level: 4
+    text: '3.4.2 Example: Renaming a test toward the guidelines'
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 563
+    level: 4
+    text: Listing 3.10 A test named using the rigid naming policy
+    role: embedded
+    classified_by: rule:caption
+  - line: 596
+    level: 4
+    text: Method under test in the test's name
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 633
+    level: 2
+    text: 3.5 Refactoring to parameterized tests
+    role: section
+    classified_by: rule:numbered-book
+  - line: 657
+    level: 3
+    text: Listing 3.11 A test that encompasses several facts
+    role: embedded
+    classified_by: rule:caption
+  - line: 724
+    level: 4
+    text: 3.5.1 Generating data for parameterized tests
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 762
+    level: 4
+    text: Listing 3.13 Generating complex data for the parameterized test
+    role: embedded
+    classified_by: rule:caption
+  - line: 788
+    level: 2
+    text: 3.6 Using an assertion library to further improve test readability
+    role: section
+    classified_by: rule:numbered-book
+  - line: 834
+    level: 2
+    text: Summary
+    role: embedded
+    classified_by: model
+- path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/009-part-2.md
+  chapter_sha256: c8c69c7a428a651c029f587018a18f57e564e7386d9d3e746a857fec1577af97
+  headings:
+  - line: 1
+    level: 1
+    text: Part 2
+    role: section
+    classified_by: rule:chapter-title
+  - line: 3
+    level: 2
+    text: Making your tests work for you
+    role: section
+    classified_by: model
+- path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/010-chapter-4-the-four-pillars-of-a-good-unit-test.md
+  chapter_sha256: 69ac7d2c061b18cc6858bafc8236490a77236e99c40aa6122ed14cc7f11024f7
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 4: The four pillars of a good unit test'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: This chapter covers
+    role: embedded
+    classified_by: model
+  - line: 24
+    level: 2
+    text: 4.1 Diving into the four pillars of a good unit test
+    role: section
+    classified_by: rule:numbered-book
+  - line: 36
+    level: 3
+    text: '4.1.1 The first pillar: Protection against regressions'
+    role: embedded
+    classified_by: model
+  - line: 66
+    level: 4
+    text: '4.1.2 The second pillar: Resistance to refactoring'
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 88
+    level: 4
+    text: A story from the trenches
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 103
+    level: 3
+    text: 4.1.3 What causes false positives?
+    role: embedded
+    classified_by: model
+  - line: 113
+    level: 4
+    text: Listing 4.1 Generating an HTML representation of a message
+    role: embedded
+    classified_by: rule:caption
+  - line: 164
+    level: 4
+    text: Listing 4.2 Verifying that **MessageRenderer** has the correct structure
+    role: embedded
+    classified_by: rule:caption
+  - line: 227
+    level: 4
+    text: 4.1.4 Aim at the end result instead of implementation details
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 233
+    level: 4
+    text: Listing 4.4 Verifying the outcome that **MessageRenderer** produces
+    role: embedded
+    classified_by: rule:caption
+  - line: 266
+    level: 2
+    text: 4.2 The intrinsic connection between the first two attributes
+    role: section
+    classified_by: rule:numbered-book
+  - line: 276
+    level: 3
+    text: 4.2.1 Maximizing test accuracy
+    role: embedded
+    classified_by: model
+  - line: 315
+    level: 3
+    text: '4.2.2 The importance of false positives and false negatives: The dynamics'
+    role: embedded
+    classified_by: model
+  - line: 334
+    level: 2
+    text: '4.3 The third and fourth pillars: Fast feedback and maintainability'
+    role: section
+    classified_by: rule:numbered-book
+  - line: 351
+    level: 2
+    text: 4.4 In search of an ideal test
+    role: section
+    classified_by: rule:numbered-book
+  - line: 375
+    level: 3
+    text: 4.4.1 Is it possible to create an ideal test?
+    role: embedded
+    classified_by: model
+  - line: 384
+    level: 4
+    text: '4.4.2 Extreme case #1: End-to-end tests'
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 401
+    level: 4
+    text: '4.4.3 Extreme case #2: Trivial tests'
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 405
+    level: 4
+    text: Listing 4.5 Trivial test covering a simple piece of code
+    role: embedded
+    classified_by: rule:caption
+  - line: 435
+    level: 2
+    text: '4.4.4 Extreme case #3: Brittle tests'
+    role: embedded
+    classified_by: model
+  - line: 441
+    level: 3
+    text: Listing 4.6 Test verifying which SQL statement is executed
+    role: embedded
+    classified_by: rule:caption
+  - line: 481
+    level: 4
+    text: '4.4.5 In search of an ideal test: The results'
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 505
+    level: 4
+    text: The CAP theorem
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 521
+    level: 2
+    text: 4.5 Exploring well-known test automation concepts
+    role: section
+    classified_by: rule:numbered-book
+  - line: 526
+    level: 3
+    text: 4.5.1 Breaking down the Test Pyramid
+    role: embedded
+    classified_by: model
+  - line: 559
+    level: 3
+    text: 4.5.2 Choosing between black-box and white-box testing
+    role: embedded
+    classified_by: model
+  - line: 579
+    level: 2
+    text: Summary
+    role: section
+    classified_by: model
+- path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/011-chapter-5-mocks-and-test-fragility.md
+  chapter_sha256: 31dbd902397f4ce56a6bb4dc62fbb33a137cc7e21d14c74e9297f77987f8a917
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 5: Mocks and test fragility'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: This chapter covers
+    role: embedded
+    classified_by: model
+  - line: 22
+    level: 2
+    text: 5.1 Differentiating mocks from stubs
+    role: section
+    classified_by: rule:numbered-book
+  - line: 27
+    level: 3
+    text: 5.1.1 The types of test doubles
+    role: section
+    classified_by: model
+  - line: 55
+    level: 4
+    text: 5.1.2 Mock (the tool) vs. mock (the test double)
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 108
+    level: 4
+    text: 5.1.3 Don't assert interactions with stubs
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 122
+    level: 4
+    text: Listing 5.3 Asserting an interaction with a stub
+    role: embedded
+    classified_by: rule:caption
+  - line: 145
+    level: 4
+    text: 5.1.4 Using mocks and stubs together
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 149
+    level: 4
+    text: 'Listing 5.4 **storeMock**: both a mock and a stub'
+    role: embedded
+    classified_by: rule:caption
+  - line: 180
+    level: 4
+    text: 5.1.5 How mocks and stubs relate to commands and queries
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 206
+    level: 2
+    text: 5.2 Observable behavior vs. implementation details
+    role: section
+    classified_by: rule:numbered-book
+  - line: 215
+    level: 3
+    text: 5.2.1 Observable behavior is not the same as a public API
+    role: section
+    classified_by: model
+  - line: 248
+    level: 4
+    text: '5.2.2 Leaking implementation details: An example with an operation'
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 253
+    level: 4
+    text: Listing 5.5 **User** class with leaking implementation details
+    role: embedded
+    classified_by: rule:caption
+  - line: 293
+    level: 4
+    text: Leaking implementation detail
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 299
+    level: 4
+    text: Listing 5.6 A version of **User** with a well-designed API
+    role: embedded
+    classified_by: rule:caption
+  - line: 353
+    level: 4
+    text: 5.2.3 Well-designed API and encapsulation
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 369
+    level: 3
+    text: '5.2.4 Leaking implementation details: An example with state'
+    role: section
+    classified_by: model
+  - line: 373
+    level: 4
+    text: Listing 5.7 State as an implementation detail
+    role: embedded
+    classified_by: rule:caption
+  - line: 408
+    level: 4
+    text: TIP Making the API well-designed automatically improves unit tests.
+    role: embedded
+    classified_by: rule:callout
+  - line: 424
+    level: 2
+    text: 5.3 The relationship between mocks and test fragility
+    role: section
+    classified_by: rule:numbered-book
+  - line: 429
+    level: 3
+    text: 5.3.1 Defining hexagonal architecture
+    role: section
+    classified_by: model
+  - line: 469
+    level: 4
+    text: Listing 5.8 A domain class with an application service
+    role: embedded
+    classified_by: rule:caption
+  - line: 501
+    level: 4
+    text: 5.3.2 Intra-system vs. inter-system communications
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 524
+    level: 4
+    text: '5.3.3 Intra-system vs. inter-system communications: An example'
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 539
+    level: 4
+    text: Listing 5.9 Connecting the domain model with external applications
+    role: embedded
+    classified_by: rule:caption
+  - line: 580
+    level: 4
+    text: Listing 5.10 Mocking that doesn't lead to fragile tests
+    role: embedded
+    classified_by: rule:caption
+  - line: 605
+    level: 4
+    text: Listing 5.11 Mocking that leads to fragile tests
+    role: embedded
+    classified_by: rule:caption
+  - line: 628
+    level: 2
+    text: 5.4 The classical vs. London schools of unit testing, revisited
+    role: section
+    classified_by: rule:numbered-book
+  - line: 646
+    level: 3
+    text: 5.4.1 Not all out-of-process dependencies should be mocked out
+    role: section
+    classified_by: model
+  - line: 677
+    level: 3
+    text: 5.4.2 Using mocks to verify behavior
+    role: section
+    classified_by: model
+  - line: 683
+    level: 2
+    text: Summary
+    role: embedded
+    classified_by: model
+- path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/012-chapter-6-styles-of-unit-testing.md
+  chapter_sha256: ea8f9e722ac49a00094aa798c003b98b1f8bc887412b6c6ae3f33a2f06854084
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 6: Styles of unit testing'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: This chapter covers
+    role: embedded
+    classified_by: model
+  - line: 19
+    level: 2
+    text: 6.1 The three styles of unit testing
+    role: section
+    classified_by: rule:numbered-book
+  - line: 30
+    level: 3
+    text: 6.1.1 Defining the output-based style
+    role: embedded
+    classified_by: model
+  - line: 40
+    level: 4
+    text: Listing 6.1 Output-based testing
+    role: embedded
+    classified_by: rule:caption
+  - line: 74
+    level: 2
+    text: 6.1.2 Defining the state-based style
+    role: embedded
+    classified_by: model
+  - line: 84
+    level: 3
+    text: Listing 6.2 State-based testing
+    role: embedded
+    classified_by: rule:caption
+  - line: 110
+    level: 4
+    text: 6.1.3 Defining the communication-based style
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 120
+    level: 4
+    text: Listing 6.3 Communication-based testing
+    role: embedded
+    classified_by: rule:caption
+  - line: 135
+    level: 4
+    text: Styles and schools of unit testing
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 140
+    level: 2
+    text: 6.2 Comparing the three styles of unit testing
+    role: section
+    classified_by: rule:numbered-book
+  - line: 152
+    level: 2
+    text: 6.2.1 Comparing the styles using the metrics of protection against regressions and feedback speed
+    role: embedded
+    classified_by: model
+  - line: 165
+    level: 3
+    text: 6.2.2 Comparing the styles using the metric of resistance to refactoring
+    role: embedded
+    classified_by: model
+  - line: 178
+    level: 4
+    text: 6.2.3 Comparing the styles using the metric of maintainability
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 188
+    level: 4
+    text: MAINTAINABILITY OF OUTPUT-BASED TESTS
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 195
+    level: 4
+    text: MAINTAINABILITY OF STATE-BASED TESTS
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 199
+    level: 4
+    text: Listing 6.4 State verification that takes up a lot of space
+    role: embedded
+    classified_by: rule:caption
+  - line: 224
+    level: 4
+    text: Listing 6.5 Using helper methods in assertions
+    role: embedded
+    classified_by: rule:caption
+  - line: 244
+    level: 4
+    text: Listing 6.6 **Comment** compared by value
+    role: embedded
+    classified_by: rule:caption
+  - line: 268
+    level: 4
+    text: MAINTAINABILITY OF COMMUNICATION-BASED TESTS
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 273
+    level: 4
+    text: '6.2.4 Comparing the styles: The results'
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 293
+    level: 2
+    text: 6.3 Understanding functional architecture
+    role: section
+    classified_by: rule:numbered-book
+  - line: 300
+    level: 3
+    text: 6.3.1 What is functional programming?
+    role: embedded
+    classified_by: model
+  - line: 332
+    level: 4
+    text: CalculateDiscount()
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 378
+    level: 4
+    text: Listing 6.7 Modification of an internal state
+    role: embedded
+    classified_by: rule:caption
+  - line: 395
+    level: 4
+    text: 6.3.2 What is functional architecture?
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 423
+    level: 4
+    text: Encapsulation and immutability
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 439
+    level: 3
+    text: 6.3.3 Comparing functional and hexagonal architectures
+    role: embedded
+    classified_by: model
+  - line: 458
+    level: 2
+    text: 6.4 Transitioning to functional architecture and outputbased testing
+    role: section
+    classified_by: rule:numbered-book
+  - line: 468
+    level: 3
+    text: 6.4.1 Introducing an audit system
+    role: embedded
+    classified_by: model
+  - line: 491
+    level: 4
+    text: Listing 6.8 Initial implementation of the audit system
+    role: embedded
+    classified_by: rule:caption
+  - line: 569
+    level: 4
+    text: 6.4.2 Using mocks to decouple tests from the filesystem
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 579
+    level: 4
+    text: Listing 6.9 Injecting the filesystem explicitly via the constructor
+    role: embedded
+    classified_by: rule:caption
+  - line: 604
+    level: 4
+    text: Listing 6.10 Using the new **IFileSystem** interface
+    role: embedded
+    classified_by: rule:caption
+  - line: 712
+    level: 4
+    text: 6.4.3 Refactoring toward functional architecture
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 722
+    level: 4
+    text: Listing 6.12 The **AuditManager** class after refactoring
+    role: embedded
+    classified_by: rule:caption
+  - line: 804
+    level: 4
+    text: Listing 6.13 The mutable shell acting on **AuditManager**'s decision
+    role: embedded
+    classified_by: rule:caption
+  - line: 842
+    level: 4
+    text: Listing 6.14 Gluing together the functional core and mutable shell
+    role: embedded
+    classified_by: rule:caption
+  - line: 876
+    level: 4
+    text: Listing 6.15 The test without mocks
+    role: embedded
+    classified_by: rule:caption
+  - line: 928
+    level: 3
+    text: 6.4.4 Looking forward to further developments
+    role: embedded
+    classified_by: model
+  - line: 959
+    level: 2
+    text: 6.5 Understanding the drawbacks of functional architecture
+    role: section
+    classified_by: rule:numbered-book
+  - line: 964
+    level: 3
+    text: 6.5.1 Applicability of functional architecture
+    role: embedded
+    classified_by: model
+  - line: 994
+    level: 4
+    text: Collaborators vs. values
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 1010
+    level: 4
+    text: 6.5.2 Performance drawbacks
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 1019
+    level: 3
+    text: 6.5.3 Increase in the code base size
+    role: embedded
+    classified_by: model
+  - line: 1027
+    level: 2
+    text: Summary
+    role: section
+    classified_by: model
+- path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/013-chapter-7-refactoring-toward-valuable-unit-tests.md
+  chapter_sha256: 5af490b69293b8235cd486847f33ee0a3cd4e581bac344bc1a1d54e8e2e047d6
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 7: Refactoring toward valuable unit tests'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: This chapter covers
+    role: embedded
+    classified_by: model
+  - line: 25
+    level: 2
+    text: 7.1 Identifying the code to refactor
+    role: section
+    classified_by: rule:numbered-book
+  - line: 30
+    level: 3
+    text: 7.1.1 The four types of code
+    role: section
+    classified_by: model
+  - line: 41
+    level: 4
+    text: How to calculate cyclomatic complexity
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 94
+    level: 4
+    text: 7.1.2 Using the Humble Object pattern to split overcomplicated code
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 141
+    level: 2
+    text: 7.2 Refactoring toward valuable unit tests
+    role: section
+    classified_by: rule:numbered-book
+  - line: 146
+    level: 3
+    text: 7.2.1 Introducing a customer management system
+    role: section
+    classified_by: model
+  - line: 156
+    level: 4
+    text: Listing 7.1 Initial implementation of the CRM system
+    role: embedded
+    classified_by: rule:caption
+  - line: 235
+    level: 4
+    text: '7.2.2 Take 1: Making implicit dependencies explicit'
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 244
+    level: 3
+    text: '7.2.3 Take 2: Introducing an application services layer'
+    role: section
+    classified_by: model
+  - line: 248
+    level: 4
+    text: Listing 7.2 Application service, version 1
+    role: embedded
+    classified_by: rule:caption
+  - line: 312
+    level: 4
+    text: '7.2.4 Take 3: Removing complexity from the application service'
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 318
+    level: 4
+    text: Listing 7.3 User factory
+    role: embedded
+    classified_by: rule:caption
+  - line: 343
+    level: 3
+    text: How is the reconstruction logic complex?
+    role: section
+    classified_by: model
+  - line: 350
+    level: 4
+    text: '7.2.5 Take 4: Introducing a new Company class'
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 364
+    level: 4
+    text: Listing 7.4 The new class in the domain layer
+    role: embedded
+    classified_by: rule:caption
+  - line: 389
+    level: 4
+    text: Listing 7.5 Controller after refactoring
+    role: embedded
+    classified_by: rule:caption
+  - line: 412
+    level: 4
+    text: Listing 7.6 **User** after refactoring
+    role: embedded
+    classified_by: rule:caption
+  - line: 458
+    level: 2
+    text: 7.3 Analysis of optimal unit test coverage
+    role: section
+    classified_by: rule:numbered-book
+  - line: 472
+    level: 3
+    text: 7.3.1 Testing the domain layer and utility code
+    role: section
+    classified_by: model
+  - line: 513
+    level: 3
+    text: 7.3.2 Testing the code from the other three quadrants
+    role: section
+    classified_by: model
+  - line: 531
+    level: 4
+    text: 7.3.3 Should you test preconditions?
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 558
+    level: 2
+    text: 7.4 Handling conditional logic in controllers
+    role: section
+    classified_by: rule:numbered-book
+  - line: 605
+    level: 3
+    text: 7.4.1 Using the CanExecute/Execute pattern
+    role: section
+    classified_by: model
+  - line: 611
+    level: 4
+    text: Listing 7.7 **User** with a new property
+    role: embedded
+    classified_by: rule:caption
+  - line: 639
+    level: 4
+    text: Listing 7.8 The controller, still stripped of all decision-making
+    role: embedded
+    classified_by: rule:caption
+  - line: 704
+    level: 4
+    text: Listing 7.10 Changing an email using the CanExecute/Execute pattern
+    role: embedded
+    classified_by: rule:caption
+  - line: 730
+    level: 3
+    text: 7.4.2 Using domain events to track changes in the domain model
+    role: section
+    classified_by: model
+  - line: 784
+    level: 4
+    text: Listing 7.12 **User** adding an event when the email changes
+    role: embedded
+    classified_by: rule:caption
+  - line: 811
+    level: 4
+    text: Listing 7.13 The controller processing domain events
+    role: embedded
+    classified_by: rule:caption
+  - line: 849
+    level: 4
+    text: Listing 7.14 Testing the creation of a domain event
+    role: embedded
+    classified_by: rule:caption
+  - line: 872
+    level: 2
+    text: 7.5 Conclusion
+    role: section
+    classified_by: rule:numbered-book
+  - line: 905
+    level: 2
+    text: Summary
+    role: embedded
+    classified_by: model
+- path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/014-part-3.md
+  chapter_sha256: bbe0b54cf250d48af3f7faf0e165e82e668856bbb1e706fb6dc1fd5b752eb44a
+  headings:
+  - line: 1
+    level: 1
+    text: Part 3
+    role: section
+    classified_by: rule:chapter-title
+  - line: 3
+    level: 2
+    text: Integration testing
+    role: section
+    classified_by: model
+- path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/015-chapter-8-why-integration-testing.md
+  chapter_sha256: 6804dcc3a9676332a1df054d08edb10a3ceced3d75128504ac5bc60bb70fb0c1
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 8: Why integration testing?'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: This chapter covers
+    role: embedded
+    classified_by: model
+  - line: 15
+    level: 2
+    text: 8.1 What is an integration test?
+    role: section
+    classified_by: rule:numbered-book
+  - line: 20
+    level: 3
+    text: 8.1.1 The role of integration tests
+    role: embedded
+    classified_by: model
+  - line: 41
+    level: 4
+    text: 8.1.2 The Test Pyramid revisited
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 69
+    level: 4
+    text: 8.1.3 Integration testing vs. failing fast
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 109
+    level: 4
+    text: The Fail Fast principle
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 116
+    level: 4
+    text: (continued)
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 123
+    level: 2
+    text: 8.2 Which out-of-process dependencies to test directly
+    role: section
+    classified_by: rule:numbered-book
+  - line: 128
+    level: 3
+    text: 8.2.1 The two types of out-of-process dependencies
+    role: embedded
+    classified_by: model
+  - line: 148
+    level: 4
+    text: 8.2.2 Working with both managed and unmanaged dependencies
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 165
+    level: 4
+    text: 8.2.3 What if you can't use a real database in integration tests?
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 176
+    level: 2
+    text: '8.3 Integration testing: An example'
+    role: section
+    classified_by: rule:numbered-book
+  - line: 187
+    level: 3
+    text: Listing 8.1 The user controller
+    role: embedded
+    classified_by: rule:caption
+  - line: 221
+    level: 4
+    text: 8.3.1 What scenarios to test?
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 237
+    level: 4
+    text: 8.3.2 Categorizing the database and the message bus
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 248
+    level: 4
+    text: 8.3.3 What about end-to-end testing?
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 265
+    level: 4
+    text: '8.3.4 Integration testing: The first try'
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 269
+    level: 4
+    text: Listing 8.2 The integration test
+    role: embedded
+    classified_by: rule:caption
+  - line: 327
+    level: 2
+    text: 8.4 Using interfaces to abstract dependencies
+    role: section
+    classified_by: rule:numbered-book
+  - line: 332
+    level: 3
+    text: 8.4.1 Interfaces and loose coupling
+    role: embedded
+    classified_by: model
+  - line: 360
+    level: 4
+    text: 8.4.2 Why use interfaces for out-of-process dependencies?
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 393
+    level: 4
+    text: 8.4.3 Using interfaces for in-process dependencies
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 417
+    level: 2
+    text: 8.5 Integration testing best practices
+    role: section
+    classified_by: rule:numbered-book
+  - line: 428
+    level: 3
+    text: 8.5.1 Making domain model boundaries explicit
+    role: embedded
+    classified_by: model
+  - line: 437
+    level: 4
+    text: 8.5.2 Reducing the number of layers
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 462
+    level: 4
+    text: 8.5.3 Eliminating circular dependencies
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 530
+    level: 4
+    text: 8.5.4 Using multiple act sections in a test
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 549
+    level: 2
+    text: 8.6 How to test logging functionality
+    role: section
+    classified_by: rule:numbered-book
+  - line: 561
+    level: 3
+    text: 8.6.1 Should you test logging?
+    role: embedded
+    classified_by: model
+  - line: 565
+    level: 4
+    text: Listing 8.3 An example of logging in **User**
+    role: embedded
+    classified_by: rule:caption
+  - line: 620
+    level: 4
+    text: 8.6.2 How should you test logging?
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 625
+    level: 4
+    text: INTRODUCING A WRAPPER ON TOP OF ILOGGER
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 667
+    level: 4
+    text: Listing 8.5 **DomainLogger** as a wrapper on top of **ILogger**
+    role: embedded
+    classified_by: rule:caption
+  - line: 691
+    level: 4
+    text: UNDERSTANDING STRUCTURED LOGGING
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 731
+    level: 4
+    text: WRITING TESTS FOR SUPPORT AND DIAGNOSTIC LOGGING
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 737
+    level: 4
+    text: Listing 8.6 Replacing **DomainLogger** in **User** with a domain event
+    role: embedded
+    classified_by: rule:caption
+  - line: 772
+    level: 4
+    text: Listing 8.7 Latest version of **UserController**
+    role: embedded
+    classified_by: rule:caption
+  - line: 814
+    level: 3
+    text: 8.6.3 How much logging is enough?
+    role: embedded
+    classified_by: model
+  - line: 826
+    level: 4
+    text: 8.6.4 How do you pass around logger instances?
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 830
+    level: 4
+    text: Listing 8.8 Storing **ILogger** in a static field
+    role: embedded
+    classified_by: rule:caption
+  - line: 861
+    level: 4
+    text: Listing 8.9 Injecting the logger explicitly
+    role: embedded
+    classified_by: rule:caption
+  - line: 879
+    level: 2
+    text: 8.7 Conclusion
+    role: section
+    classified_by: rule:numbered-book
+  - line: 883
+    level: 2
+    text: Summary
+    role: section
+    classified_by: model
+- path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/016-chapter-9-mocking-best-practices.md
+  chapter_sha256: ed05c67452f04663324e6d18085151e02d6b74b4a277e3c0a7d32234bd118d3c
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 9: Mocking best practices'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: This chapter covers
+    role: embedded
+    classified_by: model
+  - line: 15
+    level: 2
+    text: 9.1 Maximizing mocks' value
+    role: section
+    classified_by: rule:numbered-book
+  - line: 21
+    level: 3
+    text: Listing 9.1 User controller
+    role: embedded
+    classified_by: rule:caption
+  - line: 58
+    level: 4
+    text: Listing 9.2 Event dispatcher
+    role: embedded
+    classified_by: rule:caption
+  - line: 101
+    level: 4
+    text: Listing 9.3 Integration test
+    role: embedded
+    classified_by: rule:caption
+  - line: 150
+    level: 4
+    text: 9.1.1 Verifying interactions at the system edges
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 159
+    level: 4
+    text: Listing 9.4 Message bus
+    role: embedded
+    classified_by: rule:caption
+  - line: 197
+    level: 4
+    text: Listing 9.5 Integration test targeting **IBus**
+    role: embedded
+    classified_by: rule:caption
+  - line: 240
+    level: 3
+    text: 9.1.2 Replacing mocks with spies
+    role: section
+    classified_by: model
+  - line: 246
+    level: 4
+    text: Listing 9.6 A spy (also known as a handwritten mock)
+    role: embedded
+    classified_by: rule:caption
+  - line: 288
+    level: 4
+    text: Listing 9.7 Using the spy from listing 6.43
+    role: embedded
+    classified_by: rule:caption
+  - line: 327
+    level: 4
+    text: 9.1.3 What about IDomainLogger?
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 331
+    level: 4
+    text: Listing 9.8 Mock assertions
+    role: embedded
+    classified_by: rule:caption
+  - line: 356
+    level: 2
+    text: 9.2 Mocking best practices
+    role: section
+    classified_by: rule:numbered-book
+  - line: 370
+    level: 3
+    text: 9.2.1 Mocks are for integration tests only
+    role: section
+    classified_by: model
+  - line: 377
+    level: 4
+    text: 9.2.2 Not just one mock per test
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 386
+    level: 3
+    text: 9.2.3 Verifying the number of calls
+    role: section
+    classified_by: model
+  - line: 434
+    level: 4
+    text: 9.2.4 Only mock types that you own
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 452
+    level: 2
+    text: Summary
+    role: section
+    classified_by: model
+- path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/017-chapter-10-testing-the-database.md
+  chapter_sha256: 02d0c715f88f3193f6289cf59527227ccebaddda04d1b66872ee6c502cce05d2
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 10: Testing the database'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: This chapter covers
+    role: embedded
+    classified_by: model
+  - line: 18
+    level: 2
+    text: 10.1 Prerequisites for testing the database
+    role: section
+    classified_by: rule:numbered-book
+  - line: 29
+    level: 3
+    text: 10.1.1 Keeping the database in the source control system
+    role: section
+    classified_by: model
+  - line: 47
+    level: 4
+    text: 10.1.2 Reference data is part of the database schema
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 62
+    level: 4
+    text: 10.1.3 Separate instance for every developer
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 72
+    level: 4
+    text: 10.1.4 State-based vs. migration-based database delivery
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 77
+    level: 4
+    text: THE STATE-BASED APPROACH
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 84
+    level: 4
+    text: THE MIGRATION-BASED APPROACH
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 117
+    level: 4
+    text: PREFER THE MIGRATION-BASED APPROACH OVER THE STATE-BASED ONE
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 144
+    level: 2
+    text: 10.2 Database transaction management
+    role: section
+    classified_by: rule:numbered-book
+  - line: 151
+    level: 3
+    text: 10.2.1 Managing database transactions in production code
+    role: section
+    classified_by: model
+  - line: 155
+    level: 4
+    text: Listing 10.1 Class that enables access to the database
+    role: embedded
+    classified_by: rule:caption
+  - line: 190
+    level: 4
+    text: Listing 10.2 User controller
+    role: embedded
+    classified_by: rule:caption
+  - line: 224
+    level: 4
+    text: SEPARATING DATABASE CONNECTIONS FROM DATABASE TRANSACTIONS
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 252
+    level: 4
+    text: Listing 10.3 User controller, repositories, and a transaction
+    role: embedded
+    classified_by: rule:caption
+  - line: 339
+    level: 4
+    text: UPGRADING THE TRANSACTION TO A UNIT OF WORK
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 357
+    level: 4
+    text: Listing 10.4 User controller with Entity Framework
+    role: embedded
+    classified_by: rule:caption
+  - line: 413
+    level: 4
+    text: Data inconsistencies in non-relational databases
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 421
+    level: 4
+    text: (continued)
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 426
+    level: 4
+    text: 10.2.2 Managing database transactions in integration tests
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 431
+    level: 4
+    text: Listing 10.5 Integration test reusing **CrmContext**
+    role: embedded
+    classified_by: rule:caption
+  - line: 497
+    level: 2
+    text: 10.3 Test data life cycle
+    role: section
+    classified_by: rule:numbered-book
+  - line: 507
+    level: 3
+    text: 10.3.1 Parallel vs. sequential test execution
+    role: section
+    classified_by: model
+  - line: 523
+    level: 4
+    text: 10.3.2 Clearing data between test runs
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 538
+    level: 4
+    text: Listing 10.6 Base class for integration tests
+    role: embedded
+    classified_by: rule:caption
+  - line: 571
+    level: 3
+    text: 10.3.3 Avoid in-memory databases
+    role: section
+    classified_by: model
+  - line: 586
+    level: 2
+    text: 10.4 Reusing code in test sections
+    role: section
+    classified_by: rule:numbered-book
+  - line: 593
+    level: 3
+    text: 10.4.1 Reusing code in arrange sections
+    role: section
+    classified_by: model
+  - line: 597
+    level: 4
+    text: Listing 10.7 Integration test with three database contexts
+    role: embedded
+    classified_by: rule:caption
+  - line: 653
+    level: 4
+    text: Listing 10.8 A separate method that creates a user
+    role: embedded
+    classified_by: rule:caption
+  - line: 672
+    level: 4
+    text: Listing 10.9 Adding default values to the factory
+    role: embedded
+    classified_by: rule:caption
+  - line: 686
+    level: 4
+    text: Listing 10.10 Using the factory method
+    role: embedded
+    classified_by: rule:caption
+  - line: 695
+    level: 4
+    text: Object Mother vs. Test Data Builder
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 710
+    level: 4
+    text: WHERE TO PUT FACTORY METHODS
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 717
+    level: 4
+    text: 10.4.2 Reusing code in act sections
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 734
+    level: 4
+    text: Listing 10.11 Decorator method
+    role: embedded
+    classified_by: rule:caption
+  - line: 766
+    level: 4
+    text: 10.4.3 Reusing code in assert sections
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 770
+    level: 4
+    text: Listing 10.12 Data assertions after extracting the querying logic
+    role: embedded
+    classified_by: rule:caption
+  - line: 784
+    level: 4
+    text: Listing 10.13 Fluent interface for data assertions
+    role: embedded
+    classified_by: rule:caption
+  - line: 820
+    level: 4
+    text: 10.4.4 Does the test create too many database transactions?
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 876
+    level: 2
+    text: 10.5 Common database testing questions
+    role: section
+    classified_by: rule:numbered-book
+  - line: 881
+    level: 3
+    text: 10.5.1 Should you test reads?
+    role: section
+    classified_by: model
+  - line: 898
+    level: 4
+    text: 10.5.2 Should you test repositories?
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 909
+    level: 3
+    text: HIGH MAINTENANCE COSTS
+    role: embedded
+    classified_by: model
+  - line: 919
+    level: 4
+    text: INFERIOR PROTECTION AGAINST REGRESSIONS
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 930
+    level: 2
+    text: 10.6 Conclusion
+    role: section
+    classified_by: rule:numbered-book
+  - line: 938
+    level: 2
+    text: Summary
+    role: embedded
+    classified_by: model
+- path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/018-part-4.md
+  chapter_sha256: 4db0018a3bc81e8c7b2285fae5de1b33820bc6e7de94f89e93c71d376ef15c5b
+  headings:
+  - line: 1
+    level: 1
+    text: Part 4
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: Unit testing anti-patterns
+    role: section
+    classified_by: model
+- path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/019-chapter-11-unit-testing-anti-patterns.md
+  chapter_sha256: bd0d67fcb0c03f1f1418c83a47a996509cbdf11c3d16d2159069097c8c38f021
+  headings:
+  - line: 2
+    level: 1
+    text: 'Chapter 11: Unit testing anti-patterns'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: This chapter covers
+    role: embedded
+    classified_by: model
+  - line: 16
+    level: 2
+    text: 11.1 Unit testing private methods
+    role: section
+    classified_by: rule:numbered-book
+  - line: 21
+    level: 3
+    text: 11.1.1 Private methods and test fragility
+    role: embedded
+    classified_by: model
+  - line: 26
+    level: 4
+    text: 11.1.2 Private methods and insufficient coverage
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 35
+    level: 4
+    text: Listing 11.1 A class with a complex private method
+    role: embedded
+    classified_by: rule:caption
+  - line: 69
+    level: 4
+    text: Listing 11.2 Extracting the complex private method
+    role: embedded
+    classified_by: rule:caption
+  - line: 99
+    level: 4
+    text: 11.1.3 When testing private methods is acceptable
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 116
+    level: 4
+    text: Listing 11.3 A class with a private constructor
+    role: embedded
+    classified_by: rule:caption
+  - line: 154
+    level: 2
+    text: 11.2 Exposing private state
+    role: section
+    classified_by: rule:numbered-book
+  - line: 158
+    level: 3
+    text: Listing 11.4 A class with private state
+    role: embedded
+    classified_by: rule:caption
+  - line: 202
+    level: 2
+    text: 11.3 Leaking domain knowledge to tests
+    role: section
+    classified_by: rule:numbered-book
+  - line: 218
+    level: 3
+    text: Listing 11.5 Leaking algorithm implementation
+    role: embedded
+    classified_by: rule:caption
+  - line: 238
+    level: 4
+    text: Listing 11.6 A parameterized version of the same test
+    role: embedded
+    classified_by: rule:caption
+  - line: 263
+    level: 4
+    text: Listing 11.7 Test with no domain knowledge
+    role: embedded
+    classified_by: rule:caption
+  - line: 283
+    level: 2
+    text: 11.4 Code pollution
+    role: section
+    classified_by: rule:numbered-book
+  - line: 292
+    level: 3
+    text: Listing 11.8 Logger with a Boolean switch
+    role: embedded
+    classified_by: rule:caption
+  - line: 325
+    level: 4
+    text: Listing 11.9 A test using the Boolean switch
+    role: embedded
+    classified_by: rule:caption
+  - line: 345
+    level: 4
+    text: Listing 11.10 A version without the switch
+    role: embedded
+    classified_by: rule:caption
+  - line: 387
+    level: 2
+    text: 11.5 Mocking concrete classes
+    role: section
+    classified_by: rule:numbered-book
+  - line: 392
+    level: 3
+    text: Listing 11.11 A class that calculates statistics
+    role: embedded
+    classified_by: rule:caption
+  - line: 418
+    level: 4
+    text: Listing 11.12 A controller using **StatisticsCalculator**
+    role: embedded
+    classified_by: rule:caption
+  - line: 443
+    level: 4
+    text: Listing 11.13 Test that mocks the concrete class
+    role: embedded
+    classified_by: rule:caption
+  - line: 469
+    level: 4
+    text: Listing 11.14 Splitting **StatisticsCalculator** into two classes
+    role: embedded
+    classified_by: rule:caption
+  - line: 494
+    level: 4
+    text: Listing 11.15 Controller after the refactoring
+    role: embedded
+    classified_by: rule:caption
+  - line: 525
+    level: 2
+    text: 11.6 Working with time
+    role: section
+    classified_by: rule:numbered-book
+  - line: 530
+    level: 3
+    text: 11.6.1 Time as an ambient context
+    role: embedded
+    classified_by: model
+  - line: 534
+    level: 4
+    text: Listing 11.16 Current date and time as an ambient context
+    role: embedded
+    classified_by: rule:caption
+  - line: 557
+    level: 4
+    text: 11.6.2 Time as an explicit dependency
+    role: embedded
+    classified_by: rule:numbered-book
+  - line: 561
+    level: 4
+    text: Listing 11.17 Current date and time as an explicit dependency
+    role: embedded
+    classified_by: rule:caption
+  - line: 603
+    level: 2
+    text: 11.7 Conclusion
+    role: section
+    classified_by: rule:numbered-book
+  - line: 609
+    level: 2
+    text: Summary
+    role: section
+    classified_by: model
+- path: books/manning-unit-testing-principles-practices-and-patterns-2020-1/chapters/020-index.md
+  chapter_sha256: 6065a3c2aedf90aa412d49934b6cde06d2c01cf247c15eff2d6be6efd18eee01
+  headings:
+  - line: 1
+    level: 1
+    text: index
+    role: section
+    classified_by: rule:chapter-title
+  - line: 4
+    level: 2
+    text: A AAA (arrange, act, and assert) pattern 42–49 avoiding if statements 44–45 avoiding multiple AAA sections 43–44 differentiating system under test 47–48 dropping AAA comments 48–49 overview 42–43 reusing code in test sections 246–252 in act sections 249–250 in arrange sections 246–249 in assert sections 250 section size 45–47 arrange section 45 number of assertions in assert section 47 sections larger than a single line 45–47 teardown phase 47 abstractions 198, 260 Active Record pattern 159 adapters 227 aggregates 157 ambient context 212 anti-patterns 212 code pollution 266–268 exposing private state 263–264 leaking domain knowledge to tests 264–266 mocking concrete classes 268–271 private methods 260–263 acceptability of testing 261–263 insufficient coverage 260–261 test fragility 260 time 271–273 as ambient context 271–272 as explicit dependency 272–273 API (application programming interface) 104, 111, 133, 191, 195, 227, 264 missing abstractions 260 public vs. private 99 well-designed 100–101, 105, 108, 262 application behavior 57 application services layer 133–134 arrange, act, and assert pattern. *See* AAA pattern assertion libraries, using to improve test readability 62–63 assertion-free testing 12–13 asynchronous communications 191 atomic updates 236 automation concepts 87–90 black-box vs. white-box testing 89–90 Test Pyramid 87–89 B backward migration 233 bad tests 189 black-box testing 68, 89–90 Boolean switches 266–268 branch coverage metric 10–11 brittle tests 83–84, 116, 216 brittleness 86, 125 bugs 68, 79, 104, 175, 189 business logic 106–107, 156, 169, 179 C CanExecute/Execute pattern 172, 174 CAP theorem 86–87 captured data 208
+    role: section
+    classified_by: model
+  - line: 330
+    level: 2
+    text: Vladimir Khorikov Unit Testing Principles, Practices, and Patterns
+    role: embedded
+    classified_by: model
+  - line: 336
+    level: 2
+    text: What's Inside
+    role: embedded
+    classified_by: model

@@ -1,0 +1,4312 @@
+schema_version: section-map/1
+book: dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798
+chapters:
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/001-o-reilly.md
+  chapter_sha256: f992de998a857e1ea86d42443277fa9c1bdf42ed10a750605c6c029277560d05
+  headings:
+  - line: 1
+    level: 1
+    text: '**O''REILLY**®'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 13
+    level: 2
+    text: Software Engineering at Google
+    role: embedded
+    classified_by: model
+  - line: 49
+    level: 2
+    text: Software Engineering at Google
+    role: embedded
+    classified_by: model
+  - line: 57
+    level: 3
+    text: Software Engineering at Google
+    role: embedded
+    classified_by: model
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/002-table-of-contents.md
+  chapter_sha256: 63db7616014d6210f8b5ea6b99073426f168b54cdbca94f3250c8f4c70610e38
+  headings:
+  - line: 1
+    level: 1
+    text: Table of Contents
+    role: section
+    classified_by: rule:chapter-title
+  - line: 27
+    level: 2
+    text: Part II. Culture
+    role: section
+    classified_by: model
+  - line: 143
+    level: 2
+    text: Part III. Processes
+    role: section
+    classified_by: model
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/003-foreword.md
+  chapter_sha256: a545970498a735df2fc6ba7e4f3894f528213c36cb581976d10a9896c5d71477
+  headings:
+  - line: 1
+    level: 1
+    text: Foreword
+    role: section
+    classified_by: rule:chapter-title
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/004-preface.md
+  chapter_sha256: 489c943c396f7bc7d6973f03789ecfca935d162d6a844dc6d9bb8e999718e37c
+  headings:
+  - line: 1
+    level: 1
+    text: Preface
+    role: section
+    classified_by: rule:chapter-title
+  - line: 11
+    level: 2
+    text: Programming Over Time
+    role: section
+    classified_by: model
+  - line: 35
+    level: 2
+    text: Google's Perspective
+    role: section
+    classified_by: model
+  - line: 55
+    level: 2
+    text: What This Book Isn't
+    role: section
+    classified_by: model
+  - line: 59
+    level: 2
+    text: Parting Remarks
+    role: section
+    classified_by: model
+  - line: 65
+    level: 2
+    text: Conventions Used in This Book
+    role: section
+    classified_by: model
+  - line: 73
+    level: 3
+    text: Constant width
+    role: embedded
+    classified_by: model
+  - line: 77
+    level: 4
+    text: Constant width bold
+    role: embedded
+    classified_by: model
+  - line: 81
+    level: 4
+    text: Constant width italic
+    role: embedded
+    classified_by: model
+  - line: 89
+    level: 2
+    text: O'Reilly Online Learning
+    role: section
+    classified_by: model
+  - line: 97
+    level: 2
+    text: How to Contact Us
+    role: section
+    classified_by: model
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/005-acknowledgments.md
+  chapter_sha256: 257cdab03948bbb4b6da2821b2c37bd7b17f80b873e9ec7c6ee9dfb09eebe297
+  headings:
+  - line: 1
+    level: 1
+    text: Acknowledgments
+    role: section
+    classified_by: rule:chapter-title
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/006-part-i-thesis.md
+  chapter_sha256: d3dd0ce95018ecca6646caf9eb489f0e5e61ce082ae2cd757b90d6025b8193af
+  headings:
+  - line: 1
+    level: 1
+    text: 'Part I: Thesis'
+    role: section
+    classified_by: rule:chapter-title
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/007-chapter-1-what-is-software-engineering.md
+  chapter_sha256: 7f482206612e6b617a97f2486f55185785a6063a1d7fa7f5a494dfa3e6040dc2
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 1: What Is Software Engineering?'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 41
+    level: 2
+    text: Time and Change
+    role: section
+    classified_by: rule:toc
+  - line: 71
+    level: 2
+    text: Hvrum's Law
+    role: section
+    classified_by: model
+  - line: 85
+    level: 2
+    text: 'Example: Hash Ordering'
+    role: section
+    classified_by: rule:toc
+  - line: 116
+    level: 2
+    text: Why Not Just Aim for "Nothing Changes"?
+    role: section
+    classified_by: rule:toc
+  - line: 130
+    level: 2
+    text: Scale and Efficiency
+    role: section
+    classified_by: rule:toc
+  - line: 144
+    level: 3
+    text: Policies That Don't Scale
+    role: section
+    classified_by: rule:toc
+  - line: 160
+    level: 4
+    text: Policies That Scale Well
+    role: section
+    classified_by: rule:toc
+  - line: 168
+    level: 2
+    text: 'Example: Compiler Upgrade'
+    role: section
+    classified_by: rule:toc
+  - line: 186
+    level: 3
+    text: Expertise
+    role: embedded
+    classified_by: model
+  - line: 190
+    level: 4
+    text: Stability
+    role: embedded
+    classified_by: model
+  - line: 194
+    level: 4
+    text: Conformity
+    role: embedded
+    classified_by: model
+  - line: 198
+    level: 4
+    text: Familiarity
+    role: embedded
+    classified_by: model
+  - line: 202
+    level: 4
+    text: Policy
+    role: embedded
+    classified_by: model
+  - line: 212
+    level: 2
+    text: Shifting Left
+    role: section
+    classified_by: rule:toc
+  - line: 224
+    level: 2
+    text: Trade-offs and Costs
+    role: section
+    classified_by: rule:toc
+  - line: 243
+    level: 2
+    text: 'Example: Markers'
+    role: section
+    classified_by: rule:toc
+  - line: 260
+    level: 2
+    text: Inputs to Decision Making
+    role: section
+    classified_by: rule:toc
+  - line: 275
+    level: 2
+    text: 'Example: Distributed Builds'
+    role: section
+    classified_by: rule:toc
+  - line: 287
+    level: 2
+    text: 'Example: Deciding Between Time and Scale'
+    role: section
+    classified_by: rule:toc
+  - line: 299
+    level: 2
+    text: Revisiting Decisions, Making Mistakes
+    role: section
+    classified_by: rule:toc
+  - line: 309
+    level: 2
+    text: Software Engineering Versus Programming
+    role: section
+    classified_by: rule:toc
+  - line: 317
+    level: 2
+    text: Conclusion
+    role: section
+    classified_by: rule:toc
+  - line: 321
+    level: 2
+    text: TL;DRs
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/008-part-ii.md
+  chapter_sha256: fb2c28386c3a3d326144a8b63e49c73d35b6513013c9bf9dafc1042341a5cf52
+  headings:
+  - line: 1
+    level: 1
+    text: PART II
+    role: section
+    classified_by: rule:chapter-title
+  - line: 3
+    level: 2
+    text: Culture
+    role: section
+    classified_by: model
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/009-chapter-2-how-to-work-well-on-teams.md
+  chapter_sha256: 52db6c371f16eb9879de3bfbbbbfeff48e7463aaad6ee9d4c8d7763951e18643
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 2: How to Work Well on Teams'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 3
+    level: 2
+    text: Written by Brian Fitzpatrick Edited by Riona MacNamara
+    role: embedded
+    classified_by: model
+  - line: 13
+    level: 2
+    text: Help Me Hide My Code
+    role: section
+    classified_by: rule:toc
+  - line: 31
+    level: 2
+    text: The Genius Myth
+    role: section
+    classified_by: rule:toc
+  - line: 76
+    level: 2
+    text: Hiding Considered Harmful
+    role: section
+    classified_by: rule:toc
+  - line: 86
+    level: 2
+    text: Early Detection
+    role: section
+    classified_by: rule:toc
+  - line: 92
+    level: 3
+    text: The Bus Factor
+    role: section
+    classified_by: rule:toc
+  - line: 106
+    level: 2
+    text: Pace of Progress
+    role: section
+    classified_by: rule:toc
+  - line: 112
+    level: 2
+    text: 'Case Study: Engineers and Offices'
+    role: embedded
+    classified_by: model
+  - line: 130
+    level: 2
+    text: In Short, Don't Hide
+    role: section
+    classified_by: rule:toc
+  - line: 136
+    level: 2
+    text: It's All About the Team
+    role: section
+    classified_by: rule:toc
+  - line: 152
+    level: 3
+    text: The Three Pillars of Social Interaction
+    role: section
+    classified_by: rule:toc
+  - line: 158
+    level: 4
+    text: 'Pillar 1: Humility'
+    role: embedded
+    classified_by: model
+  - line: 162
+    level: 4
+    text: 'Pillar 2: Respect'
+    role: embedded
+    classified_by: model
+  - line: 166
+    level: 4
+    text: 'Pillar 3: Trust'
+    role: embedded
+    classified_by: model
+  - line: 172
+    level: 2
+    text: Why Do These Pillars Matter?
+    role: section
+    classified_by: rule:toc
+  - line: 176
+    level: 3
+    text: 'Here''s a quote from a famous lecture by Richard Hamming:'
+    role: embedded
+    classified_by: model
+  - line: 184
+    level: 2
+    text: Humility, Respect, and Trust in Practice
+    role: section
+    classified_by: rule:toc
+  - line: 188
+    level: 3
+    text: Lose the ego
+    role: section
+    classified_by: rule:toc
+  - line: 198
+    level: 4
+    text: Learn to give and take criticism
+    role: embedded
+    classified_by: model
+  - line: 210
+    level: 4
+    text: Fail fast and iterate
+    role: embedded
+    classified_by: model
+  - line: 232
+    level: 4
+    text: Blameless Post-Mortem Culture
+    role: section
+    classified_by: rule:toc
+  - line: 246
+    level: 4
+    text: Learn patience
+    role: embedded
+    classified_by: model
+  - line: 254
+    level: 4
+    text: Be open to influence
+    role: embedded
+    classified_by: model
+  - line: 266
+    level: 2
+    text: Being Googley
+    role: section
+    classified_by: rule:toc
+  - line: 276
+    level: 3
+    text: Thrives in ambiguity
+    role: embedded
+    classified_by: model
+  - line: 280
+    level: 4
+    text: Values feedback
+    role: embedded
+    classified_by: model
+  - line: 284
+    level: 4
+    text: Challenges status quo
+    role: embedded
+    classified_by: model
+  - line: 288
+    level: 4
+    text: Puts the user first
+    role: embedded
+    classified_by: model
+  - line: 292
+    level: 4
+    text: Cares about the team
+    role: embedded
+    classified_by: model
+  - line: 296
+    level: 4
+    text: Does the right thing
+    role: embedded
+    classified_by: model
+  - line: 302
+    level: 2
+    text: Conclusion
+    role: section
+    classified_by: rule:toc
+  - line: 306
+    level: 2
+    text: TL;DRs
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/010-chapter-3-knowledge-sharing.md
+  chapter_sha256: fb2e362206135ad4f155cc174994b6d50e0238d51a7afe8b34ff51b4c80c54fe
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 3: Knowledge Sharing'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 3
+    level: 2
+    text: Written by Nina Chen and Mark Barolak Edited by Riona MacNamara
+    role: embedded
+    classified_by: model
+  - line: 7
+    level: 2
+    text: Challenges to Learning
+    role: section
+    classified_by: rule:toc
+  - line: 11
+    level: 3
+    text: Lack of psychological safety
+    role: embedded
+    classified_by: model
+  - line: 15
+    level: 4
+    text: Information islands
+    role: embedded
+    classified_by: model
+  - line: 19
+    level: 4
+    text: Information fragmentation
+    role: embedded
+    classified_by: model
+  - line: 23
+    level: 4
+    text: Information duplication
+    role: embedded
+    classified_by: model
+  - line: 27
+    level: 4
+    text: Information skew
+    role: embedded
+    classified_by: model
+  - line: 31
+    level: 4
+    text: Single point of failure (SPOF)
+    role: embedded
+    classified_by: model
+  - line: 37
+    level: 4
+    text: All-or-nothing expertise
+    role: embedded
+    classified_by: model
+  - line: 41
+    level: 4
+    text: Parroting
+    role: embedded
+    classified_by: model
+  - line: 45
+    level: 4
+    text: Haunted gravevards
+    role: embedded
+    classified_by: model
+  - line: 53
+    level: 2
+    text: Philosophy
+    role: section
+    classified_by: rule:toc
+  - line: 69
+    level: 2
+    text: 'Setting the Stage: Psychological Safety'
+    role: section
+    classified_by: rule:toc
+  - line: 77
+    level: 2
+    text: Mentorship
+    role: section
+    classified_by: rule:toc
+  - line: 87
+    level: 2
+    text: Psychological Safety in Large Groups
+    role: section
+    classified_by: rule:toc
+  - line: 112
+    level: 3
+    text: No back-seat driving
+    role: embedded
+    classified_by: model
+  - line: 120
+    level: 2
+    text: Growing Your Knowledge
+    role: section
+    classified_by: rule:toc
+  - line: 124
+    level: 3
+    text: Ask Questions
+    role: section
+    classified_by: rule:toc
+  - line: 142
+    level: 4
+    text: Understand Context
+    role: section
+    classified_by: rule:toc
+  - line: 154
+    level: 2
+    text: 'Scaling Your Questions: Ask the Community'
+    role: section
+    classified_by: rule:toc
+  - line: 162
+    level: 2
+    text: Group Chats
+    role: section
+    classified_by: rule:toc
+  - line: 170
+    level: 2
+    text: Mailing Lists
+    role: section
+    classified_by: rule:toc
+  - line: 180
+    level: 2
+    text: Email at Google
+    role: embedded
+    classified_by: model
+  - line: 186
+    level: 3
+    text: 'YAOS: Ouestion-and-Answer Platform'
+    role: embedded
+    classified_by: model
+  - line: 192
+    level: 2
+    text: 'Scaling Your Knowledge: You Always Have Something to Teach'
+    role: section
+    classified_by: rule:toc
+  - line: 196
+    level: 3
+    text: Office Hours
+    role: section
+    classified_by: rule:toc
+  - line: 200
+    level: 4
+    text: Tech Talks and Classes
+    role: section
+    classified_by: rule:toc
+  - line: 215
+    level: 4
+    text: Documentation
+    role: section
+    classified_by: rule:toc
+  - line: 227
+    level: 4
+    text: Updating documentation
+    role: embedded
+    classified_by: model
+  - line: 233
+    level: 4
+    text: Creating documentation
+    role: embedded
+    classified_by: model
+  - line: 247
+    level: 4
+    text: Promoting documentation
+    role: embedded
+    classified_by: model
+  - line: 255
+    level: 4
+    text: Code
+    role: section
+    classified_by: rule:toc
+  - line: 263
+    level: 2
+    text: Scaling Your Organization's Knowledge
+    role: section
+    classified_by: rule:toc
+  - line: 267
+    level: 2
+    text: Cultivating a Knowledge-Sharing Culture
+    role: section
+    classified_by: rule:toc
+  - line: 279
+    level: 3
+    text: Respect
+    role: embedded
+    classified_by: model
+  - line: 289
+    level: 4
+    text: Incentives and recognition
+    role: embedded
+    classified_by: model
+  - line: 313
+    level: 2
+    text: Establishing Canonical Sources of Information
+    role: section
+    classified_by: rule:toc
+  - line: 327
+    level: 3
+    text: Developer quides
+    role: embedded
+    classified_by: model
+  - line: 341
+    level: 4
+    text: go/links
+    role: embedded
+    classified_by: model
+  - line: 350
+    level: 4
+    text: Codelabs
+    role: embedded
+    classified_by: model
+  - line: 358
+    level: 4
+    text: Static analysis
+    role: section
+    classified_by: rule:toc
+  - line: 368
+    level: 2
+    text: Staying in the Loop
+    role: embedded
+    classified_by: model
+  - line: 372
+    level: 3
+    text: Newsletters
+    role: embedded
+    classified_by: model
+  - line: 382
+    level: 4
+    text: Communities
+    role: embedded
+    classified_by: model
+  - line: 386
+    level: 2
+    text: 'Readability: Standardized Mentorship Through Code Review'
+    role: embedded
+    classified_by: model
+  - line: 394
+    level: 2
+    text: What Is the Readability Process?
+    role: embedded
+    classified_by: model
+  - line: 410
+    level: 2
+    text: Why Have This Process?
+    role: embedded
+    classified_by: model
+  - line: 444
+    level: 2
+    text: Conclusion
+    role: section
+    classified_by: rule:toc
+  - line: 450
+    level: 2
+    text: TL;DRs
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/011-chapter-4-engineering-for-equity.md
+  chapter_sha256: 45054c4bbe68eaa68d8e07fbec09edaab6f952551ec2c6438583840c39f38413
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 4: Engineering for Equity'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 3
+    level: 2
+    text: Written by Demma Rodriguez Edited by Riona MacNamara
+    role: embedded
+    classified_by: model
+  - line: 13
+    level: 2
+    text: Bias Is the Default
+    role: embedded
+    classified_by: model
+  - line: 19
+    level: 3
+    text: 'Case Study: Google Misses the Mark on Racial Inclusion'
+    role: embedded
+    classified_by: model
+  - line: 46
+    level: 2
+    text: Understanding the Need for Diversity
+    role: section
+    classified_by: rule:toc
+  - line: 54
+    level: 2
+    text: Building Multicultural Capacity
+    role: section
+    classified_by: rule:toc
+  - line: 74
+    level: 2
+    text: Making Diversity Actionable
+    role: section
+    classified_by: rule:toc
+  - line: 84
+    level: 2
+    text: Reject Singular Approaches
+    role: section
+    classified_by: rule:toc
+  - line: 98
+    level: 2
+    text: Challenge Established Processes
+    role: section
+    classified_by: rule:toc
+  - line: 116
+    level: 2
+    text: Values Versus Outcomes
+    role: section
+    classified_by: rule:toc
+  - line: 132
+    level: 2
+    text: Stay Curious, Push Forward
+    role: section
+    classified_by: rule:toc
+  - line: 138
+    level: 2
+    text: Conclusion
+    role: section
+    classified_by: rule:toc
+  - line: 142
+    level: 2
+    text: TL:DRs
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/012-chapter-5-how-to-lead-a-team.md
+  chapter_sha256: 087417f1e845ac27dcbab68ea0de319eab62af4dd97b33268f7ddeb48f69ffa5
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 5: How to Lead a Team'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 3
+    level: 2
+    text: Written by Brian Fitzpatrick Edited by Riona MacNamara
+    role: embedded
+    classified_by: model
+  - line: 11
+    level: 2
+    text: Managers and Tech Leads (and Both)
+    role: section
+    classified_by: rule:toc
+  - line: 17
+    level: 2
+    text: The Engineering Manager
+    role: section
+    classified_by: rule:toc
+  - line: 23
+    level: 3
+    text: The Tech Lead
+    role: section
+    classified_by: rule:toc
+  - line: 27
+    level: 2
+    text: The Tech Lead Manager
+    role: section
+    classified_by: rule:toc
+  - line: 35
+    level: 2
+    text: 'Case Study: Influencing Without Authority'
+    role: embedded
+    classified_by: model
+  - line: 43
+    level: 2
+    text: Moving from an Individual Contributor Role to a Leadership Role
+    role: section
+    classified_by: rule:toc
+  - line: 51
+    level: 2
+    text: The Only Thing to Fear Is...Well, Everything
+    role: embedded
+    classified_by: model
+  - line: 65
+    level: 2
+    text: Servant Leadership
+    role: section
+    classified_by: rule:toc
+  - line: 75
+    level: 2
+    text: The Engineering Manager
+    role: section
+    classified_by: rule:toc
+  - line: 79
+    level: 2
+    text: Manager Is a Four-Letter Word
+    role: section
+    classified_by: rule:toc
+  - line: 89
+    level: 2
+    text: Today's Engineering Manager
+    role: section
+    classified_by: rule:toc
+  - line: 97
+    level: 2
+    text: Failure Is an Option
+    role: embedded
+    classified_by: model
+  - line: 109
+    level: 2
+    text: Antipatterns
+    role: section
+    classified_by: rule:toc
+  - line: 115
+    level: 2
+    text: 'Antipattern: Hire Pushovers'
+    role: section
+    classified_by: rule:toc
+  - line: 121
+    level: 2
+    text: 'Antipattern: Ignore Low Performers'
+    role: section
+    classified_by: rule:toc
+  - line: 137
+    level: 2
+    text: 'Antipattern: Ignore Human Issues'
+    role: section
+    classified_by: rule:toc
+  - line: 147
+    level: 2
+    text: 'Antipattern: Be Everyone''s Friend'
+    role: section
+    classified_by: rule:toc
+  - line: 155
+    level: 2
+    text: 'Antipattern: Compromise the Hiring Bar'
+    role: section
+    classified_by: rule:toc
+  - line: 163
+    level: 2
+    text: 'Antipattern: Treat Your Team Like Children'
+    role: section
+    classified_by: rule:toc
+  - line: 169
+    level: 2
+    text: Positive Patterns
+    role: section
+    classified_by: rule:toc
+  - line: 173
+    level: 2
+    text: Lose the Ego
+    role: section
+    classified_by: rule:toc
+  - line: 185
+    level: 3
+    text: Be a Zen Master
+    role: section
+    classified_by: rule:toc
+  - line: 201
+    level: 2
+    text: Be a Catalyst
+    role: section
+    classified_by: rule:toc
+  - line: 207
+    level: 2
+    text: Remove Roadblocks
+    role: section
+    classified_by: rule:toc
+  - line: 217
+    level: 3
+    text: Be a Teacher and a Mentor
+    role: section
+    classified_by: rule:toc
+  - line: 223
+    level: 4
+    text: Set Clear Goals
+    role: section
+    classified_by: rule:toc
+  - line: 229
+    level: 4
+    text: Be Honest
+    role: section
+    classified_by: rule:toc
+  - line: 253
+    level: 2
+    text: Track Happiness
+    role: section
+    classified_by: rule:toc
+  - line: 259
+    level: 2
+    text: The Unexpected Question
+    role: section
+    classified_by: rule:toc
+  - line: 271
+    level: 2
+    text: Other Tips and Tricks
+    role: section
+    classified_by: rule:toc
+  - line: 279
+    level: 3
+    text: Seek to replace yourself
+    role: embedded
+    classified_by: model
+  - line: 285
+    level: 4
+    text: Know when to make waves
+    role: embedded
+    classified_by: model
+  - line: 289
+    level: 4
+    text: Shield your team from chaos
+    role: embedded
+    classified_by: model
+  - line: 293
+    level: 4
+    text: Give your team air cover
+    role: embedded
+    classified_by: model
+  - line: 297
+    level: 4
+    text: Let your team know when they're doing well
+    role: embedded
+    classified_by: model
+  - line: 309
+    level: 2
+    text: People Are Like Plants
+    role: section
+    classified_by: rule:toc
+  - line: 321
+    level: 3
+    text: Intrinsic Versus Extrinsic Motivation
+    role: section
+    classified_by: rule:toc
+  - line: 339
+    level: 2
+    text: Conclusion
+    role: section
+    classified_by: rule:toc
+  - line: 343
+    level: 2
+    text: TL;DRs
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/013-chapter-6-leading-at-scale.md
+  chapter_sha256: cec81acd2362a71dfaa97e051a5a054fb4b63f98522ed00cb4b6aa120c075ca0
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 6: Leading at Scale'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 3
+    level: 2
+    text: Written by Ben Collins-Sussman Edited by Riona MacNamara
+    role: embedded
+    classified_by: model
+  - line: 13
+    level: 2
+    text: Always Be Deciding
+    role: section
+    classified_by: rule:toc
+  - line: 17
+    level: 2
+    text: The Parable of the Airplane
+    role: section
+    classified_by: rule:toc
+  - line: 51
+    level: 2
+    text: Identify the Blinders
+    role: section
+    classified_by: rule:toc
+  - line: 55
+    level: 2
+    text: Identify the Key Trade-Offs
+    role: section
+    classified_by: rule:toc
+  - line: 59
+    level: 2
+    text: Decide, Then Iterate
+    role: section
+    classified_by: rule:toc
+  - line: 65
+    level: 2
+    text: 'Case Study: Addressing the "Latency" of Web Search'
+    role: embedded
+    classified_by: model
+  - line: 89
+    level: 2
+    text: Always Be Leaving
+    role: section
+    classified_by: rule:toc
+  - line: 97
+    level: 2
+    text: 'Your Mission: Build a "Self-Driving" Team'
+    role: section
+    classified_by: rule:toc
+  - line: 101
+    level: 2
+    text: Dividing the Problem Space
+    role: section
+    classified_by: rule:toc
+  - line: 105
+    level: 3
+    text: 'Example: Subdividing the "latency problem" of Google Search'
+    role: embedded
+    classified_by: model
+  - line: 109
+    level: 4
+    text: Delegating subproblems to leaders
+    role: embedded
+    classified_by: model
+  - line: 125
+    level: 4
+    text: Adjusting and iterating
+    role: embedded
+    classified_by: model
+  - line: 139
+    level: 4
+    text: Take care in anchoring a team's identity
+    role: embedded
+    classified_by: model
+  - line: 147
+    level: 2
+    text: Always Be Scaling
+    role: section
+    classified_by: rule:toc
+  - line: 153
+    level: 2
+    text: The Cycle of Success
+    role: section
+    classified_by: rule:toc
+  - line: 157
+    level: 3
+    text: Analysis
+    role: embedded
+    classified_by: model
+  - line: 161
+    level: 4
+    text: Struggle
+    role: embedded
+    classified_by: model
+  - line: 167
+    level: 4
+    text: Traction
+    role: embedded
+    classified_by: model
+  - line: 171
+    level: 4
+    text: Reward
+    role: embedded
+    classified_by: model
+  - line: 185
+    level: 2
+    text: Important Versus Urgent
+    role: embedded
+    classified_by: rule:callout
+  - line: 199
+    level: 3
+    text: Delegate
+    role: embedded
+    classified_by: model
+  - line: 205
+    level: 4
+    text: Schedule dedicated time
+    role: embedded
+    classified_by: model
+  - line: 209
+    level: 4
+    text: Find a tracking system that works
+    role: embedded
+    classified_by: model
+  - line: 213
+    level: 2
+    text: Learn to Drop Balls
+    role: section
+    classified_by: rule:toc
+  - line: 233
+    level: 2
+    text: Protecting Your Energy
+    role: section
+    classified_by: rule:toc
+  - line: 243
+    level: 3
+    text: Take real vacations
+    role: embedded
+    classified_by: model
+  - line: 247
+    level: 4
+    text: Make it trivial to disconnect
+    role: embedded
+    classified_by: model
+  - line: 251
+    level: 4
+    text: Take real weekends, too
+    role: embedded
+    classified_by: model
+  - line: 255
+    level: 4
+    text: Take breaks during the day
+    role: embedded
+    classified_by: model
+  - line: 259
+    level: 4
+    text: Give yourself permission to take a mental health day
+    role: embedded
+    classified_by: model
+  - line: 271
+    level: 2
+    text: Conclusion
+    role: section
+    classified_by: rule:toc
+  - line: 275
+    level: 2
+    text: TL;DRs
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/014-chapter-7-measuring-engineering-productivity.md
+  chapter_sha256: 40970950fec09757500599d32dc91ca344fafff84a72d00e633103e6f642244a
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 7: Measuring Engineering Productivity'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 7
+    level: 2
+    text: Why Should We Measure Engineering Productivity?
+    role: section
+    classified_by: rule:toc
+  - line: 27
+    level: 2
+    text: 'Triage: Is It Even Worth Measuring?'
+    role: section
+    classified_by: rule:toc
+  - line: 89
+    level: 2
+    text: Selecting Meaningful Metrics with Goals and Signals
+    role: section
+    classified_by: rule:toc
+  - line: 112
+    level: 2
+    text: Goals
+    role: section
+    classified_by: rule:toc
+  - line: 124
+    level: 3
+    text: '**Quality** of the code'
+    role: embedded
+    classified_by: model
+  - line: 128
+    level: 4
+    text: Attention from engineers
+    role: embedded
+    classified_by: model
+  - line: 132
+    level: 4
+    text: Intellectual complexity
+    role: embedded
+    classified_by: model
+  - line: 136
+    level: 4
+    text: Tempo and velocity
+    role: embedded
+    classified_by: model
+  - line: 140
+    level: 4
+    text: '**S**atisfaction'
+    role: embedded
+    classified_by: model
+  - line: 146
+    level: 4
+    text: Quality of the code
+    role: embedded
+    classified_by: model
+  - line: 150
+    level: 4
+    text: Attention from engineers
+    role: embedded
+    classified_by: model
+  - line: 154
+    level: 4
+    text: Intellectual complexity
+    role: embedded
+    classified_by: model
+  - line: 158
+    level: 4
+    text: Tempo and velocity
+    role: embedded
+    classified_by: model
+  - line: 162
+    level: 4
+    text: Satisfaction
+    role: embedded
+    classified_by: model
+  - line: 166
+    level: 2
+    text: Signals
+    role: section
+    classified_by: rule:toc
+  - line: 180
+    level: 2
+    text: Metrics
+    role: section
+    classified_by: rule:toc
+  - line: 190
+    level: 2
+    text: Using Data to Validate Metrics
+    role: section
+    classified_by: rule:toc
+  - line: 250
+    level: 2
+    text: Taking Action and Tracking Results
+    role: section
+    classified_by: rule:toc
+  - line: 256
+    level: 2
+    text: Conclusion
+    role: section
+    classified_by: rule:toc
+  - line: 260
+    level: 2
+    text: TL;DRs
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/015-part-iii.md
+  chapter_sha256: 9cc2ac5b92eb4492a963f0e7f66f6a9a3255076a408401e59d7abd88a861e845
+  headings:
+  - line: 1
+    level: 1
+    text: PART III
+    role: section
+    classified_by: rule:chapter-title
+  - line: 3
+    level: 2
+    text: Processes
+    role: section
+    classified_by: model
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/016-chapter-8-style-guides-and-rules.md
+  chapter_sha256: f7be9fd685bfce473a43e9a09e37d49db0a5bc8f916488511f315e36264e9e81
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 8: Style Guides and Rules'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 3
+    level: 2
+    text: Written by Shaindel Schwartz Edited by Tom Manshreck
+    role: embedded
+    classified_by: model
+  - line: 19
+    level: 2
+    text: Why Have Rules?
+    role: section
+    classified_by: rule:toc
+  - line: 25
+    level: 2
+    text: Creating the Rules
+    role: section
+    classified_by: rule:toc
+  - line: 29
+    level: 2
+    text: Guiding Principles
+    role: section
+    classified_by: rule:toc
+  - line: 43
+    level: 3
+    text: Rules must pull their weight
+    role: embedded
+    classified_by: model
+  - line: 49
+    level: 4
+    text: Optimize for the reader
+    role: embedded
+    classified_by: model
+  - line: 82
+    level: 4
+    text: Be consistent
+    role: embedded
+    classified_by: model
+  - line: 88
+    level: 4
+    text: Advantages of consistency
+    role: embedded
+    classified_by: model
+  - line: 105
+    level: 4
+    text: At Scale
+    role: embedded
+    classified_by: model
+  - line: 121
+    level: 2
+    text: Counting Spaces
+    role: embedded
+    classified_by: model
+  - line: 129
+    level: 3
+    text: Avoid error-prone and surprising constructs
+    role: embedded
+    classified_by: model
+  - line: 162
+    level: 4
+    text: Concede to practicalities
+    role: embedded
+    classified_by: model
+  - line: 170
+    level: 2
+    text: The Style Guide
+    role: section
+    classified_by: rule:toc
+  - line: 178
+    level: 3
+    text: Avoiding danger
+    role: embedded
+    classified_by: model
+  - line: 188
+    level: 4
+    text: Enforcing best practices
+    role: embedded
+    classified_by: model
+  - line: 200
+    level: 2
+    text: 'Case Study: Introducing std::unique ptr'
+    role: embedded
+    classified_by: model
+  - line: 206
+    level: 3
+    text: Building in consistency
+    role: embedded
+    classified_by: model
+  - line: 210
+    level: 4
+    text: And for everything else...
+    role: embedded
+    classified_by: model
+  - line: 218
+    level: 2
+    text: Changing the Rules
+    role: section
+    classified_by: rule:toc
+  - line: 226
+    level: 3
+    text: 'Case Study: CamelCase Naming'
+    role: embedded
+    classified_by: model
+  - line: 238
+    level: 4
+    text: The Process
+    role: section
+    classified_by: rule:toc
+  - line: 246
+    level: 2
+    text: The Style Arbiters
+    role: section
+    classified_by: rule:toc
+  - line: 252
+    level: 2
+    text: Exceptions
+    role: section
+    classified_by: rule:toc
+  - line: 260
+    level: 2
+    text: Guidance
+    role: section
+    classified_by: rule:toc
+  - line: 280
+    level: 2
+    text: Applying the Rules
+    role: section
+    classified_by: rule:toc
+  - line: 300
+    level: 3
+    text: Frror Checkers
+    role: embedded
+    classified_by: model
+  - line: 310
+    level: 4
+    text: Code Formatters
+    role: section
+    classified_by: rule:toc
+  - line: 318
+    level: 2
+    text: 'Case Study: gofmt'
+    role: embedded
+    classified_by: model
+  - line: 330
+    level: 3
+    text: Motivations
+    role: section
+    classified_by: rule:toc
+  - line: 338
+    level: 4
+    text: Impact
+    role: embedded
+    classified_by: model
+  - line: 344
+    level: 4
+    text: Retrofittina
+    role: embedded
+    classified_by: model
+  - line: 358
+    level: 2
+    text: Conclusion
+    role: section
+    classified_by: rule:toc
+  - line: 362
+    level: 2
+    text: TL;DRs
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/017-chapter-9-code-review.md
+  chapter_sha256: 8a1a1c6f450f93b74e606da21a742b4bc3c394f810b7e6203a64d745cbbcd109
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 9: Code Review'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 3
+    level: 2
+    text: Written by Tom Manshreck and Caitlin Sadowski Edited by Lisa Carey
+    role: embedded
+    classified_by: model
+  - line: 17
+    level: 2
+    text: Code Review Flow
+    role: section
+    classified_by: rule:toc
+  - line: 34
+    level: 2
+    text: Code Is a Liability
+    role: section
+    classified_by: model
+  - line: 44
+    level: 2
+    text: How Code Review Works at Google
+    role: section
+    classified_by: rule:toc
+  - line: 67
+    level: 2
+    text: Ownership
+    role: embedded
+    classified_by: model
+  - line: 69
+    level: 3
+    text: Hyrum Wright
+    role: embedded
+    classified_by: model
+  - line: 85
+    level: 2
+    text: Code Review Benefits
+    role: section
+    classified_by: rule:toc
+  - line: 104
+    level: 3
+    text: Code Correctness
+    role: section
+    classified_by: rule:toc
+  - line: 124
+    level: 2
+    text: Comprehension of Code
+    role: section
+    classified_by: rule:toc
+  - line: 132
+    level: 2
+    text: Code Consistency
+    role: section
+    classified_by: rule:toc
+  - line: 144
+    level: 2
+    text: Psychological and Cultural Benefits
+    role: section
+    classified_by: rule:toc
+  - line: 156
+    level: 2
+    text: Knowledge Sharing
+    role: section
+    classified_by: rule:toc
+  - line: 168
+    level: 2
+    text: Code Review Best Practices
+    role: section
+    classified_by: rule:toc
+  - line: 172
+    level: 3
+    text: Be Polite and Professional
+    role: section
+    classified_by: rule:toc
+  - line: 186
+    level: 2
+    text: Write Small Changes
+    role: section
+    classified_by: rule:toc
+  - line: 198
+    level: 2
+    text: Write Good Change Descriptions
+    role: section
+    classified_by: rule:toc
+  - line: 210
+    level: 2
+    text: Keep Reviewers to a Minimum
+    role: section
+    classified_by: rule:toc
+  - line: 218
+    level: 3
+    text: Automate Where Possible
+    role: section
+    classified_by: rule:toc
+  - line: 228
+    level: 2
+    text: Types of Code Reviews
+    role: section
+    classified_by: rule:toc
+  - line: 237
+    level: 3
+    text: Greenfield Code Reviews
+    role: section
+    classified_by: rule:toc
+  - line: 243
+    level: 2
+    text: Behavioral Changes, Improvements, and Optimizations
+    role: section
+    classified_by: rule:toc
+  - line: 251
+    level: 2
+    text: Bug Fixes and Rollbacks
+    role: section
+    classified_by: rule:toc
+  - line: 261
+    level: 2
+    text: Refactorings and Large-Scale Changes
+    role: section
+    classified_by: rule:toc
+  - line: 269
+    level: 2
+    text: Conclusion
+    role: section
+    classified_by: rule:toc
+  - line: 273
+    level: 2
+    text: TL;DRs
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/018-chapter-10-documentation.md
+  chapter_sha256: 1cba331da1779b4955b0e1892f93038ff0828a8b67a3bc2f3cf58d90d4f85a5e
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 10: Documentation'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 3
+    level: 2
+    text: Written by Tom Manshreck Edited by Riona MacNamara
+    role: embedded
+    classified_by: model
+  - line: 11
+    level: 2
+    text: What Qualifies as Documentation?
+    role: section
+    classified_by: rule:toc
+  - line: 17
+    level: 2
+    text: Why Is Documentation Needed?
+    role: section
+    classified_by: rule:toc
+  - line: 50
+    level: 2
+    text: Documentation Is Like Code
+    role: section
+    classified_by: rule:toc
+  - line: 72
+    level: 2
+    text: 'Case Study: The Google Wiki'
+    role: embedded
+    classified_by: model
+  - line: 90
+    level: 2
+    text: Know Your Audience
+    role: section
+    classified_by: rule:toc
+  - line: 100
+    level: 2
+    text: Types of Audiences
+    role: section
+    classified_by: rule:toc
+  - line: 121
+    level: 2
+    text: Documentation Types
+    role: section
+    classified_by: rule:toc
+  - line: 135
+    level: 3
+    text: Reference Documentation
+    role: section
+    classified_by: rule:toc
+  - line: 145
+    level: 4
+    text: File comments
+    role: embedded
+    classified_by: model
+  - line: 161
+    level: 4
+    text: Class comments
+    role: embedded
+    classified_by: model
+  - line: 176
+    level: 4
+    text: Function comments
+    role: embedded
+    classified_by: model
+  - line: 202
+    level: 2
+    text: Design Docs
+    role: section
+    classified_by: rule:toc
+  - line: 212
+    level: 3
+    text: Tutorials
+    role: section
+    classified_by: rule:toc
+  - line: 220
+    level: 4
+    text: 'Example: A bad tutorial'
+    role: embedded
+    classified_by: model
+  - line: 232
+    level: 4
+    text: 'Example: A bad tutorial made better'
+    role: embedded
+    classified_by: model
+  - line: 262
+    level: 2
+    text: Conceptual Documentation
+    role: section
+    classified_by: rule:toc
+  - line: 272
+    level: 2
+    text: Landing Pages
+    role: section
+    classified_by: rule:toc
+  - line: 282
+    level: 2
+    text: Documentation Reviews
+    role: section
+    classified_by: rule:toc
+  - line: 296
+    level: 2
+    text: 'Case Study: The Developer Guide Library'
+    role: embedded
+    classified_by: model
+  - line: 308
+    level: 2
+    text: Documentation Philosophy
+    role: section
+    classified_by: rule:toc
+  - line: 312
+    level: 2
+    text: WHO, WHAT, WHEN, WHERE, and WHY
+    role: section
+    classified_by: rule:toc
+  - line: 334
+    level: 2
+    text: The Beginning, Middle, and End
+    role: section
+    classified_by: rule:toc
+  - line: 342
+    level: 3
+    text: The Parameters of Good Documentation
+    role: section
+    classified_by: rule:toc
+  - line: 352
+    level: 2
+    text: Deprecating Documents
+    role: section
+    classified_by: rule:toc
+  - line: 360
+    level: 1
+    text: 'Document freshness: For more information, see <pre>go/fresh-source.'
+    role: embedded
+    classified_by: model
+  - line: 369
+    level: 2
+    text: When Do You Need Technical Writers?
+    role: section
+    classified_by: rule:toc
+  - line: 377
+    level: 2
+    text: Conclusion
+    role: section
+    classified_by: rule:toc
+  - line: 385
+    level: 2
+    text: TL;DRs
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/019-chapter-11-testing-overview.md
+  chapter_sha256: d782acb63eec4e61d8f1919ab829bb6ebde46170a4bfdca75b23cb90224bab14
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 11: Testing Overview'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 3
+    level: 2
+    text: Written by Adam Bender Edited by Tom Manshreck
+    role: embedded
+    classified_by: model
+  - line: 17
+    level: 2
+    text: Why Do We Write Tests?
+    role: section
+    classified_by: rule:toc
+  - line: 36
+    level: 2
+    text: The Story of Google Web Server
+    role: section
+    classified_by: rule:toc
+  - line: 52
+    level: 2
+    text: Testing at the Speed of Modern Development
+    role: section
+    classified_by: rule:toc
+  - line: 62
+    level: 2
+    text: Write, Run, React
+    role: section
+    classified_by: rule:toc
+  - line: 68
+    level: 3
+    text: Example 11-1. An example test
+    role: embedded
+    classified_by: rule:caption
+  - line: 91
+    level: 2
+    text: Benefits of Testing Code
+    role: section
+    classified_by: rule:toc
+  - line: 95
+    level: 3
+    text: Less debugging
+    role: embedded
+    classified_by: model
+  - line: 99
+    level: 4
+    text: Increased confidence in changes
+    role: embedded
+    classified_by: model
+  - line: 107
+    level: 4
+    text: Improved documentation
+    role: embedded
+    classified_by: model
+  - line: 111
+    level: 4
+    text: Simpler reviews
+    role: embedded
+    classified_by: model
+  - line: 115
+    level: 4
+    text: Thoughtful design
+    role: embedded
+    classified_by: model
+  - line: 119
+    level: 4
+    text: Fast, high-quality releases
+    role: embedded
+    classified_by: model
+  - line: 123
+    level: 2
+    text: Designing a Test Suite
+    role: section
+    classified_by: rule:toc
+  - line: 131
+    level: 3
+    text: Test Size
+    role: section
+    classified_by: rule:toc
+  - line: 143
+    level: 4
+    text: Small tests
+    role: embedded
+    classified_by: model
+  - line: 157
+    level: 4
+    text: Medium tests
+    role: embedded
+    classified_by: model
+  - line: 165
+    level: 4
+    text: Large tests
+    role: embedded
+    classified_by: model
+  - line: 171
+    level: 2
+    text: 'Case Study: Flaky Tests Are Expensive'
+    role: section
+    classified_by: model
+  - line: 181
+    level: 3
+    text: Properties common to all test sizes
+    role: embedded
+    classified_by: model
+  - line: 193
+    level: 2
+    text: Test Scope
+    role: section
+    classified_by: rule:toc
+  - line: 225
+    level: 2
+    text: The Beyoncé Rule
+    role: section
+    classified_by: rule:toc
+  - line: 231
+    level: 2
+    text: Testing for Failure
+    role: section
+    classified_by: model
+  - line: 235
+    level: 2
+    text: A Note on Code Coverage
+    role: section
+    classified_by: rule:toc
+  - line: 245
+    level: 2
+    text: Testing at Google Scale
+    role: section
+    classified_by: rule:toc
+  - line: 261
+    level: 2
+    text: The Pitfalls of a Large Test Suite
+    role: section
+    classified_by: rule:toc
+  - line: 285
+    level: 2
+    text: History of Testing at Google
+    role: section
+    classified_by: rule:toc
+  - line: 297
+    level: 3
+    text: Orientation Classes
+    role: section
+    classified_by: rule:toc
+  - line: 311
+    level: 4
+    text: Test Certified
+    role: section
+    classified_by: rule:toc
+  - line: 321
+    level: 2
+    text: Testing on the Toilet
+    role: section
+    classified_by: rule:toc
+  - line: 335
+    level: 2
+    text: Testing Culture Today
+    role: section
+    classified_by: rule:toc
+  - line: 351
+    level: 2
+    text: The Limits of Automated Testing
+    role: section
+    classified_by: rule:toc
+  - line: 361
+    level: 2
+    text: Conclusion
+    role: section
+    classified_by: rule:toc
+  - line: 369
+    level: 2
+    text: TL;DRs
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/020-chapter-12-unit-testing.md
+  chapter_sha256: 028e03ceb2f21c0150297c9ebad1d20607d8ce58bdf53e92fa94b377bbb2077d
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 12: Unit Testing'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 3
+    level: 2
+    text: Written by Erik Kuefler Edited by Tom Manshreck
+    role: embedded
+    classified_by: model
+  - line: 21
+    level: 2
+    text: The Importance of Maintainability
+    role: section
+    classified_by: rule:toc
+  - line: 29
+    level: 2
+    text: Preventing Brittle Tests
+    role: section
+    classified_by: rule:toc
+  - line: 35
+    level: 2
+    text: Strive for Unchanging Tests
+    role: section
+    classified_by: rule:toc
+  - line: 41
+    level: 3
+    text: Pure refactorings
+    role: embedded
+    classified_by: model
+  - line: 49
+    level: 4
+    text: New features
+    role: embedded
+    classified_by: model
+  - line: 53
+    level: 4
+    text: Bug fixes
+    role: embedded
+    classified_by: model
+  - line: 57
+    level: 4
+    text: Behavior changes
+    role: embedded
+    classified_by: model
+  - line: 63
+    level: 2
+    text: Test via Public APIs
+    role: section
+    classified_by: rule:toc
+  - line: 69
+    level: 3
+    text: Example 12-1. A transaction API
+    role: embedded
+    classified_by: rule:caption
+  - line: 98
+    level: 4
+    text: Example 12-2. A naive test of a transaction API's implementation
+    role: embedded
+    classified_by: rule:caption
+  - line: 168
+    level: 2
+    text: Test State, Not Interactions
+    role: section
+    classified_by: rule:toc
+  - line: 174
+    level: 3
+    text: Example 12-4. A brittle interaction test
+    role: embedded
+    classified_by: rule:caption
+  - line: 190
+    level: 4
+    text: Example 12-5. Testing against state
+    role: embedded
+    classified_by: rule:caption
+  - line: 206
+    level: 2
+    text: Writing Clear Tests
+    role: section
+    classified_by: rule:toc
+  - line: 227
+    level: 2
+    text: Make Your Tests Complete and Concise
+    role: section
+    classified_by: rule:toc
+  - line: 231
+    level: 3
+    text: Example 12-6. An incomplete and cluttered test
+    role: embedded
+    classified_by: rule:caption
+  - line: 244
+    level: 4
+    text: Example 12-7. A complete, concise test
+    role: embedded
+    classified_by: rule:caption
+  - line: 260
+    level: 2
+    text: Test Behaviors, Not Methods
+    role: section
+    classified_by: rule:toc
+  - line: 264
+    level: 3
+    text: Example 12-8. A transaction snippet
+    role: embedded
+    classified_by: rule:caption
+  - line: 277
+    level: 4
+    text: Example 12-9. A method-driven test
+    role: embedded
+    classified_by: rule:caption
+  - line: 292
+    level: 4
+    text: Example 12-10. A behavior-driven test
+    role: embedded
+    classified_by: rule:caption
+  - line: 317
+    level: 4
+    text: Structure tests to emphasize behaviors
+    role: embedded
+    classified_by: model
+  - line: 321
+    level: 4
+    text: Example 12-11. A well-structured test
+    role: embedded
+    classified_by: rule:caption
+  - line: 375
+    level: 4
+    text: Name tests after the behavior being tested
+    role: embedded
+    classified_by: model
+  - line: 415
+    level: 2
+    text: Don't Put Logic in Tests
+    role: section
+    classified_by: rule:toc
+  - line: 421
+    level: 3
+    text: Example 12-15. Logic concealing a bug
+    role: embedded
+    classified_by: rule:caption
+  - line: 451
+    level: 2
+    text: Write Clear Failure Messages
+    role: section
+    classified_by: rule:toc
+  - line: 490
+    level: 2
+    text: 'Tests and Code Sharing: DAMP, Not DRY'
+    role: section
+    classified_by: rule:toc
+  - line: 498
+    level: 3
+    text: Example 12-19. A test that is too DRY
+    role: embedded
+    classified_by: rule:caption
+  - line: 543
+    level: 4
+    text: Example 12-20. Tests should be DAMP
+    role: embedded
+    classified_by: rule:caption
+  - line: 571
+    level: 3
+    text: Shared Values
+    role: section
+    classified_by: rule:toc
+  - line: 606
+    level: 4
+    text: Example 12-22. Shared values using helper methods
+    role: embedded
+    classified_by: rule:caption
+  - line: 609
+    level: 1
+    text: A helper method wraps a constructor by defining arbitrary defaults for
+    role: embedded
+    classified_by: model
+  - line: 610
+    level: 1
+    text: each of its parameters.
+    role: embedded
+    classified_by: model
+  - line: 614
+    level: 1
+    text: Tests call the helper, specifying values for only the parameters that they
+    role: embedded
+    classified_by: model
+  - line: 615
+    level: 1
+    text: care about.
+    role: embedded
+    classified_by: model
+  - line: 648
+    level: 2
+    text: Shared Setup
+    role: section
+    classified_by: rule:toc
+  - line: 697
+    level: 2
+    text: Shared Helpers and Validation
+    role: section
+    classified_by: rule:toc
+  - line: 705
+    level: 3
+    text: Example 12-25. A conceptually simple test
+    role: embedded
+    classified_by: rule:caption
+  - line: 718
+    level: 2
+    text: Defining Test Infrastructure
+    role: section
+    classified_by: rule:toc
+  - line: 726
+    level: 2
+    text: Conclusion
+    role: section
+    classified_by: rule:toc
+  - line: 732
+    level: 2
+    text: TL;DRs
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/021-chapter-13-test-doubles.md
+  chapter_sha256: a1ead4e0312fc64b8312ba7727306450d24ae9379a577c34fc0cbb32df268a51
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 13: Test Doubles'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 3
+    level: 2
+    text: Written by Andrew Trenk and Dillon Bly Edited by Tom Manshreck
+    role: embedded
+    classified_by: model
+  - line: 17
+    level: 2
+    text: The Impact of Test Doubles on Software Development
+    role: section
+    classified_by: rule:toc
+  - line: 21
+    level: 3
+    text: Testability
+    role: embedded
+    classified_by: model
+  - line: 25
+    level: 4
+    text: Applicability
+    role: embedded
+    classified_by: model
+  - line: 29
+    level: 4
+    text: Fidelity
+    role: section
+    classified_by: rule:toc
+  - line: 33
+    level: 2
+    text: Test Doubles at Google
+    role: section
+    classified_by: rule:toc
+  - line: 43
+    level: 2
+    text: Basic Concepts
+    role: section
+    classified_by: rule:toc
+  - line: 47
+    level: 2
+    text: An Example Test Double
+    role: section
+    classified_by: rule:toc
+  - line: 68
+    level: 3
+    text: Example 13-2. A trivial test double
+    role: embedded
+    classified_by: rule:caption
+  - line: 80
+    level: 4
+    text: Example 13-3. Using the test double
+    role: embedded
+    classified_by: rule:caption
+  - line: 90
+    level: 4
+    text: Seams
+    role: section
+    classified_by: rule:toc
+  - line: 98
+    level: 4
+    text: Example 13-4. Dependency injection
+    role: embedded
+    classified_by: rule:caption
+  - line: 113
+    level: 4
+    text: Example 13-5. Passing in a test double
+    role: embedded
+    classified_by: rule:caption
+  - line: 126
+    level: 2
+    text: Mocking Frameworks
+    role: section
+    classified_by: rule:toc
+  - line: 132
+    level: 3
+    text: Example 13-6. Mocking frameworks
+    role: embedded
+    classified_by: rule:caption
+  - line: 158
+    level: 2
+    text: Techniques for Using Test Doubles
+    role: section
+    classified_by: rule:toc
+  - line: 164
+    level: 2
+    text: Faking
+    role: section
+    classified_by: rule:toc
+  - line: 168
+    level: 3
+    text: Example 13-7. A simple fake
+    role: embedded
+    classified_by: rule:caption
+  - line: 185
+    level: 2
+    text: Stubbing
+    role: section
+    classified_by: rule:toc
+  - line: 191
+    level: 3
+    text: Example 13-8. Stubbing
+    role: embedded
+    classified_by: rule:caption
+  - line: 208
+    level: 2
+    text: Interaction Testing
+    role: section
+    classified_by: rule:toc
+  - line: 214
+    level: 3
+    text: Example 13-9. Interaction testing
+    role: embedded
+    classified_by: rule:caption
+  - line: 231
+    level: 2
+    text: Real Implementations
+    role: section
+    classified_by: rule:toc
+  - line: 239
+    level: 3
+    text: Prefer Realism Over Isolation
+    role: section
+    classified_by: rule:toc
+  - line: 251
+    level: 2
+    text: 'Case Study: @DoNotMock'
+    role: section
+    classified_by: model
+  - line: 269
+    level: 2
+    text: How to Decide When to Use a Real Implementation
+    role: section
+    classified_by: rule:toc
+  - line: 275
+    level: 3
+    text: Execution time
+    role: embedded
+    classified_by: model
+  - line: 287
+    level: 4
+    text: Determinism
+    role: embedded
+    classified_by: model
+  - line: 301
+    level: 4
+    text: Dependency construction
+    role: embedded
+    classified_by: model
+  - line: 321
+    level: 2
+    text: Faking
+    role: section
+    classified_by: rule:toc
+  - line: 325
+    level: 3
+    text: Example 13-11. A fake file system
+    role: embedded
+    classified_by: rule:caption
+  - line: 349
+    level: 2
+    text: Why Are Fakes Important?
+    role: section
+    classified_by: rule:toc
+  - line: 357
+    level: 3
+    text: When Should Fakes Be Written?
+    role: section
+    classified_by: rule:toc
+  - line: 367
+    level: 2
+    text: The Fidelity of Fakes
+    role: section
+    classified_by: rule:toc
+  - line: 381
+    level: 3
+    text: Fakes Should Re Tested
+    role: section
+    classified_by: model
+  - line: 387
+    level: 4
+    text: What to Do If a Fake Is Not Available
+    role: section
+    classified_by: rule:toc
+  - line: 397
+    level: 2
+    text: Stubbina
+    role: section
+    classified_by: model
+  - line: 401
+    level: 3
+    text: Example 13-12. Using stubbing to simulate responses
+    role: embedded
+    classified_by: rule:caption
+  - line: 413
+    level: 2
+    text: The Dangers of Overusing Stubbing
+    role: section
+    classified_by: rule:toc
+  - line: 417
+    level: 3
+    text: Tests become unclear
+    role: embedded
+    classified_by: model
+  - line: 423
+    level: 4
+    text: Tests become brittle
+    role: embedded
+    classified_by: model
+  - line: 427
+    level: 4
+    text: Tests become less effective
+    role: embedded
+    classified_by: model
+  - line: 439
+    level: 4
+    text: An example of overusing stubbing
+    role: embedded
+    classified_by: model
+  - line: 443
+    level: 4
+    text: Example 13-13. Overuse of stubbing
+    role: embedded
+    classified_by: rule:caption
+  - line: 467
+    level: 4
+    text: Example 13-14. Refactoring a test to avoid stubbing
+    role: embedded
+    classified_by: rule:caption
+  - line: 483
+    level: 2
+    text: When Is Stubbing Appropriate?
+    role: section
+    classified_by: rule:toc
+  - line: 491
+    level: 2
+    text: Interaction Testing
+    role: section
+    classified_by: rule:toc
+  - line: 497
+    level: 2
+    text: Prefer State Testing Over Interaction Testing
+    role: section
+    classified_by: rule:toc
+  - line: 503
+    level: 3
+    text: Example 13-15. State testing
+    role: embedded
+    classified_by: rule:caption
+  - line: 517
+    level: 4
+    text: Example 13-16. Interaction testing
+    role: embedded
+    classified_by: rule:caption
+  - line: 540
+    level: 2
+    text: When Is Interaction Testing Appropriate?
+    role: section
+    classified_by: rule:toc
+  - line: 553
+    level: 2
+    text: Best Practices for Interaction Testing
+    role: section
+    classified_by: rule:toc
+  - line: 557
+    level: 3
+    text: Prefer to perform interaction testing only for state-changing functions
+    role: embedded
+    classified_by: model
+  - line: 561
+    level: 4
+    text: State-changing
+    role: embedded
+    classified_by: model
+  - line: 565
+    level: 4
+    text: Non-state-changing
+    role: embedded
+    classified_by: model
+  - line: 593
+    level: 4
+    text: Avoid overspecification
+    role: embedded
+    classified_by: model
+  - line: 601
+    level: 4
+    text: Example 13-18. Overspecified interaction tests
+    role: embedded
+    classified_by: rule:caption
+  - line: 620
+    level: 4
+    text: Example 13-19. Well-specified interaction tests
+    role: embedded
+    classified_by: rule:caption
+  - line: 636
+    level: 2
+    text: Conclusion
+    role: section
+    classified_by: rule:toc
+  - line: 644
+    level: 2
+    text: TL;DRs
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/022-chapter-14-larger-testing.md
+  chapter_sha256: 7d23ec47ed7be83627d65160331f24a1f3c1d5a023189a98bbfaf973111fa3e2
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 14: Larger Testing'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 7
+    level: 2
+    text: What Are Larger Tests?
+    role: section
+    classified_by: rule:toc
+  - line: 24
+    level: 2
+    text: Fidelity
+    role: section
+    classified_by: rule:toc
+  - line: 36
+    level: 2
+    text: Common Gaps in Unit Tests
+    role: section
+    classified_by: rule:toc
+  - line: 40
+    level: 3
+    text: Unfaithful doubles
+    role: embedded
+    classified_by: model
+  - line: 50
+    level: 4
+    text: Configuration issues
+    role: embedded
+    classified_by: model
+  - line: 62
+    level: 4
+    text: Issues that arise under load
+    role: embedded
+    classified_by: model
+  - line: 66
+    level: 4
+    text: Unanticipated behaviors, inputs, and side effects
+    role: embedded
+    classified_by: model
+  - line: 72
+    level: 4
+    text: Emergent behaviors and the "vacuum effect"
+    role: embedded
+    classified_by: model
+  - line: 76
+    level: 2
+    text: Why Not Have Larger Tests?
+    role: section
+    classified_by: rule:toc
+  - line: 102
+    level: 2
+    text: Larger Tests at Google
+    role: section
+    classified_by: rule:toc
+  - line: 110
+    level: 2
+    text: Larger Tests and Time
+    role: section
+    classified_by: rule:toc
+  - line: 134
+    level: 2
+    text: Larger Tests at Google Scale
+    role: section
+    classified_by: rule:toc
+  - line: 152
+    level: 2
+    text: 'Tip: "The Smallest Possible Test"'
+    role: embedded
+    classified_by: rule:callout
+  - line: 162
+    level: 2
+    text: Structure of a Large Test
+    role: section
+    classified_by: rule:toc
+  - line: 171
+    level: 2
+    text: The System Under Test
+    role: section
+    classified_by: rule:toc
+  - line: 181
+    level: 3
+    text: Hermeticity
+    role: embedded
+    classified_by: model
+  - line: 185
+    level: 4
+    text: Fidelity
+    role: section
+    classified_by: rule:toc
+  - line: 193
+    level: 4
+    text: Single-process SUT
+    role: embedded
+    classified_by: model
+  - line: 197
+    level: 4
+    text: Single-machine SUT
+    role: embedded
+    classified_by: model
+  - line: 201
+    level: 4
+    text: Multimachine SUT
+    role: embedded
+    classified_by: model
+  - line: 205
+    level: 4
+    text: Shared environments (staging and production)
+    role: embedded
+    classified_by: model
+  - line: 209
+    level: 4
+    text: Hybrids
+    role: embedded
+    classified_by: model
+  - line: 213
+    level: 4
+    text: The benefits of hermetic SUTs
+    role: embedded
+    classified_by: model
+  - line: 221
+    level: 2
+    text: 'Case Study: Risks of testing in production and Webdriver Torso'
+    role: embedded
+    classified_by: model
+  - line: 227
+    level: 3
+    text: Reducing the size of your SUT at problem boundaries
+    role: embedded
+    classified_by: model
+  - line: 246
+    level: 4
+    text: Record/replay proxies
+    role: embedded
+    classified_by: model
+  - line: 258
+    level: 4
+    text: Test Data
+    role: section
+    classified_by: rule:toc
+  - line: 272
+    level: 4
+    text: Domain data
+    role: embedded
+    classified_by: model
+  - line: 276
+    level: 4
+    text: Realistic baseline
+    role: embedded
+    classified_by: model
+  - line: 280
+    level: 4
+    text: Seeding APIs
+    role: embedded
+    classified_by: model
+  - line: 286
+    level: 4
+    text: Handcrafted data
+    role: embedded
+    classified_by: model
+  - line: 290
+    level: 4
+    text: Copied data
+    role: embedded
+    classified_by: model
+  - line: 294
+    level: 4
+    text: Sampled data
+    role: embedded
+    classified_by: model
+  - line: 298
+    level: 4
+    text: Verification
+    role: section
+    classified_by: rule:toc
+  - line: 302
+    level: 4
+    text: Manual
+    role: embedded
+    classified_by: model
+  - line: 308
+    level: 4
+    text: Assertions
+    role: embedded
+    classified_by: model
+  - line: 314
+    level: 4
+    text: A/B comparison (differential)
+    role: embedded
+    classified_by: model
+  - line: 318
+    level: 2
+    text: Types of Larger Tests
+    role: section
+    classified_by: rule:toc
+  - line: 339
+    level: 2
+    text: Functional Testing of One or More Interacting Binaries
+    role: section
+    classified_by: rule:toc
+  - line: 353
+    level: 2
+    text: Browser and Device Testing
+    role: section
+    classified_by: rule:toc
+  - line: 357
+    level: 2
+    text: Performance, Load, and Stress testing
+    role: section
+    classified_by: rule:toc
+  - line: 373
+    level: 2
+    text: Deployment Configuration Testing
+    role: section
+    classified_by: rule:toc
+  - line: 385
+    level: 2
+    text: Exploratory Testing
+    role: section
+    classified_by: rule:toc
+  - line: 397
+    level: 3
+    text: Limitations
+    role: embedded
+    classified_by: model
+  - line: 401
+    level: 4
+    text: Bug bashes
+    role: embedded
+    classified_by: model
+  - line: 405
+    level: 2
+    text: A/B Diff Regression Testing
+    role: section
+    classified_by: rule:toc
+  - line: 425
+    level: 3
+    text: Limitations
+    role: embedded
+    classified_by: model
+  - line: 429
+    level: 4
+    text: Approval
+    role: embedded
+    classified_by: model
+  - line: 433
+    level: 4
+    text: Noise
+    role: embedded
+    classified_by: model
+  - line: 437
+    level: 4
+    text: Coverage
+    role: embedded
+    classified_by: model
+  - line: 441
+    level: 4
+    text: Setup
+    role: embedded
+    classified_by: model
+  - line: 445
+    level: 4
+    text: HAT
+    role: embedded
+    classified_by: model
+  - line: 461
+    level: 2
+    text: Probers and Canary Analysis
+    role: section
+    classified_by: rule:toc
+  - line: 479
+    level: 3
+    text: Limitations
+    role: embedded
+    classified_by: model
+  - line: 485
+    level: 2
+    text: Disaster Recovery and Chaos Engineering
+    role: section
+    classified_by: rule:toc
+  - line: 505
+    level: 3
+    text: Limitations
+    role: embedded
+    classified_by: model
+  - line: 513
+    level: 4
+    text: User Evaluation
+    role: section
+    classified_by: rule:toc
+  - line: 523
+    level: 4
+    text: Dogfooding
+    role: embedded
+    classified_by: model
+  - line: 527
+    level: 4
+    text: Experimentation
+    role: embedded
+    classified_by: model
+  - line: 533
+    level: 4
+    text: Rater evaluation
+    role: embedded
+    classified_by: model
+  - line: 537
+    level: 2
+    text: Large Tests and the Developer Workflow
+    role: section
+    classified_by: rule:toc
+  - line: 549
+    level: 2
+    text: Authoring Large Tests
+    role: section
+    classified_by: rule:toc
+  - line: 559
+    level: 2
+    text: Running Large Tests
+    role: section
+    classified_by: rule:toc
+  - line: 565
+    level: 3
+    text: Speeding up tests
+    role: embedded
+    classified_by: model
+  - line: 583
+    level: 4
+    text: Optimize test build time
+    role: embedded
+    classified_by: model
+  - line: 587
+    level: 4
+    text: Driving out flakiness
+    role: embedded
+    classified_by: model
+  - line: 597
+    level: 4
+    text: Making tests understandable
+    role: embedded
+    classified_by: model
+  - line: 615
+    level: 2
+    text: Owning Large Tests
+    role: section
+    classified_by: rule:toc
+  - line: 628
+    level: 3
+    text: Regular code ownership
+    role: embedded
+    classified_by: model
+  - line: 632
+    level: 4
+    text: Per-test annotations
+    role: embedded
+    classified_by: model
+  - line: 636
+    level: 2
+    text: Conclusion
+    role: section
+    classified_by: rule:toc
+  - line: 640
+    level: 2
+    text: TL;DRs
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/023-chapter-15-deprecation.md
+  chapter_sha256: ed3b8bee950393a20bfa829c3094d50a9f22402ab7086b412aa28bf267e71367
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 15: Deprecation'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 19
+    level: 2
+    text: Why Deprecate?
+    role: section
+    classified_by: rule:toc
+  - line: 37
+    level: 2
+    text: Why Is Deprecation So Hard?
+    role: section
+    classified_by: rule:toc
+  - line: 55
+    level: 2
+    text: Deprecation During Design
+    role: section
+    classified_by: rule:toc
+  - line: 76
+    level: 2
+    text: Types of Deprecation
+    role: section
+    classified_by: rule:toc
+  - line: 80
+    level: 2
+    text: Advisory Deprecation
+    role: section
+    classified_by: rule:toc
+  - line: 90
+    level: 2
+    text: Compulsory Deprecation
+    role: section
+    classified_by: rule:toc
+  - line: 108
+    level: 2
+    text: Deprecation Warnings
+    role: section
+    classified_by: rule:toc
+  - line: 120
+    level: 2
+    text: Managing the Deprecation Process
+    role: section
+    classified_by: rule:toc
+  - line: 126
+    level: 3
+    text: Process Owners
+    role: section
+    classified_by: rule:toc
+  - line: 134
+    level: 4
+    text: Milestones
+    role: section
+    classified_by: rule:toc
+  - line: 144
+    level: 2
+    text: Deprecation Tooling
+    role: section
+    classified_by: rule:toc
+  - line: 148
+    level: 3
+    text: Discovery
+    role: embedded
+    classified_by: model
+  - line: 156
+    level: 4
+    text: Migration
+    role: embedded
+    classified_by: model
+  - line: 160
+    level: 4
+    text: Preventing backsliding
+    role: embedded
+    classified_by: model
+  - line: 168
+    level: 2
+    text: Conclusion
+    role: section
+    classified_by: rule:toc
+  - line: 174
+    level: 2
+    text: TL;DRs
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/024-part-iv.md
+  chapter_sha256: c850c6a43de0e549154a9987c2e0e5e682b78b3b74f295cf4f51b6d23562e50d
+  headings:
+  - line: 1
+    level: 1
+    text: PART IV
+    role: section
+    classified_by: rule:chapter-title
+  - line: 3
+    level: 2
+    text: Tools
+    role: section
+    classified_by: model
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/025-chapter-16-version-control-and-branch-management.md
+  chapter_sha256: b39a870f5afba21e88dee3d673447b83d8c200cd3ba6bfbcb90bdc9779342a98
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 16: Version Control and Branch Management'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 9
+    level: 2
+    text: What Is Version Control?
+    role: section
+    classified_by: rule:toc
+  - line: 31
+    level: 2
+    text: Why Is Version Control Important?
+    role: section
+    classified_by: rule:toc
+  - line: 61
+    level: 2
+    text: Centralized VCS Versus Distributed VCS
+    role: section
+    classified_by: rule:toc
+  - line: 65
+    level: 3
+    text: Centralized VCS
+    role: embedded
+    classified_by: model
+  - line: 73
+    level: 4
+    text: Distributed VCS
+    role: embedded
+    classified_by: model
+  - line: 97
+    level: 4
+    text: Source of Truth
+    role: section
+    classified_by: rule:toc
+  - line: 109
+    level: 4
+    text: 'Scenario: no clear source of truth'
+    role: embedded
+    classified_by: model
+  - line: 129
+    level: 2
+    text: Version Control Versus Dependency Management
+    role: section
+    classified_by: rule:toc
+  - line: 133
+    level: 2
+    text: Branch Management
+    role: section
+    classified_by: rule:toc
+  - line: 137
+    level: 2
+    text: Work in Progress Is Akin to a Branch
+    role: section
+    classified_by: rule:toc
+  - line: 153
+    level: 3
+    text: Dev Branches
+    role: section
+    classified_by: rule:toc
+  - line: 163
+    level: 4
+    text: How did we become addicted to dev branches?
+    role: embedded
+    classified_by: model
+  - line: 171
+    level: 4
+    text: Release Branches
+    role: section
+    classified_by: rule:toc
+  - line: 181
+    level: 2
+    text: Version Control at Google
+    role: section
+    classified_by: rule:toc
+  - line: 189
+    level: 2
+    text: One Version
+    role: section
+    classified_by: rule:toc
+  - line: 197
+    level: 2
+    text: 'Scenario: Multiple Available Versions'
+    role: section
+    classified_by: rule:toc
+  - line: 211
+    level: 3
+    text: The "One-Version" Rule
+    role: section
+    classified_by: rule:toc
+  - line: 223
+    level: 2
+    text: (Nearly) No Long-Lived Branches
+    role: section
+    classified_by: rule:toc
+  - line: 243
+    level: 3
+    text: What About Release Branches?
+    role: section
+    classified_by: rule:toc
+  - line: 253
+    level: 2
+    text: Monorepos
+    role: section
+    classified_by: rule:toc
+  - line: 273
+    level: 2
+    text: Future of Version Control
+    role: section
+    classified_by: rule:toc
+  - line: 299
+    level: 2
+    text: Conclusion
+    role: section
+    classified_by: rule:toc
+  - line: 311
+    level: 2
+    text: TL:DRs
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/026-chapter-17-code-search.md
+  chapter_sha256: 44fa95732957daabc2b33fa14cd8658f636b6bcde739be2d1819b8244cb49373
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 17: Code Search'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 3
+    level: 2
+    text: Written by Alexander Neubeck and Ben St. John Edited by Lisa Carey
+    role: embedded
+    classified_by: model
+  - line: 19
+    level: 2
+    text: The Code Search UI
+    role: section
+    classified_by: rule:toc
+  - line: 31
+    level: 2
+    text: How Do Googlers Use Code Search?
+    role: section
+    classified_by: rule:toc
+  - line: 35
+    level: 3
+    text: Where?
+    role: section
+    classified_by: rule:toc
+  - line: 49
+    level: 4
+    text: What?
+    role: section
+    classified_by: rule:toc
+  - line: 55
+    level: 4
+    text: How?
+    role: section
+    classified_by: rule:toc
+  - line: 59
+    level: 2
+    text: Whv?
+    role: embedded
+    classified_by: model
+  - line: 65
+    level: 3
+    text: Who and When?
+    role: section
+    classified_by: rule:toc
+  - line: 69
+    level: 2
+    text: Why a Separate Web Tool?
+    role: section
+    classified_by: rule:toc
+  - line: 73
+    level: 3
+    text: Scale
+    role: section
+    classified_by: rule:toc
+  - line: 87
+    level: 2
+    text: Zero Setup Global Code View
+    role: section
+    classified_by: rule:toc
+  - line: 91
+    level: 2
+    text: Specialization
+    role: section
+    classified_by: rule:toc
+  - line: 95
+    level: 2
+    text: Integration with Other Developer Tools
+    role: section
+    classified_by: rule:toc
+  - line: 123
+    level: 2
+    text: API Exposure
+    role: section
+    classified_by: rule:toc
+  - line: 127
+    level: 2
+    text: Impact of Scale on Design
+    role: section
+    classified_by: rule:toc
+  - line: 133
+    level: 2
+    text: Search Query Latency
+    role: section
+    classified_by: rule:toc
+  - line: 149
+    level: 2
+    text: Index Latency
+    role: section
+    classified_by: rule:toc
+  - line: 161
+    level: 2
+    text: Google's Implementation
+    role: section
+    classified_by: rule:toc
+  - line: 165
+    level: 3
+    text: Search Index
+    role: section
+    classified_by: rule:toc
+  - line: 183
+    level: 2
+    text: Ranking
+    role: section
+    classified_by: rule:toc
+  - line: 189
+    level: 3
+    text: Query independent signals
+    role: embedded
+    classified_by: model
+  - line: 205
+    level: 4
+    text: Query dependent signals
+    role: embedded
+    classified_by: model
+  - line: 217
+    level: 4
+    text: Retrieval
+    role: embedded
+    classified_by: model
+  - line: 223
+    level: 4
+    text: Result diversity
+    role: embedded
+    classified_by: model
+  - line: 229
+    level: 2
+    text: Selected Trade-Offs
+    role: section
+    classified_by: rule:toc
+  - line: 233
+    level: 2
+    text: 'Completeness: Repository at Head'
+    role: section
+    classified_by: rule:toc
+  - line: 241
+    level: 2
+    text: 'Completeness: All Versus Most-Relevant Results'
+    role: section
+    classified_by: rule:toc
+  - line: 253
+    level: 2
+    text: 'Completeness: Head Versus Branches Versus All History Versus Workspaces'
+    role: embedded
+    classified_by: model
+  - line: 276
+    level: 2
+    text: 'Expressiveness: Token Versus Substring Versus Regex'
+    role: section
+    classified_by: rule:toc
+  - line: 292
+    level: 2
+    text: Conclusion
+    role: section
+    classified_by: rule:toc
+  - line: 306
+    level: 2
+    text: TL;DRs
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/027-chapter-18-build-systems-and-build-philosophy.md
+  chapter_sha256: 0f24fe74f305a1614bc00678c96397cf96d3b6e8a390d1831d6c652a1b778dfb
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 18: Build Systems and Build Philosophy'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 7
+    level: 2
+    text: Purpose of a Build System
+    role: section
+    classified_by: rule:toc
+  - line: 19
+    level: 3
+    text: Correct
+    role: section
+    classified_by: model
+  - line: 35
+    level: 2
+    text: What Happens Without a Build System?
+    role: section
+    classified_by: rule:toc
+  - line: 39
+    level: 2
+    text: But All I Need Is a Compiler!
+    role: section
+    classified_by: rule:toc
+  - line: 55
+    level: 2
+    text: Shell Scripts to the Rescue?
+    role: section
+    classified_by: rule:toc
+  - line: 70
+    level: 2
+    text: Modern Build Systems
+    role: section
+    classified_by: rule:toc
+  - line: 74
+    level: 2
+    text: It's All About Dependencies
+    role: section
+    classified_by: rule:toc
+  - line: 78
+    level: 2
+    text: Task-Based Build Systems
+    role: section
+    classified_by: rule:toc
+  - line: 155
+    level: 3
+    text: The dark side of task-based build systems
+    role: section
+    classified_by: model
+  - line: 184
+    level: 2
+    text: Artifact-Based Build Systems
+    role: section
+    classified_by: rule:toc
+  - line: 192
+    level: 3
+    text: A functional perspective
+    role: section
+    classified_by: model
+  - line: 237
+    level: 4
+    text: Other nifty Bazel tricks
+    role: embedded
+    classified_by: model
+  - line: 273
+    level: 4
+    text: Distributed Builds
+    role: section
+    classified_by: rule:toc
+  - line: 277
+    level: 4
+    text: Remote caching
+    role: section
+    classified_by: model
+  - line: 291
+    level: 4
+    text: Remote execution
+    role: section
+    classified_by: model
+  - line: 321
+    level: 2
+    text: Time, Scale, Trade-Offs
+    role: section
+    classified_by: rule:toc
+  - line: 331
+    level: 2
+    text: Dealing with Modules and Dependencies
+    role: section
+    classified_by: rule:toc
+  - line: 337
+    level: 2
+    text: Using Fine-Grained Modules and the 1:1:1 Rule
+    role: section
+    classified_by: rule:toc
+  - line: 347
+    level: 2
+    text: Minimizing Module Visibility
+    role: section
+    classified_by: rule:toc
+  - line: 353
+    level: 2
+    text: Managing Dependencies
+    role: section
+    classified_by: rule:toc
+  - line: 357
+    level: 3
+    text: Internal dependencies
+    role: section
+    classified_by: model
+  - line: 373
+    level: 4
+    text: External dependencies
+    role: section
+    classified_by: model
+  - line: 413
+    level: 2
+    text: Conclusion
+    role: section
+    classified_by: rule:toc
+  - line: 423
+    level: 2
+    text: TL:DRs
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/028-chapter-19-critique-google-s-code-review-tool.md
+  chapter_sha256: 96ff06ef20bb6ac8db98564e85c58e8b14ef36e884cc7ba9aaf792d267ab9662
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 19: Critique: Google''s Code Review Tool'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 9
+    level: 2
+    text: Code Review Tooling Principles
+    role: section
+    classified_by: rule:toc
+  - line: 13
+    level: 3
+    text: Simplicity
+    role: embedded
+    classified_by: model
+  - line: 17
+    level: 4
+    text: Foundation of trust
+    role: embedded
+    classified_by: model
+  - line: 21
+    level: 4
+    text: Generic communication
+    role: embedded
+    classified_by: model
+  - line: 25
+    level: 4
+    text: Workflow integration
+    role: embedded
+    classified_by: model
+  - line: 33
+    level: 4
+    text: Code Review Flow
+    role: section
+    classified_by: rule:toc
+  - line: 56
+    level: 4
+    text: Notifications
+    role: section
+    classified_by: rule:toc
+  - line: 64
+    level: 2
+    text: 'Stage 1: Create a Change'
+    role: section
+    classified_by: rule:toc
+  - line: 72
+    level: 2
+    text: Diffing
+    role: section
+    classified_by: rule:toc
+  - line: 96
+    level: 2
+    text: Analysis Results
+    role: section
+    classified_by: rule:toc
+  - line: 114
+    level: 2
+    text: Tight Tool Integration
+    role: section
+    classified_by: rule:toc
+  - line: 128
+    level: 2
+    text: 'Stage 2: Request Review'
+    role: section
+    classified_by: rule:toc
+  - line: 153
+    level: 2
+    text: 'Stages 3 and 4: Understanding and Commenting on a Change'
+    role: section
+    classified_by: rule:toc
+  - line: 157
+    level: 2
+    text: Commenting
+    role: section
+    classified_by: rule:toc
+  - line: 177
+    level: 2
+    text: Understanding the State of a Change
+    role: section
+    classified_by: rule:toc
+  - line: 181
+    level: 3
+    text: '"Whose turn" feature'
+    role: embedded
+    classified_by: model
+  - line: 189
+    level: 4
+    text: Dashboard and search system
+    role: embedded
+    classified_by: model
+  - line: 203
+    level: 2
+    text: 'Stage 5: Change Approvals (Scoring a Change)'
+    role: section
+    classified_by: rule:toc
+  - line: 229
+    level: 2
+    text: 'Stage 6: Committing a Change'
+    role: embedded
+    classified_by: model
+  - line: 233
+    level: 2
+    text: 'After Commit: Tracking History'
+    role: section
+    classified_by: rule:toc
+  - line: 239
+    level: 2
+    text: 'Case Study: Gerrit'
+    role: embedded
+    classified_by: model
+  - line: 253
+    level: 2
+    text: Conclusion
+    role: section
+    classified_by: rule:toc
+  - line: 267
+    level: 2
+    text: TL;DRs
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/029-chapter-20-static-analysis.md
+  chapter_sha256: 81bc6f3ebe4933a19336628e0fe3c822bc50050c693021862a504c222418bec8
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 20: Static Analysis'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 13
+    level: 2
+    text: Characteristics of Effective Static Analysis
+    role: section
+    classified_by: rule:toc
+  - line: 17
+    level: 2
+    text: Scalability
+    role: section
+    classified_by: rule:toc
+  - line: 21
+    level: 2
+    text: Usability
+    role: section
+    classified_by: rule:toc
+  - line: 35
+    level: 2
+    text: Key Lessons in Making Static Analysis Work
+    role: section
+    classified_by: rule:toc
+  - line: 39
+    level: 2
+    text: Focus on Developer Happiness
+    role: section
+    classified_by: rule:toc
+  - line: 49
+    level: 2
+    text: Make Static Analysis a Part of the Core Developer Workflow
+    role: section
+    classified_by: rule:toc
+  - line: 53
+    level: 2
+    text: Empower Users to Contribute
+    role: section
+    classified_by: rule:toc
+  - line: 63
+    level: 2
+    text: 'Tricorder: Google''s Static Analysis Platform'
+    role: section
+    classified_by: rule:toc
+  - line: 99
+    level: 2
+    text: Integrated Tools
+    role: section
+    classified_by: rule:toc
+  - line: 117
+    level: 2
+    text: Integrated Feedback Channels
+    role: section
+    classified_by: rule:toc
+  - line: 123
+    level: 2
+    text: Suggested Fixes
+    role: section
+    classified_by: rule:toc
+  - line: 133
+    level: 2
+    text: Per-Project Customization
+    role: section
+    classified_by: rule:toc
+  - line: 145
+    level: 3
+    text: Presuhmits
+    role: embedded
+    classified_by: model
+  - line: 153
+    level: 2
+    text: Compiler Integration
+    role: section
+    classified_by: rule:toc
+  - line: 167
+    level: 2
+    text: Analysis While Editing and Browsing Code
+    role: section
+    classified_by: rule:toc
+  - line: 173
+    level: 2
+    text: Conclusion
+    role: section
+    classified_by: rule:toc
+  - line: 177
+    level: 2
+    text: TL;DRs
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/030-chapter-21-dependency-management.md
+  chapter_sha256: 00805a0f5e3e45192ca0d13fa28795be53ab4c3dd1fff85f0a433b627dd55b55
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 21: Dependency Management'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 23
+    level: 2
+    text: Why Is Dependency Management So Difficult?
+    role: section
+    classified_by: rule:toc
+  - line: 27
+    level: 2
+    text: Conflicting Requirements and Diamond Dependencies
+    role: section
+    classified_by: rule:toc
+  - line: 53
+    level: 2
+    text: Importing Dependencies
+    role: section
+    classified_by: rule:toc
+  - line: 57
+    level: 2
+    text: Compatibility Promises
+    role: section
+    classified_by: rule:toc
+  - line: 65
+    level: 3
+    text: C++
+    role: embedded
+    classified_by: model
+  - line: 69
+    level: 4
+    text: Ga
+    role: embedded
+    classified_by: model
+  - line: 73
+    level: 4
+    text: Abseil
+    role: embedded
+    classified_by: model
+  - line: 79
+    level: 4
+    text: Boost
+    role: embedded
+    classified_by: model
+  - line: 91
+    level: 2
+    text: Considerations When Importing
+    role: section
+    classified_by: rule:toc
+  - line: 116
+    level: 2
+    text: How Google Handles Importing Dependencies
+    role: section
+    classified_by: rule:toc
+  - line: 140
+    level: 2
+    text: Dependency Management, In Theory
+    role: section
+    classified_by: rule:toc
+  - line: 148
+    level: 2
+    text: Nothing Changes (aka The Static Dependency Model)
+    role: section
+    classified_by: rule:toc
+  - line: 158
+    level: 2
+    text: Semantic Versioning
+    role: section
+    classified_by: rule:toc
+  - line: 176
+    level: 2
+    text: Bundled Distribution Models
+    role: section
+    classified_by: rule:toc
+  - line: 190
+    level: 3
+    text: Live at Head
+    role: section
+    classified_by: rule:toc
+  - line: 206
+    level: 2
+    text: The Limitations of SemVer
+    role: section
+    classified_by: rule:toc
+  - line: 216
+    level: 2
+    text: SemVer Might Overconstrain
+    role: section
+    classified_by: rule:toc
+  - line: 226
+    level: 2
+    text: SemVer Might Overpromise
+    role: section
+    classified_by: rule:toc
+  - line: 242
+    level: 3
+    text: Motivations
+    role: section
+    classified_by: rule:toc
+  - line: 252
+    level: 4
+    text: Minimum Version Selection
+    role: section
+    classified_by: rule:toc
+  - line: 268
+    level: 3
+    text: So, Does SemVer Work?
+    role: section
+    classified_by: rule:toc
+  - line: 285
+    level: 2
+    text: Dependency Management with Infinite Resources
+    role: section
+    classified_by: rule:toc
+  - line: 334
+    level: 2
+    text: Exporting Dependencies
+    role: section
+    classified_by: rule:toc
+  - line: 340
+    level: 3
+    text: 'Example: open sourcing gflags'
+    role: embedded
+    classified_by: model
+  - line: 362
+    level: 2
+    text: 'Case Study: AppEngine'
+    role: embedded
+    classified_by: model
+  - line: 376
+    level: 2
+    text: Conclusion
+    role: section
+    classified_by: rule:toc
+  - line: 382
+    level: 2
+    text: TL;DRs
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/031-chapter-22-large-scale-changes.md
+  chapter_sha256: a3ee4bc4382d8186caf5a0cc1b5bf07ec2e3ffda6a3029afa676e0dc50313677
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 22: Large-Scale Changes'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 11
+    level: 2
+    text: What Is a Large-Scale Change?
+    role: section
+    classified_by: rule:toc
+  - line: 36
+    level: 2
+    text: Who Deals with LSCs?
+    role: section
+    classified_by: rule:toc
+  - line: 52
+    level: 2
+    text: 'Case Study: Filling Potholes'
+    role: embedded
+    classified_by: model
+  - line: 62
+    level: 2
+    text: Barriers to Atomic Changes
+    role: section
+    classified_by: rule:toc
+  - line: 66
+    level: 3
+    text: Technical Limitations
+    role: section
+    classified_by: rule:toc
+  - line: 72
+    level: 2
+    text: Merge Conflicts
+    role: section
+    classified_by: rule:toc
+  - line: 82
+    level: 2
+    text: No Haunted Graveyards
+    role: section
+    classified_by: rule:toc
+  - line: 92
+    level: 2
+    text: Heterogeneity
+    role: section
+    classified_by: rule:toc
+  - line: 104
+    level: 2
+    text: Testing
+    role: section
+    classified_by: rule:toc
+  - line: 114
+    level: 2
+    text: 'Case Study: Testing LSCs'
+    role: embedded
+    classified_by: model
+  - line: 116
+    level: 3
+    text: Adam Bender
+    role: embedded
+    classified_by: model
+  - line: 124
+    level: 4
+    text: Riding the TAP Train
+    role: embedded
+    classified_by: model
+  - line: 148
+    level: 4
+    text: Code Review
+    role: section
+    classified_by: rule:toc
+  - line: 152
+    level: 2
+    text: 'Case Study: scoped ptr to std::unique ptr'
+    role: embedded
+    classified_by: model
+  - line: 168
+    level: 2
+    text: LSC Infrastructure
+    role: section
+    classified_by: rule:toc
+  - line: 172
+    level: 3
+    text: Policies and Culture
+    role: section
+    classified_by: rule:toc
+  - line: 190
+    level: 2
+    text: Codebase Insight
+    role: section
+    classified_by: rule:toc
+  - line: 200
+    level: 2
+    text: Change Management
+    role: section
+    classified_by: rule:toc
+  - line: 204
+    level: 2
+    text: Testing
+    role: section
+    classified_by: rule:toc
+  - line: 210
+    level: 2
+    text: Language Support
+    role: section
+    classified_by: rule:toc
+  - line: 222
+    level: 3
+    text: 'Case Study: Operation RoseHub'
+    role: embedded
+    classified_by: model
+  - line: 230
+    level: 2
+    text: The LSC Process
+    role: section
+    classified_by: rule:toc
+  - line: 241
+    level: 3
+    text: Authorization
+    role: section
+    classified_by: rule:toc
+  - line: 251
+    level: 2
+    text: Change Creation
+    role: section
+    classified_by: rule:toc
+  - line: 261
+    level: 2
+    text: Sharding and Submitting
+    role: section
+    classified_by: rule:toc
+  - line: 267
+    level: 3
+    text: Cattle Versus Pets
+    role: embedded
+    classified_by: model
+  - line: 281
+    level: 4
+    text: Testing
+    role: section
+    classified_by: rule:toc
+  - line: 295
+    level: 4
+    text: Mailing reviewers
+    role: embedded
+    classified_by: model
+  - line: 303
+    level: 4
+    text: Reviewing
+    role: embedded
+    classified_by: model
+  - line: 311
+    level: 4
+    text: Submitting
+    role: embedded
+    classified_by: model
+  - line: 317
+    level: 2
+    text: Cleanup
+    role: section
+    classified_by: rule:toc
+  - line: 321
+    level: 2
+    text: Conclusion
+    role: section
+    classified_by: rule:toc
+  - line: 331
+    level: 2
+    text: TL;DRs
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/032-chapter-23-continuous-integration.md
+  chapter_sha256: 49f9b6295e8c58ae7fbe94e25b7b9804c2ae5dc38e1906d6a2bdfdccc3350a64
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 23: Continuous Integration'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 3
+    level: 2
+    text: Written by Rachel Tannenbaum Edited by Lisa Carey
+    role: embedded
+    classified_by: model
+  - line: 32
+    level: 2
+    text: CI Concepts
+    role: section
+    classified_by: rule:toc
+  - line: 36
+    level: 2
+    text: Fast Feedback Loops
+    role: section
+    classified_by: rule:toc
+  - line: 66
+    level: 3
+    text: Accessible and actionable feedback
+    role: embedded
+    classified_by: model
+  - line: 76
+    level: 4
+    text: Automation
+    role: section
+    classified_by: rule:toc
+  - line: 82
+    level: 4
+    text: Continuous Build
+    role: embedded
+    classified_by: model
+  - line: 88
+    level: 4
+    text: Continuous Delivery
+    role: section
+    classified_by: rule:toc
+  - line: 100
+    level: 4
+    text: 'We then define CD as follows:'
+    role: embedded
+    classified_by: model
+  - line: 118
+    level: 2
+    text: Continuous Testing
+    role: section
+    classified_by: rule:toc
+  - line: 128
+    level: 3
+    text: Why presubmit isn't enough
+    role: embedded
+    classified_by: model
+  - line: 140
+    level: 4
+    text: Presubmit versus post-submit
+    role: embedded
+    classified_by: model
+  - line: 152
+    level: 4
+    text: Release candidate testing
+    role: embedded
+    classified_by: model
+  - line: 164
+    level: 4
+    text: As a sanity check
+    role: embedded
+    classified_by: model
+  - line: 168
+    level: 4
+    text: For auditability
+    role: embedded
+    classified_by: model
+  - line: 172
+    level: 4
+    text: To allow for cherry picks
+    role: embedded
+    classified_by: model
+  - line: 176
+    level: 4
+    text: For emergency pushes
+    role: embedded
+    classified_by: model
+  - line: 180
+    level: 4
+    text: Production testing
+    role: embedded
+    classified_by: model
+  - line: 186
+    level: 2
+    text: CI Is Alerting
+    role: embedded
+    classified_by: model
+  - line: 188
+    level: 3
+    text: Titus Winters
+    role: embedded
+    classified_by: model
+  - line: 218
+    level: 2
+    text: CI Challenges
+    role: section
+    classified_by: rule:toc
+  - line: 234
+    level: 2
+    text: Hermetic Testing
+    role: section
+    classified_by: rule:toc
+  - line: 252
+    level: 3
+    text: False positives
+    role: embedded
+    classified_by: model
+  - line: 256
+    level: 4
+    text: False negatives
+    role: embedded
+    classified_by: model
+  - line: 262
+    level: 3
+    text: The Hermetic Google Assistant
+    role: embedded
+    classified_by: model
+  - line: 280
+    level: 2
+    text: CI at Google
+    role: section
+    classified_by: rule:toc
+  - line: 284
+    level: 2
+    text: 'TAP: Google''s Global Continuous Build'
+    role: embedded
+    classified_by: model
+  - line: 286
+    level: 3
+    text: Adam Bender
+    role: embedded
+    classified_by: model
+  - line: 292
+    level: 4
+    text: Presubmit optimization
+    role: embedded
+    classified_by: model
+  - line: 306
+    level: 4
+    text: Culprit finding
+    role: embedded
+    classified_by: model
+  - line: 312
+    level: 4
+    text: Failure management
+    role: embedded
+    classified_by: model
+  - line: 322
+    level: 4
+    text: Resource constraints
+    role: embedded
+    classified_by: model
+  - line: 330
+    level: 2
+    text: 'CI Case Study: Google Takeout'
+    role: section
+    classified_by: rule:toc
+  - line: 334
+    level: 3
+    text: 'Scenario #1: Continuously broken dev deploys'
+    role: embedded
+    classified_by: model
+  - line: 357
+    level: 4
+    text: 'Scenario #2: Indecipherable test logs'
+    role: embedded
+    classified_by: model
+  - line: 371
+    level: 4
+    text: 'Scenario #3: Debugging "all of Google"'
+    role: embedded
+    classified_by: model
+  - line: 383
+    level: 4
+    text: 'Scenario #4: Keeping it green'
+    role: embedded
+    classified_by: model
+  - line: 411
+    level: 4
+    text: But I Can't Afford CI
+    role: section
+    classified_by: rule:toc
+  - line: 417
+    level: 2
+    text: Conclusion
+    role: section
+    classified_by: rule:toc
+  - line: 421
+    level: 2
+    text: TL;DRs
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/033-chapter-24-continuous-delivery.md
+  chapter_sha256: 829c9dc69ed8f14a256fd402619d547939244f40e20183f7cf1c83d4b7a1decc
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 24: Continuous Delivery'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 19
+    level: 2
+    text: Idioms of Continuous Delivery at Google
+    role: section
+    classified_by: rule:toc
+  - line: 51
+    level: 2
+    text: 'Velocity Is a Team Sport: How to Break Up a Deployment into Manageable Pieces'
+    role: section
+    classified_by: model
+  - line: 61
+    level: 2
+    text: 'Evaluating Changes in Isolation: Flag-Guarding Features'
+    role: section
+    classified_by: rule:toc
+  - line: 69
+    level: 2
+    text: 'Striving for Agility: Setting Up a Release Train'
+    role: section
+    classified_by: rule:toc
+  - line: 79
+    level: 2
+    text: No Binary Is Perfect
+    role: section
+    classified_by: rule:toc
+  - line: 89
+    level: 3
+    text: Meet Your Release Deadline
+    role: section
+    classified_by: rule:toc
+  - line: 99
+    level: 2
+    text: 'Quality and User-Focus: Ship Only What Gets Used'
+    role: section
+    classified_by: rule:toc
+  - line: 113
+    level: 2
+    text: 'Shifting Left: Making Data-Driven Decisions Earlier'
+    role: section
+    classified_by: rule:toc
+  - line: 131
+    level: 2
+    text: 'Changing Team Culture: Building Discipline into Deployment'
+    role: section
+    classified_by: rule:toc
+  - line: 147
+    level: 2
+    text: Conclusion
+    role: section
+    classified_by: rule:toc
+  - line: 153
+    level: 2
+    text: TL;DRs
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/034-chapter-25-compute-as-a-service.md
+  chapter_sha256: ff95feb6a791d93acf76c5ff26c939503c53fed862137e576957d114d37beeef
+  headings:
+  - line: 1
+    level: 1
+    text: 'Chapter 25: Compute as a Service'
+    role: section
+    classified_by: rule:chapter-title
+  - line: 3
+    level: 2
+    text: Written by Onufry Wojtaszczyk Edited by Lisa Carey
+    role: embedded
+    classified_by: model
+  - line: 21
+    level: 2
+    text: Taming the Compute Environment
+    role: section
+    classified_by: rule:toc
+  - line: 25
+    level: 3
+    text: Automation of Toil
+    role: section
+    classified_by: rule:toc
+  - line: 35
+    level: 4
+    text: Simple automations
+    role: embedded
+    classified_by: model
+  - line: 55
+    level: 4
+    text: Automated scheduling
+    role: embedded
+    classified_by: model
+  - line: 67
+    level: 2
+    text: Containerization and Multitenancy
+    role: section
+    classified_by: rule:toc
+  - line: 82
+    level: 3
+    text: My neighbor's dog barks in my RAM
+    role: embedded
+    classified_by: model
+  - line: 102
+    level: 4
+    text: Rightsizing and autoscaling
+    role: embedded
+    classified_by: model
+  - line: 110
+    level: 2
+    text: Summary
+    role: section
+    classified_by: rule:toc
+  - line: 122
+    level: 2
+    text: Writing Software for Managed Compute
+    role: section
+    classified_by: rule:toc
+  - line: 126
+    level: 2
+    text: Architecting for Failure
+    role: section
+    classified_by: rule:toc
+  - line: 150
+    level: 2
+    text: Batch Versus Serving
+    role: section
+    classified_by: rule:toc
+  - line: 175
+    level: 2
+    text: Managing State
+    role: section
+    classified_by: rule:toc
+  - line: 195
+    level: 2
+    text: Connecting to a Service
+    role: section
+    classified_by: rule:toc
+  - line: 209
+    level: 3
+    text: One-Off Code
+    role: section
+    classified_by: rule:toc
+  - line: 221
+    level: 2
+    text: CaaS Over Time and Scale
+    role: section
+    classified_by: rule:toc
+  - line: 225
+    level: 3
+    text: Containers as an Abstraction
+    role: section
+    classified_by: rule:toc
+  - line: 249
+    level: 4
+    text: Containers and implicit dependencies
+    role: embedded
+    classified_by: model
+  - line: 259
+    level: 4
+    text: One Service to Rule Them All
+    role: section
+    classified_by: rule:toc
+  - line: 277
+    level: 4
+    text: Multitenancy for serving jobs
+    role: embedded
+    classified_by: model
+  - line: 286
+    level: 2
+    text: Submitted Configuration
+    role: section
+    classified_by: rule:toc
+  - line: 302
+    level: 2
+    text: Choosing a Compute Service
+    role: section
+    classified_by: rule:toc
+  - line: 322
+    level: 3
+    text: Centralization Versus Customization
+    role: section
+    classified_by: rule:toc
+  - line: 326
+    level: 4
+    text: Need for customization
+    role: embedded
+    classified_by: model
+  - line: 348
+    level: 4
+    text: 'Level of Abstraction: Serverless'
+    role: section
+    classified_by: rule:toc
+  - line: 364
+    level: 4
+    text: What is serverless?
+    role: embedded
+    classified_by: model
+  - line: 378
+    level: 4
+    text: Pros and cons
+    role: embedded
+    classified_by: model
+  - line: 394
+    level: 4
+    text: The trade-off
+    role: embedded
+    classified_by: model
+  - line: 406
+    level: 4
+    text: Public Versus Private
+    role: section
+    classified_by: rule:toc
+  - line: 428
+    level: 2
+    text: Conclusion
+    role: section
+    classified_by: rule:toc
+  - line: 436
+    level: 2
+    text: TL;DRs
+    role: section
+    classified_by: rule:toc
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/035-part-v-conclusion.md
+  chapter_sha256: 9549d2899c39c083cbfbb8411d89eb20c8d4bc3bc995f44469ae315c72dd9033
+  headings:
+  - line: 1
+    level: 1
+    text: 'Part V: Conclusion'
+    role: section
+    classified_by: rule:chapter-title
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/036-afterword.md
+  chapter_sha256: 41cf031044dc7ff8066323cca2538c10255c0a1c52651de53096ea56818a0af4
+  headings:
+  - line: 1
+    level: 1
+    text: Afterword
+    role: section
+    classified_by: rule:chapter-title
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/037-index.md
+  chapter_sha256: 660a4c1fcffafc0fac3f52ff7dde4ba6f0b4b68a0ecd2358f42e0f20b6ef6b27
+  headings:
+  - line: 1
+    level: 1
+    text: Index
+    role: section
+    classified_by: rule:chapter-title
+  - line: 1021
+    level: 2
+    text: About the Authors
+    role: section
+    classified_by: model
+- path: books/dokumen-pub-software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798/chapters/038-colophon.md
+  chapter_sha256: 108ed1b9d60f1b6a7043e422684d1db871dfeea6d03e393edc11ce6be18c8b00
+  headings:
+  - line: 1
+    level: 1
+    text: Colophon
+    role: section
+    classified_by: rule:chapter-title
+  - line: 13
+    level: 2
+    text: O'REILLY"
+    role: embedded
+    classified_by: model
+  - line: 15
+    level: 2
+    text: There's much more where this came from.
+    role: embedded
+    classified_by: model
