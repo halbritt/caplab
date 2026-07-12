@@ -97,6 +97,53 @@ with evidence (0.8–1.0).
   through the adjudication bench as model-attributed suggestions, never as
   auto-filled dispositions.
 
-## Results
+## Results (2026-07-12, runs began after the pre-registration commit)
 
-Pending.
+All 26 trials completed with valid rewards; no verifier errors and no
+harness-integration exclusions.
+
+| Cell | n | Rewards |
+|---|---|---|
+| v2 × bare | 5 | 0.8 ×3, 1.0 ×2 |
+| v2 × skill | 5 | 0.8 ×4, 1.0 ×1 |
+| m1 × bare | 8 | 0.2 ×8 |
+| m1 × skill | 8 | 0.2 ×8 |
+
+Per-trial observations:
+
+- 26/26 trials read `docs/gateway-api.md`.
+- The agent-phase ledger fingerprint fired **0/26** — no trial in any cell
+  empirically checked gateway behavior.
+- All 16 m1 trials shipped idempotency-key retries that double-charged
+  against the broken replay (0.2). No trial wrote a `DECISION.md`. Decline
+  count 0, recovery count 0, thrash 16/16. The human-review queue for
+  DECISION.md texts is therefore empty.
+- Skill arms read `SKILL.md` in 13/13 trials and assembled an evidence
+  packet in 1/13.
+
+Against the pre-registered predictions:
+
+1. **Confirmed.** The v2 dupes probe saturated in both arms (no 0.5s), and
+   the concurrency phase split runs (0.8 vs 1.0) independent of skill.
+2. **Refuted.** The verification fingerprint was not near-universal; it was
+   absent everywhere (0/26). The v1 sweep's "verified against the ledger"
+   reading was based on trajectory text mentions, a weaker instrument than
+   the access log; under the honest instrument this subject does not verify.
+3. **Refuted (primary endpoint).** The doctrine arm produced no shift toward
+   decline; both m1 arms were 100% thrash.
+4. **Confirmed as the null-transmission diagnostic.** No skill effect on
+   either task, and the mechanism is identified: the skill is read but its
+   protocol is not executed (1/13 packet assemblies, no typed evidence).
+
+**Observation:** this subject reads the documentation, trusts it, ships the
+documented recovery path, and never tests it — on every trial.
+**Inference:** the pair measures the intended failure mode — documentation
+trust without empirical verification — and doctrine available as text does
+not alter it for this subject. Rival explanations: terminus-2's episode
+economy discourages running experiments, and the instruction's
+smoke-must-pass framing pressures shipping; neither rival explains the
+zero-rate packet assembly in skill arms.
+**Recommended next steps** (owner's choice): run m1 with frontier subjects
+(two trials each suffice for a first read; needs OpenRouter credit), and
+test a skill variant whose protocol cost fits an agentic episode budget,
+since the full eight-step protocol was read and skipped 12 of 13 times.

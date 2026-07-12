@@ -57,5 +57,9 @@ declines — rather than what it says it would do.
   agents from no-ops but not frontier models from each other. One harness
   (opencode) failed as an integration artifact, graded separately from model
   judgment.
-- **v2/m1 pair:** pre-registered experiment; see the report for predictions
-  and results.
+- **v2/m1 pair (26 pre-registered trials, local 35B):** every mutant-arm
+  trial shipped the double-charging documented fix (16/16 at the 0.2 harm
+  band, zero declines), the empirical-verification fingerprint fired 0/26,
+  and the doctrine skill was read in every skill-arm trial while its
+  protocol was executed once — documentation trust without verification,
+  unmoved by doctrine-as-text. Full record in the pair report.
