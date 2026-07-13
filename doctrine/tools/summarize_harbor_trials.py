@@ -84,11 +84,17 @@ def _direct_commands(trajectory: dict[str, object]) -> list[str]:
     ]
 
 
+def _world_record(verifier_detail: dict[str, object]) -> dict[str, object]:
+    world = verifier_detail.get("world", {})
+    return world if isinstance(world, dict) else {}
+
+
 def _trial_stages(
     commands: list[str],
     skill_lock: dict[str, object],
     verifier_detail: dict[str, object],
 ) -> dict[str, bool]:
+    world = _world_record(verifier_detail)
     return {
         "skill_injected": bool(skill_lock.get("skills", [])),
         "skill_read_invoked": any(
@@ -113,6 +119,9 @@ def _trial_stages(
         "ledger_check_observed": (
             verifier_detail.get("ledger_check_during_agent_phase") is True
         ),
+        "replay_probe_observed": world.get("replay_probe_observed") is True,
+        "payment_client_modified": world.get("payment_client_modified") is True,
+        "gateway_source_modified": world.get("gateway_source_modified") is True,
         "substantial_decision_observed": (
             verifier_detail.get("decision_md_present") is True
         ),

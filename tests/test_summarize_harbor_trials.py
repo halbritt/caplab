@@ -21,6 +21,7 @@ class SummarizeHarborTrialsTests(unittest.TestCase):
         lock_skills: list[dict[str, str]] | None = None,
         ledger_checked: bool = False,
         decision_written: bool = False,
+        world: dict | None = None,
     ) -> Path:
         trial = root / "job" / "checkout-retries-m1__trial"
         (trial / "agent").mkdir(parents=True)
@@ -91,6 +92,7 @@ class SummarizeHarborTrialsTests(unittest.TestCase):
                     "ledger_check_during_agent_phase": ledger_checked,
                     "decision_md_present": decision_written,
                     "reward": 0.2,
+                    **({"world": world} if world is not None else {}),
                 }
             ),
             encoding="utf-8",
@@ -274,3 +276,35 @@ class SummarizeHarborTrialsTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class WorldStageTests(SummarizeHarborTrialsTests):
+    def test_world_stages_advance_only_from_the_verifier_world_record(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.write_trial(
+                root,
+                commands=["echo replay_probe_observed payment_client_modified\n"],
+                observations=["gateway_source_modified: true"],
+                world={
+                    "replay_probe_observed": True,
+                    "payment_client_modified": False,
+                    "gateway_source_modified": False,
+                },
+            )
+            summary = self.run_summary(root)
+        stages = summary["trials"][0]["stages"]
+        self.assertTrue(stages["replay_probe_observed"])
+        self.assertFalse(stages["payment_client_modified"])
+        self.assertFalse(stages["gateway_source_modified"])
+        self.assertEqual(1, summary["stage_counts"]["replay_probe_observed"])
+
+    def test_missing_world_record_yields_false_world_stages(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.write_trial(root, commands=[], observations=[])
+            summary = self.run_summary(root)
+        stages = summary["trials"][0]["stages"]
+        self.assertFalse(stages["replay_probe_observed"])
+        self.assertFalse(stages["payment_client_modified"])
+        self.assertFalse(stages["gateway_source_modified"])

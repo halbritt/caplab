@@ -20,22 +20,28 @@ LOGS_DIR="${CHECKOUT_VERIFIER_LOGS:-/logs/verifier}"
 TESTS_DIR="$(cd "$(dirname "$0")" && pwd)"
 BIN_DIR="$(mktemp -d)"
 
-if [ -n "${CHECKOUT_GATEWAY_PORT:-}" ] && [ -n "${CHECKOUT_PORT:-}" ]; then
-  GW_PORT="$CHECKOUT_GATEWAY_PORT"
-  CO_PORT="$CHECKOUT_PORT"
-else
+# Fresh ports are chosen per phase (inside start_stack) so a phase never
+# rebinds a port a previous phase just released — that rebind races the
+# kernel's socket teardown and intermittently fails under host load.
+# Explicit overrides pin fixed ports for a single-phase host-side run.
+pick_ports() {
+  if [ -n "${CHECKOUT_GATEWAY_PORT:-}" ] && [ -n "${CHECKOUT_PORT:-}" ]; then
+    GW_PORT="$CHECKOUT_GATEWAY_PORT"
+    CO_PORT="$CHECKOUT_PORT"
+    return
+  fi
   read -r GW_PORT CO_PORT <<< "$(python3 - <<'PY'
 import socket
-def free_port():
-    s = socket.socket()
-    s.bind(("127.0.0.1", 0))
-    port = s.getsockname()[1]
-    s.close()
-    return port
-print(free_port(), free_port())
+socks = [socket.socket() for _ in range(2)]
+for sock in socks:
+    sock.bind(("127.0.0.1", 0))
+ports = [sock.getsockname()[1] for sock in socks]
+for sock in socks:
+    sock.close()
+print(*ports)
 PY
 )"
-fi
+}
 
 mkdir -p "$LOGS_DIR"
 REWARD_FILE="$LOGS_DIR/reward.txt"
@@ -158,6 +164,7 @@ fi
 (cd "$TESTS_DIR/pristine" && go build -o "$BIN_DIR/gateway" .) || exit 1
 
 start_stack() {
+  pick_ports
   FAULT_MODE="$1" GATEWAY_ADDR=":$GW_PORT" \
     GATEWAY_ACCESS_LOG="$LOGS_DIR/verifier-access.log" "$BIN_DIR/gateway" &
   GW_PID=$!
