@@ -86,6 +86,28 @@ are recorded in the adapter README; grade harness-integration failures
 separately from model judgment — a reasoning-model reply a harness cannot
 parse is not a judgment result.
 
+## Native execution seam (striatum backend tuples)
+
+Tuples declared in striatum-next's backend fleet (native harness +
+subscription auth, e.g. `codex-sol-max`) run without Harbor through the
+`striatum-workspace-capture` seam: the runner materializes the task's
+`/app`, presents it at `/app` inside a private namespace with the pinned
+corpus at its baked path and a loopback-only network (plus vendor-endpoint
+egress for real runtimes), captures the full edited tree — which Harbor
+discarded — and grades the capture with the unchanged verifier. Contract
+and deviations: `native-capture-contract.md`. Driver:
+`doctrine/tools/run_checkout_native.py`. Model-free parity gate, required
+after any change to the surface, runner, or verifiers:
+
+```bash
+NATIVE_CORPUS=<pinned corpus dir> NATIVE_CAPTURE_BINARY=<surface binary> \
+  bash doctrine/evaluations/robustness/harbor/tasks/checkout-retries-refs/run-native-matrix.sh
+```
+
+Native trial dirs (`trial.json`) feed `summarize_harbor_trials.py` alongside
+Harbor jobs; executed-command stages come only from the runner-declared
+`codex-jsonl` event format, everything else from the verifier record.
+
 ## Records and retention
 
 Job records, trajectories, receipts, and `DECISION.md` texts stay in session

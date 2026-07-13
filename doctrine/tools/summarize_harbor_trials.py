@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Summarize executed Harbor trial stages from retained job records."""
+"""Summarize executed trial stages from retained job records.
+
+Two trial layouts are accepted, both fail-closed on unknown formats:
+Harbor jobs (terminus-2 agent, ATIF-v1.7 trajectory) and native
+workspace-capture trials (trial.json with schema native-capture-trial/1,
+whose runtime_events field names how executed commands can be read from
+capture/runtime.log)."""
 
 from __future__ import annotations
 
@@ -179,12 +185,99 @@ def _summarize_trial(trajectory_path: Path) -> dict[str, object]:
     skill_lock = _load_json(lock_path)
     verifier_detail = _load_json(detail_path)
     metadata = _trial_metadata(trial_dir, trial_result, verifier_detail)
+    metadata["adapter"] = "harbor"
     metadata["artifacts"] = _trial_artifacts(
         trial_dir, (lock_path, result_path, trajectory_path, detail_path)
     )
     metadata["stages"] = _trial_stages(
         _direct_commands(trajectory), skill_lock, verifier_detail
     )
+    return metadata
+
+
+_BASH_WRAPPER = re.compile(r"^/(?:usr/)?bin/(?:ba)?sh\s+-[a-z]*c\s+")
+
+
+def _unwrap_shell(command: str) -> str:
+    """Strip codex's `/bin/bash -lc '<cmd>'` wrapper so the read/gate
+    regexes, which anchor at start-of-string or after a shell separator,
+    see the actual command rather than the wrapper's own argv."""
+    match = _BASH_WRAPPER.match(command)
+    if not match:
+        return command
+    inner = command[match.end():].strip()
+    if len(inner) >= 2 and inner[0] == inner[-1] and inner[0] in "'\"":
+        inner = inner[1:-1]
+    return inner
+
+
+def _native_commands(trial_record: dict[str, object], runtime_log: Path) -> list[str]:
+    """Executed commands per the trial's declared runtime_events format.
+
+    Faking a supported format would subvert the fail-closed design the same
+    way faking terminus-2 metadata would; formats are declared by the
+    runner from the declaration it dispatched, never sniffed. codex emits a
+    command as an item.started then an item.completed with the same id; only
+    the completed event is counted, so a command is never double-read.
+    """
+    events_format = trial_record.get("runtime_events")
+    if events_format == "none":
+        return []
+    if events_format != "codex-jsonl":
+        raise ValueError(f"unsupported runtime_events format: {events_format!r}")
+    if not runtime_log.is_file():
+        # A capture that failed before writing runtime.log has no executed
+        # commands to read; the trial still counts, with its verifier-derived
+        # world stages, rather than crashing the whole summary.
+        return []
+    commands: list[str] = []
+    for line in runtime_log.read_text(encoding="utf-8", errors="replace").splitlines():
+        try:
+            event = json.loads(line)
+        except ValueError:
+            continue
+        if not isinstance(event, dict) or event.get("type") != "item.completed":
+            continue
+        item = event.get("item")
+        if isinstance(item, dict) and item.get("type") == "command_execution":
+            command = item.get("command")
+            if isinstance(command, str):
+                commands.append(_unwrap_shell(command))
+    return commands
+
+
+def _summarize_native_trial(record_path: Path) -> dict[str, object]:
+    trial_dir = record_path.parent
+    trial_record = _load_json(record_path)
+    schema_version = trial_record.get("schema_version")
+    if schema_version != "native-capture-trial/1":
+        raise ValueError(f"unsupported native trial schema: {schema_version!r}")
+    detail_path = trial_dir / "verifier" / "detail.json"
+    runtime_log = trial_dir / "capture" / "runtime.log"
+    verifier_detail = _load_json(detail_path) if detail_path.is_file() else {}
+    provenance = trial_record.get("provenance", {})
+    metadata = {
+        "adapter": "native-capture",
+        "job_name": trial_dir.parent.name,
+        "trial_name": trial_dir.name,
+        "task_name": trial_record.get("task_name"),
+        "model_name": provenance.get("backend_id") if isinstance(provenance, dict) else None,
+        "reward": trial_record.get("reward"),
+        "agent_error": trial_record.get("capture_exit") not in (0, 3),
+        "artifacts": _trial_artifacts(
+            trial_dir,
+            tuple(p for p in (record_path, detail_path, runtime_log) if p.is_file()),
+        ),
+        "stages": _trial_stages(
+            [
+                direct
+                for command in _native_commands(trial_record, runtime_log)
+                if (direct := _direct_command(command)) is not None
+            ],
+            {},  # native conditions are bare: no skill injection surface
+            verifier_detail,
+        ),
+    }
     return metadata
 
 
@@ -200,7 +293,18 @@ def summarize(input_paths: list[Path]) -> dict[str, object]:
             )
         }
     )
-    trials = [_summarize_trial(path) for path in trajectory_paths]
+    native_record_paths = sorted(
+        {
+            record
+            for path in input_paths
+            for record in (
+                [path] if path.name == "trial.json" else path.rglob("trial.json")
+            )
+        }
+    )
+    trials = [_summarize_trial(path) for path in trajectory_paths] + [
+        _summarize_native_trial(path) for path in native_record_paths
+    ]
     stage_names = sorted({name for trial in trials for name in trial["stages"]})
     return {
         "schema_version": "harbor-trial-stage-summary/1",

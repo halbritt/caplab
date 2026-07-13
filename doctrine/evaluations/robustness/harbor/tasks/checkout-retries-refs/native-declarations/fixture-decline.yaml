@@ -1,0 +1,14 @@
+# Fixture runtime declaration for the native parity matrix: the reference
+# solution decline.sh, run through the same declaration-parsing and execution
+# path as a real backend declaration. See
+# docs/agent-judgment/native-capture-contract.md.
+schema_version: 1
+id: fixture-decline
+kind: execution-backend
+aliasing:
+  aliasing_class: fixture
+adapter:
+  command: [/usr/bin/env, APP_DIR=/app, bash, /var/tmp/.bench-runtime/decline.sh]
+  prompt_mode: arg
+provenance_fields:
+  required: [attempts]

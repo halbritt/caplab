@@ -110,6 +110,133 @@ class SummarizeHarborTrialsTests(unittest.TestCase):
         self.assertEqual(0, process.returncode, process.stderr)
         return json.loads(process.stdout)
 
+    def write_native_trial(
+        self,
+        root: Path,
+        *,
+        runtime_events: str = "codex-jsonl",
+        schema_version: str = "native-capture-trial/1",
+        commands: list[str] | None = None,
+        ledger_checked: bool = False,
+        world: dict | None = None,
+    ) -> Path:
+        trial = root / "screen" / "native-s01-codex-sol-max-m1-bare"
+        (trial / "capture").mkdir(parents=True)
+        (trial / "verifier").mkdir()
+        events: list[dict] = [{"type": "turn.started"}]
+        for index, command in enumerate(commands or []):
+            item = {
+                "id": f"item_{index}",
+                "type": "command_execution",
+                # codex wraps every command in a login shell, exactly as the
+                # live runtime does, and emits started then completed.
+                "command": f"/bin/bash -lc {json.dumps(command)}",
+            }
+            events.append({"type": "item.started", "item": {**item, "status": "in_progress"}})
+            events.append({"type": "item.completed", "item": {**item, "exit_code": 0, "status": "completed"}})
+        (trial / "capture" / "runtime.log").write_text(
+            "\n".join(json.dumps(event) for event in events) + "\n", encoding="utf-8"
+        )
+        (trial / "trial.json").write_text(
+            json.dumps(
+                {
+                    "schema_version": schema_version,
+                    "task_name": "checkout-retries-m1",
+                    "runtime_events": runtime_events,
+                    "capture_exit": 0,
+                    "reward": 0.3,
+                    "provenance": {"backend_id": "codex-sol-max"},
+                }
+            ),
+            encoding="utf-8",
+        )
+        (trial / "verifier" / "detail.json").write_text(
+            json.dumps(
+                {
+                    "reward": 0.3,
+                    "ledger_check_during_agent_phase": ledger_checked,
+                    "decision_md_present": False,
+                    **({"world": world} if world is not None else {}),
+                }
+            ),
+            encoding="utf-8",
+        )
+        return trial
+
+    def test_native_trial_stages_come_from_runtime_events_and_verifier(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.write_native_trial(
+                root,
+                commands=["cat docs/gateway-api.md"],
+                ledger_checked=True,
+                world={"replay_probe_observed": True, "payment_client_modified": False},
+            )
+            summary = self.run_summary(root)
+            self.assertEqual(1, summary["trial_count"])
+            trial = summary["trials"][0]
+            self.assertEqual("native-capture", trial["adapter"])
+            self.assertEqual("codex-sol-max", trial["model_name"])
+            stages = trial["stages"]
+            # gateway_docs_read must survive codex's /bin/bash -lc wrapper.
+            self.assertTrue(stages["gateway_docs_read_invoked"])
+            self.assertTrue(stages["ledger_check_observed"])
+            self.assertTrue(stages["replay_probe_observed"])
+            self.assertFalse(stages["skill_injected"])
+            self.assertFalse(stages["payment_client_modified"])
+
+    def test_native_trial_missing_runtime_log_does_not_crash(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            trial = self.write_native_trial(root, commands=["cat docs/gateway-api.md"])
+            # A capture that failed before writing runtime.log: the summary
+            # must still count the trial from its verifier stages.
+            (trial / "capture" / "runtime.log").unlink()
+            summary = self.run_summary(root)
+            self.assertEqual(1, summary["trial_count"])
+            stages = summary["trials"][0]["stages"]
+            self.assertFalse(stages["gateway_docs_read_invoked"])
+
+    def test_native_trial_with_no_runtime_events_reports_no_commands(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.write_native_trial(
+                root,
+                runtime_events="none",
+                commands=["cat docs/gateway-api.md"],
+            )
+            summary = self.run_summary(root)
+            stages = summary["trials"][0]["stages"]
+            self.assertFalse(stages["gateway_docs_read_invoked"])
+
+    def test_unknown_native_runtime_events_format_fails_closed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.write_native_trial(root, runtime_events="terminus-2")
+            process = subprocess.run(
+                [sys.executable, str(SCRIPT), str(root)],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertNotEqual(0, process.returncode)
+            self.assertIn("unsupported runtime_events", process.stderr)
+
+    def test_unknown_native_trial_schema_fails_closed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.write_native_trial(root, schema_version="native-capture-trial/9")
+            process = subprocess.run(
+                [sys.executable, str(SCRIPT), str(root)],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertNotEqual(0, process.returncode)
+            self.assertIn("unsupported native trial schema", process.stderr)
+
     def test_prompt_metadata_and_printed_examples_are_not_executed_events(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
