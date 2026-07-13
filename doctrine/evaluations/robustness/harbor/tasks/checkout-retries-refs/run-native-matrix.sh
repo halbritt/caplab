@@ -27,6 +27,9 @@ cp "$HERE"/*.sh "$RUNTIME_DIR/"
 # filesystem the subject will see, not just the permissive default namespace.
 CONFINE_ARG=()
 [ "${NATIVE_CONFINE:-0}" = "1" ] && CONFINE_ARG=(--confine)
+# NATIVE_OBSERVE=1 also turns on the passive loopback observer, so parity is
+# proven in the exact namespace (confine + observe) the real screen uses.
+[ "${NATIVE_OBSERVE:-0}" = "1" ] && CONFINE_ARG+=(--observe)
 
 run_cell() {
   local TASK="$1" REF="$2"

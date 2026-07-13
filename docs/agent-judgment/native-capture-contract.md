@@ -36,6 +36,10 @@ striatum-workspace-capture \
   -bind <src>:<dst>[:ro]            # repeatable: extra binds in the namespace
   -netns                            # private network namespace, loopback only
   -netns-egress                     # with -netns: slirp4netns user-mode NAT out
+  -observe-loopback                 # with -netns: PID-1 observer records loopback
+                                    #   HTTP (method/path/idempotency-key) to
+                                    #   <output>/wire.log — harness-owned, agent
+                                    #   cannot kill it or reach the log
   -runtime-arg <arg>                # repeatable: appended to the declaration's
                                     #   adapter.command before the prompt; every use
                                     #   is recorded in provenance as a deviation
@@ -149,6 +153,26 @@ never reach the model (the declaration's own `env` prefix still delivers
 what the harness needs, e.g. `CODEX_HOME`). The model-free fixture path runs
 `-netns` **without** `-egress`, so its namespace has only private loopback —
 no route off-box at all.
+
+### Tamper-resistant empirical-probe endpoint (`-observe-loopback`)
+
+The `/app/gateway_access.log` world fingerprint is agent-writable: an agent
+that runs its own dev gateway with `GATEWAY_ACCESS_LOG` pointed at `/tmp`, or
+deletes `/app/gateway_access.log`, blinds it (the Sol/max screen showed this
+in 4/4). `-observe-loopback` replaces it with a harness-owned observation:
+inside the netns, the surface re-execs itself as the PID-1 namespace init and
+passively sniffs loopback (AF_PACKET, `CAP_NET_RAW`), writing one record per
+HTTP request — `<METHOD> <PATH> idem=<8hex|->` — to `<output>/wire.log`. As
+PID 1 the observer cannot be killed by the agent (the kernel drops
+in-namespace fatal signals to the init), and the wire log is an inherited
+descriptor the agent has no path to, so the observation survives log
+redirection, `/app/gateway_access.log` deletion, and active kill attempts.
+`run_checkout_native.py --observe` derives the endpoint: `same_key_replay_observed`
+(one idempotency key on ≥2 POST /charge) and `ledger_query_observed`. Only the
+delivered packet direction is counted, so loopback's double-capture cannot
+turn a single keyed charge into a false replay. Validated against six
+model-free behavior fixtures (`checkout-retries-refs/endpoint-fixtures/`) and
+re-passed through the full parity matrix (`NATIVE_OBSERVE=1`).
 
 The **confining root** (`-confine`) is built and used by the real-model run:
 it binds the OS read-only and, under a masked `/home/halbritt` and

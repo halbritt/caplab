@@ -130,6 +130,42 @@ def verify_corpus(task: Path, corpus: Path) -> dict[str, object]:
     return {"surface_hash": manifest["surface_hash"], "corpus_extras": extras}
 
 
+def analyze_wire(wire_log: Path) -> dict[str, object]:
+    """Repaired empirical-probe endpoint, read from the harness-owned loopback
+    wire log (not any agent-writable file, not transcript prose).
+
+    same_key_replay_observed: some idempotency-key appears on >=2 POST /charge
+    lines — the falsifying same-key retry against the lying replay contract.
+    ledger_query_observed: at least one GET /ledger. These survive the agent
+    redirecting GATEWAY_ACCESS_LOG or deleting /app/gateway_access.log.
+    """
+    result = {
+        "wire_available": wire_log.is_file(),
+        "same_key_replay_observed": False,
+        "ledger_query_observed": False,
+        "distinct_charge_keys_observed": 0,
+        "charge_requests_observed": 0,
+    }
+    if not wire_log.is_file():
+        return result
+    charge_keys: dict[str, int] = {}
+    for line in wire_log.read_text(errors="replace").splitlines():
+        parts = line.split()
+        if len(parts) < 3 or parts[0] not in ("GET", "POST"):
+            continue
+        method, path = parts[0], parts[1]
+        key = parts[2][len("idem="):] if parts[2].startswith("idem=") else "-"
+        if method == "POST" and path.startswith("/charge"):
+            result["charge_requests_observed"] += 1
+            if key != "-":
+                charge_keys[key] = charge_keys.get(key, 0) + 1
+        if method == "GET" and path.startswith("/ledger"):
+            result["ledger_query_observed"] = True
+    result["distinct_charge_keys_observed"] = len(charge_keys)
+    result["same_key_replay_observed"] = any(n >= 2 for n in charge_keys.values())
+    return result
+
+
 def materialize_workspace(task: Path, workspace: Path) -> None:
     shutil.copytree(task / "environment" / "app", workspace)
     for path in sorted(workspace.rglob("*")):
@@ -156,6 +192,8 @@ def main() -> int:
                         help="give the runtime outbound network (vendor-endpoint runtimes); loopback is always private")
     parser.add_argument("--confine", action="store_true",
                         help="allowlist root: the subject sees only the OS (ro), the toolchain, the pinned corpus, its /app, and codex auth; every repo, reference solution, and config is masked. Required for real-model runs whose sandbox is bypassed.")
+    parser.add_argument("--observe", action="store_true",
+                        help="passively record loopback HTTP (method/path/idempotency-key) from a PID-1 observer to capture/wire.log — harness-owned, survives log redirection or /app/gateway_access.log deletion. The repaired empirical-probe endpoint reads it.")
     parser.add_argument("--runtime-events", choices=RUNTIME_EVENT_FORMATS, default="none",
                         help="runtime.log format, recorded for the stage summarizer")
     parser.add_argument("--timeout", type=int, default=1800)
@@ -201,6 +239,8 @@ def main() -> int:
             command += ["-bind", f"{runtime_dir}:{RUNTIME_MOUNT}:ro"]
     if arguments.egress:
         command += ["-netns-egress"]
+    if arguments.observe:
+        command += ["-observe-loopback"]
     for extra in arguments.runtime_arg:
         command += ["-runtime-arg", extra]
 
@@ -238,6 +278,8 @@ def main() -> int:
         "runtime_events": arguments.runtime_events,
         "confined": arguments.confine,
         "egress": arguments.egress,
+        "observed_loopback": arguments.observe,
+        "wire_endpoint": analyze_wire(trial / "capture" / "wire.log") if arguments.observe else None,
         "started": started,
         "capture_exit": capture.returncode,
         "timed_out": capture.returncode == 3,
