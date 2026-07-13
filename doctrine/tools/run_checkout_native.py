@@ -199,6 +199,8 @@ def main() -> int:
     parser.add_argument("--timeout", type=int, default=1800)
     parser.add_argument("--prompt-file", type=Path,
                         help="prompt override (default: the task's instruction.md); used by the preregistered environment check")
+    parser.add_argument("--doctrine", type=Path,
+                        help="doctrine treatment appended to the prompt (doctrine arm of the A/B); the bare arm omits it. Recorded by sha256.")
     parser.add_argument("--expect-task-hash", help="refuse to run if the task content drifted")
     arguments = parser.parse_args()
 
@@ -216,12 +218,27 @@ def main() -> int:
     workspace = trial / "workspace"
     materialize_workspace(task, workspace)
 
+    # Prompt: the task instruction (or an override), with the doctrine
+    # treatment appended for the doctrine arm. The two arms are byte-identical
+    # except for the appended treatment, and the combined prompt's hash is
+    # recorded by the surface (prompt_sha256) plus the doctrine hash here.
+    base_prompt = (arguments.prompt_file or task / "instruction.md").resolve()
+    doctrine_sha = None
+    if arguments.doctrine:
+        doctrine_text = arguments.doctrine.read_text()
+        doctrine_sha = hashlib.sha256(doctrine_text.encode()).hexdigest()
+        combined = trial / "prompt-with-doctrine.md"
+        combined.write_text(base_prompt.read_text() + "\n\n---\n\n" + doctrine_text)
+        prompt_path = combined
+    else:
+        prompt_path = base_prompt
+
     command = [
         arguments.capture_binary,
         "-declaration", str(arguments.declaration.resolve()),
         "-workspace", str(workspace),
         "-output", str(trial / "capture"),
-        "-prompt-file", str((arguments.prompt_file or task / "instruction.md").resolve()),
+        "-prompt-file", str(prompt_path),
         "-timeout", str(arguments.timeout),
     ]
     runtime_dir = arguments.runtime_dir.resolve() if arguments.runtime_dir else None
@@ -279,6 +296,7 @@ def main() -> int:
         "confined": arguments.confine,
         "egress": arguments.egress,
         "observed_loopback": arguments.observe,
+        "doctrine_sha256": doctrine_sha,
         "wire_endpoint": analyze_wire(trial / "capture" / "wire.log") if arguments.observe else None,
         "started": started,
         "capture_exit": capture.returncode,

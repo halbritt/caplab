@@ -1,0 +1,13 @@
+seq,block,arm,task,condition
+1,m1,bare,m1,bare
+2,m1,doctrine,m1,doctrine
+3,m2,doctrine,m1,doctrine
+4,m2,bare,m1,bare
+5,m3,bare,m1,bare
+6,m3,doctrine,m1,doctrine
+7,m4,bare,m1,bare
+8,m4,doctrine,m1,doctrine
+9,c1,bare,v2,bare
+10,c1,doctrine,v2,doctrine
+11,c2,bare,v2,bare
+12,c2,doctrine,v2,doctrine

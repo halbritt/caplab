@@ -27,13 +27,11 @@ TASK_DIR="$REPO/doctrine/evaluations/robustness/harbor/tasks/$TASK"
 
 [ -f "$DECLARATION" ] || { echo "no declaration: $DECLARATION" >&2; exit 2; }
 
-# Extra skill/instruction delivery for a doctrine arm is threaded via
-# CODEX_EXTRA_RUNTIME_ARGS (space-separated) and CODEX_EXTRA_PROMPT_FILE; the
-# bare arm sets neither. Kept identical otherwise.
+# The doctrine arm of the A/B sets CODEX_DOCTRINE_FILE to the treatment file,
+# appended to the prompt by the runner; the bare arm leaves it unset. Every
+# other input is identical between arms.
 EXTRA_ARGS=()
-if [ -n "${CODEX_EXTRA_RUNTIME_ARGS:-}" ]; then
-  for a in $CODEX_EXTRA_RUNTIME_ARGS; do EXTRA_ARGS+=(--runtime-arg="$a"); done
-fi
+[ -n "${CODEX_DOCTRINE_FILE:-}" ] && EXTRA_ARGS+=(--doctrine "${CODEX_DOCTRINE_FILE}")
 PROMPT_ARG=()
 [ -n "${CODEX_EXTRA_PROMPT_FILE:-}" ] && PROMPT_ARG=(--prompt-file "${CODEX_EXTRA_PROMPT_FILE}")
 
