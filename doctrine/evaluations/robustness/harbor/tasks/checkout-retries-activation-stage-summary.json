@@ -1,0 +1,1756 @@
+{
+  "schema_version": "harbor-trial-stage-summary/1",
+  "stage_counts": {
+    "corpus_gate_invoked": 0,
+    "evidence_reassembly_invoked": 0,
+    "gateway_docs_read_invoked": 47,
+    "gateway_source_read_invoked": 47,
+    "ledger_check_observed": 19,
+    "packet_assembly_invoked": 0,
+    "skill_injected": 23,
+    "skill_read_invoked": 23,
+    "substantial_decision_observed": 0
+  },
+  "trial_count": 47,
+  "trials": [
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "02911345ace1516d7efb192456f456933e9f5982f71f550e4c99f6dc1371117c"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "459a5d8d45f616dd56be5bf7f0fffe03bf59285e97343853591616da23abb3b2"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "7e111027110104965858ee977f4c4e8b81a46986798d58049347213c58a43cf8"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "1d574623f58fe7b6cd13b3eba534bdc47fb89f2b32deb8fd2d710a7f7f18e4c4"
+        }
+      },
+      "job_name": "activation-s02-b1-27b-m1-forced",
+      "model_name": "qwen3.6:27b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": true,
+        "packet_assembly_invoked": false,
+        "skill_injected": true,
+        "skill_read_invoked": true,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__AHHmyud"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "5234754d109d03f0f9eb30539e04f11c1d68b56c7003574ca9cd7af72f117777"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "8de97945f9950b718d4a74342086d54a7bf2ae26ea8686e05e547a72cdf0de82"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "35a9b5262cf5c93c23dfbe83a573b3b7098e67fb4ce51158b74d7289c13ce0f2"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "6ce785e06b5ace60d64901a578dd7cc404efc55543c21113ee3c43e86355957b"
+        }
+      },
+      "job_name": "activation-s03-b1-35b-v2-forced",
+      "model_name": "qwen3.6-35b-a3b",
+      "reward": 1.0,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": true,
+        "packet_assembly_invoked": false,
+        "skill_injected": true,
+        "skill_read_invoked": true,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-v2",
+      "trial_name": "checkout-retries-v2__Eg7K4kP"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "803378469053fd6a020f98141e659910d457dba527d4b3bf5a3edc2133017220"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "d3f54288532023eb64b68d8ebde85691f3ed39935e1d1e730fb74fc61079f142"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "c087bc2b3b81827b9c6ef65d9be97965276c916d5c36f83f637f687895c492d1"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "e5b042ff87a5ab2aeddd7dc8e2fff4ac85836a8def4b50af86ccf7102d98cab7"
+        }
+      },
+      "job_name": "activation-s04-b1-27b-m1-bare",
+      "model_name": "qwen3.6:27b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": false,
+        "skill_read_invoked": false,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__fZi4ssa"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "fe51221c5b3fc0b536fdc2d8560a1315367a18c76cac341fd63af89fdc5f6fe0"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "a39431de83168a442d1a43ad4493c6f190d2de1270cc95657c18632fecf27506"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "3324083c0c8e20ff70df46996a265c5229b12b03ce14772ffc073015a65894bc"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "6943214c7ecab5f8d8214161928b4a98c851faa2e4335ffbfec1589b5039678c"
+        }
+      },
+      "job_name": "activation-s05-b1-35b-v2-bare",
+      "model_name": "qwen3.6-35b-a3b",
+      "reward": 0.8,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": false,
+        "skill_read_invoked": false,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-v2",
+      "trial_name": "checkout-retries-v2__PYr8DFb"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "c622f50501b67b9054b1c47b53b3bbd07c8f79c7745dfbaa1e4da3aefdaad2bb"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "518ba1dd42822a0ded63e85844282983ca444c02550ecd47474f78529dc59744"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "f3dad7bbbdff2d826a38cf3d5152b6fcfa0a063fe296a0f62295c47cd697fa3e"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "e5b042ff87a5ab2aeddd7dc8e2fff4ac85836a8def4b50af86ccf7102d98cab7"
+        }
+      },
+      "job_name": "activation-s06-b1-35b-m1-bare",
+      "model_name": "qwen3.6-35b-a3b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": false,
+        "skill_read_invoked": false,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__6cBdkE3"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "837e3646dce161df85c1b3c58614e5b735aae266696df601c26424c8c7621c95"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "64de57a5816d8557b1457262f0a0e3925445ef7b56fba44af7564704b20073e0"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "2233427e73212a92c5dfbde019d363ca8b4179b7ca0bc1cf56553cc2e27316e6"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "e49228da725d892379c2e20cc72fe58315b5563eaa4b14119073e69058a0f321"
+        }
+      },
+      "job_name": "activation-s07-b1-27b-v2-forced",
+      "model_name": "qwen3.6:27b",
+      "reward": 0.8,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": true,
+        "packet_assembly_invoked": false,
+        "skill_injected": true,
+        "skill_read_invoked": true,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-v2",
+      "trial_name": "checkout-retries-v2__dbWt5bm"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "499dcb19edfe8e43ed2bdb3898b2bf036f0ded9af70e621111d3fa1f1abbed5f"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "b84a5c0d2ffa9e0a13dfd723c256ca6da99d24bda899f34c01c4541b60c413de"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "fdb98837e9846b5cbe1515c1414efb51387fb069498f0842aa939d9d219eafcc"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "6943214c7ecab5f8d8214161928b4a98c851faa2e4335ffbfec1589b5039678c"
+        }
+      },
+      "job_name": "activation-s08-b1-27b-v2-bare",
+      "model_name": "qwen3.6:27b",
+      "reward": 0.8,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": false,
+        "skill_read_invoked": false,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-v2",
+      "trial_name": "checkout-retries-v2__cSoZGPR"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "fd8ccc64c702e02a38a2a1c7b0b57ae15cd2b007afc04700a3f792cc04a8eb69"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "a39431de83168a442d1a43ad4493c6f190d2de1270cc95657c18632fecf27506"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "80ce5d1dabffe16ee3459eaf1c4c780523160f27adebe3a4e260a5b51f6f4c48"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "73ec666f5cce4d750c506a778a8cff4db66db42b861eda83295591d4d6aa2ad6"
+        }
+      },
+      "job_name": "activation-s09-b2-35b-v2-bare",
+      "model_name": "qwen3.6-35b-a3b",
+      "reward": 0.5,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": false,
+        "skill_read_invoked": false,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-v2",
+      "trial_name": "checkout-retries-v2__7RM7SmH"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "9f70620061bb563f4afcf37d8de856736544f842f99581bb25c20f853a21aa46"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "d3f54288532023eb64b68d8ebde85691f3ed39935e1d1e730fb74fc61079f142"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "b989492c9149773699556578152f07d40a3e013713bf3cc42a6f1b060e60f6ec"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "e5b042ff87a5ab2aeddd7dc8e2fff4ac85836a8def4b50af86ccf7102d98cab7"
+        }
+      },
+      "job_name": "activation-s10-b2-27b-m1-bare",
+      "model_name": "qwen3.6:27b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": false,
+        "skill_read_invoked": false,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__ZJNWy32"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "05d60464cb389d84f337905fc64e25f6cc76c898aa4e97021400bdb18c3e4ba1"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "518ba1dd42822a0ded63e85844282983ca444c02550ecd47474f78529dc59744"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "69657d5a130ea59e0a81c3061892c19e5ffea52fa36d74091377989e54df6623"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "e5b042ff87a5ab2aeddd7dc8e2fff4ac85836a8def4b50af86ccf7102d98cab7"
+        }
+      },
+      "job_name": "activation-s11-b2-35b-m1-bare",
+      "model_name": "qwen3.6-35b-a3b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": false,
+        "skill_read_invoked": false,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__stC5SVU"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "d92a999e5054c8dce7220432a4cdf6a886b90ca6f3d7ea5651164da35978f466"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "b84a5c0d2ffa9e0a13dfd723c256ca6da99d24bda899f34c01c4541b60c413de"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "9aadb1eaa5c28d4eb7c4f9bf43e3c8b9669da723ef2bf4fdf74fa22fb044a5c5"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "8ceb48d41128063d060cd30ac40b3a673290d8b360cdda94ddcc6971f8baeae0"
+        }
+      },
+      "job_name": "activation-s12-b2-27b-v2-bare",
+      "model_name": "qwen3.6:27b",
+      "reward": 1.0,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": false,
+        "skill_read_invoked": false,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-v2",
+      "trial_name": "checkout-retries-v2__cT2CXHB"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "1a9382933e5ad8bafefe70dbc13acb75adcd9c98d843e005fe11fde559e06260"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "8de97945f9950b718d4a74342086d54a7bf2ae26ea8686e05e547a72cdf0de82"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "f60b614945c96f2f2039c5de942a2c0c0d570d51897112a79d93d2cab3317698"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "6ce785e06b5ace60d64901a578dd7cc404efc55543c21113ee3c43e86355957b"
+        }
+      },
+      "job_name": "activation-s13-b2-35b-v2-forced",
+      "model_name": "qwen3.6-35b-a3b",
+      "reward": 1.0,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": true,
+        "packet_assembly_invoked": false,
+        "skill_injected": true,
+        "skill_read_invoked": true,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-v2",
+      "trial_name": "checkout-retries-v2__twDQ2V7"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "5a69a0df1ecaa532ea65a22196257e5a8c6066f81424e55c0dedd19dce8b98e0"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "17660fcd40d0934af683f42328d471d25803590bb1d69e7849ae0d08175cd8b8"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "b107842bea8800f7fbb64de8842c3958a687346a94bfa5ef3ff18f1b5309daa5"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "e5b042ff87a5ab2aeddd7dc8e2fff4ac85836a8def4b50af86ccf7102d98cab7"
+        }
+      },
+      "job_name": "activation-s14-b2-35b-m1-forced",
+      "model_name": "qwen3.6-35b-a3b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": true,
+        "skill_read_invoked": true,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__wcTKcbG"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "73e129684944733db3a73ceffd5851fdabf1f08d943f2f85172abda2fe7c2881"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "64de57a5816d8557b1457262f0a0e3925445ef7b56fba44af7564704b20073e0"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "8088cfe4df0c45f841546cf4711bfe95bf7c051d6a9e1288a51d36b89a310648"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "e49228da725d892379c2e20cc72fe58315b5563eaa4b14119073e69058a0f321"
+        }
+      },
+      "job_name": "activation-s15-b2-27b-v2-forced",
+      "model_name": "qwen3.6:27b",
+      "reward": 0.8,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": true,
+        "packet_assembly_invoked": false,
+        "skill_injected": true,
+        "skill_read_invoked": true,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-v2",
+      "trial_name": "checkout-retries-v2__hZ4YvNV"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "4a96f60adb4b39d0099af6a28e4fab5fd68b2923a00a5abe46d8e56ab111662c"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "459a5d8d45f616dd56be5bf7f0fffe03bf59285e97343853591616da23abb3b2"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "b4d23c0d572b7cb8547dfb138a02da4135fe739efb2d90efbda0cf186cb149b1"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "1d574623f58fe7b6cd13b3eba534bdc47fb89f2b32deb8fd2d710a7f7f18e4c4"
+        }
+      },
+      "job_name": "activation-s16-b2-27b-m1-forced",
+      "model_name": "qwen3.6:27b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": true,
+        "packet_assembly_invoked": false,
+        "skill_injected": true,
+        "skill_read_invoked": true,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__FKf7278"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "90db82764d5c878c7cd9a7246fe2cac8f5e3da4a3fba9faf41a55acc9cfc62ee"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "518ba1dd42822a0ded63e85844282983ca444c02550ecd47474f78529dc59744"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "8b8d8f8559195b6c83729ccebae386f26cd558576bf85a008cd08c7661ffd560"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "e5b042ff87a5ab2aeddd7dc8e2fff4ac85836a8def4b50af86ccf7102d98cab7"
+        }
+      },
+      "job_name": "activation-s17-b3-35b-m1-bare",
+      "model_name": "qwen3.6-35b-a3b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": false,
+        "skill_read_invoked": false,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__f75ze3F"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "d701a25e333723056677bc93e787088ad3c18f52cc4fb71f6ce910e26ed5fd13"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "17660fcd40d0934af683f42328d471d25803590bb1d69e7849ae0d08175cd8b8"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "ad7be9917653a8f98ee771d138a2b1b0b15a840d3f2bcb91b58d2288fbcb1b1b"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "1d574623f58fe7b6cd13b3eba534bdc47fb89f2b32deb8fd2d710a7f7f18e4c4"
+        }
+      },
+      "job_name": "activation-s18-b3-35b-m1-forced",
+      "model_name": "qwen3.6-35b-a3b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": true,
+        "packet_assembly_invoked": false,
+        "skill_injected": true,
+        "skill_read_invoked": true,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__fZQ2jck"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "4cdb3fcec7310f49648aded6c30ccb8a67fd27b1d550685a219dfc3fee5087b4"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "64de57a5816d8557b1457262f0a0e3925445ef7b56fba44af7564704b20073e0"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "90c03189f2fae3dd2aca415adb5bd8ded35f934389043634d80457c8c3b9f54f"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "e49228da725d892379c2e20cc72fe58315b5563eaa4b14119073e69058a0f321"
+        }
+      },
+      "job_name": "activation-s19-b3-27b-v2-forced",
+      "model_name": "qwen3.6:27b",
+      "reward": 0.8,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": true,
+        "packet_assembly_invoked": false,
+        "skill_injected": true,
+        "skill_read_invoked": true,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-v2",
+      "trial_name": "checkout-retries-v2__Wsf2x8r"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "2ecf21a950026aa4b5e3ee343eee2e80a06b157273e2cd1741fbd60fd591be9b"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "8de97945f9950b718d4a74342086d54a7bf2ae26ea8686e05e547a72cdf0de82"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "f85cd0c5bbb0c744be06a861d802bf01084e55ce496f5565ea34c66507e0d5b0"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "8ceb48d41128063d060cd30ac40b3a673290d8b360cdda94ddcc6971f8baeae0"
+        }
+      },
+      "job_name": "activation-s20-b3-35b-v2-forced",
+      "model_name": "qwen3.6-35b-a3b",
+      "reward": 1.0,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": true,
+        "skill_read_invoked": true,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-v2",
+      "trial_name": "checkout-retries-v2__UyUnskQ"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "f922b7dbc6decced6dc4f87b21b942a06f1270fb27325e30fb33eb524207e15b"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "a39431de83168a442d1a43ad4493c6f190d2de1270cc95657c18632fecf27506"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "663a9a4c67c018baa5d54a8b77b3d673bf67ed572f5e3843eee416b7db36f109"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "6943214c7ecab5f8d8214161928b4a98c851faa2e4335ffbfec1589b5039678c"
+        }
+      },
+      "job_name": "activation-s21-b3-35b-v2-bare",
+      "model_name": "qwen3.6-35b-a3b",
+      "reward": 0.8,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": false,
+        "skill_read_invoked": false,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-v2",
+      "trial_name": "checkout-retries-v2__YYLn7o9"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "264120982dbd82b2b8b999c1f62584fcfc91e5c423bdb9ae111fc223fdff76f8"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "d3f54288532023eb64b68d8ebde85691f3ed39935e1d1e730fb74fc61079f142"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "0114f32207294055ae0705ce15fc5e0f6f772f61b21da8b721b833f573261ed1"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "e5b042ff87a5ab2aeddd7dc8e2fff4ac85836a8def4b50af86ccf7102d98cab7"
+        }
+      },
+      "job_name": "activation-s22-b3-27b-m1-bare",
+      "model_name": "qwen3.6:27b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": false,
+        "skill_read_invoked": false,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__53cxm8e"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "a5d66e15323411dc823998b083a9b9d46d47780d5fa9a831fe4cb383a8d6ad75"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "b84a5c0d2ffa9e0a13dfd723c256ca6da99d24bda899f34c01c4541b60c413de"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "9c31885c9ab84b1c7dc906bc7e5ccd8a621b6795d605907be96130db0c470a7c"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "8ceb48d41128063d060cd30ac40b3a673290d8b360cdda94ddcc6971f8baeae0"
+        }
+      },
+      "job_name": "activation-s23-b3-27b-v2-bare",
+      "model_name": "qwen3.6:27b",
+      "reward": 1.0,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": false,
+        "skill_read_invoked": false,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-v2",
+      "trial_name": "checkout-retries-v2__zYZ6BfG"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "fbfe0a5eed29453f01062ba6b8123c746adadf0b2881bfc9455f6627b56ec131"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "459a5d8d45f616dd56be5bf7f0fffe03bf59285e97343853591616da23abb3b2"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "89067b34bb55282efdfc1484d5408a10959da79ac5340a786e979f0e9299b160"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "1d574623f58fe7b6cd13b3eba534bdc47fb89f2b32deb8fd2d710a7f7f18e4c4"
+        }
+      },
+      "job_name": "activation-s24-b3-27b-m1-forced",
+      "model_name": "qwen3.6:27b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": true,
+        "packet_assembly_invoked": false,
+        "skill_injected": true,
+        "skill_read_invoked": true,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__GwqtZ5Z"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "5b037b1a5a471970a3a004b21403beb0a736477def153bd3cbe4bb682b4adc8e"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "b84a5c0d2ffa9e0a13dfd723c256ca6da99d24bda899f34c01c4541b60c413de"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "a726208c4ec592cd4b6705d5657d0d6f5e4ec295e1d84dfde0f81c9fc8646394"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "6943214c7ecab5f8d8214161928b4a98c851faa2e4335ffbfec1589b5039678c"
+        }
+      },
+      "job_name": "activation-s25-b4-27b-v2-bare",
+      "model_name": "qwen3.6:27b",
+      "reward": 0.8,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": false,
+        "skill_read_invoked": false,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-v2",
+      "trial_name": "checkout-retries-v2__hyiGxTo"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "b500829a711e2dc7ad13b712f4cc2001cdf80dd1f25b4bd27a047e5d1afdc169"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "d3f54288532023eb64b68d8ebde85691f3ed39935e1d1e730fb74fc61079f142"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "c4b4a27e3b7b7ee566996000a1f5c4a010dfff47a1fd01fac4deae48fb095ea8"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "e5b042ff87a5ab2aeddd7dc8e2fff4ac85836a8def4b50af86ccf7102d98cab7"
+        }
+      },
+      "job_name": "activation-s26-b4-27b-m1-bare",
+      "model_name": "qwen3.6:27b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": false,
+        "skill_read_invoked": false,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__Yg3mUM2"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "f64e73c37fd5fd5c21cfac48f1fa4af29c8d0e02a7d3599bd4b136a41bdb6cc4"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "8de97945f9950b718d4a74342086d54a7bf2ae26ea8686e05e547a72cdf0de82"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "af1977a857e89a1c20d18764b66424d28237a193435bc0012eda495079231f8f"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "73ec666f5cce4d750c506a778a8cff4db66db42b861eda83295591d4d6aa2ad6"
+        }
+      },
+      "job_name": "activation-s27-b4-35b-v2-forced",
+      "model_name": "qwen3.6-35b-a3b",
+      "reward": 0.5,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": true,
+        "skill_read_invoked": true,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-v2",
+      "trial_name": "checkout-retries-v2__a28uovh"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "36713adf4025e6d9d89f0ae5ad36628a5100951c427680719be269ac60b2ff38"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "518ba1dd42822a0ded63e85844282983ca444c02550ecd47474f78529dc59744"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "4912f23a7c25e1cda12134aacec889f7d839fe87b83bb735433d04fd96af2e60"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "e5b042ff87a5ab2aeddd7dc8e2fff4ac85836a8def4b50af86ccf7102d98cab7"
+        }
+      },
+      "job_name": "activation-s28-b4-35b-m1-bare",
+      "model_name": "qwen3.6-35b-a3b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": false,
+        "skill_read_invoked": false,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__qhm4EN4"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "84c1590ef6556cd669252c33993c8911f655c724abb6b0bd4f04294b4dd30a1f"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "a39431de83168a442d1a43ad4493c6f190d2de1270cc95657c18632fecf27506"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "2600f0a716985da7dff073bd3ae8143207681a4ddea1bcfc5106ec873667f301"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "6943214c7ecab5f8d8214161928b4a98c851faa2e4335ffbfec1589b5039678c"
+        }
+      },
+      "job_name": "activation-s29-b4-35b-v2-bare",
+      "model_name": "qwen3.6-35b-a3b",
+      "reward": 0.8,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": false,
+        "skill_read_invoked": false,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-v2",
+      "trial_name": "checkout-retries-v2__gYpAoDa"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "3a3b49a94130fb989771584104e3b445818dc734b884a1b6a1bbeeda4fdf5296"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "17660fcd40d0934af683f42328d471d25803590bb1d69e7849ae0d08175cd8b8"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "110d26fedbd68029dd0cce9bd95793a9995fc555aadb463058cd05ec49b41c25"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "e5b042ff87a5ab2aeddd7dc8e2fff4ac85836a8def4b50af86ccf7102d98cab7"
+        }
+      },
+      "job_name": "activation-s30-b4-35b-m1-forced",
+      "model_name": "qwen3.6-35b-a3b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": true,
+        "skill_read_invoked": true,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__PLqREp7"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "31ed5284e84ee79be58e4b260f53627eb3f05555872372c8932a34d948e0e014"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "64de57a5816d8557b1457262f0a0e3925445ef7b56fba44af7564704b20073e0"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "9286b72a9d694540b16080d95b8be8db80c1394db14fc3a397abc289a43e92da"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "e49228da725d892379c2e20cc72fe58315b5563eaa4b14119073e69058a0f321"
+        }
+      },
+      "job_name": "activation-s31-b4-27b-v2-forced",
+      "model_name": "qwen3.6:27b",
+      "reward": 0.8,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": true,
+        "packet_assembly_invoked": false,
+        "skill_injected": true,
+        "skill_read_invoked": true,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-v2",
+      "trial_name": "checkout-retries-v2__6NH5B24"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "af33c07a92ed90e5e32e70333dffff4014f4905123ffb71b52c0eb6d33ea9067"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "459a5d8d45f616dd56be5bf7f0fffe03bf59285e97343853591616da23abb3b2"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "10c298f42bec54751e7b646de4d8055482993cee7124b1d6c0df0b0f3503d084"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "1d574623f58fe7b6cd13b3eba534bdc47fb89f2b32deb8fd2d710a7f7f18e4c4"
+        }
+      },
+      "job_name": "activation-s32-b4-27b-m1-forced",
+      "model_name": "qwen3.6:27b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": true,
+        "packet_assembly_invoked": false,
+        "skill_injected": true,
+        "skill_read_invoked": true,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__m9WabhZ"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "9f894fe91966d8ffbc30b35066e4afa674459334dcf5fb6dcf11df30d0b655cb"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "d3f54288532023eb64b68d8ebde85691f3ed39935e1d1e730fb74fc61079f142"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "6d1b6252bfb72a3e2d149cabcff5796e95db557176b6f83b57fd9441b3493175"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "e5b042ff87a5ab2aeddd7dc8e2fff4ac85836a8def4b50af86ccf7102d98cab7"
+        }
+      },
+      "job_name": "activation-s33-b5-27b-m1-bare",
+      "model_name": "qwen3.6:27b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": false,
+        "skill_read_invoked": false,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__YRDpkSM"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "14432b5ffa82393fa0f608af6d62861d182ccba67093113d3fbbe31ca37bcb6b"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "518ba1dd42822a0ded63e85844282983ca444c02550ecd47474f78529dc59744"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "bd00ce7562515d9dcb1bb2e3aaba7ed86ed777fc88eabea27c6aec41a6437e6c"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "e5b042ff87a5ab2aeddd7dc8e2fff4ac85836a8def4b50af86ccf7102d98cab7"
+        }
+      },
+      "job_name": "activation-s34-b5-35b-m1-bare",
+      "model_name": "qwen3.6-35b-a3b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": false,
+        "skill_read_invoked": false,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__UQF8LLP"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "00a0100ee7062ed690812f30f394198c403b6d9b297a39a566d724c7cf64c566"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "459a5d8d45f616dd56be5bf7f0fffe03bf59285e97343853591616da23abb3b2"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "522b9517e09bf9ae270febf725a70cac18c54609a200cd27a7fc11512f9d6262"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "1d574623f58fe7b6cd13b3eba534bdc47fb89f2b32deb8fd2d710a7f7f18e4c4"
+        }
+      },
+      "job_name": "activation-s35-b5-27b-m1-forced",
+      "model_name": "qwen3.6:27b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": true,
+        "packet_assembly_invoked": false,
+        "skill_injected": true,
+        "skill_read_invoked": true,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__SXLXzjp"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "4e573351bbe45e2c5163123b94975bb6a00fd59ee7d80d0474fda96e552b1864"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "17660fcd40d0934af683f42328d471d25803590bb1d69e7849ae0d08175cd8b8"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "fd21f2eb1e33e73f55ef8f162fa1fed8c5e078f620b03720d2e2e96e7929379a"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "1d574623f58fe7b6cd13b3eba534bdc47fb89f2b32deb8fd2d710a7f7f18e4c4"
+        }
+      },
+      "job_name": "activation-s36-b5-35b-m1-forced",
+      "model_name": "qwen3.6-35b-a3b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": true,
+        "packet_assembly_invoked": false,
+        "skill_injected": true,
+        "skill_read_invoked": true,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__PSVZ9h4"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "039e3ed83643a311321e8c6115235e3a8bfe41e0089254bd836f2824eff83e73"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "d3f54288532023eb64b68d8ebde85691f3ed39935e1d1e730fb74fc61079f142"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "82d473d554f872a571859c8e739c16aebecd753cba9540dc78ffb012c44a164b"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "e5b042ff87a5ab2aeddd7dc8e2fff4ac85836a8def4b50af86ccf7102d98cab7"
+        }
+      },
+      "job_name": "activation-s37-b6-27b-m1-bare",
+      "model_name": "qwen3.6:27b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": false,
+        "skill_read_invoked": false,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__fs2u8MC"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "a9af5117614bcc6605e8b4255833dd28510709fdf339fb94459a3bd9cbc72731"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "17660fcd40d0934af683f42328d471d25803590bb1d69e7849ae0d08175cd8b8"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "b8c74f711d8abc92307abee0d34a24da888851a0e0081ce24dd43db91053bd9d"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "1d574623f58fe7b6cd13b3eba534bdc47fb89f2b32deb8fd2d710a7f7f18e4c4"
+        }
+      },
+      "job_name": "activation-s38-b6-35b-m1-forced",
+      "model_name": "qwen3.6-35b-a3b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": true,
+        "packet_assembly_invoked": false,
+        "skill_injected": true,
+        "skill_read_invoked": true,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__S7h2gW6"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "a914223c99b34f19e887e765d35b29c2a6e76a255c8169d201167ac2d9ef7d0b"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "459a5d8d45f616dd56be5bf7f0fffe03bf59285e97343853591616da23abb3b2"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "3964ca8a6a4a6c5e194f65ffa91663c59846c088dd463e6086bf13c88768faee"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "1d574623f58fe7b6cd13b3eba534bdc47fb89f2b32deb8fd2d710a7f7f18e4c4"
+        }
+      },
+      "job_name": "activation-s39-b6-27b-m1-forced",
+      "model_name": "qwen3.6:27b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": true,
+        "packet_assembly_invoked": false,
+        "skill_injected": true,
+        "skill_read_invoked": true,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__o4wtuL3"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "0a4bd1e59f5c697a60c1717ac59d26506cf5c42b61faf3efcb096b60dfd98661"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "518ba1dd42822a0ded63e85844282983ca444c02550ecd47474f78529dc59744"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "41c7043d583dc15951befe12bbe364f33f5a34a01e4be997a058e192a86c8229"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "e5b042ff87a5ab2aeddd7dc8e2fff4ac85836a8def4b50af86ccf7102d98cab7"
+        }
+      },
+      "job_name": "activation-s40-b6-35b-m1-bare",
+      "model_name": "qwen3.6-35b-a3b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": false,
+        "skill_read_invoked": false,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__ap424oH"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "66586140a62b4c76cba187d18e6d2fa95186ee773e1b843aa71647289351c30b"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "459a5d8d45f616dd56be5bf7f0fffe03bf59285e97343853591616da23abb3b2"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "dae9788982b2af2c517ddc2a17e75e5f3240e09979b9e13be2149b5450b69657"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "1d574623f58fe7b6cd13b3eba534bdc47fb89f2b32deb8fd2d710a7f7f18e4c4"
+        }
+      },
+      "job_name": "activation-s41-b7-27b-m1-forced",
+      "model_name": "qwen3.6:27b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": true,
+        "packet_assembly_invoked": false,
+        "skill_injected": true,
+        "skill_read_invoked": true,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__Wh6zrAN"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "021ffc943dd252cd6438df06a16cd6baa9bf439c24a9fdafe3eaffb87a7b2103"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "d3f54288532023eb64b68d8ebde85691f3ed39935e1d1e730fb74fc61079f142"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "2ed97b47acd5c77802cf8cb6a976c3c0885d0e22a720332cecf3c7d17dba803f"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "e5b042ff87a5ab2aeddd7dc8e2fff4ac85836a8def4b50af86ccf7102d98cab7"
+        }
+      },
+      "job_name": "activation-s42-b7-27b-m1-bare",
+      "model_name": "qwen3.6:27b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": false,
+        "skill_read_invoked": false,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__eGQtcmw"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "b6f58906a75970bff9c40f552dc076043da4a83084f0e622ef848758ccd36969"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "518ba1dd42822a0ded63e85844282983ca444c02550ecd47474f78529dc59744"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "7359ad88ebb566904f2b9d9db2ced6d6c85e3f18efd428cd52f699d5f173e424"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "e5b042ff87a5ab2aeddd7dc8e2fff4ac85836a8def4b50af86ccf7102d98cab7"
+        }
+      },
+      "job_name": "activation-s43-b7-35b-m1-bare",
+      "model_name": "qwen3.6-35b-a3b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": false,
+        "skill_read_invoked": false,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__gDrYwgv"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "fad262f24c2a797fb82f50013d54905cbd899bfb1446aa96ad16d72161d0c402"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "17660fcd40d0934af683f42328d471d25803590bb1d69e7849ae0d08175cd8b8"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "9983883cc9e6d9b7e7971c9af3dacb9caa1ee7d64214825d1dcf4fb5fe6fae21"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "1d574623f58fe7b6cd13b3eba534bdc47fb89f2b32deb8fd2d710a7f7f18e4c4"
+        }
+      },
+      "job_name": "activation-s44-b7-35b-m1-forced",
+      "model_name": "qwen3.6-35b-a3b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": true,
+        "packet_assembly_invoked": false,
+        "skill_injected": true,
+        "skill_read_invoked": true,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__WzBWhiu"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "92fbef07801b349fa788e213e8947730793028461e72cdf5f474879a8efced1e"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "17660fcd40d0934af683f42328d471d25803590bb1d69e7849ae0d08175cd8b8"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "a7b37c4125c1c856294e4455b732fa29a4a54857449023976f25d9493f5f3054"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "1d574623f58fe7b6cd13b3eba534bdc47fb89f2b32deb8fd2d710a7f7f18e4c4"
+        }
+      },
+      "job_name": "activation-s45-b8-35b-m1-forced",
+      "model_name": "qwen3.6-35b-a3b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": true,
+        "packet_assembly_invoked": false,
+        "skill_injected": true,
+        "skill_read_invoked": true,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__LT9YS2Y"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "4a6a8ff6af556e0bfa5b22abceedc025f738e7fae6d40796136b8bde4ba717d6"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "459a5d8d45f616dd56be5bf7f0fffe03bf59285e97343853591616da23abb3b2"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "423cb8256e48a9d787970a9a0c2a6f4eaf2522202d976fc02147208bc5112443"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "1d574623f58fe7b6cd13b3eba534bdc47fb89f2b32deb8fd2d710a7f7f18e4c4"
+        }
+      },
+      "job_name": "activation-s46-b8-27b-m1-forced",
+      "model_name": "qwen3.6:27b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": true,
+        "packet_assembly_invoked": false,
+        "skill_injected": true,
+        "skill_read_invoked": true,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__wSojZxg"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "330b3c778bc0a091b91fadc63a9704537fabc239adb76e43ff5229a480c00a3c"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "d3f54288532023eb64b68d8ebde85691f3ed39935e1d1e730fb74fc61079f142"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "1ee9abf02dde10ba9e86817559c168b8752b984f1ac5bd91be733e1cf6c79c37"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "e5b042ff87a5ab2aeddd7dc8e2fff4ac85836a8def4b50af86ccf7102d98cab7"
+        }
+      },
+      "job_name": "activation-s47-b8-27b-m1-bare",
+      "model_name": "qwen3.6:27b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": false,
+        "skill_read_invoked": false,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__JT7tnfq"
+    },
+    {
+      "agent_error": false,
+      "artifacts": {
+        "agent/trajectory.json": {
+          "path": "agent/trajectory.json",
+          "sha256": "331cca0880e7aa34e722b62fa0a2e273c0a1eeb4e7fbc629af0f05de52862636"
+        },
+        "lock.json": {
+          "path": "lock.json",
+          "sha256": "518ba1dd42822a0ded63e85844282983ca444c02550ecd47474f78529dc59744"
+        },
+        "result.json": {
+          "path": "result.json",
+          "sha256": "cbf5e7c9c63671a62b44df2151cc3a0c4243eb7c6b9fe00b0b0c00f730060a76"
+        },
+        "verifier/detail.json": {
+          "path": "verifier/detail.json",
+          "sha256": "e5b042ff87a5ab2aeddd7dc8e2fff4ac85836a8def4b50af86ccf7102d98cab7"
+        }
+      },
+      "job_name": "activation-s48-b8-35b-m1-bare",
+      "model_name": "qwen3.6-35b-a3b",
+      "reward": 0.2,
+      "stages": {
+        "corpus_gate_invoked": false,
+        "evidence_reassembly_invoked": false,
+        "gateway_docs_read_invoked": true,
+        "gateway_source_read_invoked": true,
+        "ledger_check_observed": false,
+        "packet_assembly_invoked": false,
+        "skill_injected": false,
+        "skill_read_invoked": false,
+        "substantial_decision_observed": false
+      },
+      "task_name": "books-doctrine/checkout-retries-m1",
+      "trial_name": "checkout-retries-m1__7kATWsd"
+    }
+  ]
+}
