@@ -44,6 +44,55 @@ NETNS_WRAP = [
     "/bin/sh", "-c", 'ip link set lo up 2>/dev/null; exec "$@"', "netns-init",
 ]
 
+HOME_DIR = "/home/halbritt"
+CODEX_HOME = "/home/halbritt/.local/share/striatum/harness-config/codex"
+CODEX_AUTH_TARGET = "/home/halbritt/.codex/auth.json"
+
+
+def confining_binds(corpus: Path, runtime_dir: Path | None) -> list[str]:
+    """The allowlist root for the agent capture run: the subject sees the OS
+    read-only and nothing of the operator's home or /var/tmp except the exact
+    toolchain paths, the pinned corpus, and (unavoidably, since its own
+    sandbox is bypassed) codex's auth. The reference solutions under /var/tmp,
+    every other git repo — including this bench's own sources — the ssh keys,
+    and the ambient configs are all masked by the tmpfs entries below and are
+    unreachable. Surface flags, in the order the surface applies them:
+    tmpfs entries first, then binds, so a bind under a tmpfs path lands in it.
+    """
+    surface_args = ["-confine", "-mount", WORKSPACE_MOUNT, "-netns"]
+    # tmpfs masks: home (all repos, ssh, configs), /var/tmp (reference
+    # solutions, other trials), /run (resolv target parent), /tmp (scratch).
+    for path in ("/tmp", "/run", "/var/tmp", HOME_DIR):
+        surface_args += ["-tmpfs", path]
+    # OS, read-only. /bin /sbin /lib /lib64 are merged-usr symlinks, so the
+    # real usr subdirs are bound at those top-level paths.
+    for src, dst in (
+        ("/usr", "/usr"), ("/usr/bin", "/bin"), ("/usr/sbin", "/sbin"),
+        ("/usr/lib", "/lib"), ("/usr/lib64", "/lib64"), ("/etc", "/etc"),
+    ):
+        surface_args += ["-bind", f"{src}:{dst}:ro"]
+    # Toolchain under the masked home, read-only: codex (npm global) and Go.
+    surface_args += ["-bind", "/home/halbritt/.npm-global:/home/halbritt/.npm-global:ro"]
+    surface_args += ["-bind", "/home/halbritt/.local/go:/home/halbritt/.local/go:ro"]
+    # codex auth: CODEX_HOME (writable, for ephemeral state) and the auth
+    # file its symlink targets. This is the one operator secret the bypassed
+    # sandbox forces into the subject's reach; recorded as a deviation.
+    surface_args += ["-bind", f"{CODEX_HOME}:{CODEX_HOME}"]
+    surface_args += ["-bind", f"{CODEX_AUTH_TARGET}:{CODEX_AUTH_TARGET}"]
+    # The pinned corpus at its baked path, read-only.
+    surface_args += ["-bind", f"{corpus}:{CORPUS_MOUNT}:ro"]
+    if runtime_dir is not None:
+        surface_args += ["-bind", f"{runtime_dir}:{RUNTIME_MOUNT}:ro"]
+    # A minimal environment with Go's caches redirected into the tmpfs so the
+    # build never reaches the masked host caches, and a writable HOME.
+    surface_args += ["-clean-env"]
+    for entry in (
+        f"HOME={HOME_DIR}", "TMPDIR=/tmp", "GOCACHE=/tmp/gocache",
+        "GOPATH=/tmp/gopath", "GOMODCACHE=/tmp/gopath/pkg/mod",
+    ):
+        surface_args += ["-setenv", entry]
+    return surface_args
+
 
 def task_content_hash(task: Path) -> str:
     # The baked corpus is gitignored and pinned separately by its surface
@@ -105,6 +154,8 @@ def main() -> int:
     parser.add_argument("--runtime-arg", action="append", default=[], help="passed through to the capture surface")
     parser.add_argument("--egress", action="store_true",
                         help="give the runtime outbound network (vendor-endpoint runtimes); loopback is always private")
+    parser.add_argument("--confine", action="store_true",
+                        help="allowlist root: the subject sees only the OS (ro), the toolchain, the pinned corpus, its /app, and codex auth; every repo, reference solution, and config is masked. Required for real-model runs whose sandbox is bypassed.")
     parser.add_argument("--runtime-events", choices=RUNTIME_EVENT_FORMATS, default="none",
                         help="runtime.log format, recorded for the stage summarizer")
     parser.add_argument("--timeout", type=int, default=1800)
@@ -134,16 +185,22 @@ def main() -> int:
         "-output", str(trial / "capture"),
         "-prompt-file", str((arguments.prompt_file or task / "instruction.md").resolve()),
         "-timeout", str(arguments.timeout),
-        "-mount", WORKSPACE_MOUNT,
-        "-netns",
-        "-tmpfs", "/tmp",
-        "-tmpfs", "/home/halbritt/git",
-        "-bind", f"{arguments.corpus.resolve()}:{CORPUS_MOUNT}:ro",
     ]
+    runtime_dir = arguments.runtime_dir.resolve() if arguments.runtime_dir else None
+    if arguments.confine:
+        command += confining_binds(arguments.corpus.resolve(), runtime_dir)
+    else:
+        command += [
+            "-mount", WORKSPACE_MOUNT,
+            "-netns",
+            "-tmpfs", "/tmp",
+            "-tmpfs", "/home/halbritt/git",
+            "-bind", f"{arguments.corpus.resolve()}:{CORPUS_MOUNT}:ro",
+        ]
+        if runtime_dir is not None:
+            command += ["-bind", f"{runtime_dir}:{RUNTIME_MOUNT}:ro"]
     if arguments.egress:
         command += ["-netns-egress"]
-    if arguments.runtime_dir:
-        command += ["-bind", f"{arguments.runtime_dir.resolve()}:{RUNTIME_MOUNT}:ro"]
     for extra in arguments.runtime_arg:
         command += ["-runtime-arg", extra]
 
@@ -179,6 +236,8 @@ def main() -> int:
         "task_content_hash": current_hash,
         "declaration": str(arguments.declaration),
         "runtime_events": arguments.runtime_events,
+        "confined": arguments.confine,
+        "egress": arguments.egress,
         "started": started,
         "capture_exit": capture.returncode,
         "timed_out": capture.returncode == 3,

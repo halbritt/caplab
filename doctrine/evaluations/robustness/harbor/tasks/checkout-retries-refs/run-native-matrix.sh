@@ -22,6 +22,12 @@ RUNTIME_DIR="$SCRATCH/runtime"
 mkdir -p "$RUNTIME_DIR"
 cp "$HERE"/*.sh "$RUNTIME_DIR/"
 
+# NATIVE_CONFINE=1 runs every cell through the allowlist confining root — the
+# same root the real-model screen uses — so parity is proven in the exact
+# filesystem the subject will see, not just the permissive default namespace.
+CONFINE_ARG=()
+[ "${NATIVE_CONFINE:-0}" = "1" ] && CONFINE_ARG=(--confine)
+
 run_cell() {
   local TASK="$1" REF="$2"
   local TRIAL="$SCRATCH/$TASK-$REF"
@@ -33,6 +39,7 @@ run_cell() {
     --runtime-dir "$RUNTIME_DIR" \
     --capture-binary "$BINARY" \
     --trial-dir "$TRIAL" \
+    "${CONFINE_ARG[@]}" \
     --timeout 300 > "$TRIAL.log" 2>&1
   if [ -f "$TRIAL/verifier/reward.txt" ]; then
     cat "$TRIAL/verifier/reward.txt"

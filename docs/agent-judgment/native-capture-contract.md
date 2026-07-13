@@ -150,18 +150,21 @@ what the harness needs, e.g. `CODEX_HOME`). The model-free fixture path runs
 `-netns` **without** `-egress`, so its namespace has only private loopback —
 no route off-box at all.
 
-Two gaps remain and are **required to close before the egress/real-model
-run** (they do not affect the fixture parity path, which has no egress):
+The **confining root** (`-confine`) is built and used by the real-model run:
+it binds the OS read-only and, under a masked `/home/halbritt` and
+`/var/tmp`, binds back only the toolchain, the pinned corpus, the workspace,
+and codex's auth — so the reference solutions, every git repo, the ssh keys,
+and the ambient configs are unreachable (verified by a confinement probe and
+by re-passing the full parity matrix through it, `NATIVE_CONFINE=1`).
+
+Remaining gaps, documented as deviations rather than closed:
 
 - **Host-LAN reach under egress.** `slirp4netns --disable-host-loopback`
   blocks the host's `127.0.0.1` but not services bound to its LAN/tailscale
-  addresses; the real-model run must add an in-namespace firewall (or a
-  slirp outbound restriction) dropping traffic to the host's non-loopback
-  addresses. Not an answer-leak for this task (the corpus/verifier are
-  filesystem-masked), but an isolation gap.
-- **Confining root.** With codex's own sandbox bypassed (required — see the
-  preregistration's sandbox-architecture findings), the real run must not
-  use `--bind / /`; it must bind only the toolchain (ro), the workspace
-  (rw), the pinned corpus (ro), and codex's auth, masking everything else
-  (notably the reference solutions under `/var/tmp` and the host's
-  credentials), and re-pass the parity matrix through that root.
+  addresses; a hardening pass would add an in-namespace firewall dropping
+  traffic to the host's non-loopback addresses. Not an answer-leak for this
+  task (the corpus/verifier are filesystem-masked), but an isolation gap.
+- **`CODEX_HOME` auth token.** Bypassing codex's own sandbox collapses the
+  separation that normally keeps the ChatGPT token out of the agent's shell;
+  the confining root must bind the auth for codex to authenticate, so the
+  subject's shell can read it. Accepted residual for a cooperative subject.

@@ -35,7 +35,7 @@ replay in its own work yet shipping the double-charge both times.
   `codex-cli 0.144.1`, ChatGPT-Pro subscription auth via the striatum
   harness-config `CODEX_HOME` — no per-token billing.
 - Execution seam: `striatum-workspace-capture` (striatum-next branch
-  `agent/bench-capture-surface` @ `4f4bf97`; the binary sha is pinned in the
+  `agent/bench-capture-surface` @ `da25bc7`; the binary sha is pinned in the
   results section at run time), driven by
   `doctrine/tools/run_checkout_native.py` with `--egress
   --runtime-events codex-jsonl --expect-task-hash <hash above>`. Namespace:
@@ -49,23 +49,25 @@ replay in its own work yet shipping the double-charge both times.
   sandbox bypassed (`--dangerously-bypass-approvals-and-sandbox`), because
   codex's native `workspace-write` sandbox provably cannot run this task and
   its bwrap-based sandbox cannot nest inside the surface's namespace on this
-  AppArmor-restricted host. Two decisions this forces are **owner-facing and
-  block sequence 1**:
-  1. the external root must confine the filesystem so the subject's shell
-     cannot read the reference solutions, the verifier, or the host's
-     credentials (`CODEX_HOME/auth.json` is the ChatGPT token) — a stronger
-     root than `--bind / /` with a few tmpfs masks;
-  2. the run is subscription model-spend on capacity shared with production
-     striatum lanes; the frontier-screen precedent gated each sequence on
-     explicit owner authorization.
+  AppArmor-restricted host. The external namespace is therefore a **confining
+  allowlist root** (`--confine`): it exposes the OS read-only and binds back
+  only the toolchain (codex, Go — both under the otherwise-masked home), the
+  pinned corpus at its baked path, the workspace at `/app`, and codex's auth;
+  every git repo (books, striatum-next — the verifier, reference solutions,
+  and this record), all of `/var/tmp` (the fixture reference solutions), the
+  ssh keys, and the ambient configs are masked. Verified 2026-07-13 by a
+  confinement probe (all of the above `No such file`) and by re-passing the
+  full model-free parity matrix through this exact root (`NATIVE_CONFINE=1`,
+  9/9). The one operator secret the bypass forces into reach is the
+  `CODEX_HOME` ChatGPT token, recorded as a deviation. Model-spend was
+  authorized by the owner 2026-07-13.
 - Runtime args (each recorded in provenance as a deviation from the bare
   declaration): `--json` (JSONL event stream: executed commands and token
   usage), `--ignore-user-config` (the shared CODEX_HOME user config, its
   plugins, and memories stay out of the condition),
-  `--dangerously-bypass-approvals-and-sandbox` (the surface's namespace is
-  the external sandbox this flag is documented for), and, only if the
-  confining root still leaves codex's own sandbox partially active,
-  `-c sandbox_workspace_write.network_access=true`.
+  `--dangerously-bypass-approvals-and-sandbox` (the surface's confining
+  namespace is the external sandbox this flag is documented for), and
+  `--ephemeral` (no session files persisted to CODEX_HOME).
 - Validation state before any trial: the nine-cell reference matrix
   reproduced exactly through this seam, model-free
   (`checkout-retries-refs/run-native-matrix.sh`, 2026-07-13: v2
@@ -176,14 +178,22 @@ seam's runtime constraints on this host:
   "/bin/bash -lc '<cmd>'"`) was captured and the stage summarizer's native
   parser was corrected to unwrap the login-shell wrapper and dedupe
   started/completed.
-- **What blocks sequence 1:** the confining external root (finding above)
-  is not yet built; with codex's sandbox bypassed, the subject's shell would
-  otherwise see the host filesystem, including the reference solutions under
-  `/var/tmp` and the ChatGPT auth token in `CODEX_HOME`. The root must bind
-  only the toolchain (ro), the workspace (rw at `/app`), the pinned corpus
-  (ro at its baked path), and codex's auth (readable by codex startup), and
-  mask everything else — and be validated by re-running the model-free
-  parity matrix through it before any model turn.
+- **Confining root — built and validated 2026-07-13.** `--confine` binds the
+  OS read-only (`/usr` and the merged-usr top-level dirs, `/etc`) and, under
+  a `tmpfs`-masked `/home/halbritt` and `/var/tmp`, binds back only
+  `.npm-global` (codex) and `.local/go` (Go) read-only, `CODEX_HOME` + the
+  auth symlink target, the pinned corpus at `/home/halbritt/git/books`, and
+  the workspace at `/app`; Go's caches are redirected into the tmpfs. A
+  confinement probe confirmed the reference solutions, every git repo (the
+  verifier and this record included), and the ssh keys all read `No such
+  file`, while go/python/curl work and the corpus is present. The full
+  model-free parity matrix re-passed through this exact root
+  (`NATIVE_CONFINE=1`: v2 0.3/0.5/0.8/1.0, m1 0.3/0.2/0.2/0.2, decline 1.0).
+  Codex then ran the environment check inside it end-to-end (6 commands, DNS
+  egress and multi-process loopback both working, token usage captured).
+  Residual: the `CODEX_HOME` auth token is reachable by the subject's shell
+  (inherent to bypassing codex's own sandbox) — a documented deviation, not
+  closed.
 
 ## Results
 

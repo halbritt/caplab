@@ -35,6 +35,7 @@ python3 "$REPO/doctrine/tools/run_checkout_native.py" \
   --corpus "$CORPUS" \
   --capture-binary "$BINARY" \
   --trial-dir "$TRIAL" \
+  --confine \
   --egress \
   --runtime-events codex-jsonl \
   --expect-task-hash "$TASK_HASH" \
@@ -42,5 +43,5 @@ python3 "$REPO/doctrine/tools/run_checkout_native.py" \
   --prompt-file "$PROMPT" \
   --runtime-arg=--json \
   --runtime-arg=--ignore-user-config \
-  --runtime-arg=-c \
-  --runtime-arg=sandbox_workspace_write.network_access=true
+  --runtime-arg=--dangerously-bypass-approvals-and-sandbox \
+  --runtime-arg=--ephemeral
