@@ -1,5 +1,5 @@
 {
-  "adjudicated_human_count": 0,
+  "adjudicated_human_count": 1,
   "candidate_count": 107,
   "candidate_kind_counts": {
     "agent-role": 9,
@@ -143,7 +143,7 @@
     "source_ids": [],
     "support_relationships": []
   },
-  "pending_human_count": 107,
+  "pending_human_count": 106,
   "required": {
     "agent_roles": [
       "architecture-agent",
@@ -268,5 +268,5 @@
     ]
   },
   "schema_version": "doctrine-gold-coverage/1",
-  "status": "pending-human-adjudication"
+  "status": "human-adjudication-partial"
 }
