@@ -4,7 +4,7 @@
     "input_sha256": {
       "doctrine/authority-model.yaml": "a11d91776a1d1d919cfd654b96811b841ec14d08bf8a9fd2c0fe439371d7be3c",
       "doctrine/context-lenses.yaml": "f3a0977ce7df98486757ee5b449c693b30e7913fa1672dc138a4d96ae67c347d",
-      "doctrine/evaluations/gold/human-dispositions.json": "4746f454ab3b0ce677ed813b054d3ad41c33335dcb131c90663c896d35398eab",
+      "doctrine/evaluations/gold/human-dispositions.json": "6a12143e92738ac94caf79dcb8618ac1c2634446d8ce2f222d41da2e842f4630",
       "doctrine/graph/edges.yaml": "9a62c3950d29f08cab56809ec0523e10cb44eeda415300b3108a5165453c9f07",
       "doctrine/graph/formulations.yaml": "51e6733c77aa241adb982e392ce0590794db059cd622f9ff10c290d3eb41c0c0",
       "doctrine/sources.yaml": "7f7f8ea331a56e4ffaacd3c31773eec46966a76ab52111291199ac5cf440fae0"
@@ -724,8 +724,8 @@
         }
       },
       "human_disposition": {
-        "reference": null,
-        "status": "pending-human"
+        "reference": "human-dispositions.json#candidate_id=gold-edge-relation-constrains",
+        "status": "adjudicated-human"
       },
       "id": "gold-edge-relation-constrains",
       "machine_screening": {

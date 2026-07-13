@@ -58,7 +58,7 @@ class GoldQueueContractTests(unittest.TestCase):
             self.assertEqual(result.returncode, 1)
             self.assertFalse((root / "doctrine" / "evaluations" / "gold").exists())
 
-    def test_checked_in_queue_covers_every_required_calibration_axis(self) -> None:
+    def test_checked_in_queue_covers_axes_and_projects_human_dispositions(self) -> None:
         result = run_tool(ROOT, "--check")
         self.assertEqual(result.returncode, 0, result.stderr)
 
@@ -104,15 +104,40 @@ class GoldQueueContractTests(unittest.TestCase):
         self.assertEqual(coverage["required"], expected)
         self.assertEqual(coverage["covered"], expected)
         self.assertTrue(all(not values for values in coverage["missing"].values()))
-        self.assertEqual(coverage["pending_human_count"], len(queue["records"]))
-        self.assertEqual(coverage["adjudicated_human_count"], 0)
-        self.assertEqual(dispositions["dispositions"], [])
+        pending_ids = {
+            record["id"]
+            for record in queue["records"]
+            if record["human_disposition"]["status"] == "pending-human"
+        }
+        adjudicated_ids = {
+            record["id"]
+            for record in queue["records"]
+            if record["human_disposition"]["status"] == "adjudicated-human"
+        }
+        disposition_ids = {
+            disposition["candidate_id"]
+            for disposition in dispositions["dispositions"]
+        }
+        self.assertEqual(coverage["pending_human_count"], len(pending_ids))
+        self.assertEqual(coverage["adjudicated_human_count"], len(adjudicated_ids))
+        self.assertEqual(adjudicated_ids, disposition_ids)
         for record in queue["records"]:
             self.assertTrue(record["candidate"]["generated_only"])
-            self.assertEqual(
-                record["human_disposition"],
-                {"reference": None, "status": "pending-human"},
-            )
+            if record["id"] in disposition_ids:
+                self.assertEqual(
+                    record["human_disposition"],
+                    {
+                        "reference": (
+                            "human-dispositions.json#candidate_id=" + record["id"]
+                        ),
+                        "status": "adjudicated-human",
+                    },
+                )
+            else:
+                self.assertEqual(
+                    record["human_disposition"],
+                    {"reference": None, "status": "pending-human"},
+                )
 
     def test_write_is_deterministic_and_check_detects_queue_drift(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
