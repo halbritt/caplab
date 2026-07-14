@@ -1,10 +1,13 @@
 # Checkout-retries Luna verification × decision gate — preregistration
 
-Status: preregistered; no trial has run. This record, its component files,
-experiment manifest, runner, and exact order are to be committed and pushed
-before the first model call. It is a component experiment at one model/effort
-tuple and one task family. It is not a general doctrine claim, a decision to
-deploy a prompt, or human acceptance.
+Status: stopped under the frozen verifier-error rule after slot 18 on
+2026-07-14. The preregistration boundary below was committed and pushed before
+the first model call at `4e623dc2902bc57baa854e156533f3f17d85fe0f`.
+The partial result is recorded in
+`checkout-retries-luna-components-2x2-result.md`; the original design and
+analysis rules below remain frozen. This is a component experiment at one
+model/effort tuple and one task family. It is not a general doctrine claim, a
+decision to deploy a prompt, or human acceptance.
 
 Assertion types follow `ubiquitous_language.md`. Capture- and verifier-owned
 facts are observations. Treatment contrasts support causal estimates for the
