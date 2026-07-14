@@ -1,0 +1,9 @@
+schema_version: 1
+id: luna-literal-no-model-fixture
+aliasing:
+  aliasing_class: fixture
+adapter:
+  command: [/usr/bin/env, bash, /var/tmp/.bench-runtime/noop.sh]
+  prompt_mode: arg
+provenance_fields:
+  required: [attempts]

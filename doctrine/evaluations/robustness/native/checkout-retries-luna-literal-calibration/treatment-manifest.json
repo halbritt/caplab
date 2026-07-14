@@ -1,0 +1,46 @@
+{
+  "schema_version": "checkout-retries-luna-literal-treatment-manifest/1",
+  "base_instruction_sha256": "ec2689ee7d7f227c3e4abad321fa0114a96a9e1ea1b323fcca956c3334533fa4",
+  "components": {
+    "V": {
+      "bytes": 430,
+      "words": 64,
+      "sha256": "b8a7baff531e66f7775cd4ca98841624f5b911e1490d53d9b67a9ca0d09dc6aa"
+    },
+    "D": {
+      "bytes": 431,
+      "words": 65,
+      "sha256": "5f6da025a8c1eb7271651aa94ef5296ab4a90881119e4c7e4a0106e8a63246ea"
+    }
+  },
+  "arms": {
+    "B": {
+      "inputs": ["base"],
+      "bytes": 750,
+      "words": 107,
+      "sha256": "ec2689ee7d7f227c3e4abad321fa0114a96a9e1ea1b323fcca956c3334533fa4"
+    },
+    "V": {
+      "inputs": ["base", "V"],
+      "bytes": 1181,
+      "words": 171,
+      "sha256": "668ede7db0bc28dfc474f578e30bdc9759a02181e4c0214a1aafc28eabfaf4a3"
+    },
+    "D": {
+      "inputs": ["base", "D"],
+      "bytes": 1182,
+      "words": 172,
+      "sha256": "37bf23bddb936f822c8e735b565eeeeac085a23145cbef6de2bc3ac1327dc8ce"
+    },
+    "VD": {
+      "inputs": ["base", "V", "D"],
+      "bytes": 1613,
+      "words": 236,
+      "sha256": "fd7afaf9f9929fed92bd93022eeac0db2f8f6342e3e9f04957f1412f2beadad1"
+    }
+  },
+  "rendering": {
+    "B": "byte-for-byte instruction.md",
+    "treated": "strip terminal newline bytes from each input, join inputs with exactly two newline bytes, append one final newline byte"
+  }
+}

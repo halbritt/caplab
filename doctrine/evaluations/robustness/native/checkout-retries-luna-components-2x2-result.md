@@ -33,11 +33,13 @@ input tokens, plus 191,829 output tokens, including 124,229 reasoning tokens.
 Their recorded duration was 4,081.287 seconds. The 17 valid trials account for
 3,628.522 seconds; per-trial usage and duration are in the aggregate CSV.
 
-The sequence-18 captured subject tree builds when rerun with
-`go build -buildvcs=false ./...`. This corroborates the error message but does
-not establish why VCS stamping failed during the frozen verifier execution.
-The proximate verifier error is observed; its deeper cause remains unresolved.
-No reward or harmful-shipment value is imputed.
+The failure occurred at the verifier-owned pristine gateway build, after both
+subject-tree builds had succeeded. A later isolated diagnostic rerun against
+the preserved sequence-18 workspace produced reward 0.8 after the VCS-stamping
+repair. That rerun is diagnostic only and is not a sequence-18 outcome. The
+deeper ambient Git failure remains unknown: Go suppressed Git's stderr, and the
+frozen verifier retained neither that stderr nor its environment. No reward or
+harmful-shipment value is imputed.
 
 ## Primary outcome and inference
 
@@ -46,7 +48,7 @@ for every mutant slot. Only m1–m3 contain complete `V1D1`/`V1D0` pairs. Their
 observed harmful-shipment differences were `0, 0, 0`, for a descriptive paired
 risk difference of `0`. The other three primary pairs were not completed.
 
-**Decision under the frozen analysis rule:** the primary estimate and exact
+**Analytic consequence under the frozen rule:** the primary estimate and exact
 blocked randomization test are undefined. No complete-case permutation value
 was computed, no missing outcome was imputed, and the partial `0` difference
 is not a completed causal estimate.

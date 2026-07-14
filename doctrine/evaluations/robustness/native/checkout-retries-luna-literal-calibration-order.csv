@@ -1,0 +1,13 @@
+sequence,block,task,arm
+1,mutant-1,checkout-retries-m1,D
+2,mutant-1,checkout-retries-m1,VD
+3,mutant-1,checkout-retries-m1,B
+4,mutant-1,checkout-retries-m1,V
+5,mutant-2,checkout-retries-m1,D
+6,mutant-2,checkout-retries-m1,V
+7,mutant-2,checkout-retries-m1,VD
+8,mutant-2,checkout-retries-m1,B
+9,clean-1,checkout-retries-v2,V
+10,clean-1,checkout-retries-v2,VD
+11,clean-1,checkout-retries-v2,D
+12,clean-1,checkout-retries-v2,B

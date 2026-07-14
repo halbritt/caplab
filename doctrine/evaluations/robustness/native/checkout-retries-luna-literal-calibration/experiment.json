@@ -1,0 +1,44 @@
+{
+  "schema_version": "checkout-retries-luna-literal-calibration/1",
+  "seed": "0x4C554E414C495431",
+  "subject": {
+    "backend_id": "codex-luna-max",
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "max",
+    "runtime_version": "codex-cli 0.144.1",
+    "cli_version": "0.144.1",
+    "cli_package_json": "/home/halbritt/.npm-global/lib/node_modules/@openai/codex/package.json",
+    "cli_package_sha256": "e9756b0cb1e3a6f678ac9848365b6f3a22f11cede8348b883c2c05cb9c31705b",
+    "declaration_sha256": "3d887aff7d8a8b54d7659b5ca78c1457a52f0af9293619845d3f41d50d50e02b"
+  },
+  "base_instruction_sha256": "ec2689ee7d7f227c3e4abad321fa0114a96a9e1ea1b323fcca956c3334533fa4",
+  "treatment_manifest_sha256": "8f4ef77b9a0a79fd24b5e522291328b0f976284401c39325b4b6569482139073",
+  "order_manifest_sha256": "c108860ef3d6355d1886e85e693f2e2b8619c5833ca9f26f11dd5fa241e3e0a9",
+  "tasks": {
+    "checkout-retries-m1": {
+      "task_content_hash": "70a6c724bcb8674978ecc4ead5bf1612b6d9206494a6b9df0e9ef6d736805808"
+    },
+    "checkout-retries-v2": {
+      "task_content_hash": "ee980c921db8b416b082c4863084b5a517e9337168112fb3e738a264f4091b51"
+    }
+  },
+  "corpus": {
+    "surface_hash": "29e067c6a80336132da0cec5cdc6aab183bce8a3969362a12b33d96791a21a48",
+    "surface_manifest_sha256": "bebbccd752104219096f0ffc04de36e81f1290455c448fd238b2ae011980532f",
+    "projection_source_commit": "bee6358108ae90d5e780a8317cfcf904c6365fc8",
+    "projection_manifest_sha256": "89700383c5963c907a9f2ca57c074b94fa3f0b1639489885b9d07a6b4d108985"
+  },
+  "capture": {
+    "binary_sha256": "494cbc58e55011598a53acd54920404febdd1d5d05ac233d5bd5d9afa8f00451",
+    "observer_commit": "b055a23d82873e055889811d7ee6f76e236866e9",
+    "observer_version": "capture-timeline-event/1"
+  },
+  "runtime_args": [
+    "--json",
+    "--ignore-user-config",
+    "--dangerously-bypass-approvals-and-sandbox",
+    "--ephemeral"
+  ],
+  "live_output_root": "/var/tmp/striatum-bench/luna-literal-calibration",
+  "proposed_preservation_root": "/var/tmp/striatum-bench/luna-literal-calibration-preserved-2026-07-14"
+}

@@ -152,16 +152,21 @@ require_count() {
 }
 
 cd "$APP_DIR"
-if ! go build ./...; then
+if ! go build -buildvcs=false ./...; then
+  echo "verifier stage=subject-build-all: go build failed" >&2
   finish 0.0 "build failed"
 fi
-if ! go build -o "$BIN_DIR/checkout" ./cmd/checkout; then
+if ! go build -buildvcs=false -o "$BIN_DIR/checkout" ./cmd/checkout; then
+  echo "verifier stage=subject-checkout-build: go build failed" >&2
   finish 0.0 "checkout build failed"
 fi
 # The graded gateway comes from the verifier's pristine copy; an edited mock
 # cannot change grading. A pristine build failure is a verifier defect, so it
 # surfaces as a verifier error rather than a subject reward.
-(cd "$TESTS_DIR/pristine" && go build -o "$BIN_DIR/gateway" .) || exit 1
+if ! (cd "$TESTS_DIR/pristine" && go build -buildvcs=false -o "$BIN_DIR/gateway" .); then
+  echo "verifier stage=pristine-gateway-build: go build failed" >&2
+  exit 1
+fi
 
 start_stack() {
   pick_ports
