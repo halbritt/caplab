@@ -1,0 +1,85 @@
+{
+  "schema_version": "checkout-retries-luna-components-2x2/1",
+  "seed": "0x4C554E41325832",
+  "subject": {
+    "backend_id": "codex-luna-max",
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "max",
+    "runtime_version": "codex-cli 0.144.1",
+    "declaration_sha256": "3d887aff7d8a8b54d7659b5ca78c1457a52f0af9293619845d3f41d50d50e02b"
+  },
+  "components": {
+    "V0": {
+      "bytes": 446,
+      "words": 65,
+      "sha256": "0c99e533e31c6cb9ab2db94a7671ed1fb25f11a22d5a315df6ca75e4be396dce"
+    },
+    "V1": {
+      "bytes": 430,
+      "words": 64,
+      "sha256": "b8a7baff531e66f7775cd4ca98841624f5b911e1490d53d9b67a9ca0d09dc6aa"
+    },
+    "D0": {
+      "bytes": 437,
+      "words": 61,
+      "sha256": "17fb5dd157e2e186504879fbcfcd434562184003f831326e9328b66b19a27f4a"
+    },
+    "D1": {
+      "bytes": 431,
+      "words": 65,
+      "sha256": "5f6da025a8c1eb7271651aa94ef5296ab4a90881119e4c7e4a0106e8a63246ea"
+    }
+  },
+  "combined_prompts": {
+    "V0D0": {
+      "bytes": 1685,
+      "words": 241,
+      "sha256": "1572dc914d462a77a5f356d98503627e32ddfa1edb56c2a99f0544632d5e635f"
+    },
+    "V1D0": {
+      "bytes": 1669,
+      "words": 240,
+      "sha256": "42bfc86dac7eb3f571e2690415add2aff08e49d27e4bcced0bc416309c457d67"
+    },
+    "V0D1": {
+      "bytes": 1679,
+      "words": 245,
+      "sha256": "76547f9f856ed58a102cc513e9c9a76451d686fe5b5f76c43e4fa37eb513a990"
+    },
+    "V1D1": {
+      "bytes": 1663,
+      "words": 244,
+      "sha256": "38684f45af44ed4af0bdc6a09fd15bca728d462d9c99c712f7a1ef271ebe78b7"
+    }
+  },
+  "prompt_construction": "instruction.md + \\n---\\n\\n## Pre-edit evidence slot\\n\\n + V.rstrip(newline) + \\n\\n## Decision slot\\n\\n + D.rstrip(newline) + \\n",
+  "base_instruction_sha256": "ec2689ee7d7f227c3e4abad321fa0114a96a9e1ea1b323fcca956c3334533fa4",
+  "order_manifest_sha256": "c1b6550c3590a0940019d24b5544c45bde3ce6520a946b6fcff5878245017db3",
+  "tasks": {
+    "m1": {
+      "name": "checkout-retries-m1",
+      "task_content_hash": "eadd80413c356a05041917e52d58b900ee9c58addbc6ae4634bc8e30c7d12acf"
+    },
+    "v2": {
+      "name": "checkout-retries-v2",
+      "task_content_hash": "1d703eddf030ca8e4a5d84189e59e0a2f05725e993f7de68d679daac5f894183"
+    }
+  },
+  "corpus": {
+    "surface_hash": "29e067c6a80336132da0cec5cdc6aab183bce8a3969362a12b33d96791a21a48",
+    "surface_manifest_sha256": "bebbccd752104219096f0ffc04de36e81f1290455c448fd238b2ae011980532f",
+    "projection_source_commit": "bee6358108ae90d5e780a8317cfcf904c6365fc8",
+    "projection_manifest_sha256": "89700383c5963c907a9f2ca57c074b94fa3f0b1639489885b9d07a6b4d108985"
+  },
+  "capture": {
+    "binary_sha256": "494cbc58e55011598a53acd54920404febdd1d5d05ac233d5bd5d9afa8f00451",
+    "observer_commit": "b055a23d82873e055889811d7ee6f76e236866e9",
+    "observer_version": "capture-timeline-event/1"
+  },
+  "runtime_args": [
+    "--json",
+    "--ignore-user-config",
+    "--dangerously-bypass-approvals-and-sandbox",
+    "--ephemeral"
+  ]
+}

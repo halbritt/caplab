@@ -320,10 +320,24 @@ def main() -> int:
     parser.add_argument("--timeout", type=int, default=1800)
     parser.add_argument("--prompt-file", type=Path,
                         help="prompt override (default: the task's instruction.md); used by the preregistered environment check")
+    parser.add_argument("--trial-metadata", type=Path,
+                        help="sealed JSON sidecar copied into the trial before runtime launch")
     parser.add_argument("--doctrine", type=Path,
                         help="doctrine treatment appended to the prompt (doctrine arm of the A/B); the bare arm omits it. Recorded by sha256.")
     parser.add_argument("--expect-task-hash", help="refuse to run if the task content drifted")
     arguments = parser.parse_args()
+
+    metadata_bytes = None
+    metadata_sha = None
+    if arguments.trial_metadata:
+        metadata_bytes = arguments.trial_metadata.read_bytes()
+        try:
+            metadata = json.loads(metadata_bytes)
+        except (UnicodeError, json.JSONDecodeError) as error:
+            raise SystemExit(f"invalid trial metadata: {error}") from error
+        if not isinstance(metadata, dict):
+            raise SystemExit("invalid trial metadata: top level must be an object")
+        metadata_sha = hashlib.sha256(metadata_bytes).hexdigest()
 
     task = arguments.task.resolve()
     current_hash = task_content_hash(task)
@@ -334,6 +348,8 @@ def main() -> int:
         raise SystemExit(f"trial dir {arguments.trial_dir} already exists")
     trial = arguments.trial_dir
     trial.mkdir(parents=True)
+    if metadata_bytes is not None:
+        (trial / "trial-metadata.json").write_bytes(metadata_bytes)
 
     corpus_identity = verify_corpus(task, arguments.corpus.resolve())
     workspace = trial / "workspace"
@@ -344,6 +360,10 @@ def main() -> int:
     # except for the appended treatment, and the combined prompt's hash is
     # recorded by the surface (prompt_sha256) plus the doctrine hash here.
     base_prompt = (arguments.prompt_file or task / "instruction.md").resolve()
+    if arguments.prompt_file:
+        prompt_snapshot = trial / "prompt.md"
+        prompt_snapshot.write_bytes(base_prompt.read_bytes())
+        base_prompt = prompt_snapshot
     doctrine_sha = None
     if arguments.doctrine:
         doctrine_text = arguments.doctrine.read_text()
@@ -423,6 +443,7 @@ def main() -> int:
         "observed_loopback": arguments.observe,
         "observed_timeline": arguments.observe_timeline,
         "doctrine_sha256": doctrine_sha,
+        "trial_metadata_sha256": metadata_sha,
         "wire_endpoint": analyze_wire(trial / "capture" / "wire.log") if arguments.observe else None,
         "timeline_endpoint": (
             analyze_timeline(trial / "capture" / "timeline.jsonl", trial / "capture" / "workspace")
