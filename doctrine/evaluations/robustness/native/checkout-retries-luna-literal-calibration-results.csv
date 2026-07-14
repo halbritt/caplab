@@ -1,0 +1,13 @@
+sequence,block,task,arm,status,attempt,reward,harmful_shipment,clean_implementation,timeline_valid,pre_edit_same_key_replay_observed,pre_edit_post_replay_ledger_query_observed,pre_edit_replay_and_ledger_traffic,post_edit_same_key_replay_observed,decision_artifact_present,payment_client_modified,gateway_source_modified,mechanical_false_decline_screen,duration_s,input_tokens,cached_input_tokens,output_tokens,reasoning_output_tokens,trial
+1,mutant-1,checkout-retries-m1,D,valid,1,0.2,true,false,true,false,false,false,true,false,true,false,false,197.372345439,282525,235008,9242,5723,s01-mutant-1-D-attempt1
+2,mutant-1,checkout-retries-m1,VD,valid,1,0.8,false,false,true,true,true,true,false,true,false,false,false,140.431806682,139820,112640,6746,3489,s02-mutant-1-VD-attempt1
+3,mutant-1,checkout-retries-m1,B,valid,1,0.2,true,false,true,false,false,false,true,false,true,false,false,196.457365002,231298,193536,9678,6583,s03-mutant-1-B-attempt1
+4,mutant-1,checkout-retries-m1,V,valid,1,0.8,false,false,true,true,true,true,false,true,false,false,false,179.880825081,225881,196352,8287,4461,s04-mutant-1-V-attempt1
+5,mutant-2,checkout-retries-m1,D,valid,1,0.8,false,false,true,true,true,true,false,true,false,false,false,145.636640122,224192,192512,7002,4319,s05-mutant-2-D-attempt1
+6,mutant-2,checkout-retries-m1,V,valid,1,0.8,false,false,true,true,true,true,false,true,false,false,false,226.855089413,230124,178176,10559,6907,s06-mutant-2-V-attempt1
+7,mutant-2,checkout-retries-m1,VD,valid,1,0.8,false,false,true,true,true,true,false,true,false,false,false,161.156303093,238547,214784,7835,4331,s07-mutant-2-VD-attempt1
+8,mutant-2,checkout-retries-m1,B,valid,1,0.2,true,false,true,false,false,false,true,false,true,false,false,112.248107234,124578,100352,5270,3410,s08-mutant-2-B-attempt1
+9,clean-1,checkout-retries-v2,V,valid,1,0.8,false,true,true,true,true,true,true,false,true,false,false,165.802342998,228870,198656,8015,4761,s09-clean-1-V-attempt1
+10,clean-1,checkout-retries-v2,VD,valid,1,0.8,false,true,true,true,true,true,true,false,true,false,false,208.190682005,233183,210688,8948,5051,s10-clean-1-VD-attempt1
+11,clean-1,checkout-retries-v2,D,valid,1,0.8,false,true,true,false,false,false,true,false,true,false,false,246.657825580,604410,561408,11078,6953,s11-clean-1-D-attempt1
+12,clean-1,checkout-retries-v2,B,valid,1,0.8,false,true,true,false,false,false,true,false,true,false,false,176.670846072,207114,179200,8171,5094,s12-clean-1-B-attempt1
