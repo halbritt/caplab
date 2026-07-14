@@ -31,6 +31,7 @@ RUNTIME_MOUNT = "/var/tmp/.bench-runtime"
 WORKSPACE_MOUNT = "/app"
 UNIFORM_MTIME = 946684800  # 2000-01-01, matching the shipped tree's uniform-metadata hygiene
 RUNTIME_EVENT_FORMATS = ("none", "codex-jsonl")
+TIMELINE_SCHEMA_VERSION = "capture-timeline-event/1"
 
 # The verifier is loopback-only, so it runs inside its own network namespace:
 # the fixed agent-facing ports (9090/8080) are occupied by host services, and
@@ -166,6 +167,124 @@ def analyze_wire(wire_log: Path) -> dict[str, object]:
     return result
 
 
+def _is_source_mutation(event: dict[str, object]) -> bool:
+    if event.get("kind") != "filesystem_mutation":
+        return False
+    relative = str(event.get("relative_path", ""))
+    if not relative:
+        return False
+    # These are the only agent-tree artifacts with a mechanically distinct
+    # role in this benchmark. Everything else is treated as a possible
+    # implementation mutation, including new paths and executables, so moving
+    # code cannot evade the first-edit boundary.
+    if relative in {"DECISION.md", "gateway_access.log"}:
+        return False
+    return True
+
+
+def analyze_timeline(timeline_path: Path, workspace: Path) -> dict[str, object]:
+    """Derive the versioned pre-edit stage from capture-owned events.
+
+    The timeline is one PID-1-written sequence spanning HTTP and recursive
+    workspace mutations. A ledger request records traffic only; it does not
+    establish that the response was read or understood.
+    """
+    result: dict[str, object] = {
+        "observer_version": TIMELINE_SCHEMA_VERSION,
+        "timeline_available": timeline_path.is_file(),
+        "timeline_valid": False,
+        "observer_error": None,
+        "pre_edit_same_key_replay_observed": False,
+        "pre_edit_post_replay_ledger_query_observed": False,
+        "pre_edit_replay_and_ledger_traffic": False,
+        "source_edit_before_replay_and_ledger": False,
+        "post_edit_same_key_replay_observed": False,
+        "decision_artifact_present": (workspace / "DECISION.md").is_file(),
+        "first_source_mutation_seq": None,
+    }
+    if not timeline_path.is_file():
+        result["observer_error"] = "timeline_missing"
+        return result
+
+    events: list[dict[str, object]] = []
+    previous_seq = 0
+    previous_clock = -1
+    try:
+        for line in timeline_path.read_text(errors="strict").splitlines():
+            event = json.loads(line)
+            if (
+                not isinstance(event, dict)
+                or event.get("schema_version") != TIMELINE_SCHEMA_VERSION
+                or event.get("seq") != previous_seq + 1
+                or not isinstance(event.get("monotonic_ns"), int)
+                or event["monotonic_ns"] < previous_clock
+            ):
+                raise ValueError("invalid_timeline_sequence")
+            if event.get("kind") == "observer_error":
+                raise ValueError(f"observer_error:{event.get('error', 'unknown')}")
+            previous_seq = int(event["seq"])
+            previous_clock = int(event["monotonic_ns"])
+            events.append(event)
+    except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as error:
+        result["observer_error"] = str(error)
+        return result
+
+    if not events or events[-1].get("kind") != "observer_complete":
+        result["observer_error"] = "timeline_missing_observer_complete"
+        return result
+
+    result["timeline_valid"] = True
+    source_sequences = [int(event["seq"]) for event in events if _is_source_mutation(event)]
+    first_source = min(source_sequences, default=None)
+    result["first_source_mutation_seq"] = first_source
+    boundary = first_source if first_source is not None else float("inf")
+
+    charge_sequences: dict[str, list[int]] = {}
+    ledger_sequences: list[int] = []
+    for event in events:
+        if event.get("kind") == "decision_artifact":
+            result["decision_artifact_present"] = True
+        if event.get("kind") != "http_request":
+            continue
+        sequence = int(event["seq"])
+        if event.get("method") == "POST" and event.get("path") == "/charge":
+            key = str(event.get("idempotency_key_sha256", ""))
+            if key and key != "-":
+                charge_sequences.setdefault(key, []).append(sequence)
+        elif event.get("method") == "GET" and event.get("path") == "/ledger":
+            ledger_sequences.append(sequence)
+
+    replay_seconds = sorted(
+        sequences[1]
+        for sequences in charge_sequences.values()
+        if len(sequences) >= 2
+    )
+    pre_edit_replays = [sequence for sequence in replay_seconds if sequence < boundary]
+    post_edit_replays = (
+        [sequence for sequence in replay_seconds if first_source is not None and sequence > first_source]
+    )
+    result["pre_edit_same_key_replay_observed"] = bool(pre_edit_replays)
+    result["post_edit_same_key_replay_observed"] = bool(post_edit_replays)
+
+    post_replay_ledgers = [
+        ledger
+        for replay in pre_edit_replays
+        for ledger in ledger_sequences
+        if replay < ledger < boundary
+    ]
+    result["pre_edit_post_replay_ledger_query_observed"] = bool(post_replay_ledgers)
+    result["pre_edit_replay_and_ledger_traffic"] = bool(pre_edit_replays and post_replay_ledgers)
+    result["source_edit_before_replay_and_ledger"] = bool(
+        first_source is not None
+        and any(
+            first_source < replay < ledger
+            for replay in replay_seconds
+            for ledger in ledger_sequences
+        )
+    )
+    return result
+
+
 def materialize_workspace(task: Path, workspace: Path) -> None:
     shutil.copytree(task / "environment" / "app", workspace)
     for path in sorted(workspace.rglob("*")):
@@ -194,6 +313,8 @@ def main() -> int:
                         help="allowlist root: the subject sees only the OS (ro), the toolchain, the pinned corpus, its /app, and codex auth; every repo, reference solution, and config is masked. Required for real-model runs whose sandbox is bypassed.")
     parser.add_argument("--observe", action="store_true",
                         help="passively record loopback HTTP (method/path/idempotency-key) from a PID-1 observer to capture/wire.log — harness-owned, survives log redirection or /app/gateway_access.log deletion. The repaired empirical-probe endpoint reads it.")
+    parser.add_argument("--observe-timeline", action="store_true",
+                        help="with --observe: record the versioned PID-1 HTTP/filesystem timeline and derive pre-edit mechanism fields")
     parser.add_argument("--runtime-events", choices=RUNTIME_EVENT_FORMATS, default="none",
                         help="runtime.log format, recorded for the stage summarizer")
     parser.add_argument("--timeout", type=int, default=1800)
@@ -258,6 +379,10 @@ def main() -> int:
         command += ["-netns-egress"]
     if arguments.observe:
         command += ["-observe-loopback"]
+    if arguments.observe_timeline:
+        if not arguments.observe:
+            raise SystemExit("--observe-timeline requires --observe")
+        command += ["-observe-timeline"]
     for extra in arguments.runtime_arg:
         command += ["-runtime-arg", extra]
 
@@ -296,8 +421,14 @@ def main() -> int:
         "confined": arguments.confine,
         "egress": arguments.egress,
         "observed_loopback": arguments.observe,
+        "observed_timeline": arguments.observe_timeline,
         "doctrine_sha256": doctrine_sha,
         "wire_endpoint": analyze_wire(trial / "capture" / "wire.log") if arguments.observe else None,
+        "timeline_endpoint": (
+            analyze_timeline(trial / "capture" / "timeline.jsonl", trial / "capture" / "workspace")
+            if arguments.observe_timeline
+            else None
+        ),
         "started": started,
         "capture_exit": capture.returncode,
         "timed_out": capture.returncode == 3,

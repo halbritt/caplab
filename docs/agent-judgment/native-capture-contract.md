@@ -1,9 +1,11 @@
 # Native capture surface — CLI/IO contract
 
-Status: v1, agreed 2026-07-13. Implemented by the striatum-next compiled
-command `striatum-workspace-capture` (branch `agent/bench-capture-surface`);
-consumed by the books native trial runner
-(`doctrine/evaluations/robustness/native/run-native-trial.sh`).
+Status: v2, agreed 2026-07-14. The v1 capture seam is implemented by the
+striatum-next compiled command `striatum-workspace-capture` (branch
+`agent/bench-capture-surface`). The v2 timeline is the additive implementation
+on branch `agent/bench-capture-timeline` at `b055a23d82873e055889811d7ee6f76e236866e9`.
+Both are consumed by the books native trial driver
+(`doctrine/tools/run_checkout_native.py`).
 
 ## Boundary
 
@@ -40,6 +42,9 @@ striatum-workspace-capture \
                                     #   HTTP (method/path/idempotency-key) to
                                     #   <output>/wire.log — harness-owned, agent
                                     #   cannot kill it or reach the log
+  -observe-timeline                 # with -observe-loopback: the same PID-1
+                                    #   observer writes one ordered HTTP/filesystem
+                                    #   event stream to <output>/timeline.jsonl
   -runtime-arg <arg>                # repeatable: appended to the declaration's
                                     #   adapter.command before the prompt; every use
                                     #   is recorded in provenance as a deviation
@@ -72,6 +77,8 @@ the runtime runs directly in `-workspace` on the host network.
   manifest-pre.json   # relpath -> sha256 of every workspace file before the run
   manifest-post.json  # same, after
   runtime.log         # runtime stdout+stderr, verbatim (codex: JSONL events)
+  wire.log            # optional v1 loopback HTTP observation
+  timeline.jsonl      # optional v2 ordered HTTP/filesystem observation
   provenance.json
 ```
 
@@ -90,6 +97,7 @@ the runtime runs directly in `-workspace` on the host network.
 | `timed_out` | bool |
 | `token_usage` | parsed from codex `--json` events when present, else null |
 | `capture_complete` | true iff workspace copy + manifests succeeded |
+| `timeline_valid` | with `-observe-timeline`, true iff the versioned stream is complete, ordered, parseable, and free of observer errors |
 
 ## Exit codes
 
@@ -100,7 +108,9 @@ the runtime runs directly in `-workspace` on the host network.
 - `2` — runtime failed to launch.
 - `3` — timeout: the runtime was killed; capture still attempted,
   `timed_out: true`.
-- `4` — capture failed after the run; workspace is intact for manual salvage.
+- `4` — capture or timeline validation failed after the run; workspace is
+  intact for manual salvage. A timeline observer error or overflow makes the
+  trial unusable even when the runtime itself completed.
 
 ## What the books runner does with it (informative)
 
@@ -173,6 +183,49 @@ delivered packet direction is counted, so loopback's double-capture cannot
 turn a single keyed charge into a false replay. Validated against six
 model-free behavior fixtures (`checkout-retries-refs/endpoint-fixtures/`) and
 re-passed through the full parity matrix (`NATIVE_OBSERVE=1`).
+
+### Versioned pre-edit stage endpoint (`-observe-timeline`)
+
+The v1 wire endpoint establishes that replay and ledger traffic happened, but
+not whether they happened before the subject changed the implementation. The
+v2 timeline puts HTTP requests and recursive workspace mutations on one
+capture-owned sequence. The PID-1 observer is the sole writer. Every JSONL
+record has `schema_version`, a contiguous `seq`, and `monotonic_ns`. HTTP
+records carry `method`, `path`, and the SHA-256 hash of the complete
+idempotency key (or `-` when absent). Filesystem records carry a workspace-
+relative path and one of `create`, `close_write`, `move`, or `delete`.
+`DECISION.md` gets its own `decision_artifact` event instead of being counted
+as a source mutation. The observer follows directories recursively, including
+populated directories moved into the workspace.
+
+The stream ends with `observer_complete`. A parse error, sequence or clock
+regression, inotify overflow, observer error, or missing completion record
+sets `timeline_valid: false` and fails capture closed. The agent cannot reach
+the stream path or its inherited descriptor.
+
+`run_checkout_native.py --observe-timeline` validates the stream again and
+derives these fields:
+
+- `pre_edit_same_key_replay_observed`
+- `pre_edit_post_replay_ledger_query_observed`
+- `pre_edit_replay_and_ledger_traffic`
+- `source_edit_before_replay_and_ledger`
+- `post_edit_same_key_replay_observed`
+- `decision_artifact_present`
+
+A source mutation is any observed workspace mutation except the separate
+`DECISION.md` artifact and the task-generated `gateway_access.log`. This
+includes edits, additions, replacements, moves, deletions, executable
+generation, and edit-then-revert behavior anywhere under the workspace. The
+HTTP endpoint establishes request ordering only: a ledger request is not
+evidence that the subject understood or correctly interpreted its response.
+
+The endpoint is protected by model-free tests for probe-before-edit,
+edit-before-probe, replay without a later ledger query, readiness traffic,
+edit-then-revert, no-op, clean implementation, log tampering, atomic rename,
+recursive moves, kill attempts, observer errors, and watcher overflow. The
+historical native reference matrix keeps its original rewards under
+`NATIVE_TIMELINE=1`.
 
 The **confining root** (`-confine`) is built and used by the real-model run:
 it binds the OS read-only and, under a masked `/home/halbritt` and

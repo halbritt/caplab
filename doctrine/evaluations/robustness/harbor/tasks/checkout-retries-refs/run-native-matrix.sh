@@ -30,6 +30,7 @@ CONFINE_ARG=()
 # NATIVE_OBSERVE=1 also turns on the passive loopback observer, so parity is
 # proven in the exact namespace (confine + observe) the real screen uses.
 [ "${NATIVE_OBSERVE:-0}" = "1" ] && CONFINE_ARG+=(--observe)
+[ "${NATIVE_TIMELINE:-0}" = "1" ] && CONFINE_ARG+=(--observe-timeline)
 
 run_cell() {
   local TASK="$1" REF="$2"
