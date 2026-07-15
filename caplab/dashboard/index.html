@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>CAPLAB Study Results</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <header class="site-header">
+    <p class="eyebrow">Agent Capability Lab</p>
+    <h1>CAPLAB Study Results</h1>
+    <p class="lede">A read-only inspection surface for historical study aggregates. It does not select, verify, or accept a capability claim.</p>
+  </header>
+
+  <main>
+    <section class="panel catalog" aria-labelledby="catalog-heading">
+      <div>
+        <p class="section-number">00 / catalog</p>
+        <h2 id="catalog-heading">Study catalog</h2>
+      </div>
+      <div class="catalog-control">
+        <label for="study-select">Study projection</label>
+        <select id="study-select" disabled><option>Loading catalog…</option></select>
+      </div>
+      <p id="comparison-state" class="boundary">Loading comparison state…</p>
+    </section>
+
+    <output id="ui-status" class="notice" role="status" aria-live="polite">Loading study results…</output>
+
+    <article id="study-view" hidden>
+      <header class="study-header">
+        <p id="study-display-id" class="eyebrow"></p>
+        <h2 id="study-title"></h2>
+        <p id="bounded-description" class="lede"></p>
+      </header>
+
+      <section class="panel" aria-labelledby="status-heading">
+        <p class="section-number">01 / state</p>
+        <h3 id="status-heading">Status ledger</h3>
+        <div class="table-scroll"><table><thead><tr><th>State</th><th>State kind</th><th>Source scope</th><th>Status</th></tr></thead><tbody id="status-ledger"></tbody></table></div>
+      </section>
+
+      <section class="panel" aria-labelledby="primary-heading">
+        <p class="section-number">02 / primary observation</p>
+        <h3 id="primary-heading">Harmful shipment, B versus V</h3>
+        <div class="arm-grid">
+          <div class="arm-card"><h4 id="primary-b-heading">B / bare</h4><p id="primary-b-count" class="metric"></p><meter id="primary-b-meter" min="0" max="1"></meter></div>
+          <div class="arm-card"><h4 id="primary-v-heading">V / exact append</h4><p id="primary-v-count" class="metric"></p><meter id="primary-v-meter" min="0" max="1"></meter></div>
+        </div>
+        <dl class="metric-strip"><div><dt>Risk difference</dt><dd id="risk-difference"></dd></div><div><dt>T<sub>obs</sub></dt><dd id="t-observed"></dd></div><div><dt>Exact one-sided p</dt><dd id="exact-p"></dd></div></dl>
+        <p id="exact-method" class="boundary"></p>
+      </section>
+
+      <section class="panel" aria-labelledby="secondary-heading">
+        <p class="section-number">03 / secondary observations</p>
+        <h3 id="secondary-heading">Traffic and workspace observables</h3>
+        <div class="table-scroll"><table><thead><tr><th>Observable</th><th>B</th><th>V</th></tr></thead><tbody id="secondary-observations"></tbody></table></div>
+        <p id="traffic-caveat" class="boundary"></p>
+      </section>
+
+      <section class="panel" aria-labelledby="clean-heading">
+        <p class="section-number">04 / clean sentinels</p>
+        <h3 id="clean-heading">Fault-clean, not concurrency-clean</h3>
+        <div id="clean-sentinels"></div>
+      </section>
+
+      <section class="panel" aria-labelledby="blocks-heading">
+        <p class="section-number">05 / paired analysis</p>
+        <h3 id="blocks-heading">Eight mutant B/V blocks</h3>
+        <div class="table-scroll"><table><thead><tr><th id="block-column-heading">Block</th><th>B sequence</th><th>B harmful shipment</th><th>V sequence</th><th>V harmful shipment</th></tr></thead><tbody id="paired-blocks"></tbody></table></div>
+      </section>
+
+      <section class="panel ledger" aria-labelledby="ledger-heading">
+        <p class="section-number">06 / trial ledger</p>
+        <h3 id="ledger-heading">Twenty frozen trial slots</h3>
+        <div class="filter-row"><label for="trial-filter">Filter ledger</label><input id="trial-filter" type="search" aria-controls="trial-ledger" placeholder="sequence, block, task, arm, status…"><output id="trial-count" aria-live="polite"></output></div>
+        <div class="table-scroll"><table id="trial-ledger"><thead id="trial-ledger-head"></thead><tbody id="trial-ledger-body"></tbody></table></div>
+      </section>
+
+      <section class="panel" aria-labelledby="provenance-heading">
+        <p class="section-number">07 / provenance and methods</p>
+        <h3 id="provenance-heading">Bound identities</h3>
+        <div id="provenance"></div>
+        <h4>Methods</h4><dl id="methods" class="definition-grid"></dl>
+      </section>
+
+      <section class="panel warning" aria-labelledby="boundary-heading">
+        <p class="section-number">08 / claim boundary</p>
+        <h3 id="boundary-heading">What this result does not establish</h3>
+        <div id="claim-boundary"></div>
+      </section>
+
+      <section class="panel" aria-labelledby="card-heading">
+        <p class="section-number">09 / card review</p>
+        <h3 id="card-heading">Capability-card proposal</h3>
+        <div id="capability-card"></div>
+      </section>
+    </article>
+
+    <noscript>This dashboard requires local JavaScript to render the checked-in JSON projection.</noscript>
+  </main>
+  <script src="/app.js" defer></script>
+</body>
+</html>
