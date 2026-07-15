@@ -1,0 +1,15 @@
+{
+  "schema_version": "caplab-synthetic-attempt/1",
+  "campaign_id": "caplab-p4-roundtrip-2026-07-15",
+  "artifact_kind": "sealed-attempt",
+  "media_type": "application/json",
+  "identity_layers": {
+    "model": {"provider": "synthetic", "model": "model-free", "weights": "none"},
+    "agent_configuration": {"runtime": "fixture", "effort": "none"},
+    "administration": {"sequence": 1, "randomization": "fixed"},
+    "trial_context": {"task": "synthetic-custody-v1", "variant": "clean"},
+    "trial_assignment": {"assignment": "p4-synthetic-001", "sealed": true},
+    "attempt": {"attempt": 1, "provider_call": false},
+    "analysis": {"analysis_key": "p4-roundtrip", "label": "Caf\u00e9 verification"}
+  }
+}

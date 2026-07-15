@@ -16,3 +16,4 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 "caplab.dashboard" = ["*.css", "*.html", "*.js", "studies/*.json"]
+"caplab.runtime" = ["requirements.lock", "migrations/*.sql"]
