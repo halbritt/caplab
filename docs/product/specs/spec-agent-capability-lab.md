@@ -11,7 +11,8 @@ superseded_by: null
 decision_owner: repository-owner
 decision_authority: repository-ownership
 decision_record: adr-0002
-related_plans: []
+related_plans:
+  - plan-agent-capability-lab-v0
 ---
 
 # Agent Capability Lab v0 charter

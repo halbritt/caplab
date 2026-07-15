@@ -13,7 +13,8 @@ affected_contexts:
   - agent-capability-lab
 related_specs:
   - spec-agent-capability-lab
-related_plans: []
+related_plans:
+  - plan-agent-capability-lab-v0
 related_receipts: []
 ---
 
