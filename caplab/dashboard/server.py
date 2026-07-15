@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit
 
-SCHEMA_VERSION = "study-results-dashboard/2"
+SCHEMA_VERSION = "study-results-dashboard/3"
 SECURITY_HEADERS = (
     ("Cache-Control", "no-store"),
     (
@@ -159,10 +159,26 @@ def _validate_study_context(value: object) -> None:
     _keys(
         context,
         "projection.study_context",
-        (*text_fields, "arms", "metric_explanations", "glossary"),
+        (*text_fields, "subject_tuple", "arms", "metric_explanations", "glossary"),
     )
     for field in text_fields:
         _text(context[field], f"projection.study_context.{field}")
+
+    subject_tuple = _object(
+        context["subject_tuple"],
+        "projection.study_context.subject_tuple",
+    )
+    subject_fields = (
+        "harness_profile",
+        "provider_model_route",
+        "reasoning_effort",
+        "runtime",
+        "model_weight_identity",
+        "scope_note",
+    )
+    _keys(subject_tuple, "projection.study_context.subject_tuple", subject_fields)
+    for field in subject_fields:
+        _text(subject_tuple[field], f"projection.study_context.subject_tuple.{field}")
 
     arms = _object(context["arms"], "projection.study_context.arms")
     _keys(arms, "projection.study_context.arms", ("b", "v"))

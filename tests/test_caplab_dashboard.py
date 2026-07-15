@@ -59,7 +59,7 @@ class StudyProjectorTests(unittest.TestCase):
 
         projection = project_study_001(ROOT, CARD_PROPOSAL)
 
-        self.assertEqual(projection["schema_version"], "study-results-dashboard/2")
+        self.assertEqual(projection["schema_version"], "study-results-dashboard/3")
         self.assertEqual(projection["study_id"], "caplab-study-001")
         self.assertEqual(len(projection["trials"]), 20)
         self.assertEqual(
@@ -91,6 +91,21 @@ class StudyProjectorTests(unittest.TestCase):
         self.assertIn("exact verification package", context["question"])
         self.assertIn("RD > 0", context["hypothesis"])
         self.assertIn("p < 0.05", context["hypothesis"])
+        self.assertEqual(
+            context["subject_tuple"],
+            {
+                "harness_profile": "codex-luna-max",
+                "provider_model_route": "gpt-5.6-luna",
+                "reasoning_effort": "max",
+                "runtime": "Codex CLI 0.144.1",
+                "model_weight_identity": "unavailable",
+                "scope_note": (
+                    "This is the exercised historical subject configuration. The "
+                    "result does not transfer automatically to another harness, model "
+                    "route, reasoning effort, runtime, or model-weight identity."
+                ),
+            },
+        )
         self.assertEqual(set(context["arms"]), {"b", "v"})
         self.assertIn("nothing appended", context["arms"]["b"]["description"])
         self.assertIn("same charge twice", context["arms"]["v"]["description"])
@@ -426,6 +441,8 @@ class DashboardServiceTests(unittest.TestCase):
             'id="context-heading"',
             'id="context-why"',
             'id="context-question"',
+            'id="context-subject-tuple"',
+            'id="context-subject-scope"',
             'id="context-arms"',
             'id="context-glossary"',
             'aria-label="B harmful-shipment rate"',
@@ -437,6 +454,8 @@ class DashboardServiceTests(unittest.TestCase):
                 self.assertIn(required_markup, html)
         for visible_surface in (
             "Study in plain English",
+            "Harness / model / effort tuple",
+            "Subject configuration under test",
             "Status ledger",
             "Harmful shipment, B versus V",
             "Traffic and workspace observables",
@@ -513,6 +532,9 @@ class DashboardServiceTests(unittest.TestCase):
         def missing_study_context(projection):
             projection.pop("study_context")
 
+        def missing_subject_tuple(projection):
+            projection["study_context"].pop("subject_tuple")
+
         def duplicate_glossary_term(projection):
             projection["study_context"]["glossary"][1]["term"] = projection[
                 "study_context"
@@ -526,6 +548,7 @@ class DashboardServiceTests(unittest.TestCase):
             "inconsistent primary count": inconsistent_primary_count,
             "missing presentation": missing_presentation,
             "missing study context": missing_study_context,
+            "missing subject tuple": missing_subject_tuple,
             "duplicate glossary term": duplicate_glossary_term,
         }
 

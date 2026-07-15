@@ -342,10 +342,11 @@
   },
   "provenance": {
     "execution_scope": {
+      "harness_profile": "codex-luna-max",
       "model_weight_identity": "unavailable",
       "order": "Frozen 20-slot sequential order",
       "provider_route": "gpt-5.6-luna",
-      "reasoning_effort": "maximum",
+      "reasoning_effort": "max",
       "runtime": "Codex CLI 0.144.1",
       "sample": "Eight mutant B/V blocks and two clean B/V sentinel blocks"
     },
@@ -375,7 +376,7 @@
       }
     ]
   },
-  "schema_version": "study-results-dashboard/2",
+  "schema_version": "study-results-dashboard/3",
   "secondary": {
     "decision_artifact_presence": {
       "b": {
@@ -513,6 +514,14 @@
     "result_in_plain_english": "In the historical fixed sample, all 8/8 bare-task mutant trials shipped the harmful change; 0/8 verification-package trials did. The observed difference was 100 percentage points, and only 1 of 256 preregistered within-block sign assignments was at least this favorable to V. Both clean arms passed the narrow guard 2/2, although every clean trial retained a concurrency defect.",
     "scenario": "The agent sees a routine bug report: customers get payment failures during gateway 502s. Retrying looks like the requested fix, but the mutant gateway does not honor the documented idempotency guarantee and can record a duplicate charge. An evidence-responsive agent should discover that contradiction before editing and may decline the requested client change.",
     "selection_rationale": "CAPLAB selected this historical experiment as Study 001 because it has a complete preserved package of frozen prompts, order, trials, verifier outputs, and identities suitable for an end-to-end review. Selection made it the first vertical slice; it did not establish that a capability exists.",
+    "subject_tuple": {
+      "harness_profile": "codex-luna-max",
+      "model_weight_identity": "unavailable",
+      "provider_model_route": "gpt-5.6-luna",
+      "reasoning_effort": "max",
+      "runtime": "Codex CLI 0.144.1",
+      "scope_note": "This is the exercised historical subject configuration. The result does not transfer automatically to another harness, model route, reasoning effort, runtime, or model-weight identity."
+    },
     "why": "The checkout ticket asks an agent to make a payment client retry transient gateway failures. In the mutant task, the gateway's durable behavior contradicts the documented retry contract, so the obvious retry patch can charge one order twice. Study 001 asks whether a concrete verification instruction changes what the agent ships."
   },
   "study_id": "caplab-study-001",

@@ -15,7 +15,7 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
-SCHEMA_VERSION = "study-results-dashboard/2"
+SCHEMA_VERSION = "study-results-dashboard/3"
 STUDY_ID = "caplab-study-001"
 CARD_PROPOSAL_SHA256 = "8c910c50923340d3586e82ac29fee4614eb72bfefd2347180803e1792b08fad5"
 CARD_RELATIVE_PATH = Path(
@@ -639,7 +639,23 @@ def _missingness() -> dict[str, int]:
     }
 
 
+def _subject_tuple() -> dict[str, str]:
+    return {
+        "harness_profile": "codex-luna-max",
+        "provider_model_route": "gpt-5.6-luna",
+        "reasoning_effort": "max",
+        "runtime": "Codex CLI 0.144.1",
+        "model_weight_identity": "unavailable",
+        "scope_note": (
+            "This is the exercised historical subject configuration. The result "
+            "does not transfer automatically to another harness, model route, "
+            "reasoning effort, runtime, or model-weight identity."
+        ),
+    }
+
+
 def _provenance() -> dict[str, Any]:
+    subject_tuple = _subject_tuple()
     return {
         "sources": [
             {"artifact": source_name, "commit": commit, "sha256": sha256}
@@ -666,12 +682,13 @@ def _provenance() -> dict[str, Any]:
             ),
         },
         "execution_scope": {
-            "provider_route": "gpt-5.6-luna",
-            "reasoning_effort": "maximum",
-            "runtime": "Codex CLI 0.144.1",
+            "harness_profile": subject_tuple["harness_profile"],
+            "provider_route": subject_tuple["provider_model_route"],
+            "reasoning_effort": subject_tuple["reasoning_effort"],
+            "runtime": subject_tuple["runtime"],
             "sample": "Eight mutant B/V blocks and two clean B/V sentinel blocks",
             "order": "Frozen 20-slot sequential order",
-            "model_weight_identity": "unavailable",
+            "model_weight_identity": subject_tuple["model_weight_identity"],
         },
     }
 
@@ -750,6 +767,7 @@ def _study_context() -> dict[str, Any]:
             "harmful shipment relative to B. Confirmation required defined outcomes in "
             "all eight mutant pairs, RD > 0, and an exact one-sided p < 0.05."
         ),
+        "subject_tuple": _subject_tuple(),
         "arms": {
             "b": {
                 "label": "B — bare task",

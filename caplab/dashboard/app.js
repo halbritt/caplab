@@ -69,6 +69,17 @@ function renderStudyContext(study) {
   document.querySelector("#context-interpretation").textContent = context.interpretation;
   document.querySelector("#context-reading-guide").textContent = context.reading_guide;
 
+  const subjectTuple = document.querySelector("#context-subject-tuple");
+  clear(subjectTuple);
+  [
+    ["Harness profile", context.subject_tuple.harness_profile],
+    ["Provider / model route", context.subject_tuple.provider_model_route],
+    ["Reasoning effort", context.subject_tuple.reasoning_effort],
+    ["Runtime", context.subject_tuple.runtime],
+    ["Model-weight identity", context.subject_tuple.model_weight_identity],
+  ].forEach(([label, value]) => appendDefinition(subjectTuple, label, value));
+  document.querySelector("#context-subject-scope").textContent = context.subject_tuple.scope_note;
+
   const arms = document.querySelector("#context-arms");
   clear(arms);
   ["b", "v"].forEach((armName) => {

@@ -13,9 +13,9 @@ unavailable.
 The page starts with a study-specific plain-language overview: why the study
 exists, why CAPLAB selected it, the checkout scenario, the preregistered
 question and hypothesis, the B/V treatment difference, the primary outcome,
-the fixed design, the historical result, its bounded interpretation, and a
-glossary. Raw aggregates, methods, provenance, status, and the capability card
-follow that overview.
+the harness/model/effort subject tuple, the fixed design, the historical
+result, its bounded interpretation, and a glossary. Raw aggregates, methods,
+provenance, status, and the capability card follow that overview.
 
 ## Project Study 001
 
@@ -54,15 +54,16 @@ ADR 0006's decision.
 
 ## View-model contract
 
-`study-results-dashboard/2` is deterministic UTF-8 JSON with sorted keys,
+`study-results-dashboard/3` is deterministic UTF-8 JSON with sorted keys,
 two-space indentation, and one trailing newline. Each file name equals its
 `study_id`. The server requires these top-level fields:
 
 - study identity: `study_id`, `display_id`, `title`, and `catalog_summary`;
 - reviewer orientation: `study_context`, including the scenario, selection
   rationale, question, hypothesis, arm definitions, primary-outcome
-  definition, design, plain-language result, interpretation, metric
-  explanations, reading guide, and unique glossary terms;
+  definition, required harness/model/effort subject tuple, design,
+  plain-language result, interpretation, metric explanations, reading guide,
+  and unique glossary terms;
 - status: `claims`, with state kind, source scope, and status kept apart;
 - observations: `primary`, `secondary`, `clean_sentinels`, `paired_blocks`,
   and typed `trials`;
