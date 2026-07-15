@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-capability-lab"
+version = "0.1.0"
+description = "Behavioral capability measurement for software agents"
+requires-python = ">=3.12"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"caplab.dashboard" = ["*.css", "*.html", "*.js", "studies/*.json"]

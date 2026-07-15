@@ -1,0 +1,35 @@
+{
+  "manifest_version": "caplab-source-binding/1",
+  "admission_status": "not_admitted",
+  "historical_evidence_copied": false,
+  "projection": {
+    "origin_commit": "e4636d2628adbbfca953734d4dc7cdfa91d72b04",
+    "origin_path": "caplab/dashboard/studies/caplab-study-001.json",
+    "origin_repository": "halbritt/books",
+    "path": "src/caplab/dashboard/studies/caplab-study-001.json",
+    "sha256": "7b710b3188ab97228acbeb4c05066e3a7aefa31891bf160780337b177941a55d"
+  },
+  "sources": [
+    {
+      "artifact": "preregistration",
+      "commit": "598c670885626d598a03a84a7274286ffca5ab8a",
+      "path": "doctrine/evaluations/robustness/native/checkout-retries-luna-bv-confirmation.md",
+      "repository": "halbritt/books",
+      "sha256": "4d8b1418172a0fc6b042efcca6dad96a5dcb08c7ded4006804fce7aa18ff3eb9"
+    },
+    {
+      "artifact": "result_record",
+      "commit": "dbe6f7e8b988823c754ad232c74ad414119a3375",
+      "path": "doctrine/evaluations/robustness/native/checkout-retries-luna-bv-confirmation-result.md",
+      "repository": "halbritt/books",
+      "sha256": "870a96b8b528dee1c85337d83662d9900a1fccd7531c181914ed948d02ed0bf4"
+    },
+    {
+      "artifact": "trial_csv",
+      "commit": "dbe6f7e8b988823c754ad232c74ad414119a3375",
+      "path": "doctrine/evaluations/robustness/native/checkout-retries-luna-bv-confirmation-results.csv",
+      "repository": "halbritt/books",
+      "sha256": "af8d64fde0b7a93773dfc2ac36651d61ee7259095eef792fa7515810a57a2374"
+    }
+  ]
+}

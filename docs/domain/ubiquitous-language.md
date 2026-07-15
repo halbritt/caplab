@@ -1,0 +1,73 @@
+# Ubiquitous language
+
+These terms govern CAPLAB code, studies, records, dashboards, and planning.
+Never silently promote one assertion type into another.
+
+## Assertion types
+
+**Observation** is a directly inspectable fact with an evidence locator,
+method, and relevant version or time. It adds no causal explanation and grants
+no authority.
+
+**Inference** interprets observations. It names credible rivals, missing or
+contradictory evidence, and uncertainty. Repetition does not turn an inference
+into an observation.
+
+**Recommendation** ranks a response against meaningful alternatives and their
+tradeoffs. It advises; it does not select or authorize.
+
+**Decision** records an option selected by a named owner or delegated mechanism
+within a defined scope. It names the source of authority and reopening
+conditions. It is not execution, verification, or acceptance.
+
+**Authorization** is permission from the actual owner or an explicitly
+delegated mechanism to perform named effects within a stated scope and time.
+Access, capability, evidence, and selection do not create authorization.
+
+**Execution** carries out an authorized decision and records the effects.
+
+**Verification** supplies evidence that execution met frozen technical
+criteria. It does not change those criteria or accept the outcome.
+
+**Acceptance** is the authorized judgment that a verified outcome is
+sufficient. Passing checks is not acceptance.
+
+The ordinary progression is:
+
+```text
+evidence -> observation -> inference -> recommendation -> proposal
+         -> selection and decision -> authorization -> execution
+         -> verification -> acceptance
+```
+
+## CAPLAB terms
+
+**Capability card** is a versioned measurement contract for one construct and
+population. It names observables, controls, rivals, exclusions, scoring,
+missingness, human judgments, and promotion gates.
+
+**Study** is one preregistered empirical question with a frozen population,
+design, instrument, analysis, and missingness contract. A task family or pool
+of adjacent experiments is not automatically one study.
+
+**Model identity**, **agent configuration**, **administration**, and **trial
+context** are separate identities. A treatment, prompt, tool, task, world,
+instrument, or runtime change must not silently redefine the model.
+
+**Trial assignment** is a sealed preregistered slot binding condition, block,
+sequence, denominator, and replacement rules.
+
+**Attempt** is one execution linked to a trial assignment, including its
+interaction boundary, timestamps, failure class, disposition, and preserved
+outputs.
+
+**Registered evidence** is immutable content whose bytes, locator, custody,
+and metadata have passed an authorized admission path. Availability or a hash
+in a source repository is not CAPLAB registration.
+
+**Capability profile** is a bounded presentation of accepted observations and
+inferences under a capability card. It is not a global model ranking.
+
+**Projection** is regenerable review or planning state. Dashboards and Plane
+are projections; they cannot create evidence, decisions, authorization,
+verification, or acceptance.
