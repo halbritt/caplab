@@ -106,8 +106,35 @@ class PostgresRuntimeIntegrationTests(unittest.TestCase):
         first = service.register(request(operation_id="op-postgres-0001"))
         replay = service.register(request(operation_id="op-postgres-0001"))
 
+        with psycopg.connect(POSTGRES_DSN) as connection:
+            event_types = [
+                row[0]
+                for row in connection.execute(
+                    """
+                    SELECT event_type FROM caplab_v0.operation_events
+                    WHERE operation_id = 'op-postgres-0001'
+                    ORDER BY event_id
+                    """
+                )
+            ]
+            audit_types = [
+                row[0]
+                for row in connection.execute(
+                    """
+                    SELECT event_type FROM caplab_v0.audit_events
+                    WHERE operation_id = 'op-postgres-0001'
+                    ORDER BY audit_id
+                    """
+                )
+            ]
+
         self.assertFalse(first.idempotent_replay)
         self.assertTrue(replay.idempotent_replay)
+        self.assertEqual(
+            event_types,
+            ["requested", "object-verified", "local-copy-verified", "registered"],
+        )
+        self.assertEqual(audit_types, ["registration-completed"])
         self.assertTrue(service.reconcile(first.operation_id).ok)
         with self.assertRaises(OperationConflict):
             service.register(request(operation_id="op-postgres-0001", payload=b"changed"))
