@@ -10,6 +10,13 @@ P7 CAPLAB recomputation. ADR 0006 selected the exact capability-card artifact;
 capability inference, technical verification, and CAPLAB acceptance remain
 unavailable.
 
+The page starts with a study-specific plain-language overview: why the study
+exists, why CAPLAB selected it, the checkout scenario, the preregistered
+question and hypothesis, the B/V treatment difference, the primary outcome,
+the fixed design, the historical result, its bounded interpretation, and a
+glossary. Raw aggregates, methods, provenance, status, and the capability card
+follow that overview.
+
 ## Project Study 001
 
 The projector resolves three fixed Git objects, checks their complete SHA-256
@@ -47,11 +54,15 @@ ADR 0006's decision.
 
 ## View-model contract
 
-`study-results-dashboard/1` is deterministic UTF-8 JSON with sorted keys,
+`study-results-dashboard/2` is deterministic UTF-8 JSON with sorted keys,
 two-space indentation, and one trailing newline. Each file name equals its
 `study_id`. The server requires these top-level fields:
 
 - study identity: `study_id`, `display_id`, `title`, and `catalog_summary`;
+- reviewer orientation: `study_context`, including the scenario, selection
+  rationale, question, hypothesis, arm definitions, primary-outcome
+  definition, design, plain-language result, interpretation, metric
+  explanations, reading guide, and unique glossary terms;
 - status: `claims`, with state kind, source scope, and status kept apart;
 - observations: `primary`, `secondary`, `clean_sentinels`, `paired_blocks`,
   and typed `trials`;
@@ -62,6 +73,11 @@ JSON booleans remain booleans. Unavailable trial fields are JSON `null`, not
 zero or an empty string. Mutant concurrency fields are unavailable; clean
 sentinels retain 40 successes and 10 bad orders. Token fields are reported
 individually and are not added together.
+
+The renderer keeps the overview expanded and the glossary collapsed by
+default. It shows the overview and primary result before the full status
+ledger, so a first-time reviewer does not need CAPLAB stage names to understand
+the study question or result.
 
 The catalog scans `studies/*.json` in lexical order. A new conforming projection
 appears in `/api/studies` and uses the same UI renderer. Invalid files remain in

@@ -56,6 +56,35 @@ async function fetchJSON(url) {
   return payload;
 }
 
+function renderStudyContext(study) {
+  const context = study.study_context;
+  document.querySelector("#context-why").textContent = context.why;
+  document.querySelector("#context-selection").textContent = context.selection_rationale;
+  document.querySelector("#context-scenario").textContent = context.scenario;
+  document.querySelector("#context-question").textContent = context.question;
+  document.querySelector("#context-hypothesis").textContent = context.hypothesis;
+  document.querySelector("#context-outcome").textContent = context.harmful_shipment_definition;
+  document.querySelector("#context-design").textContent = context.design;
+  document.querySelector("#context-result").textContent = context.result_in_plain_english;
+  document.querySelector("#context-interpretation").textContent = context.interpretation;
+  document.querySelector("#context-reading-guide").textContent = context.reading_guide;
+
+  const arms = document.querySelector("#context-arms");
+  clear(arms);
+  ["b", "v"].forEach((armName) => {
+    const arm = context.arms[armName];
+    const card = document.createElement("div");
+    card.className = "arm-card";
+    appendText(card, "h4", arm.label);
+    appendText(card, "p", arm.description);
+    arms.appendChild(card);
+  });
+
+  const glossary = document.querySelector("#context-glossary");
+  clear(glossary);
+  context.glossary.forEach((entry) => appendDefinition(glossary, entry.term, entry.definition));
+}
+
 function renderStatusLedger(study) {
   const body = document.querySelector("#status-ledger");
   clear(body);
@@ -66,7 +95,9 @@ function renderStatusLedger(study) {
 
 function renderPrimary(study) {
   const primary = study.primary;
+  const context = study.study_context;
   document.querySelector("#primary-heading").textContent = study.presentation.primary_heading;
+  document.querySelector("#primary-outcome-definition").textContent = context.harmful_shipment_definition;
   document.querySelector("#primary-b-heading").textContent = study.presentation.arm_headings.b;
   document.querySelector("#primary-v-heading").textContent = study.presentation.arm_headings.v;
   document.querySelector("#primary-b-count").textContent = `${primary.b.harmful_shipments}/${primary.b.trials}`;
@@ -76,6 +107,9 @@ function renderPrimary(study) {
   document.querySelector("#risk-difference").textContent = formatValue(primary.risk_difference);
   document.querySelector("#t-observed").textContent = formatValue(primary.t_observed);
   document.querySelector("#exact-p").textContent = `${primary.exact_one_sided.numerator}/${primary.exact_one_sided.denominator} (${primary.exact_one_sided.p_value})`;
+  document.querySelector("#risk-difference-help").textContent = context.metric_explanations.risk_difference;
+  document.querySelector("#t-observed-help").textContent = context.metric_explanations.t_observed;
+  document.querySelector("#exact-p-help").textContent = context.metric_explanations.exact_one_sided_p;
   document.querySelector("#exact-method").textContent = study.methods.exact_test;
 }
 
@@ -159,6 +193,9 @@ function appendList(target, heading, entries) {
 function renderClaimBoundary(study) {
   const target = document.querySelector("#claim-boundary");
   clear(target);
+  appendText(target, "h4", "Bounded historical result");
+  appendText(target, "p", study.claim_boundary.bounded_description);
+  appendText(target, "h4", "Scope");
   appendText(target, "p", study.claim_boundary.scope, "boundary");
   appendList(target, "Credible rivals", study.claim_boundary.credible_rivals);
   appendList(target, "Absent controls and identities", study.claim_boundary.absent_controls);
@@ -193,7 +230,8 @@ function renderCapabilityCard(study) {
 function renderStudy(study) {
   document.querySelector("#study-display-id").textContent = study.display_id;
   document.querySelector("#study-title").textContent = study.title;
-  document.querySelector("#bounded-description").textContent = study.claim_boundary.bounded_description;
+  document.querySelector("#bounded-description").textContent = study.catalog_summary;
+  renderStudyContext(study);
   renderStatusLedger(study);
   renderPrimary(study);
   renderSecondary(study);

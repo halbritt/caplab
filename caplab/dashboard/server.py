@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit
 
-SCHEMA_VERSION = "study-results-dashboard/1"
+SCHEMA_VERSION = "study-results-dashboard/2"
 SECURITY_HEADERS = (
     ("Cache-Control", "no-store"),
     (
@@ -142,7 +142,60 @@ def _arm_count(value: object, path: str, count_field: str) -> dict[str, Any]:
     return arm
 
 
+def _validate_study_context(value: object) -> None:
+    context = _object(value, "projection.study_context")
+    text_fields = (
+        "why",
+        "selection_rationale",
+        "scenario",
+        "question",
+        "hypothesis",
+        "harmful_shipment_definition",
+        "design",
+        "result_in_plain_english",
+        "interpretation",
+        "reading_guide",
+    )
+    _keys(
+        context,
+        "projection.study_context",
+        (*text_fields, "arms", "metric_explanations", "glossary"),
+    )
+    for field in text_fields:
+        _text(context[field], f"projection.study_context.{field}")
+
+    arms = _object(context["arms"], "projection.study_context.arms")
+    _keys(arms, "projection.study_context.arms", ("b", "v"))
+    for arm_name in ("b", "v"):
+        arm = _object(arms[arm_name], f"projection.study_context.arms.{arm_name}")
+        _keys(arm, f"projection.study_context.arms.{arm_name}", ("label", "description"))
+        _text(arm["label"], f"projection.study_context.arms.{arm_name}.label")
+        _text(arm["description"], f"projection.study_context.arms.{arm_name}.description")
+
+    metrics = _object(
+        context["metric_explanations"],
+        "projection.study_context.metric_explanations",
+    )
+    metric_fields = ("risk_difference", "t_observed", "exact_one_sided_p")
+    _keys(metrics, "projection.study_context.metric_explanations", metric_fields)
+    for field in metric_fields:
+        _text(metrics[field], f"projection.study_context.metric_explanations.{field}")
+
+    glossary = _array(context["glossary"], "projection.study_context.glossary", nonempty=True)
+    terms: set[str] = set()
+    for index, raw_entry in enumerate(glossary):
+        path = f"projection.study_context.glossary[{index}]"
+        entry = _object(raw_entry, path)
+        _keys(entry, path, ("term", "definition"))
+        term = _text(entry["term"], f"{path}.term")
+        _text(entry["definition"], f"{path}.definition")
+        if term in terms:
+            raise ProjectionLoadError("projection.study_context glossary terms must be unique")
+        terms.add(term)
+
+
 def _validate_nested_projection(projection: dict[str, Any]) -> None:
+    _validate_study_context(projection["study_context"])
     presentation = _object(projection["presentation"], "projection.presentation")
     _keys(
         presentation,
@@ -493,6 +546,7 @@ def _validate_projection(projection_bytes: bytes, filename_study_id: str) -> dic
         "display_id",
         "title",
         "catalog_summary",
+        "study_context",
         "presentation",
         "claims",
         "primary",

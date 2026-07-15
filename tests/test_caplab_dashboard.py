@@ -59,7 +59,7 @@ class StudyProjectorTests(unittest.TestCase):
 
         projection = project_study_001(ROOT, CARD_PROPOSAL)
 
-        self.assertEqual(projection["schema_version"], "study-results-dashboard/1")
+        self.assertEqual(projection["schema_version"], "study-results-dashboard/2")
         self.assertEqual(projection["study_id"], "caplab-study-001")
         self.assertEqual(len(projection["trials"]), 20)
         self.assertEqual(
@@ -76,6 +76,63 @@ class StudyProjectorTests(unittest.TestCase):
                 },
             },
         )
+
+    def test_bound_study_projects_first_time_reviewer_context(self) -> None:
+        from caplab.dashboard.projector import project_study_001
+
+        projection = project_study_001(ROOT, CARD_PROPOSAL)
+        context = projection["study_context"]
+
+        self.assertIn("Pre-edit gateway verification", projection["title"])
+        self.assertIn("double-charges customers", projection["catalog_summary"])
+        self.assertIn("documented retry contract", context["why"])
+        self.assertIn("complete preserved", context["selection_rationale"])
+        self.assertIn("duplicate charge", context["scenario"])
+        self.assertIn("exact verification package", context["question"])
+        self.assertIn("RD > 0", context["hypothesis"])
+        self.assertIn("p < 0.05", context["hypothesis"])
+        self.assertEqual(set(context["arms"]), {"b", "v"})
+        self.assertIn("nothing appended", context["arms"]["b"]["description"])
+        self.assertIn("same charge twice", context["arms"]["v"]["description"])
+        self.assertIn("reward 0.2", context["harmful_shipment_definition"])
+        self.assertIn("eight", context["design"].lower())
+        self.assertIn("8/8", context["result_in_plain_english"])
+        self.assertIn("0/8", context["result_in_plain_english"])
+        self.assertIn("does not show why", context["interpretation"])
+        self.assertIn(
+            "100-percentage-point",
+            context["metric_explanations"]["risk_difference"],
+        )
+        self.assertIn(
+            "not the probability",
+            context["metric_explanations"]["exact_one_sided_p"],
+        )
+        self.assertEqual(
+            {entry["term"] for entry in context["glossary"]},
+            {
+                "B",
+                "V",
+                "Mutant task",
+                "Clean sentinel",
+                "Harmful shipment",
+                "Paired block",
+                "Risk difference",
+                "T_obs",
+                "Exact one-sided p",
+                "Status ledger",
+                "DECISION.md",
+                "P6-P9",
+                "Historical estimate",
+                "Unavailable",
+                "Traffic observation",
+                "Capability card",
+            },
+        )
+        glossary = {entry["term"]: entry["definition"] for entry in context["glossary"]}
+        self.assertIn("not yet independently recomputed", glossary["Historical estimate"])
+        self.assertIn("has not earned", glossary["Unavailable"])
+        self.assertIn("event order", glossary["Traffic observation"])
+        self.assertIn("measurement and claim-boundary contract", glossary["Capability card"])
 
     def test_bound_study_projects_review_states_and_secondary_observations(self) -> None:
         from caplab.dashboard.projector import project_study_001
@@ -366,12 +423,20 @@ class DashboardServiceTests(unittest.TestCase):
             'id="blocks-heading"',
             'id="block-column-heading"',
             'id="ledger-heading"',
+            'id="context-heading"',
+            'id="context-why"',
+            'id="context-question"',
+            'id="context-arms"',
+            'id="context-glossary"',
+            'aria-label="B harmful-shipment rate"',
+            'aria-label="V harmful-shipment rate"',
             "<table",
             "<noscript>",
         ):
             with self.subTest(required_markup=required_markup):
                 self.assertIn(required_markup, html)
         for visible_surface in (
+            "Study in plain English",
             "Status ledger",
             "Harmful shipment, B versus V",
             "Traffic and workspace observables",
@@ -445,6 +510,14 @@ class DashboardServiceTests(unittest.TestCase):
         def missing_presentation(projection):
             projection.pop("presentation")
 
+        def missing_study_context(projection):
+            projection.pop("study_context")
+
+        def duplicate_glossary_term(projection):
+            projection["study_context"]["glossary"][1]["term"] = projection[
+                "study_context"
+            ]["glossary"][0]["term"]
+
         corruptions = {
             "claim missing state kind": missing_state_kind,
             "empty paired blocks": empty_paired_blocks,
@@ -452,6 +525,8 @@ class DashboardServiceTests(unittest.TestCase):
             "malformed primary arm": malformed_primary_arm,
             "inconsistent primary count": inconsistent_primary_count,
             "missing presentation": missing_presentation,
+            "missing study context": missing_study_context,
+            "duplicate glossary term": duplicate_glossary_term,
         }
 
         for scenario, corrupt in corruptions.items():
