@@ -31,9 +31,10 @@ Should this repository establish Agent Capability Lab (CAPLAB) as a behavioral
 capability measurement and model-development platform for software agents, with
 one complete checkout-retries vertical slice as v0?
 
-CAPLAB would measure engineering judgment and other task-card-defined behaviors
-as separate constructs rather than infer them from whether an agent produced a
-passing patch. Its evidence would support three downstream purposes:
+CAPLAB would measure engineering judgment and other behaviors defined by
+study-specific capability cards as separate constructs rather than infer them
+from whether an agent produced a passing patch. Its evidence would support three
+downstream purposes:
 
 1. characterize a named evaluator's preference between agent configurations on
    a defined population of complex tasks and test preregistered candidate
