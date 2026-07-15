@@ -20,7 +20,8 @@ authorized_scope:
   - tests/test_runtime.py
   - tests/fixtures/runtime/**
   - tests/integration/test_runtime_local.py
-  - docs/records/caplab-p4-roundtrip-2026-07-15-*.md
+  - docs/records/caplab-p4-execution-2026-07-15.md
+  - docs/records/caplab-p4-verification-2026-07-15.md
   - proximal:caplab-runtime/**
   - postgres:caplab/caplab_v0
   - garage:caplab-v0
@@ -285,6 +286,14 @@ boundary, rollback revokes credentials, disables peer identities, emits a
 content-identified cleanup plan, and quarantines synthetic state. P4 does not
 authorize live evidence-object or synthetic application-row deletion.
 
+P4 executed and independently verified PASS on 2026-07-15. The
+[`execution record`](../../records/caplab-p4-execution-2026-07-15.md) preserves
+the effects, deviations, artifacts, and quarantine boundary; the
+[`verification record`](../../records/caplab-p4-verification-2026-07-15.md)
+records the separate verifier's observations and bounded numeric-status gap.
+This completes P4 verification only. It is not acceptance and does not
+authorize P5.
+
 ### P5 — Fail closed and recover the synthetic attempt
 
 Exercise missing and altered objects, locator drift, duplicate submission,
@@ -483,3 +492,10 @@ replacement because the Plane connector could not remove the original relation.
   `2026-07-22T23:59:59Z`, and delegated CAPLAB decision authority. ADR 0008
   records the owner's correction that CAPLAB is a standalone repository. No P5
   or later effect is authorized.
+- **2026-07-15 — P4 executed and independently verified.** One model-free
+  synthetic operation completed registration, idempotent replay, changed-input
+  refusal, retrieval, reconciliation, cleanup-plan generation, quarantine, and
+  access disablement. The separate `caplab22_verifier` recorded PASS with a
+  bounded preservation gap: the three numeric status-2 values were asserted by
+  the live shell but not retained as direct numeric receipts. No P5 action or
+  CAPLAB acceptance occurred.
