@@ -81,6 +81,7 @@ states. Record them in the plan's status log and dedicated records.
 | ID | Type | Title | Status | Steward | Source or parent | Updated |
 |---|---|---|---|---|---|---|
 | [`spec-agent-capability-lab`](specs/spec-agent-capability-lab.md) | product specification | Agent Capability Lab v0 charter | decided | repository maintainers | ADR 0002 | 2026-07-15 |
+| [`plan-agent-capability-lab-v0`](plans/plan-agent-capability-lab-v0.md) | implementation plan | Agent Capability Lab v0 | proposed | repository maintainers | `spec-agent-capability-lab`; ADR 0002 | 2026-07-15 |
 | [`spec-doctrine-robustness-laboratory`](specs/spec-doctrine-robustness-laboratory.md) | product specification | Doctrine Robustness Laboratory | decided | repository maintainers | corpus operationalization gap | 2026-07-12 |
 | [`plan-doctrine-robustness-laboratory-pilot`](plans/plan-doctrine-robustness-laboratory-pilot.md) | implementation plan | Doctrine Robustness Laboratory pilot | authorized | repository maintainers | `spec-doctrine-robustness-laboratory` | 2026-07-12 |
 
