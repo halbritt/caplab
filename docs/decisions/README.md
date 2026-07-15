@@ -55,3 +55,4 @@ does not select the option automatically.
 | ID | Title | Status | Decision owner | Affected surface |
 |---|---|---|---|---|
 | [`adr-0001`](adr-0001-domain-documentation-authority.md) | Domain documentation authority | decided | repository owner | repository documentation |
+| [`adr-0002`](adr-0002-agent-capability-lab-v0.md) | Agent Capability Lab v0 product boundary | decided | repository owner | Agent Capability Lab |
