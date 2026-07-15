@@ -24,13 +24,15 @@ change_types:
 # Agent Capability Lab v0
 
 Status interpretation: this plan projects the selected CAPLAB v0 contract into
-dependency-ordered work. It is complete enough for review but is not ready for
-implementation: the exact Study 001 experiment, evidence-governance rules,
-capability card, runtime shape, and live Postgres and object-store constraints
+dependency-ordered work. The exact Study 001 experiment and v0 evidence
+governance are selected in ADRs 0004 and 0005. The plan remains proposed and is
+not ready for implementation: the capability card, runtime shape, exact
+physical namespaces and adapters, and live Postgres and object-store fitness
 remain unresolved. The owner's instruction on 2026-07-15 authorized preparation
-of this plan and changes to its Plane projection only. It did not authorize
-implementation, datastore changes, evidence retention, model calls, dataset
-export, training, verification, or acceptance.
+of this plan, its governing decision records, and changes to its Plane
+projection only. It did not authorize implementation, datastore changes,
+evidence retention or import, model calls, dataset export, training,
+verification, or acceptance.
 
 ## Objective and authority boundary
 
@@ -69,6 +71,11 @@ specification and ADR, but no CAPLAB implementation plan. Both source records
 have empty `related_plans` lists. **Evidence:** Git status, product index, the
 source records, and the plan directory inspected on 2026-07-15.
 
+**Observation:** On 2026-07-15 the repository owner selected the exact C9 Luna
+B-versus-V confirmation as Study 001 and selected the v0 evidence-governance
+boundary. ADRs 0004 and 0005 record those decisions. Neither decision authorizes
+implementation or evidence admission.
+
 **Observation:** `PYTHONDONTWRITEBYTECODE=1 make doctrine-check` passed at the
 baseline. **Limit:** this verifies the doctrine and generated documentation
 surfaces; it is not a CAPLAB runtime or storage check.
@@ -90,8 +97,8 @@ comment.
 
 Assumptions to test before implementation:
 
-- at least one historical checkout-retries experiment has the exact preserved
-  inputs required for an admissible Study 001 decision;
+- the selected C9 evidence passes the artifact-specific privacy, licensing, and
+  credential disposition required before admission;
 - system Postgres and the locally scoped S3-compatible store can support
   dedicated CAPLAB namespaces, credentials, backup, restore, retention, and
   purge rules;
@@ -199,6 +206,11 @@ must cite the durable authorization record that covers it.
 
 ### P0 — Bind the exact historical Study 001
 
+The repository owner selected C9 in
+[`adr-0004`](../../decisions/adr-0004-caplab-study-001-selection.md). The
+decision fixes the experiment identity and exclusions but does not admit,
+retain, import, or register evidence.
+
 Prepare a candidate dossier from preserved artifacts, including the exact
 preregistration, result, task and world identities, preservation manifest,
 content hashes, and current availability. Label aggregate-only or missing raw
@@ -210,6 +222,11 @@ Stop if a manifest cannot be verified, evidence has to be rewritten, or the
 selection owner is absent.
 
 ### P1 — Decide CAPLAB v0 evidence governance
+
+The repository owner selected the v0 governance boundary in
+[`adr-0005`](../../decisions/adr-0005-caplab-v0-evidence-governance.md). The
+decision fixes policy and fitness targets but creates no datastore state and
+does not verify the selected services.
 
 Inspect, without mutation, the exact local Postgres and S3-compatible runtime,
 versions, backup and restore boundary, credential owner, feasible dedicated
@@ -427,3 +444,9 @@ replacement because the Plane connector could not remove the original relation.
   no admissible study and no eligible export. Plane items CAPLAB-31 and
   CAPLAB-32 were cancelled and replaced by CAPLAB-33 and CAPLAB-34 because the
   connector could not remove the superseded dependency relation.
+- **2026-07-15 — P0 selected.** The repository owner selected the exact C9 Luna
+  B-versus-V confirmation as Study 001 in ADR 0004. Selection does not admit or
+  register its evidence.
+- **2026-07-15 — P1 selected.** The repository owner selected CAPLAB v0 evidence
+  governance in ADR 0005. The plan remains proposed pending P2 and P3; no
+  implementation or datastore mutation is authorized.
