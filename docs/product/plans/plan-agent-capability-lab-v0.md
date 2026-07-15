@@ -459,3 +459,8 @@ replacement because the Plane connector could not remove the original relation.
   0.1.0 Study 001 capability card in ADR 0006. The plan remains proposed pending
   P3; no implementation, evidence admission, capability inference, model call,
   export, training, verification, or acceptance is authorized.
+- **2026-07-15 — P3 proposal prepared.** The repository owner authorized
+  CAPLAB-21 discovery and proposal preparation. Proposed ADR 0007 names the
+  CLI runtime and an exact P4 synthetic campaign. The plan remains proposed and
+  unauthorized until the owner selects, revises, or declines that proposal and
+  separately exercises the bounded P4 authority it contains.

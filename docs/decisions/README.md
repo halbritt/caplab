@@ -60,3 +60,4 @@ does not select the option automatically.
 | [`adr-0004`](adr-0004-caplab-study-001-selection.md) | CAPLAB Study 001 selection | decided | repository owner | Agent Capability Lab Study 001 |
 | [`adr-0005`](adr-0005-caplab-v0-evidence-governance.md) | Agent Capability Lab v0 evidence governance | decided | repository owner | CAPLAB evidence governance |
 | [`adr-0006`](adr-0006-caplab-study-001-capability-card-selection.md) | CAPLAB Study 001 capability-card selection | decided | repository owner | Agent Capability Lab Study 001 measurement contract |
+| [`adr-0007`](adr-0007-caplab-v0-cli-runtime.md) | CAPLAB v0 CLI runtime and first synthetic campaign | proposed | none | CAPLAB runtime and P4 campaign |
