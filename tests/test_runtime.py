@@ -113,6 +113,23 @@ class RegistrationTests(unittest.TestCase):
         self.assertTrue(second.idempotent_replay)
         self.assertEqual((self.objects.write_count, self.copies.write_count), writes)
 
+    def test_registration_emits_the_exact_inventory_event_contract_once(self) -> None:
+        self.service.register(request())
+
+        self.assertEqual(
+            [event["event_type"] for event in self.metadata.events],
+            ["requested", "object-verified", "local-copy-verified", "registered"],
+        )
+        self.assertEqual(
+            [event["event_type"] for event in self.metadata.audit_events],
+            ["registration-completed"],
+        )
+
+        self.service.register(request())
+
+        self.assertEqual(len(self.metadata.events), 4)
+        self.assertEqual(len(self.metadata.audit_events), 1)
+
     def test_conflicting_operation_is_refused_before_external_effects(self) -> None:
         self.service.register(request())
         object_effects = self.objects.effect_count

@@ -64,6 +64,7 @@ class MemoryMetadataStore:
         self.operations: dict[str, dict[str, Any]] = {}
         self.registrations: dict[str, dict[str, Any]] = {}
         self.events: list[dict[str, Any]] = []
+        self.audit_events: list[dict[str, Any]] = []
         self.fail_finalization_once = False
         self._locks: dict[str, threading.RLock] = {}
         self._lock = threading.RLock()
@@ -101,6 +102,16 @@ class MemoryMetadataStore:
             raise OperationConflict("completed registration differs from retry")
         self.registrations[intent.operation_id] = record
         self.events.append({"operation_id": intent.operation_id, "event_type": "registered"})
+        self.audit_events.append(
+            {
+                "operation_id": intent.operation_id,
+                "event_type": "registration-completed",
+                "event_body": {
+                    "content_sha256": intent.content_sha256,
+                    "manifest_sha256": intent.manifest_sha256,
+                },
+            }
+        )
         return dict(record)
 
     def registration_for_operation(self, operation_id: str) -> dict[str, Any] | None:
