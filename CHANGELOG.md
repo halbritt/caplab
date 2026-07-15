@@ -8,6 +8,12 @@ remains under `Unreleased`, whether or not it has been committed.
 
 ### Added
 
+- Added the BOOKS-1 compiled doctrine retrieval path: a deterministic Python
+  compiler projects authoritative YAML into a checked-in, checksummed SQLite
+  read model; a CGO-free Go executable assembles version 2 evidence packets;
+  and Python-oracle parity, static-build, stale-index, corruption, Unicode,
+  CLI-failure, and latency gates cover the cutover. The retained Python
+  assembler remains the one-release fallback.
 - Added a repository DDD documentation spine: expanded canonical domain
   vocabulary, an uppercase discovery entrypoint, a candidate context map, an
   ADR index and template, and `adr-0001` governing the authority boundaries

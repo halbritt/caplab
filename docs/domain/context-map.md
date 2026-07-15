@@ -2,7 +2,7 @@
 artifact_type: context-map
 status: proposed
 steward: repository-maintainers
-updated: 2026-07-12
+updated: 2026-07-15
 governing_decision: ../decisions/adr-0001-domain-documentation-authority.md
 ---
 
@@ -17,7 +17,7 @@ It does not declare a bounded context or select an integration relationship.
 |---|---|---|---|
 | Corpus Production | Preserve source books; convert, normalize, validate, and index corpus books | `sources/`, `scripts/convert-books`, `books/`, `docs/adding-books.md` | candidate |
 | Doctrine Curation | Register doctrine sources; curate concepts and conflicts; maintain traceability, routing, and graph projections | `doctrine/sources.yaml`, `doctrine/concepts/`, `doctrine/conflicts.yaml`, `doctrine/graph/` | candidate |
-| Judgment Support | Assemble evidence packets and decision receipts from doctrine plus repository evidence | `doctrine/tools/assemble_packet.py`, `doctrine/runtime/`, `doctrine/routing-index.yaml` | candidate |
+| Judgment Support | Assemble evidence packets and decision receipts from doctrine plus repository evidence | `doctrine/cmd/assemble-packet/`, `doctrine/tools/assemble_packet.py`, `doctrine/runtime/`, `doctrine/routing-index.yaml` | candidate |
 | Evaluation and Adjudication | Screen claims, conduct model pre-review, preserve human audits and dispositions, and evaluate agent behavior | `doctrine/evaluations/`, `doctrine/tools/adjudication_server.py`, `docs/agent-judgment/` | candidate |
 
 The table records visible responsibility clusters. It does not establish that

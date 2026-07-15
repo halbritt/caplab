@@ -14,8 +14,8 @@ The source books remain unchanged under [`sources/`](sources/). Generated books 
 | [`doctrine/README.md`](doctrine/README.md) | Doctrinal library, semantic graph, routing, procedures, conflicts, and release gates |
 | [`doctrine/OPERATIONALIZATION.md`](doctrine/OPERATIONALIZATION.md) | Sequence for building evaluation, retrieval, skills, and decision receipts around the corpus |
 | [`doctrine/CONVERGED_RECOMMENDATION.md`](doctrine/CONVERGED_RECOMMENDATION.md) | Converged recommendation that preceded the operational design |
-| [`doctrine/runtime/`](doctrine/runtime/README.md) | JSON Schema contracts and structural assertion validation |
-| [`doctrine/tools/`](doctrine/tools/) | Doctrine validation, graph projection, evidence-packet assembly, and entailment-screening tooling |
+| [`doctrine/runtime/`](doctrine/runtime/README.md) | Runtime schemas and the generated SQLite doctrine read model |
+| [`doctrine/tools/`](doctrine/tools/) | Doctrine validation, index and executable builds, packet assembly, benchmarking, graph projection, and evaluation tooling |
 | [`doctrine/evaluations/`](doctrine/evaluations/README.md) | Replayable authority canaries, dependency-impact fixtures, entailment screening, and a pending-human gold-calibration queue |
 | [`docs/domain/`](docs/domain/README.md) | Repository domain language, candidate boundaries, and context map |
 | [`docs/decisions/`](docs/decisions/README.md) | Architecture decision records, lifecycle rules, and template |
@@ -186,14 +186,28 @@ These fixtures are synthetic contract tests. They do not establish retrieval or
 engineering-judgment quality; exact source-locator resolution is enforced by
 the doctrine release gate, while human calibration remains separate.
 
-Assemble a deterministic evidence packet from the routing index (see [`doctrine/README.md`](doctrine/README.md) for interpretation notes):
+Doctrine runtime builds require Go 1.23 or newer on `PATH`; the build uses the
+installed local toolchain. Build the doctrine read model and static packet
+assembler:
 
 ```bash
-python3 doctrine/tools/assemble_packet.py \
+make doctrine-runtime
+```
+
+Assemble a deterministic evidence packet (see
+[`doctrine/README.md`](doctrine/README.md) for interpretation and fallback
+notes):
+
+```bash
+doctrine/bin/assemble-packet \
   --role legacy-code-agent --task legacy-change \
   --question "Can we safely extract the billing calculation?" \
   --signal "no tests around target" --render markdown
 ```
+
+The executable verifies the checked-in SQLite index and authoritative YAML
+fingerprint before retrieval. `make doctrine-benchmark` compares it with the
+retained Python oracle and enforces the BOOKS-1 parity and latency gates.
 
 Screen claim-to-source entailment with the local model (results under [`doctrine/evaluations/entailment/`](doctrine/evaluations/entailment/README.md)):
 

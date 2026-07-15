@@ -11,11 +11,10 @@ import tomllib
 import unittest
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 HARNESS = ROOT / "doctrine/tools/evaluate_doctrine_skill.py"
 CASE = ROOT / "doctrine/evaluations/robustness/skill-cases/authority-withdrawal.json"
-SKILL = Path("/home/halbritt/.agents/skills/doctrine/SKILL.md")
+DEPLOYED_SKILL = os.environ.get("BOOKS_DOCTRINE_SKILL")
 
 
 def make_fixture_corpus(root: Path, harness) -> Path:
@@ -58,26 +57,62 @@ def load_harness():
 class DoctrineSkillEnvelopeTests(unittest.TestCase):
     def test_compile_is_deterministic_and_keeps_the_oracle_out_of_subject_inputs(self):
         harness = load_harness()
-        first = harness.compile_envelopes(CASE, SKILL)
-        second = harness.compile_envelopes(CASE, SKILL)
-        self.assertEqual(first, second)
-        self.assertNotIn("oracle", json.dumps(first["control"]))
-        self.assertNotIn("oracle", json.dumps(first["treatment"]))
-        self.assertNotIn("skill", first["control"])
-        self.assertEqual("doctrine", first["treatment"]["skill"]["id"])
-        self.assertEqual(
-            hashlib.sha256(SKILL.read_bytes()).hexdigest(),
-            first["treatment"]["skill"]["sha256"],
-        )
+        with tempfile.TemporaryDirectory() as directory:
+            skill = make_fixture_skill(Path(directory) / "skill")
+            first = harness.compile_envelopes(CASE, skill)
+            second = harness.compile_envelopes(CASE, skill)
+            self.assertEqual(first, second)
+            self.assertNotIn("oracle", json.dumps(first["control"]))
+            self.assertNotIn("oracle", json.dumps(first["treatment"]))
+            self.assertNotIn("skill", first["control"])
+            self.assertEqual("doctrine", first["treatment"]["skill"]["id"])
+            self.assertEqual(
+                hashlib.sha256(skill.read_bytes()).hexdigest(),
+                first["treatment"]["skill"]["sha256"],
+            )
 
     def test_compile_cli_writes_only_sealed_subject_inputs(self):
         with tempfile.TemporaryDirectory() as directory:
-            process = subprocess.run([sys.executable, str(HARNESS), "compile", str(CASE), "--skill", str(SKILL), "--out", directory], cwd=ROOT, text=True, capture_output=True, check=False)
+            base = Path(directory)
+            skill = make_fixture_skill(base / "skill")
+            output = base / "output"
+            process = subprocess.run(
+                [
+                    sys.executable,
+                    str(HARNESS),
+                    "compile",
+                    str(CASE),
+                    "--skill",
+                    str(skill),
+                    "--out",
+                    str(output),
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
             self.assertEqual(0, process.returncode, process.stderr)
-            paths = {path.name for path in Path(directory).iterdir()}
+            paths = {path.name for path in output.iterdir()}
             self.assertEqual({"control-input.json", "treatment-input.json"}, paths)
-            for path in Path(directory).iterdir():
+            for path in output.iterdir():
                 self.assertNotIn("oracle", path.read_text(encoding="utf-8"))
+
+
+class DoctrineSkillDeploymentIntegrationTests(unittest.TestCase):
+    @unittest.skipUnless(
+        DEPLOYED_SKILL,
+        "set BOOKS_DOCTRINE_SKILL to run the deployed-skill integration check",
+    )
+    def test_opted_in_deployed_skill_compiles(self):
+        skill = Path(DEPLOYED_SKILL)
+        self.assertTrue(skill.is_file(), skill)
+        treatment = load_harness().compile_envelopes(CASE, skill)["treatment"]
+        self.assertEqual("doctrine", treatment["skill"]["id"])
+        self.assertEqual(
+            hashlib.sha256(skill.read_bytes()).hexdigest(),
+            treatment["skill"]["sha256"],
+        )
 
 
 def receipt(status="recommended", extra_assertions=None):
@@ -445,7 +480,8 @@ class DoctrineSkillHarborProjectionTests(unittest.TestCase):
         harness = load_harness()
         with tempfile.TemporaryDirectory() as directory:
             base = Path(directory)
-            harness.render_harbor(CASE, SKILL, base / "tasks")
+            skill = make_fixture_skill(base / "skill")
+            harness.render_harbor(CASE, skill, base / "tasks")
             for condition in ("control", "treatment"):
                 task = base / "tasks" / condition
                 for path in task.rglob("*"):

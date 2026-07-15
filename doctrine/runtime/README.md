@@ -12,6 +12,43 @@ These JSON Schema files define portable boundaries between the corpus, retrieval
 
 The schemas use JSON Schema 2020-12. Their `$id` values are stable identifiers, not network dependencies.
 
+## Compiled retrieval index
+
+`doctrine-index.sqlite3` is the generated `doctrine-index/1` read model used by
+the Go packet assembler. YAML and JSON doctrine files remain authoritative.
+Go 1.23 or newer must be available on `PATH`; the build uses the installed
+local toolchain. Build or refresh the index and executable from the repository
+root:
+
+```bash
+make doctrine-runtime
+```
+
+The compiler writes a logical `index_content_hash` in SQLite metadata and a
+companion `doctrine-index.sqlite3.sha256` covering the complete database file.
+Equal source bytes produce equal database and checksum bytes under the same
+SQLite toolchain. Different SQLite writer versions may produce different
+physical bytes for the same logical index. `make doctrine-index-check` verifies
+the existing file checksum, SQLite integrity, foreign keys, schema, metadata,
+and canonical logical rows against the authoritative doctrine records. A normal
+build preserves an existing logically current database instead of replacing it
+only because its physical SQLite representation differs. At runtime the Go
+command opens SQLite in read-only immutable mode, verifies the file checksum,
+checks the schema version, and compares the index source fingerprint with the
+current doctrine files. It exits without assembling a packet if any check
+fails.
+
+The platform-specific executable under `doctrine/bin/` is generated and
+ignored by Git. Its `retriever-<16 hex>` identity is derived from the Go source,
+module checksums, and build script. The index is independent of that executable
+identity, so a retriever-only change does not rebuild unchanged doctrine data.
+
+Use `make doctrine-index-check` for a read-only freshness check,
+`make doctrine-parity` for the compatibility matrix, and
+`make doctrine-benchmark` for the recorded latency gate. The architecture and
+identity decisions are recorded in
+[`adr-0003`](../../docs/decisions/adr-0003-compiled-doctrine-retrieval.md).
+
 ## Assertion validation
 
 Validate a JSON assertion artifact with:
@@ -42,12 +79,16 @@ The packet assembler emits `evidence-packet/2` and defaults to the compact
 agent-facing view:
 
 ```bash
-python3 doctrine/tools/assemble_packet.py \
+doctrine/bin/assemble-packet \
   --role coding-agent \
   --task implementation \
   --question "Where should retry policy live?" \
   --render markdown
 ```
+
+Run `make doctrine-runtime` first. The Python command at
+`doctrine/tools/assemble_packet.py` remains the compatibility fallback and
+oracle during the BOOKS-1 transition.
 
 Roles and tasks resolve through the controlled routing registry. Repository
 signals may nominate doctrine but never discharge an evidence obligation; only

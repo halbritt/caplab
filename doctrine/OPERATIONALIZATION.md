@@ -1,6 +1,7 @@
 # Operationalizing the doctrine corpus
 
-Status: post-extraction runtime boundary and remaining evaluation work.
+Status: compiled retrieval implemented; judgment-quality acceptance remains
+human-adjudicated evaluation work.
 
 ## Conclusion
 
@@ -45,8 +46,8 @@ Operational work should begin only after:
    counts, extraction checksums, and schema versions;
 5. unresolved conflicts and known coverage gaps are explicit.
 
-The completed library passes this gate: 331/331 chapter files are covered, all
-141 Concept Records project to the provenance graph, and the doctrine validator
+The completed library passes this gate: 500/500 chapter files are covered, all
+214 Concept Records project to the provenance graph, and the doctrine validator
 checks concepts, conflicts, procedures, routing, techniques, exact source
 headings, graph references, and extraction checksums. Downstream retrieval still
 needs its own scenario acceptance evidence before it should guide execution.
@@ -87,12 +88,13 @@ schema changes.
 
 ### 2. Retrieve evidence packets, not chunks
 
-The routing index and deterministic evidence-packet assembler are generated and
-validated. The current assembler begins with controlled routing registries,
-question phrases, and concept routes, then selects a bounded,
-prerequisite-closed packet for one decision question. It consults graph
-formulations after selection to attach provenance; it does not traverse the
-curated graph views. A packet contains:
+The routing index, deterministic SQLite projection, and Go evidence-packet
+assembler are generated and validated. Python remains the compiler,
+compatibility oracle, and one-release fallback. The assembler begins with
+controlled routing registries, question phrases, and concept routes, then
+selects a bounded, prerequisite-closed packet for one decision question. It
+consults graph formulations after selection to attach provenance; it does not
+traverse the curated graph views. A packet contains:
 
 - activated concept and operational-layer identifiers;
 - claim-level source contributions and exact locators;

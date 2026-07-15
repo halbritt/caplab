@@ -1,7 +1,7 @@
 # Harbor adapter for the doctrine-skill A/B evaluation
 
 System-level documentation for the judgment harness this adapter belongs to
-lives in [`docs/agent-judgment/`](../../../docs/agent-judgment/README.md).
+lives in [`docs/agent-judgment/`](../../../../docs/agent-judgment/README.md).
 
 This directory holds the templates for rendering one skill-eval case as a
 matched pair of [Harbor](https://www.harborframework.com) tasks. The renderer
@@ -11,7 +11,7 @@ are retrieval working state and belong outside the repository:
 ```bash
 python3 doctrine/tools/evaluate_doctrine_skill.py render-harbor \
   doctrine/evaluations/robustness/skill-cases/authority-withdrawal.json \
-  --skill /home/halbritt/.agents/skills/doctrine/SKILL.md \
+  --skill "$HOME/.codex/skills/doctrine/SKILL.md" \
   --out /tmp/doctrine-skill-harbor
 ```
 
@@ -63,7 +63,7 @@ skill condition differs:
 ```bash
 harbor run -p /tmp/doctrine-skill-harbor/control   -a <agent> -m <model>
 harbor run -p /tmp/doctrine-skill-harbor/treatment -a <agent> -m <model> \
-  --skill /home/halbritt/.agents/skills/doctrine
+  --skill "$HOME/.codex/skills/doctrine"
 ```
 
 The rendered arms are byte-identical except for the declared skill-condition

@@ -62,6 +62,7 @@ verification into acceptance.
 | `checklists.md` | Readiness, preservation, evidence, and escalation gates | execution phase |
 | `traceability.yaml` | Coverage and source-support audit | concept/source/procedure ID |
 | `runtime/*.schema.json` | Portable evidence-record, packet, assertion, receipt, and dependency contracts | runtime artifact type |
+| `runtime/doctrine-index.sqlite3` | Generated, content-hashed SQLite read model for packet retrieval | Go packet assembler |
 | `evaluations/` | Authority/routing canaries, entailment screening, and a pending-human calibration queue | scenario/evaluation axis |
 | `CONVERGED_RECOMMENDATION.md` | Current synthesis and next accepted implementation target | downstream product decision |
 | `OPERATIONALIZATION.md` | Retrieval, evaluation, receipt, and outcome-learning design constraints | downstream runtime work |
@@ -119,10 +120,34 @@ It should not substitute confidence or source prestige for missing evidence.
 
 ### Assembling an evidence packet
 
-`tools/assemble_packet.py` implements this retrieval contract as a
-deterministic CLI. It resolves canonical role and task vocabularies, applies a
-question-sensitive and prerequisite-closed selection budget, and emits a
-content-addressed `evidence-packet/2`:
+Go 1.23 or newer must be available on `PATH`; the build uses the installed
+local toolchain. Build the generated index and CGO-free Go executable:
+
+```bash
+make doctrine-runtime
+```
+
+`bin/assemble-packet` is the primary retrieval command. It resolves canonical
+role and task vocabularies, applies the question-sensitive and
+prerequisite-closed selection budget, and emits a content-addressed
+`evidence-packet/2`:
+
+```bash
+doctrine/bin/assemble-packet \
+  --role legacy-code-agent --task legacy-change \
+  --question "Can we safely extract the billing calculation?" \
+  --signal "no tests around target" --risk regression \
+  --out packet.json --render markdown
+```
+
+The executable reads `runtime/doctrine-index.sqlite3` without writing SQLite
+journals. It verifies the companion file checksum, index schema, and source
+fingerprint before assembling a packet. Rebuild after an authoritative doctrine
+change with `make doctrine-index`; `make doctrine-check` fails when the tracked
+index or checksum is stale.
+
+`tools/assemble_packet.py` remains the one-release compatibility fallback and
+semantic oracle:
 
 ```bash
 python3 doctrine/tools/assemble_packet.py \
@@ -147,12 +172,19 @@ Interpretation notes (the assembler cannot inspect a target repository):
   packets; changes to doctrine or retrieval logic change their content IDs.
 - A packet is retrieved guidance. It never creates authority to act.
 
+Run `make doctrine-parity` for the Python-versus-Go contract matrix and
+`make doctrine-benchmark` for the same-host latency gate. The benchmark's
+defaults are five warmups, 25 samples, a 50 ms median ceiling, a 75 ms p95
+ceiling, at least 8x median speedup, and semantic equality after normalizing
+only packet identity fields.
+
 ## Release validation
 
 Run `make doctrine-check` to verify source binaries and generated provenance,
-the exact 331-chapter coverage manifest, unambiguous source locators, canonical
+the exact 500-chapter coverage manifest, unambiguous source locators, canonical
 bibliography, routing freshness, semantic graph projection, graph fragments,
-conflict reachability, pending-human calibration-queue freshness, and doctrinal
-cross-references. `make check` combines that gate with the converter integrity
-check and the test suite. Queue coverage is scaffolding, not evidence that any
-candidate has been adjudicated or accepted.
+conflict reachability, pending-human calibration-queue freshness, the generated
+SQLite index, and doctrinal cross-references. `make check` combines that gate
+with the converter integrity check, Python tests, and Go tests. Queue coverage
+is scaffolding, not evidence that any candidate has been adjudicated or
+accepted.

@@ -35,7 +35,7 @@ Compile sealed control and treatment inputs without exposing the case oracle:
 ```bash
 python3 doctrine/tools/evaluate_doctrine_skill.py compile \
   doctrine/evaluations/robustness/skill-cases/authority-withdrawal.json \
-  --skill /home/halbritt/.agents/skills/doctrine/SKILL.md \
+  --skill "$HOME/.codex/skills/doctrine/SKILL.md" \
   --out /tmp/doctrine-skill-eval
 ```
 

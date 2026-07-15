@@ -16,12 +16,12 @@ The short form:
 ```bash
 python3 doctrine/tools/evaluate_doctrine_skill.py render-harbor \
   doctrine/evaluations/robustness/skill-cases/authority-withdrawal.json \
-  --skill /home/halbritt/.agents/skills/doctrine/SKILL.md \
+  --skill "$HOME/.codex/skills/doctrine/SKILL.md" \
   --out /tmp/doctrine-skill-harbor
 
 harbor run -p /tmp/doctrine-skill-harbor/control   -a <agent> -m <model>
 harbor run -p /tmp/doctrine-skill-harbor/treatment -a <agent> -m <model> \
-  --skill /home/halbritt/.agents/skills/doctrine
+  --skill "$HOME/.codex/skills/doctrine"
 
 python3 doctrine/tools/evaluate_doctrine_skill.py grade <case> \
   --control <receipt> --treatment <receipt> --out <result>
