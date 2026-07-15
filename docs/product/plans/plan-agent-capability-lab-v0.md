@@ -73,8 +73,8 @@ source records, and the plan directory inspected on 2026-07-15.
 baseline. **Limit:** this verifies the doctrine and generated documentation
 surfaces; it is not a CAPLAB runtime or storage check.
 
-**Observation before this plan's tracker projection:** the local/private CAPLAB
-Plane project contained CAPLAB-1 through CAPLAB-17. CAPLAB-1 recorded the
+**Observation before this plan's tracker projection:** the existing CAPLAB Plane
+project contained CAPLAB-1 through CAPLAB-17. CAPLAB-1 recorded the
 selected contract and was Done. CAPLAB-2 through CAPLAB-17 were Backlog
 projections of the rejected earlier charter: among other mismatches, they pooled
 checkout-retries experiments, used an overloaded subject tuple, and put later
@@ -408,8 +408,8 @@ No CAPLAB implementation, migration, runtime verification, inference, export,
 or acceptance record exists yet. Add links here only after the corresponding
 owner records that distinct event.
 
-Planning projection: local/private Plane project `CAPLAB`, with active
-replacement work items CAPLAB-18 through CAPLAB-30 and CAPLAB-33 through
+Planning projection: Plane project `CAPLAB`, with active replacement work items
+CAPLAB-18 through CAPLAB-30 and CAPLAB-33 through
 CAPLAB-34. CAPLAB-2 through CAPLAB-17 are retained as cancelled history from
 the superseded planning interpretation. CAPLAB-31 and CAPLAB-32 are retained as
 cancelled correction history after a conditional dependency was repaired by
