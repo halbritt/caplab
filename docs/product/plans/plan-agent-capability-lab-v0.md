@@ -27,10 +27,10 @@ Status interpretation: this plan projects the selected CAPLAB v0 contract into
 dependency-ordered work. It is complete enough for review but is not ready for
 implementation: the exact Study 001 experiment, evidence-governance rules,
 capability card, runtime shape, and live Postgres and object-store constraints
-remain unresolved. The owner's instruction on 2026-07-15 authorized this plan
-and its Plane projection only. It did not authorize implementation, datastore
-changes, evidence retention, model calls, dataset export, training,
-verification, or acceptance.
+remain unresolved. The owner's instruction on 2026-07-15 authorized preparation
+of this plan and changes to its Plane projection only. It did not authorize
+implementation, datastore changes, evidence retention, model calls, dataset
+export, training, verification, or acceptance.
 
 ## Objective and authority boundary
 
@@ -73,12 +73,14 @@ source records, and the plan directory inspected on 2026-07-15.
 baseline. **Limit:** this verifies the doctrine and generated documentation
 surfaces; it is not a CAPLAB runtime or storage check.
 
-**Observation:** the local/private CAPLAB Plane project contains CAPLAB-1
-through CAPLAB-17. CAPLAB-1 records the selected contract and is Done.
-CAPLAB-2 through CAPLAB-17 remain Backlog projections of the rejected earlier
-charter: among other mismatches, they pool checkout-retries experiments, use an
-overloaded subject tuple, and put later preference, Striatum, and training work
-inside the active queue. **Evidence:** live Plane inventory on 2026-07-15.
+**Observation before this plan's tracker projection:** the local/private CAPLAB
+Plane project contained CAPLAB-1 through CAPLAB-17. CAPLAB-1 recorded the
+selected contract and was Done. CAPLAB-2 through CAPLAB-17 were Backlog
+projections of the rejected earlier charter: among other mismatches, they pooled
+checkout-retries experiments, used an overloaded subject tuple, and put later
+preference, Striatum, and training work inside the active queue. **Evidence:**
+live Plane inventory before reconciliation on 2026-07-15. The status log records
+the resulting current projection.
 
 **Inference:** retaining those items as the active queue would make two
 incompatible plans appear current. Rewriting their meanings would obscure the
@@ -153,13 +155,23 @@ permission to change the historical result.
 P0 ──┬──> P2 ──┐
      │         │
 P1 ──┴────────> P3 -> P4 -> P5 -> P6 -> P7 -> P8 -> P9 ──┐
-                       │              └────> P10 -> P11 -> P12 ─┤
-                       └──────────────────────────────────────> P13 -> P14
+                       │              └────> P10 -> P11 ───┤
+                       │                          └─> P12 ─┤ (when authorized)
+                       └─────────────────────────────────> P13 -> P14
 ```
 
 P0 and P1 may proceed independently. P10 may begin after P2 and P7 without
 waiting for the capability inference at P9. Human-owned gates are not AFK work,
 even when all mechanical inputs are ready.
+
+Two stopped outcomes are part of the plan rather than implementation failures:
+
+- if P0 finds no admissible Study 001 candidate, record that decision and stop;
+  P2 through P14 remain unavailable. Substituting another v0 slice requires the
+  repository owner to reopen the governing specification and ADR; and
+- if P11 selects no training-eligible examples, P12 is not run. P13 verifies
+  that no export occurred and records the v0 export criterion as unmet. P14 may
+  then record revision or rejection, but not acceptance.
 
 ## Checkpoints and Plane projection
 
@@ -171,7 +183,7 @@ must cite the durable authorization record that covers it.
 |---|---|---|---|---|
 | P0 | CAPLAB-18 | Bind the exact historical Study 001 | CAPLAB-1 | Git-recorded selection decision or no-admissible-candidate decision |
 | P1 | CAPLAB-19 | Decide CAPLAB v0 evidence governance | CAPLAB-1 | Current runtime facts and owner governance decision |
-| P2 | CAPLAB-20 | Accept the Study 001 capability card | P0 | Versioned, owner-selected capability card |
+| P2 | CAPLAB-20 | Select the Study 001 capability card | P0 | Versioned, owner-selected capability card |
 | P3 | CAPLAB-21 | Select the runtime shape and authorize a bounded campaign | P0, P1, P2 | Runtime decision and bounded authorization record |
 | P4 | CAPLAB-22 | Round-trip one synthetic sealed attempt | P3 | Verified model-free Postgres/S3/Git path |
 | P5 | CAPLAB-23 | Fail closed and recover the synthetic attempt | P4 | Integrity, fault, backup, restore, and purge evidence |
@@ -180,10 +192,10 @@ must cite the durable authorization record that covers it.
 | P8 | CAPLAB-26 | Emit a bounded Study 001 capability-profile proposal | P2, P7 | Study-local profile with broader claims unavailable |
 | P9 | CAPLAB-27 | Make or decline the Study 001 capability inference | P8 | Named human inference or refusal record |
 | P10 | CAPLAB-28 | Derive a governed training-candidate set | P2, P7 | Candidate manifest; no eligibility or export |
-| P11 | CAPLAB-29 | Select training eligibility and authorize one export | P1, P10 | Human eligibility decision and export authorization |
-| P12 | CAPLAB-30 | Materialize the authorized training-eligible export | P11 | Verified immutable dataset bundle and manifest |
-| P13 | CAPLAB-31 | Independently verify the integrated CAPLAB v0 slice | P5, P7, P8, P9, P12 | Independent verification record |
-| P14 | CAPLAB-32 | Accept or reject CAPLAB v0 | P13 | Repository-owner acceptance decision |
+| P11 | CAPLAB-29 | Select training eligibility and decide whether to authorize one export | P1, P10 | Human eligibility decision and, when selected, export authorization |
+| P12 | CAPLAB-30 | Materialize the authorized training-eligible export | P11 authorization | Verified immutable dataset bundle and manifest |
+| P13 | CAPLAB-33 | Independently verify the integrated CAPLAB v0 slice | P5, P7, P8, P9, P11; P12 when authorized | Independent verification record |
+| P14 | CAPLAB-34 | Accept or reject CAPLAB v0 | P13 | Repository-owner acceptance decision |
 
 ### P0 — Bind the exact historical Study 001
 
@@ -210,13 +222,13 @@ Stop if the available services cannot meet the selected isolation, recovery,
 or retention contract. Reopen the architecture if operating both stores is
 disproportionate.
 
-### P2 — Accept the Study 001 capability card
+### P2 — Select the Study 001 capability card
 
 Define the construct, intended population, direct observables, controls,
 rivals, falsifiers, exclusions, missingness, scoring, human-owned judgments,
-and promotion gates. The owner records accept, revise, or reject against the
-content-identified card. This selects the measurement contract; it records no
-capability inference.
+and promotion gates. The owner records select, revise, or decline against the
+content-identified card. Selection establishes the measurement contract; it
+records no capability inference.
 
 ### P3 — Select the runtime shape and authorize a bounded campaign
 
@@ -244,8 +256,9 @@ the evidence needed to verify what was removed.
 Exercise missing and altered objects, locator drift, duplicate submission,
 interrupted transactions, manifest mismatch, invalid and ambiguous attempts,
 backup restore, orphan detection, and authorized purge. Invalid attempts remain
-auditable but cannot become observations. Recovery must reproduce content
-identities and the selected operational state.
+auditable as invalid-attempt observations but cannot become subject-behavior
+outcomes or inference-bearing trial observations. Recovery must reproduce
+content identities and the selected operational state.
 
 ### P6 — Register Study 001 without rewriting history
 
@@ -266,7 +279,7 @@ observation or estimate, not a capability inference.
 
 ### P8 — Emit a bounded Study 001 capability-profile proposal
 
-Bind the accepted card, exact population, recomputed result, uncertainty,
+Bind the selected card, exact population, recomputed result, uncertainty,
 missingness, failures, and credible rivals. Mechanically show cross-task
 capability, universal ranking, preference, and Striatum placement as
 unavailable. The profile remains a proposal pending the human inference gate.
@@ -287,36 +300,43 @@ ambiguous judgments, and leaked cases. Keep task families and scenario
 templates together for split purposes. The output is a candidate manifest, not
 an eligibility decision, export, or training corpus.
 
-### P11 — Select training eligibility and authorize one export
+### P11 — Select training eligibility and decide whether to authorize one export
 
 A named human selects exact example identities under privacy, license, quality,
-provenance, and family-safe split rules. The owner separately authorizes the
-destination, maximum size, retention, expiry, purge, and stop conditions. The
-record excludes model calls, fine-tuning, deployment, public release, and later
-exports.
+provenance, and family-safe split rules, or records that no example is eligible.
+When examples are selected, the owner separately authorizes the destination,
+maximum size, retention, expiry, purge, and stop conditions. The record excludes
+model calls, fine-tuning, deployment, public release, and later exports. A
+no-eligible-example decision leaves P12 unavailable and the v0 export criterion
+unmet.
 
 ### P12 — Materialize the authorized training-eligible export
 
-Export exactly the authorized examples to an immutable dataset bundle and
-frozen manifest with complete lineage. Prove that unauthorized examples,
-mutable Postgres state, and changed locators cannot influence the output. This
-checkpoint performs no model execution or training.
+Run only when P11 authorizes an export. Export exactly the authorized examples
+to an immutable dataset bundle and frozen manifest with complete lineage. Prove
+that unauthorized examples, mutable Postgres state, and changed locators cannot
+influence the output. This checkpoint performs no model execution or training.
 
 ### P13 — Independently verify the integrated CAPLAB v0 slice
 
 An executor independent of implementation runs a clean replay from Study 001
-inputs through registration, result, profile, and export. Verify database and
-object recovery; valid, invalid, missing, tampered, and ambiguous fixtures;
-claim-scope refusal; and family-safe split enforcement. Record residual
-failures. Verification does not claim acceptance.
+inputs through registration, result, and profile. When P11 authorized an
+export, the replay includes P12 and its dataset bundle. When P11 selected no
+eligible examples, verify that no export occurred and record the required v0
+criterion as unmet. Verify database and object recovery; valid, invalid,
+missing, tampered, and ambiguous fixtures; claim-scope refusal; and family-safe
+split enforcement. Record residual failures. Verification does not claim
+acceptance.
 
 ### P14 — Accept or reject CAPLAB v0
 
 The repository owner reviews the independent verification record, human
 capability inference, export decision, residual risks, and stop conditions, then
 records acceptance, conditional acceptance, revision, or rejection. Acceptance
-grants no preference study, model calls, Striatum routing, fine-tuning,
-deployment, or subsequent export authority.
+is available only when every v0 criterion, including the authorized export,
+passed independent verification. Otherwise the owner records revision or
+rejection. No disposition grants preference-study, model-call, Striatum-routing,
+fine-tuning, deployment, or subsequent-export authority.
 
 ## Verification plan
 
@@ -345,7 +365,7 @@ owned by another.
 
 | Failure mode | Early signal | Mitigation | Residual owner |
 |---|---|---|---|
-| No historical experiment is admissible as Study 001 | Candidate lacks raw inputs or verified manifest | Record no selection; repair preservation under separate authority or choose another v0 | repository owner |
+| No historical experiment is admissible as Study 001 | Candidate lacks raw inputs or verified manifest | Record no selection; repair preservation under separate authority or reopen the specification and ADR before substituting the v0 slice | repository owner |
 | Mutable metadata becomes inference authority | Result depends on an unsealed row or locator | Require frozen manifests and byte verification; fail closed on disagreement | implementation owner, then independent verifier |
 | Registration rewrites history or retention | Imported timestamp, outcome, rule, or byte differs | Compare before write; stop and quarantine any mismatch | Study 001 decision owner |
 | Store assumptions are wrong | Isolation, backup, recovery, or purge proof fails | Keep plan proposed; reopen runtime shape before authorization | repository owner and system owner |
@@ -388,9 +408,12 @@ No CAPLAB implementation, migration, runtime verification, inference, export,
 or acceptance record exists yet. Add links here only after the corresponding
 owner records that distinct event.
 
-Planning projection: local/private Plane project `CAPLAB`, with replacement
-work items CAPLAB-18 through CAPLAB-32. CAPLAB-2 through CAPLAB-17 are retained
-as cancelled history from the superseded planning interpretation.
+Planning projection: local/private Plane project `CAPLAB`, with active
+replacement work items CAPLAB-18 through CAPLAB-30 and CAPLAB-33 through
+CAPLAB-34. CAPLAB-2 through CAPLAB-17 are retained as cancelled history from
+the superseded planning interpretation. CAPLAB-31 and CAPLAB-32 are retained as
+cancelled correction history after a conditional dependency was repaired by
+replacement because the Plane connector could not remove the original relation.
 
 ## Status log
 
@@ -398,3 +421,9 @@ as cancelled history from the superseded planning interpretation.
   create the implementation plan and populate Plane. The plan projects the
   selected CAPLAB v0 boundary and reconciles the stale queue. Implementation
   remains unauthorized.
+- **2026-07-15 — final-review correction.** Clarified that only plan preparation
+  and tracker projection were authorized, changed the capability-card gate to
+  selection, narrowed the invalid-attempt claim, and added stopped branches for
+  no admissible study and no eligible export. Plane items CAPLAB-31 and
+  CAPLAB-32 were cancelled and replaced by CAPLAB-33 and CAPLAB-34 because the
+  connector could not remove the superseded dependency relation.
