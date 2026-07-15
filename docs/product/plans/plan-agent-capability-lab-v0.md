@@ -25,14 +25,15 @@ change_types:
 
 Status interpretation: this plan projects the selected CAPLAB v0 contract into
 dependency-ordered work. The exact Study 001 experiment and v0 evidence
-governance are selected in ADRs 0004 and 0005. The plan remains proposed and is
-not ready for implementation: the capability card, runtime shape, exact
-physical namespaces and adapters, and live Postgres and object-store fitness
-remain unresolved. The owner's instruction on 2026-07-15 authorized preparation
-of this plan, its governing decision records, and changes to its Plane
-projection only. It did not authorize implementation, datastore changes,
-evidence retention or import, model calls, dataset export, training,
-verification, or acceptance.
+governance are selected in ADRs 0004 and 0005. The Study 001 capability card is
+selected in ADR 0006. The plan remains proposed and is not ready for
+implementation: the runtime shape, exact physical namespaces and adapters, and
+live Postgres and object-store fitness remain unresolved. The owner's
+instructions on 2026-07-15 authorized preparation of this plan, its governing
+decision records, the capability-card selection, and matching Plane projections
+only. They did not authorize implementation, datastore changes, evidence
+retention or import, model calls, dataset export, training, verification, or
+acceptance.
 
 ## Objective and authority boundary
 
@@ -241,11 +242,14 @@ disproportionate.
 
 ### P2 — Select the Study 001 capability card
 
-Define the construct, intended population, direct observables, controls,
-rivals, falsifiers, exclusions, missingness, scoring, human-owned judgments,
-and promotion gates. The owner records select, revise, or decline against the
-content-identified card. Selection establishes the measurement contract; it
-records no capability inference.
+The repository owner selected version 0.1.0 of
+[`caplab-study-001-explicit-verification-elicited-harm-avoidance`](../capability-cards/caplab-study-001-explicit-verification-elicited-harm-avoidance.md)
+in [`adr-0006`](../../decisions/adr-0006-caplab-study-001-capability-card-selection.md).
+The exact review bytes define the construct, intended population, direct
+observables, controls, rivals, falsifiers, exclusions, missingness, scoring,
+human-owned judgments, and promotion gates. Selection establishes the
+measurement contract; it records no capability inference and grants no P3
+implementation authority.
 
 ### P3 — Select the runtime shape and authorize a bounded campaign
 
@@ -422,8 +426,9 @@ claims. They are not standing work authorized by this queue.
 ## Execution, verification, and acceptance records
 
 No CAPLAB implementation, migration, runtime verification, inference, export,
-or acceptance record exists yet. Add links here only after the corresponding
-owner records that distinct event.
+or v0 acceptance record exists yet. The selected Study 001 capability card and
+its decision are linked at P2; add later execution and assertion records only
+after the corresponding owner records each distinct event.
 
 Planning projection: Plane project `CAPLAB`, with active replacement work items
 CAPLAB-18 through CAPLAB-30 and CAPLAB-33 through
@@ -450,3 +455,7 @@ replacement because the Plane connector could not remove the original relation.
 - **2026-07-15 — P1 selected.** The repository owner selected CAPLAB v0 evidence
   governance in ADR 0005. The plan remains proposed pending P2 and P3; no
   implementation or datastore mutation is authorized.
+- **2026-07-15 — P2 selected.** The repository owner selected the exact version
+  0.1.0 Study 001 capability card in ADR 0006. The plan remains proposed pending
+  P3; no implementation, evidence admission, capability inference, model call,
+  export, training, verification, or acceptance is authorized.

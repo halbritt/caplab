@@ -23,6 +23,8 @@ an ADR; it does not become one.
 ```text
 docs/product/
   README.md
+  capability-cards/
+    README.md
   templates/
     product-spec.md
     implementation-plan.md
@@ -80,6 +82,7 @@ states. Record them in the plan's status log and dedicated records.
 
 | ID | Type | Title | Status | Steward | Source or parent | Updated |
 |---|---|---|---|---|---|---|
+| [`caplab-study-001-explicit-verification-elicited-harm-avoidance`](capability-cards/caplab-study-001-explicit-verification-elicited-harm-avoidance.md) | capability card | Study 001: explicit-verification-elicited harm avoidance | selected by ADR 0006 | repository maintainers | ADRs 0004 and 0006 | 2026-07-15 |
 | [`spec-agent-capability-lab`](specs/spec-agent-capability-lab.md) | product specification | Agent Capability Lab v0 charter | decided | repository maintainers | ADR 0002 | 2026-07-15 |
 | [`plan-agent-capability-lab-v0`](plans/plan-agent-capability-lab-v0.md) | implementation plan | Agent Capability Lab v0 | proposed | repository maintainers | `spec-agent-capability-lab`; ADR 0002 | 2026-07-15 |
 | [`spec-doctrine-robustness-laboratory`](specs/spec-doctrine-robustness-laboratory.md) | product specification | Doctrine Robustness Laboratory | decided | repository maintainers | corpus operationalization gap | 2026-07-12 |

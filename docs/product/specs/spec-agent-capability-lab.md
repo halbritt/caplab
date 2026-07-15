@@ -411,17 +411,14 @@ Reopen the charter if:
 
 ## Unresolved implementation questions
 
-This decision does not select which exact frozen checkout-retries experiment
-becomes Study 001, the Postgres schema, object-store bucket name, retention
-durations, service interface, deployment topology, capability-card
-serialization, or migration sequence. Before implementation authorization, the
-repository owner or a delegate named in a durable authority record must record a
-separate Study 001 registration decision binding one existing preregistration,
-result record, task and world identities, and verified preservation manifest by
-content identity. The implementation plan must link that decision and cannot
-infer it from available files. The remaining questions belong in an
-implementation plan supported by current runtime evidence and separately
-authorized work.
+This product decision did not itself select the exact frozen checkout-retries
+experiment or capability card. ADR 0004 subsequently selected the exact C9
+experiment, and ADR 0006 selected the exact version 0.1.0 Study 001 capability
+card. The Postgres schema, object-store bucket name, retention implementation,
+service interface, deployment topology, runtime serialization, and migration
+sequence remain unresolved. The implementation plan links the downstream
+selections and cannot infer the remaining answers from available files. Those
+questions require current runtime evidence and separately authorized work.
 
 ## Decision and authorization record
 
