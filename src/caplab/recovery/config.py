@@ -17,6 +17,8 @@ from caplab.runtime.models import IDENTITY_LAYERS
 from .models import (
     P5_AUTHORIZATION_EXPIRES_AT,
     P5_CAMPAIGN_ID,
+    P5_CORRECTIVE_CAMPAIGN_ID,
+    P5_ORIGINAL_AUTHORIZATION_SHA256,
     P5Authority,
     P5Identity,
 )
@@ -49,7 +51,8 @@ def _required_string(value: object, label: str) -> str:
 @dataclass(frozen=True, slots=True)
 class RecoveryConfig:
     authority: P5Authority
-    runtime_commit: str
+    executor_source_commit: str
+    registration_runtime_commit: str
     postgres_conninfo: str
     garage_endpoint_url: str
     garage_region: str
@@ -95,9 +98,12 @@ class RecoveryConfig:
             campaign,
             {
                 "campaign_id",
+                "corrective_campaign_id",
                 "authorization_expires_at",
                 "authorization_sha256",
-                "runtime_commit",
+                "superseded_authorization_sha256",
+                "executor_source_commit",
+                "registration_runtime_commit",
             },
             "campaign",
         )
@@ -124,18 +130,43 @@ class RecoveryConfig:
         campaign_id = _required_string(campaign["campaign_id"], "campaign.campaign_id")
         if campaign_id != P5_CAMPAIGN_ID:
             raise ConfigurationError("campaign differs from the authorized P5 campaign")
+        corrective_campaign_id = _required_string(
+            campaign["corrective_campaign_id"],
+            "campaign.corrective_campaign_id",
+        )
+        if corrective_campaign_id != P5_CORRECTIVE_CAMPAIGN_ID:
+            raise ConfigurationError(
+                "corrective campaign differs from the authorized P5 repair"
+            )
         expiry_text = _required_string(
             campaign["authorization_expires_at"],
             "campaign.authorization_expires_at",
         )
         if expiry_text != "2026-07-23T23:59:59Z":
-            raise ConfigurationError("authorization expiry differs from ADR 0009")
-        runtime_commit = _required_string(
-            campaign["runtime_commit"], "campaign.runtime_commit"
+            raise ConfigurationError("authorization expiry differs from ADR 0010")
+        superseded_authorization = _required_string(
+            campaign["superseded_authorization_sha256"],
+            "campaign.superseded_authorization_sha256",
         )
-        if not COMMIT.fullmatch(runtime_commit):
+        if superseded_authorization != P5_ORIGINAL_AUTHORIZATION_SHA256:
             raise ConfigurationError(
-                "campaign.runtime_commit must be a full Git identity"
+                "superseded authorization differs from ADR 0009"
+            )
+        executor_source_commit = _required_string(
+            campaign["executor_source_commit"],
+            "campaign.executor_source_commit",
+        )
+        registration_runtime_commit = _required_string(
+            campaign["registration_runtime_commit"],
+            "campaign.registration_runtime_commit",
+        )
+        if not COMMIT.fullmatch(executor_source_commit):
+            raise ConfigurationError(
+                "campaign.executor_source_commit must be a full Git identity"
+            )
+        if not COMMIT.fullmatch(registration_runtime_commit):
+            raise ConfigurationError(
+                "campaign.registration_runtime_commit must be a full Git identity"
             )
 
         identity_hashes = identity["identity_sha256"]
@@ -229,7 +260,8 @@ class RecoveryConfig:
 
         return cls(
             authority=authority,
-            runtime_commit=runtime_commit,
+            executor_source_commit=executor_source_commit,
+            registration_runtime_commit=registration_runtime_commit,
             postgres_conninfo=conninfo,
             garage_endpoint_url=endpoint,
             garage_region=region,

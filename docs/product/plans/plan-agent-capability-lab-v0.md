@@ -17,6 +17,7 @@ authorization_record: adr-0007
 authorization_records:
   - adr-0007
   - adr-0009
+  - adr-0010
 authorized_scope:
   - CAPLAB-22/P4
   - CAPLAB-23/P5
@@ -31,6 +32,7 @@ authorized_scope:
   - garage:caplab-v0
   - /nvr/caplab/v0
   - adr-0009 bounded P5 effects
+  - adr-0010 corrective P5 continuation
 change_types:
   - change-feature-implementation
   - change-architectural-restructuring
@@ -46,9 +48,11 @@ The repository owner authorized only CAPLAB-22/P4 through
 `2026-07-22T23:59:59Z` and delegated CAPLAB decision authority on 2026-07-15.
 P4 executed and passed independent verification. The repository owner selected
 ADR 0009 and authorized its bounded P5 implementation and effects through
-`2026-07-23T23:59:59Z`. P6 and later checkpoints, historical evidence
-admission, model calls, dataset export, training, and acceptance remain
-unauthorized.
+`2026-07-23T23:59:59Z`. The first P5 execution failed independent
+verification and left the exact P5 state quarantined. ADR 0010 records the
+owner's instruction to proceed with a corrective continuation under the same
+expiry. P6 and later checkpoints, historical evidence admission, model calls,
+dataset export, training, and acceptance remain unauthorized.
 
 ## Objective and authority boundary
 
@@ -455,10 +459,11 @@ claims. They are not standing work authorized by this queue.
 
 ## Execution, verification, and acceptance records
 
-No CAPLAB implementation, migration, runtime verification, inference, export,
-or v0 acceptance record exists yet. The selected Study 001 capability card and
-its decision are linked at P2; add later execution and assertion records only
-after the corresponding owner records each distinct event.
+P4 has separate execution and PASS verification records. The first P5 campaign
+has separate stopped-execution and FAIL verification records, and ADR 0010
+authorizes a corrective continuation. No Study 001 registration,
+recomputation, capability inference, export, integrated verification, or v0
+acceptance record exists.
 
 Planning projection: Plane project `CAPLAB`, with active replacement work items
 CAPLAB-18 through CAPLAB-30 and CAPLAB-33 through
@@ -519,4 +524,13 @@ replacement because the Plane connector could not remove the original relation.
   P5-only fault, recovery, backup, isolated restore, orphan, and guarded-purge
   effects through `2026-07-23T23:59:59Z`. P4 remains an unchanged control.
   Independent restore and purge verification is required before P5 can pass;
+  P6 and P7 remain unauthorized.
+- **2026-07-16 — P5 failed and received corrective authority.** The first
+  campaign stopped after durable registration because validation conflated
+  per-migration applied-by commits with the registration runtime commit. A
+  fresh verifier returned FAIL. The executor disabled access and preserved the
+  exact registration and good bytes in quarantine. After receiving that result
+  and the requirement for a newly frozen campaign, the repository owner
+  instructed the executor to proceed. ADR 0010 authorizes the narrow source
+  correction and remaining ADR 0009 sequence under a separate evidence root.
   P6 and P7 remain unauthorized.

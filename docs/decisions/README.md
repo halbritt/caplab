@@ -12,3 +12,4 @@ does not imply execution, verification, or acceptance.
 | [ADR 0007](adr-0007-caplab-v0-cli-runtime.md) | CAPLAB v0 CLI runtime and first synthetic campaign | decided | repository owner |
 | [ADR 0008](adr-0008-standalone-repository.md) | Standalone CAPLAB repository | decided | CAPLAB execution delegate |
 | [ADR 0009](adr-0009-caplab-p5-failure-and-recovery-campaign.md) | CAPLAB P5 bounded failure and recovery campaign | decided | repository owner |
+| [ADR 0010](adr-0010-caplab-p5-corrective-continuation.md) | CAPLAB P5 corrective continuation | decided | repository owner |

@@ -34,6 +34,9 @@ class RepositoryContractTests(unittest.TestCase):
         adr_0009 = (
             ROOT / "docs/decisions/adr-0009-caplab-p5-failure-and-recovery-campaign.md"
         ).read_text(encoding="utf-8")
+        adr_0010 = (
+            ROOT / "docs/decisions/adr-0010-caplab-p5-corrective-continuation.md"
+        ).read_text(encoding="utf-8")
         plan = (
             ROOT / "docs/product/plans/plan-agent-capability-lab-v0.md"
         ).read_text(encoding="utf-8")
@@ -41,11 +44,12 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("status: decided", adr_0007)
         self.assertIn("status: decided", adr_0008)
         self.assertIn("status: decided", adr_0009)
+        self.assertIn("status: decided", adr_0010)
         self.assertIn("status: authorized", plan)
         for record in (adr_0007, adr_0008):
             self.assertIn("2026-07-22T23:59:59Z", record)
             self.assertIn("P4", record)
-        for record in (adr_0009, plan):
+        for record in (adr_0009, adr_0010, plan):
             self.assertIn("2026-07-23T23:59:59Z", record)
             self.assertIn("P5", record)
         self.assertIn("src/caplab/runtime/**", plan)

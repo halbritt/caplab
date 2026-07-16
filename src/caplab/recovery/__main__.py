@@ -352,7 +352,7 @@ def _run_migrate(config: RecoveryConfig) -> int:
     applied = PostgresMigrator(
         config.postgres_conninfo,
         Path(__file__).parents[1] / "runtime" / "migrations",
-        config.runtime_commit,
+        config.executor_source_commit,
     ).apply()
     _emit(
         {
@@ -370,7 +370,7 @@ def _run_register(args: argparse.Namespace, context: LiveContext) -> int:
     request = prepare_request(
         args.fixture,
         args.payload,
-        runtime_commit=context.config.runtime_commit,
+        runtime_commit=context.config.registration_runtime_commit,
     )
     if P5Identity.from_intent(request.intent()) != context.config.authority.identity:
         raise ConfigurationError(
@@ -401,7 +401,7 @@ def _run_verify(args: argparse.Namespace, context: LiveContext) -> int:
     report = context.registration.reconcile(
         identity.operation_id,
         expected_runtime_provenance=current_recovery_provenance(
-            context.config.runtime_commit,
+            context.config.registration_runtime_commit,
             fixture_bytes,
         ),
     )

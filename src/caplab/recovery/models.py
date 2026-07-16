@@ -18,7 +18,11 @@ from caplab.runtime.models import (
 
 
 P5_CAMPAIGN_ID = "caplab-p5-recovery-2026-07-16"
+P5_CORRECTIVE_CAMPAIGN_ID = "caplab-p5-corrective-2026-07-16"
 P5_AUTHORIZATION_EXPIRES_AT = datetime(2026, 7, 23, 23, 59, 59, tzinfo=UTC)
+P5_ORIGINAL_AUTHORIZATION_SHA256 = (
+    "e8cd172af19cb631ba6814a3fd57c7b91f381cd799de862d9bd277b6ef68d34f"
+)
 InvalidDisposition = Literal["invalid", "ambiguous"]
 
 
@@ -109,7 +113,7 @@ class P5Authority:
         _require_sha256("authorization_sha256", self.authorization_sha256)
         _require_utc("expires_at", self.expires_at)
         if self.expires_at != P5_AUTHORIZATION_EXPIRES_AT:
-            raise ValueError("P5 authority expiry differs from ADR 0009")
+            raise ValueError("P5 authority expiry differs from the active decisions")
 
     def require_active(self, now: datetime) -> None:
         from .errors import AuthorizationExpired

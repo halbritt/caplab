@@ -20,6 +20,7 @@ from caplab.recovery.errors import (
     UnknownPurgeIdentity,
 )
 from caplab.recovery.models import (
+    P5_ORIGINAL_AUTHORIZATION_SHA256,
     P5Authority,
     P5Identity,
     PurgeRequest,
@@ -266,9 +267,12 @@ class RecoveryConfigurationTests(unittest.TestCase):
         identity = frozen.identity
         values = {
             "campaign": identity.campaign_id,
+            "corrective_campaign": "caplab-p5-corrective-2026-07-16",
             "expiry": "2026-07-23T23:59:59Z",
             "authorization": frozen.authorization_sha256,
-            "runtime_commit": "a" * 40,
+            "superseded_authorization": P5_ORIGINAL_AUTHORIZATION_SHA256,
+            "executor_commit": "b" * 40,
+            "registration_commit": "a" * 40,
             "operation": identity.operation_id,
             "request": identity.request_sha256,
             "content": identity.content_sha256,
@@ -290,9 +294,12 @@ class RecoveryConfigurationTests(unittest.TestCase):
             f"""
 [campaign]
 campaign_id = "{values["campaign"]}"
+corrective_campaign_id = "{values["corrective_campaign"]}"
 authorization_expires_at = "{values["expiry"]}"
 authorization_sha256 = "{values["authorization"]}"
-runtime_commit = "{values["runtime_commit"]}"
+superseded_authorization_sha256 = "{values["superseded_authorization"]}"
+executor_source_commit = "{values["executor_commit"]}"
+registration_runtime_commit = "{values["registration_commit"]}"
 
 [identity]
 operation_id = "{values["operation"]}"
@@ -326,11 +333,30 @@ root = "{values["copy_root"]}"
         self.assertEqual(config.authority.identity.operation_id, "op-p5-recovery-0001")
         self.assertEqual(config.credentials_root, Path("/etc/caplab-p5/credentials"))
 
+    def test_corrective_config_separates_executor_and_registered_runtime_commits(
+        self,
+    ) -> None:
+        original_commit = "a" * 40
+        executor_commit = "b" * 40
+        document = self.document(
+            executor_commit=executor_commit,
+            registration_commit=original_commit,
+        )
+
+        config = RecoveryConfig._from_text(document)
+
+        self.assertEqual(config.executor_source_commit, executor_commit)
+        self.assertEqual(config.registration_runtime_commit, original_commit)
+
     def test_config_refuses_campaign_identity_expiry_and_namespace_drift(self) -> None:
         for change in (
             {"campaign": "caplab-p4-roundtrip-2026-07-15"},
+            {"corrective_campaign": "caplab-p5-corrective-other"},
             {"expiry": "2026-07-24T23:59:59Z"},
             {"authorization": "8" * 63},
+            {"superseded_authorization": "8" * 64},
+            {"executor_commit": "b" * 39},
+            {"registration_commit": "a" * 39},
             {"object_key": "objects/sha256/00/" + "0" * 64},
             {"conninfo": "dbname=other host=/var/run/postgresql"},
             {"endpoint": "http://localhost:3900"},
