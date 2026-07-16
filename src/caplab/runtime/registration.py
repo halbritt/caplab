@@ -131,10 +131,15 @@ class RegistrationService:
                 ]:
                     raise MetadataMismatch("migration ledger differs from runtime provenance")
                 if any(
-                    item["runtime_commit"] != provenance.get("runtime_commit")
+                    not isinstance(item.get("runtime_commit"), str)
+                    or len(item["runtime_commit"]) != 40
+                    or any(
+                        character not in "0123456789abcdef"
+                        for character in item["runtime_commit"]
+                    )
                     for item in migration_state
                 ):
-                    raise MetadataMismatch("migration runtime commit differs from provenance")
+                    raise MetadataMismatch("migration runtime commit is invalid")
 
     @staticmethod
     def _validate_intent_record(

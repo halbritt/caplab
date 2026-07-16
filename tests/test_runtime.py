@@ -289,6 +289,48 @@ class RegistrationTests(unittest.TestCase):
         self.assertEqual(report.provenance_status, "mismatch")
         self.assertFalse(report.ok)
 
+    def test_2026_07_16_forward_migration_ledger_preserves_applied_commit_history(
+        self,
+    ) -> None:
+        fixture = json.loads(
+            (FIXTURES / "synthetic-attempt.json").read_text(encoding="utf-8")
+        )
+        provenance = {
+            "runtime_commit": "c" * 40,
+            "requirements_lock_sha256": "b" * 64,
+            "fixture_sha256": "f" * 64,
+            "migrations": [
+                {"filename": "0001_runtime_core.sql", "sha256": "d" * 64},
+                {"filename": "0002_p5_recovery_custody.sql", "sha256": "e" * 64},
+            ],
+        }
+        registration = RegistrationRequest(
+            operation_id="op-forward-migrations-001",
+            campaign_id=fixture["campaign_id"],
+            artifact_kind=fixture["artifact_kind"],
+            media_type=fixture["media_type"],
+            identity_layers=fixture["identity_layers"],
+            payload=(FIXTURES / "synthetic-payload.json").read_bytes(),
+            runtime_provenance=provenance,
+        )
+        self.service.register(registration)
+        self.metadata.registrations[registration.operation_id]["migration_state"] = [
+            {
+                "filename": "0001_runtime_core.sql",
+                "sha256": "d" * 64,
+                "runtime_commit": "a" * 40,
+            },
+            {
+                "filename": "0002_p5_recovery_custody.sql",
+                "sha256": "e" * 64,
+                "runtime_commit": "c" * 40,
+            },
+        ]
+
+        receipt = self.service.verify(registration.operation_id)
+
+        self.assertEqual(receipt.operation_id, registration.operation_id)
+
 
 class FilesystemCopyStoreTests(unittest.TestCase):
     def test_atomic_write_is_idempotent_and_refuses_changed_bytes(self) -> None:
