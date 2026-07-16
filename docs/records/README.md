@@ -35,3 +35,19 @@ CAPLAB-23/P5 then produced separate records for campaign
   dependency, purge, tombstone, and final-absence criteria were not completed.
 
 The safe stop and quarantine do not pass P5, accept CAPLAB, or authorize P6.
+
+ADR 0010 then authorized a distinct corrective continuation without changing
+the original P5 data identity:
+
+- [`caplab-p5-corrective-execution-2026-07-16.md`](caplab-p5-corrective-execution-2026-07-16.md)
+  records successful exact replay, recovery drills, non-destructive Restic
+  check, and post-registration backup, followed by the mandatory stop when the
+  frozen isolated-restore helper could not start Debian's externally
+  configured PostgreSQL cluster; and
+- [`caplab-p5-corrective-verification-2026-07-16.md`](caplab-p5-corrective-verification-2026-07-16.md)
+  records the fresh independent **FAIL** because the restored database was not
+  queryable and dependency refusal, purge, tombstone, restore removal, and
+  final P5 absence remain unmet.
+
+The corrective safe stop also does not pass P5, accept CAPLAB, or authorize
+P6.
