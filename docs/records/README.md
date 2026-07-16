@@ -23,3 +23,15 @@ The selected P5 implementation includes
 [`execution`](caplab-p5-execution-template.md) and
 [`independent verification`](caplab-p5-verification-template.md) templates.
 They are empty contracts, not observations or evidence that P5 has run.
+
+CAPLAB-23/P5 then produced separate records for campaign
+`caplab-p5-recovery-2026-07-16`:
+
+- [`caplab-p5-execution-2026-07-16.md`](caplab-p5-execution-2026-07-16.md)
+  records the post-effect provenance stop, access disablement, and quarantined
+  registration; and
+- [`caplab-p5-verification-2026-07-16.md`](caplab-p5-verification-2026-07-16.md)
+  records the independent **FAIL** because mandatory recovery, backup, restore,
+  dependency, purge, tombstone, and final-absence criteria were not completed.
+
+The safe stop and quarantine do not pass P5, accept CAPLAB, or authorize P6.
