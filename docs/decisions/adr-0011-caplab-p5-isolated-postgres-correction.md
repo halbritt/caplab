@@ -182,9 +182,9 @@ P5, authorize purge, accept CAPLAB, or authorize P6.
 
 ## Doctrine advisory provenance
 
-The correction used evidenced packet `pkt-f69e91f413ec5944`, packet content
+The correction used evidenced packet `pkt-f85beada9624d286`, packet content
 SHA-256
-`f69e91f413ec5944417277c5c7a99e8796b1c3470bfd395dedda1cde6b9d2663`,
+`f85beada9624d286200fe52edd6c213174734d94ef33e33672c7e09e6f4c98a0`,
 retriever `retriever-20c2013aa294d1fa`, doctrine
 `doctrine-f630427242460c1e`, and corpus
 `corpus-2026-07-12-d2ea7b94a1ce`.
