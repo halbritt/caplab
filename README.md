@@ -12,10 +12,10 @@ from `halbritt/books` at commit
 `cdbb5120d1d450763fca2a8aca172f6308413440`. Historical Study 001 evidence was
 not copied during that repository separation.
 
-Current execution scope is CAPLAB-22/P4: a model-free synthetic round trip
-through the selected PostgreSQL, Garage, and independent local-copy contracts.
-P5 recovery testing, historical evidence admission, model calls, training,
-and CAPLAB acceptance remain outside that scope.
+CAPLAB-22/P4 completed independent verification and its synthetic state remains
+quarantined with access disabled. ADR 0009 proposes CAPLAB-23/P5 recovery
+testing but is not selected or authorized. Historical evidence admission,
+model calls, training, and CAPLAB acceptance remain outside the current scope.
 
 Run the hermetic repository gate with:
 

@@ -5,7 +5,7 @@ title: Agent Capability Lab v0
 status: authorized
 owner: repository-maintainers
 created: 2026-07-15
-updated: 2026-07-15
+updated: 2026-07-16
 supersedes: []
 superseded_by: null
 source_artifacts:
@@ -39,6 +39,7 @@ Status interpretation: ADRs 0004 through 0008 select Study 001, evidence
 governance, the capability card, the CLI runtime, and the standalone repository.
 The repository owner authorized only CAPLAB-22/P4 through
 `2026-07-22T23:59:59Z` and delegated CAPLAB decision authority on 2026-07-15.
+P4 executed and passed independent verification. ADR 0009 now proposes P5, but
 P5 and later checkpoints, historical evidence admission, model calls, dataset
 export, training, and acceptance remain unauthorized.
 
@@ -499,3 +500,9 @@ replacement because the Plane connector could not remove the original relation.
   bounded preservation gap: the three numeric status-2 values were asserted by
   the live shell but not retained as direct numeric receipts. No P5 action or
   CAPLAB acceptance occurred.
+- **2026-07-16 — P5 proposal prepared.** The repository owner instructed the
+  agent to handle CAPLAB-23, CAPLAB-24, and CAPLAB-25 in dependency order.
+  CAPLAB-23 moved into investigation and proposal preparation. The failure-mode
+  audit and proposed ADR 0009 name a P5-only synthetic campaign, preserve P4 as
+  a control, and require exact owner selection before live fault, restore,
+  deletion, or purge effects. P6 and P7 remain gated and unauthorized.
