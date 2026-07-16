@@ -589,11 +589,27 @@ class S3ObjectStoreTests(unittest.TestCase):
 class MigrationContractTests(unittest.TestCase):
     def test_migrations_are_lexical_and_checksum_drift_stops(self) -> None:
         migrations = discover_migrations(ROOT / "src/caplab/runtime/migrations")
-        self.assertEqual([item.filename for item in migrations], ["0001_runtime_core.sql"])
+        self.assertEqual(
+            [item.filename for item in migrations],
+            ["0001_runtime_core.sql", "0002_p5_recovery_custody.sql"],
+        )
         self.assertEqual(pending_migrations(migrations, {}), migrations)
         with self.assertRaises(ChecksumDrift):
             pending_migrations(migrations, {"0001_runtime_core.sql": "0" * 64})
-        self.assertEqual(pending_migrations(migrations, {migrations[0].filename: migrations[0].sha256}), [])
+        self.assertEqual(
+            pending_migrations(
+                migrations,
+                {migrations[0].filename: migrations[0].sha256},
+            ),
+            [migrations[1]],
+        )
+        self.assertEqual(
+            pending_migrations(
+                migrations,
+                {migration.filename: migration.sha256 for migration in migrations},
+            ),
+            [],
+        )
 
     def test_core_migration_contains_selected_tables_and_append_only_guards(self) -> None:
         sql = (ROOT / "src/caplab/runtime/migrations/0001_runtime_core.sql").read_text(encoding="utf-8")

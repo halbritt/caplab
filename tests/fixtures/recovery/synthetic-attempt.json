@@ -1,0 +1,35 @@
+{
+  "schema_version": "caplab-p5-synthetic-attempt/1",
+  "operation_id": "op-p5-recovery-0001",
+  "campaign_id": "caplab-p5-recovery-2026-07-16",
+  "artifact_kind": "synthetic-recovery-attempt",
+  "media_type": "application/json",
+  "identity_layers": {
+    "model": {
+      "provider": "fixture",
+      "model": "model-free-p5"
+    },
+    "agent_configuration": {
+      "agent": "fixture-agent",
+      "configuration": "p5-recovery"
+    },
+    "administration": {
+      "administrator": "caplab",
+      "campaign": "p5"
+    },
+    "trial_context": {
+      "study": "synthetic-recovery",
+      "condition": "control"
+    },
+    "trial_assignment": {
+      "assignment": "p5-recovery-0001"
+    },
+    "attempt": {
+      "attempt": 1,
+      "fixture": "p5-recovery"
+    },
+    "analysis": {
+      "contract": "no-subject-outcome"
+    }
+  }
+}
