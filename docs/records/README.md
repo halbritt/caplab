@@ -51,3 +51,16 @@ the original P5 data identity:
 
 The corrective safe stop also does not pass P5, accept CAPLAB, or authorize
 P6.
+
+ADR 0011 authorized one narrower isolated-restore correction:
+
+- [`caplab-p5-isolated-restore-execution-2026-07-16.md`](caplab-p5-isolated-restore-execution-2026-07-16.md)
+  records actual use of the dedicated target configuration, HBA, socket, and
+  loopback port, followed by the recovery-time `max_wal_senders` refusal and
+  preserved safe stop; and
+- [`caplab-p5-isolated-restore-verification-2026-07-16.md`](caplab-p5-isolated-restore-verification-2026-07-16.md)
+  records independent **FAIL** for the correction and **PASS** for protecting
+  the live cluster.
+
+The one retry is consumed. The stopped target remains preserved, and another
+retry, target removal, purge, and P6 require a new owner decision.
