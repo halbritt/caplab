@@ -14,8 +14,12 @@ source_decision: adr-0002
 baseline_repository: halbritt/books
 baseline: 97380767e4517d991b3118c738922ba43f2448af
 authorization_record: adr-0007
+authorization_records:
+  - adr-0007
+  - adr-0009
 authorized_scope:
   - CAPLAB-22/P4
+  - CAPLAB-23/P5
   - src/caplab/runtime/**
   - tests/test_runtime.py
   - tests/fixtures/runtime/**
@@ -26,6 +30,7 @@ authorized_scope:
   - postgres:caplab/caplab_v0
   - garage:caplab-v0
   - /nvr/caplab/v0
+  - adr-0009 bounded P5 effects
 change_types:
   - change-feature-implementation
   - change-architectural-restructuring
@@ -39,9 +44,11 @@ Status interpretation: ADRs 0004 through 0008 select Study 001, evidence
 governance, the capability card, the CLI runtime, and the standalone repository.
 The repository owner authorized only CAPLAB-22/P4 through
 `2026-07-22T23:59:59Z` and delegated CAPLAB decision authority on 2026-07-15.
-P4 executed and passed independent verification. ADR 0009 now proposes P5, but
-P5 and later checkpoints, historical evidence admission, model calls, dataset
-export, training, and acceptance remain unauthorized.
+P4 executed and passed independent verification. The repository owner selected
+ADR 0009 and authorized its bounded P5 implementation and effects through
+`2026-07-23T23:59:59Z`. P6 and later checkpoints, historical evidence
+admission, model calls, dataset export, training, and acceptance remain
+unauthorized.
 
 ## Objective and authority boundary
 
@@ -506,3 +513,10 @@ replacement because the Plane connector could not remove the original relation.
   audit and proposed ADR 0009 name a P5-only synthetic campaign, preserve P4 as
   a control, and require exact owner selection before live fault, restore,
   deletion, or purge effects. P6 and P7 remain gated and unauthorized.
+- **2026-07-16 — P5 selected and authorized.** The repository owner explicitly
+  authorized ADR 0009 as written. Campaign
+  `caplab-p5-recovery-2026-07-16` may implement and execute only its named
+  P5-only fault, recovery, backup, isolated restore, orphan, and guarded-purge
+  effects through `2026-07-23T23:59:59Z`. P4 remains an unchanged control.
+  Independent restore and purge verification is required before P5 can pass;
+  P6 and P7 remain unauthorized.

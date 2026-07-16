@@ -2,11 +2,11 @@
 id: adr-0009
 artifact_type: architecture-decision-record
 title: CAPLAB P5 bounded failure and recovery campaign
-status: proposed
+status: decided
 decision_owner: repository-owner
 decision_authority: repository-ownership
 created: 2026-07-16
-decided_at: null
+decided_at: 2026-07-16
 supersedes: []
 superseded_by: null
 affected_contexts:
@@ -23,12 +23,11 @@ related_receipts: []
 
 # CAPLAB P5 bounded failure and recovery campaign
 
-Status interpretation: the repository owner instructed the agent to handle the
-next Plane items in dependency order. That authorizes CAPLAB-23 investigation,
-proposal preparation, and tracker handling. It does not select an unseen fault
-matrix or authorize deletion, corruption, restore, purge, historical evidence
-admission, or P6. This proposal remains unselected until the owner explicitly
-authorizes it as written or records revisions.
+Status interpretation: the repository owner explicitly authorized ADR 0009 as
+written on 2026-07-16. The selected authorization covers only the bounded P5
+implementation and effects below through `2026-07-23T23:59:59Z`. It does not
+authorize historical evidence admission, CAPLAB-24/P6, CAPLAB-25/P7, model
+calls, training, export, acceptance, or any effect not named here.
 
 ## Decision question and scope
 
@@ -100,9 +99,15 @@ Rejected alternatives:
 - proceeding directly to Study 001 would promote unverified recovery targets
   into an admission decision.
 
-## Proposed decision and authorization
+## Decision and authorization
 
-If selected, the repository owner authorizes the exact campaign below.
+**Decision:** select campaign `caplab-p5-recovery-2026-07-16` exactly as
+specified below.
+
+**Owner and authority:** the repository owner under repository ownership,
+exercised by the instruction `authorize ADR 0009 as written` on 2026-07-16.
+The primary Codex agent is the named CAPLAB and host executor. A different
+fresh agent or named human must verify restore and purge before P5 can pass.
 
 ### Campaign identity, time, and roles
 
@@ -292,11 +297,11 @@ ceiling, preservation boundary, or destructive stop rules. Live reversibility,
 restore, and purge observations remain deliberately unmet until the selected
 campaign executes; this proposal does not claim them.
 
-## Owner selection required
+## Consequences and reopening conditions
 
-**Recommendation:** authorize ADR 0009 as written.
-
-Selection authorizes only the implementation and P5 effects named above through
-the proposed expiry. It does not authorize historical evidence inspection or
-admission, P6, P7, a model call, training, export, acceptance, or any effect not
-listed here.
+Execution may begin inside the selected boundary. P5 remains incomplete until
+the independent verification record passes every frozen criterion. Stop and
+reopen this decision on source or identity drift, an unavailable independent
+verifier, any P4 control change, an unlisted destructive effect, inability to
+restore staged P5 bytes, or any need to widen the historical-evidence,
+production-service, backup, model, or acceptance boundary.

@@ -24,12 +24,15 @@ class RepositoryContractTests(unittest.TestCase):
 
         self.assertEqual(violations, [])
 
-    def test_active_decisions_bind_standalone_p4_authority(self) -> None:
+    def test_active_decisions_bind_standalone_p4_and_p5_authority(self) -> None:
         adr_0007 = (
             ROOT / "docs/decisions/adr-0007-caplab-v0-cli-runtime.md"
         ).read_text(encoding="utf-8")
         adr_0008 = (
             ROOT / "docs/decisions/adr-0008-standalone-repository.md"
+        ).read_text(encoding="utf-8")
+        adr_0009 = (
+            ROOT / "docs/decisions/adr-0009-caplab-p5-failure-and-recovery-campaign.md"
         ).read_text(encoding="utf-8")
         plan = (
             ROOT / "docs/product/plans/plan-agent-capability-lab-v0.md"
@@ -37,12 +40,16 @@ class RepositoryContractTests(unittest.TestCase):
 
         self.assertIn("status: decided", adr_0007)
         self.assertIn("status: decided", adr_0008)
+        self.assertIn("status: decided", adr_0009)
         self.assertIn("status: authorized", plan)
-        for record in (adr_0007, adr_0008, plan):
+        for record in (adr_0007, adr_0008):
             self.assertIn("2026-07-22T23:59:59Z", record)
             self.assertIn("P4", record)
+        for record in (adr_0009, plan):
+            self.assertIn("2026-07-23T23:59:59Z", record)
+            self.assertIn("P5", record)
         self.assertIn("src/caplab/runtime/**", plan)
-        self.assertIn("P5 and later checkpoints", plan)
+        self.assertIn("P6 and later checkpoints", plan)
 
     def test_local_markdown_links_resolve(self) -> None:
         missing: list[str] = []

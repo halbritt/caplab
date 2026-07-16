@@ -13,9 +13,10 @@ from `halbritt/books` at commit
 not copied during that repository separation.
 
 CAPLAB-22/P4 completed independent verification and its synthetic state remains
-quarantined with access disabled. ADR 0009 proposes CAPLAB-23/P5 recovery
-testing but is not selected or authorized. Historical evidence admission,
-model calls, training, and CAPLAB acceptance remain outside the current scope.
+quarantined with access disabled. ADR 0009 authorizes the bounded
+CAPLAB-23/P5 recovery campaign through `2026-07-23T23:59:59Z`. Historical
+evidence admission, CAPLAB-24/P6, model calls, training, and CAPLAB acceptance
+remain outside the current scope.
 
 Run the hermetic repository gate with:
 
