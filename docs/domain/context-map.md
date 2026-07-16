@@ -3,7 +3,7 @@ artifact_type: context-map
 status: decided
 steward: repository-maintainers
 updated: 2026-07-16
-governing_decision: ../decisions/adr-0008-pincite-separation-and-caplab-repository-identity.md
+governing_decision: ../decisions/adr-0008-pincite-separation-and-repository-transition.md
 ---
 
 # Context map
@@ -13,29 +13,31 @@ governing_decision: ../decisions/adr-0008-pincite-separation-and-caplab-reposito
 | Context | Owned responsibilities | Evidence |
 |---|---|---|
 | Pincite | Source corpus, doctrine curation, provenance graph, retrieval index, packet assembly, and release identity | `pincite-dependency.json`; Pincite ADRs 0004 and 0005 |
-| Agent Capability Lab | Study design, behavioral evaluation, experiment custody, mechanical grading, adjudication, capability-card projection, and reviewer-facing results | `docs/product/`, `docs/agent-judgment/`, `doctrine/evaluations/`, `caplab/` |
+| This historical study repository | Source-study evidence custody, preserved evaluation instruments and records, mechanical grading, and reproducible historical projections | `docs/agent-judgment/`, `doctrine/evaluations/`, `caplab/` |
+| Standalone Agent Capability Lab | Current CAPLAB product decisions, runtime, governed research state, and future product development | `/home/halbritt/git/caplab`; its ADR 0008 |
 
 ## Integration relationship
 
 ```mermaid
 flowchart LR
-  P[Pincite release] -->|Pinned corpus, doctrine, schemas, and retriever| C[CAPLAB evaluation]
-  C -->|Screening and behavioral observations| H[Human adjudication]
-  H -->|Owner-governed interpretation| D[Capability or product decisions]
+  P[Pincite release] -->|Pinned corpus, doctrine, schemas, and retriever| S[Historical study evaluation]
+  S -->|Preserved observations and source provenance| C[Standalone CAPLAB]
+  C -->|Governed interpretation| D[Capability or product decisions]
 ```
 
-CAPLAB is a consumer of a versioned Pincite release. It validates the exact
-commit plus corpus and doctrine identities before using Pincite inputs. CAPLAB
+This repository consumes a versioned Pincite release. It validates the exact
+commit plus corpus and doctrine identities before using Pincite inputs. It
 does not write Pincite doctrine, and evaluation output cannot silently update
 the Pincite release.
 
 Historical experiments may embed a Pincite projection and old repository
 mount paths. Those sealed bytes remain experiment evidence. New experiments
-use the current CAPLAB mount and an explicitly pinned Pincite surface.
+owned by standalone CAPLAB must use its current contracts and an explicitly
+pinned Pincite surface.
 
 ## Reopening conditions
 
-Reopen the boundary if CAPLAB needs to author doctrine as part of an evaluation,
-Pincite begins owning behavioral-study custody, the dependency cannot be
-versioned independently, or a shared schema requires a separately governed
-contract repository.
+Reopen the boundary if Pincite begins owning behavioral-study custody, the
+dependency cannot be versioned independently, standalone CAPLAB needs to move
+historical evidence under an authorized admission decision, or a shared schema
+requires a separately governed contract repository.

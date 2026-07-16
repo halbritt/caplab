@@ -1,34 +1,40 @@
-# Agent Capability Lab
+# Historical agent-judgment studies
 
-Agent Capability Lab (CAPLAB) is a behavioral capability measurement and
-model-development laboratory. It preserves study designs, evaluation
-instruments, adjudication records, checked-in aggregates, and reviewer-facing
-projections without collapsing mechanical observations into scientific
-inferences or owner decisions.
+This repository preserves the source studies, evaluation instruments,
+adjudication records, checked-in aggregates, and reviewer-facing projections
+from the former Books workspace. Its final repository name is pending an owner
+choice.
 
-CAPLAB does not own the engineering-doctrine corpus or its retrieval runtime.
-Those are supplied by the separately versioned
-[`halbritt/pincite`](https://github.com/halbritt/pincite) repository through
-the exact dependency recorded in [`pincite-dependency.json`](pincite-dependency.json).
+Two products that began here now have separate authority:
+
+- Pincite owns the engineering-doctrine corpus and retrieval runtime in
+  [`halbritt/pincite`](https://github.com/halbritt/pincite). This repository
+  consumes it through the exact dependency recorded in
+  [`pincite-dependency.json`](pincite-dependency.json).
+- The standalone `/home/halbritt/git/caplab` repository owns current CAPLAB
+  product and runtime development. The CAPLAB material retained here records
+  source-study history and evidence custody; it is not the current CAPLAB
+  product authority.
 
 ## Repository map
 
 | Path | Contents |
 |---|---|
-| [`caplab/`](caplab/) | CAPLAB runtime code, Pincite dependency verification, and the study-results dashboard |
-| [`docs/product/`](docs/product/README.md) | Product specifications, plans, and capability cards |
+| [`caplab/`](caplab/) | Historical study tooling, Pincite dependency verification, and the preserved Study 001 dashboard |
+| [`docs/product/`](docs/product/README.md) | Source product specifications, plans, and capability cards retained for provenance |
 | [`docs/agent-judgment/`](docs/agent-judgment/README.md) | Evaluation operation and extension guidance |
 | [`doctrine/evaluations/`](doctrine/evaluations/README.md) | Evaluation contracts, fixtures, adjudication records, and preserved experiment reports |
-| [`doctrine/tools/`](doctrine/tools/) | CAPLAB-owned evaluation, projection, replay, and adjudication tools |
+| [`doctrine/tools/`](doctrine/tools/) | Historical evaluation, projection, replay, and adjudication tools |
 | [`docs/decisions/`](docs/decisions/README.md) | Architecture decisions and their authority boundaries |
-| [`docs/domain/`](docs/domain/README.md) | CAPLAB domain language and context map |
-| [`tests/`](tests/) | Hermetic CAPLAB tests and pinned-Pincite integration checks |
+| [`docs/domain/`](docs/domain/README.md) | Historical study domain language and current context map |
+| [`tests/`](tests/) | Hermetic repository tests and pinned-Pincite integration checks |
 | [`ubiquitous_language.md`](ubiquitous_language.md) | Canonical assertion, evaluation, and decision vocabulary |
 
 The retained `doctrine/evaluations/` path is a stable historical artifact
-namespace, not a claim that CAPLAB owns Pincite doctrine. Sealed Harbor records
-may also retain old `books` repository paths. Those bytes are experiment
-provenance and are not live repository configuration.
+namespace, not a claim that this repository owns Pincite doctrine or current
+CAPLAB product development. Sealed Harbor records may also retain old `books`
+repository paths. Those bytes are experiment provenance and are not live
+repository configuration.
 
 ## Pincite dependency
 
@@ -38,9 +44,9 @@ The default validated release location is:
 ~/.local/share/pincite/release
 ```
 
-Override it with `PINCITE_RELEASE_HOME`. CAPLAB fails closed unless that
-checkout is at the exact pinned commit and its Pincite retrieval-state gate
-reports the expected corpus and doctrine identities:
+Override it with `PINCITE_RELEASE_HOME`. Repository tooling fails closed unless
+that checkout is at the exact pinned commit and its Pincite retrieval-state
+gate reports the expected corpus and doctrine identities:
 
 ```bash
 make pincite-check
@@ -58,7 +64,7 @@ Install the small Python dependency set:
 python3 -m pip install -r requirements.txt
 ```
 
-Run the hermetic CAPLAB suite:
+Run the hermetic repository suite:
 
 ```bash
 make test

@@ -13,8 +13,9 @@ notable repository changes.
   corpus identity, and doctrine identity.
 - Updated evaluation, adjudication, gold-queue, section-resolution, and Harbor
   projection tools to read Pincite inputs from `PINCITE_RELEASE_HOME` while
-  preserving CAPLAB-owned outputs locally.
-- Adopted Agent Capability Lab (`caplab`) as the repository identity.
+  preserving historical study outputs locally.
+- Left the final repository rename target pending after live inspection showed
+  that `caplab` already names the separate CAPLAB product repository.
 - Preserved sealed historical experiment records, including old `books` mount
   paths, without treating them as live configuration.
 
