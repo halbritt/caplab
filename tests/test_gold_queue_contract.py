@@ -1,5 +1,6 @@
 import hashlib
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -11,6 +12,12 @@ import yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
+PINCITE_ROOT = Path(
+    os.environ.get(
+        "PINCITE_RELEASE_HOME",
+        Path.home() / ".local" / "share" / "pincite" / "release",
+    )
+).expanduser()
 TOOL = ROOT / "doctrine" / "tools" / "build_gold_queue.py"
 INPUT_PATHS = (
     "doctrine/sources.yaml",
@@ -35,15 +42,22 @@ def load_yaml(path: Path) -> dict[str, object]:
 
 def prepare_fixture(root: Path) -> None:
     for relative in (*INPUT_PATHS, *GOLD_STATIC_PATHS):
-        source = ROOT / relative
+        source = (
+            PINCITE_ROOT / relative if relative in INPUT_PATHS else ROOT / relative
+        )
         destination = root / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, destination)
 
 
-def run_tool(root: Path, mode: str) -> subprocess.CompletedProcess[str]:
+def run_tool(
+    root: Path, mode: str, *, pincite_root: Path | None = None
+) -> subprocess.CompletedProcess[str]:
+    command = [sys.executable, str(TOOL), "--root", str(root)]
+    if pincite_root is not None:
+        command.extend(["--pincite-root", str(pincite_root)])
     return subprocess.run(
-        [sys.executable, str(TOOL), "--root", str(root), mode],
+        [*command, mode],
         capture_output=True,
         text=True,
     )
@@ -59,7 +73,7 @@ class GoldQueueContractTests(unittest.TestCase):
             self.assertFalse((root / "doctrine" / "evaluations" / "gold").exists())
 
     def test_checked_in_queue_covers_axes_and_projects_human_dispositions(self) -> None:
-        result = run_tool(ROOT, "--check")
+        result = run_tool(ROOT, "--check", pincite_root=PINCITE_ROOT)
         self.assertEqual(result.returncode, 0, result.stderr)
 
         gold = ROOT / "doctrine" / "evaluations" / "gold"
@@ -69,13 +83,15 @@ class GoldQueueContractTests(unittest.TestCase):
             (gold / "human-dispositions.json").read_text(encoding="utf-8")
         )
 
-        sources = load_yaml(ROOT / "doctrine" / "sources.yaml")["sources"]
-        edges = load_yaml(ROOT / "doctrine" / "graph" / "edges.yaml")["edges"]
-        formulations = load_yaml(ROOT / "doctrine" / "graph" / "formulations.yaml")[
-            "formulations"
+        sources = load_yaml(PINCITE_ROOT / "doctrine" / "sources.yaml")["sources"]
+        edges = load_yaml(PINCITE_ROOT / "doctrine" / "graph" / "edges.yaml")["edges"]
+        formulations = load_yaml(
+            PINCITE_ROOT / "doctrine" / "graph" / "formulations.yaml"
+        )["formulations"]
+        authority = load_yaml(PINCITE_ROOT / "doctrine" / "authority-model.yaml")
+        lenses = load_yaml(PINCITE_ROOT / "doctrine" / "context-lenses.yaml")[
+            "lenses"
         ]
-        authority = load_yaml(ROOT / "doctrine" / "authority-model.yaml")
-        lenses = load_yaml(ROOT / "doctrine" / "context-lenses.yaml")["lenses"]
 
         expected = {
             "source_ids": sorted(source["id"] for source in sources),
@@ -165,6 +181,46 @@ class GoldQueueContractTests(unittest.TestCase):
             check = run_tool(root, "--check")
             self.assertEqual(check.returncode, 1)
             self.assertIn("queue.json is stale", check.stderr)
+
+    def test_queue_inputs_can_come_from_a_separate_pincite_root(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            workspace = Path(temporary_directory)
+            caplab_root = workspace / "caplab"
+            pincite_root = workspace / "pincite"
+            for relative in INPUT_PATHS:
+                source = PINCITE_ROOT / relative
+                destination = pincite_root / relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(source, destination)
+            for relative in GOLD_STATIC_PATHS:
+                source = ROOT / relative
+                destination = caplab_root / relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(source, destination)
+
+            completed = run_tool(
+                caplab_root, "--write", pincite_root=pincite_root
+            )
+
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            self.assertTrue(
+                (
+                    caplab_root
+                    / "doctrine"
+                    / "evaluations"
+                    / "gold"
+                    / "queue.json"
+                ).is_file()
+            )
+            self.assertFalse(
+                (
+                    pincite_root
+                    / "doctrine"
+                    / "evaluations"
+                    / "gold"
+                    / "queue.json"
+                ).exists()
+            )
 
     def test_machine_identity_cannot_create_a_human_disposition(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:

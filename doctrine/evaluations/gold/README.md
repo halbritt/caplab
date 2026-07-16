@@ -19,13 +19,15 @@ Source-support, graph-edge, and support-relationship candidates are marked for d
 Regenerate candidate metadata after a source, graph, role, risk, or authority contract changes:
 
 ```bash
-python3 doctrine/tools/build_gold_queue.py --write
+python3 doctrine/tools/build_gold_queue.py \
+  --pincite-root "$PINCITE_RELEASE_HOME" --write
 ```
 
 Check schemas, human-disposition constraints, coverage, input fingerprints, and deterministic drift:
 
 ```bash
-python3 doctrine/tools/build_gold_queue.py --check
+python3 doctrine/tools/build_gold_queue.py \
+  --pincite-root "$PINCITE_RELEASE_HOME" --check
 ```
 
 `--write` may change `queue.json` and `coverage.json`. It preserves an existing `human-dispositions.json` byte-for-byte and projects only disposition references and status into the generated queue.

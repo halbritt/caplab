@@ -1,229 +1,95 @@
-# Books
+# Agent Capability Lab
 
-This repository converts PDF and EPUB books from `sources/` into a semantically structured Markdown corpus. It also contains provenance-aware doctrine contracts and evaluation fixtures for turning the corpus into bounded engineering guidance.
+Agent Capability Lab (CAPLAB) is a behavioral capability measurement and
+model-development laboratory. It preserves study designs, evaluation
+instruments, adjudication records, checked-in aggregates, and reviewer-facing
+projections without collapsing mechanical observations into scientific
+inferences or owner decisions.
 
-The source books remain unchanged under [`sources/`](sources/). Generated books live under [`books/`](books/README.md), one directory per source.
+CAPLAB does not own the engineering-doctrine corpus or its retrieval runtime.
+Those are supplied by the separately versioned
+[`halbritt/pincite`](https://github.com/halbritt/pincite) repository through
+the exact dependency recorded in [`pincite-dependency.json`](pincite-dependency.json).
 
 ## Repository map
 
 | Path | Contents |
 |---|---|
-| [`sources/`](sources/) | Original PDF and EPUB inputs, preserved unchanged |
-| [`books/`](books/README.md) | Generated chapter Markdown, assets, source metadata, provenance, and validation records |
-| [`doctrine/bibliography.json`](doctrine/bibliography.json) | Canonical titles, editions, creator roles, and field-level evidence paths |
-| [`doctrine/README.md`](doctrine/README.md) | Doctrinal library, semantic graph, routing, procedures, conflicts, and release gates |
-| [`doctrine/OPERATIONALIZATION.md`](doctrine/OPERATIONALIZATION.md) | Sequence for building evaluation, retrieval, skills, and decision receipts around the corpus |
-| [`doctrine/CONVERGED_RECOMMENDATION.md`](doctrine/CONVERGED_RECOMMENDATION.md) | Converged recommendation that preceded the operational design |
-| [`doctrine/runtime/`](doctrine/runtime/README.md) | Runtime schemas and the generated SQLite doctrine read model |
-| [`doctrine/tools/`](doctrine/tools/) | Doctrine validation, index and executable builds, packet assembly, benchmarking, graph projection, and evaluation tooling |
-| [`doctrine/evaluations/`](doctrine/evaluations/README.md) | Replayable authority canaries, dependency-impact fixtures, entailment screening, and a pending-human gold-calibration queue |
-| [`docs/domain/`](docs/domain/README.md) | Repository domain language, candidate boundaries, and context map |
-| [`docs/decisions/`](docs/decisions/README.md) | Architecture decision records, lifecycle rules, and template |
-| [`docs/product/`](docs/product/README.md) | Repository-specific product specifications, implementation plans, templates, and lifecycle index |
-| [`ubiquitous_language.md`](ubiquitous_language.md) | Canonical assertion, authority, corpus, doctrine, evaluation, and decision vocabulary |
-| [`AGENTS.md`](AGENTS.md) | Repository instructions for coding agents |
-| [`scripts/convert-books`](scripts/convert-books) | `sources/` book discovery and conversion command |
-| [`tests/`](tests/) | Conversion-pipeline and doctrine-scaffolding tests |
-| [`CHANGELOG.md`](CHANGELOG.md) | Notable repository changes |
+| [`caplab/`](caplab/) | CAPLAB runtime code, Pincite dependency verification, and the study-results dashboard |
+| [`docs/product/`](docs/product/README.md) | Product specifications, plans, and capability cards |
+| [`docs/agent-judgment/`](docs/agent-judgment/README.md) | Evaluation operation and extension guidance |
+| [`doctrine/evaluations/`](doctrine/evaluations/README.md) | Evaluation contracts, fixtures, adjudication records, and preserved experiment reports |
+| [`doctrine/tools/`](doctrine/tools/) | CAPLAB-owned evaluation, projection, replay, and adjudication tools |
+| [`docs/decisions/`](docs/decisions/README.md) | Architecture decisions and their authority boundaries |
+| [`docs/domain/`](docs/domain/README.md) | CAPLAB domain language and context map |
+| [`tests/`](tests/) | Hermetic CAPLAB tests and pinned-Pincite integration checks |
+| [`ubiquitous_language.md`](ubiquitous_language.md) | Canonical assertion, evaluation, and decision vocabulary |
 
-## Source books
+The retained `doctrine/evaluations/` path is a stable historical artifact
+namespace, not a claim that CAPLAB owns Pincite doctrine. Sealed Harbor records
+may also retain old `books` repository paths. Those bytes are experiment
+provenance and are not live repository configuration.
 
-Only supported files located directly under `sources/` are ingested. Files in the repository root and nested source directories are not searched.
+## Pincite dependency
 
-<!-- BEGIN GENERATED SOURCE CATALOG -->
-The entries below are canonical bibliographic presentation metadata from [`doctrine/bibliography.json`](doctrine/bibliography.json). Per-book `metadata.json` remains legacy extraction evidence and is noncanonical.
+The default validated release location is:
 
-| Book | Edition | Creators | Source file |
-|---|---|---|---|
-| 100 Go Mistakes and How to Avoid Them | First edition | Teiva Harsanyi (author) | `sources/100-Go-Mistakes-and-How-to-Avoid-Them-(Teiva-Harsanyi)_bibis.ir.pdf` |
-| A Philosophy of Software Design | Second edition | John K. Ousterhout (author) | `sources/dokumen.pub_a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217.epub` |
-| API Design Patterns (Chapter 3 extract: Naming) | First edition | JJ Geewax (author) | `sources/bookshelf_ch_three_API_Design_Patterns.pdf` |
-| Architecture Patterns with Python: Enabling Test-Driven Development, Domain-Driven Design, and Event-Driven Microservices | First edition | Harry Percival (author); Bob Gregory (author) | `sources/Architecture-Patterns-with-Python.pdf` |
-| Clean Architecture: A Craftsman's Guide to Software Structure and Design | First edition | Robert C. Martin (author); James Grenning (contributor); Simon Brown (contributor) | `sources/Clean Architecture A Craftsman Guide to Software Structure and Design.pdf` |
-| Code Complete: A Practical Handbook of Software Construction | Second edition | Steve McConnell (author) | `sources/code-complete-2nd-edition-v413hav.pdf` |
-| Concurrency in Go: Tools and Techniques for Developers | First edition | Katherine Cox-Buday (author) | `sources/Concurrency in Go.pdf` |
-| Designing Data-Intensive Applications: The Big Ideas Behind Reliable, Scalable, and Maintainable Systems | Second edition | Martin Kleppmann (author); Chris Riccomini (author) | `sources/dokumen.pub_designing-data-intensive-applications-the-big-ideas-behind-reliable-scalable-and-maintainable-systems-2.pdf` |
-| Domain-Driven Design: Tackling Complexity in the Heart of Software | First edition | Eric Evans (author); Martin Fowler (foreword-author) | `sources/Domain Driven Design Tackling Complexity in the Heart of Software - Eric Evans.pdf` |
-| Efficient Go: Data-Driven Performance Optimization | First edition | Bartłomiej Płotka (author) | `sources/Efficient Go Data-Driven Performance Optimization (Bartlomiej Plotka) (Z-Library).pdf` |
-| Fluent Python | Second edition | Luciano Ramalho (author) | `sources/Fluent.Python.2nd.Edition.(z-lib.org).pdf` |
-| Fundamentals of Software Architecture: An Engineering Approach | First edition | Mark Richards (author); Neal Ford (author) | `sources/OReilly.Fundamentals.of.Software.Architecture.2020.1.pdf` |
-| Refactoring: Improving the Design of Existing Code | First edition | Martin Fowler (author); Kent Beck (contributor); John Brant (contributor); William Opdyke (contributor); Don Roberts (contributor) | `sources/Refactoring  Improving the Design of Existing Code.pdf` |
-| Release It!: Design and Deploy Production-Ready Software | Second edition | Michael T. Nygard (author) | `sources/Release It!_ Design and Deploy Production-Ready Software ( PDFDrive ).pdf` |
-| Software Design X-Rays: Fix Technical Debt with Behavioral Code Analysis | First edition | Adam Tornhill (author) | `sources/dokumen.pub_software-design-x-rays-fix-technical-debt-with-behavioral-code-analysis-1nbsped-1680502727-978-1680502725.pdf` |
-| Software Engineering at Google: Lessons Learned from Programming Over Time | First edition | Titus Winters (author); Tom Manshreck (author); Hyrum Wright (author) | `sources/dokumen.pub_software-engineering-at-google-lessons-learned-from-programming-over-time-1nbsped-1492082791-9781492082798.pdf` |
-| The Pragmatic Programmer: From Journeyman to Master | First edition | Andrew Hunt (author); David Thomas (author) | `sources/the-pragmatic-programmer.pdf` |
-| Unit Testing: Principles, Practices, and Patterns | First edition | Vladimir Khorikov (author) | `sources/Manning.Unit.Testing.Principles.Practices.and.Patterns.2020.1.pdf` |
-| Working Effectively with Legacy Code | First edition | Michael C. Feathers (author) | `sources/[PROGRAMMING][Working Effectively. with Legacy Code].pdf` |
-<!-- END GENERATED SOURCE CATALOG -->
+```text
+~/.local/share/pincite/release
+```
 
-The generated [book index](books/README.md) uses the canonical bibliography and reports conversion completion, integrity verification, content quality, human-review status, severity counts, cited-chapter impact, and complete warning disclosure for each source.
+Override it with `PINCITE_RELEASE_HOME`. CAPLAB fails closed unless that
+checkout is at the exact pinned commit and its Pincite retrieval-state gate
+reports the expected corpus and doctrine identities:
 
-## Conversion prerequisites
+```bash
+make pincite-check
+```
 
-Install the pinned Python dependency ranges in [`requirements.txt`](requirements.txt):
+The dependency manifest pins the repository, release tag, commit, corpus ID,
+and doctrine ID. Updating it is an explicit compatibility decision, not an
+incidental consequence of a newer Pincite checkout.
+
+## Checks
+
+Install the small Python dependency set:
 
 ```bash
 python3 -m pip install -r requirements.txt
 ```
 
-EPUB conversion requires Pandoc on `PATH`; `BOOKS_PANDOC` selects another executable, and `BOOKS_PANDOC_VERSION` supplies an explicit version when automatic detection is unsuitable.
-
-PDF conversion requires the configured Marker launcher and the local `pdf-safe-ingest` x-ray. A `SUSPECT` or `DANGEROUS` verdict also requires Bubblewrap, Ghostscript, and MuPDF's `mutool` for the sandboxed raster CDR path. The default primary launcher targets the SSH-reachable `peecee` GPU worker and uses the local launcher only after an infrastructure-class failure. `BOOKS_MARKER_PEECEE` and `BOOKS_MARKER_LOCAL` override those launcher commands. `make books` supplies the repository-pinned Marker version; direct script invocations must set `BOOKS_MARKER_VERSION` to give the remote converter a reusable cache identity.
-
-## Convert and validate books
-
-Convert every supported source:
+Run the hermetic CAPLAB suite:
 
 ```bash
-make books
+make test
 ```
 
-Every PDF is statically x-rayed before conversion. Source xray, rasterization,
-MuPDF normalization, and derivative xray plus structural validation run in
-separate least-privilege networkless Bubblewrap sandboxes with bounded command
-output. A source classified `SUSPECT` or `DANGEROUS` is rasterized into a
-pixel-only derivative; only a derivative matching the canonical raster profile
-and post-CDR gate reaches Marker. The original source stays unchanged, and
-`source.json` records both identities, every airlock/CDR command, and the exact
-Marker input. The original verdict remains an explicit validation warning.
-PDFs then use Marker on the `peecee` GPU worker, with the defined local Marker
-path available only as an infrastructure fallback. EPUBs use Pandoc. The
-pipeline extracts assets, identifies logical chapter boundaries, and writes
-normalized Markdown plus metadata and validation records.
-
-Convert one exact source without rebuilding the repository index:
-
-```bash
-BOOKS_MARKER_VERSION='marker-pdf 1.10.2' \
-  ./scripts/convert-books --book 'Refactoring  Improving the Design of Existing Code.pdf'
-```
-
-The exceptional `--reuse-policy-compatible-raw-cache` migration flag is
-fail-closed. It accepts only a source-, cache-, marker-input-, fingerprint-, and
-identity-diff-pinned authorization for a validated, fallback-free peecee cache.
-The existing Marker input is revalidated under the current sandbox policy
-before reuse. CLEAN original bytes and sandboxed CDR derivatives of SUSPECT or
-DANGEROUS sources are eligible; SUSPECT original-byte caches are rejected. The
-authorization, exact differences, original provenance, and current
-revalidation are recorded in `source.json`.
-
-Regenerate the root source catalog and `books/README.md` from existing records without invoking PDF or EPUB converters:
-
-```bash
-./scripts/convert-books --catalog-only
-```
-
-Bypass validated raw-converter caches when a genuinely fresh conversion is required:
-
-```bash
-./scripts/convert-books --fresh-converter
-```
-
-`--fresh-converter` cannot be combined with the read-only `--check` mode.
-
-Run tests and validate generated books without invoking converters or writing output:
+Run the complete local gate against the pinned Pincite release:
 
 ```bash
 make check
 ```
 
-Each generated book has this shape:
+GitHub Actions runs the hermetic suite. The full integration gate is local
+because the Pincite repository and release checkout are private dependencies.
 
-```text
-books/<book-slug>/
-  README.md
-  metadata.json
-  source.json
-  validation.json
-  chapters/
-  assets/
-```
+## Evaluation and dashboard entrypoints
 
-`source.json` includes the repository-relative source path, content identity, and conversion provenance. Checked-in records that predate raw-converter identity are reported as `legacy-unverified`; they remain readable but cannot authorize raw-cache reuse. Generated file manifests protect existing output: conversion refuses to overwrite unexpected edits unless `--force` is supplied explicitly.
+Start with [`docs/agent-judgment/README.md`](docs/agent-judgment/README.md) for
+the behavioral evaluation harness and
+[`caplab/dashboard/README.md`](caplab/dashboard/README.md) for the Study 001
+review dashboard.
 
-Canonical titles, editions, and creator roles live in [`doctrine/bibliography.json`](doctrine/bibliography.json), with evidence paths and direct-versus-derived support recorded per field. Existing per-book `metadata.json` files remain preserved legacy extraction evidence; they are explicitly noncanonical and have not been silently repaired.
+Machine screening, mechanical grading, and deterministic projections are
+observations of instrument output. They are not human adjudication,
+verification, acceptance, or authority to promote a broader capability claim.
 
 ## Assertion discipline
 
-Repository analysis must follow [`ubiquitous_language.md`](ubiquitous_language.md). In particular:
+Repository analysis follows [`ubiquitous_language.md`](ubiquitous_language.md):
 
-- observations require inspectable evidence;
-- inferences retain uncertainty and credible rivals;
-- recommendations include alternatives and tradeoffs;
-- decisions identify an owner and authority boundary;
-- authorization, execution, verification, and acceptance remain separate states.
-
-The structural validator checks these fields and predecessor relationships:
-
-```bash
-python3 doctrine/tools/validate_assertions.py \
-  doctrine/evaluations/fixtures/authority-withdrawn/result.json
-```
-
-Structural validity does not prove that a natural-language assertion is true or honestly labeled. Source entailment remains an evaluation concern.
-
-## Doctrine evaluations
-
-The authority canaries hold evidence constant while changing authorization. The authorized fixture may reach decision and authorization; the withdrawn fixture must stop at recommendation.
-
-Replay the withdrawn-authority case:
-
-```bash
-python3 doctrine/tools/run_scenario.py \
-  doctrine/evaluations/fixtures/authority-withdrawn/scenario.json \
-  doctrine/evaluations/fixtures/authority-withdrawn/result.json
-```
-
-Calculate the rebuild and reverification impact of a changed manifest node:
-
-```bash
-python3 doctrine/tools/dependency_impact.py \
-  doctrine/evaluations/fixtures/dependency-impact/manifest.json \
-  --changed source-a
-```
-
-These fixtures are synthetic contract tests. They do not establish retrieval or
-engineering-judgment quality; exact source-locator resolution is enforced by
-the doctrine release gate, while human calibration remains separate.
-
-Doctrine runtime builds require Go 1.23 or newer on `PATH`; the build uses the
-installed local toolchain. Build the doctrine read model and static packet
-assembler:
-
-```bash
-make doctrine-runtime
-```
-
-Assemble a deterministic evidence packet (see
-[`doctrine/README.md`](doctrine/README.md) for interpretation and fallback
-notes):
-
-```bash
-doctrine/bin/assemble-packet \
-  --role legacy-code-agent --task legacy-change \
-  --question "Can we safely extract the billing calculation?" \
-  --signal "no tests around target" --render markdown
-```
-
-The executable verifies the checked-in SQLite index and authoritative YAML
-fingerprint before retrieval. `make doctrine-benchmark` compares it with the
-retained Python oracle and enforces the BOOKS-1 parity and latency gates.
-
-Screen claim-to-source entailment with the local model (results under [`doctrine/evaluations/entailment/`](doctrine/evaluations/entailment/README.md)):
-
-```bash
-python3 doctrine/tools/entailment_eval.py --limit 12
-python3 doctrine/tools/entailment_eval.py --summarize
-```
-
-Entailment verdicts are observations of model output supporting inferences about entailment. They queue records for human audit; they are not verification or acceptance, and they never modify doctrine.
-
-## Integrity boundaries
-
-- Source PDFs and EPUBs under `sources/` are inputs and are not rewritten by conversion.
-- Generated corpus files retain source hashes, converter provenance, and validation results.
-- Unexpected manual changes to generated output stop regeneration unless replacement is explicitly forced.
-- Corpus doctrine may support an observation, inference, or recommendation; it cannot create authorization.
-- Evaluation outcomes and usage traces must not rewrite source doctrine silently.
-
-The tracked `out/Refactoring/` directory is a legacy raw Marker conversion. The corpus pipeline does not use it as an intermediate.
+- observations retain inspectable evidence and provenance;
+- inferences state uncertainty and credible rivals;
+- recommendations remain distinct from decisions;
+- decisions name an owner and authority source; and
+- authorization, execution, verification, and acceptance remain separate.

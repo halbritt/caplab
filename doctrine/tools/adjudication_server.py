@@ -631,8 +631,11 @@ def disposition_verdicts(root: Path) -> list[str]:
     )
 
 
-def build_state(root: Path) -> dict[str, Any]:
-    context = build_context(root)
+def build_state(
+    root: Path, *, pincite_root: Path | None = None
+) -> dict[str, Any]:
+    source_root = pincite_root or root
+    context = build_context(source_root)
     queue_document = load_json_mapping(root / GOLD_RELATIVE / "queue.json")
     dispositions_document = load_json_mapping(
         root / GOLD_RELATIVE / "human-dispositions.json"
@@ -659,7 +662,7 @@ def build_state(root: Path) -> dict[str, Any]:
         candidate = record.get("candidate", {})
         target = candidate.get("target", {})
         references = [
-            resolve_reference(root, context, reference)
+            resolve_reference(source_root, context, reference)
             for reference in target.get("references", [])
         ]
         formulation_ids = [
@@ -718,7 +721,9 @@ def build_state(root: Path) -> dict[str, Any]:
             stale_hidden += 1
             continue
         flag = dict(result)
-        flag["section"] = resolve_section(root, str(result.get("locator", "")))
+        flag["section"] = resolve_section(
+            source_root, str(result.get("locator", ""))
+        )
         flag["relationship_meaning"] = entailment_eval.RELATIONSHIP_MEANINGS.get(
             str(result.get("relationship", "")),
             "unregistered relationship type",
@@ -956,9 +961,11 @@ class AdjudicationServer(ThreadingHTTPServer):
         *,
         repo_root: Path,
         builder_cmd: list[str],
+        pincite_root: Path | None = None,
     ) -> None:
         super().__init__(address, handler)
         self.repo_root = repo_root
+        self.pincite_root = pincite_root or repo_root
         self.builder_cmd = builder_cmd
         self.mutation_lock = MutationLock(
             repo_root / GOLD_RELATIVE / ".adjudication.lock"
@@ -1009,7 +1016,13 @@ class AdjudicationHandler(BaseHTTPRequestHandler):
             return
         if path == "/api/state":
             try:
-                self._send_json(200, build_state(self.server.repo_root))
+                self._send_json(
+                    200,
+                    build_state(
+                        self.server.repo_root,
+                        pincite_root=self.server.pincite_root,
+                    ),
+                )
             except (OSError, ValueError, json.JSONDecodeError, yaml.YAMLError) as err:
                 self._send_json(500, {"error": f"failed to build state: {err}"})
             return
@@ -1067,8 +1080,15 @@ class AdjudicationHandler(BaseHTTPRequestHandler):
         )
 
 
-def default_builder_cmd(root: Path) -> list[str]:
-    return ["python3", str(root / "doctrine/tools/build_gold_queue.py")]
+def default_builder_cmd(root: Path, pincite_root: Path) -> list[str]:
+    return [
+        "python3",
+        str(root / "doctrine/tools/build_gold_queue.py"),
+        "--root",
+        str(root),
+        "--pincite-root",
+        str(pincite_root),
+    ]
 
 
 def parse_arguments(argv: list[str]) -> argparse.Namespace:
@@ -1077,6 +1097,12 @@ def parse_arguments(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--bind", default=DEFAULT_BIND)
     parser.add_argument(
         "--repo-root", type=Path, default=DEFAULT_ROOT, help="repository root"
+    )
+    parser.add_argument(
+        "--pincite-root",
+        type=Path,
+        default=None,
+        help="Pincite root containing doctrine and corpus evidence",
     )
     parser.add_argument(
         "--builder-cmd",
@@ -1089,16 +1115,18 @@ def parse_arguments(argv: list[str]) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> int:
     arguments = parse_arguments(argv if argv is not None else sys.argv[1:])
     repo_root = arguments.repo_root.resolve()
+    pincite_root = (arguments.pincite_root or repo_root).resolve()
     builder_cmd = (
         shlex.split(arguments.builder_cmd)
         if arguments.builder_cmd
-        else default_builder_cmd(repo_root)
+        else default_builder_cmd(repo_root, pincite_root)
     )
     server = AdjudicationServer(
         (arguments.bind, arguments.port),
         AdjudicationHandler,
         repo_root=repo_root,
         builder_cmd=builder_cmd,
+        pincite_root=pincite_root,
     )
     host, port = server.server_address[:2]
     print(

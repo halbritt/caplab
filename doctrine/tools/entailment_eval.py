@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Model-judged screening of claim-to-source entailment for doctrine concepts.
 
-For every ``source_support`` entry in ``doctrine/concepts/*.yaml`` this harness
+For every ``source_support`` entry in the pinned Pincite
+``doctrine/concepts/*.yaml`` this harness
 resolves the cited locator to its chapter section, asks a local
 OpenAI-compatible model whether the section supports the entry's claimed
 contribution, and appends a provenance-carrying record to a JSONL results file.
@@ -35,8 +36,11 @@ import yaml
 _TOOLS_DIR = str(Path(__file__).resolve().parent)
 if _TOOLS_DIR not in sys.path:
     sys.path.insert(0, _TOOLS_DIR)
+_REPOSITORY_DIR = str(Path(__file__).resolve().parents[2])
+if _REPOSITORY_DIR not in sys.path:
+    sys.path.insert(0, _REPOSITORY_DIR)
 
-from validate_doctrine import parse_heading_selector, plain_heading  # noqa: E402
+from caplab.locators import parse_heading_selector, plain_heading  # noqa: E402
 
 SCHEMA_VERSION = "entailment-eval/2"
 PROMPT_VERSION = "entailment-prompt/5"
@@ -736,7 +740,13 @@ def main(argv: list[str] | None = None) -> int:
         "--repo-root",
         type=Path,
         default=None,
-        help="repository root override (mainly for tests)",
+        help="CAPLAB repository root for screening outputs",
+    )
+    parser.add_argument(
+        "--pincite-root",
+        type=Path,
+        default=None,
+        help="Pincite root containing doctrine concepts, corpus, and section maps",
     )
     parser.add_argument("--max-tokens", type=int, default=DEFAULT_MAX_TOKENS)
     parser.add_argument(
@@ -757,6 +767,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     repo_root = (args.repo_root or DEFAULT_REPOSITORY).resolve()
+    pincite_root = (args.pincite_root or repo_root).resolve()
     results_path = (
         args.results
         or repo_root / "doctrine" / "evaluations" / "entailment" / "results.jsonl"
@@ -764,7 +775,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.summarize:
         return summarize(results_path, results_path.parent / "summary.md")
 
-    pairs = enumerate_pairs(repo_root / "doctrine" / "concepts")
+    pairs = enumerate_pairs(pincite_root / "doctrine" / "concepts")
     if args.concept:
         pairs = [pair for pair in pairs if pair["concept_id"] in set(args.concept)]
     if args.source:
@@ -800,7 +811,7 @@ def main(argv: list[str] | None = None) -> int:
     results_handle = None
     try:
         for pair in pairs:
-            resolution = resolve_locator(repo_root, pair["locator"])
+            resolution = resolve_locator(pincite_root, pair["locator"])
             sampler_overrides: dict[str, object] = {}
             key = record_key(
                 concept_id=pair["concept_id"],

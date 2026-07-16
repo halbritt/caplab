@@ -44,15 +44,15 @@ the hygiene gate:
 python3 doctrine/tools/evaluate_doctrine_skill.py bake-surface \
   --task doctrine/evaluations/robustness/harbor/tasks/checkout-retries-v2 \
   --task doctrine/evaluations/robustness/harbor/tasks/checkout-retries-m1 \
+  --corpus-root "$PINCITE_RELEASE_HOME" \
   --check   # verify the pinned manifest; omit only when re-pinning is intended
 
 bash doctrine/evaluations/robustness/harbor/tasks/scripts/check-pair-hygiene.sh
 ```
 
-Bake from a clean snapshot when the working tree carries other lanes' work:
-`git worktree add --detach /tmp/snap HEAD`, pass `--corpus-root /tmp/snap`,
-then `git worktree remove /tmp/snap`. The manifest pins content identity to
-that commit.
+The manifest pins Pincite content identity to the validated release. Use a
+clean Pincite worktree at the same pinned commit only when the installed
+release is unavailable.
 
 The reference-solution matrix must match each task's band table exactly
 after any verifier change:

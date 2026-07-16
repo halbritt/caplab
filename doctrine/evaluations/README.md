@@ -1,4 +1,4 @@
-# Doctrine evaluations
+# CAPLAB doctrine evaluations
 
 This directory contains deterministic fixtures and calibration scaffolding for
 testing evidence handling, retrieval contracts, and assertion boundaries.
@@ -27,8 +27,8 @@ The runner checks the scenario's required and forbidden retrieval IDs and assert
 The `dependency-impact` fixture is synthetic. It proves that a changed source rebuilds its dependent chapter, concept, and prompt, re-verifies the associated evaluation, and leaves an unrelated source branch untouched.
 
 These fixtures do not establish natural-language entailment or retrieval
-quality. Exact locator resolution is enforced separately by the doctrine release
-gate; engineering-judgment quality still requires graph-backed,
+quality. Exact locator resolution is supplied by the pinned Pincite release;
+engineering-judgment quality still requires graph-backed,
 human-adjudicated scenarios before the retriever can be accepted.
 
 The [`entailment/`](entailment/README.md) subdirectory holds a separate,

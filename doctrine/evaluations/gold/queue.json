@@ -10,7 +10,7 @@
       "doctrine/sources.yaml": "7f7f8ea331a56e4ffaacd3c31773eec46966a76ab52111291199ac5cf440fae0"
     },
     "tool": "doctrine/tools/build_gold_queue.py",
-    "tool_sha256": "373dbe188b6f4e36b77883b290e0c59f7a36da65421a4779f3bea4774d8b306c"
+    "tool_sha256": "948ef9ed8534593d85e302d0ed75e1961a6918dc4fe73e62084dc75adb3132c7"
   },
   "records": [
     {

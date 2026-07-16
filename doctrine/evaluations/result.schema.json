@@ -14,12 +14,14 @@
     },
     "evidence": {
       "type": "array",
-      "items": {"$ref": "../runtime/evidence-record.schema.json"}
+      "items": {
+        "$ref": "https://pincite.local/doctrine/runtime/evidence-record.schema.json"
+      }
     },
     "assertions": {
       "type": "array",
       "items": {
-        "$ref": "../runtime/assertion-artifact.schema.json#/$defs/assertion"
+        "$ref": "https://pincite.local/doctrine/runtime/assertion-artifact.schema.json#/$defs/assertion"
       }
     }
   }

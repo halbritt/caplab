@@ -361,6 +361,37 @@ class AccessGuardTests(unittest.TestCase):
             )
 
 
+class SeparateRootTests(unittest.TestCase):
+    def test_state_reads_evaluations_from_caplab_and_doctrine_from_pincite(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            workspace = Path(temporary_directory)
+            pincite_root = workspace / "pincite"
+            caplab_root = workspace / "caplab"
+            build_fixture(pincite_root)
+            shutil.copytree(
+                pincite_root / "doctrine" / "evaluations",
+                caplab_root / "doctrine" / "evaluations",
+            )
+
+            state = adjudication_server.build_state(
+                caplab_root, pincite_root=pincite_root
+            )
+
+            source_candidate = next(
+                record
+                for record in state["queue"]
+                if record["id"] == "gold-source-src-mini"
+            )
+            references = {
+                reference["kind"]: reference
+                for reference in source_candidate["references"]
+            }
+            self.assertEqual("Mini Book", references["source"]["record"]["title"])
+            self.assertIn(
+                "Deep modules", references["formulation"]["section"]["text"]
+            )
+
+
 class ServerTests(unittest.TestCase):
     def setUp(self) -> None:
         self._tmp = tempfile.TemporaryDirectory()

@@ -14,7 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 HARNESS = ROOT / "doctrine/tools/evaluate_doctrine_skill.py"
 CASE = ROOT / "doctrine/evaluations/robustness/skill-cases/authority-withdrawal.json"
-DEPLOYED_SKILL = os.environ.get("BOOKS_DOCTRINE_SKILL")
+DEPLOYED_SKILL = os.environ.get("PINCITE_DOCTRINE_SKILL")
 
 
 def make_fixture_corpus(root: Path, harness) -> Path:
@@ -102,7 +102,7 @@ class DoctrineSkillEnvelopeTests(unittest.TestCase):
 class DoctrineSkillDeploymentIntegrationTests(unittest.TestCase):
     @unittest.skipUnless(
         DEPLOYED_SKILL,
-        "set BOOKS_DOCTRINE_SKILL to run the deployed-skill integration check",
+        "set PINCITE_DOCTRINE_SKILL to run the deployed-skill integration check",
     )
     def test_opted_in_deployed_skill_compiles(self):
         skill = Path(DEPLOYED_SKILL)
@@ -492,6 +492,11 @@ class DoctrineSkillHarborProjectionTests(unittest.TestCase):
                         "environment/"
                     ):
                         continue
+                    corpus_relative = relative.removeprefix(
+                        "environment/corpus/"
+                    )
+                    if corpus_relative in harness.OPAQUE_PROJECTION_FILES:
+                        continue
                     data = path.read_bytes()
                     for marker in harness.ORACLE_MARKERS:
                         self.assertNotIn(
@@ -507,8 +512,11 @@ class DoctrineSkillHarborProjectionTests(unittest.TestCase):
             stimulus = json.loads(CASE.read_text(encoding="utf-8"))["stimulus"]
             process = subprocess.run(
                 [
-                    sys.executable,
-                    str(corpus / "doctrine/tools/assemble_packet.py"),
+                    str(corpus / "doctrine/bin/pincite"),
+                    "--index",
+                    str(corpus / "doctrine/runtime/doctrine-index.sqlite3"),
+                    "--doctrine-root",
+                    str(corpus / "doctrine"),
                     "--role",
                     stimulus["role"],
                     "--task",
@@ -587,7 +595,7 @@ class DoctrineSkillBakeSurfaceTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             base = Path(directory)
             corpus = make_fixture_corpus(base / "corpus-src", harness)
-            copy_line = "COPY corpus/ /home/halbritt/git/books/\n"
+            copy_line = "COPY corpus/ /home/halbritt/git/caplab/\n"
             first = make_fixture_task(base, "one", copy_line)
             second = make_fixture_task(base, "two", copy_line)
             harness.bake_surface([first, second], corpus_root=corpus)

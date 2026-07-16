@@ -1,5 +1,3 @@
-.book-work/
-doctrine/bin/
 __pycache__/
 *.py[cod]
 .adjudication.lock

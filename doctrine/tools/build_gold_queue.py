@@ -512,14 +512,21 @@ def build_coverage(
     }
 
 
-def input_fingerprints(root: Path, dispositions_path: Path) -> dict[str, str]:
-    paths = [root / relative for relative in INPUT_PATHS]
-    paths.append(dispositions_path)
-    return {path.relative_to(root).as_posix(): sha256_file(path) for path in paths}
+def input_fingerprints(
+    pincite_root: Path, dispositions_path: Path
+) -> dict[str, str]:
+    fingerprints = {
+        relative.as_posix(): sha256_file(pincite_root / relative)
+        for relative in INPUT_PATHS
+    }
+    fingerprints[(GOLD_RELATIVE / dispositions_path.name).as_posix()] = sha256_file(
+        dispositions_path
+    )
+    return fingerprints
 
 
 def expected_documents(
-    root: Path,
+    pincite_root: Path,
     inputs: dict[str, dict[str, Any]],
     disposition_ids: set[str],
     dispositions_path: Path,
@@ -538,7 +545,7 @@ def expected_documents(
             "tool": "doctrine/tools/build_gold_queue.py",
             "tool_sha256": sha256_file(Path(__file__).resolve()),
             "algorithm_version": "gold-queue-stratification/1",
-            "input_sha256": input_fingerprints(root, dispositions_path),
+            "input_sha256": input_fingerprints(pincite_root, dispositions_path),
         },
         "records": records,
     }
@@ -557,7 +564,7 @@ def check_static_files(gold: Path) -> tuple[Draft202012Validator, Draft202012Val
     return schema_validator(queue_schema), schema_validator(dispositions_schema)
 
 
-def run(root: Path, *, write: bool) -> None:
+def run(root: Path, *, pincite_root: Path, write: bool) -> None:
     gold = root / GOLD_RELATIVE
     if write:
         gold.mkdir(parents=True, exist_ok=True)
@@ -579,9 +586,9 @@ def run(root: Path, *, write: bool) -> None:
         )
     dispositions = load_json_mapping(dispositions_path)
     disposition_ids = validate_dispositions(dispositions, dispositions_validator)
-    inputs = load_inputs(root)
+    inputs = load_inputs(pincite_root)
     queue, coverage = expected_documents(
-        root, inputs, disposition_ids, dispositions_path
+        pincite_root, inputs, disposition_ids, dispositions_path
     )
     validate_instance(queue, queue_validator, "generated queue")
     queue_path = gold / "queue.json"
@@ -621,7 +628,13 @@ def parse_arguments(argv: list[str]) -> argparse.Namespace:
         "--root",
         type=Path,
         default=DEFAULT_ROOT,
-        help="repository root",
+        help="CAPLAB repository root containing evaluation state",
+    )
+    parser.add_argument(
+        "--pincite-root",
+        type=Path,
+        default=None,
+        help="Pincite root containing doctrine inputs; defaults to --root",
     )
     modes = parser.add_mutually_exclusive_group(required=True)
     modes.add_argument(
@@ -636,7 +649,9 @@ def parse_arguments(argv: list[str]) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> int:
     arguments = parse_arguments(argv or sys.argv[1:])
     try:
-        run(arguments.root.resolve(), write=arguments.write)
+        root = arguments.root.resolve()
+        pincite_root = (arguments.pincite_root or root).resolve()
+        run(root, pincite_root=pincite_root, write=arguments.write)
         return 0
     except (
         OSError,

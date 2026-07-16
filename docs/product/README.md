@@ -1,9 +1,9 @@
 # Product specifications and implementation plans
 
-This directory is the repository-native home for proposals that turn the
-corpus and doctrine into products, research instruments, or runtime
-capabilities. These documents are repository-specific. They are not
-source-derived doctrine and must not be cited as corpus evidence.
+This directory is the repository-native home for CAPLAB product proposals,
+research instruments, and runtime capabilities. Pincite corpus and doctrine
+may be versioned inputs, but these documents are repository-specific and must
+not be cited as source-derived doctrine.
 
 Product documents follow the assertion and authority meanings in
 [`ubiquitous_language.md`](../../ubiquitous_language.md):

@@ -39,8 +39,8 @@ or implementation architecture.
   path `ubiquitous_language.md`.
 - The repository had product specifications and implementation plans but no
   ADR index, ADR template, domain index, or context map before this decision.
-- `doctrine/OPERATIONALIZATION.md` already says a decision receipt may feed an
-  ADR, but no repository-native ADR contract existed.
+- The then-repository-local Pincite operationalization document said a decision
+  receipt may feed an ADR, but no repository-native ADR contract existed.
 - The repository owner requested a DDD scaffold with an uppercase
   `UBIQUITOUS_LANGUAGE.md` entrypoint and ADRs on 2026-07-12.
 
@@ -147,7 +147,8 @@ decision in place.
 - [`README.md`](README.md)
 - [`adr-template.md`](adr-template.md)
 - [`../../ubiquitous_language.md`](../../ubiquitous_language.md)
-- [`../../doctrine/runtime/decision-receipt.schema.json`](../../doctrine/runtime/decision-receipt.schema.json)
+- [`../../pincite-dependency.json`](../../pincite-dependency.json), which now
+  identifies the external Pincite decision-receipt contract
 
 ## Status history
 

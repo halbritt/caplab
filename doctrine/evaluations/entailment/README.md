@@ -1,11 +1,9 @@
 # Claim-to-source entailment screening
 
 Model-judged screening of whether each doctrine concept's cited source section
-actually supports its claimed contribution. This covers the first property
-listed under "Complete human evaluations before accepting the retriever" in
-[`../../OPERATIONALIZATION.md`](../../OPERATIONALIZATION.md) — claim-to-source
-entailment — which the deterministic fixtures in the parent directory
-explicitly do not evaluate.
+actually supports its claimed contribution. The concept graph, section maps,
+and corpus are read from the exact Pincite release; results and human audits
+remain under CAPLAB custody.
 
 ## Epistemic framing
 
@@ -21,23 +19,22 @@ Per [`ubiquitous_language.md`](../../../ubiquitous_language.md):
   assumption below.
 - A verdict is **screening, never verification and never acceptance**. It
   ranks citations for human audit. It creates no authority to change anything,
-  and results must never modify doctrine sources, concept records, or the
-  graph. When a flagged citation survives human reading, the finding is
-  recorded here (or as a versioned local finding), not by rewriting doctrine —
-  see "Learn from outcomes without rewriting doctrine" in
-  `OPERATIONALIZATION.md`.
+  and results must never modify Pincite doctrine sources, concept records, or
+  the graph. When a flagged citation survives human reading, the finding is
+  recorded here rather than rewriting Pincite.
 
 ## Method
 
 `doctrine/tools/entailment_eval.py`:
 
 1. Enumerates every `(concept, claim, source_support)` pair from
-   `doctrine/concepts/*.yaml` (deterministic file and record order).
+   `$PINCITE_RELEASE_HOME/doctrine/concepts/*.yaml` (deterministic file and
+   record order).
 2. Resolves each locator (`relative/chapter/path.md :: Exact Converted
    Heading`) to the text under that heading up to the next heading of the same
    or a higher level, using the same heading normalization as
-   `doctrine/tools/validate_doctrine.py`. Where the tracked section maps
-   (`doctrine/section-maps/`, see its README) cover the chapter, headings
+   Pincite's locator contract. Where the Pincite section maps cover the
+   chapter, headings
    classified `embedded` — conversion-flattened callouts, captions, and
    subsection children — do not terminate the section, so the full logical
    section is judged; without a current map the plain level rule applies.
@@ -96,10 +93,13 @@ human audits unread.
 
 ```bash
 # Screen everything not yet judged (resume is the default):
-python3 doctrine/tools/entailment_eval.py
+python3 doctrine/tools/entailment_eval.py \
+  --pincite-root "$PINCITE_RELEASE_HOME"
 
 # Bounded pilot filtered by source or concept:
-python3 doctrine/tools/entailment_eval.py --source SRC-APOSD --limit 4
+python3 doctrine/tools/entailment_eval.py \
+  --pincite-root "$PINCITE_RELEASE_HOME" \
+  --source SRC-APOSD --limit 4
 
 # Enumerate, resolve, and build prompts without model calls:
 python3 doctrine/tools/entailment_eval.py --dry-run

@@ -1,56 +1,48 @@
 PYTHON ?= python3
-GO ?= go
-MARKER_VERSION ?= marker-pdf 1.10.2
-DOCTRINE_ASSEMBLER ?= doctrine/bin/assemble-packet
-DOCTRINE_INDEX ?= doctrine/runtime/doctrine-index.sqlite3
-DOCTRINE_GO_SOURCES := $(wildcard doctrine/cmd/assemble-packet/*.go) \
-	$(wildcard doctrine/internal/packet/*.go) doctrine/go.mod doctrine/go.sum \
-	doctrine/tools/build_packet_assembler.py
+PINCITE_RELEASE_HOME ?= $(HOME)/.local/share/pincite/release
 
-.PHONY: books books-check check doctrine-assembler doctrine-benchmark \
-	doctrine-check doctrine-go-test doctrine-index doctrine-index-check \
-	doctrine-parity doctrine-runtime test
+CAPLAB_TEST_MODULES := \
+	tests.test_adjudication_server \
+	tests.test_authority_contract \
+	tests.test_caplab_dashboard \
+	tests.test_doctrine_scaffolding \
+	tests.test_entailment_eval \
+	tests.test_pincite_dependency \
+	tests.test_run_checkout_activation \
+	tests.test_section_extraction \
+	tests.test_summarize_harbor_trials
 
-books:
-	BOOKS_MARKER_VERSION="$(MARKER_VERSION)" ./scripts/convert-books
+PINCITE_INTEGRATION_TEST_MODULES := \
+	tests.test_doctrine_skill_eval \
+	tests.test_gold_queue_contract \
+	tests.test_robustness_lab \
+	tests.test_section_oracle
 
-books-check:
-	BOOKS_MARKER_VERSION="$(MARKER_VERSION)" ./scripts/convert-books --check
+.PHONY: check gold-check gold-write integration-check pincite-check test
 
 test:
-	$(PYTHON) -m unittest discover -s tests -v
+	$(PYTHON) -m unittest -v $(CAPLAB_TEST_MODULES)
 
-doctrine-index:
-	$(PYTHON) doctrine/tools/build_doctrine_index.py --out "$(DOCTRINE_INDEX)"
+pincite-check:
+	PINCITE_RELEASE_HOME="$(PINCITE_RELEASE_HOME)" \
+		$(PYTHON) -m caplab.pincite \
+		--repo-root . \
+		--pincite-home "$(PINCITE_RELEASE_HOME)"
 
-doctrine-index-check:
-	$(PYTHON) doctrine/tools/build_doctrine_index.py --out "$(DOCTRINE_INDEX)" --check
+gold-check:
+	$(PYTHON) doctrine/tools/build_gold_queue.py \
+		--root . \
+		--pincite-root "$(PINCITE_RELEASE_HOME)" \
+		--check
 
-doctrine-assembler: $(DOCTRINE_ASSEMBLER)
+gold-write:
+	$(PYTHON) doctrine/tools/build_gold_queue.py \
+		--root . \
+		--pincite-root "$(PINCITE_RELEASE_HOME)" \
+		--write
 
-$(DOCTRINE_ASSEMBLER): $(DOCTRINE_GO_SOURCES)
-	GO="$(GO)" $(PYTHON) doctrine/tools/build_packet_assembler.py --out "$(DOCTRINE_ASSEMBLER)"
+integration-check: pincite-check gold-check
+	PINCITE_RELEASE_HOME="$(PINCITE_RELEASE_HOME)" \
+		$(PYTHON) -m unittest -v $(PINCITE_INTEGRATION_TEST_MODULES)
 
-doctrine-go-test:
-	cd doctrine && CGO_ENABLED=0 GOTOOLCHAIN=local $(GO) test ./...
-
-doctrine-runtime: doctrine-index doctrine-assembler
-
-doctrine-parity:
-	$(PYTHON) -m unittest -v tests.test_go_packet_assembler
-
-doctrine-benchmark: doctrine-runtime
-	$(PYTHON) doctrine/tools/benchmark_assemble_packet.py \
-		--candidate "$(DOCTRINE_ASSEMBLER)" --index "$(DOCTRINE_INDEX)"
-
-doctrine-check:
-	$(PYTHON) doctrine/tools/build_chapter_coverage.py --check
-	$(PYTHON) doctrine/tools/build_gold_queue.py --check
-	$(PYTHON) doctrine/tools/build_routing_index.py --check
-	$(PYTHON) doctrine/tools/build_section_map.py --check
-	$(PYTHON) doctrine/tools/sync_concepts_to_graph.py --check
-	$(PYTHON) doctrine/tools/merge_graph_fragments.py --check
-	$(PYTHON) doctrine/tools/build_doctrine_index.py --out "$(DOCTRINE_INDEX)" --check
-	$(PYTHON) doctrine/tools/validate_doctrine.py
-
-check: test books-check doctrine-check doctrine-go-test
+check: test integration-check

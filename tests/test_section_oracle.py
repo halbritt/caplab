@@ -9,18 +9,25 @@ contained in the freshly extracted section for the flag's locator.
 """
 
 import json
+import os
 import sys
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+PINCITE_ROOT = Path(
+    os.environ.get(
+        "PINCITE_RELEASE_HOME",
+        Path.home() / ".local" / "share" / "pincite" / "release",
+    )
+).expanduser()
 sys.path.insert(0, str(ROOT / "doctrine" / "tools"))
 
 import entailment_eval  # noqa: E402
 
 FRONTIER = ROOT / "doctrine/evaluations/entailment/frontier-review.jsonl"
 RESULTS = ROOT / "doctrine/evaluations/entailment/results.jsonl"
-MAP_DIR = ROOT / "doctrine/section-maps"
+MAP_DIR = PINCITE_ROOT / "doctrine/section-maps"
 
 # The two human-audited artifact flags predate the frontier review; expected
 # phrases were verified against the full chapters during remediation.
@@ -80,7 +87,7 @@ class SectionOracleTests(unittest.TestCase):
         for review in artifacts:
             locator = self.locator_by_key.get(review["key"])
             self.assertIsNotNone(locator, review["concept_id"])
-            resolution = entailment_eval.resolve_locator(ROOT, locator)
+            resolution = entailment_eval.resolve_locator(PINCITE_ROOT, locator)
             self.assertIsNone(resolution.error, locator)
             if not quote_supported(
                 review["evidence_quote"], resolution.section_text or ""
@@ -90,7 +97,7 @@ class SectionOracleTests(unittest.TestCase):
 
     def test_audited_artifact_sections_recovered(self):
         for locator, phrase in AUDIT_ARTIFACT_CASES:
-            resolution = entailment_eval.resolve_locator(ROOT, locator)
+            resolution = entailment_eval.resolve_locator(PINCITE_ROOT, locator)
             self.assertIsNone(resolution.error, locator)
             self.assertTrue(
                 quote_supported(phrase, resolution.section_text or ""),

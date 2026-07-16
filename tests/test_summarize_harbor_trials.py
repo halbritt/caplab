@@ -59,7 +59,7 @@ class SummarizeHarborTrialsTests(unittest.TestCase):
         (trial / "result.json").write_text(
             json.dumps(
                 {
-                    "task_name": "books-doctrine/checkout-retries-m1",
+                    "task_name": "caplab-doctrine/checkout-retries-m1",
                     "trial_name": "checkout-retries-m1__trial",
                     "config": {"agent": {"skills": skills or []}},
                     "agent_info": {

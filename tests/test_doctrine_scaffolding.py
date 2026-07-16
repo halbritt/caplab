@@ -431,20 +431,12 @@ class CheckedInScaffoldingTests(unittest.TestCase):
                 self.assertEqual(0, result.returncode, result.stderr)
 
     def test_portable_contracts_are_versioned_json_schemas(self):
-        schema_paths = sorted((ROOT / "doctrine" / "runtime").glob("*.schema.json"))
-        schema_paths.extend(
-            [
-                ROOT / "doctrine" / "evaluations" / "result.schema.json",
-                ROOT / "doctrine" / "evaluations" / "scenario.schema.json",
-            ]
-        )
+        schema_paths = [
+            ROOT / "doctrine" / "evaluations" / "result.schema.json",
+            ROOT / "doctrine" / "evaluations" / "scenario.schema.json",
+        ]
         self.assertEqual(
             {
-                "assertion-artifact.schema.json",
-                "decision-receipt.schema.json",
-                "dependency-manifest.schema.json",
-                "evidence-packet.schema.json",
-                "evidence-record.schema.json",
                 "result.schema.json",
                 "scenario.schema.json",
             },

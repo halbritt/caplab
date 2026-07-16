@@ -26,7 +26,12 @@
       "type": "object", "additionalProperties": false, "required": ["id", "version", "parameters", "expected_input_validity"],
       "properties": {"id": {"$ref": "#/$defs/id"}, "version": {"type": "integer", "minimum": 1}, "parameters": {"type": "object"}, "expected_input_validity": {"enum": ["valid", "invalid"]}}
     },
-    "evidence": {"type": "array", "items": {"$ref": "../../runtime/evidence-record.schema.json"}},
+    "evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "https://pincite.local/doctrine/runtime/evidence-record.schema.json"
+      }
+    },
     "oracles": {
       "type": "object", "additionalProperties": false, "required": ["clean", "mutant", "pair"],
       "properties": {"clean": {"type": "object"}, "mutant": {"type": "object"}, "pair": {"type": "object"}}

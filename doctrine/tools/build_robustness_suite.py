@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import hashlib
+import os
 from pathlib import Path
 from urllib.parse import urldefrag, urljoin
 
@@ -12,6 +13,12 @@ from jsonschema import Draft202012Validator, FormatChecker, RefResolver
 
 
 ROOT = Path(__file__).resolve().parents[2]
+PINCITE_ROOT = Path(
+    os.environ.get(
+        "PINCITE_RELEASE_HOME",
+        Path.home() / ".local" / "share" / "pincite" / "release",
+    )
+).expanduser()
 SCHEMA_ROOT = ROOT / "doctrine" / "evaluations" / "robustness"
 SCHEMA_PATHS = {
     "operator": SCHEMA_ROOT / "operator.schema.json",
@@ -52,7 +59,9 @@ def _references(value: object):
 def validate_schema_registry() -> None:
     """Validate every P1 schema and prove all non-fragment refs are local."""
     schemas = [_read_object(path) for path in SCHEMA_PATHS.values()]
-    runtime_paths = sorted((ROOT / "doctrine" / "runtime").glob("*.schema.json"))
+    runtime_paths = sorted(
+        (PINCITE_ROOT / "doctrine" / "runtime").glob("*.schema.json")
+    )
     schemas.extend(_read_object(path) for path in runtime_paths)
     known_ids = {schema.get("$id") for schema in schemas}
     for schema in schemas:
@@ -68,7 +77,9 @@ def validate_schema_registry() -> None:
 
 def _offline_resolver(schema: dict[str, object]) -> RefResolver:
     paths = list(SCHEMA_PATHS.values())
-    paths.extend(sorted((ROOT / "doctrine" / "runtime").glob("*.schema.json")))
+    paths.extend(
+        sorted((PINCITE_ROOT / "doctrine" / "runtime").glob("*.schema.json"))
+    )
     schemas = [_read_object(path) for path in paths]
     store = {item["$id"]: item for item in schemas if isinstance(item.get("$id"), str)}
     return RefResolver.from_schema(schema, store=store)

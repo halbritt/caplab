@@ -35,6 +35,12 @@ fragments were removed. Repository maintainers own human adjudication and
 acceptance; external-subject traces remain disabled. Later checkpoints remain
 separate decisions under the selected plan.
 
+Post-separation note (2026-07-16): references below to repository-local corpus,
+doctrine graph, runtime schemas, and packet assembly describe the original
+execution baseline. Those inputs now come from the exact Pincite release in
+[`pincite-dependency.json`](../../../pincite-dependency.json); CAPLAB retains
+the evaluation implementation and records.
+
 ## Status log
 
 - **2026-07-12 — Doctrine-skill evaluation harness authorized and executed.**

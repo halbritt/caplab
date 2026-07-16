@@ -1,6 +1,8 @@
 # Ubiquitous language
 
-This file defines the canonical vocabulary for corpus extraction, doctrine, graphs, retrieval, evaluations, skills, reviews, plans, and decision records in this repository. Other documents should use these meanings rather than redefine them.
+This file defines the canonical vocabulary for CAPLAB evaluations, studies,
+reviews, plans, and decision records. Pincite-owned corpus and doctrine terms
+retain the meanings and provenance of the pinned Pincite release.
 
 The central rule is simple: label the kind of claim being made, and never silently promote one kind into another.
 
@@ -119,28 +121,19 @@ DDD discovery entrypoint at
 [`docs/domain/UBIQUITOUS_LANGUAGE.md`](docs/domain/UBIQUITOUS_LANGUAGE.md)
 points here rather than maintaining a second glossary.
 
-### Source book
+### Pincite release
 
-A **source book** is an original PDF or EPUB under `sources/`. Its content hash
-identifies the exact input. Conversion and doctrine work must not rewrite it.
+A **Pincite release** is the exact external corpus, doctrine, schemas,
+retrieval index, and executable identified by `pincite-dependency.json`.
+CAPLAB may consume it only after the dependency gate verifies its tag, commit,
+corpus ID, and doctrine ID.
 
-### Corpus book
+### Pincite source, corpus, and concept record
 
-A **corpus book** is the generated, chapter-oriented Markdown tree under
-`books/<slug>/`, including assets, metadata, provenance, and validation. It is
-a derived artifact, not a replacement for the source book.
-
-### Doctrine source
-
-A **doctrine source** is a corpus book registered under a stable `SRC-*` ID in
-`doctrine/sources.yaml`. Registration creates coverage and traceability
-obligations; it does not mean every statement in the book is doctrine.
-
-### Concept record
-
-A **concept record** is a curated engineering rule with a stable ID, claim,
-decision rule, applicability conditions, and source support. It is the
-authoritative doctrinal unit for retrieval.
+**Pincite source**, **corpus**, and **concept record** refer to artifacts owned
+and defined by the pinned Pincite release. CAPLAB preserves their identifiers
+and locators as provenance; it does not become their authority by evaluating
+them.
 
 ### Formulation
 
@@ -156,9 +149,10 @@ may reveal an obligation but cannot satisfy it.
 
 ### Evidence packet
 
-An **evidence packet** is a content-addressed selection of doctrine, conflicts,
-procedures, provenance, supplied evidence, and remaining evidence obligations
-for one question. It is retrieved guidance, not a decision or authorization.
+An **evidence packet** is a content-addressed Pincite selection of doctrine,
+conflicts, procedures, provenance, supplied evidence, and remaining evidence
+obligations for one question. It is retrieved guidance, not a CAPLAB finding,
+decision, or authorization.
 
 ### Decision receipt
 
@@ -203,6 +197,20 @@ identity.
 The **adjudication bench** is the interface that presents screening,
 pre-review, source evidence, human audits, and human dispositions without
 collapsing those records into one authority level.
+
+### Study
+
+A **study** is a versioned CAPLAB measurement design binding a question,
+subject identity, task world, conditions, instruments, outcomes, analysis
+population, and promotion gates. Adjacent experiments are not silently pooled
+into one study.
+
+### Capability card
+
+A **capability card** is a bounded reviewer-facing interpretation of one
+selected study. It preserves observations, uncertainty, rivals, exclusions,
+and claim scope. It is not a global model ranking or an authorization for
+deployment, placement, export, or training.
 
 ### Bounded context
 

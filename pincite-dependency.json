@@ -1,0 +1,8 @@
+{
+  "schema_version": "caplab-pincite-dependency/1",
+  "repository": "https://github.com/halbritt/pincite",
+  "release_tag": "pincite-release-20260716T023801Z",
+  "commit": "9760d1b32cd4ced1d8b86c937203d47673f1ee85",
+  "corpus_id": "corpus-2026-07-12-d2ea7b94a1ce",
+  "doctrine_id": "doctrine-f630427242460c1e"
+}

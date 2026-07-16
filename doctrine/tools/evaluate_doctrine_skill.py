@@ -7,6 +7,7 @@ import argparse
 import copy
 import hashlib
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -19,13 +20,19 @@ from validate_assertions import validate_artifact
 
 
 ROOT = Path(__file__).resolve().parents[2]
+PINCITE_ROOT = Path(
+    os.environ.get(
+        "PINCITE_RELEASE_HOME",
+        Path.home() / ".local" / "share" / "pincite" / "release",
+    )
+).expanduser()
 CASE_SCHEMA = ROOT / "doctrine/evaluations/robustness/skill-eval-case.schema.json"
 RESULT_SCHEMA = ROOT / "doctrine/evaluations/robustness/skill-eval-result.schema.json"
 
 HARBOR_ADAPTER = "doctrine-skill-harbor/1"
 HARBOR_TEMPLATES = ROOT / "doctrine/evaluations/robustness/harbor/templates"
 HARBOR_RECEIPT_PATH = "/app/decision-receipt.json"
-HARBOR_CORPUS_MOUNT = "/home/halbritt/git/books"
+HARBOR_CORPUS_MOUNT = "/home/halbritt/git/caplab"
 HARBOR_CORPUS_COPY_LINE = f"COPY corpus/ {HARBOR_CORPUS_MOUNT}/\n"
 HARBOR_TEMPLATE_NAMES = (
     "instruction.md",
@@ -36,10 +43,10 @@ HARBOR_TEMPLATE_NAMES = (
     "solve.sh",
 )
 
-# Exactly the files assemble_packet.py reads at runtime, plus the assertion
-# vocabulary and runtime contracts; the treatment agent needs nothing else.
+# The validated Pincite release subset needed for packet retrieval and receipts.
 PROJECTION_FILES = (
     "ubiquitous_language.md",
+    "doctrine/bin/pincite",
     "doctrine/authority-model.yaml",
     "doctrine/change-types.yaml",
     "doctrine/conflicts.yaml",
@@ -53,12 +60,17 @@ PROJECTION_FILES = (
     "doctrine/graph/nodes.yaml",
     "doctrine/graph/formulations.yaml",
     "doctrine/graph/edges.yaml",
-    "doctrine/tools/assemble_packet.py",
+    "doctrine/runtime/doctrine-index.sqlite3",
+    "doctrine/runtime/doctrine-index.sqlite3.sha256",
 )
 PROJECTION_GLOBS = (
     "doctrine/concepts/*.yaml",
     "doctrine/runtime/*.schema.json",
 )
+OPAQUE_PROJECTION_FILES = {
+    "doctrine/bin/pincite",
+    "doctrine/runtime/doctrine-index.sqlite3",
+}
 PROJECTION_FORBIDDEN_PREFIXES = (
     "doctrine/evaluations/",
     "doctrine/_work/",
@@ -136,7 +148,7 @@ def compile_envelopes(case_path: Path, skill_path: Path) -> dict[str, object]:
 
 
 def _receipt_schema_errors(receipt: dict[str, object]) -> list[str]:
-    runtime = ROOT / "doctrine/runtime"
+    runtime = PINCITE_ROOT / "doctrine/runtime"
     paths = sorted(runtime.glob("*.schema.json"))
     schemas = [_load_object(path) for path in paths]
     store = {schema["$id"]: schema for schema in schemas}
@@ -346,7 +358,8 @@ release gate was not replayed in this environment.
 
 Assemble an evidence packet with:
 
-    python3 doctrine/tools/assemble_packet.py --role <role> --task <task> \\
+    doctrine/bin/pincite --index doctrine/runtime/doctrine-index.sqlite3 \\
+      --doctrine-root doctrine --role <role> --task <task> \\
       --question "<question>" --render markdown
 
 Retrieved doctrine can support an observation, inference, or recommendation;
@@ -374,7 +387,8 @@ def _projection_entry(corpus_root: Path, resolved_root: Path, path: Path) -> tup
         if any(name.startswith(prefix) for prefix in PROJECTION_FORBIDDEN_PREFIXES):
             raise EvaluationError(f"projection_forbidden_path: {name}")
     data = path.read_bytes()
-    _assert_agent_surface_sealed("corpus", relative, data)
+    if relative not in OPAQUE_PROJECTION_FILES:
+        _assert_agent_surface_sealed("corpus", relative, data)
     return relative, data
 
 
@@ -515,7 +529,9 @@ def bake_surface(
         files = _surface_files(Path(source))
         source_kind = "directory"
     else:
-        files = _projection_files(ROOT if corpus_root is None else Path(corpus_root))
+        files = _projection_files(
+            PINCITE_ROOT if corpus_root is None else Path(corpus_root)
+        )
         source_kind = "doctrine-corpus-projection"
     manifest = {
         "schema_version": "knowledge-surface/1",
@@ -553,7 +569,11 @@ def bake_surface(
         if target.exists():
             shutil.rmtree(target)
         for relative, data in files.items():
-            _write_file(target / relative, data)
+            _write_file(
+                target / relative,
+                data,
+                executable=relative == "doctrine/bin/pincite",
+            )
         baked.append({"task_dir": str(task_dir), "files": len(files)})
     return {
         "surface_hash": manifest["surface_hash"],
@@ -608,7 +628,7 @@ def _task_toml(
         f"artifacts = [{_toml_string(HARBOR_RECEIPT_PATH)}]",
         "",
         "[task]",
-        f"name = {_toml_string('books-doctrine/' + str(case['id']) + '-' + condition)}",
+        f"name = {_toml_string('caplab-doctrine/' + str(case['id']) + '-' + condition)}",
         'description = "Doctrine-skill A/B evaluation arm graded by a separate verifier from the transferred decision receipt."',
         "",
         "[metadata]",
@@ -672,7 +692,7 @@ def render_harbor(
     corpus_root: Path | None = None,
 ) -> dict[str, object]:
     """Render matched control/treatment Harbor tasks with a separate verifier."""
-    corpus_root = ROOT if corpus_root is None else Path(corpus_root)
+    corpus_root = PINCITE_ROOT if corpus_root is None else Path(corpus_root)
     case = load_case(case_path)
     case_bytes = case_path.read_bytes()
     envelopes = compile_envelopes(case_path, skill_path)
@@ -694,7 +714,9 @@ def render_harbor(
     )
     runtime_schemas = {
         path.name: path.read_bytes()
-        for path in sorted((ROOT / "doctrine/runtime").glob("*.schema.json"))
+        for path in sorted(
+            (PINCITE_ROOT / "doctrine/runtime").glob("*.schema.json")
+        )
     }
     grader = {
         "doctrine/tools/evaluate_doctrine_skill.py": Path(__file__).read_bytes(),
@@ -755,7 +777,11 @@ def render_harbor(
             _write_file(task_dir / "tests/repo/doctrine/runtime" / name, data)
         if condition == "treatment":
             for relative, data in projection.items():
-                _write_file(task_dir / "environment/corpus" / relative, data)
+                _write_file(
+                    task_dir / "environment/corpus" / relative,
+                    data,
+                    executable=relative == "doctrine/bin/pincite",
+                )
         summary[condition] = {
             "task_dir": str(task_dir),
             "subject_input_hash": _content_hash(envelope),

@@ -31,9 +31,11 @@ provenance-aware, and authority-bounded when doctrine or repository evidence is
 subtly corrupted?
 
 The proposed product is an evaluation layer under
-`doctrine/evaluations/robustness/`. It consumes existing doctrine, graph,
-conflict, evidence, assertion, packet, receipt, and evaluation contracts. It
-does not replace those contracts or add another source of engineering doctrine.
+`doctrine/evaluations/robustness/`. It consumes Pincite doctrine, graph,
+conflict, evidence, assertion, packet, and receipt contracts through the
+versioned dependency in [`pincite-dependency.json`](../../../pincite-dependency.json).
+It does not replace those contracts or add another source of engineering
+doctrine.
 
 ## Observations and evidence
 
@@ -44,25 +46,26 @@ required and forbidden assertion types and retrieval IDs. **Evidence:**
 [`doctrine/tools/run_scenario.py`](../../../doctrine/tools/run_scenario.py), and
 the `authority-present` and `authority-withdrawn` fixtures.
 
-**Observation:** Evidence packets already expose activated concepts,
+**Observation:** Pincite evidence packets expose activated concepts,
 obligations, conflicts, authority constraints, provenance, activation reasons,
-and corpus, doctrine, retriever, and packet identities. **Evidence:**
-[`doctrine/runtime/evidence-packet.schema.json`](../../../doctrine/runtime/evidence-packet.schema.json)
-and [`doctrine/tools/assemble_packet.py`](../../../doctrine/tools/assemble_packet.py).
+and corpus, doctrine, retriever, and packet identities. **Evidence:** the
+Pincite `doctrine/runtime/evidence-packet.schema.json` and `doctrine/bin/pincite`
+at the dependency recorded in
+[`pincite-dependency.json`](../../../pincite-dependency.json).
 
 **Observation:** Assertion and decision-receipt contracts already distinguish
 observation, inference, recommendation, decision, authorization, execution,
 verification, and acceptance. **Evidence:**
 [`ubiquitous_language.md`](../../../ubiquitous_language.md),
-[`doctrine/runtime/assertion-artifact.schema.json`](../../../doctrine/runtime/assertion-artifact.schema.json),
-and [`doctrine/runtime/decision-receipt.schema.json`](../../../doctrine/runtime/decision-receipt.schema.json).
+plus Pincite's `doctrine/runtime/assertion-artifact.schema.json` and
+`doctrine/runtime/decision-receipt.schema.json`.
 
 **Observation:** Current synthetic fixtures establish structural contract
 behavior, not natural-language entailment, retrieval quality, or
-engineering-judgment quality. The operationalization document names
-human-adjudicated scenarios as the next acceptance gate. **Evidence:**
-[`doctrine/OPERATIONALIZATION.md`](../../../doctrine/OPERATIONALIZATION.md) and
-[`doctrine/evaluations/README.md`](../../../doctrine/evaluations/README.md).
+engineering-judgment quality. Human-adjudicated scenarios remain a separate
+acceptance gate. **Evidence:**
+[`doctrine/evaluations/README.md`](../../../doctrine/evaluations/README.md) and
+the pinned Pincite operationalization contract.
 
 **Observation:** The current gold queue is candidate scaffolding rather than
 accepted ground truth. **Evidence:**

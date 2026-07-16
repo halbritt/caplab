@@ -308,6 +308,34 @@ class HarnessRunTests(unittest.TestCase):
         self.assertIn("hide complexity behind simple interfaces", prompt)
         self.assertIn("direct_support", prompt)
 
+    def test_source_inputs_and_screening_outputs_use_separate_roots(self):
+        write_synthetic_repo(self.root)
+        caplab_root = self.root / "caplab-output"
+        results = (
+            caplab_root
+            / "doctrine"
+            / "evaluations"
+            / "entailment"
+            / "results.jsonl"
+        )
+
+        completed = entailment_eval.main(
+            [
+                "--repo-root",
+                str(caplab_root),
+                "--pincite-root",
+                str(self.root),
+                "--endpoint",
+                self.endpoint,
+            ]
+        )
+
+        self.assertEqual(completed, 0)
+        self.assertTrue(results.is_file())
+        self.assertFalse(
+            (self.root / "doctrine" / "evaluations" / "entailment").exists()
+        )
+
     def test_resume_skips_existing_key_and_redo_rejudges(self):
         write_synthetic_repo(self.root)
         self.assertEqual(0, self.run_harness())
