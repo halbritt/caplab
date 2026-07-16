@@ -109,9 +109,13 @@ inside the restored target after pgBackRest completes. The configuration must:
 - name no live PostgreSQL data, configuration, HBA, ident, socket, or PID
   path.
 
-The helper may use the restored `postgresql.auto.conf` recovery command needed
-to replay the selected backup. It must preserve the generated configuration
-and HBA hashes in target markers and execution evidence.
+The helper must replace the restored `postgresql.auto.conf` with a
+target-owned recovery-only file containing the exact pgBackRest
+`restore_command`, immediate recovery target, promotion action, and current
+timeline. It must not retain live-cluster `ALTER SYSTEM` settings such as
+archive commands or preload libraries. It must preserve the generated
+configuration, recovery, and HBA hashes in target markers and execution
+evidence.
 
 ### Live-cluster guards
 
