@@ -3,7 +3,7 @@ artifact_type: context-map
 status: decided
 steward: repository-maintainers
 updated: 2026-07-16
-governing_decision: ../decisions/adr-0008-pincite-separation-and-repository-transition.md
+governing_decision: ../decisions/adr-0008-pincite-separation-and-ethogram-repository-identity.md
 ---
 
 # Context map
@@ -13,19 +13,20 @@ governing_decision: ../decisions/adr-0008-pincite-separation-and-repository-tran
 | Context | Owned responsibilities | Evidence |
 |---|---|---|
 | Pincite | Source corpus, doctrine curation, provenance graph, retrieval index, packet assembly, and release identity | `pincite-dependency.json`; Pincite ADRs 0004 and 0005 |
-| This historical study repository | Source-study evidence custody, preserved evaluation instruments and records, mechanical grading, and reproducible historical projections | `docs/agent-judgment/`, `doctrine/evaluations/`, `caplab/` |
+| Ethogram | Agent-skill evaluation, agent-judgment measurement, source-study evidence custody, preserved evaluation records, and governed selection of fine-tuning evidence | `docs/agent-judgment/`, `doctrine/evaluations/`, `caplab/` |
 | Standalone Agent Capability Lab | Current CAPLAB product decisions, runtime, governed research state, and future product development | `/home/halbritt/git/caplab`; its ADR 0008 |
 
 ## Integration relationship
 
 ```mermaid
 flowchart LR
-  P[Pincite release] -->|Pinned corpus, doctrine, schemas, and retriever| S[Historical study evaluation]
-  S -->|Preserved observations and source provenance| C[Standalone CAPLAB]
+  P[Pincite release] -->|Pinned corpus, doctrine, schemas, and retriever| E[Ethogram evaluations]
+  E -->|Preserved observations and source provenance| C[Standalone CAPLAB]
+  E -->|Governed selected evidence| T[Fine-tuning workflows]
   C -->|Governed interpretation| D[Capability or product decisions]
 ```
 
-This repository consumes a versioned Pincite release. It validates the exact
+Ethogram consumes a versioned Pincite release. It validates the exact
 commit plus corpus and doctrine identities before using Pincite inputs. It
 does not write Pincite doctrine, and evaluation output cannot silently update
 the Pincite release.

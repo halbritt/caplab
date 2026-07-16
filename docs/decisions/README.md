@@ -59,4 +59,4 @@ does not select the option automatically.
 | [`adr-0004`](adr-0004-caplab-study-001-selection.md) | CAPLAB Study 001 selection | decided | repository owner | Agent Capability Lab Study 001 |
 | [`adr-0005`](adr-0005-caplab-v0-evidence-governance.md) | Agent Capability Lab v0 evidence governance | decided | repository owner | CAPLAB evidence governance |
 | [`adr-0006`](adr-0006-caplab-study-001-capability-card-selection.md) | CAPLAB Study 001 capability-card selection | decided | repository owner | Agent Capability Lab Study 001 measurement contract |
-| [`adr-0008`](adr-0008-pincite-separation-and-repository-transition.md) | Pincite separation and repository transition | decided | repository owner | Pincite boundary and pending rename constraint |
+| [`adr-0008`](adr-0008-pincite-separation-and-ethogram-repository-identity.md) | Pincite separation and Ethogram repository identity | decided | repository owner | Pincite boundary and Ethogram identity |

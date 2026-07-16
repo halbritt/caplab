@@ -1,9 +1,15 @@
-# Historical agent-judgment studies
+# Ethogram
 
-This repository preserves the source studies, evaluation instruments,
-adjudication records, checked-in aggregates, and reviewer-facing projections
-from the former Books workspace. Its final repository name is pending an owner
-choice.
+Ethogram is a workspace for evaluating agent skills, measuring agent judgment,
+and curating provenance-bearing evidence for model fine-tuning. Its current
+contents preserve the source studies, evaluation instruments, adjudication
+records, checked-in aggregates, and reviewer-facing projections inherited from
+the former Books workspace.
+
+Evaluation output is not automatically training data. Ethogram keeps observed
+behavior, scientific interpretation, human adjudication, dataset selection,
+fine-tuning authorization, execution, verification, and model acceptance
+distinct.
 
 Two products that began here now have separate authority:
 
@@ -35,6 +41,10 @@ namespace, not a claim that this repository owns Pincite doctrine or current
 CAPLAB product development. Sealed Harbor records may also retain old `books`
 repository paths. Those bytes are experiment provenance and are not live
 repository configuration.
+
+Fine-tuning workflows are an intended Ethogram capability, not a claim that
+the current repository already contains an accepted training pipeline or an
+authorized model-training campaign.
 
 ## Pincite dependency
 

@@ -14,8 +14,8 @@ notable repository changes.
 - Updated evaluation, adjudication, gold-queue, section-resolution, and Harbor
   projection tools to read Pincite inputs from `PINCITE_RELEASE_HOME` while
   preserving historical study outputs locally.
-- Left the final repository rename target pending after live inspection showed
-  that `caplab` already names the separate CAPLAB product repository.
+- Adopted Ethogram (`ethogram`) as the repository identity for agent-skill
+  evaluation, judgment measurement, and governed model fine-tuning evidence.
 - Preserved sealed historical experiment records, including old `books` mount
   paths, without treating them as live configuration.
 
