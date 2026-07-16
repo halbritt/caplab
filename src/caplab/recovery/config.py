@@ -26,7 +26,7 @@ P5_POSTGRES = {"dbname": "caplab", "host": "/var/run/postgresql"}
 P5_GARAGE_ENDPOINT = "http://127.0.0.1:3900"
 P5_GARAGE_REGION = "garage"
 P5_GARAGE_BUCKET = "caplab-v0"
-P5_CREDENTIALS_PATH = Path("/etc/caplab-p5/credentials/garage.json")
+P5_CREDENTIALS_ROOT = Path("/etc/caplab-p5/credentials")
 P5_LOCAL_COPY_ROOT = Path("/nvr/caplab/v0")
 P5_CONFIG_PATH = Path("/etc/caplab-p5/recovery.toml")
 P5_CONFIG_GROUP = "caplab-p5"
@@ -54,7 +54,7 @@ class RecoveryConfig:
     garage_endpoint_url: str
     garage_region: str
     garage_bucket: str
-    credentials_path: Path
+    credentials_root: Path
     local_copy_root: Path
 
     @classmethod
@@ -116,7 +116,7 @@ class RecoveryConfig:
         _exact_keys(postgres, {"conninfo"}, "postgres")
         _exact_keys(
             garage,
-            {"endpoint_url", "region", "bucket", "credentials_path"},
+            {"endpoint_url", "region", "bucket", "credentials_root"},
             "garage",
         )
         _exact_keys(local_copy, {"root"}, "local_copy")
@@ -215,12 +215,12 @@ class RecoveryConfig:
             raise ConfigurationError(
                 "Garage region or bucket differs from the P5 namespace"
             )
-        credentials_path = Path(
-            _required_string(garage["credentials_path"], "garage.credentials_path")
+        credentials_root = Path(
+            _required_string(garage["credentials_root"], "garage.credentials_root")
         )
         local_copy_root = Path(_required_string(local_copy["root"], "local_copy.root"))
         if (
-            credentials_path != P5_CREDENTIALS_PATH
+            credentials_root != P5_CREDENTIALS_ROOT
             or local_copy_root != P5_LOCAL_COPY_ROOT
         ):
             raise ConfigurationError(
@@ -234,7 +234,7 @@ class RecoveryConfig:
             garage_endpoint_url=endpoint,
             garage_region=region,
             garage_bucket=bucket,
-            credentials_path=credentials_path,
+            credentials_root=credentials_root,
             local_copy_root=local_copy_root,
         )
 

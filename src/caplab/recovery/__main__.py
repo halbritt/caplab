@@ -246,7 +246,7 @@ def _require_role(command: str) -> None:
 
 
 def _stores(config: RecoveryConfig) -> tuple[S3CustodyStore, FilesystemCustodyStore]:
-    credentials = load_credentials(config.credentials_path)
+    credentials = load_credentials(config.credentials_root / _role() / "garage.json")
     return (
         S3CustodyStore.from_settings(
             endpoint_url=config.garage_endpoint_url,

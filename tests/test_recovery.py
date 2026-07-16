@@ -278,7 +278,7 @@ class RecoveryConfigurationTests(unittest.TestCase):
             "endpoint": "http://127.0.0.1:3900",
             "region": "garage",
             "bucket": "caplab-v0",
-            "credentials": "/etc/caplab-p5/credentials/garage.json",
+            "credentials": "/etc/caplab-p5/credentials",
             "copy_root": "/nvr/caplab/v0",
         }
         values.update(changes)
@@ -309,7 +309,7 @@ conninfo = "{values["conninfo"]}"
 endpoint_url = "{values["endpoint"]}"
 region = "{values["region"]}"
 bucket = "{values["bucket"]}"
-credentials_path = "{values["credentials"]}"
+credentials_root = "{values["credentials"]}"
 
 [local_copy]
 root = "{values["copy_root"]}"
@@ -324,9 +324,7 @@ root = "{values["copy_root"]}"
         config.require_active(datetime(2026, 7, 23, 23, 59, 58, tzinfo=UTC))
 
         self.assertEqual(config.authority.identity.operation_id, "op-p5-recovery-0001")
-        self.assertEqual(
-            config.credentials_path, Path("/etc/caplab-p5/credentials/garage.json")
-        )
+        self.assertEqual(config.credentials_root, Path("/etc/caplab-p5/credentials"))
 
     def test_config_refuses_campaign_identity_expiry_and_namespace_drift(self) -> None:
         for change in (
