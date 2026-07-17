@@ -64,3 +64,16 @@ ADR 0011 authorized one narrower isolated-restore correction:
 
 The one retry is consumed. The stopped target remains preserved, and another
 retry, target removal, purge, and P6 require a new owner decision.
+
+ADR 0012 authorized the recovery-compatible `max_wal_senders` correction and
+one further isolated retry:
+
+- [`caplab-p5-recovery-compatibility-execution-2026-07-17.md`](caplab-p5-recovery-compatibility-execution-2026-07-17.md)
+  records successful recovery past the prior compatibility blocker, actual
+  HBA rejection, and the safe stop caused by a promotion-readiness race; and
+- [`caplab-p5-recovery-compatibility-verification-2026-07-17.md`](caplab-p5-recovery-compatibility-verification-2026-07-17.md)
+  records independent **FAIL** for the correction and **PASS** for protecting
+  the live cluster.
+
+ADR 0012's retry is consumed. The new stopped target remains preserved, and
+another retry, target removal, purge, and P6 require a new owner decision.
