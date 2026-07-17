@@ -14,3 +14,4 @@ does not imply execution, verification, or acceptance.
 | [ADR 0009](adr-0009-caplab-p5-failure-and-recovery-campaign.md) | CAPLAB P5 bounded failure and recovery campaign | decided | repository owner |
 | [ADR 0010](adr-0010-caplab-p5-corrective-continuation.md) | CAPLAB P5 corrective continuation | decided | repository owner |
 | [ADR 0011](adr-0011-caplab-p5-isolated-postgres-correction.md) | CAPLAB P5 isolated PostgreSQL correction | decided | repository owner |
+| [ADR 0012](adr-0012-caplab-p5-recovery-compatibility-correction.md) | CAPLAB P5 PostgreSQL recovery compatibility correction | decided | repository owner |
