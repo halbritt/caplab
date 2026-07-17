@@ -473,9 +473,10 @@ claims. They are not standing work authorized by this queue.
 
 ## Execution, verification, and acceptance records
 
-P4 has separate execution and PASS verification records. The first P5 campaign
-has separate stopped-execution and FAIL verification records, and ADR 0010
-authorizes a corrective continuation. No Study 001 registration,
+P4 has separate execution and PASS verification records. P5 preserves its
+stopped and corrective failure records plus the ADR 0013 correction PASS and
+ADR 0014 exact-purge PASS. CAPLAB-23 is complete and the P6 predecessor gate is
+open. No Study 001 registration,
 recomputation, capability inference, export, integrated verification, or v0
 acceptance record exists.
 
@@ -562,3 +563,9 @@ replacement because the Plane connector could not remove the original relation.
   dedicated clean linked worktree at that exact commit and preserves the
   original equality and cleanliness gates. No P5 data or host mutation
   preceded this correction.
+- **2026-07-17 — P5 completed.** The exact dependency rehearsal refused with
+  SQLSTATE `P5004`; the matching release cleared it; both exact P5 byte copies
+  were staged and removed; the guarded transaction removed only the P5
+  application closure and retained its tombstone; and access was disabled.
+  Fresh independent verification returned PASS. CAPLAB-23 is complete and ADR
+  0014 Stage B/P6 is open. P7 and all later authority remain unavailable.

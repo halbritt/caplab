@@ -91,3 +91,14 @@ isolated retry:
 The promotion-readiness blocker is removed, but P5 still has closure
 `1|1|0|0`. No dependency, byte deletion, purge, tombstone, P6, or acceptance
 was authorized or performed.
+
+ADR 0014 then authorized exact P5 purge completion and gated P6 admission:
+
+- [`caplab-p5-purge-execution-2026-07-17.md`](caplab-p5-purge-execution-2026-07-17.md)
+  records the dependency refusal, matching release, staged exact-byte
+  deletion, guarded transaction, tombstone, disablement, and cleanup; and
+- [`caplab-p5-purge-verification-2026-07-17.md`](caplab-p5-purge-verification-2026-07-17.md)
+  records independent **PASS** for ADR 0014 Stage A and CAPLAB-23/P5.
+
+P5 is complete and the P6 predecessor gate is open under ADR 0014 only. This
+does not authorize P7 or accept CAPLAB.
