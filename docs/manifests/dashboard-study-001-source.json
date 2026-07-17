@@ -1,13 +1,23 @@
 {
   "manifest_version": "caplab-source-binding/1",
-  "admission_status": "not_admitted",
-  "historical_evidence_copied": false,
+  "admission_status": "restricted_admitted",
+  "historical_evidence_copied": true,
   "projection": {
     "origin_commit": "e4636d2628adbbfca953734d4dc7cdfa91d72b04",
     "origin_path": "caplab/dashboard/studies/caplab-study-001.json",
     "origin_repository": "halbritt/books",
     "path": "src/caplab/dashboard/studies/caplab-study-001.json",
-    "sha256": "7b710b3188ab97228acbeb4c05066e3a7aefa31891bf160780337b177941a55d"
+    "sha256": "e48133467870fe04d15396b2cb059f8945a4ec43e2b0e5f54278a6ffb7c8ebb9"
+  },
+  "registration": {
+    "manifest_sha256": "d2d4f821146c3f39e6726133c383807ec9f6051834e74fbd3a5f33aae8ef148e",
+    "record_count": 684,
+    "unique_content_count": 325,
+    "assignment_count": 20,
+    "attempt_count": 20,
+    "outcome_count": 20,
+    "disposition": "restricted-admission",
+    "verification_status": "pass"
   },
   "sources": [
     {

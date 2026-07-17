@@ -87,8 +87,21 @@ class RepositoryContractTests(unittest.TestCase):
         projection_bytes = (ROOT / projection["path"]).read_bytes()
 
         self.assertEqual(manifest["manifest_version"], "caplab-source-binding/1")
-        self.assertEqual(manifest["admission_status"], "not_admitted")
-        self.assertIs(manifest["historical_evidence_copied"], False)
+        self.assertEqual(manifest["admission_status"], "restricted_admitted")
+        self.assertIs(manifest["historical_evidence_copied"], True)
+        self.assertEqual(
+            manifest["registration"],
+            {
+                "manifest_sha256": "d2d4f821146c3f39e6726133c383807ec9f6051834e74fbd3a5f33aae8ef148e",
+                "record_count": 684,
+                "unique_content_count": 325,
+                "assignment_count": 20,
+                "attempt_count": 20,
+                "outcome_count": 20,
+                "disposition": "restricted-admission",
+                "verification_status": "pass",
+            },
+        )
         self.assertEqual(hashlib.sha256(projection_bytes).hexdigest(), projection["sha256"])
         self.assertEqual(projection["origin_repository"], "halbritt/books")
         self.assertEqual(

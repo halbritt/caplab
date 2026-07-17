@@ -331,6 +331,13 @@ content identities and the selected operational state.
 
 ### P6 — Register Study 001 without rewriting history
 
+P6 executed under ADR 0014 and received independent **PASS** on 2026-07-17.
+The frozen restricted registration manifest is
+`d2d4f821146c3f39e6726133c383807ec9f6051834e74fbd3a5f33aae8ef148e`:
+684 evidence records, 325 unique content identities, and exact 20/20/20
+assignment-attempt-outcome links. Temporary writer and verifier access is
+disabled. This completion does not authorize P7.
+
 Ingest only inputs bound by the P0 decision and verified preservation manifest.
 Link layered identities, assignments, attempts, outcome records, object
 locators, and one frozen registration manifest end to end. Preserve historical

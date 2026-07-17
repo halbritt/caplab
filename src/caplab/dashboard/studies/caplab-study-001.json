@@ -46,7 +46,7 @@
     },
     "sha256": "8c910c50923340d3586e82ac29fee4614eb72bfefd2347180803e1792b08fad5"
   },
-  "catalog_summary": "Historical aggregate available; CAPLAB P6-P9 unavailable.",
+  "catalog_summary": "Historical aggregate and restricted P6 registration available; CAPLAB P7-P9 unavailable.",
   "claim_boundary": {
     "absent_controls": [
       "Matched filler control",
@@ -110,9 +110,9 @@
     },
     "evidence_admission_p6": {
       "label": "Evidence admission P6",
-      "source_scope": "CAPLAB stage not executed or human assertion not recorded",
+      "source_scope": "ADR 0014 restricted registration manifest d2d4f821146c3f39e6726133c383807ec9f6051834e74fbd3a5f33aae8ef148e",
       "state_kind": "registration",
-      "status": "unavailable"
+      "status": "registered"
     },
     "exact_v_treatment_estimate": {
       "label": "Exact-V treatment estimate",

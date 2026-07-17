@@ -102,3 +102,16 @@ ADR 0014 then authorized exact P5 purge completion and gated P6 admission:
 
 P5 is complete and the P6 predecessor gate is open under ADR 0014 only. This
 does not authorize P7 or accept CAPLAB.
+
+ADR 0014 Stage B then produced separate CAPLAB-24/P6 records:
+
+- [`caplab-p6-admission-execution-2026-07-17.md`](caplab-p6-admission-execution-2026-07-17.md)
+  records the exact restricted source inventory, content-addressed two-store
+  admission, append-only relational links, idempotent replay, and role
+  disablement; and
+- [`caplab-p6-admission-verification-2026-07-17.md`](caplab-p6-admission-verification-2026-07-17.md)
+  records the independent **PASS** for the 684-record, 325-byte-identity,
+  20-assignment Study 001 registration.
+
+P6 is complete. P7, recomputation, capability inference, export, publication,
+training, purge, and CAPLAB acceptance remain unavailable and unauthorized.
