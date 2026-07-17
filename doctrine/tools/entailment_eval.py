@@ -401,6 +401,14 @@ def extract_json_object(content: str) -> dict[str, Any] | None:
     return None
 
 
+def extract_chat_content(document: dict[str, Any]) -> str:
+    """Return final answer content while ignoring reasoning content."""
+    choices = document.get("choices") or [{}]
+    choice = choices[0] if isinstance(choices[0], dict) else {}
+    message = choice.get("message") or {}
+    return message.get("content") or ""
+
+
 class OpenAIClient:
     """Minimal stdlib client for an OpenAI-compatible chat endpoint."""
 
@@ -464,8 +472,7 @@ class OpenAIClient:
         latency = time.monotonic() - started
         choices = document.get("choices") or [{}]
         choice = choices[0] if isinstance(choices[0], dict) else {}
-        message = choice.get("message") or {}
-        content = message.get("content") or ""
+        content = extract_chat_content(document)
         return content, choice.get("finish_reason"), latency
 
 

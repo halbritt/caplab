@@ -1,0 +1,33 @@
+{
+  "schema_version": "evaluation-replay-fixture/1",
+  "id": "entailment-supported",
+  "consumer": "entailment",
+  "provenance": {
+    "kind": "synthetic",
+    "captured_from_live": false
+  },
+  "request": {
+    "model": "synthetic-entailment-v1",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Classify the synthetic claim against the synthetic evidence."
+      }
+    ],
+    "max_tokens": 64
+  },
+  "request_sha256": "d008405ee7d4257d9422eb22631b78238fa3b7cbf51eda69d3308201e055b24a",
+  "response": {
+    "model": "synthetic-entailment-v1",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "message": {
+          "reasoning_content": "Synthetic reasoning that the consumer must ignore.",
+          "content": "{\"verdict\":\"supported\",\"evidence_quote\":\"Synthetic evidence.\",\"rationale\":\"The fixture claim is directly supported.\"}"
+        }
+      }
+    ]
+  },
+  "response_sha256": "1037c693607df008d52f2f12e0fbc540095259aef8ed6cb067f6c6f1e8e6ba85"
+}

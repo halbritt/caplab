@@ -94,3 +94,25 @@ intentionally has no automatic baseline-update command. A passing gate is
 technical verification against the selected baseline; it is not owner
 acceptance. The initial baseline remains explicitly provisional until that
 review occurs.
+
+## Hermetic model-response replays
+
+`replay-fixtures/` contains synthetic OpenAI-compatible request and response
+pairs for the entailment and doctrine-injection consumers. Tests feed the
+stored responses through each consumer's final-answer parser; they do not open
+a socket or depend on a model server. Each fixture records canonical request
+and response hashes, and `manifest.json` records the complete fixture file
+inventory and file hashes.
+
+Run the hygiene gate with:
+
+```bash
+make fixture-hygiene
+```
+
+The gate rejects unlisted files, symlinked inputs, hash drift, URL schemes,
+host paths, environment interpolation, credential fields, and mutable refs
+such as `latest`, `main`, or `HEAD`. `make evaluation-gate` depends on this
+check, so the pull-request workflow enforces the same rule. Fixtures must stay
+synthetic; live responses and raw evaluation artifacts remain outside the
+repository.

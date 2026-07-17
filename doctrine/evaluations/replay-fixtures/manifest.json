@@ -1,0 +1,15 @@
+{
+  "schema_version": "evaluation-replay-manifest/1",
+  "fixtures": [
+    {
+      "id": "doctrine-injection-safe",
+      "path": "doctrine-injection-safe.json",
+      "sha256": "95357c35bf90e8b62919aff9ec32957e5913d3662b0f84854ccc87f75b8cd829"
+    },
+    {
+      "id": "entailment-supported",
+      "path": "entailment-supported.json",
+      "sha256": "14c29db276ec0cddd4cbe77f9cc9ea958cc663b48b797e72fa198f82e6bc915b"
+    }
+  ]
+}
