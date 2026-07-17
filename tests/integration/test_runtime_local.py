@@ -22,6 +22,9 @@ from caplab.recovery.adapters.postgres import PostgresCustodyStore
 from caplab.recovery.errors import DependencyRetained
 from caplab.recovery.models import P5Authority, P5Identity, PurgeRequest
 from caplab.recovery.service import PurgeService
+from caplab.admission.adapters.postgres import PostgresAdmissionStore
+from caplab.admission.models import GitRecord, SourceSet
+from caplab.admission.service import AdmissionService
 
 from tests.test_runtime import FIXTURES, ROOT, request
 
@@ -85,7 +88,11 @@ class PostgresRuntimeIntegrationTests(unittest.TestCase):
             results = list(executor.map(lambda _: self.migrator.apply(), range(2)))
         self.assertEqual(
             sorted(item.filename for result in results for item in result),
-            ["0001_runtime_core.sql", "0002_p5_recovery_custody.sql"],
+            [
+                "0001_runtime_core.sql",
+                "0002_p5_recovery_custody.sql",
+                "0003_study_admission.sql",
+            ],
         )
         self.assertEqual(self.migrator.apply(), [])
         import psycopg
@@ -306,6 +313,73 @@ class PostgresRuntimeIntegrationTests(unittest.TestCase):
 
         self.assertEqual(tombstone.operation_id, p5.operation_id)
         self.assertEqual(state, (False, True, True, False, False, True))
+
+    def test_study_admission_freezes_normalized_links_and_is_idempotent(self) -> None:
+        self.migrator.apply()
+        import psycopg
+        import tempfile
+
+        class Reader:
+            def __init__(self, payload: bytes) -> None:
+                self.payload = payload
+
+            def read(self, commit: str, path: str) -> bytes:
+                return self.payload
+
+        def connect_as_writer(conninfo: str):
+            connection = psycopg.connect(POSTGRES_DSN, autocommit=True)
+            connection.execute("SET ROLE caplab_writer")
+            return connection
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            payload = b"historical evidence\n"
+            digest = hashlib.sha256(payload).hexdigest()
+            (root / "evidence.txt").write_bytes(payload)
+            manifest_bytes = f"{digest}  evidence.txt\n".encode()
+            (root / "manifest.sha256").write_bytes(manifest_bytes)
+            result = b"historical result\n"
+            source = SourceSet(
+                study_id="caplab-study-test",
+                preservation_root=root,
+                preservation_manifest_sha256=hashlib.sha256(manifest_bytes).hexdigest(),
+                git_records=(
+                    GitRecord(
+                        "result-record",
+                        "b" * 40,
+                        "result.md",
+                        hashlib.sha256(result).hexdigest(),
+                    ),
+                ),
+                expected_preservation_records=1,
+                expected_total_records=3,
+                expected_attempts=0,
+            )
+            service = AdmissionService(
+                PostgresAdmissionStore(POSTGRES_DSN, connect=connect_as_writer),
+                MemoryObjectStore(),
+                MemoryCopyStore(),
+            )
+            first = service.admit(source, git_reader=Reader(result))
+            replay = service.admit(source, git_reader=Reader(result))
+
+        with psycopg.connect(POSTGRES_DSN) as connection:
+            counts = connection.execute(
+                """
+                SELECT
+                    (SELECT count(*) FROM caplab_v0.study_registrations WHERE study_id = 'caplab-study-test'),
+                    (SELECT count(*) FROM caplab_v0.study_evidence_records WHERE manifest_sha256 = %s),
+                    (SELECT count(*) FROM caplab_v0.study_objects),
+                    has_table_privilege('caplab_reader', 'caplab_v0.study_registrations', 'INSERT'),
+                    has_table_privilege('caplab_verifier', 'caplab_v0.study_registrations', 'INSERT'),
+                    has_table_privilege('caplab_writer', 'caplab_v0.study_registrations', 'UPDATE')
+                """,
+                (first.manifest_sha256,),
+            ).fetchone()
+        self.assertFalse(first.idempotent_replay)
+        self.assertTrue(replay.idempotent_replay)
+        self.assertEqual(counts, (1, 3, 3, False, False, False))
+        self.assertTrue(service.verify(first.manifest_sha256).ok)
 
 
 @unittest.skipUnless(

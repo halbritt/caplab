@@ -633,7 +633,11 @@ class MigrationContractTests(unittest.TestCase):
         migrations = discover_migrations(ROOT / "src/caplab/runtime/migrations")
         self.assertEqual(
             [item.filename for item in migrations],
-            ["0001_runtime_core.sql", "0002_p5_recovery_custody.sql"],
+            [
+                "0001_runtime_core.sql",
+                "0002_p5_recovery_custody.sql",
+                "0003_study_admission.sql",
+            ],
         )
         self.assertEqual(pending_migrations(migrations, {}), migrations)
         with self.assertRaises(ChecksumDrift):
@@ -643,7 +647,7 @@ class MigrationContractTests(unittest.TestCase):
                 migrations,
                 {migrations[0].filename: migrations[0].sha256},
             ),
-            [migrations[1]],
+            migrations[1:],
         )
         self.assertEqual(
             pending_migrations(

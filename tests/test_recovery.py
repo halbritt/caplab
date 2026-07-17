@@ -386,7 +386,11 @@ root = "{values["copy_root"]}"
         self.assertEqual(document["operation_id"], "op-p5-recovery-0001")
         self.assertEqual(
             [item["filename"] for item in document["runtime_provenance"]["migrations"]],
-            ["0001_runtime_core.sql", "0002_p5_recovery_custody.sql"],
+            [
+                "0001_runtime_core.sql",
+                "0002_p5_recovery_custody.sql",
+                "0003_study_admission.sql",
+            ],
         )
 
     def test_recovery_cli_is_separate_from_the_ordinary_runtime(self) -> None:
