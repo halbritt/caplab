@@ -24,7 +24,9 @@ class RepositoryContractTests(unittest.TestCase):
 
         self.assertEqual(violations, [])
 
-    def test_active_decisions_bind_standalone_p4_and_p5_authority(self) -> None:
+    def test_active_decisions_bind_ordered_standalone_p4_p5_and_p6_authority(
+        self,
+    ) -> None:
         adr_0007 = (
             ROOT / "docs/decisions/adr-0007-caplab-v0-cli-runtime.md"
         ).read_text(encoding="utf-8")
@@ -37,6 +39,9 @@ class RepositoryContractTests(unittest.TestCase):
         adr_0010 = (
             ROOT / "docs/decisions/adr-0010-caplab-p5-corrective-continuation.md"
         ).read_text(encoding="utf-8")
+        adr_0014 = (
+            ROOT / "docs/decisions/adr-0014-caplab-p5-purge-and-p6-admission.md"
+        ).read_text(encoding="utf-8")
         plan = (
             ROOT / "docs/product/plans/plan-agent-capability-lab-v0.md"
         ).read_text(encoding="utf-8")
@@ -45,6 +50,7 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("status: decided", adr_0008)
         self.assertIn("status: decided", adr_0009)
         self.assertIn("status: decided", adr_0010)
+        self.assertIn("status: decided", adr_0014)
         self.assertIn("status: authorized", plan)
         for record in (adr_0007, adr_0008):
             self.assertIn("2026-07-22T23:59:59Z", record)
@@ -52,8 +58,14 @@ class RepositoryContractTests(unittest.TestCase):
         for record in (adr_0009, adr_0010, plan):
             self.assertIn("2026-07-23T23:59:59Z", record)
             self.assertIn("P5", record)
+        for record in (adr_0014, plan):
+            self.assertIn("2026-07-24T23:59:59Z", record)
+            self.assertIn("CAPLAB-24/P6", record)
+        self.assertIn("does not authorize CAPLAB-25/P7", adr_0014)
+        self.assertIn("P7 and later checkpoints", plan)
+        self.assertIn("remain unauthorized", plan)
         self.assertIn("src/caplab/runtime/**", plan)
-        self.assertIn("P6 and later checkpoints", plan)
+        self.assertIn("src/caplab/admission/**", plan)
 
     def test_local_markdown_links_resolve(self) -> None:
         missing: list[str] = []

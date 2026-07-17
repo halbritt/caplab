@@ -5,7 +5,7 @@ title: Agent Capability Lab v0
 status: authorized
 owner: repository-maintainers
 created: 2026-07-15
-updated: 2026-07-16
+updated: 2026-07-17
 supersedes: []
 superseded_by: null
 source_artifacts:
@@ -18,6 +18,7 @@ authorization_records:
   - adr-0007
   - adr-0009
   - adr-0010
+  - adr-0014
 authorized_scope:
   - CAPLAB-22/P4
   - CAPLAB-23/P5
@@ -33,6 +34,15 @@ authorized_scope:
   - /nvr/caplab/v0
   - adr-0009 bounded P5 effects
   - adr-0010 corrective P5 continuation
+  - adr-0014 exact P5 purge completion and restricted P6 admission
+  - CAPLAB-24/P6
+  - src/caplab/admission/**
+  - tests/test_admission.py
+  - tests/fixtures/admission/**
+  - tests/integration/test_admission_local.py
+  - docs/records/caplab-p5-purge-*
+  - docs/records/caplab-p6-*
+  - proximal:caplab-p6/**
 change_types:
   - change-feature-implementation
   - change-architectural-restructuring
@@ -51,7 +61,9 @@ ADR 0009 and authorized its bounded P5 implementation and effects through
 `2026-07-23T23:59:59Z`. The first P5 execution failed independent
 verification and left the exact P5 state quarantined. ADR 0010 records the
 owner's instruction to proceed with a corrective continuation under the same
-expiry. P6 and later checkpoints, historical evidence admission, model calls,
+expiry. ADR 0014 authorizes exact P5 purge completion and, only after an
+independent P5 PASS, restricted P6 admission through
+`2026-07-24T23:59:59Z`. P7 and later checkpoints, recomputation, model calls,
 dataset export, training, and acceptance remain unauthorized.
 
 ## Objective and authority boundary
@@ -534,3 +546,11 @@ replacement because the Plane connector could not remove the original relation.
   instructed the executor to proceed. ADR 0010 authorizes the narrow source
   correction and remaining ADR 0009 sequence under a separate evidence root.
   P6 and P7 remain unauthorized.
+- **2026-07-17 — P5 restore blocker removed and ordered P5/P6 authority
+  recorded.** ADR 0013's isolated restore correction passed independently and
+  removed its isolated target without touching the live cluster. The owner
+  then explicitly authorized the restated boundary. ADR 0014 reopens only the
+  exact frozen P5 purge and authorizes restricted P6 admission of the
+  manifest-bound Study 001 evidence after a fresh independent P5 PASS. P7,
+  recomputation, model calls, inference, export, training, and acceptance
+  remain unauthorized.

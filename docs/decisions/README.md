@@ -16,3 +16,4 @@ does not imply execution, verification, or acceptance.
 | [ADR 0011](adr-0011-caplab-p5-isolated-postgres-correction.md) | CAPLAB P5 isolated PostgreSQL correction | decided | repository owner |
 | [ADR 0012](adr-0012-caplab-p5-recovery-compatibility-correction.md) | CAPLAB P5 PostgreSQL recovery compatibility correction | decided | repository owner |
 | [ADR 0013](adr-0013-caplab-p5-promotion-readiness-correction.md) | CAPLAB P5 PostgreSQL promotion-readiness correction | decided | CAPLAB execution delegate |
+| [ADR 0014](adr-0014-caplab-p5-purge-and-p6-admission.md) | CAPLAB P5 purge completion and P6 Study 001 admission | decided | CAPLAB execution delegate |
