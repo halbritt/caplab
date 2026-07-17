@@ -65,3 +65,32 @@ python3 doctrine/tools/run_robustness_case.py \
 
 This is a deterministic structural checkpoint, not an accepted judgment-quality
 gate. Later cases, grading, catalogs, and human adjudication remain deferred.
+
+## Composition regression gate
+
+`make evaluation-gate` builds a deterministic aggregate snapshot of the
+committed canaries, robustness cases, skill A/B cases, and entailment gold
+queue. It compares suite names, corpus identity, per-kind counts, exact case
+IDs, errors, and named scores with
+`baselines/repository.json`. Equal total counts therefore cannot conceal a
+removed or substituted hard case. Any snapshot error fails closed.
+
+The gate reads repository artifacts only; it does not call a model, network,
+Harbor, or Pincite. A live harness may normalize its aggregate results to
+`books-evaluation-snapshot/1` and supply them with `check --results PATH`.
+Raw jobs, trajectories, and sensitive records remain in scratch custody.
+
+To propose a baseline change, write a review candidate outside the repository:
+
+```bash
+python doctrine/tools/evaluation_regression_gate.py snapshot \
+  --root . --out /tmp/books-evaluation-candidate.json
+```
+
+Review the candidate's suite composition, case IDs, corpus identity, errors,
+and score movement. An owner then copies the reviewed candidate over the
+baseline, records the reason in `baseline_review`, and commits both. The tool
+intentionally has no automatic baseline-update command. A passing gate is
+technical verification against the selected baseline; it is not owner
+acceptance. The initial baseline remains explicitly provisional until that
+review occurs.

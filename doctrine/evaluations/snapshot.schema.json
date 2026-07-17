@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ethogram.local/doctrine/evaluations/snapshot.schema.json",
+  "title": "Books evaluation aggregate snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "corpus_identity", "suites"],
+  "properties": {
+    "schema_version": {"const": "books-evaluation-snapshot/1"},
+    "corpus_identity": {"type": "string", "minLength": 1},
+    "baseline_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "reason"],
+      "properties": {
+        "status": {"type": "string", "minLength": 1},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    },
+    "suites": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"$ref": "#/$defs/suite"}
+    }
+  },
+  "$defs": {
+    "score": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["count", "value"],
+      "properties": {
+        "count": {"type": "integer", "minimum": 0},
+        "value": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "suite": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_ids", "kind_counts", "scores", "errors"],
+      "properties": {
+        "case_ids": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "kind_counts": {
+          "type": "object",
+          "additionalProperties": {"type": "integer", "minimum": 0}
+        },
+        "scores": {
+          "type": "object",
+          "additionalProperties": {"$ref": "#/$defs/score"}
+        },
+        "errors": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

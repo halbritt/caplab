@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ethogram.local/doctrine/evaluations/regression-gate.schema.json",
+  "title": "Books evaluation regression gate configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "score_rules"],
+  "properties": {
+    "schema_version": {"const": "books-evaluation-gate-config/1"},
+    "score_rules": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["absolute_floor", "baseline_tolerance", "rationale"],
+        "properties": {
+          "absolute_floor": {"type": "number", "minimum": 0, "maximum": 1},
+          "baseline_tolerance": {"type": "number", "minimum": 0, "maximum": 1},
+          "rationale": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

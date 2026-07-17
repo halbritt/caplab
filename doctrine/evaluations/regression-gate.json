@@ -1,0 +1,15 @@
+{
+  "schema_version": "books-evaluation-gate-config/1",
+  "score_rules": {
+    "contract_pass_rate": {
+      "absolute_floor": 1.0,
+      "baseline_tolerance": 0.0,
+      "rationale": "The smallest deterministic suites contain one case, so one-case quantization is 1.0. These are safety and contract checks: allowing one failed case would defeat the absolute fail-closed rule, so the tolerated movement is zero."
+    },
+    "queue_coverage": {
+      "absolute_floor": 0.99,
+      "baseline_tolerance": 0.009345794392523364,
+      "rationale": "The committed queue has 107 required coverage units; one-unit quantization is 1/107 (about 0.00935). Exact case IDs and per-kind counts are checked separately, so this tolerance cannot hide a removed or substituted queue item."
+    }
+  }
+}

@@ -1,0 +1,188 @@
+{
+  "baseline_review": {
+    "reason": "Initial BOOKS-2 baseline over the committed deterministic evaluation surfaces at repository commit 60ce8cb. This records an observation for regression comparison; passing the gate is verification, not owner acceptance.",
+    "status": "provisional-owner-review"
+  },
+  "corpus_identity": "3db730f0f444d0ccfd9b22f4ffc2f55f007fce8517901885ebdd999a6c7a9629",
+  "schema_version": "books-evaluation-snapshot/1",
+  "suites": {
+    "canaries": {
+      "case_ids": [
+        "authority-present",
+        "authority-withdrawn"
+      ],
+      "errors": [],
+      "kind_counts": {
+        "authority-granted": 1,
+        "authority-withheld": 1
+      },
+      "scores": {
+        "contract_pass_rate": {
+          "count": 2,
+          "value": 1.0
+        }
+      }
+    },
+    "entailment-queue": {
+      "case_ids": [
+        "gold-agent-role-architecture-agent",
+        "gold-agent-role-coding-agent",
+        "gold-agent-role-debugging-and-repair-agent",
+        "gold-agent-role-implementation-agent",
+        "gold-agent-role-legacy-code-agent",
+        "gold-agent-role-performance-agent",
+        "gold-agent-role-refactoring-agent",
+        "gold-agent-role-repository-assessment-agent",
+        "gold-agent-role-review-agent",
+        "gold-authority-transition-authorize-execute",
+        "gold-authority-transition-diagnose-recommend",
+        "gold-authority-transition-execute-verify",
+        "gold-authority-transition-observe-diagnose",
+        "gold-authority-transition-propose-select",
+        "gold-authority-transition-recommend-propose",
+        "gold-authority-transition-select-authorize",
+        "gold-authority-transition-verify-accept",
+        "gold-edge-relation-constrains",
+        "gold-edge-relation-contraindicates",
+        "gold-edge-relation-derived-from",
+        "gold-edge-relation-enables",
+        "gold-edge-relation-evidence-for",
+        "gold-edge-relation-implements",
+        "gold-edge-relation-in-tension-with",
+        "gold-edge-relation-indicates",
+        "gold-edge-relation-motivates",
+        "gold-edge-relation-operationalizes",
+        "gold-edge-relation-participates-in",
+        "gold-edge-relation-prerequisite-of",
+        "gold-edge-relation-preserves",
+        "gold-edge-relation-refines",
+        "gold-edge-relation-requires",
+        "gold-edge-relation-sequenced-before",
+        "gold-edge-relation-specializes",
+        "gold-edge-relation-threatens",
+        "gold-edge-relation-trades-off-with",
+        "gold-outcome-abstention",
+        "gold-outcome-insufficient-evidence",
+        "gold-outcome-no-change",
+        "gold-risk-class-automation-compatibility",
+        "gold-risk-class-availability",
+        "gold-risk-class-compatibility",
+        "gold-risk-class-compliance",
+        "gold-risk-class-concurrency",
+        "gold-risk-class-consistency",
+        "gold-risk-class-cost",
+        "gold-risk-class-coupling",
+        "gold-risk-class-data",
+        "gold-risk-class-deployment",
+        "gold-risk-class-design-uncertainty",
+        "gold-risk-class-durability",
+        "gold-risk-class-dynamic-behavior",
+        "gold-risk-class-ecosystem",
+        "gold-risk-class-filesystem",
+        "gold-risk-class-hardware",
+        "gold-risk-class-interrupt",
+        "gold-risk-class-language-semantics",
+        "gold-risk-class-license",
+        "gold-risk-class-memory",
+        "gold-risk-class-mergeability",
+        "gold-risk-class-operational",
+        "gold-risk-class-option-cost",
+        "gold-risk-class-partial-failure",
+        "gold-risk-class-performance",
+        "gold-risk-class-policy",
+        "gold-risk-class-portability",
+        "gold-risk-class-power",
+        "gold-risk-class-protocol",
+        "gold-risk-class-provenance",
+        "gold-risk-class-real-time",
+        "gold-risk-class-regression",
+        "gold-risk-class-reproducibility",
+        "gold-risk-class-requirements-uncertainty",
+        "gold-risk-class-resource",
+        "gold-risk-class-safety",
+        "gold-risk-class-security",
+        "gold-risk-class-semantic-integrity",
+        "gold-risk-class-supply-chain",
+        "gold-risk-class-transaction",
+        "gold-risk-class-unknown-behavior",
+        "gold-risk-class-versioning",
+        "gold-source-src-100go",
+        "gold-source-src-adpch3",
+        "gold-source-src-aposd",
+        "gold-source-src-apwp",
+        "gold-source-src-ca",
+        "gold-source-src-cc",
+        "gold-source-src-cig",
+        "gold-source-src-ddd",
+        "gold-source-src-ddia2",
+        "gold-source-src-ego",
+        "gold-source-src-fp",
+        "gold-source-src-fsa",
+        "gold-source-src-pp",
+        "gold-source-src-ref",
+        "gold-source-src-ri",
+        "gold-source-src-sdx",
+        "gold-source-src-seag",
+        "gold-source-src-ut",
+        "gold-source-src-welc",
+        "gold-support-relationship-corroboration",
+        "gold-support-relationship-derived-inference",
+        "gold-support-relationship-direct-support",
+        "gold-support-relationship-historical-precursor",
+        "gold-support-relationship-refinement",
+        "gold-support-relationship-tension",
+        "gold-support-relationship-terminology-variant"
+      ],
+      "errors": [],
+      "kind_counts": {
+        "agent-role": 9,
+        "authority-transition": 8,
+        "edge-relation": 19,
+        "outcome": 3,
+        "risk-class": 42,
+        "source-support": 19,
+        "support-relationship": 7
+      },
+      "scores": {
+        "contract_pass_rate": {
+          "count": 107,
+          "value": 1.0
+        },
+        "queue_coverage": {
+          "count": 107,
+          "value": 1.0
+        }
+      }
+    },
+    "robustness": {
+      "case_ids": [
+        "authority-withdrawal"
+      ],
+      "errors": [],
+      "kind_counts": {
+        "authority-withdrawal": 1
+      },
+      "scores": {
+        "contract_pass_rate": {
+          "count": 1,
+          "value": 1.0
+        }
+      }
+    },
+    "skill-a-b": {
+      "case_ids": [
+        "skill-authority-withdrawal"
+      ],
+      "errors": [],
+      "kind_counts": {
+        "structural": 1
+      },
+      "scores": {
+        "contract_pass_rate": {
+          "count": 1,
+          "value": 1.0
+        }
+      }
+    }
+  }
+}
