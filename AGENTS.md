@@ -61,3 +61,7 @@ Use `make test` for hermetic CAPLAB changes and `make check` as the full local
 gate for code, generated evaluation artifacts, or Pincite integration changes.
 Do not copy Pincite corpus, doctrine, retrieval, or conversion implementation
 back into this repository to make a check pass.
+
+## Branch hygiene
+
+Do not leave unmerged code lying around. If a task uses a branch, merge its authorized work into the intended target branch before reporting completion. If merge authority is absent, report that as a blocker instead of treating the branch as finished. Clean up branches and associated worktrees after merge.
