@@ -19,6 +19,7 @@ authorization_records:
   - adr-0009
   - adr-0010
   - adr-0014
+  - adr-0015
 authorized_scope:
   - CAPLAB-22/P4
   - CAPLAB-23/P5
@@ -35,6 +36,7 @@ authorized_scope:
   - adr-0009 bounded P5 effects
   - adr-0010 corrective P5 continuation
   - adr-0014 exact P5 purge completion and restricted P6 admission
+  - adr-0015 P5 frozen executor source worktree correction
   - CAPLAB-24/P6
   - src/caplab/admission/**
   - tests/test_admission.py
@@ -554,3 +556,9 @@ replacement because the Plane connector could not remove the original relation.
   manifest-bound Study 001 evidence after a fresh independent P5 PASS. P7,
   recomputation, model calls, inference, export, training, and acceptance
   remain unauthorized.
+- **2026-07-17 — P5 frozen source-worktree correction.** ADR 0014's first
+  read-only preflight refused the advancing shared CAPLAB checkout because it
+  no longer equaled the older frozen executor commit. ADR 0015 selects a
+  dedicated clean linked worktree at that exact commit and preserves the
+  original equality and cleanliness gates. No P5 data or host mutation
+  preceded this correction.
