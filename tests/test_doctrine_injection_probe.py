@@ -43,14 +43,21 @@ CASE = {
 class DoctrineInjectionProbeTest(unittest.TestCase):
     def test_pinned_pincite_fixture_set_is_current(self) -> None:
         probe = load_probe_module()
-
-        preregistration, manifest = probe.load_inputs(
+        preregistrations = [
             probe.DEFAULT_PREREGISTRATION,
-            probe.DEFAULT_PINCITE,
-        )
+            ROOT
+            / "doctrine/evaluations/robustness/"
+            "injection-probe-diagnostic-preregistration.json",
+        ]
 
-        self.assertEqual(1, preregistration["probe"]["repetitions"])
-        self.assertEqual(6, len(manifest["cases"]))
+        for path in preregistrations:
+            with self.subTest(preregistration=path.name):
+                preregistration, manifest = probe.load_inputs(
+                    path,
+                    probe.DEFAULT_PINCITE,
+                )
+                self.assertEqual(1, preregistration["probe"]["repetitions"])
+                self.assertEqual(6, len(manifest["cases"]))
 
     def test_raw_run_output_must_stay_outside_repository(self) -> None:
         probe = load_probe_module()
