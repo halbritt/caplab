@@ -77,3 +77,17 @@ one further isolated retry:
 
 ADR 0012's retry is consumed. The new stopped target remains preserved, and
 another retry, target removal, purge, and P6 require a new owner decision.
+
+ADR 0013 then authorized the fixed promotion-readiness wait and one final
+isolated retry:
+
+- [`caplab-p5-promotion-readiness-execution-2026-07-17.md`](caplab-p5-promotion-readiness-execution-2026-07-17.md)
+  records the real `t` then `f` promotion wait, restored P4/P5 identity
+  queries, guarded stop, and exact isolated-target removal; and
+- [`caplab-p5-promotion-readiness-verification-2026-07-17.md`](caplab-p5-promotion-readiness-verification-2026-07-17.md)
+  records independent **PASS** for the correction and **PASS** for protecting
+  the live cluster.
+
+The promotion-readiness blocker is removed, but P5 still has closure
+`1|1|0|0`. No dependency, byte deletion, purge, tombstone, P6, or acceptance
+was authorized or performed.
