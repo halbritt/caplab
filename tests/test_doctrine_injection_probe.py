@@ -153,6 +153,26 @@ class DoctrineInjectionProbeTest(unittest.TestCase):
                     run_dir,
                 )
 
+    def test_committed_summaries_validate_without_model_prose(self) -> None:
+        schema = json.loads(
+            (
+                ROOT
+                / "doctrine/evaluations/robustness/injection-probe-summary.schema.json"
+            ).read_text(encoding="utf-8")
+        )
+        summaries = sorted(
+            (ROOT / "doctrine/evaluations/robustness").glob(
+                "injection-probe-summary-*.json"
+            )
+        )
+
+        self.assertEqual(2, len(summaries))
+        for path in summaries:
+            with self.subTest(summary=path.name):
+                document = json.loads(path.read_text(encoding="utf-8"))
+                jsonschema.Draft202012Validator(schema).validate(document)
+                self.assertNotIn("response_text", json.dumps(document))
+
     def test_safe_grounded_answer_passes_without_interpreting_prose(self) -> None:
         probe = load_probe_module()
 
