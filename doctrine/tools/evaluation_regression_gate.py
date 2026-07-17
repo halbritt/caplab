@@ -15,6 +15,8 @@ from typing import Any
 import jsonschema
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from evaluation_defect_ledger import record_observation  # noqa: E402
+from evaluation_mode import EvaluationModeError, require_evaluation_mode  # noqa: E402
 from evaluation_outcomes import classify_scenario_exit  # noqa: E402
 
 
@@ -200,6 +202,7 @@ def build_snapshot(root: Path) -> dict[str, Any]:
     corpus_identity, queue_suite = _queue_suite(root, evaluation_root)
     return {
         "schema_version": SNAPSHOT_SCHEMA,
+        "mode": "replay",
         "corpus_identity": corpus_identity,
         "suites": {
             "canaries": _canary_suite(root, evaluation_root),
@@ -211,7 +214,11 @@ def build_snapshot(root: Path) -> dict[str, Any]:
 
 
 def compare_snapshots(
-    candidate: dict[str, Any], baseline: dict[str, Any], config: dict[str, Any]
+    candidate: dict[str, Any],
+    baseline: dict[str, Any],
+    config: dict[str, Any],
+    *,
+    expected_mode: str,
 ) -> list[str]:
     violations: list[str] = []
     if candidate.get("schema_version") != SNAPSHOT_SCHEMA:
@@ -220,6 +227,14 @@ def compare_snapshots(
         violations.append(f"baseline schema must be {SNAPSHOT_SCHEMA}")
     if config.get("schema_version") != CONFIG_SCHEMA:
         violations.append(f"config schema must be {CONFIG_SCHEMA}")
+    for label, document in (("candidate", candidate), ("baseline", baseline)):
+        try:
+            require_evaluation_mode(expected_mode, document.get("mode"))
+        except EvaluationModeError:
+            violations.append(
+                f"{label} mode {document.get('mode')} does not match "
+                f"declared execution mode {expected_mode}"
+            )
     if candidate.get("corpus_identity") != baseline.get("corpus_identity"):
         violations.append("corpus identity differs from baseline")
 
@@ -296,6 +311,16 @@ def main(argv: list[str] | None = None) -> int:
         type=Path,
         help="normalized aggregate snapshot to check instead of inspecting the repository",
     )
+    check_parser.add_argument("--mode", choices=["live", "replay"], required=True)
+    check_parser.add_argument(
+        "--defect-ledger",
+        type=Path,
+        help="append an idempotent observation when the gate fails",
+    )
+    check_parser.add_argument(
+        "--recorded-at",
+        help="timestamp for a defect observation; defaults to current UTC time",
+    )
     args = parser.parse_args(argv)
 
     root = args.root.resolve()
@@ -314,8 +339,24 @@ def main(argv: list[str] | None = None) -> int:
     _validate(candidate, root / SNAPSHOT_SCHEMA_PATH)
     _validate(baseline, root / SNAPSHOT_SCHEMA_PATH)
     _validate(config, root / CONFIG_SCHEMA_PATH)
-    violations = compare_snapshots(candidate, baseline, config)
+    violations = compare_snapshots(
+        candidate, baseline, config, expected_mode=args.mode
+    )
     if violations:
+        if args.defect_ledger:
+            observation = record_observation(
+                args.defect_ledger,
+                candidate=candidate,
+                baseline=baseline,
+                config=config,
+                violations=violations,
+                recorded_at=args.recorded_at,
+            )
+            print(
+                f"DEFECT: {observation['defect_id']} "
+                f"observation={observation['event_id']}",
+                file=sys.stderr,
+            )
         for violation in violations:
             print(f"VIOLATION: {violation}", file=sys.stderr)
         return 1

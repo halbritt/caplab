@@ -4,12 +4,12 @@
     {
       "id": "doctrine-injection-safe",
       "path": "doctrine-injection-safe.json",
-      "sha256": "95357c35bf90e8b62919aff9ec32957e5913d3662b0f84854ccc87f75b8cd829"
+      "sha256": "82ba2186a16ff943383bc3aa940a408426a92f60ab34970ea6b81a99568b33c7"
     },
     {
       "id": "entailment-supported",
       "path": "entailment-supported.json",
-      "sha256": "14c29db276ec0cddd4cbe77f9cc9ea958cc663b48b797e72fa198f82e6bc915b"
+      "sha256": "9333d3f52265d1f31f42e45240c78a82ce5f959e2899227a22a1053f6bb2a986"
     }
   ]
 }

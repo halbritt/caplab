@@ -33,7 +33,7 @@ class EvaluationFixtureHygieneTest(unittest.TestCase):
         )
 
     def test_committed_catalog_replays_through_both_response_parsers(self) -> None:
-        fixtures = self.hygiene.load_catalog(FIXTURES)
+        fixtures = self.hygiene.load_catalog(FIXTURES, execution_mode="replay")
         entailment = load_module("entailment_eval_replay", TOOLS / "entailment_eval.py")
         injection = load_module(
             "evaluate_doctrine_injection_replay",
@@ -68,59 +68,71 @@ class EvaluationFixtureHygieneTest(unittest.TestCase):
 
     def test_fixture_rejects_live_endpoint_text(self) -> None:
         document = copy.deepcopy(
-            self.hygiene.load_catalog(FIXTURES)["entailment-supported"]
+            self.hygiene.load_catalog(FIXTURES, execution_mode="replay")[
+                "entailment-supported"
+            ]
         )
         document["request"]["messages"][0]["content"] = (
             "call https://api.example.invalid/v1"
         )
 
         with self.assertRaisesRegex(self.hygiene.FixtureError, "external_locator"):
-            self.hygiene.validate_fixture_document(document)
+            self.hygiene.validate_fixture_document(document, execution_mode="replay")
 
     def test_fixture_rejects_endpoint_fields_without_url_schemes(self) -> None:
         document = copy.deepcopy(
-            self.hygiene.load_catalog(FIXTURES)["entailment-supported"]
+            self.hygiene.load_catalog(FIXTURES, execution_mode="replay")[
+                "entailment-supported"
+            ]
         )
         document["request"]["endpoint"] = "model-server.internal:8081"
 
         with self.assertRaisesRegex(self.hygiene.FixtureError, "external_field"):
-            self.hygiene.validate_fixture_document(document)
+            self.hygiene.validate_fixture_document(document, execution_mode="replay")
 
     def test_fixture_rejects_non_synthetic_model_identity(self) -> None:
         document = copy.deepcopy(
-            self.hygiene.load_catalog(FIXTURES)["entailment-supported"]
+            self.hygiene.load_catalog(FIXTURES, execution_mode="replay")[
+                "entailment-supported"
+            ]
         )
         document["request"]["model"] = "qwen3.6-35b-a3b"
 
         with self.assertRaisesRegex(self.hygiene.FixtureError, "external_model"):
-            self.hygiene.validate_fixture_document(document)
+            self.hygiene.validate_fixture_document(document, execution_mode="replay")
 
     def test_fixture_rejects_nested_credential_field(self) -> None:
         document = copy.deepcopy(
-            self.hygiene.load_catalog(FIXTURES)["entailment-supported"]
+            self.hygiene.load_catalog(FIXTURES, execution_mode="replay")[
+                "entailment-supported"
+            ]
         )
         document["request"]["authorization"] = {"kind": "synthetic"}
 
         with self.assertRaisesRegex(self.hygiene.FixtureError, "credential_field"):
-            self.hygiene.validate_fixture_document(document)
+            self.hygiene.validate_fixture_document(document, execution_mode="replay")
 
     def test_fixture_rejects_mutable_dependency_reference(self) -> None:
         document = copy.deepcopy(
-            self.hygiene.load_catalog(FIXTURES)["entailment-supported"]
+            self.hygiene.load_catalog(FIXTURES, execution_mode="replay")[
+                "entailment-supported"
+            ]
         )
         document["request"]["model"] = "judge:latest"
 
         with self.assertRaisesRegex(self.hygiene.FixtureError, "mutable_reference"):
-            self.hygiene.validate_fixture_document(document)
+            self.hygiene.validate_fixture_document(document, execution_mode="replay")
 
     def test_fixture_rejects_response_hash_drift(self) -> None:
         document = copy.deepcopy(
-            self.hygiene.load_catalog(FIXTURES)["entailment-supported"]
+            self.hygiene.load_catalog(FIXTURES, execution_mode="replay")[
+                "entailment-supported"
+            ]
         )
         document["response"]["choices"][0]["message"]["content"] = "changed"
 
         with self.assertRaisesRegex(self.hygiene.FixtureError, "response_sha256"):
-            self.hygiene.validate_fixture_document(document)
+            self.hygiene.validate_fixture_document(document, execution_mode="replay")
 
     def test_catalog_rejects_symlinked_fixture_root(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
@@ -130,7 +142,7 @@ class EvaluationFixtureHygieneTest(unittest.TestCase):
             with self.assertRaisesRegex(
                 self.hygiene.FixtureError, "fixture_root_is_symlink"
             ):
-                self.hygiene.load_catalog(link)
+                self.hygiene.load_catalog(link, execution_mode="replay")
 
     def test_catalog_rejects_unlisted_json_fixture(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
@@ -141,7 +153,7 @@ class EvaluationFixtureHygieneTest(unittest.TestCase):
             with self.assertRaisesRegex(
                 self.hygiene.FixtureError, "fixture_inventory_mismatch"
             ):
-                self.hygiene.load_catalog(fixture_root)
+                self.hygiene.load_catalog(fixture_root, execution_mode="replay")
 
     def test_catalog_rejects_unlisted_non_json_sidecar(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
@@ -155,7 +167,14 @@ class EvaluationFixtureHygieneTest(unittest.TestCase):
             with self.assertRaisesRegex(
                 self.hygiene.FixtureError, "fixture_inventory_mismatch"
             ):
-                self.hygiene.load_catalog(fixture_root)
+                self.hygiene.load_catalog(fixture_root, execution_mode="replay")
+
+    def test_replay_fixture_rejected_under_live_execution_mode(self) -> None:
+        with self.assertRaisesRegex(
+            self.hygiene.FixtureError,
+            "mode_mismatch:expected=live:artifact=replay",
+        ):
+            self.hygiene.load_catalog(FIXTURES, execution_mode="live")
 
 
 if __name__ == "__main__":

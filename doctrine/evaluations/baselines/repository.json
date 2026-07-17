@@ -4,6 +4,7 @@
     "status": "provisional-owner-review"
   },
   "corpus_identity": "3db730f0f444d0ccfd9b22f4ffc2f55f007fce8517901885ebdd999a6c7a9629",
+  "mode": "replay",
   "schema_version": "books-evaluation-snapshot/1",
   "suites": {
     "canaries": {

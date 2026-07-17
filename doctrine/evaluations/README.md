@@ -76,9 +76,13 @@ IDs, errors, and named scores with
 removed or substituted hard case. Any snapshot error fails closed.
 
 The gate reads repository artifacts only; it does not call a model, network,
-Harbor, or Pincite. A live harness may normalize its aggregate results to
-`books-evaluation-snapshot/1` and supply them with `check --results PATH`.
-Raw jobs, trajectories, and sensitive records remain in scratch custody.
+Harbor, or Pincite. Every snapshot declares `mode` as `replay` or `live`, and
+the caller must independently declare the same mode with `check --mode`.
+A mismatch fails before results can be compared or scored. A live harness may
+normalize its aggregate results to `books-evaluation-snapshot/1`, mark them
+`live`, and supply them with `check --mode live --results PATH` against a
+separately reviewed live baseline. Raw jobs, trajectories, and sensitive
+records remain in scratch custody.
 
 To propose a baseline change, write a review candidate outside the repository:
 
@@ -115,7 +119,50 @@ host paths, environment interpolation, credential fields, and mutable refs
 such as `latest`, `main`, or `HEAD`. `make evaluation-gate` depends on this
 check, so the pull-request workflow enforces the same rule. Fixtures must stay
 synthetic; live responses and raw evaluation artifacts remain outside the
-repository.
+repository. Replay fixtures carry `mode: replay`; loading them under a declared
+live execution mode fails closed.
+
+## Gate defect ledger
+
+A failing regression check can append an idempotent observation to a durable
+JSONL ledger:
+
+```bash
+python doctrine/tools/evaluation_regression_gate.py check \
+  --root . --mode replay \
+  --defect-ledger doctrine/evaluations/gate-defects.jsonl
+```
+
+The observation records hashes of the candidate, baseline, and gate config,
+plus the normalized violations. Repeating the same failure does not duplicate
+it. The gate does not create or change a ledger unless `--defect-ledger` is
+explicitly supplied and the check fails.
+
+Diagnosis and disposition are later append-only events. They reference the
+original observation and its digest rather than rewriting it:
+
+```bash
+python doctrine/tools/evaluation_defect_ledger.py diagnose \
+  --ledger doctrine/evaluations/gate-defects.jsonl \
+  --defect-id gate-0123456789abcdef \
+  --summary "The canary fixture no longer satisfies its contract." \
+  --evidence tests/test_doctrine_scaffolding.py \
+  --rival "The reviewed baseline may be stale." \
+  --diagnosed-by agent-id
+
+python doctrine/tools/evaluation_defect_ledger.py dispose \
+  --ledger doctrine/evaluations/gate-defects.jsonl \
+  --defect-id gate-0123456789abcdef \
+  --status remediated \
+  --rationale "The contract was repaired and the gate reran cleanly." \
+  --decided-by owner-id \
+  --authority "repository owner"
+```
+
+Diagnosis is recorded as an inference with evidence and rivals. Disposition is
+recorded as a decision and requires an identified authority. Neither event is
+technical verification or owner acceptance by itself. Validate a ledger with
+`evaluation_defect_ledger.py validate --ledger PATH`.
 
 ## Error classification
 

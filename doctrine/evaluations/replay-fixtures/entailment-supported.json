@@ -1,6 +1,7 @@
 {
   "schema_version": "evaluation-replay-fixture/1",
   "id": "entailment-supported",
+  "mode": "replay",
   "consumer": "entailment",
   "provenance": {
     "kind": "synthetic",

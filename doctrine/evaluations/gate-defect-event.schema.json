@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ethogram.local/doctrine/evaluations/gate-defect-event.schema.json",
+  "title": "Append-only evaluation gate defect event",
+  "oneOf": [
+    {"$ref": "#/$defs/observation"},
+    {"$ref": "#/$defs/diagnosis"},
+    {"$ref": "#/$defs/disposition"}
+  ],
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "event_type",
+        "event_id",
+        "defect_id",
+        "recorded_at",
+        "assertion_type",
+        "gate",
+        "candidate_sha256",
+        "baseline_sha256",
+        "config_sha256",
+        "violations",
+        "observation_sha256"
+      ],
+      "properties": {
+        "schema_version": {"const": "evaluation-gate-defect-event/1"},
+        "event_type": {"const": "observation"},
+        "event_id": {"type": "string", "pattern": "^obs-[0-9a-f]{16}$"},
+        "defect_id": {"type": "string", "pattern": "^gate-[0-9a-f]{16}$"},
+        "recorded_at": {"$ref": "#/$defs/timestamp"},
+        "assertion_type": {"const": "observation"},
+        "gate": {"const": "evaluation-regression"},
+        "candidate_sha256": {"$ref": "#/$defs/digest"},
+        "baseline_sha256": {"$ref": "#/$defs/digest"},
+        "config_sha256": {"$ref": "#/$defs/digest"},
+        "violations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "observation_sha256": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "diagnosis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "event_type",
+        "event_id",
+        "defect_id",
+        "observation_event_id",
+        "observation_sha256",
+        "recorded_at",
+        "assertion_type",
+        "summary",
+        "evidence",
+        "rivals_considered",
+        "diagnosed_by"
+      ],
+      "properties": {
+        "schema_version": {"const": "evaluation-gate-defect-event/1"},
+        "event_type": {"const": "diagnosis"},
+        "event_id": {"type": "string", "pattern": "^diag-[0-9a-f]{16}$"},
+        "defect_id": {"type": "string", "pattern": "^gate-[0-9a-f]{16}$"},
+        "observation_event_id": {
+          "type": "string",
+          "pattern": "^obs-[0-9a-f]{16}$"
+        },
+        "observation_sha256": {"$ref": "#/$defs/digest"},
+        "recorded_at": {"$ref": "#/$defs/timestamp"},
+        "assertion_type": {"const": "inference"},
+        "summary": {"type": "string", "minLength": 1},
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "rivals_considered": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "diagnosed_by": {"type": "string", "minLength": 1}
+      }
+    },
+    "disposition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "event_type",
+        "event_id",
+        "defect_id",
+        "observation_event_id",
+        "observation_sha256",
+        "recorded_at",
+        "assertion_type",
+        "status",
+        "rationale",
+        "decided_by",
+        "authority"
+      ],
+      "properties": {
+        "schema_version": {"const": "evaluation-gate-defect-event/1"},
+        "event_type": {"const": "disposition"},
+        "event_id": {"type": "string", "pattern": "^disp-[0-9a-f]{16}$"},
+        "defect_id": {"type": "string", "pattern": "^gate-[0-9a-f]{16}$"},
+        "observation_event_id": {
+          "type": "string",
+          "pattern": "^obs-[0-9a-f]{16}$"
+        },
+        "observation_sha256": {"$ref": "#/$defs/digest"},
+        "recorded_at": {"$ref": "#/$defs/timestamp"},
+        "assertion_type": {"const": "decision"},
+        "status": {
+          "enum": ["remediated", "deferred", "duplicate", "not-a-defect", "accepted-risk"]
+        },
+        "rationale": {"type": "string", "minLength": 1},
+        "decided_by": {"type": "string", "minLength": 1},
+        "authority": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

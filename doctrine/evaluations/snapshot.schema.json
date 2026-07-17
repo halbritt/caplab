@@ -4,9 +4,10 @@
   "title": "Books evaluation aggregate snapshot",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "corpus_identity", "suites"],
+  "required": ["schema_version", "mode", "corpus_identity", "suites"],
   "properties": {
     "schema_version": {"const": "books-evaluation-snapshot/1"},
+    "mode": {"enum": ["live", "replay"]},
     "corpus_identity": {"type": "string", "minLength": 1},
     "baseline_review": {
       "type": "object",

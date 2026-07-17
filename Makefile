@@ -7,6 +7,7 @@ CAPLAB_TEST_MODULES := \
 	tests.test_caplab_dashboard \
 	tests.test_doctrine_scaffolding \
 	tests.test_doctrine_injection_probe \
+	tests.test_evaluation_defect_ledger \
 	tests.test_evaluation_error_taxonomy \
 	tests.test_evaluation_fixture_hygiene \
 	tests.test_evaluation_regression_gate \
@@ -29,10 +30,10 @@ test:
 	$(PYTHON) -m unittest -v $(CAPLAB_TEST_MODULES)
 
 evaluation-gate: fixture-hygiene
-	$(PYTHON) doctrine/tools/evaluation_regression_gate.py check --root .
+	$(PYTHON) doctrine/tools/evaluation_regression_gate.py check --root . --mode replay
 
 fixture-hygiene:
-	$(PYTHON) doctrine/tools/check_evaluation_fixtures.py
+	$(PYTHON) doctrine/tools/check_evaluation_fixtures.py --mode replay
 
 pincite-check:
 	PINCITE_RELEASE_HOME="$(PINCITE_RELEASE_HOME)" \

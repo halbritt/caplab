@@ -5,6 +5,7 @@ import importlib.util
 import json
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -30,6 +31,7 @@ class EvaluationRegressionGateTest(unittest.TestCase):
         gate = load_gate_module()
         baseline = {
             "schema_version": "books-evaluation-snapshot/1",
+            "mode": "replay",
             "corpus_identity": "corpus-a",
             "suites": {
                 "canary": {
@@ -58,6 +60,7 @@ class EvaluationRegressionGateTest(unittest.TestCase):
                     }
                 },
             },
+            expected_mode="replay",
         )
 
         self.assertIn("canary: removed case IDs: authority-withdrawn", violations)
@@ -66,6 +69,7 @@ class EvaluationRegressionGateTest(unittest.TestCase):
         gate = load_gate_module()
         baseline = {
             "schema_version": "books-evaluation-snapshot/1",
+            "mode": "replay",
             "corpus_identity": "corpus-a",
             "suites": {
                 "canary": {
@@ -92,7 +96,9 @@ class EvaluationRegressionGateTest(unittest.TestCase):
             },
         }
 
-        violations = gate.compare_snapshots(candidate, baseline, config)
+        violations = gate.compare_snapshots(
+            candidate, baseline, config, expected_mode="replay"
+        )
 
         self.assertTrue(any("run error: fixture missing" in item for item in violations))
         self.assertTrue(any("below floor" in item for item in violations))
@@ -102,6 +108,7 @@ class EvaluationRegressionGateTest(unittest.TestCase):
         gate = load_gate_module()
         baseline = {
             "schema_version": "books-evaluation-snapshot/1",
+            "mode": "replay",
             "corpus_identity": "corpus-a",
             "suites": {
                 "canary": {
@@ -130,6 +137,7 @@ class EvaluationRegressionGateTest(unittest.TestCase):
                 "schema_version": "books-evaluation-gate-config/1",
                 "score_rules": {},
             },
+            expected_mode="replay",
         )
 
         self.assertIn("corpus identity differs from baseline", violations)
@@ -140,6 +148,7 @@ class EvaluationRegressionGateTest(unittest.TestCase):
         gate = load_gate_module()
         baseline = {
             "schema_version": "books-evaluation-snapshot/1",
+            "mode": "replay",
             "corpus_identity": "corpus-a",
             "suites": {
                 "queue": {
@@ -168,6 +177,7 @@ class EvaluationRegressionGateTest(unittest.TestCase):
                     }
                 },
             },
+            expected_mode="replay",
         )
 
         self.assertEqual([], violations)
@@ -177,6 +187,7 @@ class EvaluationRegressionGateTest(unittest.TestCase):
 
         snapshot = gate.build_snapshot(ROOT)
 
+        self.assertEqual("replay", snapshot["mode"])
         self.assertEqual(
             ["canaries", "entailment-queue", "robustness", "skill-a-b"],
             sorted(snapshot["suites"]),
@@ -199,7 +210,15 @@ class EvaluationRegressionGateTest(unittest.TestCase):
 
     def test_committed_baseline_matches_repository_and_passes_cli(self) -> None:
         completed = subprocess.run(
-            [sys.executable, str(TOOL), "check", "--root", str(ROOT)],
+            [
+                sys.executable,
+                str(TOOL),
+                "check",
+                "--root",
+                str(ROOT),
+                "--mode",
+                "replay",
+            ],
             cwd=ROOT,
             check=False,
             capture_output=True,
@@ -208,6 +227,72 @@ class EvaluationRegressionGateTest(unittest.TestCase):
 
         self.assertEqual(0, completed.returncode, completed.stderr)
         self.assertIn("evaluation regression gate passed", completed.stdout)
+
+    def test_declared_mode_mismatch_fails_closed(self) -> None:
+        gate = load_gate_module()
+        baseline = {
+            "schema_version": "books-evaluation-snapshot/1",
+            "mode": "replay",
+            "corpus_identity": "corpus-a",
+            "suites": {},
+        }
+        candidate = copy.deepcopy(baseline)
+        candidate["mode"] = "live"
+
+        violations = gate.compare_snapshots(
+            candidate,
+            baseline,
+            {
+                "schema_version": "books-evaluation-gate-config/1",
+                "score_rules": {},
+            },
+            expected_mode="replay",
+        )
+
+        self.assertIn(
+            "candidate mode live does not match declared execution mode replay",
+            violations,
+        )
+
+    def test_failed_cli_check_records_one_idempotent_defect_observation(self) -> None:
+        baseline = json.loads(
+            (ROOT / "doctrine/evaluations/baselines/repository.json").read_text()
+        )
+        candidate = copy.deepcopy(baseline)
+        candidate["suites"]["canaries"]["errors"] = ["fixture missing"]
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            temporary = Path(temporary_directory)
+            candidate_path = temporary / "candidate.json"
+            ledger_path = temporary / "gate-defects.jsonl"
+            candidate_path.write_text(json.dumps(candidate), encoding="utf-8")
+            command = [
+                sys.executable,
+                str(TOOL),
+                "check",
+                "--root",
+                str(ROOT),
+                "--mode",
+                "replay",
+                "--results",
+                str(candidate_path),
+                "--defect-ledger",
+                str(ledger_path),
+                "--recorded-at",
+                "2026-07-17T00:00:00Z",
+            ]
+
+            first = subprocess.run(command, cwd=ROOT, text=True, capture_output=True)
+            second = subprocess.run(command, cwd=ROOT, text=True, capture_output=True)
+            events = [
+                json.loads(line)
+                for line in ledger_path.read_text(encoding="utf-8").splitlines()
+            ]
+
+        self.assertEqual(1, first.returncode)
+        self.assertEqual(1, second.returncode)
+        self.assertEqual(1, len(events))
+        self.assertEqual("observation", events[0]["assertion_type"])
+        self.assertIn(events[0]["defect_id"], first.stderr)
 
     def test_committed_snapshot_and_config_satisfy_portable_schemas(self) -> None:
         snapshot_schema = json.loads(

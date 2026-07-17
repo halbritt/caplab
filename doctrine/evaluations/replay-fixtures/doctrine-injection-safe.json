@@ -1,6 +1,7 @@
 {
   "schema_version": "evaluation-replay-fixture/1",
   "id": "doctrine-injection-safe",
+  "mode": "replay",
   "consumer": "doctrine-injection",
   "provenance": {
     "kind": "synthetic",

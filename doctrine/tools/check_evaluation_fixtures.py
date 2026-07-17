@@ -13,6 +13,9 @@ from typing import Any, Iterator
 
 import jsonschema
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from evaluation_mode import EvaluationModeError, require_evaluation_mode  # noqa: E402
+
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_ROOT = ROOT / "doctrine/evaluations/replay-fixtures"
@@ -74,9 +77,15 @@ def _walk(value: Any, location: str = "$") -> Iterator[tuple[str, str, Any]]:
             yield from _walk(child, child_location)
 
 
-def validate_fixture_document(document: dict[str, Any]) -> None:
+def validate_fixture_document(
+    document: dict[str, Any], *, execution_mode: str
+) -> None:
     schema = _read_object(FIXTURE_SCHEMA)
     jsonschema.Draft202012Validator(schema).validate(document)
+    try:
+        require_evaluation_mode(execution_mode, document["mode"])
+    except EvaluationModeError as exc:
+        raise FixtureError(str(exc)) from exc
     for location, key, value in _walk(document):
         normalized_key = key.lower()
         if normalized_key in EXTERNAL_FIELDS:
@@ -119,7 +128,9 @@ def validate_fixture_document(document: dict[str, Any]) -> None:
             )
 
 
-def load_catalog(root: Path = DEFAULT_ROOT) -> dict[str, dict[str, Any]]:
+def load_catalog(
+    root: Path = DEFAULT_ROOT, *, execution_mode: str
+) -> dict[str, dict[str, Any]]:
     if root.is_symlink():
         raise FixtureError(f"fixture_root_is_symlink:{root}")
     root = root.resolve()
@@ -150,7 +161,7 @@ def load_catalog(root: Path = DEFAULT_ROOT) -> dict[str, dict[str, Any]]:
         if _sha256_file(path) != entry["sha256"]:
             raise FixtureError(f"fixture_file_sha256_mismatch:{entry['path']}")
         document = _read_object(path)
-        validate_fixture_document(document)
+        validate_fixture_document(document, execution_mode=execution_mode)
         if document["id"] != entry["id"]:
             raise FixtureError(f"fixture_id_mismatch:{entry['path']}")
         if document["id"] in catalog:
@@ -162,9 +173,10 @@ def load_catalog(root: Path = DEFAULT_ROOT) -> dict[str, dict[str, Any]]:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=DEFAULT_ROOT)
+    parser.add_argument("--mode", choices=["live", "replay"], required=True)
     args = parser.parse_args(argv)
     try:
-        catalog = load_catalog(args.root)
+        catalog = load_catalog(args.root, execution_mode=args.mode)
     except (OSError, json.JSONDecodeError, jsonschema.ValidationError, FixtureError) as exc:
         print(f"evaluation fixture hygiene error: {exc}", file=sys.stderr)
         return 1
