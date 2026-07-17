@@ -264,7 +264,7 @@ class HarnessRunTests(unittest.TestCase):
         self.assertEqual(1, len(records))
         record = records[0]
         chapter_sha = hashlib.sha256(chapter.read_bytes()).hexdigest()
-        self.assertEqual("entailment-eval/2", record["schema_version"])
+        self.assertEqual("entailment-eval/3", record["schema_version"])
         self.assertEqual("test-deep-modules", record["concept_id"])
         self.assertEqual("SRC-FAKE", record["source_id"])
         self.assertEqual(chapter_sha, record["chapter_sha256"])
@@ -272,6 +272,7 @@ class HarnessRunTests(unittest.TestCase):
         self.assertIn("Defines deep modules", record["contribution"])
         self.assertFalse(record["truncated"])
         self.assertEqual("supported", record["verdict"])
+        self.assertEqual("model-outcome", record["outcome_class"])
         self.assertEqual(CANNED_VERDICT["evidence_quote"], record["evidence_quote"])
         self.assertEqual(CANNED_VERDICT["rationale"], record["rationale"])
         self.assertEqual("fake-judge-model", record["model"])
@@ -373,6 +374,7 @@ class HarnessRunTests(unittest.TestCase):
         record = self.read_records()[0]
         self.assertTrue(record["truncated"])
         self.assertEqual("insufficient_context", record["verdict"])
+        self.assertEqual("not-evaluated", record["outcome_class"])
         self.assertEqual("section_exceeds_context_budget", record["error"])
 
     def test_evidence_quote_must_occur_in_the_complete_section(self):
@@ -391,6 +393,7 @@ class HarnessRunTests(unittest.TestCase):
 
         record = self.read_records()[0]
         self.assertEqual("quote_not_found", record["verdict"])
+        self.assertEqual("model-failure", record["outcome_class"])
         self.assertEqual("supported", record["model_verdict"])
         self.assertEqual("evidence_quote_not_found_in_section", record["error"])
 
@@ -401,6 +404,7 @@ class HarnessRunTests(unittest.TestCase):
         records = self.read_records()
         self.assertEqual(1, len(records))
         self.assertEqual("resolution_failed", records[0]["verdict"])
+        self.assertEqual("infrastructure-failure", records[0]["outcome_class"])
         self.assertEqual("heading_not_found", records[0]["resolution_error"])
         self.assertIsNotNone(records[0]["chapter_sha256"])
 
@@ -419,6 +423,7 @@ class HarnessRunTests(unittest.TestCase):
         self.assertEqual(0, self.run_harness("--summarize"))
         self.assertEqual(first, summary_path.read_text(encoding="utf-8"))
         self.assertIn("| supported | 1 |", first)
+        self.assertIn("| model-outcome | 1 |", first)
         self.assertIn("SRC-FAKE", first)
 
 
@@ -438,6 +443,7 @@ class UnparseableContentTests(unittest.TestCase):
         )
         outcome = entailment_eval.judge(client, "prompt")
         self.assertEqual("unparseable", outcome["verdict"])
+        self.assertEqual("model-failure", outcome["outcome_class"])
         self.assertEqual("I refuse to emit JSON.", outcome["raw_content"])
         self.assertEqual(2, len(FakeOpenAIHandler.chat_requests))
 
@@ -449,6 +455,7 @@ class UnparseableContentTests(unittest.TestCase):
         client = entailment_eval.OpenAIClient(f"http://127.0.0.1:{port}/v1", 2.0, 64)
         outcome = entailment_eval.judge(client, "prompt")
         self.assertEqual("transport_error", outcome["verdict"])
+        self.assertEqual("infrastructure-failure", outcome["outcome_class"])
         self.assertTrue(outcome["error"])
 
 

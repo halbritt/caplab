@@ -41,8 +41,9 @@ if _REPOSITORY_DIR not in sys.path:
     sys.path.insert(0, _REPOSITORY_DIR)
 
 from caplab.locators import parse_heading_selector, plain_heading  # noqa: E402
+from evaluation_outcomes import classify_entailment  # noqa: E402
 
-SCHEMA_VERSION = "entailment-eval/2"
+SCHEMA_VERSION = "entailment-eval/3"
 PROMPT_VERSION = "entailment-prompt/5"
 DEFAULT_ENDPOINT = "http://localhost:8081/v1"
 MODEL_ALIAS = "qwen3.6-35b-a3b"
@@ -493,6 +494,7 @@ def judge(client: OpenAIClient, prompt: str) -> dict[str, Any]:
         if content is None:
             return {
                 "verdict": "transport_error",
+                "outcome_class": classify_entailment("transport_error"),
                 "evidence_quote": "",
                 "rationale": "",
                 "error": transport_error,
@@ -504,6 +506,7 @@ def judge(client: OpenAIClient, prompt: str) -> dict[str, Any]:
         if parsed is not None and parsed.get("verdict") in MODEL_VERDICTS:
             return {
                 "verdict": parsed["verdict"],
+                "outcome_class": classify_entailment(str(parsed["verdict"])),
                 "evidence_quote": str(parsed.get("evidence_quote", "")),
                 "rationale": str(parsed.get("rationale", "")),
                 "error": None,
@@ -512,6 +515,7 @@ def judge(client: OpenAIClient, prompt: str) -> dict[str, Any]:
             }
     return {
         "verdict": "unparseable",
+        "outcome_class": classify_entailment("unparseable"),
         "evidence_quote": "",
         "rationale": "",
         "error": "no_valid_json_verdict_in_content",
@@ -564,6 +568,7 @@ def verify_evidence_quote(outcome: dict[str, Any], section_text: str) -> dict[st
     invalid = dict(outcome)
     invalid["model_verdict"] = outcome.get("verdict")
     invalid["verdict"] = "quote_not_found"
+    invalid["outcome_class"] = classify_entailment("quote_not_found")
     invalid["error"] = "evidence_quote_not_found_in_section"
     return invalid
 
@@ -612,6 +617,10 @@ def load_records(results_path: Path) -> tuple[list[dict[str, Any]], int]:
 def summarize(results_path: Path, summary_path: Path) -> int:
     records, line_count = load_records(results_path)
     verdict_counts = Counter(record.get("verdict", "missing") for record in records)
+    outcome_counts = Counter(
+        classify_entailment(str(record.get("verdict", "missing")))
+        for record in records
+    )
     source_counts: dict[str, Counter] = {}
     for record in records:
         source_counts.setdefault(record.get("source_id", "unknown"), Counter())[
@@ -627,6 +636,12 @@ def summarize(results_path: Path, summary_path: Path) -> int:
     ]
     failures = [
         record for record in records if record.get("verdict") == "resolution_failed"
+    ]
+    infrastructure_failures = [
+        record
+        for record in records
+        if classify_entailment(str(record.get("verdict", "missing")))
+        == "infrastructure-failure"
     ]
 
     verdict_order = list(MODEL_VERDICTS) + list(HARNESS_VERDICTS)
@@ -652,6 +667,14 @@ def summarize(results_path: Path, summary_path: Path) -> int:
             lines.append(f"| {verdict} | {verdict_counts[verdict]} |")
     for verdict in sorted(set(verdict_counts) - set(verdict_order)):
         lines.append(f"| {verdict} | {verdict_counts[verdict]} |")
+    lines += ["", "## Outcome classes", "", "| class | count |", "|---|---|"]
+    for outcome_class in (
+        "model-outcome",
+        "model-failure",
+        "infrastructure-failure",
+        "not-evaluated",
+    ):
+        lines.append(f"| {outcome_class} | {outcome_counts[outcome_class]} |")
     lines += [
         "",
         "## Verdicts by source",
@@ -672,6 +695,15 @@ def summarize(results_path: Path, summary_path: Path) -> int:
     ]
     if flagged:
         for record in flagged:
+            lines.append(
+                f"- `{record.get('verdict')}` — concept `{record.get('concept_id')}` — "
+                f"`{record.get('locator')}`"
+            )
+    else:
+        lines.append("None.")
+    lines += ["", "## Infrastructure failures", ""]
+    if infrastructure_failures:
+        for record in infrastructure_failures:
             lines.append(
                 f"- `{record.get('verdict')}` — concept `{record.get('concept_id')}` — "
                 f"`{record.get('locator')}`"
@@ -894,6 +926,7 @@ def main(argv: list[str] | None = None) -> int:
                 record.update(
                     {
                         "verdict": "resolution_failed",
+                        "outcome_class": classify_entailment("resolution_failed"),
                         "evidence_quote": "",
                         "rationale": "",
                         "error": resolution.error,
@@ -906,6 +939,7 @@ def main(argv: list[str] | None = None) -> int:
                 record.update(
                     {
                         "verdict": "insufficient_context",
+                        "outcome_class": classify_entailment("insufficient_context"),
                         "evidence_quote": "",
                         "rationale": (
                             "The complete cited section exceeds the configured "

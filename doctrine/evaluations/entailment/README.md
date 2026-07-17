@@ -53,11 +53,15 @@ Per [`ubiquitous_language.md`](../../../ubiquitous_language.md):
    `unparseable` with the raw content; one retry on transport failure, then
    `transport_error`. A non-empty evidence quote that is not present in the
    complete cited section becomes `quote_not_found` rather than support.
+   Version 3 records also classify each result with the shared evaluation
+   taxonomy: valid verdicts are `model-outcome`; `unparseable` and
+   `quote_not_found` are `model-failure`; transport and resolution errors are
+   `infrastructure-failure`; and `insufficient_context` is `not-evaluated`.
 5. Appends one JSON line per judgment to `results.jsonl` with full provenance:
    concept, source, locator, chapter and section sha256, contribution,
    relationship, verdict, evidence quote, rationale, model id, request
    parameters, endpoint, prompt version, latency, schema version
-   `entailment-eval/2`, and a deterministic key over the complete judgment
+   `entailment-eval/3`, and a deterministic key over the complete judgment
    target and judge configuration. The key binds claim, relationship,
    contribution, chapter and section identity, prompt version, requested
    model, served model identifier, endpoint, token limit, and sampler

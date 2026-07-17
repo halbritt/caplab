@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ethogram.local/doctrine/evaluations/error-taxonomy.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "outcome_classes", "scenario_exit_codes", "entailment_verdicts", "unknown_status_policy"],
+  "properties": {
+    "schema_version": {"const": "evaluation-error-taxonomy/1"},
+    "outcome_classes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["model-outcome", "model-failure", "infrastructure-failure", "not-evaluated"],
+      "properties": {
+        "model-outcome": {"$ref": "#/$defs/model_outcome_class"},
+        "model-failure": {"$ref": "#/$defs/model_failure_class"},
+        "infrastructure-failure": {"$ref": "#/$defs/non_scoring_class"},
+        "not-evaluated": {"$ref": "#/$defs/non_scoring_class"}
+      }
+    },
+    "scenario_exit_codes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["0", "1", "2"],
+      "properties": {
+        "0": {"const": "model-outcome"},
+        "1": {"const": "model-failure"},
+        "2": {"const": "infrastructure-failure"}
+      }
+    },
+    "entailment_verdicts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "supported",
+        "partially_supported",
+        "not_supported",
+        "contradicted",
+        "unparseable",
+        "quote_not_found",
+        "transport_error",
+        "resolution_failed",
+        "insufficient_context"
+      ],
+      "properties": {
+        "supported": {"const": "model-outcome"},
+        "partially_supported": {"const": "model-outcome"},
+        "not_supported": {"const": "model-outcome"},
+        "contradicted": {"const": "model-outcome"},
+        "unparseable": {"const": "model-failure"},
+        "quote_not_found": {"const": "model-failure"},
+        "transport_error": {"const": "infrastructure-failure"},
+        "resolution_failed": {"const": "infrastructure-failure"},
+        "insufficient_context": {"const": "not-evaluated"}
+      }
+    },
+    "unknown_status_policy": {"const": "infrastructure-failure"}
+  },
+  "$defs": {
+    "model_outcome_class": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["score_eligible", "may_supply_model_evidence"],
+      "properties": {
+        "score_eligible": {"const": true},
+        "may_supply_model_evidence": {"const": true}
+      }
+    },
+    "model_failure_class": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["score_eligible", "may_supply_model_evidence"],
+      "properties": {
+        "score_eligible": {"const": true},
+        "may_supply_model_evidence": {"const": false}
+      }
+    },
+    "non_scoring_class": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["score_eligible", "may_supply_model_evidence"],
+      "properties": {
+        "score_eligible": {"const": false},
+        "may_supply_model_evidence": {"const": false}
+      }
+    }
+  }
+}

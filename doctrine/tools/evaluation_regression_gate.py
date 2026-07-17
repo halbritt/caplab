@@ -14,6 +14,9 @@ from typing import Any
 
 import jsonschema
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from evaluation_outcomes import classify_scenario_exit  # noqa: E402
+
 
 SNAPSHOT_SCHEMA = "books-evaluation-snapshot/1"
 CONFIG_SCHEMA = "books-evaluation-gate-config/1"
@@ -43,34 +46,46 @@ def _score(count: int, passed: int) -> dict[str, float | int]:
     return {"count": count, "value": passed / count if count else 0.0}
 
 
-def _contract_error(command: list[str], root: Path) -> str | None:
+def _contract_outcome(command: list[str], root: Path) -> tuple[str, str | None]:
     process = subprocess.run(
         command, cwd=root, text=True, capture_output=True, check=False
     )
-    if process.returncode == 0:
-        return None
-    return process.stderr.strip() or process.stdout.strip() or f"exit {process.returncode}"
+    outcome_class = classify_scenario_exit(process.returncode)
+    if outcome_class == "model-outcome":
+        return outcome_class, None
+    error = process.stderr.strip() or process.stdout.strip() or f"exit {process.returncode}"
+    return outcome_class, error
 
 
 def _suite(
-    case_ids: list[str], kinds: Counter[str], errors: list[str]
+    case_ids: list[str],
+    kinds: Counter[str],
+    model_failures: list[str],
+    infrastructure_errors: list[str],
 ) -> dict[str, Any]:
+    score_eligible = max(0, len(case_ids) - len(infrastructure_errors))
+    passed = max(0, score_eligible - len(model_failures))
     return {
         "case_ids": sorted(case_ids),
         "kind_counts": dict(sorted(kinds.items())),
         "scores": {
             "contract_pass_rate": _score(
-                len(case_ids), max(0, len(case_ids) - len(errors))
+                score_eligible, passed
             )
         },
-        "errors": sorted(errors),
+        "errors": sorted(model_failures + infrastructure_errors),
+        "outcome_counts": {
+            "model_failure": len(model_failures),
+            "infrastructure_failure": len(infrastructure_errors),
+        },
     }
 
 
 def _canary_suite(root: Path, evaluation_root: Path) -> dict[str, Any]:
     canary_ids: list[str] = []
     canary_kinds: Counter[str] = Counter()
-    canary_errors: list[str] = []
+    model_failures: list[str] = []
+    infrastructure_errors: list[str] = []
     scenario_paths = (evaluation_root / "fixtures").glob("*/scenario.json")
     for scenario_path in sorted(scenario_paths):
         try:
@@ -80,7 +95,7 @@ def _canary_suite(root: Path, evaluation_root: Path) -> dict[str, Any]:
             result_path = scenario_path.with_name("result.json")
             canary_ids.append(case_id)
             canary_kinds["authority-granted" if granted else "authority-withheld"] += 1
-            error = _contract_error(
+            outcome_class, error = _contract_outcome(
                 [
                     sys.executable,
                     str(root / "doctrine/tools/run_scenario.py"),
@@ -90,23 +105,29 @@ def _canary_suite(root: Path, evaluation_root: Path) -> dict[str, Any]:
                 root,
             )
             if error:
-                canary_errors.append(f"{case_id}: {error}")
+                target = (
+                    model_failures
+                    if outcome_class == "model-failure"
+                    else infrastructure_errors
+                )
+                target.append(f"{case_id}: {error}")
         except (OSError, ValueError, KeyError, jsonschema.ValidationError) as exc:
-            canary_errors.append(f"{scenario_path.relative_to(root)}: {exc}")
-    return _suite(canary_ids, canary_kinds, canary_errors)
+            infrastructure_errors.append(f"{scenario_path.relative_to(root)}: {exc}")
+    return _suite(canary_ids, canary_kinds, model_failures, infrastructure_errors)
 
 
 def _robustness_suite(root: Path, evaluation_root: Path) -> dict[str, Any]:
     robustness_ids: list[str] = []
     robustness_kinds: Counter[str] = Counter()
-    robustness_errors: list[str] = []
+    model_failures: list[str] = []
+    infrastructure_errors: list[str] = []
     case_paths = (evaluation_root / "robustness" / "cases").glob("*.json")
     for case_path in sorted(case_paths):
         try:
             case = _read_json(case_path)
             robustness_ids.append(str(case["id"]))
             robustness_kinds[str(case["operator"]["id"])] += 1
-            error = _contract_error(
+            outcome_class, error = _contract_outcome(
                 [
                     sys.executable,
                     str(root / "doctrine/tools/run_robustness_case.py"),
@@ -115,16 +136,23 @@ def _robustness_suite(root: Path, evaluation_root: Path) -> dict[str, Any]:
                 root,
             )
             if error:
-                robustness_errors.append(f"{case['id']}: {error}")
+                target = (
+                    model_failures
+                    if outcome_class == "model-failure"
+                    else infrastructure_errors
+                )
+                target.append(f"{case['id']}: {error}")
         except (OSError, ValueError, KeyError, jsonschema.ValidationError) as exc:
-            robustness_errors.append(f"{case_path.relative_to(root)}: {exc}")
-    return _suite(robustness_ids, robustness_kinds, robustness_errors)
+            infrastructure_errors.append(f"{case_path.relative_to(root)}: {exc}")
+    return _suite(
+        robustness_ids, robustness_kinds, model_failures, infrastructure_errors
+    )
 
 
 def _skill_suite(root: Path, evaluation_root: Path) -> dict[str, Any]:
     skill_ids: list[str] = []
     skill_kinds: Counter[str] = Counter()
-    skill_errors: list[str] = []
+    infrastructure_errors: list[str] = []
     case_paths = (evaluation_root / "robustness" / "skill-cases").glob("*.json")
     for case_path in sorted(case_paths):
         try:
@@ -136,8 +164,8 @@ def _skill_suite(root: Path, evaluation_root: Path) -> dict[str, Any]:
             skill_ids.append(str(case["id"]))
             skill_kinds[str(case["oracle"]["detection_boundary"])] += 1
         except (OSError, ValueError, KeyError, jsonschema.ValidationError) as exc:
-            skill_errors.append(f"{case_path.relative_to(root)}: {exc}")
-    return _suite(skill_ids, skill_kinds, skill_errors)
+            infrastructure_errors.append(f"{case_path.relative_to(root)}: {exc}")
+    return _suite(skill_ids, skill_kinds, [], infrastructure_errors)
 
 
 def _queue_suite(root: Path, evaluation_root: Path) -> tuple[str, dict[str, Any]]:
@@ -145,7 +173,7 @@ def _queue_suite(root: Path, evaluation_root: Path) -> tuple[str, dict[str, Any]
     coverage_path = evaluation_root / "gold" / "coverage.json"
     queue_ids: list[str] = []
     queue_kinds: Counter[str] = Counter()
-    queue_errors: list[str] = []
+    infrastructure_errors: list[str] = []
     corpus_identity = "unavailable"
     queue_scores: dict[str, dict[str, float | int]] = {}
     try:
@@ -160,9 +188,9 @@ def _queue_suite(root: Path, evaluation_root: Path) -> tuple[str, dict[str, Any]
         queue_scores["queue_coverage"] = _score(required_count, covered_count)
         corpus_identity = _canonical_sha256(queue["generation"]["input_sha256"])
     except (OSError, ValueError, KeyError, TypeError, jsonschema.ValidationError) as exc:
-        queue_errors.append(f"{queue_path.relative_to(root)}: {exc}")
+        infrastructure_errors.append(f"{queue_path.relative_to(root)}: {exc}")
 
-    queue_suite = _suite(queue_ids, queue_kinds, queue_errors)
+    queue_suite = _suite(queue_ids, queue_kinds, [], infrastructure_errors)
     queue_suite["scores"].update(queue_scores)
     return corpus_identity, queue_suite
 

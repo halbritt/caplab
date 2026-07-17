@@ -25,6 +25,11 @@ stale seed or container hashes and selectors outside the operator allowlist.
 Canonical scenarios, results, doctrine, and human-owned adjudications are
 read-only inputs.
 
+The scenario adapter preserves the shared error taxonomy across its process
+boundary: exit 1 is a model or subject contract failure, while exit 2 is an
+infrastructure failure. The robustness runner never relabels exit 2 as a
+mutant or baseline judgment.
+
 The current case establishes deterministic contract behavior only. It does not
 constitute human acceptance of judgment quality.
 

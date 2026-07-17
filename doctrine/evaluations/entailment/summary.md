@@ -21,6 +21,15 @@ Records: 1950 unique judgment keys (1968 result lines).
 | unparseable | 1 |
 | quote_not_found | 118 |
 
+## Outcome classes
+
+| class | count |
+|---|---|
+| model-outcome | 1825 |
+| model-failure | 119 |
+| infrastructure-failure | 0 |
+| not-evaluated | 6 |
+
 ## Verdicts by source
 
 | source | supported | partially_supported | not_supported | contradicted | insufficient_context | resolution_failed | unparseable | transport_error | quote_not_found | total |
@@ -198,6 +207,10 @@ Records: 1950 unique judgment keys (1968 result lines).
 - `quote_not_found` — concept `universal-preserve-behavior-by-default` — `books/programming-working-effectively-with-legacy-code/chapters/008-chapter-1-changing-software.md :: Four Reasons to Change Software`
 - `quote_not_found` — concept `universal-repository-contract-precedence` — `books/dokumen-pub-a-philosophy-of-software-design-2nd-edition-2nbsped-173210221x-9781732102217/chapters/022-17-consistency.md :: 17: Consistency`
 - `quote_not_found` — concept `universal-reversible-reviewable-change` — `books/oreilly-fundamentals-of-software-architecture-2020-1/chapters/026-chapter-19-architecture-decisions.md :: Covering Your Assets Anti-Pattern`
+
+## Infrastructure failures
+
+None.
 
 ## Locator-resolution failures
 

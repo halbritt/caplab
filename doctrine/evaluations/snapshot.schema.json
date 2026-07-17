@@ -54,6 +54,15 @@
         "errors": {
           "type": "array",
           "items": {"type": "string", "minLength": 1}
+        },
+        "outcome_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["model_failure", "infrastructure_failure"],
+          "properties": {
+            "model_failure": {"type": "integer", "minimum": 0},
+            "infrastructure_failure": {"type": "integer", "minimum": 0}
+          }
         }
       }
     }

@@ -16,6 +16,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build_robustness_suite import validate_artifact
+from evaluation_outcomes import classify_scenario_exit
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -23,6 +24,14 @@ ROBUSTNESS = ROOT / "doctrine" / "evaluations" / "robustness"
 
 
 class CompileError(ValueError):
+    pass
+
+
+class InfrastructureError(RuntimeError):
+    pass
+
+
+class ModelFailure(CompileError):
     pass
 
 
@@ -135,9 +144,15 @@ def run_case(
                 [sys.executable, str(runner), str(scenario_path), str(result_path)],
                 cwd=ROOT, text=True, capture_output=True, check=False,
             )
-            if process.returncode:
+            outcome_class = classify_scenario_exit(process.returncode)
+            if outcome_class == "infrastructure-failure":
+                raise InfrastructureError(
+                    f"scenario_runner_infrastructure_failure:{branch}: "
+                    f"{process.stderr.strip()}"
+                )
+            if outcome_class == "model-failure":
                 label = "invalid_baseline" if branch == "clean" else "mutant_failed"
-                raise CompileError(f"{label}: {process.stderr.strip()}")
+                raise ModelFailure(f"{label}: {process.stderr.strip()}")
             branches[branch] = "passed"
     return {"compiled": compiled, "branches": branches}
 
@@ -148,9 +163,15 @@ def main() -> int:
     args = parser.parse_args()
     try:
         result = run_case(args.case)
-    except (CompileError, OSError, json.JSONDecodeError) as error:
-        print(str(error), file=sys.stderr)
+    except ModelFailure as error:
+        print(f"model-failure: {error}", file=sys.stderr)
         return 1
+    except InfrastructureError as error:
+        print(f"infrastructure-failure: {error}", file=sys.stderr)
+        return 2
+    except (CompileError, OSError, json.JSONDecodeError) as error:
+        print(f"infrastructure-failure: {error}", file=sys.stderr)
+        return 2
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0
 

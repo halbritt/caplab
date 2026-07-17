@@ -116,3 +116,22 @@ such as `latest`, `main`, or `HEAD`. `make evaluation-gate` depends on this
 check, so the pull-request workflow enforces the same rule. Fixtures must stay
 synthetic; live responses and raw evaluation artifacts remain outside the
 repository.
+
+## Error classification
+
+`error-taxonomy.json` defines four closed outcome classes shared by scenario
+replay, robustness replay, entailment screening, and aggregate evaluation
+snapshots:
+
+- `model-outcome` is a valid model or subject result and is score-eligible.
+- `model-failure` is invalid model or subject output and is score-eligible as
+  a failure.
+- `infrastructure-failure` means the evaluation could not produce a judgment;
+  it is never score-eligible or passing evidence.
+- `not-evaluated` means a declared bound stopped the judgment before a model
+  call; it is not score-eligible.
+
+Scenario exit codes are 0, 1, and 2 for model outcome, model failure, and
+infrastructure failure respectively. Unknown statuses fail closed as
+`infrastructure-failure`. Aggregate gates still fail on every recorded error,
+but infrastructure failures are excluded from model score denominators.

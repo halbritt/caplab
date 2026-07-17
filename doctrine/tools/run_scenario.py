@@ -54,13 +54,26 @@ def retrieval_expectation_errors(
     return missing + forbidden
 
 
-def evaluate_scenario(scenario: object, result_artifact: object) -> list[str]:
-    if not isinstance(scenario, dict) or not isinstance(result_artifact, dict):
-        return ["scenario_and_result_must_be_objects"]
-
-    expected = scenario.get("expected", {})
+def scenario_contract_errors(scenario: object) -> list[str]:
+    if not isinstance(scenario, dict):
+        return ["scenario_must_be_an_object"]
+    if "expected" not in scenario:
+        return ["scenario_expected_is_required"]
+    expected = scenario["expected"]
     if not isinstance(expected, dict):
         return ["scenario_expected_must_be_an_object"]
+    return []
+
+
+def evaluate_scenario(scenario: object, result_artifact: object) -> list[str]:
+    scenario_errors = scenario_contract_errors(scenario)
+    if scenario_errors:
+        return scenario_errors
+    if not isinstance(result_artifact, dict):
+        return ["result_must_be_an_object"]
+    assert isinstance(scenario, dict)
+    expected = scenario["expected"]
+    assert isinstance(expected, dict)
     return assertion_expectation_errors(
         expected, result_artifact
     ) + retrieval_expectation_errors(expected, result_artifact)
@@ -76,18 +89,34 @@ def main() -> int:
 
     try:
         scenario = load_json(args.scenario)
-        result_artifact = load_json(args.result)
     except (OSError, json.JSONDecodeError) as error:
-        print(f"unable_to_read_scenario: {error}", file=sys.stderr)
+        print(f"infrastructure-failure: unable_to_read_scenario: {error}", file=sys.stderr)
         return 2
+    infrastructure_errors = scenario_contract_errors(scenario)
+    if infrastructure_errors:
+        print(
+            "\n".join(f"infrastructure-failure: {error}" for error in infrastructure_errors),
+            file=sys.stderr,
+        )
+        return 2
+
+    try:
+        result_artifact = load_json(args.result)
+    except OSError as error:
+        print(f"infrastructure-failure: unable_to_read_result: {error}", file=sys.stderr)
+        return 2
+    except json.JSONDecodeError as error:
+        print(f"model-failure: invalid_result_json: {error}", file=sys.stderr)
+        return 1
 
     errors = evaluate_scenario(scenario, result_artifact)
     if isinstance(result_artifact, dict):
         errors.extend(validate_artifact(result_artifact))
     if errors:
-        print("\n".join(errors), file=sys.stderr)
+        print("\n".join(f"model-failure: {error}" for error in errors), file=sys.stderr)
         return 1
-    print(f"scenario passed: {scenario.get('id', args.scenario.name)}")
+    assert isinstance(scenario, dict)
+    print(f"model-outcome: scenario passed: {scenario.get('id', args.scenario.name)}")
     return 0
 
 

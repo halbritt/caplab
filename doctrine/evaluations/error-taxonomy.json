@@ -1,0 +1,26 @@
+{
+  "schema_version": "evaluation-error-taxonomy/1",
+  "outcome_classes": {
+    "model-outcome": {"score_eligible": true, "may_supply_model_evidence": true},
+    "model-failure": {"score_eligible": true, "may_supply_model_evidence": false},
+    "infrastructure-failure": {"score_eligible": false, "may_supply_model_evidence": false},
+    "not-evaluated": {"score_eligible": false, "may_supply_model_evidence": false}
+  },
+  "scenario_exit_codes": {
+    "0": "model-outcome",
+    "1": "model-failure",
+    "2": "infrastructure-failure"
+  },
+  "entailment_verdicts": {
+    "supported": "model-outcome",
+    "partially_supported": "model-outcome",
+    "not_supported": "model-outcome",
+    "contradicted": "model-outcome",
+    "unparseable": "model-failure",
+    "quote_not_found": "model-failure",
+    "transport_error": "infrastructure-failure",
+    "resolution_failed": "infrastructure-failure",
+    "insufficient_context": "not-evaluated"
+  },
+  "unknown_status_policy": "infrastructure-failure"
+}

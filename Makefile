@@ -7,6 +7,7 @@ CAPLAB_TEST_MODULES := \
 	tests.test_caplab_dashboard \
 	tests.test_doctrine_scaffolding \
 	tests.test_doctrine_injection_probe \
+	tests.test_evaluation_error_taxonomy \
 	tests.test_evaluation_fixture_hygiene \
 	tests.test_evaluation_regression_gate \
 	tests.test_entailment_eval \
