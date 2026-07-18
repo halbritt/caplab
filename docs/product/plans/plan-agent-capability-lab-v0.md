@@ -5,7 +5,7 @@ title: Agent Capability Lab v0
 status: authorized
 owner: repository-maintainers
 created: 2026-07-15
-updated: 2026-07-17
+updated: 2026-07-18
 supersedes: []
 superseded_by: null
 source_artifacts:
@@ -20,6 +20,7 @@ authorization_records:
   - adr-0010
   - adr-0014
   - adr-0015
+  - adr-0016
 authorized_scope:
   - CAPLAB-22/P4
   - CAPLAB-23/P5
@@ -45,6 +46,13 @@ authorized_scope:
   - docs/records/caplab-p5-purge-*
   - docs/records/caplab-p6-*
   - proximal:caplab-p6/**
+  - adr-0016 Stage A model-free backlog-drain implementation
+  - CAPLAB-25/P7 implementation preparation
+  - CAPLAB-26/P8 implementation preparation
+  - CAPLAB-28/P10 implementation preparation
+  - src/caplab/recomputation/**
+  - src/caplab/profile/**
+  - src/caplab/training_candidates/**
 change_types:
   - change-feature-implementation
   - change-architectural-restructuring
@@ -65,8 +73,12 @@ verification and left the exact P5 state quarantined. ADR 0010 records the
 owner's instruction to proceed with a corrective continuation under the same
 expiry. ADR 0014 authorizes exact P5 purge completion and, only after an
 independent P5 PASS, restricted P6 admission through
-`2026-07-24T23:59:59Z`. P7 and later checkpoints, recomputation, model calls,
-dataset export, training, and acceptance remain unauthorized.
+`2026-07-24T23:59:59Z`. ADR 0016 authorizes model-free implementation
+preparation for P7, P8, and P10 through `2026-07-25T23:59:59Z`; live P7 data
+access remains unavailable until a separate continuation binds the exact
+executor and temporary read-only runtime. Human inference, eligibility,
+export, independent verification, model calls, training, and acceptance remain
+unauthorized.
 
 ## Objective and authority boundary
 
@@ -576,3 +588,16 @@ replacement because the Plane connector could not remove the original relation.
   application closure and retained its tombstone; and access was disabled.
   Fresh independent verification returned PASS. CAPLAB-23 is complete and ADR
   0014 Stage B/P6 is open. P7 and all later authority remain unavailable.
+- **2026-07-17 — P6 completed.** The restricted admission froze manifest
+  `d2d4f821146c3f39e6726133c383807ec9f6051834e74fbd3a5f33aae8ef148e`
+  with 684 records, 325 unique content identities, and exact 20/20/20 links.
+  Fresh independent verification returned PASS and all temporary access was
+  disabled. CAPLAB-24 is complete; this result did not authorize P7.
+- **2026-07-18 — backlog-drain Stage A authorized.** The repository owner
+  instructed the agent to work the CAPLAB backlog and clarified that the goal
+  is to drain it. ADR 0016 authorizes model-free implementation preparation for
+  CAPLAB-25/P7, CAPLAB-26/P8, and CAPLAB-28/P10 through
+  `2026-07-25T23:59:59Z`. Live registered-evidence access still requires a
+  separate exact continuation. Human inference, eligibility, export,
+  independent verification, model calls, training, and acceptance remain
+  separately gated.

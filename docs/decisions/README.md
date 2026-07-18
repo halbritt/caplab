@@ -18,3 +18,4 @@ does not imply execution, verification, or acceptance.
 | [ADR 0013](adr-0013-caplab-p5-promotion-readiness-correction.md) | CAPLAB P5 PostgreSQL promotion-readiness correction | decided | CAPLAB execution delegate |
 | [ADR 0014](adr-0014-caplab-p5-purge-and-p6-admission.md) | CAPLAB P5 purge completion and P6 Study 001 admission | decided | CAPLAB execution delegate |
 | [ADR 0015](adr-0015-caplab-p5-frozen-source-worktree.md) | CAPLAB P5 frozen executor source worktree correction | decided | CAPLAB execution delegate |
+| [ADR 0016](adr-0016-caplab-backlog-drain-afk-implementation.md) | CAPLAB backlog-drain AFK implementation campaign | decided | repository owner |

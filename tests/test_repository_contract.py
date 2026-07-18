@@ -42,6 +42,10 @@ class RepositoryContractTests(unittest.TestCase):
         adr_0014 = (
             ROOT / "docs/decisions/adr-0014-caplab-p5-purge-and-p6-admission.md"
         ).read_text(encoding="utf-8")
+        adr_0016 = (
+            ROOT
+            / "docs/decisions/adr-0016-caplab-backlog-drain-afk-implementation.md"
+        ).read_text(encoding="utf-8")
         plan = (
             ROOT / "docs/product/plans/plan-agent-capability-lab-v0.md"
         ).read_text(encoding="utf-8")
@@ -51,6 +55,7 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("status: decided", adr_0009)
         self.assertIn("status: decided", adr_0010)
         self.assertIn("status: decided", adr_0014)
+        self.assertIn("status: decided", adr_0016)
         self.assertIn("status: authorized", plan)
         for record in (adr_0007, adr_0008):
             self.assertIn("2026-07-22T23:59:59Z", record)
@@ -62,8 +67,13 @@ class RepositoryContractTests(unittest.TestCase):
             self.assertIn("2026-07-24T23:59:59Z", record)
             self.assertIn("CAPLAB-24/P6", record)
         self.assertIn("does not authorize CAPLAB-25/P7", adr_0014)
-        self.assertIn("P7 and later checkpoints", plan)
-        self.assertIn("remain unauthorized", plan)
+        for checkpoint in ("CAPLAB-25/P7", "CAPLAB-26/P8", "CAPLAB-28/P10"):
+            self.assertIn(checkpoint, adr_0016)
+        self.assertIn("Stage A creates no database row", adr_0016)
+        self.assertIn("live P7 data", plan)
+        self.assertIn("access remains unavailable", plan)
+        self.assertIn("Human inference, eligibility", plan)
+        self.assertIn("unauthorized", plan)
         self.assertIn("src/caplab/runtime/**", plan)
         self.assertIn("src/caplab/admission/**", plan)
 
