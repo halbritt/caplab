@@ -21,6 +21,7 @@ authorization_records:
   - adr-0014
   - adr-0015
   - adr-0016
+  - adr-0017
 authorized_scope:
   - CAPLAB-22/P4
   - CAPLAB-23/P5
@@ -76,7 +77,8 @@ independent P5 PASS, restricted P6 admission through
 `2026-07-24T23:59:59Z`. ADR 0016 authorizes model-free implementation
 preparation for P7, P8, and P10 through `2026-07-25T23:59:59Z`; live P7 data
 access remains unavailable until a separate continuation binds the exact
-executor and temporary read-only runtime. Human inference, eligibility,
+executor and temporary read-only runtime. ADR 0017 now authorizes that exact
+P7 continuation through `2026-07-25T23:59:59Z`. Human inference, eligibility,
 export, independent verification, model calls, training, and acceptance remain
 unauthorized. P8 and P10 now have hermetic deterministic implementations, but
 their actual Study 001 outputs remain unavailable until authorized live P7
@@ -610,3 +612,9 @@ replacement because the Plane connector could not remove the original relation.
   whose eligibility remains unavailable. This is implementation preparation,
   not execution of either checkpoint; both still depend on the pending live P7
   continuation.
+- **2026-07-18 — exact P7 live continuation approved.** The repository owner
+  instructed the agent to `approve the exact P7 live continuation`. ADR 0017
+  authorizes the proposal's frozen CAPLAB and Proximal commits, one temporary
+  read-only reader identity, two byte-identical recomputations, mandatory
+  aggregate revocation, preservation checks, and exact evidence root through
+  `2026-07-25T23:59:59Z`. All later human and acceptance gates remain separate.
