@@ -119,3 +119,11 @@ produced the exact
 The proposal awaits the repository owner's decision; it does not authorize
 live recomputation. Capability inference, export, publication, training, purge,
 and CAPLAB acceptance remain unavailable and unauthorized.
+
+ADR 0016 Stage A also produced the
+[`P8 and P10 implementation record`](caplab-p8-p10-stage-a-implementation-2026-07-18.md).
+The deterministic profile-proposal and candidate-manifest boundaries are
+implemented and pass the repository gate. This is implementation preparation,
+not execution of P8 or P10; both still depend on the pending live P7
+observation. Human inference, eligibility, export, independent verification,
+and acceptance remain separate gates.
