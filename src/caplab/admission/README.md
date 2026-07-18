@@ -12,6 +12,8 @@ that frozen manifest and reconciles both byte stores. The writer, reader, and
 verifier role boundary is enforced by the CLI, PostgreSQL grants, Garage keys,
 and filesystem permissions.
 
-The command surface intentionally contains no result recomputation, provider,
-model, inference, export, publication, training, purge, or acceptance action.
-P7 and later checkpoints remain unavailable.
+The admission command surface intentionally contains no result recomputation,
+provider, model, inference, export, publication, training, purge, or acceptance
+action. P7 recomputation is a separate read-only package and command surface;
+later inference, eligibility, export, training, and acceptance effects remain
+unavailable.

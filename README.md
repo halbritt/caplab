@@ -13,10 +13,13 @@ from `halbritt/books` at commit
 not copied during that repository separation.
 
 CAPLAB-22/P4 completed independent verification and its synthetic state remains
-quarantined with access disabled. ADR 0009 authorizes the bounded
-CAPLAB-23/P5 recovery campaign through `2026-07-23T23:59:59Z`. Historical
-evidence admission, CAPLAB-24/P6, model calls, training, and CAPLAB acceptance
-remain outside the current scope.
+quarantined with access disabled. CAPLAB-23/P5 completed its recovery campaign,
+and CAPLAB-24/P6 independently verified the restricted admission of the frozen
+Study 001 evidence. ADR 0016 authorizes implementation and hermetic testing for
+the read-only CAPLAB-25/P7 recomputation, CAPLAB-26/P8 capability-profile
+proposal, and CAPLAB-28/P10 training-candidate manifest. It does not authorize
+live recomputation, a capability inference, a training-eligibility decision,
+an export, model calls, training, or CAPLAB acceptance.
 
 Run the hermetic repository gate with:
 
@@ -24,5 +27,6 @@ Run the hermetic repository gate with:
 make check
 ```
 
-The read-only dashboard is under `src/caplab/dashboard`. Runtime code belongs
+The read-only dashboard is under `src/caplab/dashboard`, the bounded Study 001
+recomputation is under `src/caplab/recomputation`, and evidence runtime code is
 under `src/caplab/runtime`.
