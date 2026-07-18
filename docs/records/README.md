@@ -113,12 +113,16 @@ ADR 0014 Stage B then produced separate CAPLAB-24/P6 records:
   records the independent **PASS** for the 684-record, 325-byte-identity,
   20-assignment Study 001 registration.
 
-P6 is complete. ADR 0016 authorized P7 implementation and preparation, which
-produced the exact
-[`caplab-p7-live-continuation-proposal-2026-07-18.md`](caplab-p7-live-continuation-proposal-2026-07-18.md).
-The proposal awaits the repository owner's decision; it does not authorize
-live recomputation. Capability inference, export, publication, training, purge,
-and CAPLAB acceptance remain unavailable and unauthorized.
+P6 is complete. ADR 0017 approved the exact
+[`P7 live continuation proposal`](caplab-p7-live-continuation-proposal-2026-07-18.md).
+The resulting
+[`stopped execution record`](caplab-p7-live-attempt-2026-07-18.md) observes
+that Garage 2.3 response-shape verification stopped the run before either
+recomputation, followed by complete access disablement and preservation. The
+[`exact retry proposal`](caplab-p7-live-retry-proposal-2026-07-18.md) binds a
+narrow pushed controller repair and awaits a new owner decision. It is not
+retry authorization. Capability inference, export, publication, training,
+purge, and CAPLAB acceptance remain unavailable and unauthorized.
 
 ADR 0016 Stage A also produced the
 [`P8 and P10 implementation record`](caplab-p8-p10-stage-a-implementation-2026-07-18.md).

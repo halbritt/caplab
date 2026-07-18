@@ -362,6 +362,14 @@ model call occurs.
 
 ### P7 — Recompute the frozen Study 001 result
 
+ADR 0017's exact live attempt stopped during reader-ready verification before
+either recomputation. Aggregate disablement passed and all preserved controls
+remain unchanged. The stopped execution is
+[`caplab-p7-live-attempt-2026-07-18`](../../records/caplab-p7-live-attempt-2026-07-18.md).
+The causal Garage 2.3 response-shape repair is pushed, but the
+[`exact retry proposal`](../../records/caplab-p7-live-retry-proposal-2026-07-18.md)
+awaits a new owner decision. P7 remains incomplete.
+
 Resolve registered immutable evidence through Postgres locators, apply the
 frozen analysis and missingness rules, and reproduce the selected normalized
 result byte for byte. Bind inputs, code, output, and failure classifications in
@@ -618,3 +626,11 @@ replacement because the Plane connector could not remove the original relation.
   read-only reader identity, two byte-identical recomputations, mandatory
   aggregate revocation, preservation checks, and exact evidence root through
   `2026-07-25T23:59:59Z`. All later human and acceptance gates remain separate.
+- **2026-07-18 — exact P7 attempt stopped.** The installed controller rejected
+  Garage 2.3 bucket identity metadata during ready verification before either
+  recomputation. Aggregate disablement removed the key and credential, restored
+  `NOLOGIN`, and left zero sessions or processes; whole-schema, cluster, P4,
+  P6, Garage-summary, and `/nvr` controls remained unchanged. A narrow tested
+  controller repair is pushed at Proximal
+  `8c45e62a22cf5c7e566df2d4510b49742f39b6ac`, and a new exact retry proposal
+  awaits the owner's decision. ADR 0017 does not authorize that retry.
