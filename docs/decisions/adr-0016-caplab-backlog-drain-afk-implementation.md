@@ -157,6 +157,18 @@ Formatter/type-checker and concurrency obligations are nonmaterial here: this
 repository has no configured formatter or type checker, and P7 is a sequential
 read-only batch operation.
 
+The completed tracer at clean commit
+`63dc7aa4825696c6d0975c200131d53bb2b454f5` was then reassembled with the
+implementation and 93-test gate as a second typed evidence pass. Final packet
+`pkt-c3a7efc417d731c6`, content SHA-256
+`c3a7efc417d731c6224fef79be330ab5b99922d73aaab4c07e8090735e21f093`,
+uses the same corpus, doctrine, and retriever versions. It satisfied all four
+required evidence classes. Its authority ceiling remains execution without
+self-acceptance. The remaining material resource-lifecycle, containment,
+cleanup, caller-recovery, and observability obligations belong to the bounded
+Proximal executor and live continuation; they are not grounds for adding a
+writer or inference surface to the tracer.
+
 ## Reopening conditions
 
 Reopen if P6 registration or byte custody no longer reconciles, the frozen
