@@ -113,5 +113,9 @@ ADR 0014 Stage B then produced separate CAPLAB-24/P6 records:
   records the independent **PASS** for the 684-record, 325-byte-identity,
   20-assignment Study 001 registration.
 
-P6 is complete. P7, recomputation, capability inference, export, publication,
-training, purge, and CAPLAB acceptance remain unavailable and unauthorized.
+P6 is complete. ADR 0016 authorized P7 implementation and preparation, which
+produced the exact
+[`caplab-p7-live-continuation-proposal-2026-07-18.md`](caplab-p7-live-continuation-proposal-2026-07-18.md).
+The proposal awaits the repository owner's decision; it does not authorize
+live recomputation. Capability inference, export, publication, training, purge,
+and CAPLAB acceptance remain unavailable and unauthorized.
