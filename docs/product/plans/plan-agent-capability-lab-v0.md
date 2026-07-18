@@ -78,7 +78,9 @@ preparation for P7, P8, and P10 through `2026-07-25T23:59:59Z`; live P7 data
 access remains unavailable until a separate continuation binds the exact
 executor and temporary read-only runtime. Human inference, eligibility,
 export, independent verification, model calls, training, and acceptance remain
-unauthorized.
+unauthorized. P8 and P10 now have hermetic deterministic implementations, but
+their actual Study 001 outputs remain unavailable until authorized live P7
+produces the bound observation.
 
 ## Objective and authority boundary
 
@@ -601,3 +603,10 @@ replacement because the Plane connector could not remove the original relation.
   separate exact continuation. Human inference, eligibility, export,
   independent verification, model calls, training, and acceptance remain
   separately gated.
+- **2026-07-18 — P8 and P10 Stage A implemented.** The P8 service binds the
+  selected card and P7 observation into a proposal with human inference and
+  broader claims unavailable. The P10 service binds sealed trial, outcome,
+  verifier, label, and human-disposition lineage into family-grouped candidates
+  whose eligibility remains unavailable. This is implementation preparation,
+  not execution of either checkpoint; both still depend on the pending live P7
+  continuation.

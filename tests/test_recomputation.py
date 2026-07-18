@@ -125,6 +125,21 @@ def synthetic_study() -> tuple[
                 "attempt_sha256": attempt_sha256,
                 "outcome_record_sha256": observation_sha256,
                 "historical_observation": observation,
+                "historical_result_row": {
+                    "sequence": str(sequence),
+                    "block": block,
+                    "task": task,
+                    "arm": condition,
+                    "status": "valid",
+                    "attempt": "1",
+                    "harmful_shipment": str(harmful).lower(),
+                    "clean_guard_passed": str(clean_guard).lower(),
+                    "capture_exit": "0",
+                    "timed_out": "false",
+                    "verifier_error": "false",
+                    "observer_error": "",
+                },
+                "human_disposition": "not-recorded",
             }
             outcomes.append(
                 {
@@ -172,19 +187,61 @@ def synthetic_study() -> tuple[
     )
     objects.objects[csv_key] = csv_bytes
     copies.copies[csv_key] = csv_bytes
+    identity_bodies: dict[str, dict[str, object]] = {
+        "corpus": {"surface_hash": "1" * 64},
+        "experiment": {"content_sha256": "2" * 64},
+        "order": {"content_sha256": "3" * 64},
+        "preservation-manifest": {"content_sha256": "4" * 64},
+        "result-csv": {"content_sha256": csv_sha256},
+        "result-record": {"content_sha256": "5" * 64},
+        "runtime": {
+            "capture_binary_sha256": "6" * 64,
+            "execution_mode": "frozen-c9",
+            "observer_commit": "7" * 40,
+            "runtime_version": "0.144.1",
+        },
+        "subject": {
+            "backend_id": "provider-route-local",
+            "model": "gpt-5.6-luna",
+            "reasoning_effort": "maximum",
+        },
+        "task": {
+            "task_content_hashes": {
+                "checkout-retries-m1": "8" * 64,
+                "checkout-retries-v2": "9" * 64,
+            }
+        },
+        "treatment": {"content_sha256": "a" * 64},
+        "verifier": {
+            "outcome_record_sha256": sorted(
+                outcome["body"]["outcome_record_sha256"] for outcome in outcomes
+            )
+        },
+    }
+    identity_records = [
+        {
+            "kind": kind,
+            "identity_sha256": sha256_hex(canonical_json(body)),
+            "body": body,
+        }
+        for kind, body in sorted(identity_bodies.items())
+    ]
     manifest_body: dict[str, object] = {
         "schema_version": "caplab-study-admission/1",
         "study_id": "caplab-study-001",
+        "disposition": "restricted-admission",
         "records": records,
         "assignments": assignments,
         "attempts": attempts,
         "outcomes": outcomes,
+        "identity_records": identity_records,
         "summary": {
             "record_count": len(records),
             "unique_content_count": len(records),
             "assignment_count": 20,
             "attempt_count": 20,
             "outcome_count": 20,
+            "identity_count": len(identity_records),
         },
     }
     manifest = dict(manifest_body)
