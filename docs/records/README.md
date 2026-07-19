@@ -119,8 +119,13 @@ The resulting
 [`stopped execution record`](caplab-p7-live-attempt-2026-07-18.md) observes
 that Garage 2.3 response-shape verification stopped the run before either
 recomputation, followed by complete access disablement and preservation. The
-[`exact retry proposal`](caplab-p7-live-retry-proposal-2026-07-18.md) binds a
-narrow pushed controller repair and awaits a new owner decision. It is not
+[`exact retry proposal`](caplab-p7-live-retry-proposal-2026-07-18.md) was
+approved by ADR 0018. The resulting
+[`stopped retry record`](caplab-p7-live-retry-attempt-2026-07-19.md) observes
+that an added password-representation assertion stopped before either
+recomputation, followed by complete access disablement and preservation. The
+[`exact second retry proposal`](caplab-p7-live-retry-2-proposal-2026-07-19.md)
+binds the versioned readiness repair and awaits a new owner decision. It is not
 retry authorization. Capability inference, export, publication, training,
 purge, and CAPLAB acceptance remain unavailable and unauthorized.
 

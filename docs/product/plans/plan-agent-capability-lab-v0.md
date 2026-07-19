@@ -362,12 +362,13 @@ model call occurs.
 
 ### P7 — Recompute the frozen Study 001 result
 
-ADR 0017's exact live attempt stopped during reader-ready verification before
-either recomputation. Aggregate disablement passed and all preserved controls
-remain unchanged. The stopped execution is
-[`caplab-p7-live-attempt-2026-07-18`](../../records/caplab-p7-live-attempt-2026-07-18.md).
-The causal Garage 2.3 response-shape repair is pushed, but the
-[`exact retry proposal`](../../records/caplab-p7-live-retry-proposal-2026-07-18.md)
+ADR 0017's exact live attempt and ADR 0018's exact retry both stopped before
+recomputation, followed by complete aggregate disablement and matching
+preservation controls. The retry's added shell assertion confused PostgreSQL's
+unusable `*` password marker with usable password authority. The
+[`stopped retry`](../../records/caplab-p7-live-retry-attempt-2026-07-19.md) and
+tested versioned repair are recorded. The
+[`exact second retry proposal`](../../records/caplab-p7-live-retry-2-proposal-2026-07-19.md)
 awaits a new owner decision. P7 remains incomplete.
 
 Resolve registered immutable evidence through Postgres locators, apply the
@@ -642,3 +643,10 @@ replacement because the Plane connector could not remove the original relation.
   recomputations, mandatory aggregate disablement, and fresh preservation
   evidence through `2026-07-25T23:59:59Z`. Later human and acceptance gates
   remain separate.
+- **2026-07-19 — exact P7 live retry stopped.** The selected controller passed
+  ready verification, but an added shell assertion rejected PostgreSQL's
+  unusable `*` password marker before either recomputation. Aggregate
+  disablement and every preservation comparison passed. Proximal commit
+  `031d20cceefa1f7f4bf5db9386d89383d763edf0` moves the full PostgreSQL
+  readiness invariant into the tested controller. An exact second retry
+  proposal awaits the owner's decision; ADR 0018 authorizes no further run.
