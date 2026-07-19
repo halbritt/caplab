@@ -125,9 +125,11 @@ approved by ADR 0018. The resulting
 that an added password-representation assertion stopped before either
 recomputation, followed by complete access disablement and preservation. The
 [`exact second retry proposal`](caplab-p7-live-retry-2-proposal-2026-07-19.md)
-binds the versioned readiness repair and awaits a new owner decision. It is not
-retry authorization. Capability inference, export, publication, training,
-purge, and CAPLAB acceptance remain unavailable and unauthorized.
+binds the versioned readiness repair and was approved unchanged by ADR 0020.
+The decision authorizes one ordered second retry and mandatory cleanup through
+the existing expiry. Capability inference, export, publication, training,
+purge, independent verification, and CAPLAB acceptance remain unavailable and
+unauthorized.
 
 ADR 0016 Stage A also produced the
 [`P8 and P10 implementation record`](caplab-p8-p10-stage-a-implementation-2026-07-18.md).

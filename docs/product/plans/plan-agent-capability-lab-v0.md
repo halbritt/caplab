@@ -22,6 +22,8 @@ authorization_records:
   - adr-0015
   - adr-0016
   - adr-0017
+  - adr-0018
+  - adr-0020
 authorized_scope:
   - CAPLAB-22/P4
   - CAPLAB-23/P5
@@ -48,6 +50,9 @@ authorized_scope:
   - docs/records/caplab-p6-*
   - proximal:caplab-p6/**
   - adr-0016 Stage A model-free backlog-drain implementation
+  - adr-0017 exact P7 live continuation
+  - adr-0018 exact P7 live retry
+  - adr-0020 exact P7 second live retry
   - CAPLAB-25/P7 implementation preparation
   - CAPLAB-26/P8 implementation preparation
   - CAPLAB-28/P10 implementation preparation
@@ -75,14 +80,15 @@ owner's instruction to proceed with a corrective continuation under the same
 expiry. ADR 0014 authorizes exact P5 purge completion and, only after an
 independent P5 PASS, restricted P6 admission through
 `2026-07-24T23:59:59Z`. ADR 0016 authorizes model-free implementation
-preparation for P7, P8, and P10 through `2026-07-25T23:59:59Z`; live P7 data
-access remains unavailable until a separate continuation binds the exact
-executor and temporary read-only runtime. ADR 0017 now authorizes that exact
-P7 continuation through `2026-07-25T23:59:59Z`. Human inference, eligibility,
-export, independent verification, model calls, training, and acceptance remain
-unauthorized. P8 and P10 now have hermetic deterministic implementations, but
-their actual Study 001 outputs remain unavailable until authorized live P7
-produces the bound observation.
+preparation for P7, P8, and P10 through `2026-07-25T23:59:59Z`; standing
+live P7 data access remains unavailable. Exact continuations bind a temporary
+executor and read-only runtime. ADR 0020 now authorizes one exact second P7 retry
+through `2026-07-25T23:59:59Z` after the ADR 0017 and ADR 0018 attempts stopped
+before recomputation and completed aggregate disablement. Human inference,
+eligibility, export, independent verification, model calls, training, and
+acceptance remain unauthorized. P8 and P10 have hermetic deterministic
+implementations, but their actual Study 001 outputs remain unavailable until
+the authorized P7 retry produces the bound observation.
 
 ## Objective and authority boundary
 
@@ -369,7 +375,9 @@ unusable `*` password marker with usable password authority. The
 [`stopped retry`](../../records/caplab-p7-live-retry-attempt-2026-07-19.md) and
 tested versioned repair are recorded. The
 [`exact second retry proposal`](../../records/caplab-p7-live-retry-2-proposal-2026-07-19.md)
-awaits a new owner decision. P7 remains incomplete.
+was approved unchanged by ADR 0020. One ordered retry and its mandatory cleanup
+are authorized through the existing expiry. P7 remains incomplete until that
+execution produces two matching observations and preservation checks pass.
 
 Resolve registered immutable evidence through Postgres locators, apply the
 frozen analysis and missingness rules, and reproduce the selected normalized
@@ -650,3 +658,11 @@ replacement because the Plane connector could not remove the original relation.
   `031d20cceefa1f7f4bf5db9386d89383d763edf0` moves the full PostgreSQL
   readiness invariant into the tested controller. An exact second retry
   proposal awaits the owner's decision; ADR 0018 authorizes no further run.
+- **2026-07-19 — exact P7 second live retry approved.** After receiving the
+  exact proposal through the requested private paste, the repository owner
+  replied `authorization granted`. ADR 0020 authorizes that proposal unchanged:
+  one execution with Proximal controller commit
+  `031d20cceefa1f7f4bf5db9386d89383d763edf0`, two exact recomputations,
+  aggregate disablement, and fresh preservation evidence through
+  `2026-07-25T23:59:59Z`. Later inference, eligibility, export, independent
+  verification, and acceptance gates remain separate.
