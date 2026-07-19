@@ -1,0 +1,284 @@
+{
+  "$id": "https://books.local/doctrine/evaluations/gold/queue.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "generation": {
+      "additionalProperties": false,
+      "properties": {
+        "algorithm_version": {
+          "const": "gold-queue-stratification/1"
+        },
+        "input_sha256": {
+          "additionalProperties": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "propertyNames": {
+            "minLength": 1
+          },
+          "type": "object"
+        },
+        "tool": {
+          "const": "doctrine/tools/build_gold_queue.py"
+        },
+        "tool_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "tool_sha256",
+        "algorithm_version",
+        "input_sha256"
+      ],
+      "type": "object"
+    },
+    "records": {
+      "items": {
+        "$ref": "#/$defs/record"
+      },
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "doctrine-gold-queue/1"
+    }
+  },
+  "required": [
+    "schema_version",
+    "generation",
+    "records"
+  ],
+  "title": "Pending human gold-calibration queue",
+  "type": "object",
+  "$defs": {
+    "coverage": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_roles": {
+          "$ref": "#/$defs/uniqueStrings"
+        },
+        "authority_transitions": {
+          "$ref": "#/$defs/uniqueStrings"
+        },
+        "edge_relations": {
+          "$ref": "#/$defs/uniqueStrings"
+        },
+        "outcomes": {
+          "$ref": "#/$defs/uniqueStrings"
+        },
+        "risk_classes": {
+          "$ref": "#/$defs/uniqueStrings"
+        },
+        "source_ids": {
+          "$ref": "#/$defs/uniqueStrings"
+        },
+        "support_relationships": {
+          "$ref": "#/$defs/uniqueStrings"
+        }
+      },
+      "required": [
+        "source_ids",
+        "edge_relations",
+        "support_relationships",
+        "agent_roles",
+        "risk_classes",
+        "authority_transitions",
+        "outcomes"
+      ],
+      "type": "object"
+    },
+    "humanDispositionReference": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "reference": {
+              "type": "null"
+            },
+            "status": {
+              "const": "pending-human"
+            }
+          },
+          "required": [
+            "status",
+            "reference"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "reference": {
+              "pattern": "^human-dispositions\\.json#candidate_id=[a-z0-9][a-z0-9-]*$",
+              "type": "string"
+            },
+            "status": {
+              "const": "adjudicated-human"
+            }
+          },
+          "required": [
+            "status",
+            "reference"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "record": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate": {
+          "additionalProperties": false,
+          "properties": {
+            "adjudication_mode": {
+              "enum": [
+                "direct-evidence-review",
+                "scenario-construction-and-review"
+              ]
+            },
+            "coverage": {
+              "$ref": "#/$defs/coverage"
+            },
+            "generated_only": {
+              "const": true
+            },
+            "kind": {
+              "enum": [
+                "source-support",
+                "edge-relation",
+                "support-relationship",
+                "agent-role",
+                "risk-class",
+                "authority-transition",
+                "outcome"
+              ]
+            },
+            "question": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "target": {
+              "$ref": "#/$defs/target"
+            }
+          },
+          "required": [
+            "generated_only",
+            "kind",
+            "adjudication_mode",
+            "question",
+            "target",
+            "coverage"
+          ],
+          "type": "object"
+        },
+        "human_disposition": {
+          "$ref": "#/$defs/humanDispositionReference"
+        },
+        "id": {
+          "pattern": "^[a-z0-9][a-z0-9-]*$",
+          "type": "string"
+        },
+        "machine_screening": {
+          "additionalProperties": false,
+          "properties": {
+            "references": {
+              "$ref": "#/$defs/uniqueStrings"
+            },
+            "status": {
+              "enum": [
+                "not-run",
+                "recorded"
+              ]
+            }
+          },
+          "required": [
+            "status",
+            "references"
+          ],
+          "type": "object"
+        },
+        "schema_version": {
+          "const": "doctrine-gold-candidate/1"
+        }
+      },
+      "required": [
+        "schema_version",
+        "id",
+        "candidate",
+        "machine_screening",
+        "human_disposition"
+      ],
+      "type": "object"
+    },
+    "reference": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "source",
+            "formulation",
+            "node",
+            "edge",
+            "lens",
+            "role",
+            "risk-class",
+            "authority-transition",
+            "outcome"
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "id"
+      ],
+      "type": "object"
+    },
+    "target": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "formulation",
+            "edge",
+            "mapping",
+            "role",
+            "risk-class",
+            "authority-transition",
+            "outcome"
+          ]
+        },
+        "references": {
+          "items": {
+            "$ref": "#/$defs/reference"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "references"
+      ],
+      "type": "object"
+    },
+    "uniqueStrings": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    }
+  }
+}

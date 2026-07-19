@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://books.local/doctrine/evaluations/result.schema.json",
+  "title": "Doctrine scenario result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "retrieved_evidence_ids", "evidence", "assertions"],
+  "properties": {
+    "schema_version": {"const": "scenario-result/2"},
+    "retrieved_evidence_ids": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "https://pincite.local/doctrine/runtime/evidence-record.schema.json"
+      }
+    },
+    "assertions": {
+      "type": "array",
+      "items": {
+        "$ref": "https://pincite.local/doctrine/runtime/assertion-artifact.schema.json#/$defs/assertion"
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://books.local/doctrine/evaluations/robustness/operator.schema.json",
+  "title": "Doctrine robustness mutation operator",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "id", "version", "family", "target_artifact_kinds",
+    "implementation_id", "allowed_selectors", "preconditions", "postconditions",
+    "expected_mutant_validity", "detection_boundary", "default_oracle_class"
+  ],
+  "properties": {
+    "schema_version": {"const": "doctrine-robustness-operator/1"},
+    "id": {"$ref": "#/$defs/id"},
+    "version": {"type": "integer", "minimum": 1},
+    "family": {"$ref": "#/$defs/id"},
+    "target_artifact_kinds": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["scenario", "assertion-artifact", "evidence-packet", "doctrine-graph"]}},
+    "implementation_id": {"type": "string", "pattern": "^builtin/[a-z0-9][a-z0-9-]*/[1-9][0-9]*$"},
+    "allowed_selectors": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^/"}},
+    "preconditions": {"$ref": "#/$defs/nonemptyStrings"},
+    "postconditions": {"$ref": "#/$defs/nonemptyStrings"},
+    "expected_mutant_validity": {"enum": ["valid", "invalid"]},
+    "detection_boundary": {"enum": ["structural", "metamorphic", "human-semantic"]},
+    "default_oracle_class": {"enum": ["schema", "pair-relation", "human-adjudication"]}
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "nonemptyStrings": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+  }
+}

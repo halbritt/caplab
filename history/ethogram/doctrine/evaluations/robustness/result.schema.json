@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://books.local/doctrine/evaluations/robustness/result.schema.json",
+  "title": "Doctrine robustness result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "case_id", "case_hash", "operator_id", "operator_version", "runner_version", "subject_adapter", "clean_output_hash", "mutant_output_hash", "criteria", "mechanical_status", "human_status"],
+  "properties": {
+    "schema_version": {"const": "doctrine-robustness-result/1"},
+    "case_id": {"$ref": "#/$defs/id"},
+    "case_hash": {"$ref": "#/$defs/hash"},
+    "operator_id": {"$ref": "#/$defs/id"},
+    "operator_version": {"type": "integer", "minimum": 1},
+    "runner_version": {"type": "string", "minLength": 1},
+    "subject_adapter": {"enum": ["scenario-runner/2", "assertion-validator/1", "evidence-packet-assembler/1", "doctrine-graph-validator/1"]},
+    "clean_output_hash": {"$ref": "#/$defs/hash"},
+    "mutant_output_hash": {"$ref": "#/$defs/hash"},
+    "criteria": {"type": "array", "items": {"type": "object"}},
+    "mechanical_status": {"enum": ["invalid", "killed", "survived", "stable-neutral", "false-positive", "pending", "indeterminate"]},
+    "human_status": {"enum": ["not-required", "pending", "adjudicated"]}
+  },
+  "$defs": {"id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"}, "hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}
+}

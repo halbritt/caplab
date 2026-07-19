@@ -1,0 +1,44 @@
+{
+  "schema_version": "scenario-result/2",
+  "retrieved_evidence_ids": ["source-hash-change", "integrity-check-clean"],
+  "evidence": [
+    {
+      "schema_version": "evidence-record/1",
+      "id": "source-hash-change",
+      "evidence_class": "evidence-generated-artifacts",
+      "summary": "The stored and current source hashes differ.",
+      "provenance": [{"locator": "fixture:source-hash-change", "method": "hash comparison"}]
+    },
+    {
+      "schema_version": "evidence-record/1",
+      "id": "integrity-check-clean",
+      "evidence_class": "evidence-generated-artifacts",
+      "summary": "The generated-output integrity check found no manual edits.",
+      "provenance": [{"locator": "fixture:integrity-check-clean", "method": "manifest comparison"}]
+    }
+  ],
+  "assertions": [
+    {
+      "id": "source-changed",
+      "type": "observation",
+      "text": "The source hash changed and the integrity check found no manual edits.",
+      "evidence": ["source-hash-change", "integrity-check-clean"]
+    },
+    {
+      "id": "output-is-stale",
+      "type": "inference",
+      "text": "The derived output is stale.",
+      "depends_on": ["source-changed"],
+      "rivals": ["The stored source hash is corrupt."]
+    },
+    {
+      "id": "recommend-regeneration",
+      "type": "recommendation",
+      "text": "The repository owner should consider regenerating only the affected output.",
+      "depends_on": ["output-is-stale"],
+      "alternatives": ["Retain the current output pending another integrity check."],
+      "tradeoffs": ["Regeneration consumes converter time."],
+      "missing_authority": "No authority to select or authorize regeneration was supplied."
+    }
+  ]
+}

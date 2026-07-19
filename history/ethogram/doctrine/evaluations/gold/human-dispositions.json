@@ -1,0 +1,25 @@
+{
+  "dispositions": [
+    {
+      "adjudicated_at": "2026-07-12T18:38:10+00:00",
+      "adjudicator": {
+        "id": "halbritt",
+        "kind": "human"
+      },
+      "candidate_id": "gold-edge-relation-constrains",
+      "evidence_reviewed": [
+        "doctrine/graph/edges.yaml#E-ARCHDOM-001-contract-precedence-constrains-intervention",
+        "doctrine/graph/nodes.yaml#universal-repository-contract-precedence",
+        "doctrine/concepts/universal.yaml#universal-repository-contract-precedence",
+        "doctrine/graph/nodes.yaml#universal-evidence-before-intervention",
+        "doctrine/concepts/universal.yaml#universal-evidence-before-intervention",
+        "doctrine/sources.yaml#SRC-FSA",
+        "doctrine/sources.yaml#SRC-SDX"
+      ],
+      "rationale": "The provenance supports repository-contract precedence and evidence-before-intervention as independent doctrines, making the claimed constraint relationship plausible. However, the edge introduces additional semantics—including the specific applicability conditions and supersession rule—that are not directly established by the cited evidence. The synthesis therefore extends beyond what the provenance alone justifies, making the relationship partially rather than fully supported.",
+      "uncertainty": "he cited evidence supports repository-contract precedence and evidence-before-intervention independently, but does not fully justify the specific constraint relationship or its stated conditions. The edge extends beyond what the provenance directly establishes.",
+      "verdict": "partially-supported"
+    }
+  ],
+  "schema_version": "doctrine-gold-human-dispositions/1"
+}

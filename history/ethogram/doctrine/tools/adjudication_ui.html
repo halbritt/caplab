@@ -1,0 +1,1002 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Doctrine adjudication bench</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23191c22'/%3E%3Crect x='2' y='9' width='12' height='4' fill='%23ffd84d'/%3E%3C/svg%3E">
+<style>
+:root{
+  --ink:#191c22; --ink2:#20242c; --ink3:#282d37; --line:#333947;
+  --tx:#d7dbe3; --tx-dim:#969dab; --tx-faint:#6a7280;
+  --paper:#f4ecd9; --paper-edge:#dfd3b4; --paper-ink:#2b2519; --paper-dim:#75694f;
+  --hl:#ffd84d; --hl-ink:#3a3008;
+  --red:#e0605a; --orange:#e08f45; --amber:#d9b23c; --green:#63a876; --blue:#8fb4d9;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  --serif:"Iowan Old Style",Georgia,"Palatino Linotype","Book Antiqua",serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--ink);color:var(--tx);font:15px/1.5 var(--sans);display:flex;flex-direction:column}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+:focus-visible{outline:2px solid var(--focus,#8fb4d9);outline-offset:2px}
+::selection{background:#4a5468;color:#fff}
+
+/* ---------- header ---------- */
+header{display:flex;align-items:center;gap:22px;padding:10px 18px;border-bottom:1px solid var(--line);background:var(--ink2);flex-wrap:wrap}
+.brand{font:600 13px/1 var(--mono);letter-spacing:.22em;color:var(--tx)}
+.brand em{font-style:normal;color:var(--hl)}
+.brand small{display:block;margin-top:4px;letter-spacing:.05em;font-weight:400;color:var(--tx-faint);text-transform:none;font-size:10px}
+.meters{display:flex;gap:22px;flex:1;min-width:260px}
+.meter{display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11px;color:var(--tx-dim)}
+.meter .bar{width:110px;height:5px;background:var(--ink3);border-radius:3px;overflow:hidden}
+.meter .bar i{display:block;height:100%;background:var(--hl);border-radius:3px;transition:width .35s ease}
+.meter.q .bar i{background:var(--green)}
+.meter b{color:var(--tx);font-weight:600}
+#who{font-family:var(--mono);font-size:11px;color:var(--tx-dim);border:1px solid var(--line);border-radius:4px;padding:5px 10px}
+#who:hover{color:var(--tx);border-color:var(--tx-faint)}
+
+/* ---------- shell ---------- */
+main{flex:1;display:flex;min-height:0}
+nav{width:420px;min-width:420px;border-right:1px solid var(--line);display:flex;flex-direction:column;background:var(--ink)}
+.tabs{display:flex;border-bottom:1px solid var(--line)}
+.tabs button{flex:1;padding:10px 8px;font:600 12px var(--mono);letter-spacing:.06em;color:var(--tx-faint);border-bottom:2px solid transparent}
+.tabs button[aria-selected="true"]{color:var(--tx);border-bottom-color:var(--hl)}
+.tabs button .n{color:var(--tx-faint);font-weight:400}
+.filters{padding:9px 12px;border-bottom:1px solid var(--line);display:flex;gap:7px;flex-wrap:wrap}
+.filters select{background:var(--ink3);color:var(--tx);border:1px solid var(--line);border-radius:4px;font:11px var(--mono);padding:4px 6px;max-width:150px}
+.seg{display:flex;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.seg button{padding:4px 9px;font:11px var(--mono);color:var(--tx-faint)}
+.seg button[aria-pressed="true"]{background:var(--ink3);color:var(--tx)}
+#list{flex:1;overflow-y:auto}
+.row{display:flex;width:100%;text-align:left;gap:9px;align-items:baseline;padding:8px 12px;border-bottom:1px solid #232833}
+.row:hover{background:var(--ink2)}
+.row[aria-current="true"]{background:var(--ink3)}
+.dot{width:8px;height:8px;min-width:8px;border-radius:50%;background:var(--ink3);border:1px solid var(--tx-faint);align-self:center}
+.dot.done{background:var(--green);border-color:var(--green)}
+.dot.warn{background:var(--amber);border-color:var(--amber)}
+.row .tt{flex:1;min-width:0}
+.row .t1{display:block;font:12px var(--mono);color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .t2{display:block;font-size:11px;color:var(--tx-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vc{font:10px var(--mono);padding:1px 6px;border-radius:3px;white-space:nowrap}
+.v-contradicted{background:#42201e;color:#f1a19c}
+.v-not_supported{background:#3e2a15;color:#eeb27c}
+.v-partially_supported{background:#3b3213;color:#e6cb75}
+.v-supported{background:#1d3323;color:#9ed0ab}
+.v-other{background:var(--ink3);color:var(--tx-dim)}
+
+/* ---------- work pane ---------- */
+#pane{flex:1;overflow-y:auto;min-width:0}
+.pane-inner{max-width:920px;margin:0 auto;padding:22px 28px 80px}
+.itemnav{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font:11px var(--mono);color:var(--tx-faint)}
+.itemnav .btns{display:flex;gap:6px}
+.itemnav button{border:1px solid var(--line);border-radius:4px;padding:4px 12px;color:var(--tx-dim)}
+.itemnav button:hover{color:var(--tx);border-color:var(--tx-faint)}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+.chip{font:11px var(--mono);padding:2px 9px;border-radius:3px;background:var(--ink3);color:var(--tx-dim);border:1px solid var(--line)}
+.chip.kind{color:var(--blue);border-color:#31435a}
+.chip.mode-direct{color:#a5c8a9;border-color:#2f4636}
+.chip.mode-scenario{color:#e0c476;border-color:#4d4223}
+.chip.done{color:#9ed0ab;border-color:#2f4636}
+.chip.builder-warn{color:#e6cb75;border-color:#4d4223}
+h2.title{font:600 21px/1.35 var(--serif);color:#edeff4;margin:2px 0 16px;letter-spacing:.01em}
+h2.title code{font:600 17px var(--mono);color:var(--hl)}
+
+.brief{border:1px solid var(--line);border-radius:6px;background:var(--ink2);padding:4px 16px;margin-bottom:16px}
+.field{padding:10px 0;border-bottom:1px solid #2a303c}
+.field:last-child{border-bottom:none}
+.field>label{display:block;font:10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--tx-faint);margin-bottom:4px}
+.field>p{color:var(--tx);font-size:14.5px}
+.field code{font:12.5px var(--mono);color:var(--blue)}
+
+/* paper reading well — the evidence surface */
+.paper{background:var(--paper);border-radius:6px;border:1px solid var(--paper-edge);box-shadow:inset 0 1px 0 #fffdf6, 0 2px 10px rgba(0,0,0,.35);margin-bottom:6px;overflow:hidden}
+.paper-head{display:flex;justify-content:space-between;gap:12px;align-items:baseline;padding:9px 22px;border-bottom:1px solid var(--paper-edge);background:#ede3ca;font:10.5px var(--mono);color:var(--paper-dim);flex-wrap:wrap}
+.paper-head b{color:#4d4128;font-weight:600}
+.paper-body{padding:22px 30px 26px;color:var(--paper-ink);font:15.5px/1.68 var(--serif);max-height:520px;overflow-y:auto}
+.paper-body p{margin:0 0 .85em;white-space:pre-wrap}
+.paper-body p:last-child{margin-bottom:0}
+.paper-body .md-h{font-weight:700;margin:1.1em 0 .5em;color:#1e1911}
+.paper-body .md-h1,.paper-body .md-h2{font-size:1.2em}
+.paper-body .md-h3{font-size:1.05em}
+.paper-body code{font:.82em var(--mono);background:#e9dfc4;padding:0 4px;border-radius:3px}
+.paper-body pre{font:12.5px/1.5 var(--mono);background:#ece2c7;border:1px solid var(--paper-edge);border-radius:4px;padding:12px 14px;overflow-x:auto;margin:0 0 .85em;white-space:pre}
+.paper-body.prewrap{white-space:pre-wrap;font:13px/1.6 var(--mono)}
+/* signature: the highlighter stroke */
+mark{background:linear-gradient(104deg,transparent 0 2%,var(--hl) 3% 97%,transparent 98%);background-repeat:no-repeat;color:var(--hl-ink);padding:.05em .25em;margin:0 -.05em;border-radius:2px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.hl-note{font:10.5px var(--mono);color:var(--paper-dim);text-align:right;padding:0 22px 10px}
+.hl-note i{display:inline-block;width:10px;height:10px;background:var(--hl);border-radius:2px;vertical-align:-1px;margin-right:5px;font-style:normal}
+.paper-missing{padding:20px 26px;color:#8a5c33;font:13px var(--mono)}
+
+.provenance{font:10.5px var(--mono);color:var(--tx-faint);margin:10px 2px 18px;line-height:1.9}
+.provenance b{color:var(--tx-dim);font-weight:600}
+
+/* reference panels */
+.refs{margin-bottom:18px}
+.refs>h3, .screening>h3, .judgment>h3{font:600 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--tx-faint);margin:0 0 8px}
+details.ref{border:1px solid var(--line);border-radius:6px;background:var(--ink2);margin-bottom:7px;overflow:hidden}
+details.ref>summary{list-style:none;display:flex;gap:10px;align-items:baseline;padding:9px 14px;cursor:pointer;font:12px var(--mono)}
+details.ref>summary::-webkit-details-marker{display:none}
+details.ref>summary:before{content:"+";color:var(--tx-faint);width:12px}
+details.ref[open]>summary:before{content:"–"}
+details.ref>summary .rk{color:var(--blue);min-width:120px}
+details.ref>summary .rid{color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+details.ref>summary .unres{color:var(--red)}
+.ref-body{padding:4px 16px 14px;border-top:1px solid #2a303c}
+dl.kv{display:grid;grid-template-columns:190px 1fr;gap:0 14px;font-size:13.5px}
+dl.kv dt{font:11px var(--mono);color:var(--tx-faint);padding:6px 0;text-align:right}
+dl.kv dd{padding:6px 0;border-bottom:1px solid #262c37;color:var(--tx);min-width:0;overflow-wrap:anywhere}
+dl.kv dd:last-of-type{border-bottom:none}
+dl.kv ul{margin-left:16px}
+dl.kv pre{font:11.5px/1.5 var(--mono);background:var(--ink);border:1px solid var(--line);border-radius:4px;padding:8px 10px;overflow-x:auto;color:var(--tx-dim)}
+.edge-line{font:13px var(--mono);padding:10px 0 4px;color:var(--tx)}
+.edge-line .rel{color:var(--hl);padding:0 8px}
+.edge-line small{display:block;color:var(--tx-faint);font-size:11px;margin-top:2px}
+.mini-paper{background:var(--paper);color:var(--paper-ink);font:13.5px/1.6 var(--serif);border-radius:5px;border:1px solid var(--paper-edge);padding:14px 18px;margin:8px 0;max-height:300px;overflow-y:auto}
+.mini-paper p{margin:0 0 .8em;white-space:pre-wrap}
+.mini-paper .md-h{font-weight:700;margin:.9em 0 .4em}
+.mini-paper pre{font:11.5px var(--mono);background:#ece2c7;padding:8px;border-radius:4px;overflow-x:auto;white-space:pre}
+.mini-paper code{font:.82em var(--mono);background:#e9dfc4;padding:0 3px;border-radius:3px}
+
+/* machine screening */
+.screening{margin-bottom:18px}
+.sc-card{border:1px solid var(--line);border-left:3px solid var(--ink3);border-radius:6px;background:var(--ink2);padding:11px 15px;margin-bottom:7px;font-size:13.5px}
+.sc-card .sc-head{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px}
+.sc-card .sc-head .cid{font:12px var(--mono);color:var(--tx-dim)}
+.sc-card blockquote{border-left:2px solid var(--hl);margin:6px 0;padding:2px 10px;color:var(--tx-dim);font-family:var(--serif);font-size:13.5px}
+.sc-card .prov{font:10.5px var(--mono);color:var(--tx-faint);margin-top:5px}
+.sc-note{font-size:12px;color:var(--tx-faint);margin-bottom:8px}
+
+/* judgment forms */
+.judgment{border:1px solid var(--line);border-radius:6px;background:var(--ink2);padding:16px 18px;margin-top:6px}
+.judgment .rule{font-size:12px;color:var(--tx-faint);margin-bottom:12px}
+.notice{border:1px solid #4d4223;border-left:4px solid var(--amber);border-radius:5px;background:#2b2617;color:#e4cf8d;padding:10px 14px;font-size:13px;margin-bottom:14px}
+.vgroups{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.vgroup{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.vgroup>span{font:10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--tx-faint);min-width:86px;text-align:right}
+.vgroup.dim{opacity:.38;transition:opacity .15s}
+.vgroup.dim:hover,.vgroup.dim:focus-within{opacity:1}
+.vhint{font:10.5px var(--mono);color:var(--tx-faint);margin-top:2px}
+.vbtn{border:1px solid var(--line);border-radius:4px;padding:5px 12px;font:12.5px var(--mono);color:var(--tx-dim);background:var(--ink)}
+.vbtn:hover{border-color:var(--tx-faint);color:var(--tx)}
+.vbtn[aria-pressed="true"]{background:var(--hl);color:var(--hl-ink);border-color:var(--hl);font-weight:600}
+.jfield{margin-bottom:12px}
+.jfield label{display:block;font:10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--tx-faint);margin-bottom:5px}
+.jfield textarea, .jfield input[type=text]{width:100%;background:var(--ink);border:1px solid var(--line);border-radius:4px;color:var(--tx);font:13.5px/1.5 var(--sans);padding:8px 10px;resize:vertical}
+.jfield textarea:focus, .jfield input:focus{border-color:var(--blue);outline:none}
+.jfield textarea{min-height:64px}
+.evlist{display:flex;flex-direction:column;gap:4px}
+.evlist label{display:flex;gap:8px;align-items:baseline;font:12px var(--mono);color:var(--tx-dim);text-transform:none;letter-spacing:0;cursor:pointer}
+.evlist label:hover{color:var(--tx)}
+.evlist input{accent-color:var(--hl)}
+.evadd{display:flex;gap:6px;margin-top:6px}
+.evadd input{flex:1}
+.evadd button{border:1px solid var(--line);border-radius:4px;padding:4px 12px;font:12px var(--mono);color:var(--tx-dim)}
+.submit-row{display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap}
+.primary{background:var(--hl);color:var(--hl-ink);font:600 13px var(--sans);border-radius:4px;padding:8px 18px}
+.primary:hover{filter:brightness(1.07)}
+.primary:disabled{opacity:.45;cursor:default}
+.findbtns{display:flex;gap:9px;flex-wrap:wrap}
+.findbtn{border-radius:4px;padding:8px 16px;font:600 13px var(--sans);border:1px solid var(--line)}
+.findbtn.holds{background:#233828;color:#a8d6b3;border-color:#33543c}
+.findbtn.defective{background:#40231f;color:#f0a9a2;border-color:#5d332d}
+.findbtn.deeper{background:#3a3115;color:#e6cb75;border-color:#57491f}
+.findbtn:hover{filter:brightness(1.18)}
+.findbtn kbd{font:10px var(--mono);opacity:.65;margin-left:6px}
+.hint{font:11px var(--mono);color:var(--tx-faint)}
+.result{border-radius:5px;padding:10px 13px;font-size:13px;margin-top:12px}
+.result.ok{border:1px solid #2f4636;background:#1c2a20;color:#a8d6b3}
+.result.fail{border:1px solid #5d332d;background:#2d1c19;color:#f0a9a2}
+.result pre{font:11px/1.5 var(--mono);margin-top:8px;white-space:pre-wrap;overflow-wrap:anywhere;color:inherit;opacity:.85;max-height:220px;overflow-y:auto}
+.result details summary{cursor:pointer;font:11px var(--mono)}
+.frontier{border:1px solid #3a3a5c;border-radius:6px;background:#1e1e2c;padding:14px 16px;margin-bottom:16px;font-size:13.5px}
+.frontier .fr-head{font:600 12px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#a8a8e0;margin-bottom:8px}
+.frontier .fr-fix{border-left:3px solid #6c6cb8;padding:6px 10px;margin-top:8px;background:#232338;border-radius:0 4px 4px 0}
+.frontier button.usefix{margin-top:8px;font:600 11px var(--mono);color:#c6c6ee;background:#2c2c46;border:1px solid #44446a;border-radius:4px;padding:5px 10px;cursor:pointer}
+.done-card{border:1px solid #2f4636;border-radius:6px;background:#1b241e;padding:14px 16px;font-size:13.5px}
+.done-card .dc-head{font:600 12px var(--mono);color:#9ed0ab;margin-bottom:8px}
+.done-card dl.kv dd{border-color:#26382c}
+.err-banner{position:fixed;bottom:52px;left:50%;transform:translateX(-50%);background:#40231f;border:1px solid #5d332d;color:#f0a9a2;padding:9px 18px;border-radius:6px;font-size:13px;z-index:40;max-width:80%}
+.empty{color:var(--tx-faint);text-align:center;padding:80px 20px;font:13px var(--mono)}
+
+footer{border-top:1px solid var(--line);background:var(--ink2);padding:6px 18px;font:10.5px var(--mono);color:var(--tx-faint);display:flex;gap:20px;flex-wrap:wrap}
+footer kbd{border:1px solid var(--line);border-radius:3px;padding:0 5px;color:var(--tx-dim)}
+
+/* identity overlay */
+#overlay{position:fixed;inset:0;background:rgba(12,14,18,.86);display:flex;align-items:center;justify-content:center;z-index:100}
+#overlay[hidden]{display:none}
+.id-card{background:var(--ink2);border:1px solid var(--line);border-radius:8px;padding:26px 30px;width:400px;max-width:92vw}
+.id-card h2{font:600 15px var(--sans);margin-bottom:6px}
+.id-card p{font-size:12.5px;color:var(--tx-dim);margin-bottom:14px}
+.id-card input{width:100%;background:var(--ink);border:1px solid var(--line);border-radius:4px;color:var(--tx);font:14px var(--sans);padding:9px 11px;margin-bottom:12px}
+
+@media (max-width:900px){
+  main{flex-direction:column}
+  nav{width:100%;min-width:0;max-height:40vh;border-right:none;border-bottom:1px solid var(--line)}
+  .pane-inner{padding:16px 14px 70px}
+  dl.kv{grid-template-columns:1fr}
+  dl.kv dt{text-align:left;padding-bottom:0}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">DOCTRINE<em>·</em>BENCH<small>human adjudication of doctrine evaluations</small></div>
+  <div class="meters">
+    <div class="meter f"><span>flags audited</span><div class="bar"><i id="m-flags-bar" style="width:0%"></i></div><b id="m-flags">0/0</b></div>
+    <div class="meter q"><span>queue adjudicated</span><div class="bar"><i id="m-queue-bar" style="width:0%"></i></div><b id="m-queue">0/0</b></div>
+  </div>
+  <button id="who" title="Change reviewer name">reviewer: —</button>
+</header>
+
+<main>
+  <nav>
+    <div class="tabs" role="tablist">
+      <button id="tab-flags" role="tab" aria-selected="true">SCREENING FLAGS <span class="n" id="tab-flags-n"></span></button>
+      <button id="tab-queue" role="tab" aria-selected="false">GOLD QUEUE <span class="n" id="tab-queue-n"></span></button>
+    </div>
+    <div class="filters" id="filters"></div>
+    <div id="list" role="listbox" aria-label="work items"></div>
+  </nav>
+  <section id="pane"><div class="pane-inner" id="pane-inner"><div class="empty">loading…</div></div></section>
+</main>
+
+<footer>
+  <span><kbd>j</kbd>/<kbd>k</kbd> or <kbd>↓</kbd>/<kbd>↑</kbd> next / prev</span>
+  <span><kbd>ctrl</kbd>+<kbd>enter</kbd> submit disposition</span>
+  <span id="foot-flags"><kbd>1</kbd> holds · <kbd>2</kbd> defective · <kbd>3</kbd> deeper review</span>
+  <span>model verdicts are screening observations — the disposition you record is the judgment</span>
+</footer>
+
+<div id="overlay" hidden>
+  <div class="id-card">
+    <h2>Who is adjudicating?</h2>
+    <p>Your name is recorded as the human adjudicator on every disposition and flag audit you submit. Stored only in this browser.</p>
+    <input id="id-input" type="text" placeholder="e.g. halbritt" autocomplete="off">
+    <button class="primary" id="id-save">Start adjudicating</button>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- state ---------- */
+var S = {
+  data: null,
+  surface: "flags",            // "flags" | "queue"
+  sel: {flags: 0, queue: 0},   // index into the *filtered* list
+  filters: {
+    flags: {verdict: "all", status: "all"},
+    queue: {kind: "all", mode: "all", status: "all"}
+  },
+  busy: false
+};
+var LS_KEY = "doctrine-adjudicator-id";
+var FLAG_ORDER = ["contradicted","not_supported","partially_supported",
+                  "insufficient_context","unparseable","quote_not_found"];
+var VGROUPS = [
+  ["evidence",   ["supported","partially-supported","not-supported","contradicted"]],
+  ["relevance",  ["relevant","irrelevant"]],
+  ["sufficiency",["sufficient-evidence","insufficient-evidence"]],
+  ["action",     ["action-warranted","no-change","abstention"]],
+  ["transition", ["transition-allowed","transition-forbidden"]]
+];
+// Which verdict groups fit each candidate kind's question. Any enum verdict
+// stays schema-valid; the others are dimmed, not disabled.
+var KIND_GROUPS = {
+  "source-support":       ["evidence","relevance"],
+  "support-relationship": ["evidence","relevance"],
+  "edge-relation":        ["evidence","relevance"],
+  "agent-role":           ["sufficiency","action"],
+  "risk-class":           ["sufficiency","action"],
+  "authority-transition": ["transition","sufficiency"],
+  "outcome":              ["action","sufficiency"]
+};
+var FINDINGS = [
+  ["citation-holds","Citation holds","holds"],
+  ["citation-defective","Citation defective","defective"],
+  ["needs-deeper-review","Needs deeper review","deeper"]
+];
+
+function $(id){ return document.getElementById(id); }
+function esc(s){
+  return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function reviewer(){ return localStorage.getItem(LS_KEY) || ""; }
+
+/* ---------- markdown-lite + highlight ---------- */
+function normSearch(text){
+  // collapsed-whitespace, casefolded copy + index map back to the original
+  var out = "", map = [], lastSpace = true, i, ch;
+  for(i=0;i<text.length;i++){
+    ch = text[i];
+    if(/\s/.test(ch)){
+      if(!lastSpace){ out += " "; map.push(i); lastSpace = true; }
+    }else{
+      out += ch.toLowerCase(); map.push(i); lastSpace = false;
+    }
+  }
+  return {s: out, map: map};
+}
+function findQuoteRange(text, quote){
+  if(!quote || !quote.trim()) return null;
+  var hay = normSearch(text), needle = normSearch(quote).s.trim();
+  if(!needle) return null;
+  var idx = hay.s.indexOf(needle);
+  if(idx < 0) return null;
+  return [hay.map[idx], hay.map[idx + needle.length - 1] + 1];
+}
+/* insert PUA sentinels per line so every <mark> pair stays balanced */
+function insertSentinels(text, range){
+  if(!range) return text;
+  var s = range[0], e = range[1], pos = 0, lines = text.split("\n"), out = [];
+  for(var i=0;i<lines.length;i++){
+    var line = lines[i], ls = pos, le = pos + line.length;
+    var a = Math.max(s, ls), b = Math.min(e, le);
+    if(a < b){
+      line = line.slice(0, a-ls) + "" + line.slice(a-ls, b-ls) +
+             "" + line.slice(b-ls);
+    }
+    out.push(line); pos = le + 1;
+  }
+  return out.join("\n");
+}
+function inlineMd(s){
+  s = esc(s);
+  s = s.replace(/`([^`\n]+)`/g, "<code>$1</code>");
+  s = s.replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>");
+  return s.replace(//g, "<mark>").replace(//g, "</mark>");
+}
+function mdLite(text){
+  try{
+    var blocks = text.split(/\n{2,}/), html = [];
+    for(var i=0;i<blocks.length;i++){
+      var b = blocks[i];
+      if(!b.trim()) continue;
+      if(/^```/.test(b.trim())){
+        var body = b.replace(/^\s*```[^\n]*\n?/, "").replace(/\n?```\s*$/, "");
+        html.push("<pre>" + esc(body).replace(//g,"<mark>").replace(//g,"</mark>") + "</pre>");
+        continue;
+      }
+      var lines = b.split("\n"), first = lines[0].match(/^(#{1,6})\s+(.*)$/);
+      if(first){
+        html.push('<div class="md-h md-h'+first[1].length+'">'+inlineMd(first[2])+"</div>");
+        lines = lines.slice(1);
+        if(!lines.length) continue;
+        b = lines.join("\n");
+      }
+      html.push("<p>" + inlineMd(b) + "</p>");
+    }
+    return html.join("");
+  }catch(err){
+    return '<pre class="prewrap">' + esc(text) + "</pre>";
+  }
+}
+function renderSection(text, quote){
+  var range = findQuoteRange(text, quote || "");
+  return {html: mdLite(insertSentinels(text, range)), found: !!range};
+}
+
+/* ---------- generic field-list renderer ---------- */
+function valHtml(v){
+  if(v == null) return '<span style="color:var(--tx-faint)">—</span>';
+  if(Array.isArray(v)){
+    if(!v.length) return '<span style="color:var(--tx-faint)">[]</span>';
+    if(v.every(function(x){return typeof x !== "object" || x === null;}))
+      return "<ul>" + v.map(function(x){return "<li>"+esc(x)+"</li>";}).join("") + "</ul>";
+    return "<pre>" + esc(JSON.stringify(v, null, 1)) + "</pre>";
+  }
+  if(typeof v === "object") return "<pre>" + esc(JSON.stringify(v, null, 1)) + "</pre>";
+  return esc(v);
+}
+function fieldList(obj, skip){
+  skip = skip || [];
+  var rows = [];
+  for(var k in obj){
+    if(!Object.prototype.hasOwnProperty.call(obj,k)) continue;
+    if(skip.indexOf(k) >= 0 || k.charAt(0) === "_") continue;
+    rows.push("<dt>"+esc(k)+"</dt><dd>"+valHtml(obj[k])+"</dd>");
+  }
+  return '<dl class="kv">' + rows.join("") + "</dl>";
+}
+
+/* ---------- ordering + filtering ---------- */
+function flagRank(v){ var i = FLAG_ORDER.indexOf(v); return i < 0 ? FLAG_ORDER.length : i; }
+function orderedFlags(){
+  var flags = (S.data.flags || []).slice();
+  flags.sort(function(a,b){
+    var r = flagRank(a.verdict) - flagRank(b.verdict);
+    if(r) return r;
+    return String(a.concept_id).localeCompare(String(b.concept_id));
+  });
+  return flags;
+}
+var QUEUE_KIND_ORDER = ["edge-relation","source-support","support-relationship",
+                        "authority-transition","outcome","agent-role","risk-class"];
+function queueKindRank(k){
+  var i = QUEUE_KIND_ORDER.indexOf(k);
+  return i < 0 ? QUEUE_KIND_ORDER.length : i;
+}
+function orderedQueue(){
+  var q = (S.data.queue || []).slice();
+  q.sort(function(a,b){
+    var am = a.adjudication_mode === "direct-evidence-review" ? 0 : 1;
+    var bm = b.adjudication_mode === "direct-evidence-review" ? 0 : 1;
+    if(am !== bm) return am - bm;
+    var r = queueKindRank(a.kind) - queueKindRank(b.kind);
+    if(r) return r;
+    return 0; // stable: keep queue.json order within mode + kind
+  });
+  return q;
+}
+function flagDone(f){ return !!f.audit; }
+function queueDone(c){ return !!c.disposition; }
+function filteredItems(){
+  if(S.surface === "flags"){
+    var ff = S.filters.flags;
+    return orderedFlags().filter(function(f){
+      if(ff.verdict !== "all" && f.verdict !== ff.verdict) return false;
+      if(ff.status === "pending" && flagDone(f)) return false;
+      if(ff.status === "done" && !flagDone(f)) return false;
+      return true;
+    });
+  }
+  var fq = S.filters.queue;
+  return orderedQueue().filter(function(c){
+    if(fq.kind !== "all" && c.kind !== fq.kind) return false;
+    if(fq.mode !== "all" && c.adjudication_mode !== fq.mode) return false;
+    if(fq.status === "pending" && queueDone(c)) return false;
+    if(fq.status === "done" && !queueDone(c)) return false;
+    return true;
+  });
+}
+
+/* ---------- header meters ---------- */
+function renderMeters(){
+  var flags = S.data.flags || [], queue = S.data.queue || [];
+  var fa = flags.filter(flagDone).length, qa = queue.filter(queueDone).length;
+  $("m-flags").textContent = fa + "/" + flags.length;
+  $("m-queue").textContent = qa + "/" + queue.length;
+  $("m-flags-bar").style.width = (flags.length ? 100*fa/flags.length : 0) + "%";
+  $("m-queue-bar").style.width = (queue.length ? 100*qa/queue.length : 0) + "%";
+  $("tab-flags-n").textContent = "(" + (flags.length - fa) + " open)";
+  $("tab-queue-n").textContent = "(" + (queue.length - qa) + " open)";
+  $("who").textContent = "reviewer: " + (reviewer() || "—");
+}
+
+/* ---------- filters ---------- */
+function selectHtml(id, options, current, allLabel){
+  var h = '<select id="'+id+'"><option value="all">'+esc(allLabel)+"</option>";
+  options.forEach(function(o){
+    h += '<option value="'+esc(o)+'"'+(o===current?" selected":"")+">"+esc(o)+"</option>";
+  });
+  return h + "</select>";
+}
+function segHtml(id, current){
+  return '<div class="seg" id="'+id+'">' + ["all","pending","done"].map(function(v){
+    return '<button data-v="'+v+'" aria-pressed="'+(current===v)+'">'+v+"</button>";
+  }).join("") + "</div>";
+}
+function renderFilters(){
+  var box = $("filters");
+  if(S.surface === "flags"){
+    var verdicts = [];
+    (S.data.flags||[]).forEach(function(f){ if(verdicts.indexOf(f.verdict)<0) verdicts.push(f.verdict); });
+    verdicts.sort(function(a,b){return flagRank(a)-flagRank(b);});
+    box.innerHTML = selectHtml("f-verdict", verdicts, S.filters.flags.verdict, "all verdicts")
+                  + segHtml("f-status", S.filters.flags.status);
+    $("f-verdict").onchange = function(){ S.filters.flags.verdict = this.value; S.sel.flags = 0; renderAll(); };
+    bindSeg("f-status", function(v){ S.filters.flags.status = v; S.sel.flags = 0; });
+  }else{
+    var kinds = [];
+    (S.data.queue||[]).forEach(function(c){ if(kinds.indexOf(c.kind)<0) kinds.push(c.kind); });
+    box.innerHTML = selectHtml("q-kind", kinds, S.filters.queue.kind, "all kinds")
+      + selectHtml("q-mode", ["direct-evidence-review","scenario-construction-and-review"], S.filters.queue.mode, "all modes")
+      + segHtml("q-status", S.filters.queue.status);
+    $("q-kind").onchange = function(){ S.filters.queue.kind = this.value; S.sel.queue = 0; renderAll(); };
+    $("q-mode").onchange = function(){ S.filters.queue.mode = this.value; S.sel.queue = 0; renderAll(); };
+    bindSeg("q-status", function(v){ S.filters.queue.status = v; S.sel.queue = 0; });
+  }
+}
+function bindSeg(id, fn){
+  var seg = $(id);
+  Array.prototype.forEach.call(seg.querySelectorAll("button"), function(b){
+    b.onclick = function(){ fn(b.getAttribute("data-v")); renderAll(); };
+  });
+}
+
+/* ---------- sidebar list ---------- */
+function verdictChip(v){
+  var cls = ["contradicted","not_supported","partially_supported","supported"].indexOf(v)>=0
+    ? "v-"+v : "v-other";
+  return '<span class="vc '+cls+'">'+esc(v)+"</span>";
+}
+function renderList(){
+  var items = filteredItems(), sel = S.sel[S.surface], list = $("list"), h = "";
+  items.forEach(function(it, i){
+    var done, dotCls, t1, t2, chip;
+    if(S.surface === "flags"){
+      done = flagDone(it);
+      dotCls = done ? "done" : "";
+      t1 = it.concept_id;
+      t2 = (it.source_id||"") + " · " + (it.section && it.section.heading ? it.section.heading : it.locator);
+      chip = verdictChip(it.verdict);
+    }else{
+      done = queueDone(it);
+      dotCls = done ? (it._builderFailed ? "warn" : "done") : "";
+      t1 = it.id;
+      t2 = it.kind + " · " + (it.adjudication_mode === "direct-evidence-review" ? "direct evidence" : "scenario");
+      chip = done ? verdictChip(it.disposition.verdict) : "";
+    }
+    h += '<button class="row" role="option" data-i="'+i+'" aria-current="'+(i===sel)+'">'
+       + '<span class="dot '+dotCls+'"></span>'
+       + '<span class="tt"><span class="t1">'+esc(t1)+'</span><span class="t2">'+esc(t2)+"</span></span>"
+       + chip + "</button>";
+  });
+  if(!items.length) h = '<div class="empty">no items match the filters</div>';
+  list.innerHTML = h;
+  Array.prototype.forEach.call(list.querySelectorAll(".row"), function(b){
+    b.onclick = function(){ S.sel[S.surface] = +b.getAttribute("data-i"); renderAll(); };
+  });
+  var cur = list.querySelector('[aria-current="true"]');
+  if(cur) cur.scrollIntoView({block:"nearest"});
+}
+
+/* ---------- flag pane ---------- */
+function provLine(f){
+  var bits = [];
+  if(f.model) bits.push("<b>model</b> " + esc(f.model));
+  if(typeof f.latency_seconds === "number") bits.push("<b>latency</b> " + f.latency_seconds.toFixed(1) + "s");
+  if(f.judged_at) bits.push("<b>judged</b> " + esc(f.judged_at));
+  if(f.endpoint) bits.push("<b>endpoint</b> " + esc(f.endpoint));
+  if(f.prompt_version) bits.push("<b>prompt</b> " + esc(f.prompt_version));
+  if(f.chapter_sha256) bits.push("<b>chapter</b> " + esc(String(f.chapter_sha256).slice(0,12)) + "…");
+  bits.push("<b>key</b> " + esc(String(f.key||"").slice(0,12)) + "…");
+  return bits.join(" &nbsp;·&nbsp; ");
+}
+function renderFlag(f, pos, total){
+  var h = itemNav(pos, total);
+  h += '<div class="chips">' + verdictChip(f.verdict)
+     + '<span class="chip">model verdict — screening observation</span>'
+     + (f.audit ? '<span class="chip done">audited: '+esc(f.audit.finding)+"</span>" : "")
+     + "</div>";
+  h += '<h2 class="title"><code>'+esc(f.concept_id)+"</code></h2>";
+  h += '<section class="brief">'
+     + fieldRow("doctrine claim (paraphrased doctrine, not a quote)", esc(f.claim))
+     + fieldRow("claimed contribution of the cited section", esc(f.contribution))
+     + fieldRow("relationship", "<code>"+esc(f.relationship)+"</code> — "+esc(f.relationship_meaning))
+     + fieldRow("model rationale (screening)", esc(f.rationale || "—"))
+     + (f.error ? fieldRow("harness error", "<code>"+esc(f.error)+"</code>") : "")
+     + "</section>";
+
+  var sec = f.section || {};
+  h += '<section class="paper"><div class="paper-head"><b>'+esc(f.source_id)+"</b>"
+     + "<span>"+esc(sec.relative_path || f.locator)+(sec.heading ? " :: "+esc(sec.heading) : "")+"</span></div>";
+  if(sec.text){
+    var r = renderSection(sec.text, f.evidence_quote);
+    h += '<div class="paper-body">' + r.html + "</div>";
+    h += '<div class="hl-note">' + (r.found
+        ? "<i></i>model’s quoted evidence, highlighted in the cited section"
+        : (f.evidence_quote ? "model quote could not be located in this section" : "model returned no evidence quote"))
+        + "</div>";
+  }else{
+    h += '<div class="paper-missing">section did not resolve: '+esc(sec.error || "unknown")+"<br>locator: "+esc(f.locator)+"</div>";
+  }
+  h += "</section>";
+  h += '<div class="provenance">'+provLine(f)+"</div>";
+
+  if(f.frontier){
+    var fr = f.frontier;
+    var fixText = fr.proposed_fix ? (fr.proposed_fix.relationship+": "+fr.proposed_fix.contribution) : "";
+    h += '<section class="frontier"><div class="fr-head">frontier second opinion — model observation ('+esc(fr.reviewer && fr.reviewer.id || "model")+')</div>'
+       + '<div><b>'+esc(fr.finding)+'</b> · confidence '+esc(fr.confidence || "—")
+       + ' · local flag judged '+esc(fr.local_verdict_assessment || "—")+'</div>'
+       + (fr.rationale ? '<div style="margin-top:6px">'+esc(fr.rationale)+"</div>" : "")
+       + (fr.proposed_fix ? '<div class="fr-fix"><b>proposed fix</b> — <code>'+esc(fr.proposed_fix.relationship)+'</code>: '+esc(fr.proposed_fix.contribution)+'</div>'
+          + '<button class="usefix" data-fix="'+esc(fixText)+'">copy proposed fix into note</button>' : "")
+       + '<div class="rule" style="margin-top:8px;font-size:11.5px;color:var(--tx-faint)">This is another model’s screening observation, not a human audit. It settles nothing until you record your finding below.</div>'
+       + "</section>";
+  }
+
+  h += '<section class="judgment"><h3>Human audit — your finding</h3>'
+     + '<div class="rule">The model verdict above is a screening observation. Record what <em>you</em> conclude after reading the section.</div>'
+     + (f.audit ? '<div class="done-card" style="margin-bottom:12px"><div class="dc-head">latest audit — '+esc(f.audit.finding)+' · '+esc(f.audit.reviewed_by)+' · '+esc(f.audit.reviewed_at)+'</div>'+(f.audit.note?esc(f.audit.note):'<span style="color:var(--tx-faint)">no note</span>')+"</div>" : "")
+     + '<div class="jfield"><label>note (optional)</label><input type="text" id="audit-note" autocomplete="off" placeholder="what you saw in the section that decides it"></div>'
+     + '<div class="findbtns">' + FINDINGS.map(function(fd, i){
+         return '<button class="findbtn '+fd[2]+'" data-finding="'+fd[0]+'">'+fd[1]+"<kbd>"+(i+1)+"</kbd></button>";
+       }).join("")
+     + "</div>"
+     + (f.audit ? '<div class="hint" style="margin-top:8px">re-auditing is allowed — the latest audit wins for display</div>' : "")
+     + '<div id="op-result"></div>'
+     + "</section>";
+  return h;
+}
+function fieldRow(label, valueHtml){
+  return '<div class="field"><label>'+esc(label)+"</label><p>"+valueHtml+"</p></div>";
+}
+
+/* ---------- queue pane ---------- */
+function refSummary(ref){
+  var status = ref.resolved ? "" : ' <span class="unres">[unresolved]</span>';
+  return '<summary><span class="rk">'+esc(ref.kind)+"</span>"
+       + '<span class="rid">'+esc(ref.id)+"</span>"+status+"</summary>";
+}
+function refBody(ref){
+  if(!ref.resolved){
+    return '<div class="ref-body"><p style="color:var(--red);font-size:12.5px;padding:8px 0">'
+      + esc(ref.unresolved_reason || "could not resolve") + "</p>"
+      + "<pre style='font:11.5px var(--mono);background:var(--ink);border:1px solid var(--line);border-radius:4px;padding:8px 10px;overflow-x:auto'>"
+      + esc(JSON.stringify(ref.raw, null, 1)) + "</pre></div>";
+  }
+  var h = '<div class="ref-body">';
+  if(ref.kind === "edge" && ref.endpoints){
+    var ep = ref.endpoints, rec = ref.record || {};
+    h += '<div class="edge-line">'+esc(ep.from.id)+'<span class="rel">—'+esc(rec.relation||"?")+"→</span>"+esc(ep.to.id)
+       + "<small>"+esc(ep.from.label||"")+" → "+esc(ep.to.label||"")+"</small></div>";
+    h += fieldList(rec, ["id"]);
+  }else if(ref.kind === "role"){
+    h += fieldList((ref.record||{}).role_default || {});
+    var ds = ref.doctrine_section || {};
+    if(ds.text){
+      h += '<div style="font:10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--tx-faint);margin:10px 0 4px">role-doctrine.md :: '+esc(ds.heading)+"</div>";
+      h += '<div class="mini-paper">'+mdLite(ds.text)+"</div>";
+    }else{
+      h += '<p style="color:var(--amber);font-size:12px;padding-top:8px">'+esc(ds.error||"no doctrine section")+"</p>";
+    }
+  }else if(ref.kind === "formulation"){
+    h += fieldList(ref.record || {}, ["id"]);
+    var sec = ref.section || {};
+    if(sec.text){
+      h += '<div style="font:10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--tx-faint);margin:10px 0 4px">cited section — '+esc(sec.relative_path)+" :: "+esc(sec.heading)+"</div>";
+      h += '<div class="mini-paper">'+mdLite(sec.text)+"</div>";
+    }else if(sec.locator){
+      h += '<p style="color:var(--amber);font-size:12px;padding-top:8px">cited section did not resolve ('+esc(sec.error||"?")+"): "+esc(sec.locator)+"</p>";
+    }
+  }else if(ref.kind === "node"){
+    h += fieldList(ref.record || {}, ["id"]);
+    if(ref.concept){
+      h += '<div style="font:10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--tx-faint);margin:12px 0 4px">full concept record — '+esc(ref.concept._file)+"</div>";
+      h += fieldList(ref.concept, ["id"]);
+    }
+  }else{
+    h += fieldList(ref.record || {}, ["id"]);
+  }
+  return h + "</div>";
+}
+function screeningCard(sc){
+  return '<div class="sc-card"><div class="sc-head">'+verdictChip(sc.verdict)
+    + '<span class="cid">'+esc(sc.concept_id)+"</span>"
+    + '<span class="cid">match: '+esc(sc.match_basis)+"</span></div>"
+    + (sc.rationale ? "<div>"+esc(sc.rationale)+"</div>" : "")
+    + (sc.evidence_quote ? "<blockquote>"+esc(sc.evidence_quote)+"</blockquote>" : "")
+    + '<div class="prov">'+(sc.model?esc(sc.model)+" · ":"")
+    + (typeof sc.latency_seconds==="number"? sc.latency_seconds.toFixed(1)+"s · ":"")
+    + esc(sc.judged_at||"") + " · " + esc(String(sc.key||"").slice(0,12)) + "…</div></div>";
+}
+function evidencePathsFor(c){
+  var paths = [];
+  (c.references||[]).forEach(function(r){
+    (r.evidence_paths||[]).forEach(function(p){ if(paths.indexOf(p)<0) paths.push(p); });
+  });
+  (c.screening||[]).forEach(function(s){
+    if(s.evidence_path && paths.indexOf(s.evidence_path)<0) paths.push(s.evidence_path);
+  });
+  return paths;
+}
+function renderCandidate(c, pos, total){
+  var direct = c.adjudication_mode === "direct-evidence-review";
+  var h = itemNav(pos, total);
+  h += '<div class="chips"><span class="chip kind">'+esc(c.kind)+"</span>"
+     + '<span class="chip '+(direct?"mode-direct":"mode-scenario")+'">'+esc(c.adjudication_mode)+"</span>"
+     + (c.disposition ? '<span class="chip done">adjudicated</span>' : "")
+     + (c._builderFailed ? '<span class="chip builder-warn">written — builder check failed</span>' : "")
+     + "</div>";
+  h += '<h2 class="title">'+esc(c.question)+"</h2>";
+  h += '<div class="provenance"><b>candidate</b> '+esc(c.id)+" &nbsp;·&nbsp; <b>target</b> "+esc(c.target.kind)+" "+esc(c.target.id)+"</div>";
+
+  if(!direct){
+    h += '<div class="notice"><strong>Scenario required before judgment.</strong> '
+       + "This candidate is <code>scenario-construction-and-review</code>: construct a concrete, evidence-bearing scenario "
+       + "yourself before adjudicating (see gold/README.md). Axis coverage alone is not evaluation quality. "
+       + "Describe the scenario and its evidence in the rationale.</div>";
+  }
+
+  h += '<section class="refs"><h3>References — resolved evidence</h3>';
+  (c.references||[]).forEach(function(ref, i){
+    h += '<details class="ref"'+(i===0 && direct ? " open":"")+">"+refSummary(ref)+refBody(ref)+"</details>";
+  });
+  h += "</section>";
+
+  if((c.screening||[]).length){
+    h += '<section class="screening"><h3>Machine screening — observations, not judgment</h3>'
+       + '<div class="sc-note">Entailment records matching the referenced formulation. Rival explanations always include model error and section-scope limits.</div>'
+       + c.screening.map(screeningCard).join("") + "</section>";
+  }
+
+  if(c.frontier){
+    var fr = c.frontier;
+    h += '<section class="frontier"><div class="fr-head">frontier second opinion — model observation ('+esc(fr.reviewer && fr.reviewer.id || "model")+')</div>'
+       + '<div><b>'+esc(fr.recommended_verdict)+'</b> · confidence '+esc(fr.confidence || "—")+'</div>'
+       + (fr.rationale ? '<div style="margin-top:6px">'+esc(fr.rationale)+"</div>" : "")
+       + (fr.caveats ? '<div class="fr-fix"><b>caveats</b> — '+esc(fr.caveats)+"</div>" : "")
+       + (c.disposition ? "" : '<button class="usefix" data-verdict="'+esc(fr.recommended_verdict)+'">pre-select '+esc(fr.recommended_verdict)+' in the form</button>')
+       + (direct ? "" : '<div class="rule" style="margin-top:8px;font-size:11.5px;color:var(--tx-faint)">Scenario construction and the disposition remain human; this is advisory only.</div>')
+       + '<div class="rule" style="margin-top:8px;font-size:11.5px;color:var(--tx-faint)">This is another model’s review observation, not a human disposition. Rationale, uncertainty, and the recorded verdict remain yours.</div>'
+       + "</section>";
+  }
+
+  if(c.disposition){
+    var d = c.disposition;
+    h += '<section class="judgment"><h3>Recorded human disposition</h3>'
+       + '<div class="done-card"><div class="dc-head">'+esc(d.verdict)+" · "+esc(d.adjudicator && d.adjudicator.id)
+       + " · "+esc(d.adjudicated_at)+"</div>"
+       + fieldList({rationale:d.rationale, uncertainty:d.uncertainty, evidence_reviewed:d.evidence_reviewed})
+       + "</div>"
+       + (c._builderResult ? builderResultHtml(c._builderResult) : "")
+       + "</section>";
+    return h;
+  }
+
+  var paths = evidencePathsFor(c);
+  h += '<section class="judgment"><h3>Human disposition — your judgment</h3>'
+     + '<div class="rule">Recorded verbatim in human-dispositions.json under your name. Machine output above is screening; do not copy a model verdict you have not independently judged.</div>'
+     + (function(){
+         var rec = KIND_GROUPS[c.kind] || VGROUPS.map(function(g){return g[0];});
+         return '<div class="vgroups">' + VGROUPS.map(function(g){
+           var dim = rec.indexOf(g[0]) === -1 ? " dim" : "";
+           return '<div class="vgroup'+dim+'"><span>'+g[0]+"</span>" + g[1].map(function(v){
+             return '<button class="vbtn" data-verdict="'+v+'" aria-pressed="false">'+v+"</button>";
+           }).join("") + "</div>";
+         }).join("")
+         + '<div class="vhint">One verdict answers this candidate\u2019s question \u2014 the highlighted group(s) fit a '+esc(c.kind)+' candidate; dimmed verdicts stay selectable for edge cases.</div>'
+         + "</div>";
+       })()
+     + '<div class="jfield"><label>rationale — required</label><textarea id="d-rationale" placeholder="'+(direct?"what the reviewed evidence establishes and why the verdict follows":"the constructed scenario, its evidence, and why the verdict follows")+'"></textarea></div>'
+     + '<div class="jfield"><label>residual uncertainty — required</label><textarea id="d-uncertainty" placeholder="what could change this judgment; rivals not ruled out"></textarea></div>'
+     + '<div class="jfield"><label>evidence reviewed (min 1)</label><div class="evlist" id="evlist">'
+     + paths.map(function(p, i){
+         return '<label><input type="checkbox" checked data-path="'+esc(p)+'"> '+esc(p)+"</label>";
+       }).join("")
+     + '</div><div class="evadd"><input type="text" id="ev-extra" placeholder="add another evidence path…"><button id="ev-add">add</button></div></div>'
+     + '<div class="submit-row"><button class="primary" id="d-submit">Record disposition</button>'
+     + '<span class="hint">ctrl+enter · runs builder --write then --check</span></div>'
+     + '<div id="op-result"></div>'
+     + "</section>";
+  return h;
+}
+function builderResultHtml(r){
+  var ok = r.write && r.write.returncode === 0 && r.check && r.check.returncode === 0;
+  var h = '<div class="result '+(ok?"ok":"fail")+'">';
+  h += "<div><strong>" + (ok ? "Disposition written. Builder --write and --check passed."
+        : "Disposition written, but the builder reported a problem — investigate before continuing.") + "</strong></div>";
+  h += '<div style="font:11px var(--mono);margin-top:5px">--write exit '+esc(r.write?r.write.returncode:"?")
+     + " · --check exit "+esc(r.check?r.check.returncode:"?")
+     + (r.queue_status ? " · queue status: "+esc(r.queue_status) : "")+"</div>";
+  var tail = ((r.write&&r.write.output_tail)||"") + (((r.check&&r.check.output_tail)||"") ? "\n"+r.check.output_tail : "");
+  if(tail.trim()){
+    h += ok ? "<details><summary>builder output</summary><pre>"+esc(tail)+"</pre></details>"
+            : "<pre>"+esc(tail)+"</pre>";
+  }
+  return h + "</div>";
+}
+function itemNav(pos, total){
+  return '<div class="itemnav"><span>item '+(pos+1)+" of "+total+" (filtered)</span>"
+    + '<div class="btns"><button id="nav-prev">← prev (k)</button><button id="nav-next">next (j) →</button></div></div>';
+}
+
+/* ---------- pane orchestration ---------- */
+function renderPane(){
+  var items = filteredItems(), pane = $("pane-inner");
+  if(!items.length){ pane.innerHTML = '<div class="empty">nothing here — adjust the filters or switch surface</div>'; return; }
+  var sel = Math.min(S.sel[S.surface], items.length-1);
+  S.sel[S.surface] = sel;
+  var it = items[sel];
+  pane.innerHTML = S.surface === "flags" ? renderFlag(it, sel, items.length)
+                                         : renderCandidate(it, sel, items.length);
+  $("pane").scrollTop = 0;
+  var prev = $("nav-prev"), next = $("nav-next");
+  if(prev) prev.onclick = function(){ move(-1); };
+  if(next) next.onclick = function(){ move(1); };
+  if(S.surface === "flags") bindFlagControls(it);
+  else bindQueueControls(it);
+}
+function bindFlagControls(f){
+  Array.prototype.forEach.call(document.querySelectorAll(".findbtn"), function(b){
+    b.onclick = function(){ submitAudit(f, b.getAttribute("data-finding")); };
+  });
+  var usefix = document.querySelector(".frontier .usefix");
+  if(usefix) usefix.onclick = function(){
+    var note = $("audit-note");
+    note.value = usefix.getAttribute("data-fix");
+    note.focus();
+  };
+}
+function bindQueueControls(c){
+  if(c.disposition) return;
+  var chosen = null;
+  Array.prototype.forEach.call(document.querySelectorAll(".vbtn"), function(b){
+    b.onclick = function(){
+      chosen = b.getAttribute("data-verdict");
+      Array.prototype.forEach.call(document.querySelectorAll(".vbtn"), function(x){
+        x.setAttribute("aria-pressed", String(x === b));
+      });
+    };
+  });
+  var pre = document.querySelector(".frontier .usefix");
+  if(pre) pre.onclick = function(){
+    var v = pre.getAttribute("data-verdict");
+    var btn = document.querySelector('.vbtn[data-verdict="'+v+'"]');
+    if(btn) btn.click();
+  };
+  var add = $("ev-add");
+  if(add) add.onclick = function(){
+    var inp = $("ev-extra"), v = inp.value.trim();
+    if(!v) return;
+    var lab = document.createElement("label");
+    lab.innerHTML = '<input type="checkbox" checked data-path="'+esc(v)+'"> '+esc(v);
+    $("evlist").appendChild(lab);
+    inp.value = "";
+  };
+  $("d-submit").onclick = function(){ submitDisposition(c, chosen); };
+  document.querySelector(".judgment").addEventListener("keydown", function(e){
+    if(e.key === "Enter" && (e.ctrlKey || e.metaKey)){ e.preventDefault(); submitDisposition(c, chosen); }
+  });
+}
+
+/* ---------- mutations ---------- */
+function opResult(html){ var el = $("op-result"); if(el) el.innerHTML = html; }
+function errorBox(msg){ return '<div class="result fail" style="margin-top:10px">'+esc(msg)+"</div>"; }
+function banner(msg){
+  var el = document.createElement("div");
+  el.className = "err-banner"; el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(function(){ el.remove(); }, 6000);
+}
+function post(url, body){
+  return fetch(url, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)})
+    .then(function(resp){
+      return resp.json().catch(function(){ return {error:"non-JSON response ("+resp.status+")"}; })
+        .then(function(payload){ return {status:resp.status, payload:payload}; });
+    });
+}
+function submitAudit(f, finding){
+  if(S.busy) return;
+  if(!reviewer()){ askIdentity(); return; }
+  var note = ($("audit-note") && $("audit-note").value || "").trim();
+  S.busy = true;
+  post("/api/flag-audit", {key:f.key, finding:finding, note:note, reviewed_by:reviewer()})
+    .then(function(r){
+      S.busy = false;
+      if(r.status !== 200){ opResult(errorBox(r.payload.error || ("HTTP "+r.status))); return; }
+      f.audit = r.payload.audit;
+      f.audit_count = (f.audit_count||0)+1;
+      renderMeters();
+      advance();
+    })
+    .catch(function(err){ S.busy = false; opResult(errorBox("request failed: "+err)); });
+}
+function submitDisposition(c, verdict){
+  if(S.busy || c.disposition) return;
+  if(!reviewer()){ askIdentity(); return; }
+  if(!verdict){ opResult(errorBox("Pick a verdict first.")); return; }
+  var rationale = $("d-rationale").value.trim();
+  var uncertainty = $("d-uncertainty").value.trim();
+  if(!rationale){ opResult(errorBox("Rationale is required — it is your dictated judgment.")); return; }
+  if(!uncertainty){ opResult(errorBox("Residual uncertainty is required.")); return; }
+  var evidence = [];
+  Array.prototype.forEach.call(document.querySelectorAll("#evlist input:checked"), function(cb){
+    var p = cb.getAttribute("data-path");
+    if(p && evidence.indexOf(p)<0) evidence.push(p);
+  });
+  if(!evidence.length){ opResult(errorBox("Check at least one piece of evidence you actually reviewed.")); return; }
+  S.busy = true;
+  $("d-submit").disabled = true;
+  opResult('<div class="hint" style="margin-top:10px">writing disposition, running builder --write / --check…</div>');
+  post("/api/disposition", {
+    candidate_id: c.id, verdict: verdict, rationale: rationale,
+    uncertainty: uncertainty, evidence_reviewed: evidence, adjudicator_id: reviewer()
+  }).then(function(r){
+    S.busy = false;
+    if(r.status !== 200){
+      var btn = $("d-submit"); if(btn) btn.disabled = false;
+      opResult(errorBox(r.payload.error || ("HTTP "+r.status)));
+      return;
+    }
+    var p = r.payload;
+    c.disposition = p.disposition;
+    c._builderResult = {write:p.builder_write, check:p.builder_check, queue_status:p.queue_status};
+    c._builderFailed = !(p.builder_write && p.builder_write.returncode === 0
+                      && p.builder_check && p.builder_check.returncode === 0);
+    renderMeters();
+    renderList();
+    renderPane(); // shows recorded disposition + builder result inline
+    if(!c._builderFailed) setTimeout(function(){ advance(); }, 1300);
+  }).catch(function(err){
+    S.busy = false;
+    var btn = $("d-submit"); if(btn) btn.disabled = false;
+    opResult(errorBox("request failed: "+err));
+  });
+}
+function advance(){
+  var items = filteredItems(), from = S.sel[S.surface];
+  var isDone = S.surface === "flags" ? flagDone : queueDone;
+  for(var step=1; step<=items.length; step++){
+    var i = (from + step) % items.length;
+    if(!isDone(items[i])){ S.sel[S.surface] = i; renderAll(); return; }
+  }
+  renderAll();
+  banner("All " + (S.surface === "flags" ? "screening flags are audited" : "queue candidates are adjudicated") + " under the current filters.");
+}
+function move(delta){
+  var items = filteredItems();
+  if(!items.length) return;
+  S.sel[S.surface] = (S.sel[S.surface] + delta + items.length) % items.length;
+  renderAll();
+}
+
+/* ---------- identity ---------- */
+function askIdentity(){
+  $("overlay").hidden = false;
+  $("id-input").value = reviewer();
+  $("id-input").focus();
+}
+$("id-save").onclick = function(){
+  var v = $("id-input").value.trim();
+  if(!v) return;
+  localStorage.setItem(LS_KEY, v);
+  $("overlay").hidden = true;
+  renderMeters();
+};
+$("id-input") && $("id-input").addEventListener("keydown", function(e){
+  if(e.key === "Enter") $("id-save").click();
+});
+$("who").onclick = askIdentity;
+
+/* ---------- tabs + keys ---------- */
+function setSurface(s){
+  S.surface = s;
+  $("tab-flags").setAttribute("aria-selected", String(s==="flags"));
+  $("tab-queue").setAttribute("aria-selected", String(s==="queue"));
+  $("foot-flags").style.display = s === "flags" ? "" : "none";
+  renderAll();
+}
+$("tab-flags").onclick = function(){ setSurface("flags"); };
+$("tab-queue").onclick = function(){ setSurface("queue"); };
+
+document.addEventListener("keydown", function(e){
+  var tag = (document.activeElement && document.activeElement.tagName) || "";
+  var typing = tag === "TEXTAREA" || tag === "INPUT" || tag === "SELECT";
+  if(typing) return;
+  if(e.key === "j" || e.key === "ArrowDown"){ e.preventDefault(); move(1); }
+  else if(e.key === "k" || e.key === "ArrowUp"){ e.preventDefault(); move(-1); }
+  else if(S.surface === "flags" && ["1","2","3"].indexOf(e.key) >= 0){
+    var items = filteredItems(); if(!items.length) return;
+    submitAudit(items[S.sel.flags], FINDINGS[+e.key-1][0]);
+  }
+});
+
+/* ---------- boot ---------- */
+function renderAll(){ renderMeters(); renderFilters(); renderList(); renderPane(); }
+function boot(){
+  fetch("/api/state").then(function(r){
+    if(!r.ok) return r.json().then(function(p){ throw new Error(p.error || ("HTTP "+r.status)); });
+    return r.json();
+  }).then(function(data){
+    S.data = data;
+    renderAll();
+    if(!reviewer()) askIdentity();
+  }).catch(function(err){
+    $("pane-inner").innerHTML = '<div class="empty">failed to load state: '+esc(err.message||err)+"</div>";
+  });
+}
+boot();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+version = "1.0"
+
+[metadata]
+author_name = "Heath"
+author_email = "heath@example.com"
+difficulty = "medium"
+category = "judgment"
+tags = ["go", "idempotency", "root-cause", "resilience", "symptom-vs-cause"]
+# Doctrine lineage: exercises "retries require idempotency" (Efficient Go /
+# distributed-systems folklore), "read the interface contract before coding
+# against it" (Ousterhout), evidence-before-action.
+
+[environment]
+cpus = 2
+memory_mb = 2048
+storage_mb = 4096
+
+[timeouts]
+agent_execution_sec = 1800.0
+verifier_execution_sec = 300.0
+environment_build_sec = 600.0
