@@ -20,3 +20,4 @@ does not imply execution, verification, or acceptance.
 | [ADR 0015](adr-0015-caplab-p5-frozen-source-worktree.md) | CAPLAB P5 frozen executor source worktree correction | decided | CAPLAB execution delegate |
 | [ADR 0016](adr-0016-caplab-backlog-drain-afk-implementation.md) | CAPLAB backlog-drain AFK implementation campaign | decided | repository owner |
 | [ADR 0017](adr-0017-caplab-p7-live-continuation.md) | CAPLAB P7 live recomputation continuation | decided | repository owner |
+| [ADR 0018](adr-0018-caplab-p7-live-retry.md) | CAPLAB P7 exact live retry | decided | repository owner |

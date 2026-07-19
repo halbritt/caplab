@@ -634,3 +634,11 @@ replacement because the Plane connector could not remove the original relation.
   controller repair is pushed at Proximal
   `8c45e62a22cf5c7e566df2d4510b49742f39b6ac`, and a new exact retry proposal
   awaits the owner's decision. ADR 0017 does not authorize that retry.
+- **2026-07-19 — exact P7 live retry approved.** The repository owner replied
+  `approved` to the exact retry proposal. ADR 0018 authorizes one retry using
+  pushed Proximal commit
+  `8c45e62a22cf5c7e566df2d4510b49742f39b6ac`, preserved failed-attempt
+  evidence, the unchanged frozen CAPLAB source and P6 admission, two exact
+  recomputations, mandatory aggregate disablement, and fresh preservation
+  evidence through `2026-07-25T23:59:59Z`. Later human and acceptance gates
+  remain separate.
