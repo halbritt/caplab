@@ -102,3 +102,14 @@ Verification requires the following post-push observations:
 
 Passing verification is not owner acceptance and does not authorize P7, P8,
 P10, model calls, evidence export, or training.
+
+## CI correction
+
+The first canonical GitHub Actions run, `29702961943`, failed before the suite
+because the clean runner did not have `botocore`; the initial workflow invoked
+`make check` without installing CAPLAB's dependency lock. A regression contract
+now requires the workflow to install
+`src/caplab/runtime/requirements.lock` with `--require-hashes` before the gate.
+The local gate passed 104 tests with four authorized live skips after this
+correction. Final verification still requires the corrected GitHub Actions run
+to pass.

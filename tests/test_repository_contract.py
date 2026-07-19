@@ -26,6 +26,16 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("/home/halbritt/git/caplab", decision)
         self.assertIn("history/ethogram/", decision)
 
+    def test_ci_installs_locked_runtime_before_repository_gate(self) -> None:
+        # GitHub Actions run 29702961943 failed when botocore was absent.
+        workflow = (ROOT / ".github/workflows/check.yml").read_text(encoding="utf-8")
+        install = (
+            "python -m pip install --require-hashes "
+            "-r src/caplab/runtime/requirements.lock"
+        )
+        self.assertIn(install, workflow)
+        self.assertLess(workflow.index(install), workflow.index("make check"))
+
     def test_caplab_runtime_has_no_books_or_doctrine_dependency(self) -> None:
         forbidden_import = re.compile(
             r"^\s*(?:from|import)\s+(?:books|pincite|doctrine)(?:\.|\s|$)",
