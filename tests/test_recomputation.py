@@ -376,6 +376,53 @@ class RecomputationServiceTests(unittest.TestCase):
         self.assertEqual(copies.write_count, 0)
         self.assertEqual(set(first["broader_claims"].values()), {"unavailable"})
 
+    def test_recompute_preserves_decimal_tokens_as_identity_safe_strings(self) -> None:
+        registration, objects, copies = synthetic_study()
+        outcome = registration["outcomes"][0]
+        outcome_body = outcome["body"]
+        observation = outcome_body["historical_observation"]
+        observation["elapsed_seconds"] = "0.25"
+        payload = canonical_json(observation).replace(
+            b'"elapsed_seconds":"0.25"', b'"elapsed_seconds":0.25'
+        )
+        digest = sha256_hex(payload)
+        key = object_key(digest)
+        old_digest = outcome_body["outcome_record_sha256"]
+        record = next(
+            record
+            for record in registration["records"]
+            if record["content_sha256"] == old_digest
+        )
+        record.update(
+            {
+                "content_sha256": digest,
+                "byte_count": len(payload),
+                "object_key": key,
+                "local_copy_key": key,
+            }
+        )
+        objects.objects[key] = payload
+        copies.copies[key] = payload
+        outcome_body["outcome_record_sha256"] = digest
+        outcome["identity_sha256"] = sha256_hex(canonical_json(outcome_body))
+        verifier = next(
+            identity
+            for identity in registration["identity_records"]
+            if identity["kind"] == "verifier"
+        )
+        verifier["body"]["outcome_record_sha256"] = sorted(
+            candidate["body"]["outcome_record_sha256"]
+            for candidate in registration["outcomes"]
+        )
+        verifier["identity_sha256"] = sha256_hex(canonical_json(verifier["body"]))
+        rehash_registration(registration)
+
+        result = RecomputationService(
+            SyntheticRegistrationStore(registration), objects, copies
+        ).recompute(registration["manifest_sha256"], implementation_commit="a" * 40)
+
+        self.assertEqual(result["historical_comparison"]["status"], "byte-identical")
+
     def test_recompute_accepts_distinct_records_with_one_content_identity(self) -> None:
         registration, objects, copies = synthetic_study()
         duplicate = dict(registration["records"][0])

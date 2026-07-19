@@ -263,7 +263,7 @@ class RecomputationService:
                 raise RecomputationMismatch("outcome byte record is not registered")
             payload = self._verified_bytes(record, records_by_digest)
             try:
-                observed = json.loads(payload)
+                observed = json.loads(payload, parse_float=str)
             except (UnicodeDecodeError, json.JSONDecodeError) as error:
                 raise RecomputationMismatch("outcome record is not valid UTF-8 JSON") from error
             if not isinstance(observed, dict) or canonical_json(observed) != canonical_json(
