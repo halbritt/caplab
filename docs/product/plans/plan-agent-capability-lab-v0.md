@@ -5,7 +5,7 @@ title: Agent Capability Lab v0
 status: authorized
 owner: repository-maintainers
 created: 2026-07-15
-updated: 2026-07-18
+updated: 2026-07-19
 supersedes: []
 superseded_by: null
 source_artifacts:
@@ -82,13 +82,13 @@ independent P5 PASS, restricted P6 admission through
 `2026-07-24T23:59:59Z`. ADR 0016 authorizes model-free implementation
 preparation for P7, P8, and P10 through `2026-07-25T23:59:59Z`; standing
 live P7 data access remains unavailable. Exact continuations bind a temporary
-executor and read-only runtime. ADR 0020 now authorizes one exact second P7 retry
-through `2026-07-25T23:59:59Z` after the ADR 0017 and ADR 0018 attempts stopped
-before recomputation and completed aggregate disablement. Human inference,
+executor and read-only runtime. ADR 0020's exact second P7 retry stopped during
+the first recomputation at an identity-safe JSON-decimal boundary and completed
+aggregate disablement; that authorization is consumed. Human inference,
 eligibility, export, independent verification, model calls, training, and
 acceptance remain unauthorized. P8 and P10 have hermetic deterministic
 implementations, but their actual Study 001 outputs remain unavailable until
-the authorized P7 retry produces the bound observation.
+a separately authorized P7 retry produces the bound observation.
 
 ## Objective and authority boundary
 
@@ -375,9 +375,13 @@ unusable `*` password marker with usable password authority. The
 [`stopped retry`](../../records/caplab-p7-live-retry-attempt-2026-07-19.md) and
 tested versioned repair are recorded. The
 [`exact second retry proposal`](../../records/caplab-p7-live-retry-2-proposal-2026-07-19.md)
-was approved unchanged by ADR 0020. One ordered retry and its mandatory cleanup
-are authorized through the existing expiry. P7 remains incomplete until that
-execution produces two matching observations and preservation checks pass.
+was approved unchanged by ADR 0020. The
+[`stopped second retry`](../../records/caplab-p7-live-second-retry-attempt-2026-07-19.md)
+reached the first recomputation, which refused a default-parsed Python float at
+the identity-safe canonicalization boundary. It emitted no result; the replay
+did not run; aggregate disablement and preservation checks passed. ADR 0020 is
+consumed. P7 remains incomplete and another live run requires a new exact owner
+decision.
 
 Resolve registered immutable evidence through Postgres locators, apply the
 frozen analysis and missingness rules, and reproduce the selected normalized
@@ -666,3 +670,12 @@ replacement because the Plane connector could not remove the original relation.
   aggregate disablement, and fresh preservation evidence through
   `2026-07-25T23:59:59Z`. Later inference, eligibility, export, independent
   verification, and acceptance gates remain separate.
+- **2026-07-19 — exact P7 second live retry stopped.** The versioned controller
+  passed ready verification and the first frozen recomputation began. Default
+  JSON decoding converted a decimal token into a Python float, which the
+  identity-safe canonicalizer correctly refused; no result was emitted and the
+  replay did not run. Aggregate disablement and every preservation comparison
+  passed. The sealed 50-entry evidence manifest has SHA-256
+  `b0d1b0269ea9b167e3e2ccdbe19dfca6e43e2707c2970a2c9880d0565a497cd6`.
+  ADR 0020 is consumed; implementation repair remains within ADR 0016 Stage A,
+  but another live run requires a new exact owner decision.
