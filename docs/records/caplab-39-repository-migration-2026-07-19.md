@@ -111,5 +111,7 @@ because the clean runner did not have `botocore`; the initial workflow invoked
 now requires the workflow to install
 `src/caplab/runtime/requirements.lock` with `--require-hashes` before the gate.
 The local gate passed 104 tests with four authorized live skips after this
-correction. Final verification still requires the corrected GitHub Actions run
-to pass.
+correction. Corrected run `29703044525` passed, but warned that the Node 20
+action releases would be forced onto Node 24. The workflow therefore uses
+`actions/checkout@v6` and `actions/setup-python@v6`; the current canonical
+commit's run is the external verification projection for that change.

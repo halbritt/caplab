@@ -29,6 +29,8 @@ class RepositoryContractTests(unittest.TestCase):
     def test_ci_installs_locked_runtime_before_repository_gate(self) -> None:
         # GitHub Actions run 29702961943 failed when botocore was absent.
         workflow = (ROOT / ".github/workflows/check.yml").read_text(encoding="utf-8")
+        self.assertIn("uses: actions/checkout@v6", workflow)
+        self.assertIn("uses: actions/setup-python@v6", workflow)
         install = (
             "python -m pip install --require-hashes "
             "-r src/caplab/runtime/requirements.lock"
