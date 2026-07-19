@@ -381,7 +381,10 @@ reached the first recomputation, which refused a default-parsed Python float at
 the identity-safe canonicalization boundary. It emitted no result; the replay
 did not run; aggregate disablement and preservation checks passed. ADR 0020 is
 consumed. P7 remains incomplete and another live run requires a new exact owner
-decision.
+decision. The parser repair and source-pinned host surface are prepared at
+clean, pushed CAPLAB commit `bf6de2b24ac61e82107208cdc609c7e534c6eaaa`
+and Proximal commit `c5bb1efa1402010a57ccc7034f3555b14830bc1c`.
+The exact third-retry proposal awaits that decision.
 
 Resolve registered immutable evidence through Postgres locators, apply the
 frozen analysis and missingness rules, and reproduce the selected normalized
@@ -679,3 +682,11 @@ replacement because the Plane connector could not remove the original relation.
   `b0d1b0269ea9b167e3e2ccdbe19dfca6e43e2707c2970a2c9880d0565a497cd6`.
   ADR 0020 is consumed; implementation repair remains within ADR 0016 Stage A,
   but another live run requires a new exact owner decision.
+- **2026-07-19 — P7 JSON-decimal repair prepared.** A public recomputation
+  regression reproduced the live `CanonicalizationError` before the repair.
+  Recomputation now preserves decimal JSON tokens as strings at the same
+  immutable-byte boundary as admission, without accepting floats into durable
+  identity. All 105 CAPLAB tests and nine Proximal controller tests pass.
+  Clean, pushed commits `bf6de2b24ac61e82107208cdc609c7e534c6eaaa` and
+  `c5bb1efa1402010a57ccc7034f3555b14830bc1c` bind the repair and host surface.
+  The exact third-retry proposal awaits a new owner decision.
