@@ -1,4 +1,4 @@
-# Agent Capability Lab
+# CAPLAB — Agent Capability Lab
 
 CAPLAB measures software-agent capabilities that patch-completion benchmarks
 do not capture directly: judgment under contradictory evidence, verification
@@ -6,11 +6,22 @@ behavior, abstention, evidence-responsive decision control, and other
 study-specific constructs. After later gates, it is intended to supply governed
 evidence for Striatum placement decisions and open-model training work.
 
-This is the standalone CAPLAB repository. The initial product decisions,
-Study 001 selection, capability card, and dashboard projection were imported
-from `halbritt/books` at commit
+This is the canonical CAPLAB repository: `halbritt/caplab` on GitHub and
+`/home/halbritt/git/caplab` on the primary host. The active product, package,
+tests, decisions, and operational records live at the repository root.
+
+The repository also retains the complete tracked tree and Git ancestry of the
+former Ethogram repository under `history/ethogram/`. That subtree is
+historical source and evaluation custody, not an alternate package root or
+runtime authority. Its prior branches remain available for provenance and
+recovery. See [ADR 0019](docs/decisions/adr-0019-canonical-caplab-repository.md)
+for the consolidation boundary and rollback path.
+
+The initial product decisions, Study 001 selection, capability card, and
+dashboard projection were imported from `halbritt/books` at commit
 `cdbb5120d1d450763fca2a8aca172f6308413440`. Historical Study 001 evidence was
-not copied during that repository separation.
+not copied during that initial repository separation; its later restricted
+admission is recorded by CAPLAB-24/P6.
 
 CAPLAB-22/P4 completed independent verification and its synthetic state remains
 quarantined with access disabled. CAPLAB-23/P5 completed its recovery campaign,

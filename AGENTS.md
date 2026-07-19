@@ -9,6 +9,12 @@ or product authority in `books`, Pincite, Doctrine, Striatum, or Proximal.
 Those systems may supply source evidence, advisory guidance, downstream
 requirements, or host integration without owning CAPLAB's product decisions.
 
+`history/ethogram/` preserves the tracked tree and ancestry of the former
+repository identity. Treat it as historical custody, not as an active Python
+package root, CI surface, or source of CAPLAB product authority. Preserve uses
+of “Ethogram” that identify historical decisions, artifacts, branches, or
+provenance; do not revive it as the active repository identity.
+
 Keep observations, inferences, recommendations, decisions, authorization,
 execution, verification, and acceptance distinct. Plane is a planning
 projection. A model or agent may record human-owned judgment only when the

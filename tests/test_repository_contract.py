@@ -3,6 +3,7 @@
 import hashlib
 import json
 import re
+import tomllib
 import unittest
 from pathlib import Path
 
@@ -12,6 +13,19 @@ MARKDOWN_LINK = re.compile(r"\[[^]]+\]\(([^)]+)\)")
 
 
 class RepositoryContractTests(unittest.TestCase):
+    def test_canonical_repository_identity_is_caplab(self) -> None:
+        metadata = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+        self.assertEqual(
+            metadata["project"]["urls"]["Repository"],
+            "https://github.com/halbritt/caplab",
+        )
+        decision = (
+            ROOT / "docs/decisions/adr-0019-canonical-caplab-repository.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("status: decided", decision)
+        self.assertIn("/home/halbritt/git/caplab", decision)
+        self.assertIn("history/ethogram/", decision)
+
     def test_caplab_runtime_has_no_books_or_doctrine_dependency(self) -> None:
         forbidden_import = re.compile(
             r"^\s*(?:from|import)\s+(?:books|pincite|doctrine)(?:\.|\s|$)",

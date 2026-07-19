@@ -8,6 +8,10 @@ version = "0.1.0"
 description = "Behavioral capability measurement for software agents"
 requires-python = ">=3.12"
 
+[project.urls]
+Repository = "https://github.com/halbritt/caplab"
+Issues = "https://github.com/halbritt/caplab/issues"
+
 [tool.setuptools]
 package-dir = {"" = "src"}
 
