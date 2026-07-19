@@ -86,8 +86,9 @@ preparation for P7, P8, and P10 through `2026-07-25T23:59:59Z`; standing
 live P7 data access remains unavailable. Exact continuations bind a temporary
 executor and read-only runtime. ADR 0020's exact second P7 retry stopped during
 the first recomputation at an identity-safe JSON-decimal boundary and completed
-aggregate disablement; that authorization is consumed. ADR 0021 now authorizes
-one exact third retry with the repaired source through the existing expiry.
+aggregate disablement; that authorization is consumed. ADR 0021's exact third
+retry then stopped before access creation because the installed venv interpreter
+was a symlink; that authorization is also consumed.
 Human inference,
 eligibility, export, independent verification, model calls, training, and
 acceptance remain unauthorized. P8 and P10 have hermetic deterministic
@@ -388,7 +389,10 @@ consumed. P7 remains incomplete and another live run requires a new exact owner
 decision. The parser repair and source-pinned host surface were prepared at
 clean, pushed CAPLAB commit `bf6de2b24ac61e82107208cdc609c7e534c6eaaa`
 and Proximal commit `c5bb1efa1402010a57ccc7034f3555b14830bc1c`.
-ADR 0021 approves the exact third-retry proposal unchanged.
+ADR 0021 approved the exact third-retry proposal unchanged. That execution
+stopped before access creation because the installed venv interpreter was a
+symlink. The repository owner has instructed the executor to retry again; the
+exact runtime-custody correction remains to be bound before live effects.
 
 Resolve registered immutable evidence through Postgres locators, apply the
 frozen analysis and missingness rules, and reproduce the selected normalized
@@ -701,3 +705,13 @@ replacement because the Plane connector could not remove the original relation.
   commit `bf6de2b24ac61e82107208cdc609c7e534c6eaaa` and Proximal commit
   `c5bb1efa1402010a57ccc7034f3555b14830bc1c`, with mandatory aggregate
   disablement and preservation checks through the existing expiry.
+- **2026-07-19 — exact P7 third live retry stopped.** The repaired source and
+  source-pinned host files installed, and 31 pre-effect controls passed. The
+  controller then refused the new venv because `bin/python` was a symlink;
+  enablement stopped before campaign state or access creation. Independent
+  cleanup controls prove no P7 key, credential, login, session, or reader
+  process and exact pre/post preservation. The sealed 58-entry evidence
+  manifest has SHA-256
+  `56b49199a9df5ddc5cfa8f307e7b2bfe81747a52de6a6af4c633adcd191d7eb6`.
+  ADR 0021 is consumed. The repository owner then instructed `retry again`;
+  an exact regular-file runtime-custody correction must precede live effects.

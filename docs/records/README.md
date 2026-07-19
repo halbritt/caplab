@@ -143,6 +143,12 @@ binds the repaired CAPLAB and prepared Proximal commits. It awaits a new owner
 decision; preparation alone does not authorize installation or live access.
 ADR 0021 records the repository owner's conditional approval after confirming
 the repair and complete gate pass, and authorizes that proposal unchanged.
+The resulting
+[`stopped third-retry record`](caplab-p7-live-third-retry-attempt-2026-07-19.md)
+observes that the controller refused a symlinked venv interpreter before state
+or access creation. Independent controls prove access remained disabled and all
+protected state unchanged. ADR 0021 is consumed; the owner's instruction to
+`retry again` requires an exact runtime-custody correction before live effects.
 
 ADR 0016 Stage A also produced the
 [`P8 and P10 implementation record`](caplab-p8-p10-stage-a-implementation-2026-07-18.md).
