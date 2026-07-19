@@ -140,7 +140,9 @@ The regression reproduced the second retry's live failure before the one-line
 boundary repair and passes afterward with the complete repository gate. The
 [`exact third retry proposal`](caplab-p7-live-retry-3-proposal-2026-07-19.md)
 binds the repaired CAPLAB and prepared Proximal commits. It awaits a new owner
-decision; preparation does not authorize installation or live access.
+decision; preparation alone does not authorize installation or live access.
+ADR 0021 records the repository owner's conditional approval after confirming
+the repair and complete gate pass, and authorizes that proposal unchanged.
 
 ADR 0016 Stage A also produced the
 [`P8 and P10 implementation record`](caplab-p8-p10-stage-a-implementation-2026-07-18.md).

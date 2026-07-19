@@ -24,6 +24,7 @@ authorization_records:
   - adr-0017
   - adr-0018
   - adr-0020
+  - adr-0021
 authorized_scope:
   - CAPLAB-22/P4
   - CAPLAB-23/P5
@@ -53,6 +54,7 @@ authorized_scope:
   - adr-0017 exact P7 live continuation
   - adr-0018 exact P7 live retry
   - adr-0020 exact P7 second live retry
+  - adr-0021 exact P7 third live retry
   - CAPLAB-25/P7 implementation preparation
   - CAPLAB-26/P8 implementation preparation
   - CAPLAB-28/P10 implementation preparation
@@ -84,7 +86,9 @@ preparation for P7, P8, and P10 through `2026-07-25T23:59:59Z`; standing
 live P7 data access remains unavailable. Exact continuations bind a temporary
 executor and read-only runtime. ADR 0020's exact second P7 retry stopped during
 the first recomputation at an identity-safe JSON-decimal boundary and completed
-aggregate disablement; that authorization is consumed. Human inference,
+aggregate disablement; that authorization is consumed. ADR 0021 now authorizes
+one exact third retry with the repaired source through the existing expiry.
+Human inference,
 eligibility, export, independent verification, model calls, training, and
 acceptance remain unauthorized. P8 and P10 have hermetic deterministic
 implementations, but their actual Study 001 outputs remain unavailable until
@@ -381,10 +385,10 @@ reached the first recomputation, which refused a default-parsed Python float at
 the identity-safe canonicalization boundary. It emitted no result; the replay
 did not run; aggregate disablement and preservation checks passed. ADR 0020 is
 consumed. P7 remains incomplete and another live run requires a new exact owner
-decision. The parser repair and source-pinned host surface are prepared at
+decision. The parser repair and source-pinned host surface were prepared at
 clean, pushed CAPLAB commit `bf6de2b24ac61e82107208cdc609c7e534c6eaaa`
 and Proximal commit `c5bb1efa1402010a57ccc7034f3555b14830bc1c`.
-The exact third-retry proposal awaits that decision.
+ADR 0021 approves the exact third-retry proposal unchanged.
 
 Resolve registered immutable evidence through Postgres locators, apply the
 frozen analysis and missingness rules, and reproduce the selected normalized
@@ -689,4 +693,11 @@ replacement because the Plane connector could not remove the original relation.
   identity. All 105 CAPLAB tests and nine Proximal controller tests pass.
   Clean, pushed commits `bf6de2b24ac61e82107208cdc609c7e534c6eaaa` and
   `c5bb1efa1402010a57ccc7034f3555b14830bc1c` bind the repair and host surface.
-  The exact third-retry proposal awaits a new owner decision.
+  The exact third-retry proposal was approved unchanged by ADR 0021.
+- **2026-07-19 — exact P7 third live retry approved.** After confirmation that
+  the parser repair, public regression, and complete test gate pass, the
+  repository owner stated `If yes, then I approve the retry`. ADR 0021
+  authorizes one execution of the exact third-retry proposal using CAPLAB
+  commit `bf6de2b24ac61e82107208cdc609c7e534c6eaaa` and Proximal commit
+  `c5bb1efa1402010a57ccc7034f3555b14830bc1c`, with mandatory aggregate
+  disablement and preservation checks through the existing expiry.

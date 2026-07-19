@@ -23,3 +23,4 @@ does not imply execution, verification, or acceptance.
 | [ADR 0018](adr-0018-caplab-p7-live-retry.md) | CAPLAB P7 exact live retry | decided | repository owner |
 | [ADR 0019](adr-0019-canonical-caplab-repository.md) | Canonical CAPLAB repository and Ethogram history consolidation | decided | repository owner |
 | [ADR 0020](adr-0020-caplab-p7-exact-second-retry.md) | CAPLAB P7 exact second live retry | decided | repository owner |
+| [ADR 0021](adr-0021-caplab-p7-exact-third-retry.md) | CAPLAB P7 exact third live retry | decided | repository owner |
