@@ -136,3 +136,10 @@ implemented and pass the repository gate. This is implementation preparation,
 not execution of P8 or P10; both still depend on the pending live P7
 observation. Human inference, eligibility, export, independent verification,
 and acceptance remain separate gates.
+
+CAPLAB-39 produced the
+[`repository migration record`](caplab-39-repository-migration-2026-07-19.md).
+It records the verified bundles, joined histories, preserved branches, GitHub
+rename, local compatibility redirect, and retained recovery checkout. The
+migration changes repository identity and topology; it does not accept CAPLAB
+or authorize any pending study, inference, export, or training gate.
