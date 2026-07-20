@@ -2,11 +2,11 @@
 id: caplab-preference-001-native-r1
 artifact_type: study-preregistration
 title: Native-system constraint continuity in Fable-versus-GPT repository work
-status: model-free-qualified
-decision_record: adr-0040
+status: live-authorized
+decision_record: adr-0041
 decision_authority: adr-0026-and-adr-0039
 created: 2026-07-20
-execution_authorized: false
+execution_authorized: true
 instrument_authority: adr-0040
 instrument_status: model-free-qualified
 ---
@@ -64,3 +64,7 @@ versions, a content-addressed live manifest, and a separate authorization.
   native tuples, new order and reveal map, render seal, and proxy-refusal gate
   passed the complete repository check. No native-system call, judgment,
   inference, independent verification, or acceptance occurred.
+- `2026-07-20` — `live-authorized` — ADR 0041 authorized the exact
+  content-addressed native manifest, external containment, ordered custody
+  loop, 12 primary calls, and at most four infrastructure-only replacements.
+  Execution, observation, verification, and acceptance remain distinct.

@@ -1,7 +1,9 @@
 {
   "schema": "caplab.preference.native-live-manifest/v1",
-  "status": "prepared-not-authorized",
-  "authority": "pending-adr-0041",
+  "status": "active",
+  "authority": "adr-0041",
+  "authorized_at": "2026-07-20T21:45:00Z",
+  "expires_at": "2026-08-03T23:59:59Z",
   "campaign_id": "caplab-preference-001-native-r1-2026-07-20",
   "instrument": {
     "path": "native-instrument.json",
@@ -16,7 +18,7 @@
   "containment": {
     "profile": "caplab-native-task-bwrap-v1",
     "source_path": "src/caplab/preference/native_live.py",
-    "source_sha256": "85e7a541c92cca65db3307586c81942794ab00aa3bf5d6e1f55ea261eca1ace1",
+    "source_sha256": "f8bed2d71efd225be068e3cfabd024115a813c25a68489ce935596a1ee5e0655",
     "filesystem": "task-tree-write; system-and-harness-binaries-read-only; no-other-home-or-repository",
     "network": "shared-host-network-for-native-provider",
     "codex_inner_sandbox": "workspace-write"
@@ -34,5 +36,5 @@
     "raw_custody_root": "/home/halbritt/.local/share/caplab/campaigns/caplab-preference-001-native-r1-2026-07-20",
     "normalized_repository_root": "docs/product/studies/preference-001/native-campaign-2026-07-20"
   },
-  "manifest_sha256": "f95758af72b752755ea8474bfb91abf8b0793ab63a28744f6b22f66279cc2bc0"
+  "manifest_sha256": "a1891ec8cb324bf89765f5e3f851efabca27978fc67dd8250f1c2cbdaf6ba942"
 }
