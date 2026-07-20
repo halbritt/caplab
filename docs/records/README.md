@@ -4,6 +4,11 @@ Execution records state what an authorized executor changed. Verification
 records independently compare those effects with frozen criteria. Neither is
 acceptance.
 
+The [`BOOKS-1–6 ownership review`](caplab-books-1-6-triage-2026-07-20.md)
+records the custody classification and combined future-roadmap execution
+order selected by ADR 0029. It is decision support, not historical-evidence
+admission, follow-on execution, verification, or acceptance.
+
 CAPLAB-22/P4 produced separate records for campaign
 `caplab-p4-roundtrip-2026-07-15`:
 
