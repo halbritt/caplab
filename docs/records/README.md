@@ -190,12 +190,28 @@ The
 freezes a recommended verifier scope, criterion ledger, non-export observation,
 access closure, and stop conditions. It is awaiting an explicitly named
 independent executor and exact owner authorization; it contains no verification
-result. P14 remains blocked.
+result. ADR 0025 and the separate P13 verification record now preserve the
+later authorization and outcome.
 
 ADR 0025 records the owner's delegated P13 authorization and binds the fresh
 independent executor, isolated worktree, evidence root, one temporary P7
 read-access lifecycle, expiry, cleanup, and stop conditions. It authorizes
-technical verification only; no P13 verdict or P14 disposition exists yet.
+technical verification only. The resulting P13 verdict is recorded separately;
+no P14 disposition exists yet.
+
+The fresh executor produced the
+[`P13 independent verification record`](caplab-p13-independent-verification-2026-07-20.md).
+Its technical verdict is `FAIL`: a retained prior campaign state stopped the
+live replay, aggregate controller disablement remained `disable_incomplete`,
+and the frozen disabled-state oracle failed. External access is effectively
+closed, protected inventories match, and the hermetic and retained-evidence
+criteria passed. The v0 export criterion remains unmet.
+
+The
+[`P14 owner decision proposal`](caplab-p14-owner-decision-proposal-2026-07-20.md)
+recommends `revision` and presents `rejection` as the other available
+disposition. Acceptance and conditional acceptance are unavailable. The
+proposal records no owner decision and authorizes no repair or retry.
 
 CAPLAB-39 produced the
 [`repository migration record`](caplab-39-repository-migration-2026-07-19.md).

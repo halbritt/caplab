@@ -108,7 +108,10 @@ replays. ADR 0023 records the owner's refusal to make a capability inference.
 ADR 0024 selects no training-eligible examples and authorizes no export. ADR
 0025 binds one fresh independent executor to the exact P13 verification
 campaign through `2026-07-21T23:59:59Z`. Acceptance remains separate and
-unauthorized.
+unauthorized. That one-attempt campaign is now consumed: independent technical
+verification failed at the retained controller-state lifecycle, while external
+access remained effectively closed and protected inventories matched. P14 may
+record revision or rejection; acceptance is unavailable.
 
 ## Objective and authority boundary
 
@@ -797,3 +800,13 @@ replacement because the Plane connector could not remove the original relation.
   expiry, mandatory aggregate disablement, and the no-repair stop boundary.
   The primary agent cannot issue the verdict. P14 remains blocked on the
   independent record.
+- **2026-07-20 — P13 independently failed.** The independent executor verified
+  the source, sealed evidence, P6 reconstruction, P8/P10 replays, recovery
+  evidence, claim and split refusal, and bounded non-export surfaces. The live
+  replay never started: the controller refused the retained prior state, then
+  aggregate disablement left that state `disable_incomplete`. External access
+  is effectively closed and protected inventories match, but the frozen
+  controller oracle failed. Technical verification is `FAIL`; v0 criteria are
+  `UNMET`. CAPLAB-33 is complete with its failure record. CAPLAB-34 is the
+  owner decision front; its exact proposal recommends `revision` and also
+  offers `rejection`. Acceptance is unavailable.
