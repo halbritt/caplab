@@ -192,6 +192,11 @@ access closure, and stop conditions. It is awaiting an explicitly named
 independent executor and exact owner authorization; it contains no verification
 result. P14 remains blocked.
 
+ADR 0025 records the owner's delegated P13 authorization and binds the fresh
+independent executor, isolated worktree, evidence root, one temporary P7
+read-access lifecycle, expiry, cleanup, and stop conditions. It authorizes
+technical verification only; no P13 verdict or P14 disposition exists yet.
+
 CAPLAB-39 produced the
 [`repository migration record`](caplab-39-repository-migration-2026-07-19.md).
 It records the verified bundles, joined histories, preserved branches, GitHub

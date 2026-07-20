@@ -28,6 +28,7 @@ authorization_records:
   - adr-0022
   - adr-0023
   - adr-0024
+  - adr-0025
 authorized_scope:
   - CAPLAB-22/P4
   - CAPLAB-23/P5
@@ -61,6 +62,8 @@ authorized_scope:
   - adr-0022 exact P7 runtime-custody correction and fourth live retry
   - adr-0023 P9 capability-inference refusal
   - adr-0024 P11 no-example-eligible decision and no export authorization
+  - adr-0025 exact P13 independent verification campaign
+  - CAPLAB-33/P13 independent technical verification
   - CAPLAB-25/P7 implementation preparation
   - CAPLAB-26/P8 implementation preparation
   - CAPLAB-28/P10 implementation preparation
@@ -102,8 +105,10 @@ acceptance remain unauthorized. The fourth retry completed with byte-identical
 replay, historical match, aggregate disablement, and preservation proof. P8
 and P10 consumed the bound P7 observation with byte-identical deterministic
 replays. ADR 0023 records the owner's refusal to make a capability inference.
-ADR 0024 selects no training-eligible examples and authorizes no export.
-Independent verification and acceptance remain separate and unauthorized.
+ADR 0024 selects no training-eligible examples and authorizes no export. ADR
+0025 binds one fresh independent executor to the exact P13 verification
+campaign through `2026-07-21T23:59:59Z`. Acceptance remains separate and
+unauthorized.
 
 ## Objective and authority boundary
 
@@ -785,3 +790,10 @@ replacement because the Plane connector could not remove the original relation.
   cleanup proof, and fail-closed stop conditions. It does not name or authorize
   an independent executor. CAPLAB-33 is ready for that owner delegation;
   CAPLAB-34 remains blocked.
+- **2026-07-20 — P13 independently delegated and authorized.** The repository
+  owner delegated authorization to the primary agent. ADR 0025 binds fresh
+  executor `/root/p13_independent_verifier`, the isolated verifier worktree,
+  one temporary P7 read-access lifecycle, the verification evidence root, the
+  expiry, mandatory aggregate disablement, and the no-repair stop boundary.
+  The primary agent cannot issue the verdict. P14 remains blocked on the
+  independent record.
