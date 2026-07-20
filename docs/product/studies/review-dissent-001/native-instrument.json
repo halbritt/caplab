@@ -1,0 +1,125 @@
+{
+  "schema": "caplab.review-dissent.native-instrument/v1",
+  "study_id": "caplab-review-dissent-001-native-r1",
+  "status": "model-free-qualified",
+  "authority": "adr-0044",
+  "native_agent_policy": {
+    "path": "docs/product/contracts/native-agent-systems.json",
+    "sha256": "1245d7ddda6045d0476a177cd937697be2ed5cd83438b647cdfeade39f70e5d9"
+  },
+  "base_instrument": {
+    "path": "docs/product/studies/review-dissent-001/instrument.json",
+    "sha256": "7cd5c06934a0a5dadb85bb7d86b6195b3a298f58b5d9c3880d7773dec953f394",
+    "design_sha256": "2038bacc25c6b95ce2420e0c273829922b6f5eeb2230658229a10bb04b521767",
+    "development_sha256": "3de5a877d003f568b680a72ddbd2659ba69e4a391ecebbb3cc35ee24aae77419",
+    "heldout_seal_sha256": "ec7ef0160e878608094f190b7af5bb3c20e4183e7621cdb5d9d1464fb5fe2834"
+  },
+  "agent_systems": {
+    "fable": {
+      "tuple_id": "claude-fable-5-max",
+      "model_id": "claude-fable-5",
+      "native_harness_id": "claude-code",
+      "effort": "max",
+      "command": [
+        "/usr/bin/env",
+        "CLAUDE_CONFIG_DIR=/home/halbritt/.local/share/striatum/harness-config/claude-code",
+        "claude",
+        "-p",
+        "--model",
+        "claude-fable-5",
+        "--effort",
+        "max",
+        "--output-format",
+        "stream-json",
+        "--verbose",
+        "--no-session-persistence",
+        "--dangerously-skip-permissions"
+      ],
+      "version_command": [
+        "/usr/bin/env",
+        "CLAUDE_CONFIG_DIR=/home/halbritt/.local/share/striatum/harness-config/claude-code",
+        "claude",
+        "--version"
+      ],
+      "containment": "external-required"
+    },
+    "gpt": {
+      "tuple_id": "codex-terra-max",
+      "model_id": "gpt-5.6-terra",
+      "native_harness_id": "codex",
+      "effort": "max",
+      "command": [
+        "/usr/bin/env",
+        "CODEX_HOME=/home/halbritt/.local/share/striatum/harness-config/codex",
+        "codex",
+        "exec",
+        "-m",
+        "gpt-5.6-terra",
+        "-c",
+        "model_reasoning_effort=max",
+        "--sandbox",
+        "workspace-write",
+        "--skip-git-repo-check",
+        "--ephemeral",
+        "--json"
+      ],
+      "version_command": [
+        "/usr/bin/env",
+        "CODEX_HOME=/home/halbritt/.local/share/striatum/harness-config/codex",
+        "codex",
+        "--version"
+      ],
+      "containment": "native-workspace-write-plus-external-required"
+    }
+  },
+  "surface_contract": {
+    "fresh_session": true,
+    "task_tree_only": true,
+    "external_network": "native-provider-only",
+    "output_budget": "native-harness-managed",
+    "output_measurement": "required-when-exposed",
+    "wall_clock_minutes": 45,
+    "capture": [
+      "native_event_stream",
+      "final_task_tree",
+      "review_json",
+      "observed_reads",
+      "exit_status",
+      "runtime_version"
+    ]
+  },
+  "execution_order": [
+    "r03:gpt",
+    "r04:fable",
+    "r07:fable",
+    "r08:gpt",
+    "r02:gpt",
+    "r01:fable",
+    "r06:fable",
+    "r05:gpt",
+    "r04:gpt",
+    "r03:fable",
+    "r08:fable",
+    "r07:gpt",
+    "r01:gpt",
+    "r02:fable",
+    "r05:fable",
+    "r06:gpt"
+  ],
+  "replacement_rules": {
+    "maximum": 4,
+    "per_infrastructure_failure": 1,
+    "subject_outcomes_replaced": false
+  },
+  "analysis_contract": {
+    "mechanical_bands": ["0.0", "0.2", "0.4", "0.7", "1.0"],
+    "group_by": ["subject", "truth", "cue", "world"],
+    "missing_and_invalid_remain_in_denominator": true,
+    "claim_ceiling": "development calibration on these synthetic review worlds only"
+  },
+  "call_budget": {
+    "authorized_calls": 0,
+    "authorized_usd": 0
+  },
+  "design_sha256": "7841f899c2dcf3f70453db0ee16d21388352f10dc769b3290c6f826709c76213"
+}

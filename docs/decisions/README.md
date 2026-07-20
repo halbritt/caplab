@@ -41,6 +41,7 @@ does not imply execution, verification, or acceptance.
 | [ADR 0036](adr-0036-caplab-12-review-dissent-instrument-authorization.md) | CAPLAB-12 review-dissent instrument authorization | authorized | ADR 0026 delegate |
 | [ADR 0037](adr-0037-caplab-8-live-preference-study-authorization.md) | CAPLAB-8 live preference-study authorization | withdrawn | ADR 0026 delegate |
 | [ADR 0038](adr-0038-caplab-13-development-calibration-authorization.md) | CAPLAB-13 development calibration authorization | withdrawn | ADR 0026 delegate |
+| [ADR 0044](adr-0044-caplab-13-native-development-calibration.md) | CAPLAB-13 native development calibration authorization | authorized | ADR 0026 delegate |
 | [ADR 0039](adr-0039-native-agent-system-subject-identity.md) | Native agent system is the comparative subject | active | repository owner |
 | [ADR 0040](adr-0040-caplab-7-native-preference-instrument.md) | CAPLAB-7 native preference instrument qualification | decided | ADR 0026 delegate |
 | [ADR 0041](adr-0041-caplab-8-native-live-preference-authorization.md) | CAPLAB-8 native live preference campaign authorization | authorized | ADR 0026 delegate |

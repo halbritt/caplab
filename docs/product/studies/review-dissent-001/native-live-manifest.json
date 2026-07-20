@@ -1,0 +1,50 @@
+{
+  "schema": "caplab.review-dissent.native-live-manifest/v1",
+  "status": "active",
+  "authority": "adr-0044",
+  "authorized_at": "2026-07-20T22:35:00Z",
+  "expires_at": "2026-08-03T23:59:59Z",
+  "campaign_id": "caplab-review-dissent-001-development-native-r1-2026-07-20",
+  "instrument": {
+    "path": "native-instrument.json",
+    "file_sha256": "1e7747342ede592f5ddd6553233ea36c80282266251bf7e30feebb06edf6a242",
+    "design_sha256": "7841f899c2dcf3f70453db0ee16d21388352f10dc769b3290c6f826709c76213"
+  },
+  "runtime_versions": {
+    "claude-code": "2.1.215 (Claude Code)",
+    "codex": "codex-cli 0.144.6",
+    "bubblewrap": "bubblewrap 0.9.0"
+  },
+  "auth_preflight": {
+    "claude-code": "claude.ai:firstParty:max",
+    "codex": "ChatGPT"
+  },
+  "containment": {
+    "profile": "caplab-native-review-task-bwrap-v1",
+    "runner_source": {
+      "path": "src/caplab/review_dissent/native_live.py",
+      "sha256": "48bb5bf8ba282f186e29a35a65e1d6c39042d87d09a22e9322b0205cb8dbac4b"
+    },
+    "runtime_source": {
+      "path": "src/caplab/preference/native_live.py",
+      "sha256": "1f0010fcd5c876e23b65514a2c4fbbdcbd9ff19eaf6c124fdfd5109b3791ef93"
+    },
+    "filesystem": "task-tree-write; selected-native-harness-and-auth-projection; no-other-home-or-repository",
+    "network": "shared-host-network-for-native-provider",
+    "codex_inner_sandbox": "workspace-write"
+  },
+  "limits": {
+    "primary_trials": 16,
+    "maximum_replacements": 4,
+    "maximum_trials": 20,
+    "maximum_wall_clock_hours": 12,
+    "trial_wall_clock_minutes": 45,
+    "output_budget": "native-harness-managed-and-measured-when-exposed",
+    "billing": "authenticated-subscription-capacity; no-per-call-price-observed"
+  },
+  "storage": {
+    "raw_custody_root": "/home/halbritt/.local/share/caplab/campaigns/caplab-review-dissent-001-development-native-r1-2026-07-20",
+    "normalized_repository_root": "docs/product/studies/review-dissent-001/campaign-development-native-r1-2026-07-20"
+  },
+  "manifest_sha256": "b6d810ea4ee1ec55cb2f3d69646e18dc1fe34fd9d596cee940c162e367b10446"
+}
