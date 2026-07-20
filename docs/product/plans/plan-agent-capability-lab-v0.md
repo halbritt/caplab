@@ -25,6 +25,7 @@ authorization_records:
   - adr-0018
   - adr-0020
   - adr-0021
+  - adr-0022
 authorized_scope:
   - CAPLAB-22/P4
   - CAPLAB-23/P5
@@ -55,6 +56,7 @@ authorized_scope:
   - adr-0018 exact P7 live retry
   - adr-0020 exact P7 second live retry
   - adr-0021 exact P7 third live retry
+  - adr-0022 exact P7 runtime-custody correction and fourth live retry
   - CAPLAB-25/P7 implementation preparation
   - CAPLAB-26/P8 implementation preparation
   - CAPLAB-28/P10 implementation preparation
@@ -88,8 +90,8 @@ executor and read-only runtime. ADR 0020's exact second P7 retry stopped during
 the first recomputation at an identity-safe JSON-decimal boundary and completed
 aggregate disablement; that authorization is consumed. ADR 0021's exact third
 retry then stopped before access creation because the installed venv interpreter
-was a symlink; that authorization is also consumed.
-Human inference,
+was a symlink; that authorization is also consumed. ADR 0022 now authorizes one
+exact fourth retry using copied regular-file interpreter custody. Human inference,
 eligibility, export, independent verification, model calls, training, and
 acceptance remain unauthorized. P8 and P10 have hermetic deterministic
 implementations, but their actual Study 001 outputs remain unavailable until
@@ -391,8 +393,8 @@ clean, pushed CAPLAB commit `bf6de2b24ac61e82107208cdc609c7e534c6eaaa`
 and Proximal commit `c5bb1efa1402010a57ccc7034f3555b14830bc1c`.
 ADR 0021 approved the exact third-retry proposal unchanged. That execution
 stopped before access creation because the installed venv interpreter was a
-symlink. The repository owner has instructed the executor to retry again; the
-exact runtime-custody correction remains to be bound before live effects.
+symlink. The regular-file runtime-custody correction is prepared, and ADR 0022
+binds one exact fourth retry.
 
 Resolve registered immutable evidence through Postgres locators, apply the
 frozen analysis and missingness rules, and reproduce the selected normalized
@@ -715,3 +717,10 @@ replacement because the Plane connector could not remove the original relation.
   `56b49199a9df5ddc5cfa8f307e7b2bfe81747a52de6a6af4c633adcd191d7eb6`.
   ADR 0021 is consumed. The repository owner then instructed `retry again`;
   an exact regular-file runtime-custody correction must precede live effects.
+- **2026-07-19 — runtime custody corrected and fourth retry authorized.** The
+  refused symlinked runtime is preserved. The same CAPLAB source was rebuilt
+  with `venv --copies`; its interpreter is a regular `root:caplab` mode-0750
+  file matching system Python. Proximal commit
+  `1b79aa07cc4e44e8fc828449f882c6b62008edb6` makes that construction and
+  pre-enable check explicit, and all ten controller tests pass. ADR 0022 binds
+  the owner's `retry again` instruction to one exact corrected execution.

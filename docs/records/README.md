@@ -150,6 +150,12 @@ or access creation. Independent controls prove access remained disabled and all
 protected state unchanged. ADR 0021 is consumed; the owner's instruction to
 `retry again` requires an exact runtime-custody correction before live effects.
 
+ADR 0016 Stage A then produced the
+[`regular-file runtime custody repair`](caplab-p7-runtime-custody-repair-2026-07-19.md).
+The [`exact fourth-retry proposal`](caplab-p7-live-retry-4-proposal-2026-07-19.md)
+binds that correction, and ADR 0022 records the owner's `retry again`
+instruction as authority for one exact corrected execution.
+
 ADR 0016 Stage A also produced the
 [`P8 and P10 implementation record`](caplab-p8-p10-stage-a-implementation-2026-07-18.md).
 The deterministic profile-proposal and candidate-manifest boundaries are
