@@ -66,6 +66,14 @@ The
 [`CAPLAB-8 native r2 execution record`](caplab-8-native-r2-execution-2026-07-20.md)
 binds all 12 completed native attempts and their raw custody tree while keeping
 normalization, disposition, verification, and acceptance separate.
+ADR 0043 then authorized native normalization and delegated blind disposition.
+The
+[`CAPLAB-8 native r2 result`](caplab-8-native-r2-result-2026-07-20.md)
+records six valid pairs, five Fable blind preferences, zero strict mechanical
+advantages, and the exact `hypothesis-disconfirmed` conclusion. The separate
+[`technical verification`](caplab-8-native-r2-verification-2026-07-20.md)
+passes CAPLAB-8's closure criteria without claiming independence or broader
+CAPLAB acceptance.
 
 CAPLAB-22/P4 produced separate records for campaign
 `caplab-p4-roundtrip-2026-07-15`:

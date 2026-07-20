@@ -42,6 +42,18 @@ reviewer-visible. Despite that, ADRs 0030, 0033, 0037, and 0038 treated a
 common Terminus harness as a fairness control. The later records encoded the
 opposite of the established subject identity.
 
+The repository had also established the native execution boundary on
+2026-07-13 in commit `8cf7a0e232646dca95250c358f102e5f606e0fbe`.
+`docs/agent-judgment/native-capture-contract.md` assigned construction of the
+runtime invocation to the Striatum backend declaration, and the accompanying
+`checkout-retries-m1` preregistration named `codex-sol-max` as GPT-5.6 Sol at
+maximum effort through the native Codex harness. That record explicitly
+classified the OpenRouter/Terminus screen as a distinct condition. Repository
+migration later placed those files in historical custody, but their prior
+decision content still demonstrates that proxy/native non-equivalence was
+known. The failure was to generalize and enforce it across later CAPLAB
+studies.
+
 The regression was possible because the earlier rule was enforced at a study
 record and presentation boundary, while the proxy campaigns had their own
 locally consistent manifest validators. No repository-wide pre-execution
