@@ -113,6 +113,32 @@ class LocalTrainingCorpusTests(unittest.TestCase):
         self.assertEqual(manifest["limits"]["authorized_calls"], 8)
         self.assertFalse(manifest["limits"]["server_mutation"])
 
+    def test_committed_corpus_is_self_sealed_local_only_and_family_safe(self) -> None:
+        path = ROOT / "docs/product/training/caplab-review-dissent-local-qwen-r1/corpus.json"
+        corpus = json.loads(path.read_text(encoding="utf-8"))
+        sealed = dict(corpus)
+        claimed = sealed.pop("corpus_sha256")
+        import hashlib
+        actual = hashlib.sha256(
+            json.dumps(sealed, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest()
+        self.assertEqual(claimed, actual)
+        self.assertEqual(len(corpus["records"]), 7)
+        self.assertEqual(
+            {record["split"] for record in corpus["records"]},
+            {"train", "development"},
+        )
+        self.assertTrue(all(record["source_kind"] == "local-open-model" for record in corpus["records"]))
+        self.assertTrue(all(record["sealed_subject_tuple"].startswith("local-qwen-") for record in corpus["records"]))
+        self.assertEqual(
+            {record["task_family"] for record in corpus["records"] if record["split"] == "train"},
+            {"RD-D01"},
+        )
+        self.assertEqual(
+            {record["task_family"] for record in corpus["records"] if record["split"] == "development"},
+            {"RD-D02"},
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
