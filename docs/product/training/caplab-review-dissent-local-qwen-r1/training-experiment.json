@@ -67,8 +67,8 @@
     "seed": 1729
   },
   "toolchain": {
-    "python": "3.11",
-    "torch": "2.7.0+cu126",
+    "python": "3.12",
+    "torch": "2.12.1+cu130",
     "transformers": "5.14.1",
     "peft": "0.19.1",
     "trl": "1.8.0",
@@ -76,10 +76,13 @@
     "accelerate": "1.14.0"
   },
   "compute_ceiling": {
-    "gpu_model": "NVIDIA GeForce RTX 3090",
+    "execution_host": "peecee",
+    "gpu_fleet_model": "marker",
+    "gpu_fleet_slot": 1,
+    "gpu_model": "NVIDIA GeForce RTX 3090 Ti",
     "gpu_count": 1,
-    "gpu_memory_mib": 24576,
-    "host_memory_gib": 96,
+    "gpu_memory_mib": 24564,
+    "host_memory_gib": 64,
     "additive_disk_gib": 100,
     "training_wall_seconds": 7200,
     "attempts": 1

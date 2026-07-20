@@ -36,7 +36,7 @@ quality, safety, model ranking, universal superiority, or Striatum lane fit.
 The executable zero-authority manifest is
 [`training-experiment.json`](../product/training/caplab-review-dissent-local-qwen-r1/training-experiment.json),
 file SHA-256
-`a9f202a1c48d6fff34c82541b5777cf7f7ca7253d78296d4a98ed3873d8db16e`.
+`56a997d3f8e5ed72db6e586b129356d2b4fef743d16e7eae243d4085e6cfbab6`.
 
 ## Model comparison
 
@@ -89,8 +89,19 @@ Any unavailable checkpoint, incompatible toolchain, non-exclusive GPU,
 insufficient storage or host memory, dataset drift, held-out exposure, or need
 to change a frozen hyperparameter is a stop, not permission to improvise.
 
+Before any execution effect, the host binding was amended to the
+owner-controlled `peecee` batch node: RTX 3090 Ti, 64 GiB host RAM, and the
+exclusive `gpu-fleet` `marker` slot 1. This avoids mutating Proximal's
+load-bearing inference service. CPython 3.12 and the already proven
+Torch `2.12.1+cu130` CUDA base replace the uninstalled Proximal toolchain;
+the scientific design is unchanged.
+
 ## Status history
 
 - `2026-07-20` — `preregistered` — the ADR 0026 delegate selected the dense
   27B checkpoint and froze one bounded QLoRA SFT attempt and its comparisons.
   Zero training or evaluation calls are authorized.
+- `2026-07-20` — `host-amended-before-execution` — rebound the exact compute
+  host and base CUDA toolchain to `peecee` under its documented exclusive batch
+  lease. Zero execution effects had occurred; the scientific contract did not
+  change.

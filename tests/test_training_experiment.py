@@ -1,11 +1,13 @@
 import json
 import tempfile
 import unittest
+from datetime import UTC, datetime
 from pathlib import Path
 from unittest.mock import patch
 
 from caplab.review_dissent.training_experiment import (
     TrainingExperimentContractError,
+    load_training_execution,
     load_training_experiment,
 )
 
@@ -13,6 +15,7 @@ from caplab.review_dissent.training_experiment import (
 ROOT = Path(__file__).resolve().parents[1]
 TRAINING_ROOT = ROOT / "docs/product/training/caplab-review-dissent-local-qwen-r1"
 MANIFEST = TRAINING_ROOT / "training-experiment.json"
+EXECUTION = TRAINING_ROOT / "training-execution.json"
 
 
 class TrainingExperimentTests(unittest.TestCase):
@@ -64,6 +67,32 @@ class TrainingExperimentTests(unittest.TestCase):
                 TrainingExperimentContractError, "training_data_sha256_mismatch"
             ):
                 load_training_experiment(relative_manifest, root)
+
+    def test_execution_authority_binds_sources_host_and_effect_ceiling(self) -> None:
+        execution = load_training_execution(
+            EXECUTION,
+            ROOT,
+            now=datetime(2026, 7, 20, 23, 45, tzinfo=UTC),
+        )
+        self.assertEqual(execution["host"]["name"], "peecee")
+        self.assertEqual(execution["host"]["gpu_fleet_model"], "marker")
+        self.assertEqual(execution["permitted_effects"]["training_attempts"], 1)
+        self.assertEqual(execution["permitted_effects"]["paid_usd"], "0")
+
+    def test_execution_loader_does_not_open_heldout_content(self) -> None:
+        original_open = Path.open
+
+        def guarded_open(path: Path, *args, **kwargs):
+            if path.name == "heldout.json":
+                raise AssertionError("execution loader opened heldout content")
+            return original_open(path, *args, **kwargs)
+
+        with patch.object(Path, "open", guarded_open):
+            load_training_execution(
+                EXECUTION,
+                ROOT,
+                now=datetime(2026, 7, 20, 23, 45, tzinfo=UTC),
+            )
 
 
 if __name__ == "__main__":

@@ -13,7 +13,7 @@ execution_authorized: false
 
 The machine-readable experiment contract is [`training-experiment.json`](training-experiment.json),
 file SHA-256
-`a9f202a1c48d6fff34c82541b5777cf7f7ca7253d78296d4a98ed3873d8db16e`.
+`56a997d3f8e5ed72db6e586b129356d2b4fef743d16e7eae243d4085e6cfbab6`.
 
 ## Question and claim ceiling
 
@@ -102,21 +102,24 @@ Method: one 4-bit QLoRA causal-language-model supervised fine-tuning run.
 | Seed | `1729` for Python, NumPy, Torch, CUDA, data order, and adapter initialization |
 | Reporting | no external reporter or telemetry |
 
-The isolated toolchain is frozen to CPython 3.11, Torch `2.7.0+cu126`,
+The isolated toolchain is frozen to CPython 3.12, Torch `2.12.1+cu130`,
 Transformers `5.14.1`, PEFT `0.19.1`, TRL `1.8.0`, BitsAndBytes `0.49.2`, and
-Accelerate `1.14.0`. Before any checkpoint download or training, CAPLAB-16
-must prove that this exact set recognizes the architecture, enumerates every
-and only frozen adapter target, tokenizes all three records within the frozen
-truncation rule, and supports one no-update forward/backward smoke step. A
-failure stops the experiment; it does not authorize a version or parameter
-substitution.
+Accelerate `1.14.0`. Before training, CAPLAB-16 must prove that this exact set
+recognizes the architecture, enumerates every and only frozen adapter target,
+tokenizes all three records within the frozen truncation rule, and supports one
+no-update forward/backward smoke step against the downloaded immutable
+checkpoint. A failure stops the experiment; it does not authorize a version or
+parameter substitution.
 
 ## Compute ceiling, checkpoints, and stops
 
-The execution ceiling is one RTX 3090, 24 GiB device memory, at most 96 GiB
-host RAM, 100 GiB additive disk, two wall-clock GPU hours after model load, 12
-optimizer steps, and one training attempt. No remote compute or paid service is
-permitted.
+The execution host is the owner-controlled Windows batch node `peecee`, under
+an exclusive `gpu-fleet` lease on its `marker` slot 1. The ceiling is one RTX
+3090 Ti with 24,564 MiB device memory, at most 64 GiB host RAM, 100 GiB
+additive disk, two wall-clock GPU hours after model load, 12 optimizer steps,
+and one training attempt. The documented batch contract may unload the
+resident Ollama model for the lease duration and must restore its availability
+afterward. No other remote compute or paid service is permitted.
 
 Retain the immutable source identities, environment lock, exact command,
 trainer state, logs, final adapter, and checkpoints after steps 3, 6, 9, and
@@ -190,3 +193,7 @@ deployment, or policy change.
   resource ceiling, checkpoints, stop rules, held-out evaluation, coding
   controls, regression rule, primary analysis, and claim ceiling frozen. Zero
   execution effects are authorized.
+- `2026-07-20` — `host-amended-before-execution` — the exact execution host was
+  rebound from Proximal's load-bearing interactive GPU to `peecee`'s documented
+  exclusive batch slot. No model, corpus, method, seed, step, evaluation, or
+  success rule changed, and no execution effect had occurred.
