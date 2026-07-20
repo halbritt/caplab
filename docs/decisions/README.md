@@ -49,3 +49,4 @@ does not imply execution, verification, or acceptance.
 | [ADR 0042](adr-0042-caplab-8-native-auth-continuation.md) | CAPLAB-8 native authentication containment continuation | authorized | ADR 0026 delegate |
 | [ADR 0043](adr-0043-caplab-8-native-normalization-and-disposition.md) | CAPLAB-8 native normalization and delegated blind disposition | authorized | ADR 0026 delegate |
 | [ADR 0046](adr-0046-caplab-first-striatum-lane-fit.md) | First CAPLAB Striatum lane-fit disposition | decided | ADR 0026 delegate |
+| [ADR 0047](adr-0047-local-qwen-training-source-campaign.md) | Local-Qwen review training-source campaign authorization | authorized | ADR 0026 delegate |

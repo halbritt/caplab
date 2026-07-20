@@ -1,0 +1,63 @@
+{
+  "schema": "caplab.review-dissent.local-training-instrument/v1",
+  "study_id": "caplab-review-dissent-001-local-qwen-development-r1",
+  "status": "active",
+  "authority": "adr-0047",
+  "expires_at": "2026-07-21T04:00:00Z",
+  "base_instrument": {
+    "path": "docs/product/studies/review-dissent-001/instrument.json",
+    "file_sha256": "7cd5c06934a0a5dadb85bb7d86b6195b3a298f58b5d9c3880d7773dec953f394",
+    "design_sha256": "2038bacc25c6b95ce2420e0c273829922b6f5eeb2230658229a10bb04b521767",
+    "development_sha256": "3de5a877d003f568b680a72ddbd2659ba69e4a391ecebbb3cc35ee24aae77419",
+    "heldout_sha256": "ec7ef0160e878608094f190b7af5bb3c20e4183e7621cdb5d9d1464fb5fe2834"
+  },
+  "subject": {
+    "tuple_id": "local-qwen-35b-a3b-striatum-openai-lane-v1",
+    "model_id": "qwen3.6-35b-a3b",
+    "model_file_sha256": "50e1122946854f2272b44d466c03d17d410d3f02dcd1c021a1f29f6b384a7126",
+    "native_harness_id": "striatum-openai-lane",
+    "native_harness_version": "1",
+    "effort": "not-configurable",
+    "command": [
+      "striatum-openai-lane",
+      "-base-url",
+      "http://127.0.0.1:8081/v1",
+      "-model",
+      "qwen3.6-35b-a3b",
+      "-max-tokens",
+      "4096",
+      "-temperature",
+      "0",
+      "-timeout",
+      "15m"
+    ],
+    "striatum_backend_source": {
+      "commit": "d1a15803e0a1338d01ad25d68bbe434da0af394f",
+      "path": "backends/local-qwen/backend.yaml",
+      "sha256": "c29f9a25f75d1fa67bf4415e2bd157e42a8eb7c55e7dca2dc0106799a761b926"
+    }
+  },
+  "execution_order": ["r01", "r02", "r03", "r04", "r05", "r06", "r07", "r08"],
+  "limits": {
+    "authorized_calls": 8,
+    "maximum_replacements": 0,
+    "trial_wall_clock_minutes": 15,
+    "maximum_wall_clock_hours": 2,
+    "maximum_output_tokens_per_call": 4096,
+    "maximum_paid_cost_usd": 0,
+    "server_mutation": false
+  },
+  "storage": {
+    "raw_custody_root": "/home/halbritt/.local/share/caplab/campaigns/caplab-review-dissent-001-local-qwen-development-r1-2026-07-20",
+    "classification": "synthetic-private-training-source",
+    "retention": "retain through CAPLAB-17 disposition; purge requires separate exact authorization"
+  },
+  "training_use": {
+    "allowed_source": "local-open-model-output-only",
+    "proprietary_provider_output": "excluded",
+    "heldout": "sealed-unopened",
+    "export": "requires-separate-adr-0048-after-valid-result"
+  },
+  "runtime_source_sha256": "00c842cba30bf828aa6f570cd526ba37cdcc4d4235d9fd184eb00d1b05fb72c4",
+  "design_sha256": "369edaee8d829596371a9ba62cf375ebd32d9940744cec676b84d2d6da3964fd"
+}
