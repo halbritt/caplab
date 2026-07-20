@@ -31,6 +31,7 @@ a non-observational recomputation, a historical mismatch, or any promoted
 upstream claim stops with a typed error. The package has no persistence,
 provider, inference-recording, placement, export, or acceptance interface.
 
-ADR 0016 authorizes this implementation. Running it against the actual P7
-output does not become possible until the separate P7 live continuation is
-decided and P7 produces that observation.
+ADR 0016 authorizes this model-free boundary. P7 produced its content-addressed
+observation on 2026-07-20, and the first actual P8 execution emitted profile
+manifest `641965dc30fd0dbfca81d56bb05282b01e8e079285ab605c12672e92f3971ef0`.
+The profile remains pending the CAPLAB-27 human inference decision.

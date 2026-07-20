@@ -60,6 +60,7 @@ authorized_scope:
   - CAPLAB-25/P7 implementation preparation
   - CAPLAB-26/P8 implementation preparation
   - CAPLAB-28/P10 implementation preparation
+  - repository-owner backlog-drain instruction for deterministic P8 and P10 execution
   - src/caplab/recomputation/**
   - src/caplab/profile/**
   - src/caplab/training_candidates/**
@@ -95,8 +96,9 @@ exact fourth retry using copied regular-file interpreter custody. Human inferenc
 eligibility, export, independent verification, model calls, training, and
 acceptance remain unauthorized. The fourth retry completed with byte-identical
 replay, historical match, aggregate disablement, and preservation proof. P8
-and P10 have hermetic deterministic implementations and may now consume the
-bound P7 observation.
+and P10 consumed the bound P7 observation with byte-identical deterministic
+replays. Their profile and candidate outputs remain pending the separate human
+inference and eligibility gates.
 
 ## Objective and authority boundary
 
@@ -412,6 +414,8 @@ Bind the selected card, exact population, recomputed result, uncertainty,
 missingness, failures, and credible rivals. Mechanically show cross-task
 capability, universal ranking, preference, and Striatum placement as
 unavailable. The profile remains a proposal pending the human inference gate.
+The first actual proposal is content-addressed by
+`641965dc30fd0dbfca81d56bb05282b01e8e079285ab605c12672e92f3971ef0`.
 
 ### P9 — Make or decline the Study 001 capability inference
 
@@ -427,7 +431,10 @@ trial, outcome, label or reward, verifier, and required human-disposition
 lineage. Exclude provider and infrastructure failures, compromised instruments,
 ambiguous judgments, and leaked cases. Keep task families and scenario
 templates together for split purposes. The output is a candidate manifest, not
-an eligibility decision, export, or training corpus.
+an eligibility decision, export, or training corpus. The first actual candidate
+manifest is content-addressed by
+`0eeed6348f87d03143ad44c4b9d5440140957c33f32b70e456d80d493aad4a73`;
+all 20 candidates remain `derived-not-eligible`.
 
 ### P11 — Select training eligibility and decide whether to authorize one export
 
@@ -738,3 +745,13 @@ replacement because the Plane connector could not remove the original relation.
   `42b57e7c7dc38786f32267e6e2f63031cc56e335e592688470d47dcee2ac94e6`.
   P8 and P10 may now consume the observation; later human and acceptance gates
   remain separate.
+- **2026-07-20 — P8 and P10 completed.** Both deterministic commands ran twice
+  with byte-identical canonical outputs. P8 emitted pending profile manifest
+  `641965dc30fd0dbfca81d56bb05282b01e8e079285ab605c12672e92f3971ef0`.
+  P10 emitted candidate manifest
+  `0eeed6348f87d03143ad44c4b9d5440140957c33f32b70e456d80d493aad4a73`
+  with 20 `derived-not-eligible` candidates, zero exclusions, and one protected
+  split group. The sealed 23-entry execution evidence manifest has SHA-256
+  `89ea1e396eb8023e1430569edcc740642461b8fd7933f97bded61a93e018b016`.
+  P9 human inference and P11 eligibility are now the dependency front; no
+  inference, eligibility, export, verification, or acceptance was recorded.

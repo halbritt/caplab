@@ -32,5 +32,7 @@ dataset, model call, training action, verification verdict, or acceptance
 record. CAPLAB-29/P11 remains human-owned and must decide exact eligibility
 before any later export can be authorized.
 
-ADR 0016 authorizes this implementation. Actual P10 derivation remains pending
-the separate P7 live continuation and its content-addressed observation.
+ADR 0016 authorizes this model-free boundary. P7 produced its content-addressed
+observation on 2026-07-20, and the first actual P10 execution emitted candidate
+manifest `0eeed6348f87d03143ad44c4b9d5440140957c33f32b70e456d80d493aad4a73`.
+Its 20 candidates remain ineligible pending the CAPLAB-29 human decision.

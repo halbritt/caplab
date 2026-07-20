@@ -164,10 +164,12 @@ complete; this execution is not independent verification or acceptance.
 ADR 0016 Stage A also produced the
 [`P8 and P10 implementation record`](caplab-p8-p10-stage-a-implementation-2026-07-18.md).
 The deterministic profile-proposal and candidate-manifest boundaries are
-implemented and pass the repository gate. This is implementation preparation,
-not execution of P8 or P10. The P7 observation is now available for those
-deterministic checkpoints. Human inference, eligibility, export, independent
-verification, and acceptance remain separate gates.
+implemented and pass the repository gate. The
+[`P8 and P10 execution record`](caplab-p8-p10-execution-2026-07-20.md) reports
+byte-identical deterministic replays against the P7 observation: one pending
+profile proposal and 20 derived-but-ineligible candidates. Human inference,
+eligibility, export, independent verification, and acceptance remain separate
+gates.
 
 CAPLAB-39 produced the
 [`repository migration record`](caplab-39-repository-migration-2026-07-19.md).
