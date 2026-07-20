@@ -9,6 +9,13 @@ records the custody classification and combined future-roadmap execution
 order selected by ADR 0029. It is decision support, not historical-evidence
 admission, follow-on execution, verification, or acceptance.
 
+CAPLAB-41 produced the
+[`evaluation replay implementation record`](caplab-41-evaluation-replay-implementation-2026-07-20.md).
+It records the fresh synthetic fixture, content and hygiene boundary,
+mode-matching contract, and fail-closed outcome classification. It does not
+admit historical BOOKS evidence or supply independent verification or CAPLAB
+acceptance.
+
 CAPLAB-22/P4 produced separate records for campaign
 `caplab-p4-roundtrip-2026-07-15`:
 

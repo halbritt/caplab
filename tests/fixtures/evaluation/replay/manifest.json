@@ -1,0 +1,10 @@
+{
+  "schema_version": "caplab-evaluation-replay-manifest/1",
+  "fixtures": [
+    {
+      "id": "constraint-continuity-pass",
+      "path": "constraint-continuity-pass.json",
+      "sha256": "0d7cba22ee0cc37b71366fc7eac9aa060bee25d4441709e1b5aca511b5b452b4"
+    }
+  ]
+}
