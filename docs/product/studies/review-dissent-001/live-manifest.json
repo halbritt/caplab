@@ -1,0 +1,76 @@
+{
+  "schema": "caplab.review-dissent.live-manifest/v1",
+  "campaign_id": "caplab-review-dissent-001-development-2026-07-20",
+  "authority": "adr-0038",
+  "expires_at": "2026-08-03T23:59:59Z",
+  "instrument": {
+    "design_sha256": "2038bacc25c6b95ce2420e0c273829922b6f5eeb2230658229a10bb04b521767",
+    "development_sha256": "3de5a877d003f568b680a72ddbd2659ba69e4a391ecebbb3cc35ee24aae77419",
+    "heldout_seal_sha256": "ec7ef0160e878608094f190b7af5bb3c20e4183e7621cdb5d9d1464fb5fe2834"
+  },
+  "subjects": {
+    "fable": {
+      "provider_route": "openrouter/anthropic/claude-fable-5",
+      "catalog_observed_at": "2026-07-20T17:40:07Z",
+      "prompt_usd_per_token": "0.00001",
+      "completion_usd_per_token": "0.00005"
+    },
+    "gpt": {
+      "provider_route": "openrouter/openai/gpt-5.6-terra",
+      "catalog_observed_at": "2026-07-20T17:40:07Z",
+      "prompt_usd_per_token": "0.0000025",
+      "completion_usd_per_token": "0.000015"
+    }
+  },
+  "execution_order": [
+    "r03:gpt",
+    "r04:fable",
+    "r07:fable",
+    "r08:gpt",
+    "r02:gpt",
+    "r01:fable",
+    "r06:fable",
+    "r05:gpt",
+    "r04:gpt",
+    "r03:fable",
+    "r08:fable",
+    "r07:gpt",
+    "r01:gpt",
+    "r02:fable",
+    "r05:fable",
+    "r06:gpt"
+  ],
+  "surface": {
+    "memory": "fresh",
+    "tools": "task-local",
+    "external_network": false,
+    "wall_clock_minutes": 45,
+    "output_tokens": 8192
+  },
+  "harness": {
+    "harbor_version": "0.18.0",
+    "agent": "terminus-2",
+    "agent_version": "2.0.0",
+    "agent_source_sha256": "c6b72b8c6289809b2ff3a3009b8f118fa1edb1da205f48d0b56c6938a49cb12f",
+    "parser": "json",
+    "max_turns": 8,
+    "max_tokens_per_turn": 1024,
+    "reasoning_effort": "default",
+    "summarization": false,
+    "task_template": "src/caplab/review_dissent/harbor-template"
+  },
+  "limits": {
+    "primary_trials": 16,
+    "maximum_replacements": 4,
+    "maximum_trials": 20,
+    "maximum_completion_tokens_per_trial": 8192,
+    "maximum_completion_tokens": 163840,
+    "maximum_wall_clock_hours": 12,
+    "maximum_usd": "25.00"
+  },
+  "storage": {
+    "raw_custody_root": "/home/halbritt/.local/share/caplab/campaigns/caplab-review-dissent-001-development-2026-07-20",
+    "normalized_repository_root": "docs/product/studies/review-dissent-001/campaign-development-2026-07-20"
+  },
+  "manifest_sha256": "0d45191c68e5c3096a83006ccc35138f7bdc579cccc877955d88b495c547cb0a"
+}

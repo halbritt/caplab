@@ -14,7 +14,15 @@ infrastructure failures outside the harm score. `build_blinded_review_packet`
 removes mechanical, treatment, subject, and provider identity from the still
 empty human-review form.
 
-There is no subject runner, provider adapter, credential access, network call,
-subprocess, inference path, or human-adjudication implementation in this
-package. Canned captures prove instrument behavior; they are not subject
-attempts, study results, or evidence about an agent configuration.
+`caplab.review_dissent.live` is the separate ADR 0038 execution boundary. It
+loads development content through `load_calibration_instrument`, checks the
+held-out aggregate seal without opening held-out content, enforces the frozen
+two-subject order and budgets, and writes each launch, completion, provider
+result binding, and artifact tree to append-only raw custody. It invokes one
+sequential Harbor trial only through the explicit `run` command. A prior
+attempt must have a sealed observation before another call is possible.
+
+The live runner does not purchase provider credits, change billing, admit
+evidence, export data, train a model, change Striatum policy, independently
+verify a result, or accept a study. Canned captures remain qualification
+fixtures rather than subject attempts or model evidence.
