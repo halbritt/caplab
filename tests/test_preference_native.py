@@ -10,6 +10,8 @@ from pathlib import Path
 
 from caplab.preference.native import (
     NativePreferenceContractError,
+    build_native_blinded_packet,
+    build_native_capture,
     build_native_invocation,
     load_native_instrument,
     render_native_task,
@@ -102,6 +104,41 @@ class NativePreferenceInstrumentTests(unittest.TestCase):
                 NativePreferenceContractError, "native_agent_tuple_mismatch"
             ):
                 load_native_instrument(changed)
+
+    def test_native_captures_score_and_blind_under_corrected_seals(self) -> None:
+        instrument = load_native_instrument(INSTRUMENT)
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            captures = {}
+            for subject_id in ("fable", "gpt"):
+                destination = Path(temporary_directory) / subject_id
+                render_native_task(instrument, "P01", destination)
+                (destination / "tracker.json").write_text(
+                    '{"future_work":"ready","v0":"narrow"}\n',
+                    encoding="utf-8",
+                )
+                (destination / "decision.md").write_text(
+                    "Scope and authorization are distinct. Future work remains ready.\n",
+                    encoding="utf-8",
+                )
+                captures[subject_id] = build_native_capture(
+                    instrument,
+                    task_id="P01",
+                    subject_id=subject_id,
+                    task_root=destination,
+                    handoff="The future queue is preserved; checks passed.",
+                    observation_sha256=subject_id * 8,
+                    campaign_manifest_sha256="a" * 64,
+                )
+
+            self.assertEqual(captures["fable"]["outcome"], "complete")
+            self.assertNotEqual(
+                captures["fable"]["subject_seal"], captures["gpt"]["subject_seal"]
+            )
+            packet = build_native_blinded_packet(instrument, "P01", captures)
+            encoded = json.dumps(packet).casefold()
+            self.assertNotIn("claude-fable-5-max", encoded)
+            self.assertNotIn("codex-terra-max", encoded)
+            self.assertEqual(set(packet["candidates"]), {"A", "B"})
 
 
 if __name__ == "__main__":

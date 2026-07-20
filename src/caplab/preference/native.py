@@ -14,7 +14,13 @@ from caplab.subject_identity import (
     validate_native_agent_systems,
 )
 
-from .instrument import load_instrument
+from .instrument import (
+    _assert_no_identity_leak,
+    _diff,
+    _evaluate,
+    _snapshot,
+    load_instrument,
+)
 
 
 class NativePreferenceContractError(ValueError):
@@ -198,3 +204,117 @@ def build_native_invocation(
         "cwd": root,
         "command": command,
     }
+
+
+def _native_subject_seal(
+    instrument: dict[str, Any], task_id: str, subject_id: str
+) -> str:
+    subject = instrument["agent_systems"][subject_id]
+    task = instrument["_task_bank"]["tasks"][task_id]
+    return sha256(
+        _canonical(
+            {
+                "study_id": instrument["study_id"],
+                "instrument_design_sha256": instrument["design_sha256"],
+                "task_id": task_id,
+                "task_contract_sha256": task["contract_sha256"],
+                "subject_id": subject_id,
+                "tuple_id": subject["tuple_id"],
+                "native_harness_id": subject["native_harness_id"],
+                "model_id": subject["model_id"],
+                "effort": subject["effort"],
+            }
+        )
+    ).hexdigest()
+
+
+def build_native_capture(
+    instrument: dict[str, Any], *, task_id: str, subject_id: str,
+    task_root: str | os.PathLike[str], handoff: str,
+    observation_sha256: str, campaign_manifest_sha256: str,
+) -> dict[str, Any]:
+    """Normalize one completed native attempt under the corrected seal."""
+
+    task = instrument.get("_task_bank", {}).get("tasks", {}).get(task_id)
+    if not isinstance(task, dict) or subject_id not in instrument.get("agent_systems", {}):
+        raise NativePreferenceContractError("unknown_native_capture_identity")
+    if not isinstance(handoff, str) or not handoff.strip():
+        raise NativePreferenceContractError("native_handoff_missing")
+    root = Path(task_root)
+    if root.is_symlink() or not root.is_dir():
+        raise NativePreferenceContractError("native_task_capture_unavailable")
+    before = dict(task["start_files"])
+    after = _snapshot(root)
+    mechanical = _evaluate(task, before, after, handoff)
+    return {
+        "schema": "caplab.preference.native-capture/v1",
+        "task_id": task_id,
+        "instrument_design_sha256": instrument["design_sha256"],
+        "task_contract_sha256": task["contract_sha256"],
+        "subject_seal": _native_subject_seal(instrument, task_id, subject_id),
+        "campaign_manifest_sha256": campaign_manifest_sha256,
+        "observation_sha256": observation_sha256,
+        "execution_mode": "native-live",
+        "outcome": "complete" if not mechanical["missed"] else "partial",
+        "replacement_eligible": False,
+        "mechanical": mechanical,
+        "diff": _diff(before, after),
+        "handoff": handoff,
+        "human_disposition": None,
+    }
+
+
+def build_native_blinded_packet(
+    instrument: dict[str, Any], task_id: str,
+    captures: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    """Build one identity-free pair from corrected native captures."""
+
+    if set(captures) != {"fable", "gpt"}:
+        raise NativePreferenceContractError("incomplete_native_pair")
+    candidates: dict[str, Any] = {}
+    for alias in ("A", "B"):
+        subject_id = instrument["reveal_map"][task_id][alias]
+        capture = captures[subject_id]
+        task = instrument["_task_bank"]["tasks"][task_id]
+        if (
+            capture.get("task_id") != task_id
+            or capture.get("instrument_design_sha256") != instrument["design_sha256"]
+            or capture.get("task_contract_sha256") != task["contract_sha256"]
+            or capture.get("subject_seal")
+            != _native_subject_seal(instrument, task_id, subject_id)
+            or capture.get("human_disposition") is not None
+        ):
+            raise NativePreferenceContractError(
+                f"native_capture_identity_mismatch:{alias}"
+            )
+        candidate = {
+            "outcome": capture["outcome"],
+            "mechanical": capture["mechanical"],
+            "diff": capture["diff"],
+            "handoff": capture["handoff"],
+        }
+        _assert_no_identity_leak(candidate)
+        candidates[alias] = candidate
+    packet = {
+        "schema": "caplab.preference.native-blind-packet/v1",
+        "study_id": instrument["study_id"],
+        "instrument_design_sha256": instrument["design_sha256"],
+        "pair_id": task_id,
+        "task_instruction": instrument["_task_bank"]["tasks"][task_id]["instruction"],
+        "candidates": candidates,
+        "adjudication": {
+            "selection": None,
+            "allowed_selections": ["A", "B", "tie", "unjudgeable"],
+            "reasons": [
+                "more complete requested effect",
+                "better mandatory-constraint coverage",
+                "safer authority and preservation behavior",
+                "better evidence and failure handling",
+                "clearer, more accurate handoff",
+                "presentation preference only",
+            ],
+        },
+    }
+    _assert_no_identity_leak(packet)
+    return packet

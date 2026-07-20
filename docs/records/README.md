@@ -62,6 +62,10 @@ ADR 0042 and the
 preserve the first two native attempts, explain the contained Codex
 authentication failure, and keep them outside the corrected r2 denominator.
 The r2 campaign restarts from slot zero with authenticated native preflight.
+The
+[`CAPLAB-8 native r2 execution record`](caplab-8-native-r2-execution-2026-07-20.md)
+binds all 12 completed native attempts and their raw custody tree while keeping
+normalization, disposition, verification, and acceptance separate.
 
 CAPLAB-22/P4 produced separate records for campaign
 `caplab-p4-roundtrip-2026-07-15`:
