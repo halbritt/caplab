@@ -2,11 +2,21 @@
 
 from __future__ import annotations
 
+import json
 import os
+from hashlib import sha256
 from pathlib import Path
 from typing import Any
 
-from .native import NativePreferenceContractError, build_native_invocation
+from .native import (
+    NativePreferenceContractError,
+    build_native_invocation,
+    load_native_instrument,
+)
+
+
+class NativePreferenceLiveContractError(ValueError):
+    """The native live manifest or containment boundary is invalid."""
 
 
 _CLAUDE_BINARY = Path("/home/halbritt/.local/share/claude/versions/2.1.215")
@@ -15,6 +25,42 @@ _CLAUDE_CONFIG = Path(
 )
 _CODEX_MODULE = Path("/home/halbritt/.npm-global/lib/node_modules/@openai/codex")
 _CODEX_CONFIG = Path("/home/halbritt/.local/share/striatum/harness-config/codex")
+
+
+def _canonical(value: object) -> bytes:
+    return json.dumps(
+        value, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+
+
+def load_native_live_manifest(
+    manifest_path: str | os.PathLike[str], instrument_path: str | os.PathLike[str]
+) -> dict[str, Any]:
+    """Load an authorized native campaign and its content-addressed instrument."""
+
+    manifest_file = Path(manifest_path)
+    try:
+        manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise NativePreferenceLiveContractError(f"native_live_unreadable:{error}") from error
+    if not isinstance(manifest, dict) or manifest.get("schema") != "caplab.preference.native-live-manifest/v1":
+        raise NativePreferenceLiveContractError("invalid_native_live_schema")
+    if manifest.get("status") != "active" or manifest.get("authority") != "adr-0041":
+        raise NativePreferenceLiveContractError("native_live_not_authorized")
+    sealed = dict(manifest)
+    claimed = sealed.pop("manifest_sha256", None)
+    if claimed != sha256(_canonical(sealed)).hexdigest():
+        raise NativePreferenceLiveContractError("native_live_manifest_digest_mismatch")
+    instrument_file = Path(instrument_path)
+    if sha256(instrument_file.read_bytes()).hexdigest() != manifest.get("instrument", {}).get("file_sha256"):
+        raise NativePreferenceLiveContractError("native_live_instrument_file_mismatch")
+    instrument = load_native_instrument(instrument_file)
+    if instrument["design_sha256"] != manifest["instrument"].get("design_sha256"):
+        raise NativePreferenceLiveContractError("native_live_instrument_design_mismatch")
+    result = dict(manifest)
+    result["_instrument"] = instrument
+    result["_manifest_path"] = manifest_file.resolve()
+    return result
 
 
 def _system_mounts() -> list[str]:

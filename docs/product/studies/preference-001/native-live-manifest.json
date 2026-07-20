@@ -1,0 +1,38 @@
+{
+  "schema": "caplab.preference.native-live-manifest/v1",
+  "status": "prepared-not-authorized",
+  "authority": "pending-adr-0041",
+  "campaign_id": "caplab-preference-001-native-r1-2026-07-20",
+  "instrument": {
+    "path": "native-instrument.json",
+    "file_sha256": "004fb6eb7b7ab5fd22f50087732fa160fbc54f090066d80966e7c038b0c03e6a",
+    "design_sha256": "cc03ce18856433fdfff6fccab0874f6bf144c80f02c3987294f5bc60d75b1bc7"
+  },
+  "runtime_versions": {
+    "claude-code": "2.1.215 (Claude Code)",
+    "codex": "codex-cli 0.144.6",
+    "bubblewrap": "bubblewrap 0.9.0"
+  },
+  "containment": {
+    "profile": "caplab-native-task-bwrap-v1",
+    "source_path": "src/caplab/preference/native_live.py",
+    "source_sha256": "f15473af5820732799dbf959d3c30bac1d3561b983cb1e55a808c72bc68ee8fb",
+    "filesystem": "task-tree-write; system-and-harness-binaries-read-only; no-other-home-or-repository",
+    "network": "shared-host-network-for-native-provider",
+    "codex_inner_sandbox": "workspace-write"
+  },
+  "limits": {
+    "primary_trials": 12,
+    "maximum_replacements": 4,
+    "maximum_trials": 16,
+    "maximum_wall_clock_hours": 12,
+    "trial_wall_clock_minutes": 45,
+    "output_budget": "native-harness-managed-and-measured-when-exposed",
+    "billing": "authenticated-subscription-capacity; no-per-call-price-observed"
+  },
+  "storage": {
+    "raw_custody_root": "/home/halbritt/.local/share/caplab/campaigns/caplab-preference-001-native-r1-2026-07-20",
+    "normalized_repository_root": "docs/product/studies/preference-001/native-campaign-2026-07-20"
+  },
+  "manifest_sha256": "69853b5f0d17f67ffa7946dd18b6eec4a4289bd241130d5edebee941746e9f5a"
+}

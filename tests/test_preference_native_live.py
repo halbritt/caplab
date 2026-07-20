@@ -8,16 +8,25 @@ from pathlib import Path
 
 from caplab.preference.native import load_native_instrument
 from caplab.preference.native_live import (
+    NativePreferenceLiveContractError,
     build_contained_invocation,
     build_contained_version_probe,
+    load_native_live_manifest,
 )
 
 
 ROOT = Path(__file__).parents[1]
 INSTRUMENT = ROOT / "docs/product/studies/preference-001/native-instrument.json"
+MANIFEST = ROOT / "docs/product/studies/preference-001/native-live-manifest.json"
 
 
 class NativePreferenceLiveTests(unittest.TestCase):
+    def test_prepared_manifest_cannot_cross_live_authorization_boundary(self) -> None:
+        with self.assertRaisesRegex(
+            NativePreferenceLiveContractError, "native_live_not_authorized"
+        ):
+            load_native_live_manifest(MANIFEST, INSTRUMENT)
+
     def test_both_native_harnesses_run_in_the_same_external_task_namespace(self) -> None:
         instrument = load_native_instrument(INSTRUMENT)
         with tempfile.TemporaryDirectory() as temporary_directory:
