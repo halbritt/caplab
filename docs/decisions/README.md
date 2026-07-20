@@ -28,3 +28,5 @@ does not imply execution, verification, or acceptance.
 | [ADR 0023](adr-0023-caplab-study-001-capability-inference-refusal.md) | CAPLAB Study 001 capability-inference refusal | decided | repository owner |
 | [ADR 0024](adr-0024-caplab-study-001-no-training-eligibility.md) | CAPLAB Study 001 no training-eligible examples | decided | repository owner |
 | [ADR 0025](adr-0025-caplab-p13-independent-verification-authorization.md) | CAPLAB P13 independent verification authorization | authorized | repository owner through bounded delegate |
+| [ADR 0026](adr-0026-caplab-blanket-decision-authority.md) | CAPLAB blanket decision authority delegation | active | repository owner |
+| [ADR 0027](adr-0027-caplab-v0-revision-required.md) | CAPLAB v0 revision required | decided | ADR 0026 delegate |

@@ -3,10 +3,11 @@ id: caplab-p14-owner-decision-proposal-2026-07-20
 artifact_type: decision-proposal
 assertion_type: recommendation
 work_item: CAPLAB-34
-status: awaiting-owner-decision
+status: selected-by-adr-0027
 prepared_by: primary-agent
 prepared_at: 2026-07-20
 verification_record: caplab-p13-independent-verification-2026-07-20
+disposition_record: adr-0027
 ---
 
 # CAPLAB-34 owner decision proposal
@@ -17,8 +18,9 @@ CAPLAB-33 has an independent technical `FAIL`; the CAPLAB v0 criteria are
 `UNMET`. Under the accepted plan, P14 may record `revision` or `rejection`.
 Acceptance and conditional acceptance are unavailable.
 
-The repository owner has not delegated or selected the P14 disposition. This
-record recommends a choice; it is not the owner decision, repair authority,
+This proposal was prepared before the owner clarified the blanket delegation
+recorded by ADR 0026. ADR 0027 now selects the recommended `revision`
+disposition. This record remains the recommendation; it is not repair authority,
 retry authority, or acceptance.
 
 ## Evidence reviewed

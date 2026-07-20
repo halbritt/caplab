@@ -211,7 +211,11 @@ The
 [`P14 owner decision proposal`](caplab-p14-owner-decision-proposal-2026-07-20.md)
 recommends `revision` and presents `rejection` as the other available
 disposition. Acceptance and conditional acceptance are unavailable. The
-proposal records no owner decision and authorizes no repair or retry.
+proposal itself records no owner decision and authorizes no repair or retry.
+ADR 0026 records the repository owner's blanket CAPLAB decision-authority
+delegation and instruction to advance without waiting for routine decisions.
+ADR 0027 records the delegate's `revision` disposition; CAPLAB v0 is not
+accepted, and the revision decision authorizes no follow-on execution.
 
 CAPLAB-39 produced the
 [`repository migration record`](caplab-39-repository-migration-2026-07-19.md).

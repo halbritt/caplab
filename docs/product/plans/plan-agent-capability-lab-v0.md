@@ -29,6 +29,8 @@ authorization_records:
   - adr-0023
   - adr-0024
   - adr-0025
+  - adr-0026
+  - adr-0027
 authorized_scope:
   - CAPLAB-22/P4
   - CAPLAB-23/P5
@@ -64,6 +66,9 @@ authorized_scope:
   - adr-0024 P11 no-example-eligible decision and no export authorization
   - adr-0025 exact P13 independent verification campaign
   - CAPLAB-33/P13 independent technical verification
+  - adr-0026 blanket CAPLAB decision authority delegation
+  - adr-0027 P14 revision disposition
+  - CAPLAB-34/P14 delegated decision
   - CAPLAB-25/P7 implementation preparation
   - CAPLAB-26/P8 implementation preparation
   - CAPLAB-28/P10 implementation preparation
@@ -111,7 +116,10 @@ campaign through `2026-07-21T23:59:59Z`. Acceptance remains separate and
 unauthorized. That one-attempt campaign is now consumed: independent technical
 verification failed at the retained controller-state lifecycle, while external
 access remained effectively closed and protected inventories matched. P14 may
-record revision or rejection; acceptance is unavailable.
+record revision or rejection; acceptance is unavailable. ADR 0026 records the
+owner's blanket CAPLAB decision-authority delegation. ADR 0027 records the
+delegate's `revision` disposition. The current P0-P14 acceptance campaign is
+closed without CAPLAB v0 acceptance or follow-on execution authority.
 
 ## Objective and authority boundary
 
@@ -493,6 +501,11 @@ passed independent verification. Otherwise the owner records revision or
 rejection. No disposition grants preference-study, model-call, Striatum-routing,
 fine-tuning, deployment, or subsequent-export authority.
 
+ADR 0027 records the ADR 0026 delegate's `revision` disposition after
+P13 technical failure and the unmet export criterion. CAPLAB v0 is not
+accepted. The revision decision authorizes no repair, retry, eligibility
+reopening, criterion change, or export.
+
 ## Verification plan
 
 Verification layers remain distinct:
@@ -810,3 +823,11 @@ replacement because the Plane connector could not remove the original relation.
   `UNMET`. CAPLAB-33 is complete with its failure record. CAPLAB-34 is the
   owner decision front; its exact proposal recommends `revision` and also
   offers `rejection`. Acceptance is unavailable.
+- **2026-07-20 — blanket delegation clarified and P14 revision recorded.** The
+  repository owner clarified that the primary agent holds blanket CAPLAB
+  decision authority and must advance without waiting for routine decisions.
+  ADR 0026 records that standing delegation. ADR 0027 selects `revision`, so
+  the current CAPLAB v0 slice is not accepted. CAPLAB-34 is complete and the
+  P0-P14 queue is closed. The revision preserves all evidence and authorizes no
+  controller change, verification retry, eligibility reopening, export, or
+  product-criterion change.
