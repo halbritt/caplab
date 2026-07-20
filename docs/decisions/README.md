@@ -36,3 +36,4 @@ does not imply execution, verification, or acceptance.
 | [ADR 0031](adr-0031-striatum-build-and-review-profiles.md) | Striatum build and fresh-review capability profiles | decided | ADR 0026 delegate |
 | [ADR 0032](adr-0032-initial-synthetic-evaluation-baseline.md) | Initial synthetic evaluation baseline and gate policy | decided | ADR 0026 delegate |
 | [ADR 0033](adr-0033-caplab-7-model-free-instrument-authorization.md) | CAPLAB-7 model-free preference instrument authorization | authorized | ADR 0026 delegate |
+| [ADR 0034](adr-0034-review-dissent-study-selection.md) | Review dissent second-study selection | decided | ADR 0026 delegate |

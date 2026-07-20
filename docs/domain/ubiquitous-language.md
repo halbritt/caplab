@@ -71,3 +71,8 @@ inferences under a capability card. It is not a global model ranking.
 **Projection** is regenerable review or planning state. Dashboards and Plane
 are projections; they cannot create evidence, decisions, authorization,
 verification, or acceptance.
+
+**Review dissent** is an evidence-backed non-clearing review verdict that
+contradicts a favorable author cue because the frozen acceptance contract is
+not met. It is not contrarianism: the same reviewer must accept clean controls
+and must not invent blockers when the available evidence supports clearing.
