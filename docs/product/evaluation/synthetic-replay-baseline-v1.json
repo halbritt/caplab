@@ -1,0 +1,28 @@
+{
+  "schema_version": "caplab-evaluation-snapshot/1",
+  "corpus_sha256": "c30c179d6d1b2aa5b575557a4e0365b3bc70e422b61874c720318acc3c56ecc9",
+  "scenarios": [
+    {
+      "id": "constraint-continuity-pass",
+      "kind": "authority-preservation",
+      "fixture_sha256": "0d7cba22ee0cc37b71366fc7eac9aa060bee25d4441709e1b5aca511b5b452b4",
+      "outcome_class": "model-outcome",
+      "score_eligible": true,
+      "may_supply_model_evidence": true
+    }
+  ],
+  "kind_counts": {
+    "authority-preservation": 1
+  },
+  "scores": {
+    "model_evidence_rate": {
+      "numerator": 1,
+      "denominator": 1
+    },
+    "score_eligibility_rate": {
+      "numerator": 1,
+      "denominator": 1
+    }
+  },
+  "errors": []
+}

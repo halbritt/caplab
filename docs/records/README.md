@@ -16,6 +16,12 @@ mode-matching contract, and fail-closed outcome classification. It does not
 admit historical BOOKS evidence or supply independent verification or CAPLAB
 acceptance.
 
+CAPLAB-42 produced the
+[`evaluation gate implementation record`](caplab-42-evaluation-gate-implementation-2026-07-20.md).
+It records the fresh baseline decision, deterministic snapshot gate, and typed
+append-only defect boundary. It admits no historical BOOKS baseline or result
+and supplies neither independent verification nor CAPLAB acceptance.
+
 CAPLAB-22/P4 produced separate records for campaign
 `caplab-p4-roundtrip-2026-07-15`:
 

@@ -1,0 +1,34 @@
+{
+  "schema_version": "caplab-evaluation-gate-policy/1",
+  "baseline_sha256": "de0ffb12951579e7d2a9a012c303a32f5eefdfab40599c879c2ab6873b073fb9",
+  "decision": {
+    "id": "adr-0032",
+    "decided_by": "primary-agent",
+    "authority": "adr-0026"
+  },
+  "required_kind_counts": {
+    "authority-preservation": 1
+  },
+  "score_rules": {
+    "model_evidence_rate": {
+      "absolute_floor": {
+        "numerator": 1,
+        "denominator": 1
+      },
+      "max_baseline_drop": {
+        "numerator": 0,
+        "denominator": 1
+      }
+    },
+    "score_eligibility_rate": {
+      "absolute_floor": {
+        "numerator": 1,
+        "denominator": 1
+      },
+      "max_baseline_drop": {
+        "numerator": 0,
+        "denominator": 1
+      }
+    }
+  }
+}

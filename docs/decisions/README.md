@@ -34,3 +34,4 @@ does not imply execution, verification, or acceptance.
 | [ADR 0029](adr-0029-books-custody-and-caplab-admission.md) | BOOKS-1–6 custody and CAPLAB admission boundary | decided | ADR 0026 delegate |
 | [ADR 0030](adr-0030-preference-001-hypothesis-selection.md) | Preference Study 001 hypothesis selection | decided | ADR 0026 delegate |
 | [ADR 0031](adr-0031-striatum-build-and-review-profiles.md) | Striatum build and fresh-review capability profiles | decided | ADR 0026 delegate |
+| [ADR 0032](adr-0032-initial-synthetic-evaluation-baseline.md) | Initial synthetic evaluation baseline and gate policy | decided | ADR 0026 delegate |
