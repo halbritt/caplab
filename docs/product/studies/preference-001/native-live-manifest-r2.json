@@ -1,0 +1,44 @@
+{
+  "schema": "caplab.preference.native-live-manifest/v1",
+  "status": "active",
+  "authority": "adr-0042",
+  "authorized_at": "2026-07-20T21:55:00Z",
+  "expires_at": "2026-08-03T23:59:59Z",
+  "campaign_id": "caplab-preference-001-native-r2-2026-07-20",
+  "instrument": {
+    "path": "native-instrument.json",
+    "file_sha256": "004fb6eb7b7ab5fd22f50087732fa160fbc54f090066d80966e7c038b0c03e6a",
+    "design_sha256": "cc03ce18856433fdfff6fccab0874f6bf144c80f02c3987294f5bc60d75b1bc7"
+  },
+  "runtime_versions": {
+    "claude-code": "2.1.215 (Claude Code)",
+    "codex": "codex-cli 0.144.6",
+    "bubblewrap": "bubblewrap 0.9.0"
+  },
+  "auth_preflight": {
+    "claude-code": "claude.ai:firstParty:max",
+    "codex": "ChatGPT"
+  },
+  "containment": {
+    "profile": "caplab-native-task-bwrap-v2",
+    "source_path": "src/caplab/preference/native_live.py",
+    "source_sha256": "1f0010fcd5c876e23b65514a2c4fbbdcbd9ff19eaf6c124fdfd5109b3791ef93",
+    "filesystem": "task-tree-write; selected-native-harness-and-auth-projection; no-other-home-or-repository",
+    "network": "shared-host-network-for-native-provider",
+    "codex_inner_sandbox": "workspace-write"
+  },
+  "limits": {
+    "primary_trials": 12,
+    "maximum_replacements": 4,
+    "maximum_trials": 16,
+    "maximum_wall_clock_hours": 12,
+    "trial_wall_clock_minutes": 45,
+    "output_budget": "native-harness-managed-and-measured-when-exposed",
+    "billing": "authenticated-subscription-capacity; no-per-call-price-observed"
+  },
+  "storage": {
+    "raw_custody_root": "/home/halbritt/.local/share/caplab/campaigns/caplab-preference-001-native-r2-2026-07-20",
+    "normalized_repository_root": "docs/product/studies/preference-001/native-campaign-r2-2026-07-20"
+  },
+  "manifest_sha256": "c6c6eb3e8b9801cc52150edb5fe1b609e2d1724ffc846268421f4330536526b9"
+}

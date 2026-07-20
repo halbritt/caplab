@@ -237,7 +237,8 @@ class NativePreferenceLiveTests(unittest.TestCase):
         self.assertIn("codex", gpt["command"])
         self.assertIn(str(Path("/home/halbritt/.local/share/striatum/harness-config/claude-code")), fable["command"])
         self.assertNotIn(str(Path("/home/halbritt/.local/share/striatum/harness-config/codex")), fable["command"])
-        self.assertIn(str(Path("/home/halbritt/.local/share/striatum/harness-config/codex")), gpt["command"])
+        self.assertIn(str(Path("/home/halbritt/.local/share/striatum/harness-config/codex/config.toml")), gpt["command"])
+        self.assertIn(str(Path("/home/halbritt/.codex/auth.json")), gpt["command"])
         self.assertNotIn(str(Path("/home/halbritt/.local/share/striatum/harness-config/claude-code")), gpt["command"])
 
     def test_version_probes_use_the_same_containment_without_a_model_prompt(self) -> None:

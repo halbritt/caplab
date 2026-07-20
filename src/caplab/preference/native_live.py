@@ -30,6 +30,7 @@ _CLAUDE_CONFIG = Path(
 )
 _CODEX_MODULE = Path("/home/halbritt/.npm-global/lib/node_modules/@openai/codex")
 _CODEX_CONFIG = Path("/home/halbritt/.local/share/striatum/harness-config/codex")
+_CODEX_AUTH = Path("/home/halbritt/.codex/auth.json")
 _PROJECT_ROOT = Path(__file__).resolve().parents[3]
 _SUBJECT_STATUSES = {"completed", "refused", "invalid"}
 _INFRASTRUCTURE_STATUSES = {
@@ -64,7 +65,10 @@ def load_native_live_manifest(
         raise NativePreferenceLiveContractError(f"native_live_unreadable:{error}") from error
     if not isinstance(manifest, dict) or manifest.get("schema") != "caplab.preference.native-live-manifest/v1":
         raise NativePreferenceLiveContractError("invalid_native_live_schema")
-    if manifest.get("status") != "active" or manifest.get("authority") != "adr-0041":
+    if manifest.get("status") != "active" or manifest.get("authority") not in {
+        "adr-0041",
+        "adr-0042",
+    }:
         raise NativePreferenceLiveContractError("native_live_not_authorized")
     try:
         expires_at = datetime.fromisoformat(
@@ -156,9 +160,17 @@ def _contained_command(root: Path, native_command: list[str]) -> list[str]:
             "/toolbin/codex",
             "--dir",
             "/harness-config",
-            "--bind",
-            str(_CODEX_CONFIG),
+            "--dir",
             "/harness-config/codex",
+            "--bind",
+            str(_CODEX_AUTH),
+            "/harness-config/codex/auth.json",
+            "--ro-bind",
+            str(_CODEX_CONFIG / "config.toml"),
+            "/harness-config/codex/config.toml",
+            "--ro-bind",
+            str(_CODEX_CONFIG / "models_cache.json"),
+            "/harness-config/codex/models_cache.json",
         ]
     else:
         raise NativePreferenceLiveContractError("unknown_native_harness_command")
@@ -372,7 +384,7 @@ def prepare_native_trial(
 
     if (
         manifest.get("status") != "active"
-        or manifest.get("authority") != "adr-0041"
+        or manifest.get("authority") not in {"adr-0041", "adr-0042"}
         or manifest.get("_verified_manifest_sha256") != manifest.get("manifest_sha256")
     ):
         raise NativePreferenceLiveContractError("native_live_not_authorized")
@@ -455,6 +467,69 @@ def preflight_native_runtime(manifest: Mapping[str, Any]) -> dict[str, str]:
     if bwrap.returncode != 0 or value != expected.get("bubblewrap"):
         raise NativePreferenceLiveContractError("native_runtime_version_mismatch:bubblewrap")
     observed["bubblewrap"] = value
+    auth_commands = {
+        "claude-code": [
+            "/usr/bin/env",
+            f"CLAUDE_CONFIG_DIR={_CLAUDE_CONFIG}",
+            "claude",
+            "auth",
+            "status",
+        ],
+        "codex": [
+            "/usr/bin/env",
+            f"CODEX_HOME={_CODEX_CONFIG}",
+            "codex",
+            "login",
+            "status",
+        ],
+    }
+    with tempfile.TemporaryDirectory(
+        prefix="caplab-native-auth-preflight-"
+    ) as directory:
+        root = Path(directory).resolve()
+        claude_auth = subprocess.run(
+            _contained_command(root, auth_commands["claude-code"]),
+            cwd=root,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=30,
+            check=False,
+        )
+        try:
+            claude_status = json.loads(claude_auth.stdout.decode("utf-8"))
+        except (UnicodeError, json.JSONDecodeError) as error:
+            raise NativePreferenceLiveContractError(
+                "native_auth_status_invalid:claude-code"
+            ) from error
+        if (
+            claude_auth.returncode != 0
+            or not isinstance(claude_status, dict)
+            or claude_status.get("loggedIn") is not True
+            or claude_status.get("authMethod") != "claude.ai"
+            or claude_status.get("apiProvider") != "firstParty"
+            or claude_status.get("subscriptionType") != "max"
+        ):
+            raise NativePreferenceLiveContractError(
+                "native_auth_status_mismatch:claude-code"
+            )
+        observed["claude-code-auth"] = "claude.ai:firstParty:max"
+        codex_auth = subprocess.run(
+            _contained_command(root, auth_commands["codex"]),
+            cwd=root,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=30,
+            check=False,
+        )
+        if codex_auth.returncode != 0 or codex_auth.stderr.decode(
+            "utf-8", errors="replace"
+        ).strip() != "Logged in using ChatGPT":
+            raise NativePreferenceLiveContractError(
+                "native_auth_status_mismatch:codex"
+            )
+        observed["codex-auth"] = "ChatGPT"
     return observed
 
 

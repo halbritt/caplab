@@ -3,7 +3,7 @@ id: caplab-preference-001-native-r1
 artifact_type: study-preregistration
 title: Native-system constraint continuity in Fable-versus-GPT repository work
 status: live-authorized
-decision_record: adr-0041
+decision_record: adr-0042
 decision_authority: adr-0026-and-adr-0039
 created: 2026-07-20
 execution_authorized: true
@@ -68,3 +68,6 @@ versions, a content-addressed live manifest, and a separate authorization.
   content-addressed native manifest, external containment, ordered custody
   loop, 12 primary calls, and at most four infrastructure-only replacements.
   Execution, observation, verification, and acceptance remain distinct.
+- `2026-07-20` — `r1-stopped-r2-authorized` — ADR 0042 preserved the two r1
+  attempts after contained Codex authentication failed, added authenticated
+  no-inference preflight, and authorized a fresh r2 campaign from slot zero.

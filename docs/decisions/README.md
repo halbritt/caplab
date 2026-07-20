@@ -44,3 +44,4 @@ does not imply execution, verification, or acceptance.
 | [ADR 0039](adr-0039-native-agent-system-subject-identity.md) | Native agent system is the comparative subject | active | repository owner |
 | [ADR 0040](adr-0040-caplab-7-native-preference-instrument.md) | CAPLAB-7 native preference instrument qualification | decided | ADR 0026 delegate |
 | [ADR 0041](adr-0041-caplab-8-native-live-preference-authorization.md) | CAPLAB-8 native live preference campaign authorization | authorized | ADR 0026 delegate |
+| [ADR 0042](adr-0042-caplab-8-native-auth-continuation.md) | CAPLAB-8 native authentication containment continuation | authorized | ADR 0026 delegate |

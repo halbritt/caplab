@@ -57,6 +57,12 @@ qualify the corrected model-free preference instrument. It binds native Claude
 Code and Codex tuples and authorizes no live call; CAPLAB-8 owns containment
 and live execution.
 
+ADR 0042 and the
+[`CAPLAB-8 native r1 stop record`](caplab-8-native-r1-stop-2026-07-20.md)
+preserve the first two native attempts, explain the contained Codex
+authentication failure, and keep them outside the corrected r2 denominator.
+The r2 campaign restarts from slot zero with authenticated native preflight.
+
 CAPLAB-22/P4 produced separate records for campaign
 `caplab-p4-roundtrip-2026-07-15`:
 
