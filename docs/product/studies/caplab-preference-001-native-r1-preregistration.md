@@ -34,10 +34,13 @@ The evaluated units are native agent systems:
 The exact command, version probe, task-bank binding, 12-slot order, reveal map,
 surface contract, replacement rules, and analysis thresholds are sealed in
 [`native-instrument.json`](preference-001/native-instrument.json). The harness
-is part of each subject. Task bytes, authority, time and output ceilings,
-capture obligations, mechanical scoring, and blinded criteria are common
-controls where meaningful. Native planning, context management, tool use, and
-other harness behavior remain in the treatment.
+is part of each subject. Task bytes, authority, wall-clock ceiling, capture
+obligations, mechanical scoring, and blinded criteria are common
+controls where meaningful. The wall-clock ceiling is common; output budgeting
+is native-harness-managed because the two native CLIs do not expose the old
+Terminus token control as a common interface. Output usage is captured when
+the harness exposes it. Native planning, context management, tool use, output
+management, and other harness behavior remain in the treatment.
 
 ## Validity and execution boundary
 

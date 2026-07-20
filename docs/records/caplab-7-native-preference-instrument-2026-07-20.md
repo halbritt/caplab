@@ -18,7 +18,7 @@ The new instrument binds the Striatum-compatible `claude-fable-5-max` and
 `codex-terra-max` commands, new order and reveal identities, zero-call budget,
 and native capture requirements. Its renderer seals each fresh task to design
 SHA-256
-`a66911de20af5ebfbcfdd8ffecbd19f5bf8b5cb2a757083c1e42df4b22eeaef0`
+`cc03ce18856433fdfff6fccab0874f6bf144c80f02c3987294f5bc60d75b1bc7`
 rather than the withdrawn Terminus instrument.
 
 Tests cover native tuple loading, task-only projection, corrected render

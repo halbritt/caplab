@@ -47,15 +47,17 @@ instrument. It binds:
 - the six existing task contracts through file SHA-256
   `36f3dfd13ab5128d9ef687a4bab6d3c2b1a1275cecdbb80676f0cb895b5fa020`,
   projected to task instruction and task bytes only; and
-- native event stream, final tree, last message, exit status, and runtime
-  version as required capture surfaces.
+- native event stream, final tree, last message, exit status, runtime version,
+  and exposed usage as required capture surfaces. Output budgeting remains a
+  native-harness behavior because the two CLIs expose no equivalent common
+  replacement for the withdrawn Terminus token ceiling.
 
 The content-addressed instrument is
 [`native-instrument.json`](../product/studies/preference-001/native-instrument.json),
 file SHA-256
-`f54be9b15feba7865b3fa31686d43557da82731c9d38eede82d4294d20e9a25b`
+`004fb6eb7b7ab5fd22f50087732fa160fbc54f090066d80966e7c038b0c03e6a`
 and design SHA-256
-`a66911de20af5ebfbcfdd8ffecbd19f5bf8b5cb2a757083c1e42df4b22eeaef0`.
+`cc03ce18856433fdfff6fccab0874f6bf144c80f02c3987294f5bc60d75b1bc7`.
 Its loader projects out the old instrument's proxy harness, subjects, order,
 and reveal map. Rendered tasks carry the corrected instrument seal.
 
@@ -102,3 +104,6 @@ model-free check passes.
 
 - `2026-07-20` — `decided` — the ADR 0026 delegate qualified the corrected
   native-agent-system preference instrument under ADR 0039.
+- `2026-07-20` — `corrected-before-live-execution` — removed the inherited
+  8,192-token parity claim after native CLI inspection showed no equivalent
+  common enforcement surface. No native-system call had occurred.

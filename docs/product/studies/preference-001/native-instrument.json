@@ -37,7 +37,8 @@
     "fresh_session": true,
     "task_tree_only": true,
     "external_network": "native-provider-only",
-    "output_tokens": 8192,
+    "output_budget": "native-harness-managed",
+    "output_measurement": "required-when-exposed",
     "wall_clock_minutes": 45,
     "capture": ["native_event_stream", "final_task_tree", "last_message", "exit_status", "runtime_version"]
   },
@@ -53,5 +54,5 @@
   "replacement_rules": {"maximum": 4, "per_infrastructure_failure": 1, "subject_outcomes_replaced": false},
   "analysis_thresholds": {"minimum_valid_pairs": 5, "constraint_advantage_pairs": 4, "blinded_preference_pairs": 4},
   "call_budget": {"authorized_calls": 0, "authorized_usd": 0},
-  "design_sha256": "a66911de20af5ebfbcfdd8ffecbd19f5bf8b5cb2a757083c1e42df4b22eeaef0"
+  "design_sha256": "cc03ce18856433fdfff6fccab0874f6bf144c80f02c3987294f5bc60d75b1bc7"
 }
