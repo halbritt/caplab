@@ -51,6 +51,12 @@ custody. The
 is superseded before its first call. CAPLAB-7/8 and CAPLAB-13 remain future
 work under corrected native-harness designs.
 
+ADR 0040 and the
+[`CAPLAB-7 native instrument record`](caplab-7-native-preference-instrument-2026-07-20.md)
+qualify the corrected model-free preference instrument. It binds native Claude
+Code and Codex tuples and authorizes no live call; CAPLAB-8 owns containment
+and live execution.
+
 CAPLAB-22/P4 produced separate records for campaign
 `caplab-p4-roundtrip-2026-07-15`:
 

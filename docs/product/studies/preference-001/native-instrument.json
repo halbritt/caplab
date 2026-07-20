@@ -1,0 +1,57 @@
+{
+  "schema": "caplab.preference.native-instrument/v1",
+  "study_id": "caplab-preference-001-native-r1",
+  "status": "model-free-qualified",
+  "authority": "adr-0040",
+  "native_agent_policy": {
+    "path": "docs/product/contracts/native-agent-systems.json",
+    "sha256": "1245d7ddda6045d0476a177cd937697be2ed5cd83438b647cdfeade39f70e5d9"
+  },
+  "task_bank": {
+    "path": "docs/product/studies/preference-001/instrument.json",
+    "file_sha256": "36f3dfd13ab5128d9ef687a4bab6d3c2b1a1275cecdbb80676f0cb895b5fa020",
+    "design_sha256": "b61f109be67031614b0830d49922280be594d015aa405bdd741a795f08dabe45",
+    "admitted_fields": ["subject_instruction", "subject_instruction_sha256", "tasks"]
+  },
+  "agent_systems": {
+    "fable": {
+      "tuple_id": "claude-fable-5-max",
+      "model_id": "claude-fable-5",
+      "native_harness_id": "claude-code",
+      "effort": "max",
+      "command": ["/usr/bin/env", "CLAUDE_CONFIG_DIR=/home/halbritt/.local/share/striatum/harness-config/claude-code", "claude", "-p", "--model", "claude-fable-5", "--effort", "max", "--output-format", "stream-json", "--verbose", "--no-session-persistence", "--dangerously-skip-permissions"],
+      "version_command": ["/usr/bin/env", "CLAUDE_CONFIG_DIR=/home/halbritt/.local/share/striatum/harness-config/claude-code", "claude", "--version"],
+      "containment": "external-required"
+    },
+    "gpt": {
+      "tuple_id": "codex-terra-max",
+      "model_id": "gpt-5.6-terra",
+      "native_harness_id": "codex",
+      "effort": "max",
+      "command": ["/usr/bin/env", "CODEX_HOME=/home/halbritt/.local/share/striatum/harness-config/codex", "codex", "exec", "-m", "gpt-5.6-terra", "-c", "model_reasoning_effort=max", "--sandbox", "workspace-write", "--skip-git-repo-check", "--ephemeral", "--json"],
+      "version_command": ["/usr/bin/env", "CODEX_HOME=/home/halbritt/.local/share/striatum/harness-config/codex", "codex", "--version"],
+      "containment": "native-workspace-write-plus-external-required"
+    }
+  },
+  "surface_contract": {
+    "fresh_session": true,
+    "task_tree_only": true,
+    "external_network": "native-provider-only",
+    "output_tokens": 8192,
+    "wall_clock_minutes": 45,
+    "capture": ["native_event_stream", "final_task_tree", "last_message", "exit_status", "runtime_version"]
+  },
+  "execution_order": ["P02:fable", "P05:gpt", "P03:fable", "P01:gpt", "P06:gpt", "P04:fable", "P05:fable", "P02:gpt", "P04:gpt", "P06:fable", "P01:fable", "P03:gpt"],
+  "reveal_map": {
+    "P01": {"A": "fable", "B": "gpt"},
+    "P02": {"A": "gpt", "B": "fable"},
+    "P03": {"A": "fable", "B": "gpt"},
+    "P04": {"A": "gpt", "B": "fable"},
+    "P05": {"A": "fable", "B": "gpt"},
+    "P06": {"A": "gpt", "B": "fable"}
+  },
+  "replacement_rules": {"maximum": 4, "per_infrastructure_failure": 1, "subject_outcomes_replaced": false},
+  "analysis_thresholds": {"minimum_valid_pairs": 5, "constraint_advantage_pairs": 4, "blinded_preference_pairs": 4},
+  "call_budget": {"authorized_calls": 0, "authorized_usd": 0},
+  "design_sha256": "a66911de20af5ebfbcfdd8ffecbd19f5bf8b5cb2a757083c1e42df4b22eeaef0"
+}
