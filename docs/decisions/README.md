@@ -33,3 +33,4 @@ does not imply execution, verification, or acceptance.
 | [ADR 0028](adr-0028-caplab-future-roadmap-preservation.md) | Preserve the CAPLAB roadmap beyond v0 | decided | repository owner |
 | [ADR 0029](adr-0029-books-custody-and-caplab-admission.md) | BOOKS-1–6 custody and CAPLAB admission boundary | decided | ADR 0026 delegate |
 | [ADR 0030](adr-0030-preference-001-hypothesis-selection.md) | Preference Study 001 hypothesis selection | decided | ADR 0026 delegate |
+| [ADR 0031](adr-0031-striatum-build-and-review-profiles.md) | Striatum build and fresh-review capability profiles | decided | ADR 0026 delegate |
