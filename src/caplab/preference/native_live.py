@@ -12,6 +12,7 @@ from .native import (
     NativePreferenceContractError,
     build_native_invocation,
     load_native_instrument,
+    render_native_task,
 )
 
 
@@ -60,6 +61,7 @@ def load_native_live_manifest(
     result = dict(manifest)
     result["_instrument"] = instrument
     result["_manifest_path"] = manifest_file.resolve()
+    result["_verified_manifest_sha256"] = manifest["manifest_sha256"]
     return result
 
 
@@ -183,3 +185,53 @@ def build_contained_version_probe(
         "cwd": root,
         "command": _contained_command(root, list(subject["version_command"])),
     }
+
+
+def _exclusive_json(path: Path, value: object) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+    with os.fdopen(descriptor, "wb") as stream:
+        stream.write(_canonical(value) + b"\n")
+        stream.flush()
+        os.fsync(stream.fileno())
+
+
+def prepare_native_trial(
+    manifest: dict[str, Any], *, slot_index: int, attempt_kind: str
+) -> tuple[Path, list[str]]:
+    """Render and seal one native attempt; never launch an unapproved manifest."""
+
+    if (
+        manifest.get("status") != "active"
+        or manifest.get("authority") != "adr-0041"
+        or manifest.get("_verified_manifest_sha256") != manifest.get("manifest_sha256")
+    ):
+        raise NativePreferenceLiveContractError("native_live_not_authorized")
+    instrument = manifest.get("_instrument")
+    order = instrument.get("execution_order") if isinstance(instrument, dict) else None
+    if not isinstance(order, list) or not isinstance(slot_index, int) or not 0 <= slot_index < len(order):
+        raise NativePreferenceLiveContractError("invalid_native_live_slot")
+    if attempt_kind not in {"primary", "replacement"}:
+        raise NativePreferenceLiveContractError("invalid_native_attempt_kind")
+    task_id, subject_id = order[slot_index].split(":", 1)
+    custody_root = Path(manifest["storage"]["raw_custody_root"])
+    attempt_root = custody_root / "attempts" / f"s{slot_index + 1:02d}-{attempt_kind}"
+    if attempt_root.exists() or attempt_root.is_symlink():
+        raise NativePreferenceLiveContractError("native_attempt_custody_exists")
+    task_root = attempt_root / "input" / task_id
+    render_native_task(instrument, task_id, task_root)
+    invocation = build_contained_invocation(instrument, subject_id, task_id, task_root.resolve())
+    launch = {
+        "schema": "caplab.preference.native-launch/v1",
+        "campaign_id": manifest.get("campaign_id"),
+        "manifest_sha256": manifest.get("manifest_sha256"),
+        "slot_index": slot_index,
+        "attempt_kind": attempt_kind,
+        "task_id": task_id,
+        "subject_id": subject_id,
+        "tuple_id": invocation["tuple_id"],
+        "command": invocation["command"],
+    }
+    launch["launch_sha256"] = sha256(_canonical(launch)).hexdigest()
+    _exclusive_json(attempt_root / "launch.json", launch)
+    return attempt_root, invocation["command"]
