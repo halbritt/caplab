@@ -9,6 +9,11 @@ records the custody classification and combined future-roadmap execution
 order selected by ADR 0029. It is decision support, not historical-evidence
 admission, follow-on execution, verification, or acceptance.
 
+The [`BOOKS-3 admission assessment`](caplab-43-books-3-admission-assessment-2026-07-20.md)
+binds the historical Doctrine-injection series by exact provenance and records
+the ADR 0035 redesign disposition. It does not admit historical attempts,
+aggregates, model evidence, or judgments and authorizes no fresh probe.
+
 CAPLAB-41 produced the
 [`evaluation replay implementation record`](caplab-41-evaluation-replay-implementation-2026-07-20.md).
 It records the fresh synthetic fixture, content and hygiene boundary,
