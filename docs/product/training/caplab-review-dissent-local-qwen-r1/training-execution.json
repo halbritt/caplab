@@ -10,6 +10,10 @@
     "file_sha256": "56a997d3f8e5ed72db6e586b129356d2b4fef743d16e7eae243d4085e6cfbab6"
   },
   "sources": {
+    "peecee_training_orchestrator": {
+      "path": "scripts/caplab16_peecee_train.ps1",
+      "sha256": "8c9dc8f0b9368ee7a51d8fe189a75c37583bb5030294967622b2f6ecf8b9f39d"
+    },
     "training_script": {
       "path": "scripts/caplab_qwen27b_qlora.py",
       "sha256": "5a2c7397ebc740ee1970045cd105557145281d9f880309994e566208038303c8"

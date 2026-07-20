@@ -40,7 +40,7 @@ evaluation, success, or claim rule changed.
 
 Authorize the exact effects in [`training-execution.json`](../product/training/caplab-review-dissent-local-qwen-r1/training-execution.json)
 file SHA-256
-`5d36c7a2a82376281f31cd7c4bda3b5f4c25bcaed3dabe134b9f81479591d130`,
+`8bb20fa57ecfa505be862e59770d5fafd6558cd96731b67d386b697f8b946135`,
 until `2026-07-22T00:00:00Z`:
 
 1. acquire one exclusive `gpu-fleet` lease for `peecee`'s `marker` slot;
