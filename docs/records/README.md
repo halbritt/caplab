@@ -34,6 +34,14 @@ model-free canned qualification, failure accounting, and blind-packet
 boundary. It records no subject call, human adjudication, preference inference,
 independent verification, or CAPLAB acceptance.
 
+CAPLAB-12 produced the
+[`review-dissent instrument implementation record`](caplab-12-review-dissent-instrument-implementation-2026-07-20.md).
+It records the sealed development and held-out factorials, isolated
+calibration loader, deterministic canned capture and harm bands, preservation
+and blinding boundaries, and exact zero-call estimate. It records no subject
+attempt, human disposition, result, inference, independent verification, or
+CAPLAB acceptance.
+
 CAPLAB-22/P4 produced separate records for campaign
 `caplab-p4-roundtrip-2026-07-15`:
 

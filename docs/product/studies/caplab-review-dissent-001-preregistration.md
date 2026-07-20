@@ -2,12 +2,13 @@
 id: caplab-review-dissent-001
 artifact_type: study-preregistration
 title: Evidence-calibrated independent review dissent
-status: design-preregistered
+status: preregistered
 decision_record: adr-0034
 decision_authority: adr-0026
 created: 2026-07-20
 execution_authorized: false
-instrument_status: not-implemented
+instrument_authority: adr-0036
+instrument_status: model-free-qualified
 ---
 
 # Evidence-calibrated independent review dissent
@@ -183,3 +184,12 @@ later ceiling. Missing and invalid cells remain in denominator accounting.
   mechanical and human boundaries, claim ceiling, and development/held-out
   split. No instrument, trial, subject call, human disposition, result,
   verification, or acceptance occurred.
+- `2026-07-20` — `model-free-qualified` — CAPLAB-12 froze separate
+  content-addressed development and held-out artifacts, all 16 factorial
+  cells, deterministic rendering and capture, every harm band, infrastructure
+  accounting, preservation checks, blinded review packets, and a two-subject
+  development estimate of 16 primary calls plus at most four replacements.
+  The public calibration loader was regression-tested not to read held-out
+  content. Zero calls and zero spend remain authorized; no subject attempt,
+  human disposition, result, inference, independent verification, or
+  acceptance occurred.

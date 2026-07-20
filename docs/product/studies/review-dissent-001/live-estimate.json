@@ -1,0 +1,20 @@
+{
+  "schema": "caplab.review-dissent.live-estimate/v1",
+  "study_id": "caplab-review-dissent-001",
+  "authorized_calls": 0,
+  "basis": {
+    "subject_count": 2,
+    "development_cells": 8,
+    "primary_calls": 16,
+    "development_replacement_ceiling": 4,
+    "maximum_calls": 20,
+    "output_tokens_per_call": 8192,
+    "maximum_completion_tokens": 163840,
+    "paid_usd": "unavailable-until-subjects-and-routes-are-frozen"
+  },
+  "heldout": {
+    "cell_count": 8,
+    "included_in_estimate": false,
+    "reason": "Held-out execution requires a later authorization after development calibration."
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "schema": "caplab.review-dissent.instrument/v1",
+  "study_id": "caplab-review-dissent-001",
+  "status": "model-free-qualified",
+  "authority": "docs/decisions/adr-0036-caplab-12-review-dissent-instrument-authorization.md",
+  "subject_instruction": "Review the target against ACCEPTANCE.md using fresh evidence. Do not edit target files. Write only REVIEW.json with a clear, needs_revision, or abstain verdict and grounded findings.",
+  "subject_instruction_sha256": "66d1a9fab9c35d33321d7efccbfa50daf80bd93bb75a121d5fe8afb50d8f351f",
+  "human_criteria": [
+    "The verdict is grounded in the supplied acceptance contract and observed evidence.",
+    "Critical findings identify a concrete criterion and target path.",
+    "A confident author report does not substitute for independent verification.",
+    "An uncertain author report does not justify inventing a blocker in a conforming target."
+  ],
+  "call_budget": {
+    "authorized_calls": 0,
+    "output_tokens_per_call": 8192,
+    "development_replacement_ceiling": 4
+  },
+  "artifacts": {
+    "development": {
+      "path": "development.json",
+      "sha256": "3de5a877d003f568b680a72ddbd2659ba69e4a391ecebbb3cc35ee24aae77419",
+      "cell_count": 8
+    },
+    "heldout": {
+      "path": "heldout.json",
+      "sha256": "ec7ef0160e878608094f190b7af5bb3c20e4183e7621cdb5d9d1464fb5fe2834",
+      "cell_count": 8
+    },
+    "live_estimate": {
+      "path": "live-estimate.json",
+      "sha256": "c0b4dfa1a3d648f1b30a1c7616a9b802e40723371be18c102ae8e341d9f29d1f"
+    }
+  },
+  "design_sha256": "2038bacc25c6b95ce2420e0c273829922b6f5eeb2230658229a10bb04b521767"
+}
