@@ -171,6 +171,14 @@ profile proposal and 20 derived-but-ineligible candidates. Human inference,
 eligibility, export, independent verification, and acceptance remain separate
 gates.
 
+The completed outputs make the two human-owned decisions concrete. The
+[`P9 inference proposal`](caplab-p9-inference-decision-proposal-2026-07-20.md)
+presents the exact `refuse`, `narrow`, and `bounded-inference` dispositions. The
+[`P11 eligibility proposal`](caplab-p11-eligibility-decision-proposal-2026-07-20.md)
+presents `no-example-eligible`, a scoped review deferral, or an exact reviewed
+selection plus one export authorization. Neither proposal records its owner's
+decision.
+
 CAPLAB-39 produced the
 [`repository migration record`](caplab-39-repository-migration-2026-07-19.md).
 It records the verified bundles, joined histories, preserved branches, GitHub

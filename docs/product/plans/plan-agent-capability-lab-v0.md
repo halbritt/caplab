@@ -755,3 +755,10 @@ replacement because the Plane connector could not remove the original relation.
   `89ea1e396eb8023e1430569edcc740642461b8fd7933f97bded61a93e018b016`.
   P9 human inference and P11 eligibility are now the dependency front; no
   inference, eligibility, export, verification, or acceptance was recorded.
+- **2026-07-20 — exact P9 and P11 owner packets prepared.** The P9 proposal
+  binds the completed profile and offers `refuse`, `narrow`, or
+  `bounded-inference` without promoting broader claims. The P11 proposal binds
+  the completed candidate manifest and recommends `no-example-eligible` while
+  the privacy, license, and leakage reviews remain absent. CAPLAB-27 and
+  CAPLAB-29 are ready for the repository owner's decisions; all later items
+  remain blocked on those human gates.
