@@ -22,6 +22,11 @@ The canonical export is [`corpus.json`](corpus.json), semantic SHA-256
 and file SHA-256
 `09ec666630189ebbe9bf180d3dd567623f8dbee753871f63ac7f66c712cb87f2`.
 
+The first bounded tuning design is frozen separately in the
+[`Qwen3.6-27B QLoRA r1 preregistration`](caplab-review-dissent-qwen27b-qlora-r1-preregistration.md)
+and its executable [`training experiment manifest`](training-experiment.json).
+Preregistration is not training or evaluation authority.
+
 ## Inclusion and reward semantics
 
 The corpus includes all seven schema-valid local-Qwen development responses.

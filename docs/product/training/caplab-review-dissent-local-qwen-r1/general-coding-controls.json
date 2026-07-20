@@ -1,0 +1,36 @@
+{
+  "schema": "caplab.training.general-coding-controls/v1",
+  "control_set_id": "caplab-general-coding-controls-r1",
+  "authority": "adr-0049",
+  "purpose": "Detect broad code-reasoning regression outside the review-dissent task family.",
+  "response_contract": {
+    "format": "exactly one JSON object with exactly the key answer and no surrounding text",
+    "answer_type": "string"
+  },
+  "controls": [
+    {
+      "control_id": "GC-01",
+      "family": "python-sequence-reasoning",
+      "prompt": "Return exactly one JSON object with exactly the key answer and no surrounding text. answer must be a string. What is the exact Python repr of stable_unique(['a', 'b', 'a', 'c', 'b']) for this function?\n\ndef stable_unique(items):\n    seen = set()\n    return [item for item in items if not (item in seen or seen.add(item))]",
+      "oracle": "['a', 'b', 'c']"
+    },
+    {
+      "control_id": "GC-02",
+      "family": "python-boundary-reasoning",
+      "prompt": "Return exactly one JSON object with exactly the key answer and no surrounding text. answer must be a string. What is the exact Python repr of chunks([1, 2, 3, 4, 5], 2) for this function?\n\ndef chunks(items, size):\n    return [items[index:index + size] for index in range(0, len(items), size)]",
+      "oracle": "[[1, 2], [3, 4], [5]]"
+    },
+    {
+      "control_id": "GC-03",
+      "family": "python-control-flow-debugging",
+      "prompt": "Return exactly one JSON object with exactly the key answer and no surrounding text. answer must be a string. The function below incorrectly returns False for contains([1, 2], 2). Which exact repair label applies: move_false_after_loop, change_equality_to_identity, or return_true_after_loop?\n\ndef contains(items, target):\n    for item in items:\n        if item == target:\n            return True\n        return False",
+      "oracle": "move_false_after_loop"
+    },
+    {
+      "control_id": "GC-04",
+      "family": "complexity-analysis",
+      "prompt": "Return exactly one JSON object with exactly the key answer and no surrounding text. answer must be a string. Give the tight worst-case time complexity in n using exactly one of O(1), O(log n), O(n), O(n log n), or O(n^2).\n\ndef all_pairs(items):\n    result = []\n    for left in items:\n        for right in items:\n            result.append((left, right))\n    return result",
+      "oracle": "O(n^2)"
+    }
+  ]
+}
