@@ -48,3 +48,4 @@ does not imply execution, verification, or acceptance.
 | [ADR 0041](adr-0041-caplab-8-native-live-preference-authorization.md) | CAPLAB-8 native live preference campaign authorization | authorized | ADR 0026 delegate |
 | [ADR 0042](adr-0042-caplab-8-native-auth-continuation.md) | CAPLAB-8 native authentication containment continuation | authorized | ADR 0026 delegate |
 | [ADR 0043](adr-0043-caplab-8-native-normalization-and-disposition.md) | CAPLAB-8 native normalization and delegated blind disposition | authorized | ADR 0026 delegate |
+| [ADR 0046](adr-0046-caplab-first-striatum-lane-fit.md) | First CAPLAB Striatum lane-fit disposition | decided | ADR 0026 delegate |
