@@ -1,0 +1,19 @@
+# CAPLAB preference-study instrument
+
+This package owns the model-free qualification boundary for
+`caplab-preference-001`. The frozen instrument is
+[`docs/product/studies/preference-001/instrument.json`](../../../docs/product/studies/preference-001/instrument.json).
+
+`load_instrument` validates the complete design digest, exact task-contract
+digests, subject identities, shared harness surface, byte-identical subject
+instruction, execution order, reveal map, and zero-call authorization.
+`render_task` creates one fresh synthetic repository. `run_canned_attempt`
+captures only explicit `canned` inputs and separates mechanical constraint
+results from the still-empty human disposition. `build_blinded_packet` omits
+subject seals and operational metadata and recursively refuses identity clues
+rather than silently redacting them. `assess_study_state` applies the frozen
+replacement, invalid-pair, and blinding-breach stop rules.
+
+There is intentionally no model, provider, live harness, credential, network,
+subprocess, export, training, or adjudication adapter in this package. Canned
+captures are qualification data, not study results or model evidence.

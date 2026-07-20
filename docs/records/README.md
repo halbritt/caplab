@@ -22,6 +22,13 @@ It records the fresh baseline decision, deterministic snapshot gate, and typed
 append-only defect boundary. It admits no historical BOOKS baseline or result
 and supplies neither independent verification nor CAPLAB acceptance.
 
+CAPLAB-7 produced the
+[`preference instrument implementation record`](caplab-7-preference-instrument-implementation-2026-07-20.md).
+It records the exact shared subject surface, frozen six-task instrument,
+model-free canned qualification, failure accounting, and blind-packet
+boundary. It records no subject call, human adjudication, preference inference,
+independent verification, or CAPLAB acceptance.
+
 CAPLAB-22/P4 produced separate records for campaign
 `caplab-p4-roundtrip-2026-07-15`:
 

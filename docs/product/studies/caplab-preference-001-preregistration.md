@@ -8,6 +8,8 @@ decision_authority: adr-0026
 created: 2026-07-20
 preregistered_at: 2026-07-20
 execution_authorized: false
+instrument_authority: adr-0033
+instrument_status: model-free-qualified
 ---
 
 # Constraint continuity in Fable-versus-GPT complex repository work
@@ -96,8 +98,8 @@ The two compound subjects differ only in model identity:
 
 | Field | Fable subject | GPT subject |
 |---|---|---|
-| Model identity | Claude Fable 5 | GPT-5.6 |
-| Agent harness | `terminus-2`, version frozen by CAPLAB-7 | same |
+| Model identity | Claude Fable 5 (`claude-fable-5`) | GPT-5.6 Terra (`gpt-5.6-terra`) |
+| Agent harness | `terminus-2==2.0.0` under `harbor==0.18.0` | same |
 | Subject instruction | one byte-identical CAPLAB subject instruction | same |
 | Tools and network | identical task-local tools; external network disabled | same |
 | Repository start | byte-identical fresh synthetic task image | same |
@@ -203,3 +205,8 @@ better” remain unavailable.
 - `2026-07-20` — `preregistered` — hypothesis and design frozen; no instrument
   implementation, subject call, adjudication, analysis, verification, or
   acceptance has occurred.
+- `2026-07-20` — `model-free-qualified` — CAPLAB-7 resolved the exact local
+  subject and shared-harness identities, froze the content-addressed
+  instrument, and passed canned qualification. Zero calls and zero spend
+  remain authorized; no adjudication, inference, independent verification, or
+  acceptance occurred.
