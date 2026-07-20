@@ -185,6 +185,13 @@ records `no-example-eligible`, authorizes no export, and leaves P12 unavailable
 with the v0 export criterion unmet. These are owner decisions, not execution,
 independent verification, or CAPLAB acceptance.
 
+The
+[`P13 independent verification proposal`](caplab-p13-independent-verification-proposal-2026-07-20.md)
+freezes a recommended verifier scope, criterion ledger, non-export observation,
+access closure, and stop conditions. It is awaiting an explicitly named
+independent executor and exact owner authorization; it contains no verification
+result. P14 remains blocked.
+
 CAPLAB-39 produced the
 [`repository migration record`](caplab-39-repository-migration-2026-07-19.md).
 It records the verified bundles, joined histories, preserved branches, GitHub

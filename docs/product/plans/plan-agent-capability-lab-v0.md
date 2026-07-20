@@ -779,3 +779,9 @@ replacement because the Plane connector could not remove the original relation.
   `no-example-eligible`, authorizes no export, and leaves the v0 export
   criterion unmet. P12 is unavailable. P13 independent verification is now the
   dependency front; P14 remains blocked on its verdict.
+- **2026-07-20 — exact P13 verifier campaign proposed.** The proposal freezes
+  the integrated replay, failure and recovery checks, claim and split refusal,
+  bounded non-export observation, separate technical and v0-criteria verdicts,
+  cleanup proof, and fail-closed stop conditions. It does not name or authorize
+  an independent executor. CAPLAB-33 is ready for that owner delegation;
+  CAPLAB-34 remains blocked.
