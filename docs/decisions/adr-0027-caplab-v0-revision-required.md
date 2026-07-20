@@ -66,6 +66,10 @@ No CAPLAB v0 acceptance or conditional acceptance exists. The active P0-P14
 queue is closed with completed, cancelled, or revision outcomes; Plane may
 project CAPLAB-34 as Done after this decision is committed.
 
+The closed P0-P14 queue is the v0 acceptance campaign, not the complete CAPLAB
+roadmap. ADR 0028 preserves future work outside that slice and corrects its
+Plane projection.
+
 Revision creates no execution authority. In particular, this decision does not
 permit:
 

@@ -30,3 +30,4 @@ does not imply execution, verification, or acceptance.
 | [ADR 0025](adr-0025-caplab-p13-independent-verification-authorization.md) | CAPLAB P13 independent verification authorization | authorized | repository owner through bounded delegate |
 | [ADR 0026](adr-0026-caplab-blanket-decision-authority.md) | CAPLAB blanket decision authority delegation | active | repository owner |
 | [ADR 0027](adr-0027-caplab-v0-revision-required.md) | CAPLAB v0 revision required | decided | ADR 0026 delegate |
+| [ADR 0028](adr-0028-caplab-future-roadmap-preservation.md) | Preserve the CAPLAB roadmap beyond v0 | decided | repository owner |

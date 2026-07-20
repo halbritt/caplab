@@ -31,6 +31,7 @@ authorization_records:
   - adr-0025
   - adr-0026
   - adr-0027
+  - adr-0028
 authorized_scope:
   - CAPLAB-22/P4
   - CAPLAB-23/P5
@@ -68,6 +69,7 @@ authorized_scope:
   - CAPLAB-33/P13 independent technical verification
   - adr-0026 blanket CAPLAB decision authority delegation
   - adr-0027 P14 revision disposition
+  - adr-0028 future-roadmap preservation decision
   - CAPLAB-34/P14 delegated decision
   - CAPLAB-25/P7 implementation preparation
   - CAPLAB-26/P8 implementation preparation
@@ -119,7 +121,8 @@ access remained effectively closed and protected inventories matched. P14 may
 record revision or rejection; acceptance is unavailable. ADR 0026 records the
 owner's blanket CAPLAB decision-authority delegation. ADR 0027 records the
 delegate's `revision` disposition. The current P0-P14 acceptance campaign is
-closed without CAPLAB v0 acceptance or follow-on execution authority.
+closed without CAPLAB v0 acceptance or follow-on execution authority. ADR 0028
+clarifies that this v0 closure does not cancel the future CAPLAB roadmap.
 
 ## Objective and authority boundary
 
@@ -220,7 +223,8 @@ Out of scope for v0 are new model calls, preference studies, multi-family
 Striatum qualification, scheduler-policy changes, fine-tuning, checkpoint
 deployment, a global leaderboard, public raw evidence, a second operational
 database, a daemon, a UI, and a public API. Those are not implicitly authorized
-by completing any checkpoint here.
+by completing any checkpoint here. Being out of scope for v0 does not cancel
+future roadmap work; ADR 0028 preserves that distinction.
 
 ## Preservation boundaries
 
@@ -831,3 +835,7 @@ replacement because the Plane connector could not remove the original relation.
   P0-P14 queue is closed. The revision preserves all evidence and authorizes no
   controller change, verification retry, eligibility reopening, export, or
   product-criterion change.
+- **2026-07-20 — future roadmap cancellation corrected.** The repository owner
+  clarified that narrowing v0 did not cancel later CAPLAB work. ADR 0028
+  restores CAPLAB-6 through CAPLAB-17 to Backlog. The completed P0-P14 v0
+  campaign and its revision disposition remain unchanged.
