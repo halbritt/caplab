@@ -1,0 +1,71 @@
+{
+  "schema": "caplab.preference.live-manifest/v1",
+  "campaign_id": "caplab-preference-001-2026-07-20",
+  "authority": "adr-0037",
+  "authorization_commit": "069b28ba40405e85daed5ced07abb69b86d0ac8c",
+  "expires_at": "2026-07-22T23:59:59Z",
+  "instrument": {
+    "path": "instrument.json",
+    "file_sha256": "36f3dfd13ab5128d9ef687a4bab6d3c2b1a1275cecdbb80676f0cb895b5fa020",
+    "design_sha256": "b61f109be67031614b0830d49922280be594d015aa405bdd741a795f08dabe45"
+  },
+  "harness": {
+    "harbor_version": "0.18.0",
+    "agent": "terminus-2",
+    "agent_version": "2.0.0",
+    "agent_source_sha256": "c6b72b8c6289809b2ff3a3009b8f118fa1edb1da205f48d0b56c6938a49cb12f",
+    "parser": "json",
+    "max_turns": 8,
+    "max_tokens_per_turn": 1024,
+    "reasoning_effort": "default",
+    "summarization": false,
+    "task_template": "src/caplab/preference/harbor-template"
+  },
+  "subjects": {
+    "fable": {
+      "instrument_model_id": "claude-fable-5",
+      "provider_route": "openrouter/anthropic/claude-fable-5",
+      "catalog_observed_at": "2026-07-20T17:08:47Z",
+      "prompt_usd_per_token": "0.00001",
+      "completion_usd_per_token": "0.00005"
+    },
+    "gpt": {
+      "instrument_model_id": "gpt-5.6-terra",
+      "provider_route": "openrouter/openai/gpt-5.6-terra",
+      "catalog_observed_at": "2026-07-20T17:08:47Z",
+      "prompt_usd_per_token": "0.0000025",
+      "completion_usd_per_token": "0.000015"
+    }
+  },
+  "surface": {
+    "external_network": false,
+    "memory": "fresh",
+    "output_tokens": 8192,
+    "tools": "task-local",
+    "wall_clock_minutes": 45
+  },
+  "limits": {
+    "primary_trials": 12,
+    "maximum_replacements": 4,
+    "maximum_trials": 16,
+    "maximum_completion_tokens_per_trial": 8192,
+    "maximum_completion_tokens": 131072,
+    "maximum_wall_clock_hours": 12,
+    "maximum_usd": "50.00"
+  },
+  "execution_order": ["P04:gpt", "P01:fable", "P06:fable", "P03:gpt", "P02:gpt", "P05:fable", "P01:gpt", "P04:fable", "P05:gpt", "P02:fable", "P03:fable", "P06:gpt"],
+  "reveal_map": {
+    "P01": {"A": "gpt", "B": "fable"},
+    "P02": {"A": "fable", "B": "gpt"},
+    "P03": {"A": "gpt", "B": "fable"},
+    "P04": {"A": "fable", "B": "gpt"},
+    "P05": {"A": "gpt", "B": "fable"},
+    "P06": {"A": "fable", "B": "gpt"}
+  },
+  "blind_criteria": ["completion", "constraints", "safety", "evidence", "presentation"],
+  "storage": {
+    "raw_custody_root": "/home/halbritt/.local/share/caplab/campaigns/caplab-preference-001-2026-07-20",
+    "normalized_repository_root": "docs/product/studies/preference-001/campaign-2026-07-20"
+  },
+  "manifest_sha256": "3d2fc657290c0f92db53029937737c5bba74701fa111820607e99e2cc6ac778e"
+}
