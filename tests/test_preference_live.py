@@ -10,6 +10,7 @@ from pathlib import Path
 
 from caplab.preference.live import (
     LivePreferenceContractError,
+    _digest,
     assess_attempts,
     custody_tree_manifest,
     freeze_dispositions,
@@ -17,6 +18,7 @@ from caplab.preference.live import (
     load_live_manifest,
     load_custody_attempts,
     prepare_trial,
+    record_observation,
     reveal_dispositions,
 )
 
@@ -59,7 +61,7 @@ class PreferenceLiveRunnerTests(unittest.TestCase):
         self.assertIn("openrouter/openai/gpt-5.6-terra", gpt)
         self.assertIn("max_turns=8", fable)
         self.assertIn('llm_kwargs={"max_tokens":1024}', fable)
-        self.assertIn("reasoning_effort=default", fable)
+        self.assertFalse(any(value.startswith("reasoning_effort=") for value in fable))
         self.assertIn("enable_summarize=false", fable)
         self.assertIn("--max-retries", fable)
         self.assertEqual(fable[fable.index("--max-retries") + 1], "0")
@@ -71,6 +73,43 @@ class PreferenceLiveRunnerTests(unittest.TestCase):
         normalized_fable[normalized_fable.index("caplab-preference-001-s02")] = "JOB"
         normalized_gpt[normalized_gpt.index("caplab-preference-001-s01")] = "JOB"
         self.assertEqual(normalized_fable, normalized_gpt)
+
+    def test_zero_token_provider_rejection_records_zero_cost(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            manifest = dict(self.manifest)
+            manifest["storage"] = dict(self.manifest["storage"])
+            manifest["storage"]["raw_custody_root"] = temporary_directory
+            attempt_root = Path(temporary_directory) / "attempts" / "a01-s01-primary"
+            result_root = attempt_root / "harbor" / "trial"
+            artifact_root = result_root / "artifacts" / "app"
+            artifact_root.mkdir(parents=True)
+            (artifact_root / "OWNER-NOTE.txt").write_text("preserved\n", encoding="utf-8")
+            launch = {
+                "attempt_number": 1,
+                "slot_index": 0,
+                "attempt_kind": "primary",
+                "manifest_sha256": manifest["manifest_sha256"],
+            }
+            launch["launch_sha256"] = _digest(launch)
+            completion = {"return_code": 0, "timed_out": False}
+            completion["completion_sha256"] = _digest(completion)
+            result = {
+                "trial_name": "trial",
+                "agent_result": {"n_output_tokens": 0, "cost_usd": None},
+                "exception_info": {"exception_type": "BadRequestError"},
+            }
+            (attempt_root / "launch.json").write_text(json.dumps(launch), encoding="utf-8")
+            (attempt_root / "completion.json").write_text(json.dumps(completion), encoding="utf-8")
+            (result_root / "result.json").write_text(json.dumps(result), encoding="utf-8")
+
+            observation = record_observation(
+                manifest,
+                attempt_root=attempt_root,
+                status="provider_failure",
+            )
+
+            self.assertEqual(observation["completion_tokens"], 0)
+            self.assertEqual(observation["cost_usd"], "0")
 
     def test_attempt_accounting_allows_only_frozen_order_and_bounded_replacement(self) -> None:
         attempts = [

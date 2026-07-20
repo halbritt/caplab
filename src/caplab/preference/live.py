@@ -296,8 +296,6 @@ def harbor_command(
         "--agent-kwarg",
         f"parser_name={harness['parser']}",
         "--agent-kwarg",
-        f"reasoning_effort={harness['reasoning_effort']}",
-        "--agent-kwarg",
         "enable_summarize=false",
         "--agent-kwarg",
         f'llm_kwargs={{"max_tokens":{harness["max_tokens_per_turn"]}}}',
@@ -653,10 +651,13 @@ def record_observation(
     cost = agent_result.get("cost_usd")
     if not isinstance(completion_tokens, int) or isinstance(completion_tokens, bool) or completion_tokens < 0:
         raise LivePreferenceContractError("measured_completion_tokens_missing")
-    if not isinstance(cost, (int, float, str)) or isinstance(cost, bool):
-        raise LivePreferenceContractError("measured_cost_missing")
-    cost_decimal = _decimal(str(cost), "cost_usd")
     exception_present = result.get("exception_info") is not None or completion.get("return_code") != 0 or completion.get("timed_out") is True
+    if cost is None and exception_present and completion_tokens == 0:
+        cost_decimal = Decimal("0")
+    elif not isinstance(cost, (int, float, str)) or isinstance(cost, bool):
+        raise LivePreferenceContractError("measured_cost_missing")
+    else:
+        cost_decimal = _decimal(str(cost), "cost_usd")
     if exception_present and status not in _INFRASTRUCTURE:
         raise LivePreferenceContractError("infrastructure_result_misclassified")
     if not exception_present and status in _INFRASTRUCTURE:
