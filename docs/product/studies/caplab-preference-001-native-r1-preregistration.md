@@ -71,3 +71,7 @@ versions, a content-addressed live manifest, and a separate authorization.
 - `2026-07-20` — `r1-stopped-r2-authorized` — ADR 0042 preserved the two r1
   attempts after contained Codex authentication failed, added authenticated
   no-inference preflight, and authorized a fresh r2 campaign from slot zero.
+- `2026-07-20` — `normalization-and-disposition-authorized` — ADR 0043 bound
+  the complete r2 custody tree, corrected native normalization sources, six
+  identity-free packets, delegated primary-agent judgments, freeze-before-
+  reveal order, exact thresholds, and descriptive claim ceiling.
