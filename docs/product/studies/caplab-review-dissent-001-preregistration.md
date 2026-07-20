@@ -204,3 +204,9 @@ later ceiling. Missing and invalid cells remain in denominator accounting.
   rejected the equal Terminus surface as proxy substitution. No development
   call occurred. The study remains preregistered and model-free-qualified only
   at the task/instrument layer; a native-system live design is required.
+- `2026-07-20` — `native-development-calibration-complete` — ADRs 0044 and
+  0045 executed all 16 development primary slots through native Claude Code and
+  Codex CLI harnesses. All 16 reviews failed the exact severity enum because
+  the native prompt did not state its allowed values. The instrument is not
+  calibrated, model comparison is not estimable, no replacement or post-hoc
+  remapping occurred, and the held-out split remains sealed and unopened.

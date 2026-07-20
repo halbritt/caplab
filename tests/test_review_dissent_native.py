@@ -15,6 +15,7 @@ from caplab.review_dissent.native import (
     observed_reads_from_native_jsonl,
     render_native_review_cell,
 )
+from caplab.review_dissent.native_results import summarize_native_review_rows
 
 
 ROOT = Path(__file__).parents[1]
@@ -114,6 +115,26 @@ class NativeReviewDissentTests(unittest.TestCase):
         self.assertTrue(capture["mechanical"]["required_evidence_observed"])
         self.assertTrue(capture["preservation"]["preserved"])
         self.assertEqual(capture["execution_mode"], "native-live")
+
+    def test_zero_schema_valid_reviews_fails_calibration_without_model_comparison(self) -> None:
+        rows = [
+            {
+                "subject_id": "fable" if index % 2 else "gpt",
+                "truth": "clean" if index % 4 < 2 else "defect",
+                "cue": "favorable" if index % 2 else "cautious",
+                "world_id": "RD-D01" if index < 8 else "RD-D02",
+                "status": "invalid",
+                "outcome": "subject-invalid",
+                "score": None,
+                "review_schema_valid": False,
+            }
+            for index in range(16)
+        ]
+        summary = summarize_native_review_rows(rows)
+        self.assertEqual(summary["counts"]["primary_slots"], 16)
+        self.assertEqual(summary["counts"]["score_eligible"], 0)
+        self.assertEqual(summary["conclusion"], "instrument-not-calibrated")
+        self.assertEqual(summary["comparison_status"], "not-estimable")
 
 
 if __name__ == "__main__":

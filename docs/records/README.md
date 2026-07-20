@@ -51,6 +51,16 @@ custody. The
 is superseded before its first call. CAPLAB-7/8 and CAPLAB-13 remain future
 work under corrected native-harness designs.
 
+ADRs 0044 and 0045 then executed and disposed the corrected native CAPLAB-13
+development calibration. The
+[`execution record`](caplab-13-native-execution-2026-07-20.md) binds 16 native
+primary attempts with no infrastructure replacement. The
+[`result`](caplab-13-native-result-2026-07-20.md) records zero schema-valid
+reviews and the exact `instrument-not-calibrated` / `not-estimable`
+disposition. The separate
+[`technical verification`](caplab-13-native-verification-2026-07-20.md) passes
+the negative calibration result without authorizing a rerun or held-out use.
+
 ADR 0040 and the
 [`CAPLAB-7 native instrument record`](caplab-7-native-preference-instrument-2026-07-20.md)
 qualify the corrected model-free preference instrument. It binds native Claude
