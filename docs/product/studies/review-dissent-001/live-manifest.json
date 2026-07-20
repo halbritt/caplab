@@ -1,5 +1,7 @@
 {
   "schema": "caplab.review-dissent.live-manifest/v1",
+  "status": "withdrawn",
+  "withdrawal_authority": "adr-0039",
   "campaign_id": "caplab-review-dissent-001-development-2026-07-20",
   "authority": "adr-0038",
   "expires_at": "2026-08-03T23:59:59Z",
@@ -72,5 +74,5 @@
     "raw_custody_root": "/home/halbritt/.local/share/caplab/campaigns/caplab-review-dissent-001-development-2026-07-20",
     "normalized_repository_root": "docs/product/studies/review-dissent-001/campaign-development-2026-07-20"
   },
-  "manifest_sha256": "0d45191c68e5c3096a83006ccc35138f7bdc579cccc877955d88b495c547cb0a"
+  "manifest_sha256": "02d09b080691652cd5e6504afb0f603708903dc0747226411fc151ec832ba73e"
 }

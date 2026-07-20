@@ -2,14 +2,15 @@
 id: caplab-preference-001
 artifact_type: study-preregistration
 title: Constraint continuity in Fable-versus-GPT complex repository work
-status: preregistered
+status: superseded-native-harness-redesign-required
 decision_record: adr-0030
 decision_authority: adr-0026
 created: 2026-07-20
 preregistered_at: 2026-07-20
 execution_authorized: false
 instrument_authority: adr-0033
-instrument_status: model-free-qualified
+instrument_status: superseded
+superseded_by: adr-0039
 ---
 
 # Constraint continuity in Fable-versus-GPT complex repository work
@@ -210,3 +211,7 @@ better” remain unavailable.
   instrument, and passed canned qualification. Zero calls and zero spend
   remain authorized; no adjudication, inference, independent verification, or
   acceptance occurred.
+- `2026-07-20` — `superseded-native-harness-redesign-required` — ADR 0039
+  established that the shared Terminus surface removes a behavior-bearing
+  component of both intended subjects. Four proxy attempts are quarantined;
+  the study remains future work under a corrected native-system design.

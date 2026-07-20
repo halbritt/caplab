@@ -15,6 +15,11 @@ from hashlib import sha256
 from pathlib import Path, PurePosixPath
 from typing import Any, Mapping, Sequence
 
+from caplab.subject_identity import (
+    NativeAgentSystemContractError,
+    validate_active_native_manifest,
+)
+
 from .instrument import load_calibration_instrument, render_review_cell
 
 
@@ -65,6 +70,18 @@ def _project_root(path: Path) -> Path:
     raise LiveReviewContractError("project_root_not_found")
 
 
+def _assert_active_native_manifest(
+    manifest: Mapping[str, Any], project_root: Path
+) -> None:
+    try:
+        validate_active_native_manifest(
+            project_root / "docs" / "product" / "contracts" / "native-agent-systems.json",
+            manifest,
+        )
+    except NativeAgentSystemContractError as error:
+        raise LiveReviewContractError(str(error)) from error
+
+
 def _validate_sealed(document: dict[str, Any], field: str, error: str) -> None:
     sealed = dict(document)
     claimed = sealed.pop(field, None)
@@ -92,6 +109,8 @@ def load_live_manifest(manifest_path: str | os.PathLike[str], study_root: str | 
     manifest, _ = _read_json(manifest_file)
     if manifest.get("schema") != _SCHEMA or manifest.get("authority") != "adr-0038":
         raise LiveReviewContractError("invalid_live_manifest_schema_or_authority")
+    project_root = _project_root(manifest_file.resolve())
+    _assert_active_native_manifest(manifest, project_root)
     expires_at = manifest.get("expires_at")
     try:
         expiry = datetime.fromisoformat(str(expires_at).replace("Z", "+00:00"))
@@ -143,7 +162,6 @@ def load_live_manifest(manifest_path: str | os.PathLike[str], study_root: str | 
         "maximum_wall_clock_hours": 12, "maximum_usd": "25.00",
     }:
         raise LiveReviewContractError("invalid_live_limits")
-    project_root = _project_root(manifest_file.resolve())
     template = project_root / harness["task_template"]
     if template.is_symlink() or not template.is_dir():
         raise LiveReviewContractError("task_template_unavailable")
@@ -166,6 +184,7 @@ def load_live_manifest(manifest_path: str | os.PathLike[str], study_root: str | 
 def preflight_runtime(manifest: Mapping[str, Any]) -> dict[str, str]:
     """Verify exact local and provider identities without printing a secret."""
 
+    _assert_active_native_manifest(manifest, Path(manifest["_project_root"]))
     harbor = shutil.which("harbor")
     docker = shutil.which("docker")
     if harbor is None or docker is None:
@@ -335,6 +354,7 @@ def _exclusive_bytes(path: Path, content: bytes) -> None:
 def prepare_trial(manifest: Mapping[str, Any], *, slot_index: int, attempt_kind: str, prior_attempts: Sequence[Mapping[str, Any]]) -> tuple[Path, list[str]]:
     """Render and seal the next development trial before its provider call."""
 
+    _assert_active_native_manifest(manifest, Path(manifest["_project_root"]))
     state = assess_attempts(manifest, prior_attempts)
     if state["complete"]:
         raise LiveReviewContractError("campaign_already_complete")

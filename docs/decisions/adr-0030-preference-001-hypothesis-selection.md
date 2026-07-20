@@ -2,13 +2,13 @@
 id: adr-0030
 artifact_type: architecture-decision-record
 title: Preference Study 001 hypothesis selection
-status: decided
+status: amended
 decision_owner: primary-agent
 decision_authority: adr-0026
 created: 2026-07-20
 decided_at: 2026-07-20
 supersedes: []
-superseded_by: null
+superseded_by: adr-0039
 affected_contexts:
   - agent-capability-lab
 related_specs:
@@ -77,12 +77,17 @@ authorization and the named evaluator's blinded judgments.
 
 ## Reopening conditions
 
-Reopen the hypothesis before CAPLAB-7 freezes the instrument if either subject
-identity is unavailable through the same harness, any task shell cannot expose
-at least eight independently scorable constraints, or a synthetic task would
-need private or historical run evidence.
+ADR 0039 supersedes the former same-harness condition. Reopen the hypothesis
+before a corrected CAPLAB-7 freezes the instrument if either native agent
+system is unavailable, any task shell cannot expose at least eight
+independently scorable constraints, or a synthetic task would need private or
+historical run evidence. Native-harness unavailability blocks that subject; it
+does not authorize proxy substitution.
 
 ## Status history
 
 - `2026-07-20` — `decided` — the ADR 0026 delegate selected constraint
   continuity as the one bounded candidate explanation for preregistration.
+- `2026-07-20` — `amended` — ADR 0039 replaced the incorrect common-harness
+  condition with native agent-system identity; the hypothesis remains future
+  work and requires a corrected instrument.

@@ -2,14 +2,14 @@
 id: adr-0033
 artifact_type: architecture-decision-record
 title: CAPLAB-7 model-free preference instrument authorization
-status: authorized
+status: superseded
 decision_owner: primary-agent
 decision_authority: adr-0026
 created: 2026-07-20
 decided_at: 2026-07-20
 expires_at: 2026-08-03T23:59:59Z
 supersedes: []
-superseded_by: null
+superseded_by: adr-0039
 affected_contexts:
   - agent-capability-lab
   - caplab-preference-001
@@ -134,3 +134,6 @@ authorization even if CAPLAB-7 passes.
 
 - `2026-07-20` — `authorized` — the ADR 0026 delegate authorized one bounded
   model-free CAPLAB-7 instrument campaign and excluded all live study effects.
+- `2026-07-20` — `superseded` — ADR 0039 found that the instrument normalized
+  away a behavior-bearing native harness. Its implementation remains history,
+  but it is not qualified for live execution.

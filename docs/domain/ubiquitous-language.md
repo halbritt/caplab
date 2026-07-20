@@ -54,6 +54,16 @@ of adjacent experiments is not automatically one study.
 context** are separate identities. A treatment, prompt, tool, task, world,
 instrument, or runtime change must not silently redefine the model.
 
+**Native agent system** is the behavior-bearing evaluation subject for an
+agentic model: model identity plus its native harness and harness version,
+effort and configuration, instruction and knowledge surfaces, tools,
+permissions, sandbox, and relevant runtime. The harness is part of the subject
+under test. Running the same model route through a proxy or common adapter
+creates a different agent configuration; it does not control away the native
+harness. Comparative studies equalize task, authority, budgets, capture, and
+scoring where meaningful while preserving and naming native-harness
+differences. See ADR 0039.
+
 **Trial assignment** is a sealed preregistered slot binding condition, block,
 sequence, denominator, and replacement rules.
 

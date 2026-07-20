@@ -7,12 +7,106 @@ import tomllib
 import unittest
 from pathlib import Path
 
+from caplab.subject_identity import (
+    NativeAgentSystemContractError,
+    load_native_agent_system_policy,
+    validate_native_agent_systems,
+)
+
 
 ROOT = Path(__file__).resolve().parents[1]
 MARKDOWN_LINK = re.compile(r"\[[^]]+\]\(([^)]+)\)")
 
 
 class RepositoryContractTests(unittest.TestCase):
+    def test_native_agent_system_contract_uses_native_striatum_tuples(self) -> None:
+        policy_path = ROOT / "docs/product/contracts/native-agent-systems.json"
+        policy = load_native_agent_system_policy(policy_path)
+        self.assertEqual(policy["policy"], "native-harness-required")
+        self.assertEqual(
+            policy["source_observation"]["commit"],
+            "9178e74314ed3d65328b60cec0650471cc15e6b3",
+        )
+        validate_native_agent_systems(
+            policy,
+            {
+                "fable": {
+                    "tuple_id": "claude-fable-5-max",
+                    "model_id": "claude-fable-5",
+                    "native_harness_id": "claude-code",
+                    "effort": "max",
+                    "command": [
+                        "/usr/bin/env",
+                        "CLAUDE_CONFIG_DIR=/tmp/caplab-claude",
+                        "claude",
+                        "-p",
+                        "--model",
+                        "claude-fable-5",
+                        "--effort",
+                        "max",
+                        "--output-format",
+                        "text",
+                    ],
+                    "version_command": [
+                        "/usr/bin/env",
+                        "CLAUDE_CONFIG_DIR=/tmp/caplab-claude",
+                        "claude",
+                        "--version",
+                    ],
+                },
+                "gpt": {
+                    "tuple_id": "codex-terra-max",
+                    "model_id": "gpt-5.6-terra",
+                    "native_harness_id": "codex",
+                    "effort": "max",
+                    "command": [
+                        "/usr/bin/env",
+                        "CODEX_HOME=/tmp/caplab-codex",
+                        "codex",
+                        "exec",
+                        "-m",
+                        "gpt-5.6-terra",
+                        "-c",
+                        "model_reasoning_effort=max",
+                    ],
+                    "version_command": [
+                        "/usr/bin/env",
+                        "CODEX_HOME=/tmp/caplab-codex",
+                        "codex",
+                        "--version",
+                    ],
+                },
+            },
+        )
+
+    def test_shared_proxy_harness_cannot_impersonate_native_systems(self) -> None:
+        policy = load_native_agent_system_policy(
+            ROOT / "docs/product/contracts/native-agent-systems.json"
+        )
+        proxy = {
+            "fable": {
+                "tuple_id": "claude-fable-5-max",
+                "model_id": "claude-fable-5",
+                "native_harness_id": "terminus-2",
+                "effort": "max",
+                "command": ["harbor", "exec", "--model", "openrouter/anthropic/claude-fable-5"],
+                "version_command": ["harbor", "--version"],
+            }
+        }
+        with self.assertRaisesRegex(
+            NativeAgentSystemContractError, "native_agent_tuple_mismatch"
+        ):
+            validate_native_agent_systems(policy, proxy)
+
+    def test_proxy_live_manifests_are_withdrawn(self) -> None:
+        for relative in (
+            "docs/product/studies/preference-001/live-manifest.json",
+            "docs/product/studies/review-dissent-001/live-manifest.json",
+        ):
+            manifest = json.loads((ROOT / relative).read_text(encoding="utf-8"))
+            self.assertEqual(manifest["status"], "withdrawn")
+            self.assertEqual(manifest["withdrawal_authority"], "adr-0039")
+
     def test_canonical_repository_identity_is_caplab(self) -> None:
         metadata = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
         self.assertEqual(

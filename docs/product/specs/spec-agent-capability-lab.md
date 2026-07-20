@@ -230,6 +230,15 @@ behavior-relevant field changes that envelope, but does not silently redefine
 which model, configuration, treatment, task family, or population an analysis
 compares.
 
+For agentic model comparisons, the default evaluated unit is the native agent
+system defined by ADR 0039. The native harness is a behavior-bearing component
+of the agent configuration, especially for models tuned for agentic workflows
+in that harness. CAPLAB must not replace Claude Code and Codex CLI with a
+shared proxy harness and then describe the result as a comparison of the
+native systems. Common controls apply to task, authority, budgets, capture,
+and scoring; irreducible native-harness differences remain part of the
+treatment and must be reported.
+
 ### Scoped systems of record
 
 CAPLAB uses one authoritative system of record per kind of state:

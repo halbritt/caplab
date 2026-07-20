@@ -2,14 +2,14 @@
 id: adr-0038
 artifact_type: architecture-decision-record
 title: CAPLAB-13 development calibration authorization
-status: authorized
+status: withdrawn
 decision_owner: primary-agent
 decision_authority: adr-0026
 created: 2026-07-20
 decided_at: 2026-07-20
 expires_at: 2026-08-03T23:59:59Z
 supersedes: []
-superseded_by: null
+superseded_by: adr-0039
 affected_contexts:
   - agent-capability-lab
   - caplab-review-dissent-001
@@ -167,3 +167,6 @@ development-only boundary, claim ceiling, or qualitative authority.
 
 - `2026-07-20` — `authorized` — the ADR 0026 delegate authorized one exact,
   bounded, development-only CAPLAB-13 calibration campaign.
+- `2026-07-20` — `withdrawn-before-first-call` — ADR 0039 prohibited the
+  OpenRouter and Terminus proxy substitution. No CAPLAB-13 subject attempt
+  occurred; future calibration requires native agent-system tuples.

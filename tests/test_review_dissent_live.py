@@ -6,7 +6,6 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
 
 from caplab.review_dissent.live import (
     LiveReviewContractError,
@@ -17,6 +16,7 @@ from caplab.review_dissent.live import (
     prepare_trial,
     record_observation,
 )
+from caplab.review_dissent.instrument import load_calibration_instrument
 
 
 ROOT = Path(__file__).parents[1]
@@ -26,24 +26,21 @@ MANIFEST = STUDY / "live-manifest.json"
 
 class ReviewDissentLiveTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.manifest = load_live_manifest(MANIFEST, STUDY)
+        # Load withdrawn bytes only for unit coverage of pure historical
+        # accounting/custody helpers; production loading remains fail closed.
+        self.manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
+        self.manifest["_project_root"] = ROOT
+        self.manifest["_task_template_path"] = ROOT / self.manifest["harness"]["task_template"]
+        self.manifest["_instrument"] = load_calibration_instrument(STUDY)
+        self.manifest["_study_root"] = STUDY
 
-    def test_manifest_loads_development_without_opening_heldout(self) -> None:
-        original = Path.read_bytes
+    def test_withdrawn_proxy_manifest_cannot_cross_live_boundary(self) -> None:
+        with self.assertRaisesRegex(
+            LiveReviewContractError, "live_authorization_withdrawn"
+        ):
+            load_live_manifest(MANIFEST, STUDY)
 
-        def guarded(path: Path) -> bytes:
-            if path.name == "heldout.json":
-                raise AssertionError("heldout content was opened")
-            return original(path)
-
-        with patch.object(Path, "read_bytes", guarded):
-            manifest = load_live_manifest(MANIFEST, STUDY)
-        self.assertEqual(manifest["authority"], "adr-0038")
-        self.assertEqual(len(manifest["execution_order"]), 16)
-        self.assertEqual(set(manifest["_instrument"]["cells"]), {f"r{i:02d}" for i in range(1, 9)})
-        self.assertEqual(manifest["_instrument"]["split"], "development")
-
-    def test_command_freezes_equal_surface_without_reasoning_override(self) -> None:
+    def test_historical_proxy_command_shape_remains_reproducible_for_forensics(self) -> None:
         command = harbor_command(
             self.manifest,
             slot_index=0,
@@ -70,23 +67,21 @@ class ReviewDissentLiveTests(unittest.TestCase):
         with self.assertRaisesRegex(LiveReviewContractError, "replacement_without_infrastructure_failure"):
             assess_attempts(self.manifest, attempts)
 
-    def test_prepare_renders_only_next_development_cell_and_seals_launch(self) -> None:
+    def test_direct_prepare_cannot_bypass_withdrawn_manifest_loader(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             manifest = dict(self.manifest)
             manifest["storage"] = dict(self.manifest["storage"])
             manifest["storage"]["raw_custody_root"] = temporary_directory
-            attempt_root, command = prepare_trial(
-                manifest,
-                slot_index=0,
-                attempt_kind="primary",
-                prior_attempts=[],
-            )
-            launch = json.loads((attempt_root / "launch.json").read_text(encoding="utf-8"))
-            self.assertEqual(launch["cell_id"], "r03")
-            self.assertEqual(launch["subject_id"], "gpt")
-            self.assertEqual(launch["command"], command)
-            self.assertTrue((attempt_root / "input" / "review-03" / ".caplab-review-task.json").is_file())
-            self.assertFalse(any(path.name == "heldout.json" for path in attempt_root.rglob("*")))
+            with self.assertRaisesRegex(
+                LiveReviewContractError, "live_authorization_withdrawn"
+            ):
+                prepare_trial(
+                    manifest,
+                    slot_index=0,
+                    attempt_kind="primary",
+                    prior_attempts=[],
+                )
+            self.assertEqual(list(Path(temporary_directory).iterdir()), [])
 
     def test_zero_token_rejected_provider_request_records_zero_cost(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:

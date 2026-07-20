@@ -21,6 +21,15 @@ projection. A model or agent may record human-owned judgment only when the
 human has explicitly delegated that authority and the record names the source
 and scope of delegation.
 
+For comparative tests of agentic models, treat `(native harness, model,
+effort/configuration)` as the subject identity. The native harness is a
+behavior-bearing component under test. Do not substitute OpenRouter,
+Harbor/Terminus, a generic SDK, or another shared proxy for Claude Code, Codex
+CLI, or another model's native harness unless a repository-owner decision
+explicitly names that proxy configuration as the subject or authorizes the
+specific exception. Enforce `docs/product/contracts/native-agent-systems.json`
+before preparing a live attempt.
+
 Historical evidence must not be copied, admitted, registered, rewritten, or
 purged unless the active authorization names that effect. Preserve source
 commit, path, content hash, and custody provenance for imported governing

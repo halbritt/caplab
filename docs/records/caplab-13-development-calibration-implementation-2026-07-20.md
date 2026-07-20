@@ -2,7 +2,7 @@
 id: caplab-13-development-calibration-implementation-2026-07-20
 artifact_type: implementation-record
 title: CAPLAB-13 development calibration implementation checkpoint
-status: blocked-before-first-call
+status: superseded-before-first-call
 authority: adr-0038
 created: 2026-07-20
 ---
@@ -56,3 +56,8 @@ ADR 0038 excludes credit purchase, payment-method use, and billing mutation.
 The exact CAPLAB-13 first call therefore remains stopped. This checkpoint is
 implementation and preflight evidence, not trial execution, calibration
 evidence, independent verification, inference, or acceptance.
+
+ADR 0039 subsequently withdrew ADR 0038 because the OpenRouter and Terminus
+configuration was a proxy rather than either model's native agent system. No
+call occurred. This implementation is preserved as a superseded checkpoint
+and cannot be reactivated by funding the provider account.

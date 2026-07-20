@@ -6,10 +6,10 @@ status: preregistered
 decision_record: adr-0034
 decision_authority: adr-0026
 created: 2026-07-20
-execution_authorized: true
+execution_authorized: false
 instrument_authority: adr-0036
 instrument_status: model-free-qualified
-execution_authority: adr-0038
+execution_authority: withdrawn-by-adr-0039
 ---
 
 # Evidence-calibrated independent review dissent
@@ -200,3 +200,7 @@ later ceiling. Missing and invalid cells remain in denominator accounting.
   custody, and call, token, time, and USD ceilings. Held-out content remains
   outside the calibration path. Authorization is not execution, verification,
   inference, or acceptance.
+- `2026-07-20` — `development-calibration-authorization-withdrawn` — ADR 0039
+  rejected the equal Terminus surface as proxy substitution. No development
+  call occurred. The study remains preregistered and model-free-qualified only
+  at the task/instrument layer; a native-system live design is required.

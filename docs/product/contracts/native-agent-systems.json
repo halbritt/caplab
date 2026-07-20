@@ -1,0 +1,43 @@
+{
+  "schema": "caplab.native-agent-systems/v1",
+  "policy": "native-harness-required",
+  "decision_authority": "adr-0039",
+  "source_observation": {
+    "repository": "halbritt/striatum-next",
+    "commit": "9178e74314ed3d65328b60cec0650471cc15e6b3",
+    "files": {
+      "claude-fable-5-max": {
+        "path": "backends/claude-fable-5-max/backend.yaml",
+        "sha256": "acd3ed24fcb5158763fd6d4ff1201c45d761e567d91c6e1865efe631485324a6"
+      },
+      "codex-terra-max": {
+        "path": "backends/codex-terra-max/backend.yaml",
+        "sha256": "9376e6beb1592c3f0ae0349d8ebbfb9411a0e7bb09a3301011c74542f904df42"
+      },
+      "tuple_contract_test": {
+        "path": "internal/backend/llm/runtime_tuple_test.go",
+        "sha256": "8c2cea812041a60e8c13684213587b680cefebcc2eb89f8419686d9c8ec0e781"
+      }
+    }
+  },
+  "systems": {
+    "claude-fable-5-max": {
+      "model_id": "claude-fable-5",
+      "native_harness_id": "claude-code",
+      "effort": "max",
+      "executable": "claude",
+      "required_command_tokens": ["-p", "--model", "claude-fable-5", "--effort", "max"],
+      "version_command": ["claude", "--version"]
+    },
+    "codex-terra-max": {
+      "model_id": "gpt-5.6-terra",
+      "native_harness_id": "codex",
+      "effort": "max",
+      "executable": "codex",
+      "required_command_tokens": ["exec", "-m", "gpt-5.6-terra", "-c", "model_reasoning_effort=max"],
+      "version_command": ["codex", "--version"]
+    }
+  },
+  "forbidden_proxy_markers": ["openrouter", "harbor", "terminus"],
+  "exceptions": []
+}

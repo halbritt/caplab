@@ -16,11 +16,11 @@ from caplab.preference.live import (
     freeze_dispositions,
     harbor_command,
     load_live_manifest,
-    load_custody_attempts,
     prepare_trial,
     record_observation,
     reveal_dispositions,
 )
+from caplab.preference.instrument import load_instrument
 
 
 ROOT = Path(__file__).parents[1]
@@ -30,9 +30,22 @@ MANIFEST = ROOT / "docs" / "product" / "studies" / "preference-001" / "live-mani
 
 class PreferenceLiveRunnerTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.manifest = load_live_manifest(MANIFEST, INSTRUMENT)
+        # Preserve unit coverage of the historical accounting/custody code
+        # without using the production loader's authorization boundary.
+        self.manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
+        self.manifest["_manifest_path"] = MANIFEST
+        self.manifest["_instrument_path"] = INSTRUMENT
+        self.manifest["_project_root"] = ROOT
+        self.manifest["_task_template_path"] = ROOT / self.manifest["harness"]["task_template"]
+        self.manifest["_instrument"] = load_instrument(INSTRUMENT)
 
-    def test_manifest_binds_exact_authority_instrument_subjects_and_limits(self) -> None:
+    def test_withdrawn_proxy_manifest_cannot_cross_live_boundary(self) -> None:
+        with self.assertRaisesRegex(
+            LivePreferenceContractError, "live_authorization_withdrawn"
+        ):
+            load_live_manifest(MANIFEST, INSTRUMENT)
+
+    def test_withdrawn_manifest_preserves_historical_identity_and_limits(self) -> None:
         self.assertEqual(self.manifest["authority"], "adr-0037")
         self.assertEqual(self.manifest["instrument"]["design_sha256"], "b61f109be67031614b0830d49922280be594d015aa405bdd741a795f08dabe45")
         self.assertEqual(
@@ -44,7 +57,7 @@ class PreferenceLiveRunnerTests(unittest.TestCase):
         self.assertEqual(self.manifest["limits"]["maximum_completion_tokens"], 131072)
         self.assertEqual(self.manifest["limits"]["maximum_usd"], "50.00")
 
-    def test_harbor_commands_are_equal_except_frozen_slot_and_provider_route(self) -> None:
+    def test_historical_proxy_command_shape_remains_reproducible_for_forensics(self) -> None:
         fable = harbor_command(
             self.manifest,
             slot_index=1,
@@ -151,31 +164,21 @@ class PreferenceLiveRunnerTests(unittest.TestCase):
             with self.assertRaisesRegex(LivePreferenceContractError, "custody_symlink"):
                 custody_tree_manifest(root)
 
-    def test_prepare_trial_renders_only_the_next_slot_and_writes_launch_before_call(self) -> None:
+    def test_direct_prepare_cannot_bypass_withdrawn_manifest_loader(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             manifest = dict(self.manifest)
             manifest["storage"] = dict(self.manifest["storage"])
             manifest["storage"]["raw_custody_root"] = temporary_directory
-            attempt_root, command = prepare_trial(
-                manifest,
-                slot_index=0,
-                attempt_kind="primary",
-                prior_attempts=[],
-            )
-            launch = json.loads((attempt_root / "launch.json").read_text(encoding="utf-8"))
-            self.assertEqual(launch["task_id"], "P04")
-            self.assertEqual(launch["subject_id"], "gpt")
-            self.assertEqual(launch["command"], command)
-            self.assertTrue((attempt_root / "input" / "P04" / ".caplab-task.json").is_file())
-            with self.assertRaisesRegex(LivePreferenceContractError, "unclassified_attempt"):
-                load_custody_attempts(manifest)
-            with self.assertRaisesRegex(LivePreferenceContractError, "attempt_custody_exists"):
+            with self.assertRaisesRegex(
+                LivePreferenceContractError, "live_authorization_withdrawn"
+            ):
                 prepare_trial(
                     manifest,
                     slot_index=0,
                     attempt_kind="primary",
                     prior_attempts=[],
                 )
+            self.assertEqual(list(Path(temporary_directory).iterdir()), [])
 
     def test_dispositions_freeze_blind_packet_hashes_before_reveal(self) -> None:
         packets = {f"P0{index}": {"schema": "caplab.preference.blind-packet/v1", "pair_alias": f"Pair-{index}"} for index in range(1, 7)}

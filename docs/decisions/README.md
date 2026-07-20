@@ -32,12 +32,13 @@ does not imply execution, verification, or acceptance.
 | [ADR 0027](adr-0027-caplab-v0-revision-required.md) | CAPLAB v0 revision required | decided | ADR 0026 delegate |
 | [ADR 0028](adr-0028-caplab-future-roadmap-preservation.md) | Preserve the CAPLAB roadmap beyond v0 | decided | repository owner |
 | [ADR 0029](adr-0029-books-custody-and-caplab-admission.md) | BOOKS-1–6 custody and CAPLAB admission boundary | decided | ADR 0026 delegate |
-| [ADR 0030](adr-0030-preference-001-hypothesis-selection.md) | Preference Study 001 hypothesis selection | decided | ADR 0026 delegate |
+| [ADR 0030](adr-0030-preference-001-hypothesis-selection.md) | Preference Study 001 hypothesis selection | amended | ADR 0026 delegate |
 | [ADR 0031](adr-0031-striatum-build-and-review-profiles.md) | Striatum build and fresh-review capability profiles | decided | ADR 0026 delegate |
 | [ADR 0032](adr-0032-initial-synthetic-evaluation-baseline.md) | Initial synthetic evaluation baseline and gate policy | decided | ADR 0026 delegate |
-| [ADR 0033](adr-0033-caplab-7-model-free-instrument-authorization.md) | CAPLAB-7 model-free preference instrument authorization | authorized | ADR 0026 delegate |
+| [ADR 0033](adr-0033-caplab-7-model-free-instrument-authorization.md) | CAPLAB-7 model-free preference instrument authorization | superseded | ADR 0026 delegate |
 | [ADR 0034](adr-0034-review-dissent-study-selection.md) | Review dissent second-study selection | decided | ADR 0026 delegate |
 | [ADR 0035](adr-0035-books-3-probe-redesign.md) | BOOKS-3 Doctrine-injection probe redesign disposition | decided | ADR 0026 delegate |
 | [ADR 0036](adr-0036-caplab-12-review-dissent-instrument-authorization.md) | CAPLAB-12 review-dissent instrument authorization | authorized | ADR 0026 delegate |
-| [ADR 0037](adr-0037-caplab-8-live-preference-study-authorization.md) | CAPLAB-8 live preference-study authorization | authorized | ADR 0026 delegate |
-| [ADR 0038](adr-0038-caplab-13-development-calibration-authorization.md) | CAPLAB-13 development calibration authorization | authorized | ADR 0026 delegate |
+| [ADR 0037](adr-0037-caplab-8-live-preference-study-authorization.md) | CAPLAB-8 live preference-study authorization | withdrawn | ADR 0026 delegate |
+| [ADR 0038](adr-0038-caplab-13-development-calibration-authorization.md) | CAPLAB-13 development calibration authorization | withdrawn | ADR 0026 delegate |
+| [ADR 0039](adr-0039-native-agent-system-subject-identity.md) | Native agent system is the comparative subject | active | repository owner |

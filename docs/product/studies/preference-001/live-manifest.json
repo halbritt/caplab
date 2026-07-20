@@ -1,5 +1,7 @@
 {
   "schema": "caplab.preference.live-manifest/v1",
+  "status": "withdrawn",
+  "withdrawal_authority": "adr-0039",
   "campaign_id": "caplab-preference-001-2026-07-20",
   "authority": "adr-0037",
   "authorization_commit": "069b28ba40405e85daed5ced07abb69b86d0ac8c",
@@ -67,5 +69,5 @@
     "raw_custody_root": "/home/halbritt/.local/share/caplab/campaigns/caplab-preference-001-2026-07-20",
     "normalized_repository_root": "docs/product/studies/preference-001/campaign-2026-07-20"
   },
-  "manifest_sha256": "3d2fc657290c0f92db53029937737c5bba74701fa111820607e99e2cc6ac778e"
+  "manifest_sha256": "e485f6ee345ebe4850ec10c09f941f610a640c004175e47afd03dd6df3b6533f"
 }

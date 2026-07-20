@@ -15,6 +15,11 @@ from hashlib import sha256
 from pathlib import Path, PurePosixPath
 from typing import Any, Mapping, Sequence
 
+from caplab.subject_identity import (
+    NativeAgentSystemContractError,
+    validate_active_native_manifest,
+)
+
 from .instrument import load_instrument
 from .instrument import render_task
 
@@ -85,6 +90,18 @@ def _project_root(manifest_path: Path) -> Path:
     raise LivePreferenceContractError("project_root_not_found")
 
 
+def _assert_active_native_manifest(
+    manifest: Mapping[str, Any], project_root: Path
+) -> None:
+    try:
+        validate_active_native_manifest(
+            project_root / "docs" / "product" / "contracts" / "native-agent-systems.json",
+            manifest,
+        )
+    except NativeAgentSystemContractError as error:
+        raise LivePreferenceContractError(str(error)) from error
+
+
 def load_live_manifest(
     manifest_path: str | os.PathLike[str],
     instrument_path: str | os.PathLike[str],
@@ -96,6 +113,8 @@ def load_live_manifest(
     manifest, _ = _read_json_object(manifest_file)
     if manifest.get("schema") != _SCHEMA or manifest.get("authority") != "adr-0037":
         raise LivePreferenceContractError("invalid_live_manifest_schema_or_authority")
+    project_root = _project_root(manifest_file.resolve())
+    _assert_active_native_manifest(manifest, project_root)
     expires_at = manifest.get("expires_at")
     if not isinstance(expires_at, str):
         raise LivePreferenceContractError("invalid_live_expiry")
@@ -156,7 +175,6 @@ def load_live_manifest(
         "maximum_usd": "50.00",
     }:
         raise LivePreferenceContractError("invalid_live_limits")
-    project_root = _project_root(manifest_file.resolve())
     template_path = project_root / harness["task_template"]
     if template_path.is_symlink() or not template_path.is_dir():
         raise LivePreferenceContractError("task_template_unavailable")
@@ -180,6 +198,7 @@ def load_live_manifest(
 def preflight_runtime(manifest: Mapping[str, Any]) -> dict[str, str]:
     """Verify live provider and local harness identities without reading a secret."""
 
+    _assert_active_native_manifest(manifest, Path(manifest["_project_root"]))
     harbor = shutil.which("harbor")
     docker = shutil.which("docker")
     if harbor is None:
@@ -459,6 +478,7 @@ def prepare_trial(
 ) -> tuple[Path, list[str]]:
     """Create one fresh raw-custody attempt and its exact Harbor command."""
 
+    _assert_active_native_manifest(manifest, Path(manifest["_project_root"]))
     state = assess_attempts(manifest, prior_attempts)
     if state["complete"]:
         raise LivePreferenceContractError("campaign_already_complete")

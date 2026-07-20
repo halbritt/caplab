@@ -42,6 +42,15 @@ and blinding boundaries, and exact zero-call estimate. It records no subject
 attempt, human disposition, result, inference, independent verification, or
 CAPLAB acceptance.
 
+ADR 0039 corrected the subject identity for both studies: the native harness
+is part of the agent system under test. The
+[`CAPLAB-8 quarantine record`](caplab-8-openrouter-attempt-quarantine-2026-07-20.md)
+excludes four OpenRouter/Terminus attempts from study use while preserving raw
+custody. The
+[`CAPLAB-13 checkpoint`](caplab-13-development-calibration-implementation-2026-07-20.md)
+is superseded before its first call. CAPLAB-7/8 and CAPLAB-13 remain future
+work under corrected native-harness designs.
+
 CAPLAB-22/P4 produced separate records for campaign
 `caplab-p4-roundtrip-2026-07-15`:
 
