@@ -35,4 +35,5 @@ before any later export can be authorized.
 ADR 0016 authorizes this model-free boundary. P7 produced its content-addressed
 observation on 2026-07-20, and the first actual P10 execution emitted candidate
 manifest `0eeed6348f87d03143ad44c4b9d5440140957c33f32b70e456d80d493aad4a73`.
-Its 20 candidates remain ineligible pending the CAPLAB-29 human decision.
+Its 20 candidates remain `derived-not-eligible`. ADR 0024 records the separate
+human decision `no-example-eligible` and authorizes no export.

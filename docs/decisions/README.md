@@ -25,3 +25,5 @@ does not imply execution, verification, or acceptance.
 | [ADR 0020](adr-0020-caplab-p7-exact-second-retry.md) | CAPLAB P7 exact second live retry | decided | repository owner |
 | [ADR 0021](adr-0021-caplab-p7-exact-third-retry.md) | CAPLAB P7 exact third live retry | decided | repository owner |
 | [ADR 0022](adr-0022-caplab-p7-runtime-custody-and-fourth-retry.md) | CAPLAB P7 runtime custody and exact fourth live retry | decided | repository owner |
+| [ADR 0023](adr-0023-caplab-study-001-capability-inference-refusal.md) | CAPLAB Study 001 capability-inference refusal | decided | repository owner |
+| [ADR 0024](adr-0024-caplab-study-001-no-training-eligibility.md) | CAPLAB Study 001 no training-eligible examples | decided | repository owner |

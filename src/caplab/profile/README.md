@@ -34,4 +34,6 @@ provider, inference-recording, placement, export, or acceptance interface.
 ADR 0016 authorizes this model-free boundary. P7 produced its content-addressed
 observation on 2026-07-20, and the first actual P8 execution emitted profile
 manifest `641965dc30fd0dbfca81d56bb05282b01e8e079285ab605c12672e92f3971ef0`.
-The profile remains pending the CAPLAB-27 human inference decision.
+The immutable proposal retains its `pending-human-inference` status. ADR 0023
+is the separate current human disposition and records `refuse`; no capability
+inference was added to the profile.

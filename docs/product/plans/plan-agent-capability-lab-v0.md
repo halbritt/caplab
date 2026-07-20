@@ -26,6 +26,8 @@ authorization_records:
   - adr-0020
   - adr-0021
   - adr-0022
+  - adr-0023
+  - adr-0024
 authorized_scope:
   - CAPLAB-22/P4
   - CAPLAB-23/P5
@@ -57,6 +59,8 @@ authorized_scope:
   - adr-0020 exact P7 second live retry
   - adr-0021 exact P7 third live retry
   - adr-0022 exact P7 runtime-custody correction and fourth live retry
+  - adr-0023 P9 capability-inference refusal
+  - adr-0024 P11 no-example-eligible decision and no export authorization
   - CAPLAB-25/P7 implementation preparation
   - CAPLAB-26/P8 implementation preparation
   - CAPLAB-28/P10 implementation preparation
@@ -97,8 +101,9 @@ eligibility, export, independent verification, model calls, training, and
 acceptance remain unauthorized. The fourth retry completed with byte-identical
 replay, historical match, aggregate disablement, and preservation proof. P8
 and P10 consumed the bound P7 observation with byte-identical deterministic
-replays. Their profile and candidate outputs remain pending the separate human
-inference and eligibility gates.
+replays. ADR 0023 records the owner's refusal to make a capability inference.
+ADR 0024 selects no training-eligible examples and authorizes no export.
+Independent verification and acceptance remain separate and unauthorized.
 
 ## Objective and authority boundary
 
@@ -424,6 +429,9 @@ evidence, then records a bounded inference, a narrower inference, or a refusal
 to infer. Preserve that record as content-addressed evidence distinct from
 technical verification and final v0 acceptance.
 
+ADR 0023 records the repository owner's `refuse` disposition. No capability
+inference is recorded; the mechanical observation remains unchanged.
+
 ### P10 — Derive a governed training-candidate set
 
 Derive candidate examples only from evidence-valid observations with complete
@@ -445,6 +453,9 @@ maximum size, retention, expiry, purge, and stop conditions. The record excludes
 model calls, fine-tuning, deployment, public release, and later exports. A
 no-eligible-example decision leaves P12 unavailable and the v0 export criterion
 unmet.
+
+ADR 0024 records `no-example-eligible`. No export is authorized, P12 is not
+run, and the v0 export criterion is unmet.
 
 ### P12 — Materialize the authorized training-eligible export
 
@@ -762,3 +773,9 @@ replacement because the Plane connector could not remove the original relation.
   the privacy, license, and leakage reviews remain absent. CAPLAB-27 and
   CAPLAB-29 are ready for the repository owner's decisions; all later items
   remain blocked on those human gates.
+- **2026-07-20 — P9 and P11 owner decisions recorded.** The repository owner
+  accepted both recommendations. ADR 0023 records `refuse`, so Study 001 gains
+  no capability inference beyond its mechanical observation. ADR 0024 records
+  `no-example-eligible`, authorizes no export, and leaves the v0 export
+  criterion unmet. P12 is unavailable. P13 independent verification is now the
+  dependency front; P14 remains blocked on its verdict.

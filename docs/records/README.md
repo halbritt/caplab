@@ -179,6 +179,12 @@ presents `no-example-eligible`, a scoped review deferral, or an exact reviewed
 selection plus one export authorization. Neither proposal records its owner's
 decision.
 
+The repository owner accepted both recommendations. ADR 0023 records the P9
+`refuse` disposition without changing the mechanical observation. ADR 0024
+records `no-example-eligible`, authorizes no export, and leaves P12 unavailable
+with the v0 export criterion unmet. These are owner decisions, not execution,
+independent verification, or CAPLAB acceptance.
+
 CAPLAB-39 produced the
 [`repository migration record`](caplab-39-repository-migration-2026-07-19.md).
 It records the verified bundles, joined histories, preserved branches, GitHub
