@@ -34,10 +34,20 @@ model identity exercised through Claude Code or Codex CLI.
 
 This was a propagation failure, not a newly discovered preference. CAPLAB
 already defined agent configuration as model, reasoning effort,
-harness/runtime/adapter, and tool surface. Earlier Study 001 review work also
-required the harness/model/effort tuple to be visible. Despite that, ADRs 0030,
-0033, 0037, and 0038 treated a common Terminus harness as a fairness control.
-The later records encoded the opposite of the established subject identity.
+harness/runtime/adapter, and tool surface. ADR 0004, accepted on 2026-07-15 in
+commit `29d076b83d3950892a72410e476d90638f03c3d2`, bound Study 001 to the
+recorded `gpt-5.6-luna`/maximum-effort/**Codex CLI 0.144.1** subject. The
+accepted dashboard standard then required the harness/model/effort tuple to be
+reviewer-visible. Despite that, ADRs 0030, 0033, 0037, and 0038 treated a
+common Terminus harness as a fairness control. The later records encoded the
+opposite of the established subject identity.
+
+The regression was possible because the earlier rule was enforced at a study
+record and presentation boundary, while the proxy campaigns had their own
+locally consistent manifest validators. No repository-wide pre-execution
+validator rejected a later study that normalized away the native harness. A
+decision that launch code can bypass is not a sufficient durable control; the
+machine policy and cheapest-boundary validator below close that gap.
 
 The current `striatum-next` backend declarations are a useful downstream
 reference because much CAPLAB testing is intended to inform Striatum. At

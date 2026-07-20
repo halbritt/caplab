@@ -73,6 +73,28 @@ class NativePreferenceLiveTests(unittest.TestCase):
             self.assertEqual(launch["command"], command)
             self.assertTrue((attempt_root / "input/P02/.caplab-task.json").is_file())
 
+    def test_authorized_manifest_refuses_changed_containment_source(self) -> None:
+        document = json.loads(MANIFEST.read_text(encoding="utf-8"))
+        with tempfile.TemporaryDirectory(dir=MANIFEST.parent) as manifest_directory:
+            document["status"] = "active"
+            document["authority"] = "adr-0041"
+            document["containment"]["source_sha256"] = "0" * 64
+            sealed = dict(document)
+            sealed.pop("manifest_sha256")
+            document["manifest_sha256"] = hashlib.sha256(
+                json.dumps(
+                    sealed, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+                ).encode("utf-8")
+            ).hexdigest()
+            active_path = Path(manifest_directory) / "manifest.json"
+            active_path.write_text(json.dumps(document), encoding="utf-8")
+
+            with self.assertRaisesRegex(
+                NativePreferenceLiveContractError,
+                "native_live_containment_source_mismatch",
+            ):
+                load_native_live_manifest(active_path, INSTRUMENT)
+
     def test_both_native_harnesses_run_in_the_same_external_task_namespace(self) -> None:
         instrument = load_native_instrument(INSTRUMENT)
         with tempfile.TemporaryDirectory() as temporary_directory:

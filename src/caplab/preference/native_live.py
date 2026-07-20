@@ -26,6 +26,7 @@ _CLAUDE_CONFIG = Path(
 )
 _CODEX_MODULE = Path("/home/halbritt/.npm-global/lib/node_modules/@openai/codex")
 _CODEX_CONFIG = Path("/home/halbritt/.local/share/striatum/harness-config/codex")
+_PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
 
 def _canonical(value: object) -> bytes:
@@ -58,6 +59,20 @@ def load_native_live_manifest(
     instrument = load_native_instrument(instrument_file)
     if instrument["design_sha256"] != manifest["instrument"].get("design_sha256"):
         raise NativePreferenceLiveContractError("native_live_instrument_design_mismatch")
+    containment = manifest.get("containment")
+    source_path = containment.get("source_path") if isinstance(containment, dict) else None
+    if not isinstance(source_path, str) or Path(source_path).is_absolute():
+        raise NativePreferenceLiveContractError("invalid_native_live_containment_source")
+    try:
+        source_file = (_PROJECT_ROOT / source_path).resolve(strict=True)
+    except OSError as error:
+        raise NativePreferenceLiveContractError(
+            f"native_live_containment_source_unreadable:{error}"
+        ) from error
+    if not source_file.is_relative_to(_PROJECT_ROOT) or not source_file.is_file():
+        raise NativePreferenceLiveContractError("invalid_native_live_containment_source")
+    if sha256(source_file.read_bytes()).hexdigest() != containment.get("source_sha256"):
+        raise NativePreferenceLiveContractError("native_live_containment_source_mismatch")
     result = dict(manifest)
     result["_instrument"] = instrument
     result["_manifest_path"] = manifest_file.resolve()

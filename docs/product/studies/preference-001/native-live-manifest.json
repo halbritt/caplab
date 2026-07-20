@@ -16,7 +16,7 @@
   "containment": {
     "profile": "caplab-native-task-bwrap-v1",
     "source_path": "src/caplab/preference/native_live.py",
-    "source_sha256": "f15473af5820732799dbf959d3c30bac1d3561b983cb1e55a808c72bc68ee8fb",
+    "source_sha256": "85e7a541c92cca65db3307586c81942794ab00aa3bf5d6e1f55ea261eca1ace1",
     "filesystem": "task-tree-write; system-and-harness-binaries-read-only; no-other-home-or-repository",
     "network": "shared-host-network-for-native-provider",
     "codex_inner_sandbox": "workspace-write"
@@ -34,5 +34,5 @@
     "raw_custody_root": "/home/halbritt/.local/share/caplab/campaigns/caplab-preference-001-native-r1-2026-07-20",
     "normalized_repository_root": "docs/product/studies/preference-001/native-campaign-2026-07-20"
   },
-  "manifest_sha256": "69853b5f0d17f67ffa7946dd18b6eec4a4289bd241130d5edebee941746e9f5a"
+  "manifest_sha256": "f95758af72b752755ea8474bfb91abf8b0793ab63a28744f6b22f66279cc2bc0"
 }
