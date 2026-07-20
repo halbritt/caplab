@@ -40,3 +40,4 @@ does not imply execution, verification, or acceptance.
 | [ADR 0035](adr-0035-books-3-probe-redesign.md) | BOOKS-3 Doctrine-injection probe redesign disposition | decided | ADR 0026 delegate |
 | [ADR 0036](adr-0036-caplab-12-review-dissent-instrument-authorization.md) | CAPLAB-12 review-dissent instrument authorization | authorized | ADR 0026 delegate |
 | [ADR 0037](adr-0037-caplab-8-live-preference-study-authorization.md) | CAPLAB-8 live preference-study authorization | authorized | ADR 0026 delegate |
+| [ADR 0038](adr-0038-caplab-13-development-calibration-authorization.md) | CAPLAB-13 development calibration authorization | authorized | ADR 0026 delegate |

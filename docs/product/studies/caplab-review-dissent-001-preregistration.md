@@ -6,9 +6,10 @@ status: preregistered
 decision_record: adr-0034
 decision_authority: adr-0026
 created: 2026-07-20
-execution_authorized: false
+execution_authorized: true
 instrument_authority: adr-0036
 instrument_status: model-free-qualified
+execution_authority: adr-0038
 ---
 
 # Evidence-calibrated independent review dissent
@@ -193,3 +194,9 @@ later ceiling. Missing and invalid cells remain in denominator accounting.
   content. Zero calls and zero spend remain authorized; no subject attempt,
   human disposition, result, inference, independent verification, or
   acceptance occurred.
+- `2026-07-20` — `development-calibration-authorized` — ADR 0038 froze two
+  exact subject tuples, all 16 development primary slots, equal harness
+  surfaces, at most four infrastructure-only replacements, append-only raw
+  custody, and call, token, time, and USD ceilings. Held-out content remains
+  outside the calibration path. Authorization is not execution, verification,
+  inference, or acceptance.
