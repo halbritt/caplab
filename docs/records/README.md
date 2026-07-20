@@ -155,14 +155,19 @@ ADR 0016 Stage A then produced the
 The [`exact fourth-retry proposal`](caplab-p7-live-retry-4-proposal-2026-07-19.md)
 binds that correction, and ADR 0022 records the owner's `retry again`
 instruction as authority for one exact corrected execution.
+The resulting
+[`P7 execution record`](caplab-p7-live-recomputation-execution-2026-07-20.md)
+reports two byte-identical recomputations, a byte-identical historical match,
+complete aggregate disablement, and matching preservation controls. P7 is
+complete; this execution is not independent verification or acceptance.
 
 ADR 0016 Stage A also produced the
 [`P8 and P10 implementation record`](caplab-p8-p10-stage-a-implementation-2026-07-18.md).
 The deterministic profile-proposal and candidate-manifest boundaries are
 implemented and pass the repository gate. This is implementation preparation,
-not execution of P8 or P10; both still depend on the pending live P7
-observation. Human inference, eligibility, export, independent verification,
-and acceptance remain separate gates.
+not execution of P8 or P10. The P7 observation is now available for those
+deterministic checkpoints. Human inference, eligibility, export, independent
+verification, and acceptance remain separate gates.
 
 CAPLAB-39 produced the
 [`repository migration record`](caplab-39-repository-migration-2026-07-19.md).

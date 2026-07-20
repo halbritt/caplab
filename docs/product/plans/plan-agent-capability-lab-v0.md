@@ -5,7 +5,7 @@ title: Agent Capability Lab v0
 status: authorized
 owner: repository-maintainers
 created: 2026-07-15
-updated: 2026-07-19
+updated: 2026-07-20
 supersedes: []
 superseded_by: null
 source_artifacts:
@@ -93,9 +93,10 @@ retry then stopped before access creation because the installed venv interpreter
 was a symlink; that authorization is also consumed. ADR 0022 now authorizes one
 exact fourth retry using copied regular-file interpreter custody. Human inference,
 eligibility, export, independent verification, model calls, training, and
-acceptance remain unauthorized. P8 and P10 have hermetic deterministic
-implementations, but their actual Study 001 outputs remain unavailable until
-a separately authorized P7 retry produces the bound observation.
+acceptance remain unauthorized. The fourth retry completed with byte-identical
+replay, historical match, aggregate disablement, and preservation proof. P8
+and P10 have hermetic deterministic implementations and may now consume the
+bound P7 observation.
 
 ## Objective and authority boundary
 
@@ -394,7 +395,9 @@ and Proximal commit `c5bb1efa1402010a57ccc7034f3555b14830bc1c`.
 ADR 0021 approved the exact third-retry proposal unchanged. That execution
 stopped before access creation because the installed venv interpreter was a
 symlink. The regular-file runtime-custody correction is prepared, and ADR 0022
-binds one exact fourth retry.
+binds one exact fourth retry. That retry completed: both canonical outputs were
+byte-identical, the historical comparison matched, aggregate disablement
+passed, and the sealed preservation evidence verified.
 
 Resolve registered immutable evidence through Postgres locators, apply the
 frozen analysis and missingness rules, and reproduce the selected normalized
@@ -724,3 +727,14 @@ replacement because the Plane connector could not remove the original relation.
   `1b79aa07cc4e44e8fc828449f882c6b62008edb6` makes that construction and
   pre-enable check explicit, and all ten controller tests pass. ADR 0022 binds
   the owner's `retry again` instruction to one exact corrected execution.
+- **2026-07-20 — P7 recomputation completed.** The fourth attempt produced two
+  byte-identical canonical observations and a byte-identical historical match.
+  Observation manifest
+  `68845b0ce21fe30e21b5e46f988c624bef85b6eaf3d02319f24c8e7992e7c6d1`
+  binds normalized result
+  `6c4deff865354c78835741bcbbead517828e207db16452469872dfb363dbaab8`.
+  Aggregate disablement passed, every preservation comparison matched, and the
+  sealed 72-entry evidence manifest has SHA-256
+  `42b57e7c7dc38786f32267e6e2f63031cc56e335e592688470d47dcee2ac94e6`.
+  P8 and P10 may now consume the observation; later human and acceptance gates
+  remain separate.
