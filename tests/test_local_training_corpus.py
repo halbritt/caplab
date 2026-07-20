@@ -11,6 +11,7 @@ from caplab.review_dissent.local_training import (
     grade_local_review,
     parse_local_review_output,
 )
+from caplab.review_dissent.local_training_live import load_local_training_manifest
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -104,6 +105,13 @@ class LocalTrainingCorpusTests(unittest.TestCase):
         self.assertEqual({record["split"] for record in corpus["records"]}, {"train", "development"})
         self.assertTrue(all(record["source_kind"] == "local-open-model" for record in corpus["records"]))
         self.assertEqual(len(corpus["corpus_sha256"]), 64)
+
+    def test_authorized_live_manifest_binds_both_runtime_sources(self) -> None:
+        manifest = load_local_training_manifest(
+            STUDY / "local-training-instrument.json", ROOT
+        )
+        self.assertEqual(manifest["limits"]["authorized_calls"], 8)
+        self.assertFalse(manifest["limits"]["server_mutation"])
 
 
 if __name__ == "__main__":

@@ -59,5 +59,6 @@
     "export": "requires-separate-adr-0048-after-valid-result"
   },
   "runtime_source_sha256": "00c842cba30bf828aa6f570cd526ba37cdcc4d4235d9fd184eb00d1b05fb72c4",
-  "design_sha256": "369edaee8d829596371a9ba62cf375ebd32d9940744cec676b84d2d6da3964fd"
+  "runner_source_sha256": "fa502a02cb6cb01c3a2d87c6642afdf0641cdac675790bbd6f984a697c4a2a5c",
+  "design_sha256": "0f7259acecdd280f87fcae00a91cc0434148ac193a63825677cdc2fc737f2dc0"
 }
