@@ -27,6 +27,10 @@ The first bounded tuning design is frozen separately in the
 and its executable [`training experiment manifest`](training-experiment.json).
 Preregistration is not training or evaluation authority.
 
+The authorized first attempt is recorded in [`training-result.json`](training-result.json).
+It stopped after an infrastructure failure at observed optimizer step 3 of 12;
+the partial adapter is not a candidate, and held-out evaluation did not run.
+
 ## Inclusion and reward semantics
 
 The corpus includes all seven schema-valid local-Qwen development responses.

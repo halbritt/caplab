@@ -2,7 +2,7 @@
 id: adr-0050
 artifact_type: architecture-decision-record
 title: Qwen3.6-27B QLoRA training and held-out evaluation authorization
-status: authorized
+status: consumed-stopped
 decision_owner: primary-agent
 decision_authority: adr-0026
 created: 2026-07-20
@@ -89,3 +89,6 @@ deployment, lane-fit acceptance, scheduler policy, or a universal model claim.
 - `2026-07-20` — `authorized` — the ADR 0026 delegate authorized one exact
   lease-coordinated batch training attempt and its frozen native-harness
   evaluation, with contingent held-out access only after adapter seal.
+- `2026-07-21` — `consumed-stopped` — the attempt started, reached observed
+  optimizer step 3, and stopped after the GPU became unresponsive and the fleet
+  lease was lost. ADR 0051 prohibits retry and held-out access.

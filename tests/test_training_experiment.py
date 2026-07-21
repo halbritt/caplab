@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 TRAINING_ROOT = ROOT / "docs/product/training/caplab-review-dissent-local-qwen-r1"
 MANIFEST = TRAINING_ROOT / "training-experiment.json"
 EXECUTION = TRAINING_ROOT / "training-execution.json"
+RESULT = TRAINING_ROOT / "training-result.json"
 
 
 class TrainingExperimentTests(unittest.TestCase):
@@ -93,6 +94,22 @@ class TrainingExperimentTests(unittest.TestCase):
                 ROOT,
                 now=datetime(2026, 7, 20, 23, 45, tzinfo=UTC),
             )
+
+    def test_failed_result_cannot_be_mistaken_for_a_tuned_candidate(self) -> None:
+        result = json.loads(RESULT.read_text(encoding="utf-8"))
+        self.assertEqual(
+            result["status"],
+            "infrastructure-failed-training-attempt-consumed",
+        )
+        self.assertEqual(result["training"]["attempts_consumed"], 1)
+        self.assertFalse(result["training"]["final_adapter_sealed"])
+        self.assertEqual(
+            result["training"]["partial_checkpoint"]["status"],
+            "partial-unsealed-not-a-candidate",
+        )
+        self.assertEqual(result["evaluation"]["heldout_status"], "sealed-unopened")
+        self.assertEqual(result["evaluation"]["heldout_calls"], 0)
+        self.assertEqual(result["evaluation"]["native_harness_calls"], 0)
 
 
 if __name__ == "__main__":

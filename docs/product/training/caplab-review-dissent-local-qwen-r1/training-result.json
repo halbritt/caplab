@@ -1,0 +1,68 @@
+{
+  "schema": "caplab.training.execution-result/v1",
+  "experiment_id": "caplab-review-dissent-qwen27b-qlora-r1",
+  "authority": "adr-0050",
+  "disposition_authority": "adr-0051",
+  "status": "infrastructure-failed-training-attempt-consumed",
+  "base_checkpoint_revision": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+  "preflight": {
+    "status": "passed",
+    "file_sha256": "dfe6dea676a8f1bb5adf72d991d3fc4fd9836b88d642af451273bd4d15728dd7",
+    "duration_seconds": "15.078000",
+    "loss": "0.722461760044",
+    "record_token_counts": {
+      "r02-local-qwen-review": 528,
+      "r03-local-qwen-review": 455,
+      "r04-local-qwen-review": 375
+    },
+    "trainable_parameter_count": 58363904,
+    "trainable_parameter_name_count": 992
+  },
+  "training": {
+    "attempts_authorized": 1,
+    "attempts_consumed": 1,
+    "training_started_file_sha256": "a2e1a9d865d2eea83c7678721b45911c7eb1e70822db8633f34658906cc87653",
+    "observed_completed_optimizer_steps": 3,
+    "required_final_optimizer_steps": 12,
+    "final_adapter_sealed": false,
+    "training_result_present": false,
+    "partial_checkpoint": {
+      "step": 3,
+      "status": "partial-unsealed-not-a-candidate",
+      "adapter_model_sha256": "157c234e9b99f6b59bb1885c85fe83fd6bba3a76e3c64ec7eedf842d8f577ff2",
+      "adapter_model_bytes": 233605480,
+      "adapter_config_sha256": "f5d92a2fcb034cfb857b9de5d03accf8d37993cbb7dcf1902255e4d03c9fa7c9",
+      "optimizer_sha256": "95e899085d1246fc3bb870f9fdfcd20405473a05705bb9da0677d1daac898cfd",
+      "trainer_state_present": false
+    }
+  },
+  "failure": {
+    "class": "training-infrastructure-gpu-unresponsive-and-lease-lost",
+    "first_failed_gpu_probe_at": "2026-07-21T00:17:37Z",
+    "gpu_probe_failure": "nvidia-smi timed out after 10 seconds",
+    "lease_id": "2f3b3131-0b9e-43dd-b91d-34c6a8ee7c4c",
+    "lease_action": "local child process group stopped",
+    "remote_orphan_action": "verified exact process tree 31960-32000-29296 and terminated it",
+    "post_cleanup_gpu_status": "nvidia-smi still times out; gpu-fleet de-listed peecee slots",
+    "ollama_http_status": "api-tags-responsive",
+    "cleanup_status": "partial-host-gpu-recovery-requires-authority-outside-caplab"
+  },
+  "evaluation": {
+    "heldout_status": "sealed-unopened",
+    "heldout_calls": 0,
+    "general_control_calls": 0,
+    "native_harness_calls": 0,
+    "success_rule_status": "not-evaluable-no-final-adapter"
+  },
+  "cost": {
+    "paid_usd": "0",
+    "training_steps_completed": 3,
+    "latency_comparison_status": "not-run"
+  },
+  "custody": {
+    "raw_tree_inventory_sha256": "9e0b9b1e00745e58dbac8583d2b70548d4b236ea71a5cacc1878063833345c98",
+    "raw_file_count": 8,
+    "retention": "preserve-through-caplab-17-disposition"
+  },
+  "claim_ceiling": "infrastructure-failed bounded attempt only; no tuned capability, regression, deployment, lane-fit, or superiority claim"
+}
