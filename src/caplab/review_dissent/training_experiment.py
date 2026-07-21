@@ -106,11 +106,13 @@ def load_training_execution(
     if schema not in {
         "caplab.training.execution-authorization/v1",
         "caplab.training.execution-authorization/v2",
+        "caplab.training.execution-authorization/v3",
     }:
         raise TrainingExperimentContractError("execution_schema_mismatch")
     expected_authority = {
         "caplab.training.execution-authorization/v1": "adr-0050",
         "caplab.training.execution-authorization/v2": "adr-0054",
+        "caplab.training.execution-authorization/v3": "adr-0055",
     }[schema]
     if (
         authorization.get("status") != "active"
@@ -166,6 +168,28 @@ def load_training_execution(
         }
         if authorization.get("containment") != expected_containment:
             raise TrainingExperimentContractError("retry_containment_mismatch")
+        if schema == "caplab.training.execution-authorization/v3":
+            predecessor = authorization.get("predecessor", {})
+            if predecessor != {
+                "path": "docs/product/training/caplab-review-dissent-local-qwen-r2/training-execution.json",
+                "file_sha256": "0c095d5c58732678c151ad31b6874736a5f559d79d70d30894175b77d4f31d3c",
+                "outcome": "qualification-launch-refused-before-model-load",
+            }:
+                raise TrainingExperimentContractError("retry_predecessor_mismatch")
+            predecessor_path = repository_root / predecessor["path"]
+            if _sha256(predecessor_path) != predecessor["file_sha256"]:
+                raise TrainingExperimentContractError("retry_predecessor_sha256_mismatch")
+            if authorization.get("launch_correction") != {
+                "powershell_execution_policy": "Bypass",
+                "scope": "child-process-only",
+                "host_policy_mutation": False,
+            }:
+                raise TrainingExperimentContractError("retry_launch_correction_mismatch")
+            if authorization.get("remote_paths", {}).get("root") != (
+                "C:/Users/halbr/caplab/experiments/"
+                "caplab-review-dissent-qwen27b-qlora-r2-q2"
+            ):
+                raise TrainingExperimentContractError("retry_remote_root_mismatch")
         expected_effects = {
             "gpu_fleet_leases": 2,
             "temporary_ollama_model_unload": "qwen3.6:27b",

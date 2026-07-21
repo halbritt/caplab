@@ -1,7 +1,8 @@
 import json
-import tempfile
 import unittest
+from datetime import UTC, datetime
 from pathlib import Path
+from unittest.mock import patch
 
 from caplab.review_dissent.instrument import load_calibration_instrument
 from caplab.review_dissent.local_training import (
@@ -107,9 +108,12 @@ class LocalTrainingCorpusTests(unittest.TestCase):
         self.assertEqual(len(corpus["corpus_sha256"]), 64)
 
     def test_authorized_live_manifest_binds_both_runtime_sources(self) -> None:
-        manifest = load_local_training_manifest(
-            STUDY / "local-training-instrument.json", ROOT
-        )
+        with patch("caplab.review_dissent.local_training_live.datetime") as clock:
+            clock.fromisoformat.side_effect = datetime.fromisoformat
+            clock.now.return_value = datetime(2026, 7, 21, 3, 59, tzinfo=UTC)
+            manifest = load_local_training_manifest(
+                STUDY / "local-training-instrument.json", ROOT
+            )
         self.assertEqual(manifest["limits"]["authorized_calls"], 8)
         self.assertFalse(manifest["limits"]["server_mutation"])
 

@@ -292,6 +292,8 @@ class LeaseSession:
             "powershell.exe",
             "-NoProfile",
             "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
             "-File",
             f"{self.remote_root}/input/caplab16_peecee_r2.ps1",
             "-Root",

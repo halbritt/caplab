@@ -2,7 +2,7 @@
 id: adr-0054
 artifact_type: architecture-decision-record
 title: Authorize one host-contained Qwen3.6-27B retry
-status: authorized
+status: consumed-stopped
 decision_owner: primary-agent
 decision_authority: adr-0026
 created: 2026-07-21
@@ -93,3 +93,7 @@ remain distinct.
 - `2026-07-21` — `authorized` — the ADR 0026 delegate authorized one exact
   qualification-gated, host-contained r2 attempt and its contingent native
   held-out evaluation.
+- `2026-07-21` — `consumed-stopped` — the first lease reached the contained
+  qualification launch, but Windows execution policy refused the exact
+  PowerShell orchestrator before model loading. No training attempt or
+  held-out read occurred. ADR 0055 governs any corrected launch.

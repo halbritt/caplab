@@ -56,4 +56,5 @@ does not imply execution, verification, or acceptance.
 | [ADR 0051](adr-0051-dispose-failed-qwen27b-training-attempt.md) | Dispose the failed Qwen3.6-27B training attempt | decided | ADR 0026 delegate |
 | [ADR 0052](adr-0052-stop-scheduler-and-model-development-after-failed-attempt.md) | Stop scheduler and model development after the failed first attempt | decided | ADR 0026 delegate |
 | [ADR 0053](adr-0053-preregister-qwen27b-host-outage-retry.md) | Preregister a fresh Qwen3.6-27B attempt after the host outage | preregistered | ADR 0026 delegate |
-| [ADR 0054](adr-0054-authorize-qwen27b-host-contained-retry.md) | Authorize one host-contained Qwen3.6-27B retry | authorized | ADR 0026 delegate |
+| [ADR 0054](adr-0054-authorize-qwen27b-host-contained-retry.md) | Authorize one host-contained Qwen3.6-27B retry | consumed-stopped | ADR 0026 delegate |
+| [ADR 0055](adr-0055-authorize-qwen27b-execution-policy-corrected-launch.md) | Authorize the execution-policy-corrected Qwen3.6-27B launch | authorized | ADR 0026 delegate |

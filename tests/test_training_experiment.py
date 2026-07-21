@@ -20,6 +20,7 @@ RESULT = TRAINING_ROOT / "training-result.json"
 RETRY_ROOT = ROOT / "docs/product/training/caplab-review-dissent-local-qwen-r2"
 RETRY_MANIFEST = RETRY_ROOT / "training-experiment.json"
 RETRY_EXECUTION = RETRY_ROOT / "training-execution.json"
+RETRY_EXECUTION_Q2 = RETRY_ROOT / "training-execution-q2.json"
 
 
 class TrainingExperimentTests(unittest.TestCase):
@@ -125,12 +126,12 @@ class TrainingExperimentTests(unittest.TestCase):
 
     def test_retry_execution_authority_binds_qualification_and_containment(self) -> None:
         execution = load_training_execution(
-            RETRY_EXECUTION,
+            RETRY_EXECUTION_Q2,
             ROOT,
             now=datetime(2026, 7, 21, 4, 0, tzinfo=UTC),
         )
-        self.assertEqual(execution["schema"], "caplab.training.execution-authorization/v2")
-        self.assertEqual(execution["authority"], "adr-0054")
+        self.assertEqual(execution["schema"], "caplab.training.execution-authorization/v3")
+        self.assertEqual(execution["authority"], "adr-0055")
         self.assertEqual(execution["experiment_id"], "caplab-review-dissent-qwen27b-qlora-r2")
         self.assertEqual(execution["permitted_effects"]["host_qualification_runs"], 1)
         self.assertEqual(execution["permitted_effects"]["training_attempts"], 1)
@@ -143,6 +144,14 @@ class TrainingExperimentTests(unittest.TestCase):
         self.assertTrue(execution["containment"]["training_requires_qualification_acceptance"])
         self.assertFalse(execution["permitted_effects"]["install_packages"])
         self.assertFalse(execution["permitted_effects"]["download_checkpoint"])
+        self.assertEqual(
+            execution["launch_correction"],
+            {
+                "powershell_execution_policy": "Bypass",
+                "scope": "child-process-only",
+                "host_policy_mutation": False,
+            },
+        )
 
     def test_failed_result_cannot_be_mistaken_for_a_tuned_candidate(self) -> None:
         result = json.loads(RESULT.read_text(encoding="utf-8"))
