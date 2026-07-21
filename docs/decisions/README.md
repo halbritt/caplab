@@ -59,4 +59,5 @@ does not imply execution, verification, or acceptance.
 | [ADR 0054](adr-0054-authorize-qwen27b-host-contained-retry.md) | Authorize one host-contained Qwen3.6-27B retry | consumed-stopped | ADR 0026 delegate |
 | [ADR 0055](adr-0055-authorize-qwen27b-execution-policy-corrected-launch.md) | Authorize the execution-policy-corrected Qwen3.6-27B launch | consumed-stopped | ADR 0026 delegate |
 | [ADR 0056](adr-0056-authorize-qwen27b-module-independent-digest-launch.md) | Authorize the module-independent digest launch | invalidated-pre-effect | ADR 0026 delegate |
-| [ADR 0057](adr-0057-authorize-qwen27b-dual-slot-exclusive-launch.md) | Authorize the rebound-host dual-slot exclusive launch | authorized | ADR 0026 delegate |
+| [ADR 0057](adr-0057-authorize-qwen27b-dual-slot-exclusive-launch.md) | Authorize the rebound-host dual-slot exclusive launch | consumed-stopped | ADR 0026 delegate |
+| [ADR 0058](adr-0058-authorize-qwen27b-lease-aware-status-launch.md) | Authorize the lease-aware fleet-status launch | authorized | ADR 0026 delegate |

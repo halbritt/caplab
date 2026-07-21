@@ -2,7 +2,7 @@
 id: adr-0057
 artifact_type: architecture-decision-record
 title: Authorize the rebound-host dual-slot exclusive launch
-status: authorized
+status: consumed-stopped
 decision_owner: primary-agent
 decision_authority: adr-0026
 created: 2026-07-21
@@ -65,3 +65,11 @@ unconsumed r2 training attempt remain unchanged.
 - `2026-07-21` — `authorized` — the ADR 0026 delegate rebound execution to the
   recovered boot and required dual-slot exclusion before temporarily unloading
   the resident slot 0 model.
+- `2026-07-21` — `consumed-stopped` — q4 acquired outer lease
+  `f9fe507f-e759-440a-9dc2-efd7e941df01` and inner lease
+  `04a47884-b3a9-445f-aae4-8eb5a794b3b5`. The first lease-time heartbeat
+  correctly demoted slot 1 to `probationary`, but CAPLAB's controller required
+  `routable` and stopped before recording a qualification observation. The
+  remote pulse expired and the Job Object terminated the qualification child.
+  No qualification result, training-start marker, optimizer step, or held-out
+  read occurred. ADR 0058 governs the corrected fleet-status contract.

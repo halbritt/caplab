@@ -2,10 +2,10 @@
 id: caplab-review-dissent-local-qwen-r2
 artifact_type: training-experiment-card
 title: CAPLAB Qwen3.6-27B review-dissent QLoRA r2
-status: preregistered-and-q4-authorized
+status: preregistered-and-q5-authorized
 created: 2026-07-21
 decision_record: adr-0053
-execution_authorization: adr-0057
+execution_authorization: adr-0058
 ---
 
 # CAPLAB Qwen3.6-27B review-dissent QLoRA r2
@@ -30,9 +30,12 @@ Job Object process-tree containment must pass before training begins.
 - [`training-execution-q3.json`](training-execution-q3.json) is the
   module-independent digest authorization invalidated before effect by the
   driver-install reboot.
-- [`training-execution-q4.json`](training-execution-q4.json) is the active
-  rebound-host authorization. Training and evaluation each hold both logical
-  `peecee` leases before unloading the resident `qwen3-vl:8b` model.
+- [`training-execution-q4.json`](training-execution-q4.json) is the consumed
+  rebound-host authorization. Its controller rejected gpu-fleet's designed
+  lease-time `probationary` status before qualification completed.
+- [`training-execution-q5.json`](training-execution-q5.json) is the active
+  lease-aware authorization. Training and evaluation each hold both logical
+  `peecee` leases; exact lease identity, liveness, and freshness remain required.
 - The immutable corpus and controls remain under
   [`../caplab-review-dissent-local-qwen-r1`](../caplab-review-dissent-local-qwen-r1/README.md).
 

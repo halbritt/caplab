@@ -23,6 +23,7 @@ RETRY_EXECUTION = RETRY_ROOT / "training-execution.json"
 RETRY_EXECUTION_Q2 = RETRY_ROOT / "training-execution-q2.json"
 RETRY_EXECUTION_Q3 = RETRY_ROOT / "training-execution-q3.json"
 RETRY_EXECUTION_Q4 = RETRY_ROOT / "training-execution-q4.json"
+RETRY_EXECUTION_Q5 = RETRY_ROOT / "training-execution-q5.json"
 
 
 class TrainingExperimentTests(unittest.TestCase):
@@ -128,12 +129,12 @@ class TrainingExperimentTests(unittest.TestCase):
 
     def test_retry_execution_authority_binds_qualification_and_containment(self) -> None:
         execution = load_training_execution(
-            RETRY_EXECUTION_Q4,
+            RETRY_EXECUTION_Q5,
             ROOT,
             now=datetime(2026, 7, 21, 4, 0, tzinfo=UTC),
         )
-        self.assertEqual(execution["schema"], "caplab.training.execution-authorization/v5")
-        self.assertEqual(execution["authority"], "adr-0057")
+        self.assertEqual(execution["schema"], "caplab.training.execution-authorization/v6")
+        self.assertEqual(execution["authority"], "adr-0058")
         self.assertEqual(execution["experiment_id"], "caplab-review-dissent-qwen27b-qlora-r2")
         self.assertEqual(execution["permitted_effects"]["host_qualification_runs"], 1)
         self.assertEqual(execution["permitted_effects"]["training_attempts"], 1)
@@ -149,6 +150,10 @@ class TrainingExperimentTests(unittest.TestCase):
         self.assertEqual(
             execution["capacity_coordination"]["temporary_resident_unload"],
             "qwen3-vl:8b",
+        )
+        self.assertEqual(
+            execution["fleet_status_correction"]["accepted_active_lease_statuses"],
+            ["routable", "probationary"],
         )
         self.assertEqual(
             execution["launch_correction"],

@@ -109,6 +109,7 @@ def load_training_execution(
         "caplab.training.execution-authorization/v3",
         "caplab.training.execution-authorization/v4",
         "caplab.training.execution-authorization/v5",
+        "caplab.training.execution-authorization/v6",
     }:
         raise TrainingExperimentContractError("execution_schema_mismatch")
     expected_authority = {
@@ -117,6 +118,7 @@ def load_training_execution(
         "caplab.training.execution-authorization/v3": "adr-0055",
         "caplab.training.execution-authorization/v4": "adr-0056",
         "caplab.training.execution-authorization/v5": "adr-0057",
+        "caplab.training.execution-authorization/v6": "adr-0058",
     }[schema]
     if (
         authorization.get("status") != "active"
@@ -176,6 +178,7 @@ def load_training_execution(
             "caplab.training.execution-authorization/v3",
             "caplab.training.execution-authorization/v4",
             "caplab.training.execution-authorization/v5",
+            "caplab.training.execution-authorization/v6",
         }:
             predecessor = authorization.get("predecessor", {})
             expected_predecessor = {
@@ -194,6 +197,11 @@ def load_training_execution(
                     "file_sha256": "0c1d573fd9ddd064719ce46e9ab52373192d6b6cae21fa7bc0f077a057697d4a",
                     "outcome": "host-boot-identity-changed-before-lease",
                 },
+                "caplab.training.execution-authorization/v6": {
+                    "path": "docs/product/training/caplab-review-dissent-local-qwen-r2/training-execution-q4.json",
+                    "file_sha256": "2763886bc67bfb7b96469916fb4d5981fea5c59bdc43a5921d34326fbf8b2db0",
+                    "outcome": "lease-aware-heartbeat-demoted-slot-before-qualification-observation",
+                },
             }[schema]
             if predecessor != expected_predecessor:
                 raise TrainingExperimentContractError("retry_predecessor_mismatch")
@@ -208,6 +216,7 @@ def load_training_execution(
             if schema in {
                 "caplab.training.execution-authorization/v4",
                 "caplab.training.execution-authorization/v5",
+                "caplab.training.execution-authorization/v6",
             }:
                 expected_launch["digest_implementation"] = (
                     "System.Security.Cryptography.SHA256"
@@ -218,6 +227,7 @@ def load_training_execution(
                 "caplab.training.execution-authorization/v3": "q2",
                 "caplab.training.execution-authorization/v4": "q3",
                 "caplab.training.execution-authorization/v5": "q4",
+                "caplab.training.execution-authorization/v6": "q5",
             }[schema]
             expected_root = (
                 "C:/Users/halbr/caplab/experiments/"
@@ -247,7 +257,10 @@ def load_training_execution(
             "striatum_mutation": False,
             "scheduler_policy_mutation": False,
         }
-        if schema == "caplab.training.execution-authorization/v5":
+        if schema in {
+            "caplab.training.execution-authorization/v5",
+            "caplab.training.execution-authorization/v6",
+        }:
             expected_effects["gpu_fleet_leases"] = 4
             expected_effects["temporary_ollama_model_unload"] = "qwen3-vl:8b"
             expected_capacity = {
@@ -280,6 +293,16 @@ def load_training_execution(
             }
             if authorization.get("capacity_coordination") != expected_capacity:
                 raise TrainingExperimentContractError("retry_capacity_coordination_mismatch")
+        if schema == "caplab.training.execution-authorization/v6":
+            expected_fleet_status = {
+                "accepted_active_lease_statuses": ["routable", "probationary"],
+                "requires_exact_lease_id": True,
+                "requires_alive": True,
+                "requires_fresh_heartbeat": True,
+                "scheduler_policy_mutation": False,
+            }
+            if authorization.get("fleet_status_correction") != expected_fleet_status:
+                raise TrainingExperimentContractError("retry_fleet_status_correction_mismatch")
         if effects != expected_effects:
             raise TrainingExperimentContractError("execution_effect_boundary_mismatch")
     result = dict(authorization)

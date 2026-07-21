@@ -23,6 +23,11 @@ class TrainingSessionTests(unittest.TestCase):
             validate_fleet_sample(sample, lease_id="lease-1"),
             "2026-07-21T03:30:00Z",
         )
+        leased_sample = dict(sample, status="probationary")
+        self.assertEqual(
+            validate_fleet_sample(leased_sample, lease_id="lease-1"),
+            "2026-07-21T03:30:00Z",
+        )
         for field, value in (
             ("node", "other"),
             ("slot_id", 0),

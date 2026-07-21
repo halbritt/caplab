@@ -48,7 +48,10 @@ def validate_fleet_sample(sample: dict[str, Any], *, lease_id: str) -> str:
     """Validate one externally observed exact-slot sample and return its heartbeat."""
     _require(sample.get("node") == "peecee", "fleet_node_mismatch")
     _require(sample.get("slot_id") == 1, "fleet_slot_mismatch")
-    _require(sample.get("status") == "routable", "fleet_slot_not_routable")
+    _require(
+        sample.get("status") in {"routable", "probationary"},
+        "fleet_slot_not_usable",
+    )
     _require(sample.get("alive") is True, "fleet_slot_not_alive")
     _require(sample.get("fresh") is True, "fleet_heartbeat_stale")
     _require(sample.get("lease_id") == lease_id, "fleet_lease_mismatch")
