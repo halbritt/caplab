@@ -2,7 +2,7 @@
 id: adr-0055
 artifact_type: architecture-decision-record
 title: Authorize the execution-policy-corrected Qwen3.6-27B launch
-status: authorized
+status: consumed-stopped
 decision_owner: primary-agent
 decision_authority: adr-0026
 created: 2026-07-21
@@ -63,3 +63,6 @@ correction or retry is authorized by this decision.
 - `2026-07-21` — `authorized` — the ADR 0026 delegate authorized one
   child-process-only execution-policy correction after the contained launch
   failed before model loading.
+- `2026-07-21` — `consumed-stopped` — the contained PowerShell process started,
+  but module auto-loading did not expose `Get-FileHash`; the digest gate failed
+  before Python or model loading. ADR 0056 governs any corrected launch.

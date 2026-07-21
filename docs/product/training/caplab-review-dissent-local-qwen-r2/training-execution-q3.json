@@ -1,0 +1,143 @@
+{
+  "schema": "caplab.training.execution-authorization/v4",
+  "experiment_id": "caplab-review-dissent-qwen27b-qlora-r2",
+  "status": "active",
+  "authority": "adr-0056",
+  "decision_authority": "adr-0026",
+  "expires_at": "2026-07-22T12:00:00Z",
+  "predecessor": {
+    "path": "docs/product/training/caplab-review-dissent-local-qwen-r2/training-execution-q2.json",
+    "file_sha256": "460ed579e65f6eb83f456fdaee4df1a655c1986a8eb63feb66c67ce250f291c1",
+    "outcome": "digest-cmdlet-unavailable-before-model-load"
+  },
+  "preregistration": {
+    "path": "docs/product/training/caplab-review-dissent-local-qwen-r2/training-experiment.json",
+    "file_sha256": "4f8d4f0792cbb56aeee3c00e0de3c43fe4efc7f13c2316860801ffd547febfe0"
+  },
+  "sources": {
+    "peecee_phase_orchestrator": {
+      "path": "scripts/caplab16_peecee_r2.ps1",
+      "sha256": "3776552cceaf4a83f6aa3768cc619103d6468b8a292ef790c26b07d4ead2eb1c"
+    },
+    "training_script": {
+      "path": "scripts/caplab_qwen27b_qlora_r2.py",
+      "sha256": "4f1adb2d654a210fbf11db9ac39a9e58f2e288dd3d9ea75ea0923b410a1e9ae6"
+    },
+    "r1_training_library": {
+      "path": "scripts/caplab_qwen27b_qlora.py",
+      "sha256": "5a2c7397ebc740ee1970045cd105557145281d9f880309994e566208038303c8"
+    },
+    "remote_supervisor": {
+      "path": "src/caplab/review_dissent/training_supervisor.py",
+      "sha256": "548897358b4c769992b2ce5b5056d13c3dc640f9dd0d86a3036083c7ba8fe0e9"
+    },
+    "lease_session": {
+      "path": "src/caplab/review_dissent/training_session.py",
+      "sha256": "8dfa3d582c40fc4e0b480bcb116ab9cff17041035e57c8fc165969c329ac83a5"
+    },
+    "evaluation_session": {
+      "path": "src/caplab/review_dissent/evaluation_session.py",
+      "sha256": "18be108552f9927f191528b2493255acb65a9d3417db120e357cad59337dff98"
+    },
+    "native_evaluation_runner": {
+      "path": "src/caplab/review_dissent/training_evaluation.py",
+      "sha256": "f06b49a5e8899aa9c9696342d15d8e9268176357a443ca25b76f69f0f73bb550"
+    },
+    "evaluation_server": {
+      "path": "scripts/caplab_qwen27b_eval_server.py",
+      "sha256": "b9eb5d64b3a6b22bf956cae6d73033cffca9cc6f4096b089bdf4390d117eb316"
+    },
+    "corpus": {
+      "path": "docs/product/training/caplab-review-dissent-local-qwen-r1/corpus.json",
+      "sha256": "09ec666630189ebbe9bf180d3dd567623f8dbee753871f63ac7f66c712cb87f2"
+    },
+    "controls": {
+      "path": "docs/product/training/caplab-review-dissent-local-qwen-r1/general-coding-controls.json",
+      "sha256": "3f228381f6eb6175e8924af00709c3fe01e66bcb7f7c2601585ac09272647108"
+    }
+  },
+  "host": {
+    "name": "peecee",
+    "tailscale_ipv4": "100.113.63.58",
+    "gpu": "NVIDIA GeForce RTX 3090 Ti",
+    "gpu_memory_mib": 24564,
+    "gpu_fleet_model": "marker",
+    "gpu_fleet_slot": 1,
+    "recovered_boot_id": "2026-07-21T03:19:59.5000000Z"
+  },
+  "remote_paths": {
+    "root": "C:/Users/halbr/caplab/experiments/caplab-review-dissent-qwen27b-qlora-r2-q3",
+    "shared_environment": "C:/Users/halbr/caplab/experiments/caplab-review-dissent-qwen27b-qlora-r1/.venv",
+    "model": "C:/Users/halbr/caplab/models/Qwen3.6-27B-6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+    "qualification_output": "C:/Users/halbr/caplab/experiments/caplab-review-dissent-qwen27b-qlora-r2-q3/qualification-output",
+    "training_output": "C:/Users/halbr/caplab/experiments/caplab-review-dissent-qwen27b-qlora-r2-q3/training-output"
+  },
+  "local_custody": {
+    "root": "/home/halbritt/.local/share/caplab/campaigns/caplab-review-dissent-qwen27b-qlora-r2-q3-2026-07-21"
+  },
+  "launch_correction": {
+    "powershell_execution_policy": "Bypass",
+    "digest_implementation": "System.Security.Cryptography.SHA256",
+    "scope": "child-process-only",
+    "host_policy_mutation": false
+  },
+  "containment": {
+    "windows_process_tree": "job-object-kill-on-close",
+    "remote_pulse_schema": "caplab.training.remote-pulse/v1",
+    "remote_pulse_interval_seconds": 5,
+    "remote_pulse_ttl_seconds": 45,
+    "fleet_observation_interval_seconds": 5,
+    "distinct_fleet_heartbeats_min": 4,
+    "host_boot_identity_must_remain_constant": true,
+    "training_requires_qualification_acceptance": true
+  },
+  "permitted_effects": {
+    "gpu_fleet_leases": 2,
+    "temporary_ollama_model_unload": "qwen3.6:27b",
+    "stop_ollama_service": false,
+    "reuse_existing_environment": true,
+    "install_packages": false,
+    "reuse_checkpoint_cache": true,
+    "download_checkpoint": false,
+    "host_qualification_runs": 1,
+    "training_attempts": 1,
+    "heldout_reads_after_adapter_seal": 1,
+    "heldout_primary_calls": 16,
+    "general_control_calls": 8,
+    "infrastructure_replacements_max": 2,
+    "transient_eval_servers": 1,
+    "eval_server_port": 18081,
+    "paid_usd": "0",
+    "external_telemetry": false,
+    "checkpoint_deployment": false,
+    "striatum_mutation": false,
+    "scheduler_policy_mutation": false
+  },
+  "cleanup": {
+    "terminate_remote_tree_on_supervisor_exit": true,
+    "stop_transient_eval_server": true,
+    "release_gpu_fleet_lease": true,
+    "verify_ollama_service_available": true,
+    "verify_gpu_reachable": true,
+    "preserve_environment": true,
+    "preserve_checkpoint_cache": true,
+    "preserve_training_and_evaluation_custody": true
+  },
+  "stop_conditions": [
+    "source-or-preregistration-digest-drift",
+    "lease-unavailable-or-lost",
+    "host-boot-identity-change",
+    "host-hardware-or-capacity-drift",
+    "qualification-duration-or-heartbeat-floor",
+    "qualification-adapter-update",
+    "remote-pulse-invalid-or-expired",
+    "windows-job-object-unavailable",
+    "checkpoint-or-toolchain-drift",
+    "training-attempt-failure-or-ceiling",
+    "adapter-seal-failure",
+    "heldout-read-before-adapter-seal",
+    "native-harness-or-surface-drift",
+    "replacement-ceiling",
+    "cleanup-or-service-availability-failure"
+  ]
+}

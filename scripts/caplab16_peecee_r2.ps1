@@ -25,7 +25,18 @@ $QualificationAcceptance = Join-Path $Root 'qualification-accepted.json'
 
 function Assert-Sha256 {
     param([string]$Path, [string]$Expected)
-    $Actual = (Get-FileHash -Algorithm SHA256 -LiteralPath $Path).Hash.ToLowerInvariant()
+    $Stream = [IO.File]::OpenRead($Path)
+    try {
+        $Hasher = [Security.Cryptography.SHA256]::Create()
+        try {
+            $Bytes = $Hasher.ComputeHash($Stream)
+        } finally {
+            $Hasher.Dispose()
+        }
+    } finally {
+        $Stream.Dispose()
+    }
+    $Actual = ([BitConverter]::ToString($Bytes)).Replace('-', '').ToLowerInvariant()
     if ($Actual -ne $Expected) {
         throw "sha256 mismatch: $Path expected=$Expected actual=$Actual"
     }

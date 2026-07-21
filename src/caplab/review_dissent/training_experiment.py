@@ -107,12 +107,14 @@ def load_training_execution(
         "caplab.training.execution-authorization/v1",
         "caplab.training.execution-authorization/v2",
         "caplab.training.execution-authorization/v3",
+        "caplab.training.execution-authorization/v4",
     }:
         raise TrainingExperimentContractError("execution_schema_mismatch")
     expected_authority = {
         "caplab.training.execution-authorization/v1": "adr-0050",
         "caplab.training.execution-authorization/v2": "adr-0054",
         "caplab.training.execution-authorization/v3": "adr-0055",
+        "caplab.training.execution-authorization/v4": "adr-0056",
     }[schema]
     if (
         authorization.get("status") != "active"
@@ -168,27 +170,45 @@ def load_training_execution(
         }
         if authorization.get("containment") != expected_containment:
             raise TrainingExperimentContractError("retry_containment_mismatch")
-        if schema == "caplab.training.execution-authorization/v3":
+        if schema in {
+            "caplab.training.execution-authorization/v3",
+            "caplab.training.execution-authorization/v4",
+        }:
             predecessor = authorization.get("predecessor", {})
-            if predecessor != {
-                "path": "docs/product/training/caplab-review-dissent-local-qwen-r2/training-execution.json",
-                "file_sha256": "0c095d5c58732678c151ad31b6874736a5f559d79d70d30894175b77d4f31d3c",
-                "outcome": "qualification-launch-refused-before-model-load",
-            }:
+            expected_predecessor = {
+                "caplab.training.execution-authorization/v3": {
+                    "path": "docs/product/training/caplab-review-dissent-local-qwen-r2/training-execution.json",
+                    "file_sha256": "0c095d5c58732678c151ad31b6874736a5f559d79d70d30894175b77d4f31d3c",
+                    "outcome": "qualification-launch-refused-before-model-load",
+                },
+                "caplab.training.execution-authorization/v4": {
+                    "path": "docs/product/training/caplab-review-dissent-local-qwen-r2/training-execution-q2.json",
+                    "file_sha256": "460ed579e65f6eb83f456fdaee4df1a655c1986a8eb63feb66c67ce250f291c1",
+                    "outcome": "digest-cmdlet-unavailable-before-model-load",
+                },
+            }[schema]
+            if predecessor != expected_predecessor:
                 raise TrainingExperimentContractError("retry_predecessor_mismatch")
             predecessor_path = repository_root / predecessor["path"]
             if _sha256(predecessor_path) != predecessor["file_sha256"]:
                 raise TrainingExperimentContractError("retry_predecessor_sha256_mismatch")
-            if authorization.get("launch_correction") != {
+            expected_launch = {
                 "powershell_execution_policy": "Bypass",
                 "scope": "child-process-only",
                 "host_policy_mutation": False,
-            }:
+            }
+            if schema == "caplab.training.execution-authorization/v4":
+                expected_launch["digest_implementation"] = (
+                    "System.Security.Cryptography.SHA256"
+                )
+            if authorization.get("launch_correction") != expected_launch:
                 raise TrainingExperimentContractError("retry_launch_correction_mismatch")
-            if authorization.get("remote_paths", {}).get("root") != (
+            suffix = "q2" if schema.endswith("/v3") else "q3"
+            expected_root = (
                 "C:/Users/halbr/caplab/experiments/"
-                "caplab-review-dissent-qwen27b-qlora-r2-q2"
-            ):
+                f"caplab-review-dissent-qwen27b-qlora-r2-{suffix}"
+            )
+            if authorization.get("remote_paths", {}).get("root") != expected_root:
                 raise TrainingExperimentContractError("retry_remote_root_mismatch")
         expected_effects = {
             "gpu_fleet_leases": 2,
