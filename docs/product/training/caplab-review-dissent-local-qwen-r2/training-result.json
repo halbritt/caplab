@@ -36,9 +36,11 @@
     }
   },
   "failure": {
-    "class": "training-infrastructure-outer-lease-lost-gpu-responsive",
+    "class": "training-infrastructure-routing-epoch-change-fenced-outer-lease",
     "outer_lease_id": "180c8398-0bf7-45c4-bff7-3e9959519e8a",
     "inner_lease_id": "fbde31f0-968f-43f3-9e25-879be010ed5b",
+    "routing_change": "peecee slot 0 served_model changed from qwen3-vl:8b to qwen3.6:27b",
+    "post_failure_slot_0_epoch": 47,
     "lease_action": "outer runner stopped the nested local child process group",
     "remote_action": "pulse expired and Windows Job Object terminated the training tree",
     "remote_outcome_recorded_at": "2026-07-21T04:44:43.460620Z",

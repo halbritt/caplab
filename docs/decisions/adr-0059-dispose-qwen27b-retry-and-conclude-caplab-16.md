@@ -32,9 +32,13 @@ floor.
 Training then passed its separate preflight and created the attempt-start
 marker. It completed three of twelve optimizer steps and wrote checkpoint 3.
 The outer lease renewal later returned false while `nvidia-smi`, Ollama, the GPU
-workload, and the inner heartbeat remained responsive. The outer runner stopped
-its nested local process group. Loss of the remote pulse caused the Windows Job
-Object to terminate the training tree at `2026-07-21T04:44:43.460620Z`.
+workload, and the inner heartbeat remained responsive. Post-stop inspection
+resolved the fence: fleet desired state for slot 0 had changed from the
+authorized and acquired `qwen3-vl:8b` identity to `qwen3.6:27b`. The
+routing-relevant change advanced the slot epoch to 47, so stale-router fencing
+correctly refused renewal of the old lease. The outer runner stopped its nested
+local process group. Loss of the remote pulse caused the Windows Job Object to
+terminate the training tree at `2026-07-21T04:44:43.460620Z`.
 
 No final adapter or training result exists. The partial checkpoint contains a
 233,605,480-byte adapter, optimizer state, and trainer state at global step 3.
@@ -45,15 +49,16 @@ SHA-256 `6a273db2c6841fc1b164b17b7a9a6d0c7a245430929a4beea69af87c4fd48463`.
 
 ## Disposition
 
-Classify r2 as `training-infrastructure-outer-lease-lost-gpu-responsive` and
-the attempt as `infrastructure-failed-training-attempt-consumed`. Do not
-resume, evaluate, deploy, or describe checkpoint 3 as tuned. The held-out
-families remain sealed and unopened; native harness, general-control, and
-held-out call counts are all zero.
+Classify r2 as
+`training-infrastructure-routing-epoch-change-fenced-outer-lease` and the
+attempt as `infrastructure-failed-training-attempt-consumed`. Do not resume,
+evaluate, deploy, or describe checkpoint 3 as tuned. The held-out families
+remain sealed and unopened; native harness, general-control, and held-out call
+counts are all zero.
 
 The committed machine result is
 [`training-result.json`](../product/training/caplab-review-dissent-local-qwen-r2/training-result.json),
-SHA-256 `8f8fe943f3bc63ce5b5d24da40111b5f8d350bee0d7e6be1941f1389150cb7e8`.
+SHA-256 `830cc9bcbbafc6ac80f422caea9cf9c72730a8b698670d3b1f9b701a98fbfcb0`.
 Its conclusion is `not-evaluable-no-final-adapter`, not a capability failure or
 success.
 
