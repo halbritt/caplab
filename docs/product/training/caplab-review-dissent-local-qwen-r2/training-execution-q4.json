@@ -1,0 +1,172 @@
+{
+  "schema": "caplab.training.execution-authorization/v5",
+  "experiment_id": "caplab-review-dissent-qwen27b-qlora-r2",
+  "status": "active",
+  "authority": "adr-0057",
+  "decision_authority": "adr-0026",
+  "expires_at": "2026-07-22T12:00:00Z",
+  "predecessor": {
+    "path": "docs/product/training/caplab-review-dissent-local-qwen-r2/training-execution-q3.json",
+    "file_sha256": "0c1d573fd9ddd064719ce46e9ab52373192d6b6cae21fa7bc0f077a057697d4a",
+    "outcome": "host-boot-identity-changed-before-lease"
+  },
+  "preregistration": {
+    "path": "docs/product/training/caplab-review-dissent-local-qwen-r2/training-experiment.json",
+    "file_sha256": "4f8d4f0792cbb56aeee3c00e0de3c43fe4efc7f13c2316860801ffd547febfe0"
+  },
+  "sources": {
+    "peecee_phase_orchestrator": {
+      "path": "scripts/caplab16_peecee_r2.ps1",
+      "sha256": "69c8cebbcede0a7976a16b373f36ac14d62f2f10d76b77488c0a279ba5ab43b0"
+    },
+    "training_script": {
+      "path": "scripts/caplab_qwen27b_qlora_r2.py",
+      "sha256": "4f1adb2d654a210fbf11db9ac39a9e58f2e288dd3d9ea75ea0923b410a1e9ae6"
+    },
+    "r1_training_library": {
+      "path": "scripts/caplab_qwen27b_qlora.py",
+      "sha256": "5a2c7397ebc740ee1970045cd105557145281d9f880309994e566208038303c8"
+    },
+    "remote_supervisor": {
+      "path": "src/caplab/review_dissent/training_supervisor.py",
+      "sha256": "548897358b4c769992b2ce5b5056d13c3dc640f9dd0d86a3036083c7ba8fe0e9"
+    },
+    "lease_session": {
+      "path": "src/caplab/review_dissent/training_session.py",
+      "sha256": "7e379319ee8b8205222444ad719f8e953dbbb31d7211269c9b79b625a4c65782"
+    },
+    "evaluation_session": {
+      "path": "src/caplab/review_dissent/evaluation_session.py",
+      "sha256": "81ecd0e8b36d05a2c6b1f285cecabb1ae1bd67f04b78d0e5f9eb7c96c307d4c1"
+    },
+    "native_evaluation_runner": {
+      "path": "src/caplab/review_dissent/training_evaluation.py",
+      "sha256": "f06b49a5e8899aa9c9696342d15d8e9268176357a443ca25b76f69f0f73bb550"
+    },
+    "evaluation_server": {
+      "path": "scripts/caplab_qwen27b_eval_server.py",
+      "sha256": "b9eb5d64b3a6b22bf956cae6d73033cffca9cc6f4096b089bdf4390d117eb316"
+    },
+    "corpus": {
+      "path": "docs/product/training/caplab-review-dissent-local-qwen-r1/corpus.json",
+      "sha256": "09ec666630189ebbe9bf180d3dd567623f8dbee753871f63ac7f66c712cb87f2"
+    },
+    "controls": {
+      "path": "docs/product/training/caplab-review-dissent-local-qwen-r1/general-coding-controls.json",
+      "sha256": "3f228381f6eb6175e8924af00709c3fe01e66bcb7f7c2601585ac09272647108"
+    }
+  },
+  "host": {
+    "name": "peecee",
+    "tailscale_ipv4": "100.113.63.58",
+    "gpu": "NVIDIA GeForce RTX 3090 Ti",
+    "gpu_memory_mib": 24564,
+    "gpu_fleet_model": "marker",
+    "gpu_fleet_slot": 1,
+    "recovered_boot_id": "2026-07-21T04:16:37.5000000Z",
+    "driver": "596.49"
+  },
+  "remote_paths": {
+    "root": "C:/Users/halbr/caplab/experiments/caplab-review-dissent-qwen27b-qlora-r2-q4",
+    "shared_environment": "C:/Users/halbr/caplab/experiments/caplab-review-dissent-qwen27b-qlora-r1/.venv",
+    "model": "C:/Users/halbr/caplab/models/Qwen3.6-27B-6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+    "qualification_output": "C:/Users/halbr/caplab/experiments/caplab-review-dissent-qwen27b-qlora-r2-q4/qualification-output",
+    "training_output": "C:/Users/halbr/caplab/experiments/caplab-review-dissent-qwen27b-qlora-r2-q4/training-output"
+  },
+  "local_custody": {
+    "root": "/home/halbritt/.local/share/caplab/campaigns/caplab-review-dissent-qwen27b-qlora-r2-q4-2026-07-21"
+  },
+  "launch_correction": {
+    "powershell_execution_policy": "Bypass",
+    "digest_implementation": "System.Security.Cryptography.SHA256",
+    "scope": "child-process-only",
+    "host_policy_mutation": false
+  },
+  "containment": {
+    "windows_process_tree": "job-object-kill-on-close",
+    "remote_pulse_schema": "caplab.training.remote-pulse/v1",
+    "remote_pulse_interval_seconds": 5,
+    "remote_pulse_ttl_seconds": 45,
+    "fleet_observation_interval_seconds": 5,
+    "distinct_fleet_heartbeats_min": 4,
+    "host_boot_identity_must_remain_constant": true,
+    "training_requires_qualification_acceptance": true
+  },
+  "permitted_effects": {
+    "gpu_fleet_leases": 4,
+    "temporary_ollama_model_unload": "qwen3-vl:8b",
+    "stop_ollama_service": false,
+    "reuse_existing_environment": true,
+    "install_packages": false,
+    "reuse_checkpoint_cache": true,
+    "download_checkpoint": false,
+    "host_qualification_runs": 1,
+    "training_attempts": 1,
+    "heldout_reads_after_adapter_seal": 1,
+    "heldout_primary_calls": 16,
+    "general_control_calls": 8,
+    "infrastructure_replacements_max": 2,
+    "transient_eval_servers": 1,
+    "eval_server_port": 18081,
+    "paid_usd": "0",
+    "external_telemetry": false,
+    "checkpoint_deployment": false,
+    "striatum_mutation": false,
+    "scheduler_policy_mutation": false
+  },
+  "cleanup": {
+    "terminate_remote_tree_on_supervisor_exit": true,
+    "stop_transient_eval_server": true,
+    "release_gpu_fleet_lease": true,
+    "verify_ollama_service_available": true,
+    "verify_gpu_reachable": true,
+    "preserve_environment": true,
+    "preserve_checkpoint_cache": true,
+    "preserve_training_and_evaluation_custody": true
+  },
+  "stop_conditions": [
+    "source-or-preregistration-digest-drift",
+    "lease-unavailable-or-lost",
+    "host-boot-identity-change",
+    "host-hardware-or-capacity-drift",
+    "qualification-duration-or-heartbeat-floor",
+    "qualification-adapter-update",
+    "remote-pulse-invalid-or-expired",
+    "windows-job-object-unavailable",
+    "checkpoint-or-toolchain-drift",
+    "training-attempt-failure-or-ceiling",
+    "adapter-seal-failure",
+    "heldout-read-before-adapter-seal",
+    "native-harness-or-surface-drift",
+    "replacement-ceiling",
+    "cleanup-or-service-availability-failure"
+  ],
+  "capacity_coordination": {
+    "training_leases": [
+      {
+        "served_model": "qwen3-vl:8b",
+        "slot": 0,
+        "role": "outer-physical-gpu-exclusion"
+      },
+      {
+        "served_model": "marker",
+        "slot": 1,
+        "role": "inner-training-session"
+      }
+    ],
+    "evaluation_leases": [
+      {
+        "served_model": "qwen3-vl:8b",
+        "slot": 0,
+        "role": "outer-physical-gpu-exclusion"
+      },
+      {
+        "served_model": "marker",
+        "slot": 1,
+        "role": "inner-evaluation-session"
+      }
+    ],
+    "temporary_resident_unload": "qwen3-vl:8b",
+    "reload_owner": "gpu-fleet-slot-0-probe-after-release"
+  }
+}

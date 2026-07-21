@@ -108,6 +108,7 @@ def load_training_execution(
         "caplab.training.execution-authorization/v2",
         "caplab.training.execution-authorization/v3",
         "caplab.training.execution-authorization/v4",
+        "caplab.training.execution-authorization/v5",
     }:
         raise TrainingExperimentContractError("execution_schema_mismatch")
     expected_authority = {
@@ -115,6 +116,7 @@ def load_training_execution(
         "caplab.training.execution-authorization/v2": "adr-0054",
         "caplab.training.execution-authorization/v3": "adr-0055",
         "caplab.training.execution-authorization/v4": "adr-0056",
+        "caplab.training.execution-authorization/v5": "adr-0057",
     }[schema]
     if (
         authorization.get("status") != "active"
@@ -173,6 +175,7 @@ def load_training_execution(
         if schema in {
             "caplab.training.execution-authorization/v3",
             "caplab.training.execution-authorization/v4",
+            "caplab.training.execution-authorization/v5",
         }:
             predecessor = authorization.get("predecessor", {})
             expected_predecessor = {
@@ -186,6 +189,11 @@ def load_training_execution(
                     "file_sha256": "460ed579e65f6eb83f456fdaee4df1a655c1986a8eb63feb66c67ce250f291c1",
                     "outcome": "digest-cmdlet-unavailable-before-model-load",
                 },
+                "caplab.training.execution-authorization/v5": {
+                    "path": "docs/product/training/caplab-review-dissent-local-qwen-r2/training-execution-q3.json",
+                    "file_sha256": "0c1d573fd9ddd064719ce46e9ab52373192d6b6cae21fa7bc0f077a057697d4a",
+                    "outcome": "host-boot-identity-changed-before-lease",
+                },
             }[schema]
             if predecessor != expected_predecessor:
                 raise TrainingExperimentContractError("retry_predecessor_mismatch")
@@ -197,13 +205,20 @@ def load_training_execution(
                 "scope": "child-process-only",
                 "host_policy_mutation": False,
             }
-            if schema == "caplab.training.execution-authorization/v4":
+            if schema in {
+                "caplab.training.execution-authorization/v4",
+                "caplab.training.execution-authorization/v5",
+            }:
                 expected_launch["digest_implementation"] = (
                     "System.Security.Cryptography.SHA256"
                 )
             if authorization.get("launch_correction") != expected_launch:
                 raise TrainingExperimentContractError("retry_launch_correction_mismatch")
-            suffix = "q2" if schema.endswith("/v3") else "q3"
+            suffix = {
+                "caplab.training.execution-authorization/v3": "q2",
+                "caplab.training.execution-authorization/v4": "q3",
+                "caplab.training.execution-authorization/v5": "q4",
+            }[schema]
             expected_root = (
                 "C:/Users/halbr/caplab/experiments/"
                 f"caplab-review-dissent-qwen27b-qlora-r2-{suffix}"
@@ -232,6 +247,39 @@ def load_training_execution(
             "striatum_mutation": False,
             "scheduler_policy_mutation": False,
         }
+        if schema == "caplab.training.execution-authorization/v5":
+            expected_effects["gpu_fleet_leases"] = 4
+            expected_effects["temporary_ollama_model_unload"] = "qwen3-vl:8b"
+            expected_capacity = {
+                "training_leases": [
+                    {
+                        "served_model": "qwen3-vl:8b",
+                        "slot": 0,
+                        "role": "outer-physical-gpu-exclusion",
+                    },
+                    {
+                        "served_model": "marker",
+                        "slot": 1,
+                        "role": "inner-training-session",
+                    },
+                ],
+                "evaluation_leases": [
+                    {
+                        "served_model": "qwen3-vl:8b",
+                        "slot": 0,
+                        "role": "outer-physical-gpu-exclusion",
+                    },
+                    {
+                        "served_model": "marker",
+                        "slot": 1,
+                        "role": "inner-evaluation-session",
+                    },
+                ],
+                "temporary_resident_unload": "qwen3-vl:8b",
+                "reload_owner": "gpu-fleet-slot-0-probe-after-release",
+            }
+            if authorization.get("capacity_coordination") != expected_capacity:
+                raise TrainingExperimentContractError("retry_capacity_coordination_mismatch")
         if effects != expected_effects:
             raise TrainingExperimentContractError("execution_effect_boundary_mismatch")
     result = dict(authorization)

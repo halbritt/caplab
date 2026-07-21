@@ -170,6 +170,7 @@ class EvaluationSession(LeaseSession):
         self._start_pulses()
         server: subprocess.Popen[bytes] | None = None
         try:
+            self._powershell("ollama stop qwen3-vl:8b", timeout=60)
             server = self._start_server(boot_id)
             ready = self._sample_until_ready(server)
             _require(

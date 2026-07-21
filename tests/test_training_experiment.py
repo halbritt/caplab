@@ -22,6 +22,7 @@ RETRY_MANIFEST = RETRY_ROOT / "training-experiment.json"
 RETRY_EXECUTION = RETRY_ROOT / "training-execution.json"
 RETRY_EXECUTION_Q2 = RETRY_ROOT / "training-execution-q2.json"
 RETRY_EXECUTION_Q3 = RETRY_ROOT / "training-execution-q3.json"
+RETRY_EXECUTION_Q4 = RETRY_ROOT / "training-execution-q4.json"
 
 
 class TrainingExperimentTests(unittest.TestCase):
@@ -127,16 +128,15 @@ class TrainingExperimentTests(unittest.TestCase):
 
     def test_retry_execution_authority_binds_qualification_and_containment(self) -> None:
         execution = load_training_execution(
-            RETRY_EXECUTION_Q3,
+            RETRY_EXECUTION_Q4,
             ROOT,
             now=datetime(2026, 7, 21, 4, 0, tzinfo=UTC),
         )
-        self.assertEqual(execution["schema"], "caplab.training.execution-authorization/v4")
-        self.assertEqual(execution["authority"], "adr-0056")
+        self.assertEqual(execution["schema"], "caplab.training.execution-authorization/v5")
+        self.assertEqual(execution["authority"], "adr-0057")
         self.assertEqual(execution["experiment_id"], "caplab-review-dissent-qwen27b-qlora-r2")
         self.assertEqual(execution["permitted_effects"]["host_qualification_runs"], 1)
         self.assertEqual(execution["permitted_effects"]["training_attempts"], 1)
-        self.assertEqual(execution["permitted_effects"]["gpu_fleet_leases"], 2)
         self.assertEqual(execution["containment"]["remote_pulse_ttl_seconds"], 45)
         self.assertEqual(
             execution["containment"]["windows_process_tree"],
@@ -145,6 +145,11 @@ class TrainingExperimentTests(unittest.TestCase):
         self.assertTrue(execution["containment"]["training_requires_qualification_acceptance"])
         self.assertFalse(execution["permitted_effects"]["install_packages"])
         self.assertFalse(execution["permitted_effects"]["download_checkpoint"])
+        self.assertEqual(execution["permitted_effects"]["gpu_fleet_leases"], 4)
+        self.assertEqual(
+            execution["capacity_coordination"]["temporary_resident_unload"],
+            "qwen3-vl:8b",
+        )
         self.assertEqual(
             execution["launch_correction"],
             {

@@ -18,7 +18,7 @@ from typing import Any
 
 QUALIFICATION_SCHEMA = "caplab.training.host-qualification/v1"
 ACCEPTANCE_SCHEMA = "caplab.training.host-qualification-acceptance/v1"
-EXPECTED_BOOT_ID = "2026-07-21T03:19:59.5000000Z"
+EXPECTED_BOOT_ID = "2026-07-21T04:16:37.5000000Z"
 
 
 class SessionContractError(RuntimeError):

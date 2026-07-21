@@ -64,7 +64,7 @@ if ($CurrentBootId -ne $HostBootId) {
     throw "host boot identity mismatch: expected=$HostBootId actual=$CurrentBootId"
 }
 
-ollama stop qwen3.6:27b
+ollama stop qwen3-vl:8b
 
 if ($Phase -eq 'Qualification') {
     if (Test-Path -LiteralPath $QualificationOutput) {

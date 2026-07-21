@@ -2,7 +2,7 @@
 id: adr-0056
 artifact_type: architecture-decision-record
 title: Authorize the module-independent digest launch
-status: authorized-pending-host
+status: invalidated-pre-effect
 decision_owner: primary-agent
 decision_authority: adr-0026
 created: 2026-07-21
@@ -65,3 +65,7 @@ qualification/training lease and one contingent evaluation lease. Creation of
 - `2026-07-21` — `authorized-pending-host` — the ADR 0026 delegate authorized
   the module-independent digest correction, contingent on the externally
   changing NVIDIA/Ollama host state returning to its frozen preconditions.
+- `2026-07-21` — `invalidated-pre-effect` — the driver installation rebooted
+  the host at `2026-07-21T04:16:37.5000000Z`, so q3's boot precondition failed
+  before staging or lease acquisition. ADR 0057 governs the rebound host and
+  shared-GPU capacity boundary.

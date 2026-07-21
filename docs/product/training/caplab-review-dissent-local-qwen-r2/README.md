@@ -2,10 +2,10 @@
 id: caplab-review-dissent-local-qwen-r2
 artifact_type: training-experiment-card
 title: CAPLAB Qwen3.6-27B review-dissent QLoRA r2
-status: preregistered-and-q3-authorized-pending-host
+status: preregistered-and-q4-authorized
 created: 2026-07-21
 decision_record: adr-0053
-execution_authorization: adr-0056
+execution_authorization: adr-0057
 ---
 
 # CAPLAB Qwen3.6-27B review-dissent QLoRA r2
@@ -27,10 +27,12 @@ Job Object process-tree containment must pass before training begins.
 - [`training-execution-q2.json`](training-execution-q2.json) is the corrected
   execution-policy launch authorization. The contained child lacked the
   `Get-FileHash` cmdlet and stopped before model loading.
-- [`training-execution-q3.json`](training-execution-q3.json) is the active
-  module-independent digest launch authorization. Execution waits for the
-  NVIDIA driver install observed on `peecee` to finish and fleet slot 1 to
-  return to `routable`.
+- [`training-execution-q3.json`](training-execution-q3.json) is the
+  module-independent digest authorization invalidated before effect by the
+  driver-install reboot.
+- [`training-execution-q4.json`](training-execution-q4.json) is the active
+  rebound-host authorization. Training and evaluation each hold both logical
+  `peecee` leases before unloading the resident `qwen3-vl:8b` model.
 - The immutable corpus and controls remain under
   [`../caplab-review-dissent-local-qwen-r1`](../caplab-review-dissent-local-qwen-r1/README.md).
 
