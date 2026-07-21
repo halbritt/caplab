@@ -51,3 +51,9 @@ does not imply execution, verification, or acceptance.
 | [ADR 0046](adr-0046-caplab-first-striatum-lane-fit.md) | First CAPLAB Striatum lane-fit disposition | decided | ADR 0026 delegate |
 | [ADR 0047](adr-0047-local-qwen-training-source-campaign.md) | Local-Qwen review training-source campaign authorization | authorized | ADR 0026 delegate |
 | [ADR 0048](adr-0048-local-qwen-contrastive-export.md) | Local-Qwen contrastive training export authorization | authorized | ADR 0026 delegate |
+| [ADR 0049](adr-0049-preregister-qwen-27b-review-dissent-qlora.md) | Preregister Qwen 27B review-dissent QLoRA experiment | preregistered | ADR 0026 delegate |
+| [ADR 0050](adr-0050-authorize-qwen27b-qlora-training-and-evaluation.md) | Qwen3.6-27B QLoRA training and held-out evaluation authorization | consumed-stopped | ADR 0026 delegate |
+| [ADR 0051](adr-0051-dispose-failed-qwen27b-training-attempt.md) | Dispose the failed Qwen3.6-27B training attempt | decided | ADR 0026 delegate |
+| [ADR 0052](adr-0052-stop-scheduler-and-model-development-after-failed-attempt.md) | Stop scheduler and model development after the failed first attempt | decided | ADR 0026 delegate |
+| [ADR 0053](adr-0053-preregister-qwen27b-host-outage-retry.md) | Preregister a fresh Qwen3.6-27B attempt after the host outage | preregistered | ADR 0026 delegate |
+| [ADR 0054](adr-0054-authorize-qwen27b-host-contained-retry.md) | Authorize one host-contained Qwen3.6-27B retry | authorized | ADR 0026 delegate |

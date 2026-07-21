@@ -13,6 +13,12 @@ class TrainingExperimentContractError(ValueError):
     """The frozen training experiment is incomplete or has drifted."""
 
 
+_EXPERIMENT_AUTHORITIES = {
+    "caplab-review-dissent-qwen27b-qlora-r1": "adr-0049",
+    "caplab-review-dissent-qwen27b-qlora-r2": "adr-0053",
+}
+
+
 def _sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as stream:
@@ -28,6 +34,9 @@ def load_training_experiment(manifest_path: Path, repository_root: Path) -> dict
         raise TrainingExperimentContractError("experiment_schema_mismatch")
     if manifest.get("status") != "preregistered-zero-execution-authority":
         raise TrainingExperimentContractError("experiment_status_mismatch")
+    experiment_id = manifest.get("experiment_id")
+    if manifest.get("authority") != _EXPERIMENT_AUTHORITIES.get(experiment_id):
+        raise TrainingExperimentContractError("preregistration_authority_mismatch")
 
     authorization = manifest.get("authorization")
     expected_authorization = {
@@ -69,6 +78,19 @@ def load_training_experiment(manifest_path: Path, repository_root: Path) -> dict
     if manifest["evaluation"].get("native_harness") != "striatum-openai-lane":
         raise TrainingExperimentContractError("native_harness_mismatch")
 
+    if experiment_id == "caplab-review-dissent-qwen27b-qlora-r2":
+        qualification = manifest.get("host_qualification", {})
+        if qualification != {
+            "no_update_seconds": 60,
+            "distinct_fleet_heartbeats_min": 4,
+            "remote_pulse_interval_seconds": 5,
+            "remote_pulse_ttl_seconds": 45,
+            "process_containment": "windows-job-object-kill-on-close",
+            "host_boot_identity_must_remain_constant": True,
+            "training_starts_only_after_qualification": True,
+        }:
+            raise TrainingExperimentContractError("host_qualification_mismatch")
+
     return manifest
 
 
@@ -80,9 +102,20 @@ def load_training_execution(
 ) -> dict[str, Any]:
     """Validate the exact execution authority without performing an effect."""
     authorization = json.loads(authorization_path.read_text(encoding="utf-8"))
-    if authorization.get("schema") != "caplab.training.execution-authorization/v1":
+    schema = authorization.get("schema")
+    if schema not in {
+        "caplab.training.execution-authorization/v1",
+        "caplab.training.execution-authorization/v2",
+    }:
         raise TrainingExperimentContractError("execution_schema_mismatch")
-    if authorization.get("status") != "active" or authorization.get("authority") != "adr-0050":
+    expected_authority = {
+        "caplab.training.execution-authorization/v1": "adr-0050",
+        "caplab.training.execution-authorization/v2": "adr-0054",
+    }[schema]
+    if (
+        authorization.get("status") != "active"
+        or authorization.get("authority") != expected_authority
+    ):
         raise TrainingExperimentContractError("execution_not_authorized")
     expiry = datetime.fromisoformat(authorization["expires_at"].replace("Z", "+00:00"))
     if (now or datetime.now(UTC)) > expiry:
@@ -105,22 +138,58 @@ def load_training_execution(
     preregistration_path = repository_root / authorization["preregistration"]["path"]
     experiment = load_training_experiment(preregistration_path, repository_root)
     host = authorization.get("host", {})
-    if (
-        host.get("name") != "peecee"
-        or host.get("gpu_fleet_model") != "marker"
-        or host.get("gpu_fleet_slot") != 1
-    ):
+    if host.get("name") != "peecee" or host.get("gpu_fleet_model") != "marker" or host.get("gpu_fleet_slot") != 1:
         raise TrainingExperimentContractError("execution_host_binding_mismatch")
     effects = authorization.get("permitted_effects", {})
-    if (
-        effects.get("training_attempts") != 1
-        or effects.get("heldout_primary_calls") != 16
-        or effects.get("general_control_calls") != 8
-        or effects.get("paid_usd") != "0"
-        or effects.get("stop_ollama_service") is not False
-        or effects.get("striatum_mutation") is not False
-    ):
-        raise TrainingExperimentContractError("execution_effect_boundary_mismatch")
+    if schema == "caplab.training.execution-authorization/v1":
+        if (
+            effects.get("training_attempts") != 1
+            or effects.get("heldout_primary_calls") != 16
+            or effects.get("general_control_calls") != 8
+            or effects.get("paid_usd") != "0"
+            or effects.get("stop_ollama_service") is not False
+            or effects.get("striatum_mutation") is not False
+        ):
+            raise TrainingExperimentContractError("execution_effect_boundary_mismatch")
+    else:
+        if authorization.get("experiment_id") != "caplab-review-dissent-qwen27b-qlora-r2":
+            raise TrainingExperimentContractError("retry_experiment_mismatch")
+        expected_containment = {
+            "windows_process_tree": "job-object-kill-on-close",
+            "remote_pulse_schema": "caplab.training.remote-pulse/v1",
+            "remote_pulse_interval_seconds": 5,
+            "remote_pulse_ttl_seconds": 45,
+            "fleet_observation_interval_seconds": 5,
+            "distinct_fleet_heartbeats_min": 4,
+            "host_boot_identity_must_remain_constant": True,
+            "training_requires_qualification_acceptance": True,
+        }
+        if authorization.get("containment") != expected_containment:
+            raise TrainingExperimentContractError("retry_containment_mismatch")
+        expected_effects = {
+            "gpu_fleet_leases": 2,
+            "temporary_ollama_model_unload": "qwen3.6:27b",
+            "stop_ollama_service": False,
+            "reuse_existing_environment": True,
+            "install_packages": False,
+            "reuse_checkpoint_cache": True,
+            "download_checkpoint": False,
+            "host_qualification_runs": 1,
+            "training_attempts": 1,
+            "heldout_reads_after_adapter_seal": 1,
+            "heldout_primary_calls": 16,
+            "general_control_calls": 8,
+            "infrastructure_replacements_max": 2,
+            "transient_eval_servers": 1,
+            "eval_server_port": 18081,
+            "paid_usd": "0",
+            "external_telemetry": False,
+            "checkpoint_deployment": False,
+            "striatum_mutation": False,
+            "scheduler_policy_mutation": False,
+        }
+        if effects != expected_effects:
+            raise TrainingExperimentContractError("execution_effect_boundary_mismatch")
     result = dict(authorization)
     result["_experiment"] = experiment
     return result

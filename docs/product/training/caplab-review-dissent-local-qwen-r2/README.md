@@ -1,0 +1,31 @@
+---
+id: caplab-review-dissent-local-qwen-r2
+artifact_type: training-experiment-card
+title: CAPLAB Qwen3.6-27B review-dissent QLoRA r2
+status: preregistered-and-authorized
+created: 2026-07-21
+decision_record: adr-0053
+execution_authorization: adr-0054
+---
+
+# CAPLAB Qwen3.6-27B review-dissent QLoRA r2
+
+R2 is one fresh attempt after r1 ended during a `peecee` host outage. It does
+not resume or reinterpret r1. The base checkpoint, source corpus, method, seed,
+optimizer-step ceiling, held-out design, native harness, success rule, and
+claim ceiling are identical to r1.
+
+The changed treatment is operational only: a no-update heavy qualification,
+external fleet-heartbeat gate, constant boot identity, lease pulse, and Windows
+Job Object process-tree containment must pass before training begins.
+
+- [`training-experiment.json`](training-experiment.json) is the zero-authority
+  scientific and host-qualification preregistration.
+- [`training-execution.json`](training-execution.json) is the bounded execution
+  authorization. It binds the qualification/training controller and the
+  `striatum-openai-lane` evaluation runner by SHA-256.
+- The immutable corpus and controls remain under
+  [`../caplab-review-dissent-local-qwen-r1`](../caplab-review-dissent-local-qwen-r1/README.md).
+
+No result exists until execution and custody are recorded. A successful
+technical run is not deployment, lane-fit acceptance, or a general model claim.

@@ -17,6 +17,9 @@ TRAINING_ROOT = ROOT / "docs/product/training/caplab-review-dissent-local-qwen-r
 MANIFEST = TRAINING_ROOT / "training-experiment.json"
 EXECUTION = TRAINING_ROOT / "training-execution.json"
 RESULT = TRAINING_ROOT / "training-result.json"
+RETRY_ROOT = ROOT / "docs/product/training/caplab-review-dissent-local-qwen-r2"
+RETRY_MANIFEST = RETRY_ROOT / "training-experiment.json"
+RETRY_EXECUTION = RETRY_ROOT / "training-execution.json"
 
 
 class TrainingExperimentTests(unittest.TestCase):
@@ -38,6 +41,31 @@ class TrainingExperimentTests(unittest.TestCase):
 
         with patch.object(Path, "open", guarded_open):
             load_training_experiment(MANIFEST, ROOT)
+
+    def test_retry_preregistration_preserves_science_and_adds_host_qualification(self) -> None:
+        original = load_training_experiment(MANIFEST, ROOT)
+        retry = load_training_experiment(RETRY_MANIFEST, ROOT)
+
+        self.assertEqual(retry["experiment_id"], "caplab-review-dissent-qwen27b-qlora-r2")
+        self.assertEqual(retry["authority"], "adr-0053")
+        for field in ("base_checkpoint", "training_data", "method", "toolchain", "evaluation", "success"):
+            self.assertEqual(retry[field], original[field])
+        self.assertEqual(retry["authorization"], original["authorization"])
+        self.assertEqual(
+            retry["predecessor"],
+            {
+                "experiment_id": "caplab-review-dissent-qwen27b-qlora-r1",
+                "result_sha256": "f65262006596a2553a02e57f06c442002e3a993b5117879edde43904b17ae705",
+                "disposition": "infrastructure-failed-training-attempt-consumed",
+            },
+        )
+        self.assertEqual(retry["host_qualification"]["no_update_seconds"], 60)
+        self.assertEqual(retry["host_qualification"]["distinct_fleet_heartbeats_min"], 4)
+        self.assertEqual(retry["host_qualification"]["remote_pulse_ttl_seconds"], 45)
+        self.assertEqual(
+            retry["host_qualification"]["process_containment"],
+            "windows-job-object-kill-on-close",
+        )
 
     def test_drift_and_execution_authority_fail_closed(self) -> None:
         manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
@@ -94,6 +122,27 @@ class TrainingExperimentTests(unittest.TestCase):
                 ROOT,
                 now=datetime(2026, 7, 20, 23, 45, tzinfo=UTC),
             )
+
+    def test_retry_execution_authority_binds_qualification_and_containment(self) -> None:
+        execution = load_training_execution(
+            RETRY_EXECUTION,
+            ROOT,
+            now=datetime(2026, 7, 21, 4, 0, tzinfo=UTC),
+        )
+        self.assertEqual(execution["schema"], "caplab.training.execution-authorization/v2")
+        self.assertEqual(execution["authority"], "adr-0054")
+        self.assertEqual(execution["experiment_id"], "caplab-review-dissent-qwen27b-qlora-r2")
+        self.assertEqual(execution["permitted_effects"]["host_qualification_runs"], 1)
+        self.assertEqual(execution["permitted_effects"]["training_attempts"], 1)
+        self.assertEqual(execution["permitted_effects"]["gpu_fleet_leases"], 2)
+        self.assertEqual(execution["containment"]["remote_pulse_ttl_seconds"], 45)
+        self.assertEqual(
+            execution["containment"]["windows_process_tree"],
+            "job-object-kill-on-close",
+        )
+        self.assertTrue(execution["containment"]["training_requires_qualification_acceptance"])
+        self.assertFalse(execution["permitted_effects"]["install_packages"])
+        self.assertFalse(execution["permitted_effects"]["download_checkpoint"])
 
     def test_failed_result_cannot_be_mistaken_for_a_tuned_candidate(self) -> None:
         result = json.loads(RESULT.read_text(encoding="utf-8"))
