@@ -2,7 +2,7 @@
 id: caplab-review-dissent-local-qwen-r2
 artifact_type: training-experiment-card
 title: CAPLAB Qwen3.6-27B review-dissent QLoRA r2
-status: preregistered-and-q5-authorized
+status: concluded-infrastructure-failure
 created: 2026-07-21
 decision_record: adr-0053
 execution_authorization: adr-0058
@@ -33,9 +33,13 @@ Job Object process-tree containment must pass before training begins.
 - [`training-execution-q4.json`](training-execution-q4.json) is the consumed
   rebound-host authorization. Its controller rejected gpu-fleet's designed
   lease-time `probationary` status before qualification completed.
-- [`training-execution-q5.json`](training-execution-q5.json) is the active
-  lease-aware authorization. Training and evaluation each hold both logical
-  `peecee` leases; exact lease identity, liveness, and freshness remain required.
+- [`training-execution-q5.json`](training-execution-q5.json) is the consumed
+  lease-aware authorization. Qualification passed, but the outer lease was lost
+  after optimizer step 3 while the GPU remained responsive.
+- [`training-result.json`](training-result.json) records the terminal unsuccessful
+  experiment result. [`training-custody-q5.json`](training-custody-q5.json)
+  inventories the preserved raw custody; checkpoint 3 is unsealed and is not a
+  candidate.
 - The immutable corpus and controls remain under
   [`../caplab-review-dissent-local-qwen-r1`](../caplab-review-dissent-local-qwen-r1/README.md).
 

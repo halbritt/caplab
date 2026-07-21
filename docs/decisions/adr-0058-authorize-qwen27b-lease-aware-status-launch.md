@@ -2,7 +2,7 @@
 id: adr-0058
 artifact_type: architecture-decision-record
 title: Authorize the lease-aware fleet-status launch
-status: authorized
+status: consumed-stopped
 decision_owner: primary-agent
 decision_authority: adr-0026
 created: 2026-07-21
@@ -60,3 +60,9 @@ attempt, followed by evaluation only if a final adapter is sealed.
 
 - `2026-07-21` — `authorized` — the ADR 0026 delegate authorized the narrow
   lease-aware status correction and the fresh q5 custody roots.
+- `2026-07-21` — `consumed-stopped` — qualification passed and the sole
+  training attempt reached checkpoint 3 of 12. Outer lease
+  `180c8398-0bf7-45c4-bff7-3e9959519e8a` was then lost while the GPU remained
+  responsive. Containment stopped the local controller and remote training
+  tree. No final adapter was sealed and held-out remained unopened. ADR 0059
+  records the terminal experiment disposition.

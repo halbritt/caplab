@@ -1,0 +1,30 @@
+{
+  "schema": "caplab.training.custody-inventory/v1",
+  "experiment_id": "caplab-review-dissent-qwen27b-qlora-r2",
+  "execution": "q5",
+  "custody_root_name": "caplab-review-dissent-qwen27b-qlora-r2-q5-2026-07-21",
+  "files": [
+    {"path": "Qualification-fleet-observations.jsonl", "bytes": 6475, "sha256": "1ed72a7af12c0131aab3f2dcb6a9cb2305b31bf7ba9e26d905b456859b938f07"},
+    {"path": "Training-fleet-observations.jsonl", "bytes": 13300, "sha256": "1798f3896985cd92aa29dbdfa473354c02d22291e5aba959919c7c16718d8554"},
+    {"path": "cleanup.json", "bytes": 248, "sha256": "05c274058d7ce749b29cccb34e3ce0ade8ca7f2343f8b1607ddc2e8dbf1cf8d0"},
+    {"path": "qualification-accepted.json", "bytes": 487, "sha256": "b2e857452e98d74cb87ec1588b3332b8f2f68b39ded935481dbe13cf0b95001d"},
+    {"path": "qualification-output/environment.json", "bytes": 267, "sha256": "816ce35a11ce353a51440c1e935ba4eb9f838cd823eaaab7abaef0f7dc274512"},
+    {"path": "qualification-output/preflight.json", "bytes": 89550, "sha256": "1e83592637fe7414639c08c5fd412e7819e75b497d42ede9edfe0643b9335ef8"},
+    {"path": "qualification-output/qualification.json", "bytes": 499, "sha256": "556d3539c34ca49b2cf00a7153e81e552bede291c8d4e62c00758870872dd814"},
+    {"path": "qualification-process-identity.json", "bytes": 319, "sha256": "6feb83be30258f06e0a42317f49b9f6e0bda7eafa9753ea99ea926ac3721d022"},
+    {"path": "qualification-process-outcome.json", "bytes": 236, "sha256": "bfaa43353cff666bf0fabc3b1de6860743d91f92858130b6752597be505fea11"},
+    {"path": "training-output/environment.json", "bytes": 267, "sha256": "816ce35a11ce353a51440c1e935ba4eb9f838cd823eaaab7abaef0f7dc274512"},
+    {"path": "training-output/preflight.json", "bytes": 89581, "sha256": "84d14e38aa426c317b604247c59115f13791706ef2c71fc2e075b22f5b536237"},
+    {"path": "training-output/trainer/checkpoint-3/README.md", "bytes": 5316, "sha256": "0b35e64190d016250a57d54de1b5da3e05e8b004c745cc54fc5676b33f02b2f8"},
+    {"path": "training-output/trainer/checkpoint-3/adapter_config.json", "bytes": 1302, "sha256": "5f2debe021a7868162d7f1c4bbf65dd7eae2dcf33997e240c467e6e362634b2a"},
+    {"path": "training-output/trainer/checkpoint-3/adapter_model.safetensors", "bytes": 233605480, "sha256": "157c234e9b99f6b59bb1885c85fe83fd6bba3a76e3c64ec7eedf842d8f577ff2"},
+    {"path": "training-output/trainer/checkpoint-3/optimizer.pt", "bytes": 119897765, "sha256": "d1e44e60db4bd5900f1a11007d7de6ad8bb11f0064b43923872f17bcb2a9458d"},
+    {"path": "training-output/trainer/checkpoint-3/rng_state.pth", "bytes": 14645, "sha256": "043c6de280ed9059f0488426c1af44ead763fd3e3ab86edd7ef1147b5513279d"},
+    {"path": "training-output/trainer/checkpoint-3/scheduler.pt", "bytes": 1465, "sha256": "d633a8f4eddd3c5b2e877bf028ecfcf7ad862e0459132bc4903d461946362674"},
+    {"path": "training-output/trainer/checkpoint-3/trainer_state.json", "bytes": 1301, "sha256": "421a39435cfcf416226558d60e06e2d52d230e753516e4227fc19116d3820bea"},
+    {"path": "training-output/trainer/checkpoint-3/training_args.bin", "bytes": 5265, "sha256": "c5af0771c5eba1ab0d9b802ac86c2a570796f6a915526f600ca652e05dde85bb"},
+    {"path": "training-output/training-started.json", "bytes": 159, "sha256": "f01e7ca3b4fd32290bdd1578b5df8241e2af1fe3e9c41d1dea371570fcef2ebc"},
+    {"path": "training-process-identity.json", "bytes": 318, "sha256": "a397249fa1051af7faebc0f379d5526cded4dc7ef2d5ce0192bc76ea548bc264"},
+    {"path": "training-process-outcome.json", "bytes": 266, "sha256": "e45b5be61cb2af3169f86774efc45c2933a3e77a5918394fccafbd0d0bb6f092"}
+  ]
+}

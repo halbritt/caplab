@@ -24,6 +24,7 @@ RETRY_EXECUTION_Q2 = RETRY_ROOT / "training-execution-q2.json"
 RETRY_EXECUTION_Q3 = RETRY_ROOT / "training-execution-q3.json"
 RETRY_EXECUTION_Q4 = RETRY_ROOT / "training-execution-q4.json"
 RETRY_EXECUTION_Q5 = RETRY_ROOT / "training-execution-q5.json"
+RETRY_RESULT = RETRY_ROOT / "training-result.json"
 
 
 class TrainingExperimentTests(unittest.TestCase):
@@ -172,6 +173,23 @@ class TrainingExperimentTests(unittest.TestCase):
             "infrastructure-failed-training-attempt-consumed",
         )
         self.assertEqual(result["training"]["attempts_consumed"], 1)
+        self.assertFalse(result["training"]["final_adapter_sealed"])
+        self.assertEqual(
+            result["training"]["partial_checkpoint"]["status"],
+            "partial-unsealed-not-a-candidate",
+        )
+        self.assertEqual(result["evaluation"]["heldout_status"], "sealed-unopened")
+        self.assertEqual(result["evaluation"]["heldout_calls"], 0)
+        self.assertEqual(result["evaluation"]["native_harness_calls"], 0)
+
+    def test_retry_failure_remains_unsealed_and_never_opens_heldout(self) -> None:
+        result = json.loads(RETRY_RESULT.read_text(encoding="utf-8"))
+        self.assertEqual(
+            result["status"],
+            "infrastructure-failed-training-attempt-consumed",
+        )
+        self.assertEqual(result["qualification"]["status"], "passed")
+        self.assertEqual(result["training"]["observed_completed_optimizer_steps"], 3)
         self.assertFalse(result["training"]["final_adapter_sealed"])
         self.assertEqual(
             result["training"]["partial_checkpoint"]["status"],

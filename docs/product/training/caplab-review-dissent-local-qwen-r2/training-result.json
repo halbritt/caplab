@@ -1,0 +1,69 @@
+{
+  "schema": "caplab.training.execution-result/v1",
+  "experiment_id": "caplab-review-dissent-qwen27b-qlora-r2",
+  "authority": "adr-0058",
+  "disposition_authority": "adr-0059",
+  "status": "infrastructure-failed-training-attempt-consumed",
+  "base_checkpoint_revision": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+  "qualification": {
+    "status": "passed",
+    "file_sha256": "556d3539c34ca49b2cf00a7153e81e552bede291c8d4e62c00758870872dd814",
+    "duration_seconds": "63.563000",
+    "iterations": 6,
+    "optimizer_steps": 0,
+    "loss": "0.722461760044",
+    "adapter_sha256_before": "3e31412cfffb5b050a9e289937c9b9c3c9c46fb29e58d2275bb99a110d4a7470",
+    "adapter_sha256_after": "3e31412cfffb5b050a9e289937c9b9c3c9c46fb29e58d2275bb99a110d4a7470",
+    "distinct_fleet_heartbeats": 13,
+    "peak_gpu_allocated_mib": 25383
+  },
+  "training": {
+    "attempts_authorized": 1,
+    "attempts_consumed": 1,
+    "training_started_file_sha256": "f01e7ca3b4fd32290bdd1578b5df8241e2af1fe3e9c41d1dea371570fcef2ebc",
+    "observed_completed_optimizer_steps": 3,
+    "required_final_optimizer_steps": 12,
+    "final_adapter_sealed": false,
+    "training_result_present": false,
+    "partial_checkpoint": {
+      "step": 3,
+      "status": "partial-unsealed-not-a-candidate",
+      "adapter_model_sha256": "157c234e9b99f6b59bb1885c85fe83fd6bba3a76e3c64ec7eedf842d8f577ff2",
+      "adapter_model_bytes": 233605480,
+      "adapter_config_sha256": "5f2debe021a7868162d7f1c4bbf65dd7eae2dcf33997e240c467e6e362634b2a",
+      "optimizer_sha256": "d1e44e60db4bd5900f1a11007d7de6ad8bb11f0064b43923872f17bcb2a9458d",
+      "trainer_state_sha256": "421a39435cfcf416226558d60e06e2d52d230e753516e4227fc19116d3820bea"
+    }
+  },
+  "failure": {
+    "class": "training-infrastructure-outer-lease-lost-gpu-responsive",
+    "outer_lease_id": "180c8398-0bf7-45c4-bff7-3e9959519e8a",
+    "inner_lease_id": "fbde31f0-968f-43f3-9e25-879be010ed5b",
+    "lease_action": "outer runner stopped the nested local child process group",
+    "remote_action": "pulse expired and Windows Job Object terminated the training tree",
+    "remote_outcome_recorded_at": "2026-07-21T04:44:43.460620Z",
+    "post_cleanup_gpu_status": "reachable",
+    "post_cleanup_ollama_status": "available",
+    "cleanup_status": "complete-after-inner-lease-ttl-expiry"
+  },
+  "evaluation": {
+    "heldout_status": "sealed-unopened",
+    "heldout_calls": 0,
+    "general_control_calls": 0,
+    "native_harness_calls": 0,
+    "success_rule_status": "not-evaluable-no-final-adapter"
+  },
+  "cost": {
+    "paid_usd": "0",
+    "training_steps_completed": 3,
+    "latency_comparison_status": "not-run"
+  },
+  "custody": {
+    "inventory_path": "docs/product/training/caplab-review-dissent-local-qwen-r2/training-custody-q5.json",
+    "inventory_sha256": "6a273db2c6841fc1b164b17b7a9a6d0c7a245430929a4beea69af87c4fd48463",
+    "raw_file_count": 22,
+    "raw_bytes": 353734511,
+    "retention": "preserve-as-failed-experiment-custody"
+  },
+  "claim_ceiling": "infrastructure-failed bounded attempt only; no tuned capability, regression, deployment, lane-fit, or superiority claim"
+}
