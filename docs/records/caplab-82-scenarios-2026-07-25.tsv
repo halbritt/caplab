@@ -1,0 +1,10 @@
+S01	implementation-duplication-as-evidence	defect-repair	coding-agent	synchronization drift	The staging environment still times out after 30 seconds even though we raised the limit to 120.
+S02	implementation-representation-fit	defect-repair	coding-agent	habitual list or map	Exporting a large account's history crashes the worker with an out-of-memory error.
+S03	implementation-explicit-failure-policy	defect-repair	coding-agent	ambiguous null or zero	After the nightly import some records are missing and nothing shows up in the logs.
+S04	universal-no-change-option	refactoring	refactoring-agent	modernization theater	This payments module is old and nobody likes touching it. Modernize it.
+S05	universal-measure-claimed-improvement	performance-optimization	performance-agent	benchmark overfit	Report generation feels slow. Make it faster.
+S06	refactoring-small-verified-steps	refactoring	refactoring-agent	steps too large	Split the god-object OrderManager into separate services.
+S07	implementation-representation-fit	implementation	coding-agent	accidental quadratic operation	Add a check for whether a user id is in the banned list on every request.
+S08	implementation-duplication-as-evidence	defect-repair	coding-agent	synchronization drift	The mobile app shows a different tax rate than the web checkout.
+S09	implementation-explicit-failure-policy	implementation	coding-agent	retry storm	Add retries to the payment webhook so we stop losing events.
+S10	universal-no-change-option	refactoring	refactoring-agent	aesthetic refactoring	We are on an old version of the date library. Upgrade everything to the new one.
