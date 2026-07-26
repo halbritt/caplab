@@ -1,0 +1,7 @@
+# Pre-existing design-lint findings, baselined 2026-07-26.
+# The gate blocks NEW findings; these predate it and are cleared separately.
+# Remove a line to re-enable the gate for that record.
+docs/decisions/adr-0036-caplab-12-review-dissent-instrument-authorization.md:unvalidated-stop-condition
+docs/decisions/adr-0044-caplab-13-native-development-calibration.md:unvalidated-stop-condition
+docs/product/plans/plan-agent-capability-lab-v0.md:unvalidated-stop-condition
+docs/product/studies/caplab-review-dissent-001-preregistration.md:unvalidated-stop-condition

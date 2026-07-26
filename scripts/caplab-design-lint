@@ -1,0 +1,158 @@
+#!/usr/bin/env python3
+"""Design-record lint. Catches the classes of defect recorded in the
+advisory-selection-001 post-mortem (docs/records/*postmortem*).
+
+Each rule exists because an actual defect got past a human reading the file.
+Run from the repository root; exits non-zero on any finding.
+"""
+import re, sys, pathlib, collections
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+DOCS = ROOT / "docs"
+findings = []
+
+
+def add(path, line, rule, msg):
+    findings.append((str(path.relative_to(ROOT)), line, rule, msg))
+
+
+# ---- rule 1: bare statistical constants -------------------------------------
+# Post-mortem defect 2: `1.96` shipped as if it bought 80% power. The error is
+# invisible as a bare number and obvious when annotated.
+Z = {"1.96": "CI excludes zero, ~50% power", "1.959": "CI excludes zero, ~50% power",
+     "2.80": "80% power", "2.8016": "80% power", "1.645": "one-sided 95%",
+     "0.8416": "80% power z-beta"}
+ANNOT = re.compile(r"power|z[-_ ]?(alpha|beta)|excludes zero|one-sided|two-sided", re.I)
+
+
+def rule_constants(path, lines):
+    for i, ln in enumerate(lines, 1):
+        for const in Z:
+            if re.search(r"(?<![\d.])" + re.escape(const) + r"(?![\d])", ln):
+                window = " ".join(lines[max(0, i - 3):i + 2])
+                if not ANNOT.search(window):
+                    add(path, i, "bare-statistical-constant",
+                        f"{const} used without stating what it buys ({Z[const]})")
+
+
+# ---- rule 2: citing a withdrawn or superseded record ------------------------
+# Post-mortem defect 3: numbers taken from ADR-0038, whose own front matter
+# records that ADR-0039 withdrew it.
+def adr_status_map():
+    st = {}
+    for p in (DOCS / "decisions").glob("adr-*.md"):
+        head = p.read_text(errors="ignore")[:1200]
+        m = re.search(r"^status:\s*(\S+)", head, re.M)
+        sup = re.search(r"^superseded_by:\s*(\S+)", head, re.M)
+        ident = re.match(r"adr-(\d{4})", p.name).group(1)
+        bad = None
+        if m and m.group(1).lower() in {"withdrawn", "rejected", "superseded"}:
+            bad = m.group(1).lower()
+        elif sup and sup.group(1).lower() not in {"null", "~", ""}:
+            bad = f"superseded_by {sup.group(1)}"
+        st[ident] = bad
+    return st
+
+
+NUMERIC_RELIANCE = re.compile(
+    r"cost|price|pricing|ceiling|budget|USD|\$|token|rate|per[- ]episode|multiplier|"
+    r"tuple|parameter|threshold|k\s*=|episodes", re.I)
+
+
+def strip_front_matter(lines):
+    if lines and lines[0].strip() == "---":
+        for j in range(1, len(lines)):
+            if lines[j].strip() == "---":
+                return j + 1
+    return 0
+
+
+def rule_citations(path, lines, st):
+    self_id = re.match(r"adr-(\d{4})", path.name)
+    self_id = self_id.group(1) if self_id else None
+    start = strip_front_matter(lines)
+    for i, ln in enumerate(lines[start:], start + 1):
+        if re.search(r"supersed|withdraw|reject|post-mortem|postmortem|history|"
+                     r"replaced|no longer|void|consumed", ln, re.I):
+            continue
+        if not NUMERIC_RELIANCE.search(ln):
+            continue
+        for m in re.finditer(r"ADR[ -]?(\d{4})", ln, re.I):
+            num = m.group(1)
+            if num == self_id:
+                continue
+            if st.get(num):
+                add(path, i, "cites-dead-record",
+                    f"ADR {num} is {st[num]}; verify before relying on its numbers")
+
+
+# ---- rule 3: unmeasured parameters in a frozen preregistration ---------------
+# Post-mortem defect 5: headroom asserted from a curated list rather than
+# measured, and it failed on first contact with data.
+MEASURABLE = ("headroom", "spontaneous rate", "cost per episode", "recall",
+              "no-attempt", "coder agreement", "kappa")
+
+
+def rule_asserted(path, lines):
+    text = "\n".join(lines)
+    if not re.search(r"^status:\s*preregistered", text, re.M):
+        return
+    for i, ln in enumerate(lines, 1):
+        low = ln.lower()
+        if any(k in low for k in MEASURABLE) and re.search(r"assert|assum|cite[ds]?\b|estimate", low):
+            if not re.search(r"measured|observed|exhibit|locator", low):
+                add(path, i, "asserted-measurable",
+                    "a measurable quantity is asserted in a frozen prereg; "
+                    "measure it or record why measurement is unavailable")
+
+
+# ---- rule 4: stop conditions with no validating artifact --------------------
+# Post-mortem defect 4: a stop condition written without ever inspecting a
+# captured stream would have aborted 100% of episodes.
+def rule_stops(path, lines):
+    text = "\n".join(lines)
+    if not re.search(r"^status:\s*(preregistered|authorized)", text, re.M):
+        return
+    for i, ln in enumerate(lines, 1):
+        if re.match(r"\s*[-*|]\s*.*\bstop\b", ln, re.I) or re.search(r"^stop (before|condition)", ln, re.I):
+            window = " ".join(lines[max(0, i - 6):i + 6])
+            if not re.search(r"validated against|verified against|exhibit|`[^`]*\.(jsonl?|stdout)`", window, re.I):
+                add(path, i, "unvalidated-stop-condition",
+                    "stop condition with no artifact it was evaluated against")
+
+
+BASELINE = ROOT / "docs" / "records" / "design-lint-baseline.txt"
+
+
+def main():
+    accept = set()
+    if BASELINE.exists():
+        accept = {l.strip() for l in BASELINE.read_text().split("\n")
+                  if l.strip() and not l.startswith("#")}
+    st = adr_status_map()
+    targets = sorted(list((DOCS / "decisions").glob("*.md")) +
+                     list((DOCS / "product").rglob("*.md")))
+    for p in targets:
+        lines = p.read_text(errors="ignore").split("\n")
+        rule_constants(p, lines)
+        rule_citations(p, lines, st)
+        rule_asserted(p, lines)
+        rule_stops(p, lines)
+    global findings
+    if accept:
+        findings = [f for f in findings if f"{f[0]}:{f[2]}" not in accept]
+    if not findings:
+        print(f"caplab-design-lint: {len(targets)} records, no new findings "
+              f"({len(accept)} baselined)")
+        return 0
+    by = collections.Counter(f[2] for f in findings)
+    for path, line, rule, msg in findings:
+        print(f"{path}:{line}: [{rule}] {msg}")
+    print(f"\ncaplab-design-lint: {len(findings)} finding(s) across {len(targets)} records", file=sys.stderr)
+    for r, n in by.most_common():
+        print(f"  {n:3d}  {r}", file=sys.stderr)
+    return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
