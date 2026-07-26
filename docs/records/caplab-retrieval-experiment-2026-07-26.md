@@ -16,9 +16,21 @@ does each retrieval method find it, at a packet size of 14?
 | method | recall@14 |
 |---|---|
 | current nomination, question only | **0 / 10** |
-| embedding over lesson text (title + claim + decision_rule) | 0 / 10 |
-| embedding over lesson + `common_failure_modes` + `why_it_matters` | **3 / 10** |
+| vector: lesson text only | 0 / 10 |
+| vector: lesson + `common_failure_modes` + `why_it_matters` | 2–3 / 10 |
+| vector: same, with `search_query:`/`search_document:` prefixes | 2 / 10 |
+| vector: per-field chunks + prefixes, max-pooled | 1 / 10 |
 | **repository signals supplied to existing nomination** | **3 / 3** (separate run) |
+
+**Do not rank the vector variants against each other.** At n = 10 queries a
+one- or two-hit difference is sampling variation. Two runs of the closest-
+equivalent configuration returned 3/10 and 2/10. The supported statement is
+that *every* vector configuration tried lands in the 0–3/10 band at packet
+size, and none approaches usable.
+
+Applying nomic's documented asymmetric prefixes and per-field chunking — both
+expected to help — did **not** improve recall. That is evidence the ceiling is
+in the task, not in the retrieval recipe.
 
 Adding source code to the embedded query, on the three built worlds:
 
@@ -50,7 +62,8 @@ route it either. The routing information does not exist in the query.
 
 ## Implication
 
-Embeddings are a partial improvement (0/10 → 3/10) and not the main lever.
+Vector search is at best a marginal improvement over nomination (0/10 → 2–3/10,
+within noise of each other) and is not the main lever.
 The measured winner is **supplying repository signals to the nomination
 machinery that already exists** — 3/3, using Pincite's own
 `activate_for_repository_signals` axis, with the packet staying at 14 concepts
@@ -65,6 +78,18 @@ search.
 
 A hybrid is the natural shape: embeddings for topical concepts, computed
 structural signals for the rest.
+
+## Limits
+
+One embedding model was tested (`nomic-embed-text`, 768-dim), because it is
+what is installed locally. A larger or code-aware embedder could plausibly
+improve the topical concepts and the 2/10 figure may be understated. It would
+not be expected to change S01 or S06: no similarity function retrieves a
+property the text never mentions.
+
+Consistent across all five vector configurations: S01 ranked 215/217/221/219
+and S06 ranked 203/195/213 out of 227. That stability, not the small
+differences between variants, is the load-bearing observation.
 
 ## Locators
 
