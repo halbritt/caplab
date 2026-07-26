@@ -1,0 +1,63 @@
+#!/usr/bin/env python3
+"""Repository signal extractor -- blind to any target concept.
+
+Emits signals drawn from Pincite's routing vocabulary by analysing task text
+and source. Structural detectors for structural properties (which similarity
+search cannot see); lexical detectors for topical ones.
+"""
+import re,sys,os,glob,collections,json
+
+def read_sources(root):
+    out={}
+    for p in glob.glob(os.path.join(root,"**","*.py"),recursive=True):
+        if "test" in os.path.basename(p) or "/.git/" in p: continue
+        out[os.path.relpath(p,root)]=open(p,errors="ignore").read()
+    return out
+
+def extract(task, src):
+    sig=set(); why=[]
+    joined="\n".join(src.values())
+
+    # --- structural: repeated literal constants across files ---
+    lits=collections.defaultdict(set)
+    for path,txt in src.items():
+        for m in re.finditer(r"(?<![\w.])(\d{2,})(?![\w.])",txt):
+            v=m.group(1)
+            if v not in {"200","404","500","100","1000","0"}: lits[v].add(path)
+    rep={v:f for v,f in lits.items() if len(f)>=2}
+    if rep:
+        sig |= {"duplicated rule","coordinated edits","scattered invariant","similar snippets"}
+        why.append(f"literal(s) {sorted(rep)[:3]} repeated across {max(len(f) for f in rep.values())} files")
+
+    # --- structural: same dict/record shape built in >1 place ---
+    shapes=collections.Counter(re.findall(r"\{\s*[\"'](\w+)[\"']\s*:",joined))
+    if any(n>=2 for n in shapes.values()):
+        sig |= {"multiple implementations"}
+
+    # --- lexical/topical: exception handling ---
+    if re.search(r"except\s+\w*\s*:\s*(\n\s*(pass|continue))",joined) or "except Exception" in joined:
+        sig |= {"exception","catch","error return","unknown behavior"}
+        why.append("broad or silent exception handler")
+    if re.search(r"\bretry|\bbackoff",joined+task,re.I):
+        sig |= {"retry","retry loop"}
+
+    # --- lexical/topical: whole-collection materialisation ---
+    if re.search(r"\.fetchall\(\)|list\(\s*\w+\.execute|\[\s*\{.*for .* in .*\]",joined,re.S):
+        sig |= {"materialization","large cardinality","collection hot path","hotspot"}
+        why.append("whole-result materialisation")
+    if re.search(r"json\.dumps\(\s*\w+\s*\)",joined) and re.search(r"fetchall|\bfor\b",joined):
+        sig |= {"materialization"}
+
+    # --- task-text symptoms ---
+    t=task.lower()
+    if re.search(r"out.of.memory|oom|crash|memory",t): sig |= {"materialization","large cardinality"}
+    if re.search(r"missing|silently|nothing.*log|no error",t): sig |= {"unknown behavior","exception"}
+    if re.search(r"timeout|timed out|slow|latency",t): sig |= {"latency SLO","hotspot"}
+    if re.search(r"different|mismatch|inconsistent|disagree",t): sig |= {"duplicated rule","scattered invariant"}
+    return sorted(sig), why
+
+if __name__=="__main__":
+    root=sys.argv[1]
+    task=open(os.path.join(root,"TASK.md")).read().strip()
+    s,w=extract(task,read_sources(root))
+    print(json.dumps({"signals":s,"evidence":w},indent=1))
