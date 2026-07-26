@@ -33,8 +33,7 @@ def rule_constants(path, lines):
     for i, ln in enumerate(lines, 1):
         for const in Z:
             if re.search(r"(?<![\d.])" + re.escape(const) + r"(?![\d])", ln):
-                window = " ".join(lines[max(0, i - 3):i + 2])
-                if not ANNOT.search(window):
+                if not ANNOT.search(ln):
                     add(path, i, "bare-statistical-constant",
                         f"{const} used without stating what it buys ({Z[const]})")
 
@@ -128,12 +127,48 @@ def rule_stops(path, lines):
 BASELINE = ROOT / "docs" / "records" / "design-lint-baseline.txt"
 
 
+# ---- rule 5: design artifact serving a superseded question ------------------
+# Post-mortem root cause: CAPLAB-57 changed the study question from
+# instrumental to foundational. The substrate existed only to serve the old
+# question and was not re-justified. Nothing detected that for several
+# sessions. This rule makes a stale stamp fail the gate.
+def current_question_ids():
+    ids = {}
+    for p in (DOCS / "product" / "studies").glob("*preregistration.md"):
+        head = p.read_text(errors="ignore")[:2000]
+        sid = re.search(r"^id:\s*(\S+)", head, re.M)
+        qid = re.search(r"^question_id:\s*(\S+)", head, re.M)
+        if sid and qid:
+            ids[sid.group(1)] = qid.group(1)
+    return ids
+
+
+def rule_stale_question(path, lines, qids):
+    text = "\n".join(lines[:40])
+    st = re.search(r"^serves_study:\s*(\S+)", text, re.M)
+    sq = re.search(r"^serves_question:\s*(\S+)", text, re.M)
+    if not st:
+        return
+    study = st.group(1)
+    if study not in qids:
+        return
+    if not sq:
+        add(path, 1, "unstamped-question",
+            f"declares serves_study: {study} but no serves_question stamp")
+        return
+    if sq.group(1) != qids[study]:
+        add(path, 1, "stale-question-stamp",
+            f"serves_question {sq.group(1)} but {study} now asks "
+            f"{qids[study]} - re-justify this artifact or rule it out of scope")
+
+
 def main():
     accept = set()
     if BASELINE.exists():
         accept = {l.strip() for l in BASELINE.read_text().split("\n")
                   if l.strip() and not l.startswith("#")}
     st = adr_status_map()
+    qids = current_question_ids()
     targets = sorted(list((DOCS / "decisions").glob("*.md")) +
                      list((DOCS / "product").rglob("*.md")))
     for p in targets:
@@ -142,6 +177,7 @@ def main():
         rule_citations(p, lines, st)
         rule_asserted(p, lines)
         rule_stops(p, lines)
+        rule_stale_question(p, lines, qids)
     global findings
     if accept:
         findings = [f for f in findings if f"{f[0]}:{f[2]}" not in accept]
