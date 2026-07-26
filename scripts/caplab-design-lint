@@ -22,7 +22,11 @@ def add(path, line, rule, msg):
 Z = {"1.96": "CI excludes zero, ~50% power", "1.959": "CI excludes zero, ~50% power",
      "2.80": "80% power", "2.8016": "80% power", "1.645": "one-sided 95%",
      "0.8416": "80% power z-beta"}
-ANNOT = re.compile(r"power|z[-_ ]?(alpha|beta)|excludes zero|one-sided|two-sided", re.I)
+# Requiring the *word* "power" is not enough: the post-mortem defect occurred
+# in prose that discussed power at length while using the 50% constant.
+# The annotation must state an explicit level or name the condition.
+ANNOT = re.compile(r"\d{2}\s*%\s*power|power\s*=\s*\.?\d|excludes zero|"
+                   r"z[-_ ]?(alpha|beta)\s*[=:]|one-sided|two-sided", re.I)
 
 
 def rule_constants(path, lines):
