@@ -34,6 +34,7 @@ python3 - "$OUT" "$ID" "$ARM" "$T" "$RC" "$((END-START))" "$PIN" <<'PY'
 import json,sys,os,re
 out,ID,ARM,T,rc,dur,pin=sys.argv[1:8]
 turns={}; aux=set(); tin=tout=0; cost=0.0
+rate_rejected=False; rate_warned=False; resets=None
 for line in open(os.path.join(out,"native.stdout"),errors="ignore"):
     line=line.strip()
     if not line: continue
@@ -48,6 +49,14 @@ for line in open(os.path.join(out,"native.stdout"),errors="ignore"):
             cost+=mu.get("costUSD",0)
             if mu.get("outputTokens",0)>200: aux.add(m)
     if e.get("subtype")=="model_refusal_fallback": aux.add("FALLBACK:"+e.get("fallback_model","?"))
+    # CAPLAB-55: provider failures are INFRASTRUCTURE, never behavioural
+    # non-attempts. Recording quota rejection as "agent did not act" fabricates
+    # a behavioural signal from an infrastructure failure -- and in a capability
+    # titration it fabricates one pointing at the hypothesis.
+    if e.get("type")=="rate_limit_event":
+        ri=e.get("rate_limit_info") or {}
+        if ri.get("status")=="rejected": rate_rejected=True; resets=ri.get("resetsAt")
+        elif ri.get("status")=="allowed_warning": rate_warned=True
 base=lambda m:(m or "").replace("[1m","").replace("]","")
 offpin=[m for m in turns if base(m)!=base(pin)]
 ws=[l for l in open(os.path.join(out,"write_set.txt")).read().split("\n") if l and l!="TASK.md"]
@@ -55,8 +64,15 @@ rec={"slot":os.path.basename(out),"scenario":ID,"arm":ARM,"trial":int(T),"rc":in
  "duration_s":int(dur),"pinned_model":pin,"assistant_turn_models":turns,
  "substantive_models":sorted(aux),"off_pin_turns":offpin,
  "input_tokens":tin,"output_tokens":tout,"cost_usd":round(cost,4),
- "write_set":ws,"attempted":bool(ws)}
+ "write_set":ws,
+ "disposition":("infrastructure" if rate_rejected else
+                "behavioural-attempt" if ws else "behavioural-no-attempt"),
+ "rate_limited":rate_rejected,"rate_warned":rate_warned,"quota_resets_at":resets,
+ "attempted":(None if rate_rejected else bool(ws))}
 json.dump(rec,open(os.path.join(out,"episode.json"),"w"),indent=1)
+if rate_rejected:
+    open(os.path.join(out,"INFRASTRUCTURE"),"w").write("quota rejected; resets %s\n"%resets)
+    print("INFRA",rec["slot"],"quota rejected"); sys.exit(4)
 if offpin:
     open(os.path.join(out,"STOP"),"w").write("off-pin assistant turns: %s\n"%offpin)
     print("STOP",rec["slot"],offpin); sys.exit(3)
