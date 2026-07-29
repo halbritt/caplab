@@ -6,14 +6,14 @@
 
 ## Status
 
-Not authored. Not admitted.
+Authored 2026-07-29 (workflow wf_dcc02d05-04e, adversarially verified). Not admitted; headroom unmeasured.
 
 ## Required artifacts
 
-- [ ] `world/` — small, self-contained, buildable repository; tests green, defect latent
-- [ ] `TASK.md` — the symptom, in consumer register
-- [ ] `reference.md` — a solution exhibiting this concept's lesson
-- [ ] `codes.json` — 2–4 binary codes, negative space stated, validated not to fire on `world/`
+- [x] `world/` — small, self-contained, buildable repository; tests green, defect latent
+- [x] `TASK.md` — the symptom, in consumer register
+- [x] `reference.md` — a solution exhibiting this concept's lesson
+- [x] `codes.json` — 2–4 binary codes, negative space stated, validated not to fire on `world/`
 - [ ] `headroom.json` — **measured** unaided score, `none` arm, k >= 5
 
 ## Authoring constraint (part 1 depends on it)

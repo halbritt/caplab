@@ -1,16 +1,13 @@
-# Nightly partner feed misses its pickup window
+# Statement total doesn't match the raw export
 
-The nightly feed to our settlement partner has gotten painfully slow.
-Earlier this year the full run finished well inside ten minutes; last
-night it took 47 minutes and missed the partner's 02:00 pickup. Order
-volume grew maybe 15% in that period. The rows
-themselves are fine; the partner reports no layout or amount problems.
+Finance flagged customer C042's June statement. The raw June export
+(`data/june_events.jsonl`) sums to exactly 10000.0 units for C042, but the
+generated statement reports 10240.0 units and bills accordingly:
 
-To reproduce, from the repo root:
+    python3 -m meterflow statement data/june_events.jsonl --customer C042 --month 2026-06
 
-    python3 -m orderfeed.cli --orders data/orders_sample.csv \
-        --rates data/reference_rates.csv --out /tmp/feed.txt
-
-Only 400 orders, yet it takes several seconds; a batch that small used
-to be near-instant. Please get the run time back to something sane
-without changing what the feed contains.
+Expected: the statement's total units equal the sum of C042's quantities in
+the file. Actual: it comes out 240.0 units high. Customer C017 in the same
+file reconciles exactly. Support says a handful of other accounts have also
+billed high on recent statements by varying amounts, while most reconcile to
+the unit. Please work out what is going on and fix it.

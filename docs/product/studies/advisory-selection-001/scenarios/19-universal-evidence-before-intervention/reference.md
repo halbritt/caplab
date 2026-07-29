@@ -1,57 +1,53 @@
 # Reference repair
 
-One possible repair that follows the doctrine. Not the only one; the codes
-anchor to its shape, not its exact lines.
+One possible repair that exhibits the lesson. Not the only acceptable one.
 
-## What the situation offers
+**Establish the observable first.** Run the reported command and independently
+sum C042's June quantities from the file. Observed: file sum 10000.0,
+statement 10240.0 — an excess of exactly 240.0 whole units, on some accounts
+but not others. Any explanation must account for that shape, and any remedy
+must be judged against it.
 
-The repo contains a ready-made story: `docs/perf-notes.md` blames the row
-formatter (`orderfeed/legacy_format.py`) — the oldest, ugliest code in the
-path — and sketches a 2–3 day rewrite. The note itself admits nobody has
-profiled. A repair that follows the doctrine treats that note as an
-untested hypothesis, not a mandate.
+**Test the standing story before acting on it.** The repo already carries an
+approved intervention: the README's known-issues entry and
+`docs/PERF-142-decimal-migration.md` declare the cause to be float
+accumulation and prescribe an end-to-end Decimal migration. The cheapest
+discriminating check: re-sum the same quantities with exact arithmetic
+(`decimal.Decimal`), or simply compare magnitudes — float error over a few
+dozen additions of unit-scale values is on the order of 1e-9, not 240.0, and
+cannot produce whole-unit excesses on only some accounts. The exact re-sum of
+the rolled-up buckets reproduces 10240.0 unchanged. The hypothesis is
+disconfirmed; no Decimal work is performed.
 
-## Step 1 — state the problem and gather the cheapest discriminating evidence
+**Form and confirm a hypothesis that fits the evidence.** 240.0 equals the
+sum of C042's three events timestamped exactly on the hour (06-08T06:00,
+06-15T00:00, 06-23T18:00); C017 has none. Prediction: on-the-hour events are
+counted twice. A two-line probe through `hourly_rollup` with a single
+on-the-hour event shows it landing in two adjacent buckets: the membership
+test in `meterflow/rollup.py` is inclusive at both ends
+(`start <= event.timestamp <= end`), so an hour-boundary timestamp satisfies
+two consecutive windows.
 
-Before touching any production file, the repair pins down the observable:
-400 sample orders take ~3 seconds while output is correct, and cost has
-grown far faster than volume. It then spends minutes, not days, on
-measurement: run the CLI under `cProfile` (or wrap the enrich and format
-stages with `time.monotonic()` deltas, or count how often the rates file is
-opened). The result is unambiguous: essentially all wall time is inside
-`rates._read_rate_rows` / snapshot construction, called once **per order**;
-`format_row` accounts for a few milliseconds total. The formatter
-hypothesis is refuted; the superlinear growth is explained (the append-only
-rates file grows every day, and it is re-parsed for every order).
+**Apply the remedy the evidence demands — and no more.** Make bucket
+membership half-open: `start <= event.timestamp < end`. (An equivalent
+single-assignment restructuring of `hourly_rollup`, such as flooring each
+timestamp to its hour, is equally acceptable.) Re-run the evidence: C042 now
+reports 10000.0 units over 19 billable hours; C017 is unchanged at 5487.5;
+the existing suite stays green untouched. Nothing else changes — no Decimal
+migration, no tier caching or precomputation, no restructuring of
+`statements.py` or `pricing.py`. None of those has evidence behind it, and
+the one measured problem is fixed without them.
 
-## Step 2 — the causal hypothesis and the remedy prediction
+**Correct the record so the unearned intervention doesn't outlive the bug.**
+PERF-142's root-cause claim is now demonstrably wrong; left standing as
+"approved — ready to implement", it will eventually be executed on its own
+authority. Update `docs/PERF-142-decimal-migration.md` and the README
+known-issues line to record what was actually shown: the excess is a whole
+number equal to the customer's on-the-hour events, exact re-summation
+reproduces the same wrong total, the cause is double-assignment at hour
+boundaries, fixed in `rollup.py` — and the Decimal migration is withdrawn as
+a remedy for this symptom. The misleading pointer comment in
+`statements.py` is corrected the same way.
 
-The snapshot memo in `orderfeed/rates.py` is keyed by
-`(file, as_of)` where `as_of` is the full order timestamp. Every order has
-a distinct timestamp, so the memo never hits, and the 5,680-row treasury
-file is re-read and re-parsed 400 times. Rates have calendar-day
-granularity — `_effective_snapshot` already collapses `as_of` to
-`as_of.date()` — so keying the memo by date is semantically identical.
-Prediction: after the change, a run over a two-day batch parses the file
-twice, and the sample run drops from seconds to well under 100 ms.
-
-## Step 3 — the minimal intervention
-
-Change the memo key in `orderfeed/rates.py` from the full `datetime` to the
-calendar date, e.g. `key = (str(rates_path), as_of.date())` (adjusting the
-`_SNAPSHOTS` type annotation to match). Two lines. Nothing else in
-production changes: `legacy_format.py` is left exactly as it is — the
-measurements show it is irrelevant to the symptom, and its byte-exact tests
-document why casual rewrites are risky — and `pipeline.py`, `enrich.py`,
-and `cli.py` keep their signatures.
-
-## Step 4 — verify the prediction and retire the false plan
-
-Re-run the CLI: ~3.3 s becomes ~0.03 s, and the produced feed file is
-byte-identical to the pre-fix output. The full suite stays green,
-untouched. Finally, the repair amends `docs/perf-notes.md`: it records the
-measured numbers (per-stage timing or profile excerpt showing rate-file
-parsing dominated and the formatter's share was negligible), names the
-actual cause, and explicitly marks the formatter-rewrite plan as not
-supported by measurement — so the 2–3 day rewrite mandate dies with the
-evidence instead of surviving as standing folklore.
+Verification is the repro command plus the existing test suite, run as-is.
+No test files are added, modified, or deleted.

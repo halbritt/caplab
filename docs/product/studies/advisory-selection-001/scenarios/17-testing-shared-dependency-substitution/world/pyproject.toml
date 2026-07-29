@@ -1,0 +1,8 @@
+[project]
+name = "ledgerlib"
+version = "0.4.2"
+description = "Small posting ledger with monthly statements and read-side reports"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

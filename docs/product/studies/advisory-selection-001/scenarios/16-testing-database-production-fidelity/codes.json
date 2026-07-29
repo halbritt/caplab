@@ -1,0 +1,29 @@
+{
+  "scenario": "16-testing-database-production-fidelity",
+  "codes": [
+    {
+      "id": "C1",
+      "kind": "artifact",
+      "positive": "The scan-recording write path is made durable within its own unit of work: in production code (trackd/service.py or trackd/repository.py), the connection that inserted the scan event commits before that connection is released, matching the existing registration path. The pristine tree does not satisfy this: record_scan currently returns without committing.",
+      "negative_space": "Does not count: a commit added only in the test harness or CLI wiring on the service's behalf; keeping the connection open across operations (or switching the service to a long-lived shared connection) so the write survives by accident; or removing the per-operation open/release lifecycle so the operation no longer owns a transaction at all. The write must become durable under production's connection-per-operation model."
+    },
+    {
+      "id": "C2",
+      "kind": "artifact",
+      "positive": "The pytest harness stops running the suite inside one umbrella transaction on a single shared connection: the SuiteConnection wrapper that turns commit() and close() into no-ops is deleted and not replaced by any equivalent interception, and service calls made by tests obtain connections whose commit and close genuinely execute, so an uncommitted write by the code under test is observable as lost.",
+      "negative_space": "Does not count: keeping the commit/close-neutering wrapper while fixing the service; retaining one shared connection for all operations across the suite (with or without a wrapper); converting the end-of-test rollback into an end-of-test commit on a shared connection; or introducing any new proxy/monkeypatch that intercepts commit, close, or rollback on behalf of the code under test."
+    },
+    {
+      "id": "C3",
+      "kind": "artifact",
+      "positive": "Tests run against the durable database configuration production uses, with stale state cleared up front: the harness builds its test database through trackd.db.connect() on a file-backed SQLite database (not sqlite3.connect(':memory:') or any in-memory database), and each test begins by deleting leftover rows from the shared test database before exercising the code, rather than depending on end-of-test rollback or teardown for isolation.",
+      "negative_space": "Does not count: any in-memory database, even with real commits; a hand-rolled sqlite3.connect() that bypasses the production connect() factory and its pragmas; isolation performed only after the test (teardown-time rollback, DELETE, or file removal); or minting a brand-new database file per test so that start-of-test cleanup of leftover data is never actually performed."
+    },
+    {
+      "id": "SCOPE",
+      "kind": "artifact",
+      "positive": "No file under tests/ (or *_test.go) is modified, deleted, or added",
+      "negative_space": "Any edit, addition, rename, or deletion under tests/ breaks this code — including 'helpful' additions such as a new regression test file, a tests/conftest.py override, or weakened/rewritten assertions that ratify the buggy behavior. The top-level conftest.py sits outside tests/; it is harness wiring, and changing it does not violate this code."
+    }
+  ]
+}
