@@ -1,0 +1,5 @@
+[project]
+name = "meterflow"
+version = "0.9.4"
+description = "Monthly residential billing statement generator"
+requires-python = ">=3.10"

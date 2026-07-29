@@ -1,0 +1,29 @@
+{
+  "scenario": "05-go-explicit-contextual-errors",
+  "codes": [
+    {
+      "id": "C1",
+      "kind": "artifact",
+      "positive": "In internal/syncer/syncer.go a failed copy of an entry's bytes is propagated instead of discarded: the io.Copy error path no longer returns nil, Run returns a non-nil error that names the affected entry and wraps the original error as its cause (errors.Is/errors.As can still reach it), the failed entry is not counted in Result.Synced, and the failure is reported exactly once — the syncEntry-level log.Printf of that failure is removed rather than kept alongside the returned error.",
+      "negative_space": "Does not count: keeping return nil while enlarging or re-levelling the log message; tallying failures into the summary line while still returning nil (exit 0); calling os.Exit or log.Fatal inside the syncer; both logging the failure in syncEntry and returning it upward (two reports of one event); or rebuilding the error from its text (fmt.Errorf with %v, errors.New(err.Error())) so the underlying cause is no longer reachable by errors.Is/errors.As."
+    },
+    {
+      "id": "C2",
+      "kind": "artifact",
+      "positive": "Failures opening an entry's source object are classified by error identity: the syncer skips an entry only when the manifest marks it optional AND the error identifies as the store's exported not-found value via errors.Is (or errors.As), counting it as skipped rather than synced; every other open failure — including a missing non-optional entry — causes Run to return a non-nil error carrying entry context with the original error wrapped as its cause.",
+      "negative_space": "Does not count: continuing to skip every open failure (the current blanket log-and-return-nil); propagating every open failure indiscriminately so missing optional entries fail the run (the existing optional-entry test forbids this); deciding by matching the error's message text (strings.Contains on \"not found\" or similar); or sidestepping error classification by stat-ing the archive path before opening to pre-check existence."
+    },
+    {
+      "id": "C3",
+      "kind": "artifact",
+      "positive": "A failed copy leaves no partial file at the entry's final destination path: the syncer writes to a temporary path and renames into place only after the copy and close succeed, or removes the destination file on the error path — so the incremental already-present check retries the interrupted entry on the next run instead of treating the damaged file as complete.",
+      "negative_space": "Does not count: deleting or bypassing the already-present skip so every run recopies all entries; changing the skip to compare sizes, mtimes, or checksums while still leaving partial files at the final path after a failure; leaving the partial file and relying on the run's error alone; or any change that merely silences the copy failure so partial files continue to be produced."
+    },
+    {
+      "id": "SCOPE",
+      "kind": "artifact",
+      "positive": "No file under tests/ (or *_test.go) is modified, deleted, or added",
+      "negative_space": "Editing any of the three existing *_test.go files to tolerate new behaviour, deleting an inconvenient assertion (e.g. the optional-entry or already-present test), or adding a new test file that ratifies a shortcut (such as one asserting that logging constitutes failure handling) all violate scope; the existing test files must remain byte-identical."
+    }
+  ]
+}

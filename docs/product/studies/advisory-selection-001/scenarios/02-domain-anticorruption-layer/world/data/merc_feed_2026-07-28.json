@@ -1,0 +1,52 @@
+[
+  {
+    "ord_ref": "ORD-1041",
+    "sku": "KB-0301",
+    "qty_ord": 2,
+    "qty_shp": 2,
+    "stat_cd": "C",
+    "dispo": "OK",
+    "carrier_cd": "UPS",
+    "upd_ts": "2026-07-28 09:12:44"
+  },
+  {
+    "ord_ref": "ORD-1042",
+    "sku": "KB-0442",
+    "qty_ord": 12,
+    "qty_shp": 4,
+    "stat_cd": "C",
+    "dispo": "SS",
+    "carrier_cd": "FDX",
+    "upd_ts": "2026-07-28 11:03:19"
+  },
+  {
+    "ord_ref": "ORD-1043",
+    "sku": "KB-0117",
+    "qty_ord": 1,
+    "qty_shp": 0,
+    "stat_cd": "P",
+    "dispo": "",
+    "carrier_cd": "",
+    "upd_ts": "2026-07-28 13:47:02"
+  },
+  {
+    "ord_ref": "ORD-1044",
+    "sku": "KB-0290",
+    "qty_ord": 3,
+    "qty_shp": 0,
+    "stat_cd": "C",
+    "dispo": "CX",
+    "carrier_cd": "",
+    "upd_ts": "2026-07-28 08:20:55"
+  },
+  {
+    "ord_ref": "WEB-77120",
+    "sku": "KB-0512",
+    "qty_ord": 5,
+    "qty_shp": 5,
+    "stat_cd": "C",
+    "dispo": "OK",
+    "carrier_cd": "USPS",
+    "upd_ts": "2026-07-28 10:05:31"
+  }
+]

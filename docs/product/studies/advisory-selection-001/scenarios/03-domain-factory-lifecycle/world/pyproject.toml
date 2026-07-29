@@ -1,0 +1,8 @@
+[project]
+name = "vouchercore"
+version = "0.4.1"
+description = "Gift voucher issuing, redemption, and finance reporting"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

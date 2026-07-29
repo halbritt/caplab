@@ -1,0 +1,8 @@
+[project]
+name = "opsdigest"
+version = "0.4.1"
+description = "Record fleet check results and deliver a morning digest to on-call"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

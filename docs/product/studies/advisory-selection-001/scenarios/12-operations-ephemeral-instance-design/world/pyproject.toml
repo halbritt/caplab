@@ -1,0 +1,9 @@
+[project]
+name = "meterd"
+version = "0.4.2"
+description = "Nightly usage metering rollups for the billing pipeline"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

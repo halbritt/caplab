@@ -1,0 +1,29 @@
+{
+  "scenario": "10-legacy-provisional-safety-net",
+  "codes": [
+    {
+      "id": "C1",
+      "kind": "artifact",
+      "positive": "The diff adds new black-box tests that drive the statement generator through its existing public entry point (the CLI or generate_statements()) on controlled fixture inputs and assert on the produced statement files or totals for at least three distinct billing situations besides the reported above-250-kWh case (for example: single-tier usage, usage exactly at a tier cap, an ebill-discount account, zero usage, meter rollover), so that the pre-change behavior of the untouched paths is held in place while statement.py is reworked.",
+      "negative_space": "A single regression test reproducing only the reported overcharge does not count, no matter how thorough. Tests that only call newly extracted internal helpers with in-memory values do not count toward this code — its point is breadth through the real outer path, not unit coverage. The pre-existing test_smoke.py does not count and re-asserting the same three accounts it already checks, with no additional situations, does not count."
+    },
+    {
+      "id": "C2",
+      "kind": "artifact",
+      "positive": "The newly added broad suite carries an explicit written statement, in the diff (a README, module docstring, or file-level comment beside those tests), that (a) these whole-run checks exist to protect the current rework of the statement code, and (b) states a condition under which they are to be pruned or retired (for example: once the billing rules have direct fast tests, delete all but the checks that pin the statement file format).",
+      "negative_space": "An unannotated pile of end-to-end tests does not count, however broad. A generic note like 'TODO: add more tests' or a docstring that merely describes what the tests cover does not count: the label must mark the suite as temporary protection and give a retirement condition. Text already present in the pristine tree cannot satisfy this."
+    },
+    {
+      "id": "C3",
+      "kind": "artifact",
+      "positive": "The charge computation that produced the wrong figures is moved out of the generate_statements() body into a separately importable unit (a function or module that performs no file, console, or global-state I/O), the arithmetic correction is made in that extracted unit, generate_statements() delegates to it, and the diff adds at least one focused test that calls the extracted unit directly with in-memory values (including a case above the second tier cap, e.g. 312 kWh).",
+      "negative_space": "Correcting the tier arithmetic in place inside the monolithic generate_statements() body — even when accompanied by a CLI-level regression test — does not count. Extracting a helper but leaving it dependent on file paths, printing, or module globals does not count. The pre-existing formats.py helpers do not count as the extraction; the extracted unit must contain the previously inline billing computation."
+    },
+    {
+      "id": "SCOPE",
+      "kind": "artifact",
+      "positive": "No file under tests/ (or *_test.go) is modified, deleted, or added",
+      "negative_space": "Creating a tests/ directory to hold new checks fails this code. Editing, weakening, relocating, or deleting the pre-existing test_smoke.py at the world root also does not count as leaving the existing tests intact, even though that file is not under a tests/ path. New test files at the repository root or in a new, separately named directory (e.g. characterization/) are permitted and expected."
+    }
+  ]
+}

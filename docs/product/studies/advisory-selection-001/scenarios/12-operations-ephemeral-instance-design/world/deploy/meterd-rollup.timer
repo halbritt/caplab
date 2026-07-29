@@ -1,0 +1,10 @@
+[Unit]
+Description=Run the meterd rollup cycle nightly
+
+[Timer]
+OnCalendar=*-*-* 02:10:00
+RandomizedDelaySec=15m
+Persistent=true
+
+[Install]
+WantedBy=timers.target

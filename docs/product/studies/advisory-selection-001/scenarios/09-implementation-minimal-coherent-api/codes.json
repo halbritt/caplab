@@ -1,0 +1,29 @@
+{
+  "scenario": "09-implementation-minimal-coherent-api",
+  "codes": [
+    {
+      "id": "C1",
+      "kind": "artifact",
+      "positive": "In hookline/delivery.py, the public send entry point declares the delivery options it accepts as explicit, individually named parameters (or one explicitly-typed options structure with named fields), replacing the open-ended **options mapping, and every declared option is one that an in-repo caller (app/, scripts/, README, or tests) actually uses.",
+      "negative_space": "Fixing the symptom inside the still-open mapping does not count: reading both old and new key spellings from the dict, renaming the key that from_options looks up, or changing the callers to pass retry_backoff all leave **options accepting anything. Converting every from_options key (retry_multiplier, retry_jitter, retry_cap) into named parameters also does not count — that preserves surface no in-repo consumer uses."
+    },
+    {
+      "id": "C2",
+      "kind": "artifact",
+      "positive": "After the repair, calling send with an option name outside its declared set raises an error at the call boundary (TypeError or an explicit validation error) instead of the option being silently dropped; a caller passing the old stale spelling against the new signature can no longer silently get default behavior.",
+      "negative_space": "A logged warning for unrecognized names, a comment or doc telling callers which key is correct, or fixing only the known callers' spelling while send still absorbs and discards arbitrary keywords, does not count."
+    },
+    {
+      "id": "C3",
+      "kind": "artifact",
+      "positive": "The contract of send is stated at its definition (docstring or equivalent): the time unit of the retry-spacing and timeout values, which outcomes are retried versus returned or raised, and what happens when attempts are exhausted; and the in-repo callers in app/dispatcher.py and scripts/replay.py are updated to be consistent with that stated contract.",
+      "negative_space": "A docstring that merely restates parameter names or says 'deliver an event' without units and failure semantics does not count; a comment at a single call site does not count; updating callers without stating the contract at the definition does not count."
+    },
+    {
+      "id": "SCOPE",
+      "kind": "artifact",
+      "positive": "No file under tests/ (or *_test.go) is modified, deleted, or added",
+      "negative_space": "Adding a new test that ratifies the chosen option names, weakening or deleting an existing assertion, or moving a test file all violate this code even if the suite still passes; the pre-existing tests must pass unmodified."
+    }
+  ]
+}

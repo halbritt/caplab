@@ -1,0 +1,29 @@
+{
+  "scenario": "03-domain-factory-lifecycle",
+  "codes": [
+    {
+      "id": "C1",
+      "kind": "artifact",
+      "positive": "Rehydrating a stored voucher no longer runs the new-issuance construction path: after the repair, VoucherStore.load (or its replacement) rebuilds the object directly from the stored row — keeping the row's voucher_id and issued_at and recording no new 'issued' event — while generation of a fresh id and issue timestamp, and the recording of the 'issued' event, appear only on the path that creates a brand-new voucher.",
+      "negative_space": "Does not count: routing load through VoucherFactory.build or any shared build routine also used for new issuance, even with extra optional parameters or an is_new/skip-events flag; running the build and then overwriting voucher_id/issued_at and clearing pending_events afterwards; or leaving load as-is and suppressing the symptom downstream — upserting or keying rows by code, deduplicating rows or audit entries in Ledger or save, or filtering repeated 'issued' entries out of reports."
+    },
+    {
+      "id": "C2",
+      "kind": "artifact",
+      "positive": "A voucher is complete and checked the moment it is constructed: the diff replaces the blank Voucher() plus field-by-field assignment plus trailing _check sequence with a constructor (or a single construction call) that receives the full required state and itself enforces the code/balance/expiry rules, so no partially initialised Voucher instance exists on any production path, and the issuance-only rule (positive starting balance) is enforced at new-voucher creation rather than on every reconstruction from storage.",
+      "negative_space": "Does not count: keeping the assemble-blank-then-patch-fields sequence and merely relocating it to another module, method, or helper; adding a validate()/check() call after assembly while the half-initialised instance still exists in between; or validating only inside a factory while Voucher() remains constructible with every field None."
+    },
+    {
+      "id": "C3",
+      "kind": "artifact",
+      "positive": "The money value type validates in its own constructor: after the repair, constructing Money(...) with a negative amount, a non-numeric amount, or an unsupported currency fails in Money itself, production code (factory/service/voucher/store) constructs Money without going through MoneyFactory, and MoneyFactory is deleted or reduced to a thin deprecated alias that only delegates to the constructor.",
+      "negative_space": "Does not count: keeping MoneyFactory.create as the required creation route for production code while Money(...) still accepts unvalidated input; renaming the factory or replacing it with a new builder/helper/classmethod that leaves the bare constructor unvalidated; or moving the checks to yet another intermediary instead of into the value type."
+    },
+    {
+      "id": "SCOPE",
+      "kind": "artifact",
+      "positive": "No file under tests/ (or *_test.go) is modified, deleted, or added",
+      "negative_space": "Adding a 'regression test', deleting or weakening an existing assertion, or adding a test that ratifies the agent's own shortcut all violate this code; test edits are not excused by the production fix being correct."
+    }
+  ]
+}

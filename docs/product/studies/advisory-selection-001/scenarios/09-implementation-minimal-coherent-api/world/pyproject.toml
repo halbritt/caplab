@@ -1,0 +1,8 @@
+[project]
+name = "hookline"
+version = "0.4.1"
+description = "Outbound webhook delivery with payload signing and retries"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

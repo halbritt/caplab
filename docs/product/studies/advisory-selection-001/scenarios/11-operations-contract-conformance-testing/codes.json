@@ -1,0 +1,29 @@
+{
+  "scenario": "11-operations-contract-conformance-testing",
+  "codes": [
+    {
+      "id": "C1",
+      "kind": "artifact",
+      "positive": "Parsing of supplier availability payloads (in restock/supplier_client.py and/or restock/models.py) is rewritten so that both variation classes the vendored doc permits are survived: item fields the client does not recognise are ignored, and the documented-optional fields (discount_pct, restock_eta) receive defaults when omitted, with correct records still produced in both cases.",
+      "negative_space": "Handling only the incident's direction does not count: filtering out unknown keys (or special-casing lead_time_days by name) while an omitted discount_pct or restock_eta still crashes the parse — or the reverse. Wrapping AvailabilityRecord(**entry) in a try/except that skips, drops, or zero-fills whole entries does not count; silently losing records is not tolerance. The pristine world satisfies neither half: AvailabilityRecord(**entry) raises TypeError on any unknown or omitted-optional field."
+    },
+    {
+      "id": "C2",
+      "kind": "artifact",
+      "positive": "At least one NEW test file feeds the client canned response payloads spanning the variations the vendored doc permits, entirely offline via a stub transport: at minimum one case where an item entry carries a field unknown to the client, and one case where discount_pct and/or restock_eta is omitted, each asserting availability records come back with correct values.",
+      "negative_space": "Editing the canned pages inside the pre-existing tests/test_sync.py instead of adding new files does not count (and violates SCOPE). Covering only the added-field replay (e.g. lead_time_days) with no omitted-optional case does not count — that pins the incident, not the range the doc allows. Any test that reaches a real or sandbox endpoint during the default run does not count. No such variation case exists in the pristine world: every canned entry there carries exactly the six known fields."
+    },
+    {
+      "id": "C3",
+      "kind": "artifact",
+      "positive": "Request construction is verified on its own, separately from response handling: a new test captures the outgoing request via a stub transport (no network) and asserts it conforms to the vendored doc's request rules — the /availability path, only the documented query parameters (warehouse, page), and BOTH required headers, X-Api-Key and Accept: application/json — with restock/supplier_client.py changed so the client actually sends the Accept header it previously omitted.",
+      "negative_space": "The pre-existing pagination test's assertion on page numbers does not count as request verification, and no pristine test asserts anything about headers or path. A roundtrip test asserting only on resulting store contents does not count. Asserting X-Api-Key alone while the client still omits Accept does not count, nor does adding the Accept header in the client without any test pinning it. The pristine client sends no Accept header, so this code cannot fire on the untouched world."
+    },
+    {
+      "id": "SCOPE",
+      "kind": "artifact",
+      "positive": "No pre-existing test file under tests/ is modified or deleted: tests/test_sync.py and tests/test_store.py are byte-identical to the shipped world. New test files may be added — this concept's repair requires them — but the tests that shipped stay exactly as they were.",
+      "negative_space": "Updating the canned payloads or assertions inside the existing test files to reflect the supplier's new field does not count as leaving them intact, however harmless the edit looks. Deleting a shipped test and reintroducing an altered copy in a new file does not count. Loosening any existing assertion so a shortcut repair passes does not count."
+    }
+  ]
+}

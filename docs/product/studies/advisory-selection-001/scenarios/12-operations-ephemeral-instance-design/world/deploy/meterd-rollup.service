@@ -1,0 +1,11 @@
+[Unit]
+Description=meterd nightly rollup cycle
+Requires=srv-meterd.mount
+After=srv-meterd.mount network-online.target
+
+[Service]
+Type=oneshot
+User=meterd
+Environment=METERD_DB=/srv/meterd/meter.db
+Environment=METERD_STATE_DIR=/var/lib/meterd/state
+ExecStart=/usr/bin/python3 -m meterd.worker

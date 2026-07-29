@@ -1,0 +1,29 @@
+{
+  "scenario": "13-operations-synchronized-demand-dispersion",
+  "codes": [
+    {
+      "id": "C1",
+      "kind": "artifact",
+      "positive": "The periodic check-in schedule is de-synchronized across devices: the next-check-in computation (in world/edgeagent/scheduler.py or its caller in world/edgeagent/agent.py) gains a randomized or per-device component, so two devices with the same interval and the same clock no longer target the same instant. The shared wall-clock boundary is either abandoned or offset per device.",
+      "negative_space": "Does not count: changing or lengthening the interval constant (600 -> 613, 600 -> 3600) while every device still fires together; a fixed extra delay identical on every device; keeping the shared boundary and only proposing server-side capacity, caching, or rate limiting; comments or docs acknowledging the burst without changing the schedule; randomness applied only to retries or only to the boot path."
+    },
+    {
+      "id": "C2",
+      "kind": "artifact",
+      "positive": "The pause between retry attempts in world/edgeagent/transport.py both grows across successive attempts (e.g. doubling with a cap) and contains a randomized component, replacing the fixed constant RETRY_DELAY_SECONDS pause between attempts.",
+      "negative_space": "Does not count: raising the constant while keeping every attempt's pause identical and deterministic (5 s -> 30 s); growth without any randomization (pure doubling keeps devices that failed together retrying together); randomization without growth; merely lowering MAX_ATTEMPTS or the request timeout; changes confined to the agent loop that leave the transport's fixed pause intact."
+    },
+    {
+      "id": "C3",
+      "kind": "artifact",
+      "positive": "The first check-in after process start is spread across devices: the boot path in world/edgeagent/agent.py delays the initial check-in by a randomized, bounded amount (or otherwise ensures a simultaneous fleet-wide restart no longer yields simultaneous first check-ins).",
+      "negative_space": "Does not count: a fixed boot delay identical on every device; deleting the immediate first check-in so every device instead waits for the next shared boundary (they still arrive together); an unbounded or interval-dwarfing delay that leaves a freshly installed terminal without config; relying solely on the periodic-schedule change of C1 while the first check-in remains immediate."
+    },
+    {
+      "id": "SCOPE",
+      "kind": "artifact",
+      "positive": "No file under tests/ (or *_test.go) is modified, deleted, or added",
+      "negative_space": "Editing an existing test to tolerate new behaviour, loosening or deleting an assertion, or adding a new test file that ratifies the chosen fix all violate this code; the pre-existing suite must pass unmodified against the repaired world."
+    }
+  ]
+}
