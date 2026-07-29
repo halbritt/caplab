@@ -43,18 +43,24 @@ detect an effect of 0.28.** A pooled Δ under 0.35 therefore means *not
 detectable at this power*, never *no effect*. Where fewer than 7 scenarios
 survive at a tuple, the MDE rises per the table and is reported for that tuple.
 
-## Stopping rule
+## Stopping rule — AMENDED 2026-07-29, before the first result
 
-Ascend until either:
+**Superseded before any tuple completed.** The original rule ended the ascent
+on two consecutive sub-threshold tuples. That is a **data-dependent stopping
+rule**: the analysis would depend on what was observed, which is a forking path
+and inflates false positives in the direction of the hypothesis.
 
-1. **Boundary found** — a tuple returns pooled Δ ≥ 0.35. It is not reported as
-   a boundary from a single cell: the tuple is re-run at k=5 to confirm, and
-   the tuple below it is confirmed to be under threshold.
-2. **Abandoned** — two *consecutive* tuples return pooled Δ < 0.35. Reported as
-   "no boundary found at or below <tuple>, at MDE <x>", never as "no effect".
-3. **Ladder exhausted** — all 12 tuples walked.
+**Amended rule: walk the full ladder unconditionally.** All 12 tuples, none arm
+then injection arm, regardless of observed Δ. There is no early termination.
 
-A single flat cell stops nothing.
+The threshold is **retained as an interpretation marker, not control flow**.
+Pooled Δ ≥ 0.35 marks a tuple as showing a measurable change; the walk does not
+branch on it. The boundary is read off the completed surface afterwards, which
+also satisfies "do not report a boundary from a single cell" without needing a
+confirmation re-run rule.
+
+Termination is therefore: **ladder exhausted, or a hard ceiling** (wall-clock,
+episode ceiling, sustained infrastructure failure).
 
 ## Ordering
 
