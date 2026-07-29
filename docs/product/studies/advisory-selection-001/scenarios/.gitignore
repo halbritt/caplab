@@ -1,0 +1,7 @@
+# Scenario worlds must ship clean. Build residue can leak prior test outcomes
+# into an episode and is exactly the working-tree residue CAPLAB-51 flagged.
+__pycache__/
+.pytest_cache/
+*.egg-info/
+*.pyc
+.DS_Store
