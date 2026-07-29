@@ -1,10 +1,12 @@
 # advisory-selection-001 — study artifacts
 
 Construct: **advisory-responsive approach selection** (CAPLAB-58).
-Map: Plane CAPLAB-44. Preregistration:
-[`../caplab-advisory-selection-001-preregistration.md`](../caplab-advisory-selection-001-preregistration.md).
-Capability card:
-[`../../capability-cards/caplab-advisory-selection-001-advisory-responsive-approach-selection.md`](../../capability-cards/caplab-advisory-selection-001-advisory-responsive-approach-selection.md).
+Map: Plane CAPLAB-44.
+
+**Neither the preregistration nor the capability card exists yet.** They are the
+destination of CAPLAB-44, not inputs to it. Paths reserved:
+`docs/product/studies/caplab-advisory-selection-001-preregistration.md` and
+`docs/product/capability-cards/caplab-advisory-selection-001-advisory-responsive-approach-selection.md`.
 
 ## Layout
 
