@@ -90,3 +90,71 @@ report; the ladder cannot be walked from that rung.
   non-attempt rate: open the raw streams before interpreting.
 - Custody append-only under `~/.local/share/caplab/campaigns/`; model pinned
   per turn; attestation joined by `thread_id`, never by file mtime.
+
+---
+
+# Amendments — recorded 2026-07-30, before any further episode
+
+All three were issued by the repository owner on stated methodological grounds.
+Amendments 1 and 3 are corrections to gate design and executability; amendment
+2 is a post-data efficiency change that does **not** move the frozen threshold.
+
+## Amendment 1 — requalification is ceiling-only
+
+**Pre-data rationale, on gate asymmetry — not on the observed result.** A
+ceiling mechanically truncates positive Δ; a floor does not. A scenario at 0.07
+has only headroom. The floor gate was therefore asymmetric *against* the
+hypothesis, and at `luna/low` it removed the two lowest-scoring scenarios at
+precisely the rung where a low-capability-benefits-more effect would be
+largest.
+
+**New gate: drop only scenarios scoring ≥ 0.85 in the none arm.** No floor
+drop. Phase-0 minimum survivor count unchanged at 4.
+
+**Retroactive:** run the injection arm at `luna/low` for `factory-lifecycle`
+and `ephemeral-instance`, and reissue the `luna/low` contrast over all 7
+scenarios. Both the amended 7-scenario pooled Δ and the original 5-scenario
+figure are reported.
+
+## Amendment 2 — adaptive k
+
+**Rationale.** Observed within-cell variance was 0.0081 against a 0.25
+worst-case bound; four of five survivors scored identically on all five trials.
+Replicates beyond the point of agreement are copies.
+
+**The observed MDE of 0.072 is ≈ 0.33/5 — one code flipping in one scenario.
+That is the quantisation floor, not achieved precision.** This instrument
+resolves exactly one quantity: *how many scenarios flip a code*. Power is
+governed by scenario count, not by k.
+
+**Procedure per cell:** run k=2. If both trials agree exactly, stop at 2. If
+they disagree, extend to k=5. Record realised k per cell; recompute pooled SE
+and tuple MDE from realised k.
+
+**The frozen threshold of 0.35 stays fixed at its pre-data derivation and does
+not move with realised k.** Operative bar remains `max(0.35, tuple MDE)`. Any Δ
+clearing the empirical MDE but not the frozen threshold is flagged, never
+silently dropped.
+
+## Amendment 3 — tuple order is randomised and frozen
+
+The prior instruction to re-sort remaining tuples by measured none-arm score is
+**not executable**: unrun tuples have no measured score. With the stopping rule
+removed, order carries no analytic weight.
+
+Order of the remaining 11 tuples drawn at random with a recorded seed and
+frozen now, so provider drift spreads across the ladder as noise rather than
+stacking on one end. Sorting by measured unaided difficulty happens at the
+**end**, for analysis only.
+
+## Framing — the injection arm is an upper bound
+
+Stated before results are in. Injection packets are hand-built from concept
+fields and verified to contain their target. **No deployed path produces this
+stimulus.** Every Δ measured here is therefore a ceiling on what any real
+delivery mechanism could achieve.
+
+**Consequence, claimable without further work:** if the ladder comes back flat,
+the corpus is inert *under ideal delivery*, and retrieval repair is moot
+regardless of how good retrieval could be made. That is a stronger conclusion
+than the objective nominally claims.
