@@ -51,15 +51,25 @@ harness grows a tool loop — a one-shot model cannot compute
 
 | pass | train/eval | notes |
 |---|---|---|
-| review | 882 / 98 | median ~9k tok, p90 ~24k, max ~32k; verdicts 212 accept / 254 accept_with_findings / 509 needs_revision / 5 reject |
-| implementation-planning | 162 / 17 | fenced `striatum-work-graph` JSON grammar |
-| design-convergence | 142 / 15 | |
+| review | 882 / 98 | median ~9k tok, p90 ~24k, max ~37k (3.5 bytes/token measured); verdicts 212 accept / 254 accept_with_findings / 509 needs_revision / 5 reject |
+| implementation-planning | 155 / 24 | fenced `striatum-work-graph` JSON grammar |
+| design-convergence | 141 / 16 | |
 | proposal-generation | 90 / 9 | |
+
+The split is candidate-aware: dual-signal review puts the same candidate in
+front of two lanes, so whole candidate groups land on one side of the
+time-ordered split (zero train/eval candidate overlap, verified), and DPO
+pairs exclude eval candidates.
 
 Filters (see `make_sft.py`): admitted + `status: complete` only; baseline
 lanes excluded (`local-qwen`, `glm`, `kimi`, deterministic `local`) so targets
 come from frontier/strong backends; legacy `revise` verdicts normalized to the
-current gate vocabulary (`needs_revision`); prompts capped at 192 KiB.
+current gate vocabulary (`needs_revision`); prompts capped at 128 KiB (the
+argv transport bound; ≈37k tokens, inside the 40960 training cutoff).
+
+A production-mirror baseline with thinking left on is unnecessary: the
+incumbent's historical ledger performance (40.2% fate agreement over 246 real
+reviews, thinking on) already *is* that number.
 
 ## Pipeline
 
@@ -93,6 +103,27 @@ Caveat: primary reviewers partially *cause* the fate they are scored against
 (the gate aggregates their verdict), so top-line numbers are flattered; the
 gap between the incumbent and the frontier lanes is the signal, and closing
 it is the point of the fine-tune.
+
+### Baseline: served 35B, no-think (`eval-runs/baseline-35b-nothink/`)
+
+Replay of the 98-example held-out review split against the currently served
+`qwen3.6-35b-a3b` with `enable_thinking: false` (the serving config the tuned
+model will use):
+
+| metric | untuned 35B | frontier reference (ceiling) |
+|---|---|---|
+| json_valid | 88.8% | ~100% |
+| verdict legal | 86.7% | 100% |
+| exact verdict match | 19.4% | — |
+| verdict side match | 33.7% | — |
+| fate agreement | **18.8%** | 83.2% (codex-sol-max) |
+
+Failure mode is unambiguous: 84/98 answers land on the accepting side
+(mostly `accept_with_findings`) while the reference split is
+revision-heavy — the untuned model is a rubber stamp, plus ~11% broken JSON.
+Exactly the two things SFT on the balanced frontier verdict distribution
+targets. Every number the tuned adapter must beat is in
+`eval-runs/baseline-35b-nothink/summary.json`.
 
 ## Corpus record shape
 
