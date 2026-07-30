@@ -1,0 +1,53 @@
+# DRAFT backend declaration for the fine-tuned local lane.
+# Copy to striatum-next/backends/local-qwen-ft/backend.yaml when a tuned GGUF
+# is actually served; adjust -model to the served alias. Enters as a NEW
+# backend id (fresh attribution lineage + own seal key), leaving local-qwen's
+# ledger history intact for before/after comparison.
+#
+# Provision the seal key first (same shape as the existing keys — 64 hex chars):
+#   openssl rand -hex 32 > ~/.local/share/striatum/keys/local-qwen-ft.sealkey
+#   chmod 600 ~/.local/share/striatum/keys/local-qwen-ft.sealkey
+schema_version: 1
+id: local-qwen-ft
+kind: execution-backend
+declaration_version: 1
+status: accepted
+agent_runtimes:
+  - id: local-qwen-ft
+    version_discovery: probe
+aliasing:
+  aliasing_class: alibaba-qwen        # same base-model family as local-qwen
+  basis: vendor-stated
+  as_of: 2026-07-30
+  review_by: 2026-10-01
+quality:
+  classes: { review: baseline }       # stays additional-signal until the ledger
+                                      # earns a re-rank (scheduler telemetry
+                                      # wants min_samples 20)
+  basis: local-model-class
+  as_of: 2026-07-30
+  review_by: 2026-10-01
+capabilities:
+  effects: [E0]
+  supported_pass_types: [review]      # widen only after per-pass eval supports it
+  forbidden_pass_types: [proposal-generation, design-convergence, implementation-planning, packetization, build, observation, decision-generation, verification, integration, intent-capture]
+  context_profile: { window_class: large, practical_input_tokens: 200000 }
+  latency_profile: { class: batch, p50_s: 120, p95_s: 900 }
+  concurrency: { max_lanes: 1 }
+capacity:
+  model: local-slot
+  estimate: { basis: structural, unit: lanes, confidence: exact }
+  exhaustion_behavior: refuse-dispatch
+constraints:
+  network: loopback-only
+  interactive_input: none
+  internal_retry: { max: 1 }
+adapter:
+  command: [striatum-openai-lane, -base-url, "http://127.0.0.1:8081/v1", -model, qwen3.6-ft, -max-tokens, "32768"]
+  prompt_mode: stdin
+  stdout_output: single-required-output
+  version_command: [striatum-openai-lane, -version]
+provenance_fields:
+  required: [agent_runtime_id, agent_runtime_version, session_nonce, rendered_prompt_hash, attempts]
+  optional: [token_usage, internal_relaunches]
+scheduler_hints: [rank=8]             # one ahead of local-qwen; still behind every frontier lane

@@ -61,6 +61,39 @@ lanes excluded (`local-qwen`, `glm`, `kimi`, deterministic `local`) so targets
 come from frontier/strong backends; legacy `revise` verdicts normalized to the
 current gate vocabulary (`needs_revision`); prompts capped at 192 KiB.
 
+## Pipeline
+
+| step | tool | status |
+|---|---|---|
+| corpus extraction | `extract.py` | done — 2,051 records |
+| fate labels + backend ranking | `analyze.py` | done — `corpus/analysis.json` |
+| SFT splits | `make_sft.py` | done — `sft/` |
+| DPO pairs (dual-signal disagreements) | `make_dpo.py` | done — 78 pairs |
+| baseline eval of served model | `eval.py` | done — `eval-runs/baseline-35b-nothink/` |
+| QLoRA SFT (+optional DPO) | `train/*.yaml` | **needs GPU rig** — see `train/README.md` |
+| deploy as new backend | `deploy/local-qwen-ft/` | after training |
+
+### Verdict-vs-fate ranking (from `analyze.py`)
+
+Fate of each reviewed candidate — later admission with different content
+("revised") vs last admitted content ("final") — adjudicates every review
+verdict identically across backends:
+
+| backend | reviews | fate agreement |
+|---|---|---|
+| codex-sol-max | 440 | 83.2% |
+| codex | 249 | 82.3% |
+| claude-code | 26 | 69.2% |
+| claude-harm-opus-4-8-high | 86 | 67.4% |
+| agy | 109 | 57.8% |
+| **local-qwen (incumbent)** | **246** | **40.2%** |
+| agy-gemini-3-6-flash-medium | 26 | 15.4% |
+
+Caveat: primary reviewers partially *cause* the fate they are scored against
+(the gate aggregates their verdict), so top-line numbers are flattered; the
+gap between the incumbent and the frontier lanes is the signal, and closing
+it is the point of the fine-tune.
+
 ## Corpus record shape
 
 One JSON object per submission: `dispatch_id`, `run_ref`, `pass`,

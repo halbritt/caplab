@@ -2,3 +2,4 @@ corpus/
 corpus-test/
 sft/
 __pycache__/
+train/out/

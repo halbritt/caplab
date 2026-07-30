@@ -263,6 +263,15 @@ def extract_submission(exchange: str, dispatch_id: str, idx: dict, passes: set[s
         "prompt_truncated": len(prompt_bytes) > MAX_PROMPT_BYTES,
         "prompt_hash_verified": verified,
         "render_error": render_error,
+        "inputs": [
+            {
+                "identity": i.get("identity"),
+                "version_seq": i.get("version_seq"),
+                "content_hash": i.get("content_hash"),
+                "path": i.get("path"),
+            }
+            for i in dispatch.get("inputs") or []
+        ],
         "outputs": outputs,
         "diagnostics": sub.get("diagnostics"),
         "labels": {
