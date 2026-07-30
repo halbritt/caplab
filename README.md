@@ -110,20 +110,23 @@ Replay of the 98-example held-out review split against the currently served
 `qwen3.6-35b-a3b` with `enable_thinking: false` (the serving config the tuned
 model will use):
 
-| metric | untuned 35B | frontier reference (ceiling) |
-|---|---|---|
-| json_valid | 88.8% | ~100% |
-| verdict legal | 86.7% | 100% |
-| exact verdict match | 19.4% | — |
-| verdict side match | 33.7% | — |
-| fate agreement | **18.8%** | 83.2% (codex-sol-max) |
+| metric | untuned 27B¹ | untuned 35B | frontier reference (ceiling) |
+|---|---|---|---|
+| json_valid | 14.3% | 88.8% | ~100% |
+| verdict legal | 14.3% | 86.7% | 100% |
+| exact verdict match | 5.1% | 19.4% | — |
+| verdict side match | 7.1% | 33.7% | — |
+| fate agreement | 21.4% (14 scored) | **18.8%** | 83.2% (codex-sol-max) |
 
-Failure mode is unambiguous: 84/98 answers land on the accepting side
-(mostly `accept_with_findings`) while the reference split is
-revision-heavy — the untuned model is a rubber stamp, plus ~11% broken JSON.
-Exactly the two things SFT on the balanced frontier verdict distribution
-targets. Every number the tuned adapter must beat is in
-`eval-runs/baseline-35b-nothink/summary.json`.
+¹ `eval-runs/baseline-27b-iq4xs-nothink/`: Qwen3.6-27B IQ4_XS served with
+llama.cpp b10186 on peecee's 3090 Ti (ctx 40960, q8_0 KV, same sampler,
+no-think), run under a gpu-fleet `marker`-slot lease. Its dominant failure is
+total: 84/98 responses are the 6-token literal `outputs/review-ledger` — the
+base model parrots the output path instead of reviewing. The 35B fails
+differently (rubber-stamp accepts + ~11% broken JSON). SFT attacks both:
+output format is learned directly, and the verdict distribution is balanced.
+Every number the tuned adapter must beat is in these two summary.json files;
+the tuning target (27B) starts from the lower baseline.
 
 ## Corpus record shape
 
