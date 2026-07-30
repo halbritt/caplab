@@ -47,7 +47,7 @@ def main():
     ap.add_argument("--corpus", default="corpus/corpus.jsonl")
     ap.add_argument("--pass", dest="pass_id", default="review")
     ap.add_argument("--out", default="sft")
-    ap.add_argument("--max-prompt-bytes", type=int, default=192 * 1024,
+    ap.add_argument("--max-prompt-bytes", type=int, default=128 * 1024,
                     help="drop examples whose rendered prompt exceeds this")
     ap.add_argument("--eval-fraction", type=float, default=0.1)
     ap.add_argument("--exclude-backends", default="local-qwen,glm,kimi,local",
@@ -100,7 +100,34 @@ def main():
 
     kept.sort(key=lambda r: r["written_at"] or "")
     n_eval = max(1, int(len(kept) * args.eval_fraction)) if kept else 0
-    splits = {"train": kept[: len(kept) - n_eval], "eval": kept[len(kept) - n_eval:]}
+
+    # Candidate-aware split: dual-signal review means the same candidate
+    # (identity, content_hash of the primary pinned input) is often reviewed
+    # more than once. A whole candidate group lands on one side of the split —
+    # newest groups (by their latest example) become eval — so no eval
+    # candidate ever appears in train.
+    def candidate_key(r):
+        for i in r.get("inputs") or []:
+            path = (i.get("path") or "").split("/", 1)[-1]
+            if path in ("00-base-pin", "01-base") or path.startswith("02-work-graph"):
+                continue
+            if "diagnostic" in path:
+                continue
+            return (i.get("identity"), i.get("content_hash"))
+        return (r["dispatch_id"], None)
+
+    groups = collections.defaultdict(list)
+    for r in kept:
+        groups[candidate_key(r)].append(r)
+    ordered = sorted(groups.values(), key=lambda g: max(r["written_at"] or "" for r in g))
+    eval_rows, i = [], len(ordered)
+    while len(eval_rows) < n_eval and i > 0:
+        i -= 1
+        eval_rows = [r for g in ordered[i:] for r in g]
+    train_rows = [r for g in ordered[:i] for r in g]
+    train_rows.sort(key=lambda r: r["written_at"] or "")
+    eval_rows.sort(key=lambda r: r["written_at"] or "")
+    splits = {"train": train_rows, "eval": eval_rows}
 
     os.makedirs(args.out, exist_ok=True)
     for name, rows in splits.items():

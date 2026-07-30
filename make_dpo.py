@@ -25,7 +25,7 @@ import json
 from analyze import ACCEPTING, REFUSING
 from make_sft import normalize_review_body
 
-MAX_PROMPT_BYTES = 192 * 1024
+MAX_PROMPT_BYTES = 128 * 1024
 
 
 def side(verdict: str) -> str | None:
@@ -41,11 +41,25 @@ def main():
     ap.add_argument("--corpus", default="corpus/corpus.jsonl")
     ap.add_argument("--analysis", default="corpus/analysis.json")
     ap.add_argument("--out", default="sft/review.dpo.jsonl")
+    ap.add_argument("--exclude-eval", default="sft/review.eval.jsonl",
+                    help="drop pairs whose candidate appears in this eval split "
+                         "(leakage guard); empty string disables")
     args = ap.parse_args()
 
     with open(args.analysis) as f:
         analysis = json.load(f)
     fate_by_dispatch = {r["dispatch_id"]: r for r in analysis["reviews"]}
+
+    eval_candidates = set()
+    if args.exclude_eval:
+        import os
+        if os.path.isfile(args.exclude_eval):
+            with open(args.exclude_eval) as f:
+                for line in f:
+                    did = json.loads(line)["meta"]["dispatch_id"]
+                    fr = fate_by_dispatch.get(did)
+                    if fr:
+                        eval_candidates.add((fr["candidate_identity"], fr["candidate_hash"]))
 
     records = {}
     with open(args.corpus) as f:
@@ -60,6 +74,9 @@ def main():
 
     pairs, stats = [], collections.Counter()
     for (identity, chash), reviews in groups.items():
+        if (identity, chash) in eval_candidates:
+            stats["excluded_eval_candidate"] += 1
+            continue
         fate = reviews[0]["fate"]
         if fate not in ("final", "revised"):
             stats["fate_unknown"] += 1

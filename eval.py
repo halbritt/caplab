@@ -164,8 +164,11 @@ def main():
             print(f"[{i + 1}/{len(examples)}] {did[:12]} verdict={verdict} "
                   f"ref={reference.get('verdict')} {resp.get('seconds')}s", flush=True)
 
-    # Summary over everything in the results file.
-    rows = [json.loads(line) for line in open(results_path)]
+    # Summary over the current eval set only (the results file may hold rows
+    # from an earlier revision of the split; those are kept but not scored).
+    current = {ex["meta"]["dispatch_id"] for ex in examples}
+    rows = [r for line in open(results_path)
+            if (r := json.loads(line))["dispatch_id"] in current]
     n = len(rows)
     scored_fate = [r for r in rows if r["agrees_with_fate"] is not None]
     summary = {
