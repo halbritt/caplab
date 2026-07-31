@@ -158,3 +158,74 @@ delivery mechanism could achieve.
 the corpus is inert *under ideal delivery*, and retrieval repair is moot
 regardless of how good retrieval could be made. That is a stronger conclusion
 than the objective nominally claims.
+
+---
+
+# Amendment 4 — rater replacement, authorized 2026-07-31
+
+The original artifact rater, Claude Sonnet at high effort, reached an external
+monthly spend ceiling after the subject episodes had run. The repository owner
+authorized a rater change and continuation of the ladder on 2026-07-31.
+
+This amendment changes the rater, not the subject, scenarios, arms, outcome
+codes, threshold, or stopping rule.
+
+## Continuity calibration
+
+The replacement is selected by a blinded continuity calibration against 42
+existing Claude-rated behavioral attempts: six attempts from each scenario.
+Selection uses seed `20260731`. Within each scenario, attempts are grouped by
+their original primary-code score, each group is ordered by the SHA-256 of
+`<seed>:<slot>`, and groups are sampled in ascending-score round-robin order.
+Infrastructure dispositions, behavioral non-attempts, malformed judgments, and
+empty diffs are ineligible.
+
+The replacement sees only the frozen code definitions and candidate diff. It
+does not receive the subject model, effort, arm, slot, prior judgment, or
+scenario result. The native Codex CLI runs from an empty directory, ignores
+user configuration and execution rules, uses a read-only sandbox, and enforces
+an exact JSON output schema.
+
+A candidate passes only if all of these gates pass on the frozen panel:
+
+- at least 90% agreement over all primary-code bits;
+- at least 80% primary-code agreement in every scenario;
+- at least 85% agreement on originally positive primary-code decisions; and
+- at least 85% agreement on originally negative primary-code decisions.
+
+`SCOPE` agreement is recorded but is not part of these gates. Agreement with
+the old rater measures continuity, not truth.
+
+## Candidate order
+
+Candidate search is ordered and stops at the first tuple that passes every
+gate:
+
+1. `gpt-5.6-luna/high`
+2. `gpt-5.6-sol/high`
+3. `gpt-5.6-terra/high`
+4. `gpt-5.6-luna/xhigh`
+5. `gpt-5.6-sol/xhigh`
+6. `gpt-5.6-terra/xhigh`
+
+The accepted candidate is not selected by ranking observed agreement. If no
+candidate passes, scoring stops for a new owner decision.
+
+## Rerating and custody
+
+Once a candidate passes, it rates every score-eligible behavioral attempt,
+including attempts already rated by Claude. Behavioral non-attempts receive a
+mechanical primary score of zero after disposition validation. Infrastructure
+episodes remain excluded. The final analysis must not mix Claude and
+replacement-rater judgments.
+
+Claude judgments remain immutable audit evidence. Replacement prompts, schemas,
+event streams, raw final messages, parsed judgments, CLI version, model,
+effort, thread identifier, hashes, and failures are stored in a separate
+append-only namespace under the campaign root. Empty objects, missing keys,
+extra keys, non-Boolean values, nonzero exits, and unattested model or effort
+are failures, never zero scores.
+
+The replacement uses the same model family as the subjects. This is a disclosed
+instrument limitation. Blinding removes tuple and arm identity from the prompt,
+but it does not remove model-family effects.
