@@ -175,12 +175,16 @@ class ArtifactRaterTests(unittest.TestCase):
                     ),
                     json.dumps(
                         {
-                            "type": "event_msg",
+                            "type": "turn_context",
                             "payload": {
-                                "type": "thread_settings_applied",
-                                "thread_settings": {
+                                "model": "gpt-5.6-luna",
+                                "effort": "high",
+                                "collaboration_mode": {
+                                    "mode": "default",
+                                    "settings": {
                                     "model": "gpt-5.6-luna",
                                     "reasoning_effort": "high",
+                                    },
                                 },
                             },
                         }

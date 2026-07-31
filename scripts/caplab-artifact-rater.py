@@ -126,6 +126,73 @@ def _rater_metadata(output_root: Path, model: str, effort: str) -> dict[str, Any
     return metadata
 
 
+def _recover_completed_attempt(
+    attempt_root: Path,
+    accepted_path: Path,
+    entry: dict[str, Any],
+    model: str,
+    effort: str,
+) -> bool:
+    """Accept a preserved successful call after a local parser correction."""
+    record_path = attempt_root / "record.json"
+    if not record_path.is_file() or (attempt_root / "recovery.json").exists():
+        return False
+    record = _load_json(record_path)
+    if (
+        record.get("return_code") != 0
+        or record.get("model") != model
+        or record.get("effort") != effort
+        or record.get("diff_sha256") != entry["diff_sha256"]
+    ):
+        return False
+    last_message_path = attempt_root / "last-message.txt"
+    events_path = attempt_root / "events.jsonl"
+    if not last_message_path.is_file() or not events_path.is_file():
+        return False
+
+    judgment = validate_judgment(
+        json.loads(last_message_path.read_text(encoding="utf-8")),
+        entry["code_ids"],
+    )
+    thread_id = extract_thread_id(events_path.read_text(encoding="utf-8"))
+    source_rollout = _find_rollout(thread_id)
+    attestation = read_rollout_attestation(source_rollout, thread_id)
+    if attestation["model"] != model or attestation["effort"] != effort:
+        raise CalibrationError(
+            f"attested tuple mismatch: {attestation['model']}/{attestation['effort']}"
+        )
+    custody_rollout = attempt_root / "rollout.jsonl"
+    if not custody_rollout.exists():
+        shutil.copyfile(source_rollout, custody_rollout)
+    attestation["source_rollout_path"] = attestation.pop("rollout_path")
+    attestation["custody_rollout_sha256"] = _sha256(custody_rollout)
+    recovery = {
+        "schema_version": "caplab-artifact-rater-recovery/1",
+        "recovered_at": datetime.now(UTC).isoformat(),
+        "reason": "original parser did not read turn_context attestation",
+        "original_record_sha256": _sha256(record_path),
+        "thread_id": thread_id,
+        "attestation": attestation,
+        "last_message_sha256": _sha256(last_message_path),
+    }
+    _write_new_json(attempt_root / "recovery.json", recovery)
+    accepted = {
+        "schema_version": "caplab-artifact-rater-judgment/1",
+        "slot": entry["slot"],
+        "scenario": entry["scenario"],
+        "model": model,
+        "effort": effort,
+        "thread_id": thread_id,
+        "diff_sha256": entry["diff_sha256"],
+        "prompt_sha256": record["prompt_sha256"],
+        "judgment": judgment,
+        "attempt": attempt_root.name,
+        "recovered_from_preserved_attempt": True,
+    }
+    _write_new_json(accepted_path, accepted)
+    return True
+
+
 def _score_entry(
     entry: dict[str, Any],
     manifest: dict[str, Any],
@@ -147,6 +214,15 @@ def _score_entry(
         ):
             raise CalibrationError(f"accepted evidence mismatch for {slot}")
         return slot, True, "already accepted"
+
+    for prior_attempt in sorted(slot_root.glob("attempt-[0-9][0-9][0-9]"), reverse=True):
+        try:
+            if _recover_completed_attempt(
+                prior_attempt, accepted_path, entry, model, effort
+            ):
+                return slot, True, f"recovered {prior_attempt.name}"
+        except (CalibrationError, json.JSONDecodeError, OSError):
+            continue
 
     attempt_root = slot_root / f"attempt-{_attempt_number(slot_root):03d}"
     attempt_root.mkdir(parents=True, exist_ok=False)

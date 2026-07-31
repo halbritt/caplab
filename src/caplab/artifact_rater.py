@@ -124,6 +124,10 @@ def read_rollout_attestation(rollout_path: Path, thread_id: str) -> dict[str, st
                 settings = payload.get("thread_settings", {})
                 model = settings.get("model")
                 effort = settings.get("reasoning_effort")
+        if event.get("type") == "turn_context":
+            payload = event.get("payload", {})
+            model = payload.get("model", model)
+            effort = payload.get("effort", effort)
     if session_id != thread_id:
         raise CalibrationError(
             f"rollout thread mismatch: expected {thread_id}, got {session_id}"
