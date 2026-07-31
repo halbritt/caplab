@@ -1,5 +1,5 @@
 accelerate==1.14.0
-apache-tvm-ffi==0.1.13
+apache-tvm-ffi==0.1.11
 bitsandbytes==0.50.0
 datasets==5.0.1
 huggingface-hub==1.26.0
