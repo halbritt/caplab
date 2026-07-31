@@ -229,3 +229,31 @@ are failures, never zero scores.
 The replacement uses the same model family as the subjects. This is a disclosed
 instrument limitation. Blinding removes tuple and arm identity from the prompt,
 but it does not remove model-family effects.
+
+---
+
+# Amendment 5 — Terra/high accepted by owner judgment, 2026-07-31
+
+No high-effort candidate passed every continuity gate. The repository owner
+instructed the operator to make a judgment call and rerate the stack if
+Terra/high reproduced the same narrow failure as Luna/high and Sol/high. That
+instruction arrived while Terra/high was running, after 17 of its 42 judgments
+had completed and before its aggregate result was known.
+
+The three results were:
+
+| candidate | overall | positive | negative | lowest scenario | frozen result |
+|---|---:|---:|---:|---:|---|
+| `gpt-5.6-luna/high` | 92.1% | 82.1% | 100% | 77.8% | fail |
+| `gpt-5.6-sol/high` | 92.9% | 83.9% | 100% | 77.8% | fail |
+| `gpt-5.6-terra/high` | 92.9% | 83.9% | 100% | 83.3% | fail |
+
+Terra/high passed the overall, negative, and every-scenario gates. It missed
+the positive gate by one decision: 47 of 56 agreements, where 48 would have
+cleared 85%. All three candidates had 100% `SCOPE` agreement.
+
+**Decision:** accept `gpt-5.6-terra/high` as the replacement artifact rater and
+do not run the xhigh candidates. This is an explicit post-data, owner-authorized
+instrument decision. It is not reported as a successful frozen calibration.
+The full stack is rerated with Terra/high, and the limitation remains attached
+to every resulting study claim.

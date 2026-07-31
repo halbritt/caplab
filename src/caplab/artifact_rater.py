@@ -275,6 +275,68 @@ def build_calibration_manifest(
     }
 
 
+def build_scoring_manifest(
+    campaign_root: Path, scenario_root: Path
+) -> dict[str, Any]:
+    """Bind every behavioral attempt that requires an artifact judgment."""
+    attempts_root = campaign_root / "attempts"
+    if not attempts_root.is_dir():
+        raise CalibrationError(f"missing attempts directory: {attempts_root}")
+
+    entries: list[dict[str, Any]] = []
+    seen_slots: set[str] = set()
+    allowed_dispositions = {
+        "behavioural-attempt",
+        "behavioural-no-attempt",
+        "infrastructure",
+    }
+    for attempt in sorted(path for path in attempts_root.iterdir() if path.is_dir()):
+        episode_path = attempt / "episode.json"
+        episode = _load_json(episode_path)
+        try:
+            slot = episode["slot"]
+            scenario = episode["scenario"]
+            disposition = episode["disposition"]
+        except (KeyError, TypeError) as error:
+            raise CalibrationError(f"malformed episode: {episode_path}") from error
+        if slot != attempt.name:
+            raise CalibrationError(f"episode slot/path mismatch: {attempt}")
+        if slot in seen_slots:
+            raise CalibrationError(f"duplicate episode slot: {slot}")
+        seen_slots.add(slot)
+        if disposition not in allowed_dispositions:
+            raise CalibrationError(f"{slot}: unknown disposition {disposition!r}")
+        if disposition != "behavioural-attempt":
+            continue
+
+        diff_path = attempt / "diff.patch"
+        try:
+            if not diff_path.is_file() or diff_path.stat().st_size == 0:
+                raise CalibrationError(f"{slot}: behavioral attempt has no diff")
+        except OSError as error:
+            raise CalibrationError(f"cannot inspect diff for {slot}: {error}") from error
+        code_ids = _scenario_code_ids(scenario_root, scenario)
+        entries.append(
+            {
+                "slot": slot,
+                "scenario": scenario,
+                "disposition": disposition,
+                "code_ids": list(code_ids),
+                "diff_sha256": _sha256(diff_path),
+                "episode_sha256": _sha256(episode_path),
+            }
+        )
+    if not entries:
+        raise CalibrationError("no score-eligible behavioral attempts")
+    return {
+        "schema_version": "caplab-artifact-scoring-manifest/1",
+        "campaign_root": str(campaign_root.resolve()),
+        "scenario_root": str(scenario_root.resolve()),
+        "selection": "all-behavioural-attempts",
+        "entries": entries,
+    }
+
+
 def _ratio(numerator: int, denominator: int, label: str) -> float:
     if denominator == 0:
         raise CalibrationError(f"cannot compute {label}: denominator is zero")

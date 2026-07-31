@@ -10,6 +10,7 @@ from caplab.artifact_rater import (
     build_artifact_prompt,
     build_calibration_manifest,
     build_judgment_schema,
+    build_scoring_manifest,
     evaluate_calibration,
     extract_thread_id,
     read_rollout_attestation,
@@ -120,6 +121,36 @@ class ArtifactRaterTests(unittest.TestCase):
             build_calibration_manifest(
                 self.campaign, self.scenarios, seed=20260731, per_scenario=6
             )
+
+    def test_scoring_manifest_includes_unrated_behavioral_attempts_only(self) -> None:
+        scenario = "02-example"
+        self._scenario(scenario)
+        valid = self._attempt(
+            scenario,
+            1,
+            {},
+        )
+        self._attempt(
+            scenario,
+            2,
+            {},
+            disposition="behavioural-no-attempt",
+            diff="",
+        )
+        self._attempt(
+            scenario,
+            3,
+            {},
+            disposition="infrastructure",
+        )
+
+        manifest = build_scoring_manifest(self.campaign, self.scenarios)
+
+        self.assertEqual([entry["slot"] for entry in manifest["entries"]], [valid])
+        self.assertEqual(
+            manifest["entries"][0]["code_ids"], ["C1", "C2", "C3", "SCOPE"]
+        )
+        self.assertNotIn("old_judgment", manifest["entries"][0])
 
     def test_judgment_requires_exact_boolean_keys(self) -> None:
         expected = ("C1", "C2", "C3", "SCOPE")

@@ -24,6 +24,7 @@ from caplab.artifact_rater import (
     build_artifact_prompt,
     build_calibration_manifest,
     build_judgment_schema,
+    build_scoring_manifest,
     evaluate_calibration,
     extract_thread_id,
     read_rollout_attestation,
@@ -396,6 +397,16 @@ def command_run(arguments: argparse.Namespace) -> int:
     return 1 if failures else 0
 
 
+def command_select_all(arguments: argparse.Namespace) -> int:
+    manifest = build_scoring_manifest(
+        arguments.campaign_root,
+        arguments.scenario_root,
+    )
+    _save_idempotent(arguments.output, manifest)
+    print(f"selected {len(manifest['entries'])} behavioral attempts")
+    return 0
+
+
 def command_evaluate(arguments: argparse.Namespace) -> int:
     manifest = _load_json(arguments.manifest)
     judgments = {}
@@ -423,6 +434,12 @@ def parser() -> argparse.ArgumentParser:
     select.add_argument("--per-scenario", type=int, required=True)
     select.add_argument("--output", type=Path, required=True)
     select.set_defaults(function=command_select)
+
+    select_all = subparsers.add_parser("select-all")
+    select_all.add_argument("--campaign-root", type=Path, required=True)
+    select_all.add_argument("--scenario-root", type=Path, required=True)
+    select_all.add_argument("--output", type=Path, required=True)
+    select_all.set_defaults(function=command_select_all)
 
     run = subparsers.add_parser("run")
     run.add_argument("--manifest", type=Path, required=True)
