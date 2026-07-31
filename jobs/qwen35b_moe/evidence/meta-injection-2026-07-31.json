@@ -1,0 +1,68 @@
+{
+  "protocol": "striatum-qwen35b-meta-injection-evidence/1",
+  "recorded_at": "2026-07-31T19:25:00Z",
+  "model": {
+    "id": "Qwen/Qwen3.6-35B-A3B",
+    "revision": "995ad96eacd98c81ed38be0c5b274b04031597b0",
+    "config_source": "/home/halbritt/models/hf/Qwen3.6-35B-A3B-995ad96e/config.json"
+  },
+  "runtime": {
+    "python": "3.11.15",
+    "torch": "2.8.0",
+    "transformers": "5.6.2",
+    "peft": "0.20.0",
+    "accelerate": "1.14.0"
+  },
+  "method": "AutoModelForImageTextToText.from_config under accelerate.init_empty_weights, followed by PEFT get_peft_model",
+  "results": {
+    "linear-only": {
+      "target_counts": {
+        "linear_attention": 150,
+        "attention": 40,
+        "shared_expert": 120,
+        "routed_expert": 0
+      },
+      "category_parameters": {
+        "linear_attention": 25620480,
+        "attention": 6881280,
+        "shared_expert": 9830400,
+        "routed_expert": 0
+      },
+      "trainable_parameters": 42332160,
+      "base_trainable_parameters": 0,
+      "fp32_bytes": 169328640
+    },
+    "expert-aware": {
+      "target_counts": {
+        "linear_attention": 150,
+        "attention": 40,
+        "shared_expert": 120,
+        "routed_expert": 80
+      },
+      "category_parameters": {
+        "linear_attention": 25620480,
+        "attention": 6881280,
+        "shared_expert": 9830400,
+        "routed_expert": 57671680
+      },
+      "trainable_parameters": 100003840,
+      "base_trainable_parameters": 0,
+      "fp32_bytes": 400015360,
+      "expert_rank": 1
+    }
+  },
+  "limits": {
+    "linear-only": {
+      "parameter_cap": 50000000,
+      "fp32_byte_cap": 209715200,
+      "passed": true
+    },
+    "expert-aware": {
+      "parameter_cap": 110000000,
+      "fp32_byte_cap": 471859200,
+      "passed": true
+    }
+  },
+  "scope": "This proves target injection and parameter accounting only. It does not prove optimizer-step memory, checkpoint reload, GGUF conversion, or llama.cpp parity."
+}
+

@@ -1,0 +1,59 @@
+# Template consumed by materialize.py. The generated copy must receive a real
+# immutable digest via update_image_digest.py before runpod-jobrunner check.
+protocol: job-spec/1
+name: striatum-qwen36-35b-a3b-linear
+bundle_hash: "0000000000000000000000000000000000000000000000000000000000000000"
+image: ghcr.io/halbritt/striatum-tuner-qwen35b-moe@sha256:REPLACE_WITH_IMAGE_DIGEST
+runner:
+  version: 0.1.1
+  git_commit: f021b49ee68b61af7f79acdcaae9bb91631a26fa
+phase_order: "verify -> preflight -> train -> evaluate -> package"
+resources:
+  gpu_count: 1
+  gpu_types: [NVIDIA H100 80GB HBM3]
+  container_disk_gb: 220
+  secure_cloud: true
+  storage:
+    encrypted: true
+    mount: /workspace
+    required_gb: 120
+inputs:
+  manifest: input-manifest.json
+phases:
+  verify:
+    enabled: true
+    argv: [/opt/striatum-qwen35b/bin/verify]
+    timeout_seconds: 120
+  preflight:
+    enabled: true
+    argv: [/opt/striatum-qwen35b/bin/preflight, --strategy, linear-only, --run-smoke]
+    timeout_seconds: 600
+  train:
+    enabled: true
+    argv: [/opt/striatum-qwen35b/bin/train, --strategy, linear-only]
+    timeout_seconds: 43200
+  evaluate:
+    enabled: true
+    argv: [/opt/striatum-qwen35b/bin/evaluate]
+    timeout_seconds: 10800
+  package:
+    enabled: true
+    argv: [/opt/striatum-qwen35b/bin/package]
+    timeout_seconds: 1800
+heartbeat_interval_seconds: 15
+termination_grace_seconds: 60
+artifacts:
+  manifest_path: artifact-manifest.json
+  incremental_manifest_glob: checkpoints/checkpoint-*/checkpoint-complete.json
+  incremental_mirror_ack:
+    required: true
+    directory: control/incremental-acks
+    timeout_seconds: 900
+limits:
+  max_elapsed_seconds: 54000
+  max_cost_usd: "47.00"
+  usd_per_hour: "3.15"
+lifecycle:
+  recover_on_failure: true
+  delete_after_terminal: true
+  delete_on_preflight_failure: true
