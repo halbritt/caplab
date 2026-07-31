@@ -846,6 +846,42 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
     )
 
 
+def test_ssh_keygen_capability_probe_accepts_help_exit_but_not_missing_y(
+    tmp_path: Path,
+) -> None:
+    probe = (
+        'ssh_keygen_help="$(ssh-keygen -? 2>&1 || :)" \\\n'
+        '    && printf \'%s\\n\' "$ssh_keygen_help" | grep -Fq -- \'-Y sign\''
+    )
+    assert probe in (JOB / "Dockerfile").read_text()
+
+    fake_bin = tmp_path / "bin"
+    fake_bin.mkdir()
+    fake_ssh_keygen = fake_bin / "ssh-keygen"
+    fake_ssh_keygen.write_text(
+        "#!/bin/sh\n"
+        "printf '%s\\n' \"$SSH_KEYGEN_HELP\"\n"
+        "exit 255\n"
+    )
+    fake_ssh_keygen.chmod(0o755)
+    command = probe.replace("\\\n    ", "")
+    env = {"PATH": f"{fake_bin}:/usr/bin:/bin"}
+
+    supported = subprocess.run(
+        ["bash", "-o", "pipefail", "-c", command],
+        env={**env, "SSH_KEYGEN_HELP": "usage: ssh-keygen -Y sign"},
+        check=False,
+    )
+    unsupported = subprocess.run(
+        ["bash", "-o", "pipefail", "-c", command],
+        env={**env, "SSH_KEYGEN_HELP": "usage: ssh-keygen -t type"},
+        check=False,
+    )
+
+    assert supported.returncode == 0
+    assert unsupported.returncode != 0
+
+
 def test_preflight_materialization_stamps_single_quoted_yaml_hash(
     tmp_path: Path,
 ) -> None:

@@ -23,7 +23,8 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
        build-essential ca-certificates cmake git libcurl4-openssl-dev openssh-client \
        python3-venv tini \
-    && ssh-keygen -? 2>&1 | grep -q -- '-Y sign' \
+    && ssh_keygen_help="$(ssh-keygen -? 2>&1 || :)" \
+    && printf '%s\n' "$ssh_keygen_help" | grep -Fq -- '-Y sign' \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the already-published controller-matched runner by immutable image
