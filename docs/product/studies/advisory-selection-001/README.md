@@ -3,6 +3,10 @@
 Construct: **advisory-responsive approach selection** (CAPLAB-58).
 Map: Plane CAPLAB-44.
 
+The completed pre-study agent-system ladder is recorded in
+[`LADDER-RESULT.md`](LADDER-RESULT.md). Its result does not preregister or admit
+the destination study described below.
+
 **Neither the preregistration nor the capability card exists yet.** They are the
 destination of CAPLAB-44, not inputs to it. Paths reserved:
 `docs/product/studies/caplab-advisory-selection-001-preregistration.md` and
