@@ -257,3 +257,30 @@ do not run the xhigh candidates. This is an explicit post-data, owner-authorized
 instrument decision. It is not reported as a successful frozen calibration.
 The full stack is rerated with Terra/high, and the limitation remains attached
 to every resulting study claim.
+
+---
+
+# Amendment 6 — native subject continuation, recorded 2026-07-31
+
+The full rerate changed several first-two-trial agreement decisions and exposed
+subject cells that the old scorer had stopped too early. New subject attempts
+remain authorized by the owner's direction to run the ladder.
+
+ADR 0039 requires every native agent-system tuple to be mapped before a live
+attempt is prepared. The original ad hoc runner did not enforce that boundary.
+Before continuation, all 12 ladder tuples were mapped in the study-specific
+`native-agent-systems.json`. That extension seals and enforces
+`docs/product/contracts/native-agent-systems.json` without changing the bytes
+already sealed by older studies. The continuation runner validates both
+policies and the exact `(Codex CLI, model, effort)` command before it creates an
+attempt directory.
+
+Continuation uses Codex CLI 0.146.0. The original episodes used the native
+Codex version recorded in each existing rollout; this harness-version drift is
+part of the subject configuration and is reported with the result. Task bytes,
+injection bytes, scenario worlds, model IDs, efforts, 1,200-second limit, and
+full-permission native Codex execution remain unchanged.
+
+An infrastructure replacement does not overwrite the failed episode. Its slot
+suffix is `t<N>r<R>`, where `N` is the logical trial being replaced and `R` is
+the replacement number. Both records remain in append-only custody.

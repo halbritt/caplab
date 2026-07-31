@@ -12,6 +12,7 @@ from caplab.subject_identity import (
     load_native_agent_system_policy,
     validate_native_agent_systems,
 )
+from caplab.ladder_subject import validate_ladder_subject
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -97,6 +98,29 @@ class RepositoryContractTests(unittest.TestCase):
             NativeAgentSystemContractError, "native_agent_tuple_mismatch"
         ):
             validate_native_agent_systems(policy, proxy)
+
+    def test_advisory_ladder_maps_every_native_codex_tuple(self) -> None:
+        base_policy = ROOT / "docs/product/contracts/native-agent-systems.json"
+        tuple_policy = (
+            ROOT
+            / "docs/product/studies/advisory-selection-001/native-agent-systems.json"
+        )
+        for model in ("luna", "terra", "sol"):
+            for effort in ("low", "medium", "high", "xhigh"):
+                validate_ladder_subject(
+                    base_policy,
+                    tuple_policy,
+                    f"gpt-5.6-{model}",
+                    effort,
+                    [
+                        "codex",
+                        "exec",
+                        "-m",
+                        f"gpt-5.6-{model}",
+                        "-c",
+                        f"model_reasoning_effort={effort}",
+                    ],
+                )
 
     def test_proxy_live_manifests_are_withdrawn(self) -> None:
         for relative in (
