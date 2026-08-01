@@ -1457,8 +1457,8 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
     preflight = yaml.safe_load(_render_job("preflight-only"))
 
     expected_runner = {
-        "version": "0.1.8",
-        "git_commit": "2145004a1bea01d307c81f3b1c8c2ff6bbdc8a14",
+        "version": "0.1.9",
+        "git_commit": "20e81d42259813cf8fe62ed4ecd4f1ad85bd9b32",
     }
     for spec in (full, preflight):
         assert spec["runner"] == expected_runner
@@ -1666,6 +1666,20 @@ def test_dependency_policy_separates_compatibility_constraints_from_release_lock
     assert "--require-hashes -r requirements-gpu.lock" in dockerfile
 
 
+def test_worker_dependencies_are_cached_independently_of_runner_release() -> None:
+    dockerfile = (JOB / "Dockerfile").read_text()
+
+    assert "python3 -m venv /opt/striatum-qwen35b/venv" in dockerfile
+    assert (
+        "PATH=/opt/striatum-qwen35b/venv/bin:"
+        "/opt/runpod-jobrunner/venv/bin:${PATH}"
+    ) in dockerfile
+    assert "/opt/striatum-qwen35b/venv/bin/python -m pip install" in dockerfile
+    assert dockerfile.index("COPY --from=jobrunner /opt/runpod-jobrunner") > dockerfile.index(
+        "cmake --build /opt/llama.cpp/build"
+    )
+
+
 def test_paid_preflight_requires_flash_qla_runtime_evidence() -> None:
     assert "flash-qla" in PACKAGES
     assert "fla-core" in PACKAGES
@@ -1701,8 +1715,8 @@ def test_preflight_materialization_stamps_single_quoted_yaml_hash(
             ),
             "jobrunner_release": {
                 "protocol": "runner-release/1",
-                "runner_version": "0.1.8",
-                "runner_git_commit": "2145004a1bea01d307c81f3b1c8c2ff6bbdc8a14",
+                "runner_version": "0.1.9",
+                "runner_git_commit": "20e81d42259813cf8fe62ed4ecd4f1ad85bd9b32",
                 "supported_protocol_majors": {
                     "artifact-manifest": [1],
                     "incremental-mirror-ack": [1],

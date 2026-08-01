@@ -16,7 +16,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     STRIATUM_MODEL_DIR=/workspace/models/Qwen3.6-35B-A3B-995ad96e \
     STRIATUM_BASE_GGUF=/workspace/models/Qwen3.6-35B-A3B-995ad96e/gguf/base-bf16.gguf \
     MAX_JOBS=2 \
-    PATH=/opt/runpod-jobrunner/venv/bin:${PATH}
+    PATH=/opt/striatum-qwen35b/venv/bin:/opt/runpod-jobrunner/venv/bin:${PATH}
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -26,18 +26,15 @@ RUN apt-get update \
     && printf '%s\n' "$ssh_keygen_help" | grep -Fq -- '-Y sign' \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy the already-published controller-matched runner by immutable image
-# digest. No private source checkout enters the build context.
-COPY --from=jobrunner /opt/runpod-jobrunner /opt/runpod-jobrunner
-
 WORKDIR /tmp/striatum-qwen35b-build
 COPY requirements.lock requirements-gpu.lock ./
-RUN /opt/runpod-jobrunner/venv/bin/python -m pip install --no-cache-dir \
+RUN python3 -m venv /opt/striatum-qwen35b/venv \
+    && /opt/striatum-qwen35b/venv/bin/python -m pip install --no-cache-dir \
        --require-hashes -r requirements.lock \
-    && /opt/runpod-jobrunner/venv/bin/python -m pip install --no-cache-dir \
+    && /opt/striatum-qwen35b/venv/bin/python -m pip install --no-cache-dir \
        --no-deps --no-build-isolation --require-hashes -r requirements-gpu.lock \
-    && /opt/runpod-jobrunner/venv/bin/python -m pip check \
-    && /opt/runpod-jobrunner/venv/bin/python -c \
+    && /opt/striatum-qwen35b/venv/bin/python -m pip check \
+    && /opt/striatum-qwen35b/venv/bin/python -c \
        "import importlib; modules = ('torch', 'torchvision', 'transformers', 'peft', 'accelerate', 'datasets', 'safetensors', 'flash_attn', 'fla', 'causal_conv1d', 'bitsandbytes', 'tilelang', 'tvm_ffi', 'liger_kernel.transformers.model.qwen3_5_moe'); [importlib.import_module(module) for module in modules]"
 
 RUN cuda_stub_dir=/usr/local/cuda/lib64/stubs \
@@ -64,13 +61,19 @@ RUN cuda_stub_dir=/usr/local/cuda/lib64/stubs \
     && ! grep -Fq "$cuda_stub_dir" /tmp/llama-cli.dynamic \
     && rm /tmp/libggml-cuda.dynamic /tmp/llama-cli.dynamic
 
+# Copy the already-published controller-matched runner only after the expensive
+# worker dependencies and CUDA utilities. Runner-only releases then reuse those
+# layers while job phases still select the dedicated worker virtual environment
+# through PATH.
+COPY --from=jobrunner /opt/runpod-jobrunner /opt/runpod-jobrunner
+
 RUN mkdir -p /opt/striatum-qwen35b/jobs/qwen35b_moe /opt/striatum-qwen35b/bin
 COPY *.py *.json /opt/striatum-qwen35b/jobs/qwen35b_moe/
 COPY smoke/ /opt/striatum-qwen35b/jobs/qwen35b_moe/smoke/
 COPY network-volume-assets.sha256 /opt/striatum-qwen35b/jobs/qwen35b_moe/
 COPY bin/ /opt/striatum-qwen35b/bin/
 RUN chmod 0555 /opt/striatum-qwen35b/bin/* \
-    && /opt/runpod-jobrunner/venv/bin/python -m jobs.qwen35b_moe.flash_qla_smoke --validate-install \
+    && /opt/striatum-qwen35b/venv/bin/python -m jobs.qwen35b_moe.flash_qla_smoke --validate-install \
     && rm -rf /tmp/striatum-qwen35b-build
 
 LABEL org.opencontainers.image.title="Striatum Qwen3.6-35B-A3B PEFT runner"

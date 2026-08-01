@@ -5,8 +5,8 @@ name: striatum-qwen36-35b-a3b-linear
 bundle_hash: "0000000000000000000000000000000000000000000000000000000000000000"
 image: ghcr.io/halbritt/striatum-tuner-qwen35b-moe@sha256:REPLACE_WITH_IMAGE_DIGEST
 runner:
-  version: 0.1.8
-  git_commit: 2145004a1bea01d307c81f3b1c8c2ff6bbdc8a14
+  version: 0.1.9
+  git_commit: 20e81d42259813cf8fe62ed4ecd4f1ad85bd9b32
 phase_order: "verify -> preflight -> train -> evaluate -> package"
 resources:
   gpu_count: 1
