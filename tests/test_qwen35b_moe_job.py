@@ -1760,3 +1760,92 @@ def test_cuda_runtime_requires_real_h100_driver_resolution() -> None:
             ldd_output,
             devices_output.replace("NVIDIA H100 80GB HBM3", "NVIDIA A100-SXM4-80GB"),
         )
+
+
+def _fate_results(*, legal_count: int) -> list[dict[str, object]]:
+    examples = [
+        json.loads(line)
+        for line in (ROOT / "sft" / "review.eval.jsonl").read_text().splitlines()
+    ]
+    analysis = {
+        review["dispatch_id"]: review["fate"]
+        for review in json.loads((ROOT / "corpus" / "analysis.json").read_text())[
+            "reviews"
+        ]
+    }
+    results = []
+    for index, example in enumerate(examples):
+        dispatch_id = example["meta"]["dispatch_id"]
+        verdict = None
+        if index < legal_count:
+            verdict = "accept" if analysis[dispatch_id] == "final" else "reject"
+        results.append({"dispatch_id": dispatch_id, "verdict": verdict})
+    return results
+
+
+def _run_fate_scorer(
+    tmp_path: Path, results: list[dict[str, object]]
+) -> subprocess.CompletedProcess[str]:
+    results_path = tmp_path / "results.jsonl"
+    results_path.write_text(
+        "".join(json.dumps(row, sort_keys=True) + "\n" for row in results)
+    )
+    return subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "jobs.qwen35b_moe.score_fate",
+            "--results",
+            str(results_path),
+            "--analysis",
+            str(ROOT / "corpus" / "analysis.json"),
+            "--eval-source",
+            str(ROOT / "sft" / "review.eval.jsonl"),
+            "--output",
+            str(tmp_path / "fate-gate.json"),
+        ],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+
+def test_local_fate_gate_accepts_variable_legal_count_and_binds_inputs(
+    tmp_path: Path,
+) -> None:
+    process = _run_fate_scorer(tmp_path, _fate_results(legal_count=86))
+
+    assert process.returncode == 0, process.stderr
+    receipt = json.loads((tmp_path / "fate-gate.json").read_text())
+    assert receipt["fate_scored"] == 86
+    assert receipt["required_min_fate_scored"] == 86
+    assert receipt["results_count"] == 98
+    assert receipt["matched_fate_records"] == 98
+    assert receipt["results_sha256"] == sha256_file(tmp_path / "results.jsonl")
+    assert receipt["analysis_sha256"] == sha256_file(
+        ROOT / "corpus" / "analysis.json"
+    )
+    assert receipt["eval_source_sha256"] == sha256_file(
+        ROOT / "sft" / "review.eval.jsonl"
+    )
+    assert receipt["verdict_legal_passed"] is True
+    assert receipt["fate_agreement_passed"] is True
+    assert receipt["passed"] is True
+
+
+def test_local_fate_gate_rejects_old_baseline_legal_count(tmp_path: Path) -> None:
+    process = _run_fate_scorer(tmp_path, _fate_results(legal_count=85))
+
+    assert process.returncode != 0
+    assert "legal verdict count did not strictly beat" in process.stderr
+
+
+def test_local_fate_gate_rejects_duplicate_result_identity(tmp_path: Path) -> None:
+    results = _fate_results(legal_count=86)
+    results[-1]["dispatch_id"] = results[0]["dispatch_id"]
+
+    process = _run_fate_scorer(tmp_path, results)
+
+    assert process.returncode != 0
+    assert "dispatch IDs do not match the authorized evaluation source" in process.stderr

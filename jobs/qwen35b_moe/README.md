@@ -225,8 +225,15 @@ uploaded. After recovery, complete that private gate locally:
 python3 -m jobs.qwen35b_moe.score_fate \
   --results RECOVERED/eval/full/results.jsonl \
   --analysis corpus/analysis.json \
+  --eval-source sft/review.eval.jsonl \
   --output RECOVERED/eval/full/fate-gate.json
 ```
+
+The local scorer requires the exact hash-pinned 98-example evaluation source.
+It binds the results, private analysis, evaluation source, and dispatch-ID set
+into its receipt. The number of fate-scored rows is the number of legal
+verdicts produced by the candidate. It must be at least 86, which strictly
+beats the historical 85-of-98 legal-verdict baseline.
 
 Lifecycle success therefore means only that artifacts were produced,
 verified, recovered, and the worker was closed. Model acceptance also requires
