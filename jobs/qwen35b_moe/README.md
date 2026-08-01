@@ -223,9 +223,9 @@ has applied its instance patch at that point, but no training forward has run.
 The standalone bundle exposes the one-step manifest at
 `artifacts/preflight/one-step/checkpoint-*/checkpoint-complete.json` and waits
 at most 120 seconds for the controller's signed incremental-mirror
-acknowledgement. Its enabled phase timeouts total 1,425 seconds. The controller
+acknowledgement. Its enabled phase timeouts total 1,845 seconds. The controller
 starts its clock before the thin runtime image pull. The 2,700-second bound
-leaves 1,275 seconds beyond the 1,425 seconds of enabled phase timeouts for
+leaves 855 seconds beyond the 1,845 seconds of enabled phase timeouts for
 image pull, startup, input upload, recovery, and deletion. At the $4.50/hour
 admission ceiling, 2,700 seconds
 costs $3.375 and fits the $3.50 retry cap.
@@ -264,6 +264,20 @@ H100 memory budget in the retained 27B run. Every training process verifies
 that the pinned Qwen MoE fused forward is actually bound and records that real
 training calls returned loss without materialized logits. Training does no
 inline evaluation.
+
+The tokenizer contract explicitly requests a plain token-ID list from pinned
+Transformers; a structured `BatchEncoding` is rejected. Every training process
+recomputes and validates the committed full, prompt, and assistant length
+censuses for all 1,268 records before the first forward. At the 40,960-token
+cutoff, 108 records are truncated and 59 assistant segments themselves exceed
+the cutoff. These retain the full prompt and the assistant prefix that fits.
+Four records have prompts that reach the cutoff; for only those records,
+training keeps the prompt tail plus the complete 536--685-token assistant
+answer. Thus all 1,268 records contribute supervised assistant tokens, but the
+contract does not claim that every token of every overlength record is trained.
+Chunking those records would change the 1,268-example, 159-step epoch contract
+and is outside this run.
+
 Every save gets a hash-complete `checkpoint-complete.json` and then blocks for
 at most 900 seconds while the lifecycle controller mirrors and verifies the
 checkpoint. The worker accepts only a controller Ed25519 acknowledgement bound

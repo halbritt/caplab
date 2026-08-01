@@ -31,7 +31,10 @@ from .runtime import (
     model_dir_from_env,
     output_dir_from_env,
 )
-from .train import validate_liger_fused_loss_proof
+from .train import (
+    validate_liger_fused_loss_proof,
+    validate_sft_tokenization_census,
+)
 
 
 PACKAGES = (
@@ -165,6 +168,12 @@ def verify_longest_example_receipt(path: Path) -> dict[str, object]:
         raise ContractError("one-step training did not select the longest example")
     if selection.get("candidates") != 1_268 or selection.get("cutoff") != 40_960:
         raise ContractError("longest-example census has unexpected bounds")
+    tokenization = validate_sft_tokenization_census(
+        selection.get("tokenization")
+    )
+    expected_longest = tokenization.get("longest_example")
+    if not isinstance(expected_longest, dict):
+        raise ContractError("longest-example tokenization contract is invalid")
     index = selection.get("selected_global_index")
     raw = selection.get("raw_token_count")
     effective = selection.get("effective_token_count")
@@ -181,6 +190,19 @@ def verify_longest_example_receipt(path: Path) -> dict[str, object]:
         or effective != min(raw, 40_960)
         or raw != selection.get("max_raw_token_count")
         or effective != selection.get("max_effective_token_count")
+        or {
+            key: selection.get(key)
+            for key in (
+                "selected_global_index",
+                "raw_token_count",
+                "effective_token_count",
+                "prompt_token_count",
+                "assistant_token_count",
+                "supervised_token_count",
+                "truncation_mode",
+            )
+        }
+        != expected_longest
     ):
         raise ContractError("longest-example token counts are inconsistent")
     dispatch_id = selection.get("dispatch_id")

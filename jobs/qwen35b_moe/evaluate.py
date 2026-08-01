@@ -20,7 +20,7 @@ from .runtime import (
     output_dir_from_env,
     training_config,
 )
-from .train import select_longest_tokenized_index
+from .train import _chat_template_token_ids, select_longest_tokenized_index
 
 
 ACCEPTING = {"accept", "accept_with_findings"}
@@ -149,11 +149,10 @@ def _read_examples(
                 )
             raw_lengths.append(
                 len(
-                    tokenizer.apply_chat_template(
+                    _chat_template_token_ids(
+                        tokenizer,
                         messages[:1],
-                        tokenize=True,
                         add_generation_prompt=True,
-                        enable_thinking=False,
                     )
                 )
             )

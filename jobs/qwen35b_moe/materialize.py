@@ -35,7 +35,7 @@ def _render_job(profile: str) -> str:
     spec["name"] = "striatum-qwen36-35b-a3b-preflight"
     phases = spec["phases"]
     phases["preflight"]["enabled"] = True
-    phases["preflight"]["timeout_seconds"] = 480
+    phases["preflight"]["timeout_seconds"] = 900
     phases["train"]["enabled"] = False
     phases["evaluate"]["enabled"] = False
     phases["package"]["argv"] = [

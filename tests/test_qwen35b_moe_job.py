@@ -210,6 +210,38 @@ def _base_preparation_receipt() -> dict[str, object]:
     }
 
 
+def _tokenization_census() -> dict[str, object]:
+    return json.loads((JOB / "training-config.json").read_text())[
+        "tokenization_contract"
+    ]
+
+
+def _longest_training_selection() -> dict[str, object]:
+    census = _tokenization_census()
+    longest = census["longest_example"]
+    assert isinstance(longest, dict)
+    return {
+        "mode": "longest-tokenized-authorized",
+        "candidates": 1_268,
+        "selected_global_index": longest["selected_global_index"],
+        "dispatch_id": (
+            "6722f680dcf58f22c6165ed3569f02f456e5e2a22e05de0ad2dfc3df6097891b"
+        ),
+        "raw_token_count": longest["raw_token_count"],
+        "effective_token_count": longest["effective_token_count"],
+        "max_raw_token_count": longest["raw_token_count"],
+        "max_effective_token_count": longest["effective_token_count"],
+        "token_length_census_sha256": census["full_length_census_sha256"],
+        "cutoff": 40_960,
+        "tie_break": "effective-length,raw-length,earliest-global-index",
+        "tokenization": census,
+        "prompt_token_count": longest["prompt_token_count"],
+        "assistant_token_count": longest["assistant_token_count"],
+        "supervised_token_count": longest["supervised_token_count"],
+        "truncation_mode": longest["truncation_mode"],
+    }
+
+
 def test_moe_kbit_preparation_accepts_frozen_bf16_fused_experts() -> None:
     receipt = _base_preparation_receipt()
 
@@ -940,19 +972,7 @@ def test_preflight_selects_and_receipts_the_largest_tokenized_example(
         select_longest_tokenized_index([100, 40_960, 50_000, 60_000, 60_000], 40_960)
         == 3
     )
-    selection = {
-        "mode": "longest-tokenized-authorized",
-        "candidates": 1_268,
-        "selected_global_index": 3,
-        "dispatch_id": "dispatch-worst-case",
-        "raw_token_count": 60_000,
-        "effective_token_count": 40_960,
-        "max_raw_token_count": 60_000,
-        "max_effective_token_count": 40_960,
-        "token_length_census_sha256": "a" * 64,
-        "cutoff": 40_960,
-        "tie_break": "effective-length,raw-length,earliest-global-index",
-    }
+    selection = _longest_training_selection()
     result = tmp_path / "training-result.json"
     result.write_text(
         json.dumps(
@@ -984,12 +1004,76 @@ def test_preflight_selects_and_receipts_the_largest_tokenized_example(
         verify_longest_example_receipt(result)
 
 
+def test_chat_template_token_ids_requires_the_plain_list_contract() -> None:
+    class Tokenizer:
+        def apply_chat_template(self, messages, **kwargs):  # noqa: ANN001, ANN003
+            assert messages == [{"role": "user", "content": "request"}]
+            assert kwargs["tokenize"] is True
+            assert kwargs["return_dict"] is False
+            return [11, 12, 13]
+
+    assert train_module._chat_template_token_ids(
+        Tokenizer(),
+        [{"role": "user", "content": "request"}],
+        add_generation_prompt=True,
+    ) == [11, 12, 13]
+
+    class StructuredTokenizer:
+        def apply_chat_template(self, messages, **kwargs):  # noqa: ANN001, ANN003
+            del messages, kwargs
+            return {"input_ids": [11, 12, 13], "attention_mask": [1, 1, 1]}
+
+    with pytest.raises(ContractError, match="plain token-ID list"):
+        train_module._chat_template_token_ids(
+            StructuredTokenizer(),
+            [{"role": "user", "content": "request"}],
+            add_generation_prompt=True,
+        )
+
+
+def test_sft_truncation_preserves_labels_and_salvages_prompt_overflow() -> None:
+    assert train_module._truncate_sft_tokens(
+        [1, 2, 3, 4], [1, 2], cutoff=5
+    ) == {
+        "input_ids": [1, 2, 3, 4],
+        "attention_mask": [1, 1, 1, 1],
+        "labels": [-100, -100, 3, 4],
+    }
+    assert train_module._truncate_sft_tokens(
+        [1, 2, 3, 4, 5, 6], [1, 2, 3], cutoff=5
+    ) == {
+        "input_ids": [1, 2, 3, 4, 5],
+        "attention_mask": [1, 1, 1, 1, 1],
+        "labels": [-100, -100, -100, 4, 5],
+    }
+    assert train_module._truncate_sft_tokens(
+        [1, 2, 3, 4, 5, 6, 7, 8], [1, 2, 3, 4, 5, 6], cutoff=5
+    ) == {
+        "input_ids": [4, 5, 6, 7, 8],
+        "attention_mask": [1, 1, 1, 1, 1],
+        "labels": [-100, -100, -100, 7, 8],
+    }
+
+
+def test_sft_truncation_fails_closed_for_invalid_or_unsalvageable_tokens() -> None:
+    with pytest.raises(ContractError, match="exact prefix"):
+        train_module._truncate_sft_tokens([1, 9, 3], [1, 2], cutoff=5)
+    with pytest.raises(ContractError, match="no assistant tokens"):
+        train_module._truncate_sft_tokens([1, 2], [1, 2], cutoff=5)
+    with pytest.raises(ContractError, match="cannot preserve assistant tokens"):
+        train_module._truncate_sft_tokens(
+            [1, 2, 3, 4, 5, 6, 7, 8],
+            [1, 2, 3, 4],
+            cutoff=4,
+        )
+
+
 def test_preflight_reload_eval_selects_and_receipts_longest_prompt(
     tmp_path: Path,
 ) -> None:
     class Tokenizer:
         def apply_chat_template(self, messages, **kwargs):  # noqa: ANN001, ANN003
-            del kwargs
+            assert kwargs["return_dict"] is False
             return list(range(int(messages[0]["content"])))
 
     examples = [
@@ -1251,6 +1335,7 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
     }
     assert preflight["phases"]["verify"]["timeout_seconds"] == 900
     assert preflight["phases"]["preflight"]["enabled"] is True
+    assert preflight["phases"]["preflight"]["timeout_seconds"] == 900
     assert preflight["phases"]["train"]["enabled"] is False
     assert preflight["phases"]["evaluate"]["enabled"] is False
     assert preflight["phases"]["package"]["argv"][-1] == "--preflight-only"
@@ -1267,10 +1352,10 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
         for phase in preflight["phases"].values()
         if phase["enabled"]
     )
-    assert enabled_preflight_seconds == 1_425
+    assert enabled_preflight_seconds == 1_845
     assert (
         preflight["limits"]["max_elapsed_seconds"] - enabled_preflight_seconds
-        == 1_275
+        == 855
     )
     assert (
         Decimal(preflight["limits"]["max_elapsed_seconds"])
@@ -1384,19 +1469,7 @@ def test_preflight_packaging_requires_preflight_smoke_evidence(tmp_path: Path) -
     with pytest.raises(ContractError, match="paid preflight"):
         build_manifest(tmp_path, preflight_only=True)
 
-    training_selection = {
-        "mode": "longest-tokenized-authorized",
-        "candidates": 1_268,
-        "selected_global_index": 3,
-        "dispatch_id": "dispatch-train-longest",
-        "raw_token_count": 60_000,
-        "effective_token_count": 40_960,
-        "max_raw_token_count": 60_000,
-        "max_effective_token_count": 40_960,
-        "token_length_census_sha256": "a" * 64,
-        "cutoff": 40_960,
-        "tie_break": "effective-length,raw-length,earliest-global-index",
-    }
+    training_selection = _longest_training_selection()
     evaluation_selection = {
         "method": "longest-tokenized-authorized",
         "candidates": 98,
@@ -1804,6 +1877,11 @@ def test_train_phase_sequences_resume_gate_and_full_run_without_gpu(
                         "measurement": expected_adapter_measurement(
                             LINEAR_ONLY
                         ).to_dict(),
+                        "example_selection": {
+                            "mode": "all-authorized",
+                            "candidates": 1_268,
+                            "tokenization": _tokenization_census(),
+                        },
                     }
                 )
                 + "\n"

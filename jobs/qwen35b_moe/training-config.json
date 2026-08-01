@@ -6,6 +6,31 @@
     "expected_model_type": "qwen3_5_moe"
   },
   "cutoff_length": 40960,
+  "tokenization_contract": {
+    "protocol": "striatum-sft-tokenization-census/1",
+    "policy": "prompt-tail-preserve-assistant-on-prompt-overflow",
+    "tokenizer_output": "plain-token-id-list",
+    "candidates": 1268,
+    "cutoff": 40960,
+    "full_over_cutoff": 108,
+    "prompt_overflow": 4,
+    "assistant_over_cutoff": 59,
+    "prompt_tail_salvaged": 4,
+    "prefix_mismatches": 0,
+    "rows_without_labels": 0,
+    "full_length_census_sha256": "e367d9aec3c5ddcdb1e963edf2e853a4fb6a2562f747628fda095333a3f9d357",
+    "prompt_length_census_sha256": "c4e6036aaf5033984e9058bff2f726a9ea99459b98db6091e6a64f9891df4e53",
+    "assistant_length_census_sha256": "ae77043dfbdb6ad3af5a40aaf3fa1bd7ddaec0ba96a382cad51b6bd944f5bff8",
+    "longest_example": {
+      "selected_global_index": 1167,
+      "raw_token_count": 352062,
+      "effective_token_count": 40960,
+      "prompt_token_count": 14903,
+      "assistant_token_count": 337159,
+      "supervised_token_count": 26057,
+      "truncation_mode": "assistant-prefix"
+    }
+  },
   "save_steps": 25,
   "train": {
     "epochs": 2,

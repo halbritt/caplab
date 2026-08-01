@@ -34,7 +34,10 @@ from .contract import (
 )
 from .peft_config import validate_base_preparation_receipt
 from .runtime import input_dir_from_env, model_dir_from_env, output_dir_from_env
-from .train import validate_liger_fused_loss_proof
+from .train import (
+    validate_liger_fused_loss_proof,
+    validate_sft_tokenization_census,
+)
 
 
 TIMING_STEPS = 5
@@ -678,6 +681,15 @@ def _training_result(
         expected_strategy
     ).to_dict():
         raise ContractError("training result adapter measurement is invalid")
+    selection = _mapping(
+        result.get("example_selection"), "training result example selection"
+    )
+    if (
+        selection.get("mode") != "all-authorized"
+        or selection.get("candidates") != 1_268
+    ):
+        raise ContractError("training result did not use all authorized examples")
+    validate_sft_tokenization_census(selection.get("tokenization"))
     validate_liger_fused_loss_proof(result.get("liger_fused_loss"))
     return result
 

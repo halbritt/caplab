@@ -42,6 +42,7 @@ from .runtime import (
 ACK_PROTOCOL = "incremental-mirror-ack/1"
 ACK_NAMESPACE = "runpod-jobrunner-incremental-mirror"
 LIGER_PROOF_PROTOCOL = "striatum-liger-fused-loss-proof/1"
+TOKENIZATION_CENSUS_PROTOCOL = "striatum-sft-tokenization-census/1"
 _SHA256_LENGTH = 64
 
 
@@ -618,6 +619,188 @@ def select_longest_tokenized_index(lengths: Sequence[int], cutoff: int) -> int:
     )
 
 
+def _chat_template_token_ids(
+    tokenizer: Any,
+    messages: Sequence[Mapping[str, Any]],
+    *,
+    add_generation_prompt: bool,
+) -> list[int]:
+    """Require the plain token-list surface from the pinned tokenizer API."""
+    token_ids = tokenizer.apply_chat_template(
+        messages,
+        tokenize=True,
+        add_generation_prompt=add_generation_prompt,
+        enable_thinking=False,
+        return_dict=False,
+    )
+    if (
+        not isinstance(token_ids, list)
+        or not token_ids
+        or any(
+            isinstance(token_id, bool)
+            or not isinstance(token_id, int)
+            or token_id < 0
+            for token_id in token_ids
+        )
+    ):
+        raise ContractError("chat template did not return a plain token-ID list")
+    return token_ids
+
+
+def _truncate_sft_tokens(
+    full_ids: Sequence[int],
+    prompt_ids: Sequence[int],
+    *,
+    cutoff: int,
+) -> dict[str, list[int]]:
+    """Fit one SFT row while preserving supervised assistant tokens."""
+    if isinstance(cutoff, bool) or not isinstance(cutoff, int) or cutoff <= 0:
+        raise ContractError("token cutoff must be positive")
+    full = list(full_ids)
+    prompt = list(prompt_ids)
+    if not full or not prompt:
+        raise ContractError("SFT token sequences must be non-empty")
+    if full[: len(prompt)] != prompt:
+        raise ContractError("SFT prompt tokens are not an exact prefix")
+    assistant = full[len(prompt) :]
+    if not assistant:
+        raise ContractError("SFT example has no assistant tokens")
+
+    if len(prompt) >= cutoff:
+        if len(assistant) >= cutoff:
+            raise ContractError(
+                "token cutoff cannot preserve assistant tokens after prompt overflow"
+            )
+        prompt_budget = cutoff - len(assistant)
+        input_ids = prompt[-prompt_budget:] + assistant
+        labels = [-100] * prompt_budget + assistant
+    else:
+        input_ids = full[:cutoff]
+        masked = min(len(prompt), len(input_ids))
+        labels = [-100] * masked + input_ids[masked:]
+
+    if not labels or all(label == -100 for label in labels):
+        raise ContractError("token truncation removed every assistant token")
+    return {
+        "input_ids": input_ids,
+        "attention_mask": [1] * len(input_ids),
+        "labels": labels,
+    }
+
+
+def _length_census_sha256(lengths: Sequence[int]) -> str:
+    return hashlib.sha256(
+        json.dumps(list(lengths), separators=(",", ":")).encode()
+    ).hexdigest()
+
+
+def _build_sft_tokenization_census(
+    full_lengths: Sequence[int],
+    prompt_lengths: Sequence[int],
+    *,
+    cutoff: int,
+) -> dict[str, object]:
+    if len(full_lengths) != len(prompt_lengths) or not full_lengths:
+        raise ContractError("SFT tokenization census lengths are inconsistent")
+    if isinstance(cutoff, bool) or not isinstance(cutoff, int) or cutoff <= 0:
+        raise ContractError("token cutoff must be positive")
+    assistant_lengths = []
+    for full, prompt in zip(full_lengths, prompt_lengths, strict=True):
+        if (
+            isinstance(full, bool)
+            or not isinstance(full, int)
+            or isinstance(prompt, bool)
+            or not isinstance(prompt, int)
+            or prompt <= 0
+            or full <= prompt
+        ):
+            raise ContractError("SFT tokenization census contains invalid lengths")
+        assistant_lengths.append(full - prompt)
+    prompt_tail_salvaged = sum(
+        prompt >= cutoff and assistant < cutoff
+        for prompt, assistant in zip(
+            prompt_lengths, assistant_lengths, strict=True
+        )
+    )
+    rows_without_labels = sum(
+        (prompt >= cutoff and assistant >= cutoff)
+        for prompt, assistant in zip(
+            prompt_lengths, assistant_lengths, strict=True
+        )
+    )
+    selected_index = select_longest_tokenized_index(full_lengths, cutoff)
+    return {
+        "protocol": TOKENIZATION_CENSUS_PROTOCOL,
+        "policy": "prompt-tail-preserve-assistant-on-prompt-overflow",
+        "tokenizer_output": "plain-token-id-list",
+        "candidates": len(full_lengths),
+        "cutoff": cutoff,
+        "full_over_cutoff": sum(length > cutoff for length in full_lengths),
+        "prompt_overflow": sum(length >= cutoff for length in prompt_lengths),
+        "assistant_over_cutoff": sum(
+            length >= cutoff for length in assistant_lengths
+        ),
+        "prompt_tail_salvaged": prompt_tail_salvaged,
+        "prefix_mismatches": 0,
+        "rows_without_labels": rows_without_labels,
+        "full_length_census_sha256": _length_census_sha256(full_lengths),
+        "prompt_length_census_sha256": _length_census_sha256(prompt_lengths),
+        "assistant_length_census_sha256": _length_census_sha256(
+            assistant_lengths
+        ),
+        "longest_example": {
+            "selected_global_index": selected_index,
+            "raw_token_count": full_lengths[selected_index],
+            "effective_token_count": min(full_lengths[selected_index], cutoff),
+            **_selection_token_observation(
+                full_length=full_lengths[selected_index],
+                prompt_length=prompt_lengths[selected_index],
+                cutoff=cutoff,
+            ),
+        },
+    }
+
+
+def validate_sft_tokenization_census(value: object) -> dict[str, object]:
+    if not isinstance(value, Mapping):
+        raise ContractError("SFT tokenization census is invalid")
+    observed = dict(value)
+    expected = training_config().get("tokenization_contract")
+    if not isinstance(expected, dict) or observed != expected:
+        raise ContractError("SFT tokenization census does not match pinned contract")
+    return observed
+
+
+def _selection_token_observation(
+    *,
+    full_length: int,
+    prompt_length: int,
+    cutoff: int,
+) -> dict[str, object]:
+    assistant_length = full_length - prompt_length
+    if prompt_length >= cutoff:
+        if assistant_length >= cutoff:
+            raise ContractError(
+                "token cutoff cannot preserve assistant tokens after prompt overflow"
+            )
+        supervised = assistant_length
+        mode = "prompt-tail-full-assistant"
+    elif full_length > cutoff:
+        supervised = cutoff - prompt_length
+        mode = "assistant-prefix"
+    else:
+        supervised = assistant_length
+        mode = "none"
+    if supervised <= 0:
+        raise ContractError("selected SFT example has no supervised tokens")
+    return {
+        "prompt_token_count": prompt_length,
+        "assistant_token_count": assistant_length,
+        "supervised_token_count": supervised,
+        "truncation_mode": mode,
+    }
+
+
 def _load_datasets(
     input_dir: Path,
     tokenizer: Any,
@@ -640,11 +823,10 @@ def _load_datasets(
     dataset = concatenate_datasets(datasets)
     if (not limit or select_longest) and len(dataset) != 1_268:
         raise ContractError(f"expected 1,268 train examples, found {len(dataset)}")
-    selection: dict[str, Any]
-    if select_longest:
-        if limit != 1:
-            raise ContractError("--select-longest requires --limit 1")
-        raw_lengths = []
+    raw_lengths: list[int] = []
+    prompt_lengths: list[int] = []
+    tokenization_census: dict[str, object] | None = None
+    if not limit or select_longest:
         for example in dataset:
             messages = example["messages"]
             if (
@@ -655,16 +837,33 @@ def _load_datasets(
                 raise ContractError(
                     "SFT examples must contain one user and one assistant message"
                 )
-            raw_lengths.append(
-                len(
-                    tokenizer.apply_chat_template(
-                        messages,
-                        tokenize=True,
-                        add_generation_prompt=False,
-                        enable_thinking=False,
-                    )
-                )
+            full_ids = _chat_template_token_ids(
+                tokenizer,
+                messages,
+                add_generation_prompt=False,
             )
+            prompt_ids = _chat_template_token_ids(
+                tokenizer,
+                messages[:1],
+                add_generation_prompt=True,
+            )
+            _truncate_sft_tokens(full_ids, prompt_ids, cutoff=cutoff)
+            raw_lengths.append(len(full_ids))
+            prompt_lengths.append(len(prompt_ids))
+        tokenization_census = validate_sft_tokenization_census(
+            _build_sft_tokenization_census(
+                raw_lengths,
+                prompt_lengths,
+                cutoff=cutoff,
+            )
+        )
+
+    selection: dict[str, Any]
+    if select_longest:
+        if limit != 1:
+            raise ContractError("--select-longest requires --limit 1")
+        if tokenization_census is None:
+            raise ContractError("longest-example tokenization census is absent")
         selected_index = select_longest_tokenized_index(raw_lengths, cutoff)
         selected = dataset[selected_index]
         metadata = selected.get("meta")
@@ -687,13 +886,25 @@ def _load_datasets(
             ).hexdigest(),
             "cutoff": cutoff,
             "tie_break": "effective-length,raw-length,earliest-global-index",
+            "tokenization": tokenization_census,
+            **_selection_token_observation(
+                full_length=raw_lengths[selected_index],
+                prompt_length=prompt_lengths[selected_index],
+                cutoff=cutoff,
+            ),
         }
         dataset = dataset.select([selected_index])
     elif limit:
         dataset = dataset.select(range(min(limit, len(dataset))))
         selection = {"mode": "prefix", "candidates": len(dataset), "limit": limit}
     else:
-        selection = {"mode": "all-authorized", "candidates": len(dataset)}
+        if tokenization_census is None:
+            raise ContractError("full-run tokenization census is absent")
+        selection = {
+            "mode": "all-authorized",
+            "candidates": len(dataset),
+            "tokenization": tokenization_census,
+        }
 
     def tokenize(example: dict[str, Any]) -> dict[str, Any]:
         messages = example["messages"]
@@ -705,30 +916,17 @@ def _load_datasets(
             raise ContractError(
                 "SFT examples must contain one user and one assistant message"
             )
-        full_ids = tokenizer.apply_chat_template(
+        full_ids = _chat_template_token_ids(
+            tokenizer,
             messages,
-            tokenize=True,
             add_generation_prompt=False,
-            enable_thinking=False,
-        )[:cutoff]
-        prompt_ids = tokenizer.apply_chat_template(
+        )
+        prompt_ids = _chat_template_token_ids(
+            tokenizer,
             messages[:1],
-            tokenize=True,
             add_generation_prompt=True,
-            enable_thinking=False,
-        )[:cutoff]
-        labels = [-100] * min(len(prompt_ids), len(full_ids)) + full_ids[
-            len(prompt_ids) :
-        ]
-        if not labels or all(label == -100 for label in labels):
-            raise ContractError(
-                "token truncation removed the complete assistant answer"
-            )
-        return {
-            "input_ids": full_ids,
-            "attention_mask": [1] * len(full_ids),
-            "labels": labels,
-        }
+        )
+        return _truncate_sft_tokens(full_ids, prompt_ids, cutoff=cutoff)
 
     return (
         dataset.map(
