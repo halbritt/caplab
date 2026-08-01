@@ -5,5 +5,9 @@
 !*.py
 !*.json
 !network-volume-assets.sha256
+!smoke/
+!smoke/*
+!smoke/inputs/
+!smoke/inputs/**
 !bin/
 !bin/*

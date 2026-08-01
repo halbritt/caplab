@@ -7,6 +7,7 @@ import base64
 from collections.abc import Callable, Mapping
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import subprocess
@@ -26,10 +27,19 @@ from .contract import (
 
 
 from .peft_config import (
+    LINEAR_TARGET_PATTERN,
+    _predicted_lora_parameters,
+    adapter_evidence,
+    bind_adapter_source,
     lora_config,
     measure_adapter,
     prepare_base_for_lora_training,
 )
+from .data import (
+    MultimodalSFTCollator,
+    _truncate_sft_tokens as _shared_truncate_sft_tokens,
+)
+from .profile import load_training_profile, matched_lora_modules
 from .runtime import (
     input_dir_from_env,
     load_quantized_base,
@@ -629,19 +639,27 @@ def select_longest_tokenized_index(lengths: Sequence[int], cutoff: int) -> int:
 
 
 def _chat_template_token_ids(
-    tokenizer: Any,
+    processor: Any,
     messages: Sequence[Mapping[str, Any]],
     *,
     add_generation_prompt: bool,
 ) -> list[int]:
     """Require the plain token-list surface from the pinned tokenizer API."""
-    token_ids = tokenizer.apply_chat_template(
+    token_ids = processor.apply_chat_template(
         messages,
         tokenize=True,
         add_generation_prompt=add_generation_prompt,
         enable_thinking=False,
         return_dict=False,
     )
+    if hasattr(token_ids, "tolist"):
+        token_ids = token_ids.tolist()
+    if (
+        isinstance(token_ids, list)
+        and len(token_ids) == 1
+        and isinstance(token_ids[0], list)
+    ):
+        token_ids = token_ids[0]
     if (
         not isinstance(token_ids, list)
         or not token_ids
@@ -663,38 +681,7 @@ def _truncate_sft_tokens(
     cutoff: int,
 ) -> dict[str, list[int]]:
     """Fit one SFT row while preserving supervised assistant tokens."""
-    if isinstance(cutoff, bool) or not isinstance(cutoff, int) or cutoff <= 0:
-        raise ContractError("token cutoff must be positive")
-    full = list(full_ids)
-    prompt = list(prompt_ids)
-    if not full or not prompt:
-        raise ContractError("SFT token sequences must be non-empty")
-    if full[: len(prompt)] != prompt:
-        raise ContractError("SFT prompt tokens are not an exact prefix")
-    assistant = full[len(prompt) :]
-    if not assistant:
-        raise ContractError("SFT example has no assistant tokens")
-
-    if len(prompt) >= cutoff:
-        if len(assistant) >= cutoff:
-            raise ContractError(
-                "token cutoff cannot preserve assistant tokens after prompt overflow"
-            )
-        prompt_budget = cutoff - len(assistant)
-        input_ids = prompt[-prompt_budget:] + assistant
-        labels = [-100] * prompt_budget + assistant
-    else:
-        input_ids = full[:cutoff]
-        masked = min(len(prompt), len(input_ids))
-        labels = [-100] * masked + input_ids[masked:]
-
-    if not labels or all(label == -100 for label in labels):
-        raise ContractError("token truncation removed every assistant token")
-    return {
-        "input_ids": input_ids,
-        "attention_mask": [1] * len(input_ids),
-        "labels": labels,
-    }
+    return _shared_truncate_sft_tokens(full_ids, prompt_ids, cutoff=cutoff)
 
 
 def _length_census_sha256(lengths: Sequence[int]) -> str:
@@ -812,17 +799,24 @@ def _selection_token_observation(
 
 def _load_datasets(
     input_dir: Path,
-    tokenizer: Any,
+    processor: Any,
     cutoff: int,
     limit: int,
     select_longest: bool,
+    *,
+    manifest_path: Path | None = None,
+    expected_examples: int = 1_268,
+    strict_production: bool = True,
 ) -> tuple[Any, dict[str, Any]]:
     try:
         from datasets import concatenate_datasets, load_dataset
     except ImportError as error:
         raise ContractError("datasets is required for training") from error
 
-    manifest = load_input_manifest(Path(__file__).with_name("input-manifest.json"))
+    manifest = load_input_manifest(
+        manifest_path or Path(__file__).with_name("input-manifest.json"),
+        strict_production=strict_production,
+    )
     train_paths = [
         str(input_dir / item.path) for item in manifest if item.role == "train"
     ]
@@ -830,8 +824,10 @@ def _load_datasets(
         load_dataset("json", data_files=path, split="train") for path in train_paths
     ]
     dataset = concatenate_datasets(datasets)
-    if (not limit or select_longest) and len(dataset) != 1_268:
-        raise ContractError(f"expected 1,268 train examples, found {len(dataset)}")
+    if (not limit or select_longest) and len(dataset) != expected_examples:
+        raise ContractError(
+            f"expected {expected_examples} train examples, found {len(dataset)}"
+        )
     raw_lengths: list[int] = []
     prompt_lengths: list[int] = []
     tokenization_census: dict[str, object] | None = None
@@ -847,12 +843,12 @@ def _load_datasets(
                     "SFT examples must contain one user and one assistant message"
                 )
             full_ids = _chat_template_token_ids(
-                tokenizer,
+                processor,
                 messages,
                 add_generation_prompt=False,
             )
             prompt_ids = _chat_template_token_ids(
-                tokenizer,
+                processor,
                 messages[:1],
                 add_generation_prompt=True,
             )
@@ -915,36 +911,7 @@ def _load_datasets(
             "tokenization": tokenization_census,
         }
 
-    def tokenize(example: dict[str, Any]) -> dict[str, Any]:
-        messages = example["messages"]
-        if (
-            len(messages) != 2
-            or messages[0].get("role") != "user"
-            or messages[1].get("role") != "assistant"
-        ):
-            raise ContractError(
-                "SFT examples must contain one user and one assistant message"
-            )
-        full_ids = _chat_template_token_ids(
-            tokenizer,
-            messages,
-            add_generation_prompt=False,
-        )
-        prompt_ids = _chat_template_token_ids(
-            tokenizer,
-            messages[:1],
-            add_generation_prompt=True,
-        )
-        return _truncate_sft_tokens(full_ids, prompt_ids, cutoff=cutoff)
-
-    return (
-        dataset.map(
-            tokenize,
-            remove_columns=dataset.column_names,
-            desc="tokenize exact SFT allow-list",
-        ),
-        selection,
-    )
+    return dataset, selection
 
 
 def run(args: argparse.Namespace) -> None:
@@ -954,7 +921,6 @@ def run(args: argparse.Namespace) -> None:
     try:
         from peft import get_peft_model
         from transformers import (
-            DataCollatorForSeq2Seq,
             Trainer,
             TrainerCallback,
             TrainingArguments,
@@ -965,13 +931,15 @@ def run(args: argparse.Namespace) -> None:
             "transformers and PEFT are required for training"
         ) from error
 
+    profile = load_training_profile(args.config)
     input_dir = args.input_dir.resolve()
-    entries = load_input_manifest(Path(__file__).with_name("input-manifest.json"))
+    strict_production = profile.model_type == "qwen3_5_moe"
+    entries = load_input_manifest(
+        profile.input_manifest, strict_production=profile.strict_input_manifest
+    )
     verify_input_tree(input_dir, entries)
-    config = training_config()
-    train_kwargs = config["train"]
-    if train_kwargs.get("liger_fused_loss") is not True:
-        raise ContractError("training requires Liger fused linear cross entropy")
+    config = profile.raw
+    train_kwargs = profile.train
     set_seed(args.seed)
 
     output = args.output.resolve()
@@ -990,19 +958,73 @@ def run(args: argparse.Namespace) -> None:
             wait=False,
         )
 
-    base, tokenizer = load_quantized_base(args.model_dir.resolve())
-    base_preparation = prepare_base_for_lora_training(base)
+    base, processor = load_quantized_base(args.model_dir.resolve(), profile)
+    strategy_config = profile.strategy(args.strategy)
+    target_pattern = strategy_config.get("target_pattern", LINEAR_TARGET_PATTERN)
+    if not isinstance(target_pattern, str):
+        raise ContractError("training profile has no LoRA target pattern")
+    matched_modules = matched_lora_modules(base, target_pattern)
+    expected_targets = strategy_config.get("expected_target_count", 310)
+    if len(matched_modules) != expected_targets:
+        raise ContractError(
+            f"LoRA target count mismatch: {len(matched_modules)} != {expected_targets}"
+        )
+    predicted_trainable = strategy_config.get("expected_trainable_parameters")
+    if strict_production and predicted_trainable is None:
+        predicted_trainable = expected_adapter_measurement(
+            args.strategy
+        ).trainable_parameters
+    if (
+        isinstance(predicted_trainable, bool)
+        or not isinstance(predicted_trainable, int)
+        or predicted_trainable <= 0
+    ):
+        raise ContractError("profile has no positive expected LoRA trainable count")
+    print(
+        json.dumps(
+            {
+                "event": "lora-targets",
+                "matched_modules": list(matched_modules),
+                "matched_module_count": len(matched_modules),
+                "predicted_trainable_parameters": predicted_trainable,
+            },
+            sort_keys=True,
+        ),
+        flush=True,
+    )
+    base_preparation = prepare_base_for_lora_training(base, profile)
     base.config.use_cache = False
     _atomic_json(output / "base-preparation.json", base_preparation)
-    model = get_peft_model(base, lora_config(args.strategy))
-    measured = measure_adapter(model, args.strategy)
-    validate_adapter_measurement(measured, expected_adapter_measurement(args.strategy))
+    model = get_peft_model(base, lora_config(args.strategy, profile))
+    bind_adapter_source(model, profile)
+    if strict_production:
+        measured = measure_adapter(model, args.strategy)
+        validate_adapter_measurement(
+            measured, expected_adapter_measurement(args.strategy)
+        )
+        measurement: dict[str, Any] = measured.to_dict()
+        measurement["matched_modules"] = list(matched_modules)
+        measurement["total_parameters"] = sum(
+            parameter.numel() for parameter in model.parameters()
+        )
+    else:
+        measurement = adapter_evidence(
+            model,
+            matched_modules,
+            predicted_trainable,
+            profile,
+            args.strategy,
+        )
+    print(json.dumps({"event": "adapter", **measurement}, sort_keys=True), flush=True)
     dataset, example_selection = _load_datasets(
         input_dir,
-        tokenizer,
-        config["cutoff_length"],
+        processor,
+        profile.cutoff_length,
         args.limit,
         args.select_longest,
+        manifest_path=profile.input_manifest,
+        expected_examples=train_kwargs["expected_examples"],
+        strict_production=profile.strict_input_manifest,
     )
 
     acknowledged_checkpoints: list[dict[str, Any]] = []
@@ -1034,6 +1056,36 @@ def run(args: argparse.Namespace) -> None:
             return control
 
     liger_proof: dict[str, Any] = {}
+    gradient_evidence: dict[str, Any] = {
+        "optimizer_steps": 0,
+        "backward_passes_with_adapter_gradients": 0,
+        "nonzero_gradient_parameters": set(),
+    }
+
+    class OptimizationEvidenceCallback(TrainerCallback):
+        def on_pre_optimizer_step(self, training_args, state, control, **kwargs):  # noqa: ANN001
+            import torch
+
+            observed = set()
+            model_for_step = kwargs.get("model")
+            if model_for_step is None:
+                raise ContractError("Trainer did not expose the model before optimizer step")
+            for name, parameter in model_for_step.named_parameters():
+                if not parameter.requires_grad or parameter.grad is None:
+                    continue
+                if not torch.isfinite(parameter.grad).all():
+                    raise ContractError(f"non-finite adapter gradient: {name}")
+                if torch.count_nonzero(parameter.grad).item():
+                    observed.add(name)
+            if not observed:
+                raise ContractError("backward produced no nonzero adapter gradients")
+            gradient_evidence["backward_passes_with_adapter_gradients"] += 1
+            gradient_evidence["nonzero_gradient_parameters"].update(observed)
+            return control
+
+        def on_optimizer_step(self, training_args, state, control, **kwargs):  # noqa: ANN001
+            gradient_evidence["optimizer_steps"] += 1
+            return control
 
     class FusedLossTrainer(Trainer):
         def compute_loss(  # noqa: ANN001
@@ -1043,19 +1095,28 @@ def run(args: argparse.Namespace) -> None:
             return_outputs=False,
             num_items_in_batch=None,
         ):
-            _require_liger_binding_before_forward(liger_proof)
+            if profile.liger_fused_loss:
+                _require_liger_binding_before_forward(liger_proof)
             loss, outputs = super().compute_loss(
                 model,
                 inputs,
                 return_outputs=True,
                 num_items_in_batch=num_items_in_batch,
             )
-            require_no_full_logits(outputs)
-            liger_proof["observed_forward_calls"] = (
-                int(liger_proof["observed_forward_calls"]) + 1
-            )
-            liger_proof["no_full_logits_observed"] = True
+            if profile.liger_fused_loss:
+                require_no_full_logits(outputs)
+                liger_proof["observed_forward_calls"] = (
+                    int(liger_proof["observed_forward_calls"]) + 1
+                )
+                liger_proof["no_full_logits_observed"] = True
             return (loss, outputs) if return_outputs else loss
+
+    collator = MultimodalSFTCollator(
+        processor,
+        input_root=input_dir,
+        cutoff=profile.cutoff_length,
+        processing=profile.processing,
+    )
 
     trainer_args = TrainingArguments(
         output_dir=str(output),
@@ -1066,8 +1127,8 @@ def run(args: argparse.Namespace) -> None:
         max_steps=args.max_steps,
         lr_scheduler_type=train_kwargs["scheduler"],
         warmup_ratio=train_kwargs["warmup_ratio"],
-        bf16=True,
-        gradient_checkpointing=True,
+        bf16=train_kwargs["bf16"],
+        gradient_checkpointing=profile.runtime.get("gradient_checkpointing", True),
         logging_steps=1 if args.max_steps > 0 else 5,
         save_strategy="steps",
         save_steps=args.save_steps,
@@ -1076,22 +1137,23 @@ def run(args: argparse.Namespace) -> None:
         remove_unused_columns=False,
         seed=args.seed,
         data_seed=args.seed,
-        optim="paged_adamw_8bit",
-        use_liger_kernel=True,
+        optim=profile.runtime.get("optimizer", "paged_adamw_8bit"),
+        use_liger_kernel=profile.liger_fused_loss,
         liger_kernel_config=LIGER_KERNEL_CONFIG,
     )
     trainer = FusedLossTrainer(
         model=model,
         args=trainer_args,
         train_dataset=dataset,
-        data_collator=DataCollatorForSeq2Seq(
-            tokenizer=tokenizer,
-            label_pad_token_id=-100,
-            pad_to_multiple_of=8,
-        ),
+        data_collator=collator,
         callbacks=[
-            _make_liger_binding_callback(TrainerCallback, liger_proof),
             CompletionCallback(),
+            OptimizationEvidenceCallback(),
+            *(
+                [_make_liger_binding_callback(TrainerCallback, liger_proof)]
+                if profile.liger_fused_loss
+                else []
+            ),
         ],
     )
     result = trainer.train(
@@ -1099,18 +1161,46 @@ def run(args: argparse.Namespace) -> None:
             str(resume_from_checkpoint) if resume_from_checkpoint is not None else None
         )
     )
-    validated_liger_proof = validate_liger_fused_loss_proof(liger_proof)
+    train_loss = result.metrics.get("train_loss")
+    if not isinstance(train_loss, (int, float)) or not math.isfinite(train_loss):
+        raise ContractError(f"training loss is not finite: {train_loss!r}")
+    if gradient_evidence["optimizer_steps"] <= 0:
+        raise ContractError("Trainer completed without an optimizer step")
+    if collator.receipt is None:
+        raise ContractError("Trainer completed without constructing a batch")
+    validated_liger_proof = (
+        validate_liger_fused_loss_proof(liger_proof)
+        if profile.liger_fused_loss
+        else {"enabled": False, "reason": "profile-disabled"}
+    )
     final_adapter = output / "final-adapter"
     model.save_pretrained(final_adapter, safe_serialization=True)
-    tokenizer.save_pretrained(final_adapter)
+    processor.save_pretrained(final_adapter)
     _atomic_json(
         output / "training-result.json",
         {
             "protocol": "striatum-training-result/2",
             "strategy": args.strategy,
             "base_preparation": base_preparation,
-            "measurement": measured.to_dict(),
+            "profile": str(profile.path),
+            "model_load": {
+                "model_class": type(base).__name__,
+                "processor_class": type(processor).__name__,
+                "model_type": profile.model_type,
+                "quantization": profile.runtime.get("quantization"),
+                "attention_implementation": profile.runtime.get(
+                    "attention_implementation", "flash_attention_2"
+                ),
+            },
+            "measurement": measurement,
             "metrics": result.metrics,
+            "batch": collator.receipt,
+            "optimization": {
+                **gradient_evidence,
+                "nonzero_gradient_parameters": sorted(
+                    gradient_evidence["nonzero_gradient_parameters"]
+                ),
+            },
             "example_selection": example_selection,
             "global_step": trainer.state.global_step,
             "resumed_from": (
@@ -1129,6 +1219,11 @@ def run(args: argparse.Namespace) -> None:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--strategy", choices=STRATEGIES, default="linear-only")
+    parser.add_argument(
+        "--config",
+        type=Path,
+        default=Path(__file__).with_name("training-config.json"),
+    )
     parser.add_argument("--model-dir", type=Path, default=model_dir_from_env())
     parser.add_argument("--input-dir", type=Path, default=input_dir_from_env())
     parser.add_argument(

@@ -19,6 +19,7 @@ from .contract import (
     validate_adapter_measurement,
 )
 from .cuda_runtime import MIN_H200_MEMORY_MIB
+from .profile import TrainingProfile, matched_lora_modules
 
 
 # A full-path regex prevents similarly named vision modules or routed expert
@@ -163,7 +164,7 @@ FUSED_EXPERT_SPEC_SHA256 = hashlib.sha256(
 ).hexdigest()
 
 
-def prepare_base_for_lora_training(model: Any) -> dict[str, object]:
+def _prepare_moe_base_for_lora_training(model: Any) -> dict[str, object]:
     """Freeze the exact quantized MoE base without upcasting fused experts."""
 
     try:
@@ -317,21 +318,95 @@ def prepare_base_for_lora_training(model: Any) -> dict[str, object]:
     return validate_base_preparation_receipt(receipt)
 
 
-def lora_config(strategy: str) -> Any:
+def prepare_base_for_lora_training(
+    model: Any, profile: TrainingProfile | None = None
+) -> dict[str, object]:
+    """Prepare the strict production MoE base or the dense smoke family."""
+
+    if profile is None or profile.model_type == MODEL.model_type:
+        return _prepare_moe_base_for_lora_training(model)
+    try:
+        import torch
+        from peft import prepare_model_for_kbit_training
+    except ImportError as error:
+        raise ContractError("torch and PEFT are required for base preparation") from error
+    if getattr(model.config, "model_type", None) != profile.model_type:
+        raise ContractError("loaded model type does not match the selected profile")
+    if getattr(model, "is_loaded_in_4bit", False) is not True:
+        raise ContractError("base model was not loaded in 4-bit mode")
+    strategy = profile.strategy(LINEAR_ONLY)
+    pattern = strategy.get("target_pattern")
+    if not isinstance(pattern, str):
+        raise ContractError("dense profile has no LoRA target pattern")
+    targets = matched_lora_modules(model, pattern)
+    expected = strategy.get("expected_target_count")
+    if len(targets) != expected:
+        raise ContractError(
+            f"loaded adapter-target module count is not exact: {len(targets)} != {expected}"
+        )
+    unquantized = [
+        name
+        for name, module in model.named_modules()
+        if name in targets
+        and getattr(module, "weight", None).__class__.__name__ != "Params4bit"
+    ]
+    if unquantized:
+        raise ContractError(f"adapter targets are not 4-bit: {unquantized[:3]}")
+    prepare_model_for_kbit_training(
+        model,
+        use_gradient_checkpointing=True,
+        gradient_checkpointing_kwargs={"use_reentrant": False},
+    )
+    base_trainable = sum(
+        parameter.numel()
+        for _, parameter in model.named_parameters()
+        if parameter.requires_grad
+    )
+    if base_trainable:
+        raise ContractError(f"base parameters remain trainable: {base_trainable}")
+    free_bytes, total_bytes = torch.cuda.mem_get_info()
+    return {
+        "protocol": "striatum-dense-kbit-preparation/1",
+        "model_type": profile.model_type,
+        "loaded_in_4bit": True,
+        "base_trainable_parameters": 0,
+        "quantized_adapter_target_count": len(targets),
+        "gradient_checkpointing": {
+            "enabled": bool(getattr(model, "is_gradient_checkpointing", False)),
+            "use_reentrant": False,
+        },
+        "cuda_memory": {
+            "allocated_bytes": int(torch.cuda.memory_allocated()),
+            "reserved_bytes": int(torch.cuda.memory_reserved()),
+            "free_bytes": int(free_bytes),
+            "total_bytes": int(total_bytes),
+        },
+    }
+
+
+def lora_config(strategy: str, profile: TrainingProfile | None = None) -> Any:
     try:
         from peft import LoraConfig
     except ImportError as error:
         raise ContractError("PEFT is required for paid preflight") from error
 
+    selected = profile
+    strategy_config = selected.strategy(strategy) if selected is not None else {}
+    target_pattern = strategy_config.get("target_pattern", LINEAR_TARGET_PATTERN)
+    rank = strategy_config.get("rank", 32)
+    alpha = strategy_config.get("alpha", 64)
+    dropout = strategy_config.get(
+        "dropout", 0.0 if strategy == EXPERT_AWARE else 0.05
+    )
     kwargs: dict[str, Any] = {
-        "base_model_name_or_path": MODEL.model_id,
-        "revision": MODEL.revision,
-        "r": 32,
-        "lora_alpha": 64,
-        "lora_dropout": 0.0 if strategy == EXPERT_AWARE else 0.05,
+        "base_model_name_or_path": selected.model_id if selected else MODEL.model_id,
+        "revision": selected.model_revision if selected else MODEL.revision,
+        "r": rank,
+        "lora_alpha": alpha,
+        "lora_dropout": dropout,
         "bias": "none",
         "task_type": "CAUSAL_LM",
-        "target_modules": LINEAR_TARGET_PATTERN,
+        "target_modules": target_pattern,
     }
     if strategy == EXPERT_AWARE:
         kwargs.update(
@@ -344,7 +419,22 @@ def lora_config(strategy: str) -> Any:
     return LoraConfig(**kwargs)
 
 
-def inject_on_meta(model_dir: str, strategy: str) -> tuple[Any, AdapterMeasurement]:
+def bind_adapter_source(model: Any, profile: TrainingProfile) -> None:
+    """Keep saved adapters bound to the immutable model ID, not a host path."""
+
+    configs = getattr(model, "peft_config", None)
+    if not isinstance(configs, Mapping) or not configs:
+        raise ContractError("PEFT model has no adapter configuration")
+    for config in configs.values():
+        config.base_model_name_or_path = profile.model_id
+        config.revision = profile.model_revision
+
+
+def inject_on_meta(
+    model_dir: str,
+    strategy: str,
+    profile: TrainingProfile | None = None,
+) -> tuple[Any, AdapterMeasurement | dict[str, object]]:
     """Instantiate on meta, inject PEFT, and fail unless counts match shapes."""
     try:
         from accelerate import init_empty_weights
@@ -358,10 +448,95 @@ def inject_on_meta(model_dir: str, strategy: str) -> tuple[Any, AdapterMeasureme
     config = AutoConfig.from_pretrained(model_dir, local_files_only=True)
     with init_empty_weights():
         model = AutoModelForImageTextToText.from_config(config)
-        model = get_peft_model(model, lora_config(strategy))
+        if profile is not None:
+            target_config = profile.strategy(strategy)
+            pattern = target_config.get("target_pattern")
+            if not isinstance(pattern, str):
+                raise ContractError("training profile has no LoRA target pattern")
+            targets = matched_lora_modules(model, pattern)
+            expected = target_config.get("expected_target_count")
+            if len(targets) != expected:
+                raise ContractError(
+                    f"LoRA target count mismatch: {len(targets)} != {expected}"
+                )
+            predicted = _predicted_lora_parameters(model, targets, target_config)
+            configured_prediction = target_config.get(
+                "expected_trainable_parameters", predicted
+            )
+            if predicted != configured_prediction:
+                raise ContractError(
+                    "meta-derived LoRA trainables do not match the profile: "
+                    f"{predicted} != {configured_prediction}"
+                )
+        model = get_peft_model(model, lora_config(strategy, profile))
+        if profile is not None:
+            bind_adapter_source(model, profile)
+    if profile is not None and profile.model_type != MODEL.model_type:
+        evidence = adapter_evidence(model, targets, predicted, profile, strategy)
+        return model, evidence
     measured = measure_adapter(model, strategy)
     validate_adapter_measurement(measured, expected_adapter_measurement(strategy))
     return model, measured
+
+
+def _predicted_lora_parameters(
+    model: Any, targets: tuple[str, ...], strategy: Mapping[str, Any]
+) -> int:
+    rank = strategy.get("rank")
+    if isinstance(rank, bool) or not isinstance(rank, int) or rank <= 0:
+        raise ContractError("LoRA rank must be a positive integer")
+    modules = dict(model.named_modules())
+    total = 0
+    for name in targets:
+        weight = getattr(modules[name], "weight", None)
+        shape = getattr(weight, "shape", None)
+        if shape is None or len(shape) != 2:
+            raise ContractError(f"LoRA target is not a matrix module: {name}")
+        total += rank * (int(shape[0]) + int(shape[1]))
+    if total <= 0:
+        raise ContractError("predicted LoRA parameter count is zero")
+    return total
+
+
+def adapter_evidence(
+    model: Any,
+    targets: tuple[str, ...],
+    predicted_trainable: int,
+    profile: TrainingProfile,
+    strategy: str,
+) -> dict[str, object]:
+    total = 0
+    trainable = 0
+    base_trainable = 0
+    for name, parameter in model.named_parameters():
+        count = parameter.numel()
+        total += count
+        if not parameter.requires_grad:
+            continue
+        trainable += count
+        if ".lora_" not in name and "lora_embedding_" not in name:
+            base_trainable += count
+    if base_trainable:
+        raise ContractError(f"base parameters remain trainable: {base_trainable}")
+    if trainable != predicted_trainable:
+        raise ContractError(
+            "measured PEFT trainables do not match the module-derived prediction: "
+            f"{trainable} != {predicted_trainable}"
+        )
+    return {
+        "protocol": "striatum-adapter-evidence/1",
+        "model": {
+            "id": profile.model_id,
+            "revision": profile.model_revision,
+            "model_type": profile.model_type,
+        },
+        "strategy": strategy,
+        "matched_modules": list(targets),
+        "matched_module_count": len(targets),
+        "total_parameters": total,
+        "trainable_parameters": trainable,
+        "base_trainable_parameters": base_trainable,
+    }
 
 
 def _category(name: str) -> str:

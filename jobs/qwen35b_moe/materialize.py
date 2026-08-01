@@ -13,7 +13,12 @@ from .contract import ContractError, load_input_manifest, verify_input_tree
 
 
 JOB_ROOT = Path(__file__).resolve().parent
-PROFILES = ("full", "preflight-only")
+PROFILES = (
+    "full",
+    "preflight-only",
+    "hopper-dense-smoke",
+    "hopper-moe-smoke",
+)
 PREFLIGHT_MAX_ELAPSED_SECONDS = 2_700
 
 
@@ -32,7 +37,50 @@ def _render_job(profile: str) -> str:
     spec = yaml.safe_load(template)
     if not isinstance(spec, dict):
         raise ContractError("job template is not an object")
-    spec["name"] = "striatum-qwen36-35b-a3b-preflight"
+    if profile == "preflight-only":
+        spec["name"] = "striatum-qwen36-35b-a3b-preflight"
+    else:
+        dense = profile == "hopper-dense-smoke"
+        spec["name"] = (
+            "striatum-qwen35-08b-hopper-smoke"
+            if dense
+            else "striatum-qwen36-35b-a3b-moe-smoke"
+        )
+        config_name = "training-config.json" if dense else "moe-training-config.json"
+        model_dir = (
+            "/workspace/models/Qwen3.5-0.8B-2fc06364"
+            if dense
+            else "/workspace/models/Qwen3.6-35B-A3B-995ad96e"
+        )
+        spec["phases"]["verify"]["enabled"] = False
+        spec["phases"]["preflight"]["enabled"] = True
+        spec["phases"]["preflight"]["argv"] = [
+            "/opt/striatum-qwen35b/bin/preflight",
+            "--config",
+            f"/opt/striatum-qwen35b/jobs/qwen35b_moe/smoke/{config_name}",
+            "--model-dir",
+            model_dir,
+            "--strategy",
+            "linear-only",
+            "--check-hopper-kernels",
+            "--run-smoke",
+        ]
+        spec["phases"]["preflight"]["timeout_seconds"] = 2_400
+        spec["phases"]["train"]["enabled"] = False
+        spec["phases"]["evaluate"]["enabled"] = False
+        spec["phases"]["package"]["argv"] = [
+            "/opt/striatum-qwen35b/bin/package-smoke",
+            "--config",
+            f"/opt/striatum-qwen35b/jobs/qwen35b_moe/smoke/{config_name}",
+        ]
+        spec["phases"]["package"]["timeout_seconds"] = 60
+        spec["artifacts"]["incremental_manifest_glob"] = (
+            "artifacts/preflight/training/checkpoint-*/checkpoint-complete.json"
+        )
+        spec["artifacts"]["incremental_mirror_ack"]["timeout_seconds"] = 120
+        spec["limits"]["max_elapsed_seconds"] = 3_600
+        spec["limits"]["max_cost_usd"] = "3.50" if dense else "5.00"
+        return yaml.safe_dump(spec, sort_keys=False)
     phases = spec["phases"]
     phases["preflight"]["enabled"] = True
     phases["preflight"]["timeout_seconds"] = 900
@@ -56,18 +104,28 @@ def _render_job(profile: str) -> str:
 def materialize(source_repo: Path, destination: Path, profile: str = "full") -> Path:
     if destination.exists() or destination.is_symlink():
         raise ContractError(f"destination already exists: {destination}")
-    entries = load_input_manifest(JOB_ROOT / "input-manifest.json")
+    smoke_profile = profile in {"hopper-dense-smoke", "hopper-moe-smoke"}
+    manifest_path = (
+        JOB_ROOT / "smoke/input-manifest.json"
+        if smoke_profile
+        else JOB_ROOT / "input-manifest.json"
+    )
+    entries = load_input_manifest(manifest_path)
     destination.parent.mkdir(parents=True, exist_ok=True)
     staging = Path(
         tempfile.mkdtemp(prefix=f".{destination.name}.", dir=destination.parent)
     )
     try:
         (staging / "job.yaml").write_text(_render_job(profile))
-        shutil.copy2(JOB_ROOT / "input-manifest.json", staging / "input-manifest.json")
+        shutil.copy2(manifest_path, staging / "input-manifest.json")
         shutil.copytree(JOB_ROOT / "bin", staging / "bin", symlinks=False)
         input_root = staging / "inputs"
         for entry in entries:
-            source = source_repo / entry.path
+            source = (
+                JOB_ROOT / "smoke/inputs" / entry.path
+                if smoke_profile
+                else source_repo / entry.path
+            )
             if not source.is_file() or source.is_symlink():
                 raise ContractError(
                     f"source is missing, not regular, or a symlink: {source}"

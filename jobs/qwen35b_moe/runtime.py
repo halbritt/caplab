@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-import json
 import os
 from pathlib import Path
 from typing import Any
 
 from .contract import MODEL, ContractError
+from .profile import TrainingProfile, load_training_profile
 
 
 JOB_ROOT = Path(__file__).resolve().parent
@@ -69,16 +69,22 @@ def output_dir_from_env() -> Path:
 
 
 def training_config() -> dict[str, Any]:
-    return json.loads((JOB_ROOT / "training-config.json").read_text())
+    return load_training_profile(JOB_ROOT / "training-config.json").raw
 
 
-def load_quantized_base(model_dir: Path) -> tuple[Any, Any]:
+def _production_profile() -> TrainingProfile:
+    return load_training_profile(JOB_ROOT / "training-config.json")
+
+
+def load_quantized_base(
+    model_dir: Path, profile: TrainingProfile | None = None
+) -> tuple[Any, Any]:
     """Load the pinned base in 4-bit on the single authorized GPU."""
     try:
         import torch
         from transformers import (
             AutoModelForImageTextToText,
-            AutoTokenizer,
+            AutoProcessor,
             BitsAndBytesConfig,
         )
     except ImportError as error:
@@ -92,33 +98,40 @@ def load_quantized_base(model_dir: Path) -> tuple[Any, Any]:
         bnb_4bit_use_double_quant=True,
         bnb_4bit_compute_dtype=torch.bfloat16,
     )
+    selected = profile or _production_profile()
+    attention = selected.runtime.get("attention_implementation", "flash_attention_2")
     model = AutoModelForImageTextToText.from_pretrained(
         model_dir,
         local_files_only=True,
         quantization_config=quantization,
         torch_dtype=torch.bfloat16,
         device_map={"": torch.cuda.current_device()},
-        attn_implementation="flash_attention_2",
+        attn_implementation=attention,
     )
-    tokenizer = AutoTokenizer.from_pretrained(model_dir, local_files_only=True)
+    processor = AutoProcessor.from_pretrained(model_dir, local_files_only=True)
+    tokenizer = processor.tokenizer
     if tokenizer.pad_token_id is None:
         tokenizer.pad_token = tokenizer.eos_token
-    if getattr(model.config, "model_type", None) != MODEL.model_type:
+    tokenizer.padding_side = "right"
+    if getattr(model.config, "model_type", None) != selected.model_type:
         raise ContractError(
             f"loaded an unexpected model type: {model.config.model_type!r}"
         )
-    return model, tokenizer
+    return model, processor
 
 
-def load_bf16_base(model_dir: Path) -> tuple[Any, Any]:
+def load_bf16_base(
+    model_dir: Path, profile: TrainingProfile | None = None
+) -> tuple[Any, Any]:
     """Load a BF16 parity base, with bounded CPU offload when needed."""
     try:
         import torch
-        from transformers import AutoModelForImageTextToText, AutoTokenizer
+        from transformers import AutoModelForImageTextToText, AutoProcessor
     except ImportError as error:
         raise ContractError("torch and transformers are required") from error
     if not torch.cuda.is_available():
         raise ContractError("CUDA is required for model execution")
+    selected = profile or _production_profile()
     model = AutoModelForImageTextToText.from_pretrained(
         model_dir,
         local_files_only=True,
@@ -126,13 +139,17 @@ def load_bf16_base(model_dir: Path) -> tuple[Any, Any]:
         device_map="auto",
         max_memory={0: "74GiB", "cpu": "120GiB"},
         offload_folder=str(output_dir_from_env() / ".parity-offload"),
-        attn_implementation="flash_attention_2",
+        attn_implementation=selected.runtime.get(
+            "attention_implementation", "flash_attention_2"
+        ),
     )
-    tokenizer = AutoTokenizer.from_pretrained(model_dir, local_files_only=True)
+    processor = AutoProcessor.from_pretrained(model_dir, local_files_only=True)
+    tokenizer = processor.tokenizer
     if tokenizer.pad_token_id is None:
         tokenizer.pad_token = tokenizer.eos_token
-    if getattr(model.config, "model_type", None) != MODEL.model_type:
+    tokenizer.padding_side = "right"
+    if getattr(model.config, "model_type", None) != selected.model_type:
         raise ContractError(
             f"loaded an unexpected model type: {model.config.model_type!r}"
         )
-    return model, tokenizer
+    return model, processor

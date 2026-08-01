@@ -34,6 +34,7 @@ from .preflight import (
     verify_live_adapter_measurement,
     verify_longest_example_receipt,
 )
+from .flash_qla_smoke import validate_flash_qla_smoke_receipt
 from .runtime import output_dir_from_env, training_config
 from .train_phase import assess_available_gates, verify_checkpoint
 from .volume_assets import validate_asset_receipt
@@ -188,6 +189,10 @@ def _validate_preflight(run_root: Path) -> None:
         or any(not isinstance(value, str) or not value for value in versions.values())
     ):
         raise ContractError("paid preflight receipt contract is invalid")
+    if receipt.get("flash_qla") != validate_flash_qla_smoke_receipt(
+        _read_json_object(root / "flash-qla-smoke.json", "FlashQLA smoke receipt")
+    ):
+        raise ContractError("paid preflight FlashQLA evidence disagrees")
 
     _validate_census(root / "target-census.json")
     training_result = root / "one-step/training-result.json"

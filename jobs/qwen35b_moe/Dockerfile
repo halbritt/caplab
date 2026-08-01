@@ -37,9 +37,7 @@ RUN /opt/runpod-jobrunner/venv/bin/python -m pip install --no-cache-dir -r requi
        --no-build-isolation -r requirements-gpu.txt \
     && /opt/runpod-jobrunner/venv/bin/python -m pip check \
     && /opt/runpod-jobrunner/venv/bin/python -c \
-       "import importlib; modules = ('torch', 'transformers', 'peft', 'accelerate', 'datasets', 'safetensors', 'flash_attn', 'fla', 'causal_conv1d', 'bitsandbytes', 'tilelang', 'tvm_ffi', 'liger_kernel.transformers.model.qwen3_5_moe'); [importlib.import_module(module) for module in modules]"
-RUN /opt/runpod-jobrunner/venv/bin/python -c \
-    "from tilelang.analysis.nested_loop_checker import _NestedLoopCheckVisitor; _NestedLoopCheckVisitor()"
+       "import importlib; modules = ('torch', 'torchvision', 'transformers', 'peft', 'accelerate', 'datasets', 'safetensors', 'flash_attn', 'fla', 'causal_conv1d', 'bitsandbytes', 'tilelang', 'tvm_ffi', 'liger_kernel.transformers.model.qwen3_5_moe'); [importlib.import_module(module) for module in modules]"
 
 RUN cuda_stub_dir=/usr/local/cuda/lib64/stubs \
     && test -f "$cuda_stub_dir/libcuda.so" \
@@ -67,9 +65,11 @@ RUN cuda_stub_dir=/usr/local/cuda/lib64/stubs \
 
 RUN mkdir -p /opt/striatum-qwen35b/jobs/qwen35b_moe /opt/striatum-qwen35b/bin
 COPY *.py *.json /opt/striatum-qwen35b/jobs/qwen35b_moe/
+COPY smoke/ /opt/striatum-qwen35b/jobs/qwen35b_moe/smoke/
 COPY network-volume-assets.sha256 /opt/striatum-qwen35b/jobs/qwen35b_moe/
 COPY bin/ /opt/striatum-qwen35b/bin/
 RUN chmod 0555 /opt/striatum-qwen35b/bin/* \
+    && /opt/runpod-jobrunner/venv/bin/python -m jobs.qwen35b_moe.flash_qla_smoke --validate-install \
     && rm -rf /tmp/striatum-qwen35b-build
 
 LABEL org.opencontainers.image.title="Striatum Qwen3.6-35B-A3B PEFT runner"

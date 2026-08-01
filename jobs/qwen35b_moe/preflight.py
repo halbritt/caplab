@@ -12,6 +12,7 @@ import subprocess
 import sys
 
 from .census import census_snapshot
+from .flash_qla_smoke import run_flash_qla_smoke
 from .contract import (
     STRATEGIES,
     ContractError,
@@ -31,6 +32,9 @@ from .runtime import (
     model_dir_from_env,
     output_dir_from_env,
 )
+from .data import encode_sft_example
+from .profile import load_training_profile
+from .train import verify_checkpoint_manifest
 from .train import (
     validate_liger_fused_loss_proof,
     validate_sft_tokenization_census,
@@ -46,10 +50,24 @@ PACKAGES = (
     "bitsandbytes",
     "flash-attn",
     "flash-linear-attention",
+    "fla-core",
+    "flash-qla",
     "causal-conv1d",
     "tilelang",
     "apache-tvm-ffi",
     "liger-kernel",
+    "Pillow",
+    "torchvision",
+)
+
+SMOKE_PACKAGES = (
+    "torch",
+    "transformers",
+    "peft",
+    "accelerate",
+    "datasets",
+    "bitsandbytes",
+    "Pillow",
 )
 
 
@@ -267,15 +285,225 @@ def verify_liger_fused_loss_receipt(path: Path) -> dict[str, object]:
     return validate_liger_fused_loss_proof(training_result.get("liger_fused_loss"))
 
 
+def _read_profile_examples(input_dir: Path, manifest_path: Path) -> list[dict[str, object]]:
+    manifest = json.loads(manifest_path.read_text())
+    rows: list[dict[str, object]] = []
+    for item in manifest.get("files", []):
+        if not isinstance(item, dict) or item.get("role", "train") != "train":
+            continue
+        path = input_dir / str(item.get("path"))
+        try:
+            for line in path.read_text().splitlines():
+                if not line.strip():
+                    continue
+                value: object = json.loads(line)
+                if not isinstance(value, dict):
+                    raise ContractError(f"dataset row is not an object: {path}")
+                rows.append(value)
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
+            raise ContractError(f"dataset is unreadable: {path}") from error
+    if not rows:
+        raise ContractError("profile input contains no training examples")
+    return rows
+
+
+def _profile_preflight(args: argparse.Namespace) -> dict[str, object]:
+    try:
+        import torch
+        from transformers import AutoConfig, AutoProcessor
+    except ImportError as error:
+        raise ContractError("torch and transformers are required for preflight") from error
+    profile = load_training_profile(args.config)
+    flash_qla = (
+        run_flash_qla_smoke(args.output / "flash-qla-smoke.json")
+        if args.check_hopper_kernels
+        else None
+    )
+    entries = load_input_manifest(
+        profile.input_manifest, strict_production=profile.strict_input_manifest
+    )
+    verify_input_tree(args.input_dir, entries)
+    revision_receipt = args.model_dir / "snapshot-revision.txt"
+    if not revision_receipt.is_file() or revision_receipt.read_text().strip() != profile.model_revision:
+        raise ContractError(
+            "model snapshot revision receipt is missing or does not match the profile"
+        )
+    config = AutoConfig.from_pretrained(args.model_dir, local_files_only=True)
+    if getattr(config, "model_type", None) != profile.model_type:
+        raise ContractError(
+            f"model configuration type mismatch: {getattr(config, 'model_type', None)!r}"
+        )
+    processor = AutoProcessor.from_pretrained(args.model_dir, local_files_only=True)
+    rows = _read_profile_examples(args.input_dir, profile.input_manifest)
+    if len(rows) > profile.maximum_examples:
+        raise ContractError(
+            f"smoke dataset has {len(rows)} rows; maximum is {profile.maximum_examples}"
+        )
+    encoded_rows = [
+        encode_sft_example(
+            processor,
+            row,
+            input_root=args.input_dir,
+            cutoff=profile.cutoff_length,
+            processing=profile.processing,
+        )
+        for row in rows
+    ]
+    model, measurement = inject_on_meta(str(args.model_dir), args.strategy, profile)
+    del model
+    measurement_value = (
+        measurement.to_dict() if hasattr(measurement, "to_dict") else measurement
+    )
+    versions = {}
+    for package in SMOKE_PACKAGES:
+        try:
+            versions[package] = importlib.metadata.version(package)
+        except importlib.metadata.PackageNotFoundError as error:
+            raise ContractError(f"required package is absent: {package}") from error
+    cuda = {
+        "available": bool(torch.cuda.is_available()),
+        "bf16_supported": bool(
+            torch.cuda.is_available() and torch.cuda.is_bf16_supported()
+        ),
+    }
+    if torch.cuda.is_available():
+        cuda.update(
+            {
+                "device": torch.cuda.get_device_name(),
+                "compute_capability": list(torch.cuda.get_device_capability()),
+            }
+        )
+    receipt: dict[str, object] = {
+        "protocol": "striatum-training-profile-preflight/1",
+        "profile": str(profile.path),
+        "model_dir": str(args.model_dir.resolve()),
+        "input_dir": str(args.input_dir.resolve()),
+        "model": {
+            "id": profile.model_id,
+            "revision": profile.model_revision,
+            "model_type": profile.model_type,
+        },
+        "processor_class": type(processor).__name__,
+        "versions": versions,
+        "flash_qla": flash_qla,
+        "cuda": cuda,
+        "dataset": {
+            "examples": len(rows),
+            "multimodal_examples": sum(
+                "pixel_values" in encoded for encoded in encoded_rows
+            ),
+            "maximum_tokens": max(len(encoded["input_ids"]) for encoded in encoded_rows),
+            "supervised_tokens": sum(
+                sum(label != -100 for label in encoded["labels"])
+                for encoded in encoded_rows
+            ),
+        },
+        "adapter": measurement_value,
+        "smoke": "not-requested",
+    }
+    print(json.dumps(receipt, indent=2, sort_keys=True), flush=True)
+    return receipt
+
+
+def _run_profile_smoke(args: argparse.Namespace, receipt: dict[str, object]) -> None:
+    train_output = args.output / "training"
+    diagnostics = args.output / "diagnostics"
+    common = [
+        sys.executable,
+        "-m",
+        "jobs.qwen35b_moe.train",
+        "--config",
+        str(args.config),
+        "--strategy",
+        args.strategy,
+        "--model-dir",
+        str(args.model_dir),
+        "--input-dir",
+        str(args.input_dir),
+        "--output",
+        str(train_output),
+        "--limit",
+        "4",
+        "--save-steps",
+        "2",
+        "--save-final-checkpoint",
+        "--seed",
+        str(args.seed),
+    ]
+    first = [*common, "--max-steps", "2"]
+    _run(first, log_path=diagnostics / "train-to-checkpoint.log")
+    checkpoint = train_output / "checkpoint-2"
+    verify_checkpoint_manifest(checkpoint)
+    resumed = [
+        *common,
+        "--max-steps",
+        "4",
+        "--resume-from-checkpoint",
+        str(checkpoint),
+    ]
+    _run(resumed, log_path=diagnostics / "resume-training.log")
+    final_checkpoint = train_output / "checkpoint-4"
+    verify_checkpoint_manifest(final_checkpoint)
+    inference_output = args.output / "inference.json"
+    inference = [
+        sys.executable,
+        "-m",
+        "jobs.qwen35b_moe.infer",
+        "--config",
+        str(args.config),
+        "--model-dir",
+        str(args.model_dir),
+        "--input-dir",
+        str(args.input_dir),
+        "--adapter",
+        str(train_output / "final-adapter"),
+        "--output",
+        str(inference_output),
+        "--max-new-tokens",
+        "32",
+    ]
+    _run(inference, log_path=diagnostics / "inference.log")
+    first_result = json.loads((train_output / "training-result.json").read_text())
+    inference_result = json.loads(inference_output.read_text())
+    if first_result.get("global_step") != 4:
+        raise ContractError("resumed smoke training did not reach step 4")
+    if Path(str(first_result.get("resumed_from"))).resolve() != checkpoint.resolve():
+        raise ContractError("smoke training did not attest checkpoint resume")
+    optimization = first_result.get("optimization")
+    if (
+        not isinstance(optimization, dict)
+        or optimization.get("optimizer_steps", 0) <= 0
+        or optimization.get("backward_passes_with_adapter_gradients", 0) <= 0
+        or not optimization.get("nonzero_gradient_parameters")
+    ):
+        raise ContractError("smoke training has incomplete optimization evidence")
+    if inference_result.get("adapter_loaded") is not True:
+        raise ContractError("smoke inference did not load the adapter")
+    receipt.update(
+        {
+            "smoke": "passed",
+            "commands": [first, resumed, inference],
+            "checkpoint_2": str(checkpoint),
+            "checkpoint_4": str(final_checkpoint),
+            "training": first_result,
+            "inference": inference_result,
+        }
+    )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--strategy", choices=STRATEGIES, default="linear-only")
+    parser.add_argument("--config", type=Path)
     parser.add_argument("--model-dir", type=Path, default=model_dir_from_env())
     parser.add_argument("--input-dir", type=Path, default=input_dir_from_env())
     parser.add_argument(
         "--output", type=Path, default=output_dir_from_env() / "artifacts/preflight"
     )
     parser.add_argument("--run-smoke", action="store_true")
+    parser.add_argument("--check-only", action="store_true")
+    parser.add_argument("--check-hopper-kernels", action="store_true")
+    parser.add_argument("--seed", type=int, default=42)
     parser.add_argument(
         "--base-gguf",
         type=Path,
@@ -288,10 +516,23 @@ def main() -> None:
     )
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
+    if args.config is not None:
+        args.config = args.config.resolve()
+        args.model_dir = args.model_dir.resolve()
+        args.input_dir = args.input_dir.resolve()
+        receipt = _profile_preflight(args)
+        if args.run_smoke:
+            _run_profile_smoke(args, receipt)
+        receipt_path = args.output / "preflight.json"
+        receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
+        return
     diagnostics = output_dir_from_env() / "diagnostics/preflight"
 
     entries = load_input_manifest(Path(__file__).with_name("input-manifest.json"))
     verify_input_tree(args.input_dir, entries)
+    receipt_flash_qla = run_flash_qla_smoke(
+        args.output / "flash-qla-smoke.json"
+    )
     census = census_snapshot(args.model_dir)
     (args.output / "target-census.json").write_text(
         json.dumps(census, indent=2, sort_keys=True) + "\n"
@@ -309,6 +550,7 @@ def main() -> None:
         "protocol": "striatum-paid-preflight/3",
         "strategy": args.strategy,
         "measurement": measurement.to_dict(),
+        "flash_qla": receipt_flash_qla,
         "versions": versions,
         "smoke": "not-requested",
     }

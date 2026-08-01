@@ -46,10 +46,7 @@ class InputFile:
     path: str
     size: int
     sha256: str
-
-    @property
-    def role(self) -> str:
-        return "eval" if self.path == "sft/review.eval.jsonl" else "train"
+    role: str = "train"
 
 
 @dataclass(frozen=True)
@@ -222,13 +219,28 @@ def validate_adapter_measurement(
         )
 
 
-def load_input_manifest(path: Path) -> tuple[InputFile, ...]:
+def load_input_manifest(
+    path: Path, *, strict_production: bool = True
+) -> tuple[InputFile, ...]:
     raw = json.loads(path.read_text())
     if raw.get("protocol") != "input-manifest/1":
         raise ContractError("input manifest protocol must be input-manifest/1")
     if raw.get("root") != "inputs":
         raise ContractError("input manifest root must be inputs")
-    entries = tuple(InputFile(**entry) for entry in raw.get("files", ()))
+    entries_list = []
+    for value in raw.get("files", ()):
+        if not isinstance(value, Mapping):
+            raise ContractError("input manifest entries must be objects")
+        entry = dict(value)
+        if "role" not in entry:
+            entry["role"] = (
+                "eval" if entry.get("path") == "sft/review.eval.jsonl" else "train"
+            )
+        try:
+            entries_list.append(InputFile(**entry))
+        except TypeError as error:
+            raise ContractError("input manifest entry fields are invalid") from error
+    entries = tuple(entries_list)
     expected_paths = (
         "sft/review.train.jsonl",
         "sft/review.eval.jsonl",
@@ -236,21 +248,31 @@ def load_input_manifest(path: Path) -> tuple[InputFile, ...]:
         "sft/design-convergence.train.jsonl",
         "sft/proposal-generation.train.jsonl",
     )
-    if tuple(entry.path for entry in entries) != expected_paths:
-        raise ContractError("input manifest is not the exact five-file SFT allow-list")
-    if sum(entry.size for entry in entries) != 119_218_345:
-        raise ContractError("input manifest total is not 119,218,345 bytes")
+    if strict_production:
+        if tuple(entry.path for entry in entries) != expected_paths:
+            raise ContractError("input manifest is not the exact five-file SFT allow-list")
+        if sum(entry.size for entry in entries) != 119_218_345:
+            raise ContractError("input manifest total is not 119,218,345 bytes")
+    elif not entries or not any(entry.role == "train" for entry in entries):
+        raise ContractError("input manifest must contain at least one training file")
+    seen: set[PurePosixPath] = set()
     for entry in entries:
         pure_path = PurePosixPath(entry.path)
         if (
             pure_path.is_absolute()
             or ".." in pure_path.parts
-            or pure_path.parts[0] != "sft"
             or "corpus" in pure_path.parts
         ):
             raise ContractError(
-                f"input path is outside the SFT allow-list: {entry.path}"
+                f"input path is outside the input allow-list: {entry.path}"
             )
+        if pure_path in seen:
+            raise ContractError(f"duplicate input path: {entry.path}")
+        seen.add(pure_path)
+        if entry.role not in {"train", "eval", "asset"}:
+            raise ContractError(f"invalid input role for {entry.path}: {entry.role}")
+        if entry.role in {"train", "eval"} and pure_path.parts[0] != "sft":
+            raise ContractError(f"dataset input is outside sft/: {entry.path}")
         if len(entry.sha256) != 64 or any(
             c not in "0123456789abcdef" for c in entry.sha256
         ):

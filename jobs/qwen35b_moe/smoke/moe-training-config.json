@@ -1,0 +1,45 @@
+{
+  "protocol": "striatum-qwen-training-profile/1",
+  "model": {
+    "id": "Qwen/Qwen3.6-35B-A3B",
+    "revision": "995ad96eacd98c81ed38be0c5b274b04031597b0",
+    "expected_model_type": "qwen3_5_moe"
+  },
+  "input_manifest": "input-manifest.json",
+  "strict_input_manifest": false,
+  "cutoff_length": 512,
+  "maximum_examples": 8,
+  "processing": {
+    "image_shortest_edge": 65536,
+    "image_longest_edge": 262144
+  },
+  "runtime": {
+    "attention_implementation": "flash_attention_2",
+    "optimizer": "paged_adamw_8bit",
+    "gradient_checkpointing": true,
+    "quantization": "bnb-4bit-nf4-double-quant"
+  },
+  "train": {
+    "epochs": 1,
+    "expected_examples": 4,
+    "per_device_batch_size": 1,
+    "gradient_accumulation_steps": 1,
+    "learning_rate": 0.0001,
+    "warmup_ratio": 0.0,
+    "scheduler": "constant",
+    "bf16": true,
+    "liger_fused_loss": true,
+    "packing": false,
+    "thinking": false
+  },
+  "strategies": {
+    "linear-only": {
+      "rank": 32,
+      "alpha": 64,
+      "dropout": 0.05,
+      "target_pattern": ".*model\\.language_model\\.layers\\.\\d+\\.(?:linear_attn\\.(?:in_proj_qkv|in_proj_z|in_proj_b|in_proj_a|out_proj)|self_attn\\.(?:q_proj|k_proj|v_proj|o_proj)|mlp\\.shared_expert\\.(?:gate_proj|up_proj|down_proj))$",
+      "expected_target_count": 310,
+      "expected_trainable_parameters": 42332160
+    }
+  }
+}

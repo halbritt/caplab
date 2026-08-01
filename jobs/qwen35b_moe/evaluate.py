@@ -291,7 +291,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
 
     set_seed(args.seed)
     load_base = load_bf16_base if args.bf16_base else load_quantized_base
-    model, tokenizer = load_base(args.model_dir.resolve())
+    model, processor = load_base(args.model_dir.resolve())
+    tokenizer = processor.tokenizer
     model = PeftModel.from_pretrained(model, args.adapter.resolve(), is_trainable=False)
     model.eval()
     examples, selection_evidence = _read_examples(

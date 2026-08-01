@@ -103,9 +103,116 @@ from jobs.qwen35b_moe.volume_assets import (  # noqa: E402
     verify_asset_manifest,
 )
 from jobs.qwen35b_moe import verify as verify_module  # noqa: E402
+from jobs.qwen35b_moe.profile import (  # noqa: E402
+    load_training_profile,
+    matched_lora_modules,
+    resolve_multimodal_paths,
+)
+from jobs.qwen35b_moe.data import encode_sft_example  # noqa: E402
 
 
 JOB = ROOT / "jobs" / "qwen35b_moe"
+
+
+def test_smoke_profile_selects_dense_model_without_changing_production_default() -> None:
+    production = load_training_profile(JOB / "training-config.json")
+    smoke = load_training_profile(JOB / "smoke" / "training-config.json")
+
+    assert production.model_id == "Qwen/Qwen3.6-35B-A3B"
+    assert production.model_type == "qwen3_5_moe"
+    assert production.liger_fused_loss is True
+    assert smoke.model_id == "Qwen/Qwen3.5-0.8B"
+    assert smoke.model_revision == "2fc06364715b967f1860aea9cf38778875588b17"
+    assert smoke.model_type == "qwen3_5"
+    assert smoke.cutoff_length == 512
+    assert smoke.maximum_examples == 8
+    assert smoke.liger_fused_loss is False
+
+
+def test_multimodal_paths_are_resolved_inside_the_input_root(tmp_path: Path) -> None:
+    image = tmp_path / "assets" / "review-flow.pbm"
+    image.parent.mkdir()
+    image.write_text("P1\n1 1\n0\n")
+    messages = [
+        {
+            "role": "user",
+            "content": [
+                {"type": "image", "path": "assets/review-flow.pbm"},
+                {"type": "text", "text": "Review this flow."},
+            ],
+        },
+        {"role": "assistant", "content": "Looks bounded."},
+    ]
+
+    resolved = resolve_multimodal_paths(messages, tmp_path)
+
+    assert resolved[0]["content"][0]["path"] == str(image.resolve())
+    assert messages[0]["content"][0]["path"] == "assets/review-flow.pbm"
+
+
+def test_multimodal_paths_reject_escape_and_lora_targets_fail_closed(
+    tmp_path: Path,
+) -> None:
+    outside = tmp_path.parent / "outside.pbm"
+    outside.write_text("P1\n1 1\n0\n")
+    messages = [
+        {
+            "role": "user",
+            "content": [{"type": "image", "path": "../outside.pbm"}],
+        },
+        {"role": "assistant", "content": "No."},
+    ]
+    with pytest.raises(ContractError, match="outside the input root"):
+        resolve_multimodal_paths(messages, tmp_path)
+
+    model = SimpleNamespace(named_modules=lambda: iter([("model.embed_tokens", object())]))
+    with pytest.raises(ContractError, match="matched zero modules"):
+        matched_lora_modules(model, r".*\\.q_proj$")
+
+
+def test_sft_encoding_uses_processor_for_image_and_masks_only_the_prompt(
+    tmp_path: Path,
+) -> None:
+    image = tmp_path / "flow.pbm"
+    image.write_text("P1\n1 1\n0\n")
+    calls: list[list[dict[str, object]]] = []
+
+    class FakeProcessor:
+        def apply_chat_template(self, messages, **kwargs):  # noqa: ANN001
+            calls.append(messages)
+            prompt = len(messages) == 1
+            return {
+                "input_ids": [[10, 11] if prompt else [10, 11, 20, 21]],
+                "attention_mask": [[1, 1] if prompt else [1, 1, 1, 1]],
+                "mm_token_type_ids": [[1, 1] if prompt else [1, 1, 0, 0]],
+                "pixel_values": [[0.0, 1.0]],
+                "image_grid_thw": [[1, 1, 1]],
+            }
+
+    encoded = encode_sft_example(
+        FakeProcessor(),
+        {
+            "messages": [
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "image", "path": "flow.pbm"},
+                        {"type": "text", "text": "Review it."},
+                    ],
+                },
+                {"role": "assistant", "content": "Accept."},
+            ]
+        },
+        input_root=tmp_path,
+        cutoff=16,
+        processing={},
+    )
+
+    assert encoded["labels"] == [-100, -100, 20, 21]
+    assert encoded["mm_token_type_ids"] == [1, 1, 0, 0]
+    assert encoded["pixel_values"] == [[0.0, 1.0]]
+    assert calls[0][0]["content"][0]["path"] == str(image.resolve())
+    assert len(calls) == 2
 
 
 def _canonical_json(value: object) -> bytes:
@@ -129,6 +236,37 @@ def _liger_proof(calls: int = 8) -> dict[str, object]:
         "training_logits": "not-materialized",
         "no_full_logits_observed": True,
         "observed_forward_calls": calls,
+    }
+
+
+def _flash_qla_receipt() -> dict[str, object]:
+    return {
+        "protocol": "striatum-flash-qla-smoke/1",
+        "dispatcher": "FlashQLABackend",
+        "dispatch_calls": 1,
+        "device": {"name": "NVIDIA H200", "compute_capability": [9, 0]},
+        "shape": {
+            "batch": 1,
+            "tokens": 64,
+            "qk_heads": 16,
+            "v_heads": 32,
+            "dim": 128,
+        },
+        "dtype": "bfloat16",
+        "forward_finite": True,
+        "loss_finite": True,
+        "loss": 1.0,
+        "gradients": {
+            name: "finite-nonzero"
+            for name in ("q", "k", "v", "g", "beta", "initial_state")
+        },
+        "versions": {
+            "flash-linear-attention": "0.5.2",
+            "fla-core": "0.5.2",
+            "flash-qla": "0.1.2",
+            "tilelang": "0.1.9",
+            "apache-tvm-ffi": "0.1.9",
+        },
     }
 
 
@@ -1382,6 +1520,7 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
     for module in (
         "flash_attn",
         "fla",
+        "flash_qla",
         "causal_conv1d",
         "bitsandbytes",
         "tilelang",
@@ -1392,6 +1531,34 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
     assert Decimal(preflight["limits"]["max_cost_usd"]) + Decimal(
         full["limits"]["max_cost_usd"]
     ) == Decimal("42.50")
+
+
+def test_smoke_ladder_materializations_use_the_same_h200_image_path() -> None:
+    import yaml
+
+    dense = yaml.safe_load(_render_job("hopper-dense-smoke"))
+    moe = yaml.safe_load(_render_job("hopper-moe-smoke"))
+
+    for spec in (dense, moe):
+        assert spec["resources"]["gpu_types"] == ["NVIDIA H200"]
+        assert spec["phases"]["verify"]["enabled"] is False
+        assert spec["phases"]["preflight"]["enabled"] is True
+        assert "--check-hopper-kernels" in spec["phases"]["preflight"]["argv"]
+        assert spec["phases"]["train"]["enabled"] is False
+        assert spec["phases"]["evaluate"]["enabled"] is False
+        assert spec["phases"]["package"]["argv"][0].endswith("package-smoke")
+        assert spec["artifacts"]["incremental_manifest_glob"] == (
+            "artifacts/preflight/training/checkpoint-*/checkpoint-complete.json"
+        )
+
+    assert "Qwen3.5-0.8B-2fc06364" in " ".join(
+        dense["phases"]["preflight"]["argv"]
+    )
+    assert dense["limits"]["max_cost_usd"] == "3.50"
+    assert "moe-training-config.json" in " ".join(
+        moe["phases"]["preflight"]["argv"]
+    )
+    assert moe["limits"]["max_cost_usd"] == "5.00"
 
 
 def test_ssh_keygen_capability_probe_accepts_help_exit_but_not_missing_y(
@@ -1430,20 +1597,39 @@ def test_ssh_keygen_capability_probe_accepts_help_exit_but_not_missing_y(
     assert unsupported.returncode != 0
 
 
-def test_tilelang_pins_its_bundled_tvm_ffi_compatibility_release() -> None:
+def test_flash_qla_pins_one_coherent_hopper_backend_stack() -> None:
     requirements = dict(
         line.split("==", maxsplit=1)
         for line in (JOB / "requirements.txt").read_text().splitlines()
     )
 
     assert requirements["tilelang"] == "0.1.9"
-    assert requirements["apache-tvm-ffi"] == "0.1.11"
+    assert requirements["apache-tvm-ffi"] == "0.1.9"
+    assert requirements["fla-core"] == "0.5.2"
+
+    gpu_requirements = dict(
+        line.split("==", maxsplit=1)
+        for line in (JOB / "requirements-gpu.txt").read_text().splitlines()
+        if line and not line.startswith("#")
+    )
+    assert gpu_requirements["flash-linear-attention"] == "0.5.2"
+    assert gpu_requirements["flash-qla"] == "0.1.2"
 
     dockerfile = (JOB / "Dockerfile").read_text()
     assert "'tilelang'" in dockerfile
+    assert "flash_qla" in dockerfile
     assert "'tvm_ffi'" in dockerfile
-    assert "from tilelang.analysis.nested_loop_checker import" in dockerfile
-    assert "_NestedLoopCheckVisitor()" in dockerfile
+    assert "jobs.qwen35b_moe.flash_qla_smoke" in dockerfile
+
+
+def test_paid_preflight_requires_flash_qla_runtime_evidence() -> None:
+    assert "flash-qla" in PACKAGES
+    assert "fla-core" in PACKAGES
+    source = (JOB / "preflight.py").read_text()
+    assert "run_flash_qla_smoke" in source
+    assert source.index(
+        "receipt_flash_qla = run_flash_qla_smoke"
+    ) < source.index("census = census_snapshot")
 
 
 def test_preflight_materialization_stamps_single_quoted_yaml_hash(
@@ -1505,6 +1691,7 @@ def test_preflight_packaging_requires_preflight_smoke_evidence(tmp_path: Path) -
             "strategy": "linear-only",
             "measurement": expected_adapter_measurement(LINEAR_ONLY).to_dict(),
             "versions": {package: "test-version" for package in PACKAGES},
+            "flash_qla": _flash_qla_receipt(),
             "smoke": "passed",
             "longest_training_example": training_selection,
             "quantized_longest_evaluation_example": evaluation_selection,
@@ -1516,6 +1703,7 @@ def test_preflight_packaging_requires_preflight_smoke_evidence(tmp_path: Path) -
             ).to_dict(),
         },
     )
+    _write_json(root / "flash-qla-smoke.json", _flash_qla_receipt())
     _write_json(
         root / "target-census.json",
         {
