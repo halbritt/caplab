@@ -14,6 +14,7 @@ from .contract import ContractError, load_input_manifest, verify_input_tree
 
 JOB_ROOT = Path(__file__).resolve().parent
 PROFILES = ("full", "preflight-only")
+PREFLIGHT_MAX_ELAPSED_SECONDS = 2_100
 
 
 def _render_job(profile: str) -> str:
@@ -43,7 +44,7 @@ def _render_job(profile: str) -> str:
         "--preflight-only",
     ]
     phases["package"]["timeout_seconds"] = 45
-    spec["limits"]["max_elapsed_seconds"] = 600
+    spec["limits"]["max_elapsed_seconds"] = PREFLIGHT_MAX_ELAPSED_SECONDS
     spec["limits"]["max_cost_usd"] = "2.00"
     artifacts = spec["artifacts"]
     artifacts["incremental_manifest_glob"] = (

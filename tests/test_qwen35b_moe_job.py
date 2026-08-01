@@ -906,7 +906,7 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
         "timeout_seconds": 900,
     }
     assert preflight["limits"] == {
-        "max_elapsed_seconds": 600,
+        "max_elapsed_seconds": 2_100,
         "max_cost_usd": "2.00",
         "usd_per_hour": "3.15",
     }
@@ -927,9 +927,16 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
         for phase in preflight["phases"].values()
         if phase["enabled"]
     )
+    assert enabled_preflight_seconds == 570
     assert (
         preflight["limits"]["max_elapsed_seconds"] - enabled_preflight_seconds
-        >= 30
+        == 1_530
+    )
+    assert (
+        Decimal(preflight["limits"]["max_elapsed_seconds"])
+        * Decimal(preflight["limits"]["usd_per_hour"])
+        / Decimal(3_600)
+        == Decimal("1.8375")
     )
     assert (
         preflight["artifacts"]["incremental_mirror_ack"]["timeout_seconds"]
@@ -950,10 +957,10 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
     ):
         assert module in dockerfile
     assert (
-        0.50
+        1.00
         + float(preflight["limits"]["max_cost_usd"])
         + float(full["limits"]["max_cost_usd"])
-        == 49.50
+        == 50.00
     )
 
 

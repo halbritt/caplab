@@ -46,14 +46,15 @@ The two generated bundles are separate reservations. Materialize, digest-stamp,
 check, and run the preflight-only bundle first. Accept it only after the
 one-step checkpoint has been mirrored, its signed recovery acknowledgement has
 been verified, the terminal artifacts have been recovered by hash, and the
-worker has closed within 600 seconds and $2.00. Only then may the full bundle,
+worker has closed within 2,100 seconds and $2.00. Only then may the full bundle,
 materialized from the same inputs and image digest, be launched. The full
 bundle disables its redundant preflight phase and starts with verify before
 training and full evaluation; full packaging does not consume artifacts from
-the standalone preflight reservation. It reserves $47.00. With the
-controller's $0.50 no-op reservation, the aggregate maximum is $49.50. A
-failed, unacknowledged, or over-time preflight is a stop condition for
-launching the full bundle.
+the standalone preflight reservation. It reserves $47.00. The original budget
+scope already contains $1.00 in lifecycle reservations. These two reservations
+use its remaining $49.00 and reach the $50.00 scope total exactly. A failed,
+unacknowledged, or over-time preflight is a stop condition for launching the
+full bundle. There is no same-scope retry headroom.
 
 `Dockerfile` copies the remote runner from the already-published
 `runpod-jobrunner` image by immutable digest. No private source checkout enters
@@ -159,16 +160,22 @@ The standalone bundle exposes the one-step manifest at
 `artifacts/preflight/one-step/checkpoint-*/checkpoint-complete.json` and waits
 at most 120 seconds for the controller's signed incremental-mirror
 acknowledgement. Its enabled phase timeouts total 570 seconds, leaving 30
-seconds of controller headroom under the 600-second reservation.
+seconds of controller headroom under the original 600-second reservation. That
+old bound was revised before launch because the controller starts its clock
+before a cold pull of the 133.17-GiB model payload. The 2,100-second bound keeps
+the phase limits unchanged and leaves 1,530 seconds for image pull, startup,
+upload, recovery, and deletion. At the $3.15/hour admission ceiling, its GPU
+exposure is $1.8375 and remains inside the $2.00 cost cap.
 
 The verify phase fails unless `libggml-cuda.so` resolves `libcuda.so.1` to a
 non-stub runtime driver and the pinned `llama-cli --list-devices` reports one
 H100 with at least 80,000 MiB. It records the accepted binding in
 `artifacts/runtime/cuda-runtime.json`; terminal packaging requires that receipt.
 
-Do not start a full run if this exceeds ten billable minutes or needs an
-interactive patch. Direct export is not considered compatible until this
-command produces `one-step-export.json`. In particular, PEFT
+Do not start a full run if this exceeds 2,100 billable seconds or needs an
+interactive patch. Do not retry it automatically. Direct export is not
+considered compatible until this command produces `one-step-export.json`. In
+particular, PEFT
 `target_parameters` export for the expert-aware adapter remains unproven until
 its own smoke passes.
 
