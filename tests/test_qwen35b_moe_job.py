@@ -49,7 +49,7 @@ from jobs.qwen35b_moe.evaluate import (  # noqa: E402
     derive_checkpoint_25_dispatch_ids,
     verify_longest_evaluation_receipt,
 )
-from jobs.qwen35b_moe.materialize import _render_job  # noqa: E402
+from jobs.qwen35b_moe.materialize import _render_job, materialize  # noqa: E402
 from jobs.qwen35b_moe.peft_config import (  # noqa: E402
     FUSED_EXPERT_SPEC_SHA256,
     LINEAR_TARGET_PATTERN,
@@ -1559,6 +1559,19 @@ def test_smoke_ladder_materializations_use_the_same_h200_image_path() -> None:
         moe["phases"]["preflight"]["argv"]
     )
     assert moe["limits"]["max_cost_usd"] == "5.00"
+
+
+def test_dense_smoke_materialization_copies_only_the_tiny_manifest(
+    tmp_path: Path,
+) -> None:
+    destination = tmp_path / "gate2"
+
+    materialize(ROOT, destination, "hopper-dense-smoke")
+
+    assert (destination / "inputs/sft/smoke.train.jsonl").read_bytes() == (
+        JOB / "smoke/inputs/sft/smoke.train.jsonl"
+    ).read_bytes()
+    assert not (destination / "inputs/sft/review.train.jsonl").exists()
 
 
 def test_ssh_keygen_capability_probe_accepts_help_exit_but_not_missing_y(

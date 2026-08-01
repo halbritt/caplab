@@ -110,7 +110,9 @@ def materialize(source_repo: Path, destination: Path, profile: str = "full") -> 
         if smoke_profile
         else JOB_ROOT / "input-manifest.json"
     )
-    entries = load_input_manifest(manifest_path)
+    entries = load_input_manifest(
+        manifest_path, strict_production=not smoke_profile
+    )
     destination.parent.mkdir(parents=True, exist_ok=True)
     staging = Path(
         tempfile.mkdtemp(prefix=f".{destination.name}.", dir=destination.parent)
