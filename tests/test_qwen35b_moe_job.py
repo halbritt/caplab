@@ -1247,6 +1247,14 @@ def test_liger_runtime_proof_requires_bound_fused_loss_and_no_logits(
         validate_liger_fused_loss_proof(proof)
 
 
+def test_liger_training_keeps_fused_loss_but_disables_mixed_dtype_fused_moe() -> None:
+    assert train_module.LIGER_KERNEL_CONFIG == {
+        "cross_entropy": False,
+        "fused_linear_cross_entropy": True,
+        "swiglu": False,
+    }
+
+
 def test_liger_binding_callback_checks_after_trainer_applies_patch(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

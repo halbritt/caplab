@@ -44,6 +44,15 @@ ACK_NAMESPACE = "runpod-jobrunner-incremental-mirror"
 LIGER_PROOF_PROTOCOL = "striatum-liger-fused-loss-proof/1"
 TOKENIZATION_CENSUS_PROTOCOL = "striatum-sft-tokenization-census/1"
 _SHA256_LENGTH = 64
+LIGER_KERNEL_CONFIG = {
+    "cross_entropy": False,
+    "fused_linear_cross_entropy": True,
+    # Liger 0.8.1's fused MoE Triton kernel requires its activation and frozen
+    # expert weights to share a dtype. This QLoRA path intentionally has FP32
+    # activations and BF16 expert weights, so retain Transformers' native
+    # mixed-dtype-aware grouped expert path and Liger's fused no-logits loss.
+    "swiglu": False,
+}
 
 
 def require_no_full_logits(outputs: object) -> None:
@@ -1069,10 +1078,7 @@ def run(args: argparse.Namespace) -> None:
         data_seed=args.seed,
         optim="paged_adamw_8bit",
         use_liger_kernel=True,
-        liger_kernel_config={
-            "cross_entropy": False,
-            "fused_linear_cross_entropy": True,
-        },
+        liger_kernel_config=LIGER_KERNEL_CONFIG,
     )
     trainer = FusedLossTrainer(
         model=model,

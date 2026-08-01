@@ -26,17 +26,17 @@ ignored `.generated/` area; it never links the source data into a bundle.
 IMAGE_DIGEST=YOUR_64_HEX_IMAGE_DIGEST
 python3 -m jobs.qwen35b_moe.materialize \
   --source-repo "$PWD" \
-  --destination jobs/qwen35b_moe/.generated/h200-network-volume-preflight-20260801 \
+  --destination jobs/qwen35b_moe/.generated/h200-network-volume-preflight-retry3-20260801 \
   --profile preflight-only
 python3 -m jobs.qwen35b_moe.update_image_digest \
-  jobs/qwen35b_moe/.generated/h200-network-volume-preflight-20260801 \
+  jobs/qwen35b_moe/.generated/h200-network-volume-preflight-retry3-20260801 \
   "sha256:$IMAGE_DIGEST"
 python3 -m jobs.qwen35b_moe.materialize \
   --source-repo "$PWD" \
-  --destination jobs/qwen35b_moe/.generated/h200-network-volume-linear-20260801 \
+  --destination jobs/qwen35b_moe/.generated/h200-network-volume-linear-retry3-20260801 \
   --profile full
 python3 -m jobs.qwen35b_moe.update_image_digest \
-  jobs/qwen35b_moe/.generated/h200-network-volume-linear-20260801 \
+  jobs/qwen35b_moe/.generated/h200-network-volume-linear-retry3-20260801 \
   "sha256:$IMAGE_DIGEST"
 ```
 
@@ -59,35 +59,35 @@ image digest, be launched. The full bundle disables its redundant preflight
 phase and starts with verify before training and full evaluation; full
 packaging does not consume artifacts from the standalone preflight reservation.
 It reserves $39.00. The preflight reserves $3.50. Both launches must use the
-same scope and the $42.50 aggregate budget so the controller accounts for both
-reservations together. The owner's $50 target is a soft campaign cap, and the
-full-run cap leaves room for settled campaign spend plus projection overhead
-that is not explicit in the five-step timing model. A failed, unacknowledged,
-or over-time H200 preflight blocks the full bundle.
+same `striatum-qwen35b-hard100-20260801` scope and its $94.00 reservation
+ceiling. That ceiling accounts for campaign spend settled before this scope was
+created and keeps total authorized exposure below the owner's $100 hard limit.
+$75 is the soft limit for a feasibility reassessment, not an automatic stop.
+A failed, unacknowledged, or over-time H200 preflight blocks the full bundle.
 
 ```bash
-CAMPAIGN_SCOPE=striatum-qwen35b-network-volume-20260801
-PREFLIGHT_BUNDLE=jobs/qwen35b_moe/.generated/h200-network-volume-preflight-20260801
+CAMPAIGN_SCOPE=striatum-qwen35b-hard100-20260801
+PREFLIGHT_BUNDLE=jobs/qwen35b_moe/.generated/h200-network-volume-preflight-retry3-20260801
 
 runpod-jobrunner check "$PREFLIGHT_BUNDLE"
 runpod-jobrunner run "$PREFLIGHT_BUNDLE" \
   --approve-max-usd 3.50 \
   --budget-scope "$CAMPAIGN_SCOPE" \
-  --budget-total-usd 42.50
+  --budget-total-usd 94.00
 ```
 
 Stop here and monitor the returned run ID. Do not paste or run the next block
 until the preflight acceptance and closeout gates above pass.
 
 ```bash
-CAMPAIGN_SCOPE=striatum-qwen35b-network-volume-20260801
-FULL_BUNDLE=jobs/qwen35b_moe/.generated/h200-network-volume-linear-20260801
+CAMPAIGN_SCOPE=striatum-qwen35b-hard100-20260801
+FULL_BUNDLE=jobs/qwen35b_moe/.generated/h200-network-volume-linear-retry3-20260801
 
 runpod-jobrunner check "$FULL_BUNDLE"
 runpod-jobrunner run "$FULL_BUNDLE" \
   --approve-max-usd 39.00 \
   --budget-scope "$CAMPAIGN_SCOPE" \
-  --budget-total-usd 42.50
+  --budget-total-usd 94.00
 ```
 
 `Dockerfile` copies the remote runner from the already-published
@@ -107,7 +107,7 @@ python3 -m jobs.qwen35b_moe.prepare_base_gguf \
   --output /home/halbritt/models/hf/Qwen3.6-35B-A3B-995ad96e/base-bf16.gguf \
   --receipt /home/halbritt/models/hf/Qwen3.6-35B-A3B-995ad96e/base-bf16.receipt.json
 python3 -m jobs.qwen35b_moe.build_image \
-  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.4 \
+  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.7 \
   --jobrunner-image \
   "ghcr.io/halbritt/runpod-jobrunner-noop@sha256:$JOBRUNNER_DIGEST" \
   --push
@@ -219,6 +219,13 @@ on the network volume even when a failed Pod is deleted, so they can be read
 through the volume's S3-compatible API. The training process verifies the
 Liger fused-loss binding in Transformers' train-begin callback: Transformers
 has applied its instance patch at that point, but no training forward has run.
+The Liger configuration keeps fused linear cross-entropy enabled but sets
+`swiglu` to false. Liger 0.8.1's fused MoE Triton kernel requires matching
+activation and expert-weight dtypes, while this QLoRA base intentionally has
+FP32 activations and frozen BF16 expert weights. Transformers 5.6.2's native
+grouped-matrix path explicitly casts the activation to the expert-weight dtype
+and restores the output dtype. The paid preflight remains the acceptance gate
+for its memory use and throughput.
 
 The standalone bundle exposes the one-step manifest at
 `artifacts/preflight/one-step/checkpoint-*/checkpoint-complete.json` and waits
