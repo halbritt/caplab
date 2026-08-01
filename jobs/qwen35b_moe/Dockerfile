@@ -38,6 +38,8 @@ RUN /opt/runpod-jobrunner/venv/bin/python -m pip install --no-cache-dir -r requi
     && /opt/runpod-jobrunner/venv/bin/python -m pip check \
     && /opt/runpod-jobrunner/venv/bin/python -c \
        "import importlib; modules = ('torch', 'transformers', 'peft', 'accelerate', 'datasets', 'safetensors', 'flash_attn', 'fla', 'causal_conv1d', 'bitsandbytes', 'tilelang', 'tvm_ffi', 'liger_kernel.transformers.model.qwen3_5_moe'); [importlib.import_module(module) for module in modules]"
+RUN /opt/runpod-jobrunner/venv/bin/python -c \
+    "from tilelang.analysis.nested_loop_checker import _NestedLoopCheckVisitor; _NestedLoopCheckVisitor()"
 
 RUN cuda_stub_dir=/usr/local/cuda/lib64/stubs \
     && test -f "$cuda_stub_dir/libcuda.so" \

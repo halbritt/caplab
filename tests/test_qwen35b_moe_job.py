@@ -1436,12 +1436,14 @@ def test_tilelang_pins_its_bundled_tvm_ffi_compatibility_release() -> None:
         for line in (JOB / "requirements.txt").read_text().splitlines()
     )
 
-    assert requirements["tilelang"] == "0.1.8"
+    assert requirements["tilelang"] == "0.1.9"
     assert requirements["apache-tvm-ffi"] == "0.1.11"
 
     dockerfile = (JOB / "Dockerfile").read_text()
     assert "'tilelang'" in dockerfile
     assert "'tvm_ffi'" in dockerfile
+    assert "from tilelang.analysis.nested_loop_checker import" in dockerfile
+    assert "_NestedLoopCheckVisitor()" in dockerfile
 
 
 def test_preflight_materialization_stamps_single_quoted_yaml_hash(
