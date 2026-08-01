@@ -5,8 +5,7 @@
     {
       "path": "sft/smoke.train.jsonl",
       "size": 2234,
-      "sha256": "7dcd0e657ce7ac2175c67777f40acc5496e4f29685a069fc017fb98d08740a2b",
-      "role": "train"
+      "sha256": "7dcd0e657ce7ac2175c67777f40acc5496e4f29685a069fc017fb98d08740a2b"
     }
   ]
 }

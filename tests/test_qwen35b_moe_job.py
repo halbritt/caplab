@@ -1572,6 +1572,9 @@ def test_dense_smoke_materialization_copies_only_the_tiny_manifest(
         JOB / "smoke/inputs/sft/smoke.train.jsonl"
     ).read_bytes()
     assert not (destination / "inputs/sft/review.train.jsonl").exists()
+    assert "role" not in json.loads(
+        (destination / "input-manifest.json").read_text()
+    )["files"][0]
 
 
 def test_ssh_keygen_capability_probe_accepts_help_exit_but_not_missing_y(
