@@ -11,8 +11,8 @@ from .contract import MODEL, ContractError
 
 
 JOB_ROOT = Path(__file__).resolve().parent
-DEFAULT_MODEL_DIR = Path("/opt/models/Qwen3.6-35B-A3B-995ad96e")
-DEFAULT_BASE_GGUF = DEFAULT_MODEL_DIR / "base-bf16-00001-of-00019.gguf"
+DEFAULT_MODEL_DIR = Path("/workspace/models/Qwen3.6-35B-A3B-995ad96e")
+DEFAULT_BASE_GGUF = DEFAULT_MODEL_DIR / "gguf/base-bf16.gguf"
 DEFAULT_INPUT_DIR = Path("/run/job/inputs")
 DEFAULT_OUTPUT_DIR = Path("/run/job")
 
@@ -64,11 +64,8 @@ def output_dir_from_env() -> Path:
     explicit = os.environ.get("STRIATUM_OUTPUT_DIR")
     if explicit:
         return Path(explicit)
-    # artifact_manifest_path is mount-relative in job-spec/1. A paid worker has
-    # one encrypted, dedicated mount, so outputs and its terminal manifest live
-    # at that root while controller bootstrap/input state remains run-scoped.
-    mount = _jobrunner_mount()
-    return mount if mount is not None else DEFAULT_OUTPUT_DIR
+    run_root = _jobrunner_run_root()
+    return run_root if run_root is not None else DEFAULT_OUTPUT_DIR
 
 
 def training_config() -> dict[str, Any]:

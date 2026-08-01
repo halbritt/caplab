@@ -2,7 +2,9 @@
 
 This directory is the model-specific side of the `runpod-jobrunner` contract.
 It does not create or delete workers. The worker image contains these scripts;
-the only runtime data upload is the five-file, hash-pinned `sft/` manifest.
+the five-file, hash-pinned `sft/` manifest is the only per-run data upload. The
+pinned HF snapshot and BF16 GGUF are preloaded once on network volume
+`7lno735a6g` and verified again by hash before every paid run.
 
 ## Fixed inputs and model
 
@@ -21,40 +23,72 @@ hashes fail verification. `materialize.py` copies regular files into the
 ignored `.generated/` area; it never links the source data into a bundle.
 
 ```bash
+IMAGE_DIGEST=YOUR_64_HEX_IMAGE_DIGEST
 python3 -m jobs.qwen35b_moe.materialize \
   --source-repo "$PWD" \
-  --destination jobs/qwen35b_moe/.generated/h200-preflight \
+  --destination jobs/qwen35b_moe/.generated/h200-network-volume-preflight-20260801 \
   --profile preflight-only
 python3 -m jobs.qwen35b_moe.update_image_digest \
-  jobs/qwen35b_moe/.generated/h200-preflight sha256:<64-hex-image-digest>
+  jobs/qwen35b_moe/.generated/h200-network-volume-preflight-20260801 \
+  "sha256:$IMAGE_DIGEST"
 python3 -m jobs.qwen35b_moe.materialize \
   --source-repo "$PWD" \
-  --destination jobs/qwen35b_moe/.generated/h200-linear \
+  --destination jobs/qwen35b_moe/.generated/h200-network-volume-linear-20260801 \
   --profile full
 python3 -m jobs.qwen35b_moe.update_image_digest \
-  jobs/qwen35b_moe/.generated/h200-linear sha256:<64-hex-image-digest>
+  jobs/qwen35b_moe/.generated/h200-network-volume-linear-20260801 \
+  "sha256:$IMAGE_DIGEST"
 ```
 
 The committed `job.yaml` is a template and intentionally fails immutable-image
 validation until the generated copy receives a real digest. Digest stamping
 also recomputes the canonical self-hash; always finish with
-`runpod-jobrunner check GENERATED_BUNDLE`. The schema/input check receipt is in
-`evidence/bundle-check-2026-07-31.json`; its all-`a` digest was a test value,
-not a published image.
+`runpod-jobrunner check GENERATED_BUNDLE`. The old
+`evidence/bundle-check-2026-07-31.json` receipt is historical 0.1.0 evidence;
+its all-`a` digest was a test value, not a published image. It does not prove
+the network-volume bundle. Preserve the fresh 0.1.7 check output with this
+campaign's recovered controller evidence.
 
-The two generated bundles are separate reservations. Materialize, digest-stamp,
-check, and run the preflight-only bundle first. Accept it only after the
-one-step checkpoint has been mirrored, its signed recovery acknowledgement has
-been verified, the terminal artifacts have been recovered by hash, and the
-worker has closed within 2,700 seconds and $3.50. Only then may the full bundle,
-materialized from the same inputs and image digest, be launched. The full
-bundle disables its redundant preflight phase and starts with verify before
-training and full evaluation; full packaging does not consume artifacts from
-the standalone preflight reservation. It reserves $47.00. The retained H100
-attempts and no-op exercises reserve $4.00 across the first two budget scopes.
-The H200 retry uses a separate $3.50 scope. Those reservations and the full run
-total $54.50 under the $55.00 campaign ceiling. A failed, unacknowledged, or
-over-time H200 preflight blocks the full bundle.
+The two generated bundles are separate run reservations under one campaign
+budget scope. Materialize, digest-stamp, check, and run the preflight-only
+bundle first. Accept it only after the one-step checkpoint has been mirrored,
+its signed recovery acknowledgement has been verified, the terminal artifacts
+have been recovered by hash, and the worker has closed within 2,700 seconds and
+$3.50. Only then may the full bundle, materialized from the same inputs and
+image digest, be launched. The full bundle disables its redundant preflight
+phase and starts with verify before training and full evaluation; full
+packaging does not consume artifacts from the standalone preflight reservation.
+It reserves $39.00. The preflight reserves $3.50. Both launches must use the
+same scope and the $42.50 aggregate budget so the controller accounts for both
+reservations together. The owner's $50 target is a soft campaign cap, and the
+full-run cap leaves room for settled campaign spend plus projection overhead
+that is not explicit in the five-step timing model. A failed, unacknowledged,
+or over-time H200 preflight blocks the full bundle.
+
+```bash
+CAMPAIGN_SCOPE=striatum-qwen35b-network-volume-20260801
+PREFLIGHT_BUNDLE=jobs/qwen35b_moe/.generated/h200-network-volume-preflight-20260801
+
+runpod-jobrunner check "$PREFLIGHT_BUNDLE"
+runpod-jobrunner run "$PREFLIGHT_BUNDLE" \
+  --approve-max-usd 3.50 \
+  --budget-scope "$CAMPAIGN_SCOPE" \
+  --budget-total-usd 42.50
+```
+
+Stop here and monitor the returned run ID. Do not paste or run the next block
+until the preflight acceptance and closeout gates above pass.
+
+```bash
+CAMPAIGN_SCOPE=striatum-qwen35b-network-volume-20260801
+FULL_BUNDLE=jobs/qwen35b_moe/.generated/h200-network-volume-linear-20260801
+
+runpod-jobrunner check "$FULL_BUNDLE"
+runpod-jobrunner run "$FULL_BUNDLE" \
+  --approve-max-usd 39.00 \
+  --budget-scope "$CAMPAIGN_SCOPE" \
+  --budget-total-usd 42.50
+```
 
 `Dockerfile` copies the remote runner from the already-published
 `runpod-jobrunner` image by immutable digest. No private source checkout enters
@@ -66,35 +100,31 @@ infers a GPU architecture from the CPU-only image builder.
 Build locally or publish with:
 
 ```bash
+JOBRUNNER_DIGEST=YOUR_64_HEX_JOBRUNNER_IMAGE_DIGEST
 python3 -m jobs.qwen35b_moe.prepare_base_gguf \
   --model-dir /home/halbritt/models/hf/Qwen3.6-35B-A3B-995ad96e \
   --llama-cpp /home/halbritt/git/llama.cpp \
   --output /home/halbritt/models/hf/Qwen3.6-35B-A3B-995ad96e/base-bf16.gguf \
   --receipt /home/halbritt/models/hf/Qwen3.6-35B-A3B-995ad96e/base-bf16.receipt.json
-python3 -m jobs.qwen35b_moe.prepare_image_gguf \
-  --model-dir /home/halbritt/models/hf/Qwen3.6-35B-A3B-995ad96e \
-  --llama-cpp /home/halbritt/git/llama.cpp
 python3 -m jobs.qwen35b_moe.build_image \
-  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.3 \
-  --jobrunner-image ghcr.io/halbritt/runpod-jobrunner-noop@sha256:<digest> \
-  --model-snapshot /home/halbritt/models/hf/Qwen3.6-35B-A3B-995ad96e [--push]
+  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.4 \
+  --jobrunner-image \
+  "ghcr.io/halbritt/runpod-jobrunner-noop@sha256:$JOBRUNNER_DIGEST" \
+  --push
 ```
 
-After a push, use the printed `immutable_image` digest to stamp the generated
-bundle. The build refuses uncommitted Qwen job code and requires the baked
-runner image to use an immutable digest. It also refuses the model context
-unless the full target census passes, the revision receipt matches, all 26
-indexed shards exist, and no `sft` or `corpus` path is present. The snapshot is
-baked at `/opt/models/Qwen3.6-35B-A3B-995ad96e`. The exact BF16 GGUF is
-validated against its revision/llama.cpp/hash receipt, then baked as 19 native
-GGUF shards with one shard per OCI layer; the unsplit 71 GB source does not
-enter the image. Runtime SFT data remains a separate five-file upload.
+Omit `--push` to load a local-only image instead.
 
-The public worker image also carries the exact upstream Apache-2.0 `LICENSE`
-and model card from the pinned model revision. Their SHA-256 hashes are checked
-before the build context is accepted and recorded in the image-build receipt.
-A pushed build emits BuildKit provenance and an SBOM; neither attestation is a
-substitute for the immutable image digest used by the job bundle.
+After a push, use the printed `immutable_image` digest to stamp the generated
+bundle. The build refuses uncommitted Qwen job code and requires the runner
+image to use an immutable digest. It has no model build context and contains no
+safetensors or GGUF. The 41-entry `network-volume-assets.sha256` contract is
+copied into the image. The verify phase uses it to hash the exact 40-file HF
+snapshot plus
+`/workspace/models/Qwen3.6-35B-A3B-995ad96e/gguf/base-bf16.gguf`, rejects
+extras and symlinks, and then repeats the target census. A pushed build emits
+BuildKit provenance and an SBOM; neither attestation substitutes for the
+immutable image digest used by the job bundle.
 
 ## PEFT target authority
 
@@ -124,17 +154,37 @@ linear-only first; fund expert-aware only if linear-only fails.
 
 ## Readiness and paid preflight
 
-There is no transferable encrypted pre-stage between a cheap RunPod worker and
-the H200 worker. Prepare the complete exact snapshot locally, then require it
-as the model-bearing image context described above:
+Prepare the complete exact snapshot and GGUF locally, then preload them on the
+network volume through RunPod's S3-compatible endpoint:
 
 ```bash
 python3 -m jobs.qwen35b_moe.prepare_model_snapshot \
   --destination /home/halbritt/models/hf/Qwen3.6-35B-A3B-995ad96e
+
+STRIATUM_SNAPSHOT=/home/halbritt/models/hf/Qwen3.6-35B-A3B-995ad96e
+RUNPOD_VOLUME_ID=7lno735a6g
+RUNPOD_S3_ENDPOINT=https://s3api-us-nc-1.runpod.io
+AWS_PROFILE=runpod aws s3 cp "$STRIATUM_SNAPSHOT/" \
+  "s3://$RUNPOD_VOLUME_ID/models/Qwen3.6-35B-A3B-995ad96e/" \
+  --recursive --exclude '*.gguf' --exclude '*receipt.json' \
+  --exclude '.cache/*' --exclude '.gitattributes' \
+  --region US-NC-1 --endpoint-url "$RUNPOD_S3_ENDPOINT"
+AWS_PROFILE=runpod aws s3 cp "$STRIATUM_SNAPSHOT/base-bf16.gguf" \
+  "s3://$RUNPOD_VOLUME_ID/models/Qwen3.6-35B-A3B-995ad96e/gguf/base-bf16.gguf" \
+  --region US-NC-1 --endpoint-url "$RUNPOD_S3_ENDPOINT"
 ```
 
-The preflight verifies all inputs, performs the target census, injects PEFT on
-meta, and requires the baked and receipted BF16 parity GGUF. The live training
+The profile supplies the S3 credentials; do not put them in the repository or
+the command line. The endpoint and region must match the volume's data center.
+Before launch, list the prefix and require exactly 41 objects totaling
+142,993,858,696 bytes. Multipart S3 ETags are not SHA-256 proofs, so the paid
+worker still hashes every asset before any training phase.
+
+The volume layout is
+`/workspace/models/Qwen3.6-35B-A3B-995ad96e/{40 HF files,gguf/base-bf16.gguf}`.
+The preflight verifies all inputs, the complete asset hash manifest, and the
+target census, injects PEFT on meta, and requires the exact BF16 parity GGUF.
+The live training
 load then proves that all 310 ordinary LoRA targets are 4-bit, freezes the base,
 keeps the exact 80 fused expert parameters in BF16, casts the other eligible
 half-precision parameters to FP32, and records the dtype, CUDA-memory, and live
@@ -156,25 +206,29 @@ python3 -m jobs.qwen35b_moe.preflight --strategy linear-only --run-smoke
 ```
 
 Under `runpod-jobrunner`, the scripts derive the uploaded input root from
-`RUNPOD_JOBRUNNER_INPUT_ROOT`, read the baked snapshot under `/opt/models`, and
-write the terminal artifact manifest at the dedicated encrypted mount root,
-matching the v1 controller's mount-relative recovery contract. Explicit
-`STRIATUM_*` variables override these paths for a local smoke.
+`RUNPOD_JOBRUNNER_INPUT_ROOT`, treat shared hash-pinned assets under
+`/workspace/models` as read-only, and write checkpoints, evaluations, and
+terminal artifacts
+under `/workspace/runpod-jobrunner/runs/<run-id>`. This keeps retries and the
+standalone preflight isolated on the persistent volume. Explicit `STRIATUM_*`
+variables override these paths for a local smoke.
 
 The standalone bundle exposes the one-step manifest at
 `artifacts/preflight/one-step/checkpoint-*/checkpoint-complete.json` and waits
 at most 120 seconds for the controller's signed incremental-mirror
-acknowledgement. Its enabled phase timeouts total 570 seconds. The controller
-starts its clock before the cold pull of the roughly 133-GiB image. The
-2,700-second
-bound leaves 2,130 seconds for image pull, startup, upload, recovery, and
-deletion. At the $4.50/hour admission ceiling, 2,700 seconds costs $3.375 and
-fits the $3.50 retry cap.
+acknowledgement. Its enabled phase timeouts total 1,425 seconds. The controller
+starts its clock before the thin runtime image pull. The 2,700-second bound
+leaves 1,275 seconds beyond the 1,425 seconds of enabled phase timeouts for
+image pull, startup, input upload, recovery, and deletion. At the $4.50/hour
+admission ceiling, 2,700 seconds
+costs $3.375 and fits the $3.50 retry cap.
 
 The verify phase fails unless `libggml-cuda.so` resolves `libcuda.so.1` to a
 non-stub runtime driver and the pinned `llama-cli --list-devices` reports one
 H200 with at least 140,000 MiB. It records the accepted binding in
-`artifacts/runtime/cuda-runtime.json`; terminal packaging requires that receipt.
+`artifacts/runtime/cuda-runtime.json`. It also records the volume hash/census
+gate in `artifacts/runtime/volume-assets.json`; terminal packaging requires the
+runtime evidence.
 
 Do not start a full run if this exceeds 2,700 billable seconds or needs an
 interactive patch. Do not retry it automatically. Direct export is not

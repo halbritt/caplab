@@ -4,6 +4,6 @@
 !requirements-gpu.txt
 !*.py
 !*.json
+!network-volume-assets.sha256
 !bin/
 !bin/*
-

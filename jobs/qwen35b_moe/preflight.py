@@ -253,7 +253,7 @@ def main() -> None:
     if args.run_smoke:
         if not args.base_gguf.is_file():
             raise ContractError(
-                f"baked base GGUF is missing; paid preflight will not generate it: "
+                f"preloaded base GGUF is missing; paid preflight will not generate it: "
                 f"{args.base_gguf}"
             )
         train_output = args.output / "one-step"

@@ -34,11 +34,7 @@ from jobs.qwen35b_moe.contract import (  # noqa: E402
 from jobs.qwen35b_moe.base_gguf import (  # noqa: E402
     validate_base_gguf_artifacts,
 )
-from jobs.qwen35b_moe.build_image import (  # noqa: E402
-    MODEL_METADATA,
-    _render_dockerfile,
-    _stage_model_context,
-)
+from jobs.qwen35b_moe.build_image import _asset_manifest_receipt  # noqa: E402
 from jobs.qwen35b_moe.cuda_runtime import (  # noqa: E402
     validate_cuda_observations,
     validate_cuda_runtime_receipt,
@@ -73,6 +69,11 @@ from jobs.qwen35b_moe.preflight import (  # noqa: E402
     verify_liger_fused_loss_receipt,
     verify_longest_example_receipt,
 )
+from jobs.qwen35b_moe.runtime import (  # noqa: E402
+    base_gguf_from_env,
+    model_dir_from_env,
+    output_dir_from_env,
+)
 from jobs.qwen35b_moe import preflight as preflight_module  # noqa: E402
 from jobs.qwen35b_moe import score_fate as score_fate_module  # noqa: E402
 from jobs.qwen35b_moe.train import (  # noqa: E402
@@ -95,6 +96,12 @@ from jobs.qwen35b_moe.train_phase import (  # noqa: E402
     require_available_gate_improvement,
 )
 from jobs.qwen35b_moe.update_image_digest import update  # noqa: E402
+from jobs.qwen35b_moe.volume_assets import (  # noqa: E402
+    _manifest_entries,
+    validate_asset_receipt,
+    verify_asset_manifest,
+)
+from jobs.qwen35b_moe import verify as verify_module  # noqa: E402
 
 
 JOB = ROOT / "jobs" / "qwen35b_moe"
@@ -139,6 +146,32 @@ def _cuda_runtime_receipt() -> dict[str, object]:
             "backend": "CUDA0",
             "name": "NVIDIA H200",
             "memory_mib": 143_771,
+        },
+    }
+
+
+def _runtime_asset_receipt() -> dict[str, object]:
+    return {
+        "protocol": "striatum-runtime-assets/1",
+        "assets": {
+            "protocol": "striatum-volume-assets/1",
+            "manifest_sha256": (
+                "2d56aa53dc94146a01f044b04d7d161015c2f848f575779b49fa5307fe295ff8"
+            ),
+            "files": 41,
+            "bytes": 142_993_858_696,
+        },
+        "census": {
+            "protocol": "qwen35b-target-census/1",
+            "model": {"id": MODEL.model_id, "revision": MODEL.revision},
+            "census": {
+                "linear_attention": 150,
+                "attention": 40,
+                "shared_expert": 120,
+                "router": 40,
+                "shared_expert_gate": 40,
+                "routed_expert": 80,
+            },
         },
     }
 
@@ -767,7 +800,7 @@ def test_runtime_input_tree_rejects_symlinks_and_extra_files(tmp_path: Path) -> 
         verify_input_tree(tmp_path, (entry,))
 
 
-def test_baked_base_gguf_receipts_bind_source_and_native_splits(
+def test_base_gguf_receipts_bind_source_and_native_splits(
     tmp_path: Path,
 ) -> None:
     source = tmp_path / "base-bf16.gguf"
@@ -808,23 +841,7 @@ def test_baked_base_gguf_receipts_bind_source_and_native_splits(
 
     artifacts = validate_base_gguf_artifacts(tmp_path)
     assert artifacts.first_shard == shards[0]
-    rendered = _render_dockerfile(JOB, artifacts)
-    assert rendered.count("COPY --from=model-snapshot /base-bf16-") == 2
-    assert "__BASE_GGUF_SHARD_COPIES__" not in rendered
-    for name in MODEL_METADATA:
-        (tmp_path / name).touch(exist_ok=True)
-    for index in range(1, 27):
-        (tmp_path / f"model-{index:05d}-of-00026.safetensors").touch()
-    staged = tmp_path / "staged"
-    _stage_model_context(
-        tmp_path,
-        staged,
-        artifacts,
-        expected_license_sha256=hashlib.sha256(b"").hexdigest(),
-        expected_model_card_sha256=hashlib.sha256(b"").hexdigest(),
-    )
-    assert not (staged / "base-bf16.gguf").exists()
-    assert (staged / shards[0].name).stat().st_ino == shards[0].stat().st_ino
+    assert artifacts.shards == shards
 
     shards[1].write_bytes(b"bad")
     with pytest.raises(ContractError, match="receipt entry mismatch|hash mismatch"):
@@ -1141,8 +1158,8 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
     preflight = yaml.safe_load(_render_job("preflight-only"))
 
     expected_runner = {
-        "version": "0.1.6",
-        "git_commit": "c682e91186b38e5a1aebc242252fa35ea8a7fcfd",
+        "version": "0.1.7",
+        "git_commit": "ea9fd3895ff35b9e0eb0e70ed672ad28f86032e9",
     }
     for spec in (full, preflight):
         assert spec["runner"] == expected_runner
@@ -1150,9 +1167,10 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
 
     assert full["limits"] == {
         "max_elapsed_seconds": 54_000,
-        "max_cost_usd": "47.00",
+        "max_cost_usd": "39.00",
         "usd_per_hour": "4.50",
     }
+    assert full["phases"]["verify"]["timeout_seconds"] == 900
     assert full["phases"]["preflight"]["enabled"] is False
     assert full["phases"]["train"]["enabled"] is True
     assert full["phases"]["evaluate"]["enabled"] is True
@@ -1169,6 +1187,7 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
         "max_cost_usd": "3.50",
         "usd_per_hour": "4.50",
     }
+    assert preflight["phases"]["verify"]["timeout_seconds"] == 900
     assert preflight["phases"]["preflight"]["enabled"] is True
     assert preflight["phases"]["train"]["enabled"] is False
     assert preflight["phases"]["evaluate"]["enabled"] is False
@@ -1186,10 +1205,10 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
         for phase in preflight["phases"].values()
         if phase["enabled"]
     )
-    assert enabled_preflight_seconds == 570
+    assert enabled_preflight_seconds == 1_425
     assert (
         preflight["limits"]["max_elapsed_seconds"] - enabled_preflight_seconds
-        == 2_130
+        == 1_275
     )
     assert (
         Decimal(preflight["limits"]["max_elapsed_seconds"])
@@ -1215,12 +1234,9 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
         "liger_kernel.transformers.model.qwen3_5_moe",
     ):
         assert module in dockerfile
-    assert (
-        4.00
-        + float(preflight["limits"]["max_cost_usd"])
-        + float(full["limits"]["max_cost_usd"])
-        == 54.50
-    )
+    assert Decimal(preflight["limits"]["max_cost_usd"]) + Decimal(
+        full["limits"]["max_cost_usd"]
+    ) == Decimal("42.50")
 
 
 def test_ssh_keygen_capability_probe_accepts_help_exit_but_not_missing_y(
@@ -1408,6 +1424,9 @@ def test_preflight_packaging_requires_preflight_smoke_evidence(tmp_path: Path) -
     _write_json(
         tmp_path / "artifacts/runtime/cuda-runtime.json", _cuda_runtime_receipt()
     )
+    _write_json(
+        tmp_path / "artifacts/runtime/volume-assets.json", _runtime_asset_receipt()
+    )
 
     manifest = build_manifest(tmp_path, preflight_only=True)
     assert manifest["result"] == "preflight-succeeded"
@@ -1434,6 +1453,19 @@ def test_preflight_packaging_requires_preflight_smoke_evidence(tmp_path: Path) -
     with pytest.raises(ContractError, match="CUDA runtime receipt"):
         build_manifest(tmp_path, preflight_only=True)
     _write_json(cuda_receipt, _cuda_runtime_receipt())
+
+    asset_receipt = tmp_path / "artifacts/runtime/volume-assets.json"
+    asset_receipt.unlink()
+    with pytest.raises(ContractError, match="volume asset receipt"):
+        build_manifest(tmp_path, preflight_only=True)
+    _write_json(asset_receipt, _runtime_asset_receipt())
+
+    wrong_census = _runtime_asset_receipt()
+    wrong_census["census"]["model"]["revision"] = "wrong-revision"
+    _write_json(asset_receipt, wrong_census)
+    with pytest.raises(ContractError, match="another model revision"):
+        build_manifest(tmp_path, preflight_only=True)
+    _write_json(asset_receipt, _runtime_asset_receipt())
 
     quantized_summary = root / "quantized-reload-eval/summary.json"
     quantized_summary.unlink()
@@ -1552,6 +1584,9 @@ def test_full_packaging_requires_epoch_one_gate_evidence(tmp_path: Path) -> None
     _write_json(
         tmp_path / "artifacts/runtime/cuda-runtime.json", _cuda_runtime_receipt()
     )
+    _write_json(
+        tmp_path / "artifacts/runtime/volume-assets.json", _runtime_asset_receipt()
+    )
 
     manifest = build_manifest(tmp_path, preflight_only=False)
     assert manifest["result"] == "workload-succeeded-model-acceptance-pending"
@@ -1570,7 +1605,7 @@ def test_paid_projection_and_checkpoint_gate_fail_closed() -> None:
 
     limits = PaidLimits(
         max_elapsed_seconds=54_000,
-        max_cost_usd=Decimal("47.00"),
+        max_cost_usd=Decimal("39.00"),
         usd_per_hour=Decimal("4.50"),
     )
     projection = project_paid_run(
@@ -1588,7 +1623,7 @@ def test_paid_projection_and_checkpoint_gate_fail_closed() -> None:
     assert projection.observed_worker_startup_seconds == 10
     assert projection.projected_total_elapsed_seconds == 7_350
     assert projection.projected_cost_usd == Decimal("9.1875")
-    assert limits.cost_cap_elapsed_seconds == Decimal("37600")
+    assert limits.cost_cap_elapsed_seconds == Decimal("31200")
     assert projection.passed is True
 
     with pytest.raises(ContractError, match="at least 5 optimizer steps"):
@@ -1646,7 +1681,7 @@ def test_train_phase_sequences_resume_gate_and_full_run_without_gpu(
                 "bundle_hash": "a" * 64,
                 "limits": {
                     "max_elapsed_seconds": 54_000,
-                    "max_cost_usd": "47.00",
+                    "max_cost_usd": "39.00",
                     "usd_per_hour": "4.50",
                 },
                 "phases": {"train": {"enabled": True, "timeout_seconds": 43_200}},
@@ -1952,6 +1987,7 @@ def test_training_and_job_specs_keep_the_paid_run_gates() -> None:
     job_yaml = (JOB / "job.yaml").read_text()
     dockerfile = (JOB / "Dockerfile").read_text()
     image_builder = (JOB / "build_image.py").read_text()
+    dockerignore = (JOB / "Dockerfile.dockerignore").read_text()
 
     assert training["model"]["id"] == "Qwen/Qwen3.6-35B-A3B"
     assert training["model"]["revision"] == "995ad96eacd98c81ed38be0c5b274b04031597b0"
@@ -1983,31 +2019,192 @@ def test_training_and_job_specs_keep_the_paid_run_gates() -> None:
     assert "job-spec/1" in job_yaml
     assert "verify -> preflight -> train -> evaluate -> package" in job_yaml
     assert "sha256:REPLACE_WITH_IMAGE_DIGEST" in job_yaml
-    assert "encrypted: true" in job_yaml
+    assert "encrypted: false" in job_yaml
+    assert "network_volume_id: 7lno735a6g" in job_yaml
     assert "NVIDIA H200" in job_yaml
     assert "container_disk_gb: 220" in job_yaml
     assert "required_gb: 120" in job_yaml
     assert 'usd_per_hour: "4.50"' in job_yaml
-    assert dockerfile.count("COPY --from=model-snapshot /model-") == 26
-    assert "/opt/models/Qwen3.6-35B-A3B-995ad96e" in dockerfile
-    assert "STRIATUM_MODEL_DIR=/opt/models/Qwen3.6-35B-A3B-995ad96e" in dockerfile
-    assert "STRIATUM_BASE_GGUF=" in dockerfile
+    assert "COPY --from=model-snapshot" not in dockerfile
+    assert "/opt/models" not in dockerfile
+    assert "STRIATUM_MODEL_DIR=/workspace/models/Qwen3.6-35B-A3B-995ad96e" in dockerfile
+    assert "STRIATUM_BASE_GGUF=/workspace/models/Qwen3.6-35B-A3B-995ad96e/gguf/" in dockerfile
     assert "-DCMAKE_CUDA_ARCHITECTURES=90" in dockerfile
     assert (
         "RUNPOD_JOBRUNNER_RELEASE_PATH=/opt/runpod-jobrunner/release.json" in dockerfile
     )
-    assert "/LICENSE /README.md /config.json" in dockerfile
-    assert (
-        "50cbab8a892c5f2993b8c7351a99182507472def3b1374558308605d99b86b32" in dockerfile
-    )
-    assert (
-        "c4ddaa065649ff6352648f64747a16eda31726f3e34add94ce04abb461c77b75" in dockerfile
-    )
-    assert "__BASE_GGUF_SHARD_COPIES__" in dockerfile
-    assert '"--model-snapshot"' in image_builder
-    assert "validate_base_gguf_artifacts" in image_builder
+    assert "__BASE_GGUF_SHARD_COPIES__" not in dockerfile
+    assert '"--model-snapshot"' not in image_builder
+    assert "validate_base_gguf_artifacts" not in image_builder
     assert '"--provenance=mode=max"' in image_builder
     assert '"--sbom=true"' in image_builder
+    assert "!network-volume-assets.sha256" in dockerignore
+
+
+def test_worker_image_requires_preloaded_network_volume_assets() -> None:
+    dockerfile = (JOB / "Dockerfile").read_text()
+    image_builder = (JOB / "build_image.py").read_text()
+
+    assert "COPY --from=model-snapshot" not in dockerfile
+    assert "build-context" not in image_builder
+    assert '"--model-snapshot"' not in image_builder
+    assert "validate_base_gguf_artifacts" not in image_builder
+    assert (
+        "STRIATUM_MODEL_DIR=/workspace/models/Qwen3.6-35B-A3B-995ad96e"
+        in dockerfile
+    )
+    assert (
+        "STRIATUM_BASE_GGUF=/workspace/models/Qwen3.6-35B-A3B-995ad96e/gguf/"
+        "base-bf16.gguf"
+        in dockerfile
+    )
+
+
+def test_runtime_defaults_keep_assets_shared_and_outputs_run_scoped(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("STRIATUM_MODEL_DIR", raising=False)
+    monkeypatch.delenv("STRIATUM_BASE_GGUF", raising=False)
+    monkeypatch.delenv("STRIATUM_OUTPUT_DIR", raising=False)
+    monkeypatch.setenv(
+        "RUNPOD_JOBRUNNER_RUN_ROOT",
+        "/workspace/runpod-jobrunner/runs/run-network-volume",
+    )
+
+    model = Path("/workspace/models/Qwen3.6-35B-A3B-995ad96e")
+    assert model_dir_from_env() == model
+    assert base_gguf_from_env() == model / "gguf/base-bf16.gguf"
+    assert output_dir_from_env() == Path(
+        "/workspace/runpod-jobrunner/runs/run-network-volume"
+    )
+
+
+def test_volume_asset_manifest_rejects_tampering(tmp_path: Path) -> None:
+    root = tmp_path / "assets"
+    gguf = root / "gguf"
+    gguf.mkdir(parents=True)
+    config = root / "config.json"
+    base = gguf / "base-bf16.gguf"
+    config.write_bytes(b'{"model_type":"qwen3_5_moe"}\n')
+    base.write_bytes(b"GGUF-test")
+    manifest = tmp_path / "assets.sha256"
+    manifest.write_text(
+        f"{sha256_file(config)}  config.json\n"
+        f"{sha256_file(base)}  gguf/base-bf16.gguf\n"
+    )
+    manifest_sha256 = sha256_file(manifest)
+
+    receipt = verify_asset_manifest(
+        root,
+        manifest_path=manifest,
+        expected_manifest_sha256=manifest_sha256,
+    )
+    assert receipt["files"] == 2
+    assert receipt["bytes"] == config.stat().st_size + base.stat().st_size
+
+    base.write_bytes(b"GGUF-tampered")
+    with pytest.raises(ContractError, match="hash mismatch"):
+        verify_asset_manifest(
+            root,
+            manifest_path=manifest,
+            expected_manifest_sha256=manifest_sha256,
+        )
+
+    base.write_bytes(b"GGUF-test")
+    extra = root / "unexpected.bin"
+    extra.write_bytes(b"unexpected")
+    with pytest.raises(ContractError, match="missing or extra"):
+        verify_asset_manifest(
+            root,
+            manifest_path=manifest,
+            expected_manifest_sha256=manifest_sha256,
+        )
+
+    extra.unlink()
+    linked = root / "linked-config.json"
+    linked.symlink_to(config)
+    with pytest.raises(ContractError, match="contains a symlink"):
+        verify_asset_manifest(
+            root,
+            manifest_path=manifest,
+            expected_manifest_sha256=manifest_sha256,
+        )
+
+
+def test_volume_asset_manifest_rejects_an_unsafe_path(tmp_path: Path) -> None:
+    root = tmp_path / "assets"
+    root.mkdir()
+    outside = tmp_path / "outside.bin"
+    outside.write_bytes(b"outside")
+    manifest = tmp_path / "assets.sha256"
+    manifest.write_text(f"{sha256_file(outside)}  ../outside.bin\n")
+
+    with pytest.raises(ContractError, match="unsafe path"):
+        verify_asset_manifest(
+            root,
+            manifest_path=manifest,
+            expected_manifest_sha256=sha256_file(manifest),
+        )
+
+
+def test_runtime_asset_gate_combines_hash_manifest_and_model_census(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = tmp_path / "assets"
+    root.mkdir()
+    config = root / "config.json"
+    config.write_bytes(b"{}\n")
+    manifest = tmp_path / "assets.sha256"
+    manifest.write_text(f"{sha256_file(config)}  config.json\n")
+    census = {"protocol": "qwen35b-target-census/1", "snapshot": {"shards": 26}}
+    monkeypatch.setattr(verify_module, "census_snapshot", lambda path: census)
+
+    receipt = verify_module.verify_runtime_assets(
+        root,
+        manifest_path=manifest,
+        expected_manifest_sha256=sha256_file(manifest),
+    )
+
+    assert receipt["assets"]["files"] == 1
+    assert receipt["census"] == census
+
+
+def test_pinned_volume_asset_receipt_contract() -> None:
+    receipt = {
+        "protocol": "striatum-volume-assets/1",
+        "manifest_sha256": (
+            "2d56aa53dc94146a01f044b04d7d161015c2f848f575779b49fa5307fe295ff8"
+        ),
+        "files": 41,
+        "bytes": 142_993_858_696,
+    }
+
+    assert validate_asset_receipt(receipt) == receipt
+    receipt["files"] = 40
+    with pytest.raises(ContractError, match="volume asset receipt"):
+        validate_asset_receipt(receipt)
+
+
+def test_checked_in_volume_asset_manifest_is_well_formed() -> None:
+    entries = _manifest_entries(JOB / "network-volume-assets.sha256")
+
+    assert len(entries) == 41
+
+
+def test_image_build_receipt_binds_the_runtime_asset_manifest(tmp_path: Path) -> None:
+    manifest = JOB / "network-volume-assets.sha256"
+    assert _asset_manifest_receipt(manifest) == {
+        "manifest_sha256": (
+            "2d56aa53dc94146a01f044b04d7d161015c2f848f575779b49fa5307fe295ff8"
+        ),
+        "files": 41,
+        "bytes": 142_993_858_696,
+    }
+
+    tampered = tmp_path / manifest.name
+    tampered.write_bytes(manifest.read_bytes() + b"\n")
+    with pytest.raises(ContractError, match="asset manifest"):
+        _asset_manifest_receipt(tampered)
 
 
 def test_worker_image_uses_cuda_driver_stub_only_for_build_linking() -> None:

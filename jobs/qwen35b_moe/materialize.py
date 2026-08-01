@@ -34,7 +34,6 @@ def _render_job(profile: str) -> str:
         raise ContractError("job template is not an object")
     spec["name"] = "striatum-qwen36-35b-a3b-preflight"
     phases = spec["phases"]
-    phases["verify"]["timeout_seconds"] = 45
     phases["preflight"]["enabled"] = True
     phases["preflight"]["timeout_seconds"] = 480
     phases["train"]["enabled"] = False

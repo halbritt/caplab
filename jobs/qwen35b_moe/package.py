@@ -36,6 +36,7 @@ from .preflight import (
 )
 from .runtime import output_dir_from_env, training_config
 from .train_phase import assess_available_gates, verify_checkpoint
+from .volume_assets import validate_asset_receipt
 
 
 ARTIFACT_DIRS = ("artifacts", "checkpoints", "eval")
@@ -147,8 +148,7 @@ def validate_export_receipt(path: Path, gguf: Path, source_adapter: Path) -> Non
         raise ContractError("llama.cpp export base GGUF path is invalid")
 
 
-def _validate_census(path: Path) -> None:
-    receipt = _read_json_object(path, "target census")
+def _validate_census_receipt(receipt: Mapping[str, object]) -> None:
     if receipt.get("protocol") != "qwen35b-target-census/1":
         raise ContractError("target census protocol is invalid")
     model = _mapping(receipt.get("model"), "target census model")
@@ -167,6 +167,10 @@ def _validate_census(path: Path) -> None:
     except KeyError as error:
         raise ContractError("target census counts are incomplete") from error
     validate_census(census)
+
+
+def _validate_census(path: Path) -> None:
+    _validate_census_receipt(_read_json_object(path, "target census"))
 
 
 def _validate_preflight(run_root: Path) -> None:
@@ -385,6 +389,17 @@ def build_manifest(run_root: Path, *, preflight_only: bool) -> dict[str, object]
             "CUDA runtime receipt",
         )
     )
+    runtime_assets = _read_json_object(
+        run_root / "artifacts/runtime/volume-assets.json",
+        "volume asset receipt",
+    )
+    if runtime_assets.get("protocol") != "striatum-runtime-assets/1":
+        raise ContractError("volume asset receipt protocol is invalid")
+    validate_asset_receipt(
+        _mapping(runtime_assets.get("assets"), "volume asset receipt assets")
+    )
+    census = _mapping(runtime_assets.get("census"), "volume asset receipt census")
+    _validate_census_receipt(census)
 
     files = []
     for directory_name in ARTIFACT_DIRS:

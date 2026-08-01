@@ -1,4 +1,4 @@
-"""Fail-closed receipts for the baked BF16 GGUF and its OCI-safe splits."""
+"""Fail-closed receipts for the local BF16 GGUF and legacy OCI-safe splits."""
 
 from __future__ import annotations
 

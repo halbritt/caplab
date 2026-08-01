@@ -5,8 +5,8 @@ name: striatum-qwen36-35b-a3b-linear
 bundle_hash: "0000000000000000000000000000000000000000000000000000000000000000"
 image: ghcr.io/halbritt/striatum-tuner-qwen35b-moe@sha256:REPLACE_WITH_IMAGE_DIGEST
 runner:
-  version: 0.1.6
-  git_commit: c682e91186b38e5a1aebc242252fa35ea8a7fcfd
+  version: 0.1.7
+  git_commit: ea9fd3895ff35b9e0eb0e70ed672ad28f86032e9
 phase_order: "verify -> preflight -> train -> evaluate -> package"
 resources:
   gpu_count: 1
@@ -14,7 +14,8 @@ resources:
   container_disk_gb: 220
   secure_cloud: true
   storage:
-    encrypted: true
+    encrypted: false
+    network_volume_id: 7lno735a6g
     mount: /workspace
     required_gb: 120
 inputs:
@@ -23,7 +24,7 @@ phases:
   verify:
     enabled: true
     argv: [/opt/striatum-qwen35b/bin/verify]
-    timeout_seconds: 120
+    timeout_seconds: 900
   preflight:
     enabled: false
     argv: [/opt/striatum-qwen35b/bin/preflight, --strategy, linear-only, --run-smoke]
@@ -51,7 +52,7 @@ artifacts:
     timeout_seconds: 900
 limits:
   max_elapsed_seconds: 54000
-  max_cost_usd: "47.00"
+  max_cost_usd: "39.00"
   usd_per_hour: "4.50"
 lifecycle:
   recover_on_failure: true

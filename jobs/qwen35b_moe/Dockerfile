@@ -8,14 +8,13 @@ FROM ${RUNPOD_JOBRUNNER_IMAGE} AS jobrunner
 FROM runpod/pytorch@sha256:3e874356857adfa3e8faa3fd913b65bd127f77a0fe2e489513e7775e1c1e16b1
 
 ARG LLAMA_CPP_COMMIT=000547513f1530346ecd163db8b3e13962949961
-ARG BASE_GGUF_FIRST_SHARD=base-bf16-00001-of-00000.gguf
 ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONPATH=/opt/striatum-qwen35b \
     RUNPOD_JOBRUNNER_RELEASE_PATH=/opt/runpod-jobrunner/release.json \
-    STRIATUM_MODEL_DIR=/opt/models/Qwen3.6-35B-A3B-995ad96e \
-    STRIATUM_BASE_GGUF=/opt/models/Qwen3.6-35B-A3B-995ad96e/${BASE_GGUF_FIRST_SHARD} \
+    STRIATUM_MODEL_DIR=/workspace/models/Qwen3.6-35B-A3B-995ad96e \
+    STRIATUM_BASE_GGUF=/workspace/models/Qwen3.6-35B-A3B-995ad96e/gguf/base-bf16.gguf \
     MAX_JOBS=2 \
     PATH=/opt/runpod-jobrunner/venv/bin:${PATH}
 
@@ -64,59 +63,9 @@ RUN cuda_stub_dir=/usr/local/cuda/lib64/stubs \
     && ! grep -Fq "$cuda_stub_dir" /tmp/llama-cli.dynamic \
     && rm /tmp/libggml-cuda.dynamic /tmp/llama-cli.dynamic
 
-RUN mkdir -p /opt/models/Qwen3.6-35B-A3B-995ad96e
-COPY --from=model-snapshot /LICENSE /README.md /config.json /configuration.json \
-    /generation_config.json \
-    /preprocessor_config.json /video_preprocessor_config.json \
-    /tokenizer.json /tokenizer_config.json /vocab.json /merges.txt \
-    /chat_template.jinja /model.safetensors.index.json /snapshot-revision.txt \
-    /base-bf16.receipt.json /base-bf16.split-receipt.json \
-    /opt/models/Qwen3.6-35B-A3B-995ad96e/
-# One shard per OCI layer keeps every registry blob below 4 GB.
-COPY --from=model-snapshot /model-00001-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-COPY --from=model-snapshot /model-00002-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-COPY --from=model-snapshot /model-00003-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-COPY --from=model-snapshot /model-00004-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-COPY --from=model-snapshot /model-00005-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-COPY --from=model-snapshot /model-00006-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-COPY --from=model-snapshot /model-00007-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-COPY --from=model-snapshot /model-00008-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-COPY --from=model-snapshot /model-00009-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-COPY --from=model-snapshot /model-00010-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-COPY --from=model-snapshot /model-00011-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-COPY --from=model-snapshot /model-00012-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-COPY --from=model-snapshot /model-00013-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-COPY --from=model-snapshot /model-00014-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-COPY --from=model-snapshot /model-00015-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-COPY --from=model-snapshot /model-00016-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-COPY --from=model-snapshot /model-00017-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-COPY --from=model-snapshot /model-00018-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-COPY --from=model-snapshot /model-00019-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-COPY --from=model-snapshot /model-00020-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-COPY --from=model-snapshot /model-00021-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-COPY --from=model-snapshot /model-00022-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-COPY --from=model-snapshot /model-00023-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-COPY --from=model-snapshot /model-00024-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-COPY --from=model-snapshot /model-00025-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-COPY --from=model-snapshot /model-00026-of-00026.safetensors /opt/models/Qwen3.6-35B-A3B-995ad96e/
-# The build helper replaces this marker with one COPY instruction per native
-# <=4 GiB GGUF shard. Keeping each instruction separate bounds every OCI blob.
-# __BASE_GGUF_SHARD_COPIES__
-RUN test "$(cat /opt/models/Qwen3.6-35B-A3B-995ad96e/snapshot-revision.txt)" = \
-         "995ad96eacd98c81ed38be0c5b274b04031597b0" \
-    && test "$(find /opt/models/Qwen3.6-35B-A3B-995ad96e -maxdepth 1 \
-         -type f -name 'model-*.safetensors' | wc -l)" -eq 26 \
-    && test -f "$STRIATUM_BASE_GGUF" \
-    && test -f /opt/models/Qwen3.6-35B-A3B-995ad96e/base-bf16.receipt.json \
-    && test -f /opt/models/Qwen3.6-35B-A3B-995ad96e/base-bf16.split-receipt.json \
-    && test "$(sha256sum /opt/models/Qwen3.6-35B-A3B-995ad96e/LICENSE | cut -d' ' -f1)" = \
-         "50cbab8a892c5f2993b8c7351a99182507472def3b1374558308605d99b86b32" \
-    && test "$(sha256sum /opt/models/Qwen3.6-35B-A3B-995ad96e/README.md | cut -d' ' -f1)" = \
-         "c4ddaa065649ff6352648f64747a16eda31726f3e34add94ce04abb461c77b75" \
-    && test ! -e /opt/models/Qwen3.6-35B-A3B-995ad96e/base-bf16.gguf
-
 RUN mkdir -p /opt/striatum-qwen35b/jobs/qwen35b_moe /opt/striatum-qwen35b/bin
 COPY *.py *.json /opt/striatum-qwen35b/jobs/qwen35b_moe/
+COPY network-volume-assets.sha256 /opt/striatum-qwen35b/jobs/qwen35b_moe/
 COPY bin/ /opt/striatum-qwen35b/bin/
 RUN chmod 0555 /opt/striatum-qwen35b/bin/* \
     && rm -rf /tmp/striatum-qwen35b-build
