@@ -52,6 +52,8 @@ full bundle.
 the Docker context; `Dockerfile.dockerignore` allow-lists only job code and
 contracts. The RunPod PyTorch linux/amd64 base is pinned to
 `sha256:3e874356857adfa3e8faa3fd913b65bd127f77a0fe2e489513e7775e1c1e16b1`.
+The pinned `llama.cpp` build emits CUDA code for SM90 explicitly; it never
+infers a GPU architecture from the CPU-only image builder.
 Build locally or publish with:
 
 ```bash

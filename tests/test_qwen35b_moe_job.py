@@ -1641,6 +1641,7 @@ def test_training_and_job_specs_keep_the_paid_run_gates() -> None:
     assert "/opt/models/Qwen3.6-35B-A3B-995ad96e" in dockerfile
     assert "STRIATUM_MODEL_DIR=/opt/models/Qwen3.6-35B-A3B-995ad96e" in dockerfile
     assert "STRIATUM_BASE_GGUF=" in dockerfile
+    assert "-DCMAKE_CUDA_ARCHITECTURES=90" in dockerfile
     assert (
         "RUNPOD_JOBRUNNER_RELEASE_PATH=/opt/runpod-jobrunner/release.json" in dockerfile
     )

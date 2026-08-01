@@ -42,7 +42,8 @@ RUN /opt/runpod-jobrunner/venv/bin/python -m pip install --no-cache-dir -r requi
 
 RUN git clone https://github.com/ggml-org/llama.cpp.git /opt/llama.cpp \
     && git -C /opt/llama.cpp checkout "$LLAMA_CPP_COMMIT" \
-    && cmake -S /opt/llama.cpp -B /opt/llama.cpp/build -DGGML_CUDA=ON -DLLAMA_CURL=OFF \
+    && cmake -S /opt/llama.cpp -B /opt/llama.cpp/build \
+       -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=90 -DLLAMA_CURL=OFF \
     && cmake --build /opt/llama.cpp/build --config Release -j2 \
        --target llama-cli llama-quantize llama-gguf-split
 
