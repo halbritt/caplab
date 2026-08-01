@@ -5,8 +5,8 @@ name: striatum-qwen36-35b-a3b-linear
 bundle_hash: "0000000000000000000000000000000000000000000000000000000000000000"
 image: ghcr.io/halbritt/striatum-tuner-qwen35b-moe@sha256:REPLACE_WITH_IMAGE_DIGEST
 runner:
-  version: 0.1.7
-  git_commit: ea9fd3895ff35b9e0eb0e70ed672ad28f86032e9
+  version: 0.1.8
+  git_commit: 2145004a1bea01d307c81f3b1c8c2ff6bbdc8a14
 phase_order: "verify -> preflight -> train -> evaluate -> package"
 resources:
   gpu_count: 1
@@ -23,7 +23,7 @@ inputs:
 phases:
   verify:
     enabled: true
-    argv: [/opt/striatum-qwen35b/bin/verify]
+    argv: [/opt/striatum-qwen35b/bin/verify, --require-gate3-acceptance]
     timeout_seconds: 900
   preflight:
     enabled: false

@@ -31,10 +31,11 @@ RUN apt-get update \
 COPY --from=jobrunner /opt/runpod-jobrunner /opt/runpod-jobrunner
 
 WORKDIR /tmp/striatum-qwen35b-build
-COPY requirements.txt requirements-gpu.txt ./
-RUN /opt/runpod-jobrunner/venv/bin/python -m pip install --no-cache-dir -r requirements.txt \
+COPY requirements.lock requirements-gpu.lock ./
+RUN /opt/runpod-jobrunner/venv/bin/python -m pip install --no-cache-dir \
+       --require-hashes -r requirements.lock \
     && /opt/runpod-jobrunner/venv/bin/python -m pip install --no-cache-dir \
-       --no-build-isolation -r requirements-gpu.txt \
+       --no-deps --no-build-isolation --require-hashes -r requirements-gpu.lock \
     && /opt/runpod-jobrunner/venv/bin/python -m pip check \
     && /opt/runpod-jobrunner/venv/bin/python -c \
        "import importlib; modules = ('torch', 'torchvision', 'transformers', 'peft', 'accelerate', 'datasets', 'safetensors', 'flash_attn', 'fla', 'causal_conv1d', 'bitsandbytes', 'tilelang', 'tvm_ffi', 'liger_kernel.transformers.model.qwen3_5_moe'); [importlib.import_module(module) for module in modules]"

@@ -9,7 +9,8 @@ from pathlib import Path
 import tempfile
 
 from .census import census_snapshot
-from .contract import load_input_manifest, verify_input_tree
+from .contract import InputFile, load_input_manifest, sha256_file, verify_input_tree
+from .gate_acceptance import validate_gate3_acceptance
 from .cuda_runtime import inspect_cuda_runtime
 from .runtime import input_dir_from_env, model_dir_from_env, output_dir_from_env
 from .volume_assets import ASSET_MANIFEST_SHA256, verify_asset_manifest
@@ -64,13 +65,33 @@ def main() -> None:
         type=Path,
         default=Path(__file__).with_name("network-volume-assets.sha256"),
     )
+    parser.add_argument("--require-gate3-acceptance", action="store_true")
     args = parser.parse_args()
+    acceptance = None
     cuda_receipt = inspect_cuda_runtime()
     asset_receipt = verify_runtime_assets(
         args.model_dir,
         manifest_path=args.asset_manifest,
     )
     entries = load_input_manifest(args.manifest)
+    if args.require_gate3_acceptance:
+        acceptance_path = args.input_root / "control/gate3-acceptance.json"
+        request_path_value = os.environ.get("RUNPOD_JOBRUNNER_REQUEST_PATH")
+        if not request_path_value:
+            raise ValueError("RUNPOD_JOBRUNNER_REQUEST_PATH is required")
+        request = json.loads(Path(request_path_value).read_text())
+        acceptance = validate_gate3_acceptance(
+            acceptance_path, expected_image_digest=str(request.get("image_digest"))
+        )
+        entries = (
+            *entries,
+            InputFile(
+                path="control/gate3-acceptance.json",
+                role="asset",
+                size=acceptance_path.stat().st_size,
+                sha256=sha256_file(acceptance_path),
+            ),
+        )
     verify_input_tree(args.input_root, entries)
     _atomic_json(
         output_dir_from_env() / "artifacts/runtime/cuda-runtime.json",
@@ -85,6 +106,8 @@ def main() -> None:
     )
     print(json.dumps(cuda_receipt, sort_keys=True))
     print(json.dumps(asset_receipt, sort_keys=True))
+    if acceptance is not None:
+        print(json.dumps(acceptance, sort_keys=True))
 
 
 if __name__ == "__main__":

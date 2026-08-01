@@ -9,7 +9,13 @@ from pathlib import Path
 import shutil
 import tempfile
 
-from .contract import ContractError, load_input_manifest, verify_input_tree
+from .contract import (
+    ContractError,
+    load_input_manifest,
+    sha256_file,
+    verify_input_tree,
+)
+from .gate_acceptance import validate_gate3_acceptance
 
 
 JOB_ROOT = Path(__file__).resolve().parent
@@ -39,6 +45,9 @@ def _render_job(profile: str) -> str:
         raise ContractError("job template is not an object")
     if profile == "preflight-only":
         spec["name"] = "striatum-qwen36-35b-a3b-preflight"
+        spec["phases"]["verify"]["argv"] = [
+            "/opt/striatum-qwen35b/bin/verify"
+        ]
     else:
         dense = profile == "hopper-dense-smoke"
         spec["name"] = (
@@ -101,7 +110,12 @@ def _render_job(profile: str) -> str:
     return yaml.safe_dump(spec, sort_keys=False)
 
 
-def materialize(source_repo: Path, destination: Path, profile: str = "full") -> Path:
+def materialize(
+    source_repo: Path,
+    destination: Path,
+    profile: str = "full",
+    gate3_acceptance: Path | None = None,
+) -> Path:
     if destination.exists() or destination.is_symlink():
         raise ContractError(f"destination already exists: {destination}")
     smoke_profile = profile in {"hopper-dense-smoke", "hopper-moe-smoke"}
@@ -113,13 +127,17 @@ def materialize(source_repo: Path, destination: Path, profile: str = "full") -> 
     entries = load_input_manifest(
         manifest_path, strict_production=not smoke_profile
     )
+    acceptance = None
+    if profile == "full":
+        if gate3_acceptance is None:
+            raise ContractError("full materialization requires a Gate 3 acceptance receipt")
+        acceptance = validate_gate3_acceptance(gate3_acceptance.resolve())
     destination.parent.mkdir(parents=True, exist_ok=True)
     staging = Path(
         tempfile.mkdtemp(prefix=f".{destination.name}.", dir=destination.parent)
     )
     try:
         (staging / "job.yaml").write_text(_render_job(profile))
-        shutil.copy2(manifest_path, staging / "input-manifest.json")
         shutil.copytree(JOB_ROOT / "bin", staging / "bin", symlinks=False)
         input_root = staging / "inputs"
         for entry in entries:
@@ -135,7 +153,29 @@ def materialize(source_repo: Path, destination: Path, profile: str = "full") -> 
             target = input_root / entry.path
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(source, target, follow_symlinks=False)
-        verify_input_tree(input_root, entries)
+        rendered_manifest = json.loads(manifest_path.read_text())
+        if acceptance is not None:
+            assert gate3_acceptance is not None
+            acceptance_target = input_root / "control/gate3-acceptance.json"
+            acceptance_target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(
+                gate3_acceptance.resolve(), acceptance_target, follow_symlinks=False
+            )
+            rendered_manifest["files"].append(
+                {
+                    "path": "control/gate3-acceptance.json",
+                    "role": "asset",
+                    "size": acceptance_target.stat().st_size,
+                    "sha256": sha256_file(acceptance_target),
+                }
+            )
+        (staging / "input-manifest.json").write_text(
+            json.dumps(rendered_manifest, indent=2, sort_keys=True) + "\n"
+        )
+        rendered_entries = load_input_manifest(
+            staging / "input-manifest.json", strict_production=False
+        )
+        verify_input_tree(input_root, rendered_entries)
         (staging / "bundle-metadata.json").write_text(
             json.dumps(
                 {
@@ -144,6 +184,16 @@ def materialize(source_repo: Path, destination: Path, profile: str = "full") -> 
                     "input_files": len(entries),
                     "input_bytes": sum(entry.size for entry in entries),
                     "image_digest_pinned": False,
+                    **(
+                        {
+                            "gate3_acceptance_sha256": sha256_file(
+                                input_root / "control/gate3-acceptance.json"
+                            ),
+                            "gate3_image_digest": acceptance["image_digest"],
+                        }
+                        if acceptance is not None
+                        else {}
+                    ),
                 },
                 indent=2,
                 sort_keys=True,
@@ -162,10 +212,14 @@ def main() -> None:
     parser.add_argument("--source-repo", type=Path, required=True)
     parser.add_argument("--destination", type=Path, required=True)
     parser.add_argument("--profile", choices=PROFILES, default="full")
+    parser.add_argument("--gate3-acceptance", type=Path)
     args = parser.parse_args()
     print(
         materialize(
-            args.source_repo.resolve(), args.destination.resolve(), args.profile
+            args.source_repo.resolve(),
+            args.destination.resolve(),
+            args.profile,
+            args.gate3_acceptance,
         )
     )
 

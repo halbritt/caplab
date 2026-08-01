@@ -22,23 +22,11 @@ exactly these files, totaling 119,218,345 bytes:
 hashes fail verification. `materialize.py` copies regular files into the
 ignored `.generated/` area; it never links the source data into a bundle.
 
-```bash
-IMAGE_DIGEST=YOUR_64_HEX_IMAGE_DIGEST
-python3 -m jobs.qwen35b_moe.materialize \
-  --source-repo "$PWD" \
-  --destination jobs/qwen35b_moe/.generated/h200-network-volume-preflight-retry3-20260801 \
-  --profile preflight-only
-python3 -m jobs.qwen35b_moe.update_image_digest \
-  jobs/qwen35b_moe/.generated/h200-network-volume-preflight-retry3-20260801 \
-  "sha256:$IMAGE_DIGEST"
-python3 -m jobs.qwen35b_moe.materialize \
-  --source-repo "$PWD" \
-  --destination jobs/qwen35b_moe/.generated/h200-network-volume-linear-retry3-20260801 \
-  --profile full
-python3 -m jobs.qwen35b_moe.update_image_digest \
-  jobs/qwen35b_moe/.generated/h200-network-volume-linear-retry3-20260801 \
-  "sha256:$IMAGE_DIGEST"
-```
+Use `SMOKE-LADDER.md` for the exact Gate 1, Gate 2, Gate 3, and full-run
+commands. Full materialization requires the recovered Gate 3 acceptance
+receipt, and digest stamping requires the machine-readable receipt from a
+pushed image build. A copied digest or model-load-only result cannot admit the
+full run.
 
 The committed `job.yaml` is a template and intentionally fails immutable-image
 validation until the generated copy receives a real digest. Digest stamping
@@ -46,42 +34,23 @@ also recomputes the canonical self-hash; always finish with
 `runpod-jobrunner check GENERATED_BUNDLE`. The old
 `evidence/bundle-check-2026-07-31.json` receipt is historical 0.1.0 evidence;
 its all-`a` digest was a test value, not a published image. It does not prove
-the network-volume bundle. Preserve the fresh 0.1.7 check output with this
+the network-volume bundle. Preserve the fresh 0.1.8 check output with this
 campaign's recovered controller evidence.
 
-The two generated bundles are separate run reservations under one campaign
-budget scope. Materialize, digest-stamp, check, and run the preflight-only
-bundle first. Accept it only after the one-step checkpoint has been mirrored,
-its signed recovery acknowledgement has been verified, the terminal artifacts
-have been recovered by hash, and the worker has closed within 2,700 seconds and
-$3.50. Only then may the full bundle, materialized from the same inputs and
-image digest, be launched. The full bundle disables its redundant preflight
-phase and starts with verify before training and full evaluation; full
-packaging does not consume artifacts from the standalone preflight reservation.
-It reserves $39.00. The preflight reserves $3.50. Both launches must use the
-same `striatum-qwen35b-hard100-20260801` scope and its $94.00 reservation
-ceiling. That ceiling accounts for campaign spend settled before this scope was
-created and keeps total authorized exposure below the owner's $100 hard limit.
-$75 is the soft limit for a feasibility reassessment, not an automatic stop.
-A failed, unacknowledged, or over-time H200 preflight blocks the full bundle.
+Gate 2 and Gate 3 are separate reservations under the same campaign budget
+scope. Each must reach terminal artifact recovery, signed checkpoint
+acknowledgement, and provider deletion before the next reservation. Gate 3
+issues the image-bound receipt required by full materialization. The full job
+starts with runtime and Gate 3 receipt verification before training and full
+evaluation. It reserves $39.00; all launches use the
+`striatum-qwen35b-hard100-20260801` scope and its $94.00 reservation ceiling.
+That ceiling accounts for settled campaign spend and keeps total authorized
+exposure below the owner's $100 hard limit. $75 remains a feasibility
+reassessment point, not an automatic stop.
 
 ```bash
 CAMPAIGN_SCOPE=striatum-qwen35b-hard100-20260801
-PREFLIGHT_BUNDLE=jobs/qwen35b_moe/.generated/h200-network-volume-preflight-retry3-20260801
-
-runpod-jobrunner check "$PREFLIGHT_BUNDLE"
-runpod-jobrunner run "$PREFLIGHT_BUNDLE" \
-  --approve-max-usd 3.50 \
-  --budget-scope "$CAMPAIGN_SCOPE" \
-  --budget-total-usd 94.00
-```
-
-Stop here and monitor the returned run ID. Do not paste or run the next block
-until the preflight acceptance and closeout gates above pass.
-
-```bash
-CAMPAIGN_SCOPE=striatum-qwen35b-hard100-20260801
-FULL_BUNDLE=jobs/qwen35b_moe/.generated/h200-network-volume-linear-retry3-20260801
+FULL_BUNDLE=jobs/qwen35b_moe/.generated/full-20260801
 
 runpod-jobrunner check "$FULL_BUNDLE"
 runpod-jobrunner run "$FULL_BUNDLE" \
@@ -101,22 +70,23 @@ Build locally or publish with:
 
 ```bash
 JOBRUNNER_DIGEST=YOUR_64_HEX_JOBRUNNER_IMAGE_DIGEST
+BUILD_RECEIPT=/tmp/striatum-qwen35b-image-0.1.11.json
 python3 -m jobs.qwen35b_moe.prepare_base_gguf \
   --model-dir /home/halbritt/models/hf/Qwen3.6-35B-A3B-995ad96e \
   --llama-cpp /home/halbritt/git/llama.cpp \
   --output /home/halbritt/models/hf/Qwen3.6-35B-A3B-995ad96e/base-bf16.gguf \
   --receipt /home/halbritt/models/hf/Qwen3.6-35B-A3B-995ad96e/base-bf16.receipt.json
 python3 -m jobs.qwen35b_moe.build_image \
-  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.10 \
+  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.11 \
   --jobrunner-image \
   "ghcr.io/halbritt/runpod-jobrunner-noop@sha256:$JOBRUNNER_DIGEST" \
-  --push
+  --receipt "$BUILD_RECEIPT" --push
 ```
 
 Omit `--push` to load a local-only image instead.
 
-After a push, use the printed `immutable_image` digest to stamp the generated
-bundle. The build refuses uncommitted Qwen job code, requires the runner image
+After a push, use `BUILD_RECEIPT` to stamp the generated bundle. The build
+refuses uncommitted Qwen job code, requires the runner image
 to use an immutable digest, and verifies that its embedded release version and
 commit exactly match `job.yaml`. It has no model build context and contains no
 safetensors or GGUF. The 41-entry `network-volume-assets.sha256` contract is

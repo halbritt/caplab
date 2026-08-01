@@ -37,6 +37,7 @@ from jobs.qwen35b_moe.base_gguf import (  # noqa: E402
 from jobs.qwen35b_moe.build_image import (  # noqa: E402
     _asset_manifest_receipt,
     _validate_jobrunner_release,
+    _write_receipt,
 )
 from jobs.qwen35b_moe.cuda_runtime import (  # noqa: E402
     validate_cuda_observations,
@@ -53,6 +54,9 @@ from jobs.qwen35b_moe.evaluate import (  # noqa: E402
     verify_longest_evaluation_receipt,
 )
 from jobs.qwen35b_moe.materialize import _render_job, materialize  # noqa: E402
+from jobs.qwen35b_moe.gate_acceptance import (  # noqa: E402
+    validate_gate3_acceptance,
+)
 from jobs.qwen35b_moe.peft_config import (  # noqa: E402
     FUSED_EXPERT_SPEC_SHA256,
     LINEAR_TARGET_PATTERN,
@@ -1453,8 +1457,8 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
     preflight = yaml.safe_load(_render_job("preflight-only"))
 
     expected_runner = {
-        "version": "0.1.7",
-        "git_commit": "ea9fd3895ff35b9e0eb0e70ed672ad28f86032e9",
+        "version": "0.1.8",
+        "git_commit": "2145004a1bea01d307c81f3b1c8c2ff6bbdc8a14",
     }
     for spec in (full, preflight):
         assert spec["runner"] == expected_runner
@@ -1619,7 +1623,11 @@ def test_ssh_keygen_capability_probe_accepts_help_exit_but_not_missing_y(
 def test_flash_qla_pins_one_coherent_hopper_backend_stack() -> None:
     requirements = dict(
         line.split("==", maxsplit=1)
-        for line in (JOB / "requirements.txt").read_text().splitlines()
+        for line in (
+            (JOB / "requirements-common.in").read_text()
+            + (JOB / "requirements.in").read_text()
+        ).splitlines()
+        if "==" in line
     )
 
     assert requirements["tilelang"] == "0.1.9"
@@ -1628,7 +1636,7 @@ def test_flash_qla_pins_one_coherent_hopper_backend_stack() -> None:
 
     gpu_requirements = dict(
         line.split("==", maxsplit=1)
-        for line in (JOB / "requirements-gpu.txt").read_text().splitlines()
+        for line in (JOB / "requirements-gpu.in").read_text().splitlines()
         if line and not line.startswith("#")
     )
     assert gpu_requirements["flash-linear-attention"] == "0.5.2"
@@ -1639,6 +1647,21 @@ def test_flash_qla_pins_one_coherent_hopper_backend_stack() -> None:
     assert "flash_qla" in dockerfile
     assert "'tvm_ffi'" in dockerfile
     assert "jobs.qwen35b_moe.flash_qla_smoke" in dockerfile
+
+
+def test_dependency_policy_separates_compatibility_constraints_from_release_lock() -> None:
+    runtime_input = (JOB / "requirements-common.in").read_text()
+    runtime_lock = (JOB / "requirements.lock").read_text()
+    gpu_lock = (JOB / "requirements-gpu.lock").read_text()
+    dockerfile = (JOB / "Dockerfile").read_text()
+
+    assert "accelerate>=1.14,<2" in runtime_input
+    assert "datasets>=5,<6" in runtime_input
+    assert "torch==2.8.0" in runtime_input
+    assert "--hash=sha256:" in runtime_lock
+    assert "--hash=sha256:" in gpu_lock
+    assert "--require-hashes -r requirements.lock" in dockerfile
+    assert "--require-hashes -r requirements-gpu.lock" in dockerfile
 
 
 def test_paid_preflight_requires_flash_qla_runtime_evidence() -> None:
@@ -1664,7 +1687,43 @@ def test_preflight_materialization_stamps_single_quoted_yaml_hash(
         json.dumps({"image_digest_pinned": False})
     )
 
-    update(bundle, "a" * 64)
+    receipt = tmp_path / "image-build-receipt.json"
+    _write_json(
+        receipt,
+        {
+            "protocol": "striatum-worker-image-build/2",
+            "image": "ghcr.io/halbritt/striatum-tuner-qwen35b-moe:0.1.11",
+            "source_commit": "b" * 40,
+            "jobrunner_image": (
+                "ghcr.io/halbritt/runpod-jobrunner-noop@sha256:" + "c" * 64
+            ),
+            "jobrunner_release": {
+                "protocol": "runner-release/1",
+                "runner_version": "0.1.8",
+                "runner_git_commit": "2145004a1bea01d307c81f3b1c8c2ff6bbdc8a14",
+                "supported_protocol_majors": {
+                    "artifact-manifest": [1],
+                    "incremental-mirror-ack": [1],
+                    "launch-authorization": [1],
+                    "run-event": [1],
+                    "run-request": [1],
+                    "run-status": [1],
+                },
+            },
+            "network_volume_assets": {
+                "manifest_sha256": "d" * 64,
+                "files": 41,
+                "bytes": 142_993_858_696,
+            },
+            "pushed": True,
+            "digest": "sha256:" + "a" * 64,
+            "immutable_image": (
+                "ghcr.io/halbritt/striatum-tuner-qwen35b-moe@sha256:" + "a" * 64
+            ),
+        },
+    )
+
+    update(bundle, receipt)
 
     rendered = (bundle / "job.yaml").read_text()
     assert "REPLACE_WITH_IMAGE_DIGEST" not in rendered
@@ -1676,6 +1735,70 @@ def test_preflight_materialization_stamps_single_quoted_yaml_hash(
         json.loads((bundle / "bundle-metadata.json").read_text())["image_digest_pinned"]
         is True
     )
+
+
+def test_bundle_image_update_rejects_a_naked_digest(tmp_path: Path) -> None:
+    with pytest.raises(ContractError, match="build receipt"):
+        update(tmp_path, Path("sha256:" + "a" * 64))
+
+
+def test_build_receipt_is_written_atomically(tmp_path: Path) -> None:
+    target = tmp_path / "nested/image-build-receipt.json"
+    receipt = {"protocol": "striatum-worker-image-build/2", "pushed": True}
+
+    _write_receipt(target, receipt)
+
+    assert json.loads(target.read_text()) == receipt
+    assert list(target.parent.glob(f".{target.name}.*")) == []
+
+
+def test_profile_preflight_runs_expensive_hopper_probe_last() -> None:
+    source = (JOB / "preflight.py").read_text()
+    profile_source = source[source.index("def _profile_preflight") : source.index("def _run_profile_smoke")]
+
+    assert profile_source.index("verify_input_tree") < profile_source.index(
+        "run_flash_qla_smoke"
+    )
+    assert profile_source.index("inject_on_meta") < profile_source.index(
+        "run_flash_qla_smoke"
+    )
+
+
+def test_full_materialization_requires_gate3_acceptance(tmp_path: Path) -> None:
+    with pytest.raises(ContractError, match="Gate 3 acceptance"):
+        materialize(ROOT, tmp_path / "full", "full")
+
+
+def test_gate3_acceptance_is_bound_to_exact_image_and_moe_model(tmp_path: Path) -> None:
+    digest = "sha256:" + "a" * 64
+    receipt = tmp_path / "gate3-acceptance.json"
+    _write_json(
+        receipt,
+        {
+            "protocol": "striatum-gate-acceptance/1",
+            "gate": 3,
+            "accepted": True,
+            "run_id": "run-20260801T230000-abcdef012345",
+            "image_digest": (
+                "ghcr.io/halbritt/striatum-tuner-qwen35b-moe@" + digest
+            ),
+            "image_source_commit": "b" * 40,
+            "model": {
+                "id": "Qwen/Qwen3.6-35B-A3B",
+                "revision": "995ad96eacd98c81ed38be0c5b274b04031597b0",
+                "model_type": "qwen3_5_moe",
+            },
+            "artifact_manifest_sha256": "c" * 64,
+        },
+    )
+
+    value = validate_gate3_acceptance(receipt, expected_image_digest=digest)
+
+    assert value["accepted"] is True
+    with pytest.raises(ContractError, match="image digest"):
+        validate_gate3_acceptance(
+            receipt, expected_image_digest="sha256:" + "d" * 64
+        )
 
 
 def test_preflight_packaging_requires_preflight_smoke_evidence(tmp_path: Path) -> None:

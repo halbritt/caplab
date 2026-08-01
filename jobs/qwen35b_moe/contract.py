@@ -10,7 +10,9 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 import hashlib
 import json
+import os
 from pathlib import Path, PurePosixPath
+import tempfile
 from typing import Any, Mapping, Sequence
 
 
@@ -21,6 +23,23 @@ STRATEGIES = (LINEAR_ONLY, EXPERT_AWARE)
 
 class ContractError(ValueError):
     """A fail-closed job contract violation."""
+
+
+def atomic_json(path: Path, value: object) -> None:
+    """Write durable JSON evidence without ever exposing a partial document."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, raw_temp = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
+    temporary = Path(raw_temp)
+    try:
+        with os.fdopen(descriptor, "w") as handle:
+            json.dump(value, handle, indent=2, sort_keys=True)
+            handle.write("\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+    except BaseException:
+        temporary.unlink(missing_ok=True)
+        raise
 
 
 @dataclass(frozen=True)

@@ -1,7 +1,7 @@
 **
 !Dockerfile
-!requirements.txt
-!requirements-gpu.txt
+!requirements.lock
+!requirements-gpu.lock
 !*.py
 !*.json
 !network-volume-assets.sha256

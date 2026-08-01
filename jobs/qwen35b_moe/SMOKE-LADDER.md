@@ -77,15 +77,19 @@ FlashQLA on the Qwen3.6 tensor shape and requires finite forward values and
 finite nonzero gradients before loading any model weights.
 
 ```bash
-JOBRUNNER_IMAGE=ghcr.io/halbritt/runpod-jobrunner-noop@sha256:9c43123d7dfeb0735702a87b391f21972598dec9e1e9312875e9c2630830e90b
+JOBRUNNER_IMAGE=ghcr.io/halbritt/runpod-jobrunner-noop@sha256:25273fcb298ee12393f9c227b452323c54e0397b86190b8c56cb12a599c46ca7
+BUILD_RECEIPT=/tmp/striatum-qwen35b-image-0.1.11.json
 python3 -m jobs.qwen35b_moe.build_image \
-  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.10 \
-  --jobrunner-image "$JOBRUNNER_IMAGE" --push
+  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.11 \
+  --jobrunner-image "$JOBRUNNER_IMAGE" \
+  --receipt "$BUILD_RECEIPT" --push
 ```
 
-Use the resulting immutable digest as `IMAGE_DIGEST` below. Both paid gates use
-the same image, H200 requirement, network volume, runner version, mount, cache,
-and dependency stack. FP8 is not enabled.
+The build receipt is the admission input below. A naked digest is deliberately
+insufficient: stamping verifies the pushed image, source commit, exact embedded
+runner release, and immutable digest. Both paid gates use the same image, H200
+requirement, network volume, runner version, mount, cache, and dependency stack.
+FP8 is not enabled.
 
 ## Gate 2: dense model on H200
 
@@ -97,7 +101,7 @@ GATE2=jobs/qwen35b_moe/.generated/hopper-dense-smoke-20260801
 python3 -m jobs.qwen35b_moe.materialize \
   --source-repo "$PWD" --destination "$GATE2" \
   --profile hopper-dense-smoke
-python3 -m jobs.qwen35b_moe.update_image_digest "$GATE2" "$IMAGE_DIGEST"
+python3 -m jobs.qwen35b_moe.update_image_digest "$GATE2" "$BUILD_RECEIPT"
 /home/halbritt/git/runpod-jobrunner/.venv/bin/runpod-jobrunner check "$GATE2"
 /home/halbritt/git/runpod-jobrunner/.venv/bin/runpod-jobrunner run "$GATE2" \
   --approve-max-usd 3.50 \
@@ -118,7 +122,7 @@ GATE3=jobs/qwen35b_moe/.generated/hopper-moe-smoke-20260801
 python3 -m jobs.qwen35b_moe.materialize \
   --source-repo "$PWD" --destination "$GATE3" \
   --profile hopper-moe-smoke
-python3 -m jobs.qwen35b_moe.update_image_digest "$GATE3" "$IMAGE_DIGEST"
+python3 -m jobs.qwen35b_moe.update_image_digest "$GATE3" "$BUILD_RECEIPT"
 /home/halbritt/git/runpod-jobrunner/.venv/bin/runpod-jobrunner check "$GATE3"
 /home/halbritt/git/runpod-jobrunner/.venv/bin/runpod-jobrunner run "$GATE3" \
   --approve-max-usd 5.00 \
@@ -131,6 +135,32 @@ expert graph, expert-dispatch kernels, 42,332,160 trainable-parameter invariant,
 gradient flow, memory use, checkpoint compatibility, resume, and real-model
 adapter inference. Its four short steps cannot establish convergence, final
 quality, long-context memory, full evaluation correctness, or 318-step runtime.
+
+After verified recovery and closeout, bind the terminal evidence to the exact
+image. Substitute the run ID printed by the controller:
+
+```bash
+GATE3_RUN_ID=run-REPLACE_ME
+GATE3_RUN_ROOT="$HOME/.local/state/runpod-jobrunner/runs/$GATE3_RUN_ID"
+GATE3_ACCEPTANCE=/tmp/qwen35b-gate3-acceptance.json
+python3 -m jobs.qwen35b_moe.gate_acceptance \
+  --run-root "$GATE3_RUN_ROOT" \
+  --build-receipt "$BUILD_RECEIPT" \
+  --run-id "$GATE3_RUN_ID" \
+  --output "$GATE3_ACCEPTANCE"
+```
+
+The full bundle cannot be materialized without this receipt and cannot be
+stamped with a different worker image:
+
+```bash
+FULL=jobs/qwen35b_moe/.generated/full-20260801
+python3 -m jobs.qwen35b_moe.materialize \
+  --source-repo "$PWD" --destination "$FULL" --profile full \
+  --gate3-acceptance "$GATE3_ACCEPTANCE"
+python3 -m jobs.qwen35b_moe.update_image_digest "$FULL" "$BUILD_RECEIPT"
+/home/halbritt/git/runpod-jobrunner/.venv/bin/runpod-jobrunner check "$FULL"
+```
 
 Only after all three gates pass may the existing full bundle be launched. A
 failed gate is closed and recovered before another paid reservation. The full

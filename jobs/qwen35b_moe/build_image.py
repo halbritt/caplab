@@ -5,9 +5,11 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
+import tempfile
 from typing import Mapping
 
 import yaml
@@ -28,6 +30,23 @@ def _run(command: list[str], **kwargs) -> subprocess.CompletedProcess[str]:
         raise ContractError(
             f"image command failed with exit {error.returncode}: {command!r}"
         ) from error
+
+
+def _write_receipt(path: Path, receipt: Mapping[str, object]) -> None:
+    """Durably publish one build receipt without exposing a partial JSON file."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, raw_temp = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
+    temp = Path(raw_temp)
+    try:
+        with os.fdopen(descriptor, "w") as handle:
+            json.dump(receipt, handle, indent=2, sort_keys=True)
+            handle.write("\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temp, path)
+    except BaseException:
+        temp.unlink(missing_ok=True)
+        raise
 
 
 def _asset_manifest_receipt(path: Path) -> dict[str, object]:
@@ -99,6 +118,12 @@ def main() -> None:
         "--jobrunner-image",
         required=True,
         help="published runpod-jobrunner image in repository@sha256:digest form",
+    )
+    parser.add_argument(
+        "--receipt",
+        type=Path,
+        required=True,
+        help="path for the atomic machine-readable build admission receipt",
     )
     parser.add_argument("--push", action="store_true")
     args = parser.parse_args()
@@ -173,6 +198,7 @@ def main() -> None:
         manifest = json.loads(raw)
         receipt["digest"] = manifest["digest"]
         receipt["immutable_image"] = f"{args.image}@{manifest['digest']}"
+    _write_receipt(args.receipt.resolve(), receipt)
     print(json.dumps(receipt, indent=2, sort_keys=True))
 
 

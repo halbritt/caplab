@@ -16,6 +16,7 @@ from .flash_qla_smoke import run_flash_qla_smoke
 from .contract import (
     STRATEGIES,
     ContractError,
+    atomic_json,
     expected_adapter_measurement,
     load_input_manifest,
     verify_input_tree,
@@ -314,11 +315,6 @@ def _profile_preflight(args: argparse.Namespace) -> dict[str, object]:
     except ImportError as error:
         raise ContractError("torch and transformers are required for preflight") from error
     profile = load_training_profile(args.config)
-    flash_qla = (
-        run_flash_qla_smoke(args.output / "flash-qla-smoke.json")
-        if args.check_hopper_kernels
-        else None
-    )
     entries = load_input_manifest(
         profile.input_manifest, strict_production=profile.strict_input_manifest
     )
@@ -353,6 +349,14 @@ def _profile_preflight(args: argparse.Namespace) -> dict[str, object]:
     del model
     measurement_value = (
         measurement.to_dict() if hasattr(measurement, "to_dict") else measurement
+    )
+    # The Hopper kernel probe compiles and executes CUDA code. Keep it behind
+    # all cheap input, revision, processor, tokenization, and adapter checks so
+    # malformed bundles fail before consuming that setup time.
+    flash_qla = (
+        run_flash_qla_smoke(args.output / "flash-qla-smoke.json")
+        if args.check_hopper_kernels
+        else None
     )
     versions = {}
     for package in SMOKE_PACKAGES:
@@ -524,7 +528,7 @@ def main() -> None:
         if args.run_smoke:
             _run_profile_smoke(args, receipt)
         receipt_path = args.output / "preflight.json"
-        receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
+        atomic_json(receipt_path, receipt)
         return
     diagnostics = output_dir_from_env() / "diagnostics/preflight"
 
@@ -534,9 +538,7 @@ def main() -> None:
         args.output / "flash-qla-smoke.json"
     )
     census = census_snapshot(args.model_dir)
-    (args.output / "target-census.json").write_text(
-        json.dumps(census, indent=2, sort_keys=True) + "\n"
-    )
+    atomic_json(args.output / "target-census.json", census)
     model, measurement = inject_on_meta(str(args.model_dir), args.strategy)
     del model
     versions = {}
@@ -642,9 +644,7 @@ def main() -> None:
             log_path=diagnostics / "one-step-export.log",
         )
         receipt["smoke"] = "passed"
-    (args.output / "preflight.json").write_text(
-        json.dumps(receipt, indent=2, sort_keys=True) + "\n"
-    )
+    atomic_json(args.output / "preflight.json", receipt)
     print(json.dumps(receipt, indent=2, sort_keys=True))
 
 
