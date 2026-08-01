@@ -13,7 +13,11 @@ import sys
 
 from .census import census_snapshot
 from .contract import STRATEGIES, ContractError, load_input_manifest, verify_input_tree
-from .evaluate import verify_longest_evaluation_receipt
+from .evaluate import (
+    BF16_BASE_LOAD_MODE,
+    QUANTIZED_BASE_LOAD_MODE,
+    verify_longest_evaluation_receipt,
+)
 from .peft_config import inject_on_meta
 from .runtime import (
     base_gguf_from_env,
@@ -47,6 +51,55 @@ def _run(command: list[str]) -> None:
         raise ContractError(
             f"preflight child failed with exit {error.returncode}: {command!r}"
         ) from error
+
+
+def _run_reload_evaluation(
+    *,
+    model_dir: Path,
+    input_dir: Path,
+    checkpoint: Path,
+    output: Path,
+    bf16_base: bool,
+) -> dict[str, object]:
+    expected_mode = BF16_BASE_LOAD_MODE if bf16_base else QUANTIZED_BASE_LOAD_MODE
+    command = [
+        sys.executable,
+        "-m",
+        "jobs.qwen35b_moe.evaluate",
+        "--model-dir",
+        str(model_dir),
+        "--input-dir",
+        str(input_dir),
+        "--adapter",
+        str(checkpoint),
+        "--output",
+        str(output),
+        "--limit",
+        "1",
+        "--selection",
+        "longest-tokenized-authorized",
+        "--max-new-tokens",
+        "64",
+    ]
+    if bf16_base:
+        command.extend(["--deterministic", "--bf16-base"])
+    _run(command)
+    try:
+        summary = json.loads((output / "summary.json").read_text())
+    except (OSError, json.JSONDecodeError) as error:
+        raise ContractError(
+            f"{expected_mode} longest held-out reload evaluation summary is missing "
+            "or invalid"
+        ) from error
+    if not isinstance(summary, dict):
+        raise ContractError(
+            f"{expected_mode} longest held-out reload evaluation summary is invalid"
+        )
+    if summary.get("base_load_mode") != expected_mode:
+        raise ContractError(
+            f"reload evaluation did not attest the {expected_mode} base path"
+        )
+    return verify_longest_evaluation_receipt(summary)
 
 
 def verify_longest_example_receipt(path: Path) -> dict[str, object]:
@@ -148,7 +201,7 @@ def main() -> None:
             raise ContractError(f"required package is absent: {package}") from error
 
     receipt = {
-        "protocol": "striatum-paid-preflight/1",
+        "protocol": "striatum-paid-preflight/2",
         "strategy": args.strategy,
         "measurement": measurement.to_dict(),
         "versions": versions,
@@ -193,38 +246,22 @@ def main() -> None:
         checkpoint = train_output / "checkpoint-1"
         if not (checkpoint / "checkpoint-complete.json").is_file():
             raise ContractError("one-step checkpoint has no completion manifest")
-        eval_output = args.output / "reload-eval"
-        _run(
-            [
-                sys.executable,
-                "-m",
-                "jobs.qwen35b_moe.evaluate",
-                "--model-dir",
-                str(args.model_dir),
-                "--input-dir",
-                str(args.input_dir),
-                "--adapter",
-                str(checkpoint),
-                "--output",
-                str(eval_output),
-                "--limit",
-                "1",
-                "--selection",
-                "longest-tokenized-authorized",
-                "--max-new-tokens",
-                "64",
-                "--deterministic",
-                "--bf16-base",
-            ]
+        quantized_eval_output = args.output / "quantized-reload-eval"
+        receipt["quantized_longest_evaluation_example"] = _run_reload_evaluation(
+            model_dir=args.model_dir,
+            input_dir=args.input_dir,
+            checkpoint=checkpoint,
+            output=quantized_eval_output,
+            bf16_base=False,
         )
-        try:
-            eval_summary = json.loads((eval_output / "summary.json").read_text())
-        except (OSError, json.JSONDecodeError) as error:
-            raise ContractError(
-                "longest held-out reload evaluation summary is missing or invalid"
-            ) from error
-        receipt["longest_evaluation_example"] = (
-            verify_longest_evaluation_receipt(eval_summary)
+
+        bf16_eval_output = args.output / "bf16-parity-eval"
+        receipt["bf16_longest_evaluation_example"] = _run_reload_evaluation(
+            model_dir=args.model_dir,
+            input_dir=args.input_dir,
+            checkpoint=checkpoint,
+            output=bf16_eval_output,
+            bf16_base=True,
         )
         _run(
             [
@@ -238,7 +275,7 @@ def main() -> None:
                 "--base-gguf",
                 str(args.base_gguf),
                 "--hf-reference",
-                str(eval_output / "hf-reference.json"),
+                str(bf16_eval_output / "hf-reference.json"),
                 "--llama-cpp",
                 str(args.llama_cpp),
                 "--output",

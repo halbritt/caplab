@@ -19,7 +19,11 @@ from .contract import (
     sha256_file,
     validate_census,
 )
-from .evaluate import verify_longest_evaluation_receipt
+from .evaluate import (
+    BF16_BASE_LOAD_MODE,
+    QUANTIZED_BASE_LOAD_MODE,
+    verify_longest_evaluation_receipt,
+)
 from .export import LLAMA_CPP_COMMIT, inspect_peft_adapter
 from .preflight import (
     PACKAGES,
@@ -167,7 +171,7 @@ def _validate_preflight(run_root: Path) -> None:
     strategy = receipt.get("strategy")
     versions = _mapping(receipt.get("versions"), "paid preflight versions")
     if (
-        receipt.get("protocol") != "striatum-paid-preflight/1"
+        receipt.get("protocol") != "striatum-paid-preflight/2"
         or receipt.get("smoke") != "passed"
         or strategy not in STRATEGIES
         or receipt.get("measurement")
@@ -189,14 +193,35 @@ def _validate_preflight(run_root: Path) -> None:
         raise ContractError("paid preflight Liger evidence disagrees")
     verify_checkpoint(root / "one-step/checkpoint-1", 1)
 
-    reload_summary = _read_json_object(
-        root / "reload-eval/summary.json", "reload evaluation summary"
+    quantized_reload_summary = _read_json_object(
+        root / "quantized-reload-eval/summary.json",
+        "quantized reload evaluation summary",
     )
+    if quantized_reload_summary.get("base_load_mode") != QUANTIZED_BASE_LOAD_MODE:
+        raise ContractError(
+            "paid preflight quantized reload evaluation has the wrong base-load mode"
+        )
     if receipt.get(
-        "longest_evaluation_example"
-    ) != verify_longest_evaluation_receipt(reload_summary):
-        raise ContractError("paid preflight longest-evaluation evidence disagrees")
-    _validate_hf_reference(root / "reload-eval/hf-reference.json")
+        "quantized_longest_evaluation_example"
+    ) != verify_longest_evaluation_receipt(quantized_reload_summary):
+        raise ContractError(
+            "paid preflight quantized longest-evaluation evidence disagrees"
+        )
+
+    bf16_parity_summary = _read_json_object(
+        root / "bf16-parity-eval/summary.json", "BF16 parity evaluation summary"
+    )
+    if bf16_parity_summary.get("base_load_mode") != BF16_BASE_LOAD_MODE:
+        raise ContractError(
+            "paid preflight BF16 parity evaluation has the wrong base-load mode"
+        )
+    if receipt.get(
+        "bf16_longest_evaluation_example"
+    ) != verify_longest_evaluation_receipt(bf16_parity_summary):
+        raise ContractError(
+            "paid preflight BF16 longest-evaluation evidence disagrees"
+        )
+    _validate_hf_reference(root / "bf16-parity-eval/hf-reference.json")
     validate_export_receipt(
         root / "one-step-export.json",
         root / "one-step-adapter-f32.gguf",

@@ -65,6 +65,7 @@ from jobs.qwen35b_moe.preflight import (  # noqa: E402
     verify_liger_fused_loss_receipt,
     verify_longest_example_receipt,
 )
+from jobs.qwen35b_moe import preflight as preflight_module  # noqa: E402
 from jobs.qwen35b_moe.train import (  # noqa: E402
     ACK_NAMESPACE,
     ACK_PROTOCOL,
@@ -754,6 +755,76 @@ def test_preflight_reload_eval_selects_and_receipts_longest_prompt(
         )
 
 
+def test_preflight_runs_distinct_quantized_and_bf16_reload_commands(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    selection = {
+        "method": "longest-tokenized-authorized",
+        "candidates": 98,
+        "examples": 1,
+        "source_path": "sft/review.eval.jsonl",
+        "source_sha256": "a" * 64,
+        "selected_global_index": 4,
+        "dispatch_id": "dispatch-eval-longest",
+        "dispatch_ids": ["dispatch-eval-longest"],
+        "raw_token_count": 50_000,
+        "effective_token_count": 40_960,
+        "max_raw_token_count": 50_000,
+        "max_effective_token_count": 40_960,
+        "token_length_census_sha256": "b" * 64,
+        "cutoff": 40_960,
+        "tie_break": "effective-length,raw-length,earliest-global-index",
+        "tokenization_surface": "user-prompt-with-generation-marker-no-thinking",
+    }
+    quantized_output = tmp_path / "quantized-reload-eval"
+    bf16_output = tmp_path / "bf16-parity-eval"
+    _write_json(
+        quantized_output / "summary.json",
+        {
+            "protocol": "striatum-evaluation-result/1",
+            "base_load_mode": "bnb-4bit-nf4-double-quant",
+            "n": 1,
+            "selection": selection,
+        },
+    )
+    _write_json(
+        bf16_output / "summary.json",
+        {
+            "protocol": "striatum-evaluation-result/1",
+            "base_load_mode": "bf16",
+            "n": 1,
+            "selection": selection,
+        },
+    )
+    commands: list[list[str]] = []
+    monkeypatch.setattr(preflight_module, "_run", commands.append)
+
+    quantized_selection = preflight_module._run_reload_evaluation(
+        model_dir=tmp_path / "model",
+        input_dir=tmp_path / "input",
+        checkpoint=tmp_path / "checkpoint-1",
+        output=quantized_output,
+        bf16_base=False,
+    )
+    bf16_selection = preflight_module._run_reload_evaluation(
+        model_dir=tmp_path / "model",
+        input_dir=tmp_path / "input",
+        checkpoint=tmp_path / "checkpoint-1",
+        output=bf16_output,
+        bf16_base=True,
+    )
+
+    assert quantized_selection == selection
+    assert bf16_selection == selection
+    assert "--bf16-base" not in commands[0]
+    assert "--bf16-base" in commands[1]
+    assert all(
+        command[command.index("--selection") + 1]
+        == "longest-tokenized-authorized"
+        for command in commands
+    )
+
+
 def test_liger_runtime_proof_requires_bound_fused_loss_and_no_logits(
     tmp_path: Path,
 ) -> None:
@@ -963,13 +1034,14 @@ def test_preflight_packaging_requires_preflight_smoke_evidence(tmp_path: Path) -
     _write_json(
         root / "preflight.json",
         {
-            "protocol": "striatum-paid-preflight/1",
+            "protocol": "striatum-paid-preflight/2",
             "strategy": "linear-only",
             "measurement": expected_adapter_measurement(LINEAR_ONLY).to_dict(),
             "versions": {package: "test-version" for package in PACKAGES},
             "smoke": "passed",
             "longest_training_example": training_selection,
-            "longest_evaluation_example": evaluation_selection,
+            "quantized_longest_evaluation_example": evaluation_selection,
+            "bf16_longest_evaluation_example": evaluation_selection,
             "liger_fused_loss": _liger_proof(),
         },
     )
@@ -999,14 +1071,24 @@ def test_preflight_packaging_requires_preflight_smoke_evidence(tmp_path: Path) -
     )
     _write_closed_checkpoint(root / "one-step/checkpoint-1", 1)
     _write_json(
-        root / "reload-eval/summary.json",
+        root / "quantized-reload-eval/summary.json",
         {
             "protocol": "striatum-evaluation-result/1",
+            "base_load_mode": "bnb-4bit-nf4-double-quant",
             "n": 1,
             "selection": evaluation_selection,
         },
     )
-    _write_hf_reference(root / "reload-eval/hf-reference.json")
+    _write_json(
+        root / "bf16-parity-eval/summary.json",
+        {
+            "protocol": "striatum-evaluation-result/1",
+            "base_load_mode": "bf16",
+            "n": 1,
+            "selection": evaluation_selection,
+        },
+    )
+    _write_hf_reference(root / "bf16-parity-eval/hf-reference.json")
     gguf = root / "one-step-adapter-f32.gguf"
     _write_export_receipt(
         root / "one-step-export.json", gguf, root / "one-step/checkpoint-1"
@@ -1021,6 +1103,31 @@ def test_preflight_packaging_requires_preflight_smoke_evidence(tmp_path: Path) -
         for file in manifest["files"]
     )
 
+    quantized_summary = root / "quantized-reload-eval/summary.json"
+    quantized_summary.unlink()
+    with pytest.raises(ContractError, match="quantized reload evaluation summary"):
+        build_manifest(tmp_path, preflight_only=True)
+    _write_json(
+        quantized_summary,
+        {
+            "protocol": "striatum-evaluation-result/1",
+            "base_load_mode": "bf16",
+            "n": 1,
+            "selection": evaluation_selection,
+        },
+    )
+    with pytest.raises(ContractError, match="wrong base-load mode"):
+        build_manifest(tmp_path, preflight_only=True)
+
+    _write_json(
+        quantized_summary,
+        {
+            "protocol": "striatum-evaluation-result/1",
+            "base_load_mode": "bnb-4bit-nf4-double-quant",
+            "n": 1,
+            "selection": evaluation_selection,
+        },
+    )
     gguf.unlink()
     with pytest.raises(ContractError, match="exported adapter GGUF"):
         build_manifest(tmp_path, preflight_only=True)

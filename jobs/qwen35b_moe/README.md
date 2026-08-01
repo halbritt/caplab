@@ -126,11 +126,14 @@ The preflight verifies all inputs, performs the target census, injects PEFT on
 meta, requires the baked and receipted BF16 parity GGUF, trains one optimizer
 step on the largest effective token sequence found by tokenizing all 1,268
 authorized training records, hashes checkpoint 1, reloads it
-against the bf16 Hugging Face base in a separate evaluation process using the
-deterministically longest tokenized record among all 98 authorized held-out
-records, converts the adapter with pinned `llama.cpp`, loads GGUF base plus
-adapter, and requires deterministic text parity. Both token-length censuses and
-exact selections are included in the preflight receipt:
+first through the same 4-bit NF4 eval-only adapter path used by checkpoint
+evaluation, then through a separate BF16 Hugging Face process for deterministic
+`llama.cpp` parity. Both reloads use the longest tokenized record among all 98
+authorized held-out records. Their distinct load-mode attestations, token-length
+censuses, and exact selections are required by preflight packaging; BF16-only
+evidence cannot close the gate. The BF16 reference is then converted with
+pinned `llama.cpp`, loaded as GGUF base plus adapter, and required to match
+exact text:
 
 ```bash
 python3 -m jobs.qwen35b_moe.preflight --strategy linear-only --run-smoke

@@ -25,6 +25,8 @@ from .train import select_longest_tokenized_index
 
 ACCEPTING = {"accept", "accept_with_findings"}
 VERDICTS = {"accept", "accept_with_findings", "needs_revision", "reject"}
+QUANTIZED_BASE_LOAD_MODE = "bnb-4bit-nf4-double-quant"
+BF16_BASE_LOAD_MODE = "bf16"
 
 
 def extract_json(content: str) -> Any:
@@ -361,6 +363,9 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     total = len(rows)
     summary = {
         "protocol": "striatum-evaluation-result/1",
+        "base_load_mode": (
+            BF16_BASE_LOAD_MODE if args.bf16_base else QUANTIZED_BASE_LOAD_MODE
+        ),
         "selection": selection_evidence,
         "n": total,
         "json_valid": sum(row["json_valid"] for row in rows) / total if total else None,
