@@ -107,7 +107,7 @@ python3 -m jobs.qwen35b_moe.prepare_base_gguf \
   --output /home/halbritt/models/hf/Qwen3.6-35B-A3B-995ad96e/base-bf16.gguf \
   --receipt /home/halbritt/models/hf/Qwen3.6-35B-A3B-995ad96e/base-bf16.receipt.json
 python3 -m jobs.qwen35b_moe.build_image \
-  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.7 \
+  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.10 \
   --jobrunner-image \
   "ghcr.io/halbritt/runpod-jobrunner-noop@sha256:$JOBRUNNER_DIGEST" \
   --push
@@ -116,8 +116,9 @@ python3 -m jobs.qwen35b_moe.build_image \
 Omit `--push` to load a local-only image instead.
 
 After a push, use the printed `immutable_image` digest to stamp the generated
-bundle. The build refuses uncommitted Qwen job code and requires the runner
-image to use an immutable digest. It has no model build context and contains no
+bundle. The build refuses uncommitted Qwen job code, requires the runner image
+to use an immutable digest, and verifies that its embedded release version and
+commit exactly match `job.yaml`. It has no model build context and contains no
 safetensors or GGUF. The 41-entry `network-volume-assets.sha256` contract is
 copied into the image. The verify phase uses it to hash the exact 40-file HF
 snapshot plus

@@ -77,9 +77,9 @@ FlashQLA on the Qwen3.6 tensor shape and requires finite forward values and
 finite nonzero gradients before loading any model weights.
 
 ```bash
-JOBRUNNER_IMAGE=ghcr.io/halbritt/runpod-jobrunner-noop@sha256:3bf69deb62b02ada937406765087d7ee12b7c78f72c9045463b325ba4214622f
+JOBRUNNER_IMAGE=ghcr.io/halbritt/runpod-jobrunner-noop@sha256:9c43123d7dfeb0735702a87b391f21972598dec9e1e9312875e9c2630830e90b
 python3 -m jobs.qwen35b_moe.build_image \
-  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.9 \
+  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.10 \
   --jobrunner-image "$JOBRUNNER_IMAGE" --push
 ```
 
