@@ -229,11 +229,13 @@ python3 -m jobs.qwen35b_moe.score_fate \
   --output RECOVERED/eval/full/fate-gate.json
 ```
 
-The local scorer requires the exact hash-pinned 98-example evaluation source.
-It binds the results, private analysis, evaluation source, and dispatch-ID set
-into its receipt. The number of fate-scored rows is the number of legal
-verdicts produced by the candidate. It must be at least 86, which strictly
-beats the historical 85-of-98 legal-verdict baseline.
+The local scorer requires the exact hash-pinned 98-example evaluation source
+and the pinned private analysis file. It hashes the same bytes that it parses,
+then binds the results, analysis, evaluation source, and dispatch-ID set into
+its receipt. The number of fate-scored rows is the number of legal verdicts
+produced by the candidate. It must be at least 86, which strictly beats the
+historical 85-of-98 legal-verdict baseline. A structurally valid model result
+that misses either gate still produces a durable rejection receipt.
 
 Lifecycle success therefore means only that artifacts were produced,
 verified, recovered, and the worker was closed. Model acceptance also requires

@@ -74,6 +74,10 @@
       "source_path": "sft/review.eval.jsonl",
       "source_sha256": "1de3ce2f185b37f86200be46365bcbac64862d4465ad5ba951573adefd2fb36d"
     },
+    "local_fate_analysis": {
+      "source_path": "corpus/analysis.json",
+      "source_sha256": "092807c769a71d16361edb74828d02ecfba3ced46d6c0f50c9fe4822c66de7d4"
+    },
     "strictly_beat": {
       "json_valid": 0.8877551020408163,
       "verdict_legal": 0.8673469387755102,

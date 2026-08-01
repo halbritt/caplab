@@ -70,6 +70,7 @@ from jobs.qwen35b_moe.preflight import (  # noqa: E402
     verify_longest_example_receipt,
 )
 from jobs.qwen35b_moe import preflight as preflight_module  # noqa: E402
+from jobs.qwen35b_moe import score_fate as score_fate_module  # noqa: E402
 from jobs.qwen35b_moe.train import (  # noqa: E402
     ACK_NAMESPACE,
     ACK_PROTOCOL,
@@ -1680,6 +1681,12 @@ def test_training_and_job_specs_keep_the_paid_run_gates() -> None:
             "1de3ce2f185b37f86200be46365bcbac64862d4465ad5ba951573adefd2fb36d"
         ),
     }
+    assert training["quality_gate"]["local_fate_analysis"] == {
+        "source_path": "corpus/analysis.json",
+        "source_sha256": (
+            "092807c769a71d16361edb74828d02ecfba3ced46d6c0f50c9fe4822c66de7d4"
+        ),
+    }
     assert "job-spec/1" in job_yaml
     assert "verify -> preflight -> train -> evaluate -> package" in job_yaml
     assert "sha256:REPLACE_WITH_IMAGE_DIGEST" in job_yaml
@@ -1762,90 +1769,200 @@ def test_cuda_runtime_requires_real_h100_driver_resolution() -> None:
         )
 
 
-def _fate_results(*, legal_count: int) -> list[dict[str, object]]:
+def _fate_fixture(
+    tmp_path: Path, *, legal_count: int, agreement_count: int | None = None
+) -> tuple[Path, Path, Path, dict[str, object]]:
+    if agreement_count is None:
+        agreement_count = legal_count
     examples = [
-        json.loads(line)
-        for line in (ROOT / "sft" / "review.eval.jsonl").read_text().splitlines()
+        {"meta": {"dispatch_id": f"dispatch-{index:03d}"}}
+        for index in range(98)
     ]
-    analysis = {
-        review["dispatch_id"]: review["fate"]
-        for review in json.loads((ROOT / "corpus" / "analysis.json").read_text())[
-            "reviews"
-        ]
-    }
-    results = []
-    for index, example in enumerate(examples):
-        dispatch_id = example["meta"]["dispatch_id"]
-        verdict = None
-        if index < legal_count:
-            verdict = "accept" if analysis[dispatch_id] == "final" else "reject"
-        results.append({"dispatch_id": dispatch_id, "verdict": verdict})
-    return results
-
-
-def _run_fate_scorer(
-    tmp_path: Path, results: list[dict[str, object]]
-) -> subprocess.CompletedProcess[str]:
+    reviews = [
+        {
+            "dispatch_id": f"dispatch-{index:03d}",
+            "fate": "final" if index % 2 == 0 else "revised",
+        }
+        for index in range(98)
+    ]
+    results = [
+        {
+            "dispatch_id": f"dispatch-{index:03d}",
+            "verdict": (
+                (
+                    ("accept" if index % 2 == 0 else "reject")
+                    if index < agreement_count
+                    else ("reject" if index % 2 == 0 else "accept")
+                )
+                if index < legal_count
+                else None
+            ),
+        }
+        for index in range(98)
+    ]
+    eval_source_path = tmp_path / "review.eval.jsonl"
+    analysis_path = tmp_path / "analysis.json"
     results_path = tmp_path / "results.jsonl"
+    eval_source_path.write_text(
+        "".join(json.dumps(row, sort_keys=True) + "\n" for row in examples)
+    )
+    analysis_path.write_text(
+        json.dumps({"reviews": reviews}, indent=2, sort_keys=True) + "\n"
+    )
     results_path.write_text(
         "".join(json.dumps(row, sort_keys=True) + "\n" for row in results)
     )
-    return subprocess.run(
-        [
-            sys.executable,
-            "-m",
-            "jobs.qwen35b_moe.score_fate",
-            "--results",
-            str(results_path),
-            "--analysis",
-            str(ROOT / "corpus" / "analysis.json"),
-            "--eval-source",
-            str(ROOT / "sft" / "review.eval.jsonl"),
-            "--output",
-            str(tmp_path / "fate-gate.json"),
-        ],
-        cwd=ROOT,
-        text=True,
-        capture_output=True,
-        check=False,
-    )
+    policy: dict[str, object] = {
+        "epoch_one_full": {
+            "method": "all-authorized-source-order",
+            "examples": 98,
+            "source_path": "sft/review.eval.jsonl",
+            "source_sha256": sha256_file(eval_source_path),
+        },
+        "local_fate_analysis": {
+            "source_path": "corpus/analysis.json",
+            "source_sha256": sha256_file(analysis_path),
+        },
+        "strictly_beat": {
+            "verdict_legal": 85 / 98,
+            "fate_agreement": 16 / 85,
+        },
+    }
+    return results_path, analysis_path, eval_source_path, policy
 
 
 def test_local_fate_gate_accepts_variable_legal_count_and_binds_inputs(
-    tmp_path: Path,
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    process = _run_fate_scorer(tmp_path, _fate_results(legal_count=86))
+    results, analysis, eval_source, policy = _fate_fixture(
+        tmp_path, legal_count=86
+    )
+    monkeypatch.setattr(
+        score_fate_module, "training_config", lambda: {"quality_gate": policy}
+    )
 
-    assert process.returncode == 0, process.stderr
-    receipt = json.loads((tmp_path / "fate-gate.json").read_text())
+    receipt = score_fate_module.score_fate(
+        results_path=results,
+        analysis_path=analysis,
+        eval_source_path=eval_source,
+    )
+
     assert receipt["fate_scored"] == 86
     assert receipt["required_min_fate_scored"] == 86
     assert receipt["results_count"] == 98
     assert receipt["matched_fate_records"] == 98
-    assert receipt["results_sha256"] == sha256_file(tmp_path / "results.jsonl")
-    assert receipt["analysis_sha256"] == sha256_file(
-        ROOT / "corpus" / "analysis.json"
-    )
-    assert receipt["eval_source_sha256"] == sha256_file(
-        ROOT / "sft" / "review.eval.jsonl"
-    )
+    assert receipt["results_sha256"] == sha256_file(results)
+    assert receipt["analysis_sha256"] == sha256_file(analysis)
+    assert receipt["eval_source_sha256"] == sha256_file(eval_source)
     assert receipt["verdict_legal_passed"] is True
     assert receipt["fate_agreement_passed"] is True
     assert receipt["passed"] is True
 
 
-def test_local_fate_gate_rejects_old_baseline_legal_count(tmp_path: Path) -> None:
-    process = _run_fate_scorer(tmp_path, _fate_results(legal_count=85))
+def test_local_fate_gate_records_old_baseline_legal_count_rejection(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    results, analysis, eval_source, policy = _fate_fixture(
+        tmp_path, legal_count=85
+    )
+    output = tmp_path / "fate-gate.json"
+    monkeypatch.setattr(
+        score_fate_module, "training_config", lambda: {"quality_gate": policy}
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "score_fate.py",
+            "--results",
+            str(results),
+            "--analysis",
+            str(analysis),
+            "--eval-source",
+            str(eval_source),
+            "--output",
+            str(output),
+        ],
+    )
 
-    assert process.returncode != 0
-    assert "legal verdict count did not strictly beat" in process.stderr
+    with pytest.raises(ContractError, match="legal verdict count did not strictly beat"):
+        score_fate_module.main()
+
+    receipt = json.loads(output.read_text())
+    assert receipt["fate_scored"] == 85
+    assert receipt["verdict_legal_passed"] is False
+    assert receipt["passed"] is False
 
 
-def test_local_fate_gate_rejects_duplicate_result_identity(tmp_path: Path) -> None:
-    results = _fate_results(legal_count=86)
-    results[-1]["dispatch_id"] = results[0]["dispatch_id"]
+def test_local_fate_gate_rejects_duplicate_result_identity(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    results, analysis, eval_source, policy = _fate_fixture(
+        tmp_path, legal_count=86
+    )
+    rows = [json.loads(line) for line in results.read_text().splitlines()]
+    rows[-1]["dispatch_id"] = rows[0]["dispatch_id"]
+    results.write_text(
+        "".join(json.dumps(row, sort_keys=True) + "\n" for row in rows)
+    )
+    monkeypatch.setattr(
+        score_fate_module, "training_config", lambda: {"quality_gate": policy}
+    )
 
-    process = _run_fate_scorer(tmp_path, results)
+    with pytest.raises(
+        ContractError,
+        match="dispatch IDs do not match the authorized evaluation source",
+    ):
+        score_fate_module.score_fate(
+            results_path=results,
+            analysis_path=analysis,
+            eval_source_path=eval_source,
+        )
 
-    assert process.returncode != 0
-    assert "dispatch IDs do not match the authorized evaluation source" in process.stderr
+
+def test_local_fate_gate_rejects_unpinned_analysis_content(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    results, analysis, eval_source, policy = _fate_fixture(
+        tmp_path, legal_count=86
+    )
+    document = json.loads(analysis.read_text())
+    document["reviews"][0]["fate"] = "revised"
+    analysis.write_text(json.dumps(document, indent=2, sort_keys=True) + "\n")
+    monkeypatch.setattr(
+        score_fate_module, "training_config", lambda: {"quality_gate": policy}
+    )
+
+    with pytest.raises(ContractError, match="analysis source hash"):
+        score_fate_module.score_fate(
+            results_path=results,
+            analysis_path=analysis,
+            eval_source_path=eval_source,
+        )
+
+
+@pytest.mark.parametrize(("agreements", "passed"), [(16, False), (17, True)])
+def test_local_fate_gate_uses_strict_fate_agreement_boundary(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    agreements: int,
+    passed: bool,
+) -> None:
+    results, analysis, eval_source, policy = _fate_fixture(
+        tmp_path,
+        legal_count=86,
+        agreement_count=agreements,
+    )
+    monkeypatch.setattr(
+        score_fate_module, "training_config", lambda: {"quality_gate": policy}
+    )
+
+    receipt = score_fate_module.score_fate(
+        results_path=results,
+        analysis_path=analysis,
+        eval_source_path=eval_source,
+    )
+
+    assert receipt["fate_agreement"] == pytest.approx(agreements / 86)
+    assert receipt["fate_agreement_passed"] is passed
+    assert receipt["passed"] is passed

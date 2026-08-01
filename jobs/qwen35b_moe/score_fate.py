@@ -8,14 +8,25 @@ import json
 from pathlib import Path
 from typing import Any
 
-from .contract import ContractError, sha256_file
+from .contract import ContractError
 from .evaluate import side
 from .runtime import training_config
 
 
-def _json_lines(path: Path) -> list[dict[str, Any]]:
+def _read_bytes(path: Path) -> bytes:
+    try:
+        return path.read_bytes()
+    except OSError as exc:
+        raise ContractError(f"could not read {path}: {exc}") from exc
+
+
+def _json_lines(path: Path, data: bytes) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
-    for line_number, line in enumerate(path.read_text().splitlines(), start=1):
+    try:
+        lines = data.decode("utf-8").splitlines()
+    except UnicodeDecodeError as exc:
+        raise ContractError(f"{path} is not UTF-8") from exc
+    for line_number, line in enumerate(lines, start=1):
         try:
             row = json.loads(line)
         except json.JSONDecodeError as exc:
@@ -33,12 +44,22 @@ def score_fate(
 ) -> dict[str, Any]:
     config = training_config()["quality_gate"]
     evaluation_policy = config["epoch_one_full"]
+    analysis_policy = config.get("local_fate_analysis")
+    if not isinstance(analysis_policy, dict):
+        raise ContractError("quality policy has no pinned local fate analysis")
     expected_count = evaluation_policy["examples"]
-    eval_source_sha256 = sha256_file(eval_source_path)
+    eval_source_bytes = _read_bytes(eval_source_path)
+    analysis_bytes = _read_bytes(analysis_path)
+    results_bytes = _read_bytes(results_path)
+    eval_source_sha256 = hashlib.sha256(eval_source_bytes).hexdigest()
+    analysis_sha256 = hashlib.sha256(analysis_bytes).hexdigest()
+    results_sha256 = hashlib.sha256(results_bytes).hexdigest()
     if eval_source_sha256 != evaluation_policy["source_sha256"]:
         raise ContractError("evaluation source hash does not match the authorized policy")
+    if analysis_sha256 != analysis_policy.get("source_sha256"):
+        raise ContractError("analysis source hash does not match the authorized policy")
 
-    examples = _json_lines(eval_source_path)
+    examples = _json_lines(eval_source_path, eval_source_bytes)
     if len(examples) != expected_count:
         raise ContractError(
             f"expected {expected_count} authorized evaluation examples, "
@@ -56,7 +77,10 @@ def score_fate(
     if len(set(expected_dispatch_ids)) != expected_count:
         raise ContractError("authorized evaluation dispatch IDs are not unique")
 
-    analysis_document = json.loads(analysis_path.read_text())
+    try:
+        analysis_document = json.loads(analysis_bytes)
+    except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+        raise ContractError("analysis is not valid UTF-8 JSON") from exc
     reviews = (
         analysis_document.get("reviews")
         if isinstance(analysis_document, dict)
@@ -79,7 +103,7 @@ def score_fate(
         if isinstance(disposition, str):
             fate[dispatch_id] = disposition
 
-    rows = _json_lines(results_path)
+    rows = _json_lines(results_path, results_bytes)
     result_dispatch_ids = [row.get("dispatch_id") for row in rows]
     if result_dispatch_ids != expected_dispatch_ids:
         raise ContractError(
@@ -113,14 +137,10 @@ def score_fate(
         for count in range(expected_count + 1)
         if count / expected_count > legal_baseline
     )
-    if len(scored) < required_min_fate_scored:
-        raise ContractError(
-            "legal verdict count did not strictly beat the 35B baseline: "
-            f"required at least {required_min_fate_scored}, found {len(scored)}"
-        )
-
-    agreement = sum(scored) / len(scored)
+    verdict_legal_passed = len(scored) >= required_min_fate_scored
+    agreement = sum(scored) / len(scored) if scored else None
     fate_baseline = config["strictly_beat"]["fate_agreement"]
+    fate_agreement_passed = agreement is not None and agreement > fate_baseline
     dispatch_ids_sha256 = hashlib.sha256(
         json.dumps(
             expected_dispatch_ids,
@@ -130,9 +150,11 @@ def score_fate(
     ).hexdigest()
     receipt = {
         "protocol": "striatum-local-fate-gate/2",
-        "results_sha256": sha256_file(results_path),
-        "analysis_sha256": sha256_file(analysis_path),
+        "results_sha256": results_sha256,
+        "analysis_sha256": analysis_sha256,
         "eval_source_sha256": eval_source_sha256,
+        "analysis_policy_path": analysis_policy.get("source_path"),
+        "eval_source_policy_path": evaluation_policy.get("source_path"),
         "authorized_dispatch_ids_sha256": dispatch_ids_sha256,
         "results_count": len(rows),
         "matched_fate_records": expected_count,
@@ -140,13 +162,11 @@ def score_fate(
         "required_min_fate_scored": required_min_fate_scored,
         "verdict_legal": len(scored) / expected_count,
         "verdict_legal_baseline": legal_baseline,
-        "verdict_legal_passed": len(scored) >= required_min_fate_scored,
+        "verdict_legal_passed": verdict_legal_passed,
         "fate_agreement": agreement,
         "baseline": fate_baseline,
-        "fate_agreement_passed": agreement > fate_baseline,
-        "passed": (
-            len(scored) >= required_min_fate_scored and agreement > fate_baseline
-        ),
+        "fate_agreement_passed": fate_agreement_passed,
+        "passed": verdict_legal_passed and fate_agreement_passed,
     }
     return receipt
 
@@ -165,7 +185,13 @@ def main() -> None:
     )
     args.output.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
     print(json.dumps(receipt, indent=2, sort_keys=True))
-    if not receipt["passed"]:
+    if not receipt["verdict_legal_passed"]:
+        raise ContractError(
+            "legal verdict count did not strictly beat the 35B baseline: "
+            f"required at least {receipt['required_min_fate_scored']}, "
+            f"found {receipt['fate_scored']}"
+        )
+    if not receipt["fate_agreement_passed"]:
         raise ContractError("fate agreement did not strictly beat the 35B baseline")
 
 
