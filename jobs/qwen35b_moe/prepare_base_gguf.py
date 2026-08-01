@@ -1,4 +1,4 @@
-"""Convert the exact staged revision to the parity base GGUF off the H100."""
+"""Convert the staged revision to the parity GGUF before the paid run."""
 
 from __future__ import annotations
 

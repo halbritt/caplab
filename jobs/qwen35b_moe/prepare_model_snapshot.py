@@ -1,4 +1,4 @@
-"""Pre-stage the exact Hugging Face revision before H100 billing starts."""
+"""Pre-stage the exact Hugging Face revision before GPU billing starts."""
 
 from __future__ import annotations
 

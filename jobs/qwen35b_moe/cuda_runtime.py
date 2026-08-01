@@ -13,7 +13,7 @@ from .contract import ContractError
 
 CUDA_BACKEND_LIBRARY = Path("/opt/llama.cpp/build/bin/libggml-cuda.so")
 LLAMA_CLI = Path("/opt/llama.cpp/build/bin/llama-cli")
-MIN_H100_MEMORY_MIB = 80_000
+MIN_H200_MEMORY_MIB = 140_000
 
 _DRIVER = re.compile(
     r"^\s*libcuda\.so\.1\s+=>\s+(\S+)\s+\(0x[0-9a-fA-F]+\)\s*$",
@@ -30,7 +30,7 @@ def inspect_cuda_runtime(
     cuda_backend_library: Path = CUDA_BACKEND_LIBRARY,
     llama_cli: Path = LLAMA_CLI,
 ) -> dict[str, object]:
-    """Inspect the live driver binding and require exactly one H100 device."""
+    """Inspect the live driver binding and require exactly one H200 device."""
 
     if not cuda_backend_library.is_file():
         raise ContractError(
@@ -73,10 +73,10 @@ def validate_cuda_observations(
         raise ContractError("llama.cpp did not report exactly one CUDA device")
     backend, name, raw_memory_mib = devices[0]
     memory_mib = int(raw_memory_mib)
-    if backend != "CUDA0" or "H100" not in name:
-        raise ContractError("llama.cpp did not report the required H100 as CUDA0")
-    if memory_mib < MIN_H100_MEMORY_MIB:
-        raise ContractError("llama.cpp reported less than 80 GB for the H100")
+    if backend != "CUDA0" or "H200" not in name:
+        raise ContractError("llama.cpp did not report the required H200 as CUDA0")
+    if memory_mib < MIN_H200_MEMORY_MIB:
+        raise ContractError("llama.cpp reported less than 140 GB for the H200")
 
     receipt: dict[str, object] = {
         "protocol": "striatum-cuda-runtime/1",
@@ -130,15 +130,15 @@ def validate_cuda_runtime_receipt(
     if (
         device.get("backend") != "CUDA0"
         or not isinstance(name, str)
-        or "H100" not in name
+        or "H200" not in name
     ):
-        raise ContractError("CUDA runtime receipt does not identify the required H100")
+        raise ContractError("CUDA runtime receipt does not identify the required H200")
     if (
         isinstance(memory_mib, bool)
         or not isinstance(memory_mib, int)
-        or memory_mib < MIN_H100_MEMORY_MIB
+        or memory_mib < MIN_H200_MEMORY_MIB
     ):
-        raise ContractError("CUDA runtime receipt H100 memory is invalid")
+        raise ContractError("CUDA runtime receipt H200 memory is invalid")
     return {
         "protocol": "striatum-cuda-runtime/1",
         "cuda_backend_library": str(CUDA_BACKEND_LIBRARY),

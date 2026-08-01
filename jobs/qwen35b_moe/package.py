@@ -26,9 +26,12 @@ from .evaluate import (
     verify_longest_evaluation_receipt,
 )
 from .export import LLAMA_CPP_COMMIT, inspect_peft_adapter
+from .peft_config import validate_base_preparation_receipt
 from .preflight import (
     PACKAGES,
+    verify_base_preparation_receipt,
     verify_liger_fused_loss_receipt,
+    verify_live_adapter_measurement,
     verify_longest_example_receipt,
 )
 from .runtime import output_dir_from_env, training_config
@@ -172,7 +175,7 @@ def _validate_preflight(run_root: Path) -> None:
     strategy = receipt.get("strategy")
     versions = _mapping(receipt.get("versions"), "paid preflight versions")
     if (
-        receipt.get("protocol") != "striatum-paid-preflight/2"
+        receipt.get("protocol") != "striatum-paid-preflight/3"
         or receipt.get("smoke") != "passed"
         or strategy not in STRATEGIES
         or receipt.get("measurement")
@@ -192,6 +195,14 @@ def _validate_preflight(run_root: Path) -> None:
         training_result
     ):
         raise ContractError("paid preflight Liger evidence disagrees")
+    if receipt.get("base_preparation") != verify_base_preparation_receipt(
+        training_result
+    ):
+        raise ContractError("paid preflight base-preparation evidence disagrees")
+    if receipt.get("live_adapter_measurement") != verify_live_adapter_measurement(
+        training_result, str(strategy)
+    ):
+        raise ContractError("paid preflight live adapter measurement disagrees")
     verify_checkpoint(root / "one-step/checkpoint-1", 1)
 
     quantized_reload_summary = _read_json_object(
@@ -241,7 +252,7 @@ def _validate_training_receipt(run_root: Path) -> None:
         run_root / "artifacts/train-phase/train-phase.json", "paid training receipt"
     )
     if (
-        receipt.get("protocol") != "striatum-paid-training-phase/1"
+        receipt.get("protocol") != "striatum-paid-training-phase/2"
         or receipt.get("outcome")
         != "training-completed-full-evaluation-pending"
         or receipt.get("full_evaluation") != "separate-evaluate-job-phase"
@@ -281,6 +292,18 @@ def _validate_training_receipt(run_root: Path) -> None:
             expected_step is not None and stage.get("global_step") != expected_step
         ):
             raise ContractError("paid training stage sequence is invalid")
+        if expected_step is not None:
+            preparation = _mapping(
+                stage.get("base_preparation"),
+                f"paid training stage {expected_name} base preparation",
+            )
+            validate_base_preparation_receipt(preparation)
+            if stage.get("adapter_measurement") != expected_adapter_measurement(
+                str(receipt.get("strategy"))
+            ).to_dict():
+                raise ContractError(
+                    f"paid training stage {expected_name} adapter measurement is invalid"
+                )
 
     config = training_config()
     quality = _mapping(config.get("quality_gate"), "quality gate configuration")

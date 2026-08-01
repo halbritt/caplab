@@ -23,16 +23,16 @@ ignored `.generated/` area; it never links the source data into a bundle.
 ```bash
 python3 -m jobs.qwen35b_moe.materialize \
   --source-repo "$PWD" \
-  --destination jobs/qwen35b_moe/.generated/preflight \
+  --destination jobs/qwen35b_moe/.generated/h200-preflight \
   --profile preflight-only
 python3 -m jobs.qwen35b_moe.update_image_digest \
-  jobs/qwen35b_moe/.generated/preflight sha256:<64-hex-image-digest>
+  jobs/qwen35b_moe/.generated/h200-preflight sha256:<64-hex-image-digest>
 python3 -m jobs.qwen35b_moe.materialize \
   --source-repo "$PWD" \
-  --destination jobs/qwen35b_moe/.generated/linear \
+  --destination jobs/qwen35b_moe/.generated/h200-linear \
   --profile full
 python3 -m jobs.qwen35b_moe.update_image_digest \
-  jobs/qwen35b_moe/.generated/linear sha256:<64-hex-image-digest>
+  jobs/qwen35b_moe/.generated/h200-linear sha256:<64-hex-image-digest>
 ```
 
 The committed `job.yaml` is a template and intentionally fails immutable-image
@@ -46,15 +46,15 @@ The two generated bundles are separate reservations. Materialize, digest-stamp,
 check, and run the preflight-only bundle first. Accept it only after the
 one-step checkpoint has been mirrored, its signed recovery acknowledgement has
 been verified, the terminal artifacts have been recovered by hash, and the
-worker has closed within 2,100 seconds and $2.00. Only then may the full bundle,
+worker has closed within 2,700 seconds and $3.50. Only then may the full bundle,
 materialized from the same inputs and image digest, be launched. The full
 bundle disables its redundant preflight phase and starts with verify before
 training and full evaluation; full packaging does not consume artifacts from
-the standalone preflight reservation. It reserves $47.00. The original budget
-scope already contains $1.00 in lifecycle reservations. These two reservations
-use its remaining $49.00 and reach the $50.00 scope total exactly. A failed,
-unacknowledged, or over-time preflight is a stop condition for launching the
-full bundle. There is no same-scope retry headroom.
+the standalone preflight reservation. It reserves $47.00. The retained H100
+attempts and no-op exercises reserve $4.00 across the first two budget scopes.
+The H200 retry uses a separate $3.50 scope. Those reservations and the full run
+total $54.50 under the $55.00 campaign ceiling. A failed, unacknowledged, or
+over-time H200 preflight blocks the full bundle.
 
 `Dockerfile` copies the remote runner from the already-published
 `runpod-jobrunner` image by immutable digest. No private source checkout enters
@@ -75,7 +75,7 @@ python3 -m jobs.qwen35b_moe.prepare_image_gguf \
   --model-dir /home/halbritt/models/hf/Qwen3.6-35B-A3B-995ad96e \
   --llama-cpp /home/halbritt/git/llama.cpp
 python3 -m jobs.qwen35b_moe.build_image \
-  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.2 \
+  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.3 \
   --jobrunner-image ghcr.io/halbritt/runpod-jobrunner-noop@sha256:<digest> \
   --model-snapshot /home/halbritt/models/hf/Qwen3.6-35B-A3B-995ad96e [--push]
 ```
@@ -125,7 +125,7 @@ linear-only first; fund expert-aware only if linear-only fails.
 ## Readiness and paid preflight
 
 There is no transferable encrypted pre-stage between a cheap RunPod worker and
-the H100 worker. Prepare the complete exact snapshot locally, then require it
+the H200 worker. Prepare the complete exact snapshot locally, then require it
 as the model-bearing image context described above:
 
 ```bash
@@ -134,8 +134,13 @@ python3 -m jobs.qwen35b_moe.prepare_model_snapshot \
 ```
 
 The preflight verifies all inputs, performs the target census, injects PEFT on
-meta, requires the baked and receipted BF16 parity GGUF, trains one optimizer
-step on the largest effective token sequence found by tokenizing all 1,268
+meta, and requires the baked and receipted BF16 parity GGUF. The live training
+load then proves that all 310 ordinary LoRA targets are 4-bit, freezes the base,
+keeps the exact 80 fused expert parameters in BF16, casts the other eligible
+half-precision parameters to FP32, and records the dtype, CUDA-memory, and live
+FP32 adapter censuses. Terminal packaging revalidates these receipts. It trains
+one optimizer step on the largest effective token sequence found by tokenizing
+all 1,268
 authorized training records, hashes checkpoint 1, reloads it
 first through the same 4-bit NF4 eval-only adapter path used by checkpoint
 evaluation, then through a separate BF16 Hugging Face process for deterministic
@@ -159,20 +164,19 @@ matching the v1 controller's mount-relative recovery contract. Explicit
 The standalone bundle exposes the one-step manifest at
 `artifacts/preflight/one-step/checkpoint-*/checkpoint-complete.json` and waits
 at most 120 seconds for the controller's signed incremental-mirror
-acknowledgement. Its enabled phase timeouts total 570 seconds, leaving 30
-seconds of controller headroom under the original 600-second reservation. That
-old bound was revised before launch because the controller starts its clock
-before a cold pull of the 133.17-GiB model payload. The 2,100-second bound keeps
-the phase limits unchanged and leaves 1,530 seconds for image pull, startup,
-upload, recovery, and deletion. At the $3.15/hour admission ceiling, its GPU
-exposure is $1.8375 and remains inside the $2.00 cost cap.
+acknowledgement. Its enabled phase timeouts total 570 seconds. The controller
+starts its clock before the cold pull of the roughly 133-GiB image. The
+2,700-second
+bound leaves 2,130 seconds for image pull, startup, upload, recovery, and
+deletion. At the $4.50/hour admission ceiling, 2,700 seconds costs $3.375 and
+fits the $3.50 retry cap.
 
 The verify phase fails unless `libggml-cuda.so` resolves `libcuda.so.1` to a
 non-stub runtime driver and the pinned `llama-cli --list-devices` reports one
-H100 with at least 80,000 MiB. It records the accepted binding in
+H200 with at least 140,000 MiB. It records the accepted binding in
 `artifacts/runtime/cuda-runtime.json`; terminal packaging requires that receipt.
 
-Do not start a full run if this exceeds 2,100 billable seconds or needs an
+Do not start a full run if this exceeds 2,700 billable seconds or needs an
 interactive patch. Do not retry it automatically. Direct export is not
 considered compatible until this command produces `one-step-export.json`. In
 particular, PEFT

@@ -76,7 +76,7 @@ def training_config() -> dict[str, Any]:
 
 
 def load_quantized_base(model_dir: Path) -> tuple[Any, Any]:
-    """Load the pinned base in 4-bit for a single H100 process."""
+    """Load the pinned base in 4-bit on the single authorized GPU."""
     try:
         import torch
         from transformers import (
@@ -114,7 +114,7 @@ def load_quantized_base(model_dir: Path) -> tuple[Any, Any]:
 
 
 def load_bf16_base(model_dir: Path) -> tuple[Any, Any]:
-    """Load a bf16 parity base, offloading only if H100 memory requires it."""
+    """Load a BF16 parity base, with bounded CPU offload when needed."""
     try:
         import torch
         from transformers import AutoModelForImageTextToText, AutoTokenizer

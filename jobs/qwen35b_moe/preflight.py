@@ -12,13 +12,19 @@ import subprocess
 import sys
 
 from .census import census_snapshot
-from .contract import STRATEGIES, ContractError, load_input_manifest, verify_input_tree
+from .contract import (
+    STRATEGIES,
+    ContractError,
+    expected_adapter_measurement,
+    load_input_manifest,
+    verify_input_tree,
+)
 from .evaluate import (
     BF16_BASE_LOAD_MODE,
     QUANTIZED_BASE_LOAD_MODE,
     verify_longest_evaluation_receipt,
 )
-from .peft_config import inject_on_meta
+from .peft_config import inject_on_meta, validate_base_preparation_receipt
 from .runtime import (
     base_gguf_from_env,
     input_dir_from_env,
@@ -109,7 +115,7 @@ def verify_longest_example_receipt(path: Path) -> dict[str, object]:
         raise ContractError("one-step training result is missing or invalid") from error
     if (
         not isinstance(training_result, dict)
-        or training_result.get("protocol") != "striatum-training-result/1"
+        or training_result.get("protocol") != "striatum-training-result/2"
         or training_result.get("global_step") != 1
     ):
         raise ContractError("one-step training result contract is invalid")
@@ -149,6 +155,43 @@ def verify_longest_example_receipt(path: Path) -> dict[str, object]:
     return selection
 
 
+def verify_base_preparation_receipt(path: Path) -> dict[str, object]:
+    try:
+        training_result = json.loads(path.read_text())
+    except (OSError, json.JSONDecodeError) as error:
+        raise ContractError("one-step training result is missing or invalid") from error
+    if (
+        not isinstance(training_result, dict)
+        or training_result.get("protocol") != "striatum-training-result/2"
+        or training_result.get("global_step") != 1
+    ):
+        raise ContractError("one-step training result contract is invalid")
+    preparation = training_result.get("base_preparation")
+    if not isinstance(preparation, dict):
+        raise ContractError("one-step training has no base-preparation evidence")
+    return validate_base_preparation_receipt(preparation)
+
+
+def verify_live_adapter_measurement(
+    path: Path, strategy: str
+) -> dict[str, object]:
+    try:
+        training_result = json.loads(path.read_text())
+    except (OSError, json.JSONDecodeError) as error:
+        raise ContractError("one-step training result is missing or invalid") from error
+    if (
+        not isinstance(training_result, dict)
+        or training_result.get("protocol") != "striatum-training-result/2"
+        or training_result.get("global_step") != 1
+    ):
+        raise ContractError("one-step training result contract is invalid")
+    measurement = training_result.get("measurement")
+    expected = expected_adapter_measurement(strategy).to_dict()
+    if not isinstance(measurement, dict) or measurement != expected:
+        raise ContractError("live adapter measurement is invalid")
+    return measurement
+
+
 def verify_liger_fused_loss_receipt(path: Path) -> dict[str, object]:
     try:
         training_result = json.loads(path.read_text())
@@ -156,7 +199,7 @@ def verify_liger_fused_loss_receipt(path: Path) -> dict[str, object]:
         raise ContractError("one-step training result is missing or invalid") from error
     if (
         not isinstance(training_result, dict)
-        or training_result.get("protocol") != "striatum-training-result/1"
+        or training_result.get("protocol") != "striatum-training-result/2"
         or training_result.get("global_step") != 1
     ):
         raise ContractError("one-step training result contract is invalid")
@@ -201,7 +244,7 @@ def main() -> None:
             raise ContractError(f"required package is absent: {package}") from error
 
     receipt = {
-        "protocol": "striatum-paid-preflight/2",
+        "protocol": "striatum-paid-preflight/3",
         "strategy": args.strategy,
         "measurement": measurement.to_dict(),
         "versions": versions,
@@ -242,6 +285,12 @@ def main() -> None:
         )
         receipt["liger_fused_loss"] = verify_liger_fused_loss_receipt(
             training_result_path
+        )
+        receipt["base_preparation"] = verify_base_preparation_receipt(
+            training_result_path
+        )
+        receipt["live_adapter_measurement"] = verify_live_adapter_measurement(
+            training_result_path, args.strategy
         )
         checkpoint = train_output / "checkpoint-1"
         if not (checkpoint / "checkpoint-complete.json").is_file():

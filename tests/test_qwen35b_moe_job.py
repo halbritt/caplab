@@ -55,9 +55,13 @@ from jobs.qwen35b_moe.evaluate import (  # noqa: E402
 )
 from jobs.qwen35b_moe.materialize import _render_job  # noqa: E402
 from jobs.qwen35b_moe.peft_config import (  # noqa: E402
+    FUSED_EXPERT_SPEC_SHA256,
     LINEAR_TARGET_PATTERN,
     ROUTED_TARGET_PARAMETERS,
     lora_config,
+    measure_adapter,
+    prepare_base_for_lora_training,
+    validate_base_preparation_receipt,
 )
 from jobs.qwen35b_moe.package import (  # noqa: E402
     EXPECTED_CHECKPOINT_STEPS,
@@ -133,10 +137,257 @@ def _cuda_runtime_receipt() -> dict[str, object]:
         "llama_cli": "/opt/llama.cpp/build/bin/llama-cli",
         "device": {
             "backend": "CUDA0",
-            "name": "NVIDIA H100 80GB HBM3",
-            "memory_mib": 81_559,
+            "name": "NVIDIA H200",
+            "memory_mib": 143_771,
         },
     }
+
+
+def _base_preparation_receipt() -> dict[str, object]:
+    return {
+        "protocol": "striatum-moe-kbit-preparation/1",
+        "model_type": "qwen3_5_moe",
+        "loaded_in_4bit": True,
+        "base_trainable_parameters": 0,
+        "fused_experts": {
+            "parameter_count": 80,
+            "elements": 32_212_254_720,
+            "bytes": 64_424_509_440,
+            "dtype": "torch.bfloat16",
+            "spec_sha256": FUSED_EXPERT_SPEC_SHA256,
+        },
+        "quantized_parameter_count": 310,
+        "quantized_adapter_target_count": 310,
+        "converted_to_fp32": {
+            "parameter_count": 200,
+            "elements": 1000,
+        },
+        "remaining_half_precision_non_expert_parameters": 0,
+        "gradient_checkpointing": {
+            "enabled": True,
+            "use_reentrant": False,
+        },
+        "cuda_memory": {
+            "allocated_bytes": 80_000_000_000,
+            "reserved_bytes": 82_000_000_000,
+            "free_bytes": 68_000_000_000,
+            "total_bytes": 150_000_000_000,
+        },
+    }
+
+
+def test_moe_kbit_preparation_accepts_frozen_bf16_fused_experts() -> None:
+    receipt = _base_preparation_receipt()
+
+    assert validate_base_preparation_receipt(receipt) == receipt
+
+
+def test_moe_kbit_preparation_preserves_only_exact_fused_experts(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class FakeTensor:
+        def __init__(self, dtype: str, shape: tuple[int, ...]) -> None:
+            self.dtype = dtype
+            self.shape = shape
+
+        def to(self, dtype: str) -> FakeTensor:
+            return FakeTensor(dtype, self.shape)
+
+        def numel(self) -> int:
+            total = 1
+            for dimension in self.shape:
+                total *= dimension
+            return total
+
+        def element_size(self) -> int:
+            return {
+                "torch.uint8": 1,
+                "torch.bfloat16": 2,
+                "torch.float16": 2,
+                "torch.float32": 4,
+            }[self.dtype]
+
+    class FakeParameter:
+        def __init__(self, dtype: str, shape: tuple[int, ...]) -> None:
+            self.data = FakeTensor(dtype, shape)
+            self.requires_grad = True
+
+        @property
+        def dtype(self) -> str:
+            return self.data.dtype
+
+        @property
+        def shape(self) -> tuple[int, ...]:
+            return self.data.shape
+
+        def numel(self) -> int:
+            return self.data.numel()
+
+        def element_size(self) -> int:
+            return self.data.element_size()
+
+    class Params4bit(FakeParameter):
+        pass
+
+    class FakeCuda:
+        def __init__(self) -> None:
+            self.cache_cleared = False
+
+        def empty_cache(self) -> None:
+            self.cache_cleared = True
+
+        def memory_allocated(self) -> int:
+            return 80_000_000_000
+
+        def memory_reserved(self) -> int:
+            return 82_000_000_000
+
+        def mem_get_info(self) -> tuple[int, int]:
+            return 68_000_000_000, 150_000_000_000
+
+    fake_cuda = FakeCuda()
+    fake_torch = SimpleNamespace(
+        bfloat16="torch.bfloat16",
+        float16="torch.float16",
+        float32="torch.float32",
+        cuda=fake_cuda,
+    )
+    monkeypatch.setitem(sys.modules, "torch", fake_torch)
+
+    parameters: list[tuple[str, FakeParameter]] = []
+    for layer in range(40):
+        parameters.extend(
+            [
+                (
+                    f"model.language_model.layers.{layer}.mlp.experts.gate_up_proj",
+                    FakeParameter("torch.bfloat16", (256, 1024, 2048)),
+                ),
+                (
+                    f"model.language_model.layers.{layer}.mlp.experts.down_proj",
+                    FakeParameter("torch.bfloat16", (256, 2048, 512)),
+                ),
+            ]
+        )
+    normalization = FakeParameter("torch.bfloat16", (2048,))
+    parameters.append(("model.language_model.norm.weight", normalization))
+    modules: list[tuple[str, object]] = []
+    quantized_parameters: list[tuple[str, FakeParameter]] = []
+
+    def add_quantized_module(name: str, shape: tuple[int, ...]) -> None:
+        weight = Params4bit("torch.uint8", shape)
+        modules.append((name, SimpleNamespace(weight=weight)))
+        quantized_parameters.append((f"{name}.weight", weight))
+
+    for layer in range(30):
+        for projection in (
+            "in_proj_qkv",
+            "in_proj_z",
+            "in_proj_b",
+            "in_proj_a",
+            "out_proj",
+        ):
+            add_quantized_module(
+                f"model.language_model.layers.{layer}.linear_attn.{projection}",
+                (2048, 2048),
+            )
+    for layer in range(30, 40):
+        for projection in ("q_proj", "k_proj", "v_proj", "o_proj"):
+            add_quantized_module(
+                f"model.language_model.layers.{layer}.self_attn.{projection}",
+                (2048, 2048),
+            )
+    for layer in range(40):
+        for projection in ("gate_proj", "up_proj", "down_proj"):
+            add_quantized_module(
+                f"model.language_model.layers.{layer}.mlp.shared_expert.{projection}",
+                (2048, 512),
+            )
+    parameters.extend(quantized_parameters)
+    quantized = quantized_parameters[0][1]
+
+    class FakeModel:
+        def __init__(self) -> None:
+            self.config = SimpleNamespace(model_type="qwen3_5_moe")
+            self.is_loaded_in_4bit = True
+            self.is_gradient_checkpointing = False
+            self.gradient_checkpointing_kwargs: dict[str, object] | None = None
+
+        def named_parameters(self):  # noqa: ANN202
+            return iter(parameters)
+
+        def named_modules(self):  # noqa: ANN202
+            return iter(modules)
+
+        def gradient_checkpointing_enable(self, **kwargs) -> None:  # noqa: ANN003
+            self.gradient_checkpointing_kwargs = kwargs
+            self.is_gradient_checkpointing = True
+
+    model = FakeModel()
+
+    parameters[:] = [
+        item for item in parameters if item not in quantized_parameters
+    ]
+    with pytest.raises(ContractError, match="registered model parameters"):
+        prepare_base_for_lora_training(model)
+    assert all(parameter.requires_grad for _, parameter in parameters)
+    assert all(parameter.requires_grad for _, parameter in quantized_parameters)
+    assert normalization.dtype == "torch.bfloat16"
+    assert model.gradient_checkpointing_kwargs is None
+    assert fake_cuda.cache_cleared is False
+    parameters.extend(quantized_parameters)
+
+    first_expert = parameters[0][1]
+    first_expert.data = FakeTensor("torch.bfloat16", (256, 1024, 1024))
+    with pytest.raises(ContractError, match="shape is invalid"):
+        prepare_base_for_lora_training(model)
+    assert all(parameter.requires_grad for _, parameter in parameters)
+    assert normalization.dtype == "torch.bfloat16"
+    assert model.gradient_checkpointing_kwargs is None
+    assert fake_cuda.cache_cleared is False
+    first_expert.data = FakeTensor("torch.bfloat16", (256, 1024, 2048))
+
+    receipt = prepare_base_for_lora_training(model)
+
+    assert validate_base_preparation_receipt(receipt) == receipt
+    assert all(not parameter.requires_grad for _, parameter in parameters)
+    assert all(
+        parameter.dtype == "torch.bfloat16"
+        for name, parameter in parameters
+        if ".mlp.experts." in name
+    )
+    assert normalization.dtype == "torch.float32"
+    assert quantized.dtype == "torch.uint8"
+    assert model.gradient_checkpointing_kwargs == {
+        "gradient_checkpointing_kwargs": {"use_reentrant": False}
+    }
+    assert fake_cuda.cache_cleared is True
+
+
+def test_adapter_measurement_rejects_non_fp32_trainables() -> None:
+    class FakeAdapterParameter:
+        requires_grad = True
+        dtype = "torch.bfloat16"
+
+        def numel(self) -> int:
+            return 8
+
+        def element_size(self) -> int:
+            return 2
+
+    model = SimpleNamespace(
+        named_parameters=lambda: iter(
+            [
+                (
+                    "base_model.model.language_model.layers.0.linear_attn."
+                    "in_proj_qkv.lora_A.default.weight",
+                    FakeAdapterParameter(),
+                )
+            ]
+        )
+    )
+
+    with pytest.raises(ContractError, match="FP32"):
+        measure_adapter(model, LINEAR_ONLY)
 
 
 def _write_closed_checkpoint(checkpoint: Path, step: int) -> dict[str, object]:
@@ -688,7 +939,7 @@ def test_preflight_selects_and_receipts_the_largest_tokenized_example(
     result.write_text(
         json.dumps(
             {
-                "protocol": "striatum-training-result/1",
+                "protocol": "striatum-training-result/2",
                 "global_step": 1,
                 "example_selection": selection,
             }
@@ -705,7 +956,7 @@ def test_preflight_selects_and_receipts_the_largest_tokenized_example(
     result.write_text(
         json.dumps(
             {
-                "protocol": "striatum-training-result/1",
+                "protocol": "striatum-training-result/2",
                 "global_step": 1,
                 "example_selection": selection,
             }
@@ -855,7 +1106,7 @@ def test_liger_runtime_proof_requires_bound_fused_loss_and_no_logits(
     training_result.write_text(
         json.dumps(
             {
-                "protocol": "striatum-training-result/1",
+                "protocol": "striatum-training-result/2",
                 "global_step": 1,
                 "liger_fused_loss": proof,
             }
@@ -889,10 +1140,18 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
     full = yaml.safe_load(_render_job("full"))
     preflight = yaml.safe_load(_render_job("preflight-only"))
 
+    expected_runner = {
+        "version": "0.1.6",
+        "git_commit": "c682e91186b38e5a1aebc242252fa35ea8a7fcfd",
+    }
+    for spec in (full, preflight):
+        assert spec["runner"] == expected_runner
+        assert spec["resources"]["gpu_types"] == ["NVIDIA H200"]
+
     assert full["limits"] == {
         "max_elapsed_seconds": 54_000,
         "max_cost_usd": "47.00",
-        "usd_per_hour": "3.15",
+        "usd_per_hour": "4.50",
     }
     assert full["phases"]["preflight"]["enabled"] is False
     assert full["phases"]["train"]["enabled"] is True
@@ -906,9 +1165,9 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
         "timeout_seconds": 900,
     }
     assert preflight["limits"] == {
-        "max_elapsed_seconds": 2_100,
-        "max_cost_usd": "2.00",
-        "usd_per_hour": "3.15",
+        "max_elapsed_seconds": 2_700,
+        "max_cost_usd": "3.50",
+        "usd_per_hour": "4.50",
     }
     assert preflight["phases"]["preflight"]["enabled"] is True
     assert preflight["phases"]["train"]["enabled"] is False
@@ -930,13 +1189,13 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
     assert enabled_preflight_seconds == 570
     assert (
         preflight["limits"]["max_elapsed_seconds"] - enabled_preflight_seconds
-        == 1_530
+        == 2_130
     )
     assert (
         Decimal(preflight["limits"]["max_elapsed_seconds"])
         * Decimal(preflight["limits"]["usd_per_hour"])
         / Decimal(3_600)
-        == Decimal("1.8375")
+        == Decimal("3.375")
     )
     assert (
         preflight["artifacts"]["incremental_mirror_ack"]["timeout_seconds"]
@@ -957,10 +1216,10 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
     ):
         assert module in dockerfile
     assert (
-        1.00
+        4.00
         + float(preflight["limits"]["max_cost_usd"])
         + float(full["limits"]["max_cost_usd"])
-        == 50.00
+        == 54.50
     )
 
 
@@ -1081,7 +1340,7 @@ def test_preflight_packaging_requires_preflight_smoke_evidence(tmp_path: Path) -
     _write_json(
         root / "preflight.json",
         {
-            "protocol": "striatum-paid-preflight/2",
+            "protocol": "striatum-paid-preflight/3",
             "strategy": "linear-only",
             "measurement": expected_adapter_measurement(LINEAR_ONLY).to_dict(),
             "versions": {package: "test-version" for package in PACKAGES},
@@ -1090,6 +1349,10 @@ def test_preflight_packaging_requires_preflight_smoke_evidence(tmp_path: Path) -
             "quantized_longest_evaluation_example": evaluation_selection,
             "bf16_longest_evaluation_example": evaluation_selection,
             "liger_fused_loss": _liger_proof(),
+            "base_preparation": _base_preparation_receipt(),
+            "live_adapter_measurement": expected_adapter_measurement(
+                LINEAR_ONLY
+            ).to_dict(),
         },
     )
     _write_json(
@@ -1110,10 +1373,12 @@ def test_preflight_packaging_requires_preflight_smoke_evidence(tmp_path: Path) -
     _write_json(
         root / "one-step/training-result.json",
         {
-            "protocol": "striatum-training-result/1",
+            "protocol": "striatum-training-result/2",
             "global_step": 1,
+            "measurement": expected_adapter_measurement(LINEAR_ONLY).to_dict(),
             "example_selection": training_selection,
             "liger_fused_loss": _liger_proof(),
+            "base_preparation": _base_preparation_receipt(),
         },
     )
     _write_closed_checkpoint(root / "one-step/checkpoint-1", 1)
@@ -1152,6 +1417,17 @@ def test_preflight_packaging_requires_preflight_smoke_evidence(tmp_path: Path) -
         and file["sha256"] == sha256_file(gguf)
         for file in manifest["files"]
     )
+
+    training_result_path = root / "one-step/training-result.json"
+    training_result = json.loads(training_result_path.read_text())
+    training_result["measurement"]["trainable_parameters"] -= 1
+    _write_json(training_result_path, training_result)
+    with pytest.raises(ContractError, match="adapter measurement"):
+        build_manifest(tmp_path, preflight_only=True)
+    training_result["measurement"] = expected_adapter_measurement(
+        LINEAR_ONLY
+    ).to_dict()
+    _write_json(training_result_path, training_result)
 
     cuda_receipt = tmp_path / "artifacts/runtime/cuda-runtime.json"
     cuda_receipt.unlink()
@@ -1233,11 +1509,15 @@ def test_full_packaging_requires_epoch_one_gate_evidence(tmp_path: Path) -> None
         item = {"stage": stage}
         if step is not None:
             item["global_step"] = step
+            item["base_preparation"] = _base_preparation_receipt()
+            item["adapter_measurement"] = expected_adapter_measurement(
+                LINEAR_ONLY
+            ).to_dict()
         stages.append(item)
     _write_json(
         receipt_path,
         {
-            "protocol": "striatum-paid-training-phase/1",
+            "protocol": "striatum-paid-training-phase/2",
             "outcome": "training-completed-full-evaluation-pending",
             "full_evaluation": "separate-evaluate-job-phase",
             "strategy": "linear-only",
@@ -1291,7 +1571,7 @@ def test_paid_projection_and_checkpoint_gate_fail_closed() -> None:
     limits = PaidLimits(
         max_elapsed_seconds=54_000,
         max_cost_usd=Decimal("47.00"),
-        usd_per_hour=Decimal("3.15"),
+        usd_per_hour=Decimal("4.50"),
     )
     projection = project_paid_run(
         limits,
@@ -1307,6 +1587,8 @@ def test_paid_projection_and_checkpoint_gate_fail_closed() -> None:
     assert projection.elapsed_per_step_seconds == 10
     assert projection.observed_worker_startup_seconds == 10
     assert projection.projected_total_elapsed_seconds == 7_350
+    assert projection.projected_cost_usd == Decimal("9.1875")
+    assert limits.cost_cap_elapsed_seconds == Decimal("37600")
     assert projection.passed is True
 
     with pytest.raises(ContractError, match="at least 5 optimizer steps"):
@@ -1365,7 +1647,7 @@ def test_train_phase_sequences_resume_gate_and_full_run_without_gpu(
                 "limits": {
                     "max_elapsed_seconds": 54_000,
                     "max_cost_usd": "47.00",
-                    "usd_per_hour": "3.15",
+                    "usd_per_hour": "4.50",
                 },
                 "phases": {"train": {"enabled": True, "timeout_seconds": 43_200}},
             }
@@ -1415,12 +1697,16 @@ def test_train_phase_sequences_resume_gate_and_full_run_without_gpu(
             (checkpoints / "training-result.json").write_text(
                 json.dumps(
                     {
-                        "protocol": "striatum-training-result/1",
+                        "protocol": "striatum-training-result/2",
                         "strategy": "linear-only",
                         "global_step": step,
                         "resumed_from": resumed_from,
                         "metrics": {"train_runtime": runtime},
                         "liger_fused_loss": _liger_proof(step * 8),
+                        "base_preparation": _base_preparation_receipt(),
+                        "measurement": expected_adapter_measurement(
+                            LINEAR_ONLY
+                        ).to_dict(),
                     }
                 )
                 + "\n"
@@ -1698,10 +1984,10 @@ def test_training_and_job_specs_keep_the_paid_run_gates() -> None:
     assert "verify -> preflight -> train -> evaluate -> package" in job_yaml
     assert "sha256:REPLACE_WITH_IMAGE_DIGEST" in job_yaml
     assert "encrypted: true" in job_yaml
-    assert "NVIDIA H100 80GB HBM3" in job_yaml
+    assert "NVIDIA H200" in job_yaml
     assert "container_disk_gb: 220" in job_yaml
     assert "required_gb: 120" in job_yaml
-    assert 'usd_per_hour: "3.15"' in job_yaml
+    assert 'usd_per_hour: "4.50"' in job_yaml
     assert dockerfile.count("COPY --from=model-snapshot /model-") == 26
     assert "/opt/models/Qwen3.6-35B-A3B-995ad96e" in dockerfile
     assert "STRIATUM_MODEL_DIR=/opt/models/Qwen3.6-35B-A3B-995ad96e" in dockerfile
@@ -1751,13 +2037,13 @@ def test_worker_image_uses_cuda_driver_stub_only_for_build_linking() -> None:
     assert dockerfile.count('! grep -Fq "$cuda_stub_dir"') == 2
 
 
-def test_cuda_runtime_requires_real_h100_driver_resolution() -> None:
+def test_cuda_runtime_requires_real_h200_driver_resolution() -> None:
     ldd_output = """
         libcuda.so.1 => /usr/local/nvidia/lib64/libcuda.so.1 (0x00007f00)
     """
     devices_output = """
         Available devices:
-          CUDA0: NVIDIA H100 80GB HBM3 (81559 MiB, 80500 MiB free)
+          CUDA0: NVIDIA H200 (143771 MiB, 142000 MiB free)
     """
 
     receipt = validate_cuda_observations(ldd_output, devices_output)
@@ -1769,10 +2055,10 @@ def test_cuda_runtime_requires_real_h100_driver_resolution() -> None:
             ldd_output.replace("/usr/local/nvidia/lib64", "/usr/local/cuda/lib64/stubs"),
             devices_output,
         )
-    with pytest.raises(ContractError, match="H100"):
+    with pytest.raises(ContractError, match="H200"):
         validate_cuda_observations(
             ldd_output,
-            devices_output.replace("NVIDIA H100 80GB HBM3", "NVIDIA A100-SXM4-80GB"),
+            devices_output.replace("NVIDIA H200", "NVIDIA H100 80GB HBM3"),
         )
 
 

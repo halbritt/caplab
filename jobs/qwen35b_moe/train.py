@@ -25,7 +25,11 @@ from .contract import (
 )
 
 
-from .peft_config import lora_config, measure_adapter
+from .peft_config import (
+    lora_config,
+    measure_adapter,
+    prepare_base_for_lora_training,
+)
 from .runtime import (
     input_dir_from_env,
     load_quantized_base,
@@ -689,7 +693,7 @@ def run(args: argparse.Namespace) -> None:
     if save_final_checkpoint and args.max_steps <= 0:
         raise ContractError("--save-final-checkpoint requires positive --max-steps")
     try:
-        from peft import get_peft_model, prepare_model_for_kbit_training
+        from peft import get_peft_model
         from transformers import (
             DataCollatorForSeq2Seq,
             Trainer,
@@ -728,12 +732,9 @@ def run(args: argparse.Namespace) -> None:
         )
 
     base, tokenizer = load_quantized_base(args.model_dir.resolve())
+    base_preparation = prepare_base_for_lora_training(base)
     base.config.use_cache = False
-    base = prepare_model_for_kbit_training(
-        base,
-        use_gradient_checkpointing=True,
-        gradient_checkpointing_kwargs={"use_reentrant": False},
-    )
+    _atomic_json(output / "base-preparation.json", base_preparation)
     model = get_peft_model(base, lora_config(args.strategy))
     measured = measure_adapter(model, args.strategy)
     validate_adapter_measurement(measured, expected_adapter_measurement(args.strategy))
@@ -846,8 +847,9 @@ def run(args: argparse.Namespace) -> None:
     _atomic_json(
         output / "training-result.json",
         {
-            "protocol": "striatum-training-result/1",
+            "protocol": "striatum-training-result/2",
             "strategy": args.strategy,
+            "base_preparation": base_preparation,
             "measurement": measured.to_dict(),
             "metrics": result.metrics,
             "example_selection": example_selection,

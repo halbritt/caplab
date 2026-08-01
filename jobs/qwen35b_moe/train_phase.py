@@ -26,7 +26,13 @@ import tempfile
 import time
 from typing import Mapping, Sequence
 
-from .contract import STRATEGIES, ContractError, sha256_file
+from .contract import (
+    STRATEGIES,
+    ContractError,
+    expected_adapter_measurement,
+    sha256_file,
+)
+from .peft_config import validate_base_preparation_receipt
 from .runtime import input_dir_from_env, model_dir_from_env, output_dir_from_env
 from .train import validate_liger_fused_loss_proof
 
@@ -644,7 +650,7 @@ def _training_result(
     expected_resumed_from: Path | None,
 ) -> Mapping[str, object]:
     result = _read_json_object(path, "training result")
-    if result.get("protocol") != "striatum-training-result/1":
+    if result.get("protocol") != "striatum-training-result/2":
         raise ContractError("training result protocol is invalid")
     if result.get("strategy") != expected_strategy:
         raise ContractError("training result strategy is invalid")
@@ -664,6 +670,14 @@ def _training_result(
             f"{result.get('resumed_from')!r} != {expected_resume!r}"
         )
     _mapping(result.get("metrics"), "training result metrics")
+    preparation = _mapping(
+        result.get("base_preparation"), "training result base preparation"
+    )
+    validate_base_preparation_receipt(preparation)
+    if result.get("measurement") != expected_adapter_measurement(
+        expected_strategy
+    ).to_dict():
+        raise ContractError("training result adapter measurement is invalid")
     validate_liger_fused_loss_proof(result.get("liger_fused_loss"))
     return result
 
@@ -842,7 +856,7 @@ def run(args: argparse.Namespace) -> dict[str, object]:
         else output_root / "artifacts/train-phase/train-phase.json"
     )
     receipt: dict[str, object] = {
-        "protocol": "striatum-paid-training-phase/1",
+        "protocol": "striatum-paid-training-phase/2",
         "outcome": "running",
         "strategy": args.strategy,
         "request": {
@@ -943,6 +957,8 @@ def run(args: argparse.Namespace) -> dict[str, object]:
                 "child_wall_seconds": timing_wall,
                 "checkpoint": checkpoint_5.to_dict(),
                 "global_step": TIMING_STEPS,
+                "base_preparation": timing_result["base_preparation"],
+                "adapter_measurement": timing_result["measurement"],
             }
         )
         _write_receipt(receipt_path, receipt)
@@ -981,6 +997,8 @@ def run(args: argparse.Namespace) -> dict[str, object]:
                 "resumed_from": checkpoint_5.to_dict(),
                 "checkpoint": checkpoint_25.to_dict(),
                 "global_step": SCREENING_CHECKPOINT_STEP,
+                "base_preparation": screening_result["base_preparation"],
+                "adapter_measurement": screening_result["measurement"],
             }
         )
         _write_receipt(receipt_path, receipt)
@@ -1112,6 +1130,8 @@ def run(args: argparse.Namespace) -> dict[str, object]:
                 "resumed_from": checkpoint_25.to_dict(),
                 "checkpoint": checkpoint_159.to_dict(),
                 "global_step": EPOCH_ONE_CHECKPOINT_STEP,
+                "base_preparation": epoch_one_result["base_preparation"],
+                "adapter_measurement": epoch_one_result["measurement"],
             }
         )
         _write_receipt(receipt_path, receipt)
@@ -1255,6 +1275,8 @@ def run(args: argparse.Namespace) -> dict[str, object]:
                 "child_wall_seconds": full_wall,
                 "resumed_from": checkpoint_159.to_dict(),
                 "global_step": final_result["global_step"],
+                "base_preparation": final_result["base_preparation"],
+                "adapter_measurement": final_result["measurement"],
                 "final_adapter": str(final_adapter.resolve()),
             }
         )
