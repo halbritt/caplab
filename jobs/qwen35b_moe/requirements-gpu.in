@@ -1,4 +1,5 @@
 # Built against the exact torch/CUDA/Hopper tuple in requirements-common.in.
+ninja>=1.11,<2
 causal-conv1d==1.6.2.post1
 flash-attn==2.8.3.post1
 flash-linear-attention==0.5.2

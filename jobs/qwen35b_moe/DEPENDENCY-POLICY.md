@@ -8,7 +8,9 @@ The generated `*.lock` files describe one release. They pin the complete
 transitive graph for Python 3.12 on x86-64 manylinux and include accepted artifact
 hashes. The worker image installs only from these locks with `--require-hashes`.
 The GPU overlay is compiled with `--no-deps` because its build-time dependencies
-must come from the already-installed runtime lock.
+must come from the already-installed runtime lock or be declared explicitly in
+the overlay. `ninja` is a bounded tool dependency; the four CUDA extension and
+kernel packages remain the exact tested compatibility tuple.
 
 Regenerate after an intentional compatibility change:
 

@@ -1637,7 +1637,7 @@ def test_flash_qla_pins_one_coherent_hopper_backend_stack() -> None:
     gpu_requirements = dict(
         line.split("==", maxsplit=1)
         for line in (JOB / "requirements-gpu.in").read_text().splitlines()
-        if line and not line.startswith("#")
+        if "==" in line
     )
     assert gpu_requirements["flash-linear-attention"] == "0.5.2"
     assert gpu_requirements["flash-qla"] == "0.1.2"
@@ -1653,6 +1653,7 @@ def test_dependency_policy_separates_compatibility_constraints_from_release_lock
     runtime_input = (JOB / "requirements-common.in").read_text()
     runtime_lock = (JOB / "requirements.lock").read_text()
     gpu_lock = (JOB / "requirements-gpu.lock").read_text()
+    gpu_input = (JOB / "requirements-gpu.in").read_text()
     dockerfile = (JOB / "Dockerfile").read_text()
 
     assert "accelerate>=1.14,<2" in runtime_input
@@ -1660,6 +1661,7 @@ def test_dependency_policy_separates_compatibility_constraints_from_release_lock
     assert "torch==2.8.0" in runtime_input
     assert "--hash=sha256:" in runtime_lock
     assert "--hash=sha256:" in gpu_lock
+    assert "ninja>=1.11,<2" in gpu_input
     assert "--require-hashes -r requirements.lock" in dockerfile
     assert "--require-hashes -r requirements-gpu.lock" in dockerfile
 
