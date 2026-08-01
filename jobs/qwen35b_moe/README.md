@@ -213,6 +213,13 @@ under `/workspace/runpod-jobrunner/runs/<run-id>`. This keeps retries and the
 standalone preflight isolated on the persistent volume. Explicit `STRIATUM_*`
 variables override these paths for a local smoke.
 
+Each paid-preflight child writes combined standard output and error to
+`diagnostics/preflight/*.log` under that run root. These diagnostic logs remain
+on the network volume even when a failed Pod is deleted, so they can be read
+through the volume's S3-compatible API. The training process verifies the
+Liger fused-loss binding in Transformers' train-begin callback: Transformers
+has applied its instance patch at that point, but no training forward has run.
+
 The standalone bundle exposes the one-step manifest at
 `artifacts/preflight/one-step/checkpoint-*/checkpoint-complete.json` and waits
 at most 120 seconds for the controller's signed incremental-mirror

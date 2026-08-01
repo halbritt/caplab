@@ -76,6 +76,7 @@ from jobs.qwen35b_moe.runtime import (  # noqa: E402
 )
 from jobs.qwen35b_moe import preflight as preflight_module  # noqa: E402
 from jobs.qwen35b_moe import score_fate as score_fate_module  # noqa: E402
+from jobs.qwen35b_moe import train as train_module  # noqa: E402
 from jobs.qwen35b_moe.train import (  # noqa: E402
     ACK_NAMESPACE,
     ACK_PROTOCOL,
@@ -1112,6 +1113,30 @@ def test_preflight_runs_distinct_quantized_and_bf16_reload_commands(
     )
 
 
+def test_preflight_child_failure_is_written_to_a_durable_log(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    log_path = tmp_path / "diagnostics" / "one-step-train.log"
+    command = [
+        sys.executable,
+        "-c",
+        (
+            "import sys; "
+            "print('child standard output', flush=True); "
+            "print('child traceback marker', file=sys.stderr); "
+            "raise SystemExit(23)"
+        ),
+    ]
+
+    with pytest.raises(ContractError, match="exit 23"):
+        preflight_module._run(command, log_path=log_path)
+
+    assert log_path.read_text() == (
+        "child standard output\nchild traceback marker\n"
+    )
+    assert "child traceback marker" in capsys.readouterr().err
+
+
 def test_liger_runtime_proof_requires_bound_fused_loss_and_no_logits(
     tmp_path: Path,
 ) -> None:
@@ -1136,6 +1161,43 @@ def test_liger_runtime_proof_requires_bound_fused_loss_and_no_logits(
     proof["bound_forward_identity_verified"] = False
     with pytest.raises(ContractError, match="proof is invalid"):
         validate_liger_fused_loss_proof(proof)
+
+
+def test_liger_binding_callback_checks_after_trainer_applies_patch(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    binding = _liger_proof(calls=0)
+    binding["no_full_logits_observed"] = False
+    model = object()
+    observed: list[object] = []
+
+    def fake_binding(candidate: object) -> dict[str, object]:
+        observed.append(candidate)
+        return binding.copy()
+
+    monkeypatch.setattr(
+        train_module, "_require_liger_fused_loss_binding", fake_binding
+    )
+    proof: dict[str, object] = {}
+    verified: list[bool] = []
+    callback = train_module._make_liger_binding_callback(
+        object,
+        proof,
+        on_verified=lambda: verified.append(True),
+    )
+    control = object()
+
+    assert callback.on_train_begin(None, None, control, model=model) is control
+    assert observed == [model]
+    assert proof == binding
+    assert verified == [True]
+    train_module._require_liger_binding_before_forward(proof)
+    proof["observed_forward_calls"] = 1
+    proof["no_full_logits_observed"] = True
+    train_module._require_liger_binding_before_forward(proof)
+
+    with pytest.raises(ContractError, match="before the first training forward"):
+        train_module._require_liger_binding_before_forward({})
 
 
 def test_checkpoint_25_subset_is_declared_and_reproducible() -> None:

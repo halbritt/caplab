@@ -127,6 +127,58 @@ def _require_liger_fused_loss_binding(model: object) -> dict[str, Any]:
     }
 
 
+def _require_liger_binding_before_forward(proof: Mapping[str, object]) -> None:
+    """Fail unless the train-begin callback verified the exact Liger binding."""
+
+    expected_binding = {
+        "protocol": LIGER_PROOF_PROTOCOL,
+        "model_type": "qwen3_5_moe",
+        "implementation_module": "liger_kernel.transformers.model.qwen3_5_moe",
+        "implementation_name": "lce_forward_conditional_generation",
+        "bound_forward_identity_verified": True,
+        "fused_linear_cross_entropy": True,
+        "training_logits": "not-materialized",
+    }
+    calls = proof.get("observed_forward_calls")
+    logits_observed = proof.get("no_full_logits_observed")
+    if (
+        set(proof) != {*expected_binding, "no_full_logits_observed", "observed_forward_calls"}
+        or any(proof.get(key) != value for key, value in expected_binding.items())
+        or isinstance(calls, bool)
+        or not isinstance(calls, int)
+        or calls < 0
+        or (calls == 0 and logits_observed is not False)
+        or (calls > 0 and logits_observed is not True)
+    ):
+        raise ContractError(
+            "Liger binding was not verified before the first training forward"
+        )
+
+
+def _make_liger_binding_callback(
+    callback_base: type[Any],
+    proof: dict[str, Any],
+    *,
+    on_verified: Callable[[], None] | None = None,
+) -> Any:
+    """Build a callback that checks Liger after Trainer applies its patch."""
+
+    class LigerBindingCallback(callback_base):
+        def on_train_begin(self, args, state, control, **kwargs):  # noqa: ANN001
+            model = kwargs.get("model")
+            if model is None:
+                raise ContractError("Trainer did not expose its model at train begin")
+            if proof:
+                raise ContractError("Liger binding was verified more than once")
+            proof.update(_require_liger_fused_loss_binding(model))
+            _require_liger_binding_before_forward(proof)
+            if on_verified is not None:
+                on_verified()
+            return control
+
+    return LigerBindingCallback()
+
+
 def _atomic_json(path: Path, value: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     descriptor, raw_temp = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
@@ -784,6 +836,7 @@ def run(args: argparse.Namespace) -> None:
             return_outputs=False,
             num_items_in_batch=None,
         ):
+            _require_liger_binding_before_forward(liger_proof)
             loss, outputs = super().compute_loss(
                 model,
                 inputs,
@@ -832,9 +885,11 @@ def run(args: argparse.Namespace) -> None:
             label_pad_token_id=-100,
             pad_to_multiple_of=8,
         ),
-        callbacks=[CompletionCallback()],
+        callbacks=[
+            _make_liger_binding_callback(TrainerCallback, liger_proof),
+            CompletionCallback(),
+        ],
     )
-    liger_proof.update(_require_liger_fused_loss_binding(trainer.model))
     result = trainer.train(
         resume_from_checkpoint=(
             str(resume_from_checkpoint) if resume_from_checkpoint is not None else None

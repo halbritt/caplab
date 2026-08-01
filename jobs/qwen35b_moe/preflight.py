@@ -50,13 +50,48 @@ PACKAGES = (
 )
 
 
-def _run(command: list[str]) -> None:
+def _run(command: list[str], *, log_path: Path | None = None) -> None:
+    if log_path is None:
+        try:
+            subprocess.run(command, check=True)
+        except subprocess.CalledProcessError as error:
+            raise ContractError(
+                f"preflight child failed with exit {error.returncode}: {command!r}"
+            ) from error
+        return
+
+    log_path.parent.mkdir(parents=True, exist_ok=True)
     try:
-        subprocess.run(command, check=True)
-    except subprocess.CalledProcessError as error:
+        with log_path.open("xb") as log:
+            result = subprocess.run(
+                command,
+                check=False,
+                stdout=log,
+                stderr=subprocess.STDOUT,
+            )
+    except OSError as error:
         raise ContractError(
-            f"preflight child failed with exit {error.returncode}: {command!r}"
+            f"preflight child log could not be created: {log_path}"
         ) from error
+    if result.returncode == 0:
+        return
+
+    try:
+        with log_path.open("rb") as log:
+            log.seek(0, os.SEEK_END)
+            log.seek(max(0, log.tell() - 65_536))
+            tail = log.read().decode("utf-8", errors="replace")
+    except OSError as error:
+        raise ContractError(
+            f"preflight child failed with exit {result.returncode}; "
+            f"durable log is unreadable: {log_path}"
+        ) from error
+    if tail:
+        print(tail, file=sys.stderr, end="" if tail.endswith("\n") else "\n")
+    raise ContractError(
+        f"preflight child failed with exit {result.returncode}; "
+        f"durable log: {log_path}"
+    )
 
 
 def _run_reload_evaluation(
@@ -66,6 +101,7 @@ def _run_reload_evaluation(
     checkpoint: Path,
     output: Path,
     bf16_base: bool,
+    log_path: Path | None = None,
 ) -> dict[str, object]:
     expected_mode = BF16_BASE_LOAD_MODE if bf16_base else QUANTIZED_BASE_LOAD_MODE
     command = [
@@ -89,7 +125,10 @@ def _run_reload_evaluation(
     ]
     if bf16_base:
         command.extend(["--deterministic", "--bf16-base"])
-    _run(command)
+    if log_path is None:
+        _run(command)
+    else:
+        _run(command, log_path=log_path)
     try:
         summary = json.loads((output / "summary.json").read_text())
     except (OSError, json.JSONDecodeError) as error:
@@ -227,6 +266,7 @@ def main() -> None:
     )
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
+    diagnostics = output_dir_from_env() / "diagnostics/preflight"
 
     entries = load_input_manifest(Path(__file__).with_name("input-manifest.json"))
     verify_input_tree(args.input_dir, entries)
@@ -277,7 +317,8 @@ def main() -> None:
                 "--select-longest",
                 "--save-steps",
                 "1",
-            ]
+            ],
+            log_path=diagnostics / "one-step-train.log",
         )
         training_result_path = train_output / "training-result.json"
         receipt["longest_training_example"] = verify_longest_example_receipt(
@@ -302,6 +343,7 @@ def main() -> None:
             checkpoint=checkpoint,
             output=quantized_eval_output,
             bf16_base=False,
+            log_path=diagnostics / "quantized-reload-eval.log",
         )
 
         bf16_eval_output = args.output / "bf16-parity-eval"
@@ -311,6 +353,7 @@ def main() -> None:
             checkpoint=checkpoint,
             output=bf16_eval_output,
             bf16_base=True,
+            log_path=diagnostics / "bf16-parity-eval.log",
         )
         _run(
             [
@@ -331,7 +374,8 @@ def main() -> None:
                 str(args.output / "one-step-adapter-f32.gguf"),
                 "--receipt",
                 str(args.output / "one-step-export.json"),
-            ]
+            ],
+            log_path=diagnostics / "one-step-export.log",
         )
         receipt["smoke"] = "passed"
     (args.output / "preflight.json").write_text(
