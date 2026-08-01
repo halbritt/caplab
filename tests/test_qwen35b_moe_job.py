@@ -39,6 +39,10 @@ from jobs.qwen35b_moe.build_image import (  # noqa: E402
     _render_dockerfile,
     _stage_model_context,
 )
+from jobs.qwen35b_moe.cuda_runtime import (  # noqa: E402
+    validate_cuda_observations,
+    validate_cuda_runtime_receipt,
+)
 from jobs.qwen35b_moe.export import (  # noqa: E402
     LLAMA_CPP_COMMIT,
     direct_export,
@@ -118,6 +122,20 @@ def _liger_proof(calls: int = 8) -> dict[str, object]:
 def _write_json(path: Path, value: object) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
+
+
+def _cuda_runtime_receipt() -> dict[str, object]:
+    return {
+        "protocol": "striatum-cuda-runtime/1",
+        "cuda_backend_library": "/opt/llama.cpp/build/bin/libggml-cuda.so",
+        "driver_library": "/usr/local/nvidia/lib64/libcuda.so.1",
+        "llama_cli": "/opt/llama.cpp/build/bin/llama-cli",
+        "device": {
+            "backend": "CUDA0",
+            "name": "NVIDIA H100 80GB HBM3",
+            "memory_mib": 81_559,
+        },
+    }
 
 
 def _write_closed_checkpoint(checkpoint: Path, step: int) -> dict[str, object]:
@@ -1114,6 +1132,9 @@ def test_preflight_packaging_requires_preflight_smoke_evidence(tmp_path: Path) -
     _write_export_receipt(
         root / "one-step-export.json", gguf, root / "one-step/checkpoint-1"
     )
+    _write_json(
+        tmp_path / "artifacts/runtime/cuda-runtime.json", _cuda_runtime_receipt()
+    )
 
     manifest = build_manifest(tmp_path, preflight_only=True)
     assert manifest["result"] == "preflight-succeeded"
@@ -1123,6 +1144,12 @@ def test_preflight_packaging_requires_preflight_smoke_evidence(tmp_path: Path) -
         and file["sha256"] == sha256_file(gguf)
         for file in manifest["files"]
     )
+
+    cuda_receipt = tmp_path / "artifacts/runtime/cuda-runtime.json"
+    cuda_receipt.unlink()
+    with pytest.raises(ContractError, match="CUDA runtime receipt"):
+        build_manifest(tmp_path, preflight_only=True)
+    _write_json(cuda_receipt, _cuda_runtime_receipt())
 
     quantized_summary = root / "quantized-reload-eval/summary.json"
     quantized_summary.unlink()
@@ -1233,6 +1260,9 @@ def test_full_packaging_requires_epoch_one_gate_evidence(tmp_path: Path) -> None
     gguf = tmp_path / "artifacts/final/adapter-f32.gguf"
     _write_export_receipt(
         tmp_path / "artifacts/final/export.json", gguf, final_adapter
+    )
+    _write_json(
+        tmp_path / "artifacts/runtime/cuda-runtime.json", _cuda_runtime_receipt()
     )
 
     manifest = build_manifest(tmp_path, preflight_only=False)
@@ -1704,3 +1734,29 @@ def test_worker_image_uses_cuda_driver_stub_only_for_build_linking() -> None:
     assert "-Wl,-rpath," not in dockerfile
     assert "CMAKE_BUILD_RPATH" not in dockerfile
     assert "CMAKE_INSTALL_RPATH" not in dockerfile
+    assert dockerfile.count('! grep -Fq "$cuda_stub_dir"') == 2
+
+
+def test_cuda_runtime_requires_real_h100_driver_resolution() -> None:
+    ldd_output = """
+        libcuda.so.1 => /usr/local/nvidia/lib64/libcuda.so.1 (0x00007f00)
+    """
+    devices_output = """
+        Available devices:
+          CUDA0: NVIDIA H100 80GB HBM3 (81559 MiB, 80500 MiB free)
+    """
+
+    receipt = validate_cuda_observations(ldd_output, devices_output)
+    assert receipt == _cuda_runtime_receipt()
+    assert validate_cuda_runtime_receipt(receipt) == receipt
+
+    with pytest.raises(ContractError, match="stub"):
+        validate_cuda_observations(
+            ldd_output.replace("/usr/local/nvidia/lib64", "/usr/local/cuda/lib64/stubs"),
+            devices_output,
+        )
+    with pytest.raises(ContractError, match="H100"):
+        validate_cuda_observations(
+            ldd_output,
+            devices_output.replace("NVIDIA H100 80GB HBM3", "NVIDIA A100-SXM4-80GB"),
+        )

@@ -19,6 +19,7 @@ from .contract import (
     sha256_file,
     validate_census,
 )
+from .cuda_runtime import validate_cuda_runtime_receipt
 from .evaluate import (
     BF16_BASE_LOAD_MODE,
     QUANTIZED_BASE_LOAD_MODE,
@@ -355,6 +356,12 @@ def build_manifest(run_root: Path, *, preflight_only: bool) -> dict[str, object]
         _validate_preflight(run_root)
     else:
         _validate_full(run_root)
+    validate_cuda_runtime_receipt(
+        _read_json_object(
+            run_root / "artifacts/runtime/cuda-runtime.json",
+            "CUDA runtime receipt",
+        )
+    )
 
     files = []
     for directory_name in ARTIFACT_DIRS:

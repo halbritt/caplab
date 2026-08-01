@@ -161,6 +161,11 @@ at most 120 seconds for the controller's signed incremental-mirror
 acknowledgement. Its enabled phase timeouts total 570 seconds, leaving 30
 seconds of controller headroom under the 600-second reservation.
 
+The verify phase fails unless `libggml-cuda.so` resolves `libcuda.so.1` to a
+non-stub runtime driver and the pinned `llama-cli --list-devices` reports one
+H100 with at least 80,000 MiB. It records the accepted binding in
+`artifacts/runtime/cuda-runtime.json`; terminal packaging requires that receipt.
+
 Do not start a full run if this exceeds ten billable minutes or needs an
 interactive patch. Direct export is not considered compatible until this
 command produces `one-step-export.json`. In particular, PEFT
