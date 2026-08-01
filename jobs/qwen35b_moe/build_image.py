@@ -8,6 +8,9 @@ import json
 from pathlib import Path
 import re
 import subprocess
+from typing import Mapping
+
+import yaml
 
 from .contract import ContractError
 from .volume_assets import (
@@ -42,6 +45,52 @@ def _asset_manifest_receipt(path: Path) -> dict[str, object]:
     }
 
 
+def _validate_jobrunner_release(
+    release: Mapping[str, object], job_spec: Mapping[str, object]
+) -> Mapping[str, object]:
+    if release.get("protocol") != "runner-release/1":
+        raise ContractError("jobrunner image has an unsupported release receipt")
+    runner = job_spec.get("runner")
+    if not isinstance(runner, Mapping):
+        raise ContractError("job spec runner contract is missing")
+    if release.get("runner_version") != runner.get("version"):
+        raise ContractError(
+            "jobrunner image runner version does not match the job spec"
+        )
+    if release.get("runner_git_commit") != runner.get("git_commit"):
+        raise ContractError(
+            "jobrunner image runner git commit does not match the job spec"
+        )
+    protocols = release.get("supported_protocol_majors")
+    if not isinstance(protocols, Mapping) or protocols.get("run-request") != [1]:
+        raise ContractError("jobrunner image does not support run-request/1")
+    return release
+
+
+def _inspect_jobrunner_release(
+    image: str, job_spec: Mapping[str, object]
+) -> Mapping[str, object]:
+    raw = _run(
+        [
+            "docker",
+            "run",
+            "--rm",
+            "--entrypoint",
+            "/bin/cat",
+            image,
+            "/opt/runpod-jobrunner/release.json",
+        ],
+        capture_output=True,
+    ).stdout
+    try:
+        release = json.loads(raw)
+    except json.JSONDecodeError as error:
+        raise ContractError("jobrunner image release receipt is not JSON") from error
+    if not isinstance(release, Mapping):
+        raise ContractError("jobrunner image release receipt must be an object")
+    return _validate_jobrunner_release(release, job_spec)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("image", help="registry repository without a tag")
@@ -58,6 +107,10 @@ def main() -> None:
     if not re.fullmatch(r"[^@\s]+@sha256:[0-9a-f]{64}", args.jobrunner_image):
         raise ContractError("jobrunner image must use one immutable sha256 digest")
     job_root = Path(__file__).resolve().parent
+    job_spec = yaml.safe_load((job_root / "job.yaml").read_text())
+    if not isinstance(job_spec, Mapping):
+        raise ContractError("job spec must be an object")
+    jobrunner_release = _inspect_jobrunner_release(args.jobrunner_image, job_spec)
     asset_manifest = _asset_manifest_receipt(
         job_root / "network-volume-assets.sha256"
     )
@@ -100,6 +153,7 @@ def main() -> None:
         "image": tag,
         "source_commit": source_commit,
         "jobrunner_image": args.jobrunner_image,
+        "jobrunner_release": jobrunner_release,
         "network_volume_assets": asset_manifest,
         "pushed": args.push,
     }

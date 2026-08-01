@@ -34,7 +34,10 @@ from jobs.qwen35b_moe.contract import (  # noqa: E402
 from jobs.qwen35b_moe.base_gguf import (  # noqa: E402
     validate_base_gguf_artifacts,
 )
-from jobs.qwen35b_moe.build_image import _asset_manifest_receipt  # noqa: E402
+from jobs.qwen35b_moe.build_image import (  # noqa: E402
+    _asset_manifest_receipt,
+    _validate_jobrunner_release,
+)
 from jobs.qwen35b_moe.cuda_runtime import (  # noqa: E402
     validate_cuda_observations,
     validate_cuda_runtime_receipt,
@@ -2393,6 +2396,41 @@ def test_training_and_job_specs_keep_the_paid_run_gates() -> None:
     assert '"--provenance=mode=max"' in image_builder
     assert '"--sbom=true"' in image_builder
     assert "!network-volume-assets.sha256" in dockerignore
+
+
+def test_worker_image_rejects_mismatched_jobrunner_release() -> None:
+    job = {
+        "runner": {
+            "version": "0.1.7",
+            "git_commit": "e" * 40,
+        }
+    }
+    old_release = {
+        "protocol": "runner-release/1",
+        "runner_version": "0.1.2",
+        "runner_git_commit": "c" * 40,
+        "supported_protocol_majors": {"run-request": [1]},
+    }
+
+    with pytest.raises(ContractError, match="runner version"):
+        _validate_jobrunner_release(old_release, job)
+
+
+def test_worker_image_accepts_exact_jobrunner_release() -> None:
+    job = {
+        "runner": {
+            "version": "0.1.7",
+            "git_commit": "e" * 40,
+        }
+    }
+    release = {
+        "protocol": "runner-release/1",
+        "runner_version": "0.1.7",
+        "runner_git_commit": "e" * 40,
+        "supported_protocol_majors": {"run-request": [1]},
+    }
+
+    assert _validate_jobrunner_release(release, job) == release
 
 
 def test_worker_image_requires_preloaded_network_volume_assets() -> None:
