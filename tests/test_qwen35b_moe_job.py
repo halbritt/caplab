@@ -875,6 +875,7 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
         "max_cost_usd": "47.00",
         "usd_per_hour": "3.15",
     }
+    assert full["phases"]["preflight"]["enabled"] is False
     assert full["phases"]["train"]["enabled"] is True
     assert full["phases"]["evaluate"]["enabled"] is True
     assert full["artifacts"]["incremental_manifest_glob"] == (
@@ -890,11 +891,31 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
         "max_cost_usd": "2.00",
         "usd_per_hour": "3.15",
     }
+    assert preflight["phases"]["preflight"]["enabled"] is True
     assert preflight["phases"]["train"]["enabled"] is False
     assert preflight["phases"]["evaluate"]["enabled"] is False
     assert preflight["phases"]["package"]["argv"][-1] == "--preflight-only"
-    assert "incremental_manifest_glob" not in preflight["artifacts"]
-    assert "incremental_mirror_ack" not in preflight["artifacts"]
+    assert preflight["artifacts"]["incremental_manifest_glob"] == (
+        "artifacts/preflight/one-step/checkpoint-*/checkpoint-complete.json"
+    )
+    assert preflight["artifacts"]["incremental_mirror_ack"] == {
+        "required": True,
+        "directory": "control/incremental-acks",
+        "timeout_seconds": 120,
+    }
+    enabled_preflight_seconds = sum(
+        phase["timeout_seconds"]
+        for phase in preflight["phases"].values()
+        if phase["enabled"]
+    )
+    assert (
+        preflight["limits"]["max_elapsed_seconds"] - enabled_preflight_seconds
+        >= 30
+    )
+    assert (
+        preflight["artifacts"]["incremental_mirror_ack"]["timeout_seconds"]
+        < preflight["phases"]["preflight"]["timeout_seconds"]
+    )
     dockerfile = (JOB / "Dockerfile").read_text()
     assert "openssh-client" in dockerfile
     assert "ssh-keygen -?" in dockerfile

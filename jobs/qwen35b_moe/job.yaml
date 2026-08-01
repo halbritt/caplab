@@ -25,7 +25,7 @@ phases:
     argv: [/opt/striatum-qwen35b/bin/verify]
     timeout_seconds: 120
   preflight:
-    enabled: true
+    enabled: false
     argv: [/opt/striatum-qwen35b/bin/preflight, --strategy, linear-only, --run-smoke]
     timeout_seconds: 600
   train:

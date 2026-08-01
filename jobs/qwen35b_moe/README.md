@@ -23,12 +23,14 @@ ignored `.generated/` area; it never links the source data into a bundle.
 ```bash
 python3 -m jobs.qwen35b_moe.materialize \
   --source-repo "$PWD" \
-  --destination jobs/qwen35b_moe/.generated/linear \
-  --profile full
-python3 -m jobs.qwen35b_moe.materialize \
-  --source-repo "$PWD" \
   --destination jobs/qwen35b_moe/.generated/preflight \
   --profile preflight-only
+python3 -m jobs.qwen35b_moe.update_image_digest \
+  jobs/qwen35b_moe/.generated/preflight sha256:<64-hex-image-digest>
+python3 -m jobs.qwen35b_moe.materialize \
+  --source-repo "$PWD" \
+  --destination jobs/qwen35b_moe/.generated/linear \
+  --profile full
 python3 -m jobs.qwen35b_moe.update_image_digest \
   jobs/qwen35b_moe/.generated/linear sha256:<64-hex-image-digest>
 ```
@@ -40,12 +42,18 @@ also recomputes the canonical self-hash; always finish with
 `evidence/bundle-check-2026-07-31.json`; its all-`a` digest was a test value,
 not a published image.
 
-The two generated bundles are separate reservations: the preflight-only bundle
-enables verify, paid preflight, and preflight packaging under 600 seconds and
-$2.00; the full bundle reserves $47.00 and owns training plus full evaluation.
-With the controller's $0.50 no-op reservation, the aggregate maximum is
-$49.50. A failed or over-time preflight is a stop condition for launching the
-full bundle.
+The two generated bundles are separate reservations. Materialize, digest-stamp,
+check, and run the preflight-only bundle first. Accept it only after the
+one-step checkpoint has been mirrored, its signed recovery acknowledgement has
+been verified, the terminal artifacts have been recovered by hash, and the
+worker has closed within 600 seconds and $2.00. Only then may the full bundle,
+materialized from the same inputs and image digest, be launched. The full
+bundle disables its redundant preflight phase and starts with verify before
+training and full evaluation; full packaging does not consume artifacts from
+the standalone preflight reservation. It reserves $47.00. With the
+controller's $0.50 no-op reservation, the aggregate maximum is $49.50. A
+failed, unacknowledged, or over-time preflight is a stop condition for
+launching the full bundle.
 
 `Dockerfile` copies the remote runner from the already-published
 `runpod-jobrunner` image by immutable digest. No private source checkout enters
@@ -147,6 +155,12 @@ write the terminal artifact manifest at the dedicated encrypted mount root,
 matching the v1 controller's mount-relative recovery contract. Explicit
 `STRIATUM_*` variables override these paths for a local smoke.
 
+The standalone bundle exposes the one-step manifest at
+`artifacts/preflight/one-step/checkpoint-*/checkpoint-complete.json` and waits
+at most 120 seconds for the controller's signed incremental-mirror
+acknowledgement. Its enabled phase timeouts total 570 seconds, leaving 30
+seconds of controller headroom under the 600-second reservation.
+
 Do not start a full run if this exceeds ten billable minutes or needs an
 interactive patch. Direct export is not considered compatible until this
 command produces `one-step-export.json`. In particular, PEFT
@@ -180,8 +194,9 @@ to this run, bundle, immutable image, manifest, exact file count and bytes,
 public key, and `runpod-jobrunner-incremental-mirror` namespace. The per-run
 private key remains on the controller. Resume refuses a checkpoint whose exact
 inventory, hashes, trainer global step, or signed mirror acknowledgement does
-not match. Preflight-only materializations omit this contract because they do
-not expose the long-running training phase.
+not match. The standalone preflight uses the same signed acknowledgement
+contract against its one-step checkpoint path, with the shorter timeout stated
+above.
 The checkpoint-25 mini-evaluation uses 16 dispatch IDs committed in
 `training-config.json`; they are re-derived as the lowest SHA-256 dispatch-ID
 hashes from the exact held-out file, and the selection evidence is embedded in

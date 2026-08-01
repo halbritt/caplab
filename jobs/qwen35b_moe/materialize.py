@@ -33,7 +33,8 @@ def _render_job(profile: str) -> str:
         raise ContractError("job template is not an object")
     spec["name"] = "striatum-qwen36-35b-a3b-preflight"
     phases = spec["phases"]
-    phases["verify"]["timeout_seconds"] = 60
+    phases["verify"]["timeout_seconds"] = 45
+    phases["preflight"]["enabled"] = True
     phases["preflight"]["timeout_seconds"] = 480
     phases["train"]["enabled"] = False
     phases["evaluate"]["enabled"] = False
@@ -41,11 +42,14 @@ def _render_job(profile: str) -> str:
         "/opt/striatum-qwen35b/bin/package",
         "--preflight-only",
     ]
-    phases["package"]["timeout_seconds"] = 60
+    phases["package"]["timeout_seconds"] = 45
     spec["limits"]["max_elapsed_seconds"] = 600
     spec["limits"]["max_cost_usd"] = "2.00"
-    spec["artifacts"].pop("incremental_manifest_glob", None)
-    spec["artifacts"].pop("incremental_mirror_ack", None)
+    artifacts = spec["artifacts"]
+    artifacts["incremental_manifest_glob"] = (
+        "artifacts/preflight/one-step/checkpoint-*/checkpoint-complete.json"
+    )
+    artifacts["incremental_mirror_ack"]["timeout_seconds"] = 120
     return yaml.safe_dump(spec, sort_keys=False)
 
 
