@@ -1678,3 +1678,29 @@ def test_training_and_job_specs_keep_the_paid_run_gates() -> None:
     assert "validate_base_gguf_artifacts" in image_builder
     assert '"--provenance=mode=max"' in image_builder
     assert '"--sbom=true"' in image_builder
+
+
+def test_worker_image_uses_cuda_driver_stub_only_for_build_linking() -> None:
+    dockerfile = (JOB / "Dockerfile").read_text()
+
+    assert "cuda_stub_dir=/usr/local/cuda/lib64/stubs" in dockerfile
+    symlink = 'ln -s libcuda.so "$cuda_stub_dir/libcuda.so.1"'
+    linker_flag = '-DCMAKE_EXE_LINKER_FLAGS="-Wl,-rpath-link,$cuda_stub_dir"'
+    build = "cmake --build /opt/llama.cpp/build"
+    cleanup = 'rm "$cuda_stub_dir/libcuda.so.1"'
+    absence = 'test ! -e "$cuda_stub_dir/libcuda.so.1"'
+    assert symlink in dockerfile
+    assert linker_flag in dockerfile
+    assert cleanup in dockerfile
+    assert dockerfile.index(symlink) < dockerfile.index(linker_flag)
+    assert dockerfile.index(linker_flag) < dockerfile.index(build)
+    assert dockerfile.index(build) < dockerfile.index(cleanup)
+    assert dockerfile.index(cleanup) < dockerfile.index(
+        absence, dockerfile.index(cleanup)
+    )
+    assert "readelf -d /opt/llama.cpp/build/bin/libggml-cuda.so" in dockerfile
+    assert "readelf -d /opt/llama.cpp/build/bin/llama-cli" in dockerfile
+    assert "LD_LIBRARY_PATH=$cuda_stub_dir" not in dockerfile
+    assert "-Wl,-rpath," not in dockerfile
+    assert "CMAKE_BUILD_RPATH" not in dockerfile
+    assert "CMAKE_INSTALL_RPATH" not in dockerfile

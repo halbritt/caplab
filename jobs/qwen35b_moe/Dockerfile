@@ -40,12 +40,29 @@ RUN /opt/runpod-jobrunner/venv/bin/python -m pip install --no-cache-dir -r requi
     && /opt/runpod-jobrunner/venv/bin/python -c \
        "import importlib; modules = ('torch', 'transformers', 'peft', 'accelerate', 'datasets', 'safetensors', 'flash_attn', 'fla', 'causal_conv1d', 'bitsandbytes', 'tilelang', 'tvm_ffi', 'liger_kernel.transformers.model.qwen3_5_moe'); [importlib.import_module(module) for module in modules]"
 
-RUN git clone https://github.com/ggml-org/llama.cpp.git /opt/llama.cpp \
+RUN cuda_stub_dir=/usr/local/cuda/lib64/stubs \
+    && test -f "$cuda_stub_dir/libcuda.so" \
+    && test ! -e "$cuda_stub_dir/libcuda.so.1" \
+    && ln -s libcuda.so "$cuda_stub_dir/libcuda.so.1" \
+    && git clone https://github.com/ggml-org/llama.cpp.git /opt/llama.cpp \
     && git -C /opt/llama.cpp checkout "$LLAMA_CPP_COMMIT" \
     && cmake -S /opt/llama.cpp -B /opt/llama.cpp/build \
-       -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=90 -DLLAMA_CURL=OFF \
+       -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=90 \
+       -DCMAKE_EXE_LINKER_FLAGS="-Wl,-rpath-link,$cuda_stub_dir" \
+       -DLLAMA_CURL=OFF \
     && cmake --build /opt/llama.cpp/build --config Release -j2 \
-       --target llama-cli llama-quantize llama-gguf-split
+       --target llama-cli llama-quantize llama-gguf-split \
+    && rm "$cuda_stub_dir/libcuda.so.1" \
+    && test ! -e "$cuda_stub_dir/libcuda.so.1" \
+    && readelf -d /opt/llama.cpp/build/bin/libggml-cuda.so \
+       > /tmp/libggml-cuda.dynamic \
+    && grep -Fq 'Shared library: [libcuda.so.1]' \
+       /tmp/libggml-cuda.dynamic \
+    && ! grep -Fq "$cuda_stub_dir" /tmp/libggml-cuda.dynamic \
+    && readelf -d /opt/llama.cpp/build/bin/llama-cli \
+       > /tmp/llama-cli.dynamic \
+    && ! grep -Fq "$cuda_stub_dir" /tmp/llama-cli.dynamic \
+    && rm /tmp/libggml-cuda.dynamic /tmp/llama-cli.dynamic
 
 RUN mkdir -p /opt/models/Qwen3.6-35B-A3B-995ad96e
 COPY --from=model-snapshot /LICENSE /README.md /config.json /configuration.json \
