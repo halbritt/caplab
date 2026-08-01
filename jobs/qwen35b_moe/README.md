@@ -74,7 +74,7 @@ python3 -m jobs.qwen35b_moe.prepare_image_gguf \
   --model-dir /home/halbritt/models/hf/Qwen3.6-35B-A3B-995ad96e \
   --llama-cpp /home/halbritt/git/llama.cpp
 python3 -m jobs.qwen35b_moe.build_image \
-  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.1 \
+  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.2 \
   --jobrunner-image ghcr.io/halbritt/runpod-jobrunner-noop@sha256:<digest> \
   --model-snapshot /home/halbritt/models/hf/Qwen3.6-35B-A3B-995ad96e [--push]
 ```
