@@ -119,6 +119,7 @@ from jobs.qwen35b_moe.train import (  # noqa: E402
 from jobs.qwen35b_moe import train_phase  # noqa: E402
 from jobs.qwen35b_moe.train_phase import (  # noqa: E402
     PaidLimits,
+    _training_result,
     assess_available_gates,
     optimizer_steps_per_epoch,
     project_paid_run,
@@ -1340,6 +1341,46 @@ def test_production_adapter_evidence_records_the_exact_matched_module_count() ->
     ]
     assert evidence["matched_module_count"] == 2
     assert evidence["total_parameters"] == 34_224_090_480
+
+
+def test_paid_training_accepts_complete_production_adapter_evidence(
+    tmp_path: Path,
+) -> None:
+    expected = expected_adapter_measurement(LINEAR_ONLY).to_dict()
+    matched_modules = sorted(f"model.target.{index}" for index in range(310))
+    result_path = tmp_path / "training-result.json"
+    _write_json(
+        result_path,
+        {
+            "protocol": "striatum-training-result/2",
+            "strategy": LINEAR_ONLY,
+            "global_step": 5,
+            "resumed_from": None,
+            "metrics": {"train_runtime": 349.5},
+            "liger_fused_loss": _liger_proof(40),
+            "base_preparation": _base_preparation_receipt(),
+            "measurement": {
+                **expected,
+                "matched_modules": matched_modules,
+                "matched_module_count": len(matched_modules),
+                "total_parameters": 34_224_090_480,
+            },
+            "example_selection": {
+                "mode": "all-authorized",
+                "candidates": 1_268,
+                "tokenization": _tokenization_census(),
+            },
+        },
+    )
+
+    result = _training_result(
+        result_path,
+        expected_step=5,
+        expected_strategy=LINEAR_ONLY,
+        expected_resumed_from=None,
+    )
+
+    assert result["measurement"]["matched_module_count"] == 310
 
 
 def test_smoke_terminal_validation_names_a_missing_moe_module_count(
@@ -2855,9 +2896,14 @@ def test_train_phase_sequences_resume_gate_and_full_run_without_gpu(
                         "metrics": {"train_runtime": runtime},
                         "liger_fused_loss": _liger_proof(step * 8),
                         "base_preparation": _base_preparation_receipt(),
-                        "measurement": expected_adapter_measurement(
-                            LINEAR_ONLY
-                        ).to_dict(),
+                        "measurement": {
+                            **expected_adapter_measurement(LINEAR_ONLY).to_dict(),
+                            "matched_modules": [
+                                f"model.target.{index:03d}" for index in range(310)
+                            ],
+                            "matched_module_count": 310,
+                            "total_parameters": 34_224_090_480,
+                        },
                         "example_selection": {
                             "mode": "all-authorized",
                             "candidates": 1_268,

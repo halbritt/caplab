@@ -55,6 +55,7 @@ class ModelContract:
     experts_per_token: int = 8
     expert_intermediate_size: int = 512
     shared_expert_intermediate_size: int = 512
+    base_parameters: int = 34_181_758_320
 
 
 MODEL = ModelContract()
