@@ -38,7 +38,11 @@ from .preflight import (
 )
 from .flash_qla_smoke import validate_flash_qla_smoke_receipt
 from .runtime import output_dir_from_env, training_config
-from .train_phase import assess_available_gates, verify_checkpoint
+from .train_phase import (
+    assess_available_gates,
+    verify_checkpoint,
+    verify_checkpoint_set,
+)
 from .volume_assets import validate_asset_receipt
 
 
@@ -347,10 +351,7 @@ def _validate_training_receipt(run_root: Path) -> None:
     if not isinstance(raw_checkpoints, list):
         raise ContractError("paid training checkpoint evidence is absent")
     checkpoints = run_root / "checkpoints"
-    verified = [
-        verify_checkpoint(checkpoints / f"checkpoint-{step}", step).to_dict()
-        for step in EXPECTED_CHECKPOINT_STEPS
-    ]
+    verified = verify_checkpoint_set(checkpoints, set(EXPECTED_CHECKPOINT_STEPS))
     if raw_checkpoints != verified:
         raise ContractError("paid training checkpoint evidence is not exact")
 

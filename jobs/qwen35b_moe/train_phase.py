@@ -784,9 +784,16 @@ def _checkpoint_steps(checkpoints: Path) -> list[int]:
     return sorted(steps)
 
 
-def _verified_checkpoints(
+def verify_checkpoint_set(
     checkpoints: Path, required: set[int]
 ) -> list[dict[str, object]]:
+    """Verify every checkpoint present and require the milestone set.
+
+    The returned evidence describes the directory as it actually exists. This
+    matters for staged Trainer resumes: older runs can contain additional valid
+    checkpoints when a restored save interval differs from the current stage.
+    """
+
     found = _checkpoint_steps(checkpoints)
     missing = sorted(required - set(found))
     if missing:
@@ -1279,7 +1286,7 @@ def run(args: argparse.Namespace) -> dict[str, object]:
             TOTAL_STEPS,
         }
         required_steps.update(range(50, TOTAL_STEPS + 1, CHECKPOINT_INTERVAL))
-        checkpoint_evidence = _verified_checkpoints(checkpoints, required_steps)
+        checkpoint_evidence = verify_checkpoint_set(checkpoints, required_steps)
         stages.append(
             {
                 "stage": "second-epoch-318",

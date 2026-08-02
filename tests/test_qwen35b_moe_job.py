@@ -2930,6 +2930,9 @@ def test_full_packaging_requires_epoch_one_gate_evidence(tmp_path: Path) -> None
         _write_closed_checkpoint(tmp_path / f"checkpoints/checkpoint-{step}", step)
         for step in EXPECTED_CHECKPOINT_STEPS
     ]
+    checkpoint_evidence.insert(
+        1, _write_closed_checkpoint(tmp_path / "checkpoints/checkpoint-10", 10)
+    )
     stages = []
     for stage, step in (
         ("timing-5", 5),
