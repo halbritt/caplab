@@ -12,6 +12,15 @@ must come from the already-installed runtime lock or be declared explicitly in
 the overlay. `ninja` is a bounded tool dependency; the four CUDA extension and
 kernel packages remain the exact tested compatibility tuple.
 
+Torch 2.8 discards a wrapper when `torch.compiler.disable` is applied around an
+already-disabled function. FLA 0.5.2 consequently bypasses its Hopper backend
+dispatcher for `chunk_gated_delta_rule`. The image applies one fail-closed source
+correction after install: it removes the redundant inner disable decorator while
+retaining FLA's disabled dispatch wrapper. Both wheel preimage and corrected
+postimage are SHA-256-bound, so a future FLA source change fails the build instead
+of receiving an unreviewed patch. Remove this correction only after a tested FLA
+release incorporates the equivalent upstream fix.
+
 Regenerate after an intentional compatibility change:
 
 ```bash

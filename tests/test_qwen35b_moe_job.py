@@ -61,6 +61,11 @@ from jobs.qwen35b_moe.flash_qla_smoke import (  # noqa: E402
     _observe_flash_qla_calls,
     validate_flash_qla_smoke_receipt,
 )
+from jobs.qwen35b_moe.fla_dispatch_compat import (  # noqa: E402
+    POSTIMAGE_DECORATORS,
+    PREIMAGE_DECORATORS,
+    patch_source,
+)
 from jobs.qwen35b_moe.peft_config import (  # noqa: E402
     FUSED_EXPERT_SPEC_SHA256,
     LINEAR_TARGET_PATTERN,
@@ -1690,6 +1695,47 @@ def test_dependency_policy_separates_compatibility_constraints_from_release_lock
     assert "ninja>=1.11,<2" in gpu_input
     assert "--require-hashes -r requirements.lock" in dockerfile
     assert "--require-hashes -r requirements-gpu.lock" in dockerfile
+
+
+def test_fla_dispatch_patch_is_exact_idempotent_and_fail_closed() -> None:
+    source = b"prefix\n" + PREIMAGE_DECORATORS + b"\nbody\n"
+    expected = b"prefix\n" + POSTIMAGE_DECORATORS + b"\nbody\n"
+    preimage_sha256 = hashlib.sha256(source).hexdigest()
+    postimage_sha256 = hashlib.sha256(expected).hexdigest()
+
+    patched, status = patch_source(
+        source,
+        preimage_sha256=preimage_sha256,
+        postimage_sha256=postimage_sha256,
+    )
+    assert patched == expected
+    assert status == "patched"
+
+    repeated, repeated_status = patch_source(
+        patched,
+        preimage_sha256=preimage_sha256,
+        postimage_sha256=postimage_sha256,
+    )
+    assert repeated == patched
+    assert repeated_status == "already-patched"
+
+    with pytest.raises(ContractError, match="refused unknown source"):
+        patch_source(
+            source + b"drift",
+            preimage_sha256=preimage_sha256,
+            postimage_sha256=postimage_sha256,
+        )
+
+
+def test_worker_image_applies_fla_dispatch_patch_before_runtime_validation() -> None:
+    dockerfile = (JOB / "Dockerfile").read_text()
+    patch_command = "python -m jobs.qwen35b_moe.fla_dispatch_compat"
+    validation_command = (
+        "python -m jobs.qwen35b_moe.flash_qla_smoke --validate-install"
+    )
+
+    assert patch_command in dockerfile
+    assert dockerfile.index(patch_command) < dockerfile.index(validation_command)
 
 
 def test_worker_dependencies_are_cached_independently_of_runner_release() -> None:

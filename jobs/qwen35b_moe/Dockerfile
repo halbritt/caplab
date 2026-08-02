@@ -73,6 +73,7 @@ COPY smoke/ /opt/striatum-qwen35b/jobs/qwen35b_moe/smoke/
 COPY network-volume-assets.sha256 /opt/striatum-qwen35b/jobs/qwen35b_moe/
 COPY bin/ /opt/striatum-qwen35b/bin/
 RUN chmod 0555 /opt/striatum-qwen35b/bin/* \
+    && /opt/striatum-qwen35b/venv/bin/python -m jobs.qwen35b_moe.fla_dispatch_compat \
     && /opt/striatum-qwen35b/venv/bin/python -m jobs.qwen35b_moe.flash_qla_smoke --validate-install \
     && rm -rf /tmp/striatum-qwen35b-build
 
