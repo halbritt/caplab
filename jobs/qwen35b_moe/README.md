@@ -70,14 +70,14 @@ Build locally or publish with:
 
 ```bash
 JOBRUNNER_DIGEST=YOUR_64_HEX_JOBRUNNER_IMAGE_DIGEST
-BUILD_RECEIPT=/tmp/striatum-qwen35b-image-0.1.13.json
+BUILD_RECEIPT=/tmp/striatum-qwen35b-image-0.1.14.json
 python3 -m jobs.qwen35b_moe.prepare_base_gguf \
   --model-dir /home/halbritt/models/hf/Qwen3.6-35B-A3B-995ad96e \
   --llama-cpp /home/halbritt/git/llama.cpp \
   --output /home/halbritt/models/hf/Qwen3.6-35B-A3B-995ad96e/base-bf16.gguf \
   --receipt /home/halbritt/models/hf/Qwen3.6-35B-A3B-995ad96e/base-bf16.receipt.json
 python3 -m jobs.qwen35b_moe.build_image \
-  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.13 \
+  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.14 \
   --jobrunner-image \
   "ghcr.io/halbritt/runpod-jobrunner-noop@sha256:$JOBRUNNER_DIGEST" \
   --receipt "$BUILD_RECEIPT" --push

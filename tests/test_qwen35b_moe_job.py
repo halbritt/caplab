@@ -58,6 +58,7 @@ from jobs.qwen35b_moe.gate_acceptance import (  # noqa: E402
     validate_gate3_acceptance,
 )
 from jobs.qwen35b_moe.flash_qla_smoke import (  # noqa: E402
+    _observe_flash_qla_calls,
     validate_flash_qla_smoke_receipt,
 )
 from jobs.qwen35b_moe.peft_config import (  # noqa: E402
@@ -287,8 +288,19 @@ def test_flash_qla_receipt_requires_observed_dispatch_without_assuming_call_coun
     assert validate_flash_qla_smoke_receipt(receipt) == receipt
 
     receipt["dispatch_calls"] = 0
-    with pytest.raises(ContractError, match="evidence is incomplete"):
+    with pytest.raises(ContractError, match="implementation was not invoked"):
         validate_flash_qla_smoke_receipt(receipt)
+
+
+def test_flash_qla_observer_wraps_the_actual_implementation_and_restores_it() -> None:
+    original = lambda value: value + 1  # noqa: E731
+    module = SimpleNamespace(chunk_gated_delta_rule=original)
+
+    with _observe_flash_qla_calls(module) as observed:
+        assert module.chunk_gated_delta_rule(3) == 4
+        assert observed["count"] == 1
+
+    assert module.chunk_gated_delta_rule is original
 
 
 def _write_json(path: Path, value: object) -> None:

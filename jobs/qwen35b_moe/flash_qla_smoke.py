@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import argparse
+from contextlib import contextmanager
 import importlib.metadata
 import json
 import math
 import os
 from pathlib import Path
+from collections.abc import Iterator
 from typing import Any
 
 from .contract import ContractError
@@ -51,22 +53,51 @@ def validate_flash_qla_smoke_receipt(receipt: object) -> dict[str, Any]:
     gradients = receipt.get("gradients")
     device = receipt.get("device")
     dispatch_calls = receipt.get("dispatch_calls")
+    if receipt.get("protocol") != PROTOCOL:
+        raise ContractError("FlashQLA smoke protocol is invalid")
+    if receipt.get("dispatcher") != "FlashQLABackend":
+        raise ContractError("FlashQLA dispatcher identity is invalid")
     if (
-        receipt.get("protocol") != PROTOCOL
-        or receipt.get("dispatcher") != "FlashQLABackend"
-        or isinstance(dispatch_calls, bool)
+        isinstance(dispatch_calls, bool)
         or not isinstance(dispatch_calls, int)
         or dispatch_calls < 1
-        or receipt.get("forward_finite") is not True
-        or receipt.get("loss_finite") is not True
-        or not isinstance(device, dict)
-        or device.get("compute_capability") != [9, 0]
-        or not isinstance(gradients, dict)
-        or set(gradients) != set(GRADIENT_NAMES)
-        or any(value != "finite-nonzero" for value in gradients.values())
     ):
-        raise ContractError("FlashQLA forward/backward smoke evidence is incomplete")
+        raise ContractError("FlashQLA implementation was not invoked through the dispatcher")
+    if receipt.get("forward_finite") is not True:
+        raise ContractError("FlashQLA forward evidence is not finite")
+    if receipt.get("loss_finite") is not True:
+        raise ContractError("FlashQLA loss evidence is not finite")
+    if not isinstance(device, dict) or device.get("compute_capability") != [9, 0]:
+        raise ContractError("FlashQLA device evidence is not SM90")
+    if not isinstance(gradients, dict) or set(gradients) != set(GRADIENT_NAMES):
+        raise ContractError("FlashQLA gradient evidence is incomplete")
+    invalid_gradients = [
+        name for name in GRADIENT_NAMES if gradients.get(name) != "finite-nonzero"
+    ]
+    if invalid_gradients:
+        raise ContractError(
+            f"FlashQLA gradient evidence is invalid: {', '.join(invalid_gradients)}"
+        )
     return receipt
+
+
+@contextmanager
+def _observe_flash_qla_calls(module: Any) -> Iterator[dict[str, int]]:
+    """Observe the implementation that the FLA backend calls after selection."""
+    original = getattr(module, "chunk_gated_delta_rule", None)
+    if not callable(original):
+        raise ContractError("FlashQLA implementation entry point is unavailable")
+    observed = {"count": 0}
+
+    def observed_dispatch(*args, **kwargs):  # noqa: ANN002, ANN003, ANN202
+        observed["count"] += 1
+        return original(*args, **kwargs)
+
+    module.chunk_gated_delta_rule = observed_dispatch
+    try:
+        yield observed
+    finally:
+        module.chunk_gated_delta_rule = original
 
 
 def run_flash_qla_smoke(output: Path | None = None) -> dict[str, Any]:
@@ -74,10 +105,10 @@ def run_flash_qla_smoke(output: Path | None = None) -> dict[str, Any]:
     validate_install()
     os.environ["FLA_FLASH_QLA"] = "1"
     try:
+        import flash_qla
         import torch
         import torch.nn.functional as F
         from fla.ops.gated_delta_rule import chunk_gated_delta_rule
-        from fla.ops.gated_delta_rule.backends.flash_qla import FlashQLABackend
     except ImportError as error:
         raise ContractError("FlashQLA runtime dependencies are unavailable") from error
 
@@ -100,16 +131,7 @@ def run_flash_qla_smoke(output: Path | None = None) -> dict[str, Any]:
     initial_state = torch.randn(1, 32, 128, 128, device="cuda", dtype=torch.float32, requires_grad=True)
     tensors = dict(zip(GRADIENT_NAMES, (q, k, v, g, beta, initial_state), strict=True))
 
-    dispatch_calls = 0
-    original = FlashQLABackend.chunk_gated_delta_rule
-
-    def observed_dispatch(self, *args, **kwargs):  # noqa: ANN001
-        nonlocal dispatch_calls
-        dispatch_calls += 1
-        return original(self, *args, **kwargs)
-
-    FlashQLABackend.chunk_gated_delta_rule = observed_dispatch
-    try:
+    with _observe_flash_qla_calls(flash_qla) as observed:
         generated, final_state = chunk_gated_delta_rule(
             q=q,
             k=k,
@@ -126,8 +148,6 @@ def run_flash_qla_smoke(output: Path | None = None) -> dict[str, Any]:
         if not math.isfinite(float(loss.detach())):
             raise ContractError("FlashQLA smoke loss is non-finite")
         loss.backward()
-    finally:
-        FlashQLABackend.chunk_gated_delta_rule = original
 
     gradients: dict[str, str] = {}
     for name, tensor in tensors.items():
@@ -141,7 +161,7 @@ def run_flash_qla_smoke(output: Path | None = None) -> dict[str, Any]:
     receipt: dict[str, Any] = {
         "protocol": PROTOCOL,
         "dispatcher": "FlashQLABackend",
-        "dispatch_calls": dispatch_calls,
+        "dispatch_calls": observed["count"],
         "device": {
             "name": torch.cuda.get_device_name(),
             "compute_capability": capability,
