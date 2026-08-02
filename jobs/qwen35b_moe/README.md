@@ -34,7 +34,7 @@ also recomputes the canonical self-hash; always finish with
 `runpod-jobrunner check GENERATED_BUNDLE`. The old
 `evidence/bundle-check-2026-07-31.json` receipt is historical 0.1.0 evidence;
 its all-`a` digest was a test value, not a published image. It does not prove
-the network-volume bundle. Preserve the fresh 0.1.9 check output with this
+the network-volume bundle. Preserve the fresh 0.1.10 check output with this
 campaign's recovered controller evidence.
 
 Gate 2 and Gate 3 are separate reservations under the same campaign budget
@@ -70,14 +70,14 @@ Build locally or publish with:
 
 ```bash
 JOBRUNNER_DIGEST=YOUR_64_HEX_JOBRUNNER_IMAGE_DIGEST
-BUILD_RECEIPT=/tmp/striatum-qwen35b-image-0.1.11.json
+BUILD_RECEIPT=/tmp/striatum-qwen35b-image-0.1.13.json
 python3 -m jobs.qwen35b_moe.prepare_base_gguf \
   --model-dir /home/halbritt/models/hf/Qwen3.6-35B-A3B-995ad96e \
   --llama-cpp /home/halbritt/git/llama.cpp \
   --output /home/halbritt/models/hf/Qwen3.6-35B-A3B-995ad96e/base-bf16.gguf \
   --receipt /home/halbritt/models/hf/Qwen3.6-35B-A3B-995ad96e/base-bf16.receipt.json
 python3 -m jobs.qwen35b_moe.build_image \
-  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.11 \
+  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.13 \
   --jobrunner-image \
   "ghcr.io/halbritt/runpod-jobrunner-noop@sha256:$JOBRUNNER_DIGEST" \
   --receipt "$BUILD_RECEIPT" --push

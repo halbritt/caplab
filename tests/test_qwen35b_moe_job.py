@@ -1471,8 +1471,8 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
     preflight = yaml.safe_load(_render_job("preflight-only"))
 
     expected_runner = {
-        "version": "0.1.9",
-        "git_commit": "20e81d42259813cf8fe62ed4ecd4f1ad85bd9b32",
+        "version": "0.1.10",
+        "git_commit": "f6c3e5f1ec548096326afa5ddff25ec58d685cca",
     }
     for spec in (full, preflight):
         assert spec["runner"] == expected_runner
@@ -1729,8 +1729,8 @@ def test_preflight_materialization_stamps_single_quoted_yaml_hash(
             ),
             "jobrunner_release": {
                 "protocol": "runner-release/1",
-                "runner_version": "0.1.9",
-                "runner_git_commit": "20e81d42259813cf8fe62ed4ecd4f1ad85bd9b32",
+                "runner_version": "0.1.10",
+                "runner_git_commit": "f6c3e5f1ec548096326afa5ddff25ec58d685cca",
                 "supported_protocol_majors": {
                     "artifact-manifest": [1],
                     "incremental-mirror-ack": [1],
