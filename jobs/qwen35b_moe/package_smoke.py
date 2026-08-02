@@ -123,7 +123,12 @@ def _terminal_evidence_failures(
     return failures
 
 
-def build_smoke_manifest(run_root: Path, config: Path) -> dict[str, object]:
+def build_smoke_manifest(
+    run_root: Path,
+    config: Path,
+    *,
+    expected_resume: Path | None = None,
+) -> dict[str, object]:
     run_root = run_root.resolve()
     profile = load_training_profile(config)
     root = run_root / "artifacts/preflight"
@@ -147,7 +152,7 @@ def build_smoke_manifest(run_root: Path, config: Path) -> dict[str, object]:
         kernel,
         hopper_backend,
         model_id=profile.model_id,
-        expected_resume=checkpoint_2,
+        expected_resume=expected_resume or checkpoint_2,
         expected_target_count=int(strategy["expected_target_count"]),
         expected_trainable_parameters=int(strategy["expected_trainable_parameters"]),
     )

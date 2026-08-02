@@ -55,6 +55,7 @@ from jobs.qwen35b_moe.evaluate import (  # noqa: E402
 )
 from jobs.qwen35b_moe.materialize import _render_job, materialize  # noqa: E402
 from jobs.qwen35b_moe.gate_acceptance import (  # noqa: E402
+    _resolve_controller_recovery,
     validate_gate3_acceptance,
 )
 from jobs.qwen35b_moe.flash_qla_smoke import (  # noqa: E402
@@ -2172,6 +2173,91 @@ def test_gate3_acceptance_is_bound_to_exact_image_and_moe_model(tmp_path: Path) 
         validate_gate3_acceptance(
             receipt, expected_image_digest="sha256:" + "d" * 64
         )
+
+
+def test_gate3_acceptance_resolves_verified_controller_recovery(tmp_path: Path) -> None:
+    run_id = "run-20260802T022847-f6af8da54da6"
+    image = (
+        "ghcr.io/halbritt/striatum-tuner-qwen35b-moe@sha256:" + "a" * 64
+    )
+    remote_root = Path("/workspace/runpod-jobrunner/runs") / run_id
+    artifact_root = tmp_path / "receipts/artifacts"
+    manifest = tmp_path / "receipts/manifest/artifact-manifest.json"
+    artifact_root.mkdir(parents=True)
+    _write_json(manifest, {"protocol": "artifact-manifest/1"})
+    _write_json(
+        tmp_path / "request.json",
+        {
+            "protocol": "controller-request/1",
+            "controller": {"remote_run_root": str(remote_root)},
+            "provider": {"image": image},
+            "remote": {"image_digest": image},
+        },
+    )
+    _write_json(
+        tmp_path / "state.json",
+        {
+            "protocol": "run-status/1",
+            "run_id": run_id,
+            "lifecycle": "closed",
+            "workload_result": "succeeded",
+            "closeout": {
+                "artifact_disposition": {"status": "verified"},
+                "current_spend_usd_per_hour": "0",
+                "delete_acknowledged": True,
+            },
+        },
+    )
+
+    resolved = _resolve_controller_recovery(tmp_path, run_id, image)
+
+    assert resolved == (
+        artifact_root.resolve(),
+        manifest.resolve(),
+        remote_root / "artifacts/preflight/training/checkpoint-2",
+    )
+
+
+def test_gate3_acceptance_rejects_a_recovery_from_another_image(
+    tmp_path: Path,
+) -> None:
+    run_id = "run-20260802T022847-f6af8da54da6"
+    expected_image = (
+        "ghcr.io/halbritt/striatum-tuner-qwen35b-moe@sha256:" + "a" * 64
+    )
+    _write_json(
+        tmp_path / "request.json",
+        {
+            "protocol": "controller-request/1",
+            "controller": {
+                "remote_run_root": f"/workspace/runpod-jobrunner/runs/{run_id}"
+            },
+            "provider": {"image": expected_image.replace("a", "b")},
+            "remote": {"image_digest": expected_image.replace("a", "b")},
+        },
+    )
+    _write_json(
+        tmp_path / "state.json",
+        {
+            "protocol": "run-status/1",
+            "run_id": run_id,
+            "lifecycle": "closed",
+            "workload_result": "succeeded",
+            "closeout": {
+                "artifact_disposition": {"status": "verified"},
+                "current_spend_usd_per_hour": "0",
+                "delete_acknowledged": True,
+            },
+        },
+    )
+    (tmp_path / "receipts/artifacts").mkdir(parents=True)
+    _write_json(
+        tmp_path / "receipts/manifest/artifact-manifest.json",
+        {"protocol": "artifact-manifest/1"},
+    )
+
+    with pytest.raises(ContractError, match="image digest"):
+        _resolve_controller_recovery(tmp_path, run_id, expected_image)
 
 
 def test_preflight_packaging_requires_preflight_smoke_evidence(tmp_path: Path) -> None:

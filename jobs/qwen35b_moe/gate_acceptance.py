@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+from pathlib import PurePosixPath
 import re
 
 from .contract import ContractError, atomic_json, sha256_file
@@ -23,6 +24,90 @@ REQUIRED_EVIDENCE = {
     "artifacts/preflight/training/checkpoint-2/checkpoint-complete.json",
     "artifacts/preflight/training/checkpoint-4/checkpoint-complete.json",
 }
+
+
+def _json_object(path: Path, label: str) -> dict[str, object]:
+    if path.is_symlink() or not path.is_file():
+        raise ContractError(f"{label} is missing, linked, or not a file")
+    try:
+        value = json.loads(path.read_text())
+    except (OSError, json.JSONDecodeError) as error:
+        raise ContractError(f"{label} is invalid JSON") from error
+    if not isinstance(value, dict):
+        raise ContractError(f"{label} must be an object")
+    return value
+
+
+def _resolve_controller_recovery(
+    run_root: Path,
+    run_id: str,
+    expected_image: str,
+) -> tuple[Path, Path, Path]:
+    """Resolve a verified jobrunner recovery into the worker's artifact layout."""
+
+    if re.fullmatch(r"run-[A-Za-z0-9._-]+", run_id) is None:
+        raise ContractError("Gate 3 run ID is invalid")
+    if run_root.is_symlink() or not run_root.is_dir():
+        raise ContractError("Gate 3 controller run root is missing, linked, or not a directory")
+    root = run_root.resolve()
+    request = _json_object(root / "request.json", "Gate 3 controller request")
+    state = _json_object(root / "state.json", "Gate 3 controller state")
+    controller = request.get("controller")
+    provider = request.get("provider")
+    remote = request.get("remote")
+    closeout = state.get("closeout")
+    artifact_disposition = (
+        closeout.get("artifact_disposition") if isinstance(closeout, dict) else None
+    )
+    deletion_closed = isinstance(closeout, dict) and (
+        closeout.get("delete_acknowledged") is True
+        or closeout.get("delete_already_absent") is True
+    )
+    if (
+        request.get("protocol") != "controller-request/1"
+        or state.get("protocol") != "run-status/1"
+        or state.get("run_id") != run_id
+        or state.get("lifecycle") != "closed"
+        or state.get("workload_result") != "succeeded"
+        or not isinstance(artifact_disposition, dict)
+        or artifact_disposition.get("status") != "verified"
+        or not isinstance(closeout, dict)
+        or str(closeout.get("current_spend_usd_per_hour")) not in {"0", "0.0", "0.00"}
+        or not deletion_closed
+    ):
+        raise ContractError(
+            "Gate 3 controller run is not closed, successful, verified, and spend-free"
+        )
+    if not isinstance(controller, dict):
+        raise ContractError("Gate 3 controller request has no controller binding")
+    remote_root_value = controller.get("remote_run_root")
+    if not isinstance(remote_root_value, str):
+        raise ContractError("Gate 3 controller request has no remote run root")
+    remote_root = PurePosixPath(remote_root_value)
+    if (
+        not remote_root.is_absolute()
+        or ".." in remote_root.parts
+        or remote_root.name != run_id
+    ):
+        raise ContractError("Gate 3 remote run root does not match the run ID")
+    if (
+        not isinstance(provider, dict)
+        or not isinstance(remote, dict)
+        or provider.get("image") != expected_image
+        or remote.get("image_digest") != expected_image
+    ):
+        raise ContractError("Gate 3 controller image digest does not match the build receipt")
+
+    artifact_root = root / "receipts/artifacts"
+    manifest = root / "receipts/manifest/artifact-manifest.json"
+    if artifact_root.is_symlink() or not artifact_root.is_dir():
+        raise ContractError("recovered Gate 3 artifact tree is missing or linked")
+    if manifest.is_symlink() or not manifest.is_file():
+        raise ContractError("recovered Gate 3 artifact manifest is missing or linked")
+    expected_resume = Path(
+        str(remote_root / "artifacts/preflight/training/checkpoint-2")
+    )
+    return artifact_root.resolve(), manifest.resolve(), expected_resume
 
 
 def _normalized_image(value: str) -> str:
@@ -80,17 +165,17 @@ def issue_gate3_acceptance(
     run_id: str,
     output: Path,
 ) -> dict[str, object]:
-    run_root = run_root.resolve()
     build_receipt, _ = _load_build_receipt(build_receipt_path.resolve())
-    artifact_path = run_root / "artifact-manifest.json"
-    if artifact_path.is_symlink() or not artifact_path.is_file():
-        raise ContractError("recovered Gate 3 artifact manifest is missing")
-    try:
-        recovered = json.loads(artifact_path.read_text())
-    except json.JSONDecodeError as error:
-        raise ContractError("recovered Gate 3 artifact manifest is invalid") from error
+    artifact_root, artifact_path, expected_resume = _resolve_controller_recovery(
+        run_root,
+        run_id,
+        str(build_receipt["immutable_image"]),
+    )
+    recovered = _json_object(artifact_path, "recovered Gate 3 artifact manifest")
     expected = build_smoke_manifest(
-        run_root, Path(__file__).with_name("smoke") / "moe-training-config.json"
+        artifact_root,
+        Path(__file__).with_name("smoke") / "moe-training-config.json",
+        expected_resume=expected_resume,
     )
     if recovered != expected:
         raise ContractError("recovered Gate 3 artifacts do not match terminal evidence")
