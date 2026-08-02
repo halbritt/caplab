@@ -308,6 +308,32 @@ def should_force_final_checkpoint(
     return requested and global_step == max_steps
 
 
+def synchronize_trainer_save_interval(
+    training_args: Any, state: Any
+) -> dict[str, object]:
+    """Make the current invocation authoritative after Trainer state restore.
+
+    Transformers restores ``save_steps`` from ``trainer_state.json`` after it
+    computes the current TrainingArguments schedule.  A staged run therefore
+    otherwise inherits the previous stage's interval despite receiving a new
+    explicit ``--save-steps`` value.
+    """
+
+    requested = getattr(training_args, "save_steps", None)
+    previous = getattr(state, "save_steps", None)
+    for value, label in ((requested, "requested"), (previous, "restored")):
+        if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+            raise ContractError(
+                f"{label} checkpoint save interval must be a positive integer"
+            )
+    state.save_steps = requested
+    return {
+        "checkpoint_save_steps_before": previous,
+        "checkpoint_save_steps_requested": requested,
+        "checkpoint_save_steps_changed": previous != requested,
+    }
+
+
 def require_checkpoint_acknowledgement(
     checkpoint: Path,
     *,
@@ -1065,8 +1091,24 @@ def run(args: argparse.Namespace) -> None:
     )
 
     acknowledged_checkpoints: list[dict[str, Any]] = []
+    checkpoint_schedule: dict[str, object] = {}
 
     class CompletionCallback(TrainerCallback):
+        def on_train_begin(  # noqa: ANN001
+            self, training_args, state, control, **kwargs
+        ):
+            checkpoint_schedule.update(
+                synchronize_trainer_save_interval(training_args, state)
+            )
+            print(
+                json.dumps(
+                    {"event": "checkpoint-schedule", **checkpoint_schedule},
+                    sort_keys=True,
+                ),
+                flush=True,
+            )
+            return control
+
         def on_step_end(  # noqa: ANN001
             self, training_args, state, control, **kwargs
         ):
@@ -1250,6 +1292,7 @@ def run(args: argparse.Namespace) -> None:
             ),
             "resume_acknowledgement": resume_acknowledgement,
             "acknowledged_checkpoints": acknowledged_checkpoints,
+            "checkpoint_schedule": checkpoint_schedule,
             "liger_fused_loss": validated_liger_proof,
             "hopper_linear_attention": validated_hopper_backend,
             "final_adapter": str(final_adapter),

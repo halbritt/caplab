@@ -263,7 +263,10 @@ to this run, bundle, immutable image, manifest, exact file count and bytes,
 public key, and `runpod-jobrunner-incremental-mirror` namespace. The per-run
 private key remains on the controller. Resume refuses a checkpoint whose exact
 inventory, hashes, trainer global step, or signed mirror acknowledgement does
-not match. The standalone preflight uses the same signed acknowledgement
+not match. After Transformers restores the checkpoint state, the trainer
+reapplies and records the current invocation's checkpoint interval; a timing
+checkpoint therefore cannot silently impose its shorter save cadence on later
+stages. The standalone preflight uses the same signed acknowledgement
 contract against its one-step checkpoint path, with the shorter timeout stated
 above.
 The checkpoint-25 mini-evaluation uses 16 dispatch IDs committed in

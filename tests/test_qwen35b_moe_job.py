@@ -113,6 +113,7 @@ from jobs.qwen35b_moe.train import (  # noqa: E402
     require_no_full_logits,
     select_longest_tokenized_index,
     should_force_final_checkpoint,
+    synchronize_trainer_save_interval,
     validate_liger_fused_loss_proof,
     verify_checkpoint_manifest,
 )
@@ -1436,6 +1437,25 @@ def test_forced_checkpoint_is_exact_and_validated() -> None:
         should_force_final_checkpoint(0, -1, True)
     with pytest.raises(ContractError, match="non-negative"):
         should_force_final_checkpoint(-1, 159, True)
+
+
+def test_resume_uses_current_invocation_checkpoint_interval() -> None:
+    training_args = SimpleNamespace(save_steps=25)
+    restored_state = SimpleNamespace(save_steps=5)
+
+    evidence = synchronize_trainer_save_interval(training_args, restored_state)
+
+    assert restored_state.save_steps == 25
+    assert evidence == {
+        "checkpoint_save_steps_before": 5,
+        "checkpoint_save_steps_requested": 25,
+        "checkpoint_save_steps_changed": True,
+    }
+
+    with pytest.raises(ContractError, match="positive integer"):
+        synchronize_trainer_save_interval(
+            SimpleNamespace(save_steps=0), SimpleNamespace(save_steps=5)
+        )
 
 
 def test_preflight_selects_and_receipts_the_largest_tokenized_example(
