@@ -1861,7 +1861,7 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
 
     assert full["limits"] == {
         "max_elapsed_seconds": 54_000,
-        "max_cost_usd": "39.00",
+        "max_cost_usd": "45.00",
         "usd_per_hour": "4.50",
     }
     assert full["phases"]["verify"]["timeout_seconds"] == 900
@@ -1933,7 +1933,7 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
         assert module in dockerfile
     assert Decimal(preflight["limits"]["max_cost_usd"]) + Decimal(
         full["limits"]["max_cost_usd"]
-    ) == Decimal("42.50")
+    ) == Decimal("48.50")
 
 
 def test_smoke_ladder_materializations_use_the_same_h200_image_path() -> None:

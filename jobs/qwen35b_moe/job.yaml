@@ -52,7 +52,7 @@ artifacts:
     timeout_seconds: 900
 limits:
   max_elapsed_seconds: 54000
-  max_cost_usd: "39.00"
+  max_cost_usd: "45.00"
   usd_per_hour: "4.50"
 lifecycle:
   recover_on_failure: true

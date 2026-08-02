@@ -42,7 +42,7 @@ scope. Each must reach terminal artifact recovery, signed checkpoint
 acknowledgement, and provider deletion before the next reservation. Gate 3
 issues the image-bound receipt required by full materialization. The full job
 starts with runtime and Gate 3 receipt verification before training and full
-evaluation. It reserves $39.00; all launches use the
+evaluation. It reserves $45.00; all launches use the
 `striatum-qwen35b-hard100-20260801` scope and its $94.00 reservation ceiling.
 That ceiling accounts for settled campaign spend and keeps total authorized
 exposure below the owner's $100 hard limit. $75 remains a feasibility
@@ -54,7 +54,7 @@ FULL_BUNDLE=jobs/qwen35b_moe/.generated/full-20260801
 
 runpod-jobrunner check "$FULL_BUNDLE"
 runpod-jobrunner run "$FULL_BUNDLE" \
-  --approve-max-usd 39.00 \
+  --approve-max-usd 45.00 \
   --budget-scope "$CAMPAIGN_SCOPE" \
   --budget-total-usd 94.00
 ```
