@@ -28,7 +28,6 @@ RUN apt-get update \
 
 WORKDIR /tmp/striatum-qwen35b-build
 COPY requirements.lock requirements-gpu.lock ./
-COPY llama-qwen35-lora-reorder.patch /opt/striatum-qwen35b/patches/
 RUN python3 -m venv /opt/striatum-qwen35b/venv \
     && /opt/striatum-qwen35b/venv/bin/python -m pip install --no-cache-dir \
        --require-hashes -r requirements.lock \
@@ -38,6 +37,7 @@ RUN python3 -m venv /opt/striatum-qwen35b/venv \
     && /opt/striatum-qwen35b/venv/bin/python -c \
        "import importlib; modules = ('torch', 'torchvision', 'transformers', 'peft', 'accelerate', 'datasets', 'safetensors', 'flash_attn', 'fla', 'causal_conv1d', 'bitsandbytes', 'tilelang', 'tvm_ffi', 'liger_kernel.transformers.model.qwen3_5_moe'); [importlib.import_module(module) for module in modules]"
 
+COPY llama-qwen35-lora-reorder.patch /opt/striatum-qwen35b/patches/
 RUN cuda_stub_dir=/usr/local/cuda/lib64/stubs \
     && test -f "$cuda_stub_dir/libcuda.so" \
     && test ! -e "$cuda_stub_dir/libcuda.so.1" \
