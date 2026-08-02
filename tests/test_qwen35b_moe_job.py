@@ -57,6 +57,9 @@ from jobs.qwen35b_moe.materialize import _render_job, materialize  # noqa: E402
 from jobs.qwen35b_moe.gate_acceptance import (  # noqa: E402
     validate_gate3_acceptance,
 )
+from jobs.qwen35b_moe.flash_qla_smoke import (  # noqa: E402
+    validate_flash_qla_smoke_receipt,
+)
 from jobs.qwen35b_moe.peft_config import (  # noqa: E402
     FUSED_EXPERT_SPEC_SHA256,
     LINEAR_TARGET_PATTERN,
@@ -275,6 +278,17 @@ def _flash_qla_receipt() -> dict[str, object]:
             "apache-tvm-ffi": "0.1.9",
         },
     }
+
+
+def test_flash_qla_receipt_requires_observed_dispatch_without_assuming_call_count() -> None:
+    receipt = _flash_qla_receipt()
+    receipt["dispatch_calls"] = 2
+
+    assert validate_flash_qla_smoke_receipt(receipt) == receipt
+
+    receipt["dispatch_calls"] = 0
+    with pytest.raises(ContractError, match="evidence is incomplete"):
+        validate_flash_qla_smoke_receipt(receipt)
 
 
 def _write_json(path: Path, value: object) -> None:

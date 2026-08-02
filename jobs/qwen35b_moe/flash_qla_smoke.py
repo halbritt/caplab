@@ -50,10 +50,13 @@ def validate_flash_qla_smoke_receipt(receipt: object) -> dict[str, Any]:
         raise ContractError("FlashQLA smoke receipt must be an object")
     gradients = receipt.get("gradients")
     device = receipt.get("device")
+    dispatch_calls = receipt.get("dispatch_calls")
     if (
         receipt.get("protocol") != PROTOCOL
         or receipt.get("dispatcher") != "FlashQLABackend"
-        or receipt.get("dispatch_calls") != 1
+        or isinstance(dispatch_calls, bool)
+        or not isinstance(dispatch_calls, int)
+        or dispatch_calls < 1
         or receipt.get("forward_finite") is not True
         or receipt.get("loss_finite") is not True
         or not isinstance(device, dict)
