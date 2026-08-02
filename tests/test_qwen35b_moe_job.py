@@ -46,6 +46,7 @@ from jobs.qwen35b_moe.cuda_runtime import (  # noqa: E402
 from jobs.qwen35b_moe.export import (  # noqa: E402
     LLAMA_CPP_COMMIT,
     LLAMA_CPP_PATCH_SHA256,
+    _run_bounded_parity,
     direct_export,
     inspect_peft_adapter,
 )
@@ -1027,13 +1028,17 @@ def test_direct_export_receipt_binds_the_adapter_it_converted(
 
     def fake_run(command, **kwargs):  # noqa: ANN001, ANN003
         del kwargs
-        if str(converter) in command:
-            output.write_bytes(b"GGUF-adapter")
-            return SimpleNamespace(stdout="")
-        assert str(llama_cli) in command
-        return SimpleNamespace(stdout='{"verdict":"accept"}\n')
+        assert str(converter) in command
+        output.write_bytes(b"GGUF-adapter")
+        return SimpleNamespace(stdout="")
 
     monkeypatch.setattr("jobs.qwen35b_moe.export._run", fake_run)
+    monkeypatch.setattr(
+        "jobs.qwen35b_moe.export._run_bounded_parity",
+        lambda command: SimpleNamespace(
+            stdout='{"verdict":"accept"}\n', stderr_bytes=0, stderr_tail=""
+        ),
+    )
     args = argparse.Namespace(
         llama_cpp=llama_cpp,
         base_gguf=base_gguf,
@@ -1046,6 +1051,33 @@ def test_direct_export_receipt_binds_the_adapter_it_converted(
     receipt = direct_export(args)
 
     assert receipt["source_adapter"] == inspect_peft_adapter(adapter)
+
+
+def test_llama_parity_capture_bounds_diagnostic_output() -> None:
+    result = _run_bounded_parity(
+        [
+            sys.executable,
+            "-c",
+            "import sys; "
+            "sys.stderr.buffer.write(b'x' * 1000000); "
+            "sys.stdout.write('parity-output\\n')",
+        ],
+        stdout_limit=32,
+        stderr_tail_limit=64,
+    )
+
+    assert result.stdout == "parity-output\n"
+    assert result.stderr_bytes == 1_000_000
+    assert result.stderr_tail == "x" * 64
+
+
+def test_llama_parity_capture_rejects_excess_stdout() -> None:
+    with pytest.raises(ContractError, match="stdout exceeded 32 bytes"):
+        _run_bounded_parity(
+            [sys.executable, "-c", "print('x' * 1000)"],
+            stdout_limit=32,
+            stderr_tail_limit=64,
+        )
 
 
 def test_peft_adapter_rejects_malformed_and_wrong_revision_config(

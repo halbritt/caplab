@@ -4,11 +4,13 @@ from __future__ import annotations
 
 import argparse
 from collections.abc import Mapping
+from dataclasses import dataclass
 import json
 from pathlib import Path
 import struct
 import subprocess
 import sys
+import threading
 from typing import Any
 
 from .contract import EXPERT_AWARE, LINEAR_ONLY, MODEL, ContractError, sha256_file
@@ -24,6 +26,8 @@ LLAMA_CPP_PATCH_PATH = Path(
     "/opt/striatum-qwen35b/patches/llama-qwen35-lora-reorder.patch"
 )
 _SAFETENSORS_MAX_HEADER_BYTES = 64 * 1024 * 1024
+_PARITY_STDOUT_MAX_BYTES = 1024 * 1024
+_PARITY_STDERR_TAIL_BYTES = 64 * 1024
 _SAFETENSORS_DTYPE_BYTES = {
     "BOOL": 1,
     "U8": 1,
@@ -77,6 +81,102 @@ def _run(command: list[str], **kwargs) -> subprocess.CompletedProcess[str]:
         raise ContractError(
             f"export command failed with exit {error.returncode}: {command!r}"
         ) from error
+
+
+@dataclass(frozen=True)
+class BoundedParityResult:
+    stdout: str
+    stderr_tail: str
+    stderr_bytes: int
+
+
+def _run_bounded_parity(
+    command: list[str],
+    *,
+    stdout_limit: int = _PARITY_STDOUT_MAX_BYTES,
+    stderr_tail_limit: int = _PARITY_STDERR_TAIL_BYTES,
+) -> BoundedParityResult:
+    """Run llama.cpp without retaining its unbounded diagnostic stream.
+
+    llama.cpp can emit a very large stderr stream while evaluating a long
+    context. The parity text is stdout, so retain that under a strict ceiling
+    while continuously draining stderr into a fixed-size tail buffer.
+    """
+
+    for value, label in (
+        (stdout_limit, "stdout limit"),
+        (stderr_tail_limit, "stderr tail limit"),
+    ):
+        if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+            raise ContractError(f"llama.cpp parity {label} must be positive")
+    try:
+        process = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+    except OSError as error:
+        raise ContractError("could not start llama.cpp parity command") from error
+    if process.stdout is None or process.stderr is None:
+        process.kill()
+        process.wait()
+        raise ContractError("llama.cpp parity pipes were not created")
+
+    stdout = bytearray()
+    stderr_tail = bytearray()
+    stderr_bytes = 0
+    stdout_exceeded = False
+
+    def drain_stdout() -> None:
+        nonlocal stdout_exceeded
+        while chunk := process.stdout.read(64 * 1024):
+            remaining = stdout_limit - len(stdout)
+            if remaining > 0:
+                stdout.extend(chunk[:remaining])
+            if len(chunk) > remaining and not stdout_exceeded:
+                stdout_exceeded = True
+                process.terminate()
+
+    def drain_stderr() -> None:
+        nonlocal stderr_bytes
+        while chunk := process.stderr.read(64 * 1024):
+            stderr_bytes += len(chunk)
+            if len(chunk) >= stderr_tail_limit:
+                stderr_tail[:] = chunk[-stderr_tail_limit:]
+            else:
+                stderr_tail.extend(chunk)
+                excess = len(stderr_tail) - stderr_tail_limit
+                if excess > 0:
+                    del stderr_tail[:excess]
+
+    stdout_thread = threading.Thread(target=drain_stdout, name="llama-stdout")
+    stderr_thread = threading.Thread(target=drain_stderr, name="llama-stderr")
+    stdout_thread.start()
+    stderr_thread.start()
+    return_code = process.wait()
+    stdout_thread.join()
+    stderr_thread.join()
+
+    decoded_stderr = stderr_tail.decode("utf-8", errors="replace")
+    if stdout_exceeded:
+        raise ContractError(
+            f"llama.cpp parity stdout exceeded {stdout_limit} bytes; "
+            f"stderr tail: {decoded_stderr}"
+        )
+    try:
+        decoded_stdout = stdout.decode("utf-8")
+    except UnicodeDecodeError as error:
+        raise ContractError("llama.cpp parity stdout is not UTF-8") from error
+    if return_code != 0:
+        raise ContractError(
+            f"llama.cpp parity command failed with exit {return_code}; "
+            f"stderr tail: {decoded_stderr}"
+        )
+    return BoundedParityResult(
+        stdout=decoded_stdout,
+        stderr_tail=decoded_stderr,
+        stderr_bytes=stderr_bytes,
+    )
 
 
 def _check_llama_commit(llama_cpp: Path) -> None:
@@ -312,7 +412,7 @@ def direct_export(args: argparse.Namespace) -> dict[str, object]:
         raise ContractError("llama.cpp conversion returned without a non-empty adapter")
 
     reference = json.loads(args.hf_reference.read_text())
-    result = _run(
+    result = _run_bounded_parity(
         [
             str(llama_cli),
             "-m",
@@ -337,8 +437,18 @@ def direct_export(args: argparse.Namespace) -> dict[str, object]:
             "0",
             "-n",
             str(len(reference["generated_tokens"])),
-        ],
-        capture_output=True,
+        ]
+    )
+    print(
+        json.dumps(
+            {
+                "llama_parity_stderr_bytes": result.stderr_bytes,
+                "llama_parity_stderr_tail_bytes": len(
+                    result.stderr_tail.encode("utf-8")
+                ),
+            },
+            sort_keys=True,
+        )
     )
     llama_content = result.stdout.strip()
     hf_content = reference["content"].strip()
