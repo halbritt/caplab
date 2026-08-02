@@ -1463,6 +1463,73 @@ def test_chat_template_token_ids_requires_the_plain_list_contract() -> None:
         )
 
 
+def test_full_tokenization_census_normalizes_string_messages_for_processor(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    rows = [
+        {
+            "messages": [
+                {"role": "user", "content": "request"},
+                {"role": "assistant", "content": "response"},
+            ],
+            "meta": {"dispatch_id": "production-shaped-row"},
+        }
+    ]
+    calls: list[list[dict[str, object]]] = []
+
+    class FakeDataset(list):
+        def select(self, indices):  # noqa: ANN001
+            return FakeDataset([self[index] for index in indices])
+
+    def load_dataset(*args, **kwargs):  # noqa: ANN002, ANN003
+        del args, kwargs
+        return FakeDataset(rows)
+
+    def concatenate_datasets(datasets):  # noqa: ANN001
+        return FakeDataset([row for dataset in datasets for row in dataset])
+
+    monkeypatch.setitem(
+        sys.modules,
+        "datasets",
+        SimpleNamespace(
+            concatenate_datasets=concatenate_datasets,
+            load_dataset=load_dataset,
+        ),
+    )
+    monkeypatch.setattr(
+        train_module,
+        "validate_sft_tokenization_census",
+        lambda value: value,
+    )
+
+    class Processor:
+        def apply_chat_template(self, messages, **kwargs):  # noqa: ANN001, ANN003
+            del kwargs
+            calls.append(messages)
+            assert all(isinstance(message["content"], list) for message in messages)
+            assert all(
+                block["type"] == "text"
+                for message in messages
+                for block in message["content"]
+            )
+            return [11, 12] if len(messages) == 1 else [11, 12, 13]
+
+    dataset, selection = train_module._load_datasets(
+        tmp_path,
+        Processor(),
+        cutoff=16,
+        limit=0,
+        select_longest=False,
+        manifest_path=JOB / "smoke" / "input-manifest.json",
+        expected_examples=1,
+        strict_production=False,
+    )
+
+    assert len(dataset) == 1
+    assert len(calls) == 2
+    assert selection["mode"] == "all-authorized"
+
+
 def test_sft_truncation_preserves_labels_and_salvages_prompt_overflow() -> None:
     assert train_module._truncate_sft_tokens(
         [1, 2, 3, 4], [1, 2], cutoff=5
@@ -1757,6 +1824,7 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
         "usd_per_hour": "4.50",
     }
     assert full["phases"]["verify"]["timeout_seconds"] == 900
+    assert "--check-production-tokenization" in full["phases"]["verify"]["argv"]
     assert full["phases"]["preflight"]["enabled"] is False
     assert full["phases"]["train"]["enabled"] is True
     assert full["phases"]["evaluate"]["enabled"] is True
@@ -2333,6 +2401,45 @@ def test_runtime_verify_consumes_gate3_control_receipt_after_validation(
 
     assert observed == [True]
     assert not acceptance.exists()
+
+
+def test_runtime_verify_checks_inputs_and_tokenization_before_large_assets(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    input_root = tmp_path / "input"
+    input_root.mkdir()
+    output = tmp_path / "output"
+    observed: list[str] = []
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["verify", str(input_root), "--check-production-tokenization"],
+    )
+    monkeypatch.setattr(verify_module, "inspect_cuda_runtime", lambda: {})
+    monkeypatch.setattr(verify_module, "load_input_manifest", lambda path: ())
+    monkeypatch.setattr(
+        verify_module,
+        "verify_input_tree",
+        lambda root, entries: observed.append("inputs"),
+    )
+    monkeypatch.setattr(
+        verify_module,
+        "verify_production_tokenization",
+        lambda *args, **kwargs: observed.append("tokenization") or {},
+    )
+    monkeypatch.setattr(
+        verify_module,
+        "verify_runtime_assets",
+        lambda *args, **kwargs: observed.append("assets") or {},
+    )
+    monkeypatch.setattr(verify_module, "output_dir_from_env", lambda: output)
+
+    verify_module.main()
+
+    assert observed == ["inputs", "tokenization", "assets"]
+    assert (output / "artifacts/runtime/production-tokenization.json").is_file()
 
 
 def test_preflight_packaging_requires_preflight_smoke_evidence(tmp_path: Path) -> None:

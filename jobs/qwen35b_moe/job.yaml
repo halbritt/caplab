@@ -23,7 +23,7 @@ inputs:
 phases:
   verify:
     enabled: true
-    argv: [/opt/striatum-qwen35b/bin/verify, --require-gate3-acceptance]
+    argv: [/opt/striatum-qwen35b/bin/verify, --require-gate3-acceptance, --check-production-tokenization]
     timeout_seconds: 900
   preflight:
     enabled: false

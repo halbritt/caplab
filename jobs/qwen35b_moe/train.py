@@ -38,7 +38,11 @@ from .data import (
     MultimodalSFTCollator,
     _truncate_sft_tokens as _shared_truncate_sft_tokens,
 )
-from .profile import load_training_profile, matched_lora_modules
+from .profile import (
+    load_training_profile,
+    matched_lora_modules,
+    resolve_multimodal_paths,
+)
 from .hopper_backend import (
     bind_required_hopper_backend,
     validate_hopper_backend_evidence,
@@ -870,14 +874,15 @@ def _load_datasets(
                 raise ContractError(
                     "SFT examples must contain one user and one assistant message"
                 )
+            processor_messages = resolve_multimodal_paths(messages, input_dir)
             full_ids = _chat_template_token_ids(
                 processor,
-                messages,
+                processor_messages,
                 add_generation_prompt=False,
             )
             prompt_ids = _chat_template_token_ids(
                 processor,
-                messages[:1],
+                processor_messages[:1],
                 add_generation_prompt=True,
             )
             _truncate_sft_tokens(full_ids, prompt_ids, cutoff=cutoff)
