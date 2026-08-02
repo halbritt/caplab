@@ -1033,12 +1033,15 @@ def test_direct_export_receipt_binds_the_adapter_it_converted(
         return SimpleNamespace(stdout="")
 
     monkeypatch.setattr("jobs.qwen35b_moe.export._run", fake_run)
-    monkeypatch.setattr(
-        "jobs.qwen35b_moe.export._run_bounded_parity",
-        lambda command: SimpleNamespace(
+    parity_commands = []
+
+    def fake_parity(command):  # noqa: ANN001
+        parity_commands.append(command)
+        return SimpleNamespace(
             stdout='{"verdict":"accept"}\n', stderr_bytes=0, stderr_tail=""
-        ),
-    )
+        )
+
+    monkeypatch.setattr("jobs.qwen35b_moe.export._run_bounded_parity", fake_parity)
     args = argparse.Namespace(
         llama_cpp=llama_cpp,
         base_gguf=base_gguf,
@@ -1051,6 +1054,7 @@ def test_direct_export_receipt_binds_the_adapter_it_converted(
     receipt = direct_export(args)
 
     assert receipt["source_adapter"] == inspect_peft_adapter(adapter)
+    assert "--single-turn" in parity_commands[0]
 
 
 def test_llama_parity_capture_bounds_diagnostic_output() -> None:

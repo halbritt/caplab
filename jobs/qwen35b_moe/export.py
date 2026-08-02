@@ -429,6 +429,7 @@ def direct_export(args: argparse.Namespace) -> dict[str, object]:
             reference["rendered_prompt"],
             "--no-display-prompt",
             "--no-conversation",
+            "--single-turn",
             "--simple-io",
             "--log-disable",
             "--seed",
