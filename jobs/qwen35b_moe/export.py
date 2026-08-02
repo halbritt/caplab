@@ -15,7 +15,7 @@ import threading
 from typing import Any
 
 from .contract import EXPERT_AWARE, LINEAR_ONLY, MODEL, ContractError, sha256_file
-from .evaluate import VERDICTS, extract_json
+from .evaluate import PARITY_MAX_NEW_TOKENS, VERDICTS, extract_json
 from .peft_config import LINEAR_TARGET_PATTERN, ROUTED_TARGET_PARAMETERS
 from .runtime import model_dir_from_env, output_dir_from_env
 
@@ -493,7 +493,7 @@ def direct_export(args: argparse.Namespace) -> dict[str, object]:
             "--temp",
             "0",
             "-n",
-            str(len(reference["generated_tokens"])),
+            str(PARITY_MAX_NEW_TOKENS),
         ]
     )
     print(

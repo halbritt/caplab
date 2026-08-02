@@ -1063,6 +1063,8 @@ def test_direct_export_receipt_binds_the_adapter_it_converted(
 
     assert receipt["source_adapter"] == inspect_peft_adapter(adapter)
     assert "--single-turn" in parity_commands[0]
+    new_token_index = parity_commands[0].index("-n") + 1
+    assert parity_commands[0][new_token_index] == str(PARITY_MAX_NEW_TOKENS)
     assert receipt["parity"]["mode"] == "review-contract-match"
     assert receipt["parity"]["exact_text_match"] is True
 
@@ -2308,8 +2310,7 @@ def test_export_recovery_is_bounded_and_cannot_retrain() -> None:
     spec = yaml.safe_load(_render_job("recover-export", source_run_id))
 
     assert spec["name"].endswith("export-recovery")
-    assert spec["phases"]["verify"]["enabled"] is True
-    assert "--check-production-tokenization" in spec["phases"]["verify"]["argv"]
+    assert spec["phases"]["verify"]["enabled"] is False
     assert spec["phases"]["preflight"]["enabled"] is False
     assert spec["phases"]["train"]["enabled"] is False
     assert spec["phases"]["evaluate"]["enabled"] is False

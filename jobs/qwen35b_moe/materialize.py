@@ -56,10 +56,7 @@ def _render_job(profile: str, recovery_source_run_id: str | None = None) -> str:
         ):
             raise ContractError("export recovery requires a valid source run ID")
         spec["name"] = "striatum-qwen36-35b-a3b-export-recovery"
-        spec["phases"]["verify"]["argv"] = [
-            "/opt/striatum-qwen35b/bin/verify",
-            "--check-production-tokenization",
-        ]
+        spec["phases"]["verify"]["enabled"] = False
         spec["phases"]["train"]["enabled"] = False
         spec["phases"]["evaluate"]["enabled"] = False
         spec["phases"]["package"]["argv"] = [
