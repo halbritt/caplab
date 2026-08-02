@@ -113,6 +113,7 @@ from jobs.qwen35b_moe.train import (  # noqa: E402
     require_no_full_logits,
     select_longest_tokenized_index,
     should_force_final_checkpoint,
+    synchronize_resumed_optimizer_learning_rate,
     synchronize_trainer_save_interval,
     validate_liger_fused_loss_proof,
     verify_checkpoint_manifest,
@@ -1455,6 +1456,42 @@ def test_resume_uses_current_invocation_checkpoint_interval() -> None:
     with pytest.raises(ContractError, match="positive integer"):
         synchronize_trainer_save_interval(
             SimpleNamespace(save_steps=0), SimpleNamespace(save_steps=5)
+        )
+
+
+def test_resume_uses_current_invocation_scheduler_rate_before_first_step() -> None:
+    optimizer = SimpleNamespace(
+        param_groups=[{"lr": 0.0}, {"lr": 0.0}],
+    )
+    scheduler = SimpleNamespace(
+        last_epoch=159,
+        get_lr=lambda: [5.204e-5, 2.602e-5],
+    )
+
+    evidence = synchronize_resumed_optimizer_learning_rate(
+        optimizer,
+        scheduler,
+        SimpleNamespace(global_step=159),
+        max_steps=318,
+    )
+
+    assert [group["lr"] for group in optimizer.param_groups] == [
+        5.204e-5,
+        2.602e-5,
+    ]
+    assert evidence == {
+        "global_step": 159,
+        "scheduler_last_epoch": 159,
+        "learning_rates_before": [0.0, 0.0],
+        "learning_rates_applied": [5.204e-5, 2.602e-5],
+    }
+
+    with pytest.raises(ContractError, match="positive learning rate"):
+        synchronize_resumed_optimizer_learning_rate(
+            optimizer,
+            SimpleNamespace(last_epoch=159, get_lr=lambda: [0.0, 0.0]),
+            SimpleNamespace(global_step=159),
+            max_steps=318,
         )
 
 

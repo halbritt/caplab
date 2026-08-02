@@ -14,6 +14,7 @@ import subprocess
 import tempfile
 import time
 from typing import Any, Sequence
+import warnings
 
 from .contract import (
     STRATEGIES,
@@ -331,6 +332,66 @@ def synchronize_trainer_save_interval(
         "checkpoint_save_steps_before": previous,
         "checkpoint_save_steps_requested": requested,
         "checkpoint_save_steps_changed": previous != requested,
+    }
+
+
+def synchronize_resumed_optimizer_learning_rate(
+    optimizer: Any,
+    lr_scheduler: Any,
+    state: Any,
+    *,
+    max_steps: int,
+) -> dict[str, object]:
+    """Apply the current invocation's schedule before its first resumed update.
+
+    Transformers constructs the scheduler for the extended ``max_steps`` horizon,
+    then restores the previous scheduler and optimizer state.  At a staged
+    checkpoint that previous schedule is exhausted, so the optimizer otherwise
+    performs the first resumed update at a stale zero rate.  The restored
+    scheduler's ``last_epoch`` is the correct global step and its current
+    ``get_lr`` calculation uses the newly constructed schedule function.
+    """
+
+    global_step = getattr(state, "global_step", None)
+    scheduler_step = getattr(lr_scheduler, "last_epoch", None)
+    if (
+        isinstance(global_step, bool)
+        or not isinstance(global_step, int)
+        or global_step <= 0
+        or isinstance(max_steps, bool)
+        or not isinstance(max_steps, int)
+        or max_steps <= global_step
+    ):
+        raise ContractError("resumed schedule requires 0 < global step < max steps")
+    if scheduler_step != global_step:
+        raise ContractError(
+            "restored scheduler step does not match the resumed global step"
+        )
+    groups = getattr(optimizer, "param_groups", None)
+    get_lr = getattr(lr_scheduler, "get_lr", None)
+    if not isinstance(groups, list) or not groups or not callable(get_lr):
+        raise ContractError("resumed optimizer or scheduler interface is invalid")
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", UserWarning)
+        raw_rates = get_lr()
+    try:
+        rates = [float(rate) for rate in raw_rates]
+        before = [float(group["lr"]) for group in groups]
+    except (KeyError, TypeError, ValueError) as error:
+        raise ContractError("resumed learning rates are not numeric") from error
+    if len(rates) != len(groups):
+        raise ContractError("resumed scheduler and optimizer group counts differ")
+    if any(not math.isfinite(rate) or rate < 0 for rate in rates):
+        raise ContractError("resumed learning rate is negative or non-finite")
+    if not any(rate > 0 for rate in rates):
+        raise ContractError("resumed stage has no positive learning rate")
+    for group, rate in zip(groups, rates, strict=True):
+        group["lr"] = rate
+    return {
+        "global_step": global_step,
+        "scheduler_last_epoch": scheduler_step,
+        "learning_rates_before": before,
+        "learning_rates_applied": rates,
     }
 
 
@@ -1092,6 +1153,7 @@ def run(args: argparse.Namespace) -> None:
 
     acknowledged_checkpoints: list[dict[str, Any]] = []
     checkpoint_schedule: dict[str, object] = {}
+    resumed_learning_rate: dict[str, object] = {}
 
     class CompletionCallback(TrainerCallback):
         def on_train_begin(  # noqa: ANN001
@@ -1107,6 +1169,22 @@ def run(args: argparse.Namespace) -> None:
                 ),
                 flush=True,
             )
+            if resume_from_checkpoint is not None:
+                resumed_learning_rate.update(
+                    synchronize_resumed_optimizer_learning_rate(
+                        kwargs.get("optimizer"),
+                        kwargs.get("lr_scheduler"),
+                        state,
+                        max_steps=training_args.max_steps,
+                    )
+                )
+                print(
+                    json.dumps(
+                        {"event": "resumed-learning-rate", **resumed_learning_rate},
+                        sort_keys=True,
+                    ),
+                    flush=True,
+                )
             return control
 
         def on_step_end(  # noqa: ANN001
@@ -1293,6 +1371,7 @@ def run(args: argparse.Namespace) -> None:
             "resume_acknowledgement": resume_acknowledgement,
             "acknowledged_checkpoints": acknowledged_checkpoints,
             "checkpoint_schedule": checkpoint_schedule,
+            "resumed_learning_rate": resumed_learning_rate or None,
             "liger_fused_loss": validated_liger_proof,
             "hopper_linear_attention": validated_hopper_backend,
             "final_adapter": str(final_adapter),

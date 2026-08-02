@@ -237,6 +237,11 @@ reads cost, elapsed, and train-phase timeout authority from the runner's
 stops if either cap or any available 35B gate fails. Training uses cutoff 40,960,
 gradient accumulation 8, two epochs (318 expected steps), Liger's fused linear
 cross-entropy, and checkpoint interval 25. The
+current invocation is authoritative after every staged resume: the trainer
+reapplies its requested checkpoint interval and recomputes the optimizer-group
+learning rates from the extended scheduler horizon before the first resumed
+update. This prevents restored state from silently retaining an earlier save
+cadence or the zero terminal rate of an exhausted shorter schedule. The
 fused loss is required: materializing `sequence x 248,320` logits exceeded the
 H100 memory budget in the retained 27B run. Every training process verifies
 that the pinned Qwen MoE fused forward is actually bound and records that real
