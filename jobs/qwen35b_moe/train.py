@@ -28,7 +28,6 @@ from .contract import (
 
 from .peft_config import (
     LINEAR_TARGET_PATTERN,
-    _predicted_lora_parameters,
     adapter_evidence,
     bind_adapter_source,
     lora_config,
@@ -71,6 +70,21 @@ LIGER_KERNEL_CONFIG = {
 
 class _AcknowledgementNotReady(ContractError):
     """A published acknowledgement path does not yet contain complete JSON."""
+
+
+def _production_adapter_evidence(
+    measured: Any,
+    matched_modules: Sequence[str],
+    *,
+    total_parameters: int,
+) -> dict[str, Any]:
+    """Complete the strict MoE measurement with its exact module census."""
+
+    measurement = dict(measured.to_dict())
+    measurement["matched_modules"] = list(matched_modules)
+    measurement["matched_module_count"] = len(matched_modules)
+    measurement["total_parameters"] = total_parameters
+    return measurement
 
 
 def require_no_full_logits(outputs: object) -> None:
@@ -952,7 +966,6 @@ def run(args: argparse.Namespace) -> None:
         profile.input_manifest, strict_production=profile.strict_input_manifest
     )
     verify_input_tree(input_dir, entries)
-    config = profile.raw
     train_kwargs = profile.train
     set_seed(args.seed)
 
@@ -1021,10 +1034,10 @@ def run(args: argparse.Namespace) -> None:
         validate_adapter_measurement(
             measured, expected_adapter_measurement(args.strategy)
         )
-        measurement: dict[str, Any] = measured.to_dict()
-        measurement["matched_modules"] = list(matched_modules)
-        measurement["total_parameters"] = sum(
-            parameter.numel() for parameter in model.parameters()
+        measurement = _production_adapter_evidence(
+            measured,
+            matched_modules,
+            total_parameters=sum(parameter.numel() for parameter in model.parameters()),
         )
     else:
         measurement = adapter_evidence(

@@ -89,6 +89,7 @@ from jobs.qwen35b_moe.package import (  # noqa: E402
     build_manifest,
     validate_export_receipt,
 )
+from jobs.qwen35b_moe.package_smoke import _terminal_evidence_failures  # noqa: E402
 from jobs.qwen35b_moe.preflight import (  # noqa: E402
     PACKAGES,
     verify_liger_fused_loss_receipt,
@@ -106,6 +107,7 @@ from jobs.qwen35b_moe.train import (  # noqa: E402
     ACK_NAMESPACE,
     ACK_PROTOCOL,
     _checkpoint_manifest,
+    _production_adapter_evidence,
     require_checkpoint_acknowledgement,
     require_no_full_logits,
     select_longest_tokenized_index,
@@ -1320,6 +1322,69 @@ def test_checkpoint_acknowledgement_waits_for_complete_atomic_publication(
     assert acknowledgement["run_id"] == "run-checkpoint-ack"
 
 
+def test_production_adapter_evidence_records_the_exact_matched_module_count() -> None:
+    class Measurement:
+        def to_dict(self) -> dict[str, int]:
+            return {"trainable_parameters": 42_332_160}
+
+    evidence = _production_adapter_evidence(
+        Measurement(),
+        ("model.layer.0.q_proj", "model.layer.0.v_proj"),
+        total_parameters=34_224_090_480,
+    )
+
+    assert evidence["matched_modules"] == [
+        "model.layer.0.q_proj",
+        "model.layer.0.v_proj",
+    ]
+    assert evidence["matched_module_count"] == 2
+    assert evidence["total_parameters"] == 34_224_090_480
+
+
+def test_smoke_terminal_validation_names_a_missing_moe_module_count(
+    tmp_path: Path,
+) -> None:
+    kernel = _flash_qla_receipt()
+    resume = tmp_path / "checkpoint-2"
+    preflight = {
+        "protocol": "striatum-training-profile-preflight/1",
+        "smoke": "passed",
+        "flash_qla": kernel,
+        "model": {"id": "Qwen/Qwen3.6-35B-A3B"},
+    }
+    training = {
+        "protocol": "striatum-training-result/2",
+        "global_step": 4,
+        "resumed_from": str(resume),
+        "optimization": {
+            "optimizer_steps": 2,
+            "backward_passes_with_adapter_gradients": 2,
+            "nonzero_gradient_parameters": ["adapter.weight"],
+        },
+        "batch": {"image_count": 1, "supervised_tokens": 21},
+        "measurement": {"trainable_parameters": 42_332_160},
+        "metrics": {"train_loss": 2.1},
+    }
+    inference = {
+        "protocol": "striatum-adapter-inference/1",
+        "adapter_loaded": True,
+    }
+
+    failures = _terminal_evidence_failures(
+        preflight,
+        training,
+        inference,
+        kernel,
+        {"status": "bound"},
+        model_id="Qwen/Qwen3.6-35B-A3B",
+        expected_resume=resume,
+        expected_target_count=310,
+        expected_trainable_parameters=42_332_160,
+    )
+
+    assert failures == ["measurement.matched_module_count"]
+
+
 def test_forced_checkpoint_is_exact_and_validated() -> None:
     assert should_force_final_checkpoint(159, 159, True) is True
     assert should_force_final_checkpoint(318, 318, True) is True
@@ -2000,7 +2065,7 @@ def test_preflight_materialization_stamps_single_quoted_yaml_hash(
         receipt,
         {
             "protocol": "striatum-worker-image-build/2",
-            "image": "ghcr.io/halbritt/striatum-tuner-qwen35b-moe:0.1.19",
+            "image": "ghcr.io/halbritt/striatum-tuner-qwen35b-moe:0.1.20",
             "source_commit": "b" * 40,
             "jobrunner_image": (
                 "ghcr.io/halbritt/runpod-jobrunner-noop@sha256:" + "c" * 64

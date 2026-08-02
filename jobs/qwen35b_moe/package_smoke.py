@@ -29,6 +29,100 @@ def _object(path: Path, label: str) -> dict[str, object]:
     return value
 
 
+def _positive_int(value: object) -> bool:
+    return not isinstance(value, bool) and isinstance(value, int) and value > 0
+
+
+def _terminal_evidence_failures(
+    preflight: dict[str, object],
+    training: dict[str, object],
+    inference: dict[str, object],
+    kernel: dict[str, object],
+    hopper_backend: dict[str, object],
+    *,
+    model_id: str,
+    expected_resume: Path,
+    expected_target_count: int,
+    expected_trainable_parameters: int,
+) -> list[str]:
+    """Name every incomplete terminal-evidence binding without weakening it."""
+
+    failures: list[str] = []
+    model = preflight.get("model")
+    resumed_from = training.get("resumed_from")
+    optimization = training.get("optimization")
+    batch = training.get("batch")
+    measurement = training.get("measurement")
+    metrics = training.get("metrics")
+    requirements = (
+        ("preflight.protocol", preflight.get("protocol") == "striatum-training-profile-preflight/1"),
+        ("preflight.smoke", preflight.get("smoke") == "passed"),
+        ("preflight.flash_qla", preflight.get("flash_qla") == kernel),
+        ("preflight.model.id", isinstance(model, dict) and model.get("id") == model_id),
+        ("training.protocol", training.get("protocol") == "striatum-training-result/2"),
+        ("training.global_step", training.get("global_step") == 4),
+        ("hopper_linear_attention.status", hopper_backend.get("status") == "bound"),
+        (
+            "training.resumed_from",
+            isinstance(resumed_from, str)
+            and Path(resumed_from).resolve() == expected_resume.resolve(),
+        ),
+        (
+            "optimization.optimizer_steps",
+            isinstance(optimization, dict)
+            and _positive_int(optimization.get("optimizer_steps")),
+        ),
+        (
+            "optimization.backward_passes_with_adapter_gradients",
+            isinstance(optimization, dict)
+            and _positive_int(
+                optimization.get("backward_passes_with_adapter_gradients")
+            ),
+        ),
+        (
+            "optimization.nonzero_gradient_parameters",
+            isinstance(optimization, dict)
+            and bool(optimization.get("nonzero_gradient_parameters")),
+        ),
+        (
+            "batch.image_count",
+            isinstance(batch, dict) and _positive_int(batch.get("image_count")),
+        ),
+        (
+            "batch.supervised_tokens",
+            isinstance(batch, dict)
+            and _positive_int(batch.get("supervised_tokens")),
+        ),
+        (
+            "measurement.matched_module_count",
+            isinstance(measurement, dict)
+            and measurement.get("matched_module_count") == expected_target_count,
+        ),
+        (
+            "measurement.trainable_parameters",
+            isinstance(measurement, dict)
+            and measurement.get("trainable_parameters")
+            == expected_trainable_parameters,
+        ),
+        (
+            "metrics.train_loss",
+            isinstance(metrics, dict)
+            and not isinstance(metrics.get("train_loss"), bool)
+            and isinstance(metrics.get("train_loss"), (int, float))
+            and math.isfinite(float(metrics["train_loss"])),
+        ),
+        (
+            "inference.protocol",
+            inference.get("protocol") == "striatum-adapter-inference/1",
+        ),
+        ("inference.adapter_loaded", inference.get("adapter_loaded") is True),
+    )
+    for label, satisfied in requirements:
+        if not satisfied:
+            failures.append(label)
+    return failures
+
+
 def build_smoke_manifest(run_root: Path, config: Path) -> dict[str, object]:
     run_root = run_root.resolve()
     profile = load_training_profile(config)
@@ -41,45 +135,26 @@ def build_smoke_manifest(run_root: Path, config: Path) -> dict[str, object]:
     hopper_backend = validate_hopper_backend_evidence(
         training.get("hopper_linear_attention")
     )
-    optimization = training.get("optimization")
-    batch = training.get("batch")
-    measurement = training.get("measurement")
-    metrics = training.get("metrics")
     checkpoint_2 = root / "training/checkpoint-2"
     checkpoint_4 = root / "training/checkpoint-4"
     verify_checkpoint_manifest(checkpoint_2)
     verify_checkpoint_manifest(checkpoint_4)
-    resumed_from = training.get("resumed_from")
-    if (
-        preflight.get("protocol") != "striatum-training-profile-preflight/1"
-        or preflight.get("smoke") != "passed"
-        or preflight.get("flash_qla") != kernel
-        or not isinstance(preflight.get("model"), dict)
-        or preflight["model"].get("id") != profile.model_id
-        or training.get("protocol") != "striatum-training-result/2"
-        or training.get("global_step") != 4
-        or hopper_backend.get("status") != "bound"
-        or not isinstance(resumed_from, str)
-        or Path(resumed_from).resolve() != checkpoint_2.resolve()
-        or not isinstance(optimization, dict)
-        or int(optimization.get("optimizer_steps", 0)) <= 0
-        or int(optimization.get("backward_passes_with_adapter_gradients", 0)) <= 0
-        or not optimization.get("nonzero_gradient_parameters")
-        or not isinstance(batch, dict)
-        or int(batch.get("image_count", 0)) <= 0
-        or int(batch.get("supervised_tokens", 0)) <= 0
-        or not isinstance(measurement, dict)
-        or int(measurement.get("matched_module_count", 0))
-        != int(profile.strategy("linear-only")["expected_target_count"])
-        or int(measurement.get("trainable_parameters", 0))
-        != int(profile.strategy("linear-only")["expected_trainable_parameters"])
-        or not isinstance(metrics, dict)
-        or not isinstance(metrics.get("train_loss"), (int, float))
-        or not math.isfinite(float(metrics["train_loss"]))
-        or inference.get("protocol") != "striatum-adapter-inference/1"
-        or inference.get("adapter_loaded") is not True
-    ):
-        raise ContractError("smoke ladder terminal evidence is incomplete")
+    strategy = profile.strategy("linear-only")
+    failures = _terminal_evidence_failures(
+        preflight,
+        training,
+        inference,
+        kernel,
+        hopper_backend,
+        model_id=profile.model_id,
+        expected_resume=checkpoint_2,
+        expected_target_count=int(strategy["expected_target_count"]),
+        expected_trainable_parameters=int(strategy["expected_trainable_parameters"]),
+    )
+    if failures:
+        raise ContractError(
+            "smoke ladder terminal evidence is incomplete: " + ", ".join(failures)
+        )
 
     files = []
     for path in sorted((run_root / "artifacts").rglob("*")):
