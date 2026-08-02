@@ -2310,7 +2310,10 @@ def test_export_recovery_is_bounded_and_cannot_retrain() -> None:
     spec = yaml.safe_load(_render_job("recover-export", source_run_id))
 
     assert spec["name"].endswith("export-recovery")
-    assert spec["phases"]["verify"]["enabled"] is False
+    assert spec["phases"]["verify"]["enabled"] is True
+    assert spec["phases"]["verify"]["argv"] == [
+        "/opt/striatum-qwen35b/bin/verify"
+    ]
     assert spec["phases"]["preflight"]["enabled"] is False
     assert spec["phases"]["train"]["enabled"] is False
     assert spec["phases"]["evaluate"]["enabled"] is False
