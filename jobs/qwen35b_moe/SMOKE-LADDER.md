@@ -78,9 +78,9 @@ finite nonzero gradients before loading any model weights.
 
 ```bash
 JOBRUNNER_IMAGE=ghcr.io/halbritt/runpod-jobrunner-noop@sha256:304a555bc6ddbc269806c3440a7eb221b4a830169fa4e1ecf4b742551d45bb73
-BUILD_RECEIPT=/tmp/striatum-qwen35b-image-0.1.16.json
+BUILD_RECEIPT=/tmp/striatum-qwen35b-image-0.1.17.json
 python3 -m jobs.qwen35b_moe.build_image \
-  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.16 \
+  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.17 \
   --jobrunner-image "$JOBRUNNER_IMAGE" \
   --receipt "$BUILD_RECEIPT" --push
 ```
@@ -114,6 +114,12 @@ FlashQLA dispatch and compilation, BF16 gradients, launcher, persistent mount,
 cache path, checkpoint mirroring/acknowledgement, artifact recovery, and pod
 deletion. It does not validate the 35B MoE graph, expert dispatch within the
 model, its adapter target census, or its memory use.
+
+On SM90, the shared trainer binds every Qwen linear-attention layer directly
+to FLA's configured `FlashQLABackend`. Backend rejection is an immediate,
+reason-bearing error; generic fallback is forbidden. The training receipt and
+terminal package both require nonzero calls through this model-layer binding,
+in addition to the standalone kernel probe.
 
 ## Gate 3: real 35B MoE on H200
 

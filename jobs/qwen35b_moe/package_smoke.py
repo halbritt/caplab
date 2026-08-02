@@ -11,6 +11,7 @@ import tempfile
 
 from .contract import ContractError, sha256_file
 from .flash_qla_smoke import validate_flash_qla_smoke_receipt
+from .hopper_backend import validate_hopper_backend_evidence
 from .profile import load_training_profile
 from .runtime import output_dir_from_env
 from .train import verify_checkpoint_manifest
@@ -37,6 +38,9 @@ def build_smoke_manifest(run_root: Path, config: Path) -> dict[str, object]:
     inference = _object(root / "inference.json", "inference receipt")
     kernel = _object(root / "flash-qla-smoke.json", "FlashQLA receipt")
     validate_flash_qla_smoke_receipt(kernel)
+    hopper_backend = validate_hopper_backend_evidence(
+        training.get("hopper_linear_attention")
+    )
     optimization = training.get("optimization")
     batch = training.get("batch")
     measurement = training.get("measurement")
@@ -54,6 +58,7 @@ def build_smoke_manifest(run_root: Path, config: Path) -> dict[str, object]:
         or preflight["model"].get("id") != profile.model_id
         or training.get("protocol") != "striatum-training-result/2"
         or training.get("global_step") != 4
+        or hopper_backend.get("status") != "bound"
         or not isinstance(resumed_from, str)
         or Path(resumed_from).resolve() != checkpoint_2.resolve()
         or not isinstance(optimization, dict)

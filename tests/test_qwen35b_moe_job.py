@@ -71,6 +71,10 @@ from jobs.qwen35b_moe.fla_dispatch_compat import (  # noqa: E402
     patch_backend_source,
     patch_source,
 )
+from jobs.qwen35b_moe.hopper_backend import (  # noqa: E402
+    bind_required_hopper_backend,
+    validate_hopper_backend_evidence,
+)
 from jobs.qwen35b_moe.peft_config import (  # noqa: E402
     FUSED_EXPERT_SPEC_SHA256,
     LINEAR_TARGET_PATTERN,
@@ -142,12 +146,26 @@ def test_smoke_profile_selects_dense_model_without_changing_production_default()
     assert production.model_id == "Qwen/Qwen3.6-35B-A3B"
     assert production.model_type == "qwen3_5_moe"
     assert production.liger_fused_loss is True
+    assert production.runtime["hopper_linear_attention_backend"] == "flash_qla"
     assert smoke.model_id == "Qwen/Qwen3.5-0.8B"
     assert smoke.model_revision == "2fc06364715b967f1860aea9cf38778875588b17"
     assert smoke.model_type == "qwen3_5"
     assert smoke.cutoff_length == 512
     assert smoke.maximum_examples == 8
     assert smoke.liger_fused_loss is False
+    assert smoke.runtime["hopper_linear_attention_backend"] == "flash_qla"
+
+
+def test_training_profile_rejects_unknown_hopper_backend_before_model_loading(
+    tmp_path: Path,
+) -> None:
+    profile = json.loads((JOB / "smoke" / "training-config.json").read_text())
+    profile["runtime"]["hopper_linear_attention_backend"] = "implicit-fallback"
+    path = tmp_path / "training-config.json"
+    path.write_text(json.dumps(profile))
+
+    with pytest.raises(ContractError, match="hopper_linear_attention_backend"):
+        load_training_profile(path)
 
 
 def test_multimodal_paths_are_resolved_inside_the_input_root(tmp_path: Path) -> None:
@@ -326,6 +344,101 @@ def test_flash_qla_observer_wraps_the_actual_implementation_and_restores_it() ->
         assert observed["count"] == 1
 
     assert module.chunk_gated_delta_rule is original
+
+
+def test_required_hopper_backend_binds_every_qwen_linear_layer_and_records_calls() -> None:
+    class LinearLayer:
+        def __init__(self) -> None:
+            self.chunk_gated_delta_rule = lambda *args, **kwargs: "fallback"
+
+    layers = [LinearLayer(), LinearLayer()]
+    model = SimpleNamespace(
+        named_modules=lambda: iter(
+            [
+                ("", object()),
+                *((f"layer.{index}.linear_attn", layer) for index, layer in enumerate(layers)),
+            ]
+        )
+    )
+    calls: list[tuple[tuple[object, ...], dict[str, object]]] = []
+
+    class Backend:
+        @classmethod
+        def is_available(cls) -> bool:
+            return True
+
+        @classmethod
+        def is_enabled(cls) -> bool:
+            return True
+
+        def verify(self, name, *args, **kwargs):  # noqa: ANN001
+            assert name == "chunk_gated_delta_rule"
+            return True, None
+
+        def chunk_gated_delta_rule(self, *args, **kwargs):  # noqa: ANN001
+            calls.append((args, kwargs))
+            return "flash-qla"
+
+    evidence = bind_required_hopper_backend(
+        model,
+        {"hopper_linear_attention_backend": "flash_qla"},
+        compute_capability=(9, 0),
+        backend_factory=Backend,
+    )
+
+    assert evidence["bound_module_count"] == 2
+    assert layers[0].chunk_gated_delta_rule("q", g="g") == "flash-qla"
+    assert evidence["observed_calls"] == 1
+    assert calls == [(('q',), {"g": "g"})]
+    assert validate_hopper_backend_evidence(evidence) == evidence
+
+
+def test_required_hopper_backend_is_not_applied_on_ampere_and_fails_closed() -> None:
+    model = SimpleNamespace(named_modules=lambda: iter([]))
+    evidence = bind_required_hopper_backend(
+        model,
+        {"hopper_linear_attention_backend": "flash_qla"},
+        compute_capability=(8, 6),
+    )
+    assert evidence == {
+        "protocol": "striatum-hopper-linear-attention/1",
+        "configured_backend": "flash_qla",
+        "status": "not-applicable",
+        "compute_capability": [8, 6],
+        "bound_modules": [],
+        "bound_module_count": 0,
+        "observed_calls": 0,
+    }
+
+    class RejectingBackend:
+        @classmethod
+        def is_available(cls) -> bool:
+            return True
+
+        @classmethod
+        def is_enabled(cls) -> bool:
+            return True
+
+        def verify(self, name, *args, **kwargs):  # noqa: ANN001
+            return False, "K must be 128"
+
+        def chunk_gated_delta_rule(self, *args, **kwargs):  # noqa: ANN001
+            raise AssertionError("rejected backend must not execute")
+
+    layer = SimpleNamespace(chunk_gated_delta_rule=lambda: "fallback")
+    model = SimpleNamespace(
+        named_modules=lambda: iter([("model.layers.0.linear_attn", layer)])
+    )
+    evidence = bind_required_hopper_backend(
+        model,
+        {"hopper_linear_attention_backend": "flash_qla"},
+        compute_capability=(9, 0),
+        backend_factory=RejectingBackend,
+    )
+    with pytest.raises(ContractError, match="FlashQLA rejected.*K must be 128"):
+        layer.chunk_gated_delta_rule("q")
+    with pytest.raises(ContractError, match="no observed FlashQLA layer calls"):
+        validate_hopper_backend_evidence(evidence)
 
 
 def _write_json(path: Path, value: object) -> None:

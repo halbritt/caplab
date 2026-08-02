@@ -78,6 +78,15 @@ def load_training_profile(path: Path) -> TrainingProfile:
     train = raw.get("train")
     if not isinstance(model, Mapping) or not isinstance(train, Mapping):
         raise ContractError("training profile requires model and train objects")
+    runtime = raw.get("runtime", {})
+    if not isinstance(runtime, Mapping):
+        raise ContractError("training profile runtime must be an object")
+    hopper_backend = runtime.get("hopper_linear_attention_backend")
+    if hopper_backend not in {None, "flash_qla"}:
+        raise ContractError(
+            "runtime.hopper_linear_attention_backend must be 'flash_qla' "
+            "when configured"
+        )
     model_id = _required_string(model, "id", "model")
     model_revision = _required_string(model, "revision", "model")
     model_type = _required_string(model, "expected_model_type", "model")

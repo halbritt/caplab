@@ -40,6 +40,10 @@ from .data import (
     _truncate_sft_tokens as _shared_truncate_sft_tokens,
 )
 from .profile import load_training_profile, matched_lora_modules
+from .hopper_backend import (
+    bind_required_hopper_backend,
+    validate_hopper_backend_evidence,
+)
 from .runtime import (
     input_dir_from_env,
     load_quantized_base,
@@ -959,6 +963,11 @@ def run(args: argparse.Namespace) -> None:
         )
 
     base, processor = load_quantized_base(args.model_dir.resolve(), profile)
+    hopper_backend_evidence = bind_required_hopper_backend(base, profile.runtime)
+    print(
+        json.dumps({"event": "hopper-backend", **hopper_backend_evidence}, sort_keys=True),
+        flush=True,
+    )
     strategy_config = profile.strategy(args.strategy)
     target_pattern = strategy_config.get("target_pattern", LINEAR_TARGET_PATTERN)
     if not isinstance(target_pattern, str):
@@ -1168,6 +1177,9 @@ def run(args: argparse.Namespace) -> None:
         raise ContractError("Trainer completed without an optimizer step")
     if collator.receipt is None:
         raise ContractError("Trainer completed without constructing a batch")
+    validated_hopper_backend = validate_hopper_backend_evidence(
+        hopper_backend_evidence
+    )
     validated_liger_proof = (
         validate_liger_fused_loss_proof(liger_proof)
         if profile.liger_fused_loss
@@ -1211,6 +1223,7 @@ def run(args: argparse.Namespace) -> None:
             "resume_acknowledgement": resume_acknowledgement,
             "acknowledged_checkpoints": acknowledged_checkpoints,
             "liger_fused_loss": validated_liger_proof,
+            "hopper_linear_attention": validated_hopper_backend,
             "final_adapter": str(final_adapter),
         },
     )

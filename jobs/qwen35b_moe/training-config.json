@@ -6,6 +6,9 @@
     "expected_model_type": "qwen3_5_moe"
   },
   "cutoff_length": 40960,
+  "runtime": {
+    "hopper_linear_attention_backend": "flash_qla"
+  },
   "tokenization_contract": {
     "protocol": "striatum-sft-tokenization-census/1",
     "policy": "prompt-tail-preserve-assistant-on-prompt-overflow",
