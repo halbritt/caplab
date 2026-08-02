@@ -252,9 +252,13 @@ def load_input_manifest(
             raise ContractError("input manifest entries must be objects")
         entry = dict(value)
         if "role" not in entry:
-            entry["role"] = (
-                "eval" if entry.get("path") == "sft/review.eval.jsonl" else "train"
-            )
+            input_path = str(entry.get("path", ""))
+            if input_path.startswith("control/"):
+                entry["role"] = "asset"
+            elif input_path == "sft/review.eval.jsonl":
+                entry["role"] = "eval"
+            else:
+                entry["role"] = "train"
         try:
             entries_list.append(InputFile(**entry))
         except TypeError as error:

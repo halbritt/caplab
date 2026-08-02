@@ -164,7 +164,6 @@ def materialize(
             rendered_manifest["files"].append(
                 {
                     "path": "control/gate3-acceptance.json",
-                    "role": "asset",
                     "size": acceptance_target.stat().st_size,
                     "sha256": sha256_file(acceptance_target),
                 }

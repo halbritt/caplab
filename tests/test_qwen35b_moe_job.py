@@ -2143,6 +2143,42 @@ def test_full_materialization_requires_gate3_acceptance(tmp_path: Path) -> None:
         materialize(ROOT, tmp_path / "full", "full")
 
 
+def test_full_materialization_uses_the_runner_input_manifest_schema(
+    tmp_path: Path,
+) -> None:
+    digest = "sha256:" + "a" * 64
+    acceptance = tmp_path / "gate3-acceptance.json"
+    _write_json(
+        acceptance,
+        {
+            "protocol": "striatum-gate-acceptance/1",
+            "gate": 3,
+            "accepted": True,
+            "run_id": "run-20260801T230000-abcdef012345",
+            "image_digest": (
+                "ghcr.io/halbritt/striatum-tuner-qwen35b-moe@" + digest
+            ),
+            "image_source_commit": "b" * 40,
+            "model": {
+                "id": "Qwen/Qwen3.6-35B-A3B",
+                "revision": "995ad96eacd98c81ed38be0c5b274b04031597b0",
+                "model_type": "qwen3_5_moe",
+            },
+            "artifact_manifest_sha256": "c" * 64,
+        },
+    )
+
+    bundle = materialize(ROOT, tmp_path / "full", "full", acceptance)
+    manifest = json.loads((bundle / "input-manifest.json").read_text())
+    gate_entry = next(
+        item
+        for item in manifest["files"]
+        if item["path"] == "control/gate3-acceptance.json"
+    )
+
+    assert set(gate_entry) == {"path", "size", "sha256"}
+
+
 def test_gate3_acceptance_is_bound_to_exact_image_and_moe_model(tmp_path: Path) -> None:
     digest = "sha256:" + "a" * 64
     receipt = tmp_path / "gate3-acceptance.json"
