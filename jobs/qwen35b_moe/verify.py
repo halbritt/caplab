@@ -93,6 +93,8 @@ def main() -> None:
             ),
         )
     verify_input_tree(args.input_root, entries)
+    if acceptance is not None:
+        acceptance_path.unlink()
     _atomic_json(
         output_dir_from_env() / "artifacts/runtime/cuda-runtime.json",
         cuda_receipt,

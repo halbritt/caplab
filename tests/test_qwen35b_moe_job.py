@@ -2296,6 +2296,45 @@ def test_gate3_acceptance_rejects_a_recovery_from_another_image(
         _resolve_controller_recovery(tmp_path, run_id, expected_image)
 
 
+def test_runtime_verify_consumes_gate3_control_receipt_after_validation(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    input_root = tmp_path / "input"
+    acceptance = input_root / "control/gate3-acceptance.json"
+    _write_json(acceptance, {"accepted": True})
+    request = tmp_path / "request.json"
+    _write_json(request, {"image_digest": "sha256:" + "a" * 64})
+    output = tmp_path / "output"
+    observed: list[bool] = []
+
+    monkeypatch.setenv("RUNPOD_JOBRUNNER_REQUEST_PATH", str(request))
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["verify", str(input_root), "--require-gate3-acceptance"],
+    )
+    monkeypatch.setattr(verify_module, "inspect_cuda_runtime", lambda: {})
+    monkeypatch.setattr(verify_module, "verify_runtime_assets", lambda *a, **k: {})
+    monkeypatch.setattr(verify_module, "load_input_manifest", lambda path: ())
+    monkeypatch.setattr(
+        verify_module,
+        "validate_gate3_acceptance",
+        lambda path, **kwargs: {"accepted": True},
+    )
+    monkeypatch.setattr(
+        verify_module,
+        "verify_input_tree",
+        lambda root, entries: observed.append(acceptance.is_file()),
+    )
+    monkeypatch.setattr(verify_module, "output_dir_from_env", lambda: output)
+
+    verify_module.main()
+
+    assert observed == [True]
+    assert not acceptance.exists()
+
+
 def test_preflight_packaging_requires_preflight_smoke_evidence(tmp_path: Path) -> None:
     root = tmp_path / "artifacts/preflight"
     _write_json(root / "preflight.json", {})

@@ -78,9 +78,9 @@ finite nonzero gradients before loading any model weights.
 
 ```bash
 JOBRUNNER_IMAGE=ghcr.io/halbritt/runpod-jobrunner-noop@sha256:4b9f3a9ab72f3ebf0fb6f584a57162eb7d1098800492eef4390fc5c0481d5128
-BUILD_RECEIPT=/tmp/striatum-qwen35b-image-0.1.20.json
+BUILD_RECEIPT=/tmp/striatum-qwen35b-image-0.1.21.json
 python3 -m jobs.qwen35b_moe.build_image \
-  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.20 \
+  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.21 \
   --jobrunner-image "$JOBRUNNER_IMAGE" \
   --receipt "$BUILD_RECEIPT" --push
 ```
