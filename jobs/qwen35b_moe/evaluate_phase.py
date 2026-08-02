@@ -9,6 +9,7 @@ import subprocess
 import sys
 
 from .contract import ContractError
+from .evaluate import PARITY_MAX_NEW_TOKENS
 from .runtime import (
     base_gguf_from_env,
     input_dir_from_env,
@@ -79,9 +80,10 @@ def main() -> None:
             "--limit",
             "1",
             "--max-new-tokens",
-            "64",
+            str(PARITY_MAX_NEW_TOKENS),
             "--deterministic",
             "--bf16-base",
+            "--require-valid-output",
         ]
     )
     _run(

@@ -23,9 +23,10 @@ from .cuda_runtime import validate_cuda_runtime_receipt
 from .evaluate import (
     BF16_BASE_LOAD_MODE,
     QUANTIZED_BASE_LOAD_MODE,
+    verify_evaluation_results,
     verify_longest_evaluation_receipt,
 )
-from .export import LLAMA_CPP_COMMIT, inspect_peft_adapter
+from .export import LLAMA_CPP_COMMIT, LLAMA_CPP_PATCH_SHA256, inspect_peft_adapter
 from .peft_config import validate_base_preparation_receipt
 from .preflight import (
     PACKAGES,
@@ -121,13 +122,15 @@ def validate_export_receipt(path: Path, gguf: Path, source_adapter: Path) -> Non
         "base_gguf",
         "base_gguf_sha256",
         "llama_cpp_commit",
+        "llama_cpp_patch_sha256",
         "parity",
     }
     if (
         set(receipt) != expected_fields
-        or receipt.get("protocol") != "striatum-llama-export/1"
+        or receipt.get("protocol") != "striatum-llama-export/2"
         or receipt.get("mode") != "direct-peft-adapter"
         or receipt.get("llama_cpp_commit") != LLAMA_CPP_COMMIT
+        or receipt.get("llama_cpp_patch_sha256") != LLAMA_CPP_PATCH_SHA256
         or receipt.get("parity") != "exact-text-match"
     ):
         raise ContractError("llama.cpp export receipt contract is invalid")
@@ -354,7 +357,11 @@ def _validate_training_receipt(run_root: Path) -> None:
         raise ContractError("paid training checkpoint evidence is not exact")
 
 
-def _validate_full(run_root: Path) -> None:
+def validate_completed_training_and_evaluation(
+    run_root: Path,
+) -> dict[str, object]:
+    """Validate the expensive work independently of parity and export."""
+
     _validate_training_receipt(run_root)
     adapter = run_root / "checkpoints/final-adapter"
     config = _read_json_object(adapter / "adapter_config.json", "adapter config")
@@ -374,6 +381,32 @@ def _validate_full(run_root: Path) -> None:
     )
     if not all(item["passed"] is True for item in full_gate.values()):
         raise ContractError("full evaluation quality gates did not pass")
+    checkpoint = verify_checkpoint(run_root / "checkpoints/checkpoint-318", 318)
+    checkpoint_adapter = inspect_peft_adapter(run_root / "checkpoints/checkpoint-318")
+    final_adapter = inspect_peft_adapter(adapter)
+    if checkpoint_adapter["files"] != final_adapter["files"]:
+        raise ContractError("final adapter does not match checkpoint-318")
+    full_results = run_root / "eval/full/results.jsonl"
+    _regular_nonempty_file(full_results, "full evaluation results")
+    verify_evaluation_results(full, full_results)
+    return {
+        "source_run_root": str(run_root.resolve()),
+        "training_receipt_sha256": sha256_file(
+            run_root / "artifacts/train-phase/train-phase.json"
+        ),
+        "checkpoint_318": checkpoint.to_dict(),
+        "final_adapter": final_adapter,
+        "full_evaluation_summary_sha256": sha256_file(
+            run_root / "eval/full/summary.json"
+        ),
+        "full_evaluation_results_sha256": sha256_file(full_results),
+        "full_quality_gates": full_gate,
+    }
+
+
+def _validate_full(run_root: Path) -> None:
+    validate_completed_training_and_evaluation(run_root)
+    adapter = run_root / "checkpoints/final-adapter"
     _validate_hf_reference(run_root / "eval/parity/hf-reference.json")
     validate_export_receipt(
         run_root / "artifacts/final/export.json",
@@ -382,12 +415,9 @@ def _validate_full(run_root: Path) -> None:
     )
 
 
-def build_manifest(run_root: Path, *, preflight_only: bool) -> dict[str, object]:
-    run_root = run_root.resolve()
-    if preflight_only:
-        _validate_preflight(run_root)
-    else:
-        _validate_full(run_root)
+def validate_runtime_evidence(run_root: Path) -> None:
+    """Validate the exact CUDA and persistent-volume evidence for one run."""
+
     validate_cuda_runtime_receipt(
         _read_json_object(
             run_root / "artifacts/runtime/cuda-runtime.json",
@@ -405,6 +435,15 @@ def build_manifest(run_root: Path, *, preflight_only: bool) -> dict[str, object]
     )
     census = _mapping(runtime_assets.get("census"), "volume asset receipt census")
     _validate_census_receipt(census)
+
+
+def build_manifest(run_root: Path, *, preflight_only: bool) -> dict[str, object]:
+    run_root = run_root.resolve()
+    if preflight_only:
+        _validate_preflight(run_root)
+    else:
+        _validate_full(run_root)
+    validate_runtime_evidence(run_root)
 
     files = []
     for directory_name in ARTIFACT_DIRS:

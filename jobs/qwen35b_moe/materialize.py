@@ -6,6 +6,7 @@ import argparse
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import tempfile
 
@@ -24,11 +25,12 @@ PROFILES = (
     "preflight-only",
     "hopper-dense-smoke",
     "hopper-moe-smoke",
+    "recover-export",
 )
 PREFLIGHT_MAX_ELAPSED_SECONDS = 2_700
 
 
-def _render_job(profile: str) -> str:
+def _render_job(profile: str, recovery_source_run_id: str | None = None) -> str:
     if profile not in PROFILES:
         raise ContractError(f"unknown materialization profile: {profile}")
     template = (JOB_ROOT / "job.yaml").read_text()
@@ -43,6 +45,34 @@ def _render_job(profile: str) -> str:
     spec = yaml.safe_load(template)
     if not isinstance(spec, dict):
         raise ContractError("job template is not an object")
+    if profile == "recover-export":
+        if (
+            recovery_source_run_id is None
+            or re.fullmatch(
+                r"run-[0-9]{8}T[0-9]{6}-[0-9a-f]{12}",
+                recovery_source_run_id,
+            )
+            is None
+        ):
+            raise ContractError("export recovery requires a valid source run ID")
+        spec["name"] = "striatum-qwen36-35b-a3b-export-recovery"
+        spec["phases"]["verify"]["argv"] = [
+            "/opt/striatum-qwen35b/bin/verify",
+            "--check-production-tokenization",
+        ]
+        spec["phases"]["train"]["enabled"] = False
+        spec["phases"]["evaluate"]["enabled"] = False
+        spec["phases"]["package"]["argv"] = [
+            "/opt/striatum-qwen35b/bin/recover-export",
+            "--source-run-id",
+            recovery_source_run_id,
+        ]
+        spec["phases"]["package"]["timeout_seconds"] = 7_200
+        spec["artifacts"].pop("incremental_manifest_glob", None)
+        spec["artifacts"].pop("incremental_mirror_ack", None)
+        spec["limits"]["max_elapsed_seconds"] = 9_000
+        spec["limits"]["max_cost_usd"] = "12.00"
+        return yaml.safe_dump(spec, sort_keys=False)
     if profile == "preflight-only":
         spec["name"] = "striatum-qwen36-35b-a3b-preflight"
         spec["phases"]["verify"]["argv"] = [
@@ -115,6 +145,7 @@ def materialize(
     destination: Path,
     profile: str = "full",
     gate3_acceptance: Path | None = None,
+    recovery_source_run_id: str | None = None,
 ) -> Path:
     if destination.exists() or destination.is_symlink():
         raise ContractError(f"destination already exists: {destination}")
@@ -137,7 +168,9 @@ def materialize(
         tempfile.mkdtemp(prefix=f".{destination.name}.", dir=destination.parent)
     )
     try:
-        (staging / "job.yaml").write_text(_render_job(profile))
+        (staging / "job.yaml").write_text(
+            _render_job(profile, recovery_source_run_id)
+        )
         shutil.copytree(JOB_ROOT / "bin", staging / "bin", symlinks=False)
         input_root = staging / "inputs"
         for entry in entries:
@@ -193,6 +226,11 @@ def materialize(
                         if acceptance is not None
                         else {}
                     ),
+                    **(
+                        {"recovery_source_run_id": recovery_source_run_id}
+                        if recovery_source_run_id is not None
+                        else {}
+                    ),
                 },
                 indent=2,
                 sort_keys=True,
@@ -212,6 +250,7 @@ def main() -> None:
     parser.add_argument("--destination", type=Path, required=True)
     parser.add_argument("--profile", choices=PROFILES, default="full")
     parser.add_argument("--gate3-acceptance", type=Path)
+    parser.add_argument("--recovery-source-run-id")
     args = parser.parse_args()
     print(
         materialize(
@@ -219,6 +258,7 @@ def main() -> None:
             args.destination.resolve(),
             args.profile,
             args.gate3_acceptance,
+            args.recovery_source_run_id,
         )
     )
 

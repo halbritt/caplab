@@ -5,6 +5,7 @@
 !*.py
 !*.json
 !network-volume-assets.sha256
+!llama-qwen35-lora-reorder.patch
 !smoke/
 !smoke/*
 !smoke/inputs/

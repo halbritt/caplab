@@ -17,6 +17,12 @@ from .runtime import model_dir_from_env, output_dir_from_env
 
 
 LLAMA_CPP_COMMIT = "000547513f1530346ecd163db8b3e13962949961"
+LLAMA_CPP_PATCH_SHA256 = (
+    "3891147dde2bb277275364b21593103c4d1f957275e3ae58dc0e4dc621237d19"
+)
+LLAMA_CPP_PATCH_PATH = Path(
+    "/opt/striatum-qwen35b/patches/llama-qwen35-lora-reorder.patch"
+)
 _SAFETENSORS_MAX_HEADER_BYTES = 64 * 1024 * 1024
 _SAFETENSORS_DTYPE_BYTES = {
     "BOOL": 1,
@@ -82,6 +88,29 @@ def _check_llama_commit(llama_cpp: Path) -> None:
         raise ContractError(
             f"llama.cpp commit mismatch: {commit} != {LLAMA_CPP_COMMIT}"
         )
+    if (
+        LLAMA_CPP_PATCH_PATH.is_symlink()
+        or not LLAMA_CPP_PATCH_PATH.is_file()
+        or sha256_file(LLAMA_CPP_PATCH_PATH) != LLAMA_CPP_PATCH_SHA256
+    ):
+        raise ContractError("llama.cpp Qwen LoRA patch is missing or does not match")
+    _run(
+        [
+            "git",
+            "-C",
+            str(llama_cpp),
+            "apply",
+            "--reverse",
+            "--check",
+            str(LLAMA_CPP_PATCH_PATH),
+        ],
+        capture_output=True,
+    )
+    changed = _run(
+        ["git", "-C", str(llama_cpp), "diff", "--name-only"], capture_output=True
+    ).stdout.splitlines()
+    if changed != ["conversion/qwen.py", "convert_lora_to_gguf.py"]:
+        raise ContractError(f"llama.cpp patched source inventory is invalid: {changed!r}")
 
 
 def _read_adapter_config(path: Path) -> Mapping[str, Any]:
@@ -327,6 +356,7 @@ def direct_export(args: argparse.Namespace) -> dict[str, object]:
         "base_gguf": str(args.base_gguf),
         "base_gguf_sha256": sha256_file(args.base_gguf),
         "llama_cpp_commit": LLAMA_CPP_COMMIT,
+        "llama_cpp_patch_sha256": LLAMA_CPP_PATCH_SHA256,
         "parity": "exact-text-match",
     }
 
@@ -355,7 +385,7 @@ def main() -> None:
     args.output = args.output.resolve()
     args.receipt = args.receipt.resolve()
     _check_llama_commit(args.llama_cpp)
-    receipt = {"protocol": "striatum-llama-export/1", **direct_export(args)}
+    receipt = {"protocol": "striatum-llama-export/2", **direct_export(args)}
     args.receipt.parent.mkdir(parents=True, exist_ok=True)
     args.receipt.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
     print(json.dumps(receipt, indent=2, sort_keys=True))

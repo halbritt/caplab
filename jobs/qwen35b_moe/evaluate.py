@@ -27,6 +27,7 @@ ACCEPTING = {"accept", "accept_with_findings"}
 VERDICTS = {"accept", "accept_with_findings", "needs_revision", "reject"}
 QUANTIZED_BASE_LOAD_MODE = "bnb-4bit-nf4-double-quant"
 BF16_BASE_LOAD_MODE = "bf16"
+PARITY_MAX_NEW_TOKENS = 2_048
 
 
 def extract_json(content: str) -> Any:
@@ -279,6 +280,105 @@ def verify_longest_evaluation_receipt(
     return selection
 
 
+def require_valid_inference(summary: Mapping[str, object]) -> None:
+    """Require syntactic success without pretending one example proves quality."""
+
+    if summary.get("json_valid") != 1.0 or summary.get("verdict_legal") != 1.0:
+        raise ContractError(
+            "post-training inference did not produce valid JSON with a legal verdict"
+        )
+
+
+def verify_evaluation_results(
+    summary: Mapping[str, object], results_path: Path
+) -> dict[str, object]:
+    """Recompute summary metrics from the durable per-example results."""
+
+    if results_path.is_symlink() or not results_path.is_file():
+        raise ContractError(f"evaluation results are absent or linked: {results_path}")
+    selection = summary.get("selection")
+    if not isinstance(selection, Mapping):
+        raise ContractError("evaluation summary selection is invalid")
+    expected_ids = selection.get("dispatch_ids")
+    if not isinstance(expected_ids, list) or any(
+        not isinstance(item, str) or not item for item in expected_ids
+    ):
+        raise ContractError("evaluation summary dispatch IDs are invalid")
+    rows: list[dict[str, object]] = []
+    try:
+        lines = results_path.read_text(encoding="utf-8").splitlines()
+    except (OSError, UnicodeDecodeError) as error:
+        raise ContractError("evaluation results are not readable UTF-8") from error
+    for line_number, line in enumerate(lines, start=1):
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError as error:
+            raise ContractError(
+                f"evaluation result line {line_number} is invalid JSON"
+            ) from error
+        if not isinstance(row, dict):
+            raise ContractError("evaluation result row is not an object")
+        rows.append(row)
+    if [row.get("dispatch_id") for row in rows] != expected_ids:
+        raise ContractError("evaluation result dispatch IDs do not match the summary")
+    if summary.get("n") != len(rows) or not rows:
+        raise ContractError("evaluation result count does not match the summary")
+
+    derived = []
+    seconds = []
+    for row in rows:
+        content = row.get("content")
+        tokens = row.get("generated_tokens")
+        elapsed = row.get("seconds")
+        reference = row.get("reference_verdict")
+        if (
+            not isinstance(content, str)
+            or not isinstance(tokens, list)
+            or not tokens
+            or any(
+                isinstance(token, bool) or not isinstance(token, int) or token < 0
+                for token in tokens
+            )
+            or isinstance(elapsed, bool)
+            or not isinstance(elapsed, (int, float))
+            or elapsed < 0
+            or reference not in VERDICTS
+        ):
+            raise ContractError("evaluation result row has invalid generated evidence")
+        document = extract_json(content)
+        verdict = document.get("verdict") if isinstance(document, dict) else None
+        facts = {
+            "json_valid": isinstance(document, dict),
+            "verdict": verdict,
+            "verdict_legal": verdict in VERDICTS,
+            "verdict_exact_match": verdict == reference,
+            "side_match": side(verdict) is not None
+            and side(verdict) == side(reference),
+        }
+        if any(row.get(field) != value for field, value in facts.items()):
+            raise ContractError("evaluation result row claims disagree with its content")
+        derived.append(facts)
+        seconds.append(float(elapsed))
+
+    total = len(derived)
+    recomputed: dict[str, object] = {
+        "json_valid": sum(bool(row["json_valid"]) for row in derived) / total,
+        "verdict_legal": sum(bool(row["verdict_legal"]) for row in derived) / total,
+        "verdict_exact_match": sum(
+            bool(row["verdict_exact_match"]) for row in derived
+        )
+        / total,
+        "side_match": sum(bool(row["side_match"]) for row in derived) / total,
+        "verdict_distribution": dict(
+            collections.Counter(str(row["verdict"]) for row in derived)
+        ),
+        "mean_seconds": round(sum(seconds) / total, 3),
+    }
+    if any(summary.get(field) != value for field, value in recomputed.items()):
+        raise ContractError("evaluation summary does not match per-example results")
+    return recomputed
+
+
 def run(args: argparse.Namespace) -> dict[str, Any]:
     try:
         import torch
@@ -418,6 +518,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         raise ContractError(
             f"available quality gate failed: {summary['available_gates']}"
         )
+    if args.require_valid_output:
+        require_valid_inference(summary)
     return summary
 
 
@@ -442,6 +544,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--deterministic", action="store_true")
     parser.add_argument("--bf16-base", action="store_true")
     parser.add_argument("--enforce-available-gates", action="store_true")
+    parser.add_argument("--require-valid-output", action="store_true")
     return parser.parse_args()
 
 

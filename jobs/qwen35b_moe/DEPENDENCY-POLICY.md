@@ -29,6 +29,15 @@ a future FLA source change fails the build instead of receiving an unreviewed
 patch. Remove these corrections only after a tested FLA release incorporates the
 equivalent upstream fixes.
 
+The pinned llama.cpp revision cannot reorder Qwen3.5 linear-attention value
+heads when the input is a factorized LoRA tensor: its generic implementation
+tries to reshape the LoRA row dimension and raises `NotImplementedError`.
+`llama-qwen35-lora-reorder.patch` expresses the same permutation as an
+`index_select`. Output-row selection changes the LoRA B factor; input-column
+selection changes the A factor. The image checks that the patch applies to the
+exact pinned revision. Runtime export checks the retained patch hash, its
+reverse application, and the two-file tracked diff before conversion starts.
+
 Regenerate after an intentional compatibility change:
 
 ```bash

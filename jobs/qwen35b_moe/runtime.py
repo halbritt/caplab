@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 from typing import Any
 
-from .contract import MODEL, ContractError
+from .contract import ContractError
 from .profile import TrainingProfile, load_training_profile
 
 

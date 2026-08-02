@@ -28,6 +28,7 @@ RUN apt-get update \
 
 WORKDIR /tmp/striatum-qwen35b-build
 COPY requirements.lock requirements-gpu.lock ./
+COPY llama-qwen35-lora-reorder.patch /opt/striatum-qwen35b/patches/
 RUN python3 -m venv /opt/striatum-qwen35b/venv \
     && /opt/striatum-qwen35b/venv/bin/python -m pip install --no-cache-dir \
        --require-hashes -r requirements.lock \
@@ -43,6 +44,10 @@ RUN cuda_stub_dir=/usr/local/cuda/lib64/stubs \
     && ln -s libcuda.so "$cuda_stub_dir/libcuda.so.1" \
     && git clone https://github.com/ggml-org/llama.cpp.git /opt/llama.cpp \
     && git -C /opt/llama.cpp checkout "$LLAMA_CPP_COMMIT" \
+    && git -C /opt/llama.cpp apply --check \
+       /opt/striatum-qwen35b/patches/llama-qwen35-lora-reorder.patch \
+    && git -C /opt/llama.cpp apply \
+       /opt/striatum-qwen35b/patches/llama-qwen35-lora-reorder.patch \
     && cmake -S /opt/llama.cpp -B /opt/llama.cpp/build \
        -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=90 \
        -DCMAKE_EXE_LINKER_FLAGS="-Wl,-rpath-link,$cuda_stub_dir" \

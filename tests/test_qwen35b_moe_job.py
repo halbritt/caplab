@@ -45,12 +45,16 @@ from jobs.qwen35b_moe.cuda_runtime import (  # noqa: E402
 )
 from jobs.qwen35b_moe.export import (  # noqa: E402
     LLAMA_CPP_COMMIT,
+    LLAMA_CPP_PATCH_SHA256,
     direct_export,
     inspect_peft_adapter,
 )
 from jobs.qwen35b_moe.evaluate import (  # noqa: E402
     _read_examples,
+    PARITY_MAX_NEW_TOKENS,
     derive_checkpoint_25_dispatch_ids,
+    require_valid_inference,
+    verify_evaluation_results,
     verify_longest_evaluation_receipt,
 )
 from jobs.qwen35b_moe.materialize import _render_job, materialize  # noqa: E402
@@ -102,6 +106,7 @@ from jobs.qwen35b_moe.runtime import (  # noqa: E402
     output_dir_from_env,
 )
 from jobs.qwen35b_moe import preflight as preflight_module  # noqa: E402
+from jobs.qwen35b_moe import recover_export as recover_export_module  # noqa: E402
 from jobs.qwen35b_moe import score_fate as score_fate_module  # noqa: E402
 from jobs.qwen35b_moe import train as train_module  # noqa: E402
 from jobs.qwen35b_moe.train import (  # noqa: E402
@@ -800,12 +805,61 @@ def _passing_summary(
         "json_valid": 1.0,
         "verdict_legal": 1.0,
         "side_match": 1.0,
+        "verdict_exact_match": 1.0,
+        "verdict_distribution": {"accept": examples},
+        "mean_seconds": 1.0,
         "available_gates": {
             "json_valid": True,
             "verdict_legal": True,
             "side_match": True,
         },
     }
+
+
+def _write_passing_results(path: Path, summary: dict[str, object]) -> None:
+    selection = summary["selection"]
+    assert isinstance(selection, dict)
+    dispatch_ids = selection["dispatch_ids"]
+    assert isinstance(dispatch_ids, list)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        "".join(
+            json.dumps(
+                {
+                    "dispatch_id": dispatch_id,
+                    "seconds": 1.0,
+                    "json_valid": True,
+                    "verdict": "accept",
+                    "verdict_legal": True,
+                    "reference_verdict": "accept",
+                    "verdict_exact_match": True,
+                    "side_match": True,
+                    "generated_tokens": [1],
+                    "content": '{"verdict":"accept"}',
+                }
+            )
+            + "\n"
+            for dispatch_id in dispatch_ids
+        )
+    )
+
+
+def test_evaluation_summary_is_bound_to_per_example_results(tmp_path: Path) -> None:
+    summary = _passing_summary(
+        examples=2,
+        selection={"dispatch_ids": ["dispatch-a", "dispatch-b"]},
+    )
+    results = tmp_path / "results.jsonl"
+    _write_passing_results(results, summary)
+
+    assert verify_evaluation_results(summary, results)["verdict_legal"] == 1.0
+    rows = results.read_text().splitlines()
+    tampered = json.loads(rows[1])
+    tampered["content"] = '{"verdict":"reject"}'
+    rows[1] = json.dumps(tampered)
+    results.write_text("\n".join(rows) + "\n")
+    with pytest.raises(ContractError, match="claims disagree"):
+        verify_evaluation_results(summary, results)
 
 
 def _write_hf_reference(path: Path) -> None:
@@ -1013,7 +1067,7 @@ def _write_export_receipt(path: Path, gguf: Path, adapter: Path) -> None:
     _write_json(
         path,
         {
-            "protocol": "striatum-llama-export/1",
+            "protocol": "striatum-llama-export/2",
             "mode": "direct-peft-adapter",
             "source_adapter": inspect_peft_adapter(adapter),
             "adapter_gguf": str(gguf.resolve()),
@@ -1021,6 +1075,7 @@ def _write_export_receipt(path: Path, gguf: Path, adapter: Path) -> None:
             "base_gguf": "/opt/models/base.gguf",
             "base_gguf_sha256": "b" * 64,
             "llama_cpp_commit": LLAMA_CPP_COMMIT,
+            "llama_cpp_patch_sha256": LLAMA_CPP_PATCH_SHA256,
             "parity": "exact-text-match",
         },
     )
@@ -1909,8 +1964,8 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
     preflight = yaml.safe_load(_render_job("preflight-only"))
 
     expected_runner = {
-        "version": "0.1.11",
-        "git_commit": "d4eb8577bdaafc7065d7dd9612e97f754c2c015d",
+        "version": "0.1.12",
+        "git_commit": "144537205e3fd2e3b09b16179ef3872b13f14d8e",
     }
     for spec in (full, preflight):
         assert spec["runner"] == expected_runner
@@ -2019,6 +2074,111 @@ def test_smoke_ladder_materializations_use_the_same_h200_image_path() -> None:
         moe["phases"]["preflight"]["argv"]
     )
     assert moe["limits"]["max_cost_usd"] == "5.00"
+
+
+def test_export_recovery_is_bounded_and_cannot_retrain() -> None:
+    import yaml
+
+    source_run_id = "run-20260802T043418-2e928c2a9cb5"
+    spec = yaml.safe_load(_render_job("recover-export", source_run_id))
+
+    assert spec["name"].endswith("export-recovery")
+    assert spec["phases"]["verify"]["enabled"] is True
+    assert "--check-production-tokenization" in spec["phases"]["verify"]["argv"]
+    assert spec["phases"]["preflight"]["enabled"] is False
+    assert spec["phases"]["train"]["enabled"] is False
+    assert spec["phases"]["evaluate"]["enabled"] is False
+    assert spec["phases"]["package"]["enabled"] is True
+    assert spec["phases"]["package"]["argv"][-1] == source_run_id
+    assert spec["limits"] == {
+        "max_elapsed_seconds": 9_000,
+        "max_cost_usd": "12.00",
+        "usd_per_hour": "4.50",
+    }
+    assert "incremental_manifest_glob" not in spec["artifacts"]
+    assert "incremental_mirror_ack" not in spec["artifacts"]
+
+    with pytest.raises(ContractError, match="valid source run ID"):
+        _render_job("recover-export", "../run-escape")
+
+
+def test_export_recovery_reuses_validated_outputs_without_training(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    source_run_id = "run-20260802T043418-2e928c2a9cb5"
+    source = tmp_path / "runs" / source_run_id
+    output = tmp_path / "runs" / "run-20260802T120000-aaaaaaaaaaaa"
+    for relative, content in {
+        "checkpoints/checkpoint-318/checkpoint-complete.json": b"checkpoint\n",
+        "checkpoints/final-adapter/adapter_config.json": b"{}\n",
+        "checkpoints/final-adapter/adapter_model.safetensors": b"adapter\n",
+        "artifacts/train-phase/train-phase.json": b"{}\n",
+        "eval/full/results.jsonl": b"{}\n",
+        "eval/full/summary.json": b"{}\n",
+    }.items():
+        path = source / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(content)
+    (output / "artifacts/runtime").mkdir(parents=True)
+    (output / "artifacts/runtime/cuda-runtime.json").write_text("{}\n")
+    (output / "artifacts/runtime/volume-assets.json").write_text("{}\n")
+
+    validations: list[Path] = []
+    commands: list[list[str]] = []
+    monkeypatch.setattr(
+        recover_export_module,
+        "validate_completed_training_and_evaluation",
+        lambda path: {"validated": str(path)},
+    )
+    monkeypatch.setattr(
+        recover_export_module,
+        "validate_runtime_evidence",
+        lambda path: validations.append(path),
+    )
+    monkeypatch.setattr(recover_export_module, "_validate_hf_reference", lambda _: None)
+    monkeypatch.setattr(
+        recover_export_module, "validate_export_receipt", lambda *_: None
+    )
+
+    def fake_run(command: list[str]) -> None:
+        commands.append(command)
+        if "jobs.qwen35b_moe.evaluate" in command:
+            parity = Path(command[command.index("--output") + 1])
+            parity.mkdir(parents=True)
+            (parity / "results.jsonl").write_text("{}\n")
+            (parity / "summary.json").write_text("{}\n")
+            (parity / "hf-reference.json").write_text("{}\n")
+        else:
+            gguf = Path(command[command.index("--output") + 1])
+            receipt = Path(command[command.index("--receipt") + 1])
+            gguf.parent.mkdir(parents=True)
+            gguf.write_bytes(b"GGUF\n")
+            receipt.write_text("{}\n")
+
+    monkeypatch.setattr(recover_export_module, "_run", fake_run)
+    manifest = recover_export_module.recover(
+        source_run_root=source,
+        source_run_id=source_run_id,
+        output=output,
+        model_dir=tmp_path / "model",
+        input_dir=tmp_path / "inputs",
+        base_gguf=tmp_path / "base.gguf",
+        llama_cpp=tmp_path / "llama.cpp",
+    )
+
+    assert validations == [source.resolve(), output.resolve()]
+    assert len(commands) == 2
+    assert all("jobs.qwen35b_moe.train" not in command for command in commands)
+    assert "--require-valid-output" in commands[0]
+    assert commands[0][commands[0].index("--max-new-tokens") + 1] == "2048"
+    assert manifest["recovered_from_run_id"] == source_run_id
+    paths = {entry["path"] for entry in manifest["files"]}
+    assert "checkpoints/checkpoint-318/checkpoint-complete.json" in paths
+    assert "checkpoints/final-adapter/adapter_model.safetensors" in paths
+    assert "eval/full/results.jsonl" in paths
+    assert "eval/parity/hf-reference.json" in paths
+    assert "artifacts/final/adapter-f32.gguf" in paths
+    assert "artifacts/recovery/recovery.json" in paths
 
 
 def test_dense_smoke_materialization_copies_only_the_tiny_manifest(
@@ -2239,8 +2399,8 @@ def test_preflight_materialization_stamps_single_quoted_yaml_hash(
             ),
             "jobrunner_release": {
                 "protocol": "runner-release/1",
-                "runner_version": "0.1.11",
-                "runner_git_commit": "d4eb8577bdaafc7065d7dd9612e97f754c2c015d",
+                "runner_version": "0.1.12",
+                "runner_git_commit": "144537205e3fd2e3b09b16179ef3872b13f14d8e",
                 "supported_protocol_majors": {
                     "artifact-manifest": [1],
                     "incremental-mirror-ack": [1],
@@ -2723,9 +2883,14 @@ def test_full_packaging_requires_epoch_one_gate_evidence(tmp_path: Path) -> None
         examples=16, selection=quality["checkpoint_25_mini"]
     )
     epoch = _passing_summary(examples=98, selection=quality["epoch_one_full"])
+    epoch["selection"] = {
+        **epoch["selection"],
+        "dispatch_ids": [f"dispatch-{index:03d}" for index in range(98)],
+    }
     _write_json(tmp_path / "eval/checkpoint-25-mini/summary.json", mini)
     _write_json(tmp_path / "eval/epoch-one-full/summary.json", epoch)
     _write_json(tmp_path / "eval/full/summary.json", epoch)
+    _write_passing_results(tmp_path / "eval/full/results.jsonl", epoch)
     baseline = quality["strictly_beat"]
     mini_gate = assess_available_gates(
         mini,
@@ -3491,6 +3656,36 @@ def test_worker_image_uses_cuda_driver_stub_only_for_build_linking() -> None:
     assert "CMAKE_BUILD_RPATH" not in dockerfile
     assert "CMAKE_INSTALL_RPATH" not in dockerfile
     assert dockerfile.count('! grep -Fq "$cuda_stub_dir"') == 2
+
+
+def test_worker_image_applies_the_pinned_qwen_lora_reorder_patch() -> None:
+    dockerfile = (JOB / "Dockerfile").read_text()
+    dockerignore = (JOB / "Dockerfile.dockerignore").read_text()
+    patch = (JOB / "llama-qwen35-lora-reorder.patch").read_text()
+
+    assert "!llama-qwen35-lora-reorder.patch" in dockerignore
+    assert "COPY llama-qwen35-lora-reorder.patch /opt/striatum-qwen35b/patches/" in dockerfile
+    assert "git -C /opt/llama.cpp apply --check" in dockerfile
+    assert dockerfile.index('checkout "$LLAMA_CPP_COMMIT"') < dockerfile.index(
+        "git -C /opt/llama.cpp apply --check"
+    )
+    assert "def index_select(self, dim: int, index: Tensor)" in patch
+    assert "self._lora_A.index_select(-1, index)" in patch
+    assert "self._lora_B.index_select(-2, index)" in patch
+    assert "return torch.index_select(tensor, dim, indices)" in patch
+
+
+def test_terminal_parity_inference_is_bounded_and_quality_gated() -> None:
+    phase = (JOB / "evaluate_phase.py").read_text()
+
+    assert "str(PARITY_MAX_NEW_TOKENS)" in phase
+    assert PARITY_MAX_NEW_TOKENS == 2_048
+    assert phase.count('"--enforce-available-gates"') == 1
+    assert phase.count('"--require-valid-output"') == 1
+
+    require_valid_inference({"json_valid": 1.0, "verdict_legal": 1.0})
+    with pytest.raises(ContractError, match="valid JSON"):
+        require_valid_inference({"json_valid": 0.0, "verdict_legal": 0.0})
 
 
 def test_cuda_runtime_requires_real_h200_driver_resolution() -> None:

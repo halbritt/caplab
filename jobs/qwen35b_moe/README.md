@@ -34,7 +34,7 @@ also recomputes the canonical self-hash; always finish with
 `runpod-jobrunner check GENERATED_BUNDLE`. The old
 `evidence/bundle-check-2026-07-31.json` receipt is historical 0.1.0 evidence;
 its all-`a` digest was a test value, not a published image. It does not prove
-the network-volume bundle. Preserve the fresh 0.1.11 check output with this
+the network-volume bundle. Preserve the fresh 0.1.12 check output with this
 campaign's recovered controller evidence.
 
 Gate 2 and Gate 3 are separate reservations under the same campaign budget
@@ -65,7 +65,10 @@ the Docker context; `Dockerfile.dockerignore` allow-lists only job code and
 contracts. The RunPod PyTorch linux/amd64 base is pinned to
 `sha256:3e874356857adfa3e8faa3fd913b65bd127f77a0fe2e489513e7775e1c1e16b1`.
 The pinned `llama.cpp` build emits CUDA code for SM90 explicitly; it never
-infers a GPU architecture from the CPU-only image builder.
+infers a GPU architecture from the CPU-only image builder. The image applies
+`llama-qwen35-lora-reorder.patch` to the pinned source. Export checks the patch
+hash, proves that it is applied, and rejects any other tracked llama.cpp
+changes. The export receipt binds both the upstream commit and patch hash.
 Build locally or publish with:
 
 ```bash
@@ -288,8 +291,11 @@ revalidates the pinned base model and revision, LoRA target semantics, and the
 safetensors header and byte ranges before it accepts that binding.
 
 Evaluation is a separate model process. It runs the 98-example held-out split,
-then a deterministic export parity sample. The remote job can score JSON
-validity, legal verdicts, exact verdicts, and side match. It cannot score fate:
+then a deterministic export parity sample with at most 2,048 generated tokens.
+That sample must produce valid JSON and a legal verdict before export. Exact
+text parity then requires llama.cpp to reproduce the Hugging Face output. The
+remote job can score JSON validity, legal verdicts, exact verdicts, and side
+match. It cannot score fate:
 the fate map lives in `corpus/analysis.json`, which is deliberately not
 uploaded. After recovery, complete that private gate locally:
 
@@ -300,6 +306,32 @@ python3 -m jobs.qwen35b_moe.score_fate \
   --eval-source sft/review.eval.jsonl \
   --output RECOVERED/eval/full/fate-gate.json
 ```
+
+If training and the full evaluation pass but parity or export fails, do not
+repeat training. The `recover-export` profile validates every staged source
+checkpoint, the training receipt, the full evaluation results and summary, the
+final adapter, and the source runtime receipts before it loads the model. It
+copies checkpoint 318 and the final adapter into a new run, repeats one BF16
+inference, exports the adapter, and publishes a selective artifact manifest:
+
+```bash
+SOURCE_RUN_ID=run-REPLACE_ME
+RECOVERY=jobs/qwen35b_moe/.generated/recover-export-$(date -u +%Y%m%dT%H%M%SZ)
+python3 -m jobs.qwen35b_moe.materialize \
+  --source-repo "$PWD" --destination "$RECOVERY" \
+  --profile recover-export --recovery-source-run-id "$SOURCE_RUN_ID"
+python3 -m jobs.qwen35b_moe.update_image_digest "$RECOVERY" "$BUILD_RECEIPT"
+/home/halbritt/git/runpod-jobrunner/.venv/bin/runpod-jobrunner check "$RECOVERY"
+/home/halbritt/git/runpod-jobrunner/.venv/bin/runpod-jobrunner run "$RECOVERY" \
+  --approve-max-usd 12.00 \
+  --budget-scope striatum-qwen35b-hard100-20260801 \
+  --budget-total-usd 94.00
+```
+
+The recovery job has no enabled train or full-evaluation phase. Its 9,000-second
+wall-clock limit and $12 cap include source validation, one adapter-backed BF16
+inference, GGUF conversion, exact Hugging Face/llama.cpp parity, artifact
+recovery, and pod deletion.
 
 The local scorer requires the exact hash-pinned 98-example evaluation source
 and the pinned private analysis file. It hashes the same bytes that it parses,
