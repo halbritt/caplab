@@ -869,7 +869,10 @@ def _write_hf_reference(path: Path) -> None:
         {
             "protocol": "hf-llama-parity-reference/1",
             "rendered_prompt": "prompt",
-            "content": '{"verdict":"accept"}',
+            "content": (
+                '{"posture":"adversarial","verdict":"accept",'
+                '"summary":"Valid review.","findings":[]}'
+            ),
             "generated_tokens": [1, 2, 3],
             "seed": 42,
         },
@@ -1038,7 +1041,12 @@ def test_direct_export_receipt_binds_the_adapter_it_converted(
     def fake_parity(command):  # noqa: ANN001
         parity_commands.append(command)
         return SimpleNamespace(
-            stdout='{"verdict":"accept"}\n', stderr_bytes=0, stderr_tail=""
+            stdout=(
+                '{"posture":"adversarial","verdict":"accept",'
+                '"summary":"Valid review.","findings":[]}\n'
+            ),
+            stderr_bytes=0,
+            stderr_tail="",
         )
 
     monkeypatch.setattr("jobs.qwen35b_moe.export._run_bounded_parity", fake_parity)
@@ -1055,6 +1063,146 @@ def test_direct_export_receipt_binds_the_adapter_it_converted(
 
     assert receipt["source_adapter"] == inspect_peft_adapter(adapter)
     assert "--single-turn" in parity_commands[0]
+    assert receipt["parity"]["mode"] == "review-contract-match"
+    assert receipt["parity"]["exact_text_match"] is True
+
+
+def test_direct_export_accepts_cross_runtime_prose_divergence(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    adapter = tmp_path / "adapter"
+    _write_valid_adapter(adapter)
+    llama_cpp = tmp_path / "llama.cpp"
+    converter = llama_cpp / "convert_lora_to_gguf.py"
+    llama_cli = llama_cpp / "build/bin/llama-cli"
+    converter.parent.mkdir(parents=True)
+    llama_cli.parent.mkdir(parents=True)
+    converter.touch()
+    llama_cli.touch()
+    base_gguf = tmp_path / "base.gguf"
+    base_gguf.write_bytes(b"GGUF-base")
+    reference = tmp_path / "hf-reference.json"
+    _write_hf_reference(reference)
+    output = tmp_path / "adapter-f32.gguf"
+
+    def fake_run(command, **kwargs):  # noqa: ANN001, ANN003
+        del command, kwargs
+        output.write_bytes(b"GGUF-adapter")
+        return SimpleNamespace(stdout="")
+
+    monkeypatch.setattr("jobs.qwen35b_moe.export._run", fake_run)
+    monkeypatch.setattr(
+        "jobs.qwen35b_moe.export._run_bounded_parity",
+        lambda command: SimpleNamespace(  # noqa: ARG005
+            stdout=(
+                '{"posture":"adversarial","verdict":"accept",'
+                '"summary":"Different valid prose.","findings":[]}\n'
+            ),
+            stderr_bytes=0,
+            stderr_tail="",
+        ),
+    )
+    reference.write_text(
+        json.dumps(
+            {
+                "protocol": "hf-llama-parity-reference/1",
+                "rendered_prompt": "prompt",
+                "content": (
+                    '{"posture":"adversarial","verdict":"accept",'
+                    '"summary":"HF prose.","findings":[]}'
+                ),
+                "generated_tokens": [1, 2, 3],
+                "seed": 42,
+            }
+        )
+    )
+    args = argparse.Namespace(
+        llama_cpp=llama_cpp,
+        base_gguf=base_gguf,
+        adapter=adapter,
+        output=output,
+        model_dir=tmp_path / "model",
+        hf_reference=reference,
+    )
+
+    receipt = direct_export(args)
+
+    assert receipt["parity"]["exact_text_match"] is False
+    assert receipt["parity"]["hf_verdict"] == "accept"
+    assert receipt["parity"]["llama_verdict"] == "accept"
+    assert "Different valid prose" in receipt["parity"]["llama_content"]
+
+
+@pytest.mark.parametrize(
+    ("llama_content", "error"),
+    [
+        ("not json", "valid review JSON"),
+        (
+            '{"posture":"adversarial","verdict":"needs_revision",'
+            '"summary":"Different decision.","findings":[]}',
+            "verdict does not match",
+        ),
+    ],
+)
+def test_direct_export_rejects_invalid_or_decision_divergent_llama_output(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    llama_content: str,
+    error: str,
+) -> None:
+    adapter = tmp_path / "adapter"
+    _write_valid_adapter(adapter)
+    llama_cpp = tmp_path / "llama.cpp"
+    converter = llama_cpp / "convert_lora_to_gguf.py"
+    llama_cli = llama_cpp / "build/bin/llama-cli"
+    converter.parent.mkdir(parents=True)
+    llama_cli.parent.mkdir(parents=True)
+    converter.touch()
+    llama_cli.touch()
+    base_gguf = tmp_path / "base.gguf"
+    base_gguf.write_bytes(b"GGUF-base")
+    reference = tmp_path / "hf-reference.json"
+    reference.write_text(
+        json.dumps(
+            {
+                "protocol": "hf-llama-parity-reference/1",
+                "rendered_prompt": "prompt",
+                "content": (
+                    '{"posture":"adversarial","verdict":"accept",'
+                    '"summary":"HF prose.","findings":[]}'
+                ),
+                "generated_tokens": [1, 2, 3],
+                "seed": 42,
+            }
+        )
+    )
+    output = tmp_path / "adapter-f32.gguf"
+
+    def fake_run(command, **kwargs):  # noqa: ANN001, ANN003
+        del command, kwargs
+        output.write_bytes(b"GGUF-adapter")
+        return SimpleNamespace(stdout="")
+
+    monkeypatch.setattr("jobs.qwen35b_moe.export._run", fake_run)
+    monkeypatch.setattr(
+        "jobs.qwen35b_moe.export._run_bounded_parity",
+        lambda command: SimpleNamespace(  # noqa: ARG005
+            stdout=llama_content,
+            stderr_bytes=0,
+            stderr_tail="",
+        ),
+    )
+    args = argparse.Namespace(
+        llama_cpp=llama_cpp,
+        base_gguf=base_gguf,
+        adapter=adapter,
+        output=output,
+        model_dir=tmp_path / "model",
+        hf_reference=reference,
+    )
+
+    with pytest.raises(ContractError, match=error):
+        direct_export(args)
 
 
 def test_llama_parity_capture_bounds_diagnostic_output() -> None:
@@ -1125,7 +1273,7 @@ def _write_export_receipt(path: Path, gguf: Path, adapter: Path) -> None:
     _write_json(
         path,
         {
-            "protocol": "striatum-llama-export/2",
+            "protocol": "striatum-llama-export/3",
             "mode": "direct-peft-adapter",
             "source_adapter": inspect_peft_adapter(adapter),
             "adapter_gguf": str(gguf.resolve()),
@@ -1134,7 +1282,26 @@ def _write_export_receipt(path: Path, gguf: Path, adapter: Path) -> None:
             "base_gguf_sha256": "b" * 64,
             "llama_cpp_commit": LLAMA_CPP_COMMIT,
             "llama_cpp_patch_sha256": LLAMA_CPP_PATCH_SHA256,
-            "parity": "exact-text-match",
+            "parity": {
+                "mode": "review-contract-match",
+                "exact_text_match": True,
+                "hf_content_sha256": hashlib.sha256(
+                    b'{"posture":"adversarial","verdict":"accept",'
+                    b'"summary":"Valid review.","findings":[]}'
+                ).hexdigest(),
+                "llama_content_sha256": hashlib.sha256(
+                    b'{"posture":"adversarial","verdict":"accept",'
+                    b'"summary":"Valid review.","findings":[]}'
+                ).hexdigest(),
+                "hf_posture": "adversarial",
+                "llama_posture": "adversarial",
+                "hf_verdict": "accept",
+                "llama_verdict": "accept",
+                "llama_content": (
+                    '{"posture":"adversarial","verdict":"accept",'
+                    '"summary":"Valid review.","findings":[]}'
+                ),
+            },
         },
     )
 

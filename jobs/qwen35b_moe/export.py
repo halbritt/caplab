@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 from collections.abc import Mapping
 from dataclasses import dataclass
+import hashlib
 import json
 from pathlib import Path
 import struct
@@ -14,6 +15,7 @@ import threading
 from typing import Any
 
 from .contract import EXPERT_AWARE, LINEAR_ONLY, MODEL, ContractError, sha256_file
+from .evaluate import VERDICTS, extract_json
 from .peft_config import LINEAR_TARGET_PATTERN, ROUTED_TARGET_PARAMETERS
 from .runtime import model_dir_from_env, output_dir_from_env
 
@@ -88,6 +90,60 @@ class BoundedParityResult:
     stdout: str
     stderr_tail: str
     stderr_bytes: int
+
+
+def _review_document(content: str, label: str) -> Mapping[str, object]:
+    document = extract_json(content)
+    if not isinstance(document, Mapping) or set(document) != {
+        "posture",
+        "verdict",
+        "summary",
+        "findings",
+    }:
+        raise ContractError(f"{label} is not valid review JSON")
+    if not isinstance(document["posture"], str) or not document["posture"]:
+        raise ContractError(f"{label} review posture is invalid")
+    if document["verdict"] not in VERDICTS:
+        raise ContractError(f"{label} review verdict is invalid")
+    if not isinstance(document["summary"], str) or not document["summary"]:
+        raise ContractError(f"{label} review summary is invalid")
+    findings = document["findings"]
+    if not isinstance(findings, list):
+        raise ContractError(f"{label} review findings are invalid")
+    for finding in findings:
+        if (
+            not isinstance(finding, Mapping)
+            or set(finding) != {"severity", "finding"}
+            or finding["severity"] not in {"major", "minor"}
+            or not isinstance(finding["finding"], str)
+            or not finding["finding"]
+        ):
+            raise ContractError(f"{label} review finding is invalid")
+    return document
+
+
+def _review_parity_evidence(hf_content: str, llama_content: str) -> dict[str, object]:
+    """Require task-level parity while recording cross-runtime text divergence."""
+
+    hf_content = hf_content.strip()
+    llama_content = llama_content.strip()
+    hf_document = _review_document(hf_content, "HF adapter output")
+    llama_document = _review_document(llama_content, "llama.cpp adapter output")
+    if llama_document["posture"] != hf_document["posture"]:
+        raise ContractError("llama.cpp review posture does not match the HF output")
+    if llama_document["verdict"] != hf_document["verdict"]:
+        raise ContractError("llama.cpp review verdict does not match the HF output")
+    return {
+        "mode": "review-contract-match",
+        "exact_text_match": llama_content == hf_content,
+        "hf_content_sha256": hashlib.sha256(hf_content.encode()).hexdigest(),
+        "llama_content_sha256": hashlib.sha256(llama_content.encode()).hexdigest(),
+        "hf_posture": hf_document["posture"],
+        "llama_posture": llama_document["posture"],
+        "hf_verdict": hf_document["verdict"],
+        "llama_verdict": llama_document["verdict"],
+        "llama_content": llama_content,
+    }
 
 
 def _run_bounded_parity(
@@ -451,12 +507,7 @@ def direct_export(args: argparse.Namespace) -> dict[str, object]:
             sort_keys=True,
         )
     )
-    llama_content = result.stdout.strip()
-    hf_content = reference["content"].strip()
-    if llama_content != hf_content:
-        raise ContractError(
-            "llama.cpp deterministic output does not match the HF adapter output"
-        )
+    parity = _review_parity_evidence(reference["content"], result.stdout)
     if inspect_peft_adapter(args.adapter) != source_adapter:
         raise ContractError("PEFT source adapter changed during llama.cpp export")
     return {
@@ -468,7 +519,7 @@ def direct_export(args: argparse.Namespace) -> dict[str, object]:
         "base_gguf_sha256": sha256_file(args.base_gguf),
         "llama_cpp_commit": LLAMA_CPP_COMMIT,
         "llama_cpp_patch_sha256": LLAMA_CPP_PATCH_SHA256,
-        "parity": "exact-text-match",
+        "parity": parity,
     }
 
 
@@ -496,7 +547,7 @@ def main() -> None:
     args.output = args.output.resolve()
     args.receipt = args.receipt.resolve()
     _check_llama_commit(args.llama_cpp)
-    receipt = {"protocol": "striatum-llama-export/2", **direct_export(args)}
+    receipt = {"protocol": "striatum-llama-export/3", **direct_export(args)}
     args.receipt.parent.mkdir(parents=True, exist_ok=True)
     args.receipt.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
     print(json.dumps(receipt, indent=2, sort_keys=True))

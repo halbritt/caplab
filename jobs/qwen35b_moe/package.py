@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 from collections.abc import Mapping
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -24,6 +25,8 @@ from .cuda_runtime import validate_cuda_runtime_receipt
 from .evaluate import (
     BF16_BASE_LOAD_MODE,
     QUANTIZED_BASE_LOAD_MODE,
+    VERDICTS,
+    extract_json,
     verify_evaluation_results,
     verify_longest_evaluation_receipt,
 )
@@ -132,13 +135,53 @@ def validate_export_receipt(path: Path, gguf: Path, source_adapter: Path) -> Non
     }
     if (
         set(receipt) != expected_fields
-        or receipt.get("protocol") != "striatum-llama-export/2"
+        or receipt.get("protocol") != "striatum-llama-export/3"
         or receipt.get("mode") != "direct-peft-adapter"
         or receipt.get("llama_cpp_commit") != LLAMA_CPP_COMMIT
         or receipt.get("llama_cpp_patch_sha256") != LLAMA_CPP_PATCH_SHA256
-        or receipt.get("parity") != "exact-text-match"
     ):
         raise ContractError("llama.cpp export receipt contract is invalid")
+    parity = _mapping(receipt.get("parity"), "llama.cpp export parity")
+    parity_fields = {
+        "mode",
+        "exact_text_match",
+        "hf_content_sha256",
+        "llama_content_sha256",
+        "hf_posture",
+        "llama_posture",
+        "hf_verdict",
+        "llama_verdict",
+        "llama_content",
+    }
+    if (
+        set(parity) != parity_fields
+        or parity.get("mode") != "review-contract-match"
+        or not isinstance(parity.get("exact_text_match"), bool)
+        or not isinstance(parity.get("hf_posture"), str)
+        or not parity.get("hf_posture")
+        or parity.get("llama_posture") != parity.get("hf_posture")
+        or parity.get("hf_verdict") not in VERDICTS
+        or parity.get("llama_verdict") != parity.get("hf_verdict")
+        or not isinstance(parity.get("llama_content"), str)
+        or not parity.get("llama_content")
+    ):
+        raise ContractError("llama.cpp export parity evidence is invalid")
+    llama_content = parity["llama_content"]
+    llama_document = extract_json(llama_content)
+    if (
+        not isinstance(llama_document, Mapping)
+        or llama_document.get("posture") != parity["llama_posture"]
+        or llama_document.get("verdict") != parity["llama_verdict"]
+    ):
+        raise ContractError("llama.cpp export inference evidence is invalid")
+    if parity.get("llama_content_sha256") != hashlib.sha256(
+        llama_content.encode()
+    ).hexdigest():
+        raise ContractError("llama.cpp export inference hash is invalid")
+    for field in ("hf_content_sha256", "llama_content_sha256"):
+        digest = parity.get(field)
+        if not isinstance(digest, str) or _SHA256.fullmatch(digest) is None:
+            raise ContractError(f"llama.cpp export parity {field} is invalid")
     if receipt.get("source_adapter") != inspect_peft_adapter(source_adapter):
         raise ContractError(
             "llama.cpp export receipt does not bind the current PEFT source adapter"
