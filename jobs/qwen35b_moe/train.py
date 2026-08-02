@@ -69,6 +69,10 @@ LIGER_KERNEL_CONFIG = {
 }
 
 
+class _AcknowledgementNotReady(ContractError):
+    """A published acknowledgement path does not yet contain complete JSON."""
+
+
 def require_no_full_logits(outputs: object) -> None:
     """Fail unless one real training forward returned fused loss without logits."""
 
@@ -335,7 +339,11 @@ def require_checkpoint_acknowledgement(
         if ack_path.is_symlink():
             raise ContractError("checkpoint acknowledgement cannot be a symlink")
         if ack_path.is_file():
-            return _verify_checkpoint_ack(ack_path, expected, config)
+            try:
+                return _verify_checkpoint_ack(ack_path, expected, config)
+            except _AcknowledgementNotReady:
+                if not wait:
+                    raise
         if not wait:
             raise ContractError(
                 f"resume checkpoint is not durably acknowledged: {checkpoint}"
@@ -387,7 +395,9 @@ def _verify_checkpoint_ack(
             path.read_bytes(), object_pairs_hook=_object_without_duplicates
         )
     except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
-        raise ContractError("checkpoint acknowledgement is unreadable") from error
+        raise _AcknowledgementNotReady(
+            "checkpoint acknowledgement is unreadable"
+        ) from error
     record = _object(raw, "checkpoint acknowledgement")
     required_fields = {
         *expected,

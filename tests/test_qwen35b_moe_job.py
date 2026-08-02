@@ -1275,6 +1275,51 @@ def test_checkpoint_acknowledgement_waits_verifies_and_binds_resume(
         )
 
 
+def test_checkpoint_acknowledgement_waits_for_complete_atomic_publication(
+    tmp_path: Path,
+) -> None:
+    checkpoint = tmp_path / "storage/checkpoints/checkpoint-159"
+    checkpoint.mkdir(parents=True)
+    (checkpoint / "trainer_state.json").write_text('{"global_step": 159}\n')
+    (checkpoint / "checkpoint-complete.json").write_text(
+        json.dumps(_checkpoint_manifest(checkpoint), indent=2, sort_keys=True) + "\n"
+    )
+    request_path, run_root, storage_mount, ack_path, encoded = _signed_checkpoint_ack(
+        tmp_path, checkpoint
+    )
+    ack_path.parent.mkdir(parents=True, exist_ok=True)
+    ack_path.write_bytes(b"")
+
+    with pytest.raises(ContractError, match="acknowledgement is unreadable"):
+        require_checkpoint_acknowledgement(
+            checkpoint,
+            wait=False,
+            request_path=request_path,
+            run_root=run_root,
+            storage_mount=storage_mount,
+        )
+
+    sleeps = 0
+
+    def finish_publication(_: float) -> None:
+        nonlocal sleeps
+        sleeps += 1
+        ack_path.write_bytes(encoded)
+
+    acknowledgement = require_checkpoint_acknowledgement(
+        checkpoint,
+        wait=True,
+        request_path=request_path,
+        run_root=run_root,
+        storage_mount=storage_mount,
+        sleep=finish_publication,
+    )
+
+    assert sleeps == 1
+    assert acknowledgement is not None
+    assert acknowledgement["run_id"] == "run-checkpoint-ack"
+
+
 def test_forced_checkpoint_is_exact_and_validated() -> None:
     assert should_force_final_checkpoint(159, 159, True) is True
     assert should_force_final_checkpoint(318, 318, True) is True
@@ -1633,8 +1678,8 @@ def test_preflight_and_full_materializations_have_distinct_reservations() -> Non
     preflight = yaml.safe_load(_render_job("preflight-only"))
 
     expected_runner = {
-        "version": "0.1.10",
-        "git_commit": "f6c3e5f1ec548096326afa5ddff25ec58d685cca",
+        "version": "0.1.11",
+        "git_commit": "d4eb8577bdaafc7065d7dd9612e97f754c2c015d",
     }
     for spec in (full, preflight):
         assert spec["runner"] == expected_runner
@@ -1955,15 +2000,15 @@ def test_preflight_materialization_stamps_single_quoted_yaml_hash(
         receipt,
         {
             "protocol": "striatum-worker-image-build/2",
-            "image": "ghcr.io/halbritt/striatum-tuner-qwen35b-moe:0.1.11",
+            "image": "ghcr.io/halbritt/striatum-tuner-qwen35b-moe:0.1.19",
             "source_commit": "b" * 40,
             "jobrunner_image": (
                 "ghcr.io/halbritt/runpod-jobrunner-noop@sha256:" + "c" * 64
             ),
             "jobrunner_release": {
                 "protocol": "runner-release/1",
-                "runner_version": "0.1.10",
-                "runner_git_commit": "f6c3e5f1ec548096326afa5ddff25ec58d685cca",
+                "runner_version": "0.1.11",
+                "runner_git_commit": "d4eb8577bdaafc7065d7dd9612e97f754c2c015d",
                 "supported_protocol_majors": {
                     "artifact-manifest": [1],
                     "incremental-mirror-ack": [1],
