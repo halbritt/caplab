@@ -37,17 +37,12 @@ RUN python3 -m venv /opt/striatum-qwen35b/venv \
     && /opt/striatum-qwen35b/venv/bin/python -c \
        "import importlib; modules = ('torch', 'torchvision', 'transformers', 'peft', 'accelerate', 'datasets', 'safetensors', 'flash_attn', 'fla', 'causal_conv1d', 'bitsandbytes', 'tilelang', 'tvm_ffi', 'liger_kernel.transformers.model.qwen3_5_moe'); [importlib.import_module(module) for module in modules]"
 
-COPY llama-qwen35-lora-reorder.patch /opt/striatum-qwen35b/patches/
 RUN cuda_stub_dir=/usr/local/cuda/lib64/stubs \
     && test -f "$cuda_stub_dir/libcuda.so" \
     && test ! -e "$cuda_stub_dir/libcuda.so.1" \
     && ln -s libcuda.so "$cuda_stub_dir/libcuda.so.1" \
     && git clone https://github.com/ggml-org/llama.cpp.git /opt/llama.cpp \
     && git -C /opt/llama.cpp checkout "$LLAMA_CPP_COMMIT" \
-    && git -C /opt/llama.cpp apply --check \
-       /opt/striatum-qwen35b/patches/llama-qwen35-lora-reorder.patch \
-    && git -C /opt/llama.cpp apply \
-       /opt/striatum-qwen35b/patches/llama-qwen35-lora-reorder.patch \
     && cmake -S /opt/llama.cpp -B /opt/llama.cpp/build \
        -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=90 \
        -DCMAKE_EXE_LINKER_FLAGS="-Wl,-rpath-link,$cuda_stub_dir" \
@@ -65,6 +60,15 @@ RUN cuda_stub_dir=/usr/local/cuda/lib64/stubs \
        > /tmp/llama-cli.dynamic \
     && ! grep -Fq "$cuda_stub_dir" /tmp/llama-cli.dynamic \
     && rm /tmp/libggml-cuda.dynamic /tmp/llama-cli.dynamic
+
+# The Qwen LoRA fix changes converter Python only. Keep it after the native
+# build so converter revisions do not invalidate the expensive SM90 layer.
+COPY llama-qwen35-lora-reorder.patch /opt/striatum-qwen35b/patches/
+RUN git -C /opt/llama.cpp apply --check \
+       /opt/striatum-qwen35b/patches/llama-qwen35-lora-reorder.patch \
+    && git -C /opt/llama.cpp apply \
+       /opt/striatum-qwen35b/patches/llama-qwen35-lora-reorder.patch \
+    && git -C /opt/llama.cpp diff --check
 
 # Copy the already-published controller-matched runner only after the expensive
 # worker dependencies and CUDA utilities. Runner-only releases then reuse those

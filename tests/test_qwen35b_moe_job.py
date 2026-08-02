@@ -3665,9 +3665,9 @@ def test_worker_image_applies_the_pinned_qwen_lora_reorder_patch() -> None:
 
     assert "!llama-qwen35-lora-reorder.patch" in dockerignore
     assert "COPY llama-qwen35-lora-reorder.patch /opt/striatum-qwen35b/patches/" in dockerfile
-    dependency_install = "-r requirements-gpu.lock"
+    native_build = "cmake --build /opt/llama.cpp/build"
     patch_copy = "COPY llama-qwen35-lora-reorder.patch"
-    assert dockerfile.index(dependency_install) < dockerfile.index(patch_copy)
+    assert dockerfile.index(native_build) < dockerfile.index(patch_copy)
     assert "git -C /opt/llama.cpp apply --check" in dockerfile
     assert dockerfile.index('checkout "$LLAMA_CPP_COMMIT"') < dockerfile.index(
         "git -C /opt/llama.cpp apply --check"
