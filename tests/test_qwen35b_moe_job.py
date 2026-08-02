@@ -62,8 +62,13 @@ from jobs.qwen35b_moe.flash_qla_smoke import (  # noqa: E402
     validate_flash_qla_smoke_receipt,
 )
 from jobs.qwen35b_moe.fla_dispatch_compat import (  # noqa: E402
+    BACKEND_ADAPTATION,
+    BACKEND_ADMISSION,
+    BACKEND_REJECTIONS,
+    BACKEND_RETURN,
     POSTIMAGE_DECORATORS,
     PREIMAGE_DECORATORS,
+    patch_backend_source,
     patch_source,
 )
 from jobs.qwen35b_moe.peft_config import (  # noqa: E402
@@ -260,6 +265,7 @@ def _flash_qla_receipt() -> dict[str, object]:
         "protocol": "striatum-flash-qla-smoke/1",
         "dispatcher": "FlashQLABackend",
         "dispatch_calls": 1,
+        "production_fused_inputs_adapted": True,
         "device": {"name": "NVIDIA H200", "compute_capability": [9, 0]},
         "shape": {
             "batch": 1,
@@ -274,7 +280,16 @@ def _flash_qla_receipt() -> dict[str, object]:
         "loss": 1.0,
         "gradients": {
             name: "finite-nonzero"
-            for name in ("q", "k", "v", "g", "beta", "initial_state")
+            for name in (
+                "q",
+                "k",
+                "v",
+                "g",
+                "beta",
+                "A_log",
+                "dt_bias",
+                "initial_state",
+            )
         },
         "versions": {
             "flash-linear-attention": "0.5.2",
@@ -294,6 +309,11 @@ def test_flash_qla_receipt_requires_observed_dispatch_without_assuming_call_coun
 
     receipt["dispatch_calls"] = 0
     with pytest.raises(ContractError, match="implementation was not invoked"):
+        validate_flash_qla_smoke_receipt(receipt)
+
+    receipt = _flash_qla_receipt()
+    receipt["production_fused_inputs_adapted"] = False
+    with pytest.raises(ContractError, match="fused-input evidence is missing"):
         validate_flash_qla_smoke_receipt(receipt)
 
 
@@ -1721,6 +1741,36 @@ def test_fla_dispatch_patch_is_exact_idempotent_and_fail_closed() -> None:
 
     with pytest.raises(ContractError, match="refused unknown source"):
         patch_source(
+            source + b"drift",
+            preimage_sha256=preimage_sha256,
+            postimage_sha256=postimage_sha256,
+        )
+
+
+def test_flash_qla_patch_adapts_production_inputs_and_is_fail_closed() -> None:
+    source = b"prefix\n" + BACKEND_REJECTIONS + b"middle\n" + BACKEND_RETURN
+    expected = b"prefix\n" + BACKEND_ADMISSION + b"middle\n" + BACKEND_ADAPTATION
+    preimage_sha256 = hashlib.sha256(source).hexdigest()
+    postimage_sha256 = hashlib.sha256(expected).hexdigest()
+
+    patched, status = patch_backend_source(
+        source,
+        preimage_sha256=preimage_sha256,
+        postimage_sha256=postimage_sha256,
+    )
+    assert patched == expected
+    assert status == "patched"
+
+    repeated, repeated_status = patch_backend_source(
+        patched,
+        preimage_sha256=preimage_sha256,
+        postimage_sha256=postimage_sha256,
+    )
+    assert repeated == patched
+    assert repeated_status == "already-patched"
+
+    with pytest.raises(ContractError, match="refused unknown source"):
+        patch_backend_source(
             source + b"drift",
             preimage_sha256=preimage_sha256,
             postimage_sha256=postimage_sha256,

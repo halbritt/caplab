@@ -13,16 +13,27 @@ from collections.abc import Iterator
 from typing import Any
 
 from .contract import ContractError
+from .fla_dispatch_compat import validate_install as validate_compatibility_install
 
 
 PROTOCOL = "striatum-flash-qla-smoke/1"
-GRADIENT_NAMES = ("q", "k", "v", "g", "beta", "initial_state")
+GRADIENT_NAMES = (
+    "q",
+    "k",
+    "v",
+    "g",
+    "beta",
+    "A_log",
+    "dt_bias",
+    "initial_state",
+)
 
 
 def validate_install() -> dict[str, str]:
     """Validate the coherent package contract without pretending to run a kernel."""
     from fla.ops.gated_delta_rule.backends.flash_qla import FlashQLABackend
 
+    validate_compatibility_install()
     versions = {
         package: importlib.metadata.version(package)
         for package in (
@@ -57,6 +68,8 @@ def validate_flash_qla_smoke_receipt(receipt: object) -> dict[str, Any]:
         raise ContractError("FlashQLA smoke protocol is invalid")
     if receipt.get("dispatcher") != "FlashQLABackend":
         raise ContractError("FlashQLA dispatcher identity is invalid")
+    if receipt.get("production_fused_inputs_adapted") is not True:
+        raise ContractError("FlashQLA production fused-input evidence is missing")
     if (
         isinstance(dispatch_calls, bool)
         or not isinstance(dispatch_calls, int)
@@ -107,7 +120,6 @@ def run_flash_qla_smoke(output: Path | None = None) -> dict[str, Any]:
     try:
         import flash_qla
         import torch
-        import torch.nn.functional as F
         from fla.ops.gated_delta_rule import chunk_gated_delta_rule
     except ImportError as error:
         raise ContractError("FlashQLA runtime dependencies are unavailable") from error
@@ -126,10 +138,18 @@ def run_flash_qla_smoke(output: Path | None = None) -> dict[str, Any]:
     q = torch.randn(1, 64, 16, 128, device="cuda", dtype=torch.bfloat16, requires_grad=True)
     k = torch.randn(1, 64, 16, 128, device="cuda", dtype=torch.bfloat16, requires_grad=True)
     v = torch.randn(1, 64, 32, 128, device="cuda", dtype=torch.bfloat16, requires_grad=True)
-    g = F.logsigmoid(torch.randn(1, 64, 32, device="cuda", dtype=torch.float32)).detach().requires_grad_(True)
-    beta = torch.randn(1, 64, 32, device="cuda", dtype=torch.float32).sigmoid().detach().requires_grad_(True)
+    g = torch.randn(1, 64, 32, device="cuda", dtype=torch.float32, requires_grad=True)
+    beta = torch.randn(1, 64, 32, device="cuda", dtype=torch.bfloat16, requires_grad=True)
+    A_log = torch.randn(32, device="cuda", dtype=torch.float32, requires_grad=True)
+    dt_bias = torch.randn(32, device="cuda", dtype=torch.float32, requires_grad=True)
     initial_state = torch.randn(1, 32, 128, 128, device="cuda", dtype=torch.float32, requires_grad=True)
-    tensors = dict(zip(GRADIENT_NAMES, (q, k, v, g, beta, initial_state), strict=True))
+    tensors = dict(
+        zip(
+            GRADIENT_NAMES,
+            (q, k, v, g, beta, A_log, dt_bias, initial_state),
+            strict=True,
+        )
+    )
 
     with _observe_flash_qla_calls(flash_qla) as observed:
         generated, final_state = chunk_gated_delta_rule(
@@ -141,6 +161,12 @@ def run_flash_qla_smoke(output: Path | None = None) -> dict[str, Any]:
             initial_state=initial_state,
             output_final_state=True,
             use_qk_l2norm_in_kernel=True,
+            use_gate_in_kernel=True,
+            A_log=A_log,
+            dt_bias=dt_bias,
+            use_beta_sigmoid_in_kernel=True,
+            allow_neg_eigval=False,
+            state_v_first=True,
         )
         loss = generated.float().square().mean() + final_state.float().square().mean()
         if not bool(torch.isfinite(generated).all() and torch.isfinite(final_state).all()):
@@ -162,6 +188,7 @@ def run_flash_qla_smoke(output: Path | None = None) -> dict[str, Any]:
         "protocol": PROTOCOL,
         "dispatcher": "FlashQLABackend",
         "dispatch_calls": observed["count"],
+        "production_fused_inputs_adapted": True,
         "device": {
             "name": torch.cuda.get_device_name(),
             "compute_capability": capability,

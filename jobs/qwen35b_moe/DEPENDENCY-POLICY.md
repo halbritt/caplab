@@ -14,12 +14,20 @@ kernel packages remain the exact tested compatibility tuple.
 
 Torch 2.8 discards a wrapper when `torch.compiler.disable` is applied around an
 already-disabled function. FLA 0.5.2 consequently bypasses its Hopper backend
-dispatcher for `chunk_gated_delta_rule`. The image applies one fail-closed source
-correction after install: it removes the redundant inner disable decorator while
-retaining FLA's disabled dispatch wrapper. Both wheel preimage and corrected
-postimage are SHA-256-bound, so a future FLA source change fails the build instead
-of receiving an unreviewed patch. Remove this correction only after a tested FLA
-release incorporates the equivalent upstream fix.
+dispatcher for `chunk_gated_delta_rule`. Its FlashQLA backend also rejects the
+fused raw gate and beta inputs that the Qwen3.5/3.6 layer always supplies. No
+newer released FLA or FlashQLA tuple corrects these integration defects.
+
+The image therefore applies two fail-closed source corrections after install. It
+removes the redundant inner disable decorator while retaining FLA's disabled
+dispatch wrapper. It also adapts raw gate and beta inputs inside only the
+FlashQLA backend, using FLA's reference gate transform before invoking the fused
+kernel. This preserves autograd through the raw gate, beta, `A_log`, and
+`dt_bias`; FLA's own tests define the manual transform as equivalent to its
+in-kernel path. Every wheel preimage and corrected postimage is SHA-256-bound, so
+a future FLA source change fails the build instead of receiving an unreviewed
+patch. Remove these corrections only after a tested FLA release incorporates the
+equivalent upstream fixes.
 
 Regenerate after an intentional compatibility change:
 
