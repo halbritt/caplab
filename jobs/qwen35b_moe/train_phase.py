@@ -27,11 +27,10 @@ import time
 from typing import Mapping, Sequence
 
 from .contract import (
-    MODEL,
     STRATEGIES,
     ContractError,
-    expected_adapter_measurement,
     sha256_file,
+    validate_production_adapter_evidence,
 )
 from .peft_config import validate_base_preparation_receipt
 from .runtime import input_dir_from_env, model_dir_from_env, output_dir_from_env
@@ -678,46 +677,9 @@ def _training_result(
         result.get("base_preparation"), "training result base preparation"
     )
     validate_base_preparation_receipt(preparation)
-    measurement = _mapping(
-        result.get("measurement"), "training result adapter measurement"
+    validate_production_adapter_evidence(
+        result.get("measurement"), expected_strategy
     )
-    expected_measurement = expected_adapter_measurement(expected_strategy).to_dict()
-    evidence_fields = {
-        "matched_modules",
-        "matched_module_count",
-        "total_parameters",
-    }
-    if set(measurement) != set(expected_measurement) | evidence_fields:
-        raise ContractError("training result adapter measurement fields are invalid")
-    for field, expected_value in expected_measurement.items():
-        if measurement.get(field) != expected_value:
-            raise ContractError(
-                f"training result adapter measurement {field} is invalid"
-            )
-    matched_modules = measurement.get("matched_modules")
-    expected_module_count = sum(
-        count
-        for family, count in expected_measurement["target_counts"].items()
-        if family != "routed_expert"
-    )
-    if (
-        not isinstance(matched_modules, list)
-        or not all(isinstance(name, str) and name for name in matched_modules)
-        or matched_modules != sorted(set(matched_modules))
-        or measurement.get("matched_module_count") != len(matched_modules)
-        or len(matched_modules) != expected_module_count
-    ):
-        raise ContractError("training result matched LoRA module census is invalid")
-    total_parameters = measurement.get("total_parameters")
-    expected_total_parameters = (
-        MODEL.base_parameters + expected_measurement["trainable_parameters"]
-    )
-    if (
-        isinstance(total_parameters, bool)
-        or not isinstance(total_parameters, int)
-        or total_parameters != expected_total_parameters
-    ):
-        raise ContractError("training result total parameter count is invalid")
     selection = _mapping(
         result.get("example_selection"), "training result example selection"
     )

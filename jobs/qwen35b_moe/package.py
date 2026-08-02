@@ -17,6 +17,7 @@ from .contract import (
     ContractError,
     expected_adapter_measurement,
     sha256_file,
+    validate_production_adapter_evidence,
     validate_census,
 )
 from .cuda_runtime import validate_cuda_runtime_receipt
@@ -310,12 +311,9 @@ def _validate_training_receipt(run_root: Path) -> None:
                 f"paid training stage {expected_name} base preparation",
             )
             validate_base_preparation_receipt(preparation)
-            if stage.get("adapter_measurement") != expected_adapter_measurement(
-                str(receipt.get("strategy"))
-            ).to_dict():
-                raise ContractError(
-                    f"paid training stage {expected_name} adapter measurement is invalid"
-                )
+            validate_production_adapter_evidence(
+                stage.get("adapter_measurement"), str(receipt.get("strategy"))
+            )
 
     config = training_config()
     quality = _mapping(config.get("quality_gate"), "quality gate configuration")

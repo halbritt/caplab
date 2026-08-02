@@ -239,6 +239,58 @@ def validate_adapter_measurement(
         )
 
 
+def validate_production_adapter_evidence(
+    value: object, strategy: str
+) -> Mapping[str, object]:
+    """Validate the enriched measurement emitted by the production trainer."""
+
+    if not isinstance(value, Mapping):
+        raise ContractError("production adapter measurement must be an object")
+    measurement = value
+    expected = expected_adapter_measurement(strategy).to_dict()
+    evidence_fields = {
+        "matched_modules",
+        "matched_module_count",
+        "total_parameters",
+    }
+    if set(measurement) != set(expected) | evidence_fields:
+        raise ContractError("production adapter measurement fields are invalid")
+    for field, expected_value in expected.items():
+        if measurement.get(field) != expected_value:
+            raise ContractError(
+                f"production adapter measurement {field} is invalid"
+            )
+
+    matched_modules = measurement.get("matched_modules")
+    expected_module_count = sum(
+        count
+        for family, count in expected["target_counts"].items()
+        if family != "routed_expert"
+    )
+    if (
+        not isinstance(matched_modules, list)
+        or not all(isinstance(name, str) and name for name in matched_modules)
+        or matched_modules != sorted(set(matched_modules))
+        or measurement.get("matched_module_count") != len(matched_modules)
+        or len(matched_modules) != expected_module_count
+    ):
+        raise ContractError(
+            "production adapter measurement matched-module census is invalid"
+        )
+
+    total_parameters = measurement.get("total_parameters")
+    expected_total_parameters = MODEL.base_parameters + expected["trainable_parameters"]
+    if (
+        isinstance(total_parameters, bool)
+        or not isinstance(total_parameters, int)
+        or total_parameters != expected_total_parameters
+    ):
+        raise ContractError(
+            "production adapter measurement total parameter count is invalid"
+        )
+    return measurement
+
+
 def load_input_manifest(
     path: Path, *, strict_production: bool = True
 ) -> tuple[InputFile, ...]:

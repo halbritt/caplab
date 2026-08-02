@@ -922,6 +922,28 @@ def _write_valid_adapter(adapter: Path, strategy: str = LINEAR_ONLY) -> None:
     )
 
 
+def _production_adapter_measurement(strategy: str) -> dict[str, object]:
+    measurement = expected_adapter_measurement(strategy).to_dict()
+    matched_count = sum(
+        count
+        for family, count in measurement["target_counts"].items()
+        if family != "routed_expert"
+    )
+    measurement.update(
+        {
+            "matched_modules": [
+                f"model.language_model.test_module_{index:03d}"
+                for index in range(matched_count)
+            ],
+            "matched_module_count": matched_count,
+            "total_parameters": (
+                MODEL.base_parameters + measurement["trainable_parameters"]
+            ),
+        }
+    )
+    return measurement
+
+
 def test_peft_source_receipt_binds_a_semantically_valid_adapter(tmp_path: Path) -> None:
     adapter = tmp_path / "adapter"
     _write_valid_adapter(adapter)
@@ -2921,9 +2943,9 @@ def test_full_packaging_requires_epoch_one_gate_evidence(tmp_path: Path) -> None
         if step is not None:
             item["global_step"] = step
             item["base_preparation"] = _base_preparation_receipt()
-            item["adapter_measurement"] = expected_adapter_measurement(
+            item["adapter_measurement"] = _production_adapter_measurement(
                 LINEAR_ONLY
-            ).to_dict()
+            )
         stages.append(item)
     _write_json(
         receipt_path,
