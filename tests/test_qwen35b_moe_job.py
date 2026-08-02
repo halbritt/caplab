@@ -350,6 +350,7 @@ def test_required_hopper_backend_binds_every_qwen_linear_layer_and_records_calls
     class LinearLayer:
         def __init__(self) -> None:
             self.chunk_gated_delta_rule = lambda *args, **kwargs: "fallback"
+            self.causal_conv1d_fn = lambda x, **kwargs: f"conv-{x}"
 
     layers = [LinearLayer(), LinearLayer()]
     model = SimpleNamespace(
@@ -384,9 +385,13 @@ def test_required_hopper_backend_binds_every_qwen_linear_layer_and_records_calls
         {"hopper_linear_attention_backend": "flash_qla"},
         compute_capability=(9, 0),
         backend_factory=Backend,
+        causal_conv_input_normalizer=lambda value: ("bf16", value == "fp32"),
     )
 
     assert evidence["bound_module_count"] == 2
+    assert evidence["causal_conv_module_count"] == 2
+    assert layers[0].causal_conv1d_fn(x="fp32") == "conv-bf16"
+    assert evidence["causal_conv_input_casts"] == 1
     assert layers[0].chunk_gated_delta_rule("q", g="g") == "flash-qla"
     assert evidence["observed_calls"] == 1
     assert calls == [(('q',), {"g": "g"})]
@@ -408,6 +413,9 @@ def test_required_hopper_backend_is_not_applied_on_ampere_and_fails_closed() -> 
         "bound_modules": [],
         "bound_module_count": 0,
         "observed_calls": 0,
+        "causal_conv_modules": [],
+        "causal_conv_module_count": 0,
+        "causal_conv_input_casts": 0,
     }
 
     class RejectingBackend:
@@ -425,7 +433,10 @@ def test_required_hopper_backend_is_not_applied_on_ampere_and_fails_closed() -> 
         def chunk_gated_delta_rule(self, *args, **kwargs):  # noqa: ANN001
             raise AssertionError("rejected backend must not execute")
 
-    layer = SimpleNamespace(chunk_gated_delta_rule=lambda: "fallback")
+    layer = SimpleNamespace(
+        chunk_gated_delta_rule=lambda: "fallback",
+        causal_conv1d_fn=lambda x: x,
+    )
     model = SimpleNamespace(
         named_modules=lambda: iter([("model.layers.0.linear_attn", layer)])
     )
@@ -434,6 +445,7 @@ def test_required_hopper_backend_is_not_applied_on_ampere_and_fails_closed() -> 
         {"hopper_linear_attention_backend": "flash_qla"},
         compute_capability=(9, 0),
         backend_factory=RejectingBackend,
+        causal_conv_input_normalizer=lambda value: (value, False),
     )
     with pytest.raises(ContractError, match="FlashQLA rejected.*K must be 128"):
         layer.chunk_gated_delta_rule("q")

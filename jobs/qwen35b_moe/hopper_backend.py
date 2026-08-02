@@ -32,6 +32,25 @@ def _flash_qla_backend() -> Any:
     return FlashQLABackend()
 
 
+def _autocast_causal_conv_input(value: Any) -> tuple[Any, bool]:
+    """Match the fused causal convolution to the active CUDA autocast dtype."""
+
+    try:
+        import torch
+    except ImportError as error:
+        raise ContractError("torch is required for causal-convolution autocast") from error
+    if (
+        isinstance(value, torch.Tensor)
+        and value.dtype == torch.float32
+        and torch.is_autocast_enabled("cuda")
+    ):
+        target = torch.get_autocast_dtype("cuda")
+        if target not in {torch.float16, torch.bfloat16}:
+            raise ContractError(f"unsupported CUDA autocast dtype: {target}")
+        return value.to(dtype=target), True
+    return value, False
+
+
 def _base_evidence(
     configured: str | None, capability: tuple[int, int], status: str
 ) -> dict[str, Any]:
@@ -43,6 +62,9 @@ def _base_evidence(
         "bound_modules": [],
         "bound_module_count": 0,
         "observed_calls": 0,
+        "causal_conv_modules": [],
+        "causal_conv_module_count": 0,
+        "causal_conv_input_casts": 0,
     }
 
 
@@ -52,6 +74,9 @@ def bind_required_hopper_backend(
     *,
     compute_capability: tuple[int, int] | None = None,
     backend_factory: Callable[[], Any] = _flash_qla_backend,
+    causal_conv_input_normalizer: Callable[[Any], tuple[Any, bool]] = (
+        _autocast_causal_conv_input
+    ),
 ) -> dict[str, Any]:
     """Bind Qwen linear layers directly to a configured Hopper backend.
 
@@ -88,10 +113,37 @@ def bind_required_hopper_backend(
     ]
     if not modules:
         raise ContractError("configured FlashQLA backend matched zero Qwen linear layers")
+    causal_conv_modules = [
+        (name, module)
+        for name, module in modules
+        if callable(getattr(module, "causal_conv1d_fn", None))
+    ]
+    if len(causal_conv_modules) != len(modules):
+        raise ContractError(
+            "configured Hopper fast path has missing Qwen causal-convolution bindings"
+        )
 
     evidence = _base_evidence(configured, capability, "bound")
     evidence["bound_modules"] = [name for name, _ in modules]
     evidence["bound_module_count"] = len(modules)
+    evidence["causal_conv_modules"] = [name for name, _ in causal_conv_modules]
+    evidence["causal_conv_module_count"] = len(causal_conv_modules)
+
+    def causal_conv_call(original: Callable[..., Any]) -> Callable[..., Any]:
+        def call(*args: Any, **kwargs: Any) -> Any:
+            if args:
+                normalized, changed = causal_conv_input_normalizer(args[0])
+                args = (normalized, *args[1:])
+            elif "x" in kwargs:
+                normalized, changed = causal_conv_input_normalizer(kwargs["x"])
+                kwargs = {**kwargs, "x": normalized}
+            else:
+                raise ContractError("Qwen causal convolution received no input tensor")
+            if changed:
+                evidence["causal_conv_input_casts"] += 1
+            return original(*args, **kwargs)
+
+        return call
 
     def required_call(module_name: str) -> Callable[..., Any]:
         def call(*args: Any, **kwargs: Any) -> Any:
@@ -108,6 +160,8 @@ def bind_required_hopper_backend(
 
         return call
 
+    for _name, module in causal_conv_modules:
+        module.causal_conv1d_fn = causal_conv_call(module.causal_conv1d_fn)
     for name, module in modules:
         module.chunk_gated_delta_rule = required_call(name)
     return evidence
@@ -127,6 +181,9 @@ def validate_hopper_backend_evidence(value: object) -> dict[str, Any]:
         "bound_modules",
         "bound_module_count",
         "observed_calls",
+        "causal_conv_modules",
+        "causal_conv_module_count",
+        "causal_conv_input_casts",
     }
     if set(evidence) != expected or evidence.get("protocol") != PROTOCOL:
         raise ContractError("Hopper backend evidence is invalid")
@@ -136,6 +193,9 @@ def validate_hopper_backend_evidence(value: object) -> dict[str, Any]:
             evidence.get("bound_modules") != []
             or evidence.get("bound_module_count") != 0
             or evidence.get("observed_calls") != 0
+            or evidence.get("causal_conv_modules") != []
+            or evidence.get("causal_conv_module_count") != 0
+            or evidence.get("causal_conv_input_casts") != 0
         ):
             raise ContractError("inactive Hopper backend evidence contains calls")
         return evidence
@@ -144,6 +204,9 @@ def validate_hopper_backend_evidence(value: object) -> dict[str, Any]:
     modules = evidence.get("bound_modules")
     count = evidence.get("bound_module_count")
     calls = evidence.get("observed_calls")
+    causal_modules = evidence.get("causal_conv_modules")
+    causal_count = evidence.get("causal_conv_module_count")
+    causal_casts = evidence.get("causal_conv_input_casts")
     if (
         not isinstance(modules, list)
         or not modules
@@ -151,6 +214,13 @@ def validate_hopper_backend_evidence(value: object) -> dict[str, Any]:
         or isinstance(count, bool)
         or not isinstance(count, int)
         or count != len(modules)
+        or causal_modules != modules
+        or isinstance(causal_count, bool)
+        or not isinstance(causal_count, int)
+        or causal_count != count
+        or isinstance(causal_casts, bool)
+        or not isinstance(causal_casts, int)
+        or causal_casts < 0
     ):
         raise ContractError("Hopper backend binding evidence is invalid")
     if isinstance(calls, bool) or not isinstance(calls, int) or calls <= 0:

@@ -78,9 +78,9 @@ finite nonzero gradients before loading any model weights.
 
 ```bash
 JOBRUNNER_IMAGE=ghcr.io/halbritt/runpod-jobrunner-noop@sha256:304a555bc6ddbc269806c3440a7eb221b4a830169fa4e1ecf4b742551d45bb73
-BUILD_RECEIPT=/tmp/striatum-qwen35b-image-0.1.17.json
+BUILD_RECEIPT=/tmp/striatum-qwen35b-image-0.1.18.json
 python3 -m jobs.qwen35b_moe.build_image \
-  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.17 \
+  ghcr.io/halbritt/striatum-tuner-qwen35b-moe 0.1.18 \
   --jobrunner-image "$JOBRUNNER_IMAGE" \
   --receipt "$BUILD_RECEIPT" --push
 ```
@@ -119,7 +119,10 @@ On SM90, the shared trainer binds every Qwen linear-attention layer directly
 to FLA's configured `FlashQLABackend`. Backend rejection is an immediate,
 reason-bearing error; generic fallback is forbidden. The training receipt and
 terminal package both require nonzero calls through this model-layer binding,
-in addition to the standalone kernel probe.
+in addition to the standalone kernel probe. The same binding normalizes the
+fused `causal-conv1d` input from FP32 to the active CUDA autocast dtype; this
+keeps the production fast path aligned with the BF16 torch-convolution path
+used by Gate 1 and records how often the conversion occurs.
 
 ## Gate 3: real 35B MoE on H200
 
