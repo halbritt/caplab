@@ -29,6 +29,13 @@ The following gates passed:
 8. The supervisor reclaimed its cgroup residue and the wake hook fired.
 9. The standing `whisper-stt` service was restored after the lease.
 
+After verifying restoration, `whisper-stt` was deliberately stopped (not
+disabled) to hand the single GPU slot to Striatum. Final state: `llama-27b` is
+active, `whisper-stt` and its renewer are inactive, and proximal slot 0 is
+`routable` as `qwen3.6-ft` with no outstanding lease. Starting `whisper-stt`
+will acquire its standing exclusive lease and temporarily remove this backend
+from Striatum capacity.
+
 The successful sealed submission is retained at:
 
 ```text
