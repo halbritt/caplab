@@ -16,7 +16,8 @@ def test_llama_service_and_striatum_backend_share_tuned_alias():
 
     assert model == "qwen3.6-ft"
     assert "-disable-thinking" in command
-    assert "--alias qwen3.6-ft" in override
+    assert "--alias qwen3.6-ft\n" in override
+    assert "--alias qwen3.6-ft," not in override
     assert "--lora /home/halbritt/models/Qwen3.6-35B-A3B-Striatum-FT/adapter-f32.gguf" in override
     assert "-m /home/halbritt/models/Qwen3.6-35B-A3B-APEX-I-Compact.gguf" in override
     assert "--port 8081" in override

@@ -2,10 +2,9 @@
 
 This deployment keeps the trained model as a llama.cpp LoRA over the existing
 compact Qwen3.6-35B-A3B base. The endpoint alias and Striatum backend identity
-are `qwen3.6-ft` / `local-qwen-ft`. The server keeps the old model alias as a
-transition-compatible secondary alias, but the untuned `local-qwen`
-declaration is retained disabled so its historical ledger evidence remains
-attributable.
+are `qwen3.6-ft` / `local-qwen-ft`. The server exposes only the tuned alias;
+the untuned `local-qwen` declaration is retained disabled so endpoint
+discovery and new ledger evidence cannot mix the two variants.
 
 ## Install
 
@@ -31,6 +30,8 @@ Require all of these before releasing the lease:
 - `/health` returns `ok`;
 - `/v1/models` exposes `qwen3.6-ft`;
 - one bounded completion succeeds through `striatum-openai-lane`;
+- the completion request includes `-disable-thinking`, matching fine-tune
+  evaluation serving mode;
 - the local-qwen-ft live backend-conformance smoke submits a sealed review;
 - gpu-fleet graduates the exact `qwen3.6-ft` slot to `routable`; and
 - the old `local-qwen` declaration remains disabled.
@@ -41,3 +42,15 @@ Restore the prior systemd override, restart the service under a lease, and add
 a new append-only gpu-fleet migration restoring `qwen3.6-35b-a3b`. Disable
 `local-qwen-ft` and re-enable `local-qwen` with new declaration versions. Never
 rewrite an applied fleet migration or existing ledger history.
+
+When running `backend-conformance` from an interactive shell, put it in a
+delegated user scope so the supervisor can create and reclaim its child cgroup:
+
+```bash
+systemd-run --user --scope -p Delegate=yes \
+  go run ./tools/backend-conformance ...
+```
+
+Production Striatum services must provide the same cgroup delegation through
+their unit configuration; cgroup setup failure is an infrastructure refusal,
+not a model retry.
