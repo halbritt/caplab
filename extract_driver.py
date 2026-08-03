@@ -28,13 +28,18 @@ import subprocess
 import sys
 from collections import Counter, defaultdict
 
-CORPUS_VERSION = 1
+CORPUS_VERSION = 2
 
 STRIATUM_VERBS = {
     "init", "request", "cancel", "drive", "status", "accept", "reject",
     "resolve", "revoke", "reconcile", "ledger",
     # historical / auxiliary verbs seen in older transcripts
     "escalations", "observe", "graph", "backends", "catalog", "verify",
+    # legacy bootstrap-striatum (striatumd era) subcommands: matched FIRST so
+    # `striatum supervise status` labels as supervise, not status (v1 mislabeled
+    # ~15% of records this way)
+    "supervise", "run", "daemon", "checkpoint", "workflow", "dashboard",
+    "operator", "submit-review", "recovery", "escalation", "lease",
 }
 
 RESOLVE_DISPOSITIONS = {"proceed", "cancel_request", "reissue", "redirect", "override"}
