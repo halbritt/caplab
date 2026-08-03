@@ -1,5 +1,8 @@
 corpus/
 corpus-test/
+corpus-driver/
+corpus-driver.new/
+corpus-driver-run*.log
 sft/
 __pycache__/
 train/out/
