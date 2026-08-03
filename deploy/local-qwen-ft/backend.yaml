@@ -1,8 +1,6 @@
-# DRAFT backend declaration for the fine-tuned local lane.
-# Copy to striatum-next/backends/local-qwen-ft/backend.yaml when a tuned GGUF
-# is actually served; adjust -model to the served alias. Enters as a NEW
-# backend id (fresh attribution lineage + own seal key), leaving local-qwen's
-# ledger history intact for before/after comparison.
+# Canonical deployment source for the fine-tuned local review lane. Install as
+# striatum-next/backends/local-qwen-ft/backend.yaml. It enters as a new backend
+# id so baseline and tuned ledger outcomes retain separate attribution.
 #
 # Provision the seal key first (same shape as the existing keys — 64 hex chars):
 #   openssl rand -hex 32 > ~/.local/share/striatum/keys/local-qwen-ft.sealkey
@@ -16,17 +14,18 @@ agent_runtimes:
   - id: local-qwen-ft
     version_discovery: probe
 aliasing:
-  aliasing_class: alibaba-qwen        # same base-model family as local-qwen
+  aliasing_class: alibaba-qwen        # same base family; tuning does not create
+                                      # independent judgment supply
   basis: vendor-stated
-  as_of: 2026-07-30
-  review_by: 2026-10-01
+  as_of: 2026-08-03
+  review_by: 2026-11-01
 quality:
-  classes: { review: baseline }       # stays additional-signal until the ledger
-                                      # earns a re-rank (scheduler telemetry
-                                      # wants min_samples 20)
-  basis: local-model-class
-  as_of: 2026-07-30
-  review_by: 2026-10-01
+  classes: { review: baseline }       # stays additional-signal until admitted
+                                      # ledger outcomes earn a re-rank
+  basis: local-held-out-evaluation
+  benchmark_ref: "Qwen3.6-35B-A3B review SFT: 98-example held-out evaluation and private fate gate, 2026-08-02"
+  as_of: 2026-08-02
+  review_by: 2026-11-01
 capabilities:
   effects: [E0]
   supported_pass_types: [review]      # widen only after per-pass eval supports it
@@ -50,4 +49,5 @@ adapter:
 provenance_fields:
   required: [agent_runtime_id, agent_runtime_version, session_nonce, rendered_prompt_hash, attempts]
   optional: [token_usage, internal_relaunches]
-scheduler_hints: [rank=8]             # one ahead of local-qwen; still behind every frontier lane
+scheduler_hints: [rank=8]             # ahead of the retired baseline identity;
+                                      # still below every primary review tier
