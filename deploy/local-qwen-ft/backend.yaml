@@ -42,7 +42,7 @@ constraints:
   interactive_input: none
   internal_retry: { max: 1 }
 adapter:
-  command: [striatum-openai-lane, -base-url, "http://127.0.0.1:8081/v1", -model, qwen3.6-ft, -max-tokens, "32768"]
+  command: [striatum-openai-lane, -base-url, "http://127.0.0.1:8081/v1", -model, qwen3.6-ft, -disable-thinking, -max-tokens, "32768"]
   prompt_mode: stdin
   stdout_output: single-required-output
   version_command: [striatum-openai-lane, -version]
