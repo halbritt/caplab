@@ -60,7 +60,7 @@ def side(verdict) -> str | None:
     return None
 
 
-def call(base_url, model, prompt, max_tokens, think, timeout):
+def call(base_url, model, prompt, max_tokens, think, timeout, api_key_env=None):
     payload = {
         "model": model,
         "messages": [{"role": "user", "content": prompt}],
@@ -69,10 +69,19 @@ def call(base_url, model, prompt, max_tokens, think, timeout):
     }
     if not think:
         payload["chat_template_kwargs"] = {"enable_thinking": False}
+    headers = {"Content-Type": "application/json"}
+    # Bearer resolved from a named env var at call time — the same env-name
+    # credentials pattern the production lane uses (striatum-openai-lane
+    # -api-key-env). The key never enters this file, a result record, or git.
+    if api_key_env:
+        key = os.environ.get(api_key_env, "")
+        if not key:
+            raise SystemExit(f"eval: {api_key_env} is empty; export it before running")
+        headers["Authorization"] = "Bearer " + key
     req = urllib.request.Request(
         base_url.rstrip("/") + "/chat/completions",
         data=json.dumps(payload).encode(),
-        headers={"Content-Type": "application/json"},
+        headers=headers,
     )
     started = time.time()
     with urllib.request.urlopen(req, timeout=timeout) as resp:
@@ -99,6 +108,8 @@ def main():
                     help="leave model thinking on (mirrors today's production lane)")
     ap.add_argument("--timeout", type=int, default=1800)
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--api-key-env", default=None,
+                        help="env var holding the bearer token (OpenRouter and other keyed endpoints)")
     ap.add_argument("--out", required=True, help="output directory")
     args = ap.parse_args()
 
@@ -130,7 +141,8 @@ def main():
             reference = json.loads(ex["messages"][1]["content"])
             try:
                 resp = call(args.base_url, args.model, prompt,
-                            args.max_tokens, args.think, args.timeout)
+                            args.max_tokens, args.think, args.timeout,
+                            api_key_env=args.api_key_env)
                 error = None
             except Exception as e:  # noqa: BLE001 — record and continue
                 resp, error = {}, str(e)

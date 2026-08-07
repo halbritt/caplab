@@ -80,8 +80,9 @@ reviews, thinking on) already *is* that number.
 | SFT splits | `make_sft.py` | done — `sft/` |
 | DPO pairs (dual-signal disagreements) | `make_dpo.py` | done — 78 pairs |
 | baseline eval of served model | `eval.py` | done — `eval-runs/baseline-35b-nothink/` |
-| QLoRA SFT (+optional DPO) | `train/*.yaml` | **needs GPU rig** — see `train/README.md` |
-| deploy as new backend | `deploy/local-qwen-ft/` | after training |
+| QLoRA SFT | `train/*.yaml` | done — `out/review-sft-r1/` |
+| tuned generation eval | `eval.py` | done — `eval-runs/ft-r1-nothink/` |
+| deploy as new backend | `deploy/local-qwen-ft/` | after eval acceptance |
 
 ### Verdict-vs-fate ranking (from `analyze.py`)
 
@@ -104,19 +105,19 @@ Caveat: primary reviewers partially *cause* the fate they are scored against
 gap between the incumbent and the frontier lanes is the signal, and closing
 it is the point of the fine-tune.
 
-### Baseline: served 35B, no-think (`eval-runs/baseline-35b-nothink/`)
+### Held-out generation evaluation
 
-Replay of the 98-example held-out review split against the currently served
-`qwen3.6-35b-a3b` with `enable_thinking: false` (the serving config the tuned
-model will use):
+Replay of the same 98-example held-out review split with
+`enable_thinking: false`. The tuned run loaded the final SFT adapter over the
+same Qwen3.6-27B IQ4_XS base used for the 27B baseline.
 
-| metric | untuned 27B¹ | untuned 35B | frontier reference (ceiling) |
-|---|---|---|---|
-| json_valid | 14.3% | 88.8% | ~100% |
-| verdict legal | 14.3% | 86.7% | 100% |
-| exact verdict match | 5.1% | 19.4% | — |
-| verdict side match | 7.1% | 33.7% | — |
-| fate agreement | 21.4% (14 scored) | **18.8%** | 83.2% (codex-sol-max) |
+| metric | untuned 27B¹ | untuned 35B | tuned 27B² | frontier reference |
+|---|---:|---:|---:|---:|
+| JSON valid | 14.3% | 88.8% | **100.0%** | ~100% |
+| verdict legal | 14.3% | 86.7% | **100.0%** | 100% |
+| exact verdict match | 5.1% | 19.4% | **40.8%** | — |
+| verdict side match | 7.1% | 33.7% | **55.1%** | — |
+| fate agreement | 21.4% (14 scored) | 18.8% (85 scored) | **39.8% (98 scored)** | 83.2% (codex-sol-max) |
 
 ¹ `eval-runs/baseline-27b-iq4xs-nothink/`: Qwen3.6-27B IQ4_XS served with
 llama.cpp b10186 on peecee's 3090 Ti (ctx 40960, q8_0 KV, same sampler,
@@ -125,8 +126,17 @@ total: 84/98 responses are the 6-token literal `outputs/review-ledger` — the
 base model parrots the output path instead of reviewing. The 35B fails
 differently (rubber-stamp accepts + ~11% broken JSON). SFT attacks both:
 output format is learned directly, and the verdict distribution is balanced.
-Every number the tuned adapter must beat is in these two summary.json files;
-the tuning target (27B) starts from the lower baseline.
+
+² `eval-runs/ft-r1-nothink/`: final SFT LoRA converted to F16 GGUF and served
+over the 27B IQ4_XS base with llama.cpp version 10210
+(`000547513f1530346ecd163db8b3e13962949961`), ctx 40960, q8_0 KV, and the
+same sampler. The run completed all 98 requests without an endpoint error.
+Against the 35B baseline on the same examples, the tuned model gained 32 and
+lost 11 exact-verdict matches; it gained 26 and lost 5 side matches. Fate
+agreement has a different denominator because it is scored only when a model
+returns a legal verdict; on the 85 examples scored for both tuned and 35B,
+the rates are 40.0% and 18.8%, respectively. Latency is not compared because
+the tuned and baseline runs used different GPUs.
 
 ## Corpus record shape
 
@@ -141,16 +151,16 @@ One JSON object per submission: `dispatch_id`, `run_ref`, `pass`,
 backends reviewed the same subject; prefer the one that agreed with the
 adjudicated outcome. Not built yet.
 
-## Training notes (for the next step)
+## Training and deployment notes
 
-- Target model should be whatever `llama-27b.service` will serve; train
-  no-think and serve with `chat_template_kwargs={"enable_thinking": false}`.
-- 27B QLoRA at 32k sequence length does not fit a single 3090 — use the
-  quad-3090 rig or a rented GPU for the training run itself.
+- The completed 27B QLoRA run trained no-think. Serve it with
+  `chat_template_kwargs={"enable_thinking": false}`.
+- 27B QLoRA at 32k sequence length does not fit a single 3090; the completed
+  run used a rented H100.
 - Serve as GGUF LoRA adapter (`--lora`) or merged+requantized; either way the
   tuned model enters Striatum as a **new backend declaration** (own id, own
   seal key, `quality: baseline`) — never by mutating `local-qwen` in place.
-- Pre-deployment eval: replay held-out sealed dispatch bundles through
+- Before deployment acceptance, replay held-out sealed dispatch bundles through
   `striatum-openai-lane` against the tuned endpoint; score JSON validity and
   verdict agreement with the adjudicated ledger outcome.
 

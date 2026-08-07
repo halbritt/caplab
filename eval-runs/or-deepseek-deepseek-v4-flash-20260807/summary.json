@@ -1,0 +1,19 @@
+{
+  "model": "deepseek/deepseek-v4-flash",
+  "think": false,
+  "n": 98,
+  "errors": 1,
+  "json_valid": 0.7448979591836735,
+  "verdict_legal": 0.7142857142857143,
+  "verdict_exact_match": 0.12244897959183673,
+  "side_match": 0.24489795918367346,
+  "fate_agreement": 0.2714285714285714,
+  "fate_scored": 70,
+  "verdict_distribution": {
+    "accept_with_findings": 23,
+    "None": 28,
+    "needs_revision": 4,
+    "accept": 43
+  },
+  "mean_seconds": 80.9
+}

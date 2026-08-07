@@ -1,0 +1,18 @@
+{
+  "model": "qwen-ft-r1",
+  "think": false,
+  "n": 98,
+  "errors": 0,
+  "json_valid": 1.0,
+  "verdict_legal": 1.0,
+  "verdict_exact_match": 0.40816326530612246,
+  "side_match": 0.5510204081632653,
+  "fate_agreement": 0.3979591836734694,
+  "fate_scored": 98,
+  "verdict_distribution": {
+    "accept": 57,
+    "accept_with_findings": 12,
+    "needs_revision": 29
+  },
+  "mean_seconds": 26.7
+}

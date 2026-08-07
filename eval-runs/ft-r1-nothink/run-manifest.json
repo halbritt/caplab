@@ -1,0 +1,69 @@
+{
+  "run": {
+    "pod_id": "gb1ve73bf1x5d6",
+    "pod_name": "striatum-tuner-review-sft-r1-eval-2",
+    "cloud": "SECURE",
+    "gpu": "NVIDIA A40",
+    "gpu_count": 1,
+    "volume_encrypted": true,
+    "compute_cost_per_hour_usd": 0.44,
+    "created_at": "2026-07-31T10:53:26.992Z",
+    "deleted_at": "2026-07-31T11:48:21Z",
+    "deletion_verified": {
+      "pod_lookup": "404",
+      "pod_list_count": 0,
+      "current_spend_per_hour_usd": 0
+    },
+    "billing_observation": {
+      "account_balance_before_usd": 164.6595279577,
+      "account_balance_after_usd": 164.2273624798,
+      "balance_delta_for_both_attempts_usd": 0.4321654779,
+      "failed_attempt_settled_cost_usd": 0.0218984153,
+      "successful_attempt_current_hour_bucket_pending": true
+    }
+  },
+  "serving": {
+    "base_model": "Qwen3.6-27B-IQ4_XS.gguf",
+    "base_model_sha256": "89f2c7e4f9f91d17ba9df6f0eef67cb909bc67d91cd035291be35cd88f1848ba",
+    "source_adapter_sha256": "9b467d625f8583e5cbf0a678f4268857af1f02397dac154b2766d7ac55b706bd",
+    "lora_gguf": "review-sft-r1-lora-f16.gguf",
+    "lora_gguf_sha256": "5ceec887104e4ee2de0e734932b50b73a7a34a7713584675b234c37b78ed5f15",
+    "llama_cpp_commit": "000547513f1530346ecd163db8b3e13962949961",
+    "llama_server_sha256": "17fdc52e61aec9b761418271895f7fd77407097c5ffaaf8b7bf5f2f38741a6a2",
+    "context_tokens": 40960,
+    "kv_cache": "q8_0",
+    "thinking": false,
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0
+  },
+  "conversion": {
+    "llama_cpp_base_commit": "000547513f1530346ecd163db8b3e13962949961",
+    "upstream_pull_request": "https://github.com/ggml-org/llama.cpp/pull/24627",
+    "upstream_patch_commit": "f839835a3401f0bf000d362dc10ba6b1c50d3a3f",
+    "temporary_cherry_pick_commit": "7fc636d946eb434064571df3bfdefe7b44c847b3",
+    "patch_present_in_local_master": false
+  },
+  "inputs": {
+    "eval_sha256": "1de3ce2f185b37f86200be46365bcbac64862d4465ad5ba951573adefd2fb36d",
+    "eval_py_sha256": "3c5095ff5d10cc80fc1be8eb4c8685d58d3ac3015dee5db77eff2f6c522f51d1",
+    "chat_template_sha256": "e84f32a23fdda27689f868aa4a1a5621f41133e51a48d7f3efcbea2839574259",
+    "local_analysis_sha256": "092807c769a71d16361edb74828d02ecfba3ced46d6c0f50c9fe4822c66de7d4",
+    "corpus_uploaded": false
+  },
+  "outputs": {
+    "rows": 98,
+    "unique_dispatch_ids": 98,
+    "errors": 0,
+    "results_sha256_after_local_rescore": "d94570c7c83e0a13a614df16f1cb06b173e15c1e7bec9fc4990dd14c6ddc4f07",
+    "summary_sha256_after_local_rescore": "90dca4296859b5aff82968b392e396af9e8cd3e3271f44aac4f473c6ff8b19de"
+  },
+  "failed_attempt": {
+    "pod_id": "8ephtpsdiw6h2h",
+    "launch_response_recorded_at": "2026-07-31T10:49:30Z",
+    "deleted_at": "2026-07-31T10:52:25Z",
+    "cause": "input path existence was mistaken for upload completion",
+    "evaluation_rows_completed": 0
+  }
+}
