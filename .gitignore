@@ -7,3 +7,5 @@ sft/
 __pycache__/
 train/out/
 exports/*.tar.zst
+out/
+runpod-docs/
