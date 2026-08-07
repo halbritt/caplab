@@ -294,6 +294,11 @@ def main():
                     help="replace the declaration's -openrouter-provider pin with this exact "
                          "endpoint slug. Measures a configuration the declaration does not "
                          "currently name, so every row records it and the summary carries it.")
+    ap.add_argument("--restrict-to", default=None,
+                    help="path to another run's results.jsonl; measure exactly the dispatch "
+                         "ids it measured. Use to compare lane classes on one sample — a "
+                         "harness lane sees the whole split, so without this it would be "
+                         "scored on different work than the endpoint tuples.")
     ap.add_argument("--workers", type=int, default=1,
                     help="concurrent lanes. Each measurement is a subprocess call to a "
                          "remote endpoint, so fan-out is bounded by the vendor rather than "
@@ -351,6 +356,12 @@ def main():
 
     with open(args.eval) as f:
         examples = [json.loads(line) for line in f]
+    if args.restrict_to:
+        with open(args.restrict_to) as f:
+            sample = {json.loads(line)["dispatch_id"] for line in f
+                      if json.loads(line).get("measured")}
+        examples = [e for e in examples if e["meta"]["dispatch_id"] in sample]
+        print(f"restricted to {len(examples)} dispatch ids measured by {args.restrict_to}")
     if args.limit:
         examples = examples[: args.limit]
 

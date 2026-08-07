@@ -1,0 +1,132 @@
+provider override: streamlake/fp8 (the declaration's own pin is not what is being measured)
+context bound: 995,328 input tokens (~3,025,797 prompt bytes)
+[1/98] eee2c89dbd41 skipped: ~4,395,091 tokens over bound
+[2/98] bbfb055bdcc2 skipped: ~4,395,091 tokens over bound
+[3/98] 23536786023f skipped: ~4,395,091 tokens over bound
+[4/98] a1b0c03c79c5 skipped: ~4,395,091 tokens over bound
+[5/98] 6c5be85be30c skipped: ~4,515,202 tokens over bound
+[6/98] d83f1f09d40d skipped: ~4,396,490 tokens over bound
+[7/98] 958732c00b0c skipped: ~4,415,255 tokens over bound
+[8/98] 3d7975573b5a skipped: ~4,487,469 tokens over bound
+[9/98] 52d16dd86974 skipped: ~4,487,577 tokens over bound
+[10/98] 12504b21e075 skipped: ~4,516,588 tokens over bound
+[11/98] d9e6ebbf6570 skipped: ~4,403,316 tokens over bound
+[12/98] 81747aa4d79c skipped: ~4,496,030 tokens over bound
+[13/98] 85b6f9ed0e22 skipped: ~4,493,859 tokens over bound
+[14/98] 6feacceed9ba skipped: ~4,403,316 tokens over bound
+[15/98] 791a28b90227 skipped: ~4,422,572 tokens over bound
+[16/98] e9fbb2c39cc1 skipped: ~4,523,104 tokens over bound
+[17/98] e396518752f4 skipped: ~4,409,043 tokens over bound
+[18/98] 77309b1f3bbb skipped: ~4,559,188 tokens over bound
+[19/98] 1de25483ce1c skipped: ~4,428,324 tokens over bound
+[20/98] 2a860420fc75 skipped: ~4,493,859 tokens over bound
+[21/98] d492aaba77b9 skipped: ~4,409,008 tokens over bound
+[22/98] 5af87171199a skipped: ~4,428,305 tokens over bound
+[23/98] 1c7db3de356d skipped: ~4,575,228 tokens over bound
+[24/98] 5b8faac87f21 skipped: ~4,409,007 tokens over bound
+[25/98] 77e984f06127 skipped: ~4,581,943 tokens over bound
+[26/98] 3d1d2d84ee00 skipped: ~4,428,305 tokens over bound
+[27/98] d1cc026540ce skipped: ~4,577,525 tokens over bound
+[28/98] 9c75549a4d96 skipped: ~4,409,043 tokens over bound
+[29/98] 9f2890b21dc2 skipped: ~4,495,323 tokens over bound
+[30/98] 349f07301160 skipped: ~4,526,074 tokens over bound
+[31/98] f6f7bf470852 skipped: ~4,495,214 tokens over bound
+[32/98] 39cbf80913bb skipped: ~4,405,430 tokens over bound
+[33/98] 65cfb4d9cbbe skipped: ~4,578,224 tokens over bound
+[34/98] c9d6f608d47b skipped: ~4,429,389 tokens over bound
+[35/98] df4ed45d7cb7 verdict=accept_with_findings ref=accept_with_findings visible=True 76.8s $0.008027336
+[36/98] 80fe446292d3 verdict=accept ref=accept_with_findings visible=True 38.9s $0.00512412
+[37/98] 18dbd2c83b5a verdict=accept_with_findings ref=needs_revision visible=True 55.8s $0.006313824
+[38/98] 7ddfb972d4a7 verdict=accept_with_findings ref=needs_revision visible=True 40.3s $0.00447988
+[39/98] f485030e8019 verdict=accept_with_findings ref=accept_with_findings visible=True 97.8s $0.010481224
+[40/98] 66b0952ee784 verdict=accept ref=accept visible=True 42.2s $0.005297064
+[41/98] cf1b5e4665a2 verdict=accept_with_findings ref=accept_with_findings visible=True 72.4s $0.007829744
+[42/98] b6869f3b20ab verdict=accept_with_findings ref=accept_with_findings visible=True 61.3s $0.007094952
+[43/98] 2e921f25a4ac verdict=accept_with_findings ref=accept_with_findings visible=True 66.7s $0.006651144
+[44/98] 6602538b6cca verdict=accept_with_findings ref=accept_with_findings visible=True 79.5s $0.008768904
+[45/98] ce4ab5231edc verdict=needs_revision ref=needs_revision visible=True 349.3s $0.058219224
+[46/98] a4d7409b8912 skipped: ~4,510,085 tokens over bound
+[47/98] 9f7fc8ad1d47 verdict=accept ref=needs_revision visible=True 136.9s $0.035826392
+[48/98] 132acdd7fb78 verdict=accept_with_findings ref=accept_with_findings visible=True 75.3s $0.007527456
+[49/98] ef6111fcd556 verdict=accept_with_findings ref=needs_revision visible=True 166.5s $0.037263408
+[50/98] c8c961aa858b skipped: ~4,517,557 tokens over bound
+[51/98] 3b1275ee5a5d skipped: ~4,527,166 tokens over bound
+[52/98] 77f28e681801 verdict=accept_with_findings ref=needs_revision visible=True 151.9s $0.045003528
+[53/98] 2295d780e10e skipped: ~4,532,775 tokens over bound
+[54/98] 91ab85bb7217 verdict=accept_with_findings ref=needs_revision visible=True 262.4s $0.050266392
+[55/98] 351489bd3d69 skipped: ~4,529,758 tokens over bound
+[56/98] 44f00cea5d29 verdict=accept ref=needs_revision visible=True 109.3s $0.042019784
+[57/98] 3e1ddbf316b5 verdict=accept ref=needs_revision visible=True 216.0s $0.05254744
+[58/98] 6c05e5d0678d verdict=accept ref=needs_revision visible=True 302.8s $0.056056576
+[59/98] 200667419013 skipped: ~4,533,234 tokens over bound
+[60/98] 16c621f08258 skipped: ~4,540,654 tokens over bound
+[61/98] b8d9e9c4612b verdict=None ref=needs_revision visible=True 151.8s $None
+[62/98] e359fff3f105 skipped: ~4,545,028 tokens over bound
+[63/98] 9adf75687312 verdict=accept_with_findings ref=needs_revision visible=True 160.0s $0.048813896
+[64/98] 2e0da10d8c6f skipped: ~4,558,144 tokens over bound
+[65/98] 6352f1917384 verdict=accept_with_findings ref=needs_revision visible=True 349.9s $0.067433992
+[66/98] 38190c060d94 skipped: ~4,548,312 tokens over bound
+[67/98] 448d72ae108e skipped: ~4,593,289 tokens over bound
+[68/98] 97874d9f66ad verdict=accept ref=needs_revision visible=True 181.1s $0.050018672
+[69/98] bda2f9f83683 skipped: ~4,552,641 tokens over bound
+[70/98] 5158a948a5ef skipped: ~4,562,050 tokens over bound
+[71/98] f20f4de1f852 skipped: ~4,550,484 tokens over bound
+[72/98] c691d596b9bd skipped: ~4,550,484 tokens over bound
+[73/98] ca346b5fea4f skipped: ~4,556,323 tokens over bound
+[74/98] e3e8de02aca7 verdict=accept ref=needs_revision visible=True 216.7s $0.050644296
+[75/98] 59ce3cee0591 verdict=accept ref=needs_revision visible=True 175.5s $0.05078848
+[76/98] de511ff871b2 skipped: ~4,556,323 tokens over bound
+[77/98] cd075b75abe7 skipped: ~4,556,323 tokens over bound
+[78/98] 58759c57367c verdict=accept ref=needs_revision visible=True 223.1s $0.052787328
+[79/98] 0e3e832971b1 skipped: ~4,563,790 tokens over bound
+[80/98] 8de85d69e0e0 skipped: ~4,580,815 tokens over bound
+[81/98] 79eab88591ff verdict=accept ref=needs_revision visible=True 174.7s $0.05690112
+[82/98] 3cf287804b49 verdict=accept ref=needs_revision visible=True 102.5s $0.044232056
+[83/98] 6da63a4e1b23 verdict=accept ref=needs_revision visible=True 157.5s $0.049399952
+[84/98] 007bf7250fee verdict=accept ref=needs_revision visible=True 96.0s $0.045583832
+[85/98] ab6df3c71546 skipped: ~4,635,461 tokens over bound
+[86/98] 572f7309c62e skipped: ~4,580,201 tokens over bound
+[87/98] 9029b3fe1ee9 skipped: ~4,640,047 tokens over bound
+[88/98] 04bf424b1bbe skipped: ~4,599,054 tokens over bound
+[89/98] 35039215d27a skipped: ~4,646,335 tokens over bound
+[90/98] 1151e2a2f447 verdict=accept ref=needs_revision visible=True 192.1s $0.055781016
+[91/98] d792313477d7 skipped: ~4,650,399 tokens over bound
+[92/98] 85ccb29d3542 verdict=accept_with_findings ref=needs_revision visible=True 105.7s $0.05372708
+[93/98] 515ad7fa7536 skipped: ~4,655,589 tokens over bound
+[94/98] 021ab9a6bedf verdict=accept ref=needs_revision visible=True 280.1s $0.068740768
+[95/98] a5c797af89e1 skipped: ~4,670,839 tokens over bound
+[96/98] ef7436a19f8b verdict=accept ref=needs_revision visible=True 241.3s $0.07743176
+[97/98] e23846fe060b skipped: ~4,675,199 tokens over bound
+[98/98] 424106beeba1 skipped: ~4,681,360 tokens over bound
+{
+  "backend": "glm",
+  "lane": "declared-adapter-command",
+  "transport": "fair",
+  "n": 34,
+  "eligible_of_split": "34/98",
+  "excluded_over_context": 64,
+  "excluded_subject_invisible": 0,
+  "errors": 1,
+  "json_valid": 0.9705882352941176,
+  "verdict_legal": 0.9705882352941176,
+  "verdict_exact_match": 0.2647058823529412,
+  "side_match": 0.29411764705882354,
+  "fate_agreement": 0.36363636363636365,
+  "fate_scored": 33,
+  "verdict_distribution": {
+    "accept_with_findings": 15,
+    "accept": 17,
+    "needs_revision": 1,
+    "None": 1
+  },
+  "mean_seconds": 153.2,
+  "cost_total_usd": 1.2271,
+  "cost_per_review_usd": 0.0372,
+  "cost_rows": 33,
+  "mean_reasoning_tokens": 6018,
+  "providers": {
+    "StreamLake": 33
+  },
+  "context_bound": 995328,
+  "provider_override": "streamlake/fp8"
+}

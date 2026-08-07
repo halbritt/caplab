@@ -1,0 +1,74 @@
+restricted to 34 dispatch ids measured by eval-runs/bench-deepseek-v4-flash-20260807/results.jsonl
+fan-out: 4 concurrent lanes
+[4/34] 7ddfb972d4a7 verdict=needs_revision ref=needs_revision visible=True 73.1s $None [run total $0.00]
+[3/34] 18dbd2c83b5a verdict=needs_revision ref=needs_revision visible=True 104.9s $None [run total $0.00]
+[2/34] 80fe446292d3 verdict=needs_revision ref=accept_with_findings visible=True 134.7s $None [run total $0.00]
+[1/34] df4ed45d7cb7 verdict=needs_revision ref=accept_with_findings visible=True 150.8s $None [run total $0.00]
+[5/34] f485030e8019 verdict=accept ref=accept_with_findings visible=True 98.3s $None [run total $0.00]
+[7/34] cf1b5e4665a2 verdict=needs_revision ref=accept_with_findings visible=True 84.9s $None [run total $0.00]
+[8/34] b6869f3b20ab verdict=needs_revision ref=accept_with_findings visible=True 129.9s $None [run total $0.00]
+[6/34] 66b0952ee784 verdict=needs_revision ref=accept visible=True 277.3s $None [run total $0.00]
+[10/34] 6602538b6cca verdict=needs_revision ref=accept_with_findings visible=True 169.1s $None [run total $0.00]
+[9/34] 2e921f25a4ac verdict=accept_with_findings ref=accept_with_findings visible=True 257.8s $None [run total $0.00]
+[13/34] 132acdd7fb78 verdict=needs_revision ref=accept_with_findings visible=True 187.4s $None [run total $0.00]
+[14/34] ef6111fcd556 verdict=needs_revision ref=needs_revision visible=True 562.4s $None [run total $0.00]
+[11/34] ce4ab5231edc verdict=needs_revision ref=needs_revision visible=True 787.1s $None [run total $0.00]
+[15/34] 77f28e681801 verdict=needs_revision ref=needs_revision visible=True 548.4s $None [run total $0.00]
+[12/34] 9f7fc8ad1d47 verdict=needs_revision ref=needs_revision visible=True 810.2s $None [run total $0.00]
+[16/34] 91ab85bb7217 verdict=needs_revision ref=needs_revision visible=True 623.4s $None [run total $0.00]
+[19/34] 6c05e5d0678d verdict=needs_revision ref=needs_revision visible=True 450.5s $None [run total $0.00]
+[17/34] 44f00cea5d29 verdict=needs_revision ref=needs_revision visible=True 607.8s $None [run total $0.00]
+[18/34] 3e1ddbf316b5 verdict=needs_revision ref=needs_revision visible=True 614.9s $None [run total $0.00]
+[20/34] b8d9e9c4612b verdict=needs_revision ref=needs_revision visible=True 478.3s $None [run total $0.00]
+[21/34] 9adf75687312 verdict=needs_revision ref=needs_revision visible=True 457.9s $None [run total $0.00]
+[23/34] 97874d9f66ad verdict=needs_revision ref=needs_revision visible=True 394.9s $None [run total $0.00]
+restricted to 34 dispatch ids measured by eval-runs/bench-deepseek-v4-flash-20260807/results.jsonl
+fan-out: 4 concurrent lanes
+[26/34] 58759c57367c verdict=needs_revision ref=needs_revision visible=True 418.6s $None [run total $0.00]
+[24/34] e3e8de02aca7 verdict=needs_revision ref=needs_revision visible=True 439.4s $None [run total $0.00]
+[25/34] 59ce3cee0591 verdict=needs_revision ref=needs_revision visible=True 458.0s $None [run total $0.00]
+[22/34] 6352f1917384 verdict=needs_revision ref=needs_revision visible=True 656.3s $None [run total $0.00]
+[29/34] 6da63a4e1b23 verdict=needs_revision ref=needs_revision visible=True 403.8s $None [run total $0.00]
+[28/34] 3cf287804b49 verdict=needs_revision ref=needs_revision visible=True 642.4s $None [run total $0.00]
+[30/34] 007bf7250fee verdict=needs_revision ref=needs_revision visible=True 546.9s $None [run total $0.00]
+[27/34] 79eab88591ff verdict=needs_revision ref=needs_revision visible=True 1144.8s $None [run total $0.00]
+[32/34] 85ccb29d3542 verdict=needs_revision ref=needs_revision visible=True 560.3s $None [run total $0.00]
+[31/34] 1151e2a2f447 verdict=needs_revision ref=needs_revision visible=True 832.8s $None [run total $0.00]
+[33/34] 021ab9a6bedf verdict=needs_revision ref=needs_revision visible=True 540.1s $None [run total $0.00]
+[34/34] ef7436a19f8b verdict=needs_revision ref=needs_revision visible=True 768.8s $None [run total $0.00]
+{
+  "backend": "codex-sol-max",
+  "lane": "declared-adapter-command",
+  "transport": "declared",
+  "n": 34,
+  "eligible_of_split": "34/34",
+  "excluded_over_context": 0,
+  "excluded_subject_invisible": 0,
+  "errors": 0,
+  "json_valid": 1.0,
+  "verdict_legal": 1.0,
+  "verdict_exact_match": 0.7647058823529411,
+  "side_match": 0.7941176470588235,
+  "fate_agreement": 0.7352941176470589,
+  "fate_scored": 34,
+  "balanced_accuracy": 0.5909090909090909,
+  "caught_revised": 1.0,
+  "passed_final": 0.18181818181818182,
+  "n_revised": 23,
+  "n_final": 11,
+  "accept_rate": 0.058823529411764705,
+  "majority_class_rate": 0.6764705882352942,
+  "verdict_distribution": {
+    "needs_revision": 32,
+    "accept": 1,
+    "accept_with_findings": 1
+  },
+  "mean_seconds": 453.4,
+  "cost_total_usd": null,
+  "cost_per_review_usd": null,
+  "cost_rows": 0,
+  "mean_reasoning_tokens": null,
+  "providers": {},
+  "context_bound": null,
+  "provider_override": null
+}
