@@ -140,10 +140,6 @@ def collect_content(lane: lanes.Lane, run: dict, workspace: str,
 
     Returns (content, source, missing_required).
     """
-    if lane.stdout_only:
-        # The supervisor bridges this stdout to the single required output.
-        return run["stdout"], "stdout", []
-
     missing = []
     content, source = "", "absent"
     for output_id in required:
@@ -155,7 +151,18 @@ def collect_content(lane: lanes.Lane, run: dict, workspace: str,
             with open(path, errors="replace") as f:
                 content = f.read()
             source = os.path.join("outputs", output_id)
-    return content, source, missing
+    if content or not lane.stdout_only:
+        return content, source, missing
+
+    # stdout_output=single-required-output is a FALLBACK, not a channel.
+    # supervisor.go materializeStdoutOutput stats the required output first
+    # and returns early when it exists -- the file always wins, and stdout is
+    # bridged only when the lane wrote nothing. This read stdout
+    # unconditionally instead, so the whole agy family was scored on Gemini's
+    # chat summary ("The execution lane for pass review has completed...")
+    # while its actual review-ledger sat unread in outputs/. Nine tuples
+    # measured as silent because the harness looked at the wrong channel.
+    return run["stdout"], "stdout", []
 
 
 def score(doc, reference: dict, fate_record: dict) -> dict:

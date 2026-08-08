@@ -125,6 +125,11 @@ def main():
     ap.add_argument("--timeout", type=int, default=1800)
     ap.add_argument("--provider-override", default=None)
     ap.add_argument("--no-accounting", action="store_true")
+    ap.add_argument("--transport", choices=("declared", "fair"), default="declared",
+                    help="declared: invoke the lane exactly as its declaration "
+                         "says, which is what striatum-next does. fair: force "
+                         "stdin transport with everything inlined, to ask what "
+                         "a bare chat endpoint would do with the same subject")
     ap.add_argument("--abort-after-empty", type=int, default=8,
                     help="stop the run after this many consecutive attempts in "
                          "which the lane returned nothing parseable on either "
@@ -136,7 +141,16 @@ def main():
     lane = lanes.Lane.from_declaration(declaration)
     if args.provider_override:
         lane = lane.with_provider(args.provider_override)
-    transport = "fair" if lane.stdout_only else "declared"
+    # A lane is measured through the invocation striatum-next actually
+    # performs, which is the declaration's own prompt_mode. Until 2026-08-08
+    # this silently substituted stdin transport for every stdout_output lane
+    # -- that is the entire agy family, whose declarations say prompt_mode:
+    # arg -- so nine gemini tuples were scored on a call the driver never
+    # makes. A benchmark that dispatches differently than the runtime it
+    # validates is measuring itself. "fair" stays available for the question
+    # it was built for (what a bare chat endpoint would do with the same
+    # subject), but it is now opt-in and recorded per row.
+    transport = args.transport
     only = args.classes.split(",") if args.classes else None
 
     # Known-sound population. `fate == final` is unusable as a quality label
