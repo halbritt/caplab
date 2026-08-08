@@ -35,6 +35,7 @@ import json
 import os
 import random
 import shutil
+import sys
 import threading
 from concurrent.futures import ThreadPoolExecutor
 
@@ -124,6 +125,10 @@ def main():
     ap.add_argument("--timeout", type=int, default=1800)
     ap.add_argument("--provider-override", default=None)
     ap.add_argument("--no-accounting", action="store_true")
+    ap.add_argument("--abort-after-empty", type=int, default=8,
+                    help="stop the run after this many consecutive attempts in "
+                         "which the lane returned nothing parseable on either "
+                         "arm (0 = never abort)")
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
 
@@ -199,6 +204,10 @@ def main():
             "cost": accounting.get("cost"),
             "provider": accounting.get("provider"),
             "diagnostics": (run.get("diagnostics") or "")[:300],
+            # For a file-output lane, collect_content reads outputs/ and drops
+            # stdout -- which is exactly where a CLI that never got as far as
+            # writing a file says why ("You've hit your session limit").
+            "stdout_head": (run.get("stdout") or "")[:300],
         }
 
     def measure(indexed):
@@ -259,6 +268,16 @@ def main():
                     "control_exit": control.get("exit_code"),
                     "mutant_exit": mutant.get("exit_code"),
                     "control_diagnostics": control.get("diagnostics", "")[:200],
+                    # The unparseable body itself, kept verbatim. On 2026-08-08
+                    # five confirmatory runs returned 144-of-160 empty and the
+                    # cause -- "You've hit your session limit" on stdout, exit
+                    # 1, stderr empty -- was recoverable only by probing the
+                    # account live, hours later. The row that discards a body
+                    # is the only place that body still exists.
+                    "control_head": (control.get("content")
+                                     or control.get("stdout_head") or "")[:300],
+                    "mutant_head": (mutant.get("content")
+                                    or mutant.get("stdout_head") or "")[:300],
                 })
                 emit(row, f"[{i + 1}] {dispatch_id[:12]} discarded: lane returned nothing")
                 return row
@@ -317,15 +336,31 @@ def main():
     # count of usable pairs rather than of attempts.
     pool_input = list(enumerate(sound[: args.pairs * 4]))
     remaining = [args.pairs]
+    # A lane that is failing wholesale is not a slow lane. On 2026-08-08 an
+    # account session limit turned five 40-pair runs into 152 empty attempts
+    # each, and every one of them exited 0 -- a clean-looking run directory
+    # holding no measurement. Stop at a run of consecutive empty lanes and
+    # exit nonzero, so the failure is loud while the cause is still live.
+    empty_streak = [0]
+    aborted = [None]
 
     def measure_bounded(indexed):
         with write_lock:
-            if remaining[0] <= 0:
+            if remaining[0] <= 0 or aborted[0]:
                 return None
         result = measure(indexed)
-        if result and result.get("usable"):
+        if result:
             with write_lock:
-                remaining[0] -= 1
+                if result.get("usable"):
+                    remaining[0] -= 1
+                    empty_streak[0] = 0
+                elif result.get("error", "").startswith("lane produced no parseable"):
+                    empty_streak[0] += 1
+                    if (args.abort_after_empty
+                            and empty_streak[0] >= args.abort_after_empty):
+                        aborted[0] = (
+                            f"{empty_streak[0]} consecutive empty lanes; last body: "
+                            f"{(result.get('control_head') or '(nothing)')[:120]!r}")
         return result
     if args.workers > 1:
         with ThreadPoolExecutor(max_workers=args.workers) as pool:
@@ -338,9 +373,13 @@ def main():
     rows = [json.loads(line) for line in open(results_path)]
     usable = [r for r in rows if r.get("usable")]
     summary = summarize(args, usable, rows)
+    summary["aborted"] = aborted[0]
     with open(os.path.join(args.out, "summary.json"), "w") as f:
         json.dump(summary, f, indent=2)
     print(json.dumps(summary, indent=2))
+    if aborted[0]:
+        print(f"ABORTED: {aborted[0]}", file=sys.stderr)
+        raise SystemExit(2)
 
 
 def _bands(usable: list[dict]) -> dict:
