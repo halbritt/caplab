@@ -1,0 +1,93 @@
+387 known-sound candidates available; targeting 15 pairs
+[1] 838b7f43a6a9 scope_violation      control=accept mutant=accept_with_findings missed [total $0.00]
+[2] b6869f3b20ab dangling_reference   control=accept mutant=accept missed [total $0.00]
+[3] 2d79e86b31df base_dropped         control=accept mutant=accept missed [total $0.00]
+[4] 375e6abc40fb error: no operator applied; contradicted_clause: no clause bullets to contradict; dangling_reference: no cited paths to break; scope_violation: no section to append a commitment to; hash_mismatch: no sha256 field to perturb; hollow_delivery: not a multi-file change set; overclaimed_level: no claim level to overclaim; decorative_check: no acceptance_checks to hollow out; base_dropped: no anchored base to drop; dropped_section: no required section present to drop; refuted_conclusion: no section to attach a conclusion to [total $0.00]
+[5] e7cb009b3eb5 scope_violation      control=accept mutant=accept_with_findings missed [total $0.00]
+[6] 349f07301160 skipped: over bound [total $0.00]
+[7] 1e44e2a29f20 base_dropped         control=accept mutant=accept missed [total $0.00]
+[8] 195f17c2dbd5 error: no operator applied; overclaimed_level: no claim level to overclaim; contradicted_clause: no clause bullets to contradict; hollow_delivery: not a multi-file change set; hash_mismatch: no sha256 field to perturb; base_dropped: no anchored base to drop; scope_violation: no section to append a commitment to; dangling_reference: no cited paths to break; dropped_section: no required section present to drop; decorative_check: no acceptance_checks to hollow out; refuted_conclusion: no section to attach a conclusion to [total $0.00]
+[9] ded0e576bb8d refuted_conclusion   control=accept_with_findings mutant=accept missed [total $0.00]
+[10] 65cfb4d9cbbe skipped: over bound [total $0.00]
+[11] 6cba7512d976 dangling_reference   control=accept mutant=accept missed [total $0.00]
+[12] 06202fe5ce02 dropped_section      control=accept_with_findings mutant=accept missed [total $0.00]
+[13] 5f9053467a4a skipped: over bound [total $0.00]
+[14] 0a5b3b73451c dropped_section      control=accept mutant=accept missed [total $0.00]
+[15] d227fe4bc58c skipped: over bound [total $0.00]
+[16] 054cce803397 dropped_section      control=accept mutant=accept missed [total $0.00]
+[17] 393e2193e0f9 skipped: over bound [total $0.00]
+[18] e8b8333d7cce contradicted_clause  control=accept mutant=needs_revision CAUGHT [total $0.00]
+[19] eb33bdcba9a0 base_dropped         control=accept mutant=accept missed [total $0.00]
+[20] 9f3933ebaed6 refuted_conclusion   control=accept mutant=accept_with_findings missed [total $0.00]
+[21] 02505809a206 skipped: over bound [total $0.00]
+[22] 3e2fbb059771 hollow_delivery      control=accept mutant=accept missed [total $0.00]
+[23] 6ae938d9d918 skipped: over bound [total $0.00]
+[24] 63652ee7bb52 dangling_reference   control=accept mutant=accept missed [total $0.00]
+{
+  "backend": "local-qwen",
+  "instrument": "matched-pair defect injection",
+  "pairs_usable": 15,
+  "pairs_discarded": 9,
+  "discrimination": 0.06666666666666667,
+  "catch_rate": 0.06666666666666667,
+  "false_alarm_rate": 0.0,
+  "anchor_hit_rate_of_caught": 0.0,
+  "anchor_resolves_rate": 0.0,
+  "findings_per_mutant": 0.3333333333333333,
+  "json_valid_control": 1.0,
+  "json_valid_mutant": 1.0,
+  "by_defect_class": {
+    "base_dropped": {
+      "n": 3,
+      "caught": 0,
+      "anchored": 0
+    },
+    "contradicted_clause": {
+      "n": 1,
+      "caught": 1,
+      "anchored": 0
+    },
+    "dangling_reference": {
+      "n": 3,
+      "caught": 0,
+      "anchored": 0
+    },
+    "dropped_section": {
+      "n": 3,
+      "caught": 0,
+      "anchored": 0
+    },
+    "hollow_delivery": {
+      "n": 1,
+      "caught": 0,
+      "anchored": 0
+    },
+    "refuted_conclusion": {
+      "n": 2,
+      "caught": 0,
+      "anchored": 0
+    },
+    "scope_violation": {
+      "n": 2,
+      "caught": 0,
+      "anchored": 0
+    }
+  },
+  "by_size_band": {
+    "<25k": {
+      "n": 10,
+      "caught": 0,
+      "false_alarms": 0
+    },
+    "25k-100k": {
+      "n": 5,
+      "caught": 1,
+      "false_alarms": 0
+    }
+  },
+  "mean_seconds": 36.57333333333334,
+  "cost_total_usd": null,
+  "cost_per_defect_caught_usd": 0.0,
+  "provider_override": null,
+  "context_bound": 200000
+}

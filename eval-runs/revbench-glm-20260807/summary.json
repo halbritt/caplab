@@ -1,0 +1,68 @@
+{
+  "backend": "glm",
+  "instrument": "matched-pair defect injection",
+  "pairs_usable": 19,
+  "pairs_discarded": 10,
+  "discrimination": 0.3684210526315789,
+  "catch_rate": 0.3684210526315789,
+  "false_alarm_rate": 0.0,
+  "anchor_hit_rate_of_caught": 1.0,
+  "anchor_resolves_rate": 0.65625,
+  "findings_per_mutant": 1.6842105263157894,
+  "json_valid_control": 0.9473684210526315,
+  "json_valid_mutant": 0.9473684210526315,
+  "by_defect_class": {
+    "base_dropped": {
+      "n": 3,
+      "caught": 0,
+      "anchored": 0
+    },
+    "contradicted_clause": {
+      "n": 3,
+      "caught": 3,
+      "anchored": 3
+    },
+    "dangling_reference": {
+      "n": 4,
+      "caught": 1,
+      "anchored": 1
+    },
+    "dropped_section": {
+      "n": 3,
+      "caught": 0,
+      "anchored": 0
+    },
+    "hollow_delivery": {
+      "n": 1,
+      "caught": 0,
+      "anchored": 0
+    },
+    "refuted_conclusion": {
+      "n": 3,
+      "caught": 1,
+      "anchored": 3
+    },
+    "scope_violation": {
+      "n": 2,
+      "caught": 2,
+      "anchored": 2
+    }
+  },
+  "by_size_band": {
+    "<25k": {
+      "n": 12,
+      "caught": 3,
+      "false_alarms": 0
+    },
+    "25k-100k": {
+      "n": 7,
+      "caught": 4,
+      "false_alarms": 0
+    }
+  },
+  "mean_seconds": 137.7157894736842,
+  "cost_total_usd": 0.515,
+  "cost_per_defect_caught_usd": 0.0736,
+  "provider_override": "streamlake/fp8",
+  "context_bound": 200000
+}

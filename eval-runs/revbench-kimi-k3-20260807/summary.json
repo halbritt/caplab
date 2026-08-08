@@ -1,0 +1,68 @@
+{
+  "backend": "kimi-k3",
+  "instrument": "matched-pair defect injection",
+  "pairs_usable": 19,
+  "pairs_discarded": 10,
+  "discrimination": 0.47368421052631576,
+  "catch_rate": 0.5263157894736842,
+  "false_alarm_rate": 0.05263157894736842,
+  "anchor_hit_rate_of_caught": 1.0,
+  "anchor_resolves_rate": 0.7894736842105263,
+  "findings_per_mutant": 2.0,
+  "json_valid_control": 1.0,
+  "json_valid_mutant": 1.0,
+  "by_defect_class": {
+    "base_dropped": {
+      "n": 3,
+      "caught": 0,
+      "anchored": 0
+    },
+    "contradicted_clause": {
+      "n": 3,
+      "caught": 3,
+      "anchored": 3
+    },
+    "dangling_reference": {
+      "n": 4,
+      "caught": 2,
+      "anchored": 2
+    },
+    "dropped_section": {
+      "n": 3,
+      "caught": 0,
+      "anchored": 0
+    },
+    "hollow_delivery": {
+      "n": 1,
+      "caught": 0,
+      "anchored": 0
+    },
+    "refuted_conclusion": {
+      "n": 3,
+      "caught": 3,
+      "anchored": 3
+    },
+    "scope_violation": {
+      "n": 2,
+      "caught": 2,
+      "anchored": 2
+    }
+  },
+  "by_size_band": {
+    "<25k": {
+      "n": 12,
+      "caught": 6,
+      "false_alarms": 0
+    },
+    "25k-100k": {
+      "n": 7,
+      "caught": 4,
+      "false_alarms": 1
+    }
+  },
+  "mean_seconds": 88.81052631578947,
+  "cost_total_usd": 4.8587,
+  "cost_per_defect_caught_usd": 0.4859,
+  "provider_override": null,
+  "context_bound": 200000
+}
