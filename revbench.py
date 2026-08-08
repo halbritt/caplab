@@ -299,10 +299,8 @@ def main():
             mutant_verdict = (mutant_doc or {}).get("verdict")
             mutant_findings = findings_of(mutant_doc)
 
-            anchors = [str(f.get("element_anchor") or "") for f in mutant_findings
-                       if isinstance(f, dict)]
-            hit = any(injection.element_anchor.lstrip("#").lstrip("el:") in a
-                      or a and a in injection.element_anchor for a in anchors)
+            anchors = bench.anchors_of(mutant_findings)
+            hit = bench.anchor_hits(injection.element_anchor, anchors)
             grounded = [defects.anchor_resolves(a, injection.body) for a in anchors]
 
             row.update({

@@ -33,6 +33,7 @@ import argparse
 import collections
 import json
 import os
+import re
 import subprocess
 import threading
 import time
@@ -132,6 +133,65 @@ def invoke(lane: lanes.Lane, prompt: bytes, workspace: str, timeout: int,
         "exit_code": code,
         "seconds": round(time.time() - started, 1),
     }
+
+
+ANCHOR_IN_TEXT = re.compile(
+    r"(?:\{#(el:[A-Za-z0-9_.\-/:]+)\}"           # {#el:slug}, the emitted form
+    r"|element[ _]anchor[:=]\s*([^|\n,;]+)"       # "element anchor: <x>", prose
+    r"|(?<![\w#])(#?el:[A-Za-z0-9_.\-/:]+))",     # a bare el:slug mention
+    re.IGNORECASE)
+
+
+def normalize_anchor(anchor: str) -> str:
+    """An anchor reduced to the identity two lanes can be compared on.
+
+    The previous form was `a.lstrip("#").lstrip("el:")`, and lstrip takes a
+    character SET -- so `el:element-scoped-rule` normalized to
+    `ment-scoped-rule`, mangling every anchor whose slug happens to begin
+    with e, l or a colon.
+    """
+    text = anchor.strip().strip("`'\"").strip()
+    text = text.removeprefix("{").removesuffix("}")
+    text = text.removeprefix("#")
+    text = text.removeprefix("el:")
+    return text.strip().lower()
+
+
+def anchors_of(findings: list) -> list[str]:
+    """Every element anchor a review names, whatever shape it names it in.
+
+    Only findings[].element_anchor was read before. codex writes its anchor
+    inside the free-text finding -- "F1 | element anchor: <x> | Rationale:" --
+    with no such field, so it emitted 51 anchors across 35 pairs and scored an
+    anchor hit rate of exactly 0.000. That read as a lane that never grounds
+    its findings; it was a lane whose findings were never parsed.
+    """
+    found: list[str] = []
+    for finding in findings:
+        if not isinstance(finding, dict):
+            continue
+        declared = finding.get("element_anchor")
+        if isinstance(declared, str) and declared.strip():
+            found.append(declared)
+            continue
+        for value in finding.values():
+            if not isinstance(value, str):
+                continue
+            for groups in ANCHOR_IN_TEXT.findall(value):
+                found.extend(g for g in groups if g and g.strip())
+    return found
+
+
+def anchor_hits(injected: str, emitted: list[str]) -> bool:
+    """Whether any emitted anchor names the element the injection broke."""
+    target = normalize_anchor(injected)
+    if not target:
+        return False
+    for anchor in emitted:
+        candidate = normalize_anchor(anchor)
+        if candidate and (candidate in target or target in candidate):
+            return True
+    return False
 
 
 def collect_content(lane: lanes.Lane, run: dict, workspace: str,
