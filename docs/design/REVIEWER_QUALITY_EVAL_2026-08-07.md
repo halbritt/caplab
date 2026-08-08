@@ -189,6 +189,21 @@ before any tuple number is quoted:
    corpus, outcome correlated almost perfectly with prompt size; that confound
    must not be rebuilt.
 
+5. **A positive control scores well.** Run the instrument against reviewers
+   already believed strong — the frontier harness tuples — *before* spending
+   anything on unknown ones. If every tuple lands at the same low
+   discrimination, the reading is ambiguous between "these reviewers are weak"
+   and "these injections are undetectable", and the instrument has told you
+   nothing. A known-strong reviewer must separate from the field, or the
+   operators are wrong.
+
+   This check is ordered first in practice and was omitted from the first
+   version of this document. The 2026-08-07 run measured four endpoint tuples
+   at 0.08-0.20 discrimination and spent ~$9.30 doing it before any positive
+   control existed — so those numbers were uninterpretable at the moment they
+   were produced. The harness tuples are subscription-billed and cost nothing
+   to run, which makes the ordering error purely self-inflicted.
+
 ## 8. Sampling and cost
 
 Discrimination is a difference of two proportions, so the sample must support

@@ -1,34 +1,39 @@
 {
   "backend": "kimi-k3",
   "instrument": "matched-pair defect injection",
-  "pairs_usable": 19,
-  "pairs_discarded": 10,
-  "discrimination": 0.47368421052631576,
-  "catch_rate": 0.5263157894736842,
-  "false_alarm_rate": 0.05263157894736842,
-  "anchor_hit_rate_of_caught": 1.0,
-  "anchor_resolves_rate": 0.7894736842105263,
-  "findings_per_mutant": 2.0,
-  "json_valid_control": 1.0,
-  "json_valid_mutant": 1.0,
+  "pairs_usable": 49,
+  "pairs_discarded": 24,
+  "discrimination": 0.20408163265306123,
+  "catch_rate": 0.24489795918367346,
+  "false_alarm_rate": 0.04081632653061224,
+  "anchor_hit_rate_of_caught": 0.9166666666666666,
+  "anchor_resolves_rate": 0.7586206896551724,
+  "findings_per_mutant": 1.183673469387755,
+  "json_valid_control": 0.6122448979591837,
+  "json_valid_mutant": 0.5510204081632653,
   "by_defect_class": {
     "base_dropped": {
-      "n": 3,
+      "n": 7,
       "caught": 0,
       "anchored": 0
     },
     "contradicted_clause": {
-      "n": 3,
+      "n": 6,
       "caught": 3,
       "anchored": 3
     },
     "dangling_reference": {
-      "n": 4,
-      "caught": 2,
+      "n": 7,
+      "caught": 3,
       "anchored": 2
     },
     "dropped_section": {
-      "n": 3,
+      "n": 8,
+      "caught": 0,
+      "anchored": 0
+    },
+    "hash_mismatch": {
+      "n": 10,
       "caught": 0,
       "anchored": 0
     },
@@ -37,32 +42,37 @@
       "caught": 0,
       "anchored": 0
     },
+    "overclaimed_level": {
+      "n": 2,
+      "caught": 0,
+      "anchored": 0
+    },
     "refuted_conclusion": {
-      "n": 3,
-      "caught": 3,
-      "anchored": 3
+      "n": 4,
+      "caught": 4,
+      "anchored": 4
     },
     "scope_violation": {
-      "n": 2,
+      "n": 4,
       "caught": 2,
       "anchored": 2
     }
   },
   "by_size_band": {
     "<25k": {
-      "n": 12,
-      "caught": 6,
-      "false_alarms": 0
+      "n": 37,
+      "caught": 8,
+      "false_alarms": 1
     },
     "25k-100k": {
-      "n": 7,
+      "n": 12,
       "caught": 4,
       "false_alarms": 1
     }
   },
-  "mean_seconds": 88.81052631578947,
-  "cost_total_usd": 4.8587,
-  "cost_per_defect_caught_usd": 0.4859,
+  "mean_seconds": 58.37142857142857,
+  "cost_total_usd": 8.3455,
+  "cost_per_defect_caught_usd": 0.6955,
   "provider_override": null,
   "context_bound": 200000
 }

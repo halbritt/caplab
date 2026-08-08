@@ -96,3 +96,126 @@
   "provider_override": null,
   "context_bound": 200000
 }
+387 known-sound candidates available; targeting 25 pairs
+[32] 49a0b31fc904 error: no operator applied; contradicted_clause: no clause bullets to contradict; scope_violation: no section to append a commitment to; dropped_section: no required section present to drop; base_dropped: no anchored base to drop; hash_mismatch: no sha256 field to perturb; hollow_delivery: not a multi-file change set; overclaimed_level: no claim level to overclaim; dangling_reference: no cited paths to break; decorative_check: no acceptance_checks to hollow out; refuted_conclusion: no section to attach a conclusion to [total $0.00]
+[34] 7cc5785de9c8 hash_mismatch        control=needs_revision mutant=accept_with_findings missed FALSE-ALARM [total $0.24]
+[30] 8ffc41ed00b7 dropped_section      control=accept_with_findings mutant=accept_with_findings missed [total $0.47]
+[38] 614cac3616cf skipped: over bound [total $0.47]
+[33] 624841d5fa1c dropped_section      control=accept_with_findings mutant=accept_with_findings missed [total $0.79]
+[36] 6595e5ae0b4f hash_mismatch        control=accept_with_findings mutant=accept_with_findings missed [total $1.39]
+[40] ca8d503ce44d hash_mismatch        control=accept_with_findings mutant=None missed [total $1.56]
+[42] 739420d461ac skipped: over bound [total $1.56]
+[43] 563cddaa0b26 error: no operator applied; dropped_section: no required section present to drop; contradicted_clause: no clause bullets to contradict; overclaimed_level: no claim level to overclaim; dangling_reference: no cited paths to break; refuted_conclusion: no section to attach a conclusion to; hash_mismatch: no sha256 field to perturb; scope_violation: no section to append a commitment to; base_dropped: no anchored base to drop; decorative_check: no acceptance_checks to hollow out; hollow_delivery: not a multi-file change set [total $1.56]
+[41] 8d01a9355232 contradicted_clause  control=accept_with_findings mutant=None missed [total $1.60]
+[45] 2d698ae7ab7d base_dropped         control=None mutant=None missed [total $1.60]
+[46] 422d26758505 contradicted_clause  control=None mutant=None missed [total $1.60]
+[47] 1c9196ec53a2 overclaimed_level    control=None mutant=None missed [total $1.60]
+[48] ec13cea4b285 skipped: over bound [total $1.60]
+[49] 2ac9b5b720c9 hash_mismatch        control=None mutant=None missed [total $1.60]
+[50] b80227061d2f error: no operator applied; refuted_conclusion: no section to attach a conclusion to; dropped_section: no required section present to drop; dangling_reference: no cited paths to break; overclaimed_level: no claim level to overclaim; contradicted_clause: no clause bullets to contradict; base_dropped: no anchored base to drop; decorative_check: no acceptance_checks to hollow out; scope_violation: no section to append a commitment to; hash_mismatch: no sha256 field to perturb; hollow_delivery: not a multi-file change set [total $1.60]
+[51] 715c325a0a6c dropped_section      control=None mutant=None missed [total $1.60]
+[52] eb8d4d8549e2 contradicted_clause  control=None mutant=None missed [total $1.60]
+[44] f34a38a807d3 scope_violation      control=accept_with_findings mutant=None missed [total $1.66]
+[53] 3b8ed68047e9 hash_mismatch        control=None mutant=None missed [total $1.66]
+[55] 06dce8de75c8 skipped: over bound [total $1.66]
+[54] 68ea256ac421 scope_violation      control=None mutant=None missed [total $1.66]
+[57] b59ba1030300 skipped: over bound [total $1.66]
+[56] e093458a0737 base_dropped         control=None mutant=None missed [total $1.66]
+[59] f10b9bae8acf skipped: over bound [total $1.66]
+[58] 93aa9d89151e base_dropped         control=None mutant=None missed [total $1.66]
+[60] 74716dd0d310 base_dropped         control=None mutant=None missed [total $1.66]
+[61] d16b32e271a1 hash_mismatch        control=None mutant=None missed [total $1.66]
+[63] ff6a1f010ec2 skipped: over bound [total $1.66]
+[64] 1dff0a312117 hash_mismatch        control=None mutant=None missed [total $1.66]
+[62] 4b336b0f5cf1 hash_mismatch        control=None mutant=None missed [total $1.66]
+[66] f42f936578bd skipped: over bound [total $1.66]
+[65] 95d870bc0d0e dangling_reference   control=None mutant=None missed [total $1.66]
+[68] dcf0d96178b2 skipped: over bound [total $1.66]
+[67] f3a8705dd979 dropped_section      control=None mutant=None missed [total $1.66]
+[69] 06b5c8a37eda hash_mismatch        control=None mutant=None missed [total $1.66]
+[71] f51550775654 skipped: over bound [total $1.66]
+[72] 7fbb408fbfb7 skipped: over bound [total $1.66]
+[70] 7f54b2a945e0 dangling_reference   control=None mutant=None missed [total $1.66]
+[73] acec31c2e0ae overclaimed_level    control=None mutant=None missed [total $1.66]
+[31] 63008b2414af hash_mismatch        control=accept_with_findings mutant=accept_with_findings missed [total $2.21]
+[35] 9be71a0642b8 dropped_section      control=accept_with_findings mutant=accept_with_findings missed [total $2.85]
+[37] 2f41aa1c3a28 dangling_reference   control=accept_with_findings mutant=needs_revision CAUGHT [total $3.19]
+[39] e4c969b9bbd3 refuted_conclusion   control=accept_with_findings mutant=needs_revision CAUGHT anchored [total $3.49]
+{
+  "backend": "kimi-k3",
+  "instrument": "matched-pair defect injection",
+  "pairs_usable": 49,
+  "pairs_discarded": 24,
+  "discrimination": 0.20408163265306123,
+  "catch_rate": 0.24489795918367346,
+  "false_alarm_rate": 0.04081632653061224,
+  "anchor_hit_rate_of_caught": 0.9166666666666666,
+  "anchor_resolves_rate": 0.7586206896551724,
+  "findings_per_mutant": 1.183673469387755,
+  "json_valid_control": 0.6122448979591837,
+  "json_valid_mutant": 0.5510204081632653,
+  "by_defect_class": {
+    "base_dropped": {
+      "n": 7,
+      "caught": 0,
+      "anchored": 0
+    },
+    "contradicted_clause": {
+      "n": 6,
+      "caught": 3,
+      "anchored": 3
+    },
+    "dangling_reference": {
+      "n": 7,
+      "caught": 3,
+      "anchored": 2
+    },
+    "dropped_section": {
+      "n": 8,
+      "caught": 0,
+      "anchored": 0
+    },
+    "hash_mismatch": {
+      "n": 10,
+      "caught": 0,
+      "anchored": 0
+    },
+    "hollow_delivery": {
+      "n": 1,
+      "caught": 0,
+      "anchored": 0
+    },
+    "overclaimed_level": {
+      "n": 2,
+      "caught": 0,
+      "anchored": 0
+    },
+    "refuted_conclusion": {
+      "n": 4,
+      "caught": 4,
+      "anchored": 4
+    },
+    "scope_violation": {
+      "n": 4,
+      "caught": 2,
+      "anchored": 2
+    }
+  },
+  "by_size_band": {
+    "<25k": {
+      "n": 37,
+      "caught": 8,
+      "false_alarms": 1
+    },
+    "25k-100k": {
+      "n": 12,
+      "caught": 4,
+      "false_alarms": 1
+    }
+  },
+  "mean_seconds": 58.37142857142857,
+  "cost_total_usd": 8.3455,
+  "cost_per_defect_caught_usd": 0.6955,
+  "provider_override": null,
+  "context_bound": 200000
+}

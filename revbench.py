@@ -246,6 +246,22 @@ def main():
             mutant = run_arm(mutant_bundle, os.path.join(arm_dir, "mutant-ws", "work"))
 
             control_doc, mutant_doc = review_of(control["content"]), review_of(mutant["content"])
+
+            # A lane that answered nothing is not a reviewer that caught
+            # nothing. agy-gemini produced 24 empty completions on 2026-08-07
+            # and they scored as discrimination 0.000, which reads as a
+            # measurement and is not one. Discard instead.
+            if control_doc is None and mutant_doc is None:
+                row.update({
+                    "usable": False,
+                    "error": "lane produced no parseable review on either arm",
+                    "defect_class": injection.defect_class,
+                    "control_exit": control.get("exit_code"),
+                    "mutant_exit": mutant.get("exit_code"),
+                    "control_diagnostics": control.get("diagnostics", "")[:200],
+                })
+                emit(row, f"[{i + 1}] {dispatch_id[:12]} discarded: lane returned nothing")
+                return row
             control_verdict = (control_doc or {}).get("verdict")
             mutant_verdict = (mutant_doc or {}).get("verdict")
             mutant_findings = findings_of(mutant_doc)
@@ -271,6 +287,12 @@ def main():
                 "anchor_hit": bool(hit),
                 "anchors_resolved": sum(1 for g in grounded if g),
                 "anchors_total": len(anchors),
+                # Kept verbatim: on 2026-08-07 anchor_resolves read 0.0 for
+                # claude-harm and codex while both caught defects with correct
+                # verdicts, so the metric was measuring anchor *convention*
+                # rather than fabrication. Without the raw values that could
+                # not be diagnosed after the fact.
+                "anchors_emitted": anchors[:8],
                 "mutant_findings": len(mutant_findings),
                 "control_json_valid": control_doc is not None,
                 "mutant_json_valid": mutant_doc is not None,
