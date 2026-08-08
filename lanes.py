@@ -44,6 +44,7 @@ class Lane:
     command: list[str]
     prompt_mode: str
     stdout_only: bool
+    stdout_json_pointer: str = ""
 
     def with_provider(self, endpoint: str) -> "Lane":
         """This lane pinned to a different OpenRouter endpoint.
@@ -57,7 +58,8 @@ class Lane:
             command[command.index("-openrouter-provider") + 1] = endpoint
         else:
             command += ["-openrouter-provider", endpoint]
-        return Lane(self.backend_id, command, self.prompt_mode, self.stdout_only)
+        return Lane(self.backend_id, command, self.prompt_mode, self.stdout_only,
+                    self.stdout_json_pointer)
 
     @classmethod
     def from_declaration(cls, declaration: dict) -> "Lane":
@@ -73,6 +75,7 @@ class Lane:
             command=list(command),
             prompt_mode=mode,
             stdout_only=adapter.get("stdout_output") == STDOUT_ONLY,
+            stdout_json_pointer=adapter.get("stdout_json_pointer") or "",
         )
 
 

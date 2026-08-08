@@ -194,6 +194,24 @@ def anchor_hits(injected: str, emitted: list[str]) -> bool:
     return False
 
 
+def resolve_json_pointer(body: str, pointer: str) -> str:
+    """The sub-document an RFC 6901 pointer names, or "" when it does not resolve.
+
+    Mirrors resolveJSONPointer in internal/backend/llm/supervisor.go: a pointed-at
+    string is its own contents, and an unresolvable pointer yields nothing rather
+    than the envelope, so narration is scored as the absent artifact it is.
+    """
+    doc = extract_json(body)
+    if doc is None or not pointer.startswith("/"):
+        return ""
+    for raw in pointer.lstrip("/").split("/"):
+        token = raw.replace("~1", "/").replace("~0", "~")
+        if not isinstance(doc, dict) or token not in doc:
+            return ""
+        doc = doc[token]
+    return doc if isinstance(doc, str) else json.dumps(doc)
+
+
 def collect_content(lane: lanes.Lane, run: dict, workspace: str,
                     required: list[str]) -> tuple[str, str, list[str]]:
     """The artifact the lane produced, from the channel its declaration names.
@@ -222,7 +240,14 @@ def collect_content(lane: lanes.Lane, run: dict, workspace: str,
     # chat summary ("The execution lane for pass review has completed...")
     # while its actual review-ledger sat unread in outputs/. Nine tuples
     # measured as silent because the harness looked at the wrong channel.
-    return run["stdout"], "stdout", []
+    body = run["stdout"]
+    if lane.stdout_json_pointer:
+        # supervisor.go resolves the declared pointer before materializing, so
+        # a lane whose runtime wraps the completion in an envelope is scored on
+        # the payload the driver would admit -- and a lane that narrated
+        # instead of answering fails here exactly as it fails there.
+        body = resolve_json_pointer(body, lane.stdout_json_pointer)
+    return body, "stdout", []
 
 
 def score(doc, reference: dict, fate_record: dict) -> dict:
