@@ -28,6 +28,23 @@ import sys
 import bench
 
 
+def completed(run_dir: str) -> bool:
+    """Whether this run reached its own end, rather than being killed.
+
+    revbench writes summary.json only after the sampling loop returns, so its
+    absence is the one durable mark of a run that died mid-flight. Scoring read
+    results.jsonl directly and could not tell a finished 13-pair run from one
+    killed at 3 -- nine such directories existed on 2026-08-09, two of them runs
+    this harness's own operator stopped by hand. It is the same shape as the
+    three failures found that day (agy's 5m cap discarding completed work,
+    TimeoutStartSec killing a drive before it wrote drive_session_record,
+    revbench exiting 0 over 152 empty attempts): the abort path writes no
+    record, so the wreckage reads as a result. The corollary is to ask what an
+    abort FAILS to write, and then require it.
+    """
+    return os.path.isfile(os.path.join(run_dir, "summary.json"))
+
+
 def outputs_for(run_dir: str, dispatch_id: str, arm: str) -> list[str]:
     pattern = os.path.join(run_dir, "arms", dispatch_id[:12], f"{arm}-ws", "work",
                            "outputs", "*")
@@ -55,6 +72,7 @@ def main() -> None:
     args = parser.parse_args()
 
     families: dict[str, dict] = {}
+    skipped: list[str] = []
     for results in sorted(glob.glob(os.path.join(args.runs, "*", "results.jsonl"))):
         run_dir = os.path.dirname(results)
         run = os.path.basename(run_dir)
@@ -62,6 +80,9 @@ def main() -> None:
             continue
         name = re.sub(r"^(revbench|sweep|cc|confirm|agyfix)-", "", run)
         name = name.replace("-20260807", "")
+        if not completed(run_dir):
+            skipped.append(name)
+            continue
         stat = families.setdefault(name, dict(n=0, caught=0, alarms=0, was=0,
                                               now=0, anchors=0, rescored=0))
         for line in open(results):
@@ -89,6 +110,9 @@ def main() -> None:
         print("no retained arms to re-score", file=sys.stderr)
         raise SystemExit(1)
 
+    if skipped:
+        print("SKIPPED %d run(s) with no summary.json -- killed before completing: %s"
+              % (len(skipped), ", ".join(sorted(skipped))))
     print("ANCHORED DETECTION, re-scored from retained arms (no new dispatches)")
     print("%-26s %4s %9s %9s %8s %8s %8s" % (
         "tuple", "n", "anchored", "was", "catch", "false", "anchors"))
