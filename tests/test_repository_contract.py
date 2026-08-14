@@ -168,6 +168,55 @@ class RepositoryContractTests(unittest.TestCase):
 
         self.assertEqual(violations, [])
 
+    def test_qualification_contract_pins_artifact_not_runtime_registry(self) -> None:
+        claim_schema = json.loads(
+            (
+                ROOT
+                / "docs/product/contracts/qualification-claim-v1.schema.json"
+            ).read_text(encoding="utf-8")
+        )
+        export_schema = json.loads(
+            (
+                ROOT
+                / "docs/product/contracts/qualification-export-v1.schema.json"
+            ).read_text(encoding="utf-8")
+        )
+        contract = (
+            ROOT / "docs/product/contracts/caplab-qualification-contract-v1.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertEqual(
+            claim_schema["properties"]["schema_version"]["const"],
+            "caplab-qualification-claim/1",
+        )
+        self.assertEqual(
+            claim_schema["$defs"]["qualification"]["properties"]["status"][
+                "enum"
+            ],
+            ["qualified", "unqualified", "advisory", "unmeasured"],
+        )
+        self.assertEqual(
+            export_schema["properties"]["schema_version"]["const"],
+            "caplab-qualification-export/1",
+        )
+        self.assertEqual(
+            export_schema["properties"]["producer"]["properties"]["product"],
+            {"const": "caplab"},
+        )
+        for forbidden in (
+            "mutable `current` flag",
+            "provider health",
+            "quota",
+            "placement",
+            "Dispatch policy",
+        ):
+            self.assertIn(forbidden, contract)
+        self.assertIn(
+            "The reserved covariate name for migrated tuner outcomes is\n"
+            "`downstream_fate`",
+            contract,
+        )
+
     def test_active_decisions_bind_ordered_standalone_p4_p5_and_p6_authority(
         self,
     ) -> None:

@@ -46,6 +46,33 @@ evidence -> observation -> inference -> recommendation -> proposal
 population. It names observables, controls, rivals, exclusions, scoring,
 missingness, human judgments, and promotion gates.
 
+**Binding** is the content-identified, behavior-bearing configuration of one
+native agent system under measurement. It includes the exact model, serving
+path, harness, effort, administration, tool and permission surfaces, sandbox,
+and relevant runtime; a material change creates a different binding.
+
+**Measurement** is an immutable observation about one binding and capability
+under an exact experiment, protocol, corpus, and evidence basis. A measurement
+contains no qualification decision.
+
+**Qualification policy** is a versioned decision rule that interprets eligible
+measurements for one bounded capability. Its thresholds, permitted evidence
+bases, missingness rules, and decision authority remain separate from the
+experiment that produced the measurements.
+
+**Qualification claim** is an append-only recommendation or decision about one
+exact binding and bounded capability under one qualification policy. It may
+supersede prior claims in the same scope, but it is not runtime availability,
+selection, verification, or acceptance.
+
+**Revbench** is the CAPLAB experiment family that measures review behavior by
+applying a mechanically verified defect to a known control and comparing the
+binding's responses to the independently known truth.
+
+**Downstream fate** is an observation about what happened after an artifact or
+review entered another system. It is a covariate, not an independent evidence
+basis for a qualification claim.
+
 **Study** is one preregistered empirical question with a frozen population,
 design, instrument, analysis, and missingness contract. A task family or pool
 of adjacent experiments is not automatically one study.

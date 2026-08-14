@@ -1,0 +1,656 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://caplab.local/contracts/qualification-claim-v1.schema.json",
+  "title": "CAPLAB binding qualification claim v1",
+  "$comment": "Shape validation is necessary but not sufficient; caplab-qualification-contract-v1.md defines mandatory semantic validation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "claim_id",
+    "generated_at",
+    "assertion_type",
+    "binding",
+    "capability",
+    "qualification",
+    "measurement",
+    "evidence",
+    "provenance",
+    "supersedes"
+  ],
+  "properties": {
+    "schema_version": {"const": "caplab-qualification-claim/1"},
+    "claim_id": {"type": "string", "pattern": "^claim-[0-9a-f]{64}$"},
+    "generated_at": {"$ref": "#/$defs/utc_timestamp"},
+    "assertion_type": {"enum": ["decision", "recommendation"]},
+    "binding": {"$ref": "#/$defs/binding"},
+    "capability": {"$ref": "#/$defs/capability"},
+    "qualification": {"$ref": "#/$defs/qualification"},
+    "measurement": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/measurement_summary"}
+      ]
+    },
+    "evidence": {"$ref": "#/$defs/evidence_summary"},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "supersedes": {
+      "type": "array",
+      "items": {"type": "string", "pattern": "^claim-[0-9a-f]{64}$"},
+      "uniqueItems": true
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "qualification": {
+            "properties": {"status": {"enum": ["qualified", "unqualified"]}},
+            "required": ["status"]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "assertion_type": {"const": "decision"},
+          "binding": {
+            "properties": {
+              "model": {
+                "properties": {
+                  "weights_ref": {"$ref": "#/$defs/content_ref"},
+                  "weights_unavailable_reason": {"type": "null"}
+                }
+              },
+              "provider_or_path": {
+                "properties": {
+                  "resolution": {"const": "immutable"},
+                  "observed_at": {"type": "null"}
+                }
+              },
+              "harness": {
+                "properties": {
+                  "executable_ref": {"$ref": "#/$defs/content_ref"},
+                  "executable_unavailable_reason": {"type": "null"}
+                }
+              }
+            }
+          },
+          "measurement": {
+            "allOf": [
+              {"$ref": "#/$defs/measurement_summary"},
+              {
+                "properties": {
+                  "disposition": {"const": "complete"},
+                  "sample_count": {"type": "integer", "minimum": 1},
+                  "metrics": {"minProperties": 1},
+                  "bases": {
+                    "type": "array",
+                    "minItems": 1,
+                    "allOf": [
+                      {"contains": {"properties": {"role": {"const": "truth"}}, "required": ["role"]}, "minContains": 1},
+                      {"contains": {"properties": {"role": {"const": "case-selection"}}, "required": ["role"]}, "minContains": 1},
+                      {"contains": {"properties": {"role": {"const": "metric-derivation"}}, "required": ["role"]}, "minContains": 1}
+                    ],
+                    "items": {
+                      "allOf": [
+                        {"$ref": "#/$defs/basis_summary"},
+                        {"properties": {"kind": {"enum": ["mechanical-oracle", "human-authorized"]}}}
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "qualification": {
+            "properties": {
+              "authorization": {"$ref": "#/$defs/authorization"},
+              "criteria": {"minItems": 1}
+            }
+          },
+          "evidence": {
+            "properties": {
+              "bundle_ref": {"$ref": "#/$defs/content_ref"},
+              "run_refs": {"type": "array", "minItems": 1}
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {"assertion_type": {"const": "recommendation"}}
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "qualification": {
+            "properties": {"status": {"const": "unmeasured"}},
+            "required": ["status"]
+          }
+        }
+      },
+      "then": {"properties": {"measurement": {"type": "null"}}}
+    },
+    {
+      "if": {
+        "properties": {
+          "qualification": {
+            "properties": {"status": {"const": "qualified"}},
+            "required": ["status"]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "qualification": {
+            "properties": {
+              "criteria": {
+                "minItems": 1,
+                "items": {
+                  "allOf": [
+                    {"$ref": "#/$defs/criterion"},
+                    {"properties": {"observed": {"$ref": "#/$defs/ratio"}, "result": {"const": "met"}}}
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "qualification": {
+            "properties": {"status": {"const": "unqualified"}},
+            "required": ["status"]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "qualification": {
+            "properties": {
+              "criteria": {
+                "minItems": 1,
+                "contains": {"properties": {"result": {"const": "not-met"}}, "required": ["result"]},
+                "minContains": 1,
+                "not": {"contains": {"properties": {"result": {"const": "indeterminate"}}, "required": ["result"]}}
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "utc_timestamp": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-([0-2][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]Z$"
+    },
+    "nullable_sha256": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/sha256"}
+      ]
+    },
+    "ratio": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["numerator", "denominator"],
+      "properties": {
+        "numerator": {"type": "integer"},
+        "denominator": {"type": "integer", "minimum": 1}
+      }
+    },
+    "custody": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["repository", "commit", "path", "source_sha256"],
+          "properties": {
+            "repository": {"type": "string", "minLength": 1},
+            "commit": {"type": "string", "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"},
+            "path": {
+              "type": "string",
+              "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*(?:^|/)\\.(?:/|$))[A-Za-z0-9._/-]+$"
+            },
+            "source_sha256": {"$ref": "#/$defs/sha256"}
+          }
+        }
+      ]
+    },
+    "content_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "schema", "media_type", "sha256", "byte_count", "locator", "registration_ref", "custody"],
+      "properties": {
+        "kind": {"type": "string", "minLength": 1},
+        "schema": {"type": "string", "minLength": 1},
+        "media_type": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "byte_count": {"type": "integer", "minimum": 0},
+        "locator": {
+          "type": "string",
+          "pattern": "^objects/sha256/[0-9a-f]{2}/[0-9a-f]{64}$"
+        },
+        "registration_ref": {"type": "string", "pattern": "^[a-z][a-z0-9-]{2,127}:[A-Za-z0-9._:-]{1,255}$"},
+        "custody": {"$ref": "#/$defs/custody"}
+      }
+    },
+    "capability_card_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/content_ref"},
+        {"properties": {"kind": {"const": "capability-card"}}}
+      ]
+    },
+    "measurement_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/content_ref"},
+        {"properties": {"kind": {"const": "measurement"}, "schema": {"const": "caplab-measurement/1"}}}
+      ]
+    },
+    "policy_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/content_ref"},
+        {"properties": {"kind": {"const": "qualification-policy"}, "schema": {"const": "caplab-qualification-policy/1"}}}
+      ]
+    },
+    "protocol_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/content_ref"},
+        {"properties": {"kind": {"const": "protocol"}}}
+      ]
+    },
+    "corpus_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/content_ref"},
+        {"properties": {"kind": {"const": "corpus"}}}
+      ]
+    },
+    "case_selection_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/content_ref"},
+        {"properties": {"kind": {"const": "case-selection"}, "schema": {"const": "caplab-case-selection-manifest/1"}}}
+      ]
+    },
+    "evidence_bundle_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/content_ref"},
+        {"properties": {"kind": {"const": "evidence-bundle"}}}
+      ]
+    },
+    "attempt_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/content_ref"},
+        {"properties": {"kind": {"const": "attempt"}}}
+      ]
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["model_id", "revision", "weights_ref", "weights_unavailable_reason"],
+      "properties": {
+        "model_id": {"type": "string", "minLength": 1},
+        "revision": {"type": "string", "minLength": 1},
+        "weights_ref": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/content_ref"}
+          ]
+        },
+        "weights_unavailable_reason": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "minLength": 1}
+          ]
+        }
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "weights_ref": {"$ref": "#/$defs/content_ref"},
+            "weights_unavailable_reason": {"type": "null"}
+          }
+        },
+        {
+          "properties": {
+            "weights_ref": {"type": "null"},
+            "weights_unavailable_reason": {"type": "string", "minLength": 1}
+          }
+        }
+      ]
+    },
+    "provider_or_path": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "identifier", "revision", "resolution", "observed_at", "route_ref"],
+      "properties": {
+        "kind": {"enum": ["direct-provider", "proxy-provider", "local-serving", "other"]},
+        "identifier": {"type": "string", "minLength": 1},
+        "revision": {"type": "string", "minLength": 1},
+        "resolution": {"enum": ["immutable", "observed-route"]},
+        "observed_at": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/utc_timestamp"}
+          ]
+        },
+        "route_ref": {"$ref": "#/$defs/content_ref"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"resolution": {"const": "immutable"}}, "required": ["resolution"]},
+          "then": {"properties": {"observed_at": {"type": "null"}}},
+          "else": {"properties": {"observed_at": {"$ref": "#/$defs/utc_timestamp"}}}
+        }
+      ]
+    },
+    "harness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["harness_id", "harness_version", "executable_ref", "executable_unavailable_reason", "command_ref", "version_probe_ref"],
+      "properties": {
+        "harness_id": {"type": "string", "minLength": 1},
+        "harness_version": {"type": "string", "minLength": 1},
+        "executable_ref": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/content_ref"}
+          ]
+        },
+        "executable_unavailable_reason": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "minLength": 1}
+          ]
+        },
+        "command_ref": {"$ref": "#/$defs/content_ref"},
+        "version_probe_ref": {"$ref": "#/$defs/content_ref"}
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "executable_ref": {"$ref": "#/$defs/content_ref"},
+            "executable_unavailable_reason": {"type": "null"}
+          }
+        },
+        {
+          "properties": {
+            "executable_ref": {"type": "null"},
+            "executable_unavailable_reason": {"type": "string", "minLength": 1}
+          }
+        }
+      ]
+    },
+    "configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["inference_ref", "instructions_ref", "knowledge_ref", "tools_ref", "permissions_ref", "sandbox_ref", "runtime_ref"],
+      "properties": {
+        "inference_ref": {"$ref": "#/$defs/content_ref"},
+        "instructions_ref": {"$ref": "#/$defs/content_ref"},
+        "knowledge_ref": {"$ref": "#/$defs/content_ref"},
+        "tools_ref": {"$ref": "#/$defs/content_ref"},
+        "permissions_ref": {"$ref": "#/$defs/content_ref"},
+        "sandbox_ref": {"$ref": "#/$defs/content_ref"},
+        "runtime_ref": {"$ref": "#/$defs/content_ref"}
+      }
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "binding_id", "model", "provider_or_path", "harness", "reasoning_effort", "configuration"],
+      "properties": {
+        "schema_version": {"const": "caplab-binding/1"},
+        "binding_id": {"type": "string", "pattern": "^bnd-[0-9a-f]{64}$"},
+        "model": {"$ref": "#/$defs/model"},
+        "provider_or_path": {"$ref": "#/$defs/provider_or_path"},
+        "harness": {"$ref": "#/$defs/harness"},
+        "reasoning_effort": {"type": "string", "minLength": 1},
+        "configuration": {"$ref": "#/$defs/configuration"}
+      }
+    },
+    "capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "role", "domain", "distribution", "card_ref"],
+      "properties": {
+        "name": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"},
+        "version": {"type": "string", "minLength": 1},
+        "role": {"type": "string", "minLength": 1},
+        "domain": {"type": "string", "minLength": 1},
+        "distribution": {"type": "string", "minLength": 1},
+        "card_ref": {"$ref": "#/$defs/capability_card_ref"}
+      }
+    },
+    "sample_flow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["planned", "attempted", "usable", "excluded", "missing", "subject_failures", "infrastructure_failures"],
+      "properties": {
+        "planned": {"type": "integer", "minimum": 0},
+        "attempted": {"type": "integer", "minimum": 0},
+        "usable": {"type": "integer", "minimum": 0},
+        "excluded": {"type": "integer", "minimum": 0},
+        "missing": {"type": "integer", "minimum": 0},
+        "subject_failures": {"type": "integer", "minimum": 0},
+        "infrastructure_failures": {"type": "integer", "minimum": 0}
+      }
+    },
+    "metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "basis_ids", "case_selection_ref"],
+      "properties": {
+        "value": {"$ref": "#/$defs/ratio"},
+        "basis_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "pattern": "^basis-[0-9a-f]{64}$"},
+          "uniqueItems": true
+        },
+        "case_selection_ref": {"$ref": "#/$defs/case_selection_ref"}
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "allOf": [
+          {"pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"},
+          {"not": {"enum": ["downstream_fate", "fate", "admission", "provider_verdict", "scheduler_choice", "backend_rank"]}}
+        ]
+      },
+      "additionalProperties": {"$ref": "#/$defs/metric"}
+    },
+    "experiment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["family", "version"],
+      "properties": {
+        "family": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1}
+      }
+    },
+    "basis_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["basis_id", "kind", "role", "evidence_ref", "authorization_ref"],
+      "properties": {
+        "basis_id": {"type": "string", "pattern": "^basis-[0-9a-f]{64}$"},
+        "kind": {"enum": ["mechanical-oracle", "human-authorized", "model-judgment"]},
+        "role": {"enum": ["truth", "case-selection", "metric-derivation"]},
+        "evidence_ref": {"$ref": "#/$defs/content_ref"},
+        "authorization_ref": {
+          "allOf": [
+            {"$ref": "#/$defs/content_ref"},
+            {"properties": {"kind": {"const": "evidence-basis-authorization"}}}
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"kind": {"const": "mechanical-oracle"}}, "required": ["kind"]},
+          "then": {"properties": {"evidence_ref": {"allOf": [{"$ref": "#/$defs/content_ref"}, {"properties": {"kind": {"const": "mechanical-oracle-result"}}}]}}}
+        },
+        {
+          "if": {"properties": {"kind": {"const": "human-authorized"}}, "required": ["kind"]},
+          "then": {"properties": {"evidence_ref": {"allOf": [{"$ref": "#/$defs/content_ref"}, {"properties": {"kind": {"const": "human-authorized-judgment"}}}]}}}
+        },
+        {
+          "if": {"properties": {"kind": {"const": "model-judgment"}}, "required": ["kind"]},
+          "then": {"properties": {"evidence_ref": {"allOf": [{"$ref": "#/$defs/content_ref"}, {"properties": {"kind": {"const": "model-judgment"}}}]}}}
+        }
+      ]
+    },
+    "measurement_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["measurement_id", "measurement_ref", "observed_at", "binding_id", "capability", "disposition", "experiment", "protocol_ref", "corpus_ref", "sample_count", "sample_flow", "metrics", "bases"],
+      "properties": {
+        "measurement_id": {"type": "string", "pattern": "^meas-[0-9a-f]{64}$"},
+        "measurement_ref": {"$ref": "#/$defs/measurement_ref"},
+        "observed_at": {"$ref": "#/$defs/utc_timestamp"},
+        "binding_id": {"type": "string", "pattern": "^bnd-[0-9a-f]{64}$"},
+        "capability": {"$ref": "#/$defs/capability"},
+        "disposition": {"enum": ["complete", "incomplete", "invalid", "infrastructure-failure"]},
+        "experiment": {"$ref": "#/$defs/experiment"},
+        "protocol_ref": {"$ref": "#/$defs/protocol_ref"},
+        "corpus_ref": {"$ref": "#/$defs/corpus_ref"},
+        "sample_count": {"type": "integer", "minimum": 0},
+        "sample_flow": {"$ref": "#/$defs/sample_flow"},
+        "metrics": {"$ref": "#/$defs/metrics"},
+        "bases": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/basis_summary"},
+          "uniqueItems": true
+        }
+      }
+    },
+    "criterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["metric", "operator", "threshold", "observed", "result"],
+      "properties": {
+        "metric": {"type": "string", "minLength": 1},
+        "operator": {"enum": ["metric_at_least", "metric_at_most"]},
+        "threshold": {"$ref": "#/$defs/ratio"},
+        "observed": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/ratio"}
+          ]
+        },
+        "result": {"enum": ["met", "not-met", "indeterminate"]}
+      }
+    },
+    "authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "authorization_id",
+        "authority_source_ref",
+        "authorized_by",
+        "delegate_or_mechanism",
+        "binding_ids",
+        "capability",
+        "policy",
+        "permitted_statuses",
+        "valid_from",
+        "valid_until"
+      ],
+      "properties": {
+        "schema_version": {"const": "caplab-qualification-authorization/1"},
+        "authorization_id": {"type": "string", "pattern": "^auth-[0-9a-f]{64}$"},
+        "authority_source_ref": {
+          "allOf": [
+            {"$ref": "#/$defs/content_ref"},
+            {"properties": {"kind": {"const": "decision-record"}}}
+          ]
+        },
+        "authorized_by": {"type": "string", "minLength": 1},
+        "delegate_or_mechanism": {"type": "string", "minLength": 1},
+        "binding_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "pattern": "^bnd-[0-9a-f]{64}$"},
+          "uniqueItems": true
+        },
+        "capability": {"$ref": "#/$defs/capability"},
+        "policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "version"],
+          "properties": {
+            "name": {"type": "string", "minLength": 1},
+            "version": {"type": "string", "minLength": 1}
+          }
+        },
+        "permitted_statuses": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"enum": ["qualified", "unqualified"]},
+          "uniqueItems": true
+        },
+        "valid_from": {"$ref": "#/$defs/utc_timestamp"},
+        "valid_until": {"$ref": "#/$defs/utc_timestamp"}
+      }
+    },
+    "qualification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "policy_id", "policy_name", "policy_version", "policy_ref", "authorization", "criteria", "limitations", "expires_at", "invalidation_triggers"],
+      "properties": {
+        "status": {"enum": ["qualified", "unqualified", "advisory", "unmeasured"]},
+        "policy_id": {"type": "string", "pattern": "^pol-[0-9a-f]{64}$"},
+        "policy_name": {"type": "string", "minLength": 1},
+        "policy_version": {"type": "string", "minLength": 1},
+        "policy_ref": {"$ref": "#/$defs/policy_ref"},
+        "authorization": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/authorization"}
+          ]
+        },
+        "criteria": {"type": "array", "items": {"$ref": "#/$defs/criterion"}},
+        "limitations": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "expires_at": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/utc_timestamp"}
+          ]
+        },
+        "invalidation_triggers": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+      }
+    },
+    "evidence_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bundle_ref", "run_refs"],
+      "properties": {
+        "bundle_ref": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/evidence_bundle_ref"}
+          ]
+        },
+        "run_refs": {"type": "array", "items": {"$ref": "#/$defs/attempt_ref"}, "uniqueItems": true}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["caplab_version", "caplab_commit", "source_refs"],
+      "properties": {
+        "caplab_version": {"type": "string", "minLength": 1},
+        "caplab_commit": {"type": "string", "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"},
+        "source_refs": {"type": "array", "items": {"$ref": "#/$defs/content_ref"}, "uniqueItems": true}
+      }
+    }
+  }
+}
