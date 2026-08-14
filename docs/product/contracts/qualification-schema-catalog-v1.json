@@ -1,0 +1,25 @@
+{
+  "schema_version": "caplab-qualification-schema-catalog/1",
+  "resources": [
+    {
+      "id": "https://caplab.local/contracts/qualification-claim-v1.schema.json",
+      "path": "qualification-claim-v1.schema.json",
+      "sha256": "1dae0c12dd79e0dca22aabd2d6c04fa95f507aab2365c2c652f6830596eba4db"
+    },
+    {
+      "id": "https://caplab.local/contracts/qualification-export-v1.schema.json",
+      "path": "qualification-export-v1.schema.json",
+      "sha256": "99b1c66d09126375c217393de46dac7519a39cfb100141976834579f2450157d"
+    },
+    {
+      "id": "https://caplab.local/contracts/qualification-records-v1.schema.json",
+      "path": "qualification-records-v1.schema.json",
+      "sha256": "c8f3fa5b6d9e54ccff894a4edb0e16c3ee7d1767878c4f97e977eadb5e546168"
+    },
+    {
+      "id": "https://caplab.local/contracts/revbench-v1.schema.json",
+      "path": "revbench-v1.schema.json",
+      "sha256": "f18eb79f6cb61a0662842e934b881a68fca63e4ead30da7bef6fe5beda0714dd"
+    }
+  ]
+}

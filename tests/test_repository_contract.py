@@ -217,6 +217,28 @@ class RepositoryContractTests(unittest.TestCase):
             contract,
         )
 
+    def test_qualification_schema_catalog_pins_local_bytes(self) -> None:
+        contracts = ROOT / "docs/product/contracts"
+        catalog = json.loads(
+            (contracts / "qualification-schema-catalog-v1.json").read_text(
+                encoding="utf-8"
+            )
+        )
+
+        self.assertEqual(
+            catalog["schema_version"], "caplab-qualification-schema-catalog/1"
+        )
+        paths = [resource["path"] for resource in catalog["resources"]]
+        self.assertEqual(paths, sorted(paths))
+        self.assertEqual(len(paths), len(set(paths)))
+        for resource in catalog["resources"]:
+            schema_bytes = (contracts / resource["path"]).read_bytes()
+            schema = json.loads(schema_bytes)
+            self.assertEqual(schema["$id"], resource["id"])
+            self.assertEqual(
+                hashlib.sha256(schema_bytes).hexdigest(), resource["sha256"]
+            )
+
     def test_active_decisions_bind_ordered_standalone_p4_p5_and_p6_authority(
         self,
     ) -> None:

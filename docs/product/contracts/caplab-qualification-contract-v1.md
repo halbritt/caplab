@@ -6,6 +6,12 @@ unknown fields and unsupported normative schema versions. JSON bytes use
 CAPLAB canonical JSON: UTF-8, NFC strings, lexically sorted object keys, no
 insignificant whitespace, and no binary floating-point values.
 
+The network-independent
+[`qualification-schema-catalog-v1.json`](qualification-schema-catalog-v1.json)
+pins each public schema ID to a sibling file and SHA-256. Validators load that
+catalog and register local bytes by schema ID; they never fetch
+`https://caplab.local/`.
+
 ## Public operations
 
 The generic module exposes these operations through Python and the batch CLI:
@@ -123,7 +129,7 @@ and `authorization_ref`. Roles are `truth`, `case-selection`, and
 policy permits them. `model-judgment` remains distinguishable and cannot issue
 a version 1 qualified or unqualified decision.
 
-`basis_id` is `basis-` plus the canonical SHA-256 of the other three fields.
+`basis_id` is `basis-` plus the canonical SHA-256 of the other four fields.
 Both reference fields use the evidence-reference contract; the authorization
 reference names the decision or delegated mechanism that permits this basis to
 support the stated capability and distribution.
@@ -362,7 +368,7 @@ from the registered native-attempt attestation, not a caller label. Arms are
 Anchors are sorted JSON Pointers. The output is an immutable evidence reference.
 
 A captured review is usable only when its declared Binding matches the
-a manifest and its observed Binding recomputes to that exact ID. The scorer
+manifest and its observed Binding recomputes to that exact ID. The scorer
 resolves and verifies the native-attempt attestation, prompt, and output before
 using the arm. Detection requires a conforming verdict and the exact defect anchor;
 a generic refusal is not catch credit. Revbench reports catch rate,

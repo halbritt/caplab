@@ -462,7 +462,7 @@
       "propertyNames": {
         "allOf": [
           {"pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"},
-          {"not": {"enum": ["downstream_fate", "fate", "admission", "provider_verdict", "scheduler_choice", "backend_rank"]}}
+          {"not": {"pattern": "fate|admission|provider[._-]?verdict|scheduler[._-]?choice|backend[._-]?rank"}}
         ]
       },
       "additionalProperties": {"$ref": "#/$defs/metric"}
@@ -488,7 +488,12 @@
         "authorization_ref": {
           "allOf": [
             {"$ref": "#/$defs/content_ref"},
-            {"properties": {"kind": {"const": "evidence-basis-authorization"}}}
+            {
+              "properties": {
+                "kind": {"const": "evidence-basis-authorization"},
+                "schema": {"const": "caplab-evidence-basis-authorization/1"}
+              }
+            }
           ]
         }
       },
