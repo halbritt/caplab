@@ -317,7 +317,7 @@
     "registered_historical_evidence": [],
     "deleted_source_paths": [],
     "rewritten_historical_evidence": [],
-    "source_repository_notice_commit": "e3fc01503bce8e75eef0c961d2f3272c00c4ff13"
+    "source_repository_notice_commit": "4d2115a9816dea360fd109e01db1d636365fb24f"
   },
   "inventory_hash_method": "The full git_ls_tree_sha256 is the lowercase SHA-256 of the exact stdout bytes from git ls-tree -r 31d600cbc44cb4ecd48d704659059e2ae0642bf7. A directory classification uses the same command followed by -- and its listed path. The name_inventory_sha256 uses git ls-tree -r --name-only at that commit. These hashes identify tracked custody; they are not CAPLAB evidence registrations."
 }
