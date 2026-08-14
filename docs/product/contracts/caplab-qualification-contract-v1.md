@@ -338,7 +338,11 @@ artifact.
 ## Revbench v1
 
 `caplab-revbench-spec/1` has exact keys `schema_version`, `binding`,
-`capability`, `protocol`, `corpus`, `cases`, and `provenance`. Version 1 cases
+`capability`, `protocol`, `corpus`, `case_selection_ref`,
+`basis_authorization_refs`, `cases`, and `provenance`.
+`basis_authorization_refs` has exact keys `truth`, `case_selection`, and
+`metric_derivation`, each resolving to a scoped
+`caplab-evidence-basis-authorization/1` record. Version 1 cases
 are canonical JSON artifacts and have exact keys `case_id`, `control`,
 `mutation`, `oracle`, and `defect_anchor`. The one initial mutation operator is
 `replace-json-value/1`; it names a JSON Pointer and replacement value. The one
@@ -352,7 +356,8 @@ single passing predicate into a claim about general review correctness.
 
 `caplab-revbench-manifest/1` has exact keys `schema_version`, `experiment_id`,
 `family`, `family_version`, `binding`, `capability`, `protocol`, `corpus`,
-`cases`, and `provenance`. It pins each known control, mechanically transformed
+`case_selection_ref`, `basis_authorization_refs`, `cases`, and `provenance`. It
+pins each known control, mechanically transformed
 mutant, independently recomputed oracle result, exact Binding, assignment
 order, and expected JSON-Pointer defect anchor. Each arm stores canonical
 artifact content and its SHA-256. Preparation fails unless the clean control

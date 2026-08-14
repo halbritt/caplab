@@ -136,6 +136,28 @@
         }
       ]
     },
+    "basis_authorization_ref": {
+      "allOf": [
+        {"$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"},
+        {
+          "properties": {
+            "kind": {"const": "evidence-basis-authorization"},
+            "schema": {"const": "caplab-evidence-basis-authorization/1"}
+          },
+          "required": ["kind", "schema"]
+        }
+      ]
+    },
+    "basis_authorization_refs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["truth", "case_selection", "metric_derivation"],
+      "properties": {
+        "truth": {"$ref": "#/$defs/basis_authorization_ref"},
+        "case_selection": {"$ref": "#/$defs/basis_authorization_ref"},
+        "metric_derivation": {"$ref": "#/$defs/basis_authorization_ref"}
+      }
+    },
     "attempt": {
       "type": "object",
       "additionalProperties": false,
@@ -177,6 +199,8 @@
         "capability",
         "protocol",
         "corpus",
+        "case_selection_ref",
+        "basis_authorization_refs",
         "cases",
         "provenance"
       ],
@@ -186,6 +210,8 @@
         "capability": {"$ref": "#/$defs/bounded_capability"},
         "protocol": {"$ref": "qualification-claim-v1.schema.json#/$defs/protocol_ref"},
         "corpus": {"$ref": "qualification-claim-v1.schema.json#/$defs/corpus_ref"},
+        "case_selection_ref": {"$ref": "qualification-claim-v1.schema.json#/$defs/case_selection_ref"},
+        "basis_authorization_refs": {"$ref": "#/$defs/basis_authorization_refs"},
         "cases": {
           "type": "array",
           "minItems": 1,
@@ -207,6 +233,8 @@
         "capability",
         "protocol",
         "corpus",
+        "case_selection_ref",
+        "basis_authorization_refs",
         "cases",
         "provenance"
       ],
@@ -219,6 +247,8 @@
         "capability": {"$ref": "#/$defs/bounded_capability"},
         "protocol": {"$ref": "qualification-claim-v1.schema.json#/$defs/protocol_ref"},
         "corpus": {"$ref": "qualification-claim-v1.schema.json#/$defs/corpus_ref"},
+        "case_selection_ref": {"$ref": "qualification-claim-v1.schema.json#/$defs/case_selection_ref"},
+        "basis_authorization_refs": {"$ref": "#/$defs/basis_authorization_refs"},
         "cases": {
           "type": "array",
           "minItems": 1,
