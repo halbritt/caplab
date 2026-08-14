@@ -105,6 +105,12 @@ native command, and native version probe. Unknown tuples, changed harnesses,
 proxy markers, and implicit exceptions fail closed before an attempt is
 prepared.
 
+The mapping validator checks the declared command tuple; it is not by itself
+proof of an executed native system. Each live execution boundary must also
+use a sealed environment and launcher/runtime bundle and compare the observed
+harness version with the version authorized by its study. A runner without
+those controls must refuse the effect.
+
 ## Corrective effects
 
 - ADR 0030 remains the historical hypothesis-selection record, but its
@@ -169,3 +175,7 @@ reopening this invariant.
 - `2026-07-20` — `active` — the repository owner directly established the
   native harness as a behavior-bearing component under test and required the
   rule to live in the repository rather than memory alone.
+- `2026-08-14` — `operational-boundary-corrected` — command validation was
+  narrowed to exact admitted suffixes and environments. The completed advisory
+  ladder launcher was closed because its historical ambient runtime could not
+  prove the exact native-system identity required by this decision.

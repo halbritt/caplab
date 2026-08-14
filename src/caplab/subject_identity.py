@@ -17,28 +17,42 @@ CANONICAL_NATIVE_AGENT_SYSTEM_POLICY_SHA256 = (
     "56bd254c2500d4d5913460aae307cbf5b81aafdb1830d5fe66a7d429432fc5d2"
 )
 _REQUIRED_PROXY_MARKERS = frozenset({"openrouter", "harbor", "terminus"})
-_IDENTITY_ENVIRONMENT_MARKERS = (
-    "MODEL",
-    "EFFORT",
-    "PROVIDER",
-    "ENDPOINT",
-    "BASE_URL",
-    "API_BASE",
-)
-_IDENTITY_OPTIONS = frozenset(
-    {
-        "-m",
-        "--model",
-        "--effort",
-        "--fallback-model",
-        "--provider",
-        "--model-provider",
-        "--local-provider",
-        "--oss",
-        "-c",
-        "--config",
-    }
-)
+_ALLOWED_ENVIRONMENTS = {
+    "claude": {
+        (),
+        (
+            "CLAUDE_CONFIG_DIR=/home/halbritt/.local/share/striatum/"
+            "harness-config/claude-code",
+        ),
+    },
+    "codex": {
+        (),
+        ("CODEX_HOME=/home/halbritt/.local/share/striatum/harness-config/codex",),
+    },
+}
+_ALLOWED_COMMAND_SUFFIXES = {
+    "claude": {
+        (),
+        ("--output-format", "text"),
+        (
+            "--output-format",
+            "stream-json",
+            "--verbose",
+            "--no-session-persistence",
+            "--dangerously-skip-permissions",
+        ),
+    },
+    "codex": {
+        (),
+        (
+            "--sandbox",
+            "workspace-write",
+            "--skip-git-repo-check",
+            "--ephemeral",
+            "--json",
+        ),
+    },
+}
 
 
 def load_native_agent_system_policy(path: str | os.PathLike[str]) -> dict[str, Any]:
@@ -69,27 +83,6 @@ def _unwrap_env(command: Sequence[str]) -> tuple[list[str], list[str]]:
         while tokens and "=" in tokens[0] and not tokens[0].startswith("="):
             assignments.append(tokens.pop(0))
     return assignments, tokens
-
-
-def _has_identity_environment_override(assignments: Sequence[str]) -> bool:
-    seen: set[str] = set()
-    for assignment in assignments:
-        name, _, _ = assignment.partition("=")
-        normalized = name.upper()
-        if not name or name in seen:
-            return True
-        seen.add(name)
-        if any(marker in normalized for marker in _IDENTITY_ENVIRONMENT_MARKERS):
-            return True
-    return False
-
-
-def _has_identity_option(tokens: Sequence[str]) -> bool:
-    for token in tokens:
-        option = token.split("=", 1)[0]
-        if option in _IDENTITY_OPTIONS:
-            return True
-    return False
 
 
 def validate_native_agent_systems(
@@ -135,7 +128,8 @@ def validate_native_agent_systems(
             )
         executable = expected.get("executable")
         command_environment, unwrapped_command = _unwrap_env(command)
-        if _has_identity_environment_override(command_environment):
+        allowed_environments = _ALLOWED_ENVIRONMENTS.get(str(executable), {()})
+        if tuple(command_environment) not in allowed_environments:
             raise NativeAgentSystemContractError(
                 f"native_agent_environment_identity_override:{subject_id}"
             )
@@ -156,12 +150,17 @@ def validate_native_agent_systems(
             raise NativeAgentSystemContractError(
                 f"native_agent_command_tuple_mismatch:{subject_id}"
             )
-        if _has_identity_option(command_arguments[len(required) :]):
+        command_suffix = tuple(command_arguments[len(required) :])
+        allowed_suffixes = _ALLOWED_COMMAND_SUFFIXES.get(str(executable), {()})
+        if command_suffix not in allowed_suffixes:
             raise NativeAgentSystemContractError(
                 f"native_agent_command_identity_override:{subject_id}"
             )
         version_environment, unwrapped_version = _unwrap_env(version_command)
-        if _has_identity_environment_override(version_environment):
+        if (
+            tuple(version_environment) not in allowed_environments
+            or version_environment != command_environment
+        ):
             raise NativeAgentSystemContractError(
                 f"native_agent_environment_identity_override:{subject_id}"
             )

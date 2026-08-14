@@ -7,6 +7,11 @@ The completed pre-study agent-system ladder is recorded in
 [`LADDER-RESULT.md`](LADDER-RESULT.md). Its result does not preregister or admit
 the destination study described below.
 
+The completed campaign's legacy launcher now refuses every new attempt before
+creating custody or starting a process. Reopening it requires a new
+authorization and an exact, sealed native-provider launcher/runtime bundle;
+the historical runner's ambient host environment is not such a bundle.
+
 **Neither the preregistration nor the capability card exists yet.** They are the
 destination of CAPLAB-44, not inputs to it. Paths reserved:
 `docs/product/studies/caplab-advisory-selection-001-preregistration.md` and

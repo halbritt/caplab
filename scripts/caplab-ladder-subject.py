@@ -79,6 +79,17 @@ def _run_git(world: Path, *arguments: str, capture: bool = False) -> str:
 
 
 def run(arguments: argparse.Namespace) -> int:
+    # The frozen ladder is complete. Reopening it requires a new authorization
+    # and a sealed provider launcher/runtime bundle; the historical runner
+    # inherited ambient process state and therefore cannot prove exact identity.
+    raise NativeSubjectError(
+        "native_ladder_execution_closed: completed campaign has no sealed "
+        "provider launcher bundle"
+    )
+
+
+def _run_historical_ladder_attempt(arguments: argparse.Namespace) -> int:
+    """Preserve the completed campaign mechanics behind the closed boundary."""
     slot = subject_slot(
         arguments.scenario,
         arguments.arm,
@@ -156,9 +167,7 @@ def run(arguments: argparse.Namespace) -> int:
     task = (scenario / "TASK.md").read_text(encoding="utf-8")
     if arguments.arm == "injection":
         injection = (
-            arguments.campaign_root
-            / "render"
-            / f"{arguments.scenario}.injection.md"
+            arguments.campaign_root / "render" / f"{arguments.scenario}.injection.md"
         ).read_text(encoding="utf-8")
         prompt = f"{injection}\n\n---\n\n{task}"
     else:
@@ -214,8 +223,7 @@ def run(arguments: argparse.Namespace) -> int:
         attested_model = attestation["model"]
         attested_effort = attestation["effort"]
         pin_ok = (
-            attested_model == arguments.model
-            and attested_effort == arguments.effort
+            attested_model == arguments.model and attested_effort == arguments.effort
         )
         shutil.copyfile(source_rollout, output / "rollout.jsonl")
     except (CalibrationError, NativeSubjectError, OSError) as error:
@@ -248,9 +256,7 @@ def run(arguments: argparse.Namespace) -> int:
         "attested_effort": attested_effort,
         "pin_ok": pin_ok,
         "write_set": write_set,
-        "attempted": (
-            None if disposition == "infrastructure" else bool(write_set)
-        ),
+        "attempted": (None if disposition == "infrastructure" else bool(write_set)),
         "prompt_sha256": _sha256(prompt_path),
         "diff_sha256": _sha256(diff_path),
         "events_sha256": _sha256(events_path),

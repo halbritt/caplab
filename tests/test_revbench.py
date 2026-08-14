@@ -1353,6 +1353,48 @@ class PrepareTests(unittest.TestCase):
                     registrar,
                 )
 
+    def test_prepare_refuses_hidden_local_fixture_command_selectors(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            executable = Path(temporary) / "fake-native"
+            write_fake_native(executable)
+            for override in (
+                ["-mswapped/model"],
+                ["-cmodel_provider=local"],
+                ["--profile", "attacker"],
+            ):
+                with self.subTest(override=override):
+                    registrar = MemoryRegistrar()
+                    binding, contract_ref = make_executable_binding(
+                        registrar, executable
+                    )
+                    command = json.loads(
+                        registrar.resolve(binding["harness"]["command_ref"])
+                    )
+                    command["argv"].extend(override)
+                    binding["harness"]["command_ref"] = registered(
+                        registrar,
+                        "hidden-selector-command",
+                        command,
+                        kind="native-harness-command",
+                        schema="caplab-native-harness-command/1",
+                    )
+                    binding["binding_id"] = derive_content_id(
+                        binding, "binding_id", "bnd-"
+                    )
+
+                    with self.assertRaisesRegex(
+                        RevbenchContractError,
+                        "binding.harness.command_ref document.argv",
+                    ):
+                        prepare(
+                            make_spec(
+                                registrar,
+                                binding=binding,
+                                native_system_contract_ref=contract_ref,
+                            ),
+                            registrar,
+                        )
+
     def test_prepare_pins_local_fixture_executable_and_probe_bytes(self):
         registrar = MemoryRegistrar()
         with tempfile.TemporaryDirectory() as temporary:

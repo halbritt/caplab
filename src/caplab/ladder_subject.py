@@ -33,9 +33,7 @@ def subject_slot(
     if replacement is not None and replacement < 1:
         raise NativeSubjectError(f"invalid replacement number: {replacement}")
     suffix = f"t{trial}" + (f"r{replacement}" if replacement is not None else "")
-    return (
-        f"{scenario}--{arm}--{model.removeprefix('gpt-5.6-')}-{effort}--{suffix}"
-    )
+    return f"{scenario}--{arm}--{model.removeprefix('gpt-5.6-')}-{effort}--{suffix}"
 
 
 def validate_ladder_subject(
@@ -44,8 +42,10 @@ def validate_ladder_subject(
     model: str,
     effort: str,
     command: Sequence[str],
+    *,
+    observed_harness_version: str | None = None,
 ) -> None:
-    """Validate one exact model/native-Codex/effort tuple."""
+    """Validate one historical model/native-Codex/effort/version tuple."""
     model_name = model.removeprefix("gpt-5.6-")
     tuple_id = f"codex-{model_name}-{effort}"
     subject = {
@@ -70,6 +70,18 @@ def validate_ladder_subject(
         ):
             raise NativeSubjectError("native_agent_proxy_markers_mismatch")
         validate_native_agent_systems(tuple_policy, {tuple_id: subject})
+        expected = tuple_policy["systems"][tuple_id]
+        expected_command = [
+            expected["executable"],
+            *expected["required_command_tokens"],
+        ]
+        if list(command) != expected_command:
+            raise NativeSubjectError("native_ladder_command_mismatch")
+        expected_version = tuple_policy.get("native_harness_version")
+        if not isinstance(expected_version, str) or not expected_version:
+            raise NativeSubjectError("native_harness_version_policy_missing")
+        if observed_harness_version != expected_version:
+            raise NativeSubjectError("native_harness_version_mismatch")
     except (NativeAgentSystemContractError, OSError) as error:
         raise NativeSubjectError(str(error)) from error
 

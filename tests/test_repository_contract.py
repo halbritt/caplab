@@ -43,7 +43,10 @@ class RepositoryContractTests(unittest.TestCase):
                     "effort": "max",
                     "command": [
                         "/usr/bin/env",
-                        "CLAUDE_CONFIG_DIR=/tmp/caplab-claude",
+                        (
+                            "CLAUDE_CONFIG_DIR=/home/halbritt/.local/share/"
+                            "striatum/harness-config/claude-code"
+                        ),
                         "claude",
                         "-p",
                         "--model",
@@ -55,7 +58,10 @@ class RepositoryContractTests(unittest.TestCase):
                     ],
                     "version_command": [
                         "/usr/bin/env",
-                        "CLAUDE_CONFIG_DIR=/tmp/caplab-claude",
+                        (
+                            "CLAUDE_CONFIG_DIR=/home/halbritt/.local/share/"
+                            "striatum/harness-config/claude-code"
+                        ),
                         "claude",
                         "--version",
                     ],
@@ -67,7 +73,10 @@ class RepositoryContractTests(unittest.TestCase):
                     "effort": "max",
                     "command": [
                         "/usr/bin/env",
-                        "CODEX_HOME=/tmp/caplab-codex",
+                        (
+                            "CODEX_HOME=/home/halbritt/.local/share/"
+                            "striatum/harness-config/codex"
+                        ),
                         "codex",
                         "exec",
                         "-m",
@@ -77,7 +86,10 @@ class RepositoryContractTests(unittest.TestCase):
                     ],
                     "version_command": [
                         "/usr/bin/env",
-                        "CODEX_HOME=/tmp/caplab-codex",
+                        (
+                            "CODEX_HOME=/home/halbritt/.local/share/"
+                            "striatum/harness-config/codex"
+                        ),
                         "codex",
                         "--version",
                     ],
@@ -96,8 +108,12 @@ class RepositoryContractTests(unittest.TestCase):
         )
         subjects = {
             "codex-model": ["--model", "swapped/model"],
+            "codex-compact-model": ["-mswapped/model"],
             "codex-effort": ["-c", "model_reasoning_effort=low"],
+            "codex-compact-provider": ["-cmodel_provider=local"],
             "codex-provider": ["--config", "model_provider=local"],
+            "codex-profile": ["--profile", "attacker"],
+            "codex-compact-profile": ["-pattacker"],
         }
         for subject_id, override in subjects.items():
             with self.subTest(subject_id=subject_id):
@@ -145,6 +161,16 @@ class RepositoryContractTests(unittest.TestCase):
         ):
             validate_native_agent_systems(policy, {"claude-effort": claude})
 
+        for override in (["-mswapped/model"], ["--settings", "/tmp/attacker.json"]):
+            with self.subTest(claude_override=override):
+                changed = dict(claude)
+                changed["command"] = [*claude["command"][:-1], *override]
+                with self.assertRaisesRegex(
+                    NativeAgentSystemContractError,
+                    "native_agent_command_identity_override",
+                ):
+                    validate_native_agent_systems(policy, {"claude": changed})
+
     def test_native_agent_identity_rejects_wrapper_and_environment_overrides(
         self,
     ) -> None:
@@ -171,22 +197,31 @@ class RepositoryContractTests(unittest.TestCase):
         ):
             validate_native_agent_systems(policy, {"wrapper": subject})
 
-        subject["command"] = [
-            "/usr/bin/env",
-            "OPENAI_MODEL=swapped/model",
-            "codex",
-            "exec",
-            "-m",
-            "gpt-5.6-terra",
-            "-c",
-            "model_reasoning_effort=max",
-        ]
-        subject["version_command"] = ["codex", "--version"]
-        with self.assertRaisesRegex(
-            NativeAgentSystemContractError,
-            "native_agent_environment_identity_override",
+        for environment_prefix in (
+            ["/usr/bin/env", "OPENAI_MODEL=swapped/model"],
+            ["/usr/bin/env", "PATH=/tmp/native-wrapper-bin"],
+            ["/usr/bin/env", "LD_PRELOAD=/tmp/hostile.so"],
+            ["/usr/bin/env", "CODEX_HOME=/tmp/hostile"],
+            ["/usr/bin/env", "CLAUDE_CODE_USE_BEDROCK=1"],
+            ["/usr/bin/env", "CLAUDE_CODE_USE_VERTEX=1"],
+            ["/usr/bin/env", "--split-string=/tmp/native-wrapper"],
         ):
-            validate_native_agent_systems(policy, {"environment": subject})
+            with self.subTest(environment_prefix=environment_prefix):
+                subject["command"] = [
+                    *environment_prefix,
+                    "codex",
+                    "exec",
+                    "-m",
+                    "gpt-5.6-terra",
+                    "-c",
+                    "model_reasoning_effort=max",
+                ]
+                subject["version_command"] = ["codex", "--version"]
+                with self.assertRaisesRegex(
+                    NativeAgentSystemContractError,
+                    "native_agent_environment_identity_override",
+                ):
+                    validate_native_agent_systems(policy, {"environment": subject})
 
     def test_shared_proxy_harness_cannot_impersonate_native_systems(self) -> None:
         policy = load_native_agent_system_policy(
@@ -233,6 +268,7 @@ class RepositoryContractTests(unittest.TestCase):
                         "-c",
                         f"model_reasoning_effort={effort}",
                     ],
+                    observed_harness_version="codex-cli 0.146.0",
                 )
 
     def test_proxy_live_manifests_are_withdrawn(self) -> None:

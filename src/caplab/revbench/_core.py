@@ -1138,8 +1138,11 @@ def _validate_local_fixture_policy(
         [executable_text, "--version"],
         "native_system_contract_ref document.systems fixture.version_command",
     )
-    if not command_argv or command_argv[0] != executable_text:
-        _fail("binding.harness.command_ref", "does not use the sealed executable")
+    _const(
+        list(command_argv),
+        [executable_text, "review"],
+        "binding.harness.command_ref document.argv",
+    )
     if not version_argv or version_argv[0] != executable_text:
         _fail(
             "binding.harness.version_probe_ref",
