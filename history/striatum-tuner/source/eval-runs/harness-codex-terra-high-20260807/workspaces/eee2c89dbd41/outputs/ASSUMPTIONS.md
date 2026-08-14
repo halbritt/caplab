@@ -1,0 +1,1 @@
+- The execution sandbox rejected writes to the dispatch-provided absolute work directory, so required outputs are written under the active workspace root's `outputs/` directory.

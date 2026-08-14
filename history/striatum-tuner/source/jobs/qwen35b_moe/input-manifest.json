@@ -1,0 +1,31 @@
+{
+  "protocol": "input-manifest/1",
+  "root": "inputs",
+  "files": [
+    {
+      "path": "sft/review.train.jsonl",
+      "size": 50743464,
+      "sha256": "3578d14d5301a18eb4f081c427e326fc96877786ecb82d0ed05acdecef8ca8b7"
+    },
+    {
+      "path": "sft/review.eval.jsonl",
+      "size": 5418523,
+      "sha256": "1de3ce2f185b37f86200be46365bcbac64862d4465ad5ba951573adefd2fb36d"
+    },
+    {
+      "path": "sft/implementation-planning.train.jsonl",
+      "size": 21994718,
+      "sha256": "730f22ae1e18715952839fada76d08483b35904c985c21d54c9acf58c7c8cda9"
+    },
+    {
+      "path": "sft/design-convergence.train.jsonl",
+      "size": 37909488,
+      "sha256": "0bc7029702ab73ff046f8ff33ec8985eb90e0888bb0de28c49bf3e5a93b180ec"
+    },
+    {
+      "path": "sft/proposal-generation.train.jsonl",
+      "size": 3152152,
+      "sha256": "22c092902c887dc184f49326575ef1c21145ace98cfeffcca1bae980470d133d"
+    }
+  ]
+}

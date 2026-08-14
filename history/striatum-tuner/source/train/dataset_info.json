@@ -1,0 +1,73 @@
+{
+  "striatum_review": {
+    "file_name": "review.train.jsonl",
+    "formatting": "sharegpt",
+    "columns": { "messages": "messages" },
+    "tags": {
+      "role_tag": "role",
+      "content_tag": "content",
+      "user_tag": "user",
+      "assistant_tag": "assistant"
+    }
+  },
+  "striatum_review_eval": {
+    "file_name": "review.eval.jsonl",
+    "formatting": "sharegpt",
+    "columns": { "messages": "messages" },
+    "tags": {
+      "role_tag": "role",
+      "content_tag": "content",
+      "user_tag": "user",
+      "assistant_tag": "assistant"
+    }
+  },
+  "striatum_planning": {
+    "file_name": "implementation-planning.train.jsonl",
+    "formatting": "sharegpt",
+    "columns": { "messages": "messages" },
+    "tags": {
+      "role_tag": "role",
+      "content_tag": "content",
+      "user_tag": "user",
+      "assistant_tag": "assistant"
+    }
+  },
+  "striatum_design": {
+    "file_name": "design-convergence.train.jsonl",
+    "formatting": "sharegpt",
+    "columns": { "messages": "messages" },
+    "tags": {
+      "role_tag": "role",
+      "content_tag": "content",
+      "user_tag": "user",
+      "assistant_tag": "assistant"
+    }
+  },
+  "striatum_proposal": {
+    "file_name": "proposal-generation.train.jsonl",
+    "formatting": "sharegpt",
+    "columns": { "messages": "messages" },
+    "tags": {
+      "role_tag": "role",
+      "content_tag": "content",
+      "user_tag": "user",
+      "assistant_tag": "assistant"
+    }
+  },
+  "striatum_review_dpo": {
+    "file_name": "review.dpo.jsonl",
+    "formatting": "sharegpt",
+    "ranking": true,
+    "columns": {
+      "messages": "messages",
+      "chosen": "chosen",
+      "rejected": "rejected"
+    },
+    "tags": {
+      "role_tag": "role",
+      "content_tag": "content",
+      "user_tag": "user",
+      "assistant_tag": "assistant"
+    }
+  }
+}

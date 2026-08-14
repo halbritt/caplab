@@ -1,0 +1,175 @@
+context bound: 256,000 input tokens (~778,240 prompt bytes)
+[1/98] eee2c89dbd41 skipped: ~4,395,085 tokens over bound
+[2/98] bbfb055bdcc2 skipped: ~4,395,085 tokens over bound
+[3/98] 23536786023f skipped: ~4,395,085 tokens over bound
+[4/98] a1b0c03c79c5 skipped: ~4,395,085 tokens over bound
+[5/98] 6c5be85be30c skipped: ~4,515,196 tokens over bound
+[6/98] d83f1f09d40d skipped: ~4,396,484 tokens over bound
+[7/98] 958732c00b0c skipped: ~4,415,248 tokens over bound
+[8/98] 3d7975573b5a skipped: ~4,487,463 tokens over bound
+[9/98] 52d16dd86974 skipped: ~4,487,571 tokens over bound
+[10/98] 12504b21e075 skipped: ~4,516,581 tokens over bound
+[11/98] d9e6ebbf6570 skipped: ~4,403,309 tokens over bound
+[12/98] 81747aa4d79c skipped: ~4,496,024 tokens over bound
+[13/98] 85b6f9ed0e22 skipped: ~4,493,853 tokens over bound
+[14/98] 6feacceed9ba skipped: ~4,403,309 tokens over bound
+[15/98] 791a28b90227 skipped: ~4,422,565 tokens over bound
+[16/98] e9fbb2c39cc1 skipped: ~4,523,097 tokens over bound
+[17/98] e396518752f4 skipped: ~4,409,037 tokens over bound
+[18/98] 77309b1f3bbb skipped: ~4,559,181 tokens over bound
+[19/98] 1de25483ce1c skipped: ~4,428,317 tokens over bound
+[20/98] 2a860420fc75 skipped: ~4,493,853 tokens over bound
+[21/98] d492aaba77b9 skipped: ~4,409,001 tokens over bound
+[22/98] 5af87171199a skipped: ~4,428,299 tokens over bound
+[23/98] 1c7db3de356d skipped: ~4,575,221 tokens over bound
+[24/98] 5b8faac87f21 skipped: ~4,409,001 tokens over bound
+[25/98] 77e984f06127 skipped: ~4,581,937 tokens over bound
+[26/98] 3d1d2d84ee00 skipped: ~4,428,299 tokens over bound
+[27/98] d1cc026540ce skipped: ~4,577,519 tokens over bound
+[28/98] 9c75549a4d96 skipped: ~4,409,036 tokens over bound
+[29/98] 9f2890b21dc2 skipped: ~4,495,316 tokens over bound
+[30/98] 349f07301160 skipped: ~4,526,067 tokens over bound
+[31/98] f6f7bf470852 skipped: ~4,495,207 tokens over bound
+[32/98] 39cbf80913bb skipped: ~4,405,423 tokens over bound
+[33/98] 65cfb4d9cbbe skipped: ~4,578,217 tokens over bound
+[34/98] c9d6f608d47b skipped: ~4,429,382 tokens over bound
+[35/98] df4ed45d7cb7 verdict=accept_with_findings ref=accept_with_findings visible=True 130.7s $0.183018
+[36/98] 80fe446292d3 verdict=accept_with_findings ref=accept_with_findings visible=True 80.2s $0.090078
+context bound: 983,040 input tokens (~2,988,441 prompt bytes)
+[1/98] eee2c89dbd41 skipped: ~4,395,085 tokens over bound
+[2/98] bbfb055bdcc2 skipped: ~4,395,085 tokens over bound
+[3/98] 23536786023f skipped: ~4,395,085 tokens over bound
+[4/98] a1b0c03c79c5 skipped: ~4,395,085 tokens over bound
+[5/98] 6c5be85be30c skipped: ~4,515,196 tokens over bound
+[6/98] d83f1f09d40d skipped: ~4,396,484 tokens over bound
+[7/98] 958732c00b0c skipped: ~4,415,248 tokens over bound
+[8/98] 3d7975573b5a skipped: ~4,487,463 tokens over bound
+[9/98] 52d16dd86974 skipped: ~4,487,571 tokens over bound
+[10/98] 12504b21e075 skipped: ~4,516,581 tokens over bound
+[11/98] d9e6ebbf6570 skipped: ~4,403,309 tokens over bound
+[12/98] 81747aa4d79c skipped: ~4,496,024 tokens over bound
+[13/98] 85b6f9ed0e22 skipped: ~4,493,853 tokens over bound
+[14/98] 6feacceed9ba skipped: ~4,403,309 tokens over bound
+[15/98] 791a28b90227 skipped: ~4,422,565 tokens over bound
+[16/98] e9fbb2c39cc1 skipped: ~4,523,097 tokens over bound
+[17/98] e396518752f4 skipped: ~4,409,037 tokens over bound
+[18/98] 77309b1f3bbb skipped: ~4,559,181 tokens over bound
+[19/98] 1de25483ce1c skipped: ~4,428,317 tokens over bound
+[20/98] 2a860420fc75 skipped: ~4,493,853 tokens over bound
+[21/98] d492aaba77b9 skipped: ~4,409,001 tokens over bound
+[22/98] 5af87171199a skipped: ~4,428,299 tokens over bound
+[23/98] 1c7db3de356d skipped: ~4,575,221 tokens over bound
+[24/98] 5b8faac87f21 skipped: ~4,409,001 tokens over bound
+[25/98] 77e984f06127 skipped: ~4,581,937 tokens over bound
+[26/98] 3d1d2d84ee00 skipped: ~4,428,299 tokens over bound
+[27/98] d1cc026540ce skipped: ~4,577,519 tokens over bound
+[28/98] 9c75549a4d96 skipped: ~4,409,036 tokens over bound
+[29/98] 9f2890b21dc2 skipped: ~4,495,316 tokens over bound
+[30/98] 349f07301160 skipped: ~4,526,067 tokens over bound
+[31/98] f6f7bf470852 skipped: ~4,495,207 tokens over bound
+[32/98] 39cbf80913bb skipped: ~4,405,423 tokens over bound
+[33/98] 65cfb4d9cbbe skipped: ~4,578,217 tokens over bound
+[34/98] c9d6f608d47b skipped: ~4,429,382 tokens over bound
+[37/98] 18dbd2c83b5a verdict=accept_with_findings ref=needs_revision visible=True 106.7s $0.1178244
+[38/98] 7ddfb972d4a7 verdict=accept_with_findings ref=needs_revision visible=True 98.4s $0.14256
+[39/98] f485030e8019 verdict=accept_with_findings ref=accept_with_findings visible=True 164.0s $0.294147
+[40/98] 66b0952ee784 verdict=accept_with_findings ref=accept visible=True 161.3s $0.2580255
+[41/98] cf1b5e4665a2 verdict=accept_with_findings ref=accept_with_findings visible=True 112.7s $0.2194695
+[42/98] b6869f3b20ab verdict=accept_with_findings ref=accept_with_findings visible=True 94.1s $0.1724625
+[43/98] 2e921f25a4ac verdict=accept_with_findings ref=accept_with_findings visible=True 93.3s $0.137364
+[44/98] 6602538b6cca verdict=accept_with_findings ref=accept_with_findings visible=True 130.7s $0.140592
+[45/98] ce4ab5231edc verdict=needs_revision ref=needs_revision visible=True 241.2s $0.629082
+[46/98] a4d7409b8912 skipped: ~4,510,078 tokens over bound
+[47/98] 9f7fc8ad1d47 verdict=accept_with_findings ref=needs_revision visible=True 205.1s $0.8506845
+[48/98] 132acdd7fb78 verdict=None ref=accept_with_findings visible=True 765.4s $0
+[49/98] ef6111fcd556 verdict=needs_revision ref=needs_revision visible=True 407.6s $1.1439945
+[50/98] c8c961aa858b skipped: ~4,517,550 tokens over bound
+[51/98] 3b1275ee5a5d skipped: ~4,527,159 tokens over bound
+context bound: 983,040 input tokens (~2,988,441 prompt bytes)
+fan-out: 6 concurrent lanes
+[55/98] 351489bd3d69 skipped: ~4,529,752 tokens over bound [run total $0.00]
+[53/98] 2295d780e10e skipped: ~4,532,769 tokens over bound [run total $0.00]
+[59/98] 200667419013 skipped: ~4,533,228 tokens over bound [run total $0.00]
+[60/98] 16c621f08258 skipped: ~4,540,648 tokens over bound [run total $0.00]
+[58/98] 6c05e5d0678d verdict=accept_with_findings ref=needs_revision visible=True 166.2s $0.952758 [run total $0.95]
+[62/98] e359fff3f105 skipped: ~4,545,022 tokens over bound [run total $0.95]
+[56/98] 44f00cea5d29 verdict=None ref=needs_revision visible=True 168.5s $None [run total $0.95]
+[64/98] 2e0da10d8c6f skipped: ~4,558,137 tokens over bound [run total $0.95]
+[52/98] 77f28e681801 verdict=needs_revision ref=needs_revision visible=True 285.7s $0.733707 [run total $1.69]
+[66/98] 38190c060d94 skipped: ~4,548,305 tokens over bound [run total $1.69]
+[67/98] 448d72ae108e skipped: ~4,593,283 tokens over bound [run total $1.69]
+[63/98] 9adf75687312 verdict=accept_with_findings ref=needs_revision visible=True 222.3s $0.961704 [run total $2.65]
+[69/98] bda2f9f83683 skipped: ~4,552,635 tokens over bound [run total $2.65]
+[70/98] 5158a948a5ef skipped: ~4,562,044 tokens over bound [run total $2.65]
+[71/98] f20f4de1f852 skipped: ~4,550,477 tokens over bound [run total $2.65]
+[72/98] c691d596b9bd skipped: ~4,550,477 tokens over bound [run total $2.65]
+[73/98] ca346b5fea4f skipped: ~4,556,316 tokens over bound [run total $2.65]
+[57/98] 3e1ddbf316b5 verdict=accept_with_findings ref=needs_revision visible=True 424.1s $1.1380275 [run total $3.79]
+[54/98] 91ab85bb7217 verdict=needs_revision ref=needs_revision visible=True 453.6s $1.206099 [run total $4.99]
+[76/98] de511ff871b2 skipped: ~4,556,316 tokens over bound [run total $4.99]
+[77/98] cd075b75abe7 skipped: ~4,556,316 tokens over bound [run total $4.99]
+[61/98] b8d9e9c4612b verdict=accept_with_findings ref=needs_revision visible=True 465.4s $1.3219065 [run total $6.31]
+[79/98] 0e3e832971b1 skipped: ~4,563,783 tokens over bound [run total $6.31]
+[80/98] 8de85d69e0e0 skipped: ~4,580,808 tokens over bound [run total $6.31]
+[65/98] 6352f1917384 verdict=accept_with_findings ref=needs_revision visible=True 354.8s $1.3915485 [run total $7.71]
+[68/98] 97874d9f66ad verdict=accept_with_findings ref=needs_revision visible=True 238.1s $1.07937 [run total $8.79]
+[74/98] e3e8de02aca7 verdict=accept_with_findings ref=needs_revision visible=True 201.3s $0.9622755 [run total $9.75]
+[75/98] 59ce3cee0591 verdict=None ref=needs_revision visible=True 286.2s $None [run total $9.75]
+[85/98] ab6df3c71546 skipped: ~4,635,454 tokens over bound [run total $9.75]
+[86/98] 572f7309c62e skipped: ~4,580,194 tokens over bound [run total $9.75]
+[87/98] 9029b3fe1ee9 skipped: ~4,640,040 tokens over bound [run total $9.75]
+[88/98] 04bf424b1bbe skipped: ~4,599,048 tokens over bound [run total $9.75]
+[89/98] 35039215d27a skipped: ~4,646,328 tokens over bound [run total $9.75]
+[84/98] 007bf7250fee verdict=accept_with_findings ref=needs_revision visible=True 181.6s $1.046691 [run total $10.79]
+[91/98] d792313477d7 skipped: ~4,650,393 tokens over bound [run total $10.79]
+[82/98] 3cf287804b49 verdict=accept_with_findings ref=needs_revision visible=True 296.4s $1.1380995 [run total $11.93]
+[93/98] 515ad7fa7536 skipped: ~4,655,582 tokens over bound [run total $11.93]
+[78/98] 58759c57367c verdict=accept_with_findings ref=needs_revision visible=True 383.7s $1.1759175 [run total $13.11]
+[95/98] a5c797af89e1 skipped: ~4,670,833 tokens over bound [run total $13.11]
+[81/98] 79eab88591ff verdict=accept_with_findings ref=needs_revision visible=True 534.3s $1.491399 [run total $14.60]
+[97/98] e23846fe060b skipped: ~4,675,193 tokens over bound [run total $14.60]
+[98/98] 424106beeba1 skipped: ~4,681,354 tokens over bound [run total $14.60]
+[83/98] 6da63a4e1b23 verdict=accept_with_findings ref=needs_revision visible=True 478.8s $1.41984 [run total $16.02]
+[92/98] 85ccb29d3542 verdict=accept_with_findings ref=needs_revision visible=True 392.5s $1.4137695 [run total $17.43]
+[90/98] 1151e2a2f447 verdict=needs_revision ref=needs_revision visible=True 472.0s $1.504098 [run total $18.94]
+[96/98] ef7436a19f8b verdict=None ref=needs_revision visible=True 382.3s $None [run total $18.94]
+[94/98] 021ab9a6bedf verdict=needs_revision ref=needs_revision visible=True 433.9s $1.5290325 [run total $20.47]
+{
+  "backend": "kimi-k3",
+  "lane": "declared-adapter-command",
+  "transport": "fair",
+  "n": 34,
+  "eligible_of_split": "34/98",
+  "excluded_over_context": 64,
+  "excluded_subject_invisible": 0,
+  "errors": 3,
+  "json_valid": 0.8823529411764706,
+  "verdict_legal": 0.8823529411764706,
+  "verdict_exact_match": 0.38235294117647056,
+  "side_match": 0.4117647058823529,
+  "fate_agreement": 0.5,
+  "fate_scored": 30,
+  "balanced_accuracy": 0.6428571428571428,
+  "caught_revised": 0.2857142857142857,
+  "passed_final": 1.0,
+  "n_revised": 21,
+  "n_final": 9,
+  "accept_rate": 0.8,
+  "majority_class_rate": 0.7,
+  "verdict_distribution": {
+    "accept_with_findings": 24,
+    "needs_revision": 6,
+    "None": 4
+  },
+  "mean_seconds": 282.7,
+  "cost_total_usd": 24.8455,
+  "cost_per_review_usd": 0.8015,
+  "cost_rows": 31,
+  "mean_reasoning_tokens": 15577,
+  "providers": {
+    "Fireworks": 30,
+    "DigitalOcean": 1
+  },
+  "context_bound": 983040,
+  "provider_override": null
+}

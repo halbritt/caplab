@@ -1,0 +1,5 @@
+ca2e504cb2aa5252e8f4528fc711774212f41a85beabda2b11fff67ef2ed1d09  corpus-driver-v2-2026-08-03.tar.zst
+a44874122739a6415ba304e3cc6d8d8c7757f78b63ef3fead5593862ae9af999  corpus-driver/events.jsonl
+35d6bd212ad75a11aa20761e20195455f01d1f4845f9a057ac2c09d55a33e86a  corpus-driver/sessions.jsonl
+5f3c4a0766c88d0c41c1dcd6809ef6f0f9ead19efa3e8e35e35fe8ccbd03b7cf  corpus-driver/striatum_calls.jsonl
+68fefb9d9c779f75f367bc6a643a6f0457c23351e237a8f7f8f7d9fe762a3f57  corpus-driver/stats.json

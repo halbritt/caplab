@@ -1,0 +1,39 @@
+{
+  "backend": "kimi-k3",
+  "lane": "declared-adapter-command",
+  "transport": "fair",
+  "n": 34,
+  "eligible_of_split": "34/98",
+  "excluded_over_context": 64,
+  "excluded_subject_invisible": 0,
+  "errors": 3,
+  "json_valid": 0.8823529411764706,
+  "verdict_legal": 0.8823529411764706,
+  "verdict_exact_match": 0.38235294117647056,
+  "side_match": 0.4117647058823529,
+  "fate_agreement": 0.5,
+  "fate_scored": 30,
+  "balanced_accuracy": 0.6428571428571428,
+  "caught_revised": 0.2857142857142857,
+  "passed_final": 1.0,
+  "n_revised": 21,
+  "n_final": 9,
+  "accept_rate": 0.8,
+  "majority_class_rate": 0.7,
+  "verdict_distribution": {
+    "accept_with_findings": 24,
+    "needs_revision": 6,
+    "None": 4
+  },
+  "mean_seconds": 282.7,
+  "cost_total_usd": 24.8455,
+  "cost_per_review_usd": 0.8015,
+  "cost_rows": 31,
+  "mean_reasoning_tokens": 15577,
+  "providers": {
+    "Fireworks": 30,
+    "DigitalOcean": 1
+  },
+  "context_bound": 983040,
+  "provider_override": null
+}

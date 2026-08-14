@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+exec python3 -m jobs.qwen35b_moe.package "$@"
+

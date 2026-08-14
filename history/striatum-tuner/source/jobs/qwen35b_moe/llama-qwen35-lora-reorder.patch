@@ -1,0 +1,68 @@
+diff --git a/conversion/qwen.py b/conversion/qwen.py
+index d1127f743..5fb2424b5 100644
+--- a/conversion/qwen.py
++++ b/conversion/qwen.py
+@@ -368,14 +368,18 @@ class _LinearAttentionVReorderBase(Qwen3NextModel):
+     @staticmethod
+     def _reorder_v_heads(tensor: Tensor, dim: int, num_k_heads: int, num_v_per_k: int, head_dim: int) -> Tensor:
+         """Reorder V heads from grouped (by K head) to tiled order along the given dimension."""
+-        shape = list(tensor.shape)
++        ndim = len(tensor.shape)
+         if dim < 0:
+-            dim += len(shape)
+-        new_shape = shape[:dim] + [num_k_heads, num_v_per_k, head_dim] + shape[dim + 1:]
+-        tensor = tensor.reshape(*new_shape)
+-        perm = list(range(len(new_shape)))
+-        perm[dim], perm[dim + 1] = perm[dim + 1], perm[dim]
+-        return tensor.permute(*perm).contiguous().reshape(*shape)
++            dim += ndim
++        width = tensor.shape[dim]
++        assert width == num_k_heads * num_v_per_k * head_dim
++        indices = (
++            torch.arange(width, dtype=torch.long)
++            .reshape(num_k_heads, num_v_per_k, head_dim)
++            .permute(1, 0, 2)
++            .reshape(-1)
++        )
++        return torch.index_select(tensor, dim, indices)
+ 
+     def _transform_nvfp4_weight(self, name: str, weight: Tensor, scale: Tensor) -> tuple[Tensor, Tensor]:
+         if not name.endswith((
+diff --git a/convert_lora_to_gguf.py b/convert_lora_to_gguf.py
+index 47c09af53..97828c471 100755
+--- a/convert_lora_to_gguf.py
++++ b/convert_lora_to_gguf.py
+@@ -133,6 +133,23 @@ class LoraTorchTensor:
+             self._lora_B.contiguous(),
+         )
+ 
++    def index_select(self, dim: int, index: Tensor) -> LoraTorchTensor:
++        """Select output rows or input columns without materializing B @ A."""
++        ndim = len(self.shape)
++        if dim < 0:
++            dim += ndim
++        if dim == ndim - 1:
++            return LoraTorchTensor(
++                self._lora_A.index_select(-1, index),
++                self._lora_B,
++            )
++        if dim == ndim - 2:
++            return LoraTorchTensor(
++                self._lora_A,
++                self._lora_B.index_select(-2, index),
++            )
++        raise NotImplementedError
++
+     def reshape(self, *shape: int | tuple[int, ...]) -> LoraTorchTensor:
+         if isinstance(shape[0], tuple):
+             new_shape: tuple[int, ...] = shape[0]
+@@ -262,6 +279,9 @@ class LoraTorchTensor:
+             tensor, split_size = args[0], args[1]
+             dim = args[2] if len(args) > 2 else kwargs.get("dim", 0)
+             return tensor.split(split_size, dim=dim)
++        elif func is torch.index_select:
++            assert len(args)
++            return type(args[0]).index_select(*args, **kwargs)
+         else:
+             raise NotImplementedError
+ 

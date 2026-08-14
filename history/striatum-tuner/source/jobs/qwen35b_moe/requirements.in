@@ -1,0 +1,8 @@
+-r requirements-common.in
+
+# Hopper kernel and model integration tuple. These are semantic compatibility
+# pins, not a substitute for the hash-locked release snapshot.
+apache-tvm-ffi==0.1.9
+fla-core==0.5.2
+liger-kernel==0.8.1
+tilelang==0.1.9

@@ -1,0 +1,103 @@
+{
+  "protocol": "striatum-qwen35b-preflight-failure/1",
+  "recorded_at": "2026-08-01T06:55:44Z",
+  "run": {
+    "run_id": "run-20260801T061829-061231f556d8",
+    "pod_id": "22t20fnf9sr1v5",
+    "bundle_hash": "edcc4360098f24b22e0eb2547370406066915d101089b59e6ee4547c56f90ebb",
+    "image": "ghcr.io/halbritt/striatum-tuner-qwen35b-moe@sha256:dc1f25e4ae2d6cd6074f0ed46e186aed5de8b4b3ce0110bb9df03df4e98037ca",
+    "runner_version": "0.1.2",
+    "runner_git_commit": "cb488a9dbc51209e64490d46b0fa0ef4e5c5ce5a",
+    "gpu": "NVIDIA H100 80GB HBM3",
+    "observed_hourly_rate_usd": "2.99",
+    "approved_max_usd": "2.00"
+  },
+  "remote_result": {
+    "outcome": "failed",
+    "reason": "phase_nonzero_exit",
+    "phase": "preflight",
+    "completed_phases": [
+      "verify"
+    ],
+    "phase_exit_codes": {
+      "verify": 0,
+      "preflight": 1
+    },
+    "elapsed_seconds": 44.452079,
+    "runner_estimated_cost_usd": "0.038895569125",
+    "artifact_disposition": "unavailable"
+  },
+  "failure_observation": {
+    "source": "authenticated RunPod container log snapshot",
+    "observed_at": "2026-08-01T06:48:21.543613165Z",
+    "operation": "peft.prepare_model_for_kbit_training",
+    "exception": "torch.OutOfMemoryError",
+    "allocation_requested_gib": 2.0,
+    "gpu_capacity_gib": 79.18,
+    "gpu_free_gib": 1.2,
+    "process_memory_gib": 77.46,
+    "pytorch_allocated_gib": 72.8,
+    "pytorch_reserved_unallocated_gib": 4.06,
+    "optimizer_step_started": false,
+    "durability_note": "The provider log was observed before deletion but was not recovered by the runner because the failed phase produced no terminal artifact manifest."
+  },
+  "static_diagnosis": {
+    "classification": "evidence-backed-causal-inference",
+    "snapshot_total_bf16_bytes": 71903645408,
+    "fused_expert_bf16_bytes": 66035122176,
+    "fused_expert_gib": 61.5,
+    "expert_representation": "3-D torch.nn.Parameter tensors",
+    "transformers_bitsandbytes_conversion": "replaces exact nn.Linear and Conv1D modules only",
+    "peft_preparation_behavior": "casts each BF16 or FP16 non-Params4bit parameter to FP32",
+    "conclusion": "The fused experts remain BF16 during the declared 4-bit load and PEFT then attempts to double their storage. Allocator tuning cannot make the current preparation path fit a single 80GB H100.",
+    "evidence": {
+      "fused_expert_census_sha256": "b3f227e5f243bcda91dfb04b53d39b8358e7b6dc59741d61315e840c7e8de07a",
+      "peft_0_20_0_wheel_sha256": "0fbba16ffebfad3de96e06f2da6860fd860292324b85b6141909fa1e26ea9233",
+      "transformers_5_6_2_wheel_sha256": "f8d3a1bb96778fed9b8aabfd0dd6e19843e4b0f2bb6b59f32b8a92051b0f348f",
+      "runtime_py_sha256": "004da8221fd3f7071ec60882b9c26b0cc43d5e8ad6915a542a76bcad0bb4e4f8",
+      "train_py_sha256": "84afa41bc82e53f0a44c8d34cc50c9bf82974b6ded1428dccf0c388972eb53e0"
+    }
+  },
+  "lifecycle_closeout": {
+    "planned_at": "2026-08-01T06:18:29.543228+00:00",
+    "provision_dispatched_at": "2026-08-01T06:18:32.183534+00:00",
+    "workload_terminal_at": "2026-08-01T06:48:27.164141+00:00",
+    "delete_acknowledged_at": "2026-08-01T06:48:27.956439+00:00",
+    "provider_absence_confirmed_at": "2026-08-01T06:48:30.443350+00:00",
+    "closeout_completed_at": "2026-08-01T06:48:32.779374+00:00",
+    "controller_wall_seconds": "1803.236146",
+    "provider_exposure_seconds": "1798.259816",
+    "modeled_cost_at_observed_rate_usd": "1.493554680511111111111111111",
+    "modeled_cost_at_admission_rate_usd": "1.573477339",
+    "provider_billing_status": "pending",
+    "delete_acknowledged": true,
+    "provider_not_found": true,
+    "current_spend_usd_per_hour": "0",
+    "active_pod_count": 0,
+    "hashes": {
+      "events_jsonl": "b105a2f7104248af07152f4ad28ae73c13252bee6f8f848d944bd18a83ed7ca1",
+      "remote_status_json": "69f768d23c46f166dba6c3b8c02e4a62715ff5837c093f1790af42a616db71ab",
+      "state_json": "1cb99881cb72080926585b348e61458990afd0cfa0cc71b74f1f43ea36f1f96d",
+      "closeout_receipt_json": "1ead96b138de6cae866e2ce97e303727f106215834b4f4872d4d1504468f0948",
+      "input_publication_receipt_json": "09be8fdd85cb9ff913a9159acada15264136d78659147039ae03202e3a4bc44e",
+      "authorization_publication_receipt_json": "ba1ae76774455729269a610149dd68857746cf3f1514acd8a4474ee0ae3fe3c7"
+    }
+  },
+  "disposition": {
+    "preflight_accepted": false,
+    "full_run_authorized_by_gate": false,
+    "full_run_launched": false,
+    "automatic_retry": false,
+    "stage_b_compatibility_waiver_activated": false,
+    "next_state": "awaiting_principal",
+    "escalation_reason": "A safe retry needs a code change, a new immutable image, a longer paid preflight, and likely a larger-memory GPU. Its reservation plus the existing 47 USD full-run reservation cannot fit the original 50 USD budget ledger."
+  },
+  "provisional_remediation": {
+    "status": "recommendation-not-acceptance",
+    "preferred_experiment": "Freeze the fused BF16 experts without PEFT's blanket FP32 cast, cast only the intended small stability parameters, add an executable dtype and memory census, and preflight the new image on one H200 SXM.",
+    "why_h200": "The current RunPod catalog reports 141GB at 3.59 USD/hour on the same Hopper generation, avoiding a CUDA-13/SM100 rebuild while adding about 61GB over H100.",
+    "paid_retry_cap_usd": "3.00",
+    "paid_retry_elapsed_cap_seconds": 2700,
+    "residual_risk": "The corrected preparation path and 40,960-token optimizer step remain unverified until a new exact preflight passes."
+  }
+}

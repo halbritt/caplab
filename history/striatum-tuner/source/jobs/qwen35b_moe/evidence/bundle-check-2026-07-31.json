@@ -1,0 +1,35 @@
+{
+  "protocol": "striatum-runpod-jobrunner-check-evidence/1",
+  "recorded_at": "2026-07-31T20:20:31Z",
+  "jobrunner": {
+    "version": "0.1.0",
+    "source": "/home/halbritt/git/runpod-jobrunner",
+    "source_commit": "ec9bcbb83f1b0e4de8b357755e74ddd58e0cfc8e",
+    "working_tree_includes_incremental_mirroring": true
+  },
+  "commands": [
+    "runpod-jobrunner check jobs/qwen35b_moe/.generated/linear",
+    "runpod-jobrunner check jobs/qwen35b_moe/.generated/preflight"
+  ],
+  "results": [
+    {
+      "bundle_hash": "8e95a86ff18b3405391b2d5d8aed03fa68fa9ac104096b287ee0face279fdb91",
+      "image": "ghcr.io/halbritt/striatum-tuner-qwen35b-moe@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "input_bytes": 119218345,
+      "input_files": 5,
+      "max_cost_usd": "47.00",
+      "max_elapsed_seconds": 54000,
+      "name": "striatum-qwen36-35b-a3b-linear"
+    },
+    {
+      "bundle_hash": "a6aef550f980b5ebf1e9e6832c915c5ffe75cd1643bebf699ae12af000765862",
+      "image": "ghcr.io/halbritt/striatum-tuner-qwen35b-moe@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "input_bytes": 119218345,
+      "input_files": 5,
+      "max_cost_usd": "2.00",
+      "max_elapsed_seconds": 600,
+      "name": "striatum-qwen36-35b-a3b-preflight"
+    }
+  ],
+  "scope": "The all-a image digest is a schema-test placeholder, not a published image. This proves current job-spec schema compatibility, canonical bundle-hash stamping, exact five-file input hashes and sizes, the incremental checkpoint manifest declaration, and distinct 47 USD full plus 2 USD preflight reservations. Runnable materializations must be restamped with the real published digest and checked again."
+}

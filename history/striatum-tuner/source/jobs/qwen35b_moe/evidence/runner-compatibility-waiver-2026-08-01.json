@@ -1,0 +1,128 @@
+{
+  "protocol": "striatum-runner-compatibility-waiver/1",
+  "campaign": "striatum-qwen36-35b-a3b-linear-2026-08-01",
+  "status": "stage-a-accepted",
+  "accepted_at": "2026-08-01T06:17:17Z",
+  "decision_owner": "Codex agent acting under the principal's explicitly delegated campaign authority",
+  "decision": {
+    "action": "permit-one-preflight-as-cross-release-probe",
+    "rationale": "The remote runtime, protocol schemas, bootstrap, and locked runtime dependencies are byte-identical between runner releases 0.1.2 and 0.1.6. Controller-only provider fixes make 0.1.6 necessary locally. Exact image, bundle, and runner identities fail closed.",
+    "same_release_policy_deviation": true,
+    "general_backward_compatibility_claim": false
+  },
+  "controller": {
+    "version": "0.1.6",
+    "release_commit": "c682e91186b38e5a1aebc242252fa35ea8a7fcfd",
+    "checkout_commit": "19d64868888a91f1fcc1cb4cda941200d3486f8f",
+    "checkout_branch": "main",
+    "checkout_clean_and_synced": true
+  },
+  "remote_runner": {
+    "version": "0.1.2",
+    "git_commit": "cb488a9dbc51209e64490d46b0fa0ef4e5c5ce5a",
+    "base_image": "ghcr.io/halbritt/runpod-jobrunner-noop@sha256:3bf69deb62b02ada937406765087d7ee12b7c78f72c9045463b325ba4214622f"
+  },
+  "qwen_image": {
+    "repository": "ghcr.io/halbritt/striatum-tuner-qwen35b-moe",
+    "tag": "0.1.2",
+    "source_revision": "1649e2d94a0ca75bb073e0c1688348b0929fd48e",
+    "model_revision": "995ad96eacd98c81ed38be0c5b274b04031597b0",
+    "oci_index": "sha256:dc1f25e4ae2d6cd6074f0ed46e186aed5de8b4b3ce0110bb9df03df4e98037ca",
+    "linux_amd64_child": "sha256:4a1d80fca18e7b06474a9313f6a0457aa96778798c9c492ae0b58c8c192693e2",
+    "attestation_manifest": "sha256:0c4c15353e1c61c987754b846da0f0d90a56c58be13896bc679b9c850b3dcd04",
+    "config": "sha256:5f54b61373228407370ed1a09563caa3b94e214ec3fd7894509bc60787743076",
+    "sbom": "sha256:d3ac8a6340d8c6e015aed4fa16d1ab74dc8eeae8851f209be677e2275109f0ba",
+    "provenance": "sha256:c1d103df2b0483fbbea3ed64584e6e8478370a123c831ce6d7e1aedb466c4449",
+    "provenance_predicate": "https://slsa.dev/provenance/v1",
+    "public_anonymous_pull": true
+  },
+  "anonymous_image_gate": {
+    "status": "passed",
+    "verified_at": "2026-08-01T06:16:00Z",
+    "script": "/tmp/verify-striatum-qwen35b-moe-0.1.2.sh",
+    "script_sha256": "fa0072c1b89f7e4e11c4066cd9e14d991dbb5adf858b1319b7186e6cc94de406",
+    "assertions": [
+      "public package and anonymous token",
+      "top index digest and digest-addressed byte equality",
+      "one linux-amd64 child and one linked attestation manifest",
+      "config labels, entrypoint, environment, and source revision",
+      "26 exact safetensor COPY layers and 19 exact GGUF COPY layers",
+      "one SPDX 2.3 SBOM and one SLSA v1 provenance predicate",
+      "runner and PyTorch resolved materials",
+      "anonymous availability of every child and attestation blob"
+    ]
+  },
+  "bundles": {
+    "preflight": {
+      "bundle_hash": "edcc4360098f24b22e0eb2547370406066915d101089b59e6ee4547c56f90ebb",
+      "job_yaml_sha256": "7d7a8fee6d4d6a91223902b27ecb3faf8c2ac184e5eb1482ce477e08abdfd892",
+      "max_elapsed_seconds": 2100,
+      "max_cost_usd": "2.00",
+      "check_status": "passed"
+    },
+    "linear_full": {
+      "bundle_hash": "3aa9a8dd84f8622499545ebd108380143d0bc9ccebd3d8b25f19332904d9c7b1",
+      "job_yaml_sha256": "e37dea64f98ea9ea0ec5764c8c42a62288229e89cb00fdc10f7575489c55343d",
+      "max_elapsed_seconds": 54000,
+      "max_cost_usd": "47.00",
+      "check_status": "passed"
+    },
+    "shared_input_manifest_sha256": "d7cf0b193b55079dba5361aca2041a4cac7fc3d398df5a1e2c0d3433f97d2e96",
+    "shared_input_files": 5,
+    "shared_input_bytes": 119218345,
+    "shared_image_index": "sha256:dc1f25e4ae2d6cd6074f0ed46e186aed5de8b4b3ce0110bb9df03df4e98037ca"
+  },
+  "static_compatibility_evidence": {
+    "review_artifact": "/tmp/qwen35b-runner-compatibility-waiver-draft.md",
+    "review_artifact_sha256": "86ef20a171ff20d6fa75caffec3d91f3303ef5be5f67123e339e06857a793615",
+    "comparison": "cb488a9dbc51209e64490d46b0fa0ef4e5c5ce5a..c682e91186b38e5a1aebc242252fa35ea8a7fcfd",
+    "remote_runtime_schema_bootstrap_diff": "byte-identical",
+    "runtime_lock_sha256_both_releases": "52705ffa834151b1685c6e3bf7b7e24bddcdbe2b602158677de90f96bc269d31",
+    "controller_only_changes": [
+      "RunPod provider authentication and create-response handling",
+      "provider spend validation",
+      "controller status-fetch User-Agent"
+    ]
+  },
+  "inherited_live_evidence": {
+    "ci_run": "30675645766",
+    "paid_noop_run": "run-20260801T003338-3d00352cd1c8",
+    "paid_noop_runner_version": "0.1.6",
+    "paid_noop_result": "succeeded-and-closed",
+    "exact_0_1_2_live_proof": false,
+    "caveat": "The earlier 0.1.2 attempt failed in the controller before any pod was created. This preflight is the bounded exact-image proof."
+  },
+  "stage_a": {
+    "status": "accepted",
+    "authorized_operation": "one paid preflight using the exact preflight bundle",
+    "stop_on_failure": true,
+    "automatic_retry": false
+  },
+  "stage_b": {
+    "status": "pending-preflight",
+    "authorized_operation_after_activation": "one linear full run using the exact linear bundle",
+    "activation_conditions": [
+      "authenticated ready and terminal status identify runner 0.1.2 at cb488a9dbc51209e64490d46b0fa0ef4e5c5ce5a",
+      "all required protocol majors equal 1",
+      "input upload and launch authorization follow identity validation",
+      "every preflight workload and incremental-mirror gate passes",
+      "recovered terminal artifacts match authenticated manifests by hash",
+      "deletion is acknowledged, provider not-found is observed, and current spend is zero"
+    ]
+  },
+  "scope_limits": [
+    "Only the exact stamped preflight and linear bundles recorded above",
+    "Only controller release 0.1.6 and remote release 0.1.2 recorded above",
+    "No mutable tag, expert-aware bundle, other workload, or other protocol major",
+    "No waiver of image, input, budget, phase, artifact, or closeout gates"
+  ],
+  "expires_if": [
+    "controller release or production source changes",
+    "remote runner identity or base-image digest changes",
+    "Qwen image index, child, attestation, provenance, or SBOM changes",
+    "either bundle hash changes",
+    "any compatibility-surface blob or required protocol major changes",
+    "the preflight contradicts the static or inherited evidence",
+    "this Qwen preflight and linear campaign closes"
+  ]
+}

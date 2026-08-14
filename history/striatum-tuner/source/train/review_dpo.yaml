@@ -1,0 +1,44 @@
+# LLaMA-Factory DPO pass on top of the SFT adapter (optional second stage).
+#   llamafactory-cli train train/review_dpo.yaml
+# 78 pairs is a light preference signal — run AFTER SFT, low LR, one epoch,
+# and compare eval before adopting; skip if it degrades verdict metrics.
+
+model_name_or_path: /home/halbritt/models/hf/Qwen3.6-27B
+adapter_name_or_path: out/review-sft-r1
+trust_remote_code: true
+
+stage: dpo
+do_train: true
+finetuning_type: lora
+lora_rank: 32
+lora_alpha: 64
+lora_dropout: 0.05
+lora_target: all
+quantization_bit: 4
+pref_beta: 0.1
+pref_loss: sigmoid
+
+dataset_dir: ../sft
+dataset: striatum_review_dpo
+template: qwen3
+enable_thinking: false
+cutoff_len: 40960
+packing: false
+
+output_dir: out/review-dpo-r1
+logging_steps: 1
+save_steps: 20
+plot_loss: true
+report_to: none
+
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
+learning_rate: 5.0e-6
+num_train_epochs: 1.0
+lr_scheduler_type: cosine
+warmup_ratio: 0.1
+bf16: true
+flash_attn: fa2
+gradient_checkpointing: true
+
+deepspeed: ds_zero3_offload.json
