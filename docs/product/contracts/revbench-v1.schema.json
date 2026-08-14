@@ -6,7 +6,9 @@
   "oneOf": [
     {"$ref": "#/$defs/spec"},
     {"$ref": "#/$defs/manifest"},
-    {"$ref": "#/$defs/reviews"}
+    {"$ref": "#/$defs/reviews"},
+    {"$ref": "#/$defs/native_review_attempt"},
+    {"$ref": "#/$defs/native_attempt_attestation"}
   ],
   "$defs": {
     "json_pointer": {
@@ -130,7 +132,42 @@
         {"$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"},
         {
           "properties": {
-            "kind": {"const": "native-attempt-attestation"}
+            "kind": {"const": "native-attempt-attestation"},
+            "schema": {"const": "caplab-native-attempt-attestation/1"}
+          },
+          "required": ["kind", "schema"]
+        }
+      ]
+    },
+    "attempt_envelope_ref": {
+      "allOf": [
+        {"$ref": "qualification-claim-v1.schema.json#/$defs/attempt_ref"},
+        {
+          "properties": {
+            "schema": {"const": "caplab-native-review-attempt/1"}
+          },
+          "required": ["schema"]
+        }
+      ]
+    },
+    "native_system_contract_ref": {
+      "allOf": [
+        {"$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"},
+        {
+          "properties": {
+            "kind": {"const": "native-agent-systems-contract"},
+            "schema": {"const": "caplab.native-agent-systems/v1"}
+          },
+          "required": ["kind", "schema"]
+        }
+      ]
+    },
+    "capture_ref": {
+      "allOf": [
+        {"$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"},
+        {
+          "properties": {
+            "kind": {"const": "native-attempt-capture"}
           },
           "required": ["kind"]
         }
@@ -179,7 +216,7 @@
         "arm": {"enum": ["control", "mutant"]},
         "binding_id": {"type": "string", "pattern": "^bnd-[0-9a-f]{64}$"},
         "observed_binding": {"$ref": "qualification-claim-v1.schema.json#/$defs/binding"},
-        "attempt_ref": {"$ref": "qualification-claim-v1.schema.json#/$defs/attempt_ref"},
+        "attempt_ref": {"$ref": "#/$defs/attempt_envelope_ref"},
         "attestation_ref": {"$ref": "#/$defs/attestation_ref"},
         "prompt_ref": {"$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"},
         "disposition": {"enum": ["complete", "subject-failure", "infrastructure-failure"]},
@@ -189,6 +226,76 @@
           "items": {"$ref": "#/$defs/json_pointer"},
           "uniqueItems": true
         },
+        "output_ref": {"$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"}
+      }
+    },
+    "native_review_attempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "attempt_id",
+        "experiment_id",
+        "case_id",
+        "arm",
+        "binding_id",
+        "observed_binding",
+        "attestation_ref",
+        "prompt_ref",
+        "disposition",
+        "verdict",
+        "anchors",
+        "output_ref",
+        "provenance"
+      ],
+      "properties": {
+        "schema_version": {"const": "caplab-native-review-attempt/1"},
+        "attempt_id": {"type": "string", "pattern": "^attempt-[0-9a-f]{64}$"},
+        "experiment_id": {"$ref": "#/$defs/experiment_id"},
+        "case_id": {"$ref": "#/$defs/case_id"},
+        "arm": {"enum": ["control", "mutant"]},
+        "binding_id": {"type": "string", "pattern": "^bnd-[0-9a-f]{64}$"},
+        "observed_binding": {"$ref": "qualification-claim-v1.schema.json#/$defs/binding"},
+        "attestation_ref": {"$ref": "#/$defs/attestation_ref"},
+        "prompt_ref": {"$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"},
+        "disposition": {"enum": ["complete", "subject-failure", "infrastructure-failure"]},
+        "verdict": {"enum": ["clean", "defect", "invalid"]},
+        "anchors": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/json_pointer"},
+          "uniqueItems": true
+        },
+        "output_ref": {"$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"},
+        "provenance": {"$ref": "qualification-claim-v1.schema.json#/$defs/provenance"}
+      }
+    },
+    "native_attempt_attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "attestation_id",
+        "experiment_id",
+        "case_id",
+        "arm",
+        "observed_at",
+        "observed_binding",
+        "native_system_contract_ref",
+        "capture_ref",
+        "prompt_ref",
+        "output_ref"
+      ],
+      "properties": {
+        "schema_version": {"const": "caplab-native-attempt-attestation/1"},
+        "attestation_id": {"type": "string", "pattern": "^attestation-[0-9a-f]{64}$"},
+        "experiment_id": {"$ref": "#/$defs/experiment_id"},
+        "case_id": {"$ref": "#/$defs/case_id"},
+        "arm": {"enum": ["control", "mutant"]},
+        "observed_at": {"$ref": "qualification-claim-v1.schema.json#/$defs/utc_timestamp"},
+        "observed_binding": {"$ref": "qualification-claim-v1.schema.json#/$defs/binding"},
+        "native_system_contract_ref": {"$ref": "#/$defs/native_system_contract_ref"},
+        "capture_ref": {"$ref": "#/$defs/capture_ref"},
+        "prompt_ref": {"$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"},
         "output_ref": {"$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"}
       }
     },

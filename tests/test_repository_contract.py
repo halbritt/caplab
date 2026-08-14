@@ -187,6 +187,11 @@ class RepositoryContractTests(unittest.TestCase):
                 / "docs/product/contracts/qualification-records-v1.schema.json"
             ).read_text(encoding="utf-8")
         )
+        revbench_schema = json.loads(
+            (
+                ROOT / "docs/product/contracts/revbench-v1.schema.json"
+            ).read_text(encoding="utf-8")
+        )
         contract = (
             ROOT / "docs/product/contracts/caplab-qualification-contract-v1.md"
         ).read_text(encoding="utf-8")
@@ -238,6 +243,28 @@ class RepositoryContractTests(unittest.TestCase):
         )
         self.assertIn(
             "(--measurement MEASUREMENT | --binding BINDING)", contract
+        )
+        self.assertEqual(
+            revbench_schema["$defs"]["native_attempt_attestation"]["required"],
+            [
+                "schema_version",
+                "attestation_id",
+                "experiment_id",
+                "case_id",
+                "arm",
+                "observed_at",
+                "observed_binding",
+                "native_system_contract_ref",
+                "capture_ref",
+                "prompt_ref",
+                "output_ref",
+            ],
+        )
+        self.assertEqual(
+            revbench_schema["$defs"]["native_review_attempt"]["properties"][
+                "attempt_id"
+            ]["pattern"],
+            "^attempt-[0-9a-f]{64}$",
         )
         for forbidden in (
             "mutable `current` flag",

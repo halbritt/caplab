@@ -387,15 +387,35 @@ passes its oracle and the mutant fails exactly the planted invariant.
 `observed_at`, and `attempts`. Each attempt has exact keys `case_id`, `arm`,
 `binding_id`, `observed_binding`, `attempt_ref`, `attestation_ref`, `prompt_ref`,
 `disposition`, `verdict`, `anchors`, and `output_ref`. `attempt_ref` identifies
-the complete registered attempt envelope. `observed_binding` is a complete Binding derived
-from the registered native-attempt attestation, not a caller label. Arms are
+the complete registered `caplab-native-review-attempt/1` envelope.
+`observed_binding` is a complete Binding derived from the registered
+native-attempt attestation, not a caller label. Arms are
 `control` and `mutant`; dispositions are `complete`, `subject-failure`, and
 `infrastructure-failure`; verdicts are `clean`, `defect`, and `invalid`.
 Anchors are sorted JSON Pointers. The output is an immutable evidence reference.
 
+The native review attempt envelope has exact keys `schema_version`,
+`attempt_id`, `experiment_id`, `case_id`, `arm`, `binding_id`,
+`observed_binding`, `attestation_ref`, `prompt_ref`, `disposition`, `verdict`,
+`anchors`, `output_ref`, and `provenance`. Its ID is `attempt-` plus the
+canonical SHA-256 of every other field. It is the registered interpretation of
+one captured attempt; its projection must equal the corresponding review
+attempt exactly.
+
+`caplab-native-attempt-attestation/1` has exact keys `schema_version`,
+`attestation_id`, `experiment_id`, `case_id`, `arm`, `observed_at`,
+`observed_binding`, `native_system_contract_ref`, `capture_ref`, `prompt_ref`,
+and `output_ref`. Its ID is `attestation-` plus the canonical SHA-256 of every
+other field. The native-system contract and capture are registered references.
+The attestation, attempt envelope, and review must agree on experiment, case,
+arm, full Binding, prompt, and output. This one-way link avoids circular
+content IDs while preventing cross-attempt evidence substitution. A later
+downstream fate is not part of either attempt-time record.
+
 A captured review is usable only when its declared Binding matches the
 manifest and its observed Binding recomputes to that exact ID. The scorer
-resolves and verifies the native-attempt attestation, prompt, and output before
+resolves and verifies the attempt envelope, native-attempt attestation, prompt,
+output, native-system contract, and capture before
 using the arm. Detection requires a conforming verdict and the exact defect anchor;
 a generic refusal is not catch credit. Revbench reports catch rate,
 false-alarm rate, discrimination, anchor-hit rate, and conformance separately.
