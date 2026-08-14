@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import errno
 import json
 import os
 import shutil
+import stat
 import subprocess
 import sys
 import tempfile
@@ -17,7 +19,10 @@ from unittest import mock
 
 from caplab.qualification.__main__ import _execute, build_parser
 from caplab.qualification.export import build_export, write_export_exclusive
-from caplab.qualification.ledger import FilesystemQualificationLedger
+from caplab.qualification.ledger import (
+    FilesystemQualificationLedger,
+    QualificationLedgerError,
+)
 from caplab.runtime.canonical import canonical_json, sha256_hex
 
 REPOSITORY_ROOT = Path(__file__).parents[1]
@@ -315,6 +320,95 @@ class QualificationLedgerRegistrationTests(unittest.TestCase):
 
 
 class QualificationLedgerStreamTests(unittest.TestCase):
+    def test_failed_append_preserves_complete_prior_stream_and_canonical_error(
+        self,
+    ) -> None:
+        class PartialWriteStream:
+            def __init__(self, stream: object) -> None:
+                self.stream = stream
+
+            def __enter__(self) -> "PartialWriteStream":
+                return self
+
+            def __exit__(self, *exc_info: object) -> None:
+                self.stream.close()
+
+            def fileno(self) -> int:
+                return self.stream.fileno()
+
+            def write(self, payload: bytes) -> None:
+                self.stream.write(payload[:11])
+                self.stream.flush()
+                raise OSError(errno.ENOSPC, "simulated full filesystem")
+
+            def flush(self) -> None:
+                self.stream.flush()
+
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory) / "qualification"
+            ledger = FilesystemQualificationLedger(root)
+            ledger.append_measurement(
+                {"measurement_id": "meas-" + "a" * 64, "index": 1},
+                validator=owned,
+            )
+            stream_path = root / "measurements.jsonl"
+            retained_image = stream_path.read_bytes()
+            real_fdopen = os.fdopen
+
+            def partial_append(descriptor: int, mode: str, **keywords: object):
+                stream = real_fdopen(descriptor, mode, **keywords)
+                if mode == "ab":
+                    return PartialWriteStream(stream)
+                return stream
+
+            with mock.patch(
+                "caplab.qualification.ledger.os.fdopen",
+                side_effect=partial_append,
+            ):
+                with self.assertRaisesRegex(
+                    QualificationLedgerError,
+                    "ledger_stream_append_failed:measurements.jsonl",
+                ):
+                    ledger.append_measurement(
+                        {"measurement_id": "meas-" + "b" * 64, "index": 2},
+                        validator=owned,
+                    )
+
+            self.assertEqual(stream_path.read_bytes(), retained_image)
+            self.assertEqual(list(root.glob(".qualification-*")), [])
+
+    def test_directory_fsync_failure_leaves_one_complete_retryable_image(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory) / "qualification"
+            ledger = FilesystemQualificationLedger(root)
+            first = {"measurement_id": "meas-" + "a" * 64, "index": 1}
+            second = {"measurement_id": "meas-" + "b" * 64, "index": 2}
+            ledger.append_measurement(first, validator=owned)
+            real_fsync = os.fsync
+
+            def fail_directory_fsync(descriptor: int) -> None:
+                if stat.S_ISDIR(os.fstat(descriptor).st_mode):
+                    raise OSError(errno.ENOSPC, "simulated directory fsync failure")
+                real_fsync(descriptor)
+
+            with mock.patch(
+                "caplab.qualification.ledger.os.fsync",
+                side_effect=fail_directory_fsync,
+            ):
+                with self.assertRaisesRegex(
+                    QualificationLedgerError,
+                    "ledger_stream_append_failed:measurements.jsonl",
+                ):
+                    ledger.append_measurement(second, validator=owned)
+
+            replay = ledger.append_measurement(second, validator=owned)
+            records = [
+                json.loads(line)
+                for line in (root / "measurements.jsonl").read_bytes().splitlines()
+            ]
+            self.assertEqual(replay, second)
+            self.assertEqual(records, [first, second])
+
     def test_measurement_append_is_exactly_idempotent_and_rejects_id_collision(
         self,
     ) -> None:

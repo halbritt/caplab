@@ -347,10 +347,16 @@ The local reference implementation receives a ledger directory, not a database
 connection. It contains canonical `measurements.jsonl`, `policies.jsonl`, and
 `claims.jsonl`.
 Append operations refuse symlinks, take one directory-scoped exclusive lock,
-validate the complete existing stream, append one newline-terminated record,
-flush, and `fsync` before reporting success. An exact content replay is
-idempotent; an existing ID with different bytes is a conflict. Readers perform
-no repair.
+and validate the complete existing stream. An append constructs the complete
+next stream image in an exclusive, no-follow temporary file in the ledger
+directory, flushes and `fsync`s that file, atomically replaces the stream, and
+then `fsync`s the directory before reporting success. A reader therefore sees
+either the prior complete image or the next complete image, never a partial
+record. A failure before replacement leaves the prior image unchanged. A
+directory-`fsync` failure after replacement reports failure even though the
+complete next image is visible; an exact retry is idempotent. Filesystem errors
+are returned as qualification-ledger errors. An existing ID with different
+bytes is a conflict. Readers perform no repair.
 
 ## Quartermaster-facing export
 
@@ -577,7 +583,10 @@ produce a Measurement, but the local-fixture executor does not have a durable
 preopened stream sink that can recover bytes after a process completes. That
 missing seam is one reason live execution remains refused. The executor does
 not claim hardware attestation, secret-value identity, or independent
-acceptance.
+acceptance. Descriptor-relative stream publication refuses a symlink at the
+ledger root or stream entry, but still trusts the ledger path's ancestor
+directories; an actor able to replace those ancestors or write the ledger
+outside its lock remains outside this boundary.
 
 Legacy tuner summaries and fate-selected controls are not imported as
 Measurements by default. They remain `legacy_nonqualifying` observations until

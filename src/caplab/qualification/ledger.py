@@ -468,24 +468,14 @@ class FilesystemQualificationLedger:
         return registrations
 
     def _read_stream_locked(self, filename: str) -> list[dict[str, Any]]:
-        path = self.root / filename
+        directory_descriptor = _open_directory(self.root, "ledger_root")
         try:
-            metadata = path.lstat()
-        except FileNotFoundError:
-            return []
-        if not stat.S_ISREG(metadata.st_mode):
-            raise QualificationLedgerError(f"ledger_stream_not_regular:{filename}")
-        flags = os.O_RDONLY | os.O_CLOEXEC
-        if hasattr(os, "O_NOFOLLOW"):
-            flags |= os.O_NOFOLLOW
-        try:
-            descriptor = os.open(path, flags)
-        except OSError as error:
-            raise QualificationLedgerError(
-                f"ledger_stream_open_failed:{filename}"
-            ) from error
-        with os.fdopen(descriptor, "rb", closefd=True) as stream:
-            payload = stream.read()
+            payload = _read_stream_at(directory_descriptor, filename)
+        finally:
+            _close_descriptor(
+                directory_descriptor,
+                f"ledger_stream_read_failed:{filename}",
+            )
         if payload and not payload.endswith(b"\n"):
             raise QualificationLedgerError(f"ledger_stream_truncated:{filename}")
         records: list[dict[str, Any]] = []
@@ -512,25 +502,20 @@ class FilesystemQualificationLedger:
         return records
 
     def _append_line_locked(self, filename: str, document: Mapping[str, Any]) -> None:
-        path = self.root / filename
-        created = not path.exists()
-        flags = os.O_APPEND | os.O_CREAT | os.O_WRONLY | os.O_CLOEXEC
-        if hasattr(os, "O_NOFOLLOW"):
-            flags |= os.O_NOFOLLOW
+        directory_descriptor = _open_directory(self.root, "ledger_root")
         try:
-            descriptor = os.open(path, flags, 0o600)
-        except OSError as error:
-            raise QualificationLedgerError(
-                f"ledger_stream_append_failed:{filename}"
-            ) from error
-        with os.fdopen(descriptor, "ab", closefd=True) as stream:
-            if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
-                raise QualificationLedgerError(f"ledger_stream_not_regular:{filename}")
-            stream.write(canonical_json(document) + b"\n")
-            stream.flush()
-            os.fsync(stream.fileno())
-        if created:
-            _fsync_directory(self.root)
+            retained_image = _read_stream_at(directory_descriptor, filename)
+            complete_image = retained_image + canonical_json(document) + b"\n"
+            _publish_stream_image_at(
+                directory_descriptor,
+                filename,
+                complete_image,
+            )
+        finally:
+            _close_descriptor(
+                directory_descriptor,
+                f"ledger_stream_append_failed:{filename}",
+            )
 
     def _write_object_locked(self, locator: str, payload: bytes) -> None:
         parts = locator.split("/")
@@ -803,6 +788,132 @@ def _read_regular_file(path: Path, label: str) -> bytes:
         if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
             raise QualificationLedgerError(f"{label}_not_regular")
         return stream.read()
+
+
+def _open_directory(path: Path, label: str) -> int:
+    flags = os.O_RDONLY | os.O_CLOEXEC
+    if hasattr(os, "O_DIRECTORY"):
+        flags |= os.O_DIRECTORY
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    try:
+        return os.open(path, flags)
+    except OSError as error:
+        raise QualificationLedgerError(f"{label}_open_failed") from error
+
+
+def _close_descriptor(descriptor: int, error_label: str) -> None:
+    try:
+        os.close(descriptor)
+    except OSError as error:
+        raise QualificationLedgerError(error_label) from error
+
+
+def _unlink_stream_temporary(
+    directory_descriptor: int,
+    temporary_name: str,
+    filename: str,
+) -> None:
+    try:
+        os.unlink(temporary_name, dir_fd=directory_descriptor)
+    except FileNotFoundError:
+        return
+    except OSError as error:
+        raise QualificationLedgerError(
+            f"ledger_stream_append_failed:{filename}"
+        ) from error
+
+
+def _publish_stream_image_at(
+    directory_descriptor: int,
+    filename: str,
+    complete_image: bytes,
+) -> None:
+    temporary_name = f".qualification-{secrets.token_hex(16)}"
+    nofollow = os.O_NOFOLLOW if hasattr(os, "O_NOFOLLOW") else 0
+    published = False
+    try:
+        temporary_descriptor = os.open(
+            temporary_name,
+            os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_CLOEXEC | nofollow,
+            0o600,
+            dir_fd=directory_descriptor,
+        )
+        try:
+            stream = os.fdopen(temporary_descriptor, "ab", closefd=True)
+        except OSError as error:
+            _close_descriptor(
+                temporary_descriptor,
+                f"ledger_stream_append_failed:{filename}",
+            )
+            raise QualificationLedgerError(
+                f"ledger_stream_append_failed:{filename}"
+            ) from error
+        with stream:
+            stream.write(complete_image)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(
+            temporary_name,
+            filename,
+            src_dir_fd=directory_descriptor,
+            dst_dir_fd=directory_descriptor,
+        )
+        published = True
+        os.fsync(directory_descriptor)
+    except OSError as error:
+        raise QualificationLedgerError(
+            f"ledger_stream_append_failed:{filename}"
+        ) from error
+    finally:
+        if not published:
+            _unlink_stream_temporary(
+                directory_descriptor,
+                temporary_name,
+                filename,
+            )
+
+
+def _read_stream_at(directory_descriptor: int, filename: str) -> bytes:
+    try:
+        metadata = os.stat(
+            filename,
+            dir_fd=directory_descriptor,
+            follow_symlinks=False,
+        )
+    except FileNotFoundError:
+        return b""
+    except OSError as error:
+        raise QualificationLedgerError(
+            f"ledger_stream_open_failed:{filename}"
+        ) from error
+    if not stat.S_ISREG(metadata.st_mode):
+        raise QualificationLedgerError(f"ledger_stream_not_regular:{filename}")
+    flags = os.O_RDONLY | os.O_CLOEXEC
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    try:
+        descriptor = os.open(filename, flags, dir_fd=directory_descriptor)
+    except OSError as error:
+        raise QualificationLedgerError(
+            f"ledger_stream_open_failed:{filename}"
+        ) from error
+    try:
+        stream = os.fdopen(descriptor, "rb", closefd=True)
+    except OSError as error:
+        _close_descriptor(descriptor, f"ledger_stream_read_failed:{filename}")
+        raise QualificationLedgerError(
+            f"ledger_stream_read_failed:{filename}"
+        ) from error
+    try:
+        with stream:
+            if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
+                raise QualificationLedgerError(f"ledger_stream_not_regular:{filename}")
+            return stream.read()
+    except OSError as error:
+        raise QualificationLedgerError(
+            f"ledger_stream_read_failed:{filename}"
+        ) from error
 
 
 def _fsync_directory(path: Path) -> None:

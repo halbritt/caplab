@@ -61,7 +61,9 @@ protocol. A negative decision is also not a provider failure.
 
 Claims are append-only. A new Claim may supersede older Claims, but does not
 mutate them. Multiple unsuperseded heads remain visible because CAPLAB does not
-choose which one a runtime should activate.
+choose which one a runtime should activate. The local JSONL ledger publishes
+each logical append as one atomically replaced, file-and-directory-fsynced
+stream image, so a failed write cannot expose a partial record.
 
 ## Independent truth and the fate firewall
 
