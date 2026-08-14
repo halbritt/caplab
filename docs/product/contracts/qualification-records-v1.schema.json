@@ -15,6 +15,12 @@
       "$ref": "#/$defs/policy"
     },
     {
+      "$ref": "#/$defs/case_selection"
+    },
+    {
+      "$ref": "#/$defs/basis_authorization"
+    },
+    {
       "$ref": "qualification-claim-v1.schema.json#/$defs/authorization"
     }
   ],
@@ -99,6 +105,170 @@
         },
         "provenance": {
           "$ref": "qualification-claim-v1.schema.json#/$defs/provenance"
+        }
+      }
+    },
+    "case_selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "selection_id",
+        "population_ref",
+        "included_case_refs",
+        "excluded_case_refs",
+        "selection_inputs",
+        "exclusion_inputs",
+        "conditioned_on",
+        "authorization_ref"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "caplab-case-selection-manifest/1"
+        },
+        "selection_id": {
+          "type": "string",
+          "pattern": "^selection-[0-9a-f]{64}$"
+        },
+        "population_ref": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"
+        },
+        "included_case_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"
+          },
+          "uniqueItems": true
+        },
+        "excluded_case_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"
+          },
+          "uniqueItems": true
+        },
+        "selection_inputs": {
+          "type": "array",
+          "items": {
+            "$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"
+          },
+          "uniqueItems": true
+        },
+        "exclusion_inputs": {
+          "type": "array",
+          "items": {
+            "$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"
+          },
+          "uniqueItems": true
+        },
+        "conditioned_on": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "downstream_fate",
+              "model_judgment",
+              "human_judgment",
+              "provider_verdict",
+              "scheduler_choice",
+              "admission",
+              "backend_rank",
+              "task_difficulty",
+              "attempt_outcome"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "authorization_ref": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"
+        }
+      }
+    },
+    "basis_authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "authorization_id",
+        "authority_source_ref",
+        "authorized_by",
+        "delegate_or_mechanism",
+        "binding_ids",
+        "capability",
+        "experiment",
+        "protocol_ref",
+        "corpus_ref",
+        "case_selection_ref",
+        "method_ref",
+        "basis_kind",
+        "basis_role",
+        "valid_from",
+        "valid_until"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "caplab-evidence-basis-authorization/1"
+        },
+        "authorization_id": {
+          "type": "string",
+          "pattern": "^basis-auth-[0-9a-f]{64}$"
+        },
+        "authority_source_ref": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"
+        },
+        "authorized_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "delegate_or_mechanism": {
+          "type": "string",
+          "minLength": 1
+        },
+        "binding_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^bnd-[0-9a-f]{64}$"
+          },
+          "uniqueItems": true
+        },
+        "capability": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/capability"
+        },
+        "experiment": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/experiment"
+        },
+        "protocol_ref": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/protocol_ref"
+        },
+        "corpus_ref": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/corpus_ref"
+        },
+        "case_selection_ref": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/case_selection_ref"
+        },
+        "method_ref": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"
+        },
+        "basis_kind": {
+          "enum": [
+            "mechanical-oracle",
+            "human-authorized",
+            "model-judgment"
+          ]
+        },
+        "basis_role": {
+          "enum": [
+            "truth",
+            "case-selection",
+            "metric-derivation"
+          ]
+        },
+        "valid_from": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/utc_timestamp"
+        },
+        "valid_until": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/utc_timestamp"
         }
       }
     },

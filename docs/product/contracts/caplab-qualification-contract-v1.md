@@ -18,7 +18,8 @@ The generic module exposes these operations through Python and the batch CLI:
 
 ```text
 record_measurement(measurement) -> immutable measurement
-apply_policy(measurement | null, policy, generated_at, supersedes) -> claim
+apply_policy(measurement | null, policy, binding | null, generated_at,
+             supersedes) -> claim
 read_history(binding_id, capability) -> claims and graph heads
 export_claims(binding_id, capability) -> deterministic export artifact
 ```
@@ -27,8 +28,8 @@ The operator surface is:
 
 ```text
 caplab qualification measure --input MEASUREMENT --ledger LEDGER
-caplab qualification apply --measurement MEASUREMENT --policy POLICY \
-  [--supersedes CLAIM_ID ...] --ledger LEDGER
+caplab qualification apply (--measurement MEASUREMENT | --binding BINDING) \
+  --policy POLICY [--supersedes CLAIM_ID ...] --ledger LEDGER
 caplab qualification history --binding BINDING_ID \
   --capability NAME --capability-version VERSION --ledger LEDGER
 caplab qualification export --binding BINDING_ID \
@@ -152,16 +153,28 @@ capability distribution explicitly names that selected population.
 `caplab-case-selection-manifest/1` has exact keys `schema_version`,
 `selection_id`, `population_ref`, `included_case_refs`, `excluded_case_refs`,
 `selection_inputs`, `exclusion_inputs`, `conditioned_on`, and
-`authorization_ref`. The ID is content-derived; case and input lists are sorted
-registered references. `conditioned_on` uses a closed vocabulary that includes
-`downstream_fate` and `model_judgment`. A decision over the declared source
-population requires that list to be empty.
+`authorization_ref`. The ID is `selection-` plus the canonical SHA-256 of all
+other fields; case and input lists are sorted
+registered references. `conditioned_on` uses the closed vocabulary
+`downstream_fate`, `model_judgment`, `human_judgment`, `provider_verdict`,
+`scheduler_choice`, `admission`, `backend_rank`, `task_difficulty`, and
+`attempt_outcome`. A decision over the declared source population requires that
+list to be empty.
 
 An evidence basis authorization reference resolves to
-`caplab-evidence-basis-authorization/1`, which names the authority source,
-capability/card, basis kind and role, evidence scope, valid interval, and
-delegate or deterministic mechanism. It cannot broaden the separately declared
-case-selection population.
+`caplab-evidence-basis-authorization/1`. Its exact keys are `schema_version`,
+`authorization_id`, `authority_source_ref`, `authorized_by`,
+`delegate_or_mechanism`, `binding_ids`, `capability`, `experiment`,
+`protocol_ref`, `corpus_ref`, `case_selection_ref`, `method_ref`, `basis_kind`,
+`basis_role`, `valid_from`, and `valid_until`. The ID is content-derived from
+all other fields as `basis-auth-` plus its canonical SHA-256. Binding IDs are
+sorted and nonempty; capability includes its
+card; and every reference is registered. Together the Binding, capability,
+experiment, protocol, corpus, case selection, and method form the exact
+evidence scope. The authorization must match the enclosing evidence basis kind
+and role, the Measurement, and its observation time. It cannot broaden the
+separately declared case-selection population or authorize a qualification
+status.
 
 `evidence` has one `bundle_ref` and a sorted `run_refs` list. `covariates` may
 contain downstream fate and other observational metadata. Policy predicates
@@ -286,6 +299,13 @@ canonical claim basis excluding `claim_id` and `generated_at`; idempotent issue
 keeps the first ledger-recorded `generated_at`. The CLI does not accept a
 caller-selected issuance time. A test clock is injectable only through the
 in-process composition root.
+
+Claim construction accepts either a Measurement or an explicit full Binding.
+The Binding argument is required when the Measurement is null, which is the
+only path that can issue `unmeasured`. When a Measurement is supplied, its
+embedded Binding is authoritative; an optional separately supplied Binding
+must match it exactly. The CLI exposes this as a mutually exclusive
+`--measurement` or `--binding` input.
 
 `qualified` and `unqualified` use assertion type `decision`; `advisory` and
 `unmeasured` use `recommendation`. Superseded claims remain byte-for-byte

@@ -14,7 +14,7 @@
     {
       "id": "https://caplab.local/contracts/qualification-records-v1.schema.json",
       "path": "qualification-records-v1.schema.json",
-      "sha256": "c8f3fa5b6d9e54ccff894a4edb0e16c3ee7d1767878c4f97e977eadb5e546168"
+      "sha256": "f852996fc403da428de7b777ddd40a3fcece73218f00865104a44ef444212a52"
     },
     {
       "id": "https://caplab.local/contracts/revbench-v1.schema.json",

@@ -181,6 +181,12 @@ class RepositoryContractTests(unittest.TestCase):
                 / "docs/product/contracts/qualification-export-v1.schema.json"
             ).read_text(encoding="utf-8")
         )
+        records_schema = json.loads(
+            (
+                ROOT
+                / "docs/product/contracts/qualification-records-v1.schema.json"
+            ).read_text(encoding="utf-8")
+        )
         contract = (
             ROOT / "docs/product/contracts/caplab-qualification-contract-v1.md"
         ).read_text(encoding="utf-8")
@@ -202,6 +208,36 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertEqual(
             export_schema["properties"]["producer"]["properties"]["product"],
             {"const": "caplab"},
+        )
+        self.assertEqual(
+            records_schema["$defs"]["basis_authorization"]["required"],
+            [
+                "schema_version",
+                "authorization_id",
+                "authority_source_ref",
+                "authorized_by",
+                "delegate_or_mechanism",
+                "binding_ids",
+                "capability",
+                "experiment",
+                "protocol_ref",
+                "corpus_ref",
+                "case_selection_ref",
+                "method_ref",
+                "basis_kind",
+                "basis_role",
+                "valid_from",
+                "valid_until",
+            ],
+        )
+        self.assertEqual(
+            records_schema["$defs"]["case_selection"]["properties"][
+                "schema_version"
+            ]["const"],
+            "caplab-case-selection-manifest/1",
+        )
+        self.assertIn(
+            "(--measurement MEASUREMENT | --binding BINDING)", contract
         )
         for forbidden in (
             "mutable `current` flag",
