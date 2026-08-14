@@ -166,6 +166,7 @@
         "arm",
         "binding_id",
         "observed_binding",
+        "attempt_ref",
         "attestation_ref",
         "prompt_ref",
         "disposition",
@@ -178,6 +179,7 @@
         "arm": {"enum": ["control", "mutant"]},
         "binding_id": {"type": "string", "pattern": "^bnd-[0-9a-f]{64}$"},
         "observed_binding": {"$ref": "qualification-claim-v1.schema.json#/$defs/binding"},
+        "attempt_ref": {"$ref": "qualification-claim-v1.schema.json#/$defs/attempt_ref"},
         "attestation_ref": {"$ref": "#/$defs/attestation_ref"},
         "prompt_ref": {"$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"},
         "disposition": {"enum": ["complete", "subject-failure", "infrastructure-failure"]},
@@ -261,10 +263,11 @@
     "reviews": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["schema_version", "experiment_id", "attempts"],
+      "required": ["schema_version", "experiment_id", "observed_at", "attempts"],
       "properties": {
         "schema_version": {"const": "caplab-revbench-reviews/1"},
         "experiment_id": {"$ref": "#/$defs/experiment_id"},
+        "observed_at": {"$ref": "qualification-claim-v1.schema.json#/$defs/utc_timestamp"},
         "attempts": {
           "type": "array",
           "minItems": 1,

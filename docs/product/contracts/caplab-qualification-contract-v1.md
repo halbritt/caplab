@@ -364,9 +364,10 @@ artifact content and its SHA-256. Preparation fails unless the clean control
 passes its oracle and the mutant fails exactly the planted invariant.
 
 `caplab-revbench-reviews/1` has exact keys `schema_version`, `experiment_id`,
-and `attempts`. Each attempt has exact keys `case_id`, `arm`, `binding_id`,
-`observed_binding`, `attestation_ref`, `prompt_ref`, `disposition`, `verdict`,
-`anchors`, and `output_ref`. `observed_binding` is a complete Binding derived
+`observed_at`, and `attempts`. Each attempt has exact keys `case_id`, `arm`,
+`binding_id`, `observed_binding`, `attempt_ref`, `attestation_ref`, `prompt_ref`,
+`disposition`, `verdict`, `anchors`, and `output_ref`. `attempt_ref` identifies
+the complete registered attempt envelope. `observed_binding` is a complete Binding derived
 from the registered native-attempt attestation, not a caller label. Arms are
 `control` and `mutant`; dispositions are `complete`, `subject-failure`, and
 `infrastructure-failure`; verdicts are `clean`, `defect`, and `invalid`.
