@@ -354,9 +354,12 @@ then `fsync`s the directory before reporting success. A reader therefore sees
 either the prior complete image or the next complete image, never a partial
 record. A failure before replacement leaves the prior image unchanged. A
 directory-`fsync` failure after replacement reports failure even though the
-complete next image is visible; an exact retry is idempotent. Filesystem errors
-are returned as qualification-ledger errors. An existing ID with different
-bytes is a conflict. Readers perform no repair.
+complete next image is visible; an exact retry re-`fsync`s the ledger directory
+before it reports idempotent success. Object and namespace-directory replays
+likewise re-`fsync` their owning directories before the corresponding
+registration can succeed. Filesystem errors are returned as
+qualification-ledger errors. An existing ID with different bytes is a
+conflict. Readers perform no repair.
 
 ## Quartermaster-facing export
 

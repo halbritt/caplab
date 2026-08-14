@@ -63,7 +63,9 @@ Claims are append-only. A new Claim may supersede older Claims, but does not
 mutate them. Multiple unsuperseded heads remain visible because CAPLAB does not
 choose which one a runtime should activate. The local JSONL ledger publishes
 each logical append as one atomically replaced, file-and-directory-fsynced
-stream image, so a failed write cannot expose a partial record.
+stream image, so a failed write cannot expose a partial record. An exact retry
+after an uncertain directory sync re-syncs the stream and object directories
+before reporting idempotent success.
 
 ## Independent truth and the fate firewall
 

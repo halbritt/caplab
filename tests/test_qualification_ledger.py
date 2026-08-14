@@ -17,6 +17,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest import mock
 
+import caplab.qualification.ledger as ledger_module
 from caplab.qualification.__main__ import _execute, build_parser
 from caplab.qualification.export import build_export, write_export_exclusive
 from caplab.qualification.ledger import (
@@ -385,10 +386,14 @@ class QualificationLedgerStreamTests(unittest.TestCase):
             second = {"measurement_id": "meas-" + "b" * 64, "index": 2}
             ledger.append_measurement(first, validator=owned)
             real_fsync = os.fsync
+            directory_fsync_calls = 0
 
             def fail_directory_fsync(descriptor: int) -> None:
+                nonlocal directory_fsync_calls
                 if stat.S_ISDIR(os.fstat(descriptor).st_mode):
-                    raise OSError(errno.ENOSPC, "simulated directory fsync failure")
+                    directory_fsync_calls += 1
+                    if directory_fsync_calls == 2:
+                        raise OSError(errno.ENOSPC, "simulated directory fsync failure")
                 real_fsync(descriptor)
 
             with mock.patch(
@@ -401,13 +406,89 @@ class QualificationLedgerStreamTests(unittest.TestCase):
                 ):
                     ledger.append_measurement(second, validator=owned)
 
-            replay = ledger.append_measurement(second, validator=owned)
+            replay_directory_fsyncs = 0
+
+            def observe_replay_fsync(descriptor: int) -> None:
+                nonlocal replay_directory_fsyncs
+                if stat.S_ISDIR(os.fstat(descriptor).st_mode):
+                    replay_directory_fsyncs += 1
+                real_fsync(descriptor)
+
+            with mock.patch(
+                "caplab.qualification.ledger.os.fsync",
+                side_effect=observe_replay_fsync,
+            ):
+                replay = ledger.append_measurement(second, validator=owned)
             records = [
                 json.loads(line)
                 for line in (root / "measurements.jsonl").read_bytes().splitlines()
             ]
             self.assertEqual(replay, second)
             self.assertEqual(records, [first, second])
+            self.assertGreater(replay_directory_fsyncs, 0)
+
+    def test_object_directory_fsync_failure_is_recovered_on_exact_retry(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory) / "qualification"
+            ledger = FilesystemQualificationLedger(root)
+            payload = b"registered bytes with an uncertain directory commit"
+            real_link = os.link
+            real_fsync_directory = ledger_module._fsync_directory
+            object_linked = False
+            failure_injected = False
+
+            def observe_link(*args: object, **keywords: object) -> None:
+                nonlocal object_linked
+                real_link(*args, **keywords)
+                object_linked = True
+
+            def fail_after_object_link(path: Path) -> None:
+                nonlocal failure_injected
+                if object_linked and not failure_injected:
+                    failure_injected = True
+                    raise QualificationLedgerError("simulated_object_directory_fsync")
+                real_fsync_directory(path)
+
+            with (
+                mock.patch(
+                    "caplab.qualification.ledger.os.link",
+                    side_effect=observe_link,
+                ),
+                mock.patch(
+                    "caplab.qualification.ledger._fsync_directory",
+                    side_effect=fail_after_object_link,
+                ),
+            ):
+                with self.assertRaisesRegex(
+                    QualificationLedgerError,
+                    "simulated_object_directory_fsync",
+                ):
+                    ledger.register_bytes(
+                        payload,
+                        kind="raw-output",
+                        schema="caplab-native-process-stream/1",
+                    )
+
+            object_parent_fsyncs = 0
+
+            def observe_retry_directory(path: Path) -> None:
+                nonlocal object_parent_fsyncs
+                if path.name == sha256_hex(payload)[:2]:
+                    object_parent_fsyncs += 1
+                real_fsync_directory(path)
+
+            with mock.patch(
+                "caplab.qualification.ledger._fsync_directory",
+                side_effect=observe_retry_directory,
+            ):
+                ref = ledger.register_bytes(
+                    payload,
+                    kind="raw-output",
+                    schema="caplab-native-process-stream/1",
+                )
+
+            self.assertEqual(ledger.resolve(ref), payload)
+            self.assertGreater(object_parent_fsyncs, 0)
 
     def test_measurement_append_is_exactly_idempotent_and_rejects_id_collision(
         self,

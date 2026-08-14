@@ -57,6 +57,8 @@ class FilesystemQualificationLedger:
         except OSError as error:
             raise QualificationLedgerError("ledger_root_create_failed") from error
         _require_real_directory(self.root, "ledger_root")
+        _fsync_directory(self.root)
+        _fsync_directory(self.root.parent)
 
     @contextmanager
     def _locked(self, *, exclusive: bool) -> Iterator[None]:
@@ -72,7 +74,6 @@ class FilesystemQualificationLedger:
             return
         _require_real_directory(self.root, "ledger_root")
         path = self.root / ".qualification.lock"
-        created = not path.exists()
         flags = os.O_CREAT | os.O_RDWR | os.O_CLOEXEC
         if hasattr(os, "O_NOFOLLOW"):
             flags |= os.O_NOFOLLOW
@@ -84,13 +85,16 @@ class FilesystemQualificationLedger:
             metadata = os.fstat(descriptor)
             if not stat.S_ISREG(metadata.st_mode):
                 raise QualificationLedgerError("ledger_lock_not_regular")
-            if created:
-                os.fsync(descriptor)
-                _fsync_directory(self.root)
             fcntl.flock(
                 descriptor,
                 fcntl.LOCK_EX if exclusive else fcntl.LOCK_SH,
             )
+            if exclusive:
+                try:
+                    os.fsync(descriptor)
+                except OSError as error:
+                    raise QualificationLedgerError("ledger_lock_sync_failed") from error
+                _fsync_directory(self.root)
             self._lock_state.depth = 1
             self._lock_state.exclusive = exclusive
             try:
@@ -526,6 +530,7 @@ class FilesystemQualificationLedger:
         if path.exists() or path.is_symlink():
             if _read_regular_file(path, "registered_object") != payload:
                 raise QualificationLedgerError("registered_object_conflict")
+            _fsync_directory(parent)
             return
         temporary = parent / f".qualification-{secrets.token_hex(16)}"
         flags = os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_CLOEXEC
@@ -755,8 +760,6 @@ def _ensure_child_directory(parent: Path, name: str) -> Path:
     child = parent / name
     try:
         child.mkdir(mode=0o750)
-        _fsync_directory(child)
-        _fsync_directory(parent)
     except FileExistsError:
         pass
     except OSError as error:
@@ -764,6 +767,8 @@ def _ensure_child_directory(parent: Path, name: str) -> Path:
             f"object_directory_create_failed:{name}"
         ) from error
     _require_real_directory(child, "object_directory")
+    _fsync_directory(child)
+    _fsync_directory(parent)
     return child
 
 
