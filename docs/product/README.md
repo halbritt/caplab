@@ -8,6 +8,7 @@
 - [Native agent-system contract](contracts/native-agent-systems.json)
 - [Striatum pass-context capability profiles](striatum-pass-profiles/README.md)
 - [Evaluation snapshot gate](evaluation/README.md)
+- [Binding qualification and Quartermaster export boundary](qualification/README.md)
 
 The records were imported from their selected `halbritt/books` identities.
 Standalone decisions amend repository placement without rewriting the
