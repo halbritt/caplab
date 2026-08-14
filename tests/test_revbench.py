@@ -22,6 +22,14 @@ from caplab.revbench import RevbenchContractError, execute, prepare, score
 from caplab.runtime.canonical import canonical_json, sha256_hex
 
 ROOT = Path(__file__).resolve().parents[1]
+LOCAL_FIXTURE_PROVIDER = "caplab-local-fixture"
+LOCAL_FIXTURE_REVISION = "revbench-static-fixture-v1"
+LOCAL_FIXTURE_MODEL = "caplab/revbench-static-fixture"
+LOCAL_FIXTURE_HARNESS = "caplab-revbench-static-fixture"
+LOCAL_FIXTURE_HARNESS_VERSION = "fake-native 1"
+LOCAL_FIXTURE_TUPLE = "caplab-revbench-static-fixture-fixed"
+LOCAL_FIXTURE_VERSION_STDOUT = b"fake-native 1\n"
+LOCAL_FIXTURE_VERSION_STDERR = b""
 
 
 class MemoryRegistrar:
@@ -155,125 +163,39 @@ def make_delegation(
 
 
 def make_binding(registrar: MemoryRegistrar):
-    provider = {
-        "kind": "direct-provider",
-        "identifier": "example",
-        "revision": "route-r1",
-        "resolution": "immutable",
-        "observed_at": None,
-    }
-    route_ref = registered(
-        registrar,
-        "route",
-        {"schema_version": "caplab-provider-route/1", **provider},
-        kind="provider-route",
-        schema="caplab-provider-route/1",
-    )
-    command_ref = registered(
-        registrar,
-        "command",
-        {
-            "schema_version": "caplab-native-harness-command/1",
-            "argv": [
-                "native-example",
-                "review",
-                "--model",
-                "example/model",
-                "--effort",
-                "high",
-            ],
-        },
-        kind="native-harness-command",
-        schema="caplab-native-harness-command/1",
-    )
-    version_command_ref = registered(
-        registrar,
-        "version-command",
-        {
-            "schema_version": "caplab-native-harness-version-command/1",
-            "argv": ["native-example", "--version"],
-        },
-        kind="native-harness-version-command",
-        schema="caplab-native-harness-version-command/1",
-    )
-    stdout_ref = registered(
-        registrar,
-        "version-stdout",
-        {"text": "native-example 1"},
-        kind="native-harness-version-stdout",
-        schema="caplab-text-envelope/1",
-    )
-    stderr_ref = registered(
-        registrar,
-        "version-stderr",
-        {"text": ""},
-        kind="native-harness-version-stderr",
-        schema="caplab-text-envelope/1",
-    )
-    version_probe_ref = registered(
-        registrar,
-        "version-probe",
-        {
-            "command_ref": version_command_ref,
-            "exit_code": 0,
-            "stdout_ref": stdout_ref,
-            "stderr_ref": stderr_ref,
-        },
-        kind="native-harness-version-probe",
-        schema="caplab-native-harness-version-probe/1",
-    )
-    configuration_kinds = {
-        "inference": "inference-configuration",
-        "instructions": "instructions",
-        "knowledge": "knowledge",
-        "tools": "tools",
-        "permissions": "permissions",
-        "sandbox": "sandbox",
-        "runtime": "runtime",
-    }
-    refs = {
-        name: registered(
-            registrar,
-            name,
-            {"name": name},
-            kind=kind,
-            schema="caplab-binding-configuration/1",
-        )
-        for name, kind in configuration_kinds.items()
-    }
-    binding = {
-        "schema_version": "caplab-binding/1",
-        "model": {
-            "model_id": "example/model",
-            "revision": "immutable-r1",
-            "weights_ref": None,
-            "weights_unavailable_reason": "provider does not expose weights",
-        },
-        "provider_or_path": {**provider, "route_ref": route_ref},
-        "harness": {
-            "harness_id": "native-example",
-            "harness_version": "1",
-            "executable_ref": None,
-            "executable_unavailable_reason": "provider-managed native harness",
-            "command_ref": command_ref,
-            "version_probe_ref": version_probe_ref,
-        },
-        "reasoning_effort": "high",
-        "configuration": {
-            f"{name}_ref": refs[name]
-            for name in (
-                "inference",
-                "instructions",
-                "knowledge",
-                "tools",
-                "permissions",
-                "sandbox",
-                "runtime",
-            )
-        },
-    }
-    binding["binding_id"] = "bnd-" + sha256_hex(canonical_json(binding))
+    binding, _ = make_executable_binding(registrar, Path("/usr/bin/true"))
     return binding
+
+
+def make_local_fixture_contract(registrar, executable: Path):
+    return registered(
+        registrar,
+        "fixture-native-contract",
+        {
+            "schema": "caplab.native-agent-systems/v1",
+            "policy": "caplab-revbench-local-fixture-v1",
+            "decision_authority": "adr-0062",
+            "source_observation": {"contract": "caplab-revbench-local-fixture/1"},
+            "systems": {
+                LOCAL_FIXTURE_TUPLE: {
+                    "model_id": LOCAL_FIXTURE_MODEL,
+                    "native_harness_id": LOCAL_FIXTURE_HARNESS,
+                    "harness_version": LOCAL_FIXTURE_HARNESS_VERSION,
+                    "effort": "fixed",
+                    "executable": str(executable),
+                    "required_command_tokens": ["review"],
+                    "version_command": [str(executable), "--version"],
+                    "version_exit_code": 0,
+                    "version_stdout_sha256": sha256_hex(LOCAL_FIXTURE_VERSION_STDOUT),
+                    "version_stderr_sha256": sha256_hex(LOCAL_FIXTURE_VERSION_STDERR),
+                }
+            },
+            "forbidden_proxy_markers": ["openrouter", "harbor", "terminus"],
+            "exceptions": [],
+        },
+        kind="native-agent-systems-contract",
+        schema="caplab.native-agent-systems/v1",
+    )
 
 
 def make_executable_binding(
@@ -284,8 +206,8 @@ def make_executable_binding(
 ):
     provider = {
         "kind": provider_kind,
-        "identifier": "local-fixture",
-        "revision": "fixture-r1",
+        "identifier": LOCAL_FIXTURE_PROVIDER,
+        "revision": LOCAL_FIXTURE_REVISION,
         "resolution": "immutable",
         "observed_at": None,
     }
@@ -326,14 +248,14 @@ def make_executable_binding(
     version_stdout_ref = registered_bytes(
         registrar,
         "fixture-version-stdout",
-        b"fake-native 1\n",
+        LOCAL_FIXTURE_VERSION_STDOUT,
         kind="native-harness-version-stdout",
         schema="caplab-native-process-stream/1",
     )
     version_stderr_ref = registered_bytes(
         registrar,
         "fixture-version-stderr",
-        b"",
+        LOCAL_FIXTURE_VERSION_STDERR,
         kind="native-harness-version-stderr",
         schema="caplab-native-process-stream/1",
     )
@@ -442,15 +364,15 @@ def make_executable_binding(
     binding = {
         "schema_version": "caplab-binding/1",
         "model": {
-            "model_id": "fixture/model",
-            "revision": "fixture-r1",
+            "model_id": LOCAL_FIXTURE_MODEL,
+            "revision": LOCAL_FIXTURE_REVISION,
             "weights_ref": None,
             "weights_unavailable_reason": "fixture has no model weights",
         },
         "provider_or_path": {**provider, "route_ref": route_ref},
         "harness": {
-            "harness_id": "fixture-native",
-            "harness_version": "1",
+            "harness_id": LOCAL_FIXTURE_HARNESS,
+            "harness_version": LOCAL_FIXTURE_HARNESS_VERSION,
             "executable_ref": executable_ref,
             "executable_unavailable_reason": None,
             "command_ref": command_ref,
@@ -463,30 +385,7 @@ def make_executable_binding(
         },
     }
     binding["binding_id"] = "bnd-" + sha256_hex(canonical_json(binding))
-    contract_ref = registered(
-        registrar,
-        "fixture-native-contract",
-        {
-            "schema": "caplab.native-agent-systems/v1",
-            "policy": "native-harness-required",
-            "decision_authority": "test-delegation",
-            "source_observation": {"fixture": "tests.test_revbench"},
-            "systems": {
-                "fixture-native-fixed": {
-                    "model_id": "fixture/model",
-                    "native_harness_id": "fixture-native",
-                    "effort": "fixed",
-                    "executable": executable.name,
-                    "required_command_tokens": ["review"],
-                    "version_command": [executable.name, "--version"],
-                }
-            },
-            "forbidden_proxy_markers": ["openrouter", "terminus"],
-            "exceptions": [],
-        },
-        kind="native-agent-systems-contract",
-        schema="caplab.native-agent-systems/v1",
-    )
+    contract_ref = make_local_fixture_contract(registrar, executable)
     return binding, contract_ref
 
 
@@ -644,39 +543,15 @@ def make_spec(
     binding=None,
     native_system_contract_ref=None,
 ):
+    generated_contract_ref = None
     if binding is None:
-        binding = make_binding(registrar)
-    if native_system_contract_ref is None:
-        native_system_contract_ref = registered(
-            registrar,
-            "native-system-contract",
-            {
-                "schema": "caplab.native-agent-systems/v1",
-                "policy": "native-harness-required",
-                "decision_authority": "test-delegation",
-                "source_observation": {"fixture": "tests.test_revbench"},
-                "systems": {
-                    "native-example-high": {
-                        "model_id": "example/model",
-                        "native_harness_id": "native-example",
-                        "effort": "high",
-                        "executable": "native-example",
-                        "required_command_tokens": [
-                            "review",
-                            "--model",
-                            "example/model",
-                            "--effort",
-                            "high",
-                        ],
-                        "version_command": ["native-example", "--version"],
-                    }
-                },
-                "forbidden_proxy_markers": ["openrouter", "terminus"],
-                "exceptions": [],
-            },
-            kind="native-agent-systems-contract",
-            schema="caplab.native-agent-systems/v1",
+        binding, generated_contract_ref = make_executable_binding(
+            registrar, Path("/usr/bin/true")
         )
+    if native_system_contract_ref is None:
+        if generated_contract_ref is None:
+            raise AssertionError("custom Binding requires its native-system contract")
+        native_system_contract_ref = generated_contract_ref
     cases = [
         {
             "case_id": "case-b",
@@ -1385,6 +1260,181 @@ class PrepareTests(unittest.TestCase):
         with self.assertRaisesRegex(RevbenchContractError, "version_probe"):
             prepare(spec, registrar)
 
+    def test_prepare_refuses_caller_defined_live_provider_policy(self):
+        registrar = MemoryRegistrar()
+        with tempfile.TemporaryDirectory() as temporary:
+            executable = Path(temporary) / "fake-native"
+            write_fake_native(executable)
+            binding, contract_ref = make_executable_binding(
+                registrar, executable, provider_kind="direct-provider"
+            )
+            spec = make_spec(
+                registrar,
+                binding=binding,
+                native_system_contract_ref=contract_ref,
+            )
+
+            with self.assertRaisesRegex(
+                RevbenchContractError,
+                "does not match docs/product/contracts/native-agent-systems.json",
+            ):
+                prepare(spec, registrar)
+
+    def test_prepare_refuses_live_provider_even_with_repository_policy(self):
+        registrar = MemoryRegistrar()
+        with tempfile.TemporaryDirectory() as temporary:
+            executable = Path(temporary) / "fake-native"
+            write_fake_native(executable)
+            binding, _ = make_executable_binding(
+                registrar, executable, provider_kind="direct-provider"
+            )
+            policy = json.loads(
+                (ROOT / "docs/product/contracts/native-agent-systems.json").read_bytes()
+            )
+            contract_ref = registered(
+                registrar,
+                "repository-native-system-contract",
+                policy,
+                kind="native-agent-systems-contract",
+                schema="caplab.native-agent-systems/v1",
+            )
+            spec = make_spec(
+                registrar,
+                binding=binding,
+                native_system_contract_ref=contract_ref,
+            )
+
+            with self.assertRaisesRegex(
+                RevbenchContractError,
+                "live native provider preparation is not implemented",
+            ):
+                prepare(spec, registrar)
+
+    def test_prepare_refuses_local_fixture_impersonation_and_version_claims(self):
+        registrar = MemoryRegistrar()
+        with tempfile.TemporaryDirectory() as temporary:
+            executable = Path(temporary) / "fake-native"
+            write_fake_native(executable)
+            binding, contract_ref = make_executable_binding(registrar, executable)
+
+            impersonated = copy.deepcopy(binding)
+            impersonated["model"]["model_id"] = "gpt-5.6-terra"
+            impersonated["harness"]["harness_id"] = "codex"
+            impersonated["reasoning_effort"] = "max"
+            impersonated["binding_id"] = derive_content_id(
+                impersonated, "binding_id", "bnd-"
+            )
+            with self.assertRaisesRegex(
+                RevbenchContractError, "binding.model.model_id"
+            ):
+                prepare(
+                    make_spec(
+                        registrar,
+                        binding=impersonated,
+                        native_system_contract_ref=contract_ref,
+                    ),
+                    registrar,
+                )
+
+            wrong_version = copy.deepcopy(binding)
+            wrong_version["harness"]["harness_version"] = "made-up-version"
+            wrong_version["binding_id"] = derive_content_id(
+                wrong_version, "binding_id", "bnd-"
+            )
+            with self.assertRaisesRegex(
+                RevbenchContractError, "binding.harness.harness_version"
+            ):
+                prepare(
+                    make_spec(
+                        registrar,
+                        binding=wrong_version,
+                        native_system_contract_ref=contract_ref,
+                    ),
+                    registrar,
+                )
+
+    def test_prepare_pins_local_fixture_executable_and_probe_bytes(self):
+        registrar = MemoryRegistrar()
+        with tempfile.TemporaryDirectory() as temporary:
+            executable = Path(temporary) / "fake-native"
+            write_fake_native(executable)
+            binding, contract_ref = make_executable_binding(registrar, executable)
+
+            no_executable = copy.deepcopy(binding)
+            no_executable["harness"]["executable_ref"] = None
+            no_executable["harness"]["executable_unavailable_reason"] = (
+                "caller did not retain fixture bytes"
+            )
+            no_executable["binding_id"] = derive_content_id(
+                no_executable, "binding_id", "bnd-"
+            )
+            with self.assertRaisesRegex(
+                RevbenchContractError, "executable_ref.*required"
+            ):
+                prepare(
+                    make_spec(
+                        registrar,
+                        binding=no_executable,
+                        native_system_contract_ref=contract_ref,
+                    ),
+                    registrar,
+                )
+
+            wrong_probe = copy.deepcopy(binding)
+            probe = json.loads(
+                registrar.resolve(wrong_probe["harness"]["version_probe_ref"])
+            )
+            probe["stdout_ref"] = registered_bytes(
+                registrar,
+                "wrong-version-stdout",
+                b"fake-native 999\n",
+                kind="native-harness-version-stdout",
+                schema="caplab-native-process-stream/1",
+            )
+            wrong_probe["harness"]["version_probe_ref"] = registered(
+                registrar,
+                "wrong-version-probe",
+                probe,
+                kind="native-harness-version-probe",
+                schema="caplab-native-harness-version-probe/1",
+            )
+            wrong_probe["binding_id"] = derive_content_id(
+                wrong_probe, "binding_id", "bnd-"
+            )
+            with self.assertRaisesRegex(
+                RevbenchContractError,
+                "does not match the pinned fixture version observation",
+            ):
+                prepare(
+                    make_spec(
+                        registrar,
+                        binding=wrong_probe,
+                        native_system_contract_ref=contract_ref,
+                    ),
+                    registrar,
+                )
+
+            forged_policy = json.loads(registrar.resolve(contract_ref))
+            forged_policy["systems"][LOCAL_FIXTURE_TUPLE]["version_stdout_sha256"] = (
+                sha256_hex(b"fake-native 999\n")
+            )
+            forged_contract_ref = registered(
+                registrar,
+                "forged-version-contract",
+                forged_policy,
+                kind="native-agent-systems-contract",
+                schema="caplab.native-agent-systems/v1",
+            )
+            with self.assertRaisesRegex(RevbenchContractError, "version_stdout_sha256"):
+                prepare(
+                    make_spec(
+                        registrar,
+                        binding=wrong_probe,
+                        native_system_contract_ref=forged_contract_ref,
+                    ),
+                    registrar,
+                )
+
     def test_revbench_v1_refuses_hidden_selection_inputs(self):
         registrar = MemoryRegistrar()
         spec = make_spec(registrar)
@@ -1596,25 +1646,35 @@ class ScoreTests(unittest.TestCase):
             registrar = MemoryRegistrar()
             executable = Path(temporary) / "fake-native"
             write_fake_native(executable)
-            binding, contract_ref = make_executable_binding(
+            binding, _ = make_executable_binding(
                 registrar,
                 executable,
                 provider_kind="direct-provider",
             )
-            manifest = prepare(
-                make_spec(
-                    registrar,
-                    binding=binding,
-                    native_system_contract_ref=contract_ref,
-                ),
+            contract_ref = registered(
                 registrar,
+                "repository-native-system-contract",
+                json.loads(
+                    (
+                        ROOT / "docs/product/contracts/native-agent-systems.json"
+                    ).read_bytes()
+                ),
+                kind="native-agent-systems-contract",
+                schema="caplab.native-agent-systems/v1",
             )
-            authorization_ref = make_execution_authorization(registrar, manifest)
 
             with self.assertRaisesRegex(
-                RevbenchContractError, "live native execution requires"
+                RevbenchContractError,
+                "live native provider preparation is not implemented",
             ):
-                execute(manifest, authorization_ref, registrar)
+                prepare(
+                    make_spec(
+                        registrar,
+                        binding=binding,
+                        native_system_contract_ref=contract_ref,
+                    ),
+                    registrar,
+                )
 
     def test_version_drift_stops_before_native_review(self):
         registrar = MemoryRegistrar()

@@ -100,6 +100,16 @@ class StriatumTunerMigrationTests(unittest.TestCase):
         self.assertEqual(vocabulary, {"A", "B", "C", "D", "E"})
         identifiers: set[str] = set()
         class_d_paths: set[str] = set()
+        tracked_names = {
+            line.decode("utf-8")
+            for line in self._git(
+                "ls-tree",
+                "-r",
+                "--name-only",
+                self.manifest["source"]["commit"],
+            ).splitlines()
+        }
+        classified_names: set[str] = set()
         for item in self.manifest["classifications"]:
             self.assertNotIn(item["id"], identifiers)
             identifiers.add(item["id"])
@@ -118,6 +128,7 @@ class StriatumTunerMigrationTests(unittest.TestCase):
                     )
                     if item["class"] == "D":
                         class_d_paths.add(source["path"])
+                    classified_names.add(source["path"])
                 if item["class"] == "D":
                     class_d_paths.update(item.get("related_mixed_paths", []))
             elif "git_ls_tree_sha256" in item:
@@ -134,6 +145,12 @@ class StriatumTunerMigrationTests(unittest.TestCase):
                     item["git_ls_tree_sha256"],
                     item["id"],
                 )
+                for path in paths:
+                    classified_names.update(
+                        name
+                        for name in tracked_names
+                        if name == path or name.startswith(path + "/")
+                    )
             else:
                 self.assertEqual(item["class"], "E")
                 self.assertIsNone(item["content_hash"])
@@ -141,6 +158,8 @@ class StriatumTunerMigrationTests(unittest.TestCase):
 
             if item["id"] != "generated-private-and-untracked-material":
                 self.assertIn("imported", item["disposition"], item["id"])
+
+        self.assertEqual(classified_names, tracked_names)
 
         excluded_class_d_paths = {
             path

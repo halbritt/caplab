@@ -9,10 +9,12 @@ from pathlib import Path
 
 from caplab.ladder_subject import validate_ladder_subject
 from caplab.subject_identity import (
+    CANONICAL_NATIVE_AGENT_SYSTEM_POLICY_SHA256,
     NativeAgentSystemContractError,
     load_native_agent_system_policy,
     validate_native_agent_systems,
 )
+from caplab.runtime.canonical import canonical_json, sha256_hex
 
 ROOT = Path(__file__).resolve().parents[1]
 MARKDOWN_LINK = re.compile(r"\[[^]]+\]\(([^)]+)\)")
@@ -82,6 +84,109 @@ class RepositoryContractTests(unittest.TestCase):
                 },
             },
         )
+
+        self.assertEqual(
+            sha256_hex(canonical_json(policy)),
+            CANONICAL_NATIVE_AGENT_SYSTEM_POLICY_SHA256,
+        )
+
+    def test_native_agent_identity_rejects_late_selector_overrides(self) -> None:
+        policy = load_native_agent_system_policy(
+            ROOT / "docs/product/contracts/native-agent-systems.json"
+        )
+        subjects = {
+            "codex-model": ["--model", "swapped/model"],
+            "codex-effort": ["-c", "model_reasoning_effort=low"],
+            "codex-provider": ["--config", "model_provider=local"],
+        }
+        for subject_id, override in subjects.items():
+            with self.subTest(subject_id=subject_id):
+                subject = {
+                    "tuple_id": "codex-terra-max",
+                    "model_id": "gpt-5.6-terra",
+                    "native_harness_id": "codex",
+                    "effort": "max",
+                    "command": [
+                        "codex",
+                        "exec",
+                        "-m",
+                        "gpt-5.6-terra",
+                        "-c",
+                        "model_reasoning_effort=max",
+                        *override,
+                    ],
+                    "version_command": ["codex", "--version"],
+                }
+                with self.assertRaisesRegex(
+                    NativeAgentSystemContractError,
+                    "native_agent_command_identity_override",
+                ):
+                    validate_native_agent_systems(policy, {subject_id: subject})
+
+        claude = {
+            "tuple_id": "claude-fable-5-max",
+            "model_id": "claude-fable-5",
+            "native_harness_id": "claude-code",
+            "effort": "max",
+            "command": [
+                "claude",
+                "-p",
+                "--model",
+                "claude-fable-5",
+                "--effort",
+                "max",
+                "--effort=low",
+            ],
+            "version_command": ["claude", "--version"],
+        }
+        with self.assertRaisesRegex(
+            NativeAgentSystemContractError,
+            "native_agent_command_identity_override",
+        ):
+            validate_native_agent_systems(policy, {"claude-effort": claude})
+
+    def test_native_agent_identity_rejects_wrapper_and_environment_overrides(
+        self,
+    ) -> None:
+        policy = load_native_agent_system_policy(
+            ROOT / "docs/product/contracts/native-agent-systems.json"
+        )
+        subject = {
+            "tuple_id": "codex-terra-max",
+            "model_id": "gpt-5.6-terra",
+            "native_harness_id": "codex",
+            "effort": "max",
+            "command": [
+                "/tmp/codex",
+                "exec",
+                "-m",
+                "gpt-5.6-terra",
+                "-c",
+                "model_reasoning_effort=max",
+            ],
+            "version_command": ["/tmp/codex", "--version"],
+        }
+        with self.assertRaisesRegex(
+            NativeAgentSystemContractError, "native_agent_executable_mismatch"
+        ):
+            validate_native_agent_systems(policy, {"wrapper": subject})
+
+        subject["command"] = [
+            "/usr/bin/env",
+            "OPENAI_MODEL=swapped/model",
+            "codex",
+            "exec",
+            "-m",
+            "gpt-5.6-terra",
+            "-c",
+            "model_reasoning_effort=max",
+        ]
+        subject["version_command"] = ["codex", "--version"]
+        with self.assertRaisesRegex(
+            NativeAgentSystemContractError,
+            "native_agent_environment_identity_override",
+        ):
+            validate_native_agent_systems(policy, {"environment": subject})
 
     def test_shared_proxy_harness_cannot_impersonate_native_systems(self) -> None:
         policy = load_native_agent_system_policy(

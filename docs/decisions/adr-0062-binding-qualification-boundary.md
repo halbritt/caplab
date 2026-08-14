@@ -68,6 +68,11 @@ keeping benchmark execution in CAPLAB as required by the product boundary.
 Every supported execution effect requires a registered, exact, time-bounded
 delegation. The reserved `live-native-provider` authorization class is not an
 implemented execution path and cannot turn the fixture executor into one.
+Version 1 preparation also refuses live-provider Bindings after first requiring
+the canonical repository native-system contract. Its only accepted local
+profile uses a repository-owned synthetic model, harness, provider, and version
+namespace, plus registered executable bytes and pinned version-stream digests.
+It cannot be relabeled as a canonical Codex or Claude subject.
 
 A Binding identifies the exact behavior-bearing native agent system and its
 administration. A protocol and corpus identify the measurement context. A

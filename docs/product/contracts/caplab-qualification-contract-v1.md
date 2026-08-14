@@ -409,6 +409,38 @@ contract. Preparation rejects hidden selection or exclusion inputs; version 1
 therefore cannot conceal downstream-fate selection behind an empty
 `conditioned_on` declaration.
 
+Preparation accepts only the repository-owned synthetic fixture namespace in
+version 1. Its Binding is exactly:
+
+```text
+provider identifier: caplab-local-fixture
+provider/model revision: revbench-static-fixture-v1
+model: caplab/revbench-static-fixture
+harness: caplab-revbench-static-fixture
+harness version: fake-native 1
+effort: fixed
+```
+
+Its native-system document has exact top-level keys `schema`, `policy`,
+`decision_authority`, `source_observation`, `systems`,
+`forbidden_proxy_markers`, and `exceptions`. `policy` is
+`caplab-revbench-local-fixture-v1`, `decision_authority` is `adr-0062`, and
+`source_observation` is exactly
+`{"contract":"caplab-revbench-local-fixture/1"}`. The one system entry pins
+the absolute executable path, required command prefix, exact version command,
+harness version, version exit code, and SHA-256 digests of version stdout and
+stderr. The executable must be a real, executable, nonsymlink file whose bytes
+equal its registered `executable_ref`. The complete mandatory proxy-marker set
+is `openrouter`, `harbor`, and `terminus`; a caller cannot weaken it.
+
+A non-local Binding must reference canonical bytes equal to
+[`native-agent-systems.json`](native-agent-systems.json), and preparation then
+fails closed because live native-provider preparation is not implemented in
+version 1. Thus neither a caller-authored provider policy nor a local fixture
+can label synthetic bytes as Codex, Claude Code, or another live subject. A
+future provider implementation must add sealed launcher dependencies and
+version evidence before this preparation refusal can be removed.
+
 The control is known sound only for the declared integer-minimum invariant.
 The bounded distribution is `json-integer-minimum/1`; it does not imply
 general review correctness, security review, architecture judgment, or any
@@ -426,8 +458,8 @@ The authority source is a registered `caplab-authorization-delegation/1` for
 the `revbench-execution` effect and the same complete scope and interval.
 
 `effect_class` is `local-fixture` or `live-native-provider`. The latter is
-reserved and rejected by the v1 executor. A future live run would require both
-an implemented sealed provider adapter and its own registered
+reserved and rejected by v1 preparation and execution. A future live run would
+require both an implemented sealed provider adapter and its own registered
 `live-native-provider` authorization.
 
 `limits` has exact keys `max_version_probe_processes`,

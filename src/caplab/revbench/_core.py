@@ -10,9 +10,12 @@ from __future__ import annotations
 import copy
 import json
 import math
+import os
 import re
+import stat
 from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime
+from pathlib import Path
 from typing import Any, Protocol, runtime_checkable
 
 from caplab.producer import ProducerIdentityError, producer_identity
@@ -27,6 +30,7 @@ from caplab.qualification import (
 )
 from caplab.runtime.canonical import CanonicalizationError, canonical_json, sha256_hex
 from caplab.subject_identity import (
+    CANONICAL_NATIVE_AGENT_SYSTEM_POLICY_SHA256,
     NativeAgentSystemContractError,
     validate_native_agent_systems,
 )
@@ -70,6 +74,25 @@ _COMMIT = re.compile(r"^(?:[0-9a-f]{40}|[0-9a-f]{64})$")
 _NATIVE_INPUT_INSTRUCTION = (
     "Review the artifact against the requirement and return exactly one JSON object."
 )
+_LOCAL_FIXTURE_PROFILE = {
+    "provider_identifier": "caplab-local-fixture",
+    "revision": "revbench-static-fixture-v1",
+    "model_id": "caplab/revbench-static-fixture",
+    "harness_id": "caplab-revbench-static-fixture",
+    "harness_version": "fake-native 1",
+    "effort": "fixed",
+    "tuple_id": "caplab-revbench-static-fixture-fixed",
+}
+_LOCAL_FIXTURE_POLICY = "caplab-revbench-local-fixture-v1"
+_LOCAL_FIXTURE_AUTHORITY = "adr-0062"
+_LOCAL_FIXTURE_SOURCE = {"contract": "caplab-revbench-local-fixture/1"}
+_LOCAL_FIXTURE_VERSION_STDOUT_SHA256 = (
+    "6f5f9aa1f1b2abab63257536c3a55dc13fa1a04a4d4dcf19d68cbe68934318c7"
+)
+_LOCAL_FIXTURE_VERSION_STDERR_SHA256 = (
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+)
+_REQUIRED_PROXY_MARKERS = ["openrouter", "harbor", "terminus"]
 _CUSTODY_PATH = re.compile(
     r"^(?!/)(?!.*(?:^|/)\.\.(?:/|$))(?!.*(?:^|/)\.(?:/|$))[A-Za-z0-9._/-]+$"
 )
@@ -942,6 +965,245 @@ def _parse_canonical_json_ref(
     return document
 
 
+def _read_sealed_executable(path: Path) -> tuple[bytes, int]:
+    flags = os.O_RDONLY
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    try:
+        descriptor = os.open(path, flags)
+    except OSError as error:
+        raise RevbenchContractError(
+            "binding.harness.executable_ref: executable is unavailable"
+        ) from error
+    try:
+        metadata = os.fstat(descriptor)
+        if not stat.S_ISREG(metadata.st_mode):
+            _fail(
+                "binding.harness.executable_ref",
+                "executable must be a real regular file",
+            )
+        chunks: list[bytes] = []
+        while True:
+            chunk = os.read(descriptor, 1024 * 1024)
+            if not chunk:
+                break
+            chunks.append(chunk)
+        return b"".join(chunks), metadata.st_mode
+    except OSError as error:
+        raise RevbenchContractError(
+            "binding.harness.executable_ref: executable is unreadable"
+        ) from error
+    finally:
+        os.close(descriptor)
+
+
+def _validate_local_fixture_policy(
+    policy: Mapping[str, Any],
+    binding: Mapping[str, Any],
+    command_argv: Sequence[str],
+    version_argv: Sequence[str],
+    probe: Mapping[str, Any],
+    registrar: ArtifactRegistrar,
+) -> None:
+    policy = _object(
+        policy,
+        "native_system_contract_ref document",
+        {
+            "schema",
+            "policy",
+            "decision_authority",
+            "source_observation",
+            "systems",
+            "forbidden_proxy_markers",
+            "exceptions",
+        },
+    )
+    _const(
+        policy["policy"],
+        _LOCAL_FIXTURE_POLICY,
+        "native_system_contract_ref document.policy",
+    )
+    _const(
+        policy["decision_authority"],
+        _LOCAL_FIXTURE_AUTHORITY,
+        "native_system_contract_ref document.decision_authority",
+    )
+    if canonical_json(policy["source_observation"]) != canonical_json(
+        _LOCAL_FIXTURE_SOURCE
+    ):
+        _fail(
+            "native_system_contract_ref document.source_observation",
+            "does not identify the repository-owned synthetic fixture profile",
+        )
+    if policy["forbidden_proxy_markers"] != _REQUIRED_PROXY_MARKERS:
+        _fail(
+            "native_system_contract_ref document.forbidden_proxy_markers",
+            "must contain the complete repository proxy-marker set",
+        )
+    _const(
+        policy["exceptions"],
+        [],
+        "native_system_contract_ref document.exceptions",
+    )
+
+    provider = binding["provider_or_path"]
+    for field, expected in (
+        ("identifier", _LOCAL_FIXTURE_PROFILE["provider_identifier"]),
+        ("revision", _LOCAL_FIXTURE_PROFILE["revision"]),
+        ("resolution", "immutable"),
+        ("observed_at", None),
+    ):
+        _const(provider[field], expected, f"binding.provider_or_path.{field}")
+    model = binding["model"]
+    _const(
+        model["model_id"],
+        _LOCAL_FIXTURE_PROFILE["model_id"],
+        "binding.model.model_id",
+    )
+    _const(
+        model["revision"],
+        _LOCAL_FIXTURE_PROFILE["revision"],
+        "binding.model.revision",
+    )
+    harness = binding["harness"]
+    _const(
+        harness["harness_id"],
+        _LOCAL_FIXTURE_PROFILE["harness_id"],
+        "binding.harness.harness_id",
+    )
+    _const(
+        harness["harness_version"],
+        _LOCAL_FIXTURE_PROFILE["harness_version"],
+        "binding.harness.harness_version",
+    )
+    _const(
+        binding["reasoning_effort"],
+        _LOCAL_FIXTURE_PROFILE["effort"],
+        "binding.reasoning_effort",
+    )
+
+    systems = _object(
+        policy["systems"],
+        "native_system_contract_ref document.systems",
+        {_LOCAL_FIXTURE_PROFILE["tuple_id"]},
+    )
+    expected = _object(
+        systems[_LOCAL_FIXTURE_PROFILE["tuple_id"]],
+        (
+            "native_system_contract_ref document.systems."
+            + _LOCAL_FIXTURE_PROFILE["tuple_id"]
+        ),
+        {
+            "model_id",
+            "native_harness_id",
+            "harness_version",
+            "effort",
+            "executable",
+            "required_command_tokens",
+            "version_command",
+            "version_exit_code",
+            "version_stdout_sha256",
+            "version_stderr_sha256",
+        },
+    )
+    for field in ("model_id", "harness_version", "effort"):
+        _const(
+            expected[field],
+            _LOCAL_FIXTURE_PROFILE[field],
+            f"native_system_contract_ref document.systems fixture.{field}",
+        )
+    _const(
+        expected["native_harness_id"],
+        _LOCAL_FIXTURE_PROFILE["harness_id"],
+        "native_system_contract_ref document.systems fixture.native_harness_id",
+    )
+
+    executable_text = _string(
+        expected["executable"],
+        "native_system_contract_ref document.systems fixture.executable",
+    )
+    executable_path = Path(executable_text)
+    if not executable_path.is_absolute():
+        _fail(
+            "native_system_contract_ref document.systems fixture.executable",
+            "must be an absolute path",
+        )
+    _const(
+        expected["required_command_tokens"],
+        ["review"],
+        "native_system_contract_ref document.systems fixture.required_command_tokens",
+    )
+    _const(
+        expected["version_command"],
+        [executable_text, "--version"],
+        "native_system_contract_ref document.systems fixture.version_command",
+    )
+    if not command_argv or command_argv[0] != executable_text:
+        _fail("binding.harness.command_ref", "does not use the sealed executable")
+    if not version_argv or version_argv[0] != executable_text:
+        _fail(
+            "binding.harness.version_probe_ref",
+            "does not use the sealed executable",
+        )
+    executable_ref = harness["executable_ref"]
+    if executable_ref is None:
+        _fail(
+            "binding.harness.executable_ref",
+            "is required for the synthetic fixture profile",
+        )
+    registered_executable = _resolve_ref(
+        executable_ref, registrar, "binding.harness.executable_ref"
+    )
+    observed_executable, executable_mode = _read_sealed_executable(executable_path)
+    if observed_executable != registered_executable:
+        _fail(
+            "binding.harness.executable_ref",
+            "does not match executable bytes",
+        )
+    if executable_mode & 0o111 == 0:
+        _fail("binding.harness.executable_ref", "executable mode is absent")
+
+    _const(
+        expected["version_exit_code"],
+        0,
+        "native_system_contract_ref document.systems fixture.version_exit_code",
+    )
+    _const(
+        probe["exit_code"], 0, "binding.harness.version_probe_ref document.exit_code"
+    )
+    pinned_stream_digests = {
+        "stdout": _LOCAL_FIXTURE_VERSION_STDOUT_SHA256,
+        "stderr": _LOCAL_FIXTURE_VERSION_STDERR_SHA256,
+    }
+    for stream in ("stdout", "stderr"):
+        expected_digest = _string(
+            expected[f"version_{stream}_sha256"],
+            (
+                "native_system_contract_ref document.systems fixture."
+                f"version_{stream}_sha256"
+            ),
+            pattern=_SHA256,
+        )
+        _const(
+            expected_digest,
+            pinned_stream_digests[stream],
+            (
+                "native_system_contract_ref document.systems fixture."
+                f"version_{stream}_sha256"
+            ),
+        )
+        observed = _resolve_ref(
+            probe[f"{stream}_ref"],
+            registrar,
+            f"binding.harness.version_probe_ref document.{stream}_ref",
+        )
+        if sha256_hex(observed) != expected_digest:
+            _fail(
+                f"binding.harness.version_probe_ref document.{stream}_ref",
+                "does not match the pinned fixture version observation",
+            )
+
+
 def _validate_native_binding(
     binding: Mapping[str, Any],
     contract_ref: Mapping[str, Any],
@@ -961,6 +1223,20 @@ def _validate_native_binding(
         _fail(
             "native_system_contract_ref document.exceptions",
             "requires a new repository-owner contract",
+        )
+
+    provider_kind = binding["provider_or_path"]["kind"]
+    if provider_kind != "local-serving":
+        if sha256_hex(canonical_json(policy)) != (
+            CANONICAL_NATIVE_AGENT_SYSTEM_POLICY_SHA256
+        ):
+            _fail(
+                "native_system_contract_ref",
+                "does not match docs/product/contracts/native-agent-systems.json",
+            )
+        _fail(
+            "binding.provider_or_path.kind",
+            "live native provider preparation is not implemented in revbench v1",
         )
 
     command = _parse_canonical_json_ref(
@@ -1019,6 +1295,15 @@ def _validate_native_binding(
             token,
             f"binding.harness.version_probe_ref document.command_ref document.argv[{index}]",
         )
+
+    _validate_local_fixture_policy(
+        policy,
+        binding,
+        command_argv,
+        version_argv,
+        probe,
+        registrar,
+    )
 
     matching_tuple_ids = [
         tuple_id
