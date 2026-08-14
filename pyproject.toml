@@ -12,6 +12,9 @@ requires-python = ">=3.12"
 Repository = "https://github.com/halbritt/caplab"
 Issues = "https://github.com/halbritt/caplab/issues"
 
+[project.scripts]
+caplab = "caplab.__main__:main"
+
 [tool.setuptools]
 package-dir = {"" = "src"}
 
