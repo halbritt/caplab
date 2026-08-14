@@ -1,0 +1,428 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://caplab.local/contracts/qualification-records-v1.schema.json",
+  "title": "CAPLAB qualification records v1",
+  "$comment": "Shape validation is necessary but not sufficient; caplab-qualification-contract-v1.md defines mandatory canonical ordering, content-ID, cross-record, sample-flow, evidence-registration, authority, and policy-evaluation checks.",
+  "type": "object",
+  "oneOf": [
+    {
+      "$ref": "qualification-claim-v1.schema.json#/$defs/binding"
+    },
+    {
+      "$ref": "#/$defs/measurement"
+    },
+    {
+      "$ref": "#/$defs/policy"
+    },
+    {
+      "$ref": "qualification-claim-v1.schema.json#/$defs/authorization"
+    }
+  ],
+  "unevaluatedProperties": false,
+  "$defs": {
+    "measurement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "measurement_id",
+        "observed_at",
+        "binding",
+        "capability",
+        "experiment",
+        "protocol",
+        "corpus",
+        "evidence_basis",
+        "disposition",
+        "sample_flow",
+        "metrics",
+        "evidence",
+        "covariates",
+        "provenance"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "caplab-measurement/1"
+        },
+        "measurement_id": {
+          "type": "string",
+          "pattern": "^meas-[0-9a-f]{64}$"
+        },
+        "observed_at": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/utc_timestamp"
+        },
+        "binding": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/binding"
+        },
+        "capability": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/capability"
+        },
+        "experiment": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/experiment"
+        },
+        "protocol": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/protocol_ref"
+        },
+        "corpus": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/corpus_ref"
+        },
+        "evidence_basis": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence_basis"
+          },
+          "uniqueItems": true
+        },
+        "disposition": {
+          "enum": [
+            "complete",
+            "incomplete",
+            "invalid",
+            "infrastructure-failure"
+          ]
+        },
+        "sample_flow": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/sample_flow"
+        },
+        "metrics": {
+          "$ref": "#/$defs/measurement_metrics"
+        },
+        "evidence": {
+          "$ref": "#/$defs/measurement_evidence"
+        },
+        "covariates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/covariate"
+          },
+          "uniqueItems": true
+        },
+        "provenance": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/provenance"
+        }
+      }
+    },
+    "measurement_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bundle_ref",
+        "run_refs"
+      ],
+      "properties": {
+        "bundle_ref": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/evidence_bundle_ref"
+        },
+        "run_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "qualification-claim-v1.schema.json#/$defs/attempt_ref"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "covariate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "value",
+        "evidence_ref"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"
+        },
+        "value": {
+          "$ref": "#/$defs/canonical_json_scalar"
+        },
+        "evidence_ref": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "downstream_fate"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "policy_id",
+        "name",
+        "version",
+        "capability",
+        "applies_to",
+        "requirements",
+        "criteria",
+        "outcomes",
+        "authority",
+        "provenance"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "caplab-qualification-policy/1"
+        },
+        "policy_id": {
+          "type": "string",
+          "pattern": "^pol-[0-9a-f]{64}$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "capability": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/capability"
+        },
+        "applies_to": {
+          "$ref": "#/$defs/policy_scope"
+        },
+        "requirements": {
+          "$ref": "#/$defs/policy_requirements"
+        },
+        "criteria": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/policy_criterion"
+          },
+          "uniqueItems": true
+        },
+        "outcomes": {
+          "$ref": "#/$defs/policy_outcomes"
+        },
+        "authority": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "qualification-claim-v1.schema.json#/$defs/authorization"
+            }
+          ]
+        },
+        "provenance": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/provenance"
+        }
+      }
+    },
+    "policy_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "experiment",
+        "protocol_sha256",
+        "corpus_sha256",
+        "binding_resolutions"
+      ],
+      "properties": {
+        "experiment": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/experiment"
+        },
+        "protocol_sha256": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/sha256"
+        },
+        "corpus_sha256": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/sha256"
+        },
+        "binding_resolutions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "enum": [
+              "immutable",
+              "observed-route"
+            ]
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "policy_requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "minimum_usable",
+        "maximum_missing_rate",
+        "maximum_infrastructure_failure_rate",
+        "basis_kinds"
+      ],
+      "properties": {
+        "minimum_usable": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maximum_missing_rate": {
+          "$ref": "#/$defs/rate"
+        },
+        "maximum_infrastructure_failure_rate": {
+          "$ref": "#/$defs/rate"
+        },
+        "basis_kinds": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "enum": [
+              "mechanical-oracle",
+              "human-authorized"
+            ]
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "policy_criterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metric",
+        "operator",
+        "threshold"
+      ],
+      "properties": {
+        "metric": {
+          "$ref": "#/$defs/metric_name"
+        },
+        "operator": {
+          "enum": [
+            "metric_at_least",
+            "metric_at_most"
+          ]
+        },
+        "threshold": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/ratio"
+        }
+      }
+    },
+    "metric_name": {
+      "type": "string",
+      "allOf": [
+        {
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"
+        },
+        {
+          "not": {
+            "pattern": "fate|admission|provider[._-]?verdict|scheduler[._-]?choice|backend[._-]?rank"
+          }
+        }
+      ]
+    },
+    "policy_outcomes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "met",
+        "not_met",
+        "insufficient",
+        "no_measurement"
+      ],
+      "properties": {
+        "met": {
+          "const": "qualified"
+        },
+        "not_met": {
+          "const": "unqualified"
+        },
+        "insufficient": {
+          "const": "advisory"
+        },
+        "no_measurement": {
+          "const": "unmeasured"
+        }
+      }
+    },
+    "evidence_basis": {
+      "allOf": [
+        {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/basis_summary"
+        },
+        {
+          "properties": {
+            "authorization_ref": {
+              "allOf": [
+                {
+                  "$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"
+                },
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "evidence-basis-authorization"
+                    },
+                    "schema": {
+                      "const": "caplab-evidence-basis-authorization/1"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "measurement_metrics": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/metric_name"
+      },
+      "additionalProperties": {
+        "$ref": "qualification-claim-v1.schema.json#/$defs/metric"
+      }
+    },
+    "rate": {
+      "allOf": [
+        {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/ratio"
+        },
+        {
+          "properties": {
+            "numerator": {
+              "minimum": 0
+            }
+          }
+        }
+      ]
+    },
+    "canonical_json_scalar": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    }
+  }
+}
