@@ -33,6 +33,10 @@ def active_document(custody_directory: str) -> dict[str, object]:
     document = json.loads(MANIFEST.read_text(encoding="utf-8"))
     document["status"] = "active"
     document["authority"] = "adr-0041"
+    # This is a synthetic manifest used only inside a temporary test boundary.
+    # Keep the fixture independent of the historical campaign's wall-clock
+    # expiry without changing the committed authorization record.
+    document["expires_at"] = "2999-12-31T23:59:59Z"
     document["storage"]["raw_custody_root"] = custody_directory
     document["containment"]["source_sha256"] = hashlib.sha256(
         SOURCE.read_bytes()

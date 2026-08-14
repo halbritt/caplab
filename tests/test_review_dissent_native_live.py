@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import tempfile
 import unittest
+from datetime import UTC, datetime
 from pathlib import Path
+from unittest import mock
 
 from caplab.review_dissent.native_live import (
     NativeReviewLiveContractError,
@@ -23,6 +25,12 @@ INSTRUMENT = STUDY / "native-instrument.json"
 
 class NativeReviewLiveTests(unittest.TestCase):
     def setUp(self) -> None:
+        clock_patch = mock.patch(
+            "caplab.review_dissent.native_live.datetime", wraps=datetime
+        )
+        clock = clock_patch.start()
+        self.addCleanup(clock_patch.stop)
+        clock.now.return_value = datetime(2026, 8, 3, 12, tzinfo=UTC)
         self.manifest = load_native_review_live_manifest(MANIFEST, INSTRUMENT)
 
     def test_manifest_binds_native_order_containment_and_limits(self) -> None:
