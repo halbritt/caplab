@@ -108,4 +108,6 @@ The normative shapes, CLI operations, validation rules, and status semantics
 are in the
 [`CAPLAB qualification contract v1`](../contracts/caplab-qualification-contract-v1.md).
 The decision and reopening conditions are in
-[`ADR 0062`](../../decisions/adr-0062-binding-qualification-boundary.md).
+[`ADR 0062`](../../decisions/adr-0062-binding-qualification-boundary.md). The
+consumer obligations and exact next slice are in the
+[`Quartermaster ingestion handoff`](quartermaster-handoff-v1.md).

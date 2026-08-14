@@ -5,7 +5,18 @@
   "source": {
     "repository": "striatum-tuner",
     "commit": "31d600cbc44cb4ecd48d704659059e2ae0642bf7",
-    "tree": "b08c8e92a334cfb9e0a63f1cd724d131c40cf5c9"
+    "tree": "b08c8e92a334cfb9e0a63f1cd724d131c40cf5c9",
+    "tracked_file_count": 188,
+    "git_ls_tree_sha256": "8cd58a70e22cbbf3d9687000ba676fb2cc4fdac1458a23446ce18756749d7fe2",
+    "name_inventory_sha256": "e8d46416f0579bb46e16580f6ca8eb1562c519a44b6be8d1776646694d0b41aa"
+  },
+  "historical_import": {
+    "path": "history/striatum-tuner/source",
+    "tree": "b08c8e92a334cfb9e0a63f1cd724d131c40cf5c9",
+    "ancestry_preserved_by_merge_parent": "31d600cbc44cb4ecd48d704659059e2ae0642bf7",
+    "active_python_package": false,
+    "ci_root": false,
+    "caplab_evidence_registration": false
   },
   "classification_vocabulary": {
     "A": "valid-capability-measurement",
@@ -20,7 +31,7 @@
       "striatum-tuner-architecture-and-dependencies",
       "revbench-truth-and-failure-path"
     ],
-    "reconciliation": "A mechanically checkable injector or scorer is Class C infrastructure; no historical run is Class A without exact Binding identity, independently authorized truth and case selection, complete provenance, and CAPLAB admission."
+    "reconciliation": "A mechanically checkable injector or scorer is Class C infrastructure; no historical run is Class A without exact Binding identity, independently authorized truth and case selection, complete provenance, and CAPLAB admission. A tracked file may contain both reusable mechanics and non-authoritative fate logic; overlapping C and D entries identify those mixed files explicitly."
   },
   "class_a_admissions": [],
   "classifications": [
@@ -37,29 +48,37 @@
           "sha256": "4cb71c1d28de7c163fe7c95f3668c777768de2745d7e1a508ffc09692501f8bc"
         }
       ],
-      "disposition": "selected-concepts-reimplemented",
+      "disposition": "source-imported-as-historical-custody-and-selected-concepts-reimplemented",
       "caplab_target": "src/caplab/revbench",
-      "limits": "Only bounded known-defect injection, paired case identity, independent oracle checks, and deterministic scoring were carried forward. Historical control selection, result identities, and run outputs were not imported."
+      "limits": "Only bounded known-defect injection, paired case identity, independent oracle checks, and deterministic scoring were carried forward into active code. Historical control selection, result identities, and run outputs were not admitted as Measurements."
     },
     {
       "id": "tracked-run-results",
       "class": "B",
       "source_path": "eval-runs/",
       "git_ls_tree_sha256": "371693482c5edfe3c56a1d07ec46a453b9716712c7acf3fbccbb24a9374f494a",
-      "disposition": "preserved-in-source-custody-not-copied-or-registered",
+      "disposition": "imported-as-historical-custody-not-admitted-or-registered",
       "limits": "Run summaries and outputs are observations. Fate-selected controls and incomplete subject identity prevent wholesale qualification admission."
     },
     {
-      "id": "reviewer-quality-design-observations",
+      "id": "tracked-research-docs-and-export-receipts",
+      "class": "B",
+      "source_path": "docs/; exports/",
+      "git_ls_tree_sha256": "c004a95546db0b5646e4d0cb15b36715231acafa8550df9f3984578181db73b2",
+      "disposition": "imported-as-historical-custody-not-admitted-or-registered",
+      "limits": "Reports and receipts are historical observations and provenance. They require explicit admission before CAPLAB can treat their bytes as evidence."
+    },
+    {
+      "id": "repository-overview-observations",
       "class": "B",
       "source_paths": [
         {
-          "path": "docs/design/REVIEWER_QUALITY_EVAL_2026-08-07.md",
-          "sha256": "abcd50e57b5fb21735bdd9472ae11b05712bd693b7efe9e43b25c639ba2ae8aa"
+          "path": "README.md",
+          "sha256": "8425ce8d5429f90be07e923f5238e1eb50e2f2b2aa4157db061b1fa8e636bf2e"
         }
       ],
-      "disposition": "preserved-in-source-custody-not-authoritative",
-      "limits": "Empirical observations remain available for research; any fate-derived conclusions are governed by the separate Class D entries."
+      "disposition": "imported-as-historical-custody-not-authoritative",
+      "limits": "The source overview documents the historical system and its then-current claims; it does not govern CAPLAB."
     },
     {
       "id": "fate-analysis-and-ranking",
@@ -72,10 +91,26 @@
         {
           "path": "leaderboard.py",
           "sha256": "2fd2e9b0c559b822f33d6a857bc2f4a74ee9b934b244d72ffffb8222e347af43"
+        },
+        {
+          "path": "bench.py",
+          "sha256": "3c59a5c23d847cb329bde140615e1817f988802038ae8bd85e8b3d9328602771"
+        },
+        {
+          "path": "eval.py",
+          "sha256": "4dce054ce7c017b3735b3c2bffc51804581854ce8c1def8da230047bbbff3ab1"
+        },
+        {
+          "path": "eval_harness.py",
+          "sha256": "1d5950c18cb6c1c95bf4f4c1ec689f6ed373a0c33f063846ca902f29880acc73"
+        },
+        {
+          "path": "rescore.py",
+          "sha256": "23bcf82016edd8921258e8d557f00a3cd9b2ef520ba2ff0f9ef4469180414ac9"
         }
       ],
-      "disposition": "historical-non-authoritative",
-      "limits": "Downstream fate and rankings derived from it cannot authorize qualification."
+      "disposition": "imported-only-as-historical-non-authoritative-custody",
+      "limits": "Downstream fate, fate agreement, and rankings derived from it cannot authorize qualification. These mixed files also contain Class C capture or replay mechanics identified separately."
     },
     {
       "id": "fate-derived-preference-pairs",
@@ -86,7 +121,7 @@
           "sha256": "1a7e4f7e065d7fa37111708a7a608a0247b6313dfe91b5e97b4fed7cfee804f5"
         }
       ],
-      "disposition": "historical-non-authoritative",
+      "disposition": "imported-only-as-historical-non-authoritative-custody",
       "limits": "DPO preferences derived from downstream fate remain training history and are not independent truth."
     },
     {
@@ -110,7 +145,7 @@
           "sha256": "a3a17d1ddb9f40ad2da9b31b9a50ed6392944e6158e474060d882ded7bcfde10"
         }
       ],
-      "disposition": "preserved-for-later-authorized-extraction",
+      "disposition": "imported-as-historical-custody-for-later-authorized-extraction",
       "limits": "Parsing and materialization mechanics may be reused later. Produced corpora and any fate-conditioned selection require a case-level custody and selection audit before CAPLAB admission."
     },
     {
@@ -138,32 +173,121 @@
           "sha256": "23bcf82016edd8921258e8d557f00a3cd9b2ef520ba2ff0f9ef4469180414ac9"
         }
       ],
-      "disposition": "preserved-in-source-custody-not-wholesale-moved",
-      "limits": "Generic capture and replay ideas remain reusable, but the files are Striatum-specific and mix observation with legacy scoring. Revbench is the only active extraction in this build."
+      "disposition": "imported-as-historical-custody-not-wholesale-activated",
+      "limits": "Only generic capture and replay mechanics are Class C. Fate fields and fate scoring in the same files are independently marked Class D. Revbench is the only active extraction in this build."
     },
     {
-      "id": "training-job-infrastructure",
+      "id": "training-and-paid-job-infrastructure",
       "class": "C",
-      "source_path": "jobs/; train/",
-      "git_ls_tree_sha256": "d0c3ba2ff95a87b9cc6862f6849445302b095aeaec6051fa35d31ae7e2a2f409",
-      "disposition": "preserved-in-source-custody-not-moved",
-      "limits": "Reusable training, checkpoint, and paid-job machinery is outside this qualification-boundary build and has no active CAPLAB caller. Fate-scoring components inside this range remain Class D. CAPLAB does not acquire generic training authority here."
+      "source_path": "jobs/",
+      "git_ls_tree_sha256": "446a698d11b55bb0b3fdd4cff6234f4c81ca1336adc98bb6dc1aed4ce8da1f3f",
+      "excluded_class_d_paths": [
+        "jobs/qwen35b_moe/README.md",
+        "jobs/qwen35b_moe/evaluate.py",
+        "jobs/qwen35b_moe/package.py",
+        "jobs/qwen35b_moe/recover_export.py",
+        "jobs/qwen35b_moe/score_fate.py",
+        "jobs/qwen35b_moe/training-config.json"
+      ],
+      "disposition": "imported-as-historical-custody-with-no-active-caplab-caller",
+      "limits": "Reproducible paid-job, training, artifact, and checkpoint mechanics are reusable but outside this qualification build. The excluded fate-bearing files are Class D where they score or gate on fate. CAPLAB acquires no generic training or deployment authority."
     },
     {
-      "id": "tracked-research-docs-and-export-receipts",
-      "class": "B",
-      "source_path": "docs/; exports/",
-      "git_ls_tree_sha256": "c004a95546db0b5646e4d0cb15b36715231acafa8550df9f3984578181db73b2",
-      "disposition": "preserved-in-source-custody-not-copied-or-registered",
-      "limits": "Reports and receipts are historical observations and provenance. They require explicit admission before CAPLAB can treat their bytes as evidence."
+      "id": "fate-conditioned-job-gate",
+      "class": "D",
+      "source_paths": [
+        {
+          "path": "jobs/qwen35b_moe/evaluate.py",
+          "sha256": "d239c6760d96bc61fd93db34881ffbd3e0f915aa88db1ac77e5bb98c5f5a2a96"
+        },
+        {
+          "path": "jobs/qwen35b_moe/score_fate.py",
+          "sha256": "88def6b283f01e589d405fc8e599001f0e76006557652dfa7c0799f07195f9e7"
+        },
+        {
+          "path": "jobs/qwen35b_moe/training-config.json",
+          "sha256": "a9aeb0608b1d295fbdb260125298aa62ab906c6ae454b7b9fff56a18ebbc27c5"
+        }
+      ],
+      "related_mixed_paths": [
+        "jobs/qwen35b_moe/README.md",
+        "jobs/qwen35b_moe/package.py",
+        "jobs/qwen35b_moe/recover_export.py"
+      ],
+      "disposition": "imported-only-as-historical-non-authoritative-custody",
+      "limits": "Local fate analysis, fate-agreement scoring, and any acceptance statement depending on that gate cannot issue a CAPLAB Claim. The related files retain useful custody mechanics but their fate-dependent acceptance fields are non-authoritative."
+    },
+    {
+      "id": "generic-training-config",
+      "class": "C",
+      "source_paths": [
+        {
+          "path": "train/ds_zero3_offload.json",
+          "sha256": "8c45d7f10cbc4176459378462801ef638f6304639968090a65a8b33437bcfbf8"
+        },
+        {
+          "path": "train/review_sft_qlora.yaml",
+          "sha256": "d249734d9e5f8e0e7d291cf1bf3010f7fd2ceee6d839166428d7c25ddaf65071"
+        }
+      ],
+      "disposition": "imported-as-historical-training-custody-not-active-in-caplab",
+      "limits": "These mechanics configure training, not capability qualification. Losses, throughput, and checkpoints remain observations."
+    },
+    {
+      "id": "fate-derived-training-config",
+      "class": "D",
+      "source_paths": [
+        {
+          "path": "train/README.md",
+          "sha256": "8f6489e29990727b8f0aa6a22693659c66f16f318b2511099be8a654cef14b84"
+        },
+        {
+          "path": "train/dataset_info.json",
+          "sha256": "f4c9f37c8435fdd0db31e7a52755ec5c7c06516961a3ee5beb8d8ce363232401"
+        },
+        {
+          "path": "train/review_dpo.yaml",
+          "sha256": "8ae47efeffb7650e05c00ce166d2945607b90137d66d1a9b347cbcf5a8bfcd23"
+        }
+      ],
+      "disposition": "imported-only-as-historical-non-authoritative-training-custody",
+      "limits": "The DPO dataset/configuration inherits fate-derived preference choices, and the overview interprets fate agreement. These records cannot ground qualification."
+    },
+    {
+      "id": "source-tests",
+      "class": "C",
+      "source_paths": [
+        {
+          "path": "tests/test_local_qwen_ft_deploy.py",
+          "sha256": "ee5dc8e4d0f111e6101c1c21a395d0e0cf7371d3642bfd44e5c3eadc4fd03621"
+        },
+        {
+          "path": "tests/test_qwen35b_moe_job.py",
+          "sha256": "9a55a1092389385db9312a4788f46098c69d8ea35ee416c56fac1a6c2d0199a2"
+        }
+      ],
+      "disposition": "imported-as-historical-test-custody-not-caplab-ci",
+      "limits": "These tests preserve the historical training and deployment contract. They are not discovered as CAPLAB tests and do not grant runtime or qualification authority."
+    },
+    {
+      "id": "source-ignore-policy",
+      "class": "C",
+      "source_paths": [
+        {
+          "path": ".gitignore",
+          "sha256": "598fb962eb1aa641896490e06cddeedf7dcb385f77a986a9959656e067e149e8"
+        }
+      ],
+      "disposition": "imported-as-historical-custody-metadata",
+      "limits": "The ignore policy helps reconstruct historical working-copy custody but does not govern the CAPLAB repository."
     },
     {
       "id": "striatum-deployment-material",
       "class": "E",
       "source_path": "deploy/",
       "git_ls_tree_sha256": "dbc6eacc5eaa0936c7a6a91a2c61336f4067b1144914cbd0e800a11bae5abb53",
-      "disposition": "preserved-in-source-custody-never-moved-into-caplab-runtime",
-      "limits": "Backend declarations and deployment receipts are Striatum runtime effects, not CAPLAB product authority. They remain external provenance."
+      "disposition": "imported-only-as-historical-custody-never-as-caplab-runtime",
+      "limits": "Backend declarations and deployment receipts are Striatum runtime effects, not CAPLAB product authority. They remain historical provenance."
     },
     {
       "id": "generated-private-and-untracked-material",
@@ -187,11 +311,13 @@
     "result": "no-compatibility-adapter-or-service-created"
   },
   "effects": {
-    "copied_historical_measurements": [],
+    "imported_tracked_source_path": "history/striatum-tuner/source",
+    "imported_tracked_source_tree": "b08c8e92a334cfb9e0a63f1cd724d131c40cf5c9",
+    "admitted_historical_measurements": [],
     "registered_historical_evidence": [],
     "deleted_source_paths": [],
     "rewritten_historical_evidence": [],
     "source_repository_notice_commit": "e3fc01503bce8e75eef0c961d2f3272c00c4ff13"
   },
-  "inventory_hash_method": "For a directory classification, git_ls_tree_sha256 is the lowercase SHA-256 of the exact stdout bytes from: git ls-tree -r 31d600cbc44cb4ecd48d704659059e2ae0642bf7 -- <listed paths>. It identifies the tracked listing; it is not a CAPLAB evidence registration."
+  "inventory_hash_method": "The full git_ls_tree_sha256 is the lowercase SHA-256 of the exact stdout bytes from git ls-tree -r 31d600cbc44cb4ecd48d704659059e2ae0642bf7. A directory classification uses the same command followed by -- and its listed path. The name_inventory_sha256 uses git ls-tree -r --name-only at that commit. These hashes identify tracked custody; they are not CAPLAB evidence registrations."
 }

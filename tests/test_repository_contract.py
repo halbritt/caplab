@@ -16,6 +16,10 @@ from caplab.subject_identity import (
 
 ROOT = Path(__file__).resolve().parents[1]
 MARKDOWN_LINK = re.compile(r"\[[^]]+\]\(([^)]+)\)")
+HISTORICAL_CUSTODY_ROOTS = (
+    ROOT / "history/ethogram",
+    ROOT / "history/striatum-tuner/source",
+)
 
 
 class RepositoryContractTests(unittest.TestCase):
@@ -357,6 +361,11 @@ class RepositoryContractTests(unittest.TestCase):
     def test_local_markdown_links_resolve(self) -> None:
         missing: list[str] = []
         for document in sorted(ROOT.rglob("*.md")):
+            if any(
+                document.is_relative_to(custody_root)
+                for custody_root in HISTORICAL_CUSTODY_ROOTS
+            ):
+                continue
             for target in MARKDOWN_LINK.findall(document.read_text(encoding="utf-8")):
                 path_text = target.split("#", 1)[0]
                 if not path_text or "://" in path_text:
