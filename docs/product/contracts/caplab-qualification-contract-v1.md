@@ -35,13 +35,16 @@ caplab qualification history --binding BINDING_ID \
 caplab qualification export --binding BINDING_ID \
   --capability NAME --capability-version VERSION --ledger LEDGER --output FILE
 
-caplab revbench prepare --spec SPEC --output MANIFEST
-caplab revbench run --manifest MANIFEST --reviews REVIEWS --output MEASUREMENT
+caplab revbench prepare --spec SPEC --ledger LEDGER --output MANIFEST
+caplab revbench run --manifest MANIFEST --reviews REVIEWS --ledger LEDGER \
+  --output MEASUREMENT
 ```
 
 `revbench run` is an offline derivation over captured native-harness reviews;
 it performs no provider call. Harness execution remains an upstream evidence
-capture effect and must be separately authorized.
+capture effect and must be separately authorized. Both revbench commands use
+the qualification ledger as their registration-aware resolver; object bytes
+without a matching retained registration record are refused.
 
 Stdout and durable documents are canonical JSON. Expected contract failures
 return 2. A valid negative or insufficient qualification is successful and

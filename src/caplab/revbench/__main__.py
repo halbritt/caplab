@@ -11,16 +11,17 @@ from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
+from caplab.qualification.ledger import FilesystemQualificationLedger
 from caplab.revbench import RevbenchContractError, prepare, score
 from caplab.revbench._core import ContentRef, JsonValue
-from caplab.runtime.canonical import CanonicalizationError, canonical_json, sha256_hex
+from caplab.runtime.canonical import CanonicalizationError, canonical_json
 
 
-class FileArtifactRegistrar:
-    """A small local content-addressed store for the standalone module CLI."""
+class LedgerArtifactRegistrar:
+    """Adapt the durable qualification ledger to revbench's registrar seam."""
 
     def __init__(self, root: Path) -> None:
-        self._root = root.resolve()
+        self._ledger = FilesystemQualificationLedger(root.resolve())
 
     def register_document(
         self,
@@ -30,60 +31,18 @@ class FileArtifactRegistrar:
         schema: str,
         registration_id: str,
     ) -> ContentRef:
-        data = canonical_json(document)
-        digest = sha256_hex(data)
-        locator = f"objects/sha256/{digest[:2]}/{digest}"
-        target = self._path_for(locator)
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target = self._path_for(locator)
-        if target.exists():
-            if target.read_bytes() != data:
-                raise RevbenchContractError(
-                    f"existing object {locator!r} has different bytes"
-                )
-        else:
-            _write_exclusive(target, data)
-        return {
-            "kind": kind,
-            "schema": schema,
-            "media_type": "application/json",
-            "sha256": digest,
-            "byte_count": len(data),
-            "locator": locator,
-            "registration_ref": f"revbench:{registration_id}",
-            "custody": None,
-        }
+        del registration_id
+        if not isinstance(document, dict):
+            raise RevbenchContractError("registered revbench documents must be objects")
+        return self._ledger.register_document(document, kind=kind, schema=schema)
 
     def resolve(self, ref: Mapping[str, Any]) -> bytes:
-        locator = ref.get("locator")
-        if not isinstance(locator, str):
-            raise RevbenchContractError("reference locator must be a string")
-        digest = ref.get("sha256")
-        if not isinstance(digest, str):
-            raise RevbenchContractError("reference SHA-256 must be a string")
-        expected = f"objects/sha256/{digest[:2]}/{digest}"
-        if locator != expected:
-            raise RevbenchContractError("reference locator is not content-derived")
-        target = self._path_for(locator)
-        return target.read_bytes()
+        return self._ledger.resolve(ref)
 
-    def _path_for(self, locator: str) -> Path:
-        relative = Path(locator)
-        if relative.is_absolute() or ".." in relative.parts:
-            raise RevbenchContractError("reference locator escapes the object store")
-        current = self._root
-        for part in relative.parts:
-            current = current / part
-            if current.is_symlink():
-                raise RevbenchContractError("object-store paths must not use symlinks")
-        target = (self._root / relative).resolve()
-        try:
-            target.relative_to(self._root)
-        except ValueError as error:
-            raise RevbenchContractError(
-                "reference locator escapes the object store"
-            ) from error
-        return target
+
+class _Parser(argparse.ArgumentParser):
+    def error(self, message: str) -> None:
+        raise RevbenchContractError(f"argument_error:{message}")
 
 
 def _write_exclusive(path: Path, data: bytes) -> None:
@@ -124,24 +83,26 @@ def _emit(document: dict[str, Any], *, stream: Any = sys.stdout) -> None:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="python -m caplab.revbench")
+    parser = _Parser(prog="python -m caplab.revbench")
     subparsers = parser.add_subparsers(dest="command", required=True)
     prepare_parser = subparsers.add_parser(
         "prepare", help="prepare a verified revbench manifest"
     )
     prepare_parser.add_argument("--spec", type=Path, required=True)
+    prepare_parser.add_argument("--ledger", type=Path, required=True)
     prepare_parser.add_argument("--output", type=Path, required=True)
     run_parser = subparsers.add_parser(
         "run", help="score captured native-harness reviews offline"
     )
     run_parser.add_argument("--manifest", type=Path, required=True)
     run_parser.add_argument("--reviews", type=Path, required=True)
+    run_parser.add_argument("--ledger", type=Path, required=True)
     run_parser.add_argument("--output", type=Path, required=True)
     return parser
 
 
 def run(args: argparse.Namespace) -> int:
-    registrar = FileArtifactRegistrar(Path.cwd())
+    registrar = LedgerArtifactRegistrar(args.ledger)
     if args.command == "prepare":
         document = prepare(_read_document(args.spec), registrar)
     elif args.command == "run":

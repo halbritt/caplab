@@ -9,6 +9,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from caplab.qualification.ledger import FilesystemQualificationLedger
 from caplab.revbench import RevbenchContractError, prepare, score
 from caplab.runtime.canonical import canonical_json, sha256_hex
 
@@ -34,6 +35,18 @@ class MemoryRegistrar:
 
     def resolve(self, ref):
         return self.documents[ref["sha256"]]
+
+
+class LedgerRegistrar:
+    def __init__(self, root: Path) -> None:
+        self.ledger = FilesystemQualificationLedger(root)
+
+    def register_document(self, document, *, kind, schema, registration_id):
+        del registration_id
+        return self.ledger.register_document(document, kind=kind, schema=schema)
+
+    def resolve(self, ref):
+        return self.ledger.resolve(ref)
 
 
 def registered(
@@ -821,19 +834,12 @@ class ScoreTests(unittest.TestCase):
 
 class CliTests(unittest.TestCase):
     def test_module_cli_prepares_and_runs_with_canonical_files(self):
-        registrar = MemoryRegistrar()
-        spec = make_spec(registrar)
         source_root = str(Path(__file__).resolve().parents[1] / "src")
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-
-            def materialize() -> None:
-                for digest, data in registrar.documents.items():
-                    target = root / f"objects/sha256/{digest[:2]}/{digest}"
-                    target.parent.mkdir(parents=True, exist_ok=True)
-                    target.write_bytes(data)
-
-            materialize()
+            ledger_root = root / "ledger"
+            registrar = LedgerRegistrar(ledger_root)
+            spec = make_spec(registrar)
             spec_path = root / "spec.json"
             manifest_path = root / "manifest.json"
             spec_path.write_bytes(canonical_json(spec))
@@ -846,6 +852,8 @@ class CliTests(unittest.TestCase):
                     "prepare",
                     "--spec",
                     str(spec_path),
+                    "--ledger",
+                    str(ledger_root),
                     "--output",
                     str(manifest_path),
                 ],
@@ -865,6 +873,8 @@ class CliTests(unittest.TestCase):
                     "prepare",
                     "--spec",
                     str(spec_path),
+                    "--ledger",
+                    str(ledger_root),
                     "--output",
                     str(manifest_path),
                 ],
@@ -878,7 +888,6 @@ class CliTests(unittest.TestCase):
             manifest = json.loads(manifest_path.read_bytes())
 
             reviews = make_reviews(registrar, manifest)
-            materialize()
             reviews_path = root / "reviews.json"
             measurement_path = root / "measurement.json"
             reviews_path.write_bytes(canonical_json(reviews))
@@ -892,6 +901,8 @@ class CliTests(unittest.TestCase):
                     str(manifest_path),
                     "--reviews",
                     str(reviews_path),
+                    "--ledger",
+                    str(ledger_root),
                     "--output",
                     str(measurement_path),
                 ],
@@ -905,10 +916,51 @@ class CliTests(unittest.TestCase):
             measurement = json.loads(measurement_path.read_bytes())
             self.assertEqual(measurement["schema_version"], "caplab-measurement/1")
 
+    def test_module_cli_refuses_object_bytes_without_registration_records(self):
+        registrar = MemoryRegistrar()
+        spec = make_spec(registrar)
+        source_root = str(Path(__file__).resolve().parents[1] / "src")
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            ledger_root = root / "ledger"
+            ledger_root.mkdir()
+            for digest, data in registrar.documents.items():
+                target = ledger_root / f"objects/sha256/{digest[:2]}/{digest}"
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(data)
+            spec_path = root / "spec.json"
+            output_path = root / "manifest.json"
+            spec_path.write_bytes(canonical_json(spec))
+
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "caplab.revbench",
+                    "prepare",
+                    "--spec",
+                    str(spec_path),
+                    "--ledger",
+                    str(ledger_root),
+                    "--output",
+                    str(output_path),
+                ],
+                cwd=root,
+                env=dict(os.environ, PYTHONPATH=source_root),
+                check=False,
+                capture_output=True,
+            )
+
+            self.assertEqual(completed.returncode, 2)
+            self.assertFalse(output_path.exists())
+            error = json.loads(completed.stderr)
+            self.assertIn("registered reference", error["message"])
+
     def test_module_cli_returns_two_and_canonical_error_on_expected_refusal(self):
         source_root = str(Path(__file__).resolve().parents[1] / "src")
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
+            ledger_root = root / "ledger"
             spec_path = root / "spec.json"
             output_path = root / "manifest.json"
             spec_path.write_bytes(canonical_json({"schema_version": "wrong"}))
@@ -920,6 +972,8 @@ class CliTests(unittest.TestCase):
                     "prepare",
                     "--spec",
                     str(spec_path),
+                    "--ledger",
+                    str(ledger_root),
                     "--output",
                     str(output_path),
                 ],
@@ -935,6 +989,21 @@ class CliTests(unittest.TestCase):
             error = json.loads(completed.stderr)
             self.assertEqual(error["schema_version"], "caplab-revbench-error/1")
             self.assertEqual(completed.stderr, canonical_json(error) + b"\n")
+
+    def test_module_cli_argument_refusal_is_canonical(self):
+        source_root = str(Path(__file__).resolve().parents[1] / "src")
+        completed = subprocess.run(
+            [sys.executable, "-m", "caplab.revbench", "prepare"],
+            env=dict(os.environ, PYTHONPATH=source_root),
+            check=False,
+            capture_output=True,
+        )
+
+        self.assertEqual(completed.returncode, 2)
+        self.assertEqual(completed.stdout, b"")
+        error = json.loads(completed.stderr)
+        self.assertEqual(error["schema_version"], "caplab-revbench-error/1")
+        self.assertEqual(completed.stderr, canonical_json(error) + b"\n")
 
 
 if __name__ == "__main__":
