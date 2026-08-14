@@ -55,12 +55,19 @@ CAPLAB will implement two neighboring deep modules:
 1. `caplab.qualification` owns exact Binding validation, immutable Measurement
    validation, versioned policy evaluation, append-only claim history, and
    deterministic export.
-2. `caplab.revbench` owns the mechanically verified review-benchmark method and
-   produces Measurements against the qualification contract.
+2. `caplab.revbench` owns deterministic preparation, the authorization boundary
+   for benchmark execution, and mechanical offline scoring for the
+   review-benchmark method. The initial executor supports sealed static local
+   fixtures. It fails closed for real native providers until a provider bundle
+   and durable streaming-custody adapter are specified and implemented.
 
-The generic module does not own experiment execution, and revbench does not own
-generic claim history. This avoids both a premature experiment framework and a
-revbench-shaped public qualification API.
+The generic qualification module does not execute experiments, and revbench
+does not own generic policy or claim history. This avoids both a premature
+experiment framework and a revbench-shaped public qualification API while
+keeping benchmark execution in CAPLAB as required by the product boundary.
+Every supported execution effect requires a registered, exact, time-bounded
+delegation. The reserved `live-native-provider` authorization class is not an
+implemented execution path and cannot turn the fixture executor into one.
 
 A Binding identifies the exact behavior-bearing native agent system and its
 administration. A protocol and corpus identify the measurement context. A
@@ -109,12 +116,15 @@ has the smallest stable public surface while keeping the experiment replaceable.
 
 ## Preservation, verification, and rollback
 
-No historical tuner evidence is copied, admitted, rewritten, or deleted by
-this decision alone. Migration records must preserve source repository, commit,
-path, and content hash. Fate-derived summaries are classified as legacy
-nonqualifying observations unless an authorized audit later establishes an
-independent truth basis, exact Binding, complete provenance, and independent
-case-selection lineage.
+The pinned tracked tuner source tree and ancestry are retained under
+`history/striatum-tuner/source/` as historical custody so Class B and C material
+is not lost. This does not admit or register those bytes as CAPLAB evidence and
+does not make the historical package an active runtime or CI root. Untracked
+and ignored source-working-copy data remain untouched in their original
+custody. Fate-derived summaries are classified as legacy nonqualifying
+observations unless an authorized audit later establishes an independent truth
+basis, exact Binding, complete provenance, and independent case-selection
+lineage.
 
 Verification requires deterministic known-defect scoring, fate-firewall,
 binding-change, protocol-change, policy-threshold, supersession, schema/export,

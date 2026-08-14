@@ -13,14 +13,13 @@ import math
 import re
 import unicodedata
 from collections.abc import Mapping, Sequence
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from fractions import Fraction
 from typing import Any, Protocol, runtime_checkable
 
 from caplab.runtime.canonical import CanonicalizationError, canonical_json, sha256_hex
 
 from .errors import QualificationContractError
-
 
 _HEX = re.compile(r"^[0-9a-f]{64}$")
 _COMMIT = re.compile(r"^(?:[0-9a-f]{40}|[0-9a-f]{64})$")
@@ -105,7 +104,7 @@ def _enum(value: Any, path: str, choices: set[str]) -> str:
 def _timestamp(value: Any, path: str) -> datetime:
     text = _string(value, path, pattern=_UTC)
     try:
-        parsed = datetime.strptime(text, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+        parsed = datetime.strptime(text, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC)
     except ValueError as error:
         raise _error(path, "must be a valid UTC timestamp") from error
     return parsed
@@ -142,9 +141,7 @@ def _ratio(value: Any, path: str, *, rate: bool = False) -> Fraction:
     return Fraction(numerator, denominator)
 
 
-def derive_content_id(
-    document: Mapping[str, Any], id_field: str, prefix: str
-) -> str:
+def derive_content_id(document: Mapping[str, Any], id_field: str, prefix: str) -> str:
     """Derive an identity after omitting the document's identity field."""
 
     if not isinstance(document, Mapping):
@@ -156,6 +153,30 @@ def derive_content_id(
     try:
         payload = {key: value for key, value in document.items() if key != id_field}
         return prefix + sha256_hex(canonical_json(payload))
+    except CanonicalizationError as error:
+        raise QualificationContractError(str(error)) from error
+
+
+def policy_semantic_sha256(document: Mapping[str, Any]) -> str:
+    """Hash the authority-free fields that define policy behavior."""
+
+    policy = _owned(document, "policy")
+    fields = {
+        "schema_version",
+        "name",
+        "version",
+        "capability",
+        "applies_to",
+        "requirements",
+        "criteria",
+        "outcomes",
+    }
+    missing = fields - set(policy)
+    if missing:
+        raise _error("policy", f"missing {sorted(missing)}")
+    semantic = {field: policy[field] for field in fields}
+    try:
+        return sha256_hex(canonical_json(semantic))
     except CanonicalizationError as error:
         raise QualificationContractError(str(error)) from error
 
@@ -206,7 +227,9 @@ def _validate_content_ref(
             or _SAFE_PATH.fullmatch(custody_path) is None
             or any(segment in {"", ".", ".."} for segment in segments)
         ):
-            raise _error(f"{path}.custody.path", "must be a normalized repository-relative path")
+            raise _error(
+                f"{path}.custody.path", "must be a normalized repository-relative path"
+            )
         _string(custody["source_sha256"], f"{path}.custody.source_sha256", pattern=_HEX)
     if kind is not None and actual_kind != kind:
         raise _error(f"{path}.kind", f"must be {kind!r}")
@@ -217,7 +240,9 @@ def _validate_content_ref(
     try:
         payload = resolver.resolve(ref)
     except (KeyError, LookupError, OSError) as error:
-        raise _error(path, f"registered evidence cannot be resolved: {error}") from error
+        raise _error(
+            path, f"registered evidence cannot be resolved: {error}"
+        ) from error
     if not isinstance(payload, bytes):
         raise _error(path, "resolver must return bytes")
     if len(payload) != byte_count:
@@ -242,6 +267,8 @@ def _resolved_json(
     kind: str | None = None,
     schema: str | None = None,
 ) -> dict[str, Any]:
+    if not isinstance(value, dict) or value.get("media_type") != "application/json":
+        raise _error(path, "resolved JSON reference must use application/json")
     payload = _validate_content_ref(value, resolver, path, kind=kind, schema=schema)
     try:
         result = json.loads(payload.decode("utf-8"))
@@ -250,6 +277,26 @@ def _resolved_json(
     if not isinstance(result, dict):
         raise _error(path, "must resolve to a JSON object")
     return result
+
+
+def _validate_nonempty_ref(
+    value: Any,
+    resolver: EvidenceResolver,
+    path: str,
+    *,
+    kind: str,
+    schema: str | None = None,
+) -> bytes:
+    payload = _validate_content_ref(
+        value,
+        resolver,
+        path,
+        kind=kind,
+        schema=schema,
+    )
+    if not payload:
+        raise _error(path, "registered bytes must not be empty")
+    return payload
 
 
 def _validate_model(value: Any, resolver: EvidenceResolver, path: str) -> None:
@@ -266,8 +313,16 @@ def _validate_model(value: Any, resolver: EvidenceResolver, path: str) -> None:
         _string(reason, f"{path}.weights_unavailable_reason")
     else:
         if reason is not None:
-            raise _error(f"{path}.weights_unavailable_reason", "must be null when weights_ref is present")
-        _validate_content_ref(weights, resolver, f"{path}.weights_ref")
+            raise _error(
+                f"{path}.weights_unavailable_reason",
+                "must be null when weights_ref is present",
+            )
+        _validate_nonempty_ref(
+            weights,
+            resolver,
+            f"{path}.weights_ref",
+            kind="model-weights",
+        )
 
 
 def _validate_provider(value: Any, resolver: EvidenceResolver, path: str) -> None:
@@ -276,29 +331,104 @@ def _validate_provider(value: Any, resolver: EvidenceResolver, path: str) -> Non
         path,
         {"kind", "identifier", "revision", "resolution", "observed_at", "route_ref"},
     )
-    _enum(provider["kind"], f"{path}.kind", {"direct-provider", "proxy-provider", "local-serving", "other"})
+    _enum(
+        provider["kind"],
+        f"{path}.kind",
+        {"direct-provider", "proxy-provider", "local-serving", "other"},
+    )
     _string(provider["identifier"], f"{path}.identifier")
     _string(provider["revision"], f"{path}.revision")
-    resolution = _enum(provider["resolution"], f"{path}.resolution", {"immutable", "observed-route"})
+    resolution = _enum(
+        provider["resolution"], f"{path}.resolution", {"immutable", "observed-route"}
+    )
     if resolution == "immutable":
         if provider["observed_at"] is not None:
             raise _error(f"{path}.observed_at", "must be null for an immutable route")
     else:
         _timestamp(provider["observed_at"], f"{path}.observed_at")
-    _validate_content_ref(provider["route_ref"], resolver, f"{path}.route_ref")
+    route = _resolved_json(
+        provider["route_ref"],
+        resolver,
+        f"{path}.route_ref",
+        kind="provider-route",
+        schema="caplab-provider-route/1",
+    )
+    _exact_object(
+        route,
+        f"{path}.route_ref document",
+        {
+            "schema_version",
+            "kind",
+            "identifier",
+            "revision",
+            "resolution",
+            "observed_at",
+        },
+    )
+    if route["schema_version"] != "caplab-provider-route/1":
+        raise _error(
+            f"{path}.route_ref document.schema_version", "has the wrong schema version"
+        )
+    expected_route = {
+        "schema_version": "caplab-provider-route/1",
+        "kind": provider["kind"],
+        "identifier": provider["identifier"],
+        "revision": provider["revision"],
+        "resolution": provider["resolution"],
+        "observed_at": provider["observed_at"],
+    }
+    if not _content_equal(route, expected_route):
+        raise _error(
+            f"{path}.route_ref", "resolved route does not match provider identity"
+        )
+
+
+def _validate_command_ref(
+    value: Any,
+    resolver: EvidenceResolver,
+    path: str,
+    *,
+    kind: str,
+    schema: str,
+) -> list[str]:
+    command = _resolved_json(value, resolver, path, kind=kind, schema=schema)
+    _exact_object(command, f"{path} document", {"schema_version", "argv"})
+    if command["schema_version"] != schema:
+        raise _error(
+            f"{path} document.schema_version", "does not match reference schema"
+        )
+    argv = command["argv"]
+    if not isinstance(argv, list) or not argv:
+        raise _error(f"{path} document.argv", "must be a non-empty array")
+    for index, token in enumerate(argv):
+        _string(token, f"{path} document.argv[{index}]")
+    return argv
 
 
 def _validate_version_probe(
     value: Any,
     resolver: EvidenceResolver,
     path: str,
-    command_ref: dict[str, Any],
 ) -> None:
-    probe = _resolved_json(value, resolver, path)
-    probe = _exact_object(probe, f"{path} document", {"command_ref", "exit_code", "stdout_ref", "stderr_ref"})
-    _validate_content_ref(probe["command_ref"], resolver, f"{path} document.command_ref")
-    if _canonical_key(probe["command_ref"]) != _canonical_key(command_ref):
-        raise _error(f"{path} document.command_ref", "does not match harness command_ref")
+    probe = _resolved_json(
+        value,
+        resolver,
+        path,
+        kind="native-harness-version-probe",
+        schema="caplab-native-harness-version-probe/1",
+    )
+    probe = _exact_object(
+        probe,
+        f"{path} document",
+        {"command_ref", "exit_code", "stdout_ref", "stderr_ref"},
+    )
+    _validate_command_ref(
+        probe["command_ref"],
+        resolver,
+        f"{path} document.command_ref",
+        kind="native-harness-version-command",
+        schema="caplab-native-harness-version-command/1",
+    )
     exit_code = _integer(probe["exit_code"], f"{path} document.exit_code")
     if exit_code != 0:
         raise _error(f"{path} document.exit_code", "version probe must succeed")
@@ -333,14 +463,27 @@ def _validate_harness(value: Any, resolver: EvidenceResolver, path: str) -> None
         _string(reason, f"{path}.executable_unavailable_reason")
     else:
         if reason is not None:
-            raise _error(f"{path}.executable_unavailable_reason", "must be null when executable_ref is present")
-        _validate_content_ref(executable, resolver, f"{path}.executable_ref")
-    _validate_content_ref(harness["command_ref"], resolver, f"{path}.command_ref")
+            raise _error(
+                f"{path}.executable_unavailable_reason",
+                "must be null when executable_ref is present",
+            )
+        _validate_nonempty_ref(
+            executable,
+            resolver,
+            f"{path}.executable_ref",
+            kind="harness-executable",
+        )
+    _validate_command_ref(
+        harness["command_ref"],
+        resolver,
+        f"{path}.command_ref",
+        kind="native-harness-command",
+        schema="caplab-native-harness-command/1",
+    )
     _validate_version_probe(
         harness["version_probe_ref"],
         resolver,
         f"{path}.version_probe_ref",
-        harness["command_ref"],
     )
 
 
@@ -355,8 +498,23 @@ def _validate_configuration(value: Any, resolver: EvidenceResolver, path: str) -
         "runtime_ref",
     }
     configuration = _exact_object(value, path, fields)
+    kinds = {
+        "inference_ref": "inference-configuration",
+        "instructions_ref": "instructions",
+        "knowledge_ref": "knowledge",
+        "tools_ref": "tools",
+        "permissions_ref": "permissions",
+        "sandbox_ref": "sandbox",
+        "runtime_ref": "runtime",
+    }
     for field in sorted(fields):
-        _validate_content_ref(configuration[field], resolver, f"{path}.{field}")
+        _validate_nonempty_ref(
+            configuration[field],
+            resolver,
+            f"{path}.{field}",
+            kind=kinds[field],
+            schema="caplab-binding-configuration/1",
+        )
 
 
 def validate_binding(
@@ -380,9 +538,15 @@ def validate_binding(
     )
     if binding["schema_version"] != "caplab-binding/1":
         raise _error("binding.schema_version", "must be 'caplab-binding/1'")
-    _string(binding["binding_id"], "binding.binding_id", pattern=re.compile(r"^bnd-[0-9a-f]{64}$"))
+    _string(
+        binding["binding_id"],
+        "binding.binding_id",
+        pattern=re.compile(r"^bnd-[0-9a-f]{64}$"),
+    )
     _validate_model(binding["model"], resolver, "binding.model")
-    _validate_provider(binding["provider_or_path"], resolver, "binding.provider_or_path")
+    _validate_provider(
+        binding["provider_or_path"], resolver, "binding.provider_or_path"
+    )
     _validate_harness(binding["harness"], resolver, "binding.harness")
     _string(binding["reasoning_effort"], "binding.reasoning_effort")
     _validate_configuration(binding["configuration"], resolver, "binding.configuration")
@@ -411,7 +575,9 @@ def _validate_capability(
     try:
         card = json.loads(card_payload.decode("utf-8"))
     except (UnicodeError, json.JSONDecodeError) as error:
-        raise _error(f"{path}.card_ref", "JSON capability card cannot be decoded") from error
+        raise _error(
+            f"{path}.card_ref", "JSON capability card cannot be decoded"
+        ) from error
     if not isinstance(card, dict):
         raise _error(f"{path}.card_ref", "JSON capability card must be an object")
     declared = card.get("qualification_metrics")
@@ -420,7 +586,11 @@ def _validate_capability(
     metrics = _set_array(declared, f"{path}.card_ref document.qualification_metrics")
     inventory: set[str] = set()
     for index, metric in enumerate(metrics):
-        inventory.add(_metric_name(metric, f"{path}.card_ref document.qualification_metrics[{index}]"))
+        inventory.add(
+            _metric_name(
+                metric, f"{path}.card_ref document.qualification_metrics[{index}]"
+            )
+        )
     return capability, inventory
 
 
@@ -432,9 +602,27 @@ def _validate_experiment(value: Any, path: str) -> dict[str, Any]:
 
 
 def _validate_provenance(value: Any, resolver: EvidenceResolver, path: str) -> None:
-    provenance = _exact_object(value, path, {"caplab_version", "caplab_commit", "source_refs"})
+    if not isinstance(value, dict):
+        raise _error(path, "must be an object")
+    base_fields = {"caplab_version", "caplab_commit", "source_refs"}
+    actual_fields = set(value)
+    if actual_fields not in {
+        frozenset(base_fields),
+        frozenset(base_fields | {"caplab_package_sha256"}),
+    }:
+        raise _error(
+            path,
+            "must contain only version, commit, optional package digest, and source refs",
+        )
+    provenance = value
     _string(provenance["caplab_version"], f"{path}.caplab_version")
     _string(provenance["caplab_commit"], f"{path}.caplab_commit", pattern=_COMMIT)
+    if "caplab_package_sha256" in provenance:
+        _string(
+            provenance["caplab_package_sha256"],
+            f"{path}.caplab_package_sha256",
+            pattern=_HEX,
+        )
     refs = _set_array(provenance["source_refs"], f"{path}.source_refs")
     for index, ref in enumerate(refs):
         _validate_content_ref(ref, resolver, f"{path}.source_refs[{index}]")
@@ -452,8 +640,74 @@ def _metric_name(value: Any, path: str) -> str:
         or "schedulerchoice" in collapsed
         or "backendrank" in collapsed
     ):
-        raise _error(path, "reserved fate/outcome or routing metric names cannot qualify")
+        raise _error(
+            path, "reserved fate/outcome or routing metric names cannot qualify"
+        )
     return name
+
+
+def _validate_delegation_source(
+    value: Any,
+    resolver: EvidenceResolver,
+    path: str,
+    *,
+    effect: str,
+    authorized_by: str,
+    delegate_or_mechanism: str,
+    scope: Mapping[str, Any],
+    valid_from: str,
+    valid_until: str,
+) -> dict[str, Any]:
+    delegation = _resolved_json(
+        value,
+        resolver,
+        path,
+        kind="authorization-delegation",
+        schema="caplab-authorization-delegation/1",
+    )
+    _exact_object(
+        delegation,
+        f"{path} document",
+        {
+            "schema_version",
+            "delegation_id",
+            "effect",
+            "authorized_by",
+            "delegate_or_mechanism",
+            "scope",
+            "valid_from",
+            "valid_until",
+        },
+    )
+    if delegation["schema_version"] != "caplab-authorization-delegation/1":
+        raise _error(f"{path} document.schema_version", "has the wrong schema version")
+    _string(
+        delegation["delegation_id"],
+        f"{path} document.delegation_id",
+        pattern=re.compile(r"^delegation-[0-9a-f]{64}$"),
+    )
+    expected = {
+        "effect": effect,
+        "authorized_by": authorized_by,
+        "delegate_or_mechanism": delegate_or_mechanism,
+        "scope": _owned(scope, f"{path} expected scope"),
+        "valid_from": valid_from,
+        "valid_until": valid_until,
+    }
+    for field, expected_value in expected.items():
+        if not _content_equal(delegation[field], expected_value):
+            raise _error(
+                f"{path} document.{field}", "does not match authorization scope"
+            )
+    _timestamp(delegation["valid_from"], f"{path} document.valid_from")
+    _timestamp(delegation["valid_until"], f"{path} document.valid_until")
+    expected_id = derive_content_id(delegation, "delegation_id", "delegation-")
+    if delegation["delegation_id"] != expected_id:
+        raise _error(
+            f"{path} document.delegation_id",
+            "does not match canonical delegation content",
+        )
+    return delegation
 
 
 def _validate_basis_authorization(
@@ -496,13 +750,10 @@ def _validate_basis_authorization(
         f"{document_path}.authorization_id",
         pattern=re.compile(r"^basis-auth-[0-9a-f]{64}$"),
     )
-    _validate_content_ref(
-        authorization["authority_source_ref"],
-        resolver,
-        f"{document_path}.authority_source_ref",
+    authorized_by = _string(
+        authorization["authorized_by"], f"{document_path}.authorized_by"
     )
-    _string(authorization["authorized_by"], f"{document_path}.authorized_by")
-    _string(
+    delegate_or_mechanism = _string(
         authorization["delegate_or_mechanism"],
         f"{document_path}.delegate_or_mechanism",
     )
@@ -553,9 +804,33 @@ def _validate_basis_authorization(
         {"truth", "case-selection", "metric-derivation"},
     )
     valid_from = _timestamp(authorization["valid_from"], f"{document_path}.valid_from")
-    valid_until = _timestamp(authorization["valid_until"], f"{document_path}.valid_until")
+    valid_until = _timestamp(
+        authorization["valid_until"], f"{document_path}.valid_until"
+    )
     if valid_from > valid_until:
         raise _error(document_path, "valid_from must not be after valid_until")
+    scope = {
+        "binding_ids": authorization["binding_ids"],
+        "capability": authorization["capability"],
+        "experiment": authorization["experiment"],
+        "protocol_ref": authorization["protocol_ref"],
+        "corpus_ref": authorization["corpus_ref"],
+        "case_selection_ref": authorization["case_selection_ref"],
+        "method_ref": authorization["method_ref"],
+        "basis_kind": authorization["basis_kind"],
+        "basis_role": authorization["basis_role"],
+    }
+    _validate_delegation_source(
+        authorization["authority_source_ref"],
+        resolver,
+        f"{document_path}.authority_source_ref",
+        effect="evidence-basis",
+        authorized_by=authorized_by,
+        delegate_or_mechanism=delegate_or_mechanism,
+        scope=scope,
+        valid_from=authorization["valid_from"],
+        valid_until=authorization["valid_until"],
+    )
     expected = derive_content_id(authorization, "authorization_id", "basis-auth-")
     if authorization["authorization_id"] != expected:
         raise _error(
@@ -573,13 +848,19 @@ def _validate_basis(
         path,
         {"basis_id", "kind", "role", "evidence_ref", "authorization_ref"},
     )
-    _string(basis["basis_id"], f"{path}.basis_id", pattern=re.compile(r"^basis-[0-9a-f]{64}$"))
+    _string(
+        basis["basis_id"],
+        f"{path}.basis_id",
+        pattern=re.compile(r"^basis-[0-9a-f]{64}$"),
+    )
     kind = _enum(
         basis["kind"],
         f"{path}.kind",
         {"mechanical-oracle", "human-authorized", "model-judgment"},
     )
-    _enum(basis["role"], f"{path}.role", {"truth", "case-selection", "metric-derivation"})
+    _enum(
+        basis["role"], f"{path}.role", {"truth", "case-selection", "metric-derivation"}
+    )
     evidence_kind = {
         "mechanical-oracle": "mechanical-oracle-result",
         "human-authorized": "human-authorized-judgment",
@@ -595,14 +876,22 @@ def _validate_basis(
     if basis["basis_id"] != expected:
         raise _error(f"{path}.basis_id", "does not match canonical basis content")
     if authorization["basis_kind"] != kind:
-        raise _error(f"{path}.authorization_ref", "basis kind is outside authorization scope")
+        raise _error(
+            f"{path}.authorization_ref", "basis kind is outside authorization scope"
+        )
     if authorization["basis_role"] != basis["role"]:
-        raise _error(f"{path}.authorization_ref", "basis role is outside authorization scope")
+        raise _error(
+            f"{path}.authorization_ref", "basis role is outside authorization scope"
+        )
     return basis, authorization
 
 
 def _validate_case_selection(
-    value: Any, resolver: EvidenceResolver, path: str
+    value: Any,
+    resolver: EvidenceResolver,
+    path: str,
+    *,
+    observed_at: str,
 ) -> set[str]:
     manifest = _resolved_json(
         value,
@@ -636,8 +925,16 @@ def _validate_case_selection(
     )
     expected = derive_content_id(manifest, "selection_id", "selection-")
     if selection_id != expected:
-        raise _error(f"{path} document.selection_id", "does not match canonical selection content")
-    _validate_content_ref(manifest["population_ref"], resolver, f"{path} document.population_ref")
+        raise _error(
+            f"{path} document.selection_id",
+            "does not match canonical selection content",
+        )
+    _validate_content_ref(
+        manifest["population_ref"],
+        resolver,
+        f"{path} document.population_ref",
+        kind="case-population",
+    )
     reference_lists = (
         "included_case_refs",
         "excluded_case_refs",
@@ -649,10 +946,22 @@ def _validate_case_selection(
         refs = _set_array(manifest[field], f"{path} document.{field}")
         list_keys[field] = {_canonical_key(ref) for ref in refs}
         for index, ref in enumerate(refs):
-            _validate_content_ref(ref, resolver, f"{path} document.{field}[{index}]")
+            expected_kind = (
+                "case"
+                if field in {"included_case_refs", "excluded_case_refs"}
+                else "case-selection-input"
+            )
+            _validate_content_ref(
+                ref,
+                resolver,
+                f"{path} document.{field}[{index}]",
+                kind=expected_kind,
+            )
     if list_keys["included_case_refs"] & list_keys["excluded_case_refs"]:
         raise _error(f"{path} document", "included and excluded cases must be disjoint")
-    conditioned_values = _set_array(manifest["conditioned_on"], f"{path} document.conditioned_on")
+    conditioned_values = _set_array(
+        manifest["conditioned_on"], f"{path} document.conditioned_on"
+    )
     conditioned: set[str] = set()
     for index, item in enumerate(conditioned_values):
         conditioned.add(
@@ -672,9 +981,53 @@ def _validate_case_selection(
                 },
             )
         )
-    _validate_content_ref(
-        manifest["authorization_ref"], resolver, f"{path} document.authorization_ref"
+    delegation = _resolved_json(
+        manifest["authorization_ref"],
+        resolver,
+        f"{path} document.authorization_ref",
+        kind="authorization-delegation",
+        schema="caplab-authorization-delegation/1",
     )
+    valid_from = delegation.get("valid_from")
+    valid_until = delegation.get("valid_until")
+    authorized_by = delegation.get("authorized_by")
+    delegate_or_mechanism = delegation.get("delegate_or_mechanism")
+    if not all(
+        isinstance(item, str) and item
+        for item in (valid_from, valid_until, authorized_by, delegate_or_mechanism)
+    ):
+        raise _error(
+            f"{path} document.authorization_ref",
+            "delegation identity and validity fields are required",
+        )
+    scope = {
+        "population_ref": manifest["population_ref"],
+        "included_case_refs": manifest["included_case_refs"],
+        "excluded_case_refs": manifest["excluded_case_refs"],
+        "selection_inputs": manifest["selection_inputs"],
+        "exclusion_inputs": manifest["exclusion_inputs"],
+        "conditioned_on": manifest["conditioned_on"],
+    }
+    _validate_delegation_source(
+        manifest["authorization_ref"],
+        resolver,
+        f"{path} document.authorization_ref",
+        effect="case-selection",
+        authorized_by=authorized_by,
+        delegate_or_mechanism=delegate_or_mechanism,
+        scope=scope,
+        valid_from=valid_from,
+        valid_until=valid_until,
+    )
+    observed = _timestamp(observed_at, f"{path} observation time")
+    if not (
+        _timestamp(valid_from, f"{path} authorization valid_from")
+        <= observed
+        <= _timestamp(valid_until, f"{path} authorization valid_until")
+    ):
+        raise _error(
+            f"{path} document.authorization_ref", "does not authorize observation time"
+        )
     return conditioned
 
 
@@ -689,7 +1042,9 @@ def _validate_sample_flow(value: Any, path: str) -> dict[str, int]:
         "infrastructure_failures",
     }
     flow = _exact_object(value, path, fields)
-    counts = {field: _integer(flow[field], f"{path}.{field}", minimum=0) for field in fields}
+    counts = {
+        field: _integer(flow[field], f"{path}.{field}", minimum=0) for field in fields
+    }
     if counts["attempted"] + counts["missing"] != counts["planned"]:
         raise _error(path, "attempted + missing must equal planned")
     if (
@@ -710,10 +1065,14 @@ def _validate_measurement_evidence(
     value: Any, resolver: EvidenceResolver, path: str
 ) -> None:
     evidence = _exact_object(value, path, {"bundle_ref", "run_refs"})
-    _validate_content_ref(evidence["bundle_ref"], resolver, f"{path}.bundle_ref", kind="evidence-bundle")
+    _validate_content_ref(
+        evidence["bundle_ref"], resolver, f"{path}.bundle_ref", kind="evidence-bundle"
+    )
     refs = _set_array(evidence["run_refs"], f"{path}.run_refs")
     for index, ref in enumerate(refs):
-        _validate_content_ref(ref, resolver, f"{path}.run_refs[{index}]", kind="attempt")
+        _validate_content_ref(
+            ref, resolver, f"{path}.run_refs[{index}]", kind="attempt"
+        )
 
 
 def _validate_covariates(value: Any, resolver: EvidenceResolver, path: str) -> None:
@@ -723,13 +1082,15 @@ def _validate_covariates(value: Any, resolver: EvidenceResolver, path: str) -> N
         covariate = _exact_object(item, item_path, {"name", "value", "evidence_ref"})
         name = _string(covariate["name"], f"{item_path}.name", pattern=_NAME)
         scalar = covariate["value"]
-        if isinstance(scalar, float) or isinstance(scalar, (dict, list)):
+        if isinstance(scalar, (float, dict, list)):
             raise _error(f"{item_path}.value", "must be a canonical JSON scalar")
         if scalar is not None and not isinstance(scalar, (str, int, bool)):
             raise _error(f"{item_path}.value", "must be a canonical JSON scalar")
         if name == "downstream_fate" and (not isinstance(scalar, str) or not scalar):
             raise _error(f"{item_path}.value", "downstream_fate must be non-empty text")
-        _validate_content_ref(covariate["evidence_ref"], resolver, f"{item_path}.evidence_ref")
+        _validate_content_ref(
+            covariate["evidence_ref"], resolver, f"{item_path}.evidence_ref"
+        )
 
 
 def _validate_measurement_owned(
@@ -763,14 +1124,23 @@ def _validate_measurement_owned(
         "measurement.measurement_id",
         pattern=re.compile(r"^meas-[0-9a-f]{64}$"),
     )
-    _timestamp(measurement["observed_at"], "measurement.observed_at")
+    observed_at_text = measurement["observed_at"]
+    _timestamp(observed_at_text, "measurement.observed_at")
     measurement["binding"] = validate_binding(measurement["binding"], resolver)
-    capability, inventory = _validate_capability(measurement["capability"], resolver, "measurement.capability")
+    capability, inventory = _validate_capability(
+        measurement["capability"], resolver, "measurement.capability"
+    )
     measurement["capability"] = capability
     _validate_experiment(measurement["experiment"], "measurement.experiment")
-    _validate_content_ref(measurement["protocol"], resolver, "measurement.protocol", kind="protocol")
-    _validate_content_ref(measurement["corpus"], resolver, "measurement.corpus", kind="corpus")
-    basis_values = _set_array(measurement["evidence_basis"], "measurement.evidence_basis")
+    _validate_content_ref(
+        measurement["protocol"], resolver, "measurement.protocol", kind="protocol"
+    )
+    _validate_content_ref(
+        measurement["corpus"], resolver, "measurement.corpus", kind="corpus"
+    )
+    basis_values = _set_array(
+        measurement["evidence_basis"], "measurement.evidence_basis"
+    )
     bases: dict[str, dict[str, Any]] = {}
     basis_authorizations: dict[str, dict[str, Any]] = {}
     for index, value in enumerate(basis_values):
@@ -799,7 +1169,9 @@ def _validate_measurement_owned(
             {"value", "basis_ids", "case_selection_ref"},
         )
         _ratio(metric["value"], f"measurement.metrics.{name}.value")
-        basis_ids = _set_array(metric["basis_ids"], f"measurement.metrics.{name}.basis_ids", minimum=1)
+        basis_ids = _set_array(
+            metric["basis_ids"], f"measurement.metrics.{name}.basis_ids", minimum=1
+        )
         for index, basis_id in enumerate(basis_ids):
             _string(
                 basis_id,
@@ -812,7 +1184,10 @@ def _validate_measurement_owned(
                     "does not name a declared evidence basis",
                 )
         selections[metric_name] = _validate_case_selection(
-            metric["case_selection_ref"], resolver, f"measurement.metrics.{name}.case_selection_ref"
+            metric["case_selection_ref"],
+            resolver,
+            f"measurement.metrics.{name}.case_selection_ref",
+            observed_at=observed_at_text,
         )
         for basis_id in basis_ids:
             authorization = basis_authorizations[basis_id]
@@ -842,12 +1217,16 @@ def _validate_measurement_owned(
             <= _timestamp(authorization["valid_until"], f"{auth_path}.valid_until")
         ):
             raise _error(auth_path, "does not authorize the observation time")
-    _validate_measurement_evidence(measurement["evidence"], resolver, "measurement.evidence")
+    _validate_measurement_evidence(
+        measurement["evidence"], resolver, "measurement.evidence"
+    )
     _validate_covariates(measurement["covariates"], resolver, "measurement.covariates")
     _validate_provenance(measurement["provenance"], resolver, "measurement.provenance")
     expected = derive_content_id(measurement, "measurement_id", "meas-")
     if measurement["measurement_id"] != expected:
-        raise _error("measurement.measurement_id", "does not match canonical measurement content")
+        raise _error(
+            "measurement.measurement_id", "does not match canonical measurement content"
+        )
     return measurement, selections, inventory
 
 
@@ -890,14 +1269,10 @@ def _validate_authorization_owned(
         "authorization.authorization_id",
         pattern=re.compile(r"^auth-[0-9a-f]{64}$"),
     )
-    _validate_content_ref(
-        authorization["authority_source_ref"],
-        resolver,
-        "authorization.authority_source_ref",
-        kind="decision-record",
+    authorized_by = _string(
+        authorization["authorized_by"], "authorization.authorized_by"
     )
-    _string(authorization["authorized_by"], "authorization.authorized_by")
-    _string(
+    delegate_or_mechanism = _string(
         authorization["delegate_or_mechanism"],
         "authorization.delegate_or_mechanism",
     )
@@ -914,9 +1289,18 @@ def _validate_authorization_owned(
         authorization["capability"], resolver, "authorization.capability"
     )
     authorization["capability"] = capability
-    policy = _exact_object(authorization["policy"], "authorization.policy", {"name", "version"})
+    policy = _exact_object(
+        authorization["policy"],
+        "authorization.policy",
+        {"name", "version", "semantic_sha256"},
+    )
     _string(policy["name"], "authorization.policy.name")
     _string(policy["version"], "authorization.policy.version")
+    _string(
+        policy["semantic_sha256"],
+        "authorization.policy.semantic_sha256",
+        pattern=_HEX,
+    )
     statuses = _set_array(
         authorization["permitted_statuses"],
         "authorization.permitted_statuses",
@@ -932,6 +1316,22 @@ def _validate_authorization_owned(
     valid_until = _timestamp(authorization["valid_until"], "authorization.valid_until")
     if valid_from > valid_until:
         raise _error("authorization", "valid_from must not be after valid_until")
+    _validate_delegation_source(
+        authorization["authority_source_ref"],
+        resolver,
+        "authorization.authority_source_ref",
+        effect="qualification",
+        authorized_by=authorized_by,
+        delegate_or_mechanism=delegate_or_mechanism,
+        scope={
+            "binding_ids": authorization["binding_ids"],
+            "capability": authorization["capability"],
+            "policy": authorization["policy"],
+            "permitted_statuses": authorization["permitted_statuses"],
+        },
+        valid_from=authorization["valid_from"],
+        valid_until=authorization["valid_until"],
+    )
     expected = derive_content_id(authorization, "authorization_id", "auth-")
     if authorization["authorization_id"] != expected:
         raise _error(
@@ -971,10 +1371,16 @@ def _validate_policy_owned(
     )
     if policy["schema_version"] != "caplab-qualification-policy/1":
         raise _error("policy.schema_version", "must be 'caplab-qualification-policy/1'")
-    _string(policy["policy_id"], "policy.policy_id", pattern=re.compile(r"^pol-[0-9a-f]{64}$"))
+    _string(
+        policy["policy_id"],
+        "policy.policy_id",
+        pattern=re.compile(r"^pol-[0-9a-f]{64}$"),
+    )
     _string(policy["name"], "policy.name")
     _string(policy["version"], "policy.version")
-    capability, inventory = _validate_capability(policy["capability"], resolver, "policy.capability")
+    capability, inventory = _validate_capability(
+        policy["capability"], resolver, "policy.capability"
+    )
     policy["capability"] = capability
 
     applies = _exact_object(
@@ -983,7 +1389,9 @@ def _validate_policy_owned(
         {"experiment", "protocol_sha256", "corpus_sha256", "binding_resolutions"},
     )
     _validate_experiment(applies["experiment"], "policy.applies_to.experiment")
-    _string(applies["protocol_sha256"], "policy.applies_to.protocol_sha256", pattern=_HEX)
+    _string(
+        applies["protocol_sha256"], "policy.applies_to.protocol_sha256", pattern=_HEX
+    )
     _string(applies["corpus_sha256"], "policy.applies_to.corpus_sha256", pattern=_HEX)
     resolutions = _set_array(
         applies["binding_resolutions"],
@@ -1007,7 +1415,9 @@ def _validate_policy_owned(
             "basis_kinds",
         },
     )
-    _integer(requirements["minimum_usable"], "policy.requirements.minimum_usable", minimum=0)
+    _integer(
+        requirements["minimum_usable"], "policy.requirements.minimum_usable", minimum=0
+    )
     _ratio(
         requirements["maximum_missing_rate"],
         "policy.requirements.maximum_missing_rate",
@@ -1018,7 +1428,9 @@ def _validate_policy_owned(
         "policy.requirements.maximum_infrastructure_failure_rate",
         rate=True,
     )
-    kinds = _set_array(requirements["basis_kinds"], "policy.requirements.basis_kinds", minimum=1)
+    kinds = _set_array(
+        requirements["basis_kinds"], "policy.requirements.basis_kinds", minimum=1
+    )
     for index, kind in enumerate(kinds):
         _enum(
             kind,
@@ -1031,7 +1443,11 @@ def _validate_policy_owned(
         path = f"policy.criteria[{index}]"
         criterion = _exact_object(value, path, {"metric", "operator", "threshold"})
         _metric_name(criterion["metric"], f"{path}.metric")
-        _enum(criterion["operator"], f"{path}.operator", {"metric_at_least", "metric_at_most"})
+        _enum(
+            criterion["operator"],
+            f"{path}.operator",
+            {"metric_at_least", "metric_at_most"},
+        )
         _ratio(criterion["threshold"], f"{path}.threshold")
 
     outcomes = _exact_object(
@@ -1107,7 +1523,11 @@ def _authorization_limitations(
         limitations.append("qualification-authorization-binding-mismatch")
     if not _content_equal(capability, authorization["capability"]):
         limitations.append("qualification-authorization-capability-mismatch")
-    if authorization["policy"] != {"name": policy["name"], "version": policy["version"]}:
+    if authorization["policy"] != {
+        "name": policy["name"],
+        "version": policy["version"],
+        "semantic_sha256": policy_semantic_sha256(policy),
+    }:
         limitations.append("qualification-authorization-policy-mismatch")
     if status not in authorization["permitted_statuses"]:
         limitations.append("qualification-authorization-status-mismatch")
@@ -1156,10 +1576,13 @@ def build_claim(
     resolver: EvidenceResolver,
     caplab_version: str,
     caplab_commit: str,
+    caplab_package_sha256: str,
 ) -> dict[str, Any]:
     """Evaluate one exact Measurement under one Policy and build its Claim."""
 
-    governing, policy_inventory = _validate_policy_owned(_owned(policy, "policy"), resolver)
+    governing, policy_inventory = _validate_policy_owned(
+        _owned(policy, "policy"), resolver
+    )
     policy_ref_value = _owned(policy_ref, "policy_ref")
     _validate_document_reference(
         policy_ref_value,
@@ -1172,6 +1595,7 @@ def build_claim(
     generated = _timestamp(generated_at, "generated_at")
     _string(caplab_version, "caplab_version")
     _string(caplab_commit, "caplab_commit", pattern=_COMMIT)
+    _string(caplab_package_sha256, "caplab_package_sha256", pattern=_HEX)
     if isinstance(supersedes, (str, bytes)) or not isinstance(supersedes, Sequence):
         raise _error("supersedes", "must be an array")
     supersedes_value = list(supersedes)
@@ -1230,6 +1654,7 @@ def build_claim(
             "provenance": {
                 "caplab_version": caplab_version,
                 "caplab_commit": caplab_commit,
+                "caplab_package_sha256": caplab_package_sha256,
                 "source_refs": [
                     source_refs_by_key[key] for key in sorted(source_refs_by_key)
                 ],
@@ -1261,22 +1686,42 @@ def build_claim(
     )
 
     if not _content_equal(measured["capability"], governing["capability"]):
-        raise _error("policy.capability", "does not exactly match Measurement capability")
-    if not _content_equal(measured["experiment"], governing["applies_to"]["experiment"]):
-        raise _error("policy.applies_to.experiment", "does not exactly match Measurement experiment")
+        raise _error(
+            "policy.capability", "does not exactly match Measurement capability"
+        )
+    if not _content_equal(
+        measured["experiment"], governing["applies_to"]["experiment"]
+    ):
+        raise _error(
+            "policy.applies_to.experiment",
+            "does not exactly match Measurement experiment",
+        )
     if measured["protocol"]["sha256"] != governing["applies_to"]["protocol_sha256"]:
-        raise _error("policy.applies_to.protocol_sha256", "does not match Measurement protocol")
+        raise _error(
+            "policy.applies_to.protocol_sha256", "does not match Measurement protocol"
+        )
     if measured["corpus"]["sha256"] != governing["applies_to"]["corpus_sha256"]:
-        raise _error("policy.applies_to.corpus_sha256", "does not match Measurement corpus")
-    if card_inventory is not None and policy_inventory is not None and card_inventory != policy_inventory:
-        raise _error("policy.capability.card_ref", "resolved metric inventory is inconsistent")
+        raise _error(
+            "policy.applies_to.corpus_sha256", "does not match Measurement corpus"
+        )
+    if (
+        card_inventory is not None
+        and policy_inventory is not None
+        and card_inventory != policy_inventory
+    ):
+        raise _error(
+            "policy.capability.card_ref", "resolved metric inventory is inconsistent"
+        )
 
     bases_by_id = {basis["basis_id"]: basis for basis in measured["evidence_basis"]}
     criterion_results: list[dict[str, Any]] = []
     for policy_criterion in governing["criteria"]:
         metric_name = policy_criterion["metric"]
         if metric_name not in measured["metrics"]:
-            raise _error(f"measurement.metrics.{metric_name}", "policy criterion metric is absent")
+            raise _error(
+                f"measurement.metrics.{metric_name}",
+                "policy criterion metric is absent",
+            )
         if card_inventory is not None and metric_name not in card_inventory:
             raise _error(
                 f"policy.criteria.{metric_name}",
@@ -1284,7 +1729,9 @@ def build_claim(
             )
         observed_value = measured["metrics"][metric_name]["value"]
         observed = _ratio(observed_value, f"measurement.metrics.{metric_name}.value")
-        threshold = _ratio(policy_criterion["threshold"], f"policy.criteria.{metric_name}.threshold")
+        threshold = _ratio(
+            policy_criterion["threshold"], f"policy.criteria.{metric_name}.threshold"
+        )
         met = (
             observed >= threshold
             if policy_criterion["operator"] == "metric_at_least"
@@ -1322,7 +1769,11 @@ def build_claim(
     if flow["usable"] < requirements["minimum_usable"]:
         limitations.append("minimum-usable-not-met")
     missing_rate = _fraction_or_zero(flow["missing"], flow["planned"])
-    if missing_rate > _ratio(requirements["maximum_missing_rate"], "policy.requirements.maximum_missing_rate", rate=True):
+    if missing_rate > _ratio(
+        requirements["maximum_missing_rate"],
+        "policy.requirements.maximum_missing_rate",
+        rate=True,
+    ):
         limitations.append("maximum-missing-rate-exceeded")
     infrastructure_rate = _fraction_or_zero(
         flow["infrastructure_failures"], flow["attempted"]
@@ -1338,12 +1789,16 @@ def build_claim(
     declared_roles = {basis["role"] for basis in measured["evidence_basis"]}
     if not {"truth", "case-selection", "metric-derivation"}.issubset(declared_roles):
         limitations.append("required-evidence-basis-roles-missing")
-    if any(basis["kind"] not in permitted_kinds for basis in measured["evidence_basis"]):
+    if any(
+        basis["kind"] not in permitted_kinds for basis in measured["evidence_basis"]
+    ):
         limitations.append("evidence-basis-kind-not-permitted")
     for result in criterion_results:
         metric_name = result["metric"]
         metric = measured["metrics"][metric_name]
-        lineage_roles = {bases_by_id[basis_id]["role"] for basis_id in metric["basis_ids"]}
+        lineage_roles = {
+            bases_by_id[basis_id]["role"] for basis_id in metric["basis_ids"]
+        }
         if not {"truth", "metric-derivation"}.issubset(lineage_roles):
             limitations.append(f"metric-lineage-incomplete:{metric_name}")
         has_selection_basis = False
@@ -1366,7 +1821,10 @@ def build_claim(
             limitations.append(f"fate-conditioned-case-selection:{metric_name}")
         if "model_judgment" in selections[metric_name]:
             limitations.append(f"model-conditioned-case-selection:{metric_name}")
-        for condition in selections[metric_name] - {"downstream_fate", "model_judgment"}:
+        for condition in selections[metric_name] - {
+            "downstream_fate",
+            "model_judgment",
+        }:
             limitations.append(f"conditioned-case-selection:{condition}:{metric_name}")
 
     bundle_payload = _validate_content_ref(
@@ -1380,12 +1838,18 @@ def build_claim(
     if not measured["evidence"]["run_refs"]:
         limitations.append("run-evidence-missing")
     elif any(
-        not _validate_content_ref(ref, resolver, f"measurement.evidence.run_refs[{index}]", kind="attempt")
+        not _validate_content_ref(
+            ref, resolver, f"measurement.evidence.run_refs[{index}]", kind="attempt"
+        )
         for index, ref in enumerate(measured["evidence"]["run_refs"])
     ):
         limitations.append("run-evidence-empty")
 
-    provisional = "qualified" if all(item["result"] == "met" for item in criterion_results) else "unqualified"
+    provisional = (
+        "qualified"
+        if all(item["result"] == "met" for item in criterion_results)
+        else "unqualified"
+    )
     limitations.extend(
         _authorization_limitations(
             governing["authority"],
@@ -1398,7 +1862,9 @@ def build_claim(
     )
     limitations = sorted(set(limitations))
     status = provisional if not limitations else "advisory"
-    assertion_type = "decision" if status in {"qualified", "unqualified"} else "recommendation"
+    assertion_type = (
+        "decision" if status in {"qualified", "unqualified"} else "recommendation"
+    )
 
     measurement_summary = {
         "measurement_id": measured["measurement_id"],
@@ -1452,6 +1918,7 @@ def build_claim(
         "provenance": {
             "caplab_version": caplab_version,
             "caplab_commit": caplab_commit,
+            "caplab_package_sha256": caplab_package_sha256,
             "source_refs": source_refs,
         },
         "supersedes": supersedes_value,
@@ -1533,6 +2000,7 @@ def validate_claim(
         resolver=resolver,
         caplab_version=provenance.get("caplab_version"),
         caplab_commit=provenance.get("caplab_commit"),
+        caplab_package_sha256=provenance.get("caplab_package_sha256"),
     )
     if not _content_equal(claim, rebuilt):
         raise _error("claim", "does not match deterministic policy evaluation")

@@ -22,6 +22,9 @@
     },
     {
       "$ref": "qualification-claim-v1.schema.json#/$defs/authorization"
+    },
+    {
+      "$ref": "#/$defs/authorization_delegation"
     }
   ],
   "unevaluatedProperties": false,
@@ -131,33 +134,48 @@
           "pattern": "^selection-[0-9a-f]{64}$"
         },
         "population_ref": {
-          "$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"
+          "allOf": [
+            {"$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"},
+            {"properties": {"kind": {"const": "case-population"}}}
+          ]
         },
         "included_case_refs": {
           "type": "array",
           "items": {
-            "$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"
+            "allOf": [
+              {"$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"},
+              {"properties": {"kind": {"const": "case"}}}
+            ]
           },
           "uniqueItems": true
         },
         "excluded_case_refs": {
           "type": "array",
           "items": {
-            "$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"
+            "allOf": [
+              {"$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"},
+              {"properties": {"kind": {"const": "case"}}}
+            ]
           },
           "uniqueItems": true
         },
         "selection_inputs": {
           "type": "array",
           "items": {
-            "$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"
+            "allOf": [
+              {"$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"},
+              {"properties": {"kind": {"const": "case-selection-input"}}}
+            ]
           },
           "uniqueItems": true
         },
         "exclusion_inputs": {
           "type": "array",
           "items": {
-            "$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"
+            "allOf": [
+              {"$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"},
+              {"properties": {"kind": {"const": "case-selection-input"}}}
+            ]
           },
           "uniqueItems": true
         },
@@ -179,7 +197,7 @@
           "uniqueItems": true
         },
         "authorization_ref": {
-          "$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"
+          "$ref": "qualification-claim-v1.schema.json#/$defs/authorization_delegation_ref"
         }
       }
     },
@@ -213,7 +231,7 @@
           "pattern": "^basis-auth-[0-9a-f]{64}$"
         },
         "authority_source_ref": {
-          "$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"
+          "$ref": "qualification-claim-v1.schema.json#/$defs/authorization_delegation_ref"
         },
         "authorized_by": {
           "type": "string",
@@ -498,7 +516,7 @@
         },
         {
           "not": {
-            "pattern": "fate|admission|provider[._-]?verdict|scheduler[._-]?choice|backend[._-]?rank"
+            "pattern": "fate|outcome|admission|provider[._-]?verdict|scheduler[._-]?choice|backend[._-]?rank"
           }
         }
       ]
@@ -577,6 +595,37 @@
           }
         }
       ]
+    },
+    "authorization_delegation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "delegation_id",
+        "effect",
+        "authorized_by",
+        "delegate_or_mechanism",
+        "scope",
+        "valid_from",
+        "valid_until"
+      ],
+      "properties": {
+        "schema_version": {"const": "caplab-authorization-delegation/1"},
+        "delegation_id": {"type": "string", "pattern": "^delegation-[0-9a-f]{64}$"},
+        "effect": {
+          "enum": [
+            "case-selection",
+            "evidence-basis",
+            "qualification",
+            "revbench-execution"
+          ]
+        },
+        "authorized_by": {"type": "string", "minLength": 1},
+        "delegate_or_mechanism": {"type": "string", "minLength": 1},
+        "scope": {"type": "object", "minProperties": 1},
+        "valid_from": {"$ref": "qualification-claim-v1.schema.json#/$defs/utc_timestamp"},
+        "valid_until": {"$ref": "qualification-claim-v1.schema.json#/$defs/utc_timestamp"}
+      }
     },
     "canonical_json_scalar": {
       "oneOf": [

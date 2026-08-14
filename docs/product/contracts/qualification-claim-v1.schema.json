@@ -241,6 +241,48 @@
         "custody": {"$ref": "#/$defs/custody"}
       }
     },
+    "model_weights_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/content_ref"},
+        {"properties": {"kind": {"const": "model-weights"}, "byte_count": {"minimum": 1}}, "required": ["kind", "byte_count"]}
+      ]
+    },
+    "harness_executable_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/content_ref"},
+        {"properties": {"kind": {"const": "harness-executable"}, "byte_count": {"minimum": 1}}, "required": ["kind", "byte_count"]}
+      ]
+    },
+    "provider_route_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/content_ref"},
+        {"properties": {"kind": {"const": "provider-route"}, "schema": {"const": "caplab-provider-route/1"}, "media_type": {"const": "application/json"}}, "required": ["kind", "schema", "media_type"]}
+      ]
+    },
+    "harness_command_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/content_ref"},
+        {"properties": {"kind": {"const": "native-harness-command"}, "schema": {"const": "caplab-native-harness-command/1"}, "media_type": {"const": "application/json"}}, "required": ["kind", "schema", "media_type"]}
+      ]
+    },
+    "version_probe_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/content_ref"},
+        {"properties": {"kind": {"const": "native-harness-version-probe"}, "schema": {"const": "caplab-native-harness-version-probe/1"}, "media_type": {"const": "application/json"}}, "required": ["kind", "schema", "media_type"]}
+      ]
+    },
+    "configuration_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/content_ref"},
+        {"properties": {"schema": {"const": "caplab-binding-configuration/1"}, "media_type": {"const": "application/json"}, "byte_count": {"minimum": 1}}, "required": ["schema", "media_type", "byte_count"]}
+      ]
+    },
+    "authorization_delegation_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/content_ref"},
+        {"properties": {"kind": {"const": "authorization-delegation"}, "schema": {"const": "caplab-authorization-delegation/1"}, "media_type": {"const": "application/json"}}, "required": ["kind", "schema", "media_type"]}
+      ]
+    },
     "capability_card_ref": {
       "allOf": [
         {"$ref": "#/$defs/content_ref"},
@@ -299,7 +341,7 @@
         "weights_ref": {
           "oneOf": [
             {"type": "null"},
-            {"$ref": "#/$defs/content_ref"}
+            {"$ref": "#/$defs/model_weights_ref"}
           ]
         },
         "weights_unavailable_reason": {
@@ -312,7 +354,7 @@
       "oneOf": [
         {
           "properties": {
-            "weights_ref": {"$ref": "#/$defs/content_ref"},
+            "weights_ref": {"$ref": "#/$defs/model_weights_ref"},
             "weights_unavailable_reason": {"type": "null"}
           }
         },
@@ -339,7 +381,7 @@
             {"$ref": "#/$defs/utc_timestamp"}
           ]
         },
-        "route_ref": {"$ref": "#/$defs/content_ref"}
+        "route_ref": {"$ref": "#/$defs/provider_route_ref"}
       },
       "allOf": [
         {
@@ -359,7 +401,7 @@
         "executable_ref": {
           "oneOf": [
             {"type": "null"},
-            {"$ref": "#/$defs/content_ref"}
+            {"$ref": "#/$defs/harness_executable_ref"}
           ]
         },
         "executable_unavailable_reason": {
@@ -368,13 +410,13 @@
             {"type": "string", "minLength": 1}
           ]
         },
-        "command_ref": {"$ref": "#/$defs/content_ref"},
-        "version_probe_ref": {"$ref": "#/$defs/content_ref"}
+        "command_ref": {"$ref": "#/$defs/harness_command_ref"},
+        "version_probe_ref": {"$ref": "#/$defs/version_probe_ref"}
       },
       "oneOf": [
         {
           "properties": {
-            "executable_ref": {"$ref": "#/$defs/content_ref"},
+            "executable_ref": {"$ref": "#/$defs/harness_executable_ref"},
             "executable_unavailable_reason": {"type": "null"}
           }
         },
@@ -391,13 +433,13 @@
       "additionalProperties": false,
       "required": ["inference_ref", "instructions_ref", "knowledge_ref", "tools_ref", "permissions_ref", "sandbox_ref", "runtime_ref"],
       "properties": {
-        "inference_ref": {"$ref": "#/$defs/content_ref"},
-        "instructions_ref": {"$ref": "#/$defs/content_ref"},
-        "knowledge_ref": {"$ref": "#/$defs/content_ref"},
-        "tools_ref": {"$ref": "#/$defs/content_ref"},
-        "permissions_ref": {"$ref": "#/$defs/content_ref"},
-        "sandbox_ref": {"$ref": "#/$defs/content_ref"},
-        "runtime_ref": {"$ref": "#/$defs/content_ref"}
+        "inference_ref": {"allOf": [{"$ref": "#/$defs/configuration_ref"}, {"properties": {"kind": {"const": "inference-configuration"}}}]},
+        "instructions_ref": {"allOf": [{"$ref": "#/$defs/configuration_ref"}, {"properties": {"kind": {"const": "instructions"}}}]},
+        "knowledge_ref": {"allOf": [{"$ref": "#/$defs/configuration_ref"}, {"properties": {"kind": {"const": "knowledge"}}}]},
+        "tools_ref": {"allOf": [{"$ref": "#/$defs/configuration_ref"}, {"properties": {"kind": {"const": "tools"}}}]},
+        "permissions_ref": {"allOf": [{"$ref": "#/$defs/configuration_ref"}, {"properties": {"kind": {"const": "permissions"}}}]},
+        "sandbox_ref": {"allOf": [{"$ref": "#/$defs/configuration_ref"}, {"properties": {"kind": {"const": "sandbox"}}}]},
+        "runtime_ref": {"allOf": [{"$ref": "#/$defs/configuration_ref"}, {"properties": {"kind": {"const": "runtime"}}}]}
       }
     },
     "binding": {
@@ -462,7 +504,7 @@
       "propertyNames": {
         "allOf": [
           {"pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"},
-          {"not": {"pattern": "fate|admission|provider[._-]?verdict|scheduler[._-]?choice|backend[._-]?rank"}}
+          {"not": {"pattern": "fate|outcome|admission|provider[._-]?verdict|scheduler[._-]?choice|backend[._-]?rank"}}
         ]
       },
       "additionalProperties": {"$ref": "#/$defs/metric"}
@@ -572,12 +614,7 @@
       "properties": {
         "schema_version": {"const": "caplab-qualification-authorization/1"},
         "authorization_id": {"type": "string", "pattern": "^auth-[0-9a-f]{64}$"},
-        "authority_source_ref": {
-          "allOf": [
-            {"$ref": "#/$defs/content_ref"},
-            {"properties": {"kind": {"const": "decision-record"}}}
-          ]
-        },
+        "authority_source_ref": {"$ref": "#/$defs/authorization_delegation_ref"},
         "authorized_by": {"type": "string", "minLength": 1},
         "delegate_or_mechanism": {"type": "string", "minLength": 1},
         "binding_ids": {
@@ -590,10 +627,11 @@
         "policy": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["name", "version"],
+          "required": ["name", "version", "semantic_sha256"],
           "properties": {
             "name": {"type": "string", "minLength": 1},
-            "version": {"type": "string", "minLength": 1}
+            "version": {"type": "string", "minLength": 1},
+            "semantic_sha256": {"$ref": "#/$defs/sha256"}
           }
         },
         "permitted_statuses": {
@@ -654,6 +692,7 @@
       "properties": {
         "caplab_version": {"type": "string", "minLength": 1},
         "caplab_commit": {"type": "string", "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"},
+        "caplab_package_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
         "source_refs": {"type": "array", "items": {"$ref": "#/$defs/content_ref"}, "uniqueItems": true}
       }
     }

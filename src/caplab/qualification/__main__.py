@@ -3,24 +3,21 @@
 from __future__ import annotations
 
 import argparse
-import importlib.metadata
 import json
 import os
 import stat
-import subprocess
 import sys
-import tomllib
-from collections.abc import Callable, Mapping
+from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
 from types import ModuleType
 from typing import Any
 
+from caplab.producer import ProducerIdentityError, producer_identity
 from caplab.runtime.canonical import canonical_json
 
 from .export import QualificationExportError, build_export, write_export_exclusive
 from .ledger import FilesystemQualificationLedger, QualificationLedgerError
-
 
 MEASUREMENT_SCHEMA = "caplab-measurement/1"
 POLICY_SCHEMA = "caplab-qualification-policy/1"
@@ -90,49 +87,24 @@ def _load_core() -> ModuleType:
 
 
 def _contracts_directory() -> Path:
-    return Path(__file__).resolve().parents[3] / "docs" / "product" / "contracts"
+    packaged = Path(__file__).resolve().parent / "contracts"
+    if packaged.is_dir():
+        return packaged
+    source = Path(__file__).resolve().parents[3] / "docs" / "product" / "contracts"
+    if source.is_dir():
+        return source
+    return packaged
 
 
 def _now() -> datetime:
     return datetime.now(UTC)
 
 
-def _producer_identity() -> tuple[str, str]:
-    repository = Path(__file__).resolve().parents[3]
+def _producer_identity() -> tuple[str, str, str]:
     try:
-        version = importlib.metadata.version("agent-capability-lab")
-    except importlib.metadata.PackageNotFoundError:
-        try:
-            with (repository / "pyproject.toml").open("rb") as stream:
-                version = tomllib.load(stream)["project"]["version"]
-        except (OSError, KeyError, TypeError, tomllib.TOMLDecodeError) as error:
-            raise QualificationCliError("producer_version_unavailable") from error
-    if not isinstance(version, str) or not version:
-        raise QualificationCliError("producer_version_invalid")
-    try:
-        result = subprocess.run(
-            ["git", "-C", str(repository), "rev-parse", "HEAD"],
-            check=True,
-            capture_output=True,
-            text=True,
-        )
-    except (OSError, subprocess.CalledProcessError) as error:
-        raise QualificationCliError("producer_commit_unavailable") from error
-    commit = result.stdout.strip()
-    if len(commit) not in {40, 64} or any(
-        character not in "0123456789abcdef" for character in commit
-    ):
-        raise QualificationCliError("producer_commit_invalid")
-    cleanliness = subprocess.run(
-        ["git", "-C", str(repository), "diff-index", "--quiet", "HEAD", "--"],
-        check=False,
-        capture_output=True,
-    )
-    if cleanliness.returncode == 1:
-        raise QualificationCliError("producer_worktree_has_tracked_changes")
-    if cleanliness.returncode != 0:
-        raise QualificationCliError("producer_worktree_state_unavailable")
-    return version, commit
+        return producer_identity()
+    except ProducerIdentityError as error:
+        raise QualificationCliError(str(error)) from error
 
 
 def _generated_at(clock: Callable[[], datetime]) -> str:
@@ -157,17 +129,7 @@ def _unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
 
 
 def _read_document(path: Path, label: str) -> dict[str, Any]:
-    flags = os.O_RDONLY | os.O_CLOEXEC
-    if hasattr(os, "O_NOFOLLOW"):
-        flags |= os.O_NOFOLLOW
-    try:
-        descriptor = os.open(path, flags)
-    except OSError as error:
-        raise QualificationCliError(f"{label}_open_failed") from error
-    with os.fdopen(descriptor, "rb", closefd=True) as stream:
-        if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
-            raise QualificationCliError(f"{label}_not_regular")
-        payload = stream.read()
+    payload = _read_bytes(path, label)
     try:
         document = json.loads(payload, object_pairs_hook=_unique_object)
     except (UnicodeDecodeError, json.JSONDecodeError) as error:
@@ -180,27 +142,46 @@ def _read_document(path: Path, label: str) -> dict[str, Any]:
         raise QualificationCliError(f"{label}_not_canonicalizable") from error
 
 
+def _read_bytes(path: Path, label: str) -> bytes:
+    flags = os.O_RDONLY | os.O_CLOEXEC
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    try:
+        descriptor = os.open(path, flags)
+    except OSError as error:
+        raise QualificationCliError(f"{label}_open_failed") from error
+    with os.fdopen(descriptor, "rb", closefd=True) as stream:
+        if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
+            raise QualificationCliError(f"{label}_not_regular")
+        return stream.read()
+
+
 def _execute(
     options: argparse.Namespace,
     *,
     clock: Callable[[], datetime] = _now,
     core_loader: Callable[[], Any] = _load_core,
-    producer_identity: Callable[[], tuple[str, str]] = _producer_identity,
+    producer_identity: Callable[[], tuple[str, str, str]] = _producer_identity,
 ) -> tuple[dict[str, Any], bool]:
     ledger = FilesystemQualificationLedger(options.ledger)
     if options.command == "register":
-        document = _read_document(options.input, "registration_input")
-        custody: Mapping[str, Any] | None = None
         if options.custody is not None:
-            custody_document = _read_document(options.custody, "custody")
-            custody = custody_document
-        reference = ledger.register_document(
-            document,
-            kind=options.kind,
-            schema=options.schema,
-            media_type=options.media_type,
-            custody=custody,
-        )
+            raise QualificationCliError(
+                "historical_custody_registration_requires_admission_path"
+            )
+        if options.media_type == "application/json":
+            reference = ledger.register_document(
+                _read_document(options.input, "registration_input"),
+                kind=options.kind,
+                schema=options.schema,
+            )
+        else:
+            reference = ledger.register_bytes(
+                _read_bytes(options.input, "registration_input"),
+                kind=options.kind,
+                schema=options.schema,
+                media_type=options.media_type,
+            )
         return reference, False
 
     core = core_loader()
@@ -244,7 +225,7 @@ def _execute(
             )
         else:
             binding = _read_document(options.binding, "binding")
-        version, commit = producer_identity()
+        version, commit, package_sha256 = producer_identity()
         claim = core.build_claim(
             measurement,
             validated_policy,
@@ -256,6 +237,7 @@ def _execute(
             resolver=ledger,
             caplab_version=version,
             caplab_commit=commit,
+            caplab_package_sha256=package_sha256,
         )
         retained_claim = ledger.append_claim(claim, validator=core.validate_claim)
         return retained_claim, False
@@ -274,7 +256,7 @@ def _execute(
         )
         return history, True
     if options.command == "export":
-        version, commit = producer_identity()
+        version, commit, package_sha256 = producer_identity()
         document = build_export(
             ledger,
             options.binding,
@@ -282,6 +264,7 @@ def _execute(
             contracts_directory=options.contracts,
             producer_version=version,
             producer_commit=commit,
+            producer_package_sha256=package_sha256,
             claim_validator=core.validate_claim,
         )
         write_export_exclusive(options.output, document)

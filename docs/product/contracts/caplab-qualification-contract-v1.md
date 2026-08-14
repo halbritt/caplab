@@ -28,6 +28,8 @@ The operator surface is:
 
 ```text
 caplab qualification measure --input MEASUREMENT --ledger LEDGER
+caplab qualification register --input OBJECT --kind KIND --schema SCHEMA \
+  [--media-type MEDIA_TYPE] --ledger LEDGER
 caplab qualification apply (--measurement MEASUREMENT | --binding BINDING) \
   --policy POLICY [--supersedes CLAIM_ID ...] --ledger LEDGER
 caplab qualification history --binding BINDING_ID \
@@ -35,16 +37,28 @@ caplab qualification history --binding BINDING_ID \
 caplab qualification export --binding BINDING_ID \
   --capability NAME --capability-version VERSION --ledger LEDGER --output FILE
 
-caplab revbench prepare --spec SPEC --ledger LEDGER --output MANIFEST
-caplab revbench run --manifest MANIFEST --reviews REVIEWS --ledger LEDGER \
+caplab revbench prepare --spec SPEC --ledger LEDGER --output MANIFEST \
+  [--reference-output MANIFEST_REF]
+caplab revbench execute --manifest MANIFEST \
+  --execution-authorization-ref AUTHORIZATION_REF --ledger LEDGER \
+  --output REVIEWS
+caplab revbench score --manifest MANIFEST --reviews REVIEWS --ledger LEDGER \
   --output MEASUREMENT
 ```
 
-`revbench run` is an offline derivation over captured native-harness reviews;
-it performs no provider call. Harness execution remains an upstream evidence
-capture effect and must be separately authorized. Both revbench commands use
-the qualification ledger as their registration-aware resolver; object bytes
-without a matching retained registration record are refused.
+`revbench execute` is the authorization-gated CAPLAB benchmark-execution
+boundary. Version 1 prepares blinded inputs and invokes only a registered
+static local fixture under sealed limits and containment. It refuses live
+native-provider authority because the native launcher bundle and durable
+streaming-custody seam are not implemented. `revbench score` is the separate
+offline derivation; it performs no provider call. All three revbench commands
+use the qualification ledger as their registration-aware resolver. Object
+bytes without a matching retained registration record are refused.
+
+`qualification register` preserves arbitrary bytes without JSON re-encoding
+when `--media-type` is not `application/json`. Historical custody registration
+is disabled until a typed admission-authorization path exists; supplying
+`--custody` fails closed rather than creating an ungrounded provenance claim.
 
 Stdout and durable documents are canonical JSON. Expected contract failures
 return 2. A valid negative or insufficient qualification is successful and
@@ -182,7 +196,9 @@ status.
 `evidence` has one `bundle_ref` and a sorted `run_refs` list. `covariates` may
 contain downstream fate and other observational metadata. Policy predicates
 cannot address `covariates`. `provenance` has `caplab_version`,
-`caplab_commit`, and sorted `source_refs`.
+`caplab_commit`, optional `caplab_package_sha256`, and sorted `source_refs`.
+Newly produced Measurements and Claims include the package digest as a
+separate field; it never substitutes for the source commit.
 
 The exact subordinate shapes are:
 
@@ -190,7 +206,7 @@ The exact subordinate shapes are:
 evidence: {bundle_ref, run_refs}
 covariates:
   - {name, value, evidence_ref}
-provenance: {caplab_version, caplab_commit, source_refs}
+provenance: {caplab_version, caplab_commit, caplab_package_sha256, source_refs}
 ```
 
 The reserved covariate name for migrated tuner outcomes is
@@ -249,10 +265,13 @@ reference uses the evidence-reference contract.
 `authorization_id`, `authority_source_ref`, `authorized_by`,
 `delegate_or_mechanism`, `binding_ids`, `capability`, `policy`,
 `permitted_statuses`, `valid_from`, and `valid_until`. It names exact Binding
-IDs, the complete capability including card reference, policy name/version,
-and any permitted decision statuses. Its ID is content-derived from all other
-fields. Claim issue resolves its authority source and refuses out-of-scope,
-expired, not-yet-valid, or status-mismatched authorization.
+IDs, the complete capability including card reference, the policy name,
+version, and authority-free semantic SHA-256, and any permitted decision
+statuses. The semantic digest prevents two different policy bodies from
+sharing one name/version authorization. Its ID is content-derived from all
+other fields. Claim issue resolves its authority source and refuses
+out-of-scope, expired, not-yet-valid, status-mismatched, or policy-body-
+mismatched authorization.
 
 The evaluator receives a projection containing only Binding, capability,
 experiment, protocol/corpus identities, disposition, sample flow, metrics, and
@@ -360,77 +379,175 @@ artifact.
 
 ## Revbench v1
 
+Revbench is CAPLAB's first mechanically authorized experiment family. It has
+three separate effects: deterministic preparation, authorization-gated native
+execution, and offline scoring. A green execution or score is verification,
+not qualification or acceptance; applying a separate policy is still
+required to create a Claim.
+
+### Preparation
+
 `caplab-revbench-spec/1` has exact keys `schema_version`, `binding`,
-`capability`, `protocol`, `corpus`, `case_selection_ref`,
-`basis_authorization_refs`, `cases`, and `provenance`.
-`basis_authorization_refs` has exact keys `truth`, `case_selection`, and
-`metric_derivation`, each resolving to a scoped
-`caplab-evidence-basis-authorization/1` record. Version 1 cases
-are canonical JSON artifacts and have exact keys `case_id`, `control`,
-`mutation`, `oracle`, and `defect_anchor`. The one initial mutation operator is
-`replace-json-value/1`; it names a JSON Pointer and replacement value. The one
-initial oracle is `json-integer-minimum/1`; it names the same pointer and an
-inclusive integer minimum. Preparation requires a control integer at or above
-the minimum and a replacement integer below it.
+`capability`, `protocol`, `corpus`, `native_system_contract_ref`,
+`case_selection_ref`, `basis_authorization_refs`, `cases`, and `provenance`.
+Each basis authorization is independently delegated for its exact Binding,
+capability, experiment, protocol, corpus, selection, method, kind, role, and
+time interval.
 
-The control is known sound only for this declared invariant. Revbench v1 may
-support the bounded distribution `json-integer-minimum/1`; it does not turn a
-single passing predicate into a claim about general review correctness.
+Version 1 cases have exact keys `case_id`, `control`, `mutation`, `oracle`, and
+`defect_anchor`. The only initial mutation is `replace-json-value/1`; it names
+a JSON Pointer and replacement integer. The only initial oracle is
+`json-integer-minimum/1`; it names the same pointer and an inclusive minimum.
+Preparation independently proves that the control satisfies the invariant and
+the mutant violates it.
 
-`caplab-revbench-manifest/1` has exact keys `schema_version`, `experiment_id`,
-`family`, `family_version`, `binding`, `capability`, `protocol`, `corpus`,
-`case_selection_ref`, `basis_authorization_refs`, `cases`, and `provenance`. It
-pins each known control, mechanically transformed
-mutant, independently recomputed oracle result, exact Binding, assignment
-order, and expected JSON-Pointer defect anchor. Each arm stores canonical
-artifact content and its SHA-256. Preparation fails unless the clean control
-passes its oracle and the mutant fails exactly the planted invariant.
+`caplab-revbench-manifest/1` adds `experiment_id`, `family`, and
+`family_version`, replaces each source case with the exact control and mutant
+content, hashes both arms, and records a sealed `assignment_order`. The
+manifest embeds the complete Binding and the registered native-agent-systems
+contract. Preparation rejects hidden selection or exclusion inputs; version 1
+therefore cannot conceal downstream-fate selection behind an empty
+`conditioned_on` declaration.
 
-`caplab-revbench-reviews/1` has exact keys `schema_version`, `experiment_id`,
-`observed_at`, and `attempts`. Each attempt has exact keys `case_id`, `arm`,
-`binding_id`, `observed_binding`, `attempt_ref`, `attestation_ref`, `prompt_ref`,
-`disposition`, `verdict`, `anchors`, and `output_ref`. `attempt_ref` identifies
-the complete registered `caplab-native-review-attempt/1` envelope.
-`observed_binding` is a complete Binding derived from the registered
-native-attempt attestation, not a caller label. Arms are
-`control` and `mutant`; dispositions are `complete`, `subject-failure`, and
-`infrastructure-failure`; verdicts are `clean`, `defect`, and `invalid`.
-Anchors are sorted JSON Pointers. The output is an immutable evidence reference.
+The control is known sound only for the declared integer-minimum invariant.
+The bounded distribution is `json-integer-minimum/1`; it does not imply
+general review correctness, security review, architecture judgment, or any
+other distribution.
 
-The native review attempt envelope has exact keys `schema_version`,
-`attempt_id`, `experiment_id`, `case_id`, `arm`, `binding_id`,
-`observed_binding`, `attestation_ref`, `prompt_ref`, `disposition`, `verdict`,
-`anchors`, `output_ref`, and `provenance`. Its ID is `attempt-` plus the
-canonical SHA-256 of every other field. It is the registered interpretation of
-one captured attempt; its projection must equal the corresponding review
-attempt exactly.
+### Execution authorization and exact runtime
 
-`caplab-native-attempt-attestation/1` has exact keys `schema_version`,
-`attestation_id`, `experiment_id`, `case_id`, `arm`, `observed_at`,
-`observed_binding`, `native_system_contract_ref`, `capture_ref`, `prompt_ref`,
-and `output_ref`. Its ID is `attestation-` plus the canonical SHA-256 of every
-other field. The native-system contract and capture are registered references.
-The attestation, attempt envelope, and review must agree on experiment, case,
-arm, full Binding, prompt, and output. This one-way link avoids circular
-content IDs while preventing cross-attempt evidence substitution. A later
-downstream fate is not part of either attempt-time record.
+`caplab-revbench-execution-authorization/1` has exact keys
+`schema_version`, `authorization_id`, `authority_source_ref`, `authorized_by`,
+`delegate_or_mechanism`, `experiment_id`, `manifest_ref`, `binding_id`,
+`native_system_contract_ref`, `command_ref`, `version_probe_ref`,
+`effect_class`, `limits`, `valid_from`, and `valid_until`. Its ID is
+`revbench-execution-auth-` plus the canonical SHA-256 of every other field.
+The authority source is a registered `caplab-authorization-delegation/1` for
+the `revbench-execution` effect and the same complete scope and interval.
 
-A captured review is usable only when its declared Binding matches the
-manifest and its observed Binding recomputes to that exact ID. The scorer
-resolves and verifies the attempt envelope, native-attempt attestation, prompt,
-output, native-system contract, and capture before
-using the arm. Detection requires a conforming verdict and the exact defect anchor;
-a generic refusal is not catch credit. Revbench reports catch rate,
-false-alarm rate, discrimination, anchor-hit rate, and conformance separately.
-There must be exactly one control and one mutant attempt per case. An invalid,
-missing, or infrastructure-failed arm excludes its pair and remains visible in
-sample flow; it cannot improve any score. Discrimination is
-`(caught mutants - false-alarm controls) / usable pairs`, so its numerator may
-be negative.
+`effect_class` is `local-fixture` or `live-native-provider`. The latter is
+reserved and rejected by the v1 executor. A future live run would require both
+an implemented sealed provider adapter and its own registered
+`live-native-provider` authorization.
+
+`limits` has exact keys `max_version_probe_processes`,
+`max_native_review_processes`, `timeout_seconds_per_process`,
+`total_wall_seconds`, `max_stdout_bytes_per_process`, and
+`max_stderr_bytes_per_process`. The two process counts equal twice the sealed
+case count in the zero-retry v1 protocol. Time and stream limits are bounded by
+the public schema and are enforced by the runner.
+
+CAPLAB execution supports one fail-closed configuration profile:
+
+- `runtime_ref` resolves to `caplab-revbench-execution-runtime/1` and pins the
+  absolute executable path, `static-elf` format, empty environment-key list,
+  temporary empty working directory, `not-required` network mode,
+  canonical-JSON stdin, and single-JSON stdout;
+- `inference_ref` binds the exact native command;
+- `instructions_ref` binds the fixed blinded-review instruction;
+- `knowledge_ref` and `tools_ref` must explicitly disable those surfaces;
+- `permissions_ref` pins the environment allowlist, read-only root/private
+  working-directory mode, and network mode; and
+- `sandbox_ref` pins the absolute Bubblewrap adapter and its registered bytes,
+  a read-only root, private writable working directory, and the same network
+  mode.
+
+The v1 executor accepts only `local-fixture` authority. It refuses
+`live-native-provider` authority until CAPLAB has a separately pinned native
+harness bundle, provider-specific tool-disable contract, and durable streaming
+custody adapter. The authorization schema reserves that effect class without
+claiming an implementation.
+
+CAPLAB resolves and compares both executable and sandbox-adapter bytes before
+execution. `executable_ref` cannot be null on this path, and the executable
+must be a self-contained static ELF file. For every process CAPLAB writes a
+private snapshot of the already verified executable and rechecks the sealed
+Bubblewrap adapter bytes immediately before launch. It then runs the exact
+command under `shell=False` in a new process group and Bubblewrap namespace.
+The namespace has an empty root, no host filesystem mounts, no
+network, no environment values, a private working directory, and only the
+sealed executable plus minimal virtual `/proc` and `/dev` trees. The
+`knowledge_ref` and `tools_ref` records describe absent subject integrations;
+they do not rename ordinary runtime syscalls as agent tools. Stdin is written
+non-blockingly so a child that does not read cannot escape the process
+deadline. A timeout or byte limit terminates the process group and retains the
+captured prefix.
+
+### Blinding and attempt records
+
+The subject-visible `caplab-revbench-native-input/1` contains only
+`schema_version`, the fixed instruction, the declared oracle requirement, the
+artifact, and `response_schema_version`. It omits case ID, arm, assignment
+index, mutation, oracle outcome, and defect anchor. Its canonical bytes are
+the exact process stdin.
+
+`caplab-revbench-prompt/1` is the internal assignment envelope. It contains
+the experiment, case, arm, assignment index, Binding ID, protocol reference,
+and registered blinded-input reference. The subject returns one
+`caplab-revbench-native-response/1` object with `verdict` and sorted `anchors`.
+A clean response has no anchors; a defect response has at least one. Invalid
+bytes become a derived `invalid` output and never a subject-supplied valid
+verdict.
+
+A fresh version probe runs before every assigned attempt. Its registered
+`caplab-native-version-observation/1` records the authorization, Binding,
+expected probe, command, interval, complete or truncated raw streams, exit,
+termination, and mechanically recomputed match result.
+
+A successfully returned local-fixture execution registers, for every
+assignment:
+
+- exact stdin, stdout, and stderr bytes;
+- `caplab-native-output/1`, which projects only the parsed raw stdout;
+- `caplab-native-attempt-capture/1`, which records authorization, full Binding,
+  command, version observation, streams, completeness, exit, invocation state,
+  and termination;
+- `caplab-native-attempt-attestation/1`, which binds the capture to the native
+  system contract, execution authority, version observation, prompt, output,
+  assignment, and full observed Binding; and
+- `caplab-native-review-attempt/1`, the content-identified envelope whose
+  projection is repeated in the execution record.
+
+All record IDs are their named prefix plus the canonical SHA-256 after removing
+only that ID field. Scoring resolves every reference and recomputes the IDs,
+full Binding, blinded input, raw-output projection, assignment, intervals,
+authority, version match, capture disposition, and envelope projection. A
+caller cannot substitute a control prompt/output for a mutant attempt through
+the supported API and receive catch credit.
+
+`caplab-revbench-reviews/1` has exact keys `schema_version`, `execution_id`,
+`experiment_id`, `execution_authorization_ref`, `started_at`, `observed_at`,
+`status`, `stop_reason`, and `attempts`. Complete executions contain every
+sealed assignment and have a null stop reason. Stopped executions retain every
+completed attempt and may contain none when authority or total time expires
+before the first process. Subject response failures are sealed and execution
+continues. Version drift, process spawn/nonzero/timeout/stream-limit failures,
+or authorization expiry are infrastructure failures and stop execution without
+retry.
+
+### Offline scoring and trust ceiling
+
+`revbench score` accepts only a reconstructed execution record. A usable pair
+has one conforming control and mutant attempt for the same case. Catch credit
+requires a defect verdict with exactly the planted JSON-Pointer anchor. A
+generic refusal, invalid response, or wrong anchor earns no catch credit.
+Revbench reports reduced-rational catch rate, false-alarm rate,
+discrimination, anchor-hit rate when at least one mutant defect call exists,
+and conformance rate. Missing, invalid, subject-failed, and infrastructure-
+failed arms remain visible in sample flow and cannot improve a metric.
+Discrimination is `(caught mutants - false-alarm controls) / usable pairs`, so
+its numerator may be negative.
+
+The local append-only ledger is a registration-aware integrity and custody
+boundary, not a cryptographic signer or protection against a malicious writer
+with the same filesystem authority. A registration failure raises and cannot
+produce a Measurement, but the local-fixture executor does not have a durable
+preopened stream sink that can recover bytes after a process completes. That
+missing seam is one reason live execution remains refused. The executor does
+not claim hardware attestation, secret-value identity, or independent
+acceptance.
 
 Legacy tuner summaries and fate-selected controls are not imported as
 Measurements by default. They remain `legacy_nonqualifying` observations until
 an authorized audit establishes independent truth, exact Binding, complete
-provenance, and independent case-selection lineage for an individual run. A
-fate-conditioned sample may at most support a claim whose distribution is
-explicitly narrowed to that selected population; it cannot be generalized.
+provenance, and independent case-selection lineage for an individual run.

@@ -1,4 +1,4 @@
-"""Offline command-line adapter for revbench preparation and scoring."""
+"""Command-line adapter for revbench preparation, execution, and scoring."""
 
 from __future__ import annotations
 
@@ -6,13 +6,13 @@ import argparse
 import json
 import os
 import sys
-import tempfile
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
+from caplab.qualification.export import write_export_exclusive
 from caplab.qualification.ledger import FilesystemQualificationLedger
-from caplab.revbench import RevbenchContractError, prepare, score
+from caplab.revbench import RevbenchContractError, execute, prepare, score
 from caplab.revbench._core import ContentRef, JsonValue
 from caplab.runtime.canonical import CanonicalizationError, canonical_json
 
@@ -21,7 +21,7 @@ class LedgerArtifactRegistrar:
     """Adapt the durable qualification ledger to revbench's registrar seam."""
 
     def __init__(self, root: Path) -> None:
-        self._ledger = FilesystemQualificationLedger(root.resolve())
+        self._ledger = FilesystemQualificationLedger(Path(os.path.abspath(root)))
 
     def register_document(
         self,
@@ -39,32 +39,31 @@ class LedgerArtifactRegistrar:
     def resolve(self, ref: Mapping[str, Any]) -> bytes:
         return self._ledger.resolve(ref)
 
+    def register_bytes(
+        self,
+        payload: bytes,
+        *,
+        kind: str,
+        schema: str,
+        media_type: str,
+        registration_id: str,
+    ) -> ContentRef:
+        del registration_id
+        return self._ledger.register_bytes(
+            payload,
+            kind=kind,
+            schema=schema,
+            media_type=media_type,
+        )
+
 
 class _Parser(argparse.ArgumentParser):
     def error(self, message: str) -> None:
         raise RevbenchContractError(f"argument_error:{message}")
 
 
-def _write_exclusive(path: Path, data: bytes) -> None:
-    if not path.parent.is_dir():
-        raise FileNotFoundError(f"output parent does not exist: {path.parent}")
-    descriptor, temporary_name = tempfile.mkstemp(
-        prefix=f".{path.name}.", dir=path.parent
-    )
-    temporary = Path(temporary_name)
-    try:
-        with os.fdopen(descriptor, "wb") as stream:
-            stream.write(data)
-            stream.flush()
-            os.fsync(stream.fileno())
-        os.link(temporary, path)
-        directory_descriptor = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY)
-        try:
-            os.fsync(directory_descriptor)
-        finally:
-            os.close(directory_descriptor)
-    finally:
-        temporary.unlink(missing_ok=True)
+def _write_exclusive(path: Path, document: Mapping[str, Any]) -> None:
+    write_export_exclusive(path, document)
 
 
 def _read_document(path: Path) -> dict[str, Any]:
@@ -91,13 +90,23 @@ def build_parser() -> argparse.ArgumentParser:
     prepare_parser.add_argument("--spec", type=Path, required=True)
     prepare_parser.add_argument("--ledger", type=Path, required=True)
     prepare_parser.add_argument("--output", type=Path, required=True)
-    run_parser = subparsers.add_parser(
-        "run", help="score captured native-harness reviews offline"
+    prepare_parser.add_argument("--reference-output", type=Path)
+    execute_parser = subparsers.add_parser(
+        "execute", help="execute a sealed static local fixture under authority"
     )
-    run_parser.add_argument("--manifest", type=Path, required=True)
-    run_parser.add_argument("--reviews", type=Path, required=True)
-    run_parser.add_argument("--ledger", type=Path, required=True)
-    run_parser.add_argument("--output", type=Path, required=True)
+    execute_parser.add_argument("--manifest", type=Path, required=True)
+    execute_parser.add_argument(
+        "--execution-authorization-ref", type=Path, required=True
+    )
+    execute_parser.add_argument("--ledger", type=Path, required=True)
+    execute_parser.add_argument("--output", type=Path, required=True)
+    score_parser = subparsers.add_parser(
+        "score", help="score registered native-harness reviews offline"
+    )
+    score_parser.add_argument("--manifest", type=Path, required=True)
+    score_parser.add_argument("--reviews", type=Path, required=True)
+    score_parser.add_argument("--ledger", type=Path, required=True)
+    score_parser.add_argument("--output", type=Path, required=True)
     return parser
 
 
@@ -105,7 +114,21 @@ def run(args: argparse.Namespace) -> int:
     registrar = LedgerArtifactRegistrar(args.ledger)
     if args.command == "prepare":
         document = prepare(_read_document(args.spec), registrar)
-    elif args.command == "run":
+        manifest_ref = registrar.register_document(
+            document,
+            kind="revbench-manifest",
+            schema="caplab-revbench-manifest/1",
+            registration_id=document["experiment_id"],
+        )
+        if args.reference_output is not None:
+            _write_exclusive(args.reference_output, manifest_ref)
+    elif args.command == "execute":
+        document = execute(
+            _read_document(args.manifest),
+            _read_document(args.execution_authorization_ref),
+            registrar,
+        )
+    elif args.command == "score":
         document = score(
             _read_document(args.manifest),
             _read_document(args.reviews),
@@ -113,8 +136,7 @@ def run(args: argparse.Namespace) -> int:
         )
     else:
         raise AssertionError(f"unhandled command: {args.command}")
-    encoded = canonical_json(document) + b"\n"
-    _write_exclusive(args.output, encoded)
+    _write_exclusive(args.output, document)
     _emit(document)
     return 0
 

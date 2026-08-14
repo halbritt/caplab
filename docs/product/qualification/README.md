@@ -78,10 +78,15 @@ on downstream fate or model judgment cannot issue a decision over the original
 population.
 
 `caplab.revbench` is the first active experiment family at this boundary. It
-prepares bounded known-defect/control pairs and scores already captured native
-harness attempts with a deterministic oracle. The scorer performs no provider
-call and does not consult historical fate. Its output is a Measurement; a
-separate policy application is required to produce a Claim.
+prepares bounded known-defect/control pairs and scores registered captures
+with a deterministic oracle. Its v1 executor runs a sealed static local
+fixture in assignment order under separate time-bounded authority;
+subject-visible inputs are blinded to the arm and planted answer. It refuses
+real native-provider execution until CAPLAB can seal the provider launcher
+bundle and stream raw process custody durably. The offline scorer performs no
+provider call and does not consult historical fate. Its output is a
+Measurement; a separate policy application is required to produce a Claim.
+Implementation and green checks do not accept a qualification.
 
 The source migration and its conservative A–E classification are recorded in
 [`history/striatum-tuner/`](../../../history/striatum-tuner/README.md).

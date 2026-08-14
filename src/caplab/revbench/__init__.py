@@ -7,11 +7,13 @@ from caplab.revbench._core import (
     prepare,
     score,
 )
+from caplab.revbench.execution import execute
 
 __all__ = [
     "ArtifactRegistrar",
     "ContentRef",
     "RevbenchContractError",
+    "execute",
     "prepare",
     "score",
 ]

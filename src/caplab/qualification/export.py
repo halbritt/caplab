@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import secrets
 import stat
 from collections.abc import Callable, Mapping
 from pathlib import Path
@@ -12,7 +13,6 @@ from typing import Any
 from caplab.runtime.canonical import canonical_json, sha256_hex
 
 from .ledger import FilesystemQualificationLedger
-
 
 _CATALOG_FILENAME = "qualification-schema-catalog-v1.json"
 _CLAIM_SCHEMA_ID = "https://caplab.local/contracts/qualification-claim-v1.schema.json"
@@ -32,12 +32,15 @@ def build_export(
     contracts_directory: Path,
     producer_version: str,
     producer_commit: str,
+    producer_package_sha256: str,
     claim_validator: Callable[[Mapping[str, Any], Any], dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     if not isinstance(producer_version, str) or not producer_version:
         raise QualificationExportError("producer_version_invalid")
     if not _is_commit(producer_commit):
         raise QualificationExportError("producer_commit_invalid")
+    if not _is_sha256(producer_package_sha256):
+        raise QualificationExportError("producer_package_sha256_invalid")
     catalog = _load_catalog(Path(contracts_directory))
     history = ledger.history(
         binding_id,
@@ -79,6 +82,7 @@ def build_export(
             "product": "caplab",
             "version": producer_version,
             "commit": producer_commit,
+            "package_sha256": producer_package_sha256,
         },
     }
     export_id = f"export-{sha256_hex(canonical_json(body))}"
@@ -88,20 +92,98 @@ def build_export(
 def write_export_exclusive(path: Path, document: Mapping[str, Any]) -> None:
     output = Path(path)
     _require_directory(output.parent, "export_output_parent")
-    flags = os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_CLOEXEC
+    if output.name in {"", ".", ".."}:
+        raise QualificationExportError("export_output_name_invalid")
+    payload = canonical_json(document) + b"\n"
+    directory_flags = os.O_RDONLY | os.O_CLOEXEC
+    if hasattr(os, "O_DIRECTORY"):
+        directory_flags |= os.O_DIRECTORY
     if hasattr(os, "O_NOFOLLOW"):
-        flags |= os.O_NOFOLLOW
+        directory_flags |= os.O_NOFOLLOW
     try:
-        descriptor = os.open(output, flags, 0o440)
-    except FileExistsError as error:
-        raise QualificationExportError("export_output_exists") from error
+        directory_descriptor = os.open(output.parent, directory_flags)
     except OSError as error:
-        raise QualificationExportError("export_output_open_failed") from error
-    with os.fdopen(descriptor, "wb", closefd=True) as stream:
-        stream.write(canonical_json(document) + b"\n")
-        stream.flush()
-        os.fsync(stream.fileno())
-    _fsync_directory(output.parent)
+        raise QualificationExportError("export_output_parent_open_failed") from error
+    temporary_name = ""
+    published = False
+    try:
+        flags = os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_CLOEXEC
+        if hasattr(os, "O_NOFOLLOW"):
+            flags |= os.O_NOFOLLOW
+        for _ in range(128):
+            temporary_name = f".{output.name}.tmp-{secrets.token_hex(16)}"
+            try:
+                descriptor = os.open(
+                    temporary_name,
+                    flags,
+                    0o600,
+                    dir_fd=directory_descriptor,
+                )
+                break
+            except FileExistsError:
+                continue
+            except OSError as error:
+                raise QualificationExportError(
+                    "export_temporary_open_failed"
+                ) from error
+        else:
+            raise QualificationExportError("export_temporary_name_exhausted")
+        try:
+            with os.fdopen(descriptor, "wb", closefd=True) as stream:
+                stream.write(payload)
+                stream.flush()
+                os.fchmod(stream.fileno(), 0o440)
+                os.fsync(stream.fileno())
+        except OSError as error:
+            raise QualificationExportError("export_output_write_failed") from error
+        try:
+            os.link(
+                temporary_name,
+                output.name,
+                src_dir_fd=directory_descriptor,
+                dst_dir_fd=directory_descriptor,
+                follow_symlinks=False,
+            )
+        except FileExistsError as error:
+            raise QualificationExportError("export_output_exists") from error
+        except OSError as error:
+            raise QualificationExportError("export_output_publish_failed") from error
+        try:
+            os.fsync(directory_descriptor)
+        except OSError as error:
+            try:
+                os.unlink(output.name, dir_fd=directory_descriptor)
+                os.fsync(directory_descriptor)
+            except OSError as rollback_error:
+                raise QualificationExportError(
+                    "export_output_rollback_failed"
+                ) from rollback_error
+            raise QualificationExportError(
+                "export_output_directory_fsync_failed"
+            ) from error
+        published = True
+    finally:
+        cleanup_error: OSError | None = None
+        if temporary_name:
+            try:
+                os.unlink(temporary_name, dir_fd=directory_descriptor)
+            except FileNotFoundError:
+                pass
+            except OSError as error:
+                cleanup_error = error
+        if published:
+            try:
+                os.fsync(directory_descriptor)
+            except OSError as error:
+                cleanup_error = cleanup_error or error
+        os.close(directory_descriptor)
+        if cleanup_error is not None:
+            label = (
+                "export_committed_cleanup_failed"
+                if published
+                else "export_temporary_cleanup_failed"
+            )
+            raise QualificationExportError(label) from cleanup_error
 
 
 def _load_catalog(contracts_directory: Path) -> dict[str, dict[str, Any]]:

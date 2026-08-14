@@ -42,9 +42,12 @@ proposal, and CAPLAB-28/P10 training-candidate manifest. It does not authorize
 live recomputation, a capability inference, a training-eligibility decision,
 an export, model calls, training, or CAPLAB acceptance.
 
-Run the hermetic repository gate with:
+Install the hash-pinned runtime and contract-test dependencies, then run the
+hermetic repository gate:
 
 ```bash
+python3 -m pip install --require-hashes -r src/caplab/runtime/requirements.lock
+python3 -m pip install --require-hashes -r requirements-test.lock
 make check
 ```
 

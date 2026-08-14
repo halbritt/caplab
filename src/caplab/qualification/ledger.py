@@ -5,9 +5,9 @@ from __future__ import annotations
 import fcntl
 import json
 import os
+import re
 import secrets
 import stat
-import re
 from collections.abc import Callable, Iterator, Mapping
 from contextlib import contextmanager
 from pathlib import Path
@@ -15,7 +15,6 @@ from threading import local
 from typing import Any
 
 from caplab.runtime.canonical import canonical_json, sha256_hex
-
 
 _CONTENT_REF_KEYS = {
     "kind",
@@ -113,12 +112,60 @@ class FilesystemQualificationLedger:
     ) -> dict[str, Any]:
         if not isinstance(document, Mapping):
             raise QualificationLedgerError("registration_document_not_object")
+        if media_type != "application/json":
+            raise QualificationLedgerError(
+                "document_media_type_must_be_application_json"
+            )
+        payload = canonical_json(document)
+        return self._register_bytes(
+            payload,
+            kind=kind,
+            schema=schema,
+            media_type=media_type,
+            custody=custody,
+        )
+
+    def register_bytes(
+        self,
+        payload: bytes,
+        *,
+        kind: str,
+        schema: str,
+        media_type: str = "application/octet-stream",
+        custody: Mapping[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        """Register exact non-JSON evidence bytes without an encoding rewrite."""
+
+        if not isinstance(payload, bytes):
+            raise QualificationLedgerError("registration_payload_not_bytes")
+        if media_type == "application/json":
+            raise QualificationLedgerError("json_bytes_must_use_register_document")
+        return self._register_bytes(
+            payload,
+            kind=kind,
+            schema=schema,
+            media_type=media_type,
+            custody=custody,
+        )
+
+    def _register_bytes(
+        self,
+        payload: bytes,
+        *,
+        kind: str,
+        schema: str,
+        media_type: str,
+        custody: Mapping[str, Any] | None,
+    ) -> dict[str, Any]:
         if not all(
             isinstance(field, str) and field for field in (kind, schema, media_type)
         ):
             raise QualificationLedgerError("registration_metadata_invalid")
         _validate_custody(custody)
-        payload = canonical_json(document)
+        if custody is not None:
+            raise QualificationLedgerError(
+                "historical_custody_registration_requires_admission_path"
+            )
         digest = sha256_hex(payload)
         locator = f"objects/sha256/{digest[:2]}/{digest}"
         body: dict[str, Any] = {
@@ -195,6 +242,7 @@ class FilesystemQualificationLedger:
             "policy",
             policy,
             validator,
+            series_validator=_validate_policy_series,
         )
 
     def append_claim(
@@ -342,6 +390,10 @@ class FilesystemQualificationLedger:
         record_kind: str,
         document: Mapping[str, Any],
         validator: Callable[[Mapping[str, Any], Any], dict[str, Any]],
+        series_validator: Callable[
+            [Mapping[str, Any], Mapping[str, Mapping[str, Any]]], None
+        ]
+        | None = None,
     ) -> dict[str, Any]:
         validated = validator(document, self)
         if not isinstance(validated, dict):
@@ -356,6 +408,8 @@ class FilesystemQualificationLedger:
                 record_kind,
                 validator,
             )
+            if series_validator is not None:
+                series_validator(validated, existing_records)
             existing = existing_records.get(record_id)
             if existing is not None:
                 if canonical_json(existing) != canonical_json(validated):
@@ -594,6 +648,51 @@ def _validate_registration(record: dict[str, Any], line_number: int) -> None:
     expected = f"registration:{sha256_hex(canonical_json(body))}"
     if record["registration_ref"] != expected:
         raise QualificationLedgerError(f"registration_identity_invalid:{line_number}")
+
+
+def _policy_semantic_key(policy: Mapping[str, Any]) -> bytes:
+    semantic_fields = {
+        "schema_version",
+        "name",
+        "version",
+        "capability",
+        "applies_to",
+        "requirements",
+        "criteria",
+        "outcomes",
+    }
+    if semantic_fields.issubset(policy):
+        body = {field: policy[field] for field in semantic_fields}
+    else:
+        body = {
+            key: value
+            for key, value in policy.items()
+            if key not in {"policy_id", "authority", "provenance"}
+        }
+    return canonical_json(body)
+
+
+def _validate_policy_series(
+    policy: Mapping[str, Any],
+    existing: Mapping[str, Mapping[str, Any]],
+) -> None:
+    name = policy.get("name")
+    version = policy.get("version")
+    if (
+        not isinstance(name, str)
+        or not name
+        or not isinstance(version, str)
+        or not version
+    ):
+        raise QualificationLedgerError("policy_name_version_invalid")
+    semantic_key = _policy_semantic_key(policy)
+    for retained in existing.values():
+        if retained.get("name") != name or retained.get("version") != version:
+            continue
+        if _policy_semantic_key(retained) != semantic_key:
+            raise QualificationLedgerError(
+                f"policy_name_version_conflict:{name}:{version}"
+            )
 
 
 def _claim_binding_id(claim: Mapping[str, Any]) -> str:

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -12,12 +13,12 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
 from pathlib import Path
 from types import SimpleNamespace
+from unittest import mock
 
 from caplab.qualification.__main__ import _execute, build_parser
 from caplab.qualification.export import build_export, write_export_exclusive
 from caplab.qualification.ledger import FilesystemQualificationLedger
 from caplab.runtime.canonical import canonical_json, sha256_hex
-
 
 REPOSITORY_ROOT = Path(__file__).parents[1]
 CONTRACTS_DIRECTORY = REPOSITORY_ROOT / "docs" / "product" / "contracts"
@@ -34,7 +35,7 @@ QUARTERMASTER_PROJECTION_CONTRACT = (
 def owned(document: object, _resolver: object) -> dict[str, object]:
     parsed = json.loads(canonical_json(document))
     if not isinstance(parsed, dict):
-        raise ValueError("document must be an object")
+        raise TypeError("document must be an object")
     return parsed
 
 
@@ -68,28 +69,44 @@ def unmeasured_claim(*, supersedes: list[str] | None = None) -> dict[str, object
             "revision": "r1",
             "resolution": "immutable",
             "observed_at": None,
-            "route_ref": content_ref("route", "route-contract", "route/1"),
+            "route_ref": content_ref(
+                "route", "provider-route", "caplab-provider-route/1"
+            ),
         },
         "harness": {
             "harness_id": "synthetic-harness",
             "harness_version": "1",
-            "executable_ref": content_ref("executable", "executable", "bytes/1"),
+            "executable_ref": content_ref(
+                "executable", "harness-executable", "bytes/1"
+            ),
             "executable_unavailable_reason": None,
-            "command_ref": content_ref("command", "command", "command/1"),
-            "version_probe_ref": content_ref("probe", "version-probe", "probe/1"),
+            "command_ref": content_ref(
+                "command",
+                "native-harness-command",
+                "caplab-native-harness-command/1",
+            ),
+            "version_probe_ref": content_ref(
+                "probe",
+                "native-harness-version-probe",
+                "caplab-native-harness-version-probe/1",
+            ),
         },
         "reasoning_effort": "fixed",
         "configuration": {
-            name: content_ref(name, name.removesuffix("_ref"), "configuration/1")
-            for name in (
-                "inference_ref",
-                "instructions_ref",
-                "knowledge_ref",
-                "tools_ref",
-                "permissions_ref",
-                "sandbox_ref",
-                "runtime_ref",
+            f"{name}_ref": content_ref(
+                name,
+                kind,
+                "caplab-binding-configuration/1",
             )
+            for name, kind in {
+                "inference": "inference-configuration",
+                "instructions": "instructions",
+                "knowledge": "knowledge",
+                "tools": "tools",
+                "permissions": "permissions",
+                "sandbox": "sandbox",
+                "runtime": "runtime",
+            }.items()
         },
     }
     binding_body = {key: value for key, value in binding.items() if key != "binding_id"}
@@ -128,6 +145,7 @@ def unmeasured_claim(*, supersedes: list[str] | None = None) -> dict[str, object
         "provenance": {
             "caplab_version": "0.1.0",
             "caplab_commit": "a" * 40,
+            "caplab_package_sha256": "b" * 64,
             "source_refs": [],
         },
         "supersedes": supersedes or [],
@@ -197,6 +215,44 @@ class QualificationLedgerRegistrationTests(unittest.TestCase):
                 json.loads(registrations[0])["registration_ref"],
                 first["registration_ref"],
             )
+
+    def test_registered_binary_round_trips_without_json_reencoding(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            ledger = FilesystemQualificationLedger(
+                Path(temporary_directory) / "qualification"
+            )
+            payload = b"\x00native executable\xff\n"
+
+            reference = ledger.register_bytes(
+                payload,
+                kind="harness-executable",
+                schema="opaque/1",
+            )
+
+            self.assertEqual(reference["media_type"], "application/octet-stream")
+            self.assertEqual(ledger.resolve(reference), payload)
+
+    def test_historical_custody_is_disabled_without_an_admission_path(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            ledger = FilesystemQualificationLedger(
+                Path(temporary_directory) / "qualification"
+            )
+            custody = {
+                "repository": "source/repository",
+                "commit": "a" * 40,
+                "path": "runs/result.json",
+                "source_sha256": "b" * 64,
+            }
+
+            with self.assertRaisesRegex(
+                ValueError, "historical_custody_registration_requires_admission_path"
+            ):
+                ledger.register_document(
+                    {"result": "historical"},
+                    kind="observation",
+                    schema="observation/1",
+                    custody=custody,
+                )
 
     def test_tampered_object_invalidates_resolution_and_future_registration(
         self,
@@ -294,6 +350,7 @@ class QualificationLedgerStreamTests(unittest.TestCase):
                 "schema_version": "caplab-qualification-policy/1",
                 "policy_id": "pol-" + "a" * 64,
                 "name": "review-correctness",
+                "version": "1",
             }
             ledger.append_policy(policy, validator=owned)
             with (root / "policies.jsonl").open("ab") as stream:
@@ -304,6 +361,28 @@ class QualificationLedgerStreamTests(unittest.TestCase):
                     {**policy, "policy_id": "pol-" + "b" * 64},
                     validator=owned,
                 )
+
+    def test_policy_name_and_version_cannot_name_two_semantic_bodies(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            ledger = FilesystemQualificationLedger(
+                Path(temporary_directory) / "qualification"
+            )
+            first = {
+                "schema_version": "caplab-qualification-policy/1",
+                "policy_id": "pol-" + "a" * 64,
+                "name": "review-correctness",
+                "version": "1",
+                "criteria": [{"threshold": "3/4"}],
+            }
+            second = {
+                **first,
+                "policy_id": "pol-" + "b" * 64,
+                "criteria": [{"threshold": "9/10"}],
+            }
+            ledger.append_policy(first, validator=owned)
+
+            with self.assertRaisesRegex(ValueError, "policy_name_version_conflict"):
+                ledger.append_policy(second, validator=owned)
 
     def test_symlinked_stream_is_refused_without_touching_target(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
@@ -534,6 +613,7 @@ class QualificationExportTests(unittest.TestCase):
                 contracts_directory=contracts,
                 producer_version="0.1.0",
                 producer_commit="b" * 40,
+                producer_package_sha256="c" * 64,
                 claim_validator=owned,
             )
             second = build_export(
@@ -543,6 +623,7 @@ class QualificationExportTests(unittest.TestCase):
                 contracts_directory=contracts,
                 producer_version="0.1.0",
                 producer_commit="b" * 40,
+                producer_package_sha256="c" * 64,
                 claim_validator=owned,
             )
 
@@ -555,6 +636,8 @@ class QualificationExportTests(unittest.TestCase):
                 f"export-{sha256_hex(canonical_json(export_body))}",
             )
             self.assertEqual(first["claims"], [claim])
+            self.assertEqual(first["producer"]["commit"], "b" * 40)
+            self.assertEqual(first["producer"]["package_sha256"], "c" * 64)
             self.assertEqual(
                 set(first),
                 {
@@ -585,6 +668,48 @@ class QualificationExportTests(unittest.TestCase):
                 write_export_exclusive(path, {**document, "export_id": "second"})
             self.assertEqual(path.read_bytes(), canonical_json(document) + b"\n")
 
+    def test_export_write_does_not_publish_before_file_and_directory_fsync(
+        self,
+    ) -> None:
+        document = {"schema_version": "example-export/1", "export_id": "first"}
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            path = Path(temporary_directory) / "claim-export.json"
+            with (
+                mock.patch(
+                    "caplab.qualification.export.os.fsync",
+                    side_effect=OSError("simulated file fsync failure"),
+                ),
+                self.assertRaisesRegex(ValueError, "export_output_write_failed"),
+            ):
+                write_export_exclusive(path, document)
+            self.assertFalse(path.exists())
+            self.assertEqual(list(Path(temporary_directory).iterdir()), [])
+
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            path = Path(temporary_directory) / "claim-export.json"
+            real_fsync = os.fsync
+            calls = 0
+
+            def fail_directory_fsync(descriptor):
+                nonlocal calls
+                calls += 1
+                if calls == 2:
+                    raise OSError("simulated directory fsync failure")
+                return real_fsync(descriptor)
+
+            with (
+                mock.patch(
+                    "caplab.qualification.export.os.fsync",
+                    side_effect=fail_directory_fsync,
+                ),
+                self.assertRaisesRegex(
+                    ValueError, "export_output_directory_fsync_failed"
+                ),
+            ):
+                write_export_exclusive(path, document)
+            self.assertFalse(path.exists())
+            self.assertEqual(list(Path(temporary_directory).iterdir()), [])
+
     def test_export_refuses_catalog_resource_hash_drift(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             ledger = FilesystemQualificationLedger(
@@ -605,6 +730,7 @@ class QualificationExportTests(unittest.TestCase):
                     contracts_directory=copied_contracts,
                     producer_version="0.1.0",
                     producer_commit="b" * 40,
+                    producer_package_sha256="c" * 64,
                     claim_validator=owned,
                 )
 
@@ -623,6 +749,7 @@ class FakeQuartermasterConsumerTests(unittest.TestCase):
             contracts_directory=CONTRACTS_DIRECTORY,
             producer_version="0.1.0",
             producer_commit="b" * 40,
+            producer_package_sha256="c" * 64,
             claim_validator=owned,
         )
 
@@ -840,6 +967,8 @@ class QualificationCliTests(unittest.TestCase):
             policy = {
                 "schema_version": "caplab-qualification-policy/1",
                 "policy_id": "pol-" + "b" * 64,
+                "name": "fixture-policy",
+                "version": "1",
             }
             binding_path.write_bytes(canonical_json(binding) + b"\n")
             policy_path.write_bytes(canonical_json(policy) + b"\n")
@@ -889,7 +1018,7 @@ class QualificationCliTests(unittest.TestCase):
                 options,
                 clock=lambda: datetime(2026, 8, 14, 20, 30, tzinfo=UTC),
                 core_loader=lambda: core,
-                producer_identity=lambda: ("0.1.0", "d" * 40),
+                producer_identity=lambda: ("0.1.0", "d" * 40, "e" * 64),
             )
 
             self.assertFalse(read_only)
@@ -900,6 +1029,7 @@ class QualificationCliTests(unittest.TestCase):
             self.assertEqual(captured["generated_at"], "2026-08-14T20:30:00Z")
             self.assertEqual(captured["caplab_version"], "0.1.0")
             self.assertEqual(captured["caplab_commit"], "d" * 40)
+            self.assertEqual(captured["caplab_package_sha256"], "e" * 64)
 
     def test_apply_requires_exactly_one_measurement_or_binding(self) -> None:
         parser = build_parser()

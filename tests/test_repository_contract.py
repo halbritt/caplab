@@ -7,13 +7,12 @@ import tomllib
 import unittest
 from pathlib import Path
 
+from caplab.ladder_subject import validate_ladder_subject
 from caplab.subject_identity import (
     NativeAgentSystemContractError,
     load_native_agent_system_policy,
     validate_native_agent_systems,
 )
-from caplab.ladder_subject import validate_ladder_subject
-
 
 ROOT = Path(__file__).resolve().parents[1]
 MARKDOWN_LINK = re.compile(r"\[[^]]+\]\(([^)]+)\)")
@@ -90,7 +89,12 @@ class RepositoryContractTests(unittest.TestCase):
                 "model_id": "claude-fable-5",
                 "native_harness_id": "terminus-2",
                 "effort": "max",
-                "command": ["harbor", "exec", "--model", "openrouter/anthropic/claude-fable-5"],
+                "command": [
+                    "harbor",
+                    "exec",
+                    "--model",
+                    "openrouter/anthropic/claude-fable-5",
+                ],
                 "version_command": ["harbor", "--version"],
             }
         }
@@ -171,26 +175,23 @@ class RepositoryContractTests(unittest.TestCase):
     def test_qualification_contract_pins_artifact_not_runtime_registry(self) -> None:
         claim_schema = json.loads(
             (
-                ROOT
-                / "docs/product/contracts/qualification-claim-v1.schema.json"
+                ROOT / "docs/product/contracts/qualification-claim-v1.schema.json"
             ).read_text(encoding="utf-8")
         )
         export_schema = json.loads(
             (
-                ROOT
-                / "docs/product/contracts/qualification-export-v1.schema.json"
+                ROOT / "docs/product/contracts/qualification-export-v1.schema.json"
             ).read_text(encoding="utf-8")
         )
         records_schema = json.loads(
             (
-                ROOT
-                / "docs/product/contracts/qualification-records-v1.schema.json"
+                ROOT / "docs/product/contracts/qualification-records-v1.schema.json"
             ).read_text(encoding="utf-8")
         )
         revbench_schema = json.loads(
-            (
-                ROOT / "docs/product/contracts/revbench-v1.schema.json"
-            ).read_text(encoding="utf-8")
+            (ROOT / "docs/product/contracts/revbench-v1.schema.json").read_text(
+                encoding="utf-8"
+            )
         )
         contract = (
             ROOT / "docs/product/contracts/caplab-qualification-contract-v1.md"
@@ -201,9 +202,7 @@ class RepositoryContractTests(unittest.TestCase):
             "caplab-qualification-claim/1",
         )
         self.assertEqual(
-            claim_schema["$defs"]["qualification"]["properties"]["status"][
-                "enum"
-            ],
+            claim_schema["$defs"]["qualification"]["properties"]["status"]["enum"],
             ["qualified", "unqualified", "advisory", "unmeasured"],
         )
         self.assertEqual(
@@ -236,14 +235,12 @@ class RepositoryContractTests(unittest.TestCase):
             ],
         )
         self.assertEqual(
-            records_schema["$defs"]["case_selection"]["properties"][
-                "schema_version"
-            ]["const"],
+            records_schema["$defs"]["case_selection"]["properties"]["schema_version"][
+                "const"
+            ],
             "caplab-case-selection-manifest/1",
         )
-        self.assertIn(
-            "(--measurement MEASUREMENT | --binding BINDING)", contract
-        )
+        self.assertIn("(--measurement MEASUREMENT | --binding BINDING)", contract)
         self.assertEqual(
             revbench_schema["$defs"]["native_attempt_attestation"]["required"],
             [
@@ -252,9 +249,12 @@ class RepositoryContractTests(unittest.TestCase):
                 "experiment_id",
                 "case_id",
                 "arm",
+                "assignment_index",
                 "observed_at",
                 "observed_binding",
                 "native_system_contract_ref",
+                "execution_authorization_ref",
+                "version_observation_ref",
                 "capture_ref",
                 "prompt_ref",
                 "output_ref",
@@ -321,12 +321,11 @@ class RepositoryContractTests(unittest.TestCase):
             ROOT / "docs/decisions/adr-0014-caplab-p5-purge-and-p6-admission.md"
         ).read_text(encoding="utf-8")
         adr_0016 = (
-            ROOT
-            / "docs/decisions/adr-0016-caplab-backlog-drain-afk-implementation.md"
+            ROOT / "docs/decisions/adr-0016-caplab-backlog-drain-afk-implementation.md"
         ).read_text(encoding="utf-8")
-        plan = (
-            ROOT / "docs/product/plans/plan-agent-capability-lab-v0.md"
-        ).read_text(encoding="utf-8")
+        plan = (ROOT / "docs/product/plans/plan-agent-capability-lab-v0.md").read_text(
+            encoding="utf-8"
+        )
 
         self.assertIn("status: decided", adr_0007)
         self.assertIn("status: decided", adr_0008)
@@ -368,7 +367,9 @@ class RepositoryContractTests(unittest.TestCase):
 
         self.assertEqual(missing, [])
 
-    def test_dashboard_source_binding_identifies_projection_and_external_sources(self) -> None:
+    def test_dashboard_source_binding_identifies_projection_and_external_sources(
+        self,
+    ) -> None:
         manifest_path = ROOT / "docs/manifests/dashboard-study-001-source.json"
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         projection = manifest["projection"]
@@ -390,7 +391,9 @@ class RepositoryContractTests(unittest.TestCase):
                 "verification_status": "pass",
             },
         )
-        self.assertEqual(hashlib.sha256(projection_bytes).hexdigest(), projection["sha256"])
+        self.assertEqual(
+            hashlib.sha256(projection_bytes).hexdigest(), projection["sha256"]
+        )
         self.assertEqual(projection["origin_repository"], "halbritt/books")
         self.assertEqual(
             projection["origin_commit"],
