@@ -39,21 +39,29 @@ caplab qualification export --binding BINDING_ID \
 
 caplab revbench prepare --spec SPEC --ledger LEDGER --output MANIFEST \
   [--reference-output MANIFEST_REF]
+caplab revbench prepare-live-runtime --ledger LEDGER \
+  --live-custody-root CUSTODY_ROOT --output AUTHORITY_INPUTS \
+  [--reference-output AUTHORITY_INPUTS_REF]
 caplab revbench execute --manifest MANIFEST \
   --execution-authorization-ref AUTHORIZATION_REF --ledger LEDGER \
-  --output REVIEWS
+  --output REVIEWS [--live-custody-root CUSTODY_ROOT \
+  --credential-root CREDENTIAL_ROOT \
+  --credential-profile-source PROFILE=FILENAME]
 caplab revbench score --manifest MANIFEST --reviews REVIEWS --ledger LEDGER \
   --output MEASUREMENT
 ```
 
 `revbench execute` is the authorization-gated CAPLAB benchmark-execution
-boundary. Version 1 prepares blinded inputs and invokes only a registered
-static local fixture under sealed limits and containment. It refuses live
-native-provider authority because the native launcher bundle and durable
-streaming-custody seam are not implemented. `revbench score` is the separate
-offline derivation; it performs no provider call. All three revbench commands
-use the qualification ledger as their registration-aware resolver. Object
-bytes without a matching retained registration record are refused.
+boundary. Version 1 supports a registered static local fixture and one exact
+live-native slice: Codex CLI 0.147.0, GPT-5.6 Terra, maximum effort, and the
+direct OpenAI Responses route. Both paths use blinded inputs, exact limits,
+and sealed containment. `prepare-live-runtime` is a no-provider,
+no-credential-read operation that registers the clean execution-apparatus
+receipt and initializes the separately owned custody-domain identity needed
+for live authorization. `revbench score` is a separate offline derivation and
+performs no provider call. Every revbench command uses the qualification
+ledger as its registration-aware resolver. Object bytes without a matching
+retained registration record are refused.
 
 `qualification register` preserves arbitrary bytes without JSON re-encoding
 when `--media-type` is not `application/json`. Historical custody registration
@@ -89,11 +97,13 @@ configuration: {inference_ref, instructions_ref, knowledge_ref, tools_ref,
 `weights_ref` and `executable_ref` may be null only when the named provider or
 harness does not expose those bytes, in which case the matching unavailable
 reason is mandatory. Every nonnull reference follows the registered
-evidence-reference contract. The observed route and contract reference remains
-mandatory. `resolution` is `immutable` or
-`observed-route`; policy may reject the latter. `observed_at` is null for an
-immutable route and a UTC timestamp for an observed route. `route_ref`
-identifies the resolved route contract, not the nominal alias.
+evidence-reference contract. The route contract reference remains mandatory.
+`resolution` is `immutable`, `configured-route`, or `observed-route`.
+`observed_at` is null for immutable and configured routes and is a UTC
+timestamp only for an observed route. A configured route records exact
+operator configuration; it does not claim that CAPLAB observed provider
+routing. `route_ref` identifies the exact route contract, not a nominal alias.
+Configured and observed routes remain advisory-only under qualification v1.
 
 `version_probe_ref` resolves to canonical
 `{command_ref, exit_code, stdout_ref, stderr_ref}` captured before the attempt.
@@ -241,7 +251,7 @@ applies_to:
   experiment: {family, version}
   protocol_sha256: ...
   corpus_sha256: ...
-  binding_resolutions: [immutable | observed-route, ...]
+  binding_resolutions: [immutable | configured-route | observed-route, ...]
 requirements:
   minimum_usable: ...
   maximum_missing_rate: {numerator, denominator}
@@ -287,7 +297,8 @@ require a new policy schema version.
 `unmeasured`. Without an exact valid authorization for the resulting status, a
 policy can emit only `advisory` or `unmeasured`. Version 1 decision claims also
 require an `immutable` Binding with nonnull model-weights and harness-executable
-references; an `observed-route` or unknown-byte Binding is advisory-only.
+references; a `configured-route`, `observed-route`, or unknown-byte Binding is
+advisory-only even if a policy lists that resolution.
 `policy_id` is `pol-` plus the SHA-256 of the canonical document without
 `policy_id`.
 
@@ -418,8 +429,8 @@ contract. Preparation rejects hidden selection or exclusion inputs; version 1
 therefore cannot conceal downstream-fate selection behind an empty
 `conditioned_on` declaration.
 
-Preparation accepts only the repository-owned synthetic fixture namespace in
-version 1. Its Binding is exactly:
+Preparation accepts two closed profiles in version 1. The repository-owned
+synthetic fixture Binding is exactly:
 
 ```text
 provider identifier: caplab-local-fixture
@@ -443,12 +454,22 @@ equal its registered `executable_ref`. The complete mandatory proxy-marker set
 is `openrouter`, `harbor`, and `terminus`; a caller cannot weaken it.
 
 A non-local Binding must reference canonical bytes equal to
-[`native-agent-systems.json`](native-agent-systems.json), and preparation then
-fails closed because live native-provider preparation is not implemented in
-version 1. Thus neither a caller-authored provider policy nor a local fixture
-can label synthetic bytes as Codex, Claude Code, or another live subject. A
-future provider implementation must add sealed launcher dependencies and
-version evidence before this preparation refusal can be removed.
+[`native-agent-systems.json`](native-agent-systems.json). The only implemented
+live profile is its `codex-terra-max` tuple: Codex CLI 0.147.0, model
+`gpt-5.6-terra`, reasoning effort `max`, direct provider `openai`, and the
+Responses API. Its route resolution is `configured-route` with
+`observed_at: null`; preparation verifies configured intent and does not
+fabricate a provider-route observation. The Binding resolves exact registered
+documents for the native command, version probe, inference flags, disabled
+web/search/config/rules and tool surfaces, permissions, empty-root sandbox,
+credential profile, response adapter, and the packaged
+`caplab-revbench-codex-native-bundle-policy/1`. Every other live tuple,
+provider, route, model, effort, command, or configuration fails closed.
+
+The frozen native-system contract remains the historical subject-policy input;
+the additive Codex bundle policy supplies the implemented live runtime. This
+does not let a caller-authored provider policy or a local fixture relabel
+synthetic bytes as Codex, Claude Code, or another live subject.
 
 The control is known sound only for the declared integer-minimum invariant.
 The bounded distribution is `json-integer-minimum/1`; it does not imply
@@ -463,13 +484,16 @@ other distribution.
 `native_system_contract_ref`, `command_ref`, `version_probe_ref`,
 `effect_class`, `limits`, `valid_from`, and `valid_until`. Its ID is
 `revbench-execution-auth-` plus the canonical SHA-256 of every other field.
+Live authorization also requires `apparatus_ref` and `custody_domain_id`;
+local-fixture authorization forbids both fields.
 The authority source is a registered `caplab-authorization-delegation/1` for
 the `revbench-execution` effect and the same complete scope and interval.
 
-`effect_class` is `local-fixture` or `live-native-provider`. The latter is
-reserved and rejected by v1 preparation and execution. A future live run would
-require both an implemented sealed provider adapter and its own registered
-`live-native-provider` authorization.
+`effect_class` is `local-fixture` or `live-native-provider`. The live class is
+accepted only for the exact Codex profile and only when the registered
+authorization and its delegation bind the clean apparatus receipt and the
+durable custody-domain identity in addition to the manifest, Binding, native
+system contract, commands, limits, and interval.
 
 `limits` has exact keys `max_version_probe_processes`,
 `max_native_review_processes`, `timeout_seconds_per_process`,
@@ -478,7 +502,7 @@ require both an implemented sealed provider adapter and its own registered
 case count in the zero-retry v1 protocol. Time and stream limits are bounded by
 the public schema and are enforced by the runner.
 
-CAPLAB execution supports one fail-closed configuration profile:
+The local-fixture executor supports this fail-closed configuration profile:
 
 - `runtime_ref` resolves to `caplab-revbench-execution-runtime/1` and pins the
   absolute executable path, `static-elf` format, empty environment-key list,
@@ -492,12 +516,6 @@ CAPLAB execution supports one fail-closed configuration profile:
 - `sandbox_ref` pins the absolute Bubblewrap adapter and its registered bytes,
   a read-only root, private writable working directory, and the same network
   mode.
-
-The v1 executor accepts only `local-fixture` authority. It refuses
-`live-native-provider` authority until CAPLAB has a separately pinned native
-harness bundle, provider-specific tool-disable contract, and durable streaming
-custody adapter. The authorization schema reserves that effect class without
-claiming an implementation.
 
 CAPLAB resolves and compares both executable and sandbox-adapter bytes before
 execution. `executable_ref` cannot be null on this path, and the executable
@@ -513,6 +531,82 @@ they do not rename ordinary runtime syscalls as agent tools. Stdin is written
 non-blockingly so a child that does not read cannot escape the process
 deadline. A timeout or byte limit terminates the process group and retains the
 captured prefix.
+
+### Exact live Codex runtime and custody
+
+Live v1 is source-checkout-only. Both `prepare-live-runtime` and `execute`
+must run from the exact repository source through:
+
+```text
+cd REPOSITORY_ROOT
+/usr/bin/python3 -I -S -B \
+  -X pycache_prefix=/nonexistent/caplab-revbench-pycache-v1 \
+  src/caplab/revbench/live_entrypoint.py COMMAND ...
+```
+
+The entrypoint accepts the absolute or repository-relative script path but
+requires the exact interpreter options and rejects additional `-X` or `-W`
+flags, virtual environments, site/user startup hooks, package symlinks,
+untracked package members, package caches as executable inputs, and source-root
+shadow imports. The apparatus receipt records the exact clean CAPLAB package
+tree and commit, interpreter bytes and behavior flags, complete standard
+library trees, selected dependency identities, executable native mappings,
+protocol/bundle identity, and observed platform. Fresh execution recomputes
+the receipt immediately before each outer launch and requires the authorization
+to pin the same registered `apparatus_ref`. Offline scoring validates the
+retained receipt without depending on the scorer's ambient Python flags.
+
+The packaged bundle pins the 258,278,208-byte Codex 0.147.0 executable, its
+exact `--version` streams, Bubblewrap plus its loader/library closure and
+modes, ordered containment argv, fixed environment, response schema, public
+CA data, deterministic hostname, and minimal repository-owned resolver and
+`hosts: files dns` configuration. The resolver names public DNS service
+`1.1.1.1`; live authorization therefore permits that DNS egress and the pinned
+Codex transport over the shared network. No host resolver search domains are
+registered or exported. The empty-root namespace mounts no host shell or host
+filesystem. Subject-visible `/proc`, CPU, kernel, namespace support, and the
+host kernel TCB are observed rather than sealed bundle members.
+
+The credential profile is a registered nonsecret, provider-specific mismatch
+guard. Its account and subject hashes are operator-declared from locally
+parsed token claims; CAPLAB does not verify the JWT signature or claim that the
+provider observed either identity. The configured source is one 0600,
+single-link direct child of a separate 0700 credential root. Its path and bytes
+remain outside registered evidence and custody. CAPLAB reads it once through a
+nonblocking descriptor, copies it to an anonymous sealed memfd, mounts that
+copy read-only at the fixed `CODEX_HOME`, and forbids refresh/writeback. The
+operator must provision credentials valid for the authorization interval;
+authentication or refresh failure is infrastructure failure.
+
+The custody root is a separate owner-controlled, durable, nonrollback domain,
+disjoint from the evidence ledger, credential root, repository, and package.
+Its random nonsecret `custody_domain_id` is bound by the delegation,
+authorization, and intent; a caller cannot select a fresh root to replay the
+same authority. Each manifest is globally one-shot within that domain by
+manifest, experiment, case, arm, assignment index, and process kind. A new
+authorization cannot replay a completed or uncertain slot. Intended
+replication requires a new manifest/experiment identity.
+
+Before every possible outer launch, CAPLAB fsyncs an intent that binds the
+normalized semantic argv, stdin, environment, bundle, apparatus, command,
+credential profile, limits, and effect identity. Streams are scanned before
+durable writes, written incrementally to private custody, and become complete
+evidence only after EOF and stream/completion sync. A crash or uncertain
+effect retains synchronized prefixes, records recovery, never retries, and may
+seal after authority expiry. This is at-most-once *outer containment process
+launch* within one intact custody root. It does not prove provider delivery,
+prevent Codex-internal HTTP retries, or survive rollback/loss of the custody
+root.
+
+The streaming privacy gate excludes exact known credential/token/account/
+subject scalars and decoded private/custom claim keys and values, including a
+match split across read chunks. A match terminates the process, withholds the
+unsafe overlap, retains only a safe private prefix, emits a
+`privacy-quarantine` infrastructure receipt with null public stream refs, and
+never retries. This is exact-scalar quarantine only; it does not prove absence
+of encoded, transformed, or fragmented leakage. Fixed public literals such as
+`chatgpt`, the JWT algorithm/type, and pinned issuer/audience are not treated
+as secrets.
 
 ### Blinding and attempt records
 
@@ -556,6 +650,18 @@ authority, version match, capture disposition, and envelope projection. A
 caller cannot substitute a control prompt/output for a mutant attempt through
 the supported API and receive catch credit.
 
+Live execution adds registered `caplab-revbench-live-execution-intent/1` and
+`caplab-revbench-live-process-receipt/1` documents. Every version observation
+and attempt capture references its exact process receipt; every receipt names
+its sequence index, effect/process identity, launch plan, apparatus,
+authorization, synchronized stream refs or quarantine disposition, timestamps,
+completion state, and recovery ref. Native stdout is the complete Codex JSONL
+transport. A separate registered derivation selects the unique final agent
+message from an exact thread-start, turn-start, item, and terminal-turn
+sequence and binds the derived response bytes to raw stdout. The scorer
+resolves the intent, receipts, streams, derivation, apparatus, authorization,
+and complete Binding and recomputes these links and identities.
+
 `caplab-revbench-reviews/1` has exact keys `schema_version`, `execution_id`,
 `experiment_id`, `execution_authorization_ref`, `started_at`, `observed_at`,
 `status`, `stop_reason`, and `attempts`. Complete executions contain every
@@ -565,6 +671,20 @@ before the first process. Subject response failures are sealed and execution
 continues. Version drift, process spawn/nonzero/timeout/stream-limit failures,
 or authorization expiry are infrastructure failures and stop execution without
 retry.
+
+The live reviews variant also has `execution_intent_ref` and the ordered
+`process_receipt_refs`. Attempts must be the exact assignment prefix implied by
+the receipt prefix; selective omission, a later-only attempt, a swapped
+version observation, or a receipt/attempt gap is invalid. A completed,
+exit-zero, structurally valid Codex terminal JSONL envelope establishes
+observed native-harness completion. If its final agent text violates the frozen
+native response schema, the attempt is a `subject-failure` and execution
+continues. Malformed/incomplete JSONL, Codex error/failed events, nonzero exit,
+timeout, limit, privacy quarantine, or uncertain recovery is an
+`infrastructure-failure` and stops. Starting Bubblewrap alone does not prove a
+native harness or provider request occurred. A stopped uncertain version probe
+may have zero attempts while retaining its intent and receipt; scoring labels
+that Measurement infrastructure-failed and keeps the attempted count at zero.
 
 ### Offline scoring and trust ceiling
 
@@ -582,14 +702,19 @@ its numerator may be negative.
 The local append-only ledger is a registration-aware integrity and custody
 boundary, not a cryptographic signer or protection against a malicious writer
 with the same filesystem authority. A registration failure raises and cannot
-produce a Measurement, but the local-fixture executor does not have a durable
-preopened stream sink that can recover bytes after a process completes. That
-missing seam is one reason live execution remains refused. The executor does
-not claim hardware attestation, secret-value identity, or independent
-acceptance. Descriptor-relative stream publication refuses a symlink at the
-ledger root or stream entry, but still trusts the ledger path's ancestor
-directories; an actor able to replace those ancestors or write the ledger
-outside its lock remains outside this boundary.
+produce a Measurement. The local-fixture executor still lacks the live path's
+durable preopened process-stream recovery seam. Live custody is durable and
+one-shot only within one intact, owner-controlled root; rollback, deletion,
+same-user direct mutation, a hostile ancestor, provider-internal retry, and
+the exact fate of a network request remain outside its proof. The executor
+does not claim hardware attestation, provider-authenticated account identity,
+provider delivery, independent qualification, or acceptance.
+
+Every live Revbench Measurement remains advisory under qualification v1
+because its `configured-route` Binding is nonobservational. Green execution,
+scoring, schema validation, or a pinned apparatus does not qualify any Binding.
+A separate policy and authorization may produce only the status permitted by
+the generic qualification contract.
 
 Legacy tuner summaries and fate-selected controls are not imported as
 Measurements by default. They remain `legacy_nonqualifying` observations until

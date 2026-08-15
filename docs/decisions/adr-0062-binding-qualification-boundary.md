@@ -74,6 +74,11 @@ profile uses a repository-owned synthetic model, harness, provider, and version
 namespace, plus registered executable bytes and pinned version-stream digests.
 It cannot be relabeled as a canonical Codex or Claude subject.
 
+ADR 0063 supersedes only the initial live-provider-refusal clause above. It
+adds one exact Codex profile, apparatus receipt, and durable custody seam while
+preserving this ADR's module, authority, fate-firewall, qualification, and
+Quartermaster boundaries. The local-fixture behavior remains unchanged.
+
 A Binding identifies the exact behavior-bearing native agent system and its
 administration. A protocol and corpus identify the measurement context. A
 change to either side prevents claim reuse: behavior-bearing changes create a

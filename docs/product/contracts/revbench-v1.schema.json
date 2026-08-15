@@ -21,7 +21,8 @@
     {"$ref": "#/$defs/native_attempt_capture"},
     {"$ref": "#/$defs/native_attempt_attestation"},
     {"$ref": "#/$defs/native_review_attempt"},
-    {"$ref": "#/$defs/reviews"}
+    {"$ref": "#/$defs/reviews"},
+    {"$ref": "revbench-live-native-v1.schema.json"}
   ],
   "$defs": {
     "json_pointer": {
@@ -498,11 +499,28 @@
         "native_system_contract_ref": {"$ref": "#/$defs/native_system_contract_ref"},
         "command_ref": {"$ref": "qualification-claim-v1.schema.json#/$defs/harness_command_ref"},
         "version_probe_ref": {"$ref": "qualification-claim-v1.schema.json#/$defs/version_probe_ref"},
+        "apparatus_ref": {"$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"},
+        "custody_domain_id": {"type": "string", "pattern": "^custody-domain-[0-9a-f]{64}$"},
         "effect_class": {"enum": ["local-fixture", "live-native-provider"]},
         "limits": {"$ref": "#/$defs/execution_limits"},
         "valid_from": {"$ref": "qualification-claim-v1.schema.json#/$defs/utc_timestamp"},
         "valid_until": {"$ref": "qualification-claim-v1.schema.json#/$defs/utc_timestamp"}
-      }
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"effect_class": {"const": "live-native-provider"}}, "required": ["effect_class"]},
+          "then": {"required": ["apparatus_ref", "custody_domain_id"]}
+        },
+        {
+          "if": {"properties": {"effect_class": {"const": "local-fixture"}}, "required": ["effect_class"]},
+          "then": {
+            "allOf": [
+              {"not": {"required": ["apparatus_ref"]}},
+              {"not": {"required": ["custody_domain_id"]}}
+            ]
+          }
+        }
+      ]
     },
     "native_input": {
       "type": "object",

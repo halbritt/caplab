@@ -445,6 +445,7 @@
           "items": {
             "enum": [
               "immutable",
+              "configured-route",
               "observed-route"
             ]
           },

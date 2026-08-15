@@ -3,8 +3,12 @@
 import hashlib
 import json
 import re
+import shutil
+import subprocess
+import tempfile
 import tomllib
 import unittest
+import zipfile
 from pathlib import Path
 
 from caplab.ladder_subject import validate_ladder_subject
@@ -437,6 +441,7 @@ class RepositoryContractTests(unittest.TestCase):
             catalog["schema_version"], "caplab-qualification-schema-catalog/1"
         )
         paths = [resource["path"] for resource in catalog["resources"]]
+        self.assertIn("revbench-live-native-v1.schema.json", paths)
         self.assertEqual(paths, sorted(paths))
         self.assertEqual(len(paths), len(set(paths)))
         for resource in catalog["resources"]:
@@ -446,6 +451,131 @@ class RepositoryContractTests(unittest.TestCase):
             self.assertEqual(
                 hashlib.sha256(schema_bytes).hexdigest(), resource["sha256"]
             )
+
+    def test_ordinary_wheel_stamps_commit_and_packages_live_contracts(self) -> None:
+        system_python = Path("/usr/bin/python3")
+        python = (
+            str(system_python) if system_python.is_file() else shutil.which("python3")
+        )
+        if python is None:
+            self.fail("python3 is required for the wheel contract")
+        expected_commit = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        contracts = (
+            "qualification-schema-catalog-v1.json",
+            "qualification-claim-v1.schema.json",
+            "qualification-export-v1.schema.json",
+            "qualification-records-v1.schema.json",
+            "revbench-live-native-v1.schema.json",
+            "revbench-v1.schema.json",
+        )
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            wheels = root / "wheels"
+            wheels.mkdir()
+            subprocess.run(
+                [
+                    python,
+                    "-m",
+                    "pip",
+                    "wheel",
+                    ".",
+                    "--no-deps",
+                    "--no-build-isolation",
+                    "--wheel-dir",
+                    str(wheels),
+                ],
+                cwd=ROOT,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            artifacts = list(wheels.glob("*.whl"))
+            self.assertEqual(len(artifacts), 1)
+            with zipfile.ZipFile(artifacts[0]) as wheel:
+                self.assertEqual(
+                    wheel.read("caplab/_source_commit.txt"),
+                    (expected_commit + "\n").encode("ascii"),
+                )
+                for live_member in (
+                    "codex-native-bundle-v1.json",
+                    "resolv-public-v1.conf",
+                    "nsswitch-public-v1.conf",
+                ):
+                    bundle = f"caplab/revbench/contracts/{live_member}"
+                    self.assertEqual(
+                        wheel.read(bundle),
+                        (ROOT / "src" / bundle).read_bytes(),
+                    )
+                for filename in contracts:
+                    self.assertEqual(
+                        wheel.read(f"caplab/qualification/contracts/{filename}"),
+                        (ROOT / "docs/product/contracts" / filename).read_bytes(),
+                    )
+                installed = root / "ambient" / "site-packages"
+                wheel.extractall(installed)
+
+            observed = subprocess.run(
+                [
+                    python,
+                    "-I",
+                    "-c",
+                    (
+                        "import json,sys;"
+                        f"sys.path.insert(0,{str(installed)!r});"
+                        "from caplab.producer import producer_identity;"
+                        "print(json.dumps(producer_identity()))"
+                    ),
+                ],
+                cwd=root,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(json.loads(observed.stdout)[1], expected_commit)
+
+            stamp = installed / "caplab" / "_source_commit.txt"
+            stamp.write_text("$Format:%H$\n", encoding="ascii")
+            ambient = root / "ambient"
+            subprocess.run(["git", "init", "-q"], cwd=ambient, check=True)
+            subprocess.run(
+                [
+                    "git",
+                    "-c",
+                    "user.name=CAPLAB",
+                    "-c",
+                    "user.email=x@x",
+                    "commit",
+                    "--allow-empty",
+                    "-qm",
+                    "ambient",
+                ],
+                cwd=ambient,
+                check=True,
+            )
+            refused = subprocess.run(
+                [
+                    python,
+                    "-I",
+                    "-c",
+                    (
+                        "import sys;"
+                        f"sys.path.insert(0,{str(installed)!r});"
+                        "from caplab.producer import producer_identity;"
+                        "producer_identity()"
+                    ),
+                ],
+                cwd=ambient,
+                capture_output=True,
+                text=True,
+            )
+            self.assertNotEqual(refused.returncode, 0)
+            self.assertIn("producer_commit_checkout_invalid", refused.stderr)
 
     def test_active_decisions_bind_ordered_standalone_p4_p5_and_p6_authority(
         self,

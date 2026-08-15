@@ -1,0 +1,2840 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://caplab.local/contracts/revbench-live-native-v1.schema.json",
+  "title": "CAPLAB Revbench pinned live-native evidence v1",
+  "$comment": "Shape validation is not authority. Runtime validation resolves every ref, recomputes apparatus, launch plans, custody identities, stream digests, derivations, and authorization scope.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/apparatus"
+    },
+    {
+      "$ref": "#/$defs/authority_inputs"
+    },
+    {
+      "$ref": "#/$defs/bundle_policy"
+    },
+    {
+      "$ref": "#/$defs/credential_profile"
+    },
+    {
+      "$ref": "#/$defs/inference_configuration"
+    },
+    {
+      "$ref": "#/$defs/tools_configuration"
+    },
+    {
+      "$ref": "#/$defs/permissions_configuration"
+    },
+    {
+      "$ref": "#/$defs/sandbox_configuration"
+    },
+    {
+      "$ref": "#/$defs/runtime_configuration"
+    },
+    {
+      "$ref": "#/$defs/response_derivation"
+    },
+    {
+      "$ref": "#/$defs/execution_intent"
+    },
+    {
+      "$ref": "#/$defs/process_recovery"
+    },
+    {
+      "$ref": "#/$defs/process_receipt"
+    },
+    {
+      "$ref": "#/$defs/version_observation"
+    },
+    {
+      "$ref": "#/$defs/output"
+    },
+    {
+      "$ref": "#/$defs/capture"
+    },
+    {
+      "$ref": "#/$defs/attestation"
+    },
+    {
+      "$ref": "#/$defs/attempt_envelope"
+    },
+    {
+      "$ref": "#/$defs/reviews"
+    }
+  ],
+  "$defs": {
+    "ref": {
+      "$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"
+    },
+    "apparatus_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "execution-apparatus-receipt"
+            },
+            "schema": {
+              "const": "caplab-revbench-execution-apparatus/1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "execution_authorization_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "revbench-execution-authorization"
+            },
+            "schema": {
+              "const": "caplab-revbench-execution-authorization/1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "execution_intent_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "live-execution-intent"
+            },
+            "schema": {
+              "const": "caplab-revbench-live-execution-intent/1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "process_receipt_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "live-process-receipt"
+            },
+            "schema": {
+              "const": "caplab-revbench-live-process-receipt/1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "process_recovery_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "native-process-recovery"
+            },
+            "schema": {
+              "const": "caplab-revbench-live-process-recovery/1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "bundle_policy_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "native-runtime-bundle-policy"
+            },
+            "schema": {
+              "const": "caplab-revbench-codex-native-bundle-policy/1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "credential_profile_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "credential-profile"
+            },
+            "schema": {
+              "const": "caplab-revbench-codex-credential-profile/1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "harness_executable_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "harness-executable"
+            },
+            "schema": {
+              "const": "caplab-native-executable/1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "sandbox_executable_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "sandbox-executable"
+            },
+            "schema": {
+              "const": "caplab-native-executable/1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "sandbox_runtime_resource_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "sandbox-runtime-resource"
+            },
+            "schema": {
+              "const": "caplab-native-runtime-resource/1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "runtime_resource_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "native-runtime-resource"
+            },
+            "schema": {
+              "const": "caplab-native-runtime-resource/1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "response_schema_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "native-response-schema"
+            },
+            "schema": {
+              "const": "caplab-revbench-native-response-schema/1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "stdout_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "native-process-stdout"
+            },
+            "schema": {
+              "const": "caplab-native-process-stream/1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "stderr_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "native-process-stderr"
+            },
+            "schema": {
+              "const": "caplab-native-process-stream/1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "derived_response_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "native-derived-response"
+            },
+            "schema": {
+              "const": "caplab-revbench-native-response/1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "response_derivation_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "native-response-derivation"
+            },
+            "schema": {
+              "const": "caplab-revbench-response-derivation/1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "version_observation_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "live-native-version-observation"
+            },
+            "schema": {
+              "const": "caplab-live-native-version-observation/1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "version_probe_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "native-harness-version-probe"
+            },
+            "schema": {
+              "const": "caplab-native-harness-version-probe/1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "review_command_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "native-harness-command"
+            },
+            "schema": {
+              "const": "caplab-native-harness-command/1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "version_command_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "native-harness-version-command"
+            },
+            "schema": {
+              "const": "caplab-native-harness-version-command/1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "native_system_contract_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "native-agent-systems-contract"
+            },
+            "schema": {
+              "const": "caplab.native-agent-systems/v1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "prompt_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "prompt"
+            },
+            "schema": {
+              "const": "caplab-revbench-prompt/1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "stdin_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "native-process-stdin"
+            },
+            "schema": {
+              "const": "caplab-native-process-stream/1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "output_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "live-native-output"
+            },
+            "schema": {
+              "const": "caplab-live-native-output/1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "capture_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "live-native-attempt-capture"
+            },
+            "schema": {
+              "const": "caplab-live-native-attempt-capture/1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "attestation_ref": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "live-native-attempt-attestation"
+            },
+            "schema": {
+              "const": "caplab-live-native-attempt-attestation/1"
+            }
+          },
+          "required": [
+            "kind",
+            "schema"
+          ]
+        }
+      ]
+    },
+    "attempt_ref": {
+      "allOf": [
+        {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/attempt_ref"
+        },
+        {
+          "properties": {
+            "schema": {
+              "const": "caplab-live-native-review-attempt/1"
+            }
+          },
+          "required": [
+            "schema"
+          ]
+        }
+      ]
+    },
+    "timestamp": {
+      "$ref": "qualification-claim-v1.schema.json#/$defs/utc_timestamp"
+    },
+    "sha256": {
+      "$ref": "qualification-claim-v1.schema.json#/$defs/sha256"
+    },
+    "binding": {
+      "$ref": "qualification-claim-v1.schema.json#/$defs/binding"
+    },
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,127}$"
+    },
+    "effect_id": {
+      "type": "string",
+      "pattern": "^live-effect-[0-9a-f]{64}$"
+    },
+    "process_id": {
+      "type": "string",
+      "pattern": "^process-[0-9a-f]{64}$"
+    },
+    "custody_domain_id": {
+      "type": "string",
+      "pattern": "^custody-domain-[0-9a-f]{64}$"
+    },
+    "member": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "byte_count"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "byte_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "runtime_member": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "identity",
+        "storage",
+        "sha256",
+        "byte_count"
+      ],
+      "properties": {
+        "identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "storage": {
+          "enum": [
+            "python-runtime-file",
+            "mapped-native-file"
+          ]
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "byte_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "authority_inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "apparatus_ref",
+        "custody_domain_id",
+        "authority_inputs_id"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "caplab-revbench-live-authority-inputs/1"
+        },
+        "apparatus_ref": {
+          "$ref": "#/$defs/apparatus_ref"
+        },
+        "custody_domain_id": {
+          "$ref": "#/$defs/custody_domain_id"
+        },
+        "authority_inputs_id": {
+          "type": "string",
+          "pattern": "^live-authority-inputs-[0-9a-f]{64}$"
+        }
+      }
+    },
+    "credential_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "profile_id",
+        "provider",
+        "auth_method",
+        "identity_basis",
+        "provider_account_id_sha256",
+        "provider_subject_sha256",
+        "identity_token_issuer",
+        "identity_token_audience"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "caplab-revbench-codex-credential-profile/1"
+        },
+        "profile_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "provider": {
+          "const": "openai"
+        },
+        "auth_method": {
+          "const": "chatgpt"
+        },
+        "identity_basis": {
+          "const": "operator-declared-unverified-token-claims"
+        },
+        "provider_account_id_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "provider_subject_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "identity_token_issuer": {
+          "const": "https://auth.openai.com"
+        },
+        "identity_token_audience": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "inference_configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "command_ref",
+        "bundle_policy_ref",
+        "response_adapter"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "caplab-revbench-codex-inference/1"
+        },
+        "command_ref": {
+          "$ref": "#/$defs/review_command_ref"
+        },
+        "bundle_policy_ref": {
+          "$ref": "#/$defs/bundle_policy_ref"
+        },
+        "response_adapter": {
+          "const": "codex-jsonl-final-agent-message/1"
+        }
+      }
+    },
+    "tools_configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "surface",
+        "mode",
+        "host_shell_mounted",
+        "host_filesystem_mounted",
+        "user_configuration",
+        "rules",
+        "mcp_servers",
+        "plugins",
+        "web_search"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "caplab-revbench-codex-tools/1"
+        },
+        "surface": {
+          "const": "tools"
+        },
+        "mode": {
+          "const": "native-harness-empty-root"
+        },
+        "host_shell_mounted": {
+          "const": false
+        },
+        "host_filesystem_mounted": {
+          "const": false
+        },
+        "user_configuration": {
+          "const": "ignored"
+        },
+        "rules": {
+          "const": "ignored"
+        },
+        "mcp_servers": {
+          "const": []
+        },
+        "plugins": {
+          "const": []
+        },
+        "web_search": {
+          "const": "disabled"
+        }
+      }
+    },
+    "permissions_configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "environment_keys",
+        "filesystem_mode",
+        "network_mode"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "caplab-revbench-codex-permissions/1"
+        },
+        "environment_keys": {
+          "const": [
+            "CODEX_HOME",
+            "HOME",
+            "LANG",
+            "PATH",
+            "SSL_CERT_FILE"
+          ]
+        },
+        "filesystem_mode": {
+          "const": "empty-root-private-cwd"
+        },
+        "network_mode": {
+          "const": "ambient-authorized"
+        }
+      }
+    },
+    "sandbox_configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "adapter_path",
+        "adapter_ref",
+        "root_filesystem",
+        "working_directory",
+        "network_mode",
+        "namespace",
+        "die_with_parent",
+        "new_session",
+        "shell_mounted",
+        "host_filesystem_mounted"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "caplab-revbench-codex-sandbox/1"
+        },
+        "adapter_path": {
+          "const": "/usr/bin/bwrap"
+        },
+        "adapter_ref": {
+          "$ref": "#/$defs/sandbox_executable_ref"
+        },
+        "root_filesystem": {
+          "const": "empty-tmpfs"
+        },
+        "working_directory": {
+          "const": "private-write"
+        },
+        "network_mode": {
+          "const": "ambient-authorized"
+        },
+        "namespace": {
+          "const": "empty-root-unshare-all-share-net"
+        },
+        "die_with_parent": {
+          "const": true
+        },
+        "new_session": {
+          "const": true
+        },
+        "shell_mounted": {
+          "const": false
+        },
+        "host_filesystem_mounted": {
+          "const": false
+        }
+      }
+    },
+    "bundle_policy": {
+      "const": {
+        "schema_version": "caplab-revbench-codex-native-bundle-policy/1",
+        "policy_id": "codex-terra-max-revbench-live-v1",
+        "native_agent_system": {
+          "canonical_policy_sha256": "56bd254c2500d4d5913460aae307cbf5b81aafdb1830d5fe66a7d429432fc5d2",
+          "tuple_id": "codex-terra-max",
+          "model_id": "gpt-5.6-terra",
+          "native_harness_id": "codex",
+          "reasoning_effort": "max"
+        },
+        "launcher": {
+          "target": "x86_64-unknown-linux-musl",
+          "logical_executable": "codex",
+          "contained_executable": "/opt/caplab/codex/bin/codex",
+          "executable_format": "interpreter-free-static-pie-observed",
+          "executable_sha256": "cb0a15567e9a60a5820d54b0f6ae86d504dc3805c1eab21a47f70e3eb7b73a40",
+          "executable_byte_count": 258278208,
+          "harness_version": "codex-cli 0.147.0",
+          "version_argv": [
+            "codex",
+            "--version"
+          ],
+          "version_exit_code": 0,
+          "version_stdout_sha256": "47e8650c39eae3ea896e5873f03a97a65d183d81cd0d86616e8b83d7d87877ca",
+          "version_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "review_argv": [
+            "codex",
+            "exec",
+            "-m",
+            "gpt-5.6-terra",
+            "-c",
+            "model_reasoning_effort=max",
+            "-c",
+            "model_provider=openai",
+            "-c",
+            "shell_environment_policy.inherit=none",
+            "-c",
+            "web_search=disabled",
+            "--strict-config",
+            "--ignore-user-config",
+            "--ignore-rules",
+            "--dangerously-bypass-approvals-and-sandbox",
+            "--skip-git-repo-check",
+            "--ephemeral",
+            "--json",
+            "--output-schema",
+            "/opt/caplab/revbench/native-response.schema.json",
+            "--color",
+            "never",
+            "-"
+          ]
+        },
+        "containment": {
+          "adapter_path": "/usr/bin/bwrap",
+          "adapter_sha256": "52231e1caf55bcbc667b269f49c63599a6f7db4767ae6a039580d0ff853db712",
+          "adapter_byte_count": 72160,
+          "namespace": "empty-root-unshare-all-share-net",
+          "die_with_parent": true,
+          "new_session": true,
+          "shell_mounted": false,
+          "host_filesystem_mounted": false,
+          "network_mode": "ambient-authorized",
+          "hostname": "caplab-revbench",
+          "working_directory": "/work",
+          "credential_target": "/codex-home/auth.json",
+          "credential_writeback": "forbidden-read-only-anonymous-copy",
+          "credential_validity": "caller-provisioned-for-full-authorization-interval",
+          "response_schema_target": "/opt/caplab/revbench/native-response.schema.json",
+          "ca_certificates_target": "/etc/ssl/certs/ca-certificates.crt",
+          "resolver_target": "/etc/resolv.conf",
+          "nsswitch_target": "/etc/nsswitch.conf"
+        },
+        "version_containment_argv_template": [
+          "{adapter_loader}",
+          "--library-path",
+          "{adapter_library_directory}",
+          "{adapter_executable}",
+          "--unshare-all",
+          "--hostname",
+          "caplab-revbench",
+          "--die-with-parent",
+          "--new-session",
+          "--clearenv",
+          "--tmpfs",
+          "/",
+          "--proc",
+          "/proc",
+          "--dev",
+          "/dev",
+          "--dir",
+          "/opt",
+          "--dir",
+          "/opt/caplab",
+          "--dir",
+          "/opt/caplab/codex",
+          "--dir",
+          "/opt/caplab/codex/bin",
+          "--perms",
+          "0700",
+          "--file",
+          "{codex_executable_fd}",
+          "/opt/caplab/codex/bin/codex",
+          "--remount-ro",
+          "/",
+          "--",
+          "/opt/caplab/codex/bin/codex",
+          "--version"
+        ],
+        "review_containment_argv_template": [
+          "{adapter_loader}",
+          "--library-path",
+          "{adapter_library_directory}",
+          "{adapter_executable}",
+          "--unshare-all",
+          "--hostname",
+          "caplab-revbench",
+          "--share-net",
+          "--die-with-parent",
+          "--new-session",
+          "--clearenv",
+          "--tmpfs",
+          "/",
+          "--proc",
+          "/proc",
+          "--dev",
+          "/dev",
+          "--dir",
+          "/opt",
+          "--dir",
+          "/opt/caplab",
+          "--dir",
+          "/opt/caplab/codex",
+          "--dir",
+          "/opt/caplab/codex/bin",
+          "--dir",
+          "/opt/caplab/revbench",
+          "--dir",
+          "/etc",
+          "--dir",
+          "/etc/ssl",
+          "--dir",
+          "/etc/ssl/certs",
+          "--dir",
+          "/work",
+          "--dir",
+          "/codex-home",
+          "--perms",
+          "0700",
+          "--file",
+          "{codex_executable_fd}",
+          "/opt/caplab/codex/bin/codex",
+          "--perms",
+          "0444",
+          "--ro-bind-data",
+          "{response_schema_fd}",
+          "/opt/caplab/revbench/native-response.schema.json",
+          "--perms",
+          "0444",
+          "--ro-bind-data",
+          "{ca_certificates_fd}",
+          "/etc/ssl/certs/ca-certificates.crt",
+          "--perms",
+          "0444",
+          "--ro-bind-data",
+          "{resolver_fd}",
+          "/etc/resolv.conf",
+          "--perms",
+          "0444",
+          "--ro-bind-data",
+          "{nsswitch_fd}",
+          "/etc/nsswitch.conf",
+          "--remount-ro",
+          "/",
+          "--tmpfs",
+          "/work",
+          "--tmpfs",
+          "/codex-home",
+          "--tmpfs",
+          "/tmp",
+          "--perms",
+          "0400",
+          "--ro-bind-data",
+          "{credential_fd}",
+          "/codex-home/auth.json",
+          "--chdir",
+          "/work",
+          "--setenv",
+          "CODEX_HOME",
+          "/codex-home",
+          "--setenv",
+          "HOME",
+          "/work",
+          "--setenv",
+          "LANG",
+          "C.UTF-8",
+          "--setenv",
+          "PATH",
+          "/nonexistent",
+          "--setenv",
+          "SSL_CERT_FILE",
+          "/etc/ssl/certs/ca-certificates.crt",
+          "--",
+          "{contained_command...}"
+        ],
+        "adapter_runtime": {
+          "kernel_and_user_namespace_support": "host-trusted-not-bundle-member",
+          "loader": {
+            "path": "/lib64/ld-linux-x86-64.so.2",
+            "sha256": "cd4df4f3c7b83673d61189bf2eaebd33ca4f2853ab9772b8a25e025ef99b1e81",
+            "byte_count": 236616,
+            "mode": "0755"
+          },
+          "libraries": [
+            {
+              "name": "libc.so.6",
+              "path": "/lib/x86_64-linux-gnu/libc.so.6",
+              "sha256": "8db37cf3f2169f59a0f07ef1fea308c35656668c64c8ff294e1860f4121eb161",
+              "byte_count": 2125328,
+              "mode": "0755"
+            },
+            {
+              "name": "libcap.so.2",
+              "path": "/lib/x86_64-linux-gnu/libcap.so.2",
+              "sha256": "6ac6abc86ac891c6e13486470e26f1d939f47fda9e6b5d5508a7f5ec881adc84",
+              "byte_count": 51536,
+              "mode": "0644"
+            },
+            {
+              "name": "libpcre2-8.so.0",
+              "path": "/lib/x86_64-linux-gnu/libpcre2-8.so.0",
+              "sha256": "e00576d71d81d3ba0cfa4903c835a44a8723aac96f72f79ff75200b4cff9071b",
+              "byte_count": 625344,
+              "mode": "0644"
+            },
+            {
+              "name": "libselinux.so.1",
+              "path": "/lib/x86_64-linux-gnu/libselinux.so.1",
+              "sha256": "0ec0843463f90e227b0e138e1f379774f50b5514bd7f5dbd4c8a87aca0aa6670",
+              "byte_count": 174472,
+              "mode": "0644"
+            }
+          ]
+        },
+        "pinned_host_resources": {
+          "ca_certificates": {
+            "sha256": "6602a85a36afc2e51c66a0df5ae3d383c5b7c2fed93339ccef7d37e01faf09e8",
+            "byte_count": 182140,
+            "contained_mode": "0444"
+          },
+          "resolver": {
+            "sha256": "738d03354f35e693d104f054978d2ffcfbc91e86744ad7145faa034c1535aca7",
+            "byte_count": 42,
+            "source": "repository:resolv-public-v1.conf",
+            "contained_mode": "0444"
+          },
+          "nsswitch": {
+            "sha256": "2ad90a00ddc40e2931e9da1b7c943a5d40d15039436ea2e20442d47c0916959e",
+            "byte_count": 17,
+            "source": "repository:nsswitch-public-v1.conf",
+            "contained_mode": "0444"
+          }
+        },
+        "environment": {
+          "CODEX_HOME": "/codex-home",
+          "HOME": "/work",
+          "LANG": "C.UTF-8",
+          "PATH": "/nonexistent",
+          "SSL_CERT_FILE": "/etc/ssl/certs/ca-certificates.crt"
+        },
+        "response_adapter": "codex-jsonl-final-agent-message/1",
+        "response_schema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "schema_version",
+            "verdict",
+            "anchors"
+          ],
+          "properties": {
+            "schema_version": {
+              "const": "caplab-revbench-native-response/1"
+            },
+            "verdict": {
+              "enum": [
+                "clean",
+                "defect"
+              ]
+            },
+            "anchors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^(?:/(?:[^~/]|~[01])*)*$"
+              },
+              "uniqueItems": true
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "verdict": {
+                    "const": "clean"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "anchors": {
+                    "maxItems": 0
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "verdict": {
+                    "const": "defect"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "anchors": {
+                    "minItems": 1
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "credential_profile_schema": "caplab-revbench-codex-credential-profile/1",
+        "evidence_limits": {
+          "credential_identity_trust": "operator-declared-claims-not-signature-verified",
+          "secret_quarantine": "exact-known-secret-scalars-only",
+          "delivery_guarantee": "at-most-once-outer-containment-launch-within-one-nonrollback-custody-root",
+          "launch_identity": "normalized-semantic-plan-with-validated-template-substitutions",
+          "provider_request_receipt": "unavailable",
+          "provider_internal_retry_control": "unavailable",
+          "credential_refresh_or_writeback": "forbidden-auth-failure-is-infrastructure",
+          "subject_visible_ambient_kernel_proc_cpu": "observed-not-bundle-member",
+          "dynamic-containment-adapter-kernel_tcb": "pinned-userspace-closure-host-kernel-observed",
+          "trial_plan_execution": "globally-one-shot-replication-requires-new-manifest"
+        }
+      }
+    },
+    "runtime_configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "bundle_policy_ref",
+        "tuple_id",
+        "executable_ref",
+        "sandbox_adapter_ref",
+        "adapter_runtime_refs",
+        "ca_certificates_ref",
+        "resolver_ref",
+        "nsswitch_ref",
+        "response_schema_ref",
+        "credential_profile_ref",
+        "environment",
+        "working_directory",
+        "network_mode",
+        "stdin_mode",
+        "stdout_mode",
+        "custody_mode"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "caplab-revbench-codex-runtime/1"
+        },
+        "bundle_policy_ref": {
+          "$ref": "#/$defs/bundle_policy_ref"
+        },
+        "tuple_id": {
+          "const": "codex-terra-max"
+        },
+        "executable_ref": {
+          "$ref": "#/$defs/harness_executable_ref"
+        },
+        "sandbox_adapter_ref": {
+          "$ref": "#/$defs/sandbox_executable_ref"
+        },
+        "adapter_runtime_refs": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "loader_ref",
+            "library_refs"
+          ],
+          "properties": {
+            "loader_ref": {
+              "$ref": "#/$defs/sandbox_runtime_resource_ref"
+            },
+            "library_refs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "ref"
+                ],
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "libc.so.6",
+                      "libcap.so.2",
+                      "libpcre2-8.so.0",
+                      "libselinux.so.1"
+                    ]
+                  },
+                  "ref": {
+                    "$ref": "#/$defs/sandbox_runtime_resource_ref"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "ca_certificates_ref": {
+          "$ref": "#/$defs/runtime_resource_ref"
+        },
+        "resolver_ref": {
+          "$ref": "#/$defs/runtime_resource_ref"
+        },
+        "nsswitch_ref": {
+          "$ref": "#/$defs/runtime_resource_ref"
+        },
+        "response_schema_ref": {
+          "$ref": "#/$defs/response_schema_ref"
+        },
+        "credential_profile_ref": {
+          "$ref": "#/$defs/credential_profile_ref"
+        },
+        "environment": {
+          "const": {
+            "CODEX_HOME": "/codex-home",
+            "HOME": "/work",
+            "LANG": "C.UTF-8",
+            "PATH": "/nonexistent",
+            "SSL_CERT_FILE": "/etc/ssl/certs/ca-certificates.crt"
+          }
+        },
+        "working_directory": {
+          "const": "/work"
+        },
+        "network_mode": {
+          "const": "ambient-authorized"
+        },
+        "stdin_mode": {
+          "const": "canonical-json"
+        },
+        "stdout_mode": {
+          "const": "codex-jsonl"
+        },
+        "custody_mode": {
+          "const": "durable-prefix-one-shot"
+        }
+      }
+    },
+    "response_derivation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "adapter",
+        "raw_stdout_ref",
+        "selected_event_index",
+        "selected_event_type",
+        "selected_item_id",
+        "extracted_text_sha256",
+        "derived_response_ref"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "caplab-revbench-response-derivation/1"
+        },
+        "adapter": {
+          "const": "codex-jsonl-final-agent-message/1"
+        },
+        "raw_stdout_ref": {
+          "$ref": "#/$defs/stdout_ref"
+        },
+        "selected_event_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "selected_event_type": {
+          "const": "item.completed"
+        },
+        "selected_item_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "extracted_text_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "derived_response_ref": {
+          "$ref": "#/$defs/derived_response_ref"
+        }
+      }
+    },
+    "apparatus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "apparatus_id",
+        "caplab",
+        "python",
+        "protocol",
+        "ambient_observation"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "caplab-revbench-execution-apparatus/1"
+        },
+        "apparatus_id": {
+          "type": "string",
+          "pattern": "^apparatus-[0-9a-f]{64}$"
+        },
+        "caplab": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "package_version",
+            "source_commit",
+            "checkout_state",
+            "package_tree_sha256",
+            "package_members"
+          ],
+          "properties": {
+            "package_version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "source_commit": {
+              "type": "string",
+              "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+            },
+            "checkout_state": {
+              "enum": [
+                "clean",
+                "archive-installed"
+              ]
+            },
+            "package_tree_sha256": {
+              "$ref": "#/$defs/sha256"
+            },
+            "package_members": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/member"
+              }
+            }
+          }
+        },
+        "python": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "implementation",
+            "version",
+            "build",
+            "cache_tag",
+            "abi_flags",
+            "behavior_flags",
+            "executable_sha256",
+            "executable_byte_count",
+            "dependency_members",
+            "loaded_runtime_members",
+            "loaded_runtime_inventory_sha256",
+            "runtime_inventory_basis",
+            "runtime_symlink_policy"
+          ],
+          "properties": {
+            "implementation": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "build": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "type": "string"
+              }
+            },
+            "cache_tag": {
+              "type": "string",
+              "minLength": 1
+            },
+            "abi_flags": {
+              "type": "string"
+            },
+            "behavior_flags": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "debug",
+                "inspect",
+                "interactive",
+                "optimize",
+                "dont_write_bytecode",
+                "no_user_site",
+                "no_site",
+                "ignore_environment",
+                "verbose",
+                "bytes_warning",
+                "quiet",
+                "hash_randomization",
+                "isolated",
+                "dev_mode",
+                "utf8_mode",
+                "warn_default_encoding",
+                "safe_path",
+                "int_max_str_digits"
+              ],
+              "properties": {
+                "debug": {
+                  "type": "integer"
+                },
+                "inspect": {
+                  "type": "integer"
+                },
+                "interactive": {
+                  "type": "integer"
+                },
+                "optimize": {
+                  "const": 0
+                },
+                "dont_write_bytecode": {
+                  "type": "integer"
+                },
+                "no_user_site": {
+                  "type": "integer"
+                },
+                "no_site": {
+                  "type": "integer"
+                },
+                "ignore_environment": {
+                  "type": "integer"
+                },
+                "verbose": {
+                  "type": "integer"
+                },
+                "bytes_warning": {
+                  "type": "integer"
+                },
+                "quiet": {
+                  "type": "integer"
+                },
+                "hash_randomization": {
+                  "type": "integer"
+                },
+                "isolated": {
+                  "type": "integer"
+                },
+                "dev_mode": {
+                  "type": "integer"
+                },
+                "utf8_mode": {
+                  "type": "integer"
+                },
+                "warn_default_encoding": {
+                  "type": "integer"
+                },
+                "safe_path": {
+                  "type": "integer"
+                },
+                "int_max_str_digits": {
+                  "type": "integer"
+                }
+              }
+            },
+            "executable_sha256": {
+              "$ref": "#/$defs/sha256"
+            },
+            "executable_byte_count": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "dependency_members": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "module",
+                  "storage",
+                  "sha256",
+                  "byte_count"
+                ],
+                "properties": {
+                  "module": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "storage": {
+                    "enum": [
+                      "module-file",
+                      "python-executable-built-in"
+                    ]
+                  },
+                  "sha256": {
+                    "$ref": "#/$defs/sha256"
+                  },
+                  "byte_count": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                }
+              }
+            },
+            "loaded_runtime_members": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/runtime_member"
+              }
+            },
+            "loaded_runtime_inventory_sha256": {
+              "$ref": "#/$defs/sha256"
+            },
+            "runtime_inventory_basis": {
+              "const": "isolated-no-cache-source-complete-runtime-trees-and-executable-elf-mappings"
+            },
+            "runtime_symlink_policy": {
+              "const": "logical-entry-identity-with-dereferenced-regular-target-bytes"
+            }
+          }
+        },
+        "protocol": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "bundle_policy_source_sha256",
+            "launch_plan_schema",
+            "response_adapter"
+          ],
+          "properties": {
+            "bundle_policy_source_sha256": {
+              "const": "211354874f4e3443a6e11fbe8b09cf54205c9cfc767f1a9a7ca2d7a9b210a68e"
+            },
+            "launch_plan_schema": {
+              "const": "caplab-revbench-live-launch-plan/1"
+            },
+            "response_adapter": {
+              "const": "codex-jsonl-final-agent-message/1"
+            }
+          }
+        },
+        "ambient_observation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "system",
+            "release",
+            "machine",
+            "trust"
+          ],
+          "properties": {
+            "system": {
+              "type": "string",
+              "minLength": 1
+            },
+            "release": {
+              "type": "string",
+              "minLength": 1
+            },
+            "machine": {
+              "type": "string",
+              "minLength": 1
+            },
+            "trust": {
+              "const": "observed-not-bundle-member"
+            }
+          }
+        }
+      }
+    },
+    "effect_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "manifest_sha256",
+        "experiment_id",
+        "binding_id",
+        "case_id",
+        "arm",
+        "assignment_index",
+        "process_kind"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "caplab-revbench-live-effect-scope/1"
+        },
+        "manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "experiment_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "binding_id": {
+          "type": "string",
+          "pattern": "^bnd-[0-9a-f]{64}$"
+        },
+        "case_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "arm": {
+          "enum": [
+            "control",
+            "mutant"
+          ]
+        },
+        "assignment_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "process_kind": {
+          "enum": [
+            "version-probe",
+            "native-review"
+          ]
+        }
+      }
+    },
+    "launch_plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "effect_scope",
+        "argv_sha256",
+        "containment_argv_sha256",
+        "stdin_sha256",
+        "environment_sha256",
+        "runtime_bundle_sha256",
+        "apparatus_sha256",
+        "command_sha256",
+        "credential_profile_id",
+        "credential_profile_sha256",
+        "timeout_seconds",
+        "execution_deadline_at",
+        "stdout_limit",
+        "stderr_limit"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "caplab-revbench-live-launch-plan/1"
+        },
+        "effect_scope": {
+          "$ref": "#/$defs/effect_scope"
+        },
+        "argv_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "containment_argv_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "stdin_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "environment_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "runtime_bundle_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "apparatus_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "command_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "credential_profile_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "credential_profile_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "timeout_seconds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "execution_deadline_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "stdout_limit": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "stderr_limit": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "sequence_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "effect_id",
+        "process_id",
+        "launch_plan"
+      ],
+      "properties": {
+        "effect_id": {
+          "$ref": "#/$defs/effect_id"
+        },
+        "process_id": {
+          "$ref": "#/$defs/process_id"
+        },
+        "launch_plan": {
+          "$ref": "#/$defs/launch_plan"
+        }
+      }
+    },
+    "execution_intent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "authorization_id",
+        "manifest_sha256",
+        "experiment_id",
+        "binding_id",
+        "custody_domain_id",
+        "apparatus_ref",
+        "intent_recorded_at",
+        "execution_deadline_at",
+        "process_sequence"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "caplab-revbench-live-execution-intent/1"
+        },
+        "authorization_id": {
+          "type": "string",
+          "pattern": "^revbench-execution-auth-[0-9a-f]{64}$"
+        },
+        "manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "experiment_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "binding_id": {
+          "type": "string",
+          "pattern": "^bnd-[0-9a-f]{64}$"
+        },
+        "custody_domain_id": {
+          "$ref": "#/$defs/custody_domain_id"
+        },
+        "apparatus_ref": {
+          "$ref": "#/$defs/apparatus_ref"
+        },
+        "intent_recorded_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "execution_deadline_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "process_sequence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/sequence_entry"
+          }
+        }
+      }
+    },
+    "process_recovery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "process_id",
+        "intent_recorded_at",
+        "process_started_at",
+        "process_completed_at",
+        "invocation_state",
+        "termination",
+        "stdout_sha256",
+        "stdout_byte_count",
+        "stderr_sha256",
+        "stderr_byte_count",
+        "recovered_at"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "caplab-revbench-live-process-recovery/1"
+        },
+        "process_id": {
+          "$ref": "#/$defs/process_id"
+        },
+        "intent_recorded_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "process_started_at": {
+          "type": "null"
+        },
+        "process_completed_at": {
+          "type": "null"
+        },
+        "invocation_state": {
+          "const": "uncertain"
+        },
+        "termination": {
+          "const": "executor-interrupted"
+        },
+        "stdout_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "stdout_byte_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "stderr_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "stderr_byte_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recovered_at": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "nullable_timestamp": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/timestamp"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "process_receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "receipt_id",
+        "execution_intent_ref",
+        "sequence_index",
+        "authorization_id",
+        "effect_id",
+        "process_id",
+        "intent_recorded_at",
+        "launch_plan",
+        "launch_attempted_at",
+        "containment_process_started_at",
+        "containment_process_completed_at",
+        "completion_recorded_at",
+        "outer_launch_state",
+        "termination",
+        "exit_code",
+        "stream_disposition",
+        "stdout_sha256",
+        "stdout_byte_count",
+        "stdout_ref",
+        "stdout_complete",
+        "stderr_sha256",
+        "stderr_byte_count",
+        "stderr_ref",
+        "stderr_complete",
+        "recovery_ref"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "caplab-revbench-live-process-receipt/1"
+        },
+        "receipt_id": {
+          "type": "string",
+          "pattern": "^live-process-receipt-[0-9a-f]{64}$"
+        },
+        "execution_intent_ref": {
+          "$ref": "#/$defs/execution_intent_ref"
+        },
+        "sequence_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "authorization_id": {
+          "type": "string",
+          "pattern": "^revbench-execution-auth-[0-9a-f]{64}$"
+        },
+        "effect_id": {
+          "$ref": "#/$defs/effect_id"
+        },
+        "process_id": {
+          "$ref": "#/$defs/process_id"
+        },
+        "intent_recorded_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "launch_plan": {
+          "$ref": "#/$defs/launch_plan"
+        },
+        "launch_attempted_at": {
+          "$ref": "#/$defs/nullable_timestamp"
+        },
+        "containment_process_started_at": {
+          "$ref": "#/$defs/nullable_timestamp"
+        },
+        "containment_process_completed_at": {
+          "$ref": "#/$defs/nullable_timestamp"
+        },
+        "completion_recorded_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "outer_launch_state": {
+          "enum": [
+            "not-invoked",
+            "invoked",
+            "uncertain"
+          ]
+        },
+        "termination": {
+          "enum": [
+            "exited",
+            "timeout",
+            "stdout-limit",
+            "stderr-limit",
+            "spawn-failure",
+            "authorization-expired",
+            "preflight-refused",
+            "privacy-quarantine",
+            "executor-interrupted"
+          ]
+        },
+        "exit_code": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "stream_disposition": {
+          "enum": [
+            "registered",
+            "privacy-quarantined"
+          ]
+        },
+        "stdout_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "stdout_byte_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "stdout_ref": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/stdout_ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stdout_complete": {
+          "type": "boolean"
+        },
+        "stderr_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "stderr_byte_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "stderr_ref": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/stderr_ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stderr_complete": {
+          "type": "boolean"
+        },
+        "recovery_ref": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/process_recovery_ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "version_observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "observation_id",
+        "execution_authorization_ref",
+        "apparatus_ref",
+        "execution_intent_ref",
+        "process_receipt_ref",
+        "experiment_id",
+        "binding_id",
+        "expected_version_probe_ref",
+        "command_ref",
+        "intent_recorded_at",
+        "launch_attempted_at",
+        "containment_process_started_at",
+        "containment_process_completed_at",
+        "completion_recorded_at",
+        "outer_launch_state",
+        "stdout_ref",
+        "stdout_complete",
+        "stderr_ref",
+        "stderr_complete",
+        "exit_code",
+        "termination",
+        "matches_expected",
+        "recovery_ref"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "caplab-live-native-version-observation/1"
+        },
+        "observation_id": {
+          "type": "string",
+          "pattern": "^live-version-observation-[0-9a-f]{64}$"
+        },
+        "execution_authorization_ref": {
+          "$ref": "#/$defs/execution_authorization_ref"
+        },
+        "apparatus_ref": {
+          "$ref": "#/$defs/apparatus_ref"
+        },
+        "execution_intent_ref": {
+          "$ref": "#/$defs/execution_intent_ref"
+        },
+        "process_receipt_ref": {
+          "$ref": "#/$defs/process_receipt_ref"
+        },
+        "experiment_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "binding_id": {
+          "type": "string"
+        },
+        "expected_version_probe_ref": {
+          "$ref": "#/$defs/version_probe_ref"
+        },
+        "command_ref": {
+          "$ref": "#/$defs/version_command_ref"
+        },
+        "intent_recorded_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "launch_attempted_at": {
+          "$ref": "#/$defs/nullable_timestamp"
+        },
+        "containment_process_started_at": {
+          "$ref": "#/$defs/nullable_timestamp"
+        },
+        "containment_process_completed_at": {
+          "$ref": "#/$defs/nullable_timestamp"
+        },
+        "completion_recorded_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "outer_launch_state": {
+          "enum": [
+            "not-invoked",
+            "invoked",
+            "uncertain"
+          ]
+        },
+        "stdout_ref": {
+          "$ref": "#/$defs/stdout_ref"
+        },
+        "stdout_complete": {
+          "type": "boolean"
+        },
+        "stderr_ref": {
+          "$ref": "#/$defs/stderr_ref"
+        },
+        "stderr_complete": {
+          "type": "boolean"
+        },
+        "exit_code": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "termination": {
+          "type": "string"
+        },
+        "matches_expected": {
+          "type": "boolean"
+        },
+        "recovery_ref": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/process_recovery_ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "experiment_id",
+        "case_id",
+        "arm",
+        "assignment_index",
+        "binding_id",
+        "raw_stdout_ref",
+        "derived_response_ref",
+        "response_derivation_ref",
+        "parse_status",
+        "verdict",
+        "anchors"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "caplab-live-native-output/1"
+        },
+        "experiment_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "case_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "arm": {
+          "enum": [
+            "control",
+            "mutant"
+          ]
+        },
+        "assignment_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "binding_id": {
+          "type": "string"
+        },
+        "raw_stdout_ref": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/stdout_ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "derived_response_ref": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/derived_response_ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "response_derivation_ref": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/response_derivation_ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "parse_status": {
+          "enum": [
+            "valid",
+            "invalid-response",
+            "invalid-transport",
+            "privacy-quarantine"
+          ]
+        },
+        "verdict": {
+          "enum": [
+            "clean",
+            "defect",
+            "invalid"
+          ]
+        },
+        "anchors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "capture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "capture_id",
+        "execution_authorization_ref",
+        "apparatus_ref",
+        "execution_intent_ref",
+        "process_receipt_ref",
+        "experiment_id",
+        "case_id",
+        "arm",
+        "assignment_index",
+        "binding_id",
+        "observed_binding",
+        "intent_recorded_at",
+        "launch_attempted_at",
+        "containment_process_started_at",
+        "containment_process_completed_at",
+        "completion_recorded_at",
+        "outer_launch_state",
+        "native_harness_completion",
+        "provider_request_state",
+        "command_ref",
+        "version_observation_ref",
+        "prompt_ref",
+        "stdin_ref",
+        "stdout_ref",
+        "stdout_complete",
+        "stderr_ref",
+        "stderr_complete",
+        "output_ref",
+        "exit_code",
+        "termination",
+        "recovery_ref"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "caplab-live-native-attempt-capture/1"
+        },
+        "capture_id": {
+          "type": "string",
+          "pattern": "^live-capture-[0-9a-f]{64}$"
+        },
+        "execution_authorization_ref": {
+          "$ref": "#/$defs/execution_authorization_ref"
+        },
+        "apparatus_ref": {
+          "$ref": "#/$defs/apparatus_ref"
+        },
+        "execution_intent_ref": {
+          "$ref": "#/$defs/execution_intent_ref"
+        },
+        "process_receipt_ref": {
+          "$ref": "#/$defs/process_receipt_ref"
+        },
+        "experiment_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "case_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "arm": {
+          "enum": [
+            "control",
+            "mutant"
+          ]
+        },
+        "assignment_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "binding_id": {
+          "type": "string"
+        },
+        "observed_binding": {
+          "$ref": "#/$defs/binding"
+        },
+        "intent_recorded_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "launch_attempted_at": {
+          "$ref": "#/$defs/nullable_timestamp"
+        },
+        "containment_process_started_at": {
+          "$ref": "#/$defs/nullable_timestamp"
+        },
+        "containment_process_completed_at": {
+          "$ref": "#/$defs/nullable_timestamp"
+        },
+        "completion_recorded_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "outer_launch_state": {
+          "enum": [
+            "not-invoked",
+            "invoked",
+            "uncertain"
+          ]
+        },
+        "native_harness_completion": {
+          "enum": [
+            "observed",
+            "unavailable"
+          ]
+        },
+        "provider_request_state": {
+          "const": "unavailable"
+        },
+        "command_ref": {
+          "$ref": "#/$defs/review_command_ref"
+        },
+        "version_observation_ref": {
+          "$ref": "#/$defs/version_observation_ref"
+        },
+        "prompt_ref": {
+          "$ref": "#/$defs/prompt_ref"
+        },
+        "stdin_ref": {
+          "$ref": "#/$defs/stdin_ref"
+        },
+        "stdout_ref": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/stdout_ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stdout_complete": {
+          "type": "boolean"
+        },
+        "stderr_ref": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/stderr_ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stderr_complete": {
+          "type": "boolean"
+        },
+        "output_ref": {
+          "$ref": "#/$defs/output_ref"
+        },
+        "exit_code": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "termination": {
+          "type": "string"
+        },
+        "recovery_ref": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/process_recovery_ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "attestation_id",
+        "experiment_id",
+        "case_id",
+        "arm",
+        "assignment_index",
+        "observed_at",
+        "observed_binding",
+        "native_system_contract_ref",
+        "execution_authorization_ref",
+        "apparatus_ref",
+        "version_observation_ref",
+        "capture_ref",
+        "prompt_ref",
+        "output_ref"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "caplab-live-native-attempt-attestation/1"
+        },
+        "attestation_id": {
+          "type": "string",
+          "pattern": "^live-attestation-[0-9a-f]{64}$"
+        },
+        "experiment_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "case_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "arm": {
+          "enum": [
+            "control",
+            "mutant"
+          ]
+        },
+        "assignment_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "observed_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "observed_binding": {
+          "$ref": "#/$defs/binding"
+        },
+        "native_system_contract_ref": {
+          "$ref": "#/$defs/native_system_contract_ref"
+        },
+        "execution_authorization_ref": {
+          "$ref": "#/$defs/execution_authorization_ref"
+        },
+        "apparatus_ref": {
+          "$ref": "#/$defs/apparatus_ref"
+        },
+        "version_observation_ref": {
+          "$ref": "#/$defs/version_observation_ref"
+        },
+        "capture_ref": {
+          "$ref": "#/$defs/capture_ref"
+        },
+        "prompt_ref": {
+          "$ref": "#/$defs/prompt_ref"
+        },
+        "output_ref": {
+          "$ref": "#/$defs/output_ref"
+        }
+      }
+    },
+    "attempt_envelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "attempt_id",
+        "experiment_id",
+        "case_id",
+        "arm",
+        "assignment_index",
+        "binding_id",
+        "observed_binding",
+        "apparatus_ref",
+        "attestation_ref",
+        "prompt_ref",
+        "disposition",
+        "verdict",
+        "anchors",
+        "output_ref",
+        "provenance"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "caplab-live-native-review-attempt/1"
+        },
+        "attempt_id": {
+          "type": "string",
+          "pattern": "^live-attempt-[0-9a-f]{64}$"
+        },
+        "experiment_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "case_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "arm": {
+          "enum": [
+            "control",
+            "mutant"
+          ]
+        },
+        "assignment_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "binding_id": {
+          "type": "string"
+        },
+        "observed_binding": {
+          "$ref": "#/$defs/binding"
+        },
+        "apparatus_ref": {
+          "$ref": "#/$defs/apparatus_ref"
+        },
+        "attestation_ref": {
+          "$ref": "#/$defs/attestation_ref"
+        },
+        "prompt_ref": {
+          "$ref": "#/$defs/prompt_ref"
+        },
+        "disposition": {
+          "enum": [
+            "complete",
+            "subject-failure",
+            "infrastructure-failure"
+          ]
+        },
+        "verdict": {
+          "enum": [
+            "clean",
+            "defect",
+            "invalid"
+          ]
+        },
+        "anchors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "output_ref": {
+          "$ref": "#/$defs/output_ref"
+        },
+        "provenance": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/provenance"
+        }
+      }
+    },
+    "attempt_projection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_id",
+        "arm",
+        "assignment_index",
+        "binding_id",
+        "observed_binding",
+        "attempt_ref",
+        "attestation_ref",
+        "prompt_ref",
+        "disposition",
+        "verdict",
+        "anchors",
+        "output_ref"
+      ],
+      "properties": {
+        "case_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "arm": {
+          "enum": [
+            "control",
+            "mutant"
+          ]
+        },
+        "assignment_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "binding_id": {
+          "type": "string"
+        },
+        "observed_binding": {
+          "$ref": "#/$defs/binding"
+        },
+        "attempt_ref": {
+          "$ref": "#/$defs/attempt_ref"
+        },
+        "attestation_ref": {
+          "$ref": "#/$defs/attestation_ref"
+        },
+        "prompt_ref": {
+          "$ref": "#/$defs/prompt_ref"
+        },
+        "disposition": {
+          "enum": [
+            "complete",
+            "subject-failure",
+            "infrastructure-failure"
+          ]
+        },
+        "verdict": {
+          "enum": [
+            "clean",
+            "defect",
+            "invalid"
+          ]
+        },
+        "anchors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "output_ref": {
+          "$ref": "#/$defs/output_ref"
+        }
+      }
+    },
+    "reviews": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "execution_id",
+        "experiment_id",
+        "execution_authorization_ref",
+        "execution_intent_ref",
+        "process_receipt_refs",
+        "started_at",
+        "observed_at",
+        "status",
+        "stop_reason",
+        "attempts"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "caplab-revbench-reviews/1"
+        },
+        "execution_id": {
+          "type": "string",
+          "pattern": "^execution-[0-9a-f]{64}$"
+        },
+        "experiment_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "execution_authorization_ref": {
+          "$ref": "#/$defs/execution_authorization_ref"
+        },
+        "execution_intent_ref": {
+          "$ref": "#/$defs/execution_intent_ref"
+        },
+        "process_receipt_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/process_receipt_ref"
+          }
+        },
+        "started_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "observed_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "status": {
+          "enum": [
+            "complete",
+            "stopped"
+          ]
+        },
+        "stop_reason": {
+          "enum": [
+            null,
+            "preflight-refused",
+            "spawn-failure",
+            "timeout",
+            "stdout-limit",
+            "stderr-limit",
+            "privacy-quarantine",
+            "executor-interrupted",
+            "response-transport-invalid",
+            "authorization-expired",
+            "exited"
+          ]
+        },
+        "attempts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/attempt_projection"
+          }
+        }
+      }
+    }
+  }
+}

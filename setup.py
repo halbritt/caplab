@@ -20,6 +20,7 @@ _CONTRACTS = (
     "qualification-claim-v1.schema.json",
     "qualification-export-v1.schema.json",
     "qualification-records-v1.schema.json",
+    "revbench-live-native-v1.schema.json",
     "revbench-v1.schema.json",
 )
 
@@ -32,14 +33,25 @@ def _source_commit() -> str:
         raise RuntimeError("CAPLAB source-commit stamp is invalid")
     try:
         result = subprocess.run(
-            ["git", "rev-parse", "HEAD"],
+            ["/usr/bin/git", "rev-parse", "--show-toplevel", "HEAD"],
+            env={"LC_ALL": "C"},
             check=True,
             capture_output=True,
             text=True,
         )
     except (OSError, subprocess.CalledProcessError) as error:
         raise RuntimeError("CAPLAB source commit is unavailable") from error
-    commit = result.stdout.strip()
+    lines = result.stdout.splitlines()
+    if len(lines) != 2:
+        raise RuntimeError("CAPLAB source checkout is invalid")
+    try:
+        repository_root = Path(lines[0]).resolve(strict=True)
+        stamp = _STAMP.resolve(strict=True)
+    except OSError as error:
+        raise RuntimeError("CAPLAB source checkout is invalid") from error
+    if stamp != repository_root / _STAMP:
+        raise RuntimeError("CAPLAB source checkout is invalid")
+    commit = lines[1].strip()
     if not _COMMIT.fullmatch(commit):
         raise RuntimeError("CAPLAB source commit is invalid")
     return commit

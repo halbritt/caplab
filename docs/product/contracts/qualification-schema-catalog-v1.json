@@ -4,7 +4,7 @@
     {
       "id": "https://caplab.local/contracts/qualification-claim-v1.schema.json",
       "path": "qualification-claim-v1.schema.json",
-      "sha256": "2199e4cb230dbf4200fd791628384bfcfdf7fc1fa22ddc92cff4eaef15fd9b4c"
+      "sha256": "fba0516893c7f3abb1ff7bf58c06c3e3ef434334f4515103910b5c730fadb2f7"
     },
     {
       "id": "https://caplab.local/contracts/qualification-export-v1.schema.json",
@@ -14,12 +14,17 @@
     {
       "id": "https://caplab.local/contracts/qualification-records-v1.schema.json",
       "path": "qualification-records-v1.schema.json",
-      "sha256": "4aaceb6f487d28106c444ccf51c06a2996c2f4831fd21271556c61073e5278e7"
+      "sha256": "029a5a512124415b719d9b0d0025b379edac19e3caa2c80cb19c45d168073b0f"
+    },
+    {
+      "id": "https://caplab.local/contracts/revbench-live-native-v1.schema.json",
+      "path": "revbench-live-native-v1.schema.json",
+      "sha256": "eafd8236213abae19f92bc5562d724bbed6dcb9354ae9032983cbd915994dd96"
     },
     {
       "id": "https://caplab.local/contracts/revbench-v1.schema.json",
       "path": "revbench-v1.schema.json",
-      "sha256": "7a2abd1cacbfe2bb22b9cdcd24044a6ba2e6d28eb3d1e1abe5473a3718908746"
+      "sha256": "aeb3e2bc42c36f6125c12661f41175aa125f7e9a88a47fb350ba67048dcd21fc"
     }
   ]
 }

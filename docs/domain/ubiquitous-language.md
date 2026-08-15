@@ -51,6 +51,15 @@ native agent system under measurement. It includes the exact model, serving
 path, harness, effort, administration, tool and permission surfaces, sandbox,
 and relevant runtime; a material change creates a different binding.
 
+**Configured route** is an exact provider-route configuration recorded before
+execution without a provider observation. It has no observation time and must
+not be relabeled as an observed route. Qualification v1 treats it as advisory.
+
+**Custody domain** is one owner-controlled, durable, nonrollback root and its
+content-derived public identity. Live Revbench uses that domain to make a
+manifest's assigned outer launches one-shot; authorization permits an effect
+but does not identify a trial or authorize replay in a fresh domain.
+
 **Measurement** is an immutable observation about one binding and capability
 under an exact experiment, protocol, corpus, and evidence basis. A measurement
 contains no qualification decision.

@@ -374,7 +374,7 @@
         "kind": {"enum": ["direct-provider", "proxy-provider", "local-serving", "other"]},
         "identifier": {"type": "string", "minLength": 1},
         "revision": {"type": "string", "minLength": 1},
-        "resolution": {"enum": ["immutable", "observed-route"]},
+        "resolution": {"enum": ["immutable", "configured-route", "observed-route"]},
         "observed_at": {
           "oneOf": [
             {"type": "null"},
@@ -385,7 +385,7 @@
       },
       "allOf": [
         {
-          "if": {"properties": {"resolution": {"const": "immutable"}}, "required": ["resolution"]},
+          "if": {"properties": {"resolution": {"enum": ["immutable", "configured-route"]}}, "required": ["resolution"]},
           "then": {"properties": {"observed_at": {"type": "null"}}},
           "else": {"properties": {"observed_at": {"$ref": "#/$defs/utc_timestamp"}}}
         }

@@ -793,6 +793,8 @@ def make_execution_authorization(
     limits_override=None,
     valid_from="2026-01-01T00:00:00Z",
     valid_until="2027-01-01T00:00:00Z",
+    apparatus_ref=None,
+    custody_domain_id=None,
 ):
     manifest_ref = registered(
         registrar,
@@ -824,6 +826,13 @@ def make_execution_authorization(
         ),
         "limits": limits,
     }
+    if manifest["binding"]["provider_or_path"]["kind"] != "local-serving":
+        if apparatus_ref is None:
+            raise ValueError("live execution authorization requires apparatus_ref")
+        if custody_domain_id is None:
+            raise ValueError("live execution authorization requires custody_domain_id")
+        scope["apparatus_ref"] = copy.deepcopy(apparatus_ref)
+        scope["custody_domain_id"] = custody_domain_id
     identity = {
         "schema_version": "caplab-revbench-execution-authorization/1",
         "authority_source_ref": make_delegation(
@@ -1280,7 +1289,7 @@ class PrepareTests(unittest.TestCase):
             ):
                 prepare(spec, registrar)
 
-    def test_prepare_refuses_live_provider_even_with_repository_policy(self):
+    def test_prepare_refuses_unsupported_live_provider_profile(self):
         registrar = MemoryRegistrar()
         with tempfile.TemporaryDirectory() as temporary:
             executable = Path(temporary) / "fake-native"
@@ -1306,7 +1315,7 @@ class PrepareTests(unittest.TestCase):
 
             with self.assertRaisesRegex(
                 RevbenchContractError,
-                "live native provider preparation is not implemented",
+                "binding.provider_or_path.identifier",
             ):
                 prepare(spec, registrar)
 
@@ -1599,9 +1608,16 @@ class ScoreTests(unittest.TestCase):
         claim_schema = json.loads(
             (contracts / "qualification-claim-v1.schema.json").read_bytes()
         )
+        live_schema = json.loads(
+            (contracts / "revbench-live-native-v1.schema.json").read_bytes()
+        )
         Draft202012Validator.check_schema(schema)
-        registry = Registry().with_resource(
-            claim_schema["$id"], Resource.from_contents(claim_schema)
+        Draft202012Validator.check_schema(live_schema)
+        registry = Registry().with_resources(
+            (
+                (claim_schema["$id"], Resource.from_contents(claim_schema)),
+                (live_schema["$id"], Resource.from_contents(live_schema)),
+            )
         )
         validator = Draft202012Validator(schema, registry=registry)
         record_versions = {
@@ -1670,7 +1686,7 @@ class ScoreTests(unittest.TestCase):
             with self.assertRaisesRegex(RevbenchContractError, "byte count|SHA-256"):
                 execute(manifest, authorization_ref, registrar)
 
-    def test_execute_refuses_dynamic_or_live_native_profiles(self):
+    def test_execute_refuses_dynamic_or_unsupported_live_native_profiles(self):
         with tempfile.TemporaryDirectory() as temporary:
             registrar = MemoryRegistrar()
             executable = Path(temporary) / "dynamic-native"
@@ -1707,7 +1723,7 @@ class ScoreTests(unittest.TestCase):
 
             with self.assertRaisesRegex(
                 RevbenchContractError,
-                "live native provider preparation is not implemented",
+                "binding.provider_or_path.identifier",
             ):
                 prepare(
                     make_spec(

@@ -339,11 +339,16 @@ def _validate_provider(value: Any, resolver: EvidenceResolver, path: str) -> Non
     _string(provider["identifier"], f"{path}.identifier")
     _string(provider["revision"], f"{path}.revision")
     resolution = _enum(
-        provider["resolution"], f"{path}.resolution", {"immutable", "observed-route"}
+        provider["resolution"],
+        f"{path}.resolution",
+        {"immutable", "configured-route", "observed-route"},
     )
-    if resolution == "immutable":
+    if resolution in {"immutable", "configured-route"}:
         if provider["observed_at"] is not None:
-            raise _error(f"{path}.observed_at", "must be null for an immutable route")
+            raise _error(
+                f"{path}.observed_at",
+                "must be null unless the route is observed",
+            )
     else:
         _timestamp(provider["observed_at"], f"{path}.observed_at")
     route = _resolved_json(
@@ -1402,7 +1407,7 @@ def _validate_policy_owned(
         _enum(
             resolution,
             f"policy.applies_to.binding_resolutions[{index}]",
-            {"immutable", "observed-route"},
+            {"immutable", "configured-route", "observed-route"},
         )
 
     requirements = _exact_object(

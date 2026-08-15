@@ -83,14 +83,28 @@ population.
 
 `caplab.revbench` is the first active experiment family at this boundary. It
 prepares bounded known-defect/control pairs and scores registered captures
-with a deterministic oracle. Its v1 executor runs a sealed static local
-fixture in assignment order under separate time-bounded authority;
-subject-visible inputs are blinded to the arm and planted answer. It refuses
-real native-provider execution until CAPLAB can seal the provider launcher
-bundle and stream raw process custody durably. The offline scorer performs no
-provider call and does not consult historical fate. Its output is a
-Measurement; a separate policy application is required to produce a Claim.
-Implementation and green checks do not accept a qualification.
+with a deterministic oracle. Its v1 executor supports a sealed static local
+fixture and one bounded live-native profile: Codex CLI 0.147.0 with GPT-5.6
+Terra at maximum effort on the configured direct OpenAI Responses route.
+Subject-visible inputs are blinded to the arm and planted answer.
+
+Live execution requires an exact registered clean-source apparatus receipt,
+time-bounded authorization, and a separately owned nonrollback custody-domain
+identity. It runs from the documented `/usr/bin/python3 -I -S -B` source
+entrypoint, uses the packaged launcher/containment bundle, mounts a validated
+credential through an anonymous read-only memfd, and streams raw output through
+durable one-shot custody before registration. The credential profile is an
+operator-declared mismatch guard, not provider-authenticated identity. The
+one-shot guarantee covers one outer containment launch within an intact
+custody root; it does not prove provider delivery or prevent Codex-internal
+retries. Exact-scalar quarantine does not claim to detect encoded or fractured
+secret leakage. The full operational and evidence limits are in the contract.
+
+The offline scorer performs no provider call and does not consult historical
+fate. Its output is a Measurement. The live configured route is
+nonobservational and advisory-only under qualification v1; a separate policy
+application remains required to produce any Claim. Implementation, live
+execution, and green checks do not accept a qualification.
 
 The source migration and its conservative A–E classification are recorded in
 [`history/striatum-tuner/`](../../../history/striatum-tuner/README.md).

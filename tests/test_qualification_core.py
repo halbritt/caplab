@@ -562,6 +562,43 @@ class BindingValidationTests(unittest.TestCase):
         self.assertIsNot(validated, self.binding)
         self.assertIsNot(validated["model"], self.binding["model"])
 
+    def test_configured_route_is_nonobservational_and_requires_null_time(self) -> None:
+        configured = deepcopy(self.binding)
+        provider = configured["provider_or_path"]
+        provider["resolution"] = "configured-route"
+        provider["observed_at"] = None
+        provider["route_ref"] = self.resolver.add(
+            "provider-route",
+            "caplab-provider-route/1",
+            {
+                "schema_version": "caplab-provider-route/1",
+                **{
+                    field: provider[field]
+                    for field in (
+                        "kind",
+                        "identifier",
+                        "revision",
+                        "resolution",
+                        "observed_at",
+                    )
+                },
+            },
+        )
+        configured["binding_id"] = derive_content_id(configured, "binding_id", "bnd-")
+        self.assertEqual(
+            validate_binding(configured, self.resolver)["provider_or_path"][
+                "resolution"
+            ],
+            "configured-route",
+        )
+
+        configured["provider_or_path"]["observed_at"] = "2026-06-01T00:00:00Z"
+        configured["binding_id"] = derive_content_id(configured, "binding_id", "bnd-")
+        with self.assertRaisesRegex(
+            QualificationContractError, "must be null unless the route is observed"
+        ):
+            validate_binding(configured, self.resolver)
+
     def test_each_behavior_bearing_change_changes_binding_identity(self) -> None:
         mutations = (
             ("reasoning_effort", "medium"),
@@ -1064,6 +1101,42 @@ class ClaimEvaluationTests(unittest.TestCase):
                 policy = make_policy(resolver, measurement)
                 claim = build_fixture_claim(resolver, measurement, policy)
                 self.assertEqual(claim["qualification"]["status"], "advisory")
+
+    def test_configured_route_remains_advisory_even_inside_policy_scope(self) -> None:
+        resolver = MemoryResolver()
+        binding = make_binding(resolver)
+        provider = binding["provider_or_path"]
+        provider["resolution"] = "configured-route"
+        provider["observed_at"] = None
+        provider["route_ref"] = resolver.add(
+            "provider-route",
+            "caplab-provider-route/1",
+            {
+                "schema_version": "caplab-provider-route/1",
+                **{
+                    field: provider[field]
+                    for field in (
+                        "kind",
+                        "identifier",
+                        "revision",
+                        "resolution",
+                        "observed_at",
+                    )
+                },
+            },
+        )
+        binding["binding_id"] = derive_content_id(binding, "binding_id", "bnd-")
+        measurement = make_measurement(resolver, binding=binding)
+        policy = make_policy(resolver, measurement)
+
+        claim = build_fixture_claim(resolver, measurement, policy)
+
+        self.assertEqual(
+            policy["applies_to"]["binding_resolutions"], ["configured-route"]
+        )
+        self.assertEqual(claim["qualification"]["status"], "advisory")
+        self.assertEqual(claim["assertion_type"], "recommendation")
+        self.assertIn("binding-not-immutable", claim["qualification"]["limitations"])
 
     def test_protocol_corpus_capability_and_binding_mismatches_are_rejected(
         self,

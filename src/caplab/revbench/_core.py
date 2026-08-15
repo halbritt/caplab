@@ -35,6 +35,20 @@ from caplab.subject_identity import (
     validate_native_agent_systems,
 )
 
+from .codex import (
+    CodexAdapterError,
+    CodexJSONLTransportError,
+    CodexResponseSchemaError,
+    codex_native_bundle_policy,
+    derive_codex_response,
+    is_static_linux_elf,
+    normalized_codex_containment_argv,
+    response_derivation_document,
+    validate_credential_profile,
+    validate_execution_apparatus_receipt,
+)
+from .custody import live_effect_id, live_process_id
+
 type JsonValue = None | bool | int | str | list[JsonValue] | dict[str, JsonValue]
 type ContentRef = dict[str, JsonValue]
 
@@ -61,6 +75,7 @@ class ArtifactRegistrar(Protocol):
 
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _BINDING_ID = re.compile(r"^bnd-[0-9a-f]{64}$")
+_CUSTODY_DOMAIN_ID = re.compile(r"^custody-domain-[0-9a-f]{64}$")
 _CASE_ID = re.compile(r"^[a-z0-9][a-z0-9._-]{0,127}$")
 _EXPERIMENT_ID = _CASE_ID
 _UTC_TIMESTAMP = re.compile(
@@ -288,13 +303,17 @@ def _validate_binding(value: Any, path: str = "binding") -> Mapping[str, Any]:
         _fail(f"{path}.provider_or_path.kind", "is unsupported")
     _string(provider["identifier"], f"{path}.provider_or_path.identifier")
     _string(provider["revision"], f"{path}.provider_or_path.revision")
-    if provider["resolution"] not in {"immutable", "observed-route"}:
+    if provider["resolution"] not in {
+        "immutable",
+        "configured-route",
+        "observed-route",
+    }:
         _fail(f"{path}.provider_or_path.resolution", "is unsupported")
-    if provider["resolution"] == "immutable":
+    if provider["resolution"] in {"immutable", "configured-route"}:
         if provider["observed_at"] is not None:
             _fail(
                 f"{path}.provider_or_path.observed_at",
-                "must be null for immutable resolution",
+                "must be null unless the route is observed",
             )
     else:
         _string(
@@ -792,20 +811,24 @@ def _validate_timestamp(value: Any, path: str) -> str:
 
 
 def _validate_reviews(reviews: Any, manifest: Mapping[str, Any]) -> Mapping[str, Any]:
+    live = manifest["binding"]["provider_or_path"]["kind"] != "local-serving"
+    expected_fields = {
+        "schema_version",
+        "execution_id",
+        "experiment_id",
+        "execution_authorization_ref",
+        "started_at",
+        "observed_at",
+        "status",
+        "stop_reason",
+        "attempts",
+    }
+    if live:
+        expected_fields.update({"execution_intent_ref", "process_receipt_refs"})
     reviews = _object(
         reviews,
         "reviews",
-        {
-            "schema_version",
-            "execution_id",
-            "experiment_id",
-            "execution_authorization_ref",
-            "started_at",
-            "observed_at",
-            "status",
-            "stop_reason",
-            "attempts",
-        },
+        expected_fields,
     )
     _const(
         reviews["schema_version"], "caplab-revbench-reviews/1", "reviews.schema_version"
@@ -823,6 +846,23 @@ def _validate_reviews(reviews: Any, manifest: Mapping[str, Any]) -> Mapping[str,
         kind="revbench-execution-authorization",
         schema="caplab-revbench-execution-authorization/1",
     )
+    if live:
+        _validate_content_ref(
+            reviews["execution_intent_ref"],
+            "reviews.execution_intent_ref",
+            kind="live-execution-intent",
+            schema="caplab-revbench-live-execution-intent/1",
+        )
+        process_receipt_refs = _array(
+            reviews["process_receipt_refs"], "reviews.process_receipt_refs"
+        )
+        for index, ref in enumerate(process_receipt_refs):
+            _validate_content_ref(
+                ref,
+                f"reviews.process_receipt_refs[{index}]",
+                kind="live-process-receipt",
+                schema="caplab-revbench-live-process-receipt/1",
+            )
     if reviews["status"] not in {"complete", "stopped"}:
         _fail("reviews.status", "is unsupported")
     stop_reasons = {
@@ -831,6 +871,9 @@ def _validate_reviews(reviews: Any, manifest: Mapping[str, Any]) -> Mapping[str,
         "timeout",
         "stdout-limit",
         "stderr-limit",
+        "privacy-quarantine",
+        "executor-interrupted",
+        "response-transport-invalid",
         "authorization-expired",
         "exited",
     }
@@ -847,6 +890,27 @@ def _validate_reviews(reviews: Any, manifest: Mapping[str, Any]) -> Mapping[str,
     seen: set[tuple[str, str]] = set()
     seen_attempt_digests: set[str] = set()
     observed_order: list[tuple[int, int]] = []
+    attempt_kind, attempt_schema = (
+        ("attempt", "caplab-live-native-review-attempt/1")
+        if live
+        else ("attempt", "caplab-native-review-attempt/1")
+    )
+    attestation_kind, attestation_schema = (
+        (
+            "live-native-attempt-attestation",
+            "caplab-live-native-attempt-attestation/1",
+        )
+        if live
+        else (
+            "native-attempt-attestation",
+            "caplab-native-attempt-attestation/1",
+        )
+    )
+    output_kind, output_schema = (
+        ("live-native-output", "caplab-live-native-output/1")
+        if live
+        else ("native-output", "caplab-native-output/1")
+    )
     for index, value in enumerate(attempts):
         path = f"reviews.attempts[{index}]"
         attempt = _object(
@@ -902,8 +966,8 @@ def _validate_reviews(reviews: Any, manifest: Mapping[str, Any]) -> Mapping[str,
         attempt_ref = _validate_content_ref(
             attempt["attempt_ref"],
             f"{path}.attempt_ref",
-            kind="attempt",
-            schema="caplab-native-review-attempt/1",
+            kind=attempt_kind,
+            schema=attempt_schema,
         )
         if attempt_ref["sha256"] in seen_attempt_digests:
             _fail(f"{path}.attempt_ref", "reuses another attempt envelope")
@@ -911,8 +975,8 @@ def _validate_reviews(reviews: Any, manifest: Mapping[str, Any]) -> Mapping[str,
         _validate_content_ref(
             attempt["attestation_ref"],
             f"{path}.attestation_ref",
-            kind="native-attempt-attestation",
-            schema="caplab-native-attempt-attestation/1",
+            kind=attestation_kind,
+            schema=attestation_schema,
         )
         _validate_content_ref(
             attempt["prompt_ref"],
@@ -923,8 +987,8 @@ def _validate_reviews(reviews: Any, manifest: Mapping[str, Any]) -> Mapping[str,
         _validate_content_ref(
             attempt["output_ref"],
             f"{path}.output_ref",
-            kind="native-output",
-            schema="caplab-native-output/1",
+            kind=output_kind,
+            schema=output_schema,
         )
         if attempt["disposition"] not in {
             "complete",
@@ -938,8 +1002,16 @@ def _validate_reviews(reviews: Any, manifest: Mapping[str, Any]) -> Mapping[str,
         for anchor_index, anchor in enumerate(anchors):
             _pointer(anchor, f"{path}.anchors[{anchor_index}]")
         _sorted_unique(anchors, f"{path}.anchors")
-    if observed_order != sorted(observed_order):
-        _fail("reviews.attempts", "must follow manifest case and assignment order")
+    expected_order = [
+        (case_positions[case["case_id"]], assignment_index)
+        for case in manifest["cases"]
+        for assignment_index, _arm in enumerate(case["assignment_order"])
+    ]
+    if observed_order != expected_order[: len(observed_order)]:
+        _fail(
+            "reviews.attempts",
+            "must be the exact prefix of manifest case and assignment order",
+        )
     expected_attempt_count = len(manifest["cases"]) * 2
     if len(attempts) > expected_attempt_count:
         _fail("reviews.attempts", "exceeds the sealed manifest attempt count")
@@ -1207,6 +1279,470 @@ def _validate_local_fixture_policy(
             )
 
 
+def _validate_codex_live_binding(
+    native_policy: Mapping[str, Any],
+    binding: Mapping[str, Any],
+    command_argv: Sequence[str],
+    version_argv: Sequence[str],
+    probe: Mapping[str, Any],
+    registrar: ArtifactRegistrar,
+) -> None:
+    """Validate the one Revbench-scoped live Codex bundle exactly."""
+
+    try:
+        bundle = codex_native_bundle_policy()
+    except CodexAdapterError as error:
+        raise RevbenchContractError(
+            f"Codex bundle policy is unavailable: {error}"
+        ) from error
+    native = bundle["native_agent_system"]
+    launcher = bundle["launcher"]
+    containment = bundle["containment"]
+    resources = bundle["pinned_host_resources"]
+
+    if native["canonical_policy_sha256"] != CANONICAL_NATIVE_AGENT_SYSTEM_POLICY_SHA256:
+        _fail("Codex bundle policy", "does not bind the frozen native-system policy")
+    system = native_policy["systems"].get(native["tuple_id"])
+    if not isinstance(system, Mapping):
+        _fail("native_system_contract_ref", "does not contain the Codex tuple")
+    expected_system = {
+        "model_id": native["model_id"],
+        "native_harness_id": native["native_harness_id"],
+        "effort": native["reasoning_effort"],
+        "executable": launcher["logical_executable"],
+        "required_command_tokens": launcher["review_argv"][1:6],
+        "version_command": launcher["version_argv"],
+    }
+    if canonical_json(system) != canonical_json(expected_system):
+        _fail("native_system_contract_ref", "Codex tuple does not match bundle policy")
+
+    provider = binding["provider_or_path"]
+    for field, expected in (
+        ("kind", "direct-provider"),
+        ("identifier", "openai"),
+        ("revision", "responses-api"),
+        ("resolution", "configured-route"),
+    ):
+        _const(provider[field], expected, f"binding.provider_or_path.{field}")
+    _const(provider["observed_at"], None, "binding.provider_or_path.observed_at")
+    route_ref = _validate_content_ref(
+        provider["route_ref"],
+        "binding.provider_or_path.route_ref",
+        kind="provider-route",
+        schema="caplab-provider-route/1",
+    )
+    route = _parse_canonical_json_ref(
+        route_ref, registrar, "binding.provider_or_path.route_ref"
+    )
+    expected_route = {
+        "schema_version": "caplab-provider-route/1",
+        **{
+            field: provider[field]
+            for field in ("kind", "identifier", "revision", "resolution", "observed_at")
+        },
+    }
+    _exact_document(route, expected_route, "binding.provider_or_path.route_ref")
+    model = binding["model"]
+    for field, expected in (
+        ("model_id", native["model_id"]),
+        ("revision", "provider-hosted"),
+        ("weights_ref", None),
+        ("weights_unavailable_reason", "provider-hosted weights are unavailable"),
+    ):
+        _const(model[field], expected, f"binding.model.{field}")
+    harness = binding["harness"]
+    for field, expected in (
+        ("harness_id", native["native_harness_id"]),
+        ("harness_version", launcher["harness_version"]),
+        ("executable_unavailable_reason", None),
+    ):
+        _const(harness[field], expected, f"binding.harness.{field}")
+    _const(
+        binding["reasoning_effort"],
+        native["reasoning_effort"],
+        "binding.reasoning_effort",
+    )
+    if list(command_argv) != launcher["review_argv"]:
+        _fail("binding.harness.command_ref", "does not match the pinned Codex argv")
+    if list(version_argv) != launcher["version_argv"]:
+        _fail(
+            "binding.harness.version_probe_ref",
+            "does not match the pinned Codex version argv",
+        )
+    if any(
+        marker in " ".join(command_argv).casefold()
+        for marker in {"openrouter", "harbor", "terminus"}
+    ):
+        _fail("binding.harness.command_ref", "contains a forbidden proxy marker")
+
+    executable_ref = _validate_content_ref(
+        harness["executable_ref"],
+        "binding.harness.executable_ref",
+        kind="harness-executable",
+        schema="caplab-native-executable/1",
+    )
+    if (
+        executable_ref["sha256"] != launcher["executable_sha256"]
+        or executable_ref["byte_count"] != launcher["executable_byte_count"]
+    ):
+        _fail(
+            "binding.harness.executable_ref", "does not match the pinned Codex binary"
+        )
+    executable = _resolve_ref(
+        executable_ref, registrar, "binding.harness.executable_ref"
+    )
+    if not is_static_linux_elf(executable):
+        _fail("binding.harness.executable_ref", "is not an interpreter-free Linux ELF")
+
+    _const(
+        probe["exit_code"],
+        launcher["version_exit_code"],
+        "binding.harness.version_probe_ref document.exit_code",
+    )
+    expected_streams = {
+        "stdout": (
+            "native-harness-version-stdout",
+            launcher["version_stdout_sha256"],
+            (launcher["harness_version"] + "\n").encode(),
+        ),
+        "stderr": (
+            "native-harness-version-stderr",
+            launcher["version_stderr_sha256"],
+            b"",
+        ),
+    }
+    for stream, (kind, digest, expected_bytes) in expected_streams.items():
+        ref = _validate_content_ref(
+            probe[f"{stream}_ref"],
+            f"binding.harness.version_probe_ref document.{stream}_ref",
+            kind=kind,
+            schema="caplab-native-process-stream/1",
+        )
+        if (
+            ref["sha256"] != digest
+            or _resolve_ref(
+                ref,
+                registrar,
+                f"binding.harness.version_probe_ref document.{stream}_ref",
+            )
+            != expected_bytes
+        ):
+            _fail(
+                f"binding.harness.version_probe_ref document.{stream}_ref",
+                "does not match the pinned Codex version stream",
+            )
+
+    configuration = binding["configuration"]
+    inference = _parse_canonical_json_ref(
+        configuration["inference_ref"], registrar, "binding.configuration.inference_ref"
+    )
+    inference = _object(
+        inference,
+        "binding.configuration.inference_ref document",
+        {"schema_version", "command_ref", "bundle_policy_ref", "response_adapter"},
+    )
+    bundle_policy_ref = _validate_content_ref(
+        inference["bundle_policy_ref"],
+        "binding.configuration.inference_ref document.bundle_policy_ref",
+        kind="native-runtime-bundle-policy",
+        schema="caplab-revbench-codex-native-bundle-policy/1",
+    )
+    registered_bundle = _parse_canonical_json_ref(
+        bundle_policy_ref,
+        registrar,
+        "binding.configuration.inference_ref document.bundle_policy_ref",
+    )
+    if canonical_json(registered_bundle) != canonical_json(bundle):
+        _fail(
+            "binding.configuration.inference_ref document.bundle_policy_ref",
+            "does not match the installed pinned bundle policy",
+        )
+    expected_inference = {
+        "schema_version": "caplab-revbench-codex-inference/1",
+        "command_ref": harness["command_ref"],
+        "bundle_policy_ref": bundle_policy_ref,
+        "response_adapter": bundle["response_adapter"],
+    }
+    _exact_document(
+        inference, expected_inference, "binding.configuration.inference_ref"
+    )
+    instructions = _parse_canonical_json_ref(
+        configuration["instructions_ref"],
+        registrar,
+        "binding.configuration.instructions_ref",
+    )
+    _exact_document(
+        instructions,
+        {
+            "schema_version": "caplab-revbench-instructions/1",
+            "instruction": _NATIVE_INPUT_INSTRUCTION,
+        },
+        "binding.configuration.instructions_ref",
+    )
+    knowledge = _parse_canonical_json_ref(
+        configuration["knowledge_ref"], registrar, "binding.configuration.knowledge_ref"
+    )
+    _exact_document(
+        knowledge,
+        {
+            "schema_version": "caplab-revbench-disabled-surface/1",
+            "surface": "knowledge",
+            "mode": "none",
+        },
+        "binding.configuration.knowledge_ref",
+    )
+    tools = _parse_canonical_json_ref(
+        configuration["tools_ref"], registrar, "binding.configuration.tools_ref"
+    )
+    _exact_document(
+        tools,
+        {
+            "schema_version": "caplab-revbench-codex-tools/1",
+            "surface": "tools",
+            "mode": "native-harness-empty-root",
+            "host_shell_mounted": False,
+            "host_filesystem_mounted": False,
+            "user_configuration": "ignored",
+            "rules": "ignored",
+            "mcp_servers": [],
+            "plugins": [],
+            "web_search": "disabled",
+        },
+        "binding.configuration.tools_ref",
+    )
+    permissions = _parse_canonical_json_ref(
+        configuration["permissions_ref"],
+        registrar,
+        "binding.configuration.permissions_ref",
+    )
+    _exact_document(
+        permissions,
+        {
+            "schema_version": "caplab-revbench-codex-permissions/1",
+            "environment_keys": sorted(bundle["environment"]),
+            "filesystem_mode": "empty-root-private-cwd",
+            "network_mode": "ambient-authorized",
+        },
+        "binding.configuration.permissions_ref",
+    )
+    sandbox = _parse_canonical_json_ref(
+        configuration["sandbox_ref"], registrar, "binding.configuration.sandbox_ref"
+    )
+    expected_sandbox = {
+        "schema_version": "caplab-revbench-codex-sandbox/1",
+        "adapter_path": containment["adapter_path"],
+        "adapter_ref": sandbox["adapter_ref"],
+        "root_filesystem": "empty-tmpfs",
+        "working_directory": "private-write",
+        "network_mode": containment["network_mode"],
+        "namespace": containment["namespace"],
+        "die_with_parent": True,
+        "new_session": True,
+        "shell_mounted": False,
+        "host_filesystem_mounted": False,
+    }
+    _exact_document(sandbox, expected_sandbox, "binding.configuration.sandbox_ref")
+    adapter_ref = _validate_content_ref(
+        sandbox["adapter_ref"],
+        "binding.configuration.sandbox_ref document.adapter_ref",
+        kind="sandbox-executable",
+        schema="caplab-native-executable/1",
+    )
+    if (
+        adapter_ref["sha256"] != containment["adapter_sha256"]
+        or adapter_ref["byte_count"] != containment["adapter_byte_count"]
+    ):
+        _fail("binding.configuration.sandbox_ref", "does not pin Bubblewrap bytes")
+    _resolve_ref(
+        adapter_ref, registrar, "binding.configuration.sandbox_ref adapter_ref"
+    )
+
+    runtime = _parse_canonical_json_ref(
+        configuration["runtime_ref"], registrar, "binding.configuration.runtime_ref"
+    )
+    expected_runtime_fields = {
+        "schema_version",
+        "bundle_policy_ref",
+        "tuple_id",
+        "executable_ref",
+        "sandbox_adapter_ref",
+        "adapter_runtime_refs",
+        "ca_certificates_ref",
+        "resolver_ref",
+        "nsswitch_ref",
+        "response_schema_ref",
+        "credential_profile_ref",
+        "environment",
+        "working_directory",
+        "network_mode",
+        "stdin_mode",
+        "stdout_mode",
+        "custody_mode",
+    }
+    runtime = _object(
+        runtime, "binding.configuration.runtime_ref document", expected_runtime_fields
+    )
+    for field, expected in (
+        ("schema_version", "caplab-revbench-codex-runtime/1"),
+        ("tuple_id", native["tuple_id"]),
+        ("working_directory", containment["working_directory"]),
+        ("network_mode", containment["network_mode"]),
+        ("stdin_mode", "canonical-json"),
+        ("stdout_mode", "codex-jsonl"),
+        ("custody_mode", "durable-prefix-one-shot"),
+    ):
+        _const(
+            runtime[field],
+            expected,
+            f"binding.configuration.runtime_ref document.{field}",
+        )
+    for field, expected in (
+        ("bundle_policy_ref", bundle_policy_ref),
+        ("executable_ref", harness["executable_ref"]),
+        ("sandbox_adapter_ref", adapter_ref),
+    ):
+        if canonical_json(runtime[field]) != canonical_json(expected):
+            _fail(
+                f"binding.configuration.runtime_ref document.{field}",
+                "does not match Binding",
+            )
+    if canonical_json(runtime["environment"]) != canonical_json(bundle["environment"]):
+        _fail(
+            "binding.configuration.runtime_ref document.environment",
+            "does not match bundle policy",
+        )
+    credential_profile_ref = _validate_content_ref(
+        runtime["credential_profile_ref"],
+        "binding.configuration.runtime_ref document.credential_profile_ref",
+        kind="credential-profile",
+        schema="caplab-revbench-codex-credential-profile/1",
+    )
+    credential_profile = _parse_canonical_json_ref(
+        credential_profile_ref,
+        registrar,
+        "binding.configuration.runtime_ref document.credential_profile_ref",
+    )
+    try:
+        validate_credential_profile(credential_profile)
+    except CodexAdapterError as error:
+        raise RevbenchContractError(
+            f"binding.configuration.runtime_ref credential profile: {error}"
+        ) from error
+    adapter_runtime_refs = _object(
+        runtime["adapter_runtime_refs"],
+        "binding.configuration.runtime_ref document.adapter_runtime_refs",
+        {"loader_ref", "library_refs"},
+    )
+    loader_ref = _validate_content_ref(
+        adapter_runtime_refs["loader_ref"],
+        "binding.configuration.runtime_ref document.adapter_runtime_refs.loader_ref",
+        kind="sandbox-runtime-resource",
+        schema="caplab-native-runtime-resource/1",
+    )
+    expected_loader = bundle["adapter_runtime"]["loader"]
+    if (
+        loader_ref["sha256"] != expected_loader["sha256"]
+        or loader_ref["byte_count"] != expected_loader["byte_count"]
+    ):
+        _fail(
+            "binding.configuration.runtime_ref document.adapter_runtime_refs.loader_ref",
+            "does not match bundle policy",
+        )
+    _resolve_ref(
+        loader_ref,
+        registrar,
+        "binding.configuration.runtime_ref document.adapter_runtime_refs.loader_ref",
+    )
+    library_refs = _array(
+        adapter_runtime_refs["library_refs"],
+        "binding.configuration.runtime_ref document.adapter_runtime_refs.library_refs",
+    )
+    expected_libraries = bundle["adapter_runtime"]["libraries"]
+    if len(library_refs) != len(expected_libraries):
+        _fail(
+            "binding.configuration.runtime_ref document.adapter_runtime_refs.library_refs",
+            "does not match bundle policy",
+        )
+    for index, (entry, expected_library) in enumerate(
+        zip(library_refs, expected_libraries, strict=True)
+    ):
+        entry = _object(
+            entry,
+            f"binding.configuration.runtime_ref document.adapter_runtime_refs.library_refs[{index}]",
+            {"name", "ref"},
+        )
+        _const(
+            entry["name"],
+            expected_library["name"],
+            f"binding.configuration.runtime_ref document.adapter_runtime_refs.library_refs[{index}].name",
+        )
+        ref = _validate_content_ref(
+            entry["ref"],
+            f"binding.configuration.runtime_ref document.adapter_runtime_refs.library_refs[{index}].ref",
+            kind="sandbox-runtime-resource",
+            schema="caplab-native-runtime-resource/1",
+        )
+        if (
+            ref["sha256"] != expected_library["sha256"]
+            or ref["byte_count"] != expected_library["byte_count"]
+        ):
+            _fail(
+                f"binding.configuration.runtime_ref document.adapter_runtime_refs.library_refs[{index}].ref",
+                "does not match bundle policy",
+            )
+        _resolve_ref(
+            ref,
+            registrar,
+            f"binding.configuration.runtime_ref document.adapter_runtime_refs.library_refs[{index}].ref",
+        )
+    for field, resource_name in (
+        ("ca_certificates_ref", "ca_certificates"),
+        ("resolver_ref", "resolver"),
+        ("nsswitch_ref", "nsswitch"),
+    ):
+        ref = _validate_content_ref(
+            runtime[field],
+            f"binding.configuration.runtime_ref document.{field}",
+            kind="native-runtime-resource",
+            schema="caplab-native-runtime-resource/1",
+        )
+        expected = resources[resource_name]
+        if (
+            ref["sha256"] != expected["sha256"]
+            or ref["byte_count"] != expected["byte_count"]
+        ):
+            _fail(
+                f"binding.configuration.runtime_ref document.{field}",
+                "does not match bundle policy",
+            )
+        _resolve_ref(
+            ref, registrar, f"binding.configuration.runtime_ref document.{field}"
+        )
+    response_schema_ref = _validate_content_ref(
+        runtime["response_schema_ref"],
+        "binding.configuration.runtime_ref document.response_schema_ref",
+        kind="native-response-schema",
+        schema="caplab-revbench-native-response-schema/1",
+    )
+    response_schema = _parse_canonical_json_ref(
+        response_schema_ref,
+        registrar,
+        "binding.configuration.runtime_ref document.response_schema_ref",
+    )
+    if canonical_json(response_schema) != canonical_json(bundle["response_schema"]):
+        _fail(
+            "binding.configuration.runtime_ref document.response_schema_ref",
+            "does not match bundle policy",
+        )
+
+
+def _exact_document(value: Any, expected: Mapping[str, Any], path: str) -> None:
+    if not isinstance(value, Mapping) or canonical_json(value) != canonical_json(
+        expected
+    ):
+        _fail(path, "does not match the pinned live Codex bundle")
+
+
 def _validate_native_binding(
     binding: Mapping[str, Any],
     contract_ref: Mapping[str, Any],
@@ -1226,20 +1762,6 @@ def _validate_native_binding(
         _fail(
             "native_system_contract_ref document.exceptions",
             "requires a new repository-owner contract",
-        )
-
-    provider_kind = binding["provider_or_path"]["kind"]
-    if provider_kind != "local-serving":
-        if sha256_hex(canonical_json(policy)) != (
-            CANONICAL_NATIVE_AGENT_SYSTEM_POLICY_SHA256
-        ):
-            _fail(
-                "native_system_contract_ref",
-                "does not match docs/product/contracts/native-agent-systems.json",
-            )
-        _fail(
-            "binding.provider_or_path.kind",
-            "live native provider preparation is not implemented in revbench v1",
         )
 
     command = _parse_canonical_json_ref(
@@ -1298,6 +1820,25 @@ def _validate_native_binding(
             token,
             f"binding.harness.version_probe_ref document.command_ref document.argv[{index}]",
         )
+
+    provider_kind = binding["provider_or_path"]["kind"]
+    if provider_kind != "local-serving":
+        if sha256_hex(canonical_json(policy)) != (
+            CANONICAL_NATIVE_AGENT_SYSTEM_POLICY_SHA256
+        ):
+            _fail(
+                "native_system_contract_ref",
+                "does not match docs/product/contracts/native-agent-systems.json",
+            )
+        _validate_codex_live_binding(
+            policy,
+            binding,
+            command_argv,
+            version_argv,
+            probe,
+            registrar,
+        )
+        return
 
     _validate_local_fixture_policy(
         policy,
@@ -1413,26 +1954,30 @@ def _validate_execution_authorization(
     authorization = _parse_canonical_json_ref(
         ref, registrar, "execution_authorization_ref"
     )
+    live = manifest["binding"]["provider_or_path"]["kind"] != "local-serving"
+    authorization_fields = {
+        "schema_version",
+        "authorization_id",
+        "authority_source_ref",
+        "authorized_by",
+        "delegate_or_mechanism",
+        "experiment_id",
+        "manifest_ref",
+        "binding_id",
+        "native_system_contract_ref",
+        "command_ref",
+        "version_probe_ref",
+        "effect_class",
+        "limits",
+        "valid_from",
+        "valid_until",
+    }
+    if live:
+        authorization_fields.update({"apparatus_ref", "custody_domain_id"})
     authorization = _object(
         authorization,
         "execution_authorization_ref document",
-        {
-            "schema_version",
-            "authorization_id",
-            "authority_source_ref",
-            "authorized_by",
-            "delegate_or_mechanism",
-            "experiment_id",
-            "manifest_ref",
-            "binding_id",
-            "native_system_contract_ref",
-            "command_ref",
-            "version_probe_ref",
-            "effect_class",
-            "limits",
-            "valid_from",
-            "valid_until",
-        },
+        authorization_fields,
     )
     _const(
         authorization["schema_version"],
@@ -1496,6 +2041,34 @@ def _validate_execution_authorization(
         expected_effect_class,
         "execution_authorization_ref document.effect_class",
     )
+    if live:
+        _string(
+            authorization["custody_domain_id"],
+            "execution_authorization_ref document.custody_domain_id",
+            pattern=_CUSTODY_DOMAIN_ID,
+        )
+        apparatus_ref = _validate_content_ref(
+            authorization["apparatus_ref"],
+            "execution_authorization_ref document.apparatus_ref",
+            kind="execution-apparatus-receipt",
+            schema="caplab-revbench-execution-apparatus/1",
+        )
+        apparatus = _parse_canonical_json_ref(
+            apparatus_ref,
+            registrar,
+            "execution_authorization_ref document.apparatus_ref",
+        )
+        try:
+            apparatus = validate_execution_apparatus_receipt(apparatus)
+        except CodexAdapterError as error:
+            raise RevbenchContractError(
+                "execution_authorization_ref document.apparatus_ref: receipt is invalid"
+            ) from error
+        if apparatus["caplab"]["checkout_state"] != "clean":
+            _fail(
+                "execution_authorization_ref document.apparatus_ref",
+                "live v1 requires a clean exact source checkout apparatus",
+            )
     limits = _object(
         authorization["limits"],
         "execution_authorization_ref document.limits",
@@ -1571,6 +2144,9 @@ def _validate_execution_authorization(
             "limits",
         )
     }
+    if live:
+        scope["apparatus_ref"] = authorization["apparatus_ref"]
+        scope["custody_domain_id"] = authorization["custody_domain_id"]
     _validate_delegation_ref(
         authorization["authority_source_ref"],
         registrar,
@@ -1926,15 +2502,1097 @@ def _basis(
     return {"basis_id": "basis-" + sha256_hex(canonical_json(fields)), **fields}
 
 
+def _validate_live_execution_intent_evidence(
+    ref: Mapping[str, Any],
+    manifest: Mapping[str, Any],
+    authorization_ref: Mapping[str, Any],
+    apparatus_ref: Mapping[str, Any],
+    registrar: ArtifactRegistrar,
+    path: str,
+) -> dict[str, Any]:
+    """Recompute every ordered live launch plan from prepared authority."""
+
+    _validate_content_ref(
+        ref,
+        path,
+        kind="live-execution-intent",
+        schema="caplab-revbench-live-execution-intent/1",
+    )
+    intent = _parse_canonical_json_ref(ref, registrar, path)
+    intent = _object(
+        intent,
+        f"{path} document",
+        {
+            "schema_version",
+            "authorization_id",
+            "manifest_sha256",
+            "experiment_id",
+            "binding_id",
+            "custody_domain_id",
+            "apparatus_ref",
+            "intent_recorded_at",
+            "execution_deadline_at",
+            "process_sequence",
+        },
+    )
+    _const(
+        intent["schema_version"],
+        "caplab-revbench-live-execution-intent/1",
+        f"{path} document.schema_version",
+    )
+    authorization = _parse_canonical_json_ref(
+        authorization_ref, registrar, f"{path} authorization"
+    )
+    if canonical_json(apparatus_ref) != canonical_json(authorization["apparatus_ref"]):
+        _fail(f"{path} document.apparatus_ref", "is not the authorized apparatus")
+    expected_identity = {
+        "authorization_id": authorization["authorization_id"],
+        "manifest_sha256": authorization["manifest_ref"]["sha256"],
+        "experiment_id": manifest["experiment_id"],
+        "binding_id": manifest["binding"]["binding_id"],
+        "custody_domain_id": authorization["custody_domain_id"],
+        "apparatus_ref": apparatus_ref,
+    }
+    for field, expected in expected_identity.items():
+        if canonical_json(intent[field]) != canonical_json(expected):
+            _fail(f"{path} document.{field}", "does not match authorized execution")
+    intent_at = _validate_timestamp(
+        intent["intent_recorded_at"], f"{path} document.intent_recorded_at"
+    )
+    deadline_at = _validate_timestamp(
+        intent["execution_deadline_at"], f"{path} document.execution_deadline_at"
+    )
+    _validate_execution_authorization(
+        authorization_ref, manifest, registrar, observed_at=intent_at
+    )
+    if deadline_at <= intent_at or deadline_at > authorization["valid_until"]:
+        _fail(f"{path} document.execution_deadline_at", "exceeds authorization")
+    elapsed = (
+        datetime.strptime(deadline_at, "%Y-%m-%dT%H:%M:%SZ")
+        - datetime.strptime(intent_at, "%Y-%m-%dT%H:%M:%SZ")
+    ).total_seconds()
+    if elapsed > authorization["limits"]["total_wall_seconds"]:
+        _fail(f"{path} document.execution_deadline_at", "renews total wall budget")
+
+    binding = manifest["binding"]
+    policy = codex_native_bundle_policy()
+    command = _parse_canonical_json_ref(
+        binding["harness"]["command_ref"], registrar, f"{path} review command"
+    )
+    probe = _parse_canonical_json_ref(
+        binding["harness"]["version_probe_ref"], registrar, f"{path} version probe"
+    )
+    version_command = _parse_canonical_json_ref(
+        probe["command_ref"], registrar, f"{path} version command"
+    )
+    runtime = _parse_canonical_json_ref(
+        binding["configuration"]["runtime_ref"], registrar, f"{path} runtime"
+    )
+    profile_ref = runtime["credential_profile_ref"]
+    profile = _parse_canonical_json_ref(profile_ref, registrar, f"{path} profile")
+    expected_sequence: list[dict[str, Any]] = []
+    limits = authorization["limits"]
+    for case in manifest["cases"]:
+        for assignment_index, arm in enumerate(case["assignment_order"]):
+            native_input = {
+                "schema_version": "caplab-revbench-native-input/1",
+                "instruction": _NATIVE_INPUT_INSTRUCTION,
+                "requirement": case["oracle"],
+                "artifact": case[arm]["content"],
+                "response_schema_version": "caplab-revbench-native-response/1",
+            }
+            for process_kind, logical_argv, stdin, environment, command_ref in (
+                (
+                    "version-probe",
+                    version_command["argv"],
+                    b"",
+                    {},
+                    probe["command_ref"],
+                ),
+                (
+                    "native-review",
+                    command["argv"],
+                    canonical_json(native_input),
+                    policy["environment"],
+                    binding["harness"]["command_ref"],
+                ),
+            ):
+                scope = {
+                    "schema_version": "caplab-revbench-live-effect-scope/1",
+                    "manifest_sha256": authorization["manifest_ref"]["sha256"],
+                    "experiment_id": manifest["experiment_id"],
+                    "binding_id": binding["binding_id"],
+                    "case_id": case["case_id"],
+                    "arm": arm,
+                    "assignment_index": assignment_index,
+                    "process_kind": process_kind,
+                }
+                plan = {
+                    "schema_version": "caplab-revbench-live-launch-plan/1",
+                    "effect_scope": scope,
+                    "argv_sha256": sha256_hex(canonical_json(logical_argv)),
+                    "containment_argv_sha256": sha256_hex(
+                        canonical_json(normalized_codex_containment_argv(logical_argv))
+                    ),
+                    "stdin_sha256": sha256_hex(stdin),
+                    "environment_sha256": sha256_hex(canonical_json(environment)),
+                    "runtime_bundle_sha256": binding["configuration"]["runtime_ref"][
+                        "sha256"
+                    ],
+                    "apparatus_sha256": apparatus_ref["sha256"],
+                    "command_sha256": command_ref["sha256"],
+                    "credential_profile_id": profile["profile_id"],
+                    "credential_profile_sha256": profile_ref["sha256"],
+                    "timeout_seconds": limits["timeout_seconds_per_process"],
+                    "execution_deadline_at": deadline_at,
+                    "stdout_limit": limits["max_stdout_bytes_per_process"],
+                    "stderr_limit": limits["max_stderr_bytes_per_process"],
+                }
+                expected_sequence.append(
+                    {
+                        "effect_id": live_effect_id(scope),
+                        "process_id": live_process_id(plan),
+                        "launch_plan": plan,
+                    }
+                )
+    if canonical_json(intent["process_sequence"]) != canonical_json(expected_sequence):
+        _fail(f"{path} document.process_sequence", "does not recompute")
+    return copy.deepcopy(dict(intent))
+
+
+def _validate_live_process_receipt_evidence(
+    ref: Mapping[str, Any],
+    *,
+    execution_intent_ref: Mapping[str, Any],
+    intent: Mapping[str, Any],
+    reviews: Mapping[str, Any],
+    registrar: ArtifactRegistrar,
+    path: str,
+) -> dict[str, Any]:
+    """Validate a process receipt against custody identity and stream bytes."""
+
+    _validate_content_ref(
+        ref,
+        path,
+        kind="live-process-receipt",
+        schema="caplab-revbench-live-process-receipt/1",
+    )
+    if not any(
+        canonical_json(ref) == canonical_json(item)
+        for item in reviews["process_receipt_refs"]
+    ):
+        _fail(path, "is not declared by reviews")
+    receipt = _parse_canonical_json_ref(ref, registrar, path)
+    receipt = _object(
+        receipt,
+        f"{path} document",
+        {
+            "schema_version",
+            "receipt_id",
+            "execution_intent_ref",
+            "sequence_index",
+            "authorization_id",
+            "effect_id",
+            "process_id",
+            "intent_recorded_at",
+            "launch_plan",
+            "launch_attempted_at",
+            "containment_process_started_at",
+            "containment_process_completed_at",
+            "completion_recorded_at",
+            "outer_launch_state",
+            "termination",
+            "exit_code",
+            "stream_disposition",
+            "stdout_sha256",
+            "stdout_byte_count",
+            "stdout_ref",
+            "stdout_complete",
+            "stderr_sha256",
+            "stderr_byte_count",
+            "stderr_ref",
+            "stderr_complete",
+            "recovery_ref",
+        },
+    )
+    _const(
+        receipt["schema_version"],
+        "caplab-revbench-live-process-receipt/1",
+        f"{path} document.schema_version",
+    )
+    identity = copy.deepcopy(dict(receipt))
+    receipt_id = identity.pop("receipt_id")
+    if receipt_id != "live-process-receipt-" + sha256_hex(canonical_json(identity)):
+        _fail(f"{path} document.receipt_id", "is not content-derived")
+    if canonical_json(receipt["execution_intent_ref"]) != canonical_json(
+        execution_intent_ref
+    ):
+        _fail(f"{path} document.execution_intent_ref", "does not match execution")
+    index = _integer(
+        receipt["sequence_index"], f"{path} document.sequence_index", minimum=0
+    )
+    sequence = intent["process_sequence"]
+    if index >= len(sequence):
+        _fail(f"{path} document.sequence_index", "is out of range")
+    declared = sequence[index]
+    for field in ("effect_id", "process_id", "launch_plan"):
+        if canonical_json(receipt[field]) != canonical_json(declared[field]):
+            _fail(f"{path} document.{field}", "does not match declared process")
+    if receipt["authorization_id"] != intent["authorization_id"]:
+        _fail(f"{path} document.authorization_id", "does not match execution")
+    if receipt["effect_id"] != live_effect_id(receipt["launch_plan"]["effect_scope"]):
+        _fail(f"{path} document.effect_id", "does not recompute")
+    if receipt["process_id"] != live_process_id(receipt["launch_plan"]):
+        _fail(f"{path} document.process_id", "does not recompute")
+
+    intent_at = _validate_timestamp(
+        receipt["intent_recorded_at"], f"{path} document.intent_recorded_at"
+    )
+    execution_intent_at = _validate_timestamp(
+        intent["intent_recorded_at"], f"{path} execution intent_recorded_at"
+    )
+    recorded_at = _validate_timestamp(
+        receipt["completion_recorded_at"],
+        f"{path} document.completion_recorded_at",
+    )
+    if intent_at < execution_intent_at or recorded_at < intent_at:
+        _fail(path, "has an inverted custody interval")
+    temporal: dict[str, str | None] = {}
+    for field in (
+        "launch_attempted_at",
+        "containment_process_started_at",
+        "containment_process_completed_at",
+    ):
+        value = receipt[field]
+        temporal[field] = (
+            None
+            if value is None
+            else _validate_timestamp(value, f"{path} document.{field}")
+        )
+    state = receipt["outer_launch_state"]
+    termination = receipt["termination"]
+    exit_code = receipt["exit_code"]
+    if exit_code is not None:
+        _integer(exit_code, f"{path} document.exit_code")
+    launch = temporal["launch_attempted_at"]
+    started = temporal["containment_process_started_at"]
+    completed = temporal["containment_process_completed_at"]
+    if state == "invoked":
+        if None in (launch, started, completed) or not (
+            intent_at <= launch <= started <= completed <= recorded_at
+        ):
+            _fail(path, "has invalid invoked timestamps")
+        if termination in {
+            "spawn-failure",
+            "preflight-refused",
+            "executor-interrupted",
+        }:
+            _fail(path, "has contradictory invoked termination")
+    elif state == "not-invoked":
+        if started is not None or completed is not None or exit_code is not None:
+            _fail(path, "has contradictory not-invoked state")
+        if termination == "spawn-failure":
+            if launch is None or not (intent_at <= launch <= recorded_at):
+                _fail(path, "has invalid spawn-failure timestamps")
+        elif launch is not None or termination not in {
+            "preflight-refused",
+            "authorization-expired",
+        }:
+            _fail(path, "has contradictory not-invoked termination")
+    elif state == "uncertain":
+        if termination != "executor-interrupted" or exit_code is not None:
+            _fail(path, "has contradictory uncertain recovery")
+    else:
+        _fail(f"{path} document.outer_launch_state", "is unsupported")
+    if not isinstance(receipt["stdout_complete"], bool) or not isinstance(
+        receipt["stderr_complete"], bool
+    ):
+        _fail(path, "stream completeness must be boolean")
+    for name in ("stdout", "stderr"):
+        digest = receipt[f"{name}_sha256"]
+        count = receipt[f"{name}_byte_count"]
+        if not isinstance(digest, str) or _SHA256.fullmatch(digest) is None:
+            _fail(f"{path} document.{name}_sha256", "is invalid")
+        _integer(count, f"{path} document.{name}_byte_count", minimum=0)
+        stream_ref = receipt[f"{name}_ref"]
+        if receipt["stream_disposition"] == "registered":
+            _validate_content_ref(
+                stream_ref,
+                f"{path} document.{name}_ref",
+                kind=f"native-process-{name}",
+                schema="caplab-native-process-stream/1",
+            )
+            payload = _resolve_ref(stream_ref, registrar, f"{path} {name}_ref")
+            if sha256_hex(payload) != digest or len(payload) != count:
+                _fail(f"{path} document.{name}_ref", "does not match custody digest")
+        elif receipt["stream_disposition"] == "privacy-quarantined":
+            if stream_ref is not None:
+                _fail(f"{path} document.{name}_ref", "publishes quarantined bytes")
+        else:
+            _fail(f"{path} document.stream_disposition", "is unsupported")
+    privacy_disposition = receipt["stream_disposition"] == "privacy-quarantined"
+    if privacy_disposition != (termination == "privacy-quarantine"):
+        _fail(path, "privacy quarantine contradicts termination")
+    if privacy_disposition and (
+        receipt["stdout_complete"] or receipt["stderr_complete"]
+    ):
+        _fail(path, "privacy quarantine contradicts stream completeness")
+    if termination == "stdout-limit" and receipt["stdout_complete"]:
+        _fail(path, "stdout limit contradicts completeness")
+    if termination == "stderr-limit" and receipt["stderr_complete"]:
+        _fail(path, "stderr limit contradicts completeness")
+    recovery_ref = receipt["recovery_ref"]
+    if state == "uncertain":
+        recovery_ref = _validate_content_ref(
+            recovery_ref,
+            f"{path} document.recovery_ref",
+            kind="native-process-recovery",
+            schema="caplab-revbench-live-process-recovery/1",
+        )
+        recovery = _parse_canonical_json_ref(
+            recovery_ref, registrar, f"{path} recovery_ref"
+        )
+        recovery = _object(
+            recovery,
+            f"{path} recovery_ref document",
+            {
+                "schema_version",
+                "process_id",
+                "intent_recorded_at",
+                "process_started_at",
+                "process_completed_at",
+                "invocation_state",
+                "termination",
+                "stdout_sha256",
+                "stdout_byte_count",
+                "stderr_sha256",
+                "stderr_byte_count",
+                "recovered_at",
+            },
+        )
+        expected_recovery = {
+            "schema_version": "caplab-revbench-live-process-recovery/1",
+            "process_id": receipt["process_id"],
+            "intent_recorded_at": receipt["intent_recorded_at"],
+            "process_started_at": receipt["containment_process_started_at"],
+            "process_completed_at": receipt["containment_process_completed_at"],
+            "invocation_state": "uncertain",
+            "termination": "executor-interrupted",
+            "stdout_sha256": receipt["stdout_sha256"],
+            "stdout_byte_count": receipt["stdout_byte_count"],
+            "stderr_sha256": receipt["stderr_sha256"],
+            "stderr_byte_count": receipt["stderr_byte_count"],
+            "recovered_at": receipt["completion_recorded_at"],
+        }
+        if canonical_json(recovery) != canonical_json(expected_recovery):
+            _fail(f"{path} recovery_ref", "does not match receipt")
+    elif recovery_ref is not None:
+        _fail(f"{path} document.recovery_ref", "is only valid for uncertainty")
+    return copy.deepcopy(dict(receipt))
+
+
+def _verify_live_execution_attempt_evidence(
+    attempt: Mapping[str, Any],
+    manifest: Mapping[str, Any],
+    reviews: Mapping[str, Any],
+    execution_authorization_ref: Mapping[str, Any],
+    review_observed_at: str,
+    registrar: ArtifactRegistrar,
+    path: str,
+) -> tuple[str, str]:
+    """Reconstruct one Codex JSONL attempt without trusting its projections."""
+
+    experiment_id = manifest["experiment_id"]
+    binding = manifest["binding"]
+    manifest_case = next(
+        case for case in manifest["cases"] if case["case_id"] == attempt["case_id"]
+    )
+    envelope = _parse_canonical_json_ref(
+        attempt["attempt_ref"], registrar, f"{path}.attempt_ref"
+    )
+    envelope = _object(
+        envelope,
+        f"{path}.attempt_ref document",
+        {
+            "schema_version",
+            "attempt_id",
+            "experiment_id",
+            "case_id",
+            "arm",
+            "assignment_index",
+            "binding_id",
+            "observed_binding",
+            "apparatus_ref",
+            "attestation_ref",
+            "prompt_ref",
+            "disposition",
+            "verdict",
+            "anchors",
+            "output_ref",
+            "provenance",
+        },
+    )
+    _const(
+        envelope["schema_version"],
+        "caplab-live-native-review-attempt/1",
+        f"{path}.attempt_ref document.schema_version",
+    )
+    envelope_identity = copy.deepcopy(dict(envelope))
+    envelope_identity.pop("attempt_id")
+    if envelope["attempt_id"] != "live-attempt-" + sha256_hex(
+        canonical_json(envelope_identity)
+    ):
+        _fail(f"{path}.attempt_ref document.attempt_id", "is not content-derived")
+    projection = copy.deepcopy(dict(envelope))
+    for field in (
+        "schema_version",
+        "attempt_id",
+        "experiment_id",
+        "provenance",
+        "apparatus_ref",
+    ):
+        projection.pop(field)
+    supplied = copy.deepcopy(dict(attempt))
+    supplied.pop("attempt_ref")
+    if canonical_json(projection) != canonical_json(supplied):
+        _fail(path, "review attempt does not equal live envelope projection")
+    _validate_provenance(envelope["provenance"], f"{path}.attempt_ref.provenance")
+
+    apparatus_ref = _validate_content_ref(
+        envelope["apparatus_ref"],
+        f"{path}.attempt_ref document.apparatus_ref",
+        kind="execution-apparatus-receipt",
+        schema="caplab-revbench-execution-apparatus/1",
+    )
+    apparatus = _parse_canonical_json_ref(
+        apparatus_ref, registrar, f"{path}.apparatus_ref"
+    )
+    try:
+        apparatus = validate_execution_apparatus_receipt(apparatus)
+    except CodexAdapterError as error:
+        raise RevbenchContractError(
+            f"{path}.apparatus_ref: apparatus receipt is invalid"
+        ) from error
+    execution_intent_ref = reviews["execution_intent_ref"]
+    execution_intent = _validate_live_execution_intent_evidence(
+        execution_intent_ref,
+        manifest,
+        execution_authorization_ref,
+        apparatus_ref,
+        registrar,
+        f"{path}.execution_intent_ref",
+    )
+
+    prompt = _parse_canonical_json_ref(
+        attempt["prompt_ref"], registrar, f"{path}.prompt_ref"
+    )
+    prompt = _object(
+        prompt,
+        f"{path}.prompt_ref document",
+        {
+            "schema_version",
+            "experiment_id",
+            "case_id",
+            "arm",
+            "assignment_index",
+            "binding_id",
+            "protocol_ref",
+            "rendered_input_ref",
+        },
+    )
+    expected_prompt = {
+        "schema_version": "caplab-revbench-prompt/1",
+        "experiment_id": experiment_id,
+        "case_id": attempt["case_id"],
+        "arm": attempt["arm"],
+        "assignment_index": attempt["assignment_index"],
+        "binding_id": binding["binding_id"],
+        "protocol_ref": manifest["protocol"],
+    }
+    for field, expected in expected_prompt.items():
+        if canonical_json(prompt[field]) != canonical_json(expected):
+            _fail(f"{path}.prompt_ref document.{field}", "does not match assignment")
+    _validate_content_ref(
+        prompt["rendered_input_ref"],
+        f"{path}.prompt_ref document.rendered_input_ref",
+        kind="native-input",
+        schema="caplab-revbench-native-input/1",
+    )
+    native_input = _parse_canonical_json_ref(
+        prompt["rendered_input_ref"], registrar, f"{path}.rendered_input_ref"
+    )
+    expected_input = {
+        "schema_version": "caplab-revbench-native-input/1",
+        "instruction": _NATIVE_INPUT_INSTRUCTION,
+        "requirement": manifest_case["oracle"],
+        "artifact": manifest_case[attempt["arm"]]["content"],
+        "response_schema_version": "caplab-revbench-native-response/1",
+    }
+    if canonical_json(native_input) != canonical_json(expected_input):
+        _fail(f"{path}.rendered_input_ref", "does not match blinded native input")
+
+    output = _parse_canonical_json_ref(
+        attempt["output_ref"], registrar, f"{path}.output_ref"
+    )
+    output = _object(
+        output,
+        f"{path}.output_ref document",
+        {
+            "schema_version",
+            "experiment_id",
+            "case_id",
+            "arm",
+            "assignment_index",
+            "binding_id",
+            "raw_stdout_ref",
+            "derived_response_ref",
+            "response_derivation_ref",
+            "parse_status",
+            "verdict",
+            "anchors",
+        },
+    )
+    expected_output = {
+        "schema_version": "caplab-live-native-output/1",
+        "experiment_id": experiment_id,
+        "case_id": attempt["case_id"],
+        "arm": attempt["arm"],
+        "assignment_index": attempt["assignment_index"],
+        "binding_id": binding["binding_id"],
+        "verdict": attempt["verdict"],
+        "anchors": attempt["anchors"],
+    }
+    for field, expected in expected_output.items():
+        if canonical_json(output[field]) != canonical_json(expected):
+            _fail(f"{path}.output_ref document.{field}", "does not match attempt")
+    raw_stdout: bytes | None
+    if output["parse_status"] == "privacy-quarantine":
+        if output["raw_stdout_ref"] is not None:
+            _fail(f"{path}.output_ref", "publishes privacy-quarantined stdout")
+        raw_stdout = None
+    else:
+        _validate_content_ref(
+            output["raw_stdout_ref"],
+            f"{path}.output_ref document.raw_stdout_ref",
+            kind="native-process-stdout",
+            schema="caplab-native-process-stream/1",
+        )
+        raw_stdout = _resolve_ref(
+            output["raw_stdout_ref"], registrar, f"{path}.output_ref raw_stdout_ref"
+        )
+    derived = None
+    if output["parse_status"] == "valid":
+        assert raw_stdout is not None
+        derived_ref = _validate_content_ref(
+            output["derived_response_ref"],
+            f"{path}.output_ref document.derived_response_ref",
+            kind="native-derived-response",
+            schema="caplab-revbench-native-response/1",
+        )
+        derivation_ref = _validate_content_ref(
+            output["response_derivation_ref"],
+            f"{path}.output_ref document.response_derivation_ref",
+            kind="native-response-derivation",
+            schema="caplab-revbench-response-derivation/1",
+        )
+        try:
+            derived = derive_codex_response(raw_stdout)
+        except CodexAdapterError as error:
+            raise RevbenchContractError(
+                f"{path}.output_ref: registered raw Codex JSONL is invalid"
+            ) from error
+        if (
+            _resolve_ref(
+                derived_ref, registrar, f"{path}.output_ref derived_response_ref"
+            )
+            != derived.response_bytes
+        ):
+            _fail(f"{path}.output_ref", "derived response bytes do not recompute")
+        derivation = _parse_canonical_json_ref(
+            derivation_ref, registrar, f"{path}.output_ref response_derivation_ref"
+        )
+        expected_derivation = response_derivation_document(
+            derived, output["raw_stdout_ref"], derived_ref
+        )
+        if canonical_json(derivation) != canonical_json(expected_derivation):
+            _fail(f"{path}.output_ref", "response derivation does not recompute")
+        if derived.response["verdict"] != output["verdict"] or canonical_json(
+            derived.response["anchors"]
+        ) != canonical_json(output["anchors"]):
+            _fail(f"{path}.output_ref", "does not project derived response")
+    elif output["parse_status"] == "invalid-response":
+        if (
+            output["derived_response_ref"] is not None
+            or output["response_derivation_ref"] is not None
+            or output["verdict"] != "invalid"
+            or output["anchors"] != []
+        ):
+            _fail(f"{path}.output_ref", "invalid response has derived claims")
+        assert raw_stdout is not None
+        try:
+            derive_codex_response(raw_stdout)
+        except CodexResponseSchemaError:
+            pass
+        except CodexJSONLTransportError as error:
+            raise RevbenchContractError(
+                f"{path}.output_ref: invalid response lacks a terminal Codex envelope"
+            ) from error
+        else:
+            _fail(f"{path}.output_ref", "response unexpectedly satisfies schema")
+    elif output["parse_status"] in {"invalid-transport", "privacy-quarantine"}:
+        if (
+            output["derived_response_ref"] is not None
+            or output["response_derivation_ref"] is not None
+            or output["verdict"] != "invalid"
+            or output["anchors"] != []
+        ):
+            _fail(f"{path}.output_ref", "non-derived output has derived claims")
+        if output["parse_status"] == "invalid-transport":
+            assert raw_stdout is not None
+            try:
+                derive_codex_response(raw_stdout)
+            except CodexJSONLTransportError:
+                pass
+            except CodexResponseSchemaError as error:
+                raise RevbenchContractError(
+                    f"{path}.output_ref: transport failure is a terminal invalid response"
+                ) from error
+            else:
+                _fail(
+                    f"{path}.output_ref",
+                    "transport failure unexpectedly has a valid terminal envelope",
+                )
+    else:
+        _fail(f"{path}.output_ref document.parse_status", "is unsupported")
+
+    attestation = _parse_canonical_json_ref(
+        attempt["attestation_ref"], registrar, f"{path}.attestation_ref"
+    )
+    attestation = _object(
+        attestation,
+        f"{path}.attestation_ref document",
+        {
+            "schema_version",
+            "attestation_id",
+            "experiment_id",
+            "case_id",
+            "arm",
+            "assignment_index",
+            "observed_at",
+            "observed_binding",
+            "native_system_contract_ref",
+            "execution_authorization_ref",
+            "apparatus_ref",
+            "version_observation_ref",
+            "capture_ref",
+            "prompt_ref",
+            "output_ref",
+        },
+    )
+    attestation_identity = copy.deepcopy(dict(attestation))
+    attestation_identity.pop("attestation_id")
+    if attestation["attestation_id"] != "live-attestation-" + sha256_hex(
+        canonical_json(attestation_identity)
+    ):
+        _fail(f"{path}.attestation_ref", "attestation ID is not content-derived")
+    expected_attestation = {
+        "schema_version": "caplab-live-native-attempt-attestation/1",
+        "experiment_id": experiment_id,
+        "case_id": attempt["case_id"],
+        "arm": attempt["arm"],
+        "assignment_index": attempt["assignment_index"],
+        "observed_binding": binding,
+        "native_system_contract_ref": manifest["native_system_contract_ref"],
+        "execution_authorization_ref": execution_authorization_ref,
+        "apparatus_ref": apparatus_ref,
+        "prompt_ref": attempt["prompt_ref"],
+        "output_ref": attempt["output_ref"],
+    }
+    for field, expected in expected_attestation.items():
+        if canonical_json(attestation[field]) != canonical_json(expected):
+            _fail(f"{path}.attestation_ref document.{field}", "does not match attempt")
+    attested_at = _validate_timestamp(
+        attestation["observed_at"], f"{path}.attestation_ref observed_at"
+    )
+    if attested_at > review_observed_at:
+        _fail(f"{path}.attestation_ref observed_at", "is later than reviews")
+
+    capture_ref = _validate_content_ref(
+        attestation["capture_ref"],
+        f"{path}.attestation_ref capture_ref",
+        kind="live-native-attempt-capture",
+        schema="caplab-live-native-attempt-capture/1",
+    )
+    capture = _parse_canonical_json_ref(capture_ref, registrar, f"{path}.capture_ref")
+    capture = _object(
+        capture,
+        f"{path}.capture_ref document",
+        {
+            "schema_version",
+            "capture_id",
+            "execution_authorization_ref",
+            "apparatus_ref",
+            "execution_intent_ref",
+            "process_receipt_ref",
+            "experiment_id",
+            "case_id",
+            "arm",
+            "assignment_index",
+            "binding_id",
+            "observed_binding",
+            "intent_recorded_at",
+            "launch_attempted_at",
+            "containment_process_started_at",
+            "containment_process_completed_at",
+            "completion_recorded_at",
+            "outer_launch_state",
+            "native_harness_completion",
+            "provider_request_state",
+            "command_ref",
+            "version_observation_ref",
+            "prompt_ref",
+            "stdin_ref",
+            "stdout_ref",
+            "stdout_complete",
+            "stderr_ref",
+            "stderr_complete",
+            "output_ref",
+            "exit_code",
+            "termination",
+            "recovery_ref",
+        },
+    )
+    capture_identity = copy.deepcopy(dict(capture))
+    capture_identity.pop("capture_id")
+    if capture["capture_id"] != "live-capture-" + sha256_hex(
+        canonical_json(capture_identity)
+    ):
+        _fail(f"{path}.capture_ref", "capture ID is not content-derived")
+    expected_capture = {
+        "schema_version": "caplab-live-native-attempt-capture/1",
+        "execution_authorization_ref": execution_authorization_ref,
+        "apparatus_ref": apparatus_ref,
+        "execution_intent_ref": execution_intent_ref,
+        "experiment_id": experiment_id,
+        "case_id": attempt["case_id"],
+        "arm": attempt["arm"],
+        "assignment_index": attempt["assignment_index"],
+        "binding_id": binding["binding_id"],
+        "observed_binding": binding,
+        "command_ref": binding["harness"]["command_ref"],
+        "version_observation_ref": attestation["version_observation_ref"],
+        "prompt_ref": attempt["prompt_ref"],
+        "stdout_ref": output["raw_stdout_ref"],
+        "output_ref": attempt["output_ref"],
+    }
+    for field, expected in expected_capture.items():
+        if canonical_json(capture[field]) != canonical_json(expected):
+            _fail(f"{path}.capture_ref document.{field}", "does not match attempt")
+    if capture["provider_request_state"] != "unavailable":
+        _fail(f"{path}.capture_ref provider_request_state", "must remain unavailable")
+    for field in ("stdout_complete", "stderr_complete"):
+        if not isinstance(capture[field], bool):
+            _fail(f"{path}.capture_ref {field}", "must be boolean")
+    for field, kind in (("stdin_ref", "native-process-stdin"),):
+        _validate_content_ref(
+            capture[field],
+            f"{path}.capture_ref {field}",
+            kind=kind,
+            schema="caplab-native-process-stream/1",
+        )
+    if _resolve_ref(capture["stdin_ref"], registrar, f"{path}.stdin_ref") != (
+        canonical_json(native_input)
+    ):
+        _fail(f"{path}.stdin_ref", "does not equal blinded input")
+    if output["parse_status"] == "privacy-quarantine":
+        if capture["stdout_ref"] is not None or capture["stderr_ref"] is not None:
+            _fail(f"{path}.capture_ref", "publishes privacy-quarantined streams")
+    else:
+        for field, kind in (
+            ("stdout_ref", "native-process-stdout"),
+            ("stderr_ref", "native-process-stderr"),
+        ):
+            _validate_content_ref(
+                capture[field],
+                f"{path}.capture_ref {field}",
+                kind=kind,
+                schema="caplab-native-process-stream/1",
+            )
+            _resolve_ref(capture[field], registrar, f"{path}.{field}")
+
+    version_ref = _validate_content_ref(
+        capture["version_observation_ref"],
+        f"{path}.version_observation_ref",
+        kind="live-native-version-observation",
+        schema="caplab-live-native-version-observation/1",
+    )
+    version = _parse_canonical_json_ref(
+        version_ref, registrar, f"{path}.version_observation_ref"
+    )
+    version = _object(
+        version,
+        f"{path}.version_observation_ref document",
+        {
+            "schema_version",
+            "observation_id",
+            "execution_authorization_ref",
+            "apparatus_ref",
+            "execution_intent_ref",
+            "process_receipt_ref",
+            "experiment_id",
+            "binding_id",
+            "expected_version_probe_ref",
+            "command_ref",
+            "intent_recorded_at",
+            "launch_attempted_at",
+            "containment_process_started_at",
+            "containment_process_completed_at",
+            "completion_recorded_at",
+            "outer_launch_state",
+            "stdout_ref",
+            "stdout_complete",
+            "stderr_ref",
+            "stderr_complete",
+            "exit_code",
+            "termination",
+            "matches_expected",
+            "recovery_ref",
+        },
+    )
+    version_identity = copy.deepcopy(dict(version))
+    version_identity.pop("observation_id")
+    if version["observation_id"] != "live-version-observation-" + sha256_hex(
+        canonical_json(version_identity)
+    ):
+        _fail(f"{path}.version_observation_ref", "ID is not content-derived")
+    probe = _parse_canonical_json_ref(
+        binding["harness"]["version_probe_ref"], registrar, f"{path}.expected_probe"
+    )
+    expected_version = {
+        "schema_version": "caplab-live-native-version-observation/1",
+        "execution_authorization_ref": execution_authorization_ref,
+        "apparatus_ref": apparatus_ref,
+        "execution_intent_ref": execution_intent_ref,
+        "experiment_id": experiment_id,
+        "binding_id": binding["binding_id"],
+        "expected_version_probe_ref": binding["harness"]["version_probe_ref"],
+        "command_ref": probe["command_ref"],
+    }
+    for field, expected in expected_version.items():
+        if canonical_json(version[field]) != canonical_json(expected):
+            _fail(f"{path}.version document.{field}", "does not match Binding")
+    native_receipt = _validate_live_process_receipt_evidence(
+        capture["process_receipt_ref"],
+        execution_intent_ref=execution_intent_ref,
+        intent=execution_intent,
+        reviews=reviews,
+        registrar=registrar,
+        path=f"{path}.capture process_receipt_ref",
+    )
+    version_receipt = _validate_live_process_receipt_evidence(
+        version["process_receipt_ref"],
+        execution_intent_ref=execution_intent_ref,
+        intent=execution_intent,
+        reviews=reviews,
+        registrar=registrar,
+        path=f"{path}.version process_receipt_ref",
+    )
+    quarantined = native_receipt["termination"] == "privacy-quarantine"
+    if (
+        native_receipt["stream_disposition"] == "privacy-quarantined"
+    ) is not quarantined or (
+        output["parse_status"] == "privacy-quarantine"
+    ) is not quarantined:
+        _fail(f"{path}.capture", "privacy quarantine projections disagree")
+    if version_receipt["stream_disposition"] != "registered":
+        _fail(f"{path}.version", "version streams must be registered")
+    for receipt, expected_kind in (
+        (version_receipt, "version-probe"),
+        (native_receipt, "native-review"),
+    ):
+        scope = receipt["launch_plan"]["effect_scope"]
+        expected_scope = {
+            "case_id": attempt["case_id"],
+            "arm": attempt["arm"],
+            "assignment_index": attempt["assignment_index"],
+            "process_kind": expected_kind,
+        }
+        for field, expected in expected_scope.items():
+            if scope[field] != expected:
+                _fail(f"{path}.{expected_kind} receipt", "has swapped effect scope")
+    if version_receipt["sequence_index"] + 1 != native_receipt["sequence_index"]:
+        _fail(f"{path}.capture", "does not immediately follow its version probe")
+    projection_fields = {
+        "intent_recorded_at": "intent_recorded_at",
+        "launch_attempted_at": "launch_attempted_at",
+        "containment_process_started_at": "containment_process_started_at",
+        "containment_process_completed_at": "containment_process_completed_at",
+        "completion_recorded_at": "completion_recorded_at",
+        "outer_launch_state": "outer_launch_state",
+        "stdout_ref": "stdout_ref",
+        "stdout_complete": "stdout_complete",
+        "stderr_ref": "stderr_ref",
+        "stderr_complete": "stderr_complete",
+        "exit_code": "exit_code",
+        "termination": "termination",
+        "recovery_ref": "recovery_ref",
+    }
+    for document, receipt, label in (
+        (version, version_receipt, "version"),
+        (capture, native_receipt, "capture"),
+    ):
+        for document_field, receipt_field in projection_fields.items():
+            if canonical_json(document[document_field]) != canonical_json(
+                receipt[receipt_field]
+            ):
+                _fail(
+                    f"{path}.{label}.{document_field}",
+                    "does not equal process custody receipt",
+                )
+    version_stdout = _resolve_ref(
+        version["stdout_ref"], registrar, f"{path}.version stdout_ref"
+    )
+    version_stderr = _resolve_ref(
+        version["stderr_ref"], registrar, f"{path}.version stderr_ref"
+    )
+    expected_match = (
+        version["outer_launch_state"] == "invoked"
+        and version["termination"] == "exited"
+        and version["exit_code"] == probe["exit_code"] == 0
+        and version["stdout_complete"] is True
+        and version["stderr_complete"] is True
+        and version_stdout
+        == _resolve_ref(probe["stdout_ref"], registrar, f"{path}.probe stdout_ref")
+        and version_stderr
+        == _resolve_ref(probe["stderr_ref"], registrar, f"{path}.probe stderr_ref")
+    )
+    if version["matches_expected"] is not expected_match:
+        _fail(f"{path}.version matches_expected", "does not recompute")
+    if capture["outer_launch_state"] == "invoked" and not expected_match:
+        _fail(f"{path}.capture outer_launch_state", "follows version drift")
+
+    for document, label in ((version, "version"), (capture, "capture")):
+        intent_at = _validate_timestamp(
+            document["intent_recorded_at"], f"{path}.{label}.intent_recorded_at"
+        )
+        _validate_execution_authorization(
+            execution_authorization_ref, manifest, registrar, observed_at=intent_at
+        )
+        recorded_at = _validate_timestamp(
+            document["completion_recorded_at"],
+            f"{path}.{label}.completion_recorded_at",
+        )
+        launch_at = document["launch_attempted_at"]
+        started_at = document["containment_process_started_at"]
+        completed_at = document["containment_process_completed_at"]
+        parsed_launch = (
+            None
+            if launch_at is None
+            else _validate_timestamp(launch_at, f"{path}.{label}.launch_attempted_at")
+        )
+        parsed_started = (
+            None
+            if started_at is None
+            else _validate_timestamp(started_at, f"{path}.{label}.process_started_at")
+        )
+        parsed_completed = (
+            None
+            if completed_at is None
+            else _validate_timestamp(
+                completed_at, f"{path}.{label}.process_completed_at"
+            )
+        )
+        if parsed_launch is not None:
+            _validate_execution_authorization(
+                execution_authorization_ref,
+                manifest,
+                registrar,
+                observed_at=parsed_launch,
+            )
+        if document["outer_launch_state"] == "invoked":
+            if None in (parsed_launch, parsed_started, parsed_completed) or not (
+                intent_at
+                <= parsed_launch
+                <= parsed_started
+                <= parsed_completed
+                <= recorded_at
+            ):
+                _fail(f"{path}.{label}", "has invalid invoked timestamps")
+        elif document["outer_launch_state"] == "not-invoked":
+            if any(value is not None for value in (parsed_started, parsed_completed)):
+                _fail(f"{path}.{label}", "not-invoked has process timestamps")
+        elif document["outer_launch_state"] != "uncertain":
+            _fail(f"{path}.{label}.outer_launch_state", "is unsupported")
+
+    if attestation["observed_at"] != capture["completion_recorded_at"]:
+        _fail(f"{path}.attestation_ref observed_at", "does not match capture")
+    harness_observed = (
+        capture["outer_launch_state"] == "invoked"
+        and capture["termination"] == "exited"
+        and capture["exit_code"] == 0
+        and capture["stdout_complete"]
+        and capture["stderr_complete"]
+        and output["parse_status"] in {"valid", "invalid-response"}
+    )
+    if capture["native_harness_completion"] != (
+        "observed" if harness_observed else "unavailable"
+    ):
+        _fail(f"{path}.capture native_harness_completion", "does not recompute")
+    if attempt["disposition"] == "complete":
+        valid_disposition = harness_observed and output["parse_status"] == "valid"
+    elif attempt["disposition"] == "subject-failure":
+        valid_disposition = (
+            harness_observed
+            and output["parse_status"] == "invalid-response"
+            and attempt["verdict"] == "invalid"
+            and attempt["anchors"] == []
+        )
+    elif attempt["disposition"] == "infrastructure-failure":
+        valid_disposition = (
+            not harness_observed
+            and output["parse_status"] in {"invalid-transport", "privacy-quarantine"}
+            and attempt["verdict"] == "invalid"
+        )
+    else:
+        valid_disposition = False
+    if not valid_disposition:
+        _fail(f"{path}.capture", "contradicts live attempt disposition")
+    if capture["outer_launch_state"] == "uncertain" and capture["recovery_ref"] is None:
+        _fail(f"{path}.capture recovery_ref", "is required for uncertain recovery")
+    if capture["recovery_ref"] is not None:
+        recovery_ref = _validate_content_ref(
+            capture["recovery_ref"],
+            f"{path}.capture recovery_ref",
+            kind="native-process-recovery",
+            schema="caplab-revbench-live-process-recovery/1",
+        )
+        _parse_canonical_json_ref(
+            recovery_ref, registrar, f"{path}.capture recovery_ref"
+        )
+    return version["intent_recorded_at"], capture["completion_recorded_at"]
+
+
 def _verify_execution_attempt_evidence(
     attempt: Mapping[str, Any],
     manifest: Mapping[str, Any],
+    reviews: Mapping[str, Any],
     execution_authorization_ref: Mapping[str, Any],
     review_observed_at: str,
     registrar: ArtifactRegistrar,
     path: str,
 ) -> tuple[str, str]:
     """Reconstruct one supported execution attempt from its registered bytes."""
+
+    if manifest["binding"]["provider_or_path"]["kind"] != "local-serving":
+        return _verify_live_execution_attempt_evidence(
+            attempt,
+            manifest,
+            reviews,
+            execution_authorization_ref,
+            review_observed_at,
+            registrar,
+            path,
+        )
 
     experiment_id = manifest["experiment_id"]
     binding = manifest["binding"]
@@ -2517,6 +4175,104 @@ def score(
         observed_at=validated_reviews["observed_at"],
     )
 
+    if validated_manifest["binding"]["provider_or_path"]["kind"] != "local-serving":
+        intent_preview = _parse_canonical_json_ref(
+            validated_reviews["execution_intent_ref"],
+            registrar,
+            "reviews.execution_intent_ref",
+        )
+        if not isinstance(intent_preview, Mapping):
+            _fail("reviews.execution_intent_ref", "must resolve to an object")
+        apparatus_ref = _validate_content_ref(
+            intent_preview.get("apparatus_ref"),
+            "reviews.execution_intent_ref document.apparatus_ref",
+            kind="execution-apparatus-receipt",
+            schema="caplab-revbench-execution-apparatus/1",
+        )
+        apparatus_document = _parse_canonical_json_ref(
+            apparatus_ref, registrar, "reviews execution apparatus_ref"
+        )
+        try:
+            validate_execution_apparatus_receipt(apparatus_document)
+        except CodexAdapterError as error:
+            raise RevbenchContractError(
+                "reviews execution apparatus_ref: receipt is invalid"
+            ) from error
+        live_intent = _validate_live_execution_intent_evidence(
+            validated_reviews["execution_intent_ref"],
+            validated_manifest,
+            validated_reviews["execution_authorization_ref"],
+            apparatus_ref,
+            registrar,
+            "reviews.execution_intent_ref",
+        )
+        receipt_indexes: list[int] = []
+        live_receipts: list[dict[str, Any]] = []
+        for index, receipt_ref in enumerate(validated_reviews["process_receipt_refs"]):
+            receipt = _validate_live_process_receipt_evidence(
+                receipt_ref,
+                execution_intent_ref=validated_reviews["execution_intent_ref"],
+                intent=live_intent,
+                reviews=validated_reviews,
+                registrar=registrar,
+                path=f"reviews.process_receipt_refs[{index}]",
+            )
+            receipt_indexes.append(receipt["sequence_index"])
+            live_receipts.append(receipt)
+        if receipt_indexes != list(range(len(receipt_indexes))):
+            _fail(
+                "reviews.process_receipt_refs",
+                "must be the ordered prefix of the sealed process sequence",
+            )
+        attempt_count = len(validated_reviews["attempts"])
+        receipt_count = len(live_receipts)
+        if receipt_count not in {attempt_count * 2, attempt_count * 2 + 1}:
+            _fail(
+                "reviews.process_receipt_refs",
+                "does not account exactly for the attempt prefix",
+            )
+        if (
+            receipt_count % 2 == 1
+            and live_receipts[-1]["launch_plan"]["effect_scope"]["process_kind"]
+            != "version-probe"
+        ):
+            _fail(
+                "reviews.process_receipt_refs",
+                "unpaired terminal receipt is not a version probe",
+            )
+        if receipt_count % 2 == 1:
+            terminal_version = live_receipts[-1]
+            expected_probe = _parse_canonical_json_ref(
+                validated_manifest["binding"]["harness"]["version_probe_ref"],
+                registrar,
+                "reviews terminal version expected probe",
+            )
+            exact_success = (
+                terminal_version["outer_launch_state"] == "invoked"
+                and terminal_version["termination"] == "exited"
+                and terminal_version["exit_code"] == expected_probe["exit_code"] == 0
+                and terminal_version["stdout_complete"]
+                and terminal_version["stderr_complete"]
+                and all(
+                    terminal_version[f"{stream}_ref"][field]
+                    == expected_probe[f"{stream}_ref"][field]
+                    for stream in ("stdout", "stderr")
+                    for field in ("sha256", "byte_count")
+                )
+            )
+            if exact_success:
+                _fail(
+                    "reviews.process_receipt_refs",
+                    "cannot omit the native process after a successful version probe",
+                )
+        if validated_reviews["status"] == "complete" and receipt_count != len(
+            live_intent["process_sequence"]
+        ):
+            _fail(
+                "reviews.process_receipt_refs",
+                "complete execution must account for every declared process",
+            )
+
     attempts: dict[tuple[str, str], Mapping[str, Any]] = {}
     capture_intervals: dict[tuple[str, str], tuple[str, str]] = {}
     conforming = 0
@@ -2531,6 +4287,7 @@ def score(
             _verify_execution_attempt_evidence(
                 attempt,
                 validated_manifest,
+                validated_reviews,
                 validated_reviews["execution_authorization_ref"],
                 validated_reviews["observed_at"],
                 registrar,
@@ -2550,7 +4307,7 @@ def score(
     )
     if validated_reviews["execution_id"] != expected_execution_id:
         _fail("reviews.execution_id", "is not content-derived")
-    _verified_registration(
+    execution_ref = _verified_registration(
         registrar,
         copy.deepcopy(dict(validated_reviews)),
         kind="revbench-execution",
@@ -2780,6 +4537,7 @@ def score(
     bundle_document: JsonValue = {
         "schema_version": "caplab-revbench-evidence-bundle/1",
         "experiment_id": experiment_id,
+        "execution_ref": execution_ref,
         "run_refs": run_refs,
     }
     bundle_ref = _verified_registration(
@@ -2789,7 +4547,21 @@ def score(
         schema="caplab-revbench-evidence-bundle/1",
         registration_id=f"revbench-bundle-{experiment_id}-{validated_reviews['observed_at']}",
     )
-    if infrastructure_failures:
+    infrastructure_stop_reasons = {
+        "preflight-refused",
+        "spawn-failure",
+        "timeout",
+        "stdout-limit",
+        "stderr-limit",
+        "privacy-quarantine",
+        "executor-interrupted",
+        "response-transport-invalid",
+        "exited",
+    }
+    if (
+        infrastructure_failures
+        or validated_reviews["stop_reason"] in infrastructure_stop_reasons
+    ):
         disposition = "infrastructure-failure"
     elif any(
         attempt["disposition"] == "complete" and attempt["verdict"] == "invalid"

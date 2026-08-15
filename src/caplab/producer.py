@@ -27,7 +27,9 @@ def producer_identity() -> tuple[str, str, str]:
     commit = _source_commit(package_root)
     inventory: list[dict[str, object]] = []
     for path in sorted(package_root.rglob("*")):
-        if not path.is_file() or path.is_symlink() or "__pycache__" in path.parts:
+        if path.is_symlink():
+            raise ProducerIdentityError("producer_package_symlink_refused")
+        if not path.is_file() or "__pycache__" in path.parts:
             continue
         if path.suffix in {".pyc", ".pyo"}:
             continue
@@ -85,14 +87,35 @@ def _source_commit(package_root: Path) -> str:
         raise ProducerIdentityError("producer_commit_stamp_invalid")
     try:
         result = subprocess.run(
-            ["git", "-C", str(package_root), "rev-parse", "HEAD"],
+            [
+                "/usr/bin/git",
+                "-C",
+                str(package_root),
+                "rev-parse",
+                "--show-toplevel",
+                "HEAD",
+            ],
+            env={"LC_ALL": "C"},
             check=True,
             capture_output=True,
             text=True,
         )
     except (OSError, subprocess.CalledProcessError) as error:
         raise ProducerIdentityError("producer_commit_unavailable") from error
-    commit = result.stdout.strip()
+    lines = result.stdout.splitlines()
+    if len(lines) != 2:
+        raise ProducerIdentityError("producer_commit_checkout_invalid")
+    try:
+        repository_root = Path(lines[0]).resolve(strict=True)
+        resolved_package_root = package_root.resolve(strict=True)
+    except OSError as error:
+        raise ProducerIdentityError("producer_commit_checkout_invalid") from error
+    if resolved_package_root != repository_root / "src" / "caplab":
+        # An installed package can sit under an unrelated ambient repository.
+        # Its HEAD is not CAPLAB provenance and must never satisfy the archive
+        # placeholder fallback.
+        raise ProducerIdentityError("producer_commit_checkout_invalid")
+    commit = lines[1].strip()
     if not _COMMIT.fullmatch(commit):
         raise ProducerIdentityError("producer_commit_invalid")
     return commit

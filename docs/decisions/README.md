@@ -63,3 +63,4 @@ does not imply execution, verification, or acceptance.
 | [ADR 0058](adr-0058-authorize-qwen27b-lease-aware-status-launch.md) | Authorize the lease-aware fleet-status launch | consumed-stopped | ADR 0026 delegate |
 | [ADR 0059](adr-0059-dispose-qwen27b-retry-and-conclude-caplab-16.md) | Dispose the Qwen3.6-27B retry and conclude CAPLAB-16 | decided | ADR 0026 delegate |
 | [ADR 0062](adr-0062-binding-qualification-boundary.md) | Binding-specific qualification boundary and tuner absorption | decided | ADR 0026 delegate |
+| [ADR 0063](adr-0063-bounded-codex-live-revbench-execution.md) | Bounded Codex live Revbench execution and custody | decided | ADR 0026 delegate |
