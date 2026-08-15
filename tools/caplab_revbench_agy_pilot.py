@@ -37,6 +37,9 @@ PILOT_NATIVE_POLICY = (
 EFFORTS = ("low", "medium", "high")
 EXPECTED_AGY_VERSION = "1.1.13"
 EXPECTED_AGY_SHA256 = "416b197e4b38c797c8661098f0af2bb4e1323ffe3c286d5e9b6408cf7d7ee920"
+MISREAD_RESPONSE_RUNNER_SHA256 = (
+    "76725786bcc54f4542a7489c23767dedd2b47e0556ab857fb4de0683fda2f72e"
+)
 MAX_STREAM_BYTES = 1024 * 1024
 PROCESS_TIMEOUT_SECONDS = 150
 _UTC_TIMESTAMP = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
@@ -109,7 +112,7 @@ class AgyResponseError(AgyPilotError):
 
 @dataclass(frozen=True)
 class DerivedAgyEnvelope:
-    raw_response: Any
+    structured_output: Any
     conversation_id: str | None
     usage: dict[str, int]
     duration_seconds: float | None
@@ -182,10 +185,14 @@ def _validated_response(value: Any) -> dict[str, Any]:
 
 def _derive_agy_envelope(raw_stdout: bytes) -> DerivedAgyEnvelope:
     envelope = _json_object(raw_stdout, "agy")
-    if "response" not in envelope:
+    if not isinstance(envelope.get("response"), str):
         raise AgyTransportError("agy_envelope_response_missing")
     if envelope.get("status", "SUCCESS") != "SUCCESS":
         raise AgyTransportError("agy_envelope_status_not_success")
+    if "structured_output" not in envelope:
+        raise AgyTransportError("agy_envelope_structured_output_missing")
+    if envelope.get("json_schema") != RESPONSE_SCHEMA:
+        raise AgyTransportError("agy_envelope_json_schema_mismatch")
     conversation_id = envelope.get("conversation_id")
     if conversation_id is not None and not isinstance(conversation_id, str):
         raise AgyTransportError("agy_envelope_conversation_id_invalid")
@@ -211,7 +218,7 @@ def _derive_agy_envelope(raw_stdout: bytes) -> DerivedAgyEnvelope:
     ):
         raise AgyTransportError("agy_envelope_duration_invalid")
     return DerivedAgyEnvelope(
-        raw_response=copy.deepcopy(envelope["response"]),
+        structured_output=copy.deepcopy(envelope["structured_output"]),
         conversation_id=conversation_id,
         usage={key: int(value) for key, value in raw_usage.items()},
         duration_seconds=None if duration is None else float(duration),
@@ -222,7 +229,7 @@ def derive_agy_response(raw_stdout: bytes) -> DerivedAgyResponse:
     """Derive one strict Revbench response from AGY print-mode JSON."""
 
     envelope = _derive_agy_envelope(raw_stdout)
-    response = _validated_response(envelope.raw_response)
+    response = _validated_response(envelope.structured_output)
     return DerivedAgyResponse(
         response=response,
         response_bytes=canonical_json(response),
@@ -834,7 +841,9 @@ def _validate_authority(
         raise AgyPilotError("authorization_not_current")
 
 
-def _validate_plan(plan: Mapping[str, Any]) -> None:
+def _validate_plan(
+    plan: Mapping[str, Any], *, expected_runner_sha256: str | None = None
+) -> None:
     identity = copy.deepcopy(dict(plan))
     plan_id = identity.pop("plan_id", None)
     if plan_id != "agy-pilot-plan-" + sha256_hex(canonical_json(identity)):
@@ -865,7 +874,8 @@ def _validate_plan(plan: Mapping[str, Any]) -> None:
         PILOT_NATIVE_POLICY.read_bytes()
     ):
         raise AgyPilotError("pilot_plan_contract_file_drift")
-    if plan.get("pilot_runner_sha256") != sha256_hex(Path(__file__).read_bytes()):
+    runner_sha256 = expected_runner_sha256 or sha256_hex(Path(__file__).read_bytes())
+    if plan.get("pilot_runner_sha256") != runner_sha256:
         raise AgyPilotError("pilot_plan_runner_drift")
 
 
@@ -915,6 +925,47 @@ def _attempt_projection(
         "usage": dict(usage),
         "duration_milliseconds": duration_milliseconds,
     }
+
+
+def correct_attempt_projection(
+    recorded: Mapping[str, Any], raw_stdout: bytes
+) -> dict[str, Any]:
+    """Re-derive one attempt from AGY's authoritative structured output."""
+
+    effort = recorded.get("effort")
+    case_id = recorded.get("case_id")
+    arm = recorded.get("arm")
+    assignment_index = recorded.get("assignment_index")
+    if effort not in EFFORTS or recorded.get("tuple_id") != (
+        f"agy-gemini-3-7-flash-{effort}"
+    ):
+        raise AgyPilotError("correction_subject_identity_invalid")
+    case = next((item for item in CASES if item["case_id"] == case_id), None)
+    if (
+        case is None
+        or not isinstance(assignment_index, int)
+        or isinstance(assignment_index, bool)
+        or assignment_index not in range(len(case["assignment_order"]))
+        or case["assignment_order"][assignment_index] != arm
+    ):
+        raise AgyPilotError("correction_assignment_invalid")
+    derived = derive_agy_response(raw_stdout)
+    return _attempt_projection(
+        effort=effort,
+        case=case,
+        arm=arm,
+        assignment_index=assignment_index,
+        disposition="complete",
+        verdict=derived.response["verdict"],
+        anchors=derived.response["anchors"],
+        conversation_id=derived.conversation_id,
+        usage=derived.usage,
+        duration_milliseconds=(
+            None
+            if derived.duration_seconds is None
+            else round(derived.duration_seconds * 1000)
+        ),
+    )
 
 
 def _terminate_process_group(process: subprocess.Popen[bytes]) -> None:
@@ -1143,7 +1194,7 @@ def _run_attempt(
                 else round(envelope.duration_seconds * 1000)
             )
             try:
-                response = _validated_response(envelope.raw_response)
+                response = _validated_response(envelope.structured_output)
             except AgyResponseError:
                 disposition = "subject-failure"
             else:
@@ -1254,12 +1305,13 @@ def execute_workspace(args: argparse.Namespace) -> int:
     return 0 if execution["status"] == "complete" else 2
 
 
-def score_workspace(args: argparse.Namespace) -> int:
-    workspace = _workspace(args.workspace, create=False)
+def _load_retained_execution(
+    workspace: Path, *, expected_runner_sha256: str | None = None
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], list[dict[str, Any]]]:
     plan = _read_document(workspace / "pilot-plan.json", "pilot_plan")
     authorization = _read_document(workspace / "authorization.json", "authorization")
     execution = _read_document(workspace / "execution.json", "execution")
-    _validate_plan(plan)
+    _validate_plan(plan, expected_runner_sha256=expected_runner_sha256)
     _validate_authority(plan, authorization, require_current=False)
     if execution.get("plan_id") != plan.get("plan_id"):
         raise AgyPilotError("execution_plan_mismatch")
@@ -1300,6 +1352,12 @@ def score_workspace(args: argparse.Namespace) -> int:
         )
     if retained_attempts != attempts:
         raise AgyPilotError("execution_attempt_projection_mismatch")
+    return plan, authorization, execution, retained_attempts
+
+
+def score_workspace(args: argparse.Namespace) -> int:
+    workspace = _workspace(args.workspace, create=False)
+    plan, _, execution, retained_attempts = _load_retained_execution(workspace)
     scores = score_attempts(retained_attempts)
     identity = {
         "schema_version": "caplab-revbench-agy-pilot-observation/1",
@@ -1332,17 +1390,118 @@ def score_workspace(args: argparse.Namespace) -> int:
     return 0
 
 
+def _validate_observation(
+    observation: Mapping[str, Any],
+    plan: Mapping[str, Any],
+    execution: Mapping[str, Any],
+) -> None:
+    identity = copy.deepcopy(dict(observation))
+    observation_id = identity.pop("observation_id", None)
+    if observation_id != "agy-pilot-observation-" + sha256_hex(
+        canonical_json(identity)
+    ):
+        raise AgyPilotError("source_observation_id_invalid")
+    if (
+        observation.get("schema_version") != "caplab-revbench-agy-pilot-observation/1"
+        or observation.get("plan_id") != plan.get("plan_id")
+        or observation.get("execution_id") != execution.get("execution_id")
+    ):
+        raise AgyPilotError("source_observation_identity_mismatch")
+
+
+def correct_workspace(args: argparse.Namespace) -> int:
+    workspace = _workspace(args.workspace, create=False)
+    correction_path = workspace / "observation-correction.json"
+    if correction_path.exists() or correction_path.is_symlink():
+        raise AgyPilotError("observation_correction_exists")
+    plan, _, execution, retained_attempts = _load_retained_execution(
+        workspace, expected_runner_sha256=MISREAD_RESPONSE_RUNNER_SHA256
+    )
+    if execution.get("status") != "complete" or len(retained_attempts) != 12:
+        raise AgyPilotError("correction_requires_complete_execution")
+    observation_path = workspace / "observation.json"
+    observation = _read_document(observation_path, "source_observation")
+    observation_bytes = canonical_json(observation) + b"\n"
+    _validate_observation(observation, plan, execution)
+    corrected_attempts = []
+    for recorded in retained_attempts:
+        attempt_directory = (
+            workspace
+            / "attempts"
+            / recorded["effort"]
+            / (
+                f"{recorded['case_id']}-{recorded['assignment_index']}-"
+                f"{recorded['arm']}"
+            )
+        )
+        corrected_attempts.append(
+            correct_attempt_projection(
+                recorded,
+                _read_bytes(attempt_directory / "stdout.bin", "attempt_stdout"),
+            )
+        )
+    scores = score_attempts(corrected_attempts)
+    identity = {
+        "schema_version": "caplab-revbench-agy-pilot-observation-correction/1",
+        "corrected_at": _timestamp(),
+        "plan_id": plan["plan_id"],
+        "execution_id": execution["execution_id"],
+        "supersedes_observation_id": observation["observation_id"],
+        "supersedes_observation_sha256": sha256_hex(observation_bytes),
+        "source_runner_sha256": plan["pilot_runner_sha256"],
+        "correction_runner_sha256": sha256_hex(Path(__file__).read_bytes()),
+        "cause": (
+            "the source runner graded AGY response text instead of the "
+            "authoritative structured_output field"
+        ),
+        "authority_source": "conversation:2026-08-15:user-rejected-incomplete-result",
+        "model_calls": 0,
+        "corrected_attempts": corrected_attempts,
+        "bindings": scores,
+        "interpretation_boundary": (
+            "descriptive engineering pilot correction only; not a CAPLAB "
+            "Measurement, qualification Claim, acceptance, or general "
+            "capability ranking"
+        ),
+    }
+    correction = {
+        "correction_id": "agy-pilot-correction-" + sha256_hex(canonical_json(identity)),
+        **identity,
+    }
+    _write_document(correction_path, correction)
+    for effort in EFFORTS:
+        binding = scores[effort]
+        print(
+            f"{effort}: disposition={binding['disposition']} "
+            f"attempted={binding['sample_flow']['attempted']} "
+            f"usable={binding['sample_flow']['usable']}"
+        )
+    print(f"correction: {correction['correction_id']}")
+    print("model_calls: 0")
+    print("qualification: not performed")
+    print("acceptance: not performed")
+    return 0
+
+
 def inspect_workspace(args: argparse.Namespace) -> int:
     workspace = _workspace(args.workspace, create=False)
     plan = _read_document(workspace / "pilot-plan.json", "pilot_plan")
     print(f"workspace: {workspace}")
     print(f"plan: {plan['plan_id']}")
-    for name in ("authorization.json", "execution.json", "observation.json"):
+    for name in (
+        "authorization.json",
+        "execution.json",
+        "observation.json",
+        "observation-correction.json",
+    ):
         path = workspace / name
         print(f"{name}: {'present' if path.exists() else 'absent'}")
-    observation_path = workspace / "observation.json"
+    correction_path = workspace / "observation-correction.json"
+    observation_path = (
+        correction_path if correction_path.exists() else workspace / "observation.json"
+    )
     if observation_path.exists():
-        observation = _read_document(observation_path, "observation")
+        observation = _read_document(observation_path, "effective_observation")
         for effort in EFFORTS:
             binding = observation["bindings"][effort]
             print(
@@ -1392,6 +1551,9 @@ def build_parser() -> argparse.ArgumentParser:
     score_parser = subparsers.add_parser("score")
     score_parser.add_argument("workspace", type=Path)
     score_parser.set_defaults(operation=score_workspace)
+    correct_parser = subparsers.add_parser("correct")
+    correct_parser.add_argument("workspace", type=Path)
+    correct_parser.set_defaults(operation=correct_workspace)
     inspect_parser = subparsers.add_parser("inspect")
     inspect_parser.add_argument("workspace", type=Path)
     inspect_parser.set_defaults(operation=inspect_workspace)

@@ -25,6 +25,20 @@ records the caller's explicit authority and exact twelve-call budget. `execute`
 records an exclusive durable intent before every sequential call and never
 retries. `score` is offline and keeps each effort binding separate.
 `inspect` reports the retained stage state and metrics without a model call.
+The adapter validates AGY's echoed `json_schema` and grades the parsed
+`structured_output`; the envelope's `response` string is retained as raw
+transport evidence but is not the structured result.
+
+The 2026-08-15 pilot was first scored by a runner that incorrectly graded
+`response`. For a workspace bound to that exact defective runner, use the
+one-purpose offline correction command:
+
+```bash
+PYTHONPATH=src .venv/bin/python tools/caplab_revbench_agy_pilot.py correct WORKSPACE
+```
+
+It verifies the original custody, reads no new provider data, makes no model
+call, preserves `observation.json`, and writes `observation-correction.json`.
 
 Expected failures use exit status 2 and one stable error line. For example,
 `error: agy_runtime_surface_drift` means the model, plugin, configuration, or

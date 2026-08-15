@@ -41,6 +41,23 @@ That turned the slash command into a literal prompt and caused one unintended
 `226088f2-aa57-47ee-bf62-360b4e57d3e9`. It is preserved as preflight residue,
 is not a Revbench attempt, and is excluded from every pilot denominator.
 
+## 2026-08-15 observation correction
+
+The first scorer implementation graded the JSON envelope's free-text
+`response` field. AGY's headless structured-output contract instead identifies
+`structured_output` as the parsed schema result and `json_schema` as the
+enforced schema. The repository owner rejected the resulting “incomplete”
+interpretation. Inspection of the retained raw envelopes confirmed that all
+twelve `structured_output` values match the echoed frozen schema and carry the
+correct verdict and anchor. The incomplete interpretation is withdrawn as an
+apparatus defect, not a subject observation.
+
+The repair validates the echoed schema and grades only `structured_output`.
+It preserves the original observation and emits a content-identified
+`observation-correction.json` that names what it supersedes. Correction uses
+the existing raw custody and makes no model call. The source execution remains
+immutable.
+
 ## Decision and authorization
 
 Add these exact native subjects to a pilot contract that binds and preserves
@@ -71,7 +88,8 @@ The pilot tool must:
 2. record a durable exclusive intent before every provider-capable process;
 3. run in an empty per-attempt directory with a minimal named environment;
 4. preserve bounded raw stdout, stderr, exit state, duration, conversation ID,
-   and reported token usage;
+   and reported token usage, then grade the validated `structured_output`
+   field against the echoed `json_schema`;
 5. refuse replay after an intent without a durable completion;
 6. stop the campaign on infrastructure failure or runtime-surface drift; and
 7. score each effort separately with paired catch, false-alarm,

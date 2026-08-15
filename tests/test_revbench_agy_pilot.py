@@ -59,13 +59,41 @@ class AgyNativeSubjectTests(unittest.TestCase):
 
 
 class AgyResponseTests(unittest.TestCase):
+    def test_derives_result_from_agy_structured_output_not_response_text(self) -> None:
+        envelope = {
+            "status": "SUCCESS",
+            "response": (
+                '```json\n{"anchors":[],"schema_version":'
+                '"caplab-revbench-native-response/1","verdict":"clean"}\n'
+                '```\n{"anchors":[],"schema_version":'
+                '"caplab-revbench-native-response/1","verdict":"clean"}\n'
+            ),
+            "structured_output": {
+                "anchors": [],
+                "schema_version": "caplab-revbench-native-response/1",
+                "verdict": "clean",
+            },
+            "json_schema": agy_pilot.RESPONSE_SCHEMA,
+            "conversation_id": "conversation-structured",
+            "usage": {"total_tokens": 23},
+            "duration_ms": 250,
+        }
+        derived = agy_pilot.derive_agy_response(canonical_json(envelope) + b"\n")
+        self.assertEqual(derived.response["verdict"], "clean")
+        self.assertEqual(derived.response["anchors"], [])
+
     def test_derives_strict_response_and_usage_from_one_agy_envelope(self) -> None:
         envelope = {
-            "response": {
+            "response": (
+                '{"anchors":["/n"],"schema_version":'
+                '"caplab-revbench-native-response/1","verdict":"defect"}\n'
+            ),
+            "structured_output": {
                 "schema_version": "caplab-revbench-native-response/1",
                 "verdict": "defect",
                 "anchors": ["/n"],
             },
+            "json_schema": agy_pilot.RESPONSE_SCHEMA,
             "conversation_id": "conversation-1",
             "usage": {"input_tokens": 42, "output_tokens": 7},
             "duration_ms": 1250,
@@ -80,19 +108,73 @@ class AgyResponseTests(unittest.TestCase):
         with self.assertRaisesRegex(agy_pilot.AgyTransportError, "envelope"):
             agy_pilot.derive_agy_response(b"not-json\n")
         invalid = {
-            "response": {
+            "response": (
+                '{"anchors":["/n"],"schema_version":'
+                '"caplab-revbench-native-response/1","verdict":"clean"}\n'
+            ),
+            "structured_output": {
                 "schema_version": "caplab-revbench-native-response/1",
                 "verdict": "clean",
                 "anchors": ["/n"],
-            }
+            },
+            "json_schema": agy_pilot.RESPONSE_SCHEMA,
         }
         with self.assertRaisesRegex(agy_pilot.AgyResponseError, "disagree"):
             agy_pilot.derive_agy_response(canonical_json(invalid) + b"\n")
 
+    def test_refuses_an_agy_envelope_with_a_different_enforced_schema(self) -> None:
+        envelope = {
+            "status": "SUCCESS",
+            "response": "{}\n",
+            "structured_output": {},
+            "json_schema": {"type": "object"},
+        }
+        with self.assertRaisesRegex(
+            agy_pilot.AgyTransportError, "json_schema_mismatch"
+        ):
+            agy_pilot.derive_agy_response(canonical_json(envelope) + b"\n")
+
 
 class AgyPilotScoringTests(unittest.TestCase):
+    def test_correction_rederives_attempt_from_retained_structured_output(self) -> None:
+        recorded = {
+            "effort": "low",
+            "tuple_id": "agy-gemini-3-7-flash-low",
+            "case_id": "case-a",
+            "arm": "control",
+            "assignment_index": 0,
+            "disposition": "subject-failure",
+            "verdict": "invalid",
+            "anchors": [],
+            "conversation_id": None,
+            "usage": {},
+            "duration_milliseconds": None,
+        }
+        envelope = {
+            "status": "SUCCESS",
+            "response": "```json\n{}\n```\n{}\n",
+            "structured_output": {
+                "anchors": [],
+                "schema_version": "caplab-revbench-native-response/1",
+                "verdict": "clean",
+            },
+            "json_schema": agy_pilot.RESPONSE_SCHEMA,
+            "conversation_id": "corrected-conversation",
+            "usage": {"total_tokens": 23},
+            "duration_ms": 250,
+        }
+        corrected = agy_pilot.correct_attempt_projection(
+            recorded, canonical_json(envelope) + b"\n"
+        )
+        self.assertEqual(corrected["disposition"], "complete")
+        self.assertEqual(corrected["verdict"], "clean")
+        self.assertEqual(corrected["conversation_id"], "corrected-conversation")
+        self.assertEqual(corrected["usage"], {"total_tokens": 23})
+        self.assertEqual(corrected["duration_milliseconds"], 250)
+
     def test_real_fake_process_is_captured_before_attempt_completion(self) -> None:
-        fake_source = """#!/usr/bin/python3
+        fake_source = (
+            """#!/usr/bin/python3
 import json
 import sys
 
@@ -109,12 +191,16 @@ response = {
 }
 print(json.dumps({
     "status": "SUCCESS",
-    "response": response,
+    "response": json.dumps(response, separators=(",", ":")) + "\\n",
+    "structured_output": response,
+    "json_schema": json.loads('''%s'''),
     "conversation_id": "fake-conversation",
     "usage": {"total_tokens": 11},
     "duration_seconds": 0.01,
 }, separators=(",", ":")))
 """
+            % agy_pilot.RESPONSE_SCHEMA_ARGUMENT
+        )
         with tempfile.TemporaryDirectory() as directory:
             workspace = Path(directory)
             fake_agy = workspace / "agy"
@@ -200,16 +286,21 @@ sys.stdout.write("x" * 1048704)
             self.assertFalse(completion["stdout_complete"])
 
     def test_subject_failure_retains_transport_metadata_for_accounting(self) -> None:
-        fake_source = """#!/usr/bin/python3
+        fake_source = (
+            """#!/usr/bin/python3
 import json
 print(json.dumps({
     "status": "SUCCESS",
     "response": "not one JSON object",
+    "structured_output": "not one JSON object",
+    "json_schema": json.loads('''%s'''),
     "conversation_id": "failed-response-conversation",
     "usage": {"total_tokens": 23},
     "duration_seconds": 0.25,
 }, separators=(",", ":")))
 """
+            % agy_pilot.RESPONSE_SCHEMA_ARGUMENT
+        )
         with tempfile.TemporaryDirectory() as directory:
             workspace = Path(directory)
             fake_agy = workspace / "agy"
