@@ -924,6 +924,16 @@ def _verify_prepared_manifest(
     return manifest_ref
 
 
+def _require_local_fixture_binding(binding: Mapping[str, Any]) -> None:
+    provider = binding.get("provider_or_path")
+    if not isinstance(provider, Mapping) or (
+        provider.get("kind") != "local-serving"
+        or provider.get("identifier") != "caplab-local-fixture"
+        or provider.get("revision") != "revbench-static-fixture-v1"
+    ):
+        raise FirstRunError("local_fixture_binding_required")
+
+
 def scaffold(args: argparse.Namespace) -> int:
     workspace = _workspace_path(args.workspace, empty=True)
     fixture_source_bytes = FIXTURE_SOURCE.read_bytes()
@@ -966,13 +976,7 @@ def authorize(args: argparse.Namespace) -> int:
     binding = manifest.get("binding")
     if not isinstance(binding, dict):
         raise FirstRunError("manifest_binding_invalid")
-    provider = binding.get("provider_or_path")
-    if not isinstance(provider, dict) or (
-        provider.get("kind") != "local-serving"
-        or provider.get("identifier") != "caplab-local-fixture"
-        or provider.get("revision") != "revbench-static-fixture-v1"
-    ):
-        raise FirstRunError("local_fixture_manifest_required")
+    _require_local_fixture_binding(binding)
     ledger = _workspace_ledger(workspace)
     manifest_ref = _verify_prepared_manifest(workspace, ledger, manifest)
     limits = {
@@ -1096,6 +1100,7 @@ def inspect_workspace(args: argparse.Namespace) -> int:
         spec_binding
     ) != canonical_json(binding):
         raise FirstRunError("workspace_binding_mismatch")
+    _require_local_fixture_binding(binding)
     validate_binding(binding, ledger)
     prepared_manifest = prepare(spec, ledger)
     manifest = documents.get("manifest.json")

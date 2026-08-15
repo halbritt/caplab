@@ -367,21 +367,41 @@ class FirstRunTests(unittest.TestCase):
             refused = _authorize_workspace(workspace)
 
             self.assertEqual(refused.returncode, 2)
-            self.assertIn(b"local_fixture_manifest_required", refused.stderr)
+            self.assertIn(b"local_fixture_binding_required", refused.stderr)
             self.assertFalse((workspace / "execution-authorization.json").exists())
 
-    def test_inspect_refuses_a_provider_shaped_workspace_binding(self) -> None:
+    def test_inspect_refuses_a_generic_valid_nonlocal_workspace_binding(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             workspace = Path(temporary) / "workspace"
             scaffolded = _scaffold_workspace(workspace)
             self.assertEqual(scaffolded.returncode, 0, scaffolded.stderr.decode())
+            ledger = FilesystemQualificationLedger(workspace / "ledger")
             binding_path = workspace / "inputs" / "binding.json"
             binding = json.loads(binding_path.read_bytes())
-            binding["provider_or_path"]["kind"] = "direct-provider"
-            binding["provider_or_path"]["identifier"] = "provider-shaped-test"
+            provider = binding["provider_or_path"]
+            provider["kind"] = "direct-provider"
+            provider["identifier"] = "provider-shaped-test"
+            provider["route_ref"] = ledger.register_document(
+                {
+                    "schema_version": "caplab-provider-route/1",
+                    **{
+                        name: value
+                        for name, value in provider.items()
+                        if name != "route_ref"
+                    },
+                },
+                kind="provider-route",
+                schema="caplab-provider-route/1",
+            )
             binding["binding_id"] = derive_content_id(binding, "binding_id", "bnd-")
+            validate_binding(binding, ledger)
+            spec_path = workspace / "spec.json"
+            spec = json.loads(spec_path.read_bytes())
+            spec["binding"] = binding
             binding_path.chmod(0o600)
             binding_path.write_bytes(canonical_json(binding) + b"\n")
+            spec_path.chmod(0o600)
+            spec_path.write_bytes(canonical_json(spec) + b"\n")
             before = _workspace_content_hashes(workspace)
 
             refused = _run(
@@ -390,7 +410,7 @@ class FirstRunTests(unittest.TestCase):
             )
 
             self.assertEqual(refused.returncode, 2)
-            self.assertIn(b"workspace_binding_mismatch", refused.stderr)
+            self.assertIn(b"local_fixture_binding_required", refused.stderr)
             self.assertNotIn(b"provider_execution:", refused.stdout)
             self.assertEqual(_workspace_content_hashes(workspace), before)
 
