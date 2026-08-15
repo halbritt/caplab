@@ -114,6 +114,17 @@ execution, and green checks do not accept a qualification.
 The source migration and its conservative A–E classification are recorded in
 [`history/striatum-tuner/`](../../../history/striatum-tuner/README.md).
 
+## Provider-free first run
+
+The checked-in
+[`revbench-local-fixture` example](../../../examples/revbench-local-fixture/README.md)
+creates a persistent synthetic workspace, requires operator-supplied authority,
+and runs the public `prepare -> execute -> score` path through the real static
+fixture. It retains the Binding, protocol, corpus, case selection,
+authorizations, four native attempts, Measurement, and registration-aware
+ledger for inspection. The example makes no provider call and does not produce
+a qualification Claim or acceptance record.
+
 ## Quartermaster boundary
 
 `caplab qualification export` emits a deterministic
