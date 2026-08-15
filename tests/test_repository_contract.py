@@ -441,6 +441,7 @@ class RepositoryContractTests(unittest.TestCase):
             catalog["schema_version"], "caplab-qualification-schema-catalog/1"
         )
         paths = [resource["path"] for resource in catalog["resources"]]
+        self.assertIn("revbench-error-v1.schema.json", paths)
         self.assertIn("revbench-live-native-v1.schema.json", paths)
         self.assertEqual(paths, sorted(paths))
         self.assertEqual(len(paths), len(set(paths)))
@@ -471,6 +472,7 @@ class RepositoryContractTests(unittest.TestCase):
             "qualification-claim-v1.schema.json",
             "qualification-export-v1.schema.json",
             "qualification-records-v1.schema.json",
+            "revbench-error-v1.schema.json",
             "revbench-live-native-v1.schema.json",
             "revbench-v1.schema.json",
         )

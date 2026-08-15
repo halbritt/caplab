@@ -17,6 +17,11 @@
       "sha256": "029a5a512124415b719d9b0d0025b379edac19e3caa2c80cb19c45d168073b0f"
     },
     {
+      "id": "https://caplab.local/contracts/revbench-error-v1.schema.json",
+      "path": "revbench-error-v1.schema.json",
+      "sha256": "fab07f0cd6caca3b2f0e39432382367ac3fe3a1279e1cbc7f6ca05447f53535f"
+    },
+    {
       "id": "https://caplab.local/contracts/revbench-live-native-v1.schema.json",
       "path": "revbench-live-native-v1.schema.json",
       "sha256": "eafd8236213abae19f92bc5562d724bbed6dcb9354ae9032983cbd915994dd96"

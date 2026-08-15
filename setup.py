@@ -20,6 +20,7 @@ _CONTRACTS = (
     "qualification-claim-v1.schema.json",
     "qualification-export-v1.schema.json",
     "qualification-records-v1.schema.json",
+    "revbench-error-v1.schema.json",
     "revbench-live-native-v1.schema.json",
     "revbench-v1.schema.json",
 )

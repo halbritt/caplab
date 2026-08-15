@@ -36,7 +36,7 @@ from caplab.revbench.codex import (
 from caplab.revbench import RevbenchContractError, execute, prepare, score
 from caplab.revbench import __main__ as revbench_cli
 from caplab.revbench.custody import FilesystemLiveExecutionRuntime
-from caplab.runtime.canonical import canonical_json, sha256_hex
+from caplab.runtime.canonical import CanonicalizationError, canonical_json, sha256_hex
 from caplab.subject_identity import (
     NativeAgentSystemContractError,
     validate_native_agent_systems,
@@ -65,6 +65,8 @@ LIVE_CUSTOM_KEY = "private_claim_key_sentinel_7f31"
 LIVE_CUSTOM_VALUE = "private claim value 7f31"
 LIVE_ORG_ID = "org_0123456789abcdef7f31"
 LIVE_ORG_LABEL = "Private Sentinel Organization 7f31"
+LIVE_NESTED_KEY = "private_nested_claim_key_sentinel_7f31"
+LIVE_NESTED_VALUE = "private nested claim value 7f31"
 
 
 def synthetic_clean_apparatus():
@@ -100,6 +102,7 @@ def synthetic_live_credential() -> bytes:
                         "organization": {
                             "id": LIVE_ORG_ID,
                             "label": LIVE_ORG_LABEL,
+                            LIVE_NESTED_KEY: LIVE_NESTED_VALUE,
                         },
                     }
                 )
@@ -765,11 +768,17 @@ class CodexResponseAdapterTests(unittest.TestCase):
                 {
                     "schema_version": "caplab-revbench-error/1",
                     "error_type": "RevbenchContractError",
+                    "code": "live_source_invocation_profile_required",
                     "message": "live_source_invocation_profile_required",
                 }
             )
             + b"\n",
         )
+        error_schema = json.loads(
+            (ROOT / "docs/product/contracts/revbench-error-v1.schema.json").read_bytes()
+        )
+        Draft202012Validator.check_schema(error_schema)
+        Draft202012Validator(error_schema).validate(json.loads(refused.stderr))
 
         for extra_option in (("-X", "dev"), ("-W", "error")):
             hostile = subprocess.run(
@@ -810,6 +819,32 @@ class CodexResponseAdapterTests(unittest.TestCase):
         )
         self.assertEqual(relative.returncode, 0, relative.stderr)
         self.assertIn("prepare-live-runtime", relative.stdout)
+        supported_prog = " ".join(
+            (
+                "/usr/bin/python3",
+                "-I",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/nonexistent/caplab-revbench-pycache-v1",
+                str(entrypoint.resolve()),
+            )
+        )
+        self.assertIn(f"usage: {supported_prog}", relative.stdout)
+        self.assertNotIn("python -m caplab.revbench", relative.stdout)
+
+        module_help = subprocess.run(
+            [sys.executable, "-m", "caplab.revbench", "--help"],
+            cwd=ROOT,
+            env=dict(os.environ, PYTHONPATH=str(ROOT / "src")),
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(module_help.returncode, 0, module_help.stderr)
+        self.assertNotIn("prepare-live-runtime", module_help.stdout)
+        self.assertNotIn("--credential-root", module_help.stdout)
+        self.assertIn("local fixture", module_help.stdout)
 
         shadow = ROOT / "src" / "secrets.py"
         self.assertFalse(shadow.exists())
@@ -1149,6 +1184,7 @@ class CodexLiveExecutionTests(unittest.TestCase):
             nonlocal native_calls
             self.assertGreater(monotonic_deadline, 0)
             timestamp = capture.intent["intent_recorded_at"]
+            quarantined = False
             if logical_argv[-1] == "--version":
                 self.assertIsNone(credential)
                 stdout = b"codex-cli 0.147.0\n"
@@ -1188,13 +1224,23 @@ class CodexLiveExecutionTests(unittest.TestCase):
                 ]
                 stdout = b"".join(canonical_json(event) + b"\n" for event in events)
                 stderr = b""
-                if mode == "privacy-quarantine" and native_calls == 1:
-                    stdout = b"safe quarantined prefix"
-            quarantined = (
-                mode == "privacy-quarantine"
-                and logical_argv[-1] != "--version"
-                and native_calls == 1
-            )
+                quarantine_targets = {
+                    "privacy-quarantine": b"private-access-token",
+                    "nested-key-privacy-quarantine": LIVE_NESTED_KEY.encode(),
+                    "nested-value-privacy-quarantine": LIVE_NESTED_VALUE.encode(),
+                }
+                target = quarantine_targets.get(mode)
+                if target is not None and native_calls == 1:
+                    assert credential is not None
+                    gate = credential.stream_quarantine()
+                    midpoint = len(target) // 2
+                    stdout = gate.feed(b"safe quarantined prefix:" + target[:midpoint])
+                    stdout += gate.feed(target[midpoint:] + b":unsafe tail")
+                    stdout += gate.finish()
+                    self.assertTrue(gate.quarantined)
+                    quarantined = True
+                else:
+                    quarantined = False
             capture.write_stdout(stdout)
             capture.write_stderr(stderr)
             observation = CodexProcessObservation(
@@ -1343,6 +1389,8 @@ class CodexLiveExecutionTests(unittest.TestCase):
                     LIVE_CUSTOM_VALUE,
                     LIVE_ORG_ID,
                     LIVE_ORG_LABEL,
+                    LIVE_NESTED_KEY,
+                    LIVE_NESTED_VALUE,
                     str(credential_root),
                     credential_root.name,
                     str(credential_source),
@@ -1424,6 +1472,23 @@ class CodexLiveExecutionTests(unittest.TestCase):
         receipt = json.loads(registrar.resolve(reviews["process_receipt_refs"][1]))
         self.assertEqual(receipt["stream_disposition"], "privacy-quarantined")
         self.assertIsNone(receipt["stdout_ref"])
+
+    def test_nested_custom_claim_key_and_value_never_reach_evidence(self):
+        for mode in (
+            "nested-key-privacy-quarantine",
+            "nested-value-privacy-quarantine",
+        ):
+            with self.subTest(mode=mode):
+                _registrar, _manifest, reviews, measurement, calls, _source = (
+                    self._run_fake_subprocess_seam(mode)
+                )
+                self.assertEqual(reviews["status"], "stopped")
+                self.assertEqual(reviews["stop_reason"], "privacy-quarantine")
+                self.assertEqual(measurement["disposition"], "infrastructure-failure")
+                self.assertEqual(len(calls), 2)
+                combined = self._last_public_evidence + self._last_private_custody
+                self.assertNotIn(LIVE_NESTED_KEY.encode(), combined)
+                self.assertNotIn(LIVE_NESTED_VALUE.encode(), combined)
 
     def test_sealed_credential_refusal_cannot_be_replayed_after_secret_rotation(self):
         _registrar, _manifest, reviews, measurement, calls, _source = (
@@ -1818,13 +1883,22 @@ class CodexLiveExecutionTests(unittest.TestCase):
 
 
 class CodexLiveCliTests(unittest.TestCase):
-    def _main_error(self, argv):
+    def _main_error(self, argv, *, live_source=False):
         emitted = []
-        with mock.patch(
+        emit_patch = mock.patch(
             "caplab.revbench.__main__._emit",
             side_effect=lambda document, **_kwargs: emitted.append(document),
-        ):
-            self.assertEqual(revbench_cli.main(argv), 2)
+        )
+        source_patch = mock.patch(
+            "caplab.revbench.__main__.require_live_source_invocation"
+        )
+        with emit_patch:
+            if live_source:
+                with source_patch:
+                    result = revbench_cli.main(argv, live_source=True)
+            else:
+                result = revbench_cli.main(argv)
+            self.assertEqual(result, 2)
         self.assertEqual(len(emitted), 1)
         return canonical_json(emitted[0])
 
@@ -1841,7 +1915,7 @@ class CodexLiveCliTests(unittest.TestCase):
             refs = [root / f"authority-{index}.ref.json" for index in range(3)]
 
             def invoke(custody, output, reference):
-                args = revbench_cli.build_parser().parse_args(
+                args = revbench_cli.build_parser(live_source=True).parse_args(
                     [
                         "prepare-live-runtime",
                         "--ledger",
@@ -1859,13 +1933,16 @@ class CodexLiveCliTests(unittest.TestCase):
                         "caplab.revbench.__main__.execution_apparatus_receipt",
                         return_value=apparatus,
                     ),
+                    mock.patch(
+                        "caplab.revbench.__main__.require_live_source_invocation"
+                    ),
                     mock.patch("caplab.revbench.__main__._emit"),
                     mock.patch(
                         "subprocess.Popen",
                         side_effect=AssertionError("provider process must not start"),
                     ),
                 ):
-                    self.assertEqual(revbench_cli.run(args), 0)
+                    self.assertEqual(revbench_cli.run(args, live_source=True), 0)
 
             invoke(custody_one, outputs[0], refs[0])
             invoke(custody_one, outputs[1], refs[1])
@@ -1913,7 +1990,7 @@ class CodexLiveCliTests(unittest.TestCase):
                 )
             )
 
-            incomplete = revbench_cli.build_parser().parse_args(
+            incomplete = revbench_cli.build_parser(live_source=True).parse_args(
                 [
                     "execute",
                     "--manifest",
@@ -1926,12 +2003,17 @@ class CodexLiveCliTests(unittest.TestCase):
                     str(output),
                 ]
             )
-            with self.assertRaisesRegex(
-                RevbenchContractError, "live_execution_private_runtime_required"
+            with (
+                self.assertRaisesRegex(
+                    RevbenchContractError, "live_execution_private_runtime_required"
+                ),
+                mock.patch("caplab.revbench.__main__.require_live_source_invocation"),
             ):
-                revbench_cli.run(incomplete)
+                revbench_cli.run(incomplete, live_source=True)
 
-            local_with_live_option = revbench_cli.build_parser().parse_args(
+            local_with_live_option = revbench_cli.build_parser(
+                live_source=True
+            ).parse_args(
                 [
                     "execute",
                     "--manifest",
@@ -1949,7 +2031,169 @@ class CodexLiveCliTests(unittest.TestCase):
             with self.assertRaisesRegex(
                 RevbenchContractError, "local_fixture_rejects_live_runtime_options"
             ):
-                revbench_cli.run(local_with_live_option)
+                revbench_cli.run(local_with_live_option, live_source=True)
+
+    def test_generic_live_routes_refuse_before_ledger_or_custody_mutation(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            ledger = root / "ledger"
+            custody = root / "custody"
+            output = root / "output.json"
+            authority = root / "authorization.json"
+            live_manifest = root / "live-manifest.json"
+            live_manifest.write_bytes(
+                canonical_json(
+                    {"binding": {"provider_or_path": {"kind": "direct-provider"}}}
+                )
+            )
+
+            prepare_diagnostic = self._main_error(
+                [
+                    "prepare-live-runtime",
+                    "--ledger",
+                    str(ledger),
+                    "--live-custody-root",
+                    str(custody),
+                    "--output",
+                    str(output),
+                ]
+            )
+            self.assertFalse(ledger.exists())
+            self.assertFalse(custody.exists())
+            self.assertFalse(output.exists())
+            self.assertIn(b"argument_error", prepare_diagnostic)
+
+            execute_diagnostic = self._main_error(
+                [
+                    "execute",
+                    "--manifest",
+                    str(live_manifest),
+                    "--execution-authorization-ref",
+                    str(authority),
+                    "--ledger",
+                    str(ledger),
+                    "--output",
+                    str(output),
+                ]
+            )
+            self.assertFalse(ledger.exists())
+            self.assertFalse(custody.exists())
+            self.assertFalse(output.exists())
+            self.assertIn(
+                b"live_source_invocation_profile_required", execute_diagnostic
+            )
+
+    def test_document_argument_errors_are_role_coded_and_path_free(self):
+        private_directory = "owner-private-document-root-7f31"
+        private_names = {
+            "spec": "owner-private-spec-7f31.json",
+            "manifest": "owner-private-manifest-7f31.json",
+            "authorization": "owner-private-authorization-7f31.json",
+            "reviews": "owner-private-reviews-7f31.json",
+        }
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / private_directory
+            root.mkdir()
+            ledger = Path(temporary) / "ledger"
+            output = Path(temporary) / "output.json"
+            paths = {name: root / value for name, value in private_names.items()}
+            for path in paths.values():
+                path.write_text("not-json", encoding="utf-8")
+            minimal_manifest = root / "valid-local-manifest.json"
+            minimal_manifest.write_bytes(
+                canonical_json(
+                    {"binding": {"provider_or_path": {"kind": "local-serving"}}}
+                )
+            )
+            diagnostics = (
+                self._main_error(
+                    [
+                        "prepare",
+                        "--spec",
+                        str(paths["spec"]),
+                        "--ledger",
+                        str(ledger),
+                        "--output",
+                        str(output),
+                    ]
+                ),
+                self._main_error(
+                    [
+                        "execute",
+                        "--manifest",
+                        str(paths["manifest"]),
+                        "--execution-authorization-ref",
+                        str(paths["authorization"]),
+                        "--ledger",
+                        str(ledger),
+                        "--output",
+                        str(output),
+                    ]
+                ),
+                self._main_error(
+                    [
+                        "execute",
+                        "--manifest",
+                        str(minimal_manifest),
+                        "--execution-authorization-ref",
+                        str(paths["authorization"]),
+                        "--ledger",
+                        str(ledger),
+                        "--output",
+                        str(output),
+                    ]
+                ),
+                self._main_error(
+                    [
+                        "score",
+                        "--manifest",
+                        str(minimal_manifest),
+                        "--reviews",
+                        str(paths["reviews"]),
+                        "--ledger",
+                        str(ledger),
+                        "--output",
+                        str(output),
+                    ]
+                ),
+            )
+
+        combined = b"\n".join(diagnostics)
+        for private_value in (private_directory, *private_names.values()):
+            self.assertNotIn(private_value.encode(), combined)
+        for role, diagnostic in zip(
+            ("spec", "manifest", "execution_authorization", "reviews"),
+            diagnostics,
+            strict=True,
+        ):
+            self.assertIn(f"{role}_document_invalid".encode(), diagnostic)
+
+        error_schema = json.loads(
+            (ROOT / "docs/product/contracts/revbench-error-v1.schema.json").read_bytes()
+        )
+        Draft202012Validator.check_schema(error_schema)
+        validator = Draft202012Validator(error_schema)
+        for diagnostic in diagnostics:
+            validator.validate(json.loads(diagnostic))
+
+    def test_error_envelope_is_closed_for_every_public_error_category(self):
+        schema = json.loads(
+            (ROOT / "docs/product/contracts/revbench-error-v1.schema.json").read_bytes()
+        )
+        validator = Draft202012Validator(schema)
+        private_path = "/tmp/owner-private-error-path-7f31"
+        documents = (
+            revbench_cli._error_document(RevbenchContractError("argument_error")),
+            revbench_cli._error_document(CanonicalizationError("not canonical")),
+            revbench_cli._error_document(ValueError("")),
+            revbench_cli._error_document(OSError(private_path)),
+        )
+        for document in documents:
+            validator.validate(document)
+            self.assertNotIn(private_path.encode(), canonical_json(document))
+        hostile = {**documents[0], "private_detail": private_path}
+        with self.assertRaises(ValidationError):
+            validator.validate(hostile)
 
     def test_cli_private_runtime_failures_and_unknown_options_are_path_free(self):
         private_root_name = "private-credential-root-sentinel-7f31"
@@ -1987,14 +2231,15 @@ class CodexLiveCliTests(unittest.TestCase):
                 "--credential-profile-source",
                 f"caplab-openai-revbench={private_source_name}",
             ]
-            diagnostics = [self._main_error(common)]
+            diagnostics = [self._main_error(common, live_source=True)]
             diagnostics.append(
                 self._main_error(
                     [
                         "execute",
                         "--credential-roo",
                         f"{private_scalar}={private_source_name}",
-                    ]
+                    ],
+                    live_source=True,
                 )
             )
 
@@ -2007,7 +2252,8 @@ class CodexLiveCliTests(unittest.TestCase):
                         str(insecure_private_root),
                         "--credential-profile-source",
                         f"caplab-openai-revbench={private_source_name}",
-                    ]
+                    ],
+                    live_source=True,
                 )
             )
 
@@ -2018,7 +2264,7 @@ class CodexLiveCliTests(unittest.TestCase):
             private_scalar,
         ):
             self.assertNotIn(private_value.encode(), combined)
-        self.assertIn(b"private_runtime_path_invalid", diagnostics[0])
+        self.assertIn(b"credential_root_unavailable", diagnostics[0])
         self.assertIn(b"argument_error", diagnostics[1])
         self.assertIn(b"credential_root_ownership_or_mode_invalid", diagnostics[2])
 
@@ -2126,6 +2372,9 @@ class CodexCredentialTests(unittest.TestCase):
             "organization": {
                 "id": "org_0123456789abcdef7f31",
                 "label": "Private Sentinel Organization 7f31",
+                "private_nested_claim_key_sentinel_7f31": (
+                    "private nested claim value 7f31"
+                ),
             },
         }
         with tempfile.TemporaryDirectory() as temporary:
@@ -2157,6 +2406,10 @@ class CodexCredentialTests(unittest.TestCase):
                     private_claims["private_claim_key_sentinel_7f31"],
                     private_claims["organization"]["id"],
                     private_claims["organization"]["label"],
+                    "private_nested_claim_key_sentinel_7f31",
+                    private_claims["organization"][
+                        "private_nested_claim_key_sentinel_7f31"
+                    ],
                 )
                 for sentinel in sentinels:
                     with self.subTest(sentinel=sentinel):

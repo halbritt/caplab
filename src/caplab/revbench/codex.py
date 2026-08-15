@@ -461,6 +461,12 @@ def _require_live_source_invocation(package_root: Path) -> None:
         raise CodexAdapterError("live_source_path_invalid")
 
 
+def require_live_source_invocation() -> None:
+    """Refuse live CLI use outside the exact isolated source entrypoint."""
+
+    _require_live_source_invocation(Path(__file__).resolve().parents[1])
+
+
 def _require_exact_tracked_package(repository: Path, package_root: Path) -> None:
     """Reject symlinks and non-cache files outside the exact tracked tree."""
 
@@ -1999,7 +2005,7 @@ def _validate_credential_payload(
 
 
 def _credential_string_scalars(value: Any) -> tuple[bytes, ...]:
-    """Return every nonempty decoded string value without retaining paths."""
+    """Return every nonempty decoded custom-claim key and string value."""
 
     scalars: list[bytes] = []
     if isinstance(value, str):
@@ -2007,7 +2013,11 @@ def _credential_string_scalars(value: Any) -> tuple[bytes, ...]:
         if encoded:
             scalars.append(encoded)
     elif isinstance(value, Mapping):
-        for child in value.values():
+        for key, child in value.items():
+            if isinstance(key, str):
+                encoded_key = key.encode("utf-8")
+                if encoded_key:
+                    scalars.append(encoded_key)
             scalars.extend(_credential_string_scalars(child))
     elif isinstance(value, list):
         for child in value:

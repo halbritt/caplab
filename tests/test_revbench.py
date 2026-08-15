@@ -2494,6 +2494,13 @@ class CliTests(unittest.TestCase):
             error = json.loads(completed.stderr)
             self.assertEqual(error["schema_version"], "caplab-revbench-error/1")
             self.assertEqual(completed.stderr, canonical_json(error) + b"\n")
+            error_schema = json.loads(
+                (
+                    Path(__file__).resolve().parents[1]
+                    / "docs/product/contracts/revbench-error-v1.schema.json"
+                ).read_bytes()
+            )
+            Draft202012Validator(error_schema).validate(error)
 
     def test_module_cli_argument_refusal_is_canonical(self):
         source_root = str(Path(__file__).resolve().parents[1] / "src")
@@ -2509,6 +2516,13 @@ class CliTests(unittest.TestCase):
         error = json.loads(completed.stderr)
         self.assertEqual(error["schema_version"], "caplab-revbench-error/1")
         self.assertEqual(completed.stderr, canonical_json(error) + b"\n")
+        error_schema = json.loads(
+            (
+                Path(__file__).resolve().parents[1]
+                / "docs/product/contracts/revbench-error-v1.schema.json"
+            ).read_bytes()
+        )
+        Draft202012Validator(error_schema).validate(error)
 
     def test_module_cli_refuses_symlinked_ledger_root(self):
         source_root = str(Path(__file__).resolve().parents[1] / "src")

@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 from collections.abc import Mapping
 from pathlib import Path
@@ -16,10 +17,31 @@ from caplab.revbench import RevbenchContractError, execute, prepare, score
 from caplab.revbench._core import ContentRef, JsonValue
 from caplab.revbench.codex import (
     execution_apparatus_receipt,
+    require_live_source_invocation,
     validate_execution_apparatus_receipt,
 )
 from caplab.revbench.custody import FilesystemLiveExecutionRuntime
 from caplab.runtime.canonical import CanonicalizationError, canonical_json, sha256_hex
+
+
+_LIVE_PYTHON = "/usr/bin/python3"
+_LIVE_PYCACHE_PREFIX = "/nonexistent/caplab-revbench-pycache-v1"
+_STABLE_ERROR_CODE = re.compile(r"[a-z][a-z0-9_]*")
+
+
+def _live_program() -> str:
+    entrypoint = Path(__file__).with_name("live_entrypoint.py").resolve()
+    return " ".join(
+        (
+            _LIVE_PYTHON,
+            "-I",
+            "-S",
+            "-B",
+            "-X",
+            f"pycache_prefix={_LIVE_PYCACHE_PREFIX}",
+            str(entrypoint),
+        )
+    )
 
 
 class LedgerArtifactRegistrar:
@@ -78,13 +100,13 @@ def _write_exclusive(path: Path, document: Mapping[str, Any]) -> None:
     write_export_exclusive(path, document)
 
 
-def _read_document(path: Path) -> dict[str, Any]:
+def _read_document(path: Path, *, role: str) -> dict[str, Any]:
     try:
         document = json.loads(path.read_bytes())
     except (UnicodeDecodeError, json.JSONDecodeError) as error:
-        raise RevbenchContractError(f"{path}: is not a JSON document") from error
+        raise RevbenchContractError(f"{role}_document_invalid") from error
     if not isinstance(document, dict):
-        raise RevbenchContractError(f"{path}: top-level JSON value must be an object")
+        raise RevbenchContractError(f"{role}_document_invalid")
     return document
 
 
@@ -107,15 +129,22 @@ def _credential_sources(values: list[str] | None) -> dict[str, str]:
 
 def _paths_overlap(left: Path, right: Path) -> bool:
     try:
-        left = left.resolve(strict=True)
-        right = right.resolve(strict=True)
+        left = left.resolve(strict=False)
+        right = right.resolve(strict=False)
     except OSError as error:
         raise RevbenchContractError("private_runtime_path_invalid") from error
     return left == right or left in right.parents or right in left.parents
 
 
-def build_parser() -> argparse.ArgumentParser:
-    parser = _Parser(prog="python -m caplab.revbench")
+def build_parser(*, live_source: bool = False) -> argparse.ArgumentParser:
+    parser = _Parser(
+        prog=_live_program() if live_source else "python -m caplab.revbench",
+        description=(
+            "Exact source-only live and local Revbench operations."
+            if live_source
+            else "Revbench manifest preparation, local-fixture execution, and offline scoring."
+        ),
+    )
     subparsers = parser.add_subparsers(dest="command", required=True)
     prepare_parser = subparsers.add_parser(
         "prepare", help="prepare a verified revbench manifest"
@@ -124,16 +153,24 @@ def build_parser() -> argparse.ArgumentParser:
     prepare_parser.add_argument("--ledger", type=Path, required=True)
     prepare_parser.add_argument("--output", type=Path, required=True)
     prepare_parser.add_argument("--reference-output", type=Path)
-    live_runtime_parser = subparsers.add_parser(
-        "prepare-live-runtime",
-        help="register no-effect live apparatus and initialize its custody domain",
-    )
-    live_runtime_parser.add_argument("--ledger", type=Path, required=True)
-    live_runtime_parser.add_argument("--live-custody-root", type=Path, required=True)
-    live_runtime_parser.add_argument("--output", type=Path, required=True)
-    live_runtime_parser.add_argument("--reference-output", type=Path)
+    if live_source:
+        live_runtime_parser = subparsers.add_parser(
+            "prepare-live-runtime",
+            help="register no-effect live apparatus and initialize its custody domain",
+        )
+        live_runtime_parser.add_argument("--ledger", type=Path, required=True)
+        live_runtime_parser.add_argument(
+            "--live-custody-root", type=Path, required=True
+        )
+        live_runtime_parser.add_argument("--output", type=Path, required=True)
+        live_runtime_parser.add_argument("--reference-output", type=Path)
     execute_parser = subparsers.add_parser(
-        "execute", help="execute an authorized local fixture or pinned live Codex slice"
+        "execute",
+        help=(
+            "execute an authorized local fixture or pinned live Codex slice"
+            if live_source
+            else "execute an authorized local fixture"
+        ),
     )
     execute_parser.add_argument("--manifest", type=Path, required=True)
     execute_parser.add_argument(
@@ -141,22 +178,23 @@ def build_parser() -> argparse.ArgumentParser:
     )
     execute_parser.add_argument("--ledger", type=Path, required=True)
     execute_parser.add_argument("--output", type=Path, required=True)
-    execute_parser.add_argument(
-        "--live-custody-root",
-        type=Path,
-        help="private durable root for globally one-shot live process custody",
-    )
-    execute_parser.add_argument(
-        "--credential-root",
-        type=Path,
-        help="separate owner-only directory containing live credential sources",
-    )
-    execute_parser.add_argument(
-        "--credential-profile-source",
-        action="append",
-        metavar="PROFILE=FILENAME",
-        help="map a registered nonsecret profile ID to one direct-child secret file",
-    )
+    if live_source:
+        execute_parser.add_argument(
+            "--live-custody-root",
+            type=Path,
+            help="private durable root for globally one-shot live process custody",
+        )
+        execute_parser.add_argument(
+            "--credential-root",
+            type=Path,
+            help="separate owner-only directory containing live credential sources",
+        )
+        execute_parser.add_argument(
+            "--credential-profile-source",
+            action="append",
+            metavar="PROFILE=FILENAME",
+            help="map a registered nonsecret profile ID to one direct-child secret file",
+        )
     score_parser = subparsers.add_parser(
         "score", help="score registered native-harness reviews offline"
     )
@@ -167,13 +205,16 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def run(args: argparse.Namespace) -> int:
-    registrar = LedgerArtifactRegistrar(args.ledger)
+def run(args: argparse.Namespace, *, live_source: bool = False) -> int:
     if args.command == "prepare-live-runtime":
+        if not live_source:
+            raise RevbenchContractError("live_source_invocation_profile_required")
+        require_live_source_invocation()
         if _paths_overlap(args.ledger, args.live_custody_root):
             raise RevbenchContractError("live_private_roots_must_be_disjoint")
-        runtime = FilesystemLiveExecutionRuntime(args.live_custody_root)
         apparatus = validate_execution_apparatus_receipt(execution_apparatus_receipt())
+        registrar = LedgerArtifactRegistrar(args.ledger)
+        runtime = FilesystemLiveExecutionRuntime(args.live_custody_root)
         apparatus_ref = registrar.register_document(
             apparatus,
             kind="execution-apparatus-receipt",
@@ -199,7 +240,9 @@ def run(args: argparse.Namespace) -> int:
         if args.reference_output is not None:
             _write_exclusive(args.reference_output, authority_inputs_ref)
     elif args.command == "prepare":
-        document = prepare(_read_document(args.spec), registrar)
+        spec = _read_document(args.spec, role="spec")
+        registrar = LedgerArtifactRegistrar(args.ledger)
+        document = prepare(spec, registrar)
         manifest_ref = registrar.register_document(
             document,
             kind="revbench-manifest",
@@ -209,7 +252,7 @@ def run(args: argparse.Namespace) -> int:
         if args.reference_output is not None:
             _write_exclusive(args.reference_output, manifest_ref)
     elif args.command == "execute":
-        manifest = _read_document(args.manifest)
+        manifest = _read_document(args.manifest, role="manifest")
         binding = manifest.get("binding")
         provider = (
             binding.get("provider_or_path") if isinstance(binding, dict) else None
@@ -217,11 +260,14 @@ def run(args: argparse.Namespace) -> int:
         live = isinstance(provider, dict) and provider.get("kind") != "local-serving"
         runtime = None
         live_options = (
-            args.live_custody_root,
-            args.credential_root,
-            args.credential_profile_source,
+            getattr(args, "live_custody_root", None),
+            getattr(args, "credential_root", None),
+            getattr(args, "credential_profile_source", None),
         )
         if live:
+            if not live_source:
+                raise RevbenchContractError("live_source_invocation_profile_required")
+            require_live_source_invocation()
             if any(value is None for value in live_options):
                 raise RevbenchContractError("live_execution_private_runtime_required")
             assert args.live_custody_root is not None
@@ -240,18 +286,22 @@ def run(args: argparse.Namespace) -> int:
             )
         elif any(value is not None for value in live_options):
             raise RevbenchContractError("local_fixture_rejects_live_runtime_options")
+        authorization = _read_document(
+            args.execution_authorization_ref,
+            role="execution_authorization",
+        )
+        registrar = LedgerArtifactRegistrar(args.ledger)
         document = execute(
             manifest,
-            _read_document(args.execution_authorization_ref),
+            authorization,
             registrar,
             live_runtime=runtime,
         )
     elif args.command == "score":
-        document = score(
-            _read_document(args.manifest),
-            _read_document(args.reviews),
-            registrar,
-        )
+        manifest = _read_document(args.manifest, role="manifest")
+        reviews = _read_document(args.reviews, role="reviews")
+        registrar = LedgerArtifactRegistrar(args.ledger)
+        document = score(manifest, reviews, registrar)
     else:
         raise AssertionError(f"unhandled command: {args.command}")
     _write_exclusive(args.output, document)
@@ -259,28 +309,49 @@ def run(args: argparse.Namespace) -> int:
     return 0
 
 
-def main(argv: list[str] | None = None) -> int:
-    try:
-        return run(build_parser().parse_args(argv))
-    except OSError as error:
-        _emit(
-            {
-                "schema_version": "caplab-revbench-error/1",
-                "error_type": type(error).__name__,
-                "message": "filesystem_error",
-            },
-            stream=sys.stderr,
+def _error_document(error: Exception) -> dict[str, Any]:
+    if isinstance(error, OSError):
+        error_type = "FilesystemError"
+        code = "filesystem_error"
+        message = "filesystem_error"
+    else:
+        if isinstance(error, RevbenchContractError):
+            error_type = "RevbenchContractError"
+        elif isinstance(error, CanonicalizationError):
+            error_type = "CanonicalizationError"
+        else:
+            error_type = "ValueError"
+        message = str(error)
+        code = (
+            message
+            if _STABLE_ERROR_CODE.fullmatch(message)
+            else {
+                "RevbenchContractError": "revbench_contract_error",
+                "CanonicalizationError": "canonicalization_error",
+                "ValueError": "value_error",
+            }[error_type]
         )
+        if not message or len(message) > 4096:
+            message = code
+    return {
+        "schema_version": "caplab-revbench-error/1",
+        "error_type": error_type,
+        "code": code,
+        "message": message,
+    }
+
+
+def main(argv: list[str] | None = None, *, live_source: bool = False) -> int:
+    try:
+        return run(
+            build_parser(live_source=live_source).parse_args(argv),
+            live_source=live_source,
+        )
+    except OSError as error:
+        _emit(_error_document(error), stream=sys.stderr)
         return 2
     except (RevbenchContractError, CanonicalizationError, ValueError) as error:
-        _emit(
-            {
-                "schema_version": "caplab-revbench-error/1",
-                "error_type": type(error).__name__,
-                "message": str(error),
-            },
-            stream=sys.stderr,
-        )
+        _emit(_error_document(error), stream=sys.stderr)
         return 2
 
 

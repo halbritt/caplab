@@ -15,6 +15,7 @@ def _refuse(message: str) -> int:
     document = {
         "schema_version": "caplab-revbench-error/1",
         "error_type": "RevbenchContractError",
+        "code": message,
         "message": message,
     }
     sys.stderr.write(
@@ -85,7 +86,7 @@ def _main() -> int:
 
     from caplab.revbench.__main__ import main
 
-    return main()
+    return main(live_source=True)
 
 
 if __name__ == "__main__":

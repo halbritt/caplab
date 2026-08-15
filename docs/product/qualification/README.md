@@ -99,6 +99,8 @@ one-shot guarantee covers one outer containment launch within an intact
 custody root; it does not prove provider delivery or prevent Codex-internal
 retries. Exact-scalar quarantine does not claim to detect encoded or fractured
 secret leakage. The full operational and evidence limits are in the contract.
+The generic `caplab revbench` command remains fixture/offline-only and does not
+advertise or accept live runtime options.
 
 The offline scorer performs no provider call and does not consult historical
 fate. Its output is a Measurement. The live configured route is

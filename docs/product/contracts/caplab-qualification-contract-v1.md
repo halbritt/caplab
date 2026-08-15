@@ -39,29 +39,30 @@ caplab qualification export --binding BINDING_ID \
 
 caplab revbench prepare --spec SPEC --ledger LEDGER --output MANIFEST \
   [--reference-output MANIFEST_REF]
-caplab revbench prepare-live-runtime --ledger LEDGER \
-  --live-custody-root CUSTODY_ROOT --output AUTHORITY_INPUTS \
-  [--reference-output AUTHORITY_INPUTS_REF]
 caplab revbench execute --manifest MANIFEST \
   --execution-authorization-ref AUTHORIZATION_REF --ledger LEDGER \
-  --output REVIEWS [--live-custody-root CUSTODY_ROOT \
-  --credential-root CREDENTIAL_ROOT \
-  --credential-profile-source PROFILE=FILENAME]
+  --output REVIEWS
 caplab revbench score --manifest MANIFEST --reviews REVIEWS --ledger LEDGER \
   --output MEASUREMENT
 ```
 
+The generic `caplab revbench` route above supports offline manifest
+preparation, local-fixture execution, and offline scoring. It does not
+advertise or execute a live provider. The exact source entrypoint specified
+below is the only supported operator route for `prepare-live-runtime` and live
+`execute`.
+
 `revbench execute` is the authorization-gated CAPLAB benchmark-execution
-boundary. Version 1 supports a registered static local fixture and one exact
-live-native slice: Codex CLI 0.147.0, GPT-5.6 Terra, maximum effort, and the
-direct OpenAI Responses route. Both paths use blinded inputs, exact limits,
-and sealed containment. `prepare-live-runtime` is a no-provider,
-no-credential-read operation that registers the clean execution-apparatus
-receipt and initializes the separately owned custody-domain identity needed
-for live authorization. `revbench score` is a separate offline derivation and
-performs no provider call. Every revbench command uses the qualification
-ledger as its registration-aware resolver. Object bytes without a matching
-retained registration record are refused.
+boundary. Version 1 supports a registered static local fixture and, only on
+the exact source entrypoint, one live-native slice: Codex CLI 0.147.0, GPT-5.6
+Terra, maximum effort, and the direct OpenAI Responses route. Both paths use
+blinded inputs, exact limits, and sealed containment. `prepare-live-runtime`
+is a no-provider, no-credential-read operation that registers the clean
+execution-apparatus receipt and initializes the separately owned custody-domain
+identity needed for live authorization. `revbench score` is a separate offline
+derivation and performs no provider call. Every revbench command uses the
+qualification ledger as its registration-aware resolver. Object bytes without
+a matching retained registration record are refused.
 
 `qualification register` preserves arbitrary bytes without JSON re-encoding
 when `--media-type` is not `application/json`. Historical custody registration
@@ -72,6 +73,12 @@ Stdout and durable documents are canonical JSON. Expected contract failures
 return 2. A valid negative or insufficient qualification is successful and
 returns 0. Read-only integrity reports may return 3 when their document has
 `ok: false`.
+
+Revbench refusals use the closed `caplab-revbench-error/1` envelope on stderr.
+Its `error_type` is a stable public category, `code` is the machine-readable
+classification, and `message` is a bounded diagnostic. Document-input parse
+failures use path-free role codes; live private-root and argument failures do
+not reproduce supplied paths or option values.
 
 ## Binding: `caplab-binding/1`
 
@@ -541,7 +548,18 @@ must run from the exact repository source through:
 cd REPOSITORY_ROOT
 /usr/bin/python3 -I -S -B \
   -X pycache_prefix=/nonexistent/caplab-revbench-pycache-v1 \
-  src/caplab/revbench/live_entrypoint.py COMMAND ...
+  src/caplab/revbench/live_entrypoint.py prepare-live-runtime \
+  --ledger LEDGER --live-custody-root CUSTODY_ROOT \
+  --output AUTHORITY_INPUTS \
+  [--reference-output AUTHORITY_INPUTS_REF]
+
+/usr/bin/python3 -I -S -B \
+  -X pycache_prefix=/nonexistent/caplab-revbench-pycache-v1 \
+  src/caplab/revbench/live_entrypoint.py execute --manifest MANIFEST \
+  --execution-authorization-ref AUTHORIZATION_REF --ledger LEDGER \
+  --output REVIEWS --live-custody-root CUSTODY_ROOT \
+  --credential-root CREDENTIAL_ROOT \
+  --credential-profile-source PROFILE=FILENAME
 ```
 
 The entrypoint accepts the absolute or repository-relative script path but
