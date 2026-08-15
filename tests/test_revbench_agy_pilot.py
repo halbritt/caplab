@@ -199,6 +199,37 @@ sys.stdout.write("x" * 1048704)
             self.assertEqual(completion["termination"], "stdout-limit")
             self.assertFalse(completion["stdout_complete"])
 
+    def test_subject_failure_retains_transport_metadata_for_accounting(self) -> None:
+        fake_source = """#!/usr/bin/python3
+import json
+print(json.dumps({
+    "status": "SUCCESS",
+    "response": "not one JSON object",
+    "conversation_id": "failed-response-conversation",
+    "usage": {"total_tokens": 23},
+    "duration_seconds": 0.25,
+}, separators=(",", ":")))
+"""
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            fake_agy = workspace / "agy"
+            fake_agy.write_text(fake_source, encoding="utf-8")
+            fake_agy.chmod(0o700)
+            attempt = agy_pilot._run_attempt(
+                workspace=workspace,
+                agy=fake_agy,
+                plan={"plan_id": "test-plan"},
+                authorization={"authorization_id": "test-authorization"},
+                effort="low",
+                case=agy_pilot.CASES[0],
+                arm="control",
+                assignment_index=0,
+            )
+            self.assertEqual(attempt["disposition"], "subject-failure")
+            self.assertEqual(attempt["conversation_id"], "failed-response-conversation")
+            self.assertEqual(attempt["usage"], {"total_tokens": 23})
+            self.assertEqual(attempt["duration_milliseconds"], 250)
+
     def test_scores_each_effort_separately_and_keeps_failures_visible(self) -> None:
         attempts = []
         for effort in agy_pilot.EFFORTS:

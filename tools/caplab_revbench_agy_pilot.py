@@ -108,6 +108,14 @@ class AgyResponseError(AgyPilotError):
 
 
 @dataclass(frozen=True)
+class DerivedAgyEnvelope:
+    raw_response: Any
+    conversation_id: str | None
+    usage: dict[str, int]
+    duration_seconds: float | None
+
+
+@dataclass(frozen=True)
 class DerivedAgyResponse:
     response: dict[str, Any]
     response_bytes: bytes
@@ -172,15 +180,12 @@ def _validated_response(value: Any) -> dict[str, Any]:
     return copy.deepcopy(value)
 
 
-def derive_agy_response(raw_stdout: bytes) -> DerivedAgyResponse:
-    """Derive one strict Revbench response from AGY print-mode JSON."""
-
+def _derive_agy_envelope(raw_stdout: bytes) -> DerivedAgyEnvelope:
     envelope = _json_object(raw_stdout, "agy")
     if "response" not in envelope:
         raise AgyTransportError("agy_envelope_response_missing")
     if envelope.get("status", "SUCCESS") != "SUCCESS":
         raise AgyTransportError("agy_envelope_status_not_success")
-    response = _validated_response(envelope["response"])
     conversation_id = envelope.get("conversation_id")
     if conversation_id is not None and not isinstance(conversation_id, str):
         raise AgyTransportError("agy_envelope_conversation_id_invalid")
@@ -205,12 +210,25 @@ def derive_agy_response(raw_stdout: bytes) -> DerivedAgyResponse:
         or duration < 0
     ):
         raise AgyTransportError("agy_envelope_duration_invalid")
-    return DerivedAgyResponse(
-        response=response,
-        response_bytes=canonical_json(response),
+    return DerivedAgyEnvelope(
+        raw_response=copy.deepcopy(envelope["response"]),
         conversation_id=conversation_id,
         usage={key: int(value) for key, value in raw_usage.items()},
         duration_seconds=None if duration is None else float(duration),
+    )
+
+
+def derive_agy_response(raw_stdout: bytes) -> DerivedAgyResponse:
+    """Derive one strict Revbench response from AGY print-mode JSON."""
+
+    envelope = _derive_agy_envelope(raw_stdout)
+    response = _validated_response(envelope.raw_response)
+    return DerivedAgyResponse(
+        response=response,
+        response_bytes=canonical_json(response),
+        conversation_id=envelope.conversation_id,
+        usage=envelope.usage,
+        duration_seconds=envelope.duration_seconds,
     )
 
 
@@ -1113,22 +1131,25 @@ def _run_attempt(
         termination = "exited-nonzero"
     if termination == "exited" and exit_code == 0:
         try:
-            derived = derive_agy_response(stdout)
-        except AgyResponseError:
-            disposition = "subject-failure"
+            envelope = _derive_agy_envelope(stdout)
         except AgyTransportError:
             pass
         else:
-            disposition = "complete"
-            verdict = derived.response["verdict"]
-            anchors = derived.response["anchors"]
-            conversation_id = derived.conversation_id
-            usage = derived.usage
+            conversation_id = envelope.conversation_id
+            usage = envelope.usage
             duration_milliseconds = (
                 None
-                if derived.duration_seconds is None
-                else round(derived.duration_seconds * 1000)
+                if envelope.duration_seconds is None
+                else round(envelope.duration_seconds * 1000)
             )
+            try:
+                response = _validated_response(envelope.raw_response)
+            except AgyResponseError:
+                disposition = "subject-failure"
+            else:
+                disposition = "complete"
+                verdict = response["verdict"]
+                anchors = response["anchors"]
     attempt = _attempt_projection(
         effort=effort,
         case=case,
