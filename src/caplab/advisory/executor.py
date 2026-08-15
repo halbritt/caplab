@@ -48,6 +48,38 @@ def instrument_commit(repo: str) -> str:
     return out.stdout.strip()
 
 
+def prune_workspaces(out_dir: str) -> int:
+    """Retain only what scoring needs from a completed run's arms.
+
+    Keeps `arms/<id>/*-ws/work/outputs/` (the subject's written review, which
+    anchored-detection rescoring reads) and drops the materialized bundle
+    copies and workspace scratch — those are byte-reproducible from the
+    recorded (dispatch_id, operator, seed) and would otherwise import
+    thousands of foreign documents into this repository's tree.
+    """
+    import shutil
+
+    removed = 0
+    arms_root = os.path.join(out_dir, "arms")
+    if not os.path.isdir(arms_root):
+        return 0
+    for arm_id in os.listdir(arms_root):
+        arm_dir = os.path.join(arms_root, arm_id)
+        for entry in os.listdir(arm_dir):
+            path = os.path.join(arm_dir, entry)
+            if entry.endswith("-ws"):
+                work = os.path.join(path, "work")
+                for sub in (os.listdir(work) if os.path.isdir(work) else []):
+                    if sub != "outputs":
+                        shutil.rmtree(os.path.join(work, sub),
+                                      ignore_errors=True)
+                        removed += 1
+            else:
+                shutil.rmtree(path, ignore_errors=True)
+                removed += 1
+    return removed
+
+
 def run_advisory(*, backend: str, pairs: int, out_dir: str,
                  instrument_repo: str = DEFAULT_INSTRUMENT_REPO,
                  instrument_script: str = "revbench.py",
@@ -84,6 +116,7 @@ def run_advisory(*, backend: str, pairs: int, out_dir: str,
         "exit_code": proc.returncode,
         "completed": completed(out_dir),
         "log": log_path,
+        "pruned_workspace_entries": prune_workspaces(out_dir),
     })
     with open(os.path.join(out_dir, "caplab-receipt.json"), "w",
               encoding="utf-8") as f:
@@ -94,9 +127,25 @@ def run_advisory(*, backend: str, pairs: int, out_dir: str,
 
 def claims_from_runs(run_dirs: list[str], backends_root: str | None,
                      as_of: str | None = None) -> list[dict]:
-    """Score completed CAPLAB-directed runs into caplab-advisory claims."""
+    """Score completed CAPLAB-directed runs into caplab-advisory claims.
+
+    `as_of` defaults to the newest receipt's `finished_at`, never the wall
+    clock, so re-deriving claims from the same runs is idempotent — the
+    ledger's content-hash dedupe only works if identical evidence produces
+    identical bytes.
+    """
     usable_dirs = [d for d in run_dirs if completed(d)]
-    as_of = as_of or _dt.datetime.now(_dt.timezone.utc).isoformat()
+    if as_of is None:
+        stamps = []
+        for run_dir in usable_dirs:
+            receipt_path = os.path.join(run_dir, "caplab-receipt.json")
+            if os.path.isfile(receipt_path):
+                with open(receipt_path, encoding="utf-8") as f:
+                    stamp = json.load(f).get("finished_at")
+                if stamp:
+                    stamps.append(stamp)
+        as_of = max(stamps) if stamps else _dt.datetime.now(
+            _dt.timezone.utc).isoformat()
     scored = score_backends(usable_dirs)
     claims = []
     for backend, result in scored.items():

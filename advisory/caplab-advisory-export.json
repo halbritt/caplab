@@ -430,8 +430,8 @@
       }
     },
     {
-      "as_of": "2026-08-15T21:48:01.215179+00:00",
-      "claim_id": "qc-a6e236c2d91aa5b5",
+      "as_of": "2026-08-15T21:48:01.214456+00:00",
+      "claim_id": "qc-752e84215a6bd456",
       "construct": "review.defect_discrimination/1",
       "custody": "caplab-advisory",
       "evidence": [
@@ -500,8 +500,8 @@
       }
     },
     {
-      "as_of": "2026-08-15T18:57:38.377124+00:00",
-      "claim_id": "qc-0d5e348dbf784b0f",
+      "as_of": "2026-08-15T21:48:01.214456+00:00",
+      "claim_id": "qc-9e51b565b9cc10bb",
       "construct": "review.defect_discrimination/1",
       "custody": "caplab-advisory",
       "evidence": [
@@ -570,8 +570,8 @@
       }
     },
     {
-      "as_of": "2026-08-15T19:37:33.366085+00:00",
-      "claim_id": "qc-1216002cce25b8d1",
+      "as_of": "2026-08-15T21:48:01.214456+00:00",
+      "claim_id": "qc-224b9d6596a5efc9",
       "construct": "review.defect_discrimination/1",
       "custody": "caplab-advisory",
       "evidence": [
@@ -635,7 +635,7 @@
       "record": "quartermaster-scored-claim/1",
       "subject": {
         "match": "declared-name",
-        "matched_current_declaration": false,
+        "matched_current_declaration": true,
         "source_id": "agy-gemini-3-7-flash-medium"
       }
     },
