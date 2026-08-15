@@ -152,3 +152,26 @@ deliberate Principal act if the expiry arrives first.
 
 Fine-tuning and re-qualification of tuned descendants (e.g. `local-qwen-ft`)
 is a named follow-on consuming the same corpus, not part of this plan.
+
+## AFK campaign tiers (endorsed 2026-08-15)
+
+The Principal endorsed autonomous execution in three tiers:
+
+- **Tier 1 — offline/deterministic, no spend**: quartermaster scaffold,
+  binding extractor, CAPLAB review constructs + scored advisory claims +
+  export extension, tuner-sweep seed admission, end-to-end derived ranking,
+  advisory executor proven in dry-run, sweep runner as a documented command
+  (no enabled timers), ADR drafts and AFK report.
+- **Tier 2 — bounded live spend**: fresh advisory-grade revbench runs for
+  `agy-gemini-3-7-flash-{low,medium,high}`, ≤21 matched pairs per tuple,
+  capacity-probed, ~$10 total hard cap. No claude/codex live runs while AFK
+  (they share production subscription windows).
+- **Tier 3 — corpus expansion (offline)**: added after the corpus
+  assessment found only **34 distinct defect injections across all 97 tuner
+  eval runs (1,006 usable pairs)**, heavily class-skewed and
+  document-review-only. Scope: substrate harvest (verified tuner corpus rows
+  + structured docs across owned repos), new mechanical checkable defect
+  operators with class rebalance, sealed/open case-pool governance with
+  per-sweep sampling and RFC 0019-compatible partitions, a code-review
+  construct scaffold (diff + test-oracle matched pairs; generator now, live
+  runs later), and the implemented exhaust-as-cases miner.
