@@ -617,14 +617,32 @@ prevent Codex-internal HTTP retries, or survive rollback/loss of the custody
 root.
 
 The streaming privacy gate excludes exact known credential/token/account/
-subject scalars and decoded private/custom claim keys and values, including a
-match split across read chunks. A match terminates the process, withholds the
-unsafe overlap, retains only a safe private prefix, emits a
-`privacy-quarantine` infrastructure receipt with null public stream refs, and
-never retries. This is exact-scalar quarantine only; it does not prove absence
-of encoded, transformed, or fragmented leakage. Fixed public literals such as
-`chatgpt`, the JWT algorithm/type, and pinned issuer/audience are not treated
-as secrets.
+subject scalars and decoded private/custom claim material, including a match
+split across read chunks. V1 quarantines every nonempty custom string value.
+After the validated standard `sub`, `iss`, `aud`, `iat`, and `exp` claims, the
+complete repository-owned public top-level custom-key allowlist is
+`delegations`, `email`, `name`, and `organization`. The complete public nested
+structural-key allowlist is `id` and `label`. Those six names are not
+quarantine scalars; their nonempty string values still are. At either custom
+level, any other key shorter than 16 UTF-8 bytes is rejected before any
+subprocess, while any other nonempty key of at least 16 UTF-8 bytes is a
+quarantine scalar. Custom lists and objects may contain only recursively
+supported lists, objects, and string leaves; custom boolean, numeric, and null
+leaves are rejected.
+
+This is a closed v1 credential-shape compatibility boundary, not evidence that
+an operator credential or provider account is qualified. A shape mismatch is
+an infrastructure preflight refusal. Credential refusal occurs after the
+one-shot execution intent is durable, seals the authorized slot as
+`preflight-refused`, launches no subprocess, and cannot be replayed after
+credential rotation.
+
+A stream match terminates the process, withholds the unsafe overlap, retains
+only a safe private prefix, emits a `privacy-quarantine` infrastructure receipt
+with null public stream refs, and never retries. This is exact-scalar
+quarantine only; it does not prove absence of encoded, transformed, or
+fragmented leakage. Fixed public literals such as `chatgpt`, the JWT
+algorithm/type, and pinned issuer/audience are not treated as secrets.
 
 ### Blinding and attempt records
 

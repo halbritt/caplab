@@ -1306,10 +1306,15 @@ def _execute_live_codex(
     }
     attempts: list[dict[str, Any]] = []
     stop_reason: str | None = None
-    with runtime.claim_or_resume_execution(
-        execution_identity,
-        fresh_intent=(execution_intent if retained_execution_intent is None else None),
-    ) as session:
+    with (
+        runtime.claim_or_resume_execution(
+            execution_identity,
+            fresh_intent=(
+                execution_intent if retained_execution_intent is None else None
+            ),
+        ) as session,
+        contextlib.ExitStack() as credential_stack,
+    ):
         if canonical_json(apparatus_ref) != canonical_json(
             session.intent["apparatus_ref"]
         ):
@@ -1350,7 +1355,26 @@ def _execute_live_codex(
             for index, entry in enumerate(session.intent["process_sequence"])
         }
         process_receipt_refs: list[dict[str, Any]] = []
-        for assignment in assignments:
+        credential = None
+        if not session.resumed:
+            try:
+                source = runtime.credential_source(bundle.credential_profile_id)
+                if runtime.credential_root is None:
+                    raise LiveExecutionCustodyError("credential_root_required")
+                credential = credential_stack.enter_context(
+                    credential_memfd(
+                        source,
+                        credential_profile,
+                        credential_root=runtime.credential_root,
+                    )
+                )
+            except (CodexAdapterError, LiveExecutionCustodyError):
+                # The overall one-shot intent is already durable.  Refuse and
+                # seal it before any version or provider-capable subprocess so
+                # rotating a malformed credential cannot replay this slot.
+                stop_reason = "preflight-refused"
+
+        for assignment in assignments if stop_reason is None else ():
             case = assignment["case"]
             arm = assignment["arm"]
             assignment_index = assignment["assignment_index"]
@@ -1488,38 +1512,21 @@ def _execute_live_codex(
                     )
             elif not matches_expected:
                 _complete_without_launch(native_capture, "preflight-refused")
+            elif credential is None:
+                raise LiveExecutionCustodyError("live_execution_recovery_cannot_launch")
             else:
-                credential_stack = contextlib.ExitStack()
-                try:
-                    source = runtime.credential_source(bundle.credential_profile_id)
-                    if runtime.credential_root is None:
-                        raise LiveExecutionCustodyError("credential_root_required")
-                    credential = credential_stack.enter_context(
-                        credential_memfd(
-                            source,
-                            credential_profile,
-                            credential_root=runtime.credential_root,
-                        )
+                if monotonic_execution_deadline is None:
+                    raise LiveExecutionCustodyError(
+                        "live_execution_recovery_cannot_launch"
                     )
-                except (CodexAdapterError, LiveExecutionCustodyError):
-                    credential_stack.close()
-                    _complete_without_launch(native_capture, "preflight-refused")
-                else:
-                    try:
-                        if monotonic_execution_deadline is None:
-                            raise LiveExecutionCustodyError(
-                                "live_execution_recovery_cannot_launch"
-                            )
-                        run_codex_process(
-                            command["argv"],
-                            assignment["stdin"],
-                            bundle=bundle,
-                            capture=native_capture,
-                            credential=credential,
-                            monotonic_deadline=monotonic_execution_deadline,
-                        )
-                    finally:
-                        credential_stack.close()
+                run_codex_process(
+                    command["argv"],
+                    assignment["stdin"],
+                    bundle=bundle,
+                    capture=native_capture,
+                    credential=credential,
+                    monotonic_deadline=monotonic_execution_deadline,
+                )
 
             native_terminal = _terminal_custody_capture(
                 session, native_plan, native_capture

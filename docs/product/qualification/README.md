@@ -98,7 +98,10 @@ operator-declared mismatch guard, not provider-authenticated identity. The
 one-shot guarantee covers one outer containment launch within an intact
 custody root; it does not prove provider delivery or prevent Codex-internal
 retries. Exact-scalar quarantine does not claim to detect encoded or fractured
-secret leakage. The full operational and evidence limits are in the contract.
+secret leakage. Unsupported short top-level or nested custom credential claims
+and custom non-string leaves seal an infrastructure preflight refusal before
+any subprocess; matching this closed shape does not qualify the credential.
+The full operational and evidence limits are in the contract.
 The generic `caplab revbench` command remains fixture/offline-only and does not
 advertise or accept live runtime options.
 

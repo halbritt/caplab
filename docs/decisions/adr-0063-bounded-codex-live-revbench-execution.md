@@ -84,7 +84,13 @@ through a nonblocking descriptor into an anonymous sealed memfd and mounted
 read-only. Refresh and writeback are forbidden. An exact-scalar streaming gate
 withholds token, account, subject, and decoded private/custom claim material
 before durable writes; a match produces a privacy-quarantined infrastructure
-receipt with no public stream bytes.
+receipt with no public stream bytes. Top-level custom credentials admit only
+public structural keys `delegations`, `email`, `name`, and `organization`;
+nested custom objects admit only `id` and `label`. At either level, private key
+names of at least 16 UTF-8 bytes enter the quarantine set. Other short keys and
+all custom non-string leaves fail closed after the durable one-shot intent and
+before any subprocess. This closed shape is a compatibility guard, not
+qualification of an operator credential.
 
 Live evidence registers the overall intent, every process receipt, complete
 raw streams where safe, version observation, native output, raw-to-derived

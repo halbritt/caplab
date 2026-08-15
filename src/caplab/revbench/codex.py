@@ -49,6 +49,11 @@ _SOURCE_COMMIT = re.compile(r"^(?:[0-9a-f]{40}|[0-9a-f]{64})$")
 _IDENTIFIER = re.compile(r"^[a-z0-9][a-z0-9._-]{0,127}$")
 _JSON_POINTER = re.compile(r"^(?:/(?:[^~/]|~[01])*)*$")
 _MAX_CREDENTIAL_BYTES = 1024 * 1024
+_PUBLIC_TOP_LEVEL_CUSTOM_CREDENTIAL_CLAIM_KEYS = frozenset(
+    {"delegations", "email", "name", "organization"}
+)
+_PUBLIC_NESTED_CREDENTIAL_CLAIM_KEYS = frozenset({"id", "label"})
+_PRIVATE_CREDENTIAL_CLAIM_KEY_MIN_BYTES = 16
 _EXECUTOR_RUNTIME_MODULES = (
     "_hashlib",
     "_json",
@@ -1995,9 +2000,16 @@ def _validate_credential_payload(
     }
     standard_claims = {"sub", "iss", "aud", "iat", "exp"}
     for key, value in claims.items():
-        if isinstance(key, str) and key and key not in standard_claims:
-            secret_values.add(key.encode("utf-8"))
-            secret_values.update(_credential_string_scalars(value))
+        if key in standard_claims:
+            continue
+        if not isinstance(key, str) or not key:
+            raise CodexAdapterError("credential_custom_claim_key_invalid")
+        encoded_key = key.encode("utf-8")
+        if key not in _PUBLIC_TOP_LEVEL_CUSTOM_CREDENTIAL_CLAIM_KEYS:
+            if len(encoded_key) < _PRIVATE_CREDENTIAL_CLAIM_KEY_MIN_BYTES:
+                raise CodexAdapterError("credential_custom_claim_key_invalid")
+            secret_values.add(encoded_key)
+        secret_values.update(_credential_string_scalars(value))
     secret_values.update(part.encode("ascii") for part in token_parts if part)
     if not secret_values:
         raise CodexAdapterError("credential_secret_set_invalid")
@@ -2005,7 +2017,14 @@ def _validate_credential_payload(
 
 
 def _credential_string_scalars(value: Any) -> tuple[bytes, ...]:
-    """Return every nonempty decoded custom-claim key and string value."""
+    """Validate custom claim data and return its private exact scalars.
+
+    ``id`` and ``label`` are the only repository-owned public nested structure
+    names in v1. Any other short nested key is too collision-prone for the
+    substring streaming gate and is refused. Longer names remain private
+    quarantine scalars. Standard numeric claims are validated by their
+    dedicated code path; custom leaves are strings only.
+    """
 
     scalars: list[bytes] = []
     if isinstance(value, str):
@@ -2014,14 +2033,19 @@ def _credential_string_scalars(value: Any) -> tuple[bytes, ...]:
             scalars.append(encoded)
     elif isinstance(value, Mapping):
         for key, child in value.items():
-            if isinstance(key, str):
-                encoded_key = key.encode("utf-8")
-                if encoded_key:
-                    scalars.append(encoded_key)
+            if not isinstance(key, str) or not key:
+                raise CodexAdapterError("credential_nested_claim_key_invalid")
+            encoded_key = key.encode("utf-8")
+            if key not in _PUBLIC_NESTED_CREDENTIAL_CLAIM_KEYS:
+                if len(encoded_key) < _PRIVATE_CREDENTIAL_CLAIM_KEY_MIN_BYTES:
+                    raise CodexAdapterError("credential_nested_claim_key_invalid")
+                scalars.append(encoded_key)
             scalars.extend(_credential_string_scalars(child))
     elif isinstance(value, list):
         for child in value:
             scalars.extend(_credential_string_scalars(child))
+    else:
+        raise CodexAdapterError("credential_custom_claim_value_invalid")
     return tuple(scalars)
 
 

@@ -67,6 +67,10 @@ LIVE_ORG_ID = "org_0123456789abcdef7f31"
 LIVE_ORG_LABEL = "Private Sentinel Organization 7f31"
 LIVE_NESTED_KEY = "private_nested_claim_key_sentinel_7f31"
 LIVE_NESTED_VALUE = "private nested claim value 7f31"
+LIVE_SHORT_NESTED_KEY = "shortkey7f31"
+LIVE_SHORT_NESTED_VALUE = "private short nested claim value 7f31"
+LIVE_LIST_VALUE = "private custom list value 7f31"
+LIVE_SHORT_TOP_LEVEL_KEY = "shorttop7f31"
 
 
 def synthetic_clean_apparatus():
@@ -78,7 +82,13 @@ def synthetic_clean_apparatus():
     return receipt
 
 
-def synthetic_live_credential() -> bytes:
+def synthetic_live_credential(*, extra_nested_claims=None) -> bytes:
+    organization = {
+        "id": LIVE_ORG_ID,
+        "label": LIVE_ORG_LABEL,
+        LIVE_NESTED_KEY: LIVE_NESTED_VALUE,
+        **(extra_nested_claims or {}),
+    }
     token = ".".join(
         (
             base64.urlsafe_b64encode(
@@ -99,11 +109,7 @@ def synthetic_live_credential() -> bytes:
                         "email": LIVE_EMAIL,
                         "name": LIVE_NAME,
                         LIVE_CUSTOM_KEY: LIVE_CUSTOM_VALUE,
-                        "organization": {
-                            "id": LIVE_ORG_ID,
-                            "label": LIVE_ORG_LABEL,
-                            LIVE_NESTED_KEY: LIVE_NESTED_VALUE,
-                        },
+                        "organization": organization,
                     }
                 )
             )
@@ -1286,7 +1292,13 @@ class CodexLiveExecutionTests(unittest.TestCase):
             credential_root = parent / "credentials-private-root-7f31"
             credential_root.mkdir(mode=0o700)
             credential_source = credential_root / "owner-secret-source-7f31.json"
-            credential_payload = synthetic_live_credential()
+            credential_payload = synthetic_live_credential(
+                extra_nested_claims=(
+                    {LIVE_SHORT_NESTED_KEY: LIVE_SHORT_NESTED_VALUE}
+                    if mode == "short-nested-key-preflight-refused"
+                    else None
+                )
+            )
             credential_source.write_bytes(
                 b"not-a-credential-document"
                 if mode == "credential-preflight-refused"
@@ -1328,8 +1340,11 @@ class CodexLiveExecutionTests(unittest.TestCase):
                     registrar,
                     live_runtime=runtime,
                 )
-            if mode == "credential-preflight-refused":
-                credential_source.write_bytes(credential_payload)
+            if mode in {
+                "credential-preflight-refused",
+                "short-nested-key-preflight-refused",
+            }:
+                credential_source.write_bytes(synthetic_live_credential())
                 credential_source.chmod(0o600)
                 with (
                     mock.patch(
@@ -1360,12 +1375,15 @@ class CodexLiveExecutionTests(unittest.TestCase):
                 return_value=copy.deepcopy(policy),
             ):
                 measurement = score(manifest, reviews, registrar)
+            self._last_registered_evidence = b"\n".join(registrar.documents.values())
+            self._last_reviews_export = canonical_json(reviews)
+            self._last_measurement_export = canonical_json(measurement)
             self._last_public_evidence = b"\n".join(
-                [
-                    *registrar.documents.values(),
-                    canonical_json(reviews),
-                    canonical_json(measurement),
-                ]
+                (
+                    self._last_registered_evidence,
+                    self._last_reviews_export,
+                    self._last_measurement_export,
+                )
             )
             self._last_private_custody = b"\n".join(
                 path.read_bytes()
@@ -1375,27 +1393,29 @@ class CodexLiveExecutionTests(unittest.TestCase):
             self._last_credential_source = str(credential_source).encode()
             credential_document = json.loads(credential_payload)
             tokens = credential_document["tokens"]
+            private_scalars = [
+                tokens["id_token"],
+                tokens["access_token"],
+                tokens["refresh_token"],
+                tokens["account_id"],
+                LIVE_SUBJECT,
+                LIVE_EMAIL,
+                LIVE_NAME,
+                LIVE_CUSTOM_KEY,
+                LIVE_CUSTOM_VALUE,
+                LIVE_ORG_ID,
+                LIVE_ORG_LABEL,
+                LIVE_NESTED_KEY,
+                LIVE_NESTED_VALUE,
+                str(credential_root),
+                credential_root.name,
+                str(credential_source),
+                credential_source.name,
+            ]
+            if mode == "short-nested-key-preflight-refused":
+                private_scalars.extend((LIVE_SHORT_NESTED_KEY, LIVE_SHORT_NESTED_VALUE))
             self._last_private_scalars = tuple(
-                value.encode()
-                for value in (
-                    tokens["id_token"],
-                    tokens["access_token"],
-                    tokens["refresh_token"],
-                    tokens["account_id"],
-                    LIVE_SUBJECT,
-                    LIVE_EMAIL,
-                    LIVE_NAME,
-                    LIVE_CUSTOM_KEY,
-                    LIVE_CUSTOM_VALUE,
-                    LIVE_ORG_ID,
-                    LIVE_ORG_LABEL,
-                    LIVE_NESTED_KEY,
-                    LIVE_NESTED_VALUE,
-                    str(credential_root),
-                    credential_root.name,
-                    str(credential_source),
-                    credential_source.name,
-                )
+                value.encode() for value in private_scalars
             )
             self._last_private_hashes = tuple(
                 sha256_hex(value).encode()
@@ -1486,9 +1506,16 @@ class CodexLiveExecutionTests(unittest.TestCase):
                 self.assertEqual(reviews["stop_reason"], "privacy-quarantine")
                 self.assertEqual(measurement["disposition"], "infrastructure-failure")
                 self.assertEqual(len(calls), 2)
-                combined = self._last_public_evidence + self._last_private_custody
-                self.assertNotIn(LIVE_NESTED_KEY.encode(), combined)
-                self.assertNotIn(LIVE_NESTED_VALUE.encode(), combined)
+                surfaces = {
+                    "custody": self._last_private_custody,
+                    "registrar": self._last_registered_evidence,
+                    "reviews-export": self._last_reviews_export,
+                    "measurement-export": self._last_measurement_export,
+                }
+                for surface_name, surface in surfaces.items():
+                    with self.subTest(mode=mode, surface=surface_name):
+                        self.assertNotIn(LIVE_NESTED_KEY.encode(), surface)
+                        self.assertNotIn(LIVE_NESTED_VALUE.encode(), surface)
 
     def test_sealed_credential_refusal_cannot_be_replayed_after_secret_rotation(self):
         _registrar, _manifest, reviews, measurement, calls, _source = (
@@ -1498,12 +1525,30 @@ class CodexLiveExecutionTests(unittest.TestCase):
         self.assertEqual(reviews, self._last_replay)
         self.assertEqual(reviews["status"], "stopped")
         self.assertEqual(reviews["stop_reason"], "preflight-refused")
-        self.assertEqual(len(reviews["attempts"]), 1)
-        self.assertEqual(
-            reviews["attempts"][0]["disposition"], "infrastructure-failure"
+        self.assertEqual(reviews["attempts"], [])
+        self.assertEqual(reviews["process_receipt_refs"], [])
+        self.assertEqual(calls, [])
+        self.assertEqual(measurement["disposition"], "infrastructure-failure")
+        for surface in (
+            self._last_private_custody,
+            self._last_registered_evidence,
+            self._last_reviews_export,
+            self._last_measurement_export,
+        ):
+            self.assertNotIn(LIVE_SHORT_NESTED_KEY.encode(), surface)
+            self.assertNotIn(LIVE_SHORT_NESTED_VALUE.encode(), surface)
+
+    def test_unknown_short_nested_claim_refuses_without_launch_or_replay(self):
+        _registrar, _manifest, reviews, measurement, calls, _source = (
+            self._run_fake_subprocess_seam("short-nested-key-preflight-refused")
         )
-        self.assertEqual(len(calls), 1)
-        self.assertEqual(calls[0][0], "version-probe")
+
+        self.assertEqual(reviews, self._last_replay)
+        self.assertEqual(reviews["status"], "stopped")
+        self.assertEqual(reviews["stop_reason"], "preflight-refused")
+        self.assertEqual(reviews["attempts"], [])
+        self.assertEqual(reviews["process_receipt_refs"], [])
+        self.assertEqual(calls, [])
         self.assertEqual(measurement["disposition"], "infrastructure-failure")
 
     def test_uncertain_version_recovery_seals_without_a_second_launch(self):
@@ -2369,6 +2414,7 @@ class CodexCredentialTests(unittest.TestCase):
             "email": "private.person.7f31@example.invalid",
             "name": "Private Sentinel Name 7f31",
             "private_claim_key_sentinel_7f31": "private claim value 7f31",
+            "delegations": [LIVE_LIST_VALUE],
             "organization": {
                 "id": "org_0123456789abcdef7f31",
                 "label": "Private Sentinel Organization 7f31",
@@ -2404,6 +2450,7 @@ class CodexCredentialTests(unittest.TestCase):
                     private_claims["name"],
                     "private_claim_key_sentinel_7f31",
                     private_claims["private_claim_key_sentinel_7f31"],
+                    LIVE_LIST_VALUE,
                     private_claims["organization"]["id"],
                     private_claims["organization"]["label"],
                     "private_nested_claim_key_sentinel_7f31",
@@ -2421,14 +2468,127 @@ class CodexCredentialTests(unittest.TestCase):
                         self.assertTrue(gate.quarantined)
                         self.assertNotIn(encoded, retained)
                         self.assertNotIn(encoded, gate.finish())
-                ordinary = (
-                    b'{"type":"turn.completed","message":"benign chatgpt text",'
-                    b'"usage":{"input_tokens":1,"output_tokens":2}}\n'
+                ordinary_response = canonical_json(
+                    {
+                        "schema_version": "caplab-revbench-native-response/1",
+                        "verdict": "clean",
+                        "anchors": [],
+                    }
+                )
+                ordinary = b"".join(
+                    canonical_json(event) + b"\n"
+                    for event in (
+                        {"type": "thread.started", "thread_id": "thread-ordinary"},
+                        {"type": "turn.started"},
+                        {
+                            "type": "item.completed",
+                            "item": {
+                                "id": "item-ordinary",
+                                "type": "agent_message",
+                                "text": (
+                                    "benign chatgpt email name organization "
+                                    "delegations id label text "
+                                    + ordinary_response.decode("utf-8")
+                                ),
+                            },
+                        },
+                        {
+                            "type": "turn.completed",
+                            "usage": {"input_tokens": 1, "output_tokens": 2},
+                        },
+                    )
                 )
                 ordinary_gate = credential.stream_quarantine()
-                retained = ordinary_gate.feed(ordinary) + ordinary_gate.finish()
+                retained = (
+                    b"".join(
+                        ordinary_gate.feed(ordinary[index : index + 7])
+                        for index in range(0, len(ordinary), 7)
+                    )
+                    + ordinary_gate.finish()
+                )
                 self.assertFalse(ordinary_gate.quarantined)
                 self.assertEqual(retained, ordinary)
+
+            source.write_bytes(
+                self._credential(
+                    subject,
+                    account_id,
+                    extra_claims={
+                        "organization": {
+                            "id": "org_0123456789abcdef7f31",
+                            LIVE_SHORT_NESTED_KEY: LIVE_SHORT_NESTED_VALUE,
+                        }
+                    },
+                )
+            )
+            source.chmod(0o600)
+            with self.assertRaisesRegex(
+                CodexAdapterError, "credential_nested_claim_key_invalid"
+            ):
+                with credential_memfd(
+                    source,
+                    self._profile(subject, account_id),
+                    credential_root=root,
+                ):
+                    self.fail("unknown short nested claim must not be accepted")
+
+            source.write_bytes(
+                self._credential(
+                    subject,
+                    account_id,
+                    extra_claims={
+                        LIVE_SHORT_TOP_LEVEL_KEY: "private top-level value 7f31"
+                    },
+                )
+            )
+            source.chmod(0o600)
+            with self.assertRaisesRegex(
+                CodexAdapterError, "credential_custom_claim_key_invalid"
+            ):
+                with credential_memfd(
+                    source,
+                    self._profile(subject, account_id),
+                    credential_root=root,
+                ):
+                    self.fail("unknown short top-level claim must not be accepted")
+
+    def test_credential_refuses_custom_non_string_claim_leaves(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            root.chmod(0o700)
+            source = root / "auth.json"
+            subject = "acct_0123456789abcdef0123456789abcdef"
+            account_id = "workspace_0123456789abcdef0123456789abcdef"
+
+            unsupported_claims = {
+                "numeric": {"email": 7},
+                "boolean-in-list": {"delegations": ["private string", True]},
+                "null-in-object": {
+                    "organization": {
+                        "id": "org_0123456789abcdef7f31",
+                        "label": None,
+                    }
+                },
+            }
+            for label, extra_claims in unsupported_claims.items():
+                with self.subTest(label=label):
+                    source.write_bytes(
+                        self._credential(
+                            subject,
+                            account_id,
+                            extra_claims=extra_claims,
+                        )
+                    )
+                    source.chmod(0o600)
+                    with self.assertRaisesRegex(
+                        CodexAdapterError, "credential_custom_claim_value_invalid"
+                    ):
+                        with credential_memfd(
+                            source,
+                            self._profile(subject, account_id),
+                            credential_root=root,
+                        ):
+                            self.fail("custom non-string scalar must not be accepted")
 
     def test_credential_refuses_mode_subject_and_symlink_swaps(self):
         with tempfile.TemporaryDirectory() as temporary:
