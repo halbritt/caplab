@@ -1,0 +1,31 @@
+{
+  "config": "caplab-advisory-sweep-config/1",
+  "description": "Standing configuration for budgeted, capacity-aware advisory re-measurement. The sweep command plans from this file plus claim freshness; execution is always an explicit human-or-endorsed act (no enabled timers exist).",
+  "freshness_days": 90,
+  "default_pairs": 21,
+  "max_pairs": 21,
+  "population": {
+    "supervised_only_runtimes": ["claude-code", "codex"],
+    "supervised_only_reason": "these harnesses share production subscription rate-limit windows; runs require a supervised session or explicit authorization",
+    "afk_eligible_runtimes": ["agy", "local", "local-qwen", "local-qwen-ft"],
+    "afk_eligible_reason": "API-billed under endorsed budget caps, or free local inference"
+  },
+  "budget": {
+    "afk_run_usd_cap_per_binding": 3.5,
+    "notes": "gemini-flash-class pairs cost cents; the cap is a hard stop, not a target. Paid runs beyond the endorsed campaign need fresh endorsement."
+  },
+  "challengers": [
+    {
+      "binding": "agy-gemini-3-7-flash-low",
+      "reason": "first-campaign challenger: declared review class inherited from 3.6 sibling, never measured"
+    },
+    {
+      "binding": "agy-gemini-3-7-flash-medium",
+      "reason": "first-campaign challenger (Principal-named): declared review baseline suspected stale"
+    },
+    {
+      "binding": "agy-gemini-3-7-flash-high",
+      "reason": "first-campaign challenger: declared review class inherited from 3.6 sibling, never measured"
+    }
+  ]
+}
