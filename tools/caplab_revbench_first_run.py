@@ -907,6 +907,23 @@ def _print_execute_commands(workspace: Path) -> None:
     )
 
 
+def _verify_prepared_manifest(
+    workspace: Path,
+    ledger: FilesystemQualificationLedger,
+    manifest: Mapping[str, Any],
+) -> dict[str, Any]:
+    spec = _read_canonical_document(workspace / "spec.json", "spec")
+    prepared_manifest = prepare(spec, ledger)
+    if canonical_json(prepared_manifest) != canonical_json(manifest):
+        raise FirstRunError("prepared_manifest_mismatch")
+    manifest_ref = _read_canonical_document(
+        workspace / "manifest-ref.json", "manifest_reference"
+    )
+    if ledger.resolve(manifest_ref) != canonical_json(manifest):
+        raise FirstRunError("prepared_manifest_reference_mismatch")
+    return manifest_ref
+
+
 def scaffold(args: argparse.Namespace) -> int:
     workspace = _workspace_path(args.workspace, empty=True)
     fixture_source_bytes = FIXTURE_SOURCE.read_bytes()
@@ -957,15 +974,7 @@ def authorize(args: argparse.Namespace) -> int:
     ):
         raise FirstRunError("local_fixture_manifest_required")
     ledger = _workspace_ledger(workspace)
-    spec = _read_canonical_document(workspace / "spec.json", "spec")
-    prepared_manifest = prepare(spec, ledger)
-    if canonical_json(prepared_manifest) != canonical_json(manifest):
-        raise FirstRunError("prepared_manifest_mismatch")
-    manifest_ref = _read_canonical_document(
-        workspace / "manifest-ref.json", "manifest_reference"
-    )
-    if ledger.resolve(manifest_ref) != canonical_json(manifest):
-        raise FirstRunError("prepared_manifest_reference_mismatch")
+    manifest_ref = _verify_prepared_manifest(workspace, ledger, manifest)
     limits = {
         "max_version_probe_processes": len(manifest["cases"]) * 2,
         "max_native_review_processes": len(manifest["cases"]) * 2,
@@ -1079,8 +1088,31 @@ def inspect_workspace(args: argparse.Namespace) -> int:
     binding = documents.get("inputs/binding.json")
     if binding is None:
         raise FirstRunError("binding_unavailable")
+    spec = documents.get("spec.json")
+    if spec is None:
+        raise FirstRunError("spec_unavailable")
+    spec_binding = spec.get("binding")
+    if not isinstance(spec_binding, dict) or canonical_json(
+        spec_binding
+    ) != canonical_json(binding):
+        raise FirstRunError("workspace_binding_mismatch")
     validate_binding(binding, ledger)
+    prepared_manifest = prepare(spec, ledger)
+    manifest = documents.get("manifest.json")
+    manifest_ref = documents.get("manifest-ref.json")
+    if (manifest is None) != (manifest_ref is None):
+        raise FirstRunError("prepared_manifest_pair_incomplete")
+    if manifest is not None:
+        if canonical_json(prepared_manifest) != canonical_json(manifest):
+            raise FirstRunError("prepared_manifest_mismatch")
+        if ledger.resolve(manifest_ref) != canonical_json(manifest):
+            raise FirstRunError("prepared_manifest_reference_mismatch")
+    reviews = documents.get("reviews.json")
     measurement = documents.get("measurement.json")
+    if reviews is not None and manifest is None:
+        raise FirstRunError("reviews_without_manifest")
+    if measurement is not None and reviews is None:
+        raise FirstRunError("measurement_without_reviews")
     if measurement is not None:
         validate_measurement(measurement, ledger)
     resolved_payloads = _resolve_reference_graph(documents, ledger)
@@ -1101,9 +1133,10 @@ def inspect_workspace(args: argparse.Namespace) -> int:
         for name, metric in sorted(measurement["metrics"].items()):
             value = metric["value"]
             print(f"{name}: {value['numerator']}/{value['denominator']}")
-    print("qualification_status: none")
-    print("acceptance_status: not recorded")
-    print("provider_calls: none")
+    print("configured_subject: local-fixture")
+    print("qualification_evaluation: not performed by this tool")
+    print("acceptance_evaluation: not performed by this tool")
+    print("provider_execution: unavailable for this local-fixture subject")
     return 0
 
 

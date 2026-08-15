@@ -39,6 +39,21 @@ CONTENT_REF_FIELDS = {
     "registration_ref",
     "custody",
 }
+AUXILIARY_REGISTERED_SCHEMAS = {
+    "caplab-binding-configuration/1",
+    "caplab-native-harness-command/1",
+    "caplab-native-harness-version-command/1",
+    "caplab-native-harness-version-probe/1",
+    "caplab-provider-route/1",
+    "caplab-revbench-case-selection-basis/1",
+    "caplab-revbench-case/1",
+    "caplab-revbench-evidence-bundle/1",
+    "caplab-revbench-local-fixture/1",
+    "caplab-revbench-metric-derivation-basis/1",
+    "caplab-revbench-response-derivation/1",
+    "caplab-revbench-truth-basis/1",
+    "caplab.native-agent-systems/v1",
+}
 
 
 def _run(
@@ -83,10 +98,10 @@ def _content_refs(value: object) -> list[dict[str, object]]:
 def _registered_document_graph(
     ledger: FilesystemQualificationLedger,
     roots: list[dict[str, object]],
-) -> list[dict[str, object]]:
+) -> list[tuple[dict[str, object], dict[str, object]]]:
     pending = [ref for document in roots for ref in _content_refs(document)]
     resolved_refs: set[bytes] = set()
-    documents: list[dict[str, object]] = []
+    documents: list[tuple[dict[str, object], dict[str, object]]] = []
     while pending:
         ref = pending.pop()
         ref_key = canonical_json(ref)
@@ -102,7 +117,7 @@ def _registered_document_graph(
         document = json.loads(payload)
         if not isinstance(document, dict) or canonical_json(document) != payload:
             raise AssertionError("registered JSON is not a canonical object")
-        documents.append(document)
+        documents.append((ref, document))
         pending.extend(_content_refs(document))
     return documents
 
@@ -354,6 +369,30 @@ class FirstRunTests(unittest.TestCase):
             self.assertEqual(refused.returncode, 2)
             self.assertIn(b"local_fixture_manifest_required", refused.stderr)
             self.assertFalse((workspace / "execution-authorization.json").exists())
+
+    def test_inspect_refuses_a_provider_shaped_workspace_binding(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            workspace = Path(temporary) / "workspace"
+            scaffolded = _scaffold_workspace(workspace)
+            self.assertEqual(scaffolded.returncode, 0, scaffolded.stderr.decode())
+            binding_path = workspace / "inputs" / "binding.json"
+            binding = json.loads(binding_path.read_bytes())
+            binding["provider_or_path"]["kind"] = "direct-provider"
+            binding["provider_or_path"]["identifier"] = "provider-shaped-test"
+            binding["binding_id"] = derive_content_id(binding, "binding_id", "bnd-")
+            binding_path.chmod(0o600)
+            binding_path.write_bytes(canonical_json(binding) + b"\n")
+            before = _workspace_content_hashes(workspace)
+
+            refused = _run(
+                [sys.executable, str(TOOL), "inspect", str(workspace)],
+                cwd=ROOT,
+            )
+
+            self.assertEqual(refused.returncode, 2)
+            self.assertIn(b"workspace_binding_mismatch", refused.stderr)
+            self.assertNotIn(b"provider_execution:", refused.stdout)
+            self.assertEqual(_workspace_content_hashes(workspace), before)
 
     def test_authorize_refuses_drift_from_the_public_prepared_manifest(
         self,
@@ -658,10 +697,10 @@ class FirstRunTests(unittest.TestCase):
                 for ref in _content_refs(document)
             ]
             self.assertGreater(len(refs), 20)
-            registered_documents = _registered_document_graph(
+            registered_document_records = _registered_document_graph(
                 ledger, retained_documents
             )
-            self.assertGreater(len(registered_documents), 40)
+            self.assertGreater(len(registered_document_records), 40)
 
             claim_schema = json.loads(
                 (CONTRACTS / "qualification-claim-v1.schema.json").read_bytes()
@@ -679,6 +718,10 @@ class FirstRunTests(unittest.TestCase):
                 (
                     (claim_schema["$id"], Resource.from_contents(claim_schema)),
                     (records_schema["$id"], Resource.from_contents(records_schema)),
+                    (
+                        revbench_schema["$id"],
+                        Resource.from_contents(revbench_schema),
+                    ),
                     (live_schema["$id"], Resource.from_contents(live_schema)),
                 )
             )
@@ -686,13 +729,14 @@ class FirstRunTests(unittest.TestCase):
                 revbench_schema, registry=registry
             )
             records_validator = Draft202012Validator(records_schema, registry=registry)
-            workspace_contract_documents = [
-                json.loads((workspace / "spec.json").read_bytes()),
-                json.loads((workspace / "manifest.json").read_bytes()),
-                json.loads((workspace / "execution-authorization.json").read_bytes()),
-                reviews,
-                measurement,
-            ]
+            content_ref_validator = Draft202012Validator(
+                {"$ref": (claim_schema["$id"] + "#/$defs/content_ref")},
+                registry=registry,
+            )
+            capability_validator = Draft202012Validator(
+                {"$ref": (revbench_schema["$id"] + "#/$defs/bounded_capability")},
+                registry=registry,
+            )
             revbench_versions = {
                 definition["properties"]["schema_version"]["const"]
                 for branch in revbench_schema["oneOf"]
@@ -711,7 +755,9 @@ class FirstRunTests(unittest.TestCase):
                 "caplab-authorization-delegation/1",
             }
             validated_versions: set[str] = set()
-            for document in [*workspace_contract_documents, *registered_documents]:
+            auxiliary_payloads: set[bytes] = set()
+            classified_registered = 0
+            for ref, document in registered_document_records:
                 schema_version = document.get("schema_version")
                 if schema_version in revbench_versions:
                     revbench_validator.validate(document)
@@ -719,6 +765,49 @@ class FirstRunTests(unittest.TestCase):
                 elif schema_version in records_versions:
                     records_validator.validate(document)
                     validated_versions.add(schema_version)
+                elif ref["schema"] in AUXILIARY_REGISTERED_SCHEMAS:
+                    auxiliary_payloads.add(canonical_json(document))
+                else:
+                    self.fail(
+                        "unclassified registered JSON document: "
+                        f"schema={ref['schema']!r}, "
+                        f"schema_version={schema_version!r}"
+                    )
+                classified_registered += 1
+            self.assertEqual(classified_registered, len(registered_document_records))
+
+            workspace_document_paths = [
+                *sorted((workspace / "inputs").glob("*.json")),
+                workspace / "spec.json",
+                workspace / "manifest.json",
+                workspace / "manifest-ref.json",
+                workspace / "execution-delegation.json",
+                workspace / "execution-authorization.json",
+                workspace / "execution-authorization-ref.json",
+                workspace / "reviews.json",
+                workspace / "measurement.json",
+            ]
+            for path in workspace_document_paths:
+                document = json.loads(path.read_bytes())
+                schema_version = document.get("schema_version")
+                if schema_version in revbench_versions:
+                    revbench_validator.validate(document)
+                    validated_versions.add(schema_version)
+                elif schema_version in records_versions:
+                    records_validator.validate(document)
+                    validated_versions.add(schema_version)
+                elif set(document) == CONTENT_REF_FIELDS:
+                    content_ref_validator.validate(document)
+                    ledger.resolve(document)
+                elif path.name == "capability.json":
+                    capability_validator.validate(document)
+                elif canonical_json(document) in auxiliary_payloads:
+                    pass
+                else:
+                    self.fail(
+                        "unclassified emitted JSON document: "
+                        f"{path.relative_to(workspace)}"
+                    )
             self.assertTrue(
                 {
                     "caplab-revbench-spec/1",
@@ -737,7 +826,15 @@ class FirstRunTests(unittest.TestCase):
                     cwd=ROOT,
                 )
                 self.assertEqual(inspected.returncode, 0, inspected.stderr.decode())
-                self.assertIn(b"qualification_status: none", inspected.stdout)
+                self.assertIn(b"configured_subject: local-fixture", inspected.stdout)
+                self.assertIn(
+                    b"qualification_evaluation: not performed by this tool",
+                    inspected.stdout,
+                )
+                self.assertIn(
+                    b"provider_execution: unavailable for this local-fixture subject",
+                    inspected.stdout,
+                )
                 self.assertIn(b"registered_refs_resolved:", inspected.stdout)
             self.assertEqual(_workspace_content_hashes(workspace), before_inspection)
             self.assertEqual(

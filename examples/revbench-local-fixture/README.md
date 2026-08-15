@@ -12,11 +12,11 @@ provider, or make a network request.
 - the repository dependencies installed as described in the root README
 
 Run the commands from the repository root. Choose a workspace path that is new
-or an empty real directory. Replace both authority values below with your own
-local operator identity and the source of your authority to run this exercise;
-the tool deliberately has no repository-owner default. These values become
-durable registered evidence, so use nonsecret identifiers and do not put a
-credential or token in either field.
+or an empty real directory. Replace the operator identity and both
+authority-source values below with your own local identity and sources of
+authority to run this exercise; the tool deliberately has no repository-owner
+default. These values become durable registered evidence, so use nonsecret
+identifiers and do not put a credential or token in any field.
 
 ```bash
 WORKSPACE=/tmp/caplab-revbench-first-run-example
@@ -79,10 +79,13 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 \
 ```
 
 `inspect` is read-only and safe to repeat. It validates the Binding and any
+prepared manifest through the public preparation boundary, validates any
 Measurement, then resolves the complete reachable graph of registered evidence
-references. A complete run reports four planned, attempted, and usable
-attempts. Catch, discrimination, anchor-hit, and conformance rates are `1/1`;
-the false-alarm rate is `0/1`.
+references. A complete run reports the configured local-fixture subject and
+four planned, attempted, and usable attempts. Catch, discrimination,
+anchor-hit, and conformance rates are `1/1`; the false-alarm rate is `0/1`.
+It states that qualification and acceptance evaluation are outside this tool
+and that provider execution is unavailable for this subject.
 
 The workspace retains these main records:
 
@@ -129,3 +132,11 @@ error: workspace_must_be_empty
 If scaffolding stops after creating a partial workspace because of a filesystem
 failure, inspect that directory before removing it. Start again with a new or
 empty destination; the tool does not clean caller paths automatically.
+
+If `authorize` stops after ledger registration but before all three execution
+authority projection files are durable, it can leave valid registrations and
+a prefix of those files. That partial state cannot launch execution, and a
+retry refuses the existing output instead of overwriting it. Preserve the
+workspace for inspection; for this one-shot tutorial, start again in a fresh
+workspace after confirming the partial directory belongs to the failed run.
+The tool does not delete or repair a partial authorization set automatically.
