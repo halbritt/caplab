@@ -1,0 +1,4 @@
+runs/*/arms/
+runs/*/*-ws/
+runs/*/workspaces/
+runs/*/caplab-run.log
