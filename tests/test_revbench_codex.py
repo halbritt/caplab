@@ -73,6 +73,23 @@ LIVE_LIST_VALUE = "private custom list value 7f31"
 LIVE_SHORT_TOP_LEVEL_KEY = "shorttop7f31"
 
 
+def source_tree_snapshot(root: Path) -> tuple[tuple[str, str, str], ...]:
+    """Return an exact, path-local snapshot for source-mutation assertions."""
+
+    entries: list[tuple[str, str, str]] = []
+    for path in sorted(root.rglob("*")):
+        relative = path.relative_to(root).as_posix()
+        if path.is_symlink():
+            entries.append((relative, "symlink", os.readlink(path)))
+        elif path.is_file():
+            entries.append((relative, "file", sha256_hex(path.read_bytes())))
+        elif path.is_dir():
+            entries.append((relative, "directory", ""))
+        else:
+            entries.append((relative, "other", ""))
+    return tuple(entries)
+
+
 def synthetic_clean_apparatus():
     receipt = execution_apparatus_receipt(require_clean=False)
     receipt["caplab"]["checkout_state"] = "clean"
@@ -852,13 +869,56 @@ class CodexResponseAdapterTests(unittest.TestCase):
         self.assertNotIn("--credential-root", module_help.stdout)
         self.assertIn("local fixture", module_help.stdout)
 
-        shadow = ROOT / "src" / "secrets.py"
-        self.assertFalse(shadow.exists())
-        shadow.write_text(
-            "raise RuntimeError('live source root shadow imported')\n",
-            encoding="utf-8",
+        source_root = ROOT / "src"
+        source_before = source_tree_snapshot(source_root)
+        self.addCleanup(
+            lambda: self.assertEqual(
+                source_tree_snapshot(source_root),
+                source_before,
+                "live-entrypoint tests must not mutate the shared source tree",
+            )
         )
-        try:
+        with tempfile.TemporaryDirectory() as temporary:
+            checkout = Path(temporary) / "disposable-checkout"
+            head = subprocess.run(
+                ["/usr/bin/git", "-C", str(ROOT), "rev-parse", "HEAD"],
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+            subprocess.run(
+                [
+                    "/usr/bin/git",
+                    "clone",
+                    "--quiet",
+                    "--no-checkout",
+                    "--no-hardlinks",
+                    str(ROOT),
+                    str(checkout),
+                ],
+                check=True,
+            )
+            subprocess.run(
+                [
+                    "/usr/bin/git",
+                    "-C",
+                    str(checkout),
+                    "checkout",
+                    "--quiet",
+                    "--detach",
+                    head,
+                ],
+                check=True,
+            )
+            shadow = checkout / "src" / "secrets.py"
+            self.assertFalse(shadow.exists())
+            shadow.write_text(
+                "raise RuntimeError('live source root shadow imported')\n",
+                encoding="utf-8",
+            )
+            disposable_entrypoint = (
+                checkout / "src" / "caplab" / "revbench" / "live_entrypoint.py"
+            )
             accepted = subprocess.run(
                 [
                     "/usr/bin/python3",
@@ -867,17 +927,17 @@ class CodexResponseAdapterTests(unittest.TestCase):
                     "-B",
                     "-X",
                     "pycache_prefix=/nonexistent/caplab-revbench-pycache-v1",
-                    str(entrypoint),
+                    str(disposable_entrypoint),
                     "--help",
                 ],
+                cwd=checkout,
                 check=False,
                 capture_output=True,
                 text=True,
             )
-        finally:
-            shadow.unlink()
         self.assertEqual(accepted.returncode, 0, accepted.stderr)
         self.assertIn("prepare-live-runtime", accepted.stdout)
+        self.assertEqual(source_tree_snapshot(source_root), source_before)
 
     def test_live_apparatus_refuses_ignored_symlink_and_regular_package_members(self):
         with tempfile.TemporaryDirectory() as temporary:
