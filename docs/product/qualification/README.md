@@ -125,6 +125,14 @@ authorizations, four native attempts, Measurement, and registration-aware
 ledger for inspection. The example makes no provider call and does not produce
 a qualification Claim or acceptance record.
 
+## Native-AGY engineering pilot
+
+The bounded [Gemini 3.7 Flash pilot](agy-gemini-37-flash-pilot.md) exercises
+the exact AGY 1.1.13 low, medium, and high effort bindings on the same two
+synthetic clean/mutant pairs. It retains a pilot observation rather than a
+qualification Measurement because AGY's signed-in global runtime and provider
+delivery are not under the existing live custody contract.
+
 ## Quartermaster boundary
 
 `caplab qualification export` emits a deterministic
