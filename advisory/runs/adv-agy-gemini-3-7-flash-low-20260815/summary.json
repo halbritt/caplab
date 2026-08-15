@@ -1,0 +1,69 @@
+{
+  "backend": "agy-gemini-3-7-flash-low",
+  "instrument": "matched-pair defect injection",
+  "pairs_usable": 22,
+  "pairs_discarded": 0,
+  "discrimination": 0.4090909090909091,
+  "catch_rate": 0.4090909090909091,
+  "false_alarm_rate": 0.0,
+  "anchor_hit_rate_of_caught": 0.8888888888888888,
+  "anchor_resolves_rate": 0.8,
+  "findings_per_mutant": 0.4090909090909091,
+  "json_valid_control": 1.0,
+  "json_valid_mutant": 1.0,
+  "by_defect_class": {
+    "base_dropped": {
+      "n": 7,
+      "caught": 1,
+      "anchored": 1
+    },
+    "contradicted_clause": {
+      "n": 4,
+      "caught": 4,
+      "anchored": 4
+    },
+    "dangling_reference": {
+      "n": 2,
+      "caught": 1,
+      "anchored": 1
+    },
+    "dropped_section": {
+      "n": 3,
+      "caught": 1,
+      "anchored": 1
+    },
+    "hash_mismatch": {
+      "n": 3,
+      "caught": 1,
+      "anchored": 1
+    },
+    "hollow_delivery": {
+      "n": 1,
+      "caught": 0,
+      "anchored": 0
+    },
+    "overclaimed_level": {
+      "n": 2,
+      "caught": 1,
+      "anchored": 0
+    }
+  },
+  "by_size_band": {
+    "25k-100k": {
+      "n": 6,
+      "caught": 1,
+      "false_alarms": 0
+    },
+    "<25k": {
+      "n": 16,
+      "caught": 8,
+      "false_alarms": 0
+    }
+  },
+  "mean_seconds": 39.747727272727275,
+  "cost_total_usd": null,
+  "cost_per_defect_caught_usd": 0.0,
+  "provider_override": null,
+  "context_bound": null,
+  "aborted": null
+}

@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "python3",
+    "revbench.py",
+    "--backend",
+    "agy-gemini-3-7-flash-high",
+    "--pairs",
+    "21",
+    "--seed",
+    "20260815",
+    "--workers",
+    "2",
+    "--timeout",
+    "1800",
+    "--abort-after-empty",
+    "8",
+    "--out",
+    "/home/halbritt/git/caplab/advisory/runs/adv-agy-gemini-3-7-flash-high-20260815"
+  ],
+  "backend": "agy-gemini-3-7-flash-high",
+  "completed": false,
+  "exit_code": 1,
+  "finished_at": "2026-08-15T19:37:33.581058+00:00",
+  "instrument_commit": "4d2115a9816dea360fd109e01db1d636365fb24f",
+  "instrument_repo": "/home/halbritt/git/striatum-tuner",
+  "log": "advisory/runs/adv-agy-gemini-3-7-flash-high-20260815/caplab-run.log",
+  "profile": "caplab-advisory-execution/0",
+  "started_at": "2026-08-15T19:37:33.418749+00:00"
+}
