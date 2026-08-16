@@ -50,12 +50,26 @@ Protocol:
    `at-or-below-easy-floor`; a control-arm refusal marks it
    `weak-reference-noisy` (suspect substrate: the "sound" control may carry
    a real latent defect); a miss leaves it `pending-strong-reference`.
-3. **Strong-reference validation** (supervised sessions; burns subscription
-   windows): `pending-strong-reference` cases run against 2–3 reference
-   bindings with the best measured discrimination (fable-5-high class). A
+3. **Strong-reference validation**: `pending-strong-reference` cases run
+   against 2–3 reference bindings with the best measured discrimination. A
    case that ALL strong references miss is quarantined `suspect-case` — the
    test is questioned, not the bindings — and only a human decision can
    admit it as a genuinely-hard case afterward.
+
+   **Measurement equivalence is a precondition of step 3.** A calibration
+   verdict may admit or quarantine a case only if it was produced through
+   the same prompt path the measurement uses. The 2026-08-16 finding
+   (`docs/records/finding-2026-08-16-calibration-not-measurement-equivalent.md`)
+   is the reason: a compact "review this artifact" prompt supplies no stage
+   contract, posture, or manifest, so contract-relative defect classes
+   (`dropped_section`, `hash_mismatch`, `overclaimed_level`) are not
+   refusable under it — the fleet's strongest reviewer scored 0/4 on classes
+   it catches 8/8 on the real path. Verdicts from a non-equivalent harness
+   are recorded as `unresolved-harness-not-equivalent` and bind nothing.
+
+   A compact-prompt harness remains useful as a **smoke test**: it shows a
+   reference answers and parses, and it flags a noisy control. It cannot
+   admit, quarantine, or rank.
 4. **The floor**: per-case difficulty estimates accumulate across
    calibrations. Cases below the floor (nothing passes) are excluded from
    scoring pools; cases below the easy floor (the weak reference passes)
