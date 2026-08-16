@@ -96,8 +96,33 @@ def invoke(adapter: dict, prompt: str, timeout: int) -> dict:
     }
 
 
-def measure_case(case: dict, body: str, adapter: dict, timeout: int) -> dict:
-    """One matched pair. Returns a row in the instrument's own shape."""
+def _majority(verdicts: list) -> tuple:
+    """(majority verdict, refusing count, total). Ties resolve to refusing.
+
+    A tie means the subject is genuinely on the fence, and the conservative
+    reading of a fence-sitting reviewer is that it refused — the alternative
+    silently credits the arm with a clearance it did not consistently give.
+    The split is recorded either way, so no reader has to trust this choice.
+    """
+    real = [v for v in verdicts if v is not None]
+    if not real:
+        return None, 0, 0
+    refusing = sum(1 for v in real if v in REFUSING)
+    if refusing * 2 >= len(real):
+        return next(v for v in real if v in REFUSING), refusing, len(real)
+    return next(v for v in real if v not in REFUSING), refusing, len(real)
+
+
+def measure_case(case: dict, body: str, adapter: dict, timeout: int,
+                 replicates: int = 1) -> dict:
+    """One matched pair, optionally replicated.
+
+    Replication exists because the control arm reproduces at ~53% on identical
+    inputs while the mutant arm reproduces at ~80-87% (finding of 2026-08-16).
+    A single-trial false-alarm rate therefore does not describe a binding.
+    Every replicate verdict is recorded, not just the majority, so reliability
+    can be recomputed later without paying for the calls again.
+    """
     row = {"dispatch_id": f"{case['substrate_id']}:{case['operator']}:{case['seed']}",
            "substrate_id": case["substrate_id"],
            "source_kind": case["source"]["kind"],
@@ -123,9 +148,13 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int) -> dict:
     arms = [("control", body), ("mutant", injection.body)]
     # Arm order varies per case so a subject cannot benefit from position.
     random.Random(case["seed"] ^ 0x5EED).shuffle(arms)
-    results = {}
+    results, replicate_verdicts = {}, {}
     for name, arm_body in arms:
-        results[name] = invoke(adapter, prompt + arm_body, timeout)
+        runs = [invoke(adapter, prompt + arm_body, timeout)
+                for _ in range(max(1, replicates))]
+        replicate_verdicts[name] = [(r["doc"] or {}).get("verdict") for r in runs]
+        # Keep the first parseable invocation as the representative capture.
+        results[name] = next((r for r in runs if r["doc"] is not None), runs[0])
 
     control, mutant = results["control"], results["mutant"]
     if control["doc"] is None and mutant["doc"] is None:
@@ -134,8 +163,10 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int) -> dict:
                 "control_head": control["raw_head"],
                 "mutant_head": mutant["raw_head"]}
 
-    control_verdict = (control["doc"] or {}).get("verdict")
-    mutant_verdict = (mutant["doc"] or {}).get("verdict")
+    control_verdict, control_refusing, control_n = _majority(
+        replicate_verdicts["control"])
+    mutant_verdict, mutant_refusing, mutant_n = _majority(
+        replicate_verdicts["mutant"])
     emitted = anchors_of((mutant["doc"] or {}).get("findings") or [])
     # Why a control was refused is the evidence that decides whether the
     # refusal was an error or a latent defect in a substrate assumed sound.
@@ -156,6 +187,13 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int) -> dict:
         "mutant_findings": len((mutant["doc"] or {}).get("findings") or []),
         "control_findings_detail": _summarize_findings(control["doc"]),
         "mutant_findings_detail": _summarize_findings(mutant["doc"]),
+        "replicates": max(1, replicates),
+        "control_verdicts": replicate_verdicts["control"],
+        "mutant_verdicts": replicate_verdicts["mutant"],
+        "control_refusing_share": (control_refusing / control_n) if control_n else None,
+        "mutant_refusing_share": (mutant_refusing / mutant_n) if mutant_n else None,
+        "control_unanimous": control_n > 0 and control_refusing in (0, control_n),
+        "mutant_unanimous": mutant_n > 0 and mutant_refusing in (0, mutant_n),
         "control_json_valid": control["doc"] is not None,
         "mutant_json_valid": mutant["doc"] is not None,
         "control_seconds": control["seconds"], "mutant_seconds": mutant["seconds"],
@@ -168,7 +206,8 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int) -> dict:
 def run_pool(*, backend: str, backends_root: str, registry_path: str,
              out_dir: str, sweep_seed: int, per_operator: int,
              partition: str = "open", timeout: int = 1800,
-             max_cases: int = 40, abort_after_empty: int = 8) -> dict:
+             max_cases: int = 40, abort_after_empty: int = 8,
+             replicates: int = 1) -> dict:
     """Measure one binding over a sampled slice of the pool."""
     declaration = load_declaration(backends_root, backend)
     adapter = declaration["adapter"]
@@ -206,7 +245,8 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
                        "error": "substrate unreachable",
                        "defect_class": case["operator"]}
             else:
-                row = measure_case(case, body, adapter, timeout)
+                row = measure_case(case, body, adapter, timeout,
+                                   replicates=replicates)
             row["backend_measured"] = backend
             out.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
             out.flush()
@@ -233,6 +273,10 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
         "calibration_profile": MEASUREMENT_PROFILE,
         "sweep_seed": sweep_seed,
         "partition": partition,
+        "replicates": replicates,
+        "control_unanimous_share": (
+            sum(1 for r in usable if r.get("control_unanimous")) / len(usable)
+            if usable and replicates > 1 else None),
         "pairs_usable": len(usable),
         "pairs_discarded": len(rows) - len(usable),
         "catch_rate": (sum(1 for r in usable if r["caught"]) / len(usable)

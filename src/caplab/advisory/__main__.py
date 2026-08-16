@@ -135,7 +135,7 @@ def cmd_pool_run(args):
         registry_path=args.registry, out_dir=args.out,
         sweep_seed=args.seed, per_operator=args.per_operator,
         partition=args.partition, timeout=args.timeout,
-        max_cases=args.max_cases)
+        max_cases=args.max_cases, replicates=args.replicates)
     print(json.dumps(summary, indent=2))
     if summary.get("aborted"):
         print("run aborted; no claims derived", file=sys.stderr)
@@ -279,6 +279,10 @@ def main(argv=None):
     p.add_argument("--partition", default="open", choices=("open", "sealed"))
     p.add_argument("--max-cases", type=int, default=40)
     p.add_argument("--timeout", type=int, default=1800)
+    p.add_argument("--replicates", type=int, default=1,
+                   help="invocations per arm; the control arm reproduces at "
+                        "~53%% on identical inputs, so a false-alarm rate at "
+                        "1 replicate does not describe a binding")
     p.add_argument("--claim", action="store_true")
     p.set_defaults(fn=cmd_pool_run)
 

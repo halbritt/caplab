@@ -189,3 +189,62 @@ class ProfileRoutingTest(unittest.TestCase):
         self.assertIn("calibration_profile", row)
 if __name__ == "__main__":
     unittest.main()
+
+
+class ReplicationTest(unittest.TestCase):
+    """The control arm reproduces at ~53%; a single trial cannot score it."""
+
+    def _flaky(self, control_pattern, mutant_pattern="rrr"):
+        state = {"control": list(control_pattern), "mutant": list(mutant_pattern)}
+
+        def invoke(adapter, prompt, timeout):
+            arm = "mutant" if ("may freely" in prompt or "may clear" in prompt) \
+                else "control"
+            token = state[arm].pop(0)
+            verdict = "needs_revision" if token == "r" else "accept"
+            return {"doc": {"verdict": verdict, "findings": []},
+                    "exit_code": 0, "seconds": 0, "transport": "stdin",
+                    "prompt_bytes": len(prompt), "raw_head": ""}
+
+        return invoke
+
+    def _run(self, control_pattern, replicates=3):
+        original = pool_runner.invoke
+        pool_runner.invoke = self._flaky(control_pattern)
+        try:
+            return measure_case(case(), DOC, echo_adapter(), timeout=60,
+                                replicates=replicates)
+        finally:
+            pool_runner.invoke = original
+
+    def test_majority_decides_and_the_split_is_kept(self):
+        row = self._run("raa")          # one refusal, two clearances
+        self.assertFalse(row["false_alarm"])
+        self.assertEqual(row["control_verdicts"],
+                         ["needs_revision", "accept", "accept"])
+        self.assertAlmostEqual(row["control_refusing_share"], 1 / 3)
+        self.assertFalse(row["control_unanimous"])
+
+    def test_majority_refusal_is_a_false_alarm(self):
+        row = self._run("rra")
+        self.assertTrue(row["false_alarm"])
+        self.assertAlmostEqual(row["control_refusing_share"], 2 / 3)
+
+    def test_unanimous_is_distinguishable_from_split(self):
+        row = self._run("rrr")
+        self.assertTrue(row["false_alarm"])
+        self.assertTrue(row["control_unanimous"])
+
+    def test_tie_resolves_to_refusing_and_is_recorded(self):
+        row = self._run("ra", replicates=2)
+        self.assertTrue(row["false_alarm"])
+        self.assertAlmostEqual(row["control_refusing_share"], 0.5)
+        self.assertFalse(row["control_unanimous"])
+
+    def test_single_replicate_keeps_prior_behaviour(self):
+        row = self._run("a", replicates=1)
+        self.assertEqual(row["replicates"], 1)
+        self.assertFalse(row["false_alarm"])
+        self.assertTrue(row["control_unanimous"])
+if __name__ == "__main__":
+    unittest.main()
