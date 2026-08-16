@@ -1,8 +1,9 @@
-# ADR 0064 — Advisory selection campaign (draft)
+# ADR 0064 — Advisory selection campaign
 
-- Status: **draft — awaiting Principal acceptance**
-- Date: 2026-08-15
-- Deciders: halbritt (Principal); drafted during the endorsed AFK campaign
+- Status: **accepted** — halbritt (Principal), 2026-08-16, interactive
+  session ("Accept as written")
+- Date: 2026-08-15 (drafted during the endorsed AFK campaign)
+- Deciders: halbritt (Principal)
 - Plan of record: [`plan-advisory-selection-001`](../product/plans/plan-advisory-selection-001.md)
 
 ## Context
