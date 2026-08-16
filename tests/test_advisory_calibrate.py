@@ -73,6 +73,22 @@ class CalibrateTest(unittest.TestCase):
             "arg", "body")
         self.assertEqual(doc["verdict"], "accept")
 
+    def test_adapter_review_resolves_envelope_pointer(self):
+        # The agy family wraps the completion; reading raw stdout finds no
+        # verdict and would score every case a strong miss.
+        envelope = ('{"type":"result","structured_output":'
+                    '{"verdict":"needs_revision","findings":[]}}')
+        argv = ["python3", "-c", f"print({envelope!r})"]
+        self.assertIsNone(adapter_review(argv, "arg", "body").get("verdict"))
+        doc = adapter_review(argv, "arg", "body",
+                             stdout_json_pointer="/structured_output")
+        self.assertEqual(doc["verdict"], "needs_revision")
+
+    def test_unresolvable_pointer_yields_no_review(self):
+        argv = ["python3", "-c", "print('{\"type\":\"result\"}')"]
+        self.assertIsNone(adapter_review(argv, "arg", "body",
+                                         stdout_json_pointer="/structured_output"))
+
 
 if __name__ == "__main__":
     unittest.main()

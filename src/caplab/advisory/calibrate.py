@@ -65,13 +65,36 @@ def local_review(body: str, endpoint: str = LOCAL_ENDPOINT,
     return doc if isinstance(doc, dict) else None
 
 
+def resolve_json_pointer(body: str, pointer: str) -> str:
+    """The sub-document an RFC 6901 pointer names, or "" if unresolvable.
+
+    Mirrors bench.resolve_json_pointer / the supervisor's own resolution: a
+    lane whose runtime wraps the completion in an envelope is read at the
+    payload the driver would admit."""
+    doc = extract_json(body)
+    if doc is None or not pointer.startswith("/"):
+        return ""
+    for raw in pointer.lstrip("/").split("/"):
+        token = raw.replace("~1", "/").replace("~0", "~")
+        if not isinstance(doc, dict) or token not in doc:
+            return ""
+        doc = doc[token]
+    return doc if isinstance(doc, str) else json.dumps(doc)
+
+
 def adapter_review(adapter_command: list[str], prompt_mode: str, body: str,
-                   timeout: int = 1800) -> dict | None:
+                   timeout: int = 1800, stdout_json_pointer: str = "") -> dict | None:
     """Review one document through a declared adapter command.
 
     Used for strong-reference case validation: the reference binding sees the
     same compact review prompt the weak reference sees, so weak and strong
-    calibrations disagree only about the case, never about the task."""
+    calibrations disagree only about the case, never about the task.
+
+    `stdout_json_pointer` must be honored when the declaration names one.
+    The agy family wraps its completion in an envelope and points at
+    `/structured_output`; reading raw stdout there finds no `verdict` and
+    would score every case a strong miss — falsely quarantining sound cases,
+    which is the failure this validation exists to prevent."""
     import subprocess
 
     prompt = REVIEW_PROMPT + body
@@ -86,7 +109,10 @@ def adapter_review(adapter_command: list[str], prompt_mode: str, body: str,
                                    timeout=timeout)
     except subprocess.TimeoutExpired:
         return None
-    doc = extract_json(completed.stdout.decode("utf-8", errors="replace"))
+    stdout = completed.stdout.decode("utf-8", errors="replace")
+    if stdout_json_pointer:
+        stdout = resolve_json_pointer(stdout, stdout_json_pointer)
+    doc = extract_json(stdout)
     return doc if isinstance(doc, dict) else None
 
 
@@ -102,7 +128,9 @@ def strong_reviewer_from_declaration(backends_root: str, backend_id: str,
     def reviewer(body: str) -> dict | None:
         return adapter_review(adapter["command"],
                               adapter.get("prompt_mode", "stdin"),
-                              body, timeout=timeout)
+                              body, timeout=timeout,
+                              stdout_json_pointer=adapter.get(
+                                  "stdout_json_pointer") or "")
 
     reviewer.reference_name = f"{backend_id}/strong"
     return reviewer
