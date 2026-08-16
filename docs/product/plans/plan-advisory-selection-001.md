@@ -217,3 +217,38 @@ instrument is fixed before any further scoring.
 (Principal-owned as of 2026-08-16), codex tuples (all 15 disabled for
 exhausted OpenAI quota — nothing lawful to measure), qualification-grade
 evidence, and fine-tuning.
+
+### Status 2026-08-16 — both stop conditions fired
+
+**Criterion 1 — blocked on Anthropic capacity, Principal-resolvable.** Two
+attempts at `claude-fable-5-high` aborted on vendor limits (session limit at
+00:31Z; "You've reached your Fable 5 limit" at ~14:20Z on a reduced 13-pair
+retry). No claim was admitted from either. Ways forward, all needing a
+Principal call because they spend a resource under visible pressure: wait
+for the window, add usage credits, or authorize a different claude-family
+tuple (`claude-opus-5-medium` and `claude-sonnet-5-high` are enabled and
+would serve the cross-family comparison equally).
+
+**Criterion 2 — blocked on a corrective, engineering-resolvable.** Strong-
+reference validation against the fleet's best measured reviewer returned 8
+of 11 as misses, and the diagnosis was the harness, not the cases (see
+`docs/records/finding-2026-08-16-calibration-not-measurement-equivalent.md`).
+No case was quarantined. Two proximate defects are fixed (envelope pointer
+resolution; unmeasurable substrates withheld from scored sampling), but the
+load-bearing corrective remains:
+
+> **The Tier 3 case pool is not yet wired into the instrument's own prompt
+> path.** The instrument selects cases by its own seed shuffle over exchange
+> dispatches; the pool's partitioning, class balancing, and per-sweep seed
+> variation therefore govern nothing that gets scored. Until they are
+> joined, sampling machinery and measurement are two separate systems.
+
+The choice this forces, for a Principal or a session with authority to make
+it: either extend the pinned instrument to accept an explicit case list
+(changes the instrument's identity, so every prior run's comparability must
+be restated), or reimplement its dispatch-render path inside CAPLAB (keeps
+the pin intact, duplicates rendering semantics that have already been a
+source of defects). Neither should be chosen silently.
+
+Seven of the eleven cases are repo-doc sourced and cannot be validated by
+either route until synthetic manifests give them a stage contract.
