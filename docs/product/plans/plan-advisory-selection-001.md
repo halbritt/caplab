@@ -175,3 +175,45 @@ The Principal endorsed autonomous execution in three tiers:
   per-sweep sampling and RFC 0019-compatible partitions, a code-review
   construct scaffold (diff + test-oracle matched pairs; generator now, live
   runs later), and the implemented exhaust-as-cases miner.
+
+## Standing goal — matched-custody ordering and a trusted case pool
+
+Set 2026-08-16 by the Principal. This is the objective the campaign pursues
+until its completion criteria are met; a session picking this work up should
+read this section first and work to these criteria.
+
+**Goal.** Make the top of the derived ranking a *matched* comparison, and
+make the case pool trustworthy enough to justify it.
+
+Two gaps keep the current ranking suggestive rather than conclusive. The
+custody gap: Gemini 3.7 Flash is measured on `caplab-advisory` custody with
+sweep seed 20260815, while every claude tuple carries `historical-seed`
+custody with seed 20260807 — different case sets and different custody
+weights, so "Gemini leads Fable" is not yet an apples-to-apples statement.
+The pool gap: 11 calibration cases the weak reference missed are unresolved,
+and each is either genuinely hard (valuable — that is what separates strong
+bindings) or broken (dangerous — it would score misses against bindings that
+did nothing wrong).
+
+**Completion criteria.**
+
+1. `claude-fable-5-high` and `claude-fable-5-medium` carry `caplab-advisory`
+   claims measured on the same case seed as the challenger runs.
+2. Each of the 11 `pending-strong-reference` cases resolves to
+   `validated-hard`, `strong-reference-noisy`, or
+   `strong-miss-quarantine-candidate` — never a silent drop.
+3. The quartermaster projection is regenerated so its leading entries share
+   one custody class and one case seed.
+4. A written read is delivered on whether the Gemini 3.7 Flash lead survives
+   matched comparison, stating the sample limits.
+
+**Stop conditions** (any one halts the goal and reports rather than
+continuing): declared capacity exhaustion on the claude account, an
+`abort-after-empty` trip, the pair-budget refusal, or a validation result
+that impeaches the instrument rather than a binding — in which case the
+instrument is fixed before any further scoring.
+
+**Out of scope while pursuing this goal**: striatum declaration edits
+(Principal-owned as of 2026-08-16), codex tuples (all 15 disabled for
+exhausted OpenAI quota — nothing lawful to measure), qualification-grade
+evidence, and fine-tuning.

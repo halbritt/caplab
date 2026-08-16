@@ -25,6 +25,12 @@ MARKDOWN_LINK = re.compile(r"\[[^]]+\]\(([^)]+)\)")
 HISTORICAL_CUSTODY_ROOTS = (
     ROOT / "history/ethogram",
     ROOT / "history/striatum-tuner/source",
+    # Advisory run captures: subject-visible inputs and written outputs held
+    # verbatim as evidence. Their links belong to the artifacts under review,
+    # not to this repository's documentation, and rewriting them would
+    # falsify the capture. Completed runs are pruned to arms outputs; an
+    # in-flight run additionally holds materialized workspaces.
+    ROOT / "advisory/runs",
 )
 
 
