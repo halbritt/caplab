@@ -34,6 +34,12 @@ contract; they remain in the registry as sound substrates but are withheld
 from scored sampling until synthetic manifests give them a stage contract.
 `sample_cases` enforces this by default.
 
+Repo-doc substrates are *unmeasurable by the instrument as currently
+wired*, not intrinsically unmeasurable: the 2026-08-16 confirmation restored
+detection on them by stating the contract in the prompt, without any
+manifest. A synthetic contract is therefore the cheap route to making them
+measurable, and is preferred over synthesising whole manifests.
+
 Coverage under the guard (open partition, 2026-08-16): 343 of 587
 substrates are measurement-ready, and 13 of 14 operators retain 40–226
 applicable substrates each. The exception is `broken_internal_crossref`,
@@ -88,6 +94,17 @@ Protocol:
    A compact-prompt harness remains useful as a **smoke test**: it shows a
    reference answers and parses, and it flags a noisy control. It cannot
    admit, quarantine, or rank.
+
+   **Calibration profiles.** `v0` states no contract and is a smoke test
+   only. `v1` states the review contract as general reviewer obligations,
+   never a defect list, and is the profile admission uses. The 2026-08-16
+   confirmation
+   (`docs/records/confirmation-2026-08-16-contract-restores-detection.md`)
+   measured the difference on identical cases: 3/11 caught under v0 versus
+   8/11 under v1, with **zero control false alarms in both** — so the gain
+   is discrimination, not strictness. Any future profile must be checked the
+   same way: a profile that raises catches by also raising false alarms is
+   leading the reviewer and is unfit.
 4. **The floor**: per-case difficulty estimates accumulate across
    calibrations. Cases below the floor (nothing passes) are excluded from
    scoring pools; cases below the easy floor (the weak reference passes)
