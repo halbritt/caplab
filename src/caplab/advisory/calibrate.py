@@ -189,6 +189,23 @@ def strong_reviewer_from_declaration(backends_root: str, backend_id: str,
     return reviewer
 
 
+def _summarize_findings(doc: dict | None, limit: int = 6) -> list[dict]:
+    """Anchors and rationales a review named, kept verbatim but bounded."""
+    findings = (doc or {}).get("findings")
+    if not isinstance(findings, list):
+        return []
+    out = []
+    for finding in findings[:limit]:
+        if not isinstance(finding, dict):
+            out.append({"text": str(finding)[:300]})
+            continue
+        text = finding.get("rationale") or finding.get("text") or ""
+        out.append({"element_anchor": finding.get("element_anchor"),
+                    "severity": finding.get("severity"),
+                    "text": str(text)[:300]})
+    return out
+
+
 def validate_pending(calibration_path: str, reviewer, load_body,
                      on_row=None) -> list[dict]:
     """Run pending-strong-reference cases against a strong reference.
@@ -235,6 +252,15 @@ def validate_pending(calibration_path: str, reviewer, load_body,
         row.update({
             "status": "calibrated",
             "defect_class": injection.defect_class,
+            "defect_anchor": injection.element_anchor,
+            # Why a control was refused is the whole evidence for adjudicating
+            # a noisy case: a refusal naming a real gap in a shipped artifact
+            # is a finding about production, not a reviewer error. Recording
+            # only the boolean makes that unanswerable without paying again.
+            "control_verdict": (control_doc or {}).get("verdict"),
+            "mutant_verdict": (mutant_doc or {}).get("verdict"),
+            "control_findings": _summarize_findings(control_doc),
+            "mutant_findings": _summarize_findings(mutant_doc),
             "strong_reference_caught": caught,
             "strong_reference_false_alarm": false_alarm,
             "strong_reference_anchored": bool(caught and anchor_hits(

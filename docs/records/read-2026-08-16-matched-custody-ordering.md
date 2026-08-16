@@ -52,6 +52,22 @@ matched comparison narrows the claim considerably. The projection now
 reports its `matched_prefix_depth` so this failure mode is visible in the
 artifact rather than left to a reader's care.
 
+## Amendment 2026-08-16 — the false-alarm gap is not yet a reliability finding
+
+Two of Sonnet's five control refusals were audited after this read was
+written, and **both look like correct catches** on artifacts Gemini cleared:
+an internal naming contradiction in a design (`guard-*` vs `stall-*`
+entrypoints, each stated "at exactly"), and a self-clearing starvation mark
+applied to a credential failure that does not self-heal. See
+[control soundness is not established](finding-2026-08-16-control-soundness-is-not-established.md).
+
+The false-alarm comparison below therefore **cannot be read as a reliability
+advantage for Gemini** until the remaining three refusals are audited: on an
+unsound control, the reviewer that refuses is detecting and the reviewer
+that clears is missing, and the metric scores both backwards. The catch-rate
+result is unaffected. The read's conclusion — that neither difference is
+established — stands, and is now understated rather than overstated.
+
 ## What the false-alarm pairing changed
 
 The comparison originally tested catch rate only. On that test alone the
