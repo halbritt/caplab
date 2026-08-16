@@ -1,0 +1,8 @@
+[project]
+name = "trackd"
+version = "0.6.2"
+description = "Parcel scan tracking for the warehouse gateway"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,108 @@
+{
+  "protocol": "striatum-qwen35b-preflight-failure/2",
+  "recorded_at": "2026-08-01T14:25:51Z",
+  "run": {
+    "run_id": "run-20260801T133844-edf98795899d",
+    "pod_id": "5jjbislnjalv5z",
+    "bundle_hash": "963a1b76a230baf007dd1f5e812883e300d6b5bd997d48f8181a50a9fc245855",
+    "image": "ghcr.io/halbritt/striatum-tuner-qwen35b-moe@sha256:6ef00fed92539ad651e67aa444aef7624da24efcc4d3c594d5e22931fa312eff",
+    "runner_version": "0.1.6",
+    "runner_git_commit": "c682e91186b38e5a1aebc242252fa35ea8a7fcfd",
+    "gpu": "NVIDIA H200",
+    "catalog_hourly_rate_usd": "3.59",
+    "observed_hourly_rate_usd": "4.39",
+    "approved_max_usd": "3.50",
+    "max_elapsed_seconds": 2700,
+    "provider_terminate_at": "2026-08-01T14:23:44Z"
+  },
+  "remote_result": {
+    "outcome": "failed",
+    "reason": "provider_resource_disappeared_before_remote_delivery",
+    "workload_started": false,
+    "container_started": false,
+    "optimizer_step_started": false,
+    "artifact_disposition": {
+      "status": "unavailable",
+      "detail": "provider resource disappeared before remote delivery"
+    }
+  },
+  "failure_observation": {
+    "source": "authenticated RunPod system-log snapshots observed before deletion",
+    "classification": "cold image pull exceeded the admitted provider lifetime",
+    "image_compressed_bytes": 126994857996,
+    "image_compressed_gib": 118.27317811176181,
+    "image_layers": 89,
+    "safetensor_layers": 26,
+    "safetensor_compressed_gib": 52.0087,
+    "bf16_gguf_layers": 19,
+    "bf16_gguf_compressed_gib_range": [
+      50.9293,
+      51.4293
+    ],
+    "raw_safetensor_bytes": 71903645408,
+    "raw_bf16_gguf_bytes": 71066994400,
+    "registry_retry_observed": true,
+    "final_large_shard_started": true,
+    "extraction_started": true,
+    "last_observed_download_or_extract_at": "2026-08-01T14:19:36Z",
+    "durability_note": "The provider logs were observed before deletion but could not be recovered as run artifacts because the container never started. The immutable OCI manifest and local build receipt independently preserve the image size and model payload facts."
+  },
+  "independent_validation": {
+    "package_validator": {
+      "path": "/tmp/validate-qwen35b-h200-preflight-package.sh",
+      "sha256": "cbb95e53096460a8d553ad499153891dfe4be4e6829265125eb7c8d90789079a",
+      "exit_code": 1,
+      "result": "rejected",
+      "detail": "artifact manifest is absent, not regular, or a symlink"
+    },
+    "stage_b_validator": {
+      "path": "/tmp/validate-qwen35b-h200-preflight-stage-b.py",
+      "sha256": "23b99f80212a8f7c3c16e16d8232472dc1b05cfd3c41f0f3eb14e9842dd0ff8c",
+      "executed": false,
+      "reason": "The package validator rejected the run and no package receipt exists."
+    }
+  },
+  "lifecycle_closeout": {
+    "planned_at": "2026-08-01T13:38:44.660735+00:00",
+    "provision_dispatched_at": "2026-08-01T13:38:47.291986+00:00",
+    "workload_terminal_at": "2026-08-01T14:23:44.778268+00:00",
+    "delete_acknowledged_at": "2026-08-01T14:23:45.498746+00:00",
+    "provider_absence_confirmed_at": "2026-08-01T14:23:47.978511+00:00",
+    "closeout_completed_at": "2026-08-01T14:23:50.324917+00:00",
+    "controller_wall_seconds": 2705.664,
+    "provider_exposure_seconds": 2697.788,
+    "modeled_gpu_cost_at_observed_rate_usd": "3.2898025888888887",
+    "provider_billing_status": "pending",
+    "delete_acknowledged": true,
+    "provider_not_found": true,
+    "current_spend_usd_per_hour": "0",
+    "active_pod_count": 0,
+    "controller_service_result": "success",
+    "hashes": {
+      "events_jsonl": "3da3d356dbedad04d1e3a0e523260af2f081f9d4430ca9f471382518f2372f21",
+      "state_json": "a467f904da0a3c49aa802cbfb2ecaddfccf3c5a18f51b3f8e3aa25eeb6567cb3",
+      "closeout_receipt_json": "03b9eaedb627e0b91c0bff73bd6f5f9aba96c893e15e3be07af4c2f22201c8b3"
+    }
+  },
+  "disposition": {
+    "preflight_accepted": false,
+    "full_run_authorized_by_gate": false,
+    "full_run_launched": false,
+    "automatic_retry": false,
+    "next_state": "awaiting_principal",
+    "escalation_reason": "One new 3.50 USD preflight reservation would raise the conservative campaign envelope from 54.50 USD to 58.00 USD. The owner asked for escalation when the soft cap became infeasible."
+  },
+  "contingency": {
+    "fastest_safe_attempt": "After explicit budget expansion, run one deliberate preflight using the same immutable image and inputs. Provider layer cache may reduce startup time, but cache reuse is not guaranteed.",
+    "retry_loop_allowed": false,
+    "slim_image_option": {
+      "status": "design-not-acceptance",
+      "estimated_compressed_gib_range": [
+        66.84,
+        67.34
+      ],
+      "design": "Keep the pinned safetensors in the image, generate and verify the exact BF16 GGUF inside the paid lifecycle, and preserve the existing llama.cpp parity and export checks.",
+      "required_before_paid_use": "Offline reproducibility and timing proof, a new immutable image, fresh bundle hashes, anonymous verification, and a new complete H200 preflight."
+    }
+  }
+}

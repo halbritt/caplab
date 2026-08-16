@@ -12,6 +12,12 @@ requires-python = ">=3.12"
 Repository = "https://github.com/halbritt/caplab"
 Issues = "https://github.com/halbritt/caplab/issues"
 
+[project.scripts]
+caplab = "caplab.__main__:main"
+
+[project.optional-dependencies]
+test = ["jsonschema>=4.23,<5"]
+
 [tool.setuptools]
 package-dir = {"" = "src"}
 
@@ -19,5 +25,7 @@ package-dir = {"" = "src"}
 where = ["src"]
 
 [tool.setuptools.package-data]
+"caplab" = ["_source_commit.txt"]
 "caplab.dashboard" = ["*.css", "*.html", "*.js", "studies/*.json"]
+"caplab.revbench" = ["contracts/*"]
 "caplab.runtime" = ["requirements.lock", "migrations/*.sql"]

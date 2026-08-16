@@ -1,0 +1,8 @@
+[project]
+name = "upmon"
+version = "0.4.2"
+description = "A deliberately small HTTP endpoint monitor with live-reloadable probe settings."
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

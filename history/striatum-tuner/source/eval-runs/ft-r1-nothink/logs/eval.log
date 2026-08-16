@@ -1,0 +1,115 @@
+[2/98] bbfb055bdcc2 verdict=accept ref=accept 35.3s
+[3/98] 23536786023f verdict=accept ref=accept 34.5s
+[4/98] a1b0c03c79c5 verdict=accept_with_findings ref=accept 38.3s
+[5/98] 6c5be85be30c verdict=accept ref=needs_revision 40.5s
+[6/98] d83f1f09d40d verdict=needs_revision ref=accept 44.8s
+[7/98] 958732c00b0c verdict=accept ref=accept_with_findings 36.3s
+[8/98] 3d7975573b5a verdict=accept ref=accept 19.8s
+[9/98] 52d16dd86974 verdict=accept ref=accept 17.4s
+[10/98] 12504b21e075 verdict=accept ref=needs_revision 40.4s
+[11/98] d9e6ebbf6570 verdict=accept_with_findings ref=accept 41.1s
+[12/98] 81747aa4d79c verdict=accept ref=accept_with_findings 18.4s
+[13/98] 85b6f9ed0e22 verdict=accept ref=accept 18.7s
+[14/98] 6feacceed9ba verdict=accept ref=accept 35.0s
+[15/98] 791a28b90227 verdict=accept ref=accept 34.2s
+[16/98] e9fbb2c39cc1 verdict=accept ref=accept 47.0s
+[17/98] e396518752f4 verdict=accept ref=accept_with_findings 42.0s
+[18/98] 77309b1f3bbb verdict=accept ref=accept 22.0s
+[19/98] 1de25483ce1c verdict=accept ref=accept_with_findings 35.3s
+[20/98] 2a860420fc75 verdict=accept ref=needs_revision 17.5s
+[21/98] d492aaba77b9 verdict=accept ref=accept_with_findings 40.4s
+[22/98] 5af87171199a verdict=accept_with_findings ref=accept_with_findings 40.1s
+[23/98] 1c7db3de356d verdict=accept_with_findings ref=accept 22.7s
+[24/98] 5b8faac87f21 verdict=needs_revision ref=accept 59.4s
+[25/98] 77e984f06127 verdict=accept ref=needs_revision 31.6s
+[26/98] 3d1d2d84ee00 verdict=accept ref=needs_revision 36.5s
+[27/98] d1cc026540ce verdict=accept ref=accept_with_findings 39.3s
+[28/98] 9c75549a4d96 verdict=accept ref=needs_revision 43.6s
+[29/98] 9f2890b21dc2 verdict=accept_with_findings ref=accept 25.9s
+[30/98] 349f07301160 verdict=accept ref=accept 41.3s
+[31/98] f6f7bf470852 verdict=needs_revision ref=needs_revision 24.3s
+[32/98] 39cbf80913bb verdict=accept ref=accept 36.9s
+[33/98] 65cfb4d9cbbe verdict=accept ref=needs_revision 18.5s
+[34/98] c9d6f608d47b verdict=accept ref=needs_revision 35.9s
+[35/98] df4ed45d7cb7 verdict=needs_revision ref=accept_with_findings 31.3s
+[36/98] 80fe446292d3 verdict=needs_revision ref=accept_with_findings 30.0s
+[37/98] 18dbd2c83b5a verdict=accept ref=needs_revision 17.0s
+[38/98] 7ddfb972d4a7 verdict=accept ref=needs_revision 18.3s
+[39/98] f485030e8019 verdict=accept ref=accept_with_findings 16.7s
+[40/98] 66b0952ee784 verdict=accept_with_findings ref=accept 25.2s
+[41/98] cf1b5e4665a2 verdict=needs_revision ref=accept_with_findings 29.4s
+[42/98] b6869f3b20ab verdict=accept ref=accept_with_findings 18.8s
+[43/98] 2e921f25a4ac verdict=accept_with_findings ref=accept_with_findings 28.2s
+[44/98] 6602538b6cca verdict=accept_with_findings ref=accept_with_findings 32.6s
+[45/98] ce4ab5231edc verdict=needs_revision ref=needs_revision 22.1s
+[46/98] a4d7409b8912 verdict=accept_with_findings ref=needs_revision 27.5s
+[47/98] 9f7fc8ad1d47 verdict=needs_revision ref=needs_revision 22.1s
+[48/98] 132acdd7fb78 verdict=accept ref=accept_with_findings 16.9s
+[49/98] ef6111fcd556 verdict=needs_revision ref=needs_revision 29.8s
+[50/98] c8c961aa858b verdict=needs_revision ref=needs_revision 32.9s
+[51/98] 3b1275ee5a5d verdict=accept ref=needs_revision 17.4s
+[52/98] 77f28e681801 verdict=needs_revision ref=needs_revision 26.3s
+[53/98] 2295d780e10e verdict=accept ref=needs_revision 17.0s
+[54/98] 91ab85bb7217 verdict=needs_revision ref=needs_revision 31.6s
+[55/98] 351489bd3d69 verdict=needs_revision ref=needs_revision 28.6s
+[56/98] 44f00cea5d29 verdict=accept ref=needs_revision 14.0s
+[57/98] 3e1ddbf316b5 verdict=accept ref=needs_revision 14.2s
+[58/98] 6c05e5d0678d verdict=needs_revision ref=needs_revision 22.6s
+[59/98] 200667419013 verdict=needs_revision ref=needs_revision 27.9s
+[60/98] 16c621f08258 verdict=accept ref=needs_revision 17.0s
+[61/98] b8d9e9c4612b verdict=needs_revision ref=needs_revision 19.6s
+[62/98] e359fff3f105 verdict=accept ref=needs_revision 23.8s
+[63/98] 9adf75687312 verdict=needs_revision ref=needs_revision 22.9s
+[64/98] 2e0da10d8c6f verdict=accept ref=accept 16.2s
+[65/98] 6352f1917384 verdict=needs_revision ref=needs_revision 19.4s
+[66/98] 38190c060d94 verdict=needs_revision ref=needs_revision 25.7s
+[67/98] 448d72ae108e verdict=accept ref=needs_revision 20.1s
+[68/98] 97874d9f66ad verdict=needs_revision ref=needs_revision 21.0s
+[69/98] bda2f9f83683 verdict=accept ref=needs_revision 18.0s
+[70/98] 5158a948a5ef verdict=accept ref=needs_revision 17.5s
+[71/98] f20f4de1f852 verdict=accept ref=needs_revision 20.6s
+[72/98] c691d596b9bd verdict=accept ref=needs_revision 18.0s
+[73/98] ca346b5fea4f verdict=accept ref=needs_revision 17.8s
+[74/98] e3e8de02aca7 verdict=needs_revision ref=needs_revision 32.4s
+[75/98] 59ce3cee0591 verdict=needs_revision ref=needs_revision 32.9s
+[76/98] de511ff871b2 verdict=accept ref=needs_revision 20.0s
+[77/98] cd075b75abe7 verdict=accept ref=needs_revision 18.2s
+[78/98] 58759c57367c verdict=accept_with_findings ref=needs_revision 20.7s
+[79/98] 0e3e832971b1 verdict=accept ref=needs_revision 16.9s
+[80/98] 8de85d69e0e0 verdict=accept ref=needs_revision 16.9s
+[81/98] 79eab88591ff verdict=needs_revision ref=needs_revision 42.3s
+[82/98] 3cf287804b49 verdict=needs_revision ref=needs_revision 32.4s
+[83/98] 6da63a4e1b23 verdict=needs_revision ref=needs_revision 26.6s
+[84/98] 007bf7250fee verdict=needs_revision ref=needs_revision 19.6s
+[85/98] ab6df3c71546 verdict=accept ref=needs_revision 17.0s
+[86/98] 572f7309c62e verdict=accept ref=needs_revision 17.6s
+[87/98] 9029b3fe1ee9 verdict=accept ref=needs_revision 17.9s
+[88/98] 04bf424b1bbe verdict=accept ref=needs_revision 18.7s
+[89/98] 35039215d27a verdict=accept ref=needs_revision 17.3s
+[90/98] 1151e2a2f447 verdict=accept ref=needs_revision 15.3s
+[91/98] d792313477d7 verdict=accept_with_findings ref=needs_revision 31.4s
+[92/98] 85ccb29d3542 verdict=accept ref=needs_revision 14.1s
+[93/98] 515ad7fa7536 verdict=needs_revision ref=needs_revision 40.1s
+[94/98] 021ab9a6bedf verdict=needs_revision ref=needs_revision 34.5s
+[95/98] a5c797af89e1 verdict=accept ref=needs_revision 16.5s
+[96/98] ef7436a19f8b verdict=needs_revision ref=needs_revision 36.6s
+[97/98] e23846fe060b verdict=accept ref=needs_revision 18.3s
+[98/98] 424106beeba1 verdict=accept_with_findings ref=needs_revision 22.2s
+{
+  "model": "qwen-ft-r1",
+  "think": false,
+  "n": 98,
+  "errors": 0,
+  "json_valid": 1.0,
+  "verdict_legal": 1.0,
+  "verdict_exact_match": 0.40816326530612246,
+  "side_match": 0.5510204081632653,
+  "fate_agreement": null,
+  "fate_scored": 0,
+  "verdict_distribution": {
+    "accept": 57,
+    "accept_with_findings": 12,
+    "needs_revision": 29
+  },
+  "mean_seconds": 26.7
+}

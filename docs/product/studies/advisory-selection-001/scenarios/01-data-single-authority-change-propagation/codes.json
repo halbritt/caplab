@@ -1,0 +1,29 @@
+{
+  "scenario": "01-data-single-authority-change-propagation",
+  "codes": [
+    {
+      "id": "C1",
+      "kind": "artifact",
+      "positive": "The create/update/delete paths no longer write the search index themselves: the second, independent index mutation that previously sat alongside each store write is removed, and every index mutation is instead driven by consuming an ordered record of edits that the store itself produced.",
+      "negative_space": "Hardening the existing pair of writes does not count: try/except or retry loops around the index call, swapping which of the two writes happens first, compensating the index when one write fails, triggering a full index rebuild after each edit, or relocating the same paired writes into a helper or callback. The second independent write must be gone, not wrapped, reordered, or hidden."
+    },
+    {
+      "id": "C2",
+      "kind": "artifact",
+      "positive": "Each accepted edit is captured in a durable, grow-only record written atomically with the item row itself — inside the same SQLite transaction/commit, so no fact can land in the store without its entry — and entries carry a monotonically increasing position that totally orders edits.",
+      "negative_space": "Writing the entry before or after the store's commit as a separate step (a write that can independently fail or interleave) does not count; neither does an in-memory queue, list, or callback of pending index work that vanishes on crash, nor timestamps used as the ordering key across threads."
+    },
+    {
+      "id": "C3",
+      "kind": "artifact",
+      "positive": "The component that updates the index persists how far along the store's edit record it has applied, applies entries strictly in that order and tolerates re-applying entries already seen, and a missing or lagging index is brought current by loading the store's full contents at a known position and then following the record — with the CLI's existing maintenance command reusing that same path.",
+      "negative_space": "Scheduled or per-write full reindexing does not count, nor a job that diffs the index against the store and patches differences, nor replaying the entire record from the beginning on every run without a persisted progress cursor, nor a startup path that rebuilds unconditionally while normal writes still update the index independently."
+    },
+    {
+      "id": "SCOPE",
+      "kind": "artifact",
+      "positive": "No file under tests/ (or *_test.go) is modified, deleted, or added",
+      "negative_space": "Weakening an assertion, deleting or skipping a test, marking tests xfail, or adding a new test that ratifies a shortcut (for example, asserting that a retry, a try/except, or a per-write rebuild happened) all violate this code. The existing suite must be left byte-identical and passing."
+    }
+  ]
+}

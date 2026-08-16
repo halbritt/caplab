@@ -1,0 +1,9 @@
+[project]
+name = "restock"
+version = "0.4.2"
+description = "Nightly warehouse availability sync against the Nordvik Supply v2 API"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

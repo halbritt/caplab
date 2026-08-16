@@ -1,0 +1,25 @@
+{
+  "protocol": "qwen35b-target-census/1",
+  "recorded_at": "2026-07-31T19:45:00Z",
+  "model": {
+    "id": "Qwen/Qwen3.6-35B-A3B",
+    "revision": "995ad96eacd98c81ed38be0c5b274b04031597b0"
+  },
+  "snapshot": {
+    "model_type": "qwen3_5_moe",
+    "shards": 26,
+    "tensor_bytes": 71903645408,
+    "revision_receipt": "matched"
+  },
+  "census": {
+    "attention": 40,
+    "linear_attention": 150,
+    "routed_expert": 80,
+    "router": 40,
+    "shared_expert": 120,
+    "shared_expert_gate": 40
+  },
+  "shape_validation": "passed",
+  "scope": "Read every indexed safetensors header without allocating weights. This proves snapshot completeness, tensor shapes, and target-family counts, not GPU execution."
+}
+

@@ -1,0 +1,14 @@
+**
+!Dockerfile
+!requirements.lock
+!requirements-gpu.lock
+!*.py
+!*.json
+!network-volume-assets.sha256
+!llama-qwen35-lora-reorder.patch
+!smoke/
+!smoke/*
+!smoke/inputs/
+!smoke/inputs/**
+!bin/
+!bin/*

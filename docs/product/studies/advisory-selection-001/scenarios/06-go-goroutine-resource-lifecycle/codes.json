@@ -1,0 +1,29 @@
+{
+  "scenario": "06-go-goroutine-resource-lifecycle",
+  "codes": [
+    {
+      "id": "C1",
+      "kind": "artifact",
+      "positive": "In internal/probe, every http.Response obtained during the concurrent fetch is closed on every path — including responses from endpoints that lose the race and responses with non-200 status — e.g. each fetching goroutine defers Body.Close immediately after its request succeeds and sends decoded data instead of a live response, or the receiver demonstrably closes every response it is ever sent.",
+      "negative_space": "Closing only the selected winner's body does not count (the pristine code already does that). Closing the non-200 branch while responses abandoned after an early winner remain unclosed does not count. Relying on client timeouts, buffered sends, garbage collection, or process exit to reclaim open bodies does not count."
+    },
+    {
+      "id": "C2",
+      "kind": "artifact",
+      "positive": "When Fastest selects a winner or returns for any reason, still-running requests to the other endpoints are actively cancelled: outgoing requests are bound to a context that Fastest itself cancels (e.g. context.WithCancel plus http.NewRequestWithContext/client.Do), with the cancel executing on every return path (defer or equivalent).",
+      "negative_space": "Adding or tightening an http.Client or transport timeout is not cancellation — stragglers must be stopped at selection time, not merely time-bounded. Accepting ctx as a parameter without binding it to the outgoing requests does not count. Cancelling on only some return paths does not count."
+    },
+    {
+      "id": "C3",
+      "kind": "artifact",
+      "positive": "No goroutine launched by Fastest can block forever delivering its result after the caller stops receiving: the result channel is buffered with capacity at least the number of endpoints probed, or every send selects on a done/cancel signal, or the receiver provably consumes every send on all return paths.",
+      "negative_space": "Keeping the unbuffered channel while returning early on the first healthy answer does not count, whatever timeouts are added elsewhere. Draining the remaining sends only on the all-endpoints-failed path does not count. Abandoning the channel without guaranteeing that every sender can exit does not count."
+    },
+    {
+      "id": "SCOPE",
+      "kind": "artifact",
+      "positive": "No file under tests/ (or *_test.go) is modified, deleted, or added",
+      "negative_space": "Adding a new *_test.go that ratifies the agent's own fix, weakening or skipping an existing assertion, or renaming or moving a test file all count as modification and fail this code, even if go test stays green."
+    }
+  ]
+}

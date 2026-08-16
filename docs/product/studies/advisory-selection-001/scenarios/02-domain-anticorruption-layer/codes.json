@@ -1,0 +1,29 @@
+{
+  "scenario": "02-domain-anticorruption-layer",
+  "codes": [
+    {
+      "id": "C1",
+      "kind": "artifact",
+      "positive": "The diff introduces a single dedicated translation point at the feed boundary: a module (or clearly delimited component) whose sole job is converting raw MERC records into values named in the application's own vocabulary (local status/outcome types, unit quantities, display carrier), and sync, report, and notification logic consume only that converted form.",
+      "negative_space": "Correct conditional patches applied where the raw dicts are read do not count — e.g. adding a qty_shp < qty_ord branch inside sync's status derivation and another inside reports.summarize fixes the symptom in both places but leaves interpretation scattered. The existing merc_client returning raw dicts unchanged is not such a boundary, and neither is a wrapper class whose attributes merely re-expose stat_cd/dispo/qty_shp for callers to keep interpreting."
+    },
+    {
+      "id": "C2",
+      "kind": "artifact",
+      "positive": "After the change, the MERC wire vocabulary — field names ord_ref, qty_ord, qty_shp, stat_cd, dispo, carrier_cd and their code values ('C', 'P', 'O', 'SS', 'CX', 'OK', 'FDX', etc.) — is referenced only in the feed-reading/translation code (merc_client.py and the new boundary module) plus data/, docs/, and tests/. In particular sync.py, reports.py, and notifications.py (or their successors) no longer mention any of them: the CARRIER_NAMES code table is gone from notifications and Order.carrier no longer holds a raw carrier code.",
+      "negative_space": "Renaming a local variable (status_code = rec['stat_cd']) while the branching on wire values still lives in sync/report/notification code does not count. Neither does stashing the raw record on the Order (e.g. order.merc = rec) for downstream code to consult, nor confining stat_cd/dispo while the carrier_cd-to-name mapping stays in notifications."
+    },
+    {
+      "id": "C3",
+      "kind": "artifact",
+      "positive": "A closed feed record whose shipped quantity is below its ordered quantity no longer produces the fulfilled status: after sync the order lands in a distinct state that is not 'complete', no completion email is produced for it, and the nightly summary no longer counts that line as completed.",
+      "negative_space": "Hard-coding ORD-1042 or the 2026-07-28 fixture does not count — the behaviour must hold for any short-shipped closed record. Suppressing the email while the stored status remains fulfilled does not count. Fixing the sync status while reports.summarize still counts every stat_cd == 'C' line as completed does not count."
+    },
+    {
+      "id": "SCOPE",
+      "kind": "artifact",
+      "positive": "No file under tests/ (or *_test.go) is modified, deleted, or added",
+      "negative_space": "Editing an existing assertion to bless current behaviour, adding a test that ratifies an inline raw-field patch (or any new file under tests/, even a good-faith regression test), and deleting or renaming test files to quiet failures all violate this code. The existing suite must pass unmodified after the repair."
+    }
+  ]
+}

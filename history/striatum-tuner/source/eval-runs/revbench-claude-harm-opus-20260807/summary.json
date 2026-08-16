@@ -1,0 +1,73 @@
+{
+  "backend": "claude-harm-opus-4-8-high",
+  "instrument": "matched-pair defect injection",
+  "pairs_usable": 29,
+  "pairs_discarded": 2,
+  "discrimination": 0.4482758620689655,
+  "catch_rate": 0.4827586206896552,
+  "false_alarm_rate": 0.034482758620689655,
+  "anchor_hit_rate_of_caught": 0.0,
+  "anchor_resolves_rate": 0.0,
+  "findings_per_mutant": 1.3448275862068966,
+  "json_valid_control": 0.8620689655172413,
+  "json_valid_mutant": 0.9310344827586207,
+  "by_defect_class": {
+    "base_dropped": {
+      "n": 7,
+      "caught": 0,
+      "anchored": 0
+    },
+    "contradicted_clause": {
+      "n": 3,
+      "caught": 2,
+      "anchored": 0
+    },
+    "dangling_reference": {
+      "n": 4,
+      "caught": 3,
+      "anchored": 0
+    },
+    "dropped_section": {
+      "n": 4,
+      "caught": 1,
+      "anchored": 0
+    },
+    "hash_mismatch": {
+      "n": 2,
+      "caught": 0,
+      "anchored": 0
+    },
+    "hollow_delivery": {
+      "n": 4,
+      "caught": 4,
+      "anchored": 0
+    },
+    "refuted_conclusion": {
+      "n": 3,
+      "caught": 2,
+      "anchored": 0
+    },
+    "scope_violation": {
+      "n": 2,
+      "caught": 2,
+      "anchored": 0
+    }
+  },
+  "by_size_band": {
+    "<25k": {
+      "n": 17,
+      "caught": 10,
+      "false_alarms": 1
+    },
+    "25k-100k": {
+      "n": 12,
+      "caught": 4,
+      "false_alarms": 0
+    }
+  },
+  "mean_seconds": 149.97758620689658,
+  "cost_total_usd": null,
+  "cost_per_defect_caught_usd": 0.0,
+  "provider_override": null,
+  "context_bound": 200000
+}

@@ -1,0 +1,29 @@
+{
+  "scenario": "14-python-compatible-property-evolution",
+  "codes": [
+    {
+      "id": "C1",
+      "kind": "artifact",
+      "positive": "The 5-3600s interval band is enforced by the ProbeJob class at plain assignment to poll_interval itself — a property (or equivalent descriptor) on the class intercepts `job.poll_interval = value`, which setattr also routes through — so construction, the runtime-update path, and any future caller are covered by one rule.",
+      "negative_space": "Clamping or range-checking the value inside RuntimeController.apply_update, in control.py, in the CLI, or at any other call site does not count; neither does a special-cased branch for poll_interval in the setattr loop, a set_poll_interval()/update_interval() method callers must remember to invoke, nor leaving enforcement only in __init__. In all of those, plain assignment from the next caller still bypasses the rule."
+    },
+    {
+      "id": "C2",
+      "kind": "artifact",
+      "positive": "The interval's storage moves behind a non-public backing name while the outward contract is preserved: existing code still reads and assigns job.poll_interval by that exact name with plain attribute syntax, and snapshot()/status output keeps exactly the same public keys as before, with no underscore-prefixed key in any serialized output.",
+      "negative_space": "A conversion that leaves snapshot() mirroring vars(self)/__dict__ so that _poll_interval leaks (or the poll_interval key vanishes) from the status file or control-socket replies does not count; nor does renaming the public field, or migrating callers from attribute access to method calls. Preserving the contract by editing the snapshot-keys test instead of the code is a scope violation, not compatibility."
+    },
+    {
+      "id": "C3",
+      "kind": "artifact",
+      "positive": "Interception is added only where the rule exists: poll_interval alone becomes a managed attribute; its getter simply returns the stored value (no I/O, logging, clock reads, or recomputation on access); and timeout, retries, enabled, url, name, and consecutive_failures remain plain attributes.",
+      "negative_space": "Converting other fields to properties or adding get_/set_ accessor pairs 'for consistency' or future-proofing does not count, and neither does a getter that re-clamps or re-derives the value, reads configuration, or performs any other observable work on each access."
+    },
+    {
+      "id": "SCOPE",
+      "kind": "artifact",
+      "positive": "No file under tests/ (or *_test.go) is modified, deleted, or added",
+      "negative_space": "Relaxing or rewriting the snapshot-keys assertion in tests/test_probe.py so a leaked backing name passes, adding a test that enshrines call-site clamping as the contract, or deleting/renaming any test that the change breaks all violate scope."
+    }
+  ]
+}

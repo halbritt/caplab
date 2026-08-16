@@ -1,0 +1,96 @@
+{
+  "protocol": "striatum-qwen35b-preflight-failure/3",
+  "recorded_at": "2026-08-01T19:07:58Z",
+  "run": {
+    "run_id": "run-20260801T185007-c7b19c4a246d",
+    "pod_id": "5xhr7jigah8sym",
+    "bundle_hash": "523210c72c95ce99305a5f45da759e8e8f28c6eabe14ad402f8c6f3e7a46319d",
+    "image": "ghcr.io/halbritt/striatum-tuner-qwen35b-moe@sha256:18d689243862b63c350889d56617f47eafc164b95d710412af30740c8cec4ffc",
+    "runner_version": "0.1.7",
+    "runner_git_commit": "ea9fd3895ff35b9e0eb0e70ed672ad28f86032e9",
+    "gpu": "NVIDIA H200",
+    "observed_hourly_rate_usd": "4.39",
+    "approved_max_usd": "3.50"
+  },
+  "remote_result": {
+    "outcome": "failed",
+    "reason": "phase_nonzero_exit",
+    "phase": "preflight",
+    "completed_phases": [
+      "verify"
+    ],
+    "phase_exit_codes": {
+      "verify": 0,
+      "preflight": 1
+    },
+    "elapsed_seconds": 377.138355,
+    "runner_estimated_cost_usd": "0.47142294375",
+    "artifact_disposition": "unavailable"
+  },
+  "failure_observation": {
+    "source": "durable network-volume preflight log",
+    "path": "runpod-jobrunner/runs/run-20260801T185007-c7b19c4a246d/diagnostics/preflight/one-step-train.log",
+    "phase": "first real training forward",
+    "implementation": "liger_kernel.ops.fused_moe.LigerFusedMoEFunction",
+    "operation": "tl.dot(x_tile, tl.trans(w_gate), acc=acc_gate)",
+    "exception": "AssertionError: Both operands must be same dtype. Got fp32 and bf16",
+    "trainer_started": true,
+    "forward_completed": false,
+    "backward_completed": false,
+    "optimizer_step_completed": false,
+    "checkpoint_written": false
+  },
+  "base_preparation_observation": {
+    "protocol": "striatum-moe-kbit-preparation/1",
+    "converted_non_expert_fp32_parameters": 486,
+    "converted_non_expert_fp32_elements": 1044079984,
+    "frozen_bf16_expert_parameters": 80,
+    "frozen_bf16_expert_elements": 32212254720,
+    "frozen_bf16_expert_bytes": 64424509440,
+    "base_trainable_parameters": 0
+  },
+  "causal_diagnosis": {
+    "classification": "runtime-observed-and-source-confirmed",
+    "conclusion": "Liger 0.8.1 patched the Qwen3.5-MoE expert forward through its swiglu option. Its fused MoE Triton kernel received the intentional FP32 activation and frozen BF16 expert weight without an autocast boundary, so Triton rejected the mixed-dtype dot.",
+    "rejected_remedies": {
+      "cast_only_the_fused_moe_input": "This fixes the observed forward symptom but retains Liger's custom expert forward and backward semantics instead of the pinned Transformers grouped-matrix path.",
+      "upcast_expert_weights_to_fp32": "This would double the 60 GiB frozen expert representation and cannot fit the accepted single-H200 memory plan.",
+      "globally_keep_the_base_in_bf16": "This changes the accepted QLoRA stability preparation contract."
+    },
+    "selected_repair": "Set Liger swiglu=false while retaining fused_linear_cross_entropy=true. This keeps the required no-full-logits loss and leaves expert execution on the native Transformers grouped-matrix path, which explicitly reconciles activation and weight dtypes.",
+    "residual_risk": "Native expert throughput and the complete 40,960-token forward, backward, optimizer, checkpoint, reload, and export path remain unaccepted until a new exact-image paid preflight passes."
+  },
+  "lifecycle_closeout": {
+    "delete_acknowledged": true,
+    "provider_not_found": true,
+    "current_spend_scope": {
+      "kind": "resource",
+      "resource_id": "5xhr7jigah8sym"
+    },
+    "current_spend_usd_per_hour": "0",
+    "active_pod_count": 0,
+    "network_volume_retained": "7lno735a6g"
+  },
+  "budget": {
+    "scope": "striatum-qwen35b-hard100-20260801",
+    "scope_total_authorized_usd": "94.00",
+    "scope_reserved_usd": "7.00",
+    "scope_remaining_usd": "87.00",
+    "owner_soft_limit_usd": "75.00",
+    "owner_hard_limit_usd": "100.00"
+  },
+  "hashes": {
+    "durable_preflight_log": "b1e08c55b69bbd5d4371cf50f4a94345ea1c0269728841bb0346c5bddd137519",
+    "durable_status_json": "a01e95f8459931ddd83bbf38314cbb7086cda62f4f2db168c13a8125ad69e266",
+    "durable_events_jsonl": "ff0d8df95294f188354405d04a35dd4927978b001b144b17a18dc130cee562a0",
+    "base_preparation_json": "f473f55f2ce46b69dcde3b25e171015fdc1bf5b56697bfb24e5419baa3bcbab0",
+    "controller_state_json": "6c823a3f43ed4fe2116bcb7044035b88ecb93384601feb3fcd6684a60318455c",
+    "closeout_receipt_json": "f458b61bd39b19b4771adac5b7387b777f815c47a65689c93f4951f526f07c16"
+  },
+  "disposition": {
+    "preflight_accepted": false,
+    "full_run_launched": false,
+    "remediation_authorized": true,
+    "next_state": "publish-new-immutable-image-and-run-bounded-preflight"
+  }
+}

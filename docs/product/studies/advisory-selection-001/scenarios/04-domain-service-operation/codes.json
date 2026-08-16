@@ -1,0 +1,29 @@
+{
+  "scenario": "04-domain-service-operation",
+  "codes": [
+    {
+      "id": "C1",
+      "kind": "artifact",
+      "positive": "The class that holds the wallet balance (Wallet in walletd/models.py) gains balance-changing behaviour of its own: a withdraw/debit-style method that raises when the requested amount exceeds the available balance, and the adjustment/clawback path now reaches the balance only through that behaviour.",
+      "negative_space": "An insufficient-funds guard added inside WalletService.apply_adjustment (or inside promotions.py) while Wallet remains a field-only dataclass does NOT count: the symptom disappears but the rule still lives outside the object whose data it protects. Silently clamping the balance to zero instead of refusing does not count either."
+    },
+    {
+      "id": "C2",
+      "kind": "artifact",
+      "positive": "After the repair, no production module other than the Wallet class itself assigns to or arithmetically updates balance_cents on an existing wallet: top_up, charge, apply_adjustment, and both legs of transfer all mutate the balance via Wallet methods.",
+      "negative_space": "Routing only the clawback path through a new method while WalletService.charge, top_up, or transfer keep doing wallet.balance_cents -= ... directly does NOT count. Renaming the attribute or underscore-prefixing it while modules outside the class still write it does not count either. Constructing a new Wallet with an initial balance is not a violation."
+    },
+    {
+      "id": "C3",
+      "kind": "artifact",
+      "positive": "The two-wallet transfer remains a standalone operation outside the Wallet class, and its body now moves the money by invoking each wallet's own withdraw/deposit-style behaviour; transfer's private copy of the amount-versus-balance check is gone.",
+      "negative_space": "Leaving transfer's duplicated funds check in place does NOT count. Relocating transfer onto Wallet (e.g. wallet.transfer_to(other)) so that one wallet manipulates another wallet's balance does not count either: an operation between two wallets belongs to neither."
+    },
+    {
+      "id": "SCOPE",
+      "kind": "artifact",
+      "positive": "No file under tests/ (or *_test.go) is modified, deleted, or added",
+      "negative_space": "Adding a regression test for the clawback, editing an existing test to expect the new exception, or deleting a test that gets in the way all violate this code, even when the added or edited test is correct. Changing tests is how an agent ratifies its own shortcut."
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "case": {
+      "operator": "dangling_reference",
+      "seed": 2138890685,
+      "sha256": "b61c49f6eb689d09e26926cab3fbc17796064547d8cf50bb16dd1e0f17e3764a",
+      "source": {
+        "dispatch_id": "c70bc3c6abc58d5c59ccae5d31d49ebd639ff783e0bfaa59391badc9475f9b73",
+        "fate": "final",
+        "input_path": "inputs/00-striatum-next-passes-stalls-need-no-judgment-d-design",
+        "kind": "striatum-exchange"
+      },
+      "substrate_id": "qs-b61c49f6eb689d09"
+    },
+    "control_review": {
+      "findings": [
+        {
+          "element_anchor": "#el:standing-guards",
+          "text": "The design asserts the four guard programs sit 'at exactly the registered entrypoints... as the declaration's evaluator registers them,' naming those registered evaluator nodes `guard-plan-totality`, `guard-frontier-diagnosis`, `guard-oscillation`, `guard-quiescence-blocking-scope`. But C7 and the Per-guard-assertions section specify the actual delivered entrypoints as `go run ./tools/standing-guards/stall-plan-totality`, `stall-frontier-diagnosis`, `stall-oscillation`, `stall-quiescence-blocking-scope` \u2014 a different name (`stall-` vs `guard-` prefix) for every one of the four programs, with no explanation anywhere in the document of a naming split between 'evaluator node id' and 'entrypoint path'. The document repeatedly stresses that entrypoint exactness is load-bearing (acceptance-checks-bind@1: 'a missing entrypoint fails `go run` and refuses verification'; Constrains: 'the guards' entrypoints and check set are delivered exactly as registered (C7)'). Since the artifact itself claims the entrypoints in Standing guards are 'exactly' what the evaluator registers, and then delivers entrypoints under a different name, the design contradicts its own claim about what the registered entrypoints are \u2014 a self-referential mismatch, not merely an external unverifiable one. As written, if `guard-*` is truly what the pinned declaration registers, the `stall-*` programs described in C7/fixtures/Constrains would fail to satisfy the evaluator; if `stall-*` is correct, the Standing Guards section's node names are wrong. Either way this is an internal inconsistency the design must resolve before it can be trusted to deliver a verifiable capability."
+        }
+      ],
+      "verdict": "needs_revision"
+    },
+    "substrate_bytes": 55431
+  },
+  {
+    "case": {
+      "operator": "hash_mismatch",
+      "seed": 3640742643,
+      "sha256": "8e0530cf3bd80384991e2ffd7299c0d8739f41011dfcc9a88e06bcd6a7452046",
+      "source": {
+        "dispatch_id": "a9a2a7b668dd4406b251df06c19705fb36eea2844c89552d39777e509e6fa661",
+        "fate": "final",
+        "input_path": "inputs/00-striatum-next-passes-exhaustion-needs-no-judgment-packets-p10-operator-runbook-change-set",
+        "kind": "striatum-exchange"
+      },
+      "substrate_id": "qs-8e0530cf3bd80384"
+    },
+    "control_review": {
+      "findings": [
+        {
+          "element_anchor": "#el:closed-vocabulary",
+          "text": "The section states that 'Only the two terminal categories are members of the `capacity_observation` `category` enum and write a starvation mark' \u2014 meaning both `quota_spend_limit` and `auth_security_failure` produce a TTL-bound starvation mark that self-clears (per #el:mechanical-recovery: 'judged from observed_at, validity_window, and the run Bounds' and 'the backend re-enters the candidate set without a poller, lease, declaration edit, or human wakeup'). But #el:manual-levers-are-not-recovery and #el:invariants treat `auth_security_failure` as requiring durable human remediation ('do the credential work'; 'rotate or repair the credential') with no mention of `status: disabled` as a backstop. Since the starvation mark is the only exclusion mechanism at work and it is TTL-bound and self-clearing by design, the document does not reconcile what stops the scheduler from silently re-admitting a backend whose credential was never actually fixed once the starvation window lapses. Either the enum-membership claim in this section is wrong, or the 'requires human remediation' framing elsewhere is incomplete \u2014 the artifact asserts both without resolving the conflict."
+        }
+      ],
+      "verdict": "needs_revision"
+    },
+    "substrate_bytes": 12885
+  }
+]

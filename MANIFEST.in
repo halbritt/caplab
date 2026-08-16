@@ -1,0 +1,9 @@
+include docs/product/contracts/qualification-schema-catalog-v1.json
+include docs/product/contracts/qualification-claim-v1.schema.json
+include docs/product/contracts/qualification-export-v1.schema.json
+include docs/product/contracts/qualification-records-v1.schema.json
+include docs/product/contracts/revbench-error-v1.schema.json
+include docs/product/contracts/revbench-live-native-v1.schema.json
+include docs/product/contracts/revbench-v1.schema.json
+include src/caplab/_source_commit.txt
+recursive-include src/caplab/revbench/contracts *

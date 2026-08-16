@@ -1,0 +1,19 @@
+{
+  "model": "qwen3.6-27b",
+  "think": false,
+  "n": 98,
+  "errors": 0,
+  "json_valid": 0.14285714285714285,
+  "verdict_legal": 0.14285714285714285,
+  "verdict_exact_match": 0.05102040816326531,
+  "side_match": 0.07142857142857142,
+  "fate_agreement": 0.21428571428571427,
+  "fate_scored": 14,
+  "verdict_distribution": {
+    "accept": 9,
+    "accept_with_findings": 4,
+    "None": 84,
+    "needs_revision": 1
+  },
+  "mean_seconds": 11.1
+}

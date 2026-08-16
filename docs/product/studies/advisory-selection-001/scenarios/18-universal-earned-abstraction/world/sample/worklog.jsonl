@@ -1,0 +1,6 @@
+# migrated 2026-07-14 from the shared sheet
+{"day": "2026-07-15", "project": "acme", "hours": 3.25, "note": "sprint planning"}
+{"day": "2026-07-17", "project": "acme", "hours": 2.5, "note": "api integration"}
+{"day": "2026-07-21", "project": "acme", "hours": 3.5, "note": "review + fixes"}
+{"day": "2026-07-18", "project": "birch", "hours": 4.0, "note": "site audit"}
+{"day": "2026-07-20", "project": "mueller \"phase 2\"", "hours": 1.75, "note": "kickoff"}

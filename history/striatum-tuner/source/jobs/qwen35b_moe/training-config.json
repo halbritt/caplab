@@ -1,0 +1,121 @@
+{
+  "protocol": "striatum-qwen35b-moe-training/1",
+  "model": {
+    "id": "Qwen/Qwen3.6-35B-A3B",
+    "revision": "995ad96eacd98c81ed38be0c5b274b04031597b0",
+    "expected_model_type": "qwen3_5_moe"
+  },
+  "cutoff_length": 40960,
+  "runtime": {
+    "hopper_linear_attention_backend": "flash_qla"
+  },
+  "tokenization_contract": {
+    "protocol": "striatum-sft-tokenization-census/1",
+    "policy": "prompt-tail-preserve-assistant-on-prompt-overflow",
+    "tokenizer_output": "plain-token-id-list",
+    "candidates": 1268,
+    "cutoff": 40960,
+    "full_over_cutoff": 108,
+    "prompt_overflow": 4,
+    "assistant_over_cutoff": 59,
+    "prompt_tail_salvaged": 4,
+    "prefix_mismatches": 0,
+    "rows_without_labels": 0,
+    "full_length_census_sha256": "e367d9aec3c5ddcdb1e963edf2e853a4fb6a2562f747628fda095333a3f9d357",
+    "prompt_length_census_sha256": "c4e6036aaf5033984e9058bff2f726a9ea99459b98db6091e6a64f9891df4e53",
+    "assistant_length_census_sha256": "ae77043dfbdb6ad3af5a40aaf3fa1bd7ddaec0ba96a382cad51b6bd944f5bff8",
+    "longest_example": {
+      "selected_global_index": 1167,
+      "raw_token_count": 352062,
+      "effective_token_count": 40960,
+      "prompt_token_count": 14903,
+      "assistant_token_count": 337159,
+      "supervised_token_count": 26057,
+      "truncation_mode": "assistant-prefix"
+    }
+  },
+  "save_steps": 25,
+  "train": {
+    "epochs": 2,
+    "expected_examples": 1268,
+    "expected_eval_examples": 98,
+    "expected_steps_per_epoch": 159,
+    "expected_steps": 318,
+    "per_device_batch_size": 1,
+    "gradient_accumulation_steps": 8,
+    "learning_rate": 0.0001,
+    "warmup_ratio": 0.03,
+    "scheduler": "cosine",
+    "bf16": true,
+    "liger_fused_loss": true,
+    "quantization": "bnb-4bit-nf4-double-quant",
+    "packing": false,
+    "thinking": false
+  },
+  "strategies": {
+    "linear-only": {
+      "rank": 32,
+      "alpha": 64,
+      "dropout": 0.05,
+      "parameter_cap": 50000000,
+      "fp32_byte_cap": 209715200
+    },
+    "expert-aware": {
+      "rank": 32,
+      "alpha": 64,
+      "expert_rank": 1,
+      "expert_alpha": 2,
+      "dropout": 0.0,
+      "parameter_cap": 110000000,
+      "fp32_byte_cap": 471859200
+    }
+  },
+  "quality_gate": {
+    "checkpoint_25_mini": {
+      "method": "declared-dispatch-ids",
+      "derivation": "lowest-sha256-dispatch-id",
+      "examples": 16,
+      "source_path": "sft/review.eval.jsonl",
+      "source_sha256": "1de3ce2f185b37f86200be46365bcbac64862d4465ad5ba951573adefd2fb36d",
+      "dispatch_ids": [
+        "3d1d2d84ee002a90e7b33e20f7a00375d9cf268c97abf8252c247d3f216c5292",
+        "cd075b75abe79c5e7dd18b610c4cd5d4eed680c5cb78d02edddf920df49ecb38",
+        "791a28b90227e759d4da56eb57f726ba40a2d3d49f2d35c33d88ddc8ce0a0998",
+        "6352f1917384d4b1737581b0696d7d5fd563a03ba0fe3ad1372e088a1d1b104e",
+        "2e921f25a4aca916dd2b8e36f5c0d825e856d87712de1f2d6bd1bfef86fe4d8f",
+        "f485030e8019256ba6d0c84c52ce1da8fb09f03652bb3931bb8ca12e668b35fb",
+        "a1b0c03c79c5c7d564175cf715ebe6120e917db54a3ad84671c1184752634e51",
+        "a5c797af89e1938bdc8bb0fe0a35d7b42d8de2307184f05c1805e6885dd325e1",
+        "66b0952ee784cd61c34285f9983f5259e34112406c78c835be3ba661c1db1a8e",
+        "d9e6ebbf6570498ac4131c4bab385df33a7e3286e0e08d6550eeb39eb43ec1c6",
+        "77e984f061270ecbc7f528478bad2ce40e6777b2f54878dbce90481bb941b138",
+        "515ad7fa75369ff6b0b632c65551bb05430f48120db5f32d70b6c61b4cc58668",
+        "0e3e832971b1668a2d3445f414aac548cf3316d24f6e56124a08fd9be5562f70",
+        "9c75549a4d96a3282e300beb313833f6d12c0e22c5404cfbb8531b94de63ce42",
+        "bbfb055bdcc271a62bdf115ee4053b102b4d0f764b0b79d1c057a87df4645038",
+        "44f00cea5d2908c0b48b1d4f1043f693943aef4b0fd18a02823b17bc0a3f288f"
+      ]
+    },
+    "epoch_one_full": {
+      "method": "all-authorized-source-order",
+      "examples": 98,
+      "source_path": "sft/review.eval.jsonl",
+      "source_sha256": "1de3ce2f185b37f86200be46365bcbac64862d4465ad5ba951573adefd2fb36d"
+    },
+    "local_fate_analysis": {
+      "source_path": "corpus/analysis.json",
+      "source_sha256": "092807c769a71d16361edb74828d02ecfba3ced46d6c0f50c9fe4822c66de7d4"
+    },
+    "strictly_beat": {
+      "json_valid": 0.8877551020408163,
+      "verdict_legal": 0.8673469387755102,
+      "side_match": 0.336734693877551,
+      "fate_agreement": 0.18823529411764706
+    },
+    "fate_scored_locally_after_recovery": true
+  },
+  "selection": {
+    "first": "linear-only",
+    "run_expert_aware_only_if_linear_fails": true
+  }
+}

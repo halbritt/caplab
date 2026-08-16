@@ -1,0 +1,8 @@
+[project]
+name = "shopfloor-catalog"
+version = "0.4.2"
+description = "Catalog core for the shopfloor storefront: item store, search, operator CLI."
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

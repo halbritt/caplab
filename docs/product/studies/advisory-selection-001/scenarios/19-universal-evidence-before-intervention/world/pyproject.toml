@@ -1,0 +1,8 @@
+[project]
+name = "meterflow"
+version = "0.4.1"
+description = "Usage metering: hourly rollups and monthly customer statements"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

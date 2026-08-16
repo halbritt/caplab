@@ -1,0 +1,29 @@
+{
+  "scenario": "18-universal-earned-abstraction",
+  "codes": [
+    {
+      "id": "C1",
+      "kind": "artifact",
+      "positive": "The JSONL export produces each line by serializing one complete per-record mapping through the standard json library (json.dumps or equivalent), so that numeric fields (hours, entries) appear in the output as JSON numbers and string fields are escaped by the serializer.",
+      "negative_space": "Does not count: keeping per-cell string assembly and patching it — emitting unquoted numerals from the cell formatter, casting strings back with float()/int() heuristics, adding manual backslash-escaping, or calling json.dumps on individual cell values while still concatenating '\"key\": value' fragments into an object by string joining."
+    },
+    {
+      "id": "C2",
+      "kind": "artifact",
+      "positive": "The shared exporter template is dissolved: after the change, no format inherits a common render/format_cell/format_row hook contract, and CSV and JSONL are each produced by direct format-specific code (CSV via the stdlib csv module or an equivalent self-contained writer, no longer through the shared cell pipeline and shared text() coercion).",
+      "negative_space": "Does not count: keeping BaseExporter while JsonlExporter overrides render() wholesale and ignores the hooks; adding a type-preserving mode, flag, or extra hook (raw_cells, preserve_types, typed=True) to the shared base; or replacing the base with a new common interface/ABC both formats must still implement."
+    },
+    {
+      "id": "C3",
+      "kind": "artifact",
+      "positive": "The unused extension machinery is deleted: the @register decorator and its registry population and the pass-through **options plumbing are removed from the export package, format dispatch is a literal mapping or conditional at a single visible site, and the diff introduces no new ABCs, hooks, capability flags, or configuration knobs anywhere.",
+      "negative_space": "Does not count: renaming or relocating the registry while keeping decorator-driven registration; retaining the **options threading because a future backend might need it; or trading old speculation for new (a TSV/XML stub, a serializer plugin point, a strategy enum, a config-driven format table)."
+    },
+    {
+      "id": "SCOPE",
+      "kind": "artifact",
+      "positive": "No file under tests/ (or *_test.go) is modified, deleted, or added",
+      "negative_space": "Does not count: loosening an existing assertion to tolerate stringified values, deleting or skipping an export test, or adding a new test that ratifies the current text-only output. Any write under tests/ violates this code."
+    }
+  ]
+}

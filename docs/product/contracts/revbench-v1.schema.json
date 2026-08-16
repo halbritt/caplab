@@ -1,0 +1,1035 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://caplab.local/contracts/revbench-v1.schema.json",
+  "title": "CAPLAB revbench v1 artifacts",
+  "$comment": "Shape validation is necessary but not sufficient. CAPLAB also resolves registered bytes, validates authorization and native-system delegation, recomputes content IDs, reconstructs blinded inputs and attempt projections, checks process evidence and exact Binding equality, enforces assignment order, and derives reduced metrics.",
+  "oneOf": [
+    {"$ref": "#/$defs/spec"},
+    {"$ref": "#/$defs/manifest"},
+    {"$ref": "#/$defs/execution_runtime"},
+    {"$ref": "#/$defs/inference_configuration"},
+    {"$ref": "#/$defs/instructions_configuration"},
+    {"$ref": "#/$defs/disabled_surface_configuration"},
+    {"$ref": "#/$defs/execution_permissions"},
+    {"$ref": "#/$defs/execution_sandbox"},
+    {"$ref": "#/$defs/execution_authorization"},
+    {"$ref": "#/$defs/native_input"},
+    {"$ref": "#/$defs/native_response"},
+    {"$ref": "#/$defs/revbench_prompt"},
+    {"$ref": "#/$defs/native_version_observation"},
+    {"$ref": "#/$defs/native_output"},
+    {"$ref": "#/$defs/native_attempt_capture"},
+    {"$ref": "#/$defs/native_attempt_attestation"},
+    {"$ref": "#/$defs/native_review_attempt"},
+    {"$ref": "#/$defs/reviews"},
+    {"$ref": "revbench-live-native-v1.schema.json"}
+  ],
+  "$defs": {
+    "json_pointer": {
+      "type": "string",
+      "pattern": "^(?:/(?:[^~/]|~[01])*)*$"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,127}$"
+    },
+    "experiment_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,127}$"
+    },
+    "binding_id": {
+      "type": "string",
+      "pattern": "^bnd-[0-9a-f]{64}$"
+    },
+    "bounded_capability": {
+      "allOf": [
+        {"$ref": "qualification-claim-v1.schema.json#/$defs/capability"},
+        {
+          "properties": {
+            "distribution": {"const": "json-integer-minimum/1"}
+          },
+          "required": ["distribution"]
+        }
+      ]
+    },
+    "mutation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operator", "pointer", "replacement"],
+      "properties": {
+        "operator": {"const": "replace-json-value/1"},
+        "pointer": {"$ref": "#/$defs/json_pointer"},
+        "replacement": {"type": "integer"}
+      }
+    },
+    "oracle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "pointer", "minimum"],
+      "properties": {
+        "kind": {"const": "json-integer-minimum/1"},
+        "pointer": {"$ref": "#/$defs/json_pointer"},
+        "minimum": {"type": "integer"}
+      }
+    },
+    "spec_case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "control", "mutation", "oracle", "defect_anchor"],
+      "properties": {
+        "case_id": {"$ref": "#/$defs/case_id"},
+        "control": {},
+        "mutation": {"$ref": "#/$defs/mutation"},
+        "oracle": {"$ref": "#/$defs/oracle"},
+        "defect_anchor": {"$ref": "#/$defs/json_pointer"}
+      }
+    },
+    "manifest_arm": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["content", "sha256", "oracle_result"],
+      "properties": {
+        "content": {},
+        "sha256": {"$ref": "qualification-claim-v1.schema.json#/$defs/sha256"},
+        "oracle_result": {"type": "boolean"}
+      }
+    },
+    "control_arm": {
+      "allOf": [
+        {"$ref": "#/$defs/manifest_arm"},
+        {
+          "properties": {"oracle_result": {"const": true}},
+          "required": ["oracle_result"]
+        }
+      ]
+    },
+    "mutant_arm": {
+      "allOf": [
+        {"$ref": "#/$defs/manifest_arm"},
+        {
+          "properties": {"oracle_result": {"const": false}},
+          "required": ["oracle_result"]
+        }
+      ]
+    },
+    "assignment_order": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "items": {"enum": ["control", "mutant"]}
+    },
+    "manifest_case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_id",
+        "assignment_order",
+        "control",
+        "mutant",
+        "mutation",
+        "oracle",
+        "defect_anchor"
+      ],
+      "properties": {
+        "case_id": {"$ref": "#/$defs/case_id"},
+        "assignment_order": {"$ref": "#/$defs/assignment_order"},
+        "control": {"$ref": "#/$defs/control_arm"},
+        "mutant": {"$ref": "#/$defs/mutant_arm"},
+        "mutation": {"$ref": "#/$defs/mutation"},
+        "oracle": {"$ref": "#/$defs/oracle"},
+        "defect_anchor": {"$ref": "#/$defs/json_pointer"}
+      }
+    },
+    "typed_content_ref": {
+      "$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"
+    },
+    "manifest_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/typed_content_ref"},
+        {
+          "properties": {
+            "kind": {"const": "revbench-manifest"},
+            "schema": {"const": "caplab-revbench-manifest/1"}
+          },
+          "required": ["kind", "schema"]
+        }
+      ]
+    },
+    "native_system_contract_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/typed_content_ref"},
+        {
+          "properties": {
+            "kind": {"const": "native-agent-systems-contract"},
+            "schema": {"const": "caplab.native-agent-systems/v1"}
+          },
+          "required": ["kind", "schema"]
+        }
+      ]
+    },
+    "basis_authorization_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/typed_content_ref"},
+        {
+          "properties": {
+            "kind": {"const": "evidence-basis-authorization"},
+            "schema": {"const": "caplab-evidence-basis-authorization/1"}
+          },
+          "required": ["kind", "schema"]
+        }
+      ]
+    },
+    "basis_authorization_refs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["truth", "case_selection", "metric_derivation"],
+      "properties": {
+        "truth": {"$ref": "#/$defs/basis_authorization_ref"},
+        "case_selection": {"$ref": "#/$defs/basis_authorization_ref"},
+        "metric_derivation": {"$ref": "#/$defs/basis_authorization_ref"}
+      }
+    },
+    "execution_authorization_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/typed_content_ref"},
+        {
+          "properties": {
+            "kind": {"const": "revbench-execution-authorization"},
+            "schema": {"const": "caplab-revbench-execution-authorization/1"}
+          },
+          "required": ["kind", "schema"]
+        }
+      ]
+    },
+    "native_input_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/typed_content_ref"},
+        {
+          "properties": {
+            "kind": {"const": "native-input"},
+            "schema": {"const": "caplab-revbench-native-input/1"}
+          },
+          "required": ["kind", "schema"]
+        }
+      ]
+    },
+    "prompt_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/typed_content_ref"},
+        {
+          "properties": {
+            "kind": {"const": "prompt"},
+            "schema": {"const": "caplab-revbench-prompt/1"}
+          },
+          "required": ["kind", "schema"]
+        }
+      ]
+    },
+    "native_output_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/typed_content_ref"},
+        {
+          "properties": {
+            "kind": {"const": "native-output"},
+            "schema": {"const": "caplab-native-output/1"}
+          },
+          "required": ["kind", "schema"]
+        }
+      ]
+    },
+    "capture_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/typed_content_ref"},
+        {
+          "properties": {
+            "kind": {"const": "native-attempt-capture"},
+            "schema": {"const": "caplab-native-attempt-capture/1"}
+          },
+          "required": ["kind", "schema"]
+        }
+      ]
+    },
+    "attestation_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/typed_content_ref"},
+        {
+          "properties": {
+            "kind": {"const": "native-attempt-attestation"},
+            "schema": {"const": "caplab-native-attempt-attestation/1"}
+          },
+          "required": ["kind", "schema"]
+        }
+      ]
+    },
+    "attempt_envelope_ref": {
+      "allOf": [
+        {"$ref": "qualification-claim-v1.schema.json#/$defs/attempt_ref"},
+        {
+          "properties": {"schema": {"const": "caplab-native-review-attempt/1"}},
+          "required": ["schema"]
+        }
+      ]
+    },
+    "version_observation_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/typed_content_ref"},
+        {
+          "properties": {
+            "kind": {"const": "native-version-observation"},
+            "schema": {"const": "caplab-native-version-observation/1"}
+          },
+          "required": ["kind", "schema"]
+        }
+      ]
+    },
+    "version_command_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/typed_content_ref"},
+        {
+          "properties": {
+            "kind": {"const": "native-harness-version-command"},
+            "schema": {"const": "caplab-native-harness-version-command/1"}
+          },
+          "required": ["kind", "schema"]
+        }
+      ]
+    },
+    "process_stdin_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/typed_content_ref"},
+        {
+          "properties": {
+            "kind": {"const": "native-process-stdin"},
+            "schema": {"const": "caplab-native-process-stream/1"}
+          },
+          "required": ["kind", "schema"]
+        }
+      ]
+    },
+    "process_stdout_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/typed_content_ref"},
+        {
+          "properties": {
+            "kind": {"const": "native-process-stdout"},
+            "schema": {"const": "caplab-native-process-stream/1"}
+          },
+          "required": ["kind", "schema"]
+        }
+      ]
+    },
+    "process_stderr_ref": {
+      "allOf": [
+        {"$ref": "#/$defs/typed_content_ref"},
+        {
+          "properties": {
+            "kind": {"const": "native-process-stderr"},
+            "schema": {"const": "caplab-native-process-stream/1"}
+          },
+          "required": ["kind", "schema"]
+        }
+      ]
+    },
+    "environment_keys": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+      },
+      "uniqueItems": true
+    },
+    "network_mode": {
+      "enum": ["ambient-authorized", "not-required"]
+    },
+    "execution_runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "executable_path",
+        "executable_format",
+        "environment_keys",
+        "working_directory",
+        "network_mode",
+        "stdin_mode",
+        "stdout_mode"
+      ],
+      "properties": {
+        "schema_version": {"const": "caplab-revbench-execution-runtime/1"},
+        "executable_path": {"type": "string", "pattern": "^/"},
+        "executable_format": {"const": "static-elf"},
+        "environment_keys": {"$ref": "#/$defs/environment_keys"},
+        "working_directory": {"const": "temporary-empty"},
+        "network_mode": {"$ref": "#/$defs/network_mode"},
+        "stdin_mode": {"const": "canonical-json"},
+        "stdout_mode": {"const": "single-json"}
+      }
+    },
+    "inference_configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "command_ref"],
+      "properties": {
+        "schema_version": {"const": "caplab-revbench-inference/1"},
+        "command_ref": {
+          "$ref": "qualification-claim-v1.schema.json#/$defs/harness_command_ref"
+        }
+      }
+    },
+    "instructions_configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "instruction"],
+      "properties": {
+        "schema_version": {"const": "caplab-revbench-instructions/1"},
+        "instruction": {
+          "const": "Review the artifact against the requirement and return exactly one JSON object."
+        }
+      }
+    },
+    "disabled_surface_configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "surface", "mode"],
+      "properties": {
+        "schema_version": {"const": "caplab-revbench-disabled-surface/1"},
+        "surface": {"enum": ["knowledge", "tools"]},
+        "mode": {"const": "none"}
+      }
+    },
+    "execution_permissions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "environment_keys",
+        "filesystem_mode",
+        "network_mode"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "caplab-revbench-execution-permissions/1"
+        },
+        "environment_keys": {"$ref": "#/$defs/environment_keys"},
+        "filesystem_mode": {"const": "read-only-root-private-cwd"},
+        "network_mode": {"$ref": "#/$defs/network_mode"}
+      }
+    },
+    "execution_sandbox": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "adapter_path",
+        "adapter_ref",
+        "root_filesystem",
+        "working_directory",
+        "network_mode"
+      ],
+      "properties": {
+        "schema_version": {"const": "caplab-revbench-execution-sandbox/1"},
+        "adapter_path": {"type": "string", "pattern": "^/"},
+        "adapter_ref": {
+          "allOf": [
+            {"$ref": "#/$defs/typed_content_ref"},
+            {
+              "properties": {
+                "kind": {"const": "sandbox-executable"},
+                "schema": {"const": "caplab-native-executable/1"}
+              },
+              "required": ["kind", "schema"]
+            }
+          ]
+        },
+        "root_filesystem": {"const": "read-only"},
+        "working_directory": {"const": "private-write"},
+        "network_mode": {"$ref": "#/$defs/network_mode"}
+      }
+    },
+    "execution_limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_version_probe_processes",
+        "max_native_review_processes",
+        "timeout_seconds_per_process",
+        "total_wall_seconds",
+        "max_stdout_bytes_per_process",
+        "max_stderr_bytes_per_process"
+      ],
+      "properties": {
+        "max_version_probe_processes": {"type": "integer", "minimum": 1},
+        "max_native_review_processes": {"type": "integer", "minimum": 1},
+        "timeout_seconds_per_process": {"type": "integer", "minimum": 1, "maximum": 3600},
+        "total_wall_seconds": {"type": "integer", "minimum": 1, "maximum": 86400},
+        "max_stdout_bytes_per_process": {"type": "integer", "minimum": 1, "maximum": 16777216},
+        "max_stderr_bytes_per_process": {"type": "integer", "minimum": 1, "maximum": 16777216}
+      }
+    },
+    "execution_authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "authorization_id",
+        "authority_source_ref",
+        "authorized_by",
+        "delegate_or_mechanism",
+        "experiment_id",
+        "manifest_ref",
+        "binding_id",
+        "native_system_contract_ref",
+        "command_ref",
+        "version_probe_ref",
+        "effect_class",
+        "limits",
+        "valid_from",
+        "valid_until"
+      ],
+      "properties": {
+        "schema_version": {"const": "caplab-revbench-execution-authorization/1"},
+        "authorization_id": {"type": "string", "pattern": "^revbench-execution-auth-[0-9a-f]{64}$"},
+        "authority_source_ref": {"$ref": "qualification-claim-v1.schema.json#/$defs/authorization_delegation_ref"},
+        "authorized_by": {"type": "string", "minLength": 1},
+        "delegate_or_mechanism": {"type": "string", "minLength": 1},
+        "experiment_id": {"$ref": "#/$defs/experiment_id"},
+        "manifest_ref": {"$ref": "#/$defs/manifest_ref"},
+        "binding_id": {"$ref": "#/$defs/binding_id"},
+        "native_system_contract_ref": {"$ref": "#/$defs/native_system_contract_ref"},
+        "command_ref": {"$ref": "qualification-claim-v1.schema.json#/$defs/harness_command_ref"},
+        "version_probe_ref": {"$ref": "qualification-claim-v1.schema.json#/$defs/version_probe_ref"},
+        "apparatus_ref": {"$ref": "qualification-claim-v1.schema.json#/$defs/content_ref"},
+        "custody_domain_id": {"type": "string", "pattern": "^custody-domain-[0-9a-f]{64}$"},
+        "effect_class": {"enum": ["local-fixture", "live-native-provider"]},
+        "limits": {"$ref": "#/$defs/execution_limits"},
+        "valid_from": {"$ref": "qualification-claim-v1.schema.json#/$defs/utc_timestamp"},
+        "valid_until": {"$ref": "qualification-claim-v1.schema.json#/$defs/utc_timestamp"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"effect_class": {"const": "live-native-provider"}}, "required": ["effect_class"]},
+          "then": {"required": ["apparatus_ref", "custody_domain_id"]}
+        },
+        {
+          "if": {"properties": {"effect_class": {"const": "local-fixture"}}, "required": ["effect_class"]},
+          "then": {
+            "allOf": [
+              {"not": {"required": ["apparatus_ref"]}},
+              {"not": {"required": ["custody_domain_id"]}}
+            ]
+          }
+        }
+      ]
+    },
+    "native_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "instruction",
+        "requirement",
+        "artifact",
+        "response_schema_version"
+      ],
+      "properties": {
+        "schema_version": {"const": "caplab-revbench-native-input/1"},
+        "instruction": {"const": "Review the artifact against the requirement and return exactly one JSON object."},
+        "requirement": {"$ref": "#/$defs/oracle"},
+        "artifact": {},
+        "response_schema_version": {"const": "caplab-revbench-native-response/1"}
+      }
+    },
+    "native_response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "verdict", "anchors"],
+      "properties": {
+        "schema_version": {"const": "caplab-revbench-native-response/1"},
+        "verdict": {"enum": ["clean", "defect"]},
+        "anchors": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/json_pointer"},
+          "uniqueItems": true
+        }
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"verdict": {"const": "clean"}}},
+          "then": {"properties": {"anchors": {"maxItems": 0}}}
+        },
+        {
+          "if": {"properties": {"verdict": {"const": "defect"}}},
+          "then": {"properties": {"anchors": {"minItems": 1}}}
+        }
+      ]
+    },
+    "revbench_prompt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "experiment_id",
+        "case_id",
+        "arm",
+        "assignment_index",
+        "binding_id",
+        "protocol_ref",
+        "rendered_input_ref"
+      ],
+      "properties": {
+        "schema_version": {"const": "caplab-revbench-prompt/1"},
+        "experiment_id": {"$ref": "#/$defs/experiment_id"},
+        "case_id": {"$ref": "#/$defs/case_id"},
+        "arm": {"enum": ["control", "mutant"]},
+        "assignment_index": {"type": "integer", "minimum": 0, "maximum": 1},
+        "binding_id": {"$ref": "#/$defs/binding_id"},
+        "protocol_ref": {"$ref": "qualification-claim-v1.schema.json#/$defs/protocol_ref"},
+        "rendered_input_ref": {"$ref": "#/$defs/native_input_ref"}
+      }
+    },
+    "native_version_observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "observation_id",
+        "execution_authorization_ref",
+        "experiment_id",
+        "binding_id",
+        "expected_version_probe_ref",
+        "command_ref",
+        "started_at",
+        "completed_at",
+        "stdout_ref",
+        "stdout_complete",
+        "stderr_ref",
+        "stderr_complete",
+        "exit_code",
+        "termination",
+        "matches_expected"
+      ],
+      "properties": {
+        "schema_version": {"const": "caplab-native-version-observation/1"},
+        "observation_id": {"type": "string", "pattern": "^version-observation-[0-9a-f]{64}$"},
+        "execution_authorization_ref": {"$ref": "#/$defs/execution_authorization_ref"},
+        "experiment_id": {"$ref": "#/$defs/experiment_id"},
+        "binding_id": {"$ref": "#/$defs/binding_id"},
+        "expected_version_probe_ref": {"$ref": "qualification-claim-v1.schema.json#/$defs/version_probe_ref"},
+        "command_ref": {"$ref": "#/$defs/version_command_ref"},
+        "started_at": {"$ref": "qualification-claim-v1.schema.json#/$defs/utc_timestamp"},
+        "completed_at": {"$ref": "qualification-claim-v1.schema.json#/$defs/utc_timestamp"},
+        "stdout_ref": {"$ref": "#/$defs/process_stdout_ref"},
+        "stdout_complete": {"type": "boolean"},
+        "stderr_ref": {"$ref": "#/$defs/process_stderr_ref"},
+        "stderr_complete": {"type": "boolean"},
+        "exit_code": {"type": ["integer", "null"]},
+        "termination": {"enum": ["exited", "spawn-failure", "timeout", "stdout-limit", "stderr-limit", "authorization-expired"]},
+        "matches_expected": {"type": "boolean"}
+      }
+    },
+    "native_output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "experiment_id",
+        "case_id",
+        "arm",
+        "assignment_index",
+        "binding_id",
+        "raw_stdout_ref",
+        "parse_status",
+        "verdict",
+        "anchors"
+      ],
+      "properties": {
+        "schema_version": {"const": "caplab-native-output/1"},
+        "experiment_id": {"$ref": "#/$defs/experiment_id"},
+        "case_id": {"$ref": "#/$defs/case_id"},
+        "arm": {"enum": ["control", "mutant"]},
+        "assignment_index": {"type": "integer", "minimum": 0, "maximum": 1},
+        "binding_id": {"$ref": "#/$defs/binding_id"},
+        "raw_stdout_ref": {"$ref": "#/$defs/process_stdout_ref"},
+        "parse_status": {"enum": ["valid", "invalid"]},
+        "verdict": {"enum": ["clean", "defect", "invalid"]},
+        "anchors": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/json_pointer"},
+          "uniqueItems": true
+        }
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"parse_status": {"const": "invalid"}}},
+          "then": {
+            "properties": {
+              "verdict": {"const": "invalid"},
+              "anchors": {"maxItems": 0}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"parse_status": {"const": "valid"}}},
+          "then": {"properties": {"verdict": {"enum": ["clean", "defect"]}}}
+        },
+        {
+          "if": {"properties": {"verdict": {"const": "clean"}}},
+          "then": {"properties": {"anchors": {"maxItems": 0}}}
+        },
+        {
+          "if": {"properties": {"verdict": {"const": "defect"}}},
+          "then": {"properties": {"anchors": {"minItems": 1}}}
+        }
+      ]
+    },
+    "native_attempt_capture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "capture_id",
+        "execution_authorization_ref",
+        "experiment_id",
+        "case_id",
+        "arm",
+        "assignment_index",
+        "binding_id",
+        "observed_binding",
+        "started_at",
+        "completed_at",
+        "command_ref",
+        "version_observation_ref",
+        "prompt_ref",
+        "stdin_ref",
+        "stdout_ref",
+        "stdout_complete",
+        "stderr_ref",
+        "stderr_complete",
+        "output_ref",
+        "native_invoked",
+        "exit_code",
+        "termination"
+      ],
+      "properties": {
+        "schema_version": {"const": "caplab-native-attempt-capture/1"},
+        "capture_id": {"type": "string", "pattern": "^capture-[0-9a-f]{64}$"},
+        "execution_authorization_ref": {"$ref": "#/$defs/execution_authorization_ref"},
+        "experiment_id": {"$ref": "#/$defs/experiment_id"},
+        "case_id": {"$ref": "#/$defs/case_id"},
+        "arm": {"enum": ["control", "mutant"]},
+        "assignment_index": {"type": "integer", "minimum": 0, "maximum": 1},
+        "binding_id": {"$ref": "#/$defs/binding_id"},
+        "observed_binding": {"$ref": "qualification-claim-v1.schema.json#/$defs/binding"},
+        "started_at": {"$ref": "qualification-claim-v1.schema.json#/$defs/utc_timestamp"},
+        "completed_at": {"$ref": "qualification-claim-v1.schema.json#/$defs/utc_timestamp"},
+        "command_ref": {"$ref": "qualification-claim-v1.schema.json#/$defs/harness_command_ref"},
+        "version_observation_ref": {"$ref": "#/$defs/version_observation_ref"},
+        "prompt_ref": {"$ref": "#/$defs/prompt_ref"},
+        "stdin_ref": {"$ref": "#/$defs/process_stdin_ref"},
+        "stdout_ref": {"$ref": "#/$defs/process_stdout_ref"},
+        "stdout_complete": {"type": "boolean"},
+        "stderr_ref": {"$ref": "#/$defs/process_stderr_ref"},
+        "stderr_complete": {"type": "boolean"},
+        "output_ref": {"$ref": "#/$defs/native_output_ref"},
+        "native_invoked": {"type": "boolean"},
+        "exit_code": {"type": ["integer", "null"]},
+        "termination": {"enum": ["exited", "preflight-refused", "spawn-failure", "timeout", "stdout-limit", "stderr-limit", "authorization-expired"]}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"termination": {"const": "stdout-limit"}}},
+          "then": {"properties": {"stdout_complete": {"const": false}}}
+        },
+        {
+          "if": {"properties": {"termination": {"const": "stderr-limit"}}},
+          "then": {"properties": {"stderr_complete": {"const": false}}}
+        },
+        {
+          "if": {"properties": {"termination": {"enum": ["preflight-refused", "authorization-expired"]}}},
+          "then": {
+            "properties": {
+              "native_invoked": {"const": false},
+              "exit_code": {"const": null}
+            }
+          }
+        }
+      ]
+    },
+    "native_attempt_attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "attestation_id",
+        "experiment_id",
+        "case_id",
+        "arm",
+        "assignment_index",
+        "observed_at",
+        "observed_binding",
+        "native_system_contract_ref",
+        "execution_authorization_ref",
+        "version_observation_ref",
+        "capture_ref",
+        "prompt_ref",
+        "output_ref"
+      ],
+      "properties": {
+        "schema_version": {"const": "caplab-native-attempt-attestation/1"},
+        "attestation_id": {"type": "string", "pattern": "^attestation-[0-9a-f]{64}$"},
+        "experiment_id": {"$ref": "#/$defs/experiment_id"},
+        "case_id": {"$ref": "#/$defs/case_id"},
+        "arm": {"enum": ["control", "mutant"]},
+        "assignment_index": {"type": "integer", "minimum": 0, "maximum": 1},
+        "observed_at": {"$ref": "qualification-claim-v1.schema.json#/$defs/utc_timestamp"},
+        "observed_binding": {"$ref": "qualification-claim-v1.schema.json#/$defs/binding"},
+        "native_system_contract_ref": {"$ref": "#/$defs/native_system_contract_ref"},
+        "execution_authorization_ref": {"$ref": "#/$defs/execution_authorization_ref"},
+        "version_observation_ref": {"$ref": "#/$defs/version_observation_ref"},
+        "capture_ref": {"$ref": "#/$defs/capture_ref"},
+        "prompt_ref": {"$ref": "#/$defs/prompt_ref"},
+        "output_ref": {"$ref": "#/$defs/native_output_ref"}
+      }
+    },
+    "attempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_id",
+        "arm",
+        "assignment_index",
+        "binding_id",
+        "observed_binding",
+        "attempt_ref",
+        "attestation_ref",
+        "prompt_ref",
+        "disposition",
+        "verdict",
+        "anchors",
+        "output_ref"
+      ],
+      "properties": {
+        "case_id": {"$ref": "#/$defs/case_id"},
+        "arm": {"enum": ["control", "mutant"]},
+        "assignment_index": {"type": "integer", "minimum": 0, "maximum": 1},
+        "binding_id": {"$ref": "#/$defs/binding_id"},
+        "observed_binding": {"$ref": "qualification-claim-v1.schema.json#/$defs/binding"},
+        "attempt_ref": {"$ref": "#/$defs/attempt_envelope_ref"},
+        "attestation_ref": {"$ref": "#/$defs/attestation_ref"},
+        "prompt_ref": {"$ref": "#/$defs/prompt_ref"},
+        "disposition": {"enum": ["complete", "subject-failure", "infrastructure-failure"]},
+        "verdict": {"enum": ["clean", "defect", "invalid"]},
+        "anchors": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/json_pointer"},
+          "uniqueItems": true
+        },
+        "output_ref": {"$ref": "#/$defs/native_output_ref"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"disposition": {"const": "complete"}}},
+          "then": {"properties": {"verdict": {"enum": ["clean", "defect"]}}}
+        },
+        {
+          "if": {"properties": {"disposition": {"enum": ["subject-failure", "infrastructure-failure"]}}},
+          "then": {
+            "properties": {
+              "verdict": {"const": "invalid"},
+              "anchors": {"maxItems": 0}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"verdict": {"const": "clean"}}},
+          "then": {"properties": {"anchors": {"maxItems": 0}}}
+        },
+        {
+          "if": {"properties": {"verdict": {"const": "defect"}}},
+          "then": {"properties": {"anchors": {"minItems": 1}}}
+        }
+      ]
+    },
+    "native_review_attempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "attempt_id",
+        "experiment_id",
+        "case_id",
+        "arm",
+        "assignment_index",
+        "binding_id",
+        "observed_binding",
+        "attestation_ref",
+        "prompt_ref",
+        "disposition",
+        "verdict",
+        "anchors",
+        "output_ref",
+        "provenance"
+      ],
+      "properties": {
+        "schema_version": {"const": "caplab-native-review-attempt/1"},
+        "attempt_id": {"type": "string", "pattern": "^attempt-[0-9a-f]{64}$"},
+        "experiment_id": {"$ref": "#/$defs/experiment_id"},
+        "case_id": {"$ref": "#/$defs/case_id"},
+        "arm": {"enum": ["control", "mutant"]},
+        "assignment_index": {"type": "integer", "minimum": 0, "maximum": 1},
+        "binding_id": {"$ref": "#/$defs/binding_id"},
+        "observed_binding": {"$ref": "qualification-claim-v1.schema.json#/$defs/binding"},
+        "attestation_ref": {"$ref": "#/$defs/attestation_ref"},
+        "prompt_ref": {"$ref": "#/$defs/prompt_ref"},
+        "disposition": {"enum": ["complete", "subject-failure", "infrastructure-failure"]},
+        "verdict": {"enum": ["clean", "defect", "invalid"]},
+        "anchors": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/json_pointer"},
+          "uniqueItems": true
+        },
+        "output_ref": {"$ref": "#/$defs/native_output_ref"},
+        "provenance": {"$ref": "qualification-claim-v1.schema.json#/$defs/provenance"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"disposition": {"const": "complete"}}},
+          "then": {"properties": {"verdict": {"enum": ["clean", "defect"]}}}
+        },
+        {
+          "if": {"properties": {"disposition": {"enum": ["subject-failure", "infrastructure-failure"]}}},
+          "then": {
+            "properties": {
+              "verdict": {"const": "invalid"},
+              "anchors": {"maxItems": 0}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"verdict": {"const": "clean"}}},
+          "then": {"properties": {"anchors": {"maxItems": 0}}}
+        },
+        {
+          "if": {"properties": {"verdict": {"const": "defect"}}},
+          "then": {"properties": {"anchors": {"minItems": 1}}}
+        }
+      ]
+    },
+    "spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "binding",
+        "capability",
+        "protocol",
+        "corpus",
+        "native_system_contract_ref",
+        "case_selection_ref",
+        "basis_authorization_refs",
+        "cases",
+        "provenance"
+      ],
+      "properties": {
+        "schema_version": {"const": "caplab-revbench-spec/1"},
+        "binding": {"$ref": "qualification-claim-v1.schema.json#/$defs/binding"},
+        "capability": {"$ref": "#/$defs/bounded_capability"},
+        "protocol": {"$ref": "qualification-claim-v1.schema.json#/$defs/protocol_ref"},
+        "corpus": {"$ref": "qualification-claim-v1.schema.json#/$defs/corpus_ref"},
+        "native_system_contract_ref": {"$ref": "#/$defs/native_system_contract_ref"},
+        "case_selection_ref": {"$ref": "qualification-claim-v1.schema.json#/$defs/case_selection_ref"},
+        "basis_authorization_refs": {"$ref": "#/$defs/basis_authorization_refs"},
+        "cases": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/spec_case"},
+          "uniqueItems": true
+        },
+        "provenance": {"$ref": "qualification-claim-v1.schema.json#/$defs/provenance"}
+      }
+    },
+    "manifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "experiment_id",
+        "family",
+        "family_version",
+        "binding",
+        "capability",
+        "protocol",
+        "corpus",
+        "native_system_contract_ref",
+        "case_selection_ref",
+        "basis_authorization_refs",
+        "cases",
+        "provenance"
+      ],
+      "properties": {
+        "schema_version": {"const": "caplab-revbench-manifest/1"},
+        "experiment_id": {"$ref": "#/$defs/experiment_id"},
+        "family": {"const": "revbench"},
+        "family_version": {"const": "1"},
+        "binding": {"$ref": "qualification-claim-v1.schema.json#/$defs/binding"},
+        "capability": {"$ref": "#/$defs/bounded_capability"},
+        "protocol": {"$ref": "qualification-claim-v1.schema.json#/$defs/protocol_ref"},
+        "corpus": {"$ref": "qualification-claim-v1.schema.json#/$defs/corpus_ref"},
+        "native_system_contract_ref": {"$ref": "#/$defs/native_system_contract_ref"},
+        "case_selection_ref": {"$ref": "qualification-claim-v1.schema.json#/$defs/case_selection_ref"},
+        "basis_authorization_refs": {"$ref": "#/$defs/basis_authorization_refs"},
+        "cases": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/manifest_case"},
+          "uniqueItems": true
+        },
+        "provenance": {"$ref": "qualification-claim-v1.schema.json#/$defs/provenance"}
+      }
+    },
+    "reviews": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "execution_id",
+        "experiment_id",
+        "execution_authorization_ref",
+        "started_at",
+        "observed_at",
+        "status",
+        "stop_reason",
+        "attempts"
+      ],
+      "properties": {
+        "schema_version": {"const": "caplab-revbench-reviews/1"},
+        "execution_id": {"type": "string", "pattern": "^execution-[0-9a-f]{64}$"},
+        "experiment_id": {"$ref": "#/$defs/experiment_id"},
+        "execution_authorization_ref": {"$ref": "#/$defs/execution_authorization_ref"},
+        "started_at": {"$ref": "qualification-claim-v1.schema.json#/$defs/utc_timestamp"},
+        "observed_at": {"$ref": "qualification-claim-v1.schema.json#/$defs/utc_timestamp"},
+        "status": {"enum": ["complete", "stopped"]},
+        "stop_reason": {
+          "type": ["string", "null"],
+          "enum": [null, "preflight-refused", "spawn-failure", "timeout", "stdout-limit", "stderr-limit", "authorization-expired", "exited"]
+        },
+        "attempts": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/attempt"},
+          "uniqueItems": true
+        }
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"const": "complete"}}},
+          "then": {"properties": {"stop_reason": {"const": null}}}
+        },
+        {
+          "if": {"properties": {"status": {"const": "stopped"}}},
+          "then": {"properties": {"stop_reason": {"type": "string"}}}
+        }
+      ]
+    }
+  }
+}

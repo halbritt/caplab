@@ -1,0 +1,20 @@
+{
+  "schema_version": "fake-quartermaster-projection-contract/1",
+  "claim_fields": [
+    "binding_id",
+    "capability",
+    "claim_id",
+    "evidence",
+    "status",
+    "supersedes"
+  ],
+  "forbidden_export_fields": [
+    "Dispatch",
+    "cost",
+    "current",
+    "health",
+    "placement",
+    "preference",
+    "quota"
+  ]
+}

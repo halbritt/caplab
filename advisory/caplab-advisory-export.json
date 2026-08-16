@@ -1,0 +1,4200 @@
+{
+  "claims": [
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-6b5c90471e7c96f3",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "8e635e28331512247cbd05e92f0f6d3d74ec8857855e99a0d7734a56dbdfeb4f",
+          "rows_used": 14,
+          "run": "gap-agy-gemini-3-1-pro-high",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        },
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "bb1cebd5bf660d55319a127b8a4c5c97eafb04a4a04809ed84656b3e8fe28575",
+          "rows_used": 21,
+          "run": "t29-agy-gemini-3-1-pro-high",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.027866481213768224,
+            0.3010336452284873
+          ],
+          "denominator": 20,
+          "value": 0.1
+        },
+        "catch_rate": {
+          "ci95": [
+            0.3046601928840721,
+            0.6181027493151624
+          ],
+          "value": 0.45714285714285713
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.3142857142857143
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.06260231079433716,
+            0.29375554086595146
+          ],
+          "value": 0.14285714285714285
+        },
+        "findings_per_mutant": {
+          "value": 0.8857142857142857
+        },
+        "json_valid_mutant": {
+          "value": 0.9428571428571428
+        },
+        "n_distinct_cases": {
+          "value": 21
+        },
+        "n_pairs": {
+          "value": 35
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read.",
+        "repeated case trials: 14 of 35 pairs re-measure a case already measured for this subject"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "agy-gemini-3-1-pro-high"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-d12c1eebe4417f8d",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "1f3588960418eac7199190e287eb28e89b104e8d6779c0d9d009f2e1ae49ebd6",
+          "rows_used": 14,
+          "run": "gap-agy-gemini-3-1-pro-low",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        },
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "3e9dbac51e9cd7e4bf985c988eaeaff7e58eeb6b77d86174e0cf4492317b3be4",
+          "rows_used": 1,
+          "run": "sweep-agy-gemini-3-1-pro-low-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        },
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "f0c8c1dd16857520e4048b03aefcf9a8bf3104b79f09f1f686a0efa378a0430b",
+          "rows_used": 21,
+          "run": "t29-agy-gemini-3-1-pro-low",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.05136768974608513,
+            0.4769805619608442
+          ],
+          "denominator": 11,
+          "value": 0.18181818181818182
+        },
+        "catch_rate": {
+          "ci95": [
+            0.22475592946515371,
+            0.5242492451444196
+          ],
+          "value": 0.3611111111111111
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.3333333333333333
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.004920407139810443,
+            0.14169718653273855
+          ],
+          "value": 0.027777777777777776
+        },
+        "findings_per_mutant": {
+          "value": 0.4166666666666667
+        },
+        "json_valid_mutant": {
+          "value": 0.9722222222222222
+        },
+        "n_distinct_cases": {
+          "value": 22
+        },
+        "n_pairs": {
+          "value": 36
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read.",
+        "repeated case trials: 14 of 36 pairs re-measure a case already measured for this subject"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "agy-gemini-3-1-pro-low"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-6ff3a19e3a49d5f9",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "70187e45e3c5ab8f44487b56b5837eec4212a016aa8a5ebb8df03b0281a43558",
+          "rows_used": 2,
+          "run": "sweep-agy-gemini-3-5-flash-medium-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "catch_rate": {
+          "ci95": [
+            0.0,
+            0.6576197724933469
+          ],
+          "value": 0.0
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.0
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.0,
+            0.6576197724933469
+          ],
+          "value": 0.0
+        },
+        "findings_per_mutant": {
+          "value": 0.0
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 2
+        },
+        "n_pairs": {
+          "value": 2
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "agy-gemini-3-5-flash-medium"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-58a2f564407953b8",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "ac20348b38da3953609f5864bc5abc6a083aebebba18ae0000ffb02ebb72e413",
+          "rows_used": 7,
+          "run": "agylive-gemini-3-6-flash-high",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "catch_rate": {
+          "ci95": [
+            0.02567962434474355,
+            0.5131278292743189
+          ],
+          "value": 0.14285714285714285
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.14285714285714285
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            2.7755575615628914e-17,
+            0.3543304350666875
+          ],
+          "value": 0.0
+        },
+        "findings_per_mutant": {
+          "value": 0.42857142857142855
+        },
+        "json_valid_mutant": {
+          "value": 0.8571428571428571
+        },
+        "n_distinct_cases": {
+          "value": 7
+        },
+        "n_pairs": {
+          "value": 7
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "agy-gemini-3-6-flash-high"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-4c148e91ab10a97e",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "faa3cbe038c0b11666cae41658afc8638e731d434cd9b48995363f5e65661aa1",
+          "rows_used": 13,
+          "run": "gap-agy-gemini-3-6-flash-low",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.0,
+            0.5614970317550455
+          ],
+          "denominator": 3,
+          "value": 0.0
+        },
+        "catch_rate": {
+          "ci95": [
+            0.013710421242556559,
+            0.3331395092109959
+          ],
+          "value": 0.07692307692307693
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.07692307692307693
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.0,
+            0.22809537235419838
+          ],
+          "value": 0.0
+        },
+        "findings_per_mutant": {
+          "value": 0.07692307692307693
+        },
+        "json_valid_mutant": {
+          "value": 0.9230769230769231
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "agy-gemini-3-6-flash-low"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-397ae01264be574d",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "eb49d352c22066bf721d623be672787020041b0d0a2cb5ef357030eb29bbec66",
+          "rows_used": 13,
+          "run": "gap-agy-gemini-3-6-flash-medium",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        },
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "9f004fbe24aa77a1edbaa497bb4276b1008ee17a77ad5cf9335c4954a6badc68",
+          "rows_used": 1,
+          "run": "revbench-agy-gemini-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        },
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "dc26ac1d4478513d1763bb31cc2b171c44b92988d3b252981a9b909c5bceebcb",
+          "rows_used": 1,
+          "run": "sweep-agy-gemini-3-6-flash-medium-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.09453120573423074,
+            0.9054687942657693
+          ],
+          "denominator": 2,
+          "value": 0.5
+        },
+        "catch_rate": {
+          "ci95": [
+            0.011866895493268553,
+            0.2981652987378003
+          ],
+          "value": 0.06666666666666667
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.06666666666666667
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.0,
+            0.20388330103584862
+          ],
+          "value": 0.0
+        },
+        "findings_per_mutant": {
+          "value": 0.13333333333333333
+        },
+        "json_valid_mutant": {
+          "value": 0.7333333333333333
+        },
+        "n_distinct_cases": {
+          "value": 14
+        },
+        "n_pairs": {
+          "value": 15
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read.",
+        "repeated case trials: 1 of 15 pairs re-measure a case already measured for this subject"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "agy-gemini-3-6-flash-medium"
+      }
+    },
+    {
+      "as_of": "2026-08-15T21:48:01.214456+00:00",
+      "claim_id": "qc-cc6ad134a3f37d98",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "instrument_commit": "4d2115a9816dea360fd109e01db1d636365fb24f",
+          "kind": "matched-pair-run",
+          "profile": "caplab-advisory-execution/0",
+          "results_sha256": "77070a3a4443897fc591ea3a22d35e2be7d94105aeda1641fc27c975ab75a61f",
+          "rows_used": 22,
+          "run": "adv-agy-gemini-3-7-flash-high-20260815",
+          "sweep_seed": "20260815"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.5490882631704924,
+            0.8937198697736354
+          ],
+          "denominator": 21,
+          "value": 0.7619047619047619
+        },
+        "catch_rate": {
+          "ci95": [
+            0.5656004682477828,
+            0.8987696001475148
+          ],
+          "value": 0.7727272727272727
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.7727272727272727
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.0,
+            0.14865487460862087
+          ],
+          "value": 0.0
+        },
+        "findings_per_mutant": {
+          "value": 0.8181818181818182
+        },
+        "json_valid_mutant": {
+          "value": 0.9545454545454546
+        },
+        "n_distinct_cases": {
+          "value": 22
+        },
+        "n_pairs": {
+          "value": 22
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution (profile v0) through the subject's declared adapter command.",
+        "advisory-grade profile v0 executes the pinned striatum-tuner matched-pair instrument; no sealed custody domain, no provider-authenticated identity."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "agy-gemini-3-7-flash-high"
+      }
+    },
+    {
+      "as_of": "2026-08-15T21:48:01.214456+00:00",
+      "claim_id": "qc-d1a98cc32f1bb9bd",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "instrument_commit": "4d2115a9816dea360fd109e01db1d636365fb24f",
+          "kind": "matched-pair-run",
+          "profile": "caplab-advisory-execution/0",
+          "results_sha256": "2fc78164daeef02c9c5ef52238657f7a6a3daaaf5c835f9b62bf506d3e699290",
+          "rows_used": 22,
+          "run": "adv-agy-gemini-3-7-flash-low-20260815",
+          "sweep_seed": "20260815"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.19733204670366125,
+            0.5704829190986899
+          ],
+          "denominator": 22,
+          "value": 0.36363636363636365
+        },
+        "catch_rate": {
+          "ci95": [
+            0.2325581619647187,
+            0.6126518152368488
+          ],
+          "value": 0.4090909090909091
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.4090909090909091
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.0,
+            0.14865487460862087
+          ],
+          "value": 0.0
+        },
+        "findings_per_mutant": {
+          "value": 0.4090909090909091
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 22
+        },
+        "n_pairs": {
+          "value": 22
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution (profile v0) through the subject's declared adapter command.",
+        "advisory-grade profile v0 executes the pinned striatum-tuner matched-pair instrument; no sealed custody domain, no provider-authenticated identity."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "agy-gemini-3-7-flash-low"
+      }
+    },
+    {
+      "as_of": "2026-08-15T21:48:01.214456+00:00",
+      "claim_id": "qc-1e6886235df72fde",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "instrument_commit": "4d2115a9816dea360fd109e01db1d636365fb24f",
+          "kind": "matched-pair-run",
+          "profile": "caplab-advisory-execution/0",
+          "results_sha256": "60c691e1a7b1ab209cea0e3355b1a4edff45f1ec64df6b4039ec1be9b13b8de0",
+          "rows_used": 22,
+          "run": "adv-agy-gemini-3-7-flash-medium-20260815",
+          "sweep_seed": "20260815"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.47318597741042745,
+            0.8363940681864375
+          ],
+          "denominator": 22,
+          "value": 0.6818181818181818
+        },
+        "catch_rate": {
+          "ci95": [
+            0.47318597741042745,
+            0.8363940681864375
+          ],
+          "value": 0.6818181818181818
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.6818181818181818
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.0,
+            0.14865487460862087
+          ],
+          "value": 0.0
+        },
+        "findings_per_mutant": {
+          "value": 0.7272727272727273
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 22
+        },
+        "n_pairs": {
+          "value": 22
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution (profile v0) through the subject's declared adapter command.",
+        "advisory-grade profile v0 executes the pinned striatum-tuner matched-pair instrument; no sealed custody domain, no provider-authenticated identity."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "agy-gemini-3-7-flash-medium"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-c4682616a8ce1e19",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "c27ba6a95054bee5657688a0ec9287b0cdf0bc4d9d8004ab303b23795795773a",
+          "rows_used": 13,
+          "run": "sweep-agy-gpt-oss-120b-medium-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "catch_rate": {
+          "ci95": [
+            0.0,
+            0.22809537235419838
+          ],
+          "value": 0.0
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": -0.07692307692307693
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.013710421242556559,
+            0.3331395092109959
+          ],
+          "value": 0.07692307692307693
+        },
+        "findings_per_mutant": {
+          "value": 0.6923076923076923
+        },
+        "json_valid_mutant": {
+          "value": 0.7692307692307693
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "agy-gpt-oss-120b-medium"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-7a5233c3787b3c39",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "4b9e901722dc05cf4a714af1550b13b1645dd672cd5756c1ae943b3436586c30",
+          "rows_used": 13,
+          "run": "cc-claude-fable-5-high-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        },
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "da628a710b0c90e5ef337b7ffccd864c3d3eaecedb2635db7ff2439ae895c567",
+          "rows_used": 8,
+          "run": "confirm-claude-fable-5-high-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.24559518127005633,
+            0.6628358435795723
+          ],
+          "denominator": 18,
+          "value": 0.4444444444444444
+        },
+        "catch_rate": {
+          "ci95": [
+            0.36546554369306705,
+            0.7553003107462405
+          ],
+          "value": 0.5714285714285714
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.5714285714285714
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.0,
+            0.15463901892484697
+          ],
+          "value": 0.0
+        },
+        "findings_per_mutant": {
+          "value": 1.9047619047619047
+        },
+        "json_valid_mutant": {
+          "value": 0.8571428571428571
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 21
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read.",
+        "repeated case trials: 8 of 21 pairs re-measure a case already measured for this subject"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-fable-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-48f6fe4ce8c4176d",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "8faa80279b5b389aafaf6f4e6734e404eaced1ca50f2bf675b5ba36452731ccb",
+          "rows_used": 13,
+          "run": "cc-claude-fable-5-low-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        },
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "1add0d6c54cb21bf47f357af438e53e987e086eab1c17f5d773680ed2b0a7fee",
+          "rows_used": 24,
+          "run": "confirm-claude-fable-5-low-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.13750477662994837,
+            0.4107045376672835
+          ],
+          "denominator": 36,
+          "value": 0.25
+        },
+        "catch_rate": {
+          "ci95": [
+            0.3838404689217949,
+            0.6896143019562697
+          ],
+          "value": 0.5405405405405406
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.5405405405405406
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.0,
+            0.0940578258372025
+          ],
+          "value": 0.0
+        },
+        "findings_per_mutant": {
+          "value": 2.4054054054054053
+        },
+        "json_valid_mutant": {
+          "value": 0.972972972972973
+        },
+        "n_distinct_cases": {
+          "value": 24
+        },
+        "n_pairs": {
+          "value": 37
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read.",
+        "repeated case trials: 13 of 37 pairs re-measure a case already measured for this subject"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-fable-5-low"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-b703ea33dd875ad8",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "a9780cfdac81822239e75e48dfcd0d7dfc85baa6888c09a0946e655155cc4344",
+          "rows_used": 13,
+          "run": "cc-claude-fable-5-max-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.13812009109121315,
+            0.6093779111272004
+          ],
+          "denominator": 12,
+          "value": 0.3333333333333333
+        },
+        "catch_rate": {
+          "ci95": [
+            0.29143795714506004,
+            0.7679393219046169
+          ],
+          "value": 0.5384615384615384
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.5384615384615384
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.0,
+            0.22809537235419838
+          ],
+          "value": 0.0
+        },
+        "findings_per_mutant": {
+          "value": 2.4615384615384617
+        },
+        "json_valid_mutant": {
+          "value": 0.9230769230769231
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-fable-5-max"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-7cb5e12b10104899",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "d05a527714661f7e3c726f0e3b6cb49dac0b851fd006c0bcab6111b865310fcf",
+          "rows_used": 13,
+          "run": "cc-claude-fable-5-medium-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.19326031365875668,
+            0.6804886874504503
+          ],
+          "denominator": 12,
+          "value": 0.4166666666666667
+        },
+        "catch_rate": {
+          "ci95": [
+            0.29143795714506004,
+            0.7679393219046169
+          ],
+          "value": 0.5384615384615384
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.46153846153846156
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.013710421242556559,
+            0.3331395092109959
+          ],
+          "value": 0.07692307692307693
+        },
+        "findings_per_mutant": {
+          "value": 2.1538461538461537
+        },
+        "json_valid_mutant": {
+          "value": 0.9230769230769231
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-fable-5-medium"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-bda90f08b787dee7",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "44b25de396837cc32f424bee05a21cf7fe13ca38e6dd91923dea4089e8d9819a",
+          "rows_used": 13,
+          "run": "cc-claude-fable-5-xhigh-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        },
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "0adaa21f5a9dc9181f210611c069f9298eac8eacc1b955f818b80f485aa18496",
+          "rows_used": 6,
+          "run": "confirm-claude-fable-5-xhigh-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.09000928108601697,
+            0.4521458431621262
+          ],
+          "denominator": 18,
+          "value": 0.2222222222222222
+        },
+        "catch_rate": {
+          "ci95": [
+            0.3627590353425504,
+            0.7685810871754576
+          ],
+          "value": 0.5789473684210527
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.5789473684210527
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.0,
+            0.16817922405261626
+          ],
+          "value": 0.0
+        },
+        "findings_per_mutant": {
+          "value": 2.1578947368421053
+        },
+        "json_valid_mutant": {
+          "value": 0.9473684210526315
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 19
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read.",
+        "repeated case trials: 6 of 19 pairs re-measure a case already measured for this subject"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-fable-5-xhigh"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-7b30314874dcf620",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "64efef014f11cc5fda3a11fa0899b1fb529eda56ce82c3b516ff6db0b4dbcd60",
+          "rows_used": 17,
+          "run": "revbench-claude-harm-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.1730972039724375,
+            0.5869963651478132
+          ],
+          "denominator": 17,
+          "value": 0.35294117647058826
+        },
+        "catch_rate": {
+          "ci95": [
+            0.3096323506000443,
+            0.7383489355759056
+          ],
+          "value": 0.5294117647058824
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.5294117647058824
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.0,
+            0.1843181350088518
+          ],
+          "value": 0.0
+        },
+        "findings_per_mutant": {
+          "value": 1.411764705882353
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 17
+        },
+        "n_pairs": {
+          "value": 17
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-harm"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-5575bf6e05433444",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "71720086b40d484956251e0c0d568e77bd8c987c8c85d299c117fca2432e5729",
+          "rows_used": 13,
+          "run": "sweep-claude-harm-haiku-4-5-low-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.0,
+            0.22809537235419838
+          ],
+          "denominator": 13,
+          "value": 0.0
+        },
+        "catch_rate": {
+          "ci95": [
+            0.013710421242556559,
+            0.3331395092109959
+          ],
+          "value": 0.07692307692307693
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.0
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.013710421242556559,
+            0.3331395092109959
+          ],
+          "value": 0.07692307692307693
+        },
+        "findings_per_mutant": {
+          "value": 0.38461538461538464
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-harm-haiku-4-5-low"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-510aa51545fa0bba",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "9aad4357a66f652fefbfdd5c60155a12244088d6ecf86cbad16d0be91a2411eb",
+          "rows_used": 28,
+          "run": "revbench-claude-harm-opus-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.10607239452360037,
+            0.4075692886663257
+          ],
+          "denominator": 27,
+          "value": 0.2222222222222222
+        },
+        "catch_rate": {
+          "ci95": [
+            0.32633127457293465,
+            0.6736687254270654
+          ],
+          "value": 0.5
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.4642857142857143
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.0063325198490377516,
+            0.1771219774335332
+          ],
+          "value": 0.03571428571428571
+        },
+        "findings_per_mutant": {
+          "value": 1.3928571428571428
+        },
+        "json_valid_mutant": {
+          "value": 0.9642857142857143
+        },
+        "n_distinct_cases": {
+          "value": 28
+        },
+        "n_pairs": {
+          "value": 28
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-harm-opus-4-8-high"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-10f17b5794f3d26f",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "f5925157f96218d19335937b123d9c4f6be4099700299684b9bcc4c85e2f8d50",
+          "rows_used": 13,
+          "run": "sweep-claude-harm-opus-4-8-low-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.05668215145437519,
+            0.5098375284633583
+          ],
+          "denominator": 10,
+          "value": 0.2
+        },
+        "catch_rate": {
+          "ci95": [
+            0.12680703655710515,
+            0.5763065681945096
+          ],
+          "value": 0.3076923076923077
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.23076923076923078
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.013710421242556559,
+            0.3331395092109959
+          ],
+          "value": 0.07692307692307693
+        },
+        "findings_per_mutant": {
+          "value": 0.7692307692307693
+        },
+        "json_valid_mutant": {
+          "value": 0.7692307692307693
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-harm-opus-4-8-low"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-3edd918b5b89533c",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "18af9d76de4ca8d8af34e3aeaabe782cd1aca2bfba459f8f352e938d8fda821e",
+          "rows_used": 4,
+          "run": "sweep-claude-harm-opus-4-8-max-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.09453120573423074,
+            0.9054687942657693
+          ],
+          "denominator": 2,
+          "value": 0.5
+        },
+        "catch_rate": {
+          "ci95": [
+            0.15003898915214953,
+            0.8499610108478505
+          ],
+          "value": 0.5
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.5
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.0,
+            0.4898908364545973
+          ],
+          "value": 0.0
+        },
+        "findings_per_mutant": {
+          "value": 0.5
+        },
+        "json_valid_mutant": {
+          "value": 0.5
+        },
+        "n_distinct_cases": {
+          "value": 4
+        },
+        "n_pairs": {
+          "value": 4
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-harm-opus-4-8-max"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-e12132a8a6ced8ad",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "e79c1ffe72cfdb4bb57caf9c2abc194d658c5ad7538e01c82c2af7837865b2bc",
+          "rows_used": 10,
+          "run": "sweep-claude-harm-opus-4-8-medium-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.03005336974830658,
+            0.5635028221864702
+          ],
+          "denominator": 6,
+          "value": 0.16666666666666666
+        },
+        "catch_rate": {
+          "ci95": [
+            0.16818032970623614,
+            0.6873262302663417
+          ],
+          "value": 0.4
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.3
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.017876213095072868,
+            0.4041500267952385
+          ],
+          "value": 0.1
+        },
+        "findings_per_mutant": {
+          "value": 1.0
+        },
+        "json_valid_mutant": {
+          "value": 0.6
+        },
+        "n_distinct_cases": {
+          "value": 10
+        },
+        "n_pairs": {
+          "value": 10
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-harm-opus-4-8-medium"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-fce434caf5977c4f",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "ba177e7872e34ed55653902bb46ebd345f2c0438edd7742d37cd623f46253e1a",
+          "rows_used": 3,
+          "run": "sweep-claude-harm-opus-4-8-xhigh-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.0,
+            0.7934506856227626
+          ],
+          "denominator": 1,
+          "value": 0.0
+        },
+        "catch_rate": {
+          "ci95": [
+            0.06149194472039615,
+            0.7923403991979523
+          ],
+          "value": 0.3333333333333333
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.3333333333333333
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.0,
+            0.5614970317550455
+          ],
+          "value": 0.0
+        },
+        "findings_per_mutant": {
+          "value": 0.3333333333333333
+        },
+        "json_valid_mutant": {
+          "value": 0.3333333333333333
+        },
+        "n_distinct_cases": {
+          "value": 3
+        },
+        "n_pairs": {
+          "value": 3
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-harm-opus-4-8-xhigh"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-474411512957a800",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "7a20a72f989afd4f8fd660b833e71b4aecd785662d47a240f87569a0176bbef9",
+          "rows_used": 2,
+          "run": "sweep-claude-harm-opus-5-high-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "catch_rate": {
+          "ci95": [
+            0.0,
+            0.6576197724933469
+          ],
+          "value": 0.0
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": -1.0
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.34238022750665303,
+            1.0
+          ],
+          "value": 1.0
+        },
+        "findings_per_mutant": {
+          "value": 0.0
+        },
+        "json_valid_mutant": {
+          "value": 0.0
+        },
+        "n_distinct_cases": {
+          "value": 2
+        },
+        "n_pairs": {
+          "value": 2
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-harm-opus-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-e5c2e1985405e3ad",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "031411186eb58bcd65ce4a9cdce408e85c9f361f46caa1ac4f19ff8f95bd093b",
+          "rows_used": 13,
+          "run": "cc-claude-opus-4-8-high-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.08894166839405476,
+            0.5323053349335656
+          ],
+          "denominator": 12,
+          "value": 0.25
+        },
+        "catch_rate": {
+          "ci95": [
+            0.17709707797762572,
+            0.6447710848733431
+          ],
+          "value": 0.38461538461538464
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.38461538461538464
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.0,
+            0.22809537235419838
+          ],
+          "value": 0.0
+        },
+        "findings_per_mutant": {
+          "value": 1.6153846153846154
+        },
+        "json_valid_mutant": {
+          "value": 0.9230769230769231
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-opus-4-8-high"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-e7123f5dc878d8b7",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "d0616ea3fb4d690a5b61035baa0e54e4f3afd2b60c07ebba4e07c40e1b8a8acb",
+          "rows_used": 12,
+          "run": "cc-claude-opus-4-8-low-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.09746059290024889,
+            0.5656453011761291
+          ],
+          "denominator": 11,
+          "value": 0.2727272727272727
+        },
+        "catch_rate": {
+          "ci95": [
+            0.19326031365875668,
+            0.6804886874504503
+          ],
+          "value": 0.4166666666666667
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.4166666666666667
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            2.7755575615628914e-17,
+            0.24249400665524085
+          ],
+          "value": 0.0
+        },
+        "findings_per_mutant": {
+          "value": 1.1666666666666667
+        },
+        "json_valid_mutant": {
+          "value": 0.9166666666666666
+        },
+        "n_distinct_cases": {
+          "value": 12
+        },
+        "n_pairs": {
+          "value": 12
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-opus-4-8-low"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-d45b35ad1b20c961",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "b2b12f523197f3310c50cf35d1b159653d0042bf3686dbba0eb996ccf3629366",
+          "rows_used": 13,
+          "run": "cc-claude-opus-4-8-max-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.12680703655710515,
+            0.5763065681945096
+          ],
+          "denominator": 13,
+          "value": 0.3076923076923077
+        },
+        "catch_rate": {
+          "ci95": [
+            0.232060678095383,
+            0.7085620428549398
+          ],
+          "value": 0.46153846153846156
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.38461538461538464
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.013710421242556559,
+            0.3331395092109959
+          ],
+          "value": 0.07692307692307693
+        },
+        "findings_per_mutant": {
+          "value": 1.5384615384615385
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-opus-4-8-max"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-08ff01f71ea899b3",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "021440f0ce8d9847e3525fa6b2adc6525c3ab6f5ac15e9cb9e8c9b65c028733f",
+          "rows_used": 13,
+          "run": "cc-claude-opus-4-8-medium-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.05668215145437519,
+            0.5098375284633583
+          ],
+          "denominator": 10,
+          "value": 0.2
+        },
+        "catch_rate": {
+          "ci95": [
+            0.12680703655710515,
+            0.5763065681945096
+          ],
+          "value": 0.3076923076923077
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.3076923076923077
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.0,
+            0.22809537235419838
+          ],
+          "value": 0.0
+        },
+        "findings_per_mutant": {
+          "value": 0.8461538461538461
+        },
+        "json_valid_mutant": {
+          "value": 0.7692307692307693
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-opus-4-8-medium"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-dd3b8497045b0831",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "53c048d74dfac1935e75a2082f6747305f7fbf59fce9e6e0c8da0cff314f4ebe",
+          "rows_used": 13,
+          "run": "cc-claude-opus-4-8-xhigh-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.12680703655710515,
+            0.5763065681945096
+          ],
+          "denominator": 13,
+          "value": 0.3076923076923077
+        },
+        "catch_rate": {
+          "ci95": [
+            0.232060678095383,
+            0.7085620428549398
+          ],
+          "value": 0.46153846153846156
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.46153846153846156
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.0,
+            0.22809537235419838
+          ],
+          "value": 0.0
+        },
+        "findings_per_mutant": {
+          "value": 1.3076923076923077
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-opus-4-8-xhigh"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-cf7c88ff0a78f04a",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "6c8d8e47faf30f775a915f745d8118f28dbbce15e009c65465c72a6bdd3b2817",
+          "rows_used": 12,
+          "run": "cc-claude-opus-5-high-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.09746059290024889,
+            0.5656453011761291
+          ],
+          "denominator": 11,
+          "value": 0.2727272727272727
+        },
+        "catch_rate": {
+          "ci95": [
+            0.4676946650664343,
+            0.9110583316059452
+          ],
+          "value": 0.75
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.4166666666666667
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.13812009109121315,
+            0.6093779111272004
+          ],
+          "value": 0.3333333333333333
+        },
+        "findings_per_mutant": {
+          "value": 4.666666666666667
+        },
+        "json_valid_mutant": {
+          "value": 0.9166666666666666
+        },
+        "n_distinct_cases": {
+          "value": 12
+        },
+        "n_pairs": {
+          "value": 12
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-opus-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-223a47d1d0168c83",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "03990e9916cef75ec56c23623853106d8dad85ec36b8ce7645a3b3a2206fb820",
+          "rows_used": 13,
+          "run": "cc-claude-opus-5-low-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.13812009109121315,
+            0.6093779111272004
+          ],
+          "denominator": 12,
+          "value": 0.3333333333333333
+        },
+        "catch_rate": {
+          "ci95": [
+            0.42369343180549035,
+            0.8731929634428948
+          ],
+          "value": 0.6923076923076923
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.5384615384615384
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.043258178358081184,
+            0.4223463101948254
+          ],
+          "value": 0.15384615384615385
+        },
+        "findings_per_mutant": {
+          "value": 3.230769230769231
+        },
+        "json_valid_mutant": {
+          "value": 0.9230769230769231
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-opus-5-low"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-8620f0c004f7cef2",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "df57aae87ff57958fe6fe1ae1ff1c074ee991102ed20ceb7663d923f3c29e64a",
+          "rows_used": 14,
+          "run": "gap-claude-opus-5-max",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.11721378644576919,
+            0.5464908432989318
+          ],
+          "denominator": 14,
+          "value": 0.2857142857142857
+        },
+        "catch_rate": {
+          "ci95": [
+            0.4535091567010681,
+            0.8827862135542308
+          ],
+          "value": 0.7142857142857143
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.07142857142857142
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.38764423103907397,
+            0.8365526824644587
+          ],
+          "value": 0.6428571428571429
+        },
+        "findings_per_mutant": {
+          "value": 5.071428571428571
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 14
+        },
+        "n_pairs": {
+          "value": 14
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-opus-5-max"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-4dfc2e433c900d40",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "9d330544449da1307832e6e98a793112d1a6e7e881f044a73a4e69a9ad69d933",
+          "rows_used": 13,
+          "run": "cc-claude-opus-5-medium-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.12680703655710515,
+            0.5763065681945096
+          ],
+          "denominator": 13,
+          "value": 0.3076923076923077
+        },
+        "catch_rate": {
+          "ci95": [
+            0.6668604907890041,
+            0.9862895787574435
+          ],
+          "value": 0.9230769230769231
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.3076923076923077
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.35522891512665694,
+            0.8229029220223743
+          ],
+          "value": 0.6153846153846154
+        },
+        "findings_per_mutant": {
+          "value": 5.0
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-opus-5-medium"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-88cf025d929cac38",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "5a4e666ff75daf069756fcae43255a6b1a43785f85fa81a8b7e096e88312f330",
+          "rows_used": 14,
+          "run": "gap-claude-opus-5-xhigh",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.07571386712693182,
+            0.47589230586600295
+          ],
+          "denominator": 14,
+          "value": 0.21428571428571427
+        },
+        "catch_rate": {
+          "ci95": [
+            0.524107694133997,
+            0.9242861328730683
+          ],
+          "value": 0.7857142857142857
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.35714285714285715
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.21380798904474121,
+            0.6740935542034926
+          ],
+          "value": 0.42857142857142855
+        },
+        "findings_per_mutant": {
+          "value": 5.428571428571429
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 14
+        },
+        "n_pairs": {
+          "value": 14
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-opus-5-xhigh"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-0f8b68a0871c6bd5",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "7b01eca6a8e4a52206e1858e5d0af90e95f3fcf7774a1cd194d1a3d3933fc2b0",
+          "rows_used": 13,
+          "run": "cc-claude-sonnet-5-high-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.013710421242556559,
+            0.3331395092109959
+          ],
+          "denominator": 13,
+          "value": 0.07692307692307693
+        },
+        "catch_rate": {
+          "ci95": [
+            0.5776536898051745,
+            0.9567418216419186
+          ],
+          "value": 0.8461538461538461
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.46153846153846156
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.17709707797762572,
+            0.6447710848733431
+          ],
+          "value": 0.38461538461538464
+        },
+        "findings_per_mutant": {
+          "value": 2.769230769230769
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-sonnet-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-16T15:44:59.512727+00:00",
+      "claim_id": "qc-10602cad0f1fe24c",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "instrument_commit": "4d2115a9816dea360fd109e01db1d636365fb24f",
+          "kind": "matched-pair-run",
+          "profile": "caplab-advisory-execution/0",
+          "results_sha256": "7f10372c736a83afc098b26d913c1c63403ce6d02bdc5f6327ab19ec84c67936",
+          "rows_used": 14,
+          "run": "adv-claude-sonnet-5-high-20260816",
+          "sweep_seed": "20260815"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.040093921271464966,
+            0.39941379496970353
+          ],
+          "denominator": 14,
+          "value": 0.14285714285714285
+        },
+        "catch_rate": {
+          "ci95": [
+            0.3259064457965074,
+            0.7861920109552588
+          ],
+          "value": 0.5714285714285714
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.14285714285714285
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.21380798904474121,
+            0.6740935542034926
+          ],
+          "value": 0.42857142857142855
+        },
+        "findings_per_mutant": {
+          "value": 2.2857142857142856
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 14
+        },
+        "n_pairs": {
+          "value": 14
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution (profile v0) through the subject's declared adapter command.",
+        "advisory-grade profile v0 executes the pinned striatum-tuner matched-pair instrument; no sealed custody domain, no provider-authenticated identity."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-sonnet-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-2652b6295aa8eb79",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "aff35b84c88b51d6b83f8ac4ea9aa2d75c88b1ba9fbcd8ca14c7dfb6b737cc4f",
+          "rows_used": 14,
+          "run": "gap-claude-sonnet-5-low",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.040093921271464966,
+            0.39941379496970353
+          ],
+          "denominator": 14,
+          "value": 0.14285714285714285
+        },
+        "catch_rate": {
+          "ci95": [
+            0.1634473175355414,
+            0.612355768960926
+          ],
+          "value": 0.35714285714285715
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.14285714285714285
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.07571386712693182,
+            0.47589230586600295
+          ],
+          "value": 0.21428571428571427
+        },
+        "findings_per_mutant": {
+          "value": 1.7142857142857142
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 14
+        },
+        "n_pairs": {
+          "value": 14
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-sonnet-5-low"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-ea004f1c164ee2b4",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "f23fa9bd259abe0618de3a08d2923756904d9b2e5074bd0036cf6ddfa9300684",
+          "rows_used": 13,
+          "run": "cc-claude-sonnet-5-max-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.08179528718498566,
+            0.502563759467275
+          ],
+          "denominator": 13,
+          "value": 0.23076923076923078
+        },
+        "catch_rate": {
+          "ci95": [
+            0.35522891512665694,
+            0.8229029220223743
+          ],
+          "value": 0.6153846153846154
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.23076923076923078
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.17709707797762572,
+            0.6447710848733431
+          ],
+          "value": 0.38461538461538464
+        },
+        "findings_per_mutant": {
+          "value": 2.769230769230769
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-sonnet-5-max"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-a0074770537f3d7a",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "c7520b24886119316e6899c886c235f64975520de08c1d036570a9045293fe8d",
+          "rows_used": 13,
+          "run": "cc-claude-sonnet-5-medium-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.043258178358081184,
+            0.4223463101948254
+          ],
+          "denominator": 13,
+          "value": 0.15384615384615385
+        },
+        "catch_rate": {
+          "ci95": [
+            0.29143795714506004,
+            0.7679393219046169
+          ],
+          "value": 0.5384615384615384
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.23076923076923078
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.12680703655710515,
+            0.5763065681945096
+          ],
+          "value": 0.3076923076923077
+        },
+        "findings_per_mutant": {
+          "value": 1.6153846153846154
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-sonnet-5-medium"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-cecf8922dc2b797d",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "7b5f329d55a72ade5cf03d3b419fd3d21a2c0ef39970f78cb8a9bdc6b4adf5c6",
+          "rows_used": 14,
+          "run": "gap-claude-sonnet-5-xhigh",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.07571386712693182,
+            0.47589230586600295
+          ],
+          "denominator": 14,
+          "value": 0.21428571428571427
+        },
+        "catch_rate": {
+          "ci95": [
+            0.38764423103907397,
+            0.8365526824644587
+          ],
+          "value": 0.6428571428571429
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.21428571428571427
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.21380798904474121,
+            0.6740935542034926
+          ],
+          "value": 0.42857142857142855
+        },
+        "findings_per_mutant": {
+          "value": 2.7857142857142856
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 14
+        },
+        "n_pairs": {
+          "value": 14
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-sonnet-5-xhigh"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-c5d779953e9582e9",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "521b6afe6a0c6bb4286a01cd0f35b8d826ad25e403b086204b4a2b501e405a89",
+          "rows_used": 13,
+          "run": "sweep-codex-luna-high-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.013710421242556559,
+            0.3331395092109959
+          ],
+          "denominator": 13,
+          "value": 0.07692307692307693
+        },
+        "catch_rate": {
+          "ci95": [
+            0.49743624053272495,
+            0.9182047128150143
+          ],
+          "value": 0.7692307692307693
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.23076923076923078
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.29143795714506004,
+            0.7679393219046169
+          ],
+          "value": 0.5384615384615384
+        },
+        "findings_per_mutant": {
+          "value": 1.6923076923076923
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "codex-luna-high"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-f3e4f82987c96621",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "6ebfdc671de98e3165785bdedb02a18aba7e7a6346ec5b173b291271565cae9c",
+          "rows_used": 13,
+          "run": "sweep-codex-luna-low-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.0,
+            0.22809537235419838
+          ],
+          "denominator": 13,
+          "value": 0.0
+        },
+        "catch_rate": {
+          "ci95": [
+            0.29143795714506004,
+            0.7679393219046169
+          ],
+          "value": 0.5384615384615384
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.23076923076923078
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.12680703655710515,
+            0.5763065681945096
+          ],
+          "value": 0.3076923076923077
+        },
+        "findings_per_mutant": {
+          "value": 0.9230769230769231
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "codex-luna-low"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-995745bea24dd4fc",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "ad22dc96302325128f7c3de3512a78d7c02230f64fc4c0c87aacd5e1582b7201",
+          "rows_used": 13,
+          "run": "sweep-codex-luna-max-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.043258178358081184,
+            0.4223463101948254
+          ],
+          "denominator": 13,
+          "value": 0.15384615384615385
+        },
+        "catch_rate": {
+          "ci95": [
+            0.42369343180549035,
+            0.8731929634428948
+          ],
+          "value": 0.6923076923076923
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.3076923076923077
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.17709707797762572,
+            0.6447710848733431
+          ],
+          "value": 0.38461538461538464
+        },
+        "findings_per_mutant": {
+          "value": 2.4615384615384617
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "codex-luna-max"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-01af9cf97db0349b",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "716b40b405967654206de57d5ad1b47ffadb65c950fdab506dc2d29eb6c49d80",
+          "rows_used": 13,
+          "run": "sweep-codex-luna-medium-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.013710421242556559,
+            0.3331395092109959
+          ],
+          "denominator": 13,
+          "value": 0.07692307692307693
+        },
+        "catch_rate": {
+          "ci95": [
+            0.29143795714506004,
+            0.7679393219046169
+          ],
+          "value": 0.5384615384615384
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.38461538461538464
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.043258178358081184,
+            0.4223463101948254
+          ],
+          "value": 0.15384615384615385
+        },
+        "findings_per_mutant": {
+          "value": 1.0769230769230769
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "codex-luna-medium"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-2d1f5bba7ac828f2",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "bc9dab4f4f2c7ce4c7e08bcac14e9469d5a4d7184fcdcf4892812e05614a6668",
+          "rows_used": 13,
+          "run": "sweep-codex-luna-xhigh-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.013710421242556559,
+            0.3331395092109959
+          ],
+          "denominator": 13,
+          "value": 0.07692307692307693
+        },
+        "catch_rate": {
+          "ci95": [
+            0.29143795714506004,
+            0.7679393219046169
+          ],
+          "value": 0.5384615384615384
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.15384615384615385
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.17709707797762572,
+            0.6447710848733431
+          ],
+          "value": 0.38461538461538464
+        },
+        "findings_per_mutant": {
+          "value": 1.6923076923076923
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "codex-luna-xhigh"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-f40815e30a81d721",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "ed7047f2691b3e173ba4be786b1a1ee70d93882f9e404df074f9706885d0a39e",
+          "rows_used": 23,
+          "run": "revbench-codex-sol-high-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.06978653563062565,
+            0.3713764764022614
+          ],
+          "denominator": 23,
+          "value": 0.17391304347826086
+        },
+        "catch_rate": {
+          "ci95": [
+            0.6286235235977385,
+            0.9302134643693744
+          ],
+          "value": 0.8260869565217391
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.34782608695652173
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.29237157416646653,
+            0.6703726266357259
+          ],
+          "value": 0.4782608695652174
+        },
+        "findings_per_mutant": {
+          "value": 1.3043478260869565
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 23
+        },
+        "n_pairs": {
+          "value": 23
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "codex-sol-high"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-84242daa9d70f465",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "60c26d44b8dc552b30844635fdf2ac2d25991d7d9595c79787d30206d3173e1c",
+          "rows_used": 23,
+          "run": "revbench-codex-sol-low-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.04537659093631238,
+            0.32127482270095964
+          ],
+          "denominator": 23,
+          "value": 0.13043478260869565
+        },
+        "catch_rate": {
+          "ci95": [
+            0.44890335377263,
+            0.8118872406120227
+          ],
+          "value": 0.6521739130434783
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.17391304347826086
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.29237157416646653,
+            0.6703726266357259
+          ],
+          "value": 0.4782608695652174
+        },
+        "findings_per_mutant": {
+          "value": 0.782608695652174
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 23
+        },
+        "n_pairs": {
+          "value": 23
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "codex-sol-low"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-c5a4211a644a1536",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "74c620f6051744815916753254ded809ff24dbe7ade8d60bb1ec9aeb74c4b315",
+          "rows_used": 29,
+          "run": "revbench-codex-sol-max-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.12218422442520088,
+            0.42107601617811335
+          ],
+          "denominator": 29,
+          "value": 0.2413793103448276
+        },
+        "catch_rate": {
+          "ci95": [
+            0.736149189092262,
+            0.9641851086493229
+          ],
+          "value": 0.896551724137931
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.3448275862068966
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.3754796321097092,
+            0.7158683197696281
+          ],
+          "value": 0.5517241379310345
+        },
+        "findings_per_mutant": {
+          "value": 1.4482758620689655
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 29
+        },
+        "n_pairs": {
+          "value": 29
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "codex-sol-max"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-cd07d66aa6013c92",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "3b1d3ff6b1ac8af276c16a1eda1dcf29fd8028dc77c04dd6b5f1cb31cb721871",
+          "rows_used": 23,
+          "run": "revbench-codex-sol-medium-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.06978653563062565,
+            0.3713764764022614
+          ],
+          "denominator": 23,
+          "value": 0.17391304347826086
+        },
+        "catch_rate": {
+          "ci95": [
+            0.5809651698373599,
+            0.9033602197341379
+          ],
+          "value": 0.782608695652174
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.30434782608695654
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.29237157416646653,
+            0.6703726266357259
+          ],
+          "value": 0.4782608695652174
+        },
+        "findings_per_mutant": {
+          "value": 1.0869565217391304
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 23
+        },
+        "n_pairs": {
+          "value": 23
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "codex-sol-medium"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-f1debedd62e40ab2",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "f36a41ef951f0ba57f836cf896c3cb2ee91bba4ee2b95723b9fa9a0bd6f89030",
+          "rows_used": 23,
+          "run": "revbench-codex-sol-xhigh-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.12548616044986347,
+            0.4647000483742537
+          ],
+          "denominator": 23,
+          "value": 0.2608695652173913
+        },
+        "catch_rate": {
+          "ci95": [
+            0.6286235235977385,
+            0.9302134643693744
+          ],
+          "value": 0.8260869565217391
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.21739130434782608
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.4078552239138171,
+            0.7784237720752205
+          ],
+          "value": 0.6086956521739131
+        },
+        "findings_per_mutant": {
+          "value": 1.2608695652173914
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 23
+        },
+        "n_pairs": {
+          "value": 23
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "codex-sol-xhigh"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-61c5db4c1ecddc14",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "f0fb15283438408b5575d6d373300de95c4bd23c6d506ac8df76b58eea4dcffb",
+          "rows_used": 13,
+          "run": "sweep-codex-terra-high-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.043258178358081184,
+            0.4223463101948254
+          ],
+          "denominator": 13,
+          "value": 0.15384615384615385
+        },
+        "catch_rate": {
+          "ci95": [
+            0.35522891512665694,
+            0.8229029220223743
+          ],
+          "value": 0.6153846153846154
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.23076923076923078
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.17709707797762572,
+            0.6447710848733431
+          ],
+          "value": 0.38461538461538464
+        },
+        "findings_per_mutant": {
+          "value": 0.9230769230769231
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "codex-terra-high"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-3773aaca5589104b",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "b71ae2d0b357aa1cadda4bc3cd04b6da9c77d9a34a02c49317793115bcd9726b",
+          "rows_used": 13,
+          "run": "sweep-codex-terra-low-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.013710421242556559,
+            0.3331395092109959
+          ],
+          "denominator": 13,
+          "value": 0.07692307692307693
+        },
+        "catch_rate": {
+          "ci95": [
+            0.42369343180549035,
+            0.8731929634428948
+          ],
+          "value": 0.6923076923076923
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.15384615384615385
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.29143795714506004,
+            0.7679393219046169
+          ],
+          "value": 0.5384615384615384
+        },
+        "findings_per_mutant": {
+          "value": 0.8461538461538461
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "codex-terra-low"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-3f57f0dab6e65f8b",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "5e1bf089516765a8e187f56cd242e1c48629e8a3618c2fcdc695d7b381952234",
+          "rows_used": 13,
+          "run": "sweep-codex-terra-max-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.043258178358081184,
+            0.4223463101948254
+          ],
+          "denominator": 13,
+          "value": 0.15384615384615385
+        },
+        "catch_rate": {
+          "ci95": [
+            0.49743624053272495,
+            0.9182047128150143
+          ],
+          "value": 0.7692307692307693
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.15384615384615385
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.35522891512665694,
+            0.8229029220223743
+          ],
+          "value": 0.6153846153846154
+        },
+        "findings_per_mutant": {
+          "value": 1.0769230769230769
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "codex-terra-max"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-61fb116e9b21f909",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "59b1fd3d406626c87e9c9653decf0b6ecccf874a852aee9f5c6a36258ff517af",
+          "rows_used": 13,
+          "run": "sweep-codex-terra-medium-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.013710421242556559,
+            0.3331395092109959
+          ],
+          "denominator": 13,
+          "value": 0.07692307692307693
+        },
+        "catch_rate": {
+          "ci95": [
+            0.29143795714506004,
+            0.7679393219046169
+          ],
+          "value": 0.5384615384615384
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.07692307692307693
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.232060678095383,
+            0.7085620428549398
+          ],
+          "value": 0.46153846153846156
+        },
+        "findings_per_mutant": {
+          "value": 0.7692307692307693
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "codex-terra-medium"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-7a4685cb6b641fd7",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "c67a96ee5e91a086f0518f6a3b96d7a9ead1fd4316387c7ef88bca661abbd7c0",
+          "rows_used": 13,
+          "run": "sweep-codex-terra-xhigh-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.013710421242556559,
+            0.3331395092109959
+          ],
+          "denominator": 13,
+          "value": 0.07692307692307693
+        },
+        "catch_rate": {
+          "ci95": [
+            0.35522891512665694,
+            0.8229029220223743
+          ],
+          "value": 0.6153846153846154
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.38461538461538464
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.08179528718498566,
+            0.502563759467275
+          ],
+          "value": 0.23076923076923078
+        },
+        "findings_per_mutant": {
+          "value": 0.8461538461538461
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "codex-terra-xhigh"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-b05fd22b15282b8f",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "2f0d7b9b66a46db6dbb26a9f7f73def2469603d40501fae4f7a31d71a0a58e9d",
+          "rows_used": 47,
+          "run": "revbench-deepseek-v4-flash-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "catch_rate": {
+          "ci95": [
+            0.11989707998095,
+            0.34904026709198405
+          ],
+          "value": 0.2127659574468085
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.0851063829787234
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.05984604198143388,
+            0.25173940792792504
+          ],
+          "value": 0.1276595744680851
+        },
+        "findings_per_mutant": {
+          "value": 1.9148936170212767
+        },
+        "json_valid_mutant": {
+          "value": 0.9361702127659575
+        },
+        "n_distinct_cases": {
+          "value": 47
+        },
+        "n_pairs": {
+          "value": 47
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "deepseek-v4-flash"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-532110d5ed5c7f43",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "8c646a1525dd3e2566850f1f1755bcb3a733ca4dea617aeeea594503d6420629",
+          "rows_used": 34,
+          "run": "revbench-glm-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "catch_rate": {
+          "ci95": [
+            0.16834630670422424,
+            0.4616890979471443
+          ],
+          "value": 0.29411764705882354
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.2647058823529412
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.0052109062762689395,
+            0.1491557329268593
+          ],
+          "value": 0.029411764705882353
+        },
+        "findings_per_mutant": {
+          "value": 1.8235294117647058
+        },
+        "json_valid_mutant": {
+          "value": 0.8235294117647058
+        },
+        "n_distinct_cases": {
+          "value": 34
+        },
+        "n_pairs": {
+          "value": 34
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "glm"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-fea2c682ffc8e580",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "4e838328e2aac4bad6ab4949c8bc7f2630f862816efcb2abcb43f49a410e42b6",
+          "rows_used": 30,
+          "run": "revbench-kimi-k3-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "catch_rate": {
+          "ci95": [
+            0.24590628116801852,
+            0.5767963974667752
+          ],
+          "value": 0.4
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.3333333333333333
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.018477023791270378,
+            0.2132345836261692
+          ],
+          "value": 0.06666666666666667
+        },
+        "findings_per_mutant": {
+          "value": 1.9333333333333333
+        },
+        "json_valid_mutant": {
+          "value": 0.9
+        },
+        "n_distinct_cases": {
+          "value": 30
+        },
+        "n_pairs": {
+          "value": 30
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "kimi-k3"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-0bbaa063a5c5ca24",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "3146f7de16ff12e559b725e8f15dd72158ee4354a18d0d9c83022327d949346d",
+          "rows_used": 39,
+          "run": "revbench-local-qwen-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "catch_rate": {
+          "ci95": [
+            0.07247472376982099,
+            0.29729463648926696
+          ],
+          "value": 0.15384615384615385
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.10256410256410256
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.014177955415274113,
+            0.16885640047613612
+          ],
+          "value": 0.05128205128205128
+        },
+        "findings_per_mutant": {
+          "value": 0.5128205128205128
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 39
+        },
+        "n_pairs": {
+          "value": 39
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "local-qwen"
+      }
+    },
+    {
+      "as_of": "2026-08-09T00:00:00+00:00",
+      "claim_id": "qc-d0235043a55d6362",
+      "construct": "review.defect_discrimination/1",
+      "custody": "historical-seed",
+      "evidence": [
+        {
+          "kind": "matched-pair-run",
+          "results_sha256": "803a1a45e548f6a1a0f17c11e1e6a23d8717be19255312c29c9b08be6a8339d1",
+          "rows_used": 25,
+          "run": "revbench-local-qwen-ft-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
+        }
+      ],
+      "metrics": {
+        "catch_rate": {
+          "ci95": [
+            0.14283853850956563,
+            0.47576605190361576
+          ],
+          "value": 0.28
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": -0.24
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.3349851695035678,
+            0.6996871404588704
+          ],
+          "value": 0.52
+        },
+        "findings_per_mutant": {
+          "value": 1.0
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 25
+        },
+        "n_pairs": {
+          "value": 25
+        }
+      },
+      "notes": [
+        "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
+        "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
+        "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "local-qwen-ft"
+      }
+    }
+  ],
+  "constructs": {
+    "review.defect_discrimination/1": {
+      "description": "Review defect discrimination, measured by matched-pair defect injection: a mechanically verified defect is planted in a known control at a known element; catch_rate is the refusing-verdict rate on mutants, false_alarm_rate the refusing rate on controls, discrimination their difference (zero for any constant reviewer), anchored_detection whether the review names the broken element (rescored from retained arms).",
+      "metrics": [
+        "n_pairs",
+        "n_distinct_cases",
+        "catch_rate",
+        "false_alarm_rate",
+        "discrimination",
+        "anchored_detection",
+        "findings_per_mutant",
+        "json_valid_mutant"
+      ],
+      "oracle": "deterministic mechanical checkers on both arms"
+    }
+  },
+  "document": "caplab-advisory-export/1",
+  "notice": "Advisory scored claims. No qualification decision, availability, or ranking is expressed or implied."
+}

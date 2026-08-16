@@ -1,0 +1,43 @@
+{
+  "schema": "caplab.native-agent-systems/v1",
+  "policy": "native-harness-required",
+  "decision_authority": "adr-0064",
+  "base_policy": {
+    "path": "docs/product/contracts/native-agent-systems.json",
+    "sha256": "1245d7ddda6045d0476a177cd937697be2ed5cd83438b647cdfeade39f70e5d9"
+  },
+  "source_observation": {
+    "authority": "repository-owner-directive-2026-08-15-you-do-it",
+    "harness_version": "1.1.13",
+    "executable_sha256": "416b197e4b38c797c8661098f0af2bb4e1323ffe3c286d5e9b6408cf7d7ee920",
+    "model_catalog_observed_at": "2026-08-15"
+  },
+  "systems": {
+    "agy-gemini-3-7-flash-low": {
+      "model_id": "gemini-3.7-flash",
+      "native_harness_id": "antigravity-cli",
+      "effort": "low",
+      "executable": "agy",
+      "required_command_tokens": ["--model", "gemini-3.7-flash-low", "--effort", "low"],
+      "version_command": ["agy", "--version"]
+    },
+    "agy-gemini-3-7-flash-medium": {
+      "model_id": "gemini-3.7-flash",
+      "native_harness_id": "antigravity-cli",
+      "effort": "medium",
+      "executable": "agy",
+      "required_command_tokens": ["--model", "gemini-3.7-flash-medium", "--effort", "medium"],
+      "version_command": ["agy", "--version"]
+    },
+    "agy-gemini-3-7-flash-high": {
+      "model_id": "gemini-3.7-flash",
+      "native_harness_id": "antigravity-cli",
+      "effort": "high",
+      "executable": "agy",
+      "required_command_tokens": ["--model", "gemini-3.7-flash-high", "--effort", "high"],
+      "version_command": ["agy", "--version"]
+    }
+  },
+  "forbidden_proxy_markers": ["openrouter", "harbor", "terminus"],
+  "exceptions": []
+}

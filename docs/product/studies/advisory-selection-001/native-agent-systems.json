@@ -1,0 +1,110 @@
+{
+  "schema": "caplab.native-agent-systems/v1",
+  "policy": "native-harness-required",
+  "decision_authority": "LADDER-PROTOCOL.md amendments 5 and 6",
+  "base_policy": {
+    "path": "docs/product/contracts/native-agent-systems.json",
+    "sha256": "1245d7ddda6045d0476a177cd937697be2ed5cd83438b647cdfeade39f70e5d9"
+  },
+  "native_harness_version": "codex-cli 0.146.0",
+  "systems": {
+    "codex-luna-low": {
+      "model_id": "gpt-5.6-luna",
+      "native_harness_id": "codex",
+      "effort": "low",
+      "executable": "codex",
+      "required_command_tokens": ["exec", "-m", "gpt-5.6-luna", "-c", "model_reasoning_effort=low"],
+      "version_command": ["codex", "--version"]
+    },
+    "codex-luna-medium": {
+      "model_id": "gpt-5.6-luna",
+      "native_harness_id": "codex",
+      "effort": "medium",
+      "executable": "codex",
+      "required_command_tokens": ["exec", "-m", "gpt-5.6-luna", "-c", "model_reasoning_effort=medium"],
+      "version_command": ["codex", "--version"]
+    },
+    "codex-luna-high": {
+      "model_id": "gpt-5.6-luna",
+      "native_harness_id": "codex",
+      "effort": "high",
+      "executable": "codex",
+      "required_command_tokens": ["exec", "-m", "gpt-5.6-luna", "-c", "model_reasoning_effort=high"],
+      "version_command": ["codex", "--version"]
+    },
+    "codex-luna-xhigh": {
+      "model_id": "gpt-5.6-luna",
+      "native_harness_id": "codex",
+      "effort": "xhigh",
+      "executable": "codex",
+      "required_command_tokens": ["exec", "-m", "gpt-5.6-luna", "-c", "model_reasoning_effort=xhigh"],
+      "version_command": ["codex", "--version"]
+    },
+    "codex-terra-low": {
+      "model_id": "gpt-5.6-terra",
+      "native_harness_id": "codex",
+      "effort": "low",
+      "executable": "codex",
+      "required_command_tokens": ["exec", "-m", "gpt-5.6-terra", "-c", "model_reasoning_effort=low"],
+      "version_command": ["codex", "--version"]
+    },
+    "codex-terra-medium": {
+      "model_id": "gpt-5.6-terra",
+      "native_harness_id": "codex",
+      "effort": "medium",
+      "executable": "codex",
+      "required_command_tokens": ["exec", "-m", "gpt-5.6-terra", "-c", "model_reasoning_effort=medium"],
+      "version_command": ["codex", "--version"]
+    },
+    "codex-terra-high": {
+      "model_id": "gpt-5.6-terra",
+      "native_harness_id": "codex",
+      "effort": "high",
+      "executable": "codex",
+      "required_command_tokens": ["exec", "-m", "gpt-5.6-terra", "-c", "model_reasoning_effort=high"],
+      "version_command": ["codex", "--version"]
+    },
+    "codex-terra-xhigh": {
+      "model_id": "gpt-5.6-terra",
+      "native_harness_id": "codex",
+      "effort": "xhigh",
+      "executable": "codex",
+      "required_command_tokens": ["exec", "-m", "gpt-5.6-terra", "-c", "model_reasoning_effort=xhigh"],
+      "version_command": ["codex", "--version"]
+    },
+    "codex-sol-low": {
+      "model_id": "gpt-5.6-sol",
+      "native_harness_id": "codex",
+      "effort": "low",
+      "executable": "codex",
+      "required_command_tokens": ["exec", "-m", "gpt-5.6-sol", "-c", "model_reasoning_effort=low"],
+      "version_command": ["codex", "--version"]
+    },
+    "codex-sol-medium": {
+      "model_id": "gpt-5.6-sol",
+      "native_harness_id": "codex",
+      "effort": "medium",
+      "executable": "codex",
+      "required_command_tokens": ["exec", "-m", "gpt-5.6-sol", "-c", "model_reasoning_effort=medium"],
+      "version_command": ["codex", "--version"]
+    },
+    "codex-sol-high": {
+      "model_id": "gpt-5.6-sol",
+      "native_harness_id": "codex",
+      "effort": "high",
+      "executable": "codex",
+      "required_command_tokens": ["exec", "-m", "gpt-5.6-sol", "-c", "model_reasoning_effort=high"],
+      "version_command": ["codex", "--version"]
+    },
+    "codex-sol-xhigh": {
+      "model_id": "gpt-5.6-sol",
+      "native_harness_id": "codex",
+      "effort": "xhigh",
+      "executable": "codex",
+      "required_command_tokens": ["exec", "-m", "gpt-5.6-sol", "-c", "model_reasoning_effort=xhigh"],
+      "version_command": ["codex", "--version"]
+    }
+  },
+  "forbidden_proxy_markers": ["openrouter", "harbor", "terminus"],
+  "exceptions": []
+}

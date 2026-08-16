@@ -1,0 +1,12 @@
+# Fleet layout for the metering workers.
+#
+# Provisioning adds a host entry here when a new worker is imaged; each
+# host owns a fixed slice of the shard space so nightly cycles never
+# contend for the same shard.
+
+[shards]
+count = 8
+
+[assignments]
+meter-prod-a = [0, 1, 2, 3]
+meter-prod-b = [4, 5, 6, 7]

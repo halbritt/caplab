@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://caplab.local/contracts/revbench-error-v1.schema.json",
+  "title": "CAPLAB Revbench Error Envelope v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "error_type",
+    "code",
+    "message"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "caplab-revbench-error/1"
+    },
+    "error_type": {
+      "enum": [
+        "RevbenchContractError",
+        "CanonicalizationError",
+        "ValueError",
+        "FilesystemError"
+      ]
+    },
+    "code": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    }
+  }
+}

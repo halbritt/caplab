@@ -1,0 +1,8 @@
+[project]
+name = "edgeagent"
+version = "0.4.2"
+description = "On-device agent that keeps the payments terminal fleet in sync with the control plane"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,9 @@
+[project]
+name = "ledgerline"
+version = "0.3.1"
+description = "Nightly importer for bank CSV exports into the local ledger store"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

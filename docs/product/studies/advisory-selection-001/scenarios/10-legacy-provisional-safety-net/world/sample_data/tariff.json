@@ -1,0 +1,11 @@
+{
+  "currency": "USD",
+  "tiers": [[100, 10.0], [250, 15.0], [null, 22.0]],
+  "fuel_surcharge_cents_per_kwh": 1.2,
+  "service_charge_cents": 995,
+  "tax_rate": 0.06,
+  "plans": {
+    "standard": {},
+    "ebill": {"energy_discount": 0.02}
+  }
+}

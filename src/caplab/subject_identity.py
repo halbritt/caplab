@@ -13,6 +13,68 @@ class NativeAgentSystemContractError(ValueError):
 
 
 _SCHEMA = "caplab.native-agent-systems/v1"
+CANONICAL_NATIVE_AGENT_SYSTEM_POLICY_SHA256 = (
+    "56bd254c2500d4d5913460aae307cbf5b81aafdb1830d5fe66a7d429432fc5d2"
+)
+_REQUIRED_PROXY_MARKERS = frozenset({"openrouter", "harbor", "terminus"})
+_ALLOWED_ENVIRONMENTS = {
+    "agy": {()},
+    "claude": {
+        (),
+        (
+            "CLAUDE_CONFIG_DIR=/home/halbritt/.local/share/striatum/"
+            "harness-config/claude-code",
+        ),
+    },
+    "codex": {
+        (),
+        ("CODEX_HOME=/home/halbritt/.local/share/striatum/harness-config/codex",),
+    },
+}
+_ALLOWED_COMMAND_SUFFIXES = {
+    "agy": {
+        (
+            "--mode",
+            "plan",
+            "--sandbox",
+            "--output-format",
+            "json",
+            "--json-schema",
+            (
+                '{"additionalProperties":false,"properties":{"anchors":'
+                '{"items":{"type":"string"},"type":"array"},'
+                '"schema_version":{"const":'
+                '"caplab-revbench-native-response/1"},"verdict":'
+                '{"enum":["clean","defect"]}},"required":'
+                '["schema_version","verdict","anchors"],"type":"object"}'
+            ),
+            "--print-timeout",
+            "2m0s",
+            "--print",
+        ),
+    },
+    "claude": {
+        (),
+        ("--output-format", "text"),
+        (
+            "--output-format",
+            "stream-json",
+            "--verbose",
+            "--no-session-persistence",
+            "--dangerously-skip-permissions",
+        ),
+    },
+    "codex": {
+        (),
+        (
+            "--sandbox",
+            "workspace-write",
+            "--skip-git-repo-check",
+            "--ephemeral",
+            "--json",
+        ),
+    },
+}
 
 
 def load_native_agent_system_policy(path: str | os.PathLike[str]) -> dict[str, Any]:
@@ -20,32 +82,29 @@ def load_native_agent_system_policy(path: str | os.PathLike[str]) -> dict[str, A
     try:
         value = json.loads(policy_path.read_text(encoding="utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError) as error:
-        raise NativeAgentSystemContractError(f"native_agent_policy_unreadable:{error}") from error
+        raise NativeAgentSystemContractError(
+            f"native_agent_policy_unreadable:{error}"
+        ) from error
     if not isinstance(value, dict) or value.get("schema") != _SCHEMA:
         raise NativeAgentSystemContractError("invalid_native_agent_policy_schema")
     systems = value.get("systems")
     if not isinstance(systems, dict) or not systems:
         raise NativeAgentSystemContractError("native_agent_policy_has_no_systems")
     if value.get("exceptions") != []:
-        raise NativeAgentSystemContractError("native_agent_policy_exception_requires_new_contract")
+        raise NativeAgentSystemContractError(
+            "native_agent_policy_exception_requires_new_contract"
+        )
     return value
 
 
-def _ordered_subsequence(required: Sequence[str], command: Sequence[str]) -> bool:
-    position = 0
-    for token in command:
-        if position < len(required) and token == required[position]:
-            position += 1
-    return position == len(required)
-
-
-def _unwrap_env(command: Sequence[str]) -> list[str]:
+def _unwrap_env(command: Sequence[str]) -> tuple[list[str], list[str]]:
     tokens = list(command)
-    if tokens and Path(tokens[0]).name == "env":
+    assignments: list[str] = []
+    if tokens and tokens[0] == "/usr/bin/env":
         tokens.pop(0)
         while tokens and "=" in tokens[0] and not tokens[0].startswith("="):
-            tokens.pop(0)
-    return tokens
+            assignments.append(tokens.pop(0))
+    return assignments, tokens
 
 
 def validate_native_agent_systems(
@@ -58,6 +117,8 @@ def validate_native_agent_systems(
     markers = policy.get("forbidden_proxy_markers")
     if not isinstance(systems, Mapping) or not isinstance(markers, list):
         raise NativeAgentSystemContractError("invalid_native_agent_policy")
+    if not all(isinstance(marker, str) for marker in markers):
+        raise NativeAgentSystemContractError("invalid_native_agent_policy")
     if not subjects:
         raise NativeAgentSystemContractError("native_agent_subjects_missing")
 
@@ -65,7 +126,9 @@ def validate_native_agent_systems(
         tuple_id = subject.get("tuple_id")
         expected = systems.get(tuple_id) if isinstance(tuple_id, str) else None
         if not isinstance(expected, Mapping):
-            raise NativeAgentSystemContractError(f"unknown_native_agent_tuple:{subject_id}")
+            raise NativeAgentSystemContractError(
+                f"unknown_native_agent_tuple:{subject_id}"
+            )
         for field in ("model_id", "native_harness_id", "effort"):
             if subject.get(field) != expected.get(field):
                 raise NativeAgentSystemContractError(
@@ -73,36 +136,67 @@ def validate_native_agent_systems(
                 )
         command = subject.get("command")
         version_command = subject.get("version_command")
-        if not isinstance(command, list) or not all(isinstance(token, str) for token in command):
-            raise NativeAgentSystemContractError(f"native_agent_command_missing:{subject_id}")
+        if not isinstance(command, list) or not all(
+            isinstance(token, str) for token in command
+        ):
+            raise NativeAgentSystemContractError(
+                f"native_agent_command_missing:{subject_id}"
+            )
         if not isinstance(version_command, list) or not all(
             isinstance(token, str) for token in version_command
         ):
-            raise NativeAgentSystemContractError(f"native_agent_version_probe_missing:{subject_id}")
+            raise NativeAgentSystemContractError(
+                f"native_agent_version_probe_missing:{subject_id}"
+            )
         executable = expected.get("executable")
-        unwrapped_command = _unwrap_env(command)
-        command_executable = Path(unwrapped_command[0]).name if unwrapped_command else ""
+        command_environment, unwrapped_command = _unwrap_env(command)
+        allowed_environments = _ALLOWED_ENVIRONMENTS.get(str(executable), {()})
+        if tuple(command_environment) not in allowed_environments:
+            raise NativeAgentSystemContractError(
+                f"native_agent_environment_identity_override:{subject_id}"
+            )
+        command_executable = unwrapped_command[0] if unwrapped_command else ""
         if command_executable != executable:
             raise NativeAgentSystemContractError(
                 f"native_agent_executable_mismatch:{subject_id}"
             )
         required = expected.get("required_command_tokens")
-        if not isinstance(required, list) or not _ordered_subsequence(
-            required, unwrapped_command[1:]
+        if not isinstance(required, list) or not all(
+            isinstance(token, str) for token in required
         ):
             raise NativeAgentSystemContractError(
                 f"native_agent_command_tuple_mismatch:{subject_id}"
             )
-        unwrapped_version = _unwrap_env(version_command)
-        if not unwrapped_version or [
-            Path(unwrapped_version[0]).name,
-            *unwrapped_version[1:],
-        ] != expected.get("version_command"):
+        command_arguments = unwrapped_command[1:]
+        if command_arguments[: len(required)] != required:
+            raise NativeAgentSystemContractError(
+                f"native_agent_command_tuple_mismatch:{subject_id}"
+            )
+        command_suffix = tuple(command_arguments[len(required) :])
+        allowed_suffixes = _ALLOWED_COMMAND_SUFFIXES.get(str(executable), {()})
+        if command_suffix not in allowed_suffixes:
+            raise NativeAgentSystemContractError(
+                f"native_agent_command_identity_override:{subject_id}"
+            )
+        version_environment, unwrapped_version = _unwrap_env(version_command)
+        if (
+            tuple(version_environment) not in allowed_environments
+            or version_environment != command_environment
+        ):
+            raise NativeAgentSystemContractError(
+                f"native_agent_environment_identity_override:{subject_id}"
+            )
+        if not unwrapped_version or unwrapped_version != expected.get(
+            "version_command"
+        ):
             raise NativeAgentSystemContractError(
                 f"native_agent_version_probe_mismatch:{subject_id}"
             )
-        encoded = " ".join(command).casefold()
-        if any(str(marker).casefold() in encoded for marker in markers):
+        encoded = " ".join([*command, *version_command]).casefold()
+        effective_markers = _REQUIRED_PROXY_MARKERS | {
+            marker.casefold() for marker in markers
+        }
+        if any(marker in encoded for marker in effective_markers):
             raise NativeAgentSystemContractError(
                 f"proxy_harness_substitution:{subject_id}"
             )

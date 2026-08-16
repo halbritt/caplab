@@ -1,0 +1,6 @@
+/workspace/Qwen3.6-27B-IQ4_XS.gguf: OK
+/workspace/review-sft-r1-lora-f16.gguf: OK
+/workspace/review.eval.jsonl: OK
+/workspace/eval.py: OK
+/workspace/chat_template.jinja: OK
+/workspace/llama-server: OK

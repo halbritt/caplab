@@ -1,0 +1,60 @@
+{
+  "orders": [
+    {
+      "order_id": "ORD-1041",
+      "customer_email": "mia.tran@example.com",
+      "status": "open",
+      "carrier": null,
+      "lines": [
+        {
+          "sku": "KB-0301",
+          "description": "Gateron Pro switches (70 pack)",
+          "quantity_ordered": 2,
+          "quantity_shipped": 0
+        }
+      ]
+    },
+    {
+      "order_id": "ORD-1042",
+      "customer_email": "dana.okafor@example.com",
+      "status": "open",
+      "carrier": null,
+      "lines": [
+        {
+          "sku": "KB-0442",
+          "description": "Low-profile keycap set, ANSI",
+          "quantity_ordered": 12,
+          "quantity_shipped": 0
+        }
+      ]
+    },
+    {
+      "order_id": "ORD-1043",
+      "customer_email": "s.villanueva@example.com",
+      "status": "open",
+      "carrier": null,
+      "lines": [
+        {
+          "sku": "KB-0117",
+          "description": "Aluminum 65% case, lilac",
+          "quantity_ordered": 1,
+          "quantity_shipped": 0
+        }
+      ]
+    },
+    {
+      "order_id": "ORD-1044",
+      "customer_email": "j.brandt@example.com",
+      "status": "open",
+      "carrier": null,
+      "lines": [
+        {
+          "sku": "KB-0290",
+          "description": "Coiled USB-C cable, forest",
+          "quantity_ordered": 3,
+          "quantity_shipped": 0
+        }
+      ]
+    }
+  ]
+}

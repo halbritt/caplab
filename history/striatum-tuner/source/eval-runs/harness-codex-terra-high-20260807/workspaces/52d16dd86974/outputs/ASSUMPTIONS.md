@@ -1,0 +1,3 @@
+- The explicitly declared working directory did not exist in the execution environment, so its required inputs and output location could not be accessed.
+- The only available input bundle with the exact requested p01 change-set identity was used for inspection; it was located in the exchange workspace whose directory name begins `faf2fabf`.
+- Required outputs were written to this lane's actual writable working directory under `outputs/` because the declared non-existent directory could not receive files.

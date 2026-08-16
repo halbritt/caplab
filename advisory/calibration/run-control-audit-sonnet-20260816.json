@@ -1,0 +1,87 @@
+[
+  {
+    "bytes": 43585,
+    "control_verdict": "needs_revision",
+    "defect_class": "base_dropped",
+    "dispatch_id": "e57c4ab70e2b4c8e2be3cef012fe133e6a269241b61a3cdee360999ec0b9c0aa",
+    "findings": [
+      {
+        "element_anchor": "ComputeRefusalID / compute_refusal_id",
+        "severity": null,
+        "text": "contract.yaml and README claim refusal records are pinned to the 'exact contextual identity,' but the refusal_id hash (Go and Python) only incorporates contextual_identity.request_id and base_hash, dropping the schema-required subject_identity field and the optional work_graph_hash/environment_pins "
+      },
+      {
+        "element_anchor": "tests/semantic-closure/model/refusal/README.md el:test-boundaries",
+        "severity": null,
+        "text": "README claims schema_validation_test.go 'Validates JSON outputs against draft 2020-12 schemas,' but the included test only performs a Marshal/Unmarshal round-trip check \u2014 it never loads or validates against any .schema.json file. The claim is unearned."
+      },
+      {
+        "element_anchor": "validate.go IsValidEvaluatorReasonCode",
+        "severity": null,
+        "text": "evaluator_refusal_record.schema.json declares node_kind as a closed enum (check/graph/review/acceptance), but neither the Go nor Python model validation enforces it, unlike reason_code \u2014 an inconsistency between the declared schema contract and the executable model."
+      }
+    ],
+    "input_path": "inputs/00-striatum-next-passes-semantic-and-durable-closure-packets-P01f-refusal-record-contract-change-set"
+  },
+  {
+    "bytes": 23401,
+    "control_verdict": "needs_revision",
+    "defect_class": "hash_mismatch",
+    "dispatch_id": "88b49e1b8bcbbbe92c95f8c0e470f1abc8c8a6e0e59a60604f908f3e322e1ce7",
+    "findings": [
+      {
+        "element_anchor": "internal/backend/local/integrate.go: executeIntegration",
+        "severity": null,
+        "text": "The single-change-set integration lane has no equivalent of anchoredBatchBaseGuard() for the 'pin present but 01-base dispatch-expansion missing' case that executeBatchIntegration explicitly guards against. In executeIntegration, `base, err := changeset.ParseProduct(baseBody)` is called unconditiona"
+      }
+    ],
+    "input_path": "inputs/00-striatum-next-passes-anchored-lineage-composes-packets-alc-anchored-base-typed-guard-change-set"
+  },
+  {
+    "bytes": 78112,
+    "control_verdict": "needs_revision",
+    "defect_class": "overclaimed_level",
+    "dispatch_id": "612852f3540246df52d31d5a2a2deaebf6ab1d2c38397ebd1119cffa0eeece52",
+    "findings": [
+      {
+        "element_anchor": "el:required-distinctions",
+        "severity": null,
+        "text": "The 'Runtime/model movement' bullet in docs/contracts/backend/adapter-model-identity.md asserts that under the same backend identifier and the same declaration pin, admitted facts including 'aliasing-class' can differ. This contradicts the document's own 'Identity Components' section and the adjacen"
+      }
+    ],
+    "input_path": "inputs/00-striatum-next-passes-backend-model-is-bound-change-set"
+  },
+  {
+    "bytes": 96195,
+    "control_verdict": "needs_revision",
+    "defect_class": "base_dropped",
+    "dispatch_id": "2d79e86b31df3fe176b992d605330d22212d6d582fd7706847e2d692ded10127",
+    "findings": [
+      {
+        "element_anchor": "internal/store/admission.go \u2014 Stage 5 plane discipline (W10)",
+        "severity": null,
+        "text": "The W10 'consumed input' exemption comment claims this crossing is specifically for a pass whose contract consumes evidence (named as RFC 0015 knowledge-promotion), but the code only checks `run.inputs[identity]` with no pass-ID/contract restriction \u2014 any pass can declare an evidence identity as an "
+      }
+    ],
+    "input_path": "inputs/00-striatum-next-passes-recall-compiles-to-knowledge-packets-pkt-04-knowledge-promotion-intake-change-set"
+  },
+  {
+    "bytes": 12523,
+    "control_verdict": "accept_with_findings",
+    "defect_class": "dropped_section",
+    "dispatch_id": "cce284c7bbc2907e07cf0e520a28b30b3f8005b8ea50cf91cb70705f03b5db6b",
+    "findings": [
+      {
+        "element_anchor": "el:c1-pass-role",
+        "severity": null,
+        "text": "The declared pass-role vocabulary mixes formatting conventions: 'review-primary' and 'build-primary' are hyphenated single tokens, while 'deterministic verification', 'harvest review', and 'additional-signal review' contain spaces. Every concrete example elsewhere in the document (C3's `role: review"
+      },
+      {
+        "element_anchor": "el:c2-dynamic-qualification",
+        "severity": null,
+        "text": "C4 states the backend must be checked for support of both 'the pass type' and its 'determinism/effect bounds', and separately states that an unsupported pass type disqualifies the backend. The formal predicate in C2 only includes a single term, Support(B, L.effect_bound), with no visible term corres"
+      }
+    ],
+    "input_path": "inputs/00-striatum-next-passes-backend-role-qualified-design"
+  }
+]

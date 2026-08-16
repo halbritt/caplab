@@ -1,0 +1,39 @@
+{
+  "backend": "glm",
+  "lane": "declared-adapter-command",
+  "transport": "fair",
+  "n": 34,
+  "eligible_of_split": "34/98",
+  "excluded_over_context": 64,
+  "excluded_subject_invisible": 0,
+  "errors": 1,
+  "json_valid": 0.9705882352941176,
+  "verdict_legal": 0.9705882352941176,
+  "verdict_exact_match": 0.2647058823529412,
+  "side_match": 0.29411764705882354,
+  "fate_agreement": 0.36363636363636365,
+  "fate_scored": 33,
+  "balanced_accuracy": 0.5227272727272727,
+  "caught_revised": 0.045454545454545456,
+  "passed_final": 1.0,
+  "n_revised": 22,
+  "n_final": 11,
+  "accept_rate": 0.9696969696969697,
+  "majority_class_rate": 0.6666666666666666,
+  "verdict_distribution": {
+    "accept_with_findings": 15,
+    "accept": 17,
+    "needs_revision": 1,
+    "None": 1
+  },
+  "mean_seconds": 153.2,
+  "cost_total_usd": 1.2271,
+  "cost_per_review_usd": 0.0372,
+  "cost_rows": 33,
+  "mean_reasoning_tokens": 6018,
+  "providers": {
+    "StreamLake": 33
+  },
+  "context_bound": 995328,
+  "provider_override": null
+}

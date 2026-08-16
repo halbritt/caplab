@@ -1,0 +1,17 @@
+[1/1] eee2c89dbd41 verdict=accept ref=accept 32.9s
+{
+  "model": "qwen-ft-r1",
+  "think": false,
+  "n": 1,
+  "errors": 0,
+  "json_valid": 1.0,
+  "verdict_legal": 1.0,
+  "verdict_exact_match": 1.0,
+  "side_match": 1.0,
+  "fate_agreement": null,
+  "fate_scored": 0,
+  "verdict_distribution": {
+    "accept": 1
+  },
+  "mean_seconds": 32.9
+}

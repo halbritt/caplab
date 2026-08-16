@@ -1,0 +1,35 @@
+{
+  "schema_version": "caplab-qualification-schema-catalog/1",
+  "resources": [
+    {
+      "id": "https://caplab.local/contracts/qualification-claim-v1.schema.json",
+      "path": "qualification-claim-v1.schema.json",
+      "sha256": "fba0516893c7f3abb1ff7bf58c06c3e3ef434334f4515103910b5c730fadb2f7"
+    },
+    {
+      "id": "https://caplab.local/contracts/qualification-export-v1.schema.json",
+      "path": "qualification-export-v1.schema.json",
+      "sha256": "5b6e306a9c4353e88c48a054069f398f5ca7fcb3af03476fd53d6f3b41a6a4a7"
+    },
+    {
+      "id": "https://caplab.local/contracts/qualification-records-v1.schema.json",
+      "path": "qualification-records-v1.schema.json",
+      "sha256": "029a5a512124415b719d9b0d0025b379edac19e3caa2c80cb19c45d168073b0f"
+    },
+    {
+      "id": "https://caplab.local/contracts/revbench-error-v1.schema.json",
+      "path": "revbench-error-v1.schema.json",
+      "sha256": "fab07f0cd6caca3b2f0e39432382367ac3fe3a1279e1cbc7f6ca05447f53535f"
+    },
+    {
+      "id": "https://caplab.local/contracts/revbench-live-native-v1.schema.json",
+      "path": "revbench-live-native-v1.schema.json",
+      "sha256": "eafd8236213abae19f92bc5562d724bbed6dcb9354ae9032983cbd915994dd96"
+    },
+    {
+      "id": "https://caplab.local/contracts/revbench-v1.schema.json",
+      "path": "revbench-v1.schema.json",
+      "sha256": "aeb3e2bc42c36f6125c12661f41175aa125f7e9a88a47fb350ba67048dcd21fc"
+    }
+  ]
+}

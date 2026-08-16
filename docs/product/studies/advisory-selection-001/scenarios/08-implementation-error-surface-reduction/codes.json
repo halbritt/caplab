@@ -1,0 +1,29 @@
+{
+  "scenario": "08-implementation-error-surface-reduction",
+  "codes": [
+    {
+      "id": "C1",
+      "kind": "artifact",
+      "positive": "In world/ledgerline/reader.py, a failed open/read/decode of an export file no longer yields an empty, success-shaped result: the `except (OSError, UnicodeDecodeError): return []` path is removed, and such a failure leaves read_rows as an exception (the original or a wrapper carrying the file path and chained cause) that reaches run_import's caller, so a run with an unreadable file cannot end with the plain success line and exit code 0.",
+      "negative_space": "Logging or printing the problem and still returning [] (or any empty/default value) does not count. Retrying with a fallback encoding (latin-1/cp1252, errors='replace') is not itself disqualifying, but does not satisfy this code if any read failure can still yield an empty result and a successful exit. Catching the exception in cli.py only to print a warning and still return 0 does not count."
+    },
+    {
+      "id": "C2",
+      "kind": "artifact",
+      "positive": "The blanket `except Exception: return None` in world/ledgerline/records.py is removed: only errors that mean the row is not a transaction (missing or blank required fields, unparseable date or amount — e.g. KeyError/ValueError) are treated as a skippable malformed row, that condition carries its reason (a dedicated exception type or structured value chained from or including the original error), and any other exception raised during row translation propagates out of this layer unhandled.",
+      "negative_space": "Keeping `except Exception` and adding a log call does not count. Returning None with the reason written only to a logger does not count. Relocating a blanket except-Exception-and-skip into importer.py or cli.py does not count. A narrowed catch that still discards the reason (e.g. `except (KeyError, ValueError): return None` with nothing recorded anywhere) does not satisfy the reason-carrying requirement."
+    },
+    {
+      "id": "C3",
+      "kind": "artifact",
+      "positive": "The batch boundary reports what it dropped: run_import's result (or the CLI output built from it) distinguishes a clean run from a lossy one, exposing at minimum the count of skipped rows and, for skipped rows, which file/line and why, so an operator reading the run's outcome can tell rows were dropped and for what reason.",
+      "negative_space": "A bare skipped-N counter with no reasons does not count. Reasons emitted only to a debug logger while the CLI's user-facing outcome for a lossy run is identical to a clean run's does not count. Reporting skips without the cause information required by C2 (file, line, and reason) does not count."
+    },
+    {
+      "id": "SCOPE",
+      "kind": "artifact",
+      "positive": "No file under tests/ (or *_test.go) is modified, deleted, or added",
+      "negative_space": "Editing an existing test to accept weakened behaviour, deleting an inconvenient test, or adding a new test under tests/ — including one that ratifies log-and-continue as correct failure handling — all violate this code. The repair must keep the existing suite green exactly as it stands."
+    }
+  ]
+}
