@@ -126,6 +126,26 @@ def cmd_sweep(args):
     return 0
 
 
+def cmd_pool_run(args):
+    from .executor import claims_from_runs
+    from .pool_runner import run_pool
+
+    summary = run_pool(
+        backend=args.backend, backends_root=args.backends_root,
+        registry_path=args.registry, out_dir=args.out,
+        sweep_seed=args.seed, per_operator=args.per_operator,
+        partition=args.partition, timeout=args.timeout,
+        max_cases=args.max_cases)
+    print(json.dumps(summary, indent=2))
+    if summary.get("aborted"):
+        print("run aborted; no claims derived", file=sys.stderr)
+        return 2
+    if args.claim:
+        claims = claims_from_runs([args.out], args.backends_root)
+        print(json.dumps(Ledger(args.ledger).append(claims), indent=2))
+    return 0
+
+
 def cmd_harvest(args):
     import subprocess
 
@@ -245,6 +265,22 @@ def main(argv=None):
     p.add_argument("--execute", action="store_true",
                    help="actually run the planned AFK-eligible measurements")
     p.set_defaults(fn=cmd_sweep)
+
+    p = sub.add_parser("pool-run",
+                       help="measure a binding over Tier 3 pool cases "
+                            "(synthetic-contract profile)")
+    p.add_argument("--backend", required=True)
+    p.add_argument("--backends-root", default=DEFAULT_BACKENDS)
+    p.add_argument("--registry", default=os.path.join(
+        REPO_ROOT, "advisory", "substrates.jsonl"))
+    p.add_argument("--out", required=True)
+    p.add_argument("--seed", type=int, required=True)
+    p.add_argument("--per-operator", type=int, default=2)
+    p.add_argument("--partition", default="open", choices=("open", "sealed"))
+    p.add_argument("--max-cases", type=int, default=40)
+    p.add_argument("--timeout", type=int, default=1800)
+    p.add_argument("--claim", action="store_true")
+    p.set_defaults(fn=cmd_pool_run)
 
     default_exchange = os.path.expanduser(
         "~/.local/share/striatum/exchange/019f22ef-0cb4-780f-9b82-b210bab24325")

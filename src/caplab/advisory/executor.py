@@ -182,6 +182,10 @@ def claims_from_runs(run_dirs: list[str], backends_root: str | None,
                     entry["sweep_seed"] = argv[argv.index("--seed") + 1]
             evidence.append(entry)
         notes = list(ADVISORY_NOTES)
+        if result.get("instruments"):
+            notes.append("instrument(s): " + ", ".join(result["instruments"]))
+        if result.get("profiles"):
+            notes.append("prompt profile(s): " + ", ".join(result["profiles"]))
         if result["repeated_case_trials"]:
             notes.append(
                 f"repeated case trials: {result['repeated_case_trials']} of "

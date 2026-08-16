@@ -1,3 +1,4 @@
+import json
 import random
 import unittest
 
@@ -40,23 +41,30 @@ class OperatorContractTest(unittest.TestCase):
         self.assertIn("requirement_inversion", BY_NAME)    # caplab
 
     def test_each_caplab_operator_mutant_checks_and_control_passes(self):
+        # Operators target different artifact shapes: prose operators bite on
+        # markdown, delivery operators on change sets. Each must apply to at
+        # least one, and must gate correctly on whichever it applies to.
         for operator in CAPLAB_OPERATORS:
             applicable = False
-            for seed in range(6):
-                try:
-                    injection = operator(DOC, random.Random(seed))
-                except NotApplicable:
-                    continue
-                applicable = True
-                self.assertTrue(injection.checkable, operator.__name__)
-                self.assertTrue(check_present(injection, injection.body),
-                                f"{operator.__name__}: mutant fails its own check")
-                self.assertFalse(check_present(injection, DOC),
-                                 f"{operator.__name__}: control already 'broken'")
-                self.assertNotEqual(injection.body, DOC, operator.__name__)
-                self.assertTrue(injection.element_anchor, operator.__name__)
+            for control in (DOC, CHANGE_SET):
+                for seed in range(6):
+                    try:
+                        injection = operator(control, random.Random(seed))
+                    except NotApplicable:
+                        continue
+                    applicable = True
+                    self.assertTrue(injection.checkable, operator.__name__)
+                    self.assertTrue(
+                        check_present(injection, injection.body),
+                        f"{operator.__name__}: mutant fails its own check")
+                    self.assertFalse(
+                        check_present(injection, control),
+                        f"{operator.__name__}: control already 'broken'")
+                    self.assertNotEqual(injection.body, control,
+                                        operator.__name__)
+                    self.assertTrue(injection.element_anchor, operator.__name__)
             self.assertTrue(applicable,
-                            f"{operator.__name__} never applied to the fixture")
+                            f"{operator.__name__} applied to no fixture")
 
     def test_operators_deterministic(self):
         for operator in CAPLAB_OPERATORS:
@@ -76,3 +84,81 @@ class OperatorContractTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+GATED_VENDORED = ("dropped_section", "contradicted_clause", "scope_violation",
+                  "refuted_conclusion", "overclaimed_level")
+
+CLAIMY_DOC = DOC + """
+## Status {#el:status}
+
+The delivery is Asserted at this stage and binds nothing further.
+"""
+
+CHANGE_SET = json.dumps({
+    "schema_version": "1",
+    "base": {"content_hash": "a" * 64},
+    "files": {
+        "docs/thing/README.md": "# Thing\n\n- `thing_test.go`: Exercises the "
+                                "aggregation path.\n",
+        "tests/thing/thing_test.go": "package thing_test\n\nimport (\n"
+                                     "\t\"encoding/json\"\n\t\"testing\"\n)\n\n"
+                                     "func TestRoundTrip(t *testing.T) {\n"
+                                     "\tdata, _ := json.Marshal(struct{}{})\n"
+                                     "\t_ = data\n}\n",
+    },
+}, indent=2)
+
+
+class GatedVendoredOperatorTest(unittest.TestCase):
+    """The five operators that shipped without a checker are now gated."""
+
+    def test_each_gates_mutant_true_control_false(self):
+        for name in GATED_VENDORED:
+            body = CLAIMY_DOC
+            injection = None
+            for seed in range(10):
+                try:
+                    injection = BY_NAME[name](body, random.Random(seed))
+                    break
+                except NotApplicable:
+                    continue
+            self.assertIsNotNone(injection, f"{name} never applied")
+            self.assertTrue(injection.checkable, name)
+            self.assertTrue(check_present(injection, injection.body),
+                            f"{name}: mutant fails its own gate")
+            self.assertFalse(check_present(injection, body),
+                             f"{name}: control passes as already broken")
+
+    def test_gating_does_not_change_the_mutation(self):
+        # The wrapper must not alter what the vendored operator produced.
+        from caplab.advisory import instrument_defects as vendored
+        for name in GATED_VENDORED:
+            try:
+                plain = getattr(vendored, name)(CLAIMY_DOC, random.Random(4))
+                gated = BY_NAME[name](CLAIMY_DOC, random.Random(4))
+            except NotApplicable:
+                continue
+            self.assertEqual(plain.body, gated.body, name)
+            self.assertEqual(plain.element_anchor, gated.element_anchor, name)
+
+
+class ClaimVsBehaviorTest(unittest.TestCase):
+    def test_claims_a_verification_the_test_does_not_perform(self):
+        injection = BY_NAME["unearned_verification_claim"](
+            CHANGE_SET, random.Random(0))
+        self.assertEqual(injection.defect_class, "unearned_verification_claim")
+        self.assertTrue(check_present(injection, injection.body))
+        self.assertFalse(check_present(injection, CHANGE_SET))
+
+    def test_skips_tests_that_really_validate(self):
+        honest = json.loads(CHANGE_SET)
+        honest["files"]["tests/thing/thing_test.go"] += (
+            '\n// loads schemas/thing.schema.json via jsonschema\n')
+        with self.assertRaises(NotApplicable):
+            BY_NAME["unearned_verification_claim"](
+                json.dumps(honest), random.Random(0))
+
+    def test_not_applicable_to_plain_markdown(self):
+        with self.assertRaises(NotApplicable):
+            BY_NAME["unearned_verification_claim"](DOC, random.Random(0))

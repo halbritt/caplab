@@ -11,13 +11,86 @@ systematically miss questions the case, not the binding.
 
 from __future__ import annotations
 
+import json
 import random
 import re
 
+from . import instrument_defects as _vendored
 from .instrument_defects import (ALL_OPERATORS as _VENDORED_OPERATORS,
                                  HEADING, Injection, MAJOR, MINOR,
                                  NotApplicable, _headings,
                                  check_present as _vendored_check_present)
+
+
+# --------------------------------------------------- gating the ungated five
+#
+# Five vendored operators assert their defect by construction and ship no
+# checker: `dropped_section`, `contradicted_clause`, `scope_violation`,
+# `refuted_conclusion`, `overclaimed_level`. A case built on an unchecked
+# injection cannot distinguish "the subject missed a defect" from "the
+# mutation never made one" — and `overclaimed_level` is exactly the case two
+# strong references missed on 2026-08-16.
+#
+# Each is decidable. These wrappers call the vendored operator unchanged,
+# then record what a checker needs and mark the injection checkable. The
+# vendored file stays a verbatim copy.
+
+def _wrap_checkable(vendored_op, enrich):
+    def operator(body: str, rng: random.Random) -> Injection:
+        injection = vendored_op(body, rng)
+        enrich(injection, body)
+        injection.checkable = True
+        return injection
+
+    operator.__name__ = vendored_op.__name__
+    operator.__doc__ = (vendored_op.__doc__ or "") + \
+        "\n\nMechanically gated by caplab.advisory.operators."
+    return operator
+
+
+def _enrich_dropped_section(injection: Injection, control: str) -> None:
+    """The deleted heading line, which the mutant must no longer contain."""
+    text = injection.detail["section"]
+    for match in HEADING.finditer(control):
+        if match.group(2) == text:
+            injection.detail["heading_line"] = match.group(0).strip()
+            return
+    raise NotApplicable("could not locate the deleted heading to gate on")
+
+
+def _enrich_inserted_marker(key: str):
+    """For operators that insert fixed prose: keep the exact inserted slice."""
+
+    def enrich(injection: Injection, control: str) -> None:
+        # The inserted text is whatever the mutant has that the control does
+        # not, taken from the first divergence forward.
+        limit = min(len(control), len(injection.body))
+        start = next((i for i in range(limit)
+                      if control[i] != injection.body[i]), limit)
+        marker = injection.body[start:start + 160]
+        if not marker or marker in control:
+            raise NotApplicable(f"{key}: no distinguishing inserted text")
+        injection.detail["inserted_marker"] = marker
+
+    return enrich
+
+
+def _enrich_overclaimed_level(injection: Injection, control: str) -> None:
+    """Counting the downgraded token distinguishes the arms exactly."""
+    was = injection.detail["was"]
+    injection.detail["control_count"] = control.count(was)
+    injection.detail["mutant_count"] = injection.body.count(was)
+    if injection.detail["control_count"] == injection.detail["mutant_count"]:
+        raise NotApplicable("overclaim did not change the claim-level count")
+
+
+_GATED = {
+    "dropped_section": _enrich_dropped_section,
+    "contradicted_clause": _enrich_inserted_marker("contradicted_clause"),
+    "scope_violation": _enrich_inserted_marker("scope_violation"),
+    "refuted_conclusion": _enrich_inserted_marker("refuted_conclusion"),
+    "overclaimed_level": _enrich_overclaimed_level,
+}
 
 
 def _anchor_before(body: str, position: int) -> str:
@@ -185,9 +258,81 @@ def swapped_section_bodies(body: str, rng: random.Random) -> Injection:
     )
 
 
+# --------------------------------------------------- claim-vs-behavior
+
+_VERIFICATION_CLAIM = (
+    "Validates every emitted record against the shipped JSON Schema "
+    "(draft 2020-12) before assertion")
+
+_SCHEMA_EVIDENCE = re.compile(
+    r"\.schema\.json|jsonschema|santhosh|xeipuuv|Draft202012|validate_schema",
+    re.IGNORECASE)
+
+
+def unearned_verification_claim(body: str, rng: random.Random) -> Injection:
+    """Make documentation assert a verification its named test never performs.
+
+    This is the shape of both defects found in an accepted striatum change
+    set on 2026-08-16: a README stating `schema_validation_test.go`
+    "Validates JSON outputs against draft 2020-12 schemas" beside a test that
+    loads no schema and only round-trips through Marshal/Unmarshal. Whole-tree
+    checks pass, because the test compiles and passes — it simply tests
+    something else. The claim is the defect.
+
+    Applies to change sets: a documentation file that names a test file which
+    is present in the same change set and demonstrably performs no schema
+    validation. The injection adds the claim to the doc; the test is left
+    untouched, so the artifact now asserts a guarantee its own files refute.
+    """
+    doc = _vendored._load_json(body)
+    files = doc.get("files")
+    if not isinstance(files, dict):
+        raise NotApplicable("not a change set with files")
+
+    tests = {name: content for name, content in files.items()
+             if isinstance(content, str)
+             and re.search(r"(_test\.(go|py)|test_[a-z_]+\.py)$", name)
+             and not _SCHEMA_EVIDENCE.search(content)}
+    if not tests:
+        raise NotApplicable("no test file that lacks schema validation")
+
+    docs = [name for name, content in files.items()
+            if isinstance(content, str) and name.endswith(".md")]
+    if not docs:
+        raise NotApplicable("no documentation file to carry the claim")
+
+    test_name = rng.choice(sorted(tests))
+    doc_name = rng.choice(sorted(docs))
+    leaf = test_name.rsplit("/", 1)[-1]
+    claim = f"\n- `{leaf}`: {_VERIFICATION_CLAIM}.\n"
+    if claim in files[doc_name]:
+        raise NotApplicable("claim already present")
+    files[doc_name] = files[doc_name].rstrip() + "\n" + claim
+
+    return Injection(
+        defect_class="unearned_verification_claim",
+        severity=MAJOR,
+        element_anchor=doc_name,
+        description=(f"{doc_name} now claims {leaf} validates records against "
+                     f"the shipped schema; that test performs no validation"),
+        body=json.dumps(doc, indent=2),
+        checkable=True,
+        detail={"doc": doc_name, "test": test_name, "claim": claim.strip()},
+    )
+
+
 CAPLAB_OPERATORS = [broken_internal_crossref, requirement_inversion,
-                    duplicated_section, truncated_tail, swapped_section_bodies]
-ALL_OPERATORS = list(_VENDORED_OPERATORS) + CAPLAB_OPERATORS
+                    duplicated_section, truncated_tail, swapped_section_bodies,
+                    unearned_verification_claim]
+
+#: Vendored operators, with the previously ungated five now mechanically
+#: gated. Order is preserved so sampling is unaffected.
+GATED_VENDORED_OPERATORS = [
+    _wrap_checkable(op, _GATED[op.__name__]) if op.__name__ in _GATED else op
+    for op in _VENDORED_OPERATORS
+]
+
+ALL_OPERATORS = GATED_VENDORED_OPERATORS + CAPLAB_OPERATORS
 BY_NAME = {op.__name__: op for op in ALL_OPERATORS}
 
 
@@ -204,6 +349,23 @@ def check_present(injection: Injection, body: str) -> bool | None:
         return injection.detail["dropped_suffix"] not in body
     if cls == "swapped_section_bodies":
         return injection.detail["marker"] in body
+    if cls == "dropped_section" and "heading_line" in injection.detail:
+        return injection.detail["heading_line"] not in body
+    if cls in ("contradicted_clause", "scope_violation", "refuted_conclusion") \
+            and "inserted_marker" in injection.detail:
+        return injection.detail["inserted_marker"] in body
+    if cls == "unearned_verification_claim":
+        doc = _vendored._load_json(body)
+        files = doc.get("files") or {}
+        documentation = files.get(injection.detail["doc"], "")
+        test = files.get(injection.detail["test"], "")
+        # Present when the claim is asserted and the named test still cannot
+        # back it. Both halves are required: the claim alone is not a defect
+        # if the test really validates.
+        return (injection.detail["claim"] in documentation
+                and not _SCHEMA_EVIDENCE.search(test))
+    if cls == "overclaimed_level" and "mutant_count" in injection.detail:
+        return body.count(injection.detail["was"]) == injection.detail["mutant_count"]
     return _vendored_check_present(injection, body)
 
 

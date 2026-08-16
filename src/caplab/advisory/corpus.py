@@ -154,15 +154,16 @@ class SubstrateRegistry:
         return {"added": added, "skipped_duplicates": skipped}
 
 
-#: Source kinds whose substrates can be measured through the instrument's own
-#: prompt path. An exchange substrate carries its dispatch bundle, so the real
-#: posture, stage contract, and manifest render around it. A repo-doc has no
-#: bundle and therefore no contract, and the 2026-08-16 finding showed that
-#: scoring a contract-relative defect without a contract measures whether a
-#: reviewer infers an unstated rule — a different construct. Repo-docs stay in
-#: the registry (they are sound substrates) but are withheld from scored
-#: sampling until synthetic manifests give them a stage contract.
-MEASUREMENT_READY_SOURCES = {"striatum-exchange"}
+#: Source kinds whose substrates can be measured. An exchange substrate
+#: carries its dispatch bundle, so the real posture and manifest render
+#: around it. A repo-doc has no bundle — which withheld it until 2026-08-16,
+#: when the contract experiment showed the load-bearing ingredient is the
+#: stage contract itself, not the manifest: stating the contract in the
+#: prompt restored detection on exactly these substrates (3/11 → 8/11, zero
+#: added false alarms). Under the synthetic-contract measurement profile
+#: both sources are measurable, and every case records which profile
+#: measured it so a source effect stays visible rather than assumed absent.
+MEASUREMENT_READY_SOURCES = {"striatum-exchange", "repo-doc"}
 
 
 def measurement_ready(substrate: dict) -> bool:

@@ -20,19 +20,16 @@ def substrate(sha, kind="striatum-exchange", partition="open",
 
 
 class SamplingTest(unittest.TestCase):
-    def test_repo_docs_withheld_from_scored_sampling(self):
+    def test_both_sources_are_measurable_under_the_contract_profile(self):
         pool = [substrate("a" * 64), substrate("b" * 64, kind="repo-doc")]
         cases = sample_cases(pool, sweep_seed=1, per_operator=5)
-        self.assertTrue(cases)
         self.assertEqual({c["source"]["kind"] for c in cases},
-                         {"striatum-exchange"})
+                         {"striatum-exchange", "repo-doc"})
 
-    def test_repo_docs_available_when_explicitly_allowed(self):
-        pool = [substrate("b" * 64, kind="repo-doc")]
-        self.assertEqual(sample_cases(pool, sweep_seed=1, per_operator=5), [])
-        cases = sample_cases(pool, sweep_seed=1, per_operator=5,
-                             require_measurement_ready=False)
-        self.assertTrue(cases)
+    def test_an_unknown_source_is_still_withheld(self):
+        odd = substrate("c" * 64)
+        odd["source"] = {"kind": "scraped-from-the-web"}
+        self.assertEqual(sample_cases([odd], sweep_seed=1, per_operator=5), [])
 
     def test_sealed_partition_never_sampled_for_open_sweeps(self):
         pool = [substrate("c" * 64, partition="sealed")]
@@ -40,8 +37,9 @@ class SamplingTest(unittest.TestCase):
 
     def test_measurement_ready_is_source_derived(self):
         self.assertIn("striatum-exchange", MEASUREMENT_READY_SOURCES)
+        self.assertIn("repo-doc", MEASUREMENT_READY_SOURCES)
         self.assertTrue(measurement_ready(substrate("a" * 64)))
-        self.assertFalse(measurement_ready(substrate("a" * 64, kind="repo-doc")))
+        self.assertTrue(measurement_ready(substrate("a" * 64, kind="repo-doc")))
 
     def test_sampling_is_deterministic_and_class_balanced(self):
         pool = [substrate(chr(97 + i) * 64) for i in range(6)]

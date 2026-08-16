@@ -34,6 +34,12 @@ import os
 from ._tuner_vendored import anchor_hits, anchors_of, extract_json
 
 MATCHED_PAIR_INSTRUMENT = "matched-pair defect injection"
+SYNTHETIC_CONTRACT_INSTRUMENT = "matched-pair defect injection (synthetic contract)"
+#: Both profiles produce the same on-disk shape and are scored by this same
+#: code, but they measure different tasks: one renders striatum's dispatch
+#: prompt, the other a stated contract. They live in separate run roots so a
+#: caller must choose, and every claim records which produced it.
+SCOREABLE_INSTRUMENTS = {MATCHED_PAIR_INSTRUMENT, SYNTHETIC_CONTRACT_INSTRUMENT}
 
 
 def completed(run_dir: str) -> bool:
@@ -65,7 +71,7 @@ def is_matched_pair_run(run_dir: str) -> bool:
         return False
     with open(os.path.join(run_dir, "summary.json"), encoding="utf-8") as f:
         summary = json.load(f)
-    return summary.get("instrument") == MATCHED_PAIR_INSTRUMENT
+    return summary.get("instrument") in SCOREABLE_INSTRUMENTS
 
 
 def eligible_run_dirs(runs_root: str) -> tuple[list[str], list[str]]:
@@ -126,6 +132,8 @@ def score_backends(run_dirs: list[str], adjudications=None) -> dict[str, dict]:
         results_path = os.path.join(run_dir, "results.jsonl")
         run_name = os.path.basename(run_dir)
         results_sha = _sha256_file(results_path)
+        with open(os.path.join(run_dir, "summary.json"), encoding="utf-8") as f:
+            run_instrument = json.load(f).get("instrument")
         with open(results_path, encoding="utf-8") as f:
             rows = [json.loads(line) for line in f if line.strip()]
         for row in rows:
@@ -142,6 +150,9 @@ def score_backends(run_dirs: list[str], adjudications=None) -> dict[str, dict]:
             entry = stat["runs"].setdefault(run_name, {
                 "run": run_name, "results_sha256": results_sha, "rows_used": 0})
             entry["rows_used"] += 1
+            stat.setdefault("instruments", set()).add(run_instrument)
+            if row.get("calibration_profile"):
+                stat.setdefault("profiles", set()).add(row["calibration_profile"])
 
     scored: dict[str, dict] = {}
     for backend, stat in sorted(per_backend.items()):
@@ -208,6 +219,8 @@ def score_backends(run_dirs: list[str], adjudications=None) -> dict[str, dict]:
             }
         scored[backend] = {
             "backend": backend,
+            "instruments": sorted(stat.get("instruments") or []),
+            "profiles": sorted(stat.get("profiles") or []),
             "metrics": metrics,
             "by_defect_class": {k: dict(v) for k, v in sorted(by_class.items())},
             "repeated_case_trials": n - len(stat["dispatches"]),
