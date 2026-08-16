@@ -20,10 +20,19 @@ An adjudication records what is actually known about one control substrate:
   reported beside the rate, so no reader mistakes an unexamined number for
   an established one.
 
-Only a human authority may record `defective` or `sound`: adjudicating a
-shipped artifact is a judgment about another system's output, and CAPLAB
-does not own it. Model reviews supply the argument; the record names who
-accepted it.
+A `defective` or `sound` disposition needs one of the two basis kinds
+CAPLAB admits as decision-grounding:
+
+- `mechanical-oracle` — a deterministic check anyone can rerun, recorded with
+  the check itself. "The README claims the test validates against a schema;
+  the test loads no schema file" is not an opinion.
+- `human-adjudication` — a named authority accepted an argument. Required
+  whenever the basis is a model's reasoning rather than a reproducible
+  check, because judging a shipped artifact is a statement about another
+  system's output and CAPLAB does not own it.
+
+A model review on its own is neither. It supplies the argument that makes
+one of the two worth obtaining.
 """
 
 from __future__ import annotations
@@ -33,6 +42,7 @@ import os
 
 ADJUDICATION_RECORD = "caplab-control-adjudication/1"
 DISPOSITIONS = {"sound", "defective", "unadjudicated"}
+BASIS_KINDS = {"mechanical-oracle", "human-adjudication"}
 
 
 class Adjudications:
@@ -63,17 +73,27 @@ class Adjudications:
 
 def build_adjudication(*, dispatch_id: str, disposition: str, basis: str,
                        adjudicated_by: str, as_of: str,
+                       basis_kind: str = "human-adjudication",
                        evidence: list[dict] | None = None,
                        notes: list[str] | None = None) -> dict:
     if disposition not in DISPOSITIONS:
         raise ValueError(f"unknown disposition {disposition!r}")
-    if disposition != "unadjudicated" and not adjudicated_by:
-        raise ValueError("a sound/defective disposition needs a named authority")
+    if disposition != "unadjudicated":
+        if basis_kind not in BASIS_KINDS:
+            raise ValueError(f"unknown basis kind {basis_kind!r}")
+        if not adjudicated_by:
+            raise ValueError(
+                "a sound/defective disposition must name its authority or its "
+                "mechanical check")
+        if basis_kind == "mechanical-oracle" and not evidence:
+            raise ValueError(
+                "a mechanical-oracle basis must record the check that was run")
     return {
         "record": ADJUDICATION_RECORD,
         "dispatch_id": dispatch_id,
         "disposition": disposition,
         "basis": basis,
+        "basis_kind": basis_kind,
         "adjudicated_by": adjudicated_by,
         "as_of": as_of,
         "evidence": evidence or [],
