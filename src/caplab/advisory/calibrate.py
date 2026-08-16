@@ -35,7 +35,10 @@ from ._tuner_vendored import REFUSING, anchors_of, anchor_hits, extract_json
 LOCAL_ENDPOINT = "http://localhost:8081/v1/chat/completions"
 MAX_SUBSTRATE_BYTES = 60_000  # keep well inside the local slot's context
 
-REVIEW_PROMPT = """You are a strict artifact reviewer. Review the artifact \
+#: Calibration profile v0 — no stage contract. Retained only to reproduce the
+#: 2026-08-16 finding; it cannot admit or quarantine a case, because a
+#: reviewer given no contract cannot refuse a contract-relative defect.
+REVIEW_PROMPT_V0 = """You are a strict artifact reviewer. Review the artifact \
 below for defects: incoherence, missing required content, contradictions, \
 broken references, structural damage, or claims the text itself does not \
 support. Respond with ONLY a JSON object:
@@ -46,12 +49,59 @@ Use needs_revision or reject only for defects that genuinely block acceptance.
 ARTIFACT:
 """
 
+#: Calibration profile v1 — carries the review contract the measurement
+#: prompt supplies. It states general reviewer obligations, the way a review
+#: posture does; it deliberately does NOT enumerate defect classes, which
+#: would telegraph the injection. The matched-pair design is the check on
+#: whether it leads: a leading prompt refuses controls too, and a
+#: control-arm refusal is recorded as a false alarm.
+REVIEW_PROMPT_V1 = """You are reviewing one artifact produced at a defined \
+stage of an engineering pipeline, under a review contract.
+
+THE CONTRACT. An artifact clears review only when all of the following hold:
+
+- It is COMPLETE for its stage. An artifact that states decisions must also
+  carry the sections its stage requires (such as the consequences of those
+  decisions, the constraints they impose, and what they bind). A required
+  part that is absent means the stage contract is unmet, even when what
+  remains reads well.
+- It is INTERNALLY CONSISTENT. No statement may contradict another, and no
+  conclusion may assert what the artifact's own content refutes or fails to
+  establish.
+- Its REFERENCES RESOLVE. Every cited path, element, or document it points
+  at must be reachable and must name something that exists.
+- Its DECLARED METADATA MATCHES ITS CONTENT. Any hash, count, level, base,
+  or identity the artifact declares about itself must actually equal what it
+  describes. A declared value that does not match is a defect regardless of
+  how minor the discrepancy looks.
+- Its CLAIMS ARE EARNED. An asserted status, level, or completion must be
+  supported by what the artifact contains, not merely stated.
+- Its SCOPE IS ITS OWN STAGE. It must not carry commitments belonging to a
+  later stage.
+
+YOUR JOB. Decide whether this artifact meets the contract. Refuse
+(`needs_revision` or `reject`) when it does not, and name the element at
+fault. Clear it (`accept` or `accept_with_findings`) when it does — a sound
+artifact must be accepted, and inventing a blocker is as much a failure as
+missing one.
+
+Respond with ONLY a JSON object:
+{"verdict": "accept" | "accept_with_findings" | "needs_revision" | "reject",
+ "findings": [{"element_anchor": "<anchor or heading>", "text": "<what is wrong>"}]}
+
+ARTIFACT:
+"""
+
+REVIEW_PROMPT = REVIEW_PROMPT_V1
+CALIBRATION_PROFILES = {"v0": REVIEW_PROMPT_V0, "v1": REVIEW_PROMPT_V1}
+
 
 def local_review(body: str, endpoint: str = LOCAL_ENDPOINT,
-                 timeout: int = 300) -> dict | None:
+                 timeout: int = 300, profile: str = "v1") -> dict | None:
     payload = {
         "model": "qwen3.6-35b-a3b",
-        "messages": [{"role": "user", "content": REVIEW_PROMPT + body}],
+        "messages": [{"role": "user",
+                      "content": CALIBRATION_PROFILES[profile] + body}],
         "max_tokens": 2048,
         "temperature": 0.0,
         "chat_template_kwargs": {"enable_thinking": False},
@@ -83,7 +133,8 @@ def resolve_json_pointer(body: str, pointer: str) -> str:
 
 
 def adapter_review(adapter_command: list[str], prompt_mode: str, body: str,
-                   timeout: int = 1800, stdout_json_pointer: str = "") -> dict | None:
+                   timeout: int = 1800, stdout_json_pointer: str = "",
+                   profile: str = "v1") -> dict | None:
     """Review one document through a declared adapter command.
 
     Used for strong-reference case validation: the reference binding sees the
@@ -97,7 +148,7 @@ def adapter_review(adapter_command: list[str], prompt_mode: str, body: str,
     which is the failure this validation exists to prevent."""
     import subprocess
 
-    prompt = REVIEW_PROMPT + body
+    prompt = CALIBRATION_PROFILES[profile] + body
     argv = list(adapter_command)
     stdin_data = None
     if prompt_mode == "arg":
@@ -117,7 +168,7 @@ def adapter_review(adapter_command: list[str], prompt_mode: str, body: str,
 
 
 def strong_reviewer_from_declaration(backends_root: str, backend_id: str,
-                                     timeout: int = 1800):
+                                     timeout: int = 1800, profile: str = "v1"):
     import yaml
 
     path = os.path.join(backends_root, backend_id, "backend.yaml")
@@ -130,9 +181,11 @@ def strong_reviewer_from_declaration(backends_root: str, backend_id: str,
                               adapter.get("prompt_mode", "stdin"),
                               body, timeout=timeout,
                               stdout_json_pointer=adapter.get(
-                                  "stdout_json_pointer") or "")
+                                  "stdout_json_pointer") or "",
+                              profile=profile)
 
     reviewer.reference_name = f"{backend_id}/strong"
+    reviewer.profile = profile
     return reviewer
 
 
@@ -151,7 +204,8 @@ def validate_pending(calibration_path: str, reviewer, load_body) -> list[dict]:
     for record in pending:
         case = record["case"]
         row = {"case": case,
-               "reference": getattr(reviewer, "reference_name", "strong")}
+               "reference": getattr(reviewer, "reference_name", "strong"),
+               "calibration_profile": getattr(reviewer, "profile", "v1")}
         body = load_body(case)
         if body is None:
             row["status"] = "substrate-unreachable"

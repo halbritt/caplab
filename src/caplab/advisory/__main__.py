@@ -181,7 +181,9 @@ def cmd_validate_pending(args):
     def load_body(case):
         return load_substrate_body(case, args.exchange, repos)
 
-    reviewer = strong_reviewer_from_declaration(args.backends_root, args.reference)
+    reviewer = strong_reviewer_from_declaration(args.backends_root,
+                                                args.reference,
+                                                profile=args.profile)
     rows = validate_pending(args.calibration, reviewer, load_body)
     os.makedirs(os.path.dirname(args.out) or ".", exist_ok=True)
     counts = {}
@@ -263,6 +265,9 @@ def main(argv=None):
                        help="run pending calibration cases against a strong reference")
     p.add_argument("--calibration", required=True)
     p.add_argument("--reference", default="claude-fable-5-high")
+    p.add_argument("--profile", default="v1", choices=("v0", "v1"),
+                   help="calibration prompt profile; v0 carries no stage "
+                        "contract and cannot admit or quarantine a case")
     p.add_argument("--backends-root", default=DEFAULT_BACKENDS)
     p.add_argument("--exchange", default=default_exchange)
     p.add_argument("--doc-repo", action="append")
