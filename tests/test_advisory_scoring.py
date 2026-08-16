@@ -179,3 +179,46 @@ class WilsonTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class SweepSeedVerificationTest(unittest.TestCase):
+    """A recorded seed must be verified against the draws, never assumed."""
+
+    def _fixture(self, root, drawn):
+        analysis = os.path.join(root, "analysis.json")
+        exchange = os.path.join(root, "exchange")
+        ids = [f"{i:064x}" for i in range(40)]
+        with open(analysis, "w") as f:
+            json.dump({"reviews": [{"dispatch_id": i, "fate": "final"}
+                                   for i in ids]}, f)
+        for i in ids:
+            d = os.path.join(exchange, "dispatch", i)
+            os.makedirs(d, exist_ok=True)
+            with open(os.path.join(d, "manifest.json"), "w") as f:
+                json.dump({}, f)
+        run_dir = os.path.join(root, "run")
+        os.makedirs(run_dir, exist_ok=True)
+        with open(os.path.join(run_dir, "results.jsonl"), "w") as f:
+            for i in drawn:
+                f.write(json.dumps({"dispatch_id": i}) + "\n")
+        return run_dir, exchange, analysis, ids
+
+    def test_correct_seed_verifies_and_wrong_seed_does_not(self):
+        from caplab.advisory.seed import candidate_pool, verify_sweep_seed
+        with tempfile.TemporaryDirectory() as root:
+            run_dir, exchange, analysis, ids = self._fixture(root, [])
+            drawn = candidate_pool(exchange, analysis, 20260807)[:6]
+            with open(os.path.join(run_dir, "results.jsonl"), "w") as f:
+                for i in drawn:
+                    f.write(json.dumps({"dispatch_id": i}) + "\n")
+            self.assertTrue(verify_sweep_seed(run_dir, 20260807, exchange,
+                                              analysis))
+            self.assertFalse(verify_sweep_seed(run_dir, 20260815, exchange,
+                                               analysis))
+
+    def test_empty_run_does_not_verify(self):
+        from caplab.advisory.seed import verify_sweep_seed
+        with tempfile.TemporaryDirectory() as root:
+            run_dir, exchange, analysis, _ = self._fixture(root, [])
+            self.assertFalse(verify_sweep_seed(run_dir, 20260807, exchange,
+                                               analysis))

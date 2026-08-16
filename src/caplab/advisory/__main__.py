@@ -23,7 +23,8 @@ DEFAULT_BACKENDS = os.path.expanduser("~/git/striatum-next/backends")
 
 
 def cmd_seed(args):
-    result = seed_claims(args.runs_root, args.backends_root)
+    result = seed_claims(args.runs_root, args.backends_root,
+                         exchange_root=args.exchange, analysis_path=args.analysis)
     ledger = Ledger(args.ledger)
     outcome = ledger.append(result["claims"])
     print(json.dumps({
@@ -206,6 +207,10 @@ def main(argv=None):
     p = sub.add_parser("seed", help="admit the historical tuner sweep as seed claims")
     p.add_argument("--runs-root", default=DEFAULT_RUNS)
     p.add_argument("--backends-root", default=DEFAULT_BACKENDS)
+    p.add_argument("--exchange", default=os.path.expanduser(
+        "~/.local/share/striatum/exchange/019f22ef-0cb4-780f-9b82-b210bab24325"))
+    p.add_argument("--analysis", default=os.path.expanduser(
+        "~/git/striatum-tuner/corpus/analysis.json"))
     p.set_defaults(fn=cmd_seed)
 
     p = sub.add_parser("export", help="write the caplab-advisory-export/1 document")

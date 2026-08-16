@@ -2,7 +2,7 @@
   "claims": [
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-484c39b4e8ad1c36",
+      "claim_id": "qc-6b5c90471e7c96f3",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -10,13 +10,17 @@
           "kind": "matched-pair-run",
           "results_sha256": "8e635e28331512247cbd05e92f0f6d3d74ec8857855e99a0d7734a56dbdfeb4f",
           "rows_used": 14,
-          "run": "gap-agy-gemini-3-1-pro-high"
+          "run": "gap-agy-gemini-3-1-pro-high",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         },
         {
           "kind": "matched-pair-run",
           "results_sha256": "bb1cebd5bf660d55319a127b8a4c5c97eafb04a4a04809ed84656b3e8fe28575",
           "rows_used": 21,
-          "run": "t29-agy-gemini-3-1-pro-high"
+          "run": "t29-agy-gemini-3-1-pro-high",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -78,7 +82,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-b3377338560d5350",
+      "claim_id": "qc-d12c1eebe4417f8d",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -86,19 +90,25 @@
           "kind": "matched-pair-run",
           "results_sha256": "1f3588960418eac7199190e287eb28e89b104e8d6779c0d9d009f2e1ae49ebd6",
           "rows_used": 14,
-          "run": "gap-agy-gemini-3-1-pro-low"
+          "run": "gap-agy-gemini-3-1-pro-low",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         },
         {
           "kind": "matched-pair-run",
           "results_sha256": "3e9dbac51e9cd7e4bf985c988eaeaff7e58eeb6b77d86174e0cf4492317b3be4",
           "rows_used": 1,
-          "run": "sweep-agy-gemini-3-1-pro-low-20260807"
+          "run": "sweep-agy-gemini-3-1-pro-low-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         },
         {
           "kind": "matched-pair-run",
           "results_sha256": "f0c8c1dd16857520e4048b03aefcf9a8bf3104b79f09f1f686a0efa378a0430b",
           "rows_used": 21,
-          "run": "t29-agy-gemini-3-1-pro-low"
+          "run": "t29-agy-gemini-3-1-pro-low",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -160,7 +170,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-b8732619e7ced58d",
+      "claim_id": "qc-6ff3a19e3a49d5f9",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -168,7 +178,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "70187e45e3c5ab8f44487b56b5837eec4212a016aa8a5ebb8df03b0281a43558",
           "rows_used": 2,
-          "run": "sweep-agy-gemini-3-5-flash-medium-20260807"
+          "run": "sweep-agy-gemini-3-5-flash-medium-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -220,7 +232,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-3003645e7b322f52",
+      "claim_id": "qc-58a2f564407953b8",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -228,7 +240,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "ac20348b38da3953609f5864bc5abc6a083aebebba18ae0000ffb02ebb72e413",
           "rows_used": 7,
-          "run": "agylive-gemini-3-6-flash-high"
+          "run": "agylive-gemini-3-6-flash-high",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -280,7 +294,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-ddfc708101d7efb6",
+      "claim_id": "qc-4c148e91ab10a97e",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -288,7 +302,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "faa3cbe038c0b11666cae41658afc8638e731d434cd9b48995363f5e65661aa1",
           "rows_used": 13,
-          "run": "gap-agy-gemini-3-6-flash-low"
+          "run": "gap-agy-gemini-3-6-flash-low",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -349,7 +365,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-932850f6dcf77225",
+      "claim_id": "qc-397ae01264be574d",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -357,19 +373,25 @@
           "kind": "matched-pair-run",
           "results_sha256": "eb49d352c22066bf721d623be672787020041b0d0a2cb5ef357030eb29bbec66",
           "rows_used": 13,
-          "run": "gap-agy-gemini-3-6-flash-medium"
+          "run": "gap-agy-gemini-3-6-flash-medium",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         },
         {
           "kind": "matched-pair-run",
           "results_sha256": "9f004fbe24aa77a1edbaa497bb4276b1008ee17a77ad5cf9335c4954a6badc68",
           "rows_used": 1,
-          "run": "revbench-agy-gemini-20260807"
+          "run": "revbench-agy-gemini-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         },
         {
           "kind": "matched-pair-run",
           "results_sha256": "dc26ac1d4478513d1763bb31cc2b171c44b92988d3b252981a9b909c5bceebcb",
           "rows_used": 1,
-          "run": "sweep-agy-gemini-3-6-flash-medium-20260807"
+          "run": "sweep-agy-gemini-3-6-flash-medium-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -644,7 +666,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-d6094b3c7ef4b12b",
+      "claim_id": "qc-c4682616a8ce1e19",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -652,7 +674,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "c27ba6a95054bee5657688a0ec9287b0cdf0bc4d9d8004ab303b23795795773a",
           "rows_used": 13,
-          "run": "sweep-agy-gpt-oss-120b-medium-20260807"
+          "run": "sweep-agy-gpt-oss-120b-medium-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -704,7 +728,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-83b69203209f1312",
+      "claim_id": "qc-7a5233c3787b3c39",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -712,13 +736,17 @@
           "kind": "matched-pair-run",
           "results_sha256": "4b9e901722dc05cf4a714af1550b13b1645dd672cd5756c1ae943b3436586c30",
           "rows_used": 13,
-          "run": "cc-claude-fable-5-high-20260807"
+          "run": "cc-claude-fable-5-high-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         },
         {
           "kind": "matched-pair-run",
           "results_sha256": "da628a710b0c90e5ef337b7ffccd864c3d3eaecedb2635db7ff2439ae895c567",
           "rows_used": 8,
-          "run": "confirm-claude-fable-5-high-20260807"
+          "run": "confirm-claude-fable-5-high-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -780,7 +808,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-58439562aefc545c",
+      "claim_id": "qc-48f6fe4ce8c4176d",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -788,13 +816,17 @@
           "kind": "matched-pair-run",
           "results_sha256": "8faa80279b5b389aafaf6f4e6734e404eaced1ca50f2bf675b5ba36452731ccb",
           "rows_used": 13,
-          "run": "cc-claude-fable-5-low-20260807"
+          "run": "cc-claude-fable-5-low-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         },
         {
           "kind": "matched-pair-run",
           "results_sha256": "1add0d6c54cb21bf47f357af438e53e987e086eab1c17f5d773680ed2b0a7fee",
           "rows_used": 24,
-          "run": "confirm-claude-fable-5-low-20260807"
+          "run": "confirm-claude-fable-5-low-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -856,7 +888,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-b6bc62d500acf7f5",
+      "claim_id": "qc-b703ea33dd875ad8",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -864,7 +896,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "a9780cfdac81822239e75e48dfcd0d7dfc85baa6888c09a0946e655155cc4344",
           "rows_used": 13,
-          "run": "cc-claude-fable-5-max-20260807"
+          "run": "cc-claude-fable-5-max-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -925,7 +959,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-57f516c9e1e2f306",
+      "claim_id": "qc-7cb5e12b10104899",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -933,7 +967,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "d05a527714661f7e3c726f0e3b6cb49dac0b851fd006c0bcab6111b865310fcf",
           "rows_used": 13,
-          "run": "cc-claude-fable-5-medium-20260807"
+          "run": "cc-claude-fable-5-medium-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -994,7 +1030,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-d850576d8ed705bd",
+      "claim_id": "qc-bda90f08b787dee7",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -1002,13 +1038,17 @@
           "kind": "matched-pair-run",
           "results_sha256": "44b25de396837cc32f424bee05a21cf7fe13ca38e6dd91923dea4089e8d9819a",
           "rows_used": 13,
-          "run": "cc-claude-fable-5-xhigh-20260807"
+          "run": "cc-claude-fable-5-xhigh-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         },
         {
           "kind": "matched-pair-run",
           "results_sha256": "0adaa21f5a9dc9181f210611c069f9298eac8eacc1b955f818b80f485aa18496",
           "rows_used": 6,
-          "run": "confirm-claude-fable-5-xhigh-20260807"
+          "run": "confirm-claude-fable-5-xhigh-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -1070,7 +1110,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-1cefeacb8b682f79",
+      "claim_id": "qc-7b30314874dcf620",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -1078,7 +1118,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "64efef014f11cc5fda3a11fa0899b1fb529eda56ce82c3b516ff6db0b4dbcd60",
           "rows_used": 17,
-          "run": "revbench-claude-harm-20260807"
+          "run": "revbench-claude-harm-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -1139,7 +1181,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-b0345ba1bc7fae2c",
+      "claim_id": "qc-5575bf6e05433444",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -1147,7 +1189,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "71720086b40d484956251e0c0d568e77bd8c987c8c85d299c117fca2432e5729",
           "rows_used": 13,
-          "run": "sweep-claude-harm-haiku-4-5-low-20260807"
+          "run": "sweep-claude-harm-haiku-4-5-low-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -1208,7 +1252,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-966a324539072611",
+      "claim_id": "qc-510aa51545fa0bba",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -1216,7 +1260,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "9aad4357a66f652fefbfdd5c60155a12244088d6ecf86cbad16d0be91a2411eb",
           "rows_used": 28,
-          "run": "revbench-claude-harm-opus-20260807"
+          "run": "revbench-claude-harm-opus-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -1277,7 +1323,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-8a73da8ad1834c37",
+      "claim_id": "qc-10f17b5794f3d26f",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -1285,7 +1331,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "f5925157f96218d19335937b123d9c4f6be4099700299684b9bcc4c85e2f8d50",
           "rows_used": 13,
-          "run": "sweep-claude-harm-opus-4-8-low-20260807"
+          "run": "sweep-claude-harm-opus-4-8-low-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -1346,7 +1394,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-070fd2ecdd9fcca0",
+      "claim_id": "qc-3edd918b5b89533c",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -1354,7 +1402,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "18af9d76de4ca8d8af34e3aeaabe782cd1aca2bfba459f8f352e938d8fda821e",
           "rows_used": 4,
-          "run": "sweep-claude-harm-opus-4-8-max-20260807"
+          "run": "sweep-claude-harm-opus-4-8-max-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -1415,7 +1465,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-e7496b40f5f13e29",
+      "claim_id": "qc-e12132a8a6ced8ad",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -1423,7 +1473,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "e79c1ffe72cfdb4bb57caf9c2abc194d658c5ad7538e01c82c2af7837865b2bc",
           "rows_used": 10,
-          "run": "sweep-claude-harm-opus-4-8-medium-20260807"
+          "run": "sweep-claude-harm-opus-4-8-medium-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -1484,7 +1536,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-c70379fb2e69152f",
+      "claim_id": "qc-fce434caf5977c4f",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -1492,7 +1544,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "ba177e7872e34ed55653902bb46ebd345f2c0438edd7742d37cd623f46253e1a",
           "rows_used": 3,
-          "run": "sweep-claude-harm-opus-4-8-xhigh-20260807"
+          "run": "sweep-claude-harm-opus-4-8-xhigh-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -1553,7 +1607,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-725062584e10240a",
+      "claim_id": "qc-474411512957a800",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -1561,7 +1615,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "7a20a72f989afd4f8fd660b833e71b4aecd785662d47a240f87569a0176bbef9",
           "rows_used": 2,
-          "run": "sweep-claude-harm-opus-5-high-20260807"
+          "run": "sweep-claude-harm-opus-5-high-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -1613,7 +1669,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-2a181fd0edaa674f",
+      "claim_id": "qc-e5c2e1985405e3ad",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -1621,7 +1677,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "031411186eb58bcd65ce4a9cdce408e85c9f361f46caa1ac4f19ff8f95bd093b",
           "rows_used": 13,
-          "run": "cc-claude-opus-4-8-high-20260807"
+          "run": "cc-claude-opus-4-8-high-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -1682,7 +1740,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-5b99a35059281d4f",
+      "claim_id": "qc-e7123f5dc878d8b7",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -1690,7 +1748,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "d0616ea3fb4d690a5b61035baa0e54e4f3afd2b60c07ebba4e07c40e1b8a8acb",
           "rows_used": 12,
-          "run": "cc-claude-opus-4-8-low-20260807"
+          "run": "cc-claude-opus-4-8-low-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -1751,7 +1811,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-d6f580a9b910edb2",
+      "claim_id": "qc-d45b35ad1b20c961",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -1759,7 +1819,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "b2b12f523197f3310c50cf35d1b159653d0042bf3686dbba0eb996ccf3629366",
           "rows_used": 13,
-          "run": "cc-claude-opus-4-8-max-20260807"
+          "run": "cc-claude-opus-4-8-max-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -1820,7 +1882,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-6732e5e0e8c54cb4",
+      "claim_id": "qc-08ff01f71ea899b3",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -1828,7 +1890,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "021440f0ce8d9847e3525fa6b2adc6525c3ab6f5ac15e9cb9e8c9b65c028733f",
           "rows_used": 13,
-          "run": "cc-claude-opus-4-8-medium-20260807"
+          "run": "cc-claude-opus-4-8-medium-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -1889,7 +1953,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-dcb0b48230d53a2c",
+      "claim_id": "qc-dd3b8497045b0831",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -1897,7 +1961,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "53c048d74dfac1935e75a2082f6747305f7fbf59fce9e6e0c8da0cff314f4ebe",
           "rows_used": 13,
-          "run": "cc-claude-opus-4-8-xhigh-20260807"
+          "run": "cc-claude-opus-4-8-xhigh-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -1958,7 +2024,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-0700379996e078c0",
+      "claim_id": "qc-cf7c88ff0a78f04a",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -1966,7 +2032,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "6c8d8e47faf30f775a915f745d8118f28dbbce15e009c65465c72a6bdd3b2817",
           "rows_used": 12,
-          "run": "cc-claude-opus-5-high-20260807"
+          "run": "cc-claude-opus-5-high-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -2027,7 +2095,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-b90d45d3feb2ec61",
+      "claim_id": "qc-223a47d1d0168c83",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -2035,7 +2103,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "03990e9916cef75ec56c23623853106d8dad85ec36b8ce7645a3b3a2206fb820",
           "rows_used": 13,
-          "run": "cc-claude-opus-5-low-20260807"
+          "run": "cc-claude-opus-5-low-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -2096,7 +2166,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-69cad65e5d1775dd",
+      "claim_id": "qc-8620f0c004f7cef2",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -2104,7 +2174,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "df57aae87ff57958fe6fe1ae1ff1c074ee991102ed20ceb7663d923f3c29e64a",
           "rows_used": 14,
-          "run": "gap-claude-opus-5-max"
+          "run": "gap-claude-opus-5-max",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -2165,7 +2237,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-c107f00d477e9897",
+      "claim_id": "qc-4dfc2e433c900d40",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -2173,7 +2245,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "9d330544449da1307832e6e98a793112d1a6e7e881f044a73a4e69a9ad69d933",
           "rows_used": 13,
-          "run": "cc-claude-opus-5-medium-20260807"
+          "run": "cc-claude-opus-5-medium-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -2234,7 +2308,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-4fed547535cc29a5",
+      "claim_id": "qc-88cf025d929cac38",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -2242,7 +2316,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "5a4e666ff75daf069756fcae43255a6b1a43785f85fa81a8b7e096e88312f330",
           "rows_used": 14,
-          "run": "gap-claude-opus-5-xhigh"
+          "run": "gap-claude-opus-5-xhigh",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -2303,7 +2379,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-31fdc1f2269b4259",
+      "claim_id": "qc-0f8b68a0871c6bd5",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -2311,7 +2387,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "7b01eca6a8e4a52206e1858e5d0af90e95f3fcf7774a1cd194d1a3d3933fc2b0",
           "rows_used": 13,
-          "run": "cc-claude-sonnet-5-high-20260807"
+          "run": "cc-claude-sonnet-5-high-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -2372,7 +2450,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-f404d2224072a1b9",
+      "claim_id": "qc-2652b6295aa8eb79",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -2380,7 +2458,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "aff35b84c88b51d6b83f8ac4ea9aa2d75c88b1ba9fbcd8ca14c7dfb6b737cc4f",
           "rows_used": 14,
-          "run": "gap-claude-sonnet-5-low"
+          "run": "gap-claude-sonnet-5-low",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -2441,7 +2521,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-18a1149840a69e39",
+      "claim_id": "qc-ea004f1c164ee2b4",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -2449,7 +2529,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "f23fa9bd259abe0618de3a08d2923756904d9b2e5074bd0036cf6ddfa9300684",
           "rows_used": 13,
-          "run": "cc-claude-sonnet-5-max-20260807"
+          "run": "cc-claude-sonnet-5-max-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -2510,7 +2592,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-05ea6df73f6147c7",
+      "claim_id": "qc-a0074770537f3d7a",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -2518,7 +2600,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "c7520b24886119316e6899c886c235f64975520de08c1d036570a9045293fe8d",
           "rows_used": 13,
-          "run": "cc-claude-sonnet-5-medium-20260807"
+          "run": "cc-claude-sonnet-5-medium-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -2579,7 +2663,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-027702048187263c",
+      "claim_id": "qc-cecf8922dc2b797d",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -2587,7 +2671,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "7b5f329d55a72ade5cf03d3b419fd3d21a2c0ef39970f78cb8a9bdc6b4adf5c6",
           "rows_used": 14,
-          "run": "gap-claude-sonnet-5-xhigh"
+          "run": "gap-claude-sonnet-5-xhigh",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -2648,7 +2734,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-15b51509687d9d7f",
+      "claim_id": "qc-c5d779953e9582e9",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -2656,7 +2742,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "521b6afe6a0c6bb4286a01cd0f35b8d826ad25e403b086204b4a2b501e405a89",
           "rows_used": 13,
-          "run": "sweep-codex-luna-high-20260807"
+          "run": "sweep-codex-luna-high-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -2717,7 +2805,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-32e609d3f198bd66",
+      "claim_id": "qc-f3e4f82987c96621",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -2725,7 +2813,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "6ebfdc671de98e3165785bdedb02a18aba7e7a6346ec5b173b291271565cae9c",
           "rows_used": 13,
-          "run": "sweep-codex-luna-low-20260807"
+          "run": "sweep-codex-luna-low-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -2786,7 +2876,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-4065aa4ce23f93ea",
+      "claim_id": "qc-995745bea24dd4fc",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -2794,7 +2884,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "ad22dc96302325128f7c3de3512a78d7c02230f64fc4c0c87aacd5e1582b7201",
           "rows_used": 13,
-          "run": "sweep-codex-luna-max-20260807"
+          "run": "sweep-codex-luna-max-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -2855,7 +2947,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-cc5b068e38bdff26",
+      "claim_id": "qc-01af9cf97db0349b",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -2863,7 +2955,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "716b40b405967654206de57d5ad1b47ffadb65c950fdab506dc2d29eb6c49d80",
           "rows_used": 13,
-          "run": "sweep-codex-luna-medium-20260807"
+          "run": "sweep-codex-luna-medium-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -2924,7 +3018,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-50cd4dd6ec9077a4",
+      "claim_id": "qc-2d1f5bba7ac828f2",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -2932,7 +3026,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "bc9dab4f4f2c7ce4c7e08bcac14e9469d5a4d7184fcdcf4892812e05614a6668",
           "rows_used": 13,
-          "run": "sweep-codex-luna-xhigh-20260807"
+          "run": "sweep-codex-luna-xhigh-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -2993,7 +3089,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-4bb343b809221621",
+      "claim_id": "qc-f40815e30a81d721",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -3001,7 +3097,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "ed7047f2691b3e173ba4be786b1a1ee70d93882f9e404df074f9706885d0a39e",
           "rows_used": 23,
-          "run": "revbench-codex-sol-high-20260807"
+          "run": "revbench-codex-sol-high-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -3062,7 +3160,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-b494fec3a7176d40",
+      "claim_id": "qc-84242daa9d70f465",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -3070,7 +3168,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "60c26d44b8dc552b30844635fdf2ac2d25991d7d9595c79787d30206d3173e1c",
           "rows_used": 23,
-          "run": "revbench-codex-sol-low-20260807"
+          "run": "revbench-codex-sol-low-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -3131,7 +3231,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-f685d813df2fb6bf",
+      "claim_id": "qc-c5a4211a644a1536",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -3139,7 +3239,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "74c620f6051744815916753254ded809ff24dbe7ade8d60bb1ec9aeb74c4b315",
           "rows_used": 29,
-          "run": "revbench-codex-sol-max-20260807"
+          "run": "revbench-codex-sol-max-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -3200,7 +3302,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-4e233c1ee048124f",
+      "claim_id": "qc-cd07d66aa6013c92",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -3208,7 +3310,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "3b1d3ff6b1ac8af276c16a1eda1dcf29fd8028dc77c04dd6b5f1cb31cb721871",
           "rows_used": 23,
-          "run": "revbench-codex-sol-medium-20260807"
+          "run": "revbench-codex-sol-medium-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -3269,7 +3373,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-eaf4bd0f0ca60815",
+      "claim_id": "qc-f1debedd62e40ab2",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -3277,7 +3381,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "f36a41ef951f0ba57f836cf896c3cb2ee91bba4ee2b95723b9fa9a0bd6f89030",
           "rows_used": 23,
-          "run": "revbench-codex-sol-xhigh-20260807"
+          "run": "revbench-codex-sol-xhigh-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -3338,7 +3444,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-310ca91f75572b05",
+      "claim_id": "qc-61c5db4c1ecddc14",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -3346,7 +3452,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "f0fb15283438408b5575d6d373300de95c4bd23c6d506ac8df76b58eea4dcffb",
           "rows_used": 13,
-          "run": "sweep-codex-terra-high-20260807"
+          "run": "sweep-codex-terra-high-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -3407,7 +3515,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-dacad83124030692",
+      "claim_id": "qc-3773aaca5589104b",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -3415,7 +3523,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "b71ae2d0b357aa1cadda4bc3cd04b6da9c77d9a34a02c49317793115bcd9726b",
           "rows_used": 13,
-          "run": "sweep-codex-terra-low-20260807"
+          "run": "sweep-codex-terra-low-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -3476,7 +3586,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-7c290e9124b7ae38",
+      "claim_id": "qc-3f57f0dab6e65f8b",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -3484,7 +3594,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "5e1bf089516765a8e187f56cd242e1c48629e8a3618c2fcdc695d7b381952234",
           "rows_used": 13,
-          "run": "sweep-codex-terra-max-20260807"
+          "run": "sweep-codex-terra-max-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -3545,7 +3657,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-188cbf33ad085a6e",
+      "claim_id": "qc-61fb116e9b21f909",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -3553,7 +3665,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "59b1fd3d406626c87e9c9653decf0b6ecccf874a852aee9f5c6a36258ff517af",
           "rows_used": 13,
-          "run": "sweep-codex-terra-medium-20260807"
+          "run": "sweep-codex-terra-medium-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -3614,7 +3728,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-a4a6dc2391d53eb8",
+      "claim_id": "qc-7a4685cb6b641fd7",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -3622,7 +3736,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "c67a96ee5e91a086f0518f6a3b96d7a9ead1fd4316387c7ef88bca661abbd7c0",
           "rows_used": 13,
-          "run": "sweep-codex-terra-xhigh-20260807"
+          "run": "sweep-codex-terra-xhigh-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -3683,7 +3799,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-7fd1fc6be6d10b3e",
+      "claim_id": "qc-b05fd22b15282b8f",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -3691,7 +3807,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "2f0d7b9b66a46db6dbb26a9f7f73def2469603d40501fae4f7a31d71a0a58e9d",
           "rows_used": 47,
-          "run": "revbench-deepseek-v4-flash-20260807"
+          "run": "revbench-deepseek-v4-flash-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -3743,7 +3861,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-c536d03d89d4616c",
+      "claim_id": "qc-532110d5ed5c7f43",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -3751,7 +3869,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "8c646a1525dd3e2566850f1f1755bcb3a733ca4dea617aeeea594503d6420629",
           "rows_used": 34,
-          "run": "revbench-glm-20260807"
+          "run": "revbench-glm-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -3803,7 +3923,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-47a0c821e5d2281f",
+      "claim_id": "qc-fea2c682ffc8e580",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -3811,7 +3931,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "4e838328e2aac4bad6ab4949c8bc7f2630f862816efcb2abcb43f49a410e42b6",
           "rows_used": 30,
-          "run": "revbench-kimi-k3-20260807"
+          "run": "revbench-kimi-k3-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -3863,7 +3985,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-6bdfc79a7b083faf",
+      "claim_id": "qc-0bbaa063a5c5ca24",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -3871,7 +3993,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "3146f7de16ff12e559b725e8f15dd72158ee4354a18d0d9c83022327d949346d",
           "rows_used": 39,
-          "run": "revbench-local-qwen-20260807"
+          "run": "revbench-local-qwen-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {
@@ -3923,7 +4047,7 @@
     },
     {
       "as_of": "2026-08-09T00:00:00+00:00",
-      "claim_id": "qc-08873d8489106725",
+      "claim_id": "qc-d0235043a55d6362",
       "construct": "review.defect_discrimination/1",
       "custody": "historical-seed",
       "evidence": [
@@ -3931,7 +4055,9 @@
           "kind": "matched-pair-run",
           "results_sha256": "803a1a45e548f6a1a0f17c11e1e6a23d8717be19255312c29c9b08be6a8339d1",
           "rows_used": 25,
-          "run": "revbench-local-qwen-ft-20260807"
+          "run": "revbench-local-qwen-ft-20260807",
+          "sweep_seed": "20260807",
+          "sweep_seed_basis": "reconstructed-and-verified"
         }
       ],
       "metrics": {

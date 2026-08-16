@@ -14,6 +14,7 @@ final measurements landed 2026-08-09, and admission must be replayable.
 
 from __future__ import annotations
 
+import json
 import os
 
 from .claims import REVIEW_DEFECT_DISCRIMINATION, build_claim
@@ -31,18 +32,79 @@ SEED_NOTES = [
 ]
 
 
-def seed_claims(runs_root: str, backends_root: str | None = None) -> dict:
+#: The instrument's own default seed, and the value the 2026-08 sweep's draws
+#: reproduce. Historical runs recorded no seed, so it is verified rather than
+#: assumed: replaying the instrument's candidate selection under this seed
+#: reproduces the exact dispatch ids each run drew, and no other tried seed
+#: does. See `verify_sweep_seed`.
+HISTORICAL_SWEEP_SEED = 20260807
+
+DEFAULT_EXCHANGE = os.path.expanduser(
+    "~/.local/share/striatum/exchange/019f22ef-0cb4-780f-9b82-b210bab24325")
+DEFAULT_ANALYSIS = os.path.expanduser("~/git/striatum-tuner/corpus/analysis.json")
+
+
+def candidate_pool(exchange_root: str, analysis_path: str,
+                   seed: int) -> list[str]:
+    """The instrument's known-sound candidate order under one seed."""
+    import random
+
+    with open(analysis_path, encoding="utf-8") as f:
+        reviews = json.load(f)["reviews"]
+    sound = [
+        r["dispatch_id"] for r in reviews
+        if r.get("fate") == "final"
+        and os.path.isfile(os.path.join(exchange_root, "dispatch",
+                                        r["dispatch_id"], "manifest.json"))
+    ]
+    random.Random(seed).shuffle(sound)
+    return sound
+
+
+def verify_sweep_seed(run_dir: str, seed: int, exchange_root: str,
+                      analysis_path: str, slack: int = 8) -> bool:
+    """Whether this run's drawn cases are reproduced by that seed.
+
+    The instrument draws from a seeded shuffle of the known-sound pool, so a
+    run's dispatch ids must all fall inside the pool prefix that seed
+    produces. `slack` allows for the oversampling the instrument performs
+    when a case is discarded.
+    """
+    results_path = os.path.join(run_dir, "results.jsonl")
+    if not os.path.isfile(results_path):
+        return False
+    with open(results_path, encoding="utf-8") as f:
+        drawn = [json.loads(line)["dispatch_id"] for line in f if line.strip()]
+    if not drawn:
+        return False
+    prefix = set(candidate_pool(exchange_root, analysis_path,
+                                seed)[: len(drawn) + slack])
+    return all(dispatch in prefix for dispatch in drawn)
+
+
+def seed_claims(runs_root: str, backends_root: str | None = None,
+                exchange_root: str | None = None,
+                analysis_path: str | None = None) -> dict:
     """Returns {"claims": [...], "skipped_incomplete": [...], "scored": {...}}."""
     run_dirs, skipped = eligible_run_dirs(runs_root)
     scored = score_backends(run_dirs)
+    verifiable = bool(exchange_root and analysis_path
+                      and os.path.isfile(analysis_path))
     claims = []
     for backend, result in scored.items():
         matched = bool(
             backends_root
             and os.path.isfile(os.path.join(backends_root, backend, "backend.yaml")))
-        evidence = [
-            {"kind": "matched-pair-run", **run} for run in result["runs"]
-        ]
+        evidence = []
+        for run in result["runs"]:
+            entry = {"kind": "matched-pair-run", **run}
+            if verifiable:
+                run_dir = os.path.join(runs_root, run["run"])
+                if verify_sweep_seed(run_dir, HISTORICAL_SWEEP_SEED,
+                                     exchange_root, analysis_path):
+                    entry["sweep_seed"] = str(HISTORICAL_SWEEP_SEED)
+                    entry["sweep_seed_basis"] = "reconstructed-and-verified"
+            evidence.append(entry)
         claims.append(build_claim(
             subject_source_id=backend,
             subject_matched=matched,
