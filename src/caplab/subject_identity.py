@@ -18,6 +18,7 @@ CANONICAL_NATIVE_AGENT_SYSTEM_POLICY_SHA256 = (
 )
 _REQUIRED_PROXY_MARKERS = frozenset({"openrouter", "harbor", "terminus"})
 _ALLOWED_ENVIRONMENTS = {
+    "agy": {()},
     "claude": {
         (),
         (
@@ -31,6 +32,27 @@ _ALLOWED_ENVIRONMENTS = {
     },
 }
 _ALLOWED_COMMAND_SUFFIXES = {
+    "agy": {
+        (
+            "--mode",
+            "plan",
+            "--sandbox",
+            "--output-format",
+            "json",
+            "--json-schema",
+            (
+                '{"additionalProperties":false,"properties":{"anchors":'
+                '{"items":{"type":"string"},"type":"array"},'
+                '"schema_version":{"const":'
+                '"caplab-revbench-native-response/1"},"verdict":'
+                '{"enum":["clean","defect"]}},"required":'
+                '["schema_version","verdict","anchors"],"type":"object"}'
+            ),
+            "--print-timeout",
+            "2m0s",
+            "--print",
+        ),
+    },
     "claude": {
         (),
         ("--output-format", "text"),

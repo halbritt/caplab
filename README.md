@@ -56,3 +56,7 @@ recomputation is under `src/caplab/recomputation`, and evidence runtime code is
 under `src/caplab/runtime`. The qualification architecture, status semantics,
 and operator boundary are documented in
 [`docs/product/qualification/`](docs/product/qualification/README.md).
+Start with the
+[`provider-free Revbench local fixture`](examples/revbench-local-fixture/README.md)
+to create a persistent workspace and run the public preparation, contained
+execution, and offline scoring path without credentials or network access.
