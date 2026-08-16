@@ -54,19 +54,29 @@ artifact rather than left to a reader's care.
 
 ## Amendment 2026-08-16 — the false-alarm gap is not yet a reliability finding
 
-Two of Sonnet's five control refusals were audited after this read was
-written, and **both look like correct catches** on artifacts Gemini cleared:
-an internal naming contradiction in a design (`guard-*` vs `stall-*`
-entrypoints, each stated "at exactly"), and a self-clearing starvation mark
-applied to a credential failure that does not self-heal. See
+**Correction to a first version of this amendment.** It claimed that two of
+Sonnet's control refusals *in this comparison* had been audited. That was
+wrong: the two audited refusals came from the calibration pass, on two
+different substrates with **zero overlap** with this run's cases. Every one
+of the control refusals counted below remains unaudited at the time of
+writing.
+
+What the calibration audit did establish is that `fate == final` does not
+guarantee a sound control: on two shipped artifacts, refusals by a strong
+reference were specific, anchored, and defensible — an internal naming
+contradiction in a design (`guard-*` vs `stall-*` entrypoints, each stated
+"at exactly"), and a self-clearing starvation mark applied to a credential
+failure that does not self-heal. See
 [control soundness is not established](finding-2026-08-16-control-soundness-is-not-established.md).
 
-The false-alarm comparison below therefore **cannot be read as a reliability
-advantage for Gemini** until the remaining three refusals are audited: on an
-unsound control, the reviewer that refuses is detecting and the reviewer
-that clears is missing, and the metric scores both backwards. The catch-rate
-result is unaffected. The read's conclusion — that neither difference is
-established — stands, and is now understated rather than overstated.
+That is a statement about the instrument's premise, and it applies to this
+comparison's controls as much as to those two. The false-alarm comparison
+below therefore **cannot be read as a reliability advantage for Gemini**
+until this run's control refusals are themselves audited: on an unsound
+control, the reviewer that refuses is detecting and the reviewer that clears
+is missing, and the metric scores both backwards. The catch-rate result is
+unaffected. The read's conclusion — that neither difference is established —
+stands, and is now understated rather than overstated.
 
 ## What the false-alarm pairing changed
 

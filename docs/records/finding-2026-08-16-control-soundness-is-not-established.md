@@ -75,14 +75,18 @@ tolerate: it flatters the less careful subject.
 
 ## Effect on the matched read
 
-The read reported Gemini 0 false alarms against Sonnet 5 of 13
-(p = 0.062, not established). Two of Sonnet's five control refusals have now
-been audited and both look like correct catches on artifacts Gemini cleared.
-That does not reverse the comparison — three refusals remain unexamined, and
-the two audited findings are defensible rather than indisputable — but it
-does mean the false-alarm gap **cannot be read as a reliability advantage
-for Gemini** until the remaining refusals are audited. The catch-rate
-result (p = 0.375) is untouched.
+**These two substrates are not among the comparison's cases.** They came
+from the calibration pass and share no dispatch id with the matched run,
+whose six control refusals are separately unaudited. A first draft of the
+amendment conflated the two sets; that error is corrected here and in the
+read.
+
+What carries across is the premise, not the cases: if `fate == final` does
+not establish soundness for these two shipped artifacts, it does not
+establish it for the comparison's controls either. So the read's false-alarm
+gap (Gemini 0, Sonnet 5 of 13, p = 0.062) **cannot be read as a reliability
+advantage for Gemini** until that run's own refusals are audited. The
+catch-rate result (p = 0.375) is untouched.
 
 The read is amended accordingly. No claim is retracted, because the read's
 stated conclusion was already that neither difference is established.
