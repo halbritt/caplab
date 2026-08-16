@@ -135,7 +135,9 @@ def cmd_pool_run(args):
         registry_path=args.registry, out_dir=args.out,
         sweep_seed=args.seed, per_operator=args.per_operator,
         partition=args.partition, timeout=args.timeout,
-        max_cases=args.max_cases, replicates=args.replicates)
+        max_cases=args.max_cases, replicates=args.replicates,
+        mutant_replicates=args.mutant_replicates,
+        anchor_path=args.anchor_set)
     print(json.dumps(summary, indent=2))
     if summary.get("aborted"):
         print("run aborted; no claims derived", file=sys.stderr)
@@ -220,6 +222,22 @@ def cmd_validate_pending(args):
     print(json.dumps(counts, indent=2))
 
 
+
+def cmd_build_anchor(args):
+    from .adjudication import Adjudications
+    from .anchor import build_anchor_set, save
+    from .corpus import SubstrateRegistry
+
+    anchor_set = build_anchor_set(
+        SubstrateRegistry(args.registry).read(), size=args.size,
+        adjudications=Adjudications.load(args.adjudications))
+    save(anchor_set, args.out)
+    print(json.dumps({"out": args.out, "size": anchor_set["size"],
+                      "uncovered_operators": anchor_set["uncovered_operators"],
+                      "operators": [c["operator"] for c in anchor_set["cases"]]},
+                     indent=2))
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="caplab.advisory")
     ap.add_argument("--ledger", default=DEFAULT_LEDGER)
@@ -283,11 +301,31 @@ def main(argv=None):
                    help="invocations per arm; the control arm reproduces at "
                         "~53%% on identical inputs, so a false-alarm rate at "
                         "1 replicate does not describe a binding")
+    p.add_argument("--mutant-replicates", type=int, default=None,
+                   help="invocations of the mutant arm; defaults to "
+                        "--replicates. The mutant arm reproduces at ~80-87%%, "
+                        "so replicating it equally buys reliability it "
+                        "already has, at the cost of distinct defects")
+    p.add_argument("--anchor-set", default=os.path.join(
+        REPO_ROOT, "advisory", "anchor-set.json"),
+        help="invariant replay set; both arms get r=3 and its substrates are "
+             "withheld from the breadth draw")
     p.add_argument("--claim", action="store_true")
     p.set_defaults(fn=cmd_pool_run)
 
     default_exchange = os.path.expanduser(
         "~/.local/share/striatum/exchange/019f22ef-0cb4-780f-9b82-b210bab24325")
+    p = sub.add_parser("build-anchor-set",
+                       help="build the invariant replay set (instrument control)")
+    p.add_argument("--registry", default=os.path.join(
+        REPO_ROOT, "advisory", "substrates.jsonl"))
+    p.add_argument("--adjudications", default=os.path.join(
+        REPO_ROOT, "advisory", "control-adjudications.jsonl"))
+    p.add_argument("--size", type=int, default=12)
+    p.add_argument("--out", default=os.path.join(
+        REPO_ROOT, "advisory", "anchor-set.json"))
+    p.set_defaults(fn=cmd_build_anchor)
+
     p = sub.add_parser("harvest", help="harvest substrates into the registry")
     p.add_argument("--registry", default=os.path.join(
         REPO_ROOT, "advisory", "substrates.jsonl"))

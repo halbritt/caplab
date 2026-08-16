@@ -1,0 +1,160 @@
+{
+  "cases": [
+    {
+      "operator": "dropped_section",
+      "seed": 3244161330,
+      "sha256": "40181ea573013ed8e513bbb0887adafc88929642ab037e0c97ccc27c117a6f60",
+      "source": {
+        "dispatch_id": "822676378a36b799f28e5c94f8b72ec2da396d6a2d88adf89f67e9352338a8a5",
+        "fate": "final",
+        "input_path": "inputs/00-striatum-next-passes-freshness-needs-no-judgment-implementation-plan",
+        "kind": "striatum-exchange"
+      },
+      "substrate_id": "qs-40181ea573013ed8"
+    },
+    {
+      "operator": "contradicted_clause",
+      "seed": 2055694486,
+      "sha256": "402057192be1b8a8cac8765d8968b3e7bf246a85a0b506d11b38fd2c34b97dc6",
+      "source": {
+        "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+        "kind": "repo-doc",
+        "path": "docs/product/training/caplab-review-dissent-local-qwen-r1/caplab-review-dissent-qwen27b-qlora-r1-preregistration.md",
+        "repo": "caplab"
+      },
+      "substrate_id": "qs-402057192be1b8a8"
+    },
+    {
+      "operator": "dangling_reference",
+      "seed": 3568807260,
+      "sha256": "4160800d36fb89ba77d323afd63762b77127c321a0100cda8ce2d100c1c77b19",
+      "source": {
+        "dispatch_id": "663bbceb309ce793a8258fd7bd6153efe94673f17a5b5657920eadde45fe906a",
+        "fate": "final",
+        "input_path": "inputs/00-striatum-next-passes-freshness-needs-no-judgment-packets-fnnj-007-predicate-evidence-notes-change-set",
+        "kind": "striatum-exchange"
+      },
+      "substrate_id": "qs-4160800d36fb89ba"
+    },
+    {
+      "operator": "overclaimed_level",
+      "seed": 1991142534,
+      "sha256": "40be7cf187a4e2887695b3391c203045e50b054d131b6df05fd5b95565751302",
+      "source": {
+        "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
+        "kind": "repo-doc",
+        "path": "docs/explanation/bootstrap-compiler-model.md",
+        "repo": "striatum-next"
+      },
+      "substrate_id": "qs-40be7cf187a4e288"
+    },
+    {
+      "operator": "scope_violation",
+      "seed": 4046685490,
+      "sha256": "41241900113d986291f08158f80e859ec4ab8a827277a8adb570236fdb624142",
+      "source": {
+        "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
+        "kind": "repo-doc",
+        "path": "docs/tutorials/first-compile.md",
+        "repo": "striatum-next"
+      },
+      "substrate_id": "qs-41241900113d9862"
+    },
+    {
+      "operator": "refuted_conclusion",
+      "seed": 2933721764,
+      "sha256": "4298b5676c10ee3b40999cd487cea472e6eb5471d3d76ceccf53fc0547937fae",
+      "source": {
+        "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+        "kind": "repo-doc",
+        "path": "docs/product/studies/advisory-selection-001/PART1-RESULT.md",
+        "repo": "caplab"
+      },
+      "substrate_id": "qs-4298b5676c10ee3b"
+    },
+    {
+      "operator": "hollow_delivery",
+      "seed": 2626618411,
+      "sha256": "40583720e067908f3b58f91adb389b2d8934d80c54bc00342d63baf3b5814f2d",
+      "source": {
+        "dispatch_id": "01407fbb5ea42bc7410b44582afcbe4e95e9cd45f5df6c2bf296c8e73f5fdf07",
+        "fate": "final",
+        "input_path": "inputs/00-striatum-next-passes-semantic-and-durable-closure-packets-P12-independent-verification-a-change-set",
+        "kind": "striatum-exchange"
+      },
+      "substrate_id": "qs-40583720e067908f"
+    },
+    {
+      "operator": "hash_mismatch",
+      "seed": 1518308763,
+      "sha256": "415d0b9333fe336f554dd82b0a44dbd87cc77f3d53242dc4d456288b77858ef1",
+      "source": {
+        "dispatch_id": "d508a9406f501bd347da087dba7fd12079e59d6d05f38f2ff6aa10b659f92e3c",
+        "fate": "final",
+        "input_path": "inputs/00-striatum-next-passes-semantic-and-durable-closure-packets-P09-architecture-agreement-lint-change-set",
+        "kind": "striatum-exchange"
+      },
+      "substrate_id": "qs-415d0b9333fe336f"
+    },
+    {
+      "operator": "base_dropped",
+      "seed": 1336559367,
+      "sha256": "425bccdb287d365434c476e2b6eb61c4d0170b7241e56e0ccbecef4ac0bac48c",
+      "source": {
+        "dispatch_id": "3952b19c64f017f0ec821e7c31e7e3936819cdb5fc77b77b82d31f142bb37473",
+        "fate": "final",
+        "input_path": "inputs/00-striatum-next-passes-backends-own-their-config-b-packets-p1-adapter-config-contract-and-metadata-change-set",
+        "kind": "striatum-exchange"
+      },
+      "substrate_id": "qs-425bccdb287d3654"
+    },
+    {
+      "operator": "broken_internal_crossref",
+      "seed": 2811658142,
+      "sha256": "922bffcd10232e91231b87ff6b8b3575a3fc30132a26fa24db3d936daf878453",
+      "source": {
+        "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
+        "kind": "repo-doc",
+        "path": "decisions/D0013-adapter-supervision.md",
+        "repo": "striatum-next"
+      },
+      "substrate_id": "qs-922bffcd10232e91"
+    },
+    {
+      "operator": "requirement_inversion",
+      "seed": 1017253136,
+      "sha256": "42bc0f9e052bfa5753dd81eee577b96a6586804ecb0c052ca43e2494b24ccf92",
+      "source": {
+        "dispatch_id": "24478236c84b8699d1017f7aa92873c3a6a97ca2ec6e026097bccdca173e0dcf",
+        "fate": "final",
+        "input_path": "inputs/00-striatum-next-passes-agy-lane-is-robust-change-set",
+        "kind": "striatum-exchange"
+      },
+      "substrate_id": "qs-42bc0f9e052bfa57"
+    },
+    {
+      "operator": "duplicated_section",
+      "seed": 3927218825,
+      "sha256": "42ac7af2bd75bd7d6c7251ebb71c408f55d7ec049ce272d5c8b69cc430a3616c",
+      "source": {
+        "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+        "kind": "repo-doc",
+        "path": "docs/decisions/adr-0057-authorize-qwen27b-dual-slot-exclusive-launch.md",
+        "repo": "caplab"
+      },
+      "substrate_id": "qs-42ac7af2bd75bd7d"
+    }
+  ],
+  "notes": [
+    "Invariant: this set does not depend on a sweep seed and does not change when the pool grows.",
+    "Anchor substrates are withheld from breadth sampling, so a replayed case never inflates a claim's distinct-defect count.",
+    "Both arms are replicated on every sweep. The set measures the instrument, not the corpus."
+  ],
+  "partition": "open",
+  "record": "caplab-anchor-set/1",
+  "requested_size": 12,
+  "size": 12,
+  "uncovered_operators": [
+    "decorative_check"
+  ]
+}

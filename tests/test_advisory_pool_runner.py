@@ -248,3 +248,109 @@ class ReplicationTest(unittest.TestCase):
         self.assertTrue(row["control_unanimous"])
 if __name__ == "__main__":
     unittest.main()
+
+
+class AnchorSetTest(unittest.TestCase):
+    """The invariant replay set is an instrument control, not more evidence."""
+
+    def _substrates(self, n=30):
+        from caplab.advisory.operators import ALL_OPERATORS
+        names = [op.__name__ for op in ALL_OPERATORS]
+        out = []
+        for i in range(n):
+            sha = f"{i:064x}"
+            out.append({"substrate_id": "qs-" + sha[:16], "sha256": sha,
+                        "partition": "open",
+                        "source": {"kind": "striatum-exchange",
+                                   "dispatch_id": sha,
+                                   "input_path": "inputs/a"},
+                        "applicable_operators": sorted(names)})
+        return out
+
+    def test_set_is_invariant_and_substrate_disjoint(self):
+        from caplab.advisory.anchor import build_anchor_set
+        subs = self._substrates()
+        first = build_anchor_set(subs, size=12)
+        second = build_anchor_set(list(reversed(subs)), size=12)
+        self.assertEqual(first["cases"], second["cases"])
+        ids = [c["substrate_id"] for c in first["cases"]]
+        self.assertEqual(len(ids), len(set(ids)))
+        # one case per operator: the set spans the defect space first
+        ops = [c["operator"] for c in first["cases"]]
+        self.assertEqual(len(ops), len(set(ops)))
+
+    def test_defective_control_substrate_cannot_anchor(self):
+        from caplab.advisory.adjudication import (Adjudications,
+                                                  build_adjudication)
+        from caplab.advisory.anchor import build_anchor_set
+        subs = self._substrates()
+        banned = subs[0]["source"]["dispatch_id"]
+        adj = Adjudications([build_adjudication(
+            dispatch_id=banned, disposition="defective", basis="audited",
+            adjudicated_by="principal:test",
+            as_of="2026-08-16T00:00:00+00:00")])
+        chosen = build_anchor_set(subs, size=12, adjudications=adj)
+        used = {c["source"]["dispatch_id"] for c in chosen["cases"]}
+        self.assertNotIn(banned, used)
+
+    def test_anchor_substrates_are_withheld_from_breadth(self):
+        from caplab.advisory.anchor import anchor_substrate_ids
+        from caplab.advisory.corpus import sample_cases
+        subs = self._substrates()
+        from caplab.advisory.anchor import build_anchor_set
+        anchor = build_anchor_set(subs, size=12)
+        withheld = anchor_substrate_ids(anchor)
+        breadth_pool = [s for s in subs if s["substrate_id"] not in withheld]
+        drawn = {c["substrate_id"] for c in
+                 sample_cases(breadth_pool, sweep_seed=1, per_operator=3)}
+        self.assertFalse(drawn & withheld)
+
+    def test_reliability_reports_per_arm_unanimity(self):
+        from caplab.advisory.anchor import reliability
+        rows = [
+            {"anchor": True, "usable": True, "caught": True, "false_alarm": False,
+             "control_unanimous": True, "mutant_unanimous": True},
+            {"anchor": True, "usable": True, "caught": True, "false_alarm": True,
+             "control_unanimous": False, "mutant_unanimous": True},
+            {"anchor": False, "usable": True, "caught": False, "false_alarm": False,
+             "control_unanimous": False, "mutant_unanimous": False},
+        ]
+        result = reliability(rows)
+        self.assertEqual(result["anchor_cases"], 2)      # breadth row ignored
+        self.assertEqual(result["control_unanimous_share"], 0.5)
+        self.assertEqual(result["mutant_unanimous_share"], 1.0)
+
+    def test_drift_names_the_ambiguity_it_cannot_resolve(self):
+        from caplab.advisory.anchor import drift
+        before = [{"dispatch_id": "a", "anchor": True, "usable": True,
+                   "caught": True, "false_alarm": False}]
+        after = [{"dispatch_id": "a", "anchor": True, "usable": True,
+                  "caught": False, "false_alarm": False}]
+        result = drift(after, before)
+        self.assertEqual(result["shared_anchor_cases"], 1)
+        self.assertEqual(result["caught_agreement"], 0.0)
+        self.assertIn("does not say which", result["reading"])
+
+    def test_asymmetric_replication_is_honoured(self):
+        counts = {"control": 0, "mutant": 0}
+
+        def counting(adapter, prompt, timeout):
+            arm = "mutant" if ("may freely" in prompt or "may clear" in prompt) \
+                else "control"
+            counts[arm] += 1
+            return {"doc": {"verdict": "accept", "findings": []},
+                    "exit_code": 0, "seconds": 0, "transport": "stdin",
+                    "prompt_bytes": len(prompt), "raw_head": ""}
+
+        original = pool_runner.invoke
+        pool_runner.invoke = counting
+        try:
+            row = measure_case(case(), DOC, echo_adapter(), timeout=60,
+                               replicates=3, mutant_replicates=1)
+        finally:
+            pool_runner.invoke = original
+        self.assertEqual(counts, {"control": 3, "mutant": 1})
+        self.assertEqual(row["replicates"], 3)
+        self.assertEqual(row["mutant_replicates"], 1)
+if __name__ == "__main__":
+    unittest.main()

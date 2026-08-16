@@ -114,7 +114,7 @@ def _majority(verdicts: list) -> tuple:
 
 
 def measure_case(case: dict, body: str, adapter: dict, timeout: int,
-                 replicates: int = 1) -> dict:
+                 replicates: int = 1, mutant_replicates: int | None = None) -> dict:
     """One matched pair, optionally replicated.
 
     Replication exists because the control arm reproduces at ~53% on identical
@@ -148,10 +148,13 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
     arms = [("control", body), ("mutant", injection.body)]
     # Arm order varies per case so a subject cannot benefit from position.
     random.Random(case["seed"] ^ 0x5EED).shuffle(arms)
+    per_arm = {"control": max(1, replicates),
+               "mutant": max(1, replicates if mutant_replicates is None
+                             else mutant_replicates)}
     results, replicate_verdicts = {}, {}
     for name, arm_body in arms:
         runs = [invoke(adapter, prompt + arm_body, timeout)
-                for _ in range(max(1, replicates))]
+                for _ in range(per_arm[name])]
         replicate_verdicts[name] = [(r["doc"] or {}).get("verdict") for r in runs]
         # Keep the first parseable invocation as the representative capture.
         results[name] = next((r for r in runs if r["doc"] is not None), runs[0])
@@ -187,7 +190,8 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
         "mutant_findings": len((mutant["doc"] or {}).get("findings") or []),
         "control_findings_detail": _summarize_findings(control["doc"]),
         "mutant_findings_detail": _summarize_findings(mutant["doc"]),
-        "replicates": max(1, replicates),
+        "replicates": per_arm["control"],
+        "mutant_replicates": per_arm["mutant"],
         "control_verdicts": replicate_verdicts["control"],
         "mutant_verdicts": replicate_verdicts["mutant"],
         "control_refusing_share": (control_refusing / control_n) if control_n else None,
@@ -207,15 +211,36 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
              out_dir: str, sweep_seed: int, per_operator: int,
              partition: str = "open", timeout: int = 1800,
              max_cases: int = 40, abort_after_empty: int = 8,
-             replicates: int = 1) -> dict:
-    """Measure one binding over a sampled slice of the pool."""
+             replicates: int = 1, mutant_replicates: int | None = None,
+             anchor_path: str | None = None) -> dict:
+    """Measure one binding over a sampled slice of the pool.
+
+    Two populations run in one sweep and are kept apart:
+
+    - **anchor cases** replay a pinned, invariant set with replication on
+      both arms. They measure the instrument, not the corpus, and are
+      excluded from the breadth estimand.
+    - **breadth cases** are the stratified draw. They carry replication only
+      where it is needed: the control arm reproduces at ~53% and the mutant
+      arm at ~80-87%, so spending equally on both buys reliability that the
+      mutant arm already has, at the cost of distinct planted defects.
+    """
     declaration = load_declaration(backends_root, backend)
     adapter = declaration["adapter"]
+    from .anchor import anchor_substrate_ids, load as load_anchor
+
     substrates = SubstrateRegistry(registry_path).read()
-    cases = sample_cases(substrates, sweep_seed=sweep_seed,
+    anchor_set = load_anchor(anchor_path) if anchor_path else None
+    withheld = anchor_substrate_ids(anchor_set)
+    # A case replayed every sweep must not also count toward a claim's
+    # distinct-defect coverage.
+    breadth_pool = [s for s in substrates if s["substrate_id"] not in withheld]
+    cases = sample_cases(breadth_pool, sweep_seed=sweep_seed,
                          per_operator=per_operator, partition=partition)
     if len(cases) > max_cases:
         cases = cases[:max_cases]
+    anchor_cases = list(anchor_set["cases"]) if anchor_set else []
+    plan = [(c, True) for c in anchor_cases] + [(c, False) for c in cases]
 
     os.makedirs(out_dir, exist_ok=True)
     results_path = os.path.join(out_dir, "results.jsonl")
@@ -235,10 +260,15 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
     aborted = None
     started_at = _dt.datetime.now(_dt.timezone.utc).isoformat()
     with open(results_path, "a", encoding="utf-8") as out:
-        for index, case in enumerate(cases, 1):
+        for index, (case, is_anchor) in enumerate(plan, 1):
             case_id = f"{case['substrate_id']}:{case['operator']}:{case['seed']}"
             if case_id in done:
                 continue
+            arm_replicates = (3 if is_anchor else replicates)
+            arm_mutant_replicates = (
+                3 if is_anchor
+                else (replicates if mutant_replicates is None
+                      else mutant_replicates))
             body = load_substrate_body(case, exchange, repos)
             if body is None:
                 row = {"dispatch_id": case_id, "usable": False,
@@ -246,12 +276,15 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
                        "defect_class": case["operator"]}
             else:
                 row = measure_case(case, body, adapter, timeout,
-                                   replicates=replicates)
+                                   replicates=arm_replicates,
+                                   mutant_replicates=arm_mutant_replicates)
             row["backend_measured"] = backend
+            row["anchor"] = is_anchor
             out.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
             out.flush()
             os.fsync(out.fileno())
-            print(f"[{index}/{len(cases)}] {case['operator']:28} "
+            print(f"[{index}/{len(plan)}] {'ANCHOR ' if is_anchor else ''}"
+                  f"{case['operator']:28} "
                   f"{'usable' if row.get('usable') else row.get('error','')}"
                   f"{' CAUGHT' if row.get('caught') else ''}"
                   f"{' FALSE-ALARM' if row.get('false_alarm') else ''}", flush=True)
