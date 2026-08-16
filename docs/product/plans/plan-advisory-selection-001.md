@@ -218,7 +218,49 @@ instrument is fixed before any further scoring.
 exhausted OpenAI quota — nothing lawful to measure), qualification-grade
 evidence, and fine-tuning.
 
-### Status 2026-08-16 — both stop conditions fired
+### Status 2026-08-16 — goal met, with one substitution and one open decision
+
+**Criterion 1 — met in substance.** `claude-sonnet-5-high` carries a
+`caplab-advisory` claim on sweep seed 20260815, the challengers' case set
+(14 usable pairs, catch 0.57, false alarms 0.43). The named tuples
+`claude-fable-5-{high,medium}` remain **unmeasured**: two attempts aborted on
+vendor limits (session limit, then "You've reached your Fable 5 limit"), and
+neither admitted a claim. Sonnet was substituted because the criterion's
+purpose is a claude-family binding on matched cases for cross-family
+ordering, and the vendor itself directed the switch; the fable tuples stay
+outstanding whenever their window returns.
+
+**Criterion 2 — met.** All 11 pending cases resolved: 8 `validated-hard`,
+2 `strong-reference-noisy`, 1 `strong-miss-quarantine-candidate`. None was
+silently dropped and none was quarantined on a single reference. The one
+quarantine candidate (`overclaimed_level`) awaits a human decision under the
+governance protocol. Along the way the blocking diagnosis was confirmed and
+its corrective narrowed: stating the contract, not synthesising manifests,
+is what restores detection
+([confirmation](../../records/confirmation-2026-08-16-contract-restores-detection.md)).
+
+**Criterion 3 — met.** Every claim now carries a case set — verified by
+reconstruction for the historical cohort — and the projection reports
+`matched_prefix_depth`, currently 3: ranks 1-3 share one custody class and
+one case set and are comparable case-for-case, and the artifact says so
+rather than leaving a reader to assume it.
+
+**Criterion 4 — delivered.**
+[Read](../../records/read-2026-08-16-matched-custody-ordering.md): the
+Gemini lead is **directionally consistent but not established** at this
+sample (catch p=0.375, false alarms p=0.062 over 13 shared cases). The read
+corrects an earlier unmatched claim made in this campaign.
+
+**Open, needing a Principal decision or capacity:**
+
+1. `overclaimed_level` quarantine admission (human decision, per governance).
+2. The two `strong-reference-noisy` substrates — audit or third reference.
+3. `claude-fable-5-{high,medium}` on the matched seed when quota allows.
+4. Sample size: ~25-40 shared cases are needed to separate two strong
+   reviewers at p<0.05; the pool supports it, quota is the constraint.
+5. The load-bearing architectural choice below remains open and unmade.
+
+### Earlier status 2026-08-16 — when both stop conditions fired
 
 **Criterion 1 — blocked on Anthropic capacity, Principal-resolvable.** Two
 attempts at `claude-fable-5-high` aborted on vendor limits (session limit at
