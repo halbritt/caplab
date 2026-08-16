@@ -104,9 +104,22 @@ def _sha256_file(path: str) -> str:
     return digest.hexdigest()
 
 
-def score_backends(run_dirs: list[str]) -> dict[str, dict]:
-    """Per-backend merged metrics over the given completed run directories."""
+def score_backends(run_dirs: list[str], adjudications=None) -> dict[str, dict]:
+    """Per-backend merged metrics over the given completed run directories.
+
+    `adjudications` supplies what is known about each control arm. A control
+    established as defective cannot measure a false alarm — refusing it is
+    correct — so those pairs leave the false-alarm denominator entirely
+    rather than being scored either way. Unexamined refusals are still
+    counted, because the alternative lets a subject escape the metric by
+    refusing everything, but their number is reported so an unexamined rate
+    is never mistaken for an established one.
+    """
+    from .adjudication import Adjudications
     from .wilson import wilson
+
+    if adjudications is None:
+        adjudications = Adjudications([])
 
     per_backend: dict[str, dict] = {}
     for run_dir in run_dirs:
@@ -135,7 +148,16 @@ def score_backends(run_dirs: list[str]) -> dict[str, dict]:
         rows = stat["rows"]
         n = len(rows)
         caught = sum(1 for _, r in rows if r.get("caught"))
-        alarms = sum(1 for _, r in rows if r.get("false_alarm"))
+
+        # False-alarm accounting, conditioned on what is known about controls.
+        alarm_rows = [r for _, r in rows
+                      if not adjudications.is_defective(r.get("dispatch_id"))]
+        excluded_defective = n - len(alarm_rows)
+        alarms = sum(1 for r in alarm_rows if r.get("false_alarm"))
+        unaudited_alarms = sum(
+            1 for r in alarm_rows if r.get("false_alarm")
+            and adjudications.disposition(r.get("dispatch_id")) == "unadjudicated")
+        alarm_n = len(alarm_rows)
 
         anchored = rescored = 0
         for run_dir, row in rows:
@@ -156,8 +178,21 @@ def score_backends(run_dirs: list[str]) -> dict[str, dict]:
             "n_pairs": {"value": n},
             "n_distinct_cases": {"value": len(stat["dispatches"])},
             "catch_rate": {"value": caught / n, "ci95": list(wilson(caught, n))},
-            "false_alarm_rate": {"value": alarms / n, "ci95": list(wilson(alarms, n))},
-            "discrimination": {"value": (caught - alarms) / n,
+            "false_alarm_rate": (
+                {"value": alarms / alarm_n,
+                 "ci95": list(wilson(alarms, alarm_n)),
+                 "denominator": alarm_n,
+                 "excluded_defective_controls": excluded_defective,
+                 "unaudited_refusals": unaudited_alarms,
+                 "audit_status": ("established" if unaudited_alarms == 0
+                                  else "contains-unaudited-refusals")}
+                if alarm_n else
+                {"value": None, "denominator": 0,
+                 "excluded_defective_controls": excluded_defective,
+                 "unaudited_refusals": 0,
+                 "audit_status": "no-measurable-controls"}),
+            "discrimination": {"value": (caught / n) - (alarms / alarm_n)
+                               if alarm_n else None,
                                "scale": [-1.0, 1.0]},
             "findings_per_mutant": {"value": sum(
                 r.get("mutant_findings") or 0 for _, r in rows) / n},

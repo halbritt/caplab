@@ -1,0 +1,26 @@
+[
+  {
+    "bytes": 43585,
+    "control_verdict": "needs_revision",
+    "defect_class": "base_dropped",
+    "dispatch_id": "e57c4ab70e2b4c8e2be3cef012fe133e6a269241b61a3cdee360999ec0b9c0aa",
+    "findings": [
+      {
+        "element_anchor": "ComputeRefusalID / compute_refusal_id",
+        "severity": null,
+        "text": "contract.yaml and README claim refusal records are pinned to the 'exact contextual identity,' but the refusal_id hash (Go and Python) only incorporates contextual_identity.request_id and base_hash, dropping the schema-required subject_identity field and the optional work_graph_hash/environment_pins "
+      },
+      {
+        "element_anchor": "tests/semantic-closure/model/refusal/README.md el:test-boundaries",
+        "severity": null,
+        "text": "README claims schema_validation_test.go 'Validates JSON outputs against draft 2020-12 schemas,' but the included test only performs a Marshal/Unmarshal round-trip check \u2014 it never loads or validates against any .schema.json file. The claim is unearned."
+      },
+      {
+        "element_anchor": "validate.go IsValidEvaluatorReasonCode",
+        "severity": null,
+        "text": "evaluator_refusal_record.schema.json declares node_kind as a closed enum (check/graph/review/acceptance), but neither the Go nor Python model validation enforces it, unlike reason_code \u2014 an inconsistency between the declared schema contract and the executable model."
+      }
+    ],
+    "input_path": "inputs/00-striatum-next-passes-semantic-and-durable-closure-packets-P01f-refusal-record-contract-change-set"
+  }
+]

@@ -222,3 +222,67 @@ class SweepSeedVerificationTest(unittest.TestCase):
             run_dir, exchange, analysis, _ = self._fixture(root, [])
             self.assertFalse(verify_sweep_seed(run_dir, 20260807, exchange,
                                                analysis))
+
+
+class ControlAdjudicationTest(unittest.TestCase):
+    """A control established as defective cannot measure a false alarm."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = self.tmp.name
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def _score(self, adj=None):
+        eligible, _ = eligible_run_dirs(self.root)
+        return score_backends(eligible, adj)["tuple-a"]["metrics"]
+
+    def test_unaudited_refusals_are_counted_but_flagged(self):
+        write_run(self.root, "cc-tuple-a", [
+            row("a" * 64, alarm=True), row("b" * 64), row("c" * 64),
+            row("d" * 64)])
+        fa = self._score()["false_alarm_rate"]
+        self.assertAlmostEqual(fa["value"], 0.25)
+        self.assertEqual(fa["denominator"], 4)
+        self.assertEqual(fa["unaudited_refusals"], 1)
+        self.assertEqual(fa["audit_status"], "contains-unaudited-refusals")
+
+    def test_defective_control_leaves_the_denominator(self):
+        from caplab.advisory.adjudication import (Adjudications,
+                                                  build_adjudication)
+        write_run(self.root, "cc-tuple-a", [
+            row("a" * 64, alarm=True), row("b" * 64), row("c" * 64),
+            row("d" * 64)])
+        adj = Adjudications([build_adjudication(
+            dispatch_id="a" * 64, disposition="defective",
+            basis="audited: control carries an internal contradiction",
+            adjudicated_by="principal:test", as_of="2026-08-16T00:00:00+00:00")])
+        fa = self._score(adj)["false_alarm_rate"]
+        # the refusal was correct: it is neither an error nor a measurement
+        self.assertEqual(fa["value"], 0.0)
+        self.assertEqual(fa["denominator"], 3)
+        self.assertEqual(fa["excluded_defective_controls"], 1)
+        self.assertEqual(fa["audit_status"], "established")
+
+    def test_sound_adjudication_keeps_the_refusal_as_an_error(self):
+        from caplab.advisory.adjudication import (Adjudications,
+                                                  build_adjudication)
+        write_run(self.root, "cc-tuple-a", [row("a" * 64, alarm=True),
+                                            row("b" * 64)])
+        adj = Adjudications([build_adjudication(
+            dispatch_id="a" * 64, disposition="sound",
+            basis="audited: no defect found", adjudicated_by="principal:test",
+            as_of="2026-08-16T00:00:00+00:00")])
+        fa = self._score(adj)["false_alarm_rate"]
+        self.assertAlmostEqual(fa["value"], 0.5)
+        self.assertEqual(fa["denominator"], 2)
+        self.assertEqual(fa["unaudited_refusals"], 0)
+        self.assertEqual(fa["audit_status"], "established")
+
+    def test_defective_disposition_requires_an_authority(self):
+        from caplab.advisory.adjudication import build_adjudication
+        with self.assertRaises(ValueError):
+            build_adjudication(dispatch_id="a" * 64, disposition="defective",
+                               basis="a model said so", adjudicated_by="",
+                               as_of="2026-08-16T00:00:00+00:00")
