@@ -1,0 +1,52 @@
+{
+  "a": "agy-gemini-3-7-flash-high",
+  "a_catch_rate": 0.7692307692307693,
+  "a_discrimination": 0.7692307692307693,
+  "a_false_alarms": 0,
+  "a_only_caught": 4,
+  "a_only_false_alarm": 0,
+  "b": "claude-sonnet-5-high",
+  "b_catch_rate": 0.5384615384615384,
+  "b_discrimination": 0.15384615384615385,
+  "b_false_alarms": 5,
+  "b_only_caught": 1,
+  "b_only_false_alarm": 5,
+  "both_caught": 6,
+  "by_defect_class": {
+    "base_dropped": {
+      "a": 1,
+      "b": 2,
+      "n": 4
+    },
+    "contradicted_clause": {
+      "a": 3,
+      "b": 3,
+      "n": 3
+    },
+    "dropped_section": {
+      "a": 2,
+      "b": 1,
+      "n": 2
+    },
+    "hash_mismatch": {
+      "a": 2,
+      "b": 0,
+      "n": 2
+    },
+    "overclaimed_level": {
+      "a": 2,
+      "b": 1,
+      "n": 2
+    }
+  },
+  "discordant_pairs": 5,
+  "false_alarm_discordant_pairs": 5,
+  "false_alarm_sign_test_p": 0.0625,
+  "false_alarm_significant_at_05": false,
+  "neither_caught": 2,
+  "reading": "catch: 5 of 13 shared cases discriminate, exact sign test p=0.375 (not established); false alarms: 5 discordant, p=0.062 (not established)",
+  "shared_cases": 13,
+  "sign_test_p": 0.375,
+  "significant_at_05": false,
+  "uninformative_pairs": 8
+}

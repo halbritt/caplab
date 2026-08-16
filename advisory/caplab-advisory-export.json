@@ -2449,6 +2449,77 @@
       }
     },
     {
+      "as_of": "2026-08-16T15:44:59.512727+00:00",
+      "claim_id": "qc-10602cad0f1fe24c",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "instrument_commit": "4d2115a9816dea360fd109e01db1d636365fb24f",
+          "kind": "matched-pair-run",
+          "profile": "caplab-advisory-execution/0",
+          "results_sha256": "7f10372c736a83afc098b26d913c1c63403ce6d02bdc5f6327ab19ec84c67936",
+          "rows_used": 14,
+          "run": "adv-claude-sonnet-5-high-20260816",
+          "sweep_seed": "20260815"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "rescored-retained-arms",
+          "ci95": [
+            0.040093921271464966,
+            0.39941379496970353
+          ],
+          "denominator": 14,
+          "value": 0.14285714285714285
+        },
+        "catch_rate": {
+          "ci95": [
+            0.3259064457965074,
+            0.7861920109552588
+          ],
+          "value": 0.5714285714285714
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.14285714285714285
+        },
+        "false_alarm_rate": {
+          "ci95": [
+            0.21380798904474121,
+            0.6740935542034926
+          ],
+          "value": 0.42857142857142855
+        },
+        "findings_per_mutant": {
+          "value": 2.2857142857142856
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 14
+        },
+        "n_pairs": {
+          "value": 14
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution (profile v0) through the subject's declared adapter command.",
+        "advisory-grade profile v0 executes the pinned striatum-tuner matched-pair instrument; no sealed custody domain, no provider-authenticated identity."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-sonnet-5-high"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-2652b6295aa8eb79",
       "construct": "review.defect_discrimination/1",

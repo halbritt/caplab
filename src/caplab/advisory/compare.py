@@ -63,6 +63,7 @@ def paired_comparison(run_a: str, run_b: str, label_a: str = "",
 
     a_only_caught = b_only_caught = both = neither = 0
     a_alarms = b_alarms = 0
+    a_only_alarm = b_only_alarm = 0
     per_class: dict[str, dict] = {}
     for dispatch in shared:
         ra, rb = a[dispatch], b[dispatch]
@@ -75,8 +76,17 @@ def paired_comparison(run_a: str, run_b: str, label_a: str = "",
             b_only_caught += 1
         else:
             neither += 1
-        a_alarms += bool(ra.get("false_alarm"))
-        b_alarms += bool(rb.get("false_alarm"))
+        fa, fb = bool(ra.get("false_alarm")), bool(rb.get("false_alarm"))
+        a_alarms += fa
+        b_alarms += fb
+        # A false alarm is a refusal of a control arm the other subject
+        # cleared. Discrimination is catch minus false alarm, so a subject
+        # that catches well while refusing sound work is not the better
+        # reviewer -- and a catch-rate test alone cannot see that.
+        if fa and not fb:
+            a_only_alarm += 1
+        elif fb and not fa:
+            b_only_alarm += 1
         cell = per_class.setdefault(ra.get("defect_class") or "(unknown)",
                                     {"n": 0, "a": 0, "b": 0})
         cell["n"] += 1
@@ -85,6 +95,8 @@ def paired_comparison(run_a: str, run_b: str, label_a: str = "",
 
     discordant = a_only_caught + b_only_caught
     p_value = _binom_two_sided(min(a_only_caught, b_only_caught), discordant)
+    alarm_discordant = a_only_alarm + b_only_alarm
+    alarm_p = _binom_two_sided(min(a_only_alarm, b_only_alarm), alarm_discordant)
     n = len(shared)
     return {
         "a": label_a or os.path.basename(run_a),
@@ -102,11 +114,20 @@ def paired_comparison(run_a: str, run_b: str, label_a: str = "",
         "b_false_alarms": b_alarms,
         "sign_test_p": p_value,
         "significant_at_05": p_value < 0.05,
+        "a_only_false_alarm": a_only_alarm,
+        "b_only_false_alarm": b_only_alarm,
+        "false_alarm_discordant_pairs": alarm_discordant,
+        "false_alarm_sign_test_p": alarm_p,
+        "false_alarm_significant_at_05": alarm_p < 0.05,
+        "a_discrimination": ((both + a_only_caught) - a_alarms) / n if n else None,
+        "b_discrimination": ((both + b_only_caught) - b_alarms) / n if n else None,
         "by_defect_class": {k: dict(v) for k, v in sorted(per_class.items())},
         "reading": (
             "no shared cases; not a matched comparison" if not n else
-            f"{discordant} of {n} shared cases discriminate between the two; "
-            f"exact sign test p={p_value:.3f}" +
-            ("" if p_value < 0.05 else
-             " — this sample does not establish a difference")),
+            f"catch: {discordant} of {n} shared cases discriminate, exact "
+            f"sign test p={p_value:.3f}"
+            + ("" if p_value < 0.05 else " (not established)")
+            + f"; false alarms: {alarm_discordant} discordant, p="
+            f"{alarm_p:.3f}"
+            + ("" if alarm_p < 0.05 else " (not established)")),
     }
