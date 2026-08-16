@@ -24,6 +24,24 @@ it. Descendants of a substrate (revisions, retries, same artifact family)
 belong in the same partition; the harvest records lineage so this is
 checkable.
 
+## Measurement readiness
+
+A substrate may be drawn for a scored sweep only if it can be measured
+through the instrument's own prompt path. Exchange-sourced substrates carry
+their dispatch bundle, so the real posture, stage contract, and manifest
+render around them. Repo-doc substrates have no bundle and therefore no
+contract; they remain in the registry as sound substrates but are withheld
+from scored sampling until synthetic manifests give them a stage contract.
+`sample_cases` enforces this by default.
+
+Coverage under the guard (open partition, 2026-08-16): 343 of 587
+substrates are measurement-ready, and 13 of 14 operators retain 40–226
+applicable substrates each. The exception is `broken_internal_crossref`,
+which falls to **1** — an in-prose `{#el:}` cross-reference resolving to a
+heading in the same document is largely a repo-doc convention. That operator
+cannot contribute per-class evidence until repo-docs become measurable, and
+a sweep drawing it should say so rather than report a class result at n=1.
+
 ## Per-sweep sampling
 
 `sample_cases(sweep_seed, per_operator)` draws a class-balanced sample from

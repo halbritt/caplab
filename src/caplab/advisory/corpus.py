@@ -154,8 +154,24 @@ class SubstrateRegistry:
         return {"added": added, "skipped_duplicates": skipped}
 
 
+#: Source kinds whose substrates can be measured through the instrument's own
+#: prompt path. An exchange substrate carries its dispatch bundle, so the real
+#: posture, stage contract, and manifest render around it. A repo-doc has no
+#: bundle and therefore no contract, and the 2026-08-16 finding showed that
+#: scoring a contract-relative defect without a contract measures whether a
+#: reviewer infers an unstated rule — a different construct. Repo-docs stay in
+#: the registry (they are sound substrates) but are withheld from scored
+#: sampling until synthetic manifests give them a stage contract.
+MEASUREMENT_READY_SOURCES = {"striatum-exchange"}
+
+
+def measurement_ready(substrate: dict) -> bool:
+    return substrate["source"]["kind"] in MEASUREMENT_READY_SOURCES
+
+
 def sample_cases(substrates: list[dict], sweep_seed: int,
-                 per_operator: int, partition: str = "open") -> list[dict]:
+                 per_operator: int, partition: str = "open",
+                 require_measurement_ready: bool = True) -> list[dict]:
     """Deterministic per-sweep case sample, balanced across operator classes.
 
     Balancing is the corrective for the historical skew (base_dropped was 29%
@@ -164,6 +180,8 @@ def sample_cases(substrates: list[dict], sweep_seed: int,
     different seeds draw different injections from the same substrate.
     """
     pool = [s for s in substrates if s["partition"] == partition]
+    if require_measurement_ready:
+        pool = [s for s in pool if measurement_ready(s)]
     by_operator: dict[str, list[dict]] = {}
     for substrate in pool:
         for name in substrate["applicable_operators"]:
