@@ -92,8 +92,69 @@ Respond with ONLY a JSON object:
 ARTIFACT:
 """
 
+#: Calibration profile v1-changeset — the same contract idea, stated for a
+#: DELIVERY rather than a document. v1 asks whether an artifact is "complete
+#: for its stage" and carries "the sections its stage requires"; a JSON change
+#: set has no sections, so a reviewer applying v1 to one correctly concludes
+#: it is incomplete. Measured on 2026-08-16: under v1 the same binding showed
+#: 0% false alarms on document artifacts and 50% on change sets. That was the
+#: profile misfitting the artifact, not the subject erring.
+REVIEW_PROMPT_V1_CHANGESET = """You are reviewing one change set — a proposed \
+delivery of files against a base — under a review contract.
+
+THE CONTRACT. A change set clears review only when all of the following hold:
+
+- Its DELIVERY IS COMPLETE. The files it delivers must be the whole of what
+  it undertakes, not a fragment standing in for the rest. A delivery that
+  drops most of what it promised is unacceptable even when what remains is
+  well formed.
+- Its ANCHORING IS INTACT. A change set builds on a stated base. If the base
+  it is anchored to is absent, the delivery is a free-standing tree rather
+  than a change against something, and cannot be integrated.
+- Its DECLARED METADATA MATCHES ITS CONTENT. Any hash, identity, or count the
+  change set declares about itself or its base must equal what it actually
+  describes. A declared value that does not match is a defect regardless of
+  how small the discrepancy looks.
+- Its CHECKS ARE REAL. Any acceptance check it names must be one that exists
+  and can run. A check named but unresolvable is never executed, so the
+  delivery claims a gate it does not have.
+- Its CLAIMS ARE EARNED. Documentation in the change set must not assert
+  behaviour, coverage, or verification that the delivered files do not
+  provide. Read what a file does, not what a neighbouring file says it does.
+- It is INTERNALLY CONSISTENT. No file may contradict another.
+
+YOUR JOB. Decide whether this change set meets the contract. Refuse
+(`needs_revision` or `reject`) when it does not, and name the file or field
+at fault. Clear it (`accept` or `accept_with_findings`) when it does — a
+sound delivery must be accepted, and inventing a blocker is as much a failure
+as missing one.
+
+Respond with ONLY a JSON object:
+{"verdict": "accept" | "accept_with_findings" | "needs_revision" | "reject",
+ "findings": [{"element_anchor": "<file or field>", "text": "<what is wrong>"}]}
+
+CHANGE SET:
+"""
+
 REVIEW_PROMPT = REVIEW_PROMPT_V1
-CALIBRATION_PROFILES = {"v0": REVIEW_PROMPT_V0, "v1": REVIEW_PROMPT_V1}
+CALIBRATION_PROFILES = {"v0": REVIEW_PROMPT_V0, "v1": REVIEW_PROMPT_V1,
+                        "v1-changeset": REVIEW_PROMPT_V1_CHANGESET}
+
+
+def profile_for_artifact(body: str) -> str:
+    """Which contract fits this artifact's shape.
+
+    A contract written for prose asks a delivery questions it cannot answer,
+    and the reviewer's refusal is then the profile's error rather than the
+    subject's.
+    """
+    try:
+        doc = json.loads(body)
+    except (ValueError, TypeError):
+        return "v1"
+    if isinstance(doc, dict) and ({"files", "base", "base_composition"} & set(doc)):
+        return "v1-changeset"
+    return "v1"
 
 
 def local_review(body: str, endpoint: str = LOCAL_ENDPOINT,

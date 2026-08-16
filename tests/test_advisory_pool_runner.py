@@ -144,5 +144,48 @@ class SummaryShapeTest(unittest.TestCase):
             self.assertFalse(is_matched_pair_run(root))
 
 
+
+CHANGE_SET = json.dumps({
+    "schema_version": "1",
+    "base": {"content_hash": "a" * 64},
+    "files": {"docs/x.md": "# X\n\nBody text.\n",
+              "src/x.py": "def x():\n    return 1\n",
+              "src/y.py": "def y():\n    return 2\n",
+              "src/z.py": "def z():\n    return 3\n"},
+}, indent=2)
+
+
+class ProfileRoutingTest(unittest.TestCase):
+    """A contract written for prose asks a delivery questions it cannot answer."""
+
+    def test_document_case_uses_the_document_contract(self):
+        row = measure_case(case(), DOC, echo_adapter(), timeout=60)
+        self.assertEqual(row["calibration_profile"], "v1")
+
+    def test_change_set_case_uses_the_delivery_contract(self):
+        seen = {}
+
+        def spy(adapter, prompt, timeout):
+            seen["prompt"] = prompt
+            return {"doc": {"verdict": "accept", "findings": []},
+                    "exit_code": 0, "seconds": 0, "transport": "stdin",
+                    "prompt_bytes": len(prompt), "raw_head": ""}
+
+        original = pool_runner.invoke
+        pool_runner.invoke = spy
+        try:
+            row = measure_case(case("hollow_delivery", seed=5), CHANGE_SET,
+                               echo_adapter(), timeout=60)
+        finally:
+            pool_runner.invoke = original
+        self.assertTrue(row["usable"], row.get("error"))
+        self.assertEqual(row["calibration_profile"], "v1-changeset")
+        self.assertIn("CHANGE SET:", seen["prompt"])
+        self.assertNotIn("carry the sections its stage requires", seen["prompt"])
+
+    def test_unusable_row_still_records_a_profile(self):
+        row = measure_case(case("no_such_operator"), DOC, echo_adapter(),
+                           timeout=60)
+        self.assertIn("calibration_profile", row)
 if __name__ == "__main__":
     unittest.main()

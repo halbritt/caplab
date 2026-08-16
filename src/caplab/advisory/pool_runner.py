@@ -35,7 +35,8 @@ import time
 import yaml
 
 from ._tuner_vendored import REFUSING, anchor_hits, anchors_of, extract_json
-from .calibrate import CALIBRATION_PROFILES, resolve_json_pointer
+from .calibrate import (CALIBRATION_PROFILES, profile_for_artifact,
+                        resolve_json_pointer)
 from .corpus import SubstrateRegistry, sample_cases
 from .instrument_defects import NotApplicable
 from .operators import BY_NAME, check_present
@@ -100,8 +101,8 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int) -> dict:
     row = {"dispatch_id": f"{case['substrate_id']}:{case['operator']}:{case['seed']}",
            "substrate_id": case["substrate_id"],
            "source_kind": case["source"]["kind"],
-           "defect_class": case["operator"],
-           "calibration_profile": MEASUREMENT_PROFILE}
+           "defect_class": case["operator"]}
+    row.setdefault("calibration_profile", MEASUREMENT_PROFILE)
     operator = BY_NAME.get(case["operator"])
     if operator is None:
         return {**row, "usable": False, "error": "unknown operator"}
@@ -116,7 +117,9 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int) -> dict:
     if check_present(injection, body) is True:
         return {**row, "usable": False, "error": "control already carries the defect"}
 
-    prompt = CALIBRATION_PROFILES[MEASUREMENT_PROFILE]
+    profile = profile_for_artifact(body)
+    row["calibration_profile"] = profile
+    prompt = CALIBRATION_PROFILES[profile]
     arms = [("control", body), ("mutant", injection.body)]
     # Arm order varies per case so a subject cannot benefit from position.
     random.Random(case["seed"] ^ 0x5EED).shuffle(arms)
@@ -134,6 +137,10 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int) -> dict:
     control_verdict = (control["doc"] or {}).get("verdict")
     mutant_verdict = (mutant["doc"] or {}).get("verdict")
     emitted = anchors_of((mutant["doc"] or {}).get("findings") or [])
+    # Why a control was refused is the evidence that decides whether the
+    # refusal was an error or a latent defect in a substrate assumed sound.
+    # Storing only the boolean cost two rounds of paid calls on 2026-08-16.
+    from .calibrate import _summarize_findings
     return {
         **row,
         "usable": True,
@@ -147,6 +154,8 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int) -> dict:
         "anchor_hit": bool(anchor_hits(injection.element_anchor, emitted)),
         "anchors_emitted": emitted[:8],
         "mutant_findings": len((mutant["doc"] or {}).get("findings") or []),
+        "control_findings_detail": _summarize_findings(control["doc"]),
+        "mutant_findings_detail": _summarize_findings(mutant["doc"]),
         "control_json_valid": control["doc"] is not None,
         "mutant_json_valid": mutant["doc"] is not None,
         "control_seconds": control["seconds"], "mutant_seconds": mutant["seconds"],
