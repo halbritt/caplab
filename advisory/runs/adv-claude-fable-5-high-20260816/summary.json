@@ -1,0 +1,54 @@
+{
+  "backend": "claude-fable-5-high",
+  "instrument": "matched-pair defect injection",
+  "pairs_usable": 7,
+  "pairs_discarded": 10,
+  "discrimination": 0.14285714285714285,
+  "catch_rate": 0.5714285714285714,
+  "false_alarm_rate": 0.42857142857142855,
+  "anchor_hit_rate_of_caught": 0.0,
+  "anchor_resolves_rate": null,
+  "findings_per_mutant": 2.7142857142857144,
+  "json_valid_control": 1.0,
+  "json_valid_mutant": 0.8571428571428571,
+  "by_defect_class": {
+    "base_dropped": {
+      "n": 3,
+      "caught": 1,
+      "anchored": 0
+    },
+    "dropped_section": {
+      "n": 2,
+      "caught": 1,
+      "anchored": 0
+    },
+    "hash_mismatch": {
+      "n": 1,
+      "caught": 1,
+      "anchored": 0
+    },
+    "overclaimed_level": {
+      "n": 1,
+      "caught": 1,
+      "anchored": 0
+    }
+  },
+  "by_size_band": {
+    "<25k": {
+      "n": 3,
+      "caught": 2,
+      "false_alarms": 1
+    },
+    "25k-100k": {
+      "n": 4,
+      "caught": 2,
+      "false_alarms": 2
+    }
+  },
+  "mean_seconds": 241.2642857142857,
+  "cost_total_usd": null,
+  "cost_per_defect_caught_usd": 0.0,
+  "provider_override": null,
+  "context_bound": null,
+  "aborted": "9 consecutive empty lanes; last body: \"You've hit your session limit \u00b7 resets 1:20am (UTC)\\n\""
+}

@@ -1,0 +1,30 @@
+{
+  "argv": [
+    "python3",
+    "revbench.py",
+    "--backend",
+    "claude-fable-5-high",
+    "--pairs",
+    "21",
+    "--seed",
+    "20260815",
+    "--workers",
+    "2",
+    "--timeout",
+    "1800",
+    "--abort-after-empty",
+    "8",
+    "--out",
+    "/home/halbritt/git/caplab/advisory/runs/adv-claude-fable-5-high-20260816"
+  ],
+  "backend": "claude-fable-5-high",
+  "completed": true,
+  "exit_code": 2,
+  "finished_at": "2026-08-16T00:31:02.643680+00:00",
+  "instrument_commit": "4d2115a9816dea360fd109e01db1d636365fb24f",
+  "instrument_repo": "/home/halbritt/git/striatum-tuner",
+  "log": "advisory/runs/adv-claude-fable-5-high-20260816/caplab-run.log",
+  "profile": "caplab-advisory-execution/0",
+  "pruned_workspace_entries": 81,
+  "started_at": "2026-08-16T00:02:35.192650+00:00"
+}

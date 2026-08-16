@@ -111,10 +111,18 @@ def run_advisory(*, backend: str, pairs: int, out_dir: str,
     with open(log_path, "a", encoding="utf-8") as log:
         proc = subprocess.run(argv, cwd=instrument_repo,
                               stdout=log, stderr=subprocess.STDOUT)
+    aborted = None
+    summary_path = os.path.join(out_dir, "summary.json")
+    if os.path.isfile(summary_path):
+        with open(summary_path, encoding="utf-8") as f:
+            aborted = json.load(f).get("aborted")
     receipt.update({
         "finished_at": _dt.datetime.now(_dt.timezone.utc).isoformat(),
         "exit_code": proc.returncode,
-        "completed": completed(out_dir),
+        # completed() is the single authority and already refuses an aborted
+        # run; the exit code is recorded beside it so the receipt shows why.
+        "completed": completed(out_dir) and proc.returncode == 0,
+        "aborted": aborted,
         "log": log_path,
         "pruned_workspace_entries": prune_workspaces(out_dir),
     })

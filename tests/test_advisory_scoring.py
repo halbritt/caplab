@@ -5,12 +5,13 @@ import unittest
 
 from caplab.advisory.claims import Ledger, build_claim
 from caplab.advisory.export import export_document
-from caplab.advisory.scoring import eligible_run_dirs, score_backends
+from caplab.advisory.scoring import completed, eligible_run_dirs, score_backends
 from caplab.advisory.seed import seed_claims
 from caplab.advisory.wilson import wilson
 
 
-def write_run(root, name, rows, complete=True, mutant_reviews=None):
+def write_run(root, name, rows, complete=True, mutant_reviews=None,
+              aborted=None):
     run_dir = os.path.join(root, name)
     os.makedirs(run_dir, exist_ok=True)
     with open(os.path.join(run_dir, "results.jsonl"), "w") as f:
@@ -19,7 +20,8 @@ def write_run(root, name, rows, complete=True, mutant_reviews=None):
     if complete:
         with open(os.path.join(run_dir, "summary.json"), "w") as f:
             json.dump({"instrument": "matched-pair defect injection",
-                       "pairs_usable": sum(1 for r in rows if r.get("usable"))}, f)
+                       "pairs_usable": sum(1 for r in rows if r.get("usable")),
+                       "aborted": aborted}, f)
     for dispatch_id, review in (mutant_reviews or {}).items():
         out = os.path.join(run_dir, "arms", dispatch_id[:12], "mutant-ws",
                            "work", "outputs")
@@ -53,6 +55,25 @@ class ScoringTest(unittest.TestCase):
         eligible, skipped = eligible_run_dirs(self.root)
         self.assertEqual([os.path.basename(d) for d in eligible], ["cc-tuple-a"])
         self.assertEqual([os.path.basename(d) for d in skipped], ["cc-killed"])
+
+    def test_aborted_run_is_not_complete(self):
+        # The instrument writes summary.json and THEN raises its abort, so a
+        # vendor session limit leaves a complete-looking directory holding a
+        # truncated sample. It must be excluded whole.
+        write_run(self.root, "cc-aborted", [row("a" * 64), row("b" * 64)],
+                  complete=True,
+                  aborted='9 consecutive empty lanes; last body: '
+                          '"You\'ve hit your session limit"')
+        self.assertFalse(completed(os.path.join(self.root, "cc-aborted")))
+        eligible, skipped = eligible_run_dirs(self.root)
+        self.assertEqual(eligible, [])
+        self.assertEqual([os.path.basename(d) for d in skipped], ["cc-aborted"])
+
+    def test_aborted_run_yields_no_claims(self):
+        write_run(self.root, "cc-aborted", [row("a" * 64)], complete=True,
+                  aborted="session limit")
+        from caplab.advisory.seed import seed_claims
+        self.assertEqual(seed_claims(self.root, None)["claims"], [])
 
     def test_metrics_and_merge_across_runs(self):
         write_run(self.root, "cc-tuple-a",

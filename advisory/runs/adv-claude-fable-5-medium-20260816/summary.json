@@ -1,0 +1,22 @@
+{
+  "backend": "claude-fable-5-medium",
+  "instrument": "matched-pair defect injection",
+  "pairs_usable": 0,
+  "pairs_discarded": 9,
+  "discrimination": null,
+  "catch_rate": null,
+  "false_alarm_rate": null,
+  "anchor_hit_rate_of_caught": null,
+  "anchor_resolves_rate": null,
+  "findings_per_mutant": null,
+  "json_valid_control": null,
+  "json_valid_mutant": null,
+  "by_defect_class": {},
+  "by_size_band": {},
+  "mean_seconds": null,
+  "cost_total_usd": null,
+  "cost_per_defect_caught_usd": null,
+  "provider_override": null,
+  "context_bound": null,
+  "aborted": "9 consecutive empty lanes; last body: \"You've hit your session limit \u00b7 resets 1:20am (UTC)\\n\""
+}

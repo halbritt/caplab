@@ -37,7 +37,27 @@ MATCHED_PAIR_INSTRUMENT = "matched-pair defect injection"
 
 
 def completed(run_dir: str) -> bool:
-    return os.path.isfile(os.path.join(run_dir, "summary.json"))
+    """Whether this run reached its own end with a measurement to report.
+
+    `summary.json` alone is NOT sufficient. The instrument writes its summary
+    and THEN raises its abort, so a run killed by an account session limit
+    leaves a complete-looking directory holding a truncated sample — on
+    2026-08-16 that admitted a 7-pair claim for claude-fable-5-high from a
+    run the vendor cut off at "You've hit your session limit". A run that
+    aborted measured whatever it managed before the failure, under
+    conditions it did not control, and its numbers describe the outage as
+    much as the subject. Both conditions are required: the summary exists
+    and it carries no abort.
+    """
+    summary_path = os.path.join(run_dir, "summary.json")
+    if not os.path.isfile(summary_path):
+        return False
+    try:
+        with open(summary_path, encoding="utf-8") as f:
+            summary = json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return False
+    return not summary.get("aborted")
 
 
 def is_matched_pair_run(run_dir: str) -> bool:
