@@ -171,6 +171,31 @@ def cmd_calibrate(args):
     print(json.dumps(counts, indent=2))
 
 
+def cmd_validate_pending(args):
+    from .calibrate import (load_substrate_body, strong_reviewer_from_declaration,
+                            validate_pending)
+
+    repos = {os.path.basename(os.path.normpath(r)): r
+             for r in args.doc_repo or []}
+
+    def load_body(case):
+        return load_substrate_body(case, args.exchange, repos)
+
+    reviewer = strong_reviewer_from_declaration(args.backends_root, args.reference)
+    rows = validate_pending(args.calibration, reviewer, load_body)
+    os.makedirs(os.path.dirname(args.out) or ".", exist_ok=True)
+    counts = {}
+    with open(args.out, "a", encoding="utf-8") as f:
+        for row in rows:
+            counts[row.get("difficulty_flag", row["status"])] = \
+                counts.get(row.get("difficulty_flag", row["status"]), 0) + 1
+            print(f"{row['case']['operator']:26} "
+                  f"{row.get('difficulty_flag', row['status'])}", flush=True)
+            f.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+            f.flush()
+    print(json.dumps(counts, indent=2))
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="caplab.advisory")
     ap.add_argument("--ledger", default=DEFAULT_LEDGER)
@@ -233,6 +258,16 @@ def main(argv=None):
     p.add_argument("--per-operator", type=int, default=2)
     p.add_argument("--out", required=True)
     p.set_defaults(fn=cmd_calibrate)
+
+    p = sub.add_parser("validate-pending",
+                       help="run pending calibration cases against a strong reference")
+    p.add_argument("--calibration", required=True)
+    p.add_argument("--reference", default="claude-fable-5-high")
+    p.add_argument("--backends-root", default=DEFAULT_BACKENDS)
+    p.add_argument("--exchange", default=default_exchange)
+    p.add_argument("--doc-repo", action="append")
+    p.add_argument("--out", required=True)
+    p.set_defaults(fn=cmd_validate_pending)
 
     args = ap.parse_args(argv)
     return args.fn(args)

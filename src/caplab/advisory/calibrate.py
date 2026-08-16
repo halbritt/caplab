@@ -65,6 +65,101 @@ def local_review(body: str, endpoint: str = LOCAL_ENDPOINT,
     return doc if isinstance(doc, dict) else None
 
 
+def adapter_review(adapter_command: list[str], prompt_mode: str, body: str,
+                   timeout: int = 1800) -> dict | None:
+    """Review one document through a declared adapter command.
+
+    Used for strong-reference case validation: the reference binding sees the
+    same compact review prompt the weak reference sees, so weak and strong
+    calibrations disagree only about the case, never about the task."""
+    import subprocess
+
+    prompt = REVIEW_PROMPT + body
+    argv = list(adapter_command)
+    stdin_data = None
+    if prompt_mode == "arg":
+        argv.append(prompt)
+    else:
+        stdin_data = prompt.encode()
+    try:
+        completed = subprocess.run(argv, input=stdin_data, capture_output=True,
+                                   timeout=timeout)
+    except subprocess.TimeoutExpired:
+        return None
+    doc = extract_json(completed.stdout.decode("utf-8", errors="replace"))
+    return doc if isinstance(doc, dict) else None
+
+
+def strong_reviewer_from_declaration(backends_root: str, backend_id: str,
+                                     timeout: int = 1800):
+    import yaml
+
+    path = os.path.join(backends_root, backend_id, "backend.yaml")
+    with open(path, encoding="utf-8") as f:
+        declaration = yaml.safe_load(f)
+    adapter = declaration["adapter"]
+
+    def reviewer(body: str) -> dict | None:
+        return adapter_review(adapter["command"],
+                              adapter.get("prompt_mode", "stdin"),
+                              body, timeout=timeout)
+
+    reviewer.reference_name = f"{backend_id}/strong"
+    return reviewer
+
+
+def validate_pending(calibration_path: str, reviewer, load_body) -> list[dict]:
+    """Run pending-strong-reference cases against a strong reference.
+
+    Per the admission protocol: a strong catch validates the case as
+    genuinely-hard-but-detectable; a strong miss marks it a quarantine
+    CANDIDATE (`strong-miss`) — full quarantine wants 2-3 references and a
+    human decision, so one miss never silently drops a case."""
+    rows = []
+    with open(calibration_path, encoding="utf-8") as f:
+        pending = [json.loads(line) for line in f if line.strip()]
+    pending = [r for r in pending
+               if r.get("difficulty_flag") == "pending-strong-reference"]
+    for record in pending:
+        case = record["case"]
+        row = {"case": case,
+               "reference": getattr(reviewer, "reference_name", "strong")}
+        body = load_body(case)
+        if body is None:
+            row["status"] = "substrate-unreachable"
+            rows.append(row)
+            continue
+        materialized = materialize_case(case, body)
+        if materialized is None:
+            row["status"] = "injection-failed-gate"
+            rows.append(row)
+            continue
+        control, mutant, injection = materialized
+        control_doc = reviewer(control)
+        mutant_doc = reviewer(mutant)
+        if control_doc is None and mutant_doc is None:
+            row["status"] = "reference-unparseable"
+            rows.append(row)
+            continue
+        caught = (mutant_doc or {}).get("verdict") in REFUSING
+        false_alarm = (control_doc or {}).get("verdict") in REFUSING
+        row.update({
+            "status": "calibrated",
+            "defect_class": injection.defect_class,
+            "strong_reference_caught": caught,
+            "strong_reference_false_alarm": false_alarm,
+            "strong_reference_anchored": bool(caught and anchor_hits(
+                injection.element_anchor,
+                anchors_of((mutant_doc or {}).get("findings") or []))),
+            "difficulty_flag": (
+                "validated-hard" if caught and not false_alarm
+                else "strong-reference-noisy" if false_alarm
+                else "strong-miss-quarantine-candidate"),
+        })
+        rows.append(row)
+    return rows
+
+
 def materialize_case(case: dict, body: str) -> tuple[str, str, object] | None:
     """(control, mutant, injection) for a sampled case, or None if the
     injection fails its own mechanical gate on this substrate."""
