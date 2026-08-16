@@ -99,3 +99,35 @@ class CompareTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ComparisonAdjudicationTest(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = self.tmp.name
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def test_defective_control_pairs_leave_the_false_alarm_test(self):
+        from caplab.advisory.adjudication import (Adjudications,
+                                                  build_adjudication)
+        rows_a = [row("1" * 64, True, alarm=False), row("2" * 64, True, alarm=False)]
+        rows_b = [row("1" * 64, True, alarm=True), row("2" * 64, True, alarm=True)]
+        a = write_run(self.root, "a", rows_a)
+        b = write_run(self.root, "b", rows_b)
+
+        plain = paired_comparison(a, b)
+        self.assertEqual(plain["false_alarm_discordant_pairs"], 2)
+        self.assertEqual(plain["false_alarm_unaudited_pairs"], 2)
+        self.assertEqual(plain["false_alarm_audit_status"],
+                         "contains-unaudited-refusals")
+
+        adj = Adjudications([build_adjudication(
+            dispatch_id="1" * 64, disposition="defective",
+            basis="audited", adjudicated_by="principal:test",
+            as_of="2026-08-16T00:00:00+00:00")])
+        judged = paired_comparison(a, b, adjudications=adj)
+        self.assertEqual(judged["false_alarm_defective_controls_excluded"], 1)
+        self.assertEqual(judged["false_alarm_discordant_pairs"], 1)
+        self.assertEqual(judged["b_false_alarms"], 1)

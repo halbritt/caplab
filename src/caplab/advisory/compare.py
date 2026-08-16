@@ -53,8 +53,17 @@ def _binom_two_sided(k: int, n: int, p: float = 0.5) -> float:
 
 
 def paired_comparison(run_a: str, run_b: str, label_a: str = "",
-                      label_b: str = "") -> dict:
-    """Compare two completed runs on the cases they both measured."""
+                      label_b: str = "", adjudications=None) -> dict:
+    """Compare two completed runs on the cases they both measured.
+
+    False-alarm pairing is conditioned on control adjudications for the same
+    reason the scorer is: a pair whose control is established defective
+    cannot say which subject erred, because refusing it was correct.
+    """
+    from .adjudication import Adjudications
+
+    if adjudications is None:
+        adjudications = Adjudications([])
     for run in (run_a, run_b):
         if not completed(run):
             raise ValueError(f"{run}: not a completed run; refusing to compare")
@@ -64,6 +73,7 @@ def paired_comparison(run_a: str, run_b: str, label_a: str = "",
     a_only_caught = b_only_caught = both = neither = 0
     a_alarms = b_alarms = 0
     a_only_alarm = b_only_alarm = 0
+    defective_controls = unaudited_alarm_pairs = 0
     per_class: dict[str, dict] = {}
     for dispatch in shared:
         ra, rb = a[dispatch], b[dispatch]
@@ -76,7 +86,13 @@ def paired_comparison(run_a: str, run_b: str, label_a: str = "",
             b_only_caught += 1
         else:
             neither += 1
-        fa, fb = bool(ra.get("false_alarm")), bool(rb.get("false_alarm"))
+        if adjudications.is_defective(dispatch):
+            defective_controls += 1
+            fa = fb = False
+        else:
+            fa, fb = bool(ra.get("false_alarm")), bool(rb.get("false_alarm"))
+            if adjudications.disposition(dispatch) == "unadjudicated" and (fa or fb):
+                unaudited_alarm_pairs += 1
         a_alarms += fa
         b_alarms += fb
         # A false alarm is a refusal of a control arm the other subject
@@ -119,6 +135,11 @@ def paired_comparison(run_a: str, run_b: str, label_a: str = "",
         "false_alarm_discordant_pairs": alarm_discordant,
         "false_alarm_sign_test_p": alarm_p,
         "false_alarm_significant_at_05": alarm_p < 0.05,
+        "false_alarm_defective_controls_excluded": defective_controls,
+        "false_alarm_unaudited_pairs": unaudited_alarm_pairs,
+        "false_alarm_audit_status": (
+            "established" if unaudited_alarm_pairs == 0
+            else "contains-unaudited-refusals"),
         "a_discrimination": ((both + a_only_caught) - a_alarms) / n if n else None,
         "b_discrimination": ((both + b_only_caught) - b_alarms) / n if n else None,
         "by_defect_class": {k: dict(v) for k, v in sorted(per_class.items())},
@@ -129,5 +150,7 @@ def paired_comparison(run_a: str, run_b: str, label_a: str = "",
             + ("" if p_value < 0.05 else " (not established)")
             + f"; false alarms: {alarm_discordant} discordant, p="
             f"{alarm_p:.3f}"
-            + ("" if alarm_p < 0.05 else " (not established)")),
+            + ("" if alarm_p < 0.05 else " (not established)")
+            + (f", {unaudited_alarm_pairs} on unaudited controls"
+               if unaudited_alarm_pairs else "")),
     }

@@ -22,5 +22,19 @@
       }
     ],
     "input_path": "inputs/00-striatum-next-passes-semantic-and-durable-closure-packets-P01f-refusal-record-contract-change-set"
+  },
+  {
+    "bytes": 23401,
+    "control_verdict": "needs_revision",
+    "defect_class": "hash_mismatch",
+    "dispatch_id": "88b49e1b8bcbbbe92c95f8c0e470f1abc8c8a6e0e59a60604f908f3e322e1ce7",
+    "findings": [
+      {
+        "element_anchor": "internal/backend/local/integrate.go: executeIntegration",
+        "severity": null,
+        "text": "The single-change-set integration lane has no equivalent of anchoredBatchBaseGuard() for the 'pin present but 01-base dispatch-expansion missing' case that executeBatchIntegration explicitly guards against. In executeIntegration, `base, err := changeset.ParseProduct(baseBody)` is called unconditiona"
+      }
+    ],
+    "input_path": "inputs/00-striatum-next-passes-anchored-lineage-composes-packets-alc-anchored-base-typed-guard-change-set"
   }
 ]
