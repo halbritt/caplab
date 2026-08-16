@@ -185,17 +185,18 @@ def cmd_validate_pending(args):
     reviewer = strong_reviewer_from_declaration(args.backends_root,
                                                 args.reference,
                                                 profile=args.profile)
-    rows = validate_pending(args.calibration, reviewer, load_body)
     os.makedirs(os.path.dirname(args.out) or ".", exist_ok=True)
     counts = {}
     with open(args.out, "a", encoding="utf-8") as f:
-        for row in rows:
-            counts[row.get("difficulty_flag", row["status"])] = \
-                counts.get(row.get("difficulty_flag", row["status"]), 0) + 1
-            print(f"{row['case']['operator']:26} "
-                  f"{row.get('difficulty_flag', row['status'])}", flush=True)
+        def persist(row):
+            key = row.get("difficulty_flag", row["status"])
+            counts[key] = counts.get(key, 0) + 1
+            print(f"{row['case']['operator']:26} {key}", flush=True)
             f.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
             f.flush()
+            os.fsync(f.fileno())
+
+        validate_pending(args.calibration, reviewer, load_body, on_row=persist)
     print(json.dumps(counts, indent=2))
 
 

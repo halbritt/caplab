@@ -189,7 +189,8 @@ def strong_reviewer_from_declaration(backends_root: str, backend_id: str,
     return reviewer
 
 
-def validate_pending(calibration_path: str, reviewer, load_body) -> list[dict]:
+def validate_pending(calibration_path: str, reviewer, load_body,
+                     on_row=None) -> list[dict]:
     """Run pending-strong-reference cases against a strong reference.
 
     Per the admission protocol: a strong catch validates the case as
@@ -210,11 +211,15 @@ def validate_pending(calibration_path: str, reviewer, load_body) -> list[dict]:
         if body is None:
             row["status"] = "substrate-unreachable"
             rows.append(row)
+            if on_row:
+                on_row(row)
             continue
         materialized = materialize_case(case, body)
         if materialized is None:
             row["status"] = "injection-failed-gate"
             rows.append(row)
+            if on_row:
+                on_row(row)
             continue
         control, mutant, injection = materialized
         control_doc = reviewer(control)
@@ -222,6 +227,8 @@ def validate_pending(calibration_path: str, reviewer, load_body) -> list[dict]:
         if control_doc is None and mutant_doc is None:
             row["status"] = "reference-unparseable"
             rows.append(row)
+            if on_row:
+                on_row(row)
             continue
         caught = (mutant_doc or {}).get("verdict") in REFUSING
         false_alarm = (control_doc or {}).get("verdict") in REFUSING
@@ -239,6 +246,8 @@ def validate_pending(calibration_path: str, reviewer, load_body) -> list[dict]:
                 else "strong-miss-quarantine-candidate"),
         })
         rows.append(row)
+        if on_row:
+            on_row(row)
     return rows
 
 

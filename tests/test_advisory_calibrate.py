@@ -90,5 +90,31 @@ class CalibrateTest(unittest.TestCase):
                                          stdout_json_pointer="/structured_output"))
 
 
+
+class StreamingTest(unittest.TestCase):
+    def test_rows_are_emitted_as_they_complete(self):
+        import json as _json
+        import tempfile as _tf
+        with _tf.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "cal.jsonl")
+            with open(path, "w") as f:
+                for seed in (11, 12, 13):
+                    f.write(_json.dumps(pending_row(seed=seed)) + "\n")
+            seen = []
+
+            def boom(body):
+                # fail on the third case, after two have been answered
+                if len(seen) >= 2:
+                    raise RuntimeError("reference died")
+                return {"verdict": "needs_revision",
+                        "findings": [{"element_anchor": "#el:rules"}]}
+
+            with self.assertRaises(RuntimeError):
+                validate_pending(path, boom, lambda c: DOC,
+                                 on_row=seen.append)
+            # the answered cases survived the failure
+            self.assertEqual(len(seen), 2)
+
+
 if __name__ == "__main__":
     unittest.main()
