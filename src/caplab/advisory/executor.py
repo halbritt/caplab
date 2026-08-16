@@ -172,6 +172,14 @@ def claims_from_runs(run_dirs: list[str], backends_root: str | None,
                     receipt = json.load(f)
                 entry["instrument_commit"] = receipt.get("instrument_commit")
                 entry["profile"] = receipt.get("profile")
+                # The sweep seed determines which substrates were drawn and
+                # which injection each received. Two subjects share a case
+                # set only if they share this seed and this instrument
+                # commit, so a consumer cannot verify a matched comparison
+                # without it recorded on the claim.
+                argv = receipt.get("argv") or []
+                if "--seed" in argv:
+                    entry["sweep_seed"] = argv[argv.index("--seed") + 1]
             evidence.append(entry)
         notes = list(ADVISORY_NOTES)
         if result["repeated_case_trials"]:

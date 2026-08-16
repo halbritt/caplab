@@ -431,7 +431,7 @@
     },
     {
       "as_of": "2026-08-15T21:48:01.214456+00:00",
-      "claim_id": "qc-752e84215a6bd456",
+      "claim_id": "qc-cc6ad134a3f37d98",
       "construct": "review.defect_discrimination/1",
       "custody": "caplab-advisory",
       "evidence": [
@@ -441,7 +441,8 @@
           "profile": "caplab-advisory-execution/0",
           "results_sha256": "77070a3a4443897fc591ea3a22d35e2be7d94105aeda1641fc27c975ab75a61f",
           "rows_used": 22,
-          "run": "adv-agy-gemini-3-7-flash-high-20260815"
+          "run": "adv-agy-gemini-3-7-flash-high-20260815",
+          "sweep_seed": "20260815"
         }
       ],
       "metrics": {
@@ -501,7 +502,7 @@
     },
     {
       "as_of": "2026-08-15T21:48:01.214456+00:00",
-      "claim_id": "qc-9e51b565b9cc10bb",
+      "claim_id": "qc-d1a98cc32f1bb9bd",
       "construct": "review.defect_discrimination/1",
       "custody": "caplab-advisory",
       "evidence": [
@@ -511,7 +512,8 @@
           "profile": "caplab-advisory-execution/0",
           "results_sha256": "2fc78164daeef02c9c5ef52238657f7a6a3daaaf5c835f9b62bf506d3e699290",
           "rows_used": 22,
-          "run": "adv-agy-gemini-3-7-flash-low-20260815"
+          "run": "adv-agy-gemini-3-7-flash-low-20260815",
+          "sweep_seed": "20260815"
         }
       ],
       "metrics": {
@@ -571,7 +573,7 @@
     },
     {
       "as_of": "2026-08-15T21:48:01.214456+00:00",
-      "claim_id": "qc-224b9d6596a5efc9",
+      "claim_id": "qc-1e6886235df72fde",
       "construct": "review.defect_discrimination/1",
       "custody": "caplab-advisory",
       "evidence": [
@@ -581,7 +583,8 @@
           "profile": "caplab-advisory-execution/0",
           "results_sha256": "60c691e1a7b1ab209cea0e3355b1a4edff45f1ec64df6b4039ec1be9b13b8de0",
           "rows_used": 22,
-          "run": "adv-agy-gemini-3-7-flash-medium-20260815"
+          "run": "adv-agy-gemini-3-7-flash-medium-20260815",
+          "sweep_seed": "20260815"
         }
       ],
       "metrics": {
