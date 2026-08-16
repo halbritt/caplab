@@ -60,3 +60,54 @@ class SamplingTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class SamplingConstraintTest(unittest.TestCase):
+    """A claim must not rest on one artifact twice, nor on an accidental mix."""
+
+    def _pool(self, n_exchange=12, n_doc=12, operators=("a_op", "b_op")):
+        out = []
+        for i in range(n_exchange):
+            # Distinct ids: a zero-padded hex prefix is identical for every
+            # small i, which silently collapsed this fixture to one substrate.
+            sha = f"{i:064x}"
+            out.append({"substrate_id": f"qs-e{i:012x}", "sha256": sha,
+                        "partition": "open",
+                        "source": {"kind": "striatum-exchange",
+                                   "dispatch_id": sha},
+                        "applicable_operators": sorted(operators)})
+        for i in range(n_doc):
+            sha = f"{i + 500:064x}"
+            out.append({"substrate_id": f"qs-d{i:012x}", "sha256": sha,
+                        "partition": "open",
+                        "source": {"kind": "repo-doc", "repo": "caplab",
+                                   "path": f"docs/{i}.md"},
+                        "applicable_operators": sorted(operators)})
+        return out
+
+    def test_no_substrate_carries_two_cases(self):
+        cases = sample_cases(self._pool(), sweep_seed=3, per_operator=6)
+        ids = [c["substrate_id"] for c in cases]
+        self.assertEqual(len(ids), len(set(ids)))
+
+    def test_sources_are_balanced_within_an_operator(self):
+        cases = sample_cases(self._pool(), sweep_seed=3, per_operator=6)
+        for operator in {c["operator"] for c in cases}:
+            kinds = [c["source"]["kind"] for c in cases
+                     if c["operator"] == operator]
+            exchange = kinds.count("striatum-exchange")
+            docs = kinds.count("repo-doc")
+            self.assertLessEqual(abs(exchange - docs), 1,
+                                 f"{operator} drew {exchange}/{docs}")
+
+    def test_a_single_source_pool_still_fills(self):
+        cases = sample_cases(self._pool(n_doc=0), sweep_seed=3, per_operator=4)
+        self.assertEqual(len(cases), 8)
+        self.assertEqual({c["source"]["kind"] for c in cases},
+                         {"striatum-exchange"})
+
+    def test_allocation_is_capped_by_availability(self):
+        cases = sample_cases(self._pool(n_exchange=2, n_doc=1), sweep_seed=3,
+                             per_operator=5)
+        # 3 substrates, 2 operators, disjointness caps the draw at 3
+        self.assertEqual(len(cases), 3)

@@ -187,12 +187,39 @@ def sample_cases(substrates: list[dict], sweep_seed: int,
     for substrate in pool:
         for name in substrate["applicable_operators"]:
             by_operator.setdefault(name, []).append(substrate)
+    # Two constraints beyond equal allocation, both about what a claim is
+    # allowed to rest on:
+    #
+    # 1. Substrate-disjoint. One artifact must not carry two cases in a
+    #    sweep, or a single odd artifact drives several rows and their
+    #    errors are correlated rather than independent.
+    # 2. Source-balanced. Within an operator, draws alternate between
+    #    substrate sources where both are available, so a claim's source mix
+    #    is a property of the design and not of a shuffle.
     cases = []
+    used: set[str] = set()
     for name in sorted(by_operator):
         rng = random.Random(f"{sweep_seed}:{name}")
         candidates = sorted(by_operator[name], key=lambda s: s["sha256"])
         rng.shuffle(candidates)
-        for substrate in candidates[:per_operator]:
+        by_source: dict[str, list[dict]] = {}
+        for substrate in candidates:
+            by_source.setdefault(substrate["source"]["kind"], []).append(substrate)
+        picked = []
+        while len(picked) < per_operator and any(by_source.values()):
+            for kind in sorted(by_source):
+                if len(picked) >= per_operator:
+                    break
+                queue = by_source[kind]
+                while queue:
+                    substrate = queue.pop(0)
+                    if substrate["substrate_id"] not in used:
+                        used.add(substrate["substrate_id"])
+                        picked.append(substrate)
+                        break
+            if not any(by_source.values()):
+                break
+        for substrate in picked:
             cases.append({
                 "substrate_id": substrate["substrate_id"],
                 "sha256": substrate["sha256"],
