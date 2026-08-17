@@ -26,10 +26,12 @@ derived from the case seed rather than fixed.
 from __future__ import annotations
 
 import datetime as _dt
+import hashlib
 import json
 import os
 import random
 import subprocess
+import tempfile
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -47,9 +49,11 @@ SYNTHETIC_CONTRACT_INSTRUMENT = "matched-pair defect injection (synthetic contra
 MEASUREMENT_PROFILE = "v1"
 
 #: Well below the kernel's per-argument limit, leaving room for the rest of
-#: argv and the environment. A body larger than this is delivered on stdin
-#: and the row records that the transport differed — the audit harness hit
-#: exactly this ceiling on 2026-08-16 and died rather than adapting.
+#: argv and the environment. A prompt larger than this cannot ride argv; its
+#: body is spilled to a workspace file and referenced by path, and if even
+#: the spilled prompt overflows, the arm is refused loudly. There is no
+#: stdin fallback: an arg-mode CLI never reads stdin, and rerouting there
+#: recorded eight unasked questions as unanswered ones in sweep 20260817.
 MAX_ARG_BYTES = 100_000
 
 
@@ -84,21 +88,30 @@ def invoke(adapter: dict, prompt: str, timeout: int) -> dict:
     encoded = prompt.encode()
     transport = prompt_mode
     stdin_data = None
-    if prompt_mode == "arg" and len(encoded) <= MAX_ARG_BYTES:
+    if prompt_mode == "arg":
+        if len(encoded) > MAX_ARG_BYTES:
+            # An arg-mode CLI never reads stdin. Rerouting an oversize prompt
+            # there asks nothing and records the silence as the subject's
+            # answer (every discard in sweep 20260817 was this). Refuse
+            # without invoking, so an unasked question can never look like an
+            # unanswered one.
+            return {"doc": None, "exit_code": None, "timed_out": False,
+                    "seconds": 0.0, "transport": "none",
+                    "prompt_bytes": len(encoded), "raw_head": "",
+                    "error": "prompt exceeds transport capacity"}
         argv.append(prompt)
     else:
-        if prompt_mode == "arg":
-            transport = "stdin-oversize-fallback"
         stdin_data = encoded
 
     started = time.time()
+    timed_out = False
     try:
         completed = subprocess.run(argv, input=stdin_data, capture_output=True,
                                    timeout=timeout)
         stdout = completed.stdout.decode("utf-8", errors="replace")
         code = completed.returncode
     except subprocess.TimeoutExpired:
-        stdout, code = "", -1
+        stdout, code, timed_out = "", None, True
     body = stdout
     pointer = adapter.get("stdout_json_pointer")
     if pointer:
@@ -107,11 +120,43 @@ def invoke(adapter: dict, prompt: str, timeout: int) -> dict:
     return {
         "doc": doc if isinstance(doc, dict) else None,
         "exit_code": code,
+        "timed_out": timed_out,
         "seconds": round(time.time() - started, 1),
         "transport": transport,
         "prompt_bytes": len(encoded),
         "raw_head": stdout[:400],
+        "error": None,
     }
+
+
+def _prepare_prompt(contract: str, arm_body: str, adapter: dict,
+                    workspace: str | None) -> tuple:
+    """(prompt, transport label) for one arm, spilling when argv cannot carry it.
+
+    Striatum's own renderer spills argv-mode input bodies to files and
+    references them by path when the prompt overflows; an agentic subject
+    reads the file itself. The label is None for a plain inline prompt, and
+    (None, None) means no transport can carry the arm — the caller must
+    refuse loudly, never reroute. The spill filename derives from the body's
+    content, so it carries no marker of which arm it belongs to.
+    """
+    prompt = contract + arm_body
+    if (adapter.get("prompt_mode", "stdin") != "arg"
+            or len(prompt.encode()) <= MAX_ARG_BYTES):
+        return prompt, None
+    if workspace is None:
+        workspace = tempfile.mkdtemp(prefix="caplab-spill-")
+    os.makedirs(workspace, exist_ok=True)
+    name = hashlib.sha256(arm_body.encode()).hexdigest()[:16] + ".txt"
+    path = os.path.abspath(os.path.join(workspace, name))
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(arm_body)
+    spilled = (contract
+               + "The body under review is too large to inline. Read it in "
+                 "full from this file before deciding: " + path + "\n")
+    if len(spilled.encode()) > MAX_ARG_BYTES:
+        return None, None
+    return spilled, "arg-spill"
 
 
 def _majority(verdicts: list) -> tuple:
@@ -132,7 +177,8 @@ def _majority(verdicts: list) -> tuple:
 
 
 def measure_case(case: dict, body: str, adapter: dict, timeout: int,
-                 replicates: int = 1, mutant_replicates: int | None = None) -> dict:
+                 replicates: int = 1, mutant_replicates: int | None = None,
+                 workspace: str | None = None) -> dict:
     """One matched pair, optionally replicated.
 
     Replication exists because the control arm reproduces at ~53% on identical
@@ -171,18 +217,50 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
                              else mutant_replicates)}
     results, replicate_verdicts = {}, {}
     for name, arm_body in arms:
-        runs = [invoke(adapter, prompt + arm_body, timeout)
-                for _ in range(per_arm[name])]
+        prompt_text, transport_label = _prepare_prompt(prompt, arm_body,
+                                                       adapter, workspace)
+        if prompt_text is None:
+            runs = [{"doc": None, "exit_code": None, "timed_out": False,
+                     "seconds": 0.0, "transport": "none",
+                     "prompt_bytes": len((prompt + arm_body).encode()),
+                     "raw_head": "",
+                     "error": "prompt exceeds transport capacity"}]
+        else:
+            runs = [invoke(adapter, prompt_text, timeout)
+                    for _ in range(per_arm[name])]
+            if transport_label:
+                for r in runs:
+                    r["transport"] = transport_label
         replicate_verdicts[name] = [(r["doc"] or {}).get("verdict") for r in runs]
         # Keep the first parseable invocation as the representative capture.
         results[name] = next((r for r in runs if r["doc"] is not None), runs[0])
 
     control, mutant = results["control"], results["mutant"]
-    if control["doc"] is None and mutant["doc"] is None:
+    dead = [name for name in ("control", "mutant")
+            if results[name]["doc"] is None]
+    if dead:
+        # One dead arm used to leave the pair "usable": a dead mutant arm
+        # scored as a miss and a dead control arm as a clean clearance —
+        # answers the subject never gave. A pair is a measurement only when
+        # both arms answered; the discard keeps every scrap of telemetry
+        # that says which arm died and how.
+        which = "either arm" if len(dead) == 2 else f"{dead[0]} arm"
         return {**row, "usable": False,
-                "error": "no parseable review on either arm",
+                "error": f"no parseable review on {which}",
                 "control_head": control["raw_head"],
-                "mutant_head": mutant["raw_head"]}
+                "mutant_head": mutant["raw_head"],
+                "control_verdicts": replicate_verdicts["control"],
+                "mutant_verdicts": replicate_verdicts["mutant"],
+                "control_exit_code": control.get("exit_code"),
+                "mutant_exit_code": mutant.get("exit_code"),
+                "control_timed_out": control.get("timed_out", False),
+                "mutant_timed_out": mutant.get("timed_out", False),
+                "control_transport": control.get("transport"),
+                "mutant_transport": mutant.get("transport"),
+                "control_seconds": control.get("seconds"),
+                "mutant_seconds": mutant.get("seconds"),
+                "control_error": control.get("error"),
+                "mutant_error": mutant.get("error")}
 
     control_verdict, control_refusing, control_n = _majority(
         replicate_verdicts["control"])
@@ -298,7 +376,8 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
             else:
                 row = measure_case(case, body, adapter, timeout,
                                    replicates=arm_replicates,
-                                   mutant_replicates=arm_mutant_replicates)
+                                   mutant_replicates=arm_mutant_replicates,
+                                   workspace=os.path.join(out_dir, "workspace"))
             row["backend_measured"] = backend
             row["anchor"] = is_anchor
             with write_lock:
@@ -324,7 +403,7 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
             if not row:
                 return None
             with write_lock:
-                if row.get("error") == "no parseable review on either arm":
+                if (row.get("error") or "").startswith("no parseable review"):
                     empty_streak_state["streak"] += 1
                     if (abort_after_empty
                             and empty_streak_state["streak"] >= abort_after_empty):

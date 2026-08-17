@@ -54,14 +54,29 @@ def echo_adapter(verdict_for_mutant="needs_revision",
 
 
 class InvokeTest(unittest.TestCase):
-    def test_oversize_arg_falls_back_to_stdin_and_records_it(self):
+    def test_oversize_arg_prompt_is_refused_not_silently_rerouted(self):
+        # An arg-mode CLI never reads stdin, so the old stdin fallback asked
+        # nothing and recorded the silence as the subject's answer. The
+        # transport must refuse instead, without invoking anything.
         adapter = {"command": ["python3", "-c",
                                "import sys;print('{\"verdict\":\"accept\"}');"
                                "sys.stdin.read()"],
                    "prompt_mode": "arg"}
         result = invoke(adapter, "x" * (MAX_ARG_BYTES + 10), timeout=60)
-        self.assertEqual(result["transport"], "stdin-oversize-fallback")
-        self.assertEqual(result["doc"]["verdict"], "accept")
+        self.assertIsNone(result["doc"])
+        self.assertEqual(result["error"], "prompt exceeds transport capacity")
+        self.assertEqual(result["transport"], "none")
+        self.assertIsNone(result["exit_code"])
+
+    def test_timeout_is_recorded_as_timeout_not_empty_answer(self):
+        # "timed out" and "returned empty" could not be told apart in sweep
+        # 20260817; the row must say which happened.
+        adapter = {"command": ["python3", "-c", "import time;time.sleep(30)"],
+                   "prompt_mode": "arg"}
+        result = invoke(adapter, "hi", timeout=1)
+        self.assertIsNone(result["doc"])
+        self.assertTrue(result["timed_out"])
+        self.assertIsNone(result["exit_code"])
 
     def test_declared_arg_transport_is_used_when_it_fits(self):
         adapter = {"command": ["python3", "-c",
@@ -69,6 +84,34 @@ class InvokeTest(unittest.TestCase):
                    "prompt_mode": "arg"}
         result = invoke(adapter, "small", timeout=60)
         self.assertEqual(result["transport"], "arg")
+
+
+class SpillTransportTest(unittest.TestCase):
+    """An arg-mode subject with an oversize body gets the body by file path,
+    as striatum's own renderer spills argv-mode inputs in production."""
+
+    READS_SPILLED_FILE = (
+        "import sys, json;"
+        "prompt = sys.argv[1];"
+        "path = prompt.rstrip().split()[-1];"
+        "body = open(path).read();"
+        "bad = 'may freely' in body or 'may clear a gate' in body;"
+        "print(json.dumps({'verdict': 'needs_revision' if bad else 'accept',"
+        " 'findings': [{'element_anchor': '#el:motivation'}] if bad else []}))"
+    )
+
+    def test_oversize_body_is_spilled_to_a_file_the_subject_can_read(self):
+        big = DOC + "\n## Appendix {#el:appendix}\n\n" + ("filler text " * 12000)
+        adapter = {"command": ["python3", "-c", self.READS_SPILLED_FILE],
+                   "prompt_mode": "arg"}
+        with tempfile.TemporaryDirectory() as workspace:
+            row = measure_case(case(), big, adapter, timeout=60,
+                               workspace=workspace)
+            self.assertTrue(row["usable"], row.get("error"))
+        self.assertTrue(row["caught"])
+        self.assertFalse(row["false_alarm"])
+        self.assertEqual(row["control_transport"], "arg-spill")
+        self.assertEqual(row["mutant_transport"], "arg-spill")
 
 
 class MeasureCaseTest(unittest.TestCase):
@@ -122,6 +165,55 @@ class MeasureCaseTest(unittest.TestCase):
                            timeout=60)
         self.assertFalse(row["usable"])
         self.assertIn("unknown operator", row["error"])
+
+
+class PairValidityTest(unittest.TestCase):
+    """A pair with an unmeasured arm is not a measurement of the subject.
+
+    Sweep 20260817 scored four such pairs: dead mutant arms as misses and a
+    dead control arm as a clean clearance. Both readings invent an answer
+    the subject never gave.
+    """
+
+    def _one_dead_arm(self, dead_arm):
+        def fake_invoke(adapter, prompt, timeout):
+            arm = "mutant" if ("may freely" in prompt or "may clear" in prompt) \
+                else "control"
+            if arm == dead_arm:
+                return {"doc": None, "exit_code": None, "timed_out": True,
+                        "seconds": 900.0, "transport": "arg",
+                        "prompt_bytes": len(prompt), "raw_head": "",
+                        "error": None}
+            return {"doc": {"verdict": "accept", "findings": []},
+                    "exit_code": 0, "timed_out": False, "seconds": 1.0,
+                    "transport": "arg", "prompt_bytes": len(prompt),
+                    "raw_head": "{}", "error": None}
+        return fake_invoke
+
+    def _run(self, dead_arm):
+        original = pool_runner.invoke
+        pool_runner.invoke = self._one_dead_arm(dead_arm)
+        try:
+            return measure_case(case(), DOC, echo_adapter(), timeout=60,
+                                replicates=3, mutant_replicates=1)
+        finally:
+            pool_runner.invoke = original
+
+    def test_dead_mutant_arm_discards_the_pair_and_says_why(self):
+        row = self._run("mutant")
+        self.assertFalse(row["usable"])
+        self.assertIn("mutant arm", row["error"])
+        self.assertTrue(row["mutant_timed_out"])
+        self.assertIsNone(row["mutant_exit_code"])
+        # The live arm's evidence is preserved for later audit.
+        self.assertEqual(row["control_verdicts"], ["accept"] * 3)
+
+    def test_dead_control_arm_discards_the_pair_and_says_why(self):
+        row = self._run("control")
+        self.assertFalse(row["usable"])
+        self.assertIn("control arm", row["error"])
+        self.assertTrue(row["control_timed_out"])
+        self.assertNotIn("false_alarm", row)
 
 
 class SummaryShapeTest(unittest.TestCase):
