@@ -30,7 +30,9 @@ import json
 import os
 import random
 import subprocess
+import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 
 import yaml
 
@@ -49,6 +51,22 @@ MEASUREMENT_PROFILE = "v1"
 #: and the row records that the transport differed — the audit harness hit
 #: exactly this ceiling on 2026-08-16 and died rather than adapting.
 MAX_ARG_BYTES = 100_000
+
+
+def declared_lanes(declaration: dict) -> int:
+    """The concurrency the declaration itself permits.
+
+    A sweep must not exceed it. The number is part of the Binding: running
+    more lanes than the declaration sanctions measures a configuration that
+    striatum never dispatches, and it invites the rate limiting that turns a
+    run into a row of empty lanes.
+    """
+    concurrency = ((declaration.get("capabilities") or {})
+                   .get("concurrency") or {})
+    try:
+        return max(1, int(concurrency.get("max_lanes", 1)))
+    except (TypeError, ValueError):
+        return 1
 
 
 def load_declaration(backends_root: str, backend_id: str) -> dict:
@@ -212,7 +230,7 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
              partition: str = "open", timeout: int = 1800,
              max_cases: int = 40, abort_after_empty: int = 8,
              replicates: int = 1, mutant_replicates: int | None = None,
-             anchor_path: str | None = None) -> dict:
+             anchor_path: str | None = None, workers: int = 1) -> dict:
     """Measure one binding over a sampled slice of the pool.
 
     Two populations run in one sweep and are kept apart:
@@ -259,11 +277,14 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
     empty_streak = 0
     aborted = None
     started_at = _dt.datetime.now(_dt.timezone.utc).isoformat()
+    lanes = min(max(1, workers), declared_lanes(declaration))
+    write_lock = threading.Lock()
     with open(results_path, "a", encoding="utf-8") as out:
-        for index, (case, is_anchor) in enumerate(plan, 1):
+        def run_one(indexed):
+            index, (case, is_anchor) = indexed
             case_id = f"{case['substrate_id']}:{case['operator']}:{case['seed']}"
             if case_id in done:
-                continue
+                return None
             arm_replicates = (3 if is_anchor else replicates)
             arm_mutant_replicates = (
                 3 if is_anchor
@@ -280,22 +301,48 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
                                    mutant_replicates=arm_mutant_replicates)
             row["backend_measured"] = backend
             row["anchor"] = is_anchor
-            out.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
-            out.flush()
-            os.fsync(out.fileno())
-            print(f"[{index}/{len(plan)}] {'ANCHOR ' if is_anchor else ''}"
-                  f"{case['operator']:28} "
-                  f"{'usable' if row.get('usable') else row.get('error','')}"
-                  f"{' CAUGHT' if row.get('caught') else ''}"
-                  f"{' FALSE-ALARM' if row.get('false_alarm') else ''}", flush=True)
+            with write_lock:
+                out.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+                out.flush()
+                os.fsync(out.fileno())
+                print(f"[{index}/{len(plan)}] {'ANCHOR ' if is_anchor else ''}"
+                      f"{case['operator']:28} "
+                      f"{'usable' if row.get('usable') else row.get('error','')}"
+                      f"{' CAUGHT' if row.get('caught') else ''}"
+                      f"{' FALSE-ALARM' if row.get('false_alarm') else ''}",
+                      flush=True)
+            return row
 
-            if row.get("error") == "no parseable review on either arm":
-                empty_streak += 1
-                if abort_after_empty and empty_streak >= abort_after_empty:
-                    aborted = f"{empty_streak} consecutive empty lanes"
-                    break
-            elif row.get("usable"):
-                empty_streak = 0
+        # Lanes are bounded by the declaration. Each call is a subprocess to a
+        # remote endpoint, so the work is IO-bound and threads carry it.
+        empty_streak_state = {"streak": 0, "aborted": None}
+
+        def guarded(indexed):
+            if empty_streak_state["aborted"]:
+                return None
+            row = run_one(indexed)
+            if not row:
+                return None
+            with write_lock:
+                if row.get("error") == "no parseable review on either arm":
+                    empty_streak_state["streak"] += 1
+                    if (abort_after_empty
+                            and empty_streak_state["streak"] >= abort_after_empty):
+                        empty_streak_state["aborted"] = (
+                            f"{empty_streak_state['streak']} consecutive empty lanes")
+                elif row.get("usable"):
+                    empty_streak_state["streak"] = 0
+            return row
+
+        if lanes > 1:
+            print(f"lanes: {lanes} (declaration permits "
+                  f"{declared_lanes(declaration)})", flush=True)
+            with ThreadPoolExecutor(max_workers=lanes) as pool:
+                list(pool.map(guarded, enumerate(plan, 1)))
+        else:
+            for indexed in enumerate(plan, 1):
+                guarded(indexed)
+        aborted = empty_streak_state["aborted"]
 
     with open(results_path, encoding="utf-8") as f:
         rows = [json.loads(line) for line in f if line.strip()]

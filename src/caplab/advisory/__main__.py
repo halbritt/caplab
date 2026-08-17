@@ -137,7 +137,7 @@ def cmd_pool_run(args):
         partition=args.partition, timeout=args.timeout,
         max_cases=args.max_cases, replicates=args.replicates,
         mutant_replicates=args.mutant_replicates,
-        anchor_path=args.anchor_set)
+        anchor_path=args.anchor_set, workers=args.workers)
     print(json.dumps(summary, indent=2))
     if summary.get("aborted"):
         print("run aborted; no claims derived", file=sys.stderr)
@@ -306,6 +306,9 @@ def main(argv=None):
                         "--replicates. The mutant arm reproduces at ~80-87%%, "
                         "so replicating it equally buys reliability it "
                         "already has, at the cost of distinct defects")
+    p.add_argument("--workers", type=int, default=1,
+                   help="concurrent lanes, capped by the declaration's own "
+                        "capabilities.concurrency.max_lanes")
     p.add_argument("--anchor-set", default=os.path.join(
         REPO_ROOT, "advisory", "anchor-set.json"),
         help="invariant replay set; both arms get r=3 and its substrates are "

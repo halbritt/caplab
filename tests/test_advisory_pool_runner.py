@@ -354,3 +354,17 @@ class AnchorSetTest(unittest.TestCase):
         self.assertEqual(row["mutant_replicates"], 1)
 if __name__ == "__main__":
     unittest.main()
+
+
+class ConcurrencyTest(unittest.TestCase):
+    def test_lanes_never_exceed_the_declaration(self):
+        from caplab.advisory.pool_runner import declared_lanes
+        self.assertEqual(declared_lanes(
+            {"capabilities": {"concurrency": {"max_lanes": 2}}}), 2)
+        # A declaration that states nothing gets one lane, not unlimited.
+        self.assertEqual(declared_lanes({"capabilities": {}}), 1)
+        self.assertEqual(declared_lanes({}), 1)
+        self.assertEqual(declared_lanes(
+            {"capabilities": {"concurrency": {"max_lanes": "bad"}}}), 1)
+if __name__ == "__main__":
+    unittest.main()
