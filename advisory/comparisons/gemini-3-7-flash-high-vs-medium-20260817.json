@@ -1,0 +1,180 @@
+{
+  "a": "agy-gemini-3-7-flash-high",
+  "a_catch_rate": 0.8909090909090909,
+  "a_discrimination": 0.7636363636363637,
+  "a_false_alarms": 7,
+  "a_only_caught": 11,
+  "a_only_false_alarm": 3,
+  "b": "agy-gemini-3-7-flash-medium",
+  "b_catch_rate": 0.7090909090909091,
+  "b_discrimination": 0.6,
+  "b_false_alarms": 6,
+  "b_only_caught": 1,
+  "b_only_false_alarm": 2,
+  "both_caught": 38,
+  "by_defect_class": {
+    "base_dropped": {
+      "a": 4,
+      "b": 3,
+      "n": 4
+    },
+    "broken_internal_crossref": {
+      "a": 1,
+      "b": 1,
+      "n": 1
+    },
+    "contradicted_clause": {
+      "a": 4,
+      "b": 3,
+      "n": 4
+    },
+    "dangling_reference": {
+      "a": 3,
+      "b": 1,
+      "n": 3
+    },
+    "dropped_section": {
+      "a": 3,
+      "b": 2,
+      "n": 4
+    },
+    "duplicated_section": {
+      "a": 4,
+      "b": 3,
+      "n": 4
+    },
+    "hash_mismatch": {
+      "a": 4,
+      "b": 3,
+      "n": 4
+    },
+    "hollow_delivery": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "overclaimed_level": {
+      "a": 1,
+      "b": 0,
+      "n": 3
+    },
+    "refuted_conclusion": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "requirement_inversion": {
+      "a": 4,
+      "b": 2,
+      "n": 4
+    },
+    "scope_violation": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "swapped_section_bodies": {
+      "a": 1,
+      "b": 1,
+      "n": 4
+    },
+    "truncated_tail": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "unearned_verification_claim": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    }
+  },
+  "discordant_cases": [
+    {
+      "caught_by": "a",
+      "defect_class": "dropped_section",
+      "dispatch_id": "qs-4dc8e07e5529ca7d:dropped_section:1052995072",
+      "substrate_id": "qs-4dc8e07e5529ca7d"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "duplicated_section",
+      "dispatch_id": "qs-5e9c18c966cd8bf7:duplicated_section:1286126085",
+      "substrate_id": "qs-5e9c18c966cd8bf7"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "dropped_section",
+      "dispatch_id": "qs-5ebab1a249b89eb2:dropped_section:742682556",
+      "substrate_id": "qs-5ebab1a249b89eb2"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "contradicted_clause",
+      "dispatch_id": "qs-6e2b1e326c4c5c0f:contradicted_clause:3970777366",
+      "substrate_id": "qs-6e2b1e326c4c5c0f"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "overclaimed_level",
+      "dispatch_id": "qs-7438efc689422484:overclaimed_level:4127258915",
+      "substrate_id": "qs-7438efc689422484"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "dangling_reference",
+      "dispatch_id": "qs-8c4a05aae286b951:dangling_reference:2996854408",
+      "substrate_id": "qs-8c4a05aae286b951"
+    },
+    {
+      "caught_by": "b",
+      "defect_class": "dropped_section",
+      "dispatch_id": "qs-97f00c690d343f8b:dropped_section:1707476662",
+      "substrate_id": "qs-97f00c690d343f8b"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "requirement_inversion",
+      "dispatch_id": "qs-a9308a59b4cf9a2a:requirement_inversion:3111047567",
+      "substrate_id": "qs-a9308a59b4cf9a2a"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "base_dropped",
+      "dispatch_id": "qs-aae295d9adf3871e:base_dropped:3067985537",
+      "substrate_id": "qs-aae295d9adf3871e"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "dangling_reference",
+      "dispatch_id": "qs-aba90dbe009e7ea2:dangling_reference:30974265",
+      "substrate_id": "qs-aba90dbe009e7ea2"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "requirement_inversion",
+      "dispatch_id": "qs-c7e0b0e1d0daa512:requirement_inversion:1670910204",
+      "substrate_id": "qs-c7e0b0e1d0daa512"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "hash_mismatch",
+      "dispatch_id": "qs-f90cc496593e109e:hash_mismatch:2518116873",
+      "substrate_id": "qs-f90cc496593e109e"
+    }
+  ],
+  "discordant_pairs": 12,
+  "false_alarm_audit_status": "contains-unaudited-refusals",
+  "false_alarm_defective_controls_excluded": 1,
+  "false_alarm_discordant_pairs": 5,
+  "false_alarm_sign_test_p": 1.0,
+  "false_alarm_significant_at_05": false,
+  "false_alarm_unaudited_pairs": 9,
+  "neither_caught": 5,
+  "reading": "catch: 12 of 55 shared cases discriminate, exact sign test p=0.006; false alarms: 5 discordant, p=1.000 (not established), 9 on unaudited controls",
+  "shared_cases": 55,
+  "sign_test_p": 0.00634765625,
+  "significant_at_05": true,
+  "sweep_seed": 20260817,
+  "uninformative_pairs": 43
+}
