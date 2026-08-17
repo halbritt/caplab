@@ -221,11 +221,31 @@ def claims_from_runs(run_dirs: list[str], backends_root: str | None,
             notes.append("prompt profile(s): " + ", ".join(result["profiles"]))
         rel = result.get("instrument_reliability") or {}
         if rel.get("anchor_cases"):
-            notes.append(
-                f"instrument reliability from {rel['anchor_cases']} replayed "
-                f"anchor cases (excluded from these metrics): control arm "
-                f"unanimous on {rel['control_unanimous_share']:.0%} of cases, "
-                f"mutant arm {rel['mutant_unanimous_share']:.0%}")
+            control_pw = rel.get("control_pairwise")
+            mutant_pw = rel.get("mutant_pairwise")
+            if control_pw and mutant_pw:
+                # Unanimity, within-sweep pairwise agreement, and cross-sweep
+                # agreement are three different statistics; the note names the
+                # one it reports, and kappa corrects for base rate — an arm
+                # that nearly always refuses agrees with itself by chance.
+                notes.append(
+                    f"instrument reliability from {rel['anchor_cases']} "
+                    f"replayed anchor cases (excluded from these metrics): "
+                    f"replicate pairwise agreement on refuse/clear, null "
+                    f"replicates excluded — control "
+                    f"{control_pw['agreement']:.0%} (kappa "
+                    f"{control_pw['kappa']:.2f} against a "
+                    f"{control_pw['chance_agreement']:.0%} chance baseline), "
+                    f"mutant {mutant_pw['agreement']:.0%} (kappa "
+                    f"{mutant_pw['kappa']:.2f}). Within-sweep pairwise "
+                    f"agreement is not comparable to cross-sweep agreement "
+                    f"figures such as the 2026-08-16 53%")
+            else:
+                notes.append(
+                    f"instrument reliability from {rel['anchor_cases']} replayed "
+                    f"anchor cases (excluded from these metrics): control arm "
+                    f"unanimous on {rel['control_unanimous_share']:.0%} of cases, "
+                    f"mutant arm {rel['mutant_unanimous_share']:.0%}")
         if result["repeated_case_trials"]:
             notes.append(
                 f"repeated case trials: {result['repeated_case_trials']} of "

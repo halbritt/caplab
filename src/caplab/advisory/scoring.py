@@ -128,18 +128,24 @@ def score_backends(run_dirs: list[str], adjudications=None) -> dict[str, dict]:
         adjudications = Adjudications([])
 
     per_backend: dict[str, dict] = {}
+    run_instruments: dict[str, str] = {}
     for run_dir in run_dirs:
         results_path = os.path.join(run_dir, "results.jsonl")
         run_name = os.path.basename(run_dir)
         results_sha = _sha256_file(results_path)
         with open(os.path.join(run_dir, "summary.json"), encoding="utf-8") as f:
             run_instrument = json.load(f).get("instrument")
+        run_instruments[run_dir] = run_instrument
         with open(results_path, encoding="utf-8") as f:
             rows = [json.loads(line) for line in f if line.strip()]
         for row in rows:
             if not row.get("usable"):
                 continue
-            if not (row.get("mutant_json_valid") or row.get("control_json_valid")):
+            if not (row.get("mutant_json_valid") and row.get("control_json_valid")):
+                # A pair counts only when both arms answered. One dead arm
+                # used to slip through here: a dead mutant arm scored as a
+                # miss, a dead control arm as a clean clearance (four such
+                # rows in sweep 20260817).
                 continue
             if row.get("anchor"):
                 # Anchor cases are replayed by every sweep to measure the
@@ -180,13 +186,23 @@ def score_backends(run_dirs: list[str], adjudications=None) -> dict[str, dict]:
             and adjudications.disposition(r.get("dispatch_id")) == "unadjudicated")
         alarm_n = len(alarm_rows)
 
-        anchored = rescored = 0
+        anchored = rescored = from_rows = from_arms = 0
         for run_dir, row in rows:
             doc = _mutant_review(run_dir, row["dispatch_id"])
-            if doc is None:
+            if doc is not None:
+                emitted = anchors_of(doc.get("findings") or [])
+                from_arms += 1
+            elif (run_instruments.get(run_dir) == SYNTHETIC_CONTRACT_INSTRUMENT
+                  and row.get("anchors_emitted") is not None):
+                # Pool runs retain no arms/, but their rows record the
+                # anchors the mutant review emitted, extracted by the
+                # corrected parser at run time. Historical rows carry no such
+                # field and stay excluded — only their retained arms count.
+                emitted = row["anchors_emitted"]
+                from_rows += 1
+            else:
                 continue
             rescored += 1
-            emitted = anchors_of(doc.get("findings") or [])
             anchored += bool(anchor_hits(row.get("defect_anchor") or "", emitted))
 
         by_class: dict = collections.defaultdict(lambda: {"n": 0, "caught": 0})
@@ -225,7 +241,9 @@ def score_backends(run_dirs: list[str], adjudications=None) -> dict[str, dict]:
                 "value": anchored / rescored,
                 "ci95": list(wilson(anchored, rescored)),
                 "denominator": rescored,
-                "basis": "rescored-retained-arms",
+                "basis": ("rescored-retained-arms" if not from_rows
+                          else "recorded-anchors" if not from_arms
+                          else "rescored-retained-arms+recorded-anchors"),
             }
         from .anchor import reliability as _anchor_reliability
 

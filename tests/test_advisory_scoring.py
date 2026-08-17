@@ -102,6 +102,39 @@ class ScoringTest(unittest.TestCase):
         scored = score_backends(eligible)["tuple-a"]
         self.assertEqual(scored["metrics"]["n_pairs"]["value"], 1)
 
+    def test_pair_with_one_dead_arm_does_not_count(self):
+        # Sweep 20260817 left four usable-flagged rows with one unparseable
+        # arm. A dead mutant arm is not a miss and a dead control arm is not
+        # a clearance; a pair counts only when both arms answered.
+        write_run(self.root, "cc-tuple-a", [
+            row("a" * 64),
+            {**row("b" * 64, caught=False), "mutant_json_valid": False},
+            {**row("c" * 64), "control_json_valid": False},
+        ])
+        eligible, _ = eligible_run_dirs(self.root)
+        scored = score_backends(eligible)["tuple-a"]
+        self.assertEqual(scored["metrics"]["n_pairs"]["value"], 1)
+
+    def test_anchored_detection_falls_back_to_recorded_anchors(self):
+        # Pool runs retain no arms/, but each row records the anchors its
+        # mutant review emitted, extracted by the corrected parser at run
+        # time. Rescoring those is the same computation on the same evidence,
+        # and without it the Construct's anchored_detection metric goes
+        # silently absent from every pool-run claim.
+        run_dir = write_run(self.root, "cc-tuple-a", [
+            {**row("f" * 64), "anchors_emitted": ["#el:decision-clauses"]},
+            {**row("a" * 64), "anchors_emitted": ["#el:some-other-element"]},
+        ])
+        with open(os.path.join(run_dir, "summary.json"), "w") as f:
+            json.dump({"instrument":
+                       "matched-pair defect injection (synthetic contract)",
+                       "aborted": None}, f)
+        eligible, _ = eligible_run_dirs(self.root)
+        anchored = score_backends(eligible)["tuple-a"]["metrics"]["anchored_detection"]
+        self.assertEqual(anchored["value"], 0.5)
+        self.assertEqual(anchored["denominator"], 2)
+        self.assertEqual(anchored["basis"], "recorded-anchors")
+
     def test_anchor_rescore_reads_free_text_anchor(self):
         # The corrected path must find an anchor written inside free text,
         # codex-style, with no element_anchor field.

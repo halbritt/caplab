@@ -160,10 +160,56 @@ def reliability(rows: list[dict]) -> dict:
         seen = [r for r in anchor if r.get(field) is not None]
         return (sum(1 for r in seen if r[field]) / len(seen)) if seen else None
 
+    def pairwise(field):
+        """Replicate pairwise agreement on refuse/clear, chance-corrected.
+
+        Unanimity, within-sweep pairwise agreement, and cross-sweep
+        agreement are three different statistics; conflating them overstated
+        the 2026-08-17 reliability block. This one names itself: verdicts
+        binarized to refuse/clear, pairs involving a null (unparseable)
+        replicate excluded from the denominator and their count reported.
+        Kappa corrects for the base rate — an arm that nearly always refuses
+        agrees with itself by chance alone, and raw agreement hides that.
+        """
+        from itertools import combinations
+
+        from ._tuner_vendored import REFUSING
+        agree = valid = nulls = 0
+        parsed: list[bool] = []
+        for r in anchor:
+            verdicts = r.get(field) or []
+            binarized = [None if v is None else (v in REFUSING)
+                         for v in verdicts]
+            nulls += sum(1 for b in binarized if b is None)
+            parsed += [b for b in binarized if b is not None]
+            for x, y in combinations(binarized, 2):
+                if x is None or y is None:
+                    continue
+                valid += 1
+                agree += (x == y)
+        if not valid or not parsed:
+            return None
+        observed = agree / valid
+        refuse_rate = sum(parsed) / len(parsed)
+        chance = refuse_rate ** 2 + (1 - refuse_rate) ** 2
+        return {
+            "agreement": observed,
+            "agreeing_pairs": agree,
+            "valid_pairs": valid,
+            "null_replicates": nulls,
+            "base_refuse_rate": refuse_rate,
+            "chance_agreement": chance,
+            "kappa": ((observed - chance) / (1 - chance)) if chance < 1 else None,
+            "handling": ("verdicts binarized to refuse/clear; "
+                         "null replicates excluded pairwise"),
+        }
+
     return {
         "anchor_cases": len(anchor),
         "control_unanimous_share": share("control_unanimous"),
         "mutant_unanimous_share": share("mutant_unanimous"),
+        "control_pairwise": pairwise("control_verdicts"),
+        "mutant_pairwise": pairwise("mutant_verdicts"),
         "control_catch_rate": sum(1 for r in anchor if r["caught"]) / len(anchor),
         "control_false_alarm_rate": (
             sum(1 for r in anchor if r["false_alarm"]) / len(anchor)),

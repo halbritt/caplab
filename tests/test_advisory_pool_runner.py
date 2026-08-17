@@ -412,6 +412,34 @@ class AnchorSetTest(unittest.TestCase):
         self.assertEqual(result["control_unanimous_share"], 0.5)
         self.assertEqual(result["mutant_unanimous_share"], 1.0)
 
+    def test_reliability_reports_pairwise_agreement_and_kappa(self):
+        # Unanimity and pairwise agreement are different statistics, and the
+        # 2026-08-17 report conflated them with a third (cross-sweep
+        # agreement). The reliability block must state the statistic it
+        # reports and say how null replicates were handled.
+        from caplab.advisory.anchor import reliability
+        rows = [
+            {"anchor": True, "usable": True, "caught": True,
+             "false_alarm": False,
+             "control_verdicts": ["accept", "accept", "accept"],
+             "mutant_verdicts": ["needs_revision"] * 3},
+            {"anchor": True, "usable": True, "caught": False,
+             "false_alarm": True,
+             "control_verdicts": ["needs_revision", "accept", None],
+             "mutant_verdicts": ["needs_revision", "accept", "accept"]},
+        ]
+        result = reliability(rows)
+        control = result["control_pairwise"]
+        # Case 1: three agreeing pairs. Case 2: the null replicate excludes
+        # two pairs; the one valid pair disagrees.
+        self.assertEqual(control["agreeing_pairs"], 3)
+        self.assertEqual(control["valid_pairs"], 4)
+        self.assertEqual(control["null_replicates"], 1)
+        self.assertAlmostEqual(control["agreement"], 0.75)
+        self.assertAlmostEqual(control["kappa"], 0.21875)
+        self.assertIn("null replicates excluded", control["handling"])
+        self.assertAlmostEqual(result["mutant_pairwise"]["agreement"], 4 / 6)
+
     def test_drift_names_the_ambiguity_it_cannot_resolve(self):
         from caplab.advisory.anchor import drift
         before = [{"dispatch_id": "a", "anchor": True, "usable": True,
