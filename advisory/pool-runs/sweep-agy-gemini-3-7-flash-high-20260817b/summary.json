@@ -1,0 +1,16 @@
+{
+  "aborted": null,
+  "backend": "agy-gemini-3-7-flash-high",
+  "calibration_profile": "v1",
+  "catch_rate": 0.8955223880597015,
+  "control_unanimous_share": 0.8059701492537313,
+  "false_alarm_rate": 0.16417910447761194,
+  "finished_at": "2026-08-17T16:53:47.317781+00:00",
+  "instrument": "matched-pair defect injection (synthetic contract)",
+  "pairs_discarded": 2,
+  "pairs_usable": 67,
+  "partition": "open",
+  "replicates": 3,
+  "started_at": "2026-08-17T14:50:47.736767+00:00",
+  "sweep_seed": 20260817
+}
