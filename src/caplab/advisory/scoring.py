@@ -110,7 +110,8 @@ def _sha256_file(path: str) -> str:
     return digest.hexdigest()
 
 
-def score_backends(run_dirs: list[str], adjudications=None) -> dict[str, dict]:
+def score_backends(run_dirs: list[str], adjudications=None,
+                   substrate_sources: dict | None = None) -> dict[str, dict]:
     """Per-backend merged metrics over the given completed run directories.
 
     `adjudications` supplies what is known about each control arm. A control
@@ -120,6 +121,12 @@ def score_backends(run_dirs: list[str], adjudications=None) -> dict[str, dict]:
     counted, because the alternative lets a subject escape the metric by
     refusing everything, but their number is reported so an unexamined rate
     is never mistaken for an established one.
+
+    `substrate_sources` maps a pool-run row's substrate_id to the striatum
+    dispatch id its control came from. Adjudications key by that dispatch
+    id, while pool rows key by substrate; without the mapping, a control
+    proven defective still charges the reviewer that correctly refused it.
+    Historical rows carry the dispatch id directly and need no mapping.
     """
     from .adjudication import Adjudications
     from .wilson import wilson
@@ -177,13 +184,17 @@ def score_backends(run_dirs: list[str], adjudications=None) -> dict[str, dict]:
         caught = sum(1 for _, r in rows if r.get("caught"))
 
         # False-alarm accounting, conditioned on what is known about controls.
+        def _control_key(r):
+            return ((substrate_sources or {}).get(r.get("substrate_id"))
+                    or r.get("dispatch_id"))
+
         alarm_rows = [r for _, r in rows
-                      if not adjudications.is_defective(r.get("dispatch_id"))]
+                      if not adjudications.is_defective(_control_key(r))]
         excluded_defective = n - len(alarm_rows)
         alarms = sum(1 for r in alarm_rows if r.get("false_alarm"))
         unaudited_alarms = sum(
             1 for r in alarm_rows if r.get("false_alarm")
-            and adjudications.disposition(r.get("dispatch_id")) == "unadjudicated")
+            and adjudications.disposition(_control_key(r)) == "unadjudicated")
         alarm_n = len(alarm_rows)
 
         anchored = rescored = from_rows = from_arms = 0

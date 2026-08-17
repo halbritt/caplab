@@ -115,6 +115,31 @@ class ScoringTest(unittest.TestCase):
         scored = score_backends(eligible)["tuple-a"]
         self.assertEqual(scored["metrics"]["n_pairs"]["value"], 1)
 
+    def test_adjudicated_defective_control_excludes_by_substrate_source(self):
+        # Adjudications key by the striatum dispatch id; pool-run rows key by
+        # substrate. Without the mapping, a control proven defective still
+        # charges the reviewer that correctly refused it.
+        from caplab.advisory.adjudication import (Adjudications,
+                                                  build_adjudication)
+        dispatch = "f" * 64
+        write_run(self.root, "cc-tuple-a", [
+            {**row("a" * 64, alarm=True), "substrate_id": "qs-defective"},
+            {**row("b" * 64, alarm=True), "substrate_id": "qs-fine"},
+        ])
+        adj = Adjudications([build_adjudication(
+            dispatch_id=dispatch, disposition="defective", basis="audited",
+            basis_kind="mechanical-oracle", adjudicated_by="oracle:test",
+            as_of="2026-08-17T00:00:00+00:00",
+            evidence=[{"kind": "rerunnable-check", "path": "checks/test.py"}])])
+        eligible, _ = eligible_run_dirs(self.root)
+        scored = score_backends(
+            eligible, adjudications=adj,
+            substrate_sources={"qs-defective": dispatch})["tuple-a"]
+        alarms = scored["metrics"]["false_alarm_rate"]
+        self.assertEqual(alarms["denominator"], 1)
+        self.assertEqual(alarms["excluded_defective_controls"], 1)
+        self.assertEqual(alarms["value"], 1.0)
+
     def test_anchored_detection_falls_back_to_recorded_anchors(self):
         # Pool runs retain no arms/, but each row records the anchors its
         # mutant review emitted, extracted by the corrected parser at run
