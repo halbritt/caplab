@@ -141,6 +141,16 @@ def score_backends(run_dirs: list[str], adjudications=None) -> dict[str, dict]:
                 continue
             if not (row.get("mutant_json_valid") or row.get("control_json_valid")):
                 continue
+            if row.get("anchor"):
+                # Anchor cases are replayed by every sweep to measure the
+                # instrument. Counting them here would let one fixed subset
+                # inflate a claim's distinct-defect coverage and drag its
+                # rates toward whatever those twelve cases happen to do.
+                stat = per_backend.setdefault(
+                    row.get("backend_measured") or "(unknown)",
+                    {"rows": [], "runs": {}, "dispatches": collections.Counter()})
+                stat.setdefault("anchor_rows", []).append(row)
+                continue
             backend = row.get("backend_measured") or "(unknown)"
             stat = per_backend.setdefault(backend, {
                 "rows": [], "runs": {}, "dispatches": collections.Counter(),
@@ -217,8 +227,12 @@ def score_backends(run_dirs: list[str], adjudications=None) -> dict[str, dict]:
                 "denominator": rescored,
                 "basis": "rescored-retained-arms",
             }
+        from .anchor import reliability as _anchor_reliability
+
         scored[backend] = {
             "backend": backend,
+            "instrument_reliability": _anchor_reliability(
+                stat.get("anchor_rows") or []),
             "instruments": sorted(stat.get("instruments") or []),
             "profiles": sorted(stat.get("profiles") or []),
             "metrics": metrics,

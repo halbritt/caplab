@@ -452,12 +452,13 @@
       }
     },
     {
-      "as_of": "2026-08-15T21:48:01.214456+00:00",
-      "claim_id": "qc-cc6ad134a3f37d98",
+      "as_of": "2026-08-16T15:44:59.512727+00:00",
+      "claim_id": "qc-e52df1dbad22409a",
       "construct": "review.defect_discrimination/1",
       "custody": "caplab-advisory",
       "evidence": [
         {
+          "instrument": "matched-pair defect injection",
           "instrument_commit": "4d2115a9816dea360fd109e01db1d636365fb24f",
           "kind": "matched-pair-run",
           "profile": "caplab-advisory-execution/0",
@@ -492,10 +493,14 @@
           "value": 0.7727272727272727
         },
         "false_alarm_rate": {
+          "audit_status": "established",
           "ci95": [
             0.0,
             0.14865487460862087
           ],
+          "denominator": 22,
+          "excluded_defective_controls": 0,
+          "unaudited_refusals": 0,
           "value": 0.0
         },
         "findings_per_mutant": {
@@ -512,8 +517,9 @@
         }
       },
       "notes": [
-        "caplab-advisory: CAPLAB-directed advisory-grade execution (profile v0) through the subject's declared adapter command.",
-        "advisory-grade profile v0 executes the pinned striatum-tuner matched-pair instrument; no sealed custody domain, no provider-authenticated identity."
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection",
+        "dispatch-prompt profile: the pinned striatum-tuner instrument renders striatum's own dispatch prompt, with its posture, pins, and expected outputs."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -523,12 +529,82 @@
       }
     },
     {
-      "as_of": "2026-08-15T21:48:01.214456+00:00",
-      "claim_id": "qc-d1a98cc32f1bb9bd",
+      "as_of": "2026-08-17T09:24:28.898115+00:00",
+      "claim_id": "qc-012aaec54202273a",
       "construct": "review.defect_discrimination/1",
       "custody": "caplab-advisory",
       "evidence": [
         {
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "65be3189270e0dff851cb2d88114c5b7e06ccf8e6512d5d859ecc4e71384b7da",
+          "rows_used": 49,
+          "run": "sweep-agy-gemini-3-7-flash-high-20260817",
+          "sweep_seed": "20260817"
+        }
+      ],
+      "metrics": {
+        "catch_rate": {
+          "ci95": [
+            0.6864239739710013,
+            0.9002365893792968
+          ],
+          "value": 0.8163265306122449
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.653061224489796
+        },
+        "false_alarm_rate": {
+          "audit_status": "contains-unaudited-refusals",
+          "ci95": [
+            0.08512698370728837,
+            0.2903633843391683
+          ],
+          "denominator": 49,
+          "excluded_defective_controls": 0,
+          "unaudited_refusals": 8,
+          "value": 0.16326530612244897
+        },
+        "findings_per_mutant": {
+          "value": 1.0408163265306123
+        },
+        "json_valid_mutant": {
+          "value": 0.9387755102040817
+        },
+        "n_distinct_cases": {
+          "value": 49
+        },
+        "n_pairs": {
+          "value": 49
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v1-changeset",
+        "instrument reliability from 12 replayed anchor cases (excluded from these metrics): control arm unanimous on 58% of cases, mutant arm 83%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "agy-gemini-3-7-flash-high"
+      }
+    },
+    {
+      "as_of": "2026-08-16T15:44:59.512727+00:00",
+      "claim_id": "qc-6f57bf289438ed2d",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "instrument": "matched-pair defect injection",
           "instrument_commit": "4d2115a9816dea360fd109e01db1d636365fb24f",
           "kind": "matched-pair-run",
           "profile": "caplab-advisory-execution/0",
@@ -563,10 +639,14 @@
           "value": 0.4090909090909091
         },
         "false_alarm_rate": {
+          "audit_status": "established",
           "ci95": [
             0.0,
             0.14865487460862087
           ],
+          "denominator": 22,
+          "excluded_defective_controls": 0,
+          "unaudited_refusals": 0,
           "value": 0.0
         },
         "findings_per_mutant": {
@@ -583,8 +663,9 @@
         }
       },
       "notes": [
-        "caplab-advisory: CAPLAB-directed advisory-grade execution (profile v0) through the subject's declared adapter command.",
-        "advisory-grade profile v0 executes the pinned striatum-tuner matched-pair instrument; no sealed custody domain, no provider-authenticated identity."
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection",
+        "dispatch-prompt profile: the pinned striatum-tuner instrument renders striatum's own dispatch prompt, with its posture, pins, and expected outputs."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -594,12 +675,13 @@
       }
     },
     {
-      "as_of": "2026-08-15T21:48:01.214456+00:00",
-      "claim_id": "qc-1e6886235df72fde",
+      "as_of": "2026-08-16T15:44:59.512727+00:00",
+      "claim_id": "qc-5ea1f543ec76d6df",
       "construct": "review.defect_discrimination/1",
       "custody": "caplab-advisory",
       "evidence": [
         {
+          "instrument": "matched-pair defect injection",
           "instrument_commit": "4d2115a9816dea360fd109e01db1d636365fb24f",
           "kind": "matched-pair-run",
           "profile": "caplab-advisory-execution/0",
@@ -634,10 +716,14 @@
           "value": 0.6818181818181818
         },
         "false_alarm_rate": {
+          "audit_status": "established",
           "ci95": [
             0.0,
             0.14865487460862087
           ],
+          "denominator": 22,
+          "excluded_defective_controls": 0,
+          "unaudited_refusals": 0,
           "value": 0.0
         },
         "findings_per_mutant": {
@@ -654,8 +740,9 @@
         }
       },
       "notes": [
-        "caplab-advisory: CAPLAB-directed advisory-grade execution (profile v0) through the subject's declared adapter command.",
-        "advisory-grade profile v0 executes the pinned striatum-tuner matched-pair instrument; no sealed custody domain, no provider-authenticated identity."
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection",
+        "dispatch-prompt profile: the pinned striatum-tuner instrument renders striatum's own dispatch prompt, with its posture, pins, and expected outputs."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -2450,11 +2537,12 @@
     },
     {
       "as_of": "2026-08-16T15:44:59.512727+00:00",
-      "claim_id": "qc-10602cad0f1fe24c",
+      "claim_id": "qc-1938ccabe5342ded",
       "construct": "review.defect_discrimination/1",
       "custody": "caplab-advisory",
       "evidence": [
         {
+          "instrument": "matched-pair defect injection",
           "instrument_commit": "4d2115a9816dea360fd109e01db1d636365fb24f",
           "kind": "matched-pair-run",
           "profile": "caplab-advisory-execution/0",
@@ -2489,10 +2577,14 @@
           "value": 0.14285714285714285
         },
         "false_alarm_rate": {
+          "audit_status": "contains-unaudited-refusals",
           "ci95": [
             0.21380798904474121,
             0.6740935542034926
           ],
+          "denominator": 14,
+          "excluded_defective_controls": 0,
+          "unaudited_refusals": 6,
           "value": 0.42857142857142855
         },
         "findings_per_mutant": {
@@ -2509,8 +2601,9 @@
         }
       },
       "notes": [
-        "caplab-advisory: CAPLAB-directed advisory-grade execution (profile v0) through the subject's declared adapter command.",
-        "advisory-grade profile v0 executes the pinned striatum-tuner matched-pair instrument; no sealed custody domain, no provider-authenticated identity."
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection",
+        "dispatch-prompt profile: the pinned striatum-tuner instrument renders striatum's own dispatch prompt, with its posture, pins, and expected outputs."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {

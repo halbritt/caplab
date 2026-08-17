@@ -30,12 +30,25 @@ from .claims import REVIEW_DEFECT_DISCRIMINATION, build_claim
 from .scoring import completed, score_backends
 
 DEFAULT_INSTRUMENT_REPO = os.path.expanduser("~/git/striatum-tuner")
-ADVISORY_NOTES = [
-    "caplab-advisory: CAPLAB-directed advisory-grade execution (profile v0) "
-    "through the subject's declared adapter command.",
-    "advisory-grade profile v0 executes the pinned striatum-tuner matched-pair "
-    "instrument; no sealed custody domain, no provider-authenticated identity.",
-]
+#: Notes are provenance, so they must name the instrument that actually ran.
+#: A pool run does not execute the tuner instrument, and a claim that says it
+#: did misdescribes how its own numbers were produced.
+ADVISORY_NOTE_COMMON = (
+    "caplab-advisory: CAPLAB-directed advisory-grade execution through the "
+    "subject's declared adapter command; no sealed custody domain, no "
+    "provider-authenticated identity.")
+ADVISORY_NOTES_BY_INSTRUMENT = {
+    "matched-pair defect injection": (
+        "dispatch-prompt profile: the pinned striatum-tuner instrument renders "
+        "striatum's own dispatch prompt, with its posture, pins, and expected "
+        "outputs."),
+    "matched-pair defect injection (synthetic contract)": (
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own "
+        "prompt carrying a stated review contract. This is a contract-bearing "
+        "review task, not striatum's exact dispatch, and its numbers are not "
+        "interchangeable with dispatch-prompt numbers."),
+}
+ADVISORY_NOTES = [ADVISORY_NOTE_COMMON]
 
 
 class BudgetRefusal(RuntimeError):
@@ -164,9 +177,11 @@ def claims_from_runs(run_dirs: list[str], backends_root: str | None,
         for run in result["runs"]:
             entry = {"kind": "matched-pair-run", **run}
             receipt_path = None
+            run_dir_for_entry = None
             for run_dir in usable_dirs:
                 if os.path.basename(run_dir) == run["run"]:
                     receipt_path = os.path.join(run_dir, "caplab-receipt.json")
+                    run_dir_for_entry = run_dir
             if receipt_path and os.path.isfile(receipt_path):
                 with open(receipt_path, encoding="utf-8") as f:
                     receipt = json.load(f)
@@ -180,12 +195,37 @@ def claims_from_runs(run_dirs: list[str], backends_root: str | None,
                 argv = receipt.get("argv") or []
                 if "--seed" in argv:
                     entry["sweep_seed"] = argv[argv.index("--seed") + 1]
+            # A pool run writes no launcher receipt; its summary records the
+            # seed, the instrument and the prompt profile directly. Without
+            # these a consumer cannot tell a matched comparison from a
+            # coincidental one, nor a contract-bearing task from a dispatch.
+            if run_dir_for_entry:
+                summary_path = os.path.join(run_dir_for_entry, "summary.json")
+                if os.path.isfile(summary_path):
+                    with open(summary_path, encoding="utf-8") as f:
+                        summary = json.load(f)
+                    if summary.get("sweep_seed") is not None:
+                        entry.setdefault("sweep_seed", str(summary["sweep_seed"]))
+                    if summary.get("instrument"):
+                        entry["instrument"] = summary["instrument"]
+                    if summary.get("calibration_profile"):
+                        entry["prompt_profile"] = summary["calibration_profile"]
             evidence.append(entry)
         notes = list(ADVISORY_NOTES)
-        if result.get("instruments"):
-            notes.append("instrument(s): " + ", ".join(result["instruments"]))
+        for instrument in result.get("instruments") or []:
+            notes.append(f"instrument: {instrument}")
+            described = ADVISORY_NOTES_BY_INSTRUMENT.get(instrument)
+            notes.append(described if described else
+                         f"no profile description is recorded for {instrument}")
         if result.get("profiles"):
             notes.append("prompt profile(s): " + ", ".join(result["profiles"]))
+        rel = result.get("instrument_reliability") or {}
+        if rel.get("anchor_cases"):
+            notes.append(
+                f"instrument reliability from {rel['anchor_cases']} replayed "
+                f"anchor cases (excluded from these metrics): control arm "
+                f"unanimous on {rel['control_unanimous_share']:.0%} of cases, "
+                f"mutant arm {rel['mutant_unanimous_share']:.0%}")
         if result["repeated_case_trials"]:
             notes.append(
                 f"repeated case trials: {result['repeated_case_trials']} of "

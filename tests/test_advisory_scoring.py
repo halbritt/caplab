@@ -286,3 +286,27 @@ class ControlAdjudicationTest(unittest.TestCase):
             build_adjudication(dispatch_id="a" * 64, disposition="defective",
                                basis="a model said so", adjudicated_by="",
                                as_of="2026-08-16T00:00:00+00:00")
+
+
+class AnchorExclusionTest(unittest.TestCase):
+    """Replayed cases measure the instrument, never a claim's coverage."""
+
+    def test_anchor_rows_leave_the_metrics_and_report_separately(self):
+        with tempfile.TemporaryDirectory() as root:
+            rows = [row("a" * 64, caught=True), row("b" * 64, caught=True)]
+            anchor = row("c" * 64, caught=False, alarm=True)
+            anchor["anchor"] = True
+            anchor["control_unanimous"] = False
+            anchor["mutant_unanimous"] = True
+            write_run(root, "cc-tuple-a", rows + [anchor])
+            eligible, _ = eligible_run_dirs(root)
+            scored = score_backends(eligible)["tuple-a"]
+            # the anchor case is not in the claim's numbers
+            self.assertEqual(scored["metrics"]["n_pairs"]["value"], 2)
+            self.assertEqual(scored["metrics"]["catch_rate"]["value"], 1.0)
+            self.assertEqual(scored["metrics"]["false_alarm_rate"]["value"], 0.0)
+            # but it is reported as instrument reliability
+            rel = scored["instrument_reliability"]
+            self.assertEqual(rel["anchor_cases"], 1)
+            self.assertEqual(rel["control_unanimous_share"], 0.0)
+            self.assertEqual(rel["mutant_unanimous_share"], 1.0)

@@ -85,3 +85,42 @@ class ExecutorTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ProvenanceNoteTest(unittest.TestCase):
+    """A claim must name the instrument that actually produced it."""
+
+    def _claim_for(self, instrument):
+        import json as _json
+        import tempfile as _tf
+        with _tf.TemporaryDirectory() as root:
+            run = os.path.join(root, "run")
+            os.makedirs(run)
+            with open(os.path.join(run, "results.jsonl"), "w") as f:
+                f.write(_json.dumps({
+                    "dispatch_id": "a" * 64, "backend_measured": "tuple-a",
+                    "usable": True, "caught": True, "false_alarm": False,
+                    "defect_class": "x", "mutant_findings": 0,
+                    "control_json_valid": True, "mutant_json_valid": True}) + "\n")
+            with open(os.path.join(run, "summary.json"), "w") as f:
+                _json.dump({"instrument": instrument, "aborted": None}, f)
+            with open(os.path.join(run, "caplab-receipt.json"), "w") as f:
+                _json.dump({"argv": ["x", "--seed", "1"]}, f)
+            return claims_from_runs([run], None)[0]
+
+    def test_pool_run_does_not_claim_the_tuner_instrument(self):
+        claim = self._claim_for(
+            "matched-pair defect injection (synthetic contract)")
+        notes = " ".join(claim["notes"])
+        self.assertIn("synthetic-contract profile", notes)
+        self.assertNotIn("striatum-tuner instrument", notes)
+
+    def test_instrument_run_names_the_dispatch_prompt(self):
+        claim = self._claim_for("matched-pair defect injection")
+        notes = " ".join(claim["notes"])
+        self.assertIn("pinned striatum-tuner instrument", notes)
+
+    def test_unknown_instrument_says_so_rather_than_guessing(self):
+        claim = self._claim_for("some future instrument")
+        self.assertIn("no profile description is recorded",
+                      " ".join(claim["notes"]))
