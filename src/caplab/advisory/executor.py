@@ -146,6 +146,35 @@ def run_advisory(*, backend: str, pairs: int, out_dir: str,
     return receipt
 
 
+def advisory_control_context(adjudications_path: str | None = None,
+                             registry_path: str | None = None) -> tuple:
+    """(adjudications, substrate_sources) from the repo's advisory state.
+
+    Adjudications key by striatum dispatch id; pool-run rows key by
+    substrate. Anything scoring or comparing controls without both silently
+    charges reviewers for refusing controls already proven defective.
+    """
+    from .adjudication import Adjudications
+    advisory_root = os.path.join(os.path.dirname(os.path.dirname(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))))),
+        "advisory")
+    if adjudications_path is None:
+        adjudications_path = os.path.join(advisory_root,
+                                          "control-adjudications.jsonl")
+    if registry_path is None:
+        registry_path = os.path.join(advisory_root, "substrates.jsonl")
+    substrate_sources = {}
+    if os.path.isfile(registry_path):
+        with open(registry_path, encoding="utf-8") as f:
+            for line in f:
+                if line.strip():
+                    substrate = json.loads(line)
+                    dispatch = (substrate.get("source") or {}).get("dispatch_id")
+                    if dispatch:
+                        substrate_sources[substrate["substrate_id"]] = dispatch
+    return Adjudications.load(adjudications_path), substrate_sources
+
+
 def claims_from_runs(run_dirs: list[str], backends_root: str | None,
                      as_of: str | None = None,
                      adjudications_path: str | None = None,
@@ -169,30 +198,9 @@ def claims_from_runs(run_dirs: list[str], backends_root: str | None,
                     stamps.append(stamp)
         as_of = max(stamps) if stamps else _dt.datetime.now(
             _dt.timezone.utc).isoformat()
-    # Adjudications key by striatum dispatch id; pool-run rows key by
-    # substrate. Both files are part of the repo's advisory state, so a
-    # claim derived without them silently charges reviewers for refusing
-    # controls already proven defective.
-    from .adjudication import Adjudications
-    advisory_root = os.path.join(os.path.dirname(os.path.dirname(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))))),
-        "advisory")
-    if adjudications_path is None:
-        adjudications_path = os.path.join(advisory_root,
-                                          "control-adjudications.jsonl")
-    if registry_path is None:
-        registry_path = os.path.join(advisory_root, "substrates.jsonl")
-    substrate_sources = {}
-    if os.path.isfile(registry_path):
-        with open(registry_path, encoding="utf-8") as f:
-            for line in f:
-                if line.strip():
-                    substrate = json.loads(line)
-                    dispatch = (substrate.get("source") or {}).get("dispatch_id")
-                    if dispatch:
-                        substrate_sources[substrate["substrate_id"]] = dispatch
-    scored = score_backends(usable_dirs,
-                            adjudications=Adjudications.load(adjudications_path),
+    adjudications, substrate_sources = advisory_control_context(
+        adjudications_path, registry_path)
+    scored = score_backends(usable_dirs, adjudications=adjudications,
                             substrate_sources=substrate_sources)
     claims = []
     for backend, result in scored.items():

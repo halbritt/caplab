@@ -92,6 +92,32 @@ class CompareTest(unittest.TestCase):
         self.assertEqual(result["a_discrimination"], 1.0)
         self.assertEqual(result["b_discrimination"], 0.0)
 
+    def test_dead_arm_and_anchor_rows_do_not_pair(self):
+        # A pair with an unmeasured arm is not a measurement, and anchor
+        # rows measure the instrument, not the corpus.
+        rows_a = [row("1" * 64, True),
+                  {**row("2" * 64, True), "mutant_json_valid": False},
+                  {**row("3" * 64, True), "anchor": True}]
+        rows_b = [row("1" * 64, False), row("2" * 64, False),
+                  {**row("3" * 64, False), "anchor": True}]
+        result = paired_comparison(write_run(self.root, "a", rows_a),
+                                   write_run(self.root, "b", rows_b))
+        self.assertEqual(result["shared_cases"], 1)
+        self.assertEqual(result["a_only_caught"], 1)
+
+    def test_discordant_cases_are_itemized(self):
+        # Promotion into a discrimination corpus needs to know WHICH cases
+        # separated the pair, not only how many.
+        rows_a = [row("1" * 64, True, cls="hash_mismatch"),
+                  row("2" * 64, True)]
+        rows_b = [row("1" * 64, False, cls="hash_mismatch"),
+                  row("2" * 64, True)]
+        result = paired_comparison(write_run(self.root, "a", rows_a),
+                                   write_run(self.root, "b", rows_b))
+        self.assertEqual(result["discordant_cases"], [
+            {"dispatch_id": "1" * 64, "substrate_id": None,
+             "defect_class": "hash_mismatch", "caught_by": "a"}])
+
     def test_binom_symmetry(self):
         self.assertEqual(_binom_two_sided(0, 0), 1.0)
         self.assertAlmostEqual(_binom_two_sided(0, 5), 2 * 0.5 ** 5, places=9)
@@ -131,3 +157,24 @@ class ComparisonAdjudicationTest(unittest.TestCase):
         self.assertEqual(judged["false_alarm_defective_controls_excluded"], 1)
         self.assertEqual(judged["false_alarm_discordant_pairs"], 1)
         self.assertEqual(judged["b_false_alarms"], 1)
+
+    def test_pool_rows_reach_adjudications_through_substrate_source(self):
+        # Pool-run rows key by substrate; adjudications key by the striatum
+        # dispatch the control came from.
+        from caplab.advisory.adjudication import (Adjudications,
+                                                  build_adjudication)
+        dispatch = "e" * 64
+        rows_a = [{**row("qs-x:op:1", True, alarm=False),
+                   "substrate_id": "qs-x"}]
+        rows_b = [{**row("qs-x:op:1", True, alarm=True),
+                   "substrate_id": "qs-x"}]
+        adj = Adjudications([build_adjudication(
+            dispatch_id=dispatch, disposition="defective", basis="audited",
+            adjudicated_by="principal:test",
+            as_of="2026-08-17T00:00:00+00:00")])
+        judged = paired_comparison(
+            write_run(self.root, "a", rows_a),
+            write_run(self.root, "b", rows_b),
+            adjudications=adj, substrate_sources={"qs-x": dispatch})
+        self.assertEqual(judged["false_alarm_defective_controls_excluded"], 1)
+        self.assertEqual(judged["b_false_alarms"], 0)

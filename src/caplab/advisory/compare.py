@@ -33,7 +33,13 @@ def _rows(run_dir: str) -> dict[str, dict]:
             row = json.loads(line)
             if not row.get("usable"):
                 continue
-            if not (row.get("mutant_json_valid") or row.get("control_json_valid")):
+            if not (row.get("mutant_json_valid") and row.get("control_json_valid")):
+                # A pair with an unmeasured arm is not a measurement of the
+                # subject; pairing it against the other subject's real answer
+                # would manufacture a discordance the subject never produced.
+                continue
+            if row.get("anchor"):
+                # Anchor rows measure the instrument, not the corpus.
                 continue
             out[row["dispatch_id"]] = row
     return out
@@ -53,12 +59,15 @@ def _binom_two_sided(k: int, n: int, p: float = 0.5) -> float:
 
 
 def paired_comparison(run_a: str, run_b: str, label_a: str = "",
-                      label_b: str = "", adjudications=None) -> dict:
+                      label_b: str = "", adjudications=None,
+                      substrate_sources: dict | None = None) -> dict:
     """Compare two completed runs on the cases they both measured.
 
     False-alarm pairing is conditioned on control adjudications for the same
     reason the scorer is: a pair whose control is established defective
     cannot say which subject erred, because refusing it was correct.
+    `substrate_sources` maps a pool-run row's substrate_id to the striatum
+    dispatch its control came from, since adjudications key by the latter.
     """
     from .adjudication import Adjudications
 
@@ -75,6 +84,7 @@ def paired_comparison(run_a: str, run_b: str, label_a: str = "",
     a_only_alarm = b_only_alarm = 0
     defective_controls = unaudited_alarm_pairs = 0
     per_class: dict[str, dict] = {}
+    discordant_cases: list[dict] = []
     for dispatch in shared:
         ra, rb = a[dispatch], b[dispatch]
         ca, cb = bool(ra.get("caught")), bool(rb.get("caught"))
@@ -86,12 +96,22 @@ def paired_comparison(run_a: str, run_b: str, label_a: str = "",
             b_only_caught += 1
         else:
             neither += 1
-        if adjudications.is_defective(dispatch):
+        if ca != cb:
+            # Which cases separated the pair, not only how many: the
+            # promotion gate for the discrimination corpus needs the ids.
+            discordant_cases.append({
+                "dispatch_id": dispatch,
+                "substrate_id": ra.get("substrate_id"),
+                "defect_class": ra.get("defect_class") or "(unknown)",
+                "caught_by": "a" if ca else "b"})
+        control_key = ((substrate_sources or {}).get(ra.get("substrate_id"))
+                       or dispatch)
+        if adjudications.is_defective(control_key):
             defective_controls += 1
             fa = fb = False
         else:
             fa, fb = bool(ra.get("false_alarm")), bool(rb.get("false_alarm"))
-            if adjudications.disposition(dispatch) == "unadjudicated" and (fa or fb):
+            if adjudications.disposition(control_key) == "unadjudicated" and (fa or fb):
                 unaudited_alarm_pairs += 1
         a_alarms += fa
         b_alarms += fb
@@ -143,6 +163,7 @@ def paired_comparison(run_a: str, run_b: str, label_a: str = "",
         "a_discrimination": ((both + a_only_caught) - a_alarms) / n if n else None,
         "b_discrimination": ((both + b_only_caught) - b_alarms) / n if n else None,
         "by_defect_class": {k: dict(v) for k, v in sorted(per_class.items())},
+        "discordant_cases": discordant_cases,
         "reading": (
             "no shared cases; not a matched comparison" if not n else
             f"catch: {discordant} of {n} shared cases discriminate, exact "

@@ -148,6 +148,34 @@ def cmd_pool_run(args):
     return 0
 
 
+def cmd_compare(args):
+    """Matched contrast between two runs, annotated for the promotion gate."""
+    from .compare import paired_comparison
+    from .executor import advisory_control_context
+
+    adjudications, substrate_sources = advisory_control_context()
+    contrast = paired_comparison(
+        args.run_a, args.run_b, label_a=args.label_a, label_b=args.label_b,
+        adjudications=adjudications, substrate_sources=substrate_sources)
+    seeds = set()
+    for run in (args.run_a, args.run_b):
+        with open(os.path.join(run, "summary.json"), encoding="utf-8") as f:
+            seeds.add(json.load(f).get("sweep_seed"))
+    # A contrast is matched only within one sweep seed; the annotation is
+    # what lets the promotion gate count distinct-sweep reproductions.
+    contrast["sweep_seed"] = seeds.pop() if len(seeds) == 1 else None
+    if contrast["sweep_seed"] is None:
+        contrast["reading"] += "; WARNING: runs carry different sweep seeds"
+    output = json.dumps(contrast, ensure_ascii=False, indent=2, sort_keys=True)
+    if args.out:
+        os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
+        with open(args.out, "w", encoding="utf-8") as f:
+            f.write(output + "\n")
+        print(f"wrote {args.out}")
+    else:
+        print(output)
+
+
 def cmd_harvest(args):
     import subprocess
 
@@ -328,6 +356,15 @@ def main(argv=None):
     p.add_argument("--out", default=os.path.join(
         REPO_ROOT, "advisory", "anchor-set.json"))
     p.set_defaults(fn=cmd_build_anchor)
+
+    p = sub.add_parser("compare",
+                       help="matched contrast between two runs on shared cases")
+    p.add_argument("run_a")
+    p.add_argument("run_b")
+    p.add_argument("--label-a", default="")
+    p.add_argument("--label-b", default="")
+    p.add_argument("--out", default=None)
+    p.set_defaults(fn=cmd_compare)
 
     p = sub.add_parser("harvest", help="harvest substrates into the registry")
     p.add_argument("--registry", default=os.path.join(

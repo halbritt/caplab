@@ -121,3 +121,39 @@ must clear the admission protocol on a sample of their cases before their
 defect class enters a scored sweep. The vendored instrument classes carry a
 grandfather note: their behavior in the historical sweep is itself evidence
 of detectability at strong bindings.
+
+## The discrimination corpus: what the pool is for
+
+The standing goal (Principal, 2026-08-17) is discrimination: given two
+plausible Bindings for the same role, tell them apart reliably. The pool is
+candidate generation for that, not the product. A case is valuable when
+competing Bindings disagree on it, each Binding reproduces its own result,
+the disagreement maps to a declared operator, and the case resembles work
+that matters. Cases everyone passes are tripwires, not evidence; cases that
+resample differently every run are noise however precisely their rates are
+estimated. Within-Binding variance limits the confidence that an observed
+between-Binding difference is real — a principle about confidence, not a
+literal statistical bound — which is why reproduction, not one observed
+disagreement, is the unit of separation evidence.
+
+**Promotion gate** (`discrimination.promotion_candidates`, fed by annotated
+`compare` contrast documents): a case enters the corpus only when, across at
+least two distinct sweep seeds — distinct seeds draw distinct injections
+from the same substrate, so this is reproduction under perturbation, never
+replay —
+
+1. it separates the same Binding pair in the same direction each time;
+2. its control is adjudicated `sound` (a separation on an unexamined or
+   defective control scores the detecting reviewer against the missing one
+   backwards);
+3. its defect class is a declared operator, so the disagreement maps to the
+   Construct.
+
+Everything that separates but does not qualify is reported with the reason
+withheld. The sealed partition holds its overfitting role here too: a corpus
+promoted from open-partition contrasts must eventually show its separations
+survive on sealed cases, or it has learned the pair rather than the
+Construct. Absolute catch and false-alarm rates remain reported — they gate
+declarations and describe operational cost — but the claim shape this
+campaign exists to produce is the contrast: *A and B are distinguishable on
+Construct X (n cases, exact sign test), and not on Y.*
