@@ -232,12 +232,31 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
                 for r in runs:
                     r["transport"] = transport_label
         replicate_verdicts[name] = [(r["doc"] or {}).get("verdict") for r in runs]
-        # Keep the first parseable invocation as the representative capture.
-        results[name] = next((r for r in runs if r["doc"] is not None), runs[0])
+        results[name] = runs
 
-    control, mutant = results["control"], results["mutant"]
-    dead = [name for name in ("control", "mutant")
-            if results[name]["doc"] is None]
+    def representative(name: str, majority_verdict) -> dict:
+        """The retained capture must agree with the verdict the row reports.
+
+        Keeping the first parseable replicate lost qs-9f2748c49dd3313e's
+        refusal reasons in sweep 20260817: the row said refused while its
+        findings came from the one accepting replicate.
+        """
+        runs = results[name]
+        parseable = [r for r in runs if r["doc"] is not None]
+        if majority_verdict is not None:
+            aligned = [r for r in parseable
+                       if (r["doc"].get("verdict") in REFUSING)
+                       == (majority_verdict in REFUSING)]
+            if aligned:
+                return aligned[0]
+        return parseable[0] if parseable else runs[0]
+
+    control_majority, _, _ = _majority(replicate_verdicts["control"])
+    mutant_majority, _, _ = _majority(replicate_verdicts["mutant"])
+    control = representative("control", control_majority)
+    mutant = representative("mutant", mutant_majority)
+    dead = [name for name, rep in (("control", control), ("mutant", mutant))
+            if rep["doc"] is None]
     if dead:
         # One dead arm used to leave the pair "usable": a dead mutant arm
         # scored as a miss and a dead control arm as a clean clearance —

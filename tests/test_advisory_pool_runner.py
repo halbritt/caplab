@@ -333,6 +333,37 @@ class ReplicationTest(unittest.TestCase):
         self.assertAlmostEqual(row["control_refusing_share"], 0.5)
         self.assertFalse(row["control_unanimous"])
 
+    def test_findings_follow_the_majority_verdict(self):
+        # qs-9f2748c49dd3313e's refusal reasons were unauditable because the
+        # row kept the first parseable replicate — an accept with no
+        # findings — while the majority refused. The retained capture must
+        # agree with the verdict the row reports.
+        state = {"control": ["a", "r", "r"], "mutant": ["r"]}
+
+        def fake(adapter, prompt, timeout):
+            arm = "mutant" if ("may freely" in prompt or "may clear" in prompt) \
+                else "control"
+            refusing = state[arm].pop(0) == "r"
+            findings = ([{"element_anchor": "#el:x", "text": "broken"}]
+                        if refusing else [])
+            return {"doc": {"verdict": ("needs_revision" if refusing
+                                        else "accept"),
+                            "findings": findings},
+                    "exit_code": 0, "timed_out": False, "seconds": 0,
+                    "transport": "stdin", "prompt_bytes": len(prompt),
+                    "raw_head": "", "error": None}
+
+        original = pool_runner.invoke
+        pool_runner.invoke = fake
+        try:
+            row = measure_case(case(), DOC, echo_adapter(), timeout=60,
+                               replicates=3, mutant_replicates=1)
+        finally:
+            pool_runner.invoke = original
+        self.assertTrue(row["false_alarm"])
+        self.assertTrue(row["control_findings_detail"],
+                        "refusal reasons must survive when the row refuses")
+
     def test_single_replicate_keeps_prior_behaviour(self):
         row = self._run("a", replicates=1)
         self.assertEqual(row["replicates"], 1)
