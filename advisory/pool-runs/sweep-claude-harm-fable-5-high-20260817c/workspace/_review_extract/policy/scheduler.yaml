@@ -1,0 +1,211 @@
+# Scheduler policy — placement preference and re-dispatch defaults (RFC 0008 shape).
+# Values here are policy defaults; semantics live in RFC 0008 (rfcs/0008-scheduler-and-capacity-policy/design.md)
+# and decisions/D0008-scheduler-and-capacity-policy.md. Declarations describe; policy prefers.
+# Rules may restrict or re-prefer; they can never relax anything gate-adjacent (D0002.C9).
+id: scheduler
+kind: policy
+schema_version: 1                # record-format version; upcast-on-read discipline applies
+policy_version: 11               # human-meaningful; the content hash is the real pin
+status: accepted
+purpose: Placement policy for binding lanes to execution backends without redefining compiler semantics.
+demand_priority: [critical_path_depth, level_desc, deadline_proximity, subject_age]
+tiebreak: lexicographic          # closed; no alternatives at v1
+
+# --- placement declarations (capability-aware-placement@3) --------------------
+#
+# The four facts telemetry-informed placement binds are declared HERE, by the
+# Principal, and never inferred in code. The loader refuses the whole policy on
+# absence, an out-of-domain value, an incomplete declaration, an ambiguous one,
+# or an operative rule that cannot resolve — a placement declaration that cannot
+# be read is never read as no declaration.
+placement:
+  # Which objective each pass is placed under. `fallback` is the explicit pass-
+  # class default the target requires; a by_pass row overrides it for one pass.
+  # An unlisted pass with no fallback would refuse rather than default silently.
+  objectives:
+    fallback: default            # declared-rank order; observation-independent
+    by_pass:
+      # Judgment passes are placed for admission quality: the fold's own gate-
+      # refusal and needs-revision rates on the tuple, priored by the @2
+      # intelligence index on the model. Everything else keeps the declared
+      # order until measured evidence earns a change.
+      design-convergence: highest-quality
+      review: highest-quality
+
+  # Materiality thresholds for the unearned-effort demotion, in basis points
+  # (10000 = parity). Integers, not floats: the policy digest is taken over
+  # canonical bytes and a demotion trace has to name a number that re-reads
+  # identically. Read with telemetry.min_samples below — a cell under that
+  # sample count is not comparable at all.
+  comparator:
+    id: effort-dominance
+    latency_worse_ratio_bp: 12500              # 1.25x observed-active latency
+    cost_worse_ratio_bp: 12500                 # 1.25x observed cost, one currency
+    adverse_completion_worse_delta_bp: 500     # +0.05 error-or-abandonment share
+    quality_advantage_delta_bp: 200            # 0.02 admission-quality advantage
+
+  # The single definition of "current". A ledger distance, never an age: this
+  # delivery has no clock, and a wall-clock staleness would make a replayed
+  # decision depend on when the replay happened. Inclusive: evidence exactly
+  # max_lag records behind the frontier is still current.
+  staleness:
+    metric: ledger_seq_lag
+    unit: records
+    max_lag: 5000
+    boundary: inclusive
+
+  # The effort ladder, weakest rung first. The coordinate table under
+  # backends/placement-tuples.yaml deliberately declares no order over efforts;
+  # this is where two effort siblings are oriented. `default` is absent by
+  # design — it declares that the tuple pins no effort knob and sits nowhere.
+  effort_order: [low, medium, high, xhigh, max]
+
+placement_rules:                 # ordered; first full match wins; the matched rule id enters the decision trace
+  # Supported prefer shapes: `backends` (an ordered list) and `quality_profile`
+  # (highest | any) — exactly one per rule. Everything else refuses policy load.
+  # The retired `harvest-expiring-first` rule preferred `expiring_capacity` and
+  # matched on a run `mode`: neither half ever bound anything, so it read as
+  # operative policy in this file while ordering nothing in the scheduler. It is
+  # removed here, and `expiring_capacity` is now refused by name. Capacity
+  # expiry keeps its real home: the backend declarations and the dispatch and
+  # signal paths that own lane ceilings, windows, and exhaustion behavior.
+  - id: build-single-agent-coding
+    match: {pass: build}
+    # Principal-directed 2026-07-24 depreference (supersedes the 2026-07-21
+    # strongest-to-weakest order): packet builds are constrained lane tasks
+    # that do not benefit from the max/xhigh reasoning tiers — the ledger shows
+    # those tiers paying 2-4x wall-clock with elevated partial/abandon rates
+    # (docs/audits/BACKEND_SELECTION_OVERTHINKING_AUDIT_2026-07-23.md), and the
+    # openai-gpt class drops anchored base pins on non-empty deliveries
+    # (docs/audits/STALLS5_ANCHORED_BASE_FIDELITY_2026-07-24.md). Order: the
+    # base-pin-faithful anthropic-claude class first, high then medium tiers;
+    # then codex high/medium; low tiers next; max/xhigh demoted to deep
+    # fallback. Account surfaces stay adjacent, primary before claude-harm.
+    # Unlisted capable builders retain their declaration-rank fallback.
+    prefer:
+      # policy_version 10 (2026-07-25): lead with the Opus 5 tuples.
+      # The two prior failure modes were both CAPACITY failures, and Opus 5
+      # (probe-measured 2026-07-25: 1M context, 64k max output vs the 200k/
+      # smaller ceilings of every tuple below) answers each directly:
+      #  * fable-5-high (v3 lead) TRUNCATED: 2x submitted_partial -> esc 79175/79198
+      #    — output-bound, which the 64k ceiling relieves. Fable is moot anyway:
+      #    every fable tuple was disabled 2026-07-24 for account exhaustion, so
+      #    the v5 list's four fable entries were inert and are dropped here.
+      #  * opus-4-8-high (v4 lead) DIED SILENTLY at ~23min, twice — a long-thinking
+      #    failure, which is why the MEDIUM tier leads the high tier below.
+      # Corroborating evidence: the only backend completing heavy lanes right now
+      # IS the current Opus family — claude-code pins the floating `--model opus`
+      # alias, and it went 12/13 on design-convergence and
+      # 10/10 on implementation-planning since 07-24T12:00 at DEFAULT effort.
+      # Medium-before-high follows that profile and the standing rule that lane
+      # work is constrained.
+      #
+      # CORRECTION (2026-07-25, same day): the first draft of this comment said
+      # claude-sonnet-5-high "has never actually run a build ... untested, not
+      # proven." That was WRONG — an artifact of measuring from an arbitrary
+      # 07-24T12:00 cutoff. Measured from when the depreference actually landed
+      # (policy_version 3, 07-24T01:20), the build record is:
+      #   claude-sonnet-5-high        2 submitted, 0 failed
+      #   claude-harm-sonnet-5-high   1 submitted, 0 failed
+      #   claude-fable-5-high         6 submitted, 4 submitted_partial
+      #   claude-opus-4-8-high        0 submitted, 2 abandoned
+      #   claude-opus-5-medium        1 submitted (588s, admitted)
+      # and claude-harm-sonnet-5-high carries ~130 submitted builds historically
+      # — the deepest track record of any builder in this fleet.
+      # So the sonnet tuples were a WORKING lead, not a broken one. Opus 5 leads
+      # on capacity HEADROOM against the two observed failure modes, not because
+      # its predecessor was failing; the sonnet tuples sit immediately behind on
+      # a much larger evidence base. If headroom stops being the binding
+      # constraint, swapping positions 1-2 with 5-6 is the defensible reversal.
+      # max/xhigh remain demoted to deep fallback.
+      backends: [claude-opus-5-medium, claude-harm-opus-5-medium, claude-opus-5-high, claude-harm-opus-5-high, claude-sonnet-5-high, claude-harm-sonnet-5-high, claude-opus-4-8-high, claude-harm-opus-4-8-high, claude-opus-4-8-medium, claude-harm-opus-4-8-medium, claude-opus-5-low, claude-harm-opus-5-low, codex-sol-high, codex-terra-high, codex-luna-high, codex-sol-medium, codex-terra-medium, codex-luna-medium, claude-opus-4-8-low, claude-harm-opus-4-8-low, codex-sol-low, codex-terra-low, codex-luna-low, claude-opus-4-8-xhigh, claude-harm-opus-4-8-xhigh, claude-opus-4-8-max, claude-harm-opus-4-8-max, codex-sol-xhigh, codex-terra-xhigh, codex-luna-xhigh, codex-sol-max, codex-terra-max, codex-luna-max]
+  # The gating restriction is declared BEFORE the general review rule. Rules are
+  # first-full-match, so a rule an earlier rule already subsumes can never fire;
+  # placing this one after `review-timely-first` made it dead text that still
+  # read as live policy, and the placement-policy loader now refuses that shape
+  # by name rather than letting it decorate the file.
+  - id: gating-review-independent
+    match: {pass: review, gating: true}
+    require: {independence: subject}    # restates the contract; rules may restrict, never relax
+  - id: review-timely-first
+    match: {pass: review}
+    # 2026-07-24 depreference: judgment reviews are constrained tasks;
+    # claude-harm-opus-4-8-high completes them at ~1/3 the wall-clock of
+    # codex-sol-max with an equal completion profile (66/68 vs 92/99).
+    # Independence still filters ahead of preference: reviewing
+    # anthropic-claude-produced work excludes the first two entries and falls
+    # through to codex-sol-max; preference never relaxes the exclusion.
+    prefer:
+      backends: [claude-harm-opus-4-8-high, agy-claude-opus-4-6-thinking, codex-sol-max]
+  - id: proposal-constrained-effort
+    match: {pass: proposal-generation}
+    # 2026-07-24 depreference: proposals are small bounded IR artifacts; the
+    # sonnet-high tiers lead, with the max tuple retained as proven fallback
+    # (claude-harm-fable-5-max is 7/7 at ~539s median on this pass).
+    # policy_version 10 (2026-07-25): sonnet keeps the lead (1/1 submitted at
+    # 140s since the depreference); claude-harm-fable-5-max is dropped as
+    # disabled-for-exhaustion and replaced by the Opus 5 tuples as fallback.
+    prefer:
+      backends: [claude-sonnet-5-high, claude-harm-sonnet-5-high, claude-opus-5-high, claude-harm-opus-5-high, codex-luna-medium]
+  - id: design-needs-quality
+    match: {pass: design-convergence}
+    # 2026-07-24 capacity correction (policy_version 7): quality_profile:highest
+    # resolved to the max/xhigh tier, which TRUNCATED the large stalls-need-no-
+    # judgment-d design regeneration -> 2x submitted_partial -> bounds_exhausted
+    # (esc 79392/79413). NB the design-convergence-capable set is narrow (only
+    # backends whose supported_pass_types include design-convergence): claude-code,
+    # claude-harm-fable-5-max, codex-{luna,terra}-max. The build-tier tuples
+    # (sonnet-5-high, opus-4-8-high) do NOT support design-convergence, so a
+    # policy_version-6 list of them was ineligible and the scheduler fell to
+    # harm-fable-5-max (a max tier) which truncated again. Lead with claude-code
+    # (opus at DEFAULT effort — the exemplar backend that completed a ~35-file
+    # delivery; leaner than the --effort-high/max tuples that truncate), then the
+    # remaining design-capable backends as fallback.
+    prefer:
+      # policy_version 9: lead with claude-code. Measured on the -d design
+      # regeneration: claude-code (--model opus) COMPLETED (79456 -> submitted),
+      # while the base claude-harm backend ERRORED every attempt
+      # (79478/79486/79499 -> error/abandoned) — a broken model alias on the
+      # base harm backend, not the harm account (harm-fable-5-max submits).
+      # claude-harm-fable-5-max truncates the regeneration (fable-5 at max
+      # effort). So claude-code is the only proven completing design backend;
+      # claude-harm/codex-maxes trail as fallbacks only.
+      #
+      # policy_version 10 (2026-07-25): claude-code holds the lead on its record
+      # (12/13 submitted since 07-24T12:00), now joined by the explicitly-pinned
+      # explicitly pinned tuples behind it. This is the same model family
+      # claude-code already runs through its floating `--model opus` alias, so
+      # these are that leader's declared, non-drifting
+      # equivalent plus a second account surface for capacity. Dropped
+      # claude-harm-fable-5-max: disabled 07-24 for exhaustion, and it was
+      # 4/4 submitted_partial (truncating at ~22s) before that.
+      backends: [claude-code, claude-opus-5-high, claude-harm-opus-5-high, codex-luna-max, codex-terra-max, claude-harm]
+  - id: verification-local-first
+    match: {pass: verification}
+    prefer: {backends: [local]}
+
+independence:                    # semantics: RFC 0008 §Independence Satisfaction
+  required: defer_then_escalate  # never degrade; after max_defer the refusal escalates independence_unsatisfiable
+  preferred: degrade_with_deviation   # bind best available; binding carries aliasing_deviation, gates do not count it
+  # Repository policy may relax `preferred`; it can never waive `required` (D0002.C9).
+
+concurrency:
+  max_total_lanes: 6
+  reserve_demand_slots: 1        # harvest never takes the last slot
+
+deferral:
+  max_defer: {demand: PT4H, harvest: until_window_close}
+
+redispatch:                      # policy data, not code; re-dispatch is closure-then-new-run (RFC 0010)
+  dispatch_horizon_multiplier: 3.0    # x expected duration (telemetry or contract advisory), observed-active time
+  backoff: {base: PT2M, factor: 4, max: PT2H}
+  alternate_after: 1             # exclude a backend for this work after N lapses on it
+  escalate_after_attempts: 4     # then refuse retry_exhausted -> Driver escalates bounds_exhausted
+
+telemetry:
+  influence: none                # v1: none; v3: prefer_only — never unlocks forbidden placements
+  min_samples: 20
+
+explainability:
+  record_trace: full             # every binding carries its rule-match trace
+

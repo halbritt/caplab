@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/halbritt/striatum-next/schema/scheduler-policy.schema.json",
+  "title": "Scheduler Policy",
+  "description": "Scheduler placement and capacity policy. The document stays open for accepted RFC 0008 dimensions, while the placement surface consumed by telemetry-informed placement — the objective, comparator, staleness and effort-order declarations, and the ordered placement rules — is validated closed. A rule declares at most one supported prefer shape; anything outside the two shapes, and any capacity key, refuses policy load rather than binding nothing.",
+  "type": "object",
+  "required": ["placement", "placement_rules", "telemetry"],
+  "properties": {
+    "placement": {
+      "type": "object",
+      "description": "The placement declarations bound by capability-aware-placement@3.",
+      "required": ["objectives", "comparator", "staleness", "effort_order"],
+      "additionalProperties": false,
+      "properties": {
+        "objectives": {
+          "type": "object",
+          "description": "The objective each pass is placed under. `fallback` is the explicit pass-class default; a by_pass row overrides it for one pass. A pass with neither refuses rather than defaulting silently.",
+          "required": ["fallback"],
+          "additionalProperties": false,
+          "properties": {
+            "fallback": { "$ref": "#/$defs/objective" },
+            "by_pass": {
+              "type": "object",
+              "additionalProperties": { "$ref": "#/$defs/objective" }
+            }
+          }
+        },
+        "comparator": {
+          "type": "object",
+          "description": "Materiality thresholds for the unearned-effort demotion, in basis points (10000 = parity). Integers, never floats: the policy digest is taken over canonical bytes and a float threshold cannot be pinned.",
+          "required": [
+            "id",
+            "latency_worse_ratio_bp",
+            "cost_worse_ratio_bp",
+            "adverse_completion_worse_delta_bp",
+            "quality_advantage_delta_bp"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "id": { "type": "string", "minLength": 1 },
+            "latency_worse_ratio_bp": { "type": "integer", "exclusiveMinimum": 10000 },
+            "cost_worse_ratio_bp": { "type": "integer", "exclusiveMinimum": 10000 },
+            "adverse_completion_worse_delta_bp": { "type": "integer", "minimum": 1, "maximum": 10000 },
+            "quality_advantage_delta_bp": { "type": "integer", "minimum": 1, "maximum": 10000 }
+          }
+        },
+        "staleness": {
+          "type": "object",
+          "description": "The single definition of current evidence: a ledger distance, never a wall-clock age.",
+          "required": ["metric", "unit", "max_lag", "boundary"],
+          "additionalProperties": false,
+          "properties": {
+            "metric": { "const": "ledger_seq_lag" },
+            "unit": { "const": "records" },
+            "max_lag": { "type": "integer", "minimum": 1 },
+            "boundary": { "enum": ["inclusive", "exclusive"] }
+          }
+        },
+        "effort_order": {
+          "type": "array",
+          "description": "The effort ladder, weakest rung first: exactly the graded efforts, each once. `default` declares that a tuple pins no effort knob and sits nowhere on the ladder, so it is not placeable here.",
+          "minItems": 5,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": { "enum": ["low", "medium", "high", "xhigh", "max"] }
+        }
+      }
+    },
+    "placement_rules": {
+      "type": "array",
+      "description": "Ordered; first full match wins; the matched rule id enters the decision trace. Every rule states a preference or a restriction — a rule that states neither is decoration.",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "match"],
+        "additionalProperties": false,
+        "anyOf": [{ "required": ["prefer"] }, { "required": ["require"] }],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "match": {
+            "type": "object",
+            "description": "The closed match vocabulary. Run mode is not a placement coordinate and is not matchable here.",
+            "required": ["pass"],
+            "additionalProperties": false,
+            "properties": {
+              "pass": { "type": "string", "minLength": 1 },
+              "gating": { "type": "boolean" }
+            }
+          },
+          "prefer": {
+            "type": "object",
+            "description": "Exactly one supported shape. Two shapes name two orders and the rule then states neither; a capacity key such as expiring_capacity binds nothing and refuses.",
+            "minProperties": 1,
+            "maxProperties": 1,
+            "additionalProperties": false,
+            "properties": {
+              "backends": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": { "type": "string", "minLength": 1 }
+              },
+              "quality_profile": { "enum": ["highest", "any"] }
+            }
+          },
+          "require": {
+            "type": "object",
+            "description": "Rules may restrict, never relax (D0002.C9).",
+            "minProperties": 1,
+            "additionalProperties": false,
+            "properties": {
+              "independence": { "const": "subject" }
+            }
+          }
+        }
+      }
+    },
+    "telemetry": {
+      "type": "object",
+      "required": ["influence", "min_samples"],
+      "additionalProperties": false,
+      "properties": {
+        "influence": {
+          "enum": ["none", "prefer_only"],
+          "description": "prefer_only reorders candidates that already survive every hard filter; it can never unlock a forbidden placement (D0008.C9)."
+        },
+        "min_samples": { "type": "integer", "minimum": 1 }
+      }
+    }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "objective": {
+      "description": "One of the accepted @2 placement objectives.",
+      "enum": [
+        "default",
+        "highest-quality",
+        "cheapest-acceptable",
+        "fastest-above-floor",
+        "strongest-judge",
+        "best-verifier"
+      ]
+    }
+  }
+}
+

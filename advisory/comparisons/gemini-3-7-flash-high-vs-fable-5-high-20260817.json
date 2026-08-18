@@ -1,0 +1,192 @@
+{
+  "a": "agy-gemini-3-7-flash-high",
+  "a_catch_rate": 0.8846153846153846,
+  "a_discrimination": 0.7692307692307693,
+  "a_false_alarms": 6,
+  "a_only_caught": 10,
+  "a_only_false_alarm": 6,
+  "b": "claude-harm-fable-5-high",
+  "b_catch_rate": 0.7692307692307693,
+  "b_discrimination": 0.6730769230769231,
+  "b_false_alarms": 5,
+  "b_only_caught": 4,
+  "b_only_false_alarm": 5,
+  "both_caught": 36,
+  "by_defect_class": {
+    "base_dropped": {
+      "a": 4,
+      "b": 2,
+      "n": 4
+    },
+    "broken_internal_crossref": {
+      "a": 1,
+      "b": 1,
+      "n": 1
+    },
+    "contradicted_clause": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "dangling_reference": {
+      "a": 3,
+      "b": 2,
+      "n": 3
+    },
+    "dropped_section": {
+      "a": 3,
+      "b": 3,
+      "n": 4
+    },
+    "duplicated_section": {
+      "a": 4,
+      "b": 1,
+      "n": 4
+    },
+    "hash_mismatch": {
+      "a": 4,
+      "b": 3,
+      "n": 4
+    },
+    "hollow_delivery": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "overclaimed_level": {
+      "a": 1,
+      "b": 2,
+      "n": 3
+    },
+    "refuted_conclusion": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "requirement_inversion": {
+      "a": 4,
+      "b": 2,
+      "n": 4
+    },
+    "scope_violation": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "swapped_section_bodies": {
+      "a": 1,
+      "b": 3,
+      "n": 4
+    },
+    "truncated_tail": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "unearned_verification_claim": {
+      "a": 1,
+      "b": 1,
+      "n": 1
+    }
+  },
+  "discordant_cases": [
+    {
+      "caught_by": "a",
+      "defect_class": "base_dropped",
+      "dispatch_id": "qs-45baf30be46b0c3c:base_dropped:3189985499",
+      "substrate_id": "qs-45baf30be46b0c3c"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "dropped_section",
+      "dispatch_id": "qs-514df336ad6c4e50:dropped_section:1096035106",
+      "substrate_id": "qs-514df336ad6c4e50"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "duplicated_section",
+      "dispatch_id": "qs-5e9c18c966cd8bf7:duplicated_section:1286126085",
+      "substrate_id": "qs-5e9c18c966cd8bf7"
+    },
+    {
+      "caught_by": "b",
+      "defect_class": "overclaimed_level",
+      "dispatch_id": "qs-6d0ecc98d4fbedaa:overclaimed_level:1767461282",
+      "substrate_id": "qs-6d0ecc98d4fbedaa"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "dangling_reference",
+      "dispatch_id": "qs-8c4a05aae286b951:dangling_reference:2996854408",
+      "substrate_id": "qs-8c4a05aae286b951"
+    },
+    {
+      "caught_by": "b",
+      "defect_class": "dropped_section",
+      "dispatch_id": "qs-97f00c690d343f8b:dropped_section:1707476662",
+      "substrate_id": "qs-97f00c690d343f8b"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "base_dropped",
+      "dispatch_id": "qs-9f2748c49dd3313e:base_dropped:3386841555",
+      "substrate_id": "qs-9f2748c49dd3313e"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "duplicated_section",
+      "dispatch_id": "qs-a340628961f2ff69:duplicated_section:2420003044",
+      "substrate_id": "qs-a340628961f2ff69"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "requirement_inversion",
+      "dispatch_id": "qs-a9308a59b4cf9a2a:requirement_inversion:3111047567",
+      "substrate_id": "qs-a9308a59b4cf9a2a"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "duplicated_section",
+      "dispatch_id": "qs-b38ab75c53e0e892:duplicated_section:2613205746",
+      "substrate_id": "qs-b38ab75c53e0e892"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "requirement_inversion",
+      "dispatch_id": "qs-d98bbffcdcd43f21:requirement_inversion:958159918",
+      "substrate_id": "qs-d98bbffcdcd43f21"
+    },
+    {
+      "caught_by": "b",
+      "defect_class": "swapped_section_bodies",
+      "dispatch_id": "qs-ddc3934e5e87053e:swapped_section_bodies:1501417380",
+      "substrate_id": "qs-ddc3934e5e87053e"
+    },
+    {
+      "caught_by": "b",
+      "defect_class": "swapped_section_bodies",
+      "dispatch_id": "qs-e8cd172af19cb631:swapped_section_bodies:674386619",
+      "substrate_id": "qs-e8cd172af19cb631"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "hash_mismatch",
+      "dispatch_id": "qs-f90cc496593e109e:hash_mismatch:2518116873",
+      "substrate_id": "qs-f90cc496593e109e"
+    }
+  ],
+  "discordant_pairs": 14,
+  "false_alarm_audit_status": "contains-unaudited-refusals",
+  "false_alarm_defective_controls_excluded": 1,
+  "false_alarm_discordant_pairs": 11,
+  "false_alarm_sign_test_p": 1.0,
+  "false_alarm_significant_at_05": false,
+  "false_alarm_unaudited_pairs": 11,
+  "neither_caught": 2,
+  "reading": "catch: 14 of 52 shared cases discriminate, exact sign test p=0.180 (not established); false alarms: 11 discordant, p=1.000 (not established), 11 on unaudited controls",
+  "shared_cases": 52,
+  "sign_test_p": 0.1795654296875,
+  "significant_at_05": false,
+  "sweep_seed": 20260817,
+  "uninformative_pairs": 38
+}

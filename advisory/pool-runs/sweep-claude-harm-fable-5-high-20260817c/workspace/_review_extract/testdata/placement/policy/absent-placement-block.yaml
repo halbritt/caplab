@@ -1,0 +1,17 @@
+id: scheduler
+kind: policy
+policy_version: 1
+placement_rules:
+  - id: fixture-build-backends
+    match: {pass: fixture-build}
+    prefer: {backends: [fixture-alpha, fixture-beta]}
+  - id: fixture-gating-review
+    match: {pass: fixture-review, gating: true}
+    require: {independence: subject}
+  - id: fixture-review-quality
+    match: {pass: fixture-review}
+    prefer: {quality_profile: highest}
+telemetry:
+  influence: none
+  min_samples: 20
+

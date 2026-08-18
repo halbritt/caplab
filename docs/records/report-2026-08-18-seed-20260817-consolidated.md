@@ -2,45 +2,52 @@
 
 - Date: 2026-08-18
 - Case set: seed 20260817, open partition, 57 breadth cases + 12 anchors,
-  identical draws and injections for every Binding below.
-- Runs: `sweep-agy-gemini-3-7-flash-high-20260817b` (repaired),
+  identical draws and injections for all three Bindings.
+- Runs: `sweep-agy-gemini-3-7-flash-high-20260817b`,
   `sweep-agy-gemini-3-7-flash-medium-20260817`,
-  `sweep-claude-harm-fable-5-high-20260817b` (aborted, no claim).
+  `sweep-claude-harm-fable-5-high-20260817c` (completed on the third quota
+  window; the two aborted attempts are kept beside it and yield no claims).
 
 ## Scored claims
 
 | Binding | claim | pairs | catch | false alarms | discrimination | anchored |
 |---|---|---|---|---|---|---|
-| agy-gemini-3-7-flash-high | `qc-fc8146093574b024` | 55 | 0.891 (0.78–0.95) | 0.130 (denom 54, 1 defective excluded, 7 unaudited) | 0.761 | 0.691 |
+| agy-gemini-3-7-flash-high | `qc-fc8146093574b024` | 55 | 0.891 (0.78–0.95) | 0.130 (denom 54) | 0.761 | 0.691 |
+| claude-harm-fable-5-high | `qc-3b7e3886c44d5509` | 54 | 0.759 (0.63–0.85) | 0.094 (denom 53) | 0.665 | 0.648 |
 | agy-gemini-3-7-flash-medium | `qc-74e47b03b461d218` | 57 | 0.702 | 0.107 (denom 56) | 0.595 | 0.526 |
-| claude-harm-fable-5-high | **no claim** | 27 clean of 57 | — | — | — | — |
 
-The fable run aborted twice on the account's Fable sub-limit (9 consecutive
-empty lanes each time) and yields no claim under the aborted-run rule. Its
-27 cleanly measured breadth pairs read, descriptively only: catch 18/27,
-false alarms 3/27. Twenty-one cases remain; one quota window finishes it.
+Every false-alarm figure still carries unaudited refusals.
 
 ## Matched contrasts — the campaign's product
 
-**Established** (both runs complete, `advisory/comparisons/gemini-3-7-flash-high-vs-medium-20260817.json`):
+All three pairs, same seed, same injections, exact sign test over discordant
+pairs:
 
-- **high vs medium: distinguishable on catch, not on false alarms.**
-  12 of 55 shared cases discriminate, 11–1 in high's favor, exact sign test
-  p = 0.006. False alarms: 3–2 discordant, p = 1.0 (9 of those pairs on
-  unaudited controls). The discordant cases span nine operators.
+| contrast | shared | catch discordance | p | verdict |
+|---|---|---|---|---|
+| flash-high vs flash-medium | 55 | 11–1 | **0.006** | **separates** |
+| flash-high vs fable-5-high | 52 | 10–4 | 0.18 | not established |
+| flash-medium vs fable-5-high | 54 | 6–10 | 0.45 | not established |
 
-**Preview only** (fable side truncated by the abort; not claims, will be
-superseded by the completed run):
+False alarms separate no pair (p = 1.0, 1.0, 1.0).
 
-- high vs fable, 26 shared clean pairs: catch discordance 8–1 in high's
-  favor, p = 0.039; false alarms 5–2, p = 0.45. Direction agrees with the
-  2026-08-15 dispatch-instrument finding that granted flash-high FRONTIER.
-- medium vs fable, 27 shared: catch 5–5, p = 1.0. Indistinguishable.
+**The reading: this corpus discriminates effort tiers within a family, and
+at n ≈ 52 it does not discriminate across families.** flash-high leads fable
+on every absolute metric and still cannot be shown to differ from it
+case-for-case, because the two disagree in both directions (10 cases one
+way, 4 the other) where flash-high vs flash-medium disagrees almost entirely
+in one (11–1).
 
-## Within-Binding consistency is a property of the Binding
+A caution the campaign should keep: the truncated fable run's preview
+reported 8–1 and p = 0.039 on 26 shared cases. The completed run reports
+10–4 and p = 0.18 on 52. The early number was a sampling artifact of an
+aborted run, and it pointed the wrong way. Previews from incomplete runs are
+not weak evidence; they are not evidence.
 
-Anchor-set replicate agreement (refuse/clear, null pairs excluded), per
-subject on the same 12 anchor cases:
+## Within-Binding consistency is a property of the subject
+
+Anchor-set replicate agreement (refuse/clear, null pairs excluded), same 12
+anchor cases for each subject:
 
 | Binding | control pairwise (kappa) | mutant pairwise (kappa) |
 |---|---|---|
@@ -48,32 +55,30 @@ subject on the same 12 anchor cases:
 | agy-gemini-3-7-flash-medium | 89% (0.54) | 89% (0.60) |
 | agy-gemini-3-7-flash-high | 69% (0.13) | 87% (0.22) |
 
-What the reliability block measures is subject self-consistency, not a
-property of the instrument alone: flash-high — the strongest catcher — is
-also by far the least self-consistent, while fable reproduces its own
-verdicts at kappa 0.68–0.75. Within-Binding variance limits confidence that
-a between-Binding difference is real, so contrasts against flash-high need
-more evidence per case than contrasts among its steadier siblings.
+flash-high is the strongest catcher and the least self-consistent. Since
+within-Binding variance limits confidence that a between-Binding difference
+is real, contrasts involving flash-high need more cases per conclusion than
+contrasts among its steadier siblings — which is one plausible reason the
+cross-family contrast stayed unresolved at this n.
 
 ## Promotion gate
 
-0 of 12 discordant cases promoted; all withheld as "reproduction not
-established". One seed is one observation. The cheapest path to first
-promotions is the same pair on a second seed.
+0 promoted, 42 withheld across the three contrasts, every one for
+"reproduction not established: seen in 1 sweep(s)". The corpus stays empty
+by design until a second seed reproduces a separation.
 
-## Control soundness, current ledger
+## Projection
 
-Two controls adjudicated defective by mechanical oracle (`e57c4ab7`,
-`ee05d12f`); six hash-mismatch refusal grounds refuted by production-
-arithmetic replay (`advisory/checks/hashcheck/`); five refuted refusals
-await the Principal's sound/defective call; four 2026-08-16 matched-run
-refusals remain unaudited.
+`matched_prefix_depth` fell from 3 to 2: fable-5-high holds only a
+seed-20260817 synthetic-contract claim and ranks third, breaking the
+seed-20260815 dispatch cohort that occupies ranks 1–2. Correct behavior, and
+it will resolve when the gemini tiers hold synthetic-contract claims that
+`most-comparable` prefers, or when a second seed widens the cohort.
 
 ## What this does not establish
 
-- Nothing claim-grade about fable-5-high on this instrument until its run
-  completes.
-- No promotion-grade separation: every contrast is one seed deep.
-- The false-alarm axis still carries unaudited refusals on both gemini
-  claims.
+- No cross-family ordering. The one cross-family question this campaign has
+  ever been able to ask came back "not established".
+- No promotion-grade case: every contrast is one seed deep.
+- The false-alarm axis still carries unaudited refusals on all three claims.
 - Nothing about the sealed partition.
