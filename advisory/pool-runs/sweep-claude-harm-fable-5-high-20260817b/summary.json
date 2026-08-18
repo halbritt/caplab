@@ -1,0 +1,16 @@
+{
+  "aborted": "9 consecutive empty lanes",
+  "backend": "claude-harm-fable-5-high",
+  "calibration_profile": "v1",
+  "catch_rate": 0.6666666666666666,
+  "control_unanimous_share": 0.8205128205128205,
+  "false_alarm_rate": 0.1282051282051282,
+  "finished_at": "2026-08-18T02:58:13.143809+00:00",
+  "instrument": "matched-pair defect injection (synthetic contract)",
+  "pairs_discarded": 9,
+  "pairs_usable": 39,
+  "partition": "open",
+  "replicates": 3,
+  "started_at": "2026-08-18T01:30:19.396494+00:00",
+  "sweep_seed": 20260817
+}
