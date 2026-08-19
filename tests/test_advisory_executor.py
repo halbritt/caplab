@@ -124,3 +124,59 @@ class ProvenanceNoteTest(unittest.TestCase):
         claim = self._claim_for("some future instrument")
         self.assertIn("no profile description is recorded",
                       " ".join(claim["notes"]))
+
+
+class CeilingArmReliabilityNoteTest(unittest.TestCase):
+    """An arm that refuses every replicate still has to produce a note.
+
+    Kappa is undefined when chance agreement is 1.0 -- an arm that refuses
+    every anchor replicate agrees with itself by construction, so there is no
+    room above chance to measure. `reliability()` reports that honestly as a
+    null kappa, and the claim note must say so rather than crashing on it.
+    Seed 20260819 hit this: agy-gemini-3-7-flash-high refused all 12 anchor
+    mutants, and claim derivation died formatting None.
+    """
+
+    def _claim(self, mutant_verdicts):
+        import json as _json
+        import tempfile as _tf
+        with _tf.TemporaryDirectory() as root:
+            run = os.path.join(root, "run")
+            os.makedirs(run)
+            rows = [{
+                "dispatch_id": "b" * 64, "backend_measured": "tuple-a",
+                "usable": True, "caught": True, "false_alarm": False,
+                "defect_class": "x", "mutant_findings": 0,
+                "control_json_valid": True, "mutant_json_valid": True}]
+            for i in range(2):
+                rows.append({
+                    "dispatch_id": f"anchor-{i}", "backend_measured": "tuple-a",
+                    "anchor": True, "usable": True, "caught": True,
+                    "false_alarm": False, "defect_class": "x",
+                    "mutant_findings": 0, "control_json_valid": True,
+                    "mutant_json_valid": True, "control_unanimous": True,
+                    "mutant_unanimous": True,
+                    "control_verdicts": ["accept", "accept", "needs_revision"],
+                    "mutant_verdicts": list(mutant_verdicts)})
+            with open(os.path.join(run, "results.jsonl"), "w") as f:
+                for row in rows:
+                    f.write(_json.dumps(row) + "\n")
+            with open(os.path.join(run, "summary.json"), "w") as f:
+                _json.dump({"instrument": "matched-pair defect injection "
+                                          "(synthetic contract)",
+                            "aborted": None}, f)
+            with open(os.path.join(run, "caplab-receipt.json"), "w") as f:
+                _json.dump({"argv": ["x", "--seed", "1"]}, f)
+            return claims_from_runs([run], None)[0]
+
+    def test_unanimous_refusal_arm_reports_kappa_as_undefined(self):
+        claim = self._claim(["needs_revision"] * 3)
+        notes = " ".join(claim["notes"])
+        self.assertIn("kappa undefined", notes)
+        self.assertIn("100%", notes)
+
+    def test_ordinary_arm_still_reports_a_numeric_kappa(self):
+        claim = self._claim(["needs_revision", "needs_revision", "accept"])
+        notes = " ".join(claim["notes"])
+        self.assertIn("kappa ", notes)
+        self.assertNotIn("kappa undefined", notes)

@@ -262,16 +262,25 @@ def claims_from_runs(run_dirs: list[str], backends_root: str | None,
                 # agreement are three different statistics; the note names the
                 # one it reports, and kappa corrects for base rate — an arm
                 # that nearly always refuses agrees with itself by chance.
+                def _kappa(pairwise: dict) -> str:
+                    # An arm that answers one way on every replicate leaves no
+                    # room above chance, so kappa is undefined rather than
+                    # perfect. Saying so beats printing an agreement figure
+                    # that a ceiling manufactured.
+                    value = pairwise.get("kappa")
+                    return ("undefined, arm at ceiling" if value is None
+                            else f"{value:.2f}")
+
                 notes.append(
                     f"instrument reliability from {rel['anchor_cases']} "
                     f"replayed anchor cases (excluded from these metrics): "
                     f"replicate pairwise agreement on refuse/clear, null "
                     f"replicates excluded — control "
                     f"{control_pw['agreement']:.0%} (kappa "
-                    f"{control_pw['kappa']:.2f} against a "
+                    f"{_kappa(control_pw)} against a "
                     f"{control_pw['chance_agreement']:.0%} chance baseline), "
                     f"mutant {mutant_pw['agreement']:.0%} (kappa "
-                    f"{mutant_pw['kappa']:.2f}). Within-sweep pairwise "
+                    f"{_kappa(mutant_pw)}). Within-sweep pairwise "
                     f"agreement is not comparable to cross-sweep agreement "
                     f"figures such as the 2026-08-16 53%")
             else:
