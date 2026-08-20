@@ -178,3 +178,54 @@ class ComparisonAdjudicationTest(unittest.TestCase):
             adjudications=adj, substrate_sources={"qs-x": dispatch})
         self.assertEqual(judged["false_alarm_defective_controls_excluded"], 1)
         self.assertEqual(judged["b_false_alarms"], 0)
+
+
+class AnnotationTest(unittest.TestCase):
+    """The contrast document carries what the promotion gate and a reader need."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = self.tmp.name
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def _stamp(self, run_dir, **fields):
+        path = os.path.join(run_dir, "summary.json")
+        with open(path) as f:
+            summary = json.load(f)
+        summary.update(fields)
+        with open(path, "w") as f:
+            json.dump(summary, f)
+
+    def test_shared_seed_is_annotated(self):
+        from caplab.advisory.compare import annotate_from_summaries
+        a = write_run(self.root, "a", [row("1" * 64, True)])
+        b = write_run(self.root, "b", [row("1" * 64, False)])
+        self._stamp(a, sweep_seed=20260820)
+        self._stamp(b, sweep_seed=20260820)
+        doc = annotate_from_summaries(paired_comparison(a, b), a, b)
+        self.assertEqual(doc["sweep_seed"], 20260820)
+
+    def test_mismatched_seeds_warn(self):
+        from caplab.advisory.compare import annotate_from_summaries
+        a = write_run(self.root, "a", [row("1" * 64, True)])
+        b = write_run(self.root, "b", [row("1" * 64, False)])
+        self._stamp(a, sweep_seed=20260817)
+        self._stamp(b, sweep_seed=20260820)
+        doc = annotate_from_summaries(paired_comparison(a, b), a, b)
+        self.assertIsNone(doc["sweep_seed"])
+        self.assertIn("different sweep seeds", doc["reading"])
+
+    def test_targeted_runs_mark_the_contrast_as_outcome_selected(self):
+        # The sign test is a discovery statistic; on cases chosen because
+        # they separated before, the honest number is the reproduction rate.
+        from caplab.advisory.compare import annotate_from_summaries
+        a = write_run(self.root, "a", [row("1" * 64, True)])
+        b = write_run(self.root, "b", [row("1" * 64, False)])
+        for run in (a, b):
+            self._stamp(run, sweep_seed=20260820,
+                        case_selection="targeted-reproduction")
+        doc = annotate_from_summaries(paired_comparison(a, b), a, b)
+        self.assertEqual(doc["case_selection"], "targeted-reproduction")
+        self.assertIn("selected on prior outcome", doc["reading"])

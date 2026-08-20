@@ -41,7 +41,7 @@ import yaml
 from ._tuner_vendored import REFUSING, anchor_hits, anchors_of, extract_json
 from .calibrate import (CALIBRATION_PROFILES, profile_for_artifact,
                         resolve_json_pointer)
-from .corpus import SubstrateRegistry, sample_cases
+from .corpus import SubstrateRegistry, sample_cases, targeted_cases
 from .instrument_defects import NotApplicable
 from .operators import BY_NAME, check_present
 
@@ -322,12 +322,48 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
     }
 
 
+def select_cases(substrates: list[dict], *, sweep_seed: int,
+                 per_operator: int, partition: str, max_cases: int,
+                 withheld: set[str], cases_doc: dict | None) -> tuple:
+    """(cases, selection label): the seeded draw, or an explicit cell list.
+
+    A targeted-cell document exists for the promotion gate — re-measuring
+    exactly the cells that separated a pair, under a fresh sweep seed. Its
+    cases are in the sample *because of what they previously scored*, so the
+    label is stamped on the summary where claim-grade scoring can refuse the
+    run; the honest use of a targeted run is the discrimination corpus only.
+    """
+    if cases_doc is None:
+        breadth_pool = [s for s in substrates
+                        if s["substrate_id"] not in withheld]
+        cases = sample_cases(breadth_pool, sweep_seed=sweep_seed,
+                             per_operator=per_operator, partition=partition)
+        return cases[:max_cases], "seeded-draw"
+    cells = cases_doc.get("cells") or []
+    if not cells:
+        raise ValueError("targeted case document names no cells")
+    overlap = {c["substrate_id"] for c in cells} & withheld
+    if overlap:
+        # An anchor substrate is replayed every sweep as an instrument
+        # control; a targeted cell on it would run one constant subset as
+        # two populations at once.
+        raise ValueError(f"targeted cells overlap the anchor set: "
+                         f"{sorted(overlap)}")
+    cases = targeted_cases(substrates, cells, sweep_seed)
+    if len(cases) > max_cases:
+        raise ValueError(f"{len(cases)} targeted cells exceed max_cases="
+                         f"{max_cases}; a truncated reproduction set would "
+                         f"silently drop named cells")
+    return cases, "targeted-reproduction"
+
+
 def run_pool(*, backend: str, backends_root: str, registry_path: str,
              out_dir: str, sweep_seed: int, per_operator: int,
              partition: str = "open", timeout: int = 1800,
              max_cases: int = 40, abort_after_empty: int = 8,
              replicates: int = 1, mutant_replicates: int | None = None,
-             anchor_path: str | None = None, workers: int = 1) -> dict:
+             anchor_path: str | None = None, workers: int = 1,
+             cases_path: str | None = None) -> dict:
     """Measure one binding over a sampled slice of the pool.
 
     Two populations run in one sweep and are kept apart:
@@ -346,14 +382,17 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
 
     substrates = SubstrateRegistry(registry_path).read()
     anchor_set = load_anchor(anchor_path) if anchor_path else None
-    withheld = anchor_substrate_ids(anchor_set)
     # A case replayed every sweep must not also count toward a claim's
     # distinct-defect coverage.
-    breadth_pool = [s for s in substrates if s["substrate_id"] not in withheld]
-    cases = sample_cases(breadth_pool, sweep_seed=sweep_seed,
-                         per_operator=per_operator, partition=partition)
-    if len(cases) > max_cases:
-        cases = cases[:max_cases]
+    withheld = anchor_substrate_ids(anchor_set)
+    cases_doc = None
+    if cases_path:
+        with open(cases_path, encoding="utf-8") as f:
+            cases_doc = json.load(f)
+    cases, case_selection = select_cases(
+        substrates, sweep_seed=sweep_seed, per_operator=per_operator,
+        partition=partition, max_cases=max_cases, withheld=withheld,
+        cases_doc=cases_doc)
     anchor_cases = list(anchor_set["cases"]) if anchor_set else []
     plan = [(c, True) for c in anchor_cases] + [(c, False) for c in cases]
 
@@ -451,6 +490,7 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
         "calibration_profile": MEASUREMENT_PROFILE,
         "sweep_seed": sweep_seed,
         "partition": partition,
+        "case_selection": case_selection,
         "replicates": replicates,
         "control_unanimous_share": (
             sum(1 for r in usable if r.get("control_unanimous")) / len(usable)
@@ -465,6 +505,8 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
         "finished_at": _dt.datetime.now(_dt.timezone.utc).isoformat(),
         "aborted": aborted,
     }
+    if cases_path:
+        summary["cases_path"] = os.path.basename(cases_path)
     with open(os.path.join(out_dir, "summary.json"), "w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2, sort_keys=True)
         f.write("\n")

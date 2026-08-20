@@ -368,3 +368,49 @@ class AnchorExclusionTest(unittest.TestCase):
             self.assertEqual(rel["anchor_cases"], 1)
             self.assertEqual(rel["control_unanimous_share"], 0.0)
             self.assertEqual(rel["mutant_unanimous_share"], 1.0)
+
+
+class OutcomeSelectionTest(unittest.TestCase):
+    """A targeted-reproduction run is evidence for the gate, not for a claim.
+
+    Its cases are in the sample because of what they previously scored, so
+    any rate over them is biased by construction — the subject that caught
+    them before is flattered, the one that missed is punished. Claim-grade
+    scoring must refuse such a run outright.
+    """
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = self.tmp.name
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def _write(self, name, case_selection=None):
+        run_dir = write_run(self.root, name, [row("a" * 64)])
+        if case_selection:
+            with open(os.path.join(run_dir, "summary.json")) as f:
+                summary = json.load(f)
+            summary["case_selection"] = case_selection
+            with open(os.path.join(run_dir, "summary.json"), "w") as f:
+                json.dump(summary, f)
+        return run_dir
+
+    def test_targeted_run_is_outcome_selected(self):
+        from caplab.advisory.scoring import outcome_selected
+        self.assertTrue(outcome_selected(
+            self._write("cc-targeted", "targeted-reproduction")))
+        self.assertFalse(outcome_selected(self._write("cc-drawn", "seeded-draw")))
+        self.assertFalse(outcome_selected(self._write("cc-legacy")))
+
+    def test_targeted_run_yields_no_claims(self):
+        from caplab.advisory.executor import claims_from_runs
+        missing = os.path.join(self.root, "none.jsonl")
+        targeted = self._write("cc-targeted", "targeted-reproduction")
+        drawn = self._write("cc-drawn", "seeded-draw")
+        claims = claims_from_runs([targeted, drawn], None,
+                                  adjudications_path=missing,
+                                  registry_path=missing)
+        runs = [e["run"] for c in claims for e in c["evidence"]]
+        self.assertIn("cc-drawn", runs)
+        self.assertNotIn("cc-targeted", runs)

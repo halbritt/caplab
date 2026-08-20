@@ -1,0 +1,223 @@
+{
+  "cells": [
+    {
+      "operator": "dropped_section",
+      "separated_in": [
+        {
+          "caught_by": "agy-gemini-3-7-flash-high",
+          "contrast": "gemini-3-7-flash-high-vs-medium-20260817.json",
+          "sweep_seed": 20260817
+        }
+      ],
+      "substrate_id": "qs-4dc8e07e5529ca7d"
+    },
+    {
+      "operator": "dropped_section",
+      "separated_in": [
+        {
+          "caught_by": "agy-gemini-3-7-flash-high",
+          "contrast": "gemini-3-7-flash-high-vs-medium-20260819.json",
+          "sweep_seed": 20260819
+        }
+      ],
+      "substrate_id": "qs-5a60742a74305130"
+    },
+    {
+      "operator": "duplicated_section",
+      "separated_in": [
+        {
+          "caught_by": "agy-gemini-3-7-flash-high",
+          "contrast": "gemini-3-7-flash-high-vs-medium-20260817.json",
+          "sweep_seed": 20260817
+        }
+      ],
+      "substrate_id": "qs-5e9c18c966cd8bf7"
+    },
+    {
+      "operator": "dropped_section",
+      "separated_in": [
+        {
+          "caught_by": "agy-gemini-3-7-flash-high",
+          "contrast": "gemini-3-7-flash-high-vs-medium-20260817.json",
+          "sweep_seed": 20260817
+        }
+      ],
+      "substrate_id": "qs-5ebab1a249b89eb2"
+    },
+    {
+      "operator": "contradicted_clause",
+      "separated_in": [
+        {
+          "caught_by": "agy-gemini-3-7-flash-high",
+          "contrast": "gemini-3-7-flash-high-vs-medium-20260817.json",
+          "sweep_seed": 20260817
+        }
+      ],
+      "substrate_id": "qs-6e2b1e326c4c5c0f"
+    },
+    {
+      "operator": "overclaimed_level",
+      "separated_in": [
+        {
+          "caught_by": "agy-gemini-3-7-flash-high",
+          "contrast": "gemini-3-7-flash-high-vs-medium-20260817.json",
+          "sweep_seed": 20260817
+        }
+      ],
+      "substrate_id": "qs-7438efc689422484"
+    },
+    {
+      "operator": "dangling_reference",
+      "separated_in": [
+        {
+          "caught_by": "agy-gemini-3-7-flash-high",
+          "contrast": "gemini-3-7-flash-high-vs-medium-20260817.json",
+          "sweep_seed": 20260817
+        }
+      ],
+      "substrate_id": "qs-8c4a05aae286b951"
+    },
+    {
+      "operator": "dropped_section",
+      "separated_in": [
+        {
+          "caught_by": "agy-gemini-3-7-flash-high",
+          "contrast": "gemini-3-7-flash-high-vs-medium-20260819.json",
+          "sweep_seed": 20260819
+        }
+      ],
+      "substrate_id": "qs-8f41b707cb15f6d9"
+    },
+    {
+      "operator": "dropped_section",
+      "separated_in": [
+        {
+          "caught_by": "agy-gemini-3-7-flash-medium",
+          "contrast": "gemini-3-7-flash-high-vs-medium-20260817.json",
+          "sweep_seed": 20260817
+        }
+      ],
+      "substrate_id": "qs-97f00c690d343f8b"
+    },
+    {
+      "operator": "hash_mismatch",
+      "separated_in": [
+        {
+          "caught_by": "agy-gemini-3-7-flash-high",
+          "contrast": "gemini-3-7-flash-high-vs-medium-20260819.json",
+          "sweep_seed": 20260819
+        }
+      ],
+      "substrate_id": "qs-a190c423a1dcce98"
+    },
+    {
+      "operator": "requirement_inversion",
+      "separated_in": [
+        {
+          "caught_by": "agy-gemini-3-7-flash-high",
+          "contrast": "gemini-3-7-flash-high-vs-medium-20260817.json",
+          "sweep_seed": 20260817
+        }
+      ],
+      "substrate_id": "qs-a9308a59b4cf9a2a"
+    },
+    {
+      "operator": "base_dropped",
+      "separated_in": [
+        {
+          "caught_by": "agy-gemini-3-7-flash-high",
+          "contrast": "gemini-3-7-flash-high-vs-medium-20260817.json",
+          "sweep_seed": 20260817
+        }
+      ],
+      "substrate_id": "qs-aae295d9adf3871e"
+    },
+    {
+      "operator": "dangling_reference",
+      "separated_in": [
+        {
+          "caught_by": "agy-gemini-3-7-flash-high",
+          "contrast": "gemini-3-7-flash-high-vs-medium-20260817.json",
+          "sweep_seed": 20260817
+        }
+      ],
+      "substrate_id": "qs-aba90dbe009e7ea2"
+    },
+    {
+      "operator": "dropped_section",
+      "separated_in": [
+        {
+          "caught_by": "agy-gemini-3-7-flash-high",
+          "contrast": "gemini-3-7-flash-high-vs-medium-20260819.json",
+          "sweep_seed": 20260819
+        }
+      ],
+      "substrate_id": "qs-afa3ff9b86200498"
+    },
+    {
+      "operator": "requirement_inversion",
+      "separated_in": [
+        {
+          "caught_by": "agy-gemini-3-7-flash-high",
+          "contrast": "gemini-3-7-flash-high-vs-medium-20260817.json",
+          "sweep_seed": 20260817
+        }
+      ],
+      "substrate_id": "qs-c7e0b0e1d0daa512"
+    },
+    {
+      "operator": "hollow_delivery",
+      "separated_in": [
+        {
+          "caught_by": "agy-gemini-3-7-flash-high",
+          "contrast": "gemini-3-7-flash-high-vs-medium-20260819.json",
+          "sweep_seed": 20260819
+        }
+      ],
+      "substrate_id": "qs-cabbae40d5c96360"
+    },
+    {
+      "operator": "swapped_section_bodies",
+      "separated_in": [
+        {
+          "caught_by": "agy-gemini-3-7-flash-high",
+          "contrast": "gemini-3-7-flash-high-vs-medium-20260819.json",
+          "sweep_seed": 20260819
+        }
+      ],
+      "substrate_id": "qs-d24d0d472c7a9316"
+    },
+    {
+      "operator": "overclaimed_level",
+      "separated_in": [
+        {
+          "caught_by": "agy-gemini-3-7-flash-high",
+          "contrast": "gemini-3-7-flash-high-vs-medium-20260819.json",
+          "sweep_seed": 20260819
+        }
+      ],
+      "substrate_id": "qs-ec76afd5d7b27ffd"
+    },
+    {
+      "operator": "hash_mismatch",
+      "separated_in": [
+        {
+          "caught_by": "agy-gemini-3-7-flash-high",
+          "contrast": "gemini-3-7-flash-high-vs-medium-20260817.json",
+          "sweep_seed": 20260817
+        }
+      ],
+      "substrate_id": "qs-f90cc496593e109e"
+    }
+  ],
+  "pair": [
+    "agy-gemini-3-7-flash-high",
+    "agy-gemini-3-7-flash-medium"
+  ],
+  "purpose": "targeted reproduction for the promotion gate; runs on these cells are outcome-selected and never claim-grade",
+  "record": "caplab-targeted-cells/1",
+  "source_contrasts": [
+    "gemini-3-7-flash-high-vs-medium-20260817.json",
+    "gemini-3-7-flash-high-vs-medium-20260819.json"
+  ]
+}

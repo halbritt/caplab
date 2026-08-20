@@ -66,6 +66,27 @@ def completed(run_dir: str) -> bool:
     return not summary.get("aborted")
 
 
+def outcome_selected(run_dir: str) -> bool:
+    """Whether this run's cases were chosen for what they previously scored.
+
+    A targeted-reproduction sweep re-measures exactly the cells that
+    separated a Binding pair, so its sample is conditioned on the outcome
+    under test: the subject that caught those cells before is flattered and
+    the one that missed them is punished, by construction. Such a run is
+    evidence for the discrimination corpus only — claim-grade scoring must
+    refuse it whole, the way `completed` refuses an aborted run.
+    """
+    summary_path = os.path.join(run_dir, "summary.json")
+    if not os.path.isfile(summary_path):
+        return False
+    try:
+        with open(summary_path, encoding="utf-8") as f:
+            summary = json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return False
+    return summary.get("case_selection") == "targeted-reproduction"
+
+
 def is_matched_pair_run(run_dir: str) -> bool:
     if not completed(run_dir):
         return False

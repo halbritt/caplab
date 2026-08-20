@@ -230,3 +230,44 @@ def sample_cases(substrates: list[dict], sweep_seed: int,
                 "source": substrate["source"],
             })
     return cases
+
+
+def targeted_cases(substrates: list[dict], cells: list[dict],
+                   sweep_seed: int) -> list[dict]:
+    """Cases for the explicit (substrate, operator) cells, in the order given.
+
+    Exists for targeted-reproduction sweeps: the promotion gate needs the
+    same cell seen under a second sweep seed, and the seeded sampler draws
+    without replacement from a pool large enough that two independent draws
+    share almost nothing (2 of 57 cells across seeds 20260817/20260819). The
+    injection seed derives from the sweep seed exactly as `sample_cases`
+    derives it, so a targeted sweep reproduces under perturbation — it never
+    replays the identical injection.
+
+    Every defect in a cell refuses loudly. A silently dropped cell would read
+    as "did not reproduce", which is the one error this mode exists to avoid.
+    """
+    by_id = {s["substrate_id"]: s for s in substrates}
+    cases = []
+    for cell in cells:
+        substrate = by_id.get(cell["substrate_id"])
+        if substrate is None:
+            raise ValueError(f"unknown substrate {cell['substrate_id']!r}")
+        operator = cell["operator"]
+        if operator not in substrate["applicable_operators"]:
+            raise ValueError(
+                f"{operator!r} is not applicable to {cell['substrate_id']}")
+        if not measurement_ready(substrate):
+            raise ValueError(
+                f"{cell['substrate_id']} is not measurement-ready "
+                f"(source kind {substrate['source'].get('kind')!r})")
+        cases.append({
+            "substrate_id": substrate["substrate_id"],
+            "sha256": substrate["sha256"],
+            "operator": operator,
+            "seed": int(hashlib.sha256(
+                f"{sweep_seed}:{substrate['sha256']}:{operator}".encode()
+            ).hexdigest()[:8], 16),
+            "source": substrate["source"],
+        })
+    return cases

@@ -27,7 +27,7 @@ import os
 import subprocess
 
 from .claims import REVIEW_DEFECT_DISCRIMINATION, build_claim
-from .scoring import completed, score_backends
+from .scoring import completed, outcome_selected, score_backends
 
 DEFAULT_INSTRUMENT_REPO = os.path.expanduser("~/git/striatum-tuner")
 #: Notes are provenance, so they must name the instrument that actually ran.
@@ -186,7 +186,11 @@ def claims_from_runs(run_dirs: list[str], backends_root: str | None,
     ledger's content-hash dedupe only works if identical evidence produces
     identical bytes.
     """
-    usable_dirs = [d for d in run_dirs if completed(d)]
+    # An outcome-selected (targeted-reproduction) run is refused whole: its
+    # cases are in the sample because of what they previously scored, so any
+    # rate over them describes the selection, not the subject.
+    usable_dirs = [d for d in run_dirs
+                   if completed(d) and not outcome_selected(d)]
     if as_of is None:
         stamps = []
         for run_dir in usable_dirs:

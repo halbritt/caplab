@@ -175,3 +175,32 @@ def paired_comparison(run_a: str, run_b: str, label_a: str = "",
             + (f", {unaudited_alarm_pairs} on unaudited controls"
                if unaudited_alarm_pairs else "")),
     }
+
+
+def annotate_from_summaries(contrast: dict, run_a: str, run_b: str) -> dict:
+    """Stamp the contrast with what its runs' summaries establish about it.
+
+    The sweep seed: a contrast is matched only within one seed, and the
+    annotation is what lets the promotion gate count distinct-sweep
+    reproductions. The selection mode: on a targeted-reproduction run the
+    cases were chosen because they separated before, so the sign test stops
+    being a discovery statistic — the honest reading of such a contrast is
+    the reproduction rate, and the document must say so itself rather than
+    rely on every reader knowing the run's history.
+    """
+    seeds, selections = set(), set()
+    for run in (run_a, run_b):
+        with open(os.path.join(run, "summary.json"), encoding="utf-8") as f:
+            summary = json.load(f)
+        seeds.add(summary.get("sweep_seed"))
+        selections.add(summary.get("case_selection"))
+    contrast["sweep_seed"] = seeds.pop() if len(seeds) == 1 else None
+    if contrast["sweep_seed"] is None:
+        contrast["reading"] += "; WARNING: runs carry different sweep seeds"
+    if "targeted-reproduction" in selections:
+        contrast["case_selection"] = "targeted-reproduction"
+        contrast["reading"] += (
+            "; cases were selected on prior outcome (targeted reproduction) "
+            "— the sign test is not a discovery statistic here; read the "
+            "per-cell reproduction against the promotion gate instead")
+    return contrast

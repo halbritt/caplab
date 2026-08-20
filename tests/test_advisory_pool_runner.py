@@ -519,3 +519,58 @@ class ConcurrencyTest(unittest.TestCase):
             {"capabilities": {"concurrency": {"max_lanes": "bad"}}}), 1)
 if __name__ == "__main__":
     unittest.main()
+
+
+class CaseSelectionTest(unittest.TestCase):
+    """The runner draws by seed unless a targeted-cell document names cases.
+
+    Targeted cells exist for the promotion gate: they re-measure exactly the
+    (substrate, defect class) cells that separated a pair, under a fresh
+    sweep seed. Cases selected on prior outcome are claim-poison, so the
+    selection mode is stamped where scoring can refuse it.
+    """
+
+    def _substrate(self, sha, operators=("dropped_section", "hash_mismatch")):
+        return {"substrate_id": "qs-" + sha[:16], "sha256": sha,
+                "partition": "open",
+                "source": {"kind": "striatum-exchange", "dispatch_id": sha,
+                           "input_path": "inputs/a.md"},
+                "applicable_operators": sorted(operators)}
+
+    def test_seeded_draw_is_the_default(self):
+        cases, selection = pool_runner.select_cases(
+            [self._substrate("a" * 64)], sweep_seed=5, per_operator=1,
+            partition="open", max_cases=40, withheld=set(), cases_doc=None)
+        self.assertEqual(selection, "seeded-draw")
+        self.assertTrue(cases)
+
+    def test_targeted_doc_yields_exactly_its_cells(self):
+        pool = [self._substrate("a" * 64), self._substrate("b" * 64)]
+        doc = {"cells": [{"substrate_id": pool[0]["substrate_id"],
+                          "operator": "hash_mismatch"}]}
+        cases, selection = pool_runner.select_cases(
+            pool, sweep_seed=5, per_operator=1, partition="open",
+            max_cases=40, withheld=set(), cases_doc=doc)
+        self.assertEqual(selection, "targeted-reproduction")
+        self.assertEqual([(c["substrate_id"], c["operator"]) for c in cases],
+                         [(pool[0]["substrate_id"], "hash_mismatch")])
+
+    def test_empty_targeted_doc_refuses(self):
+        with self.assertRaises(ValueError):
+            pool_runner.select_cases(
+                [self._substrate("a" * 64)], sweep_seed=5, per_operator=1,
+                partition="open", max_cases=40, withheld=set(),
+                cases_doc={"cells": []})
+
+    def test_targeted_cell_on_an_anchor_substrate_refuses(self):
+        # An anchor substrate is replayed every sweep as an instrument
+        # control; letting a targeted cell double-run it would let one
+        # constant subset serve two populations at once.
+        pool = [self._substrate("a" * 64)]
+        doc = {"cells": [{"substrate_id": pool[0]["substrate_id"],
+                          "operator": "hash_mismatch"}]}
+        with self.assertRaises(ValueError):
+            pool_runner.select_cases(
+                pool, sweep_seed=5, per_operator=1, partition="open",
+                max_cases=40, withheld={pool[0]["substrate_id"]},
+                cases_doc=doc)

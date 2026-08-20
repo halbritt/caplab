@@ -8,11 +8,11 @@
     "supervised_only_runtimes": ["claude-code", "codex"],
     "supervised_only_reason": "these harnesses share production subscription rate-limit windows; runs require a supervised session or explicit authorization",
     "afk_eligible_runtimes": ["agy", "local", "local-qwen", "local-qwen-ft"],
-    "afk_eligible_reason": "API-billed under endorsed budget caps, or free local inference"
+    "afk_eligible_reason": "agy draws on a subscription rolling window (Google Ultra plan; capacity.model rolling-window in its declarations), shared across agy siblings and with live striatum dispatches — AFK-eligible because a tripped window refuses dispatch rather than incurring spend; local runtimes are free local inference"
   },
   "budget": {
     "afk_run_usd_cap_per_binding": 3.5,
-    "notes": "gemini-flash-class pairs cost cents; the cap is a hard stop, not a target. Paid runs beyond the endorsed campaign need fresh endorsement."
+    "notes": "the USD cap applies only to API-billed runtimes (none currently AFK-eligible). agy runs cost window headroom, not dollars: the planning constraints are the declaration's rolling window and contention with production striatum dispatches on the same account. Corrected 2026-08-20; the prior text claimed agy was API-billed."
   },
   "challengers": [
     {

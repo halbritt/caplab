@@ -37,11 +37,13 @@ BACKENDS = os.path.expanduser("~/git/striatum-next/backends")
 REGISTRY = os.path.join(REPO, "advisory", "substrates.jsonl")
 ANCHORS = os.path.join(REPO, "advisory", "anchor-set.json")
 
-# The sweep's identity. Every attempt must use these, or the resumed rows
-# would not belong to the same measurement.
-SWEEP = dict(sweep_seed=20260819, per_operator=4, max_cases=60,
-             partition="open", replicates=3, mutant_replicates=1,
-             workers=2)
+# The sweep's identity defaults. Every attempt must use the same values, or
+# the resumed rows would not belong to the same measurement — they are
+# arguments (not per-attempt state) for exactly that reason, and the defaults
+# reproduce the 20260819 breadth sweep this script was written for.
+SWEEP_DEFAULTS = dict(sweep_seed=20260819, per_operator=4, max_cases=60,
+                      partition="open", replicates=3, mutant_replicates=1,
+                      workers=2)
 
 QUOTA_MARKERS = ("usage limit", "quota", "rate limit exceeded",
                  "resource_exhausted")
@@ -103,7 +105,17 @@ def main() -> int:
     ap.add_argument("--probe-retries", type=int, default=10)
     ap.add_argument("--probe-wait", type=int, default=600)
     ap.add_argument("--timeout", type=int, default=1800)
+    ap.add_argument("--sweep-seed", type=int,
+                    default=SWEEP_DEFAULTS["sweep_seed"])
+    ap.add_argument("--per-operator", type=int,
+                    default=SWEEP_DEFAULTS["per_operator"])
+    ap.add_argument("--max-cases", type=int,
+                    default=SWEEP_DEFAULTS["max_cases"])
+    ap.add_argument("--cases", default=None,
+                    help="targeted-cell document; see pool-run --cases")
     args = ap.parse_args()
+    sweep = dict(SWEEP_DEFAULTS, sweep_seed=args.sweep_seed,
+                 per_operator=args.per_operator, max_cases=args.max_cases)
 
     adapter = load_declaration(BACKENDS, args.backend)["adapter"]
     stalled = 0
@@ -137,7 +149,8 @@ def main() -> int:
               f"{released} case(s) released for re-measurement", flush=True)
         summary = run_pool(backend=args.backend, backends_root=BACKENDS,
                            registry_path=REGISTRY, out_dir=args.out_dir,
-                           anchor_path=ANCHORS, timeout=args.timeout, **SWEEP)
+                           anchor_path=ANCHORS, timeout=args.timeout,
+                           cases_path=args.cases, **sweep)
         now = usable_count(args.out_dir)
         print(f"[{args.backend}] attempt {attempt} ended: "
               f"aborted={summary.get('aborted')!r} usable {have} -> {now}",

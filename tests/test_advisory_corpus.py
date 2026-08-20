@@ -1,7 +1,8 @@
 import unittest
 
 from caplab.advisory.corpus import (MEASUREMENT_READY_SOURCES,
-                                    measurement_ready, sample_cases)
+                                    measurement_ready, sample_cases,
+                                    targeted_cases)
 
 
 def substrate(sha, kind="striatum-exchange", partition="open",
@@ -111,3 +112,65 @@ class SamplingConstraintTest(unittest.TestCase):
                              per_operator=5)
         # 3 substrates, 2 operators, disjointness caps the draw at 3
         self.assertEqual(len(cases), 3)
+
+
+class TargetedCasesTest(unittest.TestCase):
+    """Explicit cells for a targeted-reproduction sweep.
+
+    The promotion gate needs the same (substrate, defect class) cell measured
+    under a distinct sweep seed, and the sampler draws without replacement
+    from 640 substrates — two random seeds shared 2 of 57 cells, so the
+    corpus cannot fill by drawing. Targeted selection names the cells; the
+    injection seed still derives from the sweep seed, so this is reproduction
+    under perturbation, never a replay of the identical injection.
+    """
+
+    def test_cell_derivation_matches_the_sampler(self):
+        pool = [substrate("a" * 64)]
+        cell = {"substrate_id": pool[0]["substrate_id"],
+                "operator": "dropped_section"}
+        sampled = sample_cases(pool, sweep_seed=9, per_operator=1)
+        targeted = targeted_cases(pool, [cell], sweep_seed=9)
+        drawn = next(c for c in sampled
+                     if c["operator"] == "dropped_section")
+        self.assertEqual(targeted[0]["seed"], drawn["seed"])
+        self.assertEqual(targeted[0]["sha256"], drawn["sha256"])
+        self.assertEqual(targeted[0]["source"], drawn["source"])
+
+    def test_distinct_sweep_seed_draws_a_distinct_injection(self):
+        pool = [substrate("a" * 64)]
+        cell = {"substrate_id": pool[0]["substrate_id"],
+                "operator": "dropped_section"}
+        first = targeted_cases(pool, [cell], sweep_seed=20260817)
+        second = targeted_cases(pool, [cell], sweep_seed=20260820)
+        self.assertNotEqual(first[0]["seed"], second[0]["seed"])
+
+    def test_cell_order_is_preserved(self):
+        pool = [substrate("a" * 64), substrate("b" * 64)]
+        cells = [{"substrate_id": pool[1]["substrate_id"],
+                  "operator": "hash_mismatch"},
+                 {"substrate_id": pool[0]["substrate_id"],
+                  "operator": "dropped_section"}]
+        cases = targeted_cases(pool, cells, sweep_seed=1)
+        self.assertEqual([c["substrate_id"] for c in cases],
+                         [cells[0]["substrate_id"], cells[1]["substrate_id"]])
+
+    def test_unknown_substrate_refuses_loudly(self):
+        with self.assertRaises(ValueError):
+            targeted_cases([substrate("a" * 64)],
+                           [{"substrate_id": "qs-missing",
+                             "operator": "dropped_section"}], sweep_seed=1)
+
+    def test_inapplicable_operator_refuses_loudly(self):
+        pool = [substrate("a" * 64, operators=("dropped_section",))]
+        with self.assertRaises(ValueError):
+            targeted_cases(pool, [{"substrate_id": pool[0]["substrate_id"],
+                                   "operator": "hash_mismatch"}], sweep_seed=1)
+
+    def test_unready_substrate_refuses_loudly(self):
+        odd = substrate("a" * 64)
+        odd["source"] = {"kind": "scraped-from-the-web"}
+        with self.assertRaises(ValueError):
+            targeted_cases([odd], [{"substrate_id": odd["substrate_id"],
+                                    "operator": "dropped_section"}],
+                           sweep_seed=1)
