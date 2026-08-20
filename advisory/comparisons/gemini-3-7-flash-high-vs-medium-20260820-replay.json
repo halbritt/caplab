@@ -1,0 +1,126 @@
+{
+  "a": "agy-gemini-3-7-flash-high",
+  "a_catch_rate": 0.8947368421052632,
+  "a_discrimination": 0.7368421052631579,
+  "a_false_alarms": 3,
+  "a_only_caught": 7,
+  "a_only_false_alarm": 3,
+  "b": "agy-gemini-3-7-flash-medium",
+  "b_catch_rate": 0.5263157894736842,
+  "b_discrimination": 0.5263157894736842,
+  "b_false_alarms": 0,
+  "b_only_caught": 0,
+  "b_only_false_alarm": 0,
+  "both_caught": 10,
+  "by_defect_class": {
+    "base_dropped": {
+      "a": 1,
+      "b": 0,
+      "n": 1
+    },
+    "contradicted_clause": {
+      "a": 1,
+      "b": 1,
+      "n": 1
+    },
+    "dangling_reference": {
+      "a": 2,
+      "b": 1,
+      "n": 2
+    },
+    "dropped_section": {
+      "a": 6,
+      "b": 3,
+      "n": 6
+    },
+    "duplicated_section": {
+      "a": 1,
+      "b": 1,
+      "n": 1
+    },
+    "hash_mismatch": {
+      "a": 2,
+      "b": 2,
+      "n": 2
+    },
+    "hollow_delivery": {
+      "a": 1,
+      "b": 1,
+      "n": 1
+    },
+    "overclaimed_level": {
+      "a": 1,
+      "b": 0,
+      "n": 2
+    },
+    "requirement_inversion": {
+      "a": 1,
+      "b": 1,
+      "n": 2
+    },
+    "swapped_section_bodies": {
+      "a": 1,
+      "b": 0,
+      "n": 1
+    }
+  },
+  "case_selection": "targeted-reproduction",
+  "discordant_cases": [
+    {
+      "caught_by": "a",
+      "defect_class": "dropped_section",
+      "dispatch_id": "qs-5ebab1a249b89eb2:dropped_section:1311955578",
+      "substrate_id": "qs-5ebab1a249b89eb2"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "dropped_section",
+      "dispatch_id": "qs-8f41b707cb15f6d9:dropped_section:2887583750",
+      "substrate_id": "qs-8f41b707cb15f6d9"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "base_dropped",
+      "dispatch_id": "qs-aae295d9adf3871e:base_dropped:1166630706",
+      "substrate_id": "qs-aae295d9adf3871e"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "dangling_reference",
+      "dispatch_id": "qs-aba90dbe009e7ea2:dangling_reference:9058134",
+      "substrate_id": "qs-aba90dbe009e7ea2"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "dropped_section",
+      "dispatch_id": "qs-afa3ff9b86200498:dropped_section:931850857",
+      "substrate_id": "qs-afa3ff9b86200498"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "swapped_section_bodies",
+      "dispatch_id": "qs-d24d0d472c7a9316:swapped_section_bodies:1960682766",
+      "substrate_id": "qs-d24d0d472c7a9316"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "overclaimed_level",
+      "dispatch_id": "qs-ec76afd5d7b27ffd:overclaimed_level:1858998811",
+      "substrate_id": "qs-ec76afd5d7b27ffd"
+    }
+  ],
+  "discordant_pairs": 7,
+  "false_alarm_audit_status": "contains-unaudited-refusals",
+  "false_alarm_defective_controls_excluded": 0,
+  "false_alarm_discordant_pairs": 3,
+  "false_alarm_sign_test_p": 0.25,
+  "false_alarm_significant_at_05": false,
+  "false_alarm_unaudited_pairs": 3,
+  "neither_caught": 2,
+  "reading": "catch: 7 of 19 shared cases discriminate, exact sign test p=0.016; false alarms: 3 discordant, p=0.250 (not established), 3 on unaudited controls; cases were selected on prior outcome (targeted reproduction) — the sign test is not a discovery statistic here; read the per-cell reproduction against the promotion gate instead",
+  "shared_cases": 19,
+  "sign_test_p": 0.015625,
+  "significant_at_05": true,
+  "sweep_seed": 20260820,
+  "uninformative_pairs": 12
+}
