@@ -1,0 +1,162 @@
+{
+  "a": "codex-sol-high",
+  "a_catch_rate": 0.9649122807017544,
+  "a_discrimination": 0.7719298245614035,
+  "a_false_alarms": 11,
+  "a_only_caught": 8,
+  "a_only_false_alarm": 8,
+  "b": "agy-gemini-3-7-flash-high",
+  "b_catch_rate": 0.8421052631578947,
+  "b_discrimination": 0.6842105263157895,
+  "b_false_alarms": 9,
+  "b_only_caught": 1,
+  "b_only_false_alarm": 6,
+  "both_caught": 47,
+  "by_defect_class": {
+    "base_dropped": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "broken_internal_crossref": {
+      "a": 1,
+      "b": 1,
+      "n": 1
+    },
+    "contradicted_clause": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "dangling_reference": {
+      "a": 4,
+      "b": 2,
+      "n": 4
+    },
+    "dropped_section": {
+      "a": 4,
+      "b": 3,
+      "n": 4
+    },
+    "duplicated_section": {
+      "a": 3,
+      "b": 4,
+      "n": 4
+    },
+    "hash_mismatch": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "hollow_delivery": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "overclaimed_level": {
+      "a": 4,
+      "b": 3,
+      "n": 4
+    },
+    "refuted_conclusion": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "requirement_inversion": {
+      "a": 4,
+      "b": 1,
+      "n": 4
+    },
+    "scope_violation": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "swapped_section_bodies": {
+      "a": 3,
+      "b": 2,
+      "n": 4
+    },
+    "truncated_tail": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "unearned_verification_claim": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    }
+  },
+  "discordant_cases": [
+    {
+      "caught_by": "a",
+      "defect_class": "dangling_reference",
+      "dispatch_id": "qs-43f3d7e27dec1a64:dangling_reference:1313159851",
+      "substrate_id": "qs-43f3d7e27dec1a64"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "dangling_reference",
+      "dispatch_id": "qs-5f841949fa746b8e:dangling_reference:1948815812",
+      "substrate_id": "qs-5f841949fa746b8e"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "requirement_inversion",
+      "dispatch_id": "qs-6d0ecc98d4fbedaa:requirement_inversion:499814546",
+      "substrate_id": "qs-6d0ecc98d4fbedaa"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "overclaimed_level",
+      "dispatch_id": "qs-71a0c8dd36c55a62:overclaimed_level:1455807091",
+      "substrate_id": "qs-71a0c8dd36c55a62"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "swapped_section_bodies",
+      "dispatch_id": "qs-7d8726d369f3efae:swapped_section_bodies:4282385272",
+      "substrate_id": "qs-7d8726d369f3efae"
+    },
+    {
+      "caught_by": "b",
+      "defect_class": "duplicated_section",
+      "dispatch_id": "qs-810276f08b5061bc:duplicated_section:2308472916",
+      "substrate_id": "qs-810276f08b5061bc"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "requirement_inversion",
+      "dispatch_id": "qs-f3d9c1ad3b285041:requirement_inversion:1299480745",
+      "substrate_id": "qs-f3d9c1ad3b285041"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "dropped_section",
+      "dispatch_id": "qs-f879a0e3f50528bf:dropped_section:4252173400",
+      "substrate_id": "qs-f879a0e3f50528bf"
+    },
+    {
+      "caught_by": "a",
+      "defect_class": "requirement_inversion",
+      "dispatch_id": "qs-fc1e95b9755ee36e:requirement_inversion:3402432770",
+      "substrate_id": "qs-fc1e95b9755ee36e"
+    }
+  ],
+  "discordant_pairs": 9,
+  "false_alarm_audit_status": "contains-unaudited-refusals",
+  "false_alarm_defective_controls_excluded": 1,
+  "false_alarm_discordant_pairs": 14,
+  "false_alarm_sign_test_p": 0.79052734375,
+  "false_alarm_significant_at_05": false,
+  "false_alarm_unaudited_pairs": 17,
+  "neither_caught": 1,
+  "reading": "catch: 9 of 57 shared cases discriminate, exact sign test p=0.039; false alarms: 14 discordant, p=0.791 (not established), 17 on unaudited controls",
+  "shared_cases": 57,
+  "sign_test_p": 0.0390625,
+  "significant_at_05": true,
+  "sweep_seed": 20260819,
+  "uninformative_pairs": 48
+}
