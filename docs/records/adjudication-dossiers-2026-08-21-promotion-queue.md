@@ -105,3 +105,18 @@ basis; the corresponding separator then promotes on the next gate run. A
 `defective` ruling excludes the separator and its control from false-alarm
 scoring — the correct outcome if the Principal reads a residual differently
 than the audit did. Rulings are individual; nothing here batches them.
+
+## Rulings — 2026-08-21
+
+The Principal ruled all six remaining controls **sound**, individually named
+in `advisory/control-adjudications.jsonl` with each dossier audit as the
+accepted basis. With the oracle case, all seven queue controls are
+adjudicated sound.
+
+Gate outcome on re-run: **7 promoted, 0 withheld on adjudication** — the
+campaign's first promoted discrimination corpus. All seven cells separate
+`agy-gemini-3-7-flash-high` from `agy-gemini-3-7-flash-medium` in the high
+direction across two sweeps each. The 12 remaining withheld entries stay at
+"seen in 1 sweep", which is regression to the mean, not backlog. Three
+false-alarm pairs on other controls remain unaudited and join the standing
+audit backlog.
