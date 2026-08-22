@@ -393,13 +393,18 @@ def main() -> int:
     projection_html = ""
     if projection:
         rows_html = ['<table><thead><tr><th>rank</th><th>Binding</th>'
-                     '<th>score</th><th>custody</th><th>seed</th><th>n</th>'
-                     '</tr></thead><tbody>']
+                     '<th>harness</th><th>score</th><th>custody</th>'
+                     '<th>seed</th><th>n</th></tr></thead><tbody>']
         for e in projection["ranked"]:
             score = "—" if e["score"] is None else f'{e["score"]:.3f}'
+            model, harness = declared_identity(e["label"])
+            model_note = (f'<br><span class="model-note">{esc(model)}</span>'
+                          if model and model.lower() not in e["label"].lower()
+                          else "")
             rows_html.append(
                 f'<tr><td class="num">{esc(e["rank"])}</td>'
-                f'<td class="name">{esc(e["label"])}</td>'
+                f'<td class="name">{esc(e["label"])}{model_note}</td>'
+                f'<td class="harness">{esc(harness) if harness else "—"}</td>'
                 f'<td class="num">{score}</td><td>{esc(e["custody"])}</td>'
                 f'<td class="num">{esc(e["seeds"])}</td>'
                 f'<td class="num">{esc(e["n"])}</td></tr>')
@@ -407,6 +412,12 @@ def main() -> int:
         projection_html = (
             "<section><h2>Quartermaster projection (review objective)</h2>"
             f'<p class="muted">{esc(projection["lead"])}</p>'
+            '<p class="muted">The objective pins the synthetic-contract '
+            'instrument: Bindings never measured on it are unranked rather '
+            'than ranked on incomparable history. Same-model tuples on '
+            'different accounts or harnesses are distinct Bindings and rank '
+            'separately by design (account, config surface, and mounting are '
+            'behavior-bearing identity fields).</p>'
             + "\n".join(rows_html) + "</section>")
 
     page = f"""<!doctype html>
