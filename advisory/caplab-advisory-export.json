@@ -6835,6 +6835,84 @@
         "matched_current_declaration": true,
         "source_id": "or-gemini-3-7-flash-high"
       }
+    },
+    {
+      "as_of": "2026-08-22T20:22:15.386600+00:00",
+      "claim_id": "qc-43629cb5aec49630",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "7c1f249848420933b09eb5b7bd7495c51987f30537997e52bfa9eab76d063a7f",
+          "rows_used": 56,
+          "run": "sweep-or-ox-alpha-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.4241321478993947,
+            0.6761327874521665
+          ],
+          "denominator": 56,
+          "value": 0.5535714285714286
+        },
+        "catch_rate": {
+          "ci95": [
+            0.40704181935661177,
+            0.6598014708777623
+          ],
+          "value": 0.5357142857142857
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.3357142857142857
+        },
+        "false_alarm_rate": {
+          "audit_status": "contains-unaudited-refusals",
+          "ci95": [
+            0.11552214909761245,
+            0.32364879157263937
+          ],
+          "denominator": 55,
+          "excluded_defective_controls": 1,
+          "unaudited_refusals": 11,
+          "value": 0.2
+        },
+        "findings_per_mutant": {
+          "value": 1.4821428571428572
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 56
+        },
+        "n_pairs": {
+          "value": 56
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 12 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 89% (kappa 0.60 against a 72% chance baseline), mutant 88% (kappa 0.76). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "or-ox-alpha"
+      }
     }
   ],
   "constructs": {
