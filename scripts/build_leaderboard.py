@@ -48,6 +48,26 @@ RUN_ROOTS = [
     os.path.join(REPO, "advisory", "runs"),
     os.path.expanduser("~/git/striatum-tuner/eval-runs"),
 ]
+BACKENDS_ROOT = os.path.expanduser("~/git/striatum-next/backends")
+
+
+def declared_model(binding_id: str) -> str | None:
+    """The model the binding's declaration pins, so a terse historical id
+    ('glm', 'local-qwen') never reads as a different model's row."""
+    path = os.path.join(BACKENDS_ROOT, binding_id, "backend.yaml")
+    if not os.path.isfile(path):
+        return None
+    try:
+        import yaml
+        with open(path, encoding="utf-8") as f:
+            declaration = yaml.safe_load(f)
+        command = ((declaration.get("adapter") or {}).get("command")) or []
+        for flag in ("-model", "--model"):
+            if flag in command:
+                return str(command[command.index(flag) + 1])
+    except Exception:
+        return None
+    return None
 
 PROMOTION_CONTRASTS = [
     "gemini-3-7-flash-high-vs-medium-20260817.json",
@@ -244,8 +264,12 @@ def cohort_table(rows):
            '<th title="semantic defects caught / measured">semantic</th>'
            '<th>anchored</th><th>as of</th><th>flags</th></tr></thead><tbody>']
     for r in rows:
+        model = declared_model(r["subject"])
+        model_note = (f'<br><span class="model-note">{esc(model)}</span>'
+                      if model and model.lower() not in r["subject"].lower()
+                      else "")
         out.append(
-            f'<tr><td class="name">{esc(r["subject"])}</td>'
+            f'<tr><td class="name">{esc(r["subject"])}{model_note}</td>'
             f'<td class="num">{esc(r["pairs"])}</td>'
             f'<td>{bar(r["catch"], "rate")}</td>'
             f'<td>{bar(r["fa"], "fa")}</td>'
@@ -412,6 +436,7 @@ th {{ text-align: left; color: var(--ink-2); font-weight: 600;
 td {{ padding: .28rem .5rem; border-bottom: 1px solid var(--line);
   vertical-align: middle; }}
 td.name {{ font-family: ui-monospace, monospace; font-size: .88rem; }}
+.model-note {{ color: var(--ink-3); font-size: .78rem; }}
 td.num {{ font-variant-numeric: tabular-nums; }}
 td.note {{ color: var(--ink-2); font-size: .85rem; }}
 tr.sig td {{ }}
