@@ -505,7 +505,8 @@ crossref, hash mismatch); <em>semantic</em> = defects that assert something
 false (contradicted clause, refuted conclusion, requirement inversion,
 overclaimed level, scope violation, unearned verification). Reported
 because a scalar hides it: one subject measured 7/7 semantic against 0/5
-structural inside a 0.042 aggregate.</div>
+structural inside a 0.042 aggregate.
+<br><strong>Emission caveat.</strong> The binary false-alarm metric rewards silence: a subject emitting near-zero findings scores a spotless FA for the wrong reason (finding: fa-rewards-silence, 2026-08-22). Read <em>anchored</em> first when comparing across emission styles.</div>
 {"".join(sections)}
 <section><h2>Matched contrasts</h2>
 <p class="muted">Paired sign tests on shared cases. Withdrawn or amended
