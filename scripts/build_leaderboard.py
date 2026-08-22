@@ -30,6 +30,25 @@ REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), 
 OUT = os.path.join(REPO, "docs", "leaderboard", "index.html")
 QUARTERMASTER = os.path.expanduser("~/git/quartermaster")
 
+#: Two-way defect-class grouping for the split columns. STRUCTURAL defects
+#: remove, corrupt, or mis-reference content (detection = noticing what is
+#: absent or inconsistent in form); SEMANTIC defects assert something false
+#: (detection = reading claims against content). The split is reported
+#: because a scalar hid it: one subject measured 7/7 semantic against 0/5
+#: structural inside a 0.042 aggregate.
+STRUCTURAL = {"dropped_section", "truncated_tail", "duplicated_section",
+              "swapped_section_bodies", "hollow_delivery", "base_dropped",
+              "dangling_reference", "broken_internal_crossref",
+              "hash_mismatch", "decorative_check"}
+SEMANTIC = {"contradicted_clause", "refuted_conclusion",
+            "requirement_inversion", "overclaimed_level", "scope_violation",
+            "unearned_verification_claim"}
+RUN_ROOTS = [
+    os.path.join(REPO, "advisory", "pool-runs"),
+    os.path.join(REPO, "advisory", "runs"),
+    os.path.expanduser("~/git/striatum-tuner/eval-runs"),
+]
+
 PROMOTION_CONTRASTS = [
     "gemini-3-7-flash-high-vs-medium-20260817.json",
     "gemini-3-7-flash-high-vs-medium-20260819.json",
@@ -76,6 +95,31 @@ def load_claims():
                     instruments.add(e["instrument"])
                 pairs += e.get("rows_used") or 0
         fa = m.get("false_alarm_rate") or {}
+        split = {"structural": [0, 0], "semantic": [0, 0]}
+        for e in c.get("evidence", []):
+            run = e.get("run") if isinstance(e, dict) else None
+            if not run:
+                continue
+            for root in RUN_ROOTS:
+                path = os.path.join(root, run, "results.jsonl")
+                if not os.path.isfile(path):
+                    continue
+                with open(path, encoding="utf-8") as f:
+                    for line in f:
+                        if not line.strip():
+                            continue
+                        row = json.loads(line)
+                        if not row.get("usable") or row.get("anchor"):
+                            continue
+                        group = ("structural"
+                                 if row.get("defect_class") in STRUCTURAL
+                                 else "semantic"
+                                 if row.get("defect_class") in SEMANTIC
+                                 else None)
+                        if group:
+                            split[group][1] += 1
+                            split[group][0] += bool(row.get("caught"))
+                break
         rows.append({
             "subject": c["subject"]["source_id"],
             "as_of": c["as_of"][:10],
@@ -93,6 +137,8 @@ def load_claims():
                              if isinstance(fa, dict) else None),
             "fa_audit": (fa.get("audit_status")
                          if isinstance(fa, dict) else None),
+            "structural": tuple(split["structural"]),
+            "semantic": tuple(split["semantic"]),
         })
     return rows
 
@@ -181,9 +227,21 @@ def claim_badges(r):
     return " ".join(badges)
 
 
+def split_cell(hit_total):
+    hits, total = hit_total
+    if not total:
+        return '<span class="muted">—</span>'
+    frac = hits / total
+    return (f'<span class="bar bar-narrow" title="{hits}/{total} caught">'
+            f'<span class="bar-fill bar-rate" style="width:{frac * 100:.0f}%">'
+            f'</span></span><span class="bar-label">{hits}/{total}</span>')
+
+
 def cohort_table(rows):
     out = ['<table><thead><tr><th>Binding</th><th>pairs</th>'
            '<th>catch</th><th>false alarms</th><th>discrimination</th>'
+           '<th title="structural defects caught / measured">structural</th>'
+           '<th title="semantic defects caught / measured">semantic</th>'
            '<th>anchored</th><th>as of</th><th>flags</th></tr></thead><tbody>']
     for r in rows:
         out.append(
@@ -192,6 +250,8 @@ def cohort_table(rows):
             f'<td>{bar(r["catch"], "rate")}</td>'
             f'<td>{bar(r["fa"], "fa")}</td>'
             f'<td>{bar(r["disc"], "disc")}</td>'
+            f'<td>{split_cell(r["structural"])}</td>'
+            f'<td>{split_cell(r["semantic"])}</td>'
             f'<td class="num">{pct(r["anchored"])}</td>'
             f'<td class="num">{esc(r["as_of"])}</td>'
             f'<td>{claim_badges(r)}</td></tr>')
@@ -356,6 +416,7 @@ td.num {{ font-variant-numeric: tabular-nums; }}
 td.note {{ color: var(--ink-2); font-size: .85rem; }}
 tr.sig td {{ }}
 tr.withdrawn td {{ color: var(--ink-3); text-decoration-color: var(--ink-3); }}
+.bar-narrow {{ width: 54px; }}
 .bar {{ display: inline-block; width: 90px; height: 8px;
   background: var(--surface-2); border-radius: 4px; overflow: hidden;
   vertical-align: middle; margin-right: .45rem; }}
@@ -378,7 +439,15 @@ local page, not published.</p>
 within one instrument, one custody class, and one case seed — each section
 below is one such cohort, ranked internally by discrimination
 (catch − false alarms). There is deliberately no merged ranking. Newest,
-widest claim per Binding shown; hover bars for values.</div>
+widest claim per Binding shown; hover bars for values.
+<br><strong>Split columns.</strong> <em>structural</em> = defects that
+remove, corrupt, or mis-reference content (dropped/truncated/duplicated/
+swapped sections, hollow delivery, dropped base, dangling reference, broken
+crossref, hash mismatch); <em>semantic</em> = defects that assert something
+false (contradicted clause, refuted conclusion, requirement inversion,
+overclaimed level, scope violation, unearned verification). Reported
+because a scalar hides it: one subject measured 7/7 semantic against 0/5
+structural inside a 0.042 aggregate.</div>
 {"".join(sections)}
 <section><h2>Matched contrasts</h2>
 <p class="muted">Paired sign tests on shared cases. Withdrawn or amended
