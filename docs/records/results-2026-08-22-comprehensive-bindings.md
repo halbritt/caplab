@@ -1,5 +1,13 @@
 # Comprehensive review-capability results across all Bindings
 
+> **ERRATUM 2026-08-22** (`erratum-2026-08-22-changeset-contract-quarantine.md`): the v1 change-set contract is
+> quarantined (~35% of synthetic-contract breadth cases). Headline
+> changes: sol-high vs flash-high is **not established** on clean cases
+> (6–1, p=0.125); sol vs flash-medium holds (11–1, p=0.006); the
+> promoted corpus is **6 cells**, not 7 (`qs-aae295d9adf3871e`
+> quarantined); flash effort at 20260819 weakens to 5–0, p=0.062 on
+> clean cases, with the targeted per-cell reproduction unaffected.
+
 - Date: 2026-08-22 · Construct: `review.defect_discrimination/1`
 - Sources: `advisory/claims.jsonl` (67 Scored claims), the contrast
   documents in `advisory/comparisons/`, the promotion gate, and the

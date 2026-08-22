@@ -76,3 +76,47 @@ class PromotionTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class QuarantinedProfileTest(unittest.TestCase):
+    """Cells measured under v1-changeset are withheld, whatever else holds.
+
+    The 2026-08-21 OOM postmortem (infra: 2026-08-21-oom-rg-store-grep.md)
+    established that the v1 change-set contract demanded base verification
+    while materializing no base — subjects grepped the 361 GB store, and
+    what the cells measured is confounded with store-forensics affordance.
+    Quarantine accepted by the Principal 2026-08-22.
+    """
+
+    def _case(self, profile):
+        entry = case()
+        if profile is not None:
+            entry["calibration_profile"] = profile
+        return entry
+
+    def test_v1_changeset_cell_is_withheld_despite_reproduction(self):
+        contrasts = [contrast(1, [self._case("v1-changeset")]),
+                     contrast(2, [self._case("v1-changeset")])]
+        result = promotion_candidates(
+            contrasts, adjudications=SoundAdjudications(),
+            substrate_sources={"qs-x": "d" * 64})
+        self.assertEqual(result["promoted"], [])
+        self.assertEqual(len(result["withheld"]), 1)
+        self.assertIn("quarantined", result["withheld"][0]["reason"])
+
+    def test_one_quarantined_sweep_taints_the_cell(self):
+        contrasts = [contrast(1, [self._case("v1")]),
+                     contrast(2, [self._case("v1-changeset")])]
+        result = promotion_candidates(
+            contrasts, adjudications=SoundAdjudications(),
+            substrate_sources={"qs-x": "d" * 64})
+        self.assertEqual(result["promoted"], [])
+        self.assertIn("quarantined", result["withheld"][0]["reason"])
+
+    def test_prose_profile_and_legacy_entries_still_promote(self):
+        contrasts = [contrast(1, [self._case("v1")]),
+                     contrast(2, [self._case(None)])]
+        result = promotion_candidates(
+            contrasts, adjudications=SoundAdjudications(),
+            substrate_sources={"qs-x": "d" * 64})
+        self.assertEqual(len(result["promoted"]), 1)

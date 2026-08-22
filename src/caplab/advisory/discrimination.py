@@ -25,6 +25,16 @@ it was withheld, because a silent gate reads as an empty pool.
 
 from __future__ import annotations
 
+#: Prompt profiles whose measurements are quarantined from promotion. The
+#: v1 change-set contract demanded verification of an absent base with no
+#: lookup primitive; subjects complied by grepping the host's 361 GB store
+#: (infra postmortem 2026-08-21-oom-rg-store-grep.md), so its cells measure
+#: store-forensics affordance and grep survival as much as review. A cell
+#: touched by a quarantined profile in ANY sweep is withheld until it
+#: reproduces entirely under a clean contract. Quarantine accepted by the
+#: Principal 2026-08-22.
+QUARANTINED_PROFILES = {"v1-changeset"}
+
 
 def promotion_candidates(contrasts: list[dict], adjudications,
                          substrate_sources: dict | None = None,
@@ -44,10 +54,14 @@ def promotion_candidates(contrasts: list[dict], adjudications,
         for entry in doc.get("discordant_cases") or []:
             key = (entry.get("substrate_id") or entry["dispatch_id"],
                    entry.get("defect_class"), pair)
-            cell = grouped.setdefault(key, {"sweeps": [], "directions": set()})
+            cell = grouped.setdefault(key, {"sweeps": [], "directions": set(),
+                                            "quarantined_profiles": set()})
             cell["sweeps"].append(doc.get("sweep_seed"))
             cell["directions"].add(
                 doc["a"] if entry.get("caught_by") == "a" else doc["b"])
+            profile = entry.get("calibration_profile")
+            if profile in QUARANTINED_PROFILES:
+                cell["quarantined_profiles"].add(profile)
 
     promoted, withheld = [], []
     for (substrate, defect_class, pair), cell in sorted(grouped.items()):
@@ -56,7 +70,14 @@ def promotion_candidates(contrasts: list[dict], adjudications,
                  "pair": list(pair), "sweeps": sweeps}
         control_key = (substrate_sources or {}).get(substrate) or substrate
         disposition = adjudications.disposition(control_key)
-        if len(cell["directions"]) > 1:
+        if cell["quarantined_profiles"]:
+            profiles = ", ".join(sorted(cell["quarantined_profiles"]))
+            withheld.append({**entry, "reason":
+                             f"measured under quarantined contract "
+                             f"({profiles}) — the cell reflects "
+                             f"store-forensics affordance, not review; "
+                             f"re-measure under a clean profile"})
+        elif len(cell["directions"]) > 1:
             withheld.append({**entry, "reason":
                              "direction flips between sweeps — the "
                              "separation is instability, not capability"})

@@ -1,5 +1,10 @@
 # Control-soundness dossiers — the promotion queue of 2026-08-20
 
+> **NOTE 2026-08-22** (`erratum-2026-08-22-changeset-contract-quarantine.md`): all eight control-soundness
+> adjudications stand. Separately, cell `qs-aae295d9adf3871e` is
+> quarantined from promotion — its *measurement* ran the contaminated
+> v1 change-set contract; its control remains adjudicated sound.
+
 - Date: 2026-08-21
 - Purpose: evidence for the seven control-soundness adjudications that stand
   between the reproduced separators and promotion

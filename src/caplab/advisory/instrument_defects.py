@@ -264,20 +264,29 @@ def hollow_delivery(body: str, rng: random.Random) -> Injection:
 
 
 def hash_mismatch(body: str, rng: random.Random) -> Injection:
-    """Perturb a declared hash so it no longer equals what it names."""
+    """Perturb a declared hash so it no longer equals what it names.
+
+    Base-object hashes are excluded: the base tree is absent from the
+    change set by design, so a flipped `base.content_hash` is detectable
+    only by locating the base outside the workspace — the store-grep the
+    v2 contract forbids and the 2026-08-21 OOM postmortem documented. An
+    operator may only plant what the contract lets a subject honestly find.
+    """
     doc = _load_json(body)
     hits: list[tuple[dict, str, str]] = []
 
-    def walk(node):
+    def walk(node, in_base=False):
         if isinstance(node, dict):
             for k, v in node.items():
+                base_key = in_base or k in ("base", "base_composition")
                 if isinstance(v, str) and re.fullmatch(r"[0-9a-f]{64}", v):
-                    hits.append((node, k, v))
+                    if not base_key:
+                        hits.append((node, k, v))
                 else:
-                    walk(v)
+                    walk(v, base_key)
         elif isinstance(node, list):
             for v in node:
-                walk(v)
+                walk(v, in_base)
 
     walk(doc)
     if not hits:

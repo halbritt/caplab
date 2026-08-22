@@ -91,72 +91,84 @@
   },
   "discordant_cases": [
     {
+      "calibration_profile": "v1",
       "caught_by": "a",
       "defect_class": "dropped_section",
       "dispatch_id": "qs-4dc8e07e5529ca7d:dropped_section:1052995072",
       "substrate_id": "qs-4dc8e07e5529ca7d"
     },
     {
+      "calibration_profile": "v1",
       "caught_by": "a",
       "defect_class": "duplicated_section",
       "dispatch_id": "qs-5e9c18c966cd8bf7:duplicated_section:1286126085",
       "substrate_id": "qs-5e9c18c966cd8bf7"
     },
     {
+      "calibration_profile": "v1",
       "caught_by": "a",
       "defect_class": "dropped_section",
       "dispatch_id": "qs-5ebab1a249b89eb2:dropped_section:742682556",
       "substrate_id": "qs-5ebab1a249b89eb2"
     },
     {
+      "calibration_profile": "v1",
       "caught_by": "a",
       "defect_class": "contradicted_clause",
       "dispatch_id": "qs-6e2b1e326c4c5c0f:contradicted_clause:3970777366",
       "substrate_id": "qs-6e2b1e326c4c5c0f"
     },
     {
+      "calibration_profile": "v1",
       "caught_by": "a",
       "defect_class": "overclaimed_level",
       "dispatch_id": "qs-7438efc689422484:overclaimed_level:4127258915",
       "substrate_id": "qs-7438efc689422484"
     },
     {
+      "calibration_profile": "v1",
       "caught_by": "a",
       "defect_class": "dangling_reference",
       "dispatch_id": "qs-8c4a05aae286b951:dangling_reference:2996854408",
       "substrate_id": "qs-8c4a05aae286b951"
     },
     {
+      "calibration_profile": "v1",
       "caught_by": "b",
       "defect_class": "dropped_section",
       "dispatch_id": "qs-97f00c690d343f8b:dropped_section:1707476662",
       "substrate_id": "qs-97f00c690d343f8b"
     },
     {
+      "calibration_profile": "v1",
       "caught_by": "a",
       "defect_class": "requirement_inversion",
       "dispatch_id": "qs-a9308a59b4cf9a2a:requirement_inversion:3111047567",
       "substrate_id": "qs-a9308a59b4cf9a2a"
     },
     {
+      "calibration_profile": "v1-changeset",
       "caught_by": "a",
       "defect_class": "base_dropped",
       "dispatch_id": "qs-aae295d9adf3871e:base_dropped:3067985537",
       "substrate_id": "qs-aae295d9adf3871e"
     },
     {
+      "calibration_profile": "v1",
       "caught_by": "a",
       "defect_class": "dangling_reference",
       "dispatch_id": "qs-aba90dbe009e7ea2:dangling_reference:30974265",
       "substrate_id": "qs-aba90dbe009e7ea2"
     },
     {
+      "calibration_profile": "v1",
       "caught_by": "a",
       "defect_class": "requirement_inversion",
       "dispatch_id": "qs-c7e0b0e1d0daa512:requirement_inversion:1670910204",
       "substrate_id": "qs-c7e0b0e1d0daa512"
     },
     {
+      "calibration_profile": "v1-changeset",
       "caught_by": "a",
       "defect_class": "hash_mismatch",
       "dispatch_id": "qs-f90cc496593e109e:hash_mismatch:2518116873",

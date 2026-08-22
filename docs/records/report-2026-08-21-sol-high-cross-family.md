@@ -1,5 +1,11 @@
 # Sol-high, seed 20260819 — the first completed cross-family contrasts
 
+> **ERRATUM 2026-08-22** (`erratum-2026-08-22-changeset-contract-quarantine.md`): 20 of 57 cases ran the
+> quarantined v1 change-set contract. Re-scored on clean cases only,
+> **sol vs flash-high drops to 6–1, p=0.125 — not established — and is
+> withdrawn**; sol vs flash-medium holds (11–1, p=0.006). The false-alarm
+> mechanism is partly the instrument's (unresolvable base → refusal).
+
 - Date: 2026-08-21
 - Subject: `codex-sol-high` (primary codex account, re-enabled 2026-08-21 by
   delegated adjudication after its dated disable's exit condition was met).

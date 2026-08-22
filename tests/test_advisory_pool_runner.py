@@ -271,9 +271,13 @@ class ProfileRoutingTest(unittest.TestCase):
         finally:
             pool_runner.invoke = original
         self.assertTrue(row["usable"], row.get("error"))
-        self.assertEqual(row["calibration_profile"], "v1-changeset")
+        self.assertEqual(row["calibration_profile"], "v2-changeset")
         self.assertIn("CHANGE SET:", seen["prompt"])
         self.assertNotIn("carry the sections its stage requires", seen["prompt"])
+        # The v2 contract must close the store-grep escape hatch the
+        # 2026-08-21 OOM postmortem documented.
+        self.assertIn("base tree is NOT available", seen["prompt"])
+        self.assertIn("Do not search", seen["prompt"])
 
     def test_unusable_row_still_records_a_profile(self):
         row = measure_case(case("no_such_operator"), DOC, echo_adapter(),

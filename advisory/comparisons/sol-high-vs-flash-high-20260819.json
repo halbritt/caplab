@@ -91,54 +91,63 @@
   },
   "discordant_cases": [
     {
+      "calibration_profile": "v1-changeset",
       "caught_by": "a",
       "defect_class": "dangling_reference",
       "dispatch_id": "qs-43f3d7e27dec1a64:dangling_reference:1313159851",
       "substrate_id": "qs-43f3d7e27dec1a64"
     },
     {
+      "calibration_profile": "v1",
       "caught_by": "a",
       "defect_class": "dangling_reference",
       "dispatch_id": "qs-5f841949fa746b8e:dangling_reference:1948815812",
       "substrate_id": "qs-5f841949fa746b8e"
     },
     {
+      "calibration_profile": "v1",
       "caught_by": "a",
       "defect_class": "requirement_inversion",
       "dispatch_id": "qs-6d0ecc98d4fbedaa:requirement_inversion:499814546",
       "substrate_id": "qs-6d0ecc98d4fbedaa"
     },
     {
+      "calibration_profile": "v1",
       "caught_by": "a",
       "defect_class": "overclaimed_level",
       "dispatch_id": "qs-71a0c8dd36c55a62:overclaimed_level:1455807091",
       "substrate_id": "qs-71a0c8dd36c55a62"
     },
     {
+      "calibration_profile": "v1",
       "caught_by": "a",
       "defect_class": "swapped_section_bodies",
       "dispatch_id": "qs-7d8726d369f3efae:swapped_section_bodies:4282385272",
       "substrate_id": "qs-7d8726d369f3efae"
     },
     {
+      "calibration_profile": "v1",
       "caught_by": "b",
       "defect_class": "duplicated_section",
       "dispatch_id": "qs-810276f08b5061bc:duplicated_section:2308472916",
       "substrate_id": "qs-810276f08b5061bc"
     },
     {
+      "calibration_profile": "v1",
       "caught_by": "a",
       "defect_class": "requirement_inversion",
       "dispatch_id": "qs-f3d9c1ad3b285041:requirement_inversion:1299480745",
       "substrate_id": "qs-f3d9c1ad3b285041"
     },
     {
+      "calibration_profile": "v1",
       "caught_by": "a",
       "defect_class": "dropped_section",
       "dispatch_id": "qs-f879a0e3f50528bf:dropped_section:4252173400",
       "substrate_id": "qs-f879a0e3f50528bf"
     },
     {
+      "calibration_profile": "v1-changeset",
       "caught_by": "a",
       "defect_class": "requirement_inversion",
       "dispatch_id": "qs-fc1e95b9755ee36e:requirement_inversion:3402432770",

@@ -1,5 +1,10 @@
 # Targeted reproduction, seed 20260820 — 7 of 19 separators hold
 
+> **ERRATUM 2026-08-22** (`erratum-2026-08-22-changeset-contract-quarantine.md`): one of the seven reproduced
+> cells (`qs-aae295d9adf3871e`, `base_dropped`) was measured under the
+> quarantined v1 change-set contract and is demoted to withheld; the
+> other six ran the clean prose contract and stand.
+
 - Date: 2026-08-20
 - Case set: the 19 withheld flash-high/flash-medium separators from seeds
   20260817 and 20260819 (`advisory/replay/replay-flash-effort-20260820.json`),

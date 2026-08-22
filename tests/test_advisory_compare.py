@@ -116,7 +116,8 @@ class CompareTest(unittest.TestCase):
                                    write_run(self.root, "b", rows_b))
         self.assertEqual(result["discordant_cases"], [
             {"dispatch_id": "1" * 64, "substrate_id": None,
-             "defect_class": "hash_mismatch", "caught_by": "a"}])
+             "defect_class": "hash_mismatch", "calibration_profile": None,
+             "caught_by": "a"}])
 
     def test_binom_symmetry(self):
         self.assertEqual(_binom_two_sided(0, 0), 1.0)
@@ -229,3 +230,25 @@ class AnnotationTest(unittest.TestCase):
         doc = annotate_from_summaries(paired_comparison(a, b), a, b)
         self.assertEqual(doc["case_selection"], "targeted-reproduction")
         self.assertIn("selected on prior outcome", doc["reading"])
+
+
+class ProfileAnnotationTest(unittest.TestCase):
+    """Discordant cases carry their prompt profile, so the promotion gate
+    can quarantine cells measured under a contaminated contract."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = self.tmp.name
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def test_discordant_case_records_the_profile(self):
+        ra = row("1" * 64, True)
+        ra["calibration_profile"] = "v1-changeset"
+        rb = row("1" * 64, False)
+        rb["calibration_profile"] = "v1-changeset"
+        result = paired_comparison(write_run(self.root, "a", [ra]),
+                                   write_run(self.root, "b", [rb]))
+        self.assertEqual(result["discordant_cases"][0]["calibration_profile"],
+                         "v1-changeset")

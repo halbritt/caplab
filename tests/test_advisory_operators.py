@@ -162,3 +162,42 @@ class ClaimVsBehaviorTest(unittest.TestCase):
     def test_not_applicable_to_plain_markdown(self):
         with self.assertRaises(NotApplicable):
             BY_NAME["unearned_verification_claim"](DOC, random.Random(0))
+
+
+class BaseHashExclusionTest(unittest.TestCase):
+    """hash_mismatch must not plant defects on hashes of absent content.
+
+    A flipped base.content_hash can only be verified by locating the base
+    blob, which the v2 change-set contract declares unavailable and the
+    2026-08-21 OOM postmortem shows was answered by grepping the whole
+    store. An operator may only plant what the contract lets a subject
+    honestly find.
+    """
+
+    def test_base_only_hash_is_not_applicable(self):
+        import json as _json
+        import random as _random
+
+        from caplab.advisory.instrument_defects import (NotApplicable,
+                                                        hash_mismatch)
+        body = _json.dumps({"schema_version": "1",
+                            "base": {"content_hash": "a" * 64},
+                            "files": {"docs/x.md": "content"}})
+        with self.assertRaises(NotApplicable):
+            hash_mismatch(body, _random.Random(1))
+
+    def test_non_base_hash_is_still_planted(self):
+        import json as _json
+        import random as _random
+
+        from caplab.advisory.instrument_defects import hash_mismatch
+        body = _json.dumps({"schema_version": "1",
+                            "base": {"content_hash": "a" * 64},
+                            "packet": {"artifact_hash": "b" * 64},
+                            "files": {"docs/x.md": "content"}})
+        for seed in range(5):
+            injection = hash_mismatch(body, _random.Random(seed))
+            self.assertEqual(injection.detail["was"], "b" * 64,
+                             "must never select the base hash")
+        mutated = _json.loads(injection.body)
+        self.assertEqual(mutated["base"]["content_hash"], "a" * 64)

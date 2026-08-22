@@ -103,6 +103,10 @@ def paired_comparison(run_a: str, run_b: str, label_a: str = "",
                 "dispatch_id": dispatch,
                 "substrate_id": ra.get("substrate_id"),
                 "defect_class": ra.get("defect_class") or "(unknown)",
+                # The prompt profile travels with the cell so the promotion
+                # gate can quarantine contracts later found contaminated
+                # (v1-changeset, per the 2026-08-21 OOM postmortem).
+                "calibration_profile": ra.get("calibration_profile"),
                 "caught_by": "a" if ca else "b"})
         control_key = ((substrate_sources or {}).get(ra.get("substrate_id"))
                        or dispatch)

@@ -1,6 +1,7 @@
 {
   "config": "caplab-advisory-sweep-config/1",
   "description": "Standing configuration for budgeted, capacity-aware advisory re-measurement. The sweep command plans from this file plus claim freshness; execution is always an explicit human-or-endorsed act (no enabled timers exist).",
+  "instrument_note": "2026-08-22: v1-changeset is retired from routing (OOM postmortem 2026-08-21; erratum-2026-08-22-changeset-contract-quarantine.md). New sweeps emit v2-changeset for change sets; v1-changeset and v2-changeset numbers do not compare, and promotion quarantines v1-changeset cells.",
   "freshness_days": 90,
   "default_pairs": 21,
   "max_pairs": 21,

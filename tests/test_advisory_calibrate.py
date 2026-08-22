@@ -118,3 +118,37 @@ class StreamingTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ChangesetV2ContractTest(unittest.TestCase):
+    """The v2 change-set contract scopes the absent base out of the review.
+
+    v1 demanded anchoring and hash verification while materializing no base
+    and providing no lookup primitive; diligent subjects grepped the whole
+    361 GB store (infra postmortem 2026-08-21-oom-rg-store-grep.md), which
+    both exhausted host memory and confounded the measurement with
+    store-forensics affordance. v2 states what is reviewable and forbids
+    the hunt.
+    """
+
+    def test_v2_is_the_routed_changeset_profile(self):
+        import json as _json
+
+        from caplab.advisory.calibrate import profile_for_artifact
+        body = _json.dumps({"base": {"content_hash": "a" * 64},
+                            "files": {"x": "y"}})
+        self.assertEqual(profile_for_artifact(body), "v2-changeset")
+
+    def test_v2_contract_scopes_out_the_base(self):
+        from caplab.advisory.calibrate import CALIBRATION_PROFILES
+        prompt = CALIBRATION_PROFILES["v2-changeset"]
+        self.assertIn("base tree is NOT available", prompt)
+        self.assertIn("Do not search", prompt)
+        self.assertIn("present in the change set", prompt)
+        # The declaration of the base must still be reviewable: its absence
+        # is a plantable defect (base_dropped).
+        self.assertIn("stated base", prompt)
+
+    def test_v1_changeset_remains_loadable_for_historical_reads(self):
+        from caplab.advisory.calibrate import CALIBRATION_PROFILES
+        self.assertIn("v1-changeset", CALIBRATION_PROFILES)

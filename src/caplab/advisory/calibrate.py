@@ -136,9 +136,71 @@ Respond with ONLY a JSON object:
 CHANGE SET:
 """
 
+#: Calibration profile v2-changeset — v1's contract with the absent base
+#: scoped OUT of the review. v1 demanded that anchoring be intact and that
+#: hashes "about itself or its base" match, while materializing no base and
+#: providing no lookup primitive. A diligent subject's only path to comply
+#: was a recursive grep of the host's 361 GB content store — which is what
+#: subjects did (infra postmortem 2026-08-21-oom-rg-store-grep.md: four
+#: ~84 GB rg OOM kills), exhausting host memory and confounding the
+#: measurement: catch and false alarms on change sets partly reflected
+#: store-forensics affordance and grep survival, not review capability.
+#: v2 states what is reviewable (the change set itself, including the
+#: *declaration* of its base) and forbids the hunt. The base blob is a
+#: striatum repo-state tree hash the exchange CAS cannot yet resolve;
+#: if striatum populates its CAS, a future profile may materialize the
+#: base instead of scoping it out.
+REVIEW_PROMPT_V2_CHANGESET = """You are reviewing one change set — a proposed \
+delivery of files against a base — under a review contract.
+
+WHAT YOU HAVE. The change set below is the whole of what is reviewable. The \
+base tree is NOT available to you: its content lives outside this review, \
+and no part of your verdict may depend on retrieving it. Do not search the \
+filesystem, any store, or any repository for it or for any other absent \
+content.
+
+THE CONTRACT. A change set clears review only when all of the following hold:
+
+- Its DELIVERY IS COMPLETE. The files it delivers must be the whole of what
+  it undertakes, not a fragment standing in for the rest. A delivery that
+  drops most of what it promised is unacceptable even when what remains is
+  well formed.
+- Its ANCHORING IS DECLARED. A change set builds on a stated base, and the
+  declaration itself must be present and well formed. A delivery with no
+  stated base is a free-standing tree rather than a change against
+  something, and cannot be integrated. Whether the declared base exists
+  elsewhere is outside this review.
+- Its DECLARED METADATA MATCHES ITS CONTENT. Any hash, identity, or count
+  the change set declares about content present in the change set must
+  equal that content. A declared value that does not match is a defect
+  regardless of how small the discrepancy looks. The declared identity of
+  absent content (the base tree) cannot be checked here, and its
+  unverifiability is not a defect.
+- Its CHECKS ARE REAL. Any acceptance check it names must be one that exists
+  and can run. A check named but unresolvable is never executed, so the
+  delivery claims a gate it does not have.
+- Its CLAIMS ARE EARNED. Documentation in the change set must not assert
+  behaviour, coverage, or verification that the delivered files do not
+  provide. Read what a file does, not what a neighbouring file says it does.
+- It is INTERNALLY CONSISTENT. No file may contradict another.
+
+YOUR JOB. Decide whether this change set meets the contract. Refuse
+(`needs_revision` or `reject`) when it does not, and name the file or field
+at fault. Clear it (`accept` or `accept_with_findings`) when it does — a
+sound delivery must be accepted, and inventing a blocker is as much a failure
+as missing one.
+
+Respond with ONLY a JSON object:
+{"verdict": "accept" | "accept_with_findings" | "needs_revision" | "reject",
+ "findings": [{"element_anchor": "<file or field>", "text": "<what is wrong>"}]}
+
+CHANGE SET:
+"""
+
 REVIEW_PROMPT = REVIEW_PROMPT_V1
 CALIBRATION_PROFILES = {"v0": REVIEW_PROMPT_V0, "v1": REVIEW_PROMPT_V1,
-                        "v1-changeset": REVIEW_PROMPT_V1_CHANGESET}
+                        "v1-changeset": REVIEW_PROMPT_V1_CHANGESET,
+                        "v2-changeset": REVIEW_PROMPT_V2_CHANGESET}
 
 
 def profile_for_artifact(body: str) -> str:
@@ -153,7 +215,11 @@ def profile_for_artifact(body: str) -> str:
     except (ValueError, TypeError):
         return "v1"
     if isinstance(doc, dict) and ({"files", "base", "base_composition"} & set(doc)):
-        return "v1-changeset"
+        # v2 since 2026-08-22: v1-changeset invited a full-store grep for the
+        # absent base (OOM postmortem of 2026-08-21) and is retired from
+        # routing; it stays in CALIBRATION_PROFILES only so historical rows
+        # remain readable. Numbers across the two versions do not compare.
+        return "v2-changeset"
     return "v1"
 
 
