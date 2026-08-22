@@ -51,23 +51,41 @@ RUN_ROOTS = [
 BACKENDS_ROOT = os.path.expanduser("~/git/striatum-next/backends")
 
 
-def declared_model(binding_id: str) -> str | None:
-    """The model the binding's declaration pins, so a terse historical id
-    ('glm', 'local-qwen') never reads as a different model's row."""
+def declared_identity(binding_id: str) -> tuple[str | None, str | None]:
+    """(model, harness) from the binding's declaration.
+
+    The model pin keeps a terse historical id ('glm', 'local-qwen') from
+    reading as a different model's row. The harness label carries the
+    affordance difference the structural split turns on: an agentic harness
+    can enumerate and compute over an artifact; a one-shot lane can only
+    read the prompt it was handed.
+    """
     path = os.path.join(BACKENDS_ROOT, binding_id, "backend.yaml")
     if not os.path.isfile(path):
-        return None
+        return None, None
     try:
         import yaml
         with open(path, encoding="utf-8") as f:
             declaration = yaml.safe_load(f)
         command = ((declaration.get("adapter") or {}).get("command")) or []
+        model = None
         for flag in ("-model", "--model"):
             if flag in command:
-                return str(command[command.index(flag) + 1])
+                model = str(command[command.index(flag) + 1])
+        joined = " ".join(str(c) for c in command)
+        if "striatum-openai-lane" in joined:
+            harness = "lane · no tools"
+        elif " codex " in f" {joined} " or "codex exec" in joined:
+            harness = "codex · tools"
+        elif " agy " in f" {joined} ":
+            harness = "agy · tools"
+        elif " claude " in f" {joined} " or "claude -p" in joined:
+            harness = "claude-code · tools"
+        else:
+            harness = None
+        return model, harness
     except Exception:
-        return None
-    return None
+        return None, None
 
 PROMOTION_CONTRASTS = [
     "gemini-3-7-flash-high-vs-medium-20260817.json",
@@ -258,18 +276,21 @@ def split_cell(hit_total):
 
 
 def cohort_table(rows):
-    out = ['<table><thead><tr><th>Binding</th><th>pairs</th>'
+    out = ['<table><thead><tr><th>Binding</th>'
+           '<th title="agentic harness (workspace + shell) vs one-shot '
+           'completion lane (no tools)">harness</th><th>pairs</th>'
            '<th>catch</th><th>false alarms</th><th>discrimination</th>'
            '<th title="structural defects caught / measured">structural</th>'
            '<th title="semantic defects caught / measured">semantic</th>'
            '<th>anchored</th><th>as of</th><th>flags</th></tr></thead><tbody>']
     for r in rows:
-        model = declared_model(r["subject"])
+        model, harness = declared_identity(r["subject"])
         model_note = (f'<br><span class="model-note">{esc(model)}</span>'
                       if model and model.lower() not in r["subject"].lower()
                       else "")
         out.append(
             f'<tr><td class="name">{esc(r["subject"])}{model_note}</td>'
+            f'<td class="harness">{esc(harness) if harness else "—"}</td>'
             f'<td class="num">{esc(r["pairs"])}</td>'
             f'<td>{bar(r["catch"], "rate")}</td>'
             f'<td>{bar(r["fa"], "fa")}</td>'
@@ -437,6 +458,7 @@ td {{ padding: .28rem .5rem; border-bottom: 1px solid var(--line);
   vertical-align: middle; }}
 td.name {{ font-family: ui-monospace, monospace; font-size: .88rem; }}
 .model-note {{ color: var(--ink-3); font-size: .78rem; }}
+td.harness {{ color: var(--ink-2); font-size: .82rem; white-space: nowrap; }}
 td.num {{ font-variant-numeric: tabular-nums; }}
 td.note {{ color: var(--ink-2); font-size: .85rem; }}
 tr.sig td {{ }}
