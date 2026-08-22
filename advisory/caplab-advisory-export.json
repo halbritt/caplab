@@ -1,6 +1,53 @@
 {
   "claims": [
     {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-671f3cd071bbc916",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.3284709601189181,
+            0.5668036176131765
+          ],
+          "denominator": 63,
+          "value": 0.4444444444444444
+        },
+        "n_pairs": {
+          "value": 28
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.4583030651442781,
+            0.7929417049226233
+          ],
+          "denominator": 28,
+          "value": 0.6428571428571429
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (0 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-6b5c90471e7c96f3",
       "construct": "review.defect_discrimination/1",
@@ -169,6 +216,100 @@
       }
     },
     {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-b46af520832568bf",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.4545185459035138,
+            0.7297511343499085
+          ],
+          "denominator": 45,
+          "value": 0.6
+        },
+        "n_pairs": {
+          "value": 30
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.3919730700081361,
+            0.7262251442353347
+          ],
+          "denominator": 30,
+          "value": 0.5666666666666667
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (2 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (0 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy-gemini-3-5-flash-high"
+      }
+    },
+    {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-8ffafb76fd183e84",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.21521606221387757,
+            0.7847839377861224
+          ],
+          "denominator": 8,
+          "value": 0.5
+        },
+        "n_pairs": {
+          "value": 4
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.15003898915214953,
+            0.8499610108478505
+          ],
+          "denominator": 4,
+          "value": 0.5
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (0 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy-gemini-3-5-flash-medium"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-6ff3a19e3a49d5f9",
       "construct": "review.defect_discrimination/1",
@@ -228,6 +369,53 @@
         "match": "declared-name",
         "matched_current_declaration": true,
         "source_id": "agy-gemini-3-5-flash-medium"
+      }
+    },
+    {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-191f410c62453d37",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.6456695649333126,
+            1.0
+          ],
+          "denominator": 7,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 10
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.10779126740630099,
+            0.6032218525388546
+          ],
+          "denominator": 10,
+          "value": 0.3
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (3 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy-gemini-3-6-flash-high"
       }
     },
     {
@@ -364,6 +552,53 @@
       }
     },
     {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-fed0846b2751ed43",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.43850296824495455,
+            1.0
+          ],
+          "denominator": 3,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 3
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.0,
+            0.5614970317550455
+          ],
+          "denominator": 3,
+          "value": 0.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (2 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy-gemini-3-6-flash-medium"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-397ae01264be574d",
       "construct": "review.defect_discrimination/1",
@@ -449,6 +684,53 @@
         "match": "declared-name",
         "matched_current_declaration": true,
         "source_id": "agy-gemini-3-6-flash-medium"
+      }
+    },
+    {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-7c2fb141bed1f843",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.986139131429513,
+            0.9989486575054253
+          ],
+          "denominator": 522,
+          "value": 0.9961685823754789
+        },
+        "n_pairs": {
+          "value": 535
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.8440208939154823,
+            0.9001683169103267
+          ],
+          "denominator": 535,
+          "value": 0.874766355140187
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (37 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (2 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy-gemini-3-7-flash-high"
       }
     },
     {
@@ -909,6 +1191,53 @@
       }
     },
     {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-3c0307dbdbeba228",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.9690386341608527,
+            0.9990131476485308
+          ],
+          "denominator": 179,
+          "value": 0.994413407821229
+        },
+        "n_pairs": {
+          "value": 195
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.7217141830257326,
+            0.8365195005246108
+          ],
+          "denominator": 195,
+          "value": 0.7846153846153846
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (8 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (2 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy-gemini-3-7-flash-medium"
+      }
+    },
+    {
       "as_of": "2026-08-16T15:44:59.512727+00:00",
       "claim_id": "qc-5ea1f543ec76d6df",
       "construct": "review.defect_discrimination/1",
@@ -1282,6 +1611,100 @@
       }
     },
     {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-71bc64053a5480f7",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.6935293207867294,
+            0.8026635180472866
+          ],
+          "denominator": 238,
+          "value": 0.7521008403361344
+        },
+        "n_pairs": {
+          "value": 172
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.5892683249470034,
+            0.72920037052204
+          ],
+          "denominator": 172,
+          "value": 0.6627906976744186
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (7 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (0 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-code"
+      }
+    },
+    {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-c93af7c85e832a04",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.31267376973365824,
+            0.8318196702937638
+          ],
+          "denominator": 10,
+          "value": 0.6
+        },
+        "n_pairs": {
+          "value": 7
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.4868721707256811,
+            0.9743203756552565
+          ],
+          "denominator": 7,
+          "value": 0.8571428571428571
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (1 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-fable-5-high"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-7a5233c3787b3c39",
       "construct": "review.defect_discrimination/1",
@@ -1439,6 +1862,53 @@
         "match": "declared-name",
         "matched_current_declaration": true,
         "source_id": "claude-fable-5-low"
+      }
+    },
+    {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-02ac172525b87072",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 1
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (0 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-fable-5-max"
       }
     },
     {
@@ -1664,6 +2134,53 @@
       }
     },
     {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-fc00878dc755b59e",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.5516286154411354,
+            0.7001500181876961
+          ],
+          "denominator": 159,
+          "value": 0.6289308176100629
+        },
+        "n_pairs": {
+          "value": 100
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.44264860323368227,
+            0.6343919169097589
+          ],
+          "denominator": 100,
+          "value": 0.54
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (0 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-7b30314874dcf620",
       "construct": "review.defect_discrimination/1",
@@ -1732,6 +2249,53 @@
         "match": "declared-name",
         "matched_current_declaration": true,
         "source_id": "claude-harm"
+      }
+    },
+    {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-38d9b8e39af573ad",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 1
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (0 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-fable-5-high"
       }
     },
     {
@@ -1881,6 +2445,53 @@
         "match": "declared-name",
         "matched_current_declaration": true,
         "source_id": "claude-harm-haiku-4-5-low"
+      }
+    },
+    {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-abf403513525fe7c",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.6005862050302965,
+            0.9599060787285351
+          ],
+          "denominator": 14,
+          "value": 0.8571428571428571
+        },
+        "n_pairs": {
+          "value": 9
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.3542021355803963,
+            0.879416181613089
+          ],
+          "denominator": 9,
+          "value": 0.6666666666666666
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (132 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (0 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-opus-4-8-high"
       }
     },
     {
@@ -2097,6 +2708,53 @@
       }
     },
     {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-f0d68cbd7f072316",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.5101091635454027,
+            1.0
+          ],
+          "denominator": 4,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 5
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.2307242812760128,
+            0.882379225767352
+          ],
+          "denominator": 5,
+          "value": 0.6
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (0 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-opus-4-8-medium"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-e12132a8a6ced8ad",
       "construct": "review.defect_discrimination/1",
@@ -2239,6 +2897,53 @@
       }
     },
     {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-cf6bcad21bb899eb",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.4104052722210608,
+            0.7010986826344964
+          ],
+          "denominator": 41,
+          "value": 0.5609756097560976
+        },
+        "n_pairs": {
+          "value": 26
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.3894861374659171,
+            0.7445555668634343
+          ],
+          "denominator": 26,
+          "value": 0.5769230769230769
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (1 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-opus-5-high"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-474411512957a800",
       "construct": "review.defect_discrimination/1",
@@ -2298,6 +3003,225 @@
         "match": "declared-name",
         "matched_current_declaration": true,
         "source_id": "claude-harm-opus-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-c6abe22ccfb3e1f6",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.06149194472039615,
+            0.7923403991979523
+          ],
+          "denominator": 3,
+          "value": 0.3333333333333333
+        },
+        "n_pairs": {
+          "value": 0
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (1 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-opus-5-low"
+      }
+    },
+    {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-15da645e96f24cf8",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.4566773858646581,
+            0.6286988594890092
+          ],
+          "denominator": 125,
+          "value": 0.544
+        },
+        "n_pairs": {
+          "value": 68
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.6356144714454861,
+            0.8376498602944786
+          ],
+          "denominator": 68,
+          "value": 0.75
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (189 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (1 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-opus-5-medium"
+      }
+    },
+    {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-91767cbc528c3a09",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.8140447305364404,
+            0.9061149655734186
+          ],
+          "denominator": 210,
+          "value": 0.8666666666666667
+        },
+        "n_pairs": {
+          "value": 400
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.29050908143055376,
+            0.3826299756997641
+          ],
+          "denominator": 400,
+          "value": 0.335
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (6 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (1 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-sonnet-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-8a09c992a48869e0",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.0,
+            0.7934506856227626
+          ],
+          "denominator": 1,
+          "value": 0.0
+        },
+        "n_pairs": {
+          "value": 0
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (1 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-sonnet-5-medium"
+      }
+    },
+    {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-6ebec3c3e86f33b5",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.2307242812760128,
+            0.882379225767352
+          ],
+          "denominator": 5,
+          "value": 0.6
+        },
+        "n_pairs": {
+          "value": 1
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (0 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-opus-4-8-high"
       }
     },
     {
@@ -2656,6 +3580,53 @@
       }
     },
     {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-c95e208a872144ae",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.6276792992295218,
+            0.8422347746994333
+          ],
+          "denominator": 60,
+          "value": 0.75
+        },
+        "n_pairs": {
+          "value": 39
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.7329425662025455,
+            0.9439718246302862
+          ],
+          "denominator": 39,
+          "value": 0.8717948717948718
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (185 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (0 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-opus-5-high"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-cf7c88ff0a78f04a",
       "construct": "review.defect_discrimination/1",
@@ -2869,6 +3840,53 @@
       }
     },
     {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-06935bf5c1af1d84",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.5753182744796683,
+            0.7121581981745726
+          ],
+          "denominator": 184,
+          "value": 0.6467391304347826
+        },
+        "n_pairs": {
+          "value": 113
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.7130598987645332,
+            0.8603666972078668
+          ],
+          "denominator": 113,
+          "value": 0.7964601769911505
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (294 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (0 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-opus-5-medium"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-4dfc2e433c900d40",
       "construct": "review.defect_discrimination/1",
@@ -3008,6 +4026,53 @@
         "match": "declared-name",
         "matched_current_declaration": true,
         "source_id": "claude-opus-5-xhigh"
+      }
+    },
+    {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-278f514c3e48c411",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.6721321021639265,
+            0.8526679265915337
+          ],
+          "denominator": 80,
+          "value": 0.775
+        },
+        "n_pairs": {
+          "value": 69
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.5197977087380359,
+            0.7410427563983122
+          ],
+          "denominator": 69,
+          "value": 0.6376811594202898
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (612 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (0 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-sonnet-5-high"
       }
     },
     {
@@ -3443,6 +4508,178 @@
       }
     },
     {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-7cbf7e5954ea7cdd",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.9497129130941735,
+            0.9921955735836505
+          ],
+          "denominator": 200,
+          "value": 0.98
+        },
+        "n_pairs": {
+          "value": 192
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.49698551032613225,
+            0.6357749386439948
+          ],
+          "denominator": 192,
+          "value": 0.5677083333333334
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (4 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (0 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex"
+      }
+    },
+    {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-2a85eb8f244883cd",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.0,
+            0.6576197724933469
+          ],
+          "denominator": 2,
+          "value": 0.0
+        },
+        "n_pairs": {
+          "value": 0
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (0 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-harm-luna-medium"
+      }
+    },
+    {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-ea1e20a4815408b5",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.0,
+            0.11696979849974075
+          ],
+          "denominator": 29,
+          "value": 0.0
+        },
+        "n_pairs": {
+          "value": 0
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (1 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-harm-sol-max"
+      }
+    },
+    {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-18eb6cd6eee8bd01",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.09677141110578041,
+            0.700006684861608
+          ],
+          "denominator": 6,
+          "value": 0.3333333333333333
+        },
+        "n_pairs": {
+          "value": 2
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.34238022750665303,
+            1.0
+          ],
+          "denominator": 2,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (1 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-harm-terra-medium"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-c5d779953e9582e9",
       "construct": "review.defect_discrimination/1",
@@ -3656,6 +4893,53 @@
       }
     },
     {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-111c18c063e5fa62",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.34238022750665303,
+            1.0
+          ],
+          "denominator": 2,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 2
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.0,
+            0.6576197724933469
+          ],
+          "denominator": 2,
+          "value": 0.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (1 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-luna-medium"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-01af9cf97db0349b",
       "construct": "review.defect_discrimination/1",
@@ -3795,6 +5079,53 @@
         "match": "declared-name",
         "matched_current_declaration": true,
         "source_id": "codex-luna-xhigh"
+      }
+    },
+    {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-43f4e6d0ca53ad68",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.9410955227546884,
+            0.9889420997780143
+          ],
+          "denominator": 194,
+          "value": 0.9742268041237113
+        },
+        "n_pairs": {
+          "value": 172
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.7555406691277303,
+            0.8700228398293196
+          ],
+          "denominator": 172,
+          "value": 0.8197674418604651
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (20 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (1 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-sol-high"
       }
     },
     {
@@ -3947,6 +5278,53 @@
       }
     },
     {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-39518c13425d35a0",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.8513451253913791,
+            1.0
+          ],
+          "denominator": 22,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 17
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.41300363485218694,
+            0.8269027960275627
+          ],
+          "denominator": 17,
+          "value": 0.6470588235294118
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (1 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (1 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-sol-low"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-84242daa9d70f465",
       "construct": "review.defect_discrimination/1",
@@ -4015,6 +5393,53 @@
         "match": "declared-name",
         "matched_current_declaration": true,
         "source_id": "codex-sol-low"
+      }
+    },
+    {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-edc904f8fc6be72e",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.8989169495906462,
+            0.9418360304242317
+          ],
+          "denominator": 598,
+          "value": 0.9230769230769231
+        },
+        "n_pairs": {
+          "value": 579
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.7343159394292291,
+            0.8027083152168213
+          ],
+          "denominator": 579,
+          "value": 0.770293609671848
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (78 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (20 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-sol-max"
       }
     },
     {
@@ -4089,6 +5514,53 @@
       }
     },
     {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-adfaadd1c4dc6fb1",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.9312077638761376,
+            1.0
+          ],
+          "denominator": 52,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 44
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.5815112690754881,
+            0.8365361837615662
+          ],
+          "denominator": 44,
+          "value": 0.7272727272727273
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (6 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (1 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-sol-medium"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-cd07d66aa6013c92",
       "construct": "review.defect_discrimination/1",
@@ -4160,6 +5632,53 @@
       }
     },
     {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-96f0b4cd7ac38653",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.9637516583923142,
+            0.9957220703997669
+          ],
+          "denominator": 239,
+          "value": 0.9874476987447699
+        },
+        "n_pairs": {
+          "value": 242
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.7335555499275683,
+            0.8359171528117602
+          ],
+          "denominator": 242,
+          "value": 0.7892561983471075
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (40 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (1 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-sol-xhigh"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-f1debedd62e40ab2",
       "construct": "review.defect_discrimination/1",
@@ -4228,6 +5747,53 @@
         "match": "declared-name",
         "matched_current_declaration": true,
         "source_id": "codex-sol-xhigh"
+      }
+    },
+    {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-a104a2ffdeaaf995",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.34238022750665303,
+            1.0
+          ],
+          "denominator": 2,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 1
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (1 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-terra-high"
       }
     },
     {
@@ -4373,6 +5939,53 @@
       }
     },
     {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-708d1ef317749273",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.5655175352168251,
+            1.0
+          ],
+          "denominator": 5,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 5
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.2307242812760128,
+            0.882379225767352
+          ],
+          "denominator": 5,
+          "value": 0.6
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (1 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-terra-max"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-3f57f0dab6e65f8b",
       "construct": "review.defect_discrimination/1",
@@ -4444,6 +6057,53 @@
       }
     },
     {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-c8c2c447092431c4",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.8241207763533425,
+            1.0
+          ],
+          "denominator": 18,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 16
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.44404355834740666,
+            0.8583535614521796
+          ],
+          "denominator": 16,
+          "value": 0.6875
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (1 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-terra-medium"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-61fb116e9b21f909",
       "construct": "review.defect_discrimination/1",
@@ -4512,6 +6172,53 @@
         "match": "declared-name",
         "matched_current_declaration": true,
         "source_id": "codex-terra-medium"
+      }
+    },
+    {
+      "as_of": "2026-08-22T00:00:00+00:00",
+      "claim_id": "qc-97c1b89ac5c2c291",
+      "construct": "build.packet_delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gate_id": "packet-checks",
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6",
+          "pass_id": "build"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.34238022750665303,
+            1.0
+          ],
+          "denominator": 2,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 1
+        },
+        "packet_checks_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus).",
+        "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
+        "capacity deferrals and dispatch refusals leave the delivery denominator (1 excluded).",
+        "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-terra-xhigh"
       }
     },
     {

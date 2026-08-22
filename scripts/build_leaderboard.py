@@ -118,6 +118,9 @@ def load_claims():
                 claims.append(json.loads(line))
     rows = []
     for c in claims:
+        if c.get("construct", "review.defect_discrimination/1") \
+                != "review.defect_discrimination/1":
+            continue
         m = c.get("metrics", {})
 
         def val(key):
@@ -420,6 +423,49 @@ def main() -> int:
             'behavior-bearing identity fields).</p>'
             + "\n".join(rows_html) + "</section>")
 
+    build_rows = []
+    for line in open(os.path.join(REPO, "advisory", "claims.jsonl"),
+                     encoding="utf-8"):
+        if not line.strip():
+            continue
+        c = json.loads(line)
+        if c.get("construct") != "build.packet_delivery/1":
+            continue
+        m = c["metrics"]
+        pc = m.get("packet_checks_pass_rate") or {}
+        dl = m.get("delivery_rate") or {}
+        build_rows.append((c["subject"]["source_id"], pc.get("value"),
+                           pc.get("denominator"), dl.get("value")))
+    build_html = ""
+    if build_rows:
+        build_rows.sort(key=lambda r: -(r[1] or 0) * (1 if (r[2] or 0) >= 10 else 0.001))
+        cells = ['<table><thead><tr><th>Binding</th><th>harness</th>'
+                 '<th>checks-pass</th><th>n</th><th>delivery</th>'
+                 '</tr></thead><tbody>']
+        for subject, pv, pn, dv in build_rows:
+            if not pn:
+                continue
+            model, harness = declared_identity(subject)
+            model_note = (f'<br><span class="model-note">{esc(model)}</span>'
+                          if model and model.lower() not in subject.lower()
+                          else "")
+            dim = ' style="opacity:.55"' if pn < 10 else ""
+            cells.append(
+                f'<tr{dim}><td class="name">{esc(subject)}{model_note}</td>'
+                f'<td class="harness">{esc(harness) if harness else "—"}</td>'
+                f'<td>{bar(pv, "rate")}</td><td class="num">{esc(pn)}</td>'
+                f'<td class="num">{pct(dv)}</td></tr>')
+        cells.append("</tbody></table>")
+        build_html = (
+            "<section><h2>Build construct (production harvest)</h2>"
+            '<p class="muted">build.packet_delivery/1 — mechanical '
+            'packet-checks label from the striatum production ledger, '
+            'custody striatum-production. Tree-moved base churn (64% of '
+            'raw failures) and capacity deferrals are excluded, never '
+            'scored. Dimmed rows sit below the n≥10 floor. A separate '
+            'construct from review: rank on one, never both.</p>'
+            + "\n".join(cells) + "</section>")
+
     page = f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -520,6 +566,7 @@ contracts. Withheld: {single} at one sweep, {quarantined} quarantined
 (v1-changeset contract — erratum 2026-08-22).</p>
 {"".join(promoted_html)}</section>
 {projection_html}
+{build_html}
 <footer>Regenerate: <code>python3 scripts/build_leaderboard.py</code> ·
 records in <code>docs/records/</code> ·
 erratum: <code>erratum-2026-08-22-changeset-contract-quarantine.md</code>
