@@ -1,0 +1,178 @@
+{
+  "a": "oc-glm-5-3",
+  "a_catch_rate": 0.7192982456140351,
+  "a_discrimination": 0.42105263157894735,
+  "a_false_alarms": 17,
+  "a_only_caught": 5,
+  "a_only_false_alarm": 9,
+  "b": "cc-glm-5-3-max",
+  "b_catch_rate": 0.7192982456140351,
+  "b_discrimination": 0.543859649122807,
+  "b_false_alarms": 10,
+  "b_only_caught": 5,
+  "b_only_false_alarm": 2,
+  "both_caught": 36,
+  "by_defect_class": {
+    "base_dropped": {
+      "a": 1,
+      "b": 2,
+      "n": 4
+    },
+    "broken_internal_crossref": {
+      "a": 1,
+      "b": 1,
+      "n": 1
+    },
+    "contradicted_clause": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "dangling_reference": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "dropped_section": {
+      "a": 2,
+      "b": 3,
+      "n": 4
+    },
+    "duplicated_section": {
+      "a": 3,
+      "b": 4,
+      "n": 4
+    },
+    "hash_mismatch": {
+      "a": 2,
+      "b": 1,
+      "n": 4
+    },
+    "hollow_delivery": {
+      "a": 1,
+      "b": 0,
+      "n": 4
+    },
+    "overclaimed_level": {
+      "a": 1,
+      "b": 2,
+      "n": 4
+    },
+    "refuted_conclusion": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "requirement_inversion": {
+      "a": 4,
+      "b": 3,
+      "n": 4
+    },
+    "scope_violation": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "swapped_section_bodies": {
+      "a": 2,
+      "b": 2,
+      "n": 4
+    },
+    "truncated_tail": {
+      "a": 4,
+      "b": 3,
+      "n": 4
+    },
+    "unearned_verification_claim": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    }
+  },
+  "discordant_cases": [
+    {
+      "calibration_profile": "v1",
+      "caught_by": "b",
+      "defect_class": "overclaimed_level",
+      "dispatch_id": "qs-71a0c8dd36c55a62:overclaimed_level:1455807091",
+      "substrate_id": "qs-71a0c8dd36c55a62"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "swapped_section_bodies",
+      "dispatch_id": "qs-78e636fdc5bf4276:swapped_section_bodies:1810804906",
+      "substrate_id": "qs-78e636fdc5bf4276"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "b",
+      "defect_class": "swapped_section_bodies",
+      "dispatch_id": "qs-7d8726d369f3efae:swapped_section_bodies:4282385272",
+      "substrate_id": "qs-7d8726d369f3efae"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "truncated_tail",
+      "dispatch_id": "qs-7dabe6891bc1679c:truncated_tail:3324493526",
+      "substrate_id": "qs-7dabe6891bc1679c"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "b",
+      "defect_class": "duplicated_section",
+      "dispatch_id": "qs-810276f08b5061bc:duplicated_section:2308472916",
+      "substrate_id": "qs-810276f08b5061bc"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "b",
+      "defect_class": "base_dropped",
+      "dispatch_id": "qs-af9054a1808cceba:base_dropped:1419128042",
+      "substrate_id": "qs-af9054a1808cceba"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "hollow_delivery",
+      "dispatch_id": "qs-cabbae40d5c96360:hollow_delivery:111034485",
+      "substrate_id": "qs-cabbae40d5c96360"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "hash_mismatch",
+      "dispatch_id": "qs-d98bbffcdcd43f21:hash_mismatch:3028064904",
+      "substrate_id": "qs-d98bbffcdcd43f21"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "b",
+      "defect_class": "dropped_section",
+      "dispatch_id": "qs-f879a0e3f50528bf:dropped_section:4252173400",
+      "substrate_id": "qs-f879a0e3f50528bf"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "requirement_inversion",
+      "dispatch_id": "qs-fc1e95b9755ee36e:requirement_inversion:3402432770",
+      "substrate_id": "qs-fc1e95b9755ee36e"
+    }
+  ],
+  "discordant_pairs": 10,
+  "false_alarm_audit_status": "contains-unaudited-refusals",
+  "false_alarm_defective_controls_excluded": 1,
+  "false_alarm_discordant_pairs": 11,
+  "false_alarm_sign_test_p": 0.0654296875,
+  "false_alarm_significant_at_05": false,
+  "false_alarm_unaudited_pairs": 19,
+  "neither_caught": 11,
+  "reading": "catch: 10 of 57 shared cases discriminate, exact sign test p=1.000 (not established); false alarms: 11 discordant, p=0.065 (not established), 19 on unaudited controls",
+  "shared_cases": 57,
+  "sign_test_p": 1.0,
+  "significant_at_05": false,
+  "sweep_seed": 20260819,
+  "uninformative_pairs": 47
+}

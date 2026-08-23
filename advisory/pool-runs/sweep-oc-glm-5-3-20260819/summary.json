@@ -1,0 +1,17 @@
+{
+  "aborted": null,
+  "backend": "oc-glm-5-3",
+  "calibration_profile": "v1",
+  "case_selection": "seeded-draw",
+  "catch_rate": 0.7391304347826086,
+  "control_unanimous_share": 0.8115942028985508,
+  "false_alarm_rate": 0.2898550724637681,
+  "finished_at": "2026-08-23T02:03:14.792456+00:00",
+  "instrument": "matched-pair defect injection (synthetic contract)",
+  "pairs_discarded": 0,
+  "pairs_usable": 69,
+  "partition": "open",
+  "replicates": 3,
+  "started_at": "2026-08-23T01:16:25.692668+00:00",
+  "sweep_seed": 20260819
+}
