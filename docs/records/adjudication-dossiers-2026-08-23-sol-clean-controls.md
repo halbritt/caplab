@@ -119,9 +119,19 @@ fnnj-003)? Scope lives in the work graph. Auditor lean: sound in-set.
 ## Final accounting (rulings of 2026-08-23)
 
 Sol's clean-contract false-alarm figure on the 20 cells settles at
-**6 of 14 (43%)**: ten controls defective (nine oracle-settled plus the
-ruled qs-af9054a1808cceba) leave the denominator; six sound controls were
-refused (three oracle-settled plus three ruled). Pattern across all three
+**6 of 10 clean controls (60%, Wilson CI95 0.31-0.83)**: ten controls
+defective (nine oracle-settled plus the ruled qs-af9054a1808cceba) leave
+the denominator; of the ten clean controls, six were refused (three
+oracle-settled sound plus three ruled sound) and four were correctly
+cleared. Discrimination on this arm moves from the claim's recorded 0.264
+to 0.300 (catch 0.900 - FA 0.600). CORRECTION 2026-08-23: an earlier
+revision of this paragraph (and commit 8de9300's message) stated "6 of 14
+(43%)", inheriting the original dossier's inconsistent projection range
+("between 3/11 and 7/15"); the denominator of a false-alarm rate is the
+clean-control count, which is 10. Claim qc-56ddef31b86a08ba (minted 18:22,
+before these rulings; audit_status contains-unaudited-refusals, FA 7/11 =
+0.636) is superseded by this accounting and should be re-minted
+adjudication-aware by the measurement pipeline. Pattern across all three
 ruled false alarms, worth carrying into the flash-high arm: Sol imports an
 out-of-set or system-level obligation into an in-set contract (driver
 admission authority; the adapter's sealed environment; work-graph scope).
