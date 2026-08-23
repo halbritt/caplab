@@ -32,9 +32,18 @@ Sol was right nine times, wrong three, on the oracle-settled set — and two
 of the nine are defect patterns ("proves" via grep; stale template) that
 recur across different packets, i.e. fleet-wide authoring habits.
 
-## Awaiting the Principal's ruling — 4 controls
+## Ruled by the Principal — 4 controls (2026-08-23, recorded in the ledger)
 
-### 1. qs-faaba3e49977ce66 — P10 bind-delivery-to-current-head
+### 1. qs-faaba3e49977ce66 — P10 bind-delivery-to-current-head — **RULED SOUND**
+
+**Ruling:** admission is the Driver's transition (D0006/P4 — backends submit,
+the Driver admits; provenance records are driver-written), so a build lane
+cannot lawfully deliver an admitted application; the unadmitted candidate
+preimage naming driver-integration-admission as producer is the only sound
+shape for this packet. A delivery claiming admitted:true would be forged
+authority. Sol's refusal scores as a false alarm.
+
+Original question, preserved:
 The set is an application-record **candidate**: `authority.admitted: false`,
 self-described as a preimage whose admission "Driver integration supplies."
 Internally consistent; content hash recomputes; tree roots agree. Sol's
@@ -45,7 +54,18 @@ driver-owned), or was admission owed? The work-graph purpose text reads
 "Record the exact application … to the current integrated head." Out-of-set
 context only. Auditor lean: sound in-set; contract question open.
 
-### 2. qs-c70d14e4ac76d99c — scheduler qualification / vendor authorization
+### 2. qs-c70d14e4ac76d99c — scheduler qualification / vendor authorization — **RULED SOUND**
+
+**Ruling:** grant-as-assignment. Neither ReadyRun nor Declaration carries an
+endpoint or credential-scope field, so grant-as-validation is uncomputable
+in-set; the grant assigns the opaque handles the adapter realizes from its
+sealed environment, and Authorize(backend, role) is the whole computable
+lookup. Whether anything verifies the adapter's actual endpoint against the
+granted handle is preserved as an open system-level question, outside this
+set and outside the scheduler by design. Sol's refusal scores as a false
+alarm.
+
+Original question, preserved:
 `VendorAuthorization.Authorize(backend, role)` matches only backend and
 role; `.Endpoint`/`.CredentialScope` are never compared. scheduler.yaml says
 admission requires a grant authorizing "that backend, endpoint, and
@@ -56,7 +76,19 @@ question:** which reading does the design intend — grant-as-assignment
 (sound) or grant-as-validation (defective)? Auditor lean: sound on the
 strict standard; genuine design-intent ambiguity.
 
-### 3. qs-af9054a1808cceba — P01c application-record contract
+### 3. qs-af9054a1808cceba — P01c application-record contract — **RULED DEFECTIVE**
+
+**Ruling:** defective on the ObjectPin gap alone. "Pins a content-addressed
+store blob by hash, address, and size" is in-set text, and content-addressing
+obliges address == sha256/<content_hash>; validate checks only formats and
+Seal only the record body hash, so a pin naming two different blobs seals
+cleanly. The duplicated-binding-pairs half is NOT sustained (no in-set
+equality obligation; the fixture legitimately models content/linked/
+materialized as distinct). Sol's refusal scores as a true positive; the
+control leaves the clean denominator. Note the oracle exits 1 — it encodes
+the pre-ruling standard and should gain the ruled clause before any rerun.
+
+Original question, preserved:
 `ObjectPin.validate` checks only the address regex; `Seal` accepts
 `content_hash = E, address = "sha256/" + G`. No in-set text states
 `address == "sha256/" + content_hash`, but the type is documented as
@@ -67,7 +99,16 @@ oblige the address to equal the hash (the auditor leans yes — a real gap),
 and are the duplicated fields one binding or several? Auditor: nothing
 substantiated in-set; A2 is the live concern.
 
-### 4. qs-d79e9a1668416a7d — fnnj-003 verification base discovery
+### 4. qs-d79e9a1668416a7d — fnnj-003 verification base discovery — **RULED SOUND**
+
+**Ruling:** the contested sentence is the doc comment on
+PlanBeforeSignalDemand and describes that function's decision procedure,
+which the code keeps and the in-set tests prove on both branches; the
+system-level reading imports work-graph scope, out-of-set by this audit's
+own rule, and library-then-wiring is the established house pattern. Sol's
+refusal scores as a false alarm.
+
+Original question, preserved:
 The package comment says it "never spends signal attempts on an
 unresolvable base"; the delivered function has no callers and no side
 effects, so it spends nothing — but nothing enforces `DemandSignal`
@@ -75,11 +116,16 @@ anywhere in the set. **The question:** is that sentence a function-level
 promise (kept) or a system-level one (not wired, integration owed by
 fnnj-003)? Scope lives in the work graph. Auditor lean: sound in-set.
 
-## What the rulings change
+## Final accounting (rulings of 2026-08-23)
 
-Sol's clean-contract false-alarm count on the 20 cells is currently 16 raw.
-With the nine defective controls leaving the denominator and three sound
-ones standing as errors, the established FA figure is **3 of 11** (27%)
-pending your four — it lands between 3/11 and 7/15 depending on how they
-fall. The same adjudications apply to flash-high's refusals on the same
-controls when its arm completes.
+Sol's clean-contract false-alarm figure on the 20 cells settles at
+**6 of 14 (43%)**: ten controls defective (nine oracle-settled plus the
+ruled qs-af9054a1808cceba) leave the denominator; six sound controls were
+refused (three oracle-settled plus three ruled). Pattern across all three
+ruled false alarms, worth carrying into the flash-high arm: Sol imports an
+out-of-set or system-level obligation into an in-set contract (driver
+admission authority; the adapter's sealed environment; work-graph scope).
+The same adjudications apply to flash-high's refusals on the same controls
+when its arm completes. Rulings recorded in
+`advisory/control-adjudications.jsonl` (records 21-24,
+basis_kind principal-ruling).
