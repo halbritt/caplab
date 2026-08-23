@@ -44,6 +44,17 @@ catches nearly everything and refuses a lot of sound work, flash catches
 less and refuses almost nothing — and nine of Sol's sixteen "false alarms"
 were real defects in shipped production change sets.
 
+## Settled — the Principal's four rulings (2026-08-23, records 21–24)
+
+`faaba3e4`, `c70d14e4`, `d79e9a16` sound; `af9054a1` **defective** (the
+content-addressed address/hash gap was real). With all twenty controls
+adjudicated — **ten defective, ten sound** — the change-set stratum's
+false-alarm measure is established, no unaudited pairs: Sol refused 6 of
+the 10 sound controls (60%), flash 0 of 10. Sol's discrimination on the
+stratum is **+0.60** against flash's +0.50; Sol was right about half the
+production change sets it refused, and a Sol refusal on a production
+change set was a coin flip between a real defect and a false alarm.
+
 ## Claims
 
 Two `profile-remeasurement` claims (n=20 each, change-set classes only —
