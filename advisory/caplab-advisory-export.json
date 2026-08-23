@@ -2153,6 +2153,84 @@
       }
     },
     {
+      "as_of": "2026-08-23T21:50:08.719656+00:00",
+      "claim_id": "qc-2cf747b2107df85e",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "6e50fa4ad6c0aebd4da1caacd6059ee4f984de356af5fd71a483c72196aac4c2",
+          "rows_used": 57,
+          "run": "iso-agy-gemini-3-7-flash-high-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.3991801621874118,
+            0.6501283201887471
+          ],
+          "denominator": 57,
+          "value": 0.5263157894736842
+        },
+        "catch_rate": {
+          "ci95": [
+            0.46697292420853914,
+            0.7138248445040439
+          ],
+          "value": 0.5964912280701754
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.5326614408361329
+        },
+        "false_alarm_rate": {
+          "audit_status": "contains-unaudited-refusals",
+          "ci95": [
+            0.021945385205433224,
+            0.17162614183124436
+          ],
+          "denominator": 47,
+          "excluded_defective_controls": 10,
+          "unaudited_refusals": 3,
+          "value": 0.06382978723404255
+        },
+        "findings_per_mutant": {
+          "value": 0.6491228070175439
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 57
+        },
+        "n_pairs": {
+          "value": 57
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 12 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 100% (kappa 1.00 against a 85% chance baseline), mutant 100% (kappa 1.00). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "agy-gemini-3-7-flash-high"
+      }
+    },
+    {
       "as_of": "2026-08-23T00:00:00+00:00",
       "claim_id": "qc-b34c029adba7c287",
       "construct": "review_pass.delivery/1",
@@ -12624,6 +12702,84 @@
         },
         "findings_per_mutant": {
           "value": 0.5892857142857143
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 56
+        },
+        "n_pairs": {
+          "value": 56
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 12 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 100% (kappa undefined, arm at ceiling against a 100% chance baseline), mutant 94% (kappa 0.89). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "or-gemini-3-7-flash-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T21:50:08.719656+00:00",
+      "claim_id": "qc-6704ecac4566ff15",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "5bf1fef8ceba3d73c15d0162169dc282cb051b058b9b2729a22699193edc2333",
+          "rows_used": 56,
+          "run": "iso-or-gemini-3-7-flash-high-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.3566821941245828,
+            0.6098961607582303
+          ],
+          "denominator": 56,
+          "value": 0.48214285714285715
+        },
+        "catch_rate": {
+          "ci95": [
+            0.37331738801362335,
+            0.6266826119863766
+          ],
+          "value": 0.5
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.5
+        },
+        "false_alarm_rate": {
+          "audit_status": "established",
+          "ci95": [
+            0.0,
+            0.07707356308558039
+          ],
+          "denominator": 46,
+          "excluded_defective_controls": 10,
+          "unaudited_refusals": 0,
+          "value": 0.0
+        },
+        "findings_per_mutant": {
+          "value": 0.5357142857142857
         },
         "json_valid_mutant": {
           "value": 1.0

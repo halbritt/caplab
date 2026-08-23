@@ -1,0 +1,17 @@
+{
+  "aborted": null,
+  "backend": "or-gemini-3-7-flash-high",
+  "calibration_profile": "v1",
+  "case_selection": "seeded-draw",
+  "catch_rate": 0.5,
+  "control_unanimous_share": 0.9705882352941176,
+  "false_alarm_rate": 0.0,
+  "finished_at": "2026-08-23T21:38:50.445319+00:00",
+  "instrument": "matched-pair defect injection (synthetic contract)",
+  "pairs_discarded": 1,
+  "pairs_usable": 68,
+  "partition": "open",
+  "replicates": 3,
+  "started_at": "2026-08-23T20:36:10.619176+00:00",
+  "sweep_seed": 20260819
+}
