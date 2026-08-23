@@ -16,7 +16,7 @@ Issues = "https://github.com/halbritt/caplab/issues"
 caplab = "caplab.__main__:main"
 
 [project.optional-dependencies]
-test = ["jsonschema>=4.23,<5"]
+test = ["jsonschema>=4.23,<5", "pyyaml>=6,<7"]
 
 [tool.setuptools]
 package-dir = {"" = "src"}

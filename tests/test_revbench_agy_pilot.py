@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -12,6 +13,13 @@ from caplab.subject_identity import (
     validate_native_agent_systems,
 )
 from tools import caplab_revbench_agy_pilot as agy_pilot
+
+#: The pilot pins the owner's home (agy_owner_home_drift) as a safety
+#: property; tests that launch it are host-bound by design and skip on any
+#: other machine (CI) rather than report the pin as a failure.
+ON_OWNER_HOST = os.environ.get("HOME") == "/home/halbritt"
+host_bound = unittest.skipUnless(ON_OWNER_HOST,
+                                 "agy pilot pins the owner home; host-bound")
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -172,6 +180,7 @@ class AgyPilotScoringTests(unittest.TestCase):
         self.assertEqual(corrected["usage"], {"total_tokens": 23})
         self.assertEqual(corrected["duration_milliseconds"], 250)
 
+    @host_bound
     def test_real_fake_process_is_captured_before_attempt_completion(self) -> None:
         fake_source = (
             """#!/usr/bin/python3
@@ -251,6 +260,7 @@ print(json.dumps({
                     assignment_index=0,
                 )
 
+    @host_bound
     def test_process_output_limit_stops_and_preserves_only_bounded_prefix(self) -> None:
         fake_source = """#!/usr/bin/python3
 import sys
@@ -285,6 +295,7 @@ sys.stdout.write("x" * 1048704)
             self.assertEqual(completion["termination"], "stdout-limit")
             self.assertFalse(completion["stdout_complete"])
 
+    @host_bound
     def test_subject_failure_retains_transport_metadata_for_accounting(self) -> None:
         fake_source = (
             """#!/usr/bin/python3

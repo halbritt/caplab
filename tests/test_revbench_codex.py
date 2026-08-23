@@ -573,6 +573,8 @@ class CodexResponseAdapterTests(unittest.TestCase):
             "cb0a15567e9a60a5820d54b0f6ae86d504dc3805c1eab21a47f70e3eb7b73a40",
         )
 
+    @unittest.skipUnless(os.environ.get("HOME") == "/home/halbritt",
+                         "pins this host's exact CA bundle bytes; host-bound")
     def test_pinned_adapter_and_network_resources_match_same_exact_bytes(self):
         policy = codex_native_bundle_policy()
         resources = {
