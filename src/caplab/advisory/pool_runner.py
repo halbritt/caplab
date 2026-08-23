@@ -48,6 +48,20 @@ from .operators import BY_NAME, check_present
 SYNTHETIC_CONTRACT_INSTRUMENT = "matched-pair defect injection (synthetic contract)"
 MEASUREMENT_PROFILE = "v1"
 
+#: The execution environment is part of claim identity (Principal ruling,
+#: 2026-08-23). Isolation moved one arm's catch by ~25 points while its
+#: unmounted control moved 5, so a claim measured with ambient checkout
+#: access and one measured without describe different tasks — the
+#: v1-changeset comparability lesson at the environment level. Bump this
+#: whenever the lane's visible universe changes; runs before the field
+#: existed carry no environment and are cohorted apart from all of them.
+#:
+#: iso-v1 (2026-08-23): bubblewrap containment, ~/git masked entirely,
+#: neutral case-workspace cwd, declaration-pinned files re-exposed
+#: read-only, review preamble v2. Successor work: materialize the task's
+#: pinned base into the workspace (bundle-faithful affordance).
+ENVIRONMENT_VERSION = "iso-v1"
+
 #: Well below the kernel's per-argument limit, leaving room for the rest of
 #: argv and the environment. A prompt larger than this cannot ride argv; its
 #: body is spilled to a workspace file and referenced by path, and if even
@@ -580,6 +594,7 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
         "sweep_seed": sweep_seed,
         "partition": partition,
         "case_selection": case_selection,
+        "environment": ENVIRONMENT_VERSION,
         "replicates": replicates,
         "control_unanimous_share": (
             sum(1 for r in usable if r.get("control_unanimous")) / len(usable)

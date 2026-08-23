@@ -246,6 +246,11 @@ def claims_from_runs(run_dirs: list[str], backends_root: str | None,
                         entry.setdefault("sweep_seed", str(summary["sweep_seed"]))
                     if summary.get("instrument"):
                         entry["instrument"] = summary["instrument"]
+                    # The execution environment is claim identity: a claim
+                    # measured with ambient checkout access and one measured
+                    # without are not the same measurement.
+                    if summary.get("environment"):
+                        entry["environment"] = summary["environment"]
                     if summary.get("calibration_profile"):
                         entry["prompt_profile"] = summary["calibration_profile"]
             evidence.append(entry)

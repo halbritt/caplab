@@ -7,7 +7,8 @@ one self-contained HTML file. No external assets, no network, no publishing:
 the page is a repo artifact viewed locally (file:// or a local server).
 
 The page's first rule is the campaign's: numbers compare only within one
-instrument, one custody class, and one case seed. There is deliberately no
+instrument, one custody class, one case seed, and one execution
+environment. There is deliberately no
 single all-Bindings ranking — cohorts are ranked internally and never
 merged. Within a cohort the newest, widest claim per Binding is shown.
 """
@@ -129,13 +130,15 @@ def load_claims():
             entry = m.get(key)
             return entry.get("value") if isinstance(entry, dict) else None
 
-        seeds, instruments, pairs = set(), set(), 0
+        seeds, instruments, environments, pairs = set(), set(), set(), 0
         for e in c.get("evidence", []):
             if isinstance(e, dict):
                 if e.get("sweep_seed"):
                     seeds.add(str(e["sweep_seed"]))
                 if e.get("instrument"):
                     instruments.add(e["instrument"])
+                if e.get("environment"):
+                    environments.add(e["environment"])
                 pairs += e.get("rows_used") or 0
         fa = m.get("false_alarm_rate") or {}
         split = {"structural": [0, 0], "semantic": [0, 0]}
@@ -171,6 +174,8 @@ def load_claims():
             "instrument": ("synthetic-contract"
                            if any("synthetic" in i for i in instruments)
                            else "dispatch-prompt"),
+            "environment": (",".join(sorted(environments)) if environments
+                            else "(pre-isolation)"),
             "pairs": pairs,
             "catch": val("catch_rate"),
             "fa": val("false_alarm_rate"),
@@ -374,20 +379,23 @@ def main() -> int:
     cohorts = {}
     for r in claims:
         cohorts.setdefault(
-            (r["custody"], r["instrument"], r["seed"]), []).append(r)
+            (r["custody"], r["instrument"], r["seed"], r["environment"]),
+            []).append(r)
 
     def cohort_sort_key(item):
-        (custody, instrument, seed), _ = item
+        (custody, instrument, seed, environment), _ = item
         return (custody != "caplab-advisory", instrument, seed != "20260819",
-                seed)
+                seed, environment)
 
     sections = []
-    for (custody, instrument, seed), rows in sorted(cohorts.items(),
-                                                    key=cohort_sort_key):
+    for (custody, instrument, seed, environment), rows in sorted(
+            cohorts.items(), key=cohort_sort_key):
         rows = best_per_binding(rows)
+        env_label = ("" if environment == "(pre-isolation)" else
+                     f" · env {esc(environment)}")
         sections.append(
             f"<section><h2>{esc(custody)} · {esc(instrument)} · seed "
-            f"{esc(seed)}</h2>\n{cohort_table(rows)}</section>")
+            f"{esc(seed)}{env_label}</h2>\n{cohort_table(rows)}</section>")
 
     contrast_html = ['<table><thead><tr><th>contrast</th><th>seed</th>'
                      '<th>shared</th><th>discordance</th><th>p</th>'

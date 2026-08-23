@@ -755,3 +755,8 @@ class AbsoluteWorkspaceTest(unittest.TestCase):
             self.assertIn(os.path.abspath("rel-ws-probe"), joined)
         finally:
             shutil.rmtree("rel-ws-probe", ignore_errors=True)
+
+
+class EnvironmentStampTest(unittest.TestCase):
+    def test_environment_version_is_declared(self):
+        self.assertEqual(pool_runner.ENVIRONMENT_VERSION, "iso-v1")

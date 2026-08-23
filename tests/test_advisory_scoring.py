@@ -414,3 +414,41 @@ class OutcomeSelectionTest(unittest.TestCase):
         runs = [e["run"] for c in claims for e in c["evidence"]]
         self.assertIn("cc-drawn", runs)
         self.assertNotIn("cc-targeted", runs)
+
+
+class EnvironmentIdentityTest(unittest.TestCase):
+    """The execution environment is part of claim identity (Principal,
+    2026-08-23): isolation changed measured behavior by ~20 points on one
+    arm, so mixing environments inside a cohort is the v1-changeset
+    comparability failure at another level. The runner stamps it, claims
+    carry it, cohorts split on it."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = self.tmp.name
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def test_claims_carry_the_run_environment(self):
+        from caplab.advisory.executor import claims_from_runs
+        run = write_run(self.root, "cc-env", [row("a" * 64)])
+        with open(os.path.join(run, "summary.json")) as f:
+            summary = json.load(f)
+        summary["environment"] = "iso-v1"
+        with open(os.path.join(run, "summary.json"), "w") as f:
+            json.dump(summary, f)
+        missing = os.path.join(self.root, "none.jsonl")
+        claims = claims_from_runs([run], None, adjudications_path=missing,
+                                  registry_path=missing)
+        envs = {e.get("environment") for c in claims for e in c["evidence"]}
+        self.assertEqual(envs, {"iso-v1"})
+
+    def test_legacy_runs_carry_no_environment(self):
+        from caplab.advisory.executor import claims_from_runs
+        run = write_run(self.root, "cc-legacy", [row("a" * 64)])
+        missing = os.path.join(self.root, "none.jsonl")
+        claims = claims_from_runs([run], None, adjudications_path=missing,
+                                  registry_path=missing)
+        envs = {e.get("environment") for c in claims for e in c["evidence"]}
+        self.assertEqual(envs, {None})

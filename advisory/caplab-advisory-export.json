@@ -2153,12 +2153,13 @@
       }
     },
     {
-      "as_of": "2026-08-23T21:50:08.719656+00:00",
-      "claim_id": "qc-2cf747b2107df85e",
+      "as_of": "2026-08-23T23:16:48.133216+00:00",
+      "claim_id": "qc-b16730e2de37b890",
       "construct": "review.defect_discrimination/1",
       "custody": "caplab-advisory",
       "evidence": [
         {
+          "environment": "iso-v1",
           "instrument": "matched-pair defect injection (synthetic contract)",
           "kind": "matched-pair-run",
           "prompt_profile": "v1",
@@ -12728,12 +12729,13 @@
       }
     },
     {
-      "as_of": "2026-08-23T21:50:08.719656+00:00",
-      "claim_id": "qc-6704ecac4566ff15",
+      "as_of": "2026-08-23T23:16:48.133216+00:00",
+      "claim_id": "qc-9b0163df7d51cefc",
       "construct": "review.defect_discrimination/1",
       "custody": "caplab-advisory",
       "evidence": [
         {
+          "environment": "iso-v1",
           "instrument": "matched-pair defect injection (synthetic contract)",
           "kind": "matched-pair-run",
           "prompt_profile": "v1",

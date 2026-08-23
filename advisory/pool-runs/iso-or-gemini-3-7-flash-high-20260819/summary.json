@@ -5,6 +5,7 @@
   "case_selection": "seeded-draw",
   "catch_rate": 0.5,
   "control_unanimous_share": 0.9705882352941176,
+  "environment": "iso-v1",
   "false_alarm_rate": 0.0,
   "finished_at": "2026-08-23T21:38:50.445319+00:00",
   "instrument": "matched-pair defect injection (synthetic contract)",
