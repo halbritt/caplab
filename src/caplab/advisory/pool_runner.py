@@ -88,7 +88,25 @@ def sandbox_available() -> bool:
         "CAPLAB_NO_SANDBOX")
 
 
-def sandbox_argv(argv: list[str], workspace: str | None) -> list[str]:
+def adapter_resources(command: list[str]) -> list[str]:
+    """Absolute-path files the adapter command itself references.
+
+    A declaration may pin resources by path (agy pins its --json-schema
+    under the striatum-next checkout). Masking the checkouts must not break
+    the declared adapter, so exactly these files are re-exposed read-only —
+    files the declaration names, never directories, never anything the
+    artifact names.
+    """
+    out = []
+    for arg in command:
+        if isinstance(arg, str) and arg.startswith("/") \
+                and os.path.isfile(arg):
+            out.append(arg)
+    return out
+
+
+def sandbox_argv(argv: list[str], workspace: str | None,
+                 extra_ro: list[str] | None = None) -> list[str]:
     """Contain a lane: the user's git root is read-only inside it.
 
     On 2026-08-23 a replayed build case's delivery was written by an agy
@@ -105,12 +123,18 @@ def sandbox_argv(argv: list[str], workspace: str | None) -> list[str]:
     git_root = os.path.join(home, "git")
     wrapped = ["bwrap", "--ro-bind", "/", "/", "--bind", home, home]
     if os.path.isdir(git_root):
-        # Binding a path that does not exist makes bwrap refuse to start
-        # at all (a CI runner keeps its checkout elsewhere); the protection
-        # is for the owner host's checkouts, which exist.
-        wrapped += ["--ro-bind", git_root, git_root]
+        # MASKED, not merely read-only: on 2026-08-23 two reviews resolved
+        # a change set's file references against the caplab tree the lane
+        # was mounted in — the read-only cousin of the replay escape. The
+        # visible universe is the artifact; the checkouts do not exist
+        # inside a lane. (Absent git root: a CI runner keeps its checkout
+        # elsewhere; binding a missing path refuses to start.)
+        wrapped += ["--tmpfs", git_root]
+    for path in extra_ro or []:
+        wrapped += ["--ro-bind", path, path]
     wrapped += ["--bind", "/tmp", "/tmp"]
     if workspace:
+        os.makedirs(workspace, exist_ok=True)
         wrapped += ["--bind", workspace, workspace]
     wrapped += ["--dev", "/dev", "--proc", "/proc", "--die-with-parent", "--"]
     return wrapped + list(argv)
@@ -123,8 +147,12 @@ def invoke(adapter: dict, prompt: str, timeout: int,
     if sandbox_available():
         if workspace:
             os.makedirs(workspace, exist_ok=True)
-        argv = sandbox_argv(argv, workspace)
+        argv = sandbox_argv(argv, workspace,
+                            extra_ro=adapter_resources(adapter["command"]))
         sandbox = "bwrap"
+    # The lane's cwd is the neutral case workspace, never a repository:
+    # a subject that "looks around" finds only its own spill file.
+    run_cwd = workspace if workspace and os.path.isdir(workspace) else None
     prompt_mode = adapter.get("prompt_mode", "stdin")
     encoded = prompt.encode()
     transport = prompt_mode
@@ -149,7 +177,7 @@ def invoke(adapter: dict, prompt: str, timeout: int,
     timed_out = False
     try:
         completed = subprocess.run(argv, input=stdin_data, capture_output=True,
-                                   timeout=timeout)
+                                   timeout=timeout, cwd=run_cwd)
         stdout = completed.stdout.decode("utf-8", errors="replace")
         code = completed.returncode
     except subprocess.TimeoutExpired:
@@ -363,6 +391,7 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
         "control_transport": control["transport"], "mutant_transport": mutant["transport"],
         "sandbox": control.get("sandbox"),
         "review_preamble": REVIEW_PREAMBLE_VERSION,
+        "workspace_isolation": 1,
         "estimated_input_tokens": int(mutant["prompt_bytes"] / 3.04),
         "error": None,
     }

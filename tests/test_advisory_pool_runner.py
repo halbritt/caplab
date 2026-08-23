@@ -638,13 +638,16 @@ class SandboxTest(unittest.TestCase):
     scheduler-overwrite-postmortem-2026-08-23). Every adapter invocation is
     now contained: the user's git root is read-only inside the lane."""
 
-    def test_sandbox_wraps_argv_with_git_root_read_only(self):
+    def test_sandbox_wraps_argv_with_git_root_masked(self):
+        # Superseded ro-bind on 2026-08-23: read access was enough to
+        # resolve references against the wrong repository, so the
+        # checkouts are masked entirely.
         argv = pool_runner.sandbox_argv(["echo", "hi"], workspace="/tmp/ws")
         self.assertEqual(argv[0], "bwrap")
         joined = " ".join(argv)
         git_root = os.path.expanduser("~/git")
         if os.path.isdir(git_root):
-            self.assertIn(f"--ro-bind {git_root} {git_root}", joined)
+            self.assertIn(f"--tmpfs {git_root}", joined)
         self.assertIn("--bind /tmp/ws /tmp/ws", joined)
         self.assertTrue(joined.endswith("-- echo hi"))
 
@@ -677,3 +680,65 @@ class SandboxTest(unittest.TestCase):
                 continue
             self.assertIn("REVIEW ONLY", prompt, name)
             self.assertIn("Do not create, modify", prompt, name)
+
+
+class WorkspaceIsolationTest(unittest.TestCase):
+    """The filesystem is not the artifact. On 2026-08-23 two oc-deepseek-pro
+    reviews demonstrably resolved a change set's file references against the
+    caplab tree they were mounted in — a read-only cousin of the replay
+    escape. The lane's visible universe is now the artifact: neutral cwd,
+    every git checkout masked, only the case workspace visible."""
+
+    def test_sandbox_masks_git_entirely(self):
+        argv = pool_runner.sandbox_argv(["true"], workspace="/tmp/ws")
+        joined = " ".join(argv)
+        git_root = os.path.expanduser("~/git")
+        if os.path.isdir(git_root):
+            self.assertIn(f"--tmpfs {git_root}", joined)
+            self.assertNotIn(f"--ro-bind {git_root}", joined)
+
+    @unittest.skipUnless(pool_runner.sandbox_available()
+                         and os.path.isdir(os.path.expanduser("~/git/caplab")),
+                         "bwrap absent or no ~/git")
+    def test_lane_cannot_even_read_the_checkouts(self):
+        import subprocess
+        argv = pool_runner.sandbox_argv(
+            ["sh", "-c",
+             "ls " + os.path.expanduser("~/git/caplab") + " 2>/dev/null "
+             "| head -1; echo END"],
+            workspace=tempfile.gettempdir())
+        out = subprocess.run(argv, capture_output=True, text=True,
+                             timeout=30).stdout
+        self.assertEqual(out.strip(), "END")
+
+    def test_invoke_runs_in_the_workspace_not_the_repo(self):
+        with tempfile.TemporaryDirectory() as ws:
+            adapter = {"command": ["python3", "-c",
+                                   "import os;print(os.getcwd())"],
+                       "prompt_mode": "arg"}
+            result = invoke(adapter, "x", timeout=60, workspace=ws)
+            self.assertIn(os.path.realpath(ws),
+                          os.path.realpath(result["raw_head"].strip()))
+
+    def test_preamble_v2_names_the_reference_universe(self):
+        from caplab.advisory.calibrate import (REVIEW_PREAMBLE,
+                                               REVIEW_PREAMBLE_VERSION)
+        self.assertEqual(REVIEW_PREAMBLE_VERSION, 2)
+        self.assertIn("filesystem is not the artifact", REVIEW_PREAMBLE)
+        self.assertIn("only against the artifact's own content",
+                      REVIEW_PREAMBLE)
+
+
+class AdapterResourceTest(unittest.TestCase):
+    """Masking the checkouts must not break declared adapters: files the
+    declaration itself pins by absolute path (agy's --json-schema under
+    striatum-next) are re-exposed read-only — files only, declaration only."""
+
+    def test_declared_files_are_reexposed(self):
+        with tempfile.NamedTemporaryFile(suffix=".json") as f:
+            resources = pool_runner.adapter_resources(
+                ["tool", "--schema", f.name, "--x", "/nonexistent/p", "-v"])
+            self.assertEqual(resources, [f.name])
+            argv = pool_runner.sandbox_argv(["tool"], workspace=None,
+                                            extra_ro=resources)
+            self.assertIn(f"--ro-bind {f.name} {f.name}", " ".join(argv))
