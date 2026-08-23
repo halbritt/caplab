@@ -1,0 +1,17 @@
+{
+  "aborted": null,
+  "backend": "oc-deepseek-v4-flash",
+  "calibration_profile": "v1",
+  "case_selection": "seeded-draw",
+  "catch_rate": 0.6956521739130435,
+  "control_unanimous_share": 0.6811594202898551,
+  "false_alarm_rate": 0.3188405797101449,
+  "finished_at": "2026-08-23T08:35:34.158078+00:00",
+  "instrument": "matched-pair defect injection (synthetic contract)",
+  "pairs_discarded": 0,
+  "pairs_usable": 69,
+  "partition": "open",
+  "replicates": 3,
+  "started_at": "2026-08-23T08:13:34.789098+00:00",
+  "sweep_seed": 20260819
+}
