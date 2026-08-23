@@ -120,3 +120,69 @@ class ClaimTest(unittest.TestCase):
                               ledger_lines=250000)
         self.assertEqual(claims[0]["metrics"]["packet_checks_pass_rate"]
                          ["denominator"], 1)
+
+
+def receipt(seq, cause, outcome):
+    return {"seq": seq, "type": "gate_result", "causes": [cause],
+            "payload": {"gate_id": "receipt-checks", "outcome": outcome}}
+
+
+class TierAHarvestTest(unittest.TestCase):
+    """Tier A: every producer pass has delivery outcomes; receipts have a
+    mechanical compliance label; some passes carry their own gates."""
+
+    def test_deliveries_harvest_per_pass_type(self):
+        from caplab.advisory.build_corpus import harvest_deliveries
+        events = ledger(
+            opened(1, pass_id="implementation-planning"),
+            bound(2, 1, "tuple-a"), closed(3, 1, outcome="submitted"),
+            opened(10, pass_id="design-convergence"),
+            bound(11, 10, "tuple-a"), closed(12, 10, outcome="abandoned"),
+            opened(20, pass_id="implementation-planning"),
+            bound(21, 20, "tuple-a"),
+            closed(22, 20, outcome="canceled", source="scheduling_deferral"))
+        d = harvest_deliveries(events)
+        plan = d["implementation-planning"]["tuple-a"]
+        self.assertEqual(plan["submitted"], 1)
+        self.assertEqual(plan["excluded_deferrals"], 1)
+        self.assertEqual(d["design-convergence"]["tuple-a"]["abandoned"], 1)
+
+    def test_receipt_compliance_attributes_to_backend(self):
+        from caplab.advisory.build_corpus import harvest_receipt_compliance
+        events = ledger(
+            opened(1, pass_id="review"), bound(2, 1, "tuple-a"),
+            submitted(3, 1), receipt(4, 3, "pass"), receipt(5, 3, "fail"),
+            closed(6, 1))
+        rc = harvest_receipt_compliance(events)
+        self.assertEqual(rc["tuple-a"], {"pass": 1, "fail": 1})
+
+    def test_generic_gate_harvest(self):
+        from caplab.advisory.build_corpus import harvest_gate
+        events = ledger(
+            opened(1, pass_id="packetization"), bound(2, 1, "tuple-a"),
+            submitted(3, 1),
+            gate(4, 3, "pass", gate_id="work-graph-legality"),
+            closed(5, 1))
+        g = harvest_gate(events, pass_id="packetization",
+                         gate_id="work-graph-legality")
+        self.assertEqual(g["tuple-a"], {"pass": 1, "fail": 0})
+
+    def test_tier_a_claims_carry_constructs_and_n(self):
+        from caplab.advisory.build_corpus import tier_a_claims
+        events = ledger(
+            opened(1, pass_id="implementation-planning"),
+            bound(2, 1, "tuple-a"), closed(3, 1, outcome="submitted"),
+            opened(4, pass_id="implementation-planning"),
+            bound(5, 4, "tuple-a"), closed(6, 4, outcome="error"),
+            opened(10, pass_id="review"), bound(11, 10, "tuple-a"),
+            submitted(12, 10), receipt(13, 12, "pass"), closed(14, 10))
+        claims = tier_a_claims(events, as_of="2026-08-23T00:00:00+00:00",
+                               ledger_lines=250000)
+        constructs = {c["construct"] for c in claims}
+        self.assertIn("planning.delivery/1", constructs)
+        self.assertIn("harness.receipt_compliance/1", constructs)
+        plan = next(c for c in claims
+                    if c["construct"] == "planning.delivery/1")
+        self.assertEqual(plan["metrics"]["delivery_rate"]["value"], 0.5)
+        self.assertEqual(plan["metrics"]["n_pairs"]["value"], 2)
+        self.assertEqual(plan["custody"], "striatum-production")

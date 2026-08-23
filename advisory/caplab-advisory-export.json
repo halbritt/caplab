@@ -48,6 +48,222 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-d93d5341b5e09479",
+      "construct": "design.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.31951131254954973,
+            0.8067396863412435
+          ],
+          "denominator": 12,
+          "value": 0.5833333333333334
+        },
+        "n_pairs": {
+          "value": 12
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-6e6146ee2aa41850",
+      "construct": "planning.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.44404355834740666,
+            0.8583535614521796
+          ],
+          "denominator": 16,
+          "value": 0.6875
+        },
+        "n_pairs": {
+          "value": 16
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-672bfd7b4cc9f0e6",
+      "construct": "proposal.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.15821985525146975,
+            0.7495416354723428
+          ],
+          "denominator": 7,
+          "value": 0.42857142857142855
+        },
+        "n_pairs": {
+          "value": 7
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-2dea383efce745a8",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.5933017762304469,
+            0.7363524978856106
+          ],
+          "denominator": 163,
+          "value": 0.6687116564417178
+        },
+        "n_pairs": {
+          "value": 163
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-227d3dff40193126",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.6096657120978346,
+            1.0
+          ],
+          "denominator": 6,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 6
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy-claude-opus-4-6-thinking"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-c35734925d3aed9d",
+      "construct": "planning.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.04558726080970055,
+            0.6993581574175981
+          ],
+          "denominator": 4,
+          "value": 0.25
+        },
+        "n_pairs": {
+          "value": 4
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy-claude-sonnet-4-6-thinking"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-6b5c90471e7c96f3",
       "construct": "review.defect_discrimination/1",
@@ -124,6 +340,42 @@
       "subject": {
         "match": "declared-name",
         "matched_current_declaration": true,
+        "source_id": "agy-gemini-3-1-pro-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-7d76a2f5dc6ac92a",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.9852462739055141,
+            0.9995353105574012
+          ],
+          "denominator": 380,
+          "value": 0.9973684210526316
+        },
+        "n_pairs": {
+          "value": 380
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
         "source_id": "agy-gemini-3-1-pro-high"
       }
     },
@@ -216,6 +468,42 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-74f52416f4118d14",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.7975819352134406,
+            0.9926065438344942
+          ],
+          "denominator": 24,
+          "value": 0.9583333333333334
+        },
+        "n_pairs": {
+          "value": 24
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy-gemini-3-1-pro-low"
+      }
+    },
+    {
       "as_of": "2026-08-22T00:00:00+00:00",
       "claim_id": "qc-b46af520832568bf",
       "construct": "build.packet_delivery/1",
@@ -255,6 +543,42 @@
         "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (2 excluded for this subject).",
         "capacity deferrals and dispatch refusals leave the delivery denominator (0 excluded).",
         "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy-gemini-3-5-flash-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-2ae5fb47bb2bf08f",
+      "construct": "design.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 1
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -419,6 +743,42 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-c60f8c9488dd976f",
+      "construct": "design.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.6755924351161198,
+            1.0
+          ],
+          "denominator": 8,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 8
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy-gemini-3-6-flash-high"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-58a2f564407953b8",
       "construct": "review.defect_discrimination/1",
@@ -477,6 +837,42 @@
       "subject": {
         "match": "declared-name",
         "matched_current_declaration": true,
+        "source_id": "agy-gemini-3-6-flash-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-fca23329e1476f99",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.5458179335547667,
+            0.6671690833642662
+          ],
+          "denominator": 245,
+          "value": 0.6081632653061224
+        },
+        "n_pairs": {
+          "value": 245
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (2)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
         "source_id": "agy-gemini-3-6-flash-high"
       }
     },
@@ -687,6 +1083,42 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-d41bda3494e4b953",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.5966674990132868,
+            0.6895070008466033
+          ],
+          "denominator": 405,
+          "value": 0.6444444444444445
+        },
+        "n_pairs": {
+          "value": 405
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (2)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy-gemini-3-6-flash-medium"
+      }
+    },
+    {
       "as_of": "2026-08-22T00:00:00+00:00",
       "claim_id": "qc-7c2fb141bed1f843",
       "construct": "build.packet_delivery/1",
@@ -726,6 +1158,42 @@
         "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (37 excluded for this subject).",
         "capacity deferrals and dispatch refusals leave the delivery denominator (2 excluded).",
         "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy-gemini-3-7-flash-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-d9ce7b3fb01da49e",
+      "construct": "design.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.34238022750665303,
+            1.0
+          ],
+          "denominator": 2,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 2
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -1114,6 +1582,42 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-b34c029adba7c287",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.9363282911750611,
+            0.997920212865336
+          ],
+          "denominator": 85,
+          "value": 0.9882352941176471
+        },
+        "n_pairs": {
+          "value": 85
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy-gemini-3-7-flash-high"
+      }
+    },
+    {
       "as_of": "2026-08-16T15:44:59.512727+00:00",
       "claim_id": "qc-6f57bf289438ed2d",
       "construct": "review.defect_discrimination/1",
@@ -1471,6 +1975,42 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-c680dcb7ac9be1d2",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.8668077490609515,
+            0.9999999999999999
+          ],
+          "denominator": 25,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 25
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy-gemini-3-7-flash-medium"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-c4682616a8ce1e19",
       "construct": "review.defect_discrimination/1",
@@ -1658,6 +2198,150 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-3387c5228ba900b9",
+      "construct": "design.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.7957706176633595,
+            0.9426118036505066
+          ],
+          "denominator": 72,
+          "value": 0.8888888888888888
+        },
+        "n_pairs": {
+          "value": 72
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-code"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-23fad277bfd98811",
+      "construct": "planning.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.932418011423458,
+            0.9999999999999999
+          ],
+          "denominator": 53,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 53
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-code"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-e211a88c13eea4e1",
+      "construct": "proposal.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.7267314055770869,
+            0.9424613230987987
+          ],
+          "denominator": 38,
+          "value": 0.868421052631579
+        },
+        "n_pairs": {
+          "value": 38
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-code"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-8ae69d89ff3bec81",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.36885862959780547,
+            0.6311413704021945
+          ],
+          "denominator": 52,
+          "value": 0.5
+        },
+        "n_pairs": {
+          "value": 52
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-code"
+      }
+    },
+    {
       "as_of": "2026-08-22T00:00:00+00:00",
       "claim_id": "qc-c93af7c85e832a04",
       "construct": "build.packet_delivery/1",
@@ -1785,6 +2469,42 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-1a9a1e30fc43ded6",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.25531740501258443,
+            0.4216889837936501
+          ],
+          "denominator": 120,
+          "value": 0.3333333333333333
+        },
+        "n_pairs": {
+          "value": 120
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (94)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-fable-5-high"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-48f6fe4ce8c4176d",
       "construct": "review.defect_discrimination/1",
@@ -1904,6 +2624,78 @@
         "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
         "capacity deferrals and dispatch refusals leave the delivery denominator (0 excluded).",
         "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-fable-5-max"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-5c14d6a0f51dc409",
+      "construct": "design.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 1
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-fable-5-max"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-a7b7d6ee398e5624",
+      "construct": "proposal.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.005717221525416816,
+            0.16194105164724906
+          ],
+          "denominator": 31,
+          "value": 0.03225806451612903
+        },
+        "n_pairs": {
+          "value": 31
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -2181,6 +2973,185 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-c8ca08022e75148a",
+      "construct": "design.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.09677141110578041,
+            0.700006684861608
+          ],
+          "denominator": 6,
+          "value": 0.3333333333333333
+        },
+        "n_pairs": {
+          "value": 6
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-ed3b3162eafb798a",
+      "construct": "packetization.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.43850296824495455,
+            1.0
+          ],
+          "denominator": 3,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 3
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-75960c904eefc1b2",
+      "construct": "packetization.legality/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "legality_pass_rate": {
+          "ci95": [
+            0.0,
+            0.5614970317550455
+          ],
+          "denominator": 3,
+          "value": 0.0
+        },
+        "n_pairs": {
+          "value": 3
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-9c4d2e8f2bc61fe6",
+      "construct": "planning.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.7575059933447592,
+            1.0
+          ],
+          "denominator": 12,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 12
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-e2c034ac9864c718",
+      "construct": "proposal.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 1
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-7b30314874dcf620",
       "construct": "review.defect_discrimination/1",
@@ -2252,6 +3223,42 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-27477ea13e2c3ed4",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.358948966656188,
+            0.6655359569698336
+          ],
+          "denominator": 37,
+          "value": 0.5135135135135135
+        },
+        "n_pairs": {
+          "value": 37
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm"
+      }
+    },
+    {
       "as_of": "2026-08-22T00:00:00+00:00",
       "claim_id": "qc-38d9b8e39af573ad",
       "construct": "build.packet_delivery/1",
@@ -2291,6 +3298,42 @@
         "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
         "capacity deferrals and dispatch refusals leave the delivery denominator (0 excluded).",
         "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-fable-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-475c8ae371ade78d",
+      "construct": "proposal.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.18643261498715644,
+            0.5217523949267991
+          ],
+          "denominator": 27,
+          "value": 0.3333333333333333
+        },
+        "n_pairs": {
+          "value": 27
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -2374,6 +3417,114 @@
         "match": "declared-name",
         "matched_current_declaration": true,
         "source_id": "claude-harm-fable-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-f0e78df49ea49227",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.07511223953671464,
+            0.10886508557747954
+          ],
+          "denominator": 1115,
+          "value": 0.09058295964125561
+        },
+        "n_pairs": {
+          "value": 1115
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (9)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-fable-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-71a40688e4fa3804",
+      "construct": "design.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.3681137508501646,
+            0.743653646743258
+          ],
+          "denominator": 23,
+          "value": 0.5652173913043478
+        },
+        "n_pairs": {
+          "value": 23
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-fable-5-max"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-1fe644e0cb8ee6d1",
+      "construct": "proposal.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.6456695649333126,
+            1.0
+          ],
+          "denominator": 7,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 7
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-fable-5-max"
       }
     },
     {
@@ -2562,6 +3713,42 @@
       "subject": {
         "match": "declared-name",
         "matched_current_declaration": true,
+        "source_id": "claude-harm-opus-4-8-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-ba237c54c9dc6849",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.8154299832554898,
+            0.9380887190654149
+          ],
+          "denominator": 101,
+          "value": 0.8910891089108911
+        },
+        "n_pairs": {
+          "value": 101
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
         "source_id": "claude-harm-opus-4-8-high"
       }
     },
@@ -2944,6 +4131,114 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-b454f7546d6c883d",
+      "construct": "design.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.5833487630404344,
+            0.8252582933408878
+          ],
+          "denominator": 50,
+          "value": 0.72
+        },
+        "n_pairs": {
+          "value": 50
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-opus-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-5b3f60d65cd8a06b",
+      "construct": "planning.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.6624527035476533,
+            0.8443749794943978
+          ],
+          "denominator": 81,
+          "value": 0.7654320987654321
+        },
+        "n_pairs": {
+          "value": 81
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (1)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-opus-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-f239c6e2faef10dc",
+      "construct": "proposal.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.09453120573423074,
+            0.9054687942657693
+          ],
+          "denominator": 2,
+          "value": 0.5
+        },
+        "n_pairs": {
+          "value": 2
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-opus-5-high"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-474411512957a800",
       "construct": "review.defect_discrimination/1",
@@ -3002,6 +4297,42 @@
       "subject": {
         "match": "declared-name",
         "matched_current_declaration": true,
+        "source_id": "claude-harm-opus-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-d5e590cece4a06ee",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.619386720876139,
+            0.7281750435168732
+          ],
+          "denominator": 281,
+          "value": 0.6761565836298933
+        },
+        "n_pairs": {
+          "value": 281
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
         "source_id": "claude-harm-opus-5-high"
       }
     },
@@ -3092,6 +4423,42 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-9606d48954fd32d3",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.0,
+            0.7934506856227626
+          ],
+          "denominator": 1,
+          "value": 0.0
+        },
+        "n_pairs": {
+          "value": 1
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-opus-5-medium"
+      }
+    },
+    {
       "as_of": "2026-08-22T00:00:00+00:00",
       "claim_id": "qc-91767cbc528c3a09",
       "construct": "build.packet_delivery/1",
@@ -3139,6 +4506,78 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-e1ba272bd42fefc2",
+      "construct": "proposal.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.6373070782524372,
+            0.8745531446737361
+          ],
+          "denominator": 45,
+          "value": 0.7777777777777778
+        },
+        "n_pairs": {
+          "value": 45
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-sonnet-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-8aca44bb7dd2c864",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.0,
+            0.7934506856227626
+          ],
+          "denominator": 1,
+          "value": 0.0
+        },
+        "n_pairs": {
+          "value": 1
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-sonnet-5-high"
+      }
+    },
+    {
       "as_of": "2026-08-22T00:00:00+00:00",
       "claim_id": "qc-8a09c992a48869e0",
       "construct": "build.packet_delivery/1",
@@ -3170,6 +4609,78 @@
         "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
         "capacity deferrals and dispatch refusals leave the delivery denominator (1 excluded).",
         "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-sonnet-5-medium"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-c2bcacf69f8ee54d",
+      "construct": "proposal.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.0,
+            0.7934506856227626
+          ],
+          "denominator": 1,
+          "value": 0.0
+        },
+        "n_pairs": {
+          "value": 1
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-sonnet-5-medium"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-7ecd3b545782e2b6",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.0,
+            0.7934506856227626
+          ],
+          "denominator": 1,
+          "value": 0.0
+        },
+        "n_pairs": {
+          "value": 1
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -3627,6 +5138,78 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-3c0411461167ec33",
+      "construct": "design.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.7719046276458016,
+            0.9999999999999999
+          ],
+          "denominator": 13,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-opus-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-58616e080b7dfd7a",
+      "construct": "proposal.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 1
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-opus-5-high"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-cf7c88ff0a78f04a",
       "construct": "review.defect_discrimination/1",
@@ -3694,6 +5277,42 @@
       "subject": {
         "match": "declared-name",
         "matched_current_declaration": true,
+        "source_id": "claude-opus-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-a748016d8d601f5b",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.8220533819707465,
+            0.9644804333931265
+          ],
+          "denominator": 61,
+          "value": 0.9180327868852459
+        },
+        "n_pairs": {
+          "value": 61
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (1)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
         "source_id": "claude-opus-5-high"
       }
     },
@@ -4068,6 +5687,42 @@
         "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (612 excluded for this subject).",
         "capacity deferrals and dispatch refusals leave the delivery denominator (0 excluded).",
         "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-sonnet-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-534dacb124a8e309",
+      "construct": "proposal.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.7719046276458016,
+            0.9999999999999999
+          ],
+          "denominator": 13,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -4555,6 +6210,150 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-01be041def1c55e7",
+      "construct": "design.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.8241207763533425,
+            1.0
+          ],
+          "denominator": 18,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 18
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-3b8bbf34225008a9",
+      "construct": "planning.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.889744604539564,
+            1.0
+          ],
+          "denominator": 31,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 31
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-ecdf7870e6495a33",
+      "construct": "proposal.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.7167126242970107,
+            0.9888806552353576
+          ],
+          "denominator": 16,
+          "value": 0.9375
+        },
+        "n_pairs": {
+          "value": 16
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-ca0e15f7592ed429",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.7503663846067677,
+            0.8396770326342934
+          ],
+          "denominator": 308,
+          "value": 0.7987012987012987
+        },
+        "n_pairs": {
+          "value": 308
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex"
+      }
+    },
+    {
       "as_of": "2026-08-22T00:00:00+00:00",
       "claim_id": "qc-2a85eb8f244883cd",
       "construct": "build.packet_delivery/1",
@@ -4594,6 +6393,42 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-95e9b71ac6a20464",
+      "construct": "proposal.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.0,
+            0.7934506856227626
+          ],
+          "denominator": 1,
+          "value": 0.0
+        },
+        "n_pairs": {
+          "value": 1
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-harm-luna-medium"
+      }
+    },
+    {
       "as_of": "2026-08-22T00:00:00+00:00",
       "claim_id": "qc-ea1e20a4815408b5",
       "construct": "build.packet_delivery/1",
@@ -4625,6 +6460,42 @@
         "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
         "capacity deferrals and dispatch refusals leave the delivery denominator (1 excluded).",
         "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-harm-sol-max"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-b9614fc2b3066a7c",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.2446105232516798,
+            0.304371363496494
+          ],
+          "denominator": 852,
+          "value": 0.2734741784037559
+        },
+        "n_pairs": {
+          "value": 852
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -4822,6 +6693,42 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-881c313efd96f544",
+      "construct": "design.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 1
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-luna-max"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-995745bea24dd4fc",
       "construct": "review.defect_discrimination/1",
@@ -4932,6 +6839,42 @@
         "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
         "capacity deferrals and dispatch refusals leave the delivery denominator (1 excluded).",
         "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-luna-medium"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-89c01342bfdda1ec",
+      "construct": "proposal.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.8754449702581327,
+            0.9999999999999999
+          ],
+          "denominator": 27,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 27
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -5129,6 +7072,114 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-6d47e0bf8405eb2b",
+      "construct": "design.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.34238022750665303,
+            1.0
+          ],
+          "denominator": 2,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 2
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-sol-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-dadb1f04cd64744f",
+      "construct": "planning.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.7575059933447592,
+            1.0
+          ],
+          "denominator": 12,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 12
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-sol-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-8d779a3c088b730a",
+      "construct": "proposal.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 1
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-sol-high"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-f40815e30a81d721",
       "construct": "review.defect_discrimination/1",
@@ -5274,6 +7325,42 @@
       "subject": {
         "match": "declared-name",
         "matched_current_declaration": true,
+        "source_id": "codex-sol-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-6e28bd615f6e6e66",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.5101091635454027,
+            1.0
+          ],
+          "denominator": 4,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 4
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
         "source_id": "codex-sol-high"
       }
     },
@@ -5510,6 +7597,42 @@
       "subject": {
         "match": "declared-name",
         "matched_current_declaration": true,
+        "source_id": "codex-sol-max"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-f9ee5c4c18512459",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.8265371006767631,
+            0.8848578187988431
+          ],
+          "denominator": 550,
+          "value": 0.8581818181818182
+        },
+        "n_pairs": {
+          "value": 550
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (1)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
         "source_id": "codex-sol-max"
       }
     },
@@ -5986,6 +8109,78 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-00da32197524b89a",
+      "construct": "design.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.6147245613168169,
+            0.8651903577535287
+          ],
+          "denominator": 42,
+          "value": 0.7619047619047619
+        },
+        "n_pairs": {
+          "value": 42
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-terra-max"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-1667b0b6a6a1133d",
+      "construct": "planning.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.8697932609096686,
+            0.9646425093492634
+          ],
+          "denominator": 116,
+          "value": 0.9310344827586207
+        },
+        "n_pairs": {
+          "value": 116
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-terra-max"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-3f57f0dab6e65f8b",
       "construct": "review.defect_discrimination/1",
@@ -6433,6 +8628,42 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-0f3bcbe0986f91cb",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.0,
+            0.7934506856227626
+          ],
+          "denominator": 1,
+          "value": 0.0
+        },
+        "n_pairs": {
+          "value": 1
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "deepseek-v4-flash"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-532110d5ed5c7f43",
       "construct": "review.defect_discrimination/1",
@@ -6491,6 +8722,42 @@
       "subject": {
         "match": "declared-name",
         "matched_current_declaration": true,
+        "source_id": "glm"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-b30d1cd4451b59fb",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.30360241557422635,
+            0.5366101512650265
+          ],
+          "denominator": 65,
+          "value": 0.4153846153846154
+        },
+        "n_pairs": {
+          "value": 65
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
         "source_id": "glm"
       }
     },
@@ -6573,6 +8840,42 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-8f7f1584d10eeb33",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.0,
+            0.39033428790216534
+          ],
+          "denominator": 6,
+          "value": 0.0
+        },
+        "n_pairs": {
+          "value": 6
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "kimi"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-fea2c682ffc8e580",
       "construct": "review.defect_discrimination/1",
@@ -6635,6 +8938,256 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-92de02f3a46b66ec",
+      "construct": "integration.checks/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "checks_pass_rate": {
+          "ci95": [
+            0.5949425733065095,
+            0.8006194381116332
+          ],
+          "denominator": 72,
+          "value": 0.7083333333333334
+        },
+        "n_pairs": {
+          "value": 72
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "local"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-bcf564b1a37fa500",
+      "construct": "integration.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.44892855114214497,
+            0.6198569858055412
+          ],
+          "denominator": 127,
+          "value": 0.5354330708661418
+        },
+        "n_pairs": {
+          "value": 127
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "local"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-1941b12e9f878864",
+      "construct": "intent.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.9224678338559534,
+            0.9727670138230177
+          ],
+          "denominator": 281,
+          "value": 0.9537366548042705
+        },
+        "n_pairs": {
+          "value": 281
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "local"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-f481113120e33469",
+      "construct": "packetization.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.8806600390550563,
+            0.9704644466090546
+          ],
+          "denominator": 116,
+          "value": 0.9396551724137931
+        },
+        "n_pairs": {
+          "value": 116
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "local"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-388d0a64cb77eac8",
+      "construct": "packetization.legality/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "legality_pass_rate": {
+          "ci95": [
+            0.5349263866662735,
+            0.7090961984465085
+          ],
+          "denominator": 115,
+          "value": 0.6260869565217392
+        },
+        "n_pairs": {
+          "value": 115
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "local"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-de9f68109f285884",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.8877440502646412,
+            0.9674584982160312
+          ],
+          "denominator": 147,
+          "value": 0.9387755102040817
+        },
+        "n_pairs": {
+          "value": 147
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "local"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-f9f27f661074596c",
+      "construct": "verification.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.9157046198583182,
+            0.933030196454009
+          ],
+          "denominator": 3565,
+          "value": 0.9248246844319775
+        },
+        "n_pairs": {
+          "value": 3565
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (1)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "local"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-0bbaa063a5c5ca24",
       "construct": "review.defect_discrimination/1",
@@ -6693,6 +9246,42 @@
       "subject": {
         "match": "declared-name",
         "matched_current_declaration": true,
+        "source_id": "local-qwen"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-0d8af6cd69052cfd",
+      "construct": "review_pass.delivery/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "delivery_rate": {
+          "ci95": [
+            0.7646230877751531,
+            0.8528617200454255
+          ],
+          "denominator": 299,
+          "value": 0.8127090301003345
+        },
+        "n_pairs": {
+          "value": 299
+        }
+      },
+      "notes": [
+        "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
+        "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
         "source_id": "local-qwen"
       }
     },

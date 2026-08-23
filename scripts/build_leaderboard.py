@@ -423,19 +423,51 @@ def main() -> int:
             'behavior-bearing identity fields).</p>'
             + "\n".join(rows_html) + "</section>")
 
-    build_rows = []
+    production = {}
     for line in open(os.path.join(REPO, "advisory", "claims.jsonl"),
                      encoding="utf-8"):
         if not line.strip():
             continue
         c = json.loads(line)
-        if c.get("construct") != "build.packet_delivery/1":
+        construct = c.get("construct") or ""
+        if construct.startswith("review.defect_discrimination"):
             continue
         m = c["metrics"]
-        pc = m.get("packet_checks_pass_rate") or {}
-        dl = m.get("delivery_rate") or {}
-        build_rows.append((c["subject"]["source_id"], pc.get("value"),
-                           pc.get("denominator"), dl.get("value")))
+        primary = next((k, v) for k, v in m.items() if k != "n_pairs")
+        production.setdefault(construct, []).append(
+            (c["subject"]["source_id"], primary[1].get("value"),
+             primary[1].get("denominator"), primary[0],
+             (m.get("delivery_rate") or {}).get("value")
+             if construct == "build.packet_delivery/1" else None))
+    build_rows = [(s_, pv, pn, dv) for (s_, pv, pn, _k, dv)
+                  in production.pop("build.packet_delivery/1", [])]
+    tier_a_html = []
+    for construct, rows_ in sorted(production.items()):
+        rows_ = [r for r in rows_ if r[2]]
+        if not rows_:
+            continue
+        rows_.sort(key=lambda r: -(r[1] or 0))
+        metric = rows_[0][3]
+        if len(rows_) == 1:
+            s_, pv, pn, _k, _d = rows_[0]
+            tier_a_html.append(
+                f'<p class="muted"><strong>{esc(construct)}</strong> — '
+                f'single production subject: {esc(s_)} {pct(pv)} '
+                f'{esc(metric)} (n={esc(pn)}).</p>')
+            continue
+        cells = [f'<h3 style="font-size:.95rem;margin:1rem 0 .3rem">'
+                 f'{esc(construct)}</h3>'
+                 '<table><thead><tr><th>Binding</th><th>harness</th>'
+                 f'<th>{esc(metric)}</th><th>n</th></tr></thead><tbody>']
+        for s_, pv, pn, _k, _d in rows_:
+            model, harness = declared_identity(s_)
+            dim = ' style="opacity:.55"' if pn < 10 else ""
+            cells.append(
+                f'<tr{dim}><td class="name">{esc(s_)}</td>'
+                f'<td class="harness">{esc(harness) if harness else "—"}</td>'
+                f'<td>{bar(pv, "rate")}</td><td class="num">{esc(pn)}</td></tr>')
+        cells.append("</tbody></table>")
+        tier_a_html.append("\n".join(cells))
     build_html = ""
     if build_rows:
         build_rows.sort(key=lambda r: -(r[1] or 0) * (1 if (r[2] or 0) >= 10 else 0.001))
@@ -464,7 +496,15 @@ def main() -> int:
             'raw failures) and capacity deferrals are excluded, never '
             'scored. Dimmed rows sit below the n≥10 floor. A separate '
             'construct from review: rank on one, never both.</p>'
-            + "\n".join(cells) + "</section>")
+            + "\n".join(cells)
+            + '<h2 style="margin-top:1.6rem">Other production constructs '
+              '(Tier A harvest)</h2>'
+              '<p class="muted">Per-pass delivery and mechanical gate rates, '
+              'custody striatum-production. Deferrals excluded; dimmed rows '
+              'below n=10. Verification, intent-capture, packetization and '
+              'integration run on the deterministic local backend in '
+              'production — one subject is the honest answer there.</p>'
+            + "\n".join(tier_a_html) + "</section>")
 
     page = f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">

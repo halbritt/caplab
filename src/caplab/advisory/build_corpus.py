@@ -189,3 +189,205 @@ def build_claims(corpus: dict, as_of: str, ledger_lines: int,
             payload.encode()).hexdigest()[:16]
         claims.append(body)
     return claims
+
+
+# --------------------------------------------------------------- Tier A
+# Tier A of the capability-measurement program (Principal, 2026-08-23):
+# every label here is mechanical or a closure outcome — no model judgment
+# in the loop. Tier B (independent-family review/acceptance verdicts) is a
+# different label class and is handled separately.
+
+PASS_CONSTRUCTS = {
+    "build": BUILD_CONSTRUCT,           # richer claim via harvest_build_corpus
+    "implementation-planning": "planning.delivery/1",
+    "design-convergence": "design.delivery/1",
+    "proposal-generation": "proposal.delivery/1",
+    "packetization": "packetization.delivery/1",
+    "integration": "integration.delivery/1",
+    "verification": "verification.delivery/1",
+    "review": "review_pass.delivery/1",
+    "intent-capture": "intent.delivery/1",
+}
+RECEIPT_CONSTRUCT = "harness.receipt_compliance/1"
+DELIVERED_OUTCOMES = ("submitted", "submitted_late")
+
+
+def _attribution(events: list[dict], pass_ids: set[str] | None = None):
+    """(runs, backend_of_run, run_of_seq) for the selected pass runs."""
+    runs = {}
+    for e in events:
+        if e.get("type") == "pass_run_opened":
+            pid = e.get("payload", {}).get("pass_id")
+            if pass_ids is None or pid in pass_ids:
+                runs[e["seq"]] = pid
+    backend_of_run: dict[int, str] = {}
+    run_of_seq: dict[int, int] = {}
+    for e in events:
+        payload = e.get("payload", {})
+        run = payload.get("run_ref")
+        touches = set(e.get("causes") or [])
+        if run in runs:
+            touches.add(run)
+        else:
+            touches &= set(runs)
+            run = next(iter(touches), None)
+        if run is None:
+            continue
+        run_of_seq[e["seq"]] = run
+        if e.get("type") == "lane_binding":
+            backend_of_run[run] = payload.get("backend_id")
+    return runs, backend_of_run, run_of_seq
+
+
+def harvest_deliveries(events: list[dict]) -> dict:
+    """{pass_id: {backend: delivery counters}} for every pass type."""
+    runs, backend_of_run, _ = _attribution(events)
+    out: dict = {}
+    for e in events:
+        if e.get("type") != "pass_run_closed":
+            continue
+        payload = e.get("payload", {})
+        run = payload.get("run_ref")
+        pid = runs.get(run)
+        backend = backend_of_run.get(run)
+        if pid is None or backend is None:
+            continue
+        cell = out.setdefault(pid, {}).setdefault(
+            backend, {"excluded_deferrals": 0})
+        if payload.get("closure_source") in EXCLUDED_CLOSURE_SOURCES:
+            cell["excluded_deferrals"] += 1
+        else:
+            outcome = payload.get("outcome") or "error"
+            cell[outcome] = cell.get(outcome, 0) + 1
+    return out
+
+
+def harvest_receipt_compliance(events: list[dict]) -> dict:
+    """{backend: {pass, fail}} over every receipt-checks gate result.
+
+    Receipts are emitted for runs of every pass type; their shape check is
+    the mechanical label for harness protocol fidelity.
+    """
+    _, backend_of_run, run_of_seq = _attribution(events)
+    out: dict = {}
+    for e in events:
+        payload = e.get("payload", {})
+        if (e.get("type") != "gate_result"
+                or payload.get("gate_id") != "receipt-checks"):
+            continue
+        run = None
+        for cause in e.get("causes") or []:
+            run = run_of_seq.get(cause)
+            if run is not None:
+                break
+        backend = backend_of_run.get(run)
+        if backend is None:
+            continue
+        cell = out.setdefault(backend, {"pass": 0, "fail": 0})
+        cell["pass" if payload.get("outcome") == "pass" else "fail"] += 1
+    return out
+
+
+def harvest_gate(events: list[dict], pass_id: str, gate_id: str) -> dict:
+    """{backend: {pass, fail}} for one gate on one pass type."""
+    runs, backend_of_run, run_of_seq = _attribution(events, {pass_id})
+    out: dict = {}
+    for e in events:
+        payload = e.get("payload", {})
+        if (e.get("type") != "gate_result"
+                or payload.get("gate_id") != gate_id):
+            continue
+        run = None
+        for cause in e.get("causes") or []:
+            run = run_of_seq.get(cause)
+            if run is not None:
+                break
+        backend = backend_of_run.get(run)
+        if backend is None:
+            continue
+        cell = out.setdefault(backend, {"pass": 0, "fail": 0})
+        cell["pass" if payload.get("outcome") == "pass" else "fail"] += 1
+    return out
+
+
+def _rate_claim(construct: str, backend: str, metric: str, k: int, n: int,
+                as_of: str, ledger_lines: int, ledger_sha256, notes):
+    lo, hi = wilson(k, n)
+    body = {
+        "record": "quartermaster-scored-claim/1",
+        "construct": construct,
+        "subject": {"source_id": backend, "match": "declared-name"},
+        "custody": "striatum-production",
+        "as_of": as_of,
+        "metrics": {metric: {"value": k / n, "denominator": n,
+                             "ci95": [lo, hi]},
+                    "n_pairs": {"value": n}},
+        "evidence": [{"kind": "striatum-ledger-harvest",
+                      "ledger_lines": ledger_lines,
+                      "ledger_sha256": ledger_sha256}],
+        "notes": list(notes),
+    }
+    payload = json.dumps(body, sort_keys=True, ensure_ascii=False)
+    body["claim_id"] = "qc-" + hashlib.sha256(
+        payload.encode()).hexdigest()[:16]
+    return body
+
+
+def tier_a_claims(events: list[dict], as_of: str, ledger_lines: int,
+                  ledger_sha256: str | None = None) -> list[dict]:
+    """All Tier A claims: per-pass delivery, receipt compliance, and the
+    mechanical per-pass gates (packetization legality, integration checks).
+    Build's richer packet-checks claim stays with `build_claims`."""
+    if ledger_lines < MIN_LEDGER_LINES:
+        raise ValueError(
+            f"ledger dump holds {ledger_lines} lines, below the "
+            f"{MIN_LEDGER_LINES} floor")
+    claims: list[dict] = []
+    base_notes = [
+        "striatum-production custody: executed and labelled by striatum's "
+        "production loop; harvested and scored by CAPLAB "
+        "(caplab.advisory.build_corpus, Tier A).",
+        "Mechanical/closure labels only — no model judgment in the loop. "
+        "Assignment is scheduler-routed, not random; rates describe the "
+        "work each Binding was actually given.",
+    ]
+    for pid, backends in sorted(harvest_deliveries(events).items()):
+        construct = PASS_CONSTRUCTS.get(pid)
+        if construct is None or pid == "build":
+            continue
+        for backend, cell in sorted(backends.items()):
+            given = sum(v for k, v in cell.items()
+                        if k != "excluded_deferrals")
+            if not given:
+                continue
+            delivered = sum(cell.get(o, 0) for o in DELIVERED_OUTCOMES)
+            claims.append(_rate_claim(
+                construct, backend, "delivery_rate", delivered, given,
+                as_of, ledger_lines, ledger_sha256, base_notes + [
+                    f"capacity deferrals excluded "
+                    f"({cell['excluded_deferrals']}).",
+                ]))
+    for backend, cell in sorted(harvest_receipt_compliance(events).items()):
+        n = cell["pass"] + cell["fail"]
+        if not n:
+            continue
+        claims.append(_rate_claim(
+            RECEIPT_CONSTRUCT, backend, "receipt_pass_rate", cell["pass"], n,
+            as_of, ledger_lines, ledger_sha256, base_notes + [
+                "receipt-checks shape validation across all pass types: "
+                "harness protocol fidelity, not model capability.",
+            ]))
+    for pid, gate_id, construct, metric in (
+            ("packetization", "work-graph-legality",
+             "packetization.legality/1", "legality_pass_rate"),
+            ("integration", "integration-checks",
+             "integration.checks/1", "checks_pass_rate")):
+        for backend, cell in sorted(
+                harvest_gate(events, pid, gate_id).items()):
+            n = cell["pass"] + cell["fail"]
+            if not n:
+                continue
+            claims.append(_rate_claim(
+                construct, backend, metric, cell["pass"], n,
+                as_of, ledger_lines, ledger_sha256, base_notes))
+    return claims
