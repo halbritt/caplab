@@ -1,0 +1,124 @@
+{
+  "a": "codex-harm-sol-high",
+  "a_catch_rate": 0.9,
+  "a_discrimination": 0.55,
+  "a_false_alarms": 7,
+  "a_only_caught": 8,
+  "a_only_false_alarm": 7,
+  "b": "agy-gemini-3-7-flash-high",
+  "b_catch_rate": 0.5,
+  "b_discrimination": 0.5,
+  "b_false_alarms": 0,
+  "b_only_caught": 0,
+  "b_only_false_alarm": 0,
+  "both_caught": 10,
+  "by_defect_class": {
+    "base_dropped": {
+      "a": 4,
+      "b": 3,
+      "n": 4
+    },
+    "dangling_reference": {
+      "a": 1,
+      "b": 0,
+      "n": 1
+    },
+    "hash_mismatch": {
+      "a": 3,
+      "b": 1,
+      "n": 4
+    },
+    "hollow_delivery": {
+      "a": 4,
+      "b": 2,
+      "n": 4
+    },
+    "overclaimed_level": {
+      "a": 1,
+      "b": 0,
+      "n": 2
+    },
+    "requirement_inversion": {
+      "a": 1,
+      "b": 0,
+      "n": 1
+    },
+    "unearned_verification_claim": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    }
+  },
+  "discordant_cases": [
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "dangling_reference",
+      "dispatch_id": "qs-43f3d7e27dec1a64:dangling_reference:3028027303",
+      "substrate_id": "qs-43f3d7e27dec1a64"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "overclaimed_level",
+      "dispatch_id": "qs-641d18fb33495aba:overclaimed_level:1603772925",
+      "substrate_id": "qs-641d18fb33495aba"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "hash_mismatch",
+      "dispatch_id": "qs-907a07dad63ec02e:hash_mismatch:2330882949",
+      "substrate_id": "qs-907a07dad63ec02e"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "hash_mismatch",
+      "dispatch_id": "qs-a190c423a1dcce98:hash_mismatch:51014435",
+      "substrate_id": "qs-a190c423a1dcce98"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "hollow_delivery",
+      "dispatch_id": "qs-c70d14e4ac76d99c:hollow_delivery:2147605417",
+      "substrate_id": "qs-c70d14e4ac76d99c"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "hollow_delivery",
+      "dispatch_id": "qs-cabbae40d5c96360:hollow_delivery:1514924466",
+      "substrate_id": "qs-cabbae40d5c96360"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "base_dropped",
+      "dispatch_id": "qs-faaba3e49977ce66:base_dropped:2019615867",
+      "substrate_id": "qs-faaba3e49977ce66"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "requirement_inversion",
+      "dispatch_id": "qs-fc1e95b9755ee36e:requirement_inversion:693028649",
+      "substrate_id": "qs-fc1e95b9755ee36e"
+    }
+  ],
+  "discordant_pairs": 8,
+  "false_alarm_audit_status": "contains-unaudited-refusals",
+  "false_alarm_defective_controls_excluded": 9,
+  "false_alarm_discordant_pairs": 7,
+  "false_alarm_sign_test_p": 0.015625,
+  "false_alarm_significant_at_05": true,
+  "false_alarm_unaudited_pairs": 4,
+  "neither_caught": 2,
+  "reading": "catch: 8 of 20 shared cases discriminate, exact sign test p=0.008; false alarms: 7 discordant, p=0.016, 4 on unaudited controls",
+  "shared_cases": 20,
+  "sign_test_p": 0.0078125,
+  "significant_at_05": true,
+  "sweep_seed": 20260823,
+  "uninformative_pairs": 12
+}

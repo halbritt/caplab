@@ -1,0 +1,18 @@
+{
+  "aborted": null,
+  "backend": "codex-harm-sol-high",
+  "calibration_profile": "v1",
+  "case_selection": "profile-remeasurement",
+  "cases_path": "remeasure-changeset-20260823.json",
+  "catch_rate": 0.9375,
+  "control_unanimous_share": 0.84375,
+  "false_alarm_rate": 0.71875,
+  "finished_at": "2026-08-23T17:19:35.371557+00:00",
+  "instrument": "matched-pair defect injection (synthetic contract)",
+  "pairs_discarded": 0,
+  "pairs_usable": 32,
+  "partition": "open",
+  "replicates": 3,
+  "started_at": "2026-08-23T16:24:51.984691+00:00",
+  "sweep_seed": 20260823
+}
