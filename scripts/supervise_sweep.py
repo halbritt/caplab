@@ -113,9 +113,13 @@ def main() -> int:
                     default=SWEEP_DEFAULTS["max_cases"])
     ap.add_argument("--cases", default=None,
                     help="targeted-cell document; see pool-run --cases")
+    ap.add_argument("--workers", type=int, default=SWEEP_DEFAULTS["workers"],
+                    help="requested lanes; run_pool still caps at the "
+                         "declaration's max_lanes")
     args = ap.parse_args()
     sweep = dict(SWEEP_DEFAULTS, sweep_seed=args.sweep_seed,
-                 per_operator=args.per_operator, max_cases=args.max_cases)
+                 per_operator=args.per_operator, max_cases=args.max_cases,
+                 workers=args.workers)
 
     adapter = load_declaration(BACKENDS, args.backend)["adapter"]
     stalled = 0
