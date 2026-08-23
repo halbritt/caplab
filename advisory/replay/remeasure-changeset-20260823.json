@@ -1,0 +1,88 @@
+{
+  "cells": [
+    {
+      "operator": "dangling_reference",
+      "substrate_id": "qs-43f3d7e27dec1a64"
+    },
+    {
+      "operator": "hollow_delivery",
+      "substrate_id": "qs-45baf30be46b0c3c"
+    },
+    {
+      "operator": "overclaimed_level",
+      "substrate_id": "qs-641d18fb33495aba"
+    },
+    {
+      "operator": "hollow_delivery",
+      "substrate_id": "qs-6ebd7c873056feb1"
+    },
+    {
+      "operator": "hash_mismatch",
+      "substrate_id": "qs-907a07dad63ec02e"
+    },
+    {
+      "operator": "unearned_verification_claim",
+      "substrate_id": "qs-93a90787f0d83382"
+    },
+    {
+      "operator": "unearned_verification_claim",
+      "substrate_id": "qs-9fa3482bef63d3ef"
+    },
+    {
+      "operator": "hash_mismatch",
+      "substrate_id": "qs-a190c423a1dcce98"
+    },
+    {
+      "operator": "base_dropped",
+      "substrate_id": "qs-a67ae350c19eff24"
+    },
+    {
+      "operator": "base_dropped",
+      "substrate_id": "qs-af9054a1808cceba"
+    },
+    {
+      "operator": "hash_mismatch",
+      "substrate_id": "qs-b2cdbb97322b4e0f"
+    },
+    {
+      "operator": "unearned_verification_claim",
+      "substrate_id": "qs-c5e755a13eb7b7ee"
+    },
+    {
+      "operator": "hollow_delivery",
+      "substrate_id": "qs-c70d14e4ac76d99c"
+    },
+    {
+      "operator": "overclaimed_level",
+      "substrate_id": "qs-c8bcd5bee2e73c16"
+    },
+    {
+      "operator": "hollow_delivery",
+      "substrate_id": "qs-cabbae40d5c96360"
+    },
+    {
+      "operator": "base_dropped",
+      "substrate_id": "qs-d79e9a1668416a7d"
+    },
+    {
+      "operator": "hash_mismatch",
+      "substrate_id": "qs-d98bbffcdcd43f21"
+    },
+    {
+      "operator": "unearned_verification_claim",
+      "substrate_id": "qs-f882ddbaaed1b065"
+    },
+    {
+      "operator": "base_dropped",
+      "substrate_id": "qs-faaba3e49977ce66"
+    },
+    {
+      "operator": "requirement_inversion",
+      "substrate_id": "qs-fc1e95b9755ee36e"
+    }
+  ],
+  "purpose": "re-measure the v1-changeset-quarantined cells of sweep seed 20260819 under the clean v2 contract; profile-selected (exogenous), claim-eligible",
+  "record": "caplab-targeted-cells/1",
+  "selection": "profile-remeasurement",
+  "source_run": "sweep-codex-sol-high-20260819"
+}

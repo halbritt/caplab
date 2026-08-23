@@ -342,6 +342,13 @@ def select_cases(substrates: list[dict], *, sweep_seed: int,
     cells = cases_doc.get("cells") or []
     if not cells:
         raise ValueError("targeted case document names no cells")
+    selection = cases_doc.get("selection", "targeted-reproduction")
+    if selection not in ("targeted-reproduction", "profile-remeasurement"):
+        # profile-remeasurement selects cells by an exogenous property fixed
+        # before any result existed (their contract version), so it stays
+        # claim-eligible; targeted-reproduction selects on outcome and is
+        # not. Anything else is a mistake, not a mode.
+        raise ValueError(f"unknown cell selection {selection!r}")
     overlap = {c["substrate_id"] for c in cells} & withheld
     if overlap:
         # An anchor substrate is replayed every sweep as an instrument
@@ -354,7 +361,7 @@ def select_cases(substrates: list[dict], *, sweep_seed: int,
         raise ValueError(f"{len(cases)} targeted cells exceed max_cases="
                          f"{max_cases}; a truncated reproduction set would "
                          f"silently drop named cells")
-    return cases, "targeted-reproduction"
+    return cases, selection
 
 
 def run_pool(*, backend: str, backends_root: str, registry_path: str,

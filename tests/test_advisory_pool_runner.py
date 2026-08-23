@@ -578,3 +578,54 @@ class CaseSelectionTest(unittest.TestCase):
                 pool, sweep_seed=5, per_operator=1, partition="open",
                 max_cases=40, withheld={pool[0]["substrate_id"]},
                 cases_doc=doc)
+
+
+class ProfileRemeasurementTest(unittest.TestCase):
+    """Cells selected by CONTRACT VERSION are not outcome-selected.
+
+    The v1-changeset quarantine removed ~35%% of early synthetic sweeps'
+    cases. Re-measuring exactly those cells under the clean contract selects
+    on profile — an exogenous property fixed before any result existed — so
+    the run is claim-eligible, unlike targeted-reproduction runs whose cells
+    are chosen for what they previously scored.
+    """
+
+    def _substrate(self, sha):
+        return {"substrate_id": "qs-" + sha[:16], "sha256": sha,
+                "partition": "open",
+                "source": {"kind": "striatum-exchange", "dispatch_id": sha,
+                           "input_path": "inputs/a.md"},
+                "applicable_operators": ["dropped_section", "hash_mismatch"]}
+
+    def test_profile_remeasurement_stamp(self):
+        pool = [self._substrate("a" * 64)]
+        doc = {"selection": "profile-remeasurement",
+               "cells": [{"substrate_id": pool[0]["substrate_id"],
+                          "operator": "hash_mismatch"}]}
+        cases, selection = pool_runner.select_cases(
+            pool, sweep_seed=5, per_operator=1, partition="open",
+            max_cases=40, withheld=set(), cases_doc=doc)
+        self.assertEqual(selection, "profile-remeasurement")
+        self.assertEqual(len(cases), 1)
+
+    def test_profile_remeasurement_is_claim_eligible(self):
+        import json as _json
+        import os as _os
+        import tempfile as _tempfile
+
+        from caplab.advisory.scoring import outcome_selected
+        with _tempfile.TemporaryDirectory() as root:
+            with open(_os.path.join(root, "summary.json"), "w") as f:
+                _json.dump({"case_selection": "profile-remeasurement",
+                            "aborted": None}, f)
+            self.assertFalse(outcome_selected(root))
+
+    def test_unknown_selection_refuses(self):
+        pool = [self._substrate("a" * 64)]
+        doc = {"selection": "vibes",
+               "cells": [{"substrate_id": pool[0]["substrate_id"],
+                          "operator": "hash_mismatch"}]}
+        with self.assertRaises(ValueError):
+            pool_runner.select_cases(
+                pool, sweep_seed=5, per_operator=1, partition="open",
+                max_cases=40, withheld=set(), cases_doc=doc)
