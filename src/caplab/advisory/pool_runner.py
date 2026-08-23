@@ -121,6 +121,12 @@ def sandbox_argv(argv: list[str], workspace: str | None,
     """
     home = os.path.expanduser("~")
     git_root = os.path.join(home, "git")
+    if workspace:
+        # bwrap binds and the lane cwd must be absolute: a relative
+        # workspace resolved against a masked parent silently loses to the
+        # tmpfs and every invocation dies with exit 1 (both isolation
+        # sweeps of 2026-08-23 did exactly that).
+        workspace = os.path.abspath(workspace)
     wrapped = ["bwrap", "--ro-bind", "/", "/", "--bind", home, home]
     if os.path.isdir(git_root):
         # MASKED, not merely read-only: on 2026-08-23 two reviews resolved
@@ -152,7 +158,8 @@ def invoke(adapter: dict, prompt: str, timeout: int,
         sandbox = "bwrap"
     # The lane's cwd is the neutral case workspace, never a repository:
     # a subject that "looks around" finds only its own spill file.
-    run_cwd = workspace if workspace and os.path.isdir(workspace) else None
+    run_cwd = (os.path.abspath(workspace)
+               if workspace and os.path.isdir(workspace) else None)
     prompt_mode = adapter.get("prompt_mode", "stdin")
     encoded = prompt.encode()
     transport = prompt_mode

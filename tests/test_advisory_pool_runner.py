@@ -742,3 +742,16 @@ class AdapterResourceTest(unittest.TestCase):
             argv = pool_runner.sandbox_argv(["tool"], workspace=None,
                                             extra_ro=resources)
             self.assertIn(f"--ro-bind {f.name} {f.name}", " ".join(argv))
+
+
+class AbsoluteWorkspaceTest(unittest.TestCase):
+    def test_relative_workspace_is_absolutized_in_binds(self):
+        import shutil
+        os.makedirs("rel-ws-probe", exist_ok=True)
+        try:
+            argv = pool_runner.sandbox_argv(["true"], "rel-ws-probe")
+            joined = " ".join(argv)
+            self.assertNotIn(" rel-ws-probe ", joined)
+            self.assertIn(os.path.abspath("rel-ws-probe"), joined)
+        finally:
+            shutil.rmtree("rel-ws-probe", ignore_errors=True)
