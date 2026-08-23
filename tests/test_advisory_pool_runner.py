@@ -643,11 +643,14 @@ class SandboxTest(unittest.TestCase):
         self.assertEqual(argv[0], "bwrap")
         joined = " ".join(argv)
         git_root = os.path.expanduser("~/git")
-        self.assertIn(f"--ro-bind {git_root} {git_root}", joined)
+        if os.path.isdir(git_root):
+            self.assertIn(f"--ro-bind {git_root} {git_root}", joined)
         self.assertIn("--bind /tmp/ws /tmp/ws", joined)
         self.assertTrue(joined.endswith("-- echo hi"))
 
-    @unittest.skipUnless(pool_runner.sandbox_available(), "bwrap absent")
+    @unittest.skipUnless(pool_runner.sandbox_available()
+                         and os.path.isdir(os.path.expanduser("~/git/caplab")),
+                         "bwrap absent or no ~/git checkout to protect")
     def test_lane_cannot_write_into_git_root(self):
         import subprocess
         target = os.path.join(os.path.expanduser("~/git/caplab"),

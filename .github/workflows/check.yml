@@ -26,6 +26,11 @@ jobs:
       # advisory runner contains every lane with it; the runner image ships
       # without it.
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq bubblewrap && bwrap --version
+      # Ubuntu 24.04 gates unprivileged user namespaces behind AppArmor
+      # profiles; the runner image does not load bubblewrap's, so
+      # `bwrap --unshare-all` dies at spawn. Relax it for the job only.
+      - run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - run: bwrap --unshare-all --ro-bind / / --proc /proc --dev /dev -- /bin/true && echo "userns sandbox works" 
       - run: python -m pip install --require-hashes -r src/caplab/runtime/requirements.lock
       - run: python -m pip install --require-hashes -r requirements-test.lock
       - run: make check

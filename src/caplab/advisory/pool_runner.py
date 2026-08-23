@@ -103,8 +103,13 @@ def sandbox_argv(argv: list[str], workspace: str | None) -> list[str]:
     """
     home = os.path.expanduser("~")
     git_root = os.path.join(home, "git")
-    wrapped = ["bwrap", "--ro-bind", "/", "/", "--bind", home, home,
-               "--ro-bind", git_root, git_root, "--bind", "/tmp", "/tmp"]
+    wrapped = ["bwrap", "--ro-bind", "/", "/", "--bind", home, home]
+    if os.path.isdir(git_root):
+        # Binding a path that does not exist makes bwrap refuse to start
+        # at all (a CI runner keeps its checkout elsewhere); the protection
+        # is for the owner host's checkouts, which exist.
+        wrapped += ["--ro-bind", git_root, git_root]
+    wrapped += ["--bind", "/tmp", "/tmp"]
     if workspace:
         wrapped += ["--bind", workspace, workspace]
     wrapped += ["--dev", "/dev", "--proc", "/proc", "--die-with-parent", "--"]
