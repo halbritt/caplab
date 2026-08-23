@@ -81,6 +81,8 @@ def declared_identity(binding_id: str) -> tuple[str | None, str | None]:
             harness = "agy · tools"
         elif " claude " in f" {joined} " or "claude -p" in joined:
             harness = "claude-code · tools"
+        elif "opencode" in joined:
+            harness = "opencode · tools"
         else:
             harness = None
         return model, harness
@@ -206,29 +208,52 @@ def load_contrasts():
     return out
 
 
-def projection_top(limit=8):
+def all_projections(limit=10):
+    """Every objective spec in the quartermaster registry, projected."""
+    import glob as _glob
     if not os.path.isdir(QUARTERMASTER):
-        return None
-    try:
-        env = dict(os.environ, PYTHONPATH=os.path.join(QUARTERMASTER, "src"))
-        raw = subprocess.run(
-            [sys.executable, "-m", "quartermaster", "project", "--objective",
-             os.path.join(QUARTERMASTER, "objectives", "striatum-draft", "review.json")],
-            capture_output=True, text=True, cwd=QUARTERMASTER, env=env, timeout=60)
-        if raw.returncode != 0:
-            return None
-        p = json.loads(raw.stdout)
-        ranked = []
-        for e in p.get("ranked", [])[:limit]:
-            c = e["constructs"].get("review.defect_discrimination/1", {})
-            ranked.append({"rank": e.get("rank"), "label": e.get("label"),
-                           "score": c.get("score"), "custody": c.get("custody"),
-                           "seeds": ",".join(c.get("case_sets") or []),
-                           "n": c.get("n")})
-        return {"ranked": ranked,
-                "lead": (p.get("lead_comparability") or {}).get("reading", "")}
-    except Exception:
-        return None
+        return []
+    env = dict(os.environ, PYTHONPATH=os.path.join(QUARTERMASTER, "src"))
+    out = []
+    for path in sorted(_glob.glob(os.path.join(
+            QUARTERMASTER, "objectives", "**", "*.json"), recursive=True)):
+        try:
+            raw = subprocess.run(
+                [sys.executable, "-m", "quartermaster", "project",
+                 "--objective", path],
+                capture_output=True, text=True, cwd=QUARTERMASTER, env=env,
+                timeout=60)
+            if raw.returncode != 0:
+                continue
+            p = json.loads(raw.stdout)
+            with open(path, encoding="utf-8") as f:
+                spec = json.load(f)
+            construct = next(iter(spec.get("constructs") or {}), "?")
+            ranked = []
+            for e in p.get("ranked", [])[:limit]:
+                c = next(iter(e["constructs"].values()), {})
+                ranked.append({"rank": e.get("rank"),
+                               "label": e.get("label"),
+                               "score": c.get("score"),
+                               "custody": c.get("custody"),
+                               "seeds": ",".join(c.get("case_sets") or []),
+                               "n": c.get("n")})
+            if not ranked:
+                continue
+            out.append({
+                "name": os.path.splitext(os.path.basename(path))[0],
+                "construct": construct,
+                "status": spec.get("status", ""),
+                "lead": (p.get("lead_comparability") or {}).get("reading", ""),
+                "ranked": ranked,
+                "total": len(p.get("ranked") or []),
+                "excluded": len(p.get("excluded") or []),
+            })
+        except Exception:
+            continue
+    order = {"review": 0, "build": 1}
+    out.sort(key=lambda o: (order.get(o["name"], 2), o["name"]))
+    return out
 
 
 def esc(x):
@@ -343,7 +368,7 @@ def main() -> int:
                 gate_docs.append(json.load(f))
     promotion = promotion_candidates(gate_docs, adjudications,
                                      substrate_sources=sources)
-    projection = projection_top()
+    projections = all_projections()
     generated = max((r["as_of"] for r in claims), default="?")
 
     cohorts = {}
@@ -394,34 +419,55 @@ def main() -> int:
                  if "reproduction not established" in w["reason"])
 
     projection_html = ""
-    if projection:
-        rows_html = ['<table><thead><tr><th>rank</th><th>Binding</th>'
-                     '<th>harness</th><th>score</th><th>custody</th>'
-                     '<th>seed</th><th>n</th></tr></thead><tbody>']
-        for e in projection["ranked"]:
-            score = "—" if e["score"] is None else f'{e["score"]:.3f}'
-            model, harness = declared_identity(e["label"])
-            model_note = (f'<br><span class="model-note">{esc(model)}</span>'
-                          if model and model.lower() not in e["label"].lower()
-                          else "")
-            rows_html.append(
-                f'<tr><td class="num">{esc(e["rank"])}</td>'
-                f'<td class="name">{esc(e["label"])}{model_note}</td>'
-                f'<td class="harness">{esc(harness) if harness else "—"}</td>'
-                f'<td class="num">{score}</td><td>{esc(e["custody"])}</td>'
-                f'<td class="num">{esc(e["seeds"])}</td>'
-                f'<td class="num">{esc(e["n"])}</td></tr>')
-        rows_html.append("</tbody></table>")
-        projection_html = (
-            "<section><h2>Quartermaster projection (review objective)</h2>"
-            f'<p class="muted">{esc(projection["lead"])}</p>'
-            '<p class="muted">The objective pins the synthetic-contract '
-            'instrument: Bindings never measured on it are unranked rather '
-            'than ranked on incomparable history. Same-model tuples on '
-            'different accounts or harnesses are distinct Bindings and rank '
-            'separately by design (account, config surface, and mounting are '
-            'behavior-bearing identity fields).</p>'
-            + "\n".join(rows_html) + "</section>")
+    if projections:
+        parts = [
+            "<section><h2>Quartermaster projections (all objectives)</h2>"
+            '<p class="muted">One derived ranking per consumer objective '
+            "spec — regenerable, never stored facts. Same-model tuples on "
+            "different accounts or harnesses are distinct Bindings and rank "
+            "separately by design. The review objective pins the "
+            "synthetic-contract instrument; Tier B objectives rank "
+            "PRODUCERS under independent-family review (model-relative "
+            "labels, reviewer-mix confound noted on the claims); draft "
+            "objectives await consumer ratification.</p>"]
+        for proj in projections:
+            parts.append(
+                f'<h3 style="font-size:.95rem;margin:1.2rem 0 .2rem">'
+                f'{esc(proj["name"])} <span class="muted" '
+                f'style="font-weight:400">— {esc(proj["construct"])}'
+                f'{" · " + esc(proj["status"]) if proj["status"] else ""}'
+                f'</span></h3>')
+            if proj["lead"]:
+                parts.append(f'<p class="muted" style="font-size:.85rem">'
+                             f'{esc(proj["lead"])}</p>')
+            rows_html = ['<table><thead><tr><th>rank</th><th>Binding</th>'
+                         '<th>harness</th><th>score</th><th>custody</th>'
+                         '<th>seed</th><th>n</th></tr></thead><tbody>']
+            for e in proj["ranked"]:
+                score = "—" if e["score"] is None else f'{e["score"]:.3f}'
+                model, harness = declared_identity(e["label"])
+                model_note = (
+                    f'<br><span class="model-note">{esc(model)}</span>'
+                    if model and model.lower() not in e["label"].lower()
+                    else "")
+                rows_html.append(
+                    f'<tr><td class="num">{esc(e["rank"])}</td>'
+                    f'<td class="name">{esc(e["label"])}{model_note}</td>'
+                    f'<td class="harness">'
+                    f'{esc(harness) if harness else "—"}</td>'
+                    f'<td class="num">{score}</td><td>{esc(e["custody"])}</td>'
+                    f'<td class="num">{esc(e["seeds"])}</td>'
+                    f'<td class="num">{esc(e["n"])}</td></tr>')
+            rows_html.append("</tbody></table>")
+            shown = len(proj["ranked"])
+            if proj["total"] > shown or proj["excluded"]:
+                rows_html.append(
+                    f'<p class="muted" style="font-size:.82rem">showing '
+                    f'{shown} of {proj["total"]} ranked; '
+                    f'{proj["excluded"]} below floors.</p>')
+            parts.append("\n".join(rows_html))
+        parts.append("</section>")
+        projection_html = "\n".join(parts)
 
     production = {}
     for line in open(os.path.join(REPO, "advisory", "claims.jsonl"),
