@@ -1,3 +1,4 @@
+import os
 import unittest
 
 from caplab.advisory.corpus import (MEASUREMENT_READY_SOURCES,
@@ -174,3 +175,30 @@ class TargetedCasesTest(unittest.TestCase):
             targeted_cases([odd], [{"substrate_id": odd["substrate_id"],
                                     "operator": "dropped_section"}],
                            sweep_seed=1)
+
+
+class TreeGuardTest(unittest.TestCase):
+    """The supervisor notices a live-tree write instead of an operator
+    finding it by luck forty minutes later."""
+
+    def test_tracked_changes_are_detected(self):
+        import subprocess
+        import tempfile
+
+        from caplab.advisory.treeguard import snapshot, changed
+        with tempfile.TemporaryDirectory() as repo:
+            subprocess.run(["git", "init", "-q", repo], check=True)
+            subprocess.run(["git", "-C", repo, "config", "user.email", "t@t"], check=True)
+            subprocess.run(["git", "-C", repo, "config", "user.name", "t"], check=True)
+            path = os.path.join(repo, "a.txt")
+            open(path, "w").write("one\n")
+            subprocess.run(["git", "-C", repo, "add", "a.txt"], check=True)
+            subprocess.run(["git", "-C", repo, "commit", "-q", "-m", "a"], check=True)
+            before = snapshot([repo])
+            self.assertFalse(changed(before, snapshot([repo])))
+            open(path, "w").write("two\n")
+            self.assertTrue(changed(before, snapshot([repo])))
+            # untracked files do not count: runs create them legitimately
+            open(path, "w").write("one\n")
+            open(os.path.join(repo, "new.txt"), "w").write("x")
+            self.assertFalse(changed(before, snapshot([repo])))

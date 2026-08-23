@@ -126,7 +126,7 @@ class MeasureCaseTest(unittest.TestCase):
     def test_mechanical_gate_precedes_any_call(self):
         calls = []
 
-        def spy(adapter, prompt, timeout):
+        def spy(adapter, prompt, timeout, **kwargs):
             calls.append(prompt)
             return {"doc": None, "exit_code": 0, "seconds": 0,
                     "transport": "stdin", "prompt_bytes": 0, "raw_head": ""}
@@ -145,7 +145,7 @@ class MeasureCaseTest(unittest.TestCase):
     def test_arm_order_is_case_derived_not_fixed(self):
         orders = set()
 
-        def record_order(adapter, prompt, timeout):
+        def record_order(adapter, prompt, timeout, **kwargs):
             orders.add(("may freely" in prompt or "may clear" in prompt))
             return {"doc": {"verdict": "accept", "findings": []},
                     "exit_code": 0, "seconds": 0, "transport": "stdin",
@@ -176,7 +176,7 @@ class PairValidityTest(unittest.TestCase):
     """
 
     def _one_dead_arm(self, dead_arm):
-        def fake_invoke(adapter, prompt, timeout):
+        def fake_invoke(adapter, prompt, timeout, **kwargs):
             arm = "mutant" if ("may freely" in prompt or "may clear" in prompt) \
                 else "control"
             if arm == dead_arm:
@@ -257,7 +257,7 @@ class ProfileRoutingTest(unittest.TestCase):
     def test_change_set_case_uses_the_delivery_contract(self):
         seen = {}
 
-        def spy(adapter, prompt, timeout):
+        def spy(adapter, prompt, timeout, **kwargs):
             seen["prompt"] = prompt
             return {"doc": {"verdict": "accept", "findings": []},
                     "exit_code": 0, "seconds": 0, "transport": "stdin",
@@ -293,7 +293,7 @@ class ReplicationTest(unittest.TestCase):
     def _flaky(self, control_pattern, mutant_pattern="rrr"):
         state = {"control": list(control_pattern), "mutant": list(mutant_pattern)}
 
-        def invoke(adapter, prompt, timeout):
+        def invoke(adapter, prompt, timeout, **kwargs):
             arm = "mutant" if ("may freely" in prompt or "may clear" in prompt) \
                 else "control"
             token = state[arm].pop(0)
@@ -344,7 +344,7 @@ class ReplicationTest(unittest.TestCase):
         # agree with the verdict the row reports.
         state = {"control": ["a", "r", "r"], "mutant": ["r"]}
 
-        def fake(adapter, prompt, timeout):
+        def fake(adapter, prompt, timeout, **kwargs):
             arm = "mutant" if ("may freely" in prompt or "may clear" in prompt) \
                 else "control"
             refusing = state[arm].pop(0) == "r"
@@ -489,7 +489,7 @@ class AnchorSetTest(unittest.TestCase):
     def test_asymmetric_replication_is_honoured(self):
         counts = {"control": 0, "mutant": 0}
 
-        def counting(adapter, prompt, timeout):
+        def counting(adapter, prompt, timeout, **kwargs):
             arm = "mutant" if ("may freely" in prompt or "may clear" in prompt) \
                 else "control"
             counts[arm] += 1
@@ -629,3 +629,48 @@ class ProfileRemeasurementTest(unittest.TestCase):
             pool_runner.select_cases(
                 pool, sweep_seed=5, per_operator=1, partition="open",
                 max_cases=40, withheld=set(), cases_doc=doc)
+
+
+class SandboxTest(unittest.TestCase):
+    """Replayed prompts name live repository paths, and an agentic harness
+    will act on them: on 2026-08-23 an agy lane wrote a replay case's
+    delivery into the live striatum-next checkout (postmortem
+    scheduler-overwrite-postmortem-2026-08-23). Every adapter invocation is
+    now contained: the user's git root is read-only inside the lane."""
+
+    def test_sandbox_wraps_argv_with_git_root_read_only(self):
+        argv = pool_runner.sandbox_argv(["echo", "hi"], workspace="/tmp/ws")
+        self.assertEqual(argv[0], "bwrap")
+        joined = " ".join(argv)
+        git_root = os.path.expanduser("~/git")
+        self.assertIn(f"--ro-bind {git_root} {git_root}", joined)
+        self.assertIn("--bind /tmp/ws /tmp/ws", joined)
+        self.assertTrue(joined.endswith("-- echo hi"))
+
+    @unittest.skipUnless(pool_runner.sandbox_available(), "bwrap absent")
+    def test_lane_cannot_write_into_git_root(self):
+        import subprocess
+        target = os.path.join(os.path.expanduser("~/git/caplab"),
+                              ".caplab-sandbox-probe")
+        argv = pool_runner.sandbox_argv(
+            ["sh", "-c", f"touch {target} && echo WROTE || echo REFUSED"],
+            workspace=tempfile.gettempdir())
+        out = subprocess.run(argv, capture_output=True, text=True,
+                             timeout=30).stdout
+        self.assertIn("REFUSED", out)
+        self.assertFalse(os.path.exists(target))
+
+    def test_invoke_records_sandbox_and_preamble(self):
+        adapter = {"command": ["python3", "-c",
+                               "import sys;print('{\"verdict\":\"accept\"}')"],
+                   "prompt_mode": "arg"}
+        result = invoke(adapter, "small", timeout=60)
+        self.assertIn(result["sandbox"], ("bwrap", "none"))
+
+    def test_every_contract_forbids_side_effects(self):
+        from caplab.advisory.calibrate import CALIBRATION_PROFILES
+        for name, prompt in CALIBRATION_PROFILES.items():
+            if name == "v0":
+                continue
+            self.assertIn("REVIEW ONLY", prompt, name)
+            self.assertIn("Do not create, modify", prompt, name)

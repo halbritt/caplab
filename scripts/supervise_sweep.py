@@ -29,6 +29,7 @@ import time
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                 "..", "src"))
 
+from caplab.advisory import treeguard  # noqa: E402
 from caplab.advisory.pool_runner import (  # noqa: E402
     invoke, load_declaration, run_pool)
 
@@ -148,6 +149,10 @@ def main() -> int:
                   f"{have}/{args.target}", flush=True)
             return 4
 
+        # Notice a live-tree write, do not find it later by luck: a tracked
+        # modification in a protected checkout during an attempt is an
+        # incident, the run stops, and the tree is left untouched as evidence.
+        tree_before = treeguard.snapshot()
         released = release_failures(args.out_dir)
         print(f"[{args.backend}] attempt {attempt}: {have} usable, "
               f"{released} case(s) released for re-measurement", flush=True)
@@ -155,6 +160,13 @@ def main() -> int:
                            registry_path=REGISTRY, out_dir=args.out_dir,
                            anchor_path=ANCHORS, timeout=args.timeout,
                            cases_path=args.cases, **sweep)
+        tree_after = treeguard.snapshot()
+        if treeguard.changed(tree_before, tree_after):
+            print(f"[{args.backend}] INCIDENT: a protected checkout changed "
+                  f"during attempt {attempt}: "
+                  f"{treeguard.diff(tree_before, tree_after)}; stopping and "
+                  f"leaving the tree untouched as evidence", flush=True)
+            return 7
         now = usable_count(args.out_dir)
         print(f"[{args.backend}] attempt {attempt} ended: "
               f"aborted={summary.get('aborted')!r} usable {have} -> {now}",

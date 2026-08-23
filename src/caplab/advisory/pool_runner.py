@@ -39,8 +39,8 @@ from concurrent.futures import ThreadPoolExecutor
 import yaml
 
 from ._tuner_vendored import REFUSING, anchor_hits, anchors_of, extract_json
-from .calibrate import (CALIBRATION_PROFILES, profile_for_artifact,
-                        resolve_json_pointer)
+from .calibrate import (CALIBRATION_PROFILES, REVIEW_PREAMBLE_VERSION,
+                        profile_for_artifact, resolve_json_pointer)
 from .corpus import SubstrateRegistry, sample_cases, targeted_cases
 from .instrument_defects import NotApplicable
 from .operators import BY_NAME, check_present
@@ -82,8 +82,44 @@ def load_declaration(backends_root: str, backend_id: str) -> dict:
     return declaration
 
 
-def invoke(adapter: dict, prompt: str, timeout: int) -> dict:
+def sandbox_available() -> bool:
+    import shutil
+    return shutil.which("bwrap") is not None and not os.environ.get(
+        "CAPLAB_NO_SANDBOX")
+
+
+def sandbox_argv(argv: list[str], workspace: str | None) -> list[str]:
+    """Contain a lane: the user's git root is read-only inside it.
+
+    On 2026-08-23 a replayed build case's delivery was written by an agy
+    lane into the live striatum-next checkout, byte-identical to the case
+    body (postmortem scheduler-overwrite-postmortem-2026-08-23); a sibling
+    case 26 seconds later named a file carrying uncommitted repair work.
+    The replayed prompts name live repository paths by design, and an
+    agentic harness acts on what it is shown — so the escape is contained
+    at the filesystem, not argued away in the prompt. Home stays writable
+    (harness config dirs, caches, opencode's db); `~/git` is bound
+    read-only on top of it; only the case workspace is re-bound writable.
+    """
+    home = os.path.expanduser("~")
+    git_root = os.path.join(home, "git")
+    wrapped = ["bwrap", "--ro-bind", "/", "/", "--bind", home, home,
+               "--ro-bind", git_root, git_root, "--bind", "/tmp", "/tmp"]
+    if workspace:
+        wrapped += ["--bind", workspace, workspace]
+    wrapped += ["--dev", "/dev", "--proc", "/proc", "--die-with-parent", "--"]
+    return wrapped + list(argv)
+
+
+def invoke(adapter: dict, prompt: str, timeout: int,
+           workspace: str | None = None) -> dict:
     argv = list(adapter["command"])
+    sandbox = "none"
+    if sandbox_available():
+        if workspace:
+            os.makedirs(workspace, exist_ok=True)
+        argv = sandbox_argv(argv, workspace)
+        sandbox = "bwrap"
     prompt_mode = adapter.get("prompt_mode", "stdin")
     encoded = prompt.encode()
     transport = prompt_mode
@@ -98,6 +134,7 @@ def invoke(adapter: dict, prompt: str, timeout: int) -> dict:
             return {"doc": None, "exit_code": None, "timed_out": False,
                     "seconds": 0.0, "transport": "none",
                     "prompt_bytes": len(encoded), "raw_head": "",
+                    "sandbox": sandbox,
                     "error": "prompt exceeds transport capacity"}
         argv.append(prompt)
     else:
@@ -125,6 +162,7 @@ def invoke(adapter: dict, prompt: str, timeout: int) -> dict:
         "transport": transport,
         "prompt_bytes": len(encoded),
         "raw_head": stdout[:400],
+        "sandbox": sandbox,
         "error": None,
     }
 
@@ -226,7 +264,8 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
                      "raw_head": "",
                      "error": "prompt exceeds transport capacity"}]
         else:
-            runs = [invoke(adapter, prompt_text, timeout)
+            runs = [invoke(adapter, prompt_text, timeout,
+                           workspace=workspace)
                     for _ in range(per_arm[name])]
             if transport_label:
                 for r in runs:
@@ -317,6 +356,8 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
         "mutant_json_valid": mutant["doc"] is not None,
         "control_seconds": control["seconds"], "mutant_seconds": mutant["seconds"],
         "control_transport": control["transport"], "mutant_transport": mutant["transport"],
+        "sandbox": control.get("sandbox"),
+        "review_preamble": REVIEW_PREAMBLE_VERSION,
         "estimated_input_tokens": int(mutant["prompt_bytes"] / 3.04),
         "error": None,
     }
