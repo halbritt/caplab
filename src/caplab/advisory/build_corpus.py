@@ -391,3 +391,128 @@ def tier_a_claims(events: list[dict], as_of: str, ledger_lines: int,
                 construct, backend, metric, cell["pass"], n,
                 as_of, ledger_lines, ledger_sha256, base_notes))
     return claims
+
+
+# --------------------------------------------------------------- Tier B
+# Tier B (Principal framing, 2026-08-23): a review pass runs on a lane and
+# produces a Review Ledger with a closed verdict; independence is enforced
+# at placement — the reviewer's aliasing class must exclude the producer's,
+# so a Gemini-built design is never judged by Gemini. These labels are
+# therefore ACCEPTANCE BY INDEPENDENT-FAMILY REVIEW: adversarial and
+# independence-guarded, but model-relative — never gold. Constructs here
+# measure PRODUCERS under that judgment; the judged artifact's own
+# attribution block names the producer.
+
+TIER_B_CONSTRUCTS = {
+    "planning.independent_acceptance/1": {
+        "review_pass_rate": "implementation-plan-review",
+        "acceptance_pass_rate": "implementation-plan-acceptance",
+        "finishability_pass_rate": "implementation-plan-finishability",
+    },
+    "design.independent_acceptance/1": {
+        "review_pass_rate": "design-review",
+        "acceptance_pass_rate": "design-acceptance",
+    },
+    "proposal.independent_acceptance/1": {
+        "review_pass_rate": "proposal-review",
+        "acceptance_pass_rate": "proposal-acceptance",
+    },
+    "packet.independent_review/1": {
+        "review_pass_rate": "packet-review",
+    },
+    "decision.independent_acceptance/1": {
+        "acceptance_pass_rate": "decision-acceptance",
+    },
+}
+_TIER_B_GATE_IDS = {g for spec in TIER_B_CONSTRUCTS.values()
+                    for g in spec.values()}
+
+
+def harvest_judgment_gates(events: list[dict]) -> dict:
+    """{gate_id: {producer backend: {pass, fail}}} for Tier B gates.
+
+    Attribution is by the judged subject's content hash through
+    `artifact_admitted.attribution.backend_id` — the artifact names its own
+    producer. Judged artifacts with no admitted attribution are counted
+    under "(unattributed)" rather than dropped, so coverage is visible.
+    """
+    producer_of_hash: dict[str, str] = {}
+    for e in events:
+        if e.get("type") == "artifact_admitted":
+            p = e.get("payload", {})
+            h = p.get("content_hash")
+            b = (p.get("attribution") or {}).get("backend_id")
+            if h and b:
+                producer_of_hash[h] = b
+    out: dict = {}
+    for e in events:
+        payload = e.get("payload", {})
+        gate_id = payload.get("gate_id")
+        if e.get("type") != "gate_result" or gate_id not in _TIER_B_GATE_IDS:
+            continue
+        h = (payload.get("subject") or {}).get("content_hash")
+        backend = producer_of_hash.get(h, "(unattributed)")
+        cell = out.setdefault(gate_id, {}).setdefault(
+            backend, {"pass": 0, "fail": 0})
+        cell["pass" if payload.get("outcome") == "pass" else "fail"] += 1
+    return out
+
+
+def tier_b_claims(events: list[dict], as_of: str, ledger_lines: int,
+                  ledger_sha256: str | None = None) -> list[dict]:
+    """Producer claims under independent-family judgment."""
+    if ledger_lines < MIN_LEDGER_LINES:
+        raise ValueError(
+            f"ledger dump holds {ledger_lines} lines, below the "
+            f"{MIN_LEDGER_LINES} floor")
+    gates = harvest_judgment_gates(events)
+    notes = [
+        "striatum-production custody: labels are verdicts of production "
+        "review passes, harvested and scored by CAPLAB "
+        "(caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement "
+        "enforces that the reviewer's aliasing class excludes the "
+        "producer's. Model-relative judgment, not gold; treat with the "
+        "vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random.",
+    ]
+    claims: list[dict] = []
+    for construct, spec in sorted(TIER_B_CONSTRUCTS.items()):
+        per_backend: dict = {}
+        for metric, gate_id in spec.items():
+            for backend, cell in (gates.get(gate_id) or {}).items():
+                if backend == "(unattributed)":
+                    continue
+                per_backend.setdefault(backend, {})[metric] = cell
+        for backend, metric_cells in sorted(per_backend.items()):
+            metrics = {}
+            total = 0
+            for metric, cell in metric_cells.items():
+                n = cell["pass"] + cell["fail"]
+                if not n:
+                    continue
+                lo, hi = wilson(cell["pass"], n)
+                metrics[metric] = {"value": cell["pass"] / n,
+                                   "denominator": n, "ci95": [lo, hi]}
+                total = max(total, n)
+            if not metrics:
+                continue
+            metrics["n_pairs"] = {"value": total}
+            body = {
+                "record": "quartermaster-scored-claim/1",
+                "construct": construct,
+                "subject": {"source_id": backend, "match": "declared-name"},
+                "custody": "striatum-production",
+                "as_of": as_of,
+                "metrics": metrics,
+                "evidence": [{"kind": "striatum-ledger-harvest",
+                              "ledger_lines": ledger_lines,
+                              "ledger_sha256": ledger_sha256,
+                              "gates": sorted(spec.values())}],
+                "notes": list(notes),
+            }
+            payload = json.dumps(body, sort_keys=True, ensure_ascii=False)
+            body["claim_id"] = "qc-" + hashlib.sha256(
+                payload.encode()).hexdigest()[:16]
+            claims.append(body)
+    return claims

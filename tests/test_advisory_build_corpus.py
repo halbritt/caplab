@@ -186,3 +186,60 @@ class TierAHarvestTest(unittest.TestCase):
         self.assertEqual(plan["metrics"]["delivery_rate"]["value"], 0.5)
         self.assertEqual(plan["metrics"]["n_pairs"]["value"], 2)
         self.assertEqual(plan["custody"], "striatum-production")
+
+
+def admitted(seq, chash, backend):
+    return {"seq": seq, "type": "artifact_admitted",
+            "payload": {"content_hash": chash,
+                        "attribution": {"backend_id": backend}}}
+
+
+def judged(seq, chash, gate_id, outcome):
+    return {"seq": seq, "type": "gate_result",
+            "payload": {"gate_id": gate_id, "outcome": outcome,
+                        "subject": {"content_hash": chash,
+                                    "identity": "x", "version_seq": seq}}}
+
+
+class TierBHarvestTest(unittest.TestCase):
+    """Tier B: judgment gates attributed to the PRODUCER of the judged
+    artifact. The label is acceptance by independent-family review (aliasing
+    exclusion at placement) — model-relative, never gold."""
+
+    def test_judgment_gate_attributes_to_producer(self):
+        from caplab.advisory.build_corpus import harvest_judgment_gates
+        events = ledger(
+            admitted(1, "a" * 64, "tuple-a"),
+            judged(2, "a" * 64, "implementation-plan-review", "pass"),
+            judged(3, "a" * 64, "implementation-plan-acceptance", "fail"))
+        out = harvest_judgment_gates(events)
+        self.assertEqual(
+            out["implementation-plan-review"]["tuple-a"], {"pass": 1, "fail": 0})
+        self.assertEqual(
+            out["implementation-plan-acceptance"]["tuple-a"],
+            {"pass": 0, "fail": 1})
+
+    def test_unattributed_subjects_are_counted_not_scored(self):
+        from caplab.advisory.build_corpus import harvest_judgment_gates
+        events = ledger(judged(2, "b" * 64, "design-review", "pass"))
+        out = harvest_judgment_gates(events)
+        self.assertEqual(out["design-review"].get("(unattributed)"),
+                         {"pass": 1, "fail": 0})
+
+    def test_tier_b_claims_carry_label_class(self):
+        from caplab.advisory.build_corpus import tier_b_claims
+        events = ledger(
+            admitted(1, "a" * 64, "tuple-a"),
+            judged(2, "a" * 64, "design-review", "pass"),
+            judged(3, "a" * 64, "design-review", "fail"),
+            judged(4, "a" * 64, "design-acceptance", "pass"))
+        claims = tier_b_claims(events, as_of="2026-08-23T00:00:00+00:00",
+                               ledger_lines=250000)
+        c = next(c for c in claims
+                 if c["construct"] == "design.independent_acceptance/1"
+                 and c["subject"]["source_id"] == "tuple-a")
+        self.assertEqual(c["metrics"]["review_pass_rate"]["value"], 0.5)
+        self.assertEqual(c["metrics"]["acceptance_pass_rate"]["value"], 1.0)
+        self.assertTrue(any("independent-family" in n for n in c["notes"]))
+        self.assertTrue(any("not gold" in n or "model-relative" in n
+                            for n in c["notes"]))

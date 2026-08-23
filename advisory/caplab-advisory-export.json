@@ -85,6 +85,93 @@
     },
     {
       "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-6062ac555a818e03",
+      "construct": "design.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "design-acceptance",
+            "design-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.06149194472039615,
+            0.7923403991979523
+          ],
+          "denominator": 3,
+          "value": 0.3333333333333333
+        },
+        "n_pairs": {
+          "value": 7
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.15821985525146975,
+            0.7495416354723428
+          ],
+          "denominator": 7,
+          "value": 0.42857142857142855
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-3a4e780df5d45b59",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 16
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.44404355834740666,
+            0.8583535614521796
+          ],
+          "denominator": 16,
+          "value": 0.6875
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
       "claim_id": "qc-6e6146ee2aa41850",
       "construct": "planning.delivery/1",
       "custody": "striatum-production",
@@ -121,6 +208,55 @@
     },
     {
       "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-aaa1e6bd853fe597",
+      "construct": "planning.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "implementation-plan-acceptance",
+            "implementation-plan-finishability",
+            "implementation-plan-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.299993315138392,
+            0.9032285888942195
+          ],
+          "denominator": 6,
+          "value": 0.6666666666666666
+        },
+        "n_pairs": {
+          "value": 11
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.280091537409322,
+            0.7872872837754024
+          ],
+          "denominator": 11,
+          "value": 0.5454545454545454
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
       "claim_id": "qc-672bfd7b4cc9f0e6",
       "construct": "proposal.delivery/1",
       "custody": "striatum-production",
@@ -148,6 +284,54 @@
         "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
         "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
         "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-0fb840d608bff148",
+      "construct": "proposal.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "proposal-acceptance",
+            "proposal-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.20765960080204765,
+            0.9385080552796037
+          ],
+          "denominator": 3,
+          "value": 0.6666666666666666
+        },
+        "n_pairs": {
+          "value": 3
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.43850296824495455,
+            1.0
+          ],
+          "denominator": 3,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -256,6 +440,63 @@
         "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
         "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
         "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy-claude-sonnet-4-6-thinking"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-cd6038b635edf209",
+      "construct": "planning.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "implementation-plan-acceptance",
+            "implementation-plan-finishability",
+            "implementation-plan-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.0,
+            0.7934506856227626
+          ],
+          "denominator": 1,
+          "value": 0.0
+        },
+        "finishability_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 1
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -587,6 +828,45 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-fa25b76f42a4c9f1",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 16
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.5699111903802586,
+            0.9340840092857187
+          ],
+          "denominator": 16,
+          "value": 0.8125
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy-gemini-3-5-flash-high"
+      }
+    },
+    {
       "as_of": "2026-08-22T00:00:00+00:00",
       "claim_id": "qc-8ffafb76fd183e84",
       "construct": "build.packet_delivery/1",
@@ -626,6 +906,45 @@
         "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
         "capacity deferrals and dispatch refusals leave the delivery denominator (0 excluded).",
         "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy-gemini-3-5-flash-medium"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-a66ba7e813a11fa9",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 2
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.34238022750665303,
+            1.0
+          ],
+          "denominator": 2,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -771,6 +1090,93 @@
         "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
         "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
         "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy-gemini-3-6-flash-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-270f00fce7f766fe",
+      "construct": "design.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "design-acceptance",
+            "design-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.34238022750665303,
+            1.0
+          ],
+          "denominator": 2,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 8
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.071479212752109,
+            0.5907245696898311
+          ],
+          "denominator": 8,
+          "value": 0.25
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy-gemini-3-6-flash-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-3c8a21594981564f",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 1
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.0,
+            0.7934506856227626
+          ],
+          "denominator": 1,
+          "value": 0.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -1194,6 +1600,93 @@
         "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
         "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
         "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy-gemini-3-7-flash-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-07e97a485eae957d",
+      "construct": "design.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "design-acceptance",
+            "design-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 2
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.09453120573423074,
+            0.9054687942657693
+          ],
+          "denominator": 2,
+          "value": 0.5
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy-gemini-3-7-flash-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-a26e5ef159156295",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 304
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.5894375187995874,
+            0.6964239123965811
+          ],
+          "denominator": 304,
+          "value": 0.6447368421052632
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -1742,6 +2235,45 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-19db027e2d8604fb",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 65
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.5720235708527267,
+            0.7911296863307898
+          ],
+          "denominator": 65,
+          "value": 0.6923076923076923
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "agy-gemini-3-7-flash-medium"
+      }
+    },
+    {
       "as_of": "2026-08-16T15:44:59.512727+00:00",
       "claim_id": "qc-5ea1f543ec76d6df",
       "construct": "review.defect_discrimination/1",
@@ -2235,6 +2767,93 @@
     },
     {
       "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-58cc32610e716bda",
+      "construct": "design.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "design-acceptance",
+            "design-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.6989663547715128,
+            0.9721335187862319
+          ],
+          "denominator": 20,
+          "value": 0.9
+        },
+        "n_pairs": {
+          "value": 63
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.20237691162188495,
+            0.4236037231355958
+          ],
+          "denominator": 63,
+          "value": 0.30158730158730157
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-code"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-8905ac83ae1aecb0",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 103
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.4476593463255318,
+            0.6365776165476932
+          ],
+          "denominator": 103,
+          "value": 0.5436893203883495
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-code"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
       "claim_id": "qc-23fad277bfd98811",
       "construct": "planning.delivery/1",
       "custody": "striatum-production",
@@ -2271,6 +2890,55 @@
     },
     {
       "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-0fbde8be20af7db7",
+      "construct": "planning.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "implementation-plan-acceptance",
+            "implementation-plan-finishability",
+            "implementation-plan-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.40739457358967,
+            0.7659669762225203
+          ],
+          "denominator": 25,
+          "value": 0.6
+        },
+        "n_pairs": {
+          "value": 49
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.2642901171173567,
+            0.5275400055647954
+          ],
+          "denominator": 49,
+          "value": 0.3877551020408163
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-code"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
       "claim_id": "qc-e211a88c13eea4e1",
       "construct": "proposal.delivery/1",
       "custody": "striatum-production",
@@ -2298,6 +2966,54 @@
         "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
         "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
         "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-code"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-da8cc9143b464bb3",
+      "construct": "proposal.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "proposal-acceptance",
+            "proposal-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.5294071156670428,
+            0.8474600394333092
+          ],
+          "denominator": 28,
+          "value": 0.7142857142857143
+        },
+        "n_pairs": {
+          "value": 33
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.6908012411955788,
+            0.9334954271839244
+          ],
+          "denominator": 33,
+          "value": 0.8484848484848485
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -2381,6 +3097,45 @@
         "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
         "capacity deferrals and dispatch refusals leave the delivery denominator (1 excluded).",
         "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-fable-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-5700d1086050e084",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 5
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.11762077423264783,
+            0.769275718723987
+          ],
+          "denominator": 5,
+          "value": 0.4
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -2669,6 +3424,93 @@
     },
     {
       "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-1ce2d14ffcbb7ccd",
+      "construct": "design.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "design-acceptance",
+            "design-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 1
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-fable-5-max"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-10de000ba74d6e7c",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 1
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-fable-5-max"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
       "claim_id": "qc-a7b7d6ee398e5624",
       "construct": "proposal.delivery/1",
       "custody": "striatum-production",
@@ -2696,6 +3538,54 @@
         "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
         "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
         "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-fable-5-max"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-54355cced769d639",
+      "construct": "proposal.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "proposal-acceptance",
+            "proposal-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 1
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -3010,6 +3900,93 @@
     },
     {
       "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-050e1f993b92a681",
+      "construct": "design.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "design-acceptance",
+            "design-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 2
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.09453120573423074,
+            0.9054687942657693
+          ],
+          "denominator": 2,
+          "value": 0.5
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-8d624b1b19eed22b",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 51
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.41384708550368815,
+            0.6773248145062598
+          ],
+          "denominator": 51,
+          "value": 0.5490196078431373
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
       "claim_id": "qc-ed3b3162eafb798a",
       "construct": "packetization.delivery/1",
       "custody": "striatum-production",
@@ -3117,6 +4094,55 @@
     },
     {
       "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-4b413fe38505c61c",
+      "construct": "planning.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "implementation-plan-acceptance",
+            "implementation-plan-finishability",
+            "implementation-plan-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.299993315138392,
+            0.9032285888942195
+          ],
+          "denominator": 6,
+          "value": 0.6666666666666666
+        },
+        "n_pairs": {
+          "value": 11
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.21271271622459764,
+            0.719908462590678
+          ],
+          "denominator": 11,
+          "value": 0.45454545454545453
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
       "claim_id": "qc-e2c034ac9864c718",
       "construct": "proposal.delivery/1",
       "custody": "striatum-production",
@@ -3144,6 +4170,54 @@
         "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
         "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
         "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-2e53d7c50c068978",
+      "construct": "proposal.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "proposal-acceptance",
+            "proposal-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 1
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -3307,6 +4381,45 @@
     },
     {
       "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-7abc7ac37983356c",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 1
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-fable-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
       "claim_id": "qc-475c8ae371ade78d",
       "construct": "proposal.delivery/1",
       "custody": "striatum-production",
@@ -3334,6 +4447,54 @@
         "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
         "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
         "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-fable-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-732c72983e5555a9",
+      "construct": "proposal.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "proposal-acceptance",
+            "proposal-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.4901624715366418,
+            0.9433178485456248
+          ],
+          "denominator": 10,
+          "value": 0.8
+        },
+        "n_pairs": {
+          "value": 10
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.7008549515804559,
+            1.0
+          ],
+          "denominator": 9,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -3493,6 +4654,54 @@
     },
     {
       "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-632d2879ec722b9b",
+      "construct": "design.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "design-acceptance",
+            "design-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.43850296824495455,
+            1.0
+          ],
+          "denominator": 3,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 12
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.08894166839405476,
+            0.5323053349335656
+          ],
+          "denominator": 12,
+          "value": 0.25
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-fable-5-max"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
       "claim_id": "qc-1fe644e0cb8ee6d1",
       "construct": "proposal.delivery/1",
       "custody": "striatum-production",
@@ -3520,6 +4729,54 @@
         "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
         "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
         "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-fable-5-max"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-2b5c1ab060d5f46f",
+      "construct": "proposal.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "proposal-acceptance",
+            "proposal-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.30064184258240184,
+            0.9544127391902995
+          ],
+          "denominator": 4,
+          "value": 0.75
+        },
+        "n_pairs": {
+          "value": 7
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.2504583645276572,
+            0.8417801447485302
+          ],
+          "denominator": 7,
+          "value": 0.5714285714285714
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -3638,6 +4895,45 @@
         "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (132 excluded for this subject).",
         "capacity deferrals and dispatch refusals leave the delivery denominator (0 excluded).",
         "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-opus-4-8-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-943d4c2d18d4bb16",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 4
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.5101091635454027,
+            1.0
+          ],
+          "denominator": 4,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -4168,6 +5464,93 @@
     },
     {
       "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-acc71e1703892038",
+      "construct": "design.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "design-acceptance",
+            "design-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.43850296824495455,
+            1.0
+          ],
+          "denominator": 3,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 35
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.02958236826696982,
+            0.22379273965896496
+          ],
+          "denominator": 35,
+          "value": 0.08571428571428572
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-opus-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-5ca552aea004165a",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 10
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.5958499732047615,
+            0.9821237869049271
+          ],
+          "denominator": 10,
+          "value": 0.9
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-opus-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
       "claim_id": "qc-5b3f60d65cd8a06b",
       "construct": "planning.delivery/1",
       "custody": "striatum-production",
@@ -4204,6 +5587,63 @@
     },
     {
       "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-975f4570ffe0b8cf",
+      "construct": "planning.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "implementation-plan-acceptance",
+            "implementation-plan-finishability",
+            "implementation-plan-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.3755346297625253,
+            0.9637758913675698
+          ],
+          "denominator": 5,
+          "value": 0.8
+        },
+        "finishability_pass_rate": {
+          "ci95": [
+            0.09846070197841039,
+            0.38390090403867905
+          ],
+          "denominator": 29,
+          "value": 0.20689655172413793
+        },
+        "n_pairs": {
+          "value": 38
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.04170257347553526,
+            0.24130521722887316
+          ],
+          "denominator": 38,
+          "value": 0.10526315789473684
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-opus-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
       "claim_id": "qc-f239c6e2faef10dc",
       "construct": "proposal.delivery/1",
       "custody": "striatum-production",
@@ -4231,6 +5671,46 @@
         "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
         "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
         "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-opus-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-04436361a456bca7",
+      "construct": "proposal.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "proposal-acceptance",
+            "proposal-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 1
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.0,
+            0.7934506856227626
+          ],
+          "denominator": 1,
+          "value": 0.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -4424,6 +5904,45 @@
     },
     {
       "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-06199fd97c3270c8",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 38
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.37258971384496664,
+            0.6752097667747393
+          ],
+          "denominator": 38,
+          "value": 0.5263157894736842
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-opus-5-medium"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
       "claim_id": "qc-9606d48954fd32d3",
       "construct": "review_pass.delivery/1",
       "custody": "striatum-production",
@@ -4507,6 +6026,45 @@
     },
     {
       "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-ec62fd25a13ccb72",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 122
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.3575751651998452,
+            0.5311737405169267
+          ],
+          "denominator": 122,
+          "value": 0.4426229508196721
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-sonnet-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
       "claim_id": "qc-e1ba272bd42fefc2",
       "construct": "proposal.delivery/1",
       "custody": "striatum-production",
@@ -4534,6 +6092,54 @@
         "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
         "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
         "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-harm-sonnet-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-e2bb04f5d6b60c56",
+      "construct": "proposal.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "proposal-acceptance",
+            "proposal-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.7008549515804559,
+            1.0
+          ],
+          "denominator": 9,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 20
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.2581978582556243,
+            0.6579146575496577
+          ],
+          "denominator": 20,
+          "value": 0.45
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -4728,6 +6334,45 @@
         "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
         "capacity deferrals and dispatch refusals leave the delivery denominator (0 excluded).",
         "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-opus-4-8-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-69144884195894f5",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 1
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -5175,6 +6820,93 @@
     },
     {
       "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-3c9058dddda3ab13",
+      "construct": "design.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "design-acceptance",
+            "design-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 13
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.013710421242556559,
+            0.3331395092109959
+          ],
+          "denominator": 13,
+          "value": 0.07692307692307693
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-opus-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-6fe750192cf5cbfe",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 28
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.7280414845132785,
+            0.9628816331707
+          ],
+          "denominator": 28,
+          "value": 0.8928571428571429
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-opus-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
       "claim_id": "qc-58616e080b7dfd7a",
       "construct": "proposal.delivery/1",
       "custody": "striatum-production",
@@ -5202,6 +6934,54 @@
         "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
         "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
         "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-opus-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-24835c2e67fab72b",
+      "construct": "proposal.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "proposal-acceptance",
+            "proposal-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 1
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -5506,6 +7286,45 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-330a45afd305163d",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 80
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.08794040506163549,
+            0.24413228561323347
+          ],
+          "denominator": 80,
+          "value": 0.15
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-opus-5-medium"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-4dfc2e433c900d40",
       "construct": "review.defect_discrimination/1",
@@ -5696,6 +7515,45 @@
     },
     {
       "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-65edd39c3dbcdf89",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 32
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.30869387108068835,
+            0.6355048288102536
+          ],
+          "denominator": 32,
+          "value": 0.46875
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-sonnet-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
       "claim_id": "qc-534dacb124a8e309",
       "construct": "proposal.delivery/1",
       "custody": "striatum-production",
@@ -5723,6 +7581,54 @@
         "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
         "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
         "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "claude-sonnet-5-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-fcdbf31fd10f3374",
+      "construct": "proposal.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "proposal-acceptance",
+            "proposal-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.6096657120978346,
+            1.0
+          ],
+          "denominator": 6,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 13
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.35522891512665694,
+            0.8229029220223743
+          ],
+          "denominator": 13,
+          "value": 0.6153846153846154
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -6247,6 +8153,93 @@
     },
     {
       "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-3223efa6dda728f1",
+      "construct": "design.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "design-acceptance",
+            "design-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.7424269921812741,
+            0.990124809021697
+          ],
+          "denominator": 18,
+          "value": 0.9444444444444444
+        },
+        "n_pairs": {
+          "value": 18
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.8241207763533425,
+            1.0
+          ],
+          "denominator": 18,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-ef5ef9153ba4d994",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 105
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.7996280033768919,
+            0.9261983577907302
+          ],
+          "denominator": 105,
+          "value": 0.8761904761904762
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
       "claim_id": "qc-3b8bbf34225008a9",
       "construct": "planning.delivery/1",
       "custody": "striatum-production",
@@ -6283,6 +8276,55 @@
     },
     {
       "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-af1a5f6bd953da86",
+      "construct": "planning.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "implementation-plan-acceptance",
+            "implementation-plan-finishability",
+            "implementation-plan-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.5794844592105632,
+            0.8896615059421671
+          ],
+          "denominator": 26,
+          "value": 0.7692307692307693
+        },
+        "n_pairs": {
+          "value": 31
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.6736564604120674,
+            0.9290737555663471
+          ],
+          "denominator": 31,
+          "value": 0.8387096774193549
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
       "claim_id": "qc-ecdf7870e6495a33",
       "construct": "proposal.delivery/1",
       "custody": "striatum-production",
@@ -6310,6 +8352,54 @@
         "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
         "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
         "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-f89675866a933032",
+      "construct": "proposal.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "proposal-acceptance",
+            "proposal-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.524107694133997,
+            0.9242861328730683
+          ],
+          "denominator": 14,
+          "value": 0.7857142857142857
+        },
+        "n_pairs": {
+          "value": 14
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.7846891972623643,
+            1.0
+          ],
+          "denominator": 14,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -6551,6 +8641,45 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-cd44e0cddb4a1a29",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 1
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.0,
+            0.7934506856227626
+          ],
+          "denominator": 1,
+          "value": 0.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-harm-terra-medium"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-c5d779953e9582e9",
       "construct": "review.defect_discrimination/1",
@@ -6729,6 +8858,54 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-dfdc3cc07d222a07",
+      "construct": "design.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "design-acceptance",
+            "design-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.09453120573423074,
+            0.9054687942657693
+          ],
+          "denominator": 2,
+          "value": 0.5
+        },
+        "n_pairs": {
+          "value": 2
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-luna-max"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-995745bea24dd4fc",
       "construct": "review.defect_discrimination/1",
@@ -6875,6 +9052,54 @@
         "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
         "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
         "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-luna-medium"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-4d11f35bc01041cb",
+      "construct": "proposal.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "proposal-acceptance",
+            "proposal-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.1636059318135624,
+            0.5268140225895723
+          ],
+          "denominator": 22,
+          "value": 0.3181818181818182
+        },
+        "n_pairs": {
+          "value": 23
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.8568833815495731,
+            1.0
+          ],
+          "denominator": 23,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -7109,6 +9334,93 @@
     },
     {
       "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-d111bff7e12e6624",
+      "construct": "design.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "design-acceptance",
+            "design-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 2
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.09453120573423074,
+            0.9054687942657693
+          ],
+          "denominator": 2,
+          "value": 0.5
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-sol-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-a3eeeb3b6215543d",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 119
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.9167514797298497,
+            0.9868522471032992
+          ],
+          "denominator": 119,
+          "value": 0.9663865546218487
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-sol-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
       "claim_id": "qc-dadb1f04cd64744f",
       "construct": "planning.delivery/1",
       "custody": "striatum-production",
@@ -7145,6 +9457,63 @@
     },
     {
       "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-2e899c05f31422d2",
+      "construct": "planning.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "implementation-plan-acceptance",
+            "implementation-plan-finishability",
+            "implementation-plan-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.34238022750665303,
+            1.0
+          ],
+          "denominator": 2,
+          "value": 1.0
+        },
+        "finishability_pass_rate": {
+          "ci95": [
+            0.08894166839405476,
+            0.5323053349335656
+          ],
+          "denominator": 12,
+          "value": 0.25
+        },
+        "n_pairs": {
+          "value": 12
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.20765960080204765,
+            0.9385080552796037
+          ],
+          "denominator": 3,
+          "value": 0.6666666666666666
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-sol-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
       "claim_id": "qc-8d779a3c088b730a",
       "construct": "proposal.delivery/1",
       "custody": "striatum-production",
@@ -7172,6 +9541,54 @@
         "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
         "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
         "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-sol-high"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-0fcda2fc7e563973",
+      "construct": "proposal.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "proposal-acceptance",
+            "proposal-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        },
+        "n_pairs": {
+          "value": 1
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -7412,6 +9829,45 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-973bf9b46a1598aa",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 5
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.5655175352168251,
+            1.0
+          ],
+          "denominator": 5,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-sol-low"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-84242daa9d70f465",
       "construct": "review.defect_discrimination/1",
@@ -7522,6 +9978,45 @@
         "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (78 excluded for this subject).",
         "capacity deferrals and dispatch refusals leave the delivery denominator (20 excluded).",
         "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-sol-max"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-26f22ca875ff681f",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 410
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.8589954780916063,
+            0.9190802635646051
+          ],
+          "denominator": 410,
+          "value": 0.8926829268292683
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -7684,6 +10179,45 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-674bb59af11e892c",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 14
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.7846891972623643,
+            1.0
+          ],
+          "denominator": 14,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-sol-medium"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-cd07d66aa6013c92",
       "construct": "review.defect_discrimination/1",
@@ -7794,6 +10328,45 @@
         "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (40 excluded for this subject).",
         "capacity deferrals and dispatch refusals leave the delivery denominator (1 excluded).",
         "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-sol-xhigh"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-ca8adc97567d61e8",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 127
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.8234509086033921,
+            0.9331899978211546
+          ],
+          "denominator": 127,
+          "value": 0.889763779527559
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -8146,6 +10719,93 @@
     },
     {
       "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-9d466b2bc39cfe0a",
+      "construct": "design.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "design-acceptance",
+            "design-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.5688285871705534,
+            0.8539880932278825
+          ],
+          "denominator": 34,
+          "value": 0.7352941176470589
+        },
+        "n_pairs": {
+          "value": 34
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.8928208017449293,
+            1.0
+          ],
+          "denominator": 32,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-terra-max"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-bdb0e70b27be948e",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 2
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.34238022750665303,
+            1.0
+          ],
+          "denominator": 2,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-terra-max"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
       "claim_id": "qc-1667b0b6a6a1133d",
       "construct": "planning.delivery/1",
       "custody": "striatum-production",
@@ -8173,6 +10833,63 @@
         "striatum-production custody: executed and labelled by striatum's production loop; harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier A).",
         "Mechanical/closure labels only — no model judgment in the loop. Assignment is scheduler-routed, not random; rates describe the work each Binding was actually given.",
         "capacity deferrals excluded (0)."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-terra-max"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-5102b8c834e1067b",
+      "construct": "planning.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "implementation-plan-acceptance",
+            "implementation-plan-finishability",
+            "implementation-plan-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.4538575306835998,
+            0.6713906818078296
+          ],
+          "denominator": 76,
+          "value": 0.5657894736842105
+        },
+        "finishability_pass_rate": {
+          "ci95": [
+            0.5403954969794421,
+            0.7575401119773312
+          ],
+          "denominator": 70,
+          "value": 0.6571428571428571
+        },
+        "n_pairs": {
+          "value": 80
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.7274245802116865,
+            0.8927936355902206
+          ],
+          "denominator": 80,
+          "value": 0.825
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -8299,6 +11016,45 @@
       }
     },
     {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-ec697cb449c2e312",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 6
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.6096657120978346,
+            1.0
+          ],
+          "denominator": 6,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-terra-medium"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-61fb116e9b21f909",
       "construct": "review.defect_discrimination/1",
@@ -8409,6 +11165,45 @@
         "packet-checks failures carrying the 'tree moved: rebase-style revision required' marker are excluded as base churn, not builder failures (0 excluded for this subject).",
         "capacity deferrals and dispatch refusals leave the delivery denominator (1 excluded).",
         "The mechanical label is packet-checks (format/compile/test) plus admission; no model judgment is in the labelling loop."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "codex-terra-xhigh"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-e146f1c4f9be4a0f",
+      "construct": "packet.independent_review/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "packet-review"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "n_pairs": {
+          "value": 1
+        },
+        "review_pass_rate": {
+          "ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "denominator": 1,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -8935,6 +11730,45 @@
         "match": "declared-name",
         "matched_current_declaration": true,
         "source_id": "kimi-k3"
+      }
+    },
+    {
+      "as_of": "2026-08-23T00:00:00+00:00",
+      "claim_id": "qc-d1bebc974eee3dc2",
+      "construct": "decision.independent_acceptance/1",
+      "custody": "striatum-production",
+      "evidence": [
+        {
+          "gates": [
+            "decision-acceptance"
+          ],
+          "kind": "striatum-ledger-harvest",
+          "ledger_lines": 253757,
+          "ledger_sha256": "55edd891f0143c34fe23f468e119e767c8fcfa7feda9b8f731bec98e44e468a6"
+        }
+      ],
+      "metrics": {
+        "acceptance_pass_rate": {
+          "ci95": [
+            0.19733204670366125,
+            0.5704829190986899
+          ],
+          "denominator": 22,
+          "value": 0.36363636363636365
+        },
+        "n_pairs": {
+          "value": 22
+        }
+      },
+      "notes": [
+        "striatum-production custody: labels are verdicts of production review passes, harvested and scored by CAPLAB (caplab.advisory.build_corpus, Tier B).",
+        "Label class: acceptance by independent-family review — placement enforces that the reviewer's aliasing class excludes the producer's. Model-relative judgment, not gold; treat with the vindication method, never as ground truth.",
+        "Assignment is scheduler-routed, not random."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "source_id": "local"
       }
     },
     {
