@@ -472,15 +472,49 @@ def calibrate_case(case: dict, body: str, reviewer=local_review) -> dict:
 
 def load_substrate_body(case: dict, exchange_root: str | None,
                         repos: dict[str, str]) -> str | None:
+    """The substrate's bytes: primary source first, advisory CAS second.
+
+    Every successful primary load writes through to the CAS, and a substrate
+    whose primary source has been reaped (dispatch bundles are) or rewritten
+    (repo files move) still audits from the retained bytes — 7 of 25
+    deepseek-refused control bodies were lost exactly that way on 2026-08-23
+    before this fallback existed. A repo-doc body that no longer matches the
+    registered sha256 is treated as unreachable at the primary and served
+    from the CAS, never silently substituted.
+    """
+    from . import cas
+
     source = case["source"]
+    expected = case.get("sha256")
     if source["kind"] == "striatum-exchange" and exchange_root:
         path = os.path.join(exchange_root, "dispatch", source["dispatch_id"],
                             source["input_path"])
     elif source["kind"] == "repo-doc" and source.get("repo") in repos:
         path = os.path.join(repos[source["repo"]], source["path"])
     else:
-        return None
-    if not os.path.isfile(path):
-        return None
-    with open(path, errors="replace", encoding="utf-8") as f:
-        return f.read()
+        path = None
+    if (path and source["kind"] == "repo-doc" and source.get("commit")
+            and source.get("repo") in repos):
+        # A rewritten repo file is not a lost body: the registration pinned
+        # a commit, and git still holds those bytes.
+        import subprocess as _sp
+        shown = _sp.run(["git", "-C", repos[source["repo"]], "show",
+                         f"{source['commit']}:{source['path']}"],
+                        capture_output=True, text=True)
+        if shown.returncode == 0:
+            import hashlib as _hashlib
+            if (expected is None or _hashlib.sha256(
+                    shown.stdout.encode()).hexdigest() == expected):
+                cas.retain(shown.stdout)
+                return shown.stdout
+    if path and os.path.isfile(path):
+        with open(path, errors="replace", encoding="utf-8") as f:
+            body = f.read()
+        import hashlib as _hashlib
+        if (expected is None
+                or _hashlib.sha256(body.encode()).hexdigest() == expected):
+            cas.retain(body)
+            return body
+    if expected:
+        return cas.load(expected)
+    return None

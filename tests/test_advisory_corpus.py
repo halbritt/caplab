@@ -202,3 +202,38 @@ class TreeGuardTest(unittest.TestCase):
             open(path, "w").write("one\n")
             open(os.path.join(repo, "new.txt"), "w").write("x")
             self.assertFalse(changed(before, snapshot([repo])))
+
+
+class SubstrateCasTest(unittest.TestCase):
+    """Bodies are retained at registration; hashes without bodies can't be
+    audited (7 of 25 deepseek-refused control bodies were lost to dispatch
+    reaping before their audit — Principal lesson 3, 2026-08-23)."""
+
+    def test_write_through_and_readback(self):
+        import tempfile
+
+        from caplab.advisory.cas import retain, load
+        with tempfile.TemporaryDirectory() as root:
+            body = "the body\n"
+            sha = retain(body, root=root)
+            self.assertEqual(load(sha, root=root), body)
+
+    def test_retain_refuses_hash_mismatch_on_readback(self):
+        import tempfile
+
+        from caplab.advisory.cas import retain, load
+        with tempfile.TemporaryDirectory() as root:
+            sha = retain("original", root=root)
+            # corrupt the stored object
+            import glob as g
+            path = g.glob(os.path.join(root, "*", "*"))[0]
+            open(path, "w").write("tampered")
+            with self.assertRaises(ValueError):
+                load(sha, root=root)
+
+    def test_load_missing_returns_none(self):
+        import tempfile
+
+        from caplab.advisory.cas import load
+        with tempfile.TemporaryDirectory() as root:
+            self.assertIsNone(load("ab" * 32, root=root))
