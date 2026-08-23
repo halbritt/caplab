@@ -237,3 +237,48 @@ class SubstrateCasTest(unittest.TestCase):
         from caplab.advisory.cas import load
         with tempfile.TemporaryDirectory() as root:
             self.assertIsNone(load("ab" * 32, root=root))
+
+
+class PlanningCorpusTest(unittest.TestCase):
+    """Arm 1 harvest: every implementation-planning dispatch becomes a
+    task — inputs retained in the CAS, prompt rendered by CAPLAB's own
+    planning contract (named on the claim, as run_pool names its
+    synthetic contract)."""
+
+    def _ledger(self):
+        return [
+            {"seq": 1, "type": "pass_run_opened",
+             "payload": {"pass_id": "implementation-planning",
+                         "manifest": {"step_id": "produce/x/plan"}}},
+            {"seq": 2, "type": "lane_binding",
+             "payload": {"run_ref": 1, "backend_id": "tuple-a",
+                         "dispatch_id": "d" * 64}},
+            {"seq": 3, "type": "pass_run_closed",
+             "payload": {"run_ref": 1, "outcome": "submitted"}},
+        ]
+
+    def test_tasks_carry_dispatch_step_and_outcome(self):
+        from caplab.advisory.planning_corpus import harvest_planning_tasks
+        tasks = harvest_planning_tasks(self._ledger())
+        self.assertEqual(len(tasks), 1)
+        t = tasks[0]
+        self.assertEqual(t["dispatch_id"], "d" * 64)
+        self.assertEqual(t["step_id"], "produce/x/plan")
+        self.assertEqual(t["production_outcome"], "submitted")
+        self.assertEqual(t["production_backend"], "tuple-a")
+
+    def test_graph_extraction_prefers_parseable_candidates(self):
+        from caplab.advisory.planning_corpus import extract_work_graph
+        noise = 'prose before {"schema_version": 2, "plan": {}, "packets": []} after'
+        g = extract_work_graph(noise)
+        self.assertEqual(g["schema_version"], 2)
+        self.assertIsNone(extract_work_graph("no json here"))
+
+    def test_oracle_wrapper_records_binary_hash(self):
+        import shutil
+        from caplab.advisory.planning_corpus import oracle_identity
+        if shutil.which("striatum-plan-oracle") is None:
+            self.skipTest("oracle not installed")
+        ident = oracle_identity()
+        self.assertEqual(len(ident["sha256"]), 64)
+        self.assertIn("striatum-plan-oracle", ident["version"])
