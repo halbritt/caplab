@@ -1,0 +1,19 @@
+{
+  "all_checks_ok": 48,
+  "by_backend": {
+    "claude-harm": 1,
+    "local": 67
+  },
+  "legality_ok": 66,
+  "n_identities": 68,
+  "oracle": {
+    "path": "/home/halbritt/.local/bin/striatum-plan-oracle",
+    "sha256": "4ff9ed37c5113b203d57af69d0ae8e0a3cfef8b20d37de36d33d499abea053f2",
+    "version": "striatum-plan-oracle 1"
+  },
+  "parse_ok": 67,
+  "population": "production work-graph submissions, deduplicated by output identity",
+  "purpose": "oracle calibration, not per-task controls",
+  "registry": "/home/halbritt/git/striatum-next/policy/checks/repository.json",
+  "resolvable_ok": 48
+}

@@ -282,3 +282,100 @@ class PlanningCorpusTest(unittest.TestCase):
         ident = oracle_identity()
         self.assertEqual(len(ident["sha256"]), 64)
         self.assertIn("striatum-plan-oracle", ident["version"])
+
+    # --- P2b: the qualification sweep's contract and draw ---
+
+    def _task(self, step_id="produce/x/implementation-plan", inputs=None):
+        from caplab.advisory import cas
+        inputs = inputs if inputs is not None else [("inputs/00-x-design", "DESIGN BODY")]
+        return {"record": "caplab-planning-task/1",
+                "task_id": "pt-" + step_id[:16],
+                "dispatch_id": "d" * 64,
+                "step_id": step_id,
+                "inputs": [{"path": p, "sha256": cas.retain(b),
+                            "bytes": len(b.encode())} for p, b in inputs]}
+
+    def test_prompt_carries_the_registry_its_contract_promises(self):
+        """plan-v1 demanded checks 'from the registry provided in the context'
+        and never supplied one, so resolvability measured guessing."""
+        from caplab.advisory.planning_corpus import render_task_prompt
+        prompt = render_task_prompt(self._task(),
+                                    check_sets=["code", "subject-default"])
+        self.assertIn("code", prompt)
+        self.assertIn("subject-default", prompt)
+        self.assertIn("DESIGN BODY", prompt)
+
+    def test_prompt_without_a_registry_is_refused_not_silently_uncheckable(self):
+        from caplab.advisory.planning_corpus import render_task_prompt
+        with self.assertRaises(ValueError):
+            render_task_prompt(self._task(), check_sets=[])
+
+    def test_design_only_profile_drops_the_base_tree_blob(self):
+        """The base blob is 98% of corpus bytes; the design-only environment
+        excludes it, and says so rather than truncating."""
+        from caplab.advisory.planning_corpus import render_task_prompt
+        task = self._task(inputs=[("inputs/00-x-design", "DESIGN BODY"),
+                                  ("inputs/01-base", "BASE TREE BLOB"),
+                                  ("inputs/90-diagnostic-review", "PRIOR REVIEW")])
+        prompt = render_task_prompt(task, check_sets=["code"],
+                                    include_base=False)
+        self.assertIn("DESIGN BODY", prompt)
+        self.assertIn("PRIOR REVIEW", prompt)
+        self.assertNotIn("BASE TREE BLOB", prompt)
+
+    def test_oversize_prompt_is_refused_never_truncated(self):
+        from caplab.advisory.planning_corpus import render_task_prompt
+        task = self._task(inputs=[("inputs/00-x-design", "x" * 500)])
+        self.assertIsNone(render_task_prompt(task, check_sets=["code"],
+                                             max_bytes=100))
+
+    def test_draw_is_pass_disjoint(self):
+        """Several tasks share one pass and its design; treating them as
+        independent inflates n (348 tasks span only 117 passes)."""
+        from caplab.advisory.planning_corpus import sample_planning_tasks
+        from caplab.advisory.planning_corpus import step_pass
+        # Real tails are a ledger seq with an optional retry suffix: 2150,
+        # 2281-r4. Treating only bare digits as an attempt left three tasks
+        # from one pass in a 24-task draw.
+        tasks = [self._task(step_id=f"revise/p{i % 3}/implementation-plan/{2000 + i}")
+                 for i in range(30)]
+        tasks += [self._task(step_id=f"revise/p{i % 3}/implementation-plan/{2000 + i}-r4")
+                  for i in range(30)]
+        drawn = sample_planning_tasks(tasks, seed=7, n=10)
+        passes = [step_pass(t) for t in drawn]
+        self.assertEqual(len(passes), len(set(passes)))
+        self.assertLessEqual(len(drawn), 3)
+
+    def test_step_pass_strips_the_attempt_and_its_retry_suffix(self):
+        from caplab.advisory.planning_corpus import step_pass
+        base = "revise/striatum-next/cli/cancel-verb/implementation-plan"
+        self.assertEqual(step_pass({"step_id": base + "/2281"}), base)
+        self.assertEqual(step_pass({"step_id": base + "/2281-r4"}), base)
+        produce = "produce/striatum-next/passes/x/implementation-plan"
+        self.assertEqual(step_pass({"step_id": produce}), produce)
+
+    def test_draw_is_seeded_and_balanced_on_step_kind(self):
+        from caplab.advisory.planning_corpus import sample_planning_tasks
+        tasks = ([self._task(step_id=f"revise/r{i}/implementation-plan") for i in range(20)]
+                 + [self._task(step_id=f"produce/p{i}/implementation-plan") for i in range(20)])
+        a = sample_planning_tasks(tasks, seed=11, n=8)
+        b = sample_planning_tasks(tasks, seed=11, n=8)
+        self.assertEqual([t["step_id"] for t in a], [t["step_id"] for t in b])
+        self.assertNotEqual([t["step_id"] for t in a],
+                            [t["step_id"] for t in sample_planning_tasks(tasks, seed=12, n=8)])
+        kinds = [t["step_id"].split("/")[0] for t in a]
+        self.assertEqual(kinds.count("produce"), 4)
+        self.assertEqual(kinds.count("revise"), 4)
+
+    def test_resolvable_check_sets_are_verified_against_the_oracle(self):
+        """A set the oracle cannot resolve must never be offered to a subject:
+        cli-guards is listed in the registry and does not resolve today."""
+        import shutil
+        from caplab.advisory.planning_corpus import resolvable_check_sets
+        registry = os.path.expanduser(
+            "~/git/striatum-next/policy/checks/repository.json")
+        if shutil.which("striatum-plan-oracle") is None or not os.path.isfile(registry):
+            self.skipTest("oracle or registry not installed")
+        sets = resolvable_check_sets(registry)
+        self.assertIn("code", sets)
+        self.assertNotIn("cli-guards", sets)
