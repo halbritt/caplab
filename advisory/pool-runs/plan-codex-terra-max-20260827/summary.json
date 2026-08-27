@@ -1,0 +1,25 @@
+{
+  "all_checks_ok": 24,
+  "check_sets_offered": 42,
+  "construct": "planning.finishability/1",
+  "discarded": 0,
+  "drawn": 24,
+  "environment": "iso-v1",
+  "finished_at": "2026-08-27T08:43:41.229437+00:00",
+  "legality_ok": 24,
+  "oracle": {
+    "path": "/home/halbritt/.local/bin/striatum-plan-oracle",
+    "sha256": "4ff9ed37c5113b203d57af69d0ae8e0a3cfef8b20d37de36d33d499abea053f2",
+    "version": "striatum-plan-oracle 1"
+  },
+  "parse_ok": 24,
+  "passes_drawn": 24,
+  "prompt_environment": "design-only",
+  "prompt_profile": "plan-v2",
+  "registry": "/home/halbritt/git/striatum-next/policy/checks/repository.json",
+  "resolvable_ok": 24,
+  "seed": 20260827,
+  "started_at": "2026-08-27T08:09:43.246778+00:00",
+  "subject": "codex-terra-max",
+  "usable": 24
+}
