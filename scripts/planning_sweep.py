@@ -355,9 +355,17 @@ def build_claims(run_dirs: list[str], as_of: str) -> list[dict]:
                                        "denominator": attempted,
                                        "ci95": [lo, hi]}
         metrics["n_pairs"] = {"value": n}
-        metrics["median_packets"] = {"value": _median([r.get("packets") for r in usable])}
+        # Structure is read over graphs that parsed. The oracle reports zero
+        # packets for a graph it could not parse, so including those counts a
+        # parse failure as a zero-packet plan and drags the median down —
+        # two different defects wearing one number.
+        structural = [r for r in usable if r.get("parse_ok")]
+        metrics["median_packets"] = {
+            "value": _median([r.get("packets") for r in structural]),
+            "denominator": len(structural)}
         metrics["median_depth_width_product"] = {
-            "value": _median([r.get("depth_width_product") for r in usable])}
+            "value": _median([r.get("depth_width_product") for r in structural]),
+            "denominator": len(structural)}
         claims.append(build_claim(
             subject_source_id=summary["subject"],
             subject_matched=True,
