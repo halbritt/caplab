@@ -70,6 +70,10 @@ def _verdict_flags(verdict: dict) -> dict:
     structure = verdict.get("structure") or {}
     return {
         "parse_ok": parse,
+        # The reason matters: a graph that fails to parse reports zero
+        # packets, so a row's structure is meaningless without it and the
+        # diagnosis would otherwise cost a re-spend.
+        "parse_error": (verdict.get("parse") or {}).get("error"),
         "index_ok": index,
         "legality_ok": legality,
         "resolvability_status": res.get("status"),
@@ -401,6 +405,13 @@ def build_claims(run_dirs: list[str], as_of: str) -> list[dict]:
                 "Report structure beside the rates: median_packets and "
                 "median_depth_width_product are on the claim because a "
                 "single-trivial-packet plan clears every mechanical check.",
+                "NOT COMPARABLE to planning.independent_acceptance/1's "
+                "finishability_pass_rate despite the shared word. That metric "
+                "is striatum's implementation-plan-finishability gate, applied "
+                "by independent-family model review to the prose plan; this one "
+                "is mechanical work-graph legality with no model in the "
+                "labelling loop. A subject may sit high here and low there "
+                "without either number being wrong.",
             ]))
     return claims
 
