@@ -10,6 +10,7 @@ graphs is printed beside that.
 
 from __future__ import annotations
 
+import itertools
 import json
 import os
 import sys
@@ -36,6 +37,35 @@ def parsed(rows):
     plans — two different defects wearing one number.
     """
     return [r for r in rows if r.get("parse_ok")]
+
+
+def _scopes(packet):
+    return [w for w in (packet.get("write_scope") or []) if w]
+
+
+def _overlap(a, b):
+    return any(x == y or x.startswith(y) or y.startswith(x)
+               for x in a for y in b)
+
+
+def scope_diagnostics(row):
+    """Size-normalized disjointness, and the collision no tree would excuse.
+
+    The binary legality verdict fails a graph if any one packet pair
+    collides, and a k-packet graph has k(k-1)/2 pairs — so the rate falls
+    with how much the planner actually decomposed the work. The share of
+    pairs that collide does not carry that bias. Reported beside it: whether
+    two packets declared the *identical* write scope, which is a planner's
+    choice rather than an artifact of not being able to see the tree.
+    """
+    packets = (row.get("graph") or {}).get("packets") or []
+    pairs = list(itertools.combinations(packets, 2))
+    if not pairs:
+        return None
+    collide = sum(1 for a, b in pairs if _overlap(_scopes(a), _scopes(b)))
+    duplicate = any(_scopes(a) and sorted(_scopes(a)) == sorted(_scopes(b))
+                    for a, b in pairs)
+    return {"disjointness": 1 - collide / len(pairs), "duplicate_scope": duplicate}
 
 
 def median(values):
@@ -118,6 +148,41 @@ def main():
             continue
         counts = sorted(r["packets"] for r in parsed(rows))
         print(f"    {rows[0]['subject']:<30}{counts}")
+
+    # The construct's central risk, measured rather than asserted: if the
+    # mechanical rate falls as graphs get bigger, then the rate rewards not
+    # planning and must never be read without the structure beside it.
+    pooled = []
+    for d in dirs:
+        pooled += parsed([r for r in load(os.path.join(RUNS, d))
+                          if r.get("usable")])
+    if pooled:
+        print("\npooled pass rate by graph size (all subjects):")
+        buckets = [(1, 2, "1-2 packets"), (3, 5, "3-5 packets"),
+                   (6, 9, "6-9 packets"), (10, 10 ** 6, "10+ packets")]
+        for lo, hi, label in buckets:
+            grp = [r for r in pooled if lo <= (r.get("packets") or 0) <= hi]
+            if not grp:
+                continue
+            ok = sum(1 for r in grp if r["all_checks_ok"])
+            wlo, whi = wilson(ok, len(grp))
+            print(f"    {label:<14} n={len(grp):>3}  pass={ok / len(grp):.2f}"
+                  f"  [{wlo:.2f},{whi:.2f}]")
+
+    print("\nsize-normalized scope diagnostics (graphs with >= 2 packets):")
+    print(f"    {'subject':<30}{'n':>4}{'disjointness':>14}{'exact-dup':>11}")
+    for d in dirs:
+        graphs = [r for r in parsed([r for r in load(os.path.join(RUNS, d))
+                                     if r.get("usable")])
+                  if (r.get("packets") or 0) >= 2]
+        diag = [(r, scope_diagnostics(r)) for r in graphs]
+        diag = [(r, x) for r, x in diag if x]
+        if not diag:
+            continue
+        dup = sum(1 for _, x in diag if x["duplicate_scope"])
+        print(f"    {diag[0][0]['subject']:<30}{len(diag):>4}"
+              f"{median(x['disjointness'] for _, x in diag):>14.2f}"
+              f"{f'{dup}/{len(diag)}':>11}")
 
     cal = os.path.join(RUNS, "plan-calibration-20260827", "calibration-summary.json")
     if os.path.isfile(cal):

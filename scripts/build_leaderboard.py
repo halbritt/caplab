@@ -492,8 +492,14 @@ def main() -> int:
             (c["subject"]["source_id"], primary[1].get("value"),
              primary[1].get("denominator"), primary[0],
              (m.get("delivery_rate") or {}).get("value")
-             if construct == "build.packet_delivery/1" else None))
-    build_rows = [(s_, pv, pn, dv) for (s_, pv, pn, _k, dv)
+             if construct == "build.packet_delivery/1" else None,
+             # planning.finishability's rate falls as a graph grows, because
+             # a k-packet graph has k(k-1)/2 scope pairs that can collide.
+             # Ranking it without the packet count beside it puts the subject
+             # that planned least on top; the card requires the anchored
+             # quantity alongside the rate for exactly this reason.
+             (m.get("median_packets") or {}).get("value")))
+    build_rows = [(s_, pv, pn, dv) for (s_, pv, pn, _k, dv, _mp)
                   in production.pop("build.packet_delivery/1", [])]
     tier_a_html = []
     for construct, rows_ in sorted(production.items()):
@@ -502,8 +508,9 @@ def main() -> int:
             continue
         rows_.sort(key=lambda r: -(r[1] or 0))
         metric = rows_[0][3]
+        structural = any(r[5] is not None for r in rows_)
         if len(rows_) == 1:
-            s_, pv, pn, _k, _d = rows_[0]
+            s_, pv, pn, _k, _d, _mp = rows_[0]
             tier_a_html.append(
                 f'<p class="muted"><strong>{esc(construct)}</strong> — '
                 f'single production subject: {esc(s_)} {pct(pv)} '
@@ -511,15 +518,25 @@ def main() -> int:
             continue
         cells = [f'<h3 style="font-size:.95rem;margin:1rem 0 .3rem">'
                  f'{esc(construct)}</h3>'
-                 '<table><thead><tr><th>Binding</th><th>harness</th>'
-                 f'<th>{esc(metric)}</th><th>n</th></tr></thead><tbody>']
-        for s_, pv, pn, _k, _d in rows_:
+                 + ('<p class="muted" style="margin:.2rem 0 .4rem">This rate '
+                    'falls as a work graph grows: every failure observed was a '
+                    'write-scope collision, and a k-packet graph has k(k-1)/2 '
+                    'pairs that can collide. Read it only with median packets '
+                    'beside it — a near-empty graph scores 1.00.</p>'
+                    if structural else "")
+                 + '<table><thead><tr><th>Binding</th><th>harness</th>'
+                 + f'<th>{esc(metric)}</th><th>n</th>'
+                 + ('<th>median packets</th>' if structural else "")
+                 + '</tr></thead><tbody>']
+        for s_, pv, pn, _k, _d, mp in rows_:
             model, harness = declared_identity(s_)
             dim = ' style="opacity:.55"' if pn < 10 else ""
             cells.append(
                 f'<tr{dim}><td class="name">{esc(s_)}</td>'
                 f'<td class="harness">{esc(harness) if harness else "—"}</td>'
-                f'<td>{bar(pv, "rate")}</td><td class="num">{esc(pn)}</td></tr>')
+                f'<td>{bar(pv, "rate")}</td><td class="num">{esc(pn)}</td>'
+                + (f'<td class="num">{esc(mp) if mp is not None else "—"}</td>'
+                   if structural else "") + '</tr>')
         cells.append("</tbody></table>")
         tier_a_html.append("\n".join(cells))
     build_html = ""
