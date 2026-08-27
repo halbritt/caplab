@@ -83,7 +83,7 @@ outcome. Median prompt 33 KB; roughly 276k input tokens per subject.
 
 | subject | declared | n | finishability | 95% CI | median packets | ≤2-packet graphs | scope disjointness | identical-scope graphs |
 |---|---|---|---|---|---|---|---|---|
-| `codex-terra-max` | disabled | 24 | **1.00** | [0.86, 1.00] | 4 | 6/24 | 1.00 | 3/21 |
+| `codex-terra-max` | disabled | 24 | **1.00** | [0.86, 1.00] | 4.5 | 6/24 | 1.00 | 3/21 |
 | `codex-harm-terra-max` | disabled | 24 | **0.96** | [0.80, 0.99] | 5 | 6/24 | 1.00 | 2/20 |
 | `claude-harm-opus-5-high` | accepted | 24 | 0.88 | [0.69, 0.96] | 7 | 3/24 | 1.00 | 6/23 |
 | `codex-sol-high` | accepted | 24 | 0.79 | [0.60, 0.91] | 4 | 7/23 | 1.00 | 4/18 |
@@ -100,7 +100,7 @@ card's placement nuance permits for information.
 
 **Read the first two columns together or not at all.** The two tuples with
 the best mechanical scores produced the smallest graphs. `codex-terra-max`
-cleared every check on all 24 tasks with a median of 4 packets, 6 of its
+cleared every check on all 24 tasks with a median of 4.5 packets, 6 of its
 graphs carrying two packets or fewer. `claude-harm-opus-5-high` scored 0.88
 with a median of 7. The ranking and the amount of planning run in opposite
 directions.
@@ -186,8 +186,11 @@ this evidence.
    declaration does not describe. That is a finding for striatum, not
    something CAPLAB should patch around — patching it would measure a tuple
    striatum does not dispatch.
-8. **n = 24 per subject.** The Wilson intervals are wide and overlap
-   heavily. Nothing here separates two adjacent subjects.
+8. **n = 24 per subject.** The Wilson intervals are wide and adjacent
+   subjects overlap throughout. Only the extremes separate —
+   `codex-terra-max` [0.86, 1.00] against `claude-opus-5-high`
+   [0.51, 0.85] — and that separation is the artifact this record spends
+   its length explaining, not a capability difference.
 
 ## The schema cannot express a verification-only packet
 
