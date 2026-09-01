@@ -1,0 +1,18 @@
+{
+  "aborted": null,
+  "backend": "cc-glm-5-3-max",
+  "calibration_profile": "v1",
+  "case_selection": "seeded-draw",
+  "catch_rate": 0.5217391304347826,
+  "control_unanimous_share": 0.6811594202898551,
+  "environment": "iso-v1",
+  "false_alarm_rate": 0.15942028985507245,
+  "finished_at": "2026-09-01T01:25:33.034743+00:00",
+  "instrument": "matched-pair defect injection (synthetic contract)",
+  "pairs_discarded": 0,
+  "pairs_usable": 69,
+  "partition": "open",
+  "replicates": 3,
+  "started_at": "2026-08-31T18:42:40.052213+00:00",
+  "sweep_seed": 20260819
+}
