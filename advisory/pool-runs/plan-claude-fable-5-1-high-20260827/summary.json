@@ -1,0 +1,25 @@
+{
+  "all_checks_ok": 23,
+  "check_sets_offered": 42,
+  "construct": "planning.finishability/1",
+  "discarded": 0,
+  "drawn": 24,
+  "environment": "iso-v1",
+  "finished_at": "2026-09-02T18:56:47.313114+00:00",
+  "legality_ok": 23,
+  "oracle": {
+    "path": "/home/halbritt/.local/lib/caplab-instruments/plan-p2b-20260827/striatum-plan-oracle",
+    "sha256": "a785e717a4ef20fb2575f67302a002da0ac6dfc7a4933c024f1447777b34b83e",
+    "version": "striatum-plan-oracle 1"
+  },
+  "parse_ok": 24,
+  "passes_drawn": 24,
+  "prompt_environment": "design-only",
+  "prompt_profile": "plan-v2",
+  "registry": "/home/halbritt/.local/lib/caplab-instruments/plan-p2b-20260827/checks-repository-v37.json",
+  "resolvable_ok": 24,
+  "seed": 20260827,
+  "started_at": "2026-09-02T18:47:32.747567+00:00",
+  "subject": "claude-fable-5-1-high",
+  "usable": 24
+}

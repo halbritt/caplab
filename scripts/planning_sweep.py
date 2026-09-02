@@ -37,7 +37,15 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 TASKS = os.path.join(ROOT, "advisory", "planning-tasks.jsonl")
 RUNS = os.path.join(ROOT, "advisory", "pool-runs")
 BACKENDS = os.path.expanduser("~/git/striatum-next/backends")
-REGISTRY = os.path.expanduser("~/git/striatum-next/policy/checks/repository.json")
+#: The checks registry and the oracle binary are claim identity, not
+#: environment: the live registry moves, and a subject scored against a
+#: later one is charged for check sets that were retired after the board it
+#: is being added to was measured (v37 -> v38 flips 19 of the 148 stored P2b
+#: graphs from resolvable to not). Both are therefore overridable, so a
+#: later subject can be measured on a pinned instrument.
+REGISTRY = os.environ.get(
+    "CAPLAB_PLAN_REGISTRY",
+    os.path.expanduser("~/git/striatum-next/policy/checks/repository.json"))
 EXCHANGE = os.path.expanduser(
     "~/.local/share/striatum/exchange/019f22ef-0cb4-780f-9b82-b210bab24325")
 
@@ -312,7 +320,8 @@ def _median(values: list) -> float | None:
     return float(vals[mid] if len(vals) % 2 else (vals[mid - 1] + vals[mid]) / 2)
 
 
-def build_claims(run_dirs: list[str], as_of: str) -> list[dict]:
+def build_claims(run_dirs: list[str], as_of: str,
+                 extra_notes: list[str] | None = None) -> list[dict]:
     """One planning.finishability/1 claim per subject.
 
     Structure travels beside every rate. A plan emitting one trivial packet
@@ -420,7 +429,7 @@ def build_claims(run_dirs: list[str], as_of: str) -> list[dict]:
                 "is mechanical work-graph legality with no model in the "
                 "labelling loop. A subject may sit high here and low there "
                 "without either number being wrong.",
-            ]))
+            ] + list(extra_notes or [])))
     return claims
 
 
@@ -432,6 +441,13 @@ def main() -> None:
     ap.add_argument("--timeout", type=int, default=900)
     ap.add_argument("--workers", type=int, default=2)
     ap.add_argument("--out-dir")
+    ap.add_argument("--registry", help="checks registry to score against "
+                    "(default: the live striatum-next registry). Pin it to "
+                    "join a board measured under an earlier registry.")
+    ap.add_argument("--oracle-dir", help="directory holding the "
+                    "striatum-plan-oracle binary to score with; prepended to "
+                    "PATH. Pin it to join a board measured under an earlier "
+                    "oracle build.")
     ap.add_argument("--calibrate", action="store_true",
                     help="score the production work graphs and exit")
     ap.add_argument("--claims", nargs="+", metavar="RUN_DIR",
@@ -439,11 +455,20 @@ def main() -> None:
     ap.add_argument("--as-of")
     ap.add_argument("--append", action="store_true",
                     help="append the built claims to advisory/claims.jsonl")
+    ap.add_argument("--note", action="append", default=[],
+                    help="extra note carried on every built claim (repeatable); "
+                         "use it to name an instrument pin")
     args = ap.parse_args()
+    if args.oracle_dir:
+        os.environ["PATH"] = (os.path.abspath(args.oracle_dir) + os.pathsep
+                              + os.environ["PATH"])
+    if args.registry:
+        global REGISTRY
+        REGISTRY = os.path.abspath(args.registry)
     if args.claims:
         from caplab.advisory.claims import Ledger
         as_of = args.as_of or _dt.datetime.now(_dt.timezone.utc).isoformat()
-        built = build_claims(args.claims, as_of)
+        built = build_claims(args.claims, as_of, extra_notes=args.note)
         print(json.dumps(built, indent=2, sort_keys=True))
         if args.append:
             print(json.dumps(Ledger(
