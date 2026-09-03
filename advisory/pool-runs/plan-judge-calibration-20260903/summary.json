@@ -1,0 +1,472 @@
+{
+  "audit": "plan-operators-audit-20260902",
+  "audit_seed": 20260902,
+  "controls": "sweep-produced graphs (synthetic) and recovered production work graphs that became accepted heads, each sound under the pinned oracle",
+  "environment": "iso-v1",
+  "finished_at": "2026-09-03T18:05:58.529431+00:00",
+  "judge_profile": "plan-judge-v1",
+  "judges": {
+    "agy-gemini-3-7-flash-high": {
+      "by_class": {
+        "circular_depends_on": {
+          "catch": 1.0,
+          "catch_ci95": [
+            0.7961166989641515,
+            1.0
+          ],
+          "n": 15,
+          "prefers_control": 15,
+          "prefers_mutant": 0,
+          "tie": 0
+        },
+        "dangling_dependency": {
+          "catch": 1.0,
+          "catch_ci95": [
+            0.8318207759473837,
+            1.0
+          ],
+          "n": 19,
+          "prefers_control": 19,
+          "prefers_mutant": 0,
+          "tie": 0
+        },
+        "dropped_deliverable": {
+          "catch": 1.0,
+          "catch_ci95": [
+            0.8318207759473837,
+            1.0
+          ],
+          "n": 19,
+          "prefers_control": 19,
+          "prefers_mutant": 0,
+          "tie": 0
+        },
+        "overclaimed_verification": {
+          "catch": 1.0,
+          "catch_ci95": [
+            0.8241207763533425,
+            1.0
+          ],
+          "n": 18,
+          "prefers_control": 18,
+          "prefers_mutant": 0,
+          "tie": 0
+        },
+        "purpose_scope_contradiction": {
+          "catch": 1.0,
+          "catch_ci95": [
+            0.8241207763533425,
+            1.0
+          ],
+          "n": 18,
+          "prefers_control": 18,
+          "prefers_mutant": 0,
+          "tie": 0
+        },
+        "unresolvable_acceptance_check": {
+          "catch": 0.875,
+          "catch_ci95": [
+            0.639771727342413,
+            0.9650225122567595
+          ],
+          "n": 16,
+          "prefers_control": 14,
+          "prefers_mutant": 0,
+          "tie": 2
+        },
+        "write_scope_outside_tree": {
+          "catch": 1.0,
+          "catch_ci95": [
+            0.8156818649911483,
+            1.0
+          ],
+          "n": 17,
+          "prefers_control": 17,
+          "prefers_mutant": 0,
+          "tie": 0
+        }
+      },
+      "defect_classes_pooled": {
+        "catch": 0.9836065573770492,
+        "catch_ci95": [
+          0.9421950412865174,
+          0.9954927533864046
+        ],
+        "n": 122,
+        "prefers_defect": 0.0
+      },
+      "pairs": 181,
+      "position_flip_n": 155,
+      "position_flip_rate": 0.0,
+      "size_preference": {
+        "n": 35,
+        "prefers_larger_share": 0.45714285714285713
+      },
+      "size_probes": {
+        "atomicity_split": {
+          "catch": 1.0,
+          "catch_ci95": [
+            0.8318207759473837,
+            1.0
+          ],
+          "mutant_is": "larger",
+          "n": 19,
+          "prefers_control": 19,
+          "prefers_mutant": 0,
+          "tie": 0
+        },
+        "merge_independent_packets": {
+          "catch": 1.0,
+          "catch_ci95": [
+            0.8063923194655637,
+            1.0
+          ],
+          "mutant_is": "smaller",
+          "n": 16,
+          "prefers_control": 16,
+          "prefers_mutant": 0,
+          "tie": 0
+        }
+      },
+      "usable": 157
+    },
+    "cc-glm-5-3-max": {
+      "by_class": {
+        "circular_depends_on": {
+          "catch": 1.0,
+          "catch_ci95": [
+            0.7411670330319684,
+            1.0
+          ],
+          "n": 11,
+          "prefers_control": 11,
+          "prefers_mutant": 0,
+          "tie": 0
+        },
+        "dangling_dependency": {
+          "catch": 1.0,
+          "catch_ci95": [
+            0.7961166989641515,
+            1.0
+          ],
+          "n": 15,
+          "prefers_control": 15,
+          "prefers_mutant": 0,
+          "tie": 0
+        },
+        "dropped_deliverable": {
+          "catch": 0.9230769230769231,
+          "catch_ci95": [
+            0.6668604907890041,
+            0.9862895787574435
+          ],
+          "n": 13,
+          "prefers_control": 12,
+          "prefers_mutant": 0,
+          "tie": 1
+        },
+        "overclaimed_verification": {
+          "catch": 0.9285714285714286,
+          "catch_ci95": [
+            0.6853129557584889,
+            0.9872777847521093
+          ],
+          "n": 14,
+          "prefers_control": 13,
+          "prefers_mutant": 0,
+          "tie": 1
+        },
+        "purpose_scope_contradiction": {
+          "catch": 1.0,
+          "catch_ci95": [
+            0.7846891972623643,
+            1.0
+          ],
+          "n": 14,
+          "prefers_control": 14,
+          "prefers_mutant": 0,
+          "tie": 0
+        },
+        "unresolvable_acceptance_check": {
+          "catch": 0.38461538461538464,
+          "catch_ci95": [
+            0.17709707797762572,
+            0.6447710848733431
+          ],
+          "n": 13,
+          "prefers_control": 5,
+          "prefers_mutant": 3,
+          "tie": 5
+        },
+        "write_scope_outside_tree": {
+          "catch": 1.0,
+          "catch_ci95": [
+            0.7719046276458016,
+            0.9999999999999999
+          ],
+          "n": 13,
+          "prefers_control": 13,
+          "prefers_mutant": 0,
+          "tie": 0
+        }
+      },
+      "defect_classes_pooled": {
+        "catch": 0.8924731182795699,
+        "catch_ci95": [
+          0.8132724499022683,
+          0.9405369297680901
+        ],
+        "n": 93,
+        "prefers_defect": 0.03225806451612903
+      },
+      "pairs": 140,
+      "position_flip_n": 115,
+      "position_flip_rate": 0.02608695652173913,
+      "size_preference": {
+        "n": 26,
+        "prefers_larger_share": 0.4230769230769231
+      },
+      "size_probes": {
+        "atomicity_split": {
+          "catch": 1.0,
+          "catch_ci95": [
+            0.7961166989641515,
+            1.0
+          ],
+          "mutant_is": "larger",
+          "n": 15,
+          "prefers_control": 15,
+          "prefers_mutant": 0,
+          "tie": 0
+        },
+        "merge_independent_packets": {
+          "catch": 1.0,
+          "catch_ci95": [
+            0.7411670330319684,
+            1.0
+          ],
+          "mutant_is": "smaller",
+          "n": 11,
+          "prefers_control": 11,
+          "prefers_mutant": 0,
+          "tie": 0
+        }
+      },
+      "usable": 119
+    },
+    "claude-harm-opus-5-high": {
+      "by_class": {
+        "circular_depends_on": {
+          "catch": 1.0,
+          "catch_ci95": [
+            0.5101091635454027,
+            1.0
+          ],
+          "n": 4,
+          "prefers_control": 4,
+          "prefers_mutant": 0,
+          "tie": 0
+        },
+        "dangling_dependency": {
+          "catch": 1.0,
+          "catch_ci95": [
+            0.5101091635454027,
+            1.0
+          ],
+          "n": 4,
+          "prefers_control": 4,
+          "prefers_mutant": 0,
+          "tie": 0
+        },
+        "dropped_deliverable": {
+          "catch": 1.0,
+          "catch_ci95": [
+            0.6096657120978346,
+            1.0
+          ],
+          "n": 6,
+          "prefers_control": 6,
+          "prefers_mutant": 0,
+          "tie": 0
+        },
+        "overclaimed_verification": {
+          "catch": 1.0,
+          "catch_ci95": [
+            0.5101091635454027,
+            1.0
+          ],
+          "n": 4,
+          "prefers_control": 4,
+          "prefers_mutant": 0,
+          "tie": 0
+        },
+        "purpose_scope_contradiction": {
+          "catch": 1.0,
+          "catch_ci95": [
+            0.43850296824495455,
+            1.0
+          ],
+          "n": 3,
+          "prefers_control": 3,
+          "prefers_mutant": 0,
+          "tie": 0
+        },
+        "unresolvable_acceptance_check": {
+          "catch": 0.5,
+          "catch_ci95": [
+            0.15003898915214953,
+            0.8499610108478505
+          ],
+          "n": 4,
+          "prefers_control": 2,
+          "prefers_mutant": 0,
+          "tie": 2
+        },
+        "write_scope_outside_tree": {
+          "catch": 1.0,
+          "catch_ci95": [
+            0.5655175352168251,
+            1.0
+          ],
+          "n": 5,
+          "prefers_control": 5,
+          "prefers_mutant": 0,
+          "tie": 0
+        }
+      },
+      "defect_classes_pooled": {
+        "catch": 0.9333333333333333,
+        "catch_ci95": [
+          0.7867654163738308,
+          0.9815229762087295
+        ],
+        "n": 30,
+        "prefers_defect": 0.0
+      },
+      "pairs": 40,
+      "position_flip_n": 36,
+      "position_flip_rate": 0.027777777777777776,
+      "size_preference": {
+        "n": 7,
+        "prefers_larger_share": 0.5714285714285714
+      },
+      "size_probes": {
+        "atomicity_split": {
+          "catch": 1.0,
+          "catch_ci95": [
+            0.43850296824495455,
+            1.0
+          ],
+          "mutant_is": "larger",
+          "n": 3,
+          "prefers_control": 3,
+          "prefers_mutant": 0,
+          "tie": 0
+        },
+        "merge_independent_packets": {
+          "catch": 1.0,
+          "catch_ci95": [
+            0.5101091635454027,
+            1.0
+          ],
+          "mutant_is": "smaller",
+          "n": 4,
+          "prefers_control": 4,
+          "prefers_mutant": 0,
+          "tie": 0
+        }
+      },
+      "usable": 37
+    },
+    "codex-sol-high": {
+      "by_class": {},
+      "defect_classes_pooled": {
+        "catch": null,
+        "catch_ci95": null,
+        "n": 0,
+        "prefers_defect": null
+      },
+      "pairs": 2,
+      "position_flip_n": 0,
+      "position_flip_rate": null,
+      "size_preference": {
+        "n": 0,
+        "prefers_larger_share": null
+      },
+      "size_probes": {},
+      "usable": 0
+    }
+  },
+  "jury": [
+    {
+      "aliasing_class": "google-gemini",
+      "command": [
+        "/usr/bin/env",
+        "HOME=/home/halbritt/.local/share/striatum/harness-config/agy",
+        "GOCACHE=/home/halbritt/.cache/go-build",
+        "agy",
+        "--dangerously-skip-permissions",
+        "--model",
+        "Gemini 3.7 Flash (High)",
+        "--output-format",
+        "json",
+        "--json-schema",
+        "/home/halbritt/git/caplab/advisory/schemas/pairwise-verdict.schema.json",
+        "--print-timeout",
+        "29m",
+        "--print"
+      ],
+      "command_sha256": "df98b215480509e72e4cb7ea1eba2c0d87de5d6d2f19e232a6c6045d4c8475cd",
+      "judge_id": "agy-gemini-3-7-flash-high"
+    },
+    {
+      "aliasing_class": "zhipu-glm",
+      "command": [
+        "/usr/bin/env",
+        "CLAUDE_CONFIG_DIR=/home/halbritt/.local/share/striatum/harness-config/glm-zai",
+        "claude",
+        "-p",
+        "--model",
+        "glm-5.3[1m]",
+        "--effort",
+        "max",
+        "--output-format",
+        "text",
+        "--dangerously-skip-permissions"
+      ],
+      "command_sha256": "c7b14817d65d84de67a6fee811f8a5790116d207c8d7332121d0ab7907edf577",
+      "judge_id": "cc-glm-5-3-max"
+    },
+    {
+      "aliasing_class": "anthropic-claude",
+      "command": [
+        "/usr/bin/env",
+        "CLAUDE_CONFIG_DIR=/home/halbritt/.local/share/striatum/harness-config/claude-harm",
+        "claude",
+        "-p",
+        "--model",
+        "claude-opus-5",
+        "--effort",
+        "high",
+        "--output-format",
+        "text",
+        "--dangerously-skip-permissions"
+      ],
+      "command_sha256": "8473601e213cb9ca015bb3be134847c3c09d18b53a4874c12f1807df77c5781c",
+      "judge_id": "claude-harm-opus-5-high"
+    }
+  ],
+  "oracle": {
+    "path": "/home/halbritt/.local/lib/caplab-instruments/plan-p2b-20260827/striatum-plan-oracle",
+    "sha256": "a785e717a4ef20fb2575f67302a002da0ac6dfc7a4933c024f1447777b34b83e",
+    "version": "striatum-plan-oracle 1"
+  },
+  "pairs": 180,
+  "per_class": 20,
+  "populations": [
+    "sweep",
+    "production-accepted"
+  ],
+  "registry_version": 37,
+  "seed": 20260903
+}
