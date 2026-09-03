@@ -1,0 +1,22 @@
+{
+  "accepted": 67,
+  "artifact_kinds": {
+    "change-set": 4732,
+    "decision-record": 27,
+    "design": 230,
+    "exogenous-change-record": 198,
+    "implementation-plan": 460,
+    "intent-statement": 365,
+    "product-artifact": 123,
+    "proposal": 171,
+    "receipt": 34728,
+    "review-ledger": 4751,
+    "verification-report": 5554,
+    "work-graph": 168
+  },
+  "distinct_work_graph_hashes": 137,
+  "finished_at": "2026-09-03T15:14:49.114373+00:00",
+  "graph_store": "/home/halbritt/.local/share/striatum/graphs/019f22ef-0cb4-780f-9b82-b210bab24325",
+  "ledger_events": 373371,
+  "recovered": 137
+}

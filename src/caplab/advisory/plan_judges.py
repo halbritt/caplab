@@ -211,7 +211,7 @@ def sample_pairs(audit_rows: list[dict], per_class: int, seed: int,
     for row in audit_rows:
         if not row.get("applied") or not row.get("admissible"):
             continue
-        planner = row["identity"].split("/", 1)[0]
+        planner = row.get("planner") or row["identity"].split("/", 1)[0]
         by_class.setdefault(row["operator"], {}).setdefault(planner, []).append(row)
     out = []
     for operator in sorted(by_class):
@@ -230,7 +230,7 @@ def sample_pairs(audit_rows: list[dict], per_class: int, seed: int,
             out.append({"pair_id": hashlib.sha256(
                             f"{row['identity']}|{operator}".encode()).hexdigest()[:16],
                         "identity": row["identity"], "operator": operator,
-                        "planner": row["identity"].split("/", 1)[0],
+                        "planner": row.get("planner") or row["identity"].split("/", 1)[0],
                         "size_probe": operator in size_probes})
     return out
 

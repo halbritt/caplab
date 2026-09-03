@@ -87,6 +87,33 @@ def production_graphs() -> list[dict]:
     return out
 
 
+RECOVERED = os.path.join(RUNS, "production-work-graphs-20260903", "graphs.jsonl")
+
+
+def recovered_production_graphs(path: str = RECOVERED) -> list[dict]:
+    """Production work graphs recovered from the graph store's object store.
+
+    The exchange spool that once held them was pruned; these bodies were read
+    back from `artifact_admitted` ledger records (content hash -> SOB1/zstd
+    object). `accepted` is carried when the recovery could show a later
+    acceptance for the hash, else False: a candidate that never became a head
+    is a real plan but not an accepted one, and the card wants accepted."""
+    out = []
+    if not os.path.isfile(path):
+        return out
+    for line in open(path, encoding="utf-8"):
+        row = json.loads(line)
+        # One pass identity carries many versions; the key must not collide.
+        out.append({"population": "production-accepted" if row.get("accepted")
+                    else "production-candidate",
+                    "source": row.get("backend"),
+                    "identity": f"{row['identity']}@{row['content_hash'][:12]}",
+                    "planner": row.get("backend"),
+                    "planner_class": row.get("aliasing_class"),
+                    "content_hash": row["content_hash"], "graph": row["graph"]})
+    return out
+
+
 def sweep_graphs() -> list[dict]:
     out = []
     for path in sorted(glob.glob(os.path.join(RUNS, "plan-*-20260827", "results.jsonl"))):
@@ -97,7 +124,8 @@ def sweep_graphs() -> list[dict]:
             if row.get("usable") and isinstance(row.get("graph"), dict):
                 out.append({"population": "sweep", "source": row["subject"],
                             "identity": f"{row['subject']}/{row['task_id']}",
-                            "graph": row["graph"]})
+                            "planner": row["subject"], "planner_class": None,
+                            "task_id": row["task_id"], "graph": row["graph"]})
     return out
 
 
@@ -121,6 +149,7 @@ def audit(controls: list[dict], registry: str, seed: int) -> tuple[list, dict]:
                 inj = op(body, rng)
             except NotApplicable as e:
                 rows.append({"identity": c["identity"], "population": c["population"],
+                             "planner": c.get("planner"), "planner_class": c.get("planner_class"),
                              "operator": op.__name__, "applied": False,
                              "reason": str(e)[:160]})
                 summary[key]["not_applicable"] += 1
@@ -134,6 +163,8 @@ def audit(controls: list[dict], registry: str, seed: int) -> tuple[list, dict]:
             silent_ok = (expect is not None) or \
                 (_mechanical(mverdict) == _mechanical(c["verdict"]))
             row = {"identity": c["identity"], "population": c["population"],
+                   "planner": c.get("planner"), "planner_class": c.get("planner_class"),
+                   "task_id": c.get("task_id"),
                    "operator": op.__name__, "applied": True,
                    "anchor": inj.element_anchor,
                    "checker_mutant": present_m, "checker_control": present_c,
@@ -166,7 +197,7 @@ def main() -> None:
     args = ap.parse_args()
     os.environ["PATH"] = os.path.abspath(args.oracle_dir) + os.pathsep + os.environ["PATH"]
     ident = oracle_identity()
-    controls = production_graphs() + sweep_graphs()
+    controls = production_graphs() + recovered_production_graphs() + sweep_graphs()
     rows, summary = audit(controls, os.path.abspath(args.registry), args.seed)
     os.makedirs(args.out, exist_ok=True)
     with open(os.path.join(args.out, "audit.jsonl"), "w", encoding="utf-8") as f:

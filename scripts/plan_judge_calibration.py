@@ -43,8 +43,13 @@ TASKS = os.path.join(ROOT, "advisory", "planning-tasks.jsonl")
 BACKENDS = os.path.expanduser("~/git/striatum-next/backends")
 
 
+RECOVERED = os.path.join(RUNS, "production-work-graphs-20260903", "graphs.jsonl")
+
+
 def load_graphs() -> dict[str, dict]:
-    """identity -> (graph, task_id) for every usable sweep graph."""
+    """audit identity -> {graph, task_id | pass_prefix} for every control the
+    audit could have drawn from: the sweep graphs and the recovered
+    production graphs, keyed exactly as the audit keys them."""
     out = {}
     for path in sorted(glob.glob(os.path.join(RUNS, "plan-*-20260827", "results.jsonl"))):
         if "calibration" in path:
@@ -54,7 +59,45 @@ def load_graphs() -> dict[str, dict]:
             if row.get("usable") and isinstance(row.get("graph"), dict):
                 out[f"{row['subject']}/{row['task_id']}"] = {
                     "graph": row["graph"], "task_id": row["task_id"]}
+    if os.path.isfile(RECOVERED):
+        for line in open(RECOVERED, encoding="utf-8"):
+            row = json.loads(line)
+            out[f"{row['identity']}@{row['content_hash'][:12]}"] = {
+                "graph": row["graph"], "task_id": None,
+                "pass_prefix": row["identity"].rsplit("/work-graph", 1)[0]}
     return out
+
+
+def context_task(entry: dict, tasks: dict[str, dict]) -> dict | None:
+    """The planning task whose design a judge reads beside this graph.
+
+    A sweep graph answers one task. A production work graph was lowered
+    from that pass's accepted plan, and the implementation-planning task of
+    the same pass carries the accepted design as its input — the latest
+    such task is used. No task, no context, no pair."""
+    if entry.get("task_id"):
+        return tasks.get(entry["task_id"])
+    prefix = entry.get("pass_prefix")
+    if not prefix:
+        return None
+    candidates = [t for t in tasks.values()
+                  if (t.get("step_id") or "").split("/implementation-plan")[0]
+                  .removeprefix("produce/").removeprefix("revise/") == prefix]
+    if not candidates:
+        return None
+    return max(candidates, key=lambda t: t.get("run_ref") or 0)
+
+
+def planner_class_of(pair_planner: str, declared: str | None) -> str | None:
+    """A production graph carries its class from attribution; a sweep graph's
+    planner is a declared backend. `local` is deterministic lowering with no
+    model family, so every judge is independent of it."""
+    if declared:
+        return declared
+    if pair_planner in (None, "local"):
+        return None
+    path = os.path.join(BACKENDS, pair_planner, "backend.yaml")
+    return pj.planner_class(BACKENDS, pair_planner) if os.path.isfile(path) else None
 
 
 def regenerate_mutant(identity: str, operator: str, graph: dict, audit_seed: int) -> dict:
@@ -77,6 +120,9 @@ def main() -> None:
     ap.add_argument("--workers", type=int, default=1,
                     help="lanes per judge; capped by each declaration")
     ap.add_argument("--timeout", type=int, default=900)
+    ap.add_argument("--populations", nargs="+",
+                    default=["sweep", "production-accepted"],
+                    help="audit populations to draw controls from")
     ap.add_argument("--smoke", type=int, default=0,
                     help="run only the first N pairs (a dry run of the plumbing)")
     ap.add_argument("--out", default=os.path.join(RUNS, "plan-judge-calibration-20260903"))
@@ -92,12 +138,22 @@ def main() -> None:
                                 declared_lanes(load_declaration(BACKENDS, j["judge_id"])))
              for j in judges}
 
+    audit_rows = [r for r in audit_rows if r.get("population") in args.populations]
+    for r in audit_rows:                       # the audit carries the planner
+        r["planner"] = r.get("planner") or r["identity"].split("/", 1)[0]
     pairs = pj.sample_pairs(audit_rows, per_class=args.per_class, seed=args.seed)
+    declared = {r["identity"]: r.get("planner_class") for r in audit_rows}
+    for p in pairs:
+        p["planner"] = next(r["planner"] for r in audit_rows
+                            if r["identity"] == p["identity"])
+    # A pair without a design context cannot be judged; drop it before counting.
+    pairs = [p for p in pairs if context_task(graphs[p["identity"]], tasks) is not None]
     if args.smoke:
         pairs = pairs[:args.smoke]
     planner_classes = {}
     for p in pairs:
-        planner_classes.setdefault(p["planner"], pj.planner_class(BACKENDS, p["planner"]))
+        planner_classes.setdefault(
+            p["planner"], planner_class_of(p["planner"], declared.get(p["identity"])))
 
     os.makedirs(args.out, exist_ok=True)
     calls_path = os.path.join(args.out, "calls.jsonl")
@@ -131,8 +187,11 @@ def main() -> None:
         control = g["graph"]
         a, b = (control, mutant["graph"]) if order == "control-first" else (mutant["graph"], control)
         workspace = os.path.join(args.out, "workspace", p["pair_id"], judge["judge_id"], order)
-        result = pj.judge_pair(judge, tasks[g["task_id"]], a, b, args.timeout, workspace)
-        row = {"pair_id": p["pair_id"], "identity": p["identity"], "task_id": g["task_id"],
+        task = context_task(g, tasks)
+        result = pj.judge_pair(judge, task, a, b, args.timeout, workspace)
+        row = {"pair_id": p["pair_id"], "identity": p["identity"], "task_id": task.get("task_id"),
+               "population": next(r["population"] for r in audit_rows
+                                  if r["identity"] == p["identity"]),
                "operator": p["operator"], "planner": p["planner"],
                "planner_class": planner_classes[p["planner"]], "size_probe": p["size_probe"],
                "judge": judge["judge_id"], "judge_class": judge["aliasing_class"],
@@ -187,8 +246,9 @@ def main() -> None:
         "seed": args.seed, "per_class": args.per_class, "pairs": len(pairs),
         "jury": [{"judge_id": j["judge_id"], "aliasing_class": j["aliasing_class"],
                   "command_sha256": j["command_sha256"], "command": j["command"]} for j in judges],
-        "controls": "synthetic (sweep-produced graphs sound under the pinned oracle); "
-                    "no production controls were available",
+        "populations": args.populations,
+        "controls": "sweep-produced graphs (synthetic) and recovered production work "
+                    "graphs that became accepted heads, each sound under the pinned oracle",
         "finished_at": _dt.datetime.now(_dt.timezone.utc).isoformat(),
         "judges": pj.summarize(resolved),
     }

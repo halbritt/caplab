@@ -1,5 +1,5 @@
 {
-  "finished_at": "2026-09-03T05:44:51.960548+00:00",
+  "finished_at": "2026-09-03T15:16:47.970957+00:00",
   "operators": [
     "dangling_dependency",
     "circular_depends_on",
@@ -31,6 +31,135 @@
   "registry_version": 37,
   "seed": 20260902,
   "summary": {
+    "production": {
+      "controls": 1
+    },
+    "production-accepted": {
+      "controls": 67,
+      "sound": 59
+    },
+    "production-accepted|atomicity_split": {
+      "admissible": 59,
+      "applied": 59,
+      "checker_ok": 59,
+      "stayed_legal": 59
+    },
+    "production-accepted|circular_depends_on": {
+      "admissible": 56,
+      "applied": 56,
+      "checker_ok": 56,
+      "not_applicable": 3,
+      "oracle_flipped": 56
+    },
+    "production-accepted|dangling_dependency": {
+      "admissible": 59,
+      "applied": 59,
+      "checker_ok": 59,
+      "oracle_flipped": 59
+    },
+    "production-accepted|dropped_deliverable": {
+      "admissible": 59,
+      "applied": 59,
+      "checker_ok": 59,
+      "stayed_legal": 59
+    },
+    "production-accepted|merge_independent_packets": {
+      "admissible": 32,
+      "applied": 32,
+      "checker_ok": 32,
+      "not_applicable": 27,
+      "stayed_legal": 32
+    },
+    "production-accepted|overclaimed_verification": {
+      "admissible": 42,
+      "applied": 42,
+      "checker_ok": 42,
+      "not_applicable": 17,
+      "stayed_legal": 42
+    },
+    "production-accepted|purpose_scope_contradiction": {
+      "admissible": 57,
+      "applied": 57,
+      "checker_ok": 57,
+      "not_applicable": 2,
+      "stayed_legal": 57
+    },
+    "production-accepted|unresolvable_acceptance_check": {
+      "admissible": 59,
+      "applied": 59,
+      "checker_ok": 59,
+      "oracle_flipped": 59
+    },
+    "production-accepted|write_scope_outside_tree": {
+      "admissible": 59,
+      "applied": 59,
+      "checker_ok": 59,
+      "stayed_legal": 59
+    },
+    "production-candidate": {
+      "controls": 70,
+      "sound": 49
+    },
+    "production-candidate|atomicity_split": {
+      "admissible": 28,
+      "applied": 28,
+      "checker_ok": 28,
+      "not_applicable": 21,
+      "stayed_legal": 28
+    },
+    "production-candidate|circular_depends_on": {
+      "admissible": 45,
+      "applied": 45,
+      "checker_ok": 45,
+      "not_applicable": 4,
+      "oracle_flipped": 45
+    },
+    "production-candidate|dangling_dependency": {
+      "admissible": 49,
+      "applied": 49,
+      "checker_ok": 49,
+      "oracle_flipped": 49
+    },
+    "production-candidate|dropped_deliverable": {
+      "admissible": 28,
+      "applied": 28,
+      "checker_ok": 28,
+      "not_applicable": 21,
+      "stayed_legal": 28
+    },
+    "production-candidate|merge_independent_packets": {
+      "admissible": 19,
+      "applied": 19,
+      "checker_ok": 19,
+      "not_applicable": 30,
+      "stayed_legal": 19
+    },
+    "production-candidate|overclaimed_verification": {
+      "admissible": 20,
+      "applied": 20,
+      "checker_ok": 20,
+      "not_applicable": 29,
+      "stayed_legal": 20
+    },
+    "production-candidate|purpose_scope_contradiction": {
+      "admissible": 44,
+      "applied": 44,
+      "checker_ok": 44,
+      "not_applicable": 5,
+      "stayed_legal": 44
+    },
+    "production-candidate|unresolvable_acceptance_check": {
+      "admissible": 49,
+      "applied": 49,
+      "checker_ok": 49,
+      "oracle_flipped": 49
+    },
+    "production-candidate|write_scope_outside_tree": {
+      "admissible": 49,
+      "applied": 49,
+      "checker_ok": 49,
+      "stayed_legal": 49
+    },
     "sweep": {
       "controls": 192,
       "sound": 164

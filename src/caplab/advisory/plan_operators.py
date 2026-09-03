@@ -408,6 +408,8 @@ def merge_independent_packets(body: str, rng: random.Random) -> Injection:
     by = _by_id(mutant)
     a, b = by[a_id], by[b_id]
     for key in ("inputs", "outputs", "write_scope", "acceptance_checks", "depends_on"):
+        if key not in a and key not in b:
+            continue            # a v1 packet has no inputs; adding the field breaks its parse
         merged = list(a.get(key) or [])
         for v in b.get(key) or []:
             if v not in merged and v != a_id:
