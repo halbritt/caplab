@@ -1,0 +1,99 @@
+{
+  "finished_at": "2026-09-03T05:44:51.960548+00:00",
+  "operators": [
+    "dangling_dependency",
+    "circular_depends_on",
+    "unresolvable_acceptance_check",
+    "write_scope_outside_tree",
+    "atomicity_split",
+    "dropped_deliverable",
+    "purpose_scope_contradiction",
+    "overclaimed_verification",
+    "merge_independent_packets"
+  ],
+  "oracle": {
+    "path": "/home/halbritt/.local/lib/caplab-instruments/plan-p2b-20260827/striatum-plan-oracle",
+    "sha256": "a785e717a4ef20fb2575f67302a002da0ac6dfc7a4933c024f1447777b34b83e",
+    "version": "striatum-plan-oracle 1"
+  },
+  "oracle_expectation": {
+    "atomicity_split": null,
+    "circular_depends_on": "application_index",
+    "dangling_dependency": "legality",
+    "dropped_deliverable": null,
+    "merge_independent_packets": null,
+    "overclaimed_verification": null,
+    "purpose_scope_contradiction": null,
+    "unresolvable_acceptance_check": "resolvability",
+    "write_scope_outside_tree": null
+  },
+  "registry": "/home/halbritt/.local/lib/caplab-instruments/plan-p2b-20260827/checks-repository-v37.json",
+  "registry_version": 37,
+  "seed": 20260902,
+  "summary": {
+    "sweep": {
+      "controls": 192,
+      "sound": 164
+    },
+    "sweep|atomicity_split": {
+      "admissible": 133,
+      "applied": 133,
+      "checker_ok": 133,
+      "not_applicable": 31,
+      "stayed_legal": 133
+    },
+    "sweep|circular_depends_on": {
+      "admissible": 144,
+      "applied": 144,
+      "checker_ok": 144,
+      "not_applicable": 20,
+      "oracle_flipped": 144
+    },
+    "sweep|dangling_dependency": {
+      "admissible": 164,
+      "applied": 164,
+      "checker_ok": 164,
+      "oracle_flipped": 164
+    },
+    "sweep|dropped_deliverable": {
+      "admissible": 133,
+      "applied": 133,
+      "checker_ok": 133,
+      "not_applicable": 31,
+      "stayed_legal": 133
+    },
+    "sweep|merge_independent_packets": {
+      "admissible": 66,
+      "applied": 66,
+      "checker_ok": 66,
+      "not_applicable": 98,
+      "stayed_legal": 66
+    },
+    "sweep|overclaimed_verification": {
+      "admissible": 130,
+      "applied": 130,
+      "checker_ok": 130,
+      "not_applicable": 34,
+      "stayed_legal": 130
+    },
+    "sweep|purpose_scope_contradiction": {
+      "admissible": 145,
+      "applied": 145,
+      "checker_ok": 145,
+      "not_applicable": 19,
+      "stayed_legal": 145
+    },
+    "sweep|unresolvable_acceptance_check": {
+      "admissible": 164,
+      "applied": 164,
+      "checker_ok": 164,
+      "oracle_flipped": 164
+    },
+    "sweep|write_scope_outside_tree": {
+      "admissible": 164,
+      "applied": 164,
+      "checker_ok": 164,
+      "stayed_legal": 164
+    }
+  }
+}
