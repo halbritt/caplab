@@ -190,9 +190,24 @@ def render_task_prompt(task: dict, check_sets: list[str],
     if not check_sets:
         raise ValueError("plan-v2 requires a non-empty check-set index; "
                          "rendering without one measures guessing")
-    parts = [PLANNING_PROMPT_V2, registry_index(check_sets), "\nCONTEXT:\n"]
+    context = task_context(task, include_base=include_base, max_bytes=max_bytes)
+    if context is None:
+        return None
     closing = "\nRespond with ONLY the work-graph JSON object.\n"
-    total = 0
+    return "".join([PLANNING_PROMPT_V2, registry_index(check_sets),
+                    "\nCONTEXT:\n", context, closing])
+
+
+def task_context(task: dict, include_base: bool = False,
+                 max_bytes: int = 180_000) -> str | None:
+    """The task's retained inputs under named headers, in bundle order.
+
+    Shared by the planning contract and the pairwise judge prompt so that a
+    judge reads exactly the design the planner read. None when a body is
+    missing from the CAS or the inputs exceed the budget — refused, never
+    truncated.
+    """
+    parts, total = [], 0
     for entry in task.get("inputs", []):
         name = (entry.get("path") or "").rsplit("/", 1)[-1]
         if not include_base and name.startswith(BASE_INPUT_PREFIX):
@@ -206,7 +221,6 @@ def render_task_prompt(task: dict, check_sets: list[str],
         parts.append(f"\n===== {entry['path']} =====\n{body}\n")
     if total > max_bytes:
         return None
-    parts.append(closing)
     return "".join(parts)
 
 

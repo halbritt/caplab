@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CAPLAB pairwise plan verdict v1",
+  "type": "object",
+  "required": ["preferred", "reasons"],
+  "additionalProperties": false,
+  "properties": {
+    "preferred": {"type": "string", "enum": ["A", "B", "tie"]},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "reasons": {"type": "array", "items": {"type": "string"}, "maxItems": 6}
+  }
+}
