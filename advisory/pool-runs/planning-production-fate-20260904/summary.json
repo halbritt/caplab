@@ -1,0 +1,323 @@
+{
+  "finished_at": "2026-09-04T02:13:54.247626+00:00",
+  "label_class": "downstream fate (covariate; scheduler-routed; not a claim basis)",
+  "ledger_events": 373363,
+  "passes_with_accepted_plan": 36,
+  "plans_accepted_total": 108,
+  "plans_total": 440,
+  "producers": {
+    "agy": {
+      "packet_checks_all_results": {
+        "fail": 0,
+        "pass": 0,
+        "results_per_packet": null
+      },
+      "packet_quarantines": 0,
+      "packet_review": {
+        "fail": 0,
+        "fail_rate": null,
+        "pass": 0
+      },
+      "packets_first_pass": {
+        "n": 0,
+        "pass": 0,
+        "rate": null
+      },
+      "plan_gates": {
+        "implementation-plan-acceptance": {
+          "fail": 2,
+          "pass": 4
+        },
+        "implementation-plan-finishability": {},
+        "implementation-plan-review": {
+          "fail": 5,
+          "pass": 6
+        }
+      },
+      "plans_accepted": 0,
+      "plans_produced": 11
+    },
+    "agy-claude-sonnet-4-6-thinking": {
+      "packet_checks_all_results": {
+        "fail": 0,
+        "pass": 0,
+        "results_per_packet": null
+      },
+      "packet_quarantines": 0,
+      "packet_review": {
+        "fail": 0,
+        "fail_rate": null,
+        "pass": 0
+      },
+      "packets_first_pass": {
+        "n": 0,
+        "pass": 0,
+        "rate": null
+      },
+      "plan_gates": {
+        "implementation-plan-acceptance": {
+          "fail": 1
+        },
+        "implementation-plan-finishability": {
+          "pass": 1
+        },
+        "implementation-plan-review": {
+          "pass": 1
+        }
+      },
+      "plans_accepted": 0,
+      "plans_produced": 1
+    },
+    "claude-code": {
+      "packet_checks_all_results": {
+        "fail": 157,
+        "pass": 46,
+        "results_per_packet": 14.5
+      },
+      "packet_quarantines": 0,
+      "packet_review": {
+        "fail": 26,
+        "fail_rate": 0.7222222222222222,
+        "pass": 10
+      },
+      "packets_first_pass": {
+        "n": 14,
+        "pass": 9,
+        "rate": 0.6428571428571429
+      },
+      "plan_gates": {
+        "implementation-plan-acceptance": {
+          "fail": 10,
+          "pass": 15
+        },
+        "implementation-plan-finishability": {},
+        "implementation-plan-review": {
+          "fail": 30,
+          "pass": 19
+        }
+      },
+      "plans_accepted": 2,
+      "plans_produced": 53
+    },
+    "claude-harm": {
+      "packet_checks_all_results": {
+        "fail": 0,
+        "pass": 0,
+        "results_per_packet": null
+      },
+      "packet_quarantines": 0,
+      "packet_review": {
+        "fail": 0,
+        "fail_rate": null,
+        "pass": 0
+      },
+      "packets_first_pass": {
+        "n": 0,
+        "pass": 0,
+        "rate": null
+      },
+      "plan_gates": {
+        "implementation-plan-acceptance": {
+          "fail": 2,
+          "pass": 4
+        },
+        "implementation-plan-finishability": {},
+        "implementation-plan-review": {
+          "fail": 6,
+          "pass": 5
+        }
+      },
+      "plans_accepted": 0,
+      "plans_produced": 12
+    },
+    "claude-harm-opus-5-high": {
+      "packet_checks_all_results": {
+        "fail": 423,
+        "pass": 1801,
+        "results_per_packet": 71.74193548387096
+      },
+      "packet_quarantines": 0,
+      "packet_review": {
+        "fail": 134,
+        "fail_rate": 0.09745454545454546,
+        "pass": 1241
+      },
+      "packets_first_pass": {
+        "n": 31,
+        "pass": 25,
+        "rate": 0.8064516129032258
+      },
+      "plan_gates": {
+        "implementation-plan-acceptance": {
+          "fail": 2,
+          "pass": 7
+        },
+        "implementation-plan-finishability": {
+          "fail": 25,
+          "pass": 9
+        },
+        "implementation-plan-review": {
+          "fail": 34,
+          "pass": 7
+        }
+      },
+      "plans_accepted": 7,
+      "plans_produced": 67
+    },
+    "claude-opus-5-high": {
+      "packet_checks_all_results": {
+        "fail": 0,
+        "pass": 12,
+        "results_per_packet": 1.5
+      },
+      "packet_quarantines": 0,
+      "packet_review": {
+        "fail": 0,
+        "fail_rate": 0.0,
+        "pass": 9
+      },
+      "packets_first_pass": {
+        "n": 8,
+        "pass": 8,
+        "rate": 1.0
+      },
+      "plan_gates": {
+        "implementation-plan-acceptance": {
+          "pass": 2
+        },
+        "implementation-plan-finishability": {
+          "pass": 2
+        },
+        "implementation-plan-review": {
+          "pass": 2
+        }
+      },
+      "plans_accepted": 2,
+      "plans_produced": 3
+    },
+    "codex": {
+      "packet_checks_all_results": {
+        "fail": 0,
+        "pass": 0,
+        "results_per_packet": null
+      },
+      "packet_quarantines": 0,
+      "packet_review": {
+        "fail": 0,
+        "fail_rate": null,
+        "pass": 0
+      },
+      "packets_first_pass": {
+        "n": 0,
+        "pass": 0,
+        "rate": null
+      },
+      "plan_gates": {
+        "implementation-plan-acceptance": {
+          "fail": 6,
+          "pass": 20
+        },
+        "implementation-plan-finishability": {},
+        "implementation-plan-review": {
+          "fail": 5,
+          "pass": 26
+        }
+      },
+      "plans_accepted": 0,
+      "plans_produced": 31
+    },
+    "codex-sol-high": {
+      "packet_checks_all_results": {
+        "fail": 206,
+        "pass": 583,
+        "results_per_packet": 8.965909090909092
+      },
+      "packet_quarantines": 0,
+      "packet_review": {
+        "fail": 19,
+        "fail_rate": 0.037549407114624504,
+        "pass": 487
+      },
+      "packets_first_pass": {
+        "n": 88,
+        "pass": 83,
+        "rate": 0.9431818181818182
+      },
+      "plan_gates": {
+        "implementation-plan-acceptance": {
+          "fail": 9,
+          "pass": 57
+        },
+        "implementation-plan-finishability": {
+          "fail": 37,
+          "pass": 123
+        },
+        "implementation-plan-review": {
+          "fail": 1,
+          "pass": 109
+        }
+      },
+      "plans_accepted": 55,
+      "plans_produced": 159
+    },
+    "codex-terra-max": {
+      "packet_checks_all_results": {
+        "fail": 2090,
+        "pass": 1013,
+        "results_per_packet": 21.85211267605634
+      },
+      "packet_quarantines": 0,
+      "packet_review": {
+        "fail": 200,
+        "fail_rate": 0.24242424242424243,
+        "pass": 625
+      },
+      "packets_first_pass": {
+        "n": 142,
+        "pass": 109,
+        "rate": 0.7676056338028169
+      },
+      "plan_gates": {
+        "implementation-plan-acceptance": {
+          "fail": 34,
+          "pass": 43
+        },
+        "implementation-plan-finishability": {
+          "fail": 24,
+          "pass": 46
+        },
+        "implementation-plan-review": {
+          "fail": 14,
+          "pass": 66
+        }
+      },
+      "plans_accepted": 42,
+      "plans_produced": 103
+    },
+    "unattributed": {
+      "packet_checks_all_results": {
+        "fail": 210,
+        "pass": 332,
+        "results_per_packet": 4.044776119402985
+      },
+      "packet_quarantines": 0,
+      "packet_review": {
+        "fail": 104,
+        "fail_rate": 0.33548387096774196,
+        "pass": 206
+      },
+      "packets_first_pass": {
+        "n": 134,
+        "pass": 101,
+        "rate": 0.753731343283582
+      },
+      "plan_gates": {
+        "implementation-plan-acceptance": {},
+        "implementation-plan-finishability": {},
+        "implementation-plan-review": {}
+      },
+      "plans_accepted": 0,
+      "plans_produced": 0
+    }
+  }
+}

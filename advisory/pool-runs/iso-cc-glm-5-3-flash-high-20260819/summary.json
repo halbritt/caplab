@@ -1,0 +1,18 @@
+{
+  "aborted": null,
+  "backend": "cc-glm-5-3-flash-high",
+  "calibration_profile": "v1",
+  "case_selection": "seeded-draw",
+  "catch_rate": 0.5072463768115942,
+  "control_unanimous_share": 0.6376811594202898,
+  "environment": "iso-v1",
+  "false_alarm_rate": 0.2753623188405797,
+  "finished_at": "2026-09-03T23:51:05.760724+00:00",
+  "instrument": "matched-pair defect injection (synthetic contract)",
+  "pairs_discarded": 0,
+  "pairs_usable": 69,
+  "partition": "open",
+  "replicates": 3,
+  "started_at": "2026-09-03T23:08:09.560472+00:00",
+  "sweep_seed": 20260819
+}

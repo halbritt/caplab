@@ -5,11 +5,12 @@
   environment `iso-v1`, two lanes each, through `scripts/supervise_sweep.py`.
 - Run roots: `advisory/pool-runs/iso-claude-fable-5-1-high-20260819/`
   (69/69 usable, complete), `advisory/pool-runs/iso-cc-glm-5-3-flash-high-20260819/`
-  (68/69 usable at writing; the last case is re-measuring). The Gemini 3.8
+  (69/69 usable, complete). The Gemini 3.8
   Flash run is at 32/69 after two agy stalls and is not reported here.
 - Claim: `qc-6504bb1fb3728992` (`claude-fable-5-1-high`,
-  `review.defect_discrimination/1`, iso-v1 cohort). The GLM-flash claim
-  follows its 69th pair.
+  `review.defect_discrimination/1`, iso-v1 cohort) and `qc-ca04644b2e37dd52`
+  (`cc-glm-5-3-flash-high`: catch 0.509, false alarm 0.255, discrimination
+  0.253 on the adjudication path).
 - Comparisons: `advisory/comparisons/iso-*-20260903.json` (four matched
   contrasts, exact sign tests on shared cases).
 
@@ -84,7 +85,7 @@ corpus. Three of the refusals cluster on `requirement_inversion` controls,
 the class whose controls were most often found defective before.
 
 **GLM-5.3-flash is not GLM-5.3 at a lower price.** Its catch is
-indistinguishable from GLM-max on matched cases (4–5, p=1.0) while its false
+indistinguishable from GLM-max on matched cases (4–5, p=1.0 at 69/69) while its false
 alarms are established higher (8–1, p=0.039, upper bound as above), it
 caught 5 of 23 structural defects, and it took as long per pair. On this
 instrument the flash tier buys nothing over the full model on the same
@@ -102,7 +103,6 @@ claim, after the control audit.
 
 ## What is still owed
 
-- The GLM-flash 69th pair, then its claim and leaderboard entry.
 - Gemini 3.8 Flash: 32/69; the agy probe timed out ten times in a row
   during the calibration run and the sweep is resuming under a 30-retry
   probe. Its interim catch (0.81 at n=31) is the highest seen on this

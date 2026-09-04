@@ -1,13 +1,13 @@
 {
   "a": "cc-glm-5-3-flash-high",
-  "a_catch_rate": 0.5178571428571429,
-  "a_discrimination": 0.30357142857142855,
+  "a_catch_rate": 0.5087719298245614,
+  "a_discrimination": 0.2982456140350877,
   "a_false_alarms": 12,
   "a_only_caught": 4,
   "a_only_false_alarm": 8,
   "b": "cc-glm-5-3-max",
-  "b_catch_rate": 0.5357142857142857,
-  "b_discrimination": 0.44642857142857145,
+  "b_catch_rate": 0.5263157894736842,
+  "b_discrimination": 0.43859649122807015,
   "b_false_alarms": 5,
   "b_only_caught": 5,
   "b_only_false_alarm": 1,
@@ -16,7 +16,7 @@
     "base_dropped": {
       "a": 0,
       "b": 1,
-      "n": 3
+      "n": 4
     },
     "broken_internal_crossref": {
       "a": 1,
@@ -161,11 +161,11 @@
   "false_alarm_sign_test_p": 0.0390625,
   "false_alarm_significant_at_05": true,
   "false_alarm_unaudited_pairs": 13,
-  "neither_caught": 22,
-  "reading": "catch: 9 of 56 shared cases discriminate, exact sign test p=1.000 (not established); false alarms: 9 discordant, p=0.039, 13 on unaudited controls",
-  "shared_cases": 56,
+  "neither_caught": 23,
+  "reading": "catch: 9 of 57 shared cases discriminate, exact sign test p=1.000 (not established); false alarms: 9 discordant, p=0.039, 13 on unaudited controls",
+  "shared_cases": 57,
   "sign_test_p": 1.0,
   "significant_at_05": false,
   "sweep_seed": 20260819,
-  "uninformative_pairs": 47
+  "uninformative_pairs": 48
 }

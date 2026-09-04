@@ -1,7 +1,7 @@
 ---
 design_id: planner-evaluation-v1
 artifact_type: design
-status: proposed
+status: parked  # Council disposition 2026-09-04; kept as reference
 decision_owner: repository-owner
 author: CAPLAB execution delegate (Claude), 2026-09-03
 supersedes: none
@@ -15,6 +15,19 @@ relates_to:
 ---
 
 # Planner evaluation: a design for an instrument that ranks
+
+> **Disposition, 2026-09-04.** The Council reviewed this design
+> (`~/council-artifacts/caplab/synthesis-2026-09-04-planner-ranking.md`,
+> sha256 `c618e402c39520f4…`) and recommended, unanimously, that the
+> pairwise ranking (§4.3, L1) be **parked, not deleted**: striatum must
+> absorb weekly model churn, any frontier planner is probably adequate, and
+> the failure worth paying to detect is a defective or regressed backend.
+> The replacement is a per-binding admission gate, operational routing
+> among admitted bindings, and production canaries
+> (`planning-admission-gate-v1.md`). Section 12 records the defects the
+> Council found in this document; the body is kept as written, with
+> corrections marked inline, so the reasoning that was reviewed stays
+> readable.
 
 This document is a **recommendation**. It proposes how CAPLAB should
 measure the planning capability of a binding so that the measurements
@@ -316,12 +329,16 @@ defect), harm 2/4.
   the mechanical gate cannot see, and the judges see them at or near the
   ceiling. That is the capability the ranking needs and the validator
   lacked.
-- **The size probes came back clean.** On `atomicity_split` the mutant is
-  the larger graph; on `merge_independent_packets` the smaller. Every
-  judge preferred the control on every size pair, in both directions
-  (Gemini 19/19 and 16/16). A judge scoring packet count would have split.
-  The instrument's central risk — that L1 inherits L0's size artifact
-  through the judge — has a measured answer of no, on 68 pairs.
+- **The size probes came back clean** — *corrected 2026-09-04: this is
+  overstated.* On `atomicity_split` the mutant is the larger graph; on
+  `merge_independent_packets` the smaller, and every judge preferred the
+  control on every size pair (Gemini 19/19 and 16/16). But in every size
+  pair the larger-or-smaller graph was also the defective one, so 68/68 is
+  defect detection with size varying, not size indifference between two
+  intact graphs. The `prefers_larger_share` of 0.457 is fixed by the probe
+  mix (16 merge / 19 split), not measured. The clean test of size
+  neutrality is H4 (masked re-judge of intact pairs), and it belongs
+  before any ranking run, not after (Council, 2026-09-04).
 - The weak class is the instrument's fault, not the judges'. A judge cannot
   know that `withholding-guards-full-suite` is unregistered unless it sees
   the registry index the planner saw; the planner prompt carries that index
@@ -339,7 +356,13 @@ A judge never shares the planner's aliasing class (`google-gemini`,
 its own family. Graphs are blinded and orders randomized. The remaining
 path — a family's stylistic preference for another family's output — is
 measurable: two judge families see every pair, and their agreement (κ) and
-any systematic split by planner family are reported. If the two judges
+any systematic split by planner family are reported. *Corrected
+2026-09-04: with codex unavailable, the jury of 2026-09-03 does not
+deliver this. Gemini 3.7 Flash is the only judge eligible for every pair;
+the second judge alternates by planner family, and Claude-vs-GLM pairs
+(6 of 28) get Gemini alone. Under that jury L1 is largely one flash
+model's preference. A third family is a prerequisite for the claim, not
+an improvement to it.* If the two judges
 disagree systematically on one planner, that planner's strength carries a
 flag, not a number.
 
@@ -365,7 +388,11 @@ middle bindings is not promised.
 L1 will be believed only if:
 
 - **H1 (anchor).** Spearman ρ(L1 strength, L2 first-pass packet rate) ≥ 0.6
-  across ≥ 6 planners on ≥ 4 shared tasks, interval excluding 0.
+  across ≥ 6 planners on ≥ 4 shared tasks, interval excluding 0. *Corrected
+  2026-09-04: internally inconsistent as written — with 8 planners the
+  interval excludes 0 only from about ρ ≥ 0.74, and 4 tasks at ~5 packets
+  is ~20 packets per planner. Restate as a point estimate plus direction
+  agreement at the two ends of the order, or raise the L2 task count.*
 - **H2 (production correlate).** L1 order agrees in direction with the Tier B
   producer rates for the bindings present in both (no reversal between a
   top-third and a bottom-third binding).
@@ -486,3 +513,40 @@ Calibration to date: 714 judge calls, ~90 minutes wall clock.
   (Arena-Lite; round-robin BT; BT-σ; non-transitivity; position and
   verbosity bias; PlanBench/VAL; execution-grounded evaluation; the
   717-task plan-quality-vs-execution study).
+
+## 12. Council disposition, 2026-09-04
+
+Recorded from `synthesis-2026-09-04-planner-ranking.md` (scribe fable;
+members agy, sol, deepseek, glm; qwen-chair failed). Unanimous.
+
+**Accepted as right:** the diagnosis (finishability/1 is a gate and cannot
+rank); the pairwise hygiene (both orders, flip-as-tie, family exclusion,
+task-level bootstrap, pre-registration, projection-not-fact); demoting
+finishability/1 to L0.
+
+**Defects found, all accepted by the author:**
+
+1. The calibration proves the wrong thing. It shows judges detect gross
+   injected defects against an intact control; L1 asks them to order two
+   intact graphs. No measurement of clean-vs-clean discrimination exists,
+   and that is the ranking's entire signal.
+2. Size neutrality is overstated (§6.2, corrected inline).
+3. The jury does not deliver two families per pair (§6.3, corrected).
+4. H1 is underpowered as written (§6.5, corrected).
+5. Transport and rubric v2 are prerequisites, not sequence items.
+6. The system design narrated this proposal in the present tense; fixed
+   2026-09-04 (`doc/designs/caplab-system-design.md` §4.3).
+7. The construct is a composite no production lane performs; placement
+   validity is bounded by that (already stated in §2.1 and §7).
+
+**Disposition:** L1 and its 5,376-call run are parked; the trigger to
+un-park is production telemetry showing planner-attributable variation
+between admitted bindings, and even then L1 is a projection for a prefer
+list, never a placement gate. The assets — operators and audit, rubric and
+adapters, calibration run, L2 executor design — are kept and serve the
+admission gate and Arm 2. Judge investment stays on review and Arm 2, where
+mechanical ground truth separates bindings at p<0.001.
+
+**Optional, not yet authorized:** a ~450-call clean-pair diagnostic on the
+192 stored graphs (8 tasks, one judge, both orders, plus null pairs that
+must tie) to close the question with a record rather than an intuition.
