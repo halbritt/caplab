@@ -660,7 +660,7 @@ table.data, table.matrix, table.heat { border-collapse: collapse; width: 100%; f
 th { text-align: left; color: var(--ink-2); font-weight: 600; border-bottom: 1px solid var(--line);
   padding: .3rem .5rem; vertical-align: bottom; }
 td { padding: .32rem .5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
-table.data td:first-child { white-space: nowrap; }
+table.data td:first-child, table.data td.mono { white-space: nowrap; }
 table.data { font-size: .86rem; }
 td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .badge { display: inline-block; border-radius: 4px; padding: 0 .4rem; font-size: .76rem; white-space: nowrap; }
