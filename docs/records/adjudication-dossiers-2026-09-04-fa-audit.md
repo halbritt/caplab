@@ -125,8 +125,14 @@ resolvability the work-graph-legality gate's job downstream, so that
 unexplained-but-present ids are a documentation gap and not a defect the
 plan-review contract refuses on? Auditor lean: the plan's own standard
 (every other id explained) makes the omission a defect of the plan against
-itself; but the contract question is the Principal's. **Until ruled, the
-pair scores as an unaudited refusal for glm-flash.**
+itself.
+
+**Ruling (Principal, 2026-09-05): DEFECTIVE.** A plan owes identification of
+every acceptance-check id it names; this plan holds itself to that standard
+and breaks it. GLM-flash's refusal was correct. Recorded as ledger record
+52 (`basis_kind: human-adjudication`, `principal:halbritt`, delegate-written
+at the Principal's direction; reopening condition: a plan-review contract
+that says check ids need not be identified in the plan).
 
 ## The cohort, audited (iso-v1, seed 20260819, 57 scored pairs; 16 defective controls excluded from FA denominators)
 
@@ -138,7 +144,7 @@ pair scores as an unaudited refusal for glm-flash.**
 | `or-gemini-3-7-flash-high` | 0.500 | 0.000 | [0.00, 0.09] | 0.500 | 0 |
 | `cc-glm-5-3-max` | 0.526 | 0.098 | [0.04, 0.23] | 0.429 | 1 |
 | `oc-glm-5-3` | 0.544 | 0.122 | [0.05, 0.26] | 0.422 | 1 |
-| `cc-glm-5-3-flash-high` | 0.509 | 0.195 | [0.10, 0.34] | 0.314 | 2 |
+| `cc-glm-5-3-flash-high` | 0.509 | 0.175 (0.195 before the ruling) | [0.09, 0.32] | 0.334 | 0 |
 
 **What the audit changed.** Fable 5.1's false alarm falls from 0.175 to
 0.098 — eleven of its thirteen refusals were on controls now proven
@@ -163,7 +169,11 @@ claims stay in the ledger as history.
 
 ## Owed
 
-- The Principal's ruling on `qs-ccfd2a5f3a14158e`.
+- ~~The Principal's ruling on `qs-ccfd2a5f3a14158e`~~ — ruled defective
+  2026-09-05 (above). GLM-flash's audit status is now `established`: catch
+  0.509, false alarm 0.175, discrimination 0.334; its false-alarm
+  contrast with GLM-max is 4–1, p=0.375 (not established); superseding
+  claim `qc-850e8a4770a2e57c`.
 - The remaining unaudited refusals on the older iso-v1 runs (GLM-max,
   oc-glm, Gemini 3.7: one each) are single-pair residues from the same
   substrates; they resolve with that ruling or with one more script.
