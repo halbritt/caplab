@@ -1,0 +1,199 @@
+{
+  "a": "agy-gemini-3-7-flash-high",
+  "a_catch_rate": 0.5964912280701754,
+  "a_discrimination": 0.5614035087719298,
+  "a_false_alarms": 2,
+  "a_only_caught": 9,
+  "a_only_false_alarm": 1,
+  "b": "cc-glm-5-3-flash-high",
+  "b_catch_rate": 0.5087719298245614,
+  "b_discrimination": 0.38596491228070173,
+  "b_false_alarms": 7,
+  "b_only_caught": 4,
+  "b_only_false_alarm": 6,
+  "both_caught": 25,
+  "by_defect_class": {
+    "base_dropped": {
+      "a": 4,
+      "b": 0,
+      "n": 4
+    },
+    "broken_internal_crossref": {
+      "a": 1,
+      "b": 1,
+      "n": 1
+    },
+    "contradicted_clause": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "dangling_reference": {
+      "a": 1,
+      "b": 2,
+      "n": 4
+    },
+    "dropped_section": {
+      "a": 0,
+      "b": 0,
+      "n": 4
+    },
+    "duplicated_section": {
+      "a": 4,
+      "b": 3,
+      "n": 4
+    },
+    "hash_mismatch": {
+      "a": 1,
+      "b": 1,
+      "n": 4
+    },
+    "hollow_delivery": {
+      "a": 1,
+      "b": 0,
+      "n": 4
+    },
+    "overclaimed_level": {
+      "a": 0,
+      "b": 0,
+      "n": 4
+    },
+    "refuted_conclusion": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "requirement_inversion": {
+      "a": 1,
+      "b": 1,
+      "n": 4
+    },
+    "scope_violation": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "swapped_section_bodies": {
+      "a": 1,
+      "b": 1,
+      "n": 4
+    },
+    "truncated_tail": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "unearned_verification_claim": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    }
+  },
+  "discordant_cases": [
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "b",
+      "defect_class": "dangling_reference",
+      "dispatch_id": "qs-43f3d7e27dec1a64:dangling_reference:1313159851",
+      "substrate_id": "qs-43f3d7e27dec1a64"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "hollow_delivery",
+      "dispatch_id": "qs-6ebd7c873056feb1:hollow_delivery:219666053",
+      "substrate_id": "qs-6ebd7c873056feb1"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "swapped_section_bodies",
+      "dispatch_id": "qs-78e636fdc5bf4276:swapped_section_bodies:1810804906",
+      "substrate_id": "qs-78e636fdc5bf4276"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "duplicated_section",
+      "dispatch_id": "qs-810276f08b5061bc:duplicated_section:2308472916",
+      "substrate_id": "qs-810276f08b5061bc"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "requirement_inversion",
+      "dispatch_id": "qs-a1dcaeae8129c495:requirement_inversion:1643874888",
+      "substrate_id": "qs-a1dcaeae8129c495"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "base_dropped",
+      "dispatch_id": "qs-a67ae350c19eff24:base_dropped:1840745034",
+      "substrate_id": "qs-a67ae350c19eff24"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "base_dropped",
+      "dispatch_id": "qs-af9054a1808cceba:base_dropped:1419128042",
+      "substrate_id": "qs-af9054a1808cceba"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "b",
+      "defect_class": "swapped_section_bodies",
+      "dispatch_id": "qs-d24d0d472c7a9316:swapped_section_bodies:3882309557",
+      "substrate_id": "qs-d24d0d472c7a9316"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "base_dropped",
+      "dispatch_id": "qs-d79e9a1668416a7d:base_dropped:2454591715",
+      "substrate_id": "qs-d79e9a1668416a7d"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "b",
+      "defect_class": "dangling_reference",
+      "dispatch_id": "qs-f368c6ceaa769cd1:dangling_reference:3286671372",
+      "substrate_id": "qs-f368c6ceaa769cd1"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "b",
+      "defect_class": "requirement_inversion",
+      "dispatch_id": "qs-f3d9c1ad3b285041:requirement_inversion:1299480745",
+      "substrate_id": "qs-f3d9c1ad3b285041"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "base_dropped",
+      "dispatch_id": "qs-faaba3e49977ce66:base_dropped:3944427857",
+      "substrate_id": "qs-faaba3e49977ce66"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "dangling_reference",
+      "dispatch_id": "qs-fd0947a4152bd3e3:dangling_reference:3847495531",
+      "substrate_id": "qs-fd0947a4152bd3e3"
+    }
+  ],
+  "discordant_pairs": 13,
+  "false_alarm_audit_status": "contains-unaudited-refusals",
+  "false_alarm_defective_controls_excluded": 17,
+  "false_alarm_discordant_pairs": 7,
+  "false_alarm_sign_test_p": 0.125,
+  "false_alarm_significant_at_05": false,
+  "false_alarm_unaudited_pairs": 1,
+  "neither_caught": 19,
+  "reading": "catch: 13 of 57 shared cases discriminate, exact sign test p=0.267 (not established); false alarms: 7 discordant, p=0.125 (not established), 1 on unaudited controls",
+  "shared_cases": 57,
+  "sign_test_p": 0.266845703125,
+  "significant_at_05": false,
+  "sweep_seed": 20260819,
+  "uninformative_pairs": 44
+}

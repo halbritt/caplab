@@ -1,0 +1,157 @@
+{
+  "a": "or-gemini-3-7-flash-high",
+  "a_catch_rate": 0.5,
+  "a_discrimination": 0.5,
+  "a_false_alarms": 0,
+  "a_only_caught": 3,
+  "a_only_false_alarm": 0,
+  "b": "cc-glm-5-3-max",
+  "b_catch_rate": 0.5178571428571429,
+  "b_discrimination": 0.44642857142857145,
+  "b_false_alarms": 4,
+  "b_only_caught": 4,
+  "b_only_false_alarm": 4,
+  "both_caught": 25,
+  "by_defect_class": {
+    "base_dropped": {
+      "a": 1,
+      "b": 0,
+      "n": 3
+    },
+    "broken_internal_crossref": {
+      "a": 1,
+      "b": 1,
+      "n": 1
+    },
+    "contradicted_clause": {
+      "a": 3,
+      "b": 4,
+      "n": 4
+    },
+    "dangling_reference": {
+      "a": 1,
+      "b": 2,
+      "n": 4
+    },
+    "dropped_section": {
+      "a": 0,
+      "b": 0,
+      "n": 4
+    },
+    "duplicated_section": {
+      "a": 4,
+      "b": 2,
+      "n": 4
+    },
+    "hash_mismatch": {
+      "a": 1,
+      "b": 1,
+      "n": 4
+    },
+    "hollow_delivery": {
+      "a": 0,
+      "b": 0,
+      "n": 4
+    },
+    "overclaimed_level": {
+      "a": 0,
+      "b": 1,
+      "n": 4
+    },
+    "refuted_conclusion": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "requirement_inversion": {
+      "a": 1,
+      "b": 1,
+      "n": 4
+    },
+    "scope_violation": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "swapped_section_bodies": {
+      "a": 1,
+      "b": 1,
+      "n": 4
+    },
+    "truncated_tail": {
+      "a": 3,
+      "b": 4,
+      "n": 4
+    },
+    "unearned_verification_claim": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    }
+  },
+  "discordant_cases": [
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "b",
+      "defect_class": "dangling_reference",
+      "dispatch_id": "qs-43f3d7e27dec1a64:dangling_reference:1313159851",
+      "substrate_id": "qs-43f3d7e27dec1a64"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "duplicated_section",
+      "dispatch_id": "qs-5ea16d212ab3d464:duplicated_section:236676599",
+      "substrate_id": "qs-5ea16d212ab3d464"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "b",
+      "defect_class": "truncated_tail",
+      "dispatch_id": "qs-7dabe6891bc1679c:truncated_tail:3324493526",
+      "substrate_id": "qs-7dabe6891bc1679c"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "duplicated_section",
+      "dispatch_id": "qs-810276f08b5061bc:duplicated_section:2308472916",
+      "substrate_id": "qs-810276f08b5061bc"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "b",
+      "defect_class": "contradicted_clause",
+      "dispatch_id": "qs-a97ff272bb749518:contradicted_clause:851652862",
+      "substrate_id": "qs-a97ff272bb749518"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "base_dropped",
+      "dispatch_id": "qs-d79e9a1668416a7d:base_dropped:2454591715",
+      "substrate_id": "qs-d79e9a1668416a7d"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "b",
+      "defect_class": "overclaimed_level",
+      "dispatch_id": "qs-ec76afd5d7b27ffd:overclaimed_level:578391153",
+      "substrate_id": "qs-ec76afd5d7b27ffd"
+    }
+  ],
+  "discordant_pairs": 7,
+  "false_alarm_audit_status": "contains-unaudited-refusals",
+  "false_alarm_defective_controls_excluded": 17,
+  "false_alarm_discordant_pairs": 4,
+  "false_alarm_sign_test_p": 0.125,
+  "false_alarm_significant_at_05": false,
+  "false_alarm_unaudited_pairs": 1,
+  "neither_caught": 24,
+  "reading": "catch: 7 of 56 shared cases discriminate, exact sign test p=1.000 (not established); false alarms: 4 discordant, p=0.125 (not established), 1 on unaudited controls",
+  "shared_cases": 56,
+  "sign_test_p": 1.0,
+  "significant_at_05": false,
+  "sweep_seed": 20260819,
+  "uninformative_pairs": 49
+}

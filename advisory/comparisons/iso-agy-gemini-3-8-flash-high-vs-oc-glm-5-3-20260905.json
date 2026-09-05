@@ -1,0 +1,213 @@
+{
+  "a": "agy-gemini-3-8-flash-high",
+  "a_catch_rate": 0.7719298245614035,
+  "a_discrimination": 0.7017543859649122,
+  "a_false_alarms": 4,
+  "a_only_caught": 14,
+  "a_only_false_alarm": 2,
+  "b": "oc-glm-5-3",
+  "b_catch_rate": 0.543859649122807,
+  "b_discrimination": 0.45614035087719296,
+  "b_false_alarms": 5,
+  "b_only_caught": 1,
+  "b_only_false_alarm": 3,
+  "both_caught": 30,
+  "by_defect_class": {
+    "base_dropped": {
+      "a": 4,
+      "b": 1,
+      "n": 4
+    },
+    "broken_internal_crossref": {
+      "a": 1,
+      "b": 1,
+      "n": 1
+    },
+    "contradicted_clause": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "dangling_reference": {
+      "a": 2,
+      "b": 2,
+      "n": 4
+    },
+    "dropped_section": {
+      "a": 3,
+      "b": 0,
+      "n": 4
+    },
+    "duplicated_section": {
+      "a": 4,
+      "b": 3,
+      "n": 4
+    },
+    "hash_mismatch": {
+      "a": 1,
+      "b": 2,
+      "n": 4
+    },
+    "hollow_delivery": {
+      "a": 2,
+      "b": 2,
+      "n": 4
+    },
+    "overclaimed_level": {
+      "a": 2,
+      "b": 0,
+      "n": 4
+    },
+    "refuted_conclusion": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "requirement_inversion": {
+      "a": 4,
+      "b": 1,
+      "n": 4
+    },
+    "scope_violation": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "swapped_section_bodies": {
+      "a": 1,
+      "b": 0,
+      "n": 4
+    },
+    "truncated_tail": {
+      "a": 4,
+      "b": 3,
+      "n": 4
+    },
+    "unearned_verification_claim": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    }
+  },
+  "discordant_cases": [
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "overclaimed_level",
+      "dispatch_id": "qs-641d18fb33495aba:overclaimed_level:2283446392",
+      "substrate_id": "qs-641d18fb33495aba"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "requirement_inversion",
+      "dispatch_id": "qs-6d0ecc98d4fbedaa:requirement_inversion:499814546",
+      "substrate_id": "qs-6d0ecc98d4fbedaa"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "swapped_section_bodies",
+      "dispatch_id": "qs-78e636fdc5bf4276:swapped_section_bodies:1810804906",
+      "substrate_id": "qs-78e636fdc5bf4276"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "truncated_tail",
+      "dispatch_id": "qs-7dabe6891bc1679c:truncated_tail:3324493526",
+      "substrate_id": "qs-7dabe6891bc1679c"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "duplicated_section",
+      "dispatch_id": "qs-810276f08b5061bc:duplicated_section:2308472916",
+      "substrate_id": "qs-810276f08b5061bc"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "dropped_section",
+      "dispatch_id": "qs-8f41b707cb15f6d9:dropped_section:2610746022",
+      "substrate_id": "qs-8f41b707cb15f6d9"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "b",
+      "defect_class": "hash_mismatch",
+      "dispatch_id": "qs-a190c423a1dcce98:hash_mismatch:173212695",
+      "substrate_id": "qs-a190c423a1dcce98"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "base_dropped",
+      "dispatch_id": "qs-af9054a1808cceba:base_dropped:1419128042",
+      "substrate_id": "qs-af9054a1808cceba"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "dropped_section",
+      "dispatch_id": "qs-afa3ff9b86200498:dropped_section:3498201820",
+      "substrate_id": "qs-afa3ff9b86200498"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "base_dropped",
+      "dispatch_id": "qs-d79e9a1668416a7d:base_dropped:2454591715",
+      "substrate_id": "qs-d79e9a1668416a7d"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "overclaimed_level",
+      "dispatch_id": "qs-ec76afd5d7b27ffd:overclaimed_level:578391153",
+      "substrate_id": "qs-ec76afd5d7b27ffd"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "requirement_inversion",
+      "dispatch_id": "qs-f3d9c1ad3b285041:requirement_inversion:1299480745",
+      "substrate_id": "qs-f3d9c1ad3b285041"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "dropped_section",
+      "dispatch_id": "qs-f879a0e3f50528bf:dropped_section:4252173400",
+      "substrate_id": "qs-f879a0e3f50528bf"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "base_dropped",
+      "dispatch_id": "qs-faaba3e49977ce66:base_dropped:3944427857",
+      "substrate_id": "qs-faaba3e49977ce66"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "requirement_inversion",
+      "dispatch_id": "qs-fc1e95b9755ee36e:requirement_inversion:3402432770",
+      "substrate_id": "qs-fc1e95b9755ee36e"
+    }
+  ],
+  "discordant_pairs": 15,
+  "false_alarm_audit_status": "established",
+  "false_alarm_defective_controls_excluded": 17,
+  "false_alarm_discordant_pairs": 5,
+  "false_alarm_sign_test_p": 1.0,
+  "false_alarm_significant_at_05": false,
+  "false_alarm_unaudited_pairs": 0,
+  "neither_caught": 12,
+  "reading": "catch: 15 of 57 shared cases discriminate, exact sign test p=0.001; false alarms: 5 discordant, p=1.000 (not established)",
+  "shared_cases": 57,
+  "sign_test_p": 0.0009765625,
+  "significant_at_05": true,
+  "sweep_seed": 20260819,
+  "uninformative_pairs": 42
+}
