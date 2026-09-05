@@ -164,15 +164,31 @@ def advisory_control_context(adjudications_path: str | None = None,
     if registry_path is None:
         registry_path = os.path.join(advisory_root, "substrates.jsonl")
     substrate_sources = {}
+    substrates = []
     if os.path.isfile(registry_path):
         with open(registry_path, encoding="utf-8") as f:
             for line in f:
                 if line.strip():
                     substrate = json.loads(line)
+                    substrates.append(substrate)
                     dispatch = (substrate.get("source") or {}).get("dispatch_id")
-                    if dispatch:
-                        substrate_sources[substrate["substrate_id"]] = dispatch
-    return Adjudications.load(adjudications_path), substrate_sources
+                    # A repo-doc substrate has no striatum dispatch; its control
+                    # key is its own id, so an adjudication survives the
+                    # per-run injection seed in the pool-run dispatch id.
+                    substrate_sources[substrate["substrate_id"]] = dispatch or substrate["substrate_id"]
+    adjudications = Adjudications.load(adjudications_path)
+    # Adjudications have been recorded under three spellings of the same
+    # control: the striatum dispatch id, the substrate id, and the body's
+    # sha256 (the 2026-08-23 deepseek audit). Scoring keys by the first; a
+    # record under either other spelling must still be found, or a reviewer
+    # is charged for refusing a control already proven defective — the
+    # 2026-09-04 audit found eight such records invisible to scoring.
+    for substrate in substrates:
+        key = substrate_sources[substrate["substrate_id"]]
+        for alias in (substrate.get("sha256"), substrate["substrate_id"]):
+            if alias and alias != key:
+                adjudications.alias(alias, key)
+    return adjudications, substrate_sources
 
 
 def claims_from_runs(run_dirs: list[str], backends_root: str | None,

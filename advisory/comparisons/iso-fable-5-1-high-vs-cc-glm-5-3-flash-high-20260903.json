@@ -1,22 +1,22 @@
 {
   "a": "fable-5-1-high",
-  "a_catch_rate": 0.6607142857142857,
-  "a_discrimination": 0.5,
-  "a_false_alarms": 9,
-  "a_only_caught": 10,
-  "a_only_false_alarm": 3,
+  "a_catch_rate": 0.6666666666666666,
+  "a_discrimination": 0.5964912280701754,
+  "a_false_alarms": 4,
+  "a_only_caught": 11,
+  "a_only_false_alarm": 1,
   "b": "cc-glm-5-3-flash-high",
-  "b_catch_rate": 0.5178571428571429,
-  "b_discrimination": 0.30357142857142855,
-  "b_false_alarms": 12,
+  "b_catch_rate": 0.5087719298245614,
+  "b_discrimination": 0.3684210526315789,
+  "b_false_alarms": 8,
   "b_only_caught": 2,
-  "b_only_false_alarm": 6,
+  "b_only_false_alarm": 5,
   "both_caught": 27,
   "by_defect_class": {
     "base_dropped": {
-      "a": 0,
+      "a": 1,
       "b": 0,
-      "n": 3
+      "n": 4
     },
     "broken_internal_crossref": {
       "a": 1,
@@ -168,6 +168,13 @@
       "substrate_id": "qs-f879a0e3f50528bf"
     },
     {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "base_dropped",
+      "dispatch_id": "qs-faaba3e49977ce66:base_dropped:3944427857",
+      "substrate_id": "qs-faaba3e49977ce66"
+    },
+    {
       "calibration_profile": "v1",
       "caught_by": "a",
       "defect_class": "dangling_reference",
@@ -175,17 +182,17 @@
       "substrate_id": "qs-fd0947a4152bd3e3"
     }
   ],
-  "discordant_pairs": 12,
+  "discordant_pairs": 13,
   "false_alarm_audit_status": "contains-unaudited-refusals",
-  "false_alarm_defective_controls_excluded": 10,
-  "false_alarm_discordant_pairs": 9,
-  "false_alarm_sign_test_p": 0.5078125,
+  "false_alarm_defective_controls_excluded": 16,
+  "false_alarm_discordant_pairs": 6,
+  "false_alarm_sign_test_p": 0.21875,
   "false_alarm_significant_at_05": false,
-  "false_alarm_unaudited_pairs": 15,
+  "false_alarm_unaudited_pairs": 1,
   "neither_caught": 17,
-  "reading": "catch: 12 of 56 shared cases discriminate, exact sign test p=0.039; false alarms: 9 discordant, p=0.508 (not established), 15 on unaudited controls",
-  "shared_cases": 56,
-  "sign_test_p": 0.03857421875,
+  "reading": "catch: 13 of 57 shared cases discriminate, exact sign test p=0.022; false alarms: 6 discordant, p=0.219 (not established), 1 on unaudited controls",
+  "shared_cases": 57,
+  "sign_test_p": 0.0224609375,
   "significant_at_05": true,
   "sweep_seed": 20260819,
   "uninformative_pairs": 44

@@ -60,6 +60,15 @@ class Adjudications:
         with open(path, encoding="utf-8") as f:
             return cls([json.loads(line) for line in f if line.strip()])
 
+    def alias(self, recorded_key: str, control_key: str) -> None:
+        """Make a record filed under `recorded_key` answer for `control_key`.
+
+        A record already filed under `control_key` is never overwritten: the
+        key scoring uses wins, and the alias only fills a gap."""
+        record = self._by_dispatch.get(recorded_key)
+        if record is not None and control_key not in self._by_dispatch:
+            self._by_dispatch[control_key] = record
+
     def disposition(self, dispatch_id: str) -> str:
         record = self._by_dispatch.get(dispatch_id)
         return record["disposition"] if record else "unadjudicated"

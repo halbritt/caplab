@@ -111,3 +111,25 @@ claim, after the control audit.
   Principal rulings on the residue), in the pattern of 2026-08-23.
 - `codex-sol-high` answers again (PROBE-OK at 15:5xZ after a day of 404);
   its return to the calibration jury is decision 4 of the design document.
+
+## Audited 2026-09-04 — false alarms after the control audit
+
+The control audit (`adjudication-dossiers-2026-09-04-fa-audit.md`) settled
+every refusal above but one, and fixed an adjudication key mismatch that had
+hidden eight earlier verdicts from scoring. On audited controls (16
+defective controls excluded from FA denominators):
+
+| binding | catch | false alarm | catch − FA |
+|---|---|---|---|
+| `claude-fable-5-1-high` | 0.667 | **0.098** (was 0.175) | 0.569 |
+| `cc-glm-5-3-flash-high` | 0.509 | 0.195 (was 0.304) | 0.314 |
+| `cc-glm-5-3-max` | 0.526 | 0.098 (was 0.158) | 0.429 |
+| `agy-gemini-3-7-flash-high` | 0.596 | 0.049 (was 0.088) | 0.548 |
+
+Eleven of fable 5.1's thirteen refusals were on controls proven defective;
+fable was right eleven times. **Correction to the reading above:** GLM-flash's
+higher false-alarm rate over GLM-max is *not* established on audited
+controls (discordant 5–1, p=0.219; the 8–1, p=0.039 above counted defective
+controls). GLM-flash still loses on catch − FA (0.31 vs 0.43). Fable 5.1's
+catch lead over both GLM tuples stands (10–2, p=0.039; 11–2, p=0.022).
+Superseding claims carry `as_of` 2026-09-04T18:30:00Z.

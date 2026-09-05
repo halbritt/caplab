@@ -78,3 +78,15 @@ Principal decision on the claim, after the control audit.
   excluded.
 - The declaration's `status: disabled` and `supported_pass_types: []` are
   the Principal's to change; nothing here changes them.
+
+## Audited 2026-09-04 — false alarms after the control audit
+
+Six of Gemini 3.8's ten refusals were on controls the audit
+(`adjudication-dossiers-2026-09-04-fa-audit.md`) proved defective; none of
+its refusals remain unaudited. On audited controls (16 defective excluded):
+catch 0.772, **false alarm 0.098** (was 0.158), catch − FA **0.674** — the
+highest discrimination on the iso-v1 cohort. Against fable 5.1 the false
+alarms are identical (4 vs 4, no discordant pairs); the separation is catch
+alone and is not established (9–3, p=0.146). The revision step over 3.7 on
+catch (10–0, p=0.002) and the lead over GLM-max (14–0) are unchanged. A
+superseding claim carries `as_of` 2026-09-04T18:30:00Z.
