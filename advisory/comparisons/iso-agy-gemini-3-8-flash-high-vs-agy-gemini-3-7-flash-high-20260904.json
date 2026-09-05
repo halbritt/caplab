@@ -1,0 +1,178 @@
+{
+  "a": "agy-gemini-3-8-flash-high",
+  "a_catch_rate": 0.7719298245614035,
+  "a_discrimination": 0.6842105263157895,
+  "a_false_alarms": 5,
+  "a_only_caught": 10,
+  "a_only_false_alarm": 3,
+  "b": "agy-gemini-3-7-flash-high",
+  "b_catch_rate": 0.5964912280701754,
+  "b_discrimination": 0.543859649122807,
+  "b_false_alarms": 3,
+  "b_only_caught": 0,
+  "b_only_false_alarm": 1,
+  "both_caught": 34,
+  "by_defect_class": {
+    "base_dropped": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "broken_internal_crossref": {
+      "a": 1,
+      "b": 1,
+      "n": 1
+    },
+    "contradicted_clause": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "dangling_reference": {
+      "a": 2,
+      "b": 1,
+      "n": 4
+    },
+    "dropped_section": {
+      "a": 3,
+      "b": 0,
+      "n": 4
+    },
+    "duplicated_section": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "hash_mismatch": {
+      "a": 1,
+      "b": 1,
+      "n": 4
+    },
+    "hollow_delivery": {
+      "a": 2,
+      "b": 1,
+      "n": 4
+    },
+    "overclaimed_level": {
+      "a": 2,
+      "b": 0,
+      "n": 4
+    },
+    "refuted_conclusion": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "requirement_inversion": {
+      "a": 4,
+      "b": 1,
+      "n": 4
+    },
+    "scope_violation": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "swapped_section_bodies": {
+      "a": 1,
+      "b": 1,
+      "n": 4
+    },
+    "truncated_tail": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "unearned_verification_claim": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    }
+  },
+  "discordant_cases": [
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "dangling_reference",
+      "dispatch_id": "qs-43f3d7e27dec1a64:dangling_reference:1313159851",
+      "substrate_id": "qs-43f3d7e27dec1a64"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "overclaimed_level",
+      "dispatch_id": "qs-641d18fb33495aba:overclaimed_level:2283446392",
+      "substrate_id": "qs-641d18fb33495aba"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "requirement_inversion",
+      "dispatch_id": "qs-6d0ecc98d4fbedaa:requirement_inversion:499814546",
+      "substrate_id": "qs-6d0ecc98d4fbedaa"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "dropped_section",
+      "dispatch_id": "qs-8f41b707cb15f6d9:dropped_section:2610746022",
+      "substrate_id": "qs-8f41b707cb15f6d9"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "dropped_section",
+      "dispatch_id": "qs-afa3ff9b86200498:dropped_section:3498201820",
+      "substrate_id": "qs-afa3ff9b86200498"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "hollow_delivery",
+      "dispatch_id": "qs-c70d14e4ac76d99c:hollow_delivery:991928483",
+      "substrate_id": "qs-c70d14e4ac76d99c"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "overclaimed_level",
+      "dispatch_id": "qs-ec76afd5d7b27ffd:overclaimed_level:578391153",
+      "substrate_id": "qs-ec76afd5d7b27ffd"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "requirement_inversion",
+      "dispatch_id": "qs-f3d9c1ad3b285041:requirement_inversion:1299480745",
+      "substrate_id": "qs-f3d9c1ad3b285041"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "dropped_section",
+      "dispatch_id": "qs-f879a0e3f50528bf:dropped_section:4252173400",
+      "substrate_id": "qs-f879a0e3f50528bf"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "requirement_inversion",
+      "dispatch_id": "qs-fc1e95b9755ee36e:requirement_inversion:3402432770",
+      "substrate_id": "qs-fc1e95b9755ee36e"
+    }
+  ],
+  "discordant_pairs": 10,
+  "false_alarm_audit_status": "contains-unaudited-refusals",
+  "false_alarm_defective_controls_excluded": 10,
+  "false_alarm_discordant_pairs": 4,
+  "false_alarm_sign_test_p": 0.625,
+  "false_alarm_significant_at_05": false,
+  "false_alarm_unaudited_pairs": 6,
+  "neither_caught": 13,
+  "reading": "catch: 10 of 57 shared cases discriminate, exact sign test p=0.002; false alarms: 4 discordant, p=0.625 (not established), 6 on unaudited controls",
+  "shared_cases": 57,
+  "sign_test_p": 0.001953125,
+  "significant_at_05": true,
+  "sweep_seed": 20260819,
+  "uninformative_pairs": 47
+}

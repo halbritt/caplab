@@ -1,0 +1,18 @@
+{
+  "aborted": null,
+  "backend": "agy-gemini-3-8-flash-high",
+  "calibration_profile": "v1",
+  "case_selection": "seeded-draw",
+  "catch_rate": 0.782608695652174,
+  "control_unanimous_share": 0.9420289855072463,
+  "environment": "iso-v1",
+  "false_alarm_rate": 0.14492753623188406,
+  "finished_at": "2026-09-04T09:07:35.188195+00:00",
+  "instrument": "matched-pair defect injection (synthetic contract)",
+  "pairs_discarded": 0,
+  "pairs_usable": 69,
+  "partition": "open",
+  "replicates": 3,
+  "started_at": "2026-09-04T08:38:58.088040+00:00",
+  "sweep_seed": 20260819
+}
