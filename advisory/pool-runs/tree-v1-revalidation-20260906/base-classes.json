@@ -1,0 +1,380 @@
+{
+ "qs-40181ea573013ed8": {
+  "class": "none-by-design",
+  "run": 31795,
+  "source": "production pinned the artifact only"
+ },
+ "qs-402057192be1b8a8": {
+  "class": "whole-tree",
+  "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+  "repo": "caplab",
+  "source": "git-archive"
+ },
+ "qs-40583720e067908f": {
+  "class": "partial-product-tree",
+  "object": "dd9c4672145a1f152faa51c72d3f8c7fed80d83e3646135816f1504b7368a4c0",
+  "source": "declared product object"
+ },
+ "qs-40be7cf187a4e288": {
+  "class": "whole-tree",
+  "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
+  "repo": "striatum-next",
+  "source": "git-archive"
+ },
+ "qs-41241900113d9862": {
+  "class": "whole-tree",
+  "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
+  "repo": "striatum-next",
+  "source": "git-archive"
+ },
+ "qs-415d0b9333fe336f": {
+  "class": "partial-product-tree",
+  "object": "dd9c4672145a1f152faa51c72d3f8c7fed80d83e3646135816f1504b7368a4c0",
+  "source": "declared product object"
+ },
+ "qs-4160800d36fb89ba": {
+  "class": "partial-product-tree",
+  "object": "6c54a486c0c23f715174110e8a18b87429830041e7dd49629a363b6ad4e34592",
+  "source": "declared product object"
+ },
+ "qs-425bccdb287d3654": {
+  "class": "lost",
+  "object": "172d27ea8c6289465eaf6d8b6f1f0eed16ddf2075cb06f6dab1279a148e88671",
+  "source": "declared base object absent from the store"
+ },
+ "qs-4298b5676c10ee3b": {
+  "class": "whole-tree",
+  "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+  "repo": "caplab",
+  "source": "git-archive"
+ },
+ "qs-42ac7af2bd75bd7d": {
+  "class": "whole-tree",
+  "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+  "repo": "caplab",
+  "source": "git-archive"
+ },
+ "qs-42bc0f9e052bfa57": {
+  "class": "lost",
+  "object": "9e309a24cf56a28d2541f6dd526afaf88aed408691d3970838f1926c47b44448",
+  "source": "declared base object absent from the store"
+ },
+ "qs-43f3d7e27dec1a64": {
+  "class": "whole-tree",
+  "commit": "04a7702aaa4309606e9e4c0e8652edadc802af2e",
+  "repo": "striatum-next",
+  "source": "git-anchor"
+ },
+ "qs-45baf30be46b0c3c": {
+  "class": "lost",
+  "object": "fc7ccc71c0d333d71d058a17bebbf6f21d8b755e16595eec1478fc42c62cb52c",
+  "source": "declared base object absent from the store"
+ },
+ "qs-514df336ad6c4e50": {
+  "class": "none-by-design",
+  "run": 31369,
+  "source": "production pinned the artifact only"
+ },
+ "qs-55beeb775063c017": {
+  "class": "none-by-design",
+  "run": 19111,
+  "source": "production pinned the artifact only"
+ },
+ "qs-5a60742a74305130": {
+  "class": "none-by-design",
+  "run": 15284,
+  "source": "production pinned the artifact only"
+ },
+ "qs-5de685afb96fcd3d": {
+  "class": "whole-tree",
+  "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+  "repo": "caplab",
+  "source": "git-archive"
+ },
+ "qs-5ea16d212ab3d464": {
+  "class": "whole-tree",
+  "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+  "repo": "caplab",
+  "source": "git-archive"
+ },
+ "qs-5f841949fa746b8e": {
+  "class": "whole-tree",
+  "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+  "repo": "caplab",
+  "source": "git-archive"
+ },
+ "qs-641d18fb33495aba": {
+  "class": "whole-tree",
+  "object": "ab132f8c48f1924772e26c65a5cca4ffadabacf46243d64ae368f3435f831df7",
+  "run": 99028,
+  "source": "materialized_base"
+ },
+ "qs-6d0ecc98d4fbedaa": {
+  "class": "whole-tree",
+  "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+  "repo": "caplab",
+  "source": "git-archive"
+ },
+ "qs-6ebd7c873056feb1": {
+  "class": "partial-product-tree",
+  "object": "7530db45e4717476a9e1cdfb4221ac786bd0593cf659b2002bbde9e40a7dd51a",
+  "source": "declared product object"
+ },
+ "qs-71a0c8dd36c55a62": {
+  "class": "whole-tree",
+  "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+  "repo": "caplab",
+  "source": "git-archive"
+ },
+ "qs-729de0dbe80c46c7": {
+  "class": "none-by-design",
+  "run": 8709,
+  "source": "production pinned the artifact only"
+ },
+ "qs-7438efc689422484": {
+  "class": "none-by-design",
+  "run": 5627,
+  "source": "production pinned the artifact only"
+ },
+ "qs-78e636fdc5bf4276": {
+  "class": "whole-tree",
+  "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+  "repo": "caplab",
+  "source": "git-archive"
+ },
+ "qs-7d8726d369f3efae": {
+  "class": "none-by-design",
+  "run": 84948,
+  "source": "production pinned the artifact only"
+ },
+ "qs-7dabe6891bc1679c": {
+  "class": "whole-tree",
+  "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+  "repo": "caplab",
+  "source": "git-archive"
+ },
+ "qs-810276f08b5061bc": {
+  "class": "whole-tree",
+  "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+  "repo": "caplab",
+  "source": "git-archive"
+ },
+ "qs-81f5ccd5f4e78f02": {
+  "class": "whole-tree",
+  "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+  "repo": "caplab",
+  "source": "git-archive"
+ },
+ "qs-8582be8e3b69eb76": {
+  "class": "whole-tree",
+  "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+  "repo": "caplab",
+  "source": "git-archive"
+ },
+ "qs-8f41b707cb15f6d9": {
+  "class": "whole-tree",
+  "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+  "repo": "caplab",
+  "source": "git-archive"
+ },
+ "qs-907a07dad63ec02e": {
+  "class": "whole-tree",
+  "object": "77749a11f92cab101bea5783f36efe7576fd1ab4c55009a8099341ff641345bf",
+  "run": 70324,
+  "source": "materialized_base"
+ },
+ "qs-922bffcd10232e91": {
+  "class": "whole-tree",
+  "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
+  "repo": "striatum-next",
+  "source": "git-archive"
+ },
+ "qs-93a90787f0d83382": {
+  "class": "whole-tree",
+  "commit": "d4aade36c3a4f9e00c91992aa326b2dee10b73d4",
+  "repo": "striatum-next",
+  "source": "git-anchor"
+ },
+ "qs-961371a1d0b19095": {
+  "class": "whole-tree",
+  "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+  "repo": "caplab",
+  "source": "git-archive"
+ },
+ "qs-9fa3482bef63d3ef": {
+  "class": "lost",
+  "object": null,
+  "source": "declared base object absent from the store"
+ },
+ "qs-a17d0d0b23b2ad0f": {
+  "class": "none-by-design",
+  "run": 85890,
+  "source": "production pinned the artifact only"
+ },
+ "qs-a190c423a1dcce98": {
+  "class": "partial-product-tree",
+  "object": "43f3d7e27dec1a640581a672aa918b42077bf5cae7efb0d5c9adcdbf828c0817",
+  "source": "declared product object"
+ },
+ "qs-a1dcaeae8129c495": {
+  "class": "none-by-design",
+  "run": 113154,
+  "source": "production pinned the artifact only"
+ },
+ "qs-a67ae350c19eff24": {
+  "class": "lost",
+  "object": "e9b49e99b383507d2b69fcb4a8e0247d9f3f832566f7d3aac1668426c1396d3a",
+  "source": "declared base object absent from the store"
+ },
+ "qs-a97ff272bb749518": {
+  "class": "whole-tree",
+  "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
+  "repo": "striatum-next",
+  "source": "git-archive"
+ },
+ "qs-af300e907c2009fd": {
+  "class": "none-by-design",
+  "run": 19706,
+  "source": "production pinned the artifact only"
+ },
+ "qs-af9054a1808cceba": {
+  "class": "whole-tree",
+  "object": "cd221acb244c5cea3a45174ed9630008bd785f9756b3db64c8cc06793a8053dd",
+  "run": 68326,
+  "source": "materialized_base"
+ },
+ "qs-afa3ff9b86200498": {
+  "class": "whole-tree",
+  "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+  "repo": "caplab",
+  "source": "git-archive"
+ },
+ "qs-b2cdbb97322b4e0f": {
+  "class": "lost",
+  "object": "9bbdfbeacc9fb87c8a5d9e5f11a27e7b9f4d6b6e8f08181a4c0ce9d2539341f1",
+  "source": "declared base object absent from the store"
+ },
+ "qs-c57fa6a9cada2dd9": {
+  "class": "none-by-design",
+  "run": 113066,
+  "source": "production pinned the artifact only"
+ },
+ "qs-c5e755a13eb7b7ee": {
+  "class": "whole-tree",
+  "object": "59f46a3b5f26aaffdadc37f435be1637db8d58df5d1dab7be884a72a661fa04a",
+  "run": 98129,
+  "source": "materialized_base"
+ },
+ "qs-c70d14e4ac76d99c": {
+  "class": "partial-product-tree",
+  "object": "43e8166cb1fba711d7f8a7399d7ec42586e1565e1051e08365edf883a44317d4",
+  "source": "declared product object"
+ },
+ "qs-c8bcd5bee2e73c16": {
+  "class": "lost",
+  "object": "bf1225b40ac44e9950991a25c9dc4f68a6fd02ad9c790dbe508bbb6ddd823c7b",
+  "source": "declared base object absent from the store"
+ },
+ "qs-cabbae40d5c96360": {
+  "class": "lost",
+  "object": "a2572d023b51fb761716e380622ec7647eb2b8d47d51e1cbd986fd5a0fb3c257",
+  "source": "declared base object absent from the store"
+ },
+ "qs-ccfd2a5f3a14158e": {
+  "class": "none-by-design",
+  "run": 5862,
+  "source": "production pinned the artifact only"
+ },
+ "qs-cdf7e520a28ff458": {
+  "class": "none-by-design",
+  "run": 442,
+  "source": "production pinned the artifact only"
+ },
+ "qs-d05784fe3c3b3ac2": {
+  "class": "none-by-design",
+  "run": 14285,
+  "source": "production pinned the artifact only"
+ },
+ "qs-d24d0d472c7a9316": {
+  "class": "whole-tree",
+  "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+  "repo": "caplab",
+  "source": "git-archive"
+ },
+ "qs-d79e9a1668416a7d": {
+  "class": "partial-product-tree",
+  "object": "45b207e2d210d225a4d25982910c7a40b83a7cffb9c2a0714b9c1025b724c2ad",
+  "source": "declared product object"
+ },
+ "qs-d8054c759739e7a6": {
+  "class": "whole-tree",
+  "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+  "repo": "caplab",
+  "source": "git-archive"
+ },
+ "qs-d98bbffcdcd43f21": {
+  "class": "partial-product-tree",
+  "object": "dd9c4672145a1f152faa51c72d3f8c7fed80d83e3646135816f1504b7368a4c0",
+  "source": "declared product object"
+ },
+ "qs-e7003896d6e7ab48": {
+  "class": "whole-tree",
+  "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+  "repo": "caplab",
+  "source": "git-archive"
+ },
+ "qs-e95b9a190bea1f12": {
+  "class": "none-by-design",
+  "run": 9142,
+  "source": "production pinned the artifact only"
+ },
+ "qs-ec18cdfe6ffb4298": {
+  "class": "none-by-design",
+  "run": 107970,
+  "source": "production pinned the artifact only"
+ },
+ "qs-ec76afd5d7b27ffd": {
+  "class": "whole-tree",
+  "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
+  "repo": "striatum-next",
+  "source": "git-archive"
+ },
+ "qs-f368c6ceaa769cd1": {
+  "class": "whole-tree",
+  "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+  "repo": "caplab",
+  "source": "git-archive"
+ },
+ "qs-f3d9c1ad3b285041": {
+  "class": "whole-tree",
+  "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
+  "repo": "striatum-next",
+  "source": "git-archive"
+ },
+ "qs-f879a0e3f50528bf": {
+  "class": "none-by-design",
+  "run": 2116,
+  "source": "production pinned the artifact only"
+ },
+ "qs-f882ddbaaed1b065": {
+  "class": "lost",
+  "object": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "source": "declared base object absent from the store"
+ },
+ "qs-faaba3e49977ce66": {
+  "class": "whole-tree",
+  "object": "1c9a12f34ac6cb22d9699a7076cd3c97035ecbeb9769f0cd3f142e60c63440c1",
+  "run": 69805,
+  "source": "materialized_base"
+ },
+ "qs-fc1e95b9755ee36e": {
+  "class": "lost",
+  "object": "0e39be922c9176fdf9e7716a7d0f99ede6c8ac87eda769a28667fbf1386aec93",
+  "source": "declared base object absent from the store"
+ },
+ "qs-fd0947a4152bd3e3": {
+  "class": "none-by-design",
+  "run": 11052,
+  "source": "production pinned the artifact only"
+ }
+}

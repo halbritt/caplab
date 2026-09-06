@@ -1,0 +1,95 @@
+[
+ {
+  "base_class": "whole-tree",
+  "base_source": "git-anchor",
+  "basis_kind": "mechanical-oracle",
+  "control_key": "1c9196ec53a203d1d6bf78f60e29cf1a0952c03995e725262e10218b9c242f6e",
+  "disposition": "defective",
+  "in_set_grounds": false,
+  "outcome": "principal-re-examination",
+  "substrate_id": "qs-43f3d7e27dec1a64",
+  "why": "whole tree now available; the label rested on out-of-set grounds"
+ },
+ {
+  "base_class": "whole-tree",
+  "base_source": "materialized_base",
+  "basis_kind": "mechanical-oracle",
+  "control_key": "f42f936578bd0c864d13d56b7731df464e15e9fce6dfb8e8ba0099e1b4f83189",
+  "disposition": "defective",
+  "in_set_grounds": false,
+  "outcome": "principal-re-examination",
+  "substrate_id": "qs-641d18fb33495aba",
+  "why": "whole tree now available; the label rested on out-of-set grounds"
+ },
+ {
+  "base_class": "whole-tree",
+  "base_source": "git-archive",
+  "basis_kind": "mechanical-oracle",
+  "control_key": "qs-41241900113d9862",
+  "disposition": "sound",
+  "in_set_grounds": true,
+  "outcome": "resolved-valid",
+  "residue": [
+   "rfc-0031"
+  ],
+  "resolution": {
+   "hash_checks": [],
+   "references": 3,
+   "unresolved": [
+    "rfc-0031"
+   ]
+  },
+  "substrate_id": "qs-41241900113d9862",
+  "why": "some referenced paths do not resolve in the pinned tree; decide whether the artifact should contain them"
+ },
+ {
+  "base_class": "whole-tree",
+  "base_source": "git-archive",
+  "basis_kind": "mechanical-oracle",
+  "control_key": "qs-e7003896d6e7ab48",
+  "disposition": "sound",
+  "in_set_grounds": true,
+  "outcome": "resolved-valid",
+  "residue": [
+   "file:training-started.json"
+  ],
+  "resolution": {
+   "hash_checks": [
+    {
+     "declared": "0c1d573fd9dd",
+     "outcome": "match",
+     "path": "docs/product/training/caplab-review-dissent-local-qwen-r2/training-execution-q3.json"
+    }
+   ],
+   "references": 7,
+   "unresolved": [
+    "file:training-started.json"
+   ]
+  },
+  "substrate_id": "qs-e7003896d6e7ab48",
+  "why": "some referenced paths do not resolve in the pinned tree; decide whether the artifact should contain them"
+ },
+ {
+  "base_class": "whole-tree",
+  "base_source": "git-archive",
+  "basis_kind": "mechanical-oracle",
+  "control_key": "qs-961371a1d0b19095",
+  "disposition": "sound",
+  "in_set_grounds": true,
+  "outcome": "resolved-valid",
+  "residue": [
+   "file:recomputation.json",
+   "file:registration.json"
+  ],
+  "resolution": {
+   "hash_checks": [],
+   "references": 7,
+   "unresolved": [
+    "file:recomputation.json",
+    "file:registration.json"
+   ]
+  },
+  "substrate_id": "qs-961371a1d0b19095",
+  "why": "some referenced paths do not resolve in the pinned tree; decide whether the artifact should contain them"
+ }
+]

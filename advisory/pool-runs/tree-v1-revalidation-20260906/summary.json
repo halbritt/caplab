@@ -1,0 +1,18 @@
+{
+  "by_base_class": {
+    "lost": 10,
+    "none-by-design": 18,
+    "partial-product-tree": 8,
+    "whole-tree": 33
+  },
+  "by_outcome": {
+    "evidence-unavailable": 5,
+    "principal-re-examination": 2,
+    "reference-not-required": 16,
+    "resolved-valid": 24
+  },
+  "draw_cases": 69,
+  "finished_at": "2026-09-06T19:25:07.978358+00:00",
+  "judgment_items": 5,
+  "records_grounded_out_of_contract": 47
+}
