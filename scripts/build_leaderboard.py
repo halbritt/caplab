@@ -502,8 +502,16 @@ def head_to_head(rows, contrasts) -> str:
                 continue
             ao, bo, p = d["a_only_caught"], d["b_only_caught"], d.get("sign_test_p")
             sig = d.get("significant_at_05")
-            cls = "win" if (sig and ao > bo) else "loss" if (sig and bo > ao) else "tie"
             fap = d.get("false_alarm_sign_test_p")
+            fa_against_row = fap is not None and fap < 0.05 and d["a_only_false_alarm"] > d["b_only_false_alarm"]
+            fa_for_row = fap is not None and fap < 0.05 and d["a_only_false_alarm"] < d["b_only_false_alarm"]
+            if sig and ao > bo and fa_against_row:
+                cls = "split"
+            elif sig and bo > ao and fa_for_row:
+                cls = "split"
+            else:
+                cls = ("win" if (sig and ao > bo) or (not sig and fa_for_row)
+                       else "loss" if (sig and bo > ao) or (not sig and fa_against_row) else "tie")
             title = (f'{d["a"]} vs {d["b"]}: catch discordant {ao}–{bo}, p={p:.3f}; '
                      f'false alarms {d["a_false_alarms"]} vs {d["b_false_alarms"]}, '
                      f'discordant {d["a_only_false_alarm"]}–{d["b_only_false_alarm"]}, p={fap:.3f} '
@@ -674,13 +682,29 @@ def dominance(rows, contrasts):
         if not a or not b or a == b or frozenset((a, b)) in seen:
             continue
         seen.add(frozenset((a, b)))
-        if d.get("significant_at_05"):
-            w, l = (a, b) if d["a_only_caught"] > d["b_only_caught"] else (b, a)
+        catch_sig = bool(d.get("significant_at_05"))
+        fa_sig = (d.get("false_alarm_sign_test_p") is not None
+                  and d["false_alarm_sign_test_p"] < 0.05)
+        catch_w = (a if d["a_only_caught"] > d["b_only_caught"] else b) if catch_sig else None
+        # Fewer false alarms wins the FA axis; ties in direction are not leads.
+        fa_w = None
+        if fa_sig:
+            fa_w = a if d["a_only_false_alarm"] < d["b_only_false_alarm"] else b
+        if catch_w and fa_w and catch_w != fa_w:
+            # One binding catches more, the other refuses less: no lead either
+            # way. Recorded as a split so the verdict can say so out loud.
+            rel[a].setdefault("split", set()).add(b)
+            rel[b].setdefault("split", set()).add(a)
+        elif catch_w or fa_w:
+            w = catch_w or fa_w
+            l = b if w == a else a
             rel[w]["beats"].add(l)
             rel[l]["beaten_by"].add(w)
         else:
             rel[a]["open"].add(b)
             rel[b]["open"].add(a)
+    for r in rel.values():
+        r.setdefault("split", set())
     return rel
 
 
@@ -712,9 +736,11 @@ def conclusions_html(rows, contrasts) -> str:
     for b, t in tier_of.items():
         by_tier.setdefault(t, []).append(b)
     parts = ['<div class="verdicts">']
-    parts.append('<p class="sub">[Observation] Leads are exact sign tests on shared cases at p &lt; 0.05. '
-                 'Tiers are the layers of that partial order: a binding is in tier 1 when no measured binding '
-                 'has an established lead over it. Within a tier the order is the point estimate and is not established.</p>')
+    parts.append('<p class="sub">[Observation] A lead is an established separation (exact sign test on shared cases, '
+                 'p &lt; 0.05) on catch or on false alarm that the other axis does not reverse; when one binding catches '
+                 'more and the other refuses less, both established, the pair is a <em>split</em> and neither leads. Tiers '
+                 'are the layers of that partial order: a binding is in tier 1 when no measured binding has a lead over it. '
+                 'Within a tier the order is the point estimate and is not established.</p>')
     parts.append('<ol class="tiers">')
     for t in sorted(by_tier):
         members = sorted(by_tier[t], key=lambda b: -(disc.get(b) or -9))
@@ -722,9 +748,13 @@ def conclusions_html(rows, contrasts) -> str:
         for b in members:
             beats = sorted(rel[b]["beats"], key=lambda x: -(disc.get(x) or -9))
             open_ = sorted(rel[b]["open"] & {m for m in by_tier[t]}, key=lambda x: -(disc.get(x) or -9))
+            splits = sorted(rel[b]["split"], key=lambda x: -(disc.get(x) or -9))
             detail = []
             if beats:
                 detail.append("leads " + ", ".join(f"<span class=\"mono\">{esc(x)}</span>" for x in beats))
+            if splits:
+                detail.append("<strong>split</strong> (catches more, refuses more) with "
+                              + ", ".join(f"<span class=\"mono\">{esc(x)}</span>" for x in splits))
             if open_:
                 detail.append("not separated from " + ", ".join(f"<span class=\"mono\">{esc(x)}</span>" for x in open_))
             d = disc.get(b)
@@ -746,6 +776,13 @@ def conclusions_html(rows, contrasts) -> str:
                      + ": none of them separates from the others on shared cases at this sample size, so the board "
                        "does not order them.")
     for r in rows:
+        if r.get("fa") is not None and r["fa"] >= 0.5:
+            n_split = len(rel[r["subject"]]["split"])
+            notes.append(f'<span class="mono">{esc(r["subject"])}</span> refuses {pct(r["fa"])} of adjudicated-sound '
+                         f'controls (catch {pct(r["catch"])}, catch − FA {r["disc"]:+.2f}). It catches more than '
+                         f'{n_split} bindings and refuses more than all of them, established both ways: under this '
+                         f'environment it is a rejecter, not a discriminating reviewer, and its catch rate says nothing '
+                         f'on its own.')
         d = declaration(r["subject"])
         if not d.get("exists"):
             continue
@@ -926,6 +963,7 @@ table.matrix td, table.heat td { text-align: center; font-variant-numeric: tabul
 table.matrix th.rowhead, table.heat th.rowhead { text-align: left; font-weight: 500; white-space: nowrap; }
 table.matrix td.win { background: var(--win-bg); }
 table.matrix td.loss { background: var(--loss-bg); }
+table.matrix td.split { background: var(--note-bg); }
 table.matrix td.diag { background: var(--surface-2); }
 table.matrix td.empty, table.heat td.empty { color: var(--ink-3); }
 table.heat td.cell { background: rgb(var(--heat) / calc(var(--v) * .55)); }
@@ -1112,7 +1150,8 @@ emitting near-zero findings scores a spotless FA for the wrong reason — so rea
 
 <h2 id="h2h">Head-to-head on shared cases <span class="k">{established} established separations</span></h2>
 <p class="lead">Exact sign test on the discordant cases two bindings share. A cell reads <em>row-only caught – column-only caught</em>;
-green is an established lead for the row, red for the column, plain is not established. Hover for false alarms.</p>
+green is an established lead for the row, red for the column, amber is a split (one catches more, the other
+refuses less — both established), plain is not established. Hover for the false-alarm contrast.</p>
 {head_to_head(current, contrasts)}
 
 <h2 id="classes">What each binding catches, by defect class</h2>

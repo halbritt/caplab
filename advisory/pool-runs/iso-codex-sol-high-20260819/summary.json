@@ -1,0 +1,18 @@
+{
+  "aborted": null,
+  "backend": "codex-sol-high",
+  "calibration_profile": "v1",
+  "case_selection": "seeded-draw",
+  "catch_rate": 0.9130434782608695,
+  "control_unanimous_share": 0.9130434782608695,
+  "environment": "iso-v1",
+  "false_alarm_rate": 0.9420289855072463,
+  "finished_at": "2026-09-06T06:35:35.988994+00:00",
+  "instrument": "matched-pair defect injection (synthetic contract)",
+  "pairs_discarded": 0,
+  "pairs_usable": 69,
+  "partition": "open",
+  "replicates": 3,
+  "started_at": "2026-09-06T04:15:18.677427+00:00",
+  "sweep_seed": 20260819
+}

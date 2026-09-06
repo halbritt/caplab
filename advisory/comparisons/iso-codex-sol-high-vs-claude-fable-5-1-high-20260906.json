@@ -1,0 +1,234 @@
+{
+  "a": "codex-sol-high",
+  "a_catch_rate": 0.9122807017543859,
+  "a_discrimination": 0.3157894736842105,
+  "a_false_alarms": 34,
+  "a_only_caught": 16,
+  "a_only_false_alarm": 30,
+  "b": "claude-fable-5-1-high",
+  "b_catch_rate": 0.6666666666666666,
+  "b_discrimination": 0.5964912280701754,
+  "b_false_alarms": 4,
+  "b_only_caught": 2,
+  "b_only_false_alarm": 0,
+  "both_caught": 36,
+  "by_defect_class": {
+    "base_dropped": {
+      "a": 4,
+      "b": 1,
+      "n": 4
+    },
+    "broken_internal_crossref": {
+      "a": 1,
+      "b": 1,
+      "n": 1
+    },
+    "contradicted_clause": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "dangling_reference": {
+      "a": 4,
+      "b": 1,
+      "n": 4
+    },
+    "dropped_section": {
+      "a": 4,
+      "b": 2,
+      "n": 4
+    },
+    "duplicated_section": {
+      "a": 3,
+      "b": 4,
+      "n": 4
+    },
+    "hash_mismatch": {
+      "a": 2,
+      "b": 1,
+      "n": 4
+    },
+    "hollow_delivery": {
+      "a": 4,
+      "b": 1,
+      "n": 4
+    },
+    "overclaimed_level": {
+      "a": 3,
+      "b": 2,
+      "n": 4
+    },
+    "refuted_conclusion": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "requirement_inversion": {
+      "a": 4,
+      "b": 3,
+      "n": 4
+    },
+    "scope_violation": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    },
+    "swapped_section_bodies": {
+      "a": 4,
+      "b": 2,
+      "n": 4
+    },
+    "truncated_tail": {
+      "a": 3,
+      "b": 4,
+      "n": 4
+    },
+    "unearned_verification_claim": {
+      "a": 4,
+      "b": 4,
+      "n": 4
+    }
+  },
+  "discordant_cases": [
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "dangling_reference",
+      "dispatch_id": "qs-43f3d7e27dec1a64:dangling_reference:1313159851",
+      "substrate_id": "qs-43f3d7e27dec1a64"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "hollow_delivery",
+      "dispatch_id": "qs-45baf30be46b0c3c:hollow_delivery:3299673631",
+      "substrate_id": "qs-45baf30be46b0c3c"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "swapped_section_bodies",
+      "dispatch_id": "qs-514df336ad6c4e50:swapped_section_bodies:2062029086",
+      "substrate_id": "qs-514df336ad6c4e50"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "dropped_section",
+      "dispatch_id": "qs-5a60742a74305130:dropped_section:717881808",
+      "substrate_id": "qs-5a60742a74305130"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "dangling_reference",
+      "dispatch_id": "qs-5f841949fa746b8e:dangling_reference:1948815812",
+      "substrate_id": "qs-5f841949fa746b8e"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "overclaimed_level",
+      "dispatch_id": "qs-641d18fb33495aba:overclaimed_level:2283446392",
+      "substrate_id": "qs-641d18fb33495aba"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "hollow_delivery",
+      "dispatch_id": "qs-6ebd7c873056feb1:hollow_delivery:219666053",
+      "substrate_id": "qs-6ebd7c873056feb1"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "swapped_section_bodies",
+      "dispatch_id": "qs-7d8726d369f3efae:swapped_section_bodies:4282385272",
+      "substrate_id": "qs-7d8726d369f3efae"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "b",
+      "defect_class": "truncated_tail",
+      "dispatch_id": "qs-7dabe6891bc1679c:truncated_tail:3324493526",
+      "substrate_id": "qs-7dabe6891bc1679c"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "b",
+      "defect_class": "duplicated_section",
+      "dispatch_id": "qs-810276f08b5061bc:duplicated_section:2308472916",
+      "substrate_id": "qs-810276f08b5061bc"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "hash_mismatch",
+      "dispatch_id": "qs-a190c423a1dcce98:hash_mismatch:173212695",
+      "substrate_id": "qs-a190c423a1dcce98"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "base_dropped",
+      "dispatch_id": "qs-a67ae350c19eff24:base_dropped:1840745034",
+      "substrate_id": "qs-a67ae350c19eff24"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "base_dropped",
+      "dispatch_id": "qs-af9054a1808cceba:base_dropped:1419128042",
+      "substrate_id": "qs-af9054a1808cceba"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "dropped_section",
+      "dispatch_id": "qs-afa3ff9b86200498:dropped_section:3498201820",
+      "substrate_id": "qs-afa3ff9b86200498"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "hollow_delivery",
+      "dispatch_id": "qs-c70d14e4ac76d99c:hollow_delivery:991928483",
+      "substrate_id": "qs-c70d14e4ac76d99c"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "base_dropped",
+      "dispatch_id": "qs-d79e9a1668416a7d:base_dropped:2454591715",
+      "substrate_id": "qs-d79e9a1668416a7d"
+    },
+    {
+      "calibration_profile": "v1",
+      "caught_by": "a",
+      "defect_class": "dangling_reference",
+      "dispatch_id": "qs-f368c6ceaa769cd1:dangling_reference:3286671372",
+      "substrate_id": "qs-f368c6ceaa769cd1"
+    },
+    {
+      "calibration_profile": "v2-changeset",
+      "caught_by": "a",
+      "defect_class": "requirement_inversion",
+      "dispatch_id": "qs-fc1e95b9755ee36e:requirement_inversion:3402432770",
+      "substrate_id": "qs-fc1e95b9755ee36e"
+    }
+  ],
+  "discordant_pairs": 18,
+  "false_alarm_audit_status": "established",
+  "false_alarm_defective_controls_excluded": 19,
+  "false_alarm_discordant_pairs": 30,
+  "false_alarm_sign_test_p": 1.862645149230957e-09,
+  "false_alarm_significant_at_05": true,
+  "false_alarm_unaudited_pairs": 0,
+  "neither_caught": 3,
+  "reading": "catch: 18 of 57 shared cases discriminate, exact sign test p=0.001; false alarms: 30 discordant, p=0.000",
+  "shared_cases": 57,
+  "sign_test_p": 0.001312255859375,
+  "significant_at_05": true,
+  "sweep_seed": 20260819,
+  "uninformative_pairs": 39
+}
