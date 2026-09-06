@@ -119,18 +119,62 @@ def adapter_resources(command: list[str]) -> list[str]:
     return out
 
 
-#: Home paths a lane must never see. Plan tree-v1 rev 2 §0/§2.2 (Stage A,
-#: 2026-09-06): between 2026-08-23 and this change every lane could read and
-#: write the graph store, the exchange, the tuner's eval runs, the whole cache
-#: and the Plane tokens, because home was bound writable beneath the ~/git
-#: mask. Each is now a tmpfs; what a harness needs back is re-bound on top.
-MASKED_HOME_PATHS = ("~/.local/share/striatum", "~/.local/share/striatum-tuner",
+#: Home paths a lane must never see, even by a declaration's mistake. Plan
+#: tree-v1 rev 2 §0/§2.2: between 2026-08-23 and Stage A (2026-09-06) every
+#: lane could read and write the graph store, the exchange, the tuner's eval
+#: runs, the whole cache and the Plane tokens, because home was bound writable
+#: beneath the ~/git mask. Under Stage B home itself is a tmpfs, so these are
+#: invisible by construction; the list survives as a refusal: a declaration
+#: whose state directory lies under one of them is not sandboxed, it is refused.
+MASKED_HOME_PATHS = ("~/git", "~/.local/share/striatum", "~/.local/share/striatum-tuner",
                      "~/.config/plane", "~/.cache")
 
 #: Environment assignments in an adapter command that name the directory a
-#: harness keeps its own state in. That directory — and only that one — is
-#: re-bound writable inside the striatum mask.
+#: harness keeps its state (and credentials) in. striatum segregates harness
+#: state under ~/.local/share/striatum/harness-config/<harness>; the
+#: declaration names that directory, so the sandbox reads it from there.
 HARNESS_STATE_VARS = ("CLAUDE_CONFIG_DIR", "CODEX_HOME", "HOME")
+
+#: Read-only install roots under home that the harness executables live in
+#: (Stage B, §2.2: the synthetic home carries binaries but no state). Bound
+#: only where present; the probe record verifies each harness resolves.
+TOOLCHAIN_RO_PATHS = ("~/.local/bin", "~/.local/share/claude", "~/.npm-global",
+                      "~/.local/go")
+
+#: opencode declares no state directory: it keeps its config, auth, state and
+#: cache under the real home in the XDG places. Bound writable only when the
+#: adapter's program is opencode. This is the one place the sandbox keys on
+#: a program name rather than the declaration, and the declaration has
+#: nothing to read.
+OPENCODE_STATE_PATHS = ("~/.config/opencode", "~/.local/share/opencode",
+                        "~/.local/state/opencode", "~/.cache/opencode")
+
+
+def _under(path: str, root: str) -> bool:
+    return path == root or path.startswith(root.rstrip(os.sep) + os.sep)
+
+
+def _refuse_masked(path: str, why: str) -> None:
+    for masked in MASKED_HOME_PATHS:
+        root = os.path.expanduser(masked)
+        if _under(path, root) and not _under(path, os.path.join(
+                os.path.expanduser("~/.local/share/striatum"), "harness-config")):
+            raise ValueError(
+                f"{why} {path} lies under the masked path {root}; refusing to "
+                "expose it inside a lane")
+
+
+def adapter_program(argv: list[str]) -> str | None:
+    """The program the adapter runs, past any `/usr/bin/env VAR=value` prefix."""
+    tokens = list(argv)
+    if tokens and os.path.basename(tokens[0]) == "env":
+        tokens = tokens[1:]
+    for tok in tokens:
+        if isinstance(tok, str) and "=" not in tok:
+            return os.path.basename(tok)
+        if isinstance(tok, str) and tok.startswith("-"):
+            return None
+    return None
 
 
 def harness_rebinds(argv: list[str]) -> list[str]:
@@ -138,9 +182,11 @@ def harness_rebinds(argv: list[str]) -> list[str]:
 
     Read off the adapter command's `env VAR=value` assignments, never
     guessed from the harness name: the declaration is the authority on where
-    a harness keeps state. agy's GOCACHE lands under the masked ~/.cache and
-    is re-bound too. opencode uses the real home; its two directories are not
-    under any mask and need nothing here.
+    a harness keeps state. agy's HOME is a harness-config subdirectory and its
+    GOCACHE lands under ~/.cache; both are re-bound. opencode has no such
+    assignment and gets OPENCODE_STATE_PATHS by program name instead. A
+    directory under a masked path (other than striatum's harness-config)
+    is refused, not bound.
     """
     home = os.path.expanduser("~")
     out = []
@@ -151,13 +197,34 @@ def harness_rebinds(argv: list[str]) -> list[str]:
         if key in HARNESS_STATE_VARS or key == "GOCACHE":
             path = os.path.abspath(os.path.expanduser(value))
             if path != home and path.startswith(home + os.sep) and os.path.isdir(path):
+                if key != "GOCACHE":
+                    _refuse_masked(path, f"{key}=")
+                out.append(path)
+    if adapter_program(argv) == "opencode":
+        for p in OPENCODE_STATE_PATHS:
+            path = os.path.expanduser(p)
+            if os.path.isdir(path):
                 out.append(path)
     return out
 
 
-def sandbox_argv(argv: list[str], workspace: str | None,
-                 extra_ro: list[str] | None = None) -> list[str]:
-    """Contain a lane: the checkouts and the store do not exist inside it.
+def adapter_env_files(argv: list[str]) -> list[str]:
+    """Files an `env VAR=/abs/file` assignment points the harness at
+    (oc-glm-5-3 pins RIPGREP_CONFIG_PATH=~/conf/ripgreprc). Exposed
+    read-only, files only."""
+    out = []
+    for arg in argv:
+        if isinstance(arg, str) and "=" in arg:
+            value = arg.partition("=")[2]
+            if value.startswith("/") and os.path.isfile(value):
+                out.append(value)
+    return out
+
+
+def sandbox_prefix(argv: list[str], workspace: str | None,
+                   extra_ro: list[str] | None = None,
+                   readonly: list[str] | None = None) -> list[str]:
+    """The bwrap invocation that contains a lane, ending in `--`.
 
     On 2026-08-23 a replayed build case's delivery was written by an agy
     lane into the live striatum-next checkout, byte-identical to the case
@@ -167,55 +234,82 @@ def sandbox_argv(argv: list[str], workspace: str | None,
     agentic harness acts on what it is shown — so the escape is contained
     at the filesystem, not argued away in the prompt.
 
-    Stage A (2026-09-06, plan tree-v1 rev 2 §2.2): home stays writable for
-    the harness's benefit, but ~/git, the striatum store, the tuner's runs,
-    the cache and the Plane tokens are each a tmpfs; the harness's own config
-    directory (and GOCACHE, for agy) is re-bound writable on top; only the
-    case workspace is otherwise re-bound writable. Stage B (the allowlisted
-    synthetic home) replaces this before any model process runs.
+    Stage B (2026-09-06, plan tree-v1 rev 2 §2.2, the allowlisted synthetic
+    home): the root filesystem is read-only and home is a tmpfs. On top of
+    it, and nothing else: the harness install roots read-only
+    (TOOLCHAIN_RO_PATHS), the harness's own state directory writable (read
+    off the declaration; opencode's XDG directories by program name), files
+    the declaration names read-only, /tmp shared, and the case workspace
+    writable with `readonly` subtrees (the materialized `base/` and
+    `evidence/`, §2.5) re-bound read-only on top. The checkouts, the graph
+    store, the exchange, the tuner's runs, the cache and the Plane tokens do
+    not exist inside a lane because home does not. Stage A (piecewise
+    tmpfs masks over a writable home) held between 02:00 and this change.
+
+    Accepted residuals (§2.2, Principal #50): the subject reads its own
+    harness's inference credentials; the network is open.
     """
     home = os.path.expanduser("~")
-    git_root = os.path.join(home, "git")
     if workspace:
         # bwrap binds and the lane cwd must be absolute: a relative
         # workspace resolved against a masked parent silently loses to the
         # tmpfs and every invocation dies with exit 1 (both isolation
         # sweeps of 2026-08-23 did exactly that).
+        # The case workspace may live under the repository (run_pool keeps
+        # it beside the run's rows); inside the lane it is the only path that
+        # exists under ~/git, its parents are empty tmpfs directories.
         workspace = os.path.abspath(workspace)
-    wrapped = ["bwrap", "--ro-bind", "/", "/", "--bind", home, home]
-    if os.path.isdir(git_root):
-        # MASKED, not merely read-only: on 2026-08-23 two reviews resolved
-        # a change set's file references against the caplab tree the lane
-        # was mounted in — the read-only cousin of the replay escape. The
-        # visible universe is the artifact; the checkouts do not exist
-        # inside a lane. (Absent git root: a CI runner keeps its checkout
-        # elsewhere; binding a missing path refuses to start.)
-        wrapped += ["--tmpfs", git_root]
-    for masked in MASKED_HOME_PATHS:
-        path = os.path.expanduser(masked)
+    wrapped = ["bwrap", "--ro-bind", "/", "/", "--tmpfs", home]
+    for p in TOOLCHAIN_RO_PATHS:
+        path = os.path.expanduser(p)
         if os.path.isdir(path):
-            wrapped += ["--tmpfs", path]
+            wrapped += ["--ro-bind", path, path]
     for path in harness_rebinds(argv):
         wrapped += ["--bind", path, path]
-    for path in extra_ro or []:
+    for path in list(extra_ro or []) + adapter_env_files(argv):
         wrapped += ["--ro-bind", path, path]
-    wrapped += ["--bind", "/tmp", "/tmp"]
     if workspace:
+        # A private /tmp: the host's /tmp holds other lanes' workspaces and
+        # spill files (probe of 2026-09-06: a sibling case under a shared
+        # /tmp was readable and writable). Without a workspace the spill
+        # file lands in the host's /tmp and must stay reachable.
+        wrapped += ["--tmpfs", "/tmp"]
         os.makedirs(workspace, exist_ok=True)
         wrapped += ["--bind", workspace, workspace]
+    else:
+        wrapped += ["--bind", "/tmp", "/tmp"]
+    if workspace:
+        for sub in readonly or []:
+            sub = os.path.abspath(sub)
+            if not _under(sub, workspace):
+                raise ValueError(f"read-only subtree {sub} is not under {workspace}")
+            if os.path.isdir(sub):
+                wrapped += ["--ro-bind", sub, sub]
     wrapped += ["--dev", "/dev", "--proc", "/proc", "--die-with-parent", "--"]
-    return wrapped + list(argv)
+    return wrapped
+
+
+def sandbox_argv(argv: list[str], workspace: str | None,
+                 extra_ro: list[str] | None = None,
+                 readonly: list[str] | None = None) -> list[str]:
+    """Contain a lane: see `sandbox_prefix`."""
+    return sandbox_prefix(argv, workspace, extra_ro=extra_ro,
+                          readonly=readonly) + list(argv)
 
 
 def invoke(adapter: dict, prompt: str, timeout: int,
-           workspace: str | None = None) -> dict:
+           workspace: str | None = None,
+           readonly: list[str] | None = None) -> dict:
+    """Run the adapter once. `readonly` names workspace subtrees (the
+    materialized `base/` and `evidence/`) re-bound read-only inside the lane."""
     argv = list(adapter["command"])
     sandbox = "none"
     if sandbox_available():
         if workspace:
             os.makedirs(workspace, exist_ok=True)
         argv = sandbox_argv(argv, workspace,
-                            extra_ro=adapter_resources(adapter["command"]))
+                            extra_ro=adapter_resources(adapter["command"]),
+                            readonly=readonly)
         sandbox = "bwrap"
     # The lane's cwd is the neutral case workspace, never a repository:
     # a subject that "looks around" finds only its own spill file.
@@ -348,6 +442,15 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
     profile = profile_for_artifact(body)
     row["calibration_profile"] = profile
     prompt = CALIBRATION_PROFILES[profile]
+    # One directory per case (plan tree-v1 rev 2 §2.5): the lane is bound to
+    # it alone, so a sibling case's spill file or base is not reachable, and
+    # a materialized `base/` and `evidence/` beneath it are re-bound read-only.
+    readonly = None
+    if workspace:
+        workspace = os.path.join(os.path.abspath(workspace),
+                                 f"{case['substrate_id']}-{case['operator']}-{case['seed']}")
+        os.makedirs(workspace, exist_ok=True)
+        readonly = [os.path.join(workspace, "base"), os.path.join(workspace, "evidence")]
     arms = [("control", body), ("mutant", injection.body)]
     # Arm order varies per case so a subject cannot benefit from position.
     random.Random(case["seed"] ^ 0x5EED).shuffle(arms)
@@ -366,7 +469,7 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
                      "error": "prompt exceeds transport capacity"}]
         else:
             runs = [invoke(adapter, prompt_text, timeout,
-                           workspace=workspace)
+                           workspace=workspace, readonly=readonly)
                     for _ in range(per_arm[name])]
             if transport_label:
                 for r in runs:

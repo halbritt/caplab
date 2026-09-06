@@ -646,8 +646,10 @@ class SandboxTest(unittest.TestCase):
         self.assertEqual(argv[0], "bwrap")
         joined = " ".join(argv)
         git_root = os.path.expanduser("~/git")
-        if os.path.isdir(git_root):
-            self.assertIn(f"--tmpfs {git_root}", joined)
+        # Stage B: the checkouts are gone with the rest of home (tmpfs over
+        # home, nothing under ~/git re-bound).
+        self.assertIn(f"--tmpfs {os.path.expanduser('~')} ", joined)
+        self.assertNotIn(f"bind {git_root}", joined)
         self.assertIn("--bind /tmp/ws /tmp/ws", joined)
         self.assertTrue(joined.endswith("-- echo hi"))
 
@@ -693,9 +695,8 @@ class WorkspaceIsolationTest(unittest.TestCase):
         argv = pool_runner.sandbox_argv(["true"], workspace="/tmp/ws")
         joined = " ".join(argv)
         git_root = os.path.expanduser("~/git")
-        if os.path.isdir(git_root):
-            self.assertIn(f"--tmpfs {git_root}", joined)
-            self.assertNotIn(f"--ro-bind {git_root}", joined)
+        self.assertIn(f"--tmpfs {os.path.expanduser('~')} ", joined)
+        self.assertNotIn(f"bind {git_root}", joined)
 
     @unittest.skipUnless(pool_runner.sandbox_available()
                          and os.path.isdir(os.path.expanduser("~/git/caplab")),
@@ -747,14 +748,18 @@ class AdapterResourceTest(unittest.TestCase):
 class AbsoluteWorkspaceTest(unittest.TestCase):
     def test_relative_workspace_is_absolutized_in_binds(self):
         import shutil
-        os.makedirs("rel-ws-probe", exist_ok=True)
+        cwd = os.getcwd()
+        scratch = tempfile.mkdtemp()
+        os.chdir(scratch)
         try:
+            os.makedirs("rel-ws-probe", exist_ok=True)
             argv = pool_runner.sandbox_argv(["true"], "rel-ws-probe")
             joined = " ".join(argv)
             self.assertNotIn(" rel-ws-probe ", joined)
             self.assertIn(os.path.abspath("rel-ws-probe"), joined)
         finally:
-            shutil.rmtree("rel-ws-probe", ignore_errors=True)
+            os.chdir(cwd)
+            shutil.rmtree(scratch, ignore_errors=True)
 
 
 class EnvironmentStampTest(unittest.TestCase):
@@ -762,54 +767,102 @@ class EnvironmentStampTest(unittest.TestCase):
         self.assertEqual(pool_runner.ENVIRONMENT_VERSION, "iso-v1")
 
 
-class StageAContainmentTest(unittest.TestCase):
-    """Plan tree-v1 rev 2 §2.2, Stage A (2026-09-06). Between 2026-08-23 and
-    this change a lane could read and write the graph store, the exchange,
-    the tuner's runs, the cache and the Plane tokens beneath the ~/git mask.
-    Each is now a tmpfs; the harness's own directory is re-bound on top."""
+class StageBContainmentTest(unittest.TestCase):
+    """Plan tree-v1 rev 2 §2.2, Stage B (2026-09-06): the allowlisted synthetic
+    home. Home is a tmpfs; only the harness install roots (read-only), the
+    harness's own state directory (from the declaration), declared files,
+    /tmp and the case workspace exist inside a lane. Between 2026-08-23 and
+    Stage A a lane could read and write the graph store, the exchange, the
+    tuner's runs, the cache and the Plane tokens beneath the ~/git mask."""
 
-    def _masked(self):
-        return [os.path.expanduser(p) for p in pool_runner.MASKED_HOME_PATHS
-                if os.path.isdir(os.path.expanduser(p))]
+    HOME = os.path.expanduser("~")
 
-    def test_store_cache_and_tokens_are_tmpfs(self):
-        argv = pool_runner.sandbox_argv(["true"], workspace="/tmp/ws")
-        joined = " ".join(argv)
-        for path in self._masked():
-            self.assertIn(f"--tmpfs {path}", joined, path)
-        # The masks come after the home bind, or the home bind would undo them.
-        home = os.path.expanduser("~")
-        if self._masked():
-            self.assertLess(joined.index(f"--bind {home} {home}"),
-                            joined.index(f"--tmpfs {self._masked()[0]}"))
+    def _joined(self, argv, **kw):
+        return " ".join(pool_runner.sandbox_argv(argv, workspace="/tmp/ws", **kw))
 
-    def test_harness_state_dir_is_rebound_from_the_declared_env(self):
-        home = os.path.expanduser("~")
-        with tempfile.TemporaryDirectory(dir=home) as d:
-            argv = pool_runner.sandbox_argv(
-                ["/usr/bin/env", f"CLAUDE_CONFIG_DIR={d}", "claude", "-p"], workspace="/tmp/ws")
-            joined = " ".join(argv)
+    def test_home_is_a_tmpfs_and_nothing_masked_is_bound(self):
+        joined = self._joined(["true"])
+        self.assertIn(f"--ro-bind / / --tmpfs {self.HOME} ", joined)
+        for masked in pool_runner.MASKED_HOME_PATHS:
+            path = os.path.expanduser(masked)
+            self.assertNotIn(f"bind {path} ", joined, path)
+        # home is never re-bound after the tmpfs
+        self.assertNotIn(f"--bind {self.HOME} {self.HOME}", joined)
+
+    def test_toolchain_is_read_only_and_state_dir_writable(self):
+        with tempfile.TemporaryDirectory(dir=self.HOME) as d:
+            joined = self._joined(["/usr/bin/env", f"CLAUDE_CONFIG_DIR={d}", "claude", "-p"])
             self.assertIn(f"--bind {d} {d}", joined)
-            if self._masked():
-                # re-bound AFTER the masks, so it wins over the tmpfs beneath it
-                self.assertGreater(joined.index(f"--bind {d} {d}"),
-                                   joined.index(f"--tmpfs {self._masked()[0]}"))
+            for p in pool_runner.TOOLCHAIN_RO_PATHS:
+                path = os.path.expanduser(p)
+                if os.path.isdir(path):
+                    self.assertIn(f"--ro-bind {path} {path}", joined)
+                    self.assertNotIn(f"--bind {path} {path}", joined)
+            # tmpfs first, then the binds on top of it
+            self.assertLess(joined.index(f"--tmpfs {self.HOME}"), joined.index(f"--bind {d} {d}"))
+
+    def test_opencode_state_is_bound_by_program_name_only(self):
+        present = [os.path.expanduser(p) for p in pool_runner.OPENCODE_STATE_PATHS
+                   if os.path.isdir(os.path.expanduser(p))]
+        with_oc = self._joined(["/usr/bin/env", "X=1", "opencode", "run"])
+        without = self._joined(["/usr/bin/env", "X=1", "claude", "-p"])
+        for path in present:
+            self.assertIn(f"--bind {path} {path}", with_oc)
+            self.assertNotIn(path, without)
+        self.assertEqual(pool_runner.adapter_program(["/usr/bin/env", "A=b", "codex", "exec"]), "codex")
+        self.assertEqual(pool_runner.adapter_program(["striatum-openai-lane", "-model", "x"]),
+                         "striatum-openai-lane")
+
+    def test_declared_env_files_are_exposed_read_only(self):
+        with tempfile.NamedTemporaryFile(dir=self.HOME) as f:
+            joined = self._joined(["/usr/bin/env", f"RIPGREP_CONFIG_PATH={f.name}", "opencode", "run"])
+            self.assertIn(f"--ro-bind {f.name} {f.name}", joined)
+
+    def test_state_dir_under_a_masked_path_is_refused(self):
+        plane = os.path.expanduser("~/.config/plane")
+        if not os.path.isdir(plane):
+            self.skipTest("no ~/.config/plane on this host")
+        with self.assertRaises(ValueError):
+            pool_runner.sandbox_argv(["/usr/bin/env", f"CODEX_HOME={plane}", "codex"], workspace="/tmp/ws")
+        # A workspace under ~/git is fine: only the case directory exists there inside the lane.
+        joined = " ".join(pool_runner.sandbox_argv(["true"], workspace="/tmp/ws/case"))
+        self.assertIn("--tmpfs /tmp --bind /tmp/ws/case /tmp/ws/case", joined)
 
     def test_no_declared_env_means_no_rebind_and_never_home_itself(self):
-        home = os.path.expanduser("~")
-        self.assertEqual(pool_runner.harness_rebinds(["tool", f"HOME={home}"]), [])
+        self.assertEqual(pool_runner.harness_rebinds(["tool", f"HOME={self.HOME}"]), [])
         self.assertEqual(pool_runner.harness_rebinds(["tool", "CODEX_HOME=/nonexistent/x"]), [])
 
-    @unittest.skipUnless(pool_runner.sandbox_available()
-                         and os.path.isdir(os.path.expanduser("~/.local/share/striatum")),
-                         "bwrap absent or no striatum store on this host")
-    def test_lane_sees_an_empty_store_and_writes_do_not_reach_it(self):
+    def test_readonly_subtrees_are_rebound_after_the_workspace(self):
+        with tempfile.TemporaryDirectory() as ws:
+            base = os.path.join(ws, "base")
+            os.mkdir(base)
+            joined = " ".join(pool_runner.sandbox_argv(["true"], workspace=ws, readonly=[base]))
+            self.assertLess(joined.index(f"--bind {ws} {ws}"), joined.index(f"--ro-bind {base} {base}"))
+            with self.assertRaises(ValueError):
+                pool_runner.sandbox_argv(["true"], workspace=ws, readonly=["/tmp"])
+
+    @unittest.skipUnless(pool_runner.sandbox_available(), "bwrap absent")
+    def test_lane_sees_a_synthetic_home_and_writes_do_not_reach_it(self):
         import subprocess
         store = os.path.expanduser("~/.local/share/striatum")
-        probe = os.path.join(store, ".caplab-stage-a-probe")
-        argv = pool_runner.sandbox_argv(
-            ["sh", "-c", f"ls -A {store} | wc -l; touch {probe} && echo WROTE || echo REFUSED"],
-            workspace=tempfile.gettempdir())
-        out = subprocess.run(argv, capture_output=True, text=True, timeout=30).stdout.split()
-        self.assertEqual(out[0], "0", "the store must be invisible inside the lane")
-        self.assertFalse(os.path.exists(probe), "a write inside the lane must not reach the store")
+        probe = os.path.join(self.HOME, ".caplab-stage-b-probe")
+        with tempfile.TemporaryDirectory() as ws:
+            base = os.path.join(ws, "base")
+            os.mkdir(base)
+            with open(os.path.join(base, "nonce.txt"), "w") as f:
+                f.write("n\n")
+            script = (f"ls -A {self.HOME} | grep -c . ; ls {store} {self.HOME}/git 2>/dev/null | wc -l; "
+                      f"touch {probe} && echo HOME_WROTE; "
+                      f"touch {base}/x 2>/dev/null && echo BASE_WROTE || echo BASE_REFUSED; "
+                      f"rm {base}/nonce.txt 2>/dev/null && echo BASE_RM || echo RM_REFUSED; "
+                      f"touch {ws}/ok && echo WS_OK")
+            argv = pool_runner.sandbox_argv(["sh", "-c", script], workspace=ws, readonly=[base])
+            out = subprocess.run(argv, capture_output=True, text=True, timeout=30).stdout.split()
+            self.assertLessEqual(int(out[0]), 3, "home must hold only the install roots")
+            self.assertEqual(out[1], "0", "store and checkouts must not exist inside the lane")
+            self.assertIn("HOME_WROTE", out)       # the tmpfs accepts the write ...
+            self.assertFalse(os.path.exists(probe))  # ... and it never reaches the real home
+            self.assertIn("BASE_REFUSED", out)
+            self.assertIn("RM_REFUSED", out)
+            self.assertIn("WS_OK", out)
+            self.assertTrue(os.path.exists(os.path.join(base, "nonce.txt")))
