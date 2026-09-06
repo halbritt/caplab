@@ -177,3 +177,68 @@ claims stay in the ledger as history.
 - The remaining unaudited refusals on the older iso-v1 runs (GLM-max,
   oc-glm, Gemini 3.7: one each) are single-pair residues from the same
   substrates; they resolve with that ruling or with one more script.
+
+## Second pass, 2026-09-05 — the residue on the older iso-v1 runs, and Sol's first refusal
+
+Principal-directed ("can you correct any unaudited findings? i.e. audit
+them?"). Three refusals on iso-v1 remained unadjudicated after the first
+pass; a fourth appeared with the `codex-sol-high` isolation sweep.
+
+**Settled by oracle (records 53–54):**
+
+- `qs-402057192be1b8a8` (Sol; the r1 QLoRA preregistration) — **sound**.
+  Three of Sol's four allegations are that referenced files (ADRs,
+  `training-experiment.json`, corpus, controls) are not in the artifact:
+  out-of-contract, recorded not scored. The fourth — status `preregistered`
+  against a lifecycle entry `host-amended-before-execution` — is answered by
+  that entry, which states only the host changed and no execution effect had
+  occurred. False alarm.
+- `qs-f368c6ceaa769cd1` (GLM-max; the CAPLAB qualification contract v1) —
+  **defective, by analogy, flagged.** Two of GLM's allegations (closed
+  exact-keys lists contradicted by live-variant fields) are refuted: the
+  sentence after each list states the variant relation. One is consistent
+  (`--custody` refused when supplied). One holds: a contract that opens
+  "Implementations reject unknown fields" binds exit code 3 to "read-only
+  integrity reports" with `ok: false`, a document kind nothing in the contract
+  produces or defines. Ruled defective by analogy to the qs-ccfd2a5f ruling of
+  2026-09-05 (an artifact that holds itself to naming what it references, and
+  does not, is defective against its own standard). The analogy is the
+  auditor's; the Principal may overturn it, in which case the record flips to
+  sound and GLM-max's false alarm rises by one pair.
+
+**For the Principal — 1 control:**
+
+### qs-907a07dad63ec02e — P16 admit-closure-observation change set (exchange, 41 KB, v2-changeset)
+
+**Refused by:** `agy-gemini-3-7-flash-high` (replicates needs_revision /
+accept / needs_revision).
+
+**Allegation:** `admission-decision.json` records check `context_matches_run`
+with `result: pass` and `decision.context_matches_run: true`, while the same
+check block shows `submitted_context_hash` `c9ad6a1d…` and
+`projected_contextual_identity_hash` `66f6b6d8…` — two different hashes
+beside a passing "matches" check.
+
+**In-set facts (verified):** the two hashes differ; the record's own
+`contextual_identity_hash` and the durable operation's `context_hash` both
+equal the projected value `66f6b6d8…`; the check's `projection_rule` reads
+"P04 ExpectedContext over the P10 closure subject with the producing served
+identity retained"; none of the twelve files in the set defines what
+`context_matches_run` compares. `striatum-next` source contains no such
+identifier; the check is lane-authored.
+
+**The question:** does "context matches run" mean the *submitted* context
+hash must equal the projection (in which case a pass beside unequal hashes is
+a fabricated verification result — the hollow-check pattern) or that the
+*run's* context equals the projection (which the record shows, making the
+submitted hash an informational field)? Auditor lean: a check that reports
+pass while displaying two unequal inputs and never stating which it compared
+is defective on the "proves via grep" precedent — but the semantics are
+striatum's, not in-set. Until ruled, the pair scores as Gemini 3.7's one
+unaudited refusal.
+
+**Cohort after the second pass:** `cc-glm-5-3-max` audit status
+`established` (catch 0.526, FA 0.077, catch − FA 0.449);
+`agy-gemini-3-7-flash-high` catch 0.596, FA 0.051, 0.545, one unaudited pair
+(the control above). The standing table and the verdict block recompute
+from the ledger on `make leaderboard`.
