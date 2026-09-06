@@ -107,3 +107,21 @@ Step 3 (label re-derivation) is blocked on the option chosen: under A, the
 36 no-tree and partial-tree cases keep their environment-invariant labels
 and their reference-resolution labels are re-derived against `evidence/`
 only; under B they are simply unscorable.
+
+## Ruling (Principal, council #57, 2026-09-06)
+
+Option A, with conditions, now written into plan §2.3 as an amendment:
+`tree-v1` proceeds **production-faithful**. `base_source` is one of
+`whole-tree`, `partial-product-tree`, `none-by-design` (prose: production
+pinned nothing), or `lost` (change sets whose production base is
+unrecoverable). `none-by-design` is an exact statement of the pinned set:
+references outside it are unverifiable and not findings, and a binding that
+refuses them is measured as a false alarm. `lost` pairs are scorable only
+for in-set operators. Exchange objects that resolve go under `evidence/`.
+Contrasts are reported per base class as well as pooled, and
+reference-resolution cells are pre-registered per class. In §4, a reference
+outside a `none-by-design` pinned set is `reference-not-required`. Two
+follow-ons: a striatum finding (production prose reviews are world-blind —
+`finding-2026-09-06-prose-reviews-world-blind.md`), and the next review seed
+is drawn from the 6,053 anchored-era reviews plus the repo-doc corpus, as the
+successor to 20260819.

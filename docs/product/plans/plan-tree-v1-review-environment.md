@@ -144,6 +144,50 @@ A case whose exact base or a required referenced object does not resolve is
 `unscorable_missing_base`. It is excluded from every scored denominator and
 counted in the coverage report.
 
+**Amendment (council #57, 2026-09-06).** The delegate established that
+`product-head-at-seq` has no source: the store holds no repository
+snapshots, and production prose reviews were one-pin and world-blind. The
+draw therefore splits as: exact whole tree 33, partial product tree 9, no
+base 27 (all 18 prose plus 9 change sets whose base is lost). The
+`product-head-at-seq` row above is struck. `tree-v1` proceeds
+**production-faithful**: each case gets exactly what production gave its
+reviewer, and `base_source` takes one of `whole-tree`, `partial-product-tree`,
+`none-by-design` (prose: production pinned nothing), or `lost` (change sets
+whose production base is unrecoverable). Rules:
+
+- `none-by-design` is an exact statement of the pinned set, not an
+  approximate base; the exact-only rule is satisfied. The contract for such
+  a case says nothing was pinned, and references outside the pinned set are
+  unverifiable and not findings. A binding that refuses them anyway is
+  breaching the production task, and that is measured as a false alarm.
+- `lost` is not production-faithful, because production's reviewer had the
+  base. Scorability is per pair, by operator: a `lost` pair whose operator
+  depends on the base (`base_dropped`, `hash_mismatch` v3, anchoring
+  checks) is unscorable; a `lost` pair whose operator is in-set
+  (`hollow_delivery`, `unearned_verification_claim`, and the like) is scored
+  with `base_source: lost` on the row.
+- Recoverable exchange objects (compilation requests resolve 19/19) go under
+  `evidence/` for every case that names them, and the contract lists them.
+- Contrasts are reported per base class as well as pooled. Reference-
+  resolution operators are interpreted only within a base class; a
+  `whole-tree` change set and a `none-by-design` prose case are not the same
+  task and their cells are pre-registered separately (§5).
+- In §4, a reference outside a `none-by-design` case's pinned set is
+  `reference-not-required` by contract, not `evidence-unavailable`. The
+  out-of-contract audit standard stands for those cases, now justified by
+  production fidelity rather than by an instrument limitation.
+
+Two records follow from this. First, a finding for striatum: production
+prose reviews are world-blind, and a strict reviewer refuses 18 of 18 sound
+prose controls in that lane, which is a lane-design question (pin a base for
+prose reviews) rather than an instrument question. Second, the next seed for
+the review instrument is drawn from the 6,053 anchored-era production
+reviews plus the repo-doc corpus (the delegate's option D), where every case
+has an exact whole tree. That draw is the successor to 20260819, not a
+replacement for it: the 71 adjudicated controls and the operator audit on
+20260819 are sunk investment that the production-faithful run spends, and
+comparability across seeds was never promised.
+
 Shared per-commit archives are safe only with all three guards: the shared
 source is immutable, its manifest digest is checked per attempt, and
 case-specific material goes to the per-case `evidence/` directory, never
