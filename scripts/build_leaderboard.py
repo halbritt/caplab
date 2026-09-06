@@ -346,6 +346,39 @@ def audit_badge(r) -> str:
     return '<span class="badge muted-badge" title="audit status not recorded on this claim">unaudited</span>'
 
 
+def missing_from_current(claims, current) -> str:
+    """Bindings measured on some cohort but not on the current one — named, so an
+    absence reads as a gap in coverage rather than as a verdict."""
+    on_board = {r["subject"] for r in current}
+    latest: dict[str, dict] = {}
+    for r in claims:
+        if r["subject"] in on_board:
+            continue
+        cur = latest.get(r["subject"])
+        if cur is None or r["as_of_full"] > cur["as_of_full"]:
+            latest[r["subject"]] = r
+    if not latest:
+        return ""
+    items = sorted(latest.values(), key=lambda r: -(r["disc"] if r["disc"] is not None else -9))
+    bits = [f'<span class="mono">{esc(r["subject"])}</span> <span class="sub">({"—" if r["disc"] is None else f"{r[chr(100)+chr(105)+chr(115)+chr(99)]:+.2f}"} on '
+            f'{esc(COHORT_SHORT.get((r["custody"], r["instrument"], r["seed"], r["environment"]), r["seed"]))})</span>'
+            for r in items]
+    return ('<p class="lead" style="margin-top:.6rem"><strong>Not yet measured on this cohort</strong> — their numbers '
+            'elsewhere do not compare to the table above: ' + "; ".join(bits) + '.</p>')
+
+
+def audit_mark(r) -> str:
+    """Compact audit status for narrow tables: ✓ audited, ◌n unaudited, ⚠ v1 rows."""
+    if r.get("fa_audit") == "established":
+        return '<span class="badge good" title="every control refusal is adjudicated">✓</span>'
+    if r.get("fa_audit") == "contains-unaudited-refusals":
+        return (f'<span class="badge note" title="{esc(r.get("fa_unaudited"))} unaudited refusal(s): '
+                f'FA is an upper bound">◌{esc(r.get("fa_unaudited"))}</span>')
+    if r["instrument"] == "synthetic-contract" and r["as_of"] < V2_CUTOVER:
+        return '<span class="badge warn" title="v1-changeset rows (erratum 2026-08-22)">⚠</span>'
+    return '<span class="badge muted-badge" title="audit status not recorded">?</span>'
+
+
 def interval_chart(rows) -> str:
     """Dot-and-interval plot: catch and false alarm per binding on one 0–100% axis.
 
@@ -622,6 +655,213 @@ def contrast_rows(contrasts):
     return out
 
 
+
+# ------------------------------------------------------ conclusions & history
+
+def dominance(rows, contrasts):
+    """Established leads on the current cohort: {binding: {"beats": set, "beaten_by": set}}.
+
+    A lead is established when the exact sign test on shared cases clears
+    p < 0.05 (`significant_at_05`). Nothing else counts: intervals that do not
+    overlap are not a lead, and a larger point estimate is not a lead."""
+    bindings = [r["subject"] for r in rows]
+    rel = {b: {"beats": set(), "beaten_by": set(), "open": set()} for b in bindings}
+    seen = set()
+    for d in sorted(contrasts, key=lambda d: d["_file"], reverse=True):
+        if not d["_file"].startswith("iso-") or "discordant_pairs" not in d:
+            continue
+        a, b = match_label(d["a"], bindings), match_label(d["b"], bindings)
+        if not a or not b or a == b or frozenset((a, b)) in seen:
+            continue
+        seen.add(frozenset((a, b)))
+        if d.get("significant_at_05"):
+            w, l = (a, b) if d["a_only_caught"] > d["b_only_caught"] else (b, a)
+            rel[w]["beats"].add(l)
+            rel[l]["beaten_by"].add(w)
+        else:
+            rel[a]["open"].add(b)
+            rel[b]["open"].add(a)
+    return rel
+
+
+def tiers(rel):
+    """Layer the partial order: tier 1 is beaten by nobody; tier k+1 is beaten
+    only by bindings in tiers <= k. Bindings with no contrasts at all sit last."""
+    remaining = set(rel)
+    placed: dict[str, int] = {}
+    level = 1
+    while remaining:
+        layer = {b for b in remaining if rel[b]["beaten_by"] <= set(placed)}
+        if not layer:                       # a cycle of established leads; report flat
+            layer = set(remaining)
+        for b in layer:
+            placed[b] = level
+        remaining -= layer
+        level += 1
+    return placed
+
+
+def conclusions_html(rows, contrasts) -> str:
+    """The board's verdicts, derived mechanically and labelled by assertion type."""
+    if len(rows) < 2:
+        return ""
+    rel = dominance(rows, contrasts)
+    tier_of = tiers(rel)
+    disc = {r["subject"]: r["disc"] for r in rows}
+    by_tier: dict[int, list] = {}
+    for b, t in tier_of.items():
+        by_tier.setdefault(t, []).append(b)
+    parts = ['<div class="verdicts">']
+    parts.append('<p class="sub">[Observation] Leads are exact sign tests on shared cases at p &lt; 0.05. '
+                 'Tiers are the layers of that partial order: a binding is in tier 1 when no measured binding '
+                 'has an established lead over it. Within a tier the order is the point estimate and is not established.</p>')
+    parts.append('<ol class="tiers">')
+    for t in sorted(by_tier):
+        members = sorted(by_tier[t], key=lambda b: -(disc.get(b) or -9))
+        items = []
+        for b in members:
+            beats = sorted(rel[b]["beats"], key=lambda x: -(disc.get(x) or -9))
+            open_ = sorted(rel[b]["open"] & {m for m in by_tier[t]}, key=lambda x: -(disc.get(x) or -9))
+            detail = []
+            if beats:
+                detail.append("leads " + ", ".join(f"<span class=\"mono\">{esc(x)}</span>" for x in beats))
+            if open_:
+                detail.append("not separated from " + ", ".join(f"<span class=\"mono\">{esc(x)}</span>" for x in open_))
+            d = disc.get(b)
+            items.append(f'<li><span class="mono"><strong>{esc(b)}</strong></span> '
+                         f'<span class="num">{"—" if d is None else f"{d:+.2f}"}</span>'
+                         + (f' <span class="sub">— {"; ".join(detail)}</span>' if detail else "") + '</li>')
+        parts.append(f'<li class="tier"><span class="tierlabel">tier {t}</span><ul>{"".join(items)}</ul></li>')
+    parts.append('</ol>')
+
+    # Inferences the reader would otherwise have to assemble by hand.
+    notes = []
+    top = by_tier.get(1, [])
+    if len(top) == 1:
+        b = top[0]
+        notes.append(f'<span class="mono">{esc(b)}</span> is the only binding no other binding has an established '
+                     f'lead over, and it leads {len(rel[b]["beats"])} of the other {len(rows) - 1}.')
+    elif len(top) > 1:
+        notes.append("Tier 1 has " + ", ".join(f'<span class="mono">{esc(b)}</span>' for b in sorted(top))
+                     + ": none of them separates from the others on shared cases at this sample size, so the board "
+                       "does not order them.")
+    for r in rows:
+        d = declaration(r["subject"])
+        if not d.get("exists"):
+            continue
+        beaten_by_weaker = [w for w in rel[r["subject"]]["beaten_by"]
+                            if (declaration(w).get("review_class") or "none") in ("baseline", "none")
+                            and (d.get("review_class") or "none") in ("strong", "frontier")]
+        if beaten_by_weaker:
+            notes.append(f'<span class="mono">{esc(r["subject"])}</span> is declared <em>{esc(d["review_class"])}</em> '
+                         f'yet has an established deficit to ' + ", ".join(
+                             f'<span class="mono">{esc(w)}</span> (declared {esc(declaration(w).get("review_class") or "none")})'
+                             for w in sorted(beaten_by_weaker)) + ": the declaration and the measurement disagree.")
+        if d.get("status") != "accepted" and rel[r["subject"]]["beats"] & {
+                x for x in rel if declaration(x).get("status") == "accepted"}:
+            acc = sorted(x for x in rel[r["subject"]]["beats"] if declaration(x).get("status") == "accepted")
+            notes.append(f'<span class="mono">{esc(r["subject"])}</span> is <em>{esc(d["status"])}</em> in striatum but has an '
+                         f'established lead over accepted ' + ", ".join(f'<span class="mono">{esc(x)}</span>' for x in acc) + ".")
+        if d.get("basis") == "measured" and d.get("quality_as_of") and d["quality_as_of"] < "2026-08-23":
+            notes.append(f'<span class="mono">{esc(r["subject"])}</span>\'s declared class rests on a pre-isolation '
+                         f'measurement; under isolation it measures {r["disc"]:+.2f}.')
+    unaudited = [r["subject"] for r in rows if r.get("fa_audit") == "contains-unaudited-refusals"]
+    if unaudited:
+        notes.append("False alarms are upper bounds for " + ", ".join(f'<span class="mono">{esc(b)}</span>' for b in unaudited)
+                     + " until their remaining control refusals are adjudicated.")
+    if notes:
+        parts.append('<p class="sub" style="margin-top:.8rem">[Inference] What follows from the observations above and the current declarations:</p>')
+        parts.append('<ul class="notes">' + "".join(f"<li>{n}</li>" for n in notes) + "</ul>")
+    parts.append('<p class="sub">These are readings of the evidence, not decisions: a declaration changes only by a Principal ruling on the claim.</p>')
+    parts.append('</div>')
+    return "\n".join(parts)
+
+
+COHORT_SHORT = {
+    ("caplab-advisory", "synthetic-contract", "20260819", "iso-v1"): "iso-v1 · 0819",
+    ("caplab-advisory", "synthetic-contract", "20260819", "(pre-isolation)"): "pre-iso · 0819",
+    ("caplab-advisory", "synthetic-contract", "20260817", "(pre-isolation)"): "pre-iso · 0817",
+    ("caplab-advisory", "synthetic-contract", "20260823", "(pre-isolation)"): "pre-iso · 0823",
+    ("caplab-advisory", "dispatch-prompt", "20260815", "(pre-isolation)"): "dispatch · 0815",
+    ("historical-seed", "dispatch-prompt", "20260807", "(pre-isolation)"): "tuner · 0807",
+}
+
+
+def history_html(claims) -> str:
+    """Per-binding history: every cohort a binding was measured on, in time order.
+
+    Small multiples share one y-axis (catch − FA, 0 to 1) and one x-order (the
+    cohort's newest claim date), so a reader compares shape across bindings;
+    each point is the newest, widest claim of that binding on that cohort."""
+    per: dict[str, dict[tuple, dict]] = {}
+    for r in claims:
+        key = (r["custody"], r["instrument"], r["seed"], r["environment"])
+        cur = per.setdefault(r["subject"], {}).get(key)
+        if cur is None or (r["pairs"], r["as_of_full"]) > (cur["pairs"], cur["as_of_full"]):
+            per[r["subject"]][key] = r
+    # x-order: cohorts by their earliest claim date across all bindings
+    cohort_first: dict[tuple, str] = {}
+    for b, cs in per.items():
+        for key, r in cs.items():
+            cohort_first[key] = min(cohort_first.get(key, "9"), r["as_of_full"])
+    order = sorted(cohort_first, key=lambda k: cohort_first[k])
+    xpos = {k: i for i, k in enumerate(order)}
+    w, h, pad_l, pad_r, pad_b = 320, 110, 30, 34, 30
+    step = (w - pad_l - pad_r) / max(1, len(order) - 1)
+    tiny = {"dispatch · 0815": "0815·dsp", "pre-iso · 0817": "0817", "pre-iso · 0819": "0819",
+            "pre-iso · 0823": "0823", "iso-v1 · 0819": "0819·iso", "tuner · 0807": "0807·tuner"}
+
+    def x(k):
+        return pad_l + xpos[k] * step
+
+    def y(v):
+        v = max(0.0, min(1.0, v if v is not None else 0))
+        return 8 + (1 - v) * (h - pad_b - 8)
+
+    cards = []
+    for b in sorted(per, key=lambda b: -(max((r["disc"] or -9) for r in per[b].values()))):
+        cs = per[b]
+        if len(cs) < 2:
+            continue
+        pts = sorted(cs.items(), key=lambda kv: xpos[kv[0]])
+        d = declaration(b)
+        svg = [f'<svg viewBox="0 0 {w} {h}" width="{w}" height="{h}" class="spark" role="img" '
+               f'aria-label="{esc(b)} discrimination across cohorts">']
+        for v in (0, .5, 1):
+            svg.append(f'<line class="grid" x1="{pad_l}" y1="{y(v):.1f}" x2="{w - 8}" y2="{y(v):.1f}"/>'
+                       f'<text class="tick" x="{pad_l - 4}" y="{y(v) + 4:.1f}" text-anchor="end">{v:.1f}</text>')
+        path = " ".join(f'{"M" if i == 0 else "L"}{x(k):.1f},{y(r["disc"]):.1f}' for i, (k, r) in enumerate(pts))
+        svg.append(f'<path class="line" d="{path}"/>')
+        for k, r in pts:
+            iso = k[3] == "iso-v1"
+            title = (f'{COHORT_SHORT.get(k, " · ".join(k))}: catch {pct(r["catch"])}, FA {pct(r["fa"])}, '
+                     f'catch − FA {r["disc"]:+.2f}, n={r["pairs"]}, {r["as_of"]}')
+            svg.append(f'<g><title>{esc(title)}</title><circle class="{"iso" if iso else "pre"}" cx="{x(k):.1f}" '
+                       f'cy="{y(r["disc"]):.1f}" r="4.5"/><text class="val" x="{x(k):.1f}" y="{y(r["disc"]) - 8:.1f}" '
+                       f'text-anchor="middle">{r["disc"]:+.2f}</text></g>')
+        for k in order:
+            if k in cs:
+                lab = tiny.get(COHORT_SHORT.get(k, ""), k[2])
+                dy = h - 16 if xpos[k] % 2 else h - 5      # staggered so neighbours never collide
+                svg.append(f'<text class="tick" x="{x(k):.1f}" y="{dy}" text-anchor="middle">{esc(lab)}</text>')
+        svg.append('</svg>')
+        rows_html = "".join(
+            f'<tr><td class="sub">{esc(COHORT_SHORT.get(k, " · ".join(k)))}</td><td class="num">{r["pairs"]}</td>'
+            f'<td class="num">{pct(r["catch"])}</td><td class="num">{pct(r["fa"])}</td>'
+            f'<td class="num"><strong>{r["disc"]:+.2f}</strong></td><td>{audit_mark(r)}</td></tr>'
+            for k, r in pts)
+        cards.append(f'<div class="card"><div class="cardhead"><span class="mono"><strong>{esc(b)}</strong></span>'
+                     f'<span class="sub"> {esc(d.get("harness") or "")}</span></div>{"".join(svg)}'
+                     f'<table class="data mini"><thead><tr><th>cohort</th><th>n</th><th>catch</th><th>FA</th>'
+                     f'<th>c − FA</th><th></th></tr></thead><tbody>{rows_html}</tbody></table></div>')
+    if not cards:
+        return ""
+    return ('<p class="lead">Every cohort a binding was measured on, oldest to newest, same y-axis (catch − FA) on every card. '
+            'Filled points are isolation runs (the base withheld); hollow points saw the live checkout. A drop from a hollow to a '
+            'filled point is the environment, not the model; only filled-to-filled moves compare. Bindings measured on one cohort '
+            'only appear in the standing table alone.</p><div class="cards">' + "".join(cards) + '</div>')
+
+
 # ------------------------------------------------------------------- page
 
 CSS = """
@@ -695,6 +935,27 @@ details { margin: 1.2rem 0; }
 details > summary { cursor: pointer; color: var(--ink-2); font-weight: 600; font-size: 1rem;
   padding: .3rem 0; border-bottom: 1px solid var(--line); }
 details h3 { font-size: .95rem; margin: 1.2rem 0 .3rem; }
+.verdicts { background: var(--surface-2); border-left: 3px solid var(--catch); padding: .7rem 1rem; margin: .6rem 0 1rem; }
+ol.tiers { list-style: none; padding: 0; margin: .3rem 0; }
+ol.tiers li.tier { display: flex; gap: .8rem; align-items: baseline; padding: .25rem 0; border-top: 1px solid var(--line); }
+ol.tiers li.tier:first-child { border-top: 0; }
+.tierlabel { flex: 0 0 4.2rem; font-size: .8rem; color: var(--ink-3); text-transform: uppercase; letter-spacing: .04em; }
+ol.tiers ul { list-style: none; margin: 0; padding: 0; }
+ol.tiers ul li { padding: .08rem 0; }
+ul.notes { margin: .2rem 0 .4rem 1.1rem; padding: 0; font-size: .9rem; }
+ul.notes li { margin: .15rem 0; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1rem; }
+.card { border: 1px solid var(--line); border-radius: 6px; padding: .6rem .7rem; background: var(--surface); }
+.cardhead { margin-bottom: .2rem; }
+svg.spark { display: block; width: 100%; height: auto; font: 10px system-ui, sans-serif; }
+svg.spark .grid { stroke: var(--line); }
+svg.spark .tick { fill: var(--ink-3); font-size: 9px; }
+svg.spark .line { fill: none; stroke: var(--ink-3); stroke-width: 1.5; }
+svg.spark circle.iso { fill: var(--catch); stroke: var(--surface); stroke-width: 1.5; }
+svg.spark circle.pre { fill: var(--surface); stroke: var(--catch); stroke-width: 2; }
+svg.spark .val { fill: var(--ink-2); font-size: 9px; font-variant-numeric: tabular-nums; }
+table.mini { font-size: .78rem; margin-top: .3rem; }
+table.mini td, table.mini th { padding: .15rem .35rem; }
 footer { margin-top: 3rem; color: var(--ink-3); font-size: .85rem; }
 """
 
@@ -826,10 +1087,10 @@ def main() -> int:
 <p class="lead">What has been measured about each binding, on the one cohort that compares today.
 Newest evidence {esc(generated)} UTC · {len(claims)} review claims · {n_adjudicated} adjudicated controls ·
 local page, not published.</p>
-<nav class="toc"><a href="#standing">standing</a><a href="#h2h">head-to-head</a>
+<nav class="toc"><a href="#standing">standing</a><a href="#verdict">what it says</a><a href="#h2h">head-to-head</a>
 <a href="#classes">by defect class</a><a href="#declared">declared vs measured</a>
 <a href="#planning">planning gate</a><a href="#fate">production fate</a>
-<a href="#history">earlier cohorts</a><a href="#derived">derived &amp; harvested</a></nav>
+<a href="#bindings">per-binding history</a><a href="#history">earlier cohorts</a><a href="#derived">derived &amp; harvested</a></nav>
 
 <h2 id="standing">Review capability — current standing
 <span class="k">{esc(custody)} · {esc(instrument)} · seed {esc(seed)} · {esc(environment)} · {n_current} bindings</span></h2>
@@ -839,11 +1100,15 @@ of adjudicated-sound controls it refused. Rows sort by catch − FA. Intervals a
 with unaudited refusals wears its false alarm as an upper bound.</p>
 {interval_chart(current)}
 {standing_table(current)}
+{missing_from_current(claims, current)}
 <div class="rule"><strong>Reading it.</strong> Two bindings separate only where the head-to-head below says so; overlapping
 intervals here are not a tie and non-overlapping ones are not a proof. Structural defects (removed, corrupted or
 mis-referenced content) are where every binding is weakest under isolation because the base is withheld;
 <em>hash_mismatch</em> needs the tree and no one catches it. The binary false-alarm metric rewards silence — a binding
 emitting near-zero findings scores a spotless FA for the wrong reason — so read <em>anchored</em> beside it.</div>
+
+<h2 id="verdict">What this board says</h2>
+{conclusions_html(current, contrasts)}
 
 <h2 id="h2h">Head-to-head on shared cases <span class="k">{established} established separations</span></h2>
 <p class="lead">Exact sign test on the discordant cases two bindings share. A cell reads <em>row-only caught – column-only caught</em>;
@@ -870,6 +1135,9 @@ routing among admitted planners is operational, not measured here.</p>
 different tasks per producer, different builders per packet — so this informs a routing objective and a regression alarm,
 never a qualification claim. Producers with fewer than 8 attributed packets omitted.</p>
 {fate_section()}
+
+<h2 id="bindings">Per-binding history <span class="k">every cohort, oldest to newest</span></h2>
+{history_html(claims)}
 
 <details id="history"><summary>Earlier cohorts ({len(cohorts) - (1 if CURRENT_COHORT in cohorts else 0)}) — comparable only within themselves</summary>
 <p class="sub">Pre-isolation runs saw the live checkout (ambient tree access moved one arm's catch by ~25 points); seeds 20260815/17
