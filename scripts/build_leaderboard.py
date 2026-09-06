@@ -1144,6 +1144,14 @@ local page, not published.</p>
 <a href="#planning">planning gate</a><a href="#fate">production fate</a>
 <a href="#bindings">per-binding history</a><a href="#history">earlier cohorts</a><a href="#derived">derived &amp; harvested</a></nav>
 
+<div class="rule" style="border-left-color: var(--fa)"><strong>Provisional (Principal, 2026-09-06; plan tree-v1 rev 2 §7).</strong>
+Every row on this cohort was measured under <code>iso-v1</code>, which withheld the artifact's base tree: its
+<em>reference-resolution</em> performance is invalid, and its false-alarm rates penalise verification-oriented
+bindings for refusing what could not be resolved. The ordering below is provisional and must not be read as
+evidence against such a binding. It stays informative for in-set defect classes and for the one-shot lanes.
+No new qualification or negative-placement decision cites the affected dimensions. The cohort is re-measured
+under <code>tree-v1</code> (pinned base present, read-only); this table switches to that cohort when the same
+eight bindings are on it.</div>
 <h2 id="standing">Review capability — current standing
 <span class="k">{esc(custody)} · {esc(instrument)} · seed {esc(seed)} · {esc(environment)} · {n_current} bindings</span></h2>
 <p class="lead">Matched-pair defect injection under isolation (the base tree withheld, <code>~/git</code> masked).

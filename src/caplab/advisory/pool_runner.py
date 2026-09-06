@@ -119,9 +119,45 @@ def adapter_resources(command: list[str]) -> list[str]:
     return out
 
 
+#: Home paths a lane must never see. Plan tree-v1 rev 2 §0/§2.2 (Stage A,
+#: 2026-09-06): between 2026-08-23 and this change every lane could read and
+#: write the graph store, the exchange, the tuner's eval runs, the whole cache
+#: and the Plane tokens, because home was bound writable beneath the ~/git
+#: mask. Each is now a tmpfs; what a harness needs back is re-bound on top.
+MASKED_HOME_PATHS = ("~/.local/share/striatum", "~/.local/share/striatum-tuner",
+                     "~/.config/plane", "~/.cache")
+
+#: Environment assignments in an adapter command that name the directory a
+#: harness keeps its own state in. That directory — and only that one — is
+#: re-bound writable inside the striatum mask.
+HARNESS_STATE_VARS = ("CLAUDE_CONFIG_DIR", "CODEX_HOME", "HOME")
+
+
+def harness_rebinds(argv: list[str]) -> list[str]:
+    """Absolute directories the lane's own harness needs writable.
+
+    Read off the adapter command's `env VAR=value` assignments, never
+    guessed from the harness name: the declaration is the authority on where
+    a harness keeps state. agy's GOCACHE lands under the masked ~/.cache and
+    is re-bound too. opencode uses the real home; its two directories are not
+    under any mask and need nothing here.
+    """
+    home = os.path.expanduser("~")
+    out = []
+    for arg in argv:
+        if not isinstance(arg, str) or "=" not in arg:
+            continue
+        key, _, value = arg.partition("=")
+        if key in HARNESS_STATE_VARS or key == "GOCACHE":
+            path = os.path.abspath(os.path.expanduser(value))
+            if path != home and path.startswith(home + os.sep) and os.path.isdir(path):
+                out.append(path)
+    return out
+
+
 def sandbox_argv(argv: list[str], workspace: str | None,
                  extra_ro: list[str] | None = None) -> list[str]:
-    """Contain a lane: the user's git root is read-only inside it.
+    """Contain a lane: the checkouts and the store do not exist inside it.
 
     On 2026-08-23 a replayed build case's delivery was written by an agy
     lane into the live striatum-next checkout, byte-identical to the case
@@ -129,9 +165,14 @@ def sandbox_argv(argv: list[str], workspace: str | None,
     case 26 seconds later named a file carrying uncommitted repair work.
     The replayed prompts name live repository paths by design, and an
     agentic harness acts on what it is shown — so the escape is contained
-    at the filesystem, not argued away in the prompt. Home stays writable
-    (harness config dirs, caches, opencode's db); `~/git` is bound
-    read-only on top of it; only the case workspace is re-bound writable.
+    at the filesystem, not argued away in the prompt.
+
+    Stage A (2026-09-06, plan tree-v1 rev 2 §2.2): home stays writable for
+    the harness's benefit, but ~/git, the striatum store, the tuner's runs,
+    the cache and the Plane tokens are each a tmpfs; the harness's own config
+    directory (and GOCACHE, for agy) is re-bound writable on top; only the
+    case workspace is otherwise re-bound writable. Stage B (the allowlisted
+    synthetic home) replaces this before any model process runs.
     """
     home = os.path.expanduser("~")
     git_root = os.path.join(home, "git")
@@ -150,6 +191,12 @@ def sandbox_argv(argv: list[str], workspace: str | None,
         # inside a lane. (Absent git root: a CI runner keeps its checkout
         # elsewhere; binding a missing path refuses to start.)
         wrapped += ["--tmpfs", git_root]
+    for masked in MASKED_HOME_PATHS:
+        path = os.path.expanduser(masked)
+        if os.path.isdir(path):
+            wrapped += ["--tmpfs", path]
+    for path in harness_rebinds(argv):
+        wrapped += ["--bind", path, path]
     for path in extra_ro or []:
         wrapped += ["--ro-bind", path, path]
     wrapped += ["--bind", "/tmp", "/tmp"]

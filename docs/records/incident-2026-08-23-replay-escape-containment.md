@@ -66,3 +66,19 @@ The postmortem's §7 options are the Principal's. From CAPLAB's side: the
 agy declaration could state its sandbox posture (none) as a capability
 fact, and `live-tree-matches-head` on a cadence would have cut the
 40-minute window to seconds for everyone, not only for CAPLAB sweeps.
+
+## Amendment 2026-09-06 — what the sandbox actually contained
+
+Council plan `tree-v1` revision 2 (§0, §2.2) found that the containment this
+record describes was narrower than its words. Between 2026-08-23 and the
+Stage A amendment of 2026-09-06, `pool_runner.sandbox_argv` bound `/`
+read-only, then the whole home directory writable, then a tmpfs over `~/git`.
+Every lane could therefore read and write `~/.local/share/striatum` (the graph
+store, exchange, keys and deploys — ~134 GB), `~/.local/share/striatum-tuner`,
+`~/.cache` (~73 GB), and `~/.config/plane` (API tokens). `treeguard` watched
+tracked files in two git checkouts and nothing else. The plan of 2026-09-06
+revision 1 asserted that "the store stays masked"; it did not. Stage A masks
+those paths with tmpfs and re-binds only the harness's own config directory
+(and `~/.cache/go-build` for agy) writable; Stage B replaces home with an
+allowlisted synthetic home before any model process runs. Both are recorded
+in the tree-v1 plan and verified by the probes it specifies.

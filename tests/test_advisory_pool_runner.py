@@ -760,3 +760,56 @@ class AbsoluteWorkspaceTest(unittest.TestCase):
 class EnvironmentStampTest(unittest.TestCase):
     def test_environment_version_is_declared(self):
         self.assertEqual(pool_runner.ENVIRONMENT_VERSION, "iso-v1")
+
+
+class StageAContainmentTest(unittest.TestCase):
+    """Plan tree-v1 rev 2 §2.2, Stage A (2026-09-06). Between 2026-08-23 and
+    this change a lane could read and write the graph store, the exchange,
+    the tuner's runs, the cache and the Plane tokens beneath the ~/git mask.
+    Each is now a tmpfs; the harness's own directory is re-bound on top."""
+
+    def _masked(self):
+        return [os.path.expanduser(p) for p in pool_runner.MASKED_HOME_PATHS
+                if os.path.isdir(os.path.expanduser(p))]
+
+    def test_store_cache_and_tokens_are_tmpfs(self):
+        argv = pool_runner.sandbox_argv(["true"], workspace="/tmp/ws")
+        joined = " ".join(argv)
+        for path in self._masked():
+            self.assertIn(f"--tmpfs {path}", joined, path)
+        # The masks come after the home bind, or the home bind would undo them.
+        home = os.path.expanduser("~")
+        if self._masked():
+            self.assertLess(joined.index(f"--bind {home} {home}"),
+                            joined.index(f"--tmpfs {self._masked()[0]}"))
+
+    def test_harness_state_dir_is_rebound_from_the_declared_env(self):
+        home = os.path.expanduser("~")
+        with tempfile.TemporaryDirectory(dir=home) as d:
+            argv = pool_runner.sandbox_argv(
+                ["/usr/bin/env", f"CLAUDE_CONFIG_DIR={d}", "claude", "-p"], workspace="/tmp/ws")
+            joined = " ".join(argv)
+            self.assertIn(f"--bind {d} {d}", joined)
+            if self._masked():
+                # re-bound AFTER the masks, so it wins over the tmpfs beneath it
+                self.assertGreater(joined.index(f"--bind {d} {d}"),
+                                   joined.index(f"--tmpfs {self._masked()[0]}"))
+
+    def test_no_declared_env_means_no_rebind_and_never_home_itself(self):
+        home = os.path.expanduser("~")
+        self.assertEqual(pool_runner.harness_rebinds(["tool", f"HOME={home}"]), [])
+        self.assertEqual(pool_runner.harness_rebinds(["tool", "CODEX_HOME=/nonexistent/x"]), [])
+
+    @unittest.skipUnless(pool_runner.sandbox_available()
+                         and os.path.isdir(os.path.expanduser("~/.local/share/striatum")),
+                         "bwrap absent or no striatum store on this host")
+    def test_lane_sees_an_empty_store_and_writes_do_not_reach_it(self):
+        import subprocess
+        store = os.path.expanduser("~/.local/share/striatum")
+        probe = os.path.join(store, ".caplab-stage-a-probe")
+        argv = pool_runner.sandbox_argv(
+            ["sh", "-c", f"ls -A {store} | wc -l; touch {probe} && echo WROTE || echo REFUSED"],
+            workspace=tempfile.gettempdir())
+        out = subprocess.run(argv, capture_output=True, text=True, timeout=30).stdout.split()
+        self.assertEqual(out[0], "0", "the store must be invisible inside the lane")
+        self.assertFalse(os.path.exists(probe), "a write inside the lane must not reach the store")
