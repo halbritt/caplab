@@ -242,3 +242,11 @@ unaudited refusal.
 `agy-gemini-3-7-flash-high` catch 0.596, FA 0.051, 0.545, one unaudited pair
 (the control above). The standing table and the verdict block recompute
 from the ledger on `make leaderboard`.
+
+**Rulings (Principal, 2026-09-05, later the same day):** `qs-907a07dad63ec02e`
+**defective** — a check reporting pass beside two unequal inputs it never says
+it compared is the hollow-verification pattern; Gemini 3.7's refusal was
+correct (record 55). `qs-f368c6ceaa769cd1` **confirmed defective** — the
+analogy to the qs-ccfd2a5f ruling holds (record 56). With these, every
+control refusal on every iso-v1 run is adjudicated: `agy-gemini-3-7-flash-high`
+catch 0.596, FA 0.026, catch − FA 0.570, audit status `established`.
