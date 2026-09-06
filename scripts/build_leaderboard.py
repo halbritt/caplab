@@ -359,12 +359,16 @@ def missing_from_current(claims, current) -> str:
             latest[r["subject"]] = r
     if not latest:
         return ""
-    items = sorted(latest.values(), key=lambda r: -(r["disc"] if r["disc"] is not None else -9))
+    tuner = [r for r in latest.values() if r["custody"] == "historical-seed"]
+    items = sorted((r for r in latest.values() if r["custody"] != "historical-seed"),
+                   key=lambda r: -(r["disc"] if r["disc"] is not None else -9))
     bits = [f'<span class="mono">{esc(r["subject"])}</span> <span class="sub">({"—" if r["disc"] is None else f"{r[chr(100)+chr(105)+chr(115)+chr(99)]:+.2f}"} on '
             f'{esc(COHORT_SHORT.get((r["custody"], r["instrument"], r["seed"], r["environment"]), r["seed"]))})</span>'
             for r in items]
+    tail = (f' A further {len(tuner)} tuples were measured only on the 2026-08 tuner seed (custody historical-seed) '
+            f'and appear under earlier cohorts.' if tuner else "")
     return ('<p class="lead" style="margin-top:.6rem"><strong>Not yet measured on this cohort</strong> — their numbers '
-            'elsewhere do not compare to the table above: ' + "; ".join(bits) + '.</p>')
+            'elsewhere do not compare to the table above: ' + "; ".join(bits) + '.' + tail + '</p>')
 
 
 def audit_mark(r) -> str:
@@ -730,7 +734,11 @@ def conclusions_html(rows, contrasts) -> str:
     if len(rows) < 2:
         return ""
     rel = dominance(rows, contrasts)
-    tier_of = tiers(rel)
+    # A binding that refuses most sound controls is not ordered: its catch is
+    # not evidence of discrimination, and every comparison with it is a split.
+    rejecters = {r["subject"] for r in rows if r.get("fa") is not None and r["fa"] >= 0.5}
+    tier_of = tiers({b: {k: (v - rejecters if isinstance(v, set) else v) for k, v in rel[b].items()}
+                     for b in rel if b not in rejecters})
     disc = {r["subject"]: r["disc"] for r in rows}
     by_tier: dict[int, list] = {}
     for b, t in tier_of.items():
@@ -748,7 +756,7 @@ def conclusions_html(rows, contrasts) -> str:
         for b in members:
             beats = sorted(rel[b]["beats"], key=lambda x: -(disc.get(x) or -9))
             open_ = sorted(rel[b]["open"] & {m for m in by_tier[t]}, key=lambda x: -(disc.get(x) or -9))
-            splits = sorted(rel[b]["split"], key=lambda x: -(disc.get(x) or -9))
+            splits = sorted(rel[b]["split"] - rejecters, key=lambda x: -(disc.get(x) or -9))
             detail = []
             if beats:
                 detail.append("leads " + ", ".join(f"<span class=\"mono\">{esc(x)}</span>" for x in beats))
@@ -762,6 +770,12 @@ def conclusions_html(rows, contrasts) -> str:
                          f'<span class="num">{"—" if d is None else f"{d:+.2f}"}</span>'
                          + (f' <span class="sub">— {"; ".join(detail)}</span>' if detail else "") + '</li>')
         parts.append(f'<li class="tier"><span class="tierlabel">tier {t}</span><ul>{"".join(items)}</ul></li>')
+    if rejecters:
+        rej = ", ".join(f'<span class="mono"><strong>{esc(b)}</strong></span> <span class="num">{disc[b]:+.2f}</span>'
+                        for b in sorted(rejecters))
+        parts.append(f'<li class="tier"><span class="tierlabel">not tiered</span><ul><li>{rej} '
+                     f'<span class="sub">— refuses most adjudicated-sound controls; a split with every binding '
+                     f'(catches more, refuses more), so the order above neither places nor excludes it</span></li></ul></li>')
     parts.append('</ol>')
 
     # Inferences the reader would otherwise have to assemble by hand.
