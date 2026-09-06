@@ -90,3 +90,22 @@ grounded in production fidelity (plan §2.3 amendment). The 5
 unscorable under `tree-v1`; the pairs stay scorable for in-set operators.
 Step 4 (Stage B containment and the probe set) does not depend on the five
 rulings above; step 6 (dry run) does.
+
+## Rulings (Principal, 2026-09-06)
+
+Each item was put to the Principal separately and ruled by multiple choice.
+
+| item | ruling |
+|---|---|
+| `qs-43f3d7e27dec1a64` | re-affirmed **defective** (in-set grounds) |
+| `qs-641d18fb33495aba` | re-affirmed **defective** (in-set grounds; base does not contradict) |
+| `qs-41241900113d9862` residue `rfcs/0031` | **reference-not-required**; sound stands |
+| `qs-e7003896d6e7ab48` residue `training-started.json` | **reference-not-required**; sound stands |
+| `qs-961371a1d0b19095` residue `/var/tmp` outputs | **reference-not-required**; sound stands |
+| `qs-907a07dad63ec02e`, `qs-af9054a1808cceba`, `qs-faaba3e49977ce66` | re-affirmed as ruled on 2026-09-05 (defective, defective, sound); the `admission.go` evidence is recorded against 907a07da |
+
+The ledger is unchanged: no disposition moved, and the adjudication ledger
+holds one record per control. The rulings live here and in
+`advisory/pool-runs/tree-v1-revalidation-20260906/rulings.json`. Step 3 is
+closed; every out-of-contract label is re-derived. The Principal has since
+directed that no further decision waits on them.

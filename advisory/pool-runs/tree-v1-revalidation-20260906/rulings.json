@@ -1,0 +1,55 @@
+{
+ "record": "caplab-tree-v1-revalidation-rulings/1",
+ "ruled_by": "principal",
+ "as_of": "2026-09-06T00:00:00+00:00",
+ "rulings": [
+  {
+   "substrate": "qs-43f3d7e27dec1a64",
+   "ruling": "re-affirm",
+   "disposition": "defective",
+   "grounds": "in-set; whole tree does not bear"
+  },
+  {
+   "substrate": "qs-641d18fb33495aba",
+   "ruling": "re-affirm",
+   "disposition": "defective",
+   "grounds": "in-set; materialized base does not contradict"
+  },
+  {
+   "substrate": "qs-41241900113d9862",
+   "ruling": "reference-not-required",
+   "disposition": "sound",
+   "residue": "rfcs/0031 in a tutorial command example"
+  },
+  {
+   "substrate": "qs-e7003896d6e7ab48",
+   "ruling": "reference-not-required",
+   "disposition": "sound",
+   "residue": "training-started.json, a marker for a run that never started"
+  },
+  {
+   "substrate": "qs-961371a1d0b19095",
+   "ruling": "reference-not-required",
+   "disposition": "sound",
+   "residue": "recomputation.json, registration.json under /var/tmp execution roots"
+  },
+  {
+   "substrate": "qs-907a07dad63ec02e",
+   "ruling": "re-affirm",
+   "disposition": "defective",
+   "grounds": "admission.go: contextMatches := candidate.Evidence.Context.Matches(candidate.RunContext)"
+  },
+  {
+   "substrate": "qs-af9054a1808cceba",
+   "ruling": "re-affirm",
+   "disposition": "defective",
+   "grounds": "tree does not bear on the contract question"
+  },
+  {
+   "substrate": "qs-faaba3e49977ce66",
+   "ruling": "re-affirm",
+   "disposition": "sound",
+   "grounds": "tree does not bear on the contract question"
+  }
+ ]
+}
