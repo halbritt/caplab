@@ -242,6 +242,21 @@ def score_backends(run_dirs: list[str], adjudications=None,
             cell = by_class[row.get("defect_class") or "(unknown)"]
             cell["n"] += 1
             cell["caught"] += int(bool(row.get("caught")))
+        # Per base class (tree-v1 §2.3 amendment): a whole-tree change set and
+        # a none-by-design prose case are not the same task; contrasts are
+        # read per class as well as pooled. Rows before tree-v1 carry none.
+        by_base: dict = collections.defaultdict(
+            lambda: {"n": 0, "caught": 0, "alarm_n": 0, "alarms": 0})
+        for _, row in rows:
+            src = row.get("base_source")
+            if not src:
+                continue
+            cell = by_base[src]
+            cell["n"] += 1
+            cell["caught"] += int(bool(row.get("caught")))
+            if not adjudications.is_defective(_control_key(row)):
+                cell["alarm_n"] += 1
+                cell["alarms"] += int(bool(row.get("false_alarm")))
 
         metrics = {
             "n_pairs": {"value": n},
@@ -287,6 +302,7 @@ def score_backends(run_dirs: list[str], adjudications=None,
             "profiles": sorted(stat.get("profiles") or []),
             "metrics": metrics,
             "by_defect_class": {k: dict(v) for k, v in sorted(by_class.items())},
+            "by_base_source": {k: dict(v) for k, v in sorted(by_base.items())},
             "repeated_case_trials": n - len(stat["dispatches"]),
             "runs": sorted(stat["runs"].values(), key=lambda e: e["run"]),
         }

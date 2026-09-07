@@ -39,11 +39,14 @@ from concurrent.futures import ThreadPoolExecutor
 import yaml
 
 from ._tuner_vendored import REFUSING, anchor_hits, anchors_of, extract_json
-from .calibrate import (CALIBRATION_PROFILES, REVIEW_PREAMBLE_VERSION,
-                        profile_for_artifact, resolve_json_pointer)
+from .calibrate import (CALIBRATION_PROFILES, REVIEW_PREAMBLE_V3_VERSION,
+                        REVIEW_PREAMBLE_VERSION, TREE_PROFILE_BODIES,
+                        profile_for_artifact, render_preamble_v3,
+                        resolve_json_pointer)
 from .corpus import SubstrateRegistry, sample_cases, targeted_cases
 from .instrument_defects import NotApplicable
-from .operators import BY_NAME, check_present
+from .operators import BASE_DEPENDENT_OPERATORS, BY_NAME, check_present, operators_for
+from . import materialize as _materialize
 
 SYNTHETIC_CONTRACT_INSTRUMENT = "matched-pair defect injection (synthetic contract)"
 MEASUREMENT_PROFILE = "v1"
@@ -60,7 +63,20 @@ MEASUREMENT_PROFILE = "v1"
 #: neutral case-workspace cwd, declaration-pinned files re-exposed
 #: read-only, review preamble v2. Successor work: materialize the task's
 #: pinned base into the workspace (bundle-faithful affordance).
+#:
+#: tree-v1 (plan rev 2, 2026-09-06): Stage B synthetic home, the case's base
+#: production materialized read-only at <case>/base (whole tree, partial
+#: product tree, or nothing, per advisory/tree-v1-bases.json), recoverable
+#: exchange objects under <case>/evidence, review preamble v3 with a per-case
+#: pinned-set statement, profiles v1-tree / v3-changeset, hash_mismatch v3.
 ENVIRONMENT_VERSION = "iso-v1"
+TREE_ENVIRONMENT = "tree-v1"
+BASE_REGISTRY_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                  "..", "..", "..", "advisory", "tree-v1-bases.json")
+
+
+def tree_mode() -> bool:
+    return ENVIRONMENT_VERSION == TREE_ENVIRONMENT
 
 #: Well below the kernel's per-argument limit, leaving room for the rest of
 #: argv and the environment. A prompt larger than this cannot ride argv; its
@@ -443,7 +459,8 @@ def _majority(verdicts: list) -> tuple:
 
 def measure_case(case: dict, body: str, adapter: dict, timeout: int,
                  replicates: int = 1, mutant_replicates: int | None = None,
-                 workspace: str | None = None) -> dict:
+                 workspace: str | None = None,
+                 base_record: dict | None = None) -> dict:
     """One matched pair, optionally replicated.
 
     Replication exists because the control arm reproduces at ~53% on identical
@@ -457,7 +474,21 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
            "source_kind": case["source"]["kind"],
            "defect_class": case["operator"]}
     row.setdefault("calibration_profile", MEASUREMENT_PROFILE)
-    operator = BY_NAME.get(case["operator"])
+    tree = tree_mode()
+    base_source = (base_record or {}).get("base_source") if tree else None
+    if tree:
+        if base_record is None:
+            return {**row, "usable": False,
+                    "error": "no base registry record for this substrate"}
+        row.update({"environment": ENVIRONMENT_VERSION, "base_source": base_source,
+                    "base_materializer": base_record.get("materializer"),
+                    "operator_version": "v3"})
+        if base_source == "lost" and case["operator"] in BASE_DEPENDENT_OPERATORS:
+            # The pair needs the base to be scorable and production's base
+            # is unrecoverable (§2.3 amendment): excluded from every scored
+            # denominator, counted in the coverage report.
+            return {**row, "usable": False, "error": "unscorable_missing_base"}
+    operator = operators_for(ENVIRONMENT_VERSION, base_source).get(case["operator"])
     if operator is None:
         return {**row, "usable": False, "error": "unknown operator"}
     try:
@@ -471,9 +502,8 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
     if check_present(injection, body) is True:
         return {**row, "usable": False, "error": "control already carries the defect"}
 
-    profile = profile_for_artifact(body)
+    profile = profile_for_artifact(body, tree=tree)
     row["calibration_profile"] = profile
-    prompt = CALIBRATION_PROFILES[profile]
     # One directory per case (plan tree-v1 rev 2 §2.5): the lane is bound to
     # it alone, so a sibling case's spill file or base is not reachable, and
     # a materialized `base/` and `evidence/` beneath it are re-bound read-only.
@@ -483,7 +513,24 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
                                  f"{case['substrate_id']}-{case['operator']}-{case['seed']}")
         os.makedirs(workspace, exist_ok=True)
         readonly = [os.path.join(workspace, "base"), os.path.join(workspace, "evidence")]
+    manifest = None
+    if tree:
+        if not workspace:
+            return {**row, "usable": False,
+                    "error": "tree-v1 needs a case workspace to materialize into"}
+        try:
+            manifest = _materialize.materialize_case(base_record, workspace)
+        except (_materialize.UnsafeEntry, RuntimeError, OSError, ValueError) as e:
+            return {**row, "usable": False, "error": f"materialization failed: {e}"}
+        row.update({"base_manifest_digest": manifest["digest"],
+                    "base_file_count": manifest["file_count"],
+                    "review_preamble": REVIEW_PREAMBLE_V3_VERSION})
+        prompt = (render_preamble_v3(base_source, manifest, workspace)
+                  + TREE_PROFILE_BODIES[profile])
+    else:
+        prompt = CALIBRATION_PROFILES[profile]
     arms = [("control", body), ("mutant", injection.body)]
+    manifest_ok = True
     # Arm order varies per case so a subject cannot benefit from position.
     random.Random(case["seed"] ^ 0x5EED).shuffle(arms)
     per_arm = {"control": max(1, replicates),
@@ -500,9 +547,16 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
                      "raw_head": "",
                      "error": "prompt exceeds transport capacity"}]
         else:
-            runs = [invoke(adapter, prompt_text, timeout,
-                           workspace=workspace, readonly=readonly)
-                    for _ in range(per_arm[name])]
+            runs = []
+            for _ in range(per_arm[name]):
+                # Manifest verified before and after every attempt (§2.4);
+                # a failure marks the row rather than hiding in a verdict.
+                if tree and not _materialize.verify_manifest(workspace):
+                    manifest_ok = False
+                runs.append(invoke(adapter, prompt_text, timeout,
+                                   workspace=workspace, readonly=readonly))
+                if tree and not _materialize.verify_manifest(workspace):
+                    manifest_ok = False
             if transport_label:
                 for r in runs:
                     r["transport"] = transport_label
@@ -593,8 +647,9 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
         "control_seconds": control["seconds"], "mutant_seconds": mutant["seconds"],
         "control_transport": control["transport"], "mutant_transport": mutant["transport"],
         "sandbox": control.get("sandbox"),
-        "review_preamble": REVIEW_PREAMBLE_VERSION,
-        "workspace_isolation": 1,
+        "review_preamble": row.get("review_preamble", REVIEW_PREAMBLE_VERSION),
+        "base_manifest_verified": manifest_ok if tree else None,
+        "workspace_isolation": 2 if tree else 1,
         "estimated_input_tokens": int(mutant["prompt_bytes"] / 3.04),
         "error": None,
     }
@@ -694,6 +749,12 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
         "~/.local/share/striatum/exchange/019f22ef-0cb4-780f-9b82-b210bab24325")
     repos = {"caplab": os.path.expanduser("~/git/caplab"),
              "striatum-next": os.path.expanduser("~/git/striatum-next")}
+    base_registry, base_registry_sha = None, None
+    if tree_mode():
+        registry_file = os.path.abspath(BASE_REGISTRY_PATH)
+        base_registry = _materialize.load_registry(registry_file)
+        with open(registry_file, "rb") as f:
+            base_registry_sha = hashlib.sha256(f.read()).hexdigest()
 
     empty_streak = 0
     aborted = None
@@ -720,7 +781,8 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
                 row = measure_case(case, body, adapter, timeout,
                                    replicates=arm_replicates,
                                    mutant_replicates=arm_mutant_replicates,
-                                   workspace=os.path.join(out_dir, "workspace"))
+                                   workspace=os.path.join(out_dir, "workspace"),
+                                   base_record=(base_registry or {}).get(case["substrate_id"]))
             row["backend_measured"] = backend
             row["anchor"] = is_anchor
             with write_lock:
@@ -777,6 +839,8 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
         "partition": partition,
         "case_selection": case_selection,
         "environment": ENVIRONMENT_VERSION,
+        "base_registry_sha256": base_registry_sha,
+        "base_registry": (os.path.relpath(os.path.abspath(BASE_REGISTRY_PATH)) if tree_mode() else None),
         "replicates": replicates,
         "control_unanimous_share": (
             sum(1 for r in usable if r.get("control_unanimous")) / len(usable)

@@ -219,25 +219,180 @@ Respond with ONLY a JSON object:
 CHANGE SET:
 """
 
+#: Review preamble v3 (plan tree-v1 rev 2 §2.7, 2026-09-06). v2's second
+#: paragraph told the subject the filesystem is not the artifact, because
+#: under iso-v1 it was not: the base tree was withheld. Under tree-v1 the
+#: case's base production is materialized read-only at <workspace>/base and
+#: the paragraph says so, then states per case exactly what was pinned, so
+#: "not reachable from the artifact" is a legitimate finding only for a named
+#: object outside the pinned set. The statement is rendered per case by
+#: `pinned_set_statement`; the version is recorded on every row.
+REVIEW_PREAMBLE_V3_VERSION = 3
+REVIEW_PREAMBLE_V3_HEAD = """REVIEW ONLY. You are reviewing an artifact; you are not \
+applying, building, or executing it. Do not create, modify, delete, move, or \
+write any file under `base/` or `evidence/`, and do not run commands that \
+change state outside your workspace. The artifact is presented for judgment.
+
+"""
+REVIEW_PREAMBLE_V3_TREE = """The repository tree this artifact belongs to is at `{ws}/base`, \
+read-only. It is an unpacked snapshot: there is no `.git` directory and no \
+commit history; inspect files directly. Exchange objects the artifact names, \
+where they were recoverable, are under `{ws}/evidence/`. Resolve the \
+artifact's references, paths, and hashes against those trees and nothing \
+else. You may copy `base/` elsewhere in the workspace to apply a change set \
+or compute a diff. Anything else on the filesystem is your execution \
+environment, not the repository.
+
+"""
+REVIEW_PREAMBLE_V3_NO_TREE = """No repository tree is mounted for this case; `{ws}/base` does not \
+exist. Exchange objects the artifact names, where they were recoverable, are \
+under `{ws}/evidence/`. Anything else on the filesystem is your execution \
+environment, not the repository, and resolving the artifact's references \
+against it produces wrong verdicts in both directions.
+
+"""
+
+
+def pinned_set_statement(base_source: str, manifest: dict | None, workspace: str) -> str:
+    """The per-case paragraph naming what production pinned for the reviewer."""
+    ws = workspace.rstrip("/")
+    n = (manifest or {}).get("file_count", 0)
+    evidence = (manifest or {}).get("evidence") or []
+    if base_source == "whole-tree":
+        text = (f"PINNED FOR THIS CASE: the whole repository tree this artifact belongs to "
+                f"({n} files, read-only at `{ws}/base/`).")
+    elif base_source == "partial-product-tree":
+        text = (f"PINNED FOR THIS CASE: the product tree the change set declares as its base "
+                f"({n} files, read-only at `{ws}/base/`) — the files its ancestors produced. "
+                f"The rest of the repository was not pinned; a path outside `base/` that the "
+                f"change set does not deliver is unverifiable here, and its unverifiability is "
+                f"not a finding.")
+    elif base_source == "none-by-design":
+        text = ("PINNED FOR THIS CASE: nothing but the artifact. Production reviewed it alone; "
+                "no repository tree was pinned and `base/` does not exist. A reference to a "
+                "document, receipt, or path outside the artifact is unverifiable here, and its "
+                "unverifiability is not a finding.")
+    elif base_source == "lost":
+        text = ("PINNED FOR THIS CASE: the artifact alone. Production pinned a base for this change "
+                "set that is no longer recoverable, so `base/` does not exist. Claims that depend "
+                "on the base (anchoring, base hashes, result tree hash) cannot be checked here, and "
+                "their unverifiability is not a finding.")
+    else:
+        raise ValueError(f"unknown base source {base_source!r}")
+    if evidence:
+        names = ", ".join(f"{e['path'].split('/')[-1].rsplit('.', 1)[0]} ({e['kind'].replace('_', ' ')}, "
+                          f"`{ws}/evidence/{e['path']}`)" for e in evidence)
+        text += f" Exchange objects it names that were recoverable: {names}."
+    else:
+        text += " No exchange object it names was recoverable, or it names none."
+    return text + "\n\n"
+
+
+def render_preamble_v3(base_source: str, manifest: dict | None, workspace: str) -> str:
+    body = REVIEW_PREAMBLE_V3_TREE if base_source in ("whole-tree", "partial-product-tree") \
+        else REVIEW_PREAMBLE_V3_NO_TREE
+    return (REVIEW_PREAMBLE_V3_HEAD + body.format(ws=workspace.rstrip("/"))
+            + pinned_set_statement(base_source, manifest, workspace))
+
+
+#: Profile v1-tree (prose, repo-doc) under tree-v1: v1's contract with one
+#: added clause about the tree as before-state.
+REVIEW_PROMPT_V1_TREE = REVIEW_PROMPT_V1.replace(
+    """YOUR JOB. Decide whether this artifact meets the contract.""",
+    """THE TREE IS THE BEFORE-STATE. Resolve the artifact's references against
+`base/` as the repository stood when the artifact was produced. A base that
+already contains the artifact's proposed work is not evidence that the
+artifact's claims are sound; judge the claims on what the artifact itself
+establishes.
+
+YOUR JOB. Decide whether this artifact meets the contract.""")
+assert REVIEW_PROMPT_V1_TREE != REVIEW_PROMPT_V1
+
+#: Profile v3-changeset: v1-changeset's contract restored now that the base
+#: is (where production pinned one) present. Drops v2's "the base tree is NOT
+#: available to you"; anchoring is a checkable claim again: declared base
+#: hashes are checked against `base/`, and `result_tree_hash` against the
+#: virtually applied result, not the unmodified base.
+REVIEW_PROMPT_V3_CHANGESET = """You are reviewing one change set — a proposed \
+delivery of files against a base — under a review contract.
+
+WHAT YOU HAVE. The change set below, and — where the pinned-set statement \
+above says so — its base tree at `base/`. Where a base is mounted, the \
+declared base hashes are checked against `base/` (the canonical linked-tree \
+hash of that tree), and the declared `result_tree_hash` is checked against \
+the result of applying the change set's deletes and files to `base/`, never \
+against the unmodified base. Where no base is mounted, the declaration of \
+the base must still be present and well formed, and its unverifiability is \
+not a defect.
+
+THE CONTRACT. A change set clears review only when all of the following hold:
+
+- Its DELIVERY IS COMPLETE. The files it delivers must be the whole of what
+  it undertakes, not a fragment standing in for the rest. A delivery that
+  drops most of what it promised is unacceptable even when what remains is
+  well formed.
+- Its ANCHORING IS INTACT. A change set builds on a stated base. If no base
+  is declared, the delivery is a free-standing tree rather than a change
+  against something, and cannot be integrated. Where the base is mounted,
+  the declared base must be the tree at `base/`.
+- Its DECLARED METADATA MATCHES ITS CONTENT. Any hash, identity, or count
+  the change set declares about content you can see — its own files, its
+  base where mounted, its applied result where the base is mounted — must
+  equal that content. A declared value that does not match is a defect
+  regardless of how small the discrepancy looks.
+- Its CHECKS ARE REAL. Any acceptance check it names must be one that exists
+  and can run. A check named but unresolvable is never executed, so the
+  delivery claims a gate it does not have.
+- Its CLAIMS ARE EARNED. Documentation in the change set must not assert
+  behaviour, coverage, or verification that the delivered files do not
+  provide. Read what a file does, not what a neighbouring file says it does.
+- It is INTERNALLY CONSISTENT. No file may contradict another.
+
+YOUR JOB. Decide whether this change set meets the contract. Refuse
+(`needs_revision` or `reject`) when it does not, and name the file or field
+at fault. Clear it (`accept` or `accept_with_findings`) when it does — a
+sound delivery must be accepted, and inventing a blocker is as much a failure
+as missing one.
+
+Respond with ONLY a JSON object:
+{"verdict": "accept" | "accept_with_findings" | "needs_revision" | "reject",
+ "findings": [{"element_anchor": "<file or field>", "text": "<what is wrong>"}]}
+
+CHANGE SET:
+"""
+
+#: Tree profiles carry no static preamble: the v3 preamble is rendered per
+#: case (`render_preamble_v3`) and prepended by the runner.
+TREE_PROFILE_BODIES = {"v1-tree": REVIEW_PROMPT_V1_TREE,
+                       "v3-changeset": REVIEW_PROMPT_V3_CHANGESET}
+
 REVIEW_PROMPT = REVIEW_PROMPT_V1
 CALIBRATION_PROFILES = {"v0": REVIEW_PROMPT_V0,
                         "v1": REVIEW_PREAMBLE + REVIEW_PROMPT_V1,
                         "v1-changeset": REVIEW_PREAMBLE + REVIEW_PROMPT_V1_CHANGESET,
-                        "v2-changeset": REVIEW_PREAMBLE + REVIEW_PROMPT_V2_CHANGESET}
+                        "v2-changeset": REVIEW_PREAMBLE + REVIEW_PROMPT_V2_CHANGESET,
+                        # the runner renders the per-case v3 preamble
+                        # (render_preamble_v3) in front of TREE_PROFILE_BODIES;
+                        # these entries carry the static head so the table
+                        # stays complete and every contract forbids side effects
+                        "v1-tree": REVIEW_PREAMBLE_V3_HEAD + REVIEW_PROMPT_V1_TREE,
+                        "v3-changeset": REVIEW_PREAMBLE_V3_HEAD + REVIEW_PROMPT_V3_CHANGESET}
 
 
-def profile_for_artifact(body: str) -> str:
+def profile_for_artifact(body: str, tree: bool = False) -> str:
     """Which contract fits this artifact's shape.
 
     A contract written for prose asks a delivery questions it cannot answer,
     and the reviewer's refusal is then the profile's error rather than the
-    subject's.
+    subject's. Under tree-v1 (`tree=True`) the tree profiles are routed.
     """
     try:
         doc = json.loads(body)
     except (ValueError, TypeError):
-        return "v1"
+        return "v1-tree" if tree else "v1"
     if isinstance(doc, dict) and ({"files", "base", "base_composition"} & set(doc)):
+        if tree:
+            return "v3-changeset"
         # v2 since 2026-08-22: v1-changeset invited a full-store grep for the
         # absent base (OOM postmortem of 2026-08-21) and is retired from
         # routing; it stays in CALIBRATION_PROFILES only so historical rows

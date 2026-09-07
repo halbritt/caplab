@@ -23,6 +23,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 import sys
 import time
 
@@ -156,10 +157,18 @@ def main() -> int:
         released = release_failures(args.out_dir)
         print(f"[{args.backend}] attempt {attempt}: {have} usable, "
               f"{released} case(s) released for re-measurement", flush=True)
-        summary = run_pool(backend=args.backend, backends_root=BACKENDS,
-                           registry_path=REGISTRY, out_dir=args.out_dir,
-                           anchor_path=ANCHORS, timeout=args.timeout,
-                           cases_path=args.cases, **sweep)
+        # Workspaces (materialized bases, spill files) are byte-reproducible
+        # from the registry and the case; torn down after every attempt, and
+        # an orphan from an aborted session is reclaimed here first (§6.7).
+        workspace_root = os.path.join(args.out_dir, "workspace")
+        shutil.rmtree(workspace_root, ignore_errors=True)
+        try:
+            summary = run_pool(backend=args.backend, backends_root=BACKENDS,
+                               registry_path=REGISTRY, out_dir=args.out_dir,
+                               anchor_path=ANCHORS, timeout=args.timeout,
+                               cases_path=args.cases, **sweep)
+        finally:
+            shutil.rmtree(workspace_root, ignore_errors=True)
         tree_after = treeguard.snapshot()
         if treeguard.changed(tree_before, tree_after):
             print(f"[{args.backend}] INCIDENT: a protected checkout changed "

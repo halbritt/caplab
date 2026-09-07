@@ -321,6 +321,91 @@ def unearned_verification_claim(body: str, rng: random.Random) -> Injection:
     )
 
 
+#: Fields no environment makes checkable: a packet's element hash and the
+#: work-graph version hash name objects that live in striatum's graph store,
+#: which a lane never sees (tree-v1 §2.8).
+UNCHECKABLE_HASH_FIELDS = ("packet_element_hash", "work_graph_version_hash",
+                           "work_graph_hash")
+#: Operators whose planted defect can only be found with the base in hand.
+#: A `lost` pair with one of these is unscorable (tree-v1 §2.3 amendment).
+BASE_DEPENDENT_OPERATORS = ("base_dropped", "hash_mismatch")
+
+
+def hash_mismatch_v3_for(base_source: str):
+    """hash_mismatch v3: flips a declared hash the tree-v1 environment makes
+    checkable for this case, records the flipped field's checkability class.
+
+    - `base`: base hashes (`base.content_hash`, `resulting_base_hash`,
+      `observed_product.content_hash`) — checkable against `base/` when a
+      whole or partial tree is mounted;
+    - `result`: `result_tree_hash` — checkable against the applied result
+      when a whole tree is mounted (the partial product tree is not the tree
+      the change set was applied to, so the result cannot be re-derived);
+    - `in-set`: any other sha256 field the change set declares about content
+      it carries.
+    Fields in UNCHECKABLE_HASH_FIELDS are never flipped.
+    """
+    def classify(path_keys: tuple, key: str) -> str | None:
+        if key in UNCHECKABLE_HASH_FIELDS:
+            return None
+        if key == "result_tree_hash":
+            return "result" if base_source == "whole-tree" else None
+        if any(k in ("base", "base_composition") for k in path_keys) or key == "resulting_base_hash":
+            return "base" if base_source in ("whole-tree", "partial-product-tree") else None
+        return "in-set"
+
+    def operator(body: str, rng: random.Random) -> Injection:
+        from .instrument_defects import MAJOR, _load_json
+        doc = _load_json(body)
+        hits: list[tuple[dict, str, str, str]] = []
+
+        def walk(node, path_keys=()):
+            if isinstance(node, dict):
+                for k, v in node.items():
+                    if isinstance(v, str) and re.fullmatch(r"[0-9a-f]{64}", v):
+                        cls = classify(path_keys, k)
+                        if cls is not None:
+                            hits.append((node, k, v, cls))
+                    elif k != "files":
+                        walk(v, path_keys + (k,))
+            elif isinstance(node, list):
+                for v in node:
+                    walk(v, path_keys)
+
+        walk(doc)
+        if not hits:
+            raise NotApplicable(
+                f"no sha256 field checkable under base_source={base_source}")
+        node, key, value, cls = rng.choice(sorted(hits, key=lambda h: (h[1], h[2])))
+        flipped = ("0" if value[0] != "0" else "1") + value[1:]
+        node[key] = flipped
+        return Injection(
+            defect_class="hash_mismatch",
+            severity=MAJOR,
+            element_anchor=key,
+            description=f"altered the declared {key} ({cls}-checkable) so it no longer matches",
+            body=json.dumps(doc, indent=2),
+            checkable=True,
+            detail={"field": key, "was": value, "now": flipped,
+                    "checkability": cls, "operator_version": "v3",
+                    "base_source": base_source},
+        )
+
+    operator.__name__ = "hash_mismatch"
+    operator.__doc__ = hash_mismatch_v3_for.__doc__
+    return operator
+
+
+def operators_for(environment: str, base_source: str | None = None) -> dict:
+    """Operator table for an environment: BY_NAME, with hash_mismatch v3
+    substituted under tree-v1. Every other operator is unchanged in
+    behaviour and carries the environment's operator label on the row."""
+    table = dict(BY_NAME)
+    if environment == "tree-v1":
+        table["hash_mismatch"] = hash_mismatch_v3_for(base_source or "lost")
+    return table
+
+
 CAPLAB_OPERATORS = [broken_internal_crossref, requirement_inversion,
                     duplicated_section, truncated_tail, swapped_section_bodies,
                     unearned_verification_claim]
