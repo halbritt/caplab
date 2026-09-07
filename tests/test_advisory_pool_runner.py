@@ -764,7 +764,7 @@ class AbsoluteWorkspaceTest(unittest.TestCase):
 
 class EnvironmentStampTest(unittest.TestCase):
     def test_environment_version_is_declared(self):
-        self.assertEqual(pool_runner.ENVIRONMENT_VERSION, "iso-v1")
+        self.assertEqual(pool_runner.ENVIRONMENT_VERSION, "tree-v1")
 
 
 class StageBContainmentTest(unittest.TestCase):

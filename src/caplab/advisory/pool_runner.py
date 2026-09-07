@@ -69,7 +69,7 @@ MEASUREMENT_PROFILE = "v1"
 #: product tree, or nothing, per advisory/tree-v1-bases.json), recoverable
 #: exchange objects under <case>/evidence, review preamble v3 with a per-case
 #: pinned-set statement, profiles v1-tree / v3-changeset, hash_mismatch v3.
-ENVIRONMENT_VERSION = "iso-v1"
+ENVIRONMENT_VERSION = "tree-v1"
 TREE_ENVIRONMENT = "tree-v1"
 BASE_REGISTRY_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                   "..", "..", "..", "advisory", "tree-v1-bases.json")

@@ -1,0 +1,36 @@
+{
+ "selection": "targeted-reproduction",
+ "note": "tree-v1 dry run (plan rev 2 \u00a76.6): one case per base class per profile plus one hash_mismatch v3 on a whole tree; rows inspected by hand, never claim-grade",
+ "cells": [
+  {
+   "substrate_id": "qs-402057192be1b8a8",
+   "operator": "contradicted_clause",
+   "base_source": "whole-tree",
+   "profile": "v1"
+  },
+  {
+   "substrate_id": "qs-40181ea573013ed8",
+   "operator": "dropped_section",
+   "base_source": "none-by-design",
+   "profile": "v1"
+  },
+  {
+   "substrate_id": "qs-43f3d7e27dec1a64",
+   "operator": "dangling_reference",
+   "base_source": "whole-tree",
+   "profile": "v2-changeset"
+  },
+  {
+   "substrate_id": "qs-40583720e067908f",
+   "operator": "hollow_delivery",
+   "base_source": "partial-product-tree",
+   "profile": "v2-changeset"
+  },
+  {
+   "substrate_id": "qs-907a07dad63ec02e",
+   "operator": "hash_mismatch",
+   "base_source": "whole-tree",
+   "profile": "v2-changeset"
+  }
+ ]
+}
