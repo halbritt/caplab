@@ -1,0 +1,25 @@
+{
+ "counts": {
+  "lost": 70,
+  "none-by-design": 140,
+  "partial-product-tree": 65,
+  "whole-tree": 377
+ },
+ "evidence_objects": 425,
+ "oracle_by_source": {
+  "partial-product-tree/product-object": 65,
+  "whole-tree/git-archive": 7,
+  "whole-tree/materialized_base": 61
+ },
+ "oracle_checked": 133,
+ "oracle_failed": 1,
+ "substrates": 652,
+ "unresolved_references": [
+  "RQ-00000",
+  "RQ-1198",
+  "RQ-2031",
+  "RQ-8001",
+  "RQ-99999"
+ ],
+ "with_result_tree_hash_checked": 60
+}
