@@ -422,11 +422,14 @@ Striatum, Council, and UIPass via **Quartermaster**:
     read-only (`caplab.advisory.materialize`, `advisory/tree-v1-bases.json`);
   - the **regression sentinel**: the eleven no-analog operators, measured and
     reported under `sentinel_by_defect_class`, never in a claim;
-  - the **production canary** (`scripts/review_criterion_ledger_pass.py`):
-    reads the striatum ledger prospectively per reviewer — clearances later
-    cancelled with a defect record, refusals later revised, applications and
-    conflicts — and reports; it decides nothing until striatum records
-    Principal re-rulings of review verdicts.
+  - the **production canary** (`scripts/review_canary.py`): reads a complete
+    ledger export using the criterion ledger pass's reader. A fixed
+    `--after-run` cutoff selects an observation window. It reports missing
+    verdicts, run outcomes, wall time, and downstream event links per reviewer
+    label. It groups inspection candidates by event and retains every selected
+    run in JSON. It computes no correctness score and reads no review-specific
+    Principal re-rulings yet. See the
+    [production report procedure](../../docs/product/advisory/production-review-report.md).
   Claims on this construct carry the 2026-09-07 standing-order note; the
   board is placement-frozen; existing permitted tuples stand.
 - **Planning constructs** — `planning.finishability/1` (card

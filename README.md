@@ -6,6 +6,13 @@ behavior, abstention, evidence-responsive decision control, and other
 study-specific constructs. After later gates, it is intended to supply governed
 evidence for Striatum placement decisions and open-model training work.
 
+For a useful first read, [inspect production reviews](docs/product/advisory/production-review-report.md).
+The report shows what each reviewer did, which verdicts are missing, and which
+later events need inspection. It runs without model calls. Review ranking is
+retired and placement is frozen under the
+[confirmed disposition](docs/records/report-2026-09-07-review-instrument-disposition.md).
+The current evidence cannot establish which reviewer is more accurate.
+
 This is the canonical CAPLAB repository: `halbritt/caplab` on GitHub and
 `/home/halbritt/git/caplab` on the primary host. The active product, package,
 tests, decisions, and operational records live at the repository root.

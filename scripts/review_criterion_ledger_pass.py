@@ -33,6 +33,7 @@ from __future__ import annotations
 
 import argparse
 import collections
+import hashlib
 import json
 import os
 import re
@@ -60,19 +61,33 @@ def artifact_class(identity: str) -> str:
     return tail or "(unknown)"
 
 
-def main() -> int:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--ledger", required=True)
-    ap.add_argument("--out", default=os.path.join(ROOT, "advisory", "criterion"))
-    args = ap.parse_args()
-    os.makedirs(args.out, exist_ok=True)
-
+def read_reviews(ledger_path: str):
+    """Read an export without changing its records or admitting evidence."""
     by = collections.defaultdict(list)
-    with open(args.ledger, encoding="utf-8") as f:
+    digest = hashlib.sha256()
+    snapshot = {"path": os.path.abspath(ledger_path), "events": 0,
+                "last_seq": 0, "written_at": None}
+    needed = {"pass_run_opened", "pass_run_closed", "lane_binding",
+              "scheduling_decision", "artifact_admitted", "gate_result",
+              "integration_conflict", "application_record", "cancellation_record",
+              "head_movement"}
+    with open(ledger_path, "rb") as f:
         for line in f:
-            if line.strip():
-                e = json.loads(line)
+            digest.update(line)
+            if not line.strip():
+                continue
+            e = json.loads(line)
+            expected = snapshot["last_seq"] + 1 if snapshot["events"] else 0
+            if e["seq"] != expected:
+                raise ValueError(f"complete ledger required: expected sequence {expected}, got {e['seq']}")
+            snapshot["events"] += 1
+            snapshot["last_seq"] = e["seq"]
+            snapshot["written_at"] = e["written_at"]
+            if e["type"] in needed:
                 by[e["type"]].append(e)
+    if not snapshot["events"]:
+        raise ValueError("ledger export is empty")
+    snapshot["sha256"] = digest.hexdigest()
 
     # --- population: anchored review runs
     runs = {}
@@ -104,6 +119,8 @@ def main() -> int:
         r["backend"] = lane.get(seq) or sched.get(seq) or "(unbound)"
         c = closed.get(seq)
         r["outcome"] = c["payload"].get("outcome") if c else None
+        r["closed"] = c["written_at"] if c else None
+        r["closed_seq"] = c["seq"] if c else None
         r["wall_s"] = (T(c["written_at"]) - T(r["opened"])).total_seconds() if c else None
 
     # --- verdicts: review-ledger bodies and review gate results
@@ -208,6 +225,7 @@ def main() -> int:
         later_app = [x for x in applied.get(r["content_hash"], []) if x["at"] > r["opened"]]
         canc = [x for x in cancellations.get(r["request_ref"], []) if x["at"] > r["opened"] and x["defect_words"]]
         later_versions = sorted(v for v in versions.get(r["identity"], set()) if r.get("version_seq") is not None and v > r["version_seq"])
+        r["post_close_versions"] = [v for v in later_versions if r["closed_seq"] is not None and v > r["closed_seq"]]
         r["later"] = {"acceptance_fail": acc_fail, "acceptance_pass": acc_pass, "conflicts": real_conf,
                       "tree_moved": len(moved), "applied": later_app, "cancellations_with_defect_words": canc,
                       "later_versions": later_versions[:5]}
@@ -251,12 +269,22 @@ def main() -> int:
     report["principal_acceptance_rulings"] = {"total": sum(len(v) for v in acceptance.values()),
                                               "by_outcome": dict(collections.Counter(a["outcome"] for v in acceptance.values() for a in v)),
                                               "by_class": dict(collections.Counter(artifact_class(a["identity"] or "") for v in acceptance.values() for a in v))}
+    return snapshot, report, runs, strata
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--ledger", required=True)
+    ap.add_argument("--out", default=os.path.join(ROOT, "advisory", "criterion"))
+    args = ap.parse_args()
+    _, report, _, strata = read_reviews(args.ledger)
+    os.makedirs(args.out, exist_ok=True)
     with open(os.path.join(args.out, "review-criterion-summary.json"), "w", encoding="utf-8") as f:
         json.dump(report, f, indent=1, sort_keys=True)
     with open(os.path.join(args.out, "review-criterion-cases.jsonl"), "w", encoding="utf-8") as f:
         for s in ("gold-defect", "gold-clear", "silver-defect", "bronze-clear"):
             for r in strata.get(s, []):
-                f.write(json.dumps({"stratum": s, **{k: v for k, v in r.items() if k != "prompt_assets"}}, ensure_ascii=False, sort_keys=True) + "\n")
+                f.write(json.dumps({"stratum": s, **{k: v for k, v in r.items() if k not in {"prompt_assets", "closed", "closed_seq", "post_close_versions"}}}, ensure_ascii=False, sort_keys=True) + "\n")
     print(json.dumps({k: v for k, v in report.items() if k != "wall_clock_median_s"}, indent=1)[:6000])
     print("wall clock", json.dumps(report["wall_clock_median_s"]))
     return 0
