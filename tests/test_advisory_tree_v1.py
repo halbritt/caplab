@@ -185,7 +185,8 @@ class TreeModeMeasureCaseTest(unittest.TestCase):
             self.assertIn("no base registry record", row["error"])
 
     def test_iso_mode_is_untouched(self):
-        with tempfile.TemporaryDirectory() as ws, mock.patch.dict(os.environ, {"CAPLAB_NO_SANDBOX": "1"}):
+        with tempfile.TemporaryDirectory() as ws, mock.patch.dict(os.environ, {"CAPLAB_NO_SANDBOX": "1"}), \
+                mock.patch.object(pool_runner, "ENVIRONMENT_VERSION", "iso-v1"):
             row = pool_runner.measure_case(self._case("truncated_tail"), self.PROSE, ECHO_ADAPTER, 30, workspace=ws)
             self.assertTrue(row["usable"], row.get("error"))
             self.assertEqual(row["calibration_profile"], "v1")

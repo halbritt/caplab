@@ -5,6 +5,22 @@ import tempfile
 import unittest
 
 from caplab.advisory import pool_runner
+from unittest import mock as _mock
+
+#: The runner's environment is tree-v1 since 2026-09-06; these tests exercise
+#: the environment-independent mechanics (arms, replication, spill, profiles)
+#: and run them under iso-v1, where no base registry record is required.
+#: tree-v1 behaviour is tested in test_advisory_tree_v1.py.
+_DECLARED_ENVIRONMENT = pool_runner.ENVIRONMENT_VERSION
+_ENV_PATCH = _mock.patch.object(pool_runner, "ENVIRONMENT_VERSION", "iso-v1")
+
+
+def setUpModule():
+    _ENV_PATCH.start()
+
+
+def tearDownModule():
+    _ENV_PATCH.stop()
 from caplab.advisory.pool_runner import (MAX_ARG_BYTES,
                                          SYNTHETIC_CONTRACT_INSTRUMENT,
                                          invoke, measure_case)
@@ -764,7 +780,7 @@ class AbsoluteWorkspaceTest(unittest.TestCase):
 
 class EnvironmentStampTest(unittest.TestCase):
     def test_environment_version_is_declared(self):
-        self.assertEqual(pool_runner.ENVIRONMENT_VERSION, "tree-v1")
+        self.assertEqual(_DECLARED_ENVIRONMENT, "tree-v1")
 
 
 class StageBContainmentTest(unittest.TestCase):
