@@ -84,7 +84,9 @@ def outcome_selected(run_dir: str) -> bool:
             summary = json.load(f)
     except (OSError, json.JSONDecodeError):
         return False
-    return summary.get("case_selection") == "targeted-reproduction"
+    # An admission-gate run (instruction 2026-09-07 §2.d) is a per-binding
+    # pass/fail measurement on fixed cells; it is not a claim either.
+    return summary.get("case_selection") in ("targeted-reproduction", "admission-gate")
 
 
 def is_matched_pair_run(run_dir: str) -> bool:

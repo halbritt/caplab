@@ -676,11 +676,13 @@ def select_cases(substrates: list[dict], *, sweep_seed: int,
     if not cells:
         raise ValueError("targeted case document names no cells")
     selection = cases_doc.get("selection", "targeted-reproduction")
-    if selection not in ("targeted-reproduction", "profile-remeasurement"):
+    if selection not in ("targeted-reproduction", "profile-remeasurement", "admission-gate"):
         # profile-remeasurement selects cells by an exogenous property fixed
         # before any result existed (their contract version), so it stays
         # claim-eligible; targeted-reproduction selects on outcome and is
-        # not. Anything else is a mistake, not a mode.
+        # not; admission-gate (instruction 2026-09-07) is a per-binding
+        # pass/fail run and never a claim. Anything else is a mistake, not
+        # a mode.
         raise ValueError(f"unknown cell selection {selection!r}")
     overlap = {c["substrate_id"] for c in cells} & withheld
     if overlap:

@@ -60,3 +60,20 @@ different rate and that production never produces. On the defects that
 occur, the instrument does not separate these bindings on catch at all; it
 separates them only on false alarm, and false alarm is the axis iso-v1
 already invalidated for verification-oriented bindings.
+
+## Natural case added to the sentinel suite (Principal amendment 2.c, 2026-09-07)
+
+`cancellation-320479-empty-patch`, in `advisory/gate/review-gate-20260819.json`:
+the change set `e2d661c374059c64…` (identity
+`striatum-next/passes/semantic-and-durable-closure-b/change-set`, version
+316939, schema 1) declares `files: {}`, `deletes: []` against the 32-file
+product `8dd2928b4228ca86…` (anchored at commit `26b0cd5f`) and asserts
+`result_tree_hash f7cf65f636a267b5…`, a 1,135-file tree. Applying the empty
+change set to the base yields the base. Review run 317113
+(`agy-gemini-3-7-flash-high`, 2026-08-29) refused it with finding RV-001
+anchored at `result_tree_hash`; the Principal's cancellation 320479 names
+the defect. It enters the suite **verbatim, unperturbed**, with the base it
+declares materialized under the Stage B mount (production pinned only the
+subject for run 317113, so the gate gives the reviewer strictly more). The
+expected outcome is a refusal with a finding anchored at `result_tree_hash`.
+`hollow_delivery` is **not** promoted to qualification on this one event.

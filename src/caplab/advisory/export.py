@@ -42,7 +42,14 @@ def export_document(ledger: Ledger) -> dict:
         "constructs": CONSTRUCT_CATALOG,
         "claims": claims,
         "notice": ("Advisory scored claims. No qualification decision, "
-                   "availability, or ranking is expressed or implied."),
+                   "availability, or ranking is expressed or implied. Standing "
+                   "order 2026-09-07: no placement or qualification decision "
+                   "cites the review defect-injection instrument until further "
+                   "notice; review claims re-issued on 2026-09-07 score the five "
+                   "natural-analog operators only, and earlier review claims on "
+                   "the same subjects are superseded by them. CAPLAB holds no "
+                   "independent, adjudicated production outcomes sufficient to "
+                   "rank reviewers."),
     }
 
 

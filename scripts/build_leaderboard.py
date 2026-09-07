@@ -1156,7 +1156,10 @@ audited real defects (<code>unearned_verification_claim</code>, <code>contradict
 <code>refuted_conclusion</code>, <code>decorative_check</code>, <code>broken_internal_crossref</code>); the
 other eleven are a regression sentinel and no longer enter a claim. The ledger pass of 2026-09-07 found no
 Principal re-ruling of any production change-set review, so the study's floor (five gold positives) is not
-met; the disposition is in <code>docs/records/report-2026-09-07-review-instrument-disposition.md</code>.</div>
+met. <strong>CAPLAB holds no independent, adjudicated production outcomes sufficient to rank reviewers.</strong>
+The disposition, confirmed and amended by the Principal on 2026-09-07, is in
+<code>docs/records/report-2026-09-07-review-instrument-disposition.md</code>; the per-binding admission gate
+that replaces the ranking is <code>advisory/gate/review-gate-20260819.json</code>.</div>
 <div class="rule" style="border-left-color: var(--fa)"><strong>Provisional (Principal, 2026-09-06; plan tree-v1 rev 2 §7).</strong>
 Every row on this cohort was measured under <code>iso-v1</code>, which withheld the artifact's base tree: its
 <em>reference-resolution</em> performance is invalid, and its false-alarm rates penalise verification-oriented

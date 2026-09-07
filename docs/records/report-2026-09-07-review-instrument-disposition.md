@@ -5,9 +5,25 @@
   0 gold positives against a floor of 5, so the study stops before any
   replay and the planning disposition
   (`report-2026-09-04-planner-ranking-disposition.md`) is applied to review.
-  Nothing in this record spends a model call. The Principal has not yet read
-  the counts; this disposition is what the pre-registered rule requires and
-  stands until the Principal says otherwise.
+  Nothing in this record spends a model call. **Confirmed by the Principal
+  2026-09-07, amended per
+  `instruction-2026-09-07-review-instrument-disposition.md`** (Council
+  #71–#76); the amendments are folded in below and marked.
+
+## Counts at the incident level (amendment 2.a)
+
+| stratum | independent records | families | versions | runs |
+|---|---|---|---|---|
+| gold-defect | **0** | 0 | 0 | 0 |
+| gold-clear | **0** | 0 | 0 | 0 |
+| silver-defect | **3** cancellation records; **1** (320479) names a defect of the reviewed artifact, 2 name a lineage or lowering-process defect | 3 | 48 | 109 |
+| bronze-clear | absence of an event | **15** | 137 | 147 |
+
+Un-parking floor for the criterion replay: ≥ 5 gold-defect and ≥ 5
+gold-clear at this unit. **CAPLAB holds no independent, adjudicated
+production outcomes sufficient to rank reviewers** (amendment 2.b); the 109
+silver and 147 bronze rows are a defect-harvest source, and nothing is
+scored against them.
 
 ## What the ledger can and cannot say
 
@@ -39,30 +55,46 @@ silver set drawn from three cancellations cannot stand in for one.
    carried came from operators that plant defects production does not
    produce. Its false-alarm dimension stays descriptive under the iso-v1
    caveat already recorded.
-2. **Admission gate, per reviewer, pass/fail.** Mechanical where possible:
-   - contract conformance: answers in the review-ledger shape under the
-     production pass contract (`review-pass-contract-649545a9.yaml`),
-     honours verdict discipline (a refusal names the falsified clause,
-     violated decision, or demonstrated harm);
-   - the five analog operators as a **regression sentinel** with a floor
-     (proposed: ≥ 12/13 caught, ≤ 2/9 sound controls refused, on the
-     20260819 cells; the two one-shot lanes measured on the same cells);
-   - the Stage B mount is the only environment (§0.4).
+2. **Admission gate, per reviewer, pass/fail** (as amended, 2.d; specified
+   in `advisory/gate/review-gate-20260819.json`, run by
+   `scripts/review_gate.py`):
+   - cells: the five analog operators on the seed-20260819 draw (16 cells;
+     13 were scorable per binding under iso-v1), the natural case from
+     cancellation 320479 verbatim (amendment 2.c), and contract conformance
+     under `review-pass-contract-649545a9.yaml`;
+   - the false-alarm floor is measured under the Stage B mount only; iso-v1
+     false-alarm rows count neither for nor against any binding at the gate;
+   - call count per binding: 16 cells × (3 control replicates + 1 mutant)
+     + 3 replicates of the natural case = **67 calls** (a cell an operator
+     cannot bite on costs nothing and is reported as not applicable);
+   - floors are proposed, not adopted: at most 2 scorable analog cells
+     missed; at most 2 sound controls refused; the natural case refused
+     with a finding anchored at `result_tree_hash` in at least 2 of 3;
+     3 of 3 outputs conform;
+   - **no fleet re-measurement now.** The gate runs for a new binding, or
+     for a binding the Principal names; that per-binding spend is
+     authorized on request and nothing else on the injection instrument
+     spends;
+   - prose reviews: no CAPLAB instrument; production pins no base for them
+     (`finding-2026-09-06-prose-reviews-world-blind.md`, with striatum).
    A binding that fails the gate is not a reviewer; among those that pass,
    nothing on this instrument prefers one over another.
 3. **Operational routing** among admitted reviewers in Quartermaster, on
    cost, latency and availability, never on an injection score.
-4. **Production canary with a per-reviewer floor.** The ledger already
+4. **Production canary, per reviewer, report-only** (amendment 2.e). The ledger already
    records, per review run, the verdict, the later application or
    conflict, and the Principal's acceptance rulings on downstream
    artifacts. A per-binding first-pass canary reads those prospectively:
    clearances later cancelled with a defect record, refusals later
    revised into acceptance, and (once striatum records them) verdicts the
-   Principal overrules. This is the instrument that measures the
-   construct; it needs the gold event to exist.
+   Principal overrules. It reads the ledger prospectively and reports; it
+   makes no placement decision until the gold event (see "Owed to
+   striatum") exists. This is the instrument that measures the construct.
 5. **Criterion replay stays parked**, not abandoned. It un-parks when the
-   ledger holds ≥ 5 gold positives in the change-set class, which requires
-   the striatum change below.
+   ledger holds ≥ 5 gold-defect and ≥ 5 gold-clear cases at the incident
+   level in the change-set class, which requires the striatum change below
+   (drafted for signature in
+   `request-2026-09-07-striatum-review-outcome-events.md`).
 
 ## Owed to striatum (finding)
 
@@ -72,6 +104,20 @@ names the **change-set version** and whose detail names the review run
 overruled. Without it, no review instrument can ever be validated against
 the Principal's judgment, and the gold strata stay empty by construction.
 Filed beside `finding-2026-09-06-prose-reviews-world-blind.md`.
+
+## Rulings carried (instruction §1)
+
+- Standing orders §0.1–§0.4 of the study instruction stay in force with no
+  end date: no injection sweep on any seed or cohort; placement-frozen
+  board; the eleven no-analog operators sentinel only; the Stage B mount
+  the only environment.
+- Existing permitted review tuples stay (#40, #41). No new qualification or
+  negative-placement decision cites the injection instrument or the iso-v1
+  false-alarm axis. Sol's `review: frontier` placement stays provisional.
+- `plan-tree-v1-review-environment.md` (rev 2) is `parked`; the environment
+  it built (materializer, base registry, change-set oracle, contract v3,
+  Stage B mount, workspace teardown) is the gate's environment. Nothing is
+  deleted; the scheduled sweeps do not run.
 
 ## Standing orders applied today
 

@@ -37,7 +37,26 @@ review gate result without a ledger body.
 against a moved head, a builder/timing event, and are not counted as a defect
 of the reviewed artifact; they are reported as their own row.
 
-## Counts
+## Counts at the incident level (Principal amendment 2.a, 2026-09-07)
+
+The unit is an independent defect record or artifact family, not a run or
+a version. A family is a pass (`striatum-next/passes/<pass>` or
+`rfcs/<rfc>`); a version is one change-set content hash; a run is one
+review.
+
+| stratum | independent records | families | identities | versions | runs |
+|---|---|---|---|---|---|
+| gold-defect | **0** | 0 | 0 | 0 | 0 |
+| gold-clear | **0** | 0 | 0 | 0 | 0 |
+| silver-defect | **3** cancellation records, of which **1** (320479) names a defect of the reviewed artifact; 76691 and 112825 name a lineage or lowering-process defect | 3 | 12 | 48 | 109 |
+| bronze-clear | — (absence of an event) | **15** | 89 | 137 | 147 |
+
+Floor for un-parking the criterion replay (amendment 2.a): at least 5
+gold-defect and at least 5 gold-clear cases at this unit. Found: 0 and 0.
+The 109 silver and 147 bronze rows are a defect-harvest source, not a
+labelled corpus; nothing is scored against them (amendment 2.b).
+
+## Counts at the run level
 
 | stratum | runs | distinct versions | by binding | by era |
 |---|---|---|---|---|

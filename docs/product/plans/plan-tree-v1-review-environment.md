@@ -2,7 +2,7 @@
 plan_id: tree-v1-review-environment
 revision: 2
 artifact_type: plan
-status: approved  # Principal, council topic caplab #50, 2026-09-06
+status: parked  # Principal, instruction-2026-09-07-review-instrument-disposition.md §3.1; approved 2026-09-06 (council #50)
 supersedes: plan-tree-v1-review-environment revision 1 (CAPLAB execution delegate, 2026-09-06)
 decision_owner: repository-owner
 author: council scribe (fable), from synthesis-2026-09-06-tree-v1.md
@@ -10,6 +10,18 @@ intended_path: docs/product/plans/plan-tree-v1-review-environment.md
 ---
 
 # Plan: a review environment with the pinned base present (`tree-v1`), revision 2
+
+> **Parked (Principal, 2026-09-07).** The review-instrument validation study
+> stopped at its pre-registered floor (0 gold positives against 5;
+> `docs/records/criterion-2026-09-07-review-ledger-pass.md`), and the
+> disposition `docs/records/report-2026-09-07-review-instrument-disposition.md`
+> retires the injection ranking. Steps 7–9 of this plan (the Sol and Gemini
+> 3.8 sweeps, the remaining six, the supersession record and the cohort
+> switch) do not run. Everything built for steps 1–6 — the Stage B mount,
+> the materializer and base registry, the change-set oracle, contract v3,
+> `hash_mismatch` v3, the per-case workspace and its teardown — is kept as the
+> environment of the per-binding admission gate
+> (`advisory/gate/review-gate-20260819.json`). Nothing here is deleted.
 
 This revision replaces the delegate's plan of 2026-09-06 in full. Nothing in
 revision 1 survives by reference; where this document is silent, revision 1

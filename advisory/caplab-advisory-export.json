@@ -3475,6 +3475,323 @@
       }
     },
     {
+      "as_of": "2026-09-05T01:00:00+00:00",
+      "claim_id": "qc-bc459f4ed38d76f6",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "6e50fa4ad6c0aebd4da1caacd6059ee4f984de356af5fd71a483c72196aac4c2",
+          "rows_used": 57,
+          "run": "iso-agy-gemini-3-7-flash-high-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.3991801621874118,
+            0.6501283201887471
+          ],
+          "denominator": 57,
+          "value": 0.5263157894736842
+        },
+        "catch_rate": {
+          "ci95": [
+            0.46697292420853914,
+            0.7138248445040439
+          ],
+          "value": 0.5964912280701754
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.5464912280701754
+        },
+        "false_alarm_rate": {
+          "audit_status": "contains-unaudited-refusals",
+          "ci95": [
+            0.013820667386148344,
+            0.16503877369140962
+          ],
+          "denominator": 40,
+          "excluded_defective_controls": 17,
+          "unaudited_refusals": 1,
+          "value": 0.05
+        },
+        "findings_per_mutant": {
+          "value": 0.6491228070175439
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 57
+        },
+        "n_pairs": {
+          "value": 57
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 12 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 100% (kappa 1.00 against a 85% chance baseline), mutant 100% (kappa 1.00). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "agy-gemini-3-7-flash-high"
+      }
+    },
+    {
+      "as_of": "2026-09-05T04:30:00+00:00",
+      "claim_id": "qc-2bbf15976e97f36f",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "6e50fa4ad6c0aebd4da1caacd6059ee4f984de356af5fd71a483c72196aac4c2",
+          "rows_used": 57,
+          "run": "iso-agy-gemini-3-7-flash-high-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.3991801621874118,
+            0.6501283201887471
+          ],
+          "denominator": 57,
+          "value": 0.5263157894736842
+        },
+        "catch_rate": {
+          "ci95": [
+            0.46697292420853914,
+            0.7138248445040439
+          ],
+          "value": 0.5964912280701754
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.5452091767881241
+        },
+        "false_alarm_rate": {
+          "audit_status": "contains-unaudited-refusals",
+          "ci95": [
+            0.014177955415274113,
+            0.16885640047613612
+          ],
+          "denominator": 39,
+          "excluded_defective_controls": 18,
+          "unaudited_refusals": 1,
+          "value": 0.05128205128205128
+        },
+        "findings_per_mutant": {
+          "value": 0.6491228070175439
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 57
+        },
+        "n_pairs": {
+          "value": 57
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 12 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 100% (kappa 1.00 against a 85% chance baseline), mutant 100% (kappa 1.00). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "agy-gemini-3-7-flash-high"
+      }
+    },
+    {
+      "as_of": "2026-09-05T05:30:00+00:00",
+      "claim_id": "qc-07f2e296cf45d1d4",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "6e50fa4ad6c0aebd4da1caacd6059ee4f984de356af5fd71a483c72196aac4c2",
+          "rows_used": 57,
+          "run": "iso-agy-gemini-3-7-flash-high-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.3991801621874118,
+            0.6501283201887471
+          ],
+          "denominator": 57,
+          "value": 0.5263157894736842
+        },
+        "catch_rate": {
+          "ci95": [
+            0.46697292420853914,
+            0.7138248445040439
+          ],
+          "value": 0.5964912280701754
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.5701754385964912
+        },
+        "false_alarm_rate": {
+          "audit_status": "established",
+          "ci95": [
+            0.004660587685768783,
+            0.1349487611595213
+          ],
+          "denominator": 38,
+          "excluded_defective_controls": 19,
+          "unaudited_refusals": 0,
+          "value": 0.02631578947368421
+        },
+        "findings_per_mutant": {
+          "value": 0.6491228070175439
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 57
+        },
+        "n_pairs": {
+          "value": 57
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 12 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 100% (kappa 1.00 against a 85% chance baseline), mutant 100% (kappa 1.00). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "agy-gemini-3-7-flash-high"
+      }
+    },
+    {
+      "as_of": "2026-09-07T02:24:27.819731+00:00",
+      "claim_id": "qc-30bb16911ec020d5",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "6e50fa4ad6c0aebd4da1caacd6059ee4f984de356af5fd71a483c72196aac4c2",
+          "rows_used": 13,
+          "run": "iso-agy-gemini-3-7-flash-high-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.6668604907890041,
+            0.9862895787574435
+          ],
+          "denominator": 13,
+          "value": 0.9230769230769231
+        },
+        "catch_rate": {
+          "ci95": [
+            0.7719046276458016,
+            0.9999999999999999
+          ],
+          "value": 1.0
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 1.0
+        },
+        "false_alarm_rate": {
+          "audit_status": "established",
+          "ci95": [
+            2.7755575615628914e-17,
+            0.29914504841954404
+          ],
+          "denominator": 9,
+          "excluded_defective_controls": 4,
+          "unaudited_refusals": 0,
+          "value": 0.0
+        },
+        "findings_per_mutant": {
+          "value": 1.1538461538461537
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "standing order 2026-09-07: no placement or qualification decision cites this instrument's dimensions until the review-instrument validation study rules; catch and false alarm are scored on the five natural-analog operators only (unearned_verification_claim, contradicted_clause, refuted_conclusion, decorative_check, broken_internal_crossref); the other eleven are a regression sentinel reported beside them.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 3 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 100% (kappa 1.00 against a 56% chance baseline), mutant 100% (kappa 1.00). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "agy-gemini-3-7-flash-high"
+      }
+    },
+    {
       "as_of": "2026-08-23T00:00:00+00:00",
       "claim_id": "qc-b34c029adba7c287",
       "construct": "review_pass.delivery/1",
@@ -4101,6 +4418,323 @@
       }
     },
     {
+      "as_of": "2026-09-04T18:30:00+00:00",
+      "claim_id": "qc-1b0bcff21f340832",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "55366849e475be012349ddb41a9d77434235e3b91759e5d78b97a7e5b8abf51c",
+          "rows_used": 57,
+          "run": "iso-agy-gemini-3-8-flash-high-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.44980141395599427,
+            0.6981240331724827
+          ],
+          "denominator": 57,
+          "value": 0.5789473684210527
+        },
+        "catch_rate": {
+          "ci95": [
+            0.6479398895432649,
+            0.8615810950103779
+          ],
+          "value": 0.7719298245614035
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.6743688489516474
+        },
+        "false_alarm_rate": {
+          "audit_status": "established",
+          "ci95": [
+            0.03859708489808934,
+            0.22547681305523387
+          ],
+          "denominator": 41,
+          "excluded_defective_controls": 16,
+          "unaudited_refusals": 0,
+          "value": 0.0975609756097561
+        },
+        "findings_per_mutant": {
+          "value": 1.0175438596491229
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 57
+        },
+        "n_pairs": {
+          "value": 57
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 12 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 100% (kappa 1.00 against a 83% chance baseline), mutant 100% (kappa 1.00). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "agy-gemini-3-8-flash-high"
+      }
+    },
+    {
+      "as_of": "2026-09-05T00:54:36.204692+00:00",
+      "claim_id": "qc-2a7d56921b0121c1",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "55366849e475be012349ddb41a9d77434235e3b91759e5d78b97a7e5b8abf51c",
+          "rows_used": 57,
+          "run": "iso-agy-gemini-3-8-flash-high-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.44980141395599427,
+            0.6981240331724827
+          ],
+          "denominator": 57,
+          "value": 0.5789473684210527
+        },
+        "catch_rate": {
+          "ci95": [
+            0.6479398895432649,
+            0.8615810950103779
+          ],
+          "value": 0.7719298245614035
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.6655468458379992
+        },
+        "false_alarm_rate": {
+          "audit_status": "contains-unaudited-refusals",
+          "ci95": [
+            0.04630478218108157,
+            0.22594269343738355
+          ],
+          "denominator": 47,
+          "excluded_defective_controls": 10,
+          "unaudited_refusals": 5,
+          "value": 0.10638297872340426
+        },
+        "findings_per_mutant": {
+          "value": 1.0175438596491229
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 57
+        },
+        "n_pairs": {
+          "value": 57
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 12 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 100% (kappa 1.00 against a 83% chance baseline), mutant 100% (kappa 1.00). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "agy-gemini-3-8-flash-high"
+      }
+    },
+    {
+      "as_of": "2026-09-05T02:00:00+00:00",
+      "claim_id": "qc-0d8a09a29e911d86",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "55366849e475be012349ddb41a9d77434235e3b91759e5d78b97a7e5b8abf51c",
+          "rows_used": 57,
+          "run": "iso-agy-gemini-3-8-flash-high-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.44980141395599427,
+            0.6981240331724827
+          ],
+          "denominator": 57,
+          "value": 0.5789473684210527
+        },
+        "catch_rate": {
+          "ci95": [
+            0.6479398895432649,
+            0.8615810950103779
+          ],
+          "value": 0.7719298245614035
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.6719298245614035
+        },
+        "false_alarm_rate": {
+          "audit_status": "established",
+          "ci95": [
+            0.03957952868260636,
+            0.230517752275223
+          ],
+          "denominator": 40,
+          "excluded_defective_controls": 17,
+          "unaudited_refusals": 0,
+          "value": 0.1
+        },
+        "findings_per_mutant": {
+          "value": 1.0175438596491229
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 57
+        },
+        "n_pairs": {
+          "value": 57
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 12 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 100% (kappa 1.00 against a 83% chance baseline), mutant 100% (kappa 1.00). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "agy-gemini-3-8-flash-high"
+      }
+    },
+    {
+      "as_of": "2026-09-07T02:24:27.819731+00:00",
+      "claim_id": "qc-9da6d151ab360af5",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "55366849e475be012349ddb41a9d77434235e3b91759e5d78b97a7e5b8abf51c",
+          "rows_used": 13,
+          "run": "iso-agy-gemini-3-8-flash-high-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.6668604907890041,
+            0.9862895787574435
+          ],
+          "denominator": 13,
+          "value": 0.9230769230769231
+        },
+        "catch_rate": {
+          "ci95": [
+            0.7719046276458016,
+            0.9999999999999999
+          ],
+          "value": 1.0
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.7777777777777778
+        },
+        "false_alarm_rate": {
+          "audit_status": "established",
+          "ci95": [
+            0.06322510711784673,
+            0.5474110308930111
+          ],
+          "denominator": 9,
+          "excluded_defective_controls": 4,
+          "unaudited_refusals": 0,
+          "value": 0.2222222222222222
+        },
+        "findings_per_mutant": {
+          "value": 1.1538461538461537
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "standing order 2026-09-07: no placement or qualification decision cites this instrument's dimensions until the review-instrument validation study rules; catch and false alarm are scored on the five natural-analog operators only (unearned_verification_claim, contradicted_clause, refuted_conclusion, decorative_check, broken_internal_crossref); the other eleven are a regression sentinel reported beside them.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 3 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 100% (kappa undefined, arm at ceiling against a 100% chance baseline), mutant 100% (kappa undefined, arm at ceiling). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "agy-gemini-3-8-flash-high"
+      }
+    },
+    {
       "as_of": "2026-08-09T00:00:00+00:00",
       "claim_id": "qc-c4682616a8ce1e19",
       "construct": "review.defect_discrimination/1",
@@ -4160,6 +4794,489 @@
         "match": "declared-name",
         "matched_current_declaration": true,
         "source_id": "agy-gpt-oss-120b-medium"
+      }
+    },
+    {
+      "as_of": "2026-09-02T21:15:00+00:00",
+      "claim_id": "qc-a094242a5bdb5aca",
+      "construct": "planning.finishability/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "check_sets_offered": 42,
+          "environment": "iso-v1",
+          "kind": "caplab-planning-sweep",
+          "oracle_sha256": "a785e717a4ef20fb2575f67302a002da0ac6dfc7a4933c024f1447777b34b83e",
+          "oracle_version": "striatum-plan-oracle 1",
+          "passes_drawn": 24,
+          "prompt_environment": "design-only",
+          "prompt_profile": "plan-v2",
+          "registry_version": 37,
+          "run_root": "plan-cc-glm-5-3-flash-high-20260827",
+          "seed": 20260827,
+          "tasks_drawn": 24
+        }
+      ],
+      "metrics": {
+        "finishability_pass_rate": {
+          "ci95": [
+            0.5952954674681133,
+            0.9075517464714814
+          ],
+          "denominator": 24,
+          "value": 0.7916666666666666
+        },
+        "graph_yield_rate": {
+          "ci95": [
+            0.8620237953250198,
+            1.0
+          ],
+          "denominator": 24,
+          "value": 1.0
+        },
+        "legality_pass_rate": {
+          "ci95": [
+            0.5952954674681133,
+            0.9075517464714814
+          ],
+          "denominator": 24,
+          "value": 0.7916666666666666
+        },
+        "median_depth_width_product": {
+          "denominator": 23,
+          "value": 8.0
+        },
+        "median_packets": {
+          "denominator": 23,
+          "value": 8.0
+        },
+        "n_pairs": {
+          "value": 24
+        },
+        "resolvability_pass_rate": {
+          "ci95": [
+            0.7975819352134406,
+            0.9926065438344942
+          ],
+          "denominator": 24,
+          "value": 0.9583333333333334
+        }
+      },
+      "notes": [
+        "caplab-advisory custody: CAPLAB drew the tasks, rendered the plan-v2 contract, invoked the subject through its declared adapter under iso-v1, and scored the produced work graph with striatum-plan-oracle. No model judgment is in the labelling loop.",
+        "SYNTHETIC COMPOSITE: the corpus is the implementation-planning pass (design -> prose plan, D2) while the oracle mechanizes the work-graph-legality gate of packetization (plan -> work graph, D1). No production lane performed this design-to-work-graph task, so no per-task production reference exists and these numbers are not comparable to production plan-review rates.",
+        "design-only environment: the base tree is withheld, so the oracle runs without -tree and its write-scope and atomicity verdicts are 'tree-not-provided' — they measure nothing about the planner and are excluded from every rate.",
+        "The draw is seeded and pass-disjoint (one task per step pass, balanced across produce/revise); selection never reads production outcome.",
+        "Resolvability is scored against the 42 registry check sets verified resolvable by the oracle at sweep time and listed in the prompt; a subject naming anything else is naming a gate the plan does not have.",
+        "Report structure beside the rates: median_packets and median_depth_width_product are on the claim because a single-trivial-packet plan clears every mechanical check.",
+        "NOT COMPARABLE to planning.independent_acceptance/1's finishability_pass_rate despite the shared word. That metric is striatum's implementation-plan-finishability gate, applied by independent-family model review to the prose plan; this one is mechanical work-graph legality with no model in the labelling loop. A subject may sit high here and low there without either number being wrong.",
+        "INSTRUMENT PINNED to the 2026-08-27 P2b board: oracle rebuilt from striatum-next 06cd940 (sha256 a785e717a4ef20fb2575f67302a002da0ac6dfc7a4933c024f1447777b34b83e; the board's rows carry 4ff9ed37c511..., which differs only by Go build stamps — replay of all 148 stored P2b graphs reproduces every recorded verdict) and checks registry v37 (42 resolvable sets). The live registry had moved to v38, which flips 19 of those 148 graphs from resolvable to not; see docs/records/report-2026-09-02-planning-additions.md.",
+        "NOT A RANKING. Per the P2b record, planning.finishability/1 in the design-only environment is close to an inverted proxy for decomposition (the only failing check is scope_overlap and it scales with packet pairs); this cell is information, not placement evidence."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "cc-glm-5-3-flash-high"
+      }
+    },
+    {
+      "as_of": "2026-09-04T02:10:48.223247+00:00",
+      "claim_id": "qc-ca04644b2e37dd52",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "669cc56817816ba57a6f36e30f546413d63f8cb6f2b272d4433f18ff6c657c80",
+          "rows_used": 57,
+          "run": "iso-cc-glm-5-3-flash-high-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.3991801621874118,
+            0.6501283201887471
+          ],
+          "denominator": 57,
+          "value": 0.5263157894736842
+        },
+        "catch_rate": {
+          "ci95": [
+            0.3825989849761274,
+            0.6338371758159258
+          ],
+          "value": 0.5087719298245614
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.25345278088839124
+        },
+        "false_alarm_rate": {
+          "audit_status": "contains-unaudited-refusals",
+          "ci95": [
+            0.152531540350547,
+            0.3950817553041745
+          ],
+          "denominator": 47,
+          "excluded_defective_controls": 10,
+          "unaudited_refusals": 12,
+          "value": 0.2553191489361702
+        },
+        "findings_per_mutant": {
+          "value": 1.4736842105263157
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 57
+        },
+        "n_pairs": {
+          "value": 57
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 12 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 89% (kappa 0.68 against a 65% chance baseline), mutant 67% (kappa 0.30). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "cc-glm-5-3-flash-high"
+      }
+    },
+    {
+      "as_of": "2026-09-04T18:30:00+00:00",
+      "claim_id": "qc-f88db3293828e87a",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "669cc56817816ba57a6f36e30f546413d63f8cb6f2b272d4433f18ff6c657c80",
+          "rows_used": 57,
+          "run": "iso-cc-glm-5-3-flash-high-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.3991801621874118,
+            0.6501283201887471
+          ],
+          "denominator": 57,
+          "value": 0.5263157894736842
+        },
+        "catch_rate": {
+          "ci95": [
+            0.3825989849761274,
+            0.6338371758159258
+          ],
+          "value": 0.5087719298245614
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.31364997860504923
+        },
+        "false_alarm_rate": {
+          "audit_status": "contains-unaudited-refusals",
+          "ci95": [
+            0.10234437385158025,
+            0.3401358518706343
+          ],
+          "denominator": 41,
+          "excluded_defective_controls": 16,
+          "unaudited_refusals": 1,
+          "value": 0.1951219512195122
+        },
+        "findings_per_mutant": {
+          "value": 1.4736842105263157
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 57
+        },
+        "n_pairs": {
+          "value": 57
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 12 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 89% (kappa 0.68 against a 65% chance baseline), mutant 67% (kappa 0.30). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "cc-glm-5-3-flash-high"
+      }
+    },
+    {
+      "as_of": "2026-09-05T00:30:00+00:00",
+      "claim_id": "qc-850e8a4770a2e57c",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "669cc56817816ba57a6f36e30f546413d63f8cb6f2b272d4433f18ff6c657c80",
+          "rows_used": 57,
+          "run": "iso-cc-glm-5-3-flash-high-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.3991801621874118,
+            0.6501283201887471
+          ],
+          "denominator": 57,
+          "value": 0.5263157894736842
+        },
+        "catch_rate": {
+          "ci95": [
+            0.3825989849761274,
+            0.6338371758159258
+          ],
+          "value": 0.5087719298245614
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.33377192982456144
+        },
+        "false_alarm_rate": {
+          "audit_status": "established",
+          "ci95": [
+            0.0874541374603592,
+            0.31949990331787714
+          ],
+          "denominator": 40,
+          "excluded_defective_controls": 17,
+          "unaudited_refusals": 0,
+          "value": 0.175
+        },
+        "findings_per_mutant": {
+          "value": 1.4736842105263157
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 57
+        },
+        "n_pairs": {
+          "value": 57
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 12 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 89% (kappa 0.68 against a 65% chance baseline), mutant 67% (kappa 0.30). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "cc-glm-5-3-flash-high"
+      }
+    },
+    {
+      "as_of": "2026-09-07T02:24:27.819731+00:00",
+      "claim_id": "qc-385c5107b7498877",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "669cc56817816ba57a6f36e30f546413d63f8cb6f2b272d4433f18ff6c657c80",
+          "rows_used": 13,
+          "run": "iso-cc-glm-5-3-flash-high-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.6668604907890041,
+            0.9862895787574435
+          ],
+          "denominator": 13,
+          "value": 0.9230769230769231
+        },
+        "catch_rate": {
+          "ci95": [
+            0.7719046276458016,
+            0.9999999999999999
+          ],
+          "value": 1.0
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.7777777777777778
+        },
+        "false_alarm_rate": {
+          "audit_status": "established",
+          "ci95": [
+            0.06322510711784673,
+            0.5474110308930111
+          ],
+          "denominator": 9,
+          "excluded_defective_controls": 4,
+          "unaudited_refusals": 0,
+          "value": 0.2222222222222222
+        },
+        "findings_per_mutant": {
+          "value": 1.9230769230769231
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "standing order 2026-09-07: no placement or qualification decision cites this instrument's dimensions until the review-instrument validation study rules; catch and false alarm are scored on the five natural-analog operators only (unearned_verification_claim, contradicted_clause, refuted_conclusion, decorative_check, broken_internal_crossref); the other eleven are a regression sentinel reported beside them.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 3 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 100% (kappa 1.00 against a 56% chance baseline), mutant 78% (kappa 0.36). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "cc-glm-5-3-flash-high"
+      }
+    },
+    {
+      "as_of": "2026-08-27T12:00:00+00:00",
+      "claim_id": "qc-822cf943c7791f62",
+      "construct": "planning.finishability/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "check_sets_offered": 42,
+          "environment": "iso-v1",
+          "kind": "caplab-planning-sweep",
+          "oracle_sha256": "4ff9ed37c5113b203d57af69d0ae8e0a3cfef8b20d37de36d33d499abea053f2",
+          "oracle_version": "striatum-plan-oracle 1",
+          "passes_drawn": 24,
+          "prompt_environment": "design-only",
+          "prompt_profile": "plan-v2",
+          "registry_version": 37,
+          "run_root": "plan-cc-glm-5-3-max-20260827",
+          "seed": 20260827,
+          "tasks_drawn": 24
+        }
+      ],
+      "metrics": {
+        "finishability_pass_rate": {
+          "ci95": [
+            0.55100555994846,
+            0.8800063377140499
+          ],
+          "denominator": 24,
+          "value": 0.75
+        },
+        "graph_yield_rate": {
+          "ci95": [
+            0.8620237953250198,
+            1.0
+          ],
+          "denominator": 24,
+          "value": 1.0
+        },
+        "legality_pass_rate": {
+          "ci95": [
+            0.55100555994846,
+            0.8800063377140499
+          ],
+          "denominator": 24,
+          "value": 0.75
+        },
+        "median_depth_width_product": {
+          "denominator": 23,
+          "value": 8.0
+        },
+        "median_packets": {
+          "denominator": 23,
+          "value": 5.0
+        },
+        "n_pairs": {
+          "value": 24
+        },
+        "resolvability_pass_rate": {
+          "ci95": [
+            0.7975819352134406,
+            0.9926065438344942
+          ],
+          "denominator": 24,
+          "value": 0.9583333333333334
+        }
+      },
+      "notes": [
+        "caplab-advisory custody: CAPLAB drew the tasks, rendered the plan-v2 contract, invoked the subject through its declared adapter under iso-v1, and scored the produced work graph with striatum-plan-oracle. No model judgment is in the labelling loop.",
+        "SYNTHETIC COMPOSITE: the corpus is the implementation-planning pass (design -> prose plan, D2) while the oracle mechanizes the work-graph-legality gate of packetization (plan -> work graph, D1). No production lane performed this design-to-work-graph task, so no per-task production reference exists and these numbers are not comparable to production plan-review rates.",
+        "design-only environment: the base tree is withheld, so the oracle runs without -tree and its write-scope and atomicity verdicts are 'tree-not-provided' — they measure nothing about the planner and are excluded from every rate.",
+        "The draw is seeded and pass-disjoint (one task per step pass, balanced across produce/revise); selection never reads production outcome.",
+        "Resolvability is scored against the 42 registry check sets verified resolvable by the oracle at sweep time and listed in the prompt; a subject naming anything else is naming a gate the plan does not have.",
+        "Report structure beside the rates: median_packets and median_depth_width_product are on the claim because a single-trivial-packet plan clears every mechanical check.",
+        "NOT COMPARABLE to planning.independent_acceptance/1's finishability_pass_rate despite the shared word. That metric is striatum's implementation-plan-finishability gate, applied by independent-family model review to the prose plan; this one is mechanical work-graph legality with no model in the labelling loop. A subject may sit high here and low there without either number being wrong."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "cc-glm-5-3-max"
       }
     },
     {
@@ -4232,6 +5349,323 @@
         "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
         "prompt profile(s): v1, v2-changeset",
         "instrument reliability from 12 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 82% (kappa 0.57 against a 59% chance baseline), mutant 83% (kappa 0.58). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "cc-glm-5-3-max"
+      }
+    },
+    {
+      "as_of": "2026-09-01T01:27:24.284939+00:00",
+      "claim_id": "qc-b1789d00974cf786",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "7cdfa2a9fc87f0901f55d1610464801b23894adc432c1170b8642d9f1f7bddee",
+          "rows_used": 57,
+          "run": "iso-cc-glm-5-3-max-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.41590685979119335,
+            0.6662739441690716
+          ],
+          "denominator": 57,
+          "value": 0.543859649122807
+        },
+        "catch_rate": {
+          "ci95": [
+            0.3991801621874118,
+            0.6501283201887471
+          ],
+          "value": 0.5263157894736842
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.41993281075027994
+        },
+        "false_alarm_rate": {
+          "audit_status": "contains-unaudited-refusals",
+          "ci95": [
+            0.04630478218108157,
+            0.22594269343738355
+          ],
+          "denominator": 47,
+          "excluded_defective_controls": 10,
+          "unaudited_refusals": 5,
+          "value": 0.10638297872340426
+        },
+        "findings_per_mutant": {
+          "value": 1.7719298245614035
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 57
+        },
+        "n_pairs": {
+          "value": 57
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 12 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 78% (kappa 0.36 against a 65% chance baseline), mutant 83% (kappa 0.66). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "cc-glm-5-3-max"
+      }
+    },
+    {
+      "as_of": "2026-09-05T01:00:00+00:00",
+      "claim_id": "qc-72a95d77f2102a5b",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "7cdfa2a9fc87f0901f55d1610464801b23894adc432c1170b8642d9f1f7bddee",
+          "rows_used": 57,
+          "run": "iso-cc-glm-5-3-max-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.41590685979119335,
+            0.6662739441690716
+          ],
+          "denominator": 57,
+          "value": 0.543859649122807
+        },
+        "catch_rate": {
+          "ci95": [
+            0.3991801621874118,
+            0.6501283201887471
+          ],
+          "value": 0.5263157894736842
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.4263157894736842
+        },
+        "false_alarm_rate": {
+          "audit_status": "contains-unaudited-refusals",
+          "ci95": [
+            0.03957952868260636,
+            0.230517752275223
+          ],
+          "denominator": 40,
+          "excluded_defective_controls": 17,
+          "unaudited_refusals": 1,
+          "value": 0.1
+        },
+        "findings_per_mutant": {
+          "value": 1.7719298245614035
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 57
+        },
+        "n_pairs": {
+          "value": 57
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 12 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 78% (kappa 0.36 against a 65% chance baseline), mutant 83% (kappa 0.66). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "cc-glm-5-3-max"
+      }
+    },
+    {
+      "as_of": "2026-09-05T04:30:00+00:00",
+      "claim_id": "qc-9fbc0d82d1267ecb",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "7cdfa2a9fc87f0901f55d1610464801b23894adc432c1170b8642d9f1f7bddee",
+          "rows_used": 57,
+          "run": "iso-cc-glm-5-3-max-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.41590685979119335,
+            0.6662739441690716
+          ],
+          "denominator": 57,
+          "value": 0.543859649122807
+        },
+        "catch_rate": {
+          "ci95": [
+            0.3991801621874118,
+            0.6501283201887471
+          ],
+          "value": 0.5263157894736842
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.44939271255060725
+        },
+        "false_alarm_rate": {
+          "audit_status": "established",
+          "ci95": [
+            0.026507395303779754,
+            0.20321071167954996
+          ],
+          "denominator": 39,
+          "excluded_defective_controls": 18,
+          "unaudited_refusals": 0,
+          "value": 0.07692307692307693
+        },
+        "findings_per_mutant": {
+          "value": 1.7719298245614035
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 57
+        },
+        "n_pairs": {
+          "value": 57
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 12 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 78% (kappa 0.36 against a 65% chance baseline), mutant 83% (kappa 0.66). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "cc-glm-5-3-max"
+      }
+    },
+    {
+      "as_of": "2026-09-07T02:24:27.819731+00:00",
+      "claim_id": "qc-ef9711c6d086ac23",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "7cdfa2a9fc87f0901f55d1610464801b23894adc432c1170b8642d9f1f7bddee",
+          "rows_used": 13,
+          "run": "iso-cc-glm-5-3-max-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.5776536898051745,
+            0.9567418216419186
+          ],
+          "denominator": 13,
+          "value": 0.8461538461538461
+        },
+        "catch_rate": {
+          "ci95": [
+            0.7719046276458016,
+            0.9999999999999999
+          ],
+          "value": 1.0
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.8888888888888888
+        },
+        "false_alarm_rate": {
+          "audit_status": "established",
+          "ci95": [
+            0.019890887638544935,
+            0.434999705576656
+          ],
+          "denominator": 9,
+          "excluded_defective_controls": 4,
+          "unaudited_refusals": 0,
+          "value": 0.1111111111111111
+        },
+        "findings_per_mutant": {
+          "value": 2.8461538461538463
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "standing order 2026-09-07: no placement or qualification decision cites this instrument's dimensions until the review-instrument validation study rules; catch and false alarm are scored on the five natural-analog operators only (unearned_verification_claim, contradicted_clause, refuted_conclusion, decorative_check, broken_internal_crossref); the other eleven are a regression sentinel reported beside them.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 3 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 78% (kappa -0.12 against a 80% chance baseline), mutant 100% (kappa 1.00). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -4988,6 +6422,328 @@
       "subject": {
         "match": "declared-name",
         "source_id": "claude-code"
+      }
+    },
+    {
+      "as_of": "2026-09-02T21:15:00+00:00",
+      "claim_id": "qc-7eb5382b3194850e",
+      "construct": "planning.finishability/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "check_sets_offered": 42,
+          "environment": "iso-v1",
+          "kind": "caplab-planning-sweep",
+          "oracle_sha256": "a785e717a4ef20fb2575f67302a002da0ac6dfc7a4933c024f1447777b34b83e",
+          "oracle_version": "striatum-plan-oracle 1",
+          "passes_drawn": 24,
+          "prompt_environment": "design-only",
+          "prompt_profile": "plan-v2",
+          "registry_version": 37,
+          "run_root": "plan-claude-fable-5-1-high-20260827",
+          "seed": 20260827,
+          "tasks_drawn": 24
+        }
+      ],
+      "metrics": {
+        "finishability_pass_rate": {
+          "ci95": [
+            0.7975819352134406,
+            0.9926065438344942
+          ],
+          "denominator": 24,
+          "value": 0.9583333333333334
+        },
+        "graph_yield_rate": {
+          "ci95": [
+            0.8620237953250198,
+            1.0
+          ],
+          "denominator": 24,
+          "value": 1.0
+        },
+        "legality_pass_rate": {
+          "ci95": [
+            0.7975819352134406,
+            0.9926065438344942
+          ],
+          "denominator": 24,
+          "value": 0.9583333333333334
+        },
+        "median_depth_width_product": {
+          "denominator": 24,
+          "value": 8.0
+        },
+        "median_packets": {
+          "denominator": 24,
+          "value": 5.0
+        },
+        "n_pairs": {
+          "value": 24
+        },
+        "resolvability_pass_rate": {
+          "ci95": [
+            0.8620237953250198,
+            1.0
+          ],
+          "denominator": 24,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "caplab-advisory custody: CAPLAB drew the tasks, rendered the plan-v2 contract, invoked the subject through its declared adapter under iso-v1, and scored the produced work graph with striatum-plan-oracle. No model judgment is in the labelling loop.",
+        "SYNTHETIC COMPOSITE: the corpus is the implementation-planning pass (design -> prose plan, D2) while the oracle mechanizes the work-graph-legality gate of packetization (plan -> work graph, D1). No production lane performed this design-to-work-graph task, so no per-task production reference exists and these numbers are not comparable to production plan-review rates.",
+        "design-only environment: the base tree is withheld, so the oracle runs without -tree and its write-scope and atomicity verdicts are 'tree-not-provided' — they measure nothing about the planner and are excluded from every rate.",
+        "The draw is seeded and pass-disjoint (one task per step pass, balanced across produce/revise); selection never reads production outcome.",
+        "Resolvability is scored against the 42 registry check sets verified resolvable by the oracle at sweep time and listed in the prompt; a subject naming anything else is naming a gate the plan does not have.",
+        "Report structure beside the rates: median_packets and median_depth_width_product are on the claim because a single-trivial-packet plan clears every mechanical check.",
+        "NOT COMPARABLE to planning.independent_acceptance/1's finishability_pass_rate despite the shared word. That metric is striatum's implementation-plan-finishability gate, applied by independent-family model review to the prose plan; this one is mechanical work-graph legality with no model in the labelling loop. A subject may sit high here and low there without either number being wrong.",
+        "INSTRUMENT PINNED to the 2026-08-27 P2b board: oracle rebuilt from striatum-next 06cd940 (sha256 a785e717a4ef20fb2575f67302a002da0ac6dfc7a4933c024f1447777b34b83e; the board's rows carry 4ff9ed37c511..., which differs only by Go build stamps — replay of all 148 stored P2b graphs reproduces every recorded verdict) and checks registry v37 (42 resolvable sets). The live registry had moved to v38, which flips 19 of those 148 graphs from resolvable to not; see docs/records/report-2026-09-02-planning-additions.md.",
+        "NOT A RANKING. Per the P2b record, planning.finishability/1 in the design-only environment is close to an inverted proxy for decomposition (the only failing check is scope_overlap and it scales with packet pairs); this cell is information, not placement evidence."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-fable-5-1-high"
+      }
+    },
+    {
+      "as_of": "2026-09-03T23:28:00.507732+00:00",
+      "claim_id": "qc-6504bb1fb3728992",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "620fda9a3ee17bb61f62e6b876cd20f905ef175f3a5dc35087ce27fd7e0e97a7",
+          "rows_used": 57,
+          "run": "iso-claude-fable-5-1-high-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.44980141395599427,
+            0.6981240331724827
+          ],
+          "denominator": 57,
+          "value": 0.5789473684210527
+        },
+        "catch_rate": {
+          "ci95": [
+            0.5372251158005144,
+            0.7750619392484925
+          ],
+          "value": 0.6666666666666666
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.47517730496453897
+        },
+        "false_alarm_rate": {
+          "audit_status": "contains-unaudited-refusals",
+          "ci95": [
+            0.10415932698542257,
+            0.32544004579661767
+          ],
+          "denominator": 47,
+          "excluded_defective_controls": 10,
+          "unaudited_refusals": 9,
+          "value": 0.19148936170212766
+        },
+        "findings_per_mutant": {
+          "value": 2.5964912280701755
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 57
+        },
+        "n_pairs": {
+          "value": 57
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 12 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 89% (kappa 0.70 against a 62% chance baseline), mutant 100% (kappa 1.00). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-fable-5-1-high"
+      }
+    },
+    {
+      "as_of": "2026-09-04T18:30:00+00:00",
+      "claim_id": "qc-5ffc2c93b598baa5",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "620fda9a3ee17bb61f62e6b876cd20f905ef175f3a5dc35087ce27fd7e0e97a7",
+          "rows_used": 57,
+          "run": "iso-claude-fable-5-1-high-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.44980141395599427,
+            0.6981240331724827
+          ],
+          "denominator": 57,
+          "value": 0.5789473684210527
+        },
+        "catch_rate": {
+          "ci95": [
+            0.5372251158005144,
+            0.7750619392484925
+          ],
+          "value": 0.6666666666666666
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.5691056910569106
+        },
+        "false_alarm_rate": {
+          "audit_status": "established",
+          "ci95": [
+            0.03859708489808934,
+            0.22547681305523387
+          ],
+          "denominator": 41,
+          "excluded_defective_controls": 16,
+          "unaudited_refusals": 0,
+          "value": 0.0975609756097561
+        },
+        "findings_per_mutant": {
+          "value": 2.5964912280701755
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 57
+        },
+        "n_pairs": {
+          "value": 57
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 12 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 89% (kappa 0.70 against a 62% chance baseline), mutant 100% (kappa 1.00). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-fable-5-1-high"
+      }
+    },
+    {
+      "as_of": "2026-09-07T02:24:27.819731+00:00",
+      "claim_id": "qc-0bc0578bbe30e68b",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "620fda9a3ee17bb61f62e6b876cd20f905ef175f3a5dc35087ce27fd7e0e97a7",
+          "rows_used": 13,
+          "run": "iso-claude-fable-5-1-high-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.6668604907890041,
+            0.9862895787574435
+          ],
+          "denominator": 13,
+          "value": 0.9230769230769231
+        },
+        "catch_rate": {
+          "ci95": [
+            0.7719046276458016,
+            0.9999999999999999
+          ],
+          "value": 1.0
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.7777777777777778
+        },
+        "false_alarm_rate": {
+          "audit_status": "established",
+          "ci95": [
+            0.06322510711784673,
+            0.5474110308930111
+          ],
+          "denominator": 9,
+          "excluded_defective_controls": 4,
+          "unaudited_refusals": 0,
+          "value": 0.2222222222222222
+        },
+        "findings_per_mutant": {
+          "value": 2.923076923076923
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "standing order 2026-09-07: no placement or qualification decision cites this instrument's dimensions until the review-instrument validation study rules; catch and false alarm are scored on the five natural-analog operators only (unearned_verification_claim, contradicted_clause, refuted_conclusion, decorative_check, broken_internal_crossref); the other eleven are a regression sentinel reported beside them.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 3 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 78% (kappa 0.55 against a 51% chance baseline), mutant 100% (kappa undefined, arm at ceiling). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-fable-5-1-high"
       }
     },
     {
@@ -9342,6 +11098,88 @@
       }
     },
     {
+      "as_of": "2026-08-27T12:00:00+00:00",
+      "claim_id": "qc-1e9ac2f09615d49c",
+      "construct": "planning.finishability/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "check_sets_offered": 42,
+          "environment": "iso-v1",
+          "kind": "caplab-planning-sweep",
+          "oracle_sha256": "4ff9ed37c5113b203d57af69d0ae8e0a3cfef8b20d37de36d33d499abea053f2",
+          "oracle_version": "striatum-plan-oracle 1",
+          "passes_drawn": 24,
+          "prompt_environment": "design-only",
+          "prompt_profile": "plan-v2",
+          "registry_version": 37,
+          "run_root": "plan-claude-harm-opus-5-high-20260827",
+          "seed": 20260827,
+          "tasks_drawn": 24
+        }
+      ],
+      "metrics": {
+        "finishability_pass_rate": {
+          "ci95": [
+            0.6899611872949993,
+            0.9565566591987655
+          ],
+          "denominator": 24,
+          "value": 0.875
+        },
+        "graph_yield_rate": {
+          "ci95": [
+            0.8620237953250198,
+            1.0
+          ],
+          "denominator": 24,
+          "value": 1.0
+        },
+        "legality_pass_rate": {
+          "ci95": [
+            0.6899611872949993,
+            0.9565566591987655
+          ],
+          "denominator": 24,
+          "value": 0.875
+        },
+        "median_depth_width_product": {
+          "denominator": 24,
+          "value": 8.0
+        },
+        "median_packets": {
+          "denominator": 24,
+          "value": 7.0
+        },
+        "n_pairs": {
+          "value": 24
+        },
+        "resolvability_pass_rate": {
+          "ci95": [
+            0.8620237953250198,
+            1.0
+          ],
+          "denominator": 24,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "caplab-advisory custody: CAPLAB drew the tasks, rendered the plan-v2 contract, invoked the subject through its declared adapter under iso-v1, and scored the produced work graph with striatum-plan-oracle. No model judgment is in the labelling loop.",
+        "SYNTHETIC COMPOSITE: the corpus is the implementation-planning pass (design -> prose plan, D2) while the oracle mechanizes the work-graph-legality gate of packetization (plan -> work graph, D1). No production lane performed this design-to-work-graph task, so no per-task production reference exists and these numbers are not comparable to production plan-review rates.",
+        "design-only environment: the base tree is withheld, so the oracle runs without -tree and its write-scope and atomicity verdicts are 'tree-not-provided' — they measure nothing about the planner and are excluded from every rate.",
+        "The draw is seeded and pass-disjoint (one task per step pass, balanced across produce/revise); selection never reads production outcome.",
+        "Resolvability is scored against the 42 registry check sets verified resolvable by the oracle at sweep time and listed in the prompt; a subject naming anything else is naming a gate the plan does not have.",
+        "Report structure beside the rates: median_packets and median_depth_width_product are on the claim because a single-trivial-packet plan clears every mechanical check.",
+        "NOT COMPARABLE to planning.independent_acceptance/1's finishability_pass_rate despite the shared word. That metric is striatum's implementation-plan-finishability gate, applied by independent-family model review to the prose plan; this one is mechanical work-graph legality with no model in the labelling loop. A subject may sit high here and low there without either number being wrong."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-harm-opus-5-high"
+      }
+    },
+    {
       "as_of": "2026-08-23T00:00:00+00:00",
       "claim_id": "qc-975f4570ffe0b8cf",
       "construct": "planning.independent_acceptance/1",
@@ -11565,6 +13403,88 @@
       }
     },
     {
+      "as_of": "2026-08-27T12:00:00+00:00",
+      "claim_id": "qc-6d065034ea518ee7",
+      "construct": "planning.finishability/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "check_sets_offered": 42,
+          "environment": "iso-v1",
+          "kind": "caplab-planning-sweep",
+          "oracle_sha256": "4ff9ed37c5113b203d57af69d0ae8e0a3cfef8b20d37de36d33d499abea053f2",
+          "oracle_version": "striatum-plan-oracle 1",
+          "passes_drawn": 24,
+          "prompt_environment": "design-only",
+          "prompt_profile": "plan-v2",
+          "registry_version": 37,
+          "run_root": "plan-claude-opus-5-high-20260827",
+          "seed": 20260827,
+          "tasks_drawn": 24
+        }
+      ],
+      "metrics": {
+        "finishability_pass_rate": {
+          "ci95": [
+            0.5083230633550337,
+            0.8508535180303913
+          ],
+          "denominator": 24,
+          "value": 0.7083333333333334
+        },
+        "graph_yield_rate": {
+          "ci95": [
+            0.8620237953250198,
+            1.0
+          ],
+          "denominator": 24,
+          "value": 1.0
+        },
+        "legality_pass_rate": {
+          "ci95": [
+            0.5083230633550337,
+            0.8508535180303913
+          ],
+          "denominator": 24,
+          "value": 0.7083333333333334
+        },
+        "median_depth_width_product": {
+          "denominator": 23,
+          "value": 8.0
+        },
+        "median_packets": {
+          "denominator": 23,
+          "value": 7.0
+        },
+        "n_pairs": {
+          "value": 24
+        },
+        "resolvability_pass_rate": {
+          "ci95": [
+            0.7975819352134406,
+            0.9926065438344942
+          ],
+          "denominator": 24,
+          "value": 0.9583333333333334
+        }
+      },
+      "notes": [
+        "caplab-advisory custody: CAPLAB drew the tasks, rendered the plan-v2 contract, invoked the subject through its declared adapter under iso-v1, and scored the produced work graph with striatum-plan-oracle. No model judgment is in the labelling loop.",
+        "SYNTHETIC COMPOSITE: the corpus is the implementation-planning pass (design -> prose plan, D2) while the oracle mechanizes the work-graph-legality gate of packetization (plan -> work graph, D1). No production lane performed this design-to-work-graph task, so no per-task production reference exists and these numbers are not comparable to production plan-review rates.",
+        "design-only environment: the base tree is withheld, so the oracle runs without -tree and its write-scope and atomicity verdicts are 'tree-not-provided' — they measure nothing about the planner and are excluded from every rate.",
+        "The draw is seeded and pass-disjoint (one task per step pass, balanced across produce/revise); selection never reads production outcome.",
+        "Resolvability is scored against the 42 registry check sets verified resolvable by the oracle at sweep time and listed in the prompt; a subject naming anything else is naming a gate the plan does not have.",
+        "Report structure beside the rates: median_packets and median_depth_width_product are on the claim because a single-trivial-packet plan clears every mechanical check.",
+        "NOT COMPARABLE to planning.independent_acceptance/1's finishability_pass_rate despite the shared word. That metric is striatum's implementation-plan-finishability gate, applied by independent-family model review to the prose plan; this one is mechanical work-graph legality with no model in the labelling loop. A subject may sit high here and low there without either number being wrong."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-opus-5-high"
+      }
+    },
+    {
       "as_of": "2026-08-23T00:00:00+00:00",
       "claim_id": "qc-58616e080b7dfd7a",
       "construct": "proposal.delivery/1",
@@ -11795,6 +13715,86 @@
         "historical-seed: executed by striatum-tuner (pre-CAPLAB custody), 2026-08-07..09 fleet sweep; admitted under advisory-selection-001.",
         "case pool is small and shared across bindings: distinct injections number in the tens, so treat fine rank distinctions as noise.",
         "anchored_detection, where present, is rescored from retained arms on the corrected anchor path; pre-correction row fields were never read."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "claude-opus-5-high"
+      }
+    },
+    {
+      "as_of": "2026-09-07T02:24:27.819731+00:00",
+      "claim_id": "qc-78223158b0b9b538",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "5b46089c3ca7f29f496be6ffca8c8b48e5f75df729ceec46209642153eab7f08",
+          "rows_used": 13,
+          "run": "iso-claude-opus-5-high-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.6668604907890041,
+            0.9862895787574435
+          ],
+          "denominator": 13,
+          "value": 0.9230769230769231
+        },
+        "catch_rate": {
+          "ci95": [
+            0.7719046276458016,
+            0.9999999999999999
+          ],
+          "value": 1.0
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.7777777777777778
+        },
+        "false_alarm_rate": {
+          "audit_status": "established",
+          "ci95": [
+            0.06322510711784673,
+            0.5474110308930111
+          ],
+          "denominator": 9,
+          "excluded_defective_controls": 4,
+          "unaudited_refusals": 0,
+          "value": 0.2222222222222222
+        },
+        "findings_per_mutant": {
+          "value": 2.3076923076923075
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "standing order 2026-09-07: no placement or qualification decision cites this instrument's dimensions until the review-instrument validation study rules; catch and false alarm are scored on the five natural-analog operators only (unearned_verification_claim, contradicted_clause, refuted_conclusion, decorative_check, broken_internal_crossref); the other eleven are a regression sentinel reported beside them.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 3 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 100% (kappa 1.00 against a 56% chance baseline), mutant 100% (kappa 1.00). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -14279,6 +16279,88 @@
       }
     },
     {
+      "as_of": "2026-08-27T12:00:00+00:00",
+      "claim_id": "qc-513b2fa5e1b83831",
+      "construct": "planning.finishability/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "check_sets_offered": 42,
+          "environment": "iso-v1",
+          "kind": "caplab-planning-sweep",
+          "oracle_sha256": "4ff9ed37c5113b203d57af69d0ae8e0a3cfef8b20d37de36d33d499abea053f2",
+          "oracle_version": "striatum-plan-oracle 1",
+          "passes_drawn": 24,
+          "prompt_environment": "design-only",
+          "prompt_profile": "plan-v2",
+          "registry_version": 37,
+          "run_root": "plan-codex-harm-terra-max-20260827",
+          "seed": 20260827,
+          "tasks_drawn": 24
+        }
+      ],
+      "metrics": {
+        "finishability_pass_rate": {
+          "ci95": [
+            0.7975819352134406,
+            0.9926065438344942
+          ],
+          "denominator": 24,
+          "value": 0.9583333333333334
+        },
+        "graph_yield_rate": {
+          "ci95": [
+            0.8620237953250198,
+            1.0
+          ],
+          "denominator": 24,
+          "value": 1.0
+        },
+        "legality_pass_rate": {
+          "ci95": [
+            0.7975819352134406,
+            0.9926065438344942
+          ],
+          "denominator": 24,
+          "value": 0.9583333333333334
+        },
+        "median_depth_width_product": {
+          "denominator": 24,
+          "value": 5.0
+        },
+        "median_packets": {
+          "denominator": 24,
+          "value": 5.0
+        },
+        "n_pairs": {
+          "value": 24
+        },
+        "resolvability_pass_rate": {
+          "ci95": [
+            0.8620237953250198,
+            1.0
+          ],
+          "denominator": 24,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "caplab-advisory custody: CAPLAB drew the tasks, rendered the plan-v2 contract, invoked the subject through its declared adapter under iso-v1, and scored the produced work graph with striatum-plan-oracle. No model judgment is in the labelling loop.",
+        "SYNTHETIC COMPOSITE: the corpus is the implementation-planning pass (design -> prose plan, D2) while the oracle mechanizes the work-graph-legality gate of packetization (plan -> work graph, D1). No production lane performed this design-to-work-graph task, so no per-task production reference exists and these numbers are not comparable to production plan-review rates.",
+        "design-only environment: the base tree is withheld, so the oracle runs without -tree and its write-scope and atomicity verdicts are 'tree-not-provided' — they measure nothing about the planner and are excluded from every rate.",
+        "The draw is seeded and pass-disjoint (one task per step pass, balanced across produce/revise); selection never reads production outcome.",
+        "Resolvability is scored against the 42 registry check sets verified resolvable by the oracle at sweep time and listed in the prompt; a subject naming anything else is naming a gate the plan does not have.",
+        "Report structure beside the rates: median_packets and median_depth_width_product are on the claim because a single-trivial-packet plan clears every mechanical check.",
+        "NOT COMPARABLE to planning.independent_acceptance/1's finishability_pass_rate despite the shared word. That metric is striatum's implementation-plan-finishability gate, applied by independent-family model review to the prose plan; this one is mechanical work-graph legality with no model in the labelling loop. A subject may sit high here and low there without either number being wrong."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "codex-harm-terra-max"
+      }
+    },
+    {
       "as_of": "2026-08-22T00:00:00+00:00",
       "claim_id": "qc-18eb6cd6eee8bd01",
       "construct": "build.packet_delivery/1",
@@ -15648,6 +17730,88 @@
       }
     },
     {
+      "as_of": "2026-08-27T12:00:00+00:00",
+      "claim_id": "qc-cfc1b43e48efe284",
+      "construct": "planning.finishability/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "check_sets_offered": 42,
+          "environment": "iso-v1",
+          "kind": "caplab-planning-sweep",
+          "oracle_sha256": "4ff9ed37c5113b203d57af69d0ae8e0a3cfef8b20d37de36d33d499abea053f2",
+          "oracle_version": "striatum-plan-oracle 1",
+          "passes_drawn": 24,
+          "prompt_environment": "design-only",
+          "prompt_profile": "plan-v2",
+          "registry_version": 37,
+          "run_root": "plan-codex-sol-high-20260827",
+          "seed": 20260827,
+          "tasks_drawn": 24
+        }
+      ],
+      "metrics": {
+        "finishability_pass_rate": {
+          "ci95": [
+            0.5952954674681133,
+            0.9075517464714814
+          ],
+          "denominator": 24,
+          "value": 0.7916666666666666
+        },
+        "graph_yield_rate": {
+          "ci95": [
+            0.8620237953250198,
+            1.0
+          ],
+          "denominator": 24,
+          "value": 1.0
+        },
+        "legality_pass_rate": {
+          "ci95": [
+            0.5952954674681133,
+            0.9075517464714814
+          ],
+          "denominator": 24,
+          "value": 0.7916666666666666
+        },
+        "median_depth_width_product": {
+          "denominator": 23,
+          "value": 4.0
+        },
+        "median_packets": {
+          "denominator": 23,
+          "value": 4.0
+        },
+        "n_pairs": {
+          "value": 24
+        },
+        "resolvability_pass_rate": {
+          "ci95": [
+            0.7975819352134406,
+            0.9926065438344942
+          ],
+          "denominator": 24,
+          "value": 0.9583333333333334
+        }
+      },
+      "notes": [
+        "caplab-advisory custody: CAPLAB drew the tasks, rendered the plan-v2 contract, invoked the subject through its declared adapter under iso-v1, and scored the produced work graph with striatum-plan-oracle. No model judgment is in the labelling loop.",
+        "SYNTHETIC COMPOSITE: the corpus is the implementation-planning pass (design -> prose plan, D2) while the oracle mechanizes the work-graph-legality gate of packetization (plan -> work graph, D1). No production lane performed this design-to-work-graph task, so no per-task production reference exists and these numbers are not comparable to production plan-review rates.",
+        "design-only environment: the base tree is withheld, so the oracle runs without -tree and its write-scope and atomicity verdicts are 'tree-not-provided' — they measure nothing about the planner and are excluded from every rate.",
+        "The draw is seeded and pass-disjoint (one task per step pass, balanced across produce/revise); selection never reads production outcome.",
+        "Resolvability is scored against the 42 registry check sets verified resolvable by the oracle at sweep time and listed in the prompt; a subject naming anything else is naming a gate the plan does not have.",
+        "Report structure beside the rates: median_packets and median_depth_width_product are on the claim because a single-trivial-packet plan clears every mechanical check.",
+        "NOT COMPARABLE to planning.independent_acceptance/1's finishability_pass_rate despite the shared word. That metric is striatum's implementation-plan-finishability gate, applied by independent-family model review to the prose plan; this one is mechanical work-graph legality with no model in the labelling loop. A subject may sit high here and low there without either number being wrong."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "codex-sol-high"
+      }
+    },
+    {
       "as_of": "2026-08-23T00:00:00+00:00",
       "claim_id": "qc-2e899c05f31422d2",
       "construct": "planning.independent_acceptance/1",
@@ -16070,6 +18234,165 @@
         "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
         "prompt profile(s): v1, v1-changeset",
         "instrument reliability from 12 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 89% (kappa 0.76 against a 54% chance baseline), mutant 94% (kappa 0.47). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "codex-sol-high"
+      }
+    },
+    {
+      "as_of": "2026-09-06T03:00:00+00:00",
+      "claim_id": "qc-e46247d9e3ec8681",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "954c631792fc066b1a22e8c56a1c6d6dca9778c83010b2a8dc7879e6d502cf91",
+          "rows_used": 57,
+          "run": "iso-codex-sol-high-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.3991801621874118,
+            0.6501283201887471
+          ],
+          "denominator": 57,
+          "value": 0.5263157894736842
+        },
+        "catch_rate": {
+          "ci95": [
+            0.8105512290044132,
+            0.9619483282220778
+          ],
+          "value": 0.9122807017543859
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.01754385964912275
+        },
+        "false_alarm_rate": {
+          "audit_status": "established",
+          "ci95": [
+            0.7586947827711269,
+            0.9582974265244647
+          ],
+          "denominator": 38,
+          "excluded_defective_controls": 19,
+          "unaudited_refusals": 0,
+          "value": 0.8947368421052632
+        },
+        "findings_per_mutant": {
+          "value": 2.192982456140351
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 57
+        },
+        "n_pairs": {
+          "value": 57
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 12 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 100% (kappa undefined, arm at ceiling against a 100% chance baseline), mutant 100% (kappa 1.00). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "codex-sol-high"
+      }
+    },
+    {
+      "as_of": "2026-09-07T02:24:27.819731+00:00",
+      "claim_id": "qc-98b7a48f475bd871",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "954c631792fc066b1a22e8c56a1c6d6dca9778c83010b2a8dc7879e6d502cf91",
+          "rows_used": 13,
+          "run": "iso-codex-sol-high-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.5776536898051745,
+            0.9567418216419186
+          ],
+          "denominator": 13,
+          "value": 0.8461538461538461
+        },
+        "catch_rate": {
+          "ci95": [
+            0.7719046276458016,
+            0.9999999999999999
+          ],
+          "value": 1.0
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.0
+        },
+        "false_alarm_rate": {
+          "audit_status": "established",
+          "ci95": [
+            0.7008549515804559,
+            1.0
+          ],
+          "denominator": 9,
+          "excluded_defective_controls": 4,
+          "unaudited_refusals": 0,
+          "value": 1.0
+        },
+        "findings_per_mutant": {
+          "value": 3.0
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "standing order 2026-09-07: no placement or qualification decision cites this instrument's dimensions until the review-instrument validation study rules; catch and false alarm are scored on the five natural-analog operators only (unearned_verification_claim, contradicted_clause, refuted_conclusion, decorative_check, broken_internal_crossref); the other eleven are a regression sentinel reported beside them.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 3 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 100% (kappa undefined, arm at ceiling against a 100% chance baseline), mutant 100% (kappa undefined, arm at ceiling). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
       ],
       "record": "quartermaster-scored-claim/1",
       "subject": {
@@ -17839,6 +20162,88 @@
       "record": "quartermaster-scored-claim/1",
       "subject": {
         "match": "declared-name",
+        "source_id": "codex-terra-max"
+      }
+    },
+    {
+      "as_of": "2026-08-27T12:00:00+00:00",
+      "claim_id": "qc-fe2d1777dcb7cebe",
+      "construct": "planning.finishability/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "check_sets_offered": 42,
+          "environment": "iso-v1",
+          "kind": "caplab-planning-sweep",
+          "oracle_sha256": "4ff9ed37c5113b203d57af69d0ae8e0a3cfef8b20d37de36d33d499abea053f2",
+          "oracle_version": "striatum-plan-oracle 1",
+          "passes_drawn": 24,
+          "prompt_environment": "design-only",
+          "prompt_profile": "plan-v2",
+          "registry_version": 37,
+          "run_root": "plan-codex-terra-max-20260827",
+          "seed": 20260827,
+          "tasks_drawn": 24
+        }
+      ],
+      "metrics": {
+        "finishability_pass_rate": {
+          "ci95": [
+            0.8620237953250198,
+            1.0
+          ],
+          "denominator": 24,
+          "value": 1.0
+        },
+        "graph_yield_rate": {
+          "ci95": [
+            0.8620237953250198,
+            1.0
+          ],
+          "denominator": 24,
+          "value": 1.0
+        },
+        "legality_pass_rate": {
+          "ci95": [
+            0.8620237953250198,
+            1.0
+          ],
+          "denominator": 24,
+          "value": 1.0
+        },
+        "median_depth_width_product": {
+          "denominator": 24,
+          "value": 4.5
+        },
+        "median_packets": {
+          "denominator": 24,
+          "value": 4.5
+        },
+        "n_pairs": {
+          "value": 24
+        },
+        "resolvability_pass_rate": {
+          "ci95": [
+            0.8620237953250198,
+            1.0
+          ],
+          "denominator": 24,
+          "value": 1.0
+        }
+      },
+      "notes": [
+        "caplab-advisory custody: CAPLAB drew the tasks, rendered the plan-v2 contract, invoked the subject through its declared adapter under iso-v1, and scored the produced work graph with striatum-plan-oracle. No model judgment is in the labelling loop.",
+        "SYNTHETIC COMPOSITE: the corpus is the implementation-planning pass (design -> prose plan, D2) while the oracle mechanizes the work-graph-legality gate of packetization (plan -> work graph, D1). No production lane performed this design-to-work-graph task, so no per-task production reference exists and these numbers are not comparable to production plan-review rates.",
+        "design-only environment: the base tree is withheld, so the oracle runs without -tree and its write-scope and atomicity verdicts are 'tree-not-provided' — they measure nothing about the planner and are excluded from every rate.",
+        "The draw is seeded and pass-disjoint (one task per step pass, balanced across produce/revise); selection never reads production outcome.",
+        "Resolvability is scored against the 42 registry check sets verified resolvable by the oracle at sweep time and listed in the prompt; a subject naming anything else is naming a gate the plan does not have.",
+        "Report structure beside the rates: median_packets and median_depth_width_product are on the claim because a single-trivial-packet plan clears every mechanical check.",
+        "NOT COMPARABLE to planning.independent_acceptance/1's finishability_pass_rate despite the shared word. That metric is striatum's implementation-plan-finishability gate, applied by independent-family model review to the prose plan; this one is mechanical work-graph legality with no model in the labelling loop. A subject may sit high here and low there without either number being wrong."
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
         "source_id": "codex-terra-max"
       }
     },
@@ -20080,6 +22485,244 @@
       }
     },
     {
+      "as_of": "2026-08-31T05:19:14.290862+00:00",
+      "claim_id": "qc-4c55bba5a925b0b4",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "e0e99710e9c831ce540c1d7fc9aeb19f2421fa7207607a86de01d689ae4256c2",
+          "rows_used": 57,
+          "run": "iso-oc-glm-5-3-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.41590685979119335,
+            0.6662739441690716
+          ],
+          "denominator": 57,
+          "value": 0.543859649122807
+        },
+        "catch_rate": {
+          "ci95": [
+            0.41590685979119335,
+            0.6662739441690716
+          ],
+          "value": 0.543859649122807
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.3949234789100411
+        },
+        "false_alarm_rate": {
+          "audit_status": "contains-unaudited-refusals",
+          "ci95": [
+            0.07406719996431721,
+            0.2768562242359355
+          ],
+          "denominator": 47,
+          "excluded_defective_controls": 10,
+          "unaudited_refusals": 6,
+          "value": 0.14893617021276595
+        },
+        "findings_per_mutant": {
+          "value": 1.3333333333333333
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 57
+        },
+        "n_pairs": {
+          "value": 57
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 12 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 72% (kappa 0.26 against a 62% chance baseline), mutant 89% (kappa 0.78). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "oc-glm-5-3"
+      }
+    },
+    {
+      "as_of": "2026-09-05T01:00:00+00:00",
+      "claim_id": "qc-42789adddd513364",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "e0e99710e9c831ce540c1d7fc9aeb19f2421fa7207607a86de01d689ae4256c2",
+          "rows_used": 57,
+          "run": "iso-oc-glm-5-3-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.41590685979119335,
+            0.6662739441690716
+          ],
+          "denominator": 57,
+          "value": 0.543859649122807
+        },
+        "catch_rate": {
+          "ci95": [
+            0.41590685979119335,
+            0.6662739441690716
+          ],
+          "value": 0.543859649122807
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.41885964912280704
+        },
+        "false_alarm_rate": {
+          "audit_status": "established",
+          "ci95": [
+            0.05459500250945401,
+            0.261121198388511
+          ],
+          "denominator": 40,
+          "excluded_defective_controls": 17,
+          "unaudited_refusals": 0,
+          "value": 0.125
+        },
+        "findings_per_mutant": {
+          "value": 1.3333333333333333
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 57
+        },
+        "n_pairs": {
+          "value": 57
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 12 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 72% (kappa 0.26 against a 62% chance baseline), mutant 89% (kappa 0.78). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "oc-glm-5-3"
+      }
+    },
+    {
+      "as_of": "2026-09-07T02:24:27.819731+00:00",
+      "claim_id": "qc-b47af433ce6a20a2",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "e0e99710e9c831ce540c1d7fc9aeb19f2421fa7207607a86de01d689ae4256c2",
+          "rows_used": 13,
+          "run": "iso-oc-glm-5-3-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.6668604907890041,
+            0.9862895787574435
+          ],
+          "denominator": 13,
+          "value": 0.9230769230769231
+        },
+        "catch_rate": {
+          "ci95": [
+            0.7719046276458016,
+            0.9999999999999999
+          ],
+          "value": 1.0
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.8888888888888888
+        },
+        "false_alarm_rate": {
+          "audit_status": "established",
+          "ci95": [
+            0.019890887638544935,
+            0.434999705576656
+          ],
+          "denominator": 9,
+          "excluded_defective_controls": 4,
+          "unaudited_refusals": 0,
+          "value": 0.1111111111111111
+        },
+        "findings_per_mutant": {
+          "value": 1.8461538461538463
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "standing order 2026-09-07: no placement or qualification decision cites this instrument's dimensions until the review-instrument validation study rules; catch and false alarm are scored on the five natural-analog operators only (unearned_verification_claim, contradicted_clause, refuted_conclusion, decorative_check, broken_internal_crossref); the other eleven are a regression sentinel reported beside them.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 3 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 78% (kappa 0.36 against a 65% chance baseline), mutant 100% (kappa 1.00). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "oc-glm-5-3"
+      }
+    },
+    {
       "as_of": "2026-08-22T05:37:35.180452+00:00",
       "claim_id": "qc-029fed86fa76783c",
       "construct": "review.defect_discrimination/1",
@@ -20237,6 +22880,165 @@
       }
     },
     {
+      "as_of": "2026-09-05T01:00:00+00:00",
+      "claim_id": "qc-9963eb5055860deb",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "5bf1fef8ceba3d73c15d0162169dc282cb051b058b9b2729a22699193edc2333",
+          "rows_used": 56,
+          "run": "iso-or-gemini-3-7-flash-high-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.3566821941245828,
+            0.6098961607582303
+          ],
+          "denominator": 56,
+          "value": 0.48214285714285715
+        },
+        "catch_rate": {
+          "ci95": [
+            0.37331738801362335,
+            0.6266826119863766
+          ],
+          "value": 0.5
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.5
+        },
+        "false_alarm_rate": {
+          "audit_status": "established",
+          "ci95": [
+            0.0,
+            0.08966685370757142
+          ],
+          "denominator": 39,
+          "excluded_defective_controls": 17,
+          "unaudited_refusals": 0,
+          "value": 0.0
+        },
+        "findings_per_mutant": {
+          "value": 0.5357142857142857
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 56
+        },
+        "n_pairs": {
+          "value": 56
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 12 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 100% (kappa undefined, arm at ceiling against a 100% chance baseline), mutant 94% (kappa 0.89). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "or-gemini-3-7-flash-high"
+      }
+    },
+    {
+      "as_of": "2026-09-07T02:24:27.819731+00:00",
+      "claim_id": "qc-a2a5d807d76f97b2",
+      "construct": "review.defect_discrimination/1",
+      "custody": "caplab-advisory",
+      "evidence": [
+        {
+          "environment": "iso-v1",
+          "instrument": "matched-pair defect injection (synthetic contract)",
+          "kind": "matched-pair-run",
+          "prompt_profile": "v1",
+          "results_sha256": "5bf1fef8ceba3d73c15d0162169dc282cb051b058b9b2729a22699193edc2333",
+          "rows_used": 13,
+          "run": "iso-or-gemini-3-7-flash-high-20260819",
+          "sweep_seed": "20260819"
+        }
+      ],
+      "metrics": {
+        "anchored_detection": {
+          "basis": "recorded-anchors",
+          "ci95": [
+            0.6668604907890041,
+            0.9862895787574435
+          ],
+          "denominator": 13,
+          "value": 0.9230769230769231
+        },
+        "catch_rate": {
+          "ci95": [
+            0.6668604907890041,
+            0.9862895787574435
+          ],
+          "value": 0.9230769230769231
+        },
+        "discrimination": {
+          "scale": [
+            -1.0,
+            1.0
+          ],
+          "value": 0.9230769230769231
+        },
+        "false_alarm_rate": {
+          "audit_status": "established",
+          "ci95": [
+            2.7755575615628914e-17,
+            0.29914504841954404
+          ],
+          "denominator": 9,
+          "excluded_defective_controls": 4,
+          "unaudited_refusals": 0,
+          "value": 0.0
+        },
+        "findings_per_mutant": {
+          "value": 1.0
+        },
+        "json_valid_mutant": {
+          "value": 1.0
+        },
+        "n_distinct_cases": {
+          "value": 13
+        },
+        "n_pairs": {
+          "value": 13
+        }
+      },
+      "notes": [
+        "caplab-advisory: CAPLAB-directed advisory-grade execution through the subject's declared adapter command; no sealed custody domain, no provider-authenticated identity.",
+        "standing order 2026-09-07: no placement or qualification decision cites this instrument's dimensions until the review-instrument validation study rules; catch and false alarm are scored on the five natural-analog operators only (unearned_verification_claim, contradicted_clause, refuted_conclusion, decorative_check, broken_internal_crossref); the other eleven are a regression sentinel reported beside them.",
+        "instrument: matched-pair defect injection (synthetic contract)",
+        "synthetic-contract profile: CAPLAB draws the cases and renders its own prompt carrying a stated review contract. This is a contract-bearing review task, not striatum's exact dispatch, and its numbers are not interchangeable with dispatch-prompt numbers.",
+        "prompt profile(s): v1, v2-changeset",
+        "instrument reliability from 3 replayed anchor cases (excluded from these metrics): replicate pairwise agreement on refuse/clear, null replicates excluded — control 100% (kappa undefined, arm at ceiling against a 100% chance baseline), mutant 100% (kappa 1.00). Within-sweep pairwise agreement is not comparable to cross-sweep agreement figures such as the 2026-08-16 53%"
+      ],
+      "record": "quartermaster-scored-claim/1",
+      "subject": {
+        "match": "declared-name",
+        "matched_current_declaration": true,
+        "source_id": "or-gemini-3-7-flash-high"
+      }
+    },
+    {
       "as_of": "2026-08-22T20:22:15.386600+00:00",
       "claim_id": "qc-43629cb5aec49630",
       "construct": "review.defect_discrimination/1",
@@ -20332,5 +23134,5 @@
     }
   },
   "document": "caplab-advisory-export/1",
-  "notice": "Advisory scored claims. No qualification decision, availability, or ranking is expressed or implied."
+  "notice": "Advisory scored claims. No qualification decision, availability, or ranking is expressed or implied. Standing order 2026-09-07: no placement or qualification decision cites the review defect-injection instrument until further notice; review claims re-issued on 2026-09-07 score the five natural-analog operators only, and earlier review claims on the same subjects are superseded by them. CAPLAB holds no independent, adjudicated production outcomes sufficient to rank reviewers."
 }

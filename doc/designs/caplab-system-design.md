@@ -396,11 +396,39 @@ Located in [`src/caplab/advisory/`](../../src/caplab/advisory/). Created under
 models and to underpin a consumer-neutral, synthetic binding ranking served to
 Striatum, Council, and UIPass via **Quartermaster**:
 
-- **Defect discrimination construct (`review.defect_discrimination/1`)** —
-  scores code-review capability on matched (control/mutant) pairs; metrics are
-  catch rate, false-alarm rate, discrimination
-  ($D = \text{catch} - \text{false_alarm}$), with Wilson 95% score confidence
-  intervals.
+- **Review: admission gate, sentinel suite, production canary.** The
+  matched-pair defect-injection instrument (`review.defect_discrimination/1`:
+  catch, false alarm, discrimination with Wilson intervals) **no longer
+  ranks reviewers**. It was retired from placement on 2026-09-07
+  ([`report-2026-09-07-review-instrument-disposition.md`](../../docs/records/report-2026-09-07-review-instrument-disposition.md))
+  for two reasons found the same week: its ordering moved with the execution
+  environment rather than with the subject (isolation moved one binding's
+  false-alarm rate from 0.20 to 0.90 with no change in the binding), and on
+  the five operators that plant defects production actually produces
+  ([`finding-2026-09-07-operator-analogs.md`](../../docs/records/finding-2026-09-07-operator-analogs.md))
+  eight of nine bindings catch every planted defect — the ordering came from
+  eleven operators whose defects never occur. A validation against
+  production outcomes could not be run: the striatum ledger holds no
+  Principal re-ruling of any change-set review
+  ([`criterion-2026-09-07-review-ledger-pass.md`](../../docs/records/criterion-2026-09-07-review-ledger-pass.md)).
+  What exists in code today:
+  - the **admission gate** (`scripts/review_gate.py`,
+    `advisory/gate/review-gate-20260819.json`): per binding, pass/fail, run
+    only for a new binding or one the Principal names — the five analog
+    operators on the seed-20260819 draw, one natural case verbatim
+    (cancellation 320479), and contract conformance under the production
+    review pass contract, 67 calls per binding, under the Stage B mount
+    (`pool_runner.sandbox_prefix`) with the case's base materialized
+    read-only (`caplab.advisory.materialize`, `advisory/tree-v1-bases.json`);
+  - the **regression sentinel**: the eleven no-analog operators, measured and
+    reported under `sentinel_by_defect_class`, never in a claim;
+  - the **production canary** (`scripts/review_criterion_ledger_pass.py`):
+    reads the striatum ledger prospectively per reviewer — clearances later
+    cancelled with a defect record, refusals later revised, applications and
+    conflicts — and reports; it decides nothing until striatum records
+    Principal re-rulings of review verdicts.
+  Claims on this construct carry the 2026-09-07 standing-order note; the
+  board is placement-frozen; existing permitted tuples stand.
 - **Planning constructs** — `planning.finishability/1` (card
   [`planning-constructs-v1`](../../docs/product/capability-cards/planning-constructs-v1.md),
   Arm 1) scores a binding's work-graph lowering with the mechanical

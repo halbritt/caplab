@@ -1,0 +1,143 @@
+{
+ "record": "caplab-review-admission-gate/1",
+ "as_of": "2026-09-07",
+ "authority": "instruction-2026-09-07-review-instrument-disposition.md \u00a72.d",
+ "environment": "tree-v1 under the Stage B mount (probe-2026-09-06-tree-v1-stage-b.md); the only environment a gate run may use",
+ "selection": "admission-gate",
+ "note": "Per-binding pass/fail gate. Runs only for a new binding or a binding the Principal names. Cells: the natural-analog operators on the seed-20260819 draw, plus one natural case verbatim, plus contract conformance under the production review pass contract. Never a ranking; never a claim.",
+ "cells": [
+  {
+   "substrate_id": "qs-922bffcd10232e91",
+   "operator": "broken_internal_crossref",
+   "profile": "v1"
+  },
+  {
+   "substrate_id": "qs-cdf7e520a28ff458",
+   "operator": "broken_internal_crossref",
+   "profile": "v1"
+  },
+  {
+   "substrate_id": "qs-402057192be1b8a8",
+   "operator": "contradicted_clause",
+   "profile": "v1"
+  },
+  {
+   "substrate_id": "qs-55beeb775063c017",
+   "operator": "contradicted_clause",
+   "profile": "v1"
+  },
+  {
+   "substrate_id": "qs-a97ff272bb749518",
+   "operator": "contradicted_clause",
+   "profile": "v1"
+  },
+  {
+   "substrate_id": "qs-e7003896d6e7ab48",
+   "operator": "contradicted_clause",
+   "profile": "v1"
+  },
+  {
+   "substrate_id": "qs-e95b9a190bea1f12",
+   "operator": "contradicted_clause",
+   "profile": "v1"
+  },
+  {
+   "substrate_id": "qs-4298b5676c10ee3b",
+   "operator": "refuted_conclusion",
+   "profile": "v1"
+  },
+  {
+   "substrate_id": "qs-5de685afb96fcd3d",
+   "operator": "refuted_conclusion",
+   "profile": "v1"
+  },
+  {
+   "substrate_id": "qs-a17d0d0b23b2ad0f",
+   "operator": "refuted_conclusion",
+   "profile": "v1"
+  },
+  {
+   "substrate_id": "qs-d05784fe3c3b3ac2",
+   "operator": "refuted_conclusion",
+   "profile": "v1"
+  },
+  {
+   "substrate_id": "qs-d8054c759739e7a6",
+   "operator": "refuted_conclusion",
+   "profile": "v1"
+  },
+  {
+   "substrate_id": "qs-93a90787f0d83382",
+   "operator": "unearned_verification_claim",
+   "profile": "v2-changeset"
+  },
+  {
+   "substrate_id": "qs-9fa3482bef63d3ef",
+   "operator": "unearned_verification_claim",
+   "profile": "v2-changeset"
+  },
+  {
+   "substrate_id": "qs-c5e755a13eb7b7ee",
+   "operator": "unearned_verification_claim",
+   "profile": "v2-changeset"
+  },
+  {
+   "substrate_id": "qs-f882ddbaaed1b065",
+   "operator": "unearned_verification_claim",
+   "profile": "v2-changeset"
+  }
+ ],
+ "natural_cases": [
+  {
+   "id": "cancellation-320479-empty-patch",
+   "source": "striatum ledger: review run 317113 (agy-gemini-3-7-flash-high, 2026-08-29), review-ledger event 317468 finding RV-001, Principal cancellation record 320479",
+   "change_set": {
+    "identity": "striatum-next/passes/semantic-and-durable-closure-b/change-set",
+    "version_seq": 316939,
+    "content_hash": "e2d661c374059c646ee9122100b680dd1e28030441323b79a4d7bc3782b16dbb",
+    "schema_version": 1,
+    "files": 0,
+    "deletes": 0,
+    "result_tree_hash": "f7cf65f636a267b527d87ac33ca55900125bf7d6c80593c88562ed924171b85e"
+   },
+   "pinned_base": {
+    "materializer": "product-object",
+    "object": "8dd2928b4228ca8659d277e05dfd050b282613b7ad7b508da05fbabce978d2c9",
+    "files": 32,
+    "anchor": {
+     "kind": "git-tree",
+     "commit": "26b0cd5f194b93d1f3c1c8fdc6d6d445b2d493fb",
+     "tree": "6f92ce285cb9cee1c6eded8415f2a49c1c4dfde2"
+    },
+    "note": "the base the change set declares; production pinned only the subject for run 317113, so the gate gives the reviewer strictly more than production did"
+   },
+   "expected": {
+    "verdict": "refuse",
+    "anchored_finding": "result_tree_hash",
+    "why": "an empty change set applied to a 32-file base yields the 32-file base; the declared result names a 1,135-file tree"
+   },
+   "perturbation": "none; verbatim",
+   "contract": "advisory/criterion/review-pass-contract-649545a9.yaml (production review pass contract v2), rendered with the tree-v1 preamble and pinned-set statement"
+  }
+ ],
+ "conformance": {
+  "contract": "advisory/criterion/review-pass-contract-649545a9.yaml",
+  "checks": [
+   "output parses as a review-ledger object with verdict in {accept, accept_with_findings, needs_revision, reject}",
+   "a non-accepting verdict carries at least one finding with an element_anchor",
+   "every finding's rationale names a falsified clause, a violated decision (D\\d{4}), or a demonstrated harm (verdict discipline, Principal ruling 2026-07-18)"
+  ]
+ },
+ "replication": {
+  "control": 3,
+  "mutant": 1,
+  "natural_case": 3
+ },
+ "floors": {
+  "status": "proposed, not adopted",
+  "catch": "every scorable analog cell caught but at most 2",
+  "false_alarm": "at most 2 sound controls refused, Stage B rows only",
+  "natural_case": "refused with a finding anchored at result_tree_hash in at least 2 of 3",
+  "conformance": "3 of 3 outputs conform"
+ }
+}
