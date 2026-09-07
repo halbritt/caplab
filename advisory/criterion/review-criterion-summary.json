@@ -1,0 +1,255 @@
+{
+ "conflict_kinds_all": {
+  "anchored-delete-named-later-version": 11,
+  "declares-vs-yields": 6,
+  "link-check": 8,
+  "tree-moved": 355
+ },
+ "contracts": {
+  "0b057789518b6c7efb16142ba998549234dfecd412f4f06483c16b057aa8c1da@v2": 1,
+  "446f4edd6906d9bb20db71a285fbc891b97ffef1b419987aaa7a1bfa58595a83@v2": 36,
+  "649545a930c199f16c441194f4851fed27f504c682740a17884eec54e3560f1d@v2": 5664,
+  "fe13918359ca5f0a6b13681e0641885b2710082f560e3a52273334bfedf7e917@v2": 341
+ },
+ "dispatch_dirs_retained": 0,
+ "population": 6042,
+ "principal_acceptance_rulings": {
+  "by_class": {
+   "(unknown)": 142,
+   "decision-record": 26,
+   "design": 62,
+   "implementation-plan": 123,
+   "proposal": 51
+  },
+  "by_outcome": {
+   "fail": 139,
+   "pass": 265
+  },
+  "total": 404
+ },
+ "prompt_assets_retained": 0,
+ "strata": {
+  "bronze-clear": {
+   "by_binding": {
+    "agy-gemini-3-1-pro-high": 25,
+    "agy-gemini-3-1-pro-low": 1,
+    "agy-gemini-3-6-flash-high": 9,
+    "agy-gemini-3-6-flash-medium": 23,
+    "agy-gemini-3-7-flash-high": 71,
+    "agy-gemini-3-7-flash-medium": 10,
+    "cc-glm-5-3-max": 2,
+    "claude-fable-5-high": 2,
+    "claude-harm-fable-5-high": 1,
+    "claude-harm-opus-4-8-high": 2,
+    "codex-sol-max": 1
+   },
+   "by_class": {
+    "change-set": 147
+   },
+   "by_era": {
+    "2026-07": 3,
+    "2026-08": 124,
+    "2026-09": 20
+   },
+   "distinct_artifact_versions": 147,
+   "n": 147
+  },
+  "excluded-refused-then-revised": {
+   "by_binding": {
+    "agy-gemini-3-1-pro-high": 37,
+    "agy-gemini-3-1-pro-low": 1,
+    "agy-gemini-3-6-flash-high": 5,
+    "agy-gemini-3-6-flash-medium": 4,
+    "agy-gemini-3-7-flash-high": 23,
+    "agy-gemini-3-7-flash-medium": 3,
+    "claude-fable-5-high": 17,
+    "claude-harm-fable-5-high": 27,
+    "claude-harm-opus-4-8-high": 2,
+    "claude-harm-opus-5-high": 57,
+    "claude-opus-5-high": 9,
+    "codex-harm-sol-max": 100,
+    "codex-sol-high": 1,
+    "codex-sol-max": 164
+   },
+   "by_class": {
+    "change-set": 450
+   },
+   "by_era": {
+    "2026-07": 168,
+    "2026-08": 277,
+    "2026-09": 5
+   },
+   "distinct_artifact_versions": 449,
+   "n": 450
+  },
+  "no-verdict": {
+   "by_binding": {
+    "(unbound)": 791,
+    "agy-gemini-3-1-pro-low": 1,
+    "agy-gemini-3-6-flash-high": 97,
+    "agy-gemini-3-6-flash-medium": 79,
+    "agy-gemini-3-7-flash-high": 4,
+    "cc-glm-5-3-max": 49,
+    "claude-fable-5-high": 119,
+    "claude-harm": 5,
+    "claude-harm-fable-5-high": 1023,
+    "claude-harm-opus-5-high": 87,
+    "claude-opus-5-high": 6,
+    "codex-harm-sol-max": 617,
+    "glm": 1,
+    "local-qwen": 1
+   },
+   "by_class": {
+    "change-set": 2880
+   },
+   "by_era": {
+    "2026-07": 46,
+    "2026-08": 2834
+   },
+   "distinct_artifact_versions": 447,
+   "n": 2880
+  },
+  "silver-defect": {
+   "by_binding": {
+    "agy-claude-opus-4-6-thinking": 2,
+    "agy-gemini-3-6-flash-medium": 10,
+    "agy-gemini-3-7-flash-high": 74,
+    "agy-gemini-3-7-flash-medium": 2,
+    "claude-harm-opus-4-8-high": 8,
+    "codex-sol-max": 13
+   },
+   "by_class": {
+    "change-set": 109
+   },
+   "by_era": {
+    "2026-07": 31,
+    "2026-08": 78
+   },
+   "distinct_artifact_versions": 109,
+   "n": 109
+  },
+  "unlabelled-cleared-no-later-event": {
+   "by_binding": {
+    "agy-claude-opus-4-6-thinking": 2,
+    "agy-gemini-3-1-pro-high": 276,
+    "agy-gemini-3-1-pro-low": 18,
+    "agy-gemini-3-6-flash-high": 118,
+    "agy-gemini-3-6-flash-medium": 120,
+    "agy-gemini-3-7-flash-high": 1099,
+    "agy-gemini-3-7-flash-medium": 109,
+    "cc-glm-5-3-max": 10,
+    "claude-fable-5-high": 14,
+    "claude-harm-fable-5-high": 69,
+    "claude-harm-opus-4-8-high": 31,
+    "claude-harm-opus-5-high": 132,
+    "claude-opus-5-high": 44,
+    "codex-harm-sol-max": 129,
+    "codex-sol-high": 2,
+    "codex-sol-max": 52
+   },
+   "by_class": {
+    "change-set": 2225
+   },
+   "by_era": {
+    "2026-07": 119,
+    "2026-08": 1833,
+    "2026-09": 273
+   },
+   "distinct_artifact_versions": 2223,
+   "n": 2225
+  },
+  "unlabelled-cleared-tree-moved": {
+   "by_binding": {
+    "agy-gemini-3-7-flash-high": 191,
+    "agy-gemini-3-7-flash-medium": 22,
+    "cc-glm-5-3-max": 3,
+    "claude-harm-opus-5-high": 2
+   },
+   "by_class": {
+    "change-set": 218
+   },
+   "by_era": {
+    "2026-08": 178,
+    "2026-09": 40
+   },
+   "distinct_artifact_versions": 218,
+   "n": 218
+  },
+  "unlabelled-refused-no-later-event": {
+   "by_binding": {
+    "codex-sol-max": 13
+   },
+   "by_class": {
+    "change-set": 13
+   },
+   "by_era": {
+    "2026-07": 13
+   },
+   "distinct_artifact_versions": 13,
+   "n": 13
+  }
+ },
+ "verdict_sources": {
+  "none": 2880,
+  "review_gate_only": 0,
+  "review_ledger_body": 3162
+ },
+ "wall_clock_median_s": {
+  "agy-gemini-3-1-pro-high": {
+   "median": 353,
+   "n": 338
+  },
+  "agy-gemini-3-1-pro-low": {
+   "median": 402,
+   "n": 21
+  },
+  "agy-gemini-3-6-flash-high": {
+   "median": 553,
+   "n": 224
+  },
+  "agy-gemini-3-6-flash-medium": {
+   "median": 275,
+   "n": 235
+  },
+  "agy-gemini-3-7-flash-high": {
+   "median": 785,
+   "n": 1459
+  },
+  "agy-gemini-3-7-flash-medium": {
+   "median": 860,
+   "n": 146
+  },
+  "cc-glm-5-3-max": {
+   "median": 1952,
+   "n": 31
+  },
+  "claude-fable-5-high": {
+   "median": 140,
+   "n": 101
+  },
+  "claude-harm-fable-5-high": {
+   "median": 104,
+   "n": 1111
+  },
+  "claude-harm-opus-4-8-high": {
+   "median": 239,
+   "n": 43
+  },
+  "claude-harm-opus-5-high": {
+   "median": 1103,
+   "n": 276
+  },
+  "claude-opus-5-high": {
+   "median": 1303,
+   "n": 58
+  },
+  "codex-harm-sol-max": {
+   "median": 288,
+   "n": 846
+  },
+  "codex-sol-max": {
+   "median": 871,
+   "n": 243
+  }
+ }
+}

@@ -1,0 +1,51 @@
+id: review
+class: analysis                  # evidence plane; never transforms
+contract_version: 2
+impl_version: 3                    # complete review-ledger prompt + Supervisor validation of exact sealed subject pins
+prompt_assets: []                # content-addressed pass assets; populated in Epoch 2
+consumes:
+  - kind: "*"                    # any artifact version, decision-role included
+postures:                        # one parameterized contract; each posture is versioned, owns its
+                                 # review-ledger section schema, and participates in the pin algebra
+  - adversarial
+  - falsification
+  - second-opinion
+  - plan-critique
+  - test-gap
+  - doc-freshness
+  - dependency-audit
+  - stale-scan
+  - coherence
+  - revalidation
+  - adjudication-preparation
+environment:                     # declared reads; undeclared reads violate hermeticity
+  decisions: [D0001, D0003, D0005]
+  policies: [repository]
+produces:
+  - kind: review-ledger
+    enters_as: candidate
+invariants:
+  pre:  ["run is independent of the producing execution where the consuming gate requires it"]
+  post: ["verdict discipline (Principal ruling, 2026-07-18): a non-accepting verdict — needs_revision or reject — is lawful only for a predicate-blocking defect: one that falsifies a clause of the accepted design or predicate, violates an in-force decision, or introduces demonstrated harm on the changed surface; every such finding names the falsified clause, the violated decision, or the demonstrated harm",
+         "findings outside that acceptance boundary — style, structure, hardening opportunities, latent risks without demonstrated harm on the changed surface — are recorded under verdict accept_with_findings; they are preserved as findings and neither block acceptance nor reset convergence",
+         "findings are structured: id, severity, element anchor, rationale, proposed disposition",
+         "adjudication-preparation produces evidence-only dossiers and never selects or records a disposition",
+         "adjudication-preparation runs consume a sealed input bundle: trigger, surface ref/kind, evidence pins, registered predicate text, condition-check results, freshness pins, and the closed lawful disposition set",
+         "adjudication-preparation dossier drivers compile exactly one base dossier and exactly one cross-family adversarial dossier over the same sealed input hash and schema version",
+         "adjudication-preparation dossier outputs pass dossier-content-review before evidence admission",
+         "dissent/minority section present",
+         "summary verdict drawn from the closed vocabulary"]
+gates: []                        # produces gate input; review ledgers are evaluated by review gates
+synthesis: single
+determinism: D2                  # the revalidation posture is mechanical (D0) where only check gates apply
+replay: contract
+idempotence: versioning          # results cached by input pins; cache invalidation is exactly claim decay
+effects: E0
+failure:
+  modes: [gate_refusal, pass_error, partial, escalation, abandonment]
+commutes_with: [review, verification, observation]   # analysis passes transform nothing
+resources:
+  context: large
+  latency_class: batch
+owning_rfc: RFC 0004
+status: accepted

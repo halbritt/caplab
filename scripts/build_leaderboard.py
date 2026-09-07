@@ -234,11 +234,15 @@ def load_claims():
 
 
 def best_per_binding(rows):
-    """Newest, widest claim per Binding within one cohort."""
+    """Newest claim per Binding within one cohort; width breaks a tie.
+
+    Newest first, not widest first: a claim re-issued under a later scoring
+    rule (the 2026-09-07 standing order scores five operators, so it has
+    fewer pairs) must win over the wider claim it supersedes."""
     keep = {}
     for r in rows:
         cur = keep.get(r["subject"])
-        if cur is None or (r["pairs"], r["as_of_full"]) > (cur["pairs"], cur["as_of_full"]):
+        if cur is None or (r["as_of_full"], r["pairs"]) > (cur["as_of_full"], cur["pairs"]):
             keep[r["subject"]] = r
     return sorted(keep.values(), key=lambda r: -(r["disc"] if r["disc"] is not None else -9))
 
@@ -1144,6 +1148,15 @@ local page, not published.</p>
 <a href="#planning">planning gate</a><a href="#fate">production fate</a>
 <a href="#bindings">per-binding history</a><a href="#history">earlier cohorts</a><a href="#derived">derived &amp; harvested</a></nav>
 
+<div class="rule" style="border-left-color: var(--fa)"><strong>Placement frozen (Principal, 2026-09-07; instruction-2026-09-07-review-validation-study §0).</strong>
+No placement or qualification decision cites this instrument's dimensions until the review-instrument
+validation study rules. Existing permitted tuples stay; nothing is newly minted or disqualified from this
+table. Catch and false alarm below are scored on the five operators with a natural analog among the 26
+audited real defects (<code>unearned_verification_claim</code>, <code>contradicted_clause</code>,
+<code>refuted_conclusion</code>, <code>decorative_check</code>, <code>broken_internal_crossref</code>); the
+other eleven are a regression sentinel and no longer enter a claim. The ledger pass of 2026-09-07 found no
+Principal re-ruling of any production change-set review, so the study's floor (five gold positives) is not
+met; the disposition is in <code>docs/records/report-2026-09-07-review-instrument-disposition.md</code>.</div>
 <div class="rule" style="border-left-color: var(--fa)"><strong>Provisional (Principal, 2026-09-06; plan tree-v1 rev 2 §7).</strong>
 Every row on this cohort was measured under <code>iso-v1</code>, which withheld the artifact's base tree: its
 <em>reference-resolution</em> performance is invalid, and its false-alarm rates penalise verification-oriented

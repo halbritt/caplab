@@ -131,8 +131,15 @@ def _sha256_file(path: str) -> str:
     return digest.hexdigest()
 
 
+#: Standing order 2026-09-07: catch and false alarm are scored on the
+#: natural-analog operators only; None means every operator counts (the
+#: pre-2026-09-07 behaviour, kept for tests of the scoring mechanics).
+from .operators import QUALIFICATION_OPERATORS as DEFAULT_QUALIFICATION_OPERATORS  # noqa: E402
+
+
 def score_backends(run_dirs: list[str], adjudications=None,
-                   substrate_sources: dict | None = None) -> dict[str, dict]:
+                   substrate_sources: dict | None = None,
+                   qualification_operators: tuple | None = None) -> dict[str, dict]:
     """Per-backend merged metrics over the given completed run directories.
 
     `adjudications` supplies what is known about each control arm. A control
@@ -157,6 +164,9 @@ def score_backends(run_dirs: list[str], adjudications=None,
 
     per_backend: dict[str, dict] = {}
     run_instruments: dict[str, str] = {}
+    allowed = (DEFAULT_QUALIFICATION_OPERATORS if qualification_operators is None
+               else qualification_operators)
+    operators_allowed = None if allowed is None else set(allowed)
     for run_dir in run_dirs:
         results_path = os.path.join(run_dir, "results.jsonl")
         run_name = os.path.basename(run_dir)
@@ -174,6 +184,19 @@ def score_backends(run_dirs: list[str], adjudications=None,
                 # used to slip through here: a dead mutant arm scored as a
                 # miss, a dead control arm as a clean clearance (four such
                 # rows in sweep 20260817).
+                continue
+            if operators_allowed is not None and row.get("defect_class") not in operators_allowed:
+                # Standing order 2026-09-07: an operator without a natural
+                # analog among the audited real defects is a regression
+                # sentinel. Its rows are counted and reported, never scored.
+                stat = per_backend.setdefault(
+                    row.get("backend_measured") or "(unknown)",
+                    {"rows": [], "runs": {}, "dispatches": collections.Counter()})
+                cell = stat.setdefault("sentinel", collections.defaultdict(
+                    lambda: {"n": 0, "caught": 0, "false_alarm": 0}))[row.get("defect_class") or "(unknown)"]
+                cell["n"] += 1
+                cell["caught"] += int(bool(row.get("caught")))
+                cell["false_alarm"] += int(bool(row.get("false_alarm")))
                 continue
             if row.get("anchor"):
                 # Anchor cases are replayed by every sweep to measure the
@@ -202,6 +225,17 @@ def score_backends(run_dirs: list[str], adjudications=None,
     for backend, stat in sorted(per_backend.items()):
         rows = stat["rows"]
         n = len(rows)
+        if n == 0:
+            # Every usable row fell to the sentinel: the binding was measured
+            # but holds no scorable pair. Reported, never divided.
+            scored[backend] = {
+                "backend": backend, "runs": [], "n_pairs": 0,
+                "metrics": {"n_pairs": {"value": 0}},
+                "qualification_operators": sorted(operators_allowed or []),
+                "sentinel_by_defect_class": {k: dict(v) for k, v in sorted((stat.get("sentinel") or {}).items())},
+                "instruments": sorted(x for x in stat.get("instruments", set()) if x),
+            }
+            continue
         caught = sum(1 for _, r in rows if r.get("caught"))
 
         # False-alarm accounting, conditioned on what is known about controls.
@@ -303,6 +337,8 @@ def score_backends(run_dirs: list[str], adjudications=None,
             "metrics": metrics,
             "by_defect_class": {k: dict(v) for k, v in sorted(by_class.items())},
             "by_base_source": {k: dict(v) for k, v in sorted(by_base.items())},
+            "qualification_operators": sorted(operators_allowed) if operators_allowed is not None else None,
+            "sentinel_by_defect_class": {k: dict(v) for k, v in sorted((stat.get("sentinel") or {}).items())},
             "repeated_case_trials": n - len(stat["dispatches"]),
             "runs": sorted(stat["runs"].values(), key=lambda e: e["run"]),
         }

@@ -406,6 +406,31 @@ def operators_for(environment: str, base_source: str | None = None) -> dict:
     return table
 
 
+#: Standing order 2026-09-07 (instruction-2026-09-07-review-validation-study
+#: §0.3): only operators with a natural analog among the 26 audited real
+#: defects count toward a qualification claim. The analog for each kept
+#: operator is a control the adjudication ledger proved defective:
+#:   unearned_verification_claim  qs-40583720 (receipts assert executions that
+#:                                never ran), 71ac079a / 1c9196ec ('proves' by
+#:                                grepping comments), qs-415d0b93, b9919beb
+#:   contradicted_clause          e57c4ab7 (README vs test), 425bccdb,
+#:                                qs-5ea16d21 (13 vs 22), a17d0d0b, qs-f3d9c1ad
+#:   refuted_conclusion           qs-42ac7af2 (capacity rationale vs its own
+#:                                figures), f42f9365, b755eb26, qs-71a0c8dd
+#:   decorative_check             qs-415d0b93 (registered argv silently
+#:                                substituted), qs-ccfd2a5f, qs-907a07da, 614cac36
+#:   broken_internal_crossref     qs-922bffcd (one anchor id for two documents)
+#: The remaining operators are a regression sentinel: measured, reported
+#: under `sentinel_by_defect_class`, never in catch or false alarm.
+QUALIFICATION_OPERATORS = ("unearned_verification_claim", "contradicted_clause",
+                           "refuted_conclusion", "decorative_check",
+                           "broken_internal_crossref")
+SENTINEL_ONLY_OPERATORS = ("base_dropped", "dangling_reference", "dropped_section",
+                           "duplicated_section", "hash_mismatch", "hollow_delivery",
+                           "overclaimed_level", "requirement_inversion", "scope_violation",
+                           "swapped_section_bodies", "truncated_tail")
+
+
 CAPLAB_OPERATORS = [broken_internal_crossref, requirement_inversion,
                     duplicated_section, truncated_tail, swapped_section_bodies,
                     unearned_verification_claim]

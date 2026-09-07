@@ -2,6 +2,22 @@ import json
 import os
 import tempfile
 import unittest
+from unittest import mock as _mock
+
+from caplab.advisory import scoring as _scoring
+
+#: These tests exercise the scoring mechanics with synthetic defect classes;
+#: they run with every operator allowed. The standing-order allowlist of
+#: 2026-09-07 is tested in test_advisory_sentinel.py.
+_ALLOW_ALL = _mock.patch.object(_scoring, "DEFAULT_QUALIFICATION_OPERATORS", None)
+
+
+def setUpModule():
+    _ALLOW_ALL.start()
+
+
+def tearDownModule():
+    _ALLOW_ALL.stop()
 
 from caplab.advisory.claims import Ledger, build_claim
 from caplab.advisory.export import export_document

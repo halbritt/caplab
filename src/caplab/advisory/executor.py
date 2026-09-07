@@ -37,6 +37,15 @@ ADVISORY_NOTE_COMMON = (
     "caplab-advisory: CAPLAB-directed advisory-grade execution through the "
     "subject's declared adapter command; no sealed custody domain, no "
     "provider-authenticated identity.")
+#: Standing order 2026-09-07 (instruction-2026-09-07-review-validation-study
+#: §0.2–0.3), carried on every claim until the validation study rules.
+ADVISORY_NOTE_STANDING_ORDER = (
+    "standing order 2026-09-07: no placement or qualification decision cites "
+    "this instrument's dimensions until the review-instrument validation study "
+    "rules; catch and false alarm are scored on the five natural-analog "
+    "operators only (unearned_verification_claim, contradicted_clause, "
+    "refuted_conclusion, decorative_check, broken_internal_crossref); the "
+    "other eleven are a regression sentinel reported beside them.")
 ADVISORY_NOTES_BY_INSTRUMENT = {
     "matched-pair defect injection": (
         "dispatch-prompt profile: the pinned striatum-tuner instrument renders "
@@ -270,7 +279,7 @@ def claims_from_runs(run_dirs: list[str], backends_root: str | None,
                     if summary.get("calibration_profile"):
                         entry["prompt_profile"] = summary["calibration_profile"]
             evidence.append(entry)
-        notes = list(ADVISORY_NOTES)
+        notes = list(ADVISORY_NOTES) + [ADVISORY_NOTE_STANDING_ORDER]
         for instrument in result.get("instruments") or []:
             notes.append(f"instrument: {instrument}")
             described = ADVISORY_NOTES_BY_INSTRUMENT.get(instrument)
