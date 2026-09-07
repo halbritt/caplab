@@ -1,6 +1,7 @@
 {
  "bases": {
   "qs-00dd988485a4aa38": {
+   "artifact_path": "docs/audits/RQ_112985_FAN_OUT_FAILURE_REMEDIATION_ASSESSMENT_2026-07-31.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -216,6 +217,7 @@
    "unresolved_references": []
   },
   "qs-016870765a7d28ac": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/LADDER-RESULT.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -226,6 +228,7 @@
    "unresolved_references": []
   },
   "qs-01b639c45a306dcc": {
+   "artifact_path": "docs/records/caplab-p5-isolated-restore-verification-2026-07-16.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -236,6 +239,7 @@
    "unresolved_references": []
   },
   "qs-01e6f1140fb1ca0b": {
+   "artifact_path": "rfcs/0008-scheduler-and-capacity-policy/design.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -246,6 +250,7 @@
    "unresolved_references": []
   },
   "qs-025e3b62b696349c": {
+   "artifact_path": "decisions/D0008-scheduler-and-capacity-policy.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -256,6 +261,7 @@
    "unresolved_references": []
   },
   "qs-031df85e121d7ce4": {
+   "artifact_path": "docs/audits/MULTIPACKET_ANCHORED_INTEGRATION_LIVELOCK_2026-07-28.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -924,6 +930,7 @@
    "unresolved_references": []
   },
   "qs-037adb0075842c5e": {
+   "artifact_path": "docs/decisions/adr-0031-striatum-build-and-review-profiles.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -1246,6 +1253,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-03cef82ba4fb48a0": {
+   "artifact_path": "rfcs/0002-compiler-architecture/design.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -1256,6 +1264,7 @@
    "unresolved_references": []
   },
   "qs-0406817f95ea638a": {
+   "artifact_path": "decisions/D0004-compiler-passes.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -1830,6 +1839,7 @@
    "unresolved_references": []
   },
   "qs-0664890f531a878c": {
+   "artifact_path": "docs/explanation/truth-surface-hardening.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -1855,6 +1865,7 @@
    "unresolved_references": []
   },
   "qs-087cbe83af5fb7aa": {
+   "artifact_path": "docs/explanation/hostile-lane-containment.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -1865,6 +1876,7 @@
    "unresolved_references": []
   },
   "qs-08dac4a9330ef806": {
+   "artifact_path": "docs/decisions/adr-0026-caplab-blanket-decision-authority.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -1890,6 +1902,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-0a7a63313f471978": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/12-operations-ephemeral-instance-design/reference.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -1900,6 +1913,7 @@
    "unresolved_references": []
   },
   "qs-0b0682acaa749f77": {
+   "artifact_path": "docs/decisions/adr-0010-caplab-p5-corrective-continuation.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -1910,6 +1924,7 @@
    "unresolved_references": []
   },
   "qs-0b546dc1fee11d9c": {
+   "artifact_path": "docs/decisions/adr-0045-caplab-13-native-calibration-disposition.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -1920,6 +1935,7 @@
    "unresolved_references": []
   },
   "qs-0ba5960dfdb25f29": {
+   "artifact_path": "docs/decisions/adr-0064-advisory-selection-campaign.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -1960,6 +1976,7 @@
    "unresolved_references": []
   },
   "qs-0c5b97bdd4b78237": {
+   "artifact_path": "docs/decisions/adr-0014-caplab-p5-purge-and-p6-admission.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -1970,6 +1987,7 @@
    "unresolved_references": []
   },
   "qs-0d1d16b0008cccaa": {
+   "artifact_path": "rfcs/0014-cross-repository-compilation/proposal.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -2005,6 +2023,7 @@
    "unresolved_references": []
   },
   "qs-0d4f845934dfb314": {
+   "artifact_path": "rfcs/0010-work-graph-execution/proposal.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -2085,6 +2104,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-0f2406744f82c7a6": {
+   "artifact_path": "docs/decisions/adr-0037-caplab-8-live-preference-study-authorization.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -2135,6 +2155,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-0f365e017e7e8f0a": {
+   "artifact_path": "docs/decisions/adr-0044-caplab-13-native-development-calibration.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -2145,6 +2166,7 @@
    "unresolved_references": []
   },
   "qs-0f4d6c70252f383b": {
+   "artifact_path": "docs/decisions/adr-0025-caplab-p13-independent-verification-authorization.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -2185,6 +2207,7 @@
    "unresolved_references": []
   },
   "qs-104d1ed668a557c9": {
+   "artifact_path": "docs/explanation/satisfaction-earns-its-force.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -2195,6 +2218,7 @@
    "unresolved_references": []
   },
   "qs-1090efc83c197bae": {
+   "artifact_path": "docs/records/caplab-13-native-result-2026-07-20.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -2459,6 +2483,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-11478f81bfae578d": {
+   "artifact_path": "docs/records/caplab-p5-promotion-readiness-verification-2026-07-17.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -2469,6 +2494,7 @@
    "unresolved_references": []
   },
   "qs-11761308e85986ad": {
+   "artifact_path": "docs/product/qualification/agy-gemini-37-flash-pilot.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -2479,6 +2505,7 @@
    "unresolved_references": []
   },
   "qs-11a0b1a4897663ab": {
+   "artifact_path": "docs/records/caplab-8-openrouter-attempt-quarantine-2026-07-20.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -3279,6 +3306,7 @@
    "unresolved_references": []
   },
   "qs-13d7654067fe0d5a": {
+   "artifact_path": "decisions/D0002-compiler-architecture.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -3304,6 +3332,7 @@
    "unresolved_references": []
   },
   "qs-1483d8fd8f48c855": {
+   "artifact_path": "rfcs/0014-cross-repository-compilation/implementation.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -3554,6 +3583,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-15923dc8baa739c9": {
+   "artifact_path": "docs/reference/cli.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -3564,6 +3594,7 @@
    "unresolved_references": []
   },
   "qs-15de1b3c4b367012": {
+   "artifact_path": "docs/concepts/graph-store.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -3860,6 +3891,7 @@
    ]
   },
   "qs-1799a8a01d588d4b": {
+   "artifact_path": "rfcs/0010-work-graph-execution/design.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -3905,6 +3937,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-198171be7e4ea7e6": {
+   "artifact_path": "rfcs/0005-artifact-lifecycle-and-state-machine/design.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -3915,6 +3948,7 @@
    "unresolved_references": []
   },
   "qs-1a34dc7d5aa8ee90": {
+   "artifact_path": "rfcs/0019-backend-qualification-and-corpus-evidence/design.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -4326,6 +4360,7 @@
    "unresolved_references": []
   },
   "qs-1a5f1cf3989f765f": {
+   "artifact_path": "docs/product/training/caplab-review-dissent-local-qwen-r2/README.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -4336,6 +4371,7 @@
    "unresolved_references": []
   },
   "qs-1a8c7d5943ee3094": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/MANIFEST.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -4346,6 +4382,7 @@
    "unresolved_references": []
   },
   "qs-1ab79be9b97a5df0": {
+   "artifact_path": "docs/records/caplab-p7-live-attempt-2026-07-18.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -4356,6 +4393,7 @@
    "unresolved_references": []
   },
   "qs-1ad2ea9ebc57c39e": {
+   "artifact_path": "docs/audits/STRIATUM_NEXT_DEEP_ARCHITECTURE_REVIEW_CLAUDE_FABLE_5_2026-08-03.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -4804,6 +4842,7 @@
    "unresolved_references": []
   },
   "qs-1b409c0128233b88": {
+   "artifact_path": "docs/audits/RQ_57950_DRIVE_POSTMORTEM_2026-07-21.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -5063,6 +5102,7 @@
    "unresolved_references": []
   },
   "qs-1c3a117302941186": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/13-operations-synchronized-demand-dispersion/PROMPT.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -5073,6 +5113,7 @@
    "unresolved_references": []
   },
   "qs-1cf07e69743880f5": {
+   "artifact_path": "docs/records/caplab-p7-live-retry-2-proposal-2026-07-19.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -5098,6 +5139,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-1e01931c588518be": {
+   "artifact_path": "docs/records/caplab-p7-live-second-retry-attempt-2026-07-19.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -5412,6 +5454,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-1fa6de635782765a": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/10-legacy-provisional-safety-net/reference.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -5789,6 +5832,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-21e995dae3a72543": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/04-domain-service-operation/reference.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -5814,6 +5858,7 @@
    "unresolved_references": []
   },
   "qs-22151ba3de1c8080": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/11-operations-contract-conformance-testing/world/docs/supplier-api-v2.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -5824,6 +5869,7 @@
    "unresolved_references": []
   },
   "qs-22c20380753e6421": {
+   "artifact_path": "docs/decisions/adr-0055-authorize-qwen27b-execution-policy-corrected-launch.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -5834,6 +5880,7 @@
    "unresolved_references": []
   },
   "qs-23832fb1fccbb6d6": {
+   "artifact_path": "docs/concepts/dispatch-and-submission.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -5903,6 +5950,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-23ea8c01c92eeabe": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/DESIGN.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -6100,6 +6148,7 @@
    "unresolved_references": []
   },
   "qs-264816b450f45b4e": {
+   "artifact_path": "rfcs/0007-agent-runtimes-and-execution-backends/implementation.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -6608,6 +6657,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-26d2fa87bfc68a87": {
+   "artifact_path": "docs/decisions/adr-0049-preregister-qwen-27b-review-dissent-qlora.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -6843,6 +6893,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-273007bc71b9c62f": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/07-implementation-attention-budget-presentation/reference.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -7301,6 +7352,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-28549ac9e376d530": {
+   "artifact_path": "docs/product/advisory/README.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -7346,6 +7398,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-293a8f6ab064fd67": {
+   "artifact_path": "docs/records/caplab-p6-admission-execution-2026-07-17.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -7356,6 +7409,7 @@
    "unresolved_references": []
   },
   "qs-29742826e4234c31": {
+   "artifact_path": "decisions/D0016-graduated-acceptance.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -7429,6 +7483,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-29bb7db6848bdc49": {
+   "artifact_path": "rfcs/0005-artifact-lifecycle-and-state-machine/implementation.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -7460,6 +7515,7 @@
    "unresolved_references": []
   },
   "qs-29fb10d4b4428dcb": {
+   "artifact_path": "docs/passes/escalations-arrive-dossiered/authority-surface-notes.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -7470,6 +7526,7 @@
    "unresolved_references": []
   },
   "qs-2a0853bc1a448a75": {
+   "artifact_path": "docs/records/caplab-12-review-dissent-instrument-implementation-2026-07-20.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -7480,6 +7537,7 @@
    "unresolved_references": []
   },
   "qs-2a0c93513a599fc7": {
+   "artifact_path": "docs/decisions/adr-0036-caplab-12-review-dissent-instrument-authorization.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -7490,6 +7548,7 @@
    "unresolved_references": []
   },
   "qs-2a7e53b2e2474f68": {
+   "artifact_path": "decisions/D0006-driver-control-surface.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -7500,6 +7559,7 @@
    "unresolved_references": []
   },
   "qs-2acfcd90d1480513": {
+   "artifact_path": "docs/records/caplab-p5-recovery-compatibility-verification-2026-07-17.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -7896,6 +7956,7 @@
    "unresolved_references": []
   },
   "qs-2b28b37120431f96": {
+   "artifact_path": "docs/product/advisory/case-pool-governance.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -8736,6 +8797,7 @@
    "unresolved_references": []
   },
   "qs-2b5dcce2a3ff4440": {
+   "artifact_path": "docs/records/caplab-p5-recovery-compatibility-execution-2026-07-17.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -8761,6 +8823,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-2b64292a05f04bb5": {
+   "artifact_path": "docs/explanation/graduated-acceptance.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -9070,6 +9133,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-2e2660cebd6d2b35": {
+   "artifact_path": "docs/decisions/adr-0013-caplab-p5-promotion-readiness-correction.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -9975,6 +10039,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-3036824be26d92a8": {
+   "artifact_path": "rfcs/0003-intermediate-representations/design.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -10000,6 +10065,7 @@
    "unresolved_references": []
   },
   "qs-30834456eaee9b05": {
+   "artifact_path": "docs/product/advisory/code-review-construct-design.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -10084,6 +10150,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-30e30cdefe931485": {
+   "artifact_path": "docs/product/studies/caplab-preference-001-native-r1-preregistration.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -10109,6 +10176,7 @@
    "unresolved_references": []
   },
   "qs-32fbbe820b4b246a": {
+   "artifact_path": "docs/explanation/cross-repository-compilation.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -10119,6 +10187,7 @@
    "unresolved_references": []
   },
   "qs-3316a2e605d29cc6": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/17-testing-shared-dependency-substitution/PROMPT.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -10129,6 +10198,7 @@
    "unresolved_references": []
   },
   "qs-34a6f5c38b1870e3": {
+   "artifact_path": "docs/product/plans/plan-agent-capability-lab-v0.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -10442,6 +10512,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-35c5bfa042be8b6d": {
+   "artifact_path": "docs/audits/SEMANTIC_AND_DURABLE_CLOSURE_RECONCILIATION_2026-07-11.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -10477,6 +10548,7 @@
    "unresolved_references": []
   },
   "qs-3632e5d4dce3fcd7": {
+   "artifact_path": "docs/decisions/adr-0038-caplab-13-development-calibration-authorization.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -10736,6 +10808,7 @@
    "unresolved_references": []
   },
   "qs-364962effc8e4ff2": {
+   "artifact_path": "rfcs/0015-fleet-knowledge/proposal.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -11020,6 +11093,7 @@
    "unresolved_references": []
   },
   "qs-3764d4e00d523322": {
+   "artifact_path": "rfcs/0011-self-hosting-bootstrap/design.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -11055,6 +11129,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-383dd1915eb791ee": {
+   "artifact_path": "docs/how-to/add-an-execution-backend.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -11606,6 +11681,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-3965feedf96488e4": {
+   "artifact_path": "rfcs/0009-provenance-ledger-and-artifact-store/proposal.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -11651,6 +11727,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-3ae0a1ed32a785c5": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/README.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -11661,6 +11738,7 @@
    "unresolved_references": []
   },
   "qs-3bbddf161a24ebf0": {
+   "artifact_path": "docs/reference/backend-contracts.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -11671,6 +11749,7 @@
    "unresolved_references": []
   },
   "qs-3cda9d1cb30877e9": {
+   "artifact_path": "docs/decisions/adr-0041-caplab-8-native-live-preference-authorization.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -11790,6 +11869,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-3e0c66bf4f057373": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/concept-slate-20.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -11800,6 +11880,7 @@
    "unresolved_references": []
   },
   "qs-3f5399b600fc263b": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/03-domain-factory-lifecycle/PROMPT.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -11810,6 +11891,7 @@
    "unresolved_references": []
   },
   "qs-3f557f326b9e3967": {
+   "artifact_path": "decisions/D0012-runtime-hardening.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -11820,6 +11902,7 @@
    "unresolved_references": []
   },
   "qs-3f6272a88ee5dc8e": {
+   "artifact_path": "docs/explanation/striatum-as-compiler-for-engineering-intent.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -11830,6 +11913,7 @@
    "unresolved_references": []
   },
   "qs-3fd1a0f4c6acd493": {
+   "artifact_path": "docs/records/caplab-p7-live-third-retry-attempt-2026-07-19.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -11875,6 +11959,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-402057192be1b8a8": {
+   "artifact_path": "docs/product/training/caplab-review-dissent-local-qwen-r1/caplab-review-dissent-qwen27b-qlora-r1-preregistration.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -12134,6 +12219,7 @@
    "unresolved_references": []
   },
   "qs-40be7cf187a4e288": {
+   "artifact_path": "docs/explanation/bootstrap-compiler-model.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -12144,6 +12230,7 @@
    "unresolved_references": []
   },
   "qs-41241900113d9862": {
+   "artifact_path": "docs/tutorials/first-compile.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -12154,6 +12241,7 @@
    "unresolved_references": []
   },
   "qs-4148306b99f685fc": {
+   "artifact_path": "docs/decisions/README.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -12259,6 +12347,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-4298b5676c10ee3b": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/PART1-RESULT.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -12269,6 +12358,7 @@
    "unresolved_references": []
   },
   "qs-42ac7af2bd75bd7d": {
+   "artifact_path": "docs/decisions/adr-0057-authorize-qwen27b-dual-slot-exclusive-launch.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -12770,6 +12860,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-442fa0a282d04187": {
+   "artifact_path": "docs/records/caplab-41-evaluation-replay-implementation-2026-07-20.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -12919,6 +13010,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-45c2cbbfa375a807": {
+   "artifact_path": "rfcs/0000-bootstrapping-striatum-next/proposal.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -12964,6 +13056,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-45e1a2bf9cb55696": {
+   "artifact_path": "rfcs/0008-scheduler-and-capacity-policy/implementation.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -12974,6 +13067,7 @@
    "unresolved_references": []
   },
   "qs-46092499aad64680": {
+   "artifact_path": "docs/decisions/adr-0017-caplab-p7-live-continuation.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -13029,6 +13123,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-46bdd18906fc1f8c": {
+   "artifact_path": "docs/decisions/adr-0016-caplab-backlog-drain-afk-implementation.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -13039,6 +13134,7 @@
    "unresolved_references": []
   },
   "qs-4772611d62f194d0": {
+   "artifact_path": "docs/records/caplab-16-qwen27b-qlora-attempt-2026-07-21.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -13392,6 +13488,7 @@
    "unresolved_references": []
   },
   "qs-48ab1c4c24abf770": {
+   "artifact_path": "decisions/index.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -14360,6 +14457,7 @@
    "unresolved_references": []
   },
   "qs-49412e029b556999": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/12-operations-ephemeral-instance-design/PROMPT.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -14370,6 +14468,7 @@
    "unresolved_references": []
   },
   "qs-49fc4184e1817e59": {
+   "artifact_path": "docs/decisions/adr-0030-preference-001-hypothesis-selection.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -14445,6 +14544,7 @@
    "unresolved_references": []
   },
   "qs-4af0b8c7433a6466": {
+   "artifact_path": "docs/records/caplab-p8-p10-execution-2026-07-20.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -14455,6 +14555,7 @@
    "unresolved_references": []
   },
   "qs-4b79497f7ee9dfa5": {
+   "artifact_path": "docs/records/retraction-2026-08-16-aborted-run-claim.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -14465,6 +14566,7 @@
    "unresolved_references": []
   },
   "qs-4bdf0990d5bb704a": {
+   "artifact_path": "docs/audits/SEMANTIC_AND_DURABLE_CLOSURE_CAMPAIGN_POSTMORTEM_2026-07-12.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -15654,6 +15756,7 @@
    "unresolved_references": []
   },
   "qs-4c4352b33c8c0309": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/08-implementation-error-surface-reduction/PROMPT.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -15664,6 +15767,7 @@
    "unresolved_references": []
   },
   "qs-4cc7d8360a4a9c3e": {
+   "artifact_path": "rfcs/0005-artifact-lifecycle-and-state-machine/proposal.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -15714,6 +15818,7 @@
    "unresolved_references": []
   },
   "qs-4d5dec94b6b439e6": {
+   "artifact_path": "rfcs/0011-self-hosting-bootstrap/implementation.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -15724,6 +15829,7 @@
    "unresolved_references": []
   },
   "qs-4dc8e07e5529ca7d": {
+   "artifact_path": "docs/records/caplab-p9-inference-decision-proposal-2026-07-20.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -16039,6 +16145,7 @@
    "unresolved_references": []
   },
   "qs-4e346aaa7b12d1c7": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/01-data-single-authority-change-propagation/PROMPT.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -16410,6 +16517,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-4f131223f921cbdb": {
+   "artifact_path": "docs/audits/CAPABILITY_AWARE_PLACEMENT_3_BLOCKER_FORENSIC_AUDIT_2026-07-26.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -17120,6 +17228,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-4f3d4196c8f4e5cd": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/17-testing-shared-dependency-substitution/reference.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -17170,6 +17279,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-50de5a800a91dcaf": {
+   "artifact_path": "docs/concepts/language-specification.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -17230,6 +17340,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-522bbd73e1744554": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/08-implementation-error-surface-reduction/reference.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -17489,6 +17600,7 @@
    "unresolved_references": []
   },
   "qs-540cb2c03e245d85": {
+   "artifact_path": "docs/records/afk-report-advisory-selection-001-2026-08-15.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -17758,6 +17870,7 @@
    "unresolved_references": []
   },
   "qs-555f9f3b58e12467": {
+   "artifact_path": "decisions/D0014-cross-repository-compilation.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -17858,6 +17971,7 @@
    "unresolved_references": []
   },
   "qs-580d5f2485061a78": {
+   "artifact_path": "docs/decisions/adr-0022-caplab-p7-runtime-custody-and-fourth-retry.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -17907,6 +18021,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-5882acca4ffaf305": {
+   "artifact_path": "docs/audits/BACKEND_EFFORT_TELEMETRY_MINING_2026-07-28.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -17917,6 +18032,7 @@
    "unresolved_references": []
   },
   "qs-59ee937124417b8a": {
+   "artifact_path": "docs/concepts/target-state.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -17927,6 +18043,7 @@
    "unresolved_references": []
   },
   "qs-59f690ba79ab491f": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/11-operations-contract-conformance-testing/reference.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -18080,6 +18197,7 @@
    "unresolved_references": []
   },
   "qs-5ba060d42728b4bf": {
+   "artifact_path": "rfcs/0009-provenance-ledger-and-artifact-store/implementation.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -18090,6 +18208,7 @@
    "unresolved_references": []
   },
   "qs-5bc05fddebd2fafe": {
+   "artifact_path": "docs/records/caplab-13-development-calibration-implementation-2026-07-20.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -18100,6 +18219,7 @@
    "unresolved_references": []
   },
   "qs-5c072c4e003c0ceb": {
+   "artifact_path": "docs/decisions/adr-0023-caplab-study-001-capability-inference-refusal.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -18110,6 +18230,7 @@
    "unresolved_references": []
   },
   "qs-5c44e38c37a47764": {
+   "artifact_path": "docs/decisions/adr-0046-caplab-first-striatum-lane-fit.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -18135,6 +18256,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-5cd3b2349692df73": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/11-operations-contract-conformance-testing/PROMPT.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -18184,6 +18306,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-5d67f7f55ca8e643": {
+   "artifact_path": "docs/decisions/adr-0051-dispose-failed-qwen27b-training-attempt.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -18194,6 +18317,7 @@
    "unresolved_references": []
   },
   "qs-5db7dbe8a7604aad": {
+   "artifact_path": "docs/source-provenance.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -18219,6 +18343,7 @@
    "unresolved_references": []
   },
   "qs-5de685afb96fcd3d": {
+   "artifact_path": "docs/decisions/adr-0007-caplab-v0-cli-runtime.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -18244,6 +18369,7 @@
    "unresolved_references": []
   },
   "qs-5e9c18c966cd8bf7": {
+   "artifact_path": "docs/audits/RQ_57950_POSTMORTEM_ANALYSIS_2026-07-22.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -18745,6 +18871,7 @@
    "unresolved_references": []
   },
   "qs-5ea16d212ab3d464": {
+   "artifact_path": "docs/records/read-2026-08-16-matched-custody-ordering.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -18755,6 +18882,7 @@
    "unresolved_references": []
   },
   "qs-5eaa40059082c1c5": {
+   "artifact_path": "rfcs/0017-irreversibility-floor/proposal.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -19301,6 +19429,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-5f841949fa746b8e": {
+   "artifact_path": "docs/records/caplab-p14-owner-decision-proposal-2026-07-20.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -19806,6 +19935,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-5f96ef1cbbc83657": {
+   "artifact_path": "docs/records/caplab-p7-live-recomputation-execution-2026-07-20.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -19816,6 +19946,7 @@
    "unresolved_references": []
   },
   "qs-60ae580168059805": {
+   "artifact_path": "docs/decisions/adr-0052-stop-scheduler-and-model-development-after-failed-attempt.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -19826,6 +19957,7 @@
    "unresolved_references": []
   },
   "qs-6143941fcb458a34": {
+   "artifact_path": "rfcs/0001-language-specification/proposal.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -19836,6 +19968,7 @@
    "unresolved_references": []
   },
   "qs-614c84f145cfabe1": {
+   "artifact_path": "docs/concepts/execution-backend.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -19846,6 +19979,7 @@
    "unresolved_references": []
   },
   "qs-61659e7a0193c5ab": {
+   "artifact_path": "rfcs/0015-fleet-knowledge/design.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -19881,6 +20015,7 @@
    "unresolved_references": []
   },
   "qs-6184179268acf229": {
+   "artifact_path": "docs/audits/D0007_INVOCATION_CLOSURE_FIELD_RESOLUTIONS_2026-07-11.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -19956,6 +20091,7 @@
    "unresolved_references": []
   },
   "qs-62da71ff04ca39dc": {
+   "artifact_path": "rfcs/0019-backend-qualification-and-corpus-evidence/proposal.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -20125,6 +20261,7 @@
    "unresolved_references": []
   },
   "qs-63138ac67c534ce9": {
+   "artifact_path": "docs/decisions/adr-0062-binding-qualification-boundary.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -20150,6 +20287,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-6391605e5965c27f": {
+   "artifact_path": "docs/how-to/recover-from-failed-pass.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -20681,6 +20819,7 @@
    "unresolved_references": []
   },
   "qs-6657f3b159f2e3a6": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/14-python-compatible-property-evolution/PROMPT.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -21222,6 +21361,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-67611d4c51db99ff": {
+   "artifact_path": "docs/decisions/adr-0050-authorize-qwen27b-qlora-training-and-evaluation.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -21267,6 +21407,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-685f21ec1d091334": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/LADDER-PROTOCOL.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -21277,6 +21418,7 @@
    "unresolved_references": []
   },
   "qs-686b7bb7552d403c": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/10-legacy-provisional-safety-net/PROMPT.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -21287,6 +21429,7 @@
    "unresolved_references": []
   },
   "qs-69842d25855fbd14": {
+   "artifact_path": "rfcs/0006-driver-control-surface/implementation.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -21640,6 +21783,7 @@
    "unresolved_references": []
   },
   "qs-6bc39c7510cca0f7": {
+   "artifact_path": "docs/audits/BACKEND_SELECTION_OVERTHINKING_AUDIT_2026-07-23.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -23013,6 +23157,7 @@
    "unresolved_references": []
   },
   "qs-6cf80d3b3e758991": {
+   "artifact_path": "docs/records/finding-2026-08-16-control-soundness-is-not-established.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -23023,6 +23168,7 @@
    "unresolved_references": []
   },
   "qs-6d0ecc98d4fbedaa": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/SCENARIO-AUTHORING-PROMPT.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -24127,6 +24273,7 @@
    "unresolved_references": []
   },
   "qs-716ea38854e5214b": {
+   "artifact_path": "docs/decisions/adr-0015-caplab-p5-frozen-source-worktree.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -24172,6 +24319,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-71a0c8dd36c55a62": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/04-domain-service-operation/PROMPT.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -24419,6 +24567,7 @@
    "unresolved_references": []
   },
   "qs-73cc162b7d1d8067": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/18-universal-earned-abstraction/reference.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -24780,6 +24929,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-74be9f9a6b935b09": {
+   "artifact_path": "docs/reference/driver-control-surface.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -24825,6 +24975,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-77bbf3deca56edda": {
+   "artifact_path": "docs/product/studies/caplab-review-dissent-001-preregistration.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -24885,6 +25036,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-783b83a8bb3e4271": {
+   "artifact_path": "docs/audits/STRIATUM_NEXT_DEEP_ARCHITECTURE_REVIEW_GEMINI_3_6_FLASH_HIGH_2026-07-26.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -24998,6 +25150,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-78e636fdc5bf4276": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/05-go-explicit-contextual-errors/PROMPT.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -25008,6 +25161,7 @@
    "unresolved_references": []
   },
   "qs-79303c646b3ae67e": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/19-universal-evidence-before-intervention/reference.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -25058,6 +25212,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-79813fa208a89ab1": {
+   "artifact_path": "docs/explanation/no-daemon-runtime.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -26396,6 +26551,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-7c4e034670e0b3d5": {
+   "artifact_path": "docs/product/training/caplab-review-dissent-local-qwen-r1/README.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -26655,6 +26811,7 @@
    "unresolved_references": []
   },
   "qs-7d14f4e4c9efffd2": {
+   "artifact_path": "docs/decisions/adr-0006-caplab-study-001-capability-card-selection.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -27216,6 +27373,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-7dabe6891bc1679c": {
+   "artifact_path": "docs/decisions/adr-0012-caplab-p5-recovery-compatibility-correction.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -27315,6 +27473,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-7f396dfb24e8cb91": {
+   "artifact_path": "docs/explanation/decision-layer.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -27325,6 +27484,7 @@
    "unresolved_references": []
   },
   "qs-7f51334ae2281466": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/06-go-goroutine-resource-lifecycle/PROMPT.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -27370,6 +27530,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-7fd7e70ec52fb08f": {
+   "artifact_path": "docs/decisions/adr-0034-review-dissent-study-selection.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -27380,6 +27541,7 @@
    "unresolved_references": []
   },
   "qs-80fea1eb16896517": {
+   "artifact_path": "docs/records/caplab-p6-admission-verification-2026-07-17.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -27639,6 +27801,7 @@
    "unresolved_references": []
   },
   "qs-810276f08b5061bc": {
+   "artifact_path": "docs/product/qualification/README.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -27708,6 +27871,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-8176d92c345ef9ad": {
+   "artifact_path": "docs/decisions/adr-0008-standalone-repository.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -27753,6 +27917,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-81f5ccd5f4e78f02": {
+   "artifact_path": "docs/decisions/adr-0033-caplab-7-model-free-instrument-authorization.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -27822,6 +27987,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-83e635fb38bf13af": {
+   "artifact_path": "docs/records/caplab-8-native-r2-execution-2026-07-20.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -27847,6 +28013,7 @@
    "unresolved_references": []
   },
   "qs-8449528706513014": {
+   "artifact_path": "rfcs/0008-scheduler-and-capacity-policy/proposal.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -28399,6 +28566,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-8582be8e3b69eb76": {
+   "artifact_path": "docs/decisions/adr-0058-authorize-qwen27b-lease-aware-status-launch.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -28409,6 +28577,7 @@
    "unresolved_references": []
   },
   "qs-85b74ca1a0c34e85": {
+   "artifact_path": "rfcs/0006-driver-control-surface/proposal.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -28419,6 +28588,7 @@
    "unresolved_references": []
   },
   "qs-8665b7725372ae5d": {
+   "artifact_path": "docs/decisions/adr-0064-bounded-agy-gemini37-revbench-pilot.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -28444,6 +28614,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-87fd835e8d48df78": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/02-domain-anticorruption-layer/PROMPT.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -28454,6 +28625,7 @@
    "unresolved_references": []
   },
   "qs-8856b2ba6d6452f5": {
+   "artifact_path": "docs/decisions/adr-0005-caplab-v0-evidence-governance.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -28464,6 +28636,7 @@
    "unresolved_references": []
   },
   "qs-8865dab2145b871b": {
+   "artifact_path": "docs/decisions/adr-0029-books-custody-and-caplab-admission.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -28612,6 +28785,7 @@
    ]
   },
   "qs-891864525163947c": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/09-implementation-minimal-coherent-api/PROMPT.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -28637,6 +28811,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-89f4c4f55a35cbb1": {
+   "artifact_path": "docs/records/caplab-p7-live-retry-attempt-2026-07-19.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -28647,6 +28822,7 @@
    "unresolved_references": []
   },
   "qs-8a8fcd86bd0e288a": {
+   "artifact_path": "decisions/D0001-language-specification.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -28657,6 +28833,7 @@
    "unresolved_references": []
   },
   "qs-8aa834cd75f4892a": {
+   "artifact_path": "docs/records/caplab-p5-isolated-restore-execution-2026-07-16.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -28717,6 +28894,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-8c1ec345c8228e8f": {
+   "artifact_path": "docs/records/caplab-42-evaluation-gate-implementation-2026-07-20.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -28727,6 +28905,7 @@
    "unresolved_references": []
   },
   "qs-8c4a05aae286b951": {
+   "artifact_path": "rfcs/0012-runtime-hardening/design.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -28737,6 +28916,7 @@
    "unresolved_references": []
   },
   "qs-8c910c50923340d3": {
+   "artifact_path": "docs/product/capability-cards/caplab-study-001-explicit-verification-elicited-harm-avoidance.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -28747,6 +28927,7 @@
    "unresolved_references": []
   },
   "qs-8cb37039e030c40c": {
+   "artifact_path": "docs/explanation/discoveries.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -29081,6 +29262,7 @@
    "unresolved_references": []
   },
   "qs-8e4242fe7b58bf23": {
+   "artifact_path": "docs/how-to/define-a-target-state.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -29126,6 +29308,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-8f41b707cb15f6d9": {
+   "artifact_path": "docs/records/caplab-p11-eligibility-decision-proposal-2026-07-20.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -29136,6 +29319,7 @@
    "unresolved_references": []
   },
   "qs-8fc98f714ee267e2": {
+   "artifact_path": "docs/audits/PREDICATE_ADVANCEMENT_ANALYSIS_2026-07-26.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -29670,6 +29854,7 @@
    "unresolved_references": []
   },
   "qs-8fcef24439c921e1": {
+   "artifact_path": "rfcs/0014-cross-repository-compilation/design.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -29954,6 +30139,7 @@
    "unresolved_references": []
   },
   "qs-9189bb4d02cf9660": {
+   "artifact_path": "docs/audits/CLOSURE_CAMPAIGN_ARCHITECTURE_REVIEW_FABLE_5_2026-07-12.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -30907,6 +31093,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-922bffcd10232e91": {
+   "artifact_path": "decisions/D0013-adapter-supervision.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -30942,6 +31129,7 @@
    "unresolved_references": []
   },
   "qs-929574e033316dc7": {
+   "artifact_path": "rfcs/0016-graduated-acceptance/proposal.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -31071,6 +31259,7 @@
    "unresolved_references": []
   },
   "qs-94fa2b4f486d81cc": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/14-python-compatible-property-evolution/reference.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -31081,6 +31270,7 @@
    "unresolved_references": []
   },
   "qs-961371a1d0b19095": {
+   "artifact_path": "docs/records/caplab-p13-independent-verification-2026-07-20.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -31091,6 +31281,7 @@
    "unresolved_references": []
   },
   "qs-96793af6e2a3a661": {
+   "artifact_path": "docs/records/caplab-p5-corrective-verification-2026-07-16.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -31116,6 +31307,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-977ee6413fbd35dd": {
+   "artifact_path": "docs/records/caplab-p5-verification-2026-07-16.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -31126,6 +31318,7 @@
    "unresolved_references": []
   },
   "qs-97f00c690d343f8b": {
+   "artifact_path": "docs/decisions/adr-0021-caplab-p7-exact-third-retry.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -31136,6 +31329,7 @@
    "unresolved_references": []
   },
   "qs-98e1cb198594f237": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/15-refactoring-demonstrated-pressure/PROMPT.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -31146,6 +31340,7 @@
    "unresolved_references": []
   },
   "qs-998be54363c7c8b8": {
+   "artifact_path": "docs/records/caplab-p5-execution-2026-07-16.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -31156,6 +31351,7 @@
    "unresolved_references": []
   },
   "qs-999195d8c665db71": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/03-domain-factory-lifecycle/reference.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -31196,6 +31392,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-9b59175ecbf9d581": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/16-testing-database-production-fidelity/reference.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -31490,6 +31687,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-9be4b7dc4833b686": {
+   "artifact_path": "docs/decisions/adr-0040-caplab-7-native-preference-instrument.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -31515,6 +31713,7 @@
    "unresolved_references": []
   },
   "qs-9d14f7c1764059fb": {
+   "artifact_path": "rfcs/0011-self-hosting-bootstrap/proposal.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -31579,6 +31778,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-9da0b38b8c1cdcf2": {
+   "artifact_path": "docs/reference/deferrals.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -31943,6 +32143,7 @@
    "unresolved_references": []
   },
   "qs-9e68948e4cb13b20": {
+   "artifact_path": "docs/reference/scheduler-policy.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -31963,6 +32164,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-9ef270d824e988b7": {
+   "artifact_path": "docs/records/caplab-8-native-r2-verification-2026-07-20.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -32973,6 +33175,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-a17f4bc857723920": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/05-go-explicit-contextual-errors/reference.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -33131,6 +33334,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-a1eb7a7a4ff9d36d": {
+   "artifact_path": "docs/records/README.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -33430,6 +33634,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-a3b40e4457d99b3f": {
+   "artifact_path": "docs/passes/escalations-arrive-dossiered/index.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -33440,6 +33645,7 @@
    "unresolved_references": []
   },
   "qs-a3b899469eeeba4f": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/06-go-goroutine-resource-lifecycle/reference.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -33450,6 +33656,7 @@
    "unresolved_references": []
   },
   "qs-a3f1f76da3b58449": {
+   "artifact_path": "docs/records/confirmation-2026-08-16-contract-restores-detection.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -33709,6 +33916,7 @@
    "unresolved_references": []
   },
   "qs-a4ad0f36af10a9fb": {
+   "artifact_path": "rfcs/0013-adapter-supervision/implementation.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -33719,6 +33927,7 @@
    "unresolved_references": []
   },
   "qs-a4b156e296019c51": {
+   "artifact_path": "docs/audits/CODEX_ANCHORED_BASE_PIN_RCA_2026-07-29.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -33744,6 +33953,7 @@
    "unresolved_references": []
   },
   "qs-a4fa64fdf4321e87": {
+   "artifact_path": "docs/records/caplab-p7-live-retry-4-proposal-2026-07-19.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -33754,6 +33964,7 @@
    "unresolved_references": []
   },
   "qs-a5501917d0da4137": {
+   "artifact_path": "docs/records/caplab-p7-live-continuation-proposal-2026-07-18.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -33764,6 +33975,7 @@
    "unresolved_references": []
   },
   "qs-a5ee93956ea4de10": {
+   "artifact_path": "docs/audits/STALLS5_ANCHORED_BASE_FIDELITY_2026-07-24.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -34445,6 +34657,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-a68597546d5a935e": {
+   "artifact_path": "docs/product/studies/caplab-preference-001-preregistration.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -34704,6 +34917,7 @@
    "unresolved_references": []
   },
   "qs-a747a6f8f55020c2": {
+   "artifact_path": "rfcs/0007-agent-runtimes-and-execution-backends/design.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -34714,6 +34928,7 @@
    "unresolved_references": []
   },
   "qs-a7a581400e4ef1b3": {
+   "artifact_path": "rfcs/0006-driver-control-surface/design.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -34726,6 +34941,7 @@
    ]
   },
   "qs-a7bbecc1aa4b0364": {
+   "artifact_path": "rfcs/0019-backend-qualification-and-corpus-evidence/implementation.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -35058,6 +35274,7 @@
    "unresolved_references": []
   },
   "qs-a826786fa41278bf": {
+   "artifact_path": "docs/passes/escalations-arrive-dossiered/predicate-notes.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -35068,6 +35285,7 @@
    "unresolved_references": []
   },
   "qs-a89fcdeafbfd7f4e": {
+   "artifact_path": "docs/domain/ubiquitous-language.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -35113,6 +35331,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-a97ff272bb749518": {
+   "artifact_path": "decisions/D0009-provenance-ledger-and-artifact-store.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -35123,6 +35342,7 @@
    "unresolved_references": []
   },
   "qs-a9b7bb582f33c8ff": {
+   "artifact_path": "docs/records/caplab-7-preference-instrument-implementation-2026-07-20.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -35133,6 +35353,7 @@
    "unresolved_references": []
   },
   "qs-a9ec51173a5b6606": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/07-implementation-attention-budget-presentation/PROMPT.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -35143,6 +35364,7 @@
    "unresolved_references": []
   },
   "qs-aa0342d7d088ec21": {
+   "artifact_path": "docs/records/caplab-p8-p10-stage-a-implementation-2026-07-18.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -35223,6 +35445,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-aba90dbe009e7ea2": {
+   "artifact_path": "docs/decisions/adr-0048-local-qwen-contrastive-export.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -35233,6 +35456,7 @@
    "unresolved_references": []
   },
   "qs-abc1cfa2663d7e87": {
+   "artifact_path": "docs/concepts/backend-observation.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -35283,6 +35507,7 @@
    "unresolved_references": []
   },
   "qs-acebe450e45d9cbd": {
+   "artifact_path": "docs/decisions/adr-0019-canonical-caplab-repository.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -35338,6 +35563,7 @@
    "unresolved_references": []
   },
   "qs-af03b2ffb03de8f9": {
+   "artifact_path": "docs/records/caplab-13-native-verification-2026-07-20.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -35383,6 +35609,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-af440b1ec8cbe0c6": {
+   "artifact_path": "docs/records/caplab-13-native-execution-2026-07-20.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -35393,6 +35620,7 @@
    "unresolved_references": []
   },
   "qs-af4d1e1dec27d852": {
+   "artifact_path": "decisions/D0011-self-hosting-bootstrap.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -35652,6 +35880,7 @@
    "unresolved_references": []
   },
   "qs-afa3ff9b86200498": {
+   "artifact_path": "docs/decisions/adr-0063-bounded-codex-live-revbench-execution.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -35662,6 +35891,7 @@
    "unresolved_references": []
   },
   "qs-b03c659ca177a064": {
+   "artifact_path": "docs/explanation/verification-teeth.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -35751,6 +35981,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-b1dbe8f11746c420": {
+   "artifact_path": "docs/records/caplab-p5-purge-verification-2026-07-17.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -35761,6 +35992,7 @@
    "unresolved_references": []
   },
   "qs-b1f6b9b0fe118cca": {
+   "artifact_path": "docs/records/caplab-p5-corrective-execution-2026-07-16.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -35771,6 +36003,7 @@
    "unresolved_references": []
   },
   "qs-b234b913c370100a": {
+   "artifact_path": "docs/decisions/adr-0042-caplab-8-native-auth-continuation.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -35877,6 +36110,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-b37e46d9cdfca8c2": {
+   "artifact_path": "docs/records/caplab-39-repository-migration-2026-07-19.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -35887,6 +36121,7 @@
    "unresolved_references": []
   },
   "qs-b38ab75c53e0e892": {
+   "artifact_path": "decisions/D0005-artifact-lifecycle-and-state-machine.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -35897,6 +36132,7 @@
    "unresolved_references": []
   },
   "qs-b4153c4d1aba95f2": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/19-universal-evidence-before-intervention/PROMPT.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -35922,6 +36158,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-b55a5c8221762442": {
+   "artifact_path": "docs/decisions/adr-0028-caplab-future-roadmap-preservation.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -36649,6 +36886,7 @@
    "unresolved_references": []
   },
   "qs-b91c35399c0d03eb": {
+   "artifact_path": "docs/decisions/adr-0018-caplab-p7-live-retry.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -36659,6 +36897,7 @@
    "unresolved_references": []
   },
   "qs-b9f391a1f94345fd": {
+   "artifact_path": "docs/records/caplab-p7-json-decimal-repair-2026-07-19.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -37303,6 +37542,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-bd2dccd1a449d7d5": {
+   "artifact_path": "docs/audits/REALIZED_VARIANCE_FIT_CHECK_2026-07-20.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -37313,6 +37553,7 @@
    "unresolved_references": []
   },
   "qs-bd37956f4517272c": {
+   "artifact_path": "docs/decisions/adr-0039-native-agent-system-subject-identity.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -37675,6 +37916,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-bf49beb5516af65e": {
+   "artifact_path": "rfcs/0009-provenance-ledger-and-artifact-store/design.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -37877,6 +38119,7 @@
    "unresolved_references": []
   },
   "qs-c2a771985437693b": {
+   "artifact_path": "docs/explanation/lanes-and-execution-backends.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -38136,6 +38379,7 @@
    "unresolved_references": []
   },
   "qs-c57ad7ec9a1e287f": {
+   "artifact_path": "docs/concepts/work-graph-build-flow.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -38814,6 +39058,7 @@
    "unresolved_references": []
   },
   "qs-c7e0b0e1d0daa512": {
+   "artifact_path": "rfcs/0001-language-specification/design.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -38824,6 +39069,7 @@
    "unresolved_references": []
   },
   "qs-c88764e444e343d5": {
+   "artifact_path": "docs/records/caplab-books-1-6-triage-2026-07-20.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -38874,6 +39120,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-c8fbad4daa91961d": {
+   "artifact_path": "docs/records/caplab-p4-verification-2026-07-15.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -38884,6 +39131,7 @@
    "unresolved_references": []
   },
   "qs-c90bae6708b85c9c": {
+   "artifact_path": "docs/reference/read-side-git-hardening.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -38894,6 +39142,7 @@
    "unresolved_references": []
   },
   "qs-c9c45296df84c2af": {
+   "artifact_path": "docs/explanation/driver.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -38904,6 +39153,7 @@
    "unresolved_references": []
   },
   "qs-ca159d5b90a7e507": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/01-data-single-authority-change-propagation/reference.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -39272,6 +39522,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-ccddbb450fad1f28": {
+   "artifact_path": "rfcs/0000-bootstrapping-striatum-next/implementation.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -39956,6 +40207,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-cdfdeb8970c7aafa": {
+   "artifact_path": "docs/tutorials/advance-rfc-to-verified.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -39966,6 +40218,7 @@
    "unresolved_references": []
   },
   "qs-ce729b31f68f0d28": {
+   "artifact_path": "docs/decisions/adr-0002-agent-capability-lab-v0.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -39976,6 +40229,7 @@
    "unresolved_references": []
   },
   "qs-ce9875879e3f79b8": {
+   "artifact_path": "docs/audits/OPENROUTER_GLM_COREWEAVE_PROBATION_2026-07-31.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -40310,6 +40564,7 @@
    "unresolved_references": []
   },
   "qs-cfc11a4632b4ceb9": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/18-universal-earned-abstraction/PROMPT.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -40320,6 +40575,7 @@
    "unresolved_references": []
   },
   "qs-d034efab4494e977": {
+   "artifact_path": "docs/records/caplab-p7-live-retry-3-proposal-2026-07-19.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -40393,6 +40649,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-d110fd0e74285f22": {
+   "artifact_path": "docs/decisions/adr-0011-caplab-p5-isolated-postgres-correction.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -41075,6 +41332,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-d24d0d472c7a9316": {
+   "artifact_path": "docs/records/finding-2026-08-16-calibration-not-measurement-equivalent.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -41085,6 +41343,7 @@
    "unresolved_references": []
   },
   "qs-d33050e7dbe3477d": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/09-implementation-minimal-coherent-api/reference.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -41095,6 +41354,7 @@
    "unresolved_references": []
   },
   "qs-d4145acbc6aa5eb2": {
+   "artifact_path": "docs/decisions/adr-0004-caplab-study-001-selection.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -41105,6 +41365,7 @@
    "unresolved_references": []
   },
   "qs-d4b84c0e2c8cd8ae": {
+   "artifact_path": "docs/records/caplab-p5-promotion-readiness-execution-2026-07-17.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -41115,6 +41376,7 @@
    "unresolved_references": []
   },
   "qs-d5992639e2c06323": {
+   "artifact_path": "docs/records/caplab-8-native-r2-result-2026-07-20.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -41125,6 +41387,7 @@
    "unresolved_references": []
   },
   "qs-d5ec3e57fadb0d87": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/20-universal-separate-semantic-structural-change/reference.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -41135,6 +41398,7 @@
    "unresolved_references": []
   },
   "qs-d671eec642ffe1ab": {
+   "artifact_path": "docs/audits/STALLS5_REPAIR_SESSION_2026-07-23.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -41605,6 +41869,7 @@
    "unresolved_references": []
   },
   "qs-d6a3e05cd9464e44": {
+   "artifact_path": "docs/decisions/adr-0035-books-3-probe-redesign.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -41615,6 +41880,7 @@
    "unresolved_references": []
   },
   "qs-d6b01b6a69661ce3": {
+   "artifact_path": "rfcs/0004-compiler-passes/design.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -41625,6 +41891,7 @@
    "unresolved_references": []
   },
   "qs-d6d17e7792b42921": {
+   "artifact_path": "docs/records/caplab-p5-purge-execution-2026-07-17.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -41721,6 +41988,7 @@
    "unresolved_references": []
   },
   "qs-d8054c759739e7a6": {
+   "artifact_path": "docs/decisions/adr-0053-preregister-qwen27b-host-outage-retry.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -41731,6 +41999,7 @@
    "unresolved_references": []
   },
   "qs-d9088309fd66ff0f": {
+   "artifact_path": "docs/records/caplab-p7-live-retry-proposal-2026-07-18.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -41741,6 +42010,7 @@
    "unresolved_references": []
   },
   "qs-d96282d8e2a426d4": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/16-testing-database-production-fidelity/PROMPT.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -42463,6 +42733,7 @@
    "unresolved_references": []
   },
   "qs-db53a5916642b8b4": {
+   "artifact_path": "docs/decisions/adr-0020-caplab-p7-exact-second-retry.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -42473,6 +42744,7 @@
    "unresolved_references": []
   },
   "qs-dc19bbeb0ce214a6": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/15-refactoring-demonstrated-pressure/reference.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -42518,6 +42790,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-dc7f549db22207e5": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/13-operations-synchronized-demand-dispersion/reference.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -43371,6 +43644,7 @@
    "unresolved_references": []
   },
   "qs-df0d9d1cb11ee438": {
+   "artifact_path": "docs/records/caplab-p4-execution-2026-07-15.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -43381,6 +43655,7 @@
    "unresolved_references": []
   },
   "qs-dfa6bffdbb3a0ffb": {
+   "artifact_path": "rfcs/0016-graduated-acceptance/design.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -43416,6 +43691,7 @@
    "unresolved_references": []
   },
   "qs-dfcdecb3df239fa2": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/02-domain-anticorruption-layer/reference.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -43441,6 +43717,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-e17d8a265cb46835": {
+   "artifact_path": "docs/records/caplab-p13-independent-verification-proposal-2026-07-20.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -43451,6 +43728,7 @@
    "unresolved_references": []
   },
   "qs-e1dbba594a8553c1": {
+   "artifact_path": "docs/product/studies/advisory-selection-001/scenarios/20-universal-separate-semantic-structural-change/PROMPT.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -43461,6 +43739,7 @@
    "unresolved_references": []
   },
   "qs-e22a141e1cc7419a": {
+   "artifact_path": "docs/product/striatum-pass-profiles/caplab-first-lane-fit-2026-07-20.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -43774,6 +44053,7 @@
    "unresolved_references": []
   },
   "qs-e36567e46000ee54": {
+   "artifact_path": "decisions/D0007-agent-runtimes-and-execution-backends.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -43799,6 +44079,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-e43ce3084c9b2c4a": {
+   "artifact_path": "docs/explanation/praxis-earns-verified.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -43824,6 +44105,7 @@
    "unresolved_references": []
   },
   "qs-e508fd76621cc8ad": {
+   "artifact_path": "docs/decisions/adr-0054-authorize-qwen27b-host-contained-retry.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -44619,6 +44901,7 @@
    "unresolved_references": []
   },
   "qs-e7003896d6e7ab48": {
+   "artifact_path": "docs/decisions/adr-0056-authorize-qwen27b-module-independent-digest-launch.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -44644,6 +44927,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-e795fd3fc9be80d7": {
+   "artifact_path": "rfcs/0004-compiler-passes/implementation.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -44669,6 +44953,7 @@
    "unresolved_references": []
   },
   "qs-e8cd172af19cb631": {
+   "artifact_path": "docs/decisions/adr-0009-caplab-p5-failure-and-recovery-campaign.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -44718,6 +45003,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-e97666623e546541": {
+   "artifact_path": "docs/decisions/adr-0043-caplab-8-native-normalization-and-disposition.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -45075,6 +45361,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-eb0ee42709390347": {
+   "artifact_path": "docs/product/specs/spec-agent-capability-lab.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -45120,6 +45407,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-eb99271df12da730": {
+   "artifact_path": "docs/explanation/capacity-aware-engineering-compute.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -45130,6 +45418,7 @@
    "unresolved_references": []
   },
   "qs-eb9a9789f746ed0c": {
+   "artifact_path": "docs/decisions/adr-0059-dispose-qwen27b-retry-and-conclude-caplab-16.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -45774,6 +46063,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-ec76afd5d7b27ffd": {
+   "artifact_path": "docs/audits/SEMANTIC_AND_DURABLE_CLOSURE_FULL_RUN_POSTMORTEM_2026-07-21.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -46743,6 +47033,7 @@
    "unresolved_references": []
   },
   "qs-ed0c2c8a4fe7cf6a": {
+   "artifact_path": "docs/product/striatum-pass-profiles/striatum-fresh-review-v1.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -46768,6 +47059,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-ed9250a0fa6e43e1": {
+   "artifact_path": "docs/records/caplab-43-books-3-admission-assessment-2026-07-20.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -46778,6 +47070,7 @@
    "unresolved_references": []
   },
   "qs-edf2c91c4d3680b8": {
+   "artifact_path": "docs/decisions/adr-0047-local-qwen-training-source-campaign.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -47007,6 +47300,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-efdeb039b399d529": {
+   "artifact_path": "rfcs/0013-adapter-supervision/design.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -47285,6 +47579,7 @@
    "unresolved_references": []
   },
   "qs-f368c6ceaa769cd1": {
+   "artifact_path": "docs/product/contracts/caplab-qualification-contract-v1.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -47295,6 +47590,7 @@
    "unresolved_references": []
   },
   "qs-f36ffe0fe7ca8383": {
+   "artifact_path": "rfcs/0007-agent-runtimes-and-execution-backends/proposal.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -47305,6 +47601,7 @@
    "unresolved_references": []
   },
   "qs-f3771a06a9ae4e04": {
+   "artifact_path": "docs/decisions/adr-0027-caplab-v0-revision-required.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -47315,6 +47612,7 @@
    "unresolved_references": []
   },
   "qs-f3d9c1ad3b285041": {
+   "artifact_path": "docs/explanation/fleet-catalog-resolution.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -47325,6 +47623,7 @@
    "unresolved_references": []
   },
   "qs-f4a835e667a55027": {
+   "artifact_path": "docs/product/striatum-pass-profiles/striatum-build-v1.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -47982,6 +48281,7 @@
    "unresolved_references": []
   },
   "qs-f7f91c67c7e0e417": {
+   "artifact_path": "docs/explanation/product-lineage-anchored.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -48042,6 +48342,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-f88e1482bee16550": {
+   "artifact_path": "decisions/D0010-work-graph-execution.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -48351,6 +48652,7 @@
    "unresolved_references": []
   },
   "qs-fb3017c0b7c5f3ac": {
+   "artifact_path": "docs/records/caplab-p7-runtime-custody-repair-2026-07-19.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -48396,6 +48698,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-fb428e9dc537099f": {
+   "artifact_path": "rfcs/0010-work-graph-execution/implementation.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -48406,6 +48709,7 @@
    "unresolved_references": []
   },
   "qs-fb6be7108089cb17": {
+   "artifact_path": "docs/product/plans/plan-advisory-selection-001.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -48416,6 +48720,7 @@
    "unresolved_references": []
   },
   "qs-fb845b1426e5d45e": {
+   "artifact_path": "docs/product/qualification/quartermaster-handoff-v1.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -48426,6 +48731,7 @@
    "unresolved_references": []
   },
   "qs-fbead94333403b0b": {
+   "artifact_path": "docs/explanation/index.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [],
@@ -48515,6 +48821,7 @@
    "why": "declared base object absent from the store and no whole tree pinned"
   },
   "qs-fe08eedf40423e2b": {
+   "artifact_path": "docs/decisions/adr-0032-initial-synthetic-evaluation-baseline.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -48525,6 +48832,7 @@
    "unresolved_references": []
   },
   "qs-fe94278098676308": {
+   "artifact_path": "rfcs/0016-graduated-acceptance/implementation.md",
    "base_source": "whole-tree",
    "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
    "evidence": [
@@ -48658,6 +48966,7 @@
    "why": "production pinned the artifact alone"
   },
   "qs-ff99d4ae1baeca06": {
+   "artifact_path": "docs/decisions/adr-0024-caplab-study-001-no-training-eligibility.md",
    "base_source": "whole-tree",
    "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
    "evidence": [],
@@ -48668,7 +48977,7 @@
    "unresolved_references": []
   }
  },
- "built": "2026-09-06T17:11:54-0700",
+ "built": "2026-09-06T17:28:31-0700",
  "counts": {
   "lost": 70,
   "none-by-design": 140,

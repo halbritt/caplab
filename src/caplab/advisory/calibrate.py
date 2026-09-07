@@ -279,6 +279,10 @@ def pinned_set_statement(base_source: str, manifest: dict | None, workspace: str
                 "their unverifiability is not a finding.")
     else:
         raise ValueError(f"unknown base source {base_source!r}")
+    own = [r for r in (manifest or {}).get("removed") or [] if r.get("why") == "artifact-under-review"]
+    if own:
+        text += (f" The artifact under review is itself proposed content for `{own[0]['path']}` in this "
+                 f"repository; that path is not in `base/` — you are reviewing what would go there.")
     if evidence:
         names = ", ".join(f"{e['path'].split('/')[-1].rsplit('.', 1)[0]} ({e['kind'].replace('_', ' ')}, "
                           f"`{ws}/evidence/{e['path']}`)" for e in evidence)

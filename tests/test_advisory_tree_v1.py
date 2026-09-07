@@ -38,6 +38,9 @@ class PreambleV3Test(unittest.TestCase):
             {"path": "exchange/RQ-14418.json", "kind": "compilation_request"}]}, ws)
         self.assertIn("`base/` does not exist", none)
         self.assertIn("RQ-14418 (compilation request, `/tmp/ws/case/evidence/exchange/RQ-14418.json`)", none)
+        own = C.pinned_set_statement("whole-tree", {"file_count": 5, "evidence": [], "removed": [
+            {"path": "docs/x.md", "why": "artifact-under-review"}]}, ws)
+        self.assertIn("proposed content for `docs/x.md`", own)
         lost = C.pinned_set_statement("lost", None, ws)
         self.assertIn("no longer recoverable", lost)
         with self.assertRaises(ValueError):

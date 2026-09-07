@@ -117,6 +117,32 @@ class MaterializeCaseTest(unittest.TestCase):
                 f.write("x")
             self.assertFalse(M.verify_manifest(case))
 
+    def test_artifact_under_review_and_instrument_ledger_are_removed_and_recorded(self):
+        with tempfile.TemporaryDirectory() as repo, tempfile.TemporaryDirectory() as case:
+            os.makedirs(os.path.join(repo, "advisory", "checks"))
+            with open(os.path.join(repo, "advisory", "checks", "verify-control-x.py"), "w") as f:
+                f.write("print('label')\n")
+            with open(os.path.join(repo, "advisory", "claims.jsonl"), "w") as f:
+                f.write("{}\n")
+            commit = self._repo(repo)
+            old = dict(M.REPOS)
+            M.REPOS["caplab"] = repo
+            try:
+                rec = {"substrate_id": "qs-t", "base_source": "whole-tree", "materializer": "git-archive",
+                       "repo": "caplab", "commit": commit, "artifact_path": "docs/adr.md", "evidence": []}
+                manifest = M.materialize_case(rec, case)
+            finally:
+                M.REPOS.clear(); M.REPOS.update(old)
+            paths = [e["path"] for e in manifest["entries"]]
+            self.assertNotIn("docs/adr.md", paths)
+            self.assertNotIn("advisory/checks/verify-control-x.py", paths)
+            self.assertIn("advisory/claims.jsonl", paths)
+            self.assertEqual({(r["path"], r["why"]) for r in manifest["removed"]},
+                             {("docs/adr.md", "artifact-under-review"),
+                              ("advisory/checks/verify-control-x.py", "instrument-ledger")})
+            self.assertNotEqual(manifest["exact_snapshot_digest"], manifest["view_digest"])
+            self.assertTrue(M.verify_manifest(case))
+
     def test_no_base_case_writes_only_evidence_and_manifest(self):
         with tempfile.TemporaryDirectory() as case:
             rec = {"substrate_id": "qs-p", "base_source": "none-by-design", "materializer": None, "evidence": []}

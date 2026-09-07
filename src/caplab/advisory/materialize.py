@@ -213,6 +213,41 @@ def git_archive_files(repo: str, commit: str) -> dict:
 
 # --- the materializer ------------------------------------------------------
 
+#: The instrument's own ledger inside the caplab tree: audits, oracles,
+#: comparisons and rows carry control labels and planted-defect classes. A
+#: reviewer given a caplab base could look the answer up. Removed from the
+#: subject-visible view of every caplab tree, each removal recorded with the
+#: exact-snapshot digest (§2.4). Four of 309 repo-docs name an advisory/
+#: path and none names one of these.
+INSTRUMENT_LEDGER_PREFIXES = ("advisory/calibration/", "advisory/checks/",
+                              "advisory/comparisons/", "advisory/pool-runs/",
+                              "advisory/control-adjudications.jsonl")
+
+
+def _remove_for_view(files: dict, record: dict) -> list[dict]:
+    """Pop entries the subject must not see; return their manifest records.
+
+    The artifact under review is itself a file of a repo-doc's repository at
+    the registered commit. Leaving it in `base/` turns review into a diff
+    against the answer; it is removed as `artifact-under-review`, and the
+    contract tells the subject so. Instrument-ledger paths are removed from
+    caplab trees as `instrument-ledger`.
+    """
+    removed = []
+    own = record.get("artifact_path")
+    if own and own in files:
+        data = files.pop(own).encode()
+        removed.append({"path": own, "why": "artifact-under-review",
+                        "sha256": hashlib.sha256(data).hexdigest(), "bytes": len(data)})
+    if record.get("repo") == "caplab":
+        for path in sorted(files):
+            if path.startswith(INSTRUMENT_LEDGER_PREFIXES):
+                data = files.pop(path).encode()
+                removed.append({"path": path, "why": "instrument-ledger",
+                                "sha256": hashlib.sha256(data).hexdigest(), "bytes": len(data)})
+    return removed
+
+
 def base_files(record: dict) -> tuple[dict | None, list[dict], dict]:
     """(files, skipped, identity) for one base-registry record, or (None, [],
     identity) for a case with no base. Raises when a recorded source is no
@@ -251,7 +286,9 @@ def materialize_case(record: dict, case_dir: str) -> dict:
     os.makedirs(case_dir, exist_ok=True)
     files, skipped, identity = base_files(record)
     entries: list[dict] = []
+    removed: list[dict] = []
     if files is not None:
+        removed = _remove_for_view(files, record)
         base_dir = os.path.join(case_dir, "base")
         os.makedirs(base_dir)
         entries = write_files(files, base_dir)
@@ -271,16 +308,28 @@ def materialize_case(record: dict, case_dir: str) -> dict:
         "substrate_id": record.get("substrate_id"),
         **identity,
         "entries": entries,
+        "removed": removed,
         "skipped": skipped,
         "evidence": evidence_entries,
         "file_count": len(entries),
         "bytes": sum(e["bytes"] for e in entries),
     }
+    # Both digests (§2.4): the exact snapshot including what the subject does
+    # not see, and the view it does.
+    manifest["exact_snapshot_digest"] = _entries_digest(entries + removed)
+    manifest["view_digest"] = _entries_digest(entries)
     manifest["digest"] = manifest_digest(manifest)
     with open(manifest_path, "w", encoding="utf-8") as f:
         json.dump(manifest, f, indent=1, sort_keys=True)
         f.write("\n")
     return manifest
+
+
+def _entries_digest(entries: list[dict]) -> str:
+    h = hashlib.sha256()
+    for e in sorted(entries, key=lambda e: e["path"]):
+        h.update(f"{e['path']}\0{e['sha256']}\n".encode())
+    return h.hexdigest()
 
 
 def manifest_digest(manifest: dict) -> str:

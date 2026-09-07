@@ -87,7 +87,7 @@ def main() -> int:
         rec["unresolved_references"] = [ev["name"] for ev in evidence if ev["kind"] == "unresolved"]
         if src["kind"] == "repo-doc":
             rec.update(base_source="whole-tree", materializer="git-archive",
-                       repo=src["repo"], commit=src["commit"])
+                       repo=src["repo"], commit=src["commit"], artifact_path=src["path"])
             ok = subprocess.run(["git", "-C", M.REPOS[src["repo"]], "cat-file", "-e", f"{src['commit']}^{{commit}}"],
                                 capture_output=True).returncode == 0
             if not ok:
