@@ -828,6 +828,20 @@ class StageBContainmentTest(unittest.TestCase):
         joined = " ".join(pool_runner.sandbox_argv(["true"], workspace="/tmp/ws/case"))
         self.assertIn("--tmpfs /tmp --bind /tmp/ws/case /tmp/ws/case", joined)
 
+    def test_symlinked_credential_in_a_state_dir_is_bound_at_its_target(self):
+        with tempfile.TemporaryDirectory(dir=self.HOME) as d, \
+                tempfile.TemporaryDirectory(dir=self.HOME) as other:
+            target = os.path.join(other, "auth.json")
+            with open(target, "w") as f:
+                f.write("{}")
+            os.symlink(target, os.path.join(d, "auth.json"))
+            os.symlink(os.path.join(d, "inside"), os.path.join(d, "self"))
+            os.symlink("/etc/hostname", os.path.join(d, "system"))
+            self.assertEqual(pool_runner.state_dir_link_targets([d]), [target])
+            joined = self._joined(["/usr/bin/env", f"CODEX_HOME={d}", "codex"])
+            self.assertIn(f"--bind {target} {target}", joined)
+            self.assertNotIn(f"--bind {other} {other}", joined)
+
     def test_no_declared_env_means_no_rebind_and_never_home_itself(self):
         self.assertEqual(pool_runner.harness_rebinds(["tool", f"HOME={self.HOME}"]), [])
         self.assertEqual(pool_runner.harness_rebinds(["tool", "CODEX_HOME=/nonexistent/x"]), [])

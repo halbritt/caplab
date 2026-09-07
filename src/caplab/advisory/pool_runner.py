@@ -205,6 +205,38 @@ def harness_rebinds(argv: list[str]) -> list[str]:
             path = os.path.expanduser(p)
             if os.path.isdir(path):
                 out.append(path)
+    return out + state_dir_link_targets(out)
+
+
+def state_dir_link_targets(state_dirs: list[str]) -> list[str]:
+    """Targets of symlinks in a harness state directory that point outside it.
+
+    striatum's codex harness-config carries `auth.json -> ~/.codex/auth.json`:
+    the credential is shared with the user's own codex login and lives in
+    the real home, which does not exist inside a lane (probe of 2026-09-06:
+    codex answered 401). Exactly the link's target is bound at its own path,
+    a file for a file, so the harness resolves the link and nothing else of
+    the target's directory is visible. Top level of the state directory
+    only; a target under a masked path is refused.
+    """
+    home = os.path.expanduser("~")
+    out = []
+    for state in state_dirs:
+        try:
+            entries = os.listdir(state)
+        except OSError:
+            continue
+        for name in entries:
+            link = os.path.join(state, name)
+            if not os.path.islink(link):
+                continue
+            target = os.path.realpath(link)
+            if _under(target, state) or not target.startswith(home + os.sep):
+                continue
+            if not os.path.exists(target):
+                continue
+            _refuse_masked(target, f"{link} ->")
+            out.append(target)
     return out
 
 

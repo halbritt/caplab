@@ -1,0 +1,12 @@
+or-gemini-3-7-flash-high mechanical: PASS
+or-gemini-3-7-flash-high model: PASS answered=True nonce=None instructions_loaded=None 8.2s
+cc-glm-5-3-flash-high mechanical: PASS
+cc-glm-5-3-flash-high model: PASS answered=True nonce=True instructions_loaded=False 11.6s
+codex-sol-high mechanical: PASS
+codex-sol-high model: FAIL answered=False nonce=False instructions_loaded=False 15.7s
+agy-gemini-3-7-flash-high mechanical: PASS
+agy-gemini-3-7-flash-high model: PASS answered=True nonce=True instructions_loaded=False 26.5s
+oc-glm-5-3 mechanical: PASS
+oc-glm-5-3 model: FAIL answered=False nonce=False instructions_loaded=False 4.9s
+claude-opus-5-high mechanical: PASS
+claude-opus-5-high model: PASS answered=True nonce=True instructions_loaded=False 4.8s
