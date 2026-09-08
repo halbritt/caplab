@@ -11,7 +11,6 @@ import os
 import subprocess
 import sys
 import tempfile
-import time
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -25,6 +24,7 @@ from caplab.artifact_rater import (
     build_judgment_schema,
     build_scoring_manifest,
     evaluate_calibration,
+    find_rollout,
     derive_artifact_judgment,
     preserve_rollout_attestation,
     read_rollout_attestation,
@@ -92,15 +92,7 @@ def _attempt_number(slot_root: Path) -> int:
 
 
 def _find_rollout(thread_id: str, timeout_seconds: float = 10.0) -> Path:
-    sessions = Path.home() / ".codex" / "sessions"
-    deadline = time.monotonic() + timeout_seconds
-    while True:
-        matches = sorted(sessions.glob(f"**/*{thread_id}*.jsonl"))
-        if matches:
-            return matches[-1]
-        if time.monotonic() >= deadline:
-            raise CalibrationError(f"cannot locate persisted rollout for {thread_id}")
-        time.sleep(0.1)
+    return find_rollout(Path.home() / ".codex" / "sessions", thread_id, timeout_seconds)
 
 
 def _rater_metadata(output_root: Path, model: str, effort: str) -> dict[str, Any]:

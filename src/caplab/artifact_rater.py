@@ -4,7 +4,11 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import os
+import re
+import stat
+import time
 from collections import defaultdict
 from pathlib import Path
 from typing import Any, Iterable, Mapping
@@ -126,6 +130,64 @@ def derive_artifact_judgment(
             "sidecar_comparison": "exact-code-booleans/1",
         },
     }
+
+
+_ROLLOUT_NAME = re.compile(
+    r"rollout-[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}-[0-9]{2}-[0-9]{2}-(.+)\.jsonl"
+)
+
+
+def _rollout_candidates(sessions_root: Path, thread_id: str) -> list[Path]:
+
+    def traversal_error(error: OSError) -> None:
+        raise error
+
+    matches = []
+    try:
+        if sessions_root.is_symlink() or sessions_root.resolve() != sessions_root:
+            raise CalibrationError("linked or unresolved native session search root")
+        if not sessions_root.exists():
+            return []
+        if not sessions_root.is_dir():
+            raise CalibrationError("native session search root must be a directory")
+        for directory, directories, files in os.walk(
+                sessions_root, followlinks=False, onerror=traversal_error):
+            parent = Path(directory)
+            for name in directories + files:
+                candidate = parent / name
+                match = _ROLLOUT_NAME.fullmatch(name)
+                if match and match[1] == thread_id:
+                    if not stat.S_ISREG(candidate.lstat().st_mode):
+                        raise CalibrationError("native rollout candidate must be regular and not linked")
+                    matches.append(candidate)
+                if name in directories and candidate.is_symlink():
+                    raise CalibrationError("linked directory in native session search root")
+    except OSError as error:
+        raise CalibrationError(f"cannot enumerate native sessions: {error}") from error
+    return matches
+
+
+def find_rollout(sessions_root: Path, thread_id: str, timeout_seconds: float = 10.0) -> Path:
+    """Locate one exact filename ID without reading or attesting session bytes."""
+    if not isinstance(thread_id, str) or re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]*", thread_id) is None:
+        raise CalibrationError("invalid native thread ID for session lookup")
+    if (type(timeout_seconds) not in (int, float) or not math.isfinite(timeout_seconds)
+            or timeout_seconds < 0):
+        raise CalibrationError("native session lookup timeout must be finite and nonnegative")
+    sessions_root = Path(sessions_root)
+    if not sessions_root.is_absolute():
+        raise CalibrationError("native session search root must be absolute")
+    deadline = time.monotonic() + timeout_seconds
+    while True:
+        matches = _rollout_candidates(sessions_root, thread_id)
+        if len(matches) > 1:
+            raise CalibrationError(f"ambiguous native rollout for {thread_id}: {len(matches)} candidates")
+        if matches:
+            return matches[0]
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise CalibrationError(f"cannot locate persisted rollout for {thread_id}")
+        time.sleep(min(0.1, remaining))
 
 
 def read_rollout_attestation(rollout_path: Path, thread_id: str) -> dict[str, str]:

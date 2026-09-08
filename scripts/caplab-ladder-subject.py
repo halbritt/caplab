@@ -20,6 +20,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from caplab.artifact_rater import (
     CalibrationError,
     extract_thread_id,
+    find_rollout,
     preserve_rollout_attestation,
 )
 from caplab.ladder_subject import (
@@ -56,15 +57,10 @@ def _sha256(path: Path) -> str:
 
 
 def _find_rollout(thread_id: str, timeout_seconds: float = 10.0) -> Path:
-    sessions = Path.home() / ".codex" / "sessions"
-    deadline = time.monotonic() + timeout_seconds
-    while True:
-        matches = sorted(sessions.glob(f"**/*{thread_id}*.jsonl"))
-        if matches:
-            return matches[-1]
-        if time.monotonic() >= deadline:
-            raise NativeSubjectError(f"cannot locate native rollout for {thread_id}")
-        time.sleep(0.1)
+    try:
+        return find_rollout(Path.home() / ".codex" / "sessions", thread_id, timeout_seconds)
+    except CalibrationError as error:
+        raise NativeSubjectError(str(error)) from error
 
 
 def _run_git(world: Path, *arguments: str, capture: bool = False) -> str:
