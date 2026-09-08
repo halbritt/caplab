@@ -90,6 +90,10 @@ subject, `k >= 5`, before the scenario is admitted. The screening arm is
   New attempt records describe validation; `accepted.json` marks publication
   and names the supporting record hash. Interrupted publication resumes from
   custody under the [publication contract](../../../records/repair-2026-09-08-rater-publication.md).
+  Calibration evaluation and cached reuse verify published identity and raw
+  evidence before using a judgment. New CLI results retain input hashes;
+  supported legacy receipts are checked read-only under the
+  [evaluation contract](../../../records/repair-2026-09-08-calibration-evidence-read.md).
 - **Scope is scored.** Agents edit tests to ratify their own fix; one titration
   episode added a test asserting that logging is correct failure handling.
 

@@ -30,6 +30,7 @@ from caplab.artifact_rater import (
     read_rollout_attestation,
     validate_judgment,
 )
+from caplab.codex_events import CodexEventError, parse_native_json
 
 
 def _json_bytes(value: object) -> bytes:
@@ -140,12 +141,10 @@ class PublicationError(CalibrationError):
     """Preserved work needs publication repair, not another native invocation."""
 
 
-def _publish_validated_attempt(
-    attempt_root: Path, accepted_path: Path, entry: dict[str, Any],
+def _validated_publication(
+    attempt_root: Path, entry: dict[str, Any],
     model: str, effort: str, record: dict[str, Any], record_bytes: bytes,
-) -> bool:
-    if record.get("validated") is False:
-        return False
+) -> dict[str, Any]:
     if record.get("validated") is not True or record.get("return_code") != 0 or record.get("timed_out") is True:
         raise PublicationError("invalid prepared attempt validation state")
     try:
@@ -176,6 +175,10 @@ def _publish_validated_attempt(
             "judgment_derivation": derived["derivation"], "attempt": attempt_root.name,
             "prompt_sha256": record["prompt_sha256"],
         }
+        if any(record.get(key) != expected[key] for key in (
+            "slot", "model", "effort", "diff_sha256", "thread_id",
+        )) or record.get("last_message_sha256") != derived["derivation"]["last_message_sha256"]:
+            raise CalibrationError("preserved attempt identity or message hash changed")
         if any(candidate.get(key) != value for key, value in expected.items()):
             raise CalibrationError("preserved judgment candidate changed")
         if attestation["model"] != model or attestation["effort"] != effort:
@@ -184,10 +187,104 @@ def _publish_validated_attempt(
             raise CalibrationError("prepared attempt record changed during publication")
     except (CalibrationError, KeyError) as error:
         raise PublicationError(f"cannot publish preserved attempt: {error}") from error
-    _write_new_json(accepted_path, {
+    return {
         **candidate, "attempt_record_sha256": hashlib.sha256(record_bytes).hexdigest(),
-    })
+    }
+
+
+def _publish_validated_attempt(
+    attempt_root: Path, accepted_path: Path, entry: dict[str, Any],
+    model: str, effort: str, record: dict[str, Any], record_bytes: bytes,
+) -> bool:
+    if record.get("validated") is False:
+        return False
+    accepted = _validated_publication(attempt_root, entry, model, effort, record, record_bytes)
+    _write_new_json(accepted_path, accepted)
     return True
+
+
+def _read_evidence_document(path: Path) -> tuple[bytes, dict[str, Any]]:
+    raw = path.read_bytes()
+    try:
+        document = parse_native_json(raw.decode("utf-8"))
+    except (CodexEventError, UnicodeError) as error:
+        raise PublicationError(f"invalid evidence document: {path}") from error
+    if not isinstance(document, dict):
+        raise PublicationError(f"evidence document is not an object: {path}")
+    return raw, document
+
+
+def _read_published_judgment(
+    path: Path, entry: dict[str, Any], model: str, effort: str,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Verify published identity and retained evidence without writing anything."""
+    slot = entry["slot"]
+    if not isinstance(slot, str) or not slot or slot in {".", ".."} or Path(slot).name != slot:
+        raise PublicationError("invalid published slot locator")
+    raw, accepted = _read_evidence_document(path)
+    if accepted.get("schema_version") != "caplab-artifact-rater-judgment/1":
+        raise PublicationError("unsupported published judgment schema")
+    expected = {"slot": slot, "scenario": entry["scenario"], "diff_sha256": entry["diff_sha256"],
+                "model": model, "effort": effort}
+    if any(accepted.get(key) != value for key, value in expected.items()):
+        raise PublicationError(f"published judgment identity mismatch for {slot}")
+    validate_judgment(accepted.get("judgment"), entry["code_ids"])
+    attempt_name = accepted.get("attempt")
+    if (not isinstance(attempt_name, str) or not attempt_name.startswith("attempt-")
+            or not attempt_name.removeprefix("attempt-").isdigit()):
+        raise PublicationError("invalid published attempt locator")
+    attempt_root = path.parent / attempt_name
+    record_bytes, record = _read_evidence_document(attempt_root / "record.json")
+    record_hash = hashlib.sha256(record_bytes).hexdigest()
+    evidence = {"published_sha256": hashlib.sha256(raw).hexdigest(), "attempt_record_sha256": record_hash}
+    if record.get("schema_version") == "caplab-artifact-rater-attempt/2":
+        verified = _validated_publication(attempt_root, entry, model, effort, record, record_bytes)
+        if accepted != verified:
+            raise PublicationError("published judgment does not match its verified attempt record")
+        evidence["events_sha256"] = record["events_sha256"]
+        evidence["rollout_sha256"] = record["attestation"]["rollout_sha256"]
+    elif record.get("schema_version") in (None, "caplab-artifact-rater-attempt/1"):
+        if (record.get("return_code") != 0 or record.get("timed_out") is True
+                or any(record.get(key) != expected[key] for key in ("slot", "model", "effort", "diff_sha256"))):
+            raise PublicationError("legacy attempt identity or execution mismatch")
+        if "attempt_record_sha256" in accepted and accepted["attempt_record_sha256"] != record_hash:
+            raise PublicationError("legacy publication has a contradictory record link")
+        proof = record
+        if accepted.get("recovered_from_preserved_attempt") is True:
+            recovery_bytes, proof = _read_evidence_document(attempt_root / "recovery.json")
+            if (proof.get("schema_version") != "caplab-artifact-rater-recovery/1"
+                    or proof.get("original_record_sha256") != record_hash):
+                raise PublicationError("legacy recovery does not name its original record")
+            evidence["recovery_sha256"] = hashlib.sha256(recovery_bytes).hexdigest()
+        elif record.get("accepted") is not True:
+            raise PublicationError("legacy publication has no acceptance or recovery proof")
+        derived = derive_artifact_judgment((attempt_root / "events.jsonl").read_bytes(),
+                                          (attempt_root / "last-message.txt").read_bytes(), entry["code_ids"])
+        if (accepted["judgment"] != derived["judgment"] or accepted.get("thread_id") != derived["thread_id"]
+                or proof.get("thread_id") != derived["thread_id"]
+                or accepted.get("prompt_sha256") != record.get("prompt_sha256")
+                or proof.get("last_message_sha256") != derived["derivation"]["last_message_sha256"]):
+            raise PublicationError("legacy judgment differs from preserved native evidence")
+        if "judgment_derivation" in accepted and accepted["judgment_derivation"] != derived["derivation"]:
+            raise PublicationError("legacy published derivation differs from captured message")
+        if "judgment_derivation" in proof and proof["judgment_derivation"] != derived["derivation"]:
+            raise PublicationError("legacy supporting derivation differs from captured message")
+        for filename, key in (("prompt.txt", "prompt_sha256"), ("schema.json", "schema_sha256"),
+                              ("stderr.txt", "stderr_sha256"), ("events.jsonl", "events_sha256")):
+            if record.get(key) != _sha256(attempt_root / filename):
+                raise PublicationError(f"legacy {filename} differs from its record")
+        observed = read_rollout_attestation(attempt_root / "rollout.jsonl", derived["thread_id"])
+        attestation = proof.get("attestation")
+        if not isinstance(attestation, dict) or any(attestation.get(key) != observed[key]
+                for key in ("thread_id", "model", "effort", "cli_version", "rollout_sha256")):
+            raise PublicationError("legacy rollout differs from its attestation")
+        if observed["model"] != model or observed["effort"] != effort:
+            raise PublicationError("legacy native tuple differs from requested tuple")
+        evidence["events_sha256"] = derived["derivation"]["events_sha256"]
+        evidence["rollout_sha256"] = observed["rollout_sha256"]
+    else:
+        raise PublicationError("unsupported published attempt schema")
+    return accepted, evidence
 
 
 def _recover_completed_attempt(
@@ -309,25 +406,7 @@ def _score_entry(
     slot_root = output_root / "scores" / slot
     accepted_path = slot_root / "accepted.json"
     if accepted_path.exists():
-        accepted = _load_json(accepted_path)
-        validate_judgment(accepted.get("judgment"), entry["code_ids"])
-        if (
-            accepted.get("model") != model
-            or accepted.get("effort") != effort
-            or accepted.get("diff_sha256") != entry["diff_sha256"]
-        ):
-            raise CalibrationError(f"accepted evidence mismatch for {slot}")
-        if "attempt_record_sha256" in accepted:
-            attempt_name = accepted.get("attempt")
-            if not isinstance(attempt_name, str) or Path(attempt_name).name != attempt_name:
-                raise PublicationError("invalid published attempt locator")
-            record_bytes = (slot_root / attempt_name / "record.json").read_bytes()
-            record = json.loads(record_bytes)
-            candidate = {key: value for key, value in accepted.items() if key != "attempt_record_sha256"}
-            if (hashlib.sha256(record_bytes).hexdigest() != accepted["attempt_record_sha256"]
-                    or record.get("validated") is not True
-                    or record.get("judgment_candidate") != candidate):
-                raise PublicationError("published judgment does not match its attempt record")
+        _read_published_judgment(accepted_path, entry, model, effort)
         return slot, True, "already accepted"
 
     for prior_attempt in sorted(slot_root.glob("attempt-[0-9][0-9][0-9]"), reverse=True):
@@ -532,16 +611,25 @@ def command_select_all(arguments: argparse.Namespace) -> int:
 
 
 def command_evaluate(arguments: argparse.Namespace) -> int:
-    manifest = _load_json(arguments.manifest)
+    manifest_bytes, manifest = _read_evidence_document(arguments.manifest)
     judgments = {}
+    evidence = []
     for entry in manifest["entries"]:
-        accepted = _load_json(
-            arguments.output_root / "scores" / entry["slot"] / "accepted.json"
+        accepted, source = _read_published_judgment(
+            arguments.output_root / "scores" / entry["slot"] / "accepted.json",
+            entry, arguments.model, arguments.effort,
         )
         judgments[entry["slot"]] = accepted["judgment"]
+        evidence.append({"slot": entry["slot"], **source})
     result = evaluate_calibration(manifest, judgments)
+    result["schema_version"] = "caplab-rater-calibration-result/2"
     result["model"] = arguments.model
     result["effort"] = arguments.effort
+    result["input_evidence"] = {
+        "schema_version": "caplab-calibration-inputs/1",
+        "manifest_sha256": hashlib.sha256(manifest_bytes).hexdigest(),
+        "judgments": evidence,
+    }
     _save_idempotent(arguments.output_root / "calibration-result.json", result)
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0 if result["passed"] else 2
