@@ -19,6 +19,11 @@ adopted by a future study and does not amend this study's existing artifacts.
 `docs/product/studies/caplab-advisory-selection-001-preregistration.md`.
 CAPLAB-44's destination is not complete.
 
+The [prospective admission contract](../../contracts/advisory-study-admission-v1.md)
+specifies source classes, permitted use, construction provenance and custody
+verification. It admits no current scenario and does not generalize the
+existing Study 001 admission command.
+
 ## Layout
 
 | path | holds |
