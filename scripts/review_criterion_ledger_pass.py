@@ -49,6 +49,18 @@ from caplab.advisory.review_response import response_error  # noqa: E402
 CLEAR = {"accept", "accept_with_findings"}
 REFUSE = {"needs_revision", "reject"}
 DEFECT_WORDS = re.compile(r"defect|wrong|incorrect|false claim|fabricat|contradict|hollow|does not (deliver|implement|match)", re.I)
+LIFECYCLE_FIELDS = {
+    "pass_run_closed": ("outcome", "closure_source", "closure_reason", "deferral_reason",
+                        "retry_at", "refusal_code", "detail", "failure", "capacity_observation_refs",
+                        "submission_operation_key"),
+    "submission_received": ("status", "attempt", "late", "operation_key", "expected_outputs",
+                            "outputs", "semantic_exhaust", "evidence_objects", "submission_object"),
+    "admission_decision": ("decision", "output", "submitted_state", "refusal_code", "detail",
+                           "submission_operation_key"),
+    "submission_refused": ("reason", "detail", "semantic_exhaust", "output_objects",
+                           "evidence_objects", "submission_object"),
+    "dispatch_lapse": ("dispatch_id", "basis", "observed", "sealed"),
+}
 
 
 def T(s):
@@ -106,6 +118,7 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
               "scheduling_decision", "artifact_admitted", "gate_result",
               "integration_conflict", "application_record", "cancellation_record",
               "head_movement"}
+    needed.update(LIFECYCLE_FIELDS)
     with open(ledger_path, "rb") as f:
         for line in f:
             digest.update(line)
@@ -163,6 +176,19 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
         r["closed"] = c["written_at"] if c else None
         r["closed_seq"] = c["seq"] if c else None
         r["wall_s"] = (T(c["written_at"]) - T(r["opened"])).total_seconds() if c else None
+
+    for kind, fields in LIFECYCLE_FIELDS.items():
+        for event in by[kind]:
+            payload = event["payload"]
+            run = payload.get("run_ref")
+            if run in runs:
+                runs[run].setdefault("lifecycle_observations", []).append({
+                    "seq": event["seq"], "type": kind, "at": event["written_at"],
+                    "schema_version": event.get("schema_version"),
+                    "detail": {key: payload[key] for key in fields if key in payload},
+                })
+    for r in runs.values():
+        r["lifecycle_observations"] = sorted(r.get("lifecycle_observations", []), key=lambda e: e["seq"])
 
     # --- verdicts: review-ledger bodies and review gate results
     for e in by["artifact_admitted"]:
@@ -348,7 +374,7 @@ def main() -> int:
     with open(os.path.join(args.out, "review-criterion-cases.jsonl"), "w", encoding="utf-8") as f:
         for s in ("gold-defect", "gold-clear", "silver-defect", "bronze-clear"):
             for r in strata.get(s, []):
-                f.write(json.dumps({"stratum": s, **{k: v for k, v in r.items() if k not in {"prompt_assets", "closed", "closed_seq", "post_close_versions", "post_close_events", "review_body_observations", "review_gate_observations"}}}, ensure_ascii=False, sort_keys=True) + "\n")
+                f.write(json.dumps({"stratum": s, **{k: v for k, v in r.items() if k not in {"prompt_assets", "closed", "closed_seq", "post_close_versions", "post_close_events", "review_body_observations", "review_gate_observations", "lifecycle_observations"}}}, ensure_ascii=False, sort_keys=True) + "\n")
     print(json.dumps({k: v for k, v in report.items() if k != "wall_clock_median_s"}, indent=1)[:6000])
     print("wall clock", json.dumps(report["wall_clock_median_s"]))
     return 0

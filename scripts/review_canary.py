@@ -71,6 +71,7 @@ def observe_run(run: dict) -> dict:
     gates = run.get("review_gate_observations", [])
     observed["review_body_observations"] = bodies
     observed["review_gate_observations"] = gates
+    observed["lifecycle_observations"] = run["lifecycle_observations"]
     observed["latest_body_status"] = bodies[-1]["status"] if bodies else "not-admitted"
     observed["multiple_body_verdicts"] = len({b["verdict"] for b in bodies
         if isinstance(b["verdict"], str) and b["verdict"] in CLEAR | REFUSE}) > 1
@@ -86,6 +87,30 @@ def observe_run(run: dict) -> dict:
     observed["request_cancellations"] = later["cancellations_with_defect_words"]
     observed["later_versions"] = run.get("post_close_versions", [])
     return observed
+
+
+def summarize_unknown_lifecycle(rows: list[dict]) -> dict:
+    unknown = [r for r in rows if r["decision"] == "unknown"]
+    sources, deferrals = collections.Counter(), collections.Counter()
+    refusals = collections.defaultdict(list)
+    for row in unknown:
+        closure = next((e["detail"] for e in row["lifecycle_observations"]
+                        if e["type"] == "pass_run_closed" and e["seq"] == row["closed_seq"]), {})
+        source = closure.get("closure_source") or ("not-recorded" if row["closed_seq"] is not None else "open")
+        sources[source] += 1
+        if source == "scheduling_deferral":
+            deferrals[closure.get("deferral_reason") or "not-recorded"] += 1
+        for event in row["lifecycle_observations"]:
+            detail = event["detail"]
+            if event["type"] == "admission_decision" and detail.get("decision") == "refused":
+                key = (detail.get("refusal_code") or "not-recorded",
+                       detail.get("submitted_state") or "not-recorded")
+                refusals[key].append(row["run"])
+    return {"record": "caplab-review-lifecycle/1", "runs": len(unknown),
+            "closure_sources": dict(sources), "deferral_reasons": dict(deferrals),
+            "admission_refusals": [{"code": code, "submitted_state": state,
+                                    "events": len(refs), "runs": len(set(refs))}
+                                   for (code, state), refs in sorted(refusals.items())]}
 
 
 def summarize(snapshot: dict, runs: dict, after_run: int) -> dict:
@@ -123,6 +148,7 @@ def summarize(snapshot: dict, runs: dict, after_run: int) -> dict:
             "downstream_ordering": "ledger-sequence-after-review-closure/1",
             "after_run": after_run, "mode": "since-cutoff" if after_run else "retrospective-baseline",
             "population": len(selected), "reviewers": reviewers, "reviews": selected,
+            "unknown_verdict_lifecycle": summarize_unknown_lifecycle(selected),
             "placement": "frozen", "gold_outcomes": "unavailable: no review-specific re-ruling event reader",
             "interpretation": "Report only. Downstream events are inspection candidates, not correctness labels."}
 
@@ -153,6 +179,23 @@ def render(report: dict) -> str:
         timing = f"{duration:.0f} ({row['closed_wall_n']})" if duration is not None else "unavailable (0)"
         lines.append(f"| {escape(row['reviewer'])} | {row['runs']} | {d.get('cleared', 0)} | "
                      f"{d.get('refused', 0)} | {d.get('unknown', 0)} | {missing} | {timing} |")
+    lifecycle = report["unknown_verdict_lifecycle"]
+    lines.extend(["", "Recorded lifecycle evidence for reviews without a verdict:", "",
+                  "| Closure source | Runs |", "|---|---:|"])
+    for source, count in sorted(lifecycle["closure_sources"].items()):
+        lines.append(f"| {escape(source)} | {count} |")
+    lines.append("")
+    for reason, count in sorted(lifecycle["deferral_reasons"].items()):
+        lines.append(f"- Scheduling deferral `{escape(reason)}`: {count} runs.")
+    if lifecycle["admission_refusals"]:
+        lines.extend(["", "| Admission refusal code | Submitted state | Events | Distinct runs |",
+                      "|---|---|---:|---:|"])
+        for refusal in lifecycle["admission_refusals"]:
+            lines.append(f"| {escape(refusal['code'])} | {escape(refusal['submitted_state'])} | "
+                         f"{refusal['events']} | {refusal['runs']} |")
+    lines.extend(["", "Closure sources and admission codes are recorded lifecycle facts, not reviewer verdicts or proof of cause.",
+                  "A refused output with submitted state absent does not establish that the reviewer produced invalid JSON.",
+                  "All linked lifecycle events and diagnostic object references are retained in report.json; no diagnostic body is executed or judged."])
     issues = collections.defaultdict(list)
     for row in report["reviews"]:
         if row["multiple_body_verdicts"]:

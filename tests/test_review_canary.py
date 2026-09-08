@@ -346,6 +346,49 @@ class ReviewCanaryTest(unittest.TestCase):
         self.assertTrue(row["multiple_gate_outcomes"])
         self.assertIn("Latest review gate: unsupported outcome", review_canary.render(report))
 
+    def test_missing_verdict_lifecycle_preserves_recorded_causes_and_diagnostic_refs(self):
+        deferred = self.review(verdict=None)
+        self.events[-1]["payload"].update(outcome="canceled", closure_source="scheduling_deferral",
+                                         deferral_reason="capacity_saturated", closure_reason="no free lane")
+        partial = self.review(verdict=None, close=False)
+        diagnostic = {"content_hash": "diagnostic-object", "label": "runerr-0"}
+        submission = self.event("submission_received", {"run_ref": partial, "status": "failed",
+                           "semantic_exhaust": [diagnostic], "operation_key": "submission-a"})
+        admission = self.event("admission_decision", {"run_ref": partial, "decision": "refused",
+                        "refusal_code": "schema_invalid", "submitted_state": "absent",
+                        "detail": "required output missing", "output": {"output_id": "review-ledger"},
+                        "submission_operation_key": "submission-a"})
+        closure = self.event("pass_run_closed", {"run_ref": partial, "outcome": "submitted_partial",
+                                                "closure_source": "submission_admission_v2"})
+        _, (snapshot, _, runs, _) = self.read()
+        report = review_canary.summarize(snapshot, runs, 0)
+        summary = report["unknown_verdict_lifecycle"]
+        self.assertEqual(summary["runs"], 2)
+        self.assertEqual(summary["closure_sources"], {"scheduling_deferral": 1, "submission_admission_v2": 1})
+        self.assertEqual(summary["deferral_reasons"], {"capacity_saturated": 1})
+        self.assertEqual(summary["admission_refusals"], [{"code": "schema_invalid", "submitted_state": "absent",
+                                                      "events": 1, "runs": 1}])
+        observations = report["reviews"][1]["lifecycle_observations"]
+        self.assertEqual([e["seq"] for e in observations], [submission, admission, closure])
+        self.assertEqual(observations[0]["detail"]["semantic_exhaust"], [diagnostic])
+        self.assertEqual(observations[1]["detail"]["detail"], "required output missing")
+        self.assertIn("capacity_saturated", review_canary.render(report))
+        self.assertEqual([x["decision"] for x in report["reviews"]], ["unknown", "unknown"])
+
+    def test_lifecycle_summary_counts_events_and_runs_separately_and_keeps_unknowns(self):
+        run = self.review(verdict=None)
+        self.review(verdict=None, close=False)
+        known = self.review()
+        for ref in (run, run, known):
+            self.event("admission_decision", {"run_ref": ref, "decision": "refused", "refusal_code": "schema_invalid"})
+        _, (snapshot, _, runs, _) = self.read()
+        report = review_canary.summarize(snapshot, runs, 0)
+        summary = report["unknown_verdict_lifecycle"]
+        self.assertEqual(summary["closure_sources"], {"not-recorded": 1, "open": 1})
+        self.assertEqual(summary["admission_refusals"], [{"code": "schema_invalid", "submitted_state": "not-recorded",
+                                                      "events": 2, "runs": 1}])
+        self.assertEqual(report["population"], 3)
+
     def test_cli_retains_source_fingerprint_and_refuses_overwrite(self):
         self.review(backend="<reviewer>|a")
         ledger, _ = self.read()

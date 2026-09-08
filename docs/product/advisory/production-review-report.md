@@ -132,6 +132,29 @@ groups issues and provides the first three run locators in ledger order;
 JSON retains all observations. Runs without an admitted body remain visible
 as `not-admitted`, including when a gate supplies the only verdict.
 
+`lifecycle_observations` retains linked `pass_run_closed`,
+`submission_received`, `admission_decision`, `submission_refused`, and
+`dispatch_lapse` events in ledger order. Each entry names the event sequence,
+schema version, timestamp, and relevant recorded detail. Submission entries
+include diagnostic and submission-object references, without reading those
+bodies. This field is an additive extension of version 3 reports.
+
+`unknown_verdict_lifecycle` (`caplab-review-lifecycle/1`) summarizes only
+reviews whose reported verdict is unknown. Closure-source counts use the
+selected closure event; open runs and missing closure-source labels stay
+explicit. Scheduling deferral reasons remain separate from submission and
+admission outcomes. Admission refusal codes are paired with their recorded
+`submitted_state` and report both event counts and distinct runs. A run can
+have several admission decisions, including decisions about other outputs;
+these rows can overlap and are not counts of incorrect reviews.
+
+Read `schema_invalid` alongside its detail and submitted state. A record
+with state `absent` and detail `required output missing` does not establish
+that the reviewer emitted malformed JSON. Likewise, a cancellation sourced
+from `scheduling_deferral` is a scheduling observation, not evidence of a
+reviewer refusing or failing its task. Diagnostic references can support
+further inspection; their presence alone does not explain the root cause.
+
 Applications and conflicts join by content hash. Request cancellations join
 more broadly. A missing content hash or request reference supplies no join;
 two absent identifiers do not establish a relationship. Only events with a
