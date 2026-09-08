@@ -10,6 +10,7 @@ from hashlib import sha256
 from pathlib import Path, PurePosixPath
 from typing import Any, Mapping
 
+from caplab.codex_events import parse_native_json
 from caplab.subject_identity import (
     NativeAgentSystemContractError,
     load_native_agent_system_policy,
@@ -278,16 +279,7 @@ def observed_reads_from_native_jsonl(
         raise NativeReviewContractError("unknown_native_subject")
     available = set(available_paths)
     observed: set[str] = set()
-    try:
-        events = [
-            json.loads(line)
-            for line in content.decode("utf-8").splitlines()
-            if line.strip()
-        ]
-    except (UnicodeError, json.JSONDecodeError) as error:
-        raise NativeReviewContractError("native_trace_not_jsonl") from error
-    if not all(isinstance(event, dict) for event in events):
-        raise NativeReviewContractError("native_trace_event_not_object")
+    events = _native_events(content)
     for event in events:
         if subject_id == "fable" and event.get("type") == "assistant":
             message = event.get("message", {})
@@ -313,6 +305,77 @@ def observed_reads_from_native_jsonl(
                 if isinstance(command, str):
                     observed.update(_command_reads(command, available))
     return [path for path in available_paths if path in observed]
+
+
+def _native_events(content: bytes) -> list[dict[str, Any]]:
+    try:
+        lines = content.decode("utf-8").split("\n")
+        if lines[-1] == "":
+            lines.pop()
+        events = [parse_native_json(line) for line in lines]
+    except (UnicodeError, ValueError) as error:
+        raise NativeReviewContractError("native_trace_not_jsonl") from error
+    if not all(isinstance(event, dict) for event in events):
+        raise NativeReviewContractError("native_trace_event_not_object")
+    return events
+
+
+def _model_identity(subject: Mapping[str, Any], content: bytes) -> dict[str, Any]:
+    """Assess native-reported model agreement, not full Binding attestation."""
+    events = _native_events(content)
+    result: dict[str, Any] = {
+        "schema": "caplab.review-dissent.native-model-identity/v1",
+        "native_stdout_sha256": sha256(content).hexdigest(),
+        "configured_model_id": subject["model_id"],
+        "native_harness_id": subject["native_harness_id"],
+        "status": "model-unverified",
+        "reason": "required-model-evidence-unavailable",
+        "initialization_models": [],
+        "response_models": [],
+        "fallbacks": [],
+        "usage_models": [],
+        "claim_ceiling": "native-reported model fields only; full Binding unverified",
+    }
+    if subject["native_harness_id"] != "claude-code":
+        return result
+    terminals = []
+    for line, event in enumerate(events, 1):
+        kind = event.get("type")
+        if kind == "system" and event.get("subtype") == "init":
+            result["initialization_models"].append({"line": line, "model": event.get("model")})
+        elif kind == "assistant":
+            message = event.get("message")
+            model = message.get("model") if isinstance(message, dict) else None
+            result["response_models"].append({"line": line, "model": model})
+        elif kind == "system" and event.get("subtype") == "model_refusal_fallback":
+            result["fallbacks"].append({
+                "line": line, "original_model": event.get("original_model"),
+                "fallback_model": event.get("fallback_model"),
+            })
+        elif kind == "result":
+            terminals.append((line, event))
+            usage = event.get("modelUsage")
+            if isinstance(usage, dict):
+                result["usage_models"].append({"line": line, "models": sorted(usage)})
+    initial = result["initialization_models"]
+    responses = result["response_models"]
+    models = [entry["model"] for entry in initial + responses]
+    mismatch = any(
+        isinstance(model, str) and model.strip() and model != subject["model_id"]
+        for model in models
+    )
+    if result["fallbacks"] or mismatch:
+        result.update(status="model-mismatch", reason="native-model-substitution-or-mismatch")
+    elif (
+        content.endswith(b"\n")
+        and len(initial) == 1 and initial[0]["line"] == 1
+        and responses and all(model == subject["model_id"] for model in models)
+        and len(terminals) == 1 and terminals[0][0] == len(events)
+        and terminals[0][1].get("subtype") == "success"
+        and terminals[0][1].get("is_error") is False
+    ):
+        result.update(status="native-model-match", reason="captured-model-fields-agree")
+    return result
 
 
 def _snapshot_task(root: Path) -> dict[str, str]:
@@ -363,6 +426,8 @@ def build_native_review_capture(
     observed = _snapshot_task(root)
     preserved = expected == observed
     available_paths = list(expected)
+    model_identity = _model_identity(subject, native_jsonl)
+    model_eligible = model_identity["status"] == "native-model-match"
     observed_reads = observed_reads_from_native_jsonl(
         subject_id, native_jsonl, available_paths
     )
@@ -377,13 +442,15 @@ def build_native_review_capture(
             review = None
     _, mechanical = _mechanical_result(
         oracle=cell["oracle"],
-        status=status,
+        status=status if model_eligible else "invalid",
         review=review,
         observed_reads=observed_reads,
         preserved=preserved,
     )
     if status in _INFRASTRUCTURE:
         outcome = "infrastructure"
+    elif not model_eligible:
+        outcome = "identity-unavailable"
     elif status == "invalid" or status == "completed" and not _valid_review(review):
         outcome = "subject-invalid"
     else:
@@ -401,7 +468,7 @@ def build_native_review_capture(
         }
     )
     capture = {
-        "schema": "caplab.review-dissent.native-capture/v1",
+        "schema": "caplab.review-dissent.native-capture/v2",
         "study_id": instrument["study_id"],
         "native_instrument_design_sha256": instrument["design_sha256"],
         "base_instrument_design_sha256": instrument["_base_design_sha256"],
@@ -409,6 +476,7 @@ def build_native_review_capture(
         "public_task_id": cell["public_task_id"],
         "subject_id": subject_id,
         "subject_seal": subject_seal,
+        "model_identity": model_identity,
         "campaign_manifest_sha256": campaign_manifest_sha256,
         "observation_sha256": observation_sha256,
         "execution_mode": "native-live",

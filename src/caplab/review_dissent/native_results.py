@@ -52,6 +52,10 @@ def _group_key(row: Mapping[str, Any], dimensions: tuple[str, ...]) -> str:
 def summarize_native_review_rows(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     """Aggregate development calibration rows without rescuing invalid reviews."""
 
+    for row in rows:
+        if row.get("score") is not None and row.get("model_identity_status") != "native-model-match":
+            raise NativeReviewResultContractError("native_review_score_without_model_evidence")
+    identity_counts = Counter(str(row.get("model_identity_status", "model-unverified")) for row in rows)
     status_counts = Counter(str(row.get("status")) for row in rows)
     outcome_counts = Counter(str(row.get("outcome")) for row in rows)
     score_counts = Counter(
@@ -78,6 +82,9 @@ def summarize_native_review_rows(rows: Sequence[Mapping[str, Any]]) -> dict[str,
                     item.get("review_schema_valid") is True for item in bucket
                 ),
                 "score_eligible": sum(item.get("score") is not None for item in bucket),
+                "model_identity": dict(sorted(Counter(
+                    str(item.get("model_identity_status", "model-unverified")) for item in bucket
+                ).items())),
                 "score_bands": dict(
                     sorted(
                         Counter(
@@ -104,6 +111,7 @@ def summarize_native_review_rows(rows: Sequence[Mapping[str, Any]]) -> dict[str,
             "primary_slots": len(rows),
             "review_schema_valid": schema_valid,
             "score_eligible": score_eligible,
+            "model_identity": dict(sorted(identity_counts.items())),
             "statuses": dict(sorted(status_counts.items())),
             "outcomes": dict(sorted(outcome_counts.items())),
             "score_bands": dict(sorted(score_counts.items())),
@@ -159,6 +167,8 @@ def normalize_native_review_campaign(manifest: Mapping[str, Any]) -> dict[str, A
         subject_id = launch["subject_id"]
         task_root = attempt_root / "input" / launch["public_task_id"]
         native_jsonl = (attempt_root / "native.stdout").read_bytes()
+        if sha256(native_jsonl).hexdigest() != observation.get("output_sha256"):
+            raise NativeReviewResultContractError("native_review_output_changed_before_capture")
         capture = build_native_review_capture(
             instrument,
             cell_id=cell_id,
@@ -195,17 +205,20 @@ def normalize_native_review_campaign(manifest: Mapping[str, Any]) -> dict[str, A
             "status": observation["status"],
             "outcome": capture["outcome"],
             "score": capture["mechanical"]["score"],
+            "model_identity_status": capture["model_identity"]["status"],
+            "model_identity_reason": capture["model_identity"]["reason"],
+            "native_stdout_sha256": capture["model_identity"]["native_stdout_sha256"],
             "review_schema_valid": _valid_review(review),
             "observed_severity_values": severities,
             "review_sha256": observation["review_sha256"],
             "observation_sha256": observation["observation_sha256"],
             "capture_sha256": capture["capture_sha256"],
-            "qualitative_disposition": "unavailable-mechanically-invalid-review-schema",
+            "qualitative_disposition": "unavailable-no-human-disposition",
         }
         rows.append(row)
 
     capture_manifest = {
-        "schema": "caplab.review-dissent.native-capture-manifest/v1",
+        "schema": "caplab.review-dissent.native-capture-manifest/v2",
         "campaign_id": manifest["campaign_id"],
         "manifest_sha256": manifest["manifest_sha256"],
         "native_instrument_design_sha256": instrument["design_sha256"],
@@ -215,7 +228,7 @@ def normalize_native_review_campaign(manifest: Mapping[str, Any]) -> dict[str, A
     _exclusive_json(normalization_root / "capture-manifest.json", capture_manifest)
     summary = summarize_native_review_rows(rows)
     result = {
-        "schema": "caplab.review-dissent.native-development-result/v1",
+        "schema": "caplab.review-dissent.native-development-result/v2",
         "campaign_id": manifest["campaign_id"],
         "manifest_sha256": manifest["manifest_sha256"],
         "native_instrument_design_sha256": instrument["design_sha256"],
@@ -224,12 +237,8 @@ def normalize_native_review_campaign(manifest: Mapping[str, Any]) -> dict[str, A
         "rows": rows,
         "summary": summary,
         "observed_severity_vocabulary": dict(sorted(severity_counts.items())),
-        "failure_explanation": (
-            "The native prompt required a severity field but did not state the "
-            "frozen critical or noncritical enum. Both native harnesses emitted "
-            "ordinary severity labels, so no review satisfied the exact schema."
-        ),
-        "qualitative_disposition_status": "unavailable-no-schema-valid-review",
+        "failure_explanation": None,
+        "qualitative_disposition_status": "unavailable-no-human-disposition",
         "heldout_status": "sealed-unopened",
         "claim_ceiling": "development calibration on these synthetic review worlds only",
     }

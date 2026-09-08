@@ -26,3 +26,19 @@ The live runner does not purchase provider credits, change billing, admit
 evidence, export data, train a model, change Striatum policy, independently
 verify a result, or accept a study. Canned captures remain qualification
 fixtures rather than subject attempts or model evidence.
+
+The separate `native` and `native_results` path retains the configured subject
+seal and adds a raw-stdout-linked `model_identity` assessment in version 2
+captures. Explicit fallback, mismatching model fields, and missing required
+model evidence withhold the mechanical score, including refusal credit.
+Execution status and assigned slots survive this identity exclusion; it does
+not create replacement eligibility. Summaries count exclusions by configured
+subject and cannot use an unattested score to declare calibration.
+
+Claude initialization and all captured assistant model fields must agree in
+a structurally bounded stream. Auxiliary usage-model names are recorded
+separately. Codex stdout alone remains unverified; rollout integration is
+still required. A matching assessment establishes only native-reported model
+agreement, not full Binding identity, authenticated provider identity, or
+capture completeness. Existing version 1 evidence is unchanged; this source
+repair authorizes no historical normalization or new live campaign.
