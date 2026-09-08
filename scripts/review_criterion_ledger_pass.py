@@ -61,10 +61,12 @@ def artifact_class(identity: str) -> str:
     return tail or "(unknown)"
 
 
-def read_reviews(ledger_path: str):
+def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
     """Read an export without changing its records or admitting evidence."""
     by = collections.defaultdict(list)
     digest = hashlib.sha256()
+    prefix_digest = hashlib.sha256()
+    prefix_remaining = expected_prefix["byte_count"] if expected_prefix else 0
     snapshot = {"path": os.path.abspath(ledger_path), "events": 0,
                 "last_seq": 0, "written_at": None}
     needed = {"pass_run_opened", "pass_run_closed", "lane_binding",
@@ -74,6 +76,10 @@ def read_reviews(ledger_path: str):
     with open(ledger_path, "rb") as f:
         for line in f:
             digest.update(line)
+            if prefix_remaining:
+                prefix = line[:prefix_remaining]
+                prefix_digest.update(prefix)
+                prefix_remaining -= len(prefix)
             if not line.strip():
                 continue
             e = json.loads(line)
@@ -87,6 +93,8 @@ def read_reviews(ledger_path: str):
                 by[e["type"]].append(e)
     if not snapshot["events"]:
         raise ValueError("ledger export is empty")
+    if expected_prefix and (prefix_remaining or prefix_digest.hexdigest() != expected_prefix["sha256"]):
+        raise ValueError("ledger does not extend the verified baseline export")
     snapshot["sha256"] = digest.hexdigest()
 
     # --- population: anchored review runs

@@ -49,6 +49,32 @@ PYTHONPATH=src python3 scripts/review_canary.py \
 fixed across follow-up reports so later outcomes remain attached to the same
 review population. Reuse exports from the same graph. No timer is installed.
 
+To verify that a new export extends your baseline, pass its report instead
+of typing the cutoff:
+
+```bash
+PYTHONPATH=src python3 scripts/review_canary.py \
+  --ledger /tmp/caplab-review-ledger-next.jsonl \
+  --baseline-report /tmp/caplab-review-baseline/report.json \
+  --out /tmp/caplab-review-follow-up-verified
+```
+
+Keep the baseline's source export at the absolute path recorded in its
+`snapshot.path`. The command checks that file's SHA-256 and event-count
+metadata, then verifies its bytes as an unchanged prefix while reading the
+new export. A different graph, rewritten history, truncated export, or missing
+baseline source is refused before a report is written. Baseline report and
+ledger hashes are retained in the new report's `baseline` field.
+
+An initial retrospective report supplies its last sequence as the cutoff.
+When a follow-up report is used as the baseline, its original `after_run`
+cutoff is preserved. This keeps the population fixed while extending its
+observation period. `--baseline-report` and `--after-run` cannot be combined.
+The numeric form remains available for manual windows; it does not verify
+baseline ancestry. Prefix verification establishes continuity, not completion
+of the new export command, availability of object-store bodies, or accuracy
+of a review. Continue to require exit code zero from the export command.
+
 Read the report in this order:
 
 1. Inspect missing verdicts and their run outcomes. A cancellation or partial

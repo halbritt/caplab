@@ -45,6 +45,89 @@ class ReviewCanaryTest(unittest.TestCase):
         ledger.write_text("".join(json.dumps(e) + "\n" for e in self.events))
         return ledger, criterion.read_reviews(str(ledger))
 
+    def baseline(self, after_run=0):
+        ledger, (snapshot, _, runs, _) = self.read()
+        retained = self.root / "baseline-ledger.jsonl"
+        ledger.rename(retained)
+        snapshot["path"] = str(retained)
+        report = review_canary.summarize(snapshot, runs, after_run)
+        path = self.root / "baseline-report.json"
+        path.write_text(json.dumps(report))
+        return path, report
+
+    def test_baseline_binds_follow_up_to_unchanged_ledger_prefix(self):
+        self.review()
+        baseline_path, baseline = self.baseline()
+        new_run = self.review(verdict="fail", version=2)
+        ledger, _ = self.read()
+        out = self.root / "follow-up"
+        command = [sys.executable, str(SCRIPTS / "review_canary.py"), "--ledger", str(ledger),
+                   "--baseline-report", str(baseline_path), "--out", str(out)]
+        completed = subprocess.run(command, capture_output=True, text=True)
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        report = json.loads((out / "report.json").read_text())
+        self.assertEqual(report["after_run"], baseline["snapshot"]["last_seq"])
+        self.assertEqual([r["run"] for r in report["reviews"]], [new_run])
+        self.assertEqual(report["baseline"]["report_sha256"], hashlib.sha256(baseline_path.read_bytes()).hexdigest())
+        self.assertEqual(report["baseline"]["ledger_sha256"], baseline["snapshot"]["sha256"])
+        self.assertIn("Verified baseline", (out / "report.md").read_text())
+
+    def test_follow_up_baseline_keeps_original_population_cutoff(self):
+        cutoff = self.review()
+        self.review(version=2)
+        path, report = self.baseline(after_run=cutoff)
+        reference, expected_prefix, after_run = review_canary.load_baseline(path)
+        self.assertEqual(after_run, cutoff)
+        self.assertLess(after_run, report["snapshot"]["last_seq"])
+        self.assertEqual(expected_prefix["sha256"], report["snapshot"]["sha256"])
+
+    def test_follow_up_from_genesis_keeps_zero_cutoff_on_the_next_report(self):
+        path, _ = self.baseline()
+        self.review()
+        ledger, _ = self.read()
+        out = self.root / "since-genesis"
+        completed = subprocess.run([sys.executable, str(SCRIPTS / "review_canary.py"),
+                                    "--ledger", str(ledger), "--baseline-report", str(path),
+                                    "--out", str(out)], capture_output=True, text=True)
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        _, _, cutoff = review_canary.load_baseline(out / "report.json")
+        self.assertEqual(cutoff, 0)
+
+    def test_changed_or_truncated_source_cannot_be_a_follow_up(self):
+        self.review()
+        path, _ = self.baseline()
+        self.review(version=2)
+        ledger, _ = self.read()
+        _, prefix, _ = review_canary.load_baseline(path)
+        self.events[0]["payload"] = {"core_graph": "different-graph"}
+        ledger.write_text("".join(json.dumps(e) + "\n" for e in self.events))
+        with self.assertRaisesRegex(ValueError, "baseline"):
+            criterion.read_reviews(str(ledger), expected_prefix=prefix)
+        ledger.write_text(json.dumps(self.events[0]) + "\n")
+        with self.assertRaisesRegex(ValueError, "baseline"):
+            criterion.read_reviews(str(ledger), expected_prefix=prefix)
+
+    def test_baseline_export_loss_or_mutation_is_an_explicit_error(self):
+        self.review()
+        path, report = self.baseline()
+        source = Path(report["snapshot"]["path"])
+        source.write_bytes(source.read_bytes() + b"\n")
+        with self.assertRaisesRegex(ValueError, "baseline"):
+            review_canary.load_baseline(path)
+        source.unlink()
+        with self.assertRaises(FileNotFoundError):
+            review_canary.load_baseline(path)
+
+    def test_baseline_metadata_must_match_its_retained_export(self):
+        self.review()
+        path, report = self.baseline()
+        for key in ("last_seq", "events"):
+            wrong = json.loads(json.dumps(report))
+            wrong["snapshot"][key] += 1
+            path.write_text(json.dumps(wrong))
+            with self.subTest(key=key), self.assertRaisesRegex(ValueError, "baseline"):
+                review_canary.load_baseline(path)
+
     def test_retains_unknown_and_open_runs_and_reports_only_linked_observations(self):
         cleared = self.review()
         refused = self.review(backend="reviewer-b", verdict="fail")

@@ -4,11 +4,57 @@ from __future__ import annotations
 
 import argparse
 import collections
+import hashlib
 import json
 from pathlib import Path
 import statistics
 
 from review_criterion_ledger_pass import CLEAR, REFUSE, T, read_reviews
+
+
+def load_baseline(path: Path) -> tuple[dict, dict, int]:
+    """Bind a follow-up to the retained export and fixed window of a report."""
+    raw = Path(path).read_bytes()
+    report = json.loads(raw)
+    if not isinstance(report, dict) or report.get("record") != "caplab-review-canary/1":
+        raise ValueError("baseline must be a production review report")
+    snapshot = report.get("snapshot")
+    if not isinstance(snapshot, dict):
+        raise ValueError("baseline has no source snapshot")
+    for key in ("events", "last_seq"):
+        if type(snapshot.get(key)) is not int or snapshot[key] < 0:
+            raise ValueError(f"invalid baseline snapshot {key}")
+    after_run = report.get("after_run")
+    if type(after_run) is not int or not 0 <= after_run <= snapshot["last_seq"]:
+        raise ValueError("invalid baseline population cutoff")
+    mode = report.get("mode")
+    if (not isinstance(mode, str) or mode not in {"since-cutoff", "retrospective-baseline"}
+            or (mode == "retrospective-baseline" and after_run != 0)):
+        raise ValueError("baseline mode contradicts its population cutoff")
+    source = snapshot.get("path")
+    if not isinstance(source, str) or not Path(source).is_absolute():
+        raise ValueError("baseline must name its retained export by absolute path")
+    digest = hashlib.sha256()
+    events = size = 0
+    last = None
+    with Path(source).open("rb") as export:
+        for line in export:
+            digest.update(line)
+            size += len(line)
+            if line.strip():
+                events += 1
+                last = line
+    if not last or digest.hexdigest() != snapshot.get("sha256"):
+        raise ValueError("baseline export no longer matches its recorded SHA-256")
+    last_event = json.loads(last)
+    if (events != snapshot["events"] or not isinstance(last_event, dict)
+            or last_event.get("seq") != snapshot["last_seq"]):
+        raise ValueError("baseline snapshot counts do not match its retained export")
+    prefix = {"byte_count": size, "sha256": digest.hexdigest()}
+    reference = {"path": str(Path(path).resolve()), "report_sha256": hashlib.sha256(raw).hexdigest(),
+                 "ledger_sha256": prefix["sha256"], "last_seq": snapshot["last_seq"],
+                 "prefix_bytes": size}
+    return reference, prefix, after_run if mode == "since-cutoff" else snapshot["last_seq"]
 
 
 def observe_run(run: dict) -> dict:
@@ -119,6 +165,10 @@ def render(report: dict) -> str:
         lines.append("No matching candidates in this window. This does not establish that reviews were correct.")
     lines.extend(["", f"Input SHA-256: `{snapshot['sha256']}`.",
                   "The JSON report retains every selected run, including missing verdicts and open runs.", ""])
+    if report.get("baseline"):
+        baseline = report["baseline"]
+        lines.extend([f"Verified baseline ledger prefix through event {baseline['last_seq']}.",
+                      f"Baseline report SHA-256: `{baseline['report_sha256']}`.", ""])
     return "\n".join(lines)
 
 
@@ -129,14 +179,25 @@ def escape(value: str) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--ledger", required=True, help="complete Striatum JSONL ledger export")
-    parser.add_argument("--after-run", type=int, default=0, help="exclusive run-opening sequence cutoff; keep fixed for follow-up")
+    window = parser.add_mutually_exclusive_group()
+    window.add_argument("--after-run", type=int, default=0, help="exclusive run-opening sequence cutoff; keep fixed for follow-up")
+    window.add_argument("--baseline-report", type=Path, help="prior report.json; verify its retained export and preserve its population cutoff")
     parser.add_argument("--out", required=True, help="new output directory; existing reports are never overwritten")
     args = parser.parse_args()
     target = Path(args.out)
     if target.exists():
         parser.error("--out already exists; choose a new report directory")
-    snapshot, _, runs, _ = read_reviews(args.ledger)
-    report = summarize(snapshot, runs, args.after_run)
+    baseline, prefix, after_run = None, None, args.after_run
+    try:
+        if args.baseline_report:
+            baseline, prefix, after_run = load_baseline(args.baseline_report)
+        snapshot, _, runs, _ = read_reviews(args.ledger, expected_prefix=prefix)
+        report = summarize(snapshot, runs, after_run)
+    except (ValueError, OSError) as exc:
+        parser.error(str(exc))
+    if baseline:
+        report["baseline"] = baseline
+        report["mode"] = "since-cutoff"
     target.mkdir(parents=True, exist_ok=False)
     (target / "report.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     (target / "report.md").write_text(render(report), encoding="utf-8")
