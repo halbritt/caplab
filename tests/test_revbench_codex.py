@@ -1101,20 +1101,28 @@ class CodexResponseAdapterTests(unittest.TestCase):
 
 
 class CodexLiveBindingTests(unittest.TestCase):
-    @unittest.skipUnless(CODEX_EXECUTABLE.is_file(), "pinned Codex binary unavailable")
-    def test_prepare_accepts_only_the_packed_exact_codex_bundle(self):
+    @unittest.skipUnless(CODEX_EXECUTABLE.is_file(), "host Codex binary unavailable")
+    def test_prepare_enforces_frozen_pin_on_installed_codex_binary(self):
         registrar = MemoryRegistrar()
         binding, native_policy_ref = make_live_codex_binding(registrar)
-
-        manifest = prepare(
-            make_spec(
-                registrar,
-                binding=binding,
-                native_system_contract_ref=native_policy_ref,
-            ),
+        spec = make_spec(
             registrar,
+            binding=binding,
+            native_system_contract_ref=native_policy_ref,
         )
+        executable = binding["harness"]["executable_ref"]
+        launcher = codex_native_bundle_policy()["launcher"]
+        if (executable["sha256"] != launcher["executable_sha256"]
+                or executable["byte_count"] != launcher["executable_byte_count"]):
+            # A host upgrade creates a different Binding. Rejection verifies
+            # the frozen policy; it supplies no positive readiness evidence.
+            with self.assertRaisesRegex(
+                RevbenchContractError, "does not match the pinned Codex binary"
+            ):
+                prepare(spec, registrar)
+            return
 
+        manifest = prepare(spec, registrar)
         self.assertEqual(manifest["binding"], binding)
         self.assertEqual(
             binding["harness"]["executable_ref"]["sha256"],

@@ -303,17 +303,19 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("/home/halbritt/git/caplab", decision)
         self.assertIn("history/ethogram/", decision)
 
-    def test_ci_installs_locked_runtime_before_repository_gate(self) -> None:
-        # GitHub Actions run 29702961943 failed when botocore was absent.
-        workflow = (ROOT / ".github/workflows/check.yml").read_text(encoding="utf-8")
-        self.assertIn("uses: actions/checkout@v6", workflow)
-        self.assertIn("uses: actions/setup-python@v6", workflow)
-        install = (
-            "python -m pip install --require-hashes "
+    def test_documented_host_gate_installs_locked_dependencies(self) -> None:
+        # Principal decision 63e9beb removed GitHub CI. The host gate still
+        # needs its locked dependencies before exercising the runtime.
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        runtime_install = (
+            "python3 -m pip install --require-hashes "
             "-r src/caplab/runtime/requirements.lock"
         )
-        self.assertIn(install, workflow)
-        self.assertLess(workflow.index(install), workflow.index("make check"))
+        test_install = "python3 -m pip install --require-hashes -r requirements-test.lock"
+        self.assertIn(runtime_install, readme)
+        self.assertIn(test_install, readme)
+        self.assertLess(readme.index(runtime_install), readme.index("make check"))
+        self.assertLess(readme.index(test_install), readme.index("make check"))
 
     def test_caplab_runtime_has_no_books_or_doctrine_dependency(self) -> None:
         forbidden_import = re.compile(
