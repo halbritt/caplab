@@ -155,6 +155,14 @@ from `scheduling_deferral` is a scheduling observation, not evidence of a
 reviewer refusing or failing its task. Diagnostic references can support
 further inspection; their presence alone does not explain the root cause.
 
+The [retained-diagnostic finding](../../records/finding-2026-09-08-review-diagnostic-coverage.md)
+shows why that distinction matters: repeated transcripts report OAuth
+expiry, exhausted credits, usage limits, and timeouts. The dominant OAuth
+message is tied to August 11–12, 2026, not a current authentication check.
+Use complete hashes and run/event references when inspecting diagnostics,
+retain their observation dates, and distinguish repeated messages from
+independent incidents. A diagnostic message is not a review-correctness label.
+
 Applications and conflicts join by content hash. Request cancellations join
 more broadly. A missing content hash or request reference supplies no join;
 two absent identifiers do not establish a relationship. Only events with a
