@@ -3,6 +3,9 @@
 Status: implemented host preparation. See the
 [decision and verification](../../records/implementation-2026-09-08-native-runtime-preparation.md).
 
+The [isolated version capture](native-version-capture-v1.md) uses this preparation
+for bounded native `--version` probes. It does not execute the retained prompt.
+
 `caplab.native_runtime.prepare_native_runtime(policy_path, invocation, *,
 expected_invocation_sha256, task_root, output_dir)` creates fresh private host
 custody for a [prospective native invocation](native-capture-invocations-v1.md).
