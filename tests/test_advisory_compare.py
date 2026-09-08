@@ -2,8 +2,11 @@ import json
 import os
 import tempfile
 import unittest
+from pathlib import Path
+from unittest import mock
 
 from caplab.advisory.compare import _binom_two_sided, paired_comparison
+from caplab.advisory import pool_runner, run_spec
 
 
 def write_run(root, name, rows, aborted=None):
@@ -42,6 +45,8 @@ class CompareTest(unittest.TestCase):
         self.assertEqual(result["a_only_caught"], 1)
         self.assertEqual(result["b_only_caught"], 0)
         self.assertEqual(result["both_caught"], 1)
+        self.assertEqual(result["comparison_basis"]["status"], "unverified-historical")
+        self.assertIn("historical conditions unverified", result["reading"])
 
     def test_concordant_pairs_are_uninformative(self):
         rows_a = [row(str(i) * 64, True) for i in range(1, 6)]
@@ -252,3 +257,127 @@ class ProfileAnnotationTest(unittest.TestCase):
                                    write_run(self.root, "b", [rb]))
         self.assertEqual(result["discordant_cases"][0]["calibration_profile"],
                          "v1-changeset")
+
+
+class FrozenComparisonTest(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+
+    def run_fixture(self, name, verdict="accept", *, selection="seeded-draw", plan_transform=None, **changes):
+        out = str(Path(self.tmp.name, name))
+        adapter = {"command": ["python3", "-c", "import json; print(json.dumps("
+                               + repr({"verdict": verdict, "findings": []}) + "))"],
+                   "prompt_mode": "stdin"}
+        plan = [{"substrate_id": f"fixture-{i}", "operator": "refuted_conclusion",
+                 "seed": i, "sha256": "d" * 64, "source": {"kind": "repo-doc"}}
+                for i in range(3)]
+        if plan_transform:
+            plan = plan_transform(plan)
+        options = dict(backend=name, backends_root="unused", registry_path="unused",
+                       out_dir=out, sweep_seed=1, per_operator=3, timeout=20)
+        with mock.patch.object(pool_runner, "ENVIRONMENT_VERSION", "iso-v1"), \
+                mock.patch.object(pool_runner, "load_declaration", return_value={"adapter": adapter}), \
+                mock.patch.object(pool_runner.SubstrateRegistry, "read", return_value=[]), \
+                mock.patch.object(pool_runner, "select_cases", return_value=(plan, selection)), \
+                mock.patch("caplab.advisory.calibrate.load_substrate_body", return_value=
+                           "## Results {#el:results}\n\nEvery probe finished within budget.\n"):
+            pool_runner.run_pool(**(options | changes))
+        return out
+
+    def change_rows(self, run, transform):
+        path = Path(run, "results.jsonl")
+        rows = [json.loads(line) for line in path.read_text().splitlines()]
+        path.write_text("".join(json.dumps(row) + "\n" for row in transform(rows)))
+
+    def test_same_experiment_allows_distinct_subject_declarations(self):
+        a, b = self.run_fixture("a"), self.run_fixture("b", "reject")
+        doc = paired_comparison(a, b)
+        self.assertEqual(doc["shared_cases"], 3)
+        self.assertEqual(doc["a_discrimination"], 0)
+        self.assertEqual(doc["b_discrimination"], 0)
+        basis = doc["comparison_basis"]
+        self.assertEqual(basis["record"], "caplab-paired-conditions/1")
+        self.assertEqual(basis["planned_cases"], 3)
+        self.assertNotEqual(basis["subjects"][0]["declaration_sha256"],
+                            basis["subjects"][1]["declaration_sha256"])
+
+    def test_changed_common_parameters_refuse_even_with_identical_case_ids(self):
+        a = self.run_fixture("a")
+        for i, changes in enumerate(({"timeout": 21}, {"replicates": 2},
+                                      {"sweep_seed": 2}, {"workers": 2})):
+            with self.subTest(changes=changes):
+                b = self.run_fixture(f"b-{i}", **changes)
+                with self.assertRaisesRegex(ValueError, "comparison conditions"):
+                    paired_comparison(a, b)
+
+    def test_changed_instrument_sources_refuse(self):
+        a = self.run_fixture("a")
+        with mock.patch.object(run_spec, "instrument_sources", return_value={"changed.py": "d" * 64}):
+            b = self.run_fixture("b")
+        with self.assertRaisesRegex(ValueError, "comparison conditions"):
+            paired_comparison(a, b)
+
+    def test_new_and_historical_runs_cannot_be_mixed(self):
+        a = self.run_fixture("a")
+        b = write_run(self.tmp.name, "legacy", [row("fixture-0:refuted_conclusion:0", False)])
+        with self.assertRaisesRegex(ValueError, "frozen.*historical"):
+            paired_comparison(a, b)
+
+    def test_missing_duplicate_and_relabelled_rows_refuse(self):
+        a = self.run_fixture("a")
+        changes = [lambda rows: rows[:-1], lambda rows: rows + [rows[0]],
+                   lambda rows: [{**rows[0], "backend_measured": "wrong"}] + rows[1:],
+                   lambda rows: [{**rows[0], "run_spec_sha256": "d" * 64}] + rows[1:],
+                   lambda rows: [{**rows[0], "anchor": True}] + rows[1:],
+                   lambda rows: [{**rows[0], "defect_anchor": "another"}] + rows[1:]]
+        for i, change in enumerate(changes):
+            with self.subTest(change=i):
+                b = self.run_fixture(f"b-{i}")
+                self.change_rows(b, change)
+                with self.assertRaises(ValueError):
+                    paired_comparison(a, b)
+
+    def test_incomplete_row_cannot_hide_behind_a_complete_summary(self):
+        a, b = self.run_fixture("a"), self.run_fixture("b")
+        self.change_rows(b, lambda rows: [{**rows[0], "usable": False,
+                                          "error": "preparation failed"}] + rows[1:])
+        with self.assertRaisesRegex(ValueError, "incomplete"):
+            paired_comparison(a, b)
+
+    def test_symmetric_inapplicability_is_reported_without_a_silent_drop(self):
+        def one_inapplicable(plan):
+            return [{**plan[0], "operator": "hash_mismatch"}] + plan[1:]
+        a = self.run_fixture("a", plan_transform=one_inapplicable)
+        b = self.run_fixture("b", plan_transform=one_inapplicable)
+        doc = paired_comparison(a, b)
+        self.assertEqual(doc["shared_cases"], 2)
+        self.assertEqual(doc["comparison_basis"]["planned_cases"], 3)
+        self.assertEqual(doc["comparison_basis"]["not_applicable_cases"], 1)
+
+    def test_outcome_selected_runs_carry_no_discovery_statistics(self):
+        for selection in ("targeted-reproduction", "admission-gate"):
+            with self.subTest(selection=selection):
+                a = self.run_fixture(selection + "-a", selection=selection)
+                b = self.run_fixture(selection + "-b", "reject", selection=selection)
+                doc = paired_comparison(a, b)
+                self.assertEqual(doc["shared_cases"], 3)
+                self.assertEqual(doc["case_selection"], selection)
+                self.assertIsNone(doc["sign_test_p"])
+                self.assertIsNone(doc["significant_at_05"])
+                self.assertIsNone(doc["false_alarm_sign_test_p"])
+                self.assertIsNone(doc["false_alarm_significant_at_05"])
+                self.assertIn("descriptive", doc["reading"])
+
+    def test_unknown_selection_cannot_gain_discovery_statistics(self):
+        a = self.run_fixture("a", selection="future-selection")
+        b = self.run_fixture("b", selection="future-selection")
+        with self.assertRaisesRegex(ValueError, "unknown case selection"):
+            paired_comparison(a, b)
+
+    def test_profile_remeasurement_retains_its_exogenous_selection_label(self):
+        a = self.run_fixture("a", selection="profile-remeasurement")
+        b = self.run_fixture("b", selection="profile-remeasurement")
+        doc = paired_comparison(a, b)
+        self.assertEqual(doc["case_selection"], "profile-remeasurement")
+        self.assertEqual(doc["sign_test_p"], 1)

@@ -69,6 +69,25 @@ verify a native Binding, pin external executable or account-state changes,
 provide one-shot attempt custody, or establish comparability between two
 runs. Those require the corresponding evidence and policy separately.
 
+Prospective paired comparisons now verify the common fields of both frozen
+run specifications before producing a contrast. They allow backend labels,
+declaration hashes, and declared lane limits to differ as subject properties;
+all other recorded conditions must match. Every planned result must be
+present exactly once, summaries must reconcile with retained rows, and both
+runs must have the same measurable population. Different case metadata,
+preparation failures, missing rows, or a mixture of frozen and historical
+runs refuse comparison.
+
+The resulting `comparison_basis` names common-condition and source-result
+hashes, subject declarations, and planned, paired, inapplicable, and anchor
+counts. Targeted reproduction and admission-gate contrasts retain descriptive
+counts but expose no discovery p-values or significance flags. These checks
+establish agreement of the recorded conditions, not native Binding identity,
+semantic finding validity, statistical independence, or reviewer ranking.
+Historical unversioned comparisons retain their numerical calculations but
+are explicitly labeled `unverified-historical`; a case-ID intersection does
+not establish common experiment conditions.
+
 ## Advisory-grade execution profile v0
 
 `python3 -m caplab.advisory run` executes the pinned striatum-tuner
