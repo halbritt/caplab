@@ -402,7 +402,7 @@ def profile_for_artifact(body: str, tree: bool = False) -> str:
         # routing; it stays in CALIBRATION_PROFILES only so historical rows
         # remain readable. Numbers across the two versions do not compare.
         return "v2-changeset"
-    return "v1"
+    return "v1-tree" if tree else "v1"
 
 
 def local_review(body: str, endpoint: str = LOCAL_ENDPOINT,

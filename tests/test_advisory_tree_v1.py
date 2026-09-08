@@ -61,6 +61,14 @@ class PreambleV3Test(unittest.TestCase):
         self.assertNotIn("NOT available to you", C.TREE_PROFILE_BODIES["v3-changeset"])
         self.assertIn("ANCHORING IS INTACT", C.TREE_PROFILE_BODIES["v3-changeset"])
 
+    def test_json_documents_keep_the_selected_environment(self):
+        for document in ({"summary": "Review the design"}, {}, [], ["a", "b"],
+                         "a document", 42, True, False, None):
+            with self.subTest(document=document):
+                body = json.dumps(document)
+                self.assertEqual(C.profile_for_artifact(body, tree=True), "v1-tree")
+                self.assertEqual(C.profile_for_artifact(body), "v1")
+
 
 class HashMismatchV3Test(unittest.TestCase):
     def _fields(self, base_source, trials=40):
@@ -123,6 +131,30 @@ class TreeModeMeasureCaseTest(unittest.TestCase):
     def _case(self, operator, substrate="qs-t1", seed=3):
         return {"substrate_id": substrate, "operator": operator, "seed": seed,
                 "source": {"kind": "repo-doc"}}
+
+    def test_json_document_reaches_both_arms_with_the_materialized_tree_contract(self):
+        body = json.dumps({"summary": "The decision is documented in `docs/adr-0001.md`."})
+        with tempfile.TemporaryDirectory() as repo, tempfile.TemporaryDirectory() as ws, \
+                mock.patch.object(pool_runner, "ENVIRONMENT_VERSION", "tree-v1"), \
+                mock.patch.dict(M.REPOS, {"testrepo": repo}), \
+                mock.patch.dict(os.environ, {"CAPLAB_NO_SANDBOX": "1"}):
+            commit = _repo(repo)
+            record = {"substrate_id": "qs-t1", "base_source": "whole-tree", "materializer": "git-archive",
+                      "repo": "testrepo", "commit": commit, "evidence": []}
+            row = pool_runner.measure_case(self._case("dangling_reference"), body,
+                                           ECHO_ADAPTER, 30, workspace=ws, base_record=record)
+            self.assertTrue(row["usable"], row.get("error"))
+            self.assertEqual(row["calibration_profile"], "v1-tree")
+            self.assertTrue(row["base_manifest_verified"])
+            self.assertEqual(row["control_valid_attempts"], 1)
+            self.assertEqual(row["mutant_valid_attempts"], 1)
+            case_dir = os.path.join(ws, "qs-t1-dangling_reference-3")
+            self.assertTrue(M.verify_manifest(case_dir))
+            with open(os.path.join(case_dir, "prompt-seen.txt")) as f:
+                seen = f.read()
+            self.assertIn(body, seen)
+            self.assertEqual(seen.count("THE TREE IS THE BEFORE-STATE"), 2)
+            self.assertEqual(seen.count(f"is at `{case_dir}/base`, read-only"), 2)
 
     def test_each_attempt_retains_its_own_integrity_and_execution_evidence(self):
         good = {"doc": {"verdict": "accept", "findings": []}, "exit_code": 0,
