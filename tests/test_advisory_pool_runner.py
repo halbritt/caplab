@@ -223,6 +223,10 @@ class PairValidityTest(unittest.TestCase):
         self.assertIsNone(row["mutant_exit_code"])
         # The live arm's evidence is preserved for later audit.
         self.assertEqual(row["control_verdicts"], ["accept"] * 3)
+        self.assertEqual(len(row["control_attempts"]), 3)
+        self.assertEqual(len(row["mutant_attempts"]), 1)
+        self.assertTrue(row["mutant_attempts"][0]["timed_out"])
+        self.assertIsNone(row["mutant_attempts"][0]["doc"])
 
     def test_dead_control_arm_discards_the_pair_and_says_why(self):
         row = self._run("control")

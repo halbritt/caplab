@@ -551,17 +551,24 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
             for _ in range(per_arm[name]):
                 # Manifest verified before and after every attempt (§2.4);
                 # a failure marks the row rather than hiding in a verdict.
-                if tree and not _materialize.verify_manifest(workspace):
-                    manifest_ok = False
-                runs.append(invoke(adapter, prompt_text, timeout,
-                                   workspace=workspace, readonly=readonly))
-                if tree and not _materialize.verify_manifest(workspace):
+                before = _materialize.verify_manifest(workspace) if tree else None
+                result = invoke(adapter, prompt_text, timeout,
+                                workspace=workspace, readonly=readonly)
+                after = _materialize.verify_manifest(workspace) if tree else None
+                result["manifest_verified"] = before and after if tree else None
+                runs.append(result)
+                if tree and not result["manifest_verified"]:
                     manifest_ok = False
             if transport_label:
                 for r in runs:
                     r["transport"] = transport_label
         replicate_verdicts[name] = [(r["doc"] or {}).get("verdict") for r in runs]
         results[name] = runs
+
+    # Gate accounting needs every attempt, including failed replicates that a
+    # representative capture or majority verdict cannot describe.
+    for name, runs in results.items():
+        row[f"{name}_attempts"] = runs
 
     def representative(name: str, majority_verdict) -> dict:
         """The retained capture must agree with the verdict the row reports.
@@ -776,7 +783,8 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
                       else mutant_replicates))
             body = load_substrate_body(case, exchange, repos)
             if body is None:
-                row = {"dispatch_id": case_id, "usable": False,
+                row = {"dispatch_id": case_id, "substrate_id": case["substrate_id"],
+                       "usable": False,
                        "error": "substrate unreachable",
                        "defect_class": case["operator"]}
             else:

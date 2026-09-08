@@ -57,19 +57,94 @@ def plan(gate: dict) -> dict:
 
 
 def conformance(doc: dict | None) -> dict:
-    out = {"parses": doc is not None}
-    if not doc:
+    out = {"parses": isinstance(doc, dict)}
+    if not isinstance(doc, dict) or not doc:
         return {**out, "verdict_valid": False, "refusal_has_anchor": None, "rationales_disciplined": None, "ok": False}
     verdict = doc.get("verdict")
-    findings = [f for f in (doc.get("findings") or []) if isinstance(f, dict)]
-    out["verdict_valid"] = verdict in VERDICTS
-    out["refusal_has_anchor"] = (any(f.get("element_anchor") for f in findings)
-                                 if verdict in REFUSING else None)
+    findings = doc.get("findings")
+    out["verdict_valid"] = isinstance(verdict, str) and verdict in VERDICTS
+    if not isinstance(findings, list) or not all(isinstance(f, dict) for f in findings):
+        return {**out, "refusal_has_anchor": False, "rationales_disciplined": False, "ok": False}
+    out["refusal_has_anchor"] = (any(isinstance(f.get("element_anchor"), str)
+                                     and f["element_anchor"].strip() for f in findings)
+                                 if isinstance(verdict, str) and verdict in REFUSING else None)
     texts = [(f.get("rationale") or f.get("text") or "") for f in findings]
-    out["rationales_disciplined"] = all(DISCIPLINE.search(t) for t in texts) if texts else None
+    out["rationales_disciplined"] = all(isinstance(t, str) and DISCIPLINE.search(t)
+                                        for t in texts) if texts else None
     out["ok"] = bool(out["verdict_valid"] and out["refusal_has_anchor"] is not False
                      and out["rationales_disciplined"] is not False)
     return out
+
+
+def observed_verdict(attempt: dict) -> str | None:
+    """An output alone cannot establish a completed, contained observation."""
+    doc = attempt.get("doc")
+    verdict = doc.get("verdict") if isinstance(doc, dict) else None
+    if (attempt.get("exit_code") == 0 and attempt.get("timed_out") is False
+            and not attempt.get("error") and attempt.get("sandbox") == "bwrap"
+            and attempt.get("manifest_verified") is True
+            and isinstance(verdict, str) and verdict in VERDICTS):
+        return verdict
+    return None
+
+
+def summarize_cells(gate: dict, rows: list[dict], adj, sources: dict) -> dict:
+    """Account for the planned population; report counts without adopting floors."""
+    expected = {(c["substrate_id"], c["operator"]) for c in gate["cells"]}
+    if len(expected) != len(gate["cells"]):
+        raise ValueError("duplicate gate cell in specification")
+    by_cell = {}
+    for row in rows:
+        key = (row.get("substrate_id"), row.get("defect_class"))
+        if key not in expected or key in by_cell:
+            raise ValueError(f"unexpected or duplicate gate cell: {key}")
+        by_cell[key] = row
+    result = {"cells_planned": len(expected), "cells_scorable": 0,
+              "cells_missing": 0, "cells_not_applicable": 0, "cells_incomplete": 0,
+              "missed": 0, "cell_observations": [],
+              "controls_by_disposition": {d: {"expected": 0, "observed": 0,
+                                                "refused": 0, "unavailable": 0}
+                                          for d in ("sound", "defective", "unadjudicated")}}
+    for substrate, operator in sorted(expected):
+        row = by_cell.get((substrate, operator))
+        cell = {"substrate_id": substrate, "operator": operator}
+        if row is None:
+            status = "missing"
+            disposition = adj.disposition(sources.get(substrate) or substrate)
+            counts = result["controls_by_disposition"][disposition]
+            counts["expected"] += gate["replication"]["control"]
+            counts["unavailable"] += gate["replication"]["control"]
+            cell["control_disposition"] = disposition
+        elif (not row.get("usable") and str(row.get("error", "")).startswith("not applicable:")
+              and not row.get("control_attempts") and not row.get("mutant_attempts")):
+            status = "not_applicable"
+        else:
+            if row.get("environment") not in (None, "tree-v1"):
+                raise ValueError("gate observations require tree-v1")
+            verdicts = {}
+            for arm in ("control", "mutant"):
+                attempts = row.get(f"{arm}_attempts", [])
+                if len(attempts) > gate["replication"][arm]:
+                    raise ValueError(f"excess {arm} attempts for {substrate}:{operator}")
+                verdicts[arm] = [observed_verdict(a) if row.get("environment") == "tree-v1"
+                                 else None for a in attempts]
+                cell[f"{arm}_observed"] = sum(v is not None for v in verdicts[arm])
+            disposition = adj.disposition(sources.get(substrate) or substrate)
+            counts = result["controls_by_disposition"][disposition]
+            counts["expected"] += gate["replication"]["control"]
+            counts["observed"] += cell["control_observed"]
+            counts["refused"] += sum(v in REFUSING for v in verdicts["control"])
+            counts["unavailable"] += gate["replication"]["control"] - cell["control_observed"]
+            cell["control_disposition"] = disposition
+            complete = all(cell[f"{arm}_observed"] == gate["replication"][arm]
+                           for arm in ("control", "mutant"))
+            status = "scorable" if row.get("usable") and complete else "incomplete"
+            if status == "scorable":
+                result["missed"] += not any(v in REFUSING for v in verdicts["mutant"])
+        result[f"cells_{status}"] += 1
+        cell.update(status=status, error=row.get("error") if row else "no retained row")
+        result["cell_observations"].append(cell)
+    return result
 
 
 def run_natural_case(nc: dict, adapter: dict, out_dir: str, timeout: int, replicates: int) -> dict:
@@ -95,17 +170,23 @@ def run_natural_case(nc: dict, adapter: dict, out_dir: str, timeout: int, replic
         before = M.verify_manifest(case_dir)
         r = pool_runner.invoke(adapter, prompt, timeout, workspace=case_dir, readonly=readonly)
         after = M.verify_manifest(case_dir)
+        r["manifest_verified"] = before and after
         doc = r.get("doc")
-        anchors = [str(f.get("element_anchor") or "") for f in ((doc or {}).get("findings") or []) if isinstance(f, dict)]
-        runs.append({"verdict": (doc or {}).get("verdict"), "anchors": anchors[:8],
+        findings = doc.get("findings") if isinstance(doc, dict) else None
+        anchors = [f["element_anchor"] for f in findings
+                   if isinstance(f, dict) and isinstance(f.get("element_anchor"), str)] if isinstance(findings, list) else []
+        verdict = observed_verdict(r)
+        runs.append({**r, "verdict": doc.get("verdict") if isinstance(doc, dict) else None,
+                     "observed": verdict is not None, "anchors": anchors,
                      "anchored_hit": any(nc["expected"]["anchored_finding"] in a for a in anchors),
-                     "refused": (doc or {}).get("verdict") in REFUSING,
+                     "refused": verdict in REFUSING,
                      "conformance": conformance(doc), "seconds": r["seconds"], "exit_code": r["exit_code"],
                      "timed_out": r["timed_out"], "manifest_verified": before and after,
                      "raw_head": (r.get("raw_head") or "")[:300]})
     return {"id": nc["id"], "base_manifest_digest": manifest["digest"], "replicates": runs,
+            "unavailable": sum(1 for r in runs if not r["observed"]),
             "refused_and_anchored": sum(1 for r in runs if r["refused"] and r["anchored_hit"]),
-            "conforming": sum(1 for r in runs if r["conformance"]["ok"])}
+            "conforming": sum(1 for r in runs if r["observed"] and r["conformance"]["ok"])}
 
 
 def main() -> int:
@@ -124,9 +205,11 @@ def main() -> int:
     if not pool_runner.sandbox_available():
         print("the Stage B mount is the only environment a gate run may use; bwrap is unavailable", file=sys.stderr)
         return 2
+    if not pool_runner.tree_mode():
+        ap.error("gate runs require tree-v1")
     out_dir = args.out or os.path.join(ROOT, "advisory", "pool-runs",
                                        f"gate-{args.binding}-{_dt.date.today().strftime('%Y%m%d')}")
-    os.makedirs(out_dir, exist_ok=True)
+    os.makedirs(out_dir, exist_ok=False)
     cells_doc = {"selection": "admission-gate", "cells": gate["cells"]}
     cells_path = os.path.join(out_dir, "cells.json")
     with open(cells_path, "w", encoding="utf-8") as f:
@@ -138,23 +221,27 @@ def main() -> int:
                                    replicates=rep["control"], mutant_replicates=rep["mutant"],
                                    cases_path=cells_path)
     declaration = pool_runner.load_declaration(BACKENDS, args.binding)
-    natural = [run_natural_case(nc, declaration["adapter"], out_dir, args.timeout, rep["natural_case"])
-               for nc in gate["natural_cases"]]
-    rows = [json.loads(l) for l in open(os.path.join(out_dir, "results.jsonl"), encoding="utf-8") if l.strip()]
-    usable = [r for r in rows if r.get("usable") and r.get("control_json_valid") and r.get("mutant_json_valid")]
+    natural = ([{"id": nc["id"], "replicates": [], "unavailable": rep["natural_case"],
+                 "refused_and_anchored": 0, "conforming": 0,
+                 "error": f"pool aborted: {summary['aborted']}"} for nc in gate["natural_cases"]]
+               if summary.get("aborted") else
+               [run_natural_case(nc, declaration["adapter"], out_dir, args.timeout, rep["natural_case"])
+                for nc in gate["natural_cases"]])
+    with open(os.path.join(out_dir, "results.jsonl"), encoding="utf-8") as f:
+        rows = [json.loads(line) for line in f if line.strip()]
+    with open(GATE, "rb") as f:
+        gate_sha256 = hashlib.sha256(f.read()).hexdigest()
     from caplab.advisory.executor import advisory_control_context
     adj, sources = advisory_control_context(os.path.join(ROOT, "advisory", "control-adjudications.jsonl"))
-    sound = [r for r in usable if not adj.is_defective((sources or {}).get(r["substrate_id"]) or r["dispatch_id"])]
     result = {
-        "record": "caplab-review-admission-gate-result/1", "binding": args.binding,
-        "gate_sha256": hashlib.sha256(open(GATE, "rb").read()).hexdigest(),
+        "record": "caplab-review-admission-gate-result/2", "binding": args.binding,
+        "gate_sha256": gate_sha256,
         "environment": summary.get("environment"), "as_of": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
-        "cells_scorable": len(usable), "cells_not_applicable": len(rows) - len(usable),
-        "missed": sum(1 for r in usable if not r["caught"]),
-        "sound_controls": len(sound), "refused_sound": sum(1 for r in sound if r["false_alarm"]),
+        **summarize_cells(gate, rows, adj, sources),
+        "pool_aborted": summary.get("aborted"),
         "natural_cases": natural,
         "floors": gate["floors"],
-        "note": "pass/fail against proposed floors; never a ranking, never a claim (case_selection admission-gate)",
+        "note": "Observations only; floors proposed, not adopted. Control dispositions are recorded ledger labels, not proof of tree-v1 revalidation. No admission decision, ranking, or claim.",
     }
     with open(os.path.join(out_dir, "gate-result.json"), "w", encoding="utf-8") as f:
         json.dump(result, f, indent=1)
