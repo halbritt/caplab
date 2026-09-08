@@ -308,8 +308,9 @@ def _snapshot(root: Path) -> dict[str, str]:
     for path in sorted(root.rglob("*")):
         if path.is_symlink():
             raise ReviewDissentContractError(f"task_symlink:{path.relative_to(root).as_posix()}")
-        if path.is_file() and path.name not in {"REVIEW.json", ".caplab-review-task.json"}:
-            result[path.relative_to(root).as_posix()] = sha256(path.read_bytes()).hexdigest()
+        relative = path.relative_to(root).as_posix()
+        if path.is_file() and relative not in {"REVIEW.json", ".caplab-review-task.json"}:
+            result[relative] = sha256(path.read_bytes()).hexdigest()
     return result
 
 

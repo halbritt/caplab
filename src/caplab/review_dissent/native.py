@@ -392,8 +392,9 @@ def _snapshot_task(root: Path) -> dict[str, str]:
     for path in sorted(root.rglob("*")):
         if path.is_symlink():
             raise NativeReviewContractError("native_task_symlink")
-        if path.is_file() and path.name not in excluded:
-            result[path.relative_to(root).as_posix()] = sha256(path.read_bytes()).hexdigest()
+        relative = path.relative_to(root).as_posix()
+        if path.is_file() and relative not in excluded:
+            result[relative] = sha256(path.read_bytes()).hexdigest()
     return result
 
 
