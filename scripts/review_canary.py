@@ -16,7 +16,7 @@ def load_baseline(path: Path) -> tuple[dict, dict, int]:
     """Bind a follow-up to the retained export and fixed window of a report."""
     raw = Path(path).read_bytes()
     report = json.loads(raw)
-    if not isinstance(report, dict) or report.get("record") not in ("caplab-review-canary/1", "caplab-review-canary/2"):
+    if not isinstance(report, dict) or report.get("record") not in ("caplab-review-canary/1", "caplab-review-canary/2", "caplab-review-canary/3"):
         raise ValueError("baseline must be a production review report")
     snapshot = report.get("snapshot")
     if not isinstance(snapshot, dict):
@@ -67,6 +67,18 @@ def observe_run(run: dict) -> dict:
     observed["decision"] = {True: "cleared", False: "refused", None: "unknown"}[run["cleared"]]
     observed["verdict_source"] = ("body" if run.get("verdict") in CLEAR | REFUSE else
                                   "gate-only" if run.get("review_gate") in {"pass", "fail"} else "missing")
+    bodies = run.get("review_body_observations", [])
+    gates = run.get("review_gate_observations", [])
+    observed["review_body_observations"] = bodies
+    observed["review_gate_observations"] = gates
+    observed["latest_body_status"] = bodies[-1]["status"] if bodies else "not-admitted"
+    observed["multiple_body_verdicts"] = len({b["verdict"] for b in bodies
+        if isinstance(b["verdict"], str) and b["verdict"] in CLEAR | REFUSE}) > 1
+    observed["multiple_gate_outcomes"] = len({g["outcome"] for g in gates
+        if isinstance(g["outcome"], str) and g["outcome"] in {"pass", "fail"}}) > 1
+    observed["body_gate_disagreement"] = (observed["verdict_source"] == "body"
+        and run.get("review_gate") in {"pass", "fail"}
+        and (run["verdict"] in CLEAR) != (run["review_gate"] == "pass"))
     later = run["post_close_events"]
     # Downstream joins nominate cases. They do not identify a wrong verdict.
     observed["applications"] = later["applied"]
@@ -93,6 +105,10 @@ def summarize(snapshot: dict, runs: dict, after_run: int) -> dict:
             "artifact_identities": len({r["identity"] for r in rows}),
             "decisions": dict(collections.Counter(r["decision"] for r in rows)),
             "verdict_sources": dict(collections.Counter(r["verdict_source"] for r in rows)),
+            "latest_body_statuses": dict(collections.Counter(r["latest_body_status"] for r in rows)),
+            "multiple_body_verdicts": sum(r["multiple_body_verdicts"] for r in rows),
+            "multiple_gate_outcomes": sum(r["multiple_gate_outcomes"] for r in rows),
+            "body_gate_disagreements": sum(r["body_gate_disagreement"] for r in rows),
             "run_outcomes": dict(collections.Counter(r["outcome"] or "open" for r in rows)),
             "median_closed_wall_s": statistics.median(durations) if durations else None,
             "closed_wall_n": len(durations),
@@ -102,7 +118,8 @@ def summarize(snapshot: dict, runs: dict, after_run: int) -> dict:
             "distinct_cancellation_records": sorted({e["seq"] for r in clear for e in r["request_cancellations"]}),
             "refusals_with_later_version": sum(r["decision"] == "refused" and bool(r["later_versions"]) for r in rows),
         })
-    return {"record": "caplab-review-canary/2", "snapshot": snapshot,
+    return {"record": "caplab-review-canary/3", "snapshot": snapshot,
+            "verdict_selection": "latest-admitted-body-then-latest-review-gate/1",
             "downstream_ordering": "ledger-sequence-after-review-closure/1",
             "after_run": after_run, "mode": "since-cutoff" if after_run else "retrospective-baseline",
             "population": len(selected), "reviewers": reviewers, "reviews": selected,
@@ -136,6 +153,33 @@ def render(report: dict) -> str:
         timing = f"{duration:.0f} ({row['closed_wall_n']})" if duration is not None else "unavailable (0)"
         lines.append(f"| {escape(row['reviewer'])} | {row['runs']} | {d.get('cleared', 0)} | "
                      f"{d.get('refused', 0)} | {d.get('unknown', 0)} | {missing} | {timing} |")
+    issues = collections.defaultdict(list)
+    for row in report["reviews"]:
+        if row["multiple_body_verdicts"]:
+            issues["Different verdicts across admitted bodies"].append(row["run"])
+        if row["body_gate_disagreement"]:
+            issues["Selected body and gate disagree"].append(row["run"])
+        if row["multiple_gate_outcomes"]:
+            issues["Different outcomes across review gates"].append(row["run"])
+        if row["review_gate_observations"]:
+            outcome = row["review_gate_observations"][-1]["outcome"]
+            if not isinstance(outcome, str) or outcome not in {"pass", "fail"}:
+                issues["Latest review gate: unsupported outcome"].append(row["run"])
+        if row["review_body_observations"]:
+            latest = row["review_body_observations"][-1]
+            if latest["status"] != "parsed-object":
+                issues["Latest body: " + latest["status"]].append(row["run"])
+            elif latest["response_error"]:
+                issues["Latest body: response envelope error"].append(row["run"])
+    lines.extend(["", "Verdict evidence requiring inspection (first three run locators per issue; all observations are in report.json):", ""])
+    for issue, refs in sorted(issues.items()):
+        lines.append(f"- {issue}: {len(refs)} runs. " + "; ".join(f"Review {ref}" for ref in refs[:3]) + ".")
+    if not issues:
+        lines.append("No recorded body or source discrepancies found. Missing bodies can still limit the report.")
+    lines.extend(["", "The latest admitted body's recognized verdict takes precedence over the latest review gate.",
+                  "An unavailable or malformed latest body cannot inherit an older body's verdict. Gate-only fallback is labeled.",
+                  "A recognized verdict is an observation even when other response fields are invalid; it is not contract conformance.",
+                  "Disagreements remain inspection evidence; this report does not adjudicate which source is right."])
     lines.extend(["", "Downstream events identify work to inspect:", "",
                   "| Reviewer | Clears then applied | Clears then conflict | Clears with request cancellation | Distinct cancellations | Refusals then revised |",
                   "|---|---:|---:|---:|---:|---:|"])

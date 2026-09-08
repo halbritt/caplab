@@ -31,7 +31,7 @@ PYTHONPATH=src python3 scripts/review_canary.py \
 
 Open `/tmp/caplab-review-baseline/report.md`. Its JSON companion retains each
 selected run and the event locators. Existing report directories are refused.
-New reports use `caplab-review-canary/2` with
+New reports use `caplab-review-canary/3` with
 `downstream_ordering: ledger-sequence-after-review-closure/1`.
 The reader uses the same local Striatum object store as the criterion ledger
 pass. A snapshot without its object store can have missing review bodies.
@@ -76,11 +76,12 @@ The numeric form remains available for manual windows; it does not verify
 baseline ancestry. Prefix verification establishes continuity, not completion
 of the new export command, availability of object-store bodies, or accuracy
 of a review. Continue to require exit code zero from the export command.
-Both version 1 and version 2 reports can supply a verified baseline. The
+Versions 1, 2, and 3 can supply a verified baseline. The
 reference records that version. Moving from version 1 to version 2 can expose
 links previously omitted by timestamp filtering or missing verdicts; ledger
-continuity does not mean the report calculations stayed the same. Historical
-reports are not rewritten.
+continuity does not mean the report calculations stayed the same. Version 3
+also corrects stale verdict provenance and exposes source discrepancies.
+Historical reports are not rewritten.
 
 Read the report in this order:
 
@@ -96,11 +97,40 @@ Read the report in this order:
 
 The population contains review runs with a materialized-base pin and a
 change-set or repo-doc subject. Prose reviews are excluded. Open runs and
-missing verdicts remain in the denominator. A retained verdict body takes
-precedence over a review gate result. Gate-only verdicts are counted separately
+missing verdicts remain in the denominator. A recognized verdict from the
+latest admitted review body takes precedence over the latest review gate
+result. Gate-only verdicts are counted separately
 in JSON. Reviewer names are backend labels from the ledger, not independently
 verified exact CAPLAB Bindings. Wall time covers all closed outcomes and
 includes failures. It is not successful-review latency or a speed ranking.
+
+`verdict_selection: latest-admitted-body-then-latest-review-gate/1` names
+that selection rule. If the latest body is unavailable or supplies no
+recognized verdict, an older body's verdict cannot be attached to its hash.
+The report falls back to the latest gate or leaves the decision unknown.
+This rule describes the report's observation; it does not decide which
+source is correct or whether a later admission validly supersedes an earlier
+one.
+
+`review_body_observations` retains every matching admission's event sequence,
+artifact identity, body hash, raw verdict field, read status, and response
+envelope error. Status distinguishes a missing or invalid reference,
+`unavailable-or-unverified` bytes, invalid JSON, a non-object JSON value, and
+a parsed object. The object-store reader verifies hashes but groups missing,
+undecodable, and hash-mismatched objects together as unavailable. A parsed
+object can still have an unsupported verdict or malformed findings. The
+recognized verdict remains an observation; envelope validity and semantic
+conformance are separate questions. The hash locates the full body without
+copying it into the report.
+
+`review_gate_observations` retains each linked gate event and its raw outcome.
+Repeated evidence references within one gate event do not duplicate that
+event. `multiple_body_verdicts`, `multiple_gate_outcomes`, and
+`body_gate_disagreement` expose source differences without adjudicating them.
+Reviewer summaries count these flags and latest-body statuses. The Markdown
+groups issues and provides the first three run locators in ledger order;
+JSON retains all observations. Runs without an admitted body remain visible
+as `not-admitted`, including when a gate supplies the only verdict.
 
 Applications and conflicts join by content hash. Request cancellations join
 more broadly. A missing content hash or request reference supplies no join;

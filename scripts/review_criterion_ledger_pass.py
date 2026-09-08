@@ -44,6 +44,7 @@ from datetime import datetime
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, os.path.join(ROOT, "src"))
 from caplab.advisory import materialize as M  # noqa: E402
+from caplab.advisory.review_response import response_error  # noqa: E402
 
 CLEAR = {"accept", "accept_with_findings"}
 REFUSE = {"needs_revision", "reject"}
@@ -59,6 +60,38 @@ def artifact_class(identity: str) -> str:
     if tail == "change-set":
         return "change-set"
     return tail or "(unknown)"
+
+
+def review_body_observation(event: dict) -> tuple[dict, dict | None]:
+    payload = event["payload"]
+    body = payload.get("body")
+    ref = body.get("content_hash") if isinstance(body, dict) else None
+    observation = {"seq": event["seq"], "artifact": payload.get("identity"),
+                   "body_hash": ref, "status": "missing-reference",
+                   "verdict": None, "response_error": "body-not-read"}
+    if body is not None and not isinstance(body, dict):
+        observation["status"] = "invalid-reference"
+        return observation, None
+    if ref is None:
+        return observation, None
+    if not isinstance(ref, str) or not ref:
+        observation["status"] = "invalid-reference"
+        return observation, None
+    raw = M.store_object(ref)
+    if raw is None:
+        observation["status"] = "unavailable-or-unverified"
+        return observation, None
+    try:
+        doc = json.loads(raw)
+    except ValueError:
+        observation.update(status="invalid-json", response_error="invalid-json")
+        return observation, None
+    observation["response_error"] = response_error(doc)
+    if not isinstance(doc, dict):
+        observation["status"] = "invalid-object"
+        return observation, None
+    observation.update(status="parsed-object", verdict=doc.get("verdict"))
+    return observation, doc
 
 
 def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
@@ -136,31 +169,39 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
         p = e["payload"]
         if p.get("kind") != "review-ledger" or p.get("produced_by_run") not in runs:
             continue
-        body = p.get("body")
-        doc = None
-        if isinstance(body, dict) and body.get("content_hash"):
-            raw = M.store_object(body["content_hash"])
-            if raw:
-                try:
-                    doc = json.loads(raw)
-                except ValueError:
-                    doc = None
+        observation, doc = review_body_observation(e)
         r = runs[p["produced_by_run"]]
+        r.setdefault("review_body_observations", []).append(observation)
         r["review_artifact"] = p.get("identity")
-        r["review_body_hash"] = (body or {}).get("content_hash") if isinstance(body, dict) else None
-        if doc:
-            r["verdict"] = doc.get("verdict")
-            r["findings"] = [{"anchor": f.get("element_anchor") or f.get("anchor"), "text": (f.get("text") or f.get("finding") or "")[:300]}
-                             for f in (doc.get("findings") or []) if isinstance(f, dict)]
-            r["summary"] = (doc.get("summary") or "")[:400]
+        r["review_body_hash"] = observation["body_hash"]
+        # Last-admission selection must not attach an earlier verdict to the
+        # newer body's locator when the new body cannot be read.
+        for key in ("verdict", "findings", "summary"):
+            r.pop(key, None)
+        if doc is not None:
+            r["verdict"] = doc.get("verdict") if isinstance(doc.get("verdict"), str) else None
+            findings = doc.get("findings")
+            r["findings"] = []
+            for finding in findings if isinstance(findings, list) else []:
+                if isinstance(finding, dict):
+                    text = finding.get("text") or finding.get("finding") or ""
+                    r["findings"].append({"anchor": finding.get("element_anchor") or finding.get("anchor"),
+                                          "text": text[:300] if isinstance(text, str) else ""})
+            summary = doc.get("summary")
+            r["summary"] = summary[:400] if isinstance(summary, str) else ""
     for e in by["gate_result"]:
         p = e["payload"]
         if p.get("gate_class") != "review":
             continue
+        seen = set()
         for ev in p.get("evidence") or []:
             run = (ev.get("producing_run") or {}).get("run_ref")
-            if run in runs:
-                runs[run]["review_gate"] = p.get("outcome")
+            if run in runs and run not in seen:
+                seen.add(run)
+                outcome = p.get("outcome")
+                runs[run].setdefault("review_gate_observations", []).append(
+                    {"seq": e["seq"], "outcome": outcome})
+                runs[run]["review_gate"] = outcome if isinstance(outcome, str) else None
                 runs[run]["review_gate_seq"] = e["seq"]
 
     def cleared(r):
@@ -307,7 +348,7 @@ def main() -> int:
     with open(os.path.join(args.out, "review-criterion-cases.jsonl"), "w", encoding="utf-8") as f:
         for s in ("gold-defect", "gold-clear", "silver-defect", "bronze-clear"):
             for r in strata.get(s, []):
-                f.write(json.dumps({"stratum": s, **{k: v for k, v in r.items() if k not in {"prompt_assets", "closed", "closed_seq", "post_close_versions", "post_close_events"}}}, ensure_ascii=False, sort_keys=True) + "\n")
+                f.write(json.dumps({"stratum": s, **{k: v for k, v in r.items() if k not in {"prompt_assets", "closed", "closed_seq", "post_close_versions", "post_close_events", "review_body_observations", "review_gate_observations"}}}, ensure_ascii=False, sort_keys=True) + "\n")
     print(json.dumps({k: v for k, v in report.items() if k != "wall_clock_median_s"}, indent=1)[:6000])
     print("wall clock", json.dumps(report["wall_clock_median_s"]))
     return 0

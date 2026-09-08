@@ -267,6 +267,85 @@ class ReviewCanaryTest(unittest.TestCase):
         self.assertEqual(report["reviews"][0]["decision"], "cleared")
         self.assertEqual(report["reviews"][0]["verdict_source"], "gate-only")
 
+    def test_unavailable_latest_body_cannot_inherit_an_earlier_verdict(self):
+        run = self.review()
+        first = self.event("artifact_admitted", {"kind": "review-ledger", "produced_by_run": run,
+                           "identity": "review-a", "body": {"content_hash": "body-a"}})
+        last = self.event("artifact_admitted", {"kind": "review-ledger", "produced_by_run": run,
+                          "identity": "review-b", "body": {"content_hash": "body-b"}})
+        with patch.object(criterion.M, "store_object", side_effect=[b'{"verdict":"reject","findings":[]}', None]):
+            _, (snapshot, _, runs, _) = self.read()
+        row = review_canary.summarize(snapshot, runs, 0)["reviews"][0]
+        self.assertIsNone(row["verdict"])
+        self.assertEqual(row["verdict_source"], "gate-only")
+        self.assertEqual(row["review_body_hash"], "body-b")
+        observations = row["review_body_observations"]
+        self.assertEqual([x["seq"] for x in observations], [first, last])
+        self.assertEqual(observations[0]["verdict"], "reject")
+        self.assertEqual(observations[-1]["status"], "unavailable-or-unverified")
+
+    def test_malformed_review_bodies_remain_explicit_inspection_evidence(self):
+        for raw, status in ((b'[]', 'invalid-object'), (b'"reject"', 'invalid-object'),
+                            (b'{broken', 'invalid-json'), (b'{"verdict":[]}', 'parsed-object'),
+                            (b'{"verdict":"reject","findings":3,"summary":{}}', 'parsed-object')):
+            with self.subTest(raw=raw):
+                self.events = self.events[:1]
+                run = self.review()
+                seq = self.event("artifact_admitted", {"kind": "review-ledger", "produced_by_run": run,
+                    "identity": "review", "body": {"content_hash": "body"}})
+                with patch.object(criterion.M, "store_object", return_value=raw):
+                    _, (snapshot, _, runs, _) = self.read()
+                row = review_canary.summarize(snapshot, runs, 0)["reviews"][0]
+                observation = row["review_body_observations"][0]
+                self.assertEqual(observation["seq"], seq)
+                self.assertEqual(observation["status"], status)
+                self.assertIsNotNone(observation["response_error"])
+
+    def test_conflicting_verdict_sources_are_retained_and_flagged(self):
+        run = self.review()
+        seqs = [self.event("artifact_admitted", {"kind": "review-ledger", "produced_by_run": run,
+                "identity": f"review-{i}", "body": {"content_hash": f"body-{i}"}}) for i in range(2)]
+        with patch.object(criterion.M, "store_object", side_effect=[
+                b'{"verdict":"accept","findings":[]}', b'{"verdict":"reject","findings":[]}']):
+            _, (snapshot, _, runs, _) = self.read()
+        report = review_canary.summarize(snapshot, runs, 0)
+        row = report["reviews"][0]
+        self.assertEqual(row["verdict"], "reject")
+        self.assertEqual([x["seq"] for x in row["review_body_observations"]], seqs)
+        self.assertTrue(row["multiple_body_verdicts"])
+        self.assertTrue(row["body_gate_disagreement"])
+        self.assertEqual(row["review_gate_observations"][0]["outcome"], "pass")
+        self.assertIn(f"Review {run}", review_canary.render(report))
+
+    def test_missing_and_invalid_body_references_do_not_invent_a_verdict(self):
+        for body, status in ((None, "missing-reference"), ({}, "missing-reference"),
+                             ([], "invalid-reference"), ({"content_hash": []}, "invalid-reference")):
+            with self.subTest(body=body):
+                self.events = self.events[:1]
+                run = self.review(verdict=None)
+                self.event("artifact_admitted", {"kind": "review-ledger", "produced_by_run": run,
+                                                "identity": "review", "body": body})
+                with patch.object(criterion.M, "store_object") as store:
+                    _, (snapshot, _, runs, _) = self.read()
+                store.assert_not_called()
+                row = review_canary.summarize(snapshot, runs, 0)["reviews"][0]
+                self.assertEqual(row["decision"], "unknown")
+                self.assertEqual(row["latest_body_status"], status)
+
+    def test_gate_disagreement_retains_each_event_once_and_invalid_latest_is_unknown(self):
+        run = self.review()
+        fail = self.event("gate_result", {"gate_class": "review", "outcome": "fail",
+                    "evidence": [{"producing_run": {"run_ref": run}}] * 2})
+        invalid = self.event("gate_result", {"gate_class": "review", "outcome": [],
+                    "evidence": [{"producing_run": {"run_ref": run}}]})
+        _, (snapshot, _, runs, _) = self.read()
+        report = review_canary.summarize(snapshot, runs, 0)
+        row = report["reviews"][0]
+        self.assertEqual(row["decision"], "unknown")
+        self.assertEqual([g["seq"] for g in row["review_gate_observations"]], [run + 2, fail, invalid])
+        self.assertTrue(row["multiple_gate_outcomes"])
+        self.assertIn("Latest review gate: unsupported outcome", review_canary.render(report))
+
     def test_cli_retains_source_fingerprint_and_refuses_overwrite(self):
         self.review(backend="<reviewer>|a")
         ledger, _ = self.read()
