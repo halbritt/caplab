@@ -85,5 +85,6 @@ Collection does not link a session to stdout, identify children, prove provider
 routing or native emission, verify containment, register evidence, or establish
 eligibility, capability, task success or study readiness. An adapter must link
 the collection to its separately retained attempt and independently preserve the
-final collection digest. A later reader must check that anchor and linked bytes
-before interpreting or admitting them; this collector alone is not that reader.
+final collection digest. The [collection verifier](native-collection-verification-v1.md) checks that anchor,
+linked bytes and selection consistency before interpretation. Session linkage
+and eligibility remain separate requirements.
