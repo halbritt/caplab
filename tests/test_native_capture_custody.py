@@ -13,6 +13,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from caplab.artifact_rater import CalibrationError, preserve_rollout_attestation
+import caplab.artifact_rater as artifact_rater
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -92,7 +93,7 @@ class NativeCaptureCustodyTests(unittest.TestCase):
             )
 
     def test_rater_retains_the_snapshot_supporting_its_attestation(self):
-        original_read = Path.read_bytes
+        original_read = artifact_rater._read_rollout_bytes
 
         def changing_source(path):
             data = original_read(path)
@@ -100,8 +101,9 @@ class NativeCaptureCustodyTests(unittest.TestCase):
                 self.source.write_bytes(rollout("different-model"))
             return data
 
-        with patch.object(Path, "read_bytes", changing_source):
+        with patch.object(artifact_rater, "_read_rollout_bytes", changing_source):
             self.assertTrue(self.score()[1])
+        self.assertEqual(self.source.read_bytes(), rollout("different-model"))
         attempt = self.root / "out/scores/slot-1/attempt-001"
         record = json.loads((attempt / "record.json").read_text())
         retained = (attempt / "rollout.jsonl").read_bytes()

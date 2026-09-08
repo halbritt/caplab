@@ -10,6 +10,7 @@ import re
 import stat
 import time
 from collections import defaultdict
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Iterable, Mapping
 
@@ -190,6 +191,23 @@ def find_rollout(sessions_root: Path, thread_id: str, timeout_seconds: float = 1
         time.sleep(min(0.1, remaining))
 
 
+@contextmanager
+def _regular_rollout_file(path: Path):
+    descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    try:
+        if not stat.S_ISREG(os.fstat(descriptor).st_mode):
+            raise OSError(f"rollout is not a regular file: {path}")
+        with open(descriptor, "rb", closefd=False) as source:
+            yield source
+    finally:
+        os.close(descriptor)
+
+
+def _read_rollout_bytes(path: Path) -> bytes:
+    with _regular_rollout_file(path) as source:
+        return source.read()
+
+
 def read_rollout_attestation(rollout_path: Path, thread_id: str) -> dict[str, str]:
     """Attest one consistent tuple across the supplied Codex capture bytes.
 
@@ -197,7 +215,7 @@ def read_rollout_attestation(rollout_path: Path, thread_id: str) -> dict[str, st
     This checks captured identity, not capture completeness or provider identity.
     """
     try:
-        capture = rollout_path.read_bytes()
+        capture = _read_rollout_bytes(rollout_path)
         text = capture.decode("utf-8")
     except (OSError, UnicodeDecodeError) as error:
         raise CalibrationError(f"cannot read rollout {rollout_path}: {error}") from error
@@ -270,17 +288,28 @@ def preserve_rollout_attestation(
     retained for inspection; a partial write cannot produce an attestation.
     """
     try:
-        capture = source_path.read_bytes()
+        capture = _read_rollout_bytes(source_path)
         try:
             descriptor = os.open(
                 custody_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600
             )
         except FileExistsError:
-            if custody_path.is_symlink() or custody_path.read_bytes() != capture:
+            if custody_path.is_symlink():
                 raise CalibrationError(f"different or linked rollout custody: {custody_path}")
+            with _regular_rollout_file(custody_path) as retained:
+                if retained.read() != capture:
+                    raise CalibrationError(f"different or linked rollout custody: {custody_path}")
+                os.fsync(retained.fileno())
         else:
             with os.fdopen(descriptor, "wb") as output:
                 output.write(capture)
+                output.flush()
+                os.fsync(output.fileno())
+        parent = os.open(custody_path.parent, os.O_RDONLY | os.O_DIRECTORY)
+        try:
+            os.fsync(parent)
+        finally:
+            os.close(parent)
         attestation = read_rollout_attestation(custody_path, thread_id)
         if attestation["rollout_sha256"] != hashlib.sha256(capture).hexdigest():
             raise CalibrationError("retained rollout differs from captured source bytes")
