@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Per-binding review admission gate (instruction 2026-09-07 §2.d).
 
-Pass/fail for one binding, never a ranking, never a claim. Runs only for a
-new binding or a binding the Principal names; `--plan` spends nothing.
+Observations for one requested binding; proposed pass/fail floors are not
+adopted. Runs only on a Principal request; `--plan` spends nothing.
 
 Cells, from advisory/gate/review-gate-20260819.json:
   1. the five natural-analog operators on the seed-20260819 draw (16 cells),
@@ -10,7 +10,8 @@ Cells, from advisory/gate/review-gate-20260819.json:
   2. the natural case (cancellation 320479) verbatim, 3 replicates, rendered
      under the production review pass contract with the tree-v1 preamble
      and pinned-set statement, its declared base materialized read-only;
-  3. contract conformance, checked mechanically on the natural-case outputs.
+  3. mechanical contract checks on the natural-case outputs; semantic
+     verdict discipline remains unverified.
 
 Usage:
   review_gate.py --plan <binding>
@@ -32,14 +33,16 @@ sys.path.insert(0, os.path.join(ROOT, "src"))
 from caplab.advisory import materialize as M  # noqa: E402
 from caplab.advisory import pool_runner  # noqa: E402
 from caplab.advisory.calibrate import render_preamble_v3  # noqa: E402
-from caplab.advisory.review_response import attempt_error, response_error  # noqa: E402
+from caplab.advisory.review_response import (  # noqa: E402
+    ANCHOR_MATCHING_VERSION, attempt_error, exact_anchor_mention, response_error)
 
 GATE = os.path.join(ROOT, "advisory", "gate", "review-gate-20260819.json")
 BACKENDS = os.path.expanduser("~/git/striatum-next/backends")
 REGISTRY = os.path.join(ROOT, "advisory", "substrates.jsonl")
 VERDICTS = {"accept", "accept_with_findings", "needs_revision", "reject"}
 REFUSING = {"needs_revision", "reject"}
-DISCIPLINE = re.compile(r"D\d{4}|clause|falsif|violat|harm", re.I)
+RATIONALE_CUE = re.compile(r"D\d{4}|clause|falsif|violat|harm", re.I)
+CONFORMANCE_VERSION = "review-gate-conformance/2"
 
 
 def load_gate() -> dict:
@@ -54,26 +57,34 @@ def plan(gate: dict) -> dict:
     return {"cells": len(cells), "operators": sorted({c["operator"] for c in cells}),
             "natural_cases": [n["id"] for n in gate["natural_cases"]],
             "replication": rep, "calls_per_binding": calls,
-            "environment": gate["environment"], "floors": gate["floors"]}
+            "environment": gate["environment"], "floors": gate["floors"],
+            "conformance_validation": CONFORMANCE_VERSION,
+            "conformance_scope": "Mechanical checks only; full contract conformance remains unverified."}
 
 
 def conformance(doc: dict | None) -> dict:
-    out = {"parses": isinstance(doc, dict)}
-    if not isinstance(doc, dict) or not doc:
-        return {**out, "verdict_valid": False, "refusal_has_anchor": None, "rationales_disciplined": None, "ok": False}
-    verdict = doc.get("verdict")
-    findings = doc.get("findings")
-    out["verdict_valid"] = isinstance(verdict, str) and verdict in VERDICTS
+    """Report necessary structural checks without judging verdict discipline."""
+    out = {"record": CONFORMANCE_VERSION, "parses": isinstance(doc, dict),
+           "verdict_valid": False, "refusal_has_anchor": None,
+           "rationales_present": None, "rationale_cues_present": None,
+           "mechanical_checks_passed": False, "status": "failed-mechanical-checks", "ok": False,
+           "interpretation": "Mechanical checks are necessary only. Lexical cues do not establish a falsified clause, violated decision, or demonstrated harm; full contract conformance remains unverified."}
+    if isinstance(doc, dict):
+        verdict = doc.get("verdict")
+        out["verdict_valid"] = isinstance(verdict, str) and verdict in VERDICTS
     if response_error(doc) is not None:
-        return {**out, "refusal_has_anchor": False, "rationales_disciplined": False, "ok": False}
+        return out
+    verdict, findings = doc["verdict"], doc["findings"]
     out["refusal_has_anchor"] = (any(isinstance(f.get("element_anchor"), str)
                                      and f["element_anchor"].strip() for f in findings)
-                                 if isinstance(verdict, str) and verdict in REFUSING else None)
-    texts = [(f.get("rationale") or f.get("text") or "") for f in findings]
-    out["rationales_disciplined"] = all(isinstance(t, str) and DISCIPLINE.search(t)
-                                        for t in texts) if texts else None
-    out["ok"] = bool(out["verdict_valid"] and out["refusal_has_anchor"] is not False
-                     and out["rationales_disciplined"] is not False)
+                                 if verdict in REFUSING else None)
+    texts = [f.get("rationale", "") for f in findings]
+    out["rationales_present"] = all(bool(t.strip()) for t in texts)
+    out["rationale_cues_present"] = all(bool(RATIONALE_CUE.search(t)) for t in texts) if texts else None
+    out["mechanical_checks_passed"] = (out["refusal_has_anchor"] is not False
+                                       and out["rationales_present"])
+    if out["mechanical_checks_passed"]:
+        out.update(status="unverified", ok=None)
     return out
 
 
@@ -174,15 +185,19 @@ def run_natural_case(nc: dict, adapter: dict, out_dir: str, timeout: int, replic
         verdict = observed_verdict(r)
         runs.append({**r, "verdict": doc.get("verdict") if isinstance(doc, dict) else None,
                      "observed": verdict is not None, "anchors": anchors,
-                     "anchored_hit": any(nc["expected"]["anchored_finding"] in a for a in anchors),
+                     "exact_anchor_mention": exact_anchor_mention(nc["expected"]["anchored_finding"], anchors),
                      "refused": verdict in REFUSING,
                      "conformance": conformance(doc), "seconds": r["seconds"], "exit_code": r["exit_code"],
                      "timed_out": r["timed_out"], "manifest_verified": before and after,
                      "raw_head": (r.get("raw_head") or "")[:300]})
     return {"id": nc["id"], "base_manifest_digest": manifest["digest"], "replicates": runs,
+            "anchor_matching": ANCHOR_MATCHING_VERSION,
             "unavailable": sum(1 for r in runs if not r["observed"]),
-            "refused_and_anchored": sum(1 for r in runs if r["refused"] and r["anchored_hit"]),
-            "conforming": sum(1 for r in runs if r["observed"] and r["conformance"]["ok"])}
+            "refused_with_exact_anchor_mention": sum(1 for r in runs if r["refused"] and r["exact_anchor_mention"]),
+            "conforming": None,
+            "mechanical_checks_passed": sum(1 for r in runs if r["observed"] and r["conformance"]["mechanical_checks_passed"]),
+            "conformance_unverified": sum(1 for r in runs if r["observed"] and r["conformance"]["status"] == "unverified"),
+            "conformance_failed_mechanical": sum(1 for r in runs if r["observed"] and r["conformance"]["status"] == "failed-mechanical-checks")}
 
 
 def main() -> int:
@@ -218,7 +233,10 @@ def main() -> int:
                                    cases_path=cells_path)
     declaration = pool_runner.load_declaration(BACKENDS, args.binding)
     natural = ([{"id": nc["id"], "replicates": [], "unavailable": rep["natural_case"],
-                 "refused_and_anchored": 0, "conforming": 0,
+                 "anchor_matching": ANCHOR_MATCHING_VERSION,
+                 "refused_with_exact_anchor_mention": 0, "conforming": None,
+                 "mechanical_checks_passed": 0, "conformance_unverified": 0,
+                 "conformance_failed_mechanical": 0,
                  "error": f"pool aborted: {summary['aborted']}"} for nc in gate["natural_cases"]]
                if summary.get("aborted") else
                [run_natural_case(nc, declaration["adapter"], out_dir, args.timeout, rep["natural_case"])
@@ -230,14 +248,15 @@ def main() -> int:
     from caplab.advisory.executor import advisory_control_context
     adj, sources = advisory_control_context(os.path.join(ROOT, "advisory", "control-adjudications.jsonl"))
     result = {
-        "record": "caplab-review-admission-gate-result/2", "binding": args.binding,
+        "record": "caplab-review-admission-gate-result/3", "binding": args.binding,
+        "conformance_validation": CONFORMANCE_VERSION,
         "gate_sha256": gate_sha256,
         "environment": summary.get("environment"), "as_of": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
         **summarize_cells(gate, rows, adj, sources),
         "pool_aborted": summary.get("aborted"),
         "natural_cases": natural,
         "floors": gate["floors"],
-        "note": "Observations only; floors proposed, not adopted. Control dispositions are recorded ledger labels, not proof of tree-v1 revalidation. No admission decision, ranking, or claim.",
+        "note": "Observations only; floors proposed, not adopted. Full contract conformance and finding correctness remain unverified. Control dispositions are recorded ledger labels, not proof of tree-v1 revalidation. No admission decision, ranking, or claim.",
     }
     with open(os.path.join(out_dir, "gate-result.json"), "w", encoding="utf-8") as f:
         json.dump(result, f, indent=1)

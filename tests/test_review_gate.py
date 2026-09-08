@@ -113,15 +113,63 @@ class GateAccountingTest(unittest.TestCase):
                 natural.assert_not_called()
                 with open(os.path.join(out, "gate-result.json")) as f:
                     report = json.load(f)
-                self.assertEqual(report["record"], "caplab-review-admission-gate-result/2")
+                self.assertEqual(report["record"], "caplab-review-admission-gate-result/3")
+                self.assertEqual(report["conformance_validation"], "review-gate-conformance/2")
                 self.assertEqual(report["cells_missing"], 1)
                 self.assertEqual(report["natural_cases"][0]["unavailable"], 3)
+                self.assertIsNone(report["natural_cases"][0]["conforming"])
+                self.assertEqual(report["natural_cases"][0]["mechanical_checks_passed"], 0)
+                self.assertEqual(report["natural_cases"][0]["conformance_unverified"], 0)
                 self.assertEqual(report["pool_aborted"], "empty lanes")
                 with self.assertRaises(FileExistsError):
                     review_gate.main()
 
 
 class NaturalEvidenceTest(unittest.TestCase):
+    def test_rationale_words_cannot_establish_verdict_discipline(self):
+        for rationale in ("No harm exists. The result is correct.",
+                          "D0003 is not violated.",
+                          "This deletes the customer's only persisted copy."):
+            with self.subTest(rationale=rationale):
+                check = review_gate.conformance({"verdict": "reject", "findings": [
+                    {"element_anchor": "result_tree_hash", "rationale": rationale}]})
+                self.assertIsNone(check["ok"])
+                self.assertTrue(check["mechanical_checks_passed"])
+                self.assertEqual(check["status"], "unverified")
+                self.assertEqual(check["rationale_cues_present"], "harm" in rationale or "D0003" in rationale)
+
+    def test_missing_rationale_fails_mechanical_checks(self):
+        for finding in ({"element_anchor": "result_tree_hash"},
+                        {"element_anchor": "result_tree_hash", "rationale": "   "},
+                        {"element_anchor": "result_tree_hash", "text": "harm"}):
+            with self.subTest(finding=finding):
+                check = review_gate.conformance({"verdict": "reject", "findings": [finding]})
+                self.assertFalse(check["mechanical_checks_passed"])
+                self.assertIs(check["ok"], False)
+
+    def test_natural_case_reports_mentions_without_semantic_conformance(self):
+        import tempfile
+        nc = review_gate.load_gate()["natural_cases"][0]
+        anchors = ["result_tree_hash_backup", "unrelated_result_tree_hash", "`result_tree_hash`"]
+        responses = [
+            {"verdict": "reject", "findings": [{"element_anchor": anchor,
+                "rationale": "No harm exists. The result is correct."}]} for anchor in anchors]
+        runs = [{**attempt(doc=doc), "seconds": 1} for doc in responses]
+        with tempfile.TemporaryDirectory() as out, \
+                mock.patch.object(review_gate.M, "materialize_case", return_value={"digest": "d"}), \
+                mock.patch.object(review_gate.M, "store_object", return_value=b"{}"), \
+                mock.patch.object(review_gate, "render_preamble_v3", return_value=""), \
+                mock.patch.object(review_gate.M, "verify_manifest", return_value=True), \
+                mock.patch.object(review_gate.pool_runner, "invoke", side_effect=runs):
+            result = review_gate.run_natural_case(nc, {}, out, 10, 3)
+        self.assertEqual(result["anchor_matching"], "normalized-anchor-exact/1")
+        self.assertEqual(result["refused_with_exact_anchor_mention"], 1)
+        self.assertIsNone(result["conforming"])
+        self.assertEqual(result["mechanical_checks_passed"], 3)
+        self.assertEqual(result["conformance_unverified"], 3)
+        self.assertEqual([r["doc"] for r in result["replicates"]], responses)
+        self.assertEqual([r["exact_anchor_mention"] for r in result["replicates"]], [False, False, True])
+
     def test_malformed_findings_do_not_conform_or_crash(self):
         for doc in ([], "accept", {"verdict": []},
                     {"verdict": "accept", "findings": ["harm"]},
@@ -147,8 +195,11 @@ class NaturalEvidenceTest(unittest.TestCase):
                 mock.patch.object(review_gate.M, "verify_manifest", side_effect=[True, True, True, False, True, True]), \
                 mock.patch.object(review_gate.pool_runner, "invoke", side_effect=runs):
             result = review_gate.run_natural_case(nc, {}, out, 10, 3)
-        self.assertEqual(result["refused_and_anchored"], 1)
-        self.assertEqual(result["conforming"], 1)
+        self.assertEqual(result["refused_with_exact_anchor_mention"], 1)
+        self.assertIsNone(result["conforming"])
+        self.assertEqual(result["mechanical_checks_passed"], 1)
+        self.assertEqual(result["conformance_unverified"], 1)
+        self.assertEqual(result["conformance_failed_mechanical"], 0)
         self.assertEqual(result["unavailable"], 2)
         self.assertEqual(result["replicates"][0]["doc"], doc)
 
@@ -180,11 +231,14 @@ class GateSpecTest(unittest.TestCase):
         import review_gate
         ok = review_gate.conformance({"verdict": "needs_revision", "findings": [
             {"element_anchor": "result_tree_hash", "rationale": "Falsification of clause delivery-is-current-product and D0003.C6"}]})
-        self.assertTrue(ok["ok"])
+        self.assertTrue(ok["mechanical_checks_passed"])
+        self.assertIsNone(ok["ok"])
         bad = review_gate.conformance({"verdict": "reject", "findings": [{"rationale": "looks wrong"}]})
         self.assertFalse(bad["ok"])
         self.assertFalse(review_gate.conformance(None)["ok"])
-        self.assertTrue(review_gate.conformance({"verdict": "accept", "findings": []})["ok"])
+        accepting = review_gate.conformance({"verdict": "accept", "findings": []})
+        self.assertTrue(accepting["mechanical_checks_passed"])
+        self.assertIsNone(accepting["ok"])
 
 
 if __name__ == "__main__":

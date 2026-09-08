@@ -12,7 +12,7 @@ PYTHONPATH=src python3 scripts/review_gate.py --plan <binding>
 ```
 
 An authorized run writes `gate-result.json` with record type
-`caplab-review-admission-gate-result/2`. The output directory must be new;
+`caplab-review-admission-gate-result/3`. The output directory must be new;
 reusing a directory is refused to prevent accidental natural-case replay and
 replacement of a prior report. Pool rows retain `control_attempts` and
 `mutant_attempts`, including parsed responses, execution outcomes, and the
@@ -56,13 +56,38 @@ The sound-label group must not support an admission decision without checking
 that its adjudications apply to the execution environment and artifact.
 
 Natural-case records retain each response and report unavailable attempts.
-Only successfully observed attempts contribute to `refused_and_anchored` or
-`conforming`. Conformance validates structure and the existing lexical
-discipline rule; mentioning a clause, decision, or harm does not establish
-that the rationale is correct. Likewise, naming `result_tree_hash` is not
-proof that a finding demonstrates the defect. Full responses remain available
-for inspection. An aborted pool leaves the natural cases unavailable and
-launches no further calls.
+Only successfully observed attempts contribute to
+`refused_with_exact_anchor_mention` or `mechanical_checks_passed`.
+Natural cases name `anchor_matching: normalized-anchor-exact/1` and use the
+shared exact matcher: formatting wrappers and case are normalized, but
+`result_tree_hash_backup` does not match `result_tree_hash`. An exact mention
+still does not establish that a finding demonstrates the defect. Full
+responses remain available for inspection.
+
+`conformance_validation: review-gate-conformance/2` separates the mechanical
+checks from full contract conformance. The checks require a valid response
+envelope, at least one nonempty anchor on a refusal, and a nonempty `rationale`
+on every finding. A legacy `text` field does not supply the contract's
+`rationale`. These are necessary checks, not a complete review-ledger schema
+validator. A response that fails them has `ok: false` and status
+`failed-mechanical-checks`. A response that passes has `ok: null` and status
+`unverified`, including an accepting response with no findings.
+
+`rationale_cues_present` reports the old word-pattern observation separately.
+It supplies neither a pass nor a failure: “no harm exists” contains a cue,
+while a concrete description of data loss can contain none. The gate has no
+independent check that a clause was falsified, an in-force decision violated,
+or harm demonstrated. The natural-case `conforming` count is therefore
+`null`, not zero or a count of lexical matches. `conformance_unverified` and
+`conformance_failed_mechanical` count the two statuses among observed
+attempts. Together with `unavailable`, they account for the specified
+replicates. An aborted pool leaves the natural cases unavailable and launches
+no further calls.
+
+The plan output also declares this assessment limit. The proposed conformance
+floor cannot be established by this report. Version 2 reports retain their
+historical lexical semantics; this change does not rewrite them or the frozen
+gate specification.
 
 Pool runs now record `response_validation: review-response/1`. A pair requires
 all specified attempts to be valid before a majority score is emitted.
@@ -78,8 +103,8 @@ New pool rows and summaries also name
 `anchor_matching: normalized-anchor-exact/1`. Their `anchor_hit` requires
 exact normalized location equality, and `anchors_emitted` retains the whole
 representative list. Older matching contracts cannot be resumed into this
-one. This changes location accounting only; the gate's natural-case lexical
-conformance checks remain bounded as described above.
+one. This changes location accounting only; neither the pool nor the natural
+case establishes finding correctness from location mentions.
 
 Prospective preparation now declares `pair_validation: paired-presence/1`.
 The injection must declare itself checkable, its presence checker must return
