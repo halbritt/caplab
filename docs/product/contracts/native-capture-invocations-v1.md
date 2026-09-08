@@ -81,6 +81,8 @@ obtain exact execution authorization. It can then pass the concrete command,
 cwd and environment to [task/process capture](task-attempt-capture-v1.md), retain
 and link native session/child/diagnostic files, and use
 [custody inspection](task-capture-verification-v1.md) before study interpretation.
+The [private runtime preparer](native-runtime-preparation-v1.md) now creates fresh
+host directories and sealed inputs from an independently anchored plan.
 The builder supplies no mounts, launch, timeout, capture quota, session collector,
 blinding, measurement, admission or placement decision. These profiles cannot
 be substituted into a frozen campaign without a new Binding and authorization.
