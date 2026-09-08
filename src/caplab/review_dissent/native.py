@@ -320,6 +320,25 @@ def _native_events(content: bytes) -> list[dict[str, Any]]:
     return events
 
 
+def _native_fallback_markers(message: Mapping[str, Any], line: int, source: str) -> list[dict]:
+    """Read explicit native markers only, never strings or nested tool payloads."""
+    markers = []
+    blocks = message.get("content")
+    for index, block in enumerate(blocks if isinstance(blocks, list) else []):
+        if isinstance(block, dict) and block.get("type") == "fallback":
+            original, fallback = block.get("from"), block.get("to")
+            markers.append({"line": line, "source": source + ".content", "index": index,
+                            "original_model": original.get("model") if isinstance(original, dict) else None,
+                            "fallback_model": fallback.get("model") if isinstance(fallback, dict) else None})
+    usage = message.get("usage")
+    iterations = usage.get("iterations") if isinstance(usage, dict) else None
+    for index, iteration in enumerate(iterations if isinstance(iterations, list) else []):
+        if isinstance(iteration, dict) and iteration.get("type") == "fallback_message":
+            markers.append({"line": line, "source": source + ".usage.iterations", "index": index,
+                            "original_model": None, "fallback_model": iteration.get("model")})
+    return markers
+
+
 def assess_native_review_model(subject: Mapping[str, Any], content: bytes) -> dict[str, Any]:
     """Assess native-reported model agreement, not full Binding attestation."""
     result: dict[str, Any] = {
@@ -343,6 +362,7 @@ def assess_native_review_model(subject: Mapping[str, Any], content: bytes) -> di
     if subject["native_harness_id"] != "claude-code":
         return result
     terminals = []
+    stream_models, stream_errors = [], []
     for line, event in enumerate(events, 1):
         kind = event.get("type")
         if kind == "system" and event.get("subtype") == "init":
@@ -351,6 +371,30 @@ def assess_native_review_model(subject: Mapping[str, Any], content: bytes) -> di
             message = event.get("message")
             model = message.get("model") if isinstance(message, dict) else None
             result["response_models"].append({"line": line, "model": model})
+            if isinstance(message, dict):
+                result["fallbacks"].extend(_native_fallback_markers(message, line, "assistant.message"))
+        elif kind == "stream_event":
+            partial = event.get("event")
+            if not isinstance(partial, dict) or not isinstance(partial.get("type"), str) or not partial["type"].strip():
+                stream_errors.append({"line": line, "reason": "invalid-stream-event-envelope"})
+                continue
+            if partial["type"] == "message_start":
+                message = partial.get("message")
+                model = message.get("model") if isinstance(message, dict) else None
+                stream_models.append({"line": line, "model": model})
+                if isinstance(message, dict):
+                    result["fallbacks"].extend(_native_fallback_markers(message, line, "stream_event.message"))
+            elif partial["type"] == "content_block_start":
+                block = partial.get("content_block")
+                if not isinstance(block, dict) or not isinstance(block.get("type"), str) or not block["type"].strip():
+                    stream_errors.append({"line": line, "reason": "invalid-content-block-start"})
+                    continue
+                markers = _native_fallback_markers({"content": [block]}, line, "stream_event")
+                for marker in markers:
+                    marker.update(source="stream_event.content_block", index=partial.get("index"))
+                result["fallbacks"].extend(markers)
+            elif partial["type"] == "message_delta":
+                result["fallbacks"].extend(_native_fallback_markers(partial, line, "stream_event"))
         elif kind == "system" and event.get("subtype") == "model_refusal_fallback":
             result["fallbacks"].append({
                 "line": line, "original_model": event.get("original_model"),
@@ -358,12 +402,17 @@ def assess_native_review_model(subject: Mapping[str, Any], content: bytes) -> di
             })
         elif kind == "result":
             terminals.append((line, event))
+            result["fallbacks"].extend(_native_fallback_markers({"usage": event.get("usage")}, line, "result"))
             usage = event.get("modelUsage")
             if isinstance(usage, dict):
                 result["usage_models"].append({"line": line, "models": sorted(usage)})
     initial = result["initialization_models"]
     responses = result["response_models"]
-    models = [entry["model"] for entry in initial + responses]
+    if stream_models:
+        result["stream_models"] = stream_models
+    if stream_errors:
+        result["stream_errors"] = stream_errors
+    models = [entry["model"] for entry in initial + responses + stream_models]
     mismatch = any(
         isinstance(model, str) and model.strip() and model != subject["model_id"]
         for model in models
@@ -373,6 +422,7 @@ def assess_native_review_model(subject: Mapping[str, Any], content: bytes) -> di
     elif (
         content.endswith(b"\n")
         and len(initial) == 1 and initial[0]["line"] == 1
+        and not stream_errors
         and responses and all(model == subject["model_id"] for model in models)
         and len(terminals) == 1 and terminals[0][0] == len(events)
         and terminals[0][1].get("subtype") == "success"

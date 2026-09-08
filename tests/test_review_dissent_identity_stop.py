@@ -115,6 +115,24 @@ class NativeReviewIdentityStopTests(unittest.TestCase):
             render.assert_not_called()
         self.assertEqual(before, sorted(str(path) for path in self.root.rglob('*')))
 
+    def test_partial_model_mismatch_stops_next_preparation(self):
+        events = [json.loads(line) for line in self.stream().splitlines()]
+        events.insert(1, {'type': 'stream_event', 'event': {
+            'type': 'message_start', 'message': {'model': 'another-model'}}})
+        stdout = ('\n'.join(json.dumps(event) for event in events) + '\n').encode()
+        root, observation = self.attempt(stdout=stdout)
+        self.assertEqual(observation['model_identity']['status'], 'model-mismatch')
+        attempts = load_native_review_attempts(self.manifest)
+        state = assess_native_review_attempts(self.manifest, attempts)
+        self.assertEqual(state['identity_stop']['attempt_number'], 1)
+        self.assertEqual(state['unattempted_primary_slots'], 2)
+        with patch('caplab.review_dissent.native_live.render_native_review_cell') as render:
+            with self.assertRaisesRegex(NativeReviewLiveContractError, 'campaign_stopped'):
+                prepare_native_review_trial(self.manifest, slot_index=1, attempt_kind='primary', prior_attempts=attempts)
+            render.assert_not_called()
+        self.assertEqual((root / 'native.stdout').read_bytes(), stdout)
+        self.assertEqual(len(list((self.root / 'attempts').iterdir())), 1)
+
     def test_missing_identity_blocks_infrastructure_replacement(self):
         self.attempt(stdout=b'', return_code=1)
         attempts = load_native_review_attempts(self.manifest)

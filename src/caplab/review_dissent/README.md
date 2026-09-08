@@ -43,6 +43,13 @@ agreement, not full Binding identity, authenticated provider identity, or
 capture completeness. Existing version 1 evidence is unchanged; this source
 repair authorizes no historical normalization or new live campaign.
 
+Exposed Claude partial-message model fields and structured fallback blocks or
+usage iterations also participate in that check. The
+[streaming evidence contract](../../../docs/product/contracts/native-stream-model-evidence-v1.md)
+names the exact surfaces and their limits. Matching completed messages cannot
+erase contradictory partial evidence; partial messages alone cannot establish
+completion. No native launch flags or frozen bindings change through this repair.
+
 Version 2 native observations retain the same model assessment before scoring.
 Custody loading recomputes it from stdout and checks the recorded assignment
 and lineage. Preparation reloads custody, rejects stale caller accounting,
