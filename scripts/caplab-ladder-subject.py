@@ -20,7 +20,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from caplab.artifact_rater import (
     CalibrationError,
     extract_thread_id,
-    read_rollout_attestation,
+    preserve_rollout_attestation,
 )
 from caplab.ladder_subject import (
     NativeSubjectError,
@@ -215,17 +215,19 @@ def _run_historical_ladder_attempt(arguments: argparse.Namespace) -> int:
 
     attested_model = attested_effort = thread_id = None
     pin_ok = False
+    attestation = None
     attestation_failure = None
     try:
         thread_id = extract_thread_id(events)
         source_rollout = _find_rollout(thread_id)
-        attestation = read_rollout_attestation(source_rollout, thread_id)
+        attestation = preserve_rollout_attestation(
+            source_rollout, output / "rollout.jsonl", thread_id
+        )
         attested_model = attestation["model"]
         attested_effort = attestation["effort"]
         pin_ok = (
             attested_model == arguments.model and attested_effort == arguments.effort
         )
-        shutil.copyfile(source_rollout, output / "rollout.jsonl")
     except (CalibrationError, NativeSubjectError, OSError) as error:
         attestation_failure = str(error)
 
@@ -264,7 +266,10 @@ def _run_historical_ladder_attempt(arguments: argparse.Namespace) -> int:
         "policy_sha256": _sha256(arguments.policy),
         "tuple_policy_sha256": _sha256(arguments.tuple_policy),
     }
-    if (output / "rollout.jsonl").is_file():
+    if attestation is not None:
+        episode["attestation"] = attestation
+        episode["rollout_sha256"] = attestation["custody_rollout_sha256"]
+    elif (output / "rollout.jsonl").is_file():
         episode["rollout_sha256"] = _sha256(output / "rollout.jsonl")
     _write_new_json(output / "episode.json", episode)
     print(f"{slot}: {disposition}")

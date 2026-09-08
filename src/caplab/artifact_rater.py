@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from collections import defaultdict
 from pathlib import Path
 from typing import Any, Iterable, Mapping
@@ -169,6 +170,38 @@ def read_rollout_attestation(rollout_path: Path, thread_id: str) -> dict[str, st
         "effort": effort,
         "rollout_path": str(rollout_path),
         "rollout_sha256": hashlib.sha256(capture).hexdigest(),
+    }
+
+
+def preserve_rollout_attestation(
+    source_path: Path, custody_path: Path, thread_id: str
+) -> dict[str, str]:
+    """Preserve one source snapshot before attesting its retained bytes.
+
+    Existing custody is reusable only when byte-identical. Failed captures are
+    retained for inspection; a partial write cannot produce an attestation.
+    """
+    try:
+        capture = source_path.read_bytes()
+        try:
+            descriptor = os.open(
+                custody_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600
+            )
+        except FileExistsError:
+            if custody_path.is_symlink() or custody_path.read_bytes() != capture:
+                raise CalibrationError(f"different or linked rollout custody: {custody_path}")
+        else:
+            with os.fdopen(descriptor, "wb") as output:
+                output.write(capture)
+        attestation = read_rollout_attestation(custody_path, thread_id)
+        if attestation["rollout_sha256"] != hashlib.sha256(capture).hexdigest():
+            raise CalibrationError("retained rollout differs from captured source bytes")
+    except OSError as error:
+        raise CalibrationError(f"cannot preserve rollout at {custody_path}: {error}") from error
+    return {
+        **attestation,
+        "source_rollout_path": str(source_path),
+        "custody_rollout_sha256": attestation["rollout_sha256"],
     }
 
 

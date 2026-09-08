@@ -8,7 +8,6 @@ import concurrent.futures
 import hashlib
 import json
 import os
-import shutil
 import subprocess
 import sys
 import tempfile
@@ -27,7 +26,7 @@ from caplab.artifact_rater import (
     build_scoring_manifest,
     evaluate_calibration,
     extract_thread_id,
-    read_rollout_attestation,
+    preserve_rollout_attestation,
     validate_judgment,
 )
 
@@ -157,16 +156,12 @@ def _recover_completed_attempt(
     )
     thread_id = extract_thread_id(events_path.read_text(encoding="utf-8"))
     source_rollout = _find_rollout(thread_id)
-    attestation = read_rollout_attestation(source_rollout, thread_id)
+    custody_rollout = attempt_root / "rollout.jsonl"
+    attestation = preserve_rollout_attestation(source_rollout, custody_rollout, thread_id)
     if attestation["model"] != model or attestation["effort"] != effort:
         raise CalibrationError(
             f"attested tuple mismatch: {attestation['model']}/{attestation['effort']}"
         )
-    custody_rollout = attempt_root / "rollout.jsonl"
-    if not custody_rollout.exists():
-        shutil.copyfile(source_rollout, custody_rollout)
-    attestation["source_rollout_path"] = attestation.pop("rollout_path")
-    attestation["custody_rollout_sha256"] = _sha256(custody_rollout)
     recovery = {
         "schema_version": "caplab-artifact-rater-recovery/1",
         "recovered_at": datetime.now(UTC).isoformat(),
@@ -314,16 +309,13 @@ def _score_entry(
         )
         thread_id = extract_thread_id(events)
         source_rollout = _find_rollout(thread_id)
-        attestation = read_rollout_attestation(source_rollout, thread_id)
+        custody_rollout = attempt_root / "rollout.jsonl"
+        attestation = preserve_rollout_attestation(source_rollout, custody_rollout, thread_id)
         if attestation["model"] != model or attestation["effort"] != effort:
             raise CalibrationError(
                 "attested tuple mismatch: "
                 f"{attestation['model']}/{attestation['effort']}"
             )
-        custody_rollout = attempt_root / "rollout.jsonl"
-        shutil.copyfile(source_rollout, custody_rollout)
-        attestation["source_rollout_path"] = attestation.pop("rollout_path")
-        attestation["custody_rollout_sha256"] = _sha256(custody_rollout)
         record.update(
             {
                 "accepted": True,

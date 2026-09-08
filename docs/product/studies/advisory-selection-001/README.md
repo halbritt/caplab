@@ -74,6 +74,9 @@ subject, `k >= 5`, before the scenario is admitted. The screening arm is
   turn; a transient change remains a failure even if later restored. This
   checks the captured bytes, not provider identity or capture completeness.
   See the [reader repair record](../../../records/repair-2026-09-08-rollout-attestation.md).
+  Callers must preserve the captured bytes before attesting them and must
+  reject custody failures or conflicting existing copies. See the
+  [custody repair record](../../../records/repair-2026-09-08-attestation-custody.md).
 - **Scope is scored.** Agents edit tests to ratify their own fix; one titration
   episode added a test asserting that logging is correct failure handling.
 
