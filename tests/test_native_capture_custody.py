@@ -138,7 +138,7 @@ class NativeCaptureCustodyTests(unittest.TestCase):
         slot = self.root / "out/scores/slot-1"
         self.assertFalse((slot / "accepted.json").exists())
         record = json.loads((slot / "attempt-001/record.json").read_text())
-        self.assertFalse(record["accepted"])
+        self.assertFalse(record["validated"])
         self.assertNotIn("attestation", record)
 
     def test_rater_rejects_failed_or_incomplete_event_evidence(self):
@@ -161,7 +161,7 @@ class NativeCaptureCustodyTests(unittest.TestCase):
                 self.assertFalse(success)
                 slot = self.root / "out/scores/slot-1"
                 record = json.loads((slot / "attempt-001/record.json").read_text())
-                self.assertFalse(record["accepted"])
+                self.assertFalse(record["validated"])
                 self.assertFalse((slot / "accepted.json").exists())
                 self.assertEqual((slot / "attempt-001/events.jsonl").read_bytes(), stream.encode())
 
@@ -197,7 +197,7 @@ class NativeCaptureCustodyTests(unittest.TestCase):
                 slot = self.root / "out/scores/slot-1"
                 self.assertFalse((slot / "accepted.json").exists())
                 record = json.loads((slot / "attempt-001/record.json").read_text())
-                self.assertFalse(record["accepted"])
+                self.assertFalse(record["validated"])
 
     def test_recovery_cannot_admit_a_different_sidecar_answer(self):
         attempt = self.root / "attempt"
@@ -241,7 +241,7 @@ class NativeCaptureCustodyTests(unittest.TestCase):
                 slot = self.root / "out/scores/slot-1"
                 self.assertFalse((slot / "accepted.json").exists())
                 self.assertEqual((slot / "attempt-001/last-message.txt").read_bytes(), answer)
-                self.assertFalse(json.loads((slot / "attempt-001/record.json").read_text())["accepted"])
+                self.assertFalse(json.loads((slot / "attempt-001/record.json").read_text())["validated"])
 
     def test_ambiguous_native_answer_is_not_resolved_by_a_valid_sidecar(self):
         message = json.dumps({"type": "item.completed", "item": {
@@ -398,7 +398,7 @@ class NativeCaptureCustodyTests(unittest.TestCase):
         record = json.loads((attempt / "record.json").read_text())
         self.assertTrue(record["timed_out"])
         self.assertEqual(record["return_code"], 124)
-        self.assertFalse(record["accepted"])
+        self.assertFalse(record["validated"])
         self.assertEqual(record["events_sha256"], hashlib.sha256(stdout).hexdigest())
         self.assertEqual(record["stderr_sha256"], hashlib.sha256(stderr).hexdigest())
         self.assertFalse((slot / "accepted.json").exists())
@@ -434,7 +434,7 @@ class NativeCaptureCustodyTests(unittest.TestCase):
         self.assertEqual((attempt / "stderr.txt").read_bytes(), stderr)
         record = json.loads((attempt / "record.json").read_text())
         self.assertFalse(record["timed_out"])
-        self.assertTrue(record["accepted"])
+        self.assertTrue(record["validated"])
 
     def test_invalid_utf8_cannot_be_accepted_or_recovered(self):
         stdout = EVENTS.encode() + b"\xff"
@@ -442,10 +442,9 @@ class NativeCaptureCustodyTests(unittest.TestCase):
         slot = self.root / "out/scores/slot-1"
         attempt = slot / "attempt-001"
         self.assertEqual((attempt / "events.jsonl").read_bytes(), stdout)
-        with self.assertRaisesRegex(CalibrationError, "not valid UTF-8"):
-            RATER._recover_completed_attempt(
-                attempt, slot / "accepted.json", self.entry, "gpt-5.6-luna", "low"
-            )
+        self.assertFalse(RATER._recover_completed_attempt(
+            attempt, slot / "accepted.json", self.entry, "gpt-5.6-luna", "low"
+        ))
         self.assertFalse((slot / "accepted.json").exists())
         self.assertFalse((attempt / "recovery.json").exists())
 

@@ -27,6 +27,7 @@ from caplab.artifact_rater import (
     evaluate_calibration,
     derive_artifact_judgment,
     preserve_rollout_attestation,
+    read_rollout_attestation,
     validate_judgment,
 )
 
@@ -47,7 +48,16 @@ def _write_new(path: Path, data: bytes) -> None:
 
 
 def _write_new_json(path: Path, value: object) -> None:
-    _write_new(path, _json_bytes(value))
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
+    try:
+        with os.fdopen(descriptor, "wb") as output:
+            output.write(_json_bytes(value))
+            output.flush()
+            os.fsync(output.fileno())
+        os.link(temporary, path)
+    finally:
+        Path(temporary).unlink(missing_ok=True)
 
 
 def _load_json(path: Path) -> Any:
@@ -126,6 +136,60 @@ def _rater_metadata(output_root: Path, model: str, effort: str) -> dict[str, Any
     return metadata
 
 
+class PublicationError(CalibrationError):
+    """Preserved work needs publication repair, not another native invocation."""
+
+
+def _publish_validated_attempt(
+    attempt_root: Path, accepted_path: Path, entry: dict[str, Any],
+    model: str, effort: str, record: dict[str, Any], record_bytes: bytes,
+) -> bool:
+    if record.get("validated") is False:
+        return False
+    if record.get("validated") is not True or record.get("return_code") != 0 or record.get("timed_out") is True:
+        raise PublicationError("invalid prepared attempt validation state")
+    try:
+        derived = derive_artifact_judgment(
+            (attempt_root / "events.jsonl").read_bytes(),
+            (attempt_root / "last-message.txt").read_bytes(), entry["code_ids"],
+        )
+        if derived["derivation"] != record["judgment_derivation"]:
+            raise CalibrationError("preserved judgment derivation changed")
+        if derived["derivation"]["events_sha256"] != record["events_sha256"]:
+            raise CalibrationError("preserved event stream changed")
+        for filename, key in (("prompt.txt", "prompt_sha256"), ("schema.json", "schema_sha256"),
+                              ("stderr.txt", "stderr_sha256")):
+            if _sha256(attempt_root / filename) != record[key]:
+                raise CalibrationError(f"preserved {filename} changed")
+        attestation = read_rollout_attestation(attempt_root / "rollout.jsonl", derived["thread_id"])
+        if not isinstance(record.get("attestation"), dict):
+            raise CalibrationError("preserved attestation is missing")
+        if any(record["attestation"].get(key) != value for key, value in attestation.items()):
+            raise CalibrationError("preserved rollout attestation changed")
+        candidate = record["judgment_candidate"]
+        if not isinstance(candidate, dict):
+            raise CalibrationError("preserved judgment candidate is malformed")
+        expected = {
+            "slot": entry["slot"], "scenario": entry["scenario"], "model": model,
+            "effort": effort, "diff_sha256": entry["diff_sha256"],
+            "thread_id": derived["thread_id"], "judgment": derived["judgment"],
+            "judgment_derivation": derived["derivation"], "attempt": attempt_root.name,
+            "prompt_sha256": record["prompt_sha256"],
+        }
+        if any(candidate.get(key) != value for key, value in expected.items()):
+            raise CalibrationError("preserved judgment candidate changed")
+        if attestation["model"] != model or attestation["effort"] != effort:
+            raise CalibrationError("preserved native tuple differs from requested tuple")
+        if (attempt_root / "record.json").read_bytes() != record_bytes:
+            raise CalibrationError("prepared attempt record changed during publication")
+    except (CalibrationError, KeyError) as error:
+        raise PublicationError(f"cannot publish preserved attempt: {error}") from error
+    _write_new_json(accepted_path, {
+        **candidate, "attempt_record_sha256": hashlib.sha256(record_bytes).hexdigest(),
+    })
+    return True
+
+
 def _recover_completed_attempt(
     attempt_root: Path,
     accepted_path: Path,
@@ -135,43 +199,86 @@ def _recover_completed_attempt(
 ) -> bool:
     """Accept a preserved successful call after a local parser correction."""
     record_path = attempt_root / "record.json"
-    if not record_path.is_file() or (attempt_root / "recovery.json").exists():
-        return False
-    record = _load_json(record_path)
+    if not record_path.is_file():
+        raise PublicationError(f"partial attempt requires disposition: {attempt_root}")
+    record_bytes = record_path.read_bytes()
+    try:
+        record = json.loads(record_bytes)
+    except (ValueError, UnicodeError) as error:
+        raise PublicationError("preserved attempt record is unreadable") from error
+    if not isinstance(record, dict):
+        raise PublicationError("preserved attempt record is not an object")
+    if record.get("schema_version") == "caplab-artifact-rater-attempt/2":
+        return _publish_validated_attempt(
+            attempt_root, accepted_path, entry, model, effort, record, record_bytes,
+        )
+    if record.get("schema_version") not in (None, "caplab-artifact-rater-attempt/1"):
+        raise PublicationError("unsupported preserved attempt schema")
+    recovery_path = attempt_root / "recovery.json"
+    existing = None
+    if recovery_path.exists():
+        try:
+            existing = _load_json(recovery_path)
+        except (ValueError, UnicodeError) as error:
+            raise PublicationError("existing recovery receipt is unreadable") from error
+        if not isinstance(existing, dict):
+            raise PublicationError("existing recovery receipt is not an object")
     if (
         record.get("return_code") != 0
         or record.get("model") != model
         or record.get("effort") != effort
         or record.get("diff_sha256") != entry["diff_sha256"]
     ):
+        if existing is not None:
+            raise PublicationError("recovery receipt belongs to a different attempt identity")
         return False
     last_message_path = attempt_root / "last-message.txt"
     events_path = attempt_root / "events.jsonl"
     if not last_message_path.is_file() or not events_path.is_file():
+        if existing is not None:
+            raise PublicationError("recovery receipt has missing source evidence")
         return False
 
-    derived = derive_artifact_judgment(
-        events_path.read_bytes(), last_message_path.read_bytes(), entry["code_ids"],
-    )
-    judgment, thread_id = derived["judgment"], derived["thread_id"]
-    source_rollout = _find_rollout(thread_id)
-    custody_rollout = attempt_root / "rollout.jsonl"
-    attestation = preserve_rollout_attestation(source_rollout, custody_rollout, thread_id)
-    if attestation["model"] != model or attestation["effort"] != effort:
-        raise CalibrationError(
-            f"attested tuple mismatch: {attestation['model']}/{attestation['effort']}"
+    try:
+        derived = derive_artifact_judgment(
+            events_path.read_bytes(), last_message_path.read_bytes(), entry["code_ids"],
         )
+        judgment, thread_id = derived["judgment"], derived["thread_id"]
+        custody_rollout = attempt_root / "rollout.jsonl"
+        if existing is not None:
+            observed = read_rollout_attestation(custody_rollout, thread_id)
+            attestation = existing.get("attestation")
+            if not isinstance(attestation, dict) or any(
+                attestation.get(key) != observed[key]
+                for key in ("thread_id", "model", "effort", "cli_version", "rollout_sha256")
+            ):
+                raise CalibrationError("recovery rollout differs from its receipt")
+        else:
+            source_rollout = _find_rollout(thread_id)
+            attestation = preserve_rollout_attestation(source_rollout, custody_rollout, thread_id)
+        if attestation["model"] != model or attestation["effort"] != effort:
+            raise CalibrationError(
+                f"attested tuple mismatch: {attestation['model']}/{attestation['effort']}"
+            )
+    except CalibrationError as error:
+        if existing is not None:
+            raise PublicationError(f"cannot resume preserved recovery: {error}") from error
+        raise
     recovery = {
         "schema_version": "caplab-artifact-rater-recovery/1",
         "recovered_at": datetime.now(UTC).isoformat(),
         "reason": "original parser did not read turn_context attestation",
-        "original_record_sha256": _sha256(record_path),
+        "original_record_sha256": hashlib.sha256(record_bytes).hexdigest(),
         "thread_id": thread_id,
         "attestation": attestation,
         "last_message_sha256": derived["derivation"]["last_message_sha256"],
         "judgment_derivation": derived["derivation"],
     }
-    _write_new_json(attempt_root / "recovery.json", recovery)
+    if existing is not None:
+        if any(existing.get(key) != value for key, value in recovery.items() if key != "recovered_at"):
+            raise PublicationError("existing recovery receipt differs from preserved evidence")
+    else:
+        _write_new_json(recovery_path, recovery)
     accepted = {
         "schema_version": "caplab-artifact-rater-judgment/1",
         "slot": entry["slot"],
@@ -210,6 +317,17 @@ def _score_entry(
             or accepted.get("diff_sha256") != entry["diff_sha256"]
         ):
             raise CalibrationError(f"accepted evidence mismatch for {slot}")
+        if "attempt_record_sha256" in accepted:
+            attempt_name = accepted.get("attempt")
+            if not isinstance(attempt_name, str) or Path(attempt_name).name != attempt_name:
+                raise PublicationError("invalid published attempt locator")
+            record_bytes = (slot_root / attempt_name / "record.json").read_bytes()
+            record = json.loads(record_bytes)
+            candidate = {key: value for key, value in accepted.items() if key != "attempt_record_sha256"}
+            if (hashlib.sha256(record_bytes).hexdigest() != accepted["attempt_record_sha256"]
+                    or record.get("validated") is not True
+                    or record.get("judgment_candidate") != candidate):
+                raise PublicationError("published judgment does not match its attempt record")
         return slot, True, "already accepted"
 
     for prior_attempt in sorted(slot_root.glob("attempt-[0-9][0-9][0-9]"), reverse=True):
@@ -218,7 +336,9 @@ def _score_entry(
                 prior_attempt, accepted_path, entry, model, effort
             ):
                 return slot, True, f"recovered {prior_attempt.name}"
-        except (CalibrationError, json.JSONDecodeError, OSError):
+        except (PublicationError, OSError) as error:
+            return slot, False, str(error)
+        except (CalibrationError, json.JSONDecodeError):
             continue
 
     attempt_root = slot_root / f"attempt-{_attempt_number(slot_root):03d}"
@@ -285,7 +405,7 @@ def _score_entry(
     _write_new(stderr_path, stderr)
 
     record: dict[str, Any] = {
-        "schema_version": "caplab-artifact-rater-attempt/1",
+        "schema_version": "caplab-artifact-rater-attempt/2",
         "slot": slot,
         "model": model,
         "effort": effort,
@@ -300,7 +420,7 @@ def _score_entry(
         "events_sha256": _sha256(events_path),
         "stderr_sha256": _sha256(stderr_path),
         "diff_sha256": entry["diff_sha256"],
-        "accepted": False,
+        "validated": False,
     }
     try:
         if timed_out:
@@ -323,7 +443,6 @@ def _score_entry(
             )
         record.update(
             {
-                "accepted": True,
                 "thread_id": thread_id,
                 "last_message_sha256": derived["derivation"]["last_message_sha256"],
                 "judgment_derivation": derived["derivation"],
@@ -343,15 +462,21 @@ def _score_entry(
             "judgment_derivation": derived["derivation"],
             "attempt": attempt_root.name,
         }
-        _write_new_json(accepted_path, accepted)
-        message = "accepted"
-        success = True
+        record["validated"] = True
+        record["judgment_candidate"] = accepted
     except (CalibrationError, json.JSONDecodeError, OSError) as error:
         record["failure"] = str(error)
         message = str(error)
-        success = False
     _write_new_json(attempt_root / "record.json", record)
-    return slot, success, message
+    if not record["validated"]:
+        return slot, False, message
+    try:
+        _publish_validated_attempt(
+            attempt_root, accepted_path, entry, model, effort, record, _json_bytes(record),
+        )
+    except (PublicationError, OSError) as error:
+        return slot, False, str(error)
+    return slot, True, "accepted"
 
 
 def command_select(arguments: argparse.Namespace) -> int:

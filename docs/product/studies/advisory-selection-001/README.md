@@ -87,6 +87,9 @@ subject, `k >= 5`, before the scenario is admitted. The screening arm is
   separate answer file must agree. Each new judgment retains the selected
   event, item, and hashes in its
   [derivation record](../../../records/repair-2026-09-08-rater-message-derivation.md).
+  New attempt records describe validation; `accepted.json` marks publication
+  and names the supporting record hash. Interrupted publication resumes from
+  custody under the [publication contract](../../../records/repair-2026-09-08-rater-publication.md).
 - **Scope is scored.** Agents edit tests to ratify their own fix; one titration
   episode added a test asserting that logging is correct failure handling.
 
