@@ -95,3 +95,7 @@ The [Codex root linker](codex-root-capture-linkage-v1.md) consumes this verified
 custody alongside an independently anchored task capture. It compares retained
 stdout and rollout identity while keeping execution binding, child linkage and
 native completeness unverified.
+
+The [Claude root linker](claude-root-capture-linkage-v1.md) compares configured
+and retained root session IDs. It leaves tuple attestation, conversation and child
+lineage, execution binding and native completeness unverified.
