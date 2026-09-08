@@ -3,6 +3,10 @@
 Status: implemented read-only root observation linkage. See the
 [decision and verification](../../records/implementation-2026-09-08-codex-root-capture-linkage.md).
 
+The separate [final-message linker](codex-final-message-linkage-v1.md) additionally
+compares the retained final artifact with the completed native agent-message event.
+Root linkage alone does not perform that comparison.
+
 `caplab.codex_capture_link.link_codex_root(policy_path, task_custody,
 collection_custody, *, expected_attempt_sha256, expected_collection_sha256,
 max_receipt_bytes, max_identity_bytes)` compares one retained Codex stdout
