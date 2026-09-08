@@ -6,29 +6,51 @@ This is not a native launcher, arbitrary-command runner or completeness gate.
 """
 
 import argparse
+import array
+from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
 import os
 from pathlib import Path
 import platform
 import re
+import socket
+import stat
+import struct
 import subprocess
 import time
 import uuid
 
 from caplab.process_capture import capture_process, seal_capture_json
+from caplab.task_capture import _Inventory
+from caplab.task_capture_verify import _Reader, _inventory, _open
 
 
 MIB = 1024 * 1024
 SCRIPT = Path(__file__).resolve()
+MARKER = b'retained marker\x00\xff\n'
 JOIN = """import os,sys
 from pathlib import Path
 Path(sys.argv[1], 'cgroup.procs').write_text(str(os.getpid()))
 os.execv(sys.argv[2], sys.argv[2:])
 """
-FIXTURE = """import errno,json,subprocess,sys
+HANDOFF = """import array,os,socket,sys
+with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as channel:
+    channel.settimeout(3)
+    channel.connect('/control.sock')
+    root = os.open('/scratch', os.O_RDONLY | os.O_DIRECTORY)
+    try:
+        channel.sendmsg([b'R'], [(socket.SOL_SOCKET, socket.SCM_RIGHTS, array.array('i', [root]))])
+    finally:
+        os.close(root)
+    if channel.recv(1) != b'1':
+        raise RuntimeError('supervisor did not accept retained mount')
+os.execv('/usr/bin/python3', ['/usr/bin/python3', '-B', '-c', sys.argv[1], sys.argv[2]])
+"""
+FIXTURE = r"""import errno,json,subprocess,sys
 from pathlib import Path
 mode = sys.argv[1]
+Path('/scratch/marker.bin').write_bytes(b'retained marker\x00\xff\n')
 if mode == 'memory':
     with Path('/scratch/payload').open('xb', buffering=0) as f:
         for _ in range(64):
@@ -96,6 +118,66 @@ def cleanup_group(group):
     group.rmdir()
 
 
+def receive_mount(listener, child):
+    descriptors = []
+    try:
+        channel, _ = listener.accept()
+        with channel:
+            channel.settimeout(3)
+            peer_pid, peer_uid, peer_gid = struct.unpack('3i', channel.getsockopt(socket.SOL_SOCKET, socket.SO_PEERCRED, 12))
+            data, ancillary, flags, _ = channel.recvmsg(1, socket.CMSG_SPACE(8), socket.MSG_CMSG_CLOEXEC)
+            for level, kind, raw in ancillary:
+                if level == socket.SOL_SOCKET and kind == socket.SCM_RIGHTS:
+                    received = array.array('i')
+                    received.frombytes(raw[:len(raw) - len(raw) % received.itemsize])
+                    descriptors.extend(received)
+            require(data == b'R' and flags & ~socket.MSG_CMSG_CLOEXEC == 0
+                    and len(descriptors) == 1, 'invalid mount handoff')
+            require(peer_uid == os.getuid() and peer_gid == os.getgid(), 'unexpected mount peer owner')
+            membership = Path(f'/proc/{peer_pid}/cgroup').read_text().strip()
+            require(membership == '0::/' + str(child.relative_to('/sys/fs/cgroup')), 'mount peer is outside fixture group')
+            info = os.fstat(descriptors[0]); capacity = os.fstatvfs(descriptors[0])
+            require(stat.S_ISDIR(info.st_mode) and capacity.f_blocks * capacity.f_frsize == 64 * MIB,
+                    'received descriptor is not the expected bounded directory')
+            listener.close()
+            channel.sendall(b'1')
+            descriptor = descriptors.pop()
+            return descriptor, {'peer_pid': peer_pid, 'peer_uid': peer_uid, 'peer_gid': peer_gid,
+                'source_dev': info.st_dev, 'source_ino': info.st_ino,
+                'allocated_capacity': capacity.f_blocks * capacity.f_frsize}
+    finally:
+        for descriptor in descriptors:
+            os.close(descriptor)
+
+
+def retain_mount(descriptor, output, identity):
+    output.mkdir(mode=0o700)
+    inventory = _Inventory(output, 40 * MIB, 100)
+    inventory.visit(descriptor, '.', '.')
+    receipt = {'schema': 'caplab.retained-mount-inventory/v1', 'source_root': '/scratch',
+        'source_scope': 'fixture namespace; not a host path', 'descriptor_identity': identity,
+        'max_retained_bytes': 40 * MIB, 'max_entries': 100,
+        'retained_bytes': inventory.retained_bytes, 'entries': sorted(inventory.entries, key=lambda e: e['path'])}
+    root_entry = receipt['entries'][0]['source_stat']
+    require((root_entry['dev'], root_entry['ino']) == (identity['source_dev'], identity['source_ino']),
+            'retained root identity differs from received descriptor')
+    return seal_capture_json(output, 'inventory.json', receipt)
+
+
+def verify_retention(root, observation):
+    for report in observation['reports']:
+        with _open(None, root / (report['mode'] + '-retained'), directory=True) as fd:
+            receipt = _Reader(200000).receipt(fd, 'inventory.json', report['inventory_sha256'],
+                                             'caplab.retained-mount-inventory/v1')
+            _inventory(fd, receipt, cwd='/scratch', bytes_left=40 * MIB, entries_left=100)
+            marker, = [e for e in receipt['entries'] if e['path'] == 'marker.bin']
+            require(marker['kind'] == 'file' and marker['bytes'] == len(MARKER)
+                    and marker['sha256'] == hashlib.sha256(MARKER).hexdigest(), 'retained marker differs')
+            if report['mode'] == 'memory':
+                payload, = [e for e in receipt['entries'] if e['path'] == 'payload']
+                require(payload['kind'] == 'file' and payload['bytes'] > 0, 'partial OOM payload was not retained')
+
+
 def inside(root, unit):
     require(re.fullmatch(r'caplab-resource-probe-[0-9a-f]{32}\.service', unit), 'invalid probe unit')
     membership = Path('/proc/self/cgroup').read_text().strip()
@@ -112,6 +194,8 @@ def inside(root, unit):
     for mode in ('control', 'memory', 'pids'):
         child = group / ('fixture-' + mode)
         child.mkdir()
+        descriptor = None
+        socket_path = root / (mode + '-control.sock')
         try:
             limits = {'memory.max': str(32 * MIB), 'memory.swap.max': '0',
                       'memory.oom.group': '1', 'pids.max': '8' if mode == 'pids' else '16'}
@@ -126,21 +210,34 @@ def inside(root, unit):
                 '--symlink', 'usr/lib', '/lib', '--symlink', 'usr/lib64', '/lib64',
                 '--proc', '/proc', '--dev', '/dev', '--size', str(64 * MIB), '--tmpfs', '/scratch',
                 '--chdir', '/scratch', '--setenv', 'PATH', '/usr/bin:/bin',
-                '--', '/usr/bin/python3', '-B', '-c', FIXTURE, mode]
+                '--ro-bind', str(socket_path), '/control.sock',
+                '--', '/usr/bin/python3', '-B', '-c', HANDOFF, FIXTURE, mode]
             command = ['/usr/bin/python3', '-B', '-c', JOIN, str(child), *bwrap]
             intent = {'mode': mode, 'cgroup': str(child), 'command': command, 'before': before}
             seal_capture_json(root, mode + '-intent.json', intent)
-            process = capture_process(command, cwd=root, environment={'PATH': '/usr/bin:/bin'},
-                output_dir=root / mode, max_stream_bytes=200000, timeout_seconds=10)
+            with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as listener:
+                listener.bind(str(socket_path)); socket_path.chmod(0o600)
+                listener.listen(1); listener.settimeout(3)
+                with ThreadPoolExecutor(max_workers=1) as pool:
+                    pending = pool.submit(capture_process, command, cwd=root, environment={'PATH': '/usr/bin:/bin'},
+                        output_dir=root / mode, max_stream_bytes=200000, timeout_seconds=10)
+                    descriptor, identity = receive_mount(listener, child)
+                    process = pending.result(timeout=16)
             after = snapshot(child)
+            require(not populated(child), 'fixture must be quiescent before mount retention')
+            inventory_hash = retain_mount(descriptor, root / (mode + '-retained'), identity)
             report = {'mode': mode, 'before': before, 'after': after, 'process': process,
-                      'populated_before_cleanup': populated(child)}
+                      'populated_before_cleanup': populated(child), 'inventory_sha256': inventory_hash,
+                      'mount_descriptor': identity}
             seal_capture_json(root, mode + '-observations.json', report)
             reports.append(report)
         finally:
+            if descriptor is not None:
+                os.close(descriptor)
+            socket_path.unlink(missing_ok=True)
             cleanup_group(child)
     seal_capture_json(root, 'observations.json', {
-        'schema': 'caplab.cgroup-resource-probe-observations/v1', 'unit': unit,
+        'schema': 'caplab.cgroup-resource-probe-observations/v2', 'unit': unit,
         'delegated_cgroup': str(group), 'kernel': platform.release(), 'python': platform.python_version(),
         'reports': reports, 'fixture_cgroups_removed': True, 'native_execution': False,
         'capture_complete_claim': False})
@@ -188,6 +285,7 @@ def run(root):
         require(process['return_code'] == 0 and process['streams_complete'], 'service failed; inspect retained streams')
         observation = json.loads((root / 'observations.json').read_bytes())
         expectations(observation)
+        verify_retention(root, observation)
     finally:
         # Exact generated unit only. No broad service, cgroup or process cleanup.
         cleanup = subprocess.run(['/usr/bin/systemctl', '--user', 'stop', unit], env=environment,
@@ -200,8 +298,9 @@ def run(root):
             'show_stderr': state.stderr.decode()})
         require(state.stdout.strip() == b'not-found', 'generated transient unit remains loaded')
     require(not Path(observation['delegated_cgroup']).exists(), 'generated cgroup remains after unit cleanup')
-    seal_capture_json(root, 'verification.json', {'schema': 'caplab.cgroup-resource-probe-verification/v1',
+    seal_capture_json(root, 'verification.json', {'schema': 'caplab.cgroup-resource-probe-verification/v2',
         'unit': unit, 'three_fixture_expectations_passed': True, 'unit_removed': True,
+        'retained_files_verified_after_service_exit': True,
         'native_execution': False, 'capture_complete_claim': False})
     print(json.dumps({'output_root': str(root), 'unit': unit, 'verified': True}))
 
