@@ -3,7 +3,9 @@
 import json
 import unittest
 
-from caplab.codex_events import CodexEventError, codex_thread_id, require_completed_codex_turn
+from caplab.codex_events import (
+    CodexEventError, codex_thread_id, final_codex_message, require_completed_codex_turn,
+)
 
 
 THREAD = {"type": "thread.started", "thread_id": "thread-1"}
@@ -16,6 +18,34 @@ def stream(*events):
 
 
 class CodexEventTests(unittest.TestCase):
+    def test_final_message_selection_ignores_tool_output_and_keeps_location(self):
+        capture = stream(THREAD, START,
+            {"type": "item.completed", "item": {"type": "agent_message", "id": "a", "text": "earlier"}},
+            {"type": "item.completed", "item": {"type": "agent_message", "id": "b", "text": "final"}},
+            {"type": "item.completed", "item": {"type": "command_execution", "text": "not the answer"}},
+            COMPLETE)
+        selected = final_codex_message(capture)
+        self.assertEqual((selected.thread_id, selected.event_index, selected.item_id, selected.text),
+                         ("thread-1", 3, "b", "final"))
+
+    def test_malformed_later_message_cannot_fall_back_to_an_earlier_one(self):
+        earlier = {"type": "item.completed", "item": {
+            "type": "agent_message", "id": "a", "text": "earlier",
+        }}
+        for item in (
+            {"type": "agent_message", "id": "b"},
+            {"type": "agent_message", "id": "b", "text": None},
+            {"type": "agent_message", "id": "a", "text": "duplicate"},
+            {"type": "agent_message", "id": " ", "text": "missing id"},
+            None,
+        ):
+            with self.subTest(item=item):
+                with self.assertRaises(CodexEventError):
+                    final_codex_message(stream(THREAD, START, earlier,
+                                               {"type": "item.completed", "item": item}, COMPLETE))
+        with self.assertRaises(CodexEventError):
+            final_codex_message(stream(THREAD, earlier, START, COMPLETE))
+
     def test_valid_turn_allows_tool_events_and_unicode_text(self):
         capture = stream(THREAD, START, {"type": "item.completed", "item": {
             "type": "agent_message", "text": "café\u2028still one JSON line",

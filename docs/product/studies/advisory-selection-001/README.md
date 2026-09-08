@@ -83,6 +83,10 @@ subject, `k >= 5`, before the scenario is admitted. The screening arm is
   Usable attempts also require one unambiguous native thread and turn with a
   final completion event and no failure evidence. A valid answer file alone
   cannot satisfy this [completion gate](../../../records/repair-2026-09-08-native-completion.md).
+  Artifact judgments are derived from the final captured agent message; the
+  separate answer file must agree. Each new judgment retains the selected
+  event, item, and hashes in its
+  [derivation record](../../../records/repair-2026-09-08-rater-message-derivation.md).
 - **Scope is scored.** Agents edit tests to ratify their own fix; one titration
   episode added a test asserting that logging is correct failure handling.
 

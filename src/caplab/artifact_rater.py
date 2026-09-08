@@ -9,7 +9,9 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any, Iterable, Mapping
 
-from caplab.codex_events import CodexEventError, codex_thread_id, require_completed_codex_turn
+from caplab.codex_events import (
+    CodexEventError, codex_thread_id, final_codex_message, parse_native_json,
+)
 
 
 class CalibrationError(ValueError):
@@ -97,12 +99,33 @@ def extract_thread_id(events_jsonl: str | bytes) -> str:
         raise CalibrationError(str(error)) from error
 
 
-def completed_thread_id(events_jsonl: str | bytes) -> str:
-    """Require completed native execution before admitting a rater judgment."""
+def derive_artifact_judgment(
+    events_jsonl: bytes, last_message: bytes, code_ids: Iterable[str]
+) -> dict[str, Any]:
+    """Derive a native judgment and require agreement with its sidecar file."""
+    code_ids = tuple(code_ids)
     try:
-        return require_completed_codex_turn(events_jsonl)
-    except CodexEventError as error:
+        message = final_codex_message(events_jsonl)
+        judgment = validate_judgment(parse_native_json(message.text), code_ids)
+        sidecar = validate_judgment(parse_native_json(last_message.decode("utf-8")), code_ids)
+        message_bytes = message.text.encode("utf-8")
+    except (CodexEventError, UnicodeError) as error:
         raise CalibrationError(str(error)) from error
+    if judgment != sidecar:
+        raise CalibrationError("native final judgment differs from last-message file")
+    return {
+        "thread_id": message.thread_id,
+        "judgment": judgment,
+        "derivation": {
+            "schema_version": "caplab-artifact-rater-derivation/1",
+            "events_sha256": hashlib.sha256(events_jsonl).hexdigest(),
+            "selected_event_index": message.event_index,
+            "selected_item_id": message.item_id,
+            "extracted_text_sha256": hashlib.sha256(message_bytes).hexdigest(),
+            "last_message_sha256": hashlib.sha256(last_message).hexdigest(),
+            "sidecar_comparison": "exact-code-booleans/1",
+        },
+    }
 
 
 def read_rollout_attestation(rollout_path: Path, thread_id: str) -> dict[str, str]:

@@ -25,7 +25,7 @@ from caplab.artifact_rater import (
     build_judgment_schema,
     build_scoring_manifest,
     evaluate_calibration,
-    completed_thread_id,
+    derive_artifact_judgment,
     preserve_rollout_attestation,
     validate_judgment,
 )
@@ -150,11 +150,10 @@ def _recover_completed_attempt(
     if not last_message_path.is_file() or not events_path.is_file():
         return False
 
-    judgment = validate_judgment(
-        json.loads(last_message_path.read_text(encoding="utf-8")),
-        entry["code_ids"],
+    derived = derive_artifact_judgment(
+        events_path.read_bytes(), last_message_path.read_bytes(), entry["code_ids"],
     )
-    thread_id = completed_thread_id(events_path.read_bytes())
+    judgment, thread_id = derived["judgment"], derived["thread_id"]
     source_rollout = _find_rollout(thread_id)
     custody_rollout = attempt_root / "rollout.jsonl"
     attestation = preserve_rollout_attestation(source_rollout, custody_rollout, thread_id)
@@ -169,7 +168,8 @@ def _recover_completed_attempt(
         "original_record_sha256": _sha256(record_path),
         "thread_id": thread_id,
         "attestation": attestation,
-        "last_message_sha256": _sha256(last_message_path),
+        "last_message_sha256": derived["derivation"]["last_message_sha256"],
+        "judgment_derivation": derived["derivation"],
     }
     _write_new_json(attempt_root / "recovery.json", recovery)
     accepted = {
@@ -182,6 +182,7 @@ def _recover_completed_attempt(
         "diff_sha256": entry["diff_sha256"],
         "prompt_sha256": record["prompt_sha256"],
         "judgment": judgment,
+        "judgment_derivation": derived["derivation"],
         "attempt": attempt_root.name,
         "recovered_from_preserved_attempt": True,
     }
@@ -308,11 +309,10 @@ def _score_entry(
             raise CalibrationError(f"Codex exited {return_code}")
         if not last_message_path.is_file():
             raise CalibrationError("Codex did not write a final message")
-        judgment = validate_judgment(
-            json.loads(last_message_path.read_text(encoding="utf-8")),
-            entry["code_ids"],
+        derived = derive_artifact_judgment(
+            events, last_message_path.read_bytes(), entry["code_ids"],
         )
-        thread_id = completed_thread_id(events)
+        judgment, thread_id = derived["judgment"], derived["thread_id"]
         source_rollout = _find_rollout(thread_id)
         custody_rollout = attempt_root / "rollout.jsonl"
         attestation = preserve_rollout_attestation(source_rollout, custody_rollout, thread_id)
@@ -325,7 +325,8 @@ def _score_entry(
             {
                 "accepted": True,
                 "thread_id": thread_id,
-                "last_message_sha256": _sha256(last_message_path),
+                "last_message_sha256": derived["derivation"]["last_message_sha256"],
+                "judgment_derivation": derived["derivation"],
                 "attestation": attestation,
             }
         )
@@ -339,6 +340,7 @@ def _score_entry(
             "diff_sha256": entry["diff_sha256"],
             "prompt_sha256": record["prompt_sha256"],
             "judgment": judgment,
+            "judgment_derivation": derived["derivation"],
             "attempt": attempt_root.name,
         }
         _write_new_json(accepted_path, accepted)

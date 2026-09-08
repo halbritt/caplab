@@ -1,11 +1,20 @@
 """Identity and completion evidence from a single native Codex invocation."""
 
 import json
+from dataclasses import dataclass
 from typing import Any
 
 
 class CodexEventError(ValueError):
     """The supplied stream cannot establish the requested execution fact."""
+
+
+@dataclass(frozen=True)
+class CodexAgentMessage:
+    thread_id: str
+    event_index: int
+    item_id: str
+    text: str
 
 
 def _unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
@@ -21,6 +30,14 @@ def _reject_constant(value: str) -> None:
     raise ValueError("non-JSON numeric constant")
 
 
+def parse_native_json(text: str) -> Any:
+    """Parse native JSON without duplicate keys or non-JSON constants."""
+    try:
+        return json.loads(text, object_pairs_hook=_unique_object, parse_constant=_reject_constant)
+    except ValueError as error:
+        raise CodexEventError("native JSON is malformed or ambiguous") from error
+
+
 def _events(stream: str | bytes) -> tuple[str, list[dict[str, Any]]]:
     if isinstance(stream, bytes):
         try:
@@ -33,7 +50,7 @@ def _events(stream: str | bytes) -> tuple[str, list[dict[str, Any]]]:
         lines.pop()
     for number, line in enumerate(lines, start=1):
         try:
-            event = json.loads(line, object_pairs_hook=_unique_object, parse_constant=_reject_constant)
+            event = parse_native_json(line)
         except ValueError as error:
             raise CodexEventError(f"native event stream has invalid JSON at line {number}") from error
         if not isinstance(event, dict):
@@ -60,8 +77,7 @@ def codex_thread_id(stream: str | bytes) -> str:
     return _thread_id(events)
 
 
-def require_completed_codex_turn(stream: str | bytes) -> str:
-    """Return the thread ID only for one complete, failure-free captured turn."""
+def _completed_events(stream: str | bytes) -> tuple[str, list[dict[str, Any]]]:
     text, events = _events(stream)
     for event in events:
         if event["type"] in {"error", "turn.failed", "thread.error"}:
@@ -78,4 +94,38 @@ def require_completed_codex_turn(stream: str | bytes) -> str:
     completed = [i for i, event in enumerate(events) if event["type"] == "turn.completed"]
     if completed != [len(events) - 1]:
         raise CodexEventError("native event stream requires one final turn.completed")
+    return thread_id, events
+
+
+def require_completed_codex_turn(stream: str | bytes) -> str:
+    """Return the thread ID only for one complete, failure-free captured turn."""
+    thread_id, _ = _completed_events(stream)
     return thread_id
+
+
+def final_codex_message(stream: str | bytes) -> CodexAgentMessage:
+    """Select the last completed agent message inside a completed native turn."""
+    thread_id, events = _completed_events(stream)
+    turn_start = next(i for i, event in enumerate(events) if event["type"] == "turn.started")
+    selected = None
+    message_ids = set()
+    for index, event in enumerate(events[:-1]):
+        if event["type"] != "item.completed":
+            continue
+        item = event.get("item")
+        if not isinstance(item, dict) or not isinstance(item.get("type"), str):
+            raise CodexEventError("native completed item is malformed")
+        if item["type"] != "agent_message":
+            continue
+        if index <= turn_start:
+            raise CodexEventError("native agent message is outside the completed turn")
+        item_id, text = item.get("id"), item.get("text")
+        if not isinstance(item_id, str) or not item_id.strip() or not isinstance(text, str):
+            raise CodexEventError("native agent message lacks item identity or text")
+        if item_id in message_ids:
+            raise CodexEventError("native completed agent message identity is duplicated")
+        message_ids.add(item_id)
+        selected = CodexAgentMessage(thread_id, index, item_id, text)
+    if selected is None:
+        raise CodexEventError("native completed turn has no agent message")
+    return selected
