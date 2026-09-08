@@ -185,12 +185,12 @@ def _run_historical_ladder_attempt(arguments: argparse.Namespace) -> int:
     ]
     started_at = datetime.now(UTC).isoformat()
     start = time.monotonic()
+    timed_out = False
     try:
         completed = subprocess.run(
             command,
             cwd=world,
             capture_output=True,
-            text=True,
             timeout=arguments.timeout,
         )
         return_code = completed.returncode
@@ -198,11 +198,12 @@ def _run_historical_ladder_attempt(arguments: argparse.Namespace) -> int:
         stderr = completed.stderr
     except subprocess.TimeoutExpired as error:
         return_code = 124
-        events = error.stdout or ""
-        stderr = (error.stderr or "") + f"\nTimed out after {arguments.timeout}s\n"
+        timed_out = True
+        events = error.stdout or b""
+        stderr = error.stderr or b""
     duration = int(time.monotonic() - start)
-    _write_new(events_path, events.encode("utf-8"))
-    _write_new(stderr_path, stderr.encode("utf-8"))
+    _write_new(events_path, events)
+    _write_new(stderr_path, stderr)
 
     _run_git(world, "add", "-A")
     diff = _run_git(world, "diff", "--cached", capture=True)
@@ -236,6 +237,9 @@ def _run_historical_ladder_attempt(arguments: argparse.Namespace) -> int:
     )
     if attestation_failure and disposition == "infrastructure":
         infrastructure_reason = attestation_failure
+    if timed_out:
+        disposition = "infrastructure"
+        infrastructure_reason = f"Codex timed out after {arguments.timeout}s"
     episode: dict[str, Any] = {
         "slot": slot,
         "scenario": arguments.scenario,
@@ -248,6 +252,8 @@ def _run_historical_ladder_attempt(arguments: argparse.Namespace) -> int:
         "native_harness_version": version,
         "command": command_prefix,
         "rc": return_code,
+        "timed_out": timed_out,
+        "timeout_seconds": arguments.timeout,
         "duration_s": duration,
         "started_at": started_at,
         "finished_at": datetime.now(UTC).isoformat(),

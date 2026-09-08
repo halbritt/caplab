@@ -77,6 +77,9 @@ subject, `k >= 5`, before the scenario is admitted. The screening arm is
   Callers must preserve the captured bytes before attesting them and must
   reject custody failures or conflicting existing copies. See the
   [custody repair record](../../../records/repair-2026-09-08-attestation-custody.md).
+  Native stdout and stderr stay byte-exact, including partial timeout output;
+  timeout facts are separate attempt metadata. See the
+  [timeout capture repair](../../../records/repair-2026-09-08-native-timeout-capture.md).
 - **Scope is scored.** Agents edit tests to ratify their own fix; one titration
   episode added a test asserting that logging is correct failure handling.
 

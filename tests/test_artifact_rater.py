@@ -238,6 +238,14 @@ class ArtifactRaterTests(unittest.TestCase):
         )
         return read_rollout_attestation(rollout, "thread-123")
 
+    def test_byte_event_identity_requires_utf8_and_object_records(self) -> None:
+        event = b'{"type":"thread.started","thread_id":"thread-123"}\n'
+        self.assertEqual(extract_thread_id(event), "thread-123")
+        for invalid in (event + b"\xe2", b"null\n" + event, b"[]\n" + event):
+            with self.subTest(invalid=invalid):
+                with self.assertRaises(CalibrationError):
+                    extract_thread_id(invalid)
+
     def _rollout_records(self) -> list[dict]:
         return [
             {"type": "session_meta", "payload": {

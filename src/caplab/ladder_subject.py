@@ -87,13 +87,18 @@ def validate_ladder_subject(
 
 
 def classify_subject_attempt(
-    events_jsonl: str,
+    events_jsonl: str | bytes,
     return_code: int,
     write_set: Iterable[str],
     *,
     pin_ok: bool,
 ) -> tuple[str, str | None]:
     """Separate behavioral attempts from native-harness infrastructure failure."""
+    if isinstance(events_jsonl, bytes):
+        try:
+            events_jsonl = events_jsonl.decode("utf-8")
+        except UnicodeDecodeError:
+            return "infrastructure", "native event stream is not valid UTF-8"
     completed = False
     failure: str | None = None
     for line in events_jsonl.splitlines():
@@ -103,6 +108,8 @@ def classify_subject_attempt(
             event = json.loads(line)
         except json.JSONDecodeError:
             continue
+        if not isinstance(event, dict):
+            return "infrastructure", "native event stream record must be an object"
         event_type = event.get("type")
         if event_type == "turn.completed":
             completed = True

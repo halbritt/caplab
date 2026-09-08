@@ -87,8 +87,13 @@ def build_artifact_prompt(codes_path: Path, diff: str) -> str:
     )
 
 
-def extract_thread_id(events_jsonl: str) -> str:
+def extract_thread_id(events_jsonl: str | bytes) -> str:
     """Extract the persistent Codex thread identifier from JSONL events."""
+    if isinstance(events_jsonl, bytes):
+        try:
+            events_jsonl = events_jsonl.decode("utf-8")
+        except UnicodeDecodeError as error:
+            raise CalibrationError("Codex event stream is not valid UTF-8") from error
     for line in events_jsonl.splitlines():
         if not line.strip():
             continue
@@ -96,6 +101,8 @@ def extract_thread_id(events_jsonl: str) -> str:
             event = json.loads(line)
         except json.JSONDecodeError:
             continue
+        if not isinstance(event, dict):
+            raise CalibrationError("Codex event stream record must be an object")
         if event.get("type") == "thread.started" and isinstance(
             event.get("thread_id"), str
         ):

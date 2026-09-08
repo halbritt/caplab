@@ -190,6 +190,18 @@ class LadderSubjectTests(unittest.TestCase):
             ("infrastructure", "native tuple attestation mismatch"),
         )
 
+    def test_byte_events_require_utf8_and_object_records(self) -> None:
+        completed = b'{"type":"turn.completed"}\n'
+        self.assertEqual(
+            classify_subject_attempt(completed, 0, ["a.py"], pin_ok=True),
+            ("behavioural-attempt", None),
+        )
+        for invalid in (completed + b"\xe2", completed + b"null\n", completed + b"[]\n"):
+            with self.subTest(invalid=invalid):
+                disposition, reason = classify_subject_attempt(invalid, 0, ["a.py"], pin_ok=True)
+                self.assertEqual(disposition, "infrastructure")
+                self.assertIn("event stream", reason)
+
 
 if __name__ == "__main__":
     unittest.main()

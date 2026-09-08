@@ -154,7 +154,7 @@ def _recover_completed_attempt(
         json.loads(last_message_path.read_text(encoding="utf-8")),
         entry["code_ids"],
     )
-    thread_id = extract_thread_id(events_path.read_text(encoding="utf-8"))
+    thread_id = extract_thread_id(events_path.read_bytes())
     source_rollout = _find_rollout(thread_id)
     custody_rollout = attempt_root / "rollout.jsonl"
     attestation = preserve_rollout_attestation(source_rollout, custody_rollout, thread_id)
@@ -264,12 +264,12 @@ def _score_entry(
             "-",
         ]
         started_at = datetime.now(UTC).isoformat()
+        timed_out = False
         try:
             completed = subprocess.run(
                 command,
-                input=prompt,
+                input=prompt.encode("utf-8"),
                 capture_output=True,
-                text=True,
                 timeout=timeout_seconds,
             )
             return_code = completed.returncode
@@ -277,10 +277,11 @@ def _score_entry(
             stderr = completed.stderr
         except subprocess.TimeoutExpired as error:
             return_code = 124
-            events = error.stdout or ""
-            stderr = (error.stderr or "") + f"\nTimed out after {timeout_seconds}s\n"
-    _write_new(events_path, events.encode("utf-8"))
-    _write_new(stderr_path, stderr.encode("utf-8"))
+            timed_out = True
+            events = error.stdout or b""
+            stderr = error.stderr or b""
+    _write_new(events_path, events)
+    _write_new(stderr_path, stderr)
 
     record: dict[str, Any] = {
         "schema_version": "caplab-artifact-rater-attempt/1",
@@ -290,6 +291,8 @@ def _score_entry(
         "started_at": started_at,
         "finished_at": datetime.now(UTC).isoformat(),
         "return_code": return_code,
+        "timed_out": timed_out,
+        "timeout_seconds": timeout_seconds,
         "command": command[:-1] + ["<prompt-on-stdin>"],
         "prompt_sha256": _sha256(prompt_path),
         "schema_sha256": _sha256(schema_path),
@@ -299,6 +302,8 @@ def _score_entry(
         "accepted": False,
     }
     try:
+        if timed_out:
+            raise CalibrationError(f"Codex timed out after {timeout_seconds}s")
         if return_code != 0:
             raise CalibrationError(f"Codex exited {return_code}")
         if not last_message_path.is_file():

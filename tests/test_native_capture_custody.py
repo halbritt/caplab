@@ -6,6 +6,7 @@ import importlib.util
 import json
 import os
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -50,7 +51,8 @@ class NativeCaptureCustodyTests(unittest.TestCase):
             "diff_sha256": hashlib.sha256(b"+changed\n").hexdigest(),
         }
 
-    def score(self, *, custody_failure=False):
+    def score(self, *, custody_failure=False, process_error=None,
+              native_output=(EVENTS.encode(), b""), native_return_code=0):
         diff = self.root / "campaign/attempts/slot-1/diff.patch"
         diff.parent.mkdir(parents=True)
         diff.write_bytes(b"+changed\n")
@@ -62,11 +64,16 @@ class NativeCaptureCustodyTests(unittest.TestCase):
         ]}))
 
         def native(command, **kwargs):
+            if process_error is not None:
+                raise process_error
             last_message = Path(command[command.index("--output-last-message") + 1])
             last_message.write_text('{"C1":true,"SCOPE":true}')
             if custody_failure:
                 (last_message.parent / "rollout.jsonl").mkdir()
-            return subprocess.CompletedProcess(command, 0, EVENTS, "")
+            stdout, stderr = native_output
+            if kwargs.get("text"):
+                stdout, stderr = stdout.decode(), stderr.decode()
+            return subprocess.CompletedProcess(command, native_return_code, stdout, stderr)
 
         with patch.object(RATER.subprocess, "run", side_effect=native), patch.object(
             RATER, "_find_rollout", return_value=self.source
@@ -184,7 +191,7 @@ class NativeCaptureCustodyTests(unittest.TestCase):
             preserve_rollout_attestation(self.source, custody, "thread-123")
         self.assertEqual(custody.read_bytes(), rollout()[:10])
 
-    def test_ladder_custody_failure_cannot_leave_a_successful_pin(self):
+    def ladder(self, *, custody_failure=False, process_error=None):
         scenario = self.root / "scenarios/scenario-1"
         (scenario / "world").mkdir(parents=True)
         (scenario / "TASK.md").write_text("Local fixture task")
@@ -201,10 +208,14 @@ class NativeCaptureCustodyTests(unittest.TestCase):
             if command[:2] == ["codex", "--version"]:
                 return subprocess.CompletedProcess(command, 0, "codex-cli 0.146.0", "")
             if command[:2] == ["codex", "exec"]:
+                if process_error is not None:
+                    raise process_error
                 attempt = next((self.root / "campaign/attempts").iterdir())
-                # Occupy the destination so neither a copy nor exclusive creation can succeed.
-                (attempt / "rollout.jsonl").mkdir()
-                return subprocess.CompletedProcess(command, 0, EVENTS, "")
+                if custody_failure:
+                    # Occupy the destination so neither copying nor exclusive creation succeeds.
+                    (attempt / "rollout.jsonl").mkdir()
+                stdout, stderr = (EVENTS, "") if kwargs.get("text") else (EVENTS.encode(), b"")
+                return subprocess.CompletedProcess(command, 0, stdout, stderr)
             return subprocess.CompletedProcess(command, 0, "", "")
 
         def git(world, *args, **kwargs):
@@ -218,11 +229,105 @@ class NativeCaptureCustodyTests(unittest.TestCase):
             result = LADDER._run_historical_ladder_attempt(arguments)
         episode_path = next((self.root / "campaign/attempts").glob("*/episode.json"))
         episode = json.loads(episode_path.read_text())
+        return result, episode, episode_path.parent
+
+    def test_ladder_custody_failure_cannot_leave_a_successful_pin(self):
+        result, episode, _ = self.ladder(custody_failure=True)
         self.assertEqual(result, 1)
         self.assertEqual(episode["disposition"], "infrastructure")
         self.assertFalse(episode["pin_ok"])
         self.assertIsNone(episode["attempted"])
         self.assertIsNone(episode["attested_model"])
+
+    def test_real_timeout_bytes_are_retained_with_rater_failure_record(self):
+        stdout = EVENTS.encode() + b'{"partial":"\xe2'
+        stderr = b"native diagnostic\xff"
+        command = [sys.executable, "-c", (
+            f"import os,time; os.write(1, {stdout!r}); "
+            f"os.write(2, {stderr!r}); time.sleep(60)"
+        )]
+        with self.assertRaises(subprocess.TimeoutExpired) as caught:
+            subprocess.run(command, capture_output=True, text=True, timeout=1)
+        self.assertEqual(caught.exception.stdout, stdout)
+        self.assertEqual(caught.exception.stderr, stderr)
+        _, success, reason = self.score(process_error=caught.exception)
+        self.assertFalse(success)
+        self.assertIn("timed out", reason)
+        slot = self.root / "out/scores/slot-1"
+        attempt = slot / "attempt-001"
+        self.assertEqual((attempt / "events.jsonl").read_bytes(), stdout)
+        self.assertEqual((attempt / "stderr.txt").read_bytes(), stderr)
+        record = json.loads((attempt / "record.json").read_text())
+        self.assertTrue(record["timed_out"])
+        self.assertEqual(record["return_code"], 124)
+        self.assertFalse(record["accepted"])
+        self.assertEqual(record["events_sha256"], hashlib.sha256(stdout).hexdigest())
+        self.assertEqual(record["stderr_sha256"], hashlib.sha256(stderr).hexdigest())
+        self.assertFalse((slot / "accepted.json").exists())
+
+    def test_ladder_timeout_retains_partial_bytes_and_infrastructure_disposition(self):
+        stdout = EVENTS.encode() + b'{"partial":"\xe2'
+        stderr = b"native diagnostic\xff"
+        error = subprocess.TimeoutExpired(["fixture"], 10, output=stdout, stderr=stderr)
+        result, episode, attempt = self.ladder(process_error=error)
+        self.assertEqual(result, 1)
+        self.assertEqual((attempt / "native.stdout").read_bytes(), stdout)
+        self.assertEqual((attempt / "native.stderr").read_bytes(), stderr)
+        self.assertTrue(episode["timed_out"])
+        self.assertEqual(episode["rc"], 124)
+        self.assertEqual(episode["disposition"], "infrastructure")
+        self.assertIn("timed out", episode["infra_reason"])
+        self.assertIsNone(episode["attempted"])
+
+    def test_rater_timeout_without_output_records_empty_streams(self):
+        error = subprocess.TimeoutExpired(["fixture"], 10)
+        self.assertFalse(self.score(process_error=error)[1])
+        attempt = self.root / "out/scores/slot-1/attempt-001"
+        self.assertEqual((attempt / "events.jsonl").read_bytes(), b"")
+        self.assertEqual((attempt / "stderr.txt").read_bytes(), b"")
+        self.assertTrue(json.loads((attempt / "record.json").read_text())["timed_out"])
+
+    def test_normal_binary_capture_preserves_native_bytes(self):
+        stdout = EVENTS.replace("\n", "\r\n").encode()
+        stderr = "diagnostic café\r\n".encode()
+        self.assertTrue(self.score(native_output=(stdout, stderr))[1])
+        attempt = self.root / "out/scores/slot-1/attempt-001"
+        self.assertEqual((attempt / "events.jsonl").read_bytes(), stdout)
+        self.assertEqual((attempt / "stderr.txt").read_bytes(), stderr)
+        record = json.loads((attempt / "record.json").read_text())
+        self.assertFalse(record["timed_out"])
+        self.assertTrue(record["accepted"])
+
+    def test_invalid_utf8_cannot_be_accepted_or_recovered(self):
+        stdout = EVENTS.encode() + b"\xff"
+        self.assertFalse(self.score(native_output=(stdout, b""))[1])
+        slot = self.root / "out/scores/slot-1"
+        attempt = slot / "attempt-001"
+        self.assertEqual((attempt / "events.jsonl").read_bytes(), stdout)
+        with self.assertRaisesRegex(CalibrationError, "not valid UTF-8"):
+            RATER._recover_completed_attempt(
+                attempt, slot / "accepted.json", self.entry, "gpt-5.6-luna", "low"
+            )
+        self.assertFalse((slot / "accepted.json").exists())
+        self.assertFalse((attempt / "recovery.json").exists())
+
+    def test_exit_124_is_not_reported_as_an_observed_timeout(self):
+        _, success, reason = self.score(native_return_code=124)
+        self.assertFalse(success)
+        self.assertEqual(reason, "Codex exited 124")
+        attempt = self.root / "out/scores/slot-1/attempt-001"
+        record = json.loads((attempt / "record.json").read_text())
+        self.assertFalse(record["timed_out"])
+
+    def test_ladder_timeout_without_output_still_records_an_attempt(self):
+        error = subprocess.TimeoutExpired(["fixture"], 10)
+        result, episode, attempt = self.ladder(process_error=error)
+        self.assertEqual(result, 1)
+        self.assertTrue(episode["timed_out"])
+        self.assertFalse(episode["pin_ok"])
+        self.assertIsNone(episode["attempted"])
+        self.assertEqual((attempt / "native.stdout").read_bytes(), b"")
+        self.assertEqual((attempt / "native.stderr").read_bytes(), b"")
 
 
 if __name__ == "__main__":
