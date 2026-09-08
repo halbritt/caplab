@@ -13,9 +13,9 @@ budget buys distinct defects at asymmetric replication. Because the set
 never changes, its numbers are comparable across sweeps and across Bindings:
 
 - within one sweep it measures how often the instrument agrees with itself;
-- across sweeps it measures drift — if the same cases move, either the
-  Binding changed or the instrument did, and the Scored claims of that
-  period must be read with that in mind.
+- across sweeps it describes changes in recorded anchor outcomes. Sampling
+  variation, the Binding, the instrument, or runtime conditions may contribute;
+  outcome disagreement alone does not identify a cause.
 
 Three properties make the set an instrument control rather than more
 evidence:
@@ -217,25 +217,76 @@ def reliability(rows: list[dict]) -> dict:
 
 
 def drift(current: list[dict], previous: list[dict]) -> dict:
-    """Agreement between two sweeps on the same anchor cases.
+    """Describe catch and false-alarm agreement, with recorded-case coverage.
 
-    A moved anchor means the Binding changed or the instrument did. It does
-    not say which, and this function does not guess.
+    Dispatch labels join rows; this does not verify experiment comparability
+    or account for cases absent from both inputs. Ambiguous identities fail.
+    Unusable rows and non-Boolean outcomes remain visible as unavailable.
     """
-    now = {r["dispatch_id"]: r for r in current
-           if r.get("anchor") and r.get("usable")}
-    before = {r["dispatch_id"]: r for r in previous
-              if r.get("anchor") and r.get("usable")}
-    shared = sorted(set(now) & set(before))
-    if not shared:
-        return {"shared_anchor_cases": 0}
+    def index(rows: list[dict], label: str) -> tuple[dict, dict]:
+        indexed, unavailable = {}, {}
+        for row in rows:
+            if not row.get("anchor"):
+                continue
+            identity = row.get("dispatch_id")
+            if not isinstance(identity, str) or not identity.strip():
+                raise ValueError(f"{label} anchor lacks a valid dispatch_id")
+            if identity in indexed:
+                raise ValueError(f"duplicate {label} anchor dispatch_id: {identity}")
+            indexed[identity] = row
+            if row.get("usable") is not True:
+                unavailable[identity] = "row-not-usable"
+            elif any(type(row.get(field)) is not bool
+                     for field in ("caught", "false_alarm")):
+                unavailable[identity] = "missing-or-invalid-outcomes"
+        return indexed, dict(sorted(unavailable.items()))
+
+    now, unavailable_now = index(current, "current")
+    before, unavailable_before = index(previous, "previous")
+    shared_recorded = set(now) & set(before)
+    shared = sorted(shared_recorded - unavailable_now.keys()
+                    - unavailable_before.keys())
     agree = {field: sum(1 for k in shared if now[k][field] == before[k][field])
              for field in ("caught", "false_alarm")}
+    complete = len(shared) == len(now) == len(before)
+    if not shared:
+        status = "unavailable"
+        reading = "no shared usable anchor cases with complete Boolean outcomes"
+    elif any(count != len(shared) for count in agree.values()):
+        status = "observed-change"
+        reading = (
+            "anchor outcomes differ on shared usable cases; sampling variation, "
+            "the Binding, the instrument, or runtime conditions may contribute; "
+            "this comparison does not say which")
+    elif not complete:
+        status = "agreement-on-subset"
+        reading = (
+            "both outcomes agree on the shared usable subset; unmatched or "
+            "unavailable recorded anchors prevent a full recorded-set comparison")
+    else:
+        status = "observed-agreement"
+        reading = (
+            "both outcomes agree on all recorded anchor cases; this observation "
+            "does not establish instrument stability or future agreement")
     return {
+        "schema_version": "caplab-anchor-drift/2",
+        "status": status,
         "shared_anchor_cases": len(shared),
-        "caught_agreement": agree["caught"] / len(shared),
-        "false_alarm_agreement": agree["false_alarm"] / len(shared),
-        "reading": ("anchor stable" if agree["caught"] == len(shared)
-                    else "anchor moved: the Binding or the instrument changed, "
-                         "and this measurement does not say which"),
+        "caught_agreement": agree["caught"] / len(shared) if shared else None,
+        "false_alarm_agreement": (
+            agree["false_alarm"] / len(shared) if shared else None),
+        "coverage": {
+            "current_anchor_cases": len(now),
+            "previous_anchor_cases": len(before),
+            "shared_recorded_cases": len(shared_recorded),
+            "current_only_ids": sorted(set(now) - set(before)),
+            "previous_only_ids": sorted(set(before) - set(now)),
+            "current_unavailable": unavailable_now,
+            "previous_unavailable": unavailable_before,
+        },
+        "comparison_basis": (
+            "dispatch-id join of reported outcomes; input bytes, condition "
+            "comparability, native Binding identity, and planned population "
+            "completeness are not verified"),
+        "reading": reading,
     }

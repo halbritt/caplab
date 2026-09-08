@@ -69,6 +69,16 @@ verify a native Binding, pin external executable or account-state changes,
 provide one-shot attempt custody, or establish comparability between two
 runs. Those require the corresponding evidence and policy separately.
 
+The `caplab-anchor-drift/2` descriptive report compares both catch and
+false-alarm outcomes on shared usable anchor rows. It reports unmatched IDs
+and unusable or incomplete rows, rejects duplicate anchor IDs, and returns
+null agreement when no complete pair is available. Agreement on a surviving
+subset is labeled separately from agreement on all recorded anchors. Neither
+establishes instrument stability. The dispatch-ID join does not verify input
+bytes, native Binding identity, condition parity, or planned cases absent
+from both inputs; changed outcomes do not identify a cause. Existing report
+artifacts are unchanged until separately authorized regeneration.
+
 Prospective paired comparisons now verify the common fields of both frozen
 run specifications before producing a contrast. They allow backend labels,
 declaration hashes, and declared lane limits to differ as subject properties;
