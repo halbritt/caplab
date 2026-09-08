@@ -3,6 +3,10 @@
 Status: implemented version-only preflight. See the
 [decision and verification](../../records/implementation-2026-09-08-native-version-capture.md).
 
+The [retained version verifier](native-version-verification-v1.md) checks the
+receipt chain, recorded command and raw output after source removal, preserving
+process outcomes without interpreting version text or asserting full Binding.
+
 `caplab.native_version_capture.capture_native_version(policy_path,
 preparation_root, harness_source, *, expected_preparation_sha256,
 expected_entrypoint_sha256, output_dir, limits)` runs the canonical native
