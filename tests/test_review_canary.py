@@ -397,6 +397,114 @@ class ReviewCanaryTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             review_canary.load_baseline(path)
 
+    def test_body_reference_cannot_alias_an_integer_review_run(self):
+        for ref in (True, 1.0, -1, "1", [], {}):
+            with self.subTest(ref=ref):
+                self.events = self.events[:1]
+                self.assertEqual(self.review(verdict=None), 1)
+                self.event("artifact_admitted", {"kind": "review-ledger", "produced_by_run": ref,
+                    "identity": "aliased", "body": {"content_hash": "synthetic-body"}})
+                with patch.object(criterion.M, "store_object", return_value=b'{"verdict":"accept","findings":[]}') as store:
+                    with self.assertRaisesRegex(ValueError, "produced_by_run"):
+                        self.read()
+                    store.assert_not_called()
+
+    def test_numeric_join_paths_are_checked_before_any_body_read(self):
+        events = [
+            ("pass_run_closed", {"run_ref": True, "outcome": "submitted"}),
+            ("lane_binding", {"run_ref": True, "backend_id": "wrong-reviewer"}),
+            ("scheduling_decision", {"run_ref": True, "backend_id": "wrong-reviewer"}),
+            ("submission_received", {"run_ref": True}),
+            ("admission_decision", {"run_ref": True, "decision": "refused"}),
+            ("submission_refused", {"run_ref": True}),
+            ("dispatch_lapse", {"run_ref": True}),
+            ("gate_result", {"gate_class": "review", "outcome": "pass",
+                             "evidence": [{"producing_run": {"run_ref": True}}]}),
+            ("pass_run_opened", {"pass_id": "review", "request_ref": True}),
+            ("pass_run_opened", {"pass_id": "review", "manifest": {"subject_pin": {"version_seq": 1.0}}}),
+            ("cancellation_record", {"issuer": {"kind": "principal"}, "request_ref": True, "reason": "defect"}),
+            ("head_movement", {"identity": "repo/passes/a/change-set", "to_version": 9.0}),
+        ]
+        for kind, payload in events:
+            with self.subTest(kind=kind, payload=payload):
+                self.events = self.events[:1]
+                run = self.review(verdict=None)
+                self.event("artifact_admitted", {"kind": "review-ledger", "produced_by_run": run,
+                    "identity": "earlier-valid", "body": {"content_hash": "synthetic-body"}})
+                self.event(kind, payload)
+                with patch.object(criterion.M, "store_object", return_value=b'{"verdict":"accept","findings":[]}') as store:
+                    with self.assertRaisesRegex(ValueError, "nonnegative integer"):
+                        self.read()
+                    store.assert_not_called()
+
+    def test_sequence_requires_integer_type_including_genesis(self):
+        for seq in (False, 0.0, "0", -1, None):
+            with self.subTest(seq=seq):
+                self.events[0]["seq"] = seq
+                with self.assertRaisesRegex(ValueError, "sequence"):
+                    self.read()
+
+    def test_reference_containers_cannot_hide_invalid_join_fields(self):
+        cases = [
+            ("pass_run_opened", None),
+            ("pass_run_opened", {"manifest": False}),
+            ("pass_run_opened", {"manifest": {"subject_pin": []}}),
+            ("gate_result", {"gate_class": "review", "evidence": {}}),
+            ("gate_result", {"gate_class": "review", "evidence": [None]}),
+            ("gate_result", {"gate_class": "review", "evidence": [{"producing_run": 0}]}),
+        ]
+        for kind, payload in cases:
+            with self.subTest(kind=kind, payload=payload):
+                self.events = self.events[:1]
+                self.event(kind, payload)
+                with self.assertRaisesRegex(ValueError, "event 1 payload"):
+                    self.read()
+
+    def test_null_missing_zero_and_large_integer_references_remain_distinct(self):
+        run = self.review(verdict=None, version=2**53 + 1, close=False)
+        for ref in (None, 0):
+            self.event("lane_binding", {"run_ref": ref, "backend_id": "must-not-join"})
+            self.event("gate_result", {"gate_class": "review", "outcome": "pass",
+                "evidence": [{"producing_run": {"run_ref": ref}}, {}]})
+        self.event("lane_binding", {"backend_id": "also-must-not-join"})
+        self.event("head_movement", {"identity": "repo/passes/a/change-set", "to_version": None})
+        _, (snapshot, _, runs, _) = self.read()
+        row = review_canary.summarize(snapshot, runs, 0)["reviews"][0]
+        self.assertEqual(row["run"], run)
+        self.assertEqual(row["backend"], "reviewer-a")
+        self.assertEqual(row["version_seq"], 2**53 + 1)
+        self.assertIs(type(row["version_seq"]), int)
+        self.assertEqual(row["decision"], "unknown")
+        self.assertEqual(row["review_gate_observations"], [])
+        self.assertIsNone(row["closed_seq"])
+
+    def test_bad_reference_cli_fails_without_report_and_preserves_source(self):
+        run = self.review(verdict=None)
+        self.event("gate_result", {"gate_class": "review", "outcome": "pass",
+            "evidence": [{"producing_run": {"run_ref": float(run)}}]})
+        ledger = self.root / "bad-reference.jsonl"
+        raw = "".join(json.dumps(e) + "\n" for e in self.events).encode()
+        ledger.write_bytes(raw)
+        out = self.root / "bad-reference-report"
+        completed = subprocess.run([sys.executable, str(SCRIPTS / "review_canary.py"),
+            "--ledger", str(ledger), "--out", str(out)], capture_output=True, text=True)
+        self.assertEqual(completed.returncode, 2, completed.stderr)
+        self.assertIn("producing_run.run_ref", completed.stderr)
+        self.assertFalse(out.exists())
+        self.assertEqual(ledger.read_bytes(), raw)
+
+    def test_baseline_terminal_sequence_cannot_alias_its_integer_metadata(self):
+        path, report = self.baseline()
+        source = Path(report["snapshot"]["path"])
+        for seq in (False, 0.0):
+            with self.subTest(seq=seq):
+                raw = (json.dumps({**self.events[0], "seq": seq}) + "\n").encode()
+                source.write_bytes(raw)
+                report["snapshot"]["sha256"] = hashlib.sha256(raw).hexdigest()
+                path.write_text(json.dumps(report))
+                with self.assertRaisesRegex(ValueError, "baseline"):
+                    review_canary.load_baseline(path)
+
     def test_conflicting_verdict_sources_are_retained_and_flagged(self):
         run = self.review()
         seqs = [self.event("artifact_admitted", {"kind": "review-ledger", "produced_by_run": run,
@@ -493,8 +601,9 @@ class ReviewCanaryTest(unittest.TestCase):
         completed = subprocess.run(command, capture_output=True, text=True)
         self.assertEqual(completed.returncode, 0, completed.stderr)
         report = json.loads((out / "report.json").read_text())
-        self.assertEqual(report["record"], "caplab-review-canary/4")
+        self.assertEqual(report["record"], "caplab-review-canary/5")
         self.assertEqual(report["json_interpretation"], "utf8-unique-object-keys-no-non-json-constants/1")
+        self.assertEqual(report["reference_validation"], "nonnegative-integer-sequence-paths/1")
         self.assertEqual(report["snapshot"]["sha256"], hashlib.sha256(ledger.read_bytes()).hexdigest())
         self.assertIn("&lt;reviewer&gt;&#124;a", (out / "report.md").read_text())
         repeated = subprocess.run(command, capture_output=True, text=True)

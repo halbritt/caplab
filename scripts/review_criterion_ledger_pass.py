@@ -62,6 +62,31 @@ LIFECYCLE_FIELDS = {
                            "evidence_objects", "submission_object"),
     "dispatch_lapse": ("dispatch_id", "basis", "observed", "sealed"),
 }
+NUMERIC_REFERENCE_PATHS = {
+    **{kind: ("run_ref",) for kind in LIFECYCLE_FIELDS},
+    "lane_binding": ("run_ref",),
+    "scheduling_decision": ("run_ref",),
+    "pass_run_opened": ("request_ref", "manifest.subject_pin.version_seq"),
+    "artifact_admitted": ("produced_by_run",),
+    "cancellation_record": ("request_ref",),
+    "head_movement": ("to_version",),
+}
+
+
+def _validate_reference_paths(payload: dict, paths: tuple[str, ...], location: str) -> None:
+    """Validate borrowed reference fields without coercing or filling absence."""
+    if not isinstance(payload, dict):
+        raise ValueError(f"{location} must be an object")
+    for path in paths:
+        value = payload
+        for part in path.split("."):
+            if value is None:
+                break
+            if not isinstance(value, dict):
+                raise ValueError(f"{location}.{path} requires object containers")
+            value = value.get(part)
+        if value is not None and (type(value) is not int or value < 0):
+            raise ValueError(f"{location}.{path} must be a nonnegative integer or absent")
 
 
 def T(s):
@@ -130,6 +155,8 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
             if not line.strip():
                 continue
             e = parse_native_json(line.decode("utf-8"))
+            if not isinstance(e, dict) or type(e.get("seq")) is not int or e["seq"] < 0:
+                raise ValueError("ledger sequence must be a nonnegative integer")
             expected = snapshot["last_seq"] + 1 if snapshot["events"] else 0
             if e["seq"] != expected:
                 raise ValueError(f"complete ledger required: expected sequence {expected}, got {e['seq']}")
@@ -137,6 +164,17 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
             snapshot["last_seq"] = e["seq"]
             snapshot["written_at"] = e["written_at"]
             if e["type"] in needed:
+                payload = e.get("payload")
+                location = f"event {e['seq']} payload"
+                _validate_reference_paths(payload, NUMERIC_REFERENCE_PATHS.get(e["type"], ()), location)
+                if e["type"] == "gate_result" and payload.get("gate_class") == "review":
+                    evidence = payload.get("evidence")
+                    if evidence is not None:
+                        if not isinstance(evidence, list):
+                            raise ValueError(f"{location}.evidence must be an array or absent")
+                        for index, item in enumerate(evidence):
+                            _validate_reference_paths(item, ("producing_run.run_ref",),
+                                                      f"{location}.evidence[{index}]")
                 by[e["type"]].append(e)
     if not snapshot["events"]:
         raise ValueError("ledger export is empty")

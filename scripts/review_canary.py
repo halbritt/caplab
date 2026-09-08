@@ -17,7 +17,9 @@ def load_baseline(path: Path) -> tuple[dict, dict, int]:
     """Bind a follow-up to the retained export and fixed window of a report."""
     raw = Path(path).read_bytes()
     report = parse_native_json(raw.decode("utf-8"))
-    if not isinstance(report, dict) or report.get("record") not in ("caplab-review-canary/1", "caplab-review-canary/2", "caplab-review-canary/3", "caplab-review-canary/4"):
+    if not isinstance(report, dict) or report.get("record") not in (
+            "caplab-review-canary/1", "caplab-review-canary/2", "caplab-review-canary/3",
+            "caplab-review-canary/4", "caplab-review-canary/5"):
         raise ValueError("baseline must be a production review report")
     snapshot = report.get("snapshot")
     if not isinstance(snapshot, dict):
@@ -49,6 +51,7 @@ def load_baseline(path: Path) -> tuple[dict, dict, int]:
         raise ValueError("baseline export no longer matches its recorded SHA-256")
     last_event = parse_native_json(last.decode("utf-8"))
     if (events != snapshot["events"] or not isinstance(last_event, dict)
+            or type(last_event.get("seq")) is not int
             or last_event.get("seq") != snapshot["last_seq"]):
         raise ValueError("baseline snapshot counts do not match its retained export")
     prefix = {"byte_count": size, "sha256": digest.hexdigest()}
@@ -144,8 +147,9 @@ def summarize(snapshot: dict, runs: dict, after_run: int) -> dict:
             "distinct_cancellation_records": sorted({e["seq"] for r in clear for e in r["request_cancellations"]}),
             "refusals_with_later_version": sum(r["decision"] == "refused" and bool(r["later_versions"]) for r in rows),
         })
-    return {"record": "caplab-review-canary/4", "snapshot": snapshot,
+    return {"record": "caplab-review-canary/5", "snapshot": snapshot,
             "json_interpretation": "utf8-unique-object-keys-no-non-json-constants/1",
+            "reference_validation": "nonnegative-integer-sequence-paths/1",
             "verdict_selection": "latest-admitted-body-then-latest-review-gate/1",
             "downstream_ordering": "ledger-sequence-after-review-closure/1",
             "after_run": after_run, "mode": "since-cutoff" if after_run else "retrospective-baseline",
