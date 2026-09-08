@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import hashlib
 import os
+import secrets
 
 DEFAULT_ROOT = os.path.expanduser("~/.local/share/caplab/cas")
 
@@ -26,14 +27,30 @@ def retain(body: str, root: str | None = None) -> str:
     data = body.encode()
     sha = hashlib.sha256(data).hexdigest()
     path = _path(sha, root)
-    if not os.path.isfile(path):
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        tmp = path + ".tmp"
-        with open(tmp, "wb") as f:
+    if load(sha, root=root) == body:
+        return sha
+    parent = os.path.dirname(path)
+    os.makedirs(parent, exist_ok=True)
+    temporary = os.path.join(parent, f".{sha}-{secrets.token_hex(16)}")
+    stream = open(temporary, "xb")
+    try:
+        with stream as f:
             f.write(data)
             f.flush()
             os.fsync(f.fileno())
-        os.replace(tmp, path)
+        try:
+            os.link(temporary, path)
+        except FileExistsError:
+            pass  # A concurrent publisher must pass the same readback below.
+        if load(sha, root=root) != body:
+            raise ValueError("CAS retention readback differs from the supplied body")
+        directory = os.open(parent, os.O_RDONLY | os.O_DIRECTORY)
+        try:
+            os.fsync(directory)
+        finally:
+            os.close(directory)
+    finally:
+        os.unlink(temporary)
     return sha
 
 
@@ -42,7 +59,8 @@ def load(sha256: str, root: str | None = None) -> str | None:
     path = _path(sha256, root)
     if not os.path.isfile(path):
         return None
-    data = open(path, "rb").read()
+    with open(path, "rb") as stream:
+        data = stream.read()
     if hashlib.sha256(data).hexdigest() != sha256:
         raise ValueError(f"CAS object {sha256[:16]}… fails its own hash — "
                          f"refusing to return tampered bytes")

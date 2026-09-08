@@ -245,6 +245,18 @@ class PlanningCorpusTest(unittest.TestCase):
     planning contract (named on the claim, as run_pool names its
     synthetic contract)."""
 
+    def setUp(self):
+        import tempfile
+        from unittest import mock
+        from caplab.advisory import cas
+
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.cas_root = temporary.name
+        root_patch = mock.patch.object(cas, "DEFAULT_ROOT", self.cas_root)
+        root_patch.start()
+        self.addCleanup(root_patch.stop)
+
     def _ledger(self):
         return [
             {"seq": 1, "type": "pass_run_opened",
@@ -292,7 +304,7 @@ class PlanningCorpusTest(unittest.TestCase):
                 "task_id": "pt-" + step_id[:16],
                 "dispatch_id": "d" * 64,
                 "step_id": step_id,
-                "inputs": [{"path": p, "sha256": cas.retain(b),
+                "inputs": [{"path": p, "sha256": cas.retain(b, root=self.cas_root),
                             "bytes": len(b.encode())} for p, b in inputs]}
 
     def test_prompt_carries_the_registry_its_contract_promises(self):

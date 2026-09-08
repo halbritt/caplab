@@ -19,6 +19,15 @@ provenance is explicit per claim and closed:
   directed runs; consumers weight it down or out via their objectives.
 - `caplab-advisory` — CAPLAB-directed advisory-grade executions.
 
+Advisory body custody uses `caplab.advisory.cas`: `retain()` verifies existing
+content before returning its hash and publishes new objects without replacing
+an existing destination. Concurrent identical writers can reuse verified
+bytes; a conflicting object raises an error and remains untouched. A failed
+write-through retention also prevents the primary-source loader from returning
+success. Only the writer's own temporary stage is cleaned up. This byte-store
+property does not admit evidence, establish source truth, or qualify a reviewer.
+See the [retention repair record](../../records/repair-2026-09-08-advisory-cas-retention.md).
+
 ## Construct
 
 `review.defect_discrimination/1` — matched-pair defect injection. A
