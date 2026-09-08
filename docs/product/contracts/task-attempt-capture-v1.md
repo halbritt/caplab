@@ -91,7 +91,9 @@ After a process-capture exception, the wrapper does not attempt a final scan.
 Component receipts do not override a failed parent attempt. Pending JSON files
 are unsealed; receipt publication syncs file and directory state using the
 shared capture publisher. Later consumers must reverify component and object
-hashes before interpretation; the wrapper is not an admission or replay API.
+hashes before interpretation; the [read-only integrity verifier](task-capture-verification-v1.md)
+implements that check against an independently retained attempt digest.
+The wrapper is not an admission or replay API.
 
 CAPLAB-84 still requires native session/child linkage, diagnostics, exact binding
 enforcement, campaign stops and representative capture-cost measurements.
