@@ -18,6 +18,16 @@ replacement of a prior report. Pool rows retain `control_attempts` and
 `mutant_attempts`, including parsed responses, execution outcomes, and the
 manifest check for each attempt.
 
+Tree checks compare against the digest captured at materialization. A failed
+pre-check prevents the call; a failed post-check retains the response but
+excludes its verdict. Either stops the remaining assignments for that case.
+`integrity_failure` names the phase and replicate (and the arm for pool
+cases). Pool rows retain their planned replication and report
+`control_unattempted_replicates` and `mutant_unattempted_replicates`;
+natural cases report `expected_replicates` and `unattempted_replicates`.
+Unattempted assignments contribute to unavailable counts without fabricated
+responses. See the [integrity stop contract](../../records/repair-2026-09-08-tree-integrity-stop.md).
+
 Every planned analog cell appears in `cell_observations` with one status:
 
 | Status | Meaning |

@@ -173,11 +173,14 @@ def run_natural_case(nc: dict, adapter: dict, out_dir: str, timeout: int, replic
               + contract_text + "\n\nCHANGE SET:\n" + body.decode("utf-8", errors="replace"))
     readonly = [os.path.join(case_dir, "base"), os.path.join(case_dir, "evidence")]
     runs = []
-    for _ in range(replicates):
-        before = M.verify_manifest(case_dir)
-        r = pool_runner.invoke(adapter, prompt, timeout, workspace=case_dir, readonly=readonly)
-        after = M.verify_manifest(case_dir)
-        r["manifest_verified"] = before and after
+    integrity_failure = None
+    for replicate in range(1, replicates + 1):
+        try:
+            r = pool_runner.invoke_with_manifest(adapter, prompt, timeout,
+                workspace=case_dir, readonly=readonly, manifest_digest=manifest["digest"])
+        except pool_runner.ManifestIntegrityError as error:
+            integrity_failure = {"phase": "before", "replicate": replicate, "error": str(error)}
+            break
         doc = r.get("doc")
         findings = doc.get("findings") if isinstance(doc, dict) else None
         anchors = [f["element_anchor"] for f in findings
@@ -188,11 +191,17 @@ def run_natural_case(nc: dict, adapter: dict, out_dir: str, timeout: int, replic
                      "exact_anchor_mention": exact_anchor_mention(nc["expected"]["anchored_finding"], anchors),
                      "refused": verdict in REFUSING,
                      "conformance": conformance(doc), "seconds": r["seconds"], "exit_code": r["exit_code"],
-                     "timed_out": r["timed_out"], "manifest_verified": before and after,
+                     "timed_out": r["timed_out"],
                      "raw_head": (r.get("raw_head") or "")[:300]})
+        if not r["manifest_verified"]:
+            integrity_failure = {"phase": "after", "replicate": replicate,
+                                 "error": "base manifest failed after invocation"}
+            break
     return {"id": nc["id"], "base_manifest_digest": manifest["digest"], "replicates": runs,
+            "expected_replicates": replicates, "unattempted_replicates": replicates - len(runs),
+            "integrity_failure": integrity_failure,
             "anchor_matching": ANCHOR_MATCHING_VERSION,
-            "unavailable": sum(1 for r in runs if not r["observed"]),
+            "unavailable": replicates - sum(1 for r in runs if r["observed"]),
             "refused_with_exact_anchor_mention": sum(1 for r in runs if r["refused"] and r["exact_anchor_mention"]),
             "conforming": None,
             "mechanical_checks_passed": sum(1 for r in runs if r["observed"] and r["conformance"]["mechanical_checks_passed"]),
@@ -233,6 +242,8 @@ def main() -> int:
                                    cases_path=cells_path)
     declaration = pool_runner.load_declaration(BACKENDS, args.binding)
     natural = ([{"id": nc["id"], "replicates": [], "unavailable": rep["natural_case"],
+                 "expected_replicates": rep["natural_case"], "unattempted_replicates": rep["natural_case"],
+                 "integrity_failure": None,
                  "anchor_matching": ANCHOR_MATCHING_VERSION,
                  "refused_with_exact_anchor_mention": 0, "conforming": None,
                  "mechanical_checks_passed": 0, "conformance_unverified": 0,

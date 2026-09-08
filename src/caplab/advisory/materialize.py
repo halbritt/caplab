@@ -337,14 +337,22 @@ def manifest_digest(manifest: dict) -> str:
     return hashlib.sha256(json.dumps(body, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
 
 
-def verify_manifest(case_dir: str) -> bool:
+def verify_manifest(case_dir: str, *, expected_digest: str | None = None) -> bool:
     """True when every manifest entry is present with its recorded digest and
-    nothing else exists under base/ and evidence/."""
+    nothing else exists under base/ and evidence/.
+
+    Execution callers supply the digest captured at materialization so a
+    self-consistent replacement manifest cannot change the expected tree.
+    """
     manifest_path = os.path.join(case_dir, "base-manifest.json")
     try:
         with open(manifest_path, encoding="utf-8") as f:
             manifest = json.load(f)
     except (OSError, ValueError):
+        return False
+    if not isinstance(manifest, dict):
+        return False
+    if expected_digest is not None and manifest.get("digest") != expected_digest:
         return False
     if manifest.get("digest") != manifest_digest(manifest):
         return False
@@ -358,8 +366,11 @@ def verify_manifest(case_dir: str) -> bool:
                     full = os.path.join(dirpath, name)
                     if os.path.islink(full):
                         return False
-                    with open(full, "rb") as f:
-                        found[os.path.relpath(full, root)] = hashlib.sha256(f.read()).hexdigest()
+                    try:
+                        with open(full, "rb") as f:
+                            found[os.path.relpath(full, root)] = hashlib.sha256(f.read()).hexdigest()
+                    except OSError:
+                        return False
         elif expected:
             return False
         if found != expected:

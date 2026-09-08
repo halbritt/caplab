@@ -117,6 +117,8 @@ class GateAccountingTest(unittest.TestCase):
                 self.assertEqual(report["conformance_validation"], "review-gate-conformance/2")
                 self.assertEqual(report["cells_missing"], 1)
                 self.assertEqual(report["natural_cases"][0]["unavailable"], 3)
+                self.assertEqual(report["natural_cases"][0]["expected_replicates"], 3)
+                self.assertEqual(report["natural_cases"][0]["unattempted_replicates"], 3)
                 self.assertIsNone(report["natural_cases"][0]["conforming"])
                 self.assertEqual(report["natural_cases"][0]["mechanical_checks_passed"], 0)
                 self.assertEqual(report["natural_cases"][0]["conformance_unverified"], 0)
@@ -192,15 +194,16 @@ class NaturalEvidenceTest(unittest.TestCase):
                 mock.patch.object(review_gate.M, "materialize_case", return_value={"digest": "d"}), \
                 mock.patch.object(review_gate.M, "store_object", return_value=b"{}"), \
                 mock.patch.object(review_gate, "render_preamble_v3", return_value=""), \
-                mock.patch.object(review_gate.M, "verify_manifest", side_effect=[True, True, True, False, True, True]), \
+                mock.patch.object(review_gate.M, "verify_manifest", return_value=True), \
                 mock.patch.object(review_gate.pool_runner, "invoke", side_effect=runs):
             result = review_gate.run_natural_case(nc, {}, out, 10, 3)
-        self.assertEqual(result["refused_with_exact_anchor_mention"], 1)
+        self.assertEqual(result["refused_with_exact_anchor_mention"], 2)
         self.assertIsNone(result["conforming"])
-        self.assertEqual(result["mechanical_checks_passed"], 1)
-        self.assertEqual(result["conformance_unverified"], 1)
+        self.assertEqual(result["mechanical_checks_passed"], 2)
+        self.assertEqual(result["conformance_unverified"], 2)
         self.assertEqual(result["conformance_failed_mechanical"], 0)
-        self.assertEqual(result["unavailable"], 2)
+        self.assertEqual(result["unavailable"], 1)
+        self.assertEqual(len(result["replicates"]), 3)
         self.assertEqual(result["replicates"][0]["doc"], doc)
 
 

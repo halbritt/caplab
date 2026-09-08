@@ -419,6 +419,21 @@ def invoke(adapter: dict, prompt: str, timeout: int,
     }
 
 
+class ManifestIntegrityError(ValueError):
+    """The pinned tree failed verification before any reviewer invocation."""
+
+
+def invoke_with_manifest(adapter: dict, prompt: str, timeout: int, *,
+                         workspace: str, readonly: list[str], manifest_digest: str) -> dict:
+    """Refuse an altered input; retain a returned capture even if its post-check fails."""
+    if not _materialize.verify_manifest(workspace, expected_digest=manifest_digest):
+        raise ManifestIntegrityError("base manifest failed before invocation")
+    result = invoke(adapter, prompt, timeout, workspace=workspace, readonly=readonly)
+    after = _materialize.verify_manifest(workspace, expected_digest=manifest_digest)
+    return {**result, "manifest_before": True, "manifest_after": after,
+            "manifest_verified": after}
+
+
 def _prepare_prompt(contract: str, arm_body: str, adapter: dict,
                     workspace: str | None) -> tuple:
     """(prompt, transport label) for one arm, spilling when argv cannot carry it.
@@ -547,10 +562,13 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
                "mutant": max(1, replicates if mutant_replicates is None
                              else mutant_replicates)}
     results, replicate_verdicts = {}, {}
+    integrity_failure = None
     for name, arm_body in arms:
-        prompt_text, transport_label = _prepare_prompt(prompt, arm_body,
-                                                       adapter, workspace)
-        if prompt_text is None:
+        prompt_text, transport_label = ((None, None) if integrity_failure else
+                                       _prepare_prompt(prompt, arm_body, adapter, workspace))
+        if integrity_failure:
+            runs = []
+        elif prompt_text is None:
             runs = [{"doc": None, "exit_code": None, "timed_out": False,
                      "seconds": 0.0, "transport": "none",
                      "prompt_bytes": len((prompt + arm_body).encode()),
@@ -558,17 +576,25 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
                      "error": "prompt exceeds transport capacity"}]
         else:
             runs = []
-            for _ in range(per_arm[name]):
-                # Manifest verified before and after every attempt (§2.4);
-                # a failure marks the row rather than hiding in a verdict.
-                before = _materialize.verify_manifest(workspace) if tree else None
-                result = invoke(adapter, prompt_text, timeout,
-                                workspace=workspace, readonly=readonly)
-                after = _materialize.verify_manifest(workspace) if tree else None
-                result["manifest_verified"] = before and after if tree else None
+            for replicate in range(1, per_arm[name] + 1):
+                if tree:
+                    try:
+                        result = invoke_with_manifest(adapter, prompt_text, timeout,
+                            workspace=workspace, readonly=readonly, manifest_digest=manifest["digest"])
+                    except ManifestIntegrityError as error:
+                        manifest_ok = False
+                        integrity_failure = {"phase": "before", "arm": name,
+                                             "replicate": replicate, "error": str(error)}
+                        break
+                else:
+                    result = invoke(adapter, prompt_text, timeout, workspace=workspace, readonly=readonly)
+                    result["manifest_verified"] = None
                 runs.append(result)
                 if tree and not result["manifest_verified"]:
                     manifest_ok = False
+                    integrity_failure = {"phase": "after", "arm": name, "replicate": replicate,
+                                         "error": "base manifest failed after invocation"}
+                    break
             if transport_label:
                 for r in runs:
                     r["transport"] = transport_label
@@ -583,7 +609,10 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
     for name, runs in results.items():
         row[f"{name}_attempts"] = runs
         row[f"{name}_valid_attempts"] = sum(r["review_error"] is None for r in runs)
+        row[f"{name}_unattempted_replicates"] = per_arm[name] - len(runs)
     row.update(replicates=per_arm["control"], mutant_replicates=per_arm["mutant"])
+    if integrity_failure:
+        row["integrity_failure"] = integrity_failure
 
     def representative(name: str, majority_verdict) -> dict:
         """The retained capture must agree with the verdict the row reports.
@@ -593,6 +622,8 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
         findings came from the one accepting replicate.
         """
         runs = results[name]
+        if not runs:
+            return {"raw_head": ""}
         parseable = [r for r in runs if r["review_error"] is None]
         if majority_verdict is not None:
             aligned = [r for r in parseable
