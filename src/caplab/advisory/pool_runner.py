@@ -31,6 +31,7 @@ import json
 import os
 import random
 import subprocess
+import sys
 import tempfile
 import threading
 import time
@@ -50,6 +51,7 @@ from .operators import (BASE_DEPENDENT_OPERATORS, BY_NAME, PAIR_VALIDATION_VERSI
 from .review_response import (ANCHOR_MATCHING_VERSION, VALIDATION_VERSION,
                               attempt_error, exact_anchor_mention)
 from . import materialize as _materialize
+from . import run_spec
 
 SYNTHETIC_CONTRACT_INSTRUMENT = "matched-pair defect injection (synthetic contract)"
 MEASUREMENT_PROFILE = "v1"
@@ -762,6 +764,7 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
     os.makedirs(out_dir, exist_ok=True)
     results_path = os.path.join(out_dir, "results.jsonl")
     done = set()
+    retained_spec_ids = set()
     if os.path.isfile(results_path):
         with open(results_path, encoding="utf-8") as f:
             for line in f:
@@ -777,6 +780,7 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
                 if prior["dispatch_id"] not in planned_ids or prior["dispatch_id"] in done:
                     raise ValueError("duplicate or unexpected retained case for this plan")
                 done.add(prior["dispatch_id"])
+                retained_spec_ids.add(prior.get("run_spec_sha256"))
 
     from .calibrate import load_substrate_body
 
@@ -790,6 +794,25 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
         base_registry = _materialize.load_registry(registry_file)
         with open(registry_file, "rb") as f:
             base_registry_sha = hashlib.sha256(f.read()).hexdigest()
+
+    spec = {
+        "backend": backend, "declaration_sha256": run_spec.declaration_digest(declaration),
+        "plan": [{"case": case, "anchor": anchor} for case, anchor in plan],
+        "case_selection": case_selection, "sweep_seed": sweep_seed,
+        "partition": partition, "per_operator": per_operator, "max_cases": max_cases,
+        "timeout": timeout, "abort_after_empty": abort_after_empty,
+        "replicates": replicates, "mutant_replicates": mutant_replicates,
+        "requested_workers": workers, "declared_lanes": declared_lanes(declaration),
+        "environment": ENVIRONMENT_VERSION, "sandbox_available": sandbox_available(),
+        "base_registry_sha256": base_registry_sha,
+        "response_validation": VALIDATION_VERSION, "anchor_matching": ANCHOR_MATCHING_VERSION,
+        "pair_validation": PAIR_VALIDATION_VERSION,
+        "instrument_sources": run_spec.instrument_sources(), "python_version": sys.version,
+    }
+    expected_spec_id = run_spec.digest(spec)
+    if retained_spec_ids and retained_spec_ids != {expected_spec_id}:
+        raise ValueError("retained rows differ from the requested pool run specification")
+    spec_id = run_spec.bind(out_dir, spec)
 
     empty_streak = 0
     aborted = None
@@ -822,6 +845,7 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
                                    workspace=os.path.join(out_dir, "workspace"),
                                    base_record=(base_registry or {}).get(case["substrate_id"]))
             row["backend_measured"] = backend
+            row["run_spec_sha256"] = spec_id
             row["anchor"] = is_anchor
             with write_lock:
                 out.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
@@ -872,6 +896,7 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
     observed_ids = {r["dispatch_id"] for r in rows}
     summary = {
         "backend": backend,
+        "run_spec_sha256": spec_id,
         "instrument": SYNTHETIC_CONTRACT_INSTRUMENT,
         "calibration_profile": MEASUREMENT_PROFILE,
         "sweep_seed": sweep_seed,

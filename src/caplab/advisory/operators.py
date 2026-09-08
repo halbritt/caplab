@@ -260,6 +260,32 @@ def swapped_section_bodies(body: str, rng: random.Random) -> Injection:
 
 # --------------------------------------------------- claim-vs-behavior
 
+def refuted_conclusion(body: str, rng: random.Random) -> Injection:
+    """Insert the conclusion after a complete heading, preserving its anchor.
+
+    The historical operator inserts after the heading title, detaching the
+    element identifier. Keep it vendored for provenance; prospective calls
+    use the exact heading occurrence selected here, including duplicate titles.
+    """
+    headings = [m for m in HEADING.finditer(body) if m.group(1) in ("##", "###")]
+    if not headings:
+        raise NotApplicable("no section to attach a conclusion to")
+    target = rng.choice(headings)
+    inserted = (
+        "\n\nThe measurements above therefore establish the opposite of what they "
+        "record: because every probe terminated normally and well inside its "
+        "budget, the budget is confirmed as the binding constraint and raising it "
+        "is the fix.\n")
+    text, slug = target.group(2), target.group(4)
+    injection = Injection(
+        defect_class="refuted_conclusion", severity=MAJOR,
+        element_anchor=f"#el:{slug}" if slug else text,
+        description="stated a conclusion the surrounding evidence refutes",
+        body=body[:target.end()] + inserted + body[target.end():], checkable=True,
+        detail={"section": text, "inserted_text": inserted})
+    _enrich_inserted_marker("refuted_conclusion")(injection, body)
+    return injection
+
 _VERIFICATION_CLAIM = (
     "Validates every emitted record against the shipped JSON Schema "
     "(draft 2020-12) before assertion")
@@ -438,6 +464,7 @@ CAPLAB_OPERATORS = [broken_internal_crossref, requirement_inversion,
 #: Vendored operators, with the previously ungated five now mechanically
 #: gated. Order is preserved so sampling is unaffected.
 GATED_VENDORED_OPERATORS = [
+    refuted_conclusion if op.__name__ == "refuted_conclusion" else
     _wrap_checkable(op, _GATED[op.__name__]) if op.__name__ in _GATED else op
     for op in _VENDORED_OPERATORS
 ]

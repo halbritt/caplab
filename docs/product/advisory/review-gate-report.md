@@ -99,6 +99,13 @@ can stop a run after consecutive preparation failures. Mechanical contrast
 on other operators is necessary, but is not a blanket guarantee of sound
 controls or semantic finding correctness.
 
+The pool's `run-spec.json` binds future results to the declared experiment and
+the Python sources used to prepare it. The conclusion operator now preserves
+the full selected heading and its element anchor; it no longer introduces a
+missing-anchor defect alongside the intended conclusion. The corrected
+generator must use a fresh run directory. A run specification is not native
+Binding verification or evidence that a finding's rationale is correct.
+
 These observations do not resolve the production-outcome gap. The
 [production report](production-review-report.md) remains the report-only
 surface for finding reviews and missing evidence to inspect.

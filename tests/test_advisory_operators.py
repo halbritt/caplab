@@ -134,6 +134,8 @@ class GatedVendoredOperatorTest(unittest.TestCase):
         # The wrapper must not alter what the vendored operator produced.
         from caplab.advisory import instrument_defects as vendored
         for name in GATED_VENDORED:
+            if name == "refuted_conclusion":
+                continue  # Prospective placement repair has its own preservation test.
             try:
                 plain = getattr(vendored, name)(CLAIMY_DOC, random.Random(4))
                 gated = BY_NAME[name](CLAIMY_DOC, random.Random(4))
@@ -141,6 +143,23 @@ class GatedVendoredOperatorTest(unittest.TestCase):
                 continue
             self.assertEqual(plain.body, gated.body, name)
             self.assertEqual(plain.element_anchor, gated.element_anchor, name)
+
+    def test_conclusion_preserves_heading_anchors_and_section_content(self):
+        from caplab.advisory.instrument_defects import _headings
+        for body in ("## Results {#el:results}\n\nMeasurements remain here.\n",
+                     "## Results\n\nMeasurements remain here.\n",
+                     "## Results {#el:results}\n\nFirst section.\n\n## Results {#el:second}\n\nSecond section.\n"):
+            for seed in range(4):
+                with self.subTest(body=body, seed=seed):
+                    injection = BY_NAME["refuted_conclusion"](body, random.Random(seed))
+                    self.assertEqual(_headings(injection.body), _headings(body))
+                    inserted = injection.detail["inserted_text"]
+                    self.assertEqual(injection.body.replace(inserted, "", 1), body)
+                    preceding = _headings(injection.body[:injection.body.index(inserted)])[-1]
+                    expected_anchor = f"#el:{preceding[2]}" if preceding[2] else preceding[1]
+                    self.assertEqual(injection.element_anchor, expected_anchor)
+                    self.assertTrue(check_present(injection, injection.body))
+                    self.assertFalse(check_present(injection, body))
 
 
 class ClaimVsBehaviorTest(unittest.TestCase):

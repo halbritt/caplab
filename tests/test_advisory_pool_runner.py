@@ -339,15 +339,109 @@ class PairValidityTest(unittest.TestCase):
 
 
 class SummaryShapeTest(unittest.TestCase):
-    def run_fixture_pool(self, out_dir, adapter):
-        planned = [case(seed=i) for i in range(1, 4)]
+    def run_fixture_pool(self, out_dir, adapter, *, planned=None, **changes):
+        if planned is None:
+            planned = [case(seed=i) for i in range(1, 4)]
         with _mock.patch.object(pool_runner, "load_declaration", return_value={"adapter": adapter}), \
                 _mock.patch.object(pool_runner.SubstrateRegistry, "read", return_value=[]), \
                 _mock.patch.object(pool_runner, "select_cases", return_value=(planned, "breadth")), \
                 _mock.patch("caplab.advisory.calibrate.load_substrate_body", return_value=DOC):
-            return pool_runner.run_pool(backend="local-fixture", backends_root="unused",
-                                        registry_path="unused", out_dir=out_dir, sweep_seed=1,
-                                        per_operator=1, timeout=30, abort_after_empty=2)
+            options = dict(backend="local-fixture", backends_root="unused",
+                           registry_path="unused", out_dir=out_dir, sweep_seed=1,
+                           per_operator=1, timeout=30, abort_after_empty=2)
+            return pool_runner.run_pool(**(options | changes))
+
+    def test_resume_refuses_changed_experiment_without_rewriting_evidence(self):
+        for changes in ({"replicates": 2}, {"mutant_replicates": 2},
+                        {"backend": "different-binding"}, {"timeout": 31},
+                        {"workers": 2}, {"sweep_seed": 2}, {"partition": "sealed"}):
+            with self.subTest(changes=changes), tempfile.TemporaryDirectory() as root:
+                self.run_fixture_pool(root, echo_adapter())
+                paths = [os.path.join(root, name) for name in ("results.jsonl", "summary.json")]
+                before = []
+                for path in paths:
+                    with open(path, "rb") as f:
+                        before.append(f.read())
+                with _mock.patch.object(pool_runner, "invoke") as invoke, \
+                        self.assertRaisesRegex(ValueError, "run specification"):
+                    self.run_fixture_pool(root, echo_adapter(), **changes)
+                invoke.assert_not_called()
+                for path, original in zip(paths, before):
+                    with open(path, "rb") as f:
+                        self.assertEqual(f.read(), original)
+
+    def test_resume_refuses_changed_adapter_declaration(self):
+        with tempfile.TemporaryDirectory() as root:
+            self.run_fixture_pool(root, echo_adapter())
+            with _mock.patch.object(pool_runner, "invoke") as invoke, \
+                    self.assertRaisesRegex(ValueError, "run specification"):
+                self.run_fixture_pool(root, echo_adapter("reject"))
+            invoke.assert_not_called()
+
+    def test_resume_refuses_changed_case_content_and_instrument_sources(self):
+        from caplab.advisory import run_spec
+        with tempfile.TemporaryDirectory() as root:
+            self.run_fixture_pool(root, echo_adapter())
+            changed_cases = [{**case(seed=i), "sha256": "e" * 64} for i in range(1, 4)]
+            with _mock.patch.object(pool_runner, "invoke") as invoke:
+                with self.assertRaisesRegex(ValueError, "run specification"):
+                    self.run_fixture_pool(root, echo_adapter(), planned=changed_cases)
+                with _mock.patch.object(run_spec, "instrument_sources", return_value={"changed.py": "e" * 64}), \
+                        self.assertRaisesRegex(ValueError, "run specification"):
+                    self.run_fixture_pool(root, echo_adapter())
+            invoke.assert_not_called()
+
+    def test_missing_or_changed_spec_refuses_resume_and_scoring(self):
+        from caplab.advisory.scoring import completed, score_backends
+        for corruption in ("missing", "contents"):
+            with self.subTest(corruption=corruption), tempfile.TemporaryDirectory() as root:
+                self.run_fixture_pool(root, echo_adapter())
+                path = os.path.join(root, "run-spec.json")
+                if corruption == "missing":
+                    os.unlink(path)
+                else:
+                    with open(path) as f:
+                        document = json.load(f)
+                    document["spec"]["backend"] = "altered"
+                    with open(path, "w") as f:
+                        json.dump(document, f)
+                self.assertFalse(completed(root))
+                with self.assertRaises((OSError, ValueError)):
+                    score_backends([root], qualification_operators={"requirement_inversion"})
+                with _mock.patch.object(pool_runner, "invoke") as invoke, \
+                        self.assertRaisesRegex(ValueError, "run specification"):
+                    self.run_fixture_pool(root, echo_adapter())
+                invoke.assert_not_called()
+
+    def test_row_spec_identity_must_match_summary_before_scoring(self):
+        from caplab.advisory.scoring import score_backends
+        with tempfile.TemporaryDirectory() as root:
+            self.run_fixture_pool(root, echo_adapter())
+            path = os.path.join(root, "results.jsonl")
+            with open(path) as f:
+                rows = [json.loads(line) for line in f]
+            rows[0]["run_spec_sha256"] = "e" * 64
+            with open(path, "w") as f:
+                f.write("".join(json.dumps(row) + "\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "run specification"):
+                score_backends([root], qualification_operators={"requirement_inversion"})
+
+    def test_spec_reference_cannot_mask_a_changed_backend_label(self):
+        from caplab.advisory.scoring import completed, score_backends
+        for target in ("summary.json", "results.jsonl"):
+            with self.subTest(target=target), tempfile.TemporaryDirectory() as root:
+                self.run_fixture_pool(root, echo_adapter())
+                path = os.path.join(root, target)
+                with open(path) as f:
+                    documents = ([json.load(f)] if target == "summary.json"
+                                 else [json.loads(line) for line in f])
+                documents[0]["backend" if target == "summary.json" else "backend_measured"] = "relabeled"
+                with open(path, "w") as f:
+                    f.write("".join(json.dumps(doc) + "\n" for doc in documents))
+                if target == "summary.json":
+                    self.assertFalse(completed(root))
+                with self.assertRaisesRegex(ValueError, "run specification"):
+                    score_backends([root], qualification_operators={"requirement_inversion"})
 
     def test_malformed_responses_trip_abort_and_preserve_population(self):
         with tempfile.TemporaryDirectory() as root:

@@ -55,6 +55,20 @@ pool cells remain incomplete rather than becoming reviewer misses. See the
 [gate report guide](review-gate-report.md) for the consequences and the
 [oracle counterexample](../../records/repair-2026-09-08-pair-oracle.md).
 
+New pool runs write `run-spec.json` before any attempt. It freezes the ordered
+plan, declared backend configuration hash, measurement parameters, environment,
+base-registry hash, Python version, and advisory-package source hashes. Rows
+and summaries name its SHA-256. Resumption requires the same specification;
+changed code, inputs, or parameters require a new output directory. The scorer
+checks the retained specification and row/summary references before using new
+results. Historical runs without this record retain their existing scoring
+path but cannot be resumed by the new runner.
+
+This specification records configuration and source provenance. It does not
+verify a native Binding, pin external executable or account-state changes,
+provide one-shot attempt custody, or establish comparability between two
+runs. Those require the corresponding evidence and policy separately.
+
 ## Advisory-grade execution profile v0
 
 `python3 -m caplab.advisory run` executes the pinned striatum-tuner

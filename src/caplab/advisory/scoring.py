@@ -35,6 +35,7 @@ from ._tuner_vendored import anchor_hits, anchors_of, extract_json
 from .review_response import (ANCHOR_MATCHING_VERSION, VALIDATION_VERSION,
                               exact_anchor_mention)
 from .operators import PAIR_VALIDATION_VERSION
+from . import run_spec
 
 MATCHED_PAIR_INSTRUMENT = "matched-pair defect injection"
 SYNTHETIC_CONTRACT_INSTRUMENT = "matched-pair defect injection (synthetic contract)"
@@ -68,6 +69,14 @@ def completed(run_dir: str) -> bool:
         return False
     if summary.get("aborted"):
         return False
+    if "run_spec_sha256" in summary:
+        try:
+            frozen = run_spec.read(run_dir)
+            if (frozen["sha256"] != summary["run_spec_sha256"]
+                    or frozen["spec"].get("backend") != summary.get("backend")):
+                return False
+        except (OSError, ValueError, TypeError):
+            return False
     if "anchor_matching" in summary and summary["anchor_matching"] != ANCHOR_MATCHING_VERSION:
         return False
     if "pair_validation" in summary and summary["pair_validation"] != PAIR_VALIDATION_VERSION:
@@ -194,6 +203,11 @@ def score_backends(run_dirs: list[str], adjudications=None,
         with open(os.path.join(run_dir, "summary.json"), encoding="utf-8") as f:
             summary = json.load(f)
         run_instrument = summary.get("instrument")
+        spec_id = summary.get("run_spec_sha256")
+        frozen = run_spec.read(run_dir) if "run_spec_sha256" in summary else None
+        if frozen and (frozen["sha256"] != spec_id
+                       or frozen["spec"].get("backend") != summary.get("backend")):
+            raise ValueError(f"run specification mismatch in {run_name}")
         matching = summary.get("anchor_matching")
         pair_validation = summary.get("pair_validation")
         if "pair_validation" in summary and pair_validation != PAIR_VALIDATION_VERSION:
@@ -204,6 +218,11 @@ def score_backends(run_dirs: list[str], adjudications=None,
         with open(results_path, encoding="utf-8") as f:
             rows = [json.loads(line) for line in f if line.strip()]
         for row in rows:
+            if frozen and row.get("backend_measured") != frozen["spec"].get("backend"):
+                raise ValueError(f"row backend differs from run specification in {run_name}")
+            if (row.get("run_spec_sha256") != spec_id or
+                    ("run_spec_sha256" in row) != ("run_spec_sha256" in summary)):
+                raise ValueError(f"row/summary run specification mismatch in {run_name}")
             if (row.get("pair_validation") != pair_validation or
                     ("pair_validation" in row) != ("pair_validation" in summary)):
                 raise ValueError(f"row/summary pair-validation contract mismatch in {run_name}")
@@ -250,6 +269,8 @@ def score_backends(run_dirs: list[str], adjudications=None,
             entry = stat["runs"].setdefault(run_name, {
                 "run": run_name, "results_sha256": results_sha, "rows_used": 0})
             entry["rows_used"] += 1
+            if spec_id:
+                entry["run_spec_sha256"] = spec_id
             stat.setdefault("instruments", set()).add(run_instrument)
             if row.get("calibration_profile"):
                 stat.setdefault("profiles", set()).add(row["calibration_profile"])
