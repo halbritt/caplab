@@ -20,6 +20,7 @@ from caplab.preference.native_live import (
 
 from .instrument import _valid_review
 from .native import (
+    assess_native_review_model,
     build_native_review_invocation,
     load_native_review_instrument,
     render_native_review_cell,
@@ -234,7 +235,8 @@ def assess_native_review_attempts(
     replacements = 0
     total_seconds = 0.0
     stop_reason: str | None = None
-    for attempt in attempts:
+    identity_stop: dict[str, Any] | None = None
+    for number, attempt in enumerate(attempts, 1):
         if stop_reason is not None:
             raise NativeReviewLiveContractError("native_review_attempt_after_stop")
         slot = attempt.get("slot_index")
@@ -276,6 +278,13 @@ def assess_native_review_attempts(
                 next_slot += 1
         else:
             raise NativeReviewLiveContractError("invalid_native_review_attempt_kind")
+        identity_status = attempt.get("model_identity_status", "model-unverified")
+        if identity_stop is None and identity_status != "native-model-match":
+            identity_stop = {
+                "attempt_number": number,
+                "slot_index": slot,
+                "status": identity_status,
+            }
         total_seconds += seconds
         if total_seconds >= limits.get("maximum_wall_clock_hours", 0) * 3600:
             stop_reason = "native_review_wall_clock_limit"
@@ -288,6 +297,8 @@ def assess_native_review_attempts(
         and replacements >= limits.get("maximum_replacements", -1)
     ):
         stop_reason = stop_reason or "native_review_replacement_limit"
+    if identity_stop is not None:
+        stop_reason = stop_reason or "native_review_model_identity_unavailable"
     return {
         "next_slot_index": next_slot,
         "pending_replacement_for": pending,
@@ -296,6 +307,10 @@ def assess_native_review_attempts(
         "duration_seconds": format(total_seconds, ".6f"),
         "complete": complete,
         "stop_reason": stop_reason,
+        "identity_stop": identity_stop,
+        "attempts_after_identity_stop": len(attempts) - identity_stop["attempt_number"]
+        if identity_stop is not None else 0,
+        "unattempted_primary_slots": len(order) - next_slot - (pending is not None),
     }
 
 
@@ -319,7 +334,10 @@ def prepare_native_review_trial(
     order = instrument.get("execution_order") if isinstance(instrument, dict) else None
     if not isinstance(order, list) or not isinstance(slot_index, int) or not 0 <= slot_index < len(order):
         raise NativeReviewLiveContractError("invalid_native_review_slot")
-    state = assess_native_review_attempts(manifest, prior_attempts)
+    recorded_attempts = load_native_review_attempts(manifest)
+    if list(prior_attempts) != recorded_attempts:
+        raise NativeReviewLiveContractError("native_review_prior_attempts_changed")
+    state = assess_native_review_attempts(manifest, recorded_attempts)
     if state["complete"]:
         raise NativeReviewLiveContractError("native_review_campaign_complete")
     if state["stop_reason"]:
@@ -419,8 +437,11 @@ def record_native_review_observation(
             stdout, stderr, completion.get("timed_out") is True
         )
     review_path = task_root / "REVIEW.json"
+    model_identity = assess_native_review_model(
+        manifest["_instrument"]["agent_systems"][launch["subject_id"]], stdout
+    )
     observation = {
-        "schema": "caplab.review-dissent.native-observation/v1",
+        "schema": "caplab.review-dissent.native-observation/v2",
         "campaign_id": manifest["campaign_id"],
         "manifest_sha256": manifest["manifest_sha256"],
         "launch_sha256": launch["launch_sha256"],
@@ -433,6 +454,7 @@ def record_native_review_observation(
         "subject_id": launch["subject_id"],
         "tuple_id": launch["tuple_id"],
         "status": status,
+        "model_identity": model_identity,
         "usage": usage,
         "review_sha256": sha256(review_path.read_bytes()).hexdigest()
         if review_path.is_file() and not review_path.is_symlink()
@@ -479,21 +501,47 @@ def load_native_review_attempts(manifest: Mapping[str, Any]) -> list[dict[str, A
             "manifest_sha256"
         ) != manifest["manifest_sha256"]:
             raise NativeReviewLiveContractError("native_review_attempt_manifest_mismatch")
-        output_path = custody_root = Path(manifest["storage"]["raw_custody_root"])
-        output_path = custody_root / observation["output_path"]
-        if output_path.is_symlink() or not output_path.is_file() or sha256(
-            output_path.read_bytes()
-        ).hexdigest() != observation.get("output_sha256"):
+        slot = observation.get("slot_index")
+        instrument = manifest["_instrument"]
+        order = instrument["execution_order"]
+        if not isinstance(slot, int) or isinstance(slot, bool) or not 0 <= slot < len(order):
+            raise NativeReviewLiveContractError("native_review_attempt_slot_mismatch")
+        cell_id, subject_id = order[slot].split(":", 1)
+        subject = instrument["agent_systems"][subject_id]
+        expected = {
+            "slot_index": slot, "cell_id": cell_id, "subject_id": subject_id,
+            "tuple_id": subject["tuple_id"],
+            "public_task_id": instrument["cells"][cell_id]["public_task_id"],
+        }
+        if any(document.get(key) != value for document in (launch, observation)
+               for key, value in expected.items()):
+            raise NativeReviewLiveContractError("native_review_attempt_assignment_mismatch")
+        if (
+            completion.get("launch_sha256") != launch["launch_sha256"]
+            or observation.get("launch_sha256") != launch["launch_sha256"]
+            or observation.get("completion_sha256") != completion["completion_sha256"]
+        ):
+            raise NativeReviewLiveContractError("native_review_attempt_lineage_mismatch")
+        output_path = root / "native.stdout"
+        if observation.get("output_path") != output_path.relative_to(attempts_root.parent).as_posix():
+            raise NativeReviewLiveContractError("native_review_output_path_mismatch")
+        if output_path.is_symlink() or not output_path.is_file():
             raise NativeReviewLiveContractError("native_review_output_changed")
+        stdout = output_path.read_bytes()
+        if sha256(stdout).hexdigest() != observation.get("output_sha256"):
+            raise NativeReviewLiveContractError("native_review_output_changed")
+        model_identity = assess_native_review_model(subject, stdout)
+        if observation.get("schema") == "caplab.review-dissent.native-observation/v2" and (
+            observation.get("model_identity") != model_identity
+        ):
+            raise NativeReviewLiveContractError("native_review_model_identity_changed")
         attempts.append(
             {
-                key: observation[key]
-                for key in (
-                    "slot_index",
-                    "attempt_kind",
-                    "status",
-                    "duration_seconds",
-                )
+                "model_identity_status": model_identity["status"],
+                "slot_index": observation["slot_index"],
+                "attempt_kind": observation["attempt_kind"],
+                "status": observation["status"],
+                "duration_seconds": observation["duration_seconds"],
             }
         )
     assess_native_review_attempts(manifest, attempts)

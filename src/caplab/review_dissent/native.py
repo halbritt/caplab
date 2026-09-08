@@ -320,9 +320,8 @@ def _native_events(content: bytes) -> list[dict[str, Any]]:
     return events
 
 
-def _model_identity(subject: Mapping[str, Any], content: bytes) -> dict[str, Any]:
+def assess_native_review_model(subject: Mapping[str, Any], content: bytes) -> dict[str, Any]:
     """Assess native-reported model agreement, not full Binding attestation."""
-    events = _native_events(content)
     result: dict[str, Any] = {
         "schema": "caplab.review-dissent.native-model-identity/v1",
         "native_stdout_sha256": sha256(content).hexdigest(),
@@ -336,6 +335,11 @@ def _model_identity(subject: Mapping[str, Any], content: bytes) -> dict[str, Any
         "usage_models": [],
         "claim_ceiling": "native-reported model fields only; full Binding unverified",
     }
+    try:
+        events = _native_events(content)
+    except NativeReviewContractError:
+        result["reason"] = "native-trace-invalid"
+        return result
     if subject["native_harness_id"] != "claude-code":
         return result
     terminals = []
@@ -426,7 +430,7 @@ def build_native_review_capture(
     observed = _snapshot_task(root)
     preserved = expected == observed
     available_paths = list(expected)
-    model_identity = _model_identity(subject, native_jsonl)
+    model_identity = assess_native_review_model(subject, native_jsonl)
     model_eligible = model_identity["status"] == "native-model-match"
     observed_reads = observed_reads_from_native_jsonl(
         subject_id, native_jsonl, available_paths

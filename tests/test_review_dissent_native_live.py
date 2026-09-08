@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+from hashlib import sha256
 import tempfile
 import unittest
 from datetime import UTC, datetime
@@ -10,6 +12,7 @@ from unittest import mock
 
 from caplab.review_dissent.native_live import (
     NativeReviewLiveContractError,
+    _digest,
     assess_native_review_attempts,
     build_contained_review_invocation,
     load_native_review_live_manifest,
@@ -31,7 +34,26 @@ class NativeReviewLiveTests(unittest.TestCase):
         clock = clock_patch.start()
         self.addCleanup(clock_patch.stop)
         clock.now.return_value = datetime(2026, 8, 3, 12, tzinfo=UTC)
-        self.manifest = load_native_review_live_manifest(MANIFEST, INSTRUMENT)
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.manifest_path = Path(temporary.name) / "manifest.json"
+        fixture = json.loads(MANIFEST.read_text())
+        fixture["campaign_id"] = "new-local-native-live-contract-fixture"
+        source = fixture["containment"]["runner_source"]
+        source["sha256"] = sha256((ROOT / source["path"]).read_bytes()).hexdigest()
+        fixture.pop("manifest_sha256")
+        fixture["manifest_sha256"] = _digest(fixture)
+        self.manifest_path.write_text(json.dumps(fixture))
+        self.manifest = load_native_review_live_manifest(self.manifest_path, INSTRUMENT)
+
+    def test_manifest_rejects_unbound_runner_bytes(self) -> None:
+        fixture = json.loads(self.manifest_path.read_text())
+        fixture["containment"]["runner_source"]["sha256"] = "0" * 64
+        fixture.pop("manifest_sha256")
+        fixture["manifest_sha256"] = _digest(fixture)
+        self.manifest_path.write_text(json.dumps(fixture))
+        with self.assertRaisesRegex(NativeReviewLiveContractError, "runner_source_digest_mismatch"):
+            load_native_review_live_manifest(self.manifest_path, INSTRUMENT)
 
     def test_manifest_binds_native_order_containment_and_limits(self) -> None:
         self.assertEqual(self.manifest["limits"]["primary_trials"], 16)

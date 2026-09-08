@@ -42,3 +42,16 @@ still required. A matching assessment establishes only native-reported model
 agreement, not full Binding identity, authenticated provider identity, or
 capture completeness. Existing version 1 evidence is unchanged; this source
 repair authorizes no historical normalization or new live campaign.
+
+Version 2 native observations retain the same model assessment before scoring.
+Custody loading recomputes it from stdout and checks the recorded assignment
+and lineage. Preparation reloads custody, rejects stale caller accounting,
+and refuses another attempt after missing or mismatched model evidence.
+This stop also prevents an infrastructure replacement while identity remains
+unavailable. Matching model evidence preserves the existing replacement rule.
+
+Read-only accounting retains all recorded attempts. `identity_stop` identifies
+the first exclusion; `attempts_after_identity_stop` counts later recorded
+attempts without authorizing them. `unattempted_primary_slots` counts assigned
+slots with no primary attempt, including the remaining slots of a stopped
+campaign. These fields do not redefine execution status or reviewer scores.
