@@ -52,3 +52,34 @@ including final streamed usage. These documents establish the inspected field
 formats; synthetic fixtures establish parser behavior. No claim is made that a
 particular installed CLI/account currently emits every surface. No SDK or proxy
 is introduced, no capture option changes, and no native/model invocation occurs.
+
+## Explicit session contradictions
+
+The [session-identity repair](../../records/repair-2026-09-08-native-stream-session-identity.md)
+adds optional `session_ids` observations containing JSONL line, exact top-level
+`session_id` and `parent_tool_use_id`. Present invalid IDs (non-string or blank)
+and conflicting root IDs produce `session_errors`. Root IDs are compared
+literally, with no trimming or UUID-format inference. Invalid scope markers also
+prevent agreement. Nested text, message content and tool inputs are not searched.
+
+A nonempty string `parent_tool_use_id` on `assistant`, `user`, `stream_event` or
+`tool_progress` marks a child-scoped observation. Its ID is retained separately
+and is not compared with root IDs. This does not verify child lineage or require
+all child IDs to agree. Other event types cannot use that field to evade root
+comparison; non-null unsupported or invalid markers are errors. Missing or null
+parent markers leave events in root scope.
+
+When session errors exist and no stronger model/fallback mismatch exists, the
+assessor returns `model-unverified` with reason
+`native-session-evidence-invalid`. Existing explicit model/fallback mismatches
+keep precedence and retain the session errors alongside them. Scoring and
+continuation gates withhold credit and next-attempt preparation through their
+existing identity-stop behavior.
+
+Streams without these fields retain their previous model-only behavior. Matching
+IDs never replace missing model, response or terminal evidence, and do not prove
+session linkage or native capture completeness. No historical assessment is
+rewritten. Claude documents IDs on init/result in its
+[session reference](https://code.claude.com/docs/en/agent-sdk/sessions), and child
+message scope in its [subagent reference](https://code.claude.com/docs/en/agent-sdk/subagents).
+These references guide envelope interpretation; no SDK runtime replaces Claude Code.

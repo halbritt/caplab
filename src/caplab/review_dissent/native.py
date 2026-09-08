@@ -339,6 +339,29 @@ def _native_fallback_markers(message: Mapping[str, Any], line: int, source: str)
     return markers
 
 
+def _native_session_evidence(events: list[dict[str, Any]]) -> tuple[list[dict], list[dict]]:
+    observations, errors = [], []
+    root_id = None
+    child_types = {"assistant", "user", "stream_event", "tool_progress"}
+    for line, event in enumerate(events, 1):
+        parent = event.get("parent_tool_use_id")
+        child = (event.get("type") in child_types and isinstance(parent, str) and bool(parent.strip()))
+        if parent is not None and not child:
+            errors.append({"line": line, "reason": "invalid-session-scope"})
+        if "session_id" not in event:
+            continue
+        session = event["session_id"]
+        observations.append({"line": line, "session_id": session, "parent_tool_use_id": parent})
+        if not isinstance(session, str) or not session.strip():
+            errors.append({"line": line, "reason": "invalid-session-id"})
+        elif not child:
+            if root_id is not None and session != root_id:
+                errors.append({"line": line, "reason": "conflicting-root-session-id"})
+            else:
+                root_id = session
+    return observations, errors
+
+
 def assess_native_review_model(subject: Mapping[str, Any], content: bytes) -> dict[str, Any]:
     """Assess native-reported model agreement, not full Binding attestation."""
     result: dict[str, Any] = {
@@ -361,6 +384,11 @@ def assess_native_review_model(subject: Mapping[str, Any], content: bytes) -> di
         return result
     if subject["native_harness_id"] != "claude-code":
         return result
+    session_ids, session_errors = _native_session_evidence(events)
+    if session_ids:
+        result["session_ids"] = session_ids
+    if session_errors:
+        result["session_errors"] = session_errors
     terminals = []
     stream_models, stream_errors = [], []
     for line, event in enumerate(events, 1):
@@ -419,6 +447,8 @@ def assess_native_review_model(subject: Mapping[str, Any], content: bytes) -> di
     )
     if result["fallbacks"] or mismatch:
         result.update(status="model-mismatch", reason="native-model-substitution-or-mismatch")
+    elif session_errors:
+        result.update(status="model-unverified", reason="native-session-evidence-invalid")
     elif (
         content.endswith(b"\n")
         and len(initial) == 1 and initial[0]["line"] == 1
