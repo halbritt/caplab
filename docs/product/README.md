@@ -12,6 +12,7 @@
 - [Prospective advisory-responsive approach selection card](capability-cards/caplab-advisory-selection-001-advisory-responsive-approach-selection.md)
 - [Prospective restricted advisory-study admission contract](contracts/advisory-study-admission-v1.md)
 - [Prospective shakedown coverage rule and read-only planner](contracts/shakedown-coverage-v1.md)
+- [Prospective usable-observation and scheduled-slot accounting](contracts/usable-sample-budget-v1.md)
 - [Striatum pass-context capability profiles](striatum-pass-profiles/README.md)
 - [Evaluation snapshot gate](evaluation/README.md)
 - [Binding qualification and Quartermaster export boundary](qualification/README.md)

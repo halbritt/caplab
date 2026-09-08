@@ -199,6 +199,12 @@ renormalize a partial code set into a complete episode score or convert an
 unavailable code to zero. Freeze aggregation and missingness handling before
 data exist; an undefined or failed reliability statistic is not a pass.
 
+Use the [usable-sample accounting contract](usable-sample-budget-v1.md) when
+translating those denominators into a sample-size or capacity plan. Required
+usable observations, scheduled slots, and observed usable counts are distinct;
+loss compensation does not create statistical information. CAPLAB-71 must
+freeze the loss-rate interpretation, per-cell targets, and shortfall disposition.
+
 Attempt-conditioned code differences describe the observed attempts. Equal
 attempt rates do not establish equal composition or an unbiased treatment
 effect. A simple counterexample uses two equally common latent types. In
