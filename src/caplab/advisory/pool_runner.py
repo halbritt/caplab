@@ -46,6 +46,7 @@ from .calibrate import (CALIBRATION_PROFILES, REVIEW_PREAMBLE_V3_VERSION,
 from .corpus import SubstrateRegistry, sample_cases, targeted_cases
 from .instrument_defects import NotApplicable
 from .operators import BASE_DEPENDENT_OPERATORS, BY_NAME, check_present, operators_for
+from .review_response import VALIDATION_VERSION, attempt_error
 from . import materialize as _materialize
 
 SYNTHETIC_CONTRACT_INSTRUMENT = "matched-pair defect injection (synthetic contract)"
@@ -385,6 +386,7 @@ def invoke(adapter: dict, prompt: str, timeout: int,
 
     started = time.time()
     timed_out = False
+    error = None
     try:
         completed = subprocess.run(argv, input=stdin_data, capture_output=True,
                                    timeout=timeout, cwd=run_cwd)
@@ -392,6 +394,9 @@ def invoke(adapter: dict, prompt: str, timeout: int,
         code = completed.returncode
     except subprocess.TimeoutExpired:
         stdout, code, timed_out = "", None, True
+    except OSError as exc:
+        stdout, code = "", None
+        error = f"process launch failed: {exc.strerror}"
     body = stdout
     pointer = adapter.get("stdout_json_pointer")
     if pointer:
@@ -406,7 +411,7 @@ def invoke(adapter: dict, prompt: str, timeout: int,
         "prompt_bytes": len(encoded),
         "raw_head": stdout[:400],
         "sandbox": sandbox,
-        "error": None,
+        "error": error,
     }
 
 
@@ -472,7 +477,7 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
     row = {"dispatch_id": f"{case['substrate_id']}:{case['operator']}:{case['seed']}",
            "substrate_id": case["substrate_id"],
            "source_kind": case["source"]["kind"],
-           "defect_class": case["operator"]}
+           "defect_class": case["operator"], "response_validation": VALIDATION_VERSION}
     row.setdefault("calibration_profile", MEASUREMENT_PROFILE)
     tree = tree_mode()
     base_source = (base_record or {}).get("base_source") if tree else None
@@ -562,13 +567,18 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
             if transport_label:
                 for r in runs:
                     r["transport"] = transport_label
-        replicate_verdicts[name] = [(r["doc"] or {}).get("verdict") for r in runs]
+        for result in runs:
+            result["review_error"] = attempt_error(result, require_manifest=tree)
+        replicate_verdicts[name] = [r["doc"]["verdict"] if r["review_error"] is None
+                                   else None for r in runs]
         results[name] = runs
 
     # Gate accounting needs every attempt, including failed replicates that a
     # representative capture or majority verdict cannot describe.
     for name, runs in results.items():
         row[f"{name}_attempts"] = runs
+        row[f"{name}_valid_attempts"] = sum(r["review_error"] is None for r in runs)
+    row.update(replicates=per_arm["control"], mutant_replicates=per_arm["mutant"])
 
     def representative(name: str, majority_verdict) -> dict:
         """The retained capture must agree with the verdict the row reports.
@@ -578,7 +588,7 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
         findings came from the one accepting replicate.
         """
         runs = results[name]
-        parseable = [r for r in runs if r["doc"] is not None]
+        parseable = [r for r in runs if r["review_error"] is None]
         if majority_verdict is not None:
             aligned = [r for r in parseable
                        if (r["doc"].get("verdict") in REFUSING)
@@ -591,17 +601,15 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
     mutant_majority, _, _ = _majority(replicate_verdicts["mutant"])
     control = representative("control", control_majority)
     mutant = representative("mutant", mutant_majority)
-    dead = [name for name, rep in (("control", control), ("mutant", mutant))
-            if rep["doc"] is None]
-    if dead:
-        # One dead arm used to leave the pair "usable": a dead mutant arm
-        # scored as a miss and a dead control arm as a clean clearance —
-        # answers the subject never gave. A pair is a measurement only when
-        # both arms answered; the discard keeps every scrap of telemetry
-        # that says which arm died and how.
-        which = "either arm" if len(dead) == 2 else f"{dead[0]} arm"
+    incomplete = [name for name in results
+                  if row[f"{name}_valid_attempts"] != per_arm[name]]
+    if incomplete:
+        # Dropping unsuccessful replicates would silently change the assigned
+        # replication and can favor a reviewer that emits unusable answers.
+        which = "either arm" if len(incomplete) == 2 else f"{incomplete[0]} arm"
         return {**row, "usable": False,
-                "error": f"no parseable review on {which}",
+                "error": f"incomplete review attempts on {which}",
+                "base_manifest_verified": manifest_ok if tree else None,
                 "control_head": control["raw_head"],
                 "mutant_head": mutant["raw_head"],
                 "control_verdicts": replicate_verdicts["control"],
@@ -744,13 +752,24 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
         cases_doc=cases_doc)
     anchor_cases = list(anchor_set["cases"]) if anchor_set else []
     plan = [(c, True) for c in anchor_cases] + [(c, False) for c in cases]
+    planned_ids = {f"{c['substrate_id']}:{c['operator']}:{c['seed']}" for c, _ in plan}
+    if len(planned_ids) != len(plan):
+        raise ValueError("duplicate case in review plan")
 
     os.makedirs(out_dir, exist_ok=True)
     results_path = os.path.join(out_dir, "results.jsonl")
     done = set()
     if os.path.isfile(results_path):
         with open(results_path, encoding="utf-8") as f:
-            done = {json.loads(line)["dispatch_id"] for line in f if line.strip()}
+            for line in f:
+                if not line.strip():
+                    continue
+                prior = json.loads(line)
+                if prior.get("response_validation") != VALIDATION_VERSION:
+                    raise ValueError("cannot resume rows from a different response-validation contract")
+                if prior["dispatch_id"] not in planned_ids or prior["dispatch_id"] in done:
+                    raise ValueError("duplicate or unexpected retained case for this plan")
+                done.add(prior["dispatch_id"])
 
     from .calibrate import load_substrate_body
 
@@ -784,7 +803,7 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
             body = load_substrate_body(case, exchange, repos)
             if body is None:
                 row = {"dispatch_id": case_id, "substrate_id": case["substrate_id"],
-                       "usable": False,
+                       "usable": False, "response_validation": VALIDATION_VERSION,
                        "error": "substrate unreachable",
                        "defect_class": case["operator"]}
             else:
@@ -818,12 +837,12 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
             if not row:
                 return None
             with write_lock:
-                if (row.get("error") or "").startswith("no parseable review"):
+                if (row.get("error") or "").startswith(("no parseable review", "incomplete review attempts")):
                     empty_streak_state["streak"] += 1
                     if (abort_after_empty
                             and empty_streak_state["streak"] >= abort_after_empty):
                         empty_streak_state["aborted"] = (
-                            f"{empty_streak_state['streak']} consecutive empty lanes")
+                            f"{empty_streak_state['streak']} consecutive incomplete review cases")
                 elif row.get("usable"):
                     empty_streak_state["streak"] = 0
             return row
@@ -841,6 +860,7 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
     with open(results_path, encoding="utf-8") as f:
         rows = [json.loads(line) for line in f if line.strip()]
     usable = [r for r in rows if r.get("usable")]
+    observed_ids = {r["dispatch_id"] for r in rows}
     summary = {
         "backend": backend,
         "instrument": SYNTHETIC_CONTRACT_INSTRUMENT,
@@ -849,6 +869,7 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
         "partition": partition,
         "case_selection": case_selection,
         "environment": ENVIRONMENT_VERSION,
+        "response_validation": VALIDATION_VERSION,
         "base_registry_sha256": base_registry_sha,
         "base_registry": (os.path.relpath(os.path.abspath(BASE_REGISTRY_PATH)) if tree_mode() else None),
         "replicates": replicates,
@@ -857,6 +878,12 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
             if usable and replicates > 1 else None),
         "pairs_usable": len(usable),
         "pairs_discarded": len(rows) - len(usable),
+        "pairs_planned": len(plan),
+        "pairs_missing": len(planned_ids - observed_ids),
+        "pairs_not_applicable": sum(not r.get("usable") and
+                                    (r.get("error") or "").startswith("not applicable:") for r in rows),
+        "pairs_incomplete": sum(not r.get("usable") and not
+                                (r.get("error") or "").startswith("not applicable:") for r in rows),
         "catch_rate": (sum(1 for r in usable if r["caught"]) / len(usable)
                        if usable else None),
         "false_alarm_rate": (sum(1 for r in usable if r["false_alarm"]) / len(usable)

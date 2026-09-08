@@ -32,6 +32,7 @@ sys.path.insert(0, os.path.join(ROOT, "src"))
 from caplab.advisory import materialize as M  # noqa: E402
 from caplab.advisory import pool_runner  # noqa: E402
 from caplab.advisory.calibrate import render_preamble_v3  # noqa: E402
+from caplab.advisory.review_response import attempt_error, response_error  # noqa: E402
 
 GATE = os.path.join(ROOT, "advisory", "gate", "review-gate-20260819.json")
 BACKENDS = os.path.expanduser("~/git/striatum-next/backends")
@@ -63,7 +64,7 @@ def conformance(doc: dict | None) -> dict:
     verdict = doc.get("verdict")
     findings = doc.get("findings")
     out["verdict_valid"] = isinstance(verdict, str) and verdict in VERDICTS
-    if not isinstance(findings, list) or not all(isinstance(f, dict) for f in findings):
+    if response_error(doc) is not None:
         return {**out, "refusal_has_anchor": False, "rationales_disciplined": False, "ok": False}
     out["refusal_has_anchor"] = (any(isinstance(f.get("element_anchor"), str)
                                      and f["element_anchor"].strip() for f in findings)
@@ -78,13 +79,8 @@ def conformance(doc: dict | None) -> dict:
 
 def observed_verdict(attempt: dict) -> str | None:
     """An output alone cannot establish a completed, contained observation."""
-    doc = attempt.get("doc")
-    verdict = doc.get("verdict") if isinstance(doc, dict) else None
-    if (attempt.get("exit_code") == 0 and attempt.get("timed_out") is False
-            and not attempt.get("error") and attempt.get("sandbox") == "bwrap"
-            and attempt.get("manifest_verified") is True
-            and isinstance(verdict, str) and verdict in VERDICTS):
-        return verdict
+    if attempt.get("sandbox") == "bwrap" and attempt_error(attempt, require_manifest=True) is None:
+        return attempt["doc"]["verdict"]
     return None
 
 

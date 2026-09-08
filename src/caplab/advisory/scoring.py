@@ -32,6 +32,7 @@ import json
 import os
 
 from ._tuner_vendored import anchor_hits, anchors_of, extract_json
+from .review_response import VALIDATION_VERSION
 
 MATCHED_PAIR_INSTRUMENT = "matched-pair defect injection"
 SYNTHETIC_CONTRACT_INSTRUMENT = "matched-pair defect injection (synthetic contract)"
@@ -63,7 +64,18 @@ def completed(run_dir: str) -> bool:
             summary = json.load(f)
     except (OSError, json.JSONDecodeError):
         return False
-    return not summary.get("aborted")
+    if summary.get("aborted"):
+        return False
+    if "response_validation" in summary:
+        # Prospective complete-replication runs cannot yield a claim from only
+        # their surviving pairs. Historical summaries keep their recorded
+        # semantics; this does not silently rescore or supersede them.
+        if summary["response_validation"] != VALIDATION_VERSION:
+            return False
+        for field in ("pairs_missing", "pairs_incomplete"):
+            if type(summary.get(field)) is not int or summary[field] != 0:
+                return False
+    return True
 
 
 def outcome_selected(run_dir: str) -> bool:

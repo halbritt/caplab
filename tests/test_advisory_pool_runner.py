@@ -70,6 +70,14 @@ def echo_adapter(verdict_for_mutant="needs_revision",
 
 
 class InvokeTest(unittest.TestCase):
+    def test_process_launch_failure_is_retained_as_unavailable(self):
+        with _mock.patch.object(pool_runner, "sandbox_available", return_value=False):
+            result = invoke({"command": ["/no-such-caplab-fixture-executable"],
+                             "prompt_mode": "stdin"}, "review", timeout=30)
+        self.assertIsNone(result["doc"])
+        self.assertIsNone(result["exit_code"])
+        self.assertIn("process launch failed", result["error"])
+
     def test_oversize_arg_prompt_is_refused_not_silently_rerouted(self):
         # An arg-mode CLI never reads stdin, so the old stdin fallback asked
         # nothing and recorded the silence as the subject's answer. The
@@ -235,8 +243,103 @@ class PairValidityTest(unittest.TestCase):
         self.assertTrue(row["control_timed_out"])
         self.assertNotIn("false_alarm", row)
 
+    def test_malformed_response_is_retained_without_a_score_or_exception(self):
+        documents = [None, {}, [], "accept", {"verdict": "maybe", "findings": []},
+                     {"verdict": [], "findings": []}, {"verdict": {}},
+                     {"verdict": "accept"}, {"verdict": "accept", "findings": 3},
+                     {"verdict": "reject", "findings": ["harm"]},
+                     {"verdict": "reject", "findings": [{"element_anchor": 3}]}]
+        for document in documents:
+            with self.subTest(document=document):
+                def fake(adapter, prompt, timeout, **kwargs):
+                    return {"doc": document, "exit_code": 0, "timed_out": False,
+                            "seconds": 1, "transport": "stdin", "prompt_bytes": 1,
+                            "raw_head": "original response", "error": None}
+
+                with _mock.patch.object(pool_runner, "invoke", side_effect=fake):
+                    row = measure_case(case(), DOC, echo_adapter(), timeout=60)
+                self.assertFalse(row["usable"])
+                self.assertNotIn("false_alarm", row)
+                self.assertNotIn("caught", row)
+                self.assertEqual(row["control_attempts"][0]["doc"], document)
+                self.assertEqual(row["control_verdicts"], [None])
+                self.assertEqual(row["control_valid_attempts"], 0)
+
+    def test_valid_json_from_failed_execution_cannot_vote(self):
+        for failure in ({"exit_code": 1}, {"timed_out": True},
+                        {"error": "transport failed"}, {"exit_code": None}):
+            with self.subTest(failure=failure):
+                response = {"doc": {"verdict": "accept", "findings": []},
+                            "exit_code": 0, "timed_out": False, "seconds": 1,
+                            "transport": "stdin", "prompt_bytes": 1,
+                            "raw_head": "", "error": None, **failure}
+                with _mock.patch.object(pool_runner, "invoke", side_effect=lambda *a, **k: dict(response)):
+                    row = measure_case(case(), DOC, echo_adapter(), timeout=60)
+                self.assertFalse(row["usable"])
+                self.assertEqual(row["control_verdicts"], [None])
+                self.assertNotIn("false_alarm", row)
+
+    def test_partial_replication_is_not_a_complete_majority_measurement(self):
+        state = {"control": ["accept", "reject", "maybe"], "mutant": ["reject"]}
+
+        def fake(adapter, prompt, timeout, **kwargs):
+            arm = "mutant" if ("may freely" in prompt or "may clear" in prompt) else "control"
+            return {"doc": {"verdict": state[arm].pop(0), "findings": []},
+                    "exit_code": 0, "timed_out": False, "seconds": 1,
+                    "transport": "stdin", "prompt_bytes": 1, "raw_head": "", "error": None}
+
+        with _mock.patch.object(pool_runner, "invoke", side_effect=fake):
+            row = measure_case(case(), DOC, echo_adapter(), timeout=60,
+                               replicates=3, mutant_replicates=1)
+        self.assertFalse(row["usable"])
+        self.assertEqual(row["control_valid_attempts"], 2)
+        self.assertEqual(row["control_verdicts"], ["accept", "reject", None])
+        self.assertEqual(row["mutant_valid_attempts"], 1)
+        self.assertEqual(row["replicates"], 3)
+        self.assertNotIn("false_alarm", row)
+
 
 class SummaryShapeTest(unittest.TestCase):
+    def run_fixture_pool(self, out_dir, adapter):
+        planned = [case(seed=i) for i in range(1, 4)]
+        with _mock.patch.object(pool_runner, "load_declaration", return_value={"adapter": adapter}), \
+                _mock.patch.object(pool_runner.SubstrateRegistry, "read", return_value=[]), \
+                _mock.patch.object(pool_runner, "select_cases", return_value=(planned, "breadth")), \
+                _mock.patch("caplab.advisory.calibrate.load_substrate_body", return_value=DOC):
+            return pool_runner.run_pool(backend="local-fixture", backends_root="unused",
+                                        registry_path="unused", out_dir=out_dir, sweep_seed=1,
+                                        per_operator=1, timeout=30, abort_after_empty=2)
+
+    def test_malformed_responses_trip_abort_and_preserve_population(self):
+        with tempfile.TemporaryDirectory() as root:
+            summary = self.run_fixture_pool(root, echo_adapter("maybe", "maybe"))
+            with open(os.path.join(root, "results.jsonl")) as f:
+                rows = [json.loads(line) for line in f]
+            self.assertFalse(is_matched_pair_run(root))
+        self.assertEqual(summary["pairs_planned"], 3)
+        self.assertEqual(summary["pairs_missing"], 1)
+        self.assertEqual(summary["pairs_incomplete"], 2)
+        self.assertEqual(summary["pairs_usable"], 0)
+        self.assertIsNone(summary["false_alarm_rate"])
+        self.assertIsNone(summary["catch_rate"])
+        self.assertEqual(len(rows), 2)
+        self.assertEqual(rows[0]["control_attempts"][0]["doc"]["verdict"], "maybe")
+        self.assertEqual(rows[0]["control_attempts"][0]["review_error"], "invalid-verdict")
+
+    def test_resume_refuses_old_validation_without_invoking_or_changing_rows(self):
+        with tempfile.TemporaryDirectory() as root:
+            path = os.path.join(root, "results.jsonl")
+            original = json.dumps({"dispatch_id": "old", "usable": True}) + "\n"
+            with open(path, "w") as f:
+                f.write(original)
+            with _mock.patch.object(pool_runner, "invoke") as invoke, \
+                    self.assertRaisesRegex(ValueError, "response-validation"):
+                self.run_fixture_pool(root, echo_adapter())
+            invoke.assert_not_called()
+            with open(path) as f:
+                self.assertEqual(f.read(), original)
+            self.assertFalse(os.path.exists(os.path.join(root, "summary.json")))
+
     def test_summary_is_recognised_as_a_scoreable_run(self):
         with tempfile.TemporaryDirectory() as root:
             with open(os.path.join(root, "results.jsonl"), "w") as f:
@@ -245,6 +348,45 @@ class SummaryShapeTest(unittest.TestCase):
                 json.dump({"instrument": SYNTHETIC_CONTRACT_INSTRUMENT,
                            "aborted": None}, f)
             self.assertTrue(is_matched_pair_run(root))
+
+    def test_new_validation_cannot_issue_a_claim_from_surviving_pairs(self):
+        from caplab.advisory.review_response import VALIDATION_VERSION
+        with tempfile.TemporaryDirectory() as root:
+            summary = {"instrument": SYNTHETIC_CONTRACT_INSTRUMENT, "aborted": None,
+                       "response_validation": VALIDATION_VERSION,
+                       "pairs_missing": 0, "pairs_incomplete": 0}
+            for changes, eligible in (({}, True), ({"pairs_incomplete": 1}, False),
+                                      ({"pairs_missing": 1}, False), ({"pairs_missing": None}, False),
+                                      ({"response_validation": "future"}, False)):
+                with self.subTest(changes=changes):
+                    with open(os.path.join(root, "summary.json"), "w") as f:
+                        json.dump({**summary, **changes}, f)
+                    self.assertEqual(is_matched_pair_run(root), eligible)
+
+    def test_complete_fixture_run_can_resume_without_repeating_attempts(self):
+        with tempfile.TemporaryDirectory() as root:
+            self.run_fixture_pool(root, echo_adapter())
+            path = os.path.join(root, "results.jsonl")
+            with open(path, "rb") as f:
+                before = f.read()
+            with _mock.patch.object(pool_runner, "invoke") as invoke:
+                summary = self.run_fixture_pool(root, echo_adapter())
+            invoke.assert_not_called()
+            with open(path, "rb") as f:
+                self.assertEqual(f.read(), before)
+            self.assertTrue(is_matched_pair_run(root))
+        self.assertEqual(summary["pairs_missing"], 0)
+        self.assertEqual(summary["pairs_usable"], 3)
+
+    def test_preparation_failure_is_incomplete_not_inapplicable(self):
+        with tempfile.TemporaryDirectory() as root, \
+                _mock.patch.object(pool_runner, "measure_case", side_effect=lambda c, *a, **k: {
+                    "dispatch_id": f"{c['substrate_id']}:{c['operator']}:{c['seed']}",
+                    "usable": False, "error": "materialization failed: absent object"}):
+            summary = self.run_fixture_pool(root, echo_adapter())
+            self.assertFalse(is_matched_pair_run(root))
+        self.assertEqual(summary["pairs_incomplete"], 3)
+        self.assertEqual(summary["pairs_not_applicable"], 0)
 
     def test_aborted_pool_run_is_not_scoreable(self):
         with tempfile.TemporaryDirectory() as root:
@@ -280,7 +422,7 @@ class ProfileRoutingTest(unittest.TestCase):
         def spy(adapter, prompt, timeout, **kwargs):
             seen["prompt"] = prompt
             return {"doc": {"verdict": "accept", "findings": []},
-                    "exit_code": 0, "seconds": 0, "transport": "stdin",
+                    "exit_code": 0, "timed_out": False, "seconds": 0, "transport": "stdin",
                     "prompt_bytes": len(prompt), "raw_head": ""}
 
         original = pool_runner.invoke
@@ -319,7 +461,7 @@ class ReplicationTest(unittest.TestCase):
             token = state[arm].pop(0)
             verdict = "needs_revision" if token == "r" else "accept"
             return {"doc": {"verdict": verdict, "findings": []},
-                    "exit_code": 0, "seconds": 0, "transport": "stdin",
+                    "exit_code": 0, "timed_out": False, "seconds": 0, "transport": "stdin",
                     "prompt_bytes": len(prompt), "raw_head": ""}
 
         return invoke

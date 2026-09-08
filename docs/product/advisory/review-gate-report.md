@@ -33,6 +33,11 @@ timeout or transport error, a valid verdict, bwrap, and a passing manifest
 check. Analog observations must also name tree-v1. Old rows without the
 per-attempt evidence cannot establish those observations.
 
+The shared response validator requires a JSON object with a supported verdict
+and a list of finding objects. Supplied anchor, text, and rationale fields
+must be strings. A successful process must explicitly record that it did not
+time out. These checks validate the envelope, not the truth of its findings.
+
 `missed` counts complete, scorable analog cells whose mutant was not refused.
 Read it alongside coverage: zero misses with no scorable cells establishes
 nothing about defect detection.
@@ -58,6 +63,16 @@ that the rationale is correct. Likewise, naming `result_tree_hash` is not
 proof that a finding demonstrates the defect. Full responses remain available
 for inspection. An aborted pool leaves the natural cases unavailable and
 launches no further calls.
+
+Pool runs now record `response_validation: review-response/1`. A pair requires
+all specified attempts to be valid before a majority score is emitted.
+Individual valid observations remain in the attempt records when the pair is
+incomplete. The summary distinguishes planned, missing, inapplicable, and
+incomplete pairs; an incomplete prospective run is refused by the claim
+export path even when it has some successful pairs. Resuming older rows under
+the new validation contract is refused before any invocation. Historical
+summaries retain their recorded semantics and are not rewritten by this
+change.
 
 These observations do not resolve the production-outcome gap. The
 [production report](production-review-report.md) remains the report-only
