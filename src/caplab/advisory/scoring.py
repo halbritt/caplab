@@ -34,6 +34,7 @@ import os
 from ._tuner_vendored import anchor_hits, anchors_of, extract_json
 from .review_response import (ANCHOR_MATCHING_VERSION, VALIDATION_VERSION,
                               exact_anchor_mention)
+from .operators import PAIR_VALIDATION_VERSION
 
 MATCHED_PAIR_INSTRUMENT = "matched-pair defect injection"
 SYNTHETIC_CONTRACT_INSTRUMENT = "matched-pair defect injection (synthetic contract)"
@@ -68,6 +69,8 @@ def completed(run_dir: str) -> bool:
     if summary.get("aborted"):
         return False
     if "anchor_matching" in summary and summary["anchor_matching"] != ANCHOR_MATCHING_VERSION:
+        return False
+    if "pair_validation" in summary and summary["pair_validation"] != PAIR_VALIDATION_VERSION:
         return False
     if "response_validation" in summary:
         # Prospective complete-replication runs cannot yield a claim from only
@@ -192,12 +195,18 @@ def score_backends(run_dirs: list[str], adjudications=None,
             summary = json.load(f)
         run_instrument = summary.get("instrument")
         matching = summary.get("anchor_matching")
+        pair_validation = summary.get("pair_validation")
+        if "pair_validation" in summary and pair_validation != PAIR_VALIDATION_VERSION:
+            raise ValueError(f"unknown pair-validation contract in {run_name}")
         if "anchor_matching" in summary and matching != ANCHOR_MATCHING_VERSION:
             raise ValueError(f"unknown anchor-matching contract in {run_name}")
         run_instruments[run_dir] = run_instrument
         with open(results_path, encoding="utf-8") as f:
             rows = [json.loads(line) for line in f if line.strip()]
         for row in rows:
+            if (row.get("pair_validation") != pair_validation or
+                    ("pair_validation" in row) != ("pair_validation" in summary)):
+                raise ValueError(f"row/summary pair-validation contract mismatch in {run_name}")
             if (row.get("anchor_matching") != matching or
                     ("anchor_matching" in row) != ("anchor_matching" in summary)):
                 raise ValueError(f"row/summary anchor-matching contract mismatch in {run_name}")

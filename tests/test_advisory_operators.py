@@ -151,7 +151,7 @@ class ClaimVsBehaviorTest(unittest.TestCase):
         self.assertTrue(check_present(injection, injection.body))
         self.assertFalse(check_present(injection, CHANGE_SET))
 
-    def test_skips_tests_that_really_validate(self):
+    def test_historical_heuristic_skips_schema_words_even_in_comments(self):
         honest = json.loads(CHANGE_SET)
         honest["files"]["tests/thing/thing_test.go"] += (
             '\n// loads schemas/thing.schema.json via jsonschema\n')

@@ -426,23 +426,24 @@ class SummaryShapeTest(unittest.TestCase):
         self.assertEqual(summary["pairs_missing"], 0)
         self.assertEqual(summary["pairs_usable"], 3)
 
-    def test_resume_refuses_a_different_anchor_contract_before_invocation(self):
-        for version in (None, "future"):
-            with self.subTest(version=version), tempfile.TemporaryDirectory() as root:
+    def test_resume_refuses_different_measurement_contracts_before_invocation(self):
+        for field, version in ((field, version) for field in ("anchor_matching", "pair_validation")
+                               for version in (None, "future")):
+            with self.subTest(field=field, version=version), tempfile.TemporaryDirectory() as root:
                 self.run_fixture_pool(root, echo_adapter())
                 path = os.path.join(root, "results.jsonl")
                 with open(path) as f:
                     rows = [json.loads(line) for line in f]
                 for result in rows:
                     if version is None:
-                        result.pop("anchor_matching", None)
+                        result.pop(field, None)
                     else:
-                        result["anchor_matching"] = version
+                        result[field] = version
                 original = "".join(json.dumps(result) + "\n" for result in rows)
                 with open(path, "w") as f:
                     f.write(original)
                 with _mock.patch.object(pool_runner, "invoke") as invoke, \
-                        self.assertRaisesRegex(ValueError, "anchor-matching"):
+                        self.assertRaisesRegex(ValueError, field.replace("_", "-")):
                     self.run_fixture_pool(root, echo_adapter())
                 invoke.assert_not_called()
                 with open(path) as f:

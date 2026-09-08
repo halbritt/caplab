@@ -445,9 +445,38 @@ GATED_VENDORED_OPERATORS = [
 ALL_OPERATORS = GATED_VENDORED_OPERATORS + CAPLAB_OPERATORS
 BY_NAME = {op.__name__: op for op in ALL_OPERATORS}
 
+PAIR_VALIDATION_VERSION = "paired-presence/1"
+
+
+def pair_gate_error(injection: Injection, control: str) -> str | None:
+    """Require explicit opposing checker results before prospective attempts.
+
+    This establishes the declared mechanical contrast only, not global
+    control soundness or the correctness of a reviewer's eventual finding.
+    Historical marker checkers remain available for characterization.
+    """
+    if injection.defect_class == "unearned_verification_claim":
+        return ("oracle unverified: absent schema-related words do not prove "
+                "absent validation; independent behavioral evidence is required")
+    if injection.checkable is not True:
+        return "oracle unverified: injection declares no mechanical checker"
+    mutant_result = check_present(injection, injection.body)
+    control_result = check_present(injection, control)
+    if mutant_result is not True:
+        return ("injection failed its own check" if mutant_result is False else
+                "oracle unverified: mutant presence is unknown")
+    if control_result is not False:
+        return ("control already carries the defect" if control_result is True else
+                "oracle unverified: control absence is unknown")
+    return None
+
 
 def check_present(injection: Injection, body: str) -> bool | None:
-    """Mechanical presence check covering vendored and CAPLAB classes."""
+    """Historical presence heuristics, insufficient alone for a pair gate.
+
+    Prospective execution uses pair_gate_error, which refuses unsupported
+    semantic claims and unknown results instead of inventing ground truth.
+    """
     cls = injection.defect_class
     if cls == "broken_internal_crossref":
         return "{#el:" + injection.detail["now"] + "}" in body
@@ -469,9 +498,9 @@ def check_present(injection: Injection, body: str) -> bool | None:
         files = doc.get("files") or {}
         documentation = files.get(injection.detail["doc"], "")
         test = files.get(injection.detail["test"], "")
-        # Present when the claim is asserted and the named test still cannot
-        # back it. Both halves are required: the claim alone is not a defect
-        # if the test really validates.
+        # Preserve the historical heuristic. A helper can validate without
+        # these words appearing in the test, so pair_gate_error refuses this
+        # class until independent behavioral evidence can establish the claim.
         return (injection.detail["claim"] in documentation
                 and not _SCHEMA_EVIDENCE.search(test))
     if cls == "overclaimed_level" and "mutant_count" in injection.detail:

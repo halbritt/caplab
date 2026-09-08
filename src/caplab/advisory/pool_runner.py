@@ -45,7 +45,8 @@ from .calibrate import (CALIBRATION_PROFILES, REVIEW_PREAMBLE_V3_VERSION,
                         resolve_json_pointer)
 from .corpus import SubstrateRegistry, sample_cases, targeted_cases
 from .instrument_defects import NotApplicable
-from .operators import BASE_DEPENDENT_OPERATORS, BY_NAME, check_present, operators_for
+from .operators import (BASE_DEPENDENT_OPERATORS, BY_NAME, PAIR_VALIDATION_VERSION,
+                        operators_for, pair_gate_error)
 from .review_response import (ANCHOR_MATCHING_VERSION, VALIDATION_VERSION,
                               attempt_error, exact_anchor_mention)
 from . import materialize as _materialize
@@ -479,7 +480,8 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
            "substrate_id": case["substrate_id"],
            "source_kind": case["source"]["kind"],
            "defect_class": case["operator"], "response_validation": VALIDATION_VERSION,
-           "anchor_matching": ANCHOR_MATCHING_VERSION}
+           "anchor_matching": ANCHOR_MATCHING_VERSION,
+           "pair_validation": PAIR_VALIDATION_VERSION}
     row.setdefault("calibration_profile", MEASUREMENT_PROFILE)
     tree = tree_mode()
     base_source = (base_record or {}).get("base_source") if tree else None
@@ -504,10 +506,9 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
         return {**row, "usable": False, "error": f"not applicable: {e}"}
 
     # Mechanical gate, before any model sees the pair.
-    if check_present(injection, injection.body) is False:
-        return {**row, "usable": False, "error": "injection failed its own check"}
-    if check_present(injection, body) is True:
-        return {**row, "usable": False, "error": "control already carries the defect"}
+    gate_error = pair_gate_error(injection, body)
+    if gate_error:
+        return {**row, "usable": False, "error": gate_error}
 
     profile = profile_for_artifact(body, tree=tree)
     row["calibration_profile"] = profile
@@ -771,6 +772,8 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
                     raise ValueError("cannot resume rows from a different response-validation contract")
                 if prior.get("anchor_matching") != ANCHOR_MATCHING_VERSION:
                     raise ValueError("cannot resume rows from a different anchor-matching contract")
+                if prior.get("pair_validation") != PAIR_VALIDATION_VERSION:
+                    raise ValueError("cannot resume rows from a different pair-validation contract")
                 if prior["dispatch_id"] not in planned_ids or prior["dispatch_id"] in done:
                     raise ValueError("duplicate or unexpected retained case for this plan")
                 done.add(prior["dispatch_id"])
@@ -809,6 +812,7 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
                 row = {"dispatch_id": case_id, "substrate_id": case["substrate_id"],
                        "usable": False, "response_validation": VALIDATION_VERSION,
                        "anchor_matching": ANCHOR_MATCHING_VERSION,
+                       "pair_validation": PAIR_VALIDATION_VERSION,
                        "error": "substrate unreachable",
                        "defect_class": case["operator"]}
             else:
@@ -876,6 +880,7 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
         "environment": ENVIRONMENT_VERSION,
         "response_validation": VALIDATION_VERSION,
         "anchor_matching": ANCHOR_MATCHING_VERSION,
+        "pair_validation": PAIR_VALIDATION_VERSION,
         "base_registry_sha256": base_registry_sha,
         "base_registry": (os.path.relpath(os.path.abspath(BASE_REGISTRY_PATH)) if tree_mode() else None),
         "replicates": replicates,

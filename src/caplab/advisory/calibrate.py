@@ -29,7 +29,7 @@ import random
 import urllib.request
 
 from .instrument_defects import NotApplicable
-from .operators import BY_NAME, check_present
+from .operators import BY_NAME, PAIR_VALIDATION_VERSION, pair_gate_error
 from ._tuner_vendored import REFUSING, anchors_of, anchor_hits, extract_json
 
 LOCAL_ENDPOINT = "http://localhost:8081/v1/chat/completions"
@@ -531,6 +531,7 @@ def validate_pending(calibration_path: str, reviewer, load_body,
     for record in pending:
         case = record["case"]
         row = {"case": case,
+               "pair_validation": PAIR_VALIDATION_VERSION,
                "reference": getattr(reviewer, "reference_name", "strong"),
                "calibration_profile": getattr(reviewer, "profile", "v1")}
         body = load_body(case)
@@ -594,15 +595,14 @@ def materialize_case(case: dict, body: str) -> tuple[str, str, object] | None:
         injection = operator(body, random.Random(case["seed"]))
     except NotApplicable:
         return None
-    if check_present(injection, injection.body) is False:
-        return None
-    if check_present(injection, body) is True:
+    if pair_gate_error(injection, body):
         return None
     return body, injection.body, injection
 
 
 def calibrate_case(case: dict, body: str, reviewer=local_review) -> dict:
-    row = {"case": case, "reference": "local-qwen3.6-35b-a3b/weak"}
+    row = {"case": case, "reference": "local-qwen3.6-35b-a3b/weak",
+           "pair_validation": PAIR_VALIDATION_VERSION}
     materialized = materialize_case(case, body)
     if materialized is None:
         row.update({"status": "injection-failed-gate"})

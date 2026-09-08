@@ -101,11 +101,23 @@ class ScoringTest(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "anchor-matching"):
                     score_backends([run])
 
-    def test_unknown_anchor_contract_is_ineligible(self):
+    def test_unknown_measurement_contract_is_ineligible(self):
         run = write_run(self.root, "unknown", [row("a" * 64)])
-        with open(os.path.join(run, "summary.json"), "w") as f:
-            json.dump({"anchor_matching": "future"}, f)
-        self.assertFalse(completed(run))
+        for field in ("anchor_matching", "pair_validation"):
+            with self.subTest(field=field):
+                with open(os.path.join(run, "summary.json"), "w") as f:
+                    json.dump({field: "future"}, f)
+                self.assertFalse(completed(run))
+
+    def test_inconsistent_pair_validation_cannot_produce_metrics(self):
+        for summary_fields, row_fields in (({"pair_validation": "paired-presence/1"}, {}),
+                                           ({}, {"pair_validation": "paired-presence/1"})):
+            with self.subTest(summary=summary_fields, row=row_fields):
+                run = write_run(self.root, "mismatch", [{**row("a" * 64), **row_fields}])
+                with open(os.path.join(run, "summary.json"), "w") as f:
+                    json.dump({"instrument": "matched-pair defect injection", **summary_fields}, f)
+                with self.assertRaisesRegex(ValueError, "pair-validation"):
+                    score_backends([run])
 
     def test_incomplete_run_excluded_whole(self):
         write_run(self.root, "cc-tuple-a", [row("a" * 64)], complete=True)

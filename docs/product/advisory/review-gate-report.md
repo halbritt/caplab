@@ -81,6 +81,24 @@ representative list. Older matching contracts cannot be resumed into this
 one. This changes location accounting only; the gate's natural-case lexical
 conformance checks remain bounded as described above.
 
+Prospective preparation now declares `pair_validation: paired-presence/1`.
+The injection must declare itself checkable, its presence checker must return
+exactly `True` on the mutant, and exactly `False` on the control. An unknown
+result cannot launch a reviewer. The `unearned_verification_claim` heuristic
+is also insufficient: a test can call a validating helper without containing
+any schema-related words itself. Applicable cells in that class now remain
+`incomplete` with an `oracle unverified` reason, rather than counting as
+operator inapplicability or reviewer misses. This does not quarantine or
+readjudicate a historical case. Resuming rows from older pair-validation
+contracts is refused before invocation.
+
+The gate specification is unchanged and still includes four candidate cells
+for that operator. A future authorized gate run must disclose this preparation
+gap; it cannot treat unavailable cells as passed. The existing abort policy
+can stop a run after consecutive preparation failures. Mechanical contrast
+on other operators is necessary, but is not a blanket guarantee of sound
+controls or semantic finding correctness.
+
 These observations do not resolve the production-outcome gap. The
 [production report](production-review-report.md) remains the report-only
 surface for finding reviews and missing evidence to inspect.

@@ -47,6 +47,14 @@ occur with any verdict and says nothing about the correctness of the
 finding's explanation. Listing every real anchor can still satisfy this
 metric. It must not serve as a semantic finding-quality score.
 
+The prospective pair gate, `paired-presence/1`, requires explicit opposing
+mechanical checker results before any pool or calibration attempt. It refuses
+unknown results and the unsupported schema-word inference in
+`unearned_verification_claim`. This can reduce executable coverage; affected
+pool cells remain incomplete rather than becoming reviewer misses. See the
+[gate report guide](review-gate-report.md) for the consequences and the
+[oracle counterexample](../../records/repair-2026-09-08-pair-oracle.md).
+
 ## Advisory-grade execution profile v0
 
 `python3 -m caplab.advisory run` executes the pinned striatum-tuner
