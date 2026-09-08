@@ -38,7 +38,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 import yaml
 
-from ._tuner_vendored import REFUSING, anchor_hits, anchors_of, extract_json
+from ._tuner_vendored import REFUSING, anchors_of, extract_json
 from .calibrate import (CALIBRATION_PROFILES, REVIEW_PREAMBLE_V3_VERSION,
                         REVIEW_PREAMBLE_VERSION, TREE_PROFILE_BODIES,
                         profile_for_artifact, render_preamble_v3,
@@ -46,7 +46,8 @@ from .calibrate import (CALIBRATION_PROFILES, REVIEW_PREAMBLE_V3_VERSION,
 from .corpus import SubstrateRegistry, sample_cases, targeted_cases
 from .instrument_defects import NotApplicable
 from .operators import BASE_DEPENDENT_OPERATORS, BY_NAME, check_present, operators_for
-from .review_response import VALIDATION_VERSION, attempt_error
+from .review_response import (ANCHOR_MATCHING_VERSION, VALIDATION_VERSION,
+                              attempt_error, exact_anchor_mention)
 from . import materialize as _materialize
 
 SYNTHETIC_CONTRACT_INSTRUMENT = "matched-pair defect injection (synthetic contract)"
@@ -477,7 +478,8 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
     row = {"dispatch_id": f"{case['substrate_id']}:{case['operator']}:{case['seed']}",
            "substrate_id": case["substrate_id"],
            "source_kind": case["source"]["kind"],
-           "defect_class": case["operator"], "response_validation": VALIDATION_VERSION}
+           "defect_class": case["operator"], "response_validation": VALIDATION_VERSION,
+           "anchor_matching": ANCHOR_MATCHING_VERSION}
     row.setdefault("calibration_profile", MEASUREMENT_PROFILE)
     tree = tree_mode()
     base_source = (base_record or {}).get("base_source") if tree else None
@@ -644,8 +646,8 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
         "mutant_verdict": mutant_verdict,
         "caught": mutant_verdict in REFUSING,
         "false_alarm": control_verdict in REFUSING,
-        "anchor_hit": bool(anchor_hits(injection.element_anchor, emitted)),
-        "anchors_emitted": emitted[:8],
+        "anchor_hit": exact_anchor_mention(injection.element_anchor, emitted),
+        "anchors_emitted": emitted,
         "mutant_findings": len((mutant["doc"] or {}).get("findings") or []),
         "control_findings_detail": _summarize_findings(control["doc"]),
         "mutant_findings_detail": _summarize_findings(mutant["doc"]),
@@ -767,6 +769,8 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
                 prior = json.loads(line)
                 if prior.get("response_validation") != VALIDATION_VERSION:
                     raise ValueError("cannot resume rows from a different response-validation contract")
+                if prior.get("anchor_matching") != ANCHOR_MATCHING_VERSION:
+                    raise ValueError("cannot resume rows from a different anchor-matching contract")
                 if prior["dispatch_id"] not in planned_ids or prior["dispatch_id"] in done:
                     raise ValueError("duplicate or unexpected retained case for this plan")
                 done.add(prior["dispatch_id"])
@@ -804,6 +808,7 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
             if body is None:
                 row = {"dispatch_id": case_id, "substrate_id": case["substrate_id"],
                        "usable": False, "response_validation": VALIDATION_VERSION,
+                       "anchor_matching": ANCHOR_MATCHING_VERSION,
                        "error": "substrate unreachable",
                        "defect_class": case["operator"]}
             else:
@@ -870,6 +875,7 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
         "case_selection": case_selection,
         "environment": ENVIRONMENT_VERSION,
         "response_validation": VALIDATION_VERSION,
+        "anchor_matching": ANCHOR_MATCHING_VERSION,
         "base_registry_sha256": base_registry_sha,
         "base_registry": (os.path.relpath(os.path.abspath(BASE_REGISTRY_PATH)) if tree_mode() else None),
         "replicates": replicates,

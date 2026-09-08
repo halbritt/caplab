@@ -31,6 +31,22 @@ rescoreable-arm denominator recorded), `n_pairs`, `n_distinct_cases`,
 `findings_per_mutant`, `json_valid_mutant`. Wilson 95% intervals accompany
 the rates.
 
+Prospective pool runs marked `anchor_matching: normalized-anchor-exact/1`
+report `exact_anchor_mention` instead of `anchored_detection`. The new metric
+requires whole-anchor equality after the existing normalization of wrappers
+and letter case. It does not credit substrings, ancestors, or longer element
+names. The runner retains every emitted anchor from the representative
+mutant response, so scoring can reproduce the same comparison. Runs with
+different anchor contracts cannot resume into one another, and the scorer
+refuses unknown or inconsistent contract markers.
+
+Historical runs retain their frozen substring rule and separate denominator.
+When a backend has both kinds of run, both metrics appear independently;
+their numerators and denominators are never pooled. A location mention can
+occur with any verdict and says nothing about the correctness of the
+finding's explanation. Listing every real anchor can still satisfy this
+metric. It must not serve as a semantic finding-quality score.
+
 ## Advisory-grade execution profile v0
 
 `python3 -m caplab.advisory run` executes the pinned striatum-tuner

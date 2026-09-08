@@ -74,6 +74,13 @@ the new validation contract is refused before any invocation. Historical
 summaries retain their recorded semantics and are not rewritten by this
 change.
 
+New pool rows and summaries also name
+`anchor_matching: normalized-anchor-exact/1`. Their `anchor_hit` requires
+exact normalized location equality, and `anchors_emitted` retains the whole
+representative list. Older matching contracts cannot be resumed into this
+one. This changes location accounting only; the gate's natural-case lexical
+conformance checks remain bounded as described above.
+
 These observations do not resolve the production-outcome gap. The
 [production report](production-review-report.md) remains the report-only
 surface for finding reviews and missing evidence to inspect.

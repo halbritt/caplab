@@ -23,9 +23,13 @@ CONSTRUCT_CATALOG = {
             "rate on mutants, false_alarm_rate the refusing rate on controls, "
             "discrimination their difference (zero for any constant "
             "reviewer), anchored_detection whether the review names the "
-            "broken element (rescored from retained arms)."),
+            "broken element using the historical substring matcher. "
+            "Prospective versioned pool runs instead report "
+            "exact_anchor_mention using whole normalized anchor equality. "
+            "These location-mention metrics do not establish finding correctness."),
         "metrics": ["n_pairs", "n_distinct_cases", "catch_rate",
                     "false_alarm_rate", "discrimination", "anchored_detection",
+                    "exact_anchor_mention",
                     "findings_per_mutant", "json_valid_mutant"],
         "oracle": "deterministic mechanical checkers on both arms",
     },

@@ -139,6 +139,45 @@ class SpillTransportTest(unittest.TestCase):
 
 
 class MeasureCaseTest(unittest.TestCase):
+    def test_anchor_mention_requires_the_whole_normalized_identity(self):
+        for anchor, hit in (("m", False), ("motivation-extra", False),
+                            ("some-motivation", False), ("", False),
+                            ("`{#el:motivation}`", True)):
+            with self.subTest(anchor=anchor):
+                response = {"doc": {"verdict": "accept_with_findings",
+                                     "findings": [{"element_anchor": anchor}]},
+                            "exit_code": 0, "timed_out": False, "seconds": 1,
+                            "raw_head": "", "error": None, "transport": "stdin",
+                            "prompt_bytes": 100}
+                with _mock.patch.object(pool_runner, "invoke", side_effect=lambda *a, **k: dict(response)):
+                    result = measure_case(case(), DOC, echo_adapter(), timeout=60)
+                self.assertTrue(result["usable"])
+                self.assertEqual(result["anchor_hit"], hit)
+                # A location mention is independent of the refusal verdict.
+                self.assertFalse(result["caught"])
+
+    def test_anchor_evidence_is_not_truncated_before_rescoring(self):
+        anchors = [f"#el:other-{i}" for i in range(8)] + ["#el:motivation"]
+        response = {"doc": {"verdict": "reject", "findings": [
+            {"element_anchor": anchor} for anchor in anchors]},
+            "exit_code": 0, "timed_out": False, "seconds": 1, "raw_head": "",
+            "transport": "stdin", "prompt_bytes": 100}
+        with _mock.patch.object(pool_runner, "invoke", side_effect=lambda *a, **k: dict(response)):
+            result = measure_case(case(), DOC, echo_adapter(), timeout=60)
+        self.assertTrue(result["anchor_hit"])
+        self.assertEqual(result["anchors_emitted"], anchors)
+
+    def test_exact_location_can_be_extracted_from_finding_text(self):
+        for text, hit in (("The rule at {#el:motivation} is inverted.", True),
+                          ("See {#el:motivation-extra}.", False)):
+            with self.subTest(text=text):
+                response = {"doc": {"verdict": "reject", "findings": [{"text": text}]},
+                            "exit_code": 0, "timed_out": False, "seconds": 1,
+                            "raw_head": "", "transport": "stdin", "prompt_bytes": 100}
+                with _mock.patch.object(pool_runner, "invoke", side_effect=lambda *a, **k: dict(response)):
+                    result = measure_case(case(), DOC, echo_adapter(), timeout=60)
+                self.assertEqual(result["anchor_hit"], hit)
+
     def test_scores_a_matched_pair(self):
         row = measure_case(case(), DOC, echo_adapter(), timeout=60)
         self.assertTrue(row["usable"], row.get("error"))
@@ -375,8 +414,39 @@ class SummaryShapeTest(unittest.TestCase):
             with open(path, "rb") as f:
                 self.assertEqual(f.read(), before)
             self.assertTrue(is_matched_pair_run(root))
+            self.assertEqual(summary["anchor_matching"], "normalized-anchor-exact/1")
+            from caplab.advisory.scoring import score_backends
+            # Local subprocess fixture through persistence and scoring.
+            scored = score_backends([root], qualification_operators={"requirement_inversion"})
+            metrics = next(iter(scored.values()))["metrics"]
+            self.assertNotIn("anchored_detection", metrics)
+            # This fixture's three seeded responses contain no findings.
+            self.assertEqual(metrics["exact_anchor_mention"]["numerator"], 0)
+            self.assertEqual(metrics["exact_anchor_mention"]["denominator"], 3)
         self.assertEqual(summary["pairs_missing"], 0)
         self.assertEqual(summary["pairs_usable"], 3)
+
+    def test_resume_refuses_a_different_anchor_contract_before_invocation(self):
+        for version in (None, "future"):
+            with self.subTest(version=version), tempfile.TemporaryDirectory() as root:
+                self.run_fixture_pool(root, echo_adapter())
+                path = os.path.join(root, "results.jsonl")
+                with open(path) as f:
+                    rows = [json.loads(line) for line in f]
+                for result in rows:
+                    if version is None:
+                        result.pop("anchor_matching", None)
+                    else:
+                        result["anchor_matching"] = version
+                original = "".join(json.dumps(result) + "\n" for result in rows)
+                with open(path, "w") as f:
+                    f.write(original)
+                with _mock.patch.object(pool_runner, "invoke") as invoke, \
+                        self.assertRaisesRegex(ValueError, "anchor-matching"):
+                    self.run_fixture_pool(root, echo_adapter())
+                invoke.assert_not_called()
+                with open(path) as f:
+                    self.assertEqual(f.read(), original)
 
     def test_preparation_failure_is_incomplete_not_inapplicable(self):
         with tempfile.TemporaryDirectory() as root, \

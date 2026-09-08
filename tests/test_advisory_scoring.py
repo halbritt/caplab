@@ -65,6 +65,48 @@ class ScoringTest(unittest.TestCase):
     def tearDown(self):
         self.tmp.cleanup()
 
+    def test_exact_anchor_mentions_do_not_mix_with_legacy_substring_scores(self):
+        legacy = write_run(self.root, "old", [row("a" * 64)], mutant_reviews={
+            "a" * 64: {"verdict": "reject", "findings": [{"element_anchor": "d"}]}})
+        modern_rows = [{**row(str(i) * 64, caught=False),
+                        "anchor_matching": "normalized-anchor-exact/1",
+                        "anchors_emitted": [anchor]}
+                       for i, anchor in enumerate(("d", "decision-clauses", "decision-clauses-extra"))]
+        modern = write_run(self.root, "new", modern_rows)
+        with open(os.path.join(modern, "summary.json"), "w") as f:
+            json.dump({"instrument": "matched-pair defect injection (synthetic contract)",
+                       "anchor_matching": "normalized-anchor-exact/1"}, f)
+        metrics = score_backends([legacy, modern])["tuple-a"]["metrics"]
+        self.assertEqual(metrics["anchored_detection"]["value"], 1)
+        self.assertEqual(metrics["anchored_detection"]["denominator"], 1)
+        self.assertEqual(metrics["exact_anchor_mention"]["numerator"], 1)
+        self.assertEqual(metrics["exact_anchor_mention"]["denominator"], 3)
+        self.assertEqual(metrics["exact_anchor_mention"]["value"], 1 / 3)
+        self.assertEqual(metrics["catch_rate"]["value"], 1 / 4)
+
+    def test_anchor_contract_mismatch_cannot_fall_back_to_legacy_scoring(self):
+        for summary_version, row_version in (("future", "future"),
+                                              ("normalized-anchor-exact/1", None),
+                                              (None, "normalized-anchor-exact/1")):
+            with self.subTest(summary=summary_version, row=row_version):
+                result = {**row("d" * 64), "anchors_emitted": ["d"]}
+                if row_version is not None:
+                    result["anchor_matching"] = row_version
+                run = write_run(self.root, "mismatch", [result])
+                summary = {"instrument": "matched-pair defect injection (synthetic contract)"}
+                if summary_version is not None:
+                    summary["anchor_matching"] = summary_version
+                with open(os.path.join(run, "summary.json"), "w") as f:
+                    json.dump(summary, f)
+                with self.assertRaisesRegex(ValueError, "anchor-matching"):
+                    score_backends([run])
+
+    def test_unknown_anchor_contract_is_ineligible(self):
+        run = write_run(self.root, "unknown", [row("a" * 64)])
+        with open(os.path.join(run, "summary.json"), "w") as f:
+            json.dump({"anchor_matching": "future"}, f)
+        self.assertFalse(completed(run))
+
     def test_incomplete_run_excluded_whole(self):
         write_run(self.root, "cc-tuple-a", [row("a" * 64)], complete=True)
         write_run(self.root, "cc-killed", [row("b" * 64)], complete=False)

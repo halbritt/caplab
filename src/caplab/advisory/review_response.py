@@ -1,9 +1,20 @@
 """Structural and execution validity for advisory review observations."""
 from __future__ import annotations
 
-from ._tuner_vendored import VERDICTS
+from ._tuner_vendored import VERDICTS, normalize_anchor
 
 VALIDATION_VERSION = "review-response/1"
+ANCHOR_MATCHING_VERSION = "normalized-anchor-exact/1"
+
+
+def exact_anchor_mention(injected: str, emitted: list[str]) -> bool:
+    """Exact normalized location mention, with no claim of finding correctness.
+
+    Keep the historical normalizer (wrappers and lowercase), but never credit
+    a substring, parent element, or longer unrelated element identifier.
+    """
+    target = normalize_anchor(injected)
+    return bool(target) and any(normalize_anchor(anchor) == target for anchor in emitted)
 
 
 def response_error(doc: object) -> str | None:

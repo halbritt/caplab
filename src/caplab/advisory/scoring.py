@@ -11,12 +11,12 @@ Scoring rules, stated once:
 
 - A run without `summary.json` was killed mid-flight and is excluded whole
   (the abort path writes no record; requiring the record is the fix).
-- Only rows with `usable: true` and at least one parseable arm count.
-- Anchored detection is computed ONLY by re-scoring retained mutant arms with
-  the corrected anchor path (`_tuner_vendored`). Row-level `anchor_hit`
-  fields recorded before the 2026-08-08 correction are parser artifacts and
-  are never read. A pair whose arms were not retained contributes to verdict
-  metrics but not to anchored detection, and the denominator says so.
+- Only usable rows with valid responses on both arms count.
+- Historical anchored detection uses the frozen substring matcher on retained
+  mutant arms or recorded pool anchors. Prospective versioned pool rows use
+  exact normalized equality and a separate `exact_anchor_mention` metric.
+  Neither metric judges finding correctness. Row-level `anchor_hit` fields
+  are never read; the evidence used and its denominator are explicit.
 - Rows are merged across runs by the row's own `backend_measured`. Repeated
   dispatch ids across runs are counted as repeated trials of the same case
   and reported, because unique-case coverage is the number that cannot be
@@ -32,7 +32,8 @@ import json
 import os
 
 from ._tuner_vendored import anchor_hits, anchors_of, extract_json
-from .review_response import VALIDATION_VERSION
+from .review_response import (ANCHOR_MATCHING_VERSION, VALIDATION_VERSION,
+                              exact_anchor_mention)
 
 MATCHED_PAIR_INSTRUMENT = "matched-pair defect injection"
 SYNTHETIC_CONTRACT_INSTRUMENT = "matched-pair defect injection (synthetic contract)"
@@ -65,6 +66,8 @@ def completed(run_dir: str) -> bool:
     except (OSError, json.JSONDecodeError):
         return False
     if summary.get("aborted"):
+        return False
+    if "anchor_matching" in summary and summary["anchor_matching"] != ANCHOR_MATCHING_VERSION:
         return False
     if "response_validation" in summary:
         # Prospective complete-replication runs cannot yield a claim from only
@@ -186,11 +189,18 @@ def score_backends(run_dirs: list[str], adjudications=None,
         run_name = os.path.basename(run_dir)
         results_sha = _sha256_file(results_path)
         with open(os.path.join(run_dir, "summary.json"), encoding="utf-8") as f:
-            run_instrument = json.load(f).get("instrument")
+            summary = json.load(f)
+        run_instrument = summary.get("instrument")
+        matching = summary.get("anchor_matching")
+        if "anchor_matching" in summary and matching != ANCHOR_MATCHING_VERSION:
+            raise ValueError(f"unknown anchor-matching contract in {run_name}")
         run_instruments[run_dir] = run_instrument
         with open(results_path, encoding="utf-8") as f:
             rows = [json.loads(line) for line in f if line.strip()]
         for row in rows:
+            if (row.get("anchor_matching") != matching or
+                    ("anchor_matching" in row) != ("anchor_matching" in summary)):
+                raise ValueError(f"row/summary anchor-matching contract mismatch in {run_name}")
             if not row.get("usable"):
                 continue
             if not (row.get("mutant_json_valid") and row.get("control_json_valid")):
@@ -267,7 +277,18 @@ def score_backends(run_dirs: list[str], adjudications=None,
         alarm_n = len(alarm_rows)
 
         anchored = rescored = from_rows = from_arms = 0
+        exact_mentions = exact_denominator = 0
         for run_dir, row in rows:
+            if row.get("anchor_matching") == ANCHOR_MATCHING_VERSION:
+                # New pool runs retain the full representative anchor list.
+                # Keep this denominator separate from historical substring
+                # scoring; a mention alone does not establish a valid finding.
+                emitted = row.get("anchors_emitted")
+                if not isinstance(emitted, list) or not all(isinstance(a, str) for a in emitted):
+                    raise ValueError("missing or invalid anchors for exact anchor-matching contract")
+                exact_denominator += 1
+                exact_mentions += exact_anchor_mention(row.get("defect_anchor") or "", emitted)
+                continue
             doc = _mutant_review(run_dir, row["dispatch_id"])
             if doc is not None:
                 emitted = anchors_of(doc.get("findings") or [])
@@ -339,6 +360,15 @@ def score_backends(run_dirs: list[str], adjudications=None,
                 "basis": ("rescored-retained-arms" if not from_rows
                           else "recorded-anchors" if not from_arms
                           else "rescored-retained-arms+recorded-anchors"),
+            }
+        if exact_denominator:
+            metrics["exact_anchor_mention"] = {
+                "value": exact_mentions / exact_denominator,
+                "numerator": exact_mentions,
+                "denominator": exact_denominator,
+                "basis": "recorded-anchors",
+                "matching": ANCHOR_MATCHING_VERSION,
+                "interpretation": "Location mention only; finding correctness is not established.",
             }
         from .anchor import reliability as _anchor_reliability
 
