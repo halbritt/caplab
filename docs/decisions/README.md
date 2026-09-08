@@ -65,3 +65,4 @@ does not imply execution, verification, or acceptance.
 | [ADR 0062](adr-0062-binding-qualification-boundary.md) | Binding-specific qualification boundary and tuner absorption | decided | ADR 0026 delegate |
 | [ADR 0063](adr-0063-bounded-codex-live-revbench-execution.md) | Bounded Codex live Revbench execution and custody | decided | ADR 0026 delegate |
 | [ADR 0064](adr-0064-bounded-agy-gemini37-revbench-pilot.md) | Bounded native-AGY Gemini 3.7 Flash Revbench pilot | authorized | repository owner |
+| [ADR 0065](adr-0065-advisory-responsive-study-selection.md) | Advisory-responsive approach selection study | decided | ADR 0026 delegate |

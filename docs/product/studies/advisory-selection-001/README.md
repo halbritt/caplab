@@ -3,6 +3,11 @@
 Construct: **advisory-responsive approach selection** (CAPLAB-58).
 Map: Plane CAPLAB-44.
 
+[ADR 0065](../../../decisions/adr-0065-advisory-responsive-study-selection.md)
+selects the owner's real-retrieval-versus-none question and distinguishes it
+from forced-injection diagnostics. The selection is complete; the executable
+design, preregistration and admission are not. It does not authorize a campaign.
+
 The completed pre-study agent-system ladder is recorded in
 [`LADDER-RESULT.md`](LADDER-RESULT.md). Its result does not preregister or admit
 the destination study described below.

@@ -122,3 +122,10 @@ verification, or acceptance.
 contradicts a favorable author cue because the frozen acceptance contract is
 not met. It is not contrarianism: the same reviewer must accept clean controls
 and must not invent blockers when the available evidence supports clearing.
+
+**Advisory-responsive approach selection** is incorporating guidance that
+bears on a task, resisting distortion by guidance that does not bear, and
+preserving work quality. Anti-suggestibility is constitutive: uptake of both
+fitting and misfit advice is not this capability. Behavioral change alone
+does not establish selective judgment or quality improvement. See
+[ADR 0065](../decisions/adr-0065-advisory-responsive-study-selection.md).
