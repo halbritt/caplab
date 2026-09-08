@@ -39,21 +39,26 @@ class NativeReviewLiveTests(unittest.TestCase):
         self.manifest_path = Path(temporary.name) / "manifest.json"
         fixture = json.loads(MANIFEST.read_text())
         fixture["campaign_id"] = "new-local-native-live-contract-fixture"
-        source = fixture["containment"]["runner_source"]
-        source["sha256"] = sha256((ROOT / source["path"]).read_bytes()).hexdigest()
+        for field in ("runner_source", "runtime_source"):
+            source = fixture["containment"][field]
+            source["sha256"] = sha256((ROOT / source["path"]).read_bytes()).hexdigest()
         fixture.pop("manifest_sha256")
         fixture["manifest_sha256"] = _digest(fixture)
         self.manifest_path.write_text(json.dumps(fixture))
         self.manifest = load_native_review_live_manifest(self.manifest_path, INSTRUMENT)
 
     def test_manifest_rejects_unbound_runner_bytes(self) -> None:
-        fixture = json.loads(self.manifest_path.read_text())
-        fixture["containment"]["runner_source"]["sha256"] = "0" * 64
-        fixture.pop("manifest_sha256")
-        fixture["manifest_sha256"] = _digest(fixture)
-        self.manifest_path.write_text(json.dumps(fixture))
-        with self.assertRaisesRegex(NativeReviewLiveContractError, "runner_source_digest_mismatch"):
-            load_native_review_live_manifest(self.manifest_path, INSTRUMENT)
+        original = self.manifest_path.read_text()
+        for field in ("runner_source", "runtime_source"):
+            with self.subTest(field=field):
+                fixture = json.loads(original)
+                fixture["containment"][field]["sha256"] = "0" * 64
+                fixture.pop("manifest_sha256")
+                fixture["manifest_sha256"] = _digest(fixture)
+                self.manifest_path.write_text(json.dumps(fixture))
+                with self.assertRaisesRegex(NativeReviewLiveContractError,
+                                            f"{field}_digest_mismatch"):
+                    load_native_review_live_manifest(self.manifest_path, INSTRUMENT)
 
     def test_manifest_binds_native_order_containment_and_limits(self) -> None:
         self.assertEqual(self.manifest["limits"]["primary_trials"], 16)

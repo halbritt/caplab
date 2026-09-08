@@ -135,6 +135,11 @@ def _sandbox_native_command(command: list[str]) -> list[str]:
     return [replacements.get(token, token) for token in command]
 
 
+def _launcher_environment() -> dict[str, str]:
+    """Exclude ambient overrides before bubblewrap applies its child policy."""
+    return {"PATH": "/usr/bin:/bin", "LANG": "C.UTF-8"}
+
+
 def _contained_command(root: Path, native_command: list[str]) -> list[str]:
     if f"CLAUDE_CONFIG_DIR={_CLAUDE_CONFIG}" in native_command:
         harness_mounts = [
@@ -454,6 +459,7 @@ def preflight_native_runtime(manifest: Mapping[str, Any]) -> dict[str, str]:
             completed = subprocess.run(
                 probe["command"], cwd=root, stdin=subprocess.DEVNULL,
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30, check=False,
+                env=_launcher_environment(),
             )
             value = completed.stdout.decode("utf-8", errors="replace").strip()
             if completed.returncode != 0 or value != expected.get(version_key):
@@ -462,6 +468,7 @@ def preflight_native_runtime(manifest: Mapping[str, Any]) -> dict[str, str]:
     bwrap = subprocess.run(
         ["/usr/bin/bwrap", "--version"], stdin=subprocess.DEVNULL,
         stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30, check=False,
+        env=_launcher_environment(),
     )
     value = bwrap.stdout.decode("utf-8", errors="replace").strip()
     if bwrap.returncode != 0 or value != expected.get("bubblewrap"):
@@ -495,6 +502,7 @@ def preflight_native_runtime(manifest: Mapping[str, Any]) -> dict[str, str]:
             stderr=subprocess.PIPE,
             timeout=30,
             check=False,
+            env=_launcher_environment(),
         )
         try:
             claude_status = json.loads(claude_auth.stdout.decode("utf-8"))
@@ -522,6 +530,7 @@ def preflight_native_runtime(manifest: Mapping[str, Any]) -> dict[str, str]:
             stderr=subprocess.PIPE,
             timeout=30,
             check=False,
+            env=_launcher_environment(),
         )
         if codex_auth.returncode != 0 or codex_auth.stderr.decode(
             "utf-8", errors="replace"
@@ -623,6 +632,7 @@ def execute_native_trial(
             command, cwd=attempt_root / "input" / manifest["_instrument"]["execution_order"][slot_index].split(":", 1)[0],
             stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
             timeout=manifest["limits"]["trial_wall_clock_minutes"] * 60, check=False,
+            env=_launcher_environment(),
         )
         return_code: int | None = completed.returncode
         stdout, stderr, timed_out = completed.stdout, completed.stderr, False

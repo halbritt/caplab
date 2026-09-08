@@ -14,6 +14,7 @@ from typing import Any, Mapping, Sequence
 from caplab.preference.native_live import (
     _contained_command,
     _failure_status,
+    _launcher_environment,
     _native_result,
     preflight_native_runtime,
 )
@@ -577,6 +578,7 @@ def execute_native_review_trial(
             stderr=subprocess.PIPE,
             timeout=manifest["limits"]["trial_wall_clock_minutes"] * 60,
             check=False,
+            env=_launcher_environment(),
         )
         return_code: int | None = completed.returncode
         stdout, stderr, timed_out = completed.stdout, completed.stderr, False
