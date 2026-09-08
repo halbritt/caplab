@@ -58,8 +58,9 @@ the outer custody unmounted, verify namespace paths against its system mounts,
 seed only separately authorized configuration/credentials, pin executable and
 account inputs, enforce storage/timeout limits and obtain execution permission.
 The runtime tree is mutable during a native attempt; initial permissions do not
-prove continued host ownership or immutable evidence. Native session/child and
-diagnostic collection still needs stable bounded reads and linkage before use.
+prove continued host ownership or immutable evidence. The [native output collector](native-output-collection-v1.md) supplies bounded raw
+retention of planned session and diagnostic paths. Session/child linkage and
+completeness checks remain required before use.
 Do not capture the entire runtime home, which may later contain credentials.
 
 The integration test mounts only the prepared task and runtime alongside a
