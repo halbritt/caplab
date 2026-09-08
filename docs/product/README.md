@@ -6,11 +6,12 @@
 - [Preference Study 001 preregistration](studies/caplab-preference-001-preregistration.md)
 - [Corrected native-system preference preregistration](studies/caplab-preference-001-native-r1-preregistration.md)
 - [Native agent-system contract](contracts/native-agent-systems.json)
+- [Prospective behavioral code-authoring procedure](contracts/behavior-code-authoring-v1.md)
 - [Striatum pass-context capability profiles](striatum-pass-profiles/README.md)
 - [Evaluation snapshot gate](evaluation/README.md)
 - [Binding qualification and Quartermaster export boundary](qualification/README.md)
 - [Quartermaster ingestion handoff](qualification/quartermaster-handoff-v1.md)
 
-The records were imported from their selected `halbritt/books` identities.
+Historical study records were imported from their selected `halbritt/books` identities.
 Standalone decisions amend repository placement without rewriting the
 historical study or admitting its evidence.
