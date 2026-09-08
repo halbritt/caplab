@@ -25,7 +25,8 @@ Strata are event predicates, reproducible here, never judgment:
   bronze-clear  review cleared a change set AND an application_record applied
                 that change set AND no later acceptance fail, conflict, or
                 cancellation names it.
-  excluded      refused, then a later version of the same identity exists.
+  excluded      refused, then the same identity has an artifact admission
+                after review closure and the reviewed version.
 
 Usage: review_criterion_ledger_pass.py --ledger ledger.jsonl [--out advisory/criterion]
 """
@@ -312,15 +313,14 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
             continue
         cancellations[p.get("request_ref")].append({"seq": e["seq"], "at": e["written_at"], "reason": (p.get("reason") or "")[:400],
                                                     "defect_words": bool(DEFECT_WORDS.search(p.get("reason") or ""))})
-    # --- later versions of the same identity (revision)
-    versions = collections.defaultdict(set)
-    for r in runs.values():
-        if r.get("identity") and r.get("version_seq") is not None:
-            versions[r["identity"]].add(r["version_seq"])
-    for e in by["head_movement"]:
+    # Version references do not establish that an artifact was admitted.
+    versions = collections.defaultdict(list)
+    for e in by["artifact_admitted"]:
         p = e["payload"]
-        if p.get("identity") and p.get("to_version") is not None:
-            versions[p["identity"]].add(p["to_version"])
+        identity = p.get("identity")
+        if isinstance(identity, str) and identity:
+            versions[identity].append({"seq": e["seq"], "at": e["written_at"],
+                                       "identity": identity, "content_hash": p.get("content_hash")})
 
     # --- strata
     strata = collections.defaultdict(list)
@@ -333,7 +333,7 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
 
     for seq, r in sorted(runs.items()):
         # The canary follows ledger order for every review, including unknown
-        # verdicts. Keep the historical criterion's time-based strata below.
+        # verdicts. Non-revision criterion strata retain time-based predicates.
         r["post_close_events"] = {
             "applied": post_close(applied, r["content_hash"], r["closed_seq"]),
             "conflicts": [e for e in post_close(conflicts, r["content_hash"], r["closed_seq"])
@@ -341,8 +341,11 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
             "cancellations_with_defect_words": [e for e in post_close(cancellations, r["request_ref"], r["closed_seq"])
                                                if e["defect_words"]],
         }
-        later_versions = sorted(v for v in versions.get(r["identity"], set()) if r.get("version_seq") is not None and v > r["version_seq"])
-        r["post_close_versions"] = [v for v in later_versions if r["closed_seq"] is not None and v > r["closed_seq"]]
+        r["post_close_version_observations"] = [
+            e for e in post_close(versions, r["identity"], r["closed_seq"])
+            if r["version_seq"] is not None and e["seq"] > r["version_seq"]]
+        later_versions = [e["seq"] for e in r["post_close_version_observations"]]
+        r["post_close_versions"] = later_versions
         c = cleared(r)
         r["cleared"] = c
         if c is None:
@@ -377,7 +380,8 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
 
     def table(rows, key):
         return dict(collections.Counter(key(r) for r in rows).most_common())
-    report = {"population": len(runs), "strata": {}, "contracts": {}, "wall_clock_median_s": {}, "prompt_assets_retained": sum(1 for r in runs.values() if r["prompt_assets"]),
+    report = {"revision_evidence": "artifact-admission-after-review-closure/1",
+              "population": len(runs), "strata": {}, "contracts": {}, "wall_clock_median_s": {}, "prompt_assets_retained": sum(1 for r in runs.values() if r["prompt_assets"]),
               "dispatch_dirs_retained": 0}
     for s, rows in strata.items():
         report["strata"][s] = {"n": len(rows),
@@ -413,7 +417,7 @@ def main() -> int:
     with open(os.path.join(args.out, "review-criterion-cases.jsonl"), "w", encoding="utf-8") as f:
         for s in ("gold-defect", "gold-clear", "silver-defect", "bronze-clear"):
             for r in strata.get(s, []):
-                f.write(json.dumps({"stratum": s, **{k: v for k, v in r.items() if k not in {"prompt_assets", "closed", "closed_seq", "post_close_versions", "post_close_events", "review_body_observations", "review_gate_observations", "lifecycle_observations"}}}, ensure_ascii=False, sort_keys=True) + "\n")
+                f.write(json.dumps({"stratum": s, **{k: v for k, v in r.items() if k not in {"prompt_assets", "closed", "closed_seq", "post_close_versions", "post_close_version_observations", "post_close_events", "review_body_observations", "review_gate_observations", "lifecycle_observations"}}}, ensure_ascii=False, sort_keys=True) + "\n")
     print(json.dumps({k: v for k, v in report.items() if k != "wall_clock_median_s"}, indent=1)[:6000])
     print("wall clock", json.dumps(report["wall_clock_median_s"]))
     return 0

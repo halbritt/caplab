@@ -45,6 +45,10 @@ class ReviewCanaryTest(unittest.TestCase):
         ledger.write_text("".join(json.dumps(e) + "\n" for e in self.events))
         return ledger, criterion.read_reviews(str(ledger))
 
+    def admit(self, identity="repo/passes/a/change-set", content_hash="new-hash"):
+        return self.event("artifact_admitted", {"identity": identity, "kind": "change-set",
+                                                "content_hash": content_hash})
+
     def baseline(self, after_run=0):
         ledger, (snapshot, _, runs, _) = self.read()
         retained = self.root / "baseline-ledger.jsonl"
@@ -146,7 +150,8 @@ class ReviewCanaryTest(unittest.TestCase):
         cancellation = self.event("cancellation_record", {
             "issuer": {"kind": "principal"}, "request_ref": 99, "reason": "incorrect lowering process"})
         self.event("application_record", {"change_set": {"content_hash": "hash-1"}})
-        self.event("head_movement", {"identity": "repo/passes/a/change-set", "to_version": len(self.events)})
+        admitted = self.admit()
+        self.event("head_movement", {"identity": "repo/passes/a/change-set", "to_version": admitted})
         # A downstream acceptance is not a review-specific re-ruling.
         self.event("gate_result", {"gate_class": "acceptance", "authority": {"kind": "principal"},
                                    "outcome": "fail", "applicability": {"materialization": {
@@ -203,8 +208,8 @@ class ReviewCanaryTest(unittest.TestCase):
         applied = self.event("application_record", {"change_set": {"content_hash": "hash-1"}})
         cancelled = self.event("cancellation_record", {"issuer": {"kind": "principal"},
                                "request_ref": 99, "reason": "incorrect lowering process"})
-        revised = self.event("head_movement", {"identity": "repo/passes/a/change-set",
-                                             "to_version": len(self.events)})
+        revised = self.admit()
+        self.event("head_movement", {"identity": "repo/passes/a/change-set", "to_version": revised})
         _, (snapshot, _, runs, _) = self.read()
         report = review_canary.summarize(snapshot, runs, 0)
         row = report["reviews"][0]
@@ -216,6 +221,65 @@ class ReviewCanaryTest(unittest.TestCase):
         self.assertIn(f"Event {cancelled}", review_canary.render(report))
         self.assertIn("unknown 1", review_canary.render(report))
         self.assertEqual(report["reviewers"][0]["clearances_with_application"], 0)
+
+    def test_version_mentions_do_not_establish_a_later_admission(self):
+        run = self.review(verdict="fail")
+        other = self.admit(identity="another/change-set")
+        for version in (other, 999):
+            self.event("head_movement", {"identity": "repo/passes/a/change-set", "to_version": version})
+        self.review(version=999)
+        with patch.object(criterion.M, "store_object") as store:
+            _, (snapshot, _, runs, strata) = self.read()
+            store.assert_not_called()
+        row = next(r for r in review_canary.summarize(snapshot, runs, 0)["reviews"] if r["run"] == run)
+        self.assertEqual(row["later_versions"], [])
+        self.assertEqual(runs[run]["later"]["later_versions"], [])
+        self.assertNotIn(run, [r["run"] for r in strata["excluded-refused-then-revised"]])
+
+    def test_admissions_need_no_head_movement_or_later_review_and_keep_source_events(self):
+        refused = self.review(verdict="fail")
+        unknown = self.review(verdict=None)
+        opened = self.review(verdict=None, close=False)
+        admissions = [self.admit(content_hash="hash-1"), self.admit(content_hash="hash-1")]
+        for seq in admissions:
+            self.events[seq]["written_at"] = "2026-09-07T00:00:00Z"
+        with patch.object(criterion.M, "store_object") as store:
+            _, (snapshot, summary, runs, strata) = self.read()
+            store.assert_not_called()
+        report = review_canary.summarize(snapshot, runs, 0)
+        rows = {r["run"]: r for r in report["reviews"]}
+        expected = [{"seq": seq, "at": "2026-09-07T00:00:00Z",
+                     "identity": "repo/passes/a/change-set", "content_hash": "hash-1"} for seq in admissions]
+        for run in (refused, unknown):
+            self.assertEqual(rows[run]["later_versions"], admissions)
+            self.assertEqual(rows[run]["later_version_observations"], expected)
+        self.assertEqual(rows[opened]["later_versions"], [])
+        self.assertEqual(rows[opened]["later_version_observations"], [])
+        self.assertEqual(report["reviewers"][0]["refusals_with_later_version"], 1)
+        self.assertEqual([r["run"] for r in strata["excluded-refused-then-revised"]], [refused])
+        self.assertEqual(summary["revision_evidence"], "artifact-admission-after-review-closure/1")
+        self.assertIn("Refusals with later admission", review_canary.render(report))
+
+    def test_admission_before_closure_is_not_a_post_refusal_revision(self):
+        run = self.review(verdict="fail", close=False)
+        admitted = self.admit()
+        self.event("pass_run_closed", {"run_ref": run, "outcome": "submitted"})
+        self.event("head_movement", {"identity": "repo/passes/a/change-set", "to_version": admitted})
+        _, (snapshot, _, runs, strata) = self.read()
+        row = review_canary.summarize(snapshot, runs, 0)["reviews"][0]
+        self.assertEqual(row["later_versions"], [])
+        self.assertEqual(runs[run]["later"]["later_versions"], [])
+        self.assertNotIn(run, [r["run"] for r in strata["excluded-refused-then-revised"]])
+
+    def test_later_admission_requires_exact_identity_and_a_known_reviewed_version(self):
+        self.review(verdict="fail", identity="répo/change-set")
+        self.review(verdict="fail", identity="unknown/change-set", version=None)
+        self.admit(identity="re\u0301po/change-set")
+        self.admit(identity="unknown/change-set")
+        _, (snapshot, _, runs, _) = self.read()
+        report = review_canary.summarize(snapshot, runs, 0)
+        self.assertTrue(all(r["later_versions"] == [] for r in report["reviews"]))
+        self.assertEqual(report["reviewers"][0]["refusals_with_later_version"], 0)
 
     def test_ledger_order_handles_ties_and_clock_reversal(self):
         for written_at in ("2026-09-07T00:00:00Z", "2026-09-07T00:00:04Z"):
@@ -601,9 +665,10 @@ class ReviewCanaryTest(unittest.TestCase):
         completed = subprocess.run(command, capture_output=True, text=True)
         self.assertEqual(completed.returncode, 0, completed.stderr)
         report = json.loads((out / "report.json").read_text())
-        self.assertEqual(report["record"], "caplab-review-canary/5")
+        self.assertEqual(report["record"], "caplab-review-canary/6")
         self.assertEqual(report["json_interpretation"], "utf8-unique-object-keys-no-non-json-constants/1")
         self.assertEqual(report["reference_validation"], "nonnegative-integer-sequence-paths/1")
+        self.assertEqual(report["revision_evidence"], "artifact-admission-after-review-closure/1")
         self.assertEqual(report["snapshot"]["sha256"], hashlib.sha256(ledger.read_bytes()).hexdigest())
         self.assertIn("&lt;reviewer&gt;&#124;a", (out / "report.md").read_text())
         repeated = subprocess.run(command, capture_output=True, text=True)
