@@ -219,7 +219,24 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
     # --- strata
     strata = collections.defaultdict(list)
     tree_moved_after_clear = []
+
+    def post_close(index, key, closed_seq):
+        if key is None or key == "" or closed_seq is None:
+            return []
+        return [e for e in index.get(key, []) if e["seq"] > closed_seq]
+
     for seq, r in sorted(runs.items()):
+        # The canary follows ledger order for every review, including unknown
+        # verdicts. Keep the historical criterion's time-based strata below.
+        r["post_close_events"] = {
+            "applied": post_close(applied, r["content_hash"], r["closed_seq"]),
+            "conflicts": [e for e in post_close(conflicts, r["content_hash"], r["closed_seq"])
+                          if e["kind"] != "tree-moved"],
+            "cancellations_with_defect_words": [e for e in post_close(cancellations, r["request_ref"], r["closed_seq"])
+                                               if e["defect_words"]],
+        }
+        later_versions = sorted(v for v in versions.get(r["identity"], set()) if r.get("version_seq") is not None and v > r["version_seq"])
+        r["post_close_versions"] = [v for v in later_versions if r["closed_seq"] is not None and v > r["closed_seq"]]
         c = cleared(r)
         r["cleared"] = c
         if c is None:
@@ -232,8 +249,6 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
         moved = [x for x in later_conf if x["kind"] == "tree-moved"]
         later_app = [x for x in applied.get(r["content_hash"], []) if x["at"] > r["opened"]]
         canc = [x for x in cancellations.get(r["request_ref"], []) if x["at"] > r["opened"] and x["defect_words"]]
-        later_versions = sorted(v for v in versions.get(r["identity"], set()) if r.get("version_seq") is not None and v > r["version_seq"])
-        r["post_close_versions"] = [v for v in later_versions if r["closed_seq"] is not None and v > r["closed_seq"]]
         r["later"] = {"acceptance_fail": acc_fail, "acceptance_pass": acc_pass, "conflicts": real_conf,
                       "tree_moved": len(moved), "applied": later_app, "cancellations_with_defect_words": canc,
                       "later_versions": later_versions[:5]}
@@ -292,7 +307,7 @@ def main() -> int:
     with open(os.path.join(args.out, "review-criterion-cases.jsonl"), "w", encoding="utf-8") as f:
         for s in ("gold-defect", "gold-clear", "silver-defect", "bronze-clear"):
             for r in strata.get(s, []):
-                f.write(json.dumps({"stratum": s, **{k: v for k, v in r.items() if k not in {"prompt_assets", "closed", "closed_seq", "post_close_versions"}}}, ensure_ascii=False, sort_keys=True) + "\n")
+                f.write(json.dumps({"stratum": s, **{k: v for k, v in r.items() if k not in {"prompt_assets", "closed", "closed_seq", "post_close_versions", "post_close_events"}}}, ensure_ascii=False, sort_keys=True) + "\n")
     print(json.dumps({k: v for k, v in report.items() if k != "wall_clock_median_s"}, indent=1)[:6000])
     print("wall clock", json.dumps(report["wall_clock_median_s"]))
     return 0

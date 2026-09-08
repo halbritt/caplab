@@ -9,14 +9,14 @@ import json
 from pathlib import Path
 import statistics
 
-from review_criterion_ledger_pass import CLEAR, REFUSE, T, read_reviews
+from review_criterion_ledger_pass import CLEAR, REFUSE, read_reviews
 
 
 def load_baseline(path: Path) -> tuple[dict, dict, int]:
     """Bind a follow-up to the retained export and fixed window of a report."""
     raw = Path(path).read_bytes()
     report = json.loads(raw)
-    if not isinstance(report, dict) or report.get("record") != "caplab-review-canary/1":
+    if not isinstance(report, dict) or report.get("record") not in ("caplab-review-canary/1", "caplab-review-canary/2"):
         raise ValueError("baseline must be a production review report")
     snapshot = report.get("snapshot")
     if not isinstance(snapshot, dict):
@@ -52,6 +52,7 @@ def load_baseline(path: Path) -> tuple[dict, dict, int]:
         raise ValueError("baseline snapshot counts do not match its retained export")
     prefix = {"byte_count": size, "sha256": digest.hexdigest()}
     reference = {"path": str(Path(path).resolve()), "report_sha256": hashlib.sha256(raw).hexdigest(),
+                 "record": report["record"],
                  "ledger_sha256": prefix["sha256"], "last_seq": snapshot["last_seq"],
                  "prefix_bytes": size}
     return reference, prefix, after_run if mode == "since-cutoff" else snapshot["last_seq"]
@@ -59,22 +60,18 @@ def load_baseline(path: Path) -> tuple[dict, dict, int]:
 
 def observe_run(run: dict) -> dict:
     observed = {key: run.get(key) for key in (
-        "run", "opened", "closed", "backend", "identity", "version_seq",
+        "run", "opened", "closed", "closed_seq", "backend", "identity", "version_seq",
         "content_hash", "class", "materialized_base", "contract_hash",
         "request_ref", "review_artifact", "review_body_hash", "verdict",
         "review_gate", "review_gate_seq", "outcome", "wall_s")}
     observed["decision"] = {True: "cleared", False: "refused", None: "unknown"}[run["cleared"]]
     observed["verdict_source"] = ("body" if run.get("verdict") in CLEAR | REFUSE else
                                   "gate-only" if run.get("review_gate") in {"pass", "fail"} else "missing")
-    later = run.get("later", {})
+    later = run["post_close_events"]
     # Downstream joins nominate cases. They do not identify a wrong verdict.
-    closed = T(run["closed"]) if run.get("closed") else None
-    observed["applications"] = [e for e in later.get("applied", [])
-                                if closed is not None and T(e["at"]) > closed]
-    observed["conflicts"] = [e for e in later.get("conflicts", [])
-                             if closed is not None and T(e["at"]) > closed]
-    observed["request_cancellations"] = [e for e in later.get("cancellations_with_defect_words", [])
-                                         if closed is not None and T(e["at"]) > closed]
+    observed["applications"] = later["applied"]
+    observed["conflicts"] = later["conflicts"]
+    observed["request_cancellations"] = later["cancellations_with_defect_words"]
     observed["later_versions"] = run.get("post_close_versions", [])
     return observed
 
@@ -105,7 +102,8 @@ def summarize(snapshot: dict, runs: dict, after_run: int) -> dict:
             "distinct_cancellation_records": sorted({e["seq"] for r in clear for e in r["request_cancellations"]}),
             "refusals_with_later_version": sum(r["decision"] == "refused" and bool(r["later_versions"]) for r in rows),
         })
-    return {"record": "caplab-review-canary/1", "snapshot": snapshot,
+    return {"record": "caplab-review-canary/2", "snapshot": snapshot,
+            "downstream_ordering": "ledger-sequence-after-review-closure/1",
             "after_run": after_run, "mode": "since-cutoff" if after_run else "retrospective-baseline",
             "population": len(selected), "reviewers": reviewers, "reviews": selected,
             "placement": "frozen", "gold_outcomes": "unavailable: no review-specific re-ruling event reader",
@@ -123,6 +121,7 @@ def render(report: dict) -> str:
              f"Mode: {report['mode']}. Review runs opened after event {report['after_run']}.",
              f"Population: {report['population']} anchored change-set or repo-doc review runs.",
              "All later events in this snapshot are considered. Open runs remain in the denominator.", "",
+             "Later means a ledger sequence after review closure. Timestamps are retained for inspection, not event ordering.", "",
              f"Reviews without a retained verdict: {len(unknown)}. Run outcomes: " +
              (", ".join(f"{k} {v}" for k, v in sorted(unknown_outcomes.items())) or "none") + ".",
              "A missing verdict can follow cancellation, a partial submission, or an error. It is not a wrong answer.", "",
@@ -148,18 +147,20 @@ def render(report: dict) -> str:
                   "One cancellation can affect many reviews. These columns overlap and do not count independent defects.",
                   "An application does not prove correctness. A later revision does not prove a refusal was correct.",
                   "Unknown outcomes and short follow-up can hide later problems. No adjudicated outcome score is computed.", "",
-                  "Inspection candidates, grouped by downstream event (all linked runs are in report.json):", ""])
-    candidates = [r for r in report["reviews"] if r["decision"] == "cleared"
-                  and (r["conflicts"] or r["request_cancellations"])]
+                  "Inspection candidates across all verdicts, grouped by downstream event (all linked runs are in report.json):", ""])
+    candidates = [r for r in report["reviews"] if r["conflicts"] or r["request_cancellations"]]
     incidents = {}
     for row in candidates:
         for kind, events in (("conflict", row["conflicts"]), ("request cancellation", row["request_cancellations"])):
             for event in events:
-                incident = incidents.setdefault(event["seq"], {"kind": kind, "runs": set(), "identities": set()})
+                incident = incidents.setdefault(event["seq"], {"kind": kind, "runs": set(), "identities": set(),
+                                                               "decisions": collections.Counter()})
                 incident["runs"].add(row["run"])
                 incident["identities"].add(row["identity"])
+                incident["decisions"][row["decision"]] += 1
     for seq, incident in sorted(incidents.items()):
-        lines.append(f"- Event {seq} ({incident['kind']}): {len(incident['runs'])} linked cleared reviews, "
+        decisions = ", ".join(f"{key} {count}" for key, count in sorted(incident["decisions"].items()))
+        lines.append(f"- Event {seq} ({incident['kind']}): {len(incident['runs'])} linked reviews ({decisions}), "
                      f"{len(incident['identities'])} artifact identities. Example review: {min(incident['runs'])}.")
     if not candidates:
         lines.append("No matching candidates in this window. This does not establish that reviews were correct.")
@@ -168,6 +169,7 @@ def render(report: dict) -> str:
     if report.get("baseline"):
         baseline = report["baseline"]
         lines.extend([f"Verified baseline ledger prefix through event {baseline['last_seq']}.",
+                      f"Baseline report version: `{baseline['record']}`. Prefix verification establishes ledger continuity, not unchanged report calculations.",
                       f"Baseline report SHA-256: `{baseline['report_sha256']}`.", ""])
     return "\n".join(lines)
 

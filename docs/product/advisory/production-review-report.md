@@ -31,6 +31,8 @@ PYTHONPATH=src python3 scripts/review_canary.py \
 
 Open `/tmp/caplab-review-baseline/report.md`. Its JSON companion retains each
 selected run and the event locators. Existing report directories are refused.
+New reports use `caplab-review-canary/2` with
+`downstream_ordering: ledger-sequence-after-review-closure/1`.
 The reader uses the same local Striatum object store as the criterion ledger
 pass. A snapshot without its object store can have missing review bodies.
 
@@ -74,13 +76,19 @@ The numeric form remains available for manual windows; it does not verify
 baseline ancestry. Prefix verification establishes continuity, not completion
 of the new export command, availability of object-store bodies, or accuracy
 of a review. Continue to require exit code zero from the export command.
+Both version 1 and version 2 reports can supply a verified baseline. The
+reference records that version. Moving from version 1 to version 2 can expose
+links previously omitted by timestamp filtering or missing verdicts; ledger
+continuity does not mean the report calculations stayed the same. Historical
+reports are not rewritten.
 
 Read the report in this order:
 
 1. Inspect missing verdicts and their run outcomes. A cancellation or partial
    submission can explain missing output. Missing output is not a wrong answer.
-2. Use the downstream event list to locate work for inspection. One event can
-   link to many reviews. The JSON retains the review run, subject version,
+2. Use the downstream event list to locate work for inspection. It includes
+   cleared, refused, and unknown-verdict reviews, with separate counts. One
+   event can link to many reviews. The JSON retains the review run, subject version,
    content hash, reviewer label, and downstream event sequences.
 3. Read the source event and artifact before judging a review. Cancellations
    join by request and defect wording. They can describe a process failure.
@@ -95,8 +103,19 @@ verified exact CAPLAB Bindings. Wall time covers all closed outcomes and
 includes failures. It is not successful-review latency or a speed ranking.
 
 Applications and conflicts join by content hash. Request cancellations join
-more broadly. Only events after run closure count as later outcomes. A newer
-artifact version after refusal is reported without a judgment of correctness.
+more broadly. A missing content hash or request reference supplies no join;
+two absent identifiers do not establish a relationship. Only events with a
+ledger sequence greater than `closed_seq` count as later outcomes. Tied or
+reversed timestamps do not remove those events, and a future timestamp on an
+earlier event does not make it a later outcome. Original timestamps remain in
+the report. Open reviews have no post-closure events.
+
+Closed reviews with unknown verdicts retain the same downstream links and
+later-version observations as reviews with verdicts. The links cannot supply
+their missing verdicts. Reviewer summary columns still count clearances and
+refusals separately; adding an unknown review to the inspection list does not
+count it as either. A newer artifact version after refusal is reported without
+a judgment of correctness.
 Short follow-up can hide later problems. The script does not infer gold
 outcomes from downstream acceptance events.
 

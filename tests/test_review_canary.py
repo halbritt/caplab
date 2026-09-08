@@ -81,6 +81,16 @@ class ReviewCanaryTest(unittest.TestCase):
         self.assertLess(after_run, report["snapshot"]["last_seq"])
         self.assertEqual(expected_prefix["sha256"], report["snapshot"]["sha256"])
 
+    def test_legacy_baseline_preserves_window_without_claiming_same_calculations(self):
+        self.review()
+        path, report = self.baseline()
+        report["record"] = "caplab-review-canary/1"
+        report.pop("downstream_ordering")
+        path.write_text(json.dumps(report))
+        reference, _, cutoff = review_canary.load_baseline(path)
+        self.assertEqual(cutoff, report["snapshot"]["last_seq"])
+        self.assertEqual(reference["record"], "caplab-review-canary/1")
+
     def test_follow_up_from_genesis_keeps_zero_cutoff_on_the_next_report(self):
         path, _ = self.baseline()
         self.review()
@@ -155,6 +165,10 @@ class ReviewCanaryTest(unittest.TestCase):
         self.assertTrue(report["gold_outcomes"].startswith("unavailable:"))
         self.assertEqual(report["placement"], "frozen")
         self.assertEqual([r["run"] for r in report["reviews"][:2]], [cleared, refused])
+        self.assertEqual(len(report["reviews"][2]["request_cancellations"]), 1)
+        self.assertEqual(report["reviews"][3]["request_cancellations"], [])
+        self.assertEqual(report["reviews"][3]["applications"], [])
+        self.assertEqual(report["reviews"][3]["later_versions"], [])
 
     def test_cancellation_multiplicity_and_fixed_cutoff_do_not_become_defect_counts(self):
         old_run = self.review()
@@ -178,10 +192,63 @@ class ReviewCanaryTest(unittest.TestCase):
     def test_events_before_close_do_not_count_as_later_outcomes(self):
         run = self.review(close=False)
         self.event("application_record", {"change_set": {"content_hash": "hash-1"}})
+        self.events[-1]["written_at"] = "2026-09-08T00:00:00Z"
         self.event("pass_run_closed", {"run_ref": run, "outcome": "submitted"})
         _, (snapshot, _, runs, _) = self.read()
         row = review_canary.summarize(snapshot, runs, 0)["reviewers"][0]
         self.assertEqual(row["clearances_with_application"], 0)
+
+    def test_unknown_verdict_keeps_downstream_inspection_evidence(self):
+        run = self.review(verdict=None)
+        applied = self.event("application_record", {"change_set": {"content_hash": "hash-1"}})
+        cancelled = self.event("cancellation_record", {"issuer": {"kind": "principal"},
+                               "request_ref": 99, "reason": "incorrect lowering process"})
+        revised = self.event("head_movement", {"identity": "repo/passes/a/change-set",
+                                             "to_version": len(self.events)})
+        _, (snapshot, _, runs, _) = self.read()
+        report = review_canary.summarize(snapshot, runs, 0)
+        row = report["reviews"][0]
+        self.assertEqual(row["run"], run)
+        self.assertEqual(row["decision"], "unknown")
+        self.assertEqual([e["seq"] for e in row["applications"]], [applied])
+        self.assertEqual([e["seq"] for e in row["request_cancellations"]], [cancelled])
+        self.assertEqual(row["later_versions"], [revised])
+        self.assertIn(f"Event {cancelled}", review_canary.render(report))
+        self.assertIn("unknown 1", review_canary.render(report))
+        self.assertEqual(report["reviewers"][0]["clearances_with_application"], 0)
+
+    def test_ledger_order_handles_ties_and_clock_reversal(self):
+        for written_at in ("2026-09-07T00:00:00Z", "2026-09-07T00:00:04Z"):
+            with self.subTest(written_at=written_at):
+                self.events = self.events[:1]
+                run = self.review()
+                closed = self.events[-1]["seq"]
+                application = self.event("application_record", {"change_set": {"content_hash": "hash-1"}})
+                conflict = self.event("integration_conflict", {"losing_change_set_pin": {"content_hash": "hash-1"},
+                                                             "detail": "declares a different tree"})
+                cancellation = self.event("cancellation_record", {"issuer": {"kind": "principal"},
+                    "request_ref": 99, "reason": "incorrect change"})
+                for event in self.events[closed + 1:]:
+                    event["written_at"] = written_at
+                _, (snapshot, _, runs, _) = self.read()
+                row = review_canary.summarize(snapshot, runs, 0)["reviews"][0]
+                self.assertEqual(row["closed_seq"], closed)
+                for field, seq in (("applications", application), ("conflicts", conflict),
+                                   ("request_cancellations", cancellation)):
+                    self.assertEqual([e["seq"] for e in row[field]], [seq])
+                    self.assertEqual(row[field][0]["at"], written_at)
+
+    def test_missing_join_identity_cannot_link_unrelated_events(self):
+        run = self.review()
+        self.events[run]["payload"].pop("request_ref")
+        self.events[run]["payload"]["manifest"]["subject_pin"].pop("content_hash")
+        self.event("application_record", {"change_set": {}})
+        self.event("integration_conflict", {"losing_change_set_pin": {}, "detail": "incorrect tree"})
+        self.event("cancellation_record", {"issuer": {"kind": "principal"}, "reason": "incorrect request"})
+        _, (snapshot, _, runs, _) = self.read()
+        row = review_canary.summarize(snapshot, runs, 0)["reviews"][0]
+        for field in ("applications", "conflicts", "request_cancellations"):
+            self.assertEqual(row[field], [])
 
     def test_body_verdict_precedes_gate_and_prose_is_excluded(self):
         run = self.review()
