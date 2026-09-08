@@ -89,3 +89,9 @@ retained inputs; the command never discovers an anchor automatically. Exit zero
 prints the JSON inspection, including missingness. Invalid input or integrity
 failure exits two through argparse, with no JSON success on stdout. This exit
 status is not a native-completeness or eligibility verdict.
+
+
+The [Codex root linker](codex-root-capture-linkage-v1.md) consumes this verified
+custody alongside an independently anchored task capture. It compares retained
+stdout and rollout identity while keeping execution binding, child linkage and
+native completeness unverified.

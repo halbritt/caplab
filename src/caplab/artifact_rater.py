@@ -209,16 +209,22 @@ def _read_rollout_bytes(path: Path) -> bytes:
 
 
 def read_rollout_attestation(rollout_path: Path, thread_id: str) -> dict[str, str]:
-    """Attest one consistent tuple across the supplied Codex capture bytes.
+    """Attest one consistent tuple from a regular rollout file; no completeness claim."""
+    try:
+        capture = _read_rollout_bytes(rollout_path)
+        return attest_rollout_capture(capture, thread_id, rollout_locator=str(rollout_path))
+    except (OSError, UnicodeDecodeError) as error:
+        raise CalibrationError(f"cannot read rollout {rollout_path}: {error}") from error
+
+
+def attest_rollout_capture(capture: bytes, thread_id: str, *, rollout_locator: str) -> dict[str, str]:
+    """Interpret already retained bytes; the caller owns read bounds and custody.
 
     Settings must agree with complete turn contexts; they cannot replace them.
     This checks captured identity, not capture completeness or provider identity.
+    The locator labels evidence and is never opened.
     """
-    try:
-        capture = _read_rollout_bytes(rollout_path)
-        text = capture.decode("utf-8")
-    except (OSError, UnicodeDecodeError) as error:
-        raise CalibrationError(f"cannot read rollout {rollout_path}: {error}") from error
+    text = capture.decode("utf-8")
     if not text.endswith("\n"):
         raise CalibrationError("rollout lacks final newline")
     lines = text.split("\n")[:-1]
@@ -274,7 +280,7 @@ def read_rollout_attestation(rollout_path: Path, thread_id: str) -> dict[str, st
         "cli_version": cli_version,
         "model": model,
         "effort": effort,
-        "rollout_path": str(rollout_path),
+        "rollout_path": rollout_locator,
         "rollout_sha256": hashlib.sha256(capture).hexdigest(),
     }
 
