@@ -103,44 +103,72 @@ def extract_thread_id(events_jsonl: str) -> str:
 
 
 def read_rollout_attestation(rollout_path: Path, thread_id: str) -> dict[str, str]:
-    """Read model, effort, and CLI version from the persisted Codex rollout."""
-    session_id = cli_version = model = effort = None
+    """Attest one consistent tuple across the supplied Codex capture bytes.
+
+    Settings must agree with complete turn contexts; they cannot replace them.
+    This checks captured identity, not capture completeness or provider identity.
+    """
     try:
-        lines = rollout_path.read_text(encoding="utf-8").splitlines()
-    except OSError as error:
+        capture = rollout_path.read_bytes()
+        lines = capture.decode("utf-8").splitlines()
+    except (OSError, UnicodeDecodeError) as error:
         raise CalibrationError(f"cannot read rollout {rollout_path}: {error}") from error
-    for line in lines:
+
+    def identity_pair(payload: object, keys: tuple[str, str]) -> tuple[str, str]:
+        if not isinstance(payload, dict):
+            raise CalibrationError("rollout identity payload must be an object")
+        values = tuple(payload.get(key) for key in keys)
+        if not all(isinstance(value, str) and value.strip() for value in values):
+            raise CalibrationError(f"rollout lacks complete {'/'.join(keys)} attestation")
+        return values
+
+    sessions: set[tuple[str, str]] = set()
+    tuples: set[tuple[str, str]] = set()
+    has_turn = False
+    for line_number, line in enumerate(lines, start=1):
+        if not line.strip():
+            continue
         try:
             event = json.loads(line)
-        except json.JSONDecodeError:
-            continue
+        except json.JSONDecodeError as error:
+            raise CalibrationError(f"malformed rollout JSON at line {line_number}") from error
+        if not isinstance(event, dict):
+            raise CalibrationError(f"rollout record at line {line_number} must be an object")
+        if not isinstance(event.get("type"), str) or not event["type"].strip():
+            raise CalibrationError(f"rollout record at line {line_number} lacks event type")
         if event.get("type") == "session_meta":
-            payload = event.get("payload", {})
-            session_id = payload.get("id")
-            cli_version = payload.get("cli_version")
+            session = identity_pair(event.get("payload"), ("id", "cli_version"))
+            if session[0] != thread_id:
+                raise CalibrationError(
+                    f"rollout thread mismatch: expected {thread_id}, got {session[0]}"
+                )
+            sessions.add(session)
         if event.get("type") == "event_msg":
-            payload = event.get("payload", {})
+            payload = event.get("payload")
+            if not isinstance(payload, dict):
+                raise CalibrationError("rollout event_msg payload must be an object")
             if payload.get("type") == "thread_settings_applied":
-                settings = payload.get("thread_settings", {})
-                model = settings.get("model")
-                effort = settings.get("reasoning_effort")
+                tuples.add(identity_pair(
+                    payload.get("thread_settings"), ("model", "reasoning_effort")
+                ))
         if event.get("type") == "turn_context":
-            payload = event.get("payload", {})
-            model = payload.get("model", model)
-            effort = payload.get("effort", effort)
-    if session_id != thread_id:
-        raise CalibrationError(
-            f"rollout thread mismatch: expected {thread_id}, got {session_id}"
-        )
-    if not all(isinstance(value, str) and value for value in (cli_version, model, effort)):
-        raise CalibrationError("rollout lacks CLI, model, or effort attestation")
+            tuples.add(identity_pair(event.get("payload"), ("model", "effort")))
+            has_turn = True
+    if len(sessions) != 1:
+        raise CalibrationError("rollout requires consistent session and CLI attestation")
+    if not has_turn:
+        raise CalibrationError("rollout lacks complete turn_context attestation")
+    if len(tuples) != 1:
+        raise CalibrationError("rollout model or effort changes within capture")
+    (_, cli_version), = sessions
+    (model, effort), = tuples
     return {
         "thread_id": thread_id,
         "cli_version": cli_version,
         "model": model,
         "effort": effort,
         "rollout_path": str(rollout_path),
-        "rollout_sha256": _sha256(rollout_path),
+        "rollout_sha256": hashlib.sha256(capture).hexdigest(),
     }
 
 

@@ -68,7 +68,12 @@ subject, `k >= 5`, before the scenario is admitted. The screening arm is
   packet's own prose. See `scripts/caplab-classifier-fixtures.py`.
 - **Attestation is per episode.** Codex's non-ephemeral rollout carries
   per-turn `model` and `reasoning_effort`; join it by `thread_id`, never by
-  file mtime, which races across parallel lanes.
+  file mtime, which races across parallel lanes. The shared reader requires
+  complete turn contexts with a consistent model/effort tuple and session/CLI
+  metadata throughout the supplied capture. Settings alone cannot attest a
+  turn; a transient change remains a failure even if later restored. This
+  checks the captured bytes, not provider identity or capture completeness.
+  See the [reader repair record](../../../records/repair-2026-09-08-rollout-attestation.md).
 - **Scope is scored.** Agents edit tests to ratify their own fix; one titration
   episode added a test asserting that logging is correct failure handling.
 

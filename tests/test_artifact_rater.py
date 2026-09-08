@@ -1,5 +1,6 @@
 """Tests for advisory-selection artifact-rater recovery tooling."""
 
+import hashlib
 import json
 import tempfile
 import unittest
@@ -228,6 +229,108 @@ class ArtifactRaterTests(unittest.TestCase):
         self.assertEqual(attestation["model"], "gpt-5.6-luna")
         self.assertEqual(attestation["effort"], "high")
         self.assertEqual(attestation["cli_version"], "0.146.0")
+
+    def _attest(self, records: list[object], suffix: bytes = b"") -> dict[str, str]:
+        rollout = self.root / "rollout.jsonl"
+        rollout.write_bytes(
+            ("\n".join(json.dumps(record) for record in records) + "\n").encode()
+            + suffix
+        )
+        return read_rollout_attestation(rollout, "thread-123")
+
+    def _rollout_records(self) -> list[dict]:
+        return [
+            {"type": "session_meta", "payload": {
+                "id": "thread-123", "cli_version": "0.146.0",
+            }},
+            {"type": "turn_context", "payload": {
+                "model": "gpt-5.6-luna", "effort": "high",
+            }},
+        ]
+
+    def test_attestation_accepts_consistent_turns_and_hashes_capture(self) -> None:
+        records = self._rollout_records()
+        settings = {"type": "event_msg", "payload": {
+            "type": "thread_settings_applied", "thread_settings": {
+                "model": "gpt-5.6-luna", "reasoning_effort": "high",
+            },
+        }}
+        attestation = self._attest([records[0], settings, records[1], records[1]])
+        self.assertEqual(attestation["model"], "gpt-5.6-luna")
+        self.assertEqual(attestation["effort"], "high")
+        self.assertEqual(attestation["rollout_sha256"], hashlib.sha256(
+            (self.root / "rollout.jsonl").read_bytes()
+        ).hexdigest())
+
+    def test_attestation_rejects_transient_turn_and_session_drift(self) -> None:
+        for record_index, key, value in (
+            (1, "model", "different-model"),
+            (1, "effort", "low"),
+            (0, "id", "another-thread"),
+            (0, "cli_version", "another-version"),
+        ):
+            with self.subTest(key=key):
+                records = self._rollout_records()
+                changed = {"type": records[record_index]["type"], "payload": {
+                    **records[record_index]["payload"], key: value,
+                }}
+                with self.assertRaises(CalibrationError):
+                    self._attest([*records, changed, *records])
+
+    def test_attestation_rejects_incomplete_turns_and_settings_only(self) -> None:
+        for records in ([], self._rollout_records()[:1], self._rollout_records()[1:]):
+            with self.subTest(records=records):
+                with self.assertRaises(CalibrationError):
+                    self._attest(records)
+        for key in ("model", "effort"):
+            for value in (None, "", " ", 4):
+                with self.subTest(key=key, value=value):
+                    records = self._rollout_records()
+                    incomplete = {**records[1]["payload"], key: value}
+                    with self.assertRaises(CalibrationError):
+                        self._attest([*records, {
+                            "type": "turn_context", "payload": incomplete,
+                        }, records[1]])
+            records = self._rollout_records()
+            incomplete = dict(records[1]["payload"])
+            del incomplete[key]
+            with self.assertRaises(CalibrationError):
+                self._attest([*records, {"type": "turn_context", "payload": incomplete}])
+        with self.assertRaises(CalibrationError):
+            self._attest([self._rollout_records()[0], {
+                "type": "event_msg", "payload": {
+                    "type": "thread_settings_applied", "thread_settings": {
+                        "model": "gpt-5.6-luna", "reasoning_effort": "high",
+                    },
+                },
+            }])
+
+    def test_attestation_rejects_conflicting_settings_even_before_first_turn(self) -> None:
+        records = self._rollout_records()
+        for model, effort in (("different-model", "high"), ("gpt-5.6-luna", "low")):
+            with self.subTest(model=model, effort=effort):
+                with self.assertRaises(CalibrationError):
+                    self._attest([records[0], {"type": "event_msg", "payload": {
+                        "type": "thread_settings_applied", "thread_settings": {
+                            "model": model, "reasoning_effort": effort,
+                        },
+                    }}, records[1]])
+
+    def test_attestation_rejects_malformed_records(self) -> None:
+        for record in (None, [], 1, {}, {"type": None},
+                       {"type": "turn_context", "payload": []},
+                       {"type": "session_meta", "payload": None},
+                       {"type": "event_msg", "payload": {
+                           "type": "thread_settings_applied", "thread_settings": [],
+                       }}):
+            with self.subTest(record=record):
+                records = self._rollout_records()
+                with self.assertRaises(CalibrationError):
+                    self._attest([*records, record, *records])
+        for suffix in (b'{"type":', b'\xff'):
+            with self.subTest(suffix=suffix):
+                with self.assertRaises(CalibrationError):
+                    self._attest(self._rollout_records(), suffix)
 
     def test_calibration_evaluation_enforces_every_gate(self) -> None:
         entries = []
