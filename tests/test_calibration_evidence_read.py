@@ -61,6 +61,26 @@ class CalibrationEvidenceReadTests(unittest.TestCase):
             with self.assertRaises(CalibrationError):
                 RATER._score_entry(self.fixture.entry, {}, self.root / "out", "gpt-5.6-luna", "low", 10)
 
+    def test_evaluation_rejects_ambiguous_rollout_even_with_updated_hashes(self):
+        rollout = self.attempt / "rollout.jsonl"
+        raw = rollout.read_bytes().replace(b'"model":', b'"model":"another-model","model":')
+        rollout.write_bytes(raw)
+        record_path = self.attempt / "record.json"
+        record = json.loads(record_path.read_text())
+        digest = hashlib.sha256(raw).hexdigest()
+        record["attestation"]["rollout_sha256"] = digest
+        record["attestation"]["custody_rollout_sha256"] = digest
+        record_path.write_text(json.dumps(record))
+        accepted = json.loads(self.accepted.read_text())
+        accepted["attempt_record_sha256"] = hashlib.sha256(record_path.read_bytes()).hexdigest()
+        self.accepted.write_text(json.dumps(accepted))
+        before = self.snapshot()
+        with patch.object(RATER.subprocess, "run", side_effect=AssertionError("unexpected native call")):
+            with self.assertRaisesRegex(CalibrationError, "malformed rollout JSON"):
+                RATER.command_evaluate(self.arguments)
+        self.assertEqual(before, self.snapshot())
+        self.assertFalse((self.root / "out/calibration-result.json").exists())
+
     def test_evaluation_requires_the_supporting_record(self):
         (self.attempt / "record.json").unlink()
         with self.assertRaises((CalibrationError, OSError)):

@@ -222,7 +222,7 @@ class ArtifactRaterTests(unittest.TestCase):
                         }
                     ),
                 ]
-            ),
+            ) + "\n",
             encoding="utf-8",
         )
         attestation = read_rollout_attestation(rollout, "thread-123")

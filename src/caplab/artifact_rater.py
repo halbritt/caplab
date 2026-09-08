@@ -136,9 +136,12 @@ def read_rollout_attestation(rollout_path: Path, thread_id: str) -> dict[str, st
     """
     try:
         capture = rollout_path.read_bytes()
-        lines = capture.decode("utf-8").splitlines()
+        text = capture.decode("utf-8")
     except (OSError, UnicodeDecodeError) as error:
         raise CalibrationError(f"cannot read rollout {rollout_path}: {error}") from error
+    if not text.endswith("\n"):
+        raise CalibrationError("rollout lacks final newline")
+    lines = text.split("\n")[:-1]
 
     def identity_pair(payload: object, keys: tuple[str, str]) -> tuple[str, str]:
         if not isinstance(payload, dict):
@@ -152,11 +155,9 @@ def read_rollout_attestation(rollout_path: Path, thread_id: str) -> dict[str, st
     tuples: set[tuple[str, str]] = set()
     has_turn = False
     for line_number, line in enumerate(lines, start=1):
-        if not line.strip():
-            continue
         try:
-            event = json.loads(line)
-        except json.JSONDecodeError as error:
+            event = parse_native_json(line)
+        except CodexEventError as error:
             raise CalibrationError(f"malformed rollout JSON at line {line_number}") from error
         if not isinstance(event, dict):
             raise CalibrationError(f"rollout record at line {line_number} must be an object")
