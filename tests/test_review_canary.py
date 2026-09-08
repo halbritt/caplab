@@ -301,6 +301,102 @@ class ReviewCanaryTest(unittest.TestCase):
                 self.assertEqual(observation["status"], status)
                 self.assertIsNotNone(observation["response_error"])
 
+    def test_ambiguous_latest_body_cannot_supply_or_inherit_a_verdict(self):
+        bodies = [
+            b'{"verdict":"reject","verdict":"accept","findings":[]}',
+            b'{"verdict":"accept","verdict":"reject","findings":[]}',
+            b'{"verdict":"accept","verdict":"accept","findings":[]}',
+            b'{"verdict":"reject","ver\\u0064ict":"accept","findings":[]}',
+            b'{"verdict":"accept","findings":[{"text":"a","text":"b"}]}',
+            b'{"verdict":"accept","findings":[],"extra":NaN}',
+            b'{"verdict":"accept","findings":[],"extra":Infinity}',
+            b'{"verdict":"accept","findings":[],"extra":-Infinity}',
+            '{"verdict":"accept","findings":[]}'.encode("utf-16"),
+            b'{"verdict":"accept","summary":"\xff","findings":[]}',
+        ]
+        for raw in bodies:
+            for gate in (None, "pass"):
+                with self.subTest(raw=raw, gate=gate):
+                    self.events = self.events[:1]
+                    run = self.review(verdict=gate)
+                    for ref in ("earlier", "latest"):
+                        self.event("artifact_admitted", {"kind": "review-ledger",
+                            "produced_by_run": run, "identity": ref, "body": {"content_hash": ref}})
+                    with patch.object(criterion.M, "store_object", side_effect=[
+                            b'{"verdict":"reject","findings":[]}', raw]):
+                        _, (snapshot, _, runs, _) = self.read()
+                    row = review_canary.summarize(snapshot, runs, 0)["reviews"][0]
+                    self.assertIsNone(row["verdict"])
+                    self.assertEqual(row["review_body_hash"], "latest")
+                    self.assertEqual(row["latest_body_status"], "invalid-json")
+                    self.assertEqual(row["review_body_observations"][0]["verdict"], "reject")
+                    self.assertIsNone(row["review_body_observations"][-1]["verdict"])
+                    self.assertEqual(row["verdict_source"], "gate-only" if gate else "missing")
+                    self.assertEqual(row["decision"], "cleared" if gate else "unknown")
+
+    def test_strict_body_reader_preserves_unicode_without_normalization(self):
+        text = "café / cafe\u0301 / 改修 / 🙂"
+        doc = {"verdict": "reject", "findings": [], "summary": text}
+        event = {"seq": 7, "payload": {"identity": "review", "body": {"content_hash": "body"}}}
+        with patch.object(criterion.M, "store_object", return_value=json.dumps(doc, ensure_ascii=False).encode("utf-8")):
+            observation, parsed = criterion.review_body_observation(event)
+        self.assertEqual(parsed, doc)
+        self.assertEqual(observation["status"], "parsed-object")
+        self.assertEqual(observation["verdict"], "reject")
+
+    def test_ambiguous_ledger_json_fails_before_store_reads_or_report_output(self):
+        valid = json.dumps(self.events[0])
+        variants = [
+            valid.replace('"seq": 0', '"seq": 9, "seq": 0'),
+            valid.replace('"payload": {}', '"payload": {"key": 1, "key": 2}'),
+            valid.replace('"payload": {}', '"payload": {"key": NaN}'),
+        ]
+        for number, raw in enumerate(variants):
+            with self.subTest(raw=raw):
+                ledger = self.root / "ambiguous-ledger.jsonl"
+                ledger.write_text(raw + "\n", encoding="utf-8")
+                with patch.object(criterion.M, "store_object") as store:
+                    with self.assertRaises(ValueError):
+                        criterion.read_reviews(str(ledger))
+                    store.assert_not_called()
+                out = self.root / f"bad-json-{number}"
+                completed = subprocess.run([sys.executable, str(SCRIPTS / "review_canary.py"),
+                    "--ledger", str(ledger), "--out", str(out)], capture_output=True, text=True)
+                self.assertEqual(completed.returncode, 2, completed.stderr)
+                self.assertFalse(out.exists())
+
+    def test_ambiguous_baseline_cannot_select_a_follow_up_window(self):
+        self.review()
+        path, report = self.baseline()
+        valid = json.dumps(report)
+        variants = [
+            valid.replace('"after_run": 0', '"after_run": 1, "after_run": 0').encode(),
+            valid.replace('"last_seq":', '"last_seq": 0, "last_seq":').encode(),
+            valid.replace('"after_run": 0', '"extra": NaN, "after_run": 0').encode(),
+            valid.encode("utf-16"),
+        ]
+        for number, raw in enumerate(variants):
+            with self.subTest(raw=raw):
+                path.write_bytes(raw)
+                with self.assertRaises(ValueError):
+                    review_canary.load_baseline(path)
+                out = self.root / f"bad-baseline-{number}"
+                completed = subprocess.run([sys.executable, str(SCRIPTS / "review_canary.py"),
+                    "--ledger", report["snapshot"]["path"], "--baseline-report", str(path),
+                    "--out", str(out)], capture_output=True, text=True)
+                self.assertEqual(completed.returncode, 2, completed.stderr)
+                self.assertFalse(out.exists())
+
+    def test_baseline_terminal_record_requires_unambiguous_json_even_with_matching_hash(self):
+        path, report = self.baseline()
+        source = Path(report["snapshot"]["path"])
+        raw = source.read_bytes().replace(b'"seq": 0', b'"seq": 7, "seq": 0')
+        source.write_bytes(raw)
+        report["snapshot"]["sha256"] = hashlib.sha256(raw).hexdigest()
+        path.write_text(json.dumps(report))
+        with self.assertRaises(ValueError):
+            review_canary.load_baseline(path)
+
     def test_conflicting_verdict_sources_are_retained_and_flagged(self):
         run = self.review()
         seqs = [self.event("artifact_admitted", {"kind": "review-ledger", "produced_by_run": run,
@@ -397,6 +493,8 @@ class ReviewCanaryTest(unittest.TestCase):
         completed = subprocess.run(command, capture_output=True, text=True)
         self.assertEqual(completed.returncode, 0, completed.stderr)
         report = json.loads((out / "report.json").read_text())
+        self.assertEqual(report["record"], "caplab-review-canary/4")
+        self.assertEqual(report["json_interpretation"], "utf8-unique-object-keys-no-non-json-constants/1")
         self.assertEqual(report["snapshot"]["sha256"], hashlib.sha256(ledger.read_bytes()).hexdigest())
         self.assertIn("&lt;reviewer&gt;&#124;a", (out / "report.md").read_text())
         repeated = subprocess.run(command, capture_output=True, text=True)

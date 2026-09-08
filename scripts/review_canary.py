@@ -10,13 +10,14 @@ from pathlib import Path
 import statistics
 
 from review_criterion_ledger_pass import CLEAR, REFUSE, read_reviews
+from caplab.codex_events import parse_native_json
 
 
 def load_baseline(path: Path) -> tuple[dict, dict, int]:
     """Bind a follow-up to the retained export and fixed window of a report."""
     raw = Path(path).read_bytes()
-    report = json.loads(raw)
-    if not isinstance(report, dict) or report.get("record") not in ("caplab-review-canary/1", "caplab-review-canary/2", "caplab-review-canary/3"):
+    report = parse_native_json(raw.decode("utf-8"))
+    if not isinstance(report, dict) or report.get("record") not in ("caplab-review-canary/1", "caplab-review-canary/2", "caplab-review-canary/3", "caplab-review-canary/4"):
         raise ValueError("baseline must be a production review report")
     snapshot = report.get("snapshot")
     if not isinstance(snapshot, dict):
@@ -46,7 +47,7 @@ def load_baseline(path: Path) -> tuple[dict, dict, int]:
                 last = line
     if not last or digest.hexdigest() != snapshot.get("sha256"):
         raise ValueError("baseline export no longer matches its recorded SHA-256")
-    last_event = json.loads(last)
+    last_event = parse_native_json(last.decode("utf-8"))
     if (events != snapshot["events"] or not isinstance(last_event, dict)
             or last_event.get("seq") != snapshot["last_seq"]):
         raise ValueError("baseline snapshot counts do not match its retained export")
@@ -143,7 +144,8 @@ def summarize(snapshot: dict, runs: dict, after_run: int) -> dict:
             "distinct_cancellation_records": sorted({e["seq"] for r in clear for e in r["request_cancellations"]}),
             "refusals_with_later_version": sum(r["decision"] == "refused" and bool(r["later_versions"]) for r in rows),
         })
-    return {"record": "caplab-review-canary/3", "snapshot": snapshot,
+    return {"record": "caplab-review-canary/4", "snapshot": snapshot,
+            "json_interpretation": "utf8-unique-object-keys-no-non-json-constants/1",
             "verdict_selection": "latest-admitted-body-then-latest-review-gate/1",
             "downstream_ordering": "ledger-sequence-after-review-closure/1",
             "after_run": after_run, "mode": "since-cutoff" if after_run else "retrospective-baseline",
@@ -169,6 +171,7 @@ def render(report: dict) -> str:
              (", ".join(f"{k} {v}" for k, v in sorted(unknown_outcomes.items())) or "none") + ".",
              "A missing verdict can follow cancellation, a partial submission, or an error. It is not a wrong answer.", "",
              "Reviewer names are ledger backend labels, not verified exact CAPLAB Bindings.",
+             "JSON inputs require UTF-8, unique object keys, and no NaN or Infinity constants.",
              "Rows use alphabetical order. Durations include all closed outcomes and exclude open runs.", "",
              "| Reviewer | Runs | Cleared | Refused | Unknown | Missing body | Median closed seconds (n) |",
              "|---|---:|---:|---:|---:|---:|---:|"]
@@ -221,6 +224,7 @@ def render(report: dict) -> str:
         lines.append("No recorded body or source discrepancies found. Missing bodies can still limit the report.")
     lines.extend(["", "The latest admitted body's recognized verdict takes precedence over the latest review gate.",
                   "An unavailable or malformed latest body cannot inherit an older body's verdict. Gate-only fallback is labeled.",
+                  "An ambiguous body supplies no verdict, even if one of its repeated fields says accept or reject.",
                   "A recognized verdict is an observation even when other response fields are invalid; it is not contract conformance.",
                   "Disagreements remain inspection evidence; this report does not adjudicate which source is right."])
     lines.extend(["", "Downstream events identify work to inspect:", "",

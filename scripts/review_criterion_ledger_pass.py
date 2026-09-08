@@ -45,6 +45,7 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, os.path.join(ROOT, "src"))
 from caplab.advisory import materialize as M  # noqa: E402
 from caplab.advisory.review_response import response_error  # noqa: E402
+from caplab.codex_events import parse_native_json  # noqa: E402
 
 CLEAR = {"accept", "accept_with_findings"}
 REFUSE = {"needs_revision", "reject"}
@@ -94,7 +95,7 @@ def review_body_observation(event: dict) -> tuple[dict, dict | None]:
         observation["status"] = "unavailable-or-unverified"
         return observation, None
     try:
-        doc = json.loads(raw)
+        doc = parse_native_json(raw.decode("utf-8"))
     except ValueError:
         observation.update(status="invalid-json", response_error="invalid-json")
         return observation, None
@@ -128,7 +129,7 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
                 prefix_remaining -= len(prefix)
             if not line.strip():
                 continue
-            e = json.loads(line)
+            e = parse_native_json(line.decode("utf-8"))
             expected = snapshot["last_seq"] + 1 if snapshot["events"] else 0
             if e["seq"] != expected:
                 raise ValueError(f"complete ledger required: expected sequence {expected}, got {e['seq']}")

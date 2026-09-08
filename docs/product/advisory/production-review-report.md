@@ -31,7 +31,7 @@ PYTHONPATH=src python3 scripts/review_canary.py \
 
 Open `/tmp/caplab-review-baseline/report.md`. Its JSON companion retains each
 selected run and the event locators. Existing report directories are refused.
-New reports use `caplab-review-canary/3` with
+New reports use `caplab-review-canary/4` with
 `downstream_ordering: ledger-sequence-after-review-closure/1`.
 The reader uses the same local Striatum object store as the criterion ledger
 pass. A snapshot without its object store can have missing review bodies.
@@ -76,11 +76,14 @@ The numeric form remains available for manual windows; it does not verify
 baseline ancestry. Prefix verification establishes continuity, not completion
 of the new export command, availability of object-store bodies, or accuracy
 of a review. Continue to require exit code zero from the export command.
-Versions 1, 2, and 3 can supply a verified baseline. The
+Versions 1, 2, 3, and 4 can supply a verified baseline. The
 reference records that version. Moving from version 1 to version 2 can expose
 links previously omitted by timestamp filtering or missing verdicts; ledger
 continuity does not mean the report calculations stayed the same. Version 3
 also corrects stale verdict provenance and exposes source discrepancies.
+Version 4 rejects ambiguous JSON and requires UTF-8 at the report's read
+boundaries. A legacy baseline must also satisfy those read requirements;
+its version does not authorize ambiguous interpretation.
 Historical reports are not rewritten.
 
 Read the report in this order:
@@ -122,6 +125,23 @@ object can still have an unsupported verdict or malformed findings. The
 recognized verdict remains an observation; envelope validity and semantic
 conformance are separate questions. The hash locates the full body without
 copying it into the report.
+
+`json_interpretation: utf8-unique-object-keys-no-non-json-constants/1` records
+the version 4 read policy. Ledger events, baseline reports, the baseline
+export's final record, and admitted review-body bytes require UTF-8 and
+unambiguous JSON objects at every nesting level. Duplicate keys are rejected
+even when their values agree or one key uses an equivalent Unicode escape.
+Non-JSON constants `NaN`, `Infinity`, and `-Infinity` are rejected. Valid
+Unicode text is preserved without normalization. This is a decoding policy,
+not full event-schema validation or proof that every numeric field is finite
+and meaningful.
+
+An ambiguous ledger or baseline fails before an output directory is created.
+An ambiguous or incorrectly encoded review body is retained as an
+`invalid-json` observation, with its event and hash but no selected verdict.
+The existing gate-only fallback still applies and remains labeled. A matching
+content hash establishes byte identity; it cannot make duplicate verdict
+fields into one uniquely supported decision.
 
 `review_gate_observations` retains each linked gate event and its raw outcome.
 Repeated evidence references within one gate event do not duplicate that
