@@ -166,9 +166,10 @@ class LadderSubjectTests(unittest.TestCase):
         completed = "\n".join(
             [
                 json.dumps({"type": "thread.started", "thread_id": "abc"}),
+                json.dumps({"type": "turn.started"}),
                 json.dumps({"type": "turn.completed", "usage": {}}),
             ]
-        )
+        ) + "\n"
         self.assertEqual(
             classify_subject_attempt(completed, 0, ["a.py"], pin_ok=True),
             ("behavioural-attempt", None),
@@ -191,7 +192,8 @@ class LadderSubjectTests(unittest.TestCase):
         )
 
     def test_byte_events_require_utf8_and_object_records(self) -> None:
-        completed = b'{"type":"turn.completed"}\n'
+        completed = (b'{"type":"thread.started","thread_id":"abc"}\n'
+                     b'{"type":"turn.started"}\n{"type":"turn.completed"}\n')
         self.assertEqual(
             classify_subject_attempt(completed, 0, ["a.py"], pin_ok=True),
             ("behavioural-attempt", None),
@@ -201,6 +203,15 @@ class LadderSubjectTests(unittest.TestCase):
                 disposition, reason = classify_subject_attempt(invalid, 0, ["a.py"], pin_ok=True)
                 self.assertEqual(disposition, "infrastructure")
                 self.assertIn("event stream", reason)
+
+    def test_completion_does_not_hide_later_activity_or_malformed_records(self) -> None:
+        completed = ('{"type":"thread.started","thread_id":"abc"}\n'
+                     '{"type":"turn.started"}\n{"type":"turn.completed"}\n')
+        for invalid in (completed + '{"type":"turn.started"}\n', completed + '{"type":',
+                        completed + '{"type":"thread.started","thread_id":"other"}\n'):
+            with self.subTest(invalid=invalid):
+                disposition, _ = classify_subject_attempt(invalid, 0, ["a.py"], pin_ok=True)
+                self.assertEqual(disposition, "infrastructure")
 
 
 if __name__ == "__main__":

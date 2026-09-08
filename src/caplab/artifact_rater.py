@@ -9,6 +9,8 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any, Iterable, Mapping
 
+from caplab.codex_events import CodexEventError, codex_thread_id, require_completed_codex_turn
+
 
 class CalibrationError(ValueError):
     """Raised when calibration evidence is incomplete or malformed."""
@@ -89,25 +91,18 @@ def build_artifact_prompt(codes_path: Path, diff: str) -> str:
 
 def extract_thread_id(events_jsonl: str | bytes) -> str:
     """Extract the persistent Codex thread identifier from JSONL events."""
-    if isinstance(events_jsonl, bytes):
-        try:
-            events_jsonl = events_jsonl.decode("utf-8")
-        except UnicodeDecodeError as error:
-            raise CalibrationError("Codex event stream is not valid UTF-8") from error
-    for line in events_jsonl.splitlines():
-        if not line.strip():
-            continue
-        try:
-            event = json.loads(line)
-        except json.JSONDecodeError:
-            continue
-        if not isinstance(event, dict):
-            raise CalibrationError("Codex event stream record must be an object")
-        if event.get("type") == "thread.started" and isinstance(
-            event.get("thread_id"), str
-        ):
-            return event["thread_id"]
-    raise CalibrationError("Codex event stream has no thread.started identifier")
+    try:
+        return codex_thread_id(events_jsonl)
+    except CodexEventError as error:
+        raise CalibrationError(str(error)) from error
+
+
+def completed_thread_id(events_jsonl: str | bytes) -> str:
+    """Require completed native execution before admitting a rater judgment."""
+    try:
+        return require_completed_codex_turn(events_jsonl)
+    except CodexEventError as error:
+        raise CalibrationError(str(error)) from error
 
 
 def read_rollout_attestation(rollout_path: Path, thread_id: str) -> dict[str, str]:

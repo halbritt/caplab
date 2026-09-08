@@ -80,6 +80,9 @@ subject, `k >= 5`, before the scenario is admitted. The screening arm is
   Native stdout and stderr stay byte-exact, including partial timeout output;
   timeout facts are separate attempt metadata. See the
   [timeout capture repair](../../../records/repair-2026-09-08-native-timeout-capture.md).
+  Usable attempts also require one unambiguous native thread and turn with a
+  final completion event and no failure evidence. A valid answer file alone
+  cannot satisfy this [completion gate](../../../records/repair-2026-09-08-native-completion.md).
 - **Scope is scored.** Agents edit tests to ratify their own fix; one titration
   episode added a test asserting that logging is correct failure handling.
 

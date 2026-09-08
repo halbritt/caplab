@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
-import json
 import hashlib
 from pathlib import Path
 from typing import Iterable, Sequence
+
+from caplab.codex_events import CodexEventError, require_completed_codex_turn
 
 from caplab.subject_identity import (
     NativeAgentSystemContractError,
@@ -94,38 +95,14 @@ def classify_subject_attempt(
     pin_ok: bool,
 ) -> tuple[str, str | None]:
     """Separate behavioral attempts from native-harness infrastructure failure."""
-    if isinstance(events_jsonl, bytes):
-        try:
-            events_jsonl = events_jsonl.decode("utf-8")
-        except UnicodeDecodeError:
-            return "infrastructure", "native event stream is not valid UTF-8"
-    completed = False
-    failure: str | None = None
-    for line in events_jsonl.splitlines():
-        if not line.strip():
-            continue
-        try:
-            event = json.loads(line)
-        except json.JSONDecodeError:
-            continue
-        if not isinstance(event, dict):
-            return "infrastructure", "native event stream record must be an object"
-        event_type = event.get("type")
-        if event_type == "turn.completed":
-            completed = True
-        if event_type in {"error", "turn.failed", "thread.error"}:
-            failure = str(event_type)
-        rate_limit = event.get("rate_limit_info")
-        if isinstance(rate_limit, dict) and rate_limit.get("status") == "rejected":
-            failure = "rate_limit"
     if not pin_ok:
         return "infrastructure", "native tuple attestation mismatch"
-    if failure:
-        return "infrastructure", failure
+    try:
+        require_completed_codex_turn(events_jsonl)
+    except CodexEventError as error:
+        return "infrastructure", str(error)
     if return_code != 0:
         return "infrastructure", f"native harness exited {return_code}"
-    if not completed:
-        return "infrastructure", "no turn.completed"
     return (
         ("behavioural-attempt", None)
         if list(write_set)

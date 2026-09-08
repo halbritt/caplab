@@ -36,7 +36,8 @@ def rollout(model="gpt-5.6-luna"):
     ]) + "\n").encode()
 
 
-EVENTS = '{"type":"thread.started","thread_id":"thread-123"}\n{"type":"turn.completed"}\n'
+EVENTS = ('{"type":"thread.started","thread_id":"thread-123"}\n'
+          '{"type":"turn.started"}\n{"type":"turn.completed"}\n')
 
 
 class NativeCaptureCustodyTests(unittest.TestCase):
@@ -134,6 +135,46 @@ class NativeCaptureCustodyTests(unittest.TestCase):
         record = json.loads((slot / "attempt-001/record.json").read_text())
         self.assertFalse(record["accepted"])
         self.assertNotIn("attestation", record)
+
+    def test_rater_rejects_failed_or_incomplete_event_evidence(self):
+        base = self.root
+        streams = (
+            EVENTS.replace('{"type":"turn.completed"}\n', ''),
+            EVENTS.replace('turn.completed', 'turn.failed'),
+            EVENTS + '{"type":"turn.started"}\n',
+            EVENTS + '{"type":',
+            EVENTS.replace('{"type":"turn.started"}\n', ''),
+            EVENTS + '{"type":"thread.started","thread_id":"other"}\n',
+            EVENTS.replace('"type":"turn.completed"', '"type":"turn.failed","type":"turn.completed"'),
+            EVENTS.replace('{"type":"turn.completed"}',
+                           '{"type":"notice","rate_limit_info":{"status":"rejected"}}\n{"type":"turn.completed"}'),
+        )
+        for index, stream in enumerate(streams):
+            with self.subTest(stream=stream):
+                self.root = base / str(index)
+                _, success, _ = self.score(native_output=(stream.encode(), b""))
+                self.assertFalse(success)
+                slot = self.root / "out/scores/slot-1"
+                record = json.loads((slot / "attempt-001/record.json").read_text())
+                self.assertFalse(record["accepted"])
+                self.assertFalse((slot / "accepted.json").exists())
+                self.assertEqual((slot / "attempt-001/events.jsonl").read_bytes(), stream.encode())
+
+    def test_recovery_cannot_accept_a_failed_native_turn(self):
+        attempt = self.root / "attempt"
+        attempt.mkdir()
+        (attempt / "record.json").write_text(json.dumps({
+            "return_code": 0, "model": "gpt-5.6-luna", "effort": "low",
+            "diff_sha256": self.entry["diff_sha256"], "prompt_sha256": "a" * 64,
+        }))
+        (attempt / "last-message.txt").write_text('{"C1":true,"SCOPE":true}')
+        (attempt / "events.jsonl").write_text(EVENTS.replace("turn.completed", "turn.failed"))
+        accepted = self.root / "accepted.json"
+        with patch.object(RATER, "_find_rollout", return_value=self.source):
+            with self.assertRaises(CalibrationError):
+                RATER._recover_completed_attempt(attempt, accepted, self.entry, "gpt-5.6-luna", "low")
+        self.assertFalse(accepted.exists())
+        self.assertFalse((attempt / "recovery.json").exists())
 
     def test_preservation_is_private_and_reuses_only_identical_custody(self):
         custody = self.root / "retained.jsonl"

@@ -25,7 +25,7 @@ from caplab.artifact_rater import (
     build_judgment_schema,
     build_scoring_manifest,
     evaluate_calibration,
-    extract_thread_id,
+    completed_thread_id,
     preserve_rollout_attestation,
     validate_judgment,
 )
@@ -154,7 +154,7 @@ def _recover_completed_attempt(
         json.loads(last_message_path.read_text(encoding="utf-8")),
         entry["code_ids"],
     )
-    thread_id = extract_thread_id(events_path.read_bytes())
+    thread_id = completed_thread_id(events_path.read_bytes())
     source_rollout = _find_rollout(thread_id)
     custody_rollout = attempt_root / "rollout.jsonl"
     attestation = preserve_rollout_attestation(source_rollout, custody_rollout, thread_id)
@@ -312,7 +312,7 @@ def _score_entry(
             json.loads(last_message_path.read_text(encoding="utf-8")),
             entry["code_ids"],
         )
-        thread_id = extract_thread_id(events)
+        thread_id = completed_thread_id(events)
         source_rollout = _find_rollout(thread_id)
         custody_rollout = attempt_root / "rollout.jsonl"
         attestation = preserve_rollout_attestation(source_rollout, custody_rollout, thread_id)
