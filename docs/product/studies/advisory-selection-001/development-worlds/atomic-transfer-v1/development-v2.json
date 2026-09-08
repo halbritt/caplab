@@ -1,0 +1,85 @@
+{
+  "schema": "caplab.atomic-transfer-development-dossier/v2",
+  "world_id": "atomic-transfer-v1",
+  "status": "development-unsealed",
+  "construction_baseline": "8cf9f250b46d77c89dfc9236e81e9d9d67be87a8",
+  "author": {
+    "identity": "primary-agent",
+    "authority": "CAPLAB ADR 0026",
+    "roles": [
+      "task-author",
+      "fixture-author",
+      "oracle-author"
+    ],
+    "binding_attested": false,
+    "independent_validator": null,
+    "prior_context_inventory_complete": false,
+    "known_prior_exposure": [
+      "ongoing CAPLAB work",
+      "ubiquitous language",
+      "behavior-code-authoring/v1",
+      "engineering doctrine",
+      "atomic-transfer-v1 authored and its oracle outcomes observed at 8cf9f25"
+    ],
+    "blind_task_authoring": false
+  },
+  "study_eligible": false,
+  "permanently_excluded_from_unobserved_population": true,
+  "concept_target": null,
+  "behavior_codes": [],
+  "pairing": null,
+  "independent_accuracy_anchor": null,
+  "content": [
+    {
+      "path": "README.md",
+      "bytes": 5890,
+      "sha256": "ba4c3a9b8c08dc871c2981093afdad17edf21a32186d8712035fdf0049071692"
+    },
+    {
+      "path": "TASK.md",
+      "bytes": 3016,
+      "sha256": "1e4663e3116628dc04a17672ff22dce82fd448961a4b0af48444b7ff95ba385a"
+    },
+    {
+      "path": "development.json",
+      "bytes": 2084,
+      "sha256": "bc579bc1b4fd65a3546fe494cea0ebc3975ff9a2cc0017858f069da227701aae"
+    },
+    {
+      "path": "negatives/false_success.py",
+      "bytes": 1768,
+      "sha256": "d1735d8417f12fbb5bffb31df5b17c29f188a8b28d152628213a7408c2a32e58"
+    },
+    {
+      "path": "negatives/retry_only.py",
+      "bytes": 1273,
+      "sha256": "fc52ff4c82c3ba598ad62c2f9c9b9601bf94cc2f876b7c6150516bbc5b17d32e"
+    },
+    {
+      "path": "oracle.py",
+      "bytes": 10475,
+      "sha256": "0fa22850d12819da91d3e16b499c1ba8a960d375b8409dc90e88677ffcab00cc"
+    },
+    {
+      "path": "parent/transfer.py",
+      "bytes": 960,
+      "sha256": "87eec756e3f49f8da5b662fe26cd99a7410df5e2e2237b4300bc4e447fc79d1d"
+    },
+    {
+      "path": "repairs/savepoint.py",
+      "bytes": 1804,
+      "sha256": "557ddcd73348cbdc7ba5bd82cfe1013e3b78a2b7a9a5030aebea773053e77dfc"
+    },
+    {
+      "path": "repairs/transaction.py",
+      "bytes": 1748,
+      "sha256": "514d0d5606c9db5312e43ec086e8fdebd474ec56d4d37ad64625fa9a3221f735"
+    }
+  ],
+  "previous_dossier": {
+    "source_commit": "8cf9f250b46d77c89dfc9236e81e9d9d67be87a8",
+    "path": "docs/product/studies/advisory-selection-001/development-worlds/atomic-transfer-v1/development.json",
+    "sha256": "bc579bc1b4fd65a3546fe494cea0ebc3975ff9a2cc0017858f069da227701aae"
+  },
+  "oracle_version": "caplab.atomic-transfer-development-audit/v2"
+}

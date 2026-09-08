@@ -20,7 +20,8 @@ retries or interruptions damage the ledger.
 | `negatives/retry_only.py` | Handles repeated IDs but retains non-atomic writes |
 | `negatives/false_success.py` | Rolls back SQLite failures but reports success |
 | `oracle.py` | Pure ledger model, state/return checks and bounded statement-failure experiments |
-| `development.json` | Content identities, exposure and explicit exclusions; not a protected study freeze |
+| `development-v2.json` | Current content identities, exposure and exclusions; not a protected study freeze |
+| `development.json` | Preserved original dossier describing commit `8cf9f25`, not the revised files |
 
 The two candidate repairs use different update and rollback strategies. Their
 checks use the same logical state model; no comparison to patch text or concept
@@ -39,6 +40,23 @@ score. The tests additionally exercise two concurrent connections for competing
 withdrawals and duplicate request IDs. Those schedules are evidence, not a proof
 of all interleavings. SQLite busy/locked errors are permitted by the task and
 must leave no partial transfer. The caller owns retry policy.
+
+The v2 oracle records whether a candidate **returned** or **raised**. Returning
+an exception object cannot satisfy a requirement to raise it; a non-string value
+cannot imitate the required success string through equality alone. Candidate
+exceptions remain observations, while setup/oracle failures propagate. Actual
+unsupported fault operations are also recorded on the probe, so catching their
+exception cannot hide unavailable observation coverage.
+
+It also compares the main and temporary SQLite schema definitions alongside row
+state and transaction ownership. Added tables, indexes or triggers and removed
+task tables fail the written no-schema-change rule. If the schema changed, the
+dependent row comparison is unavailable (`state_agrees: null`) and the schema
+violation is reported explicitly. Snapshots do not detect every intermediate schema
+change that is reversed before observation. These checks do not inspect attached databases,
+filesystem effects or every SQLite setting and do not establish full scope
+containment. The [v2 repair record](../../../../../records/repair-2026-09-08-atomic-transfer-oracle-observations.md)
+retains the false-acceptance reproductions and compatibility checks.
 
 For each supported witness, the fault experiment first counts direct
 `connection.execute` calls on a successful fresh or replay path. It then creates
