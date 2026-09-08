@@ -7,6 +7,7 @@
 - [Corrected native-system preference preregistration](studies/caplab-preference-001-native-r1-preregistration.md)
 - [Native agent-system contract](contracts/native-agent-systems.json)
 - [Prospective behavioral code-authoring procedure](contracts/behavior-code-authoring-v1.md)
+- [Read-only two-coder agreement report](contracts/code-agreement-report-v1.md)
 - [Striatum pass-context capability profiles](striatum-pass-profiles/README.md)
 - [Evaluation snapshot gate](evaluation/README.md)
 - [Binding qualification and Quartermaster export boundary](qualification/README.md)
