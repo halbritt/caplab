@@ -8,6 +8,11 @@ The [decision record](../../records/decision-2026-09-08-code-agreement-diagnosti
 selects the prospective single-code failure disposition; this CLI does not
 apply a threshold or decide study acceptance.
 
+For an explicitly supplied reference label set, use the optional
+[`--reference` comparison](code-reference-report-v1.md). It retains this report
+and adds per-coder reference counts and coverage. Reference truth and
+independence remain unverified; the original mode and schema are unchanged.
+
 ## Input
 
 `caplab-code-agreement-input/1` has exactly five top-level fields:

@@ -24,13 +24,8 @@ def _identifiers(value: object, label: str) -> list[str]:
     return ids
 
 
-def build_code_agreement_report(document: object) -> dict:
-    """Validate labels against planned slots; compute each world/code separately.
-
-    Values are Boolean or explicit null (unavailable). Missing judgment records
-    are counted separately. Neither source custody nor the expected population's
-    freeze is verified by accepting this document.
-    """
+def _validated_document(document: object) -> tuple:
+    """Read judgments against explicit slots without modifying source records."""
     source = _fields(document, {"schema_version", "coder_ids", "worlds",
                                 "slots", "judgments"}, "input")
     if source["schema_version"] != "caplab-code-agreement-input/1":
@@ -74,6 +69,12 @@ def build_code_agreement_report(document: object) -> dict:
         if value is not None and type(value) is not bool:
             raise ValueError(f"{slot}/{coder}/{code}: value must be Boolean or null")
         judgments[key] = value
+
+    return coders, worlds, slots, world_slots, judgments
+
+
+def _agreement_report(validated: tuple) -> dict:
+    coders, worlds, slots, world_slots, judgments = validated
 
     reports = []
     for world in sorted(worlds):
@@ -124,4 +125,94 @@ def build_code_agreement_report(document: object) -> dict:
             "agreement on complete paired judgments only; does not establish accuracy, "
             "coder independence, blinding, population completeness, or study readiness; "
             "no threshold or acceptance decision is applied"),
+    }
+
+
+def build_code_agreement_report(document: object) -> dict:
+    """Report agreement on complete pairs; do not qualify coders or references."""
+    return _agreement_report(_validated_document(document))
+
+
+def _reference_labels(reference: object, worlds: dict, slots: dict) -> tuple:
+    source = _fields(reference, {"schema_version", "reference_id", "judgments"}, "reference")
+    if source["schema_version"] != "caplab-code-reference-input/1":
+        raise ValueError("unsupported code-reference input schema")
+    reference_id = _identifier(source["reference_id"], "reference_id")
+    if not isinstance(source["judgments"], list):
+        raise ValueError("reference judgments: expected a list")
+    labels = {}
+    for label in source["judgments"]:
+        label = _fields(label, {"slot", "code_id", "value", "evidence_locator"}, "reference judgment")
+        slot = _identifier(label["slot"], "reference slot")
+        code = _identifier(label["code_id"], "reference code_id")
+        _identifier(label["evidence_locator"], "reference evidence_locator")
+        if slot not in slots or code not in worlds[slots[slot]]:
+            raise ValueError(f"reference outside expected population: {slot}/{code}")
+        key = (slot, code)
+        if key in labels:
+            raise ValueError(f"duplicate reference judgment: {slot}/{code}")
+        if label["value"] is not None and type(label["value"]) is not bool:
+            raise ValueError(f"{slot}/{code}: reference must be Boolean or null")
+        labels[key] = label["value"]
+    return reference_id, labels
+
+
+def _ratio(numerator: int, denominator: int) -> float | None:
+    return numerator / denominator if denominator else None
+
+
+def _compare_coder(judgments: dict, known: dict, coder: str, code: str) -> dict:
+    joint = {"00": 0, "01": 0, "10": 0, "11": 0}
+    missing = unavailable = 0
+    for slot, reference in known.items():
+        key = (slot, coder, code)
+        if key not in judgments:
+            missing += 1
+        elif judgments[key] is None:
+            unavailable += 1
+        else:
+            joint[f"{int(reference)}{int(judgments[key])}"] += 1
+    count = sum(joint.values())
+    return {
+        "coder_id": coder, "compared_labels": count,
+        "missing_judgments_on_known_references": missing,
+        "unavailable_judgments_on_known_references": unavailable,
+        "reference_joint_counts": joint,
+        "reference_coverage": _ratio(count, len(known)),
+        "reference_agreement": _ratio(joint["00"] + joint["11"], count),
+        "positive_reference_agreement": _ratio(joint["11"], joint["10"] + joint["11"]),
+        "negative_reference_agreement": _ratio(joint["00"], joint["00"] + joint["01"]),
+    }
+
+
+def build_code_reference_report(document: object, reference: object) -> dict:
+    """Compare supplied labels; their truth, provenance and independence are unverified."""
+    validated = _validated_document(document)
+    coders, worlds, slots, world_slots, judgments = validated
+    reference_id, labels = _reference_labels(reference, worlds, slots)
+    rows = []
+    for world in sorted(worlds):
+        for code in sorted(worlds[world]):
+            expected = world_slots[world]
+            known = {slot: labels[(slot, code)] for slot in expected
+                     if (slot, code) in labels and labels[(slot, code)] is not None}
+            reference_counts = {
+                "world": world, "code_id": code, "expected_labels": len(expected),
+                "missing_reference_labels": sum((slot, code) not in labels for slot in expected),
+                "unavailable_reference_labels": sum((slot, code) in labels and labels[(slot, code)] is None
+                                                    for slot in expected),
+                "known_reference_labels": len(known),
+                "positive_reference_labels": sum(known.values()),
+                "negative_reference_labels": len(known) - sum(known.values()),
+            }
+            for coder in coders:
+                rows.append({**reference_counts, **_compare_coder(judgments, known, coder, code)})
+    return {
+        "schema_version": "caplab-code-reference-report/1", "reference_id": reference_id,
+        "agreement": _agreement_report(validated), "reference_comparisons": rows,
+        "reference_joint_axes": ["reference", "coder"],
+        "interpretation": (
+            "comparison against supplied, unverified reference labels on comparable observations only; "
+            "does not establish reference truth, independence, human authorship, blinding, "
+            "representativeness, coder accuracy qualification or study readiness; no threshold is applied"),
     }
