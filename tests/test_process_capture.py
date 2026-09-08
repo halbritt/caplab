@@ -219,6 +219,23 @@ class ProcessCaptureTests(unittest.TestCase):
         self.assertEqual(processes[0].poll(), -signal.SIGKILL)
         self.assertFalse((self.out / "capture.json").exists())
 
+    def test_pipe_setup_failure_closes_both_pipes_and_reaps_child(self):
+        processes = []
+        real_popen = subprocess.Popen
+        def retain(*args, **kwargs):
+            process = real_popen(*args, **kwargs)
+            processes.append(process)
+            return process
+        with patch.object(capture.subprocess, "Popen", side_effect=retain), patch.object(
+                capture.os, "set_blocking", side_effect=OSError("pipe setup failed")):
+            with self.assertRaisesRegex(OSError, "pipe setup failed"):
+                self.run_child("import time; time.sleep(30)")
+        self.addCleanup(processes[0].stderr.close)
+        self.assertEqual(processes[0].poll(), -signal.SIGKILL)
+        self.assertTrue(processes[0].stdout.closed)
+        self.assertTrue(processes[0].stderr.closed)
+        self.assertFalse((self.out / "capture.json").exists())
+
     def test_closed_pipes_do_not_hide_a_running_process(self):
         receipt = self.run_child("import os,time; os.close(1); os.close(2); time.sleep(30)", timeout=.2)
         self.assertEqual(receipt["termination"], "timeout")

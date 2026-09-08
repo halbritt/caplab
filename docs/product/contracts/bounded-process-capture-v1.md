@@ -8,6 +8,8 @@ This component implements the stdout/stderr part of
 [CAPLAB-79's prospective capture design](../../records/decision-2026-09-08-caplab-79-capture-design.md).
 It does not implement the entire episode recorder or authorize a launch.
 Existing frozen native runners do not call it. CAPLAB-84 remains open.
+The prospective [task-attempt wrapper](task-attempt-capture-v1.md) now calls it
+between sealed task inventories; this does not establish native integration.
 
 ## Interface and owner responsibilities
 
@@ -96,6 +98,8 @@ subject to the stated cleanup deadline. Retained prefixes remain available for
 restricted failure inspection. A partial `.capture.pending` is not a completion
 record; a directory with no valid final receipt is not an eligible episode.
 No exception becomes an empty successful result. No native source is deleted.
+Both child pipes are owned before nonblocking setup or selector registration,
+so a setup failure closes both as well as terminating/reaping the child.
 
 Under CAPLAB-79, quota overflow, incomplete capture, and storage failures stop
 the campaign. The future campaign adapter must enforce that rule and keep the

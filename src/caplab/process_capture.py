@@ -32,6 +32,32 @@ def _kill_group(process: subprocess.Popen) -> None:
         pass
 
 
+def seal_capture_json(output_dir: Path, name: str, receipt: dict) -> str:
+    """Publish a named JSON receipt in fresh trusted custody; return its byte hash."""
+    pending = output_dir / ("." + name.removesuffix(".json") + ".pending")
+    content = (json.dumps(receipt, sort_keys=True) + "\n").encode("utf-8")
+    fd = os.open(pending, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+    try:
+        _write_all(fd, content)
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+    final = output_dir / name
+    os.link(pending, final)
+    try:
+        pending.unlink()
+        for directory in (output_dir, output_dir.parent):
+            parent_fd = os.open(directory, os.O_RDONLY | os.O_DIRECTORY)
+            try:
+                os.fsync(parent_fd)
+            finally:
+                os.close(parent_fd)
+    except BaseException:
+        final.unlink()
+        raise
+    return hashlib.sha256(content).hexdigest()
+
+
 def capture_process(
     command: Sequence[str], *, cwd: Path, environment: Mapping[str, str],
     output_dir: Path, max_stream_bytes: int, timeout_seconds: float,
@@ -82,8 +108,9 @@ def capture_process(
                                    stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE, start_new_session=True)
         try:
+            pipes = {name: stack.enter_context(getattr(process, name)) for name in streams}
             for name in streams:
-                pipe = stack.enter_context(getattr(process, name))
+                pipe = pipes[name]
                 os.set_blocking(pipe.fileno(), False)
                 selector.register(pipe, selectors.EVENT_READ, name)
             while selector.get_map() or process.poll() is None:
@@ -133,23 +160,5 @@ def capture_process(
                         | {"sha256": info["digest"].hexdigest(), "path": "native." + name}
                         for name, info in streams.items()},
         }
-        pending = output_dir / ".capture.pending"
-        fd = os.open(pending,
-                     os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
-        stack.callback(os.close, fd)
-        _write_all(fd, (json.dumps(receipt, sort_keys=True) + "\n").encode("utf-8"))
-        os.fsync(fd)
-        final = output_dir / "capture.json"
-        os.link(pending, final)
-        try:
-            pending.unlink()
-            for directory in (output_dir, output_dir.parent):
-                parent_fd = os.open(directory, os.O_RDONLY | os.O_DIRECTORY)
-                try:
-                    os.fsync(parent_fd)
-                finally:
-                    os.close(parent_fd)
-        except BaseException:
-            final.unlink()
-            raise
+        seal_capture_json(output_dir, "capture.json", receipt)
     return receipt
