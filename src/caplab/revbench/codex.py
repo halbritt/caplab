@@ -26,6 +26,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Sequence
 
+from caplab.codex_events import is_codex_model_reroute
 from caplab.producer import ProducerIdentityError, producer_identity
 from caplab.runtime.canonical import canonical_json, sha256_hex
 
@@ -1655,6 +1656,8 @@ def derive_codex_response(raw_stdout: bytes) -> DerivedCodexResponse:
         raise CodexJSONLTransportError("codex_jsonl_terminal_turn_invalid")
     if any(event["type"] in {"turn.failed", "error"} for event in events):
         raise CodexJSONLTransportError("codex_jsonl_failed_turn")
+    if any(is_codex_model_reroute(event) for event in events):
+        raise CodexJSONLTransportError("codex_jsonl_model_reroute")
     messages: list[tuple[int, dict[str, Any]]] = []
     for index, event in enumerate(events[:-1]):
         if event["type"] != "item.completed":

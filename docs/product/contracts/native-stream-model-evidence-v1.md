@@ -3,6 +3,10 @@
 Status: implemented semantic repair. See the
 [decision and verification record](../../records/repair-2026-09-08-native-stream-model-evidence.md).
 
+The separate [Codex reroute contract](codex-model-reroute-v1.md) recognizes the
+native completed-error marker and withholds configured-subject attribution.
+An otherwise valid Codex stream without that marker remains model-unverified.
+
 `caplab.review_dissent.native.assess_native_review_model` checks Claude model
 observations in completed messages and exposed partial events. Existing system
 initialization, assistant model and system fallback checks remain. The assessor

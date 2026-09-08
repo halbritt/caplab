@@ -77,6 +77,25 @@ def codex_thread_id(stream: str | bytes) -> str:
     return _thread_id(events)
 
 
+def is_codex_model_reroute(event: dict[str, Any]) -> bool:
+    """Recognize the native ModelRerouted envelope without parsing model names."""
+    item = event.get("item")
+    return (
+        event.get("type") == "item.completed"
+        and isinstance(item, dict)
+        and item.get("type") == "error"
+        and isinstance(item.get("message"), str)
+        and item["message"].startswith("model rerouted: ")
+    )
+
+
+def require_no_codex_model_reroutes(stream: str | bytes) -> None:
+    """Reject explicit reroutes; absence does not establish model identity."""
+    _, events = _events(stream)
+    if any(is_codex_model_reroute(event) for event in events):
+        raise CodexEventError("native event stream reports model reroute")
+
+
 def _completed_events(stream: str | bytes) -> tuple[str, list[dict[str, Any]]]:
     text, events = _events(stream)
     for event in events:

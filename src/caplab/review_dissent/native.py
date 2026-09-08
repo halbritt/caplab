@@ -10,7 +10,7 @@ from hashlib import sha256
 from pathlib import Path, PurePosixPath
 from typing import Any, Mapping
 
-from caplab.codex_events import parse_native_json
+from caplab.codex_events import is_codex_model_reroute, parse_native_json
 from caplab.subject_identity import (
     NativeAgentSystemContractError,
     load_native_agent_system_policy,
@@ -381,6 +381,17 @@ def assess_native_review_model(subject: Mapping[str, Any], content: bytes) -> di
         events = _native_events(content)
     except NativeReviewContractError:
         result["reason"] = "native-trace-invalid"
+        return result
+    if subject["native_harness_id"] == "codex":
+        reroutes = [
+            {"line": line, "item_id": event["item"].get("id"),
+             "message": event["item"]["message"], "source": "item.completed.error"}
+            for line, event in enumerate(events, 1) if is_codex_model_reroute(event)
+        ]
+        if reroutes:
+            result["reroutes"] = reroutes
+            result["status"] = "model-mismatch"
+            result["reason"] = "native-model-reroute"
         return result
     if subject["native_harness_id"] != "claude-code":
         return result

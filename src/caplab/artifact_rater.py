@@ -16,6 +16,7 @@ from typing import Any, Iterable, Mapping
 
 from caplab.codex_events import (
     CodexEventError, codex_thread_id, final_codex_message, parse_native_json,
+    require_no_codex_model_reroutes,
 )
 
 
@@ -110,6 +111,7 @@ def derive_artifact_judgment(
     """Derive a native judgment and require agreement with its sidecar file."""
     code_ids = tuple(code_ids)
     try:
+        require_no_codex_model_reroutes(events_jsonl)
         message = final_codex_message(events_jsonl)
         judgment = validate_judgment(parse_native_json(message.text), code_ids)
         sidecar = validate_judgment(parse_native_json(last_message.decode("utf-8")), code_ids)

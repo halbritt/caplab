@@ -6,7 +6,9 @@ import hashlib
 from pathlib import Path
 from typing import Iterable, Sequence
 
-from caplab.codex_events import CodexEventError, require_completed_codex_turn
+from caplab.codex_events import (
+    CodexEventError, require_completed_codex_turn, require_no_codex_model_reroutes,
+)
 
 from caplab.subject_identity import (
     NativeAgentSystemContractError,
@@ -98,6 +100,7 @@ def classify_subject_attempt(
     if not pin_ok:
         return "infrastructure", "native tuple attestation mismatch"
     try:
+        require_no_codex_model_reroutes(events_jsonl)
         require_completed_codex_turn(events_jsonl)
     except CodexEventError as error:
         return "infrastructure", str(error)
