@@ -220,7 +220,7 @@ def inspect_devices(peer_pid):
     return devices
 
 
-def receive_mount(listener, child, recorder, *, inspect_peer=None, usable_devices=False):
+def receive_mount(listener, child, recorder, *, inspect_peer=None, usable_devices=False, quarantine_factory=None):
     descriptors = []
     try:
         channel, _ = listener.accept()
@@ -265,7 +265,12 @@ def receive_mount(listener, child, recorder, *, inspect_peer=None, usable_device
                 identity['peer_checks'] = peer_checks
             if usable_devices:
                 identity['device_access'] = device_access
-            seal_capture_json(recorder.output_dir.parent, child.name.removeprefix('fixture-') + '-handoff.json', identity)
+            name = child.name.removeprefix('fixture-') + '-handoff.json'
+            for path in (recorder.output_dir.parent / name,
+                         recorder.output_dir.parent / ('.' + name.removesuffix('.json') + '.pending')):
+                check_capture_bytes(quarantine_factory, os.fsencode(path))
+            check_capture_document(quarantine_factory, identity)
+            seal_capture_json(recorder.output_dir.parent, name, identity)
             listener.close()
             channel.sendall(b'1')
             owned = descriptors[:]
