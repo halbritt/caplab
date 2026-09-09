@@ -70,3 +70,7 @@ authority to extrapolate a campaign budget.
 See [task verification](task-capture-verification-v1.md),
 [native collection verification](native-collection-verification-v1.md),
 and the [implementation record](../../records/implementation-2026-09-08-capture-byte-accounting.md).
+
+For several expected slots, use the [population report](capture-population-report-v1.md).
+It retains slots whose final anchors were not supplied, verifies partial
+counterparts, and leaves all-slot pair totals unavailable when any pair is missing.

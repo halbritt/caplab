@@ -1,10 +1,12 @@
 """Verified logical payload accounting for retained task and native bundles."""
 
 from contextlib import ExitStack
+import hashlib
 from pathlib import Path
 
-from caplab.native_collection_verify import verify_native_collection
-from caplab.task_capture_verify import CaptureVerificationError, _Reader, _open, _require, verify_task_capture
+from caplab.codex_events import parse_native_json
+from caplab.native_collection_verify import _host_path, verify_native_collection
+from caplab.task_capture_verify import CaptureVerificationError, _Reader, _digest, _open, _require, verify_task_capture
 
 
 def _surface(name: str, entries: list[dict], *, status: str = "retained") -> dict:
@@ -86,3 +88,114 @@ def build_capture_byte_report(
             "are metadata already encoded in receipts; missing surfaces are unavailable; excludes allocated "
             "disk use, unreferenced files and runtime peaks; no native execution linkage, cost extrapolation, "
             "task success, blinding or study eligibility is established"}
+
+
+def _population_input(content: bytes, expected_sha256: str, max_bytes: int, max_slots: int) -> dict:
+    _require(isinstance(content, bytes) and len(content) <= max_bytes, "population input exceeds byte allowance or is not bytes")
+    _require(hashlib.sha256(content).hexdigest() == _digest(expected_sha256), "population input hash mismatch")
+    try:
+        data = parse_native_json(content.decode("utf-8"))
+    except (ValueError, UnicodeError, RecursionError) as error:
+        raise CaptureVerificationError("invalid population JSON") from error
+    _require(isinstance(data, dict) and set(data) == {"schema", "cells"}
+             and data["schema"] == "caplab.capture-population-input/v1", "invalid population input schema")
+    _require(isinstance(data["cells"], list) and data["cells"], "population requires declared cells")
+    cells, slots, anchors, paths = set(), set(), set(), set()
+    for cell in data["cells"]:
+        _require(isinstance(cell, dict) and set(cell) == {"world", "arm", "configured_tuple_id", "slots"},
+                 "invalid population cell")
+        for field in ("world", "arm", "configured_tuple_id"):
+            _require(isinstance(cell[field], str) and cell[field].strip() and "\0" not in cell[field],
+                     f"invalid cell {field}")
+        key = (cell["world"], cell["arm"], cell["configured_tuple_id"])
+        _require(key not in cells, "duplicate population cell")
+        cells.add(key)
+        _require(isinstance(cell["slots"], list), "cell slots must be an array")
+        for slot in cell["slots"]:
+            _require(isinstance(slot, dict) and set(slot) == {"slot_id", "task_capture", "native_collection"},
+                     "invalid expected slot")
+            name = slot["slot_id"]
+            _require(isinstance(name, str) and name.strip() and "\0" not in name, "invalid slot ID")
+            _require(name not in slots, "duplicate expected slot")
+            slots.add(name)
+            _require(len(slots) <= max_slots, "population exceeds slot allowance")
+            for kind in ("task_capture", "native_collection"):
+                anchor = slot[kind]
+                if anchor is None:
+                    continue
+                _require(isinstance(anchor, dict) and set(anchor) == {"custody", "sha256"}, "invalid bundle anchor")
+                path = str(_host_path(anchor["custody"], "bundle custody"))
+                digest = _digest(anchor["sha256"])
+                _require(path not in paths and digest not in anchors, "bundle path or anchor reused across population")
+                paths.add(path)
+                anchors.add(digest)
+    return data
+
+
+def _population_totals(rows: list[dict]) -> dict:
+    available = [row["byte_report"] for row in rows if row["byte_report"] is not None]
+    payload = sum(report["retained_logical_payload_bytes"] for report in available)
+    receipts = sum(report["verified_receipt_bytes"] for report in available)
+    unavailable = len(rows) - len(available)
+    return {"expected_slots": len(rows), "available_pair_slots": len(available),
+            "unavailable_pair_slots": unavailable,
+            "available_pair_logical_payload_bytes": payload,
+            "available_pair_receipt_bytes": receipts,
+            "all_slot_pair_logical_payload_bytes": None if unavailable else payload,
+            "all_slot_pair_receipt_bytes": None if unavailable else receipts}
+
+
+def build_capture_population_report(
+    policy_path: Path, content: bytes, *, expected_input_sha256: str,
+    max_input_bytes: int, max_slots: int, max_receipt_bytes: int,
+) -> dict:
+    """Inspect the declared population; absent anchors do not imply unused slots.
+
+    Parse and validate all input before bundle reads. Every supplied anchor is
+    verified, even when its counterpart is absent. The caller owns the input
+    anchor, population completeness, authorization and stable private custody.
+    Receipt allowances apply separately to each invoked existing verifier.
+    """
+    for name, value in (("input byte", max_input_bytes), ("slot", max_slots), ("receipt byte", max_receipt_bytes)):
+        _require(type(value) is int and value > 0, f"{name} allowance must be a positive integer")
+    data = _population_input(content, expected_input_sha256, max_input_bytes, max_slots)
+    cells, all_rows = [], []
+    for cell in data["cells"]:
+        rows = []
+        for slot in cell["slots"]:
+            task, native = slot["task_capture"], slot["native_collection"]
+            byte_report = task_inspection = native_inspection = None
+            missing = [kind for kind in ("task_capture", "native_collection") if slot[kind] is None]
+            try:
+                if not missing:
+                    byte_report = build_capture_byte_report(policy_path, Path(task["custody"]), Path(native["custody"]),
+                        expected_attempt_sha256=task["sha256"], expected_collection_sha256=native["sha256"],
+                        max_receipt_bytes=max_receipt_bytes)
+                    observed_tuple = byte_report["configured_tuple_id"]
+                else:
+                    if task is not None:
+                        task_inspection = verify_task_capture(Path(task["custody"]),
+                            expected_attempt_sha256=task["sha256"], max_receipt_bytes=max_receipt_bytes)
+                    if native is not None:
+                        native_inspection = verify_native_collection(policy_path, Path(native["custody"]),
+                            expected_collection_sha256=native["sha256"], max_receipt_bytes=max_receipt_bytes)
+                    observed_tuple = native_inspection["configured_tuple_id"] if native_inspection else None
+                if observed_tuple is not None:
+                    _require(observed_tuple == cell["configured_tuple_id"], "collection configured tuple differs from cell")
+            except CaptureVerificationError as error:
+                raise CaptureVerificationError(f"slot {slot['slot_id']!r}: {error}") from error
+            rows.append({**slot, "pair_available": not missing, "anchors_not_supplied": missing,
+                         "byte_report": byte_report, "task_inspection": task_inspection,
+                         "native_inspection": native_inspection})
+        cells.append({key: cell[key] for key in ("world", "arm", "configured_tuple_id")}
+                     | {"slots": rows, "totals": _population_totals(rows)})
+        all_rows.extend(rows)
+    return {"schema": "caplab.capture-population-report/v1", "input_sha256": expected_input_sha256,
+            "input_bytes": len(content), "cells": cells, "totals": _population_totals(all_rows),
+            "population_assignment_verified": False, "study_eligibility_established": False,
+            "interpretation": "Expected slots and cell labels are caller-declared. Every supplied bundle anchor "
+            "is verified; absent anchors do not establish no launch or a failure cause. Pair totals cover "
+            "only available bundle pairs and count retained logical occurrences, not runtime or total disk "
+            "cost. Partial component inspections are separate and not included in pair totals. All-slot "
+            "pair totals remain null if any pair is unavailable. No native execution, representative cost, "
+            "precision, blinding, study eligibility or reviewer capability is established."}
