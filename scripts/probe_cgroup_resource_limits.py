@@ -51,8 +51,9 @@ FIXTURE = r"""import errno,json,subprocess,sys
 from pathlib import Path
 mode = sys.argv[1]
 Path('/scratch/marker.bin').write_bytes(b'retained marker\x00\xff\n')
-if mode == 'memory':
-    with Path('/scratch/payload').open('xb', buffering=0) as f:
+if mode in ('memory', 'tmp-memory', 'shm-memory'):
+    destination = {'memory': '/scratch', 'tmp-memory': '/tmp', 'shm-memory': '/dev/shm'}[mode]
+    with Path(destination, 'payload').open('xb', buffering=0) as f:
         for _ in range(64):
             if f.write(b'x' * 1048576) != 1048576:
                 raise RuntimeError('short fixture write')
@@ -75,7 +76,19 @@ elif mode == 'pids':
             child.wait(timeout=3)
     print(json.dumps({'caught_errno': caught, 'children': len(children)}))
 elif mode == 'control':
-    Path('/scratch/control').write_bytes(b'ok')
+    for directory in ('/scratch', '/tmp', '/dev/shm'):
+        Path(directory, 'control').write_bytes(b'ok')
+    refused = []
+    for path in ('/other', '/dev/other', '/usr/other', '/proc/self/comm'):
+        try:
+            Path(path).write_bytes(b'not allowed')
+        except OSError as error:
+            if error.errno != errno.EROFS:
+                raise
+            refused.append(path)
+        else:
+            raise RuntimeError('write escaped declared tmpfs mounts: ' + path)
+    print(json.dumps({'refused_readonly_writes': refused}))
 else:
     raise ValueError('unknown fixed fixture')
 print('fixture exits successfully')
@@ -118,6 +131,27 @@ def cleanup_group(group):
     group.rmdir()
 
 
+def mount_coverage(raw):
+    """Check the fixed fixture topology, including unexpected nested mounts."""
+    mounts = []
+    for line in raw.splitlines():
+        fields = line.split()
+        separator = fields.index('-')
+        require(separator >= 6 and len(fields) >= separator + 4, 'invalid mountinfo row')
+        mounts.append({'path': fields[4], 'options': fields[5].split(','),
+                       'filesystem': fields[separator + 1]})
+    by_path = {m['path']: m for m in mounts}
+    require(len(by_path) == len(mounts), 'ambiguous stacked fixture mounts')
+    writable = {m['path'] for m in mounts if 'rw' in m['options']}
+    require(writable == {'/scratch', '/tmp', '/dev/shm'}, 'unexpected writable fixture mounts')
+    require(all(by_path[path]['filesystem'] == 'tmpfs' for path in writable),
+            'writable fixture mount is not tmpfs')
+    require(all(path in by_path and 'ro' in by_path[path]['options']
+                for path in ('/', '/usr', '/proc', '/dev/null', '/dev/urandom')),
+            'required read-only fixture mount is absent or writable')
+    return {'raw': raw, 'mounts': mounts, 'writable_tmpfs': sorted(writable)}
+
+
 def receive_mount(listener, child):
     descriptors = []
     try:
@@ -139,12 +173,13 @@ def receive_mount(listener, child):
             info = os.fstat(descriptors[0]); capacity = os.fstatvfs(descriptors[0])
             require(stat.S_ISDIR(info.st_mode) and capacity.f_blocks * capacity.f_frsize == 64 * MIB,
                     'received descriptor is not the expected bounded directory')
+            coverage = mount_coverage(Path(f'/proc/{peer_pid}/mountinfo').read_text())
             listener.close()
             channel.sendall(b'1')
             descriptor = descriptors.pop()
             return descriptor, {'peer_pid': peer_pid, 'peer_uid': peer_uid, 'peer_gid': peer_gid,
                 'source_dev': info.st_dev, 'source_ino': info.st_ino,
-                'allocated_capacity': capacity.f_blocks * capacity.f_frsize}
+                'allocated_capacity': capacity.f_blocks * capacity.f_frsize, 'mount_coverage': coverage}
     finally:
         for descriptor in descriptors:
             os.close(descriptor)
@@ -191,7 +226,7 @@ def inside(root, unit):
     require((group / 'pids.max').read_text().strip() == '64', 'outer task limit differs')
     (group / 'cgroup.subtree_control').write_text('+memory +pids')
     reports = []
-    for mode in ('control', 'memory', 'pids'):
+    for mode in ('control', 'memory', 'pids', 'tmp-memory', 'shm-memory'):
         child = group / ('fixture-' + mode)
         child.mkdir()
         descriptor = None
@@ -208,9 +243,14 @@ def inside(root, unit):
             bwrap = ['/usr/bin/bwrap', '--unshare-all', '--die-with-parent', '--new-session', '--clearenv',
                 '--ro-bind', '/usr', '/usr', '--symlink', 'usr/bin', '/bin',
                 '--symlink', 'usr/lib', '/lib', '--symlink', 'usr/lib64', '/lib64',
-                '--proc', '/proc', '--dev', '/dev', '--size', str(64 * MIB), '--tmpfs', '/scratch',
+                '--proc', '/proc', '--dir', '/dev',
+                '--ro-bind', '/dev/null', '/dev/null', '--ro-bind', '/dev/urandom', '/dev/urandom',
+                '--size', str(64 * MIB), '--tmpfs', '/scratch',
+                '--size', str(64 * MIB), '--tmpfs', '/tmp',
+                '--size', str(64 * MIB), '--tmpfs', '/dev/shm',
                 '--chdir', '/scratch', '--setenv', 'PATH', '/usr/bin:/bin',
                 '--ro-bind', str(socket_path), '/control.sock',
+                '--remount-ro', '/proc', '--remount-ro', '/',
                 '--', '/usr/bin/python3', '-B', '-c', HANDOFF, FIXTURE, mode]
             command = ['/usr/bin/python3', '-B', '-c', JOIN, str(child), *bwrap]
             intent = {'mode': mode, 'cgroup': str(child), 'command': command, 'before': before}
@@ -237,7 +277,7 @@ def inside(root, unit):
             socket_path.unlink(missing_ok=True)
             cleanup_group(child)
     seal_capture_json(root, 'observations.json', {
-        'schema': 'caplab.cgroup-resource-probe-observations/v2', 'unit': unit,
+        'schema': 'caplab.cgroup-resource-probe-observations/v3', 'unit': unit,
         'delegated_cgroup': str(group), 'kernel': platform.release(), 'python': platform.python_version(),
         'reports': reports, 'fixture_cgroups_removed': True, 'native_execution': False,
         'capture_complete_claim': False})
@@ -245,7 +285,7 @@ def inside(root, unit):
 
 def expectations(observation):
     reports = {r['mode']: r for r in observation['reports']}
-    require(set(reports) == {'control', 'memory', 'pids'}, 'incomplete fixture set')
+    require(set(reports) == {'control', 'memory', 'pids', 'tmp-memory', 'shm-memory'}, 'incomplete fixture set')
     require(all(not r['populated_before_cleanup'] for r in reports.values()), 'residual fixture processes')
     require(all(r['process']['streams_complete'] and r['process']['termination'] == 'exited'
                 for r in reports.values()), 'incomplete fixture process capture')
@@ -256,8 +296,12 @@ def expectations(observation):
     require(control['process']['return_code'] == 0 and control['process']['streams_complete'], 'control failed')
     require(delta('control', 'memory_events', 'oom') == 0 and delta('control', 'pids_events', 'max') == 0,
             'control encountered a resource event')
-    require(reports['memory']['process']['return_code'] != 0 and delta('memory', 'memory_events', 'oom_kill') > 0,
-            'tmpfs writer did not produce an independently observed OOM kill')
+    for mode in ('memory', 'tmp-memory', 'shm-memory'):
+        require(reports[mode]['process']['return_code'] != 0 and delta(mode, 'memory_events', 'oom_kill') > 0,
+                mode + ' writer did not produce an independently observed OOM kill')
+    for report in reports.values():
+        coverage = report['mount_descriptor']['mount_coverage']
+        require(mount_coverage(coverage['raw']) == coverage, 'recorded mount coverage differs')
     require(reports['pids']['process']['return_code'] == 0 and delta('pids', 'pids_events', 'max') > 0,
             'caught fork failure did not retain independent task-limit evidence')
 
@@ -273,7 +317,7 @@ def run(root):
     command = ['/usr/bin/systemd-run', '--user', '--unit=' + unit, '--wait', '--pipe', '--collect',
         '--service-type=exec', '--property=Delegate=memory pids', '--property=DelegateSubgroup=supervisor',
         '--property=MemoryMax=134217728', '--property=MemorySwapMax=0', '--property=TasksMax=64',
-        '--property=RuntimeMaxSec=30', '--property=OOMPolicy=continue', '--property=KillMode=control-group',
+        '--property=RuntimeMaxSec=60', '--property=OOMPolicy=continue', '--property=KillMode=control-group',
         '--', '/usr/bin/env', '-i', 'PATH=/usr/bin:/bin', 'LANG=C.UTF-8',
         'PYTHONPATH=' + str(SCRIPT.parents[1] / 'src'), '/usr/bin/python3', '-B', str(SCRIPT),
         '--output-root', str(root), '--inside-unit', unit]
@@ -281,7 +325,7 @@ def run(root):
         'script_sha256': hashlib.sha256(SCRIPT.read_bytes()).hexdigest()})
     try:
         process = capture_process(command, cwd=root, environment=environment,
-            output_dir=root / 'service', max_stream_bytes=200000, timeout_seconds=40)
+            output_dir=root / 'service', max_stream_bytes=200000, timeout_seconds=70)
         require(process['return_code'] == 0 and process['streams_complete'], 'service failed; inspect retained streams')
         observation = json.loads((root / 'observations.json').read_bytes())
         expectations(observation)
@@ -298,8 +342,8 @@ def run(root):
             'show_stderr': state.stderr.decode()})
         require(state.stdout.strip() == b'not-found', 'generated transient unit remains loaded')
     require(not Path(observation['delegated_cgroup']).exists(), 'generated cgroup remains after unit cleanup')
-    seal_capture_json(root, 'verification.json', {'schema': 'caplab.cgroup-resource-probe-verification/v2',
-        'unit': unit, 'three_fixture_expectations_passed': True, 'unit_removed': True,
+    seal_capture_json(root, 'verification.json', {'schema': 'caplab.cgroup-resource-probe-verification/v3',
+        'unit': unit, 'five_fixture_expectations_passed': True, 'unit_removed': True,
         'retained_files_verified_after_service_exit': True,
         'native_execution': False, 'capture_complete_claim': False})
     print(json.dumps({'output_root': str(root), 'unit': unit, 'verified': True}))
