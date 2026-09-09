@@ -24,14 +24,22 @@ The policy file remains a separate trusted input, outside custody read limits.
 
 The caller's positive integer `max_receipt_bytes` bounds the combined raw bytes
 of four JSON receipts: collection, intent, preparation and invocation. Booleans
-are rejected. Each linked file must match its exact expected hash and v1 schema.
+are rejected. Each linked file must match its exact expected hash. Collection
+and intent schemas must be a matching v1 or v2 pair; preparation and invocation
+remain v1. Unknown or mixed versions are refused.
 The existing strict JSON reader rejects invalid UTF-8, duplicate keys and
 non-finite constants. The source preparation/invocation byte count must also fit
 the collector's anchored source-receipt allowance.
 
 Canonical invocation reconstruction checks configured subject/profile identity.
-The intent and preparation invocation hashes must agree. Both selected-path maps
-must match the canonical plan translated under the recorded source runtime.
+The intent and preparation invocation hashes must agree. The preparation's
+selected-path map must match the canonical plan translated under the recorded
+host runtime. A v1 intent uses those same host paths. A v2 intent uses the
+canonical namespace paths and requires exactly the descriptor-source fields
+defined by the [collector](native-output-collection-v1.md#retained-directory-descriptors-v2-receipts).
+Its namespace root must match the plan, its device must be a nonnegative integer,
+and its inode a positive integer; booleans are refused. A v1 intent must not
+carry descriptor-source metadata.
 Locations must be unique, sorted, complete for that plan, and carry the expected
 source and directory/file kind. A location's status is `retained` or `missing`;
 the missing-location summary must agree exactly.
@@ -60,7 +68,9 @@ referenced bundle.
 The `caplab.native-collection-inspection/v1` report contains the independent
 collection hash, `integrity_verified: true`, configured tuple/profile/invocation
 identities, verified receipt-byte count, retained artifact/entry totals and
-missing locations. It omits prompts, commands, raw output and source paths.
+missing locations. It omits prompts, commands and raw output. For v2 collections
+it also carries `runtime_source`, including the declared namespace root and
+descriptor device/inode. V1 inspection results retain their existing shape.
 The source collection must retain `native_identity_verified: false` and
 `native_capture_complete: null`; a contradictory positive claim is rejected.
 The report preserves those values. Configured identity is not observed identity.
@@ -73,7 +83,10 @@ without independent chronology or provenance verification. Unrelated preparation
 metadata is not fully reverified. A valid bundle does not prove publication
 completed, recover an interrupted capture, establish session/attempt or child
 linkage, prove exhaustive native emission or containment, or grant eligibility.
-Known capture failures cannot be overridden by this reader.
+Known capture failures cannot be overridden by this reader. Descriptor provenance
+is an anchored observation: this offline verifier does not reopen the directory
+or independently authenticate the original mount handoff. Codex/Claude linkage
+and byte accounting preserve that distinction when consuming v2 collections.
 
 The CLI runs from an environment with CAPLAB importable:
 

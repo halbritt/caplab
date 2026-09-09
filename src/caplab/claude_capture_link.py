@@ -6,6 +6,7 @@ from contextlib import ExitStack
 from pathlib import Path, PurePosixPath
 
 from caplab.codex_capture_link import _retained_bytes
+from caplab.native_collection import COLLECTION_INTENT_SCHEMAS, COLLECTION_SCHEMAS
 from caplab.native_collection_verify import verify_native_collection
 from caplab.review_dissent.native import NativeReviewContractError, _native_events, _native_session_evidence
 from caplab.task_capture_verify import CaptureVerificationError, _Reader, _open, _require, verify_task_capture
@@ -89,9 +90,9 @@ def link_claude_root(
         native_root = stack.enter_context(_open(None, collection_custody, directory=True))
         task_root = stack.enter_context(_open(None, task_custody, directory=True))
         collection = reader.receipt(native_root, 'collection.json', expected_collection_sha256,
-                                    'caplab.native-output-collection/v1')
+                                    COLLECTION_SCHEMAS)
         intent = reader.receipt(native_root, 'intent.json', collection['intent_sha256'],
-                                'caplab.native-collection-intent/v1')
+                                COLLECTION_INTENT_SCHEMAS)
         preparation = reader.receipt(native_root, 'preparation.json', intent['preparation_sha256'],
                                      'caplab.native-runtime-preparation/v1')
         invocation = reader.receipt(native_root, 'invocation.json', preparation['invocation_file_sha256'],
@@ -127,7 +128,8 @@ def link_claude_root(
             'invocation_sha256': invocation['invocation_sha256'], 'profile_sha256': invocation['profile_sha256'],
             'configured_tuple_id': subject['tuple_id'], 'stdout_sha256': stdout_entry['sha256'],
             'transcript_path': selected['path'], 'transcript_sha256': selected['sha256'],
-            'session_fields': fields, 'root_id_agrees': True, 'recorded_task_root_agrees': True,
+            'session_fields': fields, 'root_id_agrees': True, **({'runtime_source': collection_check['runtime_source']} if 'runtime_source' in collection_check else {}),
+            'recorded_task_root_agrees': True,
             'reported_tuple_agrees': None, 'executed_invocation_bound': False,
             'process_capture_complete': task_check['capture_complete'],
             'process_return_code': task_check['return_code'], 'process_termination': task_check['termination'],

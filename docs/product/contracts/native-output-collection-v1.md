@@ -5,7 +5,7 @@ Status: implemented raw collection. See the
 
 `caplab.native_collection.collect_native_outputs(policy_path, preparation_root,
 *, expected_preparation_sha256, output_dir, max_receipt_bytes,
-max_artifact_bytes, max_entries)` retains the output locations named by a
+max_artifact_bytes, max_entries, runtime_descriptor=None)` retains the output locations named by a
 [prepared native runtime](native-runtime-preparation-v1.md). The caller supplies
 an independently retained SHA-256 of `preparation.json`, a quiescent runtime,
 trusted stable host parents and an authorized collection scope. This function
@@ -88,3 +88,40 @@ the collection to its separately retained attempt and independently preserve the
 final collection digest. The [collection verifier](native-collection-verification-v1.md) checks that anchor,
 linked bytes and selection consistency before interpretation. Session linkage
 and eligibility remain separate requirements.
+
+## Retained directory descriptors (v2 receipts)
+
+The optional `NativeRuntimeDescriptor(descriptor, device, inode)` input selects
+an already-open runtime directory instead of `preparation_root/runtime`. The
+caller owns that descriptor, stops all writers, and independently supplies its
+expected device/inode from the runtime handoff. These fields are integers
+excluding booleans; the descriptor and device must be nonnegative and the inode
+positive. The collector duplicates the descriptor, checks that it identifies a
+directory with the expected device/inode, and closes only its duplicate on both
+success and failure. It rejects output whose parent or ancestor has that runtime
+identity. Trusted stable host ancestry and the existing disjoint output rules
+remain required.
+
+Preparation and invocation receipts remain at their anchored host custody path.
+Their original host layout must still match the canonical plan. The prepared
+runtime directory itself need not exist: descriptor collection neither opens it
+nor falls back to it. Source stat checks surround traversal through the borrowed
+runtime's duplicate. The source descriptor may outlive its original path or
+mount namespace; source mutation and quota failures still prevent publication.
+
+Descriptor collection writes `caplab.native-collection-intent/v2` and
+`caplab.native-output-collection/v2`. The intent retains `source_root` as the
+preparation custody location, but `capture_paths` and each selected location's
+`source` use the plan's namespace paths. Its exact `runtime_source` fields are
+`kind: directory-descriptor`, `namespace_root`, `device`, and `inode`. The
+namespace root equals the plan's runtime root. It records no process-local FD
+number as a durable locator. The v1 host-path behavior remains the default;
+v1 intents cannot assert this descriptor-source field.
+
+The verified source metadata is carried into collection inspection, Codex/Claude
+root linkage and byte accounting. This is provenance supplied by the caller and
+checked against the open directory during collection. It does not authenticate
+the earlier handoff, bind that directory to the executed invocation, or prove
+native emission. Those remain adapter responsibilities. Binary payloads,
+literal symlinks, shared limits, explicit missing locations and claim ceilings
+are unchanged. See the [implementation and verification record](../../records/implementation-2026-09-08-descriptor-native-collection.md).

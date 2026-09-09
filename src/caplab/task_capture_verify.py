@@ -77,7 +77,7 @@ class _Reader:
     def __init__(self, receipt_bytes: int):
         self.remaining = receipt_bytes
 
-    def receipt(self, parent: int, name: str, expected: str, schema: str) -> dict:
+    def receipt(self, parent: int, name: str, expected: str, schema: str | tuple[str, ...]) -> dict:
         expected = _digest(expected)
         raw, size, digest = _read_file(parent, name, self.remaining, retain=True)
         self.remaining -= size
@@ -86,7 +86,8 @@ class _Reader:
             document = parse_native_json(raw.decode("utf-8"))
         except (ValueError, UnicodeError, RecursionError) as error:
             raise CaptureVerificationError(f"invalid receipt JSON: {name}") from error
-        _require(isinstance(document, dict) and document.get("schema") == schema,
+        schemas = (schema,) if isinstance(schema, str) else schema
+        _require(isinstance(document, dict) and document.get("schema") in schemas,
                  f"unsupported receipt schema: {name}")
         return document
 

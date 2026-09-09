@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from contextlib import ExitStack
+from contextlib import ExitStack, contextmanager
+from dataclasses import dataclass
 from datetime import UTC, datetime
 import hashlib
 import os
@@ -18,6 +19,45 @@ from caplab.task_capture_verify import _digest, _open, _read_file
 
 class NativeCollectionError(ValueError):
     """Selected native outputs cannot support a sealed collection."""
+
+
+COLLECTION_SCHEMAS = ("caplab.native-output-collection/v1", "caplab.native-output-collection/v2")
+COLLECTION_INTENT_SCHEMAS = ("caplab.native-collection-intent/v1", "caplab.native-collection-intent/v2")
+
+
+@dataclass(frozen=True)
+class NativeRuntimeDescriptor:
+    """Borrowed directory FD with caller-anchored identity; not handoff attestation."""
+
+    descriptor: int
+    device: int
+    inode: int
+
+    def __post_init__(self):
+        if (any(type(v) is not int or v < 0 for v in (self.descriptor, self.device, self.inode))
+                or self.inode == 0):
+            raise NativeCollectionError("invalid-runtime-descriptor-identity")
+
+
+@contextmanager
+def _runtime_source(root: int, source: NativeRuntimeDescriptor | None, output_dir: Path):
+    if source is None:
+        with _open(root, "runtime", directory=True) as descriptor:
+            yield descriptor
+        return
+    descriptor = os.dup(source.descriptor)
+    try:
+        observed = os.fstat(descriptor)
+        if (not stat.S_ISDIR(observed.st_mode)
+                or (observed.st_dev, observed.st_ino) != (source.device, source.inode)):
+            raise NativeCollectionError("runtime-descriptor-identity-differs")
+        for ancestor in (output_dir.parent, *output_dir.parent.parents):
+            identity = ancestor.stat()
+            if (identity.st_dev, identity.st_ino) == (source.device, source.inode):
+                raise NativeCollectionError("output-must-be-outside-descriptor-runtime")
+        yield descriptor
+    finally:
+        os.close(descriptor)
 
 
 def _receipt(parent: int, name: str, expected: str, schema: str, limit: int) -> tuple[dict, bytes]:
@@ -71,16 +111,21 @@ def _collect_location(runtime_fd: int, relative: PurePosixPath, name: str,
 def collect_native_outputs(
     policy_path: Path, preparation_root: Path, *, expected_preparation_sha256: str,
     output_dir: Path, max_receipt_bytes: int, max_artifact_bytes: int, max_entries: int,
+    runtime_descriptor: NativeRuntimeDescriptor | None = None,
 ) -> dict:
     """Retain planned paths after writers stop; no native parsing or eligibility.
 
     The caller supplies an independent preparation anchor, quiescent source, and
     trusted stable host parents. Partial state survives failure; never retry into
     that output root. Byte/entry limits bound retention, not blocked filesystem time.
+    A supplied descriptor is borrowed and selects v2 namespace-source provenance;
+    its independently supplied identity does not establish original mount linkage.
     """
     for value in (max_receipt_bytes, max_artifact_bytes, max_entries):
         if type(value) is not int or value <= 0:
             raise NativeCollectionError("limits-must-be-positive-integers")
+    if runtime_descriptor is not None and not isinstance(runtime_descriptor, NativeRuntimeDescriptor):
+        raise NativeCollectionError("invalid-runtime-descriptor")
     _digest(expected_preparation_sha256)
     preparation_root, output_dir = Path(preparation_root), Path(output_dir)
     if (not preparation_root.is_absolute() or preparation_root == Path("/")
@@ -110,18 +155,23 @@ def collect_native_outputs(
         if (not task.is_absolute() or ".." in task.parts or output_dir.is_relative_to(task)
                 or task.is_relative_to(output_dir)):
             raise NativeCollectionError("output-must-be-outside-task")
-        with _open(root, "runtime", directory=True) as runtime_fd:
+        with _runtime_source(root, runtime_descriptor, output_dir) as runtime_fd:
             runtime_before = os.fstat(runtime_fd)
+            version = 0 if runtime_descriptor is None else 1
+            source_paths = expected_paths if version == 0 else dict(plan["capture_locations"])
             output_dir.mkdir(mode=0o700)
             output_dir.chmod(0o700)
             _retain_receipt(output_dir / "preparation.json", preparation_raw)
             _retain_receipt(output_dir / "invocation.json", invocation_raw)
-            intent = {"schema": "caplab.native-collection-intent/v1",
+            intent = {"schema": COLLECTION_INTENT_SCHEMAS[version],
                       "preparation_sha256": expected_preparation_sha256,
                       "invocation_file_sha256": hashlib.sha256(invocation_raw).hexdigest(),
                       "invocation_sha256": plan["invocation_sha256"], "source_root": str(preparation_root),
-                      "capture_paths": expected_paths, "max_receipt_bytes": max_receipt_bytes,
+                      "capture_paths": source_paths, "max_receipt_bytes": max_receipt_bytes,
                       "max_artifact_bytes": max_artifact_bytes, "max_entries": max_entries}
+            if runtime_descriptor is not None:
+                intent["runtime_source"] = {"kind": "directory-descriptor", "namespace_root": plan["runtime_root"],
+                    "device": runtime_descriptor.device, "inode": runtime_descriptor.inode}
             intent_digest = seal_capture_json(output_dir, "intent.json", intent)
             payload = output_dir / "objects"
             payload.mkdir(mode=0o700)
@@ -130,13 +180,14 @@ def collect_native_outputs(
             for name, relative in sorted(selected.items()):
                 kind = "directory" if name.endswith("_search_root") else "file"
                 present = _collect_location(runtime_fd, relative, name, kind, inventory)
-                locations.append({"name": name, "source": expected_paths[name], "expected_kind": kind,
+                locations.append({"name": name, "source": source_paths[name], "expected_kind": kind,
                                   "status": "retained" if present else "missing"})
             _unchanged(runtime_before, os.fstat(runtime_fd), "runtime")
-            _unchanged(runtime_before, os.stat("runtime", dir_fd=root, follow_symlinks=False), "runtime")
+            if runtime_descriptor is None:
+                _unchanged(runtime_before, os.stat("runtime", dir_fd=root, follow_symlinks=False), "runtime")
             with _open(None, payload, directory=True) as fd:
                 os.fsync(fd)
-            receipt = {"schema": "caplab.native-output-collection/v1", "intent_sha256": intent_digest,
+            receipt = {"schema": COLLECTION_SCHEMAS[version], "intent_sha256": intent_digest,
                        "started_at": started, "finished_at": datetime.now(UTC).isoformat(),
                        "locations": locations, "entries": sorted(inventory.entries, key=lambda e: e["path"]),
                        "retained_artifact_bytes": inventory.retained_bytes,

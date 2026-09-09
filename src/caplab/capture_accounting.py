@@ -5,6 +5,7 @@ import hashlib
 from pathlib import Path
 
 from caplab.codex_events import parse_native_json
+from caplab.native_collection import COLLECTION_INTENT_SCHEMAS, COLLECTION_SCHEMAS
 from caplab.native_collection_verify import _host_path, verify_native_collection
 from caplab.task_capture_verify import CaptureVerificationError, _Reader, _digest, _open, _require, verify_task_capture
 
@@ -43,9 +44,9 @@ def build_capture_byte_report(
         task_intent = reader.receipt(task_root, "intent.json", attempt["intent_sha256"],
                                      "caplab.task-capture-intent/v1")
         collection = reader.receipt(native_root, "collection.json", expected_collection_sha256,
-                                    "caplab.native-output-collection/v1")
+                                    COLLECTION_SCHEMAS)
         intent = reader.receipt(native_root, "intent.json", collection["intent_sha256"],
-                                "caplab.native-collection-intent/v1")
+                                COLLECTION_INTENT_SCHEMAS)
         preparation = reader.receipt(native_root, "preparation.json", intent["preparation_sha256"],
                                      "caplab.native-runtime-preparation/v1")
         try:
@@ -79,6 +80,7 @@ def build_capture_byte_report(
             "retained_symlink_target_bytes": links, "retained_logical_payload_bytes": files + links,
             "verified_receipt_bytes": task["verified_receipt_bytes"] + native["verified_receipt_bytes"],
             "missing_locations": native["missing_locations"],
+            **({"runtime_source": native["runtime_source"]} if "runtime_source" in native else {}),
             "task_capture_complete": task["capture_complete"], "termination": task["termination"],
             "return_code": task["return_code"], "recorded_task_root_agrees": True,
             "executed_invocation_bound": False, "native_capture_complete": None,

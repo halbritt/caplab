@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path, PurePosixPath
 
+from caplab.native_collection import COLLECTION_INTENT_SCHEMAS, COLLECTION_SCHEMAS
 from caplab.native_runtime import _validated_invocation
 from caplab.task_capture_verify import CaptureVerificationError, _Reader, _count, _digest, _inventory, _open, _require
 
@@ -30,8 +31,19 @@ def _selection(policy_path: Path, intent: dict, preparation: dict, invocation: d
                 for name, path in plan["capture_locations"].items()}
     _require(preparation.get("custody_root") == str(source) and preparation.get("runtime_root") == str(runtime),
              "preparation roots differ from intent")
-    _require(intent.get("capture_paths") == expected and preparation.get("capture_paths") == expected,
-             "selected paths differ from invocation")
+    _require(preparation.get("capture_paths") == expected, "prepared paths differ from invocation")
+    if intent["schema"] == COLLECTION_INTENT_SCHEMAS[1]:
+        descriptor = intent.get("runtime_source")
+        _require(isinstance(descriptor, dict) and set(descriptor) == {"kind", "namespace_root", "device", "inode"},
+                 "invalid descriptor runtime source")
+        _require(descriptor["kind"] == "directory-descriptor" and descriptor["namespace_root"] == plan["runtime_root"],
+                 "descriptor namespace differs from invocation")
+        _count(descriptor["device"], "descriptor device")
+        _require(_count(descriptor["inode"], "descriptor inode") > 0, "invalid descriptor inode")
+        expected = dict(plan["capture_locations"])
+    else:
+        _require("runtime_source" not in intent, "v1 intent cannot assert descriptor provenance")
+    _require(intent.get("capture_paths") == expected, "selected paths differ from invocation")
     return plan, expected
 
 
@@ -102,9 +114,11 @@ def verify_native_collection(
     reader = _Reader(max_receipt_bytes)
     with _open(None, custody, directory=True) as root:
         collection = reader.receipt(root, "collection.json", expected_collection_sha256,
-                                    "caplab.native-output-collection/v1")
+                                    COLLECTION_SCHEMAS)
         intent = reader.receipt(root, "intent.json", collection.get("intent_sha256"),
-                                "caplab.native-collection-intent/v1")
+                                COLLECTION_INTENT_SCHEMAS)
+        _require(COLLECTION_SCHEMAS.index(collection["schema"]) == COLLECTION_INTENT_SCHEMAS.index(intent["schema"]),
+                 "collection and intent versions differ")
         remaining_before = reader.remaining
         preparation = reader.receipt(root, "preparation.json", intent.get("preparation_sha256"),
                                      "caplab.native-runtime-preparation/v1")
@@ -126,5 +140,6 @@ def verify_native_collection(
             "retained_artifact_bytes": byte_count, "retained_entries": entry_count,
             "verified_receipt_bytes": max_receipt_bytes - reader.remaining,
             "missing_locations": collection["missing_locations"], "native_identity_verified": False,
+            **({"runtime_source": intent["runtime_source"]} if "runtime_source" in intent else {}),
             "native_capture_complete": None,
             "interpretation": "retained byte integrity and selection consistency only; no native linkage or eligibility"}
