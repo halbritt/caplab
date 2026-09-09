@@ -1,5 +1,12 @@
 # Inspect the recorded finding in production review 403588
 
+> **Correction:** The reconstruction discrepancy below resulted from applying
+> overlays to the compact anchored base rather than the expanded materialized
+> tree named by the review context. Corrected Go and Python calculations match
+> both candidates' declared result hashes. See [the correction and verification](inspection-2026-09-08-production-review-403617-scope.md).
+> The conditional source-index observation remains separate and has not been
+> established as an end-to-end runtime reproduction. Original evidence follows.
+
 ## Authorization before source inspection
 
 Under ADR 0026 and the continuing CAPLAB improvement request, the primary agent

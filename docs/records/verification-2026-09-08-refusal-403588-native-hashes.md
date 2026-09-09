@@ -1,5 +1,13 @@
 # Compare the refusal reconstruction with historical Go arithmetic
 
+> **Correction:** The invalid-candidate-hash inference below is withdrawn.
+> This check applied overlays to the compact anchored representation, while the
+> historical driver and review contract use the expanded materialized tree and
+> retain the compact hash only as the base pin. The corrected Go and Python
+> calculations match both declared result hashes; strict application succeeds.
+> See [the expanded-base verification](inspection-2026-09-08-production-review-403617-scope.md).
+> The original observations remain below to preserve how this error arose.
+
 ## Authorization before execution
 
 Under ADR 0026 and the continuing CAPLAB improvement request, the primary agent
