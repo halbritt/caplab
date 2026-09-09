@@ -14,7 +14,7 @@ between sealed task inventories; this does not establish native integration.
 ## Interface and owner responsibilities
 
 `caplab.process_capture.capture_process(command, *, cwd, environment,
-output_dir, max_stream_bytes, timeout_seconds, pass_fds=())` launches one argument-vector
+output_dir, max_stream_bytes, timeout_seconds, pass_fds=(), quarantine_factory=None)` launches one argument-vector
 command, with stdin closed and an explicit environment. The caller must supply
 an absolute working directory, a fresh absolute output directory under a
 trusted resolved parent, a positive integer combined stream limit, and a
@@ -46,10 +46,61 @@ Capture does not read, hash, seek, duplicate, close or change the parent's
 inheritable flags on them. A child shares their open-file-description state,
 including offsets and access permissions; borrowing does not imply immutable
 input. The input-descriptor contents are not added to capture metadata, but
-any bytes emitted by the child still enter raw stdout/stderr capture. This is
+without a quarantine factory, bytes emitted by the child enter raw stdout/stderr capture. This is
 a transport facility, not credential validation, redaction, or authorization.
 Callers own sealing/read-only delivery, closure before final subject exec,
 and secret handling. See the [descriptor implementation record](../../records/implementation-2026-09-08-capture-input-descriptors.md).
+
+## Optional output quarantine
+
+`quarantine_factory` is a trusted callable, invoked once for stdout then once
+for stderr before custody creation or launch. It returns distinct fresh gates
+implementing `StreamQuarantine`: `feed(bytes) -> bytes`, `finish() -> bytes`,
+`abandon()`, and a `quarantined` flag initially exactly `False`. The existing
+Revbench `SealedCredential.stream_quarantine` method satisfies this interface;
+the recorder imports no provider adapter and parses no credentials. Gate
+construction and private data/buffering bounds belong to the caller. Factory
+calls precede the capture deadline; this is not a sandbox for untrusted code.
+
+The recorder checks methods, initial flag and distinct identity before launch.
+It adopts each returned object's callable `abandon` even when another shape
+check rejects it; a duplicate object is cleaned once. A rejected object without
+a callable cleanup method cannot be cleaned by this interface. Factory and
+gate exceptions propagate; their implementation must not disclose secrets in
+exception messages. Type annotations do not validate gate policy.
+
+During capture, `feed` withholds possible secret prefixes before the disk sink.
+`finish` releases safe buffered bytes only at observed EOF. The flag must remain
+exactly `False` before any returned bytes can be written. The received byte
+allowance includes withheld overlap, so buffering does not extend the limit.
+A gate cannot emit more bytes than its stream has received, and all emitted
+values must be bytes. Before completion publication, each stream's emitted
+length and SHA-256 must match its original received bytes. These checks reject
+silent transformations, loss and reordering; they do not prove the supplied
+gate recognizes the right secrets or validate intermediate emitted prefixes.
+
+A secret match or invalid runtime flag raises `ProcessCaptureQuarantineError`
+with `capture output quarantined`. Altered/non-byte/excess output uses
+`quarantine changed raw stream`. Timeout or quota exhaustion in guarded mode
+raises `guarded capture incomplete: timeout` or `guarded capture incomplete:
+byte-limit`. The child group is terminated and reaped, pending gate data is
+abandoned, and no final receipt is published. Safe prefixes already written
+remain in private failure custody; no public receipt or automatic retry is
+created. A missing receipt is unavailable capture, never zero-cost success.
+Gate cleanup completes before receipt publication, including after normal
+native failure. Successful guarded capture retains the unchanged v1 schema
+and exact raw streams; nonzero native exit may still have complete streams.
+
+The default `None` retains existing behavior, including incomplete receipts
+for unguarded timeout or quota stops. The optional seam has no credential
+policy identifier in v1; an adopting adapter must freeze the factory, private
+policy source and its authority separately. A receipt alone does not prove a
+quarantine was selected. Known-value matching does not detect transformed,
+encoded, cross-stream fragmented or unknown secrets, or protect persisted
+native files and task inventories. This is not coder blinding or full-surface
+privacy acceptance. See the [implementation record](../../records/implementation-2026-09-09-process-output-quarantine.md).
+
+## Remaining caller responsibilities
 
 The caller owns execution authorization, exact subject/instrument identity,
 command/configuration custody, task and account isolation, disk reservation,

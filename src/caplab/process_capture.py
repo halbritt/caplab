@@ -13,7 +13,21 @@ import subprocess
 import time
 from contextlib import ExitStack
 from datetime import UTC, datetime
-from typing import Mapping, Sequence
+from typing import Callable, Mapping, Protocol, Sequence
+
+
+class StreamQuarantine(Protocol):
+    """Trusted, bounded, per-stream policy supplied by the credential owner."""
+
+    quarantined: bool
+
+    def feed(self, payload: bytes) -> bytes: ...
+    def finish(self) -> bytes: ...
+    def abandon(self) -> None: ...
+
+
+class ProcessCaptureQuarantineError(RuntimeError):
+    """Guarded output cannot produce a complete raw capture."""
 
 
 def _write_all(descriptor: int, data: bytes) -> None:
@@ -62,6 +76,7 @@ def capture_process(
     command: Sequence[str], *, cwd: Path, environment: Mapping[str, str],
     output_dir: Path, max_stream_bytes: int, timeout_seconds: float,
     pass_fds: Sequence[int] = (),
+    quarantine_factory: Callable[[], StreamQuarantine] | None = None,
 ) -> dict:
     """Retain stdout/stderr under one limit; this does not authorize execution.
 
@@ -71,6 +86,10 @@ def capture_process(
     Exceptions leave raw prefixes without a final receipt and propagate.
     Explicit extra descriptors are borrowed; callers keep them open and stable
     until return. Their contents are not read or added to the receipt here.
+    A trusted quarantine factory creates two distinct stream gates. Guarded
+    failures abandon buffered overlap and leave no completion receipt; success
+    requires exact raw bytes. Gate memory, execution time and secret policy
+    remain the caller's responsibility.
     """
     if type(max_stream_bytes) is not int or max_stream_bytes <= 0:
         raise ValueError("max_stream_bytes must be a positive integer")
@@ -104,23 +123,50 @@ def capture_process(
         raise ValueError("cwd must be an absolute existing directory")
     if not output_dir.is_absolute() or output_dir.parent.resolve() != output_dir.parent:
         raise ValueError("output_dir must have an absolute resolved parent")
-    output_dir.mkdir(mode=0o700)
-    streams = {name: {"bytes": 0, "digest": hashlib.sha256(),
-                      "eof": False, "first_receipt_monotonic_ns": None,
-                      "last_receipt_monotonic_ns": None}
-               for name in ("stdout", "stderr")}
-    started = time.monotonic_ns()
-    started_at = datetime.now(UTC).isoformat()
-    deadline = time.monotonic() + timeout_seconds
-    total = 0
-    termination = "exited"
     with ExitStack() as stack:
+        gate_cleanup = stack.enter_context(ExitStack())
+        gates = {}
+        if quarantine_factory is not None:
+            if not callable(quarantine_factory):
+                raise ValueError("quarantine_factory must be callable")
+            for name in ("stdout", "stderr"):
+                gate = quarantine_factory()
+                if any(gate is prior for prior in gates.values()):
+                    raise ValueError("quarantine_factory must create distinct fresh stream gates")
+                abandon = getattr(gate, "abandon", None)
+                if callable(abandon):
+                    gate_cleanup.callback(abandon)
+                if (any(not callable(getattr(gate, method, None))
+                        for method in ("feed", "finish", "abandon"))
+                        or getattr(gate, "quarantined", None) is not False):
+                    raise ValueError("quarantine_factory must create distinct fresh stream gates")
+                gates[name] = gate
+        output_dir.mkdir(mode=0o700)
+        streams = {name: {"bytes": 0, "digest": hashlib.sha256(),
+                          "eof": False, "first_receipt_monotonic_ns": None,
+                          "last_receipt_monotonic_ns": None}
+                   for name in ("stdout", "stderr")}
+        received = {name: {"bytes": 0, "digest": hashlib.sha256()} for name in gates}
+        started = time.monotonic_ns()
+        started_at = datetime.now(UTC).isoformat()
+        deadline = time.monotonic() + timeout_seconds
+        total = 0
+        termination = "exited"
         descriptors = {}
         for name in streams:
             fd = os.open(output_dir / ("native." + name),
                          os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
             stack.callback(os.close, fd)
             descriptors[name] = fd
+
+        def retain(name: str, data: bytes) -> None:
+            if gates and (not isinstance(data, bytes)
+                          or len(data) > received[name]["bytes"] - streams[name]["bytes"]):
+                raise ProcessCaptureQuarantineError("quarantine changed raw stream")
+            _write_all(descriptors[name], data)
+            streams[name]["digest"].update(data)
+            streams[name]["bytes"] += len(data)
+
         selector = stack.enter_context(selectors.DefaultSelector())
         process = subprocess.Popen(command, cwd=cwd, env=environment,
                                    stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
@@ -142,6 +188,11 @@ def capture_process(
                     name = key.data
                     data = os.read(key.fd, min(65536, max_stream_bytes - total + 1))
                     if not data:
+                        if gates:
+                            tail = gates[name].finish()
+                            if gates[name].quarantined is not False:
+                                raise ProcessCaptureQuarantineError("capture output quarantined")
+                            retain(name, tail)
                         streams[name]["eof"] = True
                         selector.unregister(key.fileobj)
                         continue
@@ -151,9 +202,13 @@ def capture_process(
                         info["first_receipt_monotonic_ns"] = now
                     info["last_receipt_monotonic_ns"] = now
                     retained = data[:max_stream_bytes - total]
-                    _write_all(descriptors[name], retained)
-                    info["digest"].update(retained)
-                    info["bytes"] += len(retained)
+                    if gates:
+                        received[name]["bytes"] += len(retained)
+                        received[name]["digest"].update(retained)
+                    emitted = gates[name].feed(retained) if gates else retained
+                    if gates and gates[name].quarantined is not False:
+                        raise ProcessCaptureQuarantineError("capture output quarantined")
+                    retain(name, emitted)
                     total += len(retained)
                     if len(retained) != len(data):
                         termination = "byte-limit"
@@ -164,6 +219,13 @@ def capture_process(
             # Also stops same-group descendants holding pipes after leader exit.
             _kill_group(process)
             process.wait(timeout=5)
+        if gates and termination != "exited":
+            raise ProcessCaptureQuarantineError("guarded capture incomplete: " + termination)
+        if any(streams[name]["bytes"] != original["bytes"]
+               or streams[name]["digest"].digest() != original["digest"].digest()
+               for name, original in received.items()):
+            raise ProcessCaptureQuarantineError("quarantine changed raw stream")
+        gate_cleanup.close()
         for fd in descriptors.values():
             os.fsync(fd)
         receipt = {
