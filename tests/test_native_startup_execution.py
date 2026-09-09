@@ -66,10 +66,19 @@ class NativeStartupExecutionTests(unittest.TestCase):
         root, report, native = self.fixture(requirement=False)
         self.assertNotIn('entrypoint_termination', self.startup.inspect_execution(root, report, native)['launch_configuration'])
 
+    def test_shared_custody_caller_needs_no_startup_selection_without_execution_anchors(self):
+        root, report, native = self.fixture()
+        report['anchors'] = {}
+        (root / 'selections.json').unlink(); (root / 'intent.json').unlink()
+        before = {p.name: p.read_bytes() for p in root.iterdir()}
+        self.assertEqual(self.startup.inspect_execution(root, report, native), {})
+        self.assertEqual({p.name: p.read_bytes() for p in root.iterdir()}, before)
+
     def test_new_selection_reports_entrypoint_outcome_despite_wrapper_failure(self):
         root, report, native = self.fixture(requirement=True,
             terminal=b'73 +++ exited with 0 +++\n72 +++ exited with 1 +++\n')
-        result = self.startup.inspect_execution(root, report, native)
+        result = self.startup.inspect_execution(root, report, native,
+            expected_selections_sha256=self.startup.digest(root / 'selections.json'))
         outcome = result['launch_configuration']['entrypoint_termination']
         self.assertEqual(outcome['termination']['exit_code'], 0)
         self.assertFalse(outcome['task_success_verified'])
@@ -88,12 +97,30 @@ class NativeStartupExecutionTests(unittest.TestCase):
                 root, report, native = self.fixture(requirement=True, terminal=terminal)
                 self.startup.inspect_execution(root, report, native)
         root, report, native = self.fixture(requirement=True)
+        selection_anchor = self.startup.digest(root / 'selections.json')
         report['anchors'] = {}
         with self.assertRaisesRegex(RuntimeError, 'required termination needs an exec trace'):
-            self.startup.inspect_execution(root, report, native)
+            self.startup.inspect_execution(root, report, native, expected_selections_sha256=selection_anchor)
         (root / 'selections.json').unlink()
         with self.assertRaises(FileNotFoundError):
-            self.startup.inspect_execution(root, report, native)
+            self.startup.inspect_execution(root, report, native, expected_selections_sha256=selection_anchor)
+
+    def test_wrong_or_malformed_selection_anchor_cannot_be_ignored(self):
+        root, report, native = self.fixture(requirement=True, terminal=b'73 +++ exited with 0 +++\n')
+        for anchor in ('0'*64, '', True, 0, [], {}, 'A'*64, '1'*63):
+            with self.subTest(anchor=anchor), self.assertRaisesRegex(RuntimeError, 'selection anchor'):
+                self.startup.inspect_execution(root, report, native, expected_selections_sha256=anchor)
+
+    def test_independent_anchor_rejects_a_resealed_weaker_selection(self):
+        root, report, native = self.fixture(requirement=True)
+        expected = self.startup.digest(root / 'selections.json')
+        selected = json.loads((root / 'selections.json').read_bytes())
+        selected[0]['entrypoint_termination_required'] = False
+        (root / 'selections.json').write_text(json.dumps(selected))
+        (root / 'intent.json').write_text(json.dumps({'selections_sha256': self.startup.digest(root / 'selections.json')}))
+        report['anchors'] = {}
+        with self.assertRaisesRegex(RuntimeError, 'selection anchor differs'):
+            self.startup.inspect_execution(root, report, native, expected_selections_sha256=expected)
 
     def test_selection_tamper_and_custody_contradiction_prevent_stronger_report(self):
         root, report, native = self.fixture(requirement=True, terminal=b'73 +++ exited with 0 +++\n')

@@ -133,7 +133,7 @@ def inspect_traced_peer(peer_pid, trace_path):
     return checks | {'tracer_namespaces': namespaces, 'host_trace_path_exposed': False, 'exec_tracer': tracer}
 
 
-def inspect_custody(root, report):
+def inspect_custody(root, report, *, expected_selections_sha256=None):
     name, anchors = report['harness'], report['anchors']
     task = verify_task_capture(root / name, expected_attempt_sha256=anchors['attempt_sha256'], max_receipt_bytes=300000)
     native = verify_native_collection(POLICY, root / (name + '-collection'),
@@ -180,13 +180,19 @@ def inspect_custody(root, report):
             bytes_left -= size; entries_left -= count
     require(report['retained_bytes'] == 40 * MIB - bytes_left and
             report['retained_entries'] == 2000 - entries_left, 'retained totals differ')
-    execution = inspect_execution(root, report, native)
+    execution = inspect_execution(root, report, native, expected_selections_sha256=expected_selections_sha256)
     return {'task': task, 'native': native, 'accounting': accounting, **execution,
             'native_launch_attempted_by_supervisor': True, 'model_execution_verified': False,
             'native_capture_complete': None, 'study_eligible': False}
 
 
-def inspect_execution(root, report, native):
+def inspect_execution(root, report, native, *, expected_selections_sha256=None):
+    if expected_selections_sha256 is None and 'exec_trace_sha256' not in report['anchors']:
+        return {}
+    if expected_selections_sha256 is not None:
+        require(isinstance(expected_selections_sha256, str) and
+                re.fullmatch(r'[0-9a-f]{64}', expected_selections_sha256) is not None,
+                'invalid startup selection anchor')
     name = report['harness']
     anchors, handoff = report['anchors'], report['handoff']
     network = handoff['peer_checks']
@@ -194,8 +200,11 @@ def inspect_execution(root, report, native):
     selections = json.loads((root / 'selections.json').read_bytes())
     selected, = [item for item in selections if item['harness'] == name]
     plan = _validated_invocation(POLICY, selected['plan'], native['invocation_sha256'])
-    require(digest(root / 'selections.json') == json.loads((root / 'intent.json').read_bytes())['selections_sha256'],
+    selection_hash = digest(root / 'selections.json')
+    require(selection_hash == json.loads((root / 'intent.json').read_bytes())['selections_sha256'],
             'traced selections differ from sealed intent')
+    require(expected_selections_sha256 is None or selection_hash == expected_selections_sha256,
+            'startup selection anchor differs')
     termination_required = selected.get('entrypoint_termination_required', False)
     require(type(termination_required) is bool, 'invalid termination requirement')
     require(not termination_required or 'launch_configuration' in selected,
@@ -236,8 +245,10 @@ def inside(root, unit, *, trace_claude=False, trace_exec=False):
         require((group / name).read_text().strip() == value, 'outer resource limit differs')
     (group / 'cgroup.subtree_control').write_text('+memory +pids')
     selections = json.loads((root / 'selections.json').read_bytes())
+    selection_anchor = None
     if trace_exec:
-        require(digest(root / 'selections.json') == json.loads((root / 'intent.json').read_bytes())['selections_sha256'],
+        selection_anchor = json.loads((root / 'intent.json').read_bytes())['selections_sha256']
+        require(digest(root / 'selections.json') == selection_anchor,
                 'traced selections differ before launch')
     require([s['harness'] for s in selections] == (['claude'] if trace_claude else list(SOURCES)),
             'startup selection differs from fixed diagnostic mode')
@@ -323,7 +334,8 @@ def inside(root, unit, *, trace_claude=False, trace_exec=False):
             require(harness_manifest(source) == selected['harness_manifest'], 'harness changed during startup')
             if trace_claude or trace_exec:
                 require(digest(Path('/usr/bin/strace')) == selected['strace_sha256'], 'strace changed during startup')
-            seal_capture_json(root, name + '-checks.json', inspect_custody(root, report))
+            seal_capture_json(root, name + '-checks.json', inspect_custody(root, report,
+                expected_selections_sha256=selection_anchor))
             reports.append(report)
         finally:
             for fd in descriptors: os.close(fd)
@@ -379,7 +391,8 @@ def run(root, *, trace_claude=False, trace_exec=False):
         require([r['harness'] for r in observation['reports']] == [s['harness'] for s in selections],
                 'incomplete startup population')
         for report in observation['reports']:
-            require(inspect_custody(root, report) == json.loads((root / (report['harness'] + '-checks.json')).read_bytes()),
+            require(inspect_custody(root, report, expected_selections_sha256=selection_hash if trace_exec else None) ==
+                    json.loads((root / (report['harness'] + '-checks.json')).read_bytes()),
                     'custody checks changed after namespace exit')
     finally:
         stopped = subprocess.run(['/usr/bin/systemctl', '--user', 'stop', unit], env=environment, capture_output=True, timeout=5)

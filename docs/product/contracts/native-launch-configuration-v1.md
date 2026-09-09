@@ -99,19 +99,37 @@ New `--trace-exec` startup selections seal the canonical launch configuration
 and `entrypoint_termination_required: true`. The supervisor requires that exact
 value and configuration before execution, then uses v2 inspection afterward.
 The startup execution inspector verifies the selection-to-intent hash before
-consulting the requirement, including when the report has no trace anchor.
+consulting the requirement. New traced startup calls supply an independent
+expected selection hash, so the check also runs when a report has no trace anchor.
 A required termination without a trace anchor or launch configuration fails;
 malformed requirement values fail rather than selecting a weaker check.
 
 Older selections with no requirement retain v1 inspection, and those without
 a launch configuration keep direct exec inspection. Explicit false also selects
-the older behavior, but the new traced producer never emits it. Valid untraced
-selections still return no execution evidence. Missing/corrupt selections or
-intent now fail for untraced inspection as well; omission cannot bypass a sealed
-requirement. The startup script preserves its RuntimeError guards, while launch
-and trace validation errors propagate unchanged. This is a prospective producer
-change; it does not rewrite older selections, rerun agents or claim complete
-capture. See the
+the older behavior, but the new traced producer never emits it.
+
+The shared startup functions `inspect_custody(root, report, *,
+expected_selections_sha256=None)` and `inspect_execution(root, report, native, *,
+expected_selections_sha256=None)` accept that independently retained hash.
+It must be 64 lowercase hexadecimal characters and must agree with the actual
+selection bytes and the intent. Supplying it requires selection custody even
+if the report lacks its trace anchor. New traced supervisor and post-exit calls
+always supply it; the report itself cannot choose whether the caller requires it.
+Missing/corrupt selections or intent, or a re-sealed selection that differs
+from the independent hash, fail without retry or weaker fallback.
+
+Without that keyword and without an exec trace anchor, shared custody inspection
+returns no execution evidence and reads no startup-specific files. Other native
+diagnostics use this path when their execution evidence is checked separately.
+This result makes no startup-selection or execution claim. Legacy traced
+callers still validate their selection-to-intent hash and retain the declared
+inspection strength. This compatibility repair replaces the prior unconditional
+startup-selection read for untraced shared-custody callers.
+
+The startup script preserves its RuntimeError guards, while launch and trace
+validation errors propagate unchanged. These changes do not rewrite older
+selections, rerun agents or claim complete capture. See the
+[selection-anchor repair](../../records/repair-2026-09-09-startup-selection-anchor.md),
 [termination adoption record](../../records/implementation-2026-09-09-launch-termination-adoption.md)
 and the original
 [implementation record](../../records/implementation-2026-09-09-native-launch-configuration.md).
