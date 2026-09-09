@@ -4,7 +4,7 @@ import sys
 import unittest
 from unittest import mock
 
-from caplab.advisory.adjudication import Adjudications
+from caplab.advisory.adjudication import Adjudications, build_adjudication
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
@@ -26,7 +26,9 @@ class GateAccountingTest(unittest.TestCase):
                     "environment": "tree-v1", "false_alarm": False, "caught": True,
                     "control_attempts": [attempt("reject"), attempt(), attempt()],
                     "mutant_attempts": [attempt("reject")]}
-        self.adj = Adjudications([{"dispatch_id": "qs-a", "disposition": "sound"}])
+        self.adj = Adjudications([build_adjudication(
+            dispatch_id="qs-a", disposition="sound", basis="Synthetic audited control",
+            adjudicated_by="principal:test", as_of="2026-09-08T12:00:00+00:00")])
 
     def summarize(self, rows):
         return review_gate.summarize_cells(self.gate, rows, self.adj, {})

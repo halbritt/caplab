@@ -144,3 +144,31 @@ Binding verification or evidence that a finding's rationale is correct.
 These observations do not resolve the production-outcome gap. The
 [production report](production-review-report.md) remains the report-only
 surface for finding reviews and missing evidence to inspect.
+
+## Adjudication input validation
+
+Control records are validated when built, loaded from JSONL, supplied directly
+to `Adjudications`, or appended. The expected v1 tag, nonempty dispatch ID and
+recorded time, recognized disposition/basis kind, evidence-object list and
+string-note list are required. Sound/defective records also require nonblank
+basis and authority strings; mechanical-oracle records require nonempty
+evidence. The historical `principal-ruling` spelling remains supported.
+Recorded times must be nonempty strings; this boundary does not verify dates.
+Unknown fields are retained if their JSON representation is valid.
+
+Ambiguous duplicate JSON keys, non-finite values and unserializable records
+are rejected. Loaded values are owned, so mutating the caller's original record
+cannot change eligibility. A malformed record is an error, not an unaudited
+or sound control. Optional absent ledgers still yield no adjudications.
+
+Append validates the whole proposed batch before opening or creating its
+destination. It retains the existing duplicate-ID skip behavior; loading an
+existing history retains the last record for each dispatch ID. This is not a
+concurrent-writer transaction or an atomic guarantee against later I/O failure.
+An alias cannot overwrite an existing canonical control judgment.
+
+These checks validate record structure, not truth. They do not authenticate a
+named adjudicator, execute an evidence locator, prove authority or independence,
+check environment applicability, or turn a control judgment into a production
+gold outcome. The caller must still establish those facts before using it for
+an authorized decision. No historical record is migrated by these checks.
