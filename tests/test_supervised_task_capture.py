@@ -35,16 +35,22 @@ Path('/work/item').write_bytes(b'old')
 with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as channel:
     channel.settimeout(3)
     channel.connect('/handoff.sock')
-    descriptors = [os.open(p, os.O_RDONLY | os.O_DIRECTORY) for p in ('/work','/episode')]
+    descriptors = [os.open(p, os.O_RDONLY | os.O_DIRECTORY) for p in data['mounts']]
     channel.sendmsg([b'R'], [(socket.SOL_SOCKET,socket.SCM_RIGHTS,array.array('i',descriptors))])
     for descriptor in descriptors: os.close(descriptor)
     if channel.recv(1) != b'1': raise RuntimeError('before capture not acknowledged')
 Path('/work/item').write_bytes(b'changed')
+for path, raw in data['markers'].items():
+    Path(path, 'marker.bin').write_bytes(bytes.fromhex(raw))
 for name, raw in data['files'].items():
     target = Path('/episode') / name
     target.parent.mkdir(parents=True,exist_ok=True)
     target.write_bytes(bytes.fromhex(raw))
-sys.stdout.buffer.write(bytes.fromhex(data['stdout']))
+for name, raw in data['extra_files'].items():
+    target = Path(name)
+    target.parent.mkdir(parents=True,exist_ok=True)
+    target.write_bytes(bytes.fromhex(raw))
+sys.stdout.buffer.write(bytes.fromhex(data['stdout']) + bytes.fromhex(data['stdout_suffix']))
 raise SystemExit(data['return_code'])
 """
 
@@ -53,7 +59,8 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def retained_fixture(root, harness, return_code):
+def retained_fixture(root, harness, return_code, *, quarantine_factory=None, mount_retainer=None,
+                     extra_files=None, stdout_suffix=b''):
     root.mkdir(mode=0o700)
     task = root/'task'; task.mkdir()
     fixture = root/'fixture'; fixture.mkdir()
@@ -76,49 +83,76 @@ def retained_fixture(root, harness, return_code):
         stdout = jsonl(stdout_events())
         files = {paths['session_search_root']+'/-work/'+SESSION+'.jsonl':jsonl(transcript_events()),
                  paths['diagnostic_file']:b'\x00\xffdiagnostic'}
+    mounts = ('/scratch', '/tmp', '/dev/shm', '/work', '/episode') if mount_retainer else ('/work', '/episode')
+    extra_files = {} if extra_files is None else dict(extra_files)
+    assert all(any(Path(path).is_relative_to(mount) and path != mount for mount in mounts)
+               and '..' not in Path(path).parts and isinstance(raw, bytes) for path, raw in extra_files.items())
+    assert isinstance(stdout_suffix, bytes)
+    markers = {path: (b'retained marker\x00\xff\n' + path.encode()).hex() for path in mounts} if mount_retainer else {}
     (fixture/'payload.json').write_text(json.dumps({'files':{k:v.hex() for k,v in files.items()},
-                                                  'stdout':stdout.hex(),'return_code':return_code}))
+        'stdout':stdout.hex(),'return_code':return_code,'mounts':mounts,'markers':markers,
+        'extra_files':{path:raw.hex() for path,raw in extra_files.items()},'stdout_suffix':stdout_suffix.hex()}))
     (fixture/'producer.py').write_text(PRODUCER)
     socket_path = root/'handoff.sock'
     command = ['/usr/bin/bwrap','--unshare-all','--die-with-parent','--new-session','--clearenv',
         '--ro-bind','/usr','/usr','--symlink','usr/bin','/bin','--symlink','usr/lib','/lib',
-        '--symlink','usr/lib64','/lib64','--size','1048576','--tmpfs','/work',
-        '--size','1048576','--tmpfs','/episode','--ro-bind',str(fixture),'/fixture',
+        '--symlink','usr/lib64','/lib64']
+    for mount in mounts:
+        command += ['--size','1048576','--tmpfs',mount]
+    command += ['--ro-bind',str(fixture),'/fixture',
         '--ro-bind',str(socket_path),'/handoff.sock','--chdir','/work','--remount-ro','/',
         '--','/usr/bin/python3','-B','/fixture/producer.py']
     environment = {'PATH':'/usr/bin:/bin'}
     attempt = root/'attempt'; collection = root/'collection'
     descriptors = []
+    full_retention = None
     try:
         with socket.socket(socket.AF_UNIX,socket.SOCK_STREAM) as listener:
             listener.bind(str(socket_path)); listener.listen(1); listener.settimeout(5)
             with SupervisedTaskCapture(command,task_root=task,namespace_root='/work',environment=environment,
                     output_dir=attempt,limits=TaskCaptureLimits(100000,10000,100,5),
-                    max_process_receipt_bytes=10000) as recorder:
+                    max_process_receipt_bytes=10000,quarantine_factory=quarantine_factory) as recorder:
                 assert (attempt/'intent.json').is_file()
                 with ThreadPoolExecutor(max_workers=1) as pool:
                     pending = pool.submit(capture_process,command,cwd=task,environment=environment,
-                        output_dir=attempt/'process',max_stream_bytes=100000,timeout_seconds=5)
+                        output_dir=attempt/'process',max_stream_bytes=100000,timeout_seconds=5,
+                        quarantine_factory=quarantine_factory)
                     channel,_ = listener.accept()
                     with channel:
                         channel.settimeout(5)
-                        data,ancillary,flags,_ = channel.recvmsg(1,socket.CMSG_SPACE(2*array.array('i').itemsize),
+                        data,ancillary,flags,_ = channel.recvmsg(1,socket.CMSG_SPACE(len(mounts)*array.array('i').itemsize),
                                                                  socket.MSG_CMSG_CLOEXEC)
                         for level,kind,raw in ancillary:
                             if level==socket.SOL_SOCKET and kind==socket.SCM_RIGHTS:
                                 received=array.array('i'); received.frombytes(raw); descriptors.extend(received)
-                        assert data==b'R' and flags & ~socket.MSG_CMSG_CLOEXEC==0 and len(descriptors)==2
-                        info=os.fstat(descriptors[0])
-                        before_hash=recorder.capture_before(descriptors[0],expected_device=info.st_dev,expected_inode=info.st_ino)
+                        assert data==b'R' and flags & ~socket.MSG_CMSG_CLOEXEC==0 and len(descriptors)==len(mounts)
+                        task_descriptor=descriptors[mounts.index('/work')]
+                        info=os.fstat(task_descriptor)
+                        before_hash=recorder.capture_before(task_descriptor,expected_device=info.st_dev,expected_inode=info.st_ino)
                         assert before_hash==digest(attempt/'before/inventory.json')
                         channel.sendall(b'1')
                     process=pending.result(timeout=7)
                 receipt=recorder.finish(expected_process_sha256=digest(attempt/'process/capture.json'))
                 assert process['return_code']==return_code and receipt['process']==process
-                info=os.fstat(descriptors[1])
+                native_descriptor=descriptors[mounts.index('/episode')]
+                info=os.fstat(native_descriptor)
                 collect_native_outputs(POLICY,prepared,expected_preparation_sha256=preparation_hash,
                     output_dir=collection,max_receipt_bytes=100000,max_artifact_bytes=10000,max_entries=100,
-                    runtime_descriptor=NativeRuntimeDescriptor(descriptors[1],info.st_dev,info.st_ino))
+                    runtime_descriptor=NativeRuntimeDescriptor(native_descriptor,info.st_dev,info.st_ino),
+                    quarantine_factory=quarantine_factory)
+            if mount_retainer is not None:
+                retained = root/'fixture-retained'; retained.mkdir(mode=0o700)
+                identities, inventories = [], []
+                bytes_left, entries_left = 40*1024*1024, 100
+                for index, (mount, descriptor) in enumerate(zip(mounts, descriptors, strict=True)):
+                    info = os.fstat(descriptor)
+                    identity = {'source_root':mount,'source_dev':info.st_dev,'source_ino':info.st_ino}
+                    sha, bytes_left, entries_left = mount_retainer(descriptor,retained/str(index),identity,
+                        bytes_left,entries_left,quarantine_factory=quarantine_factory)
+                    identities.append(identity)
+                    inventories.append({'source_root':mount,'inventory_sha256':sha})
+                full_retention = {'mode':'fixture','inventories':inventories,'mount_descriptor':{'mounts':identities},
+                    'retained_bytes':40*1024*1024-bytes_left,'retained_entries':100-entries_left}
     finally:
         for descriptor in descriptors: os.close(descriptor)
         socket_path.unlink(missing_ok=True)
@@ -137,7 +171,8 @@ def retained_fixture(root, harness, return_code):
         format='codex-exec-jsonl' if harness=='codex' else 'claude-stream-jsonl',
         expected_root_id='root-A' if harness=='codex' else SESSION,max_receipt_bytes=200000,max_event_bytes=10000)
     return {'harness_layout':harness,'configured_process_return_code':return_code,'anchors':options,
-            'link':linked,'accounting':counted,'pairs':pairs,'native_execution':False}
+            'link':linked,'accounting':counted,'pairs':pairs,'native_execution':False,
+            **({'full_retention':full_retention} if full_retention is not None else {})}
 
 
 class SupervisedTaskCaptureTests(unittest.TestCase):

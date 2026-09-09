@@ -24,6 +24,7 @@ import uuid
 
 from caplab.process_capture import capture_process, seal_capture_json
 from caplab.capture_accounting import build_capture_byte_report
+from caplab.capture_quarantine import check_capture_bytes, check_capture_document
 from caplab.codex_capture_link import link_codex_final_message, link_codex_root
 from caplab.native_capture_invocation import NativeCaptureContext, build_native_capture_invocation
 from caplab.native_collection import NativeRuntimeDescriptor, collect_native_outputs
@@ -275,9 +276,16 @@ def receive_mount(listener, child, recorder, *, inspect_peer=None, usable_device
             os.close(descriptor)
 
 
-def retain_mount(descriptor, output, identity, bytes_left, entries_left):
+def retain_mount(descriptor, output, identity, bytes_left, entries_left, *, quarantine_factory=None):
+    """Retain one quiescent borrowed mount; the caller owns policy and authorization."""
+    identity = dict(identity)
+    if quarantine_factory is not None:
+        for path in (output, output / 'inventory.json', output / '.inventory.pending'):
+            check_capture_bytes(quarantine_factory, os.fsencode(path))
+        check_capture_bytes(quarantine_factory, os.fsencode(identity['source_root']))
+        check_capture_document(quarantine_factory, identity)
     output.mkdir(mode=0o700)
-    inventory = _Inventory(output, bytes_left, entries_left)
+    inventory = _Inventory(output, bytes_left, entries_left, quarantine_factory)
     inventory.visit(descriptor, '.', '.')
     receipt = {'schema': 'caplab.retained-mount-inventory/v1', 'source_root': identity['source_root'],
         'source_scope': 'fixture namespace; not a host path', 'descriptor_identity': identity,
@@ -286,6 +294,7 @@ def retain_mount(descriptor, output, identity, bytes_left, entries_left):
     root_entry, = [entry['source_stat'] for entry in receipt['entries'] if entry['path'] == '.']
     require((root_entry['dev'], root_entry['ino']) == (identity['source_dev'], identity['source_ino']),
             'retained root identity differs from received descriptor')
+    check_capture_document(quarantine_factory, receipt)
     digest = seal_capture_json(output, 'inventory.json', receipt)
     return digest, inventory.bytes_left, inventory.entries_left
 
