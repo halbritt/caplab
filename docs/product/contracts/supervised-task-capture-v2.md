@@ -9,7 +9,8 @@ handoff, task quiescence and process cleanup.
 
 Construct it with `command`, and keyword arguments `task_root`,
 `namespace_root`, `environment`, `output_dir`, `limits` and
-`max_process_receipt_bytes`. `limits` is the existing `TaskCaptureLimits`.
+`max_process_receipt_bytes`, with optional `quarantine_factory=None`.
+`limits` is the existing `TaskCaptureLimits`.
 The command and environment are copied and validated as explicit string inputs.
 `task_root` is a resolved, existing host directory below `/`, used as the
 declared launch working directory and preparation identity. It is not opened
@@ -99,3 +100,28 @@ observations, and temporary writes between scans remain unobserved. No report
 establishes native emission, handoff authenticity, exhaustive containment,
 task correctness, study eligibility or acceptance. See the
 [implementation and verification record](../../records/implementation-2026-09-08-supervised-task-capture.md).
+
+## Optional trusted quarantine
+
+The optional factory uses the [task wrapper's policy contract](task-attempt-capture-v1.md#optional-trusted-quarantine)
+for raw task files, literal names/targets and task receipt metadata. Enter checks
+the copied command/environment, declared paths, generated/pending custody names
+and intent before creating output. Before and after scans pass the factory to
+the same bounded inventory copier. Their receipts and the final attempt are
+checked before publication, including the embedded process document. Successful
+output preserves v2 raw bytes, limits, descriptor identity and verification.
+
+The recorder does not own the process capture. Its caller must pass the selected
+policy to the separately launched `capture_process` and independently preserve
+that selection. Configuring only this recorder does not prevent unguarded writes
+by the process owner. Receipt hashes, stream integrity and final metadata checks
+cannot retrospectively establish that another writer used the policy.
+
+A guard, factory or cleanup failure leaves the current operation incomplete and
+prevents reuse of the recorder, even if the caller catches it. Context exit still
+closes only the recorder's descriptor duplicate; workload blocking, release and
+termination remain caller-owned. No separate failure receipt or purge is added.
+`None` preserves existing behavior. Factories remain referenced by the recorder
+and caller; no credential lifetime or memory-zeroization guarantee is supplied.
+No policy identity is added to v2 receipts, and no independent privacy acceptance
+or authenticated execution follows. See the [new integration record](../../records/implementation-2026-09-09-task-capture-quarantine.md).

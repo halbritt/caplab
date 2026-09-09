@@ -100,6 +100,23 @@ encoded, cross-stream fragmented or unknown secrets, or protect persisted
 native files and task inventories. This is not coder blinding or full-surface
 privacy acceptance. See the [implementation record](../../records/implementation-2026-09-09-process-output-quarantine.md).
 
+After complete guarded streams and their cleanup, fresh gates also check the
+generated process receipt's string keys/values before JSON escaping and its
+exact serialized bytes before publication. A metadata match raises
+`CaptureQuarantineError`; policy/cleanup errors propagate. Safe stream files may
+remain, but `.capture.pending` and `capture.json` are not created by that failed
+metadata check. This additional callback work remains outside the stream polling
+deadline and byte allowance. The factory must support more than its two initial
+stream gates. `StreamQuarantine` is defined in `capture_quarantine` and remains
+importable from `process_capture` for compatibility.
+
+This check covers receipt content. The process API does not retain command or
+environment metadata and does not inspect those values for secrets; the guarded
+[task capture APIs](task-attempt-capture-v1.md#optional-trusted-quarantine) own
+that intent and their planned custody-path checks. Standalone process-capture
+callers still own the privacy of their selected output path. See the
+[task integration record](../../records/implementation-2026-09-09-task-capture-quarantine.md).
+
 ## Remaining caller responsibilities
 
 The caller owns execution authorization, exact subject/instrument identity,

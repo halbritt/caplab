@@ -3,9 +3,17 @@
 from contextlib import ExitStack, contextmanager
 import hashlib
 import json
-from typing import Callable
+from typing import Callable, Protocol
 
-from caplab.process_capture import StreamQuarantine
+
+class StreamQuarantine(Protocol):
+    """Trusted, bounded, per-stream policy supplied by the credential owner."""
+
+    quarantined: bool
+
+    def feed(self, payload: bytes) -> bytes: ...
+    def finish(self) -> bytes: ...
+    def abandon(self) -> None: ...
 
 
 class CaptureQuarantineError(RuntimeError):

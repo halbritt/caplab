@@ -5,7 +5,7 @@ eligibility are not implemented by this interface. Decision and verification:
 [implementation record](../../records/implementation-2026-09-08-task-attempt-capture.md).
 
 `caplab.task_capture.capture_task_attempt(command, *, task_root, environment,
-output_dir, limits)` retains the task tree before and after
+output_dir, limits, quarantine_factory=None)` retains the task tree before and after
 [bounded process capture](bounded-process-capture-v1.md). `limits` is a
 `TaskCaptureLimits(max_stream_bytes, max_task_bytes, max_task_entries,
 timeout_seconds)` value. Every limit is explicit; integer limits must be
@@ -105,3 +105,42 @@ CAPLAB-84 still requires native session/child linkage, diagnostics, exact bindin
 enforcement, campaign stops and representative capture-cost measurements.
 CAPLAB-66 still owns blinding feasibility. No historical budget or campaign
 manifest is renewed by this component.
+
+## Optional trusted quarantine
+
+`quarantine_factory` selects the same trusted per-stream policy used by
+[native collection](native-output-collection-v1.md#optional-exact-secret-quarantine)
+and [process capture](bounded-process-capture-v1.md#optional-output-quarantine).
+It must create fresh independent gates and own bounded secret selection,
+allocation and execution. The caller owns its identity and lifetime; it is not
+untrusted plugin code. Each returned gate is abandoned on success or exception.
+Invalid interfaces, matches, altered bytes and cleanup failures prevent a final
+attempt; arbitrary callback exceptions propagate.
+
+Before creating custody, the wrapper checks command/environment strings, source
+and output paths, generated directory/receipt names and pending filenames.
+Command, environment and path values are checked in their filesystem/exec byte
+representation as well as the JSON string representation. Intent strings and
+serialized bytes are checked before sealing. Both inventories use the guarded
+copier: literal names and link targets are checked before JSON/base64 encoding;
+file reads pass through a gate before writing and count received bytes against
+the existing shared quota. Only EOF flushes withheld overlap. Safe bytes remain
+exact, and the count/hash checks refuse transforming gates at completion.
+
+The wrapper forwards the factory to process capture for both raw streams and
+the process receipt. A stream match, timeout or byte-limit exception prevents
+the after scan. Inventory and attempt receipts are checked before publication.
+The v1 `TaskCaptureError` handler also checks failure-receipt metadata: if the
+reason contains a known secret, no failure receipt is written and the quarantine
+error propagates. A safe quota reason still produces its normal phase and
+truncation record. Already retained safe prefixes and source files remain.
+Exception chains and logs outside this custody API remain caller-owned.
+
+`None` preserves unguarded behavior, including incomplete process receipts and
+the later after scan. Guarded successes retain the same v1 schema and independent
+verification rules. Receipts do not attest policy selection or identity. The
+adopting adapter must freeze that policy with its source/configuration and treat
+missing receipts as unavailable attempts. Exact matching does not cover unknown
+secrets, arbitrary encodings, fragments across separate streams, or memory
+zeroization. No complete-surface blinding or privacy acceptance follows. See the
+[implementation and verification record](../../records/implementation-2026-09-09-task-capture-quarantine.md).

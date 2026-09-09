@@ -12,7 +12,7 @@ from pathlib import Path
 import stat
 from typing import Callable, Mapping, Sequence
 
-from caplab.capture_quarantine import check_capture_bytes, quarantine_stream
+from caplab.capture_quarantine import check_capture_bytes, check_capture_document, quarantine_stream
 from caplab.process_capture import StreamQuarantine, capture_process, seal_capture_json
 
 
@@ -149,10 +149,40 @@ class _Inventory:
             raise TaskCaptureError(f"unsupported-task-object:{relative}")
 
 
-def _inventory(root: Path, output: Path, bytes_left: int, entries_left: int) -> tuple[dict, str]:
+def _check_task_intent(intent: dict, output: Path, quarantine_factory) -> None:
+    if quarantine_factory is None:
+        return
+    # These strings also cross filesystem/exec boundaries, including surrogate escapes.
+    values = [intent['cwd'], *intent['command'], *intent['environment'].keys(),
+              *intent['environment'].values()]
+    if 'task_source' in intent:
+        values.append(intent['task_source']['namespace_root'])
+    for value in values:
+        check_capture_bytes(quarantine_factory, os.fsencode(value))
+    check_capture_document(quarantine_factory, intent)
+    paths = ['', 'intent.json', '.intent.pending', 'attempt.json', '.attempt.pending',
+             'failure.json', '.failure.pending', 'before', 'after', 'process',
+             'before/inventory.json', 'before/.inventory.pending',
+             'after/inventory.json', 'after/.inventory.pending',
+             'process/native.stdout', 'process/native.stderr',
+             'process/capture.json', 'process/.capture.pending']
+    for relative in paths:
+        check_capture_bytes(quarantine_factory, os.fsencode(output / relative))
+
+
+def _seal_task_receipt(output: Path, name: str, receipt: dict, quarantine_factory) -> str:
+    if quarantine_factory is not None:
+        for filename in (name, '.' + name.removesuffix('.json') + '.pending'):
+            check_capture_bytes(quarantine_factory, os.fsencode(output / filename))
+        check_capture_document(quarantine_factory, receipt)
+    return seal_capture_json(output, name, receipt)
+
+
+def _inventory(root: Path, output: Path, bytes_left: int, entries_left: int,
+               quarantine_factory: Callable[[], StreamQuarantine] | None = None) -> tuple[dict, str]:
     output.mkdir(mode=0o700)
     started_at = datetime.now(UTC).isoformat()
-    inventory = _Inventory(output, bytes_left, entries_left)
+    inventory = _Inventory(output, bytes_left, entries_left, quarantine_factory)
     parent = os.open(root.parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
     try:
         inventory.visit(parent, root.name, ".")
@@ -162,7 +192,7 @@ def _inventory(root: Path, output: Path, bytes_left: int, entries_left: int) -> 
                "started_at": started_at, "finished_at": datetime.now(UTC).isoformat(),
                "retained_bytes": inventory.retained_bytes,
                "entries": sorted(inventory.entries, key=lambda e: e["path"])}
-    digest = seal_capture_json(output, "inventory.json", receipt)
+    digest = _seal_task_receipt(output, "inventory.json", receipt, quarantine_factory)
     return receipt, digest
 
 
@@ -186,8 +216,13 @@ def _changes(before: dict, after: dict) -> list[dict]:
 def capture_task_attempt(
     command: Sequence[str], *, task_root: Path, environment: Mapping[str, str],
     output_dir: Path, limits: TaskCaptureLimits,
+    quarantine_factory: Callable[[], StreamQuarantine] | None = None,
 ) -> dict:
-    """Retain quiescent task trees around an owned process; no native eligibility claim."""
+    """Retain quiescent task trees around an owned process; no native eligibility claim.
+
+    An optional trusted factory guards task inputs, snapshots and receipts and
+    is forwarded to process capture. Guarded failures leave no final attempt.
+    """
     if isinstance(command, (str, bytes)) or not command:
         raise ValueError("command must be a nonempty argument sequence")
     command, environment = list(command), dict(environment)
@@ -200,31 +235,32 @@ def capture_task_attempt(
     if (not output_dir.is_absolute() or output_dir.parent.resolve() != output_dir.parent
             or output_dir.is_relative_to(task_root)):
         raise ValueError("output_dir must have a resolved parent outside the task tree")
-    output_dir.mkdir(mode=0o700)
     intent = {"schema": "caplab.task-capture-intent/v1", "command": list(command),
               "cwd": str(task_root), "environment": dict(environment), "limits": asdict(limits)}
-    intent_digest = seal_capture_json(output_dir, "intent.json", intent)
+    _check_task_intent(intent, output_dir, quarantine_factory)
+    output_dir.mkdir(mode=0o700)
+    intent_digest = _seal_task_receipt(output_dir, "intent.json", intent, quarantine_factory)
     phase = "before"
     try:
         before, before_digest = _inventory(task_root, output_dir / "before",
-                                           limits.max_task_bytes, limits.max_task_entries)
+                                           limits.max_task_bytes, limits.max_task_entries, quarantine_factory)
         if len(before["entries"]) == limits.max_task_entries:
             raise TaskCaptureError("task-entry-limit:no-final-root-allowance")
         phase = "process"
         process = capture_process(command, cwd=task_root, environment=environment,
                                   output_dir=output_dir / "process", max_stream_bytes=limits.max_stream_bytes,
-                                  timeout_seconds=limits.timeout_seconds)
+                                  timeout_seconds=limits.timeout_seconds, quarantine_factory=quarantine_factory)
         phase = "after"
         after, after_digest = _inventory(task_root, output_dir / "after",
                                          limits.max_task_bytes - before["retained_bytes"],
-                                         limits.max_task_entries - len(before["entries"]))
+                                         limits.max_task_entries - len(before["entries"]), quarantine_factory)
     except TaskCaptureError as error:
         reason = str(error)
-        seal_capture_json(output_dir, "failure.json", {
+        _seal_task_receipt(output_dir, "failure.json", {
             "schema": "caplab.task-capture-failure/v1", "phase": phase,
             "intent_sha256": intent_digest, "reason": reason,
             "truncated": reason.startswith(("task-byte-limit", "task-entry-limit")),
-        })
+        }, quarantine_factory)
         raise
     receipt = {"schema": "caplab.task-attempt-capture/v1", "intent_sha256": intent_digest,
                "before_inventory_sha256": before_digest, "after_inventory_sha256": after_digest,
@@ -234,5 +270,5 @@ def capture_task_attempt(
                "process": process, "changes": _changes(before, after),
                "capture_complete": process["streams_complete"],
                "interpretation": "observed final task changes; no intermediate-write, containment, native identity or eligibility claim"}
-    seal_capture_json(output_dir, "attempt.json", receipt)
+    _seal_task_receipt(output_dir, "attempt.json", receipt, quarantine_factory)
     return receipt

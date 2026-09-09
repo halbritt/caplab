@@ -5,10 +5,12 @@ from datetime import UTC, datetime
 import os
 from pathlib import Path, PurePosixPath
 import stat
-from typing import Mapping, Sequence
+from typing import Callable, Mapping, Sequence
 
-from caplab.process_capture import seal_capture_json
-from caplab.task_capture import TaskCaptureError, TaskCaptureLimits, _Inventory, _changes
+from caplab.process_capture import StreamQuarantine
+from caplab.task_capture import (
+    TaskCaptureError, TaskCaptureLimits, _Inventory, _changes, _check_task_intent, _seal_task_receipt,
+)
 from caplab.task_capture_verify import _Reader, _open, _process
 
 
@@ -19,11 +21,14 @@ class SupervisedTaskCapture:
     before tree while work is blocked, then release it. Finish after writers stop,
     with an independently retained process receipt digest. No process is launched
     or stopped here. Errors preserve custody and prohibit reuse of the recorder.
+    An optional trusted factory guards task snapshots and receipts; the caller
+    must also configure its separately owned process capture with that policy.
     """
 
     def __init__(self, command: Sequence[str], *, task_root: Path, namespace_root: str,
                  environment: Mapping[str, str], output_dir: Path,
-                 limits: TaskCaptureLimits, max_process_receipt_bytes: int):
+                 limits: TaskCaptureLimits, max_process_receipt_bytes: int,
+                 quarantine_factory: Callable[[], StreamQuarantine] | None = None):
         if isinstance(command, (str, bytes)) or not command:
             raise ValueError('command must be a nonempty argument sequence')
         command = tuple(command)
@@ -52,6 +57,7 @@ class SupervisedTaskCapture:
                 or output_dir.is_relative_to(task_root) or task_root.is_relative_to(output_dir)):
             raise ValueError('output must have a resolved parent disjoint from the declared task')
         self.output_dir, self._limits = output_dir, limits
+        self._quarantine_factory = quarantine_factory
         self._receipt_limit = max_process_receipt_bytes
         self._intent = {'schema': 'caplab.task-capture-intent/v2', 'command': list(command),
             'cwd': str(task_root), 'environment': environment, 'limits': asdict(limits),
@@ -63,9 +69,10 @@ class SupervisedTaskCapture:
         if self._state != 'new':
             raise TaskCaptureError('supervised-capture-cannot-be-reentered')
         self._state = 'entering'
+        _check_task_intent(self._intent, self.output_dir, self._quarantine_factory)
         self.output_dir.mkdir(mode=0o700)
         self.output_dir.chmod(0o700)
-        self._intent_hash = seal_capture_json(self.output_dir, 'intent.json', self._intent)
+        self._intent_hash = _seal_task_receipt(self.output_dir, 'intent.json', self._intent, self._quarantine_factory)
         self._state = 'awaiting-before'
         return self
 
@@ -82,7 +89,7 @@ class SupervisedTaskCapture:
         output = self.output_dir / phase
         output.mkdir(mode=0o700)
         started = datetime.now(UTC).isoformat()
-        inventory = _Inventory(output, bytes_left, entries_left)
+        inventory = _Inventory(output, bytes_left, entries_left, self._quarantine_factory)
         inventory.visit(self._fd, '.', '.')
         root = inventory.entries[0]['source_stat']
         if (root['dev'], root['ino']) != (self._identity['device'], self._identity['inode']):
@@ -93,7 +100,7 @@ class SupervisedTaskCapture:
             'started_at': started, 'finished_at': datetime.now(UTC).isoformat(),
             'retained_bytes': inventory.retained_bytes,
             'entries': sorted(inventory.entries, key=lambda e: e['path'])}
-        return receipt, seal_capture_json(output, 'inventory.json', receipt)
+        return receipt, _seal_task_receipt(output, 'inventory.json', receipt, self._quarantine_factory)
 
     def capture_before(self, descriptor: int, *, expected_device: int, expected_inode: int) -> str:
         """Seal the blocked task's before tree; return its byte digest for the supervisor."""
@@ -141,6 +148,6 @@ class SupervisedTaskCapture:
             'capture_complete': process['streams_complete'],
             'interpretation': 'observed task changes through a retained descriptor; caller owns workload blocking, '
                 'quiescence and handoff provenance; no native execution binding or eligibility'}
-        seal_capture_json(self.output_dir, 'attempt.json', receipt)
+        _seal_task_receipt(self.output_dir, 'attempt.json', receipt, self._quarantine_factory)
         self._state = 'finished'
         return receipt

@@ -13,17 +13,9 @@ import subprocess
 import time
 from contextlib import ExitStack
 from datetime import UTC, datetime
-from typing import Callable, Mapping, Protocol, Sequence
+from typing import Callable, Mapping, Sequence
 
-
-class StreamQuarantine(Protocol):
-    """Trusted, bounded, per-stream policy supplied by the credential owner."""
-
-    quarantined: bool
-
-    def feed(self, payload: bytes) -> bytes: ...
-    def finish(self) -> bytes: ...
-    def abandon(self) -> None: ...
+from caplab.capture_quarantine import StreamQuarantine, check_capture_document
 
 
 class ProcessCaptureQuarantineError(RuntimeError):
@@ -90,6 +82,7 @@ def capture_process(
     failures abandon buffered overlap and leave no completion receipt; success
     requires exact raw bytes. Gate memory, execution time and secret policy
     remain the caller's responsibility.
+    Fresh metadata gates also check the process receipt before publication.
     """
     if type(max_stream_bytes) is not int or max_stream_bytes <= 0:
         raise ValueError("max_stream_bytes must be a positive integer")
@@ -241,5 +234,6 @@ def capture_process(
                         | {"sha256": info["digest"].hexdigest(), "path": "native." + name}
                         for name, info in streams.items()},
         }
+        check_capture_document(quarantine_factory, receipt)
         seal_capture_json(output_dir, "capture.json", receipt)
     return receipt
