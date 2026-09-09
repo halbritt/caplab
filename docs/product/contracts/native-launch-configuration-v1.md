@@ -48,7 +48,8 @@ and collection schemas remain unchanged. Every result keeps authorization,
 complete Binding and study eligibility false.
 
 `inspect_native_launch_trace(policy_path, invocation, launch, trace_path, *,
-evidence)` checks the anchored configuration against one exact exec.
+evidence, require_termination=False)` checks the anchored configuration against
+one exact exec, optionally requiring that entrypoint PID's termination.
 `NativeLaunchTraceEvidence` carries `expected_invocation_sha256`,
 `expected_launch_sha256`, `expected_trace_sha256`, `expected_pid` and
 `max_trace_bytes`. The caller independently obtains those anchors and the
@@ -72,13 +73,45 @@ completeness remains null, and nested tracer-provenance limits remain visible.
 Program failure after a successful exec does not invalidate argv/environment
 agreement and cannot be relabeled task success.
 
+`require_termination` must be an actual boolean. Its default false preserves
+the v1 report and accepted exec-only behavior. When true, the same configuration
+validation precedes [exec termination inspection](exec-termination-trace-v1.md).
+The report schema becomes `caplab.native-launch-exec-link/v2` and adds
+`entrypoint_termination`, containing that complete inspector report. The
+top-level `exec_trace` remains the nested exec report for compatibility with
+consumers of exact invocation evidence. The stronger inspection performs two
+sequential same-hash reads, each bounded by max_trace_bytes; it adds no third
+exec-only read. Missing or contradictory termination cannot fall back to v1.
+Nonzero exit and signal termination remain reportable observations, not errors.
+
+The selected PID is the authenticated entrypoint, which can exec further images
+or spawn a native child. Its termination must not be relabeled as a child's
+outcome or inferred from the supervisor's return code. Native-binary parentage,
+task success, transport status and final-message linkage require separate
+evidence. The v2 report preserves all v1 limits and false/null eligibility fields.
+
 Invalid configuration or evidence raises `ValueError` or its existing capture/
 runtime subclasses; filesystem errors propagate. No retry, mutation, fallback
 or alternate-source search occurs. The trace allowance covers the trace bytes;
 it does not bound the already supplied documents, trusted policy or wall time.
 
-New `--trace-exec` startup selections seal the canonical launch configuration,
-check selection custody and exact configuration before execution, and use this
-checker afterward. Prior selections without a launch configuration keep the
-existing direct exec check, without acquiring a new configuration claim. See
-the [implementation record](../../records/implementation-2026-09-09-native-launch-configuration.md).
+New `--trace-exec` startup selections seal the canonical launch configuration
+and `entrypoint_termination_required: true`. The supervisor requires that exact
+value and configuration before execution, then uses v2 inspection afterward.
+The startup execution inspector verifies the selection-to-intent hash before
+consulting the requirement, including when the report has no trace anchor.
+A required termination without a trace anchor or launch configuration fails;
+malformed requirement values fail rather than selecting a weaker check.
+
+Older selections with no requirement retain v1 inspection, and those without
+a launch configuration keep direct exec inspection. Explicit false also selects
+the older behavior, but the new traced producer never emits it. Valid untraced
+selections still return no execution evidence. Missing/corrupt selections or
+intent now fail for untraced inspection as well; omission cannot bypass a sealed
+requirement. The startup script preserves its RuntimeError guards, while launch
+and trace validation errors propagate unchanged. This is a prospective producer
+change; it does not rewrite older selections, rerun agents or claim complete
+capture. See the
+[termination adoption record](../../records/implementation-2026-09-09-launch-termination-adoption.md)
+and the original
+[implementation record](../../records/implementation-2026-09-09-native-launch-configuration.md).

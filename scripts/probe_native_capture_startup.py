@@ -180,13 +180,29 @@ def inspect_custody(root, report):
             bytes_left -= size; entries_left -= count
     require(report['retained_bytes'] == 40 * MIB - bytes_left and
             report['retained_entries'] == 2000 - entries_left, 'retained totals differ')
+    execution = inspect_execution(root, report, native)
+    return {'task': task, 'native': native, 'accounting': accounting, **execution,
+            'native_launch_attempted_by_supervisor': True, 'model_execution_verified': False,
+            'native_capture_complete': None, 'study_eligible': False}
+
+
+def inspect_execution(root, report, native):
+    name = report['harness']
+    anchors, handoff = report['anchors'], report['handoff']
+    network = handoff['peer_checks']
     execution = {}
+    selections = json.loads((root / 'selections.json').read_bytes())
+    selected, = [item for item in selections if item['harness'] == name]
+    plan = _validated_invocation(POLICY, selected['plan'], native['invocation_sha256'])
+    require(digest(root / 'selections.json') == json.loads((root / 'intent.json').read_bytes())['selections_sha256'],
+            'traced selections differ from sealed intent')
+    termination_required = selected.get('entrypoint_termination_required', False)
+    require(type(termination_required) is bool, 'invalid termination requirement')
+    require(not termination_required or 'launch_configuration' in selected,
+            'required termination needs a launch configuration')
+    require(not termination_required or 'exec_trace_sha256' in anchors,
+            'required termination needs an exec trace')
     if 'exec_trace_sha256' in anchors:
-        selections = json.loads((root / 'selections.json').read_bytes())
-        selected, = [item for item in selections if item['harness'] == name]
-        plan = _validated_invocation(POLICY, selected['plan'], native['invocation_sha256'])
-        require(digest(root / 'selections.json') == json.loads((root / 'intent.json').read_bytes())['selections_sha256'],
-                'traced selections differ from sealed intent')
         require(network['host_trace_path_exposed'] is False and all(
             item['supervisor'] != item['peer'] for item in network['tracer_namespaces'].values()),
             'recorded tracer custody isolation differs')
@@ -194,7 +210,8 @@ def inspect_custody(root, report):
             launch = selected['launch_configuration']
             execution['launch_configuration'] = inspect_native_launch_trace(POLICY, plan, launch,
                 root / (name + '-exec.trace'), evidence=NativeLaunchTraceEvidence(native['invocation_sha256'],
-                    launch['launch_configuration_sha256'], anchors['exec_trace_sha256'], handoff['peer_pid'], MIB))
+                    launch['launch_configuration_sha256'], anchors['exec_trace_sha256'], handoff['peer_pid'], MIB),
+                require_termination=termination_required)
             execution['exec_trace'] = execution['launch_configuration']['exec_trace']
         else:
             execution['exec_trace'] = inspect_exec_trace(root / (name + '-exec.trace'),
@@ -204,9 +221,7 @@ def inspect_custody(root, report):
         if 'exec_tracer' in network:
             execution['exec_tracer'] = verify_exec_tracer(network['exec_tracer'], root / (name + '-exec.trace'),
                                                         expected_pid=handoff['peer_pid'])
-    return {'task': task, 'native': native, 'accounting': accounting, **execution,
-            'native_launch_attempted_by_supervisor': True, 'model_execution_verified': False,
-            'native_capture_complete': None, 'study_eligible': False}
+    return execution
 
 
 def inside(root, unit, *, trace_claude=False, trace_exec=False):
@@ -230,6 +245,8 @@ def inside(root, unit, *, trace_claude=False, trace_exec=False):
     for selected in selections:
         name = selected['harness']; source = SOURCES[name]; plan = selected['plan']
         if trace_exec:
+            require(selected.get('entrypoint_termination_required') is True,
+                    'new traced startup requires entrypoint termination')
             expected_launch = build_native_launch_configuration(POLICY, plan,
                 expected_invocation_sha256=plan['invocation_sha256'], context=NativeLaunchContext('canonical-native/v1'))
             require(json.dumps(selected['launch_configuration'], sort_keys=True, allow_nan=False) ==
@@ -331,7 +348,8 @@ def run(root, *, trace_claude=False, trace_exec=False):
         prepare_native_runtime(POLICY, plan, expected_invocation_sha256=plan['invocation_sha256'], task_root=task, output_dir=prepared)
         selections.append({'harness': name, 'harness_manifest': manifest, 'plan': plan,
                            'preparation_sha256': digest(prepared / 'preparation.json'),
-                           **({'launch_configuration': build_native_launch_configuration(POLICY, plan,
+                           **({'entrypoint_termination_required': True,
+                               'launch_configuration': build_native_launch_configuration(POLICY, plan,
                                expected_invocation_sha256=plan['invocation_sha256'],
                                context=NativeLaunchContext('canonical-native/v1'))} if trace_exec else {}),
                            **({'strace_sha256': digest(Path('/usr/bin/strace'))} if trace_claude or trace_exec else {})})

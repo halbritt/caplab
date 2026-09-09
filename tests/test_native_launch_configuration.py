@@ -98,6 +98,62 @@ class NativeLaunchConfigurationTests(unittest.TestCase):
                 self.assertTrue(report['canonical_invocation_agrees'])
                 self.assertEqual((plan,launch),before);self.assertEqual(trace.read_bytes(),raw)
 
+    def test_required_termination_reports_entrypoint_exit_separately_from_wrapper(self):
+        plan=self.plan();launch=self.build(plan);trace,evidence=self.trace_fixture(plan,launch)
+        raw=trace.read_bytes()+b'73 +++ exited with 0 +++\n72 +++ exited with 1 +++\n'
+        trace.write_bytes(raw)
+        evidence=replace(evidence,expected_trace_sha256=hashlib.sha256(raw).hexdigest(),max_trace_bytes=len(raw))
+        legacy=inspect_native_launch_trace(POLICY,plan,launch,trace,evidence=evidence)
+        report=inspect_native_launch_trace(POLICY,plan,launch,trace,evidence=evidence,require_termination=True)
+        self.assertEqual(report['schema'],'caplab.native-launch-exec-link/v2')
+        self.assertEqual(report['exec_trace'],legacy['exec_trace'])
+        self.assertEqual(report['entrypoint_termination']['termination']['exit_code'],0)
+        self.assertFalse(report['entrypoint_termination']['task_success_verified'])
+        self.assertFalse(report['binding_complete']);self.assertFalse(report['study_eligible'])
+        self.assertIsNone(report['native_capture_complete'])
+        self.assertNotIn('entrypoint_termination',legacy)
+
+    def test_malformed_requirement_cannot_select_or_skip_termination_checks(self):
+        plan=self.plan();launch=self.build(plan);trace,evidence=self.trace_fixture(plan,launch)
+        for value in (None,0,1,'false','true',[],{}):
+            with self.subTest(value=value),self.assertRaisesRegex(ValueError,'termination requirement'):
+                inspect_native_launch_trace(POLICY,plan,launch,trace,evidence=evidence,require_termination=value)
+
+    def test_required_termination_keeps_failure_outcomes_and_refuses_missing_evidence(self):
+        for harness,profile,port in (('codex-terra-max','canonical-native/v1',None),
+                                    ('claude-fable-5-max','canonical-native/v1',None),
+                                    ('codex-terra-max','codex-scripted-local/v1',43129)):
+            plan=self.plan(harness);launch=self.build(plan,profile,port)
+            trace,evidence=self.trace_fixture(plan,launch);execution=trace.read_bytes()
+            for terminal,kind,code,signal in ((b'73 +++ exited with 137 +++\n','exited',137,None),
+                                              (b'73 +++ killed by SIGKILL +++\n','signaled',None,'SIGKILL')):
+                with self.subTest(harness=harness,profile=profile,terminal=terminal):
+                    raw=execution+terminal;trace.write_bytes(raw)
+                    current=replace(evidence,expected_trace_sha256=hashlib.sha256(raw).hexdigest(),max_trace_bytes=len(raw))
+                    report=inspect_native_launch_trace(POLICY,plan,launch,trace,evidence=current,require_termination=True)
+                    outcome=report['entrypoint_termination']['termination']
+                    self.assertEqual((outcome['kind'],outcome['exit_code'],outcome['signal']),(kind,code,signal))
+                    self.assertFalse(report['study_eligible'])
+            for terminal in (b'',b'74 +++ exited with 0 +++\n',b'73 +++ exited with 0 +++\n'*2):
+                raw=execution+terminal;trace.write_bytes(raw)
+                current=replace(evidence,expected_trace_sha256=hashlib.sha256(raw).hexdigest(),max_trace_bytes=len(raw))
+                with self.subTest(terminal=terminal),self.assertRaises(ValueError):
+                    inspect_native_launch_trace(POLICY,plan,launch,trace,evidence=current,require_termination=True)
+
+    def test_termination_mode_does_not_bypass_launch_profile_or_trace_anchors(self):
+        plan=self.plan();launch=self.build(plan);trace,evidence=self.trace_fixture(plan,launch)
+        raw=trace.read_bytes()+b'73 +++ exited with 0 +++\n';trace.write_bytes(raw)
+        evidence=replace(evidence,expected_trace_sha256=hashlib.sha256(raw).hexdigest(),max_trace_bytes=len(raw))
+        for changes in ({'expected_invocation_sha256':'0'*64},{'expected_launch_sha256':'0'*64},
+                        {'expected_trace_sha256':'0'*64},{'expected_pid':74},{'max_trace_bytes':1}):
+            with self.subTest(changes=changes),self.assertRaises(ValueError):
+                inspect_native_launch_trace(POLICY,plan,launch,trace,evidence=replace(evidence,**changes),require_termination=True)
+        altered=deepcopy(launch);altered['environment']['HOME']='/other'
+        altered['launch_configuration_sha256']=_digest({k:v for k,v in altered.items() if k!='launch_configuration_sha256'})
+        with self.assertRaisesRegex(ValueError,'declared profile'):
+            inspect_native_launch_trace(POLICY,plan,altered,trace,
+                evidence=replace(evidence,expected_launch_sha256=altered['launch_configuration_sha256']),require_termination=True)
+
     def test_wrong_anchors_pid_or_trace_bounds_refuse(self):
         plan=self.plan();launch=self.build(plan);trace,evidence=self.trace_fixture(plan,launch)
         for changes in ({'expected_invocation_sha256':'0'*64},{'expected_launch_sha256':'0'*64},

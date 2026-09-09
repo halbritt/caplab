@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from pathlib import Path
 
-from caplab.exec_trace import inspect_exec_trace
+from caplab.exec_trace import inspect_exec_trace, inspect_exec_termination
 from caplab.native_capture_invocation import _digest
 from caplab.native_runtime import _validated_invocation
 from caplab.task_capture_verify import _digest as _require_digest, _require
@@ -60,15 +60,17 @@ def build_native_launch_configuration(
 
 def inspect_native_launch_trace(
     policy_path: Path, invocation: dict, launch: dict, trace_path: Path, *,
-    evidence: NativeLaunchTraceEvidence,
+    evidence: NativeLaunchTraceEvidence, require_termination: bool = False,
 ) -> dict:
     """Rebuild an anchored launch and compare its exact command with exec evidence.
 
     The caller owns independent anchors, authenticated PID, tracer provenance,
     cwd/source linkage and bounded loading of the borrowed configuration objects.
     A successful exec is neither native task success nor a complete Binding.
+    Required termination names this entrypoint PID, not a child binary's outcome.
     """
     _require(isinstance(evidence, NativeLaunchTraceEvidence), 'invalid native launch trace evidence')
+    _require(type(require_termination) is bool, 'invalid termination requirement')
     _require_digest(evidence.expected_launch_sha256)
     _require(isinstance(launch, dict), 'invalid native launch configuration')
     unsigned = {key: value for key, value in launch.items() if key != 'launch_configuration_sha256'}
@@ -78,14 +80,17 @@ def inspect_native_launch_trace(
         expected_invocation_sha256=evidence.expected_invocation_sha256,
         context=NativeLaunchContext(launch.get('profile'), launch.get('fixture_port')))
     _require(_digest(rebuilt) == _digest(launch), 'native launch differs from its declared profile')
-    check = inspect_exec_trace(trace_path, expected_trace_sha256=evidence.expected_trace_sha256,
+    inspector = inspect_exec_termination if require_termination else inspect_exec_trace
+    check = inspector(trace_path, expected_trace_sha256=evidence.expected_trace_sha256,
         expected_pid=evidence.expected_pid, expected_executable='/toolbin/' + rebuilt['command'][0],
         expected_command=rebuilt['command'], expected_environment=rebuilt['environment'],
         max_trace_bytes=evidence.max_trace_bytes)
-    return {'schema': 'caplab.native-launch-exec-link/v1',
+    return {'schema': 'caplab.native-launch-exec-link/v2' if require_termination else 'caplab.native-launch-exec-link/v1',
             'invocation_sha256': evidence.expected_invocation_sha256,
             'launch_configuration_sha256': evidence.expected_launch_sha256,
             'profile': rebuilt['profile'], 'canonical_invocation_agrees': rebuilt['canonical_invocation_agrees'],
-            'entrypoint_argv_environment_agree': True, 'exec_trace': check,
+            'entrypoint_argv_environment_agree': True,
+            'exec_trace': check['exec_trace'] if require_termination else check,
+            **({'entrypoint_termination': check} if require_termination else {}),
             'cwd_source_linked': False, 'binding_complete': False,
             'native_capture_complete': None, 'study_eligible': False}
