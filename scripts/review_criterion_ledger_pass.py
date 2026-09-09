@@ -7,15 +7,10 @@ Population: anchored-era production review runs (pass_id `review`, a
 review-ledger artifact (object store) and from the driver's review
 gate_result; the two are reported side by side.
 
-Strata are event predicates, reproducible here, never judgment:
+Strata are inspection candidates, never review-correctness judgments:
 
-  gold-defect   review cleared the artifact version (verdict accept or
-                accept_with_findings, or review gate pass) AND a later
-                Principal acceptance gate_result on the same artifact
-                version has outcome fail.
-  gold-clear    review refused the version (needs_revision/reject, or gate
-                fail) AND a later Principal acceptance gate_result on the
-                same version has outcome pass.
+  gold          unavailable: no review-specific adjudication reader exists.
+                An artifact acceptance gate cannot supply a gold label.
   silver-defect review cleared a change set AND a later integration_conflict
                 names that change set as the losing pin with a conflict that
                 is not "tree moved" (tree-moved is staleness of the base, a
@@ -28,7 +23,8 @@ Strata are event predicates, reproducible here, never judgment:
   excluded      refused, then the same identity has an artifact admission
                 after review closure and the reviewed version.
 
-Usage: review_criterion_ledger_pass.py --ledger ledger.jsonl [--out advisory/criterion]
+Usage: review_criterion_ledger_pass.py --ledger ledger.jsonl --out fresh-directory
+Output must be fresh; existing exports are never overwritten.
 """
 from __future__ import annotations
 
@@ -71,6 +67,7 @@ NUMERIC_REFERENCE_PATHS = {
     "artifact_admitted": ("produced_by_run",),
     "cancellation_record": ("request_ref",),
     "head_movement": ("to_version",),
+    "gate_result": ("applicability.materialization.version_seq",),
 }
 
 
@@ -99,6 +96,14 @@ def artifact_class(identity: str) -> str:
     if tail == "change-set":
         return "change-set"
     return tail or "(unknown)"
+
+
+def _artifact_version_key(pin: dict) -> tuple | None:
+    identity, version, content_hash = (pin.get(key) for key in ("identity", "version_seq", "content_hash"))
+    if (not isinstance(identity, str) or not identity or type(version) is not int or version < 0
+            or not isinstance(content_hash, str) or not content_hash):
+        return None
+    return identity, version, content_hash
 
 
 def review_body_observation(event: dict) -> tuple[dict, dict | None]:
@@ -287,8 +292,9 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
         if (p.get("authority") or {}).get("kind") != "principal":
             continue
         mat = (p.get("applicability") or {}).get("materialization") or {}
-        acceptance[mat.get("content_hash")].append({"seq": e["seq"], "at": e["written_at"], "outcome": p.get("outcome"),
-                                                    "detail": (p.get("detail") or "")[:600], "identity": mat.get("identity")})
+        acceptance[_artifact_version_key(mat)].append({"seq": e["seq"], "at": e["written_at"], "outcome": p.get("outcome"),
+            "detail": (p.get("detail") or "")[:600], "identity": mat.get("identity"),
+            "version_seq": mat.get("version_seq"), "content_hash": mat.get("content_hash")})
     # --- integration conflicts and applications, by change-set hash
     conflicts = collections.defaultdict(list)
     for e in by["integration_conflict"]:
@@ -332,8 +338,8 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
         return [e for e in index.get(key, []) if e["seq"] > closed_seq]
 
     for seq, r in sorted(runs.items()):
-        # The canary follows ledger order for every review, including unknown
-        # verdicts. Non-revision criterion strata retain time-based predicates.
+        # Acceptance and revision observations follow closure in ledger order.
+        # Other legacy candidate predicates below retain their original scope.
         r["post_close_events"] = {
             "applied": post_close(applied, r["content_hash"], r["closed_seq"]),
             "conflicts": [e for e in post_close(conflicts, r["content_hash"], r["closed_seq"])
@@ -344,13 +350,14 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
         r["post_close_version_observations"] = [
             e for e in post_close(versions, r["identity"], r["closed_seq"])
             if r["version_seq"] is not None and e["seq"] > r["version_seq"]]
+        r["post_close_acceptance_observations"] = post_close(acceptance, _artifact_version_key(r), r["closed_seq"])
         later_versions = [e["seq"] for e in r["post_close_version_observations"]]
         r["post_close_versions"] = later_versions
         c = cleared(r)
         r["cleared"] = c
         if c is None:
             strata["no-verdict"].append(r); continue
-        later_acc = [a for a in acceptance.get(r["content_hash"], []) if a["at"] > r["opened"]]
+        later_acc = r["post_close_acceptance_observations"]
         acc_fail = [a for a in later_acc if a["outcome"] == "fail"]
         acc_pass = [a for a in later_acc if a["outcome"] == "pass"]
         later_conf = [x for x in conflicts.get(r["content_hash"], []) if x["at"] > r["opened"]]
@@ -361,11 +368,7 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
         r["later"] = {"acceptance_fail": acc_fail, "acceptance_pass": acc_pass, "conflicts": real_conf,
                       "tree_moved": len(moved), "applied": later_app, "cancellations_with_defect_words": canc,
                       "later_versions": later_versions[:5]}
-        if c and acc_fail:
-            strata["gold-defect"].append(r)
-        elif (not c) and acc_pass:
-            strata["gold-clear"].append(r)
-        elif c and (real_conf or canc):
+        if c and (real_conf or canc):
             strata["silver-defect"].append(r)
         elif c and later_app and not acc_fail and not later_conf and not canc:
             strata["bronze-clear"].append(r)
@@ -380,7 +383,12 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
 
     def table(rows, key):
         return dict(collections.Counter(key(r) for r in rows).most_common())
-    report = {"revision_evidence": "artifact-admission-after-review-closure/1",
+    report = {"record": "caplab-review-criterion-candidates/2",
+              "snapshot": snapshot,
+              "gold_outcomes": "unavailable: no review-specific adjudication reader; artifact acceptance is not review correctness",
+              "interpretation": "Inspection candidates only; no ranking, scoring or adjudicated correctness labels.",
+              "acceptance_observation_linkage": "complete-artifact-pin-after-review-closure/1",
+              "revision_evidence": "artifact-admission-after-review-closure/1",
               "population": len(runs), "strata": {}, "contracts": {}, "wall_clock_median_s": {}, "prompt_assets_retained": sum(1 for r in runs.values() if r["prompt_assets"]),
               "dispatch_dirs_retained": 0}
     for s, rows in strata.items():
@@ -408,16 +416,25 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--ledger", required=True)
-    ap.add_argument("--out", default=os.path.join(ROOT, "advisory", "criterion"))
+    ap.add_argument("--out", default=os.path.join(ROOT, "advisory", "criterion"), help="Fresh output directory; existing paths refuse")
     args = ap.parse_args()
-    _, report, _, strata = read_reviews(args.ledger)
-    os.makedirs(args.out, exist_ok=True)
+    snapshot, report, runs, strata = read_reviews(args.ledger)
+    os.makedirs(args.out, exist_ok=False)
     with open(os.path.join(args.out, "review-criterion-summary.json"), "w", encoding="utf-8") as f:
         json.dump(report, f, indent=1, sort_keys=True)
     with open(os.path.join(args.out, "review-criterion-cases.jsonl"), "w", encoding="utf-8") as f:
-        for s in ("gold-defect", "gold-clear", "silver-defect", "bronze-clear"):
+        for s in ("silver-defect", "bronze-clear"):
             for r in strata.get(s, []):
                 f.write(json.dumps({"stratum": s, **{k: v for k, v in r.items() if k not in {"prompt_assets", "closed", "closed_seq", "post_close_versions", "post_close_version_observations", "post_close_events", "review_body_observations", "review_gate_observations", "lifecycle_observations"}}}, ensure_ascii=False, sort_keys=True) + "\n")
+    with open(os.path.join(args.out, "review-acceptance-observations.jsonl"), "w", encoding="utf-8") as f:
+        for r in runs.values():
+            for observation in r["post_close_acceptance_observations"]:
+                f.write(json.dumps({"record": "caplab-review-acceptance-observation/1",
+                    "ledger_sha256": snapshot["sha256"], "review_run": r["run"],
+                    "subject": {key: r[key] for key in ("identity", "version_seq", "content_hash")},
+                    "acceptance": observation,
+                    "interpretation": "Artifact acceptance observation, not an adjudication of this review."},
+                    ensure_ascii=False, sort_keys=True) + "\n")
     print(json.dumps({k: v for k, v in report.items() if k != "wall_clock_median_s"}, indent=1)[:6000])
     print("wall clock", json.dumps(report["wall_clock_median_s"]))
     return 0
