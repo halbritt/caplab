@@ -75,3 +75,19 @@ class ExecTraceTests(unittest.TestCase):
                 expected_pid=73, expected_executable='/toolbin/native', expected_command=self.command,
                 expected_environment=self.environment, max_trace_bytes=100000)
         self.assertEqual(set(os.listdir('/proc/self/fd')), before)
+
+    def test_process_creation_records_do_not_obscure_exact_exec_evidence(self):
+        report = self.inspect('73 ' + self.call + '\n73 vfork( <unfinished ...>\n'
+            '91 ' + self.call + "\n73 <... vfork resumed>) = 3 /* 91 in strace's PID NS */\n")
+        self.assertEqual(report['observed_pid_execve_calls'], 1)
+        self.assertEqual(report['matching_execve'], {'entry_line': 1, 'completion_line': 1})
+        for tail in ('73 vfork( <unfinished ...>\n', '73 <... vfork resumed>) = 3\n',
+                     '73 clone(unknown) = abbreviated\n', '73 fork(unexpected) = 3\n',
+                     '73 clone(unknown) = 3\n'):
+            with self.subTest(tail=tail), self.assertRaises(CaptureVerificationError):
+                self.inspect('73 ' + self.call + '\n' + tail)
+
+    def test_aligned_resumed_exec_result_keeps_exact_payload_comparison(self):
+        text = '73 ' + self.call[:-5] + ' <unfinished ...>\n73 <... execve resumed>)           = 0\n'
+        self.assertEqual(self.inspect(text)['matching_execve'], {'entry_line': 1, 'completion_line': 2})
+        with self.assertRaises(CaptureVerificationError): self.inspect(text, expected_command=['wrong'])

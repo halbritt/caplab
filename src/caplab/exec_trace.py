@@ -4,12 +4,13 @@ from pathlib import Path
 import re
 
 from caplab.task_capture_verify import _digest, _read_file, _require
+from caplab.process_trace import _creation_records
 
 
 _STRING = r'"(?:\\x[0-9a-f]{2})*"'
 _ARRAY = r'\[(?:' + _STRING + r'(?:, ' + _STRING + r')*)?\]'
 _EXEC = re.compile(r'execve\((' + _STRING + r'), (' + _ARRAY + r'), (' + _ARRAY +
-                   r')\) = (0|-1 [A-Z][A-Z0-9_]* \([^\r\n]*\))')
+                   r')\)[ \t]+= (0|-1 [A-Z][A-Z0-9_]* \([^\r\n]*\))')
 
 
 def _decode(value):
@@ -60,10 +61,14 @@ def inspect_exec_trace(trace_path: Path, *, expected_trace_sha256: str, expected
     except UnicodeError as error:
         raise ValueError('exec trace must use ASCII hex format') from error
     prefix = re.compile(str(expected_pid) + r'\s+(.+)')
+    _, creation_lines = _creation_records(lines, selected_pid=expected_pid)
     pending, successes, observed_calls = None, [], 0
     for number, line in enumerate(lines, 1):
         selected = prefix.fullmatch(line)
         if selected is None:
+            continue
+        if number in creation_lines:
+            _require(pending is None, 'exec trace overlaps process creation')
             continue
         body = selected[1]
         if body.startswith('<... execve resumed>'):
