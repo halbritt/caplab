@@ -174,7 +174,7 @@ def cleanup_group(group):
     group.rmdir()
 
 
-def mount_coverage(raw):
+def mount_coverage(raw, *, usable_devices=False):
     """Check the fixed fixture topology, including unexpected nested mounts."""
     mounts = []
     for line in raw.splitlines():
@@ -186,16 +186,40 @@ def mount_coverage(raw):
     by_path = {m['path']: m for m in mounts}
     require(len(by_path) == len(mounts), 'ambiguous stacked fixture mounts')
     writable = {m['path'] for m in mounts if 'rw' in m['options']}
-    require(writable == set(MOUNTS), 'unexpected writable fixture mounts')
-    require(all(by_path[path]['filesystem'] == 'tmpfs' for path in writable),
+    devices = {'/dev/null', '/dev/urandom'} if usable_devices else set()
+    require(writable == set(MOUNTS) | devices, 'unexpected writable fixture mounts')
+    require(all(by_path[path]['filesystem'] == 'tmpfs' for path in MOUNTS),
             'writable fixture mount is not tmpfs')
+    require(all(by_path[path]['filesystem'] == 'devtmpfs' and 'nodev' not in by_path[path]['options']
+                for path in devices), 'device mount does not allow device access')
+    readonly = ('/', '/usr', '/proc') + (() if usable_devices else ('/dev/null', '/dev/urandom'))
     require(all(path in by_path and 'ro' in by_path[path]['options']
-                for path in ('/', '/usr', '/proc', '/dev/null', '/dev/urandom')),
+                for path in readonly),
             'required read-only fixture mount is absent or writable')
-    return {'raw': raw, 'mounts': mounts, 'writable_tmpfs': sorted(writable)}
+    return {'raw': raw, 'mounts': mounts, 'writable_tmpfs': sorted(MOUNTS),
+            **({'writable_devices': sorted(devices)} if usable_devices else {})}
 
 
-def receive_mount(listener, child, recorder):
+def inspect_devices(peer_pid):
+    devices = []
+    for name in ('null', 'urandom'):
+        path = Path(f'/proc/{peer_pid}/root/dev/{name}')
+        info, host = path.stat(), Path('/dev', name).stat()
+        require(stat.S_ISCHR(info.st_mode) and info.st_rdev == host.st_rdev, 'peer device identity differs')
+        fd = os.open(path, os.O_RDWR if name == 'null' else os.O_RDONLY)
+        try:
+            read_count = len(os.read(fd, 1))
+            require(read_count == (0 if name == 'null' else 1), 'device read differs')
+            if name == 'null':
+                require(os.write(fd, b'probe') == 5, 'null device did not discard write')
+        finally:
+            os.close(fd)
+        devices.append({'path': '/dev/' + name, 'rdev': info.st_rdev, 'read_bytes': read_count,
+                        'null_write_verified': name == 'null'})
+    return devices
+
+
+def receive_mount(listener, child, recorder, *, inspect_peer=None, usable_devices=False):
     descriptors = []
     try:
         channel, _ = listener.accept()
@@ -214,7 +238,7 @@ def receive_mount(listener, child, recorder):
             require(peer_uid == os.getuid() and peer_gid == os.getgid(), 'unexpected mount peer owner')
             membership = Path(f'/proc/{peer_pid}/cgroup').read_text().strip()
             require(membership == '0::/' + str(child.relative_to('/sys/fs/cgroup')), 'mount peer is outside fixture group')
-            coverage = mount_coverage(Path(f'/proc/{peer_pid}/mountinfo').read_text())
+            coverage = mount_coverage(Path(f'/proc/{peer_pid}/mountinfo').read_text(), usable_devices=usable_devices)
             identities = []
             for path, descriptor in zip(MOUNTS, descriptors, strict=True):
                 info = os.fstat(descriptor); capacity = os.fstatvfs(descriptor)
@@ -227,6 +251,8 @@ def receive_mount(listener, child, recorder):
                                    'allocated_capacity': capacity.f_blocks * capacity.f_frsize})
             require(len({(i['source_dev'], i['source_ino']) for i in identities}) == len(MOUNTS),
                     'mount handoff aliases a directory')
+            peer_checks = inspect_peer(peer_pid) if inspect_peer is not None else None
+            device_access = inspect_devices(peer_pid) if usable_devices else None
             index = MOUNTS.index('/work')
             task = identities[index]
             before_hash = recorder.capture_before(descriptors[index],
@@ -234,6 +260,10 @@ def receive_mount(listener, child, recorder):
             identity = {'peer_pid': peer_pid, 'peer_uid': peer_uid, 'peer_gid': peer_gid,
                         'mounts': identities, 'mount_coverage': coverage,
                         'before_inventory_sha256': before_hash}
+            if inspect_peer is not None:
+                identity['peer_checks'] = peer_checks
+            if usable_devices:
+                identity['device_access'] = device_access
             seal_capture_json(recorder.output_dir.parent, child.name.removeprefix('fixture-') + '-handoff.json', identity)
             listener.close()
             channel.sendall(b'1')
@@ -383,7 +413,7 @@ def inside(root, unit):
                 '--ro-bind', '/usr', '/usr', '--symlink', 'usr/bin', '/bin',
                 '--symlink', 'usr/lib', '/lib', '--symlink', 'usr/lib64', '/lib64',
                 '--proc', '/proc', '--dir', '/dev',
-                '--ro-bind', '/dev/null', '/dev/null', '--ro-bind', '/dev/urandom', '/dev/urandom',
+                '--dev-bind', '/dev/null', '/dev/null', '--dev-bind', '/dev/urandom', '/dev/urandom',
                 '--size', str(64 * MIB), '--tmpfs', '/scratch',
                 '--size', str(64 * MIB), '--tmpfs', '/tmp',
                 '--size', str(64 * MIB), '--tmpfs', '/dev/shm',
@@ -406,7 +436,7 @@ def inside(root, unit):
                     with ThreadPoolExecutor(max_workers=1) as pool:
                         pending = pool.submit(capture_process, command, cwd=task, environment={'PATH': '/usr/bin:/bin'},
                             output_dir=root / mode / 'process', max_stream_bytes=200000, timeout_seconds=10)
-                        descriptors, identity = receive_mount(listener, child, recorder)
+                        descriptors, identity = receive_mount(listener, child, recorder, usable_devices=True)
                         process = pending.result(timeout=16)
                 after = snapshot(child)
                 seal_capture_json(root, mode + '-resource-exit.json',
@@ -444,7 +474,7 @@ def inside(root, unit):
             socket_path.unlink(missing_ok=True)
             cleanup_group(child)
     seal_capture_json(root, 'observations.json', {
-        'schema': 'caplab.cgroup-resource-probe-observations/v5', 'unit': unit,
+        'schema': 'caplab.cgroup-resource-probe-observations/v6', 'unit': unit,
         'delegated_cgroup': str(group), 'kernel': platform.release(), 'python': platform.python_version(),
         'reports': reports, 'fixture_cgroups_removed': True, 'native_execution': False,
         'capture_complete_claim': False})
@@ -468,7 +498,8 @@ def expectations(observation):
                 mode + ' writer did not produce an independently observed OOM kill')
     for report in reports.values():
         coverage = report['mount_descriptor']['mount_coverage']
-        require(mount_coverage(coverage['raw']) == coverage, 'recorded mount coverage differs')
+        require(mount_coverage(coverage['raw'], usable_devices='writable_devices' in coverage) == coverage,
+                'recorded mount coverage differs')
     require(reports['pids']['process']['return_code'] == 0 and delta('pids', 'pids_events', 'max') > 0,
             'caught fork failure did not retain independent task-limit evidence')
 
@@ -512,7 +543,7 @@ def run(root):
             'show_stderr': state.stderr.decode()})
         require(state.stdout.strip() == b'not-found', 'generated transient unit remains loaded')
     require(not Path(observation['delegated_cgroup']).exists(), 'generated cgroup remains after unit cleanup')
-    seal_capture_json(root, 'verification.json', {'schema': 'caplab.cgroup-resource-probe-verification/v5',
+    seal_capture_json(root, 'verification.json', {'schema': 'caplab.cgroup-resource-probe-verification/v6',
         'unit': unit, 'five_fixture_expectations_passed': True, 'unit_removed': True,
         'retained_files_verified_after_service_exit': True,
         'native_execution': False, 'capture_complete_claim': False})
