@@ -73,6 +73,10 @@ completeness remains null, and nested tracer-provenance limits remain visible.
 Program failure after a successful exec does not invalidate argv/environment
 agreement and cannot be relabeled task success.
 
+[Native child execution inspection](native-child-execution-v1.md) composes this
+launch with independently selected direct-child parentage, exact exec and
+termination. It additionally refuses children created before the selected launch.
+
 `require_termination` must be an actual boolean. Its default false preserves
 the v1 report and accepted exec-only behavior. When true, the same configuration
 validation precedes [exec termination inspection](exec-termination-trace-v1.md).

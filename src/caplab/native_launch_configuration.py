@@ -6,6 +6,7 @@ from pathlib import Path
 from caplab.exec_trace import inspect_exec_trace, inspect_exec_termination
 from caplab.native_capture_invocation import _digest
 from caplab.native_runtime import _validated_invocation
+from caplab.process_trace import ProcessCreationEvidence, inspect_process_creation
 from caplab.task_capture_verify import _digest as _require_digest, _require
 
 
@@ -22,6 +23,14 @@ class NativeLaunchTraceEvidence:
     expected_trace_sha256: str
     expected_pid: int
     max_trace_bytes: int
+
+
+@dataclass(frozen=True)
+class NativeChildTraceEvidence:
+    expected_pid: int
+    expected_executable: str
+    expected_command: list[str]
+    expected_environment: dict[str, str]
 
 
 def build_native_launch_configuration(
@@ -93,4 +102,27 @@ def inspect_native_launch_trace(
             'exec_trace': check['exec_trace'] if require_termination else check,
             **({'entrypoint_termination': check} if require_termination else {}),
             'cwd_source_linked': False, 'binding_complete': False,
+            'native_capture_complete': None, 'study_eligible': False}
+
+
+def inspect_native_child_trace(
+    policy_path: Path, invocation: dict, launch: dict, trace_path: Path, *,
+    evidence: NativeLaunchTraceEvidence, child: NativeChildTraceEvidence,
+) -> dict:
+    """Join one launch and direct child; callers independently select both identities."""
+    _require(isinstance(child, NativeChildTraceEvidence), 'invalid native child trace evidence')
+    parent = inspect_native_launch_trace(policy_path, invocation, launch, trace_path,
+        evidence=evidence, require_termination=True)
+    creation = inspect_process_creation(trace_path, evidence=ProcessCreationEvidence(
+        evidence.expected_trace_sha256, evidence.expected_pid, child.expected_pid, evidence.max_trace_bytes))
+    _require(creation['creation']['entry_line'] > parent['exec_trace']['matching_execve']['completion_line'],
+             'child creation precedes selected entrypoint')
+    execution = inspect_exec_termination(trace_path, expected_trace_sha256=evidence.expected_trace_sha256,
+        expected_pid=child.expected_pid, expected_executable=child.expected_executable,
+        expected_command=child.expected_command, expected_environment=child.expected_environment,
+        max_trace_bytes=evidence.max_trace_bytes)
+    return {'schema': 'caplab.native-child-execution-link/v1', 'launch': parent,
+            'creation': creation, 'child_execution': execution, 'recorded_child_execution_linked': True,
+            'executable_bytes_verified': False, 'task_success_verified': False,
+            'trace_provenance_verified': False, 'binding_complete': False,
             'native_capture_complete': None, 'study_eligible': False}
