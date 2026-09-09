@@ -8,18 +8,24 @@ import json
 from pathlib import Path
 
 from caplab.code_agreement import build_code_agreement_report, build_code_reference_report
+from caplab.code_agreement_bounds import build_iid_agreement_bounds
 from caplab.codex_events import CodexEventError, parse_native_json
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("input", type=Path, help="caplab-code-agreement-input/1 JSON")
-    parser.add_argument("--reference", type=Path, help="caplab-code-reference-input/1 JSON")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--reference", type=Path, help="caplab-code-reference-input/1 JSON")
+    mode.add_argument("--iid-confidence", type=float,
+                      help="optional simultaneous bounds assuming IID complete episode pairs; confidence in (0, 1)")
     args = parser.parse_args()
     try:
         raw = args.input.read_bytes()
         document = parse_native_json(raw.decode("utf-8"))
-        if args.reference is None:
+        if args.iid_confidence is not None:
+            report = build_iid_agreement_bounds(document, confidence=args.iid_confidence)
+        elif args.reference is None:
             report = build_code_agreement_report(document)
         else:
             reference_raw = args.reference.read_bytes()

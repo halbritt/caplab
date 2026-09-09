@@ -113,6 +113,11 @@ pairs does not establish precise or representative reliability. This version
 does not estimate uncertainty intervals. It does not establish accuracy:
 two coders that always make the same wrong judgment can agree perfectly.
 
+An explicit [`--iid-confidence` mode](code-agreement-bounds-v1.md) provides a
+separate conservative simultaneous-bounds report under stated independent-pair
+assumptions. It leaves this default point-estimate report unchanged and does
+not select a study interval method or reliability gate.
+
 For a future study, freeze the roster, accuracy evidence, per-code thresholds,
 missingness limits, sample plan and analysis before unblinding. Apply the
 [code-authoring procedure](behavior-code-authoring-v1.md) and its separate
