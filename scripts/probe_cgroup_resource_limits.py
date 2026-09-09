@@ -175,8 +175,9 @@ def cleanup_group(group):
     group.rmdir()
 
 
-def mount_coverage(raw, *, usable_devices=False):
+def mount_coverage(raw, *, usable_devices=False, nested_userns=False):
     """Check the fixed fixture topology, including unexpected nested mounts."""
+    require(type(nested_userns) is bool, 'nested_userns must be a boolean')
     mounts = []
     for line in raw.splitlines():
         fields = line.split()
@@ -188,17 +189,61 @@ def mount_coverage(raw, *, usable_devices=False):
     require(len(by_path) == len(mounts), 'ambiguous stacked fixture mounts')
     writable = {m['path'] for m in mounts if 'rw' in m['options']}
     devices = {'/dev/null', '/dev/urandom'} if usable_devices else set()
-    require(writable == set(MOUNTS) | devices, 'unexpected writable fixture mounts')
+    procfs = {'/proc'} if nested_userns else set()
+    require(writable == set(MOUNTS) | devices | procfs, 'unexpected writable fixture mounts')
     require(all(by_path[path]['filesystem'] == 'tmpfs' for path in MOUNTS),
             'writable fixture mount is not tmpfs')
     require(all(by_path[path]['filesystem'] == 'devtmpfs' and 'nodev' not in by_path[path]['options']
                 for path in devices), 'device mount does not allow device access')
-    readonly = ('/', '/usr', '/proc') + (() if usable_devices else ('/dev/null', '/dev/urandom'))
+    readonly = ('/', '/usr') + (() if nested_userns else ('/proc',)) + (() if usable_devices else ('/dev/null', '/dev/urandom'))
     require(all(path in by_path and 'ro' in by_path[path]['options']
                 for path in readonly),
             'required read-only fixture mount is absent or writable')
+    if nested_userns:
+        require(by_path['/proc']['filesystem'] == 'proc', 'nested procfs has wrong filesystem')
+        require(not any(m['path'].startswith('/proc/') for m in mounts), 'nested procfs has covered paths')
+        require({'nosuid', 'nodev', 'noexec'} <= set(by_path['/proc']['options']), 'nested procfs lacks mount protections')
     return {'raw': raw, 'mounts': mounts, 'writable_tmpfs': sorted(MOUNTS),
+            **({'writable_procfs': ['/proc']} if nested_userns else {}),
             **({'writable_devices': sorted(devices)} if usable_devices else {})}
+
+
+def verify_nested_procfs(observation):
+    """Validate recorded namespace and privilege predicates, not live safety."""
+    require(isinstance(observation, dict) and observation.get('schema') == 'caplab.nested-procfs/v1',
+            'missing nested procfs observation')
+    namespaces = observation.get('namespaces')
+    require(isinstance(namespaces, dict) and set(namespaces) == {'pid', 'mnt', 'net', 'user'},
+            'incomplete nested procfs namespaces')
+    for name, pair in namespaces.items():
+        require(isinstance(pair, dict) and set(pair) == {'supervisor', 'peer'}, 'invalid namespace pair')
+        require(all(isinstance(value, str) and re.fullmatch(name + r':\[[0-9]+\]', value)
+                    for value in pair.values()), 'invalid namespace identity')
+        require(pair['supervisor'] != pair['peer'], 'nested procfs shares supervisor namespace')
+    require(observation.get('proc_pid1_namespace') == namespaces['pid']['peer'],
+            'procfs does not show the peer PID namespace')
+    status = observation.get('status')
+    require(isinstance(status, dict) and set(status) == {'CapEff', 'CapPrm', 'CapInh', 'CapAmb', 'NoNewPrivs'},
+            'incomplete nested procfs privilege observation')
+    require(all(status[name] == '0000000000000000' for name in ('CapEff', 'CapPrm', 'CapInh', 'CapAmb'))
+            and status['NoNewPrivs'] == '1', 'nested procfs peer retains privileges')
+
+
+def inspect_nested_procfs(peer_pid):
+    """Inspect the paused peer before allowing writable per-process controls."""
+    namespaces = {name: {'supervisor': os.readlink('/proc/self/ns/' + name),
+                         'peer': os.readlink(f'/proc/{peer_pid}/ns/{name}')}
+                  for name in ('pid', 'mnt', 'net', 'user')}
+    require(all(pair['supervisor'] != pair['peer'] for pair in namespaces.values()),
+            'nested procfs shares supervisor namespace')
+    status = dict(line.split(':', 1) for line in Path(f'/proc/{peer_pid}/status').read_text().splitlines()
+                  if ':' in line)
+    observation = {'schema': 'caplab.nested-procfs/v1', 'namespaces': namespaces,
+                   'proc_pid1_namespace': os.readlink(f'/proc/{peer_pid}/root/proc/1/ns/pid'),
+                   'status': {name: status.get(name, '').strip()
+                              for name in ('CapEff', 'CapPrm', 'CapInh', 'CapAmb', 'NoNewPrivs')}}
+    verify_nested_procfs(observation)
+    return observation
 
 
 def inspect_devices(peer_pid):
@@ -220,7 +265,9 @@ def inspect_devices(peer_pid):
     return devices
 
 
-def receive_mount(listener, child, recorder, *, inspect_peer=None, usable_devices=False, quarantine_factory=None):
+def receive_mount(listener, child, recorder, *, inspect_peer=None, usable_devices=False, quarantine_factory=None,
+                  nested_userns=False):
+    require(type(nested_userns) is bool, 'nested_userns must be a boolean')
     descriptors = []
     try:
         channel, _ = listener.accept()
@@ -239,7 +286,9 @@ def receive_mount(listener, child, recorder, *, inspect_peer=None, usable_device
             require(peer_uid == os.getuid() and peer_gid == os.getgid(), 'unexpected mount peer owner')
             membership = Path(f'/proc/{peer_pid}/cgroup').read_text().strip()
             require(membership == '0::/' + str(child.relative_to('/sys/fs/cgroup')), 'mount peer is outside fixture group')
-            coverage = mount_coverage(Path(f'/proc/{peer_pid}/mountinfo').read_text(), usable_devices=usable_devices)
+            coverage = mount_coverage(Path(f'/proc/{peer_pid}/mountinfo').read_text(), usable_devices=usable_devices,
+                                      nested_userns=nested_userns)
+            procfs = inspect_nested_procfs(peer_pid) if nested_userns else None
             identities = []
             for path, descriptor in zip(MOUNTS, descriptors, strict=True):
                 info = os.fstat(descriptor); capacity = os.fstatvfs(descriptor)
@@ -265,6 +314,8 @@ def receive_mount(listener, child, recorder, *, inspect_peer=None, usable_device
                 identity['peer_checks'] = peer_checks
             if usable_devices:
                 identity['device_access'] = device_access
+            if nested_userns:
+                identity['nested_procfs'] = procfs
             name = child.name.removeprefix('fixture-') + '-handoff.json'
             for path in (recorder.output_dir.parent / name,
                          recorder.output_dir.parent / ('.' + name.removesuffix('.json') + '.pending')):

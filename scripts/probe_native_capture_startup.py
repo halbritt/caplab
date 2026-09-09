@@ -31,6 +31,7 @@ from caplab.task_capture_verify import _Reader, _identity, _inventory, _open, _r
 from probe_cgroup_resource_limits import (
     JOIN, MIB, MOUNTS, cleanup_group, digest, mount_coverage,
     populated, receive_mount, require, retain_mount, snapshot,
+    verify_nested_procfs,
 )
 
 SCRIPT = Path(__file__).resolve()
@@ -139,7 +140,11 @@ def inspect_custody(root, report):
     handoff = json.loads((root / (name + '-handoff.json')).read_bytes())
     require(handoff == report['handoff'], 'handoff observation differs')
     coverage = handoff['mount_coverage']
-    require(mount_coverage(coverage['raw'], usable_devices='writable_devices' in coverage) == coverage, 'mount coverage differs')
+    nested_userns = 'writable_procfs' in coverage
+    require(mount_coverage(coverage['raw'], usable_devices='writable_devices' in coverage,
+                          nested_userns=nested_userns) == coverage, 'mount coverage differs')
+    if nested_userns:
+        verify_nested_procfs(handoff.get('nested_procfs'))
     network = handoff['peer_checks']
     require(network['supervisor_network_namespace'] != network['peer_network_namespace']
             and network['interfaces'] == ['lo'], 'recorded network isolation differs')
