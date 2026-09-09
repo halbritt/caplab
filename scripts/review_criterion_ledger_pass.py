@@ -67,7 +67,7 @@ NUMERIC_REFERENCE_PATHS = {
     "artifact_admitted": ("produced_by_run",),
     "cancellation_record": ("request_ref",),
     "head_movement": ("to_version",),
-    "gate_result": ("applicability.materialization.version_seq",),
+    "gate_result": ("subject.version_seq",),
 }
 
 
@@ -291,10 +291,10 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
             continue
         if (p.get("authority") or {}).get("kind") != "principal":
             continue
-        mat = (p.get("applicability") or {}).get("materialization") or {}
-        acceptance[_artifact_version_key(mat)].append({"seq": e["seq"], "at": e["written_at"], "outcome": p.get("outcome"),
-            "detail": (p.get("detail") or "")[:600], "identity": mat.get("identity"),
-            "version_seq": mat.get("version_seq"), "content_hash": mat.get("content_hash")})
+        subject = p.get("subject") or {}
+        acceptance[_artifact_version_key(subject)].append({"seq": e["seq"], "at": e["written_at"], "outcome": p.get("outcome"),
+            "detail": (p.get("detail") or "")[:600], "identity": subject.get("identity"),
+            "version_seq": subject.get("version_seq"), "content_hash": subject.get("content_hash")})
     # --- integration conflicts and applications, by change-set hash
     conflicts = collections.defaultdict(list)
     for e in by["integration_conflict"]:
@@ -387,7 +387,7 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
               "snapshot": snapshot,
               "gold_outcomes": "unavailable: no review-specific adjudication reader; artifact acceptance is not review correctness",
               "interpretation": "Inspection candidates only; no ranking, scoring or adjudicated correctness labels.",
-              "acceptance_observation_linkage": "complete-artifact-pin-after-review-closure/1",
+              "acceptance_observation_linkage": "gate-subject-pin-after-review-closure/2",
               "revision_evidence": "artifact-admission-after-review-closure/1",
               "population": len(runs), "strata": {}, "contracts": {}, "wall_clock_median_s": {}, "prompt_assets_retained": sum(1 for r in runs.values() if r["prompt_assets"]),
               "dispatch_dirs_retained": 0}

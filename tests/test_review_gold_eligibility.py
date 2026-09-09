@@ -39,7 +39,9 @@ class ReviewGoldEligibilityTests(unittest.TestCase):
     def acceptance(self, outcome='fail', at=None, **pin):
         subject = {'identity': 'work/a/change-set', 'version_seq': 0, 'content_hash': 'same-bytes'} | pin
         return self.event('gate_result', {'gate_class': 'acceptance', 'authority': {'kind': 'principal'},
-            'outcome': outcome, 'applicability': {'materialization': subject}, 'detail': 'Artifact acceptance only'}, at)
+            'outcome': outcome, 'subject': subject, 'applicability': {'materialization': {
+                'kind': 'artifact-body', 'identity': subject['identity'], 'content_hash': subject['content_hash']}},
+            'detail': 'Artifact acceptance only'}, at)
 
     def read(self):
         ledger = self.root / 'ledger.jsonl'
@@ -131,6 +133,48 @@ class ReviewGoldEligibilityTests(unittest.TestCase):
         for value in (True, False, '0', -1):
             with self.subTest(value=value):
                 self.acceptance(version_seq=value)
-                with self.assertRaisesRegex(ValueError, 'materialization.version_seq'):
+                with self.assertRaisesRegex(ValueError, 'subject.version_seq'):
                     self.read()
                 self.events.pop()
+
+    def test_product_tree_gate_links_subject_bytes_instead_of_materialized_tree(self):
+        subject = {'identity': 'work/a/product', 'version_seq': 1, 'content_hash': 'a' * 64}
+        run = self.review(**subject)
+        tree_bytes = self.review(**(subject | {'content_hash': 'b' * 64}))
+        producer = {'run_ref': 1, 'run_manifest_hash': 'c' * 64}
+        gate = self.event('gate_result', {
+            'operation_key': 'd' * 64, 'subject': subject, 'request_ref': 1,
+            'target_semantic_hash': 'e' * 64, 'producing_run': producer,
+            'gate_id': 'principal-acceptance', 'gate_class': 'acceptance',
+            'gate_contract_hash': 'f' * 64, 'gate_predicate_version': 1,
+            'outcome': 'fail', 'verdict': 'reject', 'inputs_fresh': True, 'evidence': [],
+            'semantic_environment': {'digest': '1' * 64, 'pins': [
+                {'kind': 'gate-contract', 'id': 'principal-acceptance', 'hash': 'f' * 64}]},
+            'applicability': {
+                'product': subject | {'linked_tree_hash': '2' * 64, 'materialized_tree_hash': 'b' * 64},
+                'materialization': {'kind': 'product-tree', 'identity': subject['identity'], 'content_hash': 'b' * 64}},
+            'independence': {'predicate': 'not-required@1', 'result': 'not_required',
+                'producer': producer | {'lane_id': 'synthetic', 'backend_id': 'synthetic',
+                    'aliasing_class': 'synthetic', 'session_nonce': 'synthetic'}, 'evidence': []},
+            'authority': {'kind': 'principal', 'identity': 'synthetic-principal',
+                          'authority_proof': {'synthetic': True}},
+        })
+        self.events[gate]['schema_version'] = 2
+        _, report, runs, strata = self.read()
+        observation, = runs[run]['post_close_acceptance_observations']
+        self.assertEqual(observation['seq'], gate)
+        self.assertEqual({key: observation[key] for key in subject}, subject)
+        self.assertEqual(runs[tree_bytes]['post_close_acceptance_observations'], [])
+        self.assertEqual(report['acceptance_observation_linkage'], 'gate-subject-pin-after-review-closure/2')
+        self.assertEqual(report['principal_acceptance_rulings']['by_class'], {'product': 1})
+        self.assertFalse(strata.get('gold-defect'))
+
+    def test_missing_subject_does_not_fall_back_to_a_materialization_pin(self):
+        run = self.review()
+        gate = self.acceptance()
+        payload = self.events[gate]['payload']
+        payload['applicability']['materialization'] = payload.pop('subject')
+        _, report, runs, _ = self.read()
+        self.assertEqual(runs[run]['post_close_acceptance_observations'], [])
+        self.assertEqual(report['principal_acceptance_rulings']['total'], 1)
+        self.assertEqual(report['principal_acceptance_rulings']['by_class'], {'(unknown)': 1})
