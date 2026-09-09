@@ -105,6 +105,8 @@ class ReviewGateAttributionTests(unittest.TestCase):
         run, gate = self.review()
         admission = self.events[gate - 1]['payload']
         admission['body'] = {'content_hash': 'a' * 64}
+        admission['content_hash'] = 'a' * 64
+        self.events[gate]['payload']['evidence'][0]['pin']['content_hash'] = 'a' * 64
         with patch.object(criterion.M, 'store_object', return_value=b'{"verdict":"reject"}'):
             _, _, report = self.read()
         self.assertTrue(report['reviews'][0]['body_gate_disagreement'])

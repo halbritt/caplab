@@ -1,3 +1,4 @@
+import copy
 import hashlib
 import json
 from pathlib import Path
@@ -23,6 +24,15 @@ class ReviewCanaryTest(unittest.TestCase):
         self.event("graph_genesis", {})
 
     def event(self, kind, payload):
+        if kind == "artifact_admitted" and payload.get("kind") == "review-ledger":
+            run = payload.get("produced_by_run")
+            if type(run) is int and 0 <= run < len(self.events) and self.events[run]["type"] == "pass_run_opened":
+                payload = dict(payload)
+                subject = self.events[run]["payload"]["manifest"]["subject_pin"]
+                payload.setdefault("edges", {"evidences": [{"subject": copy.deepcopy(subject)}]})
+                body = payload.get("body")
+                if isinstance(body, dict):
+                    payload.setdefault("content_hash", body.get("content_hash"))
         seq = len(self.events)
         self.events.append({"seq": seq, "type": kind, "written_at": f"2026-09-07T00:00:{seq:02d}Z",
                             "payload": payload})
@@ -89,7 +99,7 @@ class ReviewCanaryTest(unittest.TestCase):
         self.review()
         path, report = self.baseline()
         report.pop("downstream_ordering")
-        for version in range(1, 8):
+        for version in range(1, 9):
             with self.subTest(version=version):
                 report["record"] = f"caplab-review-canary/{version}"
                 path.write_text(json.dumps(report))
@@ -671,7 +681,7 @@ class ReviewCanaryTest(unittest.TestCase):
         completed = subprocess.run(command, capture_output=True, text=True)
         self.assertEqual(completed.returncode, 0, completed.stderr)
         report = json.loads((out / "report.json").read_text())
-        self.assertEqual(report["record"], "caplab-review-canary/8")
+        self.assertEqual(report["record"], "caplab-review-canary/9")
         self.assertEqual(report["json_interpretation"], "utf8-unique-object-keys-no-non-json-constants/1")
         self.assertEqual(report["reference_validation"], "nonnegative-integer-sequence-paths/1")
         self.assertEqual(report["revision_evidence"], "artifact-admission-after-review-closure/1")

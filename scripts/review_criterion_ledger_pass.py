@@ -46,8 +46,9 @@ from caplab.codex_events import parse_native_json  # noqa: E402
 
 CLEAR = {"accept", "accept_with_findings"}
 REFUSE = {"needs_revision", "reject"}
-VERDICT_SELECTION = "latest-admitted-body-then-linked-review-gate/2"
+VERDICT_SELECTION = "latest-body-if-linked-then-linked-review-gate/3"
 BODY_REFERENCE_RESOLUTION = "sha256-address-or-hash-agreement/1"
+BODY_ATTRIBUTION = "admitted-body-hash-and-exact-subject/1"
 DEFECT_WORDS = re.compile(r"defect|wrong|incorrect|false claim|fabricat|contradict|hollow|does not (deliver|implement|match)", re.I)
 LIFECYCLE_FIELDS = {
     "pass_run_closed": ("outcome", "closure_source", "closure_reason", "deferral_reason",
@@ -110,6 +111,31 @@ def _artifact_version_key(pin: dict) -> tuple | None:
     return identity, version, content_hash
 
 
+def review_evidence_claim(payload: dict) -> dict:
+    edges = payload.get("edges")
+    claims = edges.get("evidences") if isinstance(edges, dict) else None
+    return claims[0] if isinstance(claims, list) and claims and isinstance(claims[0], dict) else {}
+
+
+def review_body_attribution(event: dict, run: dict, observation: dict, doc: dict | None) -> str:
+    payload = event["payload"]
+    if event["seq"] <= run["run"]:
+        return "admission-before-producing-run"
+    if (not isinstance(payload.get("identity"), str) or not payload["identity"]
+            or not observation["body_hash"] or payload.get("content_hash") != observation["body_hash"]):
+        return "admission-body-mismatch-or-incomplete"
+    subject = _artifact_version_key(run)
+    if subject is None or _artifact_version_key(review_evidence_claim(event["payload"]).get("subject")) != subject:
+        return "admitted-subject-mismatch-or-incomplete"
+    if doc is None:
+        return "body-unavailable"
+    if "subject_pins" in doc:
+        pins = doc["subject_pins"]
+        if not isinstance(pins, list) or len(pins) != 1 or _artifact_version_key(pins[0]) != subject:
+            return "body-subject-mismatch-or-incomplete"
+    return "linked"
+
+
 def review_gate_attribution(event: dict, run: dict, admissions: dict) -> str:
     payload = event["payload"]
     subject = _artifact_version_key(payload.get("subject"))
@@ -130,9 +156,10 @@ def review_gate_attribution(event: dict, run: dict, admissions: dict) -> str:
             or (item.get("producing_run") or {}).get("run_ref") != run["run"]
             or _artifact_version_key({**artifact, "version_seq": admission["seq"]}) != pin):
         return "evidence-admission-mismatch"
-    edges = artifact.get("edges")
-    claims = edges.get("evidences") if isinstance(edges, dict) else None
-    claim = claims[0] if isinstance(claims, list) and claims and isinstance(claims[0], dict) else {}
+    body = next((b for b in run.get("review_body_observations", []) if b["seq"] == pin[1]), None)
+    if body is not None and body["status"] == "parsed-object" and body["attribution"] != "linked":
+        return "evidence-body-attribution-conflict"
+    claim = review_evidence_claim(artifact)
     if _artifact_version_key(claim.get("subject")) != subject:
         return "admitted-subject-mismatch-or-incomplete"
     verdict = payload.get("verdict")
@@ -303,6 +330,9 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None, objec
             continue
         observation, doc = review_body_observation(e, object_store=snapshot["object_store"])
         r = runs[p["produced_by_run"]]
+        observation.update(attribution=review_body_attribution(e, r, observation, doc),
+                           admitted_subject=review_evidence_claim(p).get("subject"),
+                           body_subject_pins=doc.get("subject_pins") if doc is not None else None)
         r.setdefault("review_body_observations", []).append(observation)
         r["review_artifact"] = p.get("identity")
         r["review_body_hash"] = observation["body_hash"]
@@ -310,7 +340,7 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None, objec
         # newer body's locator when the new body cannot be read.
         for key in ("verdict", "findings", "summary"):
             r.pop(key, None)
-        if doc is not None:
+        if doc is not None and observation["attribution"] == "linked":
             r["verdict"] = doc.get("verdict") if isinstance(doc.get("verdict"), str) else None
             findings = doc.get("findings")
             r["findings"] = []
@@ -454,6 +484,7 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None, objec
               "gold_outcomes": "unavailable: no review-specific adjudication reader; artifact acceptance is not review correctness",
               "verdict_selection": VERDICT_SELECTION,
               "body_reference_resolution": BODY_REFERENCE_RESOLUTION,
+              "body_attribution": BODY_ATTRIBUTION,
               "interpretation": "Inspection candidates only; no ranking, scoring or adjudicated correctness labels.",
               "acceptance_observation_linkage": "gate-subject-pin-after-review-closure/2",
               "revision_evidence": "artifact-admission-after-review-closure/1",

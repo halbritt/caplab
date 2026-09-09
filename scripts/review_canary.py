@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 import statistics
 
-from review_criterion_ledger_pass import BODY_REFERENCE_RESOLUTION, CLEAR, REFUSE, VERDICT_SELECTION, read_reviews
+from review_criterion_ledger_pass import BODY_ATTRIBUTION, BODY_REFERENCE_RESOLUTION, CLEAR, REFUSE, VERDICT_SELECTION, read_reviews
 from caplab.codex_events import parse_native_json
 
 
@@ -20,7 +20,7 @@ def load_baseline(path: Path) -> tuple[dict, dict, int]:
     if not isinstance(report, dict) or report.get("record") not in (
             "caplab-review-canary/1", "caplab-review-canary/2", "caplab-review-canary/3",
             "caplab-review-canary/4", "caplab-review-canary/5", "caplab-review-canary/6",
-            "caplab-review-canary/7", "caplab-review-canary/8"):
+            "caplab-review-canary/7", "caplab-review-canary/8", "caplab-review-canary/9"):
         raise ValueError("baseline must be a production review report")
     snapshot = report.get("snapshot")
     if not isinstance(snapshot, dict):
@@ -75,6 +75,7 @@ def observe_run(run: dict) -> dict:
     bodies = run.get("review_body_observations", [])
     gates = run.get("review_gate_observations", [])
     observed["review_body_observations"] = bodies
+    observed["unverified_body_observations"] = sum(b["attribution"] != "linked" for b in bodies)
     observed["review_gate_observations"] = gates
     observed["unverified_gate_observations"] = sum(g["attribution"] != "linked" for g in gates)
     observed["lifecycle_observations"] = run["lifecycle_observations"]
@@ -151,12 +152,13 @@ def summarize(snapshot: dict, runs: dict, after_run: int) -> dict:
             "distinct_cancellation_records": sorted({e["seq"] for r in clear for e in r["request_cancellations"]}),
             "refusals_with_later_version": sum(r["decision"] == "refused" and bool(r["later_versions"]) for r in rows),
         })
-    return {"record": "caplab-review-canary/8", "snapshot": snapshot,
+    return {"record": "caplab-review-canary/9", "snapshot": snapshot,
             "json_interpretation": "utf8-unique-object-keys-no-non-json-constants/1",
             "reference_validation": "nonnegative-integer-sequence-paths/1",
             "revision_evidence": "artifact-admission-after-review-closure/1",
             "verdict_selection": VERDICT_SELECTION,
             "body_reference_resolution": BODY_REFERENCE_RESOLUTION,
+            "body_attribution": BODY_ATTRIBUTION,
             "downstream_ordering": "ledger-sequence-after-review-closure/1",
             "after_run": after_run, "mode": "since-cutoff" if after_run else "retrospective-baseline",
             "population": len(selected), "reviewers": reviewers, "reviews": selected,
@@ -225,6 +227,8 @@ def render(report: dict) -> str:
             if not isinstance(outcome, str) or outcome not in {"pass", "fail"}:
                 issues["Latest review gate: unsupported outcome"].append(row["run"])
         if row["review_body_observations"]:
+            for reason in sorted({b["attribution"] for b in row["review_body_observations"] if b["attribution"] != "linked"}):
+                issues["Unverified body attribution: " + reason].append(row["run"])
             latest = row["review_body_observations"][-1]
             if latest["status"] != "parsed-object":
                 issues["Latest body: " + latest["status"]].append(row["run"])
@@ -235,7 +239,10 @@ def render(report: dict) -> str:
         lines.append(f"- {issue}: {len(refs)} runs. " + "; ".join(f"Review {ref}" for ref in refs[:3]) + ".")
     if not issues:
         lines.append("No recorded body or source discrepancies found. Missing bodies can still limit the report.")
-    lines.extend(["", "The latest admitted body's recognized verdict takes precedence over a linked review gate.",
+    lines.extend(["", "The latest admitted body's recognized verdict takes precedence only when its subject and admitted hash are linked.",
+                  "A body must follow its producing run and match the admitted subject. Any supplied subject_pins must contain exactly that one subject.",
+                  "When subject_pins is absent, the admitted subject supplies the link; this does not establish strict response conformance.",
+                  "A parsed body's subject or hash conflict also prevents fallback through a gate using that exact admission.",
                   "Gate-only fallback requires one exact admitted review artifact, its recorded subject and verdict, and matching gate outcome.",
                   "Unverified gate links remain observations but supply no verdict. A newer unverified gate cannot inherit an older gate's verdict.",
                   "Body/gate disagreement is compared only for the same admitted review artifact; linkage does not prove review correctness or independence.",

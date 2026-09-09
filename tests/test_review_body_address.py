@@ -35,7 +35,8 @@ class ReviewBodyAddressTests(unittest.TestCase):
             {'type': 'pass_run_opened', 'payload': {'pass_id': 'review', 'manifest': {
                 'subject_pin': subject, 'input_pins': [{'role': 'materialized_base', 'content_hash': 'base'}]}}},
             {'type': 'artifact_admitted', 'schema_version': 1, 'payload': {'identity': 'work/review',
-                'kind': 'review-ledger', 'content_hash': self.hash, 'produced_by_run': 1, 'body': self.body}},
+                'kind': 'review-ledger', 'content_hash': self.hash, 'produced_by_run': 1, 'body': self.body,
+                'edges': {'evidences': [{'subject': subject, 'claim': 'verdict:reject'}]}}},
             {'type': 'pass_run_closed', 'payload': {'run_ref': 1, 'outcome': 'submitted'}},
         ]
         for seq, event in enumerate(self.events):
