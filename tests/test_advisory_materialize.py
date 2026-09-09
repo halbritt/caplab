@@ -86,6 +86,74 @@ class MaterializeCaseTest(unittest.TestCase):
         path.write_bytes(b"SOB1" + b"\0" * 12 + packed.stdout)
         return digest, path
 
+    def test_changed_source_record_refuses_cache_reuse_and_preserves_custody(self):
+        with tempfile.TemporaryDirectory() as root:
+            digest, _ = self._object(root, {"files": {"artifact.txt": "before"}})
+            replacement, _ = self._object(root, {"files": {"artifact.txt": "after"}})
+            record = {"substrate_id": "case-1", "base_source": "whole-tree",
+                      "materializer": "materialized_base", "object": digest,
+                      "evidence": [{"name": "RQ-1", "kind": "request", "payload": {"value": "before"}}]}
+            changes = [{"object": replacement}, {"artifact_path": "artifact.txt"},
+                       {"substrate_id": "case-2"}, {"base_source": "partial-product-tree"},
+                       {"evidence": [{"name": "RQ-1", "kind": "request", "payload": {"value": "after"}}]}]
+            case = Path(root, "case")
+            with mock.patch.object(M, "store_object", partial(M.store_object, root=root)):
+                M.materialize_case(record, str(case))
+                before = {str(p.relative_to(case)): p.read_bytes() for p in case.rglob("*") if p.is_file()}
+                for change in changes:
+                    with self.subTest(change=change):
+                        with self.assertRaisesRegex(ValueError, "source record"):
+                            M.materialize_case({**record, **change}, str(case))
+                        after = {str(p.relative_to(case)): p.read_bytes() for p in case.rglob("*") if p.is_file()}
+                        self.assertEqual(after, before)
+
+    def test_record_key_order_does_not_change_valid_cache_identity(self):
+        with tempfile.TemporaryDirectory() as case:
+            record = {"base_source": "none-by-design", "evidence": [
+                {"name": "RQ-1", "kind": "request", "payload": {"a": 1, "b": 2}}]}
+            manifest = M.materialize_case(record, case)
+            reordered = {"evidence": [{"payload": {"b": 2, "a": 1}, "kind": "request", "name": "RQ-1"}],
+                         "base_source": "none-by-design"}
+            self.assertEqual(M.materialize_case(reordered, case), manifest)
+            self.assertEqual(len(manifest["source_record_sha256"]), 64)
+
+    def test_unbound_or_mismatched_manifest_cannot_be_silently_rebuilt(self):
+        for mode in ("legacy", "mismatch-with-damaged-payload", "malformed"):
+            with self.subTest(mode=mode), tempfile.TemporaryDirectory() as case:
+                record = {"base_source": "none-by-design", "evidence": [
+                    {"name": "RQ-1", "kind": "request", "payload": {"value": "retained"}}]}
+                manifest = M.materialize_case(record, case)
+                path = Path(case, "base-manifest.json")
+                if mode == "malformed":
+                    path.write_text("{broken")
+                else:
+                    if mode == "legacy":
+                        manifest.pop("source_record_sha256", None)
+                    else:
+                        record["substrate_id"] = "changed"
+                        Path(case, "evidence/exchange/RQ-1.json").write_text("damaged")
+                    manifest["digest"] = M.manifest_digest(manifest)
+                    path.write_text(json.dumps(manifest))
+                    self.assertEqual(M.verify_manifest(case), mode == "legacy")
+                before = {str(p.relative_to(case)): p.read_bytes() for p in Path(case).rglob("*") if p.is_file()}
+                with self.assertRaises(ValueError):
+                    M.materialize_case(record, case)
+                after = {str(p.relative_to(case)): p.read_bytes() for p in Path(case).rglob("*") if p.is_file()}
+                self.assertEqual(after, before)
+
+    def test_same_record_can_rebuild_a_damaged_payload(self):
+        with tempfile.TemporaryDirectory() as case:
+            record = {"base_source": "none-by-design", "evidence": [
+                {"name": "RQ-1", "kind": "request", "payload": {"value": "original"}}]}
+            manifest = M.materialize_case(record, case)
+            payload = Path(case, "evidence/exchange/RQ-1.json")
+            expected = payload.read_bytes()
+            payload.write_bytes(b"damaged")
+            self.assertFalse(M.verify_manifest(case))
+            self.assertEqual(M.materialize_case(record, case), manifest)
+            self.assertEqual(payload.read_bytes(), expected)
+            self.assertTrue(M.verify_manifest(case))
+
     def test_anchored_objects_cannot_claim_an_expanded_base(self):
         for source, how in (("whole-tree", "materialized_base"),
                             ("whole-tree", "product-object"),
@@ -138,7 +206,7 @@ class MaterializeCaseTest(unittest.TestCase):
                     before = {str(p.relative_to(case)): p.read_bytes() for p in case.rglob("*") if p.is_file()}
                     self.assertFalse(M.verify_manifest(str(case), expected_digest=manifest["digest"]))
                     record.update(base_source=source, materializer=how)
-                    with self.assertRaisesRegex(ValueError, "anchored product"):
+                    with self.assertRaises(ValueError):
                         M.materialize_case(record, str(case))
                     after = {str(p.relative_to(case)): p.read_bytes() for p in case.rglob("*") if p.is_file()}
                     self.assertEqual(after, before)

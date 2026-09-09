@@ -287,11 +287,23 @@ def base_files(record: dict) -> tuple[dict | None, list[dict], dict]:
 
 def materialize_case(record: dict, case_dir: str) -> dict:
     """Write `base/`, `evidence/` and `base-manifest.json` for one case.
-    Idempotent: an existing materialization whose manifest verifies is kept."""
+    Reuse requires a verifying manifest bound to the same complete JSON record.
+    Key order is ignored; all values and array order are significant. Legacy,
+    unreadable or differently bound manifests are refused without replacement;
+    a separately authorized fresh case is required. Stable inputs and trusted
+    case parents are caller obligations, not synchronized by this function.
+    """
+    record_bytes = json.dumps(record, sort_keys=True, ensure_ascii=False, allow_nan=False).encode()
+    record_sha256 = hashlib.sha256(record_bytes).hexdigest()
     manifest_path = os.path.join(case_dir, "base-manifest.json")
-    if os.path.isfile(manifest_path) and verify_manifest(case_dir):
+    if os.path.isfile(manifest_path):
         with open(manifest_path, encoding="utf-8") as f:
-            return json.load(f)
+            existing = json.load(f)
+        if not isinstance(existing, dict) or existing.get("source_record_sha256") != record_sha256:
+            raise ValueError("existing materialization does not bind the requested source record; "
+                             "use a separately authorized fresh case directory")
+        if verify_manifest(case_dir):
+            return existing
     files, skipped, identity = base_files(record)
     for sub in ("base", "evidence"):
         shutil.rmtree(os.path.join(case_dir, sub), ignore_errors=True)
@@ -316,6 +328,7 @@ def materialize_case(record: dict, case_dir: str) -> dict:
                                  "sha256": hashlib.sha256(data).hexdigest(), "bytes": len(data)})
     manifest = {
         "record": MANIFEST_RECORD,
+        "source_record_sha256": record_sha256,
         "substrate_id": record.get("substrate_id"),
         **identity,
         "entries": entries,
