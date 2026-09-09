@@ -4,6 +4,10 @@ The reader also accepts validated process-creation records and aligned resumed
 exec results; see [process creation composition](process-creation-trace-v1.md).
 Parentage remains a separate check.
 
+[Exec termination inspection](exec-termination-trace-v1.md) additionally links
+the exact exec to a subsequent terminal event for that PID. It preserves this
+exec-only interface and does not substitute a wrapper exit for a native outcome.
+
 `caplab.exec_trace.inspect_exec_trace(trace_path, *, expected_trace_sha256,
 expected_pid, expected_executable, expected_command, expected_environment,
 max_trace_bytes)` checks one successful Linux `execve` observation against a

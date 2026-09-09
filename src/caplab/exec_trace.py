@@ -11,6 +11,10 @@ _STRING = r'"(?:\\x[0-9a-f]{2})*"'
 _ARRAY = r'\[(?:' + _STRING + r'(?:, ' + _STRING + r')*)?\]'
 _EXEC = re.compile(r'execve\((' + _STRING + r'), (' + _ARRAY + r'), (' + _ARRAY +
                    r')\)[ \t]+= (0|-1 [A-Z][A-Z0-9_]* \([^\r\n]*\))')
+_TERMINAL_SIGNALS = frozenset(('SIGHUP SIGINT SIGQUIT SIGILL SIGTRAP SIGABRT SIGBUS SIGFPE '
+    'SIGKILL SIGUSR1 SIGSEGV SIGUSR2 SIGPIPE SIGALRM SIGTERM SIGSTKFLT SIGCHLD SIGCONT '
+    'SIGSTOP SIGTSTP SIGTTIN SIGTTOU SIGURG SIGXCPU SIGXFSZ SIGVTALRM SIGPROF SIGWINCH '
+    'SIGIO SIGPWR SIGSYS').split())
 
 
 def _decode(value):
@@ -105,3 +109,45 @@ def inspect_exec_trace(trace_path: Path, *, expected_trace_sha256: str, expected
             'observed_pid_execve_calls': observed_calls, 'successful_execve_agrees': True,
             'trace_provenance_verified': False, 'binding_complete': False,
             'native_capture_complete': None, 'study_eligible': False}
+
+
+def inspect_exec_termination(trace_path: Path, *, expected_trace_sha256: str, expected_pid: int,
+                             expected_executable: str, expected_command: list[str],
+                             expected_environment: dict[str, str], max_trace_bytes: int) -> dict:
+    """Link exact exec and subsequent PID termination; neither proves task success.
+
+    The caller owns authenticated PID identity and complete, quiescent trace
+    custody. The existing exec check and termination pass each read at most
+    max_trace_bytes, with the same independent hash required for both reads.
+    """
+    execution = inspect_exec_trace(trace_path, expected_trace_sha256=expected_trace_sha256,
+        expected_pid=expected_pid, expected_executable=expected_executable,
+        expected_command=expected_command, expected_environment=expected_environment,
+        max_trace_bytes=max_trace_bytes)
+    raw, _, digest = _read_file(None, Path(trace_path), max_trace_bytes, retain=True)
+    _require(digest == expected_trace_sha256, 'termination trace hash differs')
+    prefix = re.compile(str(expected_pid) + r'\s+(.+)')
+    termination = None
+    for number, line in enumerate(raw.decode('ascii').splitlines(), 1):
+        selected = prefix.fullmatch(line)
+        if selected is None:
+            continue
+        _require(termination is None, 'selected PID appears after termination')
+        if selected[1].startswith('+++ '):
+            exited = re.fullmatch(r'\+\+\+ exited with (0|[1-9][0-9]{0,2}) \+\+\+', selected[1])
+            killed = re.fullmatch(r'\+\+\+ killed by (SIG[A-Z0-9]+)( \(core dumped\))? \+\+\+', selected[1])
+            if exited:
+                _require(int(exited[1]) <= 255, 'unsupported process exit code')
+                termination = {'kind': 'exited', 'exit_code': int(exited[1]), 'signal': None,
+                               'core_dump_reported': False, 'line': number}
+            else:
+                _require(killed is not None and killed[1] in _TERMINAL_SIGNALS,
+                         'unsupported process termination')
+                termination = {'kind': 'signaled', 'exit_code': None, 'signal': killed[1],
+                               'core_dump_reported': killed[2] is not None, 'line': number}
+            _require(number > execution['matching_execve']['completion_line'], 'termination precedes matching exec')
+    _require(termination is not None, 'selected PID termination missing')
+    return {'schema': 'caplab.exec-termination-inspection/v1', 'exec_trace': execution,
+            'termination': termination, 'recorded_pid_termination_verified': True,
+            'task_success_verified': False, 'trace_provenance_verified': False,
+            'binding_complete': False, 'native_capture_complete': None, 'study_eligible': False}
