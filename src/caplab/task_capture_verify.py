@@ -7,12 +7,13 @@ from contextlib import ExitStack, contextmanager
 import hashlib
 import json
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import re
 import stat
 
 from caplab.codex_events import parse_native_json
-from caplab.task_capture import TaskCaptureLimits, _changes
+from caplab.task_capture import (TASK_ATTEMPT_SCHEMAS, TASK_INTENT_SCHEMAS, TASK_INVENTORY_SCHEMAS,
+                                TaskCaptureLimits, _changes)
 
 
 class CaptureVerificationError(ValueError):
@@ -198,28 +199,62 @@ def verify_task_capture(
     reader = _Reader(max_receipt_bytes)
     with ExitStack() as stack:
         root = stack.enter_context(_open(None, custody, directory=True))
-        attempt = reader.receipt(root, "attempt.json", expected_attempt_sha256, "caplab.task-attempt-capture/v1")
-        intent = reader.receipt(root, "intent.json", attempt.get("intent_sha256"), "caplab.task-capture-intent/v1")
+        attempt = reader.receipt(root, "attempt.json", expected_attempt_sha256, TASK_ATTEMPT_SCHEMAS)
+        intent = reader.receipt(root, "intent.json", attempt.get("intent_sha256"), TASK_INTENT_SCHEMAS)
+        version = TASK_ATTEMPT_SCHEMAS.index(attempt["schema"])
+        _require(TASK_INTENT_SCHEMAS.index(intent["schema"]) == version, "task receipt versions differ")
         try:
             limits = TaskCaptureLimits(**intent["limits"])
         except (KeyError, TypeError, ValueError, OverflowError) as error:
             raise CaptureVerificationError("invalid capture limits") from error
         cwd = intent.get("cwd")
         _require(isinstance(cwd, str) and cwd.startswith("/") and "\0" not in cwd, "invalid intent cwd")
+        source_root = cwd
+        if version == 1:
+            source = intent.get("task_source")
+            _require(isinstance(source, dict) and set(source) == {"kind", "namespace_root"}
+                     and source["kind"] == "directory-descriptor", "invalid descriptor task source")
+            source_root = source["namespace_root"]
+            _require(isinstance(source_root, str) and source_root.startswith('/') and source_root != '/'
+                     and not source_root.startswith('//') and '\0' not in source_root
+                     and '..' not in PurePosixPath(source_root).parts and str(PurePosixPath(source_root)) == source_root,
+                     "invalid task namespace root")
+            receipt_limit = _count(intent.get("max_process_receipt_bytes"), "process receipt allowance")
+            _require(receipt_limit > 0, "process receipt allowance must be positive")
+        else:
+            _require("task_source" not in intent, "v1 task cannot assert descriptor provenance")
         before_fd, after_fd, process_fd = [stack.enter_context(_open(root, name, directory=True))
                                           for name in ("before", "after", "process")]
         before = reader.receipt(before_fd, "inventory.json", attempt.get("before_inventory_sha256"),
-                                "caplab.task-inventory/v1")
+                                TASK_INVENTORY_SCHEMAS[version])
         after = reader.receipt(after_fd, "inventory.json", attempt.get("after_inventory_sha256"),
-                               "caplab.task-inventory/v1")
+                               TASK_INVENTORY_SCHEMAS[version])
+        remaining = reader.remaining
         process = reader.receipt(process_fd, "capture.json", attempt.get("process_capture_sha256"),
                                  "caplab.process-capture/v1")
+        if version == 1:
+            _require(remaining - reader.remaining <= receipt_limit, "process receipt exceeds intent allowance")
         _require(json.dumps(attempt.get("process"), sort_keys=True) == json.dumps(process, sort_keys=True),
                  "embedded process differs from linked receipt")
-        before_bytes, before_entries = _inventory(before_fd, before, cwd=cwd,
+        before_bytes, before_entries = _inventory(before_fd, before, cwd=source_root,
             bytes_left=limits.max_task_bytes, entries_left=limits.max_task_entries)
-        after_bytes, after_entries = _inventory(after_fd, after, cwd=cwd,
+        after_bytes, after_entries = _inventory(after_fd, after, cwd=source_root,
             bytes_left=limits.max_task_bytes - before_bytes, entries_left=limits.max_task_entries - before_entries)
+        if version == 1:
+            identity = before.get("descriptor_identity")
+            _require(isinstance(identity, dict) and set(identity) == {"device", "inode"},
+                     "invalid task descriptor identity")
+            _count(identity["device"], "task descriptor device")
+            _require(_count(identity["inode"], "task descriptor inode") > 0, "invalid task descriptor inode")
+            _require(after.get("descriptor_identity") == identity, "task descriptor identity changed")
+            _count(after["descriptor_identity"]["device"], "after descriptor device")
+            _count(after["descriptor_identity"]["inode"], "after descriptor inode")
+            for inventory in (before, after):
+                observed = inventory["entries"][0].get("source_stat")
+                _require(isinstance(observed, dict), "task root lacks source identity")
+                _require((_count(observed.get("dev"), "task root device"),
+                          _count(observed.get("ino"), "task root inode")) == (identity["device"], identity["inode"]),
+                         "task inventory root differs from descriptor identity")
         _process(process_fd, process, limits)
         _require(_count(attempt.get("retained_task_bytes"), "task bytes") == before_bytes + after_bytes,
                  "attempt task byte count mismatch")
@@ -236,4 +271,5 @@ def verify_task_capture(
             "retained_task_entries": before_entries + after_entries,
             "retained_stream_bytes": process["retained_stream_bytes"],
             "verified_receipt_bytes": max_receipt_bytes - reader.remaining, "changes": changes,
+            **({"task_source": {**source, **identity}} if version == 1 else {}),
             "interpretation": "byte integrity and summary consistency only; no eligibility or task-success decision"}

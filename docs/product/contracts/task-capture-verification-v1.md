@@ -1,5 +1,11 @@
 # Inspect task capture integrity, version 1
 
+The verifier also accepts the matching v2 attempt, intent and inventories
+produced by the [supervised recorder](supervised-task-capture-v2.md). V2 adds
+descriptor-source, namespace and process-receipt-limit checks and returns the
+verified `task_source` metadata. The contract below describes the original v1
+path; valid v1 inputs and result shapes remain supported.
+
 Status: implemented read-only component. Decision and verification:
 [implementation record](../../records/implementation-2026-09-08-task-capture-verification.md).
 

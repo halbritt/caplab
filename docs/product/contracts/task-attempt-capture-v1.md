@@ -93,6 +93,12 @@ are unsealed; receipt publication syncs file and directory state using the
 shared capture publisher. Later consumers must reverify component and object
 hashes before interpretation; the [read-only integrity verifier](task-capture-verification-v1.md)
 implements that check against an independently retained attempt digest.
+
+For a task created inside a blocked namespace, use the separate
+[supervised v2 recorder](supervised-task-capture-v2.md). It seals intent before
+supervisor launch, then inventories an identified directory descriptor before
+work is released and after writers stop. It preserves v1's byte/entry accounting
+while making the namespace source and external supervisor responsibilities explicit.
 The wrapper is not an admission or replay API.
 
 CAPLAB-84 still requires native session/child linkage, diagnostics, exact binding

@@ -9,6 +9,7 @@ from caplab.codex_capture_link import _retained_bytes
 from caplab.native_collection import COLLECTION_INTENT_SCHEMAS, COLLECTION_SCHEMAS
 from caplab.native_collection_verify import verify_native_collection
 from caplab.review_dissent.native import NativeReviewContractError, _native_events, _native_session_evidence
+from caplab.task_capture import TASK_ATTEMPT_SCHEMAS, TASK_INTENT_SCHEMAS
 from caplab.task_capture_verify import CaptureVerificationError, _Reader, _open, _require, verify_task_capture
 
 
@@ -100,14 +101,17 @@ def link_claude_root(
         subject = invocation['base_subject']
         _require(subject['native_harness_id'] == 'claude-code', 'root linkage requires a Claude collection')
         attempt = reader.receipt(task_root, 'attempt.json', expected_attempt_sha256,
-                                 'caplab.task-attempt-capture/v1')
+                                 TASK_ATTEMPT_SCHEMAS)
         task_intent = reader.receipt(task_root, 'intent.json', attempt['intent_sha256'],
-                                     'caplab.task-capture-intent/v1')
+                                     TASK_INTENT_SCHEMAS)
         try:
             recorded_task = preparation['mounts']['task']['source']
         except (KeyError, TypeError) as error:
             raise CaptureVerificationError('preparation lacks task source') from error
         _require(task_intent['cwd'] == recorded_task, 'captured task differs from prepared task')
+        if 'task_source' in task_check:
+            _require(task_check['task_source']['namespace_root'] == invocation['cwd'],
+                     'captured task namespace differs from invocation')
         process_root = stack.enter_context(_open(task_root, 'process', directory=True))
         process = reader.receipt(process_root, 'capture.json', attempt['process_capture_sha256'],
                                  'caplab.process-capture/v1')
@@ -129,6 +133,7 @@ def link_claude_root(
             'configured_tuple_id': subject['tuple_id'], 'stdout_sha256': stdout_entry['sha256'],
             'transcript_path': selected['path'], 'transcript_sha256': selected['sha256'],
             'session_fields': fields, 'root_id_agrees': True, **({'runtime_source': collection_check['runtime_source']} if 'runtime_source' in collection_check else {}),
+            **({'task_source': task_check['task_source']} if 'task_source' in task_check else {}),
             'recorded_task_root_agrees': True,
             'reported_tuple_agrees': None, 'executed_invocation_bound': False,
             'process_capture_complete': task_check['capture_complete'],

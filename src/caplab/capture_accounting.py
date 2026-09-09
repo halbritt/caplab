@@ -7,6 +7,7 @@ from pathlib import Path
 from caplab.codex_events import parse_native_json
 from caplab.native_collection import COLLECTION_INTENT_SCHEMAS, COLLECTION_SCHEMAS
 from caplab.native_collection_verify import _host_path, verify_native_collection
+from caplab.task_capture import TASK_ATTEMPT_SCHEMAS, TASK_INTENT_SCHEMAS, TASK_INVENTORY_SCHEMAS
 from caplab.task_capture_verify import CaptureVerificationError, _Reader, _digest, _open, _require, verify_task_capture
 
 
@@ -40,9 +41,9 @@ def build_capture_byte_report(
         task_root = stack.enter_context(_open(None, task_custody, directory=True))
         native_root = stack.enter_context(_open(None, collection_custody, directory=True))
         attempt = reader.receipt(task_root, "attempt.json", expected_attempt_sha256,
-                                 "caplab.task-attempt-capture/v1")
+                                 TASK_ATTEMPT_SCHEMAS)
         task_intent = reader.receipt(task_root, "intent.json", attempt["intent_sha256"],
-                                     "caplab.task-capture-intent/v1")
+                                     TASK_INTENT_SCHEMAS)
         collection = reader.receipt(native_root, "collection.json", expected_collection_sha256,
                                     COLLECTION_SCHEMAS)
         intent = reader.receipt(native_root, "intent.json", collection["intent_sha256"],
@@ -54,11 +55,16 @@ def build_capture_byte_report(
         except (KeyError, TypeError) as error:
             raise CaptureVerificationError("preparation lacks task source") from error
         _require(task_intent["cwd"] == recorded_task, "captured task differs from prepared task")
+        if "task_source" in task:
+            invocation = reader.receipt(native_root, "invocation.json", preparation["invocation_file_sha256"],
+                                        "caplab.native-capture-invocation/v1")
+            _require(task["task_source"]["namespace_root"] == invocation["cwd"],
+                     "captured task namespace differs from invocation")
         surfaces = []
         for phase in ("before", "after"):
             folder = stack.enter_context(_open(task_root, phase, directory=True))
             inventory = reader.receipt(folder, "inventory.json", attempt[f"{phase}_inventory_sha256"],
-                                       "caplab.task-inventory/v1")
+                                       TASK_INVENTORY_SCHEMAS)
             surfaces.append(_surface(f"task/{phase}", inventory["entries"]))
         for name, stream in sorted(attempt["process"]["streams"].items()):
             row = _surface(f"process/{name}", [{"kind": "file", "bytes": stream["bytes"]}])
@@ -82,7 +88,8 @@ def build_capture_byte_report(
             "missing_locations": native["missing_locations"],
             **({"runtime_source": native["runtime_source"]} if "runtime_source" in native else {}),
             "task_capture_complete": task["capture_complete"], "termination": task["termination"],
-            "return_code": task["return_code"], "recorded_task_root_agrees": True,
+            "return_code": task["return_code"], **({"task_source": task["task_source"]} if "task_source" in task else {}),
+            "recorded_task_root_agrees": True,
             "executed_invocation_bound": False, "native_capture_complete": None,
             "capture_overhead_seconds": None, "peak_runtime_bytes": None,
             "redaction_seconds": None, "manual_redaction_seconds": None,

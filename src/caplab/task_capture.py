@@ -15,6 +15,11 @@ from typing import Mapping, Sequence
 from caplab.process_capture import capture_process, seal_capture_json
 
 
+TASK_ATTEMPT_SCHEMAS = ("caplab.task-attempt-capture/v1", "caplab.task-attempt-capture/v2")
+TASK_INTENT_SCHEMAS = ("caplab.task-capture-intent/v1", "caplab.task-capture-intent/v2")
+TASK_INVENTORY_SCHEMAS = ("caplab.task-inventory/v1", "caplab.task-inventory/v2")
+
+
 class TaskCaptureError(ValueError):
     """Task custody is incomplete and must not be used as an eligible attempt."""
 

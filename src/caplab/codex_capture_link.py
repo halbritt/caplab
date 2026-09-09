@@ -9,6 +9,7 @@ from caplab.artifact_rater import CalibrationError, _ROLLOUT_NAME, attest_rollou
 from caplab.codex_events import CodexEventError, codex_thread_id, final_codex_message
 from caplab.native_collection import COLLECTION_INTENT_SCHEMAS, COLLECTION_SCHEMAS
 from caplab.native_collection_verify import verify_native_collection
+from caplab.task_capture import TASK_ATTEMPT_SCHEMAS, TASK_INTENT_SCHEMAS
 from caplab.task_capture_verify import CaptureVerificationError, _Reader, _open, _read_file, _require, verify_task_capture
 
 
@@ -50,14 +51,17 @@ def link_codex_root(
         subject = invocation['base_subject']
         _require(subject['native_harness_id'] == 'codex', 'root linkage requires a Codex collection')
         attempt = reader.receipt(task_root, 'attempt.json', expected_attempt_sha256,
-                                 'caplab.task-attempt-capture/v1')
+                                 TASK_ATTEMPT_SCHEMAS)
         task_intent = reader.receipt(task_root, 'intent.json', attempt['intent_sha256'],
-                                     'caplab.task-capture-intent/v1')
+                                     TASK_INTENT_SCHEMAS)
         try:
             recorded_task = preparation['mounts']['task']['source']
         except (KeyError, TypeError) as error:
             raise CaptureVerificationError('preparation lacks task source') from error
         _require(task_intent['cwd'] == recorded_task, 'captured task differs from prepared task')
+        if 'task_source' in task_check:
+            _require(task_check['task_source']['namespace_root'] == invocation['cwd'],
+                     'captured task namespace differs from invocation')
         process_root = stack.enter_context(_open(task_root, 'process', directory=True))
         process = reader.receipt(process_root, 'capture.json', attempt['process_capture_sha256'],
                                  'caplab.process-capture/v1')
@@ -91,6 +95,7 @@ def link_codex_root(
             'configured_tuple_id': subject['tuple_id'], 'stdout_sha256': stdout_entry['sha256'],
             'rollout': attestation, 'root_id_agrees': True, 'reported_tuple_agrees': True,
             **({'runtime_source': collection_check['runtime_source']} if 'runtime_source' in collection_check else {}),
+            **({'task_source': task_check['task_source']} if 'task_source' in task_check else {}),
             'recorded_task_root_agrees': True, 'executed_invocation_bound': False,
             'process_capture_complete': task_check['capture_complete'],
             'process_return_code': task_check['return_code'], 'process_termination': task_check['termination'],
@@ -123,7 +128,7 @@ def link_codex_final_message(
         collection = reader.receipt(native_root, 'collection.json', expected_collection_sha256,
                                     COLLECTION_SCHEMAS)
         attempt = reader.receipt(task_root, 'attempt.json', expected_attempt_sha256,
-                                 'caplab.task-attempt-capture/v1')
+                                 TASK_ATTEMPT_SCHEMAS)
         process_root = stack.enter_context(_open(task_root, 'process', directory=True))
         process = reader.receipt(process_root, 'capture.json', attempt['process_capture_sha256'],
                                  'caplab.process-capture/v1')

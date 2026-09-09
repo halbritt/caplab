@@ -6,6 +6,7 @@ from contextlib import ExitStack
 from pathlib import Path
 
 from caplab.codex_events import parse_native_json
+from caplab.task_capture import TASK_ATTEMPT_SCHEMAS
 from caplab.task_capture_verify import _Reader, _open, _read_file, _require, verify_task_capture
 
 
@@ -236,7 +237,7 @@ def inspect_captured_tool_pairs(custody: Path, *, expected_attempt_sha256: str,
     with ExitStack() as stack:
         root = stack.enter_context(_open(None, custody, directory=True))
         attempt = reader.receipt(root, "attempt.json", expected_attempt_sha256,
-                                 "caplab.task-attempt-capture/v1")
+                                 TASK_ATTEMPT_SCHEMAS)
         process_root = stack.enter_context(_open(root, "process", directory=True))
         process = reader.receipt(process_root, "capture.json", attempt["process_capture_sha256"],
                                  "caplab.process-capture/v1")
