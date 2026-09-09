@@ -22,6 +22,13 @@ exit records without treating them as execution success. Other PIDs' lines do
 not supply a match. This is a bounded format contract, not a general strace
 parser or a process-tree completeness checker.
 
+The producer contract excludes `--seccomp-bpf`: a workload's seccomp denial
+can prevent a selected call from reaching the trace. This reader cannot infer
+such missing calls from the retained text or attest the producer's configuration.
+See the [creation evidence requirements](process-creation-trace-v1.md#required-evidence)
+and their fixed compatibility control. A passing exact exec check remains a
+claim about the retained successful observation, not complete syscall coverage.
+
 `expected_pid` and `max_trace_bytes` are positive integers, excluding booleans.
 Expected strings are UTF-8 without NUL. The executable is an absolute path;
 argv is a nonempty list with a nonempty first element. Environment names must

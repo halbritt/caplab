@@ -18,6 +18,16 @@ The trace is produced outside the workload PID namespace with strace
 custody require separate verification. Calls must not be filtered by outcome,
 and the caller must bound file growth and retain complete process lifetimes.
 
+Do not use `--seccomp-bpf` for this producer contract. A workload filter can
+suppress the tracer's notification for a selected denied call; a successful
+exec or parentage match cannot establish that those records were retained.
+The [fixed compatibility control](../../records/decision-2026-09-09-trace-filter-compatibility.md)
+demonstrated both omitted denied calls and passing selected-call checks with
+strace 6.8 on the recorded Linux host. The caller must verify the actual tracer
+configuration separately: this text reader cannot detect a syscall omitted
+before writing. Ordinary tracing remains the selected producer configuration;
+that selection alone does not establish complete capture or trusted origin.
+
 The reader verifies the file's independent hash and byte allowance using the
 existing stable regular-file reader. It requires a resolved absolute parent,
 ASCII text and final newline. Every line must have a positive host PID prefix.
