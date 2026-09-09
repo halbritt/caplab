@@ -48,6 +48,10 @@ process receipt at finish time establishes only internal consistency. Neither
 call order nor equal device/inode values establishes native execution identity.
 The declared host-task agreement also does not prove that the namespace's
 initial bytes match a frozen task input; that requires a separate content check.
+The [anchored task-input API](task-input-v1.md) can create and verify those
+bytes in the empty handed-off directory before `capture_before`. The caller
+must seal its materialization result and connect the input and before-inventory
+anchors before release; the recorder does not enforce that separate protocol.
 
 Repeated or out-of-order calls are refused. A caught before/finish ordering
 violation prevents further recording with that object. Exiting normally without

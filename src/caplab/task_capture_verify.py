@@ -250,7 +250,8 @@ def verify_task_capture(
             _count(after["descriptor_identity"]["device"], "after descriptor device")
             _count(after["descriptor_identity"]["inode"], "after descriptor inode")
             for inventory in (before, after):
-                observed = inventory["entries"][0].get("source_stat")
+                root_entry = next(entry for entry in inventory["entries"] if entry["path"] == ".")
+                observed = root_entry.get("source_stat")
                 _require(isinstance(observed, dict), "task root lacks source identity")
                 _require((_count(observed.get("dev"), "task root device"),
                           _count(observed.get("ino"), "task root inode")) == (identity["device"], identity["inode"]),
