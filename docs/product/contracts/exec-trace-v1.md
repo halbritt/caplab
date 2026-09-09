@@ -60,3 +60,8 @@ are unchanged. Tracing is a behavior-bearing part of the observation apparatus;
 it does not establish equivalence to untraced timing, capacity or behavior.
 Each run still requires a fresh exact authorization. See the
 [implementation and verification record](../../records/implementation-2026-09-08-native-exec-witness.md).
+
+New traced startup handoffs also retain a
+[kernel-observed tracer relationship](exec-tracer-provenance-v1.md), checked
+against the trace inode after exit. This supplements the caller's provenance
+evidence without changing this inspector's origin or completeness flags.

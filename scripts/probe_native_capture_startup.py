@@ -18,6 +18,7 @@ import time
 import uuid
 
 from caplab.capture_accounting import build_capture_byte_report
+from caplab.exec_provenance import observe_exec_tracer, verify_exec_tracer
 from caplab.exec_trace import inspect_exec_trace
 from caplab.native_capture_invocation import NativeCaptureContext, build_native_capture_invocation
 from caplab.native_collection import NativeRuntimeDescriptor, collect_native_outputs
@@ -125,7 +126,8 @@ def inspect_traced_peer(peer_pid, trace_path):
                         'peer': os.readlink(f'/proc/{peer_pid}/ns/{name}')} for name in ('mnt', 'pid')}
     require(all(item['supervisor'] != item['peer'] for item in namespaces.values()), 'tracer shares peer namespace')
     require(not Path(f'/proc/{peer_pid}/root', str(trace_path).lstrip('/')).exists(), 'host trace path is exposed')
-    return checks | {'tracer_namespaces': namespaces, 'host_trace_path_exposed': False}
+    tracer = observe_exec_tracer(peer_pid, trace_path, expected_tracer_executable=Path('/usr/bin/strace'))
+    return checks | {'tracer_namespaces': namespaces, 'host_trace_path_exposed': False, 'exec_tracer': tracer}
 
 
 def inspect_custody(root, report):
@@ -189,6 +191,9 @@ def inspect_custody(root, report):
             expected_trace_sha256=anchors['exec_trace_sha256'], expected_pid=handoff['peer_pid'],
             expected_executable='/toolbin/' + name, expected_command=plan['command'],
             expected_environment=plan['environment'], max_trace_bytes=MIB)
+        if 'exec_tracer' in network:
+            execution['exec_tracer'] = verify_exec_tracer(network['exec_tracer'], root / (name + '-exec.trace'),
+                                                        expected_pid=handoff['peer_pid'])
     return {'task': task, 'native': native, 'accounting': accounting, **execution,
             'native_launch_attempted_by_supervisor': True, 'model_execution_verified': False,
             'native_capture_complete': None, 'study_eligible': False}
