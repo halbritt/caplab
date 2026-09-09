@@ -14,7 +14,7 @@ between sealed task inventories; this does not establish native integration.
 ## Interface and owner responsibilities
 
 `caplab.process_capture.capture_process(command, *, cwd, environment,
-output_dir, max_stream_bytes, timeout_seconds)` launches one argument-vector
+output_dir, max_stream_bytes, timeout_seconds, pass_fds=())` launches one argument-vector
 command, with stdin closed and an explicit environment. The caller must supply
 an absolute working directory, a fresh absolute output directory under a
 trusted resolved parent, a positive integer combined stream limit, and a
@@ -29,6 +29,27 @@ containers cannot change what is launched. The caller must keep inputs stable
 while those initial snapshots are made; this does not synchronize writers or
 make arbitrary custom containers atomic. String entries are immutable, so
 shallow snapshots suffice. No ambient environment is merged into the snapshot.
+
+`pass_fds` optionally names extra POSIX descriptors that the launched program
+may inherit, at their existing numbers. Its empty default passes none. The
+sequence is snapshotted before setup; entries must be unique exact integers
+greater than 2. Strings, bytes, non-sequence containers, booleans, standard
+stream numbers and duplicates raise `ValueError`. Each descriptor is checked
+with `fstat` before custody opens any files, so an already-closed number cannot
+silently become a capture file; a closed descriptor raises `OSError`.
+`Popen(close_fds=True, pass_fds=...)` excludes other extra descriptors even if
+they are inheritable in the parent.
+
+The descriptors remain borrowed. The caller keeps them open and their identities
+stable until return; concurrent close/reassignment is outside this contract.
+Capture does not read, hash, seek, duplicate, close or change the parent's
+inheritable flags on them. A child shares their open-file-description state,
+including offsets and access permissions; borrowing does not imply immutable
+input. The input-descriptor contents are not added to capture metadata, but
+any bytes emitted by the child still enter raw stdout/stderr capture. This is
+a transport facility, not credential validation, redaction, or authorization.
+Callers own sealing/read-only delivery, closure before final subject exec,
+and secret handling. See the [descriptor implementation record](../../records/implementation-2026-09-08-capture-input-descriptors.md).
 
 The caller owns execution authorization, exact subject/instrument identity,
 command/configuration custody, task and account isolation, disk reservation,

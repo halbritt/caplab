@@ -61,6 +61,7 @@ def seal_capture_json(output_dir: Path, name: str, receipt: dict) -> str:
 def capture_process(
     command: Sequence[str], *, cwd: Path, environment: Mapping[str, str],
     output_dir: Path, max_stream_bytes: int, timeout_seconds: float,
+    pass_fds: Sequence[int] = (),
 ) -> dict:
     """Retain stdout/stderr under one limit; this does not authorize execution.
 
@@ -68,6 +69,8 @@ def capture_process(
     and a trusted private parent for output_dir. No existing directory is reused.
     A receipt means the capture operation ended, not that the task succeeded.
     Exceptions leave raw prefixes without a final receipt and propagate.
+    Explicit extra descriptors are borrowed; callers keep them open and stable
+    until return. Their contents are not read or added to the receipt here.
     """
     if type(max_stream_bytes) is not int or max_stream_bytes <= 0:
         raise ValueError("max_stream_bytes must be a positive integer")
@@ -87,6 +90,15 @@ def capture_process(
             not isinstance(k, str) or not isinstance(v, str) or not k
             or "=" in k or "\0" in k or "\0" in v for k, v in environment.items()):
         raise ValueError("environment must be an explicit string mapping")
+    if not isinstance(pass_fds, Sequence) or isinstance(pass_fds, (str, bytes)):
+        raise ValueError("pass_fds must be a sequence of unique open descriptors above 2")
+    pass_fds = tuple(pass_fds)
+    if (any(type(fd) is not int or fd <= 2 for fd in pass_fds)
+            or len(set(pass_fds)) != len(pass_fds)):
+        raise ValueError("pass_fds must be a sequence of unique open descriptors above 2")
+    # Check before custody opens files that could reuse an already-closed number.
+    for fd in pass_fds:
+        os.fstat(fd)
     cwd, output_dir = Path(cwd), Path(output_dir)
     if not cwd.is_absolute() or not cwd.is_dir():
         raise ValueError("cwd must be an absolute existing directory")
@@ -112,7 +124,8 @@ def capture_process(
         selector = stack.enter_context(selectors.DefaultSelector())
         process = subprocess.Popen(command, cwd=cwd, env=environment,
                                    stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
-                                   stderr=subprocess.PIPE, start_new_session=True)
+                                   stderr=subprocess.PIPE, start_new_session=True,
+                                   close_fds=True, pass_fds=pass_fds)
         try:
             pipes = {name: stack.enter_context(getattr(process, name)) for name in streams}
             for name in streams:
