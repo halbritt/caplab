@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 import platform
 import re
+import shutil
 import socket
 import stat
 import struct
@@ -22,20 +23,32 @@ import time
 import uuid
 
 from caplab.process_capture import capture_process, seal_capture_json
-from caplab.task_capture import _Inventory
+from caplab.capture_accounting import build_capture_byte_report
+from caplab.codex_capture_link import link_codex_final_message, link_codex_root
+from caplab.native_capture_invocation import NativeCaptureContext, build_native_capture_invocation
+from caplab.native_collection import NativeRuntimeDescriptor, collect_native_outputs
+from caplab.native_collection_verify import verify_native_collection
+from caplab.native_runtime import prepare_native_runtime
+from caplab.native_tool_pairs import inspect_captured_tool_pairs
+from caplab.supervised_task_capture import SupervisedTaskCapture
+from caplab.task_capture import TaskCaptureLimits, _Inventory
 from caplab.task_capture_verify import _Reader, _inventory, _open
 
 
 MIB = 1024 * 1024
 SCRIPT = Path(__file__).resolve()
 MARKER = b'retained marker\x00\xff\n'
-MOUNTS = ('/scratch', '/tmp', '/dev/shm')
+MOUNTS = ('/scratch', '/tmp', '/dev/shm', '/work', '/episode')
+POLICY = SCRIPT.parent.parent / 'docs/product/contracts/native-agent-systems.json'
+ROOT_ID = 'resource-fixture'
 JOIN = """import os,sys
 from pathlib import Path
 Path(sys.argv[1], 'cgroup.procs').write_text(str(os.getpid()))
 os.execv(sys.argv[2], sys.argv[2:])
 """
 HANDOFF = """import array,json,os,socket,sys
+from pathlib import Path
+Path('/work/item').write_bytes(b'old')
 with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as channel:
     channel.settimeout(3)
     channel.connect('/control.sock')
@@ -49,12 +62,30 @@ with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as channel:
             os.close(root)
     if channel.recv(1) != b'1':
         raise RuntimeError('supervisor did not accept retained mount')
-os.execv('/usr/bin/python3', ['/usr/bin/python3', '-B', '-c', sys.argv[2], sys.argv[3]])
+os.execv('/usr/bin/python3', ['/usr/bin/python3', '-B', '-c', *sys.argv[2:]])
 """
 FIXTURE = r"""import errno,json,subprocess,sys
 from pathlib import Path
 mode = sys.argv[1]
-for directory in ('/scratch', '/tmp', '/dev/shm'):
+config = json.loads(sys.argv[2])
+def emit(event):
+    print(json.dumps(event), flush=True)
+def append(event):
+    with session.open('a') as stream:
+        stream.write(json.dumps(event) + '\n')
+paths = config['capture_locations']
+session = Path(paths['session_search_root']) / ('rollout-2026-09-08T12-00-00-' + config['root_id'] + '.jsonl')
+session.parent.mkdir(parents=True)
+append({'type':'session_meta','payload':{'id':config['root_id'],'cli_version':'synthetic-resource-fixture'}})
+append({'type':'turn_context','payload':{'model':'gpt-5.6-terra','effort':'max'}})
+diagnostic = Path(paths['diagnostic_search_root']) / 'raw'
+diagnostic.parent.mkdir(parents=True)
+diagnostic.write_bytes(b'\x00\xfffixture began\n')
+emit({'type':'thread.started','thread_id':config['root_id']})
+emit({'type':'turn.started'})
+emit({'type':'item.started','item':{'id':'work','type':'command_execution','command':mode}})
+Path('/work/item').write_bytes(b'changed')
+for directory in config['mounts']:
     Path(directory, 'marker.bin').write_bytes(b'retained marker\x00\xff\n' + directory.encode('ascii'))
 if mode in ('memory', 'tmp-memory', 'shm-memory'):
     destination = {'memory': '/scratch', 'tmp-memory': '/tmp', 'shm-memory': '/dev/shm'}[mode]
@@ -62,6 +93,7 @@ if mode in ('memory', 'tmp-memory', 'shm-memory'):
         for _ in range(64):
             if f.write(b'x' * 1048576) != 1048576:
                 raise RuntimeError('short fixture write')
+    result = {'pressure_exhausted_without_oom': True}
 elif mode == 'pids':
     children = []
     caught = None
@@ -79,7 +111,7 @@ elif mode == 'pids':
             child.terminate()
         for child in children:
             child.wait(timeout=3)
-    print(json.dumps({'caught_errno': caught, 'children': len(children)}))
+    result = {'caught_errno': caught, 'children': len(children)}
 elif mode == 'control':
     for directory in ('/scratch', '/tmp', '/dev/shm'):
         Path(directory, 'control').write_bytes(b'ok')
@@ -93,10 +125,16 @@ elif mode == 'control':
             refused.append(path)
         else:
             raise RuntimeError('write escaped declared tmpfs mounts: ' + path)
-    print(json.dumps({'refused_readonly_writes': refused}))
+    result = {'refused_readonly_writes': refused}
 else:
     raise ValueError('unknown fixed fixture')
-print('fixture exits successfully')
+emit({'type':'item.completed','item':{'id':'work','type':'command_execution',
+    'status':'completed','exit_code':0,'aggregated_output':json.dumps(result)}})
+message = 'synthetic fixture completed'
+Path(paths['final_message']).write_text(message)
+append({'type':'event_msg','payload':{'type':'agent_message','message':message}})
+emit({'type':'item.completed','item':{'id':'final','type':'agent_message','text':message}})
+emit({'type':'turn.completed'})
 """
 
 
@@ -148,7 +186,7 @@ def mount_coverage(raw):
     by_path = {m['path']: m for m in mounts}
     require(len(by_path) == len(mounts), 'ambiguous stacked fixture mounts')
     writable = {m['path'] for m in mounts if 'rw' in m['options']}
-    require(writable == {'/scratch', '/tmp', '/dev/shm'}, 'unexpected writable fixture mounts')
+    require(writable == set(MOUNTS), 'unexpected writable fixture mounts')
     require(all(by_path[path]['filesystem'] == 'tmpfs' for path in writable),
             'writable fixture mount is not tmpfs')
     require(all(path in by_path and 'ro' in by_path[path]['options']
@@ -157,7 +195,7 @@ def mount_coverage(raw):
     return {'raw': raw, 'mounts': mounts, 'writable_tmpfs': sorted(writable)}
 
 
-def receive_mount(listener, child):
+def receive_mount(listener, child, recorder):
     descriptors = []
     try:
         channel, _ = listener.accept()
@@ -189,12 +227,19 @@ def receive_mount(listener, child):
                                    'allocated_capacity': capacity.f_blocks * capacity.f_frsize})
             require(len({(i['source_dev'], i['source_ino']) for i in identities}) == len(MOUNTS),
                     'mount handoff aliases a directory')
+            index = MOUNTS.index('/work')
+            task = identities[index]
+            before_hash = recorder.capture_before(descriptors[index],
+                expected_device=task['source_dev'], expected_inode=task['source_ino'])
+            identity = {'peer_pid': peer_pid, 'peer_uid': peer_uid, 'peer_gid': peer_gid,
+                        'mounts': identities, 'mount_coverage': coverage,
+                        'before_inventory_sha256': before_hash}
+            seal_capture_json(recorder.output_dir.parent, child.name.removeprefix('fixture-') + '-handoff.json', identity)
             listener.close()
             channel.sendall(b'1')
             owned = descriptors[:]
             descriptors.clear()
-            return owned, {'peer_pid': peer_pid, 'peer_uid': peer_uid, 'peer_gid': peer_gid,
-                           'mounts': identities, 'mount_coverage': coverage}
+            return owned, identity
     finally:
         for descriptor in descriptors:
             os.close(descriptor)
@@ -248,6 +293,57 @@ def verify_retention(root, observation):
                 and report['retained_entries'] == 100 - entries_left, 'combined retention totals differ')
 
 
+def digest(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def verify_captures(root, report):
+    """Rebuild derived checks from retained bundles after source namespace exit."""
+    attempt = root / report['mode']
+    collection = root / (report['mode'] + '-collection')
+    anchors = report['capture_anchors']
+    options = dict(task_custody=attempt, collection_custody=collection,
+        expected_attempt_sha256=anchors['attempt_sha256'],
+        expected_collection_sha256=anchors['collection_sha256'], max_receipt_bytes=200000)
+    native = verify_native_collection(POLICY, collection,
+        expected_collection_sha256=anchors['collection_sha256'], max_receipt_bytes=200000)
+    linked = link_codex_root(POLICY, **options, max_identity_bytes=100000)
+    accounting = build_capture_byte_report(POLICY, **options)
+    pairs = inspect_captured_tool_pairs(attempt, expected_attempt_sha256=anchors['attempt_sha256'],
+        format='codex-exec-jsonl', expected_root_id=ROOT_ID, max_receipt_bytes=200000, max_event_bytes=100000)
+    task = pairs['task_capture']
+    require(digest(root / (report['mode'] + '-handoff.json')) == anchors['handoff_sha256']
+            and json.loads((root / (report['mode'] + '-handoff.json')).read_bytes()) == report['mount_descriptor'],
+            'handoff differs from pre-release custody')
+    identities = {m['source_root']: m for m in report['mount_descriptor']['mounts']}
+    for source, name in ((task['task_source'], '/work'), (native['runtime_source'], '/episode')):
+        identity = identities[name]
+        require((source['namespace_root'], source['device'], source['inode']) ==
+                (name, identity['source_dev'], identity['source_ino']), 'capture source differs from handoff')
+    captured_attempt = json.loads((attempt / 'attempt.json').read_bytes())
+    require(captured_attempt['before_inventory_sha256'] == report['mount_descriptor']['before_inventory_sha256'],
+            'before inventory differs from pre-release anchor')
+    require(captured_attempt['process'] == report['process'], 'resource and task process receipts differ')
+    collected = json.loads((collection / 'collection.json').read_bytes())
+    diagnostic, = [e for e in collected['entries'] if e['path'] == 'diagnostic_search_root/raw']
+    require((collection / 'objects' / diagnostic['object']).read_bytes() == b'\x00\xfffixture began\n',
+            'retained diagnostic bytes differ')
+    for phase, expected in (('before', b'old'), ('after', b'changed')):
+        inventory = json.loads((attempt / phase / 'inventory.json').read_bytes())
+        entry, = [e for e in inventory['entries'] if e['path'] == 'item']
+        require((attempt / phase / entry['object']).read_bytes() == expected, 'retained task bytes differ')
+    require(pairs['tool_pairs_available'], 'authored tool events unavailable')
+    failed = report['mode'] in ('memory', 'tmp-memory', 'shm-memory')
+    expected_counts = {'request_without_result': 1} if failed else {'paired': 1}
+    require(pairs['tool_pair_report']['status_counts'] == expected_counts, 'tool lifecycle missingness differs')
+    require(native['missing_locations'] == (['final_message'] if failed else []), 'final output missingness differs')
+    final = None if failed else link_codex_final_message(POLICY, **options, max_identity_bytes=100000)
+    require(linked['executed_invocation_bound'] is False and linked['native_capture_complete'] is None,
+            'fixture must not assert native execution or completeness')
+    return {'native': native, 'root_link': linked, 'final_link': final, 'accounting': accounting, 'pairs': pairs,
+            'native_execution': False, 'capture_complete_claim': False}
+
+
 def inside(root, unit):
     require(re.fullmatch(r'caplab-resource-probe-[0-9a-f]{32}\.service', unit), 'invalid probe unit')
     membership = Path('/proc/self/cgroup').read_text().strip()
@@ -267,6 +363,14 @@ def inside(root, unit):
         descriptors = []
         socket_path = root / (mode + '-control.sock')
         try:
+            task = root / (mode + '-task'); task.mkdir(mode=0o700)
+            (task / 'item').write_bytes(b'old')
+            plan = build_native_capture_invocation(POLICY, 'codex-terra-max',
+                context=NativeCaptureContext('/work', '/episode', b'synthetic resource fixture', None))
+            prepared = root / (mode + '-prepared')
+            prepare_native_runtime(POLICY, plan, expected_invocation_sha256=plan['invocation_sha256'],
+                                   task_root=task, output_dir=prepared)
+            preparation_hash = digest(prepared / 'preparation.json')
             limits = {'memory.max': str(32 * MIB), 'memory.swap.max': '0',
                       'memory.oom.group': '1', 'pids.max': '8' if mode == 'pids' else '16'}
             for name, value in limits.items():
@@ -283,35 +387,56 @@ def inside(root, unit):
                 '--size', str(64 * MIB), '--tmpfs', '/scratch',
                 '--size', str(64 * MIB), '--tmpfs', '/tmp',
                 '--size', str(64 * MIB), '--tmpfs', '/dev/shm',
-                '--chdir', '/scratch', '--setenv', 'PATH', '/usr/bin:/bin',
+                '--size', str(64 * MIB), '--tmpfs', '/work',
+                '--size', str(64 * MIB), '--tmpfs', '/episode',
+                '--chdir', '/work', '--setenv', 'PATH', '/usr/bin:/bin',
                 '--ro-bind', str(socket_path), '/control.sock',
                 '--remount-ro', '/proc', '--remount-ro', '/',
-                '--', '/usr/bin/python3', '-B', '-c', HANDOFF, json.dumps(MOUNTS), FIXTURE, mode]
+                '--', '/usr/bin/python3', '-B', '-c', HANDOFF, json.dumps(MOUNTS), FIXTURE, mode,
+                json.dumps({'capture_locations': plan['capture_locations'], 'root_id': ROOT_ID, 'mounts': MOUNTS})]
             command = ['/usr/bin/python3', '-B', '-c', JOIN, str(child), *bwrap]
             intent = {'mode': mode, 'cgroup': str(child), 'command': command, 'before': before}
             seal_capture_json(root, mode + '-intent.json', intent)
-            with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as listener:
-                listener.bind(str(socket_path)); socket_path.chmod(0o600)
-                listener.listen(1); listener.settimeout(3)
-                with ThreadPoolExecutor(max_workers=1) as pool:
-                    pending = pool.submit(capture_process, command, cwd=root, environment={'PATH': '/usr/bin:/bin'},
-                        output_dir=root / mode, max_stream_bytes=200000, timeout_seconds=10)
-                    descriptors, identity = receive_mount(listener, child)
-                    process = pending.result(timeout=16)
-            after = snapshot(child)
-            require(not populated(child), 'fixture must be quiescent before mount retention')
+            with SupervisedTaskCapture(command, task_root=task, namespace_root='/work',
+                    environment={'PATH': '/usr/bin:/bin'}, output_dir=root / mode,
+                    limits=TaskCaptureLimits(200000, 10000, 100, 10), max_process_receipt_bytes=20000) as recorder:
+                with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as listener:
+                    listener.bind(str(socket_path)); socket_path.chmod(0o600)
+                    listener.listen(1); listener.settimeout(3)
+                    with ThreadPoolExecutor(max_workers=1) as pool:
+                        pending = pool.submit(capture_process, command, cwd=task, environment={'PATH': '/usr/bin:/bin'},
+                            output_dir=root / mode / 'process', max_stream_bytes=200000, timeout_seconds=10)
+                        descriptors, identity = receive_mount(listener, child, recorder)
+                        process = pending.result(timeout=16)
+                after = snapshot(child)
+                seal_capture_json(root, mode + '-resource-exit.json',
+                    {'before': before, 'after': after, 'process': process, 'populated': populated(child)})
+                require(not populated(child), 'fixture must be quiescent before task and native retention')
+                recorder.finish(expected_process_sha256=digest(root / mode / 'process/capture.json'))
+                index = MOUNTS.index('/episode'); runtime = identity['mounts'][index]
+                collect_native_outputs(POLICY, prepared, expected_preparation_sha256=preparation_hash,
+                    output_dir=root / (mode + '-collection'), max_receipt_bytes=100000,
+                    max_artifact_bytes=100000, max_entries=100,
+                    runtime_descriptor=NativeRuntimeDescriptor(descriptors[index], runtime['source_dev'], runtime['source_ino']))
             retained = root / (mode + '-retained'); retained.mkdir(mode=0o700)
             inventories = []
             bytes_left, entries_left = 40 * MIB, 100
             for index, (descriptor, mount) in enumerate(zip(descriptors, identity['mounts'], strict=True)):
-                digest, bytes_left, entries_left = retain_mount(
+                inventory_hash, bytes_left, entries_left = retain_mount(
                     descriptor, retained / str(index), mount, bytes_left, entries_left)
-                inventories.append({'source_root': mount['source_root'], 'inventory_sha256': digest})
+                inventories.append({'source_root': mount['source_root'], 'inventory_sha256': inventory_hash})
             report = {'mode': mode, 'before': before, 'after': after, 'process': process,
                       'populated_before_cleanup': populated(child), 'inventories': inventories,
                       'retained_bytes': 40 * MIB - bytes_left, 'retained_entries': 100 - entries_left,
-                      'mount_descriptor': identity}
+                      'mount_descriptor': identity,
+                      'capture_anchors': {'attempt_sha256': digest(root / mode / 'attempt.json'),
+                          'collection_sha256': digest(root / (mode + '-collection') / 'collection.json'),
+                          'handoff_sha256': digest(root / (mode + '-handoff.json'))}}
             seal_capture_json(root, mode + '-observations.json', report)
+            # Only newly created preparation/input roots. Verification below uses retained custody.
+            shutil.rmtree(task)
+            shutil.rmtree(prepared)
+            seal_capture_json(root, mode + '-capture-checks.json', verify_captures(root, report))
             reports.append(report)
         finally:
             for descriptor in descriptors:
@@ -319,7 +444,7 @@ def inside(root, unit):
             socket_path.unlink(missing_ok=True)
             cleanup_group(child)
     seal_capture_json(root, 'observations.json', {
-        'schema': 'caplab.cgroup-resource-probe-observations/v4', 'unit': unit,
+        'schema': 'caplab.cgroup-resource-probe-observations/v5', 'unit': unit,
         'delegated_cgroup': str(group), 'kernel': platform.release(), 'python': platform.python_version(),
         'reports': reports, 'fixture_cgroups_removed': True, 'native_execution': False,
         'capture_complete_claim': False})
@@ -372,6 +497,9 @@ def run(root):
         observation = json.loads((root / 'observations.json').read_bytes())
         expectations(observation)
         verify_retention(root, observation)
+        for report in observation['reports']:
+            require(verify_captures(root, report) == json.loads((root / (report['mode'] + '-capture-checks.json')).read_bytes()),
+                    'capture checks differ after service exit')
     finally:
         # Exact generated unit only. No broad service, cgroup or process cleanup.
         cleanup = subprocess.run(['/usr/bin/systemctl', '--user', 'stop', unit], env=environment,
@@ -384,7 +512,7 @@ def run(root):
             'show_stderr': state.stderr.decode()})
         require(state.stdout.strip() == b'not-found', 'generated transient unit remains loaded')
     require(not Path(observation['delegated_cgroup']).exists(), 'generated cgroup remains after unit cleanup')
-    seal_capture_json(root, 'verification.json', {'schema': 'caplab.cgroup-resource-probe-verification/v4',
+    seal_capture_json(root, 'verification.json', {'schema': 'caplab.cgroup-resource-probe-verification/v5',
         'unit': unit, 'five_fixture_expectations_passed': True, 'unit_removed': True,
         'retained_files_verified_after_service_exit': True,
         'native_execution': False, 'capture_complete_claim': False})
