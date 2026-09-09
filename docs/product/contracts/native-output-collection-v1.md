@@ -5,7 +5,7 @@ Status: implemented raw collection. See the
 
 `caplab.native_collection.collect_native_outputs(policy_path, preparation_root,
 *, expected_preparation_sha256, output_dir, max_receipt_bytes,
-max_artifact_bytes, max_entries, runtime_descriptor=None)` retains the output locations named by a
+max_artifact_bytes, max_entries, runtime_descriptor=None, quarantine_factory=None)` retains the output locations named by a
 [prepared native runtime](native-runtime-preparation-v1.md). The caller supplies
 an independently retained SHA-256 of `preparation.json`, a quiescent runtime,
 trusted stable host parents and an authorized collection scope. This function
@@ -125,3 +125,57 @@ the earlier handoff, bind that directory to the executed invocation, or prove
 native emission. Those remain adapter responsibilities. Binary payloads,
 literal symlinks, shared limits, explicit missing locations and claim ceilings
 are unchanged. See the [implementation and verification record](../../records/implementation-2026-09-08-descriptor-native-collection.md).
+
+## Optional exact-secret quarantine
+
+An authorized caller may supply `quarantine_factory`, using the same trusted
+`StreamQuarantine` protocol as [process capture](bounded-process-capture-v1.md).
+The factory must return a fresh independent gate for each file or metadata
+stream; it owns secret selection and bounded allocation/execution. The collector
+checks callable methods and an initial `quarantined` flag exactly equal to
+`False`. It owns each returned gate through `abandon()` on success, rejection,
+exception or cancellation. Factory failures before returning a gate remain
+factory-owned. No secret values or policy identities are added to receipts.
+
+File bytes pass through the gate before writing. The existing artifact budget
+charges received bytes, including withheld overlap, and still shares its limit
+with literal symlink targets across selected locations. Each read remains at
+most 65,536 bytes, with the existing one-byte overflow observation. Only actual
+EOF permits `finish()`; quota/source/storage failure prevents final publication.
+At normal EOF, received and emitted byte counts and SHA-256 must agree. Gates
+that expand, truncate, reorder or otherwise transform bytes cannot produce a
+completed raw collection. Every emission must be bytes, fit within received
+bytes, and leave `quarantined` exactly `False`. Checks do not prove the supplied
+policy detects secrets: the factory is trusted host code, not a sandbox plugin.
+
+Literal filesystem names are checked as filesystem bytes before inventory use;
+symlink targets are checked before base64 encoding. Caller custody paths and
+generated output names, including pending receipt names and object locators,
+are checked before creation. The copied preparation and invocation receipts
+are checked before any output directory is created. Their string keys/values
+are checked as UTF-8 with surrogate-pass encoding before JSON escaping, as are
+generated intent and collection metadata. Exact serialized bytes are checked
+as well. Strings are not normalized, and opaque native file payloads are not
+decoded or parsed. The helper streams already-bounded metadata through each
+gate; it does not buffer whole artifact files.
+
+A match or invalid runtime flag raises `CaptureQuarantineError` with a fixed
+message; invalid factory interfaces raise `ValueError`. Policy and filesystem
+exceptions propagate. Safe prefixes and earlier private receipts may remain,
+but no final collection is published after a known failure. There is no purge,
+retry or redacted substitute. Source files are never changed. The caller still
+owns source custody, exception/log handling, and the policy's memory lifetime.
+
+`None` preserves unguarded collection. Successful guarded collections use the
+existing v1/v2 formats and verifier without byte changes. Those receipts do not
+attest which gate was selected; an adopting adapter must freeze and retain that
+policy identity independently and treat absent receipts as unavailable output.
+The task-attempt facade does not enable this option merely because collection
+and task capture share an inventory copier.
+
+Exact-value protection does not detect arbitrary encodings, unknown secrets,
+or fragments divided across separate streams. Checking literal symlink targets
+and JSON strings covers their known serialization steps, not all transformed
+content. This change is not complete-surface blinding, privacy acceptance,
+credential administration, native authentication or campaign readiness. See
+the [decision and verification record](../../records/implementation-2026-09-09-native-collection-quarantine.md).

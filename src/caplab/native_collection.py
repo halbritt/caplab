@@ -9,10 +9,12 @@ import hashlib
 import os
 from pathlib import Path, PurePosixPath
 import stat
+from typing import Callable
 
+from caplab.capture_quarantine import check_capture_bytes, check_capture_document
 from caplab.codex_events import parse_native_json
 from caplab.native_runtime import _validated_invocation
-from caplab.process_capture import seal_capture_json
+from caplab.process_capture import StreamQuarantine, seal_capture_json
 from caplab.task_capture import _Inventory, _unchanged
 from caplab.task_capture_verify import _digest, _open, _read_file
 
@@ -112,6 +114,7 @@ def collect_native_outputs(
     policy_path: Path, preparation_root: Path, *, expected_preparation_sha256: str,
     output_dir: Path, max_receipt_bytes: int, max_artifact_bytes: int, max_entries: int,
     runtime_descriptor: NativeRuntimeDescriptor | None = None,
+    quarantine_factory: Callable[[], StreamQuarantine] | None = None,
 ) -> dict:
     """Retain planned paths after writers stop; no native parsing or eligibility.
 
@@ -120,6 +123,9 @@ def collect_native_outputs(
     that output root. Byte/entry limits bound retention, not blocked filesystem time.
     A supplied descriptor is borrowed and selects v2 namespace-source provenance;
     its independently supplied identity does not establish original mount linkage.
+    Optional trusted quarantine checks file bytes and receipt/name metadata before
+    retention; failures abandon overlap and prevent a final collection receipt.
+    The caller owns the bounded policy and its identity; receipts do not attest it.
     """
     for value in (max_receipt_bytes, max_artifact_bytes, max_entries):
         if type(value) is not int or value <= 0:
@@ -128,6 +134,13 @@ def collect_native_outputs(
         raise NativeCollectionError("invalid-runtime-descriptor")
     _digest(expected_preparation_sha256)
     preparation_root, output_dir = Path(preparation_root), Path(output_dir)
+    if quarantine_factory is not None:
+        paths = [preparation_root, output_dir]
+        paths.extend(output_dir / name for name in (
+            "preparation.json", "invocation.json", "objects", "intent.json",
+            ".intent.pending", "collection.json", ".collection.pending"))
+        for path in paths:
+            check_capture_bytes(quarantine_factory, os.fsencode(path))
     if (not preparation_root.is_absolute() or preparation_root == Path("/")
             or preparation_root.resolve() != preparation_root):
         raise NativeCollectionError("preparation-root-must-be-resolved")
@@ -155,14 +168,12 @@ def collect_native_outputs(
         if (not task.is_absolute() or ".." in task.parts or output_dir.is_relative_to(task)
                 or task.is_relative_to(output_dir)):
             raise NativeCollectionError("output-must-be-outside-task")
+        check_capture_document(quarantine_factory, preparation, preparation_raw)
+        check_capture_document(quarantine_factory, invocation, invocation_raw)
         with _runtime_source(root, runtime_descriptor, output_dir) as runtime_fd:
             runtime_before = os.fstat(runtime_fd)
             version = 0 if runtime_descriptor is None else 1
             source_paths = expected_paths if version == 0 else dict(plan["capture_locations"])
-            output_dir.mkdir(mode=0o700)
-            output_dir.chmod(0o700)
-            _retain_receipt(output_dir / "preparation.json", preparation_raw)
-            _retain_receipt(output_dir / "invocation.json", invocation_raw)
             intent = {"schema": COLLECTION_INTENT_SCHEMAS[version],
                       "preparation_sha256": expected_preparation_sha256,
                       "invocation_file_sha256": hashlib.sha256(invocation_raw).hexdigest(),
@@ -172,10 +183,15 @@ def collect_native_outputs(
             if runtime_descriptor is not None:
                 intent["runtime_source"] = {"kind": "directory-descriptor", "namespace_root": plan["runtime_root"],
                     "device": runtime_descriptor.device, "inode": runtime_descriptor.inode}
+            check_capture_document(quarantine_factory, intent)
+            output_dir.mkdir(mode=0o700)
+            output_dir.chmod(0o700)
+            _retain_receipt(output_dir / "preparation.json", preparation_raw)
+            _retain_receipt(output_dir / "invocation.json", invocation_raw)
             intent_digest = seal_capture_json(output_dir, "intent.json", intent)
             payload = output_dir / "objects"
             payload.mkdir(mode=0o700)
-            inventory = _Inventory(payload, max_artifact_bytes, max_entries)
+            inventory = _Inventory(payload, max_artifact_bytes, max_entries, quarantine_factory)
             locations, started = [], datetime.now(UTC).isoformat()
             for name, relative in sorted(selected.items()):
                 kind = "directory" if name.endswith("_search_root") else "file"
@@ -195,5 +211,6 @@ def collect_native_outputs(
                        "missing_locations": [item["name"] for item in locations if item["status"] == "missing"],
                        "native_identity_verified": False, "native_capture_complete": None,
                        "interpretation": "raw planned-path custody only; no session linkage, native completeness or eligibility"}
+            check_capture_document(quarantine_factory, receipt)
             seal_capture_json(output_dir, "collection.json", receipt)
             return receipt

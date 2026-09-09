@@ -10,9 +10,10 @@ import math
 import os
 from pathlib import Path
 import stat
-from typing import Mapping, Sequence
+from typing import Callable, Mapping, Sequence
 
-from caplab.process_capture import capture_process, seal_capture_json
+from caplab.capture_quarantine import check_capture_bytes, quarantine_stream
+from caplab.process_capture import StreamQuarantine, capture_process, seal_capture_json
 
 
 TASK_ATTEMPT_SCHEMAS = ("caplab.task-attempt-capture/v1", "caplab.task-attempt-capture/v2")
@@ -61,12 +62,14 @@ def _names(fd: int, limit: int, overflow_reason: str) -> list[str]:
 
 
 class _Inventory:
-    def __init__(self, output: Path, bytes_left: int, entries_left: int):
+    def __init__(self, output: Path, bytes_left: int, entries_left: int,
+                 quarantine_factory: Callable[[], StreamQuarantine] | None = None):
         self.output = output
         self.bytes_left = bytes_left
         self.entries_left = entries_left
         self.entries: list[dict] = []
         self.retained_bytes = 0
+        self.quarantine_factory = quarantine_factory
 
     def _retain_file(self, parent: int, name: str, before: os.stat_result, relative: str) -> dict:
         fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=parent)
@@ -76,20 +79,24 @@ class _Inventory:
             if not stat.S_ISREG(opened.st_mode):
                 raise TaskCaptureError(f"unsupported-task-object:{relative}")
             destination = f"object-{len(self.entries):08d}"
+            check_capture_bytes(self.quarantine_factory, os.fsencode(self.output / destination))
             digest = hashlib.sha256()
             size = 0
-            with (self.output / destination).open("xb") as retained:
+            with (quarantine_stream(self.quarantine_factory) as gate,
+                  (self.output / destination).open("xb") as retained):
                 os.fchmod(retained.fileno(), 0o600)
                 while True:
                     chunk = os.read(fd, min(65536, self.bytes_left + 1))
                     if not chunk:
+                        if gate is not None:
+                            retained.write(gate.finish())
                         break
                     prefix = chunk[:self.bytes_left]
-                    retained.write(prefix)
                     digest.update(prefix)
                     size += len(prefix)
                     self.retained_bytes += len(prefix)
                     self.bytes_left -= len(prefix)
+                    retained.write(gate.feed(prefix) if gate is not None else prefix)
                     if len(prefix) != len(chunk):
                         retained.flush()
                         os.fsync(retained.fileno())
@@ -105,6 +112,7 @@ class _Inventory:
             os.close(fd)
 
     def visit(self, parent: int, name: str, relative: str) -> None:
+        check_capture_bytes(self.quarantine_factory, os.fsencode(relative))
         if self.entries_left == 0:
             raise TaskCaptureError("task-entry-limit")
         self.entries_left -= 1
@@ -130,6 +138,7 @@ class _Inventory:
             entry.update(self._retain_file(parent, name, before, relative))
         elif stat.S_ISLNK(before.st_mode):
             target = os.fsencode(os.readlink(name, dir_fd=parent))
+            check_capture_bytes(self.quarantine_factory, target)
             if len(target) > self.bytes_left:
                 raise TaskCaptureError(f"task-byte-limit:{relative}")
             self.bytes_left -= len(target)
