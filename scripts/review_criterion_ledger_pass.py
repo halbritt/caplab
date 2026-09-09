@@ -47,6 +47,7 @@ from caplab.codex_events import parse_native_json  # noqa: E402
 CLEAR = {"accept", "accept_with_findings"}
 REFUSE = {"needs_revision", "reject"}
 VERDICT_SELECTION = "latest-admitted-body-then-linked-review-gate/2"
+BODY_REFERENCE_RESOLUTION = "sha256-address-or-hash-agreement/1"
 DEFECT_WORDS = re.compile(r"defect|wrong|incorrect|false claim|fabricat|contradict|hollow|does not (deliver|implement|match)", re.I)
 LIFECYCLE_FIELDS = {
     "pass_run_closed": ("outcome", "closure_source", "closure_reason", "deferral_reason",
@@ -142,24 +143,47 @@ def review_gate_attribution(event: dict, run: dict, admissions: dict) -> str:
     return "linked"
 
 
-def review_body_observation(event: dict) -> tuple[dict, dict | None]:
+def review_body_reference(body: dict | None) -> tuple[str | None, str | None]:
+    if body is None:
+        return None, "missing-reference"
+    if not isinstance(body, dict):
+        return None, "invalid-reference"
+    hashes = []
+    if "address" in body:
+        address = body["address"]
+        if not isinstance(address, str) or not re.fullmatch(r"sha256/[0-9a-f]{64}", address):
+            return None, "invalid-reference"
+        hashes.append(address[7:])
+    if "content_hash" in body:
+        value = body["content_hash"]
+        if not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{64}", value):
+            return None, "invalid-reference"
+        hashes.append(value)
+    if not hashes:
+        return None, "missing-reference"
+    if len(set(hashes)) != 1:
+        return None, "conflicting-reference"
+    if (body.get("store", "object") != "object" or body.get("compression", "zstd") != "zstd"
+            or ("size" in body and (type(body["size"]) is not int or body["size"] < 0))):
+        return None, "invalid-reference"
+    return hashes[0], None
+
+
+def review_body_observation(event: dict, *, object_store: str = M.GRAPH_STORE) -> tuple[dict, dict | None]:
     payload = event["payload"]
     body = payload.get("body")
-    ref = body.get("content_hash") if isinstance(body, dict) else None
+    ref, error = review_body_reference(body)
     observation = {"seq": event["seq"], "artifact": payload.get("identity"),
-                   "body_hash": ref, "status": "missing-reference",
+                   "body_hash": ref, "body_reference": body, "status": error or "missing-reference",
                    "verdict": None, "response_error": "body-not-read"}
-    if body is not None and not isinstance(body, dict):
-        observation["status"] = "invalid-reference"
+    if error:
         return observation, None
-    if ref is None:
-        return observation, None
-    if not isinstance(ref, str) or not ref:
-        observation["status"] = "invalid-reference"
-        return observation, None
-    raw = M.store_object(ref)
+    raw = M.store_object(ref, root=object_store)
     if raw is None:
         observation["status"] = "unavailable-or-unverified"
+        return observation, None
+    if "size" in body and len(raw) != body["size"]:
+        observation["status"] = "body-size-mismatch"
         return observation, None
     try:
         doc = parse_native_json(raw.decode("utf-8"))
@@ -174,14 +198,15 @@ def review_body_observation(event: dict) -> tuple[dict, dict | None]:
     return observation, doc
 
 
-def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
+def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None, object_store: str | None = None):
     """Read an export without changing its records or admitting evidence."""
     by = collections.defaultdict(list)
     digest = hashlib.sha256()
     prefix_digest = hashlib.sha256()
     prefix_remaining = expected_prefix["byte_count"] if expected_prefix else 0
     snapshot = {"path": os.path.abspath(ledger_path), "events": 0,
-                "last_seq": 0, "written_at": None}
+                "last_seq": 0, "written_at": None,
+                "object_store": os.path.abspath(os.path.expanduser(M.GRAPH_STORE if object_store is None else object_store))}
     needed = {"pass_run_opened", "pass_run_closed", "lane_binding",
               "scheduling_decision", "artifact_admitted", "gate_result",
               "integration_conflict", "application_record", "cancellation_record",
@@ -276,7 +301,7 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
         p = e["payload"]
         if p.get("kind") != "review-ledger" or p.get("produced_by_run") not in runs:
             continue
-        observation, doc = review_body_observation(e)
+        observation, doc = review_body_observation(e, object_store=snapshot["object_store"])
         r = runs[p["produced_by_run"]]
         r.setdefault("review_body_observations", []).append(observation)
         r["review_artifact"] = p.get("identity")
@@ -428,6 +453,7 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
               "snapshot": snapshot,
               "gold_outcomes": "unavailable: no review-specific adjudication reader; artifact acceptance is not review correctness",
               "verdict_selection": VERDICT_SELECTION,
+              "body_reference_resolution": BODY_REFERENCE_RESOLUTION,
               "interpretation": "Inspection candidates only; no ranking, scoring or adjudicated correctness labels.",
               "acceptance_observation_linkage": "gate-subject-pin-after-review-closure/2",
               "revision_evidence": "artifact-admission-after-review-closure/1",
@@ -458,9 +484,10 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--ledger", required=True)
+    ap.add_argument("--object-store", help="Graph-store root containing objects/sha256; defaults to the local Striatum graph")
     ap.add_argument("--out", default=os.path.join(ROOT, "advisory", "criterion"), help="Fresh output directory; existing paths refuse")
     args = ap.parse_args()
-    snapshot, report, runs, strata = read_reviews(args.ledger)
+    snapshot, report, runs, strata = read_reviews(args.ledger, object_store=args.object_store)
     os.makedirs(args.out, exist_ok=False)
     with open(os.path.join(args.out, "review-criterion-summary.json"), "w", encoding="utf-8") as f:
         json.dump(report, f, indent=1, sort_keys=True)

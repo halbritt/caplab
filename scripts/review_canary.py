@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 import statistics
 
-from review_criterion_ledger_pass import CLEAR, REFUSE, VERDICT_SELECTION, read_reviews
+from review_criterion_ledger_pass import BODY_REFERENCE_RESOLUTION, CLEAR, REFUSE, VERDICT_SELECTION, read_reviews
 from caplab.codex_events import parse_native_json
 
 
@@ -19,7 +19,8 @@ def load_baseline(path: Path) -> tuple[dict, dict, int]:
     report = parse_native_json(raw.decode("utf-8"))
     if not isinstance(report, dict) or report.get("record") not in (
             "caplab-review-canary/1", "caplab-review-canary/2", "caplab-review-canary/3",
-            "caplab-review-canary/4", "caplab-review-canary/5", "caplab-review-canary/6", "caplab-review-canary/7"):
+            "caplab-review-canary/4", "caplab-review-canary/5", "caplab-review-canary/6",
+            "caplab-review-canary/7", "caplab-review-canary/8"):
         raise ValueError("baseline must be a production review report")
     snapshot = report.get("snapshot")
     if not isinstance(snapshot, dict):
@@ -150,11 +151,12 @@ def summarize(snapshot: dict, runs: dict, after_run: int) -> dict:
             "distinct_cancellation_records": sorted({e["seq"] for r in clear for e in r["request_cancellations"]}),
             "refusals_with_later_version": sum(r["decision"] == "refused" and bool(r["later_versions"]) for r in rows),
         })
-    return {"record": "caplab-review-canary/7", "snapshot": snapshot,
+    return {"record": "caplab-review-canary/8", "snapshot": snapshot,
             "json_interpretation": "utf8-unique-object-keys-no-non-json-constants/1",
             "reference_validation": "nonnegative-integer-sequence-paths/1",
             "revision_evidence": "artifact-admission-after-review-closure/1",
             "verdict_selection": VERDICT_SELECTION,
+            "body_reference_resolution": BODY_REFERENCE_RESOLUTION,
             "downstream_ordering": "ledger-sequence-after-review-closure/1",
             "after_run": after_run, "mode": "since-cutoff" if after_run else "retrospective-baseline",
             "population": len(selected), "reviewers": reviewers, "reviews": selected,
@@ -171,6 +173,7 @@ def render(report: dict) -> str:
              "Use this report to find reviews to inspect and gaps in retained evidence.",
              "It cannot tell you which reviewer is more accurate. Placement remains frozen.", "",
              f"Snapshot through ledger event {snapshot['last_seq']} ({snapshot['written_at']}).",
+             f"Object store: {escape(snapshot['object_store'])}.",
              f"Mode: {report['mode']}. Review runs opened after event {report['after_run']}.",
              f"Population: {report['population']} anchored change-set or repo-doc review runs.",
              "All later events in this snapshot are considered. Open runs remain in the denominator.", "",
@@ -238,6 +241,7 @@ def render(report: dict) -> str:
                   "Body/gate disagreement is compared only for the same admitted review artifact; linkage does not prove review correctness or independence.",
                   "An unavailable or malformed latest body cannot inherit an older body's verdict. Gate-only fallback is labeled.",
                   "An ambiguous body supplies no verdict, even if one of its repeated fields says accept or reject.",
+                  "Body addresses and hashes must identify the same SHA-256 object; returned bytes must match its hash and any recorded size.",
                   "A recognized verdict is an observation even when other response fields are invalid; it is not contract conformance.",
                   "Disagreements remain inspection evidence; this report does not adjudicate which source is right."])
     lines.extend(["", "Downstream events identify work to inspect:", "",
@@ -291,6 +295,7 @@ def main() -> int:
     window.add_argument("--after-run", type=int, default=0, help="exclusive run-opening sequence cutoff; keep fixed for follow-up")
     window.add_argument("--baseline-report", type=Path, help="prior report.json; verify its retained export and preserve its population cutoff")
     parser.add_argument("--out", required=True, help="new output directory; existing reports are never overwritten")
+    parser.add_argument("--object-store", help="Graph-store root containing objects/sha256; defaults to the local Striatum graph")
     args = parser.parse_args()
     target = Path(args.out)
     if target.exists():
@@ -299,7 +304,7 @@ def main() -> int:
     try:
         if args.baseline_report:
             baseline, prefix, after_run = load_baseline(args.baseline_report)
-        snapshot, _, runs, _ = read_reviews(args.ledger, expected_prefix=prefix)
+        snapshot, _, runs, _ = read_reviews(args.ledger, expected_prefix=prefix, object_store=args.object_store)
         report = summarize(snapshot, runs, after_run)
     except (ValueError, OSError) as exc:
         parser.error(str(exc))

@@ -104,7 +104,7 @@ class ReviewGateAttributionTests(unittest.TestCase):
     def test_disagreement_requires_the_same_admitted_body_as_the_gate_evidence(self):
         run, gate = self.review()
         admission = self.events[gate - 1]['payload']
-        admission['body'] = {'content_hash': 'synthetic-body'}
+        admission['body'] = {'content_hash': 'a' * 64}
         with patch.object(criterion.M, 'store_object', return_value=b'{"verdict":"reject"}'):
             _, _, report = self.read()
         self.assertTrue(report['reviews'][0]['body_gate_disagreement'])

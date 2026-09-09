@@ -89,7 +89,7 @@ class ReviewCanaryTest(unittest.TestCase):
         self.review()
         path, report = self.baseline()
         report.pop("downstream_ordering")
-        for version in range(1, 7):
+        for version in range(1, 8):
             with self.subTest(version=version):
                 report["record"] = f"caplab-review-canary/{version}"
                 path.write_text(json.dumps(report))
@@ -321,7 +321,7 @@ class ReviewCanaryTest(unittest.TestCase):
     def test_body_verdict_precedes_gate_and_prose_is_excluded(self):
         run = self.review()
         self.event("artifact_admitted", {"kind": "review-ledger", "produced_by_run": run,
-                                         "identity": "review", "body": {"content_hash": "body-hash"}})
+                                         "identity": "review", "body": {"content_hash": hashlib.sha256(b"body-hash").hexdigest()}})
         self.review(identity="repo/passes/a/design")
         with patch.object(criterion.M, "store_object", return_value=b'{"verdict":"reject","findings":[]}'):
             _, (snapshot, _, runs, _) = self.read()
@@ -338,15 +338,15 @@ class ReviewCanaryTest(unittest.TestCase):
     def test_unavailable_latest_body_cannot_inherit_an_earlier_verdict(self):
         run = self.review()
         first = self.event("artifact_admitted", {"kind": "review-ledger", "produced_by_run": run,
-                           "identity": "review-a", "body": {"content_hash": "body-a"}})
+                           "identity": "review-a", "body": {"content_hash": hashlib.sha256(b"body-a").hexdigest()}})
         last = self.event("artifact_admitted", {"kind": "review-ledger", "produced_by_run": run,
-                          "identity": "review-b", "body": {"content_hash": "body-b"}})
+                          "identity": "review-b", "body": {"content_hash": hashlib.sha256(b"body-b").hexdigest()}})
         with patch.object(criterion.M, "store_object", side_effect=[b'{"verdict":"reject","findings":[]}', None]):
             _, (snapshot, _, runs, _) = self.read()
         row = review_canary.summarize(snapshot, runs, 0)["reviews"][0]
         self.assertIsNone(row["verdict"])
         self.assertEqual(row["verdict_source"], "gate-only")
-        self.assertEqual(row["review_body_hash"], "body-b")
+        self.assertEqual(row["review_body_hash"], hashlib.sha256(b"body-b").hexdigest())
         observations = row["review_body_observations"]
         self.assertEqual([x["seq"] for x in observations], [run + 2, first, last])
         self.assertEqual(observations[0]["status"], "missing-reference")
@@ -361,7 +361,7 @@ class ReviewCanaryTest(unittest.TestCase):
                 self.events = self.events[:1]
                 run = self.review()
                 seq = self.event("artifact_admitted", {"kind": "review-ledger", "produced_by_run": run,
-                    "identity": "review", "body": {"content_hash": "body"}})
+                    "identity": "review", "body": {"content_hash": hashlib.sha256(b"body").hexdigest()}})
                 with patch.object(criterion.M, "store_object", return_value=raw):
                     _, (snapshot, _, runs, _) = self.read()
                 row = review_canary.summarize(snapshot, runs, 0)["reviews"][0]
@@ -390,13 +390,13 @@ class ReviewCanaryTest(unittest.TestCase):
                     run = self.review(verdict=gate)
                     for ref in ("earlier", "latest"):
                         self.event("artifact_admitted", {"kind": "review-ledger",
-                            "produced_by_run": run, "identity": ref, "body": {"content_hash": ref}})
+                            "produced_by_run": run, "identity": ref, "body": {"content_hash": hashlib.sha256(ref.encode()).hexdigest()}})
                     with patch.object(criterion.M, "store_object", side_effect=[
                             b'{"verdict":"reject","findings":[]}', raw]):
                         _, (snapshot, _, runs, _) = self.read()
                     row = review_canary.summarize(snapshot, runs, 0)["reviews"][0]
                     self.assertIsNone(row["verdict"])
-                    self.assertEqual(row["review_body_hash"], "latest")
+                    self.assertEqual(row["review_body_hash"], hashlib.sha256(b"latest").hexdigest())
                     self.assertEqual(row["latest_body_status"], "invalid-json")
                     self.assertEqual(row["review_body_observations"][-2]["verdict"], "reject")
                     self.assertIsNone(row["review_body_observations"][-1]["verdict"])
@@ -406,7 +406,7 @@ class ReviewCanaryTest(unittest.TestCase):
     def test_strict_body_reader_preserves_unicode_without_normalization(self):
         text = "café / cafe\u0301 / 改修 / 🙂"
         doc = {"verdict": "reject", "findings": [], "summary": text}
-        event = {"seq": 7, "payload": {"identity": "review", "body": {"content_hash": "body"}}}
+        event = {"seq": 7, "payload": {"identity": "review", "body": {"content_hash": hashlib.sha256(b"body").hexdigest()}}}
         with patch.object(criterion.M, "store_object", return_value=json.dumps(doc, ensure_ascii=False).encode("utf-8")):
             observation, parsed = criterion.review_body_observation(event)
         self.assertEqual(parsed, doc)
@@ -472,7 +472,7 @@ class ReviewCanaryTest(unittest.TestCase):
                 self.events = self.events[:1]
                 self.assertEqual(self.review(verdict=None), 1)
                 self.event("artifact_admitted", {"kind": "review-ledger", "produced_by_run": ref,
-                    "identity": "aliased", "body": {"content_hash": "synthetic-body"}})
+                    "identity": "aliased", "body": {"content_hash": hashlib.sha256(b"synthetic-body").hexdigest()}})
                 with patch.object(criterion.M, "store_object", return_value=b'{"verdict":"accept","findings":[]}') as store:
                     with self.assertRaisesRegex(ValueError, "produced_by_run"):
                         self.read()
@@ -499,7 +499,7 @@ class ReviewCanaryTest(unittest.TestCase):
                 self.events = self.events[:1]
                 run = self.review(verdict=None)
                 self.event("artifact_admitted", {"kind": "review-ledger", "produced_by_run": run,
-                    "identity": "earlier-valid", "body": {"content_hash": "synthetic-body"}})
+                    "identity": "earlier-valid", "body": {"content_hash": hashlib.sha256(b"synthetic-body").hexdigest()}})
                 self.event(kind, payload)
                 with patch.object(criterion.M, "store_object", return_value=b'{"verdict":"accept","findings":[]}') as store:
                     with self.assertRaisesRegex(ValueError, "nonnegative integer"):
@@ -577,7 +577,7 @@ class ReviewCanaryTest(unittest.TestCase):
     def test_conflicting_verdict_sources_are_retained_and_flagged(self):
         run = self.review()
         seqs = [self.event("artifact_admitted", {"kind": "review-ledger", "produced_by_run": run,
-                "identity": f"review-{i}", "body": {"content_hash": f"body-{i}"}}) for i in range(2)]
+                "identity": f"review-{i}", "body": {"content_hash": hashlib.sha256(f"body-{i}".encode()).hexdigest()}}) for i in range(2)]
         with patch.object(criterion.M, "store_object", side_effect=[
                 b'{"verdict":"accept","findings":[]}', b'{"verdict":"reject","findings":[]}']):
             _, (snapshot, _, runs, _) = self.read()
@@ -671,7 +671,7 @@ class ReviewCanaryTest(unittest.TestCase):
         completed = subprocess.run(command, capture_output=True, text=True)
         self.assertEqual(completed.returncode, 0, completed.stderr)
         report = json.loads((out / "report.json").read_text())
-        self.assertEqual(report["record"], "caplab-review-canary/7")
+        self.assertEqual(report["record"], "caplab-review-canary/8")
         self.assertEqual(report["json_interpretation"], "utf8-unique-object-keys-no-non-json-constants/1")
         self.assertEqual(report["reference_validation"], "nonnegative-integer-sequence-paths/1")
         self.assertEqual(report["revision_evidence"], "artifact-admission-after-review-closure/1")
