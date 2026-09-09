@@ -46,6 +46,7 @@ from caplab.codex_events import parse_native_json  # noqa: E402
 
 CLEAR = {"accept", "accept_with_findings"}
 REFUSE = {"needs_revision", "reject"}
+VERDICT_SELECTION = "latest-admitted-body-then-linked-review-gate/2"
 DEFECT_WORDS = re.compile(r"defect|wrong|incorrect|false claim|fabricat|contradict|hollow|does not (deliver|implement|match)", re.I)
 LIFECYCLE_FIELDS = {
     "pass_run_closed": ("outcome", "closure_source", "closure_reason", "deferral_reason",
@@ -99,11 +100,46 @@ def artifact_class(identity: str) -> str:
 
 
 def _artifact_version_key(pin: dict) -> tuple | None:
+    if not isinstance(pin, dict):
+        return None
     identity, version, content_hash = (pin.get(key) for key in ("identity", "version_seq", "content_hash"))
     if (not isinstance(identity, str) or not identity or type(version) is not int or version < 0
             or not isinstance(content_hash, str) or not content_hash):
         return None
     return identity, version, content_hash
+
+
+def review_gate_attribution(event: dict, run: dict, admissions: dict) -> str:
+    payload = event["payload"]
+    subject = _artifact_version_key(payload.get("subject"))
+    if subject is None or subject != _artifact_version_key(run):
+        return "subject-mismatch-or-incomplete"
+    evidence = payload.get("evidence") or []
+    if not evidence or any(item != evidence[0] for item in evidence[1:]):
+        return "not-one-distinct-evidence"
+    item = evidence[0]
+    pin = _artifact_version_key(item.get("pin"))
+    if pin is None:
+        return "evidence-pin-incomplete"
+    admission = admissions.get(pin[1])
+    if admission is None or not run["run"] < pin[1] < event["seq"]:
+        return "evidence-admission-missing-or-out-of-order"
+    artifact = admission["payload"]
+    if (artifact.get("kind") != "review-ledger" or artifact.get("produced_by_run") != run["run"]
+            or (item.get("producing_run") or {}).get("run_ref") != run["run"]
+            or _artifact_version_key({**artifact, "version_seq": admission["seq"]}) != pin):
+        return "evidence-admission-mismatch"
+    edges = artifact.get("edges")
+    claims = edges.get("evidences") if isinstance(edges, dict) else None
+    claim = claims[0] if isinstance(claims, list) and claims and isinstance(claims[0], dict) else {}
+    if _artifact_version_key(claim.get("subject")) != subject:
+        return "admitted-subject-mismatch-or-incomplete"
+    verdict = payload.get("verdict")
+    if (not isinstance(verdict, str) or verdict not in CLEAR | REFUSE
+            or payload.get("outcome") != ("pass" if verdict in CLEAR else "fail")
+            or claim.get("claim") != "verdict:" + verdict):
+        return "admitted-verdict-mismatch-or-incomplete"
+    return "linked"
 
 
 def review_body_observation(event: dict) -> tuple[dict, dict | None]:
@@ -179,7 +215,7 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
                         if not isinstance(evidence, list):
                             raise ValueError(f"{location}.evidence must be an array or absent")
                         for index, item in enumerate(evidence):
-                            _validate_reference_paths(item, ("producing_run.run_ref",),
+                            _validate_reference_paths(item, ("producing_run.run_ref", "pin.version_seq"),
                                                       f"{location}.evidence[{index}]")
                 by[e["type"]].append(e)
     if not snapshot["events"]:
@@ -260,6 +296,7 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
                                           "text": text[:300] if isinstance(text, str) else ""})
             summary = doc.get("summary")
             r["summary"] = summary[:400] if isinstance(summary, str) else ""
+    admissions = {e["seq"]: e for e in by["artifact_admitted"]}
     for e in by["gate_result"]:
         p = e["payload"]
         if p.get("gate_class") != "review":
@@ -270,10 +307,14 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
             if run in runs and run not in seen:
                 seen.add(run)
                 outcome = p.get("outcome")
+                attribution = review_gate_attribution(e, runs[run], admissions)
                 runs[run].setdefault("review_gate_observations", []).append(
-                    {"seq": e["seq"], "outcome": outcome})
-                runs[run]["review_gate"] = outcome if isinstance(outcome, str) else None
+                    {"seq": e["seq"], "schema_version": e.get("schema_version"), "outcome": outcome,
+                     "verdict": p.get("verdict"), "subject": p.get("subject"), "evidence": p.get("evidence"),
+                     "attribution": attribution})
+                runs[run]["review_gate"] = outcome if attribution == "linked" and isinstance(outcome, str) else None
                 runs[run]["review_gate_seq"] = e["seq"]
+                runs[run]["review_gate_evidence_seq"] = ev["pin"]["version_seq"] if attribution == "linked" else None
 
     def cleared(r):
         v = r.get("verdict")
@@ -386,6 +427,7 @@ def read_reviews(ledger_path: str, *, expected_prefix: dict | None = None):
     report = {"record": "caplab-review-criterion-candidates/2",
               "snapshot": snapshot,
               "gold_outcomes": "unavailable: no review-specific adjudication reader; artifact acceptance is not review correctness",
+              "verdict_selection": VERDICT_SELECTION,
               "interpretation": "Inspection candidates only; no ranking, scoring or adjudicated correctness labels.",
               "acceptance_observation_linkage": "gate-subject-pin-after-review-closure/2",
               "revision_evidence": "artifact-admission-after-review-closure/1",

@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 import statistics
 
-from review_criterion_ledger_pass import CLEAR, REFUSE, read_reviews
+from review_criterion_ledger_pass import CLEAR, REFUSE, VERDICT_SELECTION, read_reviews
 from caplab.codex_events import parse_native_json
 
 
@@ -19,7 +19,7 @@ def load_baseline(path: Path) -> tuple[dict, dict, int]:
     report = parse_native_json(raw.decode("utf-8"))
     if not isinstance(report, dict) or report.get("record") not in (
             "caplab-review-canary/1", "caplab-review-canary/2", "caplab-review-canary/3",
-            "caplab-review-canary/4", "caplab-review-canary/5", "caplab-review-canary/6"):
+            "caplab-review-canary/4", "caplab-review-canary/5", "caplab-review-canary/6", "caplab-review-canary/7"):
         raise ValueError("baseline must be a production review report")
     snapshot = report.get("snapshot")
     if not isinstance(snapshot, dict):
@@ -67,7 +67,7 @@ def observe_run(run: dict) -> dict:
         "run", "opened", "closed", "closed_seq", "backend", "identity", "version_seq",
         "content_hash", "class", "materialized_base", "contract_hash",
         "request_ref", "review_artifact", "review_body_hash", "verdict",
-        "review_gate", "review_gate_seq", "outcome", "wall_s")}
+        "review_gate", "review_gate_seq", "review_gate_evidence_seq", "outcome", "wall_s")}
     observed["decision"] = {True: "cleared", False: "refused", None: "unknown"}[run["cleared"]]
     observed["verdict_source"] = ("body" if run.get("verdict") in CLEAR | REFUSE else
                                   "gate-only" if run.get("review_gate") in {"pass", "fail"} else "missing")
@@ -75,13 +75,15 @@ def observe_run(run: dict) -> dict:
     gates = run.get("review_gate_observations", [])
     observed["review_body_observations"] = bodies
     observed["review_gate_observations"] = gates
+    observed["unverified_gate_observations"] = sum(g["attribution"] != "linked" for g in gates)
     observed["lifecycle_observations"] = run["lifecycle_observations"]
     observed["latest_body_status"] = bodies[-1]["status"] if bodies else "not-admitted"
     observed["multiple_body_verdicts"] = len({b["verdict"] for b in bodies
         if isinstance(b["verdict"], str) and b["verdict"] in CLEAR | REFUSE}) > 1
     observed["multiple_gate_outcomes"] = len({g["outcome"] for g in gates
         if isinstance(g["outcome"], str) and g["outcome"] in {"pass", "fail"}}) > 1
-    observed["body_gate_disagreement"] = (observed["verdict_source"] == "body"
+    observed["body_gate_comparable"] = bool(bodies and bodies[-1]["seq"] == run.get("review_gate_evidence_seq"))
+    observed["body_gate_disagreement"] = (observed["body_gate_comparable"] and observed["verdict_source"] == "body"
         and run.get("review_gate") in {"pass", "fail"}
         and (run["verdict"] in CLEAR) != (run["review_gate"] == "pass"))
     later = run["post_close_events"]
@@ -148,11 +150,11 @@ def summarize(snapshot: dict, runs: dict, after_run: int) -> dict:
             "distinct_cancellation_records": sorted({e["seq"] for r in clear for e in r["request_cancellations"]}),
             "refusals_with_later_version": sum(r["decision"] == "refused" and bool(r["later_versions"]) for r in rows),
         })
-    return {"record": "caplab-review-canary/6", "snapshot": snapshot,
+    return {"record": "caplab-review-canary/7", "snapshot": snapshot,
             "json_interpretation": "utf8-unique-object-keys-no-non-json-constants/1",
             "reference_validation": "nonnegative-integer-sequence-paths/1",
             "revision_evidence": "artifact-admission-after-review-closure/1",
-            "verdict_selection": "latest-admitted-body-then-latest-review-gate/1",
+            "verdict_selection": VERDICT_SELECTION,
             "downstream_ordering": "ledger-sequence-after-review-closure/1",
             "after_run": after_run, "mode": "since-cutoff" if after_run else "retrospective-baseline",
             "population": len(selected), "reviewers": reviewers, "reviews": selected,
@@ -214,6 +216,8 @@ def render(report: dict) -> str:
         if row["multiple_gate_outcomes"]:
             issues["Different outcomes across review gates"].append(row["run"])
         if row["review_gate_observations"]:
+            for reason in sorted({g["attribution"] for g in row["review_gate_observations"] if g["attribution"] != "linked"}):
+                issues["Unverified gate attribution: " + reason].append(row["run"])
             outcome = row["review_gate_observations"][-1]["outcome"]
             if not isinstance(outcome, str) or outcome not in {"pass", "fail"}:
                 issues["Latest review gate: unsupported outcome"].append(row["run"])
@@ -228,7 +232,10 @@ def render(report: dict) -> str:
         lines.append(f"- {issue}: {len(refs)} runs. " + "; ".join(f"Review {ref}" for ref in refs[:3]) + ".")
     if not issues:
         lines.append("No recorded body or source discrepancies found. Missing bodies can still limit the report.")
-    lines.extend(["", "The latest admitted body's recognized verdict takes precedence over the latest review gate.",
+    lines.extend(["", "The latest admitted body's recognized verdict takes precedence over a linked review gate.",
+                  "Gate-only fallback requires one exact admitted review artifact, its recorded subject and verdict, and matching gate outcome.",
+                  "Unverified gate links remain observations but supply no verdict. A newer unverified gate cannot inherit an older gate's verdict.",
+                  "Body/gate disagreement is compared only for the same admitted review artifact; linkage does not prove review correctness or independence.",
                   "An unavailable or malformed latest body cannot inherit an older body's verdict. Gate-only fallback is labeled.",
                   "An ambiguous body supplies no verdict, even if one of its repeated fields says accept or reject.",
                   "A recognized verdict is an observation even when other response fields are invalid; it is not contract conformance.",

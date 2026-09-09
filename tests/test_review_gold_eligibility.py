@@ -9,6 +9,7 @@ import unittest
 SCRIPTS = Path(__file__).resolve().parents[1] / 'scripts'
 sys.path.insert(0, str(SCRIPTS))
 import review_criterion_ledger_pass as criterion
+from test_review_gate_attribution import gate_for_review
 
 
 class ReviewGoldEligibilityTests(unittest.TestCase):
@@ -30,8 +31,7 @@ class ReviewGoldEligibilityTests(unittest.TestCase):
         run = self.event('pass_run_opened', {'pass_id': 'review', 'manifest': {
             'subject_pin': subject, 'input_pins': [{'role': 'materialized_base', 'content_hash': 'base'}]}})
         if verdict:
-            self.event('gate_result', {'gate_class': 'review', 'outcome': verdict,
-                                       'evidence': [{'producing_run': {'run_ref': run}}]})
+            gate_for_review(self.event, self.events, run, verdict)
         if close:
             self.event('pass_run_closed', {'run_ref': run, 'outcome': 'submitted'})
         return run

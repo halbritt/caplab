@@ -11,6 +11,7 @@ SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
 sys.path.insert(0, str(SCRIPTS))
 import review_canary
 import review_criterion_ledger_pass as criterion
+from test_review_gate_attribution import gate_for_review
 
 
 class ReviewCanaryTest(unittest.TestCase):
@@ -34,8 +35,7 @@ class ReviewCanaryTest(unittest.TestCase):
                          "subject_pin": {"identity": identity, "version_seq": version, "content_hash": f"hash-{version}"}}})
         self.event("lane_binding", {"run_ref": run, "backend_id": backend})
         if verdict:
-            self.event("gate_result", {"gate_class": "review", "outcome": verdict,
-                                       "evidence": [{"producing_run": {"run_ref": run}}]})
+            gate_for_review(self.event, self.events, run, verdict)
         if close:
             self.event("pass_run_closed", {"run_ref": run, "outcome": "submitted" if verdict else "error"})
         return run
@@ -88,12 +88,16 @@ class ReviewCanaryTest(unittest.TestCase):
     def test_legacy_baseline_preserves_window_without_claiming_same_calculations(self):
         self.review()
         path, report = self.baseline()
-        report["record"] = "caplab-review-canary/1"
         report.pop("downstream_ordering")
-        path.write_text(json.dumps(report))
-        reference, _, cutoff = review_canary.load_baseline(path)
-        self.assertEqual(cutoff, report["snapshot"]["last_seq"])
-        self.assertEqual(reference["record"], "caplab-review-canary/1")
+        for version in range(1, 7):
+            with self.subTest(version=version):
+                report["record"] = f"caplab-review-canary/{version}"
+                path.write_text(json.dumps(report))
+                before = path.read_bytes()
+                reference, _, cutoff = review_canary.load_baseline(path)
+                self.assertEqual(cutoff, report["snapshot"]["last_seq"])
+                self.assertEqual(reference["record"], report["record"])
+                self.assertEqual(path.read_bytes(), before)
 
     def test_follow_up_from_genesis_keeps_zero_cutoff_on_the_next_report(self):
         path, _ = self.baseline()
@@ -285,7 +289,7 @@ class ReviewCanaryTest(unittest.TestCase):
         for written_at in ("2026-09-07T00:00:00Z", "2026-09-07T00:00:04Z"):
             with self.subTest(written_at=written_at):
                 self.events = self.events[:1]
-                run = self.review()
+                self.review()
                 closed = self.events[-1]["seq"]
                 application = self.event("application_record", {"change_set": {"content_hash": "hash-1"}})
                 conflict = self.event("integration_conflict", {"losing_change_set_pin": {"content_hash": "hash-1"},
@@ -344,8 +348,9 @@ class ReviewCanaryTest(unittest.TestCase):
         self.assertEqual(row["verdict_source"], "gate-only")
         self.assertEqual(row["review_body_hash"], "body-b")
         observations = row["review_body_observations"]
-        self.assertEqual([x["seq"] for x in observations], [first, last])
-        self.assertEqual(observations[0]["verdict"], "reject")
+        self.assertEqual([x["seq"] for x in observations], [run + 2, first, last])
+        self.assertEqual(observations[0]["status"], "missing-reference")
+        self.assertEqual(observations[-2]["verdict"], "reject")
         self.assertEqual(observations[-1]["status"], "unavailable-or-unverified")
 
     def test_malformed_review_bodies_remain_explicit_inspection_evidence(self):
@@ -360,7 +365,7 @@ class ReviewCanaryTest(unittest.TestCase):
                 with patch.object(criterion.M, "store_object", return_value=raw):
                     _, (snapshot, _, runs, _) = self.read()
                 row = review_canary.summarize(snapshot, runs, 0)["reviews"][0]
-                observation = row["review_body_observations"][0]
+                observation = row["review_body_observations"][-1]
                 self.assertEqual(observation["seq"], seq)
                 self.assertEqual(observation["status"], status)
                 self.assertIsNotNone(observation["response_error"])
@@ -393,7 +398,7 @@ class ReviewCanaryTest(unittest.TestCase):
                     self.assertIsNone(row["verdict"])
                     self.assertEqual(row["review_body_hash"], "latest")
                     self.assertEqual(row["latest_body_status"], "invalid-json")
-                    self.assertEqual(row["review_body_observations"][0]["verdict"], "reject")
+                    self.assertEqual(row["review_body_observations"][-2]["verdict"], "reject")
                     self.assertIsNone(row["review_body_observations"][-1]["verdict"])
                     self.assertEqual(row["verdict_source"], "gate-only" if gate else "missing")
                     self.assertEqual(row["decision"], "cleared" if gate else "unknown")
@@ -579,9 +584,10 @@ class ReviewCanaryTest(unittest.TestCase):
         report = review_canary.summarize(snapshot, runs, 0)
         row = report["reviews"][0]
         self.assertEqual(row["verdict"], "reject")
-        self.assertEqual([x["seq"] for x in row["review_body_observations"]], seqs)
+        self.assertEqual([x["seq"] for x in row["review_body_observations"]], [run + 2, *seqs])
         self.assertTrue(row["multiple_body_verdicts"])
-        self.assertTrue(row["body_gate_disagreement"])
+        self.assertFalse(row["body_gate_disagreement"])
+        self.assertFalse(row["body_gate_comparable"])
         self.assertEqual(row["review_gate_observations"][0]["outcome"], "pass")
         self.assertIn(f"Review {run}", review_canary.render(report))
 
@@ -610,12 +616,12 @@ class ReviewCanaryTest(unittest.TestCase):
         report = review_canary.summarize(snapshot, runs, 0)
         row = report["reviews"][0]
         self.assertEqual(row["decision"], "unknown")
-        self.assertEqual([g["seq"] for g in row["review_gate_observations"]], [run + 2, fail, invalid])
+        self.assertEqual([g["seq"] for g in row["review_gate_observations"]], [run + 3, fail, invalid])
         self.assertTrue(row["multiple_gate_outcomes"])
         self.assertIn("Latest review gate: unsupported outcome", review_canary.render(report))
 
     def test_missing_verdict_lifecycle_preserves_recorded_causes_and_diagnostic_refs(self):
-        deferred = self.review(verdict=None)
+        self.review(verdict=None)
         self.events[-1]["payload"].update(outcome="canceled", closure_source="scheduling_deferral",
                                          deferral_reason="capacity_saturated", closure_reason="no free lane")
         partial = self.review(verdict=None, close=False)
@@ -665,7 +671,7 @@ class ReviewCanaryTest(unittest.TestCase):
         completed = subprocess.run(command, capture_output=True, text=True)
         self.assertEqual(completed.returncode, 0, completed.stderr)
         report = json.loads((out / "report.json").read_text())
-        self.assertEqual(report["record"], "caplab-review-canary/6")
+        self.assertEqual(report["record"], "caplab-review-canary/7")
         self.assertEqual(report["json_interpretation"], "utf8-unique-object-keys-no-non-json-constants/1")
         self.assertEqual(report["reference_validation"], "nonnegative-integer-sequence-paths/1")
         self.assertEqual(report["revision_evidence"], "artifact-admission-after-review-closure/1")
