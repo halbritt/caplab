@@ -7,6 +7,7 @@ This is not a native launcher, arbitrary-command runner or completeness gate.
 
 import argparse
 import array
+import errno
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
@@ -175,9 +176,23 @@ def cleanup_group(group):
     group.rmdir()
 
 
+BASIC_DEVICE_IDENTITIES = (('null', 1, 3), ('zero', 1, 5), ('full', 1, 7),
+                           ('random', 1, 8), ('urandom', 1, 9), ('tty', 5, 0))
+
+
+def device_names(selection):
+    if selection is False:
+        return ()
+    if selection is True:
+        return ('null', 'urandom')
+    require(type(selection) is str and selection == 'bwrap-basic-v1', 'invalid device profile')
+    return tuple(name for name, _, _ in BASIC_DEVICE_IDENTITIES)
+
+
 def mount_coverage(raw, *, usable_devices=False, nested_userns=False):
     """Check the fixed fixture topology, including unexpected nested mounts."""
     require(type(nested_userns) is bool, 'nested_userns must be a boolean')
+    devices = {'/dev/' + name for name in device_names(usable_devices)}
     mounts = []
     for line in raw.splitlines():
         fields = line.split()
@@ -188,7 +203,6 @@ def mount_coverage(raw, *, usable_devices=False, nested_userns=False):
     by_path = {m['path']: m for m in mounts}
     require(len(by_path) == len(mounts), 'ambiguous stacked fixture mounts')
     writable = {m['path'] for m in mounts if 'rw' in m['options']}
-    devices = {'/dev/null', '/dev/urandom'} if usable_devices else set()
     procfs = {'/proc'} if nested_userns else set()
     require(writable == set(MOUNTS) | devices | procfs, 'unexpected writable fixture mounts')
     require(all(by_path[path]['filesystem'] == 'tmpfs' for path in MOUNTS),
@@ -205,6 +219,7 @@ def mount_coverage(raw, *, usable_devices=False, nested_userns=False):
         require({'nosuid', 'nodev', 'noexec'} <= set(by_path['/proc']['options']), 'nested procfs lacks mount protections')
     return {'raw': raw, 'mounts': mounts, 'writable_tmpfs': sorted(MOUNTS),
             **({'writable_procfs': ['/proc']} if nested_userns else {}),
+            **({'device_profile': usable_devices} if type(usable_devices) is str else {}),
             **({'writable_devices': sorted(devices)} if usable_devices else {})}
 
 
@@ -246,9 +261,67 @@ def inspect_nested_procfs(peer_pid):
     return observation
 
 
-def inspect_devices(peer_pid):
+def inspect_basic_device(peer_pid, name, major, minor):
+    path = f'/proc/{peer_pid}/root/dev/{name}'
+    descriptor = os.open(path, os.O_PATH | os.O_NOFOLLOW | os.O_CLOEXEC)
+    try:
+        info = os.fstat(descriptor)
+        require(stat.S_ISCHR(info.st_mode) and (os.major(info.st_rdev), os.minor(info.st_rdev)) == (major, minor),
+                'peer device identity differs: ' + name)
+        observed = {'path': '/dev/' + name, 'major': os.major(info.st_rdev), 'minor': os.minor(info.st_rdev),
+                    'read_bytes': None, 'zero_read_verified': None, 'write_result': 'not-tested'}
+        if name == 'tty':
+            return observed  # O_PATH proves identity without opening the supervisor's terminal.
+        access = os.O_RDWR if name in ('null', 'full') else os.O_RDONLY
+        fd = os.open(f'/proc/self/fd/{descriptor}', access | os.O_NONBLOCK | os.O_CLOEXEC)
+        try:
+            raw = os.read(fd, 1)
+            observed['read_bytes'] = len(raw)
+            if name in ('zero', 'full'):
+                observed['zero_read_verified'] = raw == b'\0'
+            if name == 'null':
+                require(os.write(fd, b'probe') == 5, 'null device did not discard write')
+                observed['write_result'] = 'discarded'
+            if name == 'full':
+                try:
+                    os.write(fd, b'probe')
+                except OSError as error:
+                    require(error.errno == errno.ENOSPC, 'full device write error differs')
+                    observed['write_result'] = 'enospc'
+                else:
+                    raise RuntimeError('full device accepted a write')
+        finally:
+            os.close(fd)
+        return observed
+    finally:
+        os.close(descriptor)
+
+
+def verify_basic_devices(observation):
+    expected = {'schema': 'caplab.basic-device-observation/v1', 'profile': 'bwrap-basic-v1',
+                'controlling_terminal': 0, 'devices': []}
+    for name, major, minor in BASIC_DEVICE_IDENTITIES:
+        expected['devices'].append({'path': '/dev/' + name, 'major': major, 'minor': minor,
+            'read_bytes': None if name == 'tty' else (0 if name == 'null' else 1),
+            'zero_read_verified': True if name in ('zero', 'full') else None,
+            'write_result': {'null': 'discarded', 'full': 'enospc'}.get(name, 'not-tested')})
+    require(json.dumps(observation, sort_keys=True) == json.dumps(expected, sort_keys=True),
+            'basic device observation differs')
+
+
+def inspect_devices(peer_pid, *, usable_devices=True):
+    names = device_names(usable_devices)
+    if usable_devices == 'bwrap-basic-v1':
+        fields = Path(f'/proc/{peer_pid}/stat').read_text().rsplit(')', 1)[1].split()
+        tty = int(fields[4])
+        require(tty == 0, 'peer has a controlling terminal')
+        observation = {'schema': 'caplab.basic-device-observation/v1', 'profile': usable_devices,
+                       'controlling_terminal': tty,
+                       'devices': [inspect_basic_device(peer_pid, *identity) for identity in BASIC_DEVICE_IDENTITIES]}
+        verify_basic_devices(observation)
+        return observation
     devices = []
-    for name in ('null', 'urandom'):
+    for name in names:
         path = Path(f'/proc/{peer_pid}/root/dev/{name}')
         info, host = path.stat(), Path('/dev', name).stat()
         require(stat.S_ISCHR(info.st_mode) and info.st_rdev == host.st_rdev, 'peer device identity differs')
@@ -268,6 +341,7 @@ def inspect_devices(peer_pid):
 def receive_mount(listener, child, recorder, *, inspect_peer=None, usable_devices=False, quarantine_factory=None,
                   nested_userns=False):
     require(type(nested_userns) is bool, 'nested_userns must be a boolean')
+    device_names(usable_devices)
     descriptors = []
     try:
         channel, _ = listener.accept()
@@ -302,7 +376,7 @@ def receive_mount(listener, child, recorder, *, inspect_peer=None, usable_device
             require(len({(i['source_dev'], i['source_ino']) for i in identities}) == len(MOUNTS),
                     'mount handoff aliases a directory')
             peer_checks = inspect_peer(peer_pid) if inspect_peer is not None else None
-            device_access = inspect_devices(peer_pid) if usable_devices else None
+            device_access = inspect_devices(peer_pid, usable_devices=usable_devices) if usable_devices else None
             index = MOUNTS.index('/work')
             task = identities[index]
             before_hash = recorder.capture_before(descriptors[index],

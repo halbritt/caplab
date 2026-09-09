@@ -4,7 +4,10 @@ from copy import deepcopy
 import json
 import os
 from pathlib import Path
+import select
 import socket
+import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -29,19 +32,20 @@ print(Path('/work/witness.txt').read_text(),end='')
 
 @unittest.skipUnless(Path('/usr/bin/bwrap').is_file(), 'Bubblewrap required')
 class NestedProcfsTests(unittest.TestCase):
-    def exercise(self, *, retain_capability=False):
+    def exercise(self, *, retain_capability=False, usable_devices=True, device_sources=None, producer=PRODUCER):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);task=root/'task';task.mkdir();sock=root/'control.sock'
             member=Path('/proc/self/cgroup').read_text().strip()
             group=Path('/sys/fs/cgroup')/member[3:].lstrip('/')
             cmd=['/usr/bin/bwrap','--unshare-all','--die-with-parent','--new-session','--clearenv','--cap-drop','ALL',
                  '--ro-bind','/usr','/usr','--symlink','usr/bin','/bin','--symlink','usr/lib','/lib',
-                 '--symlink','usr/lib64','/lib64','--proc','/proc','--dir','/dev',
-                 '--dev-bind','/dev/null','/dev/null','--dev-bind','/dev/urandom','/dev/urandom']
+                 '--symlink','usr/lib64','/lib64','--proc','/proc','--dir','/dev']
+            for name,source in (device_sources or {'null':'null','urandom':'urandom'}).items():
+                cmd+=['--dev-bind','/dev/'+source,'/dev/'+name]
             if retain_capability:cmd+=['--cap-add','CAP_NET_ADMIN']
             for path in probe.MOUNTS:cmd+=['--size',str(64*probe.MIB),'--tmpfs',path]
             cmd+=['--ro-bind',str(sock),'/control.sock','--chdir','/work','--remount-ro','/',
-                  '--','/usr/bin/python3','-B','-c',PRODUCER]
+                  '--','/usr/bin/python3','-B','-c',producer]
             with SupervisedTaskCapture(cmd,task_root=task,namespace_root='/work',environment={},
                     output_dir=root/'attempt',limits=TaskCaptureLimits(10000,1000,20,10),max_process_receipt_bytes=10000) as recorder:
                 with socket.socket(socket.AF_UNIX,socket.SOCK_STREAM) as listener:
@@ -51,7 +55,7 @@ class NestedProcfsTests(unittest.TestCase):
                             output_dir=root/'attempt/process',max_stream_bytes=10000,timeout_seconds=10)
                         if retain_capability:
                             with self.assertRaisesRegex(RuntimeError, 'retains privileges'):
-                                probe.receive_mount(listener,group,recorder,usable_devices=True,nested_userns=True)
+                                probe.receive_mount(listener,group,recorder,usable_devices=usable_devices,nested_userns=True)
                             process=future.result(timeout=12)
                             self.assertEqual(process['return_code'],7)
                             self.assertEqual((root/'attempt/process/native.stdout').read_bytes(),b'')
@@ -59,7 +63,7 @@ class NestedProcfsTests(unittest.TestCase):
                             receipt=group.name.removeprefix('fixture-')+'-handoff.json'
                             self.assertFalse((root/receipt).exists())
                             return
-                        fds,handoff=probe.receive_mount(listener,group,recorder,usable_devices=True,nested_userns=True)
+                        fds,handoff=probe.receive_mount(listener,group,recorder,usable_devices=usable_devices,nested_userns=True)
                         try:
                             self.assertEqual(handoff['mount_coverage']['writable_procfs'],['/proc'])
                             probe.verify_nested_procfs(handoff['nested_procfs'])
@@ -82,6 +86,78 @@ class NestedProcfsTests(unittest.TestCase):
 
     def test_handoff_permits_nested_sandbox_with_isolated_procfs(self):
         self.exercise()
+
+    def test_basic_devices_permit_real_nested_dev_setup(self):
+        devices={name:name for name in ('null','zero','full','random','urandom','tty')}
+        producer=PRODUCER.replace("'--dir','/dev','--dev-bind','/dev/null','/dev/null'", "'--dev','/dev'")
+        self.assertNotEqual(producer,PRODUCER)
+        handoff=self.exercise(usable_devices='bwrap-basic-v1',device_sources=devices,producer=producer)
+        self.assertEqual(handoff['mount_coverage']['device_profile'],'bwrap-basic-v1')
+        self.assertEqual(handoff['device_access']['profile'],'bwrap-basic-v1')
+
+    def test_basic_profile_refuses_a_wrong_character_device(self):
+        devices={name:name for name in ('null','zero','full','random','urandom','tty')}
+        devices['zero']='urandom'
+        before=set(os.listdir('/proc/self/fd'))
+        with self.assertRaisesRegex(RuntimeError,'peer device identity differs: zero'):
+            self.exercise(usable_devices='bwrap-basic-v1',device_sources=devices)
+        self.assertEqual(before,set(os.listdir('/proc/self/fd')))
+
+    def test_basic_profile_refuses_missing_or_extra_device_mounts(self):
+        devices={name:name for name in ('null','zero','full','random','urandom','tty')}
+        for changed in ({k:v for k,v in devices.items() if k!='zero'},devices|{'unexpected':'null'}):
+            before=set(os.listdir('/proc/self/fd'))
+            with self.subTest(devices=changed),self.assertRaisesRegex(RuntimeError,'unexpected writable'):
+                self.exercise(usable_devices='bwrap-basic-v1',device_sources=changed)
+            self.assertEqual(before,set(os.listdir('/proc/self/fd')))
+
+    def test_device_selection_rejects_ambiguous_flags_and_arbitrary_profiles(self):
+        for selection in (None,0,1,'true','false','arbitrary',[],{}):
+            with self.subTest(selection=selection),self.assertRaisesRegex(RuntimeError,'invalid device profile'):
+                probe.mount_coverage('',usable_devices=selection)
+
+    def test_basic_device_record_rejects_missing_or_contradictory_predicates(self):
+        devices={name:name for name in ('null','zero','full','random','urandom','tty')}
+        observed=self.exercise(usable_devices='bwrap-basic-v1',device_sources=devices)['device_access']
+        probe.verify_basic_devices(observed)
+        for bad in (None,{},observed|{'controlling_terminal':1},observed|{'controlling_terminal':False},
+                    observed|{'profile':'arbitrary'},observed|{'devices':observed['devices'][:-1]}):
+            with self.subTest(observation=bad),self.assertRaisesRegex(RuntimeError,'basic device observation differs'):
+                probe.verify_basic_devices(bad)
+        for index,item in enumerate(observed['devices']):
+            for field,value in (('major',True),('minor',999),('read_bytes',10),
+                                ('zero_read_verified',False),('write_result','accepted')):
+                bad=deepcopy(observed);bad['devices'][index][field]=value
+                with self.subTest(device=item['path'],field=field),self.assertRaisesRegex(RuntimeError,'basic device observation differs'):
+                    probe.verify_basic_devices(bad)
+
+    def test_basic_profile_refuses_a_peer_with_a_private_controlling_terminal(self):
+        before=set(os.listdir('/proc/self/fd'))
+        master,slave=os.openpty()
+        release_read,release_write=os.pipe()
+        child=None
+        try:
+            child=subprocess.Popen([sys.executable,'-B','-c',
+                "import fcntl,os,sys,termios; fcntl.ioctl(0,termios.TIOCSCTTY,0); print('ready',flush=True); os.read(int(sys.argv[1]),1)",
+                str(release_read)],stdin=slave,stdout=subprocess.PIPE,stderr=subprocess.PIPE,
+                start_new_session=True,pass_fds=(release_read,))
+            ready,_,_=select.select([child.stdout],[],[],3)
+            self.assertTrue(ready,'private terminal child did not start')
+            self.assertEqual(child.stdout.readline(),b'ready\n')
+            with self.assertRaisesRegex(RuntimeError,'peer has a controlling terminal'):
+                probe.inspect_devices(child.pid,usable_devices='bwrap-basic-v1')
+        finally:
+            for fd in (release_write,release_read):os.close(fd)
+            try:
+                if child is not None:
+                    try:child.communicate(timeout=3)
+                    except subprocess.TimeoutExpired:
+                        child.kill();child.communicate(timeout=3)
+                        raise
+            finally:
+                for fd in (slave,master):os.close(fd)
+        self.assertEqual(child.returncode,0)
+        self.assertEqual(before,set(os.listdir('/proc/self/fd')))
 
     def test_host_procfs_is_refused(self):
         with self.assertRaisesRegex(RuntimeError, 'shares supervisor namespace'):
