@@ -57,7 +57,8 @@ def _creation_records(lines, *, selected_pid=None):
         syscall, arguments, result = call.groups()
         flags = _creation_flags(syscall, arguments.strip())
         parsed = _RESULT.fullmatch(result)
-        _require(parsed is not None or _ERROR.fullmatch(result), 'invalid process creation result')
+        _require(parsed is not None or _ERROR.fullmatch(result)
+                 or result == '? ERESTARTNOINTR (To be restarted)', 'invalid process creation result')
         if parsed:
             if 'CLONE_DETACHED' in flags:
                 _require(syscall == 'clone' and 'CLONE_PIDFD' not in flags, 'invalid successful detached clone')

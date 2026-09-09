@@ -103,6 +103,41 @@ class ProcessTraceTests(unittest.TestCase):
                      'invalid prefix\n', "73 fork() = 3 /* 91 in strace's PID NS */"):
             with self.subTest(text=text), self.assertRaises(CaptureVerificationError): self.inspect(text)
 
+    def test_restarted_clone_only_links_the_later_successful_creation(self):
+        interrupted = ('73 clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|SIGCHLD <unfinished ...>\n'
+            '74 --- SIGCHLD {} ---\n'
+            '73 <... clone resumed>, child_tidptr=0x1000) = ? ERESTARTNOINTR (To be restarted)\n'
+            '73 --- SIGCHLD {} ---\n')
+        completed = ('73 clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|SIGCHLD <unfinished ...>\n'
+            '91 execve("\\x2f\\x78", ["\\x78"], []) = 0\n'
+            "73 <... clone resumed>, child_tidptr=0x1000) = 3 /* 91 in strace's PID NS */\n")
+        report = self.inspect(interrupted + completed)
+        self.assertEqual(report['creation'], {'syscall': 'clone', 'entry_line': 5, 'completion_line': 7})
+        with self.assertRaisesRegex(CaptureVerificationError, 'exactly one child creation'):
+            self.inspect(interrupted)
+        with self.assertRaises(CaptureVerificationError):
+            self.inspect(interrupted + completed.replace('CLONE_CHILD_CLEARTID', 'CLONE_PARENT'))
+        with self.assertRaises(CaptureVerificationError):
+            self.inspect(interrupted + completed + "73 fork() = 3 /* 91 in strace's PID NS */\n")
+
+    def test_restart_results_never_supply_a_child_or_accept_unknown_result_shapes(self):
+        birth = "73 fork() = 3 /* 91 in strace's PID NS */\n"
+        for call in ('fork()', 'vfork()', 'clone(child_stack=NULL, flags=SIGCHLD)',
+                     'clone3({flags=0, exit_signal=SIGCHLD}, 88)'):
+            restart = '74 ' + call + ' = ? ERESTARTNOINTR (To be restarted)\n'
+            with self.subTest(call=call):
+                self.assertTrue(self.inspect(restart + birth)['recorded_parentage_agrees'])
+                with self.assertRaisesRegex(CaptureVerificationError, 'exactly one child creation'):
+                    self.inspect(restart)
+        for result in ('?', '? ERESTARTSYS (To be restarted)', '? ERESTARTNOINTR (unknown)',
+                       '? ERESTARTNOINTR (To be restarted) trailing',
+                       "? ERESTARTNOINTR (To be restarted) /* 91 in strace's PID NS */"):
+            with self.subTest(result=result), self.assertRaises(CaptureVerificationError):
+                self.inspect('74 fork() = ' + result + '\n' + birth)
+        for call in ('clone(flags=0x100)', 'clone(flags=CLONE_VM|...)', 'fork(unexpected)'):
+            with self.subTest(call=call), self.assertRaises(CaptureVerificationError):
+                self.inspect('74 ' + call + ' = ? ERESTARTNOINTR (To be restarted)\n' + birth)
+
     def test_hash_bounds_identities_and_symlinks_fail_without_leaking_descriptors(self):
         text = "73 fork() = 3 /* 91 in strace's PID NS */\n"
         before = set(os.listdir('/proc/self/fd'))

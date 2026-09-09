@@ -104,3 +104,14 @@ class ExecTraceTests(unittest.TestCase):
                 self.inspect(text.replace('0x400000', flag))
         with self.assertRaises(CaptureVerificationError):
             self.inspect(text.replace('CLONE_THREAD', 'CLONE_PIDFD'))
+
+    def test_restarted_creation_does_not_obscure_or_replace_exact_exec(self):
+        restart = ('73 clone(child_stack=NULL, flags=SIGCHLD <unfinished ...>\n'
+                   '73 <... clone resumed>) = ? ERESTARTNOINTR (To be restarted)\n')
+        text = restart + '73 ' + self.call + '\n'
+        self.assertEqual(self.inspect(text)['matching_execve'], {'entry_line': 3, 'completion_line': 3})
+        with self.assertRaises(CaptureVerificationError): self.inspect(text, expected_command=['wrong'])
+        for bad in (restart, text.replace('ERESTARTNOINTR', 'ERESTARTSYS'),
+                    '73 ' + self.call[:-5] + ' <unfinished ...>\n' + restart,
+                    '73 <... clone resumed>) = ? ERESTARTNOINTR (To be restarted)\n73 ' + self.call + '\n'):
+            with self.subTest(text=bad), self.assertRaises(CaptureVerificationError): self.inspect(bad)

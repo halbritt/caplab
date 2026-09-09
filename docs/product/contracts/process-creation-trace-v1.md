@@ -27,6 +27,14 @@ same PID and syscall; overlapping, orphaned or incomplete calls fail. Signals
 may interrupt an unfinished creation. A child may execute or exit before its
 parent's vfork call resumes; entry and completion line numbers remain distinct.
 
+The exact internal result `? ERESTARTNOINTR (To be restarted)` is recognized
+for these creation calls. Flags and call/resumption structure still validate,
+but this result supplies no child PID and creates no parentage record. A later
+successful call must independently supply the selected birth; its original line
+numbers are retained without linking it to the earlier restart request. Other
+question-mark results remain unsupported. This does not certify that a requested
+restart eventually occurred or that the process completed successfully.
+
 Successful returns identify the child. For the selected edge, an explicit
 `local_pid /* host_pid in strace's PID NS */` translation is mandatory. A bare
 number cannot establish which PID namespace it belongs to. Exactly one creation
