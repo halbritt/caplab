@@ -18,10 +18,11 @@ import time
 import uuid
 
 from caplab.capture_accounting import build_capture_byte_report
+from caplab.exec_trace import inspect_exec_trace
 from caplab.native_capture_invocation import NativeCaptureContext, build_native_capture_invocation
 from caplab.native_collection import NativeRuntimeDescriptor, collect_native_outputs
 from caplab.native_collection_verify import verify_native_collection
-from caplab.native_runtime import prepare_native_runtime
+from caplab.native_runtime import _validated_invocation, prepare_native_runtime
 from caplab.preference.native_live import _launcher_environment
 from caplab.process_capture import capture_process, seal_capture_json
 from caplab.supervised_task_capture import SupervisedTaskCapture
@@ -43,6 +44,9 @@ plan=json.loads(sys.argv[1])
 for relative in json.loads(sys.argv[2]):
     Path('/episode', *Path(relative).parts[1:]).mkdir(mode=0o700,exist_ok=True)
 resource.setrlimit(resource.RLIMIT_CORE,(0,0))
+if len(sys.argv)==6:
+    if sys.argv[5]!='trace-exec':raise RuntimeError('unsupported handoff mode')
+    resource.setrlimit(resource.RLIMIT_FSIZE,(67108864,67108864))
 with socket.socket(socket.AF_UNIX,socket.SOCK_STREAM) as channel:
     channel.settimeout(5)
     channel.connect('/control.sock')
@@ -114,6 +118,15 @@ def stop_writers(child):
     return forced
 
 
+def inspect_traced_peer(peer_pid, trace_path):
+    checks = inspect_network(peer_pid)
+    namespaces = {name: {'supervisor': os.readlink('/proc/self/ns/' + name),
+                        'peer': os.readlink(f'/proc/{peer_pid}/ns/{name}')} for name in ('mnt', 'pid')}
+    require(all(item['supervisor'] != item['peer'] for item in namespaces.values()), 'tracer shares peer namespace')
+    require(not Path(f'/proc/{peer_pid}/root', str(trace_path).lstrip('/')).exists(), 'host trace path is exposed')
+    return checks | {'tracer_namespaces': namespaces, 'host_trace_path_exposed': False}
+
+
 def inspect_custody(root, report):
     name, anchors = report['harness'], report['anchors']
     task = verify_task_capture(root / name, expected_attempt_sha256=anchors['attempt_sha256'], max_receipt_bytes=300000)
@@ -154,12 +167,27 @@ def inspect_custody(root, report):
             bytes_left -= size; entries_left -= count
     require(report['retained_bytes'] == 40 * MIB - bytes_left and
             report['retained_entries'] == 2000 - entries_left, 'retained totals differ')
-    return {'task': task, 'native': native, 'accounting': accounting,
+    execution = {}
+    if 'exec_trace_sha256' in anchors:
+        selections = json.loads((root / 'selections.json').read_bytes())
+        selected, = [item for item in selections if item['harness'] == name]
+        plan = _validated_invocation(POLICY, selected['plan'], native['invocation_sha256'])
+        require(digest(root / 'selections.json') == json.loads((root / 'intent.json').read_bytes())['selections_sha256'],
+                'traced selections differ from sealed intent')
+        require(network['host_trace_path_exposed'] is False and all(
+            item['supervisor'] != item['peer'] for item in network['tracer_namespaces'].values()),
+            'recorded tracer custody isolation differs')
+        execution['exec_trace'] = inspect_exec_trace(root / (name + '-exec.trace'),
+            expected_trace_sha256=anchors['exec_trace_sha256'], expected_pid=handoff['peer_pid'],
+            expected_executable='/toolbin/' + name, expected_command=plan['command'],
+            expected_environment=plan['environment'], max_trace_bytes=MIB)
+    return {'task': task, 'native': native, 'accounting': accounting, **execution,
             'native_launch_attempted_by_supervisor': True, 'model_execution_verified': False,
             'native_capture_complete': None, 'study_eligible': False}
 
 
-def inside(root, unit, *, trace_claude=False):
+def inside(root, unit, *, trace_claude=False, trace_exec=False):
+    require(not (trace_claude and trace_exec), 'trace modes are mutually exclusive')
     require(re.fullmatch(r'caplab-native-startup-[0-9a-f]{32}\.service', unit), 'invalid native startup unit')
     membership = Path('/proc/self/cgroup').read_text().strip()
     require(membership.startswith('0::/') and '\n' not in membership, 'unified cgroup required')
@@ -177,7 +205,7 @@ def inside(root, unit, *, trace_claude=False):
         name = selected['harness']; source = SOURCES[name]; plan = selected['plan']
         trace_prefix = ['/usr/bin/strace', '-f', '-s', '256', '-e', 'trace=%file,%process,%signal',
                         '-o', '/scratch/trace.log', '--'] if trace_claude else []
-        if trace_claude:
+        if trace_claude or trace_exec:
             require(digest(Path('/usr/bin/strace')) == selected['strace_sha256'], 'strace differs before launch')
         require(harness_manifest(source) == selected['harness_manifest'], 'harness differs before launch')
         task, prepared = root / (name + '-task'), root / (name + '-prepared')
@@ -203,6 +231,11 @@ def inside(root, unit, *, trace_claude=False):
             command += ['--ro-bind', str(socket_path), '/control.sock', '--chdir', '/work',
                 '--remount-ro', '/proc', '--remount-ro', '/', '--', '/usr/bin/python3', '-B', '-c', HANDOFF,
                 json.dumps(plan), json.dumps(preparation['directories']), json.dumps(MOUNTS), json.dumps(trace_prefix)]
+            if trace_exec:
+                command.append('trace-exec')
+                command = ['/usr/bin/prlimit', '--fsize=1048576:67108864', '--core=0', '--',
+                    '/usr/bin/strace', '-f', '-v', '-xx', '-s', '65536', '-e', 'trace=execve,execveat',
+                    '-o', str(root / (name + '-exec.trace')), '--', *command]
             seal_capture_json(root, name + '-launch.json', {'command': command, 'before': before, 'plan': plan})
             with SupervisedTaskCapture(command, task_root=task, namespace_root='/work', environment=_launcher_environment(),
                     output_dir=root / name, limits=TaskCaptureLimits(200000, MIB, 1000, 20), max_process_receipt_bytes=30000) as recorder:
@@ -212,7 +245,8 @@ def inside(root, unit, *, trace_claude=False):
                         future = pool.submit(capture_process, command, cwd=task, environment=_launcher_environment(),
                             output_dir=root / name / 'process', max_stream_bytes=200000, timeout_seconds=20)
                         descriptors, handoff = receive_mount(listener, child, recorder,
-                            inspect_peer=inspect_network, usable_devices=True)
+                            inspect_peer=(lambda pid: inspect_traced_peer(pid, root / (name + '-exec.trace')))
+                                if trace_exec else inspect_network, usable_devices=True)
                         process = future.result(timeout=26)
                 forced = stop_writers(child)
                 after = snapshot(child)
@@ -234,9 +268,12 @@ def inside(root, unit, *, trace_claude=False):
                 'retained_entries': 2000 - entries_left, 'anchors': {'attempt_sha256': digest(root / name / 'attempt.json'),
                     'collection_sha256': digest(root / (name + '-collection') / 'collection.json'),
                     'handoff_sha256': digest(root / (name + '-handoff.json'))}}
+            if trace_exec:
+                require((root / (name + '-exec.trace')).stat().st_size < MIB, 'execution trace reached file limit')
+                report['anchors']['exec_trace_sha256'] = digest(root / (name + '-exec.trace'))
             seal_capture_json(root, name + '-observations.json', report)
             require(harness_manifest(source) == selected['harness_manifest'], 'harness changed during startup')
-            if trace_claude:
+            if trace_claude or trace_exec:
                 require(digest(Path('/usr/bin/strace')) == selected['strace_sha256'], 'strace changed during startup')
             seal_capture_json(root, name + '-checks.json', inspect_custody(root, report))
             reports.append(report)
@@ -247,7 +284,8 @@ def inside(root, unit, *, trace_claude=False):
     seal_capture_json(root, 'observations.json', {'unit': unit, 'delegated_cgroup': str(group), 'reports': reports})
 
 
-def run(root, *, trace_claude=False):
+def run(root, *, trace_claude=False, trace_exec=False):
+    require(not (trace_claude and trace_exec), 'trace modes are mutually exclusive')
     require(root.is_absolute() and root.parent.resolve() == root.parent and not root.exists(), 'output must be fresh and resolved')
     root.mkdir(mode=0o700)
     selections = []
@@ -262,7 +300,7 @@ def run(root, *, trace_claude=False):
         prepare_native_runtime(POLICY, plan, expected_invocation_sha256=plan['invocation_sha256'], task_root=task, output_dir=prepared)
         selections.append({'harness': name, 'harness_manifest': manifest, 'plan': plan,
                            'preparation_sha256': digest(prepared / 'preparation.json'),
-                           **({'strace_sha256': digest(Path('/usr/bin/strace'))} if trace_claude else {})})
+                           **({'strace_sha256': digest(Path('/usr/bin/strace'))} if trace_claude or trace_exec else {})})
     selection_hash = seal_capture_json(root, 'selections.json', selections)
     unit = 'caplab-native-startup-' + uuid.uuid4().hex + '.service'
     environment = {**_launcher_environment(), 'XDG_RUNTIME_DIR': f'/run/user/{os.getuid()}',
@@ -276,6 +314,8 @@ def run(root, *, trace_claude=False):
         '--output-root', str(root), '--inside-unit', unit]
     if trace_claude:
         command.append('--trace-claude')
+    if trace_exec:
+        command.append('--trace-exec')
     seal_capture_json(root, 'intent.json', {'unit': unit, 'command': command, 'environment': environment,
         'selections_sha256': selection_hash, 'script_sha256': digest(SCRIPT),
         'resource_probe_sha256': digest(SCRIPT.with_name('probe_cgroup_resource_limits.py'))})
@@ -299,7 +339,8 @@ def run(root, *, trace_claude=False):
         require(state.returncode == 0 and state.stdout.strip() == b'not-found', 'native startup unit remains')
     require(not Path(observation['delegated_cgroup']).exists(), 'native startup cgroup remains')
     seal_capture_json(root, 'verification.json', {'schema': 'caplab.offline-native-startup-verification/v1',
-        'unit': unit, 'startup_capture_count': len(selections), 'trace_claude': trace_claude, 'unit_removed': True,
+        'unit': unit, 'startup_capture_count': len(selections), 'trace_claude': trace_claude,
+        'trace_exec': trace_exec, 'unit_removed': True,
         'remote_model_execution': False, 'native_capture_complete': None, 'study_eligible': False})
     print(json.dumps({'root': str(root), 'unit': unit, 'verified': True}))
 
@@ -308,9 +349,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output-root', type=Path, required=True)
     parser.add_argument('--inside-unit', help=argparse.SUPPRESS)
-    parser.add_argument('--trace-claude', action='store_true', help='Single offline Claude syscall diagnostic; requires new authorization')
+    modes = parser.add_mutually_exclusive_group()
+    modes.add_argument('--trace-claude', action='store_true', help='Single offline Claude syscall diagnostic; requires new authorization')
+    modes.add_argument('--trace-exec', action='store_true', help='Supervisor-owned offline exec traces; requires new authorization')
     args = parser.parse_args()
     if args.inside_unit:
-        inside(args.output_root, args.inside_unit, trace_claude=args.trace_claude)
+        inside(args.output_root, args.inside_unit, trace_claude=args.trace_claude, trace_exec=args.trace_exec)
     else:
-        run(args.output_root, trace_claude=args.trace_claude)
+        run(args.output_root, trace_claude=args.trace_claude, trace_exec=args.trace_exec)
