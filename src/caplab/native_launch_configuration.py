@@ -67,6 +67,22 @@ def build_native_launch_configuration(
     return launch
 
 
+def _validated_launch_configuration(
+    policy_path: Path, invocation: dict, launch: dict, *,
+    expected_invocation_sha256: str, expected_launch_sha256: str,
+) -> dict:
+    _require_digest(expected_launch_sha256)
+    _require(isinstance(launch, dict), 'invalid native launch configuration')
+    unsigned = {key: value for key, value in launch.items() if key != 'launch_configuration_sha256'}
+    _require(launch.get('launch_configuration_sha256') == expected_launch_sha256
+             and _digest(unsigned) == expected_launch_sha256, 'native launch configuration hash differs')
+    rebuilt = build_native_launch_configuration(policy_path, invocation,
+        expected_invocation_sha256=expected_invocation_sha256,
+        context=NativeLaunchContext(launch.get('profile'), launch.get('fixture_port')))
+    _require(_digest(rebuilt) == _digest(launch), 'native launch differs from its declared profile')
+    return rebuilt
+
+
 def inspect_native_launch_trace(
     policy_path: Path, invocation: dict, launch: dict, trace_path: Path, *,
     evidence: NativeLaunchTraceEvidence, require_termination: bool = False,
@@ -80,15 +96,9 @@ def inspect_native_launch_trace(
     """
     _require(isinstance(evidence, NativeLaunchTraceEvidence), 'invalid native launch trace evidence')
     _require(type(require_termination) is bool, 'invalid termination requirement')
-    _require_digest(evidence.expected_launch_sha256)
-    _require(isinstance(launch, dict), 'invalid native launch configuration')
-    unsigned = {key: value for key, value in launch.items() if key != 'launch_configuration_sha256'}
-    _require(launch.get('launch_configuration_sha256') == evidence.expected_launch_sha256
-             and _digest(unsigned) == evidence.expected_launch_sha256, 'native launch configuration hash differs')
-    rebuilt = build_native_launch_configuration(policy_path, invocation,
+    rebuilt = _validated_launch_configuration(policy_path, invocation, launch,
         expected_invocation_sha256=evidence.expected_invocation_sha256,
-        context=NativeLaunchContext(launch.get('profile'), launch.get('fixture_port')))
-    _require(_digest(rebuilt) == _digest(launch), 'native launch differs from its declared profile')
+        expected_launch_sha256=evidence.expected_launch_sha256)
     inspector = inspect_exec_termination if require_termination else inspect_exec_trace
     check = inspector(trace_path, expected_trace_sha256=evidence.expected_trace_sha256,
         expected_pid=evidence.expected_pid, expected_executable='/toolbin/' + rebuilt['command'][0],
