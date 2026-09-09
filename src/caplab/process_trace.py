@@ -16,7 +16,7 @@ _ERROR = re.compile(r'-1 [A-Z][A-Z0-9_]* \([^\r\n]*\)')
 _PARENT_FLAGS = frozenset(('CLONE_VM CLONE_FS CLONE_FILES CLONE_SIGHAND CLONE_VFORK '
     'CLONE_PARENT_SETTID CLONE_CHILD_CLEARTID CLONE_CHILD_SETTID CLONE_SYSVSEM '
     'CLONE_SETTLS CLONE_PIDFD CLONE_IO CLONE_NEWNS CLONE_NEWCGROUP CLONE_NEWUTS '
-    'CLONE_NEWIPC CLONE_NEWUSER CLONE_NEWPID CLONE_NEWNET SIGCHLD 0').split())
+    'CLONE_NEWIPC CLONE_NEWUSER CLONE_NEWPID CLONE_NEWNET CLONE_DETACHED SIGCHLD 0').split())
 
 
 @dataclass(frozen=True)
@@ -59,6 +59,8 @@ def _creation_records(lines, *, selected_pid=None):
         parsed = _RESULT.fullmatch(result)
         _require(parsed is not None or _ERROR.fullmatch(result), 'invalid process creation result')
         if parsed:
+            if 'CLONE_DETACHED' in flags:
+                _require(syscall == 'clone' and 'CLONE_PIDFD' not in flags, 'invalid successful detached clone')
             records.append({'parent_pid': pid, 'child_pid': int(parsed[2] or parsed[1]),
                 'namespace_child_pid': int(parsed[1]), 'translated': parsed[2] is not None,
                 'flags': flags, 'syscall': syscall,
@@ -71,9 +73,10 @@ def _creation_flags(syscall, arguments):
     if syscall in ('fork', 'vfork'):
         _require(not arguments, 'unexpected fork arguments')
         return set()
-    flags = re.findall(r'(?:^|[, {])flags=([A-Z0-9_|]+)(?=[,}]|$)', arguments)
+    flags = re.findall(r'(?:^|[, {])flags=([^,}]+)(?=[,}]|$)', arguments)
     _require(len(flags) == 1 and '...' not in arguments, 'missing or abbreviated clone flags')
-    observed = set(flags[0].split('|'))
+    observed = {'CLONE_DETACHED' if re.fullmatch(r'0x0*400000(?: /\* CLONE_\?\?\? \*/)?', flag) else flag
+                for flag in flags[0].split('|')}
     _require(observed <= _PARENT_FLAGS | {'CLONE_PARENT', 'CLONE_THREAD'}, 'unsupported clone flags')
     return observed
 

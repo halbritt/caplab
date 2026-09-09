@@ -91,3 +91,16 @@ class ExecTraceTests(unittest.TestCase):
         text = '73 ' + self.call[:-5] + ' <unfinished ...>\n73 <... execve resumed>)           = 0\n'
         self.assertEqual(self.inspect(text)['matching_execve'], {'entry_line': 1, 'completion_line': 2})
         with self.assertRaises(CaptureVerificationError): self.inspect(text, expected_command=['wrong'])
+
+    def test_known_detached_thread_records_preserve_exact_exec_checks(self):
+        thread = ('73 clone(child_stack=0x1000, flags=CLONE_VM|CLONE_SIGHAND|CLONE_THREAD|'
+                  "0x400000) = 3 /* 91 in strace's PID NS */\n")
+        text = '73 ' + self.call + '\n' + thread
+        self.assertTrue(self.inspect(text)['successful_execve_agrees'])
+        with self.assertRaises(CaptureVerificationError): self.inspect(text, expected_command=['wrong'])
+        for flag in ('0x400100', '0x800000', '0x400000x', '4194304', 'CLONE_UNKNOWN', '0x400000|...',
+                     '0x400100 /* CLONE_??? */', '0x400000 /* CLONE_PARENT */', '0x400000||SIGCHLD'):
+            with self.subTest(flag=flag), self.assertRaises(CaptureVerificationError):
+                self.inspect(text.replace('0x400000', flag))
+        with self.assertRaises(CaptureVerificationError):
+            self.inspect(text.replace('CLONE_THREAD', 'CLONE_PIDFD'))

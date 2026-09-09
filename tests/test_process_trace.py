@@ -59,12 +59,37 @@ class ProcessTraceTests(unittest.TestCase):
                      birth + "74 fork() = 3 /* 91 in strace's PID NS */\n"):
             with self.subTest(text=text), self.assertRaises(CaptureVerificationError): self.inspect(text)
 
+    def test_legacy_detached_flag_preserves_process_and_thread_distinction(self):
+        for flag in ('0x400000', '0x00400000', 'CLONE_DETACHED', '0x400000 /* CLONE_??? */'):
+            birth = '73 clone(child_stack=NULL, flags=' + flag + "|SIGCHLD) = 3 /* 91 in strace's PID NS */\n"
+            thread = ('91 clone(child_stack=0x753f789ff3e8, flags=CLONE_VM|CLONE_FS|CLONE_FILES|'
+                'CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|'
+                'CLONE_CHILD_CLEARTID|' + flag + ", parent_tid=[4 /* 92 in strace's PID NS */], "
+                "tls=0x753f789ffb38, child_tidptr=0x753f789ffe10) = 4 /* 92 in strace's PID NS */\n")
+            with self.subTest(flag=flag):
+                self.assertTrue(self.inspect(birth + thread)['recorded_parentage_agrees'])
+                with self.assertRaisesRegex(CaptureVerificationError, 'parentage flags'):
+                    self.inspect(birth + thread, parent_pid=91, child_pid=92)
+                with self.assertRaises(CaptureVerificationError):
+                    self.inspect(birth.replace('|SIGCHLD', '|CLONE_PARENT|SIGCHLD'))
+
     def test_clone_and_clone3_preserve_exact_flags_without_confusing_parent_settid(self):
         for call in ('clone(child_stack=NULL, flags=CLONE_PARENT_SETTID|SIGCHLD)',
                      'clone3({flags=CLONE_VM|CLONE_VFORK, exit_signal=SIGCHLD}, 88)', 'fork()'):
             with self.subTest(call=call):
                 report = self.inspect('73 ' + call + " = 3 /* 91 in strace's PID NS */\n")
                 self.assertTrue(report['recorded_parentage_agrees'])
+
+    def test_detached_invalid_syscall_combinations_only_allow_failed_observations(self):
+        birth = "73 fork() = 3 /* 91 in strace's PID NS */\n"
+        for flag in ('0x400000', 'CLONE_DETACHED'):
+            for call in ('clone(child_stack=NULL, flags=CLONE_PIDFD|' + flag + '|SIGCHLD)',
+                         'clone3({flags=' + flag + ', exit_signal=SIGCHLD}, 88)'):
+                with self.subTest(call=call):
+                    self.assertTrue(self.inspect('73 ' + call + ' = -1 EINVAL (Invalid argument)\n' + birth)[
+                        'recorded_parentage_agrees'])
+                    with self.assertRaisesRegex(CaptureVerificationError, 'invalid successful detached clone'):
+                        self.inspect('73 ' + call + " = 3 /* 91 in strace's PID NS */\n")
 
     def test_missing_wrong_ambiguous_and_incomplete_creation_evidence_refuses(self):
         for text in ('73 vfork() = 91\n', "74 vfork() = 3 /* 91 in strace's PID NS */\n",

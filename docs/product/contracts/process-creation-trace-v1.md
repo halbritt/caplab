@@ -37,9 +37,17 @@ parent/child records after a terminal event also fail. These checks reject
 visible lifetime contradictions; the caller still owns complete trace capture
 and the authenticated parent's lifetime.
 
-Fork/vfork arguments must be empty. Clone/clone3 require unabbreviated named
-flags from the closed set in `process_trace.py`. Numeric unknown bits and
-unrecognized flags fail. `CLONE_PARENT` and `CLONE_THREAD` are recognized for
+Fork/vfork arguments must be empty. Clone/clone3 require unabbreviated
+flags from the closed set in `process_trace.py`. The legacy `CLONE_DETACHED`
+flag also accepts the observed `0x400000` encoding, with optional leading zeros
+after `0x`, and the exact optional strace annotation ` /* CLONE_??? */`.
+No other numeric bit, combined numeric mask or numeric annotation is accepted.
+Successful creation with that flag requires legacy clone without `CLONE_PIDFD`;
+clone3 and the PIDFD combination are refused on a successful return. Failed
+calls with those known flags remain parseable but supply no child evidence.
+This follows the Linux clone contract and is not a general validator of every
+flag combination. Unknown bits and unrecognized flags fail.
+`CLONE_PARENT` and `CLONE_THREAD` are recognized for
 other calls but refused for the selected edge: they do not establish ordinary
 parentage to the calling process. `CLONE_PARENT_SETTID` is a different flag
 and remains supported. Other clone argument fields are not semantically
