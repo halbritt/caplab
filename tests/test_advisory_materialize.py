@@ -1,8 +1,12 @@
+from functools import partial
+import hashlib
 import json
 import os
+from pathlib import Path
 import subprocess
 import tempfile
 import unittest
+from unittest import mock
 
 from caplab.advisory import materialize as M
 
@@ -73,6 +77,85 @@ class WriteFilesTest(unittest.TestCase):
 
 
 class MaterializeCaseTest(unittest.TestCase):
+    def _object(self, root, product):
+        body = (json.dumps(product) + "\n").encode()
+        digest = hashlib.sha256(body).hexdigest()
+        path = Path(root, "objects", "sha256", digest[:2], digest[2:4], digest + ".zst")
+        path.parent.mkdir(parents=True, exist_ok=True)
+        packed = subprocess.run(["zstd", "-q", "-c"], input=body, capture_output=True, check=True)
+        path.write_bytes(b"SOB1" + b"\0" * 12 + packed.stdout)
+        return digest, path
+
+    def test_anchored_objects_cannot_claim_an_expanded_base(self):
+        for source, how in (("whole-tree", "materialized_base"),
+                            ("whole-tree", "product-object"),
+                            ("partial-product-tree", "materialized_base")):
+            for anchor in ({"kind": "git-tree", "commit": "c", "tree": "t"}, {}, False):
+                with self.subTest(source=source, how=how, anchor=anchor), tempfile.TemporaryDirectory() as root:
+                    digest, _ = self._object(root, {"files": {"overlay.txt": "overlay"}, "anchor": anchor})
+                    record = {"base_source": source, "materializer": how, "object": digest}
+                    case = Path(root, "case")
+                    # Redirect only the external store root; decode and hash verification remain real.
+                    with mock.patch.object(M, "store_object", partial(M.store_object, root=root)):
+                        with self.assertRaisesRegex(ValueError, "anchored product"):
+                            M.materialize_case(record, str(case))
+                    self.assertFalse(case.exists())
+
+    def test_partial_and_expanded_objects_keep_their_views_and_valid_cache(self):
+        anchor = {"kind": "git-tree", "commit": "c", "tree": "t"}
+        for source, how, product_anchor in (("partial-product-tree", "product-object", anchor),
+                                             ("whole-tree", "materialized_base", None),
+                                             ("whole-tree", "product-object", None)):
+            with self.subTest(source=source, how=how), tempfile.TemporaryDirectory() as root:
+                digest, object_path = self._object(root, {"files": {"a.txt": "body"}, "anchor": product_anchor})
+                record = {"base_source": source, "materializer": how, "object": digest}
+                case = Path(root, "case")
+                with mock.patch.object(M, "store_object", partial(M.store_object, root=root)):
+                    manifest = M.materialize_case(record, str(case))
+                    self.assertEqual(manifest["base_source"], source)
+                    self.assertEqual(manifest["anchor"], product_anchor)
+                    self.assertEqual(case.joinpath("base/a.txt").read_text(), "body")
+                    self.assertTrue(M.verify_manifest(str(case), expected_digest=manifest["digest"]))
+                    object_path.unlink()
+                    self.assertEqual(M.materialize_case(record, str(case)), manifest)
+
+    def test_contradictory_cached_manifest_is_rejected_without_destroying_payloads(self):
+        for source, how in (("whole-tree", "materialized_base"),
+                            ("whole-tree", "product-object"),
+                            ("partial-product-tree", "materialized_base")):
+            with self.subTest(source=source, how=how), tempfile.TemporaryDirectory() as root:
+                product = {"files": {"a.txt": "overlay"}, "anchor": {"kind": "git-tree", "commit": "c", "tree": "t"}}
+                digest, _ = self._object(root, product)
+                record = {"base_source": "partial-product-tree", "materializer": "product-object", "object": digest,
+                          "evidence": [{"name": "RQ-1", "kind": "compilation_request", "seq": 1, "payload": {"note": "n"}}]}
+                case = Path(root, "case")
+                with mock.patch.object(M, "store_object", partial(M.store_object, root=root)):
+                    manifest = M.materialize_case(record, str(case))
+                    # Model the old writer's self-consistent but contradictory manifest.
+                    manifest.update(base_source=source, materializer=how)
+                    manifest["digest"] = M.manifest_digest(manifest)
+                    case.joinpath("base-manifest.json").write_text(json.dumps(manifest))
+                    before = {str(p.relative_to(case)): p.read_bytes() for p in case.rglob("*") if p.is_file()}
+                    self.assertFalse(M.verify_manifest(str(case), expected_digest=manifest["digest"]))
+                    record.update(base_source=source, materializer=how)
+                    with self.assertRaisesRegex(ValueError, "anchored product"):
+                        M.materialize_case(record, str(case))
+                    after = {str(p.relative_to(case)): p.read_bytes() for p in case.rglob("*") if p.is_file()}
+                    self.assertEqual(after, before)
+
+    def test_invalid_replacement_source_preserves_incomplete_case(self):
+        with tempfile.TemporaryDirectory() as root:
+            digest, _ = self._object(root, {"files": {}, "anchor": {}})
+            case = Path(root, "case")
+            case.joinpath("base").mkdir(parents=True)
+            case.joinpath("base/retained.txt").write_bytes(b"retained")
+            record = {"base_source": "whole-tree", "materializer": "materialized_base", "object": digest}
+            with mock.patch.object(M, "store_object", partial(M.store_object, root=root)):
+                with self.assertRaisesRegex(ValueError, "anchored product"):
+                    M.materialize_case(record, str(case))
+            self.assertEqual(case.joinpath("base/retained.txt").read_bytes(), b"retained")
+            self.assertFalse(case.joinpath("base-manifest.json").exists())
+
     def _repo(self, d):
         subprocess.run(["git", "init", "-q", d], check=True)
         os.makedirs(os.path.join(d, "docs"))

@@ -248,11 +248,20 @@ def _remove_for_view(files: dict, record: dict) -> list[dict]:
     return removed
 
 
+def _claims_expanded_anchored_product(identity: dict) -> bool:
+    how = identity.get("materializer")
+    return identity.get("anchor") is not None and (
+        how == "materialized_base"
+        or (how == "product-object" and identity.get("base_source") == "whole-tree")
+    )
+
+
 def base_files(record: dict) -> tuple[dict | None, list[dict], dict]:
     """(files, skipped, identity) for one base-registry record, or (None, [],
     identity) for a case with no base. Raises when a recorded source is no
     longer reachable — the registry said it was, and silence would score
-    the case as if it were."""
+    the case as if it were. An anchored object's files are only an overlay;
+    only an explicitly partial product view can use them without expansion."""
     source = record["base_source"]
     how = record.get("materializer")
     identity = {"base_source": source, "materializer": how}
@@ -270,6 +279,8 @@ def base_files(record: dict) -> tuple[dict | None, list[dict], dict]:
             raise RuntimeError(f"{record['object']} left the store since the registry was built")
         product = json.loads(body)
         identity.update(object=record["object"], anchor=product.get("anchor"))
+        if _claims_expanded_anchored_product(identity):
+            raise ValueError("anchored product requires expansion before it can be used as an expanded base")
         return dict(product.get("files") or {}), [], identity
     raise ValueError(f"unknown materializer {how!r}")
 
@@ -281,10 +292,10 @@ def materialize_case(record: dict, case_dir: str) -> dict:
     if os.path.isfile(manifest_path) and verify_manifest(case_dir):
         with open(manifest_path, encoding="utf-8") as f:
             return json.load(f)
+    files, skipped, identity = base_files(record)
     for sub in ("base", "evidence"):
         shutil.rmtree(os.path.join(case_dir, sub), ignore_errors=True)
     os.makedirs(case_dir, exist_ok=True)
-    files, skipped, identity = base_files(record)
     entries: list[dict] = []
     removed: list[dict] = []
     if files is not None:
@@ -339,7 +350,9 @@ def manifest_digest(manifest: dict) -> str:
 
 def verify_manifest(case_dir: str, *, expected_digest: str | None = None) -> bool:
     """True when every manifest entry is present with its recorded digest and
-    nothing else exists under base/ and evidence/.
+    nothing else exists under base/ and evidence/, and its object representation
+    does not contradict its claim to be an expanded base. This does not prove
+    completeness relative to an external Git tree or source registry.
 
     Execution callers supply the digest captured at materialization so a
     self-consistent replacement manifest cannot change the expected tree.
@@ -351,6 +364,8 @@ def verify_manifest(case_dir: str, *, expected_digest: str | None = None) -> boo
     except (OSError, ValueError):
         return False
     if not isinstance(manifest, dict):
+        return False
+    if _claims_expanded_anchored_product(manifest):
         return False
     if expected_digest is not None and manifest.get("digest") != expected_digest:
         return False
