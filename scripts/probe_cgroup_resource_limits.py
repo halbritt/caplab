@@ -29,28 +29,33 @@ from caplab.task_capture_verify import _Reader, _inventory, _open
 MIB = 1024 * 1024
 SCRIPT = Path(__file__).resolve()
 MARKER = b'retained marker\x00\xff\n'
+MOUNTS = ('/scratch', '/tmp', '/dev/shm')
 JOIN = """import os,sys
 from pathlib import Path
 Path(sys.argv[1], 'cgroup.procs').write_text(str(os.getpid()))
 os.execv(sys.argv[2], sys.argv[2:])
 """
-HANDOFF = """import array,os,socket,sys
+HANDOFF = """import array,json,os,socket,sys
 with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as channel:
     channel.settimeout(3)
     channel.connect('/control.sock')
-    root = os.open('/scratch', os.O_RDONLY | os.O_DIRECTORY)
+    roots = []
     try:
-        channel.sendmsg([b'R'], [(socket.SOL_SOCKET, socket.SCM_RIGHTS, array.array('i', [root]))])
+        for path in json.loads(sys.argv[1]):
+            roots.append(os.open(path, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW))
+        channel.sendmsg([b'R'], [(socket.SOL_SOCKET, socket.SCM_RIGHTS, array.array('i', roots))])
     finally:
-        os.close(root)
+        for root in roots:
+            os.close(root)
     if channel.recv(1) != b'1':
         raise RuntimeError('supervisor did not accept retained mount')
-os.execv('/usr/bin/python3', ['/usr/bin/python3', '-B', '-c', sys.argv[1], sys.argv[2]])
+os.execv('/usr/bin/python3', ['/usr/bin/python3', '-B', '-c', sys.argv[2], sys.argv[3]])
 """
 FIXTURE = r"""import errno,json,subprocess,sys
 from pathlib import Path
 mode = sys.argv[1]
-Path('/scratch/marker.bin').write_bytes(b'retained marker\x00\xff\n')
+for directory in ('/scratch', '/tmp', '/dev/shm'):
+    Path(directory, 'marker.bin').write_bytes(b'retained marker\x00\xff\n' + directory.encode('ascii'))
 if mode in ('memory', 'tmp-memory', 'shm-memory'):
     destination = {'memory': '/scratch', 'tmp-memory': '/tmp', 'shm-memory': '/dev/shm'}[mode]
     with Path(destination, 'payload').open('xb', buffering=0) as f:
@@ -159,58 +164,88 @@ def receive_mount(listener, child):
         with channel:
             channel.settimeout(3)
             peer_pid, peer_uid, peer_gid = struct.unpack('3i', channel.getsockopt(socket.SOL_SOCKET, socket.SO_PEERCRED, 12))
-            data, ancillary, flags, _ = channel.recvmsg(1, socket.CMSG_SPACE(8), socket.MSG_CMSG_CLOEXEC)
+            data, ancillary, flags, _ = channel.recvmsg(
+                1, socket.CMSG_SPACE(len(MOUNTS) * array.array('i').itemsize), socket.MSG_CMSG_CLOEXEC)
             for level, kind, raw in ancillary:
                 if level == socket.SOL_SOCKET and kind == socket.SCM_RIGHTS:
                     received = array.array('i')
                     received.frombytes(raw[:len(raw) - len(raw) % received.itemsize])
                     descriptors.extend(received)
             require(data == b'R' and flags & ~socket.MSG_CMSG_CLOEXEC == 0
-                    and len(descriptors) == 1, 'invalid mount handoff')
+                    and len(descriptors) == len(MOUNTS), 'invalid mount handoff')
             require(peer_uid == os.getuid() and peer_gid == os.getgid(), 'unexpected mount peer owner')
             membership = Path(f'/proc/{peer_pid}/cgroup').read_text().strip()
             require(membership == '0::/' + str(child.relative_to('/sys/fs/cgroup')), 'mount peer is outside fixture group')
-            info = os.fstat(descriptors[0]); capacity = os.fstatvfs(descriptors[0])
-            require(stat.S_ISDIR(info.st_mode) and capacity.f_blocks * capacity.f_frsize == 64 * MIB,
-                    'received descriptor is not the expected bounded directory')
             coverage = mount_coverage(Path(f'/proc/{peer_pid}/mountinfo').read_text())
+            identities = []
+            for path, descriptor in zip(MOUNTS, descriptors, strict=True):
+                info = os.fstat(descriptor); capacity = os.fstatvfs(descriptor)
+                named = Path(f'/proc/{peer_pid}/root{path}').stat()
+                require(stat.S_ISDIR(info.st_mode)
+                        and (info.st_dev, info.st_ino) == (named.st_dev, named.st_ino)
+                        and capacity.f_blocks * capacity.f_frsize == 64 * MIB,
+                        'received descriptor differs from named bounded mount: ' + path)
+                identities.append({'source_root': path, 'source_dev': info.st_dev, 'source_ino': info.st_ino,
+                                   'allocated_capacity': capacity.f_blocks * capacity.f_frsize})
+            require(len({(i['source_dev'], i['source_ino']) for i in identities}) == len(MOUNTS),
+                    'mount handoff aliases a directory')
             listener.close()
             channel.sendall(b'1')
-            descriptor = descriptors.pop()
-            return descriptor, {'peer_pid': peer_pid, 'peer_uid': peer_uid, 'peer_gid': peer_gid,
-                'source_dev': info.st_dev, 'source_ino': info.st_ino,
-                'allocated_capacity': capacity.f_blocks * capacity.f_frsize, 'mount_coverage': coverage}
+            owned = descriptors[:]
+            descriptors.clear()
+            return owned, {'peer_pid': peer_pid, 'peer_uid': peer_uid, 'peer_gid': peer_gid,
+                           'mounts': identities, 'mount_coverage': coverage}
     finally:
         for descriptor in descriptors:
             os.close(descriptor)
 
 
-def retain_mount(descriptor, output, identity):
+def retain_mount(descriptor, output, identity, bytes_left, entries_left):
     output.mkdir(mode=0o700)
-    inventory = _Inventory(output, 40 * MIB, 100)
+    inventory = _Inventory(output, bytes_left, entries_left)
     inventory.visit(descriptor, '.', '.')
-    receipt = {'schema': 'caplab.retained-mount-inventory/v1', 'source_root': '/scratch',
+    receipt = {'schema': 'caplab.retained-mount-inventory/v1', 'source_root': identity['source_root'],
         'source_scope': 'fixture namespace; not a host path', 'descriptor_identity': identity,
-        'max_retained_bytes': 40 * MIB, 'max_entries': 100,
+        'max_retained_bytes': bytes_left, 'max_entries': entries_left,
         'retained_bytes': inventory.retained_bytes, 'entries': sorted(inventory.entries, key=lambda e: e['path'])}
     root_entry = receipt['entries'][0]['source_stat']
     require((root_entry['dev'], root_entry['ino']) == (identity['source_dev'], identity['source_ino']),
             'retained root identity differs from received descriptor')
-    return seal_capture_json(output, 'inventory.json', receipt)
+    digest = seal_capture_json(output, 'inventory.json', receipt)
+    return digest, inventory.bytes_left, inventory.entries_left
 
 
 def verify_retention(root, observation):
     for report in observation['reports']:
-        with _open(None, root / (report['mode'] + '-retained'), directory=True) as fd:
-            receipt = _Reader(200000).receipt(fd, 'inventory.json', report['inventory_sha256'],
-                                             'caplab.retained-mount-inventory/v1')
-            _inventory(fd, receipt, cwd='/scratch', bytes_left=40 * MIB, entries_left=100)
-            marker, = [e for e in receipt['entries'] if e['path'] == 'marker.bin']
-            require(marker['kind'] == 'file' and marker['bytes'] == len(MARKER)
-                    and marker['sha256'] == hashlib.sha256(MARKER).hexdigest(), 'retained marker differs')
-            if report['mode'] == 'memory':
-                payload, = [e for e in receipt['entries'] if e['path'] == 'payload']
-                require(payload['kind'] == 'file' and payload['bytes'] > 0, 'partial OOM payload was not retained')
+        require([i['source_root'] for i in report['inventories']] == list(MOUNTS), 'incomplete retained mount set')
+        require([i['source_root'] for i in report['mount_descriptor']['mounts']] == list(MOUNTS),
+                'incomplete descriptor identity set')
+        bytes_left, entries_left = 40 * MIB, 100
+        pressure_mount = {'memory': '/scratch', 'tmp-memory': '/tmp', 'shm-memory': '/dev/shm'}.get(report['mode'])
+        for index, (item, identity) in enumerate(zip(report['inventories'], report['mount_descriptor']['mounts'], strict=True)):
+            path = item['source_root']
+            with _open(None, root / (report['mode'] + '-retained') / str(index), directory=True) as fd:
+                receipt = _Reader(200000).receipt(fd, 'inventory.json', item['inventory_sha256'],
+                                                 'caplab.retained-mount-inventory/v1')
+                require(receipt['descriptor_identity'] == identity, 'retained descriptor identity differs')
+                require((receipt['max_retained_bytes'], receipt['max_entries']) == (bytes_left, entries_left),
+                        'retained mount allowance differs from combined budget')
+                size, count = _inventory(fd, receipt, cwd=path, bytes_left=bytes_left, entries_left=entries_left)
+                entries = receipt['entries']
+                source = entries[0]['source_stat']
+                require((source['dev'], source['ino']) == (identity['source_dev'], identity['source_ino']),
+                        'retained root differs from handed-off mount')
+                bytes_left -= size
+                entries_left -= count
+                marker, = [e for e in entries if e['path'] == 'marker.bin']
+                expected = MARKER + path.encode('ascii')
+                require(marker['kind'] == 'file' and marker['bytes'] == len(expected)
+                        and marker['sha256'] == hashlib.sha256(expected).hexdigest(), 'retained marker differs')
+                if path == pressure_mount:
+                    payload, = [e for e in entries if e['path'] == 'payload']
+                    require(payload['kind'] == 'file' and payload['bytes'] > 0, 'partial OOM payload was not retained')
+        require(report['retained_bytes'] == 40 * MIB - bytes_left
+                and report['retained_entries'] == 100 - entries_left, 'combined retention totals differ')
 
 
 def inside(root, unit):
@@ -229,7 +264,7 @@ def inside(root, unit):
     for mode in ('control', 'memory', 'pids', 'tmp-memory', 'shm-memory'):
         child = group / ('fixture-' + mode)
         child.mkdir()
-        descriptor = None
+        descriptors = []
         socket_path = root / (mode + '-control.sock')
         try:
             limits = {'memory.max': str(32 * MIB), 'memory.swap.max': '0',
@@ -251,7 +286,7 @@ def inside(root, unit):
                 '--chdir', '/scratch', '--setenv', 'PATH', '/usr/bin:/bin',
                 '--ro-bind', str(socket_path), '/control.sock',
                 '--remount-ro', '/proc', '--remount-ro', '/',
-                '--', '/usr/bin/python3', '-B', '-c', HANDOFF, FIXTURE, mode]
+                '--', '/usr/bin/python3', '-B', '-c', HANDOFF, json.dumps(MOUNTS), FIXTURE, mode]
             command = ['/usr/bin/python3', '-B', '-c', JOIN, str(child), *bwrap]
             intent = {'mode': mode, 'cgroup': str(child), 'command': command, 'before': before}
             seal_capture_json(root, mode + '-intent.json', intent)
@@ -261,23 +296,30 @@ def inside(root, unit):
                 with ThreadPoolExecutor(max_workers=1) as pool:
                     pending = pool.submit(capture_process, command, cwd=root, environment={'PATH': '/usr/bin:/bin'},
                         output_dir=root / mode, max_stream_bytes=200000, timeout_seconds=10)
-                    descriptor, identity = receive_mount(listener, child)
+                    descriptors, identity = receive_mount(listener, child)
                     process = pending.result(timeout=16)
             after = snapshot(child)
             require(not populated(child), 'fixture must be quiescent before mount retention')
-            inventory_hash = retain_mount(descriptor, root / (mode + '-retained'), identity)
+            retained = root / (mode + '-retained'); retained.mkdir(mode=0o700)
+            inventories = []
+            bytes_left, entries_left = 40 * MIB, 100
+            for index, (descriptor, mount) in enumerate(zip(descriptors, identity['mounts'], strict=True)):
+                digest, bytes_left, entries_left = retain_mount(
+                    descriptor, retained / str(index), mount, bytes_left, entries_left)
+                inventories.append({'source_root': mount['source_root'], 'inventory_sha256': digest})
             report = {'mode': mode, 'before': before, 'after': after, 'process': process,
-                      'populated_before_cleanup': populated(child), 'inventory_sha256': inventory_hash,
+                      'populated_before_cleanup': populated(child), 'inventories': inventories,
+                      'retained_bytes': 40 * MIB - bytes_left, 'retained_entries': 100 - entries_left,
                       'mount_descriptor': identity}
             seal_capture_json(root, mode + '-observations.json', report)
             reports.append(report)
         finally:
-            if descriptor is not None:
+            for descriptor in descriptors:
                 os.close(descriptor)
             socket_path.unlink(missing_ok=True)
             cleanup_group(child)
     seal_capture_json(root, 'observations.json', {
-        'schema': 'caplab.cgroup-resource-probe-observations/v3', 'unit': unit,
+        'schema': 'caplab.cgroup-resource-probe-observations/v4', 'unit': unit,
         'delegated_cgroup': str(group), 'kernel': platform.release(), 'python': platform.python_version(),
         'reports': reports, 'fixture_cgroups_removed': True, 'native_execution': False,
         'capture_complete_claim': False})
@@ -342,7 +384,7 @@ def run(root):
             'show_stderr': state.stderr.decode()})
         require(state.stdout.strip() == b'not-found', 'generated transient unit remains loaded')
     require(not Path(observation['delegated_cgroup']).exists(), 'generated cgroup remains after unit cleanup')
-    seal_capture_json(root, 'verification.json', {'schema': 'caplab.cgroup-resource-probe-verification/v3',
+    seal_capture_json(root, 'verification.json', {'schema': 'caplab.cgroup-resource-probe-verification/v4',
         'unit': unit, 'five_fixture_expectations_passed': True, 'unit_removed': True,
         'retained_files_verified_after_service_exit': True,
         'native_execution': False, 'capture_complete_claim': False})
