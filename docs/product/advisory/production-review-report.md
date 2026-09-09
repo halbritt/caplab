@@ -8,6 +8,10 @@ The [confirmed disposition](../../records/report-2026-09-07-review-instrument-di
 permits this report-only canary. It freezes placement and model spend on
 injection sweeps. A gate run still needs a named binding from the Principal.
 
+For a worked investigation, see [case 403583](review-case-403583.md): an original
+refusal with a reproduced native dispatch failure and a later passing revision.
+The brief separates that evidence from the independent ruling still needed.
+
 Create a fresh ledger export from the Striatum repository. This reads the
 ledger. It does not run a review or change a declaration.
 
