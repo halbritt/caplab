@@ -4,6 +4,9 @@ Status: development reporting surface. See the
 [implementation record](../../records/implementation-2026-09-08-native-tool-pairs.md).
 Native emission and representative coding compatibility remain unverified.
 
+Use the [capture-backed inspection](captured-tool-pairs-v1.md) to follow an
+independently anchored task attempt to its stdout before building this report.
+
 `caplab.native_tool_pairs.build_native_tool_pair_report(content, *, format,
 expected_sha256, expected_root_id, max_bytes)` inspects caller-owned immutable
 bytes. It requires a positive integer byte limit, a matching lowercase SHA-256,

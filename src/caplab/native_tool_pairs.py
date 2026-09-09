@@ -2,8 +2,11 @@
 
 import hashlib
 import re
+from contextlib import ExitStack
+from pathlib import Path
 
 from caplab.codex_events import parse_native_json
+from caplab.task_capture_verify import _Reader, _open, _read_file, _require, verify_task_capture
 
 
 FORMATS = ("codex-exec-jsonl", "claude-stream-jsonl")
@@ -213,3 +216,52 @@ def build_native_tool_pair_report(content: bytes, *, format: str,
             "interpretation": "Observed IDs and record order only. Codex item lifecycles and Claude tool "
             "blocks are different units. A pair or native terminal event does not establish successful "
             "work, complete capture, test passage, child ancestry, blinding or study eligibility."}
+
+
+def inspect_captured_tool_pairs(custody: Path, *, expected_attempt_sha256: str,
+                                format: str, expected_root_id: str,
+                                max_receipt_bytes: int, max_event_bytes: int) -> dict:
+    """Follow an anchored attempt to stdout before interpreting native event IDs.
+
+    Full bundle verification and the two-receipt reread have separate receipt
+    allowances. Parsing uses its own byte allowance. Trusted stable parents and
+    quiescent custody are required throughout, as for verify_task_capture.
+    """
+    if format not in FORMATS or type(max_event_bytes) is not int or max_event_bytes <= 0:
+        raise ValueError("invalid format or event byte limit")
+    _identifier(expected_root_id, "expected root ID")
+    capture = verify_task_capture(custody, expected_attempt_sha256=expected_attempt_sha256,
+                                  max_receipt_bytes=max_receipt_bytes)
+    reader = _Reader(max_receipt_bytes)
+    with ExitStack() as stack:
+        root = stack.enter_context(_open(None, custody, directory=True))
+        attempt = reader.receipt(root, "attempt.json", expected_attempt_sha256,
+                                 "caplab.task-attempt-capture/v1")
+        process_root = stack.enter_context(_open(root, "process", directory=True))
+        process = reader.receipt(process_root, "capture.json", attempt["process_capture_sha256"],
+                                 "caplab.process-capture/v1")
+        entry = process["streams"]["stdout"]
+        result = {"schema": "caplab.captured-tool-pairs/v1", "format": format,
+            "expected_root_id": expected_root_id, "attempt_sha256": expected_attempt_sha256,
+            "process_capture_sha256": attempt["process_capture_sha256"],
+            "stdout": {"path": "process/native.stdout", "sha256": entry["sha256"],
+                       "bytes": entry["bytes"], "eof": entry["eof"]},
+            "task_capture": capture, "max_event_bytes": max_event_bytes,
+            "tool_pairs_available": False, "tool_pair_report": None, "unavailable_reason": None,
+            "native_execution_linked": False, "native_capture_complete": None,
+            "interpretation": "Attempt-to-stdout integrity linkage only; recorded process failure and "
+            "incompleteness remain material. Unavailable pairing is not zero activity. Native execution, "
+            "event completeness, work correctness, blinding and study eligibility are not established."}
+        if entry["bytes"] > max_event_bytes:
+            result["unavailable_reason"] = {"code": "event_byte_allowance", "message": "stdout exceeds parsing allowance"}
+            return result
+        content, size, digest = _read_file(process_root, "native.stdout", entry["bytes"], retain=True)
+        _require(size == entry["bytes"] and digest == entry["sha256"], "stdout differs from anchored capture")
+    try:
+        pairing = build_native_tool_pair_report(content, format=format, expected_sha256=entry["sha256"],
+            expected_root_id=expected_root_id, max_bytes=max_event_bytes)
+    except ValueError as error:
+        result["unavailable_reason"] = {"code": "native_event_contract", "message": str(error)}
+    else:
+        result.update(tool_pairs_available=True, tool_pair_report=pairing)
+    return result
