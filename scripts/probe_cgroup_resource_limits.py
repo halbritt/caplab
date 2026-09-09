@@ -283,7 +283,7 @@ def retain_mount(descriptor, output, identity, bytes_left, entries_left):
         'source_scope': 'fixture namespace; not a host path', 'descriptor_identity': identity,
         'max_retained_bytes': bytes_left, 'max_entries': entries_left,
         'retained_bytes': inventory.retained_bytes, 'entries': sorted(inventory.entries, key=lambda e: e['path'])}
-    root_entry = receipt['entries'][0]['source_stat']
+    root_entry, = [entry['source_stat'] for entry in receipt['entries'] if entry['path'] == '.']
     require((root_entry['dev'], root_entry['ino']) == (identity['source_dev'], identity['source_ino']),
             'retained root identity differs from received descriptor')
     digest = seal_capture_json(output, 'inventory.json', receipt)
@@ -307,7 +307,7 @@ def verify_retention(root, observation):
                         'retained mount allowance differs from combined budget')
                 size, count = _inventory(fd, receipt, cwd=path, bytes_left=bytes_left, entries_left=entries_left)
                 entries = receipt['entries']
-                source = entries[0]['source_stat']
+                source, = [entry['source_stat'] for entry in entries if entry['path'] == '.']
                 require((source['dev'], source['ino']) == (identity['source_dev'], identity['source_ino']),
                         'retained root differs from handed-off mount')
                 bytes_left -= size
