@@ -23,6 +23,9 @@ from caplab.exec_trace import inspect_exec_trace
 from caplab.native_capture_invocation import NativeCaptureContext, build_native_capture_invocation
 from caplab.native_collection import NativeRuntimeDescriptor, collect_native_outputs
 from caplab.native_collection_verify import verify_native_collection
+from caplab.native_launch_configuration import (
+    NativeLaunchContext, NativeLaunchTraceEvidence, build_native_launch_configuration, inspect_native_launch_trace,
+)
 from caplab.native_runtime import _validated_invocation, prepare_native_runtime
 from caplab.preference.native_live import _launcher_environment
 from caplab.process_capture import capture_process, seal_capture_json
@@ -187,10 +190,17 @@ def inspect_custody(root, report):
         require(network['host_trace_path_exposed'] is False and all(
             item['supervisor'] != item['peer'] for item in network['tracer_namespaces'].values()),
             'recorded tracer custody isolation differs')
-        execution['exec_trace'] = inspect_exec_trace(root / (name + '-exec.trace'),
-            expected_trace_sha256=anchors['exec_trace_sha256'], expected_pid=handoff['peer_pid'],
-            expected_executable='/toolbin/' + name, expected_command=plan['command'],
-            expected_environment=plan['environment'], max_trace_bytes=MIB)
+        if 'launch_configuration' in selected:
+            launch = selected['launch_configuration']
+            execution['launch_configuration'] = inspect_native_launch_trace(POLICY, plan, launch,
+                root / (name + '-exec.trace'), evidence=NativeLaunchTraceEvidence(native['invocation_sha256'],
+                    launch['launch_configuration_sha256'], anchors['exec_trace_sha256'], handoff['peer_pid'], MIB))
+            execution['exec_trace'] = execution['launch_configuration']['exec_trace']
+        else:
+            execution['exec_trace'] = inspect_exec_trace(root / (name + '-exec.trace'),
+                expected_trace_sha256=anchors['exec_trace_sha256'], expected_pid=handoff['peer_pid'],
+                expected_executable='/toolbin/' + name, expected_command=plan['command'],
+                expected_environment=plan['environment'], max_trace_bytes=MIB)
         if 'exec_tracer' in network:
             execution['exec_tracer'] = verify_exec_tracer(network['exec_tracer'], root / (name + '-exec.trace'),
                                                         expected_pid=handoff['peer_pid'])
@@ -211,11 +221,19 @@ def inside(root, unit, *, trace_claude=False, trace_exec=False):
         require((group / name).read_text().strip() == value, 'outer resource limit differs')
     (group / 'cgroup.subtree_control').write_text('+memory +pids')
     selections = json.loads((root / 'selections.json').read_bytes())
+    if trace_exec:
+        require(digest(root / 'selections.json') == json.loads((root / 'intent.json').read_bytes())['selections_sha256'],
+                'traced selections differ before launch')
     require([s['harness'] for s in selections] == (['claude'] if trace_claude else list(SOURCES)),
             'startup selection differs from fixed diagnostic mode')
     reports = []
     for selected in selections:
         name = selected['harness']; source = SOURCES[name]; plan = selected['plan']
+        if trace_exec:
+            expected_launch = build_native_launch_configuration(POLICY, plan,
+                expected_invocation_sha256=plan['invocation_sha256'], context=NativeLaunchContext('canonical-native/v1'))
+            require(json.dumps(selected['launch_configuration'], sort_keys=True, allow_nan=False) ==
+                    json.dumps(expected_launch, sort_keys=True, allow_nan=False), 'startup launch configuration differs')
         trace_prefix = ['/usr/bin/strace', '-f', '-s', '256', '-e', 'trace=%file,%process,%signal',
                         '-o', '/scratch/trace.log', '--'] if trace_claude else []
         if trace_claude or trace_exec:
@@ -313,6 +331,9 @@ def run(root, *, trace_claude=False, trace_exec=False):
         prepare_native_runtime(POLICY, plan, expected_invocation_sha256=plan['invocation_sha256'], task_root=task, output_dir=prepared)
         selections.append({'harness': name, 'harness_manifest': manifest, 'plan': plan,
                            'preparation_sha256': digest(prepared / 'preparation.json'),
+                           **({'launch_configuration': build_native_launch_configuration(POLICY, plan,
+                               expected_invocation_sha256=plan['invocation_sha256'],
+                               context=NativeLaunchContext('canonical-native/v1'))} if trace_exec else {}),
                            **({'strace_sha256': digest(Path('/usr/bin/strace'))} if trace_claude or trace_exec else {})})
     selection_hash = seal_capture_json(root, 'selections.json', selections)
     unit = 'caplab-native-startup-' + uuid.uuid4().hex + '.service'

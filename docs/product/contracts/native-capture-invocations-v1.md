@@ -54,6 +54,11 @@ configuration; they confer no authorization, storage seal or complete Binding.
 The plan explicitly states `execution_authorized: false` and
 `binding_complete: false`.
 
+The separate [effective launch configuration](native-launch-configuration-v1.md)
+can preserve these exact configured values or identify the closed local scripted
+diagnostic additions. Its distinct hash does not replace this canonical plan's
+identity or make that diagnostic eligible for a study.
+
 Capture locations are configured destinations or candidate search roots:
 Codex `codex/sessions`, `codex/log` and `final-message.txt`; Claude
 `claude/projects` and `debug.log`, all under `runtime_root`. A search root is not
