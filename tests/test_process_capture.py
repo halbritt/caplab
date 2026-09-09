@@ -44,6 +44,46 @@ class ProcessCaptureTests(unittest.TestCase):
         self.assertLessEqual(total, receipt["max_stream_bytes"])
         self.assertEqual((self.out / "capture.json").stat().st_mode & 0o777, 0o600)
 
+    def test_caller_mutation_during_setup_cannot_change_launched_inputs(self):
+        code = ("import json,os,sys; print(json.dumps([sys.argv[1],"
+                "os.environ['CAPLAB_FIXTURE'],os.environ.get('CAPLAB_LATE')]))")
+        command = [sys.executable, "-c", code, "original-argument"]
+        environment = {"CAPLAB_FIXTURE": "original-environment"}
+        real_open = os.open
+        mutations = []
+
+        def mutate_during_output_open(path, *args, **kwargs):
+            if path == self.out / "native.stdout":
+                command[-1] = "changed-argument"
+                environment["CAPLAB_FIXTURE"] = "changed-environment"
+                environment["CAPLAB_LATE"] = "late-value"
+                mutations.append(True)
+            return real_open(path, *args, **kwargs)
+
+        with patch.object(capture.os, "open", side_effect=mutate_during_output_open):
+            receipt = capture_process(command, cwd=self.root, environment=environment,
+                                      output_dir=self.out, max_stream_bytes=4096, timeout_seconds=3)
+        self.assertEqual(mutations, [True])
+        self.assertEqual(receipt["return_code"], 0)
+        self.assertTrue(receipt["streams_complete"])
+        observed = json.loads((self.out / "native.stdout").read_bytes())
+        self.assertEqual(observed, ["original-argument", "original-environment", None])
+        self.assertEqual(command[-1], "changed-argument")
+        self.assertEqual(environment["CAPLAB_LATE"], "late-value")
+        self.verify_receipt(receipt)
+
+    def test_invalid_launch_inputs_fail_before_custody_is_created(self):
+        valid = [sys.executable, "-c", "raise AssertionError('must not launch')"]
+        cases = [(command, {}) for command in ([], "python", b"python", [""], [1], ["python", "\0"])]
+        cases += [(valid, environment) for environment in
+                  ([], [("key", "value")], {1: "value"}, {"": "value"},
+                   {"a=b": "value"}, {"key": "\0"}, {"key": 1})]
+        for command, environment in cases:
+            with self.subTest(command=command, environment=environment), self.assertRaises(ValueError):
+                capture_process(command, cwd=self.root, environment=environment,
+                                output_dir=self.out, max_stream_bytes=4096, timeout_seconds=3)
+            self.assertFalse(self.out.exists())
+
     def test_binary_streams_preserved_without_decoding_or_pipe_deadlock(self):
         receipt = self.run_child("import os\nfor i in range(512):\n os.write(1,bytes(range(256)))\n os.write(2,bytes(reversed(range(256))))")
         self.assertEqual((self.out / "native.stdout").read_bytes(), bytes(range(256)) * 512)

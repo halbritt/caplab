@@ -74,10 +74,16 @@ def capture_process(
     if (type(timeout_seconds) not in (int, float)
             or not math.isfinite(timeout_seconds) or timeout_seconds <= 0):
         raise ValueError("timeout_seconds must be positive and finite")
-    if not command or isinstance(command, (str, bytes)) or not command[0] or any(
+    if not command or isinstance(command, (str, bytes)):
+        raise ValueError("command must be a nonempty argument sequence")
+    command = tuple(command)
+    if not command or not command[0] or any(
             not isinstance(arg, str) or "\0" in arg for arg in command):
         raise ValueError("command must be a nonempty argument sequence")
-    if not isinstance(environment, Mapping) or any(
+    if not isinstance(environment, Mapping):
+        raise ValueError("environment must be an explicit string mapping")
+    environment = dict(environment)
+    if any(
             not isinstance(k, str) or not isinstance(v, str) or not k
             or "=" in k or "\0" in k or "\0" in v for k, v in environment.items()):
         raise ValueError("environment must be an explicit string mapping")
@@ -104,7 +110,7 @@ def capture_process(
             stack.callback(os.close, fd)
             descriptors[name] = fd
         selector = stack.enter_context(selectors.DefaultSelector())
-        process = subprocess.Popen(list(command), cwd=cwd, env=dict(environment),
+        process = subprocess.Popen(command, cwd=cwd, env=environment,
                                    stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE, start_new_session=True)
         try:

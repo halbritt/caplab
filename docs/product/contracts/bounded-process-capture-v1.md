@@ -22,6 +22,14 @@ positive finite timeout. There are no inherited-environment, byte-budget,
 working-directory, shell, or timeout defaults. Empty argument values are
 permitted; the executable argument must be nonempty.
 
+The function snapshots each input container before validating its entries;
+both the argument tuple and environment dictionary are owned before creating
+custody. Later changes to the caller's
+containers cannot change what is launched. The caller must keep inputs stable
+while those initial snapshots are made; this does not synchronize writers or
+make arbitrary custom containers atomic. String entries are immutable, so
+shallow snapshots suffice. No ambient environment is merged into the snapshot.
+
 The caller owns execution authorization, exact subject/instrument identity,
 command/configuration custody, task and account isolation, disk reservation,
 and campaign accounting. It must put capture outside subject-writable mounts.
