@@ -1,0 +1,52 @@
+{
+  "schema": "caplab.scripted-diagnostic-source-provenance/v1",
+  "source_manifest_sha256": "7b56652290539279e8a2a4ad73d19ea6398914542563f6492fe6987d10c8bb8a",
+  "sources": [
+    {
+      "path": "/tmp/caplab-native-freeze-fixture.py",
+      "sha256": "e615e267772f19968d6dfdf0a48782f6a5364e8bd59fe44814c8600ca15b8bb3",
+      "provenance_commit": "f687d48"
+    },
+    {
+      "path": "/tmp/caplab-native-freeze-payload.py",
+      "sha256": "7a4e124184c29af09affee4f2e630a24d0451a1c9bc495bcdade988ef78e966e",
+      "provenance_commit": "f687d48"
+    },
+    {
+      "path": "/tmp/caplab-native-freeze-support.py",
+      "sha256": "e6a08b1edbd8f3c0cc59a994ba89e08433f1964194db3504560973cd904466c0",
+      "provenance_commit": "f687d48"
+    },
+    {
+      "path": "/tmp/caplab-native-freeze-bootstrap.py",
+      "sha256": "632fc415a4d3334165290837b05ecb5edca66e9f17cee8ee268230b13d00f717",
+      "provenance_commit": "f687d48"
+    },
+    {
+      "path": "/tmp/caplab-native-freeze-probe.py",
+      "sha256": "e1d1e62ef6d507732a183b73e86224c35595136e22e9cd06fc26e7761b8ce849",
+      "provenance_commit": "f687d48"
+    },
+    {
+      "path": "/tmp/caplab-native-freeze-observation-audit.py",
+      "sha256": "1654d73df6e7d613d125145d79b717426889f7c98a55e69be70a39f87586b642",
+      "provenance_commit": "f687d48"
+    },
+    {
+      "path": "/tmp/caplab-native-freeze-tests.py",
+      "sha256": "8db1154d6892822ca68c84a08bafb0b535a71bf7eb03216fb8224e0a7934c957",
+      "provenance_commit": "f687d48"
+    },
+    {
+      "path": "/tmp/caplab-native-freeze-handshake-tests.py",
+      "sha256": "afc6429048e88435b6c08e0772fdfc2a0005f7fd24e7109ec88387c0764cd745",
+      "provenance_commit": "f687d48"
+    },
+    {
+      "path": "/tmp/caplab-native-freeze-controls.py",
+      "sha256": "6da431228002009474327750ca1da2a02e8df755ef4e81f686a9d90d5f26361c",
+      "provenance_commit": "f687d48"
+    }
+  ],
+  "historical_evidence_admitted": false
+}

@@ -6,6 +6,7 @@
 - [Preference Study 001 preregistration](studies/caplab-preference-001-preregistration.md)
 - [Corrected native-system preference preregistration](studies/caplab-preference-001-native-r1-preregistration.md)
 - [Native agent-system contract](contracts/native-agent-systems.json)
+- [Scripted native capture diagnostic](contracts/scripted-native-capture-v1.md)
 - [Prospective behavioral code-authoring procedure](contracts/behavior-code-authoring-v1.md)
 - [Read-only two-coder agreement report](contracts/code-agreement-report-v1.md)
 - [Prospective adjacent-placebo selection rule](contracts/adjacent-placebo-selection-v1.md)
