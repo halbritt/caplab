@@ -140,6 +140,9 @@ observation; command/environment come from the prospectively sealed source
 preparation. The original installation must remain available and unchanged for
 source revalidation. It checks exact task/final bytes, raw request/response
 lineage and timing, resource counters, quarantine and owned-unit removal.
+The shared custody reader also checks [overlapping retained copies](capture-overlap-v1.md):
+the final task inventory against retained `/work`, and selected native locations
+against retained `/episode`. Individually valid copies that disagree are refused.
 
 Missing prerequisite artifacts return `status=unavailable` and exit 1. Changed
 or malformed anchored evidence refuses with an exception; it never becomes a

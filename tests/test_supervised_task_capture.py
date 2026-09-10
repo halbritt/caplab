@@ -50,6 +50,10 @@ for name, raw in data['extra_files'].items():
     target = Path(name)
     target.parent.mkdir(parents=True,exist_ok=True)
     target.write_bytes(bytes.fromhex(raw))
+for name, raw in data.get('extra_links', {}).items():
+    target = Path(name)
+    target.parent.mkdir(parents=True,exist_ok=True)
+    os.symlink(bytes.fromhex(raw), os.fsencode(target))
 sys.stdout.buffer.write(bytes.fromhex(data['stdout']) + bytes.fromhex(data['stdout_suffix']))
 raise SystemExit(data['return_code'])
 """
@@ -60,7 +64,7 @@ def digest(path):
 
 
 def retained_fixture(root, harness, return_code, *, quarantine_factory=None, mount_retainer=None,
-                     extra_files=None, stdout_suffix=b''):
+                     extra_files=None, stdout_suffix=b'', extra_links=None):
     root.mkdir(mode=0o700)
     task = root/'task'; task.mkdir()
     fixture = root/'fixture'; fixture.mkdir()
@@ -85,13 +89,18 @@ def retained_fixture(root, harness, return_code, *, quarantine_factory=None, mou
                  paths['diagnostic_file']:b'\x00\xffdiagnostic'}
     mounts = ('/scratch', '/tmp', '/dev/shm', '/work', '/episode') if mount_retainer else ('/work', '/episode')
     extra_files = {} if extra_files is None else dict(extra_files)
+    extra_links = {} if extra_links is None else dict(extra_links)
     assert all(any(Path(path).is_relative_to(mount) and path != mount for mount in mounts)
                and '..' not in Path(path).parts and isinstance(raw, bytes) for path, raw in extra_files.items())
     assert isinstance(stdout_suffix, bytes)
+    assert all(any(Path(path).is_relative_to(mount) and path != mount for mount in mounts)
+               and '..' not in Path(path).parts and isinstance(raw, bytes) and raw and b'\0' not in raw
+               for path, raw in extra_links.items())
     markers = {path: (b'retained marker\x00\xff\n' + path.encode()).hex() for path in mounts} if mount_retainer else {}
     (fixture/'payload.json').write_text(json.dumps({'files':{k:v.hex() for k,v in files.items()},
         'stdout':stdout.hex(),'return_code':return_code,'mounts':mounts,'markers':markers,
-        'extra_files':{path:raw.hex() for path,raw in extra_files.items()},'stdout_suffix':stdout_suffix.hex()}))
+        'extra_files':{path:raw.hex() for path,raw in extra_files.items()},
+        'extra_links':{path:raw.hex() for path,raw in extra_links.items()},'stdout_suffix':stdout_suffix.hex()}))
     (fixture/'producer.py').write_text(PRODUCER)
     socket_path = root/'handoff.sock'
     command = ['/usr/bin/bwrap','--unshare-all','--die-with-parent','--new-session','--clearenv',

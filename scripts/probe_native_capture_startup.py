@@ -18,10 +18,11 @@ import time
 import uuid
 
 from caplab.capture_accounting import build_capture_byte_report
+from caplab.capture_overlap import compare_verified_capture_overlap
 from caplab.exec_provenance import observe_exec_tracer, verify_exec_tracer
 from caplab.exec_trace import inspect_exec_trace
 from caplab.native_capture_invocation import NativeCaptureContext, build_native_capture_invocation
-from caplab.native_collection import NativeRuntimeDescriptor, collect_native_outputs
+from caplab.native_collection import COLLECTION_SCHEMAS, NativeRuntimeDescriptor, collect_native_outputs
 from caplab.native_collection_verify import verify_native_collection
 from caplab.native_launch_configuration import (
     NativeLaunchContext, NativeLaunchTraceEvidence, build_native_launch_configuration, inspect_native_launch_trace,
@@ -30,7 +31,7 @@ from caplab.native_runtime import _validated_invocation, prepare_native_runtime
 from caplab.preference.native_live import _launcher_environment
 from caplab.process_capture import capture_process, seal_capture_json
 from caplab.supervised_task_capture import SupervisedTaskCapture
-from caplab.task_capture import TaskCaptureLimits
+from caplab.task_capture import TASK_ATTEMPT_SCHEMAS, TASK_INVENTORY_SCHEMAS, TaskCaptureLimits
 from caplab.task_capture_verify import _Reader, _identity, _inventory, _open, _read_file, verify_task_capture
 from probe_cgroup_resource_limits import (
     JOIN, MIB, MOUNTS, cleanup_group, digest, mount_coverage,
@@ -167,6 +168,7 @@ def inspect_custody(root, report, *, expected_selections_sha256=None):
         require((source['namespace_root'], source['device'], source['inode']) ==
                 (path, identity['source_dev'], identity['source_ino']), 'capture source differs from handoff')
     bytes_left, entries_left = 40 * MIB, 2000
+    retained_receipts = {}
     require([i['source_root'] for i in report['inventories']] == list(MOUNTS), 'incomplete mount custody')
     for index, item in enumerate(report['inventories']):
         identity = handoff['mounts'][index]
@@ -178,10 +180,22 @@ def inspect_custody(root, report, *, expected_selections_sha256=None):
                     'retained mount identity or combined allowance differs')
             size, count = _inventory(fd, receipt, cwd=MOUNTS[index], bytes_left=bytes_left, entries_left=entries_left)
             bytes_left -= size; entries_left -= count
+            retained_receipts[MOUNTS[index]] = receipt
     require(report['retained_bytes'] == 40 * MIB - bytes_left and
             report['retained_entries'] == 2000 - entries_left, 'retained totals differ')
+    reader = _Reader(300000)
+    with _open(None, root / name, directory=True) as fd:
+        attempt = reader.receipt(fd, 'attempt.json', anchors['attempt_sha256'], TASK_ATTEMPT_SCHEMAS)
+        with _open(fd, 'after', directory=True) as after_fd:
+            after = reader.receipt(after_fd, 'inventory.json', attempt['after_inventory_sha256'],
+                                   TASK_INVENTORY_SCHEMAS)
+    with _open(None, root / (name + '-collection'), directory=True) as fd:
+        collection = _Reader(300000).receipt(fd, 'collection.json', anchors['collection_sha256'],
+                                            COLLECTION_SCHEMAS)
+    overlap = compare_verified_capture_overlap(task_after=after, native=collection,
+        retained_task=retained_receipts['/work'], retained_runtime=retained_receipts['/episode'])
     execution = inspect_execution(root, report, native, expected_selections_sha256=expected_selections_sha256)
-    return {'task': task, 'native': native, 'accounting': accounting, **execution,
+    return {'task': task, 'native': native, 'accounting': accounting, 'overlap': overlap, **execution,
             'native_launch_attempted_by_supervisor': True, 'model_execution_verified': False,
             'native_capture_complete': None, 'study_eligible': False}
 
