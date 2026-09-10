@@ -74,9 +74,19 @@ finally:
 
 
 def network_handoff(
-    root, *, existing_policy=False, retain_privileges=False, quarantine_factory=None
+    root,
+    *,
+    existing_policy=False,
+    retain_privileges=False,
+    quarantine_factory=None,
+    installer=None,
+    plan=None,
+    producer=PRODUCER,
+    command_prefix=(),
+    root_mapping=False,
 ):
-    installer = network.install_capture_network_policy
+    if installer is None:
+        installer = network.install_capture_network_policy
     task = root / "task"
     task.mkdir()
     attempt = root / "attempt"
@@ -84,15 +94,20 @@ def network_handoff(
     member = Path("/proc/self/cgroup").read_text().strip()
     child = Path("/sys/fs/cgroup") / member[3:].lstrip("/")
     receipt_name = child.name.removeprefix("fixture-") + "-handoff.json"
-    plan = build_capture_network_policy(
-        [
-            {"address": "127.0.0.1", "port": 39071},
-            {"address": "127.0.0.1", "port": 39073},
-        ]
+    plan = (
+        plan
+        if plan is not None
+        else build_capture_network_policy(
+            [
+                {"address": "127.0.0.1", "port": 39071},
+                {"address": "127.0.0.1", "port": 39073},
+            ]
+        )
     )
     command = [
         "/usr/bin/bwrap",
         "--unshare-all",
+        *(["--uid", "0", "--gid", "0"] if root_mapping else []),
         "--die-with-parent",
         "--new-session",
         "--clearenv",
@@ -148,8 +163,9 @@ def network_handoff(
         "-B",
         "-c",
         setup,
-        PRODUCER,
+        producer,
     ]
+    command = [*command_prefix, *command]
     with SupervisedTaskCapture(
         command,
         task_root=task,
