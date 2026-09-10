@@ -1,0 +1,430 @@
+{
+  "all_corrected_administrations_valid": true,
+  "base": "33881f4a341681fb3b29f6cfd87bdb08e1de9134",
+  "batches": [
+    {
+      "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/github-release-witness-1",
+      "plan_sha256": "cda143a2b942c320d92de77c9e414c1c14c84d1bfde53e309842a32bc771ad27",
+      "slots": [
+        {
+          "completion_sha256": "d789eecb7617581f77ccf967ab1c264bfdc1e340fc17fc4c159e27f57f8e8278",
+          "returncode": 1,
+          "slot": "preflight"
+        }
+      ],
+      "source_fixture_runtime_hashes_unchanged": true
+    },
+    {
+      "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/github-release-witness-2",
+      "plan_sha256": "04bdc530ae1e5585a6a4e8fe9325fd627539f41dbff201292c769132059d2496",
+      "slots": [
+        {
+          "completion_sha256": "00974e73b0e2b693940324fa7b217b32a2f2ba1939d1962ab7b88792853a4624",
+          "returncode": 1,
+          "slot": "preflight"
+        }
+      ],
+      "source_fixture_runtime_hashes_unchanged": true
+    },
+    {
+      "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/github-release-witness-3",
+      "plan_sha256": "1c53d56aad5de3f909671e7b794635e6a704d63c000ec4d799ae25f2ee9f75b5",
+      "slots": [
+        {
+          "completion_sha256": "38951390e04c9f80aedfe93dc41483f7e3067e6baff84bf34166982863448bc8",
+          "returncode": 0,
+          "slot": "base-low-draft-1"
+        },
+        {
+          "completion_sha256": "42647f3ddac89787620459c2f227c068727ceaac4c07f81ab180c8c7c2946682",
+          "returncode": 0,
+          "slot": "base-low-draft-2"
+        },
+        {
+          "completion_sha256": "dab77555e9e77c5391ac4a8b3902498f898de99c37443a3eeefaaa0f10373925",
+          "returncode": 0,
+          "slot": "base-low-draft-3"
+        },
+        {
+          "completion_sha256": "89d0e290ef6042a77a02fa8bc48e8b6118c32a823f98fd6bc1b35c01f5672420",
+          "returncode": 0,
+          "slot": "base-low-eligible-1"
+        },
+        {
+          "completion_sha256": "fd15139cd8c3136aed31b8ce0c0e75e975f0fa7d9aa15b6220555a2e122eaf98",
+          "returncode": 0,
+          "slot": "base-low-eligible-2"
+        },
+        {
+          "completion_sha256": "b793e7b92f865621589859d8238c160fc7e3e2df04f9ea9897ba469f3c26c74b",
+          "returncode": 0,
+          "slot": "base-low-eligible-3"
+        },
+        {
+          "completion_sha256": "3b4d2f6974739a071528bfc75355f3f7a08538b6f673a21d4b6165ac8570a0d9",
+          "returncode": 0,
+          "slot": "base-low-empty-1"
+        },
+        {
+          "completion_sha256": "6541536f48318751e31d75e0ff227e40a391e6100cfa67baf2ea158be29284a6",
+          "returncode": 0,
+          "slot": "base-low-empty-2"
+        },
+        {
+          "completion_sha256": "26e0bc1b0e47dcb995de2fa6be686c12ab3f0e2bf51452c4206c53a0fb1d0fbd",
+          "returncode": 0,
+          "slot": "base-low-empty-3"
+        },
+        {
+          "completion_sha256": "27208b691bca4f57c5edf477a027e3865d950692f8978d76ebbb1649cc92ec47",
+          "returncode": 0,
+          "slot": "base-ordinary-1"
+        },
+        {
+          "completion_sha256": "458a69c1aee8b0c8ad60d32bc489ff9864c44a7ead0ea2bdc4411a23079ccdf8",
+          "returncode": 0,
+          "slot": "base-ordinary-2"
+        },
+        {
+          "completion_sha256": "d76b486b3c6f45c1bc02df1763e04d7f9b3aa416c55e467f0b725c8cbfad5821",
+          "returncode": 0,
+          "slot": "base-ordinary-3"
+        },
+        {
+          "completion_sha256": "2a21b3e9a60392fb064e0c240eb3a41186bb00833f6b6db71987f03edb6f2771",
+          "returncode": 0,
+          "slot": "introduction-low-draft-1"
+        },
+        {
+          "completion_sha256": "c3b98de079fb632f03204b989ce51d2dd762b349ad7ea6646f6bdbbd38b885da",
+          "returncode": 0,
+          "slot": "introduction-low-draft-2"
+        },
+        {
+          "completion_sha256": "a75f9f53873c507094c9c7a279e098d31a300802b6fe68524948beecf15f5ba1",
+          "returncode": 0,
+          "slot": "introduction-low-draft-3"
+        },
+        {
+          "completion_sha256": "9aa6dc0d708ea43c839609714ec2e83805fcb4225dc994ccab58abfdac0892f8",
+          "returncode": 0,
+          "slot": "introduction-low-eligible-1"
+        },
+        {
+          "completion_sha256": "273ecb4e1436b9ca8f2bdcadab8b75d2a5b314fb2226c08b85d44095087cb1da",
+          "returncode": 0,
+          "slot": "introduction-low-eligible-2"
+        },
+        {
+          "completion_sha256": "1787c9980e69fe02a4298d13101011d6d2e4c519ab37b421d1a5443fbc76527a",
+          "returncode": 0,
+          "slot": "introduction-low-eligible-3"
+        },
+        {
+          "completion_sha256": "5d1b598c2bb2e443ef6a98fac924449e3f3f8095024ec2f1309d5542acf25ee1",
+          "returncode": 0,
+          "slot": "introduction-low-empty-1"
+        },
+        {
+          "completion_sha256": "9376ed95339d2c8bd33d0ffabdce0fe78611336622ab50ecaba6ff8eacfaa43f",
+          "returncode": 0,
+          "slot": "introduction-low-empty-2"
+        },
+        {
+          "completion_sha256": "c5a7977fa3bb2b22633c891f396534c1c1f78351ecf71808afa086c66c39d474",
+          "returncode": 0,
+          "slot": "introduction-low-empty-3"
+        },
+        {
+          "completion_sha256": "d193713d5ec82a63d49f63811f3e8e6d2b7af3ba845dbb069d79e19dc573b4e6",
+          "returncode": 0,
+          "slot": "introduction-ordinary-1"
+        },
+        {
+          "completion_sha256": "f1be7a8c1250cdd0c1525cdd34a61e0e371eb6f7038c4d9d48f4d94fc1069833",
+          "returncode": 0,
+          "slot": "introduction-ordinary-2"
+        },
+        {
+          "completion_sha256": "a53bbef220c6429356bcf99c85f9fcdbd669c1dd8709399ac4a8035d21a4ed03",
+          "returncode": 0,
+          "slot": "introduction-ordinary-3"
+        },
+        {
+          "completion_sha256": "03f485aa0567cd127fda2e4a7c3b081dcff811c75a814c5d60059cab582a9b52",
+          "returncode": 0,
+          "slot": "preflight"
+        },
+        {
+          "completion_sha256": "fe52f0a576fab2645ff439124555e1be2e97d89388ae2755ac8ab9ac8da5a3ea",
+          "returncode": 0,
+          "slot": "repair-low-draft-1"
+        },
+        {
+          "completion_sha256": "0a2ab6251c440e1123121bd15daad0dd34fcb5db6276759a8d55cddeddf275d9",
+          "returncode": 0,
+          "slot": "repair-low-draft-2"
+        },
+        {
+          "completion_sha256": "1faed10f2e337cde92981111365e26b58af77539c2490c5170333d26de64cdad",
+          "returncode": 0,
+          "slot": "repair-low-draft-3"
+        },
+        {
+          "completion_sha256": "760156e6eb70d3eb4cc2b3c57435fd3ffaf4562816e8cf29f49f10f95f526031",
+          "returncode": 0,
+          "slot": "repair-low-eligible-1"
+        },
+        {
+          "completion_sha256": "23705221daaac849f90546dbf3d3fc13218e3d0f1092c5e0508e3e28ad99af2e",
+          "returncode": 0,
+          "slot": "repair-low-eligible-2"
+        },
+        {
+          "completion_sha256": "cadac52ae859f4d897dc5eaf21d3937e289a0013d2362e294f3fe53ed45bc5e2",
+          "returncode": 0,
+          "slot": "repair-low-eligible-3"
+        },
+        {
+          "completion_sha256": "d1472a038b6ad71f43e6e3dc3ae70eae2ba16d320ea902da27fac7b952b920a6",
+          "returncode": 0,
+          "slot": "repair-low-empty-1"
+        },
+        {
+          "completion_sha256": "034f94bc1ea17a325874ed3e1d013890442730e9957e925661f0830a52a82f26",
+          "returncode": 0,
+          "slot": "repair-low-empty-2"
+        },
+        {
+          "completion_sha256": "2d59fd4c9885e5824b1479d36af3d4fbe44ff91a94928dd20e91a04cbc865062",
+          "returncode": 0,
+          "slot": "repair-low-empty-3"
+        },
+        {
+          "completion_sha256": "175272875a5c3b011d7286eb1b592207ad30e1f50ff37877b34388b80eae0e8a",
+          "returncode": 0,
+          "slot": "repair-ordinary-1"
+        },
+        {
+          "completion_sha256": "226ef7e2c143ba41455277891c6b86d14fb081813682f05dbd2fc0ceffc9a3a4",
+          "returncode": 0,
+          "slot": "repair-ordinary-2"
+        },
+        {
+          "completion_sha256": "19886bf21a47a74f536988043633b11f37434e1221c92aa84558ff5017a802c6",
+          "returncode": 0,
+          "slot": "repair-ordinary-3"
+        }
+      ],
+      "source_fixture_runtime_hashes_unchanged": true
+    },
+    {
+      "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/github-release-witness-4",
+      "plan_sha256": "4b5d3a194aaa70b2fc588ddd285308205c8a98cc357f76481445f16c6b469a00",
+      "slots": [
+        {
+          "completion_sha256": "65f505d6e574a1110f936fd6283d295fde6caabca5e68bfba37f6f8173816a05",
+          "returncode": 0,
+          "slot": "base-low-draft-1"
+        },
+        {
+          "completion_sha256": "e41ed899f5efb5b62faa799e2ed6378f67b419b6bf3ce0010fefb0e43ef0a19d",
+          "returncode": 0,
+          "slot": "base-low-draft-2"
+        },
+        {
+          "completion_sha256": "4fb119c3304735b042c52f1a585727f5e9a6778b2a9d732a9c728e2ed2bfcd89",
+          "returncode": 0,
+          "slot": "base-low-draft-3"
+        },
+        {
+          "completion_sha256": "fa2be667e1d7b613701d994bb009f214a10c04f34b2517ac26b18867072d757f",
+          "returncode": 0,
+          "slot": "base-low-eligible-1"
+        },
+        {
+          "completion_sha256": "1afac2d630ffd715bae21521ca612fdf9ce347ebda0a28912d3605db08168d55",
+          "returncode": 0,
+          "slot": "base-low-eligible-2"
+        },
+        {
+          "completion_sha256": "fde428b819e03d68a7e08b63ffbbaafbb08eba13cb0adcfca10881a090636b0f",
+          "returncode": 0,
+          "slot": "base-low-eligible-3"
+        },
+        {
+          "completion_sha256": "211b1abec991501c32d01f6f9a8c13b7bd9ca3710d1cc3896cab4af660e967fa",
+          "returncode": 0,
+          "slot": "base-low-empty-1"
+        },
+        {
+          "completion_sha256": "bc250df8cf273b9999a1bebaaee8eebeb42e8a99488b529296e8850de34d0275",
+          "returncode": 0,
+          "slot": "base-low-empty-2"
+        },
+        {
+          "completion_sha256": "c47f0cd00ed4a7f9e45e9eca947a165bde31b45e729c16e852d05a8e801fcd18",
+          "returncode": 0,
+          "slot": "base-low-empty-3"
+        },
+        {
+          "completion_sha256": "56da833a0603c872362ec98bdf38164f9d2437972ab51ba0ef8474038717fd4c",
+          "returncode": 0,
+          "slot": "base-ordinary-1"
+        },
+        {
+          "completion_sha256": "45f66a619ed684ef020c7d9fd59fabd80cf0d5b5fe8e626b68f5b1c4a9d7e70d",
+          "returncode": 0,
+          "slot": "base-ordinary-2"
+        },
+        {
+          "completion_sha256": "1e72dc97a52ea517fb03fd95bbc59af094b0aa50d329796584c91c6d3aaf75f1",
+          "returncode": 0,
+          "slot": "base-ordinary-3"
+        },
+        {
+          "completion_sha256": "ea6becdb6034d0bd1aaae05021108144622aac9c50275c69ed707c7fc965c9da",
+          "returncode": 0,
+          "slot": "introduction-low-draft-1"
+        },
+        {
+          "completion_sha256": "301be6648c5d2e62edc3f7e623a2ec4a99973ad8273d66c5c5dba5d8e5f0f6a4",
+          "returncode": 0,
+          "slot": "introduction-low-draft-2"
+        },
+        {
+          "completion_sha256": "b824962d44149975d54f60f969b819054abb8cbe29a44b334dc60f0eee3db9d6",
+          "returncode": 0,
+          "slot": "introduction-low-draft-3"
+        },
+        {
+          "completion_sha256": "3d2a1d7344f448b94091f7092ebd7cbabc79a87b0f69b704e326070069e77042",
+          "returncode": 0,
+          "slot": "introduction-low-eligible-1"
+        },
+        {
+          "completion_sha256": "bc3a8e9b36879c0552a0930c073cba47aa510470b796741eb9391149978639b1",
+          "returncode": 0,
+          "slot": "introduction-low-eligible-2"
+        },
+        {
+          "completion_sha256": "4d10c09ca949b43ce1189d041d976abf826803c21ebde1d873a288c52e845352",
+          "returncode": 0,
+          "slot": "introduction-low-eligible-3"
+        },
+        {
+          "completion_sha256": "334b2985c9c01f8d6f4331acb9412488d10ea37468610c60212c255fe882d134",
+          "returncode": 0,
+          "slot": "introduction-low-empty-1"
+        },
+        {
+          "completion_sha256": "eaa331a1395d304500bcf3714499d3c96dc2a8c40f0c86f2b043a8d5d36eb66c",
+          "returncode": 0,
+          "slot": "introduction-low-empty-2"
+        },
+        {
+          "completion_sha256": "e365fd25b1c1961894cb4e0fe2079e89056cd678dcb860f5cb0b542761f77ecb",
+          "returncode": 0,
+          "slot": "introduction-low-empty-3"
+        },
+        {
+          "completion_sha256": "5821a44934be5a7522e0d6f944928caab8c49a8a12cc4b2b3261ee957ca62ee0",
+          "returncode": 0,
+          "slot": "introduction-ordinary-1"
+        },
+        {
+          "completion_sha256": "f305642ac12eb4825559eed06267a60d12af18f8ce0e012dd1dc0990b6e7c14b",
+          "returncode": 0,
+          "slot": "introduction-ordinary-2"
+        },
+        {
+          "completion_sha256": "61930466398dfbc377ad50617ddb3cf708df4caf2e29481ff7caf5b6daf4f239",
+          "returncode": 0,
+          "slot": "introduction-ordinary-3"
+        },
+        {
+          "completion_sha256": "c2d12690291d25a0efd24960854ed4401e146fad33398d25d943c6b102b45dc6",
+          "returncode": 0,
+          "slot": "preflight"
+        },
+        {
+          "completion_sha256": "ea99f5b84c99060e1d7b893860aff32a28ead54d3c251d9dca8e2c71d56c0ec6",
+          "returncode": 0,
+          "slot": "repair-low-draft-1"
+        },
+        {
+          "completion_sha256": "83241f34f59ae8dbcc31f4ec076f295598d79d85097a71e5bcf210fcfe9037ea",
+          "returncode": 0,
+          "slot": "repair-low-draft-2"
+        },
+        {
+          "completion_sha256": "481ff9dfb15ade2958f9b47ec986a9b27757da91c63f9fdfd9f83cf47b7ab7ad",
+          "returncode": 0,
+          "slot": "repair-low-draft-3"
+        },
+        {
+          "completion_sha256": "4e75527beda42c8f8efc55d6956ce3c21f633abcb6b22544d2363c6a99ecf891",
+          "returncode": 0,
+          "slot": "repair-low-eligible-1"
+        },
+        {
+          "completion_sha256": "0a8ea1ea4411fbcf2412f88059f5524302da31e61b21f28b657f62753dfaba7e",
+          "returncode": 0,
+          "slot": "repair-low-eligible-2"
+        },
+        {
+          "completion_sha256": "aaeb48393ce7c1bbf6a28a0a7f34e132dd5690d2b8fec388e8ccc1586a17ee99",
+          "returncode": 0,
+          "slot": "repair-low-eligible-3"
+        },
+        {
+          "completion_sha256": "11183351cdb9be0e21c32082fabcd1dfecc2f28c7fcdc7aa51a2b7916e6e81fc",
+          "returncode": 0,
+          "slot": "repair-low-empty-1"
+        },
+        {
+          "completion_sha256": "e25c9bcb5e35b73156d744b5110264eb59865c2ee0996c59b1f0834be41ab96e",
+          "returncode": 0,
+          "slot": "repair-low-empty-2"
+        },
+        {
+          "completion_sha256": "06552f661a96dc251ac9df8ffd539e4e7fdf6a7652218bec66cdac9f8d740b59",
+          "returncode": 0,
+          "slot": "repair-low-empty-3"
+        },
+        {
+          "completion_sha256": "974e5ea09bb4e05054ce8c59286f8ce86a09aadb6062e5162c363e64633c3fb6",
+          "returncode": 0,
+          "slot": "repair-ordinary-1"
+        },
+        {
+          "completion_sha256": "d4878ed62aa16705e26c0281210a03403f0c8500c8a830b237d5d4da7f0a225b",
+          "returncode": 0,
+          "slot": "repair-ordinary-2"
+        },
+        {
+          "completion_sha256": "f1be4cd3ab4002de5578efc276775b8587a6aa314e058ab841b14fadaae3384b",
+          "returncode": 0,
+          "slot": "repair-ordinary-3"
+        }
+      ],
+      "source_fixture_runtime_hashes_unchanged": true
+    }
+  ],
+  "checker_challenges_sha256": "26a85b6adecaca1377ad807e5715da4a6288448a2cdd67d6e7094a33b1c37f61",
+  "corrected_observations": 36,
+  "family_count": 1,
+  "introduction": "e7672756e15b45e68e7f0725b54247cc3e93b89a",
+  "introduction_in_census_window": false,
+  "limitations": [
+    "The original introduction is outside the fixed population window.",
+    "The sampled repair removes the tested bug and is not labeled defective.",
+    "No whole-change clean label, experimental admission, reviewer scoring or ranking.",
+    "Batch 3 introduction observations are invalid because the fixture returned 404."
+  ],
+  "repeated_property_violations": 6,
+  "sampled_repair": "c04f6c8b3af6bef8876330f37d02c42effd12908",
+  "schema": "caplab.reviewer-github-release-development-receipt/v1",
+  "status": "development-evidence-only",
+  "verification_sha256": "fea9c0c505179214b01adf7b0230fcba53e4b1a740db61f77b6edb05cd03f65d"
+}

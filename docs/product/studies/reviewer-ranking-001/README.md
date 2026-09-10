@@ -117,3 +117,18 @@ The [effort-control investigation](../../../records/verification-2026-09-10-revi
 adds a selected real change with identical parser outcomes across 135 inputs
 per revision and a compiler-confirmed unreachable fallback. This supports
 named preservation properties, not an admitted whole-patch clean label.
+
+The [dependency readiness investigation](../../../records/verification-2026-09-10-reviewer-dependency-readiness.md)
+installed the four Council revisions' locked dependencies. Builds complete,
+but full test readiness remains unresolved. The effort base/change have the
+same 134 failing test headings in the corrected namespace; those shared
+failures do not establish change-attributable defects or reviewer quality.
+
+The [GitHub release-loss witness](../../../records/verification-2026-09-10-reviewer-github-release-outcome.md)
+adds a second real failure family: the original scanner and sampled repair
+base lose a successful release response at low quota, while the repair keeps
+it. All 36 corrected observations have valid HTTP inputs and the predicted
+contrast. Earlier invalid fixtures are preserved. The original introduction
+is outside the census window, so it cannot become an in-population defective
+review task merely because this development witness succeeded. Reviewer
+scoring, remaining case coverage and held-out comparisons are still open.
