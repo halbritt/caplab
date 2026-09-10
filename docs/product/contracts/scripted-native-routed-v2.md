@@ -22,6 +22,11 @@ The optional [cgroup resource profile](cgroup-resource-observation-v1.md) select
 preparation v5 and binds `resource_profile: cgroup-usage/v1` in addition to the
 routed/v2 launch profile.
 
+The explicit [buffered trace profile](buffered-exec-trace-v1.md) additionally
+requires supervisor-poll/v1 and selects preparation v7. It quarantines raw and
+decoded trace strings before durable retention and links the copied trace to
+the observed anonymous source.
+
 The initial inner Bubblewrap still maps root so trusted setup can raise
 loopback and establish the workload identity. For v2 only, it also requests
 CAP_SETFCAP and mounts `workload_identity.py` read-only beside the other trusted

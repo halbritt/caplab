@@ -173,7 +173,16 @@ def prepare(
     launch_profile="codex-scripted-local/v1",
     resource_profile=None,
     child_observation_profile=None,
+    trace_profile=None,
 ):
+    require(
+        trace_profile is None
+        or (
+            trace_profile == "sealed-buffer/v1"
+            and child_observation_profile == "supervisor-poll/v1"
+        ),
+        "buffered traces require supervisor child observation",
+    )
     require(
         child_observation_profile is None
         or (
@@ -303,6 +312,10 @@ def prepare(
             schema="caplab.scripted-native-preparation/v6",
             child_observation_profile=child_observation_profile,
         )
+    if trace_profile is not None:
+        prepared.update(
+            schema="caplab.scripted-native-preparation/v7", trace_profile=trace_profile
+        )
     seal_capture_json(output, "preparation.json", prepared)
     return {
         "custody_root": str(output),
@@ -322,6 +335,7 @@ def read_preparation(output, *, expected_sha256):
         "caplab.scripted-native-preparation/v4",
         "caplab.scripted-native-preparation/v5",
         "caplab.scripted-native-preparation/v6",
+        "caplab.scripted-native-preparation/v7",
     )
     require(
         isinstance(prepared, dict)
@@ -351,12 +365,22 @@ def read_preparation(output, *, expected_sha256):
                 in (
                     "caplab.scripted-native-preparation/v5",
                     "caplab.scripted-native-preparation/v6",
+                    "caplab.scripted-native-preparation/v7",
                 )
                 else set()
             )
             | (
                 {"child_observation_profile"}
-                if prepared.get("schema") == "caplab.scripted-native-preparation/v6"
+                if prepared.get("schema")
+                in (
+                    "caplab.scripted-native-preparation/v6",
+                    "caplab.scripted-native-preparation/v7",
+                )
+                else set()
+            )
+            | (
+                {"trace_profile"}
+                if prepared.get("schema") == "caplab.scripted-native-preparation/v7"
                 else set()
             )
             if routed
@@ -375,6 +399,7 @@ def read_preparation(output, *, expected_sha256):
             "caplab.scripted-native-preparation/v4",
             "caplab.scripted-native-preparation/v5",
             "caplab.scripted-native-preparation/v6",
+            "caplab.scripted-native-preparation/v7",
         ),
         "unsupported preparation",
     )
@@ -388,6 +413,7 @@ def read_preparation(output, *, expected_sha256):
                 "caplab.scripted-native-preparation/v4",
                 "caplab.scripted-native-preparation/v5",
                 "caplab.scripted-native-preparation/v6",
+                "caplab.scripted-native-preparation/v7",
             )
             else "codex-scripted-routed/v1"
         ),
@@ -398,14 +424,24 @@ def read_preparation(output, *, expected_sha256):
         not in (
             "caplab.scripted-native-preparation/v5",
             "caplab.scripted-native-preparation/v6",
+            "caplab.scripted-native-preparation/v7",
         )
         or prepared["resource_profile"] == "cgroup-usage/v1",
         "resource observation profile differs",
     )
     require(
-        prepared["schema"] != "caplab.scripted-native-preparation/v6"
+        prepared["schema"]
+        not in (
+            "caplab.scripted-native-preparation/v6",
+            "caplab.scripted-native-preparation/v7",
+        )
         or prepared["child_observation_profile"] == "supervisor-poll/v1",
         "child observation profile differs",
+    )
+    require(
+        prepared["schema"] != "caplab.scripted-native-preparation/v7"
+        or prepared["trace_profile"] == "sealed-buffer/v1",
+        "trace profile differs",
     )
     require(
         prepared["schema"] != "caplab.scripted-native-preparation/v2"

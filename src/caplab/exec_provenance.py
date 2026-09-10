@@ -6,6 +6,7 @@ import re
 import stat
 
 from caplab.task_capture_verify import _require
+from caplab.exec_trace_buffer import ExecTraceBuffer, verify_trace_retention
 
 
 _NAMESPACES = ('mnt', 'pid', 'user', 'net')
@@ -53,9 +54,27 @@ def observe_exec_tracer(peer_pid: int, trace_path: Path, *, expected_tracer_exec
     actual, expected = Path(f'/proc/{tracer_pid}/exe').stat(), Path(expected_tracer_executable).stat()
     _require((actual.st_dev, actual.st_ino) == (expected.st_dev, expected.st_ino),
              'tracer executable differs')
-    identity = _trace_identity(trace_path)
-    _require(not Path(f'/proc/{peer_pid}/root', str(trace_path).lstrip('/')).exists(),
-             'host trace path is exposed to peer')
+    buffered = isinstance(trace_path, ExecTraceBuffer)
+    identity = trace_path.identity if buffered else _trace_identity(trace_path)
+    if buffered:
+        try:
+            exposed = Path(f'/proc/{peer_pid}/root', str(trace_path.path).lstrip('/')).stat()
+        except FileNotFoundError:
+            exposed = None
+        _require(exposed is None or (exposed.st_dev, exposed.st_ino) != (identity['device'], identity['inode']),
+                 'trace buffer path is exposed to peer')
+        with os.scandir(f'/proc/{peer_pid}/fd') as entries:
+            for count, entry in enumerate(entries, 1):
+                _require(count <= 128, 'peer descriptor allowance exceeded')
+                try:
+                    observed = entry.stat()
+                except FileNotFoundError:
+                    continue
+                _require((observed.st_dev, observed.st_ino) != (identity['device'], identity['inode']),
+                         'trace buffer descriptor is exposed to peer')
+    else:
+        _require(not Path(f'/proc/{peer_pid}/root', str(trace_path).lstrip('/')).exists(),
+                 'host trace path is exposed to peer')
     matching = []
     with os.scandir(f'/proc/{tracer_pid}/fd') as entries:
         for count, entry in enumerate(entries, 1):
@@ -72,7 +91,8 @@ def observe_exec_tracer(peer_pid: int, trace_path: Path, *, expected_tracer_exec
                 if ':' in line)
     flags = int(info['flags'].strip(), 8)
     _require(flags & os.O_ACCMODE in (os.O_WRONLY, os.O_RDWR), 'tracer trace descriptor is not writable')
-    return {'schema': 'caplab.exec-tracer-observation/v1', 'peer_pid': peer_pid,
+    return {'schema': 'caplab.exec-tracer-observation/v2' if buffered else 'caplab.exec-tracer-observation/v1',
+            **({'trace_storage': 'sealed-buffer/v1'} if buffered else {}), 'peer_pid': peer_pid,
             'tracer_pid': tracer_pid, 'supervisor_pid': os.getpid(), 'supervisor_cgroup': cgroup,
             'tracer_cgroup': cgroup, 'supervisor_namespaces': supervisor_namespaces,
             'tracer_namespaces': tracer_namespaces, 'peer_namespaces': peer_namespaces,
@@ -81,7 +101,7 @@ def observe_exec_tracer(peer_pid: int, trace_path: Path, *, expected_tracer_exec
             'trace_descriptor_flags': flags, 'host_trace_path_exposed': False}
 
 
-def verify_exec_tracer(observation: dict, trace_path: Path, *, expected_pid: int) -> dict:
+def verify_exec_tracer(observation: dict, trace_path: Path, *, expected_pid: int, trace_retention=None) -> dict:
     """Check a trusted retained observation; its bytes do not attest their origin.
 
     The caller supplies an independent observation anchor and authenticated
@@ -89,9 +109,14 @@ def verify_exec_tracer(observation: dict, trace_path: Path, *, expected_pid: int
     """
     _require(type(expected_pid) is int and expected_pid > 0, 'invalid exec peer PID')
     _validate_observation(observation)
-    _require(observation['schema'] == 'caplab.exec-tracer-observation/v1'
-             and observation['peer_pid'] == expected_pid, 'tracer observation peer differs')
-    _require(observation['trace_identity'] == _trace_identity(trace_path), 'observed trace identity differs')
+    _require(observation['peer_pid'] == expected_pid, 'tracer observation peer differs')
+    buffered = observation['schema'] == 'caplab.exec-tracer-observation/v2'
+    if buffered:
+        retention = verify_trace_retention(trace_retention, trace_path,
+            expected_source_identity=observation['trace_identity'])
+    else:
+        _require(trace_retention is None, 'file-backed trace cannot use a buffer retention link')
+        _require(observation['trace_identity'] == _trace_identity(trace_path), 'observed trace identity differs')
     _require(observation['host_trace_path_exposed'] is False, 'recorded host trace path is exposed')
     _require(observation['tracer_cgroup'] == observation['supervisor_cgroup'], 'recorded tracer cgroup differs')
     _require(observation['tracer_namespaces'] == observation['supervisor_namespaces'],
@@ -100,17 +125,24 @@ def verify_exec_tracer(observation: dict, trace_path: Path, *, expected_pid: int
                  for name in _NAMESPACES), 'recorded peer shares supervisor namespace')
     _require(observation['trace_descriptor_flags'] & os.O_ACCMODE in (os.O_WRONLY, os.O_RDWR),
              'recorded trace descriptor is not writable')
-    return {'schema': 'caplab.exec-tracer-consistency/v1', 'peer_pid': expected_pid,
+    return {'schema': 'caplab.exec-tracer-consistency/v2' if buffered else 'caplab.exec-tracer-consistency/v1',
+            **({'trace_retention': retention} if buffered else {}), 'peer_pid': expected_pid,
             'trace_identity': dict(observation['trace_identity']), 'recorded_tracer_custody_agrees': True,
             'observation_origin_verified': False, 'binding_complete': False,
             'native_capture_complete': None, 'study_eligible': False}
 
 
 def _validate_observation(observation):
+    _require(isinstance(observation, dict) and observation.get('schema') in (
+        'caplab.exec-tracer-observation/v1', 'caplab.exec-tracer-observation/v2'),
+        'invalid tracer observation schema')
     fields = {'schema', 'peer_pid', 'tracer_pid', 'supervisor_pid', 'supervisor_cgroup',
               'tracer_cgroup', 'supervisor_namespaces', 'tracer_namespaces', 'peer_namespaces',
               'tracer_executable', 'trace_identity', 'trace_descriptor', 'trace_descriptor_flags',
               'host_trace_path_exposed'}
+    if observation['schema'] == 'caplab.exec-tracer-observation/v2':
+        fields.add('trace_storage')
+        _require(observation.get('trace_storage') == 'sealed-buffer/v1', 'invalid trace storage profile')
     _require(isinstance(observation, dict) and set(observation) == fields,
              'invalid tracer observation fields')
     for name in ('peer_pid', 'tracer_pid', 'supervisor_pid'):

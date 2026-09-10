@@ -83,6 +83,8 @@ def inspect(output, *, expected_preparation_sha256, expected_result_sha256):
     ]
     if preparation.get("resource_profile") == "cgroup-usage/v1":
         required += ["safe-resource-before.json", "safe-resource-after.json"]
+    if preparation.get("trace_profile") == "sealed-buffer/v1":
+        required += ["safe-trace-retention.json"]
     missing = [name for name in required if not (root / name).is_file()]
     if preparation.get("launch_profile") in (
         "codex-scripted-routed/v1",
@@ -194,7 +196,28 @@ def _inspect_complete(root, preparation, result):
         ),
         "native launch differs from prepared diagnostic profile",
     )
-    tracer = verify_exec_tracer(guard["tracer"], trace, expected_pid=guard["peer_pid"])
+    buffered_trace = preparation.get("trace_profile") == "sealed-buffer/v1"
+    require(
+        selection.get("trace_profile") == preparation.get("trace_profile"),
+        "capture trace selection differs",
+    )
+    require(
+        guard["tracer"]["schema"]
+        == (
+            "caplab.exec-tracer-observation/v2"
+            if buffered_trace
+            else "caplab.exec-tracer-observation/v1"
+        ),
+        "tracer storage differs from preparation",
+    )
+    tracer = verify_exec_tracer(
+        guard["tracer"],
+        trace,
+        expected_pid=guard["peer_pid"],
+        trace_retention=json.loads((root / "safe-trace-retention.json").read_bytes())
+        if buffered_trace
+        else None,
+    )
     node = inspect_exec_trace(
         trace,
         expected_trace_sha256=anchor,

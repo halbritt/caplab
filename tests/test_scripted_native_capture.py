@@ -25,6 +25,47 @@ from probe_native_capture_startup import harness_manifest
 
 
 class ScriptedCapturePreparationTests(unittest.TestCase):
+    def test_buffered_trace_is_explicit_and_bound_to_supervised_profile(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            native, dependency = self.installation(root), self.dependency(root)
+            options = dict(
+                codex_root=native,
+                websockets_root=dependency,
+                launch_profile="codex-scripted-routed/v2",
+                resource_profile="cgroup-usage/v1",
+                child_observation_profile="supervisor-poll/v1",
+                trace_profile="sealed-buffer/v1",
+            )
+            with self.assertRaises(ValueError):
+                prepare(
+                    root / "refused", **(options | {"child_observation_profile": None})
+                )
+            self.assertFalse((root / "refused").exists())
+            output = root / "capture"
+            receipt = prepare(output, **options)
+            prepared = read_preparation(
+                output, expected_sha256=receipt["preparation_sha256"]
+            )
+            self.assertEqual(
+                prepared["schema"], "caplab.scripted-native-preparation/v7"
+            )
+            self.assertEqual(prepared["trace_profile"], "sealed-buffer/v1")
+            self.assertFalse((output / "consumption.json").exists())
+            for changes in (
+                {"schema": "caplab.scripted-native-preparation/v6"},
+                {"trace_profile": "file/v1"},
+                {"child_observation_profile": None},
+                {"resource_profile": None},
+            ):
+                with self.subTest(changes=changes):
+                    raw = json.dumps(prepared | changes).encode()
+                    (output / "preparation.json").write_bytes(raw)
+                    with self.assertRaises(ValueError):
+                        read_preparation(
+                            output, expected_sha256=hashlib.sha256(raw).hexdigest()
+                        )
+
     def test_supervisor_observation_is_explicit_and_requires_resource_capture(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

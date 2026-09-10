@@ -20,6 +20,7 @@ def main(argv=None):
     preparation.add_argument("--task-input", type=Path)
     preparation.add_argument("--task-input-sha256")
     preparation.add_argument("--resource-profile", choices=("cgroup-usage/v1",))
+    preparation.add_argument("--trace-profile", choices=("sealed-buffer/v1",))
     preparation.add_argument(
         "--child-observation-profile", choices=("supervisor-poll/v1",)
     )
@@ -64,6 +65,7 @@ def main(argv=None):
             launch_profile=args.launch_profile,
             resource_profile=args.resource_profile,
             child_observation_profile=args.child_observation_profile,
+            trace_profile=args.trace_profile,
         )
     elif args.command == "execute":
         result = execute(

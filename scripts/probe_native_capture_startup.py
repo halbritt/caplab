@@ -23,6 +23,7 @@ from caplab.capture_overlap import compare_verified_capture_overlap
 from caplab.prepared_task_capture import verify_prepared_before
 from caplab.exec_provenance import observe_exec_tracer, verify_exec_tracer
 from caplab.exec_trace import inspect_exec_trace
+from caplab.exec_trace_buffer import ExecTraceBuffer
 from caplab.native_capture_invocation import NativeCaptureContext, build_native_capture_invocation
 from caplab.native_collection import COLLECTION_SCHEMAS, NativeRuntimeDescriptor, collect_native_outputs
 from caplab.native_collection_verify import verify_native_collection
@@ -131,7 +132,8 @@ def inspect_traced_peer(peer_pid, trace_path):
     namespaces = {name: {'supervisor': os.readlink('/proc/self/ns/' + name),
                         'peer': os.readlink(f'/proc/{peer_pid}/ns/{name}')} for name in ('mnt', 'pid')}
     require(all(item['supervisor'] != item['peer'] for item in namespaces.values()), 'tracer shares peer namespace')
-    require(not Path(f'/proc/{peer_pid}/root', str(trace_path).lstrip('/')).exists(), 'host trace path is exposed')
+    if not isinstance(trace_path, ExecTraceBuffer):
+        require(not Path(f'/proc/{peer_pid}/root', str(trace_path).lstrip('/')).exists(), 'host trace path is exposed')
     tracer = observe_exec_tracer(peer_pid, trace_path, expected_tracer_executable=Path('/usr/bin/strace'))
     return checks | {'tracer_namespaces': namespaces, 'host_trace_path_exposed': False, 'exec_tracer': tracer}
 

@@ -172,9 +172,16 @@ def case(root, group, name, selected):
         selected.get("child_observation_profile") == "supervisor-poll/v1"
     )
     capture_seconds = 75 if routed else 45
-    fixture_stack, routing_stack = ExitStack(), ExitStack()
+    fixture_stack, routing_stack, trace_stack = ExitStack(), ExitStack(), ExitStack()
     fixed = None
     try:
+        trace_buffer = None
+        if selected.get("trace_profile") == "sealed-buffer/v1":
+            from caplab.exec_trace_buffer import buffered_exec_trace
+
+            trace_buffer = trace_stack.enter_context(
+                buffered_exec_trace(max_bytes=2 * MIB, quarantine_factory=factory)
+            )
         if not supervisor_observation:
             observation_listener.bind(str(observation_path))
             observation_path.chmod(0o600)
@@ -386,7 +393,7 @@ def case(root, group, name, selected):
                 "-e",
                 "trace=execve,execveat,clone,clone3,fork,vfork",
                 "-o",
-                str(trace_path),
+                str(trace_buffer.path if trace_buffer else trace_path),
                 "--",
             ] + command
             seal(
@@ -403,7 +410,9 @@ def case(root, group, name, selected):
             stage = "handoff"
 
             def inspect_peer(pid):
-                checks = inspect_traced_peer(pid, trace_path)
+                checks = inspect_traced_peer(
+                    pid, trace_buffer if trace_buffer else trace_path
+                )
                 if routed:
                     from caplab.capture_network_transport import capture_routed_network
 
@@ -468,7 +477,7 @@ def case(root, group, name, selected):
                                 "handoff": handoff,
                                 "group": child,
                                 "source": SOURCE,
-                                "trace": trace_path,
+                                "trace": trace_buffer if trace_buffer else trace_path,
                                 "seal": seal,
                                 "policy": POLICY,
                                 "selected": selected,
@@ -605,6 +614,8 @@ def case(root, group, name, selected):
                 require(
                     os.read(fd, len(raw) + 1) == raw, "sealed fixture input changed"
                 )
+        if trace_buffer is not None:
+            seal(root, name + "-trace-retention.json", trace_buffer.retain(trace_path))
         index = MOUNTS.index("/episode")
         identity = handoff["mounts"][index]
         guarded(
@@ -703,6 +714,7 @@ def case(root, group, name, selected):
     finally:
         failure = sys.exc_info()
         with ExitStack() as cleanup:
+            cleanup.callback(trace_stack.__exit__, *failure)
             cleanup.callback(fixture_stack.__exit__, *failure)
             cleanup.callback(routing_stack.__exit__, *failure)
             cleanup.callback(cleanup_group, child)
@@ -772,6 +784,10 @@ def inside(root, unit, expected_preparation_sha256):
         selected.get("child_observation_profile")
         == prepared.get("child_observation_profile"),
         "worker child observation profile differs",
+    )
+    require(
+        selected.get("trace_profile") == prepared.get("trace_profile"),
+        "worker trace profile differs",
     )
     if prepared.get("launch_profile") in (
         "codex-scripted-routed/v1",
@@ -852,6 +868,8 @@ def run(root, prepared, expected_preparation_sha256):
         selected["resource_profile"] = prepared["resource_profile"]
     if "child_observation_profile" in prepared:
         selected["child_observation_profile"] = prepared["child_observation_profile"]
+    if "trace_profile" in prepared:
+        selected["trace_profile"] = prepared["trace_profile"]
     seal(root, "selection.json", selected)
     unit = "caplab-scripted-native-" + uuid.uuid4().hex + ".service"
     environment = ENV | {
