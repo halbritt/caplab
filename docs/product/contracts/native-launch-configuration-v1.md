@@ -5,7 +5,7 @@ policy_path, invocation, *, expected_invocation_sha256, context)` identifies
 the effective command, environment and configured cwd separately from the
 [canonical prepared invocation](native-capture-invocations-v1.md).
 
-`NativeLaunchContext(profile, fixture_port=None)` selects one of two closed
+`NativeLaunchContext(profile, fixture_port=None)` selects one of three closed
 profiles. The canonical base is rebuilt under the exact native policy and its
 independent hash before the effective configuration is constructed.
 
@@ -13,6 +13,7 @@ independent hash before the effective configuration is constructed.
 |---|---|---|
 | `canonical-native/v1` | Exact canonical argv, environment and cwd; no fixture port. Supports the canonical Codex and Claude tuples. | Native capture preparation. |
 | `codex-scripted-local/v1` | The canonical Codex invocation plus the fixed local transport and diagnostic settings below. | Scripted protocol diagnostic only. |
+| `codex-scripted-routed/v1` | The same diagnostic settings with the fixed endpoint address `198.18.0.1`. | Restricted routed protocol diagnostic only. |
 
 The local profile requires an integer port from 1 through 65535, excluding
 booleans. Immediately before the final `--` and prompt, it adds these exact
@@ -36,6 +37,11 @@ verified local diagnostic's configuration; they do not guarantee routing,
 containment or behavior for any installed harness. The caller must freeze the
 exact harness, isolate networking and authorize the diagnostic separately.
 The local profile supplies no model inference or eligible study configuration.
+The routed profile uses the same port validation and settings, replacing
+`127.0.0.1` with `198.18.0.1` in both base URLs and the refresh URL. It selects
+no arbitrary endpoint and grants no routing authority. Its
+[routed capture contract](scripted-native-routed-v1.md) owns the separate
+supervisor network, fixture placement and capture requirements.
 
 The `caplab.native-launch-configuration/v1` record includes its canonical
 `invocation_sha256`, profile, port, effective command/environment/cwd, purpose

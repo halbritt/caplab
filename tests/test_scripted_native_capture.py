@@ -25,6 +25,41 @@ from probe_native_capture_startup import harness_manifest
 
 
 class ScriptedCapturePreparationTests(unittest.TestCase):
+    def test_routed_preparation_freezes_profile_and_routing_tools(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            output = root / "capture"
+            receipt = prepare(
+                output,
+                codex_root=self.installation(root),
+                websockets_root=self.dependency(root),
+                launch_profile="codex-scripted-routed/v1",
+            )
+            prepared = read_preparation(
+                output, expected_sha256=receipt["preparation_sha256"]
+            )
+            self.assertEqual(
+                prepared["schema"], "caplab.scripted-native-preparation/v3"
+            )
+            self.assertEqual(prepared["launch_profile"], "codex-scripted-routed/v1")
+            self.assertEqual(prepared["limits"]["capture_seconds"], 75)
+            self.assertEqual(prepared["limits"]["routing_handoff_seconds"], 25)
+            self.assertIn(
+                "/usr/bin/slirp4netns",
+                [p["invoked_path"] for p in prepared["runtime_pins"]],
+            )
+            self.assertIsNone(prepared["task_input"])
+            self.assertFalse((output / "consumption.json").exists())
+            prepared["launch_profile"] = "codex-scripted-local/v1"
+            (output / "preparation.json").write_text(json.dumps(prepared))
+            with self.assertRaises(ValueError):
+                read_preparation(
+                    output,
+                    expected_sha256=hashlib.sha256(
+                        (output / "preparation.json").read_bytes()
+                    ).hexdigest(),
+                )
+
     def test_unbounded_task_metadata_is_refused_before_opening_custody(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

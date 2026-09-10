@@ -78,6 +78,56 @@ async def response(ws, document):
 
 
 class Controls(unittest.IsolatedAsyncioTestCase):
+    async def test_supervised_fixture_retains_exchange_and_joins_after_body_failure(
+        self,
+    ):
+        from scripted_native.routed_fixture import supervised_fixture
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with supervised_fixture(
+                expected_identity=IDENTITY,
+                capture_dir=root / "normal",
+                observation_socket=None,
+                quarantine_factory=None,
+                bind_address="127.0.0.1",
+            ) as fixed:
+                async with connect(fixed.uri) as ws:
+                    await response(ws, TOOLS)
+                    await response(ws, RESULT)
+            self.assertEqual(fixed.summary["scripted_generated_responses"], 2)
+            self.assertEqual(fixed.summary["errors"], [])
+            self.assertTrue(fixed.summary["fixture_thread_joined"])
+            with self.assertRaisesRegex(RuntimeError, "body failure"):
+                with supervised_fixture(
+                    expected_identity=IDENTITY,
+                    capture_dir=root / "failure",
+                    observation_socket=None,
+                    quarantine_factory=None,
+                    bind_address="127.0.0.1",
+                ) as failed:
+                    raise RuntimeError("body failure")
+            self.assertTrue(failed.summary["fixture_thread_joined"])
+
+    async def test_supervisor_fixture_quarantines_protocol_bytes_before_retention(self):
+        from caplab.revbench.codex import ExactSecretStreamQuarantine
+
+        with tempfile.TemporaryDirectory() as temporary:
+            capture = Path(temporary) / "protocol"
+            async with fixed_fixture(
+                payload.scripted_response,
+                capture_dir=capture,
+                bind_address="127.0.0.1",
+                quarantine_factory=lambda: ExactSecretStreamQuarantine(
+                    (b"private-marker",)
+                ),
+            ) as server:
+                async with connect(server.uri) as ws:
+                    with self.assertRaises(ConnectionClosed):
+                        await response(ws, {**TOOLS, "private": "private-marker"})
+            self.assertTrue(server.errors)
+            self.assertEqual(list(capture.iterdir()), [])
+
     async def test_identity_is_required_on_warmup_and_every_generated_turn(self):
         from copy import deepcopy
 
@@ -599,6 +649,7 @@ class ShutdownControls(unittest.IsolatedAsyncioTestCase):
             )
             namespace = {
                 "sys": sys,
+                "external_fixture": None,
                 "plan": {
                     "base_subject": {
                         "model_id": IDENTITY["model"],

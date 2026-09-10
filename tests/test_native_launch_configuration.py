@@ -67,6 +67,22 @@ class NativeLaunchConfigurationTests(unittest.TestCase):
             self.assertFalse(report['exec_trace']['trace_provenance_verified'])
             self.assertNotIn('Fixed café',str(report))
 
+    def test_routed_diagnostic_pins_a_distinct_external_fixture_configuration(self):
+        plan=self.plan()
+        local=self.build(plan,'codex-scripted-local/v1',43129)
+        routed=self.build(plan,'codex-scripted-routed/v1',43129)
+        self.assertIn('openai_base_url="http://198.18.0.1:43129"',routed['command'])
+        self.assertEqual(routed['environment']['CODEX_REFRESH_TOKEN_URL_OVERRIDE'],
+                         'http://198.18.0.1:43129/oauth/token')
+        self.assertNotEqual(routed['launch_configuration_sha256'],local['launch_configuration_sha256'])
+        trace,evidence=self.trace_fixture(plan,routed)
+        report=inspect_native_launch_trace(POLICY,plan,routed,trace,evidence=evidence)
+        self.assertEqual(report['profile'],'codex-scripted-routed/v1')
+        self.assertFalse(report['study_eligible'])
+        for port in (None,True,0,65536,'43129'):
+            with self.subTest(port=port),self.assertRaises(ValueError):
+                self.build(plan,'codex-scripted-routed/v1',port)
+
     def test_profile_boundary_rejects_arbitrary_amendments_and_ambiguous_ports(self):
         plan=self.plan()
         for port in (None,True,False,0,-1,65536,1.0,'43129',[],{}):

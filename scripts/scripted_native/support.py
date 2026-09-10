@@ -13,13 +13,37 @@ from caplab.native_launch_configuration import (
 from probe_cgroup_resource_limits import MOUNTS, inspect_nested_procfs, require
 
 
-def expected_invocation(policy, plan, port):
+def expected_invocation(policy, plan, port, *, profile="codex-scripted-local/v1"):
     return build_native_launch_configuration(
         policy,
         plan,
         expected_invocation_sha256=plan["invocation_sha256"],
-        context=NativeLaunchContext("codex-scripted-local/v1", port),
+        context=NativeLaunchContext(profile, port),
     )
+
+
+def combine_routed_summary(native, fixture):
+    """Join separate captured native and supervisor-fixture outcomes without editing either."""
+    require(isinstance(native, dict) and isinstance(fixture, dict)
+            and type(fixture.get('peer_pid')) is int and fixture['peer_pid'] > 0
+            and type(fixture.get('finished_monotonic_ns')) is int and fixture['finished_monotonic_ns'] > 0
+            and type(fixture.get('port')) is int and 1 <= fixture['port'] <= 65535,
+            'invalid supervisor fixture identity')
+    endpoint = {"address": "198.18.0.1", "port": fixture["port"]}
+    require(native.get("external_fixture") == endpoint
+            and fixture.get("bind_address") == endpoint["address"]
+            and fixture.get("schema") == "caplab.supervised-scripted-fixture/v1"
+            and fixture.get("fixture_thread_joined") is True
+            and fixture.get("fixture_closed") is True
+            and fixture.get("study_eligible") is False,
+            "routed fixture outcome identity differs")
+    require(native["requests"] == [] and native["errors"] == []
+            and native["websocket_messages"] == [] and native["library_events"] == []
+            and native["scripted_generated_responses"] == 0
+            and native["deferred_close"] is None and native["fixture_stop_reason"] is None,
+            "routed bootstrap claimed supervisor fixture observations")
+    return native | {key: fixture[key] for key in ("requests", "errors", "websocket_messages",
+        "library_events", "scripted_generated_responses", "deferred_close", "fixture_stop_reason")}
 
 
 NATIVE_RELATIVE = (

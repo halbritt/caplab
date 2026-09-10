@@ -2,6 +2,7 @@
 
 import base64
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import ExitStack
 import hashlib
 import json
 import os
@@ -9,6 +10,7 @@ from pathlib import Path
 import re
 import socket
 import subprocess
+import sys
 import uuid
 
 from caplab.capture_quarantine import (
@@ -161,6 +163,10 @@ def case(root, group, name, selected):
     context = {}
     refusals = []
     process = None
+    routed = selected.get("launch_profile") == "codex-scripted-routed/v1"
+    capture_seconds = 75 if routed else 45
+    fixture_stack, routing_stack = ExitStack(), ExitStack()
+    fixed = None
     try:
         observation_listener.bind(str(observation_path))
         observation_path.chmod(0o600)
@@ -170,6 +176,26 @@ def case(root, group, name, selected):
         native_path.chmod(0o600)
         native_listener.listen(1)
         native_listener.settimeout(5)
+        if routed:
+            from .routed_fixture import supervised_fixture
+            from caplab.capture_network_policy import build_capture_network_policy
+
+            fixed = fixture_stack.enter_context(
+                supervised_fixture(
+                    expected_identity={
+                        "model": plan["base_subject"]["model_id"],
+                        "effort": plan["base_subject"]["effort"],
+                        "summary": "detailed",
+                    },
+                    capture_dir=root / (name + "-fixture-requests"),
+                    observation_socket=str(observation_path),
+                    quarantine_factory=factory,
+                )
+            )
+            network_plan = build_capture_network_policy(
+                [{"address": "198.18.0.1", "port": fixed.port}]
+            )
+            seal(root, name + "-network-policy.json", network_plan)
         limits = {
             "memory.max": str(256 * MIB),
             "memory.swap.max": "0",
@@ -193,6 +219,16 @@ def case(root, group, name, selected):
                     "case": name,
                     "echo_value": SECRET.decode(),
                     "directories": preparation["directories"],
+                    **(
+                        {
+                            "external_fixture": {
+                                "address": "198.18.0.1",
+                                "port": fixed.port,
+                            }
+                        }
+                        if routed
+                        else {}
+                    ),
                 },
                 sort_keys=True,
             )
@@ -261,6 +297,24 @@ def case(root, group, name, selected):
                 "/opt/native/bin/codex.js",
                 "/toolbin/codex",
             ]
+            if routed:
+                marker = command.index("--unshare-all") + 1
+                command[marker:marker] = [
+                    "--uid",
+                    "0",
+                    "--gid",
+                    "0",
+                    "--cap-add",
+                    "CAP_SETPCAP",
+                ]
+                marker = command.index("/usr/bin/bwrap")
+                command[marker:marker] = [
+                    "/usr/bin/setpriv",
+                    "--bounding-set=-all",
+                    "--inh-caps=-all",
+                    "--ambient-caps=-all",
+                    "--no-new-privs",
+                ]
             for filename in ("bootstrap.py", "fixture.py", "payload.py", "guard.py"):
                 command += [
                     "--ro-bind",
@@ -327,6 +381,26 @@ def case(root, group, name, selected):
                 },
             )
             stage = "handoff"
+
+            def inspect_peer(pid):
+                checks = inspect_traced_peer(pid, trace_path)
+                if routed:
+                    from caplab.capture_network_transport import capture_routed_network
+
+                    checks["routing"] = routing_stack.enter_context(
+                        capture_routed_network(
+                            network_plan,
+                            expected_policy_sha256=network_plan[
+                                "network_policy_sha256"
+                            ],
+                            peer_pid=pid,
+                            output_dir=root / (name + "-network"),
+                            timeout_seconds=45,
+                            quarantine_factory=factory,
+                        )
+                    )
+                return checks
+
             try:
                 with SupervisedTaskCapture(
                     command,
@@ -334,7 +408,7 @@ def case(root, group, name, selected):
                     namespace_root="/work",
                     environment=ENV,
                     output_dir=root / name,
-                    limits=TaskCaptureLimits(300000, MIB, 1000, 45),
+                    limits=TaskCaptureLimits(300000, MIB, 1000, capture_seconds),
                     max_process_receipt_bytes=30000,
                     quarantine_factory=factory,
                 ) as recorder:
@@ -351,7 +425,7 @@ def case(root, group, name, selected):
                                 environment=ENV,
                                 output_dir=root / name / "process",
                                 max_stream_bytes=300000,
-                                timeout_seconds=45,
+                                timeout_seconds=capture_seconds,
                                 pass_fds=(auth_fd, control_fd),
                                 quarantine_factory=factory,
                             )
@@ -359,9 +433,7 @@ def case(root, group, name, selected):
                                 listener,
                                 child,
                                 recorder,
-                                inspect_peer=lambda pid: inspect_traced_peer(
-                                    pid, trace_path
-                                ),
+                                inspect_peer=inspect_peer,
                                 usable_devices="bwrap-basic-v1",
                                 quarantine_factory=factory,
                                 nested_userns=True,
@@ -382,7 +454,12 @@ def case(root, group, name, selected):
                                 native_listener,
                                 context,
                                 lambda port: support.expected_invocation(
-                                    POLICY, plan, port
+                                    POLICY,
+                                    plan,
+                                    port,
+                                    profile=selected.get(
+                                        "launch_profile", "codex-scripted-local/v1"
+                                    ),
                                 ),
                             )
                             (binary,) = [
@@ -393,7 +470,9 @@ def case(root, group, name, selected):
                             support.receive_child_observation(
                                 observation_listener,
                                 group=child,
-                                expected_peer=handoff["peer_pid"],
+                                expected_peer=fixed.peer_pid
+                                if routed
+                                else handoff["peer_pid"],
                                 evidence=FrozenNativeChildEvidence(
                                     exec_observation["peer_pid"],
                                     context["parent_proc_descriptor"],
@@ -407,8 +486,12 @@ def case(root, group, name, selected):
                                 ),
                             )
                             stage = "process"
-                            process = future.result(timeout=51)
+                            process = future.result(timeout=capture_seconds + 6)
                     forced = stop_writers(child)
+                    if routed:
+                        routing_stack.close()
+                        fixture_stack.close()
+                        seal(root, name + "-fixture.json", fixed.summary)
                     after = snapshot(child)
                     seal(
                         root,
@@ -440,6 +523,9 @@ def case(root, group, name, selected):
                 )
                 refusals.append(stage)
                 forced = stop_writers(child)
+                if routed:
+                    routing_stack.__exit__(*sys.exc_info())
+                    fixture_stack.__exit__(*sys.exc_info())
                 after = snapshot(child)
                 seal(
                     root,
@@ -538,6 +624,8 @@ def case(root, group, name, selected):
             if line.startswith(b'{"fixture_summary":')
         ]
         require(len(summaries) <= 1, "multiple fixture summaries")
+        if routed and summaries:
+            summaries[0] = support.combine_routed_summary(summaries[0], fixed.summary)
         report["fixture_summary"] = summaries[0] if summaries else None
         report["native_attempt_succeeded"] = bool(
             summaries
@@ -554,16 +642,20 @@ def case(root, group, name, selected):
         seal(root, name + "-observations.json", report)
         return report
     finally:
-        for descriptor in descriptors:
-            os.close(descriptor)
-        if "parent_proc_descriptor" in context:
-            os.close(context["parent_proc_descriptor"])
-        observation_listener.close()
-        observation_path.unlink(missing_ok=True)
-        native_listener.close()
-        native_path.unlink(missing_ok=True)
-        socket_path.unlink(missing_ok=True)
-        cleanup_group(child)
+        failure = sys.exc_info()
+        with ExitStack() as cleanup:
+            cleanup.callback(fixture_stack.__exit__, *failure)
+            cleanup.callback(routing_stack.__exit__, *failure)
+            cleanup.callback(cleanup_group, child)
+            for descriptor in descriptors:
+                os.close(descriptor)
+            if "parent_proc_descriptor" in context:
+                os.close(context["parent_proc_descriptor"])
+            observation_listener.close()
+            observation_path.unlink(missing_ok=True)
+            native_listener.close()
+            native_path.unlink(missing_ok=True)
+            socket_path.unlink(missing_ok=True)
 
 
 def inside(root, unit, expected_preparation_sha256):
@@ -609,6 +701,22 @@ def inside(root, unit, expected_preparation_sha256):
         and selected.get("task_input") == prepared.get("task_input"),
         "worker selection differs",
     )
+    require(
+        selected.get("launch_profile") == prepared.get("launch_profile"),
+        "worker launch profile differs",
+    )
+    if prepared.get("launch_profile") == "codex-scripted-routed/v1":
+        from .routed_network import configure_outer
+
+        outer_launch = json.loads((root / "outer-launch.json").read_bytes())
+        require(
+            outer_launch["preparation_sha256"] == expected_preparation_sha256,
+            "outer launch preparation differs",
+        )
+        observation = configure_outer(
+            root, outer_launch["parent_namespaces"], quarantine_factory=factory
+        )
+        seal(root, "outer-network.json", observation)
     require(
         json.loads((root / "intent.json").read_bytes())["unit"] == unit,
         "worker unit differs from intent",
@@ -667,6 +775,8 @@ def run(root, prepared, expected_preparation_sha256):
     }
     if "task_input" in prepared:
         selected["task_input"] = prepared["task_input"]
+    if "launch_profile" in prepared:
+        selected["launch_profile"] = prepared["launch_profile"]
     seal(root, "selection.json", selected)
     unit = "caplab-scripted-native-" + uuid.uuid4().hex + ".service"
     environment = ENV | {
@@ -686,7 +796,7 @@ def run(root, prepared, expected_preparation_sha256):
         "--property=MemoryMax=536870912",
         "--property=MemorySwapMax=0",
         "--property=TasksMax=192",
-        "--property=RuntimeMaxSec=90",
+        "--property=RuntimeMaxSec=" + str(prepared["limits"]["unit_seconds"]),
         "--property=KillMode=control-group",
         "--property=LimitCORE=0",
         "--",
@@ -698,7 +808,9 @@ def run(root, prepared, expected_preparation_sha256):
         "/usr/bin/python3",
         "-B",
         str(SCRIPT),
-        "worker",
+        "routed-worker"
+        if prepared.get("launch_profile") == "codex-scripted-routed/v1"
+        else "worker",
         str(root),
         "--unit",
         unit,
@@ -724,7 +836,7 @@ def run(root, prepared, expected_preparation_sha256):
             environment=environment,
             output_dir=root / "service",
             max_stream_bytes=200000,
-            timeout_seconds=100,
+            timeout_seconds=prepared["limits"]["outer_seconds"],
             quarantine_factory=factory,
         )
         observed = (

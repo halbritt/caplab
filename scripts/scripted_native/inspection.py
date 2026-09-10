@@ -82,6 +82,18 @@ def inspect(output, *, expected_preparation_sha256, expected_result_sha256):
         "safe-observations.json",
     ]
     missing = [name for name in required if not (root / name).is_file()]
+    if preparation.get("launch_profile") == "codex-scripted-routed/v1":
+        missing += [
+            name
+            for name in (
+                "outer-launch.json",
+                "outer-network.json",
+                "safe-fixture.json",
+                "safe-network-policy.json",
+                "safe-network/terminal.json",
+            )
+            if not (root / name).is_file()
+        ]
     if missing:
         return {
             "schema": "caplab.scripted-native-inspection/v1",
@@ -103,6 +115,11 @@ def _inspect_complete(root, preparation, result):
         "service outcome differs from captured receipt",
     )
     selection = read(root / "selection.json")
+    routed = preparation.get("launch_profile") == "codex-scripted-routed/v1"
+    require(
+        selection.get("launch_profile") == preparation.get("launch_profile"),
+        "selected launch profile differs from preparation",
+    )
     require(
         selection.get("task_input") == preparation.get("task_input"),
         "selected task input differs from preparation",
@@ -155,6 +172,16 @@ def _inspect_complete(root, preparation, result):
         raise AssertionError()
     expected = guard["expected"]
     plan = selection["plan"]
+    require(
+        launch
+        == p.support.expected_invocation(
+            p.POLICY,
+            plan,
+            guard["port"],
+            profile=preparation.get("launch_profile", "codex-scripted-local/v1"),
+        ),
+        "native launch differs from prepared diagnostic profile",
+    )
     tracer = verify_exec_tracer(guard["tracer"], trace, expected_pid=guard["peer_pid"])
     node = inspect_exec_trace(
         trace,
@@ -194,7 +221,11 @@ def _inspect_complete(root, preparation, result):
         raise AssertionError()
     handshake = read(root / "safe-child-observation.json")
     observed = handshake["observation"]
-    if not (handshake["peer_pid"] == handoff["peer_pid"] and "error" not in handshake):
+    fixed = read(root / "safe-fixture.json") if routed else None
+    expected_request_peer = fixed["peer_pid"] if routed else handoff["peer_pid"]
+    if not (
+        handshake["peer_pid"] == expected_request_peer and "error" not in handshake
+    ):
         raise AssertionError()
     if not (
         observed["parent_pid"] == guard["peer_pid"]
@@ -239,6 +270,8 @@ def _inspect_complete(root, preparation, result):
         for l in (root / "safe/process/native.stderr").read_bytes().splitlines()
         if l.startswith(b'{"fixture_summary":')
     ]
+    if routed:
+        summary = p.support.combine_routed_summary(summary, fixed)
     reported = read(root / "safe-observations.json")
     require(
         reported["fixture_summary"] == summary
@@ -263,7 +296,8 @@ def _inspect_complete(root, preparation, result):
     ):
         raise AssertionError()
     if not (
-        resource["process"]["return_code"] == int(bool(summary["errors"]))
+        resource["process"]["return_code"]
+        == (0 if routed else int(bool(summary["errors"])))
         and resource["process"]["streams_complete"]
         and (not resource["guarded_refusals"])
     ):
@@ -307,8 +341,78 @@ def _inspect_complete(root, preparation, result):
         "retained_entries": total_entries,
         "anchors": anchors,
     }
+    expected_routing = None
+    if routed:
+        from caplab.capture_network_policy import build_capture_network_policy
+
+        policy = build_capture_network_policy(
+            [{"address": "198.18.0.1", "port": guard["port"]}]
+        )
+        require(
+            read(root / "safe-network-policy.json") == policy,
+            "native network policy differs",
+        )
+        require(
+            fixed["port"] == guard["port"], "native and supervisor fixture ports differ"
+        )
+        (terminal_pin,) = [
+            entry
+            for entry in result["capture_manifest"]["entries"]
+            if entry["path"] == "safe-network/terminal.json"
+        ]
+        expected_routing = {"plan": policy, "terminal_sha256": terminal_pin["sha256"]}
+        outer = read(root / "outer-network.json")
+        launch_outer = read(root / "outer-launch.json")
+        from .routed_network import outer_command
+        import sys
+
+        group = Path("/sys/fs/cgroup") / guard["cgroup"][4:]
+        expected_outer = outer_command(
+            root,
+            source=source,
+            dependency=Path(selection["dependency_root"]),
+            group=group.parent,
+            task_input=Path(preparation["task_input"]["custody"])
+            if preparation.get("task_input") is not None
+            else None,
+            child_command=[
+                sys.executable,
+                "-B",
+                str(p.SCRIPT),
+                "worker",
+                str(root),
+                "--unit",
+                intent["unit"],
+                "--preparation-sha256",
+                result["preparation_sha256"],
+            ],
+        )
+        require(
+            launch_outer["command"] == expected_outer
+            and launch_outer["preparation_sha256"] == result["preparation_sha256"],
+            "outer launch differs from selected profile",
+        )
+        require(
+            outer["parent_namespaces"] == launch_outer["parent_namespaces"]
+            and outer["initial_routes"] == []
+            and [i["ifname"] for i in outer["initial_links"]] == ["lo"]
+            and outer["fixture_address"] == "198.18.0.1"
+            and all(
+                outer["namespaces"][k] != outer["parent_namespaces"][k]
+                for k in ("user", "net", "pid")
+            ),
+            "outer namespace observations disagree",
+        )
+        require(
+            outer["namespaces"]["net"]
+            == handoff["peer_checks"]["supervisor_network_namespace"],
+            "routing supervisor namespace differs from outer fixture network",
+        )
     custody = inspect_custody(
-        root, report, expected_task_input=preparation.get("task_input")
+        root,
+        report,
+        expected_task_input=preparation.get("task_input"),
+        expected_routing=expected_routing,
     )
     kwargs = {
         "expected_attempt_sha256": anchors["attempt_sha256"],
@@ -355,7 +459,7 @@ def _inspect_complete(root, preparation, result):
     if not collection["missing_locations"] == []:
         raise AssertionError()
     after = read(root / "safe/after/inventory.json")
-    if "task_input" in preparation:
+    if preparation.get("task_input") is not None:
         require(
             custody["task"]["changes"]
             == [{"path": "capture-witness.txt", "change": "added"}],
@@ -489,17 +593,22 @@ def _inspect_complete(root, preparation, result):
             metadata = request[field]
             if not metadata["path"] == name:
                 raise AssertionError()
-            entry = entries["fixture-requests/" + name]
-            raw = (root / "safe-retained/4" / entry["object"]).read_bytes()
+            if routed:
+                (entry,) = [
+                    e
+                    for e in result["capture_manifest"]["entries"]
+                    if e["path"] == "safe-fixture-requests/" + name
+                ]
+                artifact_path = root / "safe-fixture-requests" / name
+            else:
+                entry = entries["fixture-requests/" + name]
+                artifact_path = root / "safe-retained/4" / entry["object"]
+            raw = artifact_path.read_bytes()
             if not (
                 len(raw) == entry["bytes"] == metadata["bytes"] and len(raw) <= 1048576
             ):
                 raise AssertionError()
-            if (
-                not sha(root / "safe-retained/4" / entry["object"])
-                == entry["sha256"]
-                == metadata["sha256"]
-            ):
+            if not sha(artifact_path) == entry["sha256"] == metadata["sha256"]:
                 raise AssertionError()
             artifacts[field] = raw
         document = json.loads(artifacts["request_artifact"])
@@ -651,7 +760,11 @@ def _inspect_complete(root, preparation, result):
         if (
             not requests[-1]["written_monotonic_ns"]
             <= close["observed_monotonic_ns"]
-            <= clock["poll_end_monotonic_ns"]
+            <= (
+                fixed["finished_monotonic_ns"]
+                if routed
+                else clock["poll_end_monotonic_ns"]
+            )
         ):
             raise AssertionError()
     elif not close is None:

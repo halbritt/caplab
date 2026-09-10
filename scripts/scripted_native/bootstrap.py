@@ -19,6 +19,16 @@ resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
 resource.setrlimit(resource.RLIMIT_FSIZE, (8388608, 8388608))
 plan = json.loads(sys.argv[2])
 control_document = json.loads(Path("/fixture/input.json").read_bytes())
+external_fixture = control_document.get("external_fixture")
+if external_fixture is not None:
+    if (
+        not isinstance(external_fixture, dict)
+        or set(external_fixture) != {"address", "port"}
+        or external_fixture["address"] != "198.18.0.1"
+        or type(external_fixture["port"]) is not int
+        or not 1 <= external_fixture["port"] <= 65535
+    ):
+        raise ValueError("invalid routed fixture endpoint")
 for relative in control_document["directories"]:
     Path("/episode", *Path(relative).parts[1:]).mkdir(mode=448, exist_ok=True)
 Path("/episode/home").mkdir(exist_ok=True)
@@ -67,6 +77,17 @@ header = Header(537396514, 0)
 capabilities = (Caps * 2)()
 if not libc.prctl(38, 1, 0, 0, 0) == 0:
     raise AssertionError()
+if external_fixture is not None:
+    if libc.prctl(47, 4, 0, 0, 0) != 0:
+        raise OSError(ctypes.get_errno(), "clear routed workload ambient capabilities")
+    for capability in range(64):
+        if libc.prctl(24, capability, 0, 0, 0) != 0:
+            error = ctypes.get_errno()
+            if error == errno.EINVAL:
+                break
+            raise OSError(error, "drop routed workload bounding capability")
+    else:
+        raise RuntimeError("unsupported capability range")
 if not libc.capset(ctypes.byref(header), ctypes.byref(capabilities)) == 0:
     raise AssertionError()
 status = dict(
@@ -77,7 +98,12 @@ status = dict(
     )
 )
 capabilities_observed = {
-    key: status[key].strip() for key in ("CapEff", "CapPrm", "CapInh", "NoNewPrivs")
+    key: status[key].strip()
+    for key in (
+        ("CapEff", "CapPrm", "CapInh", "CapBnd", "CapAmb", "NoNewPrivs")
+        if external_fixture is not None
+        else ("CapEff", "CapPrm", "CapInh", "NoNewPrivs")
+    )
 }
 if not all(
     (int(capabilities_observed[key], 16) == 0 for key in ("CapEff", "CapPrm", "CapInh"))
@@ -85,6 +111,11 @@ if not all(
     raise AssertionError()
 if not capabilities_observed["NoNewPrivs"] == "1":
     raise AssertionError()
+if external_fixture is not None and not all(
+    capabilities_observed[key] == "0000000000000000"
+    for key in ("CapEff", "CapPrm", "CapInh", "CapBnd", "CapAmb")
+):
+    raise RuntimeError("routed workload retains capabilities")
 for name in os.listdir("/proc/self/fd"):
     try:
         target = os.readlink("/proc/self/fd/" + name)
@@ -95,7 +126,7 @@ for name in os.listdir("/proc/self/fd"):
 import array
 
 with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as channel:
-    channel.settimeout(5)
+    channel.settimeout(25 if external_fixture is not None else 5)
     channel.connect("/control.sock")
     roots = []
     try:
@@ -225,16 +256,21 @@ def serve_fixture():
     asyncio.run(fixture_worker())
 
 
-thread = threading.Thread(target=serve_fixture, daemon=True)
-thread.start()
-if not (ready.wait(5) and (not state.get("failed")) and ("port" in state)):
-    raise AssertionError()
+thread = None
+if external_fixture is None:
+    thread = threading.Thread(target=serve_fixture, daemon=True)
+    thread.start()
+    if not (ready.wait(5) and (not state.get("failed")) and ("port" in state)):
+        raise AssertionError()
+else:
+    state["port"] = external_fixture["port"]
 process = None
 timed_out = False
 clock = {}
 try:
     port = state["port"]
-    connection = HTTPConnection("127.0.0.1", port, timeout=2)
+    address = "127.0.0.1" if external_fixture is None else external_fixture["address"]
+    connection = HTTPConnection(address, port, timeout=2)
     try:
         connection.request("GET", "/__fixture_check")
         response = connection.getresponse()
@@ -250,14 +286,16 @@ try:
     marker = command.index("--")
     command[marker:marker] = [
         "-c",
-        'chatgpt_base_url="http://127.0.0.1:' + str(port) + '"',
+        'chatgpt_base_url="http://' + address + ":" + str(port) + '"',
         "-c",
-        'openai_base_url="http://127.0.0.1:' + str(port) + '"',
+        'openai_base_url="http://' + address + ":" + str(port) + '"',
         "-c",
         "check_for_update_on_startup=false",
     ]
     environment = plan["environment"] | {
-        "CODEX_REFRESH_TOKEN_URL_OVERRIDE": "http://127.0.0.1:"
+        "CODEX_REFRESH_TOKEN_URL_OVERRIDE": "http://"
+        + address
+        + ":"
         + str(port)
         + "/oauth/token",
         "RUST_LOG": "codex_core::stream_events_utils=trace,codex_core::tools::router=trace,codex_core::tools::code_mode=trace,codex_core::codex=debug",
@@ -309,13 +347,19 @@ finally:
         process.wait(timeout=5)
     clock["after_wait_monotonic_ns"] = time.monotonic_ns()
     stop_event.set()
-    thread.join(timeout=3)
-    if not not thread.is_alive():
-        raise AssertionError()
+    if thread is not None:
+        thread.join(timeout=3)
+        if thread.is_alive():
+            raise AssertionError()
     print(
         json.dumps(
             {
                 "fixture_summary": {
+                    **(
+                        {"external_fixture": external_fixture}
+                        if external_fixture is not None
+                        else {}
+                    ),
                     "diagnostic_clock": clock,
                     "native_return_code": None
                     if process is None
@@ -340,7 +384,7 @@ if not (
     and (not timed_out)
     and (not errors)
     and (stop_reason is None)
-    and (response_posts == 2)
+    and (external_fixture is not None or response_posts == 2)
     and (process.returncode == 0)
 ):
     raise AssertionError()

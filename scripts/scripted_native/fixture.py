@@ -165,9 +165,15 @@ class Fixture:
         deadline_seconds=30,
         capture_dir=None,
         observation_socket=None,
+        bind_address="127.0.0.1",
+        quarantine_factory=None,
     ):
         if type(deadline_seconds) not in (int, float) or not 0 < deadline_seconds <= 30:
             raise ValueError("invalid deadline")
+        if bind_address not in ("127.0.0.1", "198.18.0.1"):
+            raise ValueError("unsupported fixture bind address")
+        self.bind_address = bind_address
+        self.quarantine_factory = quarantine_factory
         self.observation_socket = observation_socket
         self.expected_identity = identity_expectation(expected_identity)
         self.response_builder = response_builder
@@ -197,10 +203,17 @@ class Fixture:
 
     async def __aenter__(self):
         if self.capture_dir is not None:
+            if self.quarantine_factory is not None:
+                from caplab.capture_quarantine import check_capture_bytes
+                import os
+
+                check_capture_bytes(
+                    self.quarantine_factory, os.fsencode(self.capture_dir)
+                )
             self.capture_dir.mkdir(mode=0o700)
         self.server = await serve(
             self.handle,
-            "127.0.0.1",
+            self.bind_address,
             0,
             compression=None,
             max_size=MAX_MESSAGE,
@@ -215,7 +228,9 @@ class Fixture:
             create_connection=lambda *a, **k: HTTPConnection(*a, fixture=self, **k),
         )
         self.uri = (
-            "ws://127.0.0.1:"
+            "ws://"
+            + self.bind_address
+            + ":"
             + str(self.server.sockets[0].getsockname()[1])
             + "/responses"
         )
@@ -258,6 +273,14 @@ class Fixture:
         if len(raw) > MAX_MESSAGE:
             raise ValueError("retained fixture artifact too large")
         if self.capture_dir is not None:
+            if self.quarantine_factory is not None:
+                from caplab.capture_quarantine import check_capture_bytes
+                import os
+
+                check_capture_bytes(
+                    self.quarantine_factory, os.fsencode(self.capture_dir / name)
+                )
+                check_capture_bytes(self.quarantine_factory, raw)
             with (self.capture_dir / name).open("xb") as out:
                 out.write(raw)
         return {

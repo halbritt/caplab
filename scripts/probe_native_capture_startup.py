@@ -7,6 +7,7 @@ This is a diagnostic, not a native study launcher or completeness gate.
 
 import argparse
 from concurrent.futures import ThreadPoolExecutor
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -135,7 +136,8 @@ def inspect_traced_peer(peer_pid, trace_path):
     return checks | {'tracer_namespaces': namespaces, 'host_trace_path_exposed': False, 'exec_tracer': tracer}
 
 
-def inspect_custody(root, report, *, expected_selections_sha256=None, expected_task_input=None):
+def inspect_custody(root, report, *, expected_selections_sha256=None, expected_task_input=None,
+                    expected_routing=None):
     name, anchors = report['harness'], report['anchors']
     task = verify_task_capture(root / name, expected_attempt_sha256=anchors['attempt_sha256'], max_receipt_bytes=300000)
     native = verify_native_collection(POLICY, root / (name + '-collection'),
@@ -158,6 +160,21 @@ def inspect_custody(root, report, *, expected_selections_sha256=None, expected_t
     network = handoff['peer_checks']
     require(network['supervisor_network_namespace'] != network['peer_network_namespace']
             and network['interfaces'] == ['lo'], 'recorded network isolation differs')
+    routing = None
+    if expected_routing is None:
+        require('routing' not in network, 'routed capture requires independent routing anchors')
+    else:
+        from caplab.capture_network_verify import verify_capture_routing
+        require(isinstance(expected_routing, dict) and set(expected_routing) ==
+                {'plan', 'terminal_sha256'}, 'invalid expected routing evidence')
+        ready = network.get('routing')
+        require(isinstance(ready, dict), 'routed handoff lacks readiness')
+        ready_sha = hashlib.sha256((json.dumps(ready, sort_keys=True) + '\n').encode()).hexdigest()
+        routing = verify_capture_routing(root / (name + '-network'),
+            plan=expected_routing['plan'],
+            expected_policy_sha256=expected_routing['plan']['network_policy_sha256'],
+            expected_terminal_sha256=expected_routing['terminal_sha256'],
+            expected_ready_sha256=ready_sha, expected_peer_pid=handoff['peer_pid'])
     before_reader = _Reader(300000)
     with _open(None, root / name, directory=True) as fd:
         attempt = before_reader.receipt(fd, 'attempt.json', anchors['attempt_sha256'], TASK_ATTEMPT_SCHEMAS)
@@ -208,6 +225,7 @@ def inspect_custody(root, report, *, expected_selections_sha256=None, expected_t
         retained_task=retained_receipts['/work'], retained_runtime=retained_receipts['/episode'])
     execution = inspect_execution(root, report, native, expected_selections_sha256=expected_selections_sha256)
     return {'task': task, 'native': native, 'accounting': accounting, 'overlap': overlap, **execution,
+            **({'routing': routing} if routing is not None else {}),
             **({'prepared_task': prepared_task} if prepared_task is not None else {}),
             'native_launch_attempted_by_supervisor': True, 'model_execution_verified': False,
             'native_capture_complete': None, 'study_eligible': False}

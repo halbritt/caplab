@@ -19,6 +19,11 @@ def main(argv=None):
     preparation.add_argument("--websockets-root", required=True, type=Path)
     preparation.add_argument("--task-input", type=Path)
     preparation.add_argument("--task-input-sha256")
+    preparation.add_argument(
+        "--launch-profile",
+        default="codex-scripted-local/v1",
+        choices=("codex-scripted-local/v1", "codex-scripted-routed/v1"),
+    )
     execution = commands.add_parser(
         "execute", help="consume one separately authorized attempt"
     )
@@ -36,6 +41,10 @@ def main(argv=None):
     worker.add_argument("output", type=Path)
     worker.add_argument("--unit", required=True)
     worker.add_argument("--preparation-sha256", required=True)
+    routed_worker = commands.add_parser("routed-worker", help=argparse.SUPPRESS)
+    routed_worker.add_argument("output", type=Path)
+    routed_worker.add_argument("--unit", required=True)
+    routed_worker.add_argument("--preparation-sha256", required=True)
     args = parser.parse_args(argv)
     if args.command == "prepare":
         result = prepare(
@@ -44,6 +53,7 @@ def main(argv=None):
             websockets_root=args.websockets_root,
             task_input=args.task_input,
             task_input_sha256=args.task_input_sha256,
+            launch_profile=args.launch_profile,
         )
     elif args.command == "execute":
         result = execute(
@@ -60,6 +70,11 @@ def main(argv=None):
             expected_preparation_sha256=args.preparation_sha256,
             expected_result_sha256=args.result_sha256,
         )
+    elif args.command == "routed-worker":
+        from scripted_native.routed_network import enter_outer
+
+        enter_outer(args.output, args.unit, args.preparation_sha256)
+        return 0
     else:
         from scripted_native.runner import inside
 

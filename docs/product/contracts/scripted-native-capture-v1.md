@@ -1,5 +1,10 @@
 # Scripted native capture diagnostic v1
 
+This page describes the default `codex-scripted-local/v1` profile. The explicit
+`--launch-profile codex-scripted-routed/v1` option follows the separate
+[routed diagnostic contract](scripted-native-routed-v1.md), with preparation
+version 3, additional tool pins, different containment setup and time ceilings.
+
 `scripts/probe_scripted_native_capture.py` prepares, executes once and inspects
 one fixed offline Codex tool exchange. It exercises capture infrastructure with
 scripted responses. It does not measure model or reviewer capability, provide

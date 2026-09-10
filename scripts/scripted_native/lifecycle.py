@@ -32,6 +32,12 @@ RUNTIME_PATHS = (
     "/usr/bin/strace",
     "/usr/bin/bwrap",
 )
+ROUTED_RUNTIME_PATHS = RUNTIME_PATHS + (
+    "/usr/bin/slirp4netns",
+    "/usr/sbin/nft",
+    "/usr/sbin/ip",
+    "/usr/bin/setpriv",
+)
 BINARY = (
     "node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/bin/codex"
 )
@@ -56,6 +62,12 @@ LIMITS = {
     "native_file_bytes": 8 * 1024**2,
     "handshake_seconds": 5,
     "freeze_transition_seconds": 2,
+}
+ROUTED_LIMITS = LIMITS | {
+    "capture_seconds": 75,
+    "unit_seconds": 120,
+    "outer_seconds": 130,
+    "routing_handoff_seconds": 25,
 }
 
 
@@ -152,8 +164,19 @@ def check_task_selection(selection, output):
 
 
 def prepare(
-    output, *, codex_root, websockets_root, task_input=None, task_input_sha256=None
+    output,
+    *,
+    codex_root,
+    websockets_root,
+    task_input=None,
+    task_input_sha256=None,
+    launch_profile="codex-scripted-local/v1",
 ):
+    require(
+        launch_profile in ("codex-scripted-local/v1", "codex-scripted-routed/v1"),
+        "unsupported scripted launch profile",
+    )
+    routed = launch_profile == "codex-scripted-routed/v1"
     output, source, dependency = Path(output), Path(codex_root), Path(websockets_root)
     require(
         output.is_absolute()
@@ -191,7 +214,7 @@ def prepare(
         POLICY,
         invocation,
         expected_invocation_sha256=invocation["invocation_sha256"],
-        context=NativeLaunchContext("codex-scripted-local/v1", 1),
+        context=NativeLaunchContext(launch_profile, 1),
     )
     (binary,) = [entry for entry in installation["entries"] if entry["path"] == BINARY]
     source_check = prepare_codex_child_configuration(
@@ -213,7 +236,7 @@ def prepare(
             "path": str(path.resolve()),
             "sha256": digest(path.resolve(), 1024**3),
         }
-        for path in map(Path, RUNTIME_PATHS)
+        for path in map(Path, ROUTED_RUNTIME_PATHS if routed else RUNTIME_PATHS)
     ]
     output.mkdir(mode=0o700)
     info = output.stat()
@@ -228,7 +251,7 @@ def prepare(
         "source_files": source_check["source_files"],
         "implementation_pins": pins,
         "runtime_pins": runtime,
-        "limits": dict(LIMITS),
+        "limits": dict(ROUTED_LIMITS if routed else LIMITS),
         "attempt_limit": 1,
         "execution_authorized": False,
         "binding_complete": False,
@@ -237,6 +260,12 @@ def prepare(
     if selection is not None:
         prepared.update(
             schema="caplab.scripted-native-preparation/v2", task_input=selection
+        )
+    if routed:
+        prepared.update(
+            schema="caplab.scripted-native-preparation/v3",
+            launch_profile=launch_profile,
+            task_input=selection,
         )
     seal_capture_json(output, "preparation.json", prepared)
     return {
@@ -252,6 +281,10 @@ def read_preparation(output, *, expected_sha256):
         "resolved custody root required",
     )
     prepared = read_document(output / "preparation.json", expected_sha256)
+    routed = (
+        isinstance(prepared, dict)
+        and prepared.get("schema") == "caplab.scripted-native-preparation/v3"
+    )
     require(
         isinstance(prepared, dict)
         and set(prepared)
@@ -273,7 +306,9 @@ def read_preparation(output, *, expected_sha256):
             "study_eligible",
         }
         | (
-            {"task_input"}
+            {"task_input", "launch_profile"}
+            if routed
+            else {"task_input"}
             if prepared.get("schema") == "caplab.scripted-native-preparation/v2"
             else set()
         ),
@@ -284,8 +319,18 @@ def read_preparation(output, *, expected_sha256):
         in (
             "caplab.scripted-native-preparation/v1",
             "caplab.scripted-native-preparation/v2",
+            "caplab.scripted-native-preparation/v3",
         ),
         "unsupported preparation",
+    )
+    require(
+        not routed or prepared["launch_profile"] == "codex-scripted-routed/v1",
+        "routed preparation profile differs",
+    )
+    require(
+        prepared["schema"] != "caplab.scripted-native-preparation/v2"
+        or prepared["task_input"] is not None,
+        "version 2 preparation requires its task input",
     )
     require(
         prepared.get("custody_root") == str(output), "preparation custody root differs"
@@ -298,7 +343,7 @@ def read_preparation(output, *, expected_sha256):
     )
     require(
         json.dumps(prepared.get("limits"), sort_keys=True, allow_nan=False)
-        == json.dumps(LIMITS, sort_keys=True)
+        == json.dumps(ROUTED_LIMITS if routed else LIMITS, sort_keys=True)
         and type(prepared.get("attempt_limit")) is int
         and prepared["attempt_limit"] == 1,
         "diagnostic limits differ",
@@ -318,24 +363,25 @@ def read_preparation(output, *, expected_sha256):
         prepared.get("invocation") == expected, "fixed diagnostic invocation differs"
     )
     require(stat.S_IMODE(info.st_mode) & 0o077 == 0, "custody root is not private")
-    if "task_input" in prepared:
+    if prepared.get("task_input") is not None:
         check_task_selection(prepared["task_input"], output)
     runtime = prepared["runtime_pins"]
+    runtime_paths = ROUTED_RUNTIME_PATHS if routed else RUNTIME_PATHS
     require(
         isinstance(runtime, list)
-        and len(runtime) == len(RUNTIME_PATHS)
+        and len(runtime) == len(runtime_paths)
         and all(
             isinstance(pin, dict) and set(pin) == {"invoked_path", "path", "sha256"}
             for pin in runtime
         )
-        and [pin["invoked_path"] for pin in runtime] == list(RUNTIME_PATHS),
+        and [pin["invoked_path"] for pin in runtime] == list(runtime_paths),
         "system runtime pins differ",
     )
     return prepared
 
 
 def check_inputs(prepared):
-    if "task_input" in prepared:
+    if prepared.get("task_input") is not None:
         check_task_selection(prepared["task_input"], Path(prepared["custody_root"]))
     require(
         source_pins() == prepared["implementation_pins"],

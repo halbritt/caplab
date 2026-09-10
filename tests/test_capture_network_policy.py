@@ -84,6 +84,7 @@ def network_handoff(
     producer=PRODUCER,
     command_prefix=(),
     root_mapping=False,
+    task_input=None,
 ):
     if installer is None:
         installer = network.install_capture_network_policy
@@ -194,6 +195,7 @@ def network_handoff(
                     child,
                     recorder,
                     usable_devices=True,
+                    task_input=task_input,
                     inspect_peer=lambda pid: installer(
                         plan,
                         expected_policy_sha256=plan["network_policy_sha256"],
