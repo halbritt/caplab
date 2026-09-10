@@ -1,0 +1,340 @@
+{
+  "files": {
+    "feasibility-20260910.json": {
+      "bytes": 556240,
+      "content_sha256": "2ec503f325733145ef600731d950a956949c629ec6cd23235731e71e952f287e",
+      "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/feasibility-20260910.json",
+      "sha256": "8960d3c8c46d46eb8dbf15d6b0b9b30c7407409cc7a4fa6fa70d9d9d378c260f"
+    },
+    "population-20260910.json": {
+      "bytes": 3420173,
+      "content_sha256": "8cc0c04a3e40a5acff17d211b89123f0aae151f74742c91eaf92d5255ba338e3",
+      "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/population-20260910.json",
+      "sha256": "214fdf776ce5d217f18ed41d1c3196e5514fbc0178bbc141d202bc1a9e9f5371"
+    }
+  },
+  "interpretation": "metadata census and development sample only; no experimental admission, truth labels or ranking",
+  "repositories": [
+    {
+      "changed_code_paths_by_language": {
+        "Python": 136
+      },
+      "dispositions": {
+        "included-code-change": 22,
+        "no-included-code-change": 2
+      },
+      "eligible_commits": 22,
+      "mainline_commits_in_window": 24,
+      "name": "ai-newsroom",
+      "tip": "544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f"
+    },
+    {
+      "changed_code_paths_by_language": {
+        "C": 1,
+        "Go": 37,
+        "JavaScript": 1,
+        "Python": 955,
+        "Shell": 1
+      },
+      "dispositions": {
+        "included-code-change": 194,
+        "no-included-code-change": 87
+      },
+      "eligible_commits": 194,
+      "mainline_commits_in_window": 281,
+      "name": "caplab",
+      "tip": "152b9f197f8d37fc02f09e696653921b498c14da"
+    },
+    {
+      "changed_code_paths_by_language": {
+        "Python": 8,
+        "TypeScript": 1096
+      },
+      "dispositions": {
+        "included-code-change": 163,
+        "no-included-code-change": 28
+      },
+      "eligible_commits": 163,
+      "mainline_commits_in_window": 191,
+      "name": "council",
+      "tip": "1144389665a3cbc89413e6aba6af2f3781d11e6f"
+    },
+    {
+      "changed_code_paths_by_language": {
+        "Go": 867,
+        "Shell": 1
+      },
+      "dispositions": {
+        "included-code-change": 228,
+        "no-included-code-change": 52
+      },
+      "eligible_commits": 228,
+      "mainline_commits_in_window": 280,
+      "name": "striatum-next",
+      "tip": "5ea87ca65c1bd25f228c0447110d991a3f0de8c8"
+    }
+  ],
+  "sample_cases": [
+    {
+      "base": "623c5f840a8dc813f404994fdfae605dd61cb894",
+      "commit": "566e5af24c0a7a7a00e04326de75bf613dedeb6d",
+      "repository": "ai-newsroom",
+      "selection_hash": "4ae00a4b9872e25a4d57534e0a1a8f70a87573be4dde6968efdfe9b3c3e7e923",
+      "size_stratum": "0-20",
+      "tree": "1c4f2a1f19ebc8fdde91565eb9e48cccca73640e"
+    },
+    {
+      "base": "566e5af24c0a7a7a00e04326de75bf613dedeb6d",
+      "commit": "c7535007644ffea29db055365257b4a6f2b4d905",
+      "repository": "ai-newsroom",
+      "selection_hash": "8e581638c8355f21424a56208da185ec62fe693caae3003108815b12510629bd",
+      "size_stratum": "0-20",
+      "tree": "6ce22f59ec3386260d5409e492864487c4036327"
+    },
+    {
+      "base": "33881f4a341681fb3b29f6cfd87bdb08e1de9134",
+      "commit": "c04f6c8b3af6bef8876330f37d02c42effd12908",
+      "repository": "ai-newsroom",
+      "selection_hash": "14beb7ffdd9bcc550a751d258f435a2260941c93e5223a39ccd7ad1ec80b971b",
+      "size_stratum": "101-500",
+      "tree": "811e3f6a7f6b73adcbac8378244a790fed6dfdb2"
+    },
+    {
+      "base": "00efadb0c5bdd2fc6d939793e7d372bf3c69ea73",
+      "commit": "e4d5293910614ead24a9f7599f7d12050d5c64cf",
+      "repository": "ai-newsroom",
+      "selection_hash": "2e8349d1c9f2508363a8ec5469e36aa0dd10a67e6db1d9c9437368ef681e3df7",
+      "size_stratum": "101-500",
+      "tree": "1bee0b33c1a809a04e5c454e823cc088500629d0"
+    },
+    {
+      "base": "c04f6c8b3af6bef8876330f37d02c42effd12908",
+      "commit": "00efadb0c5bdd2fc6d939793e7d372bf3c69ea73",
+      "repository": "ai-newsroom",
+      "selection_hash": "14812bbff18e6ada846e821e38530ca79f795707c24ee6a9d684458ce3a7be46",
+      "size_stratum": "21-100",
+      "tree": "4f94ed8b5563a65792181593a7bbda19e5c0c742"
+    },
+    {
+      "base": "8ea5513fae0d4468d81e0b5c729790eb4035b077",
+      "commit": "345e9d25caafe3e12578b0e3a27c18ef0d1c38a4",
+      "repository": "ai-newsroom",
+      "selection_hash": "2cadf52a76983e72c6aef6ca4160ed8051822e57d8e11f1ac8c9b83b77285bc4",
+      "size_stratum": "21-100",
+      "tree": "542fcad69735cd90120afa1519be19b5c1311578"
+    },
+    {
+      "base": "1bfe5a656bcb2c663891afd5f980211a3ef144a8",
+      "commit": "544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f",
+      "repository": "ai-newsroom",
+      "selection_hash": "33e4bb7112222250bc92f2bd559df472cd9914fd2d915607b2ef89ab425d28fe",
+      "size_stratum": "501+",
+      "tree": "ffd0b76ba0043bb2644ebc2e6e0e6ef9de85ffd7"
+    },
+    {
+      "base": "a3c0cec9ec49a319541cc3c00ec1b2c691eadf5e",
+      "commit": "1bfe5a656bcb2c663891afd5f980211a3ef144a8",
+      "repository": "ai-newsroom",
+      "selection_hash": "62ecf024fe0dca4ee6cf73e18a74e84e359376bf4fa16a854eeceefea51bdf57",
+      "size_stratum": "501+",
+      "tree": "9d63957463f4e4e6a8a5923fe1b5fdd80d7214b7"
+    },
+    {
+      "base": "495b0eef4833d5dca078d2b0e0b36bd5faf11129",
+      "commit": "b359e30393265a9e36a6de21a9ef0833fd54e0fd",
+      "repository": "caplab",
+      "selection_hash": "27750481a19ae849700c1787a964c920fa02bbfa670886c6088757e3b12503e0",
+      "size_stratum": "0-20",
+      "tree": "a38676e4d15503cd46e329bd4183d238f5e4fa3c"
+    },
+    {
+      "base": "170fdf488df959ac503d5d419924caf5fec7bd8a",
+      "commit": "51a7698535f065604337f5c1d54f20267e8be2a0",
+      "repository": "caplab",
+      "selection_hash": "433fba3bed4ae7a8e2572a80115ad89323bef441586b6f9c703cf476c2d443ec",
+      "size_stratum": "0-20",
+      "tree": "464287a678c11b42dd1e2ca88c03332bde4b6995"
+    },
+    {
+      "base": "1517d426afbced67422a4097c0d5fd92d7200287",
+      "commit": "c8f097a0934bfa380e7c9c5cda4f11ea4ac2b454",
+      "repository": "caplab",
+      "selection_hash": "0016f4caa2c75459400b7fc005f1adc410926b084e2a7b87aa38f24e7d4d36f3",
+      "size_stratum": "101-500",
+      "tree": "2078f40ffbf8f4210554f15f4477b0437eb81041"
+    },
+    {
+      "base": "7bd506c3db146072991240df146dad23abe1c4c4",
+      "commit": "b8c68924f1df421d4cf92780b8323109d4a7112c",
+      "repository": "caplab",
+      "selection_hash": "00a22eb64cb354048d811d9e84bdd141bf35eaada09da10e82c2c22b4e153994",
+      "size_stratum": "101-500",
+      "tree": "cb4be87f8352f1ff53ef43e4b5cc4e0a0945b0a8"
+    },
+    {
+      "base": "997badf08f3f98f53f25ea70b8576a9990fe50aa",
+      "commit": "9fa844d3a02dceb809f6500695654cdee3cfebc6",
+      "repository": "caplab",
+      "selection_hash": "025e20f0f172e5d31f68d56015bc90beb64f5d0b3ef61359d52df6c77a92cedd",
+      "size_stratum": "21-100",
+      "tree": "2828851334ee1f07aec8c4795308967a5176c337"
+    },
+    {
+      "base": "3f60ca3b8320eed1782687cfe341d242efcd6aaa",
+      "commit": "f2d2a3b21fffdc438fa34a85c2cc11b435c1b712",
+      "repository": "caplab",
+      "selection_hash": "094046c0e0ba4b822c97d1efa37c61aac194945978381629c9662dc645c91dd0",
+      "size_stratum": "21-100",
+      "tree": "d79befe5a31af434479ed9425b97bc153907ec1e"
+    },
+    {
+      "base": "9793d6c6f04fe58b10e93c452b7fb446db177b41",
+      "commit": "a8d5094908c9f029e7465a08128cf3e044f0ad7e",
+      "repository": "caplab",
+      "selection_hash": "06112a460eadf68c5cc02c7324bd78871b924f31acf2f769c21ad0cf23aae0d9",
+      "size_stratum": "501+",
+      "tree": "6ea0099ec58293ff57fd379351b673540c96fdd0"
+    },
+    {
+      "base": "160d056a9e2319c9bb04e7ad64b8672b8388b0b4",
+      "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+      "repository": "caplab",
+      "selection_hash": "0e3a3f01eaaf483e8ceb28900b952098831b51a7e683ccd61f0dddc3f8b8b8c8",
+      "size_stratum": "501+",
+      "tree": "ea831e43be0b48d0cd5ef2b7f5bdcc3ab7149f01"
+    },
+    {
+      "base": "c60cb4694a97b0f3151fdc48abfbea2e631ac1fb",
+      "commit": "c1526c8552ccfa6236c01988aa141d0705eb5d7f",
+      "repository": "council",
+      "selection_hash": "000f539741d174537cfa98c99343b6f3ad2d5f5ee8f037bb6f58b28964b256ba",
+      "size_stratum": "0-20",
+      "tree": "d92c81ec413c3f6093a110c40db3354f101c69aa"
+    },
+    {
+      "base": "31dad96baef71afea869e15ed679d7501891d531",
+      "commit": "8a0fd3efc8163e7ea7e4b00ecb92bd434e5dd0b6",
+      "repository": "council",
+      "selection_hash": "01c689db1d6ed828782f4ae03bc0a9ca7884c0f178586896040a7b99105db3fa",
+      "size_stratum": "0-20",
+      "tree": "d95fda066eef1299025efe11f9398250ca304497"
+    },
+    {
+      "base": "99498b26b8e7668796a1a24193fd224c0d7b2064",
+      "commit": "348304bce37097efeaf869f22c4bb0b0be909d98",
+      "repository": "council",
+      "selection_hash": "01752f1fdfa3ee057b77be85e3dd1211251ecd9b51a4e245cad45cad33d6e5a9",
+      "size_stratum": "101-500",
+      "tree": "6e464dbf750fcc2e5cd4a24fee1e319b0070b46b"
+    },
+    {
+      "base": "32c9f09674b27b185abb7498883d9d3495ac4951",
+      "commit": "19fb83494cf3ec8e338d748f566be3df21088a40",
+      "repository": "council",
+      "selection_hash": "0b945ca7246f155486cdbb058a36e0958c5f9c7daf07966ac75550b3418a290c",
+      "size_stratum": "101-500",
+      "tree": "913b396646366461ac0e6a882b6a03694e4437dd"
+    },
+    {
+      "base": "2ed91ad74a5c737e64abbfb4f313edb7f54984a0",
+      "commit": "32c9f09674b27b185abb7498883d9d3495ac4951",
+      "repository": "council",
+      "selection_hash": "00a503a0d0f4c19a1897af36538595de5f955643063b0a533ac2b6b3198de023",
+      "size_stratum": "21-100",
+      "tree": "e4971b7cbe9e4887743d3ecfb2bfafb684f0154f"
+    },
+    {
+      "base": "a156cc918d54507eef0cdc72dc30cf401d303370",
+      "commit": "ea09c00acbc003057a6d3ce63bce20b9351a6ee3",
+      "repository": "council",
+      "selection_hash": "05533a0c5799192221e909829c67a802ba1e92d4748a2037e5e99f89a64247cf",
+      "size_stratum": "21-100",
+      "tree": "86f1d6ea90b675f444b5125e87875359666287ea"
+    },
+    {
+      "base": "290f9ba1a6fa36fa7fbaed646651f5eb6d42cd9a",
+      "commit": "9ca876645f8b129ac945a93dfeab8714496d722b",
+      "repository": "council",
+      "selection_hash": "049db7f488a72a83f05405190988a71ef1d9c7c9b44f04b6536bb360282a6fe6",
+      "size_stratum": "501+",
+      "tree": "44a9f87ee9e17d5abdcae832514065472a2a5d82"
+    },
+    {
+      "base": "f9aae19f07de70c8349781141664f31b80c63895",
+      "commit": "06e4536643910d743ad6f702fdb9917ebce46cc4",
+      "repository": "council",
+      "selection_hash": "08b37ee79febd7f9a997497cac9915ce0d425772118e4a58054b7b895819bbc7",
+      "size_stratum": "501+",
+      "tree": "5d5c70d8c4290f19a3757d64fa2826df9026fe37"
+    },
+    {
+      "base": "03f0cc39b02c7882674ca2706398560e986b1032",
+      "commit": "98759de9d5f1bfa855cc8d7ff43456be243db7db",
+      "repository": "striatum-next",
+      "selection_hash": "0ec882461a6bda5e010d1e3e86fc5125a46b6843d7997247010a3d7415fd2227",
+      "size_stratum": "0-20",
+      "tree": "aaded3b618aaec457204519fc53d39d1bab27dd4"
+    },
+    {
+      "base": "7be9542c1567640b71b8a1f8d238f6f819706bd6",
+      "commit": "ff6444d62331fd7d01cb5286b886d8456107f299",
+      "repository": "striatum-next",
+      "selection_hash": "0fae3dc0de7d7df771980031ed6545859429febf94ea5414f52c3b0f4161774d",
+      "size_stratum": "0-20",
+      "tree": "3eda5272b4f957fb54429c0761f2d7431b7ce49a"
+    },
+    {
+      "base": "8ccbc6ace771d63a474dabd6f416657e546605c8",
+      "commit": "83083103119e0d3a4f3adf77fc7e7ba0874d146d",
+      "repository": "striatum-next",
+      "selection_hash": "03790cf36d7dcd11b9065afa1813b59b3c93fedcf0cf9613dbc22e95ad24b69e",
+      "size_stratum": "101-500",
+      "tree": "199386950b98694b84c702d8439e29e733b7b48b"
+    },
+    {
+      "base": "0a7aa730f164e98a705dfe27c5db2ec8f20cc8a5",
+      "commit": "b9325d547fa8fc4f8df38ddef274ca9eae6a95f4",
+      "repository": "striatum-next",
+      "selection_hash": "04e470c16069975465327d0fdb55c6d8a955759b005f56a14a6edef330231bc3",
+      "size_stratum": "101-500",
+      "tree": "7183f0eb22e3970b501a492dfd55b273520704c2"
+    },
+    {
+      "base": "35677b6e747e4a49eceeef8ac3c52df89b0f475a",
+      "commit": "f6bcad95edc33ed2867940fc39c02160e914b6c9",
+      "repository": "striatum-next",
+      "selection_hash": "02a340aef5380125b32e0c7deb7249c644888fe3298c91ca7e9cdd591af8cf81",
+      "size_stratum": "21-100",
+      "tree": "ab39bab25952b8b09940cdd69a8ea7f5b7b15aca"
+    },
+    {
+      "base": "e2ad5905ae07d2b66109d6f2297e7470ddd5af4e",
+      "commit": "3470918aa26bb13a99f7fd9d46c61b9f3b62f5f8",
+      "repository": "striatum-next",
+      "selection_hash": "041b8d6ced8ac089f9187b17531994acb6550f4379ca31fae1d45cc1e65e2231",
+      "size_stratum": "21-100",
+      "tree": "d4f02fd22ecd4b1c15e5124d38c5188f17271ea4"
+    },
+    {
+      "base": "03cc8b2a987e65ab2014a62ecae168dcf51cf9cd",
+      "commit": "9dbe944b63107ac8ede6b3099649b6289e31d634",
+      "repository": "striatum-next",
+      "selection_hash": "01fff9aea639ca505506872bf28b04a9daeead8f03b9a2bb3d7513d5f93fcd2d",
+      "size_stratum": "501+",
+      "tree": "5629085e52c56411c8441b39f6c715fa61605d02"
+    },
+    {
+      "base": "8f671a358da0858f7e096c2a8f0893d5a1f1d809",
+      "commit": "8d3e71bddca24d0a59f479f8fa37922a5851542b",
+      "repository": "striatum-next",
+      "selection_hash": "15215b0e5961815868b8ddc4a713b3185bd5fc73fcc1a871812d103153a31035",
+      "size_stratum": "501+",
+      "tree": "0dc0fa00ebf970876da30971d85da86366014b41"
+    }
+  ],
+  "schema": "caplab.reviewer-population-development-receipt/v1",
+  "window": {
+    "end": "2026-09-10T17:25:10Z",
+    "start": "2026-08-11T00:00:00Z"
+  }
+}
