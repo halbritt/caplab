@@ -229,3 +229,12 @@ partial-RSS-refresh claim. Its truth remains unresolved pending original-path
 execution; the previously confirmed deadline and optional-RSS defects are
 absent from its final report. Representation checks do not establish review
 success, scorer acceptance or a comparative result. Case coverage is unchanged.
+
+The [partial-refresh investigation](../../../records/verification-2026-09-10-reviewer-partial-refresh-outcome.md)
+now confirms that review's new blocker through original CLI, HTTPS and SQLite
+behavior. Partial RSS failure returns 0 with unavailable state, while healthy
+collection, valid empty listings, successful RSS fallback and total failure
+controls distinguish the scenario. Twelve executions repeat six conditions;
+they add one failure family on the same change, not twelve cases. The prior
+unresolved assessment is preserved. This closes that finding's behavioral
+question without accepting a scorer or ranking.

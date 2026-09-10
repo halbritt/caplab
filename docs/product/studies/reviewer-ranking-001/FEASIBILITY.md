@@ -12,7 +12,7 @@ This projection keeps every selected change in the denominator. A witness may co
 | ai-newsroom | 101-500 | `e4d529391061` | [Publication precision and window behavior](../../../records/verification-2026-09-10-reviewer-publication-outcome.md) |
 | ai-newsroom | 21-100 | `00efadb0c5bd` | Executed as another case base; this change remains unverified. |
 | ai-newsroom | 21-100 | `345e9d25caaf` | No change-specific behavioral witness established. |
-| ai-newsroom | 501+ | `544f7e3c43ea` | [Reddit recovery deadline, filtering and pool reopen](../../../records/verification-2026-09-10-reviewer-reddit-recovery-outcome.md); other components unverified. |
+| ai-newsroom | 501+ | `544f7e3c43ea` | [Reddit recovery deadline, filtering and pool reopen](../../../records/verification-2026-09-10-reviewer-reddit-recovery-outcome.md), [optional-RSS coupling](../../../records/verification-2026-09-10-reviewer-newsroom-natural-findings.md), and [partial-refresh exit status](../../../records/verification-2026-09-10-reviewer-partial-refresh-outcome.md); other components unverified. |
 | ai-newsroom | 501+ | `1bfe5a656bcb` | [Executed as a listing baseline](../../../records/verification-2026-09-10-reviewer-newsroom-natural-findings.md); its Particle change remains unverified. |
 | caplab | 0-20 | `b359e3039326` | No change-specific behavioral witness established. |
 | caplab | 0-20 | `51a7698535f0` | No change-specific behavioral witness established. |

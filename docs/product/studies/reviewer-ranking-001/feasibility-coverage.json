@@ -86,6 +86,18 @@
       "tree": "542fcad69735cd90120afa1519be19b5c1311578"
     },
     {
+      "additional_evidence": [
+        {
+          "receipt": "natural-findings-development-receipt.json",
+          "receipt_sha256": "1a89cd4150e2c7a99afbdb821edae1aa421840704243a5bffd1f47329b81c88e",
+          "record": "../../../records/verification-2026-09-10-reviewer-newsroom-natural-findings.md"
+        },
+        {
+          "receipt": "partial-refresh-development-receipt.json",
+          "receipt_sha256": "7eb27d60d1515e12d2b55af8c7a30c18542a6527f2340c8e8bea86afb0b4d7f7",
+          "record": "../../../records/verification-2026-09-10-reviewer-partial-refresh-outcome.md"
+        }
+      ],
       "base": "1bfe5a656bcb2c663891afd5f980211a3ef144a8",
       "case_admitted": false,
       "commit": "544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f",
@@ -93,7 +105,7 @@
       "receipt_sha256": "db1b962df13f82f0980cd690397a4c56cbffc06ac6e89955618278b57d6e93f5",
       "record": "../../../records/verification-2026-09-10-reviewer-reddit-recovery-outcome.md",
       "repository": "ai-newsroom",
-      "scope": "Reddit recovery deadline, candidate filtering and pool reopen; other change components unverified",
+      "scope": "Reddit recovery deadline, filtering and pool reopen; optional-RSS/pool coupling and partial-refresh exit failure independently reproduced. Other components unverified.",
       "size_stratum": "501+",
       "status": "bounded-change-behavior",
       "tree": "ffd0b76ba0043bb2644ebc2e6e0e6ef9de85ffd7"

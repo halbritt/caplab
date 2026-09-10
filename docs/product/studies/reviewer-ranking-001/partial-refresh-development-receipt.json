@@ -1,0 +1,1098 @@
+{
+  "assessment": {
+    "assessor": "primary agent under ADR 0026; evidence-backed development inference, not accepted semantic scorer",
+    "causal_inference": "The new provider writes unavailable and raises SourceUnavailable without setting degraded; the new RSS fallback handler catches it in the partial-listing path. The new harvest saves partial candidates and cmd_harvest returns 0 because no exception escapes and degraded is false. This violates the new failed-refresh exit contract.",
+    "change_attribution": "The base already tolerated partial HTML/JSON listing failure. It had no RSS provider state, _fetch_rss, harvest method, cmd_harvest or harvester service. Attribute the defect to the newly added failed-refresh/status/retry contract and code path, not to all partial-listing tolerance.",
+    "disposition": "confirmed-introduced-partial-refresh-status-defect",
+    "finding": {
+      "finding_id": "55a4389be241824676a7d8a66c92ca2997311a205d41eefb0b5c3473f03abb53",
+      "finding_index": 0,
+      "finding_sha256": "b3b42f61abfee35db3deda936b1e01d1705694fe0f75a785b0fae5a17ea0c9fd",
+      "location_checks": [
+        {
+          "file_lines": 510,
+          "file_sha256": "cf8eef0e2cf80003ae31473c19f337163143600ea7417f7ef70a565d5ee35ab0",
+          "status": "resolved"
+        },
+        {
+          "file_lines": 971,
+          "file_sha256": "6b5cf71f0ced83cd48900a28f301341602f2834b7cfbcb75d2498dbaa00013da",
+          "status": "resolved"
+        },
+        {
+          "file_lines": 288,
+          "file_sha256": "462b71a5ee0029330468a99361cfafc8cfd4a29966295d0ffe3b94040daab306",
+          "status": "resolved"
+        }
+      ],
+      "reported": {
+        "acceptance_effect": "block",
+        "change_attribution": "The new fallback handler catches SourceUnavailable and only raises when every configured subreddit remains blocked. cmd_harvest then returns nonzero only for provider.degraded, which is false for this swallowed failure.",
+        "claim": "A failed RSS refresh for only some blocked subreddits is swallowed, allowing the harvest command to return success and suppress systemd retry.",
+        "claim_status": "asserted",
+        "evidence": "Local reproduction monkeypatched one listing to return [] and another to raise _SubredditBlocked, with _fetch_rss raising SourceUnavailable. Output included \"combined RSS simulated RSS outage\" and \"Reddit harvest retained 0 candidates\", followed by \"exit= 0\". README states that a failed refresh exits nonzero for systemd retry.",
+        "expected_behavior": "The documented failed-refresh behavior is a nonzero harvest exit so systemd retries rather than accepting an incomplete collection.",
+        "locations": [
+          {
+            "end_line": 478,
+            "path": "newsroom/sources/reddit.py",
+            "start_line": 466
+          },
+          {
+            "end_line": 431,
+            "path": "newsroom/cli.py",
+            "start_line": 427
+          },
+          {
+            "end_line": 201,
+            "path": "README.md",
+            "start_line": 193
+          }
+        ],
+        "observed_or_predicted_behavior": "Demonstrated: the current command logged the RSS failure and unreachable subreddit, retained 0 candidates, and returned exit code 0. Predicted consequence: systemd sees success and does not retry, leaving the blocked subreddit(s) absent from the harvested pool.",
+        "title": "Partial RSS fallback failures are reported as successful harvests",
+        "trigger": "Configure two Reddit subreddits; one listing fetch succeeds, another is blocked, and the combined RSS fallback for the blocked subreddit(s) raises SourceUnavailable with no usable cache."
+      }
+    },
+    "independent_basis": "Original subprocess CLI and config loader, unmodified HTML/JSON/RSS/provider functions, real namespace-local TLS requests and retained SQLite. No reviewer-authored patched demonstration supplies this outcome basis.",
+    "limits": [
+      "Review seen before investigation; exposed development case.",
+      "No source functions, constants, clocks, transports or configuration loader are patched.",
+      "Controlled HTTP inputs establish a scenario, not its field prevalence or an observed systemd restart.",
+      "No case admission, whole-patch clean label, scorer acceptance or ranking.",
+      "Repeated scenarios are one failure family on an already investigated change; no increase in independent case coverage.",
+      "Assessment does not constitute an independent verdict on the investigator or acceptance of a semantic scorer."
+    ],
+    "observations": [
+      "Both mixed failure conditions return 0 in both repetitions with last_status unavailable and no feed cache. The nonempty case retains one healthy candidate; the empty case retains zero. Both record last_harvest_at.",
+      "Healthy HTML retains two candidates and returns 0; valid empty HTML retains zero and returns 0 with live state.",
+      "Successful RSS fallback restores the blocked subreddit candidate, retains two candidates plus a validated feed snapshot, and returns 0.",
+      "Total blockage with the same failed RSS response returns 1 with unavailable state and no harvest timestamp.",
+      "Original Restart=on-failure appears in the newly added harvester service; no systemd instance was started."
+    ],
+    "previous_assessment": {
+      "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/finding-units-review-1/claim-assessment.json",
+      "preserved_unchanged": true,
+      "sha256": "7c432dbc8a7e2f85e2b938b7a5335b2cfeb6d90e98dd995542789803b2fb2381"
+    },
+    "ranking_eligible": false,
+    "raw_report_sha256": "ad47259eb3ab98374b03ac07635dfa8f59ffa62d99716441fa4dd755dcd92e84",
+    "reported_blocker_assessment": "The explicit block recommendation concerns a confirmed change-attributable defect in the tested scenario; it is not an independently refuted blocker. Severity weighting and ranking policy remain unfrozen.",
+    "requirement": {
+      "claim": "A failed refresh exits nonzero so systemd retries; unavailable collections must not be represented as healthy quiet days.",
+      "end_line": 201,
+      "path": "README.md",
+      "source_predates_review": true,
+      "start_line": 193
+    },
+    "restart_inference": "The observed exit 0 does not satisfy the supplied Restart=on-failure policy. This supports the reported retry consequence for that policy, not a claim about an observed live restart or timer schedule.",
+    "schema": "caplab.partial-refresh-finding-assessment/v1",
+    "scores_computed": false,
+    "source_comparison": [
+      {
+        "path": "newsroom/sources/reddit.py",
+        "present": true,
+        "relevant_definitions": [],
+        "role": "base",
+        "sha256": "4d2d4f1f9e27c03c93ee7e406d619e2eac9cc202845d8668c869685726f2925f"
+      },
+      {
+        "path": "newsroom/sources/reddit_state.py",
+        "present": false,
+        "role": "base"
+      },
+      {
+        "path": "newsroom/cli.py",
+        "present": true,
+        "relevant_definitions": [],
+        "role": "base",
+        "sha256": "adacdc12bc6d83bb272a75b771778e601b92cf2c901865e009a8dc4f6c4a7602"
+      },
+      {
+        "path": "README.md",
+        "present": true,
+        "role": "base",
+        "sha256": "afe5dc5e555c10d4f197f55da066d6b94c9bcddc26b38de6787f6ce9da11a4f3"
+      },
+      {
+        "path": "systemd/ai-newsroom-reddit-harvest.service",
+        "present": false,
+        "role": "base"
+      },
+      {
+        "path": "newsroom/sources/reddit.py",
+        "present": true,
+        "relevant_definitions": [
+          {
+            "end_line": 379,
+            "name": "_fetch_rss",
+            "start_line": 346
+          },
+          {
+            "end_line": 424,
+            "name": "harvest",
+            "start_line": 419
+          }
+        ],
+        "role": "current",
+        "sha256": "cf8eef0e2cf80003ae31473c19f337163143600ea7417f7ef70a565d5ee35ab0"
+      },
+      {
+        "path": "newsroom/sources/reddit_state.py",
+        "present": true,
+        "relevant_definitions": [
+          {
+            "end_line": 196,
+            "name": "RedditState",
+            "start_line": 38
+          }
+        ],
+        "role": "current",
+        "sha256": "0e105f4d3ae0892c8feee5b18be4f39ad37ebdaca3a3a6be5372f05fa18a22d0"
+      },
+      {
+        "path": "newsroom/cli.py",
+        "present": true,
+        "relevant_definitions": [
+          {
+            "end_line": 431,
+            "name": "cmd_harvest",
+            "start_line": 412
+          }
+        ],
+        "role": "current",
+        "sha256": "6b5cf71f0ced83cd48900a28f301341602f2834b7cfbcb75d2498dbaa00013da"
+      },
+      {
+        "path": "README.md",
+        "present": true,
+        "role": "current",
+        "sha256": "462b71a5ee0029330468a99361cfafc8cfd4a29966295d0ffe3b94040daab306"
+      },
+      {
+        "path": "systemd/ai-newsroom-reddit-harvest.service",
+        "present": true,
+        "role": "current",
+        "sha256": "b9393ad05ea81a98b112d5d6d62d839bc680665ea03fc44ee166a9ee080115ac"
+      }
+    ],
+    "witness_verification": {
+      "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/verification.json",
+      "sha256": "c47aa1c4cd661fd1388fc2e31f35a295dc02b64ec0b6061e274af5cd2434df28"
+    }
+  },
+  "capture_inventories": {
+    "healthy-1": [
+      {
+        "bytes": 28672,
+        "path": "data/reddit-provider/rss.db",
+        "sha256": "5b9ffba26b3e7e85783e9167b20c32c5e5319a454ef0837f9fd6b64c418dbf01"
+      },
+      {
+        "bytes": 101,
+        "path": "harvest.stderr",
+        "sha256": "45ce08739a04d36889a0db35bc0a659ab808380fb6934110f31fff16775a988d"
+      },
+      {
+        "bytes": 0,
+        "path": "harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 1478,
+        "path": "observation.json",
+        "sha256": "7decdec25c12f964166a25495a442edecd3876b4f375eeedb851e3482039cd2d"
+      },
+      {
+        "bytes": 500,
+        "path": "requests.json",
+        "sha256": "ed49a774214e62f9728e6867d6b91ff2e1d623645f0134512d2dbd4014600ef2"
+      }
+    ],
+    "healthy-2": [
+      {
+        "bytes": 28672,
+        "path": "data/reddit-provider/rss.db",
+        "sha256": "ab4fe1c2bf1a109a1345389cf46927cbf3ac6eb87af9efb4dad46489ad7883e3"
+      },
+      {
+        "bytes": 101,
+        "path": "harvest.stderr",
+        "sha256": "45ce08739a04d36889a0db35bc0a659ab808380fb6934110f31fff16775a988d"
+      },
+      {
+        "bytes": 0,
+        "path": "harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 1476,
+        "path": "observation.json",
+        "sha256": "83ab8231588e23f209e0d9f002a1bc57959931b24d989bfc541c378a935a2afe"
+      },
+      {
+        "bytes": 500,
+        "path": "requests.json",
+        "sha256": "fee19f242ba6a456c063f9689b3dee77e810f9030e3091760dd162e15d8203e2"
+      }
+    ],
+    "healthy-empty-1": [
+      {
+        "bytes": 28672,
+        "path": "data/reddit-provider/rss.db",
+        "sha256": "a5629034fa292eeea1c9ecf6ea64d68f68b23a22b144b2d008b3ced9a1d2b211"
+      },
+      {
+        "bytes": 101,
+        "path": "harvest.stderr",
+        "sha256": "0888ec3f9897605d41d06f1e15220429a28fdf6fe6bb46ea10e7200a9de19db2"
+      },
+      {
+        "bytes": 0,
+        "path": "harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 417,
+        "path": "observation.json",
+        "sha256": "fac6d84e29105e31a5535125ccd77bce922d7fe4bea43a45108a02528fd234e9"
+      },
+      {
+        "bytes": 498,
+        "path": "requests.json",
+        "sha256": "ef8ff21f498bf62d1e647014b000665405000586df64d12a7fc9a1c816e74025"
+      }
+    ],
+    "healthy-empty-2": [
+      {
+        "bytes": 28672,
+        "path": "data/reddit-provider/rss.db",
+        "sha256": "61d3525ebe3c317008be2bde988872047a7fb336844f0db1215acfa6a1434bbd"
+      },
+      {
+        "bytes": 101,
+        "path": "harvest.stderr",
+        "sha256": "0888ec3f9897605d41d06f1e15220429a28fdf6fe6bb46ea10e7200a9de19db2"
+      },
+      {
+        "bytes": 0,
+        "path": "harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 420,
+        "path": "observation.json",
+        "sha256": "d1c2ffdc269d87dddbd5bd8ede16ab23db0875873d7abf6547ed80ed2b09c75b"
+      },
+      {
+        "bytes": 498,
+        "path": "requests.json",
+        "sha256": "b30f4ab058687fbdc62669017d9e259e68a5e0ad3bf6b8bd5b2759d8abdfa16e"
+      }
+    ],
+    "mixed-empty-rss-failure-1": [
+      {
+        "bytes": 28672,
+        "path": "data/reddit-provider/rss.db",
+        "sha256": "9b110651a55ffd84b3a075f272d3169e910d6f6e9a4f6e3f71252080372b61c6"
+      },
+      {
+        "bytes": 408,
+        "path": "harvest.stderr",
+        "sha256": "0aad02d03eb1eaea198174be506f2621f56eff334357638b5acc4f7d99e08b76"
+      },
+      {
+        "bytes": 0,
+        "path": "harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 466,
+        "path": "observation.json",
+        "sha256": "c0dbfa463253749fed488a9f340c45035b788fe6dc361cc47449d293ffa79e6c"
+      },
+      {
+        "bytes": 1512,
+        "path": "requests.json",
+        "sha256": "794ce533c2cbfc44517f2589987f3809654f0d70dcb7fba987725114847366db"
+      }
+    ],
+    "mixed-empty-rss-failure-2": [
+      {
+        "bytes": 28672,
+        "path": "data/reddit-provider/rss.db",
+        "sha256": "915585798b1e29c5f397c598ff3b15f30fc411d70b6e22459ffba82cc90275ef"
+      },
+      {
+        "bytes": 408,
+        "path": "harvest.stderr",
+        "sha256": "0aad02d03eb1eaea198174be506f2621f56eff334357638b5acc4f7d99e08b76"
+      },
+      {
+        "bytes": 0,
+        "path": "harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 465,
+        "path": "observation.json",
+        "sha256": "439cd8d8cf0af6d33c88605dadeb045b1503e151c5d6c4a1ba00ffafa1720c84"
+      },
+      {
+        "bytes": 1512,
+        "path": "requests.json",
+        "sha256": "3ebc2ca216e515aa0408bf37e407eb2ea6dc4571252a90af5f82ec02a0f7920f"
+      }
+    ],
+    "mixed-rss-failure-1": [
+      {
+        "bytes": 28672,
+        "path": "data/reddit-provider/rss.db",
+        "sha256": "874678530058e0ac196885cb931b10b8b70bcd3f37709a80f64407a444a01b4c"
+      },
+      {
+        "bytes": 408,
+        "path": "harvest.stderr",
+        "sha256": "73322fd13e2ca5f19c92007cffe51dc768981f7e6da281eeef8f4b5e27f5f09e"
+      },
+      {
+        "bytes": 0,
+        "path": "harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 1004,
+        "path": "observation.json",
+        "sha256": "d0e2746714051fdbe024d9f5965b8222a4319ef874b507c3d8579b44e8b4415c"
+      },
+      {
+        "bytes": 1512,
+        "path": "requests.json",
+        "sha256": "4cbbd5e5f3611da089002b9e90e22e26d9e18ec0a5906f05a96e3934ba98e9d6"
+      }
+    ],
+    "mixed-rss-failure-2": [
+      {
+        "bytes": 28672,
+        "path": "data/reddit-provider/rss.db",
+        "sha256": "9950b3c2019b1c07d0eded24dd0eae58895d21582b05506fb9f37c183bbd6a78"
+      },
+      {
+        "bytes": 408,
+        "path": "harvest.stderr",
+        "sha256": "73322fd13e2ca5f19c92007cffe51dc768981f7e6da281eeef8f4b5e27f5f09e"
+      },
+      {
+        "bytes": 0,
+        "path": "harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 1004,
+        "path": "observation.json",
+        "sha256": "835b85a2ad450491204cfb6ff58da0b15bb4822986d1482d3ed72055fdae3ae4"
+      },
+      {
+        "bytes": 1513,
+        "path": "requests.json",
+        "sha256": "ffe93c2428dc8e65c20e0e5aff405e15975b9466e46046ff73760ac2c59079ba"
+      }
+    ],
+    "mixed-rss-success-1": [
+      {
+        "bytes": 28672,
+        "path": "data/reddit-provider/rss.db",
+        "sha256": "1fb521df320a400de10fd84fa0eafcb6305f75288c8d77e6bf8565b695269a17"
+      },
+      {
+        "bytes": 353,
+        "path": "harvest.stderr",
+        "sha256": "2124887ad74e00947cdf57b448b6185069edd1fac92ff8f493a2fb22afd169a7"
+      },
+      {
+        "bytes": 0,
+        "path": "harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 1779,
+        "path": "observation.json",
+        "sha256": "397663a2a834355b48ac8befe3c2dd56f8461a62844bc6acbaf70fc731e58850"
+      },
+      {
+        "bytes": 1514,
+        "path": "requests.json",
+        "sha256": "7bb0d5b1a2ba5721b8bd0f1d3d2b0f707976d8464fe373e2674f73cf6e74efdf"
+      }
+    ],
+    "mixed-rss-success-2": [
+      {
+        "bytes": 28672,
+        "path": "data/reddit-provider/rss.db",
+        "sha256": "26d8a32a245276d0a53245c712c5cf8833df6670c44052a2865d882b3334cb3e"
+      },
+      {
+        "bytes": 353,
+        "path": "harvest.stderr",
+        "sha256": "2124887ad74e00947cdf57b448b6185069edd1fac92ff8f493a2fb22afd169a7"
+      },
+      {
+        "bytes": 0,
+        "path": "harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 1783,
+        "path": "observation.json",
+        "sha256": "e0ff5d08790f7cf652103849fb5dfe1168340f4d81b8906b384ee0232237e1de"
+      },
+      {
+        "bytes": 1513,
+        "path": "requests.json",
+        "sha256": "81c26ea50d79a893db4c8c33e526ee104b92ac80450110041934407d4df96d53"
+      }
+    ],
+    "total-rss-failure-1": [
+      {
+        "bytes": 28672,
+        "path": "data/reddit-provider/rss.db",
+        "sha256": "019573280c3da12f5fbeac5dbae9c4ff76043666bbd132a89f2e56193c01864d"
+      },
+      {
+        "bytes": 607,
+        "path": "harvest.stderr",
+        "sha256": "e873ddff3bbfb03d4009e96ce9bd735806d5f76009fbb7d75e8c17338546eb98"
+      },
+      {
+        "bytes": 0,
+        "path": "harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 455,
+        "path": "observation.json",
+        "sha256": "94b7909ef85dec854224b0d1f471f841dcb724a7536c4de9cdb815ddfc0e6726"
+      },
+      {
+        "bytes": 2308,
+        "path": "requests.json",
+        "sha256": "f9893abc96f9e559ea8fe5220d19fa7ae8dac8bc3bd1d8cdb977afca73d5b19b"
+      }
+    ],
+    "total-rss-failure-2": [
+      {
+        "bytes": 28672,
+        "path": "data/reddit-provider/rss.db",
+        "sha256": "9ef4ab48c7e9e7424dc58faeaf8d56bdd0b786eb3a43f3972ccbcfb32460bf1a"
+      },
+      {
+        "bytes": 607,
+        "path": "harvest.stderr",
+        "sha256": "a5ec630a7e139786bf78c6c3ab2ec80c92a5c7b2ac74dc374ebdd8eec492af55"
+      },
+      {
+        "bytes": 0,
+        "path": "harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 456,
+        "path": "observation.json",
+        "sha256": "69481d3e0258fc8102449a67cdfda22748525da191d63505cfdd2aff38834204"
+      },
+      {
+        "bytes": 2308,
+        "path": "requests.json",
+        "sha256": "4891cd5d59bcf6036bfb35bc12575719e3b9ecde69a07b817cb3efd180ccf6ec"
+      }
+    ]
+  },
+  "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1",
+  "files": [
+    {
+      "path": "certificate/completion.json",
+      "sha256": "b5481cb89d5ce87389c3b68792b0d86420bdfc27feb619ccc8556363a2b610e0"
+    },
+    {
+      "path": "certificate/launch.json",
+      "sha256": "d1b8379536fa01afe897b705ebabd72943ee3cce0f24bf15e57594480ea75af1"
+    },
+    {
+      "path": "certificate/stderr",
+      "sha256": "f848beadb2e1e8cfde6228b4baa8ececa8b311ff6b3cd92251cba53a11802103"
+    },
+    {
+      "path": "certificate/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "claim-assessment.json",
+      "sha256": "92996a7e9b55d38a204253bf4d49a5018910d453ae48de452edb88142ddbe63e"
+    },
+    {
+      "path": "completion.json",
+      "sha256": "f6e7cd29e63d37963989108a604b0eaa2a9d92131b5434e8202bdfd6e80c6d37"
+    },
+    {
+      "path": "healthy-1/completion.json",
+      "sha256": "17b3560f47fdfbb70d3bc4248fdd68fb7b4a63f497d439d08ae42ce1950e0634"
+    },
+    {
+      "path": "healthy-1/launch.json",
+      "sha256": "9702a92680a14a2ba6f3b4eac83ea09ae632cc52c4d683a9a729c2fc21c7c0c0"
+    },
+    {
+      "path": "healthy-1/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "healthy-1/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "healthy-1-inventory.json",
+      "sha256": "728705d2e87ade55a8e5e37aabedca3ddde81f2dad2c5a307ea57932b5a3fd6e"
+    },
+    {
+      "path": "healthy-2/completion.json",
+      "sha256": "049c74bcb4194385abee62e131b9da94f7afbe133fb7c594db01a660a08f5eab"
+    },
+    {
+      "path": "healthy-2/launch.json",
+      "sha256": "c742f380c3c89cf398eae64a49c8572c9fda54ea3a3debb8dab9b2de3080cb31"
+    },
+    {
+      "path": "healthy-2/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "healthy-2/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "healthy-2-inventory.json",
+      "sha256": "fdb82db5b984456c75a0f71c4733783101bd6850344ae632c02f5d67fb5ba8fb"
+    },
+    {
+      "path": "healthy-empty-1/completion.json",
+      "sha256": "8bfadd8fbcb55f61f285903d54e7b511ed57ee4bb0b8c97341b683a47a3ba2c7"
+    },
+    {
+      "path": "healthy-empty-1/launch.json",
+      "sha256": "74a4b55094be1f24836fa035936e2f38a3f531813c622d9899079341ffcd07e2"
+    },
+    {
+      "path": "healthy-empty-1/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "healthy-empty-1/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "healthy-empty-1-inventory.json",
+      "sha256": "02ca9e27c4db600f143d8619db8292c2bb1a0075e8a2d3c66c2ea7e976008d55"
+    },
+    {
+      "path": "healthy-empty-2/completion.json",
+      "sha256": "57fd406f9582e7777197bf10583c7c5854f9b42bd1b71b04372d2d5f630e046c"
+    },
+    {
+      "path": "healthy-empty-2/launch.json",
+      "sha256": "3823c22abc6246c2d9d47de471dc6337184dcaf21d6c3663d0eb61801a3a4566"
+    },
+    {
+      "path": "healthy-empty-2/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "healthy-empty-2/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "healthy-empty-2-inventory.json",
+      "sha256": "6ed0829734ddb06a4eb96fdfca71ba4743b3cc24a0798c898093d3f60ecfc53e"
+    },
+    {
+      "path": "mixed-empty-rss-failure-1/completion.json",
+      "sha256": "c62724432487f260430306038d2c27adc81ff8349d81bb6e201b1e265faaaeec"
+    },
+    {
+      "path": "mixed-empty-rss-failure-1/launch.json",
+      "sha256": "e876bb869b751940b3ca8c87b05feb0f150ae81a3e596646af20db5e9a8d018f"
+    },
+    {
+      "path": "mixed-empty-rss-failure-1/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "mixed-empty-rss-failure-1/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "mixed-empty-rss-failure-1-inventory.json",
+      "sha256": "746acd70c0dd6d211183d35868b2617501abf9b716daa8a92d00b3365a48126d"
+    },
+    {
+      "path": "mixed-empty-rss-failure-2/completion.json",
+      "sha256": "1a18212bcce57837a90a9b6b87546e1296d1ae3a2b1b5d3b3e35dc977d7401c7"
+    },
+    {
+      "path": "mixed-empty-rss-failure-2/launch.json",
+      "sha256": "01c81e7af8a1a6f17f6f6f95400e649def8022a27253a0f896174853ab70b0e4"
+    },
+    {
+      "path": "mixed-empty-rss-failure-2/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "mixed-empty-rss-failure-2/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "mixed-empty-rss-failure-2-inventory.json",
+      "sha256": "4eda440e500fbd6ac9acf5a1ce04ea266acea959d49e37322d865306e8c781df"
+    },
+    {
+      "path": "mixed-rss-failure-1/completion.json",
+      "sha256": "cfbacd9dfc0e80a514e8a64e9e4b2a5a18ce769d5d38886ed61d0cd4759a97a9"
+    },
+    {
+      "path": "mixed-rss-failure-1/launch.json",
+      "sha256": "16b0a36af1ff2170848d280419e866ed1de2dff8103689bc7340c4e9aa8a3bab"
+    },
+    {
+      "path": "mixed-rss-failure-1/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "mixed-rss-failure-1/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "mixed-rss-failure-1-inventory.json",
+      "sha256": "a22c6e6eef2bfe766a7555ca8883c12740f1a42854441195a8b2c1ee24c4b491"
+    },
+    {
+      "path": "mixed-rss-failure-2/completion.json",
+      "sha256": "144d9bd1f86671c7fbec90167e53d2b7e87e612f3a91468130753e3393ced6ca"
+    },
+    {
+      "path": "mixed-rss-failure-2/launch.json",
+      "sha256": "39d3c228dee7f3a649d7b0e4316d8b80d674f5a93dcd09e3ae72543fdd9dee23"
+    },
+    {
+      "path": "mixed-rss-failure-2/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "mixed-rss-failure-2/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "mixed-rss-failure-2-inventory.json",
+      "sha256": "e5665c98e59726738c00916ba0ee85021e980fe72b0df69e80f01a069e51fac4"
+    },
+    {
+      "path": "mixed-rss-success-1/completion.json",
+      "sha256": "e1ea58c765c421bb7c72383017872063697c53765b1259ff7a8566ae388fd9fe"
+    },
+    {
+      "path": "mixed-rss-success-1/launch.json",
+      "sha256": "9c7bbef66257fbc7a0c4fde0547cfb64479369716dbaab328036d119cd48b524"
+    },
+    {
+      "path": "mixed-rss-success-1/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "mixed-rss-success-1/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "mixed-rss-success-1-inventory.json",
+      "sha256": "23fe253ef98ebedf09a138508ed9ced4c73d425ed2487e931905c96534d4da99"
+    },
+    {
+      "path": "mixed-rss-success-2/completion.json",
+      "sha256": "9e9aca12adfc564a7a9ec2091bccdffec8503e1172deffa68f75c5b7041e0fba"
+    },
+    {
+      "path": "mixed-rss-success-2/launch.json",
+      "sha256": "ae2f65d03272e301227770d8c965f68118ea405bbec48d76ca68efc330dcb074"
+    },
+    {
+      "path": "mixed-rss-success-2/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "mixed-rss-success-2/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "mixed-rss-success-2-inventory.json",
+      "sha256": "e808b9c497ad2fcdf65f1c7e40bf470d2894b6f9764b35a4b3ee26fa56fe7b60"
+    },
+    {
+      "path": "plan.json",
+      "sha256": "2e0637d3e047442ecb5e54a894266d89f11c0b80097b2aff6bb8d3df9ae42518"
+    },
+    {
+      "path": "run-started.json",
+      "sha256": "7600eaa2ac93ce271c430c995dc47b906a0365eba0e5ffde1264d7209e1be1bb"
+    },
+    {
+      "path": "runner.py",
+      "sha256": "d4788ecc0a9b4bf513da2d906abedab23b7809ead274feb497cc85a1416bf4f4"
+    },
+    {
+      "path": "total-rss-failure-1/completion.json",
+      "sha256": "16f73ccd8e7a4a6061eea87a11332b51a2d93e251747f36d2e0b50e71d306ffe"
+    },
+    {
+      "path": "total-rss-failure-1/launch.json",
+      "sha256": "a05598a46b49c1d583b9963bda993e8dd92a3b44b9004c900b2348f49897b3d6"
+    },
+    {
+      "path": "total-rss-failure-1/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "total-rss-failure-1/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "total-rss-failure-1-inventory.json",
+      "sha256": "7f2e9cc9db0f1d7306f4beac8ca24af291ed2311739364271ef8da2236070e93"
+    },
+    {
+      "path": "total-rss-failure-2/completion.json",
+      "sha256": "3dc98ac0520f2622de4633c121a28aebd4438c36915fa53863ba02407046d166"
+    },
+    {
+      "path": "total-rss-failure-2/launch.json",
+      "sha256": "a3fb785116c117e2e82fdee75ff91f551f4eb0ed3079dcd270bd57ac34ca1ec0"
+    },
+    {
+      "path": "total-rss-failure-2/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "total-rss-failure-2/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "total-rss-failure-2-inventory.json",
+      "sha256": "bfa9e598592b2a02f2513eccd488006e732b752ac2dc06f5f53b9aaf16cbccea"
+    },
+    {
+      "path": "verification.json",
+      "sha256": "c47aa1c4cd661fd1388fc2e31f35a295dc02b64ec0b6061e274af5cd2434df28"
+    },
+    {
+      "path": "verifier.py",
+      "sha256": "9f695178be41f9b03380e5e864c2f9c77d88e048e1a86ac08fcc4360c3aa3fba"
+    },
+    {
+      "path": "witness/LocalLLaMA.html",
+      "sha256": "c54fdaba44f891c56e0270bc1756139dc6b1ef2cc659f2f7ba26324c8eded1b3"
+    },
+    {
+      "path": "witness/MachineLearning.html",
+      "sha256": "cc7119991d9675162183b3d3349bf1999af66b7da2614edeed7c770360c870b1"
+    },
+    {
+      "path": "witness/cert.pem",
+      "sha256": "e2fed1f5bf002a33573264f469c0e92565ea0c42552bfaef903860bac33a0e6c"
+    },
+    {
+      "path": "witness/criteria.json",
+      "sha256": "42fa3ff25e8e964eed367ea4c747bf943af586492050a7cf9edb368825034d1f"
+    },
+    {
+      "path": "witness/empty.html",
+      "sha256": "7ab7700daccaeff47d2c35fd24e7b6d8f74be4ce6820e9d60083108905a84750"
+    },
+    {
+      "path": "witness/feed.xml",
+      "sha256": "d7910e212493ee15dfab8490bfa6892b194e8821e2935844161dd5b3d8e1383b"
+    },
+    {
+      "path": "witness/hosts",
+      "sha256": "52d60d880e4e54d6dbee3b60a1f4ca4e021d46ccbdae88fe6427743dc03d5591"
+    },
+    {
+      "path": "witness/key.pem",
+      "sha256": "954ddc3b27d0230d01fb8f02d63cbc79cd8789e6fde2bbffbd5f0581f4e77e81"
+    },
+    {
+      "path": "witness/newsroom.toml",
+      "sha256": "9dada979ac26691585dcf2e5fe04ce2c0c8740a6cf2a97652d175f310e641d39"
+    },
+    {
+      "path": "witness/nsswitch.conf",
+      "sha256": "bfc6be87fadc435bad993523e78249bc43ed4c84f1ca6cb05b832d43087dc25b"
+    },
+    {
+      "path": "witness/probe.py",
+      "sha256": "8eb53fdff6291bf0bd410907cb8de817a63f854d7d8feaae7196f992b452ce51"
+    },
+    {
+      "path": "witness/sources.toml",
+      "sha256": "c276b975b90287547c9a0cd05592c18e28f20435cc306b959fb48da7f40092f4"
+    }
+  ],
+  "original_source_files": 188,
+  "ranking_eligible": false,
+  "schema": "caplab.partial-refresh-development-receipt/v1",
+  "source_snapshots": {
+    "base": {
+      "commit": "1bfe5a656bcb2c663891afd5f980211a3ef144a8",
+      "parent": "a3c0cec9ec49a319541cc3c00ec1b2c691eadf5e",
+      "tree": "9d63957463f4e4e6a8a5923fe1b5fdd80d7214b7"
+    },
+    "current": {
+      "commit": "544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f",
+      "parent": "1bfe5a656bcb2c663891afd5f980211a3ef144a8",
+      "tree": "ffd0b76ba0043bb2644ebc2e6e0e6ef9de85ffd7"
+    }
+  },
+  "verification": {
+    "elapsed_seconds": 57.424852104857564,
+    "executions": [
+      {
+        "captured_files": 5,
+        "inventory_sha256": "728705d2e87ade55a8e5e37aabedca3ddde81f2dad2c5a307ea57932b5a3fd6e",
+        "slot": "healthy-1"
+      },
+      {
+        "captured_files": 5,
+        "inventory_sha256": "02ca9e27c4db600f143d8619db8292c2bb1a0075e8a2d3c66c2ea7e976008d55",
+        "slot": "healthy-empty-1"
+      },
+      {
+        "captured_files": 5,
+        "inventory_sha256": "23fe253ef98ebedf09a138508ed9ced4c73d425ed2487e931905c96534d4da99",
+        "slot": "mixed-rss-success-1"
+      },
+      {
+        "captured_files": 5,
+        "inventory_sha256": "a22c6e6eef2bfe766a7555ca8883c12740f1a42854441195a8b2c1ee24c4b491",
+        "slot": "mixed-rss-failure-1"
+      },
+      {
+        "captured_files": 5,
+        "inventory_sha256": "746acd70c0dd6d211183d35868b2617501abf9b716daa8a92d00b3365a48126d",
+        "slot": "mixed-empty-rss-failure-1"
+      },
+      {
+        "captured_files": 5,
+        "inventory_sha256": "7f2e9cc9db0f1d7306f4beac8ca24af291ed2311739364271ef8da2236070e93",
+        "slot": "total-rss-failure-1"
+      },
+      {
+        "captured_files": 5,
+        "inventory_sha256": "fdb82db5b984456c75a0f71c4733783101bd6850344ae632c02f5d67fb5ba8fb",
+        "slot": "healthy-2"
+      },
+      {
+        "captured_files": 5,
+        "inventory_sha256": "6ed0829734ddb06a4eb96fdfca71ba4743b3cc24a0798c898093d3f60ecfc53e",
+        "slot": "healthy-empty-2"
+      },
+      {
+        "captured_files": 5,
+        "inventory_sha256": "e808b9c497ad2fcdf65f1c7e40bf470d2894b6f9764b35a4b3ee26fa56fe7b60",
+        "slot": "mixed-rss-success-2"
+      },
+      {
+        "captured_files": 5,
+        "inventory_sha256": "e5665c98e59726738c00916ba0ee85021e980fe72b0df69e80f01a069e51fac4",
+        "slot": "mixed-rss-failure-2"
+      },
+      {
+        "captured_files": 5,
+        "inventory_sha256": "4eda440e500fbd6ac9acf5a1ce04ea266acea959d49e37322d865306e8c781df",
+        "slot": "mixed-empty-rss-failure-2"
+      },
+      {
+        "captured_files": 5,
+        "inventory_sha256": "bfa9e598592b2a02f2513eccd488006e732b752ac2dc06f5f53b9aaf16cbccea",
+        "slot": "total-rss-failure-2"
+      }
+    ],
+    "limits": [
+      "Review seen before investigation; exposed development case.",
+      "No source functions, constants, clocks, transports or configuration loader are patched.",
+      "Controlled HTTP inputs establish a scenario, not its field prevalence or an observed systemd restart.",
+      "No case admission, whole-patch clean label, scorer acceptance or ranking."
+    ],
+    "observations": [
+      {
+        "candidate_urls": [
+          "https://example.invalid/LocalLLaMA/research",
+          "https://example.invalid/MachineLearning/research"
+        ],
+        "condition": "healthy",
+        "elapsed_seconds": 0.23155496502295136,
+        "failed_refresh_reported_success": false,
+        "feed_count": 0,
+        "harvest_timestamp_present": true,
+        "last_status": "live",
+        "repetition": 1,
+        "requests": 2,
+        "returncode": 0
+      },
+      {
+        "candidate_urls": [],
+        "condition": "healthy-empty",
+        "elapsed_seconds": 0.1639373330399394,
+        "failed_refresh_reported_success": false,
+        "feed_count": 0,
+        "harvest_timestamp_present": true,
+        "last_status": "live",
+        "repetition": 1,
+        "requests": 2,
+        "returncode": 0
+      },
+      {
+        "candidate_urls": [
+          "https://example.invalid/MachineLearning/research",
+          "https://www.reddit.com/r/LocalLLaMA/comments/fresh/model/"
+        ],
+        "condition": "mixed-rss-success",
+        "elapsed_seconds": 6.232202043058351,
+        "failed_refresh_reported_success": false,
+        "feed_count": 1,
+        "harvest_timestamp_present": true,
+        "last_status": "live",
+        "repetition": 1,
+        "requests": 6,
+        "returncode": 0
+      },
+      {
+        "candidate_urls": [
+          "https://example.invalid/MachineLearning/research"
+        ],
+        "condition": "mixed-rss-failure",
+        "elapsed_seconds": 6.218652508920059,
+        "failed_refresh_reported_success": true,
+        "feed_count": 0,
+        "harvest_timestamp_present": true,
+        "last_status": "unavailable",
+        "repetition": 1,
+        "requests": 6,
+        "returncode": 0
+      },
+      {
+        "candidate_urls": [],
+        "condition": "mixed-empty-rss-failure",
+        "elapsed_seconds": 6.224702603882179,
+        "failed_refresh_reported_success": true,
+        "feed_count": 0,
+        "harvest_timestamp_present": true,
+        "last_status": "unavailable",
+        "repetition": 1,
+        "requests": 6,
+        "returncode": 0
+      },
+      {
+        "candidate_urls": [],
+        "condition": "total-rss-failure",
+        "elapsed_seconds": 6.227309557143599,
+        "failed_refresh_reported_success": false,
+        "feed_count": 0,
+        "harvest_timestamp_present": false,
+        "last_status": "unavailable",
+        "repetition": 1,
+        "requests": 9,
+        "returncode": 1
+      },
+      {
+        "candidate_urls": [
+          "https://example.invalid/LocalLLaMA/research",
+          "https://example.invalid/MachineLearning/research"
+        ],
+        "condition": "healthy",
+        "elapsed_seconds": 0.159895139047876,
+        "failed_refresh_reported_success": false,
+        "feed_count": 0,
+        "harvest_timestamp_present": true,
+        "last_status": "live",
+        "repetition": 2,
+        "requests": 2,
+        "returncode": 0
+      },
+      {
+        "candidate_urls": [],
+        "condition": "healthy-empty",
+        "elapsed_seconds": 0.19565441296435893,
+        "failed_refresh_reported_success": false,
+        "feed_count": 0,
+        "harvest_timestamp_present": true,
+        "last_status": "live",
+        "repetition": 2,
+        "requests": 2,
+        "returncode": 0
+      },
+      {
+        "candidate_urls": [
+          "https://example.invalid/MachineLearning/research",
+          "https://www.reddit.com/r/LocalLLaMA/comments/fresh/model/"
+        ],
+        "condition": "mixed-rss-success",
+        "elapsed_seconds": 6.1887636568862945,
+        "failed_refresh_reported_success": false,
+        "feed_count": 1,
+        "harvest_timestamp_present": true,
+        "last_status": "live",
+        "repetition": 2,
+        "requests": 6,
+        "returncode": 0
+      },
+      {
+        "candidate_urls": [
+          "https://example.invalid/MachineLearning/research"
+        ],
+        "condition": "mixed-rss-failure",
+        "elapsed_seconds": 6.250488247023895,
+        "failed_refresh_reported_success": true,
+        "feed_count": 0,
+        "harvest_timestamp_present": true,
+        "last_status": "unavailable",
+        "repetition": 2,
+        "requests": 6,
+        "returncode": 0
+      },
+      {
+        "candidate_urls": [],
+        "condition": "mixed-empty-rss-failure",
+        "elapsed_seconds": 6.314232832984999,
+        "failed_refresh_reported_success": true,
+        "feed_count": 0,
+        "harvest_timestamp_present": true,
+        "last_status": "unavailable",
+        "repetition": 2,
+        "requests": 6,
+        "returncode": 0
+      },
+      {
+        "candidate_urls": [],
+        "condition": "total-rss-failure",
+        "elapsed_seconds": 6.2620549709536135,
+        "failed_refresh_reported_success": false,
+        "feed_count": 0,
+        "harvest_timestamp_present": false,
+        "last_status": "unavailable",
+        "repetition": 2,
+        "requests": 9,
+        "returncode": 1
+      }
+    ],
+    "plan_sha256": "2e0637d3e047442ecb5e54a894266d89f11c0b80097b2aff6bb8d3df9ae42518",
+    "ranking_eligible": false,
+    "schema": "caplab.partial-refresh-witness-verification/v1",
+    "semantic_repetitions_match": true,
+    "verifier_sha256": "9f695178be41f9b03380e5e864c2f9c77d88e048e1a86ac08fcc4360c3aa3fba"
+  }
+}
