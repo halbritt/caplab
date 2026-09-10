@@ -1,0 +1,120 @@
+{
+  "attempts": [
+    {
+      "custody": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/output-probe-1",
+      "elapsed_seconds_including_capture": 46.03551098913886,
+      "files": [
+        {
+          "bytes": 50850,
+          "path": "plan.json",
+          "sha256": "db54702f8d6a49f4e2ae18833cc8ca95ebb938541c94874b7a424136af05efd4"
+        },
+        {
+          "bytes": 2566,
+          "path": "launch.json",
+          "sha256": "71f3c21bed7a1c835c7e77d6bc0df04a53694fcbe1ab911860beee1e9538dcad"
+        },
+        {
+          "bytes": 1382046,
+          "path": "completion.json",
+          "sha256": "d3ebdceb872f349c4595bc96cf512a45b4c14a4cef66fe2db8a1ab7851851f75"
+        },
+        {
+          "bytes": 7829,
+          "path": "runner.py",
+          "sha256": "9ad534c247ad4718221e41b4323f991025dfbccaeaae32f7344863a4ebb6cfcc"
+        },
+        {
+          "bytes": 800,
+          "path": "prompt.txt",
+          "sha256": "b46ffe27dcee427502fa337606d5219e85eabb56a6d688810f7108d840fe4edb"
+        },
+        {
+          "bytes": 878,
+          "path": "auth-format-preflight.json",
+          "sha256": "c5dc213ac4a0d6b9a50a1c3b4ceb47334886f3a55d144838daa95e6b86ea627e"
+        },
+        {
+          "bytes": 313,
+          "path": "auth-format-preflight-2.json",
+          "sha256": "e63af3b60ba90b613bdef37234c8c43e9f120824e00161764af6b78751f12412"
+        },
+        {
+          "bytes": 3282,
+          "path": "capture/stdout",
+          "sha256": "c7e1e2dbfd9083765821167e62e041b79a8669b8a88c2a5a3621e59f1e64fa12"
+        },
+        {
+          "bytes": 1278,
+          "path": "capture/stderr",
+          "sha256": "2eea2c6c871387294faf2773096701a6e7127f5378c58c66abe303f53116c14a"
+        },
+        {
+          "bytes": 33590,
+          "path": "capture/codex/sessions/2026/09/10/rollout-2026-09-10T18-23-12-01a08c8f-3ccd-7960-8937-51c6e5b32233.jsonl",
+          "sha256": "75361d9a515132ec6333e8d6424ca24261abebafe5eda9835788969e6e38f4c1"
+        }
+      ],
+      "final_review_available": false,
+      "id": "output-probe-1",
+      "retained_files": 5052,
+      "returncode": 1,
+      "reviewer_scores": null,
+      "source_inventory_rechecked": true,
+      "termination": "exit",
+      "withheld_files": 439
+    },
+    {
+      "custody": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/output-probe-2",
+      "elapsed_seconds_including_capture": 303.0795896339696,
+      "files": [
+        {
+          "bytes": 51674,
+          "path": "plan.json",
+          "sha256": "c4ad94389c2c56726c7165c3fb6bfa85d9147eb9f4dbd2033759c7481e3b9acd"
+        },
+        {
+          "bytes": 2552,
+          "path": "launch.json",
+          "sha256": "10620e4f416b67ea96c425ec8ec7724a6317517bf775de0a63be5142868fd116"
+        },
+        {
+          "bytes": 86788,
+          "path": "completion.json",
+          "sha256": "24a484659a678b9cd4e0173918fd5290ae710b794f3de58043cdfc8877de8117"
+        },
+        {
+          "bytes": 8065,
+          "path": "runner.py",
+          "sha256": "43351a9413e2f2702c04c2575193297420ddad062d80ce18fd9bb671a7414a40"
+        },
+        {
+          "bytes": 800,
+          "path": "prompt.txt",
+          "sha256": "b46ffe27dcee427502fa337606d5219e85eabb56a6d688810f7108d840fe4edb"
+        },
+        {
+          "bytes": 379,
+          "path": "task-quarantine-preflight.json",
+          "sha256": "466ff4f294e8c0959dcc5190c64ac7091107985d547545efa4e3fc157050ff81"
+        },
+        {
+          "bytes": 1033,
+          "path": "capture/stderr",
+          "sha256": "653437df1b89aa4f43183f4d7aa9c996f239a9405e60e55f5395676908894a99"
+        }
+      ],
+      "final_review_available": false,
+      "id": "output-probe-2",
+      "retained_files": 321,
+      "returncode": -9,
+      "reviewer_scores": null,
+      "source_inventory_rechecked": true,
+      "termination": "deadline",
+      "withheld_files": 14
+    }
+  ],
+  "ranking_established": false,
+  "schema": "caplab.review-output-development-receipt/v1",
+  "study_eligible": false
+}

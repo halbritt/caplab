@@ -60,6 +60,9 @@ a benchmark of only toy algorithms, easy-to-test bugs, or witness-writing.
 1. Census real changes without outcome-dependent selection.
 2. Validate actual defect and control candidates against original requirements.
 3. Build and challenge scoring on those cases before live reviewer pilots.
+   A separately authorized, unscored native output probe may inform the
+   scoring interface. It cannot supply pilot or ranking measurements; see
+   [the bounded output probe authorization](../../../records/authorization-2026-09-10-reviewer-output-probe.md).
 4. Complete the native execution path needed by the selected configurations.
 5. Freeze and execute the study, analyze held-out evidence, publish the ranking
    with its limits, and perform a requirement-by-requirement completion audit.
@@ -95,3 +98,10 @@ that satisfies the tested properties. It is one related failure family with
 36 repeated diagnostic observations. It supplies no whole-patch clean label,
 reviewer attribution, experimental admission, or ranking. The other sampled
 changes and overall coverage remain open.
+
+The [native output feasibility probes](../../../records/verification-2026-09-10-reviewer-output-probes.md)
+produced no usable final review: the first failed execution preparation, and
+the second timed out with its transcript withheld by the privacy guard.
+Applying that guard to the authorized task itself rejected six files. Capture
+validity must be corrected and challenged before further reviewer calls.
+These failures supply no reviewer score or attribution.
