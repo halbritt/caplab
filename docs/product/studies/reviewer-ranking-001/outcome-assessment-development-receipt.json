@@ -1,0 +1,233 @@
+{
+  "capture_dispositions": {
+    "projected-retained": 1,
+    "retained": 73
+  },
+  "capture_files": 74,
+  "cases": [
+    {
+      "case": "introduced-timeout",
+      "disposition": "confirmed-introduced-defect",
+      "introduced_defect_credit": true,
+      "matches_expected_disposition": true
+    },
+    {
+      "case": "inherited-timeout",
+      "disposition": "inherited-behavior",
+      "introduced_defect_credit": false,
+      "matches_expected_disposition": true
+    },
+    {
+      "case": "refuted-repair-scenario",
+      "disposition": "refuted-scenario",
+      "introduced_defect_credit": false,
+      "matches_expected_disposition": true
+    },
+    {
+      "case": "unsupported-location",
+      "disposition": "causal-attribution-unresolved",
+      "introduced_defect_credit": false,
+      "matches_expected_disposition": true
+    },
+    {
+      "case": "duplicate-introduced-finding",
+      "disposition": "confirmed-introduced-defect",
+      "introduced_defect_credit": true,
+      "matches_expected_disposition": true
+    },
+    {
+      "case": "no-reported-findings",
+      "disposition": "known-defect-not-reported",
+      "introduced_defect_credit": false,
+      "matches_expected_disposition": true
+    }
+  ],
+  "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/claim-interpretation-3",
+  "documents": 24,
+  "elapsed_seconds": 245.1256974528078,
+  "files": [
+    {
+      "path": "fixture-plan.json",
+      "sha256": "9434699e47342ae7b18174ae576af8a23140cd367e5886596b77a1cd58c4a6ba"
+    },
+    {
+      "path": "fixture-generator.py",
+      "sha256": "7c9223d3b7bdb8f008188d0c149e54e8e1a81aed725b5bf133f7d1de1b18be58"
+    },
+    {
+      "path": "task/inputs.json",
+      "sha256": "513041862f4c1376f5960b77d9c6368c5caad5833c28f1124ba93960d3d24230"
+    },
+    {
+      "path": "expected.json",
+      "sha256": "5d765179d29ee3eff2310efe97bce13b5079dc4120ba802c12ac9821f51f42a6"
+    },
+    {
+      "path": "prompt.txt",
+      "sha256": "b9a7335e24246715b1e9bcda3be5d77e55e6f48ddc6726ce3d9a6e93831ac7ac"
+    },
+    {
+      "path": "assessment-cases.json",
+      "sha256": "b26c88ab41a30d5f7198c25b384dd1b6745a25412af732c4fdd1049942df554b"
+    },
+    {
+      "path": "outcome-plan.json",
+      "sha256": "b2ab73dcba01e213747a27e85818af17260998b51dfd678161c9ba67d564f1d1"
+    },
+    {
+      "path": "projection.py",
+      "sha256": "46c364d41b462a9085a927a1ca37b78d9a08e48c55be2be2654002ba8113b86f"
+    },
+    {
+      "path": "plan.json",
+      "sha256": "f7543c0c4f5da56bf16ebd5958ecf21c55049a09ccf79a706b62799c4d949de1"
+    },
+    {
+      "path": "runner.py",
+      "sha256": "1d718d773fc68f6ddf1db854afe0423cc7e72ba9a8cc06427bbf77976fc84df5"
+    },
+    {
+      "path": "launch.json",
+      "sha256": "17453184f4160f24d400d5073d790caa31c1592a400205361602147181fadb7b"
+    },
+    {
+      "path": "process.json",
+      "sha256": "af3005d945055256eec8cd63d289789c45447dbc371b65049c961f2e5eb2c852"
+    },
+    {
+      "path": "completion.json",
+      "sha256": "cb0fdbcbd3b2df24d0b95f17b8f674a4251900c7e094f8829d39e738bc1b73a0"
+    },
+    {
+      "path": "capture/final-message.txt",
+      "sha256": "28763d443333ba759086278b5580ec702286f7ba018d7f233d6fb8718f6b14d2"
+    },
+    {
+      "path": "assessor.py",
+      "sha256": "9c0701fdde90e4f21e40ed3f47e352cddbea694b6e63b9f2ad07f1eb74b0a80a"
+    },
+    {
+      "path": "verification.json",
+      "sha256": "bc4fe73465c16506d1a3f91a55d72642915dff47a6aeedb9d6f53194db4465bb"
+    },
+    {
+      "path": "administration-checker.py",
+      "sha256": "de6a11035672a0c8e2fa281f3592914fbd7e5990333d041c767f840835f59b41"
+    },
+    {
+      "path": "administration-check.json",
+      "sha256": "8b07327bb6cef3915973dd04ed2b1c7e825ef2ba1821421efb5ef373b4d622b2"
+    },
+    {
+      "path": "projection-receipts/codex/sessions/2026/09/10/rollout-2026-09-10T20-37-28-01a08d0a-27f4-7eb3-a8fa-69ca0f68a531.receipt.json",
+      "sha256": "6c0956c5556e80a55ca362df2933de6d9ccf8cbc1370d569ac86308062f8a21e"
+    }
+  ],
+  "input_lines": 142,
+  "limitations": [
+    "Authored semantic expectations and a closed hypothesis vocabulary do not establish broad semantic accuracy.",
+    "Full source context preserves qualifications but is not proof of semantic support.",
+    "Location outside the known causal region remains unresolved; alternative valid causal explanations need investigation.",
+    "Repair refutation is limited to the frozen concrete scenario, not universal absence of a defect.",
+    "Synthetic reports are scorer checks, not native reviewer measurements."
+  ],
+  "matching_documents": 24,
+  "native_administration": {
+    "auth_cache_unchanged": true,
+    "complete_readable_capture": true,
+    "final_matches_native_message": true,
+    "limit": "Recorded native tools only; no complete kernel network/process trace. Opaque ciphertext was omitted before guarding; raw hashes attest capture-time custody and cannot reconstruct discarded bytes.",
+    "native_package_unchanged": true,
+    "observed_cli_version": "0.153.4",
+    "observed_effort": "max",
+    "observed_model": "gpt-5.6-terra",
+    "opaque_fields_omitted": 24,
+    "original_raw_capture_complete": false,
+    "plan_sha256": "f7543c0c4f5da56bf16ebd5958ecf21c55049a09ccf79a706b62799c4d949de1",
+    "projected_rollouts": 1,
+    "recorded_commands": [
+      "/usr/bin/bash -lc \"sed -n '1,240p' /task/inputs.json\""
+    ],
+    "recorded_tools": [
+      {
+        "name": "exec",
+        "type": "custom_tool_call"
+      }
+    ],
+    "rollout_sha256": "87fa58bf74c7b825114eae4f1bb72bb300b77e1afcd58306d12fc76fbba9c270",
+    "schema": "caplab.claim-interpretation-administration/v2",
+    "thread_id": "01a08d0a-27f4-7eb3-a8fa-69ca0f68a531",
+    "usage": {
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 20992,
+      "input_tokens": 26417,
+      "output_tokens": 13316,
+      "reasoning_output_tokens": 12044
+    },
+    "verifier_sha256": "de6a11035672a0c8e2fa281f3592914fbd7e5990333d041c767f840835f59b41"
+  },
+  "native_development_observation": {
+    "causal_anchor_supported": false,
+    "disposition": "known-defect-not-reported",
+    "reported_stance": null,
+    "scenario_violation_observed": true,
+    "scope": "Only the frozen 300 ms timeout / two-second body scenario; no whole-patch clean label.",
+    "unmapped_claims": [],
+    "unresolved_assertions": [
+      {
+        "hypothesis_id": "h-af5c02f3d7",
+        "stance": "asserted"
+      },
+      {
+        "hypothesis_id": "h-50390f22bb",
+        "stance": "asserted"
+      },
+      {
+        "hypothesis_id": "h-277eef4323",
+        "stance": "asserted"
+      }
+    ]
+  },
+  "prior_withheld_attempt": {
+    "capture_dispositions": {
+      "quarantined-prefix-retained": 1,
+      "retained": 75
+    },
+    "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/claim-interpretation-2",
+    "elapsed_seconds": 140.8129863240756,
+    "files": [
+      {
+        "path": "fixture-plan.json",
+        "sha256": "9434699e47342ae7b18174ae576af8a23140cd367e5886596b77a1cd58c4a6ba"
+      },
+      {
+        "path": "outcome-plan.json",
+        "sha256": "b2ab73dcba01e213747a27e85818af17260998b51dfd678161c9ba67d564f1d1"
+      },
+      {
+        "path": "plan.json",
+        "sha256": "7aef24089a481e8204acd2959b724ba7bb0521034b82cf4780f7f3b43b0aef98"
+      },
+      {
+        "path": "runner.py",
+        "sha256": "2a9a929871e66f6261cfd26850ca1e6a57360cc484c4f0c2da4c09a56a67bc0a"
+      },
+      {
+        "path": "launch.json",
+        "sha256": "72ef509f46412d05f296d9a9553e4662011c8da7aac925990767671be57f882a"
+      },
+      {
+        "path": "completion.json",
+        "sha256": "de8e78497b93040040e1c089a9b9c2683ffbc8f7942b8756baf95523b65aea7b"
+      },
+      {
+        "path": "verification-failure.json",
+        "sha256": "c2f331a6051aab9d87326de0add51edad639baf1b417165c4c42145a65170e47"
+      }
+    ],
+    "status": "capture incomplete; interpretation and assessment withheld; old custody preserved"
+  },
+  "ranking_eligible": false,
+  "schema": "caplab.reviewer-outcome-development-receipt/v1",
+  "status": "frozen development criteria met; general scorer unaccepted"
+}

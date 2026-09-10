@@ -141,3 +141,13 @@ locations were retained. This exposes a reported-versus-inferred distinction
 that must be resolved before scoring. Literal quote checks also do not prove
 semantic support. This is an unaccepted interpretation prototype, not a
 free-text reviewer scorer or a ranking measurement.
+
+The [revised interpretation and outcome assessment](../../../records/verification-2026-09-10-reviewer-outcome-assessment.md)
+matches all 24 frozen document mappings and six assessment cases. Introduced
+defects, inherited behavior, tested refutations, unresolved locations,
+duplicates and omitted findings remain distinct. The second attempt's partial
+capture is preserved and unassessed. A new attempt retained complete readable
+capture by omitting opaque encrypted reasoning with hash receipts before the
+unchanged privacy guard. These exposed, authored challenges validate a bounded
+development path; unseen natural reviews, new-finding investigation and broad
+case coverage are still required before accepting a general scorer.
