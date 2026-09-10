@@ -1,0 +1,6 @@
+<feed xmlns="http://www.w3.org/2005/Atom">
+<title>Private recovery witness</title><id>urn:caplab:reddit-recovery</id><updated>2026-09-10T18:00:00Z</updated>
+<entry><id>fresh</id><title>AI lab releases a research model</title><link href="https://www.reddit.com/r/MachineLearning/comments/fresh/model/"/><updated>2026-09-10T18:00:00Z</updated><summary>Fresh synthetic research report.</summary></entry>
+<entry><id>stale</id><title>AI lab publishes an older report</title><link href="https://www.reddit.com/r/MachineLearning/comments/stale/report/"/><updated>2026-09-01T18:00:00Z</updated><summary>Stale synthetic report.</summary></entry>
+<entry><id>future</id><title>AI lab publishes a future report</title><link href="https://www.reddit.com/r/MachineLearning/comments/future/report/"/><updated>2026-09-11T18:00:00Z</updated><summary>Future synthetic report.</summary></entry>
+</feed>

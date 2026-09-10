@@ -2,8 +2,8 @@
   "admitted_cases": 0,
   "counts": {
     "base-tree-only": 2,
-    "bounded-change-behavior": 6,
-    "pending-change-behavior": 24
+    "bounded-change-behavior": 7,
+    "pending-change-behavior": 23
   },
   "interpretation": "Planning projection. Bounded behavior evidence is not complete change coverage, a whole-patch clean label, case admission or an independent case count. Base-tree executions do not verify that base commit change. No selected case has been replaced.",
   "rows": [
@@ -89,13 +89,13 @@
       "base": "1bfe5a656bcb2c663891afd5f980211a3ef144a8",
       "case_admitted": false,
       "commit": "544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f",
-      "receipt": null,
-      "receipt_sha256": null,
-      "record": null,
+      "receipt": "reddit-recovery-development-receipt.json",
+      "receipt_sha256": "db1b962df13f82f0980cd690397a4c56cbffc06ac6e89955618278b57d6e93f5",
+      "record": "../../../records/verification-2026-09-10-reviewer-reddit-recovery-outcome.md",
       "repository": "ai-newsroom",
-      "scope": "No change-specific behavioral witness established.",
+      "scope": "Reddit recovery deadline, candidate filtering and pool reopen; other change components unverified",
       "size_stratum": "501+",
-      "status": "pending-change-behavior",
+      "status": "bounded-change-behavior",
       "tree": "ffd0b76ba0043bb2644ebc2e6e0e6ef9de85ffd7"
     },
     {

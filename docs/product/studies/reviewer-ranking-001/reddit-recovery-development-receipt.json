@@ -1,0 +1,380 @@
+{
+  "captured_files": 24,
+  "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/reddit-recovery-witness-2",
+  "execution_seconds": 382.2986470090691,
+  "executions": 4,
+  "failed_attempt": {
+    "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/reddit-recovery-witness-1",
+    "files": [
+      {
+        "path": "plan.json",
+        "sha256": "f3eefb8772a06ae2493181ab5ebf7fad3aba8c02d18b7eab39390f79bec2edaa"
+      },
+      {
+        "path": "runner.py",
+        "sha256": "5410860581ac60bf91c319e069e29104df4be091dd2e2c26a65f97d737140dde"
+      },
+      {
+        "path": "run-started.json",
+        "sha256": "989c1878f91be99d801d5a2550633d2063bde26199a4c91253ece853a636f8c2"
+      },
+      {
+        "path": "completion.json",
+        "sha256": "e9fa7adb57b9e4d4d5226ce9d6e003a6f1091909372861870dc7fe46db356ea5"
+      },
+      {
+        "path": "ordinary-1/launch.json",
+        "sha256": "c6fc22f1a2748eacea1207a48c97755660d9a017c44160e7cb010474d77c993f"
+      },
+      {
+        "path": "ordinary-1/completion.json",
+        "sha256": "2c93216bcf0b65a0236a4f19300b9a30e165e0d3aa9281cbbbf452a6a6f39baf"
+      },
+      {
+        "path": "ordinary-1/stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "ordinary-1/stderr",
+        "sha256": "9d50927be02567f60aa9a0bdb0fef06c5cfc592e659c5ee643a02e97ae92fec2"
+      },
+      {
+        "path": "ordinary-1-inventory.json",
+        "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+      }
+    ],
+    "interpretation": "HTTPS bind denied in isolated namespace before any harvest. Preserved as fixture failure; corrected attempt changes namespace low-port capability only, with fresh local test certificate."
+  },
+  "files": [
+    {
+      "path": "plan.json",
+      "sha256": "c34639643cbc3a0134d9d450192c73e8dc3fd82b071051f8f50fba2790db2b8c"
+    },
+    {
+      "path": "runner.py",
+      "sha256": "94db2c52213692d0929a70f64f9bd79568a58eaf064d69b6c51b21728929b6ed"
+    },
+    {
+      "path": "run-started.json",
+      "sha256": "24565beeb9cdc78e5bc056ad705832ffa83f9c848eb2918ecdb393b9fb670d3e"
+    },
+    {
+      "path": "completion.json",
+      "sha256": "91473126b6d4e1638663c7cb3ed62f9bf542a625058958823f2f16e084fa58f6"
+    },
+    {
+      "path": "verification.json",
+      "sha256": "ae90ff38769a59b3fafbd68da7f92f278cb7267233902c917577bf38e5b8005d"
+    },
+    {
+      "path": "verifier.py",
+      "sha256": "70e30753da36a703acb1a5d786853c8f9425baa1b961c0cee05b2766fb5852a1"
+    },
+    {
+      "path": "selection-check.json",
+      "sha256": "c910bb3624e41b2637357c0e2720babafa1a53cef2b5f241931891c2581022fe"
+    },
+    {
+      "path": "witness/cert.pem",
+      "sha256": "3f7cc27b34c2cb220496fc316d0bbd289b479db89264246e6754d5ab6e0b3f5c"
+    },
+    {
+      "path": "witness/criteria.json",
+      "sha256": "4360311760660dc34a7182f0577acd6b61d901d8c79577e104021c68458b3cda"
+    },
+    {
+      "path": "witness/feed.xml",
+      "sha256": "2fafdfe7f045dd8383bf6681ca1aebe131e16bd923a91037ea30b75543f37acd"
+    },
+    {
+      "path": "witness/hosts",
+      "sha256": "7c9cf1637fa42b5501bbeec9964764ddad00ef5526043427d560b7302b16c069"
+    },
+    {
+      "path": "witness/nsswitch.conf",
+      "sha256": "bfc6be87fadc435bad993523e78249bc43ed4c84f1ca6cb05b832d43087dc25b"
+    },
+    {
+      "path": "witness/probe.py",
+      "sha256": "70ff5ba70bd05f9f3b073077cf13f0e5f1b61248b41451af47410754198f07d9"
+    },
+    {
+      "path": "certificate/completion.json",
+      "sha256": "bd01f2e2d8304a05af7e413cff81f3c74831a299469c35c1b23fdaed0cb8182e"
+    },
+    {
+      "path": "certificate/launch.json",
+      "sha256": "cd17d6aa8dc9dd0077c4a6530b442807ce605c2dc2c00b472ca191c81cefa9e1"
+    },
+    {
+      "path": "certificate/stderr",
+      "sha256": "5e3213c8171a19c9e95bd5f3698df9c0e2cda18ef1525ff2ed12736739dfbdb5"
+    },
+    {
+      "path": "certificate/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "ordinary-1/completion.json",
+      "sha256": "a049a7d8793c13af8a5b26684e808ad38487e24e174a2bb02966c81b20243edb"
+    },
+    {
+      "path": "ordinary-1/launch.json",
+      "sha256": "8d6b5e75f920a8be9ab884bc8efecf4d17d10ef6b8521b2f3f58020b4044e435"
+    },
+    {
+      "path": "ordinary-1/stderr",
+      "sha256": "ce82f2f306e49f174276725a98cace7e6c598c1edcbc3dbb071b1665b7338a4f"
+    },
+    {
+      "path": "ordinary-1/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "ordinary-1-inventory.json",
+      "sha256": "38c240876d4109f9a57806bc9eac20aa9d82af89f09b0eed9f14e99536a247e9"
+    },
+    {
+      "path": "ordinary-1-capture/harvest-started.json",
+      "sha256": "326f4f0886822c2b22e4a8ec018f3fe9b1662c5c91cfcddb0bc5d48861234750"
+    },
+    {
+      "path": "ordinary-1-capture/observation.json",
+      "sha256": "52243f060aca81eae50ce8cb7e76ee3550ce1a9a3ae1d2343f8d4161f496dde3"
+    },
+    {
+      "path": "ordinary-1-capture/response-body.xml",
+      "sha256": "2fafdfe7f045dd8383bf6681ca1aebe131e16bd923a91037ea30b75543f37acd"
+    },
+    {
+      "path": "ordinary-1-capture/server-completion.json",
+      "sha256": "2ac15e03bc523d80a1e42f4cebe5a30383c040dbf8c20ee6ebb3539ffcf0ba25"
+    },
+    {
+      "path": "ordinary-1-capture/server-events.jsonl",
+      "sha256": "c7564535740d3fbd32d08330f00043e127256d1b0a9b709747d54a0e3fe4146c"
+    },
+    {
+      "path": "drip-1/completion.json",
+      "sha256": "0b286373d5774554ecc7b86b4ba0785a8c73e61ab8b20f7bb84ecd12a291e24b"
+    },
+    {
+      "path": "drip-1/launch.json",
+      "sha256": "a81ce13e306f11a280c924b96ff952ad8c4da0f7df2a2460df23ae5d6b043411"
+    },
+    {
+      "path": "drip-1/stderr",
+      "sha256": "cf43a652e70ec84f84a42b54e53e2e66b7dc207d6db3155351889fe864fc914b"
+    },
+    {
+      "path": "drip-1/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "drip-1-inventory.json",
+      "sha256": "ca2ccf7c6070f2437247cc2e9dfd92c52e8dae2163f180236f6e92340d66720f"
+    },
+    {
+      "path": "drip-1-capture/harvest-started.json",
+      "sha256": "e94819e6344b3f1fe2bfa1e0318566992b876efb80922ee905f37f5b742912c3"
+    },
+    {
+      "path": "drip-1-capture/observation.json",
+      "sha256": "aea4d22cef20c30d665844c8b488e941d504c58f6d315dc4a1f90110ad91a14f"
+    },
+    {
+      "path": "drip-1-capture/response-body.xml",
+      "sha256": "126191f130fa71f0ac2a0a976e7f82643c3fea17e105384abd1d975349ea4a5c"
+    },
+    {
+      "path": "drip-1-capture/server-completion.json",
+      "sha256": "b60b8588752383a75eacbd6b073fd8aa24fb5cb81485e27331d0e654b71c8bef"
+    },
+    {
+      "path": "drip-1-capture/server-events.jsonl",
+      "sha256": "ecb9044f1b5b632a4a87757082074e3a3ac894a9d1e4a4900abee7d4fcc3a5b1"
+    },
+    {
+      "path": "ordinary-2/completion.json",
+      "sha256": "cf5dae628a351b0f890f2f15a57097d67ef5f38905328d0d3de693de2f7f9350"
+    },
+    {
+      "path": "ordinary-2/launch.json",
+      "sha256": "ecb69dbee6f3f1bc2a633005fa02772105ee5529db6dfd6eeca8956f82d4c9c7"
+    },
+    {
+      "path": "ordinary-2/stderr",
+      "sha256": "060c042d5b6be53dd36b4399f2ff89917fbc00c7887ce3d36f0ed9002e8e9298"
+    },
+    {
+      "path": "ordinary-2/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "ordinary-2-inventory.json",
+      "sha256": "d3a1b473ad558ad43bcd1aaee16f59980f04e3b13e5586883a97a35077b0a7bf"
+    },
+    {
+      "path": "ordinary-2-capture/harvest-started.json",
+      "sha256": "61b06caa44dfb2a0f5fa85f6c0128a029523d4f6b4f7d84233c480cad6acedf2"
+    },
+    {
+      "path": "ordinary-2-capture/observation.json",
+      "sha256": "3912c8f1a7563701a3fcfc8abca15798f30b2078cd7d8982c088a0d37184d363"
+    },
+    {
+      "path": "ordinary-2-capture/response-body.xml",
+      "sha256": "2fafdfe7f045dd8383bf6681ca1aebe131e16bd923a91037ea30b75543f37acd"
+    },
+    {
+      "path": "ordinary-2-capture/server-completion.json",
+      "sha256": "2ac15e03bc523d80a1e42f4cebe5a30383c040dbf8c20ee6ebb3539ffcf0ba25"
+    },
+    {
+      "path": "ordinary-2-capture/server-events.jsonl",
+      "sha256": "67e400b5322da7ef400b09cf181231701c7cb258de7d8818b37034523b0478b0"
+    },
+    {
+      "path": "drip-2/completion.json",
+      "sha256": "be91b7a249368d903e5b0b876f056f0585bacfca14c0d1ba1ea9cf4ca25b1b80"
+    },
+    {
+      "path": "drip-2/launch.json",
+      "sha256": "fa70c486a7b0007bb0421d35318a334a42086a57bf2b1908693c0813ec673bb4"
+    },
+    {
+      "path": "drip-2/stderr",
+      "sha256": "0c6862fae774f39d7b0a26f5389a71768c0c7a2d7aa21364b1664359097966cf"
+    },
+    {
+      "path": "drip-2/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "drip-2-inventory.json",
+      "sha256": "8ac1f1ce6283c27764546f4468185ace6ec25bfed28a52e978cedae602846e1a"
+    },
+    {
+      "path": "drip-2-capture/harvest-started.json",
+      "sha256": "5b774aa30a5c261c05dd3221fdb703ad9a44e35087885f36ddffb7b2fd7ba081"
+    },
+    {
+      "path": "drip-2-capture/observation.json",
+      "sha256": "96dea572b5a6b289934ce9a94f993dd9ab71137d1ca00faeedc04c2a71366bde"
+    },
+    {
+      "path": "drip-2-capture/response-body.xml",
+      "sha256": "126191f130fa71f0ac2a0a976e7f82643c3fea17e105384abd1d975349ea4a5c"
+    },
+    {
+      "path": "drip-2-capture/server-completion.json",
+      "sha256": "b60b8588752383a75eacbd6b073fd8aa24fb5cb81485e27331d0e654b71c8bef"
+    },
+    {
+      "path": "drip-2-capture/server-events.jsonl",
+      "sha256": "923a85daec0bd6df58f1a1fc0bcdf7532360baddf8ee5b156bbea422a6a68d05"
+    }
+  ],
+  "limits": [
+    "One part of a selected large change, not full-change verification or a whole-patch clean label.",
+    "New provider module absent in base; no comparable base execution is fabricated.",
+    "No real Reddit, model or Slack call, no case admission or ranking.",
+    "Only recovery duration, filtering and pool reopen are covered; other parts of the large change remain unverified.",
+    "Real endpoint streaming establishes timing, not prevalence of this behavior on Reddit."
+  ],
+  "observations": [
+    {
+      "budget_respected_with_tolerance": true,
+      "condition": "ordinary",
+      "configured_budget_seconds": 180,
+      "elapsed_seconds": 0.03215037006884813,
+      "error_type": null,
+      "feed_recorded_live": true,
+      "filtered_expected_candidate": true,
+      "harvest_succeeded": true,
+      "max_byte_gap_seconds": 5.058501847088337e-05,
+      "pool_reopens": true,
+      "reopen_without_http": true,
+      "repetition": 1,
+      "server_completed": true,
+      "successful_harvest_exceeds_recovery_budget": false
+    },
+    {
+      "budget_respected_with_tolerance": false,
+      "condition": "drip",
+      "configured_budget_seconds": 180,
+      "elapsed_seconds": 190.118735156022,
+      "error_type": null,
+      "feed_recorded_live": true,
+      "filtered_expected_candidate": true,
+      "harvest_succeeded": true,
+      "max_byte_gap_seconds": 1.0016155859921128,
+      "pool_reopens": true,
+      "reopen_without_http": true,
+      "repetition": 1,
+      "server_completed": true,
+      "successful_harvest_exceeds_recovery_budget": true
+    },
+    {
+      "budget_respected_with_tolerance": true,
+      "condition": "ordinary",
+      "configured_budget_seconds": 180,
+      "elapsed_seconds": 0.04519569291733205,
+      "error_type": null,
+      "feed_recorded_live": true,
+      "filtered_expected_candidate": true,
+      "harvest_succeeded": true,
+      "max_byte_gap_seconds": 0.0002665340434759855,
+      "pool_reopens": true,
+      "reopen_without_http": true,
+      "repetition": 2,
+      "server_completed": true,
+      "successful_harvest_exceeds_recovery_budget": false
+    },
+    {
+      "budget_respected_with_tolerance": false,
+      "condition": "drip",
+      "configured_budget_seconds": 180,
+      "elapsed_seconds": 190.14222064521164,
+      "error_type": null,
+      "feed_recorded_live": true,
+      "filtered_expected_candidate": true,
+      "harvest_succeeded": true,
+      "max_byte_gap_seconds": 1.000852771103382,
+      "pool_reopens": true,
+      "reopen_without_http": true,
+      "repetition": 2,
+      "server_completed": true,
+      "successful_harvest_exceeds_recovery_budget": true
+    }
+  ],
+  "ranking_eligible": false,
+  "repetitions": 2,
+  "schema": "caplab.reddit-recovery-development-receipt/v1",
+  "semantic_repetitions_match": true,
+  "source_files": 91,
+  "source_snapshots": {
+    "base": {
+      "commit": "1bfe5a656bcb2c663891afd5f980211a3ef144a8",
+      "executed": false,
+      "parent": "a3c0cec9ec49a319541cc3c00ec1b2c691eadf5e",
+      "tree": "9d63957463f4e4e6a8a5923fe1b5fdd80d7214b7"
+    },
+    "change": {
+      "commit": "544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f",
+      "executed": true,
+      "parent": "1bfe5a656bcb2c663891afd5f980211a3ef144a8",
+      "tree": "ffd0b76ba0043bb2644ebc2e6e0e6ef9de85ffd7"
+    }
+  },
+  "verifier_support": [
+    {
+      "path": "scripts/verify_reviewer_scheduler_witness.py",
+      "sha256": "dce2c550760c092b58ad902270bb897521d5345dafe56743e40f6a73a4ed195b"
+    },
+    {
+      "path": "scripts/verify_reviewer_claim_interpretation.py",
+      "sha256": "fe636a929585a9db324465f214bc518f64eec6cc6487093b05535a18558bb78e"
+    }
+  ]
+}
