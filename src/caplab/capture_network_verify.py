@@ -57,12 +57,13 @@ def _descriptors(value, count):
     return value
 
 
-def _routing_command(command, installation):
+def _routing_command(command, installation, *, parent_owned=False):
     _keys(
         command,
         "command environment borrowed_descriptors slirp_sha256 namespaces "
         "python_sha256 helper_source_sha256 network_policy_sha256 "
-        "policy_installation_sha256 timeout_seconds max_stream_bytes",
+        "policy_installation_sha256 timeout_seconds max_stream_bytes"
+        + (" namespace_profile network_identity_sha256" if parent_owned else ""),
         "routing command",
     )
     user, net, ready, exit_fd = _descriptors(command["borrowed_descriptors"], 4)
@@ -104,8 +105,10 @@ def _routing_command(command, installation):
     )
 
 
-def _policy_identity(installation, preflight):
+def _policy_identity(installation, preflight, *, parent_owned=False):
     fields = "peer_pid namespaces capabilities network_policy_sha256 tool_sha256 helper_source_sha256"
+    if parent_owned:
+        fields += " namespace_profile network_identity workload_credentials"
     _keys(preflight, "schema " + fields, "policy preflight")
     _keys(
         installation,
@@ -118,6 +121,39 @@ def _policy_identity(installation, preflight):
             preflight[name],
             installation[name],
             "policy preflight and installation disagree",
+        )
+    if parent_owned:
+        from caplab.capture_network_identity import verify_network_identity_observation
+
+        _require(
+            installation["namespace_profile"] == "parent-user/v1",
+            "policy ownership profile differs",
+        )
+        identity = verify_network_identity_observation(
+            installation["network_identity"],
+            expected_profile="parent-user/v1",
+            expected_peer_pid=installation["peer_pid"],
+        )
+        _same(
+            installation["workload_credentials"],
+            {
+                kind: [str(identity["mapping_observer"][kind])] * 4
+                for kind in ("uid", "gid")
+            },
+            "retained workload credentials differ",
+        )
+        _same(
+            installation["namespaces"],
+            {
+                "user": identity["network_owner_user_namespace"],
+                "net": identity["network_namespace"],
+            },
+            "policy namespaces differ from checked owner",
+        )
+        _same(
+            installation["capabilities"],
+            identity["capabilities"],
+            "policy workload privileges disagree",
         )
     identities = installation["namespaces"]
     _keys(identities, "user net", "routing namespaces")
@@ -295,6 +331,7 @@ def verify_capture_routing(
     expected_terminal_sha256: str,
     expected_ready_sha256: str,
     expected_peer_pid: int,
+    expected_namespace_profile: str = "workload-user/v1",
 ) -> dict:
     """Check retained consistency against externally supplied handoff anchors.
 
@@ -304,6 +341,17 @@ def verify_capture_routing(
     Missing, malformed or contradictory custody raises ValueError or OSError.
     """
     plan = _validated(plan, expected_policy_sha256)
+    _require(
+        type(expected_namespace_profile) is str
+        and expected_namespace_profile in ("workload-user/v1", "parent-user/v1"),
+        "unsupported expected ownership profile",
+    )
+    parent_owned = expected_namespace_profile == "parent-user/v1"
+    version = "2" if parent_owned else "1"
+    ownership_fields = (
+        " namespace_profile network_identity_sha256" if parent_owned else ""
+    )
+    ownership = {}
     _digest(expected_terminal_sha256)
     _digest(expected_ready_sha256)
     _require(
@@ -325,18 +373,19 @@ def verify_capture_routing(
         _keys(
             terminal,
             "schema command_sha256 ready_sha256 capture_sha256 normal_shutdown "
-            "body_completed tools_agree study_eligible",
+            "body_completed tools_agree study_eligible" + ownership_fields,
             "routing terminal",
         )
         _keys(
             ready,
             "schema command_sha256 network_policy_sha256 namespaces "
-            "ready_signal_observed ready_observed_monotonic_ns study_eligible",
+            "ready_signal_observed ready_observed_monotonic_ns study_eligible"
+            + ownership_fields,
             "routing readiness",
         )
         _require(
-            terminal.get("schema") == "caplab.capture-routing-terminal/v1"
-            and ready.get("schema") == "caplab.capture-routing-readiness/v1",
+            terminal.get("schema") == "caplab.capture-routing-terminal/v" + version
+            and ready.get("schema") == "caplab.capture-routing-readiness/v" + version,
             "unsupported routing lifecycle schema",
         )
         _require(
@@ -372,8 +421,10 @@ def verify_capture_routing(
         )
         preflight = reader.document(policy, "preflight.json")
         _require(
-            installation.get("schema") == "caplab.capture-network-installation/v1"
-            and preflight.get("schema") == "caplab.capture-network-preflight/v1",
+            installation.get("schema")
+            == "caplab.capture-network-installation/v" + version
+            and preflight.get("schema")
+            == "caplab.capture-network-preflight/v" + version,
             "unsupported routing policy schema",
         )
         _require(
@@ -385,8 +436,28 @@ def verify_capture_routing(
             installation.get("network_policy_sha256") == expected_policy_sha256,
             "installation policy differs from selection",
         )
-        _policy_identity(installation, preflight)
-        _routing_command(command, installation)
+        _policy_identity(installation, preflight, parent_owned=parent_owned)
+        _routing_command(command, installation, parent_owned=parent_owned)
+        if parent_owned:
+            identity_sha = _digest(command["network_identity_sha256"])
+            identity = reader.document(top, "identity.json", identity_sha)
+            _same(
+                identity,
+                installation["network_identity"],
+                "routing and policy ownership differ",
+            )
+            for record in (terminal, ready, command):
+                _require(
+                    record.get("namespace_profile") == expected_namespace_profile
+                    and record.get("network_identity_sha256") == identity_sha,
+                    "routing ownership anchors disagree",
+                )
+            ownership = {
+                "namespace_profile": expected_namespace_profile,
+                "network_identity_sha256": identity_sha,
+                "network_identity": identity,
+            }
+
         identities = installation.get("namespaces")
         _same(
             identities, ready.get("namespaces"), "routing readiness namespaces disagree"
@@ -488,7 +559,8 @@ def verify_capture_routing(
         )
         reader.unchanged()
     return {
-        "schema": "caplab.capture-routing-inspection/v1",
+        "schema": "caplab.capture-routing-inspection/v" + version,
+        **ownership,
         "status": "verified-observation",
         "network_policy_sha256": expected_policy_sha256,
         "terminal_sha256": expected_terminal_sha256,

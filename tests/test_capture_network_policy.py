@@ -85,6 +85,7 @@ def network_handoff(
     command_prefix=(),
     root_mapping=False,
     task_input=None,
+    parent_user_namespace=False,
 ):
     if installer is None:
         installer = network.install_capture_network_policy
@@ -116,6 +117,7 @@ def network_handoff(
         "CAP_NET_ADMIN",
         "--cap-add",
         "CAP_SETPCAP",
+        *(["--cap-add", "CAP_SETFCAP"] if parent_user_namespace else []),
         "--ro-bind",
         "/usr",
         "/usr",
@@ -142,6 +144,15 @@ def network_handoff(
     for mount in probe.MOUNTS:
         command += ["--size", str(64 * probe.MIB), "--tmpfs", mount]
     setup = "import os,subprocess,sys;subprocess.run(['/usr/sbin/ip','link','set','lo','up'],check=True);os.execv('/usr/bin/setpriv',['/usr/bin/setpriv','--bounding-set=-all','--inh-caps=-all','--ambient-caps=-all','--no-new-privs','/usr/bin/python3','-B','-c',sys.argv[1]])"
+    if parent_user_namespace:
+        from test_capture_network_identity import USER_NAMESPACE_SETUP
+
+        assert root_mapping
+        setup = "import subprocess;subprocess.run(['/usr/sbin/ip','link','set','lo','up'],check=True)\n"
+        setup += USER_NAMESPACE_SETUP.replace("mode=sys.argv[1]", "mode='parent'")
+        setup += (
+            "\nos.execv('/usr/bin/python3',['/usr/bin/python3','-B','-c',sys.argv[1]])"
+        )
     if existing_policy:
         setup = setup.replace(
             "os.execv(",
@@ -155,8 +166,7 @@ def network_handoff(
         "/control.sock",
         "--chdir",
         "/work",
-        "--remount-ro",
-        "/proc",
+        *([] if parent_user_namespace else ["--remount-ro", "/proc"]),
         "--remount-ro",
         "/",
         "--",
@@ -196,6 +206,7 @@ def network_handoff(
                     recorder,
                     usable_devices=True,
                     task_input=task_input,
+                    nested_userns=parent_user_namespace,
                     inspect_peer=lambda pid: installer(
                         plan,
                         expected_policy_sha256=plan["network_policy_sha256"],

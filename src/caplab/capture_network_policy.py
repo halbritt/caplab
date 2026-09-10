@@ -214,6 +214,7 @@ def install_capture_network_policy(
     peer_pid: int,
     output_dir: Path,
     quarantine_factory=None,
+    namespace_profile="workload-user/v1",
 ) -> dict:
     """Install before release of an authenticated, zero-capability peer.
 
@@ -223,6 +224,12 @@ def install_capture_network_policy(
     namespace. This does not attach transport or prove full native containment.
     """
     rebuilt = _validated(plan, expected_policy_sha256)
+    _require(
+        type(namespace_profile) is str
+        and namespace_profile in ("workload-user/v1", "parent-user/v1"),
+        "unsupported network ownership profile",
+    )
+    parent_owned = namespace_profile == "parent-user/v1"
     _require(type(peer_pid) is int and peer_pid > 0, "invalid network peer PID")
     _require(
         isinstance(output_dir, Path)
@@ -237,18 +244,32 @@ def install_capture_network_policy(
         proc = stack.enter_context(
             _open(None, Path(f"/proc/{peer_pid}"), directory=True)
         )
-        namespace_fds, identities = {}, {}
-        for kind in ("user", "net"):
-            fd = os.open("ns/" + kind, os.O_RDONLY | os.O_CLOEXEC, dir_fd=proc)
-            stack.callback(os.close, fd)
-            own = os.stat("/proc/self/ns/" + kind)
-            peer = os.fstat(fd)
-            _require(
-                (own.st_dev, own.st_ino) != (peer.st_dev, peer.st_ino),
-                "network policy cannot modify a supervisor namespace",
+        network_identity = None
+        if parent_owned:
+            from caplab.capture_network_identity import open_capture_network_namespaces
+
+            lease = stack.enter_context(
+                open_capture_network_namespaces(peer_pid, profile=namespace_profile)
             )
-            namespace_fds[kind] = fd
-            identities[kind] = {"device": peer.st_dev, "inode": peer.st_ino}
+            network_identity = lease.observation
+            namespace_fds = {"user": lease.user_fd, "net": lease.network_fd}
+            identities = {
+                "user": network_identity["network_owner_user_namespace"],
+                "net": network_identity["network_namespace"],
+            }
+        else:
+            namespace_fds, identities = {}, {}
+            for kind in ("user", "net"):
+                fd = os.open("ns/" + kind, os.O_RDONLY | os.O_CLOEXEC, dir_fd=proc)
+                stack.callback(os.close, fd)
+                own = os.stat("/proc/self/ns/" + kind)
+                peer = os.fstat(fd)
+                _require(
+                    (own.st_dev, own.st_ino) != (peer.st_dev, peer.st_ino),
+                    "network policy cannot modify a supervisor namespace",
+                )
+                namespace_fds[kind] = fd
+                identities[kind] = {"device": peer.st_dev, "inode": peer.st_ino}
         status_fd = stack.enter_context(_open(proc, "status"))
         raw = os.read(status_fd, 16385)
         _require(len(raw) <= 16384, "peer status exceeds allowance")
@@ -271,7 +292,9 @@ def install_capture_network_policy(
             for name in ("/usr/bin/python3", "/usr/sbin/nft")
         }
         preflight = {
-            "schema": "caplab.capture-network-preflight/v1",
+            "schema": "caplab.capture-network-preflight/v2"
+            if parent_owned
+            else "caplab.capture-network-preflight/v1",
             "peer_pid": peer_pid,
             "namespaces": identities,
             "capabilities": capabilities,
@@ -279,6 +302,28 @@ def install_capture_network_policy(
             "tool_sha256": tools,
             "helper_source_sha256": hashlib.sha256(_ENTER.encode("utf-8")).hexdigest(),
         }
+        if parent_owned:
+            credentials = {
+                kind: fields.get(field, "").split()
+                for kind, field in (("uid", "Uid"), ("gid", "Gid"))
+            }
+            _require(
+                credentials
+                == {
+                    kind: [str(network_identity["mapping_observer"][kind])] * 4
+                    for kind in ("uid", "gid")
+                },
+                "workload credentials changed before policy",
+            )
+            _require(
+                capabilities == network_identity["capabilities"],
+                "workload capabilities changed before policy",
+            )
+            preflight.update(
+                namespace_profile=namespace_profile,
+                network_identity=network_identity,
+                workload_credentials=credentials,
+            )
         check_capture_document(quarantine_factory, preflight)
         output_dir.mkdir(mode=0o700)
 
@@ -374,7 +419,9 @@ def install_capture_network_policy(
         )
         result = {
             **preflight,
-            "schema": "caplab.capture-network-installation/v1",
+            "schema": "caplab.capture-network-installation/v2"
+            if parent_owned
+            else "caplab.capture-network-installation/v1",
             "command_receipt_sha256": captured,
             "command_sha256": commands,
             "readback_sha256": hashlib.sha256(

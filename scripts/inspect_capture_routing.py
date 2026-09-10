@@ -17,6 +17,11 @@ def main() -> int:
     parser.add_argument("--expected-terminal-sha256", required=True)
     parser.add_argument("--expected-ready-sha256", required=True)
     parser.add_argument("--expected-peer-pid", required=True, type=int)
+    parser.add_argument(
+        "--namespace-profile",
+        choices=("workload-user/v1", "parent-user/v1"),
+        default="workload-user/v1",
+    )
     args = parser.parse_args()
     try:
         with _open(None, args.policy.parent, directory=True) as parent:
@@ -29,6 +34,7 @@ def main() -> int:
             expected_terminal_sha256=args.expected_terminal_sha256,
             expected_ready_sha256=args.expected_ready_sha256,
             expected_peer_pid=args.expected_peer_pid,
+            expected_namespace_profile=args.namespace_profile,
         )
     except (OSError, ValueError, RecursionError) as error:
         parser.error(str(error))

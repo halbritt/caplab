@@ -45,7 +45,7 @@ def namespaces():
     return {k: os.readlink("/proc/self/ns/" + k) for k in ("user", "net", "pid")}
 
 
-def outer(root, host, mode):
+def outer(root, host, mode, namespace_profile="workload-user/v1"):
     from caplab.capture_network_transport import capture_routed_network
 
     own = namespaces()
@@ -117,6 +117,7 @@ def outer(root, host, mode):
                             output_dir=output_dir,
                             timeout_seconds=2 if mode == "timeout" else 8,
                             quarantine_factory=quarantine_factory,
+                            namespace_profile=namespace_profile,
                         )
                     )
                     if mode == "body-error":
@@ -127,8 +128,14 @@ def outer(root, host, mode):
                     root,
                     installer=install,
                     plan=plan,
-                    producer=PRODUCER,
+                    producer=PRODUCER.replace(
+                        "print('workload-released'",
+                        "import subprocess;subprocess.run(['/usr/bin/bwrap','--unshare-user','--ro-bind','/','/','--proc','/proc','--','/usr/bin/true'],check=True,timeout=3)\nprint('workload-released'",
+                    )
+                    if namespace_profile == "parent-user/v1"
+                    else PRODUCER,
                     root_mapping=True,
+                    parent_user_namespace=namespace_profile == "parent-user/v1",
                     command_prefix=(
                         "/usr/bin/setpriv",
                         "--bounding-set=-all",
@@ -169,7 +176,7 @@ def outer(root, host, mode):
     (root / "result.json").write_text(json.dumps(result, indent=2) + "\n")
 
 
-def run_outer(root, mode="normal"):
+def run_outer(root, mode="normal", *, namespace_profile="workload-user/v1"):
     host = namespaces()
     (root / "etc").mkdir()
     (root / "etc/resolv.conf").write_text("nameserver 198.18.0.53\n")
@@ -236,6 +243,7 @@ def run_outer(root, mode="normal"):
         str(root),
         json.dumps(host),
         mode,
+        namespace_profile,
     ]
     (root / "command.json").write_text(
         json.dumps({"command": command, "environment": env}, indent=2) + "\n"
@@ -372,4 +380,4 @@ class CaptureNetworkTransportTests(unittest.TestCase):
 
 
 if __name__ == "__main__" and len(sys.argv) > 1 and sys.argv[1] == "outer":
-    outer(Path(sys.argv[2]), json.loads(sys.argv[3]), sys.argv[4])
+    outer(Path(sys.argv[2]), json.loads(sys.argv[3]), sys.argv[4], sys.argv[5])

@@ -62,6 +62,7 @@ def capture_routed_network(
     output_dir: Path,
     timeout_seconds: float,
     quarantine_factory=None,
+    namespace_profile="workload-user/v1",
 ):
     """Yield recorded readiness; require normal captured helper shutdown on exit.
 
@@ -71,6 +72,12 @@ def capture_routed_network(
     leaves policy and partial custody; the caller must destroy its workload.
     """
     rebuilt = _validated(plan, expected_policy_sha256)
+    _require(
+        type(namespace_profile) is str
+        and namespace_profile in ("workload-user/v1", "parent-user/v1"),
+        "unsupported network ownership profile",
+    )
+    parent_owned = namespace_profile == "parent-user/v1"
     _require(type(peer_pid) is int and peer_pid > 0, "invalid network peer PID")
     _require(
         type(timeout_seconds) in (int, float)
@@ -91,17 +98,31 @@ def capture_routed_network(
         proc = stack.enter_context(
             _open(None, Path(f"/proc/{peer_pid}"), directory=True)
         )
-        namespaces, identities = {}, {}
-        for kind in ("user", "net"):
-            fd = os.open("ns/" + kind, os.O_RDONLY | os.O_CLOEXEC, dir_fd=proc)
-            stack.callback(os.close, fd)
-            peer, own = os.fstat(fd), os.stat("/proc/self/ns/" + kind)
-            _require(
-                (peer.st_dev, peer.st_ino) != (own.st_dev, own.st_ino),
-                "transport cannot modify a supervisor namespace",
+        network_identity = None
+        if parent_owned:
+            from caplab.capture_network_identity import open_capture_network_namespaces
+
+            lease = stack.enter_context(
+                open_capture_network_namespaces(peer_pid, profile=namespace_profile)
             )
-            namespaces[kind] = fd
-            identities[kind] = {"device": peer.st_dev, "inode": peer.st_ino}
+            network_identity = lease.observation
+            namespaces = {"user": lease.user_fd, "net": lease.network_fd}
+            identities = {
+                "user": network_identity["network_owner_user_namespace"],
+                "net": network_identity["network_namespace"],
+            }
+        else:
+            namespaces, identities = {}, {}
+            for kind in ("user", "net"):
+                fd = os.open("ns/" + kind, os.O_RDONLY | os.O_CLOEXEC, dir_fd=proc)
+                stack.callback(os.close, fd)
+                peer, own = os.fstat(fd), os.stat("/proc/self/ns/" + kind)
+                _require(
+                    (peer.st_dev, peer.st_ino) != (own.st_dev, own.st_ino),
+                    "transport cannot modify a supervisor namespace",
+                )
+                namespaces[kind] = fd
+                identities[kind] = {"device": peer.st_dev, "inode": peer.st_ino}
         binary = Path("/usr/bin/slirp4netns")
         binary_sha256 = hashlib.sha256(binary.read_bytes()).hexdigest()
         python_sha256 = hashlib.sha256(
@@ -124,10 +145,21 @@ def capture_routed_network(
             peer_pid=peer_pid,
             output_dir=output_dir / "policy",
             quarantine_factory=quarantine_factory,
+            namespace_profile=namespace_profile,
         )
         _require(
             policy["namespaces"] == identities, "transport and policy namespaces differ"
         )
+        ownership = {}
+        if parent_owned:
+            _require(
+                policy.get("network_identity") == network_identity,
+                "policy and routing ownership observations differ",
+            )
+            ownership = {
+                "namespace_profile": namespace_profile,
+                "network_identity_sha256": seal("identity.json", network_identity),
+            }
         ready_read, ready_write = os.pipe2(os.O_CLOEXEC)
         stack.callback(os.close, ready_read)
         stack.callback(os.close, ready_write)
@@ -157,6 +189,7 @@ def capture_routed_network(
         command_sha256 = seal(
             "command.json",
             {
+                **ownership,
                 "command": command,
                 "environment": environment,
                 "borrowed_descriptors": list(descriptors),
@@ -205,7 +238,10 @@ def capture_routed_network(
                     break
             _require(not future.done(), "routing helper ended at readiness")
             ready = {
-                "schema": "caplab.capture-routing-readiness/v1",
+                "schema": "caplab.capture-routing-readiness/v2"
+                if parent_owned
+                else "caplab.capture-routing-readiness/v1",
+                **ownership,
                 "command_sha256": command_sha256,
                 "network_policy_sha256": expected_policy_sha256,
                 "namespaces": identities,
@@ -232,7 +268,10 @@ def capture_routed_network(
             seal(
                 "terminal.json",
                 {
-                    "schema": "caplab.capture-routing-terminal/v1",
+                    "schema": "caplab.capture-routing-terminal/v2"
+                    if parent_owned
+                    else "caplab.capture-routing-terminal/v1",
+                    **ownership,
                     "command_sha256": command_sha256,
                     "ready_sha256": ready_sha256,
                     "capture_sha256": hashlib.sha256(

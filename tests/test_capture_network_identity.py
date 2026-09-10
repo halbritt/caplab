@@ -13,7 +13,7 @@ import unittest
 from caplab.capture_network_identity import open_capture_network_namespaces
 from caplab.process_capture import capture_process
 
-SETUP = r"""
+USER_NAMESPACE_SETUP = r"""
 import ctypes,errno,json,os,socket,subprocess,sys
 from pathlib import Path
 mode=sys.argv[1]
@@ -43,6 +43,10 @@ if mode!='privileged':
     class Caps(ctypes.Structure):_fields_=[('effective',ctypes.c_uint32),('permitted',ctypes.c_uint32),('inheritable',ctypes.c_uint32)]
     header=Header(0x20080522,0);caps=(Caps*2)()
     if libc.capset(ctypes.byref(header),ctypes.byref(caps))!=0:raise OSError(ctypes.get_errno(),'capset')
+"""
+SETUP = (
+    USER_NAMESPACE_SETUP
+    + r"""
 report={'uid':os.getuid(),'gid':os.getgid()}
 if mode=='parent':
     command=['/usr/bin/bwrap','--unshare-user','--uid','0','--gid','0',
@@ -57,6 +61,7 @@ with socket.socket(socket.AF_UNIX,socket.SOCK_STREAM) as connection:
     connection.settimeout(5);connection.connect('/control.sock')
     connection.sendall(json.dumps(report).encode());assert connection.recv(1)==b'1'
 """
+)
 
 
 @contextmanager

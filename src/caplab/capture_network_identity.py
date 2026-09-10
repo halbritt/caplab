@@ -164,3 +164,116 @@ def open_capture_network_namespaces(peer_pid: int, *, profile: str):
             "study_eligible": False,
         }
         yield CaptureNetworkNamespaces(owner, network, observation)
+
+
+def verify_network_identity_observation(
+    observation, *, expected_profile, expected_peer_pid
+):
+    """Check retained relationships, not whether the kernel observation occurred.
+
+    Caller supplies the independently selected profile/PID and anchors the input.
+    Workload credential status is not in this v1 snapshot; collection must retain
+    and link it separately when its contract requires that evidence.
+    """
+    from copy import deepcopy
+
+    _require(
+        type(expected_profile) is str and expected_profile in _PROFILES,
+        "unsupported expected network ownership profile",
+    )
+    _require(
+        type(expected_peer_pid) is int and expected_peer_pid > 0,
+        "invalid expected network peer PID",
+    )
+    fields = set(
+        "schema profile peer_pid supervisor_namespaces workload_user_namespace "
+        "workload_user_parent_namespace network_namespace network_owner_user_namespace "
+        "mapping_observer uid_map gid_map capabilities study_eligible".split()
+    )
+    _require(
+        type(observation) is dict and set(observation) == fields,
+        "invalid retained network identity",
+    )
+    _require(
+        observation["schema"] == "caplab.capture-network-identity/v1"
+        and observation["profile"] == expected_profile
+        and type(observation["peer_pid"]) is int
+        and observation["peer_pid"] == expected_peer_pid
+        and observation["study_eligible"] is False,
+        "retained network identity selection differs",
+    )
+
+    def identity(value):
+        _require(
+            type(value) is dict
+            and set(value) == {"device", "inode"}
+            and all(type(n) is int and 0 < n < 2**64 for n in value.values()),
+            "invalid retained namespace identity",
+        )
+
+    own = observation["supervisor_namespaces"]
+    _require(
+        type(own) is dict and set(own) == {"user", "net"},
+        "invalid supervisor namespace identities",
+    )
+    for value in (
+        *own.values(),
+        observation["workload_user_namespace"],
+        observation["network_namespace"],
+        observation["network_owner_user_namespace"],
+    ):
+        identity(value)
+    owner, workload = (
+        observation["network_owner_user_namespace"],
+        observation["workload_user_namespace"],
+    )
+    _require(
+        owner != own["user"]
+        and workload != own["user"]
+        and observation["network_namespace"] != own["net"],
+        "retained network identity overlaps supervisor",
+    )
+    if expected_profile == "parent-user/v1":
+        identity(observation["workload_user_parent_namespace"])
+        _require(
+            owner != workload
+            and observation["workload_user_parent_namespace"] == owner,
+            "retained immediate parent ownership differs",
+        )
+    else:
+        _require(
+            owner == workload and observation["workload_user_parent_namespace"] is None,
+            "retained same-user ownership differs",
+        )
+    observer = observation["mapping_observer"]
+    _require(
+        type(observer) is dict
+        and set(observer) == {"uid", "gid"}
+        and all(type(n) is int and 0 <= n < 2**32 for n in observer.values()),
+        "invalid retained mapping observer",
+    )
+    for kind in ("uid", "gid"):
+        rows = observation[kind + "_map"]
+        _require(
+            type(rows) is list and 1 <= len(rows) <= 1024, "invalid retained ID mapping"
+        )
+        for row in rows:
+            _require(
+                type(row) is list
+                and len(row) == 3
+                and all(type(n) is int and 0 <= n < 2**32 for n in row)
+                and row[2] > 0
+                and row[0] + row[2] <= 2**32
+                and row[1] + row[2] <= 2**32,
+                "invalid retained ID mapping range",
+            )
+        if expected_profile == "parent-user/v1":
+            _require(
+                rows == [[1000, observer[kind], 1]], "retained non-root mapping differs"
+            )
+    _require(
+        observation["capabilities"]
+        == {**{key: "0000000000000000" for key in _CAPABILITIES}, "NoNewPrivs": "1"},
+        "retained workload privileges differ",
+    )
+    return deepcopy(observation)
