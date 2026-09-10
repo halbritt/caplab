@@ -166,7 +166,10 @@ def inspect_custody(root, report, *, expected_selections_sha256=None, expected_t
     else:
         from caplab.capture_network_verify import verify_capture_routing
         require(isinstance(expected_routing, dict) and set(expected_routing) ==
-                {'plan', 'terminal_sha256'}, 'invalid expected routing evidence')
+                {'plan', 'terminal_sha256'} | ({'namespace_profile'} if 'namespace_profile' in expected_routing else set()),
+                'invalid expected routing evidence')
+        require('namespace_profile' not in expected_routing or expected_routing['namespace_profile'] == 'parent-user/v1',
+                'invalid selected routing namespace profile')
         ready = network.get('routing')
         require(isinstance(ready, dict), 'routed handoff lacks readiness')
         ready_sha = hashlib.sha256((json.dumps(ready, sort_keys=True) + '\n').encode()).hexdigest()
@@ -174,7 +177,8 @@ def inspect_custody(root, report, *, expected_selections_sha256=None, expected_t
             plan=expected_routing['plan'],
             expected_policy_sha256=expected_routing['plan']['network_policy_sha256'],
             expected_terminal_sha256=expected_routing['terminal_sha256'],
-            expected_ready_sha256=ready_sha, expected_peer_pid=handoff['peer_pid'])
+            expected_ready_sha256=ready_sha, expected_peer_pid=handoff['peer_pid'],
+            expected_namespace_profile=expected_routing.get('namespace_profile', 'workload-user/v1'))
     before_reader = _Reader(300000)
     with _open(None, root / name, directory=True) as fd:
         attempt = before_reader.receipt(fd, 'attempt.json', anchors['attempt_sha256'], TASK_ATTEMPT_SCHEMAS)

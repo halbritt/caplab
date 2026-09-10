@@ -159,7 +159,8 @@ def enter_outer(root, unit, expected_preparation_sha256):
     )
     check_inputs(prepared)
     require(
-        prepared.get("launch_profile") == "codex-scripted-routed/v1",
+        prepared.get("launch_profile")
+        in ("codex-scripted-routed/v1", "codex-scripted-routed/v2"),
         "routed worker needs routed preparation",
     )
     member = Path("/proc/self/cgroup").read_text().strip()

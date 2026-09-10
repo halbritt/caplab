@@ -82,7 +82,10 @@ def inspect(output, *, expected_preparation_sha256, expected_result_sha256):
         "safe-observations.json",
     ]
     missing = [name for name in required if not (root / name).is_file()]
-    if preparation.get("launch_profile") == "codex-scripted-routed/v1":
+    if preparation.get("launch_profile") in (
+        "codex-scripted-routed/v1",
+        "codex-scripted-routed/v2",
+    ):
         missing += [
             name
             for name in (
@@ -115,7 +118,10 @@ def _inspect_complete(root, preparation, result):
         "service outcome differs from captured receipt",
     )
     selection = read(root / "selection.json")
-    routed = preparation.get("launch_profile") == "codex-scripted-routed/v1"
+    routed = preparation.get("launch_profile") in (
+        "codex-scripted-routed/v1",
+        "codex-scripted-routed/v2",
+    )
     require(
         selection.get("launch_profile") == preparation.get("launch_profile"),
         "selected launch profile differs from preparation",
@@ -361,6 +367,8 @@ def _inspect_complete(root, preparation, result):
             if entry["path"] == "safe-network/terminal.json"
         ]
         expected_routing = {"plan": policy, "terminal_sha256": terminal_pin["sha256"]}
+        if preparation["launch_profile"] == "codex-scripted-routed/v2":
+            expected_routing["namespace_profile"] = "parent-user/v1"
         outer = read(root / "outer-network.json")
         launch_outer = read(root / "outer-launch.json")
         from .routed_network import outer_command

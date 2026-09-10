@@ -163,7 +163,11 @@ def case(root, group, name, selected):
     context = {}
     refusals = []
     process = None
-    routed = selected.get("launch_profile") == "codex-scripted-routed/v1"
+    routed = selected.get("launch_profile") in (
+        "codex-scripted-routed/v1",
+        "codex-scripted-routed/v2",
+    )
+    parent_owned = selected.get("launch_profile") == "codex-scripted-routed/v2"
     capture_seconds = 75 if routed else 45
     fixture_stack, routing_stack = ExitStack(), ExitStack()
     fixed = None
@@ -219,6 +223,7 @@ def case(root, group, name, selected):
                     "case": name,
                     "echo_value": SECRET.decode(),
                     "directories": preparation["directories"],
+                    **({"namespace_profile": "parent-user/v1"} if parent_owned else {}),
                     **(
                         {
                             "external_fixture": {
@@ -306,6 +311,7 @@ def case(root, group, name, selected):
                     "0",
                     "--cap-add",
                     "CAP_SETPCAP",
+                    *(["--cap-add", "CAP_SETFCAP"] if parent_owned else []),
                 ]
                 marker = command.index("/usr/bin/bwrap")
                 command[marker:marker] = [
@@ -315,7 +321,9 @@ def case(root, group, name, selected):
                     "--ambient-caps=-all",
                     "--no-new-privs",
                 ]
-            for filename in ("bootstrap.py", "fixture.py", "payload.py", "guard.py"):
+            for filename in ("bootstrap.py", "fixture.py", "payload.py", "guard.py") + (
+                ("workload_identity.py",) if parent_owned else ()
+            ):
                 command += [
                     "--ro-bind",
                     str(CODE / filename),
@@ -396,6 +404,9 @@ def case(root, group, name, selected):
                             peer_pid=pid,
                             output_dir=root / (name + "-network"),
                             timeout_seconds=45,
+                            namespace_profile="parent-user/v1"
+                            if parent_owned
+                            else "workload-user/v1",
                             quarantine_factory=factory,
                         )
                     )
@@ -705,7 +716,10 @@ def inside(root, unit, expected_preparation_sha256):
         selected.get("launch_profile") == prepared.get("launch_profile"),
         "worker launch profile differs",
     )
-    if prepared.get("launch_profile") == "codex-scripted-routed/v1":
+    if prepared.get("launch_profile") in (
+        "codex-scripted-routed/v1",
+        "codex-scripted-routed/v2",
+    ):
         from .routed_network import configure_outer
 
         outer_launch = json.loads((root / "outer-launch.json").read_bytes())
@@ -809,7 +823,8 @@ def run(root, prepared, expected_preparation_sha256):
         "-B",
         str(SCRIPT),
         "routed-worker"
-        if prepared.get("launch_profile") == "codex-scripted-routed/v1"
+        if prepared.get("launch_profile")
+        in ("codex-scripted-routed/v1", "codex-scripted-routed/v2")
         else "worker",
         str(root),
         "--unit",

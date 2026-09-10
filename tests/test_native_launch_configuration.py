@@ -83,6 +83,18 @@ class NativeLaunchConfigurationTests(unittest.TestCase):
             with self.subTest(port=port),self.assertRaises(ValueError):
                 self.build(plan,'codex-scripted-routed/v1',port)
 
+    def test_parent_routed_profile_has_distinct_identity_with_same_fixture_request(self):
+        plan=self.plan()
+        old=self.build(plan,'codex-scripted-routed/v1',43129)
+        parent=self.build(plan,'codex-scripted-routed/v2',43129)
+        self.assertEqual(old['command'],parent['command'])
+        self.assertEqual(old['environment'],parent['environment'])
+        self.assertNotEqual(old['launch_configuration_sha256'],parent['launch_configuration_sha256'])
+        trace,evidence=self.trace_fixture(plan,parent)
+        report=inspect_native_launch_trace(POLICY,plan,parent,trace,evidence=evidence)
+        self.assertEqual(report['profile'],'codex-scripted-routed/v2')
+        self.assertFalse(report['study_eligible'])
+
     def test_profile_boundary_rejects_arbitrary_amendments_and_ambiguous_ports(self):
         plan=self.plan()
         for port in (None,True,False,0,-1,65536,1.0,'43129',[],{}):

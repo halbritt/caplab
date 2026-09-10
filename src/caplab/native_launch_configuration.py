@@ -44,7 +44,7 @@ def build_native_launch_configuration(
     if context.profile == 'canonical-native/v1':
         _require(context.fixture_port is None, 'canonical launch cannot have a fixture port')
         purpose = 'native-capture'
-    elif context.profile in ('codex-scripted-local/v1', 'codex-scripted-routed/v1'):
+    elif context.profile in ('codex-scripted-local/v1', 'codex-scripted-routed/v1', 'codex-scripted-routed/v2'):
         _require(plan['base_subject']['native_harness_id'] == 'codex', 'scripted local launch requires Codex')
         port = context.fixture_port
         _require(type(port) is int and 1 <= port <= 65535, 'invalid local fixture port')

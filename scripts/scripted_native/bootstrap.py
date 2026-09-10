@@ -20,6 +20,11 @@ resource.setrlimit(resource.RLIMIT_FSIZE, (8388608, 8388608))
 plan = json.loads(sys.argv[2])
 control_document = json.loads(Path("/fixture/input.json").read_bytes())
 external_fixture = control_document.get("external_fixture")
+namespace_profile = control_document.get("namespace_profile")
+if "namespace_profile" in control_document and (
+    namespace_profile != "parent-user/v1" or external_fixture is None
+):
+    raise ValueError("invalid native workload namespace selection")
 if external_fixture is not None:
     if (
         not isinstance(external_fixture, dict)
@@ -58,6 +63,11 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as control:
     observed = fcntl.ioctl(control.fileno(), 35091, request)
     flags = struct.unpack("16sH14x", observed)[1]
     fcntl.ioctl(control.fileno(), 35092, struct.pack("16sH14x", b"lo", flags | 1))
+if namespace_profile == "parent-user/v1":
+    sys.path.insert(0, "/fixture-code")
+    from workload_identity import enter_parent_owned_workload
+
+    enter_parent_owned_workload()
 libc = ctypes.CDLL(None, use_errno=True)
 
 

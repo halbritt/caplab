@@ -173,10 +173,15 @@ def prepare(
     launch_profile="codex-scripted-local/v1",
 ):
     require(
-        launch_profile in ("codex-scripted-local/v1", "codex-scripted-routed/v1"),
+        launch_profile
+        in (
+            "codex-scripted-local/v1",
+            "codex-scripted-routed/v1",
+            "codex-scripted-routed/v2",
+        ),
         "unsupported scripted launch profile",
     )
-    routed = launch_profile == "codex-scripted-routed/v1"
+    routed = launch_profile in ("codex-scripted-routed/v1", "codex-scripted-routed/v2")
     output, source, dependency = Path(output), Path(codex_root), Path(websockets_root)
     require(
         output.is_absolute()
@@ -263,7 +268,9 @@ def prepare(
         )
     if routed:
         prepared.update(
-            schema="caplab.scripted-native-preparation/v3",
+            schema="caplab.scripted-native-preparation/v4"
+            if launch_profile == "codex-scripted-routed/v2"
+            else "caplab.scripted-native-preparation/v3",
             launch_profile=launch_profile,
             task_input=selection,
         )
@@ -281,9 +288,9 @@ def read_preparation(output, *, expected_sha256):
         "resolved custody root required",
     )
     prepared = read_document(output / "preparation.json", expected_sha256)
-    routed = (
-        isinstance(prepared, dict)
-        and prepared.get("schema") == "caplab.scripted-native-preparation/v3"
+    routed = isinstance(prepared, dict) and prepared.get("schema") in (
+        "caplab.scripted-native-preparation/v3",
+        "caplab.scripted-native-preparation/v4",
     )
     require(
         isinstance(prepared, dict)
@@ -320,11 +327,18 @@ def read_preparation(output, *, expected_sha256):
             "caplab.scripted-native-preparation/v1",
             "caplab.scripted-native-preparation/v2",
             "caplab.scripted-native-preparation/v3",
+            "caplab.scripted-native-preparation/v4",
         ),
         "unsupported preparation",
     )
     require(
-        not routed or prepared["launch_profile"] == "codex-scripted-routed/v1",
+        not routed
+        or prepared["launch_profile"]
+        == (
+            "codex-scripted-routed/v2"
+            if prepared["schema"] == "caplab.scripted-native-preparation/v4"
+            else "codex-scripted-routed/v1"
+        ),
         "routed preparation profile differs",
     )
     require(

@@ -50,7 +50,7 @@ print('routed-fixture-replied',flush=True)
 """
 
 
-def outer(root, parent):
+def outer(root, parent, parent_owned=False):
     import hashlib
     import errno
     from scripted_native.lifecycle import check_task_selection
@@ -97,6 +97,9 @@ def outer(root, parent):
                         expected_policy_sha256=expected_policy_sha256,
                         output_dir=output_dir,
                         timeout_seconds=8,
+                        namespace_profile="parent-user/v1"
+                        if parent_owned
+                        else "workload-user/v1",
                         quarantine_factory=quarantine_factory,
                     )
                 )
@@ -105,9 +108,23 @@ def outer(root, parent):
                 root,
                 installer=install,
                 plan=plan,
-                producer=PRODUCER.replace("FIXTURE_PORT", str(fixed.port)),
+                producer=(
+                    PRODUCER.replace("FIXTURE_PORT", str(fixed.port))
+                    + (
+                        "\nimport subprocess;subprocess.run(['/usr/bin/bwrap','--unshare-user','--ro-bind','/','/','--proc','/proc','--','/usr/bin/true'],check=True,timeout=3)\n"
+                        if parent_owned
+                        else ""
+                    )
+                ),
                 task_input=selection,
                 root_mapping=True,
+                parent_user_namespace=parent_owned,
+                parent_setup_source=(
+                    (REPO / "scripts/scripted_native/workload_identity.py").read_text()
+                    + "\nenter_parent_owned_workload()"
+                    if parent_owned
+                    else None
+                ),
                 command_prefix=(
                     "/usr/bin/setpriv",
                     "--bounding-set=-all",
@@ -126,6 +143,9 @@ def outer(root, parent):
         expected_terminal_sha256=sha(network / "terminal.json"),
         expected_ready_sha256=sha(network / "ready.json"),
         expected_peer_pid=handoff["peer_pid"],
+        expected_namespace_profile="parent-user/v1"
+        if parent_owned
+        else "workload-user/v1",
     )
     assert (
         fixed.summary["requests"][0]["status"] == 200
@@ -186,6 +206,12 @@ class RoutedNativeNetworkTests(unittest.TestCase):
                 combine_routed_summary(native, fixture | {field: value})
 
     def test_production_outer_and_supervised_fixture_support_restricted_handoff(self):
+        self.run_fixture(False)
+
+    def test_parent_workload_setup_supports_nested_sandbox_and_routed_fixture(self):
+        self.run_fixture(True)
+
+    def run_fixture(self, parent_owned):
         with tempfile.TemporaryDirectory() as temporary:
             from caplab.task_input import prepare_task_input
 
@@ -223,6 +249,7 @@ class RoutedNativeNetworkTests(unittest.TestCase):
                     "outer",
                     str(root),
                     json.dumps(before),
+                    json.dumps(parent_owned),
                 ],
             )
             process = capture_process(
@@ -241,7 +268,17 @@ class RoutedNativeNetworkTests(unittest.TestCase):
             result = json.loads((root / "result.json").read_bytes())
             self.assertEqual(result["routing"]["status"], "verified-observation")
             self.assertFalse(result["routing"]["native_containment_verified"])
+            if parent_owned:
+                self.assertEqual(
+                    result["routing"]["namespace_profile"], "parent-user/v1"
+                )
+                identity = result["routing"]["network_identity"]
+                self.assertEqual(
+                    identity["workload_user_parent_namespace"],
+                    identity["network_owner_user_namespace"],
+                )
+                self.assertEqual(identity["uid_map"][0][0], 1000)
 
 
 if __name__ == "__main__" and len(sys.argv) > 1 and sys.argv[1] == "outer":
-    outer(Path(sys.argv[2]), json.loads(sys.argv[3]))
+    outer(Path(sys.argv[2]), json.loads(sys.argv[3]), json.loads(sys.argv[4]))

@@ -86,6 +86,7 @@ def network_handoff(
     root_mapping=False,
     task_input=None,
     parent_user_namespace=False,
+    parent_setup_source=None,
 ):
     if installer is None:
         installer = network.install_capture_network_policy
@@ -149,7 +150,15 @@ def network_handoff(
 
         assert root_mapping
         setup = "import subprocess;subprocess.run(['/usr/sbin/ip','link','set','lo','up'],check=True)\n"
-        setup += USER_NAMESPACE_SETUP.replace("mode=sys.argv[1]", "mode='parent'")
+        source = USER_NAMESPACE_SETUP
+        if parent_setup_source is not None:
+            source = (
+                source[: source.index("if mode in (")]
+                + parent_setup_source
+                + "\n"
+                + source[source.index("libc=ctypes.CDLL") :]
+            )
+        setup += source.replace("mode=sys.argv[1]", "mode='parent'")
         setup += (
             "\nos.execv('/usr/bin/python3',['/usr/bin/python3','-B','-c',sys.argv[1]])"
         )

@@ -22,7 +22,11 @@ def main(argv=None):
     preparation.add_argument(
         "--launch-profile",
         default="codex-scripted-local/v1",
-        choices=("codex-scripted-local/v1", "codex-scripted-routed/v1"),
+        choices=(
+            "codex-scripted-local/v1",
+            "codex-scripted-routed/v1",
+            "codex-scripted-routed/v2",
+        ),
     )
     execution = commands.add_parser(
         "execute", help="consume one separately authorized attempt"

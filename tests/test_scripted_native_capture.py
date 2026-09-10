@@ -60,6 +60,38 @@ class ScriptedCapturePreparationTests(unittest.TestCase):
                     ).hexdigest(),
                 )
 
+    def test_parent_routed_preparation_cannot_be_relabelled_as_prior_profile(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            output = root / "capture"
+            receipt = prepare(
+                output,
+                codex_root=self.installation(root),
+                websockets_root=self.dependency(root),
+                launch_profile="codex-scripted-routed/v2",
+            )
+            prepared = read_preparation(
+                output, expected_sha256=receipt["preparation_sha256"]
+            )
+            self.assertEqual(
+                prepared["schema"], "caplab.scripted-native-preparation/v4"
+            )
+            self.assertEqual(prepared["launch_profile"], "codex-scripted-routed/v2")
+            self.assertEqual(prepared["limits"]["capture_seconds"], 75)
+            self.assertFalse((output / "consumption.json").exists())
+            for key, value in (
+                ("schema", "caplab.scripted-native-preparation/v3"),
+                ("launch_profile", "codex-scripted-routed/v1"),
+                ("launch_profile", "codex-scripted-local/v1"),
+            ):
+                with self.subTest(key=key, value=value):
+                    raw = json.dumps(prepared | {key: value}).encode()
+                    (output / "preparation.json").write_bytes(raw)
+                    with self.assertRaises(ValueError):
+                        read_preparation(
+                            output, expected_sha256=hashlib.sha256(raw).hexdigest()
+                        )
+
     def test_unbounded_task_metadata_is_refused_before_opening_custody(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
