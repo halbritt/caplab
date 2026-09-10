@@ -488,6 +488,18 @@ def _inspect_complete(root, preparation, result):
                 raise AssertionError()
             artifacts[field] = raw
         document = json.loads(artifacts["request_artifact"])
+        identity = helper.request_identity(
+            document,
+            {
+                "model": plan["base_subject"]["model_id"],
+                "effort": plan["base_subject"]["effort"],
+                "summary": "detailed",
+            },
+        )
+        require(
+            request.get("request_identity") == identity,
+            "request identity observation differs",
+        )
         events = [
             json.loads(line) for line in artifacts["events_artifact"].splitlines()
         ]
@@ -651,6 +663,7 @@ def _inspect_complete(root, preparation, result):
         "tool_pairs": pairs,
         "strict_final_link": strict,
         "raw_protocol_verified": True,
+        "request_configuration_verified": True,
         "exact_task_bytes_agree": True,
         "pause_milliseconds": (
             pause["thawed_monotonic_ns"] - pause["freeze_requested_monotonic_ns"]

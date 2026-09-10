@@ -182,6 +182,11 @@ async def fixture_worker():
     try:
         async with fixture_module.Fixture(
             scripted_response,
+            expected_identity={
+                "model": plan["base_subject"]["model_id"],
+                "effort": plan["base_subject"]["effort"],
+                "summary": "detailed",
+            },
             capture_dir=Path("/episode/fixture-requests"),
             observation_socket="/child-observation.sock",
         ) as fixed:

@@ -22,7 +22,17 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "scripts"))
 from scripted_native import payload, fixture
 
+IDENTITY = {"model": "gpt-5.6-terra", "effort": "max", "summary": "detailed"}
+REQUEST_IDENTITY = {
+    "model": IDENTITY["model"],
+    "reasoning": {"effort": IDENTITY["effort"], "summary": IDENTITY["summary"]},
+}
+from functools import partial
+
+fixed_fixture = partial(fixture.Fixture, expected_identity=IDENTITY)
+
 TOOLS = {
+    **REQUEST_IDENTITY,
     "type": "response.create",
     "input": [
         {
@@ -44,6 +54,7 @@ TOOLS = {
     ],
 }
 RESULT = {
+    **REQUEST_IDENTITY,
     "type": "response.create",
     "previous_response_id": "resp_caplab_1",
     "input": [
@@ -67,8 +78,127 @@ async def response(ws, document):
 
 
 class Controls(unittest.IsolatedAsyncioTestCase):
+    async def test_identity_is_required_on_warmup_and_every_generated_turn(self):
+        from copy import deepcopy
+
+        mutations = [
+            {"model": None},
+            {"model": 1},
+            {"model": "other"},
+            {"reasoning": None},
+            {"reasoning": []},
+            {"reasoning": "max"},
+            {"reasoning": {}},
+            {"reasoning": {"effort": "low", "summary": "detailed"}},
+            {"reasoning": {"effort": "max"}},
+            {"reasoning": {"effort": "max", "summary": False}},
+            {"reasoning": {"effort": "max", "summary": "auto"}},
+        ]
+        for stage in ("first", "warmup", "after-warmup", "tool-result"):
+            for mutation in mutations:
+                with self.subTest(stage=stage, mutation=mutation):
+                    async with fixed_fixture(payload.scripted_response) as server:
+                        async with connect(
+                            server.uri, compression=None, proxy=None
+                        ) as ws:
+                            document = deepcopy(
+                                RESULT if stage == "tool-result" else TOOLS
+                            )
+                            if stage == "warmup":
+                                document["generate"] = False
+                            elif stage == "after-warmup":
+                                warmup = await response(ws, TOOLS | {"generate": False})
+                                document["previous_response_id"] = warmup[-1][
+                                    "response"
+                                ]["id"]
+                                document["input"] = []
+                            elif stage == "tool-result":
+                                await response(ws, TOOLS)
+                            document.update(mutation)
+                            # Null and absent are both required-field failures.
+                            for field in ("model", "reasoning"):
+                                if document.get(field) is None:
+                                    document.pop(field, None)
+                            before = server.generated
+                            await ws.send(json.dumps(document))
+                            with self.assertRaises(ConnectionClosed):
+                                await asyncio.wait_for(ws.recv(), 2)
+                        await asyncio.wait_for(server.done.wait(), 2)
+                        self.assertEqual(server.generated, before)
+                        self.assertTrue(server.stop_required)
+                        self.assertIn("request ", server.errors[0])
+                        self.assertNotIn("events_artifact", server.messages[-1])
+                        self.assertNotIn("written_monotonic_ns", server.messages[-1])
+
+    async def test_identity_refusal_precedes_the_child_observation_handshake(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            async with fixed_fixture(
+                payload.scripted_response,
+                observation_socket=str(Path(temporary) / "absent.sock"),
+            ) as server:
+                async with connect(server.uri, compression=None, proxy=None) as ws:
+                    await ws.send(
+                        json.dumps(TOOLS | {"model": "other", "generate": False})
+                    )
+                    with self.assertRaises(ConnectionClosed):
+                        await asyncio.wait_for(ws.recv(), 2)
+                await asyncio.wait_for(server.done.wait(), 2)
+                self.assertIn("request model differs", server.errors[0])
+                self.assertNotIn(
+                    "child_observation_requested_monotonic_ns", server.messages[0]
+                )
+
+    async def test_expected_identity_is_copied_and_additional_reasoning_is_retained(
+        self,
+    ):
+        expected = dict(IDENTITY)
+        document = TOOLS | {
+            "reasoning": REQUEST_IDENTITY["reasoning"] | {"context": "all_turns"}
+        }
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "requests"
+            async with fixture.Fixture(
+                payload.scripted_response, expected_identity=expected, capture_dir=root
+            ) as server:
+                expected["model"] = "changed after construction"
+                async with connect(server.uri, compression=None, proxy=None) as ws:
+                    await response(ws, document)
+                    await response(ws, RESULT)
+                await asyncio.wait_for(server.done.wait(), 2)
+                self.assertEqual(server.errors, [])
+                self.assertEqual(server.messages[0]["request_identity"], IDENTITY)
+                self.assertEqual(
+                    json.loads((root / "0.request.json").read_bytes()), document
+                )
+        for invalid in (
+            {},
+            IDENTITY | {"extra": "x"},
+            IDENTITY | {"effort": False},
+            IDENTITY | {"model": ""},
+            IDENTITY | {"summary": "x" * 257},
+        ):
+            with self.subTest(invalid=invalid), self.assertRaises(ValueError):
+                fixture.Fixture(payload.scripted_response, expected_identity=invalid)
+
+    async def test_off_pin_request_is_retained_without_a_scripted_response(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "requests"
+            async with fixed_fixture(
+                payload.scripted_response, capture_dir=root
+            ) as server:
+                async with connect(server.uri, compression=None, proxy=None) as ws:
+                    raw = json.dumps(TOOLS | {"model": "different-model"})
+                    await ws.send(raw)
+                    with self.assertRaises(ConnectionClosed):
+                        await asyncio.wait_for(ws.recv(), 2)
+                await asyncio.wait_for(server.done.wait(), 2)
+                self.assertEqual(server.generated, 0)
+                self.assertIn("request model differs", server.errors[0])
+                self.assertEqual((root / "0.request.json").read_bytes(), raw.encode())
+                self.assertFalse((root / "0.events.jsonl").exists())
+
     async def test_fixed_exchange_preserves_scripted_events_and_closes(self):
-        async with fixture.Fixture(payload.scripted_response) as server:
+        async with fixed_fixture(payload.scripted_response) as server:
             async with connect(server.uri, compression=None, proxy=None) as ws:
                 first = await response(ws, TOOLS)
                 second = await response(ws, RESULT)
@@ -98,13 +228,14 @@ class Controls(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(server.closed)
 
     async def test_warmup_retains_context_and_requires_its_response_id(self):
-        async with fixture.Fixture(payload.scripted_response) as server:
+        async with fixed_fixture(payload.scripted_response) as server:
             async with connect(server.uri, compression=None, proxy=None) as ws:
                 warmup = await response(ws, TOOLS | {"generate": False})
                 self.assertEqual(warmup[-1]["response"]["output"], [])
                 first = await response(
                     ws,
                     {
+                        **REQUEST_IDENTITY,
                         "type": "response.create",
                         "previous_response_id": warmup[-1]["response"]["id"],
                         "input": [],
@@ -135,7 +266,7 @@ class Controls(unittest.IsolatedAsyncioTestCase):
         ]
         for raw in cases:
             with self.subTest(raw_type=type(raw).__name__, bytes=len(raw)):
-                async with fixture.Fixture(payload.scripted_response) as server:
+                async with fixed_fixture(payload.scripted_response) as server:
                     async with connect(server.uri, compression=None, proxy=None) as ws:
                         await ws.send(raw)
                         with self.assertRaises(ConnectionClosed):
@@ -145,7 +276,7 @@ class Controls(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(server.generated, 0)
 
     async def test_rejects_second_connection_before_message_processing(self):
-        async with fixture.Fixture(payload.scripted_response) as server:
+        async with fixed_fixture(payload.scripted_response) as server:
             async with connect(server.uri, compression=None, proxy=None) as first:
                 with self.assertRaises(InvalidStatus) as caught:
                     async with connect(server.uri, compression=None, proxy=None):
@@ -184,7 +315,7 @@ class Controls(unittest.IsolatedAsyncioTestCase):
         ]
         for document in cases:
             with self.subTest(document=document):
-                async with fixture.Fixture(payload.scripted_response) as server:
+                async with fixed_fixture(payload.scripted_response) as server:
                     async with connect(server.uri, compression=None, proxy=None) as ws:
                         await response(ws, TOOLS)
                         await ws.send(json.dumps(document))
@@ -193,7 +324,7 @@ class Controls(unittest.IsolatedAsyncioTestCase):
                     await asyncio.wait_for(server.done.wait(), 2)
                     self.assertEqual(server.generated, 1)
                     self.assertTrue(server.errors)
-        async with fixture.Fixture(payload.scripted_response) as server:
+        async with fixed_fixture(payload.scripted_response) as server:
             async with connect(server.uri, compression=None, proxy=None) as ws:
                 await response(ws, TOOLS)
                 await response(ws, RESULT)
@@ -207,7 +338,7 @@ class Controls(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(server.errors)
 
     async def test_deadline_and_early_close_leave_no_success(self):
-        async with fixture.Fixture(
+        async with fixed_fixture(
             payload.scripted_response, deadline_seconds=0.05
         ) as server:
             async with connect(server.uri, compression=None, proxy=None) as ws:
@@ -216,7 +347,7 @@ class Controls(unittest.IsolatedAsyncioTestCase):
             await asyncio.wait_for(server.done.wait(), 2)
             self.assertTrue(any("TimeoutError" in e for e in server.errors))
             self.assertEqual(server.generated, 0)
-        async with fixture.Fixture(payload.scripted_response) as server:
+        async with fixed_fixture(payload.scripted_response) as server:
             async with connect(server.uri, compression=None, proxy=None):
                 pass
             await asyncio.wait_for(server.done.wait(), 2)
@@ -224,7 +355,7 @@ class Controls(unittest.IsolatedAsyncioTestCase):
 
     async def test_http_routes_and_active_connection_cleanup(self):
         before = set(os.listdir("/proc/self/fd"))
-        async with fixture.Fixture(payload.scripted_response) as server:
+        async with fixed_fixture(payload.scripted_response) as server:
             port = int(server.uri.split(":")[2].split("/")[0])
             reader, writer = await asyncio.open_connection("127.0.0.1", port)
             writer.write(
@@ -254,7 +385,7 @@ class Controls(unittest.IsolatedAsyncioTestCase):
             await asyncio.open_connection("127.0.0.1", port)
 
     async def test_warmup_cannot_be_repeated(self):
-        async with fixture.Fixture(payload.scripted_response) as server:
+        async with fixed_fixture(payload.scripted_response) as server:
             async with connect(server.uri, compression=None, proxy=None) as ws:
                 await response(ws, TOOLS | {"generate": False})
                 await ws.send(
@@ -275,7 +406,7 @@ class Controls(unittest.IsolatedAsyncioTestCase):
     async def test_raw_exchange_is_retained_before_response(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp) / "capture"
-            async with fixture.Fixture(
+            async with fixed_fixture(
                 payload.scripted_response, capture_dir=root
             ) as server:
                 async with connect(server.uri, compression=None, proxy=None) as ws:
@@ -299,7 +430,7 @@ class Controls(unittest.IsolatedAsyncioTestCase):
     async def test_request_retention_failure_prevents_response(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp) / "capture"
-            async with fixture.Fixture(
+            async with fixed_fixture(
                 payload.scripted_response, capture_dir=root
             ) as server:
                 (root / "0.request.json").write_bytes(b"preserve")
@@ -313,7 +444,7 @@ class Controls(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual((root / "0.request.json").read_bytes(), b"preserve")
 
     async def test_ancillary_post_refusal_is_observed_and_ws_still_works(self):
-        async with fixture.Fixture(payload.scripted_response) as server:
+        async with fixed_fixture(payload.scripted_response) as server:
             port = int(server.uri.split(":")[2].split("/")[0])
             reader, writer = await asyncio.open_connection("127.0.0.1", port)
             writer.write(
@@ -344,7 +475,7 @@ class Controls(unittest.IsolatedAsyncioTestCase):
             b"Content-Length: 0\r\nX-Long: " + b"x" * 16384,
         ]
         for headers in cases:
-            async with fixture.Fixture(payload.scripted_response) as server:
+            async with fixed_fixture(payload.scripted_response) as server:
                 port = int(server.uri.split(":")[2].split("/")[0])
                 reader, writer = await asyncio.open_connection("127.0.0.1", port)
                 writer.write(b"POST /other HTTP/1.1\r\n" + headers + b"\r\n\r\n")
@@ -355,7 +486,7 @@ class Controls(unittest.IsolatedAsyncioTestCase):
                 self.assertTrue(raw.startswith(b"HTTP/1.1 400 Bad Request"), raw)
                 self.assertTrue(server.errors)
                 self.assertEqual(server.generated, 0)
-        async with fixture.Fixture(payload.scripted_response) as server:
+        async with fixed_fixture(payload.scripted_response) as server:
             port = int(server.uri.split(":")[2].split("/")[0])
             reader, writer = await asyncio.open_connection("127.0.0.1", port)
             for part in [
@@ -374,7 +505,7 @@ class Controls(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(server.http_requests[0]["body_bytes"], 2)
 
     async def test_incomplete_post_and_event_retention_fail_closed(self):
-        async with fixture.Fixture(payload.scripted_response) as server:
+        async with fixed_fixture(payload.scripted_response) as server:
             port = int(server.uri.split(":")[2].split("/")[0])
             reader, writer = await asyncio.open_connection("127.0.0.1", port)
             writer.write(b"POST /other HTTP/1.1\r\nContent-Length: 2\r\n\r\n{")
@@ -385,7 +516,7 @@ class Controls(unittest.IsolatedAsyncioTestCase):
             self.assertIn("incomplete HTTP POST", server.errors)
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp) / "capture"
-            async with fixture.Fixture(
+            async with fixed_fixture(
                 payload.scripted_response, capture_dir=root
             ) as server:
                 (root / "0.events.jsonl").write_bytes(b"preserve")
@@ -401,7 +532,7 @@ class Controls(unittest.IsolatedAsyncioTestCase):
 
 class ShutdownControls(unittest.IsolatedAsyncioTestCase):
     async def test_abort_after_complete_responses_preserves_error_without_stop(self):
-        async with fixture.Fixture(payload.scripted_response) as server:
+        async with fixed_fixture(payload.scripted_response) as server:
             ws = await connect(server.uri, compression=None, proxy=None)
             await response(ws, TOOLS)
             await response(ws, RESULT)
@@ -468,6 +599,12 @@ class ShutdownControls(unittest.IsolatedAsyncioTestCase):
             )
             namespace = {
                 "sys": sys,
+                "plan": {
+                    "base_subject": {
+                        "model_id": IDENTITY["model"],
+                        "effort": IDENTITY["effort"],
+                    }
+                },
                 "threading": threading,
                 "Path": Path,
                 "scripted_response": payload.scripted_response,
@@ -515,7 +652,7 @@ class ShutdownControls(unittest.IsolatedAsyncioTestCase):
     async def test_early_abort_and_non_normal_close_codes_still_stop(self):
         for generated in [0, 1, 2]:
             with self.subTest(generated=generated):
-                async with fixture.Fixture(payload.scripted_response) as server:
+                async with fixed_fixture(payload.scripted_response) as server:
                     ws = await connect(server.uri, compression=None, proxy=None)
                     if generated >= 1:
                         await response(ws, TOOLS)
@@ -531,7 +668,7 @@ class ShutdownControls(unittest.IsolatedAsyncioTestCase):
     async def test_post_completion_malformed_input_still_stops(self):
         for raw_frame in [False, True]:
             with self.subTest(raw_frame=raw_frame):
-                async with fixture.Fixture(payload.scripted_response) as server:
+                async with fixed_fixture(payload.scripted_response) as server:
                     ws = await connect(server.uri, compression=None, proxy=None)
                     await response(ws, TOOLS)
                     await response(ws, RESULT)
@@ -549,7 +686,7 @@ class ShutdownControls(unittest.IsolatedAsyncioTestCase):
     async def test_final_retention_failure_and_open_socket_deadline_still_stop(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp) / "capture"
-            async with fixture.Fixture(
+            async with fixed_fixture(
                 payload.scripted_response, capture_dir=root
             ) as server:
                 ws = await connect(server.uri, compression=None, proxy=None)
@@ -565,7 +702,7 @@ class ShutdownControls(unittest.IsolatedAsyncioTestCase):
                 self.assertTrue(server.stop_required)
                 self.assertEqual((root / "1.events.jsonl").read_bytes(), b"preserve")
                 await ws.close()
-        async with fixture.Fixture(
+        async with fixed_fixture(
             payload.scripted_response, deadline_seconds=0.1
         ) as server:
             ws = await connect(server.uri, compression=None, proxy=None)

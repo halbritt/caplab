@@ -220,9 +220,9 @@ def worker(unit, root):
  def request():
   try:
    with socket.socket(socket.AF_UNIX,socket.SOCK_SEQPACKET) as observer:
-    observer.settimeout(5);observer.connect('/observe.sock');observer.sendall(RAW)
-    try:ack=observer.recv(1)
-    except ConnectionResetError:ack=b''
+    observer.settimeout(5);observer.connect('/observe.sock');
+    try:observer.sendall(RAW);ack=observer.recv(1)
+    except (BrokenPipeError,ConnectionResetError):ack=b''
     assert ack==ACK
   except Exception as error:errors.append(repr(error))
  thread=threading.Thread(target=request);thread.start()
@@ -230,6 +230,13 @@ def worker(unit, root):
             hook = hook.replace("RAW", repr(raw)).replace(
                 "ack==ACK", "ack==" + repr(b"1" if mode == "success" else b"")
             )
+            if mode == "wrong_peer":
+                # Make rejection before the sender writes observable, not schedule-dependent.
+                hook = hook.replace(
+                    "observer.connect('/observe.sock');",
+                    "observer.connect('/observe.sock');import select;"
+                    "assert select.select([observer],[],[],2)[0];",
+                )
             LAUNCHER = ORIGINAL_LAUNCHER.replace(
                 "channel.recv(1)\n for child", hook + "\n for child", 1
             )
@@ -362,7 +369,19 @@ class ScriptedChildHandshakeTests(unittest.TestCase):
                 completed = subprocess.run(
                     command, env=environment, capture_output=True, timeout=55
                 )
-                self.assertEqual(completed.returncode, 0, completed.stderr.decode())
+                diagnostics = completed.stderr.decode()
+                if completed.returncode:
+                    for case in (
+                        "success",
+                        "wrong_peer",
+                        "malformed",
+                        "wrong_hash",
+                        "seal_failure",
+                    ):
+                        path = root / case / "launcher.stderr"
+                        if path.is_file():
+                            diagnostics += "\n" + case + ": " + path.read_text()[:65536]
+                self.assertEqual(completed.returncode, 0, diagnostics)
                 result = json.loads(completed.stdout)
                 self.assertEqual(
                     [x["mode"] for x in result["reports"]],

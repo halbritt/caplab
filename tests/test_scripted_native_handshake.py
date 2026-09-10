@@ -18,7 +18,7 @@ class HandshakeTests(unittest.IsolatedAsyncioTestCase):
                 listener.bind(path)
                 listener.listen(1)
                 listener.settimeout(2)
-                async with fixture.Fixture(
+                async with existing.fixed_fixture(
                     payload.scripted_response,
                     observation_socket=path,
                     deadline_seconds=deadline,

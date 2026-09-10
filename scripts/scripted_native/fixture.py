@@ -10,6 +10,12 @@ import time
 from websockets.asyncio.server import serve, ServerConnection
 from websockets.exceptions import ConnectionClosedOK, ConnectionClosedError
 
+# The supervisor imports a package; the capsule mounts these files individually.
+if __package__:
+    from .payload import identity_expectation, request_identity
+else:
+    from payload import identity_expectation, request_identity
+
 MAX_MESSAGE = 1048576
 
 
@@ -155,6 +161,7 @@ class Fixture:
         self,
         response_builder,
         *,
+        expected_identity,
         deadline_seconds=30,
         capture_dir=None,
         observation_socket=None,
@@ -162,6 +169,7 @@ class Fixture:
         if type(deadline_seconds) not in (int, float) or not 0 < deadline_seconds <= 30:
             raise ValueError("invalid deadline")
         self.observation_socket = observation_socket
+        self.expected_identity = identity_expectation(expected_identity)
         self.response_builder = response_builder
         self.deadline_seconds = deadline_seconds
         self.generated = 0
@@ -319,6 +327,9 @@ class Fixture:
                         raise ValueError("generated response limit")
                     if document.get("previous_response_id") != self.last_id:
                         raise ValueError("response lineage differs")
+                    self.messages[-1]["request_identity"] = request_identity(
+                        document, self.expected_identity
+                    )
                     if number == 0 and self.observation_socket is not None:
                         timing = self.messages[-1]
                         timing["child_observation_requested_monotonic_ns"] = (

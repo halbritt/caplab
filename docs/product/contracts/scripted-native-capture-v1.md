@@ -88,6 +88,21 @@ requests one frozen kernel child observation. The supervisor thaws before
 sealing and acknowledging. The fixture sends no scripted response before that
 acknowledgement and still enforces its original deadline afterward.
 
+Every request, including warmup and continuation, must explicitly name the
+selected model, reasoning effort and `detailed` reasoning summary. The endpoint
+retains raw request bytes before validation and refuses missing, malformed or
+conflicting fields before requesting a child observation or constructing any
+response for that request. Earlier completed responses remain retained. The
+expected fields are copied from the caller's selected configuration at fixture
+construction. Other reasoning metadata remains in raw custody; matching the
+three selected fields does not establish complete configuration or provider
+authentication. Inspection independently compares the raw fields with the
+prepared subject and checks the recorded request observation.
+Earlier captures that lack that observation retain their original pinned
+inspector and original claims. The stricter current inspector does not certify
+that this gate ran in an older capture; a later raw-field consistency check is
+a separate observation with its own provenance.
+
 Fixed limits are native/capture/unit/outer 30/45/90/100 seconds; workload/unit
 memory 256/512 MiB, zero swap, 128/192 tasks; stream 300,000 bytes; task
 1 MiB/1,000 entries; native collection 8 MiB/1,000; retained mounts

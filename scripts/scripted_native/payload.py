@@ -1,5 +1,37 @@
 import hashlib, json
 
+
+def identity_expectation(expected):
+    """Copy the three explicitly selected request fields; do not infer defaults."""
+    if (
+        not isinstance(expected, dict)
+        or set(expected) != {"model", "effort", "summary"}
+        or not all(isinstance(v, str) and 0 < len(v) <= 256 for v in expected.values())
+    ):
+        raise ValueError("invalid request identity expectation")
+    return dict(expected)
+
+
+def request_identity(document, expected):
+    """Compare native request metadata, without authenticating a served model."""
+    expected = identity_expectation(expected)
+    if not isinstance(document, dict):
+        raise ValueError("invalid request document")
+    if document.get("model") != expected["model"]:
+        raise ValueError("request model differs")
+    reasoning = document.get("reasoning")
+    if not isinstance(reasoning, dict):
+        raise ValueError("request reasoning is missing or malformed")
+    for field in ("effort", "summary"):
+        if reasoning.get(field) != expected[field]:
+            raise ValueError("request reasoning " + field + " differs")
+    return {
+        "model": document["model"],
+        "effort": reasoning["effort"],
+        "summary": reasoning["summary"],
+    }
+
+
 WITNESS = "CAPLAB café tool witness\n"
 FINAL = "CAPLAB SCRIPTED TOOL DIAGNOSTIC COMPLETE"
 TOOL_COMMAND = "python3 -c 'from pathlib import Path; p=Path('\"'\"'capture-witness.txt'\"'\"'); p.write_text('\"'\"'CAPLAB café tool witness\\n'\"'\"', encoding='\"'\"'utf-8'\"'\"'); print(p.read_text(encoding='\"'\"'utf-8'\"'\"'), end='\"'\"''\"'\"')'"
