@@ -89,6 +89,11 @@ These inspected cases are development material and cannot become held-out
 evidence. `scripts/reviewer_feasibility_sample.py` reproduces this selection
 from the hash-checked census.
 
+The [coverage projection](FEASIBILITY.md) accounts for all 32 selected changes.
+Six have bounded change-relevant behavioral evidence; two additional trees
+ran only as other cases' bases, and 24 changes remain behaviorally unverified.
+These are coverage states, not case admissions or independent defect counts.
+
 ## Verified development outcomes
 
 The [Council provider-lifetime reproduction](../../../records/verification-2026-09-10-reviewer-timeout-outcome.md)
@@ -181,3 +186,14 @@ Endpoint byte receipts and original summaries corroborate 54 repeated
 observations; no scripted endpoint is treated as a reviewer. The ancestors
 are in the census but were not independently selected in the fixed sample.
 This expands case feasibility without admitting a corpus or accepting a ranking.
+
+The [publication-date witness](../../../records/verification-2026-09-10-reviewer-publication-outcome.md)
+uses the real installed blogwatcher binary and a local feed to exercise the
+selected newsroom repair. The original base loses known calendar dates,
+admits stale/future RSS entries and displays a non-UTC timestamp seven hours
+off. The repair preserves precision and the timestamp's meaning, applies the
+window, and resolves configured tilde history paths. Original CLI output,
+curator input and producer queue preservation are retained. The producer's
+modified-build metadata is disclosed. These verified properties support a
+bounded control candidate; the whole patch and reviewer ranking remain
+unaccepted.

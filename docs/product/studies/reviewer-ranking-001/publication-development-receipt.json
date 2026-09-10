@@ -1,0 +1,312 @@
+{
+  "blogwatcher": {
+    "build_metadata": "witness/blogwatcher-build.txt",
+    "path": "/usr/local/bin/blogwatcher",
+    "reported_source_modified": true,
+    "sha256": "cb12243a59734c3e5ec0e1407019afe5f1228e308d5946a01e0b3194b5db668b",
+    "version": "0.0.2"
+  },
+  "captured_files": 116,
+  "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/publication-witness-1",
+  "execution_seconds": 3.4041559959296137,
+  "executions": 4,
+  "files": [
+    {
+      "path": "plan.json",
+      "sha256": "d369323f22ce23d1d0f8eb1d419fdc9cd53fd8c01f8a7b2f7871518fbbd5fd65"
+    },
+    {
+      "path": "runner.py",
+      "sha256": "3a969b8e83921b412b0e5375ed535b8ac87096cddf5a2e6950a433256c59ae1d"
+    },
+    {
+      "path": "run-started.json",
+      "sha256": "9b34e8e3bfd6c13b4f97cb2b2bdc0b63b35f2eb0a75a3434c220fb5d49daa6aa"
+    },
+    {
+      "path": "completion.json",
+      "sha256": "a2ebaafead736a9b4576c211a599b8b5f57b4220a66acb15ace862e8ded2eff3"
+    },
+    {
+      "path": "verification.json",
+      "sha256": "3e6af4c4ae78959a918aed7434c4332b5b8a53d0947c7263ef42ce6dc9857a32"
+    },
+    {
+      "path": "verifier.py",
+      "sha256": "ed4aa602c784677e7f5361727c2cc35862b39cf9a23fdb257da4b47d3c10c67a"
+    },
+    {
+      "path": "selection-check.json",
+      "sha256": "a57afa1c77b86fa18c1d878091c0222748641ac0961e8fdff44012ac0132f760"
+    },
+    {
+      "path": "witness/blogwatcher-build.txt",
+      "sha256": "f318ce085baf5a98c32fd3a9ae1556c3ef2a90a19fa8e7f92df859fc2828cc59"
+    },
+    {
+      "path": "witness/blogwatcher-version.txt",
+      "sha256": "a5dd346546a384362936b97a4c2f5da2d3d253043ea9679aa7b97d89550dfdbd"
+    },
+    {
+      "path": "witness/criteria.json",
+      "sha256": "bc3773c417a742f7143698773fbcbe8fd8cb10e0d627441c36280c0b89445fcf"
+    },
+    {
+      "path": "witness/feed.xml",
+      "sha256": "0955efd7ce46f5fe7ff0e0ed5a46c82408c541f96efd64c14143f70db7c9f7db"
+    },
+    {
+      "path": "witness/probe.py",
+      "sha256": "899c99a3b4e9bdaecec697a30d1e3d892b86d0309eacb4030fb307f47a1da92d"
+    },
+    {
+      "path": "base-1/launch.json",
+      "sha256": "ef69213505506770a85fa12c8043ec13ac2b5b26b24495b8ee6145ea34d25d01"
+    },
+    {
+      "path": "base-1/completion.json",
+      "sha256": "61b07b41b49aa46a03eaa3ed6ee190e66b3c6bc518cc690f3750e3d6c9409397"
+    },
+    {
+      "path": "base-1/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "base-1/stderr",
+      "sha256": "e7deca8eece629e757419e5033db88ebefdc1773e27b115ed00b0a3fcefd44cd"
+    },
+    {
+      "path": "base-1-inventory.json",
+      "sha256": "2902a7b2126f8d13275c7449cb637d175571caae4732ff84015ab391ecb77dad"
+    },
+    {
+      "path": "base-1-capture/rss.json",
+      "sha256": "ba4bc0ef38c67c860f202dbf25e21d8c334a0737f18cae9802018617f90bc24f"
+    },
+    {
+      "path": "base-1-capture/rss-curator-prompt.txt",
+      "sha256": "e94c8eb00a7a01a2d34302c92a1b086ee2235856f4bd93d10a53f893691b2330"
+    },
+    {
+      "path": "base-1-capture/timezone.json",
+      "sha256": "571c5f30803b13d226e00b0192d9ad4b1c23376c72aaeb2cf27246707f3b22e8"
+    },
+    {
+      "path": "base-1-capture/timezone-curator-prompt.txt",
+      "sha256": "59429d4ba16cfded62fc5c49e4f38c75f1ec6a23dfd1b1ece49821874530cf8d"
+    },
+    {
+      "path": "base-1-capture/instants.json",
+      "sha256": "f334542a1311aa11ee4e342fa98b2c200855b930fca694abdc7bcc56149840bd"
+    },
+    {
+      "path": "base-1-capture/paths.json",
+      "sha256": "61cbece67f092acc753389e0f412c7f7647a91838e57fb66d29262f6a62aa566"
+    },
+    {
+      "path": "base-1-capture/http-requests.json",
+      "sha256": "3538fe9d6dd43824af2c5326e0535919ac6bd69c78b9a8c6f66c935874ab9c4b"
+    },
+    {
+      "path": "base-1-capture/loaded-source.json",
+      "sha256": "cdd3a28a2109108ff030251ff9aa0cbde9d8a9252bad22eaffc65ce164603742"
+    },
+    {
+      "path": "base-2/launch.json",
+      "sha256": "46f679df81c3a478f1a6051f3ce1fdbb7c32713ada8c3802fb19462545832f90"
+    },
+    {
+      "path": "base-2/completion.json",
+      "sha256": "0d9e602a539eb25b48b46d0bdede4387ba313bcba273f5303e87e37311b1fb90"
+    },
+    {
+      "path": "base-2/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "base-2/stderr",
+      "sha256": "e7deca8eece629e757419e5033db88ebefdc1773e27b115ed00b0a3fcefd44cd"
+    },
+    {
+      "path": "base-2-inventory.json",
+      "sha256": "fe3b3c905dd2451359bb82c6310565674ad8a680b1b9ee557679daef96f9c009"
+    },
+    {
+      "path": "base-2-capture/rss.json",
+      "sha256": "1a365d86284b659eec7e002d2c4798275d7fe74127bdc913d506593f16ca6a20"
+    },
+    {
+      "path": "base-2-capture/rss-curator-prompt.txt",
+      "sha256": "e94c8eb00a7a01a2d34302c92a1b086ee2235856f4bd93d10a53f893691b2330"
+    },
+    {
+      "path": "base-2-capture/timezone.json",
+      "sha256": "571c5f30803b13d226e00b0192d9ad4b1c23376c72aaeb2cf27246707f3b22e8"
+    },
+    {
+      "path": "base-2-capture/timezone-curator-prompt.txt",
+      "sha256": "59429d4ba16cfded62fc5c49e4f38c75f1ec6a23dfd1b1ece49821874530cf8d"
+    },
+    {
+      "path": "base-2-capture/instants.json",
+      "sha256": "a45592722a2a1320a4c2d1b6004a4315dd3ad768887fb8a4bbfefded61b05970"
+    },
+    {
+      "path": "base-2-capture/paths.json",
+      "sha256": "61cbece67f092acc753389e0f412c7f7647a91838e57fb66d29262f6a62aa566"
+    },
+    {
+      "path": "base-2-capture/http-requests.json",
+      "sha256": "3538fe9d6dd43824af2c5326e0535919ac6bd69c78b9a8c6f66c935874ab9c4b"
+    },
+    {
+      "path": "base-2-capture/loaded-source.json",
+      "sha256": "cdd3a28a2109108ff030251ff9aa0cbde9d8a9252bad22eaffc65ce164603742"
+    },
+    {
+      "path": "repair-1/launch.json",
+      "sha256": "37b4e119096eef1b3a1e66d4329a3fd3c150168f69658c993821cf6532ea6a86"
+    },
+    {
+      "path": "repair-1/completion.json",
+      "sha256": "f7b002885fc2bfc7d38fc20d6388bbdc15407af2e6801ce059d5c7cff6428b93"
+    },
+    {
+      "path": "repair-1/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repair-1/stderr",
+      "sha256": "f8bd4dc1677964cfc3c712f38a90462b8f58073a7c88f039402758f1ac6d3d23"
+    },
+    {
+      "path": "repair-1-inventory.json",
+      "sha256": "96622f326482300e07b49b3319afa49353f22a64b5155b26aff467c75f651d32"
+    },
+    {
+      "path": "repair-1-capture/rss.json",
+      "sha256": "1948200ce8dc84a207843aae007d27dda0b0a3698766fca3468baa375a867a75"
+    },
+    {
+      "path": "repair-1-capture/rss-curator-prompt.txt",
+      "sha256": "c50cad21707714aa94f741ffa3d168bda93ac349686749c6a11030c0fd9956eb"
+    },
+    {
+      "path": "repair-1-capture/timezone.json",
+      "sha256": "03ed33d13773dc90fbe3644cbbc8d25b76d89ae01bf91914aa90cde65f16389a"
+    },
+    {
+      "path": "repair-1-capture/timezone-curator-prompt.txt",
+      "sha256": "43248beffcef5ef9675dc00585f49f7fcc3e8457ac391b402e01fd16113a90a3"
+    },
+    {
+      "path": "repair-1-capture/instants.json",
+      "sha256": "852e4dcadc8a4b0d6c2e348e88ad30a6d279fb4719cb019473c18028d1e6e328"
+    },
+    {
+      "path": "repair-1-capture/paths.json",
+      "sha256": "f54c4b650a848b83d0d3aea5d79dcd726151d768fed5f0df59a63ffb6305a372"
+    },
+    {
+      "path": "repair-1-capture/http-requests.json",
+      "sha256": "3538fe9d6dd43824af2c5326e0535919ac6bd69c78b9a8c6f66c935874ab9c4b"
+    },
+    {
+      "path": "repair-1-capture/loaded-source.json",
+      "sha256": "cbf6b73fb791ec2ea0ef180cdc3d6dc45bc013030625f308aa9416078be25d4f"
+    },
+    {
+      "path": "repair-2/launch.json",
+      "sha256": "267c441bccf4cff641c8b1517b8bb634b86c6f1cb883e0939dc49391b6d9db15"
+    },
+    {
+      "path": "repair-2/completion.json",
+      "sha256": "5b64dfe0c061df29acac0f840c1509165f42e9f58cc108e5c9de86cac1a33be5"
+    },
+    {
+      "path": "repair-2/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repair-2/stderr",
+      "sha256": "f8bd4dc1677964cfc3c712f38a90462b8f58073a7c88f039402758f1ac6d3d23"
+    },
+    {
+      "path": "repair-2-inventory.json",
+      "sha256": "251f9b84ef35bd8e5c76c627ac3e6206f4a3457c351f09166c078aff9441ccde"
+    },
+    {
+      "path": "repair-2-capture/rss.json",
+      "sha256": "ccce9bf2dd2af8ae185f69b8f4d50f6a9b78a9ee299a596f779e6f7cec35cd5c"
+    },
+    {
+      "path": "repair-2-capture/rss-curator-prompt.txt",
+      "sha256": "c50cad21707714aa94f741ffa3d168bda93ac349686749c6a11030c0fd9956eb"
+    },
+    {
+      "path": "repair-2-capture/timezone.json",
+      "sha256": "03ed33d13773dc90fbe3644cbbc8d25b76d89ae01bf91914aa90cde65f16389a"
+    },
+    {
+      "path": "repair-2-capture/timezone-curator-prompt.txt",
+      "sha256": "43248beffcef5ef9675dc00585f49f7fcc3e8457ac391b402e01fd16113a90a3"
+    },
+    {
+      "path": "repair-2-capture/instants.json",
+      "sha256": "9182b0b77e3e3d681bab3d746371c0726fe9cfedea700a81a844201bc1172c77"
+    },
+    {
+      "path": "repair-2-capture/paths.json",
+      "sha256": "f54c4b650a848b83d0d3aea5d79dcd726151d768fed5f0df59a63ffb6305a372"
+    },
+    {
+      "path": "repair-2-capture/http-requests.json",
+      "sha256": "3538fe9d6dd43824af2c5326e0535919ac6bd69c78b9a8c6f66c935874ab9c4b"
+    },
+    {
+      "path": "repair-2-capture/loaded-source.json",
+      "sha256": "cbf6b73fb791ec2ea0ef180cdc3d6dc45bc013030625f308aa9416078be25d4f"
+    }
+  ],
+  "findings": [
+    "Base loses actual displayed publication dates and admits known stale/future RSS items; repair preserves dates and filters those items.",
+    "Base admits known future instants; repair enforces the upper window bound.",
+    "Base labels a non-UTC time as UTC, shifting the displayed instant; repair preserves its offset.",
+    "Repair expands tilde history paths to private home; default path behavior is preserved."
+  ],
+  "limits": [
+    "Pinned installed producer reports modified source; no verified historical deployed-binary identity.",
+    "No editor/model execution or freshness judgment on unknown dates.",
+    "Date-overlap candidates are not proof of exact publication within the 24-hour window.",
+    "Development evidence only; no case admission, scorer acceptance or reviewer ranking.",
+    "No prior tilde-expansion policy is established; path resolution is a verified compatibility behavior.",
+    "Multiple mechanisms within one sampled change do not become independent cases."
+  ],
+  "ranking_eligible": false,
+  "repetitions": 2,
+  "schema": "caplab.publication-development-receipt/v1",
+  "semantic_repetitions_match": true,
+  "source_files": 70,
+  "source_snapshots": {
+    "base": {
+      "commit": "00efadb0c5bdd2fc6d939793e7d372bf3c69ea73",
+      "parent": "c04f6c8b3af6bef8876330f37d02c42effd12908",
+      "tree": "4f94ed8b5563a65792181593a7bbda19e5c0c742"
+    },
+    "repair": {
+      "commit": "e4d5293910614ead24a9f7599f7d12050d5c64cf",
+      "parent": "00efadb0c5bdd2fc6d939793e7d372bf3c69ea73",
+      "tree": "1bee0b33c1a809a04e5c454e823cc088500629d0"
+    }
+  },
+  "verifier_support": [
+    {
+      "path": "scripts/verify_reviewer_scheduler_witness.py",
+      "sha256": "dce2c550760c092b58ad902270bb897521d5345dafe56743e40f6a73a4ed195b"
+    },
+    {
+      "path": "scripts/verify_reviewer_claim_interpretation.py",
+      "sha256": "fe636a929585a9db324465f214bc518f64eec6cc6487093b05535a18558bb78e"
+    }
+  ]
+}

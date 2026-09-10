@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel>
+<title>Private publication witness</title><link>http://127.0.0.1:8765/</link><description>New disposable test feed.</description>
+<item><title>AI report today</title><link>http://127.0.0.1:8765/today</link><guid>today</guid><pubDate>Thu, 10 Sep 2026 12:00:00 GMT</pubDate></item>
+<item><title>AI report yesterday early</title><link>http://127.0.0.1:8765/yesterday-early</link><guid>yesterday-early</guid><pubDate>Wed, 09 Sep 2026 01:00:00 GMT</pubDate></item>
+<item><title>AI report yesterday late</title><link>http://127.0.0.1:8765/yesterday-late</link><guid>yesterday-late</guid><pubDate>Wed, 09 Sep 2026 23:30:00 GMT</pubDate></item>
+<item><title>AI report stale</title><link>http://127.0.0.1:8765/stale</link><guid>stale</guid><pubDate>Tue, 01 Sep 2026 12:00:00 GMT</pubDate></item>
+<item><title>AI report future</title><link>http://127.0.0.1:8765/future</link><guid>future</guid><pubDate>Fri, 11 Sep 2026 12:00:00 GMT</pubDate></item>
+<item><title>AI report undated</title><link>http://127.0.0.1:8765/undated</link><guid>undated</guid></item>
+<item><title>Traditional pasta recipe</title><link>http://127.0.0.1:8765/non-ai</link><guid>non-ai</guid><pubDate>Thu, 10 Sep 2026 12:00:00 GMT</pubDate></item>
+</channel></rss>
