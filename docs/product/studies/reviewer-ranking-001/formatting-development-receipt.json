@@ -1,0 +1,326 @@
+{
+  "assessment": {
+    "assessor": "primary agent under ADR 0026; bounded preservation inference, no case admission",
+    "binary_sha256": "eee51da8399331af1602726a17d8f5ef4e69e8402077264f9c288d5b29943dc8",
+    "case_admitted": false,
+    "changed_paths": [
+      "internal/scheduler/glm_activation_test.go"
+    ],
+    "commits": {
+      "base": "03f0cc39b02c7882674ca2706398560e986b1032",
+      "change": "98759de9d5f1bfa855cc8d7ff43456be243db7db"
+    },
+    "disposition": "formatting-conformance-restored-with-original-test-preservation",
+    "formatting_requirement": {
+      "base": {
+        "git_blob": "ae6a107163df351843a9cb686f32ac8b01b92e49",
+        "mode": "100644",
+        "path": "Makefile",
+        "sha256": "7b43ff6b9745d94d80c20dcd364074827c11ce408b5a1a1c53f6a00343751ba4"
+      },
+      "change": {
+        "git_blob": "ae6a107163df351843a9cb686f32ac8b01b92e49",
+        "mode": "100644",
+        "path": "Makefile",
+        "sha256": "7b43ff6b9745d94d80c20dcd364074827c11ce408b5a1a1c53f6a00343751ba4"
+      }
+    },
+    "inference": "For this compiler configuration and the affected original tests, the edit restores formatting without changing the compiled test program or observed results. This supports a clean-control candidate for runtime-regression allegations about these whitespace edits.",
+    "limits": [
+      "The tests historical declaration and capability assumptions are not independently validated or accepted as current model facts.",
+      "The full original scheduler suite is compiled but only the two affected tests execute.",
+      "No native reviewer has been scored on this case, no case is admitted, and no reviewer ranking follows from formatter or test success."
+    ],
+    "observations": [
+      "The complete commit diff changes only internal/scheduler/glm_activation_test.go.",
+      "Original file bytes differ; Go 1.23.4 gofmt outputs are identical. The changed file equals that canonical output and the base file does not.",
+      "Both original scheduler test-package builds produce the same SHA-256 binary under the pinned toolchain and locked dependencies.",
+      "Both exact affected original tests run and pass without skips in each tree twice. No substitute test or reviewer output supplies those outcomes."
+    ],
+    "ranking_eligible": false,
+    "schema": "caplab.formatting-development-assessment/v1",
+    "source_files": {
+      "base": {
+        "git_blob": "a99377d14a35b05c0ed881d5b40e1dde7da6652d",
+        "mode": "100644",
+        "path": "internal/scheduler/glm_activation_test.go",
+        "sha256": "75482923d7cbc0ed54dbe285b4e84fc59cbdbe61b913fed14b2ebe37f4429aca"
+      },
+      "change": {
+        "git_blob": "aa5c5c3856f4d809abb3cc8ab2516b399e6e108c",
+        "mode": "100644",
+        "path": "internal/scheduler/glm_activation_test.go",
+        "sha256": "6eb9a1afe9ce944e3f50cc654f04e60c63b1410c601644d2d6f4945a77a64541"
+      }
+    },
+    "witness": {
+      "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/formatting-witness-1/verification.json",
+      "sha256": "87136366db3d7ef732bf7693524285d4fd2f75d00fa33cb7dc4c476e3c816348"
+    }
+  },
+  "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/formatting-witness-1",
+  "files": [
+    {
+      "path": "assessment.json",
+      "sha256": "3a673a1ddf6e025ca198d3b52b674a80d6de89bcc6829b2f5552371786f274a6"
+    },
+    {
+      "path": "base-compile/completion.json",
+      "sha256": "af1bdfcba9a77e22f81715a1eede2fe85a79f1c8604582d8c99ff1adaef55091"
+    },
+    {
+      "path": "base-compile/launch.json",
+      "sha256": "641718d80513154871169fee2b0dcd3dba272dae8a8dcf65ce4e3fa295d9342b"
+    },
+    {
+      "path": "base-compile/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "base-compile/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "base-format/completion.json",
+      "sha256": "c6df1a3230c137c161ebe943a7a829cb72ca52e3bd22931336b247b80ee65706"
+    },
+    {
+      "path": "base-format/launch.json",
+      "sha256": "5bf419836f345594f8ae647a2259a41b9955836c09a3e7e2121553879e71b8ff"
+    },
+    {
+      "path": "base-format/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "base-format/stdout",
+      "sha256": "6eb9a1afe9ce944e3f50cc654f04e60c63b1410c601644d2d6f4945a77a64541"
+    },
+    {
+      "path": "base-test-1/completion.json",
+      "sha256": "ff8496c769c5f1223d2e879c1879426223e1c15ae67aa232206f7bd720b6e051"
+    },
+    {
+      "path": "base-test-1/launch.json",
+      "sha256": "035ff8c44220ea605c4a55100aaf48dc32a7ef63e115f534ab80152f85a59d38"
+    },
+    {
+      "path": "base-test-1/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "base-test-1/stdout",
+      "sha256": "73df067c2a47376e5613b4c1803a8d0051feaef8a988d67459e3854f379f2d16"
+    },
+    {
+      "path": "base-test-2/completion.json",
+      "sha256": "3368b4fb19120dd8641e6d02cf9f3a7e187a4396a49321e318fdb032218b867e"
+    },
+    {
+      "path": "base-test-2/launch.json",
+      "sha256": "b81d215ad58e20b0546db7e2cd66198e3df252bf30b4ab7ba0146bfbbf479d8b"
+    },
+    {
+      "path": "base-test-2/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "base-test-2/stdout",
+      "sha256": "0bb5a15b4369f0757e086f7d18c7bb2beb8af45d1da6d07f02410e6d6e491f77"
+    },
+    {
+      "path": "builds/base/binary.json",
+      "sha256": "adcfbf04e1f8904365dccefc9e4b555160728126ca4c921e4a01717e5e685819"
+    },
+    {
+      "path": "builds/base/tests",
+      "sha256": "eee51da8399331af1602726a17d8f5ef4e69e8402077264f9c288d5b29943dc8"
+    },
+    {
+      "path": "builds/change/binary.json",
+      "sha256": "adcfbf04e1f8904365dccefc9e4b555160728126ca4c921e4a01717e5e685819"
+    },
+    {
+      "path": "builds/change/tests",
+      "sha256": "eee51da8399331af1602726a17d8f5ef4e69e8402077264f9c288d5b29943dc8"
+    },
+    {
+      "path": "change-compile/completion.json",
+      "sha256": "9e032973d3dae7c99761607ea77093f78f379b038322b5c9b3eb4fe30b3292a0"
+    },
+    {
+      "path": "change-compile/launch.json",
+      "sha256": "ee69a9528219b0f7174d20d244739b32c1796693917cbb47090a1a4d1372408a"
+    },
+    {
+      "path": "change-compile/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "change-compile/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "change-format/completion.json",
+      "sha256": "455a13e265ef35cbac7e027eb34cacb7e2aea644d751338e1e51af56cead6788"
+    },
+    {
+      "path": "change-format/launch.json",
+      "sha256": "1b1b79333ab5eede3966432678e0c12f52d9fdc9fbd9e765144e4643ce773c58"
+    },
+    {
+      "path": "change-format/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "change-format/stdout",
+      "sha256": "6eb9a1afe9ce944e3f50cc654f04e60c63b1410c601644d2d6f4945a77a64541"
+    },
+    {
+      "path": "change-test-1/completion.json",
+      "sha256": "4007933aca5bcf3e06213ab04e62bfd00fe1b540177c81f4f40954647ae6588f"
+    },
+    {
+      "path": "change-test-1/launch.json",
+      "sha256": "0844b29b947a38be8a488fc42ac6c800f4e2748981b03d04bb8f4ff918a6c489"
+    },
+    {
+      "path": "change-test-1/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "change-test-1/stdout",
+      "sha256": "73df067c2a47376e5613b4c1803a8d0051feaef8a988d67459e3854f379f2d16"
+    },
+    {
+      "path": "change-test-2/completion.json",
+      "sha256": "f20986608b6d0fcc72e55448daa11e5b0bba59d453a89f5303b50d62973f3d89"
+    },
+    {
+      "path": "change-test-2/launch.json",
+      "sha256": "fe7b5ea3d0cf31c61b73a499860d0f5bea98312b244dfb8e1f50ae8cac07122a"
+    },
+    {
+      "path": "change-test-2/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "change-test-2/stdout",
+      "sha256": "73df067c2a47376e5613b4c1803a8d0051feaef8a988d67459e3854f379f2d16"
+    },
+    {
+      "path": "change.diff",
+      "sha256": "0ed272cb12f2d0d1cbf49b3f8802cb29c49ae7d231de866a4b67f7e909fc27b1"
+    },
+    {
+      "path": "completion.json",
+      "sha256": "27b963569ae524cbe888a41a83f565c6633e2b783f3ce512401dc5605769f6a0"
+    },
+    {
+      "path": "plan.json",
+      "sha256": "ea3151ddf4a90961af9bc7e1a52b66a4b861e944d909f67055c0c1ad453438a1"
+    },
+    {
+      "path": "run-started.json",
+      "sha256": "79f8e9536c91b3d783518689376d4d6d0278d4d563b6f38c4cd42db7cb88913f"
+    },
+    {
+      "path": "runner.py",
+      "sha256": "828720e0429193f89def389f7590cec71cb8158072e27c2d4ae7d88f0e7286f7"
+    },
+    {
+      "path": "verification.json",
+      "sha256": "87136366db3d7ef732bf7693524285d4fd2f75d00fa33cb7dc4c476e3c816348"
+    },
+    {
+      "path": "verifier.py",
+      "sha256": "651e3206e58f5fd643e67305a2ab38e849c7e8bcd9b733d066679bf1645dc4dc"
+    }
+  ],
+  "original_source_files": 1068,
+  "ranking_eligible": false,
+  "schema": "caplab.formatting-development-receipt/v1",
+  "source_snapshots": {
+    "base": {
+      "commit": "03f0cc39b02c7882674ca2706398560e986b1032",
+      "file_count": 534,
+      "tree": "dd8ca26cc32fe05d479e129fb6534b2aaff86f0e"
+    },
+    "change": {
+      "commit": "98759de9d5f1bfa855cc8d7ff43456be243db7db",
+      "file_count": 534,
+      "tree": "aaded3b618aaec457204519fc53d39d1bab27dd4"
+    }
+  },
+  "verification": {
+    "elapsed_seconds": 7.73194886604324,
+    "executions": [
+      {
+        "binary_sha256": "eee51da8399331af1602726a17d8f5ef4e69e8402077264f9c288d5b29943dc8",
+        "build_elapsed_seconds": 5.492257219040766,
+        "elapsed_seconds": 0.06379266688600183,
+        "repetition": 1,
+        "role": "base",
+        "stdout_sha256": "73df067c2a47376e5613b4c1803a8d0051feaef8a988d67459e3854f379f2d16",
+        "tests_passed": [
+          "TestRepositoryGLMReviewDeactivationContract",
+          "TestClaudeHarmFamilyTracksExactAvailabilityPosture"
+        ]
+      },
+      {
+        "binary_sha256": "eee51da8399331af1602726a17d8f5ef4e69e8402077264f9c288d5b29943dc8",
+        "build_elapsed_seconds": 5.492257219040766,
+        "elapsed_seconds": 0.1144112329930067,
+        "repetition": 2,
+        "role": "base",
+        "stdout_sha256": "0bb5a15b4369f0757e086f7d18c7bb2beb8af45d1da6d07f02410e6d6e491f77",
+        "tests_passed": [
+          "TestRepositoryGLMReviewDeactivationContract",
+          "TestClaudeHarmFamilyTracksExactAvailabilityPosture"
+        ]
+      },
+      {
+        "binary_sha256": "eee51da8399331af1602726a17d8f5ef4e69e8402077264f9c288d5b29943dc8",
+        "build_elapsed_seconds": 0.415552785852924,
+        "elapsed_seconds": 0.06463358621113002,
+        "repetition": 1,
+        "role": "change",
+        "stdout_sha256": "73df067c2a47376e5613b4c1803a8d0051feaef8a988d67459e3854f379f2d16",
+        "tests_passed": [
+          "TestRepositoryGLMReviewDeactivationContract",
+          "TestClaudeHarmFamilyTracksExactAvailabilityPosture"
+        ]
+      },
+      {
+        "binary_sha256": "eee51da8399331af1602726a17d8f5ef4e69e8402077264f9c288d5b29943dc8",
+        "build_elapsed_seconds": 0.415552785852924,
+        "elapsed_seconds": 0.06375895999372005,
+        "repetition": 2,
+        "role": "change",
+        "stdout_sha256": "73df067c2a47376e5613b4c1803a8d0051feaef8a988d67459e3854f379f2d16",
+        "tests_passed": [
+          "TestRepositoryGLMReviewDeactivationContract",
+          "TestClaudeHarmFamilyTracksExactAvailabilityPosture"
+        ]
+      }
+    ],
+    "formatting": {
+      "base_is_formatted": false,
+      "canonical_outputs_equal": true,
+      "canonical_sha256": "6eb9a1afe9ce944e3f50cc654f04e60c63b1410c601644d2d6f4945a77a64541",
+      "change_is_formatted": true,
+      "original_bytes_differ": true
+    },
+    "limits": [
+      "Only the two affected original tests execute; the whole original package is compiled.",
+      "The formatting comparison and test preservation do not independently validate the historical tests assumptions.",
+      "Historical declaration assertions are not current model availability, capability or ranking evidence.",
+      "One selected change is investigated; repetitions do not create independent cases."
+    ],
+    "named_properties_hold": true,
+    "plan_sha256": "ea3151ddf4a90961af9bc7e1a52b66a4b861e944d909f67055c0c1ad453438a1",
+    "ranking_eligible": false,
+    "schema": "caplab.formatting-witness-verification/v1",
+    "verifier_sha256": "651e3206e58f5fd643e67305a2ab38e849c7e8bcd9b733d066679bf1645dc4dc"
+  }
+}

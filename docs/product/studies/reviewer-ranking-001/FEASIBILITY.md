@@ -1,6 +1,6 @@
 # Fixed-sample behavioral coverage
 
-Eight of the 32 selected changes have bounded, change-relevant behavioral witnesses. Three further selected trees ran as bases for other witnesses; their own changes remain unverified. The remaining 21 changes have no established behavioral witness. No case is admitted for reviewer scoring.
+Nine of the 32 selected changes have bounded, change-relevant behavioral witnesses. Three further selected trees ran as bases for other witnesses; their own changes remain unverified. The remaining 20 changes have no established behavioral witness. No case is admitted for reviewer scoring.
 
 This projection keeps every selected change in the denominator. A witness may cover only part of a change. Repeated executions, ancestor investigations and passing tests do not increase the count of independently covered changes.
 
@@ -30,7 +30,7 @@ This projection keeps every selected change in the denominator. A witness may co
 | council | 21-100 | `ea09c00acbc0` | No change-specific behavioral witness established. |
 | council | 501+ | `9ca876645f8b` | No change-specific behavioral witness established. |
 | council | 501+ | `06e453664391` | No change-specific behavioral witness established. |
-| striatum-next | 0-20 | `98759de9d5f1` | No change-specific behavioral witness established. |
+| striatum-next | 0-20 | `98759de9d5f1` | [Formatter conformance, identical original test binaries and preserved test outcomes](../../../records/verification-2026-09-10-reviewer-formatting-outcome.md). |
 | striatum-next | 0-20 | `ff6444d62331` | No change-specific behavioral witness established. |
 | striatum-next | 101-500 | `83083103119e` | No change-specific behavioral witness established. |
 | striatum-next | 101-500 | `b9325d547fa8` | [Decision input provenance and graph admission](../../../records/verification-2026-09-10-reviewer-scheduler-graph-outcome.md) |

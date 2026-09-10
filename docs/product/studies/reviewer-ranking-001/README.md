@@ -247,3 +247,12 @@ supervisor or model. These bounded clean properties expand fixed-sample
 coverage to eight changes; they do not admit a case or establish reviewer
 performance. Three selected trees remain base-only and twenty-one changes
 remain without a behavioral witness.
+
+The [formatting investigation](../../../records/verification-2026-09-10-reviewer-formatting-outcome.md)
+adds a selected small Striatum change. Both original files normalize
+identically, the changed file restores formatter conformance, and the
+original package builds produce identical test binaries. Both affected
+tests pass twice on each tree. This is bounded preservation evidence about
+the whitespace edit; historical capability assertions in those tests are
+not accepted as current truth. Coverage is now nine bounded changes, three
+base-only trees and twenty pending, with no case admission or reviewer score.

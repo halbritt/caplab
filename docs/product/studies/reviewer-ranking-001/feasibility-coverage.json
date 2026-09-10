@@ -2,8 +2,8 @@
   "admitted_cases": 0,
   "counts": {
     "base-tree-only": 3,
-    "bounded-change-behavior": 8,
-    "pending-change-behavior": 21
+    "bounded-change-behavior": 9,
+    "pending-change-behavior": 20
   },
   "interpretation": "Planning projection. Bounded behavior evidence is not complete change coverage, a whole-patch clean label, case admission or an independent case count. Base-tree executions do not verify that base commit change. No selected case has been replaced.",
   "rows": [
@@ -335,13 +335,13 @@
       "base": "03f0cc39b02c7882674ca2706398560e986b1032",
       "case_admitted": false,
       "commit": "98759de9d5f1bfa855cc8d7ff43456be243db7db",
-      "receipt": null,
-      "receipt_sha256": null,
-      "record": null,
+      "receipt": "formatting-development-receipt.json",
+      "receipt_sha256": "8477cb048e7a3bdad605ad7894f461845ab474b8dc9645a951e4bb8615a603fb",
+      "record": "../../../records/verification-2026-09-10-reviewer-formatting-outcome.md",
       "repository": "striatum-next",
-      "scope": "No change-specific behavioral witness established.",
+      "scope": "Only changed Go test file normalizes identically; original base/change test binaries identical and both affected tests pass twice. Historical capability assertions are not current truth.",
       "size_stratum": "0-20",
-      "status": "pending-change-behavior",
+      "status": "bounded-change-behavior",
       "tree": "aaded3b618aaec457204519fc53d39d1bab27dd4"
     },
     {
