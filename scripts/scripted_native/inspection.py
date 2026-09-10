@@ -81,6 +81,8 @@ def inspect(output, *, expected_preparation_sha256, expected_result_sha256):
         "safe-collection/collection.json",
         "safe-observations.json",
     ]
+    if preparation.get("resource_profile") == "cgroup-usage/v1":
+        required += ["safe-resource-before.json", "safe-resource-after.json"]
     missing = [name for name in required if not (root / name).is_file()]
     if preparation.get("launch_profile") in (
         "codex-scripted-routed/v1",
@@ -125,6 +127,10 @@ def _inspect_complete(root, preparation, result):
     require(
         selection.get("launch_profile") == preparation.get("launch_profile"),
         "selected launch profile differs from preparation",
+    )
+    require(
+        selection.get("resource_profile") == preparation.get("resource_profile"),
+        "selected resource profile differs from preparation",
     )
     require(
         selection.get("task_input") == preparation.get("task_input"),
@@ -782,8 +788,20 @@ def _inspect_complete(root, preparation, result):
         < 30 * 10**9
     ):
         raise AssertionError()
+    resource_fields = {}
+    if preparation.get("resource_profile") == "cgroup-usage/v1":
+        resource_fields["resource_usage"] = inspect_resource_usage(
+            root,
+            capture_manifest=result["capture_manifest"],
+            expected_cgroup={
+                key: handshake["observation"]["cgroup"][key]
+                for key in ("path", "device", "inode")
+            },
+            process=resource["process"],
+        )
     return {
         "schema": "caplab.scripted-native-inspection/v1",
+        **resource_fields,
         "status": "verified-observation",
         "normal_native_shutdown_verified": True,
         "transport_errors": summary["errors"],
@@ -821,4 +839,46 @@ def _inspect_complete(root, preparation, result):
         "binding_complete": False,
         "native_capture_complete": None,
         "study_eligible": False,
+    }
+
+
+def inspect_resource_usage(root, *, capture_manifest, expected_cgroup, process):
+    """Inspect resource files anchored by the caller's verified capture manifest."""
+    from caplab.capture_resources import verify_cgroup_resource_interval
+    from caplab.codex_events import parse_native_json
+    from caplab.task_capture_verify import _read_file
+
+    snapshots, hashes = [], {}
+    for phase in ("before", "after"):
+        name = "safe-resource-" + phase + ".json"
+        matches = [
+            entry for entry in capture_manifest["entries"] if entry["path"] == name
+        ]
+        require(
+            len(matches) == 1 and matches[0]["kind"] == "file",
+            "resource capture anchor missing or ambiguous",
+        )
+        hashes[phase] = matches[0]["sha256"]
+        raw, _, observed = _read_file(None, root / name, 1024 * 1024, retain=True)
+        require(observed == hashes[phase], "resource capture hash differs")
+        snapshots.append(parse_native_json(raw.decode("utf-8")))
+    report = verify_cgroup_resource_interval(
+        *snapshots, expected_cgroup=expected_cgroup
+    )
+    start, finish = process["started_monotonic_ns"], process["finished_monotonic_ns"]
+    require(
+        type(start) is int and type(finish) is int and 0 < start <= finish,
+        "invalid resource process interval",
+    )
+    require(
+        snapshots[0]["finished_monotonic_ns"]
+        <= start
+        <= finish
+        <= snapshots[1]["started_monotonic_ns"],
+        "resource observations do not enclose captured process",
+    )
+    return {
+        **report,
+        "snapshot_sha256": hashes,
+        "captured_process_interval_enclosed": True,
     }

@@ -92,6 +92,49 @@ class ScriptedCapturePreparationTests(unittest.TestCase):
                             output, expected_sha256=hashlib.sha256(raw).hexdigest()
                         )
 
+    def test_resource_profile_requires_parent_routing_and_its_own_preparation(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            native, dependency = self.installation(root), self.dependency(root)
+            for launch in ("codex-scripted-local/v1", "codex-scripted-routed/v1"):
+                with self.subTest(launch=launch), self.assertRaises(ValueError):
+                    prepare(
+                        root / "refused",
+                        codex_root=native,
+                        websockets_root=dependency,
+                        launch_profile=launch,
+                        resource_profile="cgroup-usage/v1",
+                    )
+                self.assertFalse((root / "refused").exists())
+            output = root / "capture"
+            receipt = prepare(
+                output,
+                codex_root=native,
+                websockets_root=dependency,
+                launch_profile="codex-scripted-routed/v2",
+                resource_profile="cgroup-usage/v1",
+            )
+            prepared = read_preparation(
+                output, expected_sha256=receipt["preparation_sha256"]
+            )
+            self.assertEqual(
+                prepared["schema"], "caplab.scripted-native-preparation/v5"
+            )
+            self.assertEqual(prepared["resource_profile"], "cgroup-usage/v1")
+            self.assertFalse((output / "consumption.json").exists())
+            for key, value in (
+                ("schema", "caplab.scripted-native-preparation/v4"),
+                ("resource_profile", "cgroup-usage/v2"),
+                ("launch_profile", "codex-scripted-routed/v1"),
+            ):
+                with self.subTest(key=key, value=value):
+                    raw = json.dumps(prepared | {key: value}).encode()
+                    (output / "preparation.json").write_bytes(raw)
+                    with self.assertRaises(ValueError):
+                        read_preparation(
+                            output, expected_sha256=hashlib.sha256(raw).hexdigest()
+                        )
+
     def test_unbounded_task_metadata_is_refused_before_opening_custody(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

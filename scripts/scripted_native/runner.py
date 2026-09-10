@@ -209,6 +209,10 @@ def case(root, group, name, selected):
         for key, value in limits.items():
             (child / key).write_text(value)
         before = snapshot(child)
+        if selected.get("resource_profile") == "cgroup-usage/v1":
+            from caplab.capture_resources import read_cgroup_resources
+
+            seal(root, name + "-resource-before.json", read_cgroup_resources(child))
         require(
             all(
                 before["limits_and_usage"][key] == value
@@ -504,6 +508,12 @@ def case(root, group, name, selected):
                         fixture_stack.close()
                         seal(root, name + "-fixture.json", fixed.summary)
                     after = snapshot(child)
+                    if selected.get("resource_profile") == "cgroup-usage/v1":
+                        seal(
+                            root,
+                            name + "-resource-after.json",
+                            read_cgroup_resources(child),
+                        )
                     seal(
                         root,
                         name + "-resource-exit.json",
@@ -538,6 +548,12 @@ def case(root, group, name, selected):
                     routing_stack.__exit__(*sys.exc_info())
                     fixture_stack.__exit__(*sys.exc_info())
                 after = snapshot(child)
+                if selected.get("resource_profile") == "cgroup-usage/v1":
+                    seal(
+                        root,
+                        name + "-resource-after.json",
+                        read_cgroup_resources(child),
+                    )
                 seal(
                     root,
                     name + "-resource-exit.json",
@@ -716,6 +732,10 @@ def inside(root, unit, expected_preparation_sha256):
         selected.get("launch_profile") == prepared.get("launch_profile"),
         "worker launch profile differs",
     )
+    require(
+        selected.get("resource_profile") == prepared.get("resource_profile"),
+        "worker resource profile differs",
+    )
     if prepared.get("launch_profile") in (
         "codex-scripted-routed/v1",
         "codex-scripted-routed/v2",
@@ -791,6 +811,8 @@ def run(root, prepared, expected_preparation_sha256):
         selected["task_input"] = prepared["task_input"]
     if "launch_profile" in prepared:
         selected["launch_profile"] = prepared["launch_profile"]
+    if "resource_profile" in prepared:
+        selected["resource_profile"] = prepared["resource_profile"]
     seal(root, "selection.json", selected)
     unit = "caplab-scripted-native-" + uuid.uuid4().hex + ".service"
     environment = ENV | {

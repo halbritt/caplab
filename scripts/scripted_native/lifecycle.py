@@ -171,7 +171,16 @@ def prepare(
     task_input=None,
     task_input_sha256=None,
     launch_profile="codex-scripted-local/v1",
+    resource_profile=None,
 ):
+    require(
+        resource_profile is None
+        or (
+            resource_profile == "cgroup-usage/v1"
+            and launch_profile == "codex-scripted-routed/v2"
+        ),
+        "resource observation requires the selected parent-routed profile",
+    )
     require(
         launch_profile
         in (
@@ -274,6 +283,11 @@ def prepare(
             launch_profile=launch_profile,
             task_input=selection,
         )
+    if resource_profile is not None:
+        prepared.update(
+            schema="caplab.scripted-native-preparation/v5",
+            resource_profile=resource_profile,
+        )
     seal_capture_json(output, "preparation.json", prepared)
     return {
         "custody_root": str(output),
@@ -291,6 +305,7 @@ def read_preparation(output, *, expected_sha256):
     routed = isinstance(prepared, dict) and prepared.get("schema") in (
         "caplab.scripted-native-preparation/v3",
         "caplab.scripted-native-preparation/v4",
+        "caplab.scripted-native-preparation/v5",
     )
     require(
         isinstance(prepared, dict)
@@ -314,6 +329,11 @@ def read_preparation(output, *, expected_sha256):
         }
         | (
             {"task_input", "launch_profile"}
+            | (
+                {"resource_profile"}
+                if prepared.get("schema") == "caplab.scripted-native-preparation/v5"
+                else set()
+            )
             if routed
             else {"task_input"}
             if prepared.get("schema") == "caplab.scripted-native-preparation/v2"
@@ -328,6 +348,7 @@ def read_preparation(output, *, expected_sha256):
             "caplab.scripted-native-preparation/v2",
             "caplab.scripted-native-preparation/v3",
             "caplab.scripted-native-preparation/v4",
+            "caplab.scripted-native-preparation/v5",
         ),
         "unsupported preparation",
     )
@@ -336,10 +357,19 @@ def read_preparation(output, *, expected_sha256):
         or prepared["launch_profile"]
         == (
             "codex-scripted-routed/v2"
-            if prepared["schema"] == "caplab.scripted-native-preparation/v4"
+            if prepared["schema"]
+            in (
+                "caplab.scripted-native-preparation/v4",
+                "caplab.scripted-native-preparation/v5",
+            )
             else "codex-scripted-routed/v1"
         ),
         "routed preparation profile differs",
+    )
+    require(
+        prepared["schema"] != "caplab.scripted-native-preparation/v5"
+        or prepared["resource_profile"] == "cgroup-usage/v1",
+        "resource observation profile differs",
     )
     require(
         prepared["schema"] != "caplab.scripted-native-preparation/v2"

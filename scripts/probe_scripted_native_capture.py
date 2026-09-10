@@ -19,6 +19,7 @@ def main(argv=None):
     preparation.add_argument("--websockets-root", required=True, type=Path)
     preparation.add_argument("--task-input", type=Path)
     preparation.add_argument("--task-input-sha256")
+    preparation.add_argument("--resource-profile", choices=("cgroup-usage/v1",))
     preparation.add_argument(
         "--launch-profile",
         default="codex-scripted-local/v1",
@@ -58,6 +59,7 @@ def main(argv=None):
             task_input=args.task_input,
             task_input_sha256=args.task_input_sha256,
             launch_profile=args.launch_profile,
+            resource_profile=args.resource_profile,
         )
     elif args.command == "execute":
         result = execute(

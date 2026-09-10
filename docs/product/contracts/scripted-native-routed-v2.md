@@ -7,8 +7,9 @@ mapped-root nested sandbox failure observed in routed attempt 2. The default
 remains `codex-scripted-local/v1`; the
 [original routed profile](scripted-native-routed-v1.md) remains selectable.
 
-Preparation uses `caplab.scripted-native-preparation/v4`, with the same field
-inventory as v3 and exactly `launch_profile: codex-scripted-routed/v2`. Version 3
+Without a resource profile, preparation uses
+`caplab.scripted-native-preparation/v4`, with the same field inventory as v3 and
+exactly `launch_profile: codex-scripted-routed/v2`. Version 3
 still requires `codex-scripted-routed/v1`. Changing either field alone and
 recalculating the preparation hash is refused. The launch configuration has its
 own profile-bound identity, even though its native command and fixture endpoint
@@ -16,6 +17,10 @@ settings equal those of v1. Source, installed harness, dependency, optional task
 input, runtime and resource pins retain the existing validation. A new helper
 source is included in implementation pins. Preparation grants no execution
 permission; authorization and one-shot consumption remain separate.
+
+The optional [cgroup resource profile](cgroup-resource-observation-v1.md) selects
+preparation v5 and binds `resource_profile: cgroup-usage/v1` in addition to the
+routed/v2 launch profile.
 
 The initial inner Bubblewrap still maps root so trusted setup can raise
 loopback and establish the workload identity. For v2 only, it also requests
