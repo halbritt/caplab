@@ -1,6 +1,6 @@
 # Fixed-sample behavioral coverage
 
-Seven of the 32 selected changes have bounded, change-relevant behavioral witnesses. Three further selected trees ran as bases for other witnesses; their own changes remain unverified. The remaining 22 changes have no established behavioral witness. No case is admitted for reviewer scoring.
+Eight of the 32 selected changes have bounded, change-relevant behavioral witnesses. Three further selected trees ran as bases for other witnesses; their own changes remain unverified. The remaining 21 changes have no established behavioral witness. No case is admitted for reviewer scoring.
 
 This projection keeps every selected change in the denominator. A witness may cover only part of a change. Repeated executions, ancestor investigations and passing tests do not increase the count of independently covered changes.
 
@@ -15,7 +15,7 @@ This projection keeps every selected change in the denominator. A witness may co
 | ai-newsroom | 501+ | `544f7e3c43ea` | [Reddit recovery deadline, filtering and pool reopen](../../../records/verification-2026-09-10-reviewer-reddit-recovery-outcome.md), [optional-RSS coupling](../../../records/verification-2026-09-10-reviewer-newsroom-natural-findings.md), and [partial-refresh exit status](../../../records/verification-2026-09-10-reviewer-partial-refresh-outcome.md); other components unverified. |
 | ai-newsroom | 501+ | `1bfe5a656bcb` | [Executed as a listing baseline](../../../records/verification-2026-09-10-reviewer-newsroom-natural-findings.md); its Particle change remains unverified. |
 | caplab | 0-20 | `b359e3039326` | No change-specific behavioral witness established. |
-| caplab | 0-20 | `51a7698535f0` | No change-specific behavioral witness established. |
+| caplab | 0-20 | `51a7698535f0` | [Original launcher environment and dispatch properties](../../../records/verification-2026-09-10-reviewer-launcher-outcome.md); supervisor and models unexecuted. |
 | caplab | 101-500 | `c8f097a0934b` | [Prompt delivery and response validity](../../../records/verification-2026-09-10-reviewer-pool-transport-outcome.md) |
 | caplab | 101-500 | `b8c68924f1df` | No change-specific behavioral witness established. |
 | caplab | 21-100 | `9fa844d3a02d` | No change-specific behavioral witness established. |

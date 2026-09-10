@@ -2,8 +2,8 @@
   "admitted_cases": 0,
   "counts": {
     "base-tree-only": 3,
-    "bounded-change-behavior": 7,
-    "pending-change-behavior": 22
+    "bounded-change-behavior": 8,
+    "pending-change-behavior": 21
   },
   "interpretation": "Planning projection. Bounded behavior evidence is not complete change coverage, a whole-patch clean label, case admission or an independent case count. Base-tree executions do not verify that base commit change. No selected case has been replaced.",
   "rows": [
@@ -140,13 +140,13 @@
       "base": "170fdf488df959ac503d5d419924caf5fec7bd8a",
       "case_admitted": false,
       "commit": "51a7698535f065604337f5c1d54f20267e8be2a0",
-      "receipt": null,
-      "receipt_sha256": null,
-      "record": null,
+      "receipt": "launcher-development-receipt.json",
+      "receipt_sha256": "a6ade1642d7c86069ff533e76f8b07d30ff0ec7aa833982b2389095db391e9be",
+      "record": "../../../records/verification-2026-09-10-reviewer-launcher-outcome.md",
       "repository": "caplab",
-      "scope": "No change-specific behavioral witness established.",
+      "scope": "Original launcher environment export, PATH selection, argv preservation, output directory and failure propagation. Supervisor/model behavior unexecuted; no whole-change clean label.",
       "size_stratum": "0-20",
-      "status": "pending-change-behavior",
+      "status": "bounded-change-behavior",
       "tree": "464287a678c11b42dd1e2ca88c03332bde4b6995"
     },
     {

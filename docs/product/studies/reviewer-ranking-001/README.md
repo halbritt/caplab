@@ -238,3 +238,12 @@ controls distinguish the scenario. Twelve executions repeat six conditions;
 they add one failure family on the same change, not twelve cases. The prior
 unresolved assessment is preserved. This closes that finding's behavioral
 question without accepting a scorer or ranking.
+
+The [launcher investigation](../../../records/verification-2026-09-10-reviewer-launcher-outcome.md)
+adds a selected small CAPLAB change. Original shell execution preserves
+environment export, tool selection, arguments, output-directory creation and
+failure status across eight conditions. The downstream recorder executes no
+supervisor or model. These bounded clean properties expand fixed-sample
+coverage to eight changes; they do not admit a case or establish reviewer
+performance. Three selected trees remain base-only and twenty-one changes
+remain without a behavioral witness.
