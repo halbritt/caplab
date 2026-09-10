@@ -64,3 +64,7 @@ has synthetic file/descriptor/process verification; it has not delivered the
 owner's real credential or executed an authenticated native repair. A new
 prospective native profile, private identity selection and exact execution
 authorization remain necessary before that use.
+
+An explicitly selected [version 2 marker policy](codex-external-credential-v2.md)
+recognizes declared protocol fields and generic categories. This version 1
+policy remains the default and retains its original marker behavior.

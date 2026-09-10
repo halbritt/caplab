@@ -20,6 +20,14 @@ _AUTH_CLAIM = "https://api.openai.com/auth"
 _PUBLIC_KEYS = frozenset(
     {"id", "label", "email", "name", "organization", "delegations", _AUTH_CLAIM}
 )
+_QUARANTINE_PROFILES = ("credential-private-text/v1", "credential-private-text/v2")
+_PLAN_CATEGORIES = frozenset(
+    {"free", "go", "plus", "pro", "team", "business", "enterprise", "edu", "unknown"}
+)
+_SCOPES = frozenset({"openid", "profile", "email", "offline_access"})
+_ROLES = frozenset({"owner", "admin", "member", "user", "reader"})
+_DEFAULT_TITLES = frozenset({"Personal", "personal", "Default", "default"})
+_ORG_PATH = (_AUTH_CLAIM, "organizations", None)
 
 
 class ExternalCredentialError(ValueError):
@@ -30,6 +38,7 @@ class ExternalCredentialError(ValueError):
 class ExternalCodexCredential:
     descriptor: int
     _secrets: tuple[bytes, ...] = field(repr=False)
+    quarantine_profile: str = "credential-private-text/v1"
 
     def quarantine_factory(self):
         """Create independent stream state; the caller must guard every durable surface."""
@@ -173,22 +182,75 @@ def _jwt(value, now):
     return header, claims, tuple(part.encode("ascii") for part in pieces)
 
 
-def _private_strings(value):
-    strings, pending, count = set(), [(value, 0)], 0
+def _protocol_claim_field(path, key, value, owner):
+    """Classify this occurrence, never remove equal private markers globally."""
+    if path == ():
+        if key == "rat":
+            return type(value) is int and value >= 0, False
+        if key == "sl":
+            return type(value) is bool, False
+        if key in ("sid", "session_id"):
+            return type(value) is str and bool(value), False
+        if key in ("scope", "scp"):
+            shape = type(value) is str or (
+                type(value) is list and all(type(v) is str for v in value)
+            )
+            category = type(value) is str and all(
+                v in _SCOPES for v in value.split(" ")
+            )
+            return shape, category
+    if path == (_AUTH_CLAIM,):
+        if key in ("chatgpt_account_id", "chatgpt_user_id", "chatgpt_plan_type"):
+            return type(value) is str, (
+                key == "chatgpt_plan_type"
+                and type(value) is str
+                and value in _PLAN_CATEGORIES
+            )
+        if key == "organizations":
+            return type(value) is list, False
+    if path == _ORG_PATH:
+        if key == "is_default":
+            return type(value) is bool, False
+        if key == "role":
+            return type(value) is str, type(value) is str and value in _ROLES
+        if key == "title":
+            return type(value) is str, (
+                type(value) is str
+                and owner.get("is_default") is True
+                and value in _DEFAULT_TITLES
+            )
+    return False, False
+
+
+def _private_strings(value, *, claim_categories=False):
+    strings, pending, count = set(), [(value, 0, (), False)], 0
     while pending:
-        value, depth = pending.pop()
+        value, depth, path, category = pending.pop()
         count += 1
         _require(count <= 4096 and depth <= 32, "credential_claim_complexity_exceeded")
         if type(value) is str:
-            if value:
+            if value and not category:
                 strings.add(value.encode("utf-8"))
         elif type(value) is dict:
             for key, child in value.items():
-                if key and key not in _PUBLIC_KEYS:
+                public_key, public_value = (
+                    _protocol_claim_field(path, key, child, value)
+                    if claim_categories
+                    else (False, False)
+                )
+                if key and key not in _PUBLIC_KEYS and not public_key:
                     strings.add(key.encode("utf-8"))
-                pending.append((child, depth + 1))
+                pending.append((child, depth + 1, path + (key,), public_value))
         elif type(value) is list:
-            pending.extend((child, depth + 1) for child in value)
+            scope_list = (
+                claim_categories
+                and path in (("scp",), ("scope",))
+                and all(type(v) is str for v in value)
+            )
+            pending.extend(
+                (child, depth + 1, path + (None,), scope_list and child in _SCOPES)
+                for child in value
+            )
         else:
             _require(
                 value is None or type(value) in (int, float, bool),
@@ -197,7 +259,27 @@ def _private_strings(value):
     return strings
 
 
-def _projection(raw, account_sha256, subject_sha256, lifetime):
+def _claim_strings(claims, quarantine_profile):
+    private = {
+        k: v for k, v in claims.items() if k not in ("iss", "aud", "iat", "exp", "sub")
+    }
+    return _private_strings(
+        private, claim_categories=quarantine_profile == "credential-private-text/v2"
+    )
+
+
+def _projection(
+    raw,
+    account_sha256,
+    subject_sha256,
+    lifetime,
+    *,
+    quarantine_profile="credential-private-text/v1",
+):
+    _require(
+        quarantine_profile in _QUARANTINE_PROFILES,
+        "credential_quarantine_profile_invalid",
+    )
     document = _json(raw)
     _require(
         type(document) is dict
@@ -257,15 +339,7 @@ def _projection(raw, account_sha256, subject_sha256, lifetime):
                 {k: v for k, v in header.items() if k not in ("alg", "typ")}
             )
         )
-        secrets.update(
-            _private_strings(
-                {
-                    k: v
-                    for k, v in claims.items()
-                    if k not in ("iss", "aud", "iat", "exp", "sub")
-                }
-            )
-        )
+        secrets.update(_claim_strings(claims, quarantine_profile))
     projected = document | {
         "auth_mode": "chatgptAuthTokens",
         "tokens": tokens | {"refresh_token": ""},
@@ -284,6 +358,7 @@ def open_codex_external_credential(
     expected_account_sha256: str,
     expected_subject_sha256: str,
     minimum_access_lifetime_seconds: int,
+    quarantine_profile: str = "credential-private-text/v1",
 ):
     """Borrow sealed external-token input and independent exact-byte stream guards.
 
@@ -294,7 +369,14 @@ def open_codex_external_credential(
     Descriptor validity ends on context exit; Python secret-memory erasure and
     transformed-secret detection are not provided. Short claim strings can cause
     quarantine false positives and make an otherwise parseable cache unusable.
+    Explicit v2 recognizes declared protocol fields and closed administration
+    categories; equal text at private occurrences remains guarded. Neither
+    profile hides all administration metadata or authorizes publication.
     """
+    _require(
+        quarantine_profile in _QUARANTINE_PROFILES,
+        "credential_quarantine_profile_invalid",
+    )
     for digest in (
         expected_source_sha256,
         expected_account_sha256,
@@ -316,10 +398,11 @@ def open_codex_external_credential(
             expected_account_sha256,
             expected_subject_sha256,
             minimum_access_lifetime_seconds,
+            quarantine_profile=quarantine_profile,
         )
     except ExternalCredentialError:
         raise
     except (OSError, ValueError, TypeError, RecursionError, OverflowError):
         raise ExternalCredentialError("credential_input_invalid") from None
     with _sealed_data_memfd("external-native-auth", payload) as descriptor:
-        yield ExternalCodexCredential(descriptor, secrets)
+        yield ExternalCodexCredential(descriptor, secrets, quarantine_profile)
