@@ -105,3 +105,15 @@ the second timed out with its transcript withheld by the privacy guard.
 Applying that guard to the authorized task itself rejected six files. Capture
 validity must be corrected and challenged before further reviewer calls.
 These failures supply no reviewer score or attribution.
+
+The [third output probe](../../../records/verification-2026-09-10-reviewer-completed-output.md)
+completed with intact native capture after the guard correction. It reported
+one new issue and did not report the known timeout family. A separate witness
+corroborated the new report's scan-limit/error-conversion behavior; its broader
+defect interpretation remains unresolved. No score is assigned. Project
+dependencies must be prepared and pinned before comparative reviewer runs.
+
+The [effort-control investigation](../../../records/verification-2026-09-10-reviewer-effort-control.md)
+adds a selected real change with identical parser outcomes across 135 inputs
+per revision and a compiler-confirmed unreachable fallback. This supports
+named preservation properties, not an admitted whole-patch clean label.

@@ -1,0 +1,172 @@
+{
+  "batches": [
+    {
+      "accepted_per_revision": 2,
+      "cases_per_revision": 135,
+      "custody": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/effort-control-1",
+      "expected_categories_met": false,
+      "files": [
+        {
+          "bytes": 1128001,
+          "path": "plan.json",
+          "sha256": "816ea369a49ccec736da57477db18b01109c8e90d993e9ecc6f34e7afec90022"
+        },
+        {
+          "bytes": 4361,
+          "path": "runner.py",
+          "sha256": "cd4fc9d7a0b04acb20a1cdf5e3c59a0373631f559857e4f59ba7f526e516ef9a"
+        },
+        {
+          "bytes": 1722,
+          "path": "probe/probe.mts",
+          "sha256": "feedc71457d26194fdc9c00b5519e1a058eb2c3f36e42eb38d55cb484338ab0a"
+        },
+        {
+          "bytes": 77812,
+          "path": "probe/cases.json",
+          "sha256": "cdd9621a40e55313caf03c4081c7a8e8bb9e73239fafe98daae1306c6a2906ef"
+        },
+        {
+          "bytes": 1048,
+          "path": "base-observation/launch.json",
+          "sha256": "c25726535a99a7db074094ac710217c245b060c33f94b7602f7c46c4de7a34b7"
+        },
+        {
+          "bytes": 87,
+          "path": "base-observation/completion.json",
+          "sha256": "79f77db6a41c972f494ca3ddecfb92e3d9e076b686823aa4a450d6abde8ec0fd"
+        },
+        {
+          "bytes": 19572,
+          "path": "base-observation/stdout",
+          "sha256": "9539a86e9406cc3f6e736f555c3960376102443175a96c6b1ff8ecf823f840c3"
+        },
+        {
+          "bytes": 0,
+          "path": "base-observation/stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "bytes": 1050,
+          "path": "change-observation/launch.json",
+          "sha256": "52af7fab208b0a9d5149318d8281887643d8ffda0eb0d8d5660783b468ab9fab"
+        },
+        {
+          "bytes": 88,
+          "path": "change-observation/completion.json",
+          "sha256": "787334324ef0a04ff43a7b3f6af84e6a5bfd3f543517c0cfc0b4630f4b7828f6"
+        },
+        {
+          "bytes": 19611,
+          "path": "change-observation/stdout",
+          "sha256": "393a7681f1ad33b52dd3ac6530eaeffe57f5db93f9992a78fca3bdc1851c5ae1"
+        },
+        {
+          "bytes": 0,
+          "path": "change-observation/stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "id": "effort-control-1",
+      "interpretation": "invalid fixture masked valid effort cases",
+      "sources": {
+        "base": {
+          "commit": "c60cb4694a97b0f3151fdc48abfbea2e631ac1fb",
+          "tree": "ac8197c9c6e0827c5923bca8ffd7c69c96746680"
+        },
+        "change": {
+          "commit": "c1526c8552ccfa6236c01988aa141d0705eb5d7f",
+          "tree": "d92c81ec413c3f6093a110c40db3354f101c69aa"
+        }
+      }
+    },
+    {
+      "accepted_per_revision": 44,
+      "cases_per_revision": 135,
+      "custody": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/effort-control-2",
+      "expected_categories_met": true,
+      "files": [
+        {
+          "bytes": 1128001,
+          "path": "plan.json",
+          "sha256": "4e115402ea40b4cdadf85a06a9a70366c2545b7b4a710afbb0254e07bb110037"
+        },
+        {
+          "bytes": 4369,
+          "path": "runner.py",
+          "sha256": "fbb4e2cccec04650951ae41d1871c30e07751d10a0401d9beab9fa973a6e56b4"
+        },
+        {
+          "bytes": 1722,
+          "path": "probe/probe.mts",
+          "sha256": "feedc71457d26194fdc9c00b5519e1a058eb2c3f36e42eb38d55cb484338ab0a"
+        },
+        {
+          "bytes": 78532,
+          "path": "probe/cases.json",
+          "sha256": "c719e30deeaf5d3930fc6cd0ea891c2cba14d01308aa7eff6bc3ac42078a02fc"
+        },
+        {
+          "bytes": 513,
+          "path": "verification.json",
+          "sha256": "6022166545260edcdcb852cfd50e8b3cc26e1d46ae75c9c8f6d47f5cabea21bc"
+        },
+        {
+          "bytes": 1047,
+          "path": "base-observation/launch.json",
+          "sha256": "dacc182175388368665171dc42d62f6524638b842feaf23799999e0ed81619e1"
+        },
+        {
+          "bytes": 87,
+          "path": "base-observation/completion.json",
+          "sha256": "441488f415f9c864c9e14e9024e2dd9d4332aefc3b07204ad8b0d9811708e5a1"
+        },
+        {
+          "bytes": 31377,
+          "path": "base-observation/stdout",
+          "sha256": "737f3d0322f4817ba6b5dfdca6e5ff32fdd28e8b7a17fe1029a979ad68b054cf"
+        },
+        {
+          "bytes": 0,
+          "path": "base-observation/stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "bytes": 1050,
+          "path": "change-observation/launch.json",
+          "sha256": "a54c4088c51df22609801e1fe6eb609997238a04f7853f8ad9f203d218f80ca3"
+        },
+        {
+          "bytes": 88,
+          "path": "change-observation/completion.json",
+          "sha256": "6754059297c0d9c51fa3202f0a09e6395f1ed8c48eeea49fd5102c4e70453363"
+        },
+        {
+          "bytes": 31416,
+          "path": "change-observation/stdout",
+          "sha256": "db2dd0aa16c7b318c80f5fbb9403e2fc38f8d7f0cde1bbf41e79db14c8b56715"
+        },
+        {
+          "bytes": 0,
+          "path": "change-observation/stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "id": "effort-control-2",
+      "interpretation": "bounded preservation properties verified",
+      "sources": {
+        "base": {
+          "commit": "c60cb4694a97b0f3151fdc48abfbea2e631ac1fb",
+          "tree": "ac8197c9c6e0827c5923bca8ffd7c69c96746680"
+        },
+        "change": {
+          "commit": "c1526c8552ccfa6236c01988aa141d0705eb5d7f",
+          "tree": "d92c81ec413c3f6093a110c40db3354f101c69aa"
+        }
+      }
+    }
+  ],
+  "schema": "caplab.effort-control-development-receipt/v1",
+  "study_eligible": false,
+  "whole_patch_clean_label": false
+}

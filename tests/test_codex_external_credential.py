@@ -85,6 +85,100 @@ def with_claims(document, update):
 
 
 class CodexExternalCredentialTests(unittest.TestCase):
+    def test_authentication_category_preserves_source_review_without_weakening_old_profile(self):
+        from caplab.codex_external_credential import open_codex_external_credential
+
+        original, account, subject = fixture()
+        document = with_claims(original, lambda c: c.update(auth_provider="password"))
+        raw = json.dumps(document).encode()
+        source_review = b'Finding: password redaction only covers the first request.\n'
+        with tempfile.TemporaryDirectory() as temporary:
+            source = Path(temporary) / "auth.json"
+            source.write_bytes(raw)
+            source.chmod(0o600)
+            for profile, expected_quarantine in (
+                ("credential-private-text/v2", True),
+                ("credential-private-text/v3", False),
+            ):
+                with self.subTest(profile=profile), open_codex_external_credential(
+                    source, expected_source_sha256=digest(raw),
+                    expected_account_sha256=digest(account.encode()),
+                    expected_subject_sha256=digest(subject.encode()),
+                    minimum_access_lifetime_seconds=300, quarantine_profile=profile,
+                ) as lease:
+                    guard = lease.quarantine_factory()
+                    retained = guard.feed(source_review[:17]) + guard.feed(source_review[17:]) + guard.finish()
+                    self.assertEqual(guard.quarantined, expected_quarantine)
+                    if not expected_quarantine:
+                        self.assertEqual(retained, source_review)
+            self.assertEqual(source.read_bytes(), raw)
+
+    def test_group_field_name_preserves_protocol_text_but_not_membership(self):
+        from caplab.codex_external_credential import open_codex_external_credential
+
+        original, account, subject = fixture()
+        document = with_claims(original, lambda c: c["https://api.openai.com/auth"].update(groups=["private-group-name"]))
+        raw = json.dumps(document).encode()
+        with tempfile.TemporaryDirectory() as temporary:
+            source = Path(temporary) / "auth.json"
+            source.write_bytes(raw)
+            source.chmod(0o600)
+            with open_codex_external_credential(
+                source, expected_source_sha256=digest(raw),
+                expected_account_sha256=digest(account.encode()),
+                expected_subject_sha256=digest(subject.encode()),
+                minimum_access_lifetime_seconds=300,
+                quarantine_profile="credential-private-text/v3",
+            ) as lease:
+                message = b'The patch groups requests by member.\n'
+                guard = lease.quarantine_factory()
+                self.assertEqual(guard.feed(message) + guard.finish(), message)
+                self.assertFalse(guard.quarantined)
+                guard = lease.quarantine_factory()
+                retained = guard.feed(b'private-group-') + guard.feed(b'name') + guard.finish()
+                self.assertTrue(guard.quarantined)
+                self.assertNotIn(b'private-group-name', retained)
+
+    def test_authentication_category_keeps_private_occurrences_and_credentials_quarantined(self):
+        from caplab.codex_external_credential import open_codex_external_credential
+
+        original, account, subject = fixture()
+        base = with_claims(original, lambda c: c.update(auth_provider="password"))
+        cases = [
+            ("private-name", with_claims(base, lambda c: c.update(name="password")), [b"password"]),
+            ("private-custom-key", with_claims(base, lambda c: c.update(password=True)), [b"password"]),
+            ("nested-field", with_claims(original, lambda c: c.update(custom={"auth_provider": "password"})), [b"password"]),
+            ("malformed-category", with_claims(original, lambda c: c.update(auth_provider=["password"])), [b"password"]),
+            ("unknown-category", with_claims(original, lambda c: c.update(auth_provider="private-auth-provider")), [b"private-auth-provider"]),
+            ("private-group-word", with_claims(base, lambda c: c.update(name="groups")), [b"groups"]),
+            ("misplaced-groups", with_claims(base, lambda c: c.update(groups=[])), [b"groups"]),
+            ("malformed-groups", with_claims(base, lambda c: c["https://api.openai.com/auth"].update(groups="private-group")), [b"groups", b"private-group"]),
+            ("token-material", base, [
+                *(v.encode() for v in base["tokens"].values()), subject.encode(),
+                b"fabricated-person@example.invalid", b"fabricated-org-00001",
+                *(part.encode() for part in base["tokens"]["access_token"].split(".")),
+            ]),
+        ]
+        with tempfile.TemporaryDirectory() as temporary:
+            source = Path(temporary) / "auth.json"
+            for name, document, secret_values in cases:
+                raw = json.dumps(document).encode()
+                source.write_bytes(raw)
+                source.chmod(0o600)
+                with self.subTest(case=name), open_codex_external_credential(
+                    source, expected_source_sha256=digest(raw),
+                    expected_account_sha256=digest(account.encode()),
+                    expected_subject_sha256=digest(subject.encode()),
+                    minimum_access_lifetime_seconds=300,
+                    quarantine_profile="credential-private-text/v3",
+                ) as lease:
+                    for secret in secret_values:
+                        guard = lease.quarantine_factory()
+                        retained = guard.feed(b"review: " + secret[:3]) + guard.feed(secret[3:]) + guard.finish()
+                        self.assertTrue(guard.quarantined)
+                        self.assertNotIn(secret, retained)
+                self.assertEqual(source.read_bytes(), raw)
+
     def test_protocol_categories_do_not_exempt_custom_identity_or_malformed_locations(
         self,
     ):

@@ -20,7 +20,9 @@ _AUTH_CLAIM = "https://api.openai.com/auth"
 _PUBLIC_KEYS = frozenset(
     {"id", "label", "email", "name", "organization", "delegations", _AUTH_CLAIM}
 )
-_QUARANTINE_PROFILES = ("credential-private-text/v1", "credential-private-text/v2")
+_QUARANTINE_PROFILES = (
+    "credential-private-text/v1", "credential-private-text/v2", "credential-private-text/v3"
+)
 _PLAN_CATEGORIES = frozenset(
     {"free", "go", "plus", "pro", "team", "business", "enterprise", "edu", "unknown"}
 )
@@ -182,9 +184,11 @@ def _jwt(value, now):
     return header, claims, tuple(part.encode("ascii") for part in pieces)
 
 
-def _protocol_claim_field(path, key, value, owner):
+def _protocol_claim_field(path, key, value, owner, *, authentication_categories=False):
     """Classify this occurrence, never remove equal private markers globally."""
     if path == ():
+        if authentication_categories and key == "auth_provider":
+            return type(value) is str, type(value) is str and value == "password"
         if key == "rat":
             return type(value) is int and value >= 0, False
         if key == "sl":
@@ -200,6 +204,8 @@ def _protocol_claim_field(path, key, value, owner):
             )
             return shape, category
     if path == (_AUTH_CLAIM,):
+        if authentication_categories and key == "groups":
+            return type(value) is list, False
         if key in ("chatgpt_account_id", "chatgpt_user_id", "chatgpt_plan_type"):
             return type(value) is str, (
                 key == "chatgpt_plan_type"
@@ -222,7 +228,7 @@ def _protocol_claim_field(path, key, value, owner):
     return False, False
 
 
-def _private_strings(value, *, claim_categories=False):
+def _private_strings(value, *, claim_categories=False, authentication_categories=False):
     strings, pending, count = set(), [(value, 0, (), False)], 0
     while pending:
         value, depth, path, category = pending.pop()
@@ -234,7 +240,10 @@ def _private_strings(value, *, claim_categories=False):
         elif type(value) is dict:
             for key, child in value.items():
                 public_key, public_value = (
-                    _protocol_claim_field(path, key, child, value)
+                    _protocol_claim_field(
+                        path, key, child, value,
+                        authentication_categories=authentication_categories,
+                    )
                     if claim_categories
                     else (False, False)
                 )
@@ -264,7 +273,9 @@ def _claim_strings(claims, quarantine_profile):
         k: v for k, v in claims.items() if k not in ("iss", "aud", "iat", "exp", "sub")
     }
     return _private_strings(
-        private, claim_categories=quarantine_profile == "credential-private-text/v2"
+        private,
+        claim_categories=quarantine_profile in ("credential-private-text/v2", "credential-private-text/v3"),
+        authentication_categories=quarantine_profile == "credential-private-text/v3",
     )
 
 
