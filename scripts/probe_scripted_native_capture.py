@@ -21,6 +21,9 @@ def main(argv=None):
     preparation.add_argument("--task-input-sha256")
     preparation.add_argument("--resource-profile", choices=("cgroup-usage/v1",))
     preparation.add_argument(
+        "--child-observation-profile", choices=("supervisor-poll/v1",)
+    )
+    preparation.add_argument(
         "--launch-profile",
         default="codex-scripted-local/v1",
         choices=(
@@ -60,6 +63,7 @@ def main(argv=None):
             task_input_sha256=args.task_input_sha256,
             launch_profile=args.launch_profile,
             resource_profile=args.resource_profile,
+            child_observation_profile=args.child_observation_profile,
         )
     elif args.command == "execute":
         result = execute(

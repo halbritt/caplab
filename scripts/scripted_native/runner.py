@@ -168,14 +168,18 @@ def case(root, group, name, selected):
         "codex-scripted-routed/v2",
     )
     parent_owned = selected.get("launch_profile") == "codex-scripted-routed/v2"
+    supervisor_observation = (
+        selected.get("child_observation_profile") == "supervisor-poll/v1"
+    )
     capture_seconds = 75 if routed else 45
     fixture_stack, routing_stack = ExitStack(), ExitStack()
     fixed = None
     try:
-        observation_listener.bind(str(observation_path))
-        observation_path.chmod(0o600)
-        observation_listener.listen(1)
-        observation_listener.settimeout(30)
+        if not supervisor_observation:
+            observation_listener.bind(str(observation_path))
+            observation_path.chmod(0o600)
+            observation_listener.listen(1)
+            observation_listener.settimeout(30)
         native_listener.bind(str(native_path))
         native_path.chmod(0o600)
         native_listener.listen(1)
@@ -192,7 +196,9 @@ def case(root, group, name, selected):
                         "summary": "detailed",
                     },
                     capture_dir=root / (name + "-fixture-requests"),
-                    observation_socket=str(observation_path),
+                    observation_socket=None
+                    if supervisor_observation
+                    else str(observation_path),
                     quarantine_factory=factory,
                 )
             )
@@ -345,9 +351,11 @@ def case(root, group, name, selected):
                 "--ro-bind",
                 str(socket_path),
                 "/control.sock",
-                "--ro-bind",
-                str(observation_path),
-                "/child-observation.sock",
+                *(
+                    []
+                    if supervisor_observation
+                    else ["--ro-bind", str(observation_path), "/child-observation.sock"]
+                ),
                 "--ro-bind",
                 str(native_path),
                 "/native-control.sock",
@@ -482,24 +490,48 @@ def case(root, group, name, selected):
                                 for x in selected["harness_manifest"]["entries"]
                                 if x["path"] == support.NATIVE_RELATIVE
                             ]
-                            support.receive_child_observation(
-                                observation_listener,
-                                group=child,
-                                expected_peer=fixed.peer_pid
-                                if routed
-                                else handoff["peer_pid"],
-                                evidence=FrozenNativeChildEvidence(
-                                    exec_observation["peer_pid"],
-                                    context["parent_proc_descriptor"],
-                                    SOURCE / support.NATIVE_RELATIVE,
-                                    binary["sha256"],
-                                    1024**3,
-                                    128,
-                                ),
-                                seal_observation=lambda document: seal(
-                                    root, name + "-child-observation.json", document
-                                ),
+                            child_evidence = FrozenNativeChildEvidence(
+                                exec_observation["peer_pid"],
+                                context["parent_proc_descriptor"],
+                                SOURCE / support.NATIVE_RELATIVE,
+                                binary["sha256"],
+                                1024**3,
+                                128,
                             )
+                            if supervisor_observation:
+                                from caplab.native_child_observation import (
+                                    wait_for_native_child,
+                                    NativeChildObservationError,
+                                )
+
+                                try:
+                                    child_record = wait_for_native_child(
+                                        child,
+                                        evidence=child_evidence,
+                                        timeout_seconds=5,
+                                    )
+                                except NativeChildObservationError as error:
+                                    seal(
+                                        root,
+                                        name + "-child-observation.json",
+                                        error.record,
+                                    )
+                                    raise
+                                seal(
+                                    root, name + "-child-observation.json", child_record
+                                )
+                            else:
+                                support.receive_child_observation(
+                                    observation_listener,
+                                    group=child,
+                                    expected_peer=fixed.peer_pid
+                                    if routed
+                                    else handoff["peer_pid"],
+                                    evidence=child_evidence,
+                                    seal_observation=lambda document: seal(
+                                        root, name + "-child-observation.json", document
+                                    ),
+                                )
                             stage = "process"
                             process = future.result(timeout=capture_seconds + 6)
                     forced = stop_writers(child)
@@ -736,6 +768,11 @@ def inside(root, unit, expected_preparation_sha256):
         selected.get("resource_profile") == prepared.get("resource_profile"),
         "worker resource profile differs",
     )
+    require(
+        selected.get("child_observation_profile")
+        == prepared.get("child_observation_profile"),
+        "worker child observation profile differs",
+    )
     if prepared.get("launch_profile") in (
         "codex-scripted-routed/v1",
         "codex-scripted-routed/v2",
@@ -813,6 +850,8 @@ def run(root, prepared, expected_preparation_sha256):
         selected["launch_profile"] = prepared["launch_profile"]
     if "resource_profile" in prepared:
         selected["resource_profile"] = prepared["resource_profile"]
+    if "child_observation_profile" in prepared:
+        selected["child_observation_profile"] = prepared["child_observation_profile"]
     seal(root, "selection.json", selected)
     unit = "caplab-scripted-native-" + uuid.uuid4().hex + ".service"
     environment = ENV | {

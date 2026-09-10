@@ -234,11 +234,33 @@ def _inspect_complete(root, preparation, result):
     handshake = read(root / "safe-child-observation.json")
     observed = handshake["observation"]
     fixed = read(root / "safe-fixture.json") if routed else None
-    expected_request_peer = fixed["peer_pid"] if routed else handoff["peer_pid"]
-    if not (
-        handshake["peer_pid"] == expected_request_peer and "error" not in handshake
-    ):
-        raise AssertionError()
+    supervisor_observation = (
+        preparation.get("child_observation_profile") == "supervisor-poll/v1"
+    )
+    require(
+        selection.get("child_observation_profile")
+        == preparation.get("child_observation_profile"),
+        "selected child observation profile differs",
+    )
+    if supervisor_observation:
+        from caplab.native_child_observation import inspect_supervisor_child_observation
+
+        require(handshake["timeout_seconds"] == 5, "child wait timeout differs")
+        observation_timing = inspect_supervisor_child_observation(
+            handshake,
+            expected_parent_pid=guard["peer_pid"],
+            expected_supervisor_pid=fixed["peer_pid"],
+            not_before_monotonic_ns=guard["diagnostic_clock"][
+                "before_observation_seal_monotonic_ns"
+            ],
+            not_after_monotonic_ns=resource["process"]["finished_monotonic_ns"],
+        )
+    else:
+        expected_request_peer = fixed["peer_pid"] if routed else handoff["peer_pid"]
+        require(
+            handshake["peer_pid"] == expected_request_peer and "error" not in handshake,
+            "child observation peer differs",
+        )
     if not (
         observed["parent_pid"] == guard["peer_pid"]
         and observed["child_status"]["PPid"] == guard["peer_pid"]
@@ -546,51 +568,62 @@ def _inspect_complete(root, preparation, result):
     if not 2 <= len(requests) <= 3:
         raise AssertionError()
     first = requests[0]
-    if not handshake["request_sha256"] == first["sha256"]:
-        raise AssertionError()
-    if (
-        not sum(
-            (
-                "child_observation_requested_monotonic_ns" in request
-                for request in requests
-            )
-        )
-        == 1
-    ):
-        raise AssertionError()
     pause = handshake["clock"]
-    ordered = [
-        first["received_monotonic_ns"],
-        first["child_observation_requested_monotonic_ns"],
-        pause["accepted_monotonic_ns"],
-        pause["freeze_requested_monotonic_ns"],
-        pause["frozen_monotonic_ns"],
-        observed["started_monotonic_ns"],
-        observed["finished_monotonic_ns"],
-        pause["thaw_requested_monotonic_ns"],
-        pause["thawed_monotonic_ns"],
-        pause["before_seal_monotonic_ns"],
-        first["child_observation_acknowledged_monotonic_ns"],
-        first["written_monotonic_ns"],
-    ]
-    if not ordered == sorted(ordered):
-        raise AssertionError()
-    if (
-        not pause["frozen_monotonic_ns"] - pause["freeze_requested_monotonic_ns"]
-        <= 2 * 10**9
-    ):
-        raise AssertionError()
-    if (
-        not pause["thawed_monotonic_ns"] - pause["thaw_requested_monotonic_ns"]
-        <= 2 * 10**9
-    ):
-        raise AssertionError()
-    if (
-        not first["child_observation_acknowledged_monotonic_ns"]
-        - first["child_observation_requested_monotonic_ns"]
-        < 5 * 10**9
-    ):
-        raise AssertionError()
+    if supervisor_observation:
+        require(
+            all(
+                "child_observation_requested_monotonic_ns" not in request
+                and "child_observation_acknowledged_monotonic_ns" not in request
+                for request in requests
+            ),
+            "supervisor observation still depends on fixture handshake",
+        )
+    else:
+        if not handshake["request_sha256"] == first["sha256"]:
+            raise AssertionError()
+        if (
+            not sum(
+                (
+                    "child_observation_requested_monotonic_ns" in request
+                    for request in requests
+                )
+            )
+            == 1
+        ):
+            raise AssertionError()
+        pause = handshake["clock"]
+        ordered = [
+            first["received_monotonic_ns"],
+            first["child_observation_requested_monotonic_ns"],
+            pause["accepted_monotonic_ns"],
+            pause["freeze_requested_monotonic_ns"],
+            pause["frozen_monotonic_ns"],
+            observed["started_monotonic_ns"],
+            observed["finished_monotonic_ns"],
+            pause["thaw_requested_monotonic_ns"],
+            pause["thawed_monotonic_ns"],
+            pause["before_seal_monotonic_ns"],
+            first["child_observation_acknowledged_monotonic_ns"],
+            first["written_monotonic_ns"],
+        ]
+        if not ordered == sorted(ordered):
+            raise AssertionError()
+        if (
+            not pause["frozen_monotonic_ns"] - pause["freeze_requested_monotonic_ns"]
+            <= 2 * 10**9
+        ):
+            raise AssertionError()
+        if (
+            not pause["thawed_monotonic_ns"] - pause["thaw_requested_monotonic_ns"]
+            <= 2 * 10**9
+        ):
+            raise AssertionError()
+        if (
+            not first["child_observation_acknowledged_monotonic_ns"]
+            - first["child_observation_requested_monotonic_ns"]
+            < 5 * 10**9
+        ):
+            raise AssertionError()
     inventory = read(root / "safe-retained/4/inventory.json")
     entries = {e["path"]: e for e in inventory["entries"] if e["kind"] == "file"}
     last_id = None
@@ -823,11 +856,17 @@ def _inspect_complete(root, preparation, result):
             pause["thawed_monotonic_ns"] - pause["freeze_requested_monotonic_ns"]
         )
         / 1000000.0,
-        "handshake_milliseconds": (
-            first["child_observation_acknowledged_monotonic_ns"]
-            - first["child_observation_requested_monotonic_ns"]
-        )
-        / 1000000.0,
+        **(
+            {"supervisor_observation_timing": observation_timing}
+            if supervisor_observation
+            else {
+                "handshake_milliseconds": (
+                    first["child_observation_acknowledged_monotonic_ns"]
+                    - first["child_observation_requested_monotonic_ns"]
+                )
+                / 1000000.0
+            }
+        ),
         "trace_sha256": anchor,
         "trace_bytes": trace.stat().st_size,
         "retained_mount_bytes": total_bytes,

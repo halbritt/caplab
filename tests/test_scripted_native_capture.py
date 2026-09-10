@@ -25,6 +25,51 @@ from probe_native_capture_startup import harness_manifest
 
 
 class ScriptedCapturePreparationTests(unittest.TestCase):
+    def test_supervisor_observation_is_explicit_and_requires_resource_capture(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            native, dependency = self.installation(root), self.dependency(root)
+            with self.assertRaises(ValueError):
+                prepare(
+                    root / "refused",
+                    codex_root=native,
+                    websockets_root=dependency,
+                    launch_profile="codex-scripted-routed/v2",
+                    child_observation_profile="supervisor-poll/v1",
+                )
+            self.assertFalse((root / "refused").exists())
+            output = root / "capture"
+            receipt = prepare(
+                output,
+                codex_root=native,
+                websockets_root=dependency,
+                launch_profile="codex-scripted-routed/v2",
+                resource_profile="cgroup-usage/v1",
+                child_observation_profile="supervisor-poll/v1",
+            )
+            prepared = read_preparation(
+                output, expected_sha256=receipt["preparation_sha256"]
+            )
+            self.assertEqual(
+                prepared["schema"], "caplab.scripted-native-preparation/v6"
+            )
+            self.assertEqual(
+                prepared["child_observation_profile"], "supervisor-poll/v1"
+            )
+            self.assertFalse((output / "consumption.json").exists())
+            for change in (
+                {"schema": "caplab.scripted-native-preparation/v5"},
+                {"child_observation_profile": "fixture/v1"},
+                {"resource_profile": None},
+            ):
+                with self.subTest(change=change):
+                    raw = json.dumps(prepared | change).encode()
+                    (output / "preparation.json").write_bytes(raw)
+                    with self.assertRaises(ValueError):
+                        read_preparation(
+                            output, expected_sha256=hashlib.sha256(raw).hexdigest()
+                        )
+
     def test_routed_preparation_freezes_profile_and_routing_tools(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
