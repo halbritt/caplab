@@ -1,0 +1,434 @@
+{
+  "captured_files": 30,
+  "claim_investigation": {
+    "administration_sha256": "f0ee550e86fc87044a2b1741904adfba1ccb6916c875268c63dd9f29deaaba57",
+    "claims": [
+      {
+        "behavior": "An enabled healthy HTML harvest persists three candidates and the pool reopens. Disabling only RSS makes both harvest and pool fetch fail before HTTP despite the same supplied provider directory and valid pool.",
+        "blocker_stance": "not explicitly stated",
+        "byte_end_exclusive": 851,
+        "byte_start": 82,
+        "causal_basis": "The newly added constructor initializes RedditState only when provider_dir and rss_fallback are true. Newly added harvest/fetch reject the resulting None provider.",
+        "disposition": "confirmed-introduced-configuration-defect",
+        "finding_id": "natural-1",
+        "full_finding_text": "- `newsroom/sources/reddit.py:393-423` \u2014 harvested mode incorrectly requires RSS fallback.\n\n  Trigger: configure `use_harvested = true` with `rss_fallback = false`.\n\n  Expected: harvesting and reading the durable candidate pool work without opting into the optional RSS transport.\n\n  Actual: `RedditAdapter` creates no provider because construction is gated on `self.rss_fallback`; both `harvest()` and `fetch()` fail with `SourceUnavailable: Reddit harvesting requires provider_state_dir`, even when `provider_state_dir` is supplied.\n\n  Why: line 396 couples state creation to RSS fallback, although state is also required for harvested candidates.\n\n  Reproduction: constructing the adapter with those settings produced `provider: None` followed by that exception.",
+        "requirement_basis": "Original README says the harvester tries HTML/JSON then RSS when rss_fallback is enabled; the module describes RSS as optional. Disabling optional transport must not disable HTML collection or reading an existing pool."
+      },
+      {
+        "behavior": "With an independently held run.lock, original harvest succeeds and persists candidates, original run exits 2 before HTTP, and pool fetch succeeds without HTTP.",
+        "blocker_stance": "not explicitly stated",
+        "byte_end_exclusive": 1551,
+        "byte_start": 851,
+        "disposition": "refuted-contract-application",
+        "finding_id": "natural-2",
+        "full_finding_text": "- `newsroom/cli.py:412-431` \u2014 `harvest` bypasses the live-run lock.\n\n  Trigger: run `newsroom harvest --source reddit` while a live `newsroom run` holds `data_dir/run.lock`.\n\n  Expected: per the README, an overlapping live invocation exits with code 2.\n\n  Actual: harvest runs and returns success while the lock is held, allowing it to write `reddit-provider/rss.db` and make collection requests concurrently with the digest.\n\n  Why: only `cmd_run()` acquires `run.lock` (`cli.py:450-456`); `cmd_harvest()` has no equivalent lock.\n\n  Reproduction: while holding an exclusive flock on a temporary `run.lock`, invoking the actual CLI harvest path called `RedditAdapter.harvest` and returned exit 0.",
+        "requirement_basis": "The unchanged pre-change engineering requirement names exclusion of overlapping live publishers. Original systemd documentation describes the run fetch/curate/deliver workflow. The new harvester explicitly performs neither publication nor delivery.",
+        "scope": "This refutes applying the cited publisher-exclusion requirement to every harvesting command. It does not prove all concurrent-harvest behavior safe or refute the demonstrated ability to harvest under run.lock."
+      },
+      {
+        "behavior": "Real original HTTPS listing requests arrive within 0.012 seconds across all conditions. The base already behaves this way; listing transport functions and executor statements are AST-identical. No next_request state exists after HTML harvest.",
+        "blocker_stance": "not explicitly stated",
+        "byte_end_exclusive": 2401,
+        "byte_start": 1551,
+        "disposition": "requirement-scope-and-change-attribution-unresolved",
+        "finding_id": "natural-3",
+        "full_finding_text": "- `newsroom/sources/reddit.py:431-452` \u2014 normal HTML/JSON collection bypasses the newly documented provider rate limiter.\n\n  Trigger: a regular harvest before `prefer_rss` is set, with `rss_fallback = true` and multiple subreddits.\n\n  Expected: the documented 65-second provider request interval should protect Reddit collection requests and shared quota.\n\n  Actual: the adapter submits HTML/JSON listing requests through a `ThreadPoolExecutor`; no `RedditState.fetch()` or `_reserve()` call occurs. Three configured listings began within 0.0002 seconds in a local reproduction, with zero provider reservations.\n\n  Why: provider pacing is only used by `_fetch_rss`; the normal listing branch directly calls `_fetch_subreddit`.\n\n  The concurrent dispatch is demonstrated. Whether Reddit responds with 429s in the deployment is not verified locally.",
+        "requirement_basis": "The new README describes a provider-state minimum interval in its feed-cache discussion. Whether that promise extends from RSS recovery to existing HTML/JSON paths is not independently settled.",
+        "scope": "Inherited dispatch mechanics are verified. Whether their reuse violates a newly introduced broader contract remains unresolved. No live rate-limit incidence is inferred."
+      }
+    ],
+    "interpretation_owner": "primary-agent",
+    "interpretation_status": "evidence-backed development assessment; not an independent verdict on the investigator or acceptance of a semantic scorer",
+    "known_family": {
+      "basis": "The three complete findings concern RSS configuration, command locking and inter-request pacing. None reports an active body outlasting the 180-second recovery budget.",
+      "family": "reddit-recovery-active-body-deadline",
+      "reported_in_final_review": false,
+      "verification_path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/reddit-recovery-witness-2/verification.json",
+      "verification_sha256": "ae90ff38769a59b3fafbd68da7f92f278cb7267233902c917577bf38e5b8005d"
+    },
+    "limits": [
+      "No precision, recall, false-blocker rate or ranking is computed.",
+      "No explicit blocking/advisory disposition appears in the review; do not invent it.",
+      "This is one sampled change with several claims, not independent cases.",
+      "The current closed-hypothesis interpreter is not validated on this natural multi-finding review."
+    ],
+    "lineage": {
+      "base": {
+        "helper_ast_sha256": {
+          "_fetch_subreddit": "af94e96d576320f7112176872d5711e22314e4cfe3d8a4bbc83093c7958e7e7a",
+          "_fetch_subreddit_html": "214c19f6e70d58b4f26d1cd556ce1e0b49ee26203a220424e394d6b8fba1d21d",
+          "_fetch_subreddit_json": "bc0b9506840fcec57da425ff6c0bca4bad64829321a225b4944aeefa6b5c474d",
+          "_make_article": "5d116af8a9ed0744afa03632df1024b107530c3b819e535a578921c6d223d0fa"
+        },
+        "listing_executor_ast_sha256": "e68cbd83ce93dea98a87a1cff44ea2c4ea0e9eca6d89871dc30e76dba4b508f7",
+        "source_sha256": "4d2d4f1f9e27c03c93ee7e406d619e2eac9cc202845d8668c869685726f2925f"
+      },
+      "current": {
+        "helper_ast_sha256": {
+          "_fetch_subreddit": "af94e96d576320f7112176872d5711e22314e4cfe3d8a4bbc83093c7958e7e7a",
+          "_fetch_subreddit_html": "214c19f6e70d58b4f26d1cd556ce1e0b49ee26203a220424e394d6b8fba1d21d",
+          "_fetch_subreddit_json": "bc0b9506840fcec57da425ff6c0bca4bad64829321a225b4944aeefa6b5c474d",
+          "_make_article": "5d116af8a9ed0744afa03632df1024b107530c3b819e535a578921c6d223d0fa"
+        },
+        "listing_executor_ast_sha256": "e68cbd83ce93dea98a87a1cff44ea2c4ea0e9eca6d89871dc30e76dba4b508f7",
+        "source_sha256": "cf8eef0e2cf80003ae31473c19f337163143600ea7417f7ef70a565d5ee35ab0"
+      }
+    },
+    "requirement_context": {
+      "base": {
+        "engineering_review_sha256": "c035256064a36768e176f620cfe5e475f1c1ef61bdf646bc513b0681dd4ee42c",
+        "lock_scope_quote": "Only one live run may use a data directory at a time. An overlapping invocation\nexits with code 2; dry runs can run alongside it.",
+        "publisher_scope_quote": "Locking prevents overlapping live publishers per data directory.",
+        "readme_sha256": "afe5dc5e555c10d4f197f55da066d6b94c9bcddc26b38de6787f6ce9da11a4f3"
+      },
+      "current": {
+        "engineering_review_sha256": "c035256064a36768e176f620cfe5e475f1c1ef61bdf646bc513b0681dd4ee42c",
+        "lock_scope_quote": "Only one live run may use a data directory at a time. An overlapping invocation\nexits with code 2; dry runs can run alongside it.",
+        "publisher_scope_quote": "Locking prevents overlapping live publishers per data directory.",
+        "readme_sha256": "462b71a5ee0029330468a99361cfafc8cfd4a29966295d0ffe3b94040daab306"
+      }
+    },
+    "review_sha256": "d040e7f39d25804845b04a5f78f0f1d70e8db2eb4929e56817013dde28839ae6",
+    "schema": "caplab.natural-review-claim-investigation/v1",
+    "witness_verification_sha256": "d101743663feb7eec75928ace7fdc8aa4728395ccb25a859be5a341e4a056b7c"
+  },
+  "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-findings-witness-1",
+  "elapsed_seconds": 4.324371505063027,
+  "executions": 6,
+  "files": [
+    {
+      "path": "base-listing-1-inventory.json",
+      "sha256": "b8d2ef5d6dd06c1caa74fa2edd0eca1fb64b6a86efebca86d8cab96ad1e43808"
+    },
+    {
+      "path": "base-listing-2-inventory.json",
+      "sha256": "8df806957dde88032a34a5278ad18cd15d4a08641e24575d98cb476b68b59712"
+    },
+    {
+      "path": "change-cli-lock-1-inventory.json",
+      "sha256": "3b1beddb8c5973b2b935a1ed91952b989b8b83d93a4664f332f407a0aef2faeb"
+    },
+    {
+      "path": "change-cli-lock-2-inventory.json",
+      "sha256": "562a45eec3de85160d0bf94fb9bd6670e7820c8e38e533c637afbce0adc66adb"
+    },
+    {
+      "path": "change-pool-1-inventory.json",
+      "sha256": "619cfd2fa14f0622f198c37bfe73945540c2406573e942caa809b58056186254"
+    },
+    {
+      "path": "change-pool-2-inventory.json",
+      "sha256": "357ea95c129b7689e7ee83ee07df9970d332d446c924651d634ce3ff337bcee3"
+    },
+    {
+      "path": "claim-investigation.json",
+      "sha256": "e582d9ca56ff52deecf46f68eb6133a12aeed46b7a41e3dc11cd28ca08e86acb"
+    },
+    {
+      "path": "completion.json",
+      "sha256": "b918c6bb415ef249dd254e023b62d73116ac38e512fc3d43b7a35d09673f5e72"
+    },
+    {
+      "path": "plan.json",
+      "sha256": "1188993e4cc50599f46fbcd126574499b1b3459f9f327fc36d3d1f8867512d88"
+    },
+    {
+      "path": "run-started.json",
+      "sha256": "bbeafc16e3acf4814539a1e7ebb98c705926eaabb1e6a426522c9262a0f5643b"
+    },
+    {
+      "path": "runner.py",
+      "sha256": "d0292d28dffaf64feaebca253bfc9339d31e867a24465b2a7fb170e4ede698b4"
+    },
+    {
+      "path": "verification.json",
+      "sha256": "d101743663feb7eec75928ace7fdc8aa4728395ccb25a859be5a341e4a056b7c"
+    },
+    {
+      "path": "verifier.py",
+      "sha256": "0a1ffe16e67fb5779fe987322fc38c9e674e175e4f83abf138882644fc5857d3"
+    },
+    {
+      "path": "witness/LocalLLaMA.html",
+      "sha256": "c54fdaba44f891c56e0270bc1756139dc6b1ef2cc659f2f7ba26324c8eded1b3"
+    },
+    {
+      "path": "witness/MachineLearning.html",
+      "sha256": "cc7119991d9675162183b3d3349bf1999af66b7da2614edeed7c770360c870b1"
+    },
+    {
+      "path": "witness/OpenAI.html",
+      "sha256": "a7b926cf22004eec9890df42bf7c6e074129defca5ab9891297c1b09a90d2723"
+    },
+    {
+      "path": "witness/cert.pem",
+      "sha256": "d582767ba529784ab8726f29a7a9a6b792c8e420caf3eb012829f89e5be4fdf3"
+    },
+    {
+      "path": "witness/criteria.json",
+      "sha256": "644e1f9840f79586081c67b9e088905d980aeb667148ff8df37c7e1faf6cc3da"
+    },
+    {
+      "path": "witness/hosts",
+      "sha256": "587d30975fb9c069ec106d8a72591563dabd4d3a4e50d593a4de29e7eb47757b"
+    },
+    {
+      "path": "witness/newsroom.toml",
+      "sha256": "9dada979ac26691585dcf2e5fe04ce2c0c8740a6cf2a97652d175f310e641d39"
+    },
+    {
+      "path": "witness/nsswitch.conf",
+      "sha256": "bfc6be87fadc435bad993523e78249bc43ed4c84f1ca6cb05b832d43087dc25b"
+    },
+    {
+      "path": "witness/probe.py",
+      "sha256": "5ecc47b8058d7baca9f5ee0004085dd54cbb4aa9440f1f64f9cd014b9ddc803e"
+    },
+    {
+      "path": "witness/sources.toml",
+      "sha256": "32d72f7a8c3733367133f85f28945b15a72377f5fbdae98602ac5e2393348c61"
+    },
+    {
+      "path": "certificate/completion.json",
+      "sha256": "794edd408d23d369ec4361fa038ed39934bae01f595e6246b4ba65fc80e2de57"
+    },
+    {
+      "path": "certificate/launch.json",
+      "sha256": "db48d97520cdc38634bbe8522c85ac8924309621c838aea74941183a0334030f"
+    },
+    {
+      "path": "certificate/stderr",
+      "sha256": "6d653dcea5922b8f4e939df656937b1fe64dc29397b2740161314edc7049ce90"
+    },
+    {
+      "path": "certificate/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "base-listing-1/completion.json",
+      "sha256": "6475701ef74f7828dfb7ae529310ba950ce6f215d8cf08494964ddaa5a769c27"
+    },
+    {
+      "path": "base-listing-1/launch.json",
+      "sha256": "d11e75318a7c2221f266860fb947baf397d21b45d7c9e44da2d9a59638714f71"
+    },
+    {
+      "path": "base-listing-1/stderr",
+      "sha256": "f25a9ead5e2a223a6fcb04ff0e8be442aa5eeda296f208c60c73dc03d8b6a6ae"
+    },
+    {
+      "path": "base-listing-1/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "change-pool-1/completion.json",
+      "sha256": "72c84b2c065f7608e5e64d48324f3bb961d645e4d8f58d0569e12ae808e09e46"
+    },
+    {
+      "path": "change-pool-1/launch.json",
+      "sha256": "9ba9d18fa3e334173d401709f767171d20ab34dd5ec0dad9ee0a9959fd8d9260"
+    },
+    {
+      "path": "change-pool-1/stderr",
+      "sha256": "2cd71db81dfc6895e34643642534070942d82695f9df7e85a8097b7835c4a9c8"
+    },
+    {
+      "path": "change-pool-1/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "change-cli-lock-1/completion.json",
+      "sha256": "a68448baeb3319daeec238252b9dc0963a22c9735ed2bf15d03630ffe8492653"
+    },
+    {
+      "path": "change-cli-lock-1/launch.json",
+      "sha256": "b419226c15bc48b4377545c48ed20e58b7e1f1433066818537c08798c6786ed3"
+    },
+    {
+      "path": "change-cli-lock-1/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "change-cli-lock-1/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "base-listing-2/completion.json",
+      "sha256": "cef35e4ffa4ac196cc56e4751e5456f3bb6533fc445c3349eab7aff55d1f686f"
+    },
+    {
+      "path": "base-listing-2/launch.json",
+      "sha256": "f12cb5a902600b5b5d4170d7dbec1142dfbbab5fb0d1c202bc31baab04073446"
+    },
+    {
+      "path": "base-listing-2/stderr",
+      "sha256": "f25a9ead5e2a223a6fcb04ff0e8be442aa5eeda296f208c60c73dc03d8b6a6ae"
+    },
+    {
+      "path": "base-listing-2/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "change-pool-2/completion.json",
+      "sha256": "3c872574ab284e7391ccca5823db99021a464e57cf733597f8e5b857ff0a7e04"
+    },
+    {
+      "path": "change-pool-2/launch.json",
+      "sha256": "7eb69d85835301dc1d949922b23fdc0ef647ff13d907cec2da67b79484e7cf25"
+    },
+    {
+      "path": "change-pool-2/stderr",
+      "sha256": "81fb85993d1fe6de2348f23181ade74c1f5e98d37ab38e09c64ec156064d3b4f"
+    },
+    {
+      "path": "change-pool-2/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "change-cli-lock-2/completion.json",
+      "sha256": "ae6151e37e81518ca577432e8845a1cef4a650f0f48dfccfe89f306f9c3a7f24"
+    },
+    {
+      "path": "change-cli-lock-2/launch.json",
+      "sha256": "bc4fa0f3984c804628bb3ac5aa1ecb61d8b0ee97a35777e5d8f35baedc220a10"
+    },
+    {
+      "path": "change-cli-lock-2/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "change-cli-lock-2/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "observations": [
+    {
+      "condition": "base-listing",
+      "repetition": 1,
+      "request_span_seconds": 0.0020669149234890938,
+      "requests": 3,
+      "three_listing_requests_within_65_seconds": true
+    },
+    {
+      "condition": "change-pool",
+      "disabled-harvest": {
+        "article_count": 0,
+        "error": {
+          "message": "Reddit harvesting requires provider_state_dir",
+          "type": "SourceUnavailable"
+        },
+        "requests": 0
+      },
+      "disabled-pool": {
+        "article_count": 0,
+        "error": {
+          "message": "Reddit harvesting requires provider_state_dir",
+          "type": "SourceUnavailable"
+        },
+        "requests": 0
+      },
+      "durable_candidates": 3,
+      "enabled_pool_reopens_without_http": true,
+      "last_status": "live",
+      "next_request_present": false,
+      "repetition": 1,
+      "request_span_seconds": 0.011500455904752016,
+      "requests": 3,
+      "three_listing_requests_within_65_seconds": true
+    },
+    {
+      "cli_exit_codes": {
+        "fetch": 0,
+        "harvest": 0,
+        "run": 2
+      },
+      "cli_request_counts": {
+        "fetch": 0,
+        "harvest": 3,
+        "run": 0
+      },
+      "condition": "change-cli-lock",
+      "durable_candidates": 3,
+      "held_lock_confirmed": true,
+      "last_status": "live",
+      "next_request_present": false,
+      "repetition": 1,
+      "request_span_seconds": 0.01095728506334126,
+      "requests": 3,
+      "three_listing_requests_within_65_seconds": true
+    },
+    {
+      "condition": "base-listing",
+      "repetition": 2,
+      "request_span_seconds": 0.002062826883047819,
+      "requests": 3,
+      "three_listing_requests_within_65_seconds": true
+    },
+    {
+      "condition": "change-pool",
+      "disabled-harvest": {
+        "article_count": 0,
+        "error": {
+          "message": "Reddit harvesting requires provider_state_dir",
+          "type": "SourceUnavailable"
+        },
+        "requests": 0
+      },
+      "disabled-pool": {
+        "article_count": 0,
+        "error": {
+          "message": "Reddit harvesting requires provider_state_dir",
+          "type": "SourceUnavailable"
+        },
+        "requests": 0
+      },
+      "durable_candidates": 3,
+      "enabled_pool_reopens_without_http": true,
+      "last_status": "live",
+      "next_request_present": false,
+      "repetition": 2,
+      "request_span_seconds": 0.0033540460281074047,
+      "requests": 3,
+      "three_listing_requests_within_65_seconds": true
+    },
+    {
+      "cli_exit_codes": {
+        "fetch": 0,
+        "harvest": 0,
+        "run": 2
+      },
+      "cli_request_counts": {
+        "fetch": 0,
+        "harvest": 3,
+        "run": 0
+      },
+      "condition": "change-cli-lock",
+      "durable_candidates": 3,
+      "held_lock_confirmed": true,
+      "last_status": "live",
+      "next_request_present": false,
+      "repetition": 2,
+      "request_span_seconds": 0.011066097998991609,
+      "requests": 3,
+      "three_listing_requests_within_65_seconds": true
+    }
+  ],
+  "ranking_eligible": false,
+  "repetitions": 2,
+  "schema": "caplab.natural-findings-development-receipt/v1",
+  "source_custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-natural-output-2",
+  "source_files": 188,
+  "source_preparation_sha256": "0a5f444de83daac52326e778a5c4977997a01011b242edcfa0cedf1d464c402c",
+  "source_snapshots": {
+    "base": {
+      "commit": "1bfe5a656bcb2c663891afd5f980211a3ef144a8",
+      "parent": "a3c0cec9ec49a319541cc3c00ec1b2c691eadf5e",
+      "tree": "9d63957463f4e4e6a8a5923fe1b5fdd80d7214b7"
+    },
+    "current": {
+      "commit": "544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f",
+      "parent": "1bfe5a656bcb2c663891afd5f980211a3ef144a8",
+      "tree": "ffd0b76ba0043bb2644ebc2e6e0e6ef9de85ffd7"
+    }
+  }
+}

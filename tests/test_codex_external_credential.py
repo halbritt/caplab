@@ -85,6 +85,76 @@ def with_claims(document, update):
 
 
 class CodexExternalCredentialTests(unittest.TestCase):
+    def test_identity_alias_never_exempts_private_occurrences_or_token_material(self):
+        from caplab.codex_external_credential import open_codex_external_credential
+
+        original, account, subject = fixture()
+        auth = "https://api.openai.com/auth"
+        cases = [
+            ("root-key", lambda c: c.update(user_id="private-alias")),
+            ("nested-key", lambda c: c.update(custom={"user_id": "private-alias"})),
+            ("private-value", lambda c: c.update(name="user_id")),
+            ("self-named-value", lambda c: c[auth].update(user_id="user_id")),
+            ("empty", lambda c: c[auth].update(user_id="")),
+            ("null", lambda c: c[auth].update(user_id=None)),
+            ("number", lambda c: c[auth].update(user_id=123)),
+            ("list", lambda c: c[auth].update(user_id=["private-alias"])),
+            ("object", lambda c: c[auth].update(user_id={"name": "private-alias"})),
+        ]
+        with tempfile.TemporaryDirectory() as temporary:
+            source = Path(temporary) / "auth.json"
+            for name, update in cases:
+                document = with_claims(original, lambda c: c[auth].update(user_id="private-alias"))
+                document = with_claims(document, update)
+                raw = json.dumps(document).encode()
+                source.write_bytes(raw)
+                source.chmod(0o600)
+                with self.subTest(case=name), open_codex_external_credential(
+                    source, expected_source_sha256=digest(raw),
+                    expected_account_sha256=digest(account.encode()),
+                    expected_subject_sha256=digest(subject.encode()),
+                    minimum_access_lifetime_seconds=300,
+                    quarantine_profile="credential-private-text/v4",
+                ) as lease:
+                    secrets = [b"user_id", subject.encode(),
+                               *(v.encode() for v in document["tokens"].values()),
+                               *(part.encode() for part in document["tokens"]["access_token"].split("."))]
+                    for secret in secrets:
+                        guard = lease.quarantine_factory()
+                        retained = guard.feed(secret[:3]) + guard.feed(secret[3:]) + guard.finish()
+                        self.assertTrue(guard.quarantined)
+                        self.assertNotIn(secret, retained)
+                self.assertEqual(source.read_bytes(), raw)
+
+    def test_identity_alias_field_name_preserves_source_only_in_v4(self):
+        from caplab.codex_external_credential import open_codex_external_credential
+
+        original, account, subject = fixture()
+        document = with_claims(original, lambda c: c["https://api.openai.com/auth"].update(user_id="private-alias-identity"))
+        raw = json.dumps(document).encode()
+        source_text = b'def open_dm(user_id: str, token: str): pass\n'
+        with tempfile.TemporaryDirectory() as temporary:
+            source = Path(temporary) / "auth.json"
+            source.write_bytes(raw)
+            source.chmod(0o600)
+            for profile, blocked in (("credential-private-text/v3", True), ("credential-private-text/v4", False)):
+                with self.subTest(profile=profile), open_codex_external_credential(
+                    source, expected_source_sha256=digest(raw),
+                    expected_account_sha256=digest(account.encode()),
+                    expected_subject_sha256=digest(subject.encode()),
+                    minimum_access_lifetime_seconds=300, quarantine_profile=profile,
+                ) as lease:
+                    guard = lease.quarantine_factory()
+                    retained = guard.feed(source_text[:18]) + guard.feed(source_text[18:]) + guard.finish()
+                    self.assertEqual(guard.quarantined, blocked)
+                    if not blocked:
+                        self.assertEqual(retained, source_text)
+                    guard = lease.quarantine_factory()
+                    retained = guard.feed(b'private-alias-') + guard.feed(b'identity') + guard.finish()
+                    self.assertTrue(guard.quarantined)
+                    self.assertNotIn(b'private-alias-identity', retained)
+            self.assertEqual(source.read_bytes(), raw)
+
     def test_authentication_category_preserves_source_review_without_weakening_old_profile(self):
         from caplab.codex_external_credential import open_codex_external_credential
 

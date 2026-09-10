@@ -1,0 +1,743 @@
+{
+  "administration": {
+    "captured_files": 76,
+    "complete_readable_capture": true,
+    "elapsed_seconds": 464.9423208660446,
+    "final_matches_native_message": true,
+    "final_sha256": "d040e7f39d25804845b04a5f78f0f1d70e8db2eb4929e56817013dde28839ae6",
+    "limits": [
+      "Authentic complete readable output establishes administration, not correctness of findings.",
+      "Recorded native tools are not a complete kernel network/process trace.",
+      "Opaque ciphertext was discarded before guarding, with hashes and omission receipts.",
+      "One selected development review supplies no comparative ranking or scorer acceptance."
+    ],
+    "native_package_unchanged": true,
+    "observed_cli_version": "0.153.4",
+    "observed_effort": "max",
+    "observed_model": "gpt-5.6-terra",
+    "opaque_fields_omitted": 56,
+    "original_raw_capture_complete": false,
+    "owner_auth_cache_unchanged": true,
+    "plan_sha256": "3602e61ff5c2870044623a0984e0b5de012435f4021eeb5167e2ad74d4122b2d",
+    "preparation_sha256": "0a5f444de83daac52326e778a5c4977997a01011b242edcfa0cedf1d464c402c",
+    "projected_rollouts": 1,
+    "ranking_eligible": false,
+    "readiness": [
+      {
+        "completion_sha256": "93adbec12a443ea36fff076bf1e81a22bc0cedecce3f4ff172635d27e9f3884c",
+        "role": "base",
+        "stdout_sha256": "d3d307e917294b689b9d2731602236e1ab792e814ee6ffab26b912f5bf07251d",
+        "tests_xml_sha256": "95dbadec3f1b089e5d5f0bb3c58b0ea9863b6ff48d99fffdbfb99b491c3a0424"
+      },
+      {
+        "completion_sha256": "8d58ddd70ee4fdbaaa7c7f7c3c2819cf07e23bc22d4f9ba0598b80c3f9d9f55d",
+        "role": "current",
+        "stdout_sha256": "5ac58fbbb821d056511d4c3e6fc36abcd7f47b7553c23ac6beb1d13e9f57ddf7",
+        "tests_xml_sha256": "1998ca985eaa3eb3136b2df81fbcc190cbe87462e009aa03d4f26acde8fe03a0"
+      }
+    ],
+    "readiness_inherited_from": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-natural-output-1",
+    "rollout_sha256": "e58eac84fde15a3afc442a1687ded5315200ad01569a4b12fdbc82f6899d2c7c",
+    "schema": "caplab.natural-review-administration/v1",
+    "task_and_dependencies_unchanged": true,
+    "thread_id": "01a08d70-c413-7ca2-8fca-b2368ddcb1e0",
+    "usage": {
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 1664768,
+      "input_tokens": 1793358,
+      "output_tokens": 23457,
+      "reasoning_output_tokens": 19154
+    },
+    "verifier_sha256": "6074b2488bb866c8ba2f7cb061f185184f60bfb2cae280e4fde8ee809d452694"
+  },
+  "capture_inventory": [
+    {
+      "bytes": 51,
+      "disposition": "retained",
+      "path": "codex/config.toml",
+      "sha256": "4a2bde9cf0e035a0ac36de4675acddc0e7cc07c8aa7548af989438ad99b60cc1"
+    },
+    {
+      "bytes": 32768,
+      "disposition": "retained",
+      "path": "codex/goals_1.sqlite",
+      "sha256": "edff02a4324bf39fa55206edde11fa48b8342273bb2975541dbc5ff474decf2f"
+    },
+    {
+      "bytes": 36,
+      "disposition": "retained",
+      "path": "codex/installation_id",
+      "sha256": "61dfbffc5d7812442962741e5325bfbd94c5de95769da9a856ab9054559b9952"
+    },
+    {
+      "bytes": 49152,
+      "disposition": "retained",
+      "path": "codex/logs_2.sqlite",
+      "sha256": "cf85fe6628ccaa1bf7a04ca85a609c8461a4a6a80d3c0a86e4db4fac1a9c7708"
+    },
+    {
+      "bytes": 40960,
+      "disposition": "retained",
+      "path": "codex/memories_1.sqlite",
+      "sha256": "adc57172b968fab5c45b374dc7716765f64cea56c062a86351c3517165e125ce"
+    },
+    {
+      "bytes": 244856,
+      "disposition": "retained",
+      "path": "codex/models_cache.json",
+      "sha256": "feb0c18c0120a964d215a6f78a64ed52e3cf003bf2bd9de853a150a9642747ad"
+    },
+    {
+      "bytes": 40960,
+      "disposition": "retained",
+      "path": "codex/queue_1.sqlite",
+      "sha256": "3660cfab32c1543369e92972da1b6a31e52f6d4c7fd01226e487376dbcb62764"
+    },
+    {
+      "bytes": 1597787,
+      "disposition": "projected-retained",
+      "path": "codex/sessions/2026/09/10/rollout-2026-09-10T22-29-32-01a08d70-c413-7ca2-8fca-b2368ddcb1e0.jsonl",
+      "projection_receipt": "projection-receipts/codex/sessions/2026/09/10/rollout-2026-09-10T22-29-32-01a08d70-c413-7ca2-8fca-b2368ddcb1e0.receipt.json",
+      "projection_receipt_sha256": "c0e1f7b9da524ba2677039439209d49f5114f199d6b1074e16f9c5147064cfd9",
+      "sha256": "e58eac84fde15a3afc442a1687ded5315200ad01569a4b12fdbc82f6899d2c7c"
+    },
+    {
+      "bytes": 17,
+      "disposition": "retained",
+      "path": "codex/skills/.system/.codex-system-skills.marker",
+      "sha256": "af2d6853e26c9bf6a4ad2e9588586dba9f06fdc4b91864861b9866921abe98ac"
+    },
+    {
+      "bytes": 10776,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/LICENSE.txt",
+      "sha256": "4dd13869245e356246a5b770723247bbb80a8f07a181d1d3d873a1734297cdb9"
+    },
+    {
+      "bytes": 19201,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/SKILL.md",
+      "sha256": "681ddb4ad6d06a2acc78a3535b583f8d0c1ea800ecda3d56370d3310fd2cd4ba"
+    },
+    {
+      "bytes": 275,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/agents/openai.yaml",
+      "sha256": "9ca574af14580dc7a2a3dc37a1796d17f93cb8850be66501f0799ef8603e9dc0"
+    },
+    {
+      "bytes": 2889,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/assets/imagegen-small.svg",
+      "sha256": "cff5f34f57ff60b3ee92eaedd17b15e96dd4b9e776df3e78936c9e00d42be294"
+    },
+    {
+      "bytes": 1711,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/assets/imagegen.png",
+      "sha256": "95952f644064eb9e890f98d8db07216347186526e4c41ad66d3420629eb86e20"
+    },
+    {
+      "bytes": 9655,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/references/cli.md",
+      "sha256": "ecfc2e09261a0feb3482517a5fa0ff410cb7d1958e3cbd2ac6b61586f5b81405"
+    },
+    {
+      "bytes": 1779,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/references/codex-network.md",
+      "sha256": "c88298ca4481f6116a16fa7987434fc977f8b311c1bbc0c3d862ffd0c5981148"
+    },
+    {
+      "bytes": 6072,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/references/image-api.md",
+      "sha256": "dc975d7af8a4888967251a0276014b4a71ea30455294944b762256373ce3e569"
+    },
+    {
+      "bytes": 8282,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/references/prompting.md",
+      "sha256": "b210b051c775860267080941eba968212bf0ac7fce581d75c5dcc217d8293f8b"
+    },
+    {
+      "bytes": 17617,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/references/sample-prompts.md",
+      "sha256": "70474177d151855b175c6133de2aae1d90b7f146b0dab50ec830972c47d72183"
+    },
+    {
+      "bytes": 34667,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/scripts/image_gen.py",
+      "sha256": "b4345cf835e5b593b97df6bb2b70bda493b8a97eee4cabbc99b2fa57dba9b448"
+    },
+    {
+      "bytes": 13905,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/scripts/remove_chroma_key.py",
+      "sha256": "a5893c4bd04b21abced33731ea89d2ac428e81d92a0368eb18ffbe4fda5253e2"
+    },
+    {
+      "bytes": 10776,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/LICENSE.txt",
+      "sha256": "4dd13869245e356246a5b770723247bbb80a8f07a181d1d3d873a1734297cdb9"
+    },
+    {
+      "bytes": 5446,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/SKILL.md",
+      "sha256": "7cb8fa1b2a0c635b5c61ffe1da7b8594a7ea0fce5b71e8d523e2025d88b2a05e"
+    },
+    {
+      "bytes": 370,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/agents/openai.yaml",
+      "sha256": "44b9efac6be1bae32d869aa2942fecbe4dcae82682ee03e4120f2f9b7d4658ec"
+    },
+    {
+      "bytes": 1091,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/assets/openai-small.svg",
+      "sha256": "45be1f0757eb18889eefb1e7db79668ef46a275dc4e0e78e8df5ebd7f6cdeadc"
+    },
+    {
+      "bytes": 1429,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/assets/openai.png",
+      "sha256": "156cc84d7332bfe95b310350bd470b690d22aa33d65340cc6c2e06022946194c"
+    },
+    {
+      "bytes": 7417,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/codex-self-knowledge.md",
+      "sha256": "8c8fb00e6e5cb1977924f5164684a6095427fa828bbc765225f17d9aeb79a912"
+    },
+    {
+      "bytes": 2094,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/latest-model.md",
+      "sha256": "f25e351e522dd6e30e82d482f31f44c992e794b11031cdcb6ac7c0e6b20c9d5d"
+    },
+    {
+      "bytes": 2318,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/mcp-diagnostics.md",
+      "sha256": "49bbd2f73df7bbd7f86c80425dea4da2d301c22046080399a36bfc0ca49509e9"
+    },
+    {
+      "bytes": 5054,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/model-migration.md",
+      "sha256": "5f20c38fbbb10319767b216d91ba74bae49c68fc1bfd6d1abd7c9b4cc9cb9ab0"
+    },
+    {
+      "bytes": 1344,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/model-selection.md",
+      "sha256": "ba2d164abbca30435a460a0bc3a7d82398dce2bdf092705c98ba55b3f3af38a8"
+    },
+    {
+      "bytes": 3337,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/official-docs.md",
+      "sha256": "7962f2dce55089b93bde4115bb89fd42f20993c1597a2b13edd4956f463875b9"
+    },
+    {
+      "bytes": 15747,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/prompting-guide.md",
+      "sha256": "db913884cfe0fabf29bee1a139918f56e299decfa0a14d61c48596f23f76621d"
+    },
+    {
+      "bytes": 1050,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/upgrade-guide.md",
+      "sha256": "ed1b75a89b8ec4d67787774ef6c4e8b98eace16c63348f42e969e6ffa67cb656"
+    },
+    {
+      "bytes": 23093,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/upgrading-to-gpt-5p6-sol.md",
+      "sha256": "9a918a0c8dd051d574f2fd0309201afa8a9b9c08241c11ca1fb0ac2f4724e7ac"
+    },
+    {
+      "bytes": 16085,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/scripts/fetch-codex-manual.mjs",
+      "sha256": "f53eb6d2f286e9efcc397e8bee93a938e37296c90953e4e06e94899ef1b6c363"
+    },
+    {
+      "bytes": 1038,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/scripts/resolve-latest-model-info",
+      "sha256": "7354dbb030ca0736dd633a7ca1b930cf640abd40370725dea3a458cb51d49523"
+    },
+    {
+      "bytes": 3937,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/scripts/resolve-latest-model-info.cjs",
+      "sha256": "eeb1bb486018e16b37edfc06b1a37179dbc672982d501040d4f7142f29dd2e64"
+    },
+    {
+      "bytes": 11467,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/SKILL.md",
+      "sha256": "71b95b8219644f95d633721e7f7cd3c469edfc8fe50f8415d400dfb2d74bc7b9"
+    },
+    {
+      "bytes": 339,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/agents/openai.yaml",
+      "sha256": "fecaf35d692bd3d33d1a065648258d12e393afa9055d78adf6e57b42f4142f6d"
+    },
+    {
+      "bytes": 1319,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/assets/plugin-creator-small.svg",
+      "sha256": "6591bf8ea9bb9435890dbdea299e0d2bd05f3aa893a335d26e4c535e93c8e7fb"
+    },
+    {
+      "bytes": 1563,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/assets/plugin-creator.png",
+      "sha256": "a4024b0306ddb05847e1012879d37aaf1e658205199da596f5145ed7a88d9162"
+    },
+    {
+      "bytes": 6000,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/references/installing-and-updating.md",
+      "sha256": "91c4781d48568fcc708b45566b08fb610ad1c88672720ae512f9525a1cf9cb20"
+    },
+    {
+      "bytes": 9179,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/references/plugin-json-spec.md",
+      "sha256": "eeb640130f69636affaa299d4170d5a7ae6a0ff978296ddf75c409ce6dd87b91"
+    },
+    {
+      "bytes": 11731,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/scripts/create_basic_plugin.py",
+      "sha256": "272cb14e02ad7c76ac40777443c49cfecfa333ee28ab7f6214210b72c8fd02ae"
+    },
+    {
+      "bytes": 784,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/scripts/identifier_validation.py",
+      "sha256": "a6d51ce4a9a7e8f85626ff5808a467a67574e7f8cdf1167ffb467c5f67e57223"
+    },
+    {
+      "bytes": 1644,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/scripts/read_marketplace_name.py",
+      "sha256": "ba24e6d91eed6f778bde022a967be335c6253983b5ecd1c5e30c8483385887fd"
+    },
+    {
+      "bytes": 3045,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/scripts/update_plugin_cachebuster.py",
+      "sha256": "6a630dfbdc2bca6952580da9c2c7ece08030926819ccd81d9deb518c24c1b0ed"
+    },
+    {
+      "bytes": 21739,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/scripts/validate_plugin.py",
+      "sha256": "f4eeadb733b28b0c3e714de263a76d6542866a672f3e99bdffcf4dbcdf85e944"
+    },
+    {
+      "bytes": 2661,
+      "disposition": "retained",
+      "path": "codex/skills/.system/review-agent/SKILL.md",
+      "sha256": "07079efd0dc76f05fade424e5dfb048dce1de2df7626e1a4f56292a4f3f92228"
+    },
+    {
+      "bytes": 252,
+      "disposition": "retained",
+      "path": "codex/skills/.system/review-agent/agents/openai.yaml",
+      "sha256": "4d867a46d15e36ac880176484aae160f59855340c6059b2ea6ab9fbc9af084de"
+    },
+    {
+      "bytes": 15311,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/SKILL.md",
+      "sha256": "6656e54755638e8efcf275a472b9672eaa8a9a1b9e59dc210e275b03b59e1e66"
+    },
+    {
+      "bytes": 183,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/agents/openai.yaml",
+      "sha256": "d07d21b93fcf3d4dc8d9a3399c05fc226a49a333a96d3e1c68b451b8dd9eade6"
+    },
+    {
+      "bytes": 1319,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/assets/skill-creator-small.svg",
+      "sha256": "6591bf8ea9bb9435890dbdea299e0d2bd05f3aa893a335d26e4c535e93c8e7fb"
+    },
+    {
+      "bytes": 1563,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/assets/skill-creator.png",
+      "sha256": "a4024b0306ddb05847e1012879d37aaf1e658205199da596f5145ed7a88d9162"
+    },
+    {
+      "bytes": 11358,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/license.txt",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "bytes": 2356,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/references/openai_yaml.md",
+      "sha256": "ffac39318e408108141d40f820968e59f70434a891694f9bf1d25be8237b150c"
+    },
+    {
+      "bytes": 6669,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/scripts/generate_openai_yaml.py",
+      "sha256": "816df12072d74faf924d802a6599a139997e1441e90bfe4869ec304f2e5e2851"
+    },
+    {
+      "bytes": 10314,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/scripts/init_skill.py",
+      "sha256": "bf0656a5f9d8d8cdecf0245eaf27e1df8e0e9b6d40ccdda814eb8e3d5f6992c8"
+    },
+    {
+      "bytes": 4249,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/scripts/quick_validate.py",
+      "sha256": "ee6dba90f44d37171c5a6edb8095979c54919ff6822c1a907afca2e78c48738c"
+    },
+    {
+      "bytes": 11358,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-installer/LICENSE.txt",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "bytes": 3367,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-installer/SKILL.md",
+      "sha256": "d68b77e5bbb34dedab89d134da52855f140fc4b4299b80104f534e3b9e98f8ee"
+    },
+    {
+      "bytes": 221,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-installer/agents/openai.yaml",
+      "sha256": "5ce223d8b1070b82c42298538f1b8d376f788eb9e7a42a987e8c094070d73f0e"
+    },
+    {
+      "bytes": 923,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-installer/assets/skill-installer-small.svg",
+      "sha256": "3928703ff00dc1a681e7a22401843b7edcbd4b2051651ce4c43b75f7e140504e"
+    },
+    {
+      "bytes": 1086,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-installer/assets/skill-installer.png",
+      "sha256": "d0a230b1a79b71b858b7c215a0fbb0768d6459c14ea4ef80c61592629bf0e605"
+    },
+    {
+      "bytes": 659,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-installer/scripts/github_utils.py",
+      "sha256": "61c1bbe2ae217433b4b6f9f09f21aca4df52c12598068343ade719f706e4859b"
+    },
+    {
+      "bytes": 11917,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-installer/scripts/install-skill-from-github.py",
+      "sha256": "38f311b75664bb063808f982c600271ebc4b560830f491705190f88a94e3e781"
+    },
+    {
+      "bytes": 2948,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-installer/scripts/list-skills.py",
+      "sha256": "9d6dfb2abf3afeee7f027a89fb1626b918a973da18f4eb6c25681286301beb41"
+    },
+    {
+      "bytes": 241664,
+      "disposition": "retained",
+      "path": "codex/state_5.sqlite",
+      "sha256": "19fe9334746059aa97b993545e7a1c5c03bf6ccb9f656ca1941c948e34bb4c30"
+    },
+    {
+      "bytes": 0,
+      "disposition": "retained",
+      "path": "codex/thread-writer-locks/.coordination.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 548864,
+      "disposition": "retained",
+      "path": "codex/thread_history_1.sqlite",
+      "sha256": "f03c6ba7f68dbcd3760f3139b943864dc44f8b1234efec1f9e8b9cc4b87432c6"
+    },
+    {
+      "bytes": 32768,
+      "disposition": "retained",
+      "path": "codex/thread_history_1.sqlite-shm",
+      "sha256": "82f93105d4e689edccb83d2d41752b7b7d4d8f95338b9e1f838dc5639165363e"
+    },
+    {
+      "bytes": 4120032,
+      "disposition": "retained",
+      "path": "codex/thread_history_1.sqlite-wal",
+      "sha256": "bedfdadae79f923fd058a06eb9c61625eae995179f7920131e2840d87880f656"
+    },
+    {
+      "bytes": 2659,
+      "disposition": "retained",
+      "path": "final-message.txt",
+      "sha256": "d040e7f39d25804845b04a5f78f0f1d70e8db2eb4929e56817013dde28839ae6"
+    },
+    {
+      "bytes": 39,
+      "disposition": "retained",
+      "path": "stderr",
+      "sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721"
+    },
+    {
+      "bytes": 399796,
+      "disposition": "retained",
+      "path": "stdout",
+      "sha256": "67a8ce77b67ca1b0417c585ac645308cd00f71a2f22988e251586adba9f7b451"
+    }
+  ],
+  "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-natural-output-2",
+  "failed_preparation": {
+    "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-natural-output-1",
+    "files": [
+      {
+        "path": "assessment-obligations.json",
+        "sha256": "5101d500d60c18dfde249fe454bbd90b07ecddf2271198bd76fab3477fb36b18"
+      },
+      {
+        "path": "guard-diagnostic.json",
+        "sha256": "07d90d34aa7e00cc8115409fb123a78e72be4a5165e7caf1d2b36f93f63d25de"
+      },
+      {
+        "path": "plan.json",
+        "sha256": "4c27a1741a6daa0ad9d31bf042ade80f936de013ccbbd1ef11c22beeb164474e"
+      },
+      {
+        "path": "preflight-failure.json",
+        "sha256": "643acf63518924e65febd9cc74a7bcb24021af46e3a6b248de2aa70f2b5fb84f"
+      },
+      {
+        "path": "preparation.json",
+        "sha256": "b24e38d2df66100223d1549a454df73ff02fc18e384cc45db70cc9e75378c413"
+      },
+      {
+        "path": "projection.py",
+        "sha256": "46c364d41b462a9085a927a1ca37b78d9a08e48c55be2be2654002ba8113b86f"
+      },
+      {
+        "path": "prompt.txt",
+        "sha256": "a6d45a7273077032435b7e68727c3f5ecd39de84582f6a9e5e2925df7615440b"
+      },
+      {
+        "path": "readiness-plan.json",
+        "sha256": "fd725d5f782c3cf503c1dcde855ba8c46fe870c18fa9982940dac79a828fef29"
+      },
+      {
+        "path": "runner.py",
+        "sha256": "c69d6b2be4722b5ac4a229f81adbd41e677ff821ea82b81b6256f0554694f5d6"
+      },
+      {
+        "path": "readiness-base/completion.json",
+        "sha256": "93adbec12a443ea36fff076bf1e81a22bc0cedecce3f4ff172635d27e9f3884c"
+      },
+      {
+        "path": "readiness-base/launch.json",
+        "sha256": "ee224c312384b673cc22a2b54adba1370d3a136f4ae84ee50ed45a11a43abbce"
+      },
+      {
+        "path": "readiness-base/stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "readiness-base/stdout",
+        "sha256": "d3d307e917294b689b9d2731602236e1ab792e814ee6ffab26b912f5bf07251d"
+      },
+      {
+        "path": "readiness-current/completion.json",
+        "sha256": "8d58ddd70ee4fdbaaa7c7f7c3c2819cf07e23bc22d4f9ba0598b80c3f9d9f55d"
+      },
+      {
+        "path": "readiness-current/launch.json",
+        "sha256": "13d1c1cfeec884a4c863df6d9c6c1543f2f6373f06da62e119a3bd8200c1dfd3"
+      },
+      {
+        "path": "readiness-current/stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "readiness-current/stdout",
+        "sha256": "5ac58fbbb821d056511d4c3e6fc36abcd7f47b7553c23ac6beb1d13e9f57ddf7"
+      },
+      {
+        "path": "readiness-base-capture/tests.xml",
+        "sha256": "95dbadec3f1b089e5d5f0bb3c58b0ea9863b6ff48d99fffdbfb99b491c3a0424"
+      },
+      {
+        "path": "readiness-current-capture/tests.xml",
+        "sha256": "1998ca985eaa3eb3136b2df81fbcc190cbe87462e009aa03d4f26acde8fe03a0"
+      }
+    ],
+    "model_launched": false
+  },
+  "files": [
+    {
+      "path": "administration-check.json",
+      "sha256": "f0ee550e86fc87044a2b1741904adfba1ccb6916c875268c63dd9f29deaaba57"
+    },
+    {
+      "path": "administration-checker.py",
+      "sha256": "6074b2488bb866c8ba2f7cb061f185184f60bfb2cae280e4fde8ee809d452694"
+    },
+    {
+      "path": "assessment-obligations.json",
+      "sha256": "5101d500d60c18dfde249fe454bbd90b07ecddf2271198bd76fab3477fb36b18"
+    },
+    {
+      "path": "completion.json",
+      "sha256": "9f7b24d2144d457a45bf71a67744d9c8472fdccd629d29000bc76189af105b3a"
+    },
+    {
+      "path": "guard-verification.json",
+      "sha256": "a700936f2515481a99851ef9bd275edbe918c134703e1d17f1de07a81dd38620"
+    },
+    {
+      "path": "launch.json",
+      "sha256": "ccf5cadc67aab433600c50803e5008b5caa26f9838c27709183df96a110290e6"
+    },
+    {
+      "path": "plan.json",
+      "sha256": "3602e61ff5c2870044623a0984e0b5de012435f4021eeb5167e2ad74d4122b2d"
+    },
+    {
+      "path": "preparation.json",
+      "sha256": "0a5f444de83daac52326e778a5c4977997a01011b242edcfa0cedf1d464c402c"
+    },
+    {
+      "path": "process.json",
+      "sha256": "e5551a75dc11102ba577eec90504f86291777ffcbc9ca835460865aac86d3048"
+    },
+    {
+      "path": "projection.py",
+      "sha256": "46c364d41b462a9085a927a1ca37b78d9a08e48c55be2be2654002ba8113b86f"
+    },
+    {
+      "path": "prompt.txt",
+      "sha256": "a6d45a7273077032435b7e68727c3f5ecd39de84582f6a9e5e2925df7615440b"
+    },
+    {
+      "path": "readiness-plan.json",
+      "sha256": "fd725d5f782c3cf503c1dcde855ba8c46fe870c18fa9982940dac79a828fef29"
+    },
+    {
+      "path": "runner.py",
+      "sha256": "e5aaeade825c3b8e9f05fb084b287481944e91f01809a2845b248157c3b86dd6"
+    },
+    {
+      "path": "selection-check.json",
+      "sha256": "3084f0ff800b4276d7ce991b86c7a802b66eefe55d3e46a81cdc745f32612a37"
+    },
+    {
+      "path": "readiness-base/completion.json",
+      "sha256": "93adbec12a443ea36fff076bf1e81a22bc0cedecce3f4ff172635d27e9f3884c"
+    },
+    {
+      "path": "readiness-base/launch.json",
+      "sha256": "ee224c312384b673cc22a2b54adba1370d3a136f4ae84ee50ed45a11a43abbce"
+    },
+    {
+      "path": "readiness-base/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "readiness-base/stdout",
+      "sha256": "d3d307e917294b689b9d2731602236e1ab792e814ee6ffab26b912f5bf07251d"
+    },
+    {
+      "path": "readiness-current/completion.json",
+      "sha256": "8d58ddd70ee4fdbaaa7c7f7c3c2819cf07e23bc22d4f9ba0598b80c3f9d9f55d"
+    },
+    {
+      "path": "readiness-current/launch.json",
+      "sha256": "13d1c1cfeec884a4c863df6d9c6c1543f2f6373f06da62e119a3bd8200c1dfd3"
+    },
+    {
+      "path": "readiness-current/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "readiness-current/stdout",
+      "sha256": "5ac58fbbb821d056511d4c3e6fc36abcd7f47b7553c23ac6beb1d13e9f57ddf7"
+    },
+    {
+      "path": "readiness-base-capture/tests.xml",
+      "sha256": "95dbadec3f1b089e5d5f0bb3c58b0ea9863b6ff48d99fffdbfb99b491c3a0424"
+    },
+    {
+      "path": "readiness-current-capture/tests.xml",
+      "sha256": "1998ca985eaa3eb3136b2df81fbcc190cbe87462e009aa03d4f26acde8fe03a0"
+    },
+    {
+      "path": "projection-receipts/codex/sessions/2026/09/10/rollout-2026-09-10T22-29-32-01a08d70-c413-7ca2-8fca-b2368ddcb1e0.receipt.json",
+      "sha256": "c0e1f7b9da524ba2677039439209d49f5114f199d6b1074e16f9c5147064cfd9"
+    }
+  ],
+  "guard_check": {
+    "all_accepted_bytes_unchanged": true,
+    "credential_values_not_recorded": true,
+    "implementation_sha256": "4dd1f2598b498ad22409db4bfcf9b1c55b9907d33916543b163743b6b6b7a853",
+    "profiles": {
+      "credential-private-text/v3": {
+        "accepted_files": 185,
+        "checked_files": 191,
+        "rejected": [
+          "task/base/newsroom/cli.py",
+          "task/base/newsroom/feedback.py",
+          "task/base/newsroom/slack.py",
+          "task/current/newsroom/cli.py",
+          "task/current/newsroom/feedback.py",
+          "task/current/newsroom/slack.py"
+        ]
+      },
+      "credential-private-text/v4": {
+        "accepted_files": 191,
+        "checked_files": 191,
+        "rejected": []
+      }
+    },
+    "schema": "caplab.original-task-guard-check/v1"
+  },
+  "limits": [
+    "Authentic native output does not establish finding truth or scorer validity.",
+    "Original suite readiness is separate from independent behavioral evidence.",
+    "This development case is unavailable for held-out evaluation."
+  ],
+  "ranking_eligible": false,
+  "schema": "caplab.natural-review-development-receipt/v1",
+  "source_files": 188,
+  "source_snapshots": {
+    "base": {
+      "commit": "1bfe5a656bcb2c663891afd5f980211a3ef144a8",
+      "parent": "a3c0cec9ec49a319541cc3c00ec1b2c691eadf5e",
+      "tree": "9d63957463f4e4e6a8a5923fe1b5fdd80d7214b7"
+    },
+    "current": {
+      "commit": "544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f",
+      "parent": "1bfe5a656bcb2c663891afd5f980211a3ef144a8",
+      "tree": "ffd0b76ba0043bb2644ebc2e6e0e6ef9de85ffd7"
+    }
+  }
+}

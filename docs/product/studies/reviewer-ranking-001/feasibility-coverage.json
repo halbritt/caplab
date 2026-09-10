@@ -1,9 +1,9 @@
 {
   "admitted_cases": 0,
   "counts": {
-    "base-tree-only": 2,
+    "base-tree-only": 3,
     "bounded-change-behavior": 7,
-    "pending-change-behavior": 23
+    "pending-change-behavior": 22
   },
   "interpretation": "Planning projection. Bounded behavior evidence is not complete change coverage, a whole-patch clean label, case admission or an independent case count. Base-tree executions do not verify that base commit change. No selected case has been replaced.",
   "rows": [
@@ -102,13 +102,13 @@
       "base": "a3c0cec9ec49a319541cc3c00ec1b2c691eadf5e",
       "case_admitted": false,
       "commit": "1bfe5a656bcb2c663891afd5f980211a3ef144a8",
-      "receipt": null,
-      "receipt_sha256": null,
+      "receipt": "natural-findings-development-receipt.json",
+      "receipt_sha256": "1a89cd4150e2c7a99afbdb821edae1aa421840704243a5bffd1f47329b81c88e",
       "record": null,
       "repository": "ai-newsroom",
-      "scope": "No change-specific behavioral witness established.",
+      "scope": "Original HTML listing behavior executed as baseline for another case; this Particle change remains unverified.",
       "size_stratum": "501+",
-      "status": "pending-change-behavior",
+      "status": "base-tree-only",
       "tree": "9d63957463f4e4e6a8a5923fe1b5fdd80d7214b7"
     },
     {

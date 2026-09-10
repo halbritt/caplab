@@ -1,6 +1,6 @@
 # Fixed-sample behavioral coverage
 
-Seven of the 32 selected changes have bounded, change-relevant behavioral witnesses. Two further selected trees ran as bases for other witnesses; their own changes remain unverified. The remaining 23 changes have no established behavioral witness. No case is admitted for reviewer scoring.
+Seven of the 32 selected changes have bounded, change-relevant behavioral witnesses. Three further selected trees ran as bases for other witnesses; their own changes remain unverified. The remaining 22 changes have no established behavioral witness. No case is admitted for reviewer scoring.
 
 This projection keeps every selected change in the denominator. A witness may cover only part of a change. Repeated executions, ancestor investigations and passing tests do not increase the count of independently covered changes.
 
@@ -13,7 +13,7 @@ This projection keeps every selected change in the denominator. A witness may co
 | ai-newsroom | 21-100 | `00efadb0c5bd` | Executed as another case base; this change remains unverified. |
 | ai-newsroom | 21-100 | `345e9d25caaf` | No change-specific behavioral witness established. |
 | ai-newsroom | 501+ | `544f7e3c43ea` | [Reddit recovery deadline, filtering and pool reopen](../../../records/verification-2026-09-10-reviewer-reddit-recovery-outcome.md); other components unverified. |
-| ai-newsroom | 501+ | `1bfe5a656bcb` | No change-specific behavioral witness established. |
+| ai-newsroom | 501+ | `1bfe5a656bcb` | [Executed as a listing baseline](../../../records/verification-2026-09-10-reviewer-newsroom-natural-findings.md); its Particle change remains unverified. |
 | caplab | 0-20 | `b359e3039326` | No change-specific behavioral witness established. |
 | caplab | 0-20 | `51a7698535f0` | No change-specific behavioral witness established. |
 | caplab | 101-500 | `c8f097a0934b` | [Prompt delivery and response validity](../../../records/verification-2026-09-10-reviewer-pool-transport-outcome.md) |

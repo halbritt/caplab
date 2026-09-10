@@ -21,7 +21,8 @@ _PUBLIC_KEYS = frozenset(
     {"id", "label", "email", "name", "organization", "delegations", _AUTH_CLAIM}
 )
 _QUARANTINE_PROFILES = (
-    "credential-private-text/v1", "credential-private-text/v2", "credential-private-text/v3"
+    "credential-private-text/v1", "credential-private-text/v2", "credential-private-text/v3",
+    "credential-private-text/v4",
 )
 _PLAN_CATEGORIES = frozenset(
     {"free", "go", "plus", "pro", "team", "business", "enterprise", "edu", "unknown"}
@@ -184,7 +185,7 @@ def _jwt(value, now):
     return header, claims, tuple(part.encode("ascii") for part in pieces)
 
 
-def _protocol_claim_field(path, key, value, owner, *, authentication_categories=False):
+def _protocol_claim_field(path, key, value, owner, *, authentication_categories=False, identity_alias=False):
     """Classify this occurrence, never remove equal private markers globally."""
     if path == ():
         if authentication_categories and key == "auth_provider":
@@ -204,6 +205,8 @@ def _protocol_claim_field(path, key, value, owner, *, authentication_categories=
             )
             return shape, category
     if path == (_AUTH_CLAIM,):
+        if identity_alias and key == "user_id":
+            return type(value) is str and bool(value), False
         if authentication_categories and key == "groups":
             return type(value) is list, False
         if key in ("chatgpt_account_id", "chatgpt_user_id", "chatgpt_plan_type"):
@@ -228,7 +231,7 @@ def _protocol_claim_field(path, key, value, owner, *, authentication_categories=
     return False, False
 
 
-def _private_strings(value, *, claim_categories=False, authentication_categories=False):
+def _private_strings(value, *, claim_categories=False, authentication_categories=False, identity_alias=False):
     strings, pending, count = set(), [(value, 0, (), False)], 0
     while pending:
         value, depth, path, category = pending.pop()
@@ -243,6 +246,7 @@ def _private_strings(value, *, claim_categories=False, authentication_categories
                     _protocol_claim_field(
                         path, key, child, value,
                         authentication_categories=authentication_categories,
+                        identity_alias=identity_alias,
                     )
                     if claim_categories
                     else (False, False)
@@ -274,8 +278,9 @@ def _claim_strings(claims, quarantine_profile):
     }
     return _private_strings(
         private,
-        claim_categories=quarantine_profile in ("credential-private-text/v2", "credential-private-text/v3"),
-        authentication_categories=quarantine_profile == "credential-private-text/v3",
+        claim_categories=quarantine_profile in ("credential-private-text/v2", "credential-private-text/v3", "credential-private-text/v4"),
+        authentication_categories=quarantine_profile in ("credential-private-text/v3", "credential-private-text/v4"),
+        identity_alias=quarantine_profile == "credential-private-text/v4",
     )
 
 

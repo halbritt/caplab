@@ -90,8 +90,10 @@ evidence. `scripts/reviewer_feasibility_sample.py` reproduces this selection
 from the hash-checked census.
 
 The [coverage projection](FEASIBILITY.md) accounts for all 32 selected changes.
-Six have bounded change-relevant behavioral evidence; two additional trees
-ran only as other cases' bases, and 24 changes remain behaviorally unverified.
+Seven have bounded change-relevant behavioral evidence; three additional trees
+have only baseline-witness evidence, and 22 changes remain without a
+change-specific behavioral witness. Test-readiness runs do not promote cases
+into these witness categories.
 These are coverage states, not case admissions or independent defect counts.
 
 ## Verified development outcomes
@@ -197,3 +199,24 @@ curator input and producer queue preservation are retained. The producer's
 modified-build metadata is disclosed. These verified properties support a
 bounded control candidate; the whole patch and reviewer ranking remain
 unaccepted.
+
+The [Reddit recovery witness](../../../records/verification-2026-09-10-reviewer-reddit-recovery-outcome.md)
+executes the unchanged 180-second budget through real active HTTPS responses.
+The selected large change completes both slow harvests after 190 seconds,
+persists the response and marks it live. Ordinary completion, date filtering
+and fresh-adapter pool reads pass. These observations cover named parts of
+one large change. Its copied base is not an executed control, and the rest
+of the change remains unverified.
+
+The [prospective newsroom review and finding investigations](../../../records/verification-2026-09-10-reviewer-newsroom-natural-findings.md)
+provide a complete natural review with original dependencies and passing suite
+readiness. Of three reported findings, the optional-RSS/pool coupling is
+independently reproduced as a new configuration defect. The lock finding
+misapplies a publisher-exclusion requirement to a non-publishing harvester.
+The HTML pacing claim remains unresolved in requirement scope and attribution;
+its dispatch mechanics already exist in the base. The known recovery-deadline
+family is absent from the final review. These are development assessments,
+not scores from a validated semantic interpreter. The review supplies no
+explicit blocking/advisory disposition, so no false-blocker rate is inferred.
+The failed source preflight is preserved; a versioned guard correction lets
+public `user_id` field names survive while retaining private-value protection.
