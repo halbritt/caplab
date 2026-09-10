@@ -1,0 +1,338 @@
+{
+  "attribution": "Observation omission predates sampled repair; predictor change permits original graph admission of that incomplete decision.",
+  "captured_files": 396,
+  "clock_administration_source_inspection": [
+    {
+      "observation": "Evaluate selects bindings with bind before reading HostClock; the counterfactual supplies the fixed fixture clock for supervised execution bounds.",
+      "path": "internal/scheduler/evaluation.go",
+      "role": "base",
+      "sha256": "065c8cc0551e4b5588090bc49386a3737bd38e23914b3af330d849a2885a2808"
+    },
+    {
+      "observation": "Evaluate selects bindings with bind before reading HostClock; the counterfactual supplies the fixed fixture clock for supervised execution bounds.",
+      "path": "internal/scheduler/evaluation.go",
+      "role": "repair",
+      "sha256": "6046dc3bd9567c71e48bdcda28a38585aee64b3f971a8f1e951f9cbf85cf755f"
+    }
+  ],
+  "conditions": 5,
+  "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/scheduler-graph-witness-2",
+  "diagnostic_observations": 20,
+  "execution_seconds": 15.939685609890148,
+  "failed_preparation": {
+    "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/scheduler-graph-witness-1",
+    "disposition": "Go vet could not open the virtual overlay file; no executable output or witness execution",
+    "files": [
+      {
+        "path": "plan.json",
+        "sha256": "42179cc2721ada6343d89ee8b44a8f927f981452540791747e0a27a310f0ce63"
+      },
+      {
+        "path": "criteria.json",
+        "sha256": "e4b275c1b1f962eb5a0d88bfa27c2003217ea3e85fdfd4a5d1fd8353eacca966"
+      },
+      {
+        "path": "witness/graph_probe_test.go",
+        "sha256": "7f59e2de4ac8d67c78d3f11a85be165897f4a67e22d88222f38199b6ec92a3ed"
+      },
+      {
+        "path": "witness/overlay.json",
+        "sha256": "7e99064074406bb1b69d625a37a157f5d3451d060970e7502f95f9e4403b7bc6"
+      },
+      {
+        "path": "runner.py",
+        "sha256": "4255de5b39cc32dbce03eafe4d0b926f381686314a942dc8fd3a4940c73cc71b"
+      },
+      {
+        "path": "run-started.json",
+        "sha256": "afba1fb221708652b738cd46297eeb5f6f144d21d68c90e8316d22ef19d3dad6"
+      },
+      {
+        "path": "completion.json",
+        "sha256": "0ececdc1cefa83dc9aeab359f3c503a90c7aa8ad32dd603fd6a73c460290cfab"
+      },
+      {
+        "path": "base-compile/launch.json",
+        "sha256": "1a9c3e5a70a95e80bec0b0aa88b7d9271942b1c7110b9d21969f6e8127e8ef10"
+      },
+      {
+        "path": "base-compile/completion.json",
+        "sha256": "2fe2c9c147ebcbfff686919e938a229cda1728d5b2c9b7dd805c5cfe5809d676"
+      },
+      {
+        "path": "base-compile/stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "base-compile/stderr",
+        "sha256": "489ca910fe4bb98f99147d5902e6f659f7b9b51714a4c969e02fa5128a9c8ed1"
+      }
+    ]
+  },
+  "family": "striatum-scheduling-decision-input-and-envelope",
+  "files": [
+    {
+      "path": "plan.json",
+      "sha256": "692a839050253defb17ffc7fd597b24c8b31a34bd5664fb49aba753e50dc82a0"
+    },
+    {
+      "path": "criteria.json",
+      "sha256": "e4b275c1b1f962eb5a0d88bfa27c2003217ea3e85fdfd4a5d1fd8353eacca966"
+    },
+    {
+      "path": "witness/graph_probe_test.go",
+      "sha256": "7f59e2de4ac8d67c78d3f11a85be165897f4a67e22d88222f38199b6ec92a3ed"
+    },
+    {
+      "path": "witness/overlay.json",
+      "sha256": "7e99064074406bb1b69d625a37a157f5d3451d060970e7502f95f9e4403b7bc6"
+    },
+    {
+      "path": "runner.py",
+      "sha256": "eec17e9a94fbd8ca629f8e53776b1425e6628a3b3816165788a85ac14a272758"
+    },
+    {
+      "path": "run-started.json",
+      "sha256": "aebbe6cb55c4b790b056638b69157145bb24841d1e37420172db057f1b63b97a"
+    },
+    {
+      "path": "completion.json",
+      "sha256": "5bfff4283f043d7470390f3c6676cb14ac86910dfcf768aa62b7506df4da2e6e"
+    },
+    {
+      "path": "verification.json",
+      "sha256": "554256ea2e73ee15fc29850a6c703421a3232a6454eeb504f78ec040fd25c265"
+    },
+    {
+      "path": "verifier.py",
+      "sha256": "b5c9a7e29b32caad79a5159a8f590e8ea46baca0cc4c784009245b03932c996e"
+    },
+    {
+      "path": "builds/base/binary.json",
+      "sha256": "52e90f8403dbd358d5cd959e3625f66a5371151e3d666262ffafda088b892ee1"
+    },
+    {
+      "path": "base-compile/launch.json",
+      "sha256": "1f7248bfe75aeffd0de710936a51981c0246c4a08ad55c5dfbcd247da21b4424"
+    },
+    {
+      "path": "base-compile/completion.json",
+      "sha256": "22c98b618e499178ad129fdd9462d672f9812e2a27955b53f6c71491d8ef34dc"
+    },
+    {
+      "path": "base-compile/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "base-compile/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "base-execution-1/launch.json",
+      "sha256": "ee4542c4e2dffe520a6a3f00037af52fa24de74ef9d1468794092b0b7967e4c8"
+    },
+    {
+      "path": "base-execution-1/completion.json",
+      "sha256": "1cdcc6860e56366842bf8113cac85b5b77f3d1e913e7602662c4fa1b2bcb5580"
+    },
+    {
+      "path": "base-execution-1/stdout",
+      "sha256": "1b29cd8ef71e0e6be7c2edf3b8933e6a93192e3251b0a9c8049bc8fe770f8f39"
+    },
+    {
+      "path": "base-execution-1/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "base-execution-2/launch.json",
+      "sha256": "5165a17d1e0c211b638db0dc60d203c57523a6a1348426ee4c6817612c8b2374"
+    },
+    {
+      "path": "base-execution-2/completion.json",
+      "sha256": "1f13300309561eb6d11a351ed34f155a2359fee1f09e607491e0693cd77db828"
+    },
+    {
+      "path": "base-execution-2/stdout",
+      "sha256": "e43521e637ce63fd85c9cddedc4762a0cbf5b096ac811cfa348d8fc8f6aaeb4d"
+    },
+    {
+      "path": "base-execution-2/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "base-execution-1-inventory.json",
+      "sha256": "f242dfc33e7611c4b3c896d9e06f4718e3204cb8c441067d667c80a594e6caf1"
+    },
+    {
+      "path": "base-execution-1-capture/expired-observation/result.json",
+      "sha256": "f6b2085f3a0707898410e9c5d49a6c65a70eeaf0566591fee674acc643360d2b"
+    },
+    {
+      "path": "base-execution-1-capture/local-fallback/result.json",
+      "sha256": "cd031e80b280230e057bf2710182e183e4de141d93112917d44c9d21023d925c"
+    },
+    {
+      "path": "base-execution-1-capture/ordinary/result.json",
+      "sha256": "fc44491af2d7a40cc8fcd0c6d3f367a42706b4960e70e96a927bc7ae96f39036"
+    },
+    {
+      "path": "base-execution-1-capture/supervised-fallback/result.json",
+      "sha256": "f295b2a8dc6181347ed88e3c8bc70462988c2cb6ba13b8022a6b52bf9cdffac4"
+    },
+    {
+      "path": "base-execution-1-capture/unrecognized-terminal/result.json",
+      "sha256": "81398fadd3dc7d3146ffd805c2388c0c0a80381e6e2034e464b6d8b5ebb1e5b1"
+    },
+    {
+      "path": "base-execution-2-inventory.json",
+      "sha256": "b38af9111d78fee3749af2d9f00843091dac875b1a257d563e2f5cff086bbc94"
+    },
+    {
+      "path": "base-execution-2-capture/expired-observation/result.json",
+      "sha256": "88b54c79013375153146732b4e6a8c99d18d3fae5855b1f6b57785045519dbd5"
+    },
+    {
+      "path": "base-execution-2-capture/local-fallback/result.json",
+      "sha256": "6025aa6f73de77c223037cd7e821ea454dbe00751664d64155ee236619d465d0"
+    },
+    {
+      "path": "base-execution-2-capture/ordinary/result.json",
+      "sha256": "4bc8017abe0664a99ba58ca6a16f293c87c7eb2e1a1509b107eb5a0f25b9d747"
+    },
+    {
+      "path": "base-execution-2-capture/supervised-fallback/result.json",
+      "sha256": "b526e86f5170f7a5ffae1e05204d2d7c1c23528f6c9a33429d793216ddd0e4d8"
+    },
+    {
+      "path": "base-execution-2-capture/unrecognized-terminal/result.json",
+      "sha256": "de2b0096e32ef1c025c40ccbe5dc880ed3ea10484c20cc43c81bc48f5240d6bf"
+    },
+    {
+      "path": "builds/repair/binary.json",
+      "sha256": "0d384ecdb3ef0c611b24d922ae7ad108874edfe876df57ebe1188096d6961348"
+    },
+    {
+      "path": "repair-compile/launch.json",
+      "sha256": "54319e5363a185f4c80398d9959cdee08ae2081c8d6ae970ce08b7c77d8efb4c"
+    },
+    {
+      "path": "repair-compile/completion.json",
+      "sha256": "4c3dda16e40d23aedadde6a8af10d623a7abf49b4c6952c729cb087f12fc1ae7"
+    },
+    {
+      "path": "repair-compile/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repair-compile/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repair-execution-1/launch.json",
+      "sha256": "8cfc5166c7bb8f411b9e0215177a08703d8f4f5eef14495bbb9b2d39f6607121"
+    },
+    {
+      "path": "repair-execution-1/completion.json",
+      "sha256": "aeefbc43442c9fcc362f1018ed6189dcf319afa27a8ffbf72185fa21d7a62d80"
+    },
+    {
+      "path": "repair-execution-1/stdout",
+      "sha256": "7057300399a6ae2f2aa12f4a6df012f611bbf37f393bf0b5bd358d0f5cebdaed"
+    },
+    {
+      "path": "repair-execution-1/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repair-execution-2/launch.json",
+      "sha256": "58867b95ceb040d6b61ffcfce38673ec4f063ec59e25f42998dd0c0687316fab"
+    },
+    {
+      "path": "repair-execution-2/completion.json",
+      "sha256": "46bc5de087e927a97b3df6553c6f1515bbcd58c589149473e76c2505bc2b4283"
+    },
+    {
+      "path": "repair-execution-2/stdout",
+      "sha256": "8c526cff8efaf604f602229ed6a927a701bd394575b35f638d8b90b871eddc14"
+    },
+    {
+      "path": "repair-execution-2/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repair-execution-1-inventory.json",
+      "sha256": "ad6c7b82b677c72bf3ff01af42ebf7177bad4d2866bbf3f812a540e93aa3522b"
+    },
+    {
+      "path": "repair-execution-1-capture/expired-observation/result.json",
+      "sha256": "c7a5418d663b2c67273187642cbcd13ed6833aa61b4aab0581b57c0ec2d42d9d"
+    },
+    {
+      "path": "repair-execution-1-capture/local-fallback/result.json",
+      "sha256": "a912694663fd7168d1b0ad28a43669a2161379387836f1be354756366ce4a71b"
+    },
+    {
+      "path": "repair-execution-1-capture/ordinary/result.json",
+      "sha256": "0622df703991b170c900f9699c0273d426fd4dad3b4f9df4c348d7885284724d"
+    },
+    {
+      "path": "repair-execution-1-capture/supervised-fallback/result.json",
+      "sha256": "d8f3c48f2bfe7fb705210df0f8333b0ce3e7615d8c08b79e78ae45d072136eef"
+    },
+    {
+      "path": "repair-execution-1-capture/unrecognized-terminal/result.json",
+      "sha256": "c2bfd51b9fe481537f85f989cbe68b951f8562e2184af36ffce0b5f743228b2f"
+    },
+    {
+      "path": "repair-execution-2-inventory.json",
+      "sha256": "17816ec662ce8d707de6b3cc90f59138234f68712e8b009b199ecc429b0621c5"
+    },
+    {
+      "path": "repair-execution-2-capture/expired-observation/result.json",
+      "sha256": "b9759507769c77903267187abecc84c9b4967ea33d0c78476aabe10b4cece3a4"
+    },
+    {
+      "path": "repair-execution-2-capture/local-fallback/result.json",
+      "sha256": "3554f8e0599c228c363dd94d89b71eb9a51508f4b1e3682417deee9fe1987e1b"
+    },
+    {
+      "path": "repair-execution-2-capture/ordinary/result.json",
+      "sha256": "03ec1b50557d8aba64244e4e1bd10f9cf2b01e0ad5ec2b27f8376209917b4bdd"
+    },
+    {
+      "path": "repair-execution-2-capture/supervised-fallback/result.json",
+      "sha256": "77dc9b04aadd980cb2c62038b4f8d9222a8a92be08eadac0dc998ff510e8cc3d"
+    },
+    {
+      "path": "repair-execution-2-capture/unrecognized-terminal/result.json",
+      "sha256": "a074edf64ec5d929c78e71852d63329d367bf345863cf1d5d0cd7bc6cf45579d"
+    }
+  ],
+  "finding": "Repaired original Driver creates, binds and reopens a v2 decision missing the active observation that caused local fallback.",
+  "limits": [
+    "Historical fixture builders supply setup, not correctness labels.",
+    "Observation removal is a counterfactual, not a general record-to-input reconstruction.",
+    "No backend execution, real provider exhaustion, corpus admission or reviewer ranking.",
+    "Surrounding graph retains the observation; irrecoverable loss is not established.",
+    "One related failure family, not 20 independent defects; no reviewer measured."
+  ],
+  "prior_record_witness_receipt": "scheduler-development-receipt.json",
+  "ranking_eligible": false,
+  "repetitions": 2,
+  "revisions": 2,
+  "schema": "caplab.scheduler-graph-development-receipt/v1",
+  "semantic_repetitions_match": true,
+  "source_custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/scheduler-witness-2",
+  "source_plan_sha256": "5da0a78a262415eacdfd9cfb82cc7629f4d88b6b2491403a138f2bdbfd8eb50a",
+  "unchanged_witness_and_criteria": true,
+  "verifier_dependencies": [
+    {
+      "path": "scripts/verify_reviewer_scheduler_witness.py",
+      "sha256": "dce2c550760c092b58ad902270bb897521d5345dafe56743e40f6a73a4ed195b"
+    },
+    {
+      "path": "scripts/verify_reviewer_claim_interpretation.py",
+      "sha256": "fe636a929585a9db324465f214bc518f64eec6cc6487093b05535a18558bb78e"
+    }
+  ]
+}

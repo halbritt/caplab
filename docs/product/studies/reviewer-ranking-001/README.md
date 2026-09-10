@@ -161,3 +161,13 @@ accept that record. The omission predates the sampled repair; the new
 predictor exposes it through a serializable envelope. This is record-boundary
 and counterfactual placement evidence, with full live graph behavior still
 open. It prevents treating the sampled repair as a verified clean control.
+
+The [original Driver graph witness](../../../records/verification-2026-09-10-reviewer-scheduler-graph-outcome.md)
+now reproduces the missing input through decision creation, lane binding,
+graph reopening and a fresh Session fold. The repaired local-fallback decision
+passes those paths without its causal exhaustion observation; the supervised
+control retains it. Ordinary, unrecognized-message and expiry controls also
+complete. Twenty repeated observations extend the same failure family, with
+zero backend dispatches. This closes the graph admission/reopening question
+for the tested scenario; case admission, broader recovery behavior and reviewer
+ranking remain open.
