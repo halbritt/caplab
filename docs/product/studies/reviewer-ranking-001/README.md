@@ -171,3 +171,13 @@ complete. Twenty repeated observations extend the same failure family, with
 zero backend dispatches. This closes the graph admission/reopening question
 for the tested scenario; case admission, broader recovery behavior and reviewer
 ranking remain open.
+
+The [CAPLAB pool transport witness](../../../records/verification-2026-09-10-reviewer-pool-transport-outcome.md)
+executes another fixed-sample change through the original subprocess and pool
+aggregation path. The introduction/base silently send oversized argument
+prompts to unread stdin and count pairs with absent responses. The repair
+fixes those paths but still counts a parseable object without a verdict.
+Endpoint byte receipts and original summaries corroborate 54 repeated
+observations; no scripted endpoint is treated as a reviewer. The ancestors
+are in the census but were not independently selected in the fixed sample.
+This expands case feasibility without admitting a corpus or accepting a ranking.
