@@ -1,0 +1,1045 @@
+{
+  "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/scheduler-witness-2",
+  "distinct_conditions": 7,
+  "execution_seconds": 6.970836875960231,
+  "family": "striatum-scheduling-decision-input-and-envelope",
+  "files": [
+    {
+      "path": "plan.json",
+      "sha256": "5da0a78a262415eacdfd9cfb82cc7629f4d88b6b2491403a138f2bdbfd8eb50a"
+    },
+    {
+      "path": "criteria.json",
+      "sha256": "3036dcc2fe010eb3caa11197610c7412547d9744f65a6b55e8afc7b5ecbebf45"
+    },
+    {
+      "path": "witness/probe.go",
+      "sha256": "ee347f9d27312f612fd9f2a4cd19a1fe1511295aa5124479873d0144ea7ef6e2"
+    },
+    {
+      "path": "runner.py",
+      "sha256": "cd66b72a743bc7135437578e41dee3002fb077f8048c58924102730bea4237c2"
+    },
+    {
+      "path": "run-started.json",
+      "sha256": "9dfa7927e27a226465d30c3e18c50c5d6295ac99c857f22e82597fa6e4e2dbe9"
+    },
+    {
+      "path": "completion.json",
+      "sha256": "40e64b2424fe3fc1fbfedeec10b01e60005f74e6fdfac8414e3b1402a70a47d3"
+    },
+    {
+      "path": "verification.json",
+      "sha256": "fa0497396d21e47f6284d0a2284ad09fe1fd529ed1cb44d5e6151677162ccca0"
+    },
+    {
+      "path": "verifier.py",
+      "sha256": "dce2c550760c092b58ad902270bb897521d5345dafe56743e40f6a73a4ed195b"
+    },
+    {
+      "path": "source-inspection.json",
+      "sha256": "78487f2dee2aef2ac7d89589d7192d981125b90b54154a74d464357714e8b9a9"
+    },
+    {
+      "path": "source-inventory-check.json",
+      "sha256": "a9598b044c8db2e03a86884f4d792518aecbb7cedc19affb873199b1ddc2e847"
+    },
+    {
+      "path": "builds/base/binary.json",
+      "sha256": "36b0de5e7ca97302128631bdae8d99dcff06604fef3d58cbed747cfd003acaa4"
+    },
+    {
+      "path": "base-verify-modules/launch.json",
+      "sha256": "7c686296bfedfa7b3cf1b48c90a253818b4c5021a6dace0e71bea02cf8a11481"
+    },
+    {
+      "path": "base-verify-modules/completion.json",
+      "sha256": "bed66c231310b1cfb422e6e747d017d83ac02f1c7280d8902d410558644ba2ce"
+    },
+    {
+      "path": "base-verify-modules/stdout",
+      "sha256": "b4537ed75f533f993f371954de47e42a793b8e5b0587577de7e27fb3e50696bd"
+    },
+    {
+      "path": "base-verify-modules/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "base-compile/launch.json",
+      "sha256": "9aa5bba80ddf4d35d970676ca334816ad5272e511daccafcdc00e950fb1403dc"
+    },
+    {
+      "path": "base-compile/completion.json",
+      "sha256": "88d39ac9511ee244129319e57f74b7d285bc9ed17239cabf833594f88f068e0d"
+    },
+    {
+      "path": "base-compile/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "base-compile/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "base-execution-1/launch.json",
+      "sha256": "bfeb84592f5f3a52218b8991843c1c9b907e4946a0bb1d80e35d4ae790f5e1fd"
+    },
+    {
+      "path": "base-execution-1/completion.json",
+      "sha256": "6fc46f0a2f8c8e3204e930f32094c3444b06fa752ec278fefc274e19ecaea1b7"
+    },
+    {
+      "path": "base-execution-1/stdout",
+      "sha256": "1ba37d81d20b3abeaa9411fbbeda355511f65fa558722b0920ad64e9a35615dd"
+    },
+    {
+      "path": "base-execution-1/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "base-execution-2/launch.json",
+      "sha256": "0cda64d4519045819c81cba8e0f47c7be32bab260f75fe313e2b42cf77011de0"
+    },
+    {
+      "path": "base-execution-2/completion.json",
+      "sha256": "1352d6f2cb405f43a52a67942eb97c099e6ea8ccfa0dc20ce48c480b13c9d6c8"
+    },
+    {
+      "path": "base-execution-2/stdout",
+      "sha256": "1ba37d81d20b3abeaa9411fbbeda355511f65fa558722b0920ad64e9a35615dd"
+    },
+    {
+      "path": "base-execution-2/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "builds/partial/binary.json",
+      "sha256": "b264bf71af15f77d8a2063981cb9f2c06fef7c3e4c8ccd99d28cc868002ec62f"
+    },
+    {
+      "path": "partial-verify-modules/launch.json",
+      "sha256": "208973fddf8360531973f6941d38ce9daef89377a1648a1cb308c95994ba0290"
+    },
+    {
+      "path": "partial-verify-modules/completion.json",
+      "sha256": "a1f59e7e16318ad39f1de5e65a2fd3e08be51ccf6746f8f2b1c71a98050070ed"
+    },
+    {
+      "path": "partial-verify-modules/stdout",
+      "sha256": "b4537ed75f533f993f371954de47e42a793b8e5b0587577de7e27fb3e50696bd"
+    },
+    {
+      "path": "partial-verify-modules/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "partial-compile/launch.json",
+      "sha256": "e85f6b4b8999cf30c01b57f18a5c39ff5fbace0cc884deb3b6eb8fd27a8bc305"
+    },
+    {
+      "path": "partial-compile/completion.json",
+      "sha256": "54601ce9d3bbb745ed3ec48fe1a7d3c4e2b22a6826ac3b45e1496bd50ebfd6f8"
+    },
+    {
+      "path": "partial-compile/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "partial-compile/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "partial-execution-1/launch.json",
+      "sha256": "e367df03c3bf3a320524a477c121e8b6d94651c6e89a2f513fe3be65946807f0"
+    },
+    {
+      "path": "partial-execution-1/completion.json",
+      "sha256": "79423d058462c5adc13b2cf1ded6b922b6c8083b689825ba0d6e43d2579527ee"
+    },
+    {
+      "path": "partial-execution-1/stdout",
+      "sha256": "507b19932f5fb5f84833d6ae783c4988662058b4c75befea9a3b82f7e34cfcd6"
+    },
+    {
+      "path": "partial-execution-1/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "partial-execution-2/launch.json",
+      "sha256": "e074b2684d115c09b8a95be0c4f2b59cd531a79d22412a71dfecb5ddf7641bba"
+    },
+    {
+      "path": "partial-execution-2/completion.json",
+      "sha256": "3a3129154c903d2b200b14c1bd0ffb557545df4fc871c24f8d6208384cf55d6d"
+    },
+    {
+      "path": "partial-execution-2/stdout",
+      "sha256": "507b19932f5fb5f84833d6ae783c4988662058b4c75befea9a3b82f7e34cfcd6"
+    },
+    {
+      "path": "partial-execution-2/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "builds/precursor/binary.json",
+      "sha256": "01be26ecd29162e81e4ec6a4eed473b2873044e3d280f8143cb343d0aaa975df"
+    },
+    {
+      "path": "precursor-verify-modules/launch.json",
+      "sha256": "5ffacaa71821493f0b7df4a11f1c2914bd6575091e38097cb623aa9c0317b4dc"
+    },
+    {
+      "path": "precursor-verify-modules/completion.json",
+      "sha256": "453b08dc97055bc23b0835d0adac89918c9920cbe29ce5a41a84c814248a9f52"
+    },
+    {
+      "path": "precursor-verify-modules/stdout",
+      "sha256": "b4537ed75f533f993f371954de47e42a793b8e5b0587577de7e27fb3e50696bd"
+    },
+    {
+      "path": "precursor-verify-modules/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "precursor-compile/launch.json",
+      "sha256": "5b095a78c477cfec4b7fd53765d9a6cc1d52c8fe5c096e9096c931f38d96ceff"
+    },
+    {
+      "path": "precursor-compile/completion.json",
+      "sha256": "600c2ae752b66eaf904d89fd31f9db7c314250aa8681fbdb345476ea012d2a58"
+    },
+    {
+      "path": "precursor-compile/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "precursor-compile/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "precursor-execution-1/launch.json",
+      "sha256": "ba7212314b74608ff57763db902ec2e58f59804f09a4ae49cf3a4647ef06605a"
+    },
+    {
+      "path": "precursor-execution-1/completion.json",
+      "sha256": "3c5a495b4231e34347889067a2b005c5ccdd6cfbbe7e5d1317c99476d595744e"
+    },
+    {
+      "path": "precursor-execution-1/stdout",
+      "sha256": "4b4d02bbf01e1bf4b0d554f13004e48d650a122b94fc352c357e509fc86b153f"
+    },
+    {
+      "path": "precursor-execution-1/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "precursor-execution-2/launch.json",
+      "sha256": "d0c4f3aa43957095339d07f3ffb8e039cccbbf053b4a585d6466dcd1cbde1997"
+    },
+    {
+      "path": "precursor-execution-2/completion.json",
+      "sha256": "8c834713d019bdd10e7fc2f79bb0fb74e33010092bacd7fa3fa1618c8aa6158c"
+    },
+    {
+      "path": "precursor-execution-2/stdout",
+      "sha256": "4b4d02bbf01e1bf4b0d554f13004e48d650a122b94fc352c357e509fc86b153f"
+    },
+    {
+      "path": "precursor-execution-2/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "builds/repair/binary.json",
+      "sha256": "a7ac0836d276c92101a303bfe14705265fe885ea233ddd2ddac7966243d284e7"
+    },
+    {
+      "path": "repair-verify-modules/launch.json",
+      "sha256": "11dcf44fb8143f43c331d0da4753d98b8a74c49fd3098b735314670266b90416"
+    },
+    {
+      "path": "repair-verify-modules/completion.json",
+      "sha256": "f429acb43825b7e2f3e0c7587fcb79e735eed33195126dad41661353bbb18782"
+    },
+    {
+      "path": "repair-verify-modules/stdout",
+      "sha256": "b4537ed75f533f993f371954de47e42a793b8e5b0587577de7e27fb3e50696bd"
+    },
+    {
+      "path": "repair-verify-modules/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repair-compile/launch.json",
+      "sha256": "64780a956d780c3b2a5cba6ca8f3eb213f1ceb7d4117ca2080534307c13d8542"
+    },
+    {
+      "path": "repair-compile/completion.json",
+      "sha256": "3f13b7ba8e92257fce9b3fdd024192be0c378241658bc4a660fe59133ac6afa4"
+    },
+    {
+      "path": "repair-compile/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repair-compile/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repair-execution-1/launch.json",
+      "sha256": "39097708f7c03fb310c3fafcecaacfbce861324081d4c9fdc3d6615679810021"
+    },
+    {
+      "path": "repair-execution-1/completion.json",
+      "sha256": "6d4e82cd31dea90a4cc294223b9146c5e1aa0c982f5a6479cf04fb38e85cba42"
+    },
+    {
+      "path": "repair-execution-1/stdout",
+      "sha256": "315d89ef9135d0e1c04c7a21c9b549d96a20d0567b0d2dd58b2677310e6491dc"
+    },
+    {
+      "path": "repair-execution-1/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repair-execution-2/launch.json",
+      "sha256": "8321229a5a2e580d1abd2d58885aeced6ecd260d7df9ac726e9e4f0fc8a2daf9"
+    },
+    {
+      "path": "repair-execution-2/completion.json",
+      "sha256": "8db83fee268cbeabaa530a0dbadb9a0b6bded74e178e748f360b99046db66e22"
+    },
+    {
+      "path": "repair-execution-2/stdout",
+      "sha256": "315d89ef9135d0e1c04c7a21c9b549d96a20d0567b0d2dd58b2677310e6491dc"
+    },
+    {
+      "path": "repair-execution-2/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "limits": [
+    "Record serialization/decoding and original placement APIs only; no full live driver or graph recovery.",
+    "Observation removal is a counterfactual check, not a complete record-to-input replay.",
+    "Related revisions and repetitions belong to one failure family.",
+    "Scenario success is not a whole-patch clean label or scorer acceptance.",
+    "The observation omission predates the sampled repair; the new version predictor makes the incomplete v2 record serializable under the predicted envelope.",
+    "Live Graph append/recovery and reconstruction from surrounding ledger state have not been executed."
+  ],
+  "module_verification": "all modules verified in all four isolated source revisions",
+  "observations": 56,
+  "prior_failed_preparation": {
+    "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/scheduler-witness-1",
+    "disposition": "four module preflights failed; no scheduler compilation or execution",
+    "files": [
+      {
+        "path": "plan.json",
+        "sha256": "effeccd1248ec1135242a3da462cc88eedf11f161707363f16a7b3aa42b56da6"
+      },
+      {
+        "path": "criteria.json",
+        "sha256": "3036dcc2fe010eb3caa11197610c7412547d9744f65a6b55e8afc7b5ecbebf45"
+      },
+      {
+        "path": "runner.py",
+        "sha256": "37db1300f40eeeec0f3ef46d35b64e74eefe4160395cd0fcaf061191886c5fbf"
+      },
+      {
+        "path": "run-started.json",
+        "sha256": "4d9031591c449890b7cc8c8e6101b47cff1c74d44bb892026f382126f4717fff"
+      },
+      {
+        "path": "completion.json",
+        "sha256": "dab738e4e819414ccf01df7a8fb6919fd6ddd3901448b67c535d32c128b09201"
+      },
+      {
+        "path": "base-verify-modules/completion.json",
+        "sha256": "b070c18b06cb67485c566540fa17144e36f87efdcecee93c7ad21f0c2f8eb3f6"
+      },
+      {
+        "path": "base-verify-modules/stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "base-verify-modules/stderr",
+        "sha256": "7e54dfb066ede8074473dfe2c51fca7785602e3b002b5bc786658a8ef42ec262"
+      },
+      {
+        "path": "partial-verify-modules/completion.json",
+        "sha256": "8d36349ed1b94889a4818dd75915719bb6e5be9108f1e1cc95e0697ba3f0d8d9"
+      },
+      {
+        "path": "partial-verify-modules/stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "partial-verify-modules/stderr",
+        "sha256": "7e54dfb066ede8074473dfe2c51fca7785602e3b002b5bc786658a8ef42ec262"
+      },
+      {
+        "path": "precursor-verify-modules/completion.json",
+        "sha256": "897749d2856192ec819ed58d30c25a96733068b2dd8c92eb783d756bf471be7c"
+      },
+      {
+        "path": "precursor-verify-modules/stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "precursor-verify-modules/stderr",
+        "sha256": "7e54dfb066ede8074473dfe2c51fca7785602e3b002b5bc786658a8ef42ec262"
+      },
+      {
+        "path": "repair-verify-modules/completion.json",
+        "sha256": "90dd1d5e77afe04182779c6947f8aeb2f686833bec998f7be7f1ff4789de5718"
+      },
+      {
+        "path": "repair-verify-modules/stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "repair-verify-modules/stderr",
+        "sha256": "7e54dfb066ede8074473dfe2c51fca7785602e3b002b5bc786658a8ef42ec262"
+      }
+    ]
+  },
+  "ranking_eligible": false,
+  "repetitions_per_revision": 2,
+  "results": [
+    {
+      "accepted_record_omits_selection_input": false,
+      "active_observation_count": 0,
+      "active_observations_retained": true,
+      "commit": "58ff7ce58e58b0cd5ea7719c5826fa3716bfbb68",
+      "condition": "ordinary-local",
+      "counterfactual_selection_changed": false,
+      "disposition": "evaluated",
+      "evaluation_version": 2,
+      "expected_placement_matches": true,
+      "repetition": 1,
+      "role": "precursor",
+      "selected": [
+        "local"
+      ],
+      "selection_without_observations": [
+        "local"
+      ],
+      "stamp": 2,
+      "stamped_record_accepted": true,
+      "version_agreement": true
+    },
+    {
+      "accepted_record_omits_selection_input": false,
+      "active_observation_count": 1,
+      "active_observations_retained": true,
+      "commit": "58ff7ce58e58b0cd5ea7719c5826fa3716bfbb68",
+      "condition": "local-unrelated-active",
+      "counterfactual_selection_changed": false,
+      "disposition": "evaluated",
+      "evaluation_version": 5,
+      "expected_placement_matches": true,
+      "repetition": 1,
+      "role": "precursor",
+      "selected": [
+        "local"
+      ],
+      "selection_without_observations": [
+        "local"
+      ],
+      "stamp": 5,
+      "stamped_record_accepted": false,
+      "version_agreement": true
+    },
+    {
+      "accepted_record_omits_selection_input": false,
+      "active_observation_count": 1,
+      "active_observations_retained": true,
+      "commit": "58ff7ce58e58b0cd5ea7719c5826fa3716bfbb68",
+      "condition": "exhausted-fallback-local",
+      "counterfactual_selection_changed": true,
+      "disposition": "evaluated",
+      "evaluation_version": 5,
+      "expected_placement_matches": true,
+      "repetition": 1,
+      "role": "precursor",
+      "selected": [
+        "local"
+      ],
+      "selection_without_observations": [
+        "remote"
+      ],
+      "stamp": 5,
+      "stamped_record_accepted": false,
+      "version_agreement": true
+    },
+    {
+      "accepted_record_omits_selection_input": false,
+      "active_observation_count": 1,
+      "active_observations_retained": true,
+      "commit": "58ff7ce58e58b0cd5ea7719c5826fa3716bfbb68",
+      "condition": "supervised-failover",
+      "counterfactual_selection_changed": true,
+      "disposition": "evaluated",
+      "evaluation_version": 5,
+      "expected_placement_matches": true,
+      "repetition": 1,
+      "role": "precursor",
+      "selected": [
+        "survivor"
+      ],
+      "selection_without_observations": [
+        "remote"
+      ],
+      "stamp": 5,
+      "stamped_record_accepted": true,
+      "version_agreement": true
+    },
+    {
+      "accepted_record_omits_selection_input": false,
+      "active_observation_count": 2,
+      "active_observations_retained": true,
+      "commit": "58ff7ce58e58b0cd5ea7719c5826fa3716bfbb68",
+      "condition": "all-supervised-exhausted",
+      "counterfactual_selection_changed": true,
+      "disposition": "evaluated",
+      "evaluation_version": 5,
+      "expected_placement_matches": true,
+      "repetition": 1,
+      "role": "precursor",
+      "selected": [],
+      "selection_without_observations": [
+        "remote"
+      ],
+      "stamp": 5,
+      "stamped_record_accepted": true,
+      "version_agreement": true
+    },
+    {
+      "accepted_record_omits_selection_input": false,
+      "active_observation_count": 0,
+      "active_observations_retained": true,
+      "commit": "58ff7ce58e58b0cd5ea7719c5826fa3716bfbb68",
+      "condition": "expired-observation",
+      "counterfactual_selection_changed": false,
+      "disposition": "evaluated",
+      "evaluation_version": 2,
+      "expected_placement_matches": true,
+      "repetition": 1,
+      "role": "precursor",
+      "selected": [
+        "local"
+      ],
+      "selection_without_observations": [
+        "local"
+      ],
+      "stamp": 2,
+      "stamped_record_accepted": true,
+      "version_agreement": true
+    },
+    {
+      "commit": "58ff7ce58e58b0cd5ea7719c5826fa3716bfbb68",
+      "condition": "malformed-observation",
+      "disposition": "malformed-input-rejected",
+      "repetition": 1,
+      "role": "precursor"
+    },
+    {
+      "accepted_record_omits_selection_input": false,
+      "active_observation_count": 0,
+      "active_observations_retained": true,
+      "commit": "147775a0047a1219e241ae4798813a50b35f32fc",
+      "condition": "ordinary-local",
+      "counterfactual_selection_changed": false,
+      "disposition": "evaluated",
+      "evaluation_version": 2,
+      "expected_placement_matches": true,
+      "repetition": 1,
+      "role": "partial",
+      "selected": [
+        "local"
+      ],
+      "selection_without_observations": [
+        "local"
+      ],
+      "stamp": 2,
+      "stamped_record_accepted": true,
+      "version_agreement": true
+    },
+    {
+      "accepted_record_omits_selection_input": false,
+      "active_observation_count": 1,
+      "active_observations_retained": false,
+      "commit": "147775a0047a1219e241ae4798813a50b35f32fc",
+      "condition": "local-unrelated-active",
+      "counterfactual_selection_changed": false,
+      "disposition": "evaluated",
+      "evaluation_version": 2,
+      "expected_placement_matches": true,
+      "repetition": 1,
+      "role": "partial",
+      "selected": [
+        "local"
+      ],
+      "selection_without_observations": [
+        "local"
+      ],
+      "stamp": 5,
+      "stamped_record_accepted": false,
+      "version_agreement": false
+    },
+    {
+      "accepted_record_omits_selection_input": false,
+      "active_observation_count": 1,
+      "active_observations_retained": false,
+      "commit": "147775a0047a1219e241ae4798813a50b35f32fc",
+      "condition": "exhausted-fallback-local",
+      "counterfactual_selection_changed": true,
+      "disposition": "evaluated",
+      "evaluation_version": 2,
+      "expected_placement_matches": true,
+      "repetition": 1,
+      "role": "partial",
+      "selected": [
+        "local"
+      ],
+      "selection_without_observations": [
+        "remote"
+      ],
+      "stamp": 5,
+      "stamped_record_accepted": false,
+      "version_agreement": false
+    },
+    {
+      "accepted_record_omits_selection_input": false,
+      "active_observation_count": 1,
+      "active_observations_retained": true,
+      "commit": "147775a0047a1219e241ae4798813a50b35f32fc",
+      "condition": "supervised-failover",
+      "counterfactual_selection_changed": true,
+      "disposition": "evaluated",
+      "evaluation_version": 5,
+      "expected_placement_matches": true,
+      "repetition": 1,
+      "role": "partial",
+      "selected": [
+        "survivor"
+      ],
+      "selection_without_observations": [
+        "remote"
+      ],
+      "stamp": 5,
+      "stamped_record_accepted": true,
+      "version_agreement": true
+    },
+    {
+      "accepted_record_omits_selection_input": false,
+      "active_observation_count": 2,
+      "active_observations_retained": true,
+      "commit": "147775a0047a1219e241ae4798813a50b35f32fc",
+      "condition": "all-supervised-exhausted",
+      "counterfactual_selection_changed": true,
+      "disposition": "evaluated",
+      "evaluation_version": 5,
+      "expected_placement_matches": true,
+      "repetition": 1,
+      "role": "partial",
+      "selected": [],
+      "selection_without_observations": [
+        "remote"
+      ],
+      "stamp": 5,
+      "stamped_record_accepted": true,
+      "version_agreement": true
+    },
+    {
+      "accepted_record_omits_selection_input": false,
+      "active_observation_count": 0,
+      "active_observations_retained": true,
+      "commit": "147775a0047a1219e241ae4798813a50b35f32fc",
+      "condition": "expired-observation",
+      "counterfactual_selection_changed": false,
+      "disposition": "evaluated",
+      "evaluation_version": 2,
+      "expected_placement_matches": true,
+      "repetition": 1,
+      "role": "partial",
+      "selected": [
+        "local"
+      ],
+      "selection_without_observations": [
+        "local"
+      ],
+      "stamp": 2,
+      "stamped_record_accepted": true,
+      "version_agreement": true
+    },
+    {
+      "commit": "147775a0047a1219e241ae4798813a50b35f32fc",
+      "condition": "malformed-observation",
+      "disposition": "malformed-input-rejected",
+      "repetition": 1,
+      "role": "partial"
+    },
+    {
+      "accepted_record_omits_selection_input": false,
+      "active_observation_count": 0,
+      "active_observations_retained": true,
+      "commit": "0a7aa730f164e98a705dfe27c5db2ec8f20cc8a5",
+      "condition": "ordinary-local",
+      "counterfactual_selection_changed": false,
+      "disposition": "evaluated",
+      "evaluation_version": 2,
+      "expected_placement_matches": true,
+      "repetition": 1,
+      "role": "base",
+      "selected": [
+        "local"
+      ],
+      "selection_without_observations": [
+        "local"
+      ],
+      "stamp": 2,
+      "stamped_record_accepted": true,
+      "version_agreement": true
+    },
+    {
+      "accepted_record_omits_selection_input": false,
+      "active_observation_count": 1,
+      "active_observations_retained": false,
+      "commit": "0a7aa730f164e98a705dfe27c5db2ec8f20cc8a5",
+      "condition": "local-unrelated-active",
+      "counterfactual_selection_changed": false,
+      "disposition": "evaluated",
+      "evaluation_version": 2,
+      "expected_placement_matches": true,
+      "repetition": 1,
+      "role": "base",
+      "selected": [
+        "local"
+      ],
+      "selection_without_observations": [
+        "local"
+      ],
+      "stamp": 5,
+      "stamped_record_accepted": false,
+      "version_agreement": false
+    },
+    {
+      "accepted_record_omits_selection_input": false,
+      "active_observation_count": 1,
+      "active_observations_retained": false,
+      "commit": "0a7aa730f164e98a705dfe27c5db2ec8f20cc8a5",
+      "condition": "exhausted-fallback-local",
+      "counterfactual_selection_changed": true,
+      "disposition": "evaluated",
+      "evaluation_version": 2,
+      "expected_placement_matches": true,
+      "repetition": 1,
+      "role": "base",
+      "selected": [
+        "local"
+      ],
+      "selection_without_observations": [
+        "remote"
+      ],
+      "stamp": 5,
+      "stamped_record_accepted": false,
+      "version_agreement": false
+    },
+    {
+      "accepted_record_omits_selection_input": false,
+      "active_observation_count": 1,
+      "active_observations_retained": true,
+      "commit": "0a7aa730f164e98a705dfe27c5db2ec8f20cc8a5",
+      "condition": "supervised-failover",
+      "counterfactual_selection_changed": true,
+      "disposition": "evaluated",
+      "evaluation_version": 5,
+      "expected_placement_matches": true,
+      "repetition": 1,
+      "role": "base",
+      "selected": [
+        "survivor"
+      ],
+      "selection_without_observations": [
+        "remote"
+      ],
+      "stamp": 5,
+      "stamped_record_accepted": true,
+      "version_agreement": true
+    },
+    {
+      "accepted_record_omits_selection_input": false,
+      "active_observation_count": 2,
+      "active_observations_retained": true,
+      "commit": "0a7aa730f164e98a705dfe27c5db2ec8f20cc8a5",
+      "condition": "all-supervised-exhausted",
+      "counterfactual_selection_changed": true,
+      "disposition": "evaluated",
+      "evaluation_version": 5,
+      "expected_placement_matches": true,
+      "repetition": 1,
+      "role": "base",
+      "selected": [],
+      "selection_without_observations": [
+        "remote"
+      ],
+      "stamp": 5,
+      "stamped_record_accepted": true,
+      "version_agreement": true
+    },
+    {
+      "accepted_record_omits_selection_input": false,
+      "active_observation_count": 0,
+      "active_observations_retained": true,
+      "commit": "0a7aa730f164e98a705dfe27c5db2ec8f20cc8a5",
+      "condition": "expired-observation",
+      "counterfactual_selection_changed": false,
+      "disposition": "evaluated",
+      "evaluation_version": 2,
+      "expected_placement_matches": true,
+      "repetition": 1,
+      "role": "base",
+      "selected": [
+        "local"
+      ],
+      "selection_without_observations": [
+        "local"
+      ],
+      "stamp": 2,
+      "stamped_record_accepted": true,
+      "version_agreement": true
+    },
+    {
+      "commit": "0a7aa730f164e98a705dfe27c5db2ec8f20cc8a5",
+      "condition": "malformed-observation",
+      "disposition": "malformed-input-rejected",
+      "repetition": 1,
+      "role": "base"
+    },
+    {
+      "accepted_record_omits_selection_input": false,
+      "active_observation_count": 0,
+      "active_observations_retained": true,
+      "commit": "b9325d547fa8fc4f8df38ddef274ca9eae6a95f4",
+      "condition": "ordinary-local",
+      "counterfactual_selection_changed": false,
+      "disposition": "evaluated",
+      "evaluation_version": 2,
+      "expected_placement_matches": true,
+      "repetition": 1,
+      "role": "repair",
+      "selected": [
+        "local"
+      ],
+      "selection_without_observations": [
+        "local"
+      ],
+      "stamp": 2,
+      "stamped_record_accepted": true,
+      "version_agreement": true
+    },
+    {
+      "accepted_record_omits_selection_input": false,
+      "active_observation_count": 1,
+      "active_observations_retained": false,
+      "commit": "b9325d547fa8fc4f8df38ddef274ca9eae6a95f4",
+      "condition": "local-unrelated-active",
+      "counterfactual_selection_changed": false,
+      "disposition": "evaluated",
+      "evaluation_version": 2,
+      "expected_placement_matches": true,
+      "repetition": 1,
+      "role": "repair",
+      "selected": [
+        "local"
+      ],
+      "selection_without_observations": [
+        "local"
+      ],
+      "stamp": 2,
+      "stamped_record_accepted": true,
+      "version_agreement": true
+    },
+    {
+      "accepted_record_omits_selection_input": true,
+      "active_observation_count": 1,
+      "active_observations_retained": false,
+      "commit": "b9325d547fa8fc4f8df38ddef274ca9eae6a95f4",
+      "condition": "exhausted-fallback-local",
+      "counterfactual_selection_changed": true,
+      "disposition": "evaluated",
+      "evaluation_version": 2,
+      "expected_placement_matches": true,
+      "repetition": 1,
+      "role": "repair",
+      "selected": [
+        "local"
+      ],
+      "selection_without_observations": [
+        "remote"
+      ],
+      "stamp": 2,
+      "stamped_record_accepted": true,
+      "version_agreement": true
+    },
+    {
+      "accepted_record_omits_selection_input": false,
+      "active_observation_count": 1,
+      "active_observations_retained": true,
+      "commit": "b9325d547fa8fc4f8df38ddef274ca9eae6a95f4",
+      "condition": "supervised-failover",
+      "counterfactual_selection_changed": true,
+      "disposition": "evaluated",
+      "evaluation_version": 5,
+      "expected_placement_matches": true,
+      "repetition": 1,
+      "role": "repair",
+      "selected": [
+        "survivor"
+      ],
+      "selection_without_observations": [
+        "remote"
+      ],
+      "stamp": 5,
+      "stamped_record_accepted": true,
+      "version_agreement": true
+    },
+    {
+      "accepted_record_omits_selection_input": false,
+      "active_observation_count": 2,
+      "active_observations_retained": true,
+      "commit": "b9325d547fa8fc4f8df38ddef274ca9eae6a95f4",
+      "condition": "all-supervised-exhausted",
+      "counterfactual_selection_changed": true,
+      "disposition": "evaluated",
+      "evaluation_version": 5,
+      "expected_placement_matches": true,
+      "repetition": 1,
+      "role": "repair",
+      "selected": [],
+      "selection_without_observations": [
+        "remote"
+      ],
+      "stamp": 5,
+      "stamped_record_accepted": true,
+      "version_agreement": true
+    },
+    {
+      "accepted_record_omits_selection_input": false,
+      "active_observation_count": 0,
+      "active_observations_retained": true,
+      "commit": "b9325d547fa8fc4f8df38ddef274ca9eae6a95f4",
+      "condition": "expired-observation",
+      "counterfactual_selection_changed": false,
+      "disposition": "evaluated",
+      "evaluation_version": 2,
+      "expected_placement_matches": true,
+      "repetition": 1,
+      "role": "repair",
+      "selected": [
+        "local"
+      ],
+      "selection_without_observations": [
+        "local"
+      ],
+      "stamp": 2,
+      "stamped_record_accepted": true,
+      "version_agreement": true
+    },
+    {
+      "commit": "b9325d547fa8fc4f8df38ddef274ca9eae6a95f4",
+      "condition": "malformed-observation",
+      "disposition": "malformed-input-rejected",
+      "repetition": 1,
+      "role": "repair"
+    }
+  ],
+  "sampled_base": "0a7aa730f164e98a705dfe27c5db2ec8f20cc8a5",
+  "sampled_commit": "b9325d547fa8fc4f8df38ddef274ca9eae6a95f4",
+  "schema": "caplab.scheduler-development-receipt/v1",
+  "source_revisions": 4,
+  "sources": [
+    {
+      "commit": "58ff7ce58e58b0cd5ea7719c5826fa3716bfbb68",
+      "git_blob": "fa1d6324ce59a75f3c5fa80688de21a6abc79c59",
+      "inspection": "C1 and C11 require deterministic placement over sealed inputs and complete decision input/output preimages.",
+      "lines": "11-21",
+      "path": "decisions/D0008-scheduler-and-capacity-policy.md",
+      "role": "precursor",
+      "sha256": "025e3b62b696349ce6480519cee4ae36c97afec8bda737c09c31c088f0fc45e2"
+    },
+    {
+      "commit": "58ff7ce58e58b0cd5ea7719c5826fa3716bfbb68",
+      "git_blob": "603c2ad7750e7c8de6cb7ff2af7670a761e725f9",
+      "inspection": "Versioned record union; v5 seals capacity observations and retains supervised binding bounds.",
+      "lines": "1-13",
+      "path": "schema/ledger-records/scheduling_decision.schema.json",
+      "role": "precursor",
+      "sha256": "feeb38eb4715d9c49ae0de0809920b0ee9e68a0c4f90bca1e2122312288bd786"
+    },
+    {
+      "commit": "b9325d547fa8fc4f8df38ddef274ca9eae6a95f4",
+      "git_blob": "cbef8aee3bc35c2fee87a38c0a2aabd04d77f07c",
+      "inspection": "Driver predicts envelope version, evaluates under the append boundary and refuses version disagreement.",
+      "lines": "533-592",
+      "path": "internal/driver/dispatch_recovery.go",
+      "role": "repair",
+      "sha256": "8f67559fd9521763074ac4a308735585eaa54940d295b065a2a593e67c2c2287"
+    },
+    {
+      "commit": "b9325d547fa8fc4f8df38ddef274ca9eae6a95f4",
+      "git_blob": "cbef8aee3bc35c2fee87a38c0a2aabd04d77f07c",
+      "inspection": "Driver supplies observations separately from snapshot, using capable declarations for the ready pass.",
+      "lines": "756-796",
+      "path": "internal/driver/dispatch_recovery.go",
+      "role": "repair",
+      "sha256": "8f67559fd9521763074ac4a308735585eaa54940d295b065a2a593e67c2c2287"
+    },
+    {
+      "commit": "b9325d547fa8fc4f8df38ddef274ca9eae6a95f4",
+      "git_blob": "6cef8fb95621f198dd536eb4a6ce5e0d81f84c13",
+      "inspection": "Active observations are drawn from folded state by pass, declared capability and time.",
+      "lines": "410-451",
+      "path": "internal/driver/exhaustion.go",
+      "role": "repair",
+      "sha256": "f11cfa5df44a86c872cc2aec527d64b7e2b3141ad060f2d55b4ad314de4f58f1"
+    },
+    {
+      "commit": "b9325d547fa8fc4f8df38ddef274ca9eae6a95f4",
+      "git_blob": "f21369731e24b2c00e3c063b00048f863488fecc",
+      "inspection": "Semantic fold checks capacity inputs only for v5; this source inspection is not a full driver execution.",
+      "lines": "1376-1459",
+      "path": "internal/driver/fold.go",
+      "role": "repair",
+      "sha256": "855f9a2783e393aa6a2252ebab2213b6c40ec0d4991a1ec27b73267f757725d3"
+    },
+    {
+      "commit": "b9325d547fa8fc4f8df38ddef274ca9eae6a95f4",
+      "git_blob": "b05b65a9b64fa1cb2b3201fd55c788bc654f9346",
+      "inspection": "Shared capacity fold reads top-level backend_id/pool_id; a recognized-exhaustion variant stores its candidate in a nested map.",
+      "lines": "350-400",
+      "path": "internal/driver/session.go",
+      "role": "repair",
+      "sha256": "9c83e6524748622139f02ddc0a8dd77acde682804c60ab1697885da0d6d3104f"
+    },
+    {
+      "commit": "b9325d547fa8fc4f8df38ddef274ca9eae6a95f4",
+      "git_blob": "7faaf748cb414535b80537bfe8490eb107435b62",
+      "inspection": "Shared version selection returns v2 for an unsupervised binding.",
+      "lines": "340-381",
+      "path": "internal/scheduler/evaluation.go",
+      "role": "repair",
+      "sha256": "6046dc3bd9567c71e48bdcda28a38585aee64b3f971a8f1e951f9cbf85cf755f"
+    },
+    {
+      "commit": "b9325d547fa8fc4f8df38ddef274ca9eae6a95f4",
+      "git_blob": "7faaf748cb414535b80537bfe8490eb107435b62",
+      "inspection": "Capacity observation preimages are emitted only for v5.",
+      "lines": "615-621",
+      "path": "internal/scheduler/evaluation.go",
+      "role": "repair",
+      "sha256": "6046dc3bd9567c71e48bdcda28a38585aee64b3f971a8f1e951f9cbf85cf755f"
+    }
+  ],
+  "status": "record-boundary reproduction; sampled repair is not a verified clean control",
+  "toolchain": "go version go1.23.4 linux/amd64"
+}

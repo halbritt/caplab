@@ -151,3 +151,13 @@ capture by omitting opaque encrypted reasoning with hash receipts before the
 unchanged privacy guard. These exposed, authored challenges validate a bounded
 development path; unseen natural reviews, new-finding investigation and broad
 case coverage are still required before accepting a general scorer.
+
+The [Go scheduler witness](../../../records/verification-2026-09-10-reviewer-scheduler-outcome.md)
+adds a third real failure family across a sampled repair and its precursors.
+The repair resolves the predicted-versus-evaluated schema mismatch, but its
+v2 record omits an exhaustion observation that changed placement from a
+supervised remote backend to local fallback. Original encoding and decoding
+accept that record. The omission predates the sampled repair; the new
+predictor exposes it through a serializable envelope. This is record-boundary
+and counterfactual placement evidence, with full live graph behavior still
+open. It prevents treating the sampled repair as a verified clean control.
