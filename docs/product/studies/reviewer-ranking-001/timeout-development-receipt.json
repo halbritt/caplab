@@ -1,0 +1,251 @@
+{
+  "custody": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/timeout-witness-1",
+  "experimental_admission": false,
+  "files": {
+    "criteria.json": {
+      "bytes": 1736,
+      "sha256": "59c8d85a1a1a756fce3650180ef8601b7b6b4b0f369bc76375b30ea97513411d"
+    },
+    "plan.json": {
+      "bytes": 1159743,
+      "sha256": "f81ab8a4aea1751c6a4cf95b814d374a5a935d5eb868c939113ec6f0a88399b9"
+    },
+    "run-complete.json": {
+      "bytes": 146,
+      "sha256": "c627846f6d6078186ae0884584477cb8c49a9b8e93ab23c8ac83469323617983"
+    },
+    "run-started.json": {
+      "bytes": 122,
+      "sha256": "60d3b423e2586953c0049a2604e188e106ef2215642ffc010c20f43a70078e7d"
+    },
+    "verification.json": {
+      "bytes": 21857,
+      "sha256": "29fa55ca80b35e333967ddc377798921ff874fa3478177c4ed7da39f1c1ca257"
+    },
+    "witness/probe.mts": {
+      "bytes": 4473,
+      "sha256": "2637f58600be1e4d85f8cc8112bb7866b1bc4593e5b9d4f1cac6ae1b8f76088d"
+    }
+  },
+  "groups": [
+    {
+      "condition": "ordinary",
+      "elapsed_ms": [
+        25.73017999999999,
+        24.334812999999997,
+        24.217201999999986
+      ],
+      "observations": 3,
+      "property_satisfied": 3,
+      "role": "introduction"
+    },
+    {
+      "condition": "delayed-body",
+      "elapsed_ms": [
+        2026.8102700000002,
+        2021.4439360000001,
+        2020.6407639999998
+      ],
+      "observations": 3,
+      "property_satisfied": 0,
+      "role": "introduction"
+    },
+    {
+      "condition": "cancel-body",
+      "elapsed_ms": [
+        2020.9400839999998,
+        2026.2390370000003,
+        2022.8851610000002
+      ],
+      "observations": 3,
+      "property_satisfied": 0,
+      "role": "introduction"
+    },
+    {
+      "condition": "pre-aborted",
+      "elapsed_ms": [
+        22.790674999999993,
+        23.291336,
+        22.511493
+      ],
+      "observations": 3,
+      "property_satisfied": 0,
+      "role": "introduction"
+    },
+    {
+      "condition": "ordinary",
+      "elapsed_ms": [
+        22.961771999999996,
+        23.014697000000012,
+        22.772827000000007
+      ],
+      "observations": 3,
+      "property_satisfied": 3,
+      "role": "base"
+    },
+    {
+      "condition": "delayed-body",
+      "elapsed_ms": [
+        2020.688173,
+        2020.1592469999998,
+        2051.91047
+      ],
+      "observations": 3,
+      "property_satisfied": 0,
+      "role": "base"
+    },
+    {
+      "condition": "cancel-body",
+      "elapsed_ms": [
+        2020.92676,
+        2032.9776740000002,
+        2020.5623120000002
+      ],
+      "observations": 3,
+      "property_satisfied": 0,
+      "role": "base"
+    },
+    {
+      "condition": "pre-aborted",
+      "elapsed_ms": [
+        22.675963999999993,
+        23.536703999999986,
+        45.186351
+      ],
+      "observations": 3,
+      "property_satisfied": 0,
+      "role": "base"
+    },
+    {
+      "condition": "ordinary",
+      "elapsed_ms": [
+        24.643721999999997,
+        23.38919900000002,
+        23.121091999999976
+      ],
+      "observations": 3,
+      "property_satisfied": 3,
+      "role": "repair"
+    },
+    {
+      "condition": "delayed-body",
+      "elapsed_ms": [
+        317.778004,
+        317.52024199999994,
+        318.55135700000005
+      ],
+      "observations": 3,
+      "property_satisfied": 3,
+      "role": "repair"
+    },
+    {
+      "condition": "cancel-body",
+      "elapsed_ms": [
+        126.08530399999998,
+        124.853715,
+        124.02683999999996
+      ],
+      "observations": 3,
+      "property_satisfied": 3,
+      "role": "repair"
+    },
+    {
+      "condition": "pre-aborted",
+      "elapsed_ms": [
+        6.687000000000012,
+        6.806754000000012,
+        6.961652999999984
+      ],
+      "observations": 3,
+      "property_satisfied": 3,
+      "role": "repair"
+    }
+  ],
+  "independent_failure_families": 1,
+  "reviewer_calls": 0,
+  "schema": "caplab.reviewer-timeout-development-receipt/v1",
+  "sources": {
+    "base": {
+      "commit": "32c9f09674b27b185abb7498883d9d3495ac4951",
+      "governing_and_runtime_files": [
+        {
+          "bytes": 270581,
+          "git_blob": "688e2d8ea79382d2a66c6065af42056c00f773cc",
+          "mode": "100644",
+          "path": "PROTOCOL-v3.md",
+          "sha256": "032519f2b62bb7b485608dd2be6267f2691c7551b26985218870a223b97fa403"
+        },
+        {
+          "bytes": 17156,
+          "git_blob": "ab82734a7aac754b73076898274d7c9a6d8e32ed",
+          "mode": "100644",
+          "path": "src/v3/adapters/deepseek.ts",
+          "sha256": "ad0c3ef9352aa856f68eae463b6cfec3650d40284cbd58c8c2870e7d7da79cb0"
+        },
+        {
+          "bytes": 93866,
+          "git_blob": "90e25a206ebf3c94890cf121d39c8a6826b56558",
+          "mode": "100644",
+          "path": "src/v3/deepseek-runtime.ts",
+          "sha256": "c1851ecbdcaaa7ccf241710e470070388b7e3594876d7385f3b55eecd99535c8"
+        }
+      ],
+      "tree": "e4971b7cbe9e4887743d3ecfb2bfafb684f0154f"
+    },
+    "introduction": {
+      "commit": "9c66a76836245fbc8d203812a4a36f475341ce0e",
+      "governing_and_runtime_files": [
+        {
+          "bytes": 150662,
+          "git_blob": "397c789dbe44ed47b093a7567ba21c4ca74805e3",
+          "mode": "100644",
+          "path": "PROTOCOL-v3.md",
+          "sha256": "09826d68500903cb4e040b1323da5d5ba9f267cc7c48caacbe574e3381666af2"
+        },
+        {
+          "bytes": 16987,
+          "git_blob": "4905357258dd8a488b058810a65c868f40da9941",
+          "mode": "100644",
+          "path": "src/v3/adapters/deepseek.ts",
+          "sha256": "bf059a425cb2aba3297b2c337f98bf93f6248569077e836b061b62d0148fce59"
+        },
+        {
+          "bytes": 92938,
+          "git_blob": "7696adf62c5f48e0d9bef09eb31895e8d8953c5a",
+          "mode": "100644",
+          "path": "src/v3/deepseek-runtime.ts",
+          "sha256": "35fad5a1e63f007dca7ef32b736302ac147be31149c70d6f7ed7f236ac86d9d9"
+        }
+      ],
+      "tree": "26981ce29e4ccff93e5b343ce000324b99b9b5de"
+    },
+    "repair": {
+      "commit": "19fb83494cf3ec8e338d748f566be3df21088a40",
+      "governing_and_runtime_files": [
+        {
+          "bytes": 270581,
+          "git_blob": "688e2d8ea79382d2a66c6065af42056c00f773cc",
+          "mode": "100644",
+          "path": "PROTOCOL-v3.md",
+          "sha256": "032519f2b62bb7b485608dd2be6267f2691c7551b26985218870a223b97fa403"
+        },
+        {
+          "bytes": 17156,
+          "git_blob": "ab82734a7aac754b73076898274d7c9a6d8e32ed",
+          "mode": "100644",
+          "path": "src/v3/adapters/deepseek.ts",
+          "sha256": "ad0c3ef9352aa856f68eae463b6cfec3650d40284cbd58c8c2870e7d7da79cb0"
+        },
+        {
+          "bytes": 94655,
+          "git_blob": "a0b8330a853844c86faa71d85002231d1cd54c11",
+          "mode": "100644",
+          "path": "src/v3/deepseek-runtime.ts",
+          "sha256": "4657dbd6464a99a9bedd7bb5888d92211a6a98212b4a033135e3556f20ee6f1e"
+        }
+      ],
+      "tree": "913b396646366461ac0e6a882b6a03694e4437dd"
+    }
+  },
+  "whole_patch_cleanliness": "unadjudicated"
+}

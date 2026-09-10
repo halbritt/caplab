@@ -85,3 +85,13 @@ do not treat the selected cases as a uniform random sample of all commits.
 These inspected cases are development material and cannot become held-out
 evidence. `scripts/reviewer_feasibility_sample.py` reproduces this selection
 from the hash-checked census.
+
+## Verified development outcomes
+
+The [Council provider-lifetime reproduction](../../../records/verification-2026-09-10-reviewer-timeout-outcome.md)
+establishes actual timeout/cancellation violations in the original runtime and
+the sampled repair's base, with ordinary-completion controls and a repair
+that satisfies the tested properties. It is one related failure family with
+36 repeated diagnostic observations. It supplies no whole-patch clean label,
+reviewer attribution, experimental admission, or ranking. The other sampled
+changes and overall coverage remain open.

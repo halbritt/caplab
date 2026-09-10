@@ -1,0 +1,49 @@
+{
+  "schema": "caplab.council-provider-lifetime-criteria/v1",
+  "scope": "Only the observed request lifetime, cancellation and ordinary completion properties; never whole-patch correctness",
+  "shared": {
+    "source_sha256": "must match the pinned original source file",
+    "network_namespace": "must differ from the host",
+    "process": "must exit normally and emit one complete observation",
+    "event_order": "monotonic, with turn invocation before return",
+    "failure_of_apparatus": "unavailable, not a property failure"
+  },
+  "ordinary": {
+    "requests": 1,
+    "status": "success",
+    "reply": "ordinary reply",
+    "required_events": ["headers-flushed", "body-ended", "turn-returned"]
+  },
+  "delayed-body": {
+    "requests": 1,
+    "status": "failure",
+    "code": "provider_timeout",
+    "phase": "provider",
+    "dispatched": true,
+    "required_events": ["headers-flushed", "body-prefix-sent", "turn-returned"],
+    "body_ended_before_return": false,
+    "maximum_ms_from_headers_to_return": 1000,
+    "configured_timeout_ms": 300,
+    "planned_body_end_delay_ms": 2000
+  },
+  "cancel-body": {
+    "requests": 1,
+    "status": "failure",
+    "code": "provider_cancelled",
+    "phase": "provider",
+    "dispatched": true,
+    "required_events": ["headers-flushed", "body-prefix-sent", "service-aborted", "turn-returned"],
+    "body_ended_before_return": false,
+    "maximum_ms_from_abort_to_return": 1000,
+    "configured_timeout_ms": 5000,
+    "planned_body_end_delay_ms": 2000
+  },
+  "pre-aborted": {
+    "requests": 0,
+    "status": "failure",
+    "code": "provider_cancelled",
+    "phase": "pre_dispatch",
+    "dispatched": false,
+    "required_events": ["service-aborted", "turn-invoked", "turn-returned"]
+  }
+}
