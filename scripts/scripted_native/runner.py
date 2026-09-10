@@ -365,6 +365,7 @@ def case(root, group, name, selected):
                                 usable_devices="bwrap-basic-v1",
                                 quarantine_factory=factory,
                                 nested_userns=True,
+                                task_input=selected.get("task_input"),
                             )
                             context = {
                                 "root": root,
@@ -604,7 +605,8 @@ def inside(root, unit, expected_preparation_sha256):
     require(
         selected["plan"] == prepared["invocation"]
         and selected["harness_manifest"] == prepared["harness_manifest"]
-        and selected["dependency_root"] == prepared["dependency_manifest"]["source"],
+        and selected["dependency_root"] == prepared["dependency_manifest"]["source"]
+        and selected.get("task_input") == prepared.get("task_input"),
         "worker selection differs",
     )
     require(
@@ -663,6 +665,8 @@ def run(root, prepared, expected_preparation_sha256):
         "script_sha256": digest(SCRIPT),
         "support_sha256": digest(SUPPORT),
     }
+    if "task_input" in prepared:
+        selected["task_input"] = prepared["task_input"]
     seal(root, "selection.json", selected)
     unit = "caplab-scripted-native-" + uuid.uuid4().hex + ".service"
     environment = ENV | {

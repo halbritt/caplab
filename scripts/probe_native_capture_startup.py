@@ -19,6 +19,7 @@ import uuid
 
 from caplab.capture_accounting import build_capture_byte_report
 from caplab.capture_overlap import compare_verified_capture_overlap
+from caplab.prepared_task_capture import verify_prepared_before
 from caplab.exec_provenance import observe_exec_tracer, verify_exec_tracer
 from caplab.exec_trace import inspect_exec_trace
 from caplab.native_capture_invocation import NativeCaptureContext, build_native_capture_invocation
@@ -134,7 +135,7 @@ def inspect_traced_peer(peer_pid, trace_path):
     return checks | {'tracer_namespaces': namespaces, 'host_trace_path_exposed': False, 'exec_tracer': tracer}
 
 
-def inspect_custody(root, report, *, expected_selections_sha256=None):
+def inspect_custody(root, report, *, expected_selections_sha256=None, expected_task_input=None):
     name, anchors = report['harness'], report['anchors']
     task = verify_task_capture(root / name, expected_attempt_sha256=anchors['attempt_sha256'], max_receipt_bytes=300000)
     native = verify_native_collection(POLICY, root / (name + '-collection'),
@@ -157,10 +158,21 @@ def inspect_custody(root, report, *, expected_selections_sha256=None):
     network = handoff['peer_checks']
     require(network['supervisor_network_namespace'] != network['peer_network_namespace']
             and network['interfaces'] == ['lo'], 'recorded network isolation differs')
-    require(json.loads((root / name / 'attempt.json').read_bytes())['before_inventory_sha256'] ==
-            handoff['before_inventory_sha256'], 'pre-release task anchor differs')
-    before = json.loads((root / name / 'before/inventory.json').read_bytes())
-    require([e['path'] for e in before['entries']] == ['.'], 'startup task was not empty before release')
+    before_reader = _Reader(300000)
+    with _open(None, root / name, directory=True) as fd:
+        attempt = before_reader.receipt(fd, 'attempt.json', anchors['attempt_sha256'], TASK_ATTEMPT_SCHEMAS)
+        require(attempt['before_inventory_sha256'] == handoff['before_inventory_sha256'],
+                'pre-release task anchor differs')
+        with _open(fd, 'before', directory=True) as before_fd:
+            before = before_reader.receipt(before_fd, 'inventory.json', attempt['before_inventory_sha256'],
+                                           TASK_INVENTORY_SCHEMAS)
+    prepared_task = None
+    if expected_task_input is None:
+        require('prepared_task' not in handoff, 'unexpected prepared task handoff')
+        require([e['path'] for e in before['entries']] == ['.'], 'startup task was not empty before release')
+    else:
+        prepared_task = verify_prepared_before(expected_task_input, before, handoff.get('prepared_task'),
+                                               expected_before_sha256=attempt['before_inventory_sha256'])
     require(task['return_code'] == report['process']['return_code'] and
             task['termination'] == report['process']['termination'], 'resource and task outcomes differ')
     for source, path in ((task['task_source'], '/work'), (native['runtime_source'], '/episode')):
@@ -196,6 +208,7 @@ def inspect_custody(root, report, *, expected_selections_sha256=None):
         retained_task=retained_receipts['/work'], retained_runtime=retained_receipts['/episode'])
     execution = inspect_execution(root, report, native, expected_selections_sha256=expected_selections_sha256)
     return {'task': task, 'native': native, 'accounting': accounting, 'overlap': overlap, **execution,
+            **({'prepared_task': prepared_task} if prepared_task is not None else {}),
             'native_launch_attempted_by_supervisor': True, 'model_execution_verified': False,
             'native_capture_complete': None, 'study_eligible': False}
 

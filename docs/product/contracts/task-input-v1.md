@@ -77,6 +77,9 @@ must seal it, retain its digest and connect it to the input anchor and
 [supervised before capture](supervised-task-capture-v2.md) before releasing
 task execution. Handoff authentication, blocked setup, exact command identity,
 writer shutdown and the release decision remain the supervisor's duties.
+The [prepared-task capture helper](prepared-task-capture-v1.md) implements
+materialization and before-content linkage for the authenticated shared mount
+handoff used by the scripted native diagnostic.
 
 Preparation and materialization preserve partial effects on failure and
 propagate validation or filesystem errors. They provide no rollback, resume,

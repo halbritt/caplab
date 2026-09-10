@@ -12,13 +12,124 @@ import unittest
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "scripts"))
 
-from scripted_native.lifecycle import prepare, read_preparation, consume
+from scripted_native.lifecycle import (
+    prepare,
+    read_preparation,
+    consume,
+    check_task_selection,
+)
 from scripted_native.inspection import inspect
 from caplab.process_capture import seal_capture_json
+from caplab.task_input import prepare_task_input
 from probe_native_capture_startup import harness_manifest
 
 
 class ScriptedCapturePreparationTests(unittest.TestCase):
+    def test_unbounded_task_metadata_is_refused_before_opening_custody(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            selection = {
+                "custody": str(root / "absent"),
+                "input_sha256": "0" * 64,
+                "max_receipt_bytes": 2**40,
+            }
+            with self.assertRaisesRegex(ValueError, "task metadata allowance differs"):
+                check_task_selection(selection, root / "capture")
+
+    def test_task_input_limits_reserved_path_and_partial_selection_refuse_preparation(
+        self,
+    ):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            installation, dependency = self.installation(root), self.dependency(root)
+            for mode in (
+                "reserved",
+                "read-only root",
+                "oversized allowance",
+                "two copies exceed budget",
+                "missing hash",
+                "missing custody",
+                "overlap",
+            ):
+                with self.subTest(mode=mode):
+                    case = root / mode
+                    case.mkdir()
+                    source = case / "source"
+                    source.mkdir()
+                    (
+                        source
+                        / ("capture-witness.txt" if mode == "reserved" else "task.py")
+                    ).write_bytes(b"initial")
+                    if mode == "read-only root":
+                        source.chmod(0o500)
+                    if mode == "two copies exceed budget":
+                        (source / "task.py").write_bytes(b"x" * (512 * 1024))
+                    bundle = case / "input"
+                    anchor = prepare_task_input(
+                        source,
+                        output_dir=bundle,
+                        max_task_bytes={
+                            "oversized allowance": 2**30,
+                            "two copies exceed budget": 1024**2,
+                        }.get(mode, 1000),
+                        max_task_entries=20,
+                    )
+                    output = (
+                        bundle / "capture" if mode == "overlap" else case / "capture"
+                    )
+                    with self.assertRaises(ValueError):
+                        prepare(
+                            output,
+                            codex_root=installation,
+                            websockets_root=dependency,
+                            task_input=None if mode == "missing custody" else bundle,
+                            task_input_sha256=None
+                            if mode == "missing hash"
+                            else anchor,
+                        )
+                    self.assertFalse(output.exists())
+
+    def test_prepared_task_is_anchored_and_drift_refuses_before_consumption(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "task-source"
+            source.mkdir()
+            (source / "task.py").write_bytes(b"print('caf\xc3\xa9')\n")
+            bundle = root / "task-input"
+            input_sha = prepare_task_input(
+                source, output_dir=bundle, max_task_bytes=1000, max_task_entries=20
+            )
+            shutil.rmtree(source)
+            output = root / "capture"
+            receipt = prepare(
+                output,
+                codex_root=self.installation(root),
+                websockets_root=self.dependency(root),
+                task_input=bundle,
+                task_input_sha256=input_sha,
+            )
+            prepared = read_preparation(
+                output, expected_sha256=receipt["preparation_sha256"]
+            )
+            self.assertEqual(
+                prepared["schema"], "caplab.scripted-native-preparation/v2"
+            )
+            self.assertEqual(prepared["task_input"]["input_sha256"], input_sha)
+            path, auth_sha = self.authorization(
+                root, output, receipt["preparation_sha256"]
+            )
+            inventory = json.loads((bundle / "inventory/inventory.json").read_bytes())
+            entry = next(e for e in inventory["entries"] if e["kind"] == "file")
+            (bundle / "inventory" / entry["object"]).write_bytes(b"changed")
+            with self.assertRaises(ValueError):
+                consume(
+                    output,
+                    expected_preparation_sha256=receipt["preparation_sha256"],
+                    authorization_path=path,
+                    expected_authorization_sha256=auth_sha,
+                )
+            self.assertFalse((output / "consumption.json").exists())
+
     def installation(self, root):
         source = root / "codex"
         source.mkdir()

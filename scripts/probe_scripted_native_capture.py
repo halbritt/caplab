@@ -17,6 +17,8 @@ def main(argv=None):
     preparation.add_argument("output", type=Path)
     preparation.add_argument("--codex-root", required=True, type=Path)
     preparation.add_argument("--websockets-root", required=True, type=Path)
+    preparation.add_argument("--task-input", type=Path)
+    preparation.add_argument("--task-input-sha256")
     execution = commands.add_parser(
         "execute", help="consume one separately authorized attempt"
     )
@@ -40,6 +42,8 @@ def main(argv=None):
             args.output,
             codex_root=args.codex_root,
             websockets_root=args.websockets_root,
+            task_input=args.task_input,
+            task_input_sha256=args.task_input_sha256,
         )
     elif args.command == "execute":
         result = execute(

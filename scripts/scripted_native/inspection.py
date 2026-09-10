@@ -103,6 +103,10 @@ def _inspect_complete(root, preparation, result):
         "service outcome differs from captured receipt",
     )
     selection = read(root / "selection.json")
+    require(
+        selection.get("task_input") == preparation.get("task_input"),
+        "selected task input differs from preparation",
+    )
     intent = read(root / "intent.json")
     guard = read(root / "safe-native-exec.json")
     handoff = read(root / "safe-handoff.json")
@@ -303,7 +307,9 @@ def _inspect_complete(root, preparation, result):
         "retained_entries": total_entries,
         "anchors": anchors,
     }
-    custody = inspect_custody(root, report)
+    custody = inspect_custody(
+        root, report, expected_task_input=preparation.get("task_input")
+    )
     kwargs = {
         "expected_attempt_sha256": anchors["attempt_sha256"],
         "expected_collection_sha256": anchors["collection_sha256"],
@@ -349,7 +355,16 @@ def _inspect_complete(root, preparation, result):
     if not collection["missing_locations"] == []:
         raise AssertionError()
     after = read(root / "safe/after/inventory.json")
-    (witness,) = [e for e in after["entries"] if e["kind"] == "file"]
+    if "task_input" in preparation:
+        require(
+            custody["task"]["changes"]
+            == [{"path": "capture-witness.txt", "change": "added"}],
+            "diagnostic changed the prepared task",
+        )
+        witnesses = [e for e in after["entries"] if e["path"] == "capture-witness.txt"]
+    else:
+        witnesses = [e for e in after["entries"] if e["kind"] == "file"]
+    (witness,) = witnesses
     if not (
         witness["path"] == "capture-witness.txt"
         and (root / "safe/after" / witness["object"]).read_bytes()

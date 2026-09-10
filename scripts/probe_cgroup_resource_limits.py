@@ -24,6 +24,7 @@ import time
 import uuid
 
 from caplab.process_capture import capture_process, seal_capture_json
+from caplab.prepared_task_capture import capture_prepared_before
 from caplab.capture_accounting import build_capture_byte_report
 from caplab.capture_quarantine import check_capture_bytes, check_capture_document
 from caplab.codex_capture_link import link_codex_final_message, link_codex_root
@@ -339,7 +340,7 @@ def inspect_devices(peer_pid, *, usable_devices=True):
 
 
 def receive_mount(listener, child, recorder, *, inspect_peer=None, usable_devices=False, quarantine_factory=None,
-                  nested_userns=False):
+                  nested_userns=False, task_input=None):
     require(type(nested_userns) is bool, 'nested_userns must be a boolean')
     device_names(usable_devices)
     descriptors = []
@@ -379,8 +380,14 @@ def receive_mount(listener, child, recorder, *, inspect_peer=None, usable_device
             device_access = inspect_devices(peer_pid, usable_devices=usable_devices) if usable_devices else None
             index = MOUNTS.index('/work')
             task = identities[index]
-            before_hash = recorder.capture_before(descriptors[index],
-                expected_device=task['source_dev'], expected_inode=task['source_ino'])
+            prepared_task = None
+            if task_input is None:
+                before_hash = recorder.capture_before(descriptors[index],
+                    expected_device=task['source_dev'], expected_inode=task['source_ino'])
+            else:
+                prepared_task = capture_prepared_before(task_input, recorder, descriptors[index],
+                    expected_device=task['source_dev'], expected_inode=task['source_ino'])
+                before_hash = prepared_task['before_inventory_sha256']
             identity = {'peer_pid': peer_pid, 'peer_uid': peer_uid, 'peer_gid': peer_gid,
                         'mounts': identities, 'mount_coverage': coverage,
                         'before_inventory_sha256': before_hash}
@@ -390,6 +397,8 @@ def receive_mount(listener, child, recorder, *, inspect_peer=None, usable_device
                 identity['device_access'] = device_access
             if nested_userns:
                 identity['nested_procfs'] = procfs
+            if prepared_task is not None:
+                identity['prepared_task'] = prepared_task
             name = child.name.removeprefix('fixture-') + '-handoff.json'
             for path in (recorder.output_dir.parent / name,
                          recorder.output_dir.parent / ('.' + name.removesuffix('.json') + '.pending')):

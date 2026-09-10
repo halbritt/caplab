@@ -19,6 +19,7 @@ from caplab.native_launch_configuration import (
     build_native_launch_configuration,
 )
 from caplab.process_capture import seal_capture_json
+from caplab.prepared_task_capture import read_task_selection
 from caplab.task_capture_verify import _read_file
 from probe_native_capture_startup import harness_manifest
 
@@ -112,7 +113,47 @@ def dependency_manifest(root):
     return manifest
 
 
-def prepare(output, *, codex_root, websockets_root):
+def check_task_selection(selection, output):
+    require(
+        isinstance(selection, dict)
+        and type(selection.get("max_receipt_bytes")) is int
+        and selection["max_receipt_bytes"] == 300000,
+        "task metadata allowance differs",
+    )
+    receipt, inventory = read_task_selection(
+        selection,
+        max_task_bytes=LIMITS["task_bytes"],
+        max_task_entries=LIMITS["task_entries"],
+    )
+    custody = Path(selection["custody"])
+    require(
+        not custody.is_relative_to(output) and not output.is_relative_to(custody),
+        "diagnostic custody overlaps task input",
+    )
+    require(
+        2 * receipt["retained_task_bytes"] + len("CAPLAB café tool witness\n".encode())
+        <= LIMITS["task_bytes"]
+        and 2 * receipt["retained_task_entries"] + 1 <= LIMITS["task_entries"],
+        "prepared task exceeds diagnostic capture allowance",
+    )
+    require(
+        not any(
+            e["path"] == "capture-witness.txt"
+            or e["path"].startswith("capture-witness.txt/")
+            for e in inventory["entries"]
+        ),
+        "prepared task occupies diagnostic witness path",
+    )
+    (task_root,) = [e for e in inventory["entries"] if e["path"] == "."]
+    require(
+        task_root["mode"] & 0o300 == 0o300,
+        "prepared task root must permit witness creation",
+    )
+
+
+def prepare(
+    output, *, codex_root, websockets_root, task_input=None, task_input_sha256=None
+):
     output, source, dependency = Path(output), Path(codex_root), Path(websockets_root)
     require(
         output.is_absolute()
@@ -127,6 +168,18 @@ def prepare(output, *, codex_root, websockets_root):
         ),
         "custody overlaps an input tree",
     )
+    require(
+        (task_input is None) == (task_input_sha256 is None),
+        "task input requires custody and hash",
+    )
+    selection = None
+    if task_input is not None:
+        selection = {
+            "custody": str(task_input),
+            "input_sha256": task_input_sha256,
+            "max_receipt_bytes": 300000,
+        }
+        check_task_selection(selection, output)
     installation = harness_manifest(source)
     library = dependency_manifest(dependency)
     invocation = build_native_capture_invocation(
@@ -181,6 +234,10 @@ def prepare(output, *, codex_root, websockets_root):
         "binding_complete": False,
         "study_eligible": False,
     }
+    if selection is not None:
+        prepared.update(
+            schema="caplab.scripted-native-preparation/v2", task_input=selection
+        )
     seal_capture_json(output, "preparation.json", prepared)
     return {
         "custody_root": str(output),
@@ -214,11 +271,20 @@ def read_preparation(output, *, expected_sha256):
             "execution_authorized",
             "binding_complete",
             "study_eligible",
-        },
+        }
+        | (
+            {"task_input"}
+            if prepared.get("schema") == "caplab.scripted-native-preparation/v2"
+            else set()
+        ),
         "invalid preparation fields",
     )
     require(
-        prepared.get("schema") == "caplab.scripted-native-preparation/v1",
+        prepared.get("schema")
+        in (
+            "caplab.scripted-native-preparation/v1",
+            "caplab.scripted-native-preparation/v2",
+        ),
         "unsupported preparation",
     )
     require(
@@ -252,6 +318,8 @@ def read_preparation(output, *, expected_sha256):
         prepared.get("invocation") == expected, "fixed diagnostic invocation differs"
     )
     require(stat.S_IMODE(info.st_mode) & 0o077 == 0, "custody root is not private")
+    if "task_input" in prepared:
+        check_task_selection(prepared["task_input"], output)
     runtime = prepared["runtime_pins"]
     require(
         isinstance(runtime, list)
@@ -267,6 +335,8 @@ def read_preparation(output, *, expected_sha256):
 
 
 def check_inputs(prepared):
+    if "task_input" in prepared:
+        check_task_selection(prepared["task_input"], Path(prepared["custody_root"]))
     require(
         source_pins() == prepared["implementation_pins"],
         "implementation source changed",

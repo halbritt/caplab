@@ -38,6 +38,31 @@ One-shot enforcement assumes the owner preserves this custody root and its
 consumption receipt without deletion or rollback. The diagnostic does not
 provide an external durable attempt ledger or authorize replay in another root.
 
+An optional prepared task is selected with both `--task-input /absolute/private/input`
+and `--task-input-sha256 <input.json hash>`. The bundle must already satisfy the
+[task-input contract](task-input-v1.md); preparation neither discovers a world
+nor copies its original source. The default empty task keeps preparation schema
+`caplab.scripted-native-preparation/v1`. Supplying an input uses `/v2` and adds
+`task_input` with its exact custody path, input hash and 300,000-byte metadata
+allowance. Keep that input custody stable and available through inspection.
+
+Input-declared allowances must not exceed 1 MiB and 1,000 entries, checked
+before input payload verification. Actual input counts must leave room for
+both before/after copies and the diagnostic witness within the existing task
+capture quotas. Its root must permit owner write/search, and
+`capture-witness.txt` and descendants are reserved. Partial option pairs,
+overlapping custody and incompatible inputs refuse preparation. Input bytes
+are reverified before attempt consumption and materialization.
+
+After authenticated mount checks, the supervisor materializes the selected
+input into blocked `/work`, captures its before inventory, verifies content
+agreement and seals the [prepared-task link](prepared-task-capture-v1.md) in
+the guarded handoff before release. Quarantine or linkage failure prevents
+release and preserves partial effects. The fixed diagnostic tool still only
+adds its witness file; the task is not presented as a model-generated repair.
+Input instructions can affect native behavior and require their own exposure
+and configuration accounting before any study use.
+
 ## Authorize and execute once
 
 Preparation grants no execution authority. A separate authorization document
@@ -143,6 +168,11 @@ lineage and timing, resource counters, quarantine and owned-unit removal.
 The shared custody reader also checks [overlapping retained copies](capture-overlap-v1.md):
 the final task inventory against retained `/work`, and selected native locations
 against retained `/episode`. Individually valid copies that disagree are refused.
+For prepared tasks, inspection also requires the preparation's exact input
+selection, the handoff's materialization/before linkage, and an observed task
+change list containing only the added `capture-witness.txt`. Other task content
+or mode changes refuse inspection. A successful check does not validate the
+task's oracle or establish that a model repaired it.
 
 Missing prerequisite artifacts return `status=unavailable` and exit 1. Changed
 or malformed anchored evidence refuses with an exception; it never becomes a
