@@ -104,7 +104,9 @@ def assess_lifetime(report: dict, fact: dict, hypothesis: str) -> dict:
         raise ValueError('verified scenario outcome required')
     violation = not fact['delayed_body_property_satisfied']
     anchor_supported = False
-    for location in report['locations']:
+    # Aggregate locations cannot be assigned to one of several reported claims.
+    locations = report['locations'] if len(report['assertions']) == 1 and not report['unmapped_claims'] else []
+    for location in locations:
         match = re.fullmatch(r'([^:]+):(\d+)(?:-(\d+))?', location)
         if match and match[1] == fact['source_file']:
             first, last = int(match[2]), int(match[3] or match[2])

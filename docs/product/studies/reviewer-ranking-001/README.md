@@ -220,3 +220,12 @@ not scores from a validated semantic interpreter. The review supplies no
 explicit blocking/advisory disposition, so no false-blocker rate is inferred.
 The failed source preflight is preserved; a versioned guard correction lets
 public `user_id` field names survive while retaining private-value protection.
+
+The [finding-unit administration](../../../records/verification-2026-09-10-reviewer-finding-units.md)
+corrects cross-finding location credit and introduces a
+[native report contract](REVIEW-REPORT.md) with explicit acceptance effects.
+One repeated native review produced an inspectable, explicitly blocking
+partial-RSS-refresh claim. Its truth remains unresolved pending original-path
+execution; the previously confirmed deadline and optional-RSS defects are
+absent from its final report. Representation checks do not establish review
+success, scorer acceptance or a comparative result. Case coverage is unchanged.

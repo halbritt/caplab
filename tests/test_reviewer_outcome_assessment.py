@@ -34,6 +34,15 @@ class OutcomeAssessmentTest(unittest.TestCase):
         self.assertEqual(result['disposition'], 'causal-attribution-unresolved')
         self.assertFalse(result['introduced_defect_credit'])
 
+    def test_one_finding_cannot_borrow_another_findings_aggregate_location(self):
+        # The timeout report cites config.ts; another claim cites runtime.ts.
+        # This old representation has already discarded that association.
+        self.report['assertions'].append({'hypothesis_id': 'other', 'stance': 'asserted'})
+        self.report['locations'] = ['src/config.ts:7', 'src/runtime.ts:15']
+        result = assess_lifetime(self.report, self.fact, 'h')
+        self.assertEqual(result['disposition'], 'causal-attribution-unresolved')
+        self.assertFalse(result['introduced_defect_credit'])
+
     def test_uncertainty_retraction_and_omission_do_not_become_catches_or_clearance(self):
         for stance in ('uncertain', 'rejected'):
             self.report['assertions'][0]['stance'] = stance

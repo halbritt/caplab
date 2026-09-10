@@ -1,0 +1,71 @@
+{
+  "assessment": "unresolved-pending-original-path-witness",
+  "assessor": "primary agent under ADR 0026; development inference, not accepted semantic scorer",
+  "finding_id": "55a4389be241824676a7d8a66c92ca2997311a205d41eefb0b5c3473f03abb53",
+  "finding_sha256": "b3b42f61abfee35db3deda936b1e01d1705694fe0f75a785b0fae5a17ea0c9fd",
+  "known_families": [
+    {
+      "basis": {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/reddit-recovery-witness-2/verification.json",
+        "sha256": "ae90ff38769a59b3fafbd68da7f92f278cb7267233902c917577bf38e5b8005d"
+      },
+      "family": "active-response-exceeds-180-second-recovery-budget",
+      "final_report_presence": "absent"
+    },
+    {
+      "basis": {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-findings-witness-1/claim-investigation.json",
+        "sha256": "e582d9ca56ff52deecf46f68eb6133a12aeed46b7a41e3dc11cd28ca08e86acb"
+      },
+      "family": "optional-rss-flag-disables-harvest-and-valid-pool-read",
+      "final_report_presence": "absent"
+    }
+  ],
+  "limits": [
+    "One exposed development case with changed report administration; no comparative performance inference.",
+    "Explicit block is the reviewer recommendation, not an acceptance decision or proof of incorrect blocking.",
+    "Case coverage remains seven bounded investigations, three base-tree-only, twenty-two pending, zero admitted."
+  ],
+  "presence_interpretation": "The single final claim concerns unsuccessful partial refresh and exit status, not active-body deadline enforcement or disabling optional RSS. Shared RSS/recovery vocabulary does not establish either finding.",
+  "ranking_eligible": false,
+  "raw_report_sha256": "ad47259eb3ab98374b03ac07635dfa8f59ffa62d99716441fa4dd755dcd92e84",
+  "reported_acceptance_effect": "block",
+  "reported_claim_status": "asserted",
+  "required_witness": "Execute the original CLI, configuration loader, listing transports, RSS/provider recovery and candidate persistence with controlled real HTTP responses for mixed healthy/blocked listings and failed RSS with no cache. Include healthy and total-blockage controls, record exit status and state, and distinguish service restart policy from an actually observed restart.",
+  "reviewer_demonstration_limit": "The reviewer replaced listing and RSS functions and configuration loading; its exit-zero demonstration bypassed the real provider recovery and HTTP paths. Preserve it as reviewer evidence, not independent case truth.",
+  "schema": "caplab.finding-units-development-assessment/v1",
+  "scores_computed": false,
+  "source_inspection": "The provider no-cache failure writes unavailable and raises SourceUnavailable without setting degraded. The partial-listing caller catches that exception; cmd_harvest returns nonzero only for an escaping exception or degraded provider. This supports investigating the reported scenario but is not an independent execution of it.",
+  "source_references": [
+    {
+      "end_line": 491,
+      "path": "newsroom/sources/reddit.py",
+      "sha256": "cf8eef0e2cf80003ae31473c19f337163143600ea7417f7ef70a565d5ee35ab0",
+      "start_line": 466
+    },
+    {
+      "end_line": 196,
+      "path": "newsroom/sources/reddit_state.py",
+      "sha256": "0e105f4d3ae0892c8feee5b18be4f39ad37ebdaca3a3a6be5372f05fa18a22d0",
+      "start_line": 145
+    },
+    {
+      "end_line": 431,
+      "path": "newsroom/cli.py",
+      "sha256": "6b5cf71f0ced83cd48900a28f301341602f2834b7cfbcb75d2498dbaa00013da",
+      "start_line": 412
+    },
+    {
+      "end_line": 201,
+      "path": "README.md",
+      "sha256": "462b71a5ee0029330468a99361cfafc8cfd4a29966295d0ffe3b94040daab306",
+      "start_line": 193
+    },
+    {
+      "end_line": 17,
+      "path": "systemd/ai-newsroom-reddit-harvest.service",
+      "sha256": "b9393ad05ea81a98b112d5d6d62d839bc680665ea03fc44ee166a9ee080115ac",
+      "start_line": 1
+    }
+  ]
+}

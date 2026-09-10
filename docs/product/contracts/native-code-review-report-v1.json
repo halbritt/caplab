@@ -1,0 +1,104 @@
+{
+  "type": "object",
+  "properties": {
+    "schema": {
+      "type": "string",
+      "enum": [
+        "caplab.native-code-review-report/v1"
+      ]
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "claim": {
+            "type": "string"
+          },
+          "trigger": {
+            "type": "string"
+          },
+          "expected_behavior": {
+            "type": "string"
+          },
+          "observed_or_predicted_behavior": {
+            "type": "string"
+          },
+          "change_attribution": {
+            "type": "string"
+          },
+          "evidence": {
+            "type": "string"
+          },
+          "claim_status": {
+            "type": "string",
+            "enum": [
+              "asserted",
+              "uncertain",
+              "withdrawn"
+            ]
+          },
+          "acceptance_effect": {
+            "type": "string",
+            "enum": [
+              "block",
+              "advise",
+              "undetermined"
+            ]
+          },
+          "locations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "start_line": {
+                  "type": "integer"
+                },
+                "end_line": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "path",
+                "start_line",
+                "end_line"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "title",
+          "claim",
+          "trigger",
+          "expected_behavior",
+          "observed_or_predicted_behavior",
+          "change_attribution",
+          "evidence",
+          "claim_status",
+          "acceptance_effect",
+          "locations"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "schema",
+    "findings",
+    "limitations"
+  ],
+  "additionalProperties": false
+}
