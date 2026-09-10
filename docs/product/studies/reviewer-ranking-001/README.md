@@ -132,3 +132,12 @@ contrast. Earlier invalid fixtures are preserved. The original introduction
 is outside the census window, so it cannot become an in-population defective
 review task merely because this development witness succeeded. Reviewer
 scoring, remaining case coverage and held-out comparisons are still open.
+
+The [claim-interpretation experiment](../../../records/verification-2026-09-10-reviewer-claim-interpretation.md)
+tested one actual review and 17 adversarial variants without exposing case
+truth. Four of 18 interpretations added inferred opposing stances beyond the
+frozen expected mappings; all positive claims, unknown-claim presence and
+locations were retained. This exposes a reported-versus-inferred distinction
+that must be resolved before scoring. Literal quote checks also do not prove
+semantic support. This is an unaccepted interpretation prototype, not a
+free-text reviewer scorer or a ranking measurement.

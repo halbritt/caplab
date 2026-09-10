@@ -1,0 +1,256 @@
+{
+  "cases": [
+    {
+      "case": "keywords-only",
+      "checks": {
+        "assertion_mapping_matches": true,
+        "locations_match": true,
+        "unmapped_presence_matches": true
+      },
+      "document_id": "d-07befc17cd0e"
+    },
+    {
+      "case": "wrong-location",
+      "checks": {
+        "assertion_mapping_matches": false,
+        "locations_match": true,
+        "unmapped_presence_matches": true
+      },
+      "document_id": "d-1e21176a8748"
+    },
+    {
+      "case": "explicit-overreach",
+      "checks": {
+        "assertion_mapping_matches": true,
+        "locations_match": true,
+        "unmapped_presence_matches": true
+      },
+      "document_id": "d-27e5e93b27ec"
+    },
+    {
+      "case": "genuine-conflict",
+      "checks": {
+        "assertion_mapping_matches": true,
+        "locations_match": true,
+        "unmapped_presence_matches": true
+      },
+      "document_id": "d-31732bd0ec64"
+    },
+    {
+      "case": "timeout-negation",
+      "checks": {
+        "assertion_mapping_matches": true,
+        "locations_match": true,
+        "unmapped_presence_matches": true
+      },
+      "document_id": "d-5cf952bf1ce5"
+    },
+    {
+      "case": "false-but-asserted",
+      "checks": {
+        "assertion_mapping_matches": true,
+        "locations_match": true,
+        "unmapped_presence_matches": true
+      },
+      "document_id": "d-5ee782fbbbc3"
+    },
+    {
+      "case": "protect-home",
+      "checks": {
+        "assertion_mapping_matches": true,
+        "locations_match": true,
+        "unmapped_presence_matches": true
+      },
+      "document_id": "d-70042e57dc1d"
+    },
+    {
+      "case": "duplicate-report",
+      "checks": {
+        "assertion_mapping_matches": false,
+        "locations_match": true,
+        "unmapped_presence_matches": true
+      },
+      "document_id": "d-78ed158afd8c"
+    },
+    {
+      "case": "unknown-finding",
+      "checks": {
+        "assertion_mapping_matches": true,
+        "locations_match": true,
+        "unmapped_presence_matches": true
+      },
+      "document_id": "d-8759fdd5e3de"
+    },
+    {
+      "case": "uncertain-release",
+      "checks": {
+        "assertion_mapping_matches": true,
+        "locations_match": true,
+        "unmapped_presence_matches": true
+      },
+      "document_id": "d-88feff48d6c8"
+    },
+    {
+      "case": "control-preserved",
+      "checks": {
+        "assertion_mapping_matches": false,
+        "locations_match": true,
+        "unmapped_presence_matches": true
+      },
+      "document_id": "d-b0f5f46164fa"
+    },
+    {
+      "case": "withdrawal",
+      "checks": {
+        "assertion_mapping_matches": true,
+        "locations_match": true,
+        "unmapped_presence_matches": true
+      },
+      "document_id": "d-b79e8c5b67bc"
+    },
+    {
+      "case": "actual-native-review",
+      "checks": {
+        "assertion_mapping_matches": true,
+        "locations_match": true,
+        "unmapped_presence_matches": true
+      },
+      "document_id": "d-c9b216d9e7a4"
+    },
+    {
+      "case": "explicit-correction",
+      "checks": {
+        "assertion_mapping_matches": true,
+        "locations_match": true,
+        "unmapped_presence_matches": true
+      },
+      "document_id": "d-d71a8a9cd8f6"
+    },
+    {
+      "case": "embedded-instruction",
+      "checks": {
+        "assertion_mapping_matches": true,
+        "locations_match": true,
+        "unmapped_presence_matches": true
+      },
+      "document_id": "d-d7c37b84f649"
+    },
+    {
+      "case": "timeout-paraphrase",
+      "checks": {
+        "assertion_mapping_matches": false,
+        "locations_match": true,
+        "unmapped_presence_matches": true
+      },
+      "document_id": "d-e922720b5abc"
+    },
+    {
+      "case": "uncertain-diagnosis",
+      "checks": {
+        "assertion_mapping_matches": true,
+        "locations_match": true,
+        "unmapped_presence_matches": true
+      },
+      "document_id": "d-eea952011cc5"
+    },
+    {
+      "case": "audit-suggestion",
+      "checks": {
+        "assertion_mapping_matches": true,
+        "locations_match": true,
+        "unmapped_presence_matches": true
+      },
+      "document_id": "d-ff7fc5f2e425"
+    }
+  ],
+  "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/claim-interpretation-1",
+  "documents": 18,
+  "elapsed_seconds": 194.44230567314662,
+  "empirical_defect_truth_supplied": false,
+  "files": [
+    {
+      "path": "fixture-plan.json",
+      "sha256": "628edd4f32e27720e2255411bdd9d84d1ccd2027c51c4d1c3f316643fdff7b14"
+    },
+    {
+      "path": "fixture-generator.py",
+      "sha256": "e012b1b6746d8d50f2559f63936fe460498524e212a9a11c7693cb03930b0572"
+    },
+    {
+      "path": "expected.json",
+      "sha256": "12737170afd9535a3fc48416fe86670afa5b37e13f9d47e05bfcb908c8e03f6b"
+    },
+    {
+      "path": "prompt.txt",
+      "sha256": "7f6f9f2fd8747cde1243ae0243d6e821f8c5bdc3fed88afb6af6f0c22517843b"
+    },
+    {
+      "path": "task/inputs.json",
+      "sha256": "80f6a0480251049d0d2d38d256805cac56a93865053edf50aa75c18815c0ec23"
+    },
+    {
+      "path": "plan.json",
+      "sha256": "a7a5d30a2e538256336df05e3fb0465a1243b9908d99994adfe0084dabdc4a49"
+    },
+    {
+      "path": "runner.py",
+      "sha256": "2230cdfa2af8fb6acd150db7b87aec1f7ba0d4ad7099a022d71cadb3b344d398"
+    },
+    {
+      "path": "launch.json",
+      "sha256": "bb079d3b2c8406b63d4cd27fb03d63657a8fccc7804479f4f83cd98bc2c5c9d0"
+    },
+    {
+      "path": "process.json",
+      "sha256": "250532537ac177f8ef567de60460b3b1e109b3ea0395017841ff5a278d2ec703"
+    },
+    {
+      "path": "completion.json",
+      "sha256": "db85b6c089f35252e614b97eeaa2d111efa19f18c925897c78205cefad23424c"
+    },
+    {
+      "path": "capture/final-message.txt",
+      "sha256": "e518c479d9e0022d22c9f18cad3349c0168f893d3fd52acaaa73f814b554ae10"
+    },
+    {
+      "path": "verification.json",
+      "sha256": "0680d6e3f398bc9c62c1129aec28393bb6d5550f697794ca3cb71d5fd97ae80f"
+    },
+    {
+      "path": "administration-check.json",
+      "sha256": "af1e7d8e47d4c1b91ba3f76daac93c73a592847ae185bbd3c2cfc6749abe50c4"
+    }
+  ],
+  "interpretation": "Four extra inferred opposing stances; no estimate of semantic accuracy or reviewer quality.",
+  "matching_documents": 14,
+  "native_administration": {
+    "auth_cache_unchanged": true,
+    "final_matches_native_message": true,
+    "input_fully_read": true,
+    "limits": "Recorded native tool audit; not a complete kernel network/process trace. Broad semantic accuracy and ranking eligibility are unproven.",
+    "native_package_unchanged": true,
+    "observed_cli_version": "0.153.4",
+    "observed_contexts": [
+      {
+        "effort": "max",
+        "model": "gpt-5.6-terra"
+      }
+    ],
+    "observed_model": "gpt-5.6-terra",
+    "only_recorded_command": "/usr/bin/bash -c \"sed -n '1,240p' /task/inputs.json\"",
+    "rollout_sha256": "823c737f961310bc14b85dae9e843164049af153c1d5fb65de0385a6983dde20",
+    "schema": "caplab.claim-interpretation-administration/v1",
+    "thread_id": "01a08ce9-1d57-7773-8b45-1d79002e4e12",
+    "usage": {
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 13824,
+      "input_tokens": 26118,
+      "output_tokens": 10529,
+      "reasoning_output_tokens": 8863
+    }
+  },
+  "retained_capture_files": 76,
+  "reviewer_ranking_eligible": false,
+  "schema": "caplab.claim-interpretation-development-receipt/v1",
+  "status": "all-document-criterion-not-met; unaccepted prototype"
+}
