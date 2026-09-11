@@ -90,8 +90,8 @@ evidence. `scripts/reviewer_feasibility_sample.py` reproduces this selection
 from the hash-checked census.
 
 The [coverage projection](FEASIBILITY.md) accounts for all 32 selected changes.
-Seven have bounded change-relevant behavioral evidence; three additional trees
-have only baseline-witness evidence, and 22 changes remain without a
+Eleven have bounded change-relevant behavioral evidence; three additional trees
+have only baseline-witness evidence, and 18 changes remain without a
 change-specific behavioral witness. Test-readiness runs do not promote cases
 into these witness categories.
 These are coverage states, not case admissions or independent defect counts.
@@ -265,3 +265,13 @@ type, and the tested source-text and origin restrictions are preserved.
 These are two selected changes in one related presentation sequence. Coverage
 is now eleven bounded changes, three base-only trees and eighteen pending;
 this is neither eleven independent incidents nor an admitted reviewer corpus.
+
+The [first Claude native development review](../../../records/verification-2026-09-10-reviewer-claude-output.md)
+completed with intact stream/session capture and a structured four-finding
+report. Its optional-RSS finding matches independent original-path evidence;
+two operational concerns remain unresolved, and a systemd version premise is
+refuted by upstream release source. All findings are advisory, including the
+explicitly uncertain compatibility concern. Native title generation used Haiku
+and is retained in harness/cost accounting. This closes an administration gap
+and supplies natural scoring challenges; it establishes no paired ranking.
+Coverage and admission counts are unchanged.

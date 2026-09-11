@@ -1,0 +1,103 @@
+{
+  "credential_metadata": {
+    "credential_delivered": false,
+    "expiry_milliseconds_in_future": true,
+    "fields": {
+      "accessToken": {
+        "nonempty_string": true,
+        "present": true,
+        "type": "str"
+      },
+      "expiresAt": {
+        "nonempty_string": false,
+        "present": true,
+        "type": "int"
+      },
+      "rateLimitTier": {
+        "nonempty_string": true,
+        "present": true,
+        "type": "str"
+      },
+      "refreshToken": {
+        "nonempty_string": true,
+        "present": true,
+        "type": "str"
+      },
+      "scopes": {
+        "nonempty_string": false,
+        "present": true,
+        "type": "list"
+      },
+      "subscriptionType": {
+        "nonempty_string": true,
+        "present": true,
+        "type": "str"
+      }
+    },
+    "known_scopes": [
+      "user:file_upload",
+      "user:inference",
+      "user:mcp_servers",
+      "user:profile",
+      "user:sessions:claude_code"
+    ],
+    "model_launched": false,
+    "source_safety_checked": true,
+    "unrecognized_scope_count": 0
+  },
+  "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/claude-preflight-1",
+  "files": [
+    {
+      "path": "completion.json",
+      "sha256": "366896fc299feebc38b245fb05029e7cba527e07af12df2b4fe1dbc2f2836a0e"
+    },
+    {
+      "path": "credential-metadata.json",
+      "sha256": "8419d5be83417321bad6f0e54a18accf2ab5e1a829c624aed90715668d812c15"
+    },
+    {
+      "path": "help-completion.json",
+      "sha256": "0a0be3598d39d00b30917ac839a453f1463d39a4953ae6c613d7458ed89dbfc5"
+    },
+    {
+      "path": "help-launch.json",
+      "sha256": "6e47a96f12d4cc3cfd34688dbad9b1a1356ffca53be9d96834e31690a39dd44a"
+    },
+    {
+      "path": "help.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "help.stdout",
+      "sha256": "ae85d661e9c086f05637ebcd868f5702b477ff6e55e2e65b8ada7807cd51a4b6"
+    },
+    {
+      "path": "inspection-method.py",
+      "sha256": "8a26cd9bc2c3aab1057b539a62b804b5dda1a4d24a4031810bd41d74100bdec7"
+    },
+    {
+      "path": "plan.json",
+      "sha256": "00f4271ad64a9469ae5ff86ca24d687728e3a2acee7643addb4a9ea0447a578a"
+    },
+    {
+      "path": "version-completion.json",
+      "sha256": "6a350ea5a43290781de90b60c9fb7fe71fad104906c59a355d240733925b0bff"
+    },
+    {
+      "path": "version-launch.json",
+      "sha256": "566391c75440abb95fcb88b74cde2ec6140af9c82edcc3e5ea475c59476c2b4a"
+    },
+    {
+      "path": "version.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "version.stdout",
+      "sha256": "63a9a44d5ed72850cbb864978de82be5be0fe617d0f32e623d03fc910bfd2641"
+    }
+  ],
+  "model_launched": false,
+  "observed_version": "2.1.268 (Claude Code)",
+  "ranking_eligible": false,
+  "schema": "caplab.claude-preflight-development-receipt/v1"
+}

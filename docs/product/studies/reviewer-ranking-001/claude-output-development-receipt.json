@@ -1,0 +1,435 @@
+{
+  "administration": {
+    "complete_kernel_process_trace": false,
+    "elapsed_seconds": 790.1708393760491,
+    "native_model_match": "native-model-match",
+    "native_terminal_success": true,
+    "paired_tool_calls": {
+      "paired": 25
+    },
+    "ranking_eligible": false,
+    "session_fields_agree": true,
+    "unretained_entries": [],
+    "verification_sha256": "1a030c04afb09e5475a8dc605f10eb2caa6a039b2a8ab80f608b348c8a66350d"
+  },
+  "assessment": {
+    "absence_basis": "Manual inspection of all four complete findings and limitations, with byte-identified final report. No keyword score or general recall estimate.",
+    "assessor": "Primary agent under ADR 0026; source/witness-grounded development assessment, not an independent verdict on own execution or scorer acceptance",
+    "findings": [
+      {
+        "assessment": "The exact optional-RSS constructor gate and both guarded entry points match the independently executed healthy HTML, disabled-RSS and populated-pool controls. The reviewer marks this true defect advisory; no stronger acceptance judgment is inferred.",
+        "finding_id": "ee3ef287a035fcb01b80f1137c5e30ed378d4ab25ed338fdd4099c60f2f6a923",
+        "finding_sha256": "04af6ffc556e97305ce74e1fecc66d2a298642cc0ce850e975136d8bf9fc9454",
+        "independent_evidence": [
+          {
+            "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-findings-witness-1/verification.json",
+            "sha256": "d101743663feb7eec75928ace7fdc8aa4728395ccb25a859be5a341e4a056b7c"
+          },
+          {
+            "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-findings-witness-1/claim-investigation.json",
+            "sha256": "e582d9ca56ff52deecf46f68eb6133a12aeed46b7a41e3dc11cd28ca08e86acb"
+          }
+        ],
+        "reported": {
+          "acceptance_effect": "advise",
+          "change_attribution": "All of this logic is new in the change: reddit.py line 396 gates provider construction on `provider_dir and self.rss_fallback`, while fetch()/harvest() (lines 406-424) require the provider for harvested operation. config/sources.toml (lines 93-96) introduces the flags as separate settings. The shipped config enables both flags, so the defect appears only when an operator toggles rss_fallback off.",
+          "claim": "RedditAdapter constructs its persistent provider (RedditState) only when rss_fallback is true, but both the use_harvested digest path and the new harvest command require the provider. With use_harvested enabled and provider_state_dir configured but rss_fallback false, every Reddit fetch and every harvest run fails, and the error message wrongly claims provider_state_dir is missing.",
+          "claim_status": "asserted",
+          "evidence": "Reproduced: PYTHONPATH=/task/current python3 constructing RedditAdapter({'use_harvested': True, 'provider_state_dir': '/tmp/prov1'}) printed 'provider is: None', then 'fetch -> Reddit harvesting requires provider_state_dir', 'harvest -> Reddit harvesting requires provider_state_dir', 'provider dir created? False'. The failure and wrong message are demonstrated; the operational impact (loss of the whole Reddit pipeline after disabling only the RSS transport) is the direct consequence, not separately observed in production.",
+          "expected_behavior": "Harvest storage and the harvested-pool digest work whenever a provider state directory is available; rss_fallback should only control whether the RSS transport is attempted. At minimum the error should name the actual unmet condition.",
+          "locations": [
+            {
+              "end_line": 396,
+              "path": "newsroom/sources/reddit.py",
+              "start_line": 393
+            },
+            {
+              "end_line": 424,
+              "path": "newsroom/sources/reddit.py",
+              "start_line": 406
+            },
+            {
+              "end_line": 96,
+              "path": "config/sources.toml",
+              "start_line": 93
+            }
+          ],
+          "observed_or_predicted_behavior": "Demonstrated with the supplied runtime: provider is None, and both fetch(24) and harvest(24) raise SourceUnavailable('Reddit harvesting requires provider_state_dir') even though provider_state_dir is set; the provider directory is never created. Via cmd_harvest this exits 1 with the same misleading message; via the digest, Reddit is reported unavailable every run.",
+          "title": "Harvested-pool digest and harvest command fail with a misleading error when rss_fallback is disabled",
+          "trigger": "Set sources.reddit use_harvested = true (or run `newsroom harvest --source reddit`) with rss_fallback = false \u2014 three keys the config file presents as independent options \u2014 while provider_state_dir/state_dir is configured normally. Example: RedditAdapter({'use_harvested': True, 'provider_state_dir': '/tmp/prov1'}).fetch(24)."
+        },
+        "status": "confirmed-introduced-configuration-defect"
+      },
+      {
+        "assessment": "Source inspection confirms per-capture mkdtemp directories and repeated request storage, with no pruning in the trace module. The source requirement promises private incident records but supplies no retention period or capacity bound. No long-running disk-growth witness or independent requirement establishes an actionable defect. Retention may be a useful recommendation; the finding remains unresolved.",
+        "finding_id": "a25b8c844eaf97d70ffd675d61ce5ea8d57bcd80e2e00f49d467552699807636",
+        "finding_sha256": "40f5d63301247ced8a25c40c2a42feda8cddce4dd28b7298b862dde6c3b7c3e3",
+        "independent_evidence": [],
+        "reported": {
+          "acceptance_effect": "advise",
+          "change_attribution": "newsroom/curation_trace.py is entirely new; cli.py newly wraps the main curation call in capture(config.data_dir, scan_id, new). No pruning was added anywhere in the diff.",
+          "claim": "curation_trace.capture creates a new per-run directory containing the full candidate packet (input.json) plus the full prompt duplicated into every attempt-NN.json (up to 4 attempts now that the fallback gets a corrective retry), and nothing in the codebase ever prunes these directories.",
+          "claim_status": "asserted",
+          "evidence": "Grep across newsroom/ shows data_dir/'curation' referenced only by curation_trace.py (creation/writing) and cli.py (capture call); no purge/cleanup path exists, in contrast to DedupStore purge(90) called in cli._run and the 72h candidate expiry in reddit_state.save_candidates. Growth rate and eventual disk impact are predicted, not demonstrated over time.",
+          "expected_behavior": "Incident-recovery records retained with some bound, consistent with every other store in this project: the dedup store is purged at 90 days, harvested Reddit candidates expire at 72 hours, cached feeds at 24 hours.",
+          "locations": [
+            {
+              "end_line": 57,
+              "path": "newsroom/curation_trace.py",
+              "start_line": 43
+            },
+            {
+              "end_line": 596,
+              "path": "newsroom/cli.py",
+              "start_line": 581
+            }
+          ],
+          "observed_or_predicted_behavior": "Predicted unbounded disk growth: one directory per run forever (order of megabytes per run for a large candidate pool whose prompt is re-serialized into each attempt file). Verified by inspection and grep that no code deletes or expires anything under data_dir/curation; the README documents the records but states no retention.",
+          "title": "Curation trace directories under data_dir/curation accumulate without any retention bound",
+          "trigger": "Normal operation: every live daily digest run (and every dry run, though those land in the disposable preview snapshot) writes a new directory under data_dir/curation/ on the unattended box."
+        },
+        "status": "unresolved-operational-requirement"
+      },
+      {
+        "assessment": "Base and changed source directly show removal of the HTTPError body excerpt and recording of the reduced error string. No original-path HTTP witness was executed in this investigation. The README promises private failed-selection records and excludes API keys and provider reasoning; it does not explicitly promise raw error bodies. The reviewer acknowledges a possible deliberate tradeoff. Diagnostic change is observed in source; defect status remains unresolved.",
+        "finding_id": "22451c30b0cc466b58a5791ecb6ba6f0d1ebf66ef27d348fadf2e4d602f1e0c8",
+        "finding_sha256": "54a1d11ec1ca41bccdc2eae7cad7e4cb4380ed0ce43559f08315ee06a34ca36f",
+        "independent_evidence": [],
+        "reported": {
+          "acceptance_effect": "advise",
+          "change_attribution": "The diff explicitly removed `body = e.read()...` and the `{body[:500]}` interpolation from the HTTPError handler when renaming _post_chat to _post_chat_network; the new trace plumbing then persists the reduced string.",
+          "claim": "_post_chat_network now raises CurationError('LLM HTTP error {code}') where the base included the first 500 bytes of the provider's error body. Because _complete records exactly this string into the attempt trace and operator logs, the provider's explanatory error JSON (e.g. an OpenRouter 402/400 reason) is no longer captured anywhere.",
+          "claim_status": "asserted",
+          "evidence": "Code diff comparison: base curate.py raised CurationError(f\"LLM HTTP error {e.code}: {body[:500]}\"); current newsroom/curate.py:134 raises CurationError(f\"LLM HTTP error {e.code}\"). _complete (lines 195-201) records str(exc) into the trace. This is a code-level demonstration; the operational diagnostic loss is predicted, and the intent behind the removal is not documented in the change.",
+          "expected_behavior": "The base behavior: 'LLM HTTP error 402: {body excerpt}' in the log, giving the operator the provider's stated reason; the new trace files, whose stated purpose is inspecting the exact failed attempt, would reasonably retain at least as much.",
+          "locations": [
+            {
+              "end_line": 134,
+              "path": "newsroom/curate.py",
+              "start_line": 133
+            },
+            {
+              "end_line": 201,
+              "path": "newsroom/curate.py",
+              "start_line": 195
+            }
+          ],
+          "observed_or_predicted_behavior": "Predicted from the code (not executed against a live provider): logs and attempt-NN.json record only 'LLM HTTP error 402' with no body, weakening exactly the incident-recovery capability the change adds, and contrasting with the actionable-message treatment this same change gives TwitterAPI 402s. The change looks deliberate (the hunk rewrites the handler), possibly to keep worker stdout small or avoid retaining response bodies, so this may be an accepted tradeoff.",
+          "title": "HTTP error bodies are dropped from curation errors and from the new incident-recovery traces",
+          "trigger": "Any non-2xx response from the primary or fallback chat endpoint during a digest or brief run, e.g. a 402 credits-exhausted or 400 invalid-model reply carrying an explanatory JSON body."
+        },
+        "status": "unresolved-diagnostic-tradeoff"
+      },
+      {
+        "assessment": "Upstream v243 rejects non-no restart settings for oneshot. Upstream v244 explicitly permits ON_FAILURE and its manual excludes only always and on-success. This supplies a pre-v250 counterexample to the claimed cutoff. No target systemd version or actual unit execution was observed. The narrower concern for older hosts remains unverified. The reviewer explicitly marked this uncertain and advisory, so it is not an incorrect blocker.",
+        "finding_id": "bc6b1128d015e2159757f5036e4c7406c62388efe25c84ba0662997bfce21d8f",
+        "finding_sha256": "c1e8001a895b44357f6b47b08324a790e21dee49dee9b1b3d9120bfbc6b50083",
+        "independent_evidence": [
+          {
+            "commit": "efb536d0cbe2e58f80e501d19999928c75e08f6a",
+            "custody_path": "v243/src/core/service.c",
+            "git_blob": "73b3c9c316508b467d837c7e782a83afa60e3427",
+            "path": "src/core/service.c",
+            "repository": "https://github.com/systemd/systemd",
+            "retrieved_at": "2026-09-11T00:29:54.657840+00:00",
+            "sha256": "0965f1c29551019d259c24d90c23fc17e17d57833bd2a338d325e020a3aefe3e",
+            "tag": "v243",
+            "tag_object": "dfaf766941068fac7e8581b87f51d779255390a8",
+            "url": "https://github.com/systemd/systemd/blob/efb536d0cbe2e58f80e501d19999928c75e08f6a/src/core/service.c"
+          },
+          {
+            "commit": "db9c5ae73e23d816e2df2a3e10a9a2a60b5b3ed7",
+            "custody_path": "v244/src/core/service.c",
+            "git_blob": "49ad166c26045643c9fc4b24505a929f40a0bd4d",
+            "path": "src/core/service.c",
+            "repository": "https://github.com/systemd/systemd",
+            "retrieved_at": "2026-09-11T00:29:54.928641+00:00",
+            "sha256": "e37b186c6c0918c6822cfa99a3432b72cf997aa6ef5d45504cc36eb415e46479",
+            "tag": "v244",
+            "tag_object": "ec298e702b87e2859f7f7864f51eef3360daf163",
+            "url": "https://github.com/systemd/systemd/blob/db9c5ae73e23d816e2df2a3e10a9a2a60b5b3ed7/src/core/service.c"
+          },
+          {
+            "commit": "db9c5ae73e23d816e2df2a3e10a9a2a60b5b3ed7",
+            "custody_path": "v244/man/systemd.service.xml",
+            "git_blob": "db28e3e272958cf14b52981ce15606c5eea9fa40",
+            "path": "man/systemd.service.xml",
+            "repository": "https://github.com/systemd/systemd",
+            "retrieved_at": "2026-09-11T00:29:55.176120+00:00",
+            "sha256": "d86ef3e8530eb9a1a56aefe6ae2f3c80f44141c31593740f8357e6b9381ba23d",
+            "tag": "v244",
+            "tag_object": "ec298e702b87e2859f7f7864f51eef3360daf163",
+            "url": "https://github.com/systemd/systemd/blob/db9c5ae73e23d816e2df2a3e10a9a2a60b5b3ed7/man/systemd.service.xml"
+          }
+        ],
+        "reported": {
+          "acceptance_effect": "advise",
+          "change_attribution": "The service file is new in this change. The pre-existing oneshot units in systemd/ (ai-newsroom.service, -editorial, -feedback) never set Restart=; the only pre-existing Restart=on-failure unit (ai-newsroom-web.service) is Type=simple, so the change introduces the first oneshot+Restart combination.",
+          "claim": "ai-newsroom-reddit-harvest.service sets Type=oneshot together with Restart=on-failure/RestartSec=5min. systemd releases before v250 refuse Restart= (other than no) on Type=oneshot units at load time, in which case the harvester never runs; with the shipped use_harvested=true config the morning digest would then permanently report Reddit as having no harvested pool.",
+          "claim_status": "uncertain",
+          "evidence": "File inspection of systemd/ai-newsroom-reddit-harvest.service lines 9-15 and comparison with the base units. The systemd version constraint is from documented systemd behavior (Restart= on oneshot first allowed in v250), not verified by running systemd here. This is an unverified concern about deployment environment, not a demonstrated failure.",
+          "expected_behavior": "The unit loads and runs on the target host; failed harvests are retried per RestartSec within the StartLimit budget.",
+          "locations": [
+            {
+              "end_line": 15,
+              "path": "systemd/ai-newsroom-reddit-harvest.service",
+              "start_line": 9
+            }
+          ],
+          "observed_or_predicted_behavior": "Predicted, environment-dependent: on systemd < 250 the unit is refused ('Service has Restart= setting other than no, which isn't allowed for Type=oneshot services') and never starts. Not demonstrated: systemd-analyze and the target host are unavailable in this sandbox, and a 2026-era host very likely runs systemd >= 250, so this may be moot in practice.",
+          "title": "New harvest service combines Type=oneshot with Restart=on-failure, refused by systemd before v250",
+          "trigger": "Deploying the new unit on a host running systemd older than v250 (pre-2022 distributions). On systemd >= 250 the combination is valid and behaves as the README describes."
+        },
+        "status": "version-cutoff-refuted-applicability-unresolved"
+      }
+    ],
+    "known_families_absent_from_final": [
+      "180-second recovery deadline exceeded by active HTTPS body",
+      "Partial RSS failure returns success despite unavailable provider state"
+    ],
+    "limitations_correction": "The report says no network access. The namespace actually shared network for native provider access; external research was prohibited and no web tool was exposed. Treat the sentence as the reviewer reporting unexercised target endpoints, not evidence of kernel network isolation.",
+    "limits": [
+      "One exposed development case, not a paired ranking.",
+      "All four acceptance effects are advise; no blocker count or false-blocker rate is inferred.",
+      "Native auxiliary title-model use is part of the observed harness configuration and cost.",
+      "No newly admitted cases, scoring policy acceptance or operational qualification."
+    ],
+    "native_administration": {
+      "auxiliary_basis": {
+        "lines": [
+          166
+        ],
+        "path": "capture/debug.log",
+        "sha256": "407d77620e0dc1352f979f4dfeb2a03ed4cd0d1b1062bedfe4879ae790027b44"
+      },
+      "auxiliary_model": "claude-haiku-4-5-20251001",
+      "auxiliary_purpose": "Native session title generation",
+      "cost_is_provider_invoice": false,
+      "effort_configured": "max",
+      "effort_independently_observed": false,
+      "native_reported_cost_usd": 6.445459000000001,
+      "native_reported_model_usage": {
+        "claude-fable-5": {
+          "cacheCreationInputTokens": 129861,
+          "cacheReadInputTokens": 1098434,
+          "canonicalModel": "claude-fable-5",
+          "contextWindow": 1000000,
+          "costBasis": "list",
+          "costUSD": 6.443984000000002,
+          "inputTokens": 28,
+          "maxOutputTokens": 64000,
+          "outputTokens": 54961,
+          "provider": "firstParty",
+          "thinkingTokens": 45775,
+          "webSearchRequests": 0
+        },
+        "claude-haiku-4-5-20251001": {
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 0,
+          "canonicalModel": "claude-haiku-4-5",
+          "contextWindow": 200000,
+          "costBasis": "list",
+          "costUSD": 0.001475,
+          "inputTokens": 1390,
+          "maxOutputTokens": 32000,
+          "outputTokens": 17,
+          "provider": "firstParty",
+          "thinkingTokens": 0,
+          "webSearchRequests": 0
+        }
+      },
+      "root_review_model": "claude-fable-5"
+    },
+    "native_verification_sha256": "1a030c04afb09e5475a8dc605f10eb2caa6a039b2a8ab80f608b348c8a66350d",
+    "ranking_eligible": false,
+    "raw_report_sha256": "40fc1ea84cc5e78a7c4bc056179be3ef83f63f93e836d65fcf63bcdf133dfd45",
+    "review_seen_before_assessment": true,
+    "schema": "caplab.claude-development-finding-assessment/v1"
+  },
+  "capture_files": 9,
+  "capture_inventory": [
+    {
+      "bytes": 38532,
+      "disposition": "retained",
+      "path": "claude/.claude.json",
+      "sha256": "51fdbdcff835d3a0d4abfcbffa84c460b14465fb7c5776a8b125da1cd976dc4c"
+    },
+    {
+      "bytes": 24,
+      "disposition": "retained",
+      "path": "claude/.last-cleanup",
+      "sha256": "10f2b3889767f77277e9988938845d0473aa083d9912756cb77257835e2b234f"
+    },
+    {
+      "bytes": 84,
+      "disposition": "retained",
+      "path": "claude/backups/.claude.json.backup.1789085667090",
+      "sha256": "f10696183007af19806f833f85b2ecc5f192389e15bea6f1ef47e983efad8149"
+    },
+    {
+      "bytes": 214,
+      "disposition": "retained",
+      "path": "claude/policy-limits.json",
+      "sha256": "5dcd420c6318cc28d72f1a1bf63ec42e46a6d49ddf62fe83dfe658f0c7c04b45"
+    },
+    {
+      "bytes": 707789,
+      "disposition": "retained",
+      "path": "claude/projects/-task-current/ac729307-e929-4eff-a13d-f738a3b27258.jsonl",
+      "sha256": "2b0db1475a1c059058717ed15cdb91d33193bb8d389cd6799495ce6aa8e9b9c3"
+    },
+    {
+      "bytes": 2,
+      "disposition": "retained",
+      "path": "claude/remote-settings.json",
+      "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "bytes": 50007,
+      "disposition": "retained",
+      "path": "debug.log",
+      "sha256": "407d77620e0dc1352f979f4dfeb2a03ed4cd0d1b1062bedfe4879ae790027b44"
+    },
+    {
+      "bytes": 0,
+      "disposition": "retained",
+      "path": "stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1513854,
+      "disposition": "retained",
+      "path": "stdout",
+      "sha256": "6fb39e065115d66702e448f0c404fa07f78af4b5980babc6abc1991bb08d1e23"
+    }
+  ],
+  "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/claude-output-1",
+  "files": [
+    {
+      "path": "assessment.json",
+      "sha256": "e994cb6c4cb1c0ab82c8fa9993edf34d16f6399fbb5533e00bc2da097021b7f1"
+    },
+    {
+      "path": "bootstrap.py",
+      "sha256": "db4b703862408239e81888bba16152ea670ee6248e69893f7c26a42ea0496929"
+    },
+    {
+      "path": "completion.json",
+      "sha256": "515521ed4c146a40f0ee368b48a5ee6de1ccc48b2076c38e800572048f6f9ad3"
+    },
+    {
+      "path": "final-report.json",
+      "sha256": "40fc1ea84cc5e78a7c4bc056179be3ef83f63f93e836d65fcf63bcdf133dfd45"
+    },
+    {
+      "path": "launch.json",
+      "sha256": "9d5503fbe7cacd6d974751d81ba6c50136dc745fe3600347d50618386f805ba2"
+    },
+    {
+      "path": "plan.json",
+      "sha256": "27065c942e333605c27ca821c7567c8aa38d1f5135d280a2f2e0dfcaf4ad0725"
+    },
+    {
+      "path": "private-credential-binding.json",
+      "sha256": "3d535d585ac8d596b359795b0ce7403171740f2bba65fc8f613fe6d37c138e1d"
+    },
+    {
+      "path": "process.json",
+      "sha256": "38223dd891e3ea44dffbb7f2ac0218653ae5b88d642737c61afa050f177c9f0e"
+    },
+    {
+      "path": "prompt.txt",
+      "sha256": "16a191a633e471ae9b43df4bc435faab09b2008755c7feb37367e3fe3d3dcaf9"
+    },
+    {
+      "path": "readiness-base/completion.json",
+      "sha256": "93adbec12a443ea36fff076bf1e81a22bc0cedecce3f4ff172635d27e9f3884c"
+    },
+    {
+      "path": "readiness-base/launch.json",
+      "sha256": "ee224c312384b673cc22a2b54adba1370d3a136f4ae84ee50ed45a11a43abbce"
+    },
+    {
+      "path": "readiness-base/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "readiness-base/stdout",
+      "sha256": "d3d307e917294b689b9d2731602236e1ab792e814ee6ffab26b912f5bf07251d"
+    },
+    {
+      "path": "readiness-current/completion.json",
+      "sha256": "8d58ddd70ee4fdbaaa7c7f7c3c2819cf07e23bc22d4f9ba0598b80c3f9d9f55d"
+    },
+    {
+      "path": "readiness-current/launch.json",
+      "sha256": "13d1c1cfeec884a4c863df6d9c6c1543f2f6373f06da62e119a3bd8200c1dfd3"
+    },
+    {
+      "path": "readiness-current/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "readiness-current/stdout",
+      "sha256": "5ac58fbbb821d056511d4c3e6fc36abcd7f47b7553c23ac6beb1d13e9f57ddf7"
+    },
+    {
+      "path": "references/manifest.json",
+      "sha256": "45e159993103b49f93f46e8a31a8bc6562d3bbc96238ac50201b82018fb72cd5"
+    },
+    {
+      "path": "references/retrieval-method.py",
+      "sha256": "40251547fab312c09ea5e13dfd7764a32ed5085ad25a4992cd9d66d3d9e72e2e"
+    },
+    {
+      "path": "references/v243/src/core/service.c",
+      "sha256": "0965f1c29551019d259c24d90c23fc17e17d57833bd2a338d325e020a3aefe3e"
+    },
+    {
+      "path": "references/v244/man/systemd.service.xml",
+      "sha256": "d86ef3e8530eb9a1a56aefe6ae2f3c80f44141c31593740f8357e6b9381ba23d"
+    },
+    {
+      "path": "references/v244/src/core/service.c",
+      "sha256": "e37b186c6c0918c6822cfa99a3432b72cf997aa6ef5d45504cc36eb415e46479"
+    },
+    {
+      "path": "runner.py",
+      "sha256": "1bd3c9f95f12eacdb68fb6574294601e6f496ae0bb42efbf035b3aea5e5682f1"
+    },
+    {
+      "path": "source-preparation.json",
+      "sha256": "0a5f444de83daac52326e778a5c4977997a01011b242edcfa0cedf1d464c402c"
+    },
+    {
+      "path": "source-readiness-plan.json",
+      "sha256": "fd725d5f782c3cf503c1dcde855ba8c46fe870c18fa9982940dac79a828fef29"
+    },
+    {
+      "path": "verification-method.json",
+      "sha256": "c3445dc3937f522e541ff5430b2d2ddda7fc15b0a2a3a4df4edc3286ec5850fd"
+    },
+    {
+      "path": "verification.json",
+      "sha256": "1a030c04afb09e5475a8dc605f10eb2caa6a039b2a8ab80f608b348c8a66350d"
+    },
+    {
+      "path": "verifier.py",
+      "sha256": "44e3b3e89fc9d2824d25f2758fff5afb5752d190eeae6db4980a2a30addfbda6"
+    }
+  ],
+  "ranking_eligible": false,
+  "schema": "caplab.claude-output-development-receipt/v1",
+  "source_snapshots": {
+    "base": {
+      "commit": "1bfe5a656bcb2c663891afd5f980211a3ef144a8",
+      "files": 90,
+      "tree": "9d63957463f4e4e6a8a5923fe1b5fdd80d7214b7"
+    },
+    "current": {
+      "commit": "544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f",
+      "files": 98,
+      "tree": "ffd0b76ba0043bb2644ebc2e6e0e6ef9de85ffd7"
+    }
+  }
+}
