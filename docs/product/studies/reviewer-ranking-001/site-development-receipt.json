@@ -1,0 +1,916 @@
+{
+  "assessment": {
+    "analysis_cluster": "newsroom-nameplate-icon-sequence",
+    "assessor": "Primary agent under ADR 0026; named behavioral properties and direct screenshot inspection only",
+    "case_admitted": false,
+    "commits": {
+      "base": "623c5f840a8dc813f404994fdfae605dd61cb894",
+      "icon": "c7535007644ffea29db055365257b4a6f2b4d905",
+      "mark": "566e5af24c0a7a7a00e04326de75bf613dedeb6d"
+    },
+    "disposition": "bounded-presentation-and-origin-preservation",
+    "inference": "These outcomes support control candidates for specific allegations about nameplate clipping, missing icon delivery, escaped source rendering and the tested origin access restrictions. They do not establish that either whole patch is defect-free.",
+    "limits": [
+      "Two adjacent changes in one presentation sequence, not independent incidents.",
+      "Named viewport/browser/security checks do not prove universal accessibility, security or aesthetic approval.",
+      "No native reviewer, corpus admission or ranking.",
+      "No browser tab favicon UI, universal accessibility, other browser engines or untested viewport/security behavior is assessed."
+    ],
+    "observations": [
+      "Six original builder and HTTP-server executions completed: three revisions, two repetitions, with synthetic publication input and pinned Chromium 153.0.8010.12.",
+      "At 320, 768 and 1280 CSS-pixel widths the nameplate and document remain within the viewport. The nameplate accessibility snapshot identifies a link named AI Newsroom at / in all recorded views.",
+      "Direct inspection of the four retained screenshots shows the original text nameplate, the new green AI mark beside Newsroom at mobile width, the desktop mark, and a rendered green square AI icon.",
+      "The icon revision serves the original SVG bytes with image/svg+xml and references /icon.svg; both prior revisions return 404 for that asset.",
+      "Each revision serves pages, CSS and RSS, refuses tested private/dot/traversal/symlink paths with 404 and POST with 501, retains original origin headers, and leaves the publication database unchanged during reads.",
+      "Synthetic HTML-like title and pick text render literally with no DOM scripts. The original source story remains in SQLite and its title survives RSS generation.",
+      "Only the icon revision ignores .playwright-mcp/probe.txt; the source-file control remains unignored."
+    ],
+    "publication_requirement": {
+      "base": {
+        "git_blob": "30e7c6293f58089167390e0213aa3e386e09843f",
+        "mode": "100644",
+        "path": "docs/publication.md",
+        "sha256": "cdae09c8f712917a9b85920757d010c60396d76e92c835697a60d6672153a8be"
+      },
+      "icon": {
+        "git_blob": "30e7c6293f58089167390e0213aa3e386e09843f",
+        "mode": "100644",
+        "path": "docs/publication.md",
+        "sha256": "cdae09c8f712917a9b85920757d010c60396d76e92c835697a60d6672153a8be"
+      },
+      "mark": {
+        "git_blob": "30e7c6293f58089167390e0213aa3e386e09843f",
+        "mode": "100644",
+        "path": "docs/publication.md",
+        "sha256": "cdae09c8f712917a9b85920757d010c60396d76e92c835697a60d6672153a8be"
+      }
+    },
+    "ranking_eligible": false,
+    "relationship": "Two adjacent selected changes in one presentation sequence; mark is the icon change base. Repetitions and selected-change count are not independent incidents.",
+    "schema": "caplab.site-development-assessment/v1",
+    "visual_inspection": [
+      {
+        "path": "base-1-capture/header-320.png",
+        "sha256": "bd202b8b1c989845d9d42db926b3c7e4ff16474ca86a755f70d1d4931b2f1fbd"
+      },
+      {
+        "path": "mark-1-capture/header-320.png",
+        "sha256": "c2e312ae8887269b42181cb3458ebb4c97f71b2852119ba6e0e676f4f0f65963"
+      },
+      {
+        "path": "icon-1-capture/header-1280.png",
+        "sha256": "1bc4b0fc0ac48b351c222c06fd6b914ad11b9bd9ce198cc15112e314969da468"
+      },
+      {
+        "path": "icon-1-capture/icon.png",
+        "sha256": "fd25778ba4bb0bd72342a352a18405ebe176eb8b6d69b80cc66c4a6a46a36899"
+      }
+    ],
+    "witness": {
+      "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/site-witness-1/verification.json",
+      "sha256": "9264c1cff77e150f07d6f2eb9b652c6390f833c4c77b3565739e70d032ae2f88"
+    }
+  },
+  "capture_custody": "Inventory files pin capture bytes and literal namespace symlink targets. Host verification never follows /capture symlink targets.",
+  "capture_files": 256,
+  "capture_symlinks": 18,
+  "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/site-witness-1",
+  "files": [
+    {
+      "path": "assessment.json",
+      "sha256": "1305ac9d7acdbd9ef3e11e6e15004c7b58eefec80e06e3d605420f78bf021aee"
+    },
+    {
+      "path": "base-1/completion.json",
+      "sha256": "84bec6e572107d031b4881d9029b1a1ed70d8c52fd9b631c3451216947bba488"
+    },
+    {
+      "path": "base-1/launch.json",
+      "sha256": "eeeb5eb1c0d317c9d12835f292c0324f7178c7ed6ae5487ff80080d6847bb631"
+    },
+    {
+      "path": "base-1/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "base-1/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "base-1-inventory.json",
+      "sha256": "02cc1eacbdb2eb4b1db4c6d35b9af7bf1e7fb4eb82dc9fc2c2a5e6088a981fab"
+    },
+    {
+      "path": "base-2/completion.json",
+      "sha256": "7ace5d88bb0659f0c326bd727a6ce60c27b27f494400ebc2c7f0b081f23bdff1"
+    },
+    {
+      "path": "base-2/launch.json",
+      "sha256": "ecfcd622ba953183504c69a1e0d004e2fe50410398a3e868d2fa9d4be4978991"
+    },
+    {
+      "path": "base-2/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "base-2/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "base-2-inventory.json",
+      "sha256": "516d5b8d9a9c8f50599f6d5440e8598024e39bbf2526454d3aef24db2b100a80"
+    },
+    {
+      "path": "completion.json",
+      "sha256": "7fd5601022d411d0269cb3e1aa262620b0e3ad20cbea1067a355ac8c898b0f26"
+    },
+    {
+      "path": "icon-1/completion.json",
+      "sha256": "7ec6b7ac9cbd7b359d019f9ffb2f8a22c44cf71b295372b8ab0d83271796990d"
+    },
+    {
+      "path": "icon-1/launch.json",
+      "sha256": "9aae786f8e73814da2abf878537d75798b99f890c3a658f2c7610f961e7a05bc"
+    },
+    {
+      "path": "icon-1/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "icon-1/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "icon-1-inventory.json",
+      "sha256": "c636ffdd52ad4106e6ebee18192649d771b2ec52a052e65d9981279ff2a17a25"
+    },
+    {
+      "path": "icon-2/completion.json",
+      "sha256": "d89a106fde0371d381b8283d12bf4b06ba29de537e894ba27b6156d7db7dd74f"
+    },
+    {
+      "path": "icon-2/launch.json",
+      "sha256": "8ec8b00a01428121a82498693e73a09396efadfda9c0f578a87638c2e90119d6"
+    },
+    {
+      "path": "icon-2/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "icon-2/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "icon-2-inventory.json",
+      "sha256": "b671764b55bc27860ff5c9aa7144f1b48ec4a3b00eeed2cdc1e8e253d55fe28c"
+    },
+    {
+      "path": "mark-1/completion.json",
+      "sha256": "62abdef20630c7de4cfb40d381b330b724144dd3cb1f134149ba7b1b9290bcdd"
+    },
+    {
+      "path": "mark-1/launch.json",
+      "sha256": "2089a703866d4a72498f831356923bf86f1edc534a4826afcf319d31364872e4"
+    },
+    {
+      "path": "mark-1/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "mark-1/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "mark-1-inventory.json",
+      "sha256": "21559d3d5b137548c23537bba66fbb985993565db6f2a7d42c394f338d600b7d"
+    },
+    {
+      "path": "mark-2/completion.json",
+      "sha256": "e8bcc842dada00683d44f9d9fa80b85d3411e0bbecb2f5bc587454e3e57c35c9"
+    },
+    {
+      "path": "mark-2/launch.json",
+      "sha256": "84aee539aa23cd7b1a84c548dd73c7b43efd1465ed62e9adddc6e42c203bd198"
+    },
+    {
+      "path": "mark-2/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "mark-2/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "mark-2-inventory.json",
+      "sha256": "e1211db4e2be99add3ff3430b1904c156d7d0a5dea674bae23ed1ef2debaed99"
+    },
+    {
+      "path": "plan.json",
+      "sha256": "616181db05c7db2ae175adb259ce6918919d7c1ca25d49966dc7d750e7c783c3"
+    },
+    {
+      "path": "run-started.json",
+      "sha256": "ed41c3cea33018d3607bf2f561f0caf2a340776b8eb509d8bfaef5e16233b800"
+    },
+    {
+      "path": "runner.py",
+      "sha256": "98439d05da2e3613284dd6bb8201cd824f0ea11f4f5bf767e40704c00ad30c60"
+    },
+    {
+      "path": "verification.json",
+      "sha256": "9264c1cff77e150f07d6f2eb9b652c6390f833c4c77b3565739e70d032ae2f88"
+    },
+    {
+      "path": "verifier.py",
+      "sha256": "8ee5826bcfb6e1c4e13de1401eb7630038fd7d348cf350d3450df89d97b04e66"
+    }
+  ],
+  "original_source_files": 124,
+  "ranking_eligible": false,
+  "schema": "caplab.site-development-receipt/v1",
+  "source_snapshots": {
+    "base": {
+      "base": "e9c6beaa7c1bc7f94735e9371d35fb74bfffd0e8",
+      "commit": "623c5f840a8dc813f404994fdfae605dd61cb894",
+      "file_count": 41,
+      "tree": "0b1928b400967858042226ac6e85078a6e5764b1"
+    },
+    "icon": {
+      "base": "566e5af24c0a7a7a00e04326de75bf613dedeb6d",
+      "commit": "c7535007644ffea29db055365257b4a6f2b4d905",
+      "file_count": 42,
+      "tree": "6ce22f59ec3386260d5409e492864487c4036327"
+    },
+    "mark": {
+      "base": "623c5f840a8dc813f404994fdfae605dd61cb894",
+      "commit": "566e5af24c0a7a7a00e04326de75bf613dedeb6d",
+      "file_count": 41,
+      "tree": "1c4f2a1f19ebc8fdde91565eb9e48cccca73640e"
+    }
+  },
+  "verification": {
+    "all_named_properties_hold": true,
+    "elapsed_seconds": 18.173734579933807,
+    "executions": [
+      {
+        "capture_files": 42,
+        "capture_links": 3,
+        "inventory_sha256": "02cc1eacbdb2eb4b1db4c6d35b9af7bf1e7fb4eb82dc9fc2c2a5e6088a981fab",
+        "slot": "base-1"
+      },
+      {
+        "capture_files": 42,
+        "capture_links": 3,
+        "inventory_sha256": "21559d3d5b137548c23537bba66fbb985993565db6f2a7d42c394f338d600b7d",
+        "slot": "mark-1"
+      },
+      {
+        "capture_files": 44,
+        "capture_links": 3,
+        "inventory_sha256": "c636ffdd52ad4106e6ebee18192649d771b2ec52a052e65d9981279ff2a17a25",
+        "slot": "icon-1"
+      },
+      {
+        "capture_files": 42,
+        "capture_links": 3,
+        "inventory_sha256": "516d5b8d9a9c8f50599f6d5440e8598024e39bbf2526454d3aef24db2b100a80",
+        "slot": "base-2"
+      },
+      {
+        "capture_files": 42,
+        "capture_links": 3,
+        "inventory_sha256": "e1211db4e2be99add3ff3430b1904c156d7d0a5dea674bae23ed1ef2debaed99",
+        "slot": "mark-2"
+      },
+      {
+        "capture_files": 44,
+        "capture_links": 3,
+        "inventory_sha256": "b671764b55bc27860ff5c9aa7144f1b48ec4a3b00eeed2cdc1e8e253d55fe28c",
+        "slot": "icon-2"
+      }
+    ],
+    "limits": [
+      "Two adjacent changes in one presentation sequence, not independent incidents.",
+      "Named viewport/browser/security checks do not prove universal accessibility, security or aesthetic approval.",
+      "No native reviewer, corpus admission or ranking."
+    ],
+    "observations": [
+      {
+        "all_named_properties_hold": true,
+        "properties": {
+          "browser_errors_absent": true,
+          "browser_requests_local": true,
+          "database_unchanged": true,
+          "feed_preserves_title": true,
+          "http": [
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            }
+          ],
+          "icon_render": true,
+          "ignore_rule": true,
+          "source_story_retained": true,
+          "viewports": {
+            "1280": {
+              "document_within_viewport": true,
+              "icon_reference": true,
+              "mark_rendering": true,
+              "nameplate_identity": true,
+              "nameplate_within_viewport": true,
+              "source_text_rendered_literally": true
+            },
+            "320": {
+              "document_within_viewport": true,
+              "icon_reference": true,
+              "mark_rendering": true,
+              "nameplate_identity": true,
+              "nameplate_within_viewport": true,
+              "source_text_rendered_literally": true
+            },
+            "768": {
+              "document_within_viewport": true,
+              "icon_reference": true,
+              "mark_rendering": true,
+              "nameplate_identity": true,
+              "nameplate_within_viewport": true,
+              "source_text_rendered_literally": true
+            }
+          }
+        },
+        "repetition": 1,
+        "role": "base"
+      },
+      {
+        "all_named_properties_hold": true,
+        "properties": {
+          "browser_errors_absent": true,
+          "browser_requests_local": true,
+          "database_unchanged": true,
+          "feed_preserves_title": true,
+          "http": [
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            }
+          ],
+          "icon_render": true,
+          "ignore_rule": true,
+          "source_story_retained": true,
+          "viewports": {
+            "1280": {
+              "document_within_viewport": true,
+              "icon_reference": true,
+              "mark_rendering": true,
+              "nameplate_identity": true,
+              "nameplate_within_viewport": true,
+              "source_text_rendered_literally": true
+            },
+            "320": {
+              "document_within_viewport": true,
+              "icon_reference": true,
+              "mark_rendering": true,
+              "nameplate_identity": true,
+              "nameplate_within_viewport": true,
+              "source_text_rendered_literally": true
+            },
+            "768": {
+              "document_within_viewport": true,
+              "icon_reference": true,
+              "mark_rendering": true,
+              "nameplate_identity": true,
+              "nameplate_within_viewport": true,
+              "source_text_rendered_literally": true
+            }
+          }
+        },
+        "repetition": 1,
+        "role": "mark"
+      },
+      {
+        "all_named_properties_hold": true,
+        "properties": {
+          "browser_errors_absent": true,
+          "browser_requests_local": true,
+          "database_unchanged": true,
+          "feed_preserves_title": true,
+          "http": [
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            }
+          ],
+          "icon_render": true,
+          "ignore_rule": true,
+          "source_story_retained": true,
+          "viewports": {
+            "1280": {
+              "document_within_viewport": true,
+              "icon_reference": true,
+              "mark_rendering": true,
+              "nameplate_identity": true,
+              "nameplate_within_viewport": true,
+              "source_text_rendered_literally": true
+            },
+            "320": {
+              "document_within_viewport": true,
+              "icon_reference": true,
+              "mark_rendering": true,
+              "nameplate_identity": true,
+              "nameplate_within_viewport": true,
+              "source_text_rendered_literally": true
+            },
+            "768": {
+              "document_within_viewport": true,
+              "icon_reference": true,
+              "mark_rendering": true,
+              "nameplate_identity": true,
+              "nameplate_within_viewport": true,
+              "source_text_rendered_literally": true
+            }
+          }
+        },
+        "repetition": 1,
+        "role": "icon"
+      },
+      {
+        "all_named_properties_hold": true,
+        "properties": {
+          "browser_errors_absent": true,
+          "browser_requests_local": true,
+          "database_unchanged": true,
+          "feed_preserves_title": true,
+          "http": [
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            }
+          ],
+          "icon_render": true,
+          "ignore_rule": true,
+          "source_story_retained": true,
+          "viewports": {
+            "1280": {
+              "document_within_viewport": true,
+              "icon_reference": true,
+              "mark_rendering": true,
+              "nameplate_identity": true,
+              "nameplate_within_viewport": true,
+              "source_text_rendered_literally": true
+            },
+            "320": {
+              "document_within_viewport": true,
+              "icon_reference": true,
+              "mark_rendering": true,
+              "nameplate_identity": true,
+              "nameplate_within_viewport": true,
+              "source_text_rendered_literally": true
+            },
+            "768": {
+              "document_within_viewport": true,
+              "icon_reference": true,
+              "mark_rendering": true,
+              "nameplate_identity": true,
+              "nameplate_within_viewport": true,
+              "source_text_rendered_literally": true
+            }
+          }
+        },
+        "repetition": 2,
+        "role": "base"
+      },
+      {
+        "all_named_properties_hold": true,
+        "properties": {
+          "browser_errors_absent": true,
+          "browser_requests_local": true,
+          "database_unchanged": true,
+          "feed_preserves_title": true,
+          "http": [
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            }
+          ],
+          "icon_render": true,
+          "ignore_rule": true,
+          "source_story_retained": true,
+          "viewports": {
+            "1280": {
+              "document_within_viewport": true,
+              "icon_reference": true,
+              "mark_rendering": true,
+              "nameplate_identity": true,
+              "nameplate_within_viewport": true,
+              "source_text_rendered_literally": true
+            },
+            "320": {
+              "document_within_viewport": true,
+              "icon_reference": true,
+              "mark_rendering": true,
+              "nameplate_identity": true,
+              "nameplate_within_viewport": true,
+              "source_text_rendered_literally": true
+            },
+            "768": {
+              "document_within_viewport": true,
+              "icon_reference": true,
+              "mark_rendering": true,
+              "nameplate_identity": true,
+              "nameplate_within_viewport": true,
+              "source_text_rendered_literally": true
+            }
+          }
+        },
+        "repetition": 2,
+        "role": "mark"
+      },
+      {
+        "all_named_properties_hold": true,
+        "properties": {
+          "browser_errors_absent": true,
+          "browser_requests_local": true,
+          "database_unchanged": true,
+          "feed_preserves_title": true,
+          "http": [
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            },
+            {
+              "asset_mime": true,
+              "expected_status": true,
+              "origin_headers": true
+            }
+          ],
+          "icon_render": true,
+          "ignore_rule": true,
+          "source_story_retained": true,
+          "viewports": {
+            "1280": {
+              "document_within_viewport": true,
+              "icon_reference": true,
+              "mark_rendering": true,
+              "nameplate_identity": true,
+              "nameplate_within_viewport": true,
+              "source_text_rendered_literally": true
+            },
+            "320": {
+              "document_within_viewport": true,
+              "icon_reference": true,
+              "mark_rendering": true,
+              "nameplate_identity": true,
+              "nameplate_within_viewport": true,
+              "source_text_rendered_literally": true
+            },
+            "768": {
+              "document_within_viewport": true,
+              "icon_reference": true,
+              "mark_rendering": true,
+              "nameplate_identity": true,
+              "nameplate_within_viewport": true,
+              "source_text_rendered_literally": true
+            }
+          }
+        },
+        "repetition": 2,
+        "role": "icon"
+      }
+    ],
+    "plan_sha256": "616181db05c7db2ae175adb259ce6918919d7c1ca25d49966dc7d750e7c783c3",
+    "ranking_eligible": false,
+    "schema": "caplab.site-witness-verification/v1",
+    "verifier_sha256": "8ee5826bcfb6e1c4e13de1401eb7630038fd7d348cf350d3450df89d97b04e66"
+  }
+}

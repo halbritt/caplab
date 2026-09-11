@@ -2,35 +2,37 @@
   "admitted_cases": 0,
   "counts": {
     "base-tree-only": 3,
-    "bounded-change-behavior": 9,
-    "pending-change-behavior": 20
+    "bounded-change-behavior": 11,
+    "pending-change-behavior": 18
   },
   "interpretation": "Planning projection. Bounded behavior evidence is not complete change coverage, a whole-patch clean label, case admission or an independent case count. Base-tree executions do not verify that base commit change. No selected case has been replaced.",
   "rows": [
     {
+      "analysis_cluster": "newsroom-nameplate-icon-sequence",
       "base": "623c5f840a8dc813f404994fdfae605dd61cb894",
       "case_admitted": false,
       "commit": "566e5af24c0a7a7a00e04326de75bf613dedeb6d",
-      "receipt": null,
-      "receipt_sha256": null,
-      "record": null,
+      "receipt": "site-development-receipt.json",
+      "receipt_sha256": "9ee40e32ad727de9213f3ff3cebb0c4da13f916159fd36f65055bd4ed3b052af",
+      "record": "../../../records/verification-2026-09-10-reviewer-site-outcome.md",
       "repository": "ai-newsroom",
-      "scope": "No change-specific behavioral witness established.",
+      "scope": "Original nameplate rendering, viewport geometry and named origin/text preservation properties. Adjacent changes share one presentation cluster; no whole-change clean label.",
       "size_stratum": "0-20",
-      "status": "pending-change-behavior",
+      "status": "bounded-change-behavior",
       "tree": "1c4f2a1f19ebc8fdde91565eb9e48cccca73640e"
     },
     {
+      "analysis_cluster": "newsroom-nameplate-icon-sequence",
       "base": "566e5af24c0a7a7a00e04326de75bf613dedeb6d",
       "case_admitted": false,
       "commit": "c7535007644ffea29db055365257b4a6f2b4d905",
-      "receipt": null,
-      "receipt_sha256": null,
-      "record": null,
+      "receipt": "site-development-receipt.json",
+      "receipt_sha256": "9ee40e32ad727de9213f3ff3cebb0c4da13f916159fd36f65055bd4ed3b052af",
+      "record": "../../../records/verification-2026-09-10-reviewer-site-outcome.md",
       "repository": "ai-newsroom",
-      "scope": "No change-specific behavioral witness established.",
+      "scope": "Original icon publication, HTTP bytes and MIME, SVG rendering, ignore rule and named origin preservation properties. Adjacent changes share one presentation cluster; no whole-change clean label.",
       "size_stratum": "0-20",
-      "status": "pending-change-behavior",
+      "status": "bounded-change-behavior",
       "tree": "6ce22f59ec3386260d5409e492864487c4036327"
     },
     {

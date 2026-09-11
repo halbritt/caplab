@@ -1,13 +1,13 @@
 # Fixed-sample behavioral coverage
 
-Nine of the 32 selected changes have bounded, change-relevant behavioral witnesses. Three further selected trees ran as bases for other witnesses; their own changes remain unverified. The remaining 20 changes have no established behavioral witness. No case is admitted for reviewer scoring.
+Eleven of the 32 selected changes have bounded, change-relevant behavioral witnesses. Three further selected trees ran as bases for other witnesses; their own changes remain unverified. The remaining 18 changes have no established behavioral witness. No case is admitted for reviewer scoring.
 
 This projection keeps every selected change in the denominator. A witness may cover only part of a change. Repeated executions, ancestor investigations and passing tests do not increase the count of independently covered changes.
 
 | Repository | Size stratum | Selected commit | Evidence status |
 | --- | --- | --- | --- |
-| ai-newsroom | 0-20 | `566e5af24c0a` | No change-specific behavioral witness established. |
-| ai-newsroom | 0-20 | `c7535007644f` | No change-specific behavioral witness established. |
+| ai-newsroom | 0-20 | `566e5af24c0a` | [Nameplate rendering and origin preservation](../../../records/verification-2026-09-10-reviewer-site-outcome.md); shared presentation cluster. |
+| ai-newsroom | 0-20 | `c7535007644f` | [SVG delivery, rendering and origin preservation](../../../records/verification-2026-09-10-reviewer-site-outcome.md); shared presentation cluster. |
 | ai-newsroom | 101-500 | `c04f6c8b3af6` | [Release response preservation](../../../records/verification-2026-09-10-reviewer-github-release-outcome.md) |
 | ai-newsroom | 101-500 | `e4d529391061` | [Publication precision and window behavior](../../../records/verification-2026-09-10-reviewer-publication-outcome.md) |
 | ai-newsroom | 21-100 | `00efadb0c5bd` | Executed as another case base; this change remains unverified. |

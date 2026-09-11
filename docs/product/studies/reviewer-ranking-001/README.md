@@ -256,3 +256,12 @@ tests pass twice on each tree. This is bounded preservation evidence about
 the whitespace edit; historical capability assertions in those tests are
 not accepted as current truth. Coverage is now nine bounded changes, three
 base-only trees and twenty pending, with no case admission or reviewer score.
+
+The [site presentation investigation](../../../records/verification-2026-09-10-reviewer-site-outcome.md)
+executes the original builder and HTTP server at three adjacent revisions with
+a pinned browser. The new mark renders within the tested mobile, tablet and
+desktop widths, the SVG is published and served with the correct bytes and MIME
+type, and the tested source-text and origin restrictions are preserved.
+These are two selected changes in one related presentation sequence. Coverage
+is now eleven bounded changes, three base-only trees and eighteen pending;
+this is neither eleven independent incidents nor an admitted reviewer corpus.
