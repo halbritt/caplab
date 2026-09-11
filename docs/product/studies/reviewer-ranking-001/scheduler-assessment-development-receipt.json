@@ -1,0 +1,818 @@
+{
+  "admitted_cases": 0,
+  "capture_entries": [
+    {
+      "bytes": 43,
+      "disposition": "retained",
+      "path": "codex/config.toml",
+      "sha256": "b5717d4727fc02cf15bc07c546604cbcaddba2d3005bcbb7cb0e53bc45ceef42"
+    },
+    {
+      "bytes": 32768,
+      "disposition": "retained",
+      "path": "codex/goals_1.sqlite",
+      "sha256": "89fd771dc22adb803ebd159348c92f8c1dcbab5f99baa664db0665180ae95b10"
+    },
+    {
+      "bytes": 36,
+      "disposition": "retained",
+      "path": "codex/installation_id",
+      "sha256": "f8b4daa35a2e4a6afd299feefa42f712c41da9989743977b02601725e3a32b05"
+    },
+    {
+      "bytes": 49152,
+      "disposition": "retained",
+      "path": "codex/logs_2.sqlite",
+      "sha256": "6f47483beda7bd8a05612b19ca5d50f0223fa36e7ba0b9c4f796142c4a7ad12e"
+    },
+    {
+      "bytes": 40960,
+      "disposition": "retained",
+      "path": "codex/memories_1.sqlite",
+      "sha256": "942213e3f422813a225f63d0bd94ad6ad9dde1f99f2df11268dcee66c5d51e6f"
+    },
+    {
+      "bytes": 244856,
+      "disposition": "retained",
+      "path": "codex/models_cache.json",
+      "sha256": "8fb3c734ef6674bfcd93e7b257a4296343c5893434f1ffe2aae2f2ee35ee88b3"
+    },
+    {
+      "bytes": 40960,
+      "disposition": "retained",
+      "path": "codex/queue_1.sqlite",
+      "sha256": "0b82bd8c063254d61fcedf881dd4d779d7a55ee3f60afa1e205c5e9d971fbdd8"
+    },
+    {
+      "bytes": 3753300,
+      "disposition": "projected-retained",
+      "path": "codex/sessions/2026/09/11/rollout-2026-09-11T02-09-19-01a08e39-faab-7602-94a3-243d01afbe3a.jsonl",
+      "projection_receipt": "projection-receipts/codex/sessions/2026/09/11/rollout-2026-09-11T02-09-19-01a08e39-faab-7602-94a3-243d01afbe3a.receipt.json",
+      "projection_receipt_sha256": "b46b01b652a1cd1b4052773f951f2456c0665cba1cae13d759ff9bf1eb088fe6",
+      "sha256": "18425bc8ce0146861bbb7840d771f27d405b969314289fd31c23e6c1fc591b37"
+    },
+    {
+      "bytes": 17,
+      "disposition": "retained",
+      "path": "codex/skills/.system/.codex-system-skills.marker",
+      "sha256": "af2d6853e26c9bf6a4ad2e9588586dba9f06fdc4b91864861b9866921abe98ac"
+    },
+    {
+      "bytes": 10776,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/LICENSE.txt",
+      "sha256": "4dd13869245e356246a5b770723247bbb80a8f07a181d1d3d873a1734297cdb9"
+    },
+    {
+      "bytes": 19201,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/SKILL.md",
+      "sha256": "681ddb4ad6d06a2acc78a3535b583f8d0c1ea800ecda3d56370d3310fd2cd4ba"
+    },
+    {
+      "bytes": 275,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/agents/openai.yaml",
+      "sha256": "9ca574af14580dc7a2a3dc37a1796d17f93cb8850be66501f0799ef8603e9dc0"
+    },
+    {
+      "bytes": 2889,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/assets/imagegen-small.svg",
+      "sha256": "cff5f34f57ff60b3ee92eaedd17b15e96dd4b9e776df3e78936c9e00d42be294"
+    },
+    {
+      "bytes": 1711,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/assets/imagegen.png",
+      "sha256": "95952f644064eb9e890f98d8db07216347186526e4c41ad66d3420629eb86e20"
+    },
+    {
+      "bytes": 9655,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/references/cli.md",
+      "sha256": "ecfc2e09261a0feb3482517a5fa0ff410cb7d1958e3cbd2ac6b61586f5b81405"
+    },
+    {
+      "bytes": 1779,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/references/codex-network.md",
+      "sha256": "c88298ca4481f6116a16fa7987434fc977f8b311c1bbc0c3d862ffd0c5981148"
+    },
+    {
+      "bytes": 6072,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/references/image-api.md",
+      "sha256": "dc975d7af8a4888967251a0276014b4a71ea30455294944b762256373ce3e569"
+    },
+    {
+      "bytes": 8282,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/references/prompting.md",
+      "sha256": "b210b051c775860267080941eba968212bf0ac7fce581d75c5dcc217d8293f8b"
+    },
+    {
+      "bytes": 17617,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/references/sample-prompts.md",
+      "sha256": "70474177d151855b175c6133de2aae1d90b7f146b0dab50ec830972c47d72183"
+    },
+    {
+      "bytes": 34667,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/scripts/image_gen.py",
+      "sha256": "b4345cf835e5b593b97df6bb2b70bda493b8a97eee4cabbc99b2fa57dba9b448"
+    },
+    {
+      "bytes": 13905,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/scripts/remove_chroma_key.py",
+      "sha256": "a5893c4bd04b21abced33731ea89d2ac428e81d92a0368eb18ffbe4fda5253e2"
+    },
+    {
+      "bytes": 10776,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/LICENSE.txt",
+      "sha256": "4dd13869245e356246a5b770723247bbb80a8f07a181d1d3d873a1734297cdb9"
+    },
+    {
+      "bytes": 5446,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/SKILL.md",
+      "sha256": "7cb8fa1b2a0c635b5c61ffe1da7b8594a7ea0fce5b71e8d523e2025d88b2a05e"
+    },
+    {
+      "bytes": 370,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/agents/openai.yaml",
+      "sha256": "44b9efac6be1bae32d869aa2942fecbe4dcae82682ee03e4120f2f9b7d4658ec"
+    },
+    {
+      "bytes": 1091,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/assets/openai-small.svg",
+      "sha256": "45be1f0757eb18889eefb1e7db79668ef46a275dc4e0e78e8df5ebd7f6cdeadc"
+    },
+    {
+      "bytes": 1429,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/assets/openai.png",
+      "sha256": "156cc84d7332bfe95b310350bd470b690d22aa33d65340cc6c2e06022946194c"
+    },
+    {
+      "bytes": 7417,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/codex-self-knowledge.md",
+      "sha256": "8c8fb00e6e5cb1977924f5164684a6095427fa828bbc765225f17d9aeb79a912"
+    },
+    {
+      "bytes": 2094,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/latest-model.md",
+      "sha256": "f25e351e522dd6e30e82d482f31f44c992e794b11031cdcb6ac7c0e6b20c9d5d"
+    },
+    {
+      "bytes": 2318,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/mcp-diagnostics.md",
+      "sha256": "49bbd2f73df7bbd7f86c80425dea4da2d301c22046080399a36bfc0ca49509e9"
+    },
+    {
+      "bytes": 5054,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/model-migration.md",
+      "sha256": "5f20c38fbbb10319767b216d91ba74bae49c68fc1bfd6d1abd7c9b4cc9cb9ab0"
+    },
+    {
+      "bytes": 1344,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/model-selection.md",
+      "sha256": "ba2d164abbca30435a460a0bc3a7d82398dce2bdf092705c98ba55b3f3af38a8"
+    },
+    {
+      "bytes": 3337,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/official-docs.md",
+      "sha256": "7962f2dce55089b93bde4115bb89fd42f20993c1597a2b13edd4956f463875b9"
+    },
+    {
+      "bytes": 15747,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/prompting-guide.md",
+      "sha256": "db913884cfe0fabf29bee1a139918f56e299decfa0a14d61c48596f23f76621d"
+    },
+    {
+      "bytes": 1050,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/upgrade-guide.md",
+      "sha256": "ed1b75a89b8ec4d67787774ef6c4e8b98eace16c63348f42e969e6ffa67cb656"
+    },
+    {
+      "bytes": 23093,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/upgrading-to-gpt-5p6-sol.md",
+      "sha256": "9a918a0c8dd051d574f2fd0309201afa8a9b9c08241c11ca1fb0ac2f4724e7ac"
+    },
+    {
+      "bytes": 16085,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/scripts/fetch-codex-manual.mjs",
+      "sha256": "f53eb6d2f286e9efcc397e8bee93a938e37296c90953e4e06e94899ef1b6c363"
+    },
+    {
+      "bytes": 1038,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/scripts/resolve-latest-model-info",
+      "sha256": "7354dbb030ca0736dd633a7ca1b930cf640abd40370725dea3a458cb51d49523"
+    },
+    {
+      "bytes": 3937,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/scripts/resolve-latest-model-info.cjs",
+      "sha256": "eeb1bb486018e16b37edfc06b1a37179dbc672982d501040d4f7142f29dd2e64"
+    },
+    {
+      "bytes": 11467,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/SKILL.md",
+      "sha256": "71b95b8219644f95d633721e7f7cd3c469edfc8fe50f8415d400dfb2d74bc7b9"
+    },
+    {
+      "bytes": 339,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/agents/openai.yaml",
+      "sha256": "fecaf35d692bd3d33d1a065648258d12e393afa9055d78adf6e57b42f4142f6d"
+    },
+    {
+      "bytes": 1319,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/assets/plugin-creator-small.svg",
+      "sha256": "6591bf8ea9bb9435890dbdea299e0d2bd05f3aa893a335d26e4c535e93c8e7fb"
+    },
+    {
+      "bytes": 1563,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/assets/plugin-creator.png",
+      "sha256": "a4024b0306ddb05847e1012879d37aaf1e658205199da596f5145ed7a88d9162"
+    },
+    {
+      "bytes": 6000,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/references/installing-and-updating.md",
+      "sha256": "91c4781d48568fcc708b45566b08fb610ad1c88672720ae512f9525a1cf9cb20"
+    },
+    {
+      "bytes": 9179,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/references/plugin-json-spec.md",
+      "sha256": "eeb640130f69636affaa299d4170d5a7ae6a0ff978296ddf75c409ce6dd87b91"
+    },
+    {
+      "bytes": 11731,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/scripts/create_basic_plugin.py",
+      "sha256": "272cb14e02ad7c76ac40777443c49cfecfa333ee28ab7f6214210b72c8fd02ae"
+    },
+    {
+      "bytes": 784,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/scripts/identifier_validation.py",
+      "sha256": "a6d51ce4a9a7e8f85626ff5808a467a67574e7f8cdf1167ffb467c5f67e57223"
+    },
+    {
+      "bytes": 1644,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/scripts/read_marketplace_name.py",
+      "sha256": "ba24e6d91eed6f778bde022a967be335c6253983b5ecd1c5e30c8483385887fd"
+    },
+    {
+      "bytes": 3045,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/scripts/update_plugin_cachebuster.py",
+      "sha256": "6a630dfbdc2bca6952580da9c2c7ece08030926819ccd81d9deb518c24c1b0ed"
+    },
+    {
+      "bytes": 21739,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/scripts/validate_plugin.py",
+      "sha256": "f4eeadb733b28b0c3e714de263a76d6542866a672f3e99bdffcf4dbcdf85e944"
+    },
+    {
+      "bytes": 2661,
+      "disposition": "retained",
+      "path": "codex/skills/.system/review-agent/SKILL.md",
+      "sha256": "07079efd0dc76f05fade424e5dfb048dce1de2df7626e1a4f56292a4f3f92228"
+    },
+    {
+      "bytes": 252,
+      "disposition": "retained",
+      "path": "codex/skills/.system/review-agent/agents/openai.yaml",
+      "sha256": "4d867a46d15e36ac880176484aae160f59855340c6059b2ea6ab9fbc9af084de"
+    },
+    {
+      "bytes": 15311,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/SKILL.md",
+      "sha256": "6656e54755638e8efcf275a472b9672eaa8a9a1b9e59dc210e275b03b59e1e66"
+    },
+    {
+      "bytes": 183,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/agents/openai.yaml",
+      "sha256": "d07d21b93fcf3d4dc8d9a3399c05fc226a49a333a96d3e1c68b451b8dd9eade6"
+    },
+    {
+      "bytes": 1319,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/assets/skill-creator-small.svg",
+      "sha256": "6591bf8ea9bb9435890dbdea299e0d2bd05f3aa893a335d26e4c535e93c8e7fb"
+    },
+    {
+      "bytes": 1563,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/assets/skill-creator.png",
+      "sha256": "a4024b0306ddb05847e1012879d37aaf1e658205199da596f5145ed7a88d9162"
+    },
+    {
+      "bytes": 11358,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/license.txt",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "bytes": 2356,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/references/openai_yaml.md",
+      "sha256": "ffac39318e408108141d40f820968e59f70434a891694f9bf1d25be8237b150c"
+    },
+    {
+      "bytes": 6669,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/scripts/generate_openai_yaml.py",
+      "sha256": "816df12072d74faf924d802a6599a139997e1441e90bfe4869ec304f2e5e2851"
+    },
+    {
+      "bytes": 10314,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/scripts/init_skill.py",
+      "sha256": "bf0656a5f9d8d8cdecf0245eaf27e1df8e0e9b6d40ccdda814eb8e3d5f6992c8"
+    },
+    {
+      "bytes": 4249,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/scripts/quick_validate.py",
+      "sha256": "ee6dba90f44d37171c5a6edb8095979c54919ff6822c1a907afca2e78c48738c"
+    },
+    {
+      "bytes": 11358,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-installer/LICENSE.txt",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "bytes": 3367,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-installer/SKILL.md",
+      "sha256": "d68b77e5bbb34dedab89d134da52855f140fc4b4299b80104f534e3b9e98f8ee"
+    },
+    {
+      "bytes": 221,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-installer/agents/openai.yaml",
+      "sha256": "5ce223d8b1070b82c42298538f1b8d376f788eb9e7a42a987e8c094070d73f0e"
+    },
+    {
+      "bytes": 923,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-installer/assets/skill-installer-small.svg",
+      "sha256": "3928703ff00dc1a681e7a22401843b7edcbd4b2051651ce4c43b75f7e140504e"
+    },
+    {
+      "bytes": 1086,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-installer/assets/skill-installer.png",
+      "sha256": "d0a230b1a79b71b858b7c215a0fbb0768d6459c14ea4ef80c61592629bf0e605"
+    },
+    {
+      "bytes": 659,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-installer/scripts/github_utils.py",
+      "sha256": "61c1bbe2ae217433b4b6f9f09f21aca4df52c12598068343ade719f706e4859b"
+    },
+    {
+      "bytes": 11917,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-installer/scripts/install-skill-from-github.py",
+      "sha256": "38f311b75664bb063808f982c600271ebc4b560830f491705190f88a94e3e781"
+    },
+    {
+      "bytes": 2948,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-installer/scripts/list-skills.py",
+      "sha256": "9d6dfb2abf3afeee7f027a89fb1626b918a973da18f4eb6c25681286301beb41"
+    },
+    {
+      "bytes": 258048,
+      "disposition": "retained",
+      "path": "codex/state_5.sqlite",
+      "sha256": "ed1038a389c83f03e575d5151610266e9aa832c5727ca167eae08f7739fc95dd"
+    },
+    {
+      "bytes": 0,
+      "disposition": "retained",
+      "path": "codex/thread-writer-locks/.coordination.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1363968,
+      "disposition": "retained",
+      "path": "codex/thread_history_1.sqlite",
+      "sha256": "7d62a8b97c19560b7f364ca1489e4f14a4a2634e3157c930fdf1618049177514"
+    },
+    {
+      "bytes": 34526,
+      "disposition": "retained",
+      "path": "final-message.txt",
+      "sha256": "e3f9d6c6c44405238f3c0439e3c3997c5ccf3f19f96f69b479174568e3d1294d"
+    },
+    {
+      "bytes": 39,
+      "disposition": "retained",
+      "path": "stderr",
+      "sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721"
+    },
+    {
+      "bytes": 1204739,
+      "disposition": "retained",
+      "path": "stdout",
+      "sha256": "863a41b21837ea0de1df47c95fa10537be2d540666239bfd098665979752e0d2"
+    }
+  ],
+  "corpus_coverage_unchanged": {
+    "admitted": 0,
+    "base_only": 3,
+    "bounded": 11,
+    "pending": 18
+  },
+  "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/scheduler-assessment-2",
+  "development_exposed": true,
+  "disposition": "Incomplete claim coverage and evidence-phase errors remain; preserve supported alternative source argument and unchanged expected answers.",
+  "distinct_citation_ranges": 31,
+  "failed_preparation": {
+    "disposition": "Credential guard rejected unchanged target-hash ELF before namespace/model launch. Preserved complete first fixture and preparation errors.",
+    "files": [
+      {
+        "bytes": 24825,
+        "path": "base-execution-1-inventory.json",
+        "sha256": "f242dfc33e7611c4b3c896d9e06f4718e3204cb8c441067d667c80a594e6caf1"
+      },
+      {
+        "bytes": 260,
+        "path": "base-execution-1-record-completion.json",
+        "sha256": "6fc46f0a2f8c8e3204e930f32094c3444b06fa752ec278fefc274e19ecaea1b7"
+      },
+      {
+        "bytes": 24825,
+        "path": "base-execution-2-inventory.json",
+        "sha256": "b38af9111d78fee3749af2d9f00843091dac875b1a257d563e2f5cff086bbc94"
+      },
+      {
+        "bytes": 261,
+        "path": "base-execution-2-record-completion.json",
+        "sha256": "1352d6f2cb405f43a52a67942eb97c099e6ea8ccfa0dc20ce48c480b13c9d6c8"
+      },
+      {
+        "bytes": 1520422,
+        "path": "copy-provenance.json",
+        "sha256": "349c671b0bf4cc5a5ddcc618e6594acd4fea687a3ddf362feb4c52f220ccfd26"
+      },
+      {
+        "bytes": 428,
+        "path": "executor-derivation.json",
+        "sha256": "e917e9fa063a8228132c06507456705c3bac14323e531b1b468cd05f2dc44e26"
+      },
+      {
+        "bytes": 12593,
+        "path": "executor.py",
+        "sha256": "cab3f46c34b20e6ab7536b96af28fc8d2061bad7f930c181e38aef0cebaf5dec"
+      },
+      {
+        "bytes": 3634,
+        "path": "expected.json",
+        "sha256": "2ca6469e28401091d0b04e4266bbd9f99775dd8eee5c89488643b316c4848099"
+      },
+      {
+        "bytes": 6405,
+        "path": "facts-before.json",
+        "sha256": "fdcb8abe9d4527d54a3989fc14cf1753f8c23046ab49f9dfd488f27b98ba5c66"
+      },
+      {
+        "bytes": 198,
+        "path": "facts-check-failure-1.json",
+        "sha256": "93538a210e410dc07b99560e12b4287b6993118b0f50d6f103d9dc2f4b032f50"
+      },
+      {
+        "bytes": 5129,
+        "path": "facts-check-failure-1.py",
+        "sha256": "b394aa4031da7703eb9e635cc7a91b4473b69f2b577aadaf88dc12c569d5b45f"
+      },
+      {
+        "bytes": 17883,
+        "path": "fixture-generator.py",
+        "sha256": "afd3cfed5bd642a7fa7c7083b5795f99cf5260b817a30d9ccd63dde266de734a"
+      },
+      {
+        "bytes": 496681,
+        "path": "fixture-plan.json",
+        "sha256": "c5435dd6231b6f014ddedfa1a0f5bdfb0c3e699eae57d6b6d483e5aef8b6fe0e"
+      },
+      {
+        "bytes": 1521,
+        "path": "launch-assessor.py",
+        "sha256": "afb943dff1c4f522ac0908e0846b329a2893d3d0bb0e1b77547c9e59069108fe"
+      },
+      {
+        "bytes": 119143,
+        "path": "plan.json",
+        "sha256": "e2668f15f39da7731e88027aa5ce3c927b4808d11d7700b3723b13b400bf424a"
+      },
+      {
+        "bytes": 118,
+        "path": "preflight-failure.json",
+        "sha256": "868307b7bf5351af21cea7ba0c1d70373e07b16a522cfe28fba92e6e6b3496c8"
+      },
+      {
+        "bytes": 314,
+        "path": "preparation-failure-1.json",
+        "sha256": "85a24f858ac26f4c1c2abf2ef9a5ce8b8be65dc44be9096b1aa6ad29b728030b"
+      },
+      {
+        "bytes": 17195,
+        "path": "preparation-failure-1.py",
+        "sha256": "56287d737808155fb5e4f34c472a09d6028e355988e92bcbce99003a70481d64"
+      },
+      {
+        "bytes": 3812,
+        "path": "projection.py",
+        "sha256": "46c364d41b462a9085a927a1ca37b78d9a08e48c55be2be2654002ba8113b86f"
+      },
+      {
+        "bytes": 3838,
+        "path": "prompt.txt",
+        "sha256": "ba1406781a378665da65b8b0164ae4f009f4df55404e8147e2e4c475af83c0b4"
+      },
+      {
+        "bytes": 24825,
+        "path": "repair-execution-1-inventory.json",
+        "sha256": "ad6c7b82b677c72bf3ff01af42ebf7177bad4d2866bbf3f812a540e93aa3522b"
+      },
+      {
+        "bytes": 261,
+        "path": "repair-execution-1-record-completion.json",
+        "sha256": "6d4e82cd31dea90a4cc294223b9146c5e1aa0c982f5a6479cf04fb38e85cba42"
+      },
+      {
+        "bytes": 24825,
+        "path": "repair-execution-2-inventory.json",
+        "sha256": "17816ec662ce8d707de6b3cc90f59138234f68712e8b009b199ecc429b0621c5"
+      },
+      {
+        "bytes": 261,
+        "path": "repair-execution-2-record-completion.json",
+        "sha256": "8db83fee268cbeabaa530a0dbadb9a0b6bded74e178e748f360b99046db66e22"
+      },
+      {
+        "bytes": 12593,
+        "path": "runner.py",
+        "sha256": "cab3f46c34b20e6ab7536b96af28fc8d2061bad7f930c181e38aef0cebaf5dec"
+      },
+      {
+        "bytes": 1229,
+        "path": "scheduler-graph-witness-2-plan.json",
+        "sha256": "692a839050253defb17ffc7fd597b24c8b31a34bd5664fb49aba753e50dc82a0"
+      },
+      {
+        "bytes": 3984348,
+        "path": "scheduler-witness-2-plan.json",
+        "sha256": "5da0a78a262415eacdfd9cfb82cc7629f4d88b6b2491403a138f2bdbfd8eb50a"
+      },
+      {
+        "bytes": 772044,
+        "path": "source-custody.json",
+        "sha256": "38a0893c1b8aa44f0c3cffc3bc016c9ba470bc0104f39c7398b9f18ae9b0472d"
+      },
+      {
+        "bytes": 5163,
+        "path": "verify-facts.py",
+        "sha256": "6865ad2c6df92d15069e7d3437e698fdfa8fd697da16b7c979ce5c5e3a0f6260"
+      },
+      {
+        "bytes": 1567,
+        "path": "view-derivation.json",
+        "sha256": "0b6d00cc007567e0220f94393cb4ac8cf673899a8031a8789c363f9c44497559"
+      }
+    ],
+    "model_launched": false,
+    "root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/scheduler-assessment-1"
+  },
+  "files": [
+    {
+      "bytes": 55799,
+      "path": "citation-content-audit.txt",
+      "sha256": "f61159f0aed7be748dcbf6feda2dc5d96d924910604e7f2bbd8aa77fa40c00e5"
+    },
+    {
+      "bytes": 16646,
+      "path": "completion.json",
+      "sha256": "cb0bf1fcbb3219b0bcf6d7805b57938abf3b112aa6eb22fe2a5e07132b234583"
+    },
+    {
+      "bytes": 1520422,
+      "path": "copy-provenance.json",
+      "sha256": "349c671b0bf4cc5a5ddcc618e6594acd4fea687a3ddf362feb4c52f220ccfd26"
+    },
+    {
+      "bytes": 428,
+      "path": "executor-derivation.json",
+      "sha256": "e917e9fa063a8228132c06507456705c3bac14323e531b1b468cd05f2dc44e26"
+    },
+    {
+      "bytes": 12593,
+      "path": "executor.py",
+      "sha256": "cab3f46c34b20e6ab7536b96af28fc8d2061bad7f930c181e38aef0cebaf5dec"
+    },
+    {
+      "bytes": 3634,
+      "path": "expected.json",
+      "sha256": "2ca6469e28401091d0b04e4266bbd9f99775dd8eee5c89488643b316c4848099"
+    },
+    {
+      "bytes": 7235,
+      "path": "facts-after.json",
+      "sha256": "34962feafd1d9f9411c18fed2d413dd1f2d6674496b16631d569d3d505d4412d"
+    },
+    {
+      "bytes": 7235,
+      "path": "facts-before.json",
+      "sha256": "34962feafd1d9f9411c18fed2d413dd1f2d6674496b16631d569d3d505d4412d"
+    },
+    {
+      "bytes": 4822,
+      "path": "fixture-generator.py",
+      "sha256": "9435a9cbe2cf95a1f11c120d2a1b34e012fde83abd2eb1e62747609383b44e58"
+    },
+    {
+      "bytes": 496584,
+      "path": "fixture-plan.json",
+      "sha256": "3fbc33aa189eb9cee443bedebf82d7eadb83161d8d03d4cf70c18358faa855c0"
+    },
+    {
+      "bytes": 12573,
+      "path": "graph-evidence-recheck.json",
+      "sha256": "554256ea2e73ee15fc29850a6c703421a3232a6454eeb504f78ec040fd25c265"
+    },
+    {
+      "bytes": 1605,
+      "path": "launch-assessor.py",
+      "sha256": "0df97e104aa6469a37bcd70cb38fbec79e0013b9621d4e16b1dcab30e80e33dd"
+    },
+    {
+      "bytes": 5830,
+      "path": "launch.json",
+      "sha256": "e9a9eb09ec5f84f79b079f069dbf4038f91502ee8948f14b7b6c76327b622d7d"
+    },
+    {
+      "bytes": 119585,
+      "path": "plan.json",
+      "sha256": "f81a318dfdab03dcd91eb1d1de5946a5bbd334856f4d903ceba9fdc044060631"
+    },
+    {
+      "bytes": 496681,
+      "path": "prior-fixture-plan.json",
+      "sha256": "c5435dd6231b6f014ddedfa1a0f5bdfb0c3e699eae57d6b6d483e5aef8b6fe0e"
+    },
+    {
+      "bytes": 118,
+      "path": "prior-preflight-failure.json",
+      "sha256": "868307b7bf5351af21cea7ba0c1d70373e07b16a522cfe28fba92e6e6b3496c8"
+    },
+    {
+      "bytes": 55,
+      "path": "process.json",
+      "sha256": "ba06361cc183f967940365d0de94cc91c2a963940e6fdfa13c6c973371bb93e1"
+    },
+    {
+      "bytes": 3812,
+      "path": "projection.py",
+      "sha256": "46c364d41b462a9085a927a1ca37b78d9a08e48c55be2be2654002ba8113b86f"
+    },
+    {
+      "bytes": 3838,
+      "path": "prompt.txt",
+      "sha256": "ba1406781a378665da65b8b0164ae4f009f4df55404e8147e2e4c475af83c0b4"
+    },
+    {
+      "bytes": 35727,
+      "path": "record-evidence-recheck.json",
+      "sha256": "fa0497396d21e47f6284d0a2284ad09fe1fd529ed1cb44d5e6151677162ccca0"
+    },
+    {
+      "bytes": 12593,
+      "path": "runner.py",
+      "sha256": "cab3f46c34b20e6ab7536b96af28fc8d2061bad7f930c181e38aef0cebaf5dec"
+    },
+    {
+      "bytes": 3213,
+      "path": "semantic-audit.json",
+      "sha256": "0f72c76012c210bd68c44248af9f31f75b0777bd6ebf11dd5f4666ddff30fdd1"
+    },
+    {
+      "bytes": 6312,
+      "path": "semantic-audit.md",
+      "sha256": "819c52812a866434c0c2b2e75126f50935402d3766f1462987e7348c866c2385"
+    },
+    {
+      "bytes": 772044,
+      "path": "source-custody.json",
+      "sha256": "38a0893c1b8aa44f0c3cffc3bc016c9ba470bc0104f39c7398b9f18ae9b0472d"
+    },
+    {
+      "bytes": 1863,
+      "path": "task-delta.json",
+      "sha256": "17c42f3b0daaf87eebfe91ed57ca7ecd6fe738b227187ba5609e781a01d1e93a"
+    },
+    {
+      "bytes": 102297,
+      "path": "verification.json",
+      "sha256": "fa6a357baecf906dd1fb10709b39f247f70dea935d257e3fe91db5b1900e7c59"
+    },
+    {
+      "bytes": 1882,
+      "path": "verify-assessment.py",
+      "sha256": "1eebc3987b152331a6e111532b720e8b3f712f15d93183155d1f7f66034ce81a"
+    },
+    {
+      "bytes": 2519,
+      "path": "verify-facts.py",
+      "sha256": "0fa5b2dd0c3fb002866e018cc1f1f0a2bd79f1ad947023cea2de3011dfe51c71"
+    },
+    {
+      "bytes": 65,
+      "path": "version-preflight.json",
+      "sha256": "472b2102874807ee8cc927668da6825b6e3db9ec0cb0bc29f1713df1f8c0bd6a"
+    },
+    {
+      "bytes": 1567,
+      "path": "view-derivation.json",
+      "sha256": "0b6d00cc007567e0220f94393cb4ac8cf673899a8031a8789c363f9c44497559"
+    }
+  ],
+  "fixture_sha256": "3fbc33aa189eb9cee443bedebf82d7eadb83161d8d03d4cf70c18358faa855c0",
+  "independent_case_count": 1,
+  "native": {
+    "captured_files": 74,
+    "elapsed_seconds": 462.46517594810575,
+    "final_sha256": "e3f9d6c6c44405238f3c0439e3c3997c5ccf3f19f96f69b479174568e3d1294d",
+    "observed_effort": "max",
+    "observed_harness_version": "0.153.4",
+    "observed_model": "gpt-5.6-terra",
+    "opaque_fields_omitted": 43,
+    "thread_id": "01a08e39-faab-7602-94a3-243d01afbe3a",
+    "usage": {
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 1633280,
+      "input_tokens": 1822043,
+      "output_tokens": 23840,
+      "reasoning_output_tokens": 12502
+    }
+  },
+  "propositions": 29,
+  "ranking_eligible": false,
+  "recorded_local_inspection_commands": 20,
+  "report_origin": "Primary-authored assessment challenges, no natural reviewer discovery output",
+  "reports": 6,
+  "representation_checks_pass": true,
+  "schema": "caplab.scheduler-assessment-development-receipt/v1",
+  "scorer_accepted": false,
+  "semantic_audit_sha256": "0f72c76012c210bd68c44248af9f31f75b0777bd6ebf11dd5f4666ddff30fdd1",
+  "semantic_challenge_pass": false,
+  "source_change": {
+    "base": "0a7aa730f164e98a705dfe27c5db2ec8f20cc8a5",
+    "current": "b9325d547fa8fc4f8df38ddef274ca9eae6a95f4"
+  },
+  "source_text_and_observations_unchanged_from_failed_preparation": true,
+  "task_files": 2580,
+  "unmounted_unchanged_binaries": [
+    {
+      "bytes": 3606438,
+      "path": "unmounted/source/base/target-hash",
+      "sha256": "4baa1e80d46bc620f4bb9c7c501bb8b12731d13d929616ddf0ef2b7100867e46"
+    },
+    {
+      "bytes": 3606438,
+      "path": "unmounted/source/current/target-hash",
+      "sha256": "4baa1e80d46bc620f4bb9c7c501bb8b12731d13d929616ddf0ef2b7100867e46"
+    }
+  ],
+  "verification_sha256": "fa6a357baecf906dd1fb10709b39f247f70dea935d257e3fe91db5b1900e7c59"
+}

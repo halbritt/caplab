@@ -301,3 +301,13 @@ The [development requirement basis](REQUIREMENT-BASIS.md) separates publisher
 exclusion, optional-RSS collection, provider pacing and failed-refresh exit
 behavior. Global HTML pacing remains unresolved. These prospective scope
 interpretations preserve the prior failed results and create no ranking credit.
+
+The [scheduler assessment challenge](../../../records/verification-2026-09-10-reviewer-scheduler-assessment.md)
+tests the unchanged v2 contract on six authored reports about a different
+real change. All 29 propositions pass representation checks, but content
+inspection finds missing claim coverage and pre-append state cited as
+post-append evidence. It also finds a credible source argument not anticipated
+by the frozen expectations; label agreement cannot define correctness.
+The native attempt is complete and preserved, but the semantic challenge
+does not pass. Natural-report validation, case admission and the broader
+ranking remain open; no additional schema expansion is selected.
