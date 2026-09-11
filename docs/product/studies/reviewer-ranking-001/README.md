@@ -321,3 +321,13 @@ errors. The calculations preserve duplicates, withdrawals and new-finding
 uncertainty; they do not verify the supplied judgments or establish ranking
 eligibility. Natural-report warrant validation, completion and advisory-burden
 policy, case admission and comparative study design remain required.
+
+The [natural outcome-warrant challenge](../../../records/verification-2026-09-10-reviewer-natural-warrants.md)
+applies the credit policy to five natural findings and two authored controls.
+Content inspection supports two distinct natural catches, the shared miss of
+an unreported deadline defect, and refutation of both authored blockers. Three
+unresolved advisories remain visible. Individual citation and auxiliary-field
+limitations are preserved without turning them into incorrect outcome scores.
+The complete reports and inspected warrants are bound to their source hashes
+in a development projection. This is one exposed change, not an accepted scorer
+or comparative measurement; broader validation and admission remain open.
