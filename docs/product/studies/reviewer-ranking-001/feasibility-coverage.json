@@ -2,8 +2,8 @@
   "admitted_cases": 0,
   "counts": {
     "base-tree-only": 2,
-    "bounded-change-behavior": 12,
-    "pending-change-behavior": 18
+    "bounded-change-behavior": 13,
+    "pending-change-behavior": 17
   },
   "interpretation": "Planning projection. Bounded behavior evidence is not complete change coverage, a whole-patch clean label, case admission or an independent case count. Base-tree executions do not verify that base commit change. No selected case has been replaced.",
   "rows": [
@@ -83,13 +83,13 @@
       "base": "8ea5513fae0d4468d81e0b5c729790eb4035b077",
       "case_admitted": false,
       "commit": "345e9d25caafe3e12578b0e3a27c18ef0d1c38a4",
-      "receipt": null,
-      "receipt_sha256": null,
-      "record": null,
+      "receipt": "editorial-route-development-receipt.json",
+      "receipt_sha256": "70c8a13e62b4fd662932d4f85b45e5ffd8671e44751ecfb389d43cbf8f5ed18b",
+      "record": "../../../records/verification-2026-09-10-reviewer-editorial-route-outcome.md",
       "repository": "ai-newsroom",
-      "scope": "No change-specific behavioral witness established.",
+      "scope": "Dedicated and legacy routing, actual-writer family and credential use, review input separation, explicit publication and failed-review retention through real HTTP and SQLite. Repeated excerpt and missing executor endpoint stop are recorded preparation departures; no editorial-quality or whole-change clean claim.",
       "size_stratum": "21-100",
-      "status": "pending-change-behavior",
+      "status": "bounded-change-behavior",
       "tree": "542fcad69735cd90120afa1519be19b5c1311578"
     },
     {

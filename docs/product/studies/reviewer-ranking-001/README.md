@@ -90,8 +90,8 @@ evidence. `scripts/reviewer_feasibility_sample.py` reproduces this selection
 from the hash-checked census.
 
 The [coverage projection](FEASIBILITY.md) accounts for all 32 selected changes.
-Twelve have bounded change-relevant behavioral evidence; two additional trees
-have only baseline-witness evidence, and 18 changes remain without a
+Thirteen have bounded change-relevant behavioral evidence; two additional trees
+have only baseline-witness evidence, and 17 changes remain without a
 change-specific behavioral witness. Test-readiness runs do not promote cases
 into these witness categories.
 These are coverage states, not case admissions or independent defect counts.
@@ -340,3 +340,14 @@ selections remain distinct from failures. Forty original component executions
 use real local HTTP and SQLite, with controlled provider responses. This adds
 one bounded change and named clean-control properties; the full main-digest
 caller and whole-change cleanliness remain unverified. No case is admitted.
+
+The [editorial-route witness](../../../records/verification-2026-09-10-reviewer-editorial-route-outcome.md)
+checks dedicated credentials and reviewer exclusivity after writer fallback,
+actual-writer family rules, separate review inputs and durable publication
+control. Fifty-six source executions use original application paths with real
+local HTTP and SQLite. All observed route and publication effects match the
+frozen conditions. Three source URLs repeat one excerpt, and the executor
+lacks its own unexpected-endpoint stop; both preparation departures are
+recorded. These named control properties add one bounded change, with no
+editorial-quality claim or case admission. Coverage is thirteen bounded, two
+base-only and seventeen pending changes.
