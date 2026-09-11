@@ -1,0 +1,212 @@
+{
+  "advisory_basis_counts": {
+    "supported": 2,
+    "unresolved": 3
+  },
+  "artifacts": [
+    {
+      "bytes": 8579,
+      "path": "advisory-basis.json",
+      "sha256": "06381fa57598e46800b21e49e55551ee09d2ac36dab45cab7af149e6ae61e08f"
+    },
+    {
+      "bytes": 4449,
+      "path": "authorization.md",
+      "sha256": "8ce05874fc4a41e9fd466643f1775d71240788eadfd03b5e8cffd6e1a074db15"
+    },
+    {
+      "bytes": 852,
+      "path": "checker-tests.log",
+      "sha256": "dbf23d6d92c6f73a461d02d44803a903bfdec048cbd4302983c195a11a22e084"
+    },
+    {
+      "bytes": 8935,
+      "path": "completion-policy.md",
+      "sha256": "2b4b99f313093d74d4645e60161cf99c1784f981dd0c4cb8886d407132aebbcb"
+    },
+    {
+      "bytes": 7109,
+      "path": "credit-policy.md",
+      "sha256": "4fa3b3664858e3ba8a53cc1c62f26dee1f984ce8257a270f06e8f35eb783ebe4"
+    },
+    {
+      "bytes": 1178,
+      "path": "doctrine-consumption.json",
+      "sha256": "de7003c65bc967bebff97714f43af0d79c9c2860f476e7cfe28026c9ad4a0a52"
+    },
+    {
+      "bytes": 5558,
+      "path": "plan.json",
+      "sha256": "a0103233569ad2f5a71c89b3083f9ffb8e9b0816eb0529e84957d7988ab330ac"
+    },
+    {
+      "bytes": 477,
+      "path": "preparation-failure.json",
+      "sha256": "f0e7d43d3c3328fbfe7147698f0ea6a39144b5ceb025548e284ff2fa081257c3"
+    },
+    {
+      "bytes": 4776,
+      "path": "prepare-advisories-first.py",
+      "sha256": "51710edf8dcb549966be4567a963df617249319ec920015f62f896b908885ce9"
+    },
+    {
+      "bytes": 4804,
+      "path": "prepare-advisories.py",
+      "sha256": "64b07fd1b7d9d9d2af5391e2988e1d1747fdbea84b7f72677479082dda70ac1d"
+    },
+    {
+      "bytes": 2947,
+      "path": "prepare.py",
+      "sha256": "df148afe00bffaeb61d7ace13ad0001192afb560c8fac9f9776c056e011639f7"
+    },
+    {
+      "bytes": 2687,
+      "path": "receipt-method.py",
+      "sha256": "10b45daf0b5b9d5fbbe89953d9710b0895781cdee922adb6461679925c560db9"
+    },
+    {
+      "bytes": 12169,
+      "path": "reports/claude-output-1",
+      "sha256": "40fc1ea84cc5e78a7c4bc056179be3ef83f63f93e836d65fcf63bcdf133dfd45"
+    },
+    {
+      "bytes": 2251,
+      "path": "reports/finding-units-review-1",
+      "sha256": "ad47259eb3ab98374b03ac07635dfa8f59ffa62d99716441fa4dd755dcd92e84"
+    },
+    {
+      "bytes": 2659,
+      "path": "reports/newsroom-natural-output-2",
+      "sha256": "d040e7f39d25804845b04a5f78f0f1d70e8db2eb4929e56817013dde28839ae6"
+    },
+    {
+      "bytes": 3286,
+      "path": "test_verifier.py",
+      "sha256": "6cebb514d86c68b8013b5b02961bfdf73b3f3cb4f98f878a790221e4f94df416"
+    },
+    {
+      "bytes": 234257,
+      "path": "verification-final.json",
+      "sha256": "9082a4b1642f14c836b45650467e6bdda9236d724a68b02b4212cdec2e2292c5"
+    },
+    {
+      "bytes": 0,
+      "path": "verification-first.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 7107,
+      "path": "verification-record.md",
+      "sha256": "0c33abf489d72d75142283f4cf025f8aa3af8d71faee23197b0234ea335cb954"
+    },
+    {
+      "bytes": 234239,
+      "path": "verification.json",
+      "sha256": "f45f1a73e57d597aa45f6fce5698c3eb770d9493aed1b7fc22ebe9ada3026225"
+    },
+    {
+      "bytes": 12938,
+      "path": "verify-first.py",
+      "sha256": "cb39128856377a6d62eb3ac8525a03464bb6cb7581a4ee15fd88eab51af39264"
+    },
+    {
+      "bytes": 13830,
+      "path": "verify.py",
+      "sha256": "f0c7739b41846f0cdbd29f6ba2d168a3dde561870145e4039ee85999a45af300"
+    }
+  ],
+  "captured_files": 163,
+  "case_admitted": false,
+  "checker_tests": 5,
+  "complete_but_unassessed_reports": 1,
+  "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/native-accounting-1",
+  "exact_copies": 7,
+  "limits": [
+    "Retrospective inventory of three development administrations on one exposed change.",
+    "Native reported identity and capture consistency do not establish full Binding or provider attestation.",
+    "Source-grounded advisory analysis is not independent acceptance of a semantic scorer.",
+    "Earlier free-text dispositions remain unassessed under the new policy; its original report is retained."
+  ],
+  "model_calls": 0,
+  "native_probes": 3,
+  "natural_outcome_warrants": 5,
+  "opaque_fields_omitted": 116,
+  "original_archive_file_references": 244,
+  "plan_sha256": "a0103233569ad2f5a71c89b3083f9ffb8e9b0816eb0529e84957d7988ab330ac",
+  "prior_warrant_artifacts": 413,
+  "ranking_eligible": false,
+  "schema": "caplab.native-accounting-development-receipt/v1",
+  "source_receipts": [
+    {
+      "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-natural-output-2",
+      "path": "/home/halbritt/git/caplab/docs/product/studies/reviewer-ranking-001/natural-output-development-receipt.json",
+      "probe": "newsroom-natural-output-2",
+      "sha256": "c51f24064c83a35c45f0ebac391f22dd6ded650fc7592eb7ed1a36ea84f67380"
+    },
+    {
+      "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/finding-units-review-1",
+      "path": "/home/halbritt/git/caplab/docs/product/studies/reviewer-ranking-001/finding-units-development-receipt.json",
+      "probe": "finding-units-review-1",
+      "sha256": "6cdb1835b8669235b8e6e7ae316d9ec8a4c15b51ba280795f2c4c6a56835cb2e"
+    },
+    {
+      "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/claude-output-1",
+      "path": "/home/halbritt/git/caplab/docs/product/studies/reviewer-ranking-001/claude-output-development-receipt.json",
+      "probe": "claude-output-1",
+      "sha256": "c4cd0688fb34d0419d5b71eab5f369305668da46197ac9783d119d3b9640025d"
+    },
+    {
+      "path": "/home/halbritt/git/caplab/docs/product/studies/reviewer-ranking-001/natural-warrants-development-receipt.json",
+      "sha256": "310b3ebb119a8bf945daa60c75afe2be7be3a9530d597980954e34c1dc1ebc5f"
+    }
+  ],
+  "support": [
+    {
+      "path": "/home/halbritt/git/caplab/scripts/reviewer_assignment_outcomes.py",
+      "sha256": "1381d6745ee65b69cd1beeeebb2ac31702c449269ce881a2796c1d3c8e2740f6"
+    },
+    {
+      "path": "/home/halbritt/git/caplab/scripts/reviewer_credit_policy.py",
+      "sha256": "859c32cc0d379e52d94f7ff4903015315254070b665313bd35acc1810b44d1fd"
+    },
+    {
+      "path": "/home/halbritt/git/caplab/scripts/reviewer_outcome_assessment.py",
+      "sha256": "e3fc96c094a17eb917248446760162684770ef60e07d6efa77b9c086ad9b5e13"
+    },
+    {
+      "path": "/home/halbritt/git/caplab/scripts/codex_rollout_projection.py",
+      "sha256": "46c364d41b462a9085a927a1ca37b78d9a08e48c55be2be2654002ba8113b86f"
+    },
+    {
+      "path": "/home/halbritt/git/caplab/scripts/reviewer_scheduler_witness.py",
+      "sha256": "cd66b72a743bc7135437578e41dee3002fb077f8048c58924102730bea4237c2"
+    },
+    {
+      "path": "/home/halbritt/git/caplab/src/caplab/native_review_report.py",
+      "sha256": "17174134b05d1cc1dd8444699101cb0b5c3fba4dca2f626dc2205466d10b92e5"
+    },
+    {
+      "path": "/home/halbritt/git/caplab/src/caplab/review_dissent/native.py",
+      "sha256": "1f4f68cefd53abd4a964ee07687a097c2bcd7e368e63a7740bf41664b5c44919"
+    },
+    {
+      "path": "/home/halbritt/git/caplab/src/caplab/codex_events.py",
+      "sha256": "79435b39696c5899c59ce35e16e0c3ca1b30b7eccac4de0a25ed3fd9af88035f"
+    }
+  ],
+  "verification_sha256": "9082a4b1642f14c836b45650467e6bdda9236d724a68b02b4212cdec2e2292c5",
+  "witnesses": [
+    {
+      "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-findings-witness-1/verification.json",
+      "sha256": "d101743663feb7eec75928ace7fdc8aa4728395ccb25a859be5a341e4a056b7c"
+    },
+    {
+      "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/verification.json",
+      "sha256": "c47aa1c4cd661fd1388fc2e31f35a295dc02b64ec0b6061e274af5cd2434df28"
+    },
+    {
+      "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/reddit-recovery-witness-2/verification.json",
+      "sha256": "ae90ff38769a59b3fafbd68da7f92f278cb7267233902c917577bf38e5b8005d"
+    }
+  ]
+}

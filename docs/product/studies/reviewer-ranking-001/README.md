@@ -363,3 +363,12 @@ nonblocking findings from disappearing behind a zero false-blocker count.
 Finding occurrences remain descriptive, with no claim to measure human effort.
 This is prospective accounting and arithmetic; native authenticity, natural
 advisory judgments and comparative performance remain unverified.
+
+The [native-accounting integration](../../../records/verification-2026-09-10-reviewer-native-accounting.md)
+checks three preserved natural reviews against original capture custody,
+native completion events and two final-output locations. All remain complete;
+the earlier free-text report remains unassessed under the new policy without
+losing its original findings. Two explicit reports retain five bound outcome
+warrants and separate advisory judgments; three advisory concerns remain
+unresolved. This retrospective development inventory changes no historical
+score, admits no case and establishes no comparative ranking.
