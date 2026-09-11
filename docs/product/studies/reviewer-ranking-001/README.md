@@ -284,3 +284,12 @@ stances/effects survive. The preserved failure motivates a
 [prospective proposition-based contract](EVIDENCE-ASSESSMENT-V2.md), which still
 requires implementation and validation. No label-agreement percentage is
 treated as semantic accuracy. Case coverage and admission remain unchanged.
+
+The [proposition-based native assessment](../../../records/verification-2026-09-10-reviewer-proposition-assessor.md)
+implements the v2 representation and tests it on 13 finding occurrences.
+All original judgments survive, but five findings fail quotation, component
+or locator checks. Content inspection also finds unsupported citation
+explanations and inconsistent requirement scope. The frozen challenge fails;
+eight structurally passing findings are not eight correct assessments.
+Requirement interpretation and semantic validation remain open. The original
+output, failed criteria and evidence are preserved; coverage is unchanged.
