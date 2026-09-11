@@ -1,8 +1,8 @@
 {
   "admitted_cases": 0,
   "counts": {
-    "base-tree-only": 3,
-    "bounded-change-behavior": 11,
+    "base-tree-only": 2,
+    "bounded-change-behavior": 12,
     "pending-change-behavior": 18
   },
   "interpretation": "Planning projection. Bounded behavior evidence is not complete change coverage, a whole-patch clean label, case admission or an independent case count. Base-tree executions do not verify that base commit change. No selected case has been replaced.",
@@ -65,13 +65,18 @@
       "base": "c04f6c8b3af6bef8876330f37d02c42effd12908",
       "case_admitted": false,
       "commit": "00efadb0c5bdd2fc6d939793e7d372bf3c69ea73",
-      "receipt": "publication-development-receipt.json",
-      "receipt_sha256": "35d5c3ea1b4ec1f28e7d3d38fbb2316923dafdb9f962f56ade1e8ce5ca7af6c2",
-      "record": null,
+      "prior_base_evidence": {
+        "receipt": "publication-development-receipt.json",
+        "receipt_sha256": "35d5c3ea1b4ec1f28e7d3d38fbb2316923dafdb9f962f56ade1e8ce5ca7af6c2",
+        "scope": "Executed as another case base; this change remains unverified."
+      },
+      "receipt": "brief-preview-development-receipt.json",
+      "receipt_sha256": "844d24ab4c4016b1682e45660cb699b98e4f21b8f6db737dcf0f19f6cf0b9fa4",
+      "record": "../../../records/verification-2026-09-10-reviewer-brief-preview-outcome.md",
       "repository": "ai-newsroom",
-      "scope": "Executed as another case base; this change remains unverified.",
+      "scope": "Original brief preview/live selection, original-history preservation, simulated/acknowledged dispositions and direct URL partition properties. Full main-digest caller unexecuted; no whole-change clean label.",
       "size_stratum": "21-100",
-      "status": "base-tree-only",
+      "status": "bounded-change-behavior",
       "tree": "4f94ed8b5563a65792181593a7bbda19e5c0c742"
     },
     {

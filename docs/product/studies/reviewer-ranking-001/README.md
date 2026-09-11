@@ -90,7 +90,7 @@ evidence. `scripts/reviewer_feasibility_sample.py` reproduces this selection
 from the hash-checked census.
 
 The [coverage projection](FEASIBILITY.md) accounts for all 32 selected changes.
-Eleven have bounded change-relevant behavioral evidence; three additional trees
+Twelve have bounded change-relevant behavioral evidence; two additional trees
 have only baseline-witness evidence, and 18 changes remain without a
 change-specific behavioral witness. Test-readiness runs do not promote cases
 into these witness categories.
@@ -331,3 +331,12 @@ limitations are preserved without turning them into incorrect outcome scores.
 The complete reports and inspected warrants are bound to their source hashes
 in a development projection. This is one exposed change, not an accepted scorer
 or comparative measurement; broader validation and admission remain open.
+
+The [brief-preview witness](../../../records/verification-2026-09-10-reviewer-brief-preview-outcome.md)
+reproduces preview/live duplicate-selection divergence in a selected change's
+base and verifies agreement after the change. Original history remains
+byte-identical across previews, distinct content stays eligible, and empty
+selections remain distinct from failures. Forty original component executions
+use real local HTTP and SQLite, with controlled provider responses. This adds
+one bounded change and named clean-control properties; the full main-digest
+caller and whole-change cleanliness remain unverified. No case is admitted.
