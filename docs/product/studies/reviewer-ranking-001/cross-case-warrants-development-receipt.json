@@ -1,0 +1,165 @@
+{
+  "artifacts": [
+    {
+      "bytes": 1992,
+      "path": "authorization.md",
+      "sha256": "40d39c323383033b74fe2da0af2686f7d8cfdbb065a77531abfca2515a23a5f4"
+    },
+    {
+      "bytes": 616531,
+      "path": "fixture-plan.json",
+      "sha256": "08d0962b820f5fd6f77007ea7ad41e3bae9df50ddeb87cb95bc1bb7b151650ef"
+    },
+    {
+      "bytes": 840,
+      "path": "task-delta.json",
+      "sha256": "bd16b6daa45fd6a82b644463254b7872168d87be156357a536c00782fb86b980"
+    },
+    {
+      "bytes": 123167,
+      "path": "plan.json",
+      "sha256": "dc303738d1e2842b239618637dfad9d54681ff6ca23665c6600a79b1f1af2b23"
+    },
+    {
+      "bytes": 1865,
+      "path": "expected.json",
+      "sha256": "2b158082a6e153841101d02cae184af6b55e4eb8a18fca82a908b6dec2bdafb1"
+    },
+    {
+      "bytes": 17821,
+      "path": "completion.json",
+      "sha256": "2c5d761d4fd05bf23b445901c5ae53129a39844aa77de28c4759f74a549421bf"
+    },
+    {
+      "bytes": 282867,
+      "path": "verification.json",
+      "sha256": "324a7de90e213e9f2b17eb1552f3490587a5b09b779db24090d9c9a264478430"
+    },
+    {
+      "bytes": 5724,
+      "path": "content-audit.md",
+      "sha256": "a90935606a15950d1ff56a6a0712174830c3d007004ebf87a543b6ae470de5d1"
+    },
+    {
+      "bytes": 11300,
+      "path": "content-audit.json",
+      "sha256": "4360083d6a5b45f7278a16a286c9d1d613785cdb5ff0decb9bccd0e868a4dcd0"
+    },
+    {
+      "bytes": 873,
+      "path": "supplementary-original-basis.json",
+      "sha256": "da571a633d224e5e776431bd5f40610081f8f02d44ae8045e526395537954c93"
+    },
+    {
+      "bytes": 515,
+      "path": "native-content-check.json",
+      "sha256": "1f3f22c7484ccd9f3d16d7e58757b38c6af4814589ccb54467b5d521f7d552ad"
+    },
+    {
+      "bytes": 28805,
+      "path": "development-projection.json",
+      "sha256": "94f1cb78f1c14c264ad40fd6899b67befb5390d36b751224a1018eba26536f0e"
+    },
+    {
+      "bytes": 662867,
+      "path": "private-artifact-manifest.json",
+      "sha256": "635c5c34e9fe1e69d2fde99de0999b6ebb9ed0003d819800d201c732a1cec03e"
+    },
+    {
+      "bytes": 638044,
+      "path": "prior-preparation-artifact-manifest.json",
+      "sha256": "24e4b7725354a4349cb07e917dfa517bb7a44656acdee43365fed5fefb0c942a"
+    },
+    {
+      "bytes": 7837,
+      "path": "verification-record.md",
+      "sha256": "e80efc21d57caaeb2afeca6e8b3b5726bf69148467f103954479da450be2acae"
+    },
+    {
+      "bytes": 114,
+      "path": "policy-tests.log",
+      "sha256": "9fc652a196457d4ff9b3a9b3d2f85a4d04bbc6bc99761301c9be2b7d148a4d0e"
+    },
+    {
+      "bytes": 8722,
+      "path": "finalize-audit.py",
+      "sha256": "eedbf98ec4e8ddf9433f0b1edee9b595e1cb929db8c45bb496228108aa8e258b"
+    },
+    {
+      "bytes": 4852,
+      "path": "receipt-method.py",
+      "sha256": "5f8bec955006d23b3962d88e9c5003ec7ce8159c3a2f1373ecf39affb3cd0e55"
+    },
+    {
+      "bytes": 7087,
+      "path": "custody/admitted-cases.json",
+      "sha256": "532c9fef9ae63434dfea97c12abe56d1bab35fa1de29847d0463503b120c6850"
+    },
+    {
+      "bytes": 3408150,
+      "path": "custody/registered-byte-links.json",
+      "sha256": "569eb2fcd4d23b17f2be49c65ffea6dd66fe7b34727b70399a38c5aa934730db"
+    },
+    {
+      "bytes": 828,
+      "path": "custody/derived-evidence-checks.json",
+      "sha256": "e4837e5414557f749dc92bca30b749b5ba20d84e723f7771f00530ec0294ad70"
+    }
+  ],
+  "authored_findings": 11,
+  "authorizations": [
+    "docs/records/authorization-2026-09-10-reviewer-cross-case-warrants.md",
+    "docs/records/authorization-2026-09-10-reviewer-cross-case-warrants-2.md"
+  ],
+  "comparative_measurements_added": 0,
+  "completed_preparation_artifact_count": 3171,
+  "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/cross-case-warrants-2",
+  "development_cases": 2,
+  "documents": 10,
+  "evidence_manifest_sha256": "737dc5e9e7b9db5d3aa179b00487b053f94bace86373b25030e1312ed449fa50",
+  "first_preparation_artifact_count": 3037,
+  "fixture_sha256": "08d0962b820f5fd6f77007ea7ad41e3bae9df50ddeb87cb95bc1bb7b151650ef",
+  "limits": [
+    "Native pre-append/post-append citation failure remains; primary inspection uses supplementary original evidence.",
+    "Authored development challenge only; no natural reviewer observations or held-out accuracy.",
+    "Effort preservation is bounded; empty catalog is not whole-patch cleanliness.",
+    "Production restart execution is unobserved; the stated causal mechanism has a bounded source refutation.",
+    "Private manifests pin all retained artifacts including rejected preparation and draft audit locator correction."
+  ],
+  "native": {
+    "captured_files": 80,
+    "elapsed_seconds": 647.0032403869554,
+    "final_sha256": "93fbc20634ed3c476166177502e4d489bcb75ac66f8d11dc7cf041694db57adf",
+    "observed_effort": "max",
+    "observed_harness_version": "0.153.4",
+    "observed_model": "gpt-5.6-terra",
+    "opaque_fields_omitted": 71,
+    "recorded_command_count": 34,
+    "session_event_types": [
+      "item_completed",
+      "task_complete",
+      "task_started",
+      "token_count"
+    ],
+    "thread_id": "01a08eed-8957-7bd1-8c35-dd50b4ae00ec",
+    "usage": {
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 3951104,
+      "input_tokens": 4195822,
+      "output_tokens": 32862,
+      "reasoning_output_tokens": 22565
+    }
+  },
+  "native_evidence_obligations_passed": false,
+  "natural_findings": 0,
+  "preparation_dispositions": [
+    "First task refused by credential guard before namespace/model launch.",
+    "Second preparation retained original plans outside task; full dependency arrays omitted from explicit projections; guard unchanged."
+  ],
+  "primary_inspected_development_outcomes": true,
+  "prior_preparation_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/cross-case-warrants-1",
+  "ranking_eligible": false,
+  "representation_passed": true,
+  "schema": "caplab.cross-case-warrants-development-receipt/v1",
+  "scorer_accepted": false
+}

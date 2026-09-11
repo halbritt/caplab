@@ -12,6 +12,14 @@ has no whole-patch clean label. The original 32-case sample remains unchanged.
 The development entries below describe evidence and limits at each step;
 this admission is the current disposition of those two cases.
 
+The [cross-case outcome-warrant challenge](../../../records/verification-2026-09-10-reviewer-cross-case-warrants.md)
+completed eleven authored findings on those two cases. The native scorer
+repeated a pre-append/post-append citation error and remains unaccepted.
+Separate primary-agent inspection supports bounded development projections
+using original evidence; this adds no natural reviewer or ranking observations.
+The next step is natural review output on these cases with the answer basis
+withheld, alongside broader case coverage and a frozen held-out comparison.
+
 ## Purpose and outcome
 
 Determine which exact native reviewer configurations are more useful for
