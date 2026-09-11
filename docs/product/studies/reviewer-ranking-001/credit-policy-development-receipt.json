@@ -1,0 +1,77 @@
+{
+  "admitted_cases": 0,
+  "claims_established": [
+    "policy arithmetic for supplied warrants",
+    "explicit input accounting and uncertainty bounds"
+  ],
+  "claims_not_established": [
+    "native report authenticity or completion",
+    "warrant truth, materiality, scope or content binding",
+    "semantic scorer accuracy",
+    "case admission or representative ranking"
+  ],
+  "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/credit-policy-1",
+  "enumerated_evidence_status_combinations": 729,
+  "files": [
+    {
+      "bytes": 7109,
+      "path": "policy.md",
+      "sha256": "4fa3b3664858e3ba8a53cc1c62f26dee1f984ce8257a270f06e8f35eb783ebe4",
+      "source": "/home/halbritt/git/caplab/docs/product/studies/reviewer-ranking-001/OUTCOME-CREDIT.md"
+    },
+    {
+      "bytes": 5033,
+      "path": "implementation.py",
+      "sha256": "859c32cc0d379e52d94f7ff4903015315254070b665313bd35acc1810b44d1fd",
+      "source": "/home/halbritt/git/caplab/scripts/reviewer_credit_policy.py"
+    },
+    {
+      "bytes": 9520,
+      "path": "tests.py",
+      "sha256": "38188513b20a87e7d216341fc4a980d682200dd64321802c200d68d29654b39f",
+      "source": "/home/halbritt/git/caplab/tests/test_reviewer_credit_policy.py"
+    },
+    {
+      "bytes": 8910,
+      "path": "verification.md",
+      "sha256": "2a2ece758d7c5e4b122e9a6acb65d27c33f8a9f5a5d46f64c517057b19941872",
+      "source": "/home/halbritt/git/caplab/docs/records/verification-2026-09-10-reviewer-credit-policy.md"
+    },
+    {
+      "bytes": 256279,
+      "path": "repository-check-failure.log",
+      "sha256": "86203b53d2abc39b77447566ad537a7c4c573c26aaf01eb93a02128afe17bee1",
+      "source": "/tmp/caplab-credit-policy-check.log"
+    },
+    {
+      "bytes": 280406,
+      "path": "repository-check.log",
+      "sha256": "ac0814dd3ab6b75bbd4680780ab7073e9696504e262023b8d2f9bab2ee5fc670",
+      "source": "/tmp/caplab-credit-policy-check-2.log"
+    },
+    {
+      "bytes": 489,
+      "path": "environment.json",
+      "sha256": "1ed09cf8c089616be562e6dc2467f617600c2d107b88b316278dfa6d616af873"
+    }
+  ],
+  "focused_tests": 7,
+  "full_check": {
+    "passed": true,
+    "seconds": 204.122,
+    "skipped": 7,
+    "tests": 1578
+  },
+  "historical_reviews_rescored": 0,
+  "initial_check": {
+    "cause": "PyYAML absent from virtual environment",
+    "import_errors": 11,
+    "passed": false,
+    "seconds": 196.487,
+    "tests": 1392
+  },
+  "live_model_calls": 0,
+  "ranking_eligible": false,
+  "schema": "caplab.review-credit-policy-development/v1",
+  "scorer_accepted": false
+}

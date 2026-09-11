@@ -311,3 +311,13 @@ by the frozen expectations; label agreement cannot define correctness.
 The native attempt is complete and preserved, but the semantic challenge
 does not pass. Natural-report validation, case admission and the broader
 ranking remain open; no additional schema expansion is selected.
+
+The [outcome-credit policy](OUTCOME-CREDIT.md) defines when supported core
+findings earn catches, when a blocking rationale is independently refuted,
+and how unresolved evidence affects known-defect and blocker bounds.
+Its [implementation verification](../../../records/verification-2026-09-10-reviewer-credit-policy.md)
+separates outcome-changing assessment errors from incidental annotation
+errors. The calculations preserve duplicates, withdrawals and new-finding
+uncertainty; they do not verify the supplied judgments or establish ranking
+eligibility. Natural-report warrant validation, completion and advisory-burden
+policy, case admission and comparative study design remain required.
