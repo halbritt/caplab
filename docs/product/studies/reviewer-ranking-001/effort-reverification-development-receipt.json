@@ -1,0 +1,124 @@
+{
+  "case_admitted": false,
+  "checker_tests": 7,
+  "corrected_batch": {
+    "accepted_per_revision": 44,
+    "criteria_met": true,
+    "rejected_per_revision": 91
+  },
+  "current_dependency_drift": false,
+  "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/effort-reverification-1",
+  "dependency_entries_per_batch": 6633,
+  "files": [
+    {
+      "bytes": 3123,
+      "path": "authorization.md",
+      "sha256": "9186aa00d65ca918dca0dda31f2aaaf97a74566451606e9311fa578ccf3698cd"
+    },
+    {
+      "bytes": 993,
+      "path": "checker-challenges.txt",
+      "sha256": "f6fa972f0173abc4c1a9bc9530f6796d03f67ad7eae9d5b16fcb582f1b6ee732"
+    },
+    {
+      "bytes": 993,
+      "path": "checker-final.txt",
+      "sha256": "f4a5162e2cf5ca69eb2e4a4caafc3591cc5e8cb7b41295e93cabe74659a55fde"
+    },
+    {
+      "bytes": 98,
+      "path": "checker-first-green.txt",
+      "sha256": "c346f1228fe88f4ab3cb336ffa610dc3a34ec7c7bb7d05df7a1c222f2d928881"
+    },
+    {
+      "bytes": 250,
+      "path": "checker-red.txt",
+      "sha256": "87adb1782d6e23184fbdedcf3780bbf34673c5d759a3552c1da1c07fa3f43152"
+    },
+    {
+      "bytes": 2700,
+      "path": "finalize.py",
+      "sha256": "7ec65f62d1bd89d0fd129b45ee508ef8369b4ab4221dd4ac8d0e3959e45bd149"
+    },
+    {
+      "bytes": 522,
+      "path": "method-plan.json",
+      "sha256": "f8344473c99930d836de718d9f31463b6c1af2dbf8357622855da34f4b580403"
+    },
+    {
+      "bytes": 5939,
+      "path": "original-receipt.json",
+      "sha256": "1d9cd25aa1d2cf473268cb1e51aee9e6dc170f026cc62973bdd1513f3149a7f7"
+    },
+    {
+      "bytes": 466,
+      "path": "plan.json",
+      "sha256": "3faf8c295ae4d8850d7f16e85d255c2f0416452c7544a84011558b0d443b04f6"
+    },
+    {
+      "bytes": 9130,
+      "path": "support_timeout_witness.py",
+      "sha256": "0925191e7077b16cbe852be8d4e10774e08cd6e7418dc1e8b33aeae719ff7712"
+    },
+    {
+      "bytes": 3653,
+      "path": "test_verifier.py",
+      "sha256": "59ae09ac49f4392d74358fcf404aec1c46dcaf250f9f026cedcee9d6e11edcc3"
+    },
+    {
+      "bytes": 5699,
+      "path": "verification-first.json",
+      "sha256": "caf759f80ba28ebaba9fa883e963bf2a61874965645e40a4fbfe3c68fa95f27b"
+    },
+    {
+      "bytes": 0,
+      "path": "verification-first.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 5699,
+      "path": "verification.json",
+      "sha256": "93dd19be4780633fe545dacfdace8fe6eff9f1f3c6cc268ce8d52bf6c69db9d4"
+    },
+    {
+      "bytes": 0,
+      "path": "verification.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 9939,
+      "path": "verify-first.py",
+      "sha256": "8f34431259d53e8742bd8bd186561c7d0aee327d4b590e5988615bf9cf7d3848"
+    },
+    {
+      "bytes": 9863,
+      "path": "verify.py",
+      "sha256": "d383c0a47a65f3a6d827168e8995709b9692d12ad12664f1b8c99ece6984fca1"
+    }
+  ],
+  "first_batch": {
+    "accepted_per_revision": 2,
+    "category_mismatches_per_revision": 42,
+    "criteria_met": false
+  },
+  "limits": [
+    "Member-pinning parser only; configuration-file caller was not executed.",
+    "Expected categories preserve existing behavior; no independent claim that those product choices are ideal.",
+    "Compiler exhaustiveness is a separate bounded witness, not proof of whole-change correctness.",
+    "Current dependency checks do not make the retained dependencies durable registered evidence.",
+    "The new verifier reconstructs the old result; it is not the missing original verification method."
+  ],
+  "method_plan_sha256": "f8344473c99930d836de718d9f31463b6c1af2dbf8357622855da34f4b580403",
+  "negative_challenge_variants": 8,
+  "new_model_calls": 0,
+  "new_source_executions": 0,
+  "original_cases_per_revision": 135,
+  "original_receipt_members_checked": 25,
+  "original_receipt_sha256": "1d9cd25aa1d2cf473268cb1e51aee9e6dc170f026cc62973bdd1513f3149a7f7",
+  "plan_sha256": "3faf8c295ae4d8850d7f16e85d255c2f0416452c7544a84011558b0d443b04f6",
+  "ranking_eligible": false,
+  "schema": "caplab.effort-reverification-development-receipt/v1",
+  "source_file_instances_checked": 784,
+  "verification_sha256": "93dd19be4780633fe545dacfdace8fe6eff9f1f3c6cc268ce8d52bf6c69db9d4",
+  "whole_patch_clean_label": false
+}

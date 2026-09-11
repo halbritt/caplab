@@ -124,6 +124,11 @@ The [effort-control investigation](../../../records/verification-2026-09-10-revi
 adds a selected real change with identical parser outcomes across 135 inputs
 per revision and a compiler-confirmed unreachable fallback. This supports
 named preservation properties, not an admitted whole-patch clean label.
+The [retained verification reconstruction](../../../records/verification-2026-09-10-reviewer-effort-reverification.md)
+now reproduces those results from the original captures. It also rejects the
+first batch's 42 failed positive controls despite equal revision outcomes.
+Seven checker tests pass; source and dependency inventories still match.
+The configuration-file caller and durable case admission remain open.
 
 The [dependency readiness investigation](../../../records/verification-2026-09-10-reviewer-dependency-readiness.md)
 installed the four Council revisions' locked dependencies. Builds complete,
