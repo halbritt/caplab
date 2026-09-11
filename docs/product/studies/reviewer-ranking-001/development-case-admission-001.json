@@ -1,0 +1,139 @@
+{
+  "cases": [
+    {
+      "admission_scope": "development outcome and scorer validation",
+      "base": "0a7aa730f164e98a705dfe27c5db2ec8f20cc8a5",
+      "case_id": "striatum-scheduler-b9325d5",
+      "case_scope_content_sha256": "6238e5aa08b17e56e9ed0d2adab867f5ff581bd5da3e46f422f678d835561743",
+      "case_truth_id": "8f1da13387a0f234f963bdfc9b6de7a3ea2455c9fff8fb246d4b6a2668758240",
+      "change": "b9325d547fa8fc4f8df38ddef274ca9eae6a95f4",
+      "comparative_trial_eligible": false,
+      "defect_ids": [
+        "accepted-decision-omits-causal-exhaustion-input"
+      ],
+      "defects": [
+        {
+          "assertion": "Changed predictor permits original Driver to append, bind and reopen an incomplete local-fallback decision; removing omitted observation changes original placement.",
+          "change_attribution": "The sampled change enables acceptance of the incomplete decision; omission alone is inherited.",
+          "defect_id": "accepted-decision-omits-causal-exhaustion-input",
+          "independent_basis": "Predating complete-preimage requirement, original graph records and removal of the omitted input changing original placement. Author inspected the change; separate contexts do not establish independence.",
+          "requirement_basis": {
+            "commit": "58ff7ce58e58b0cd5ea7719c5826fa3716bfbb68",
+            "git_blob": "fa1d6324ce59a75f3c5fa80688de21a6abc79c59",
+            "inspection": "C1 and C11 require deterministic placement over sealed inputs and complete decision input/output preimages.",
+            "lines": "11-21",
+            "path": "decisions/D0008-scheduler-and-capacity-policy.md",
+            "role": "precursor",
+            "sha256": "025e3b62b696349ce6480519cee4ae36c97afec8bda737c09c31c088f0fc45e2"
+          },
+          "requirement_predates_change": true,
+          "verification_sha256": [
+            "fa0497396d21e47f6284d0a2284ad09fe1fd529ed1cb44d5e6151677162ccca0",
+            "554256ea2e73ee15fc29850a6c703421a3232a6454eeb504f78ec040fd25c265"
+          ]
+        }
+      ],
+      "evidence_archives": [
+        {
+          "content_sha256": "211f9e43170ffdc04ad1d2cafa5cc7befeb7c9b5ffa5bba39bc6154098f85a31",
+          "path": "scheduler-witness-1.tar"
+        },
+        {
+          "content_sha256": "aab142c13c99ea7ae9e68a56612a1791f91da4c6a8ba672645bcdb08e091e4db",
+          "path": "scheduler-witness-2.tar"
+        },
+        {
+          "content_sha256": "a389e743af5914516b60b3763c13bf15c241be1b6ae8b46fd83e28048abd3a56",
+          "path": "scheduler-graph-witness-1.tar"
+        },
+        {
+          "content_sha256": "2e7c597ff5d928ab2b50311e64d128cc7fd85e6ed2990b70315419e3fe7707c6",
+          "path": "scheduler-graph-witness-2.tar"
+        }
+      ],
+      "evidence_manifest_sha256": "737dc5e9e7b9db5d3aa179b00487b053f94bace86373b25030e1312ed449fa50",
+      "held_out_eligible": false,
+      "known_truth_is_exhaustive": false,
+      "limits": [
+        "Omission itself predates change.",
+        "Graph retains source observation.",
+        "No backend dispatch or irrecoverable-loss claim.",
+        "Related revisions and repeats are one failure family."
+      ],
+      "provenance_content_sha256": "74913efed82ab7161f41e499451bff6b603e62c8a04dd62166af467ebe911fdf",
+      "repository": "striatum-next",
+      "tree": "7183f0eb22e3970b501a492dfd55b273520704c2",
+      "whole_patch_clean_label": false
+    },
+    {
+      "admission_scope": "development outcome and scorer validation",
+      "base": "c60cb4694a97b0f3151fdc48abfbea2e631ac1fb",
+      "case_id": "council-effort-c1526c8",
+      "case_scope_content_sha256": "6238e5aa08b17e56e9ed0d2adab867f5ff581bd5da3e46f422f678d835561743",
+      "case_truth_id": "8baa0b6e6bb7b816d5a4251310a684efdda4c69fc6a21fb286fb2f52f6f4621c",
+      "change": "c1526c8552ccfa6236c01988aa141d0705eb5d7f",
+      "comparative_trial_eligible": false,
+      "control_properties": [
+        {
+          "assertion": "135 public member-pinning inputs retain complete outputs and effort-validation categories.",
+          "limits": "Acceptance categories encode existing behavior and do not establish ideal product choices.",
+          "property_id": "member-pinning-effort-preserved"
+        },
+        {
+          "assertion": "TypeScript 5.9.3 reports no module diagnostics and the added fallback argument is never.",
+          "independent_basis": "Separately implemented TypeScript compiler examines the original source module and its imports.",
+          "property_id": "added-fallback-exhaustive"
+        }
+      ],
+      "defect_ids": [],
+      "defects": [],
+      "evidence_archives": [
+        {
+          "content_sha256": "9e2cb9210e0e979017615d2879aad7ed1b85988908d1087548b39f3327469dbd",
+          "path": "effort-control-1.tar"
+        },
+        {
+          "content_sha256": "e578a3b4dcf2c72f84d08ebe161079d8b38205180d968a84c5cea19fa83a187c",
+          "path": "effort-control-2.tar"
+        },
+        {
+          "content_sha256": "fe20457286d4a677451bf2bd56b77a1adf245055a665522b36b04ad1a369f31b",
+          "path": "effort-reverification-1.tar"
+        },
+        {
+          "content_sha256": "2c55fa4fd51c3af650589d1e5a37cb9ffc230f0c5ea840746cc5914181894f45",
+          "path": "council-dependencies.tar"
+        }
+      ],
+      "evidence_manifest_sha256": "737dc5e9e7b9db5d3aa179b00487b053f94bace86373b25030e1312ed449fa50",
+      "held_out_eligible": false,
+      "known_truth_is_exhaustive": false,
+      "limits": [
+        "Configuration-file caller was not executed.",
+        "Expected categories preserve existing behavior; product-choice correctness is not independently established.",
+        "No whole-patch clean label."
+      ],
+      "provenance_content_sha256": "74913efed82ab7161f41e499451bff6b603e62c8a04dd62166af467ebe911fdf",
+      "repository": "council",
+      "tree": "d92c81ec413c3f6093a110c40db3354f101c69aa",
+      "verification_sha256": "93dd19be4780633fe545dacfdace8fe6eff9f1f3c6cc268ce8d52bf6c69db9d4",
+      "whole_patch_clean_label": false
+    }
+  ],
+  "comparative_corpus_frozen": false,
+  "decision_authority": [
+    "docs/decisions/adr-0026-caplab-blanket-decision-authority.md",
+    "docs/decisions/adr-0066-reviewer-ranking-outcome-selection.md",
+    "docs/records/authorization-2026-09-10-reviewer-case-evidence-registration.md"
+  ],
+  "decision_owner": "primary-agent",
+  "decision_record": "docs/records/decision-2026-09-10-reviewer-development-case-admission.md",
+  "evidence_manifest_sha256": "737dc5e9e7b9db5d3aa179b00487b053f94bace86373b25030e1312ed449fa50",
+  "pilot_accepted": false,
+  "population": "Two development-exposed cases from the unchanged 32-case sample; not a representative or matched comparative sample.",
+  "ranking_accepted": false,
+  "registered_namespace": "reviewer-ranking-001-development-cases-001",
+  "reopening_rule": "New supported findings create a new common truth version for every binding assessed on the case; unknown claims stay unresolved. Preserve prior versions.",
+  "schema": "caplab.reviewer-development-case-admission/v1",
+  "scorer_accepted": false
+}

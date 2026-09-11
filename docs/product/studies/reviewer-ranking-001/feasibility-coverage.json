@@ -1,11 +1,12 @@
 {
-  "admitted_cases": 0,
+  "admitted_cases": 2,
+  "comparative_cases_admitted": 0,
   "counts": {
     "base-tree-only": 2,
     "bounded-change-behavior": 13,
     "pending-change-behavior": 17
   },
-  "interpretation": "Planning projection. Bounded behavior evidence is not complete change coverage, a whole-patch clean label, case admission or an independent case count. Base-tree executions do not verify that base commit change. No selected case has been replaced.",
+  "interpretation": "Planning projection. Two cases have separately authorized development admission backed by registered evidence. Bounded behavior evidence and admission do not establish whole-patch cleanliness, an independent incident count, comparative eligibility or ranking. All 32 selected identities and behavioral coverage states are unchanged.",
   "rows": [
     {
       "analysis_cluster": "newsroom-nameplate-icon-sequence",
@@ -236,7 +237,10 @@
     },
     {
       "base": "c60cb4694a97b0f3151fdc48abfbea2e631ac1fb",
-      "case_admitted": false,
+      "case_admission_record": "../../../records/decision-2026-09-10-reviewer-development-case-admission.md",
+      "case_admission_scope": "development outcome and scorer validation",
+      "case_admitted": true,
+      "case_truth_id": "8baa0b6e6bb7b816d5a4251310a684efdda4c69fc6a21fb286fb2f52f6f4621c",
       "commit": "c1526c8552ccfa6236c01988aa141d0705eb5d7f",
       "receipt": "effort-control-development-receipt.json",
       "receipt_sha256": "1d9cd25aa1d2cf473268cb1e51aee9e6dc170f026cc62973bdd1513f3149a7f7",
@@ -379,7 +383,10 @@
     },
     {
       "base": "0a7aa730f164e98a705dfe27c5db2ec8f20cc8a5",
-      "case_admitted": false,
+      "case_admission_record": "../../../records/decision-2026-09-10-reviewer-development-case-admission.md",
+      "case_admission_scope": "development outcome and scorer validation",
+      "case_admitted": true,
+      "case_truth_id": "8f1da13387a0f234f963bdfc9b6de7a3ea2455c9fff8fb246d4b6a2668758240",
       "commit": "b9325d547fa8fc4f8df38ddef274ca9eae6a95f4",
       "identity_receipt": "scheduler-development-receipt.json",
       "identity_receipt_sha256": "a0afc1e3c5844d26289d19f37b650e0298daf59e445affd5dd19c50a18cb2a87",

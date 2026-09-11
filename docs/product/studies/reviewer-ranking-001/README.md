@@ -1,8 +1,16 @@
 # Reviewer ranking: development contract
 
-Status: instrument development. No frozen preregistration, admitted corpus,
-live reviewer measurements, or accepted ranking exists for this study.
+Status: instrument development. Two cases are admitted for development
+outcome and scorer validation. The comparative corpus and preregistration
+remain open. No eligible reviewer measurements or accepted ranking exist.
 Authority: [ADR 0066](../../../decisions/adr-0066-reviewer-ranking-outcome-selection.md).
+
+The [first case admission](../../../records/decision-2026-09-10-reviewer-development-case-admission.md)
+establishes one bounded scheduler defect and an effort-parser preservation
+control using registered evidence. Both are development-exposed; the control
+has no whole-patch clean label. The original 32-case sample remains unchanged.
+The development entries below describe evidence and limits at each step;
+this admission is the current disposition of those two cases.
 
 ## Purpose and outcome
 

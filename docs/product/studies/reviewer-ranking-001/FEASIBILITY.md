@@ -1,6 +1,13 @@
 # Fixed-sample behavioral coverage
 
-Thirteen of the 32 selected changes have bounded, change-relevant behavioral witnesses. Two further selected trees ran as bases for other witnesses; their own changes remain unverified. The remaining 17 changes have no established behavioral witness. No case is admitted for reviewer scoring.
+Thirteen of the 32 selected changes have bounded, change-relevant behavioral witnesses. Two further selected trees ran as bases for other witnesses; their own changes remain unverified. The remaining 17 changes have no established behavioral witness. Two cases are now admitted for development outcome and scorer validation; no comparative corpus is frozen.
+
+The [case admission decision](../../../records/decision-2026-09-10-reviewer-development-case-admission.md)
+admits the scheduler's accepted incomplete decision and the effort parser's
+bounded preservation properties. It preserves all 32 selected identities,
+the failed preparations and the cases' development exposure. Admission does
+not turn the effort change into a globally clean patch or either case into
+held-out evidence.
 
 This projection keeps every selected change in the denominator. A witness may cover only part of a change. Repeated executions, ancestor investigations and passing tests do not increase the count of independently covered changes.
 
