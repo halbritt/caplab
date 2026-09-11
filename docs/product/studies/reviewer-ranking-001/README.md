@@ -275,3 +275,12 @@ explicitly uncertain compatibility concern. Native title generation used Haiku
 and is retained in harness/cost accounting. This closes an administration gap
 and supplies natural scoring challenges; it establishes no paired ranking.
 Coverage and admission counts are unchanged.
+
+The [blinded evidence-assessor challenge](../../../records/verification-2026-09-10-reviewer-evidence-assessor.md)
+failed its frozen checks. The checker rejects valid exact-patch citations,
+and the whole-finding labels overlap when a supported or refuted premise has
+unresolved requirements or applicability. All eleven occurrences and reported
+stances/effects survive. The preserved failure motivates a
+[prospective proposition-based contract](EVIDENCE-ASSESSMENT-V2.md), which still
+requires implementation and validation. No label-agreement percentage is
+treated as semantic accuracy. Case coverage and admission remain unchanged.

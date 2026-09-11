@@ -1,0 +1,636 @@
+{
+  "administration": {
+    "captured_files": 74,
+    "elapsed_seconds": 366.924112184206,
+    "final_sha256": "faa3a023e80065dbd394a16352c3f18906b321cb2d3ecf1631eb250b2f9f8ae9",
+    "observed_effort": "max",
+    "observed_harness_version": "0.153.4",
+    "observed_model": "gpt-5.6-terra",
+    "opaque_fields_omitted": 38,
+    "recorded_commands": [
+      "/usr/bin/bash -lc \"date -u +%Y-%m-%dT%H:%M:%SZ && pwd && rg --files /task | sed -n '1,240p'\"",
+      "/usr/bin/bash -lc 'nl -ba assessment.schema.json && nl -ba reviews.json && nl -ba evidence/README.md'",
+      "/usr/bin/bash -lc \"wc -l source/change.diff source/current/newsroom/sources/reddit.py source/current/newsroom/cli.py source/current/newsroom/curation_trace.py source/current/newsroom/curate.py source/current/README.md source/current/systemd/ai-newsroom-reddit-harvest.service source/current/systemd/README.md && nl -ba source/change.diff | sed -n '1,260p'\"",
+      "/usr/bin/bash -lc 'rg -n -C 4 \"reddit|curation_trace|_post_chat_network|HTTPError|ai-newsroom-reddit-harvest|Restart=|retention|purge\" source/change.diff'",
+      "/usr/bin/bash -lc 'for f in evidence/newsroom-findings-witness-1/probe.py evidence/newsroom-findings-witness-1/base-listing-1-capture/observation.json evidence/newsroom-findings-witness-1/base-listing-2-capture/observation.json evidence/newsroom-findings-witness-1/change-pool-1-capture/observation.json evidence/newsroom-findings-witness-1/change-pool-2-capture/observation.json evidence/newsroom-findings-witness-1/change-cli-lock-1-capture/observation.json evidence/newsroom-findings-witness-1/change-cli-lock-2-capture/observation.json; do echo \"### $f\"; nl -ba \"$f\"; done'",
+      "/usr/bin/bash -lc \"nl -ba source/current/newsroom/sources/reddit.py | sed -n '360,510p'\nnl -ba source/current/newsroom/sources/reddit_state.py | sed -n '1,260p'\nnl -ba source/current/newsroom/cli.py | sed -n '405,445p'\nnl -ba source/current/config/sources.toml | sed -n '86,114p'\nnl -ba source/current/README.md | sed -n '160,235p'\"",
+      "/usr/bin/bash -lc \"nl -ba source/current/newsroom/curation_trace.py\nrg -n \\\"curation|capture\\\\(\\\" source/current/newsroom source/current/tests source/current/README.md | sed -n '1,220p'\nnl -ba source/current/newsroom/curate.py | sed -n '100,225p'\nnl -ba source/base/newsroom/curate.py | sed -n '110,150p'\"",
+      "/usr/bin/bash -lc \"nl -ba evidence/upstream/manifest.json\nrg -n -C 8 \\\"Type=oneshot|SERVICE_ONESHOT|restart|Restart=\\\" evidence/upstream/v243/src/core/service.c evidence/upstream/v244/src/core/service.c evidence/upstream/v244/man/systemd.service.xml | sed -n '1,500p'\nnl -ba source/current/systemd/ai-newsroom-reddit-harvest.service\nnl -ba source/current/systemd/README.md | sed -n '35,105p'\"",
+      "/usr/bin/bash -lc \"nl -ba evidence/upstream/v244/src/core/service.c | sed -n '540,620p'\nnl -ba evidence/upstream/v243/src/core/service.c | sed -n '550,595p'\nnl -ba evidence/upstream/v244/man/systemd.service.xml | sed -n '685,780p'\nnl -ba evidence/upstream/v244/man/systemd.service.xml | sed -n '1318,1338p'\"",
+      "/usr/bin/bash -lc \"nl -ba evidence/partial-refresh-witness-1/probe.py | sed -n '1,330p'\nfor f in evidence/partial-refresh-witness-1/*-capture/observation.json; do echo \\\"### \"'$f\"; nl -ba \"$f\"; done'",
+      "/usr/bin/bash -lc 'for f in evidence/partial-refresh-witness-1/mixed-rss-failure-1-capture/requests.json evidence/partial-refresh-witness-1/mixed-rss-failure-1-capture/harvest.stderr evidence/partial-refresh-witness-1/mixed-empty-rss-failure-1-capture/requests.json evidence/partial-refresh-witness-1/mixed-empty-rss-failure-1-capture/harvest.stderr evidence/partial-refresh-witness-1/total-rss-failure-1-capture/harvest.stderr; do echo \"### $f\"; nl -ba \"$f\"; done\nnl -ba source/current/newsroom/sources/reddit.py | sed -n '\"'454,507p'\nnl -ba source/current/newsroom/cli.py | sed -n '412,432p'\"",
+      "/usr/bin/bash -lc \"rg -n \\\"_complete\\\\(|fallback|corrective|attempt\\\" source/current/newsroom/curate.py | sed -n '1,300p'\nnl -ba source/current/newsroom/curate.py | sed -n '680,940p'\nnl -ba source/current/newsroom/curate.py | sed -n '940,1050p'\nnl -ba source/current/newsroom/cli.py | sed -n '560,615p'\nnl -ba source/current/newsroom/curation_trace.py | sed -n '42,84p'\"",
+      "/usr/bin/bash -lc \"nl -ba source/current/newsroom/cli.py | sed -n '465,590p'\nnl -ba source/current/newsroom/cli.py | sed -n '585,640p'\nnl -ba source/current/newsroom/preview.py | sed -n '1,180p'\nnl -ba source/current/tests/test_curation_trace.py\"",
+      "/usr/bin/bash -lc \"nl -ba source/change.diff | sed -n '650,790p'\nnl -ba source/change.diff | sed -n '425,490p'\nnl -ba source/change.diff | sed -n '270,355p'\nnl -ba source/change.diff | sed -n '1068,1096p'\"",
+      "/usr/bin/bash -lc 'date -u +%Y-%m-%dT%H:%M:%SZ'",
+      "/usr/bin/bash -lc \"nl -ba source/current/newsroom/chat_worker.py\nnl -ba source/current/newsroom/curate.py | sed -n '115,205p'\nnl -ba source/base/newsroom/curate.py | sed -n '114,140p'\nnl -ba source/change.diff | sed -n '278,345p'\nnl -ba evidence/README.md | sed -n '1,8p'\""
+    ],
+    "returncode": 0,
+    "termination": "exit",
+    "thread_id": "01a08dec-5937-7452-b1c6-67390d8b3bb7",
+    "usage": {
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 990208,
+      "input_tokens": 1111090,
+      "output_tokens": 18873,
+      "reasoning_output_tokens": 13368
+    }
+  },
+  "capture_entries": [
+    {
+      "bytes": 43,
+      "disposition": "retained",
+      "path": "codex/config.toml",
+      "sha256": "b5717d4727fc02cf15bc07c546604cbcaddba2d3005bcbb7cb0e53bc45ceef42"
+    },
+    {
+      "bytes": 32768,
+      "disposition": "retained",
+      "path": "codex/goals_1.sqlite",
+      "sha256": "333989d8b4f7679e6f7277046a6363557ffe92e78cefeb937db25844c1c04b47"
+    },
+    {
+      "bytes": 36,
+      "disposition": "retained",
+      "path": "codex/installation_id",
+      "sha256": "4fec1cf634e2cd63e76917e9848e17851ae247d0d65678efc34b2f6bcdf04b8a"
+    },
+    {
+      "bytes": 49152,
+      "disposition": "retained",
+      "path": "codex/logs_2.sqlite",
+      "sha256": "e8b61f515ba6e7d1448449fdbfb9db9f8455e42b8805a41b2563e0829a0b5c49"
+    },
+    {
+      "bytes": 40960,
+      "disposition": "retained",
+      "path": "codex/memories_1.sqlite",
+      "sha256": "1a6cb157fd3588e59438312f4a67280d0cd2bd83b12adc9c2f676a46b5bedcd6"
+    },
+    {
+      "bytes": 244856,
+      "disposition": "retained",
+      "path": "codex/models_cache.json",
+      "sha256": "e1636b5467a630eaa8dc192f36c2697e4cc28a23890028f08bda52476a994d46"
+    },
+    {
+      "bytes": 40960,
+      "disposition": "retained",
+      "path": "codex/queue_1.sqlite",
+      "sha256": "252a6e4f5c49970ae3549ee682e1cc7e298e7750a364f3342f17c76eedf20d45"
+    },
+    {
+      "bytes": 1619561,
+      "disposition": "projected-retained",
+      "path": "codex/sessions/2026/09/11/rollout-2026-09-11T00-44-31-01a08dec-5937-7452-b1c6-67390d8b3bb7.jsonl",
+      "projection_receipt": "projection-receipts/codex/sessions/2026/09/11/rollout-2026-09-11T00-44-31-01a08dec-5937-7452-b1c6-67390d8b3bb7.receipt.json",
+      "projection_receipt_sha256": "2d53b83be0e73462f70387bb8353d693f565af0d9b156d2df3b05fc845e3e98b",
+      "sha256": "a18d7f85693be9923708687a100156c60e3fec2f3f866984ce3b1c508c10bc71"
+    },
+    {
+      "bytes": 17,
+      "disposition": "retained",
+      "path": "codex/skills/.system/.codex-system-skills.marker",
+      "sha256": "af2d6853e26c9bf6a4ad2e9588586dba9f06fdc4b91864861b9866921abe98ac"
+    },
+    {
+      "bytes": 10776,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/LICENSE.txt",
+      "sha256": "4dd13869245e356246a5b770723247bbb80a8f07a181d1d3d873a1734297cdb9"
+    },
+    {
+      "bytes": 19201,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/SKILL.md",
+      "sha256": "681ddb4ad6d06a2acc78a3535b583f8d0c1ea800ecda3d56370d3310fd2cd4ba"
+    },
+    {
+      "bytes": 275,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/agents/openai.yaml",
+      "sha256": "9ca574af14580dc7a2a3dc37a1796d17f93cb8850be66501f0799ef8603e9dc0"
+    },
+    {
+      "bytes": 2889,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/assets/imagegen-small.svg",
+      "sha256": "cff5f34f57ff60b3ee92eaedd17b15e96dd4b9e776df3e78936c9e00d42be294"
+    },
+    {
+      "bytes": 1711,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/assets/imagegen.png",
+      "sha256": "95952f644064eb9e890f98d8db07216347186526e4c41ad66d3420629eb86e20"
+    },
+    {
+      "bytes": 9655,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/references/cli.md",
+      "sha256": "ecfc2e09261a0feb3482517a5fa0ff410cb7d1958e3cbd2ac6b61586f5b81405"
+    },
+    {
+      "bytes": 1779,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/references/codex-network.md",
+      "sha256": "c88298ca4481f6116a16fa7987434fc977f8b311c1bbc0c3d862ffd0c5981148"
+    },
+    {
+      "bytes": 6072,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/references/image-api.md",
+      "sha256": "dc975d7af8a4888967251a0276014b4a71ea30455294944b762256373ce3e569"
+    },
+    {
+      "bytes": 8282,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/references/prompting.md",
+      "sha256": "b210b051c775860267080941eba968212bf0ac7fce581d75c5dcc217d8293f8b"
+    },
+    {
+      "bytes": 17617,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/references/sample-prompts.md",
+      "sha256": "70474177d151855b175c6133de2aae1d90b7f146b0dab50ec830972c47d72183"
+    },
+    {
+      "bytes": 34667,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/scripts/image_gen.py",
+      "sha256": "b4345cf835e5b593b97df6bb2b70bda493b8a97eee4cabbc99b2fa57dba9b448"
+    },
+    {
+      "bytes": 13905,
+      "disposition": "retained",
+      "path": "codex/skills/.system/imagegen/scripts/remove_chroma_key.py",
+      "sha256": "a5893c4bd04b21abced33731ea89d2ac428e81d92a0368eb18ffbe4fda5253e2"
+    },
+    {
+      "bytes": 10776,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/LICENSE.txt",
+      "sha256": "4dd13869245e356246a5b770723247bbb80a8f07a181d1d3d873a1734297cdb9"
+    },
+    {
+      "bytes": 5446,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/SKILL.md",
+      "sha256": "7cb8fa1b2a0c635b5c61ffe1da7b8594a7ea0fce5b71e8d523e2025d88b2a05e"
+    },
+    {
+      "bytes": 370,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/agents/openai.yaml",
+      "sha256": "44b9efac6be1bae32d869aa2942fecbe4dcae82682ee03e4120f2f9b7d4658ec"
+    },
+    {
+      "bytes": 1091,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/assets/openai-small.svg",
+      "sha256": "45be1f0757eb18889eefb1e7db79668ef46a275dc4e0e78e8df5ebd7f6cdeadc"
+    },
+    {
+      "bytes": 1429,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/assets/openai.png",
+      "sha256": "156cc84d7332bfe95b310350bd470b690d22aa33d65340cc6c2e06022946194c"
+    },
+    {
+      "bytes": 7417,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/codex-self-knowledge.md",
+      "sha256": "8c8fb00e6e5cb1977924f5164684a6095427fa828bbc765225f17d9aeb79a912"
+    },
+    {
+      "bytes": 2094,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/latest-model.md",
+      "sha256": "f25e351e522dd6e30e82d482f31f44c992e794b11031cdcb6ac7c0e6b20c9d5d"
+    },
+    {
+      "bytes": 2318,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/mcp-diagnostics.md",
+      "sha256": "49bbd2f73df7bbd7f86c80425dea4da2d301c22046080399a36bfc0ca49509e9"
+    },
+    {
+      "bytes": 5054,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/model-migration.md",
+      "sha256": "5f20c38fbbb10319767b216d91ba74bae49c68fc1bfd6d1abd7c9b4cc9cb9ab0"
+    },
+    {
+      "bytes": 1344,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/model-selection.md",
+      "sha256": "ba2d164abbca30435a460a0bc3a7d82398dce2bdf092705c98ba55b3f3af38a8"
+    },
+    {
+      "bytes": 3337,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/official-docs.md",
+      "sha256": "7962f2dce55089b93bde4115bb89fd42f20993c1597a2b13edd4956f463875b9"
+    },
+    {
+      "bytes": 15747,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/prompting-guide.md",
+      "sha256": "db913884cfe0fabf29bee1a139918f56e299decfa0a14d61c48596f23f76621d"
+    },
+    {
+      "bytes": 1050,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/upgrade-guide.md",
+      "sha256": "ed1b75a89b8ec4d67787774ef6c4e8b98eace16c63348f42e969e6ffa67cb656"
+    },
+    {
+      "bytes": 23093,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/references/upgrading-to-gpt-5p6-sol.md",
+      "sha256": "9a918a0c8dd051d574f2fd0309201afa8a9b9c08241c11ca1fb0ac2f4724e7ac"
+    },
+    {
+      "bytes": 16085,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/scripts/fetch-codex-manual.mjs",
+      "sha256": "f53eb6d2f286e9efcc397e8bee93a938e37296c90953e4e06e94899ef1b6c363"
+    },
+    {
+      "bytes": 1038,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/scripts/resolve-latest-model-info",
+      "sha256": "7354dbb030ca0736dd633a7ca1b930cf640abd40370725dea3a458cb51d49523"
+    },
+    {
+      "bytes": 3937,
+      "disposition": "retained",
+      "path": "codex/skills/.system/openai-docs/scripts/resolve-latest-model-info.cjs",
+      "sha256": "eeb1bb486018e16b37edfc06b1a37179dbc672982d501040d4f7142f29dd2e64"
+    },
+    {
+      "bytes": 11467,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/SKILL.md",
+      "sha256": "71b95b8219644f95d633721e7f7cd3c469edfc8fe50f8415d400dfb2d74bc7b9"
+    },
+    {
+      "bytes": 339,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/agents/openai.yaml",
+      "sha256": "fecaf35d692bd3d33d1a065648258d12e393afa9055d78adf6e57b42f4142f6d"
+    },
+    {
+      "bytes": 1319,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/assets/plugin-creator-small.svg",
+      "sha256": "6591bf8ea9bb9435890dbdea299e0d2bd05f3aa893a335d26e4c535e93c8e7fb"
+    },
+    {
+      "bytes": 1563,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/assets/plugin-creator.png",
+      "sha256": "a4024b0306ddb05847e1012879d37aaf1e658205199da596f5145ed7a88d9162"
+    },
+    {
+      "bytes": 6000,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/references/installing-and-updating.md",
+      "sha256": "91c4781d48568fcc708b45566b08fb610ad1c88672720ae512f9525a1cf9cb20"
+    },
+    {
+      "bytes": 9179,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/references/plugin-json-spec.md",
+      "sha256": "eeb640130f69636affaa299d4170d5a7ae6a0ff978296ddf75c409ce6dd87b91"
+    },
+    {
+      "bytes": 11731,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/scripts/create_basic_plugin.py",
+      "sha256": "272cb14e02ad7c76ac40777443c49cfecfa333ee28ab7f6214210b72c8fd02ae"
+    },
+    {
+      "bytes": 784,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/scripts/identifier_validation.py",
+      "sha256": "a6d51ce4a9a7e8f85626ff5808a467a67574e7f8cdf1167ffb467c5f67e57223"
+    },
+    {
+      "bytes": 1644,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/scripts/read_marketplace_name.py",
+      "sha256": "ba24e6d91eed6f778bde022a967be335c6253983b5ecd1c5e30c8483385887fd"
+    },
+    {
+      "bytes": 3045,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/scripts/update_plugin_cachebuster.py",
+      "sha256": "6a630dfbdc2bca6952580da9c2c7ece08030926819ccd81d9deb518c24c1b0ed"
+    },
+    {
+      "bytes": 21739,
+      "disposition": "retained",
+      "path": "codex/skills/.system/plugin-creator/scripts/validate_plugin.py",
+      "sha256": "f4eeadb733b28b0c3e714de263a76d6542866a672f3e99bdffcf4dbcdf85e944"
+    },
+    {
+      "bytes": 2661,
+      "disposition": "retained",
+      "path": "codex/skills/.system/review-agent/SKILL.md",
+      "sha256": "07079efd0dc76f05fade424e5dfb048dce1de2df7626e1a4f56292a4f3f92228"
+    },
+    {
+      "bytes": 252,
+      "disposition": "retained",
+      "path": "codex/skills/.system/review-agent/agents/openai.yaml",
+      "sha256": "4d867a46d15e36ac880176484aae160f59855340c6059b2ea6ab9fbc9af084de"
+    },
+    {
+      "bytes": 15311,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/SKILL.md",
+      "sha256": "6656e54755638e8efcf275a472b9672eaa8a9a1b9e59dc210e275b03b59e1e66"
+    },
+    {
+      "bytes": 183,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/agents/openai.yaml",
+      "sha256": "d07d21b93fcf3d4dc8d9a3399c05fc226a49a333a96d3e1c68b451b8dd9eade6"
+    },
+    {
+      "bytes": 1319,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/assets/skill-creator-small.svg",
+      "sha256": "6591bf8ea9bb9435890dbdea299e0d2bd05f3aa893a335d26e4c535e93c8e7fb"
+    },
+    {
+      "bytes": 1563,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/assets/skill-creator.png",
+      "sha256": "a4024b0306ddb05847e1012879d37aaf1e658205199da596f5145ed7a88d9162"
+    },
+    {
+      "bytes": 11358,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/license.txt",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "bytes": 2356,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/references/openai_yaml.md",
+      "sha256": "ffac39318e408108141d40f820968e59f70434a891694f9bf1d25be8237b150c"
+    },
+    {
+      "bytes": 6669,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/scripts/generate_openai_yaml.py",
+      "sha256": "816df12072d74faf924d802a6599a139997e1441e90bfe4869ec304f2e5e2851"
+    },
+    {
+      "bytes": 10314,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/scripts/init_skill.py",
+      "sha256": "bf0656a5f9d8d8cdecf0245eaf27e1df8e0e9b6d40ccdda814eb8e3d5f6992c8"
+    },
+    {
+      "bytes": 4249,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-creator/scripts/quick_validate.py",
+      "sha256": "ee6dba90f44d37171c5a6edb8095979c54919ff6822c1a907afca2e78c48738c"
+    },
+    {
+      "bytes": 11358,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-installer/LICENSE.txt",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "bytes": 3367,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-installer/SKILL.md",
+      "sha256": "d68b77e5bbb34dedab89d134da52855f140fc4b4299b80104f534e3b9e98f8ee"
+    },
+    {
+      "bytes": 221,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-installer/agents/openai.yaml",
+      "sha256": "5ce223d8b1070b82c42298538f1b8d376f788eb9e7a42a987e8c094070d73f0e"
+    },
+    {
+      "bytes": 923,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-installer/assets/skill-installer-small.svg",
+      "sha256": "3928703ff00dc1a681e7a22401843b7edcbd4b2051651ce4c43b75f7e140504e"
+    },
+    {
+      "bytes": 1086,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-installer/assets/skill-installer.png",
+      "sha256": "d0a230b1a79b71b858b7c215a0fbb0768d6459c14ea4ef80c61592629bf0e605"
+    },
+    {
+      "bytes": 659,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-installer/scripts/github_utils.py",
+      "sha256": "61c1bbe2ae217433b4b6f9f09f21aca4df52c12598068343ade719f706e4859b"
+    },
+    {
+      "bytes": 11917,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-installer/scripts/install-skill-from-github.py",
+      "sha256": "38f311b75664bb063808f982c600271ebc4b560830f491705190f88a94e3e781"
+    },
+    {
+      "bytes": 2948,
+      "disposition": "retained",
+      "path": "codex/skills/.system/skill-installer/scripts/list-skills.py",
+      "sha256": "9d6dfb2abf3afeee7f027a89fb1626b918a973da18f4eb6c25681286301beb41"
+    },
+    {
+      "bytes": 258048,
+      "disposition": "retained",
+      "path": "codex/state_5.sqlite",
+      "sha256": "befe70b80b58194b24c8aa991fde9dbff20fd91e09adc8c843d0243bc5992690"
+    },
+    {
+      "bytes": 0,
+      "disposition": "retained",
+      "path": "codex/thread-writer-locks/.coordination.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 540672,
+      "disposition": "retained",
+      "path": "codex/thread_history_1.sqlite",
+      "sha256": "ecf0f25904452716d30d79e72ad862b277a08e74f52f30e29d3e222240184ecd"
+    },
+    {
+      "bytes": 14332,
+      "disposition": "retained",
+      "path": "final-message.txt",
+      "sha256": "faa3a023e80065dbd394a16352c3f18906b321cb2d3ecf1631eb250b2f9f8ae9"
+    },
+    {
+      "bytes": 39,
+      "disposition": "retained",
+      "path": "stderr",
+      "sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721"
+    },
+    {
+      "bytes": 402149,
+      "disposition": "retained",
+      "path": "stdout",
+      "sha256": "c2f88f570408e5bca80a8b8fc511cdb52a25727711a1fea4b0214353b0ddd5cc"
+    }
+  ],
+  "copy_provenance": "copy-provenance.json",
+  "counts": {
+    "documents": 7,
+    "finding_occurrences": 11,
+    "flat_label_matches": 8,
+    "natural_occurrences": 5,
+    "required_path_failures": 6,
+    "rows_matching_all_frozen_checks": 3,
+    "source_changes": 1,
+    "synthetic_occurrences": 6
+  },
+  "coverage": {
+    "admitted_cases": 0,
+    "counts": {
+      "base-tree-only": 3,
+      "bounded-change-behavior": 11,
+      "pending-change-behavior": 18
+    },
+    "source_sample_file_sha256": "8960d3c8c46d46eb8dbf15d6b0b9b30c7407409cc7a4fa6fa70d9d9d378c260f"
+  },
+  "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/evidence-assessor-1",
+  "fixture_inventory": "fixture-plan.json",
+  "interpretation": [
+    "One exposed change and authored variants cannot establish general semantic validity.",
+    "This inspection preserves the frozen failure; it is not a relabeling or replacement verifier.",
+    "Correct explanations and locators do not accept a scorer or create reviewer performance measurements."
+  ],
+  "outcome": "failed-frozen-challenge",
+  "ranking_eligible": false,
+  "repository_check": {
+    "command": "make check",
+    "elapsed_seconds": 204.247,
+    "log_sha256": "b0707264061242dbd293cf418d6d2bfcafd839afa7bfbb93907e8881b96f9f27",
+    "outcome": "passed",
+    "skipped": 7,
+    "tests": 1566
+  },
+  "schema": "caplab.evidence-assessor-development-receipt/v1",
+  "scorer_accepted": false,
+  "semantic_audit_sha256": "a8beef2ffaee1e9225a4db96000857b570f41075959fd272ccdf9a6c9ebad946",
+  "semantic_support_verified": false,
+  "supporting_files": [
+    {
+      "bytes": 16642,
+      "path": "completion.json",
+      "sha256": "5efd1780112cfd9994799005939638d13d433d25f0ed7dc553523ff0c1402689"
+    },
+    {
+      "bytes": 30367,
+      "path": "copy-provenance.json",
+      "sha256": "49f8a8427fd45f7919f56292a40b85132cda79d53ff0168ca89bc9e41636cc44"
+    },
+    {
+      "bytes": 5789,
+      "path": "expected.json",
+      "sha256": "c58c3e7c612f23a9759344ce5ff706a98250b851771d143b9e2f29b6b35e8786"
+    },
+    {
+      "bytes": 15543,
+      "path": "fixture-generator.py",
+      "sha256": "f907ed765ad761a289c8165ef9fea69406ac8d4347477614122f3c66a57327cd"
+    },
+    {
+      "bytes": 48208,
+      "path": "fixture-plan.json",
+      "sha256": "a610ae6c4cc0266a358b535ad69c987c3b098178837d08fe0449fd3dc6fe508b"
+    },
+    {
+      "bytes": 5307,
+      "path": "launch.json",
+      "sha256": "29d68f1e32053b1a0cac6be5c279d084792675e737193658fc5e21e0f065b98d"
+    },
+    {
+      "bytes": 114804,
+      "path": "plan.json",
+      "sha256": "8b40df76d2b940ab2b8ebdd45ef93a7b45e582c4cd2327fa857541a5ff46ed44"
+    },
+    {
+      "bytes": 56,
+      "path": "process.json",
+      "sha256": "b1c2339ea88be6460e99626ff2874094a51cbd6926b334acd18b768a4ebc2d21"
+    },
+    {
+      "bytes": 3812,
+      "path": "projection.py",
+      "sha256": "46c364d41b462a9085a927a1ca37b78d9a08e48c55be2be2654002ba8113b86f"
+    },
+    {
+      "bytes": 3312,
+      "path": "prompt.txt",
+      "sha256": "db74e8f04653d75b7545caf63b881c02608329cf74f9ba4f069918ea2ccfbb62"
+    },
+    {
+      "bytes": 277950,
+      "path": "repository-check.log",
+      "sha256": "b0707264061242dbd293cf418d6d2bfcafd839afa7bfbb93907e8881b96f9f27"
+    },
+    {
+      "bytes": 12593,
+      "path": "runner.py",
+      "sha256": "a16f2866233d1b4aecc511d497aa0ad791391733f170cbfe497d1ca5f3c2885d"
+    },
+    {
+      "bytes": 30458,
+      "path": "semantic-audit.json",
+      "sha256": "a8beef2ffaee1e9225a4db96000857b570f41075959fd272ccdf9a6c9ebad946"
+    },
+    {
+      "bytes": 357649,
+      "path": "source-preparation.json",
+      "sha256": "0a5f444de83daac52326e778a5c4977997a01011b242edcfa0cedf1d464c402c"
+    },
+    {
+      "bytes": 167,
+      "path": "verification-method.json",
+      "sha256": "a643afba0bf3e0410e02f4b37d94b1fad17185933eb8df5beb055467edfd4f47"
+    },
+    {
+      "bytes": 36734,
+      "path": "verification.json",
+      "sha256": "205211629bbcc4312ff818de46b53d2b2ccfe972a194d5cf9ee594ff25022bc2"
+    },
+    {
+      "bytes": 4867,
+      "path": "verifier.py",
+      "sha256": "0d9eba9b85a1561158086e75db3d6f762c5c1a925729100268ae13e1d15e3e1b"
+    },
+    {
+      "bytes": 65,
+      "path": "version-preflight.json",
+      "sha256": "472b2102874807ee8cc927668da6825b6e3db9ec0cb0bc29f1713df1f8c0bd6a"
+    },
+    {
+      "bytes": 12169,
+      "path": "source-reports/0.json",
+      "sha256": "40fc1ea84cc5e78a7c4bc056179be3ef83f63f93e836d65fcf63bcdf133dfd45"
+    },
+    {
+      "bytes": 2251,
+      "path": "source-reports/1.json",
+      "sha256": "ad47259eb3ab98374b03ac07635dfa8f59ffa62d99716441fa4dd755dcd92e84"
+    },
+    {
+      "bytes": 7404,
+      "path": "projection-receipts/codex/sessions/2026/09/11/rollout-2026-09-11T00-44-31-01a08dec-5937-7452-b1c6-67390d8b3bb7.receipt.json",
+      "sha256": "2d53b83be0e73462f70387bb8353d693f565af0d9b156d2df3b05fc845e3e98b"
+    }
+  ],
+  "verification_sha256": "205211629bbcc4312ff818de46b53d2b2ccfe972a194d5cf9ee594ff25022bc2"
+}
