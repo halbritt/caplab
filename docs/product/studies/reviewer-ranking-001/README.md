@@ -319,8 +319,9 @@ Its [implementation verification](../../../records/verification-2026-09-10-revie
 separates outcome-changing assessment errors from incidental annotation
 errors. The calculations preserve duplicates, withdrawals and new-finding
 uncertainty; they do not verify the supplied judgments or establish ranking
-eligibility. Natural-report warrant validation, completion and advisory-burden
-policy, case admission and comparative study design remain required.
+eligibility. Natural-report warrant validation, authenticated completion and
+advisory-basis validation, case admission and comparative study design remain
+required.
 
 The [natural outcome-warrant challenge](../../../records/verification-2026-09-10-reviewer-natural-warrants.md)
 applies the credit policy to five natural findings and two authored controls.
@@ -351,3 +352,14 @@ lacks its own unexpected-endpoint stop; both preparation departures are
 recorded. These named control properties add one bounded change, with no
 editorial-quality claim or case admission. Coverage is thirteen bounded, two
 base-only and seventeen pending changes.
+
+The [completion and advisory policy](COMPLETION-AND-ADVISORIES.md) and its
+[implementation check](../../../records/verification-2026-09-10-reviewer-assignment-outcomes.md)
+retain every declared assignment, reject conflicting case truth across
+bindings, and distinguish completed, partial, unavailable and unobserved
+reviews. A completed review awaiting assessment keeps known completion and
+unknown quality. Separate advisory-basis warrants prevent refuted or unresolved
+nonblocking findings from disappearing behind a zero false-blocker count.
+Finding occurrences remain descriptive, with no claim to measure human effort.
+This is prospective accounting and arithmetic; native authenticity, natural
+advisory judgments and comparative performance remain unverified.

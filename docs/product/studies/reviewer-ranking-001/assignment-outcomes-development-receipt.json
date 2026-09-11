@@ -1,0 +1,156 @@
+{
+  "artifacts": [
+    {
+      "bytes": 308,
+      "path": "check-summary.json",
+      "sha256": "74e8dd2b84cab52f809767e0a912d4707f388e44a149ad443dca9d40aa9cf3eb"
+    },
+    {
+      "bytes": 282014,
+      "path": "checks/caplab-assignment-outcomes-check-2.log",
+      "sha256": "41360fd9e920c955127964d6e89e28ea08d5d08afce07be7e5c77530cfaf14fc"
+    },
+    {
+      "bytes": 281827,
+      "path": "checks/caplab-assignment-outcomes-check.log",
+      "sha256": "6bb76a3bc85493740efcb6709bf280d0beb5bc827250d1985fbb3189d1d85610"
+    },
+    {
+      "bytes": 3184,
+      "path": "checks/caplab-assignment-outcomes-focused-2.log",
+      "sha256": "ff1e48023204bf5d4f8ee4dea6bdc40719935e0084f082546d3aef11d7d317b2"
+    },
+    {
+      "bytes": 2991,
+      "path": "checks/caplab-assignment-outcomes-focused.log",
+      "sha256": "5257a181ccfefc724d348976d602578b2c901ed0318267a9bf88f883ff6280ce"
+    },
+    {
+      "bytes": 98,
+      "path": "checks/caplab-assignment-outcomes-green-1.log",
+      "sha256": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5"
+    },
+    {
+      "bytes": 100,
+      "path": "checks/caplab-assignment-outcomes-green-2.log",
+      "sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+    },
+    {
+      "bytes": 101,
+      "path": "checks/caplab-assignment-outcomes-green-3.log",
+      "sha256": "199ba496f288116d36c62f29346d4fbf0bd75745a1c893abfcbdaa4c6d5b1033"
+    },
+    {
+      "bytes": 860,
+      "path": "checks/caplab-assignment-outcomes-red-1.log",
+      "sha256": "4c42ce7e3ac92596925bc32db1ac6fed1639185ac515c4850571a7ec49ba9c0e"
+    },
+    {
+      "bytes": 1023,
+      "path": "checks/caplab-assignment-outcomes-red-2.log",
+      "sha256": "d3ae702a8d8d4a17a563738411c92b0564d5a34b7176f03bff5ff00f2bcca2fd"
+    },
+    {
+      "bytes": 7033,
+      "path": "checks/caplab-assignment-outcomes-red-3.log",
+      "sha256": "5020241c7ec33699605d1814beb883f9df03d9fcba2924e8773b658358f9be31"
+    },
+    {
+      "bytes": 1266,
+      "path": "checks/caplab-assignment-outcomes-red-4.log",
+      "sha256": "627490f2659e7e565868eef941dcbca81aa5f65339b2b3331d8bc268bbf30285"
+    },
+    {
+      "bytes": 44051,
+      "path": "constructed-inputs.json",
+      "sha256": "1d3f42e0c82555c2eeae6c925dbd5e44ffee000d7ee275fc9f4b1fc184fbee3d"
+    },
+    {
+      "bytes": 87365,
+      "path": "constructed-projection.json",
+      "sha256": "1abfa14adc506acb8a5739cc3e9b327339245b5059b87af30cd2cb9e464db2bd"
+    },
+    {
+      "bytes": 4681,
+      "path": "copy-provenance.json",
+      "sha256": "2ca069b4f5877b43ae53ca855c940d9f6e3193a94db0e7a8fb70a645c909f74a"
+    },
+    {
+      "bytes": 1178,
+      "path": "doctrine-consumption.json",
+      "sha256": "de7003c65bc967bebff97714f43af0d79c9c2860f476e7cfe28026c9ad4a0a52"
+    },
+    {
+      "bytes": 7429,
+      "path": "first-policy/COMPLETION-AND-ADVISORIES.md",
+      "sha256": "8b0395533ddfa7faeb1a94571f1b895727ad749f7a144f1accefd684951f08ba"
+    },
+    {
+      "bytes": 759,
+      "path": "first-policy/checkpoint.json",
+      "sha256": "e9569b81268c3e9a498539cd7e10c2a54a5deb107b8deb846112905c0f0c13da"
+    },
+    {
+      "bytes": 6688,
+      "path": "first-policy/reviewer_assignment_outcomes.py",
+      "sha256": "180ca17693cc75b15491803e0a39f861a3e7bcc3953c16d1ec7ea928bf97cb39"
+    },
+    {
+      "bytes": 10381,
+      "path": "first-policy/test_reviewer_assignment_outcomes.py",
+      "sha256": "bc0d10793fe12faeda391ecbf269937f34bc6d5eda1fd7a553fcc8adbc9128fb"
+    },
+    {
+      "bytes": 7474,
+      "path": "implementation.py",
+      "sha256": "1381d6745ee65b69cd1beeeebb2ac31702c449269ce881a2796c1d3c8e2740f6"
+    },
+    {
+      "bytes": 8935,
+      "path": "policy.md",
+      "sha256": "2b4b99f313093d74d4645e60161cf99c1784f981dd0c4cb8886d407132aebbcb"
+    },
+    {
+      "bytes": 4556,
+      "path": "receipt-method.py",
+      "sha256": "419f4dc72ecb62d461e78be56ee6ed41903d07c78a7c43c88bbe48e7d83b7fce"
+    },
+    {
+      "bytes": 10985,
+      "path": "tests.py",
+      "sha256": "ecadffd0e3742deb90189da364a2a63972a736859bc21c3fdb1a35d2f065a9c1"
+    },
+    {
+      "bytes": 6006,
+      "path": "verification-record.md",
+      "sha256": "48274effe5777c8a3d1ac917cd66b745f71a6ec2bf0be8ebbb639f23ca433a32"
+    }
+  ],
+  "case_admitted": false,
+  "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/assignment-outcomes-1",
+  "focused_new_tests": 8,
+  "full_suite_skipped": 7,
+  "full_suite_tests": 1586,
+  "implementation_sha256": "1381d6745ee65b69cd1beeeebb2ac31702c449269ce881a2796c1d3c8e2740f6",
+  "limits": [
+    "Constructed accounting and arithmetic examples, not native reviewer performance.",
+    "Completion evidence and semantic warrants are supplied, not authenticated or established here.",
+    "No comparison aggregation, statistical inference or ranking policy is implemented."
+  ],
+  "model_calls": 0,
+  "policy_sha256": "2b4b99f313093d74d4645e60161cf99c1784f981dd0c4cb8886d407132aebbcb",
+  "prior_policy_preserved": true,
+  "ranking_eligible": false,
+  "schema": "caplab.assignment-outcomes-development-receipt/v1",
+  "support": [
+    {
+      "path": "/home/halbritt/git/caplab/scripts/reviewer_credit_policy.py",
+      "sha256": "859c32cc0d379e52d94f7ff4903015315254070b665313bd35acc1810b44d1fd"
+    },
+    {
+      "path": "/home/halbritt/git/caplab/src/caplab/native_review_report.py",
+      "sha256": "17174134b05d1cc1dd8444699101cb0b5c3fba4dca2f626dc2205466d10b92e5"
+    }
+  ],
+  "tests_sha256": "ecadffd0e3742deb90189da364a2a63972a736859bc21c3fdb1a35d2f065a9c1"
+}
