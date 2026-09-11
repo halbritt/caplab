@@ -1,0 +1,159 @@
+{
+  "artifacts": [
+    {
+      "bytes": 4529,
+      "path": "authorization.md",
+      "sha256": "3d0f7882d167050ffc9fed35804c17428b2e9c0aa26efbd14143af33182f2a20"
+    },
+    {
+      "bytes": 472461,
+      "path": "fixture-plan.json",
+      "sha256": "aae43b5aca34560ddb7ee745dbc3e17b2816c85af0243bc0c84054e71e6b78ac"
+    },
+    {
+      "bytes": 712698,
+      "path": "source-provenance.json",
+      "sha256": "fbc0c9b011f2c58c66c41b067bb42aa0564bdc53e941fb83c9e5e130adfd9072"
+    },
+    {
+      "bytes": 2358849,
+      "path": "tool-preparation.json",
+      "sha256": "d30940b44430e8fc97d71b475629160eb7734ffcbf74a7defd5b51af9928ea6f"
+    },
+    {
+      "bytes": 496,
+      "path": "expected.json",
+      "sha256": "3c059b736fbb598cd45c0c9736c155f4f3e42029725b13d89a4861e35e72bb23"
+    },
+    {
+      "bytes": 2297,
+      "path": "prompt.txt",
+      "sha256": "078353a5dd756a9a7d0e077906bca3f02c2ee4762124e5151a0b54c89503fc53"
+    },
+    {
+      "bytes": 5121,
+      "path": "native-invocation-preflight.json",
+      "sha256": "6a99e90154c1ecbe2cd4e1bfe0a88f76d3f602d5f9a7d3a63cc6bf1cfefd8f74"
+    },
+    {
+      "bytes": 3893,
+      "path": "tool-preflight-launch.json",
+      "sha256": "f14c7519eb1487fd18f345e5984e70bb6d98b3aaaa269cbcc2ab3b453a7d7658"
+    },
+    {
+      "bytes": 90,
+      "path": "tool-preflight-completion.json",
+      "sha256": "4f12b86e00674f8f85064423f8f55fbaeff44aabb44ad4d780f36797e14e1523"
+    },
+    {
+      "bytes": 115349,
+      "path": "plan.json",
+      "sha256": "8be837b4d7401ca8d27783ce599c930ced365fb602b02c1bdcfb59636665e30f"
+    },
+    {
+      "bytes": 7491,
+      "path": "launch.json",
+      "sha256": "6e1687c6fd25f845ca1446a6189992bc5bcdc65dd7dd74068a2853705384b2a3"
+    },
+    {
+      "bytes": 19397,
+      "path": "completion.json",
+      "sha256": "4a6d5b4ce9a27c073027c3c8e7332b1027c597c5cafcb6bf0007ee892c93ca2d"
+    },
+    {
+      "bytes": 864,
+      "path": "verification-plan.json",
+      "sha256": "bf9417bb19a01e64c6484c07945a2aa163011c457c5f9116ab4e0ab81745df0c"
+    },
+    {
+      "bytes": 22769,
+      "path": "verification.json",
+      "sha256": "3b5aa427bcab9c56a06aeba5b957ad12188aa3199922f4ab2ca4c669395fa067"
+    },
+    {
+      "bytes": 3944,
+      "path": "verify-review.py",
+      "sha256": "c963c72cd5b80d4ff1db45e0d718d2f9c43575bf14e4d77d028790f1c13f0138"
+    },
+    {
+      "bytes": 5560,
+      "path": "primary-inspection.md",
+      "sha256": "0506daf6e2365f28d88a38abcf8364c5661deb0ec06b68573822267ecf8c9013"
+    },
+    {
+      "bytes": 27125,
+      "path": "development-outcomes.json",
+      "sha256": "e4c91b4d881ca9bd4344a077a412ecae3963ce50433073e9de058c5fcdc767cf"
+    },
+    {
+      "bytes": 4660,
+      "path": "project-outcomes.py",
+      "sha256": "cda804fa422a89c2e41c0a22082beff7835d4b2869343a2e9a66cd2216a1eb9f"
+    },
+    {
+      "bytes": 510334,
+      "path": "private-artifact-manifest.json",
+      "sha256": "f99b2f88e2ad383bcb0193a7e1133be55178758ff99b1230d2fcb4b5e94c1aa3"
+    },
+    {
+      "bytes": 7024,
+      "path": "verification-record.md",
+      "sha256": "80059db00dfcbd228e7015ac1db2f485585b52f2abea8f4a73a38428fb9696f3"
+    },
+    {
+      "bytes": 4263,
+      "path": "executor.diff",
+      "sha256": "2dbb994e8d9fb385ac413fffffab754e268e4b560504bb80d10da3179f8cf2f3"
+    },
+    {
+      "bytes": 368,
+      "path": "wrapper-correction.json",
+      "sha256": "0fc5f690c719c50d4c52fa6c228313ed5861f73ac58300b2ba4c370589bc3bf0"
+    }
+  ],
+  "authored_findings": 0,
+  "base": "0a7aa730f164e98a705dfe27c5db2ec8f20cc8a5",
+  "case_id": "striatum-scheduler-b9325d5",
+  "case_truth_id": "8f1da13387a0f234f963bdfc9b6de7a3ea2455c9fff8fb246d4b6a2668758240",
+  "change": "b9325d547fa8fc4f8df38ddef274ca9eae6a95f4",
+  "comparative_measurements_added": 0,
+  "completion_verified": true,
+  "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/scheduler-natural-review-1",
+  "fixture_sha256": "aae43b5aca34560ddb7ee745dbc3e17b2816c85af0243bc0c84054e71e6b78ac",
+  "known_answers_withheld": true,
+  "limitations": [
+    "One development-exposed case and one native binding; no comparative or held-out inference.",
+    "Source text is original, but the compiled target-hash executable and CLAUDE.md symlink were omitted explicitly.",
+    "Report completeness and source-locator checks are separate from truth and blocking-rationale judgments.",
+    "Native token counters are not a provider invoice."
+  ],
+  "native": {
+    "captured_files": 86,
+    "elapsed_seconds": 569.0162714000326,
+    "final_sha256": "4fa7a73703f5cd88ea9bce10b6746cb3a06bc575d8afd98a8bdfcde9b0187fe5",
+    "observed_effort": "max",
+    "observed_harness_version": "0.153.4",
+    "observed_model": "gpt-5.6-terra",
+    "opaque_fields_omitted": 58,
+    "recorded_command_count": 60,
+    "session_event_types": [
+      "item_completed",
+      "task_complete",
+      "task_started",
+      "token_count"
+    ],
+    "thread_id": "01a08f0a-73a4-73d2-b683-1cf592737c66",
+    "usage": {
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 2712576,
+      "input_tokens": 2857962,
+      "output_tokens": 23410,
+      "reasoning_output_tokens": 15531
+    }
+  },
+  "natural_findings": 3,
+  "private_artifact_count": 2685,
+  "ranking_eligible": false,
+  "schema": "caplab.scheduler-natural-review-development-receipt/v1",
+  "scorer_accepted": false
+}

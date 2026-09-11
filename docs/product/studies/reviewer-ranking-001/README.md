@@ -17,8 +17,13 @@ completed eleven authored findings on those two cases. The native scorer
 repeated a pre-append/post-append citation error and remains unaccepted.
 Separate primary-agent inspection supports bounded development projections
 using original evidence; this adds no natural reviewer or ranking observations.
-The next step is natural review output on these cases with the answer basis
-withheld, alongside broader case coverage and a frozen held-out comparison.
+The [natural scheduler review](../../../records/verification-2026-09-10-reviewer-scheduler-natural-review.md)
+then caught the admitted defect with the answer withheld and reported two new
+concerns. The new claims remain unresolved pending independent investigation;
+incorrect-blocker and erroneous-advisory bounds remain open. Next, investigate
+those claims and review the effort control, alongside broader case coverage
+and a frozen held-out comparison. This development observation adds no
+eligible comparative measurement.
 
 ## Purpose and outcome
 
