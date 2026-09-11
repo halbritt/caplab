@@ -1,0 +1,539 @@
+{
+  "coverage": {
+    "admitted_cases": 0,
+    "counts": {
+      "base-tree-only": 3,
+      "bounded-change-behavior": 11,
+      "pending-change-behavior": 18
+    },
+    "source_sample_file_sha256": "8960d3c8c46d46eb8dbf15d6b0b9b30c7407409cc7a4fa6fa70d9d9d378c260f"
+  },
+  "custody_root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/requirement-provenance-1",
+  "limits": [
+    "Original source statements and current interpretations are distinct.",
+    "Historical test source and reported successes are not new test executions.",
+    "The failed assessor outputs and their frozen expectations are unchanged.",
+    "Publisher exclusion does not establish every possible concurrency policy; global HTML pacing remains unresolved."
+  ],
+  "model_calls": 0,
+  "ranking_eligible": false,
+  "requirement_basis": {
+    "authority": "Primary agent under ADR 0026; prospective development interpretations of original requirements, made after seeing prior outputs",
+    "path": "docs/product/studies/reviewer-ranking-001/REQUIREMENT-BASIS.md",
+    "sha256": "a9d82e47370ee2e0bf57314710df771bed410edebf09e15639908cc0a5413c98",
+    "source_project_requirements_changed": false
+  },
+  "schema": "caplab.requirement-provenance-receipt/v1",
+  "scorer_accepted": false,
+  "semantic_accuracy_established": false,
+  "source_commits": [
+    {
+      "commit": "31725352516d10cc859c1435f3839025087e8fc7",
+      "committed_at": "2026-09-08T02:56:22-07:00",
+      "parents": [
+        "9c9b6e68ca288d1ab9258f8c4d00662bb18ed4e3"
+      ],
+      "tree": "805823f89a7f673c2d3009238523a0c44f681447"
+    },
+    {
+      "commit": "1df624ef0e8dd44ba985219cf3beaed23a1340e1",
+      "committed_at": "2026-09-08T04:19:13-07:00",
+      "parents": [
+        "e4d5293910614ead24a9f7599f7d12050d5c64cf"
+      ],
+      "tree": "88b6ddb4c501ce70bab9f8ac32c48e533c9b2257"
+    },
+    {
+      "commit": "544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f",
+      "committed_at": "2026-09-09T09:49:34-07:00",
+      "parents": [
+        "1bfe5a656bcb2c663891afd5f980211a3ef144a8"
+      ],
+      "tree": "ffd0b76ba0043bb2644ebc2e6e0e6ef9de85ffd7"
+    }
+  ],
+  "source_execution_performed": false,
+  "source_files": [
+    {
+      "bytes": 7862,
+      "commit": "31725352516d10cc859c1435f3839025087e8fc7",
+      "git_blob": "7485e6476bae466636d35f370c2dea4bdaaf3766",
+      "mode": "100644",
+      "path": "source/31725352516d10cc859c1435f3839025087e8fc7/README.md",
+      "repository": "/home/halbritt/git/ai-newsroom",
+      "sha256": "bde740eec7de77372e3c3f13a055fc1dd1414d999d2bb65d99bdf18d5a694244",
+      "source_path": "README.md"
+    },
+    {
+      "bytes": 4517,
+      "commit": "31725352516d10cc859c1435f3839025087e8fc7",
+      "git_blob": "a566eebe2631e5be59ea06d562564d098a477479",
+      "mode": "100644",
+      "path": "source/31725352516d10cc859c1435f3839025087e8fc7/systemd/README.md",
+      "repository": "/home/halbritt/git/ai-newsroom",
+      "sha256": "ef897658fd6cebf8bb86e6d3cac22665b77465843a3f98dc7a8f140e226c63c8",
+      "source_path": "systemd/README.md"
+    },
+    {
+      "bytes": 5955,
+      "commit": "31725352516d10cc859c1435f3839025087e8fc7",
+      "git_blob": "3065dcc9c66e945b46532efa72b2f116dacc5d6d",
+      "mode": "100644",
+      "path": "source/31725352516d10cc859c1435f3839025087e8fc7/docs/engineering-review.md",
+      "repository": "/home/halbritt/git/ai-newsroom",
+      "sha256": "e63f07c7985680a18421643c91e2f95c4f05ff6cef912013d286eb8dccce61c3",
+      "source_path": "docs/engineering-review.md"
+    },
+    {
+      "bytes": 36643,
+      "commit": "31725352516d10cc859c1435f3839025087e8fc7",
+      "git_blob": "49e74032636a4ea69664d411fe97121d1644f730",
+      "mode": "100644",
+      "path": "source/31725352516d10cc859c1435f3839025087e8fc7/newsroom/cli.py",
+      "repository": "/home/halbritt/git/ai-newsroom",
+      "sha256": "eb1efa673e3e39a1e0a59cef17ced3394b04f450ad66291f7792df8564b6bc98",
+      "source_path": "newsroom/cli.py"
+    },
+    {
+      "bytes": 43351,
+      "commit": "31725352516d10cc859c1435f3839025087e8fc7",
+      "git_blob": "f10ed698f8b6968492bee6321ac02313717d8b89",
+      "mode": "100644",
+      "path": "source/31725352516d10cc859c1435f3839025087e8fc7/tests/test_cli.py",
+      "repository": "/home/halbritt/git/ai-newsroom",
+      "sha256": "dbdf4fe51d7708c943e34c0830be00d3144f1faf092774d31eb42b9879e3bb25",
+      "source_path": "tests/test_cli.py"
+    },
+    {
+      "bytes": 18568,
+      "commit": "1df624ef0e8dd44ba985219cf3beaed23a1340e1",
+      "git_blob": "15eeabac9eed539a5e14db9f7119484cacb47b46",
+      "mode": "100644",
+      "path": "source/1df624ef0e8dd44ba985219cf3beaed23a1340e1/docs/engineering-review.md",
+      "repository": "/home/halbritt/git/ai-newsroom",
+      "sha256": "c035256064a36768e176f620cfe5e475f1c1ef61bdf646bc513b0681dd4ee42c",
+      "source_path": "docs/engineering-review.md"
+    },
+    {
+      "bytes": 15242,
+      "commit": "544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f",
+      "git_blob": "67cbd277dfdfa1b797d15bdf3587a188f643a8b6",
+      "mode": "100644",
+      "path": "source/544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f/README.md",
+      "repository": "/home/halbritt/git/ai-newsroom",
+      "sha256": "462b71a5ee0029330468a99361cfafc8cfd4a29966295d0ffe3b94040daab306",
+      "source_path": "README.md"
+    },
+    {
+      "bytes": 6425,
+      "commit": "544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f",
+      "git_blob": "21589560ecbb6dcab80497e71097c35e30914f35",
+      "mode": "100644",
+      "path": "source/544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f/config/sources.toml",
+      "repository": "/home/halbritt/git/ai-newsroom",
+      "sha256": "341dad21cb69d503adaba5eb5d9a1535380fd50d8f286eaa789f1df79f916d7b",
+      "source_path": "config/sources.toml"
+    },
+    {
+      "bytes": 6785,
+      "commit": "544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f",
+      "git_blob": "8d118e3a80728f868b809742c988f18d5333838e",
+      "mode": "100644",
+      "path": "source/544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f/systemd/README.md",
+      "repository": "/home/halbritt/git/ai-newsroom",
+      "sha256": "c2a7e63e4e0ac727e3ee041b35bf504fef01153b3ec26a456590779a92565ee8",
+      "source_path": "systemd/README.md"
+    },
+    {
+      "bytes": 18568,
+      "commit": "544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f",
+      "git_blob": "15eeabac9eed539a5e14db9f7119484cacb47b46",
+      "mode": "100644",
+      "path": "source/544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f/docs/engineering-review.md",
+      "repository": "/home/halbritt/git/ai-newsroom",
+      "sha256": "c035256064a36768e176f620cfe5e475f1c1ef61bdf646bc513b0681dd4ee42c",
+      "source_path": "docs/engineering-review.md"
+    },
+    {
+      "bytes": 41327,
+      "commit": "544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f",
+      "git_blob": "59293ce14602bf18d9c1037fe9ab96b18bc368a6",
+      "mode": "100644",
+      "path": "source/544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f/newsroom/cli.py",
+      "repository": "/home/halbritt/git/ai-newsroom",
+      "sha256": "6b5cf71f0ced83cd48900a28f301341602f2834b7cfbcb75d2498dbaa00013da",
+      "source_path": "newsroom/cli.py"
+    },
+    {
+      "bytes": 20425,
+      "commit": "544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f",
+      "git_blob": "c01260695ee8c04b5ce370b85343e614bf46c06b",
+      "mode": "100644",
+      "path": "source/544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f/newsroom/sources/reddit.py",
+      "repository": "/home/halbritt/git/ai-newsroom",
+      "sha256": "cf8eef0e2cf80003ae31473c19f337163143600ea7417f7ef70a565d5ee35ab0",
+      "source_path": "newsroom/sources/reddit.py"
+    },
+    {
+      "bytes": 9429,
+      "commit": "544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f",
+      "git_blob": "356ac4d4544ea703c486c05b524b96df85d43cd5",
+      "mode": "100644",
+      "path": "source/544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f/newsroom/sources/reddit_state.py",
+      "repository": "/home/halbritt/git/ai-newsroom",
+      "sha256": "0e105f4d3ae0892c8feee5b18be4f39ad37ebdaca3a3a6be5372f05fa18a22d0",
+      "source_path": "newsroom/sources/reddit_state.py"
+    },
+    {
+      "bytes": 51065,
+      "commit": "544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f",
+      "git_blob": "eea2c750ecee250686f74d7d20e1169178169c1b",
+      "mode": "100644",
+      "path": "source/544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f/tests/test_cli.py",
+      "repository": "/home/halbritt/git/ai-newsroom",
+      "sha256": "a7844b45eea40e6bf3d9585b3e4e63ef6b872e941a8f8cc22c4202d3c7bc2dee",
+      "source_path": "tests/test_cli.py"
+    },
+    {
+      "bytes": 14583,
+      "commit": "544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f",
+      "git_blob": "ecf482f75f08cfd62101114939374d19199733e5",
+      "mode": "100644",
+      "path": "source/544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f/tests/test_reddit.py",
+      "repository": "/home/halbritt/git/ai-newsroom",
+      "sha256": "efae5c5970a4a53e4fa0b4ce1c5fcdd2191b9d97cd43eee48c32d9a1da8e63dc",
+      "source_path": "tests/test_reddit.py"
+    },
+    {
+      "bytes": 7960,
+      "commit": "544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f",
+      "git_blob": "6f4cbbb169dd705d165abbad438c6cedc4604e6a",
+      "mode": "100644",
+      "path": "source/544f7e3c43eaa0c06cf17d9e93613d33c0cfb66f/tests/test_reddit_state.py",
+      "repository": "/home/halbritt/git/ai-newsroom",
+      "sha256": "46d3e58364872a6c1cd6521b0eaeb7ed45ed2fdeb6dfff235bbc81d061b09a76",
+      "source_path": "tests/test_reddit_state.py"
+    }
+  ],
+  "source_manifest_sha256": "b877f0f64c252cb64f00da7418ea1efe3827d3328cb3c01f49fca11825f1aaf4",
+  "supporting_files": [
+    {
+      "bytes": 8326,
+      "path": "manifest.json",
+      "sha256": "b877f0f64c252cb64f00da7418ea1efe3827d3328cb3c01f49fca11825f1aaf4"
+    },
+    {
+      "bytes": 3071,
+      "path": "preserve.py",
+      "sha256": "23e059fe89e3dbbd9143c4677d80fec63b4e38cbcfed6324d79f53b40144ae10"
+    },
+    {
+      "bytes": 5960,
+      "path": "requirement-basis.md",
+      "sha256": "a9d82e47370ee2e0bf57314710df771bed410edebf09e15639908cc0a5413c98"
+    },
+    {
+      "bytes": 17635,
+      "path": "verification.json",
+      "sha256": "651d697356d286dec5f757f31728a9c589a1ff22164eca757a5bf3e0958f95dd"
+    },
+    {
+      "bytes": 3483,
+      "path": "verify.py",
+      "sha256": "ab081fe0af0331a13d3660e46c354040322a3d1ec62faa49ccc5711488d4e9e7"
+    }
+  ],
+  "verification": {
+    "ancestry_verified": true,
+    "frozen_assessor_inputs": [
+      {
+        "fixture_sha256": "a610ae6c4cc0266a358b535ad69c987c3b098178837d08fe0449fd3dc6fe508b",
+        "reviewed_source_files_matched": 10,
+        "root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/evidence-assessor-1",
+        "verification_sha256": "205211629bbcc4312ff818de46b53d2b2ccfe972a194d5cf9ee594ff25022bc2"
+      },
+      {
+        "fixture_sha256": "59bc7f1bb471b02bb3fc882bd57c30afc814e76025b5a2ee14f6f27d08f863b3",
+        "reviewed_source_files_matched": 10,
+        "root": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/proposition-assessor-1",
+        "verification_sha256": "19391e839021d6cdab50fcb1d26b02eb7feab7e843edf568b1f6caf13f0de792"
+      }
+    ],
+    "manifest_sha256": "b877f0f64c252cb64f00da7418ea1efe3827d3328cb3c01f49fca11825f1aaf4",
+    "method_sha256": "ab081fe0af0331a13d3660e46c354040322a3d1ec62faa49ccc5711488d4e9e7",
+    "original_witness_files_checked": [
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-findings-witness-1/base-listing-1-capture/observation.json",
+        "sha256": "4747f131b62a085c364ac07c9b3112fc6f9f7ace04197b737a59230ed95c9ad2"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-findings-witness-1/base-listing-1-capture/requests.json",
+        "sha256": "9460235607f0c148368cbfacbcc7288fadffc2971eb92c8a041715aebbc7ac53"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-findings-witness-1/base-listing-2-capture/observation.json",
+        "sha256": "2eb85d3fe3b1080c9ff5fbce57ba01cebb79756c6acad214ff2bfbdc373e3882"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-findings-witness-1/base-listing-2-capture/requests.json",
+        "sha256": "74eb03c80615ed61a52c9efd4d658aedeb6bceca6652907c100f7ee0ddca9214"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-findings-witness-1/change-cli-lock-1-capture/harvest.stderr",
+        "sha256": "aa881dbfd5fb1455fa120fa687eef03a86dd09dc05944f8c353621d47eee9dfb"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-findings-witness-1/change-cli-lock-1-capture/harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-findings-witness-1/change-cli-lock-1-capture/observation.json",
+        "sha256": "c5a1e5e9071bff7fa9cb94aa736c47f1a540317c06a09e04485d89d1761d0d85"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-findings-witness-1/change-cli-lock-1-capture/requests.json",
+        "sha256": "fd8282a17e6e044e7ece45a4b23e20fee35a39fbc590e7420b5dd112badff166"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-findings-witness-1/change-cli-lock-2-capture/harvest.stderr",
+        "sha256": "aa881dbfd5fb1455fa120fa687eef03a86dd09dc05944f8c353621d47eee9dfb"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-findings-witness-1/change-cli-lock-2-capture/harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-findings-witness-1/change-cli-lock-2-capture/observation.json",
+        "sha256": "fa7f2d618e6eb5690a8d0bb530ff715d932157c388bda5a74802081c4f5c41b4"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-findings-witness-1/change-cli-lock-2-capture/requests.json",
+        "sha256": "e871343f5097c6ecaa53db9109fff72eef0d6f32680ed540a2b5c122eb3fff25"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-findings-witness-1/change-pool-1-capture/observation.json",
+        "sha256": "ab4066afa4bd1bd534491c44ac773fce6c8cb4f991c3c0b475c33750a810d3ee"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-findings-witness-1/change-pool-1-capture/requests.json",
+        "sha256": "b91d5f4d5aef4cf3f857ca7348072193c727022f5c4a7436664d8c5aff35139c"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-findings-witness-1/change-pool-2-capture/observation.json",
+        "sha256": "d5f3fa638ca229659c867ee7060838172bf7b172c8f9955139c08f0513a69a53"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-findings-witness-1/change-pool-2-capture/requests.json",
+        "sha256": "db50b4c02ffabce768df8eeaca9824d82e0dd6478852d0763665ba673cc53c37"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/newsroom-findings-witness-1/witness/probe.py",
+        "sha256": "5ecc47b8058d7baca9f5ee0004085dd54cbb4aa9440f1f64f9cd014b9ddc803e"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/healthy-1-capture/harvest.stderr",
+        "sha256": "45ce08739a04d36889a0db35bc0a659ab808380fb6934110f31fff16775a988d"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/healthy-1-capture/harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/healthy-1-capture/observation.json",
+        "sha256": "7decdec25c12f964166a25495a442edecd3876b4f375eeedb851e3482039cd2d"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/healthy-1-capture/requests.json",
+        "sha256": "ed49a774214e62f9728e6867d6b91ff2e1d623645f0134512d2dbd4014600ef2"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/healthy-2-capture/harvest.stderr",
+        "sha256": "45ce08739a04d36889a0db35bc0a659ab808380fb6934110f31fff16775a988d"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/healthy-2-capture/harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/healthy-2-capture/observation.json",
+        "sha256": "83ab8231588e23f209e0d9f002a1bc57959931b24d989bfc541c378a935a2afe"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/healthy-2-capture/requests.json",
+        "sha256": "fee19f242ba6a456c063f9689b3dee77e810f9030e3091760dd162e15d8203e2"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/healthy-empty-1-capture/harvest.stderr",
+        "sha256": "0888ec3f9897605d41d06f1e15220429a28fdf6fe6bb46ea10e7200a9de19db2"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/healthy-empty-1-capture/harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/healthy-empty-1-capture/observation.json",
+        "sha256": "fac6d84e29105e31a5535125ccd77bce922d7fe4bea43a45108a02528fd234e9"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/healthy-empty-1-capture/requests.json",
+        "sha256": "ef8ff21f498bf62d1e647014b000665405000586df64d12a7fc9a1c816e74025"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/healthy-empty-2-capture/harvest.stderr",
+        "sha256": "0888ec3f9897605d41d06f1e15220429a28fdf6fe6bb46ea10e7200a9de19db2"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/healthy-empty-2-capture/harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/healthy-empty-2-capture/observation.json",
+        "sha256": "d1c2ffdc269d87dddbd5bd8ede16ab23db0875873d7abf6547ed80ed2b09c75b"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/healthy-empty-2-capture/requests.json",
+        "sha256": "b30f4ab058687fbdc62669017d9e259e68a5e0ad3bf6b8bd5b2759d8abdfa16e"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/mixed-empty-rss-failure-1-capture/harvest.stderr",
+        "sha256": "0aad02d03eb1eaea198174be506f2621f56eff334357638b5acc4f7d99e08b76"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/mixed-empty-rss-failure-1-capture/harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/mixed-empty-rss-failure-1-capture/observation.json",
+        "sha256": "c0dbfa463253749fed488a9f340c45035b788fe6dc361cc47449d293ffa79e6c"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/mixed-empty-rss-failure-1-capture/requests.json",
+        "sha256": "794ce533c2cbfc44517f2589987f3809654f0d70dcb7fba987725114847366db"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/mixed-empty-rss-failure-2-capture/harvest.stderr",
+        "sha256": "0aad02d03eb1eaea198174be506f2621f56eff334357638b5acc4f7d99e08b76"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/mixed-empty-rss-failure-2-capture/harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/mixed-empty-rss-failure-2-capture/observation.json",
+        "sha256": "439cd8d8cf0af6d33c88605dadeb045b1503e151c5d6c4a1ba00ffafa1720c84"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/mixed-empty-rss-failure-2-capture/requests.json",
+        "sha256": "3ebc2ca216e515aa0408bf37e407eb2ea6dc4571252a90af5f82ec02a0f7920f"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/mixed-rss-failure-1-capture/harvest.stderr",
+        "sha256": "73322fd13e2ca5f19c92007cffe51dc768981f7e6da281eeef8f4b5e27f5f09e"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/mixed-rss-failure-1-capture/harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/mixed-rss-failure-1-capture/observation.json",
+        "sha256": "d0e2746714051fdbe024d9f5965b8222a4319ef874b507c3d8579b44e8b4415c"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/mixed-rss-failure-1-capture/requests.json",
+        "sha256": "4cbbd5e5f3611da089002b9e90e22e26d9e18ec0a5906f05a96e3934ba98e9d6"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/mixed-rss-failure-2-capture/harvest.stderr",
+        "sha256": "73322fd13e2ca5f19c92007cffe51dc768981f7e6da281eeef8f4b5e27f5f09e"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/mixed-rss-failure-2-capture/harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/mixed-rss-failure-2-capture/observation.json",
+        "sha256": "835b85a2ad450491204cfb6ff58da0b15bb4822986d1482d3ed72055fdae3ae4"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/mixed-rss-failure-2-capture/requests.json",
+        "sha256": "ffe93c2428dc8e65c20e0e5aff405e15975b9466e46046ff73760ac2c59079ba"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/mixed-rss-success-1-capture/harvest.stderr",
+        "sha256": "2124887ad74e00947cdf57b448b6185069edd1fac92ff8f493a2fb22afd169a7"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/mixed-rss-success-1-capture/harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/mixed-rss-success-1-capture/observation.json",
+        "sha256": "397663a2a834355b48ac8befe3c2dd56f8461a62844bc6acbaf70fc731e58850"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/mixed-rss-success-1-capture/requests.json",
+        "sha256": "7bb0d5b1a2ba5721b8bd0f1d3d2b0f707976d8464fe373e2674f73cf6e74efdf"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/mixed-rss-success-2-capture/harvest.stderr",
+        "sha256": "2124887ad74e00947cdf57b448b6185069edd1fac92ff8f493a2fb22afd169a7"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/mixed-rss-success-2-capture/harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/mixed-rss-success-2-capture/observation.json",
+        "sha256": "e0ff5d08790f7cf652103849fb5dfe1168340f4d81b8906b384ee0232237e1de"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/mixed-rss-success-2-capture/requests.json",
+        "sha256": "81c26ea50d79a893db4c8c33e526ee104b92ac80450110041934407d4df96d53"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/witness/probe.py",
+        "sha256": "8eb53fdff6291bf0bd410907cb8de817a63f854d7d8feaae7196f992b452ce51"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/total-rss-failure-1-capture/harvest.stderr",
+        "sha256": "e873ddff3bbfb03d4009e96ce9bd735806d5f76009fbb7d75e8c17338546eb98"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/total-rss-failure-1-capture/harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/total-rss-failure-1-capture/observation.json",
+        "sha256": "94b7909ef85dec854224b0d1f471f841dcb724a7536c4de9cdb815ddfc0e6726"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/total-rss-failure-1-capture/requests.json",
+        "sha256": "f9893abc96f9e559ea8fe5220d19fa7ae8dac8bc3bd1d8cdb977afca73d5b19b"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/total-rss-failure-2-capture/harvest.stderr",
+        "sha256": "a5ec630a7e139786bf78c6c3ab2ec80c92a5c7b2ac74dc374ebdd8eec492af55"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/total-rss-failure-2-capture/harvest.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/total-rss-failure-2-capture/observation.json",
+        "sha256": "69481d3e0258fc8102449a67cdfda22748525da191d63505cfdd2aff38834204"
+      },
+      {
+        "path": "/home/halbritt/.local/share/caplab/reviewer-ranking-001/development/partial-refresh-witness-1/total-rss-failure-2-capture/requests.json",
+        "sha256": "4891cd5d59bcf6036bfb35bc12575719e3b9ecde69a07b817cb3efd180ccf6ec"
+      }
+    ],
+    "publisher_document_blob_unchanged": true,
+    "ranking_eligible": false,
+    "schema": "caplab.requirement-provenance-verification/v1",
+    "scorer_accepted": false,
+    "semantic_accuracy_established": false,
+    "source_files_verified": 16,
+    "source_or_model_execution": false
+  },
+  "verification_sha256": "651d697356d286dec5f757f31728a9c589a1ff22164eca757a5bf3e0958f95dd"
+}

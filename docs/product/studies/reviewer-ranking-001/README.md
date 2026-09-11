@@ -293,3 +293,11 @@ explanations and inconsistent requirement scope. The frozen challenge fails;
 eight structurally passing findings are not eight correct assessments.
 Requirement interpretation and semantic validation remain open. The original
 output, failed criteria and evidence are preserved; coverage is unchanged.
+
+The [requirement-provenance investigation](../../../records/verification-2026-09-10-reviewer-requirement-provenance.md)
+locates the publisher-specific requirement before the harvester's introduction
+and verifies that its exact source was already available to both assessors.
+The [development requirement basis](REQUIREMENT-BASIS.md) separates publisher
+exclusion, optional-RSS collection, provider pacing and failed-refresh exit
+behavior. Global HTML pacing remains unresolved. These prospective scope
+interpretations preserve the prior failed results and create no ranking credit.
