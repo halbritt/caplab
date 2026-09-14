@@ -1,8 +1,25 @@
 # Reviewer ranking: development contract
 
-Status: instrument development. Two cases are admitted for development
-outcome and scorer validation. The comparative corpus and preregistration
-remain open. No eligible reviewer measurements or accepted ranking exist.
+**Status: STOPPED 2026-09-14 by Principal decision.** No eligible reviewer
+measurements or accepted ranking ever existed, and none will be produced under
+this contract. See
+[the goal disposition](../../../records/decision-2026-09-14-review-ranking-goal-disposition.md)
+for the reasoning: on the five operators with a production analog, eight of
+nine bindings catch 13/13, so the ranking question is very likely measuring a
+difference that is not there.
+
+Nothing here is deleted. The census, the thirteen bounded witnesses, the
+outcome-credit policy, the completion/advisory accounting and the native
+capture substrate are retained as source custody and remain reusable by a
+later question. The queued preview-claims investigation does not run.
+
+The development contract below is preserved unchanged as the record of what
+was required and how far it got. Do not resume it without a new owner
+decision; reusable infrastructure is not a reason to reopen the goal.
+
+Historical status at the stop: instrument development. Two cases admitted for
+development outcome and scorer validation, both development-exposed. The
+comparative corpus and preregistration remained open.
 Authority: [ADR 0066](../../../decisions/adr-0066-reviewer-ranking-outcome-selection.md).
 
 The [first case admission](../../../records/decision-2026-09-10-reviewer-development-case-admission.md)

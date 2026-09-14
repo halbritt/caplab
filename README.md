@@ -13,6 +13,16 @@ retired and placement is frozen under the
 [confirmed disposition](docs/records/report-2026-09-07-review-instrument-disposition.md).
 The current evidence cannot establish which reviewer is more accurate.
 
+The successor ranking attempt, `reviewer-ranking-001`, was
+[stopped on 2026-09-14](docs/records/decision-2026-09-14-review-ranking-goal-disposition.md).
+CAPLAB now does three things and no more: a per-binding admission gate on
+request (pass/fail, never an ordering), the report-only production canary, and
+operational routing on cost, latency and availability in Quartermaster. The
+blocking dependency is a
+[filed request to striatum](docs/records/request-2026-09-07-striatum-review-outcome-events.md)
+for review-outcome events; without them the gold strata stay empty by
+construction and no review instrument can be validated.
+
 This is the canonical CAPLAB repository: `halbritt/caplab` on GitHub and
 `/home/halbritt/git/caplab` on the primary host. The active product, package,
 tests, decisions, and operational records live at the repository root.

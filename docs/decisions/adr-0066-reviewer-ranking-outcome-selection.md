@@ -2,13 +2,19 @@
 id: adr-0066
 artifact_type: architecture-decision-record
 title: Rank native reviewers on verified code-review outcomes
-status: decided
+status: superseded
 decision_owner: primary-agent
 decision_authority: adr-0026 and owner thread goal
 created: 2026-09-10
 ---
 
 # Rank native reviewers on verified code-review outcomes
+
+> **Superseded 2026-09-14.** The owner goal this record selected was stopped by
+> [the goal disposition](../records/decision-2026-09-14-review-ranking-goal-disposition.md).
+> The bounded development authorization below is expired and grants nothing.
+> The validity requirements remain accurate and are worth reading before any
+> future ranking attempt; the selection is no longer active.
 
 ## Owner requirement and decision
 

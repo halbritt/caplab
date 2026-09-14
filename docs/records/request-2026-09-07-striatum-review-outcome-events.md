@@ -1,8 +1,12 @@
 # Request to striatum: review-outcome events, for the Principal's signature
 
 - Date: 2026-09-07. Drafted by CAPLAB per
-  `instruction-2026-09-07-review-instrument-disposition.md` §4. **Not filed**;
-  the Principal files it.
+  `instruction-2026-09-07-review-instrument-disposition.md` §4.
+- **Filed 2026-09-14** by the Principal as Cairn record
+  `4c75c6e0-e5d5-46c6-bb3a-680b75a1eaa5`, reachable by a striatum-next agent.
+  See `decision-2026-09-14-review-ranking-goal-disposition.md`. The request
+  text below is unchanged from the draft. Filing transmits a request; striatum
+  owns whether and how each item is implemented.
 - Attachments: `criterion-2026-09-07-review-ledger-pass.md`,
   `report-2026-09-07-review-instrument-disposition.md`,
   `finding-2026-09-07-operator-analogs.md`.
