@@ -217,6 +217,8 @@ def main() -> int:
     g.add_argument("--run", action="store_true")
     ap.add_argument("--out")
     ap.add_argument("--timeout", type=int, default=1800)
+    ap.add_argument("--backends-root", default=BACKENDS,
+                    help="striatum backends directory (default: the striatum-next main checkout)")
     args = ap.parse_args()
     gate = load_gate()
     if args.plan:
@@ -235,12 +237,12 @@ def main() -> int:
     with open(cells_path, "w", encoding="utf-8") as f:
         json.dump(cells_doc, f, indent=1)
     rep = gate["replication"]
-    summary = pool_runner.run_pool(backend=args.binding, backends_root=BACKENDS, registry_path=REGISTRY,
+    summary = pool_runner.run_pool(backend=args.binding, backends_root=args.backends_root, registry_path=REGISTRY,
                                    out_dir=out_dir, sweep_seed=20260819, per_operator=1, timeout=args.timeout,
                                    max_cases=len(gate["cells"]), anchor_path=None, workers=1,
                                    replicates=rep["control"], mutant_replicates=rep["mutant"],
                                    cases_path=cells_path)
-    declaration = pool_runner.load_declaration(BACKENDS, args.binding)
+    declaration = pool_runner.load_declaration(args.backends_root, args.binding)
     natural = ([{"id": nc["id"], "replicates": [], "unavailable": rep["natural_case"],
                  "expected_replicates": rep["natural_case"], "unattempted_replicates": rep["natural_case"],
                  "integrity_failure": None,
@@ -256,12 +258,16 @@ def main() -> int:
         rows = [json.loads(line) for line in f if line.strip()]
     with open(GATE, "rb") as f:
         gate_sha256 = hashlib.sha256(f.read()).hexdigest()
+    declaration_sha256 = hashlib.sha256(json.dumps(declaration, sort_keys=True, default=str)
+                                        .encode("utf-8")).hexdigest()
     from caplab.advisory.executor import advisory_control_context
     adj, sources = advisory_control_context(os.path.join(ROOT, "advisory", "control-adjudications.jsonl"))
     result = {
         "record": "caplab-review-admission-gate-result/3", "binding": args.binding,
         "conformance_validation": CONFORMANCE_VERSION,
         "gate_sha256": gate_sha256,
+        "backends_root": os.path.abspath(args.backends_root),
+        "declaration_sha256": declaration_sha256,
         "environment": summary.get("environment"), "as_of": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
         **summarize_cells(gate, rows, adj, sources),
         "pool_aborted": summary.get("aborted"),
