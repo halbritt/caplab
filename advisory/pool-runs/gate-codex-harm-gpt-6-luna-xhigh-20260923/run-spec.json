@@ -1,0 +1,297 @@
+{
+  "record": "caplab-pool-run-spec/1",
+  "sha256": "59fc511a6236298d2129e4d0e8747dd8fdecac2b4360849dac0582febaeab14d",
+  "spec": {
+    "abort_after_empty": 8,
+    "anchor_matching": "normalized-anchor-exact/1",
+    "backend": "codex-harm-gpt-6-luna-xhigh",
+    "base_registry_sha256": "3c41c9f790714958b727be8dc3c9814cf2b0749c3d2c4838943e8ea32294963b",
+    "case_selection": "admission-gate",
+    "declaration_sha256": "8ccba6e130d3fceb4f712368f51b1f757dbb4fbeb1e02250c5ca1617a6e375e4",
+    "declared_lanes": 2,
+    "environment": "tree-v1",
+    "instrument_sources": {
+      "__init__.py": "7d83bb5e3de7b217fa2a756c784be8522fc2336a6c68f1aebf4b13849a1142a4",
+      "__main__.py": "5db458c6eed7c83b0f8194b16f5219957c53bf56a4ce0dc3c237df45ab1f9211",
+      "_tuner_vendored.py": "d88232eb8057812bbdbdb54520f7aa9519697c190a27fcfb6db3a894d026e84a",
+      "adjudication.py": "9f4b2314baa0a8e0193e95d6558c2c5356ed3c0a083f2e6d1f687da38c460954",
+      "anchor.py": "e505e7781cb06b4d8b30bdfdaa08c1131b0a368db82c36e57486a6ecc1bef7a0",
+      "build_corpus.py": "8a62708c00c60b67b2cf85f9ffedb0b18288a13532d7e5a498205aa922c5dd17",
+      "calibrate.py": "ca3d35f7ca9627faa1644d5d9ae5e8b55ee7932c05a95b078cfdaeaa2a695e4c",
+      "cas.py": "1d7edb929db5eb7379f3ae23658d50c61382233ef5065c19123dcb60f63f6f40",
+      "claims.py": "441b4338ceb0229a37b23dd7f6977354d5c5ecf12ca43600075845cc5d0f4c4c",
+      "compare.py": "7c7ad6ada360a8e4f08d8158c5d73490ade2b2e7d00376c2265e660244ce85d8",
+      "corpus.py": "6b86cc4a76dd9fc953692f182bc859813c7f6d0232ff421a7bd57503eae86d93",
+      "discrimination.py": "20354ebc4a634513625f80900cb194b1a79f8d70182b93d8313aa7aff02a6407",
+      "executor.py": "caedce9abccedd1667f639657ff08d6aeeb16108456edaee683312ed3705d0ad",
+      "export.py": "618a05ec74f29866af1f3431ce88b2de98b7a64b5cb5347334d08a5ecbce1a33",
+      "instrument_defects.py": "a2065cad5a64583570bb0ed99c577e2a70fbae79a69554a9fa839d1967954b29",
+      "materialize.py": "295804cc50256bd308cb63d2c24510d14af2cb1fc51829ee48d5a9f2627930b8",
+      "operators.py": "76478daa8654da907fee60d9af415b154ccf4cdaef72022f3c51f09a64abb34d",
+      "plan_judges.py": "1e5e2bb8e9f4501db48bd6acd585c1e7df47713411de0d4879b96aab3fc4c936",
+      "plan_operators.py": "62fd1b6f53936583308ddc351ae826b2f2b76c313bd315c9971250920f1671d6",
+      "planning_corpus.py": "660311fe3bc13060659d7ecb518752eee60ddd221811806d957f2dc2c9dbf3ba",
+      "pool_runner.py": "dee94b8a5f92100b01480e12d09f5913a97942e70d70eb6eb9248eb9fac68f5a",
+      "review_response.py": "c38fdffdc2edc58187a8ed932908cdb1965b91507e6d5ab416dfa09dec68956c",
+      "run_spec.py": "a44578fdcbc70b4c8f3f4f854fce739b88d01759b30d3c4f8fd2a693698762f8",
+      "scoring.py": "3db8414a33ce5a0df9d5c2dc7b439a98e75c9e50bf96445cd29e4295eb1e41d0",
+      "seed.py": "26beece1c514e463a952cefe956a79c429c02a8077d7719d5ead8e4a87482c33",
+      "treeguard.py": "32167f6fecc3061aa846b8c5340d8957c2667bec2d91e83d850ce60059201921",
+      "wilson.py": "9eb6d8266f503599bdb2b03f0be64e9b9b4fab8877748d6e19784e646b22c6c4"
+    },
+    "max_cases": 16,
+    "mutant_replicates": 1,
+    "pair_validation": "paired-presence/1",
+    "partition": "open",
+    "per_operator": 1,
+    "plan": [
+      {
+        "anchor": false,
+        "case": {
+          "operator": "broken_internal_crossref",
+          "seed": 254024468,
+          "sha256": "922bffcd10232e91231b87ff6b8b3575a3fc30132a26fa24db3d936daf878453",
+          "source": {
+            "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
+            "kind": "repo-doc",
+            "path": "decisions/D0013-adapter-supervision.md",
+            "repo": "striatum-next"
+          },
+          "substrate_id": "qs-922bffcd10232e91"
+        }
+      },
+      {
+        "anchor": false,
+        "case": {
+          "operator": "broken_internal_crossref",
+          "seed": 4055818886,
+          "sha256": "cdf7e520a28ff458393a54a588ba4fac0b04c3a50c807217847d6ec4c932e144",
+          "source": {
+            "dispatch_id": "0647e7d0bbacc9a022cbc5a5309ca2dbce0c6fe6452c0d5f174cdf97e54306e8",
+            "fate": "final",
+            "input_path": "inputs/00-striatum-next-intents-work-graph-doc-implementation-plan",
+            "kind": "striatum-exchange"
+          },
+          "substrate_id": "qs-cdf7e520a28ff458"
+        }
+      },
+      {
+        "anchor": false,
+        "case": {
+          "operator": "contradicted_clause",
+          "seed": 3158338731,
+          "sha256": "402057192be1b8a8cac8765d8968b3e7bf246a85a0b506d11b38fd2c34b97dc6",
+          "source": {
+            "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+            "kind": "repo-doc",
+            "path": "docs/product/training/caplab-review-dissent-local-qwen-r1/caplab-review-dissent-qwen27b-qlora-r1-preregistration.md",
+            "repo": "caplab"
+          },
+          "substrate_id": "qs-402057192be1b8a8"
+        }
+      },
+      {
+        "anchor": false,
+        "case": {
+          "operator": "contradicted_clause",
+          "seed": 1103092540,
+          "sha256": "55beeb775063c017520eaf7a659841529b9d6970fee026a4d95aea43c6f45f2b",
+          "source": {
+            "dispatch_id": "dac5730885618f1242973c27ab32c976eee8979938dae44705081101159c461b",
+            "fate": "final",
+            "input_path": "inputs/00-striatum-next-passes-lane-output-is-a-file-implementation-plan",
+            "kind": "striatum-exchange"
+          },
+          "substrate_id": "qs-55beeb775063c017"
+        }
+      },
+      {
+        "anchor": false,
+        "case": {
+          "operator": "contradicted_clause",
+          "seed": 851652862,
+          "sha256": "a97ff272bb749518b9100e6261401cb58c7592e365739754fa93357a5c5a4e77",
+          "source": {
+            "commit": "dc794628e30344b68cadbe3ba3c96fe3aeceae0f",
+            "kind": "repo-doc",
+            "path": "decisions/D0009-provenance-ledger-and-artifact-store.md",
+            "repo": "striatum-next"
+          },
+          "substrate_id": "qs-a97ff272bb749518"
+        }
+      },
+      {
+        "anchor": false,
+        "case": {
+          "operator": "contradicted_clause",
+          "seed": 1922162860,
+          "sha256": "e7003896d6e7ab48716658b47038154f14b4c88fa2418948d3da60e7073ff0a1",
+          "source": {
+            "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+            "kind": "repo-doc",
+            "path": "docs/decisions/adr-0056-authorize-qwen27b-module-independent-digest-launch.md",
+            "repo": "caplab"
+          },
+          "substrate_id": "qs-e7003896d6e7ab48"
+        }
+      },
+      {
+        "anchor": false,
+        "case": {
+          "operator": "contradicted_clause",
+          "seed": 1776681726,
+          "sha256": "e95b9a190bea1f12edeb1d069f9f44f741b8adc81cf9fea1641345c250db550a",
+          "source": {
+            "dispatch_id": "e38df1b049479ea84711d1df5b368dbbdb05a304d611f1c086885ea6f656cffc",
+            "fate": "final",
+            "input_path": "inputs/00-striatum-next-passes-terminal-report-live-implementation-plan",
+            "kind": "striatum-exchange"
+          },
+          "substrate_id": "qs-e95b9a190bea1f12"
+        }
+      },
+      {
+        "anchor": false,
+        "case": {
+          "operator": "refuted_conclusion",
+          "seed": 1285482737,
+          "sha256": "4298b5676c10ee3b40999cd487cea472e6eb5471d3d76ceccf53fc0547937fae",
+          "source": {
+            "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+            "kind": "repo-doc",
+            "path": "docs/product/studies/advisory-selection-001/PART1-RESULT.md",
+            "repo": "caplab"
+          },
+          "substrate_id": "qs-4298b5676c10ee3b"
+        }
+      },
+      {
+        "anchor": false,
+        "case": {
+          "operator": "refuted_conclusion",
+          "seed": 2560774173,
+          "sha256": "5de685afb96fcd3dd4ecee6e8eab9cc7b4c2c74eac8d3713f34a36e374f95cf0",
+          "source": {
+            "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+            "kind": "repo-doc",
+            "path": "docs/decisions/adr-0007-caplab-v0-cli-runtime.md",
+            "repo": "caplab"
+          },
+          "substrate_id": "qs-5de685afb96fcd3d"
+        }
+      },
+      {
+        "anchor": false,
+        "case": {
+          "operator": "refuted_conclusion",
+          "seed": 1249157772,
+          "sha256": "a17d0d0b23b2ad0f0ed9d6301dbfcec0e7b6e4f6905ce26ca9d2490a699ccb18",
+          "source": {
+            "dispatch_id": "726b14eba7612839abad55e6043be48b8f3d0176a51d4772f7574b8dea7cfc04",
+            "fate": "final",
+            "input_path": "inputs/00-striatum-next-passes-capability-aware-placement-f-implementation-plan",
+            "kind": "striatum-exchange"
+          },
+          "substrate_id": "qs-a17d0d0b23b2ad0f"
+        }
+      },
+      {
+        "anchor": false,
+        "case": {
+          "operator": "refuted_conclusion",
+          "seed": 1558225136,
+          "sha256": "d05784fe3c3b3ac2cc9448c73ec9c225ae1794f27104733fde32df9426da3a46",
+          "source": {
+            "dispatch_id": "9b2bf3ff124c98c31970966c112c14ef103c84a45f59966f4df3074fb557ac27",
+            "fate": "final",
+            "input_path": "inputs/00-striatum-next-passes-capability-aware-placement-b-design",
+            "kind": "striatum-exchange"
+          },
+          "substrate_id": "qs-d05784fe3c3b3ac2"
+        }
+      },
+      {
+        "anchor": false,
+        "case": {
+          "operator": "refuted_conclusion",
+          "seed": 2302113555,
+          "sha256": "d8054c759739e7a6feb45efd5689e3ad997519f739336724efe5384e9ab26c59",
+          "source": {
+            "commit": "c4c8e2417e12d971b7d05220a24f7577c2bf454c",
+            "kind": "repo-doc",
+            "path": "docs/decisions/adr-0053-preregister-qwen27b-host-outage-retry.md",
+            "repo": "caplab"
+          },
+          "substrate_id": "qs-d8054c759739e7a6"
+        }
+      },
+      {
+        "anchor": false,
+        "case": {
+          "operator": "unearned_verification_claim",
+          "seed": 182363481,
+          "sha256": "93a90787f0d8338261dcb98f80d001b765f96acd60f87e202b5de6892e5eb7ab",
+          "source": {
+            "dispatch_id": "b206738756470f74d688dc70813125f72cae724087c68f300bff2179c9bec481",
+            "fate": "final",
+            "input_path": "inputs/00-striatum-next-passes-fleet-overlay-autoresolve-product-artifact",
+            "kind": "striatum-exchange"
+          },
+          "substrate_id": "qs-93a90787f0d83382"
+        }
+      },
+      {
+        "anchor": false,
+        "case": {
+          "operator": "unearned_verification_claim",
+          "seed": 2969572992,
+          "sha256": "9fa3482bef63d3efde1e64705c4d4449ff28c23e823c91fee043643774baa34c",
+          "source": {
+            "dispatch_id": "c778cba8b60583e9471ff3f645677ae60466f3ba37b503d9cd8afdcb580f2266",
+            "fate": "final",
+            "input_path": "inputs/00-striatum-next-passes-stalls-need-no-judgment-c-change-set",
+            "kind": "striatum-exchange"
+          },
+          "substrate_id": "qs-9fa3482bef63d3ef"
+        }
+      },
+      {
+        "anchor": false,
+        "case": {
+          "operator": "unearned_verification_claim",
+          "seed": 3180138439,
+          "sha256": "c5e755a13eb7b7ee93d90b2d98894c1d19fd0af899830ea3b214ccad146edf3b",
+          "source": {
+            "dispatch_id": "f07b350442986111236035069f26a6a2801d44c7ce9e9bfc83d75fe9b1723f42",
+            "fate": "final",
+            "input_path": "inputs/00-striatum-next-passes-work-graph-assembly-b-packets-lowering-rule-declaration-change-set",
+            "kind": "striatum-exchange"
+          },
+          "substrate_id": "qs-c5e755a13eb7b7ee"
+        }
+      },
+      {
+        "anchor": false,
+        "case": {
+          "operator": "unearned_verification_claim",
+          "seed": 737671386,
+          "sha256": "f882ddbaaed1b065505fdc6c62945c6b29c795e140248551dbcd2c7b6d51389c",
+          "source": {
+            "dispatch_id": "b9919beb2088c641e77db70055374caf10bdef09ff981cd6eaee09313ec6d69d",
+            "fate": "final",
+            "input_path": "inputs/00-striatum-next-passes-backend-role-qualified-change-set",
+            "kind": "striatum-exchange"
+          },
+          "substrate_id": "qs-f882ddbaaed1b065"
+        }
+      }
+    ],
+    "python_version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "replicates": 3,
+    "requested_workers": 1,
+    "response_validation": "review-response/1",
+    "sandbox_available": true,
+    "sweep_seed": 20260819,
+    "timeout": 1800
+  }
+}
