@@ -1,0 +1,397 @@
+{
+ "record": "caplab-review-admission-gate-result/3",
+ "binding": "claude-opus-5-5-high",
+ "conformance_validation": "review-gate-conformance/2",
+ "gate_sha256": "dba1d5608ca95d122a9c46ea49aaa4eee08927461db8236e64bdd9563de35a39",
+ "backends_root": "/home/halbritt/git/striatum-next/backends",
+ "declaration_sha256": "d342a2370eea8c0b9b602b992557022a8dc6995dbe4e119e6f552d2ecc810861",
+ "environment": "tree-v1",
+ "as_of": "2026-09-23T13:49:08-0700",
+ "cells_planned": 16,
+ "cells_scorable": 12,
+ "cells_missing": 0,
+ "cells_not_applicable": 0,
+ "cells_incomplete": 4,
+ "missed": 0,
+ "cell_observations": [
+  {
+   "substrate_id": "qs-402057192be1b8a8",
+   "operator": "contradicted_clause",
+   "control_observed": 3,
+   "mutant_observed": 1,
+   "control_disposition": "sound",
+   "status": "scorable",
+   "error": null
+  },
+  {
+   "substrate_id": "qs-4298b5676c10ee3b",
+   "operator": "refuted_conclusion",
+   "control_observed": 3,
+   "mutant_observed": 1,
+   "control_disposition": "sound",
+   "status": "scorable",
+   "error": null
+  },
+  {
+   "substrate_id": "qs-55beeb775063c017",
+   "operator": "contradicted_clause",
+   "control_observed": 3,
+   "mutant_observed": 1,
+   "control_disposition": "sound",
+   "status": "scorable",
+   "error": null
+  },
+  {
+   "substrate_id": "qs-5de685afb96fcd3d",
+   "operator": "refuted_conclusion",
+   "control_observed": 3,
+   "mutant_observed": 1,
+   "control_disposition": "sound",
+   "status": "scorable",
+   "error": null
+  },
+  {
+   "substrate_id": "qs-922bffcd10232e91",
+   "operator": "broken_internal_crossref",
+   "control_observed": 3,
+   "mutant_observed": 1,
+   "control_disposition": "defective",
+   "status": "scorable",
+   "error": null
+  },
+  {
+   "substrate_id": "qs-93a90787f0d83382",
+   "operator": "unearned_verification_claim",
+   "control_observed": 0,
+   "mutant_observed": 0,
+   "control_disposition": "defective",
+   "status": "incomplete",
+   "error": "oracle unverified: absent schema-related words do not prove absent validation; independent behavioral evidence is required"
+  },
+  {
+   "substrate_id": "qs-9fa3482bef63d3ef",
+   "operator": "unearned_verification_claim",
+   "control_observed": 0,
+   "mutant_observed": 0,
+   "control_disposition": "defective",
+   "status": "incomplete",
+   "error": "oracle unverified: absent schema-related words do not prove absent validation; independent behavioral evidence is required"
+  },
+  {
+   "substrate_id": "qs-a17d0d0b23b2ad0f",
+   "operator": "refuted_conclusion",
+   "control_observed": 3,
+   "mutant_observed": 1,
+   "control_disposition": "defective",
+   "status": "scorable",
+   "error": null
+  },
+  {
+   "substrate_id": "qs-a97ff272bb749518",
+   "operator": "contradicted_clause",
+   "control_observed": 3,
+   "mutant_observed": 1,
+   "control_disposition": "sound",
+   "status": "scorable",
+   "error": null
+  },
+  {
+   "substrate_id": "qs-c5e755a13eb7b7ee",
+   "operator": "unearned_verification_claim",
+   "control_observed": 0,
+   "mutant_observed": 0,
+   "control_disposition": "sound",
+   "status": "incomplete",
+   "error": "oracle unverified: absent schema-related words do not prove absent validation; independent behavioral evidence is required"
+  },
+  {
+   "substrate_id": "qs-cdf7e520a28ff458",
+   "operator": "broken_internal_crossref",
+   "control_observed": 3,
+   "mutant_observed": 1,
+   "control_disposition": "sound",
+   "status": "scorable",
+   "error": null
+  },
+  {
+   "substrate_id": "qs-d05784fe3c3b3ac2",
+   "operator": "refuted_conclusion",
+   "control_observed": 3,
+   "mutant_observed": 1,
+   "control_disposition": "sound",
+   "status": "scorable",
+   "error": null
+  },
+  {
+   "substrate_id": "qs-d8054c759739e7a6",
+   "operator": "refuted_conclusion",
+   "control_observed": 3,
+   "mutant_observed": 1,
+   "control_disposition": "sound",
+   "status": "scorable",
+   "error": null
+  },
+  {
+   "substrate_id": "qs-e7003896d6e7ab48",
+   "operator": "contradicted_clause",
+   "control_observed": 3,
+   "mutant_observed": 1,
+   "control_disposition": "sound",
+   "status": "scorable",
+   "error": null
+  },
+  {
+   "substrate_id": "qs-e95b9a190bea1f12",
+   "operator": "contradicted_clause",
+   "control_observed": 3,
+   "mutant_observed": 1,
+   "control_disposition": "sound",
+   "status": "scorable",
+   "error": null
+  },
+  {
+   "substrate_id": "qs-f882ddbaaed1b065",
+   "operator": "unearned_verification_claim",
+   "control_observed": 0,
+   "mutant_observed": 0,
+   "control_disposition": "defective",
+   "status": "incomplete",
+   "error": "oracle unverified: absent schema-related words do not prove absent validation; independent behavioral evidence is required"
+  }
+ ],
+ "controls_by_disposition": {
+  "sound": {
+   "expected": 33,
+   "observed": 30,
+   "refused": 16,
+   "unavailable": 3
+  },
+  "defective": {
+   "expected": 15,
+   "observed": 6,
+   "refused": 4,
+   "unavailable": 9
+  },
+  "unadjudicated": {
+   "expected": 0,
+   "observed": 0,
+   "refused": 0,
+   "unavailable": 0
+  }
+ },
+ "pool_aborted": null,
+ "natural_cases": [
+  {
+   "id": "cancellation-320479-empty-patch",
+   "base_manifest_digest": "36380a6fdb8ffff8c6fb86f6d958e06bebf32f53840c0716828c89ba38ff2534",
+   "replicates": [
+    {
+     "doc": {
+      "posture": "adversarial",
+      "verdict": "accept_with_findings",
+      "findings": [
+       {
+        "id": "RV-001",
+        "severity": "medium",
+        "element_anchor": "change_set.files / change_set.deletes",
+        "rationale": "The change set is a no-op. `files` is {} and `deletes` is [], so nothing is delivered. The substrate id (`cancellation-320479-empty-patch`) points to a producing execution that was cancelled, not one that finished. No predicate or packet is bound (see RV-002), so no accepted-design clause can be shown false and no in-force decision (D0001/D0003/D0005) is violated. The changed surface is empty, so there is no demonstrated harm on it either. Under the 2026-07-18 verdict discipline this cannot block acceptance. It does mean accepting this change set cannot count as evidence that any work item was completed.",
+        "proposed_disposition": "Record it as a no-op artifact. Consuming gates must not let it satisfy a work-graph packet's deliverables. If the cancelled work is still needed, re-dispatch it instead of converging on this empty result."
+       },
+       {
+        "id": "RV-002",
+        "severity": "low",
+        "element_anchor": "change_set.packet.{work_graph_identity,work_graph_hash,packet_id}",
+        "rationale": "All three packet binding fields are empty strings. The change set does not trace back to any work graph or packet, so no registered predicate exists to check it against, and a gate cannot tell which obligation, if any, it claims to address. This is a gap in provenance and traceability, not a falsified clause.",
+        "proposed_disposition": "Hardening: make the producer either bind a packet or explicitly mark the artifact as an unbound or cancellation output, so gates can route it on that basis instead of inferring from empty strings."
+       },
+       {
+        "id": "RV-003",
+        "severity": "low",
+        "element_anchor": "change_set.result_tree_hash",
+        "rationale": "I confirmed that base.content_hash 8dd2928b\u2026d2c9 equals the pinned base manifest's `object`. All 32 base files match their manifest sha256 values, and the path/sha256 view digest recomputes to 97d49a52\u2026260b, as recorded. The declared result_tree_hash f7cf65f6\u2026b85e differs from the base content hash. That is not by itself a contradiction, because the two use different hash schemes. But the base is a partial product tree (32 files, `base_source: partial-product-tree`), so I cannot recompute the full-tree hash. That leaves the claim that an empty patch reproduces the base tree unverified. Per the pinning note, this unverifiability is not a defect.",
+        "proposed_disposition": "No change needed on this change set. A downstream check with the full product tree should confirm that result_tree_hash equals the base product's tree hash."
+       }
+      ],
+      "dissent": "Minority view: an empty change set coming from a cancelled execution arguably should be rejected outright, not accepted, because it fulfils no work. This view is recorded but does not decide the verdict. The pass contract allows needs_revision or reject only when a finding names a falsified clause, a violated decision, or demonstrated harm on the changed surface. With no bound packet or predicate and an empty surface, none of these can be named. Blocking also belongs at the gate or scheduler level (routing, per RV-001), not in this review ledger.",
+      "summary": "accept_with_findings: the change set is empty. The base pin checks out: content_hash matches the manifest object, and all 32 base files verify against the manifest. No clause, in-force decision, or demonstrated harm is violated. Findings are recorded for the no-op, cancellation-origin nature of the artifact (RV-001), the empty packet binding (RV-002), and the result_tree_hash, which cannot be checked against a partial base (RV-003). None of them block acceptance."
+     },
+     "exit_code": 0,
+     "timed_out": false,
+     "seconds": 44.3,
+     "transport": "stdin",
+     "prompt_bytes": 5598,
+     "raw_head": "```json\n{\"posture\":\"adversarial\",\"verdict\":\"accept_with_findings\",\"findings\":[{\"id\":\"RV-001\",\"severity\":\"medium\",\"element_anchor\":\"change_set.files / change_set.deletes\",\"rationale\":\"The change set is a no-op. `files` is {} and `deletes` is [], so nothing is delivered. The substrate id (`cancellatio",
+     "sandbox": "bwrap",
+     "error": null,
+     "manifest_before": true,
+     "manifest_after": true,
+     "manifest_verified": true,
+     "verdict": "accept_with_findings",
+     "observed": true,
+     "anchors": [
+      "change_set.files / change_set.deletes",
+      "change_set.packet.{work_graph_identity,work_graph_hash,packet_id}",
+      "change_set.result_tree_hash"
+     ],
+     "exact_anchor_mention": false,
+     "refused": false,
+     "conformance": {
+      "record": "review-gate-conformance/2",
+      "parses": true,
+      "verdict_valid": true,
+      "refusal_has_anchor": null,
+      "rationales_present": true,
+      "rationale_cues_present": true,
+      "mechanical_checks_passed": true,
+      "status": "unverified",
+      "ok": null,
+      "interpretation": "Mechanical checks are necessary only. Lexical cues do not establish a falsified clause, violated decision, or demonstrated harm; full contract conformance remains unverified."
+     }
+    },
+    {
+     "doc": {
+      "posture": "adversarial",
+      "verdict": "accept_with_findings",
+      "findings": [
+       {
+        "id": "RV-001",
+        "severity": "medium",
+        "element_anchor": "change-set.packet (work_graph_identity, work_graph_hash, packet_id = \"\") vs rfcs/0010-work-graph-execution/design.md#el:3-change-set-admission predicates 1-2; decisions/D0005 C2 (W5 content-hash pins)",
+        "rationale": "The packet block is present, but all three fields are empty strings. An empty triple identifies no packet. If this is a build-lane Change Set, RFC 0010 \u00a73 predicate 1 requires a packet pin in the schema, and predicate 2 compares it to the packet element hash in the accepted Work Graph head. An empty pin cannot pass that comparison. D0005.C2/W5 also requires references to be (identity, content_hash) pins. I am not blocking on this because three things are unknown. The change-set schema is not in the pinned base. The base identity names a pass product artifact ('passes/semantic-and-durable-closure-b/product-artifact'), not a Work Graph packet, so the empty block may be the lawful null encoding for a change set that is not a packet build. And the packet-checks gate enforces this mechanically in any case. So no clause is shown to be falsified. Proposed disposition: route to packet-checks. If the subject is a packet build, refuse there with cause packet_moved or a schema error. Otherwise, record an explicit null-packet encoding rather than empty strings."
+       },
+       {
+        "id": "RV-002",
+        "severity": "low",
+        "element_anchor": "change-set.result_tree_hash (f7cf65f6\u2026b85e) vs change-set.base.content_hash (8dd2928b\u2026d2c9); rfcs/0010-work-graph-execution/design.md#el:3-change-set-admission predicate 4 (base coherence)",
+        "rationale": "The diff is empty (files {} and deletes []), so applying it to the composed base must give a result tree hash equal to the composed-base tree hash. The declared result_tree_hash differs from base.content_hash. However, base.content_hash equals the base manifest's product 'object' digest, which is an object-hash domain, not a tree-hash domain. The composed-base tree hash is not declared in the change set, and the pinned base is a partial product tree of 32 files. So I cannot confirm or refute base coherence from this material, and I show no harm. Proposed disposition: base coherence is left to packet-checks predicate 4 or to materialization-time hash verification (\u00a75.2 step 1). Any mismatch there should be a refusal, not something the review signs off."
+       },
+       {
+        "id": "RV-003",
+        "severity": "low",
+        "element_anchor": "change-set.files = {}, change-set.deletes = [] (whole change set)",
+        "rationale": "The change set delivers no content and gives no reason why, such as a claim that the predicate is already met or an attribution/advisory note. The substrate label indicates a cancelled run that emitted an empty patch. An empty diff changes no surface, so it can do no harm and falsifies nothing on its own. But it gives no evidence of progress on any predicate. Under D0005.C5/C9, accepting it must not be read as satisfying or advancing whatever target the producing run was dispatched for. Proposed disposition: record the change set as a no-op. Whatever target it was dispatched for gets no evidence from it. The Driver should treat the packet or pass as still pending, not advanced."
+       }
+      ],
+      "summary": "This change set is empty: no file writes, no deletes, and an empty packet pin, declared against base 8dd2928b\u2026d2c9. That base matches the pinned manifest object, and the tree has 32 files. Because nothing changes, there is no changed surface and no demonstrated harm. I found no clause of D0001, D0003, or D0005, or of the accepted RFC 0010 design, that this material shows to be falsified. The empty packet pin and the result-tree-hash / base-content-hash mismatch cannot be verified here. Both belong to the mechanical packet-checks predicates (\u00a73 predicates 1, 2, and 4), which will refuse the change set if either is actually defective. Verdict: accept_with_findings. Accepting does not count as progress on any target predicate. DISSENT/MINORITY: an adversarial reading holds that the packet key is present but empty. That is a malformed reference contrary to D0005.C2/W5, and under D0005.C10 this change set could never bind to an exact subject/base context. On that reading, needs_revision is warranted. The majority declines that reading because the change-set schema is unavailable in the pinned base, the base identifies a pass product artifact rather than a Work Graph packet, and so no violation is demonstrated."
+     },
+     "exit_code": 0,
+     "timed_out": false,
+     "seconds": 54.5,
+     "transport": "stdin",
+     "prompt_bytes": 5598,
+     "raw_head": "{\"posture\":\"adversarial\",\"verdict\":\"accept_with_findings\",\"findings\":[{\"id\":\"RV-001\",\"severity\":\"medium\",\"element_anchor\":\"change-set.packet (work_graph_identity, work_graph_hash, packet_id = \\\"\\\") vs rfcs/0010-work-graph-execution/design.md#el:3-change-set-admission predicates 1-2; decisions/D0005 ",
+     "sandbox": "bwrap",
+     "error": null,
+     "manifest_before": true,
+     "manifest_after": true,
+     "manifest_verified": true,
+     "verdict": "accept_with_findings",
+     "observed": true,
+     "anchors": [
+      "change-set.packet (work_graph_identity, work_graph_hash, packet_id = \"\") vs rfcs/0010-work-graph-execution/design.md#el:3-change-set-admission predicates 1-2; decisions/D0005 C2 (W5 content-hash pins)",
+      "change-set.result_tree_hash (f7cf65f6\u2026b85e) vs change-set.base.content_hash (8dd2928b\u2026d2c9); rfcs/0010-work-graph-execution/design.md#el:3-change-set-admission predicate 4 (base coherence)",
+      "change-set.files = {}, change-set.deletes = [] (whole change set)"
+     ],
+     "exact_anchor_mention": false,
+     "refused": false,
+     "conformance": {
+      "record": "review-gate-conformance/2",
+      "parses": true,
+      "verdict_valid": true,
+      "refusal_has_anchor": null,
+      "rationales_present": true,
+      "rationale_cues_present": true,
+      "mechanical_checks_passed": true,
+      "status": "unverified",
+      "ok": null,
+      "interpretation": "Mechanical checks are necessary only. Lexical cues do not establish a falsified clause, violated decision, or demonstrated harm; full contract conformance remains unverified."
+     }
+    },
+    {
+     "doc": {
+      "posture": "adversarial",
+      "verdict": "reject",
+      "findings": [
+       {
+        "id": "RV-001",
+        "severity": "blocking",
+        "element_anchor": "change_set.packet (work_graph_identity, work_graph_hash, packet_id)",
+        "rationale": "All three packet pin fields are empty strings. Clauses falsified: D0010.C3 says Change Sets pin the packet element hash. D0010.C4 and RFC 0010 \u00a73 (el:3-change-set-admission), predicate 2, require packet-checks to verify that this hash equals the packet's element hash in the current accepted Work Graph head. RFC 0010 \u00a72.1 defines packet_pin as {work-graph identity, work-graph version hash, packet element anchor, packet element hash}. This change set has no identity, no version hash and no anchor, and it has no packet element hash field at all. Without a packet, \u00a73 predicate 3 (write-scope conformance) also has no declared write scope to check against, so two of the five execution-free admission predicates can't be evaluated. This is the D0003.C5 guarantee that RFC 0010 \u00a72.3 applies at runtime, and this artifact breaks it. Proposed disposition: refuse at packet-checks. Nothing here can be revised, because there is no packet to revise against. If a packet exists, the Driver should plan a new build run whose manifest carries a full packet_pin."
+       },
+       {
+        "id": "RV-002",
+        "severity": "blocking",
+        "element_anchor": "change_set.base; change_set (attribution, advisory section)",
+        "rationale": "RFC 0010 \u00a73 predicate 1 requires the change set to validate against schema/change-set, which includes base composition pins, attribution and an advisory-evidence section. The base block here gives only a product identity and a content hash. It does not give the base_composition that \u00a72.1 and \u00a72.5 define: the observed product tree hash, the ordered admitted ancestor Change Set hashes, and the composed base tree hash. The artifact also has no lane attribution and no backend identity, so predicate 5 (attribution completeness, which D0010.C4 requires for independence evaluation) can't be satisfied. It has no advisory section either. The schema/change-set body is outside the pinned tree, so I judged only the object as presented. As presented, it fails the predicates of the accepted design. Proposed disposition: refuse, together with RV-001."
+       },
+       {
+        "id": "RV-003",
+        "severity": "major",
+        "element_anchor": "change_set.files = {}, change_set.deletes = []",
+        "rationale": "The diff is empty, so it can't satisfy any packet obligation. Under RFC 0007's submission status mapping, a run with no admissible outputs reports `failed` (pass_error) or closes as canceled/abandoned. It does not emit a zero-content candidate. The demonstrated harm on this surface: RFC 0010 \u00a72.4 says the first admission wins a packet and later valid results are retired as redundant_candidate. So if an empty change set were ever bound to a real packet and admitted, it would take the packet's first-admission slot and turn real work into redundant history. D0002.C4 and D0010.C2 require that finished work never be discarded, and this outcome would effectively discard it. Proposed disposition: do not admit this as a Change Set candidate. Record the run's real closure (canceled, abandoned or failed) through the RFC 0006 records instead."
+       },
+       {
+        "id": "RV-004",
+        "severity": "minor",
+        "element_anchor": "change_set.result_tree_hash vs base.content_hash",
+        "rationale": "Because the diff is empty, RFC 0010 \u00a73 predicate 4 (base coherence) means the result tree must equal the composed base tree exactly. The declared result_tree_hash (f7cf65f6\u2026) differs from base.content_hash (8dd2928b\u2026). These may be different hash domains (a product-artifact content hash versus a tree hash), and I couldn't reproduce either value from the 32-file pinned tree with git SHA-1 or SHA-256 tree hashing. So no mismatch is demonstrated, and this finding doesn't block on its own. Proposed disposition: if the artifact is ever resubmitted, verify base coherence with the canonical tree-hash algorithm."
+       }
+      ],
+      "summary": "Verdict: reject. The change set is an empty patch that isn't bound to any packet. Its packet pin is blank, it carries no base composition, attribution or advisory section, and its diff is empty. Two blocking findings falsify accepted clauses: RFC 0010 \u00a73 predicates 1, 2, 3 and 5, and D0010.C3/C4. Also, if an empty candidate were admitted against a real packet, it would take the first-admission slot (RFC 0010 \u00a72.4) with no content. Revision isn't the right path because there is nothing to revise. The run should close through its real outcome record, and any packet should be rebuilt under a properly pinned manifest. I couldn't recover any exchange objects and no evidence tree exists, so these findings rest on the change set as presented and on the pinned base/ design and decision texts only. Dissent/minority: one could argue for needs_revision rather than reject, on the grounds that an empty change set may be a legitimate result for a packet whose target state is already satisfied by the base. The artifact gives no packet or predicate that would support that reading, and the missing pins are required regardless. So the minority view doesn't change the verdict, but a resubmission with full pins and an explicit 'already satisfied' justification should get a fresh review."
+     },
+     "exit_code": 0,
+     "timed_out": false,
+     "seconds": 51.9,
+     "transport": "stdin",
+     "prompt_bytes": 5598,
+     "raw_head": "```json\n{\"posture\":\"adversarial\",\"verdict\":\"reject\",\"findings\":[{\"id\":\"RV-001\",\"severity\":\"blocking\",\"element_anchor\":\"change_set.packet (work_graph_identity, work_graph_hash, packet_id)\",\"rationale\":\"All three packet pin fields are empty strings. Clauses falsified: D0010.C3 says Change Sets pin the",
+     "sandbox": "bwrap",
+     "error": null,
+     "manifest_before": true,
+     "manifest_after": true,
+     "manifest_verified": true,
+     "verdict": "reject",
+     "observed": true,
+     "anchors": [
+      "change_set.packet (work_graph_identity, work_graph_hash, packet_id)",
+      "change_set.base; change_set (attribution, advisory section)",
+      "change_set.files = {}, change_set.deletes = []",
+      "change_set.result_tree_hash vs base.content_hash"
+     ],
+     "exact_anchor_mention": false,
+     "refused": true,
+     "conformance": {
+      "record": "review-gate-conformance/2",
+      "parses": true,
+      "verdict_valid": true,
+      "refusal_has_anchor": true,
+      "rationales_present": true,
+      "rationale_cues_present": true,
+      "mechanical_checks_passed": true,
+      "status": "unverified",
+      "ok": null,
+      "interpretation": "Mechanical checks are necessary only. Lexical cues do not establish a falsified clause, violated decision, or demonstrated harm; full contract conformance remains unverified."
+     }
+    }
+   ],
+   "expected_replicates": 3,
+   "unattempted_replicates": 0,
+   "integrity_failure": null,
+   "anchor_matching": "normalized-anchor-exact/1",
+   "unavailable": 0,
+   "refused_with_exact_anchor_mention": 0,
+   "conforming": null,
+   "mechanical_checks_passed": 3,
+   "conformance_unverified": 3,
+   "conformance_failed_mechanical": 0
+  }
+ ],
+ "floors": {
+  "status": "proposed, not adopted",
+  "catch": "every scorable analog cell caught but at most 2",
+  "false_alarm": "at most 2 sound controls refused, Stage B rows only",
+  "natural_case": "refused with a finding anchored at result_tree_hash in at least 2 of 3",
+  "conformance": "3 of 3 outputs conform"
+ },
+ "note": "Observations only; floors proposed, not adopted. Full contract conformance and finding correctness remain unverified. Control dispositions are recorded ledger labels, not proof of tree-v1 revalidation. No admission decision, ranking, or claim."
+}
