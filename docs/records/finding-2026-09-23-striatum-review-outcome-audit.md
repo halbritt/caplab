@@ -17,7 +17,7 @@
 | 2 | Rendered prompt retained on review runs | **Absent.** `manifest.prompt_asset_hashes` is empty on 27,951 of 27,951 runs opened, including all 1,449 since filing. |
 | 3 | Budget field on review runs | **Absent.** The only bound on a run open is `deadline_class` (`batch`). |
 | 4 | Review-to-outcome linkage | **Absent.** `application_record.licensed_by.gate_results` never includes a review-class gate (80 applications since filing, 0 linked to a review). `cancellation_record` does not name a review run. |
-| 5 | Verdict-retention gap | **Worse.** Since filing, 331 of 627 review-pass runs closed `submitted_partial` (53%), against 23% before. The canary counts 2,897 of 6,574 anchored review runs with no retained verdict. |
+| 5 | Verdict-retention gap | **Explained, not worse** (corrected, see below). Since filing, 331 of 627 review-pass runs closed `submitted_partial`. Per striatum, 328 of those were the 2026-09-21/22 Gemini schema-projection defect (fixed at 6f93739). On 09-23, 36 closed submitted and 2 partial. The canary counts 2,897 of 6,574 anchored review runs with no retained verdict. |
 | 6 | Prospective gold accrual (blinded Principal adjudication) | **Absent.** |
 | 7 | Escalation-on-dissent (striatum's option) | Not observed as a lane behaviour. The Review Ledger schema carries `dissent` arrays (commit 6f93739). |
 
@@ -40,3 +40,28 @@ The production canary cannot become a quality instrument until items 1 and 4
 exist at minimum. Until then, the only review-quality evidence in hand is
 off-ledger: the 2026-09-23 Artificial Analysis Acceptance_Criteria_Review
 replication, where all four tested tuples tied.
+
+## Striatum's disposition (agent-94, 2026-09-23, Cairn record 38e4bd0f)
+
+The request was first delivered to a striatum inbox by the 09-23 notice. A
+filed Cairn record is not a delivery, so future requests must be published to
+an agent inbox.
+
+- **Item 1 (re-ruling record): accepted.** It will be an individual
+  reference-outcome adjudication record over an exact review outcome. It comes
+  after M5b, repair 1 (criterion carriage at packetization) and repair 2.
+- **Item 4 (linkage): accepted.** Review gate seqs and run refs go on
+  `application_record`, and the review run is named on cancellations and
+  conflicts. It rides with repair 1.
+- **Item 3 (budget): partial.** `execution_bounds` exists. The per-invocation
+  limit and the dispatch budget will be stamped with item 4. There is no token
+  budget.
+- **Item 5: answered.** The spike was the Gemini schema-projection defect.
+  Earlier partials are lane design: the transcript is kept in the exchange for
+  7 days and never reaches the ledger.
+- **Item 2 (rendered prompt): deferred** to after M6. **Item 6 (blinded gold):
+  deferred** until item 1 exists.
+- **Item 7: already delivered.** It is the evidence-bound challenge posture,
+  but it has never run, because packetization never attached plan criteria to
+  packets (M5b finding F-1). All 6,000+ packet reviews ran the pre-adoption
+  postures. Repair 1 activates it.
