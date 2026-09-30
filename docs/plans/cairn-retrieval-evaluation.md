@@ -189,3 +189,40 @@ CLI contracts: `validate --spec PATH`; `run --spec PATH --output NEW_DIR`;
 execution while retaining its report. Quality scores have no invented pass
 threshold. Omitting comparison arm selectors is valid only for unambiguous
 single-arm inputs or a clearly documented matching-arm report.
+
+## Native task-evidence bridge (second implementation slice)
+
+After contracts/metrics are committed, agent 235 owns `native_task.py` and its
+focused tests. Agent 250 adds the CLI entry point after its core CLI is ready.
+The bridge is in scope; it must not be postponed past harness completion.
+
+```python
+import_task_run(report_path: Path, *, plan_path: Path, corpus_path: Path,
+                cairn_checkout: Path, output: Path) -> dict
+verify_task_run(output: Path) -> dict
+```
+
+Input is a completed or interrupted `cairn.task-eval.agent/1` report with its
+original plan, corpus and available run streams. Preserve exact input bytes in
+a fresh CAPLAB filesystem ledger. Reuse the explicitly selected checkout's
+`trial_task_evidence.py` parser, pin its source, and inspect its expected input
+contract; never call a model or production service while importing evidence.
+Do not change the source grades, fill in missing streams, invent native Binding
+identity or infer successful actions from tool-call names. Check report/plan
+case, arm, seed, model, effort and frozen hashes; retain planned-but-not-started
+rows and failure dispositions. Duplicate/unplanned rows or unsafe source paths
+are errors. A missing stream remains unknown evidence, not zero delivery.
+
+Output schema `caplab-retrieval-task-evidence/1` contains source references,
+original grades/check outcomes, native delivery observations, assignment/status
+counts and scope limits. Separate completion tasks from boundary/abstention
+strata and expose unknown strata without silently treating them as completion.
+Reported grades are retained source observations; this bridge does not certify
+that an old instrument or oracle was valid. Missing configuration identity is
+explicit and cannot be silently upgraded to a full CAPLAB Measurement.
+
+Expose `caplab retrieval import-task --report PATH --plan PATH --corpus PATH
+--cairn-checkout PATH --output NEW_DIR` and a verified report-reading path.
+Local tests use newly constructed, clearly labelled fixture evidence with the
+real Cairn parser, plus adversarial identity/hash/path/missing-stream cases.
+Importing historical campaign evidence is not part of this implementation run.
