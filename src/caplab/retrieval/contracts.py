@@ -270,6 +270,10 @@ def validate_attempt(attempt: Any, spec: dict) -> dict:
     arms = {arm["id"] for arm in spec["arms"]}
     queries = {q["id"] for q in spec["queries"]}
     corpus = {n["id"] for n in spec["corpus"]}
+    # Type-check identities before set membership: an unhashable value must be a
+    # ContractError, never a raw TypeError.
+    _slug(a["arm"], "/arm")
+    _slug(a["query_id"], "/query_id")
     if a["arm"] not in arms:
         _fail("UNKNOWN_ID", "/arm", f"{a['arm']!r} is not a spec arm")
     if a["query_id"] not in queries:

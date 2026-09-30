@@ -136,6 +136,17 @@ class AttemptValidation(unittest.TestCase):
         self.assertIsNone(validate_attempt(not_started, self.spec)["latency_ns"])
         self.assertCode(ok_attempt(error={"code": "X"}), "INCONSISTENT_STATUS")
 
+    def test_malformed_containers_raise_only_contract_errors(self):
+        good = ok_attempt()
+        cases = [dict(good, arm=["cmd"]), dict(good, arm={"cmd": 1}), dict(good, query_id=["q1"]),
+                 dict(good, query_id={"q": 1}), dict(good, seed=[0]), dict(good, assignment_id=["x"]),
+                 dict(good, status=["ok"]), dict(good, ranked_ids=[["a"]]), dict(good, ranked_ids="a"),
+                 dict(good, delivered_ids={"a": 1}), dict(good, error=[1]), dict(good, observation=[1]), [], None, 5]
+        for attempt in cases:
+            with self.subTest(attempt=attempt), self.assertRaises(ContractError):
+                validate_attempt(attempt, self.spec)
+        self.assertEqual(validate_attempt(good, self.spec)["arm"], "cmd")  # ordinary callers unchanged
+
     def test_rejects_bad_identity_ids_and_values(self):
         cases = [
             (ok_attempt(arm="ghost"), "UNKNOWN_ID"),

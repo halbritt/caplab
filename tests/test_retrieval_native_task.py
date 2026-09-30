@@ -11,7 +11,10 @@ import shutil
 import tempfile
 import unittest
 
-from caplab.retrieval.native_task import TaskEvidenceError, import_task_run, verify_task_run
+from caplab.qualification.ledger import FilesystemQualificationLedger
+from caplab.retrieval.native_task import (EVIDENCE_MEDIA_TYPE, SCHEMA, TaskEvidenceError, _evidence_bytes,
+                                          import_task_run, verify_task_run)
+from caplab.runtime.canonical import canonical_json
 
 CAIRN = Path(os.environ.get("CAIRN_CHECKOUT", Path.home() / "git/cairn"))
 HAVE_CAIRN = (CAIRN / "scripts/trial_task_evidence.py").is_file()
@@ -131,6 +134,98 @@ class NativeTaskBridge(unittest.TestCase):
         self.assertEqual((doc["counts"]["missing"], doc["counts"]["recorded"]), (1, 4))
         self.assertEqual({a["run_id"]: a["status"] for a in doc["assignments"]}["boundary.candidate.s0"], "missing")
 
+    def forge(self, mutate, name="out"):
+        """A coherent forgery: edit evidence, re-register it and rewrite the manifest."""
+        out = self.root / name
+        document = json.loads((out / "evidence.json").read_bytes())
+        mutate(document)
+        data = _evidence_bytes(document)
+        ref = FilesystemQualificationLedger(out / "ledger").register_bytes(
+            data, kind="retrieval-task-evidence", schema=SCHEMA, media_type=EVIDENCE_MEDIA_TYPE)
+        for file, payload in (("evidence.json", data),
+                              ("manifest.json", canonical_json({"schema_version": SCHEMA + "+manifest", "evidence": ref}))):
+            os.chmod(out / file, 0o600)
+            (out / file).write_bytes(payload)
+        return out
+
+    def test_coherently_reregistered_forgeries_are_refused(self):
+        self.run_import()
+        pristine = (self.root / "out/evidence.json").read_bytes()
+        forgeries = {
+            "grade": lambda d: d["assignments"][0]["original"].update(outcome="mistake"),
+            "memory": lambda d: d["assignments"][0]["original_memory"].update(context_bytes=1),
+            "stratum_class": lambda d: d["assignments"][2].update(stratum_class="completion"),
+            "status": lambda d: d["assignments"][5].update(status="missing"),
+            "order": lambda d: d["assignments"][0].update(order=1),
+            "counts": lambda d: d["counts"].update(recorded=6),
+            "outcomes": lambda d: d["outcomes"].update(correct=9),
+            "strata": lambda d: d["strata"].pop("unknown"),
+            "admission": lambda d: d["admission"].update(state="complete"),
+            "identity": lambda d: d["identity"]["reported"].update(model="other-model"),
+            "binding": lambda d: d["identity"].update(binding="fabricated"),
+            "dropped_assignment": lambda d: d["assignments"].pop(3),
+            "parser_report_hash": lambda d: d["parser_analysis"].update(report_sha256="0" * 64),
+            "parser_corpus_hash": lambda d: d["parser_analysis"].update(corpus_sha256="0" * 64),
+            "stream_flipped_unobserved": lambda d: d["assignments"][0].update(delivery={"observed": False, "reason": "missing_stream"}),
+            "limits": lambda d: d["limits"].pop(),
+        }
+        for label, mutate in forgeries.items():
+            with self.subTest(label):
+                (self.root / "out/evidence.json").chmod(0o600)
+                self.forge(mutate)
+                with self.assertRaises(TaskEvidenceError) as caught:
+                    verify_task_run(self.root / "out")
+                self.assertIn(caught.exception.code, ("INTEGRITY", "IDENTITY_MISMATCH"))
+                self.forge(lambda d: d.clear() or d.update(json.loads(pristine)))  # restore for the next case
+        self.assertTrue(verify_task_run(self.root / "out")["verified"])
+
+    def test_forged_delivery_needs_trusted_parser_to_detect(self):
+        self.run_import()
+        result = verify_task_run(self.root / "out", trusted_parser_checkout=CAIRN)
+        self.assertEqual(result["verification"]["parser_derived"], "re-executed with trusted checkout; matched")
+        self.forge(lambda d: d["assignments"][0]["delivery"].update(body_notes=["D-other"]))
+        hash_bound = verify_task_run(self.root / "out")  # honestly labelled: parser output is hash-bound only
+        self.assertEqual(hash_bound["verification"]["parser_derived"], "hash-bound; not re-executed")
+        with self.assertRaises(TaskEvidenceError) as caught:
+            verify_task_run(self.root / "out", trusted_parser_checkout=CAIRN)
+        self.assertEqual(caught.exception.code, "INTEGRITY")
+
+    def test_trusted_checkout_must_match_retained_parser(self):
+        self.run_import()
+        other = self.root / "other-checkout/scripts"
+        other.mkdir(parents=True)
+        (other / "trial_task_evidence.py").write_bytes((CAIRN / "scripts/trial_task_evidence.py").read_bytes() + b"\n# edited\n")
+        with self.assertRaises(TaskEvidenceError) as caught:
+            verify_task_run(self.root / "out", trusted_parser_checkout=self.root / "other-checkout")
+        self.assertEqual(caught.exception.code, "PARSER_CONTRACT")
+
+    def test_colliding_derived_run_ids_are_refused(self):
+        # (a.b, c) and (a, b.c) both derive run_id a.b.c.s0 and would share one stream.
+        self.plan.update(arms=["c", "b.c"], runs=[["a.b", "c", 0, 0], ["a", "b.c", 0, 1]])
+        self.report.update(arms=["c", "b.c"], admission=dict(state="complete", planned=2, admitted=2, not_started=[]),
+                           records=[dict(run_id="a.b.c.s0", case="a.b", arm="c", seed=0, outcome="correct"),
+                                    dict(run_id="a.b.c.s0", case="a", arm="b.c", seed=0, outcome="mistake")])
+        self.write()
+        self.assertRefused("DUPLICATE_RUN")
+
+    def test_nonfinite_or_unsafe_inputs_fail_before_any_output(self):
+        self.report["records"][0]["seconds"] = float("nan")
+        self.write()
+        self.assertRefused("MALFORMED")
+        self.report["records"][0]["seconds"] = 41.37
+        for path in ("/etc/observed.json", "../observed.json", "a/../../x.json"):
+            self.report["observed_corpus"] = self.plan["observed_corpus"] = {"path": path, "sha256": "0" * 64}
+            self.write()
+            with self.subTest(path=path):
+                self.assertRefused("UNSAFE_PATH")
+                self.assertFalse((self.root / "refused").exists())
+
+    def test_dangling_symlink_output_is_typed(self):
+        os.symlink(self.root / "nowhere", self.root / "dangling")
+        with self.assertRaises(TaskEvidenceError) as caught:
+            self.run_import("dangling")
+        self.assertEqual(caught.exception.code, "OUTPUT_EXISTS")
+
     def test_tampering_is_detected(self):
         self.run_import()
         objects = sorted((self.root / "out/ledger/objects").rglob("*"))
@@ -144,6 +239,7 @@ class NativeTaskBridge(unittest.TestCase):
     def test_evidence_json_tampering_is_detected(self):
         self.run_import()
         path = self.root / "out/evidence.json"
+        os.chmod(path, 0o600)  # retained files are written read-only; a tamperer can still change them
         path.write_bytes(path.read_bytes().replace(b'"correct"', b'"mistake"', 1))
         with self.assertRaises(TaskEvidenceError):
             verify_task_run(self.root / "out")

@@ -5,7 +5,7 @@ CLI entry point (`caplab retrieval import-task`) belongs to agent-250.
 
 ```python
 import_task_run(report_path, *, plan_path, corpus_path, cairn_checkout, output) -> dict
-verify_task_run(output) -> dict
+verify_task_run(output, *, trusted_parser_checkout=None) -> dict
 ```
 
 Both raise `TaskEvidenceError(code, message)` with these codes:
@@ -23,10 +23,30 @@ Both raise `TaskEvidenceError(code, message)` with these codes:
 | `PARSER_REFUSED` | The pinned Cairn parser rejected the evidence |
 | `INTEGRITY` | Retained bytes failed verification |
 
+## Trust boundary
+
+The selected checkout's `scripts/trial_task_evidence.py` is Python code. It runs
+in this process at import. Select only a checkout you trust.
+- The importer executes exactly the bytes it hashes and retains; it does not
+  read the file a second time. A dirty check covers the parser file only, not
+  modules it imports.
+- `verify_task_run` never executes retained code. It re-runs the parser only
+  from `trusted_parser_checkout`, when the caller passes one explicitly, and
+  only if that checkout's parser bytes equal the retained parser.
+
 ## What import does
 
-1. **Refuses to overwrite.** The output directory must not exist, and nothing
-   is created until every check has passed.
+1. **Refuses to overwrite, and fails before writing.** The output must not exist.
+   A dangling symlink or a creation race also gives `OUTPUT_EXISTS`. Nothing is
+   created until every content check has passed:
+   - strict JSON (NaN, Infinity and pathological nesting are `MALFORMED`);
+   - identity and position checks;
+   - observed-corpus path containment and hash;
+   - the parser run, and the parser's report, corpus, observed-corpus and
+     analyzer hashes checked against the bytes being retained;
+   - stream hashes.
+   After that only I/O remains. An I/O failure part-way can leave a partial
+   output, which verify refuses.
 2. **Checks identity** between the report (`cairn.task-eval.agent/1`) and its
    original plan:
    - the `frozen` object and the corpus bytes' hash must match;
@@ -40,7 +60,9 @@ Both raise `TaskEvidenceError(code, message)` with these codes:
      optional (older reports omit them), but when present they must agree with
      the plan;
    - duplicate or unplanned runs, and invalid `not_started` rows, are errors;
-   - run identities must be safe single path components.
+   - run identities must be safe single path components, and no two
+     identities may derive the same `case.arm.sSEED` run ID. Otherwise two
+     assignments would share one stream (`DUPLICATE_RUN`).
 3. **Runs the selected checkout's own parser**
    (`scripts/trial_task_evidence.py`). It is loaded from the explicit
    `cairn_checkout` and pinned by source SHA-256, git commit and whether the
@@ -96,10 +118,28 @@ Both raise `TaskEvidenceError(code, message)` with these codes:
   - `original_memory`: the evaluator's hook observations, as reported.
 - **limits:** scope statements carried with the evidence.
 
-`verify_task_run` re-resolves every retained object through the ledger. It
-checks hashes and sizes, confirms `evidence.json` is byte-identical to the
-registered document, and returns `{schema_version, verified, objects, counts,
-evidence}`. `evidence` is the verified registered document itself, so a caller
+`verify_task_run` works in three stages.
+1. **Bytes.** Every retained object is resolved through the ledger and checked
+   by hash and size, and `evidence.json` must equal the registered document.
+2. **Re-derivation.** Everything that is not parser output is re-derived from
+   the retained report, plan and corpus bytes and must reproduce
+   `evidence.json` byte for byte. That covers identity checks, assignment
+   order and status, original grades and memory, stratum classes, counts,
+   outcomes, strata, admission, reported identity, `binding: null` and limits.
+   A coherently forged evidence document that is re-registered with a
+   rewritten manifest is therefore refused.
+3. **Parser output.** Parser-derived delivery observations are hash-bound:
+   `parser_analysis` must name the retained report, corpus, observed corpus and
+   parser bytes. Every observed delivery must correspond to a retained stream,
+   and vice versa. They are re-executed only with `trusted_parser_checkout`.
+   Otherwise a forged delivery list over genuine streams is not detected, and
+   the result says so honestly.
+
+It returns `{schema_version, verified, objects, counts, evidence,
+verification}`. `verification.parser_derived` is either
+`"hash-bound; not re-executed"` or
+`"re-executed with trusted checkout; matched"`. Verification establishes
+consistency with immutable retained sources, not cryptographic authorship. `evidence` is the verified registered document itself, so a caller
 such as the CLI report can render retained task evidence with no second,
 unverified read.
 

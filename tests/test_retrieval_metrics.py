@@ -60,6 +60,13 @@ class ScoreAttempt(unittest.TestCase):
         self.assertEqual(perfect["cutoffs"]["3"]["ndcg"], 1.0)
         self.assertEqual(frac(perfect["cutoffs"]["3"]["recall"]), (2, 2))
 
+    def test_ndcg_ideal_is_cut_at_k_when_gold_exceeds_k(self):
+        # 'two' has 2 relevant notes; at k=1 a relevant first hit is a perfect ranking.
+        scored = score_attempt(q(self.s, "two"), attempt(self.s, "good", "two", ranked=["r1", "x1"]), [1, 3])
+        self.assertEqual(scored["cutoffs"]["1"]["ndcg"], 1.0)
+        self.assertEqual(frac(scored["cutoffs"]["1"]["recall"]), (1, 2))
+        self.assertAlmostEqual(scored["cutoffs"]["3"]["ndcg"], 1 / (1 + 1 / math.log2(3)))
+
     def test_empty_gold_controls_get_false_positive_not_precision(self):
         clean = score_attempt(q(self.s, "none"), attempt(self.s, "good", "none", ranked=[]), [1, 3])
         dirty = score_attempt(q(self.s, "none"), attempt(self.s, "good", "none", ranked=["x1"]), [1, 3])
@@ -135,6 +142,12 @@ class Summarize(unittest.TestCase):
         # 'two' succeeded without the forbidden note; the errored 'trap' is not clean.
         self.assertEqual(frac(k["forbidden"]["clean_all_assignments"]), (1, 2))
         self.assertEqual(frac(k["forbidden"]["hit_rate"]), (0, 1))
+
+    def test_summarize_rejects_malformed_attempt_containers(self):
+        s = spec()
+        for bad in (None, 5, "attempts", {"a": 1}, [None], [5], [[]]):
+            with self.subTest(bad=bad), self.assertRaises(ContractError):
+                summarize(s, bad)
 
     def test_missing_attempts_are_counted_and_duplicates_fail_closed(self):
         s = spec()

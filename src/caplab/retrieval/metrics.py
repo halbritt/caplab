@@ -195,6 +195,8 @@ def summarize(spec: dict, attempts: list) -> dict:
     dropped. No pass threshold or qualification judgment is applied.
     """
     queries = {q["id"]: q for q in spec["queries"]}
+    if not isinstance(attempts, list):
+        raise ContractError("TYPE", "/attempts", "must be an array of attempt objects")
     by_id = {}
     for i, raw in enumerate(attempts):
         try:
